@@ -430,6 +430,14 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 			report["replacement_quote_low_minor"] = replacement_quote["low"]
 			report["replacement_quote_high_minor"] = replacement_quote["high"]
 			report["replacement_quote_scope"] = "complete_build_replacement_quote_comparison"
+			# CR-39c: C_incident = min(C_repair, C_replace), and a complete dossier always
+			# prices C_replace, so the complete-build high bounds the bill even while
+			# inspections are pending. It is a ceiling, never a total.
+			var ceiling: Variant = replacement_quote["high"]
+			if ceiling != null and not high_possible and (not low_possible or low_total <= int(ceiling)):
+				high_possible = true
+				high_total = int(ceiling)
+				report["range_basis"] = "complete_build_replacement_ceiling"
 
 		report["replacement_minor"] = replacement_total if replacement_complete else null
 		report["salvage_minor"] = 0

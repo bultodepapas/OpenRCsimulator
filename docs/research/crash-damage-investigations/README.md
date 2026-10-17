@@ -51,6 +51,8 @@ The current research has gaps and source-quality limits documented in each repor
 
 [CR-31h](CR-31h/README.md) keeps pending total-loss salvage unknown. [CR-38b](CR-38b/README.md) compares frozen price revisions and flags sale quotes for recheck; [CR-36h](CR-36h/radio.md) and [CR-36i](CR-36i/service.md) add distinct receiver and service-part offers with unresolved fit/stock explicit.
 
+[CR-39](CR-39/README.md) audits the accident cost path on 2026-10-17: stale Extra/P-51 dossiers, no headline amount for a terminal crash without a prop strike, per-reset catalog reload timing, and the proposed hardening steps.
+
 [CR-35a](CR-35a/README.md) verifies finite source budgets, explicit ignition ticks and analytic component heating/cooling. Its parameters and thresholds remain caller-declared; it is not connected to aircraft damage or visual fire.
 
 [CR-36a](CR-36a/README.md) extends the economic dossier to the 55AX and FS-64V Stik configurations with exact propeller offers, explicit engine/silencer coverage substitutions, guarded inventory inheritance and production contact-to-report checks. Complete cost coverage remains separate from physical installation qualification.

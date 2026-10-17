@@ -1,0 +1,153 @@
+{
+  "evidence_version": 1,
+  "created_date": "2026-10-17",
+  "capture_script": {
+    "path": "tools/trailer/capture_vehicles.gd",
+    "sha256": "6CEAC721A7F9C54D518F4F737645DCFE8FCFA1387A641A6E5A640F4240121D85"
+  },
+  "capture_config": {
+    "engine": "Godot 4.7.2-stable.official",
+    "runtime_project": "tmp/trailer/runtime/app",
+    "source_app_modified": false,
+    "renderer": "OpenGL Compatibility, NVIDIA GeForce RTX 3090",
+    "movie_maker": "--fixed-fps 60 --disable-vsync",
+    "canvas": [1920, 1080],
+    "input": "Production InputEventKey events through Input.parse_input_event; live sessions and vehicle physics",
+    "audio_capture": "Godot Movie Maker AVI audio, PCM signed 16-bit, 48 kHz stereo",
+    "audio_level_measurement": "FFmpeg volumedetect on raw AVI audio; mean/max values are dBFS"
+  },
+  "accepted_shots": [
+    {
+      "id": "xcell-60-research",
+      "file": "tmp/trailer/vehicles/helicopter/raw.avi",
+      "manifest": "tmp/trailer/vehicles/helicopter/manifest.json",
+      "sha256": "D95F9F369AAB1809C29E6F2D3DF28C810350EAFC6F56A1252572AB02CC2975F5",
+      "camera": "Production orbit view, 2.55 m boom, 12 degree elevation",
+      "trim": {
+        "avi_start_frame_inclusive": 9,
+        "avi_end_frame_exclusive": 309,
+        "trimmed_frames": 300,
+        "fps": 60,
+        "duration_s": 5.0,
+        "raw_avi_frames": 309
+      },
+      "video": {
+        "codec": "mjpeg",
+        "resolution": [1920, 1080],
+        "frame_rate": "60/1"
+      },
+      "audio": {
+        "codec": "pcm_s16le",
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "mean_dbfs": -36.5,
+        "max_dbfs": -23.2
+      },
+      "motion_samples": {
+        "position_ned_m_bounds": [[12.0, 13.694561], [3.981168, 6.007149], [-3.0, -2.91222]],
+        "speed_mps_bounds": [0.0, 2.335404],
+        "phase": "GOVERNED",
+        "crashed": false,
+        "controls": "D yaw at 1.25–1.90 s; Up forward cyclic at 2.55–3.25 s"
+      },
+      "inspection_samples": [
+        "tmp/trailer/vehicles/helicopter/inspect_01.png",
+        "tmp/trailer/vehicles/helicopter/inspect_02.png",
+        "tmp/trailer/vehicles/helicopter/inspect_03.png",
+        "tmp/trailer/vehicles/helicopter/inspect_04.png"
+      ],
+      "validation": "Trim frame count, resolution, fps and audio stream verified with ffprobe; hover, yaw and forward-control motion reviewed in frames."
+    },
+    {
+      "id": "mt8-bisonte",
+      "file": "tmp/trailer/vehicles/bisonte/raw.avi",
+      "manifest": "tmp/trailer/vehicles/bisonte/manifest.json",
+      "sha256": "46024802A783EBA214AB98C9B81F062E8087789F14812D9F91C069FDC17AD3B4",
+      "camera": "Production ground chase view, 1.75 m boom, 0.62 m height",
+      "trim": {
+        "avi_start_frame_inclusive": 8,
+        "avi_end_frame_exclusive": 248,
+        "trimmed_frames": 240,
+        "fps": 60,
+        "duration_s": 4.0,
+        "raw_avi_frames": 248
+      },
+      "video": {
+        "codec": "mjpeg",
+        "resolution": [1920, 1080],
+        "frame_rate": "60/1"
+      },
+      "audio": {
+        "codec": "pcm_s16le",
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "mean_dbfs": -35.2,
+        "max_dbfs": -23.0
+      },
+      "motion_samples": {
+        "state_position_m_bounds": [[10.587793, 14.999669], [0.00065, 7.539783], [-0.175287, -0.174252]],
+        "speed_mps_bounds": [0.084151, 5.775559],
+        "forward_speed_mps_bounds": [-2.222256, 5.671318],
+        "steering_bounds": [-1.0, 1.0],
+        "airborne": false,
+        "paused": false,
+        "controls": "W throttle with alternating D/A steering"
+      },
+      "inspection_samples": [
+        "tmp/trailer/vehicles/bisonte/inspect_01.png",
+        "tmp/trailer/vehicles/bisonte/inspect_02.png",
+        "tmp/trailer/vehicles/bisonte/inspect_03.png",
+        "tmp/trailer/vehicles/bisonte/inspect_04.png",
+        "tmp/trailer/vehicles/bisonte/inspect_05.png"
+      ],
+      "validation": "Session ticks advanced by 120 every 30 recorded frames; trim frame count, resolution, fps and audio stream verified with ffprobe; live steering and chase framing reviewed in frames."
+    },
+    {
+      "id": "monster-car-2",
+      "file": "tmp/trailer/vehicles/monster-car-2/raw.avi",
+      "manifest": "tmp/trailer/vehicles/monster-car-2/manifest.json",
+      "sha256": "9689C4E3AEFC6EE12E08FDB1C3B26B49BA60693CC3FC4B5DBD0B37FC7AFF8204",
+      "camera": "Production ground chase view, 1.75 m boom, 0.62 m height",
+      "trim": {
+        "avi_start_frame_inclusive": 8,
+        "avi_end_frame_exclusive": 248,
+        "trimmed_frames": 240,
+        "fps": 60,
+        "duration_s": 4.0,
+        "raw_avi_frames": 248
+      },
+      "video": {
+        "codec": "mjpeg",
+        "resolution": [1920, 1080],
+        "frame_rate": "60/1"
+      },
+      "audio": {
+        "codec": "pcm_s16le",
+        "sample_rate_hz": 48000,
+        "channels": 2,
+        "mean_dbfs": -20.6,
+        "max_dbfs": -12.5
+      },
+      "motion_samples": {
+        "state_position_m_bounds": [[14.999039, 19.793625], [0.000019, 8.269036], [-0.118091, -0.114881]],
+        "speed_mps_bounds": [0.004816, 5.172873],
+        "forward_speed_mps_bounds": [0.000756, 5.170791],
+        "steering_bounds": [-1.0, 1.0],
+        "engine_running": true,
+        "airborne": false,
+        "paused": false,
+        "controls": "Nitro engine preserved in its running production start state; W throttle with alternating A/D steering"
+      },
+      "validation": "Session ticks advanced by 120 every 30 recorded frames; engine_running remained true; trim frame count, resolution, fps and audio stream verified with ffprobe."
+    }
+  ],
+  "errors": [],
+  "warnings": [
+    "Godot logged pre-existing invalid resource UIDs in scenery population GLBs and fell back to their text paths; all routes rendered.",
+    "Godot reported ObjectDB instances leaked during external SceneTree script teardown after each successful render."
+  ],
+  "notes": [
+    "Motion bounds are extrema of manifest samples recorded every 30 output frames, not continuous-simulation extrema.",
+    "No external assets, generated vehicle models, or new video framework were used."
+  ]
+}
