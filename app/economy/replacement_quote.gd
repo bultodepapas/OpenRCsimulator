@@ -28,7 +28,18 @@ static func quote(
 	package_candidates: Array = [],
 	search_limit: Variant = PackageOptimizer.DEFAULT_SEARCH_LIMIT
 ) -> Dictionary:
-	var calculation: Dictionary = Calculator.calculate(dossier, assessment)
+	return quote_calculated(dossier, assessment, Calculator.calculate(dossier, assessment), package_candidates, search_limit)
+
+
+## Same quote from a Calculator.calculate(dossier, assessment) result the caller already holds.
+## Only ok, complete and replacement lines (id, action, quantity) are read.
+static func quote_calculated(
+	dossier: Dictionary,
+	assessment: Dictionary,
+	calculation: Dictionary,
+	package_candidates: Array = [],
+	search_limit: Variant = PackageOptimizer.DEFAULT_SEARCH_LIMIT
+) -> Dictionary:
 	var assessment_complete: bool = bool(calculation.get("complete", false))
 	if not bool(calculation.get("ok", false)):
 		return _base_result("invalid_assessment", assessment_complete, null, false, _bounded_errors(calculation.get("errors", [])))

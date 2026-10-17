@@ -311,6 +311,37 @@ func _mark_propeller() -> void:
 	_add_unresolved("Propeller strike: inspect the powertrain, shaft and mount before return to service.")
 
 
+## CR-39d: the dossier's authored contact → economic-component binding. Hull/gear events carry
+## the probe in contact_id; scenery/lake events carry the obstacle there and the probe in probe_id.
+func _contact_components(event: Dictionary) -> Array:
+	var bindings: Variant = dossier.get("contact_components", {})
+	if typeof(bindings) != TYPE_DICTIONARY or bindings.is_empty():
+		return []
+	var result: Array = []
+	var contact_id := str(event.get("contact_id", ""))
+	for key: String in [contact_id, str(event.get("probe_id", "")), "%s/%s" % [event.get("source", ""), contact_id]]:
+		var mapped: Variant = bindings.get(key)
+		if key.is_empty() or typeof(mapped) != TYPE_ARRAY:
+			continue
+		for component_id: Variant in mapped:
+			if typeof(component_id) == TYPE_STRING and not result.has(component_id):
+				result.append(component_id)
+	return result
+
+
+## A mapped contact makes its parts pending inspection; it never downgrades a confirmed replacement.
+func _mark_contact_inspection(component_ids: Array) -> bool:
+	var changed := false
+	for component_id: String in component_ids:
+		if not _assessment.components.has(component_id):
+			_assessment.components[component_id] = {disposition = "inspect"}
+			changed = true
+		elif _assessment.components[component_id].get("disposition") not in ["inspect", "replace", "unrecoverable"]:
+			# A later contact on an already assessed part reopens its condition.
+			changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
+	return changed
+
+
 func _add_unresolved(reason: String) -> bool:
 	if _assessment.unresolved.has(reason):
 		return false
@@ -330,9 +361,16 @@ func _recalculate() -> void:
 			lines = [], salvage_minor = 0, replacement_minor = null, price_date = "",
 			valuation_kind = "unavailable", unresolved = _assessment.unresolved.duplicate(),
 			errors = _catalog_errors.duplicate()}
-		report.unresolved.append("Compatible aircraft cost dossier is unavailable.")
+		var stale := false
+		for error: Variant in _catalog_errors:
+			stale = stale or str(error).contains("stale")
+		# CR-39g: name the cause the player can act on instead of a generic unavailable.
+		report.unresolved.append("Cost data is out of date for this aircraft version; no prices were applied." if stale
+			else "Compatible aircraft cost dossier is unavailable.")
 	else:
 		report = Calculator.calculate(dossier, _assessment)
+	# CR-39f: quote from this calculation; lines gain display fields only after the quote.
+	var comparison := ReplacementQuote.quote_calculated(dossier, _assessment, report)
 	var component_lookup: Dictionary = {}
 	for component: Dictionary in dossier.get("components", []):
 		component_lookup[component.id] = component
@@ -347,7 +385,6 @@ func _recalculate() -> void:
 		report.assumptions.append("%s [%s]: %s" % [receipt.inspection_id, receipt.basis, receipt.evidence])
 	report["inspections"] = _inspections.duplicate(true)
 	report["repair_choices"] = _repair_choices.duplicate(true)
-	var comparison := compare_replacements()
 	if comparison.get("status") in ["optimal", "unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
 		comparison.erase("candidate_catalog") # Freeze only the selected comparison, not every alternative.
 		comparison["format"] = "openrc-replacement-comparison v2"
@@ -380,7 +417,7 @@ func flush(force_retry := false) -> Error:
 
 
 func _write_archive() -> Error:
-	var encoded := JSON.stringify(report, "\t", true, true)
+	var encoded := JSON.stringify(report, "", true, true) # CR-39f: compact; readers accept either form.
 	if encoded.to_utf8_buffer().size() > ARCHIVE_MAX_BYTES:
 		return ERR_OUT_OF_MEMORY
 	var file := FileAccess.open(archive_path + ".tmp", FileAccess.WRITE)
