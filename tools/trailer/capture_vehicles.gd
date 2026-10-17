@@ -96,13 +96,22 @@ func _run() -> void:
 			quit(1)
 			return
 		if vehicle_id == "monster-car-2":
-			# This Nitro truck starts with its engine stopped. Use the normal pit
-			# service action before driving so the capture shows a live powertrain.
-			activity.handle_action("engine_start")
-			if not activity.session.load_error.is_empty():
-				push_error("Monster Car 2 engine service failed: " + activity.session.load_error)
-				quit(1)
-				return
+			# Preserve the production start state, using the regular pit service only
+			# if the vehicle arrives with its Nitro engine stopped.
+			var nitro: Dictionary = activity.session.telemetry_snapshot().get("nitro", {})
+			print("VEHICLE_NITRO_START ", JSON.stringify(nitro))
+			if not bool(nitro.get("engine_running", false)):
+				if float(nitro.get("fuel_kg", 0.0)) <= 0.0:
+					activity.handle_action("refuel")
+				if not activity.session.load_error.is_empty():
+					push_error("Monster Car 2 refuel service failed: " + activity.session.load_error)
+					quit(1)
+					return
+				activity.handle_action("engine_start")
+				if not activity.session.load_error.is_empty():
+					push_error("Monster Car 2 engine service failed: " + activity.session.load_error)
+					quit(1)
+					return
 		activity.handle_action("resume")
 		activity.dashboard.visible = false
 		# A closer-than-default boom keeps the camera low to the suspension while framing the full truck.
@@ -269,7 +278,7 @@ func _record(frame: int, heli: bool) -> Dictionary:
 		"speed_mps": float(telemetry.get("speed_m_per_s", 0.0)),
 		"forward_speed_mps": float(telemetry.get("forward_speed_m_per_s", 0.0)),
 		"airborne": bool(telemetry.get("airborne", false)),
-		"engine_running": bool(telemetry.get("engine_running", false)),
+		"engine_running": bool(telemetry.get("nitro", {}).get("engine_running", false)),
 		"steering": float(activity._last_controls.get("steering", 0.0)),
 		"controls": activity._last_controls.duplicate(true),
 	}

@@ -40,7 +40,7 @@ def tracked(draw, xy, text, size, spacing, color, regular=False):
     return x
 
 
-def plate(path, label="", subtitle="", title="", cinematic=False, brand=False):
+def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795)):
     im = Image.new("RGBA", (W, H))
     d = ImageDraw.Draw(im)
     if label or title:
@@ -53,7 +53,7 @@ def plate(path, label="", subtitle="", title="", cinematic=False, brand=False):
         if subtitle:
             tracked(d, (113, 941), subtitle, 23, 2.6, (200, 215, 226, 255), True)
     if title:
-        d.text((88, 795), title, font=font(74), fill=(250, 250, 250, 255), stroke_width=1)
+        d.text(tuple(title_xy), title, font=font(74), fill=(250, 250, 250, 255), stroke_width=1)
     if cinematic:
         d.rectangle((78, 68, 510, 111), fill=(4, 12, 20, 160))
         tracked(d, (92, 72), "CINEMATIC FORMATION SEQUENCE", 23, 1.3, (243, 247, 252, 255), True)
@@ -92,7 +92,16 @@ def sha(path):
 
 def assemble(manifest_path, ffmpeg, ffprobe, out, work):
     spec = json.loads(manifest_path.read_text(encoding="utf-8"))
+    def media_path(value):
+        path = Path(value)
+        return path if path.is_absolute() else (manifest_path.parent / path).resolve()
+
+    spec["music"] = str(media_path(spec["music"]))
     shots = spec["shots"]
+    for shot in shots:
+        for key in ("source", "audio"):
+            if shot.get(key):
+                shot[key] = str(media_path(shot[key]))
     assert sum(s["frames"] for s in shots) == 3600
     out.mkdir(parents=True, exist_ok=True)
     work.mkdir(parents=True, exist_ok=True)
@@ -143,7 +152,8 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work):
         else:
             run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", duration, "-c:a", "pcm_s24le", audio_out])
         audio_clips.append(audio_out)
-        source_rows.append({**shot, "timeline_start_frame": timeline, "encoded_sha256": sha(target)})
+        source_rows.append({**shot, "timeline_start_frame": timeline, "encoded_sha256": sha(target),
+                            "source_sha256": sha(source) if kind != "frames" else "individual frame hashes in capture manifest"})
         timeline += frames
         print(f"EDIT_SHOT_OK {name}: {frames} frames", flush=True)
     for filename, paths in [("picture-list.txt", video_clips), ("sound-list.txt", audio_clips)]:
@@ -154,13 +164,13 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work):
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-f", "concat", "-safe", 0, "-i", work / "sound-list.txt", "-c:a", "pcm_s24le", game])
     mixed = work / "mix.wav"
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-i", game, "-i", spec["music"],
-         "-filter_complex", "[0:a]volume=1.0[g];[1:a]volume=0.72[m];[g][m]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.89:level=false:latency=true,atrim=duration=60[a]",
+         "-filter_complex", "[0:a]volume=1.0[g];[1:a]volume='0.72*if(lt(t,1),0.5,if(between(t,18,23),0.7,if(between(t,44,48),0.45,1)))':eval=frame[m];[g][m]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.89:level=false:latency=true,atrim=duration=60[a]",
          "-map", "[a]", "-ar", 48000, "-c:a", "pcm_s24le", mixed])
     # Two-pass loudness normalization on the full mixed program.
-    measure = run([ffmpeg, "-hide_banner", "-i", mixed, "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=json", "-f", "null", "-"])
+    measure = run([ffmpeg, "-hide_banner", "-i", mixed, "-af", "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"])
     raw = measure.stderr[measure.stderr.rfind("{"):]
     loud = json.loads(raw)
-    normalizer = ("loudnorm=I=-14:TP=-1:LRA=11:linear=true:"
+    normalizer = ("loudnorm=I=-14:TP=-1.5:LRA=11:linear=true:"
                   f"measured_I={loud['input_i']}:measured_TP={loud['input_tp']}:measured_LRA={loud['input_lra']}:"
                   f"measured_thresh={loud['input_thresh']}:offset={loud['target_offset']}")
     final = out / "OpenRC-Every-Input-Matters-60s-1080p60.mp4"
@@ -172,7 +182,20 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work):
     assert (v["width"], v["height"], v["r_frame_rate"], int(v["nb_frames"])) == (1920, 1080, "60/1", 3600), v
     assert abs(float(probe["format"]["duration"]) - 60) < .05
     run([ffmpeg, "-hide_banner", "-v", "error", "-i", final, "-f", "null", "-"])
-    (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, "loudness_first_pass": loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
+    decoded_measure = run([ffmpeg, "-hide_banner", "-i", final, "-vn", "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=json", "-f", "null", "-"])
+    decoded_loud = json.loads(decoded_measure.stderr[decoded_measure.stderr.rfind("{"):])
+    assert float(decoded_loud["input_tp"]) <= -1.0, decoded_loud
+    (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, "loudness_first_pass": loud, "decoded_aac_loudness": decoded_loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
+    (out / "VIDEO-DESCRIPTION.txt").write_text(
+        "OpenRC Simulator — Every Input Matters\n\n"
+        "An open-source RC simulator. Development footage with current aircraft, helicopter and RC cars. "
+        "The simultaneous four-aircraft finale is labeled cinematic choreography using the original game models; it does not demonstrate multiplayer.\n\n"
+        "Project: https://bultodepapas.github.io/OpenRCsimulator/\n\n"
+        "'Uprising' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au\n"
+        "https://www.scottbuckley.com.au/library/uprising/\n"
+        "https://creativecommons.org/licenses/by/4.0/\n"
+        "Music edited for length and mixed with simulator audio.\n",
+        encoding="utf-8")
     print(str(final), flush=True)
 
 

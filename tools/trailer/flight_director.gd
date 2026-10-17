@@ -110,8 +110,8 @@ func _commands_at(t: float) -> Dictionary:
 			c.throttle = 0.94
 			c.roll = 0.12 if t >= 1.0 and t < 2.15 else 0.0
 		"extra-roll":
-			c.throttle = 0.86
-			c.roll = 0.9 if t >= 0.48 and t < 2.85 else (-0.15 if t >= 2.85 and t < 3.3 else 0.0)
+			c.throttle = 0.94
+			c.roll = 0.9 if t < 3.55 else (-0.45 if t < 3.8 else 0.0)
 			c.pitch = 0.025
 		"mustang-pass":
 			c.throttle = 0.9
@@ -154,6 +154,13 @@ func _place_camera(t: float) -> void:
 	var right: Vector3 = Vector3(body.x.x, 0.0, body.x.z).normalized()
 	if right.length_squared() < 0.9:
 		right = Vector3.RIGHT
+	if shot == "extra-roll":
+		# Keep the hero camera on a world-horizontal chase rail so the aircraft's axial roll
+		# rotates in frame without dragging the camera around its body axis.
+		forward = Vector3(-body.z.x, 0.0, -body.z.z).normalized()
+		if forward.length_squared() < 0.9:
+			forward = Vector3.FORWARD
+		right = forward.cross(Vector3.UP).normalized()
 	var elapsed: float = clampf(t / maxf(duration_s, 0.001), 0.0, 1.0)
 	var distance := 5.5
 	var height := 1.6
