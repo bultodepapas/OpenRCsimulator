@@ -24,6 +24,7 @@ const TAPE := [
 
 var _checks := 0
 var _failures: Array[String] = []
+var _skipped: Array[Dictionary] = []
 var _aircraft_results: Array[Dictionary] = []
 var _run_args: Dictionary = {}
 
@@ -41,6 +42,11 @@ func _initialize() -> void:
 	var electric_demo: String = str(_run_args.get("electric-demo", ""))
 	var aircraft_ids: PackedStringArray = PackedStringArray([Catalog.DEFAULT_ID]) if not electric_demo.is_empty() else Catalog.ids()
 	for aircraft_id: String in aircraft_ids:
+		if Catalog.is_rotorcraft(aircraft_id):
+			# main.tscn is the fixed-wing route; it loads rotorcraft data as an invalid airplane. Report, never hide.
+			_skipped.append({aircraft_id = aircraft_id, reason = "rotorcraft: not a main.tscn fixed-wing flight; parity not covered"})
+			print("SKIP ", aircraft_id, " — rotorcraft route is not covered by this fixed-wing harness")
+			continue
 		if not Catalog.can_fly(aircraft_id):
 			_fail("catalog route", "%s has no flight data" % aircraft_id)
 			continue
@@ -331,7 +337,7 @@ func _fail(label: String, detail: String) -> void:
 
 
 func _finish() -> void:
-	var expected: int = 1 if not str(_run_args.get("electric-demo", "")).is_empty() else Catalog.ids().size()
+	var expected: int = 1 if not str(_run_args.get("electric-demo", "")).is_empty() else Catalog.ids().size() - _skipped.size()
 	var passed_pairs: int = 0
 	for result: Dictionary in _aircraft_results:
 		if result.get("ok", false):
@@ -359,6 +365,7 @@ func _finish() -> void:
 		"passed_pairs": passed_pairs,
 		"expected_pairs": expected,
 		"runs": _aircraft_results,
+		"skipped": _skipped,
 		"failures": _failures,
 		"scope": "simulation parity only; no acoustic, latency, speaker, or human acceptance",
 	}

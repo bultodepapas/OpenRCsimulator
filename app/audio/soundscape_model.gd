@@ -39,6 +39,62 @@ static func retarded_emission(times: PackedFloat64Array, positions: PackedVector
 	return {index = 0, alpha = 0.0, delay = now - times[0], truncated = true}
 
 
+## AUD-11b: ISO 9613-1:1993 pure-tone atmospheric absorption. Presentation use only: one low-pass per aircraft
+## follows the coarse trend; this is not a calibrated propagation model.
+const ISO_REFERENCE_PRESSURE_PA: float = 101325.0
+const ISO_REFERENCE_TEMPERATURE_K: float = 293.15
+const ISO_TRIPLE_POINT_K: float = 273.16
+## The reference atmosphere is dry ISA air by construction, not an observed humidity. Dry air absorbs about 7x less
+## at 8 kHz than humid air, so audio assumes this relative humidity when the flight has no configured atmosphere.
+const REFERENCE_RELATIVE_HUMIDITY_PCT: float = 50.0
+## Godot's 12 dB/octave Butterworth low-pass (measured, research/audio/air-absorption-2026-10-17) is placed where
+## the ISO path loss reaches its -3 dB point. Above this ceiling a moving cutoff adds measurable artifacts.
+const ABSORPTION_KNEE_DB: float = 3.0
+const ABSORPTION_CEILING_HZ: float = 16000.0
+const ABSORPTION_FLOOR_HZ: float = 20.0
+
+
+## Molar concentration of water vapour h (%) from relative humidity, ISO 9613-1 Annex B saturation pressure.
+static func humidity_molar_pct(relative_humidity_pct: float, temperature_k: float,
+		pressure_pa: float = ISO_REFERENCE_PRESSURE_PA) -> float:
+	var saturation_ratio: float = pow(10.0, -6.8346 * pow(ISO_TRIPLE_POINT_K / temperature_k, 1.261) + 4.6151)
+	return clampf(relative_humidity_pct, 0.0, 100.0) * saturation_ratio * ISO_REFERENCE_PRESSURE_PA / pressure_pa
+
+
+## Attenuation coefficient (dB/m) at frequency f for temperature, pressure and molar humidity h (%).
+static func absorption_db_per_m(frequency_hz: float, temperature_k: float = 288.15,
+		pressure_pa: float = ISO_REFERENCE_PRESSURE_PA, humidity_pct: float = 0.0) -> float:
+	var p: float = pressure_pa / ISO_REFERENCE_PRESSURE_PA
+	var t: float = temperature_k / ISO_REFERENCE_TEMPERATURE_K
+	var h: float = maxf(humidity_pct, 0.0)
+	var relax_oxygen: float = p * (24.0 + 4.04e4 * h * (0.02 + h) / (0.391 + h))
+	var relax_nitrogen: float = p * pow(t, -0.5) * (9.0 + 280.0 * h * exp(-4.170 * (pow(t, -1.0 / 3.0) - 1.0)))
+	var f2: float = frequency_hz * frequency_hz
+	return 8.686 * f2 * (1.84e-11 / p * sqrt(t) + pow(t, -2.5) * (
+		0.01275 * exp(-2239.1 / temperature_k) / (relax_oxygen + f2 / relax_oxygen)
+		+ 0.1068 * exp(-3352.0 / temperature_k) / (relax_nitrogen + f2 / relax_nitrogen)))
+
+
+## Frequency where absorption over the path reaches ABSORPTION_KNEE_DB, clamped to [floor, ceiling].
+## Absorption rises monotonically with frequency, so bisection in log frequency is exact to the iteration count.
+static func absorption_cutoff_hz(path_m: float, temperature_k: float = 288.15,
+		pressure_pa: float = ISO_REFERENCE_PRESSURE_PA, humidity_pct: float = 0.0) -> float:
+	var path: float = maxf(path_m, 0.0)
+	if absorption_db_per_m(ABSORPTION_CEILING_HZ, temperature_k, pressure_pa, humidity_pct) * path <= ABSORPTION_KNEE_DB:
+		return ABSORPTION_CEILING_HZ
+	if absorption_db_per_m(ABSORPTION_FLOOR_HZ, temperature_k, pressure_pa, humidity_pct) * path >= ABSORPTION_KNEE_DB:
+		return ABSORPTION_FLOOR_HZ
+	var low: float = log(ABSORPTION_FLOOR_HZ)
+	var high: float = log(ABSORPTION_CEILING_HZ)
+	for iteration: int in 48:
+		var mid: float = 0.5 * (low + high)
+		if absorption_db_per_m(exp(mid), temperature_k, pressure_pa, humidity_pct) * path < ABSORPTION_KNEE_DB:
+			low = mid
+		else:
+			high = mid
+	return exp(0.5 * (low + high))
+
+
 static func targets(snapshot: Dictionary) -> Dictionary:
 	var rpm: float = maxf(float(snapshot.get("rpm", 0.0)), 0.0)
 	var ratio: float = clampf(rpm / maxf(float(snapshot.get("max_rpm", 12000.0)), 1.0), 0.0, 1.4)

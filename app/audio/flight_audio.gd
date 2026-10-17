@@ -2,6 +2,7 @@
 extends Node
 
 const Soundscape = preload("res://audio/soundscape.gd")
+const SoundscapeModel = preload("res://audio/soundscape_model.gd")
 const Frames = preload("res://render/frames.gd")
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Propulsion = preload("res://physics/propulsion.gd")
@@ -96,13 +97,20 @@ func snapshot() -> Dictionary:
 		jet_velocity_max = Turbine.gross_thrust(float(prop.max_rpm), prop, rho) / Turbine.mass_flow(float(prop.max_rpm), prop, rho)
 		var axis: PackedFloat64Array = prop.axis
 		exhaust = Frames.ned_to_render(Array(M.q_rotate(attitude, M.v3(-axis[0], -axis[1], -axis[2]))))
+	# AUD-11b: ISO 9613-1 inputs from the accepted atmosphere. The reference atmosphere is dry ISA air by
+	# construction, so it takes the documented presentation humidity instead of 0 %.
+	var temperature_k: float = float(atmosphere.get("temperature_k", 288.15))
+	var pressure_pa: float = float(atmosphere.get("pressure_pa", SoundscapeModel.ISO_REFERENCE_PRESSURE_PA))
+	var humidity: float = SoundscapeModel.humidity_molar_pct(SoundscapeModel.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)
+	if not session.atmosphere_is_reference() and pressure_pa > 0.0:
+		humidity = 100.0 * float(atmosphere.get("vapor_pressure_pa", 0.0)) / pressure_pa
 	# Turbine load uses throttle; propellers use accepted-state aerodynamic torque.
 	return {
 		rpm = rpm, max_rpm = EngineSound.reference_rpm(prop),
 		load = load_amount, throttle = session.sim.inputs[3], running = session.engine_running,
 		blades = blades, sound_speed = sqrt(1.4 * 287.05 * float(atmosphere.get("temperature_k", 288.15))),
 		airspeed = air.V,
-		temperature_c = float(atmosphere.get("temperature_k", 288.15)) - 273.15,
+		temperature_c = temperature_k - 273.15, pressure_pa = pressure_pa, humidity_molar_pct = humidity,
 		wind_speed = wind.length(), wind_direction = wind,
 		source = flight._airplane.root.global_position, listener = flight._camera.global_position, source_velocity = velocity,
 		paused = session.sim.paused, sun_elevation = elevation, time = session.sim.time(),
