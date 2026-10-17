@@ -9,6 +9,7 @@ FT stall_power_off          INVALID {}
 FT vmax                     valid {"height_error_end_m":0.38,"height_error_run_m":0.41,"initial_acceleration_mps2":3.48,"max_level_speed_kmh":140.0,"max_level_speed_mps":38.89,"rpm_at_max":15884,"time_plus_10_mps_s":2.28,"time_plus_5_mps_s":1.28,"time_to_90_percent_s":5.5}
 FT modes                    valid {}
    note: 1.3Vs: no trim at 11.8 m/s: nonfinite iterated trim residual
+   note: 0.8Vmax: longitudinal roots do not separate into short period and phugoid; phugoid not reported
 FT stall_power_on           valid {"altitude_lost_m":12.6,"bank_in_first_second_deg":-94.0,"break_kind":"wing drop or sink","deceleration_before_break_mps2":1.26,"max_bank_in_recovery_deg":94.0,"ratio_to_cl_max_estimate":0.817,"recovery_time_s":2.82,"stall_alpha_deg":17.0,"stall_speed_mps":7.4,"wing_drop":"left"}
    note: stall_power_on: no trim at 12.7 m/s, started at 15.4 m/s
 FT throttle_response        valid {"rpm_full":15488,"rpm_idle_end":8914,"rpm_trimmed":8121,"speed_gain_in_6_s_mps":17.24,"spool_down_90_10_s":3.517,"spool_up_10_90_s":3.463}

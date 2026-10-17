@@ -25,7 +25,7 @@ python research/flight-test/run.py --out tmp/ft-candidate --aircraft p51d-mustan
 python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tmp/ft-compare.md
 ```
 
-1. **Baseline.** Run the battery on the unchanged tree. `--aircraft all` (the default) asks the catalog for every aircraft a flight session accepts; the helicopter is left out. Four parallel jobs take about 9 minutes on the owner's desktop, and each glow Stik about 6.
+1. **Baseline.** Run the battery on the unchanged tree. `--aircraft all` (the default) asks the catalog for every aircraft a flight session accepts; the helicopter is left out. Four parallel jobs take about 10 minutes on the owner's desktop; each glow Stik alone takes 6–7.
 2. **Candidate.** Make one explicit change in a disposable copy of `app/` (or the working tree) and run it with `--app`.
 3. **Compare.** The comparator lists, per aircraft:
    - every test whose validity changed;

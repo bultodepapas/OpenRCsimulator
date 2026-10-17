@@ -28,10 +28,8 @@ FT knife_edge_full_rudder   valid {}
    note: knife_edge_full_rudder left_50pct: stopped at the 60 m floor after 7.9 s
 FT inverted                 valid {"alpha_deg":-3.5,"elevator_servo":-0.116,"elevator_stick":-0.116,"speed_mps":20.78,"throttle":0.487,"upright_throttle":0.485,"vertical_speed_mps":0.02}
 FT spin                     valid {}
-FT takeoff                  INVALID {}
-   note: no qualified runway start for this aircraft
-FT landing                  INVALID {}
-   note: no qualified runway start for this aircraft
+FT takeoff                  valid {"ground_roll_m":14.5,"liftoff_speed_mps":15.27,"liftoff_speed_vs":1.45,"max_heading_error_deg":2.0,"max_rudder_stick":0.17,"rotation_attitude_deg":8.0,"rudder_free_heading_change_3_s_deg":6.5,"time_to_liftoff_s":3.11}
+FT landing                  valid {"approach_speed_mps":13.66,"bounced":false,"flare_height_m":0.955210391453086,"max_heading_error_deg":0.9,"rollout_m":88.3,"rollout_time_s":11.4,"touchdown_past_threshold_m":13.1,"touchdown_pitch_deg":7.2,"touchdown_sink_mps":0.53,"touchdown_speed_mps":12.92,"touchdown_speed_vs":1.23}
 FT report: tmp\ft-base1/gp-extra-300s-60/profile.md
 WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
    at: _stringify (core/io/json.cpp:86)

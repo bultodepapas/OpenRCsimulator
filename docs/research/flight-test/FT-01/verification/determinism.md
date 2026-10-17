@@ -1,6 +1,6 @@
 # Flight-test comparison
 
-Baseline `tmp\ft-base1`, candidate `tmp\ft-base2`; tolerance max(0.0, 0.0 × |baseline|).
+Baseline `run A (card v2 before the phugoid check, d2c8bceb, clean app)`, candidate `run B (same code, repeated)`; tolerance max(0.0, 0.0 × |baseline|).
 
 Card ft-card-v2 → ft-card-v2; commit d2c8bcebbb → d2c8bcebbb (candidate dirty).
 

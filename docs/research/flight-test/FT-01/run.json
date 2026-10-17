@@ -1,6 +1,6 @@
 {
   "card": "ft-card-v2",
-  "commit": "d2c8bcebbb6d78d14cd6f6ec60586219c58bc997",
+  "commit": "208f0b89d36256ea00f8e413394edf191c671437",
   "dirty_paths": [],
   "godot": "4.7.2.stable.official.ed1daf0bf",
   "app": "app",
@@ -9,7 +9,7 @@
     "jensen-das-ugly-stik-60": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 119.6,
+      "wall_s": 137.0,
       "valid_tests": 20,
       "tests": 20,
       "data_file": "data/aircraft/jensen_ugly_stik_60.json",
@@ -18,7 +18,7 @@
     "stik-glow-61fx-2t": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 351.0,
+      "wall_s": 395.5,
       "valid_tests": 18,
       "tests": 20,
       "data_file": "data/aircraft/stik_glow_61fx_2t.json",
@@ -27,7 +27,7 @@
     "stik-glow-55ax-2t": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 339.9,
+      "wall_s": 378.5,
       "valid_tests": 19,
       "tests": 20,
       "data_file": "data/aircraft/stik_glow_55ax_2t.json",
@@ -36,7 +36,7 @@
     "stik-glow-fs64v-4t": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 325.8,
+      "wall_s": 351.8,
       "valid_tests": 19,
       "tests": 20,
       "data_file": "data/aircraft/stik_glow_fs64v_4t.json",
@@ -45,16 +45,16 @@
     "gp-extra-300s-60": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 103.9,
-      "valid_tests": 18,
+      "wall_s": 142.4,
+      "valid_tests": 20,
       "tests": 20,
       "data_file": "data/aircraft/gp_extra_300s_60.json",
-      "data_sha256": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e"
+      "data_sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62"
     },
     "p51d-mustang-120": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 263.7,
+      "wall_s": 278.7,
       "valid_tests": 20,
       "tests": 20,
       "data_file": "data/aircraft/p51d_mustang_120.json",
@@ -63,7 +63,7 @@
     "sebart-avanti-s-a200-p100rx": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 174.1,
+      "wall_s": 204.4,
       "valid_tests": 20,
       "tests": 20,
       "data_file": "data/aircraft/sebart_avanti_s_a200.json",
@@ -72,7 +72,7 @@
     "turbo-lumber-evolution": {
       "exit": 0,
       "script_errors": 0,
-      "wall_s": 183.8,
+      "wall_s": 215.2,
       "valid_tests": 20,
       "tests": 20,
       "data_file": "data/aircraft/turbo_lumber_evolution.json",

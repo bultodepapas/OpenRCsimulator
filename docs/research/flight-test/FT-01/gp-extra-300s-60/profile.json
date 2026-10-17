@@ -2,7 +2,7 @@
   "format": "ft-card-v2",
   "aircraft": "gp-extra-300s-60",
   "name": "Great Planes Extra 300S .60",
-  "data_sha256": "7ce5d12dcc5a740952f18e58393233c8f538c6247ea1b68036d79ad56039d4b1",
+  "data_sha256": "c902b2d94b1344275315561be89efc68f8c5cae2c6791a008560fecb6391263a",
   "mass_kg": 3.419469,
   "wing_area_m2": 0.479999,
   "span_m": 1.6256,
@@ -240,7 +240,7 @@
           "rpm": 10955
         }
       ],
-      "wall_s": 0.151
+      "wall_s": 0.162
     },
     "stall_power_off": {
       "valid": true,
@@ -257,7 +257,7 @@
         "ratio_to_cl_max_estimate": 1.008
       },
       "notes": [],
-      "wall_s": 3.209
+      "wall_s": 3.767
     },
     "vmax": {
       "valid": true,
@@ -273,7 +273,7 @@
         "height_error_run_m": 0.92
       },
       "notes": [],
-      "wall_s": 2.729
+      "wall_s": 3.082
     },
     "modes": {
       "valid": true,
@@ -320,7 +320,7 @@
           "spiral_time_to_half_s": null
         }
       ],
-      "wall_s": 0.03
+      "wall_s": 0.034
     },
     "stall_power_on": {
       "valid": true,
@@ -337,7 +337,7 @@
         "ratio_to_cl_max_estimate": 0.941
       },
       "notes": [],
-      "wall_s": 4.428
+      "wall_s": 5.273
     },
     "throttle_response": {
       "valid": true,
@@ -350,7 +350,7 @@
         "speed_gain_in_6_s_mps": 16.29
       },
       "notes": [],
-      "wall_s": 2.694
+      "wall_s": 3.482
     },
     "hands_off": {
       "valid": true,
@@ -368,7 +368,7 @@
         "reached_floor_s": null
       },
       "notes": [],
-      "wall_s": 6.714
+      "wall_s": 7.905
     },
     "climb": {
       "valid": true,
@@ -415,7 +415,7 @@
           "rpm": 11149
         }
       ],
-      "wall_s": 18.416
+      "wall_s": 21.225
     },
     "glide": {
       "valid": true,
@@ -464,7 +464,7 @@
           "glide_ratio": 4.64
         }
       ],
-      "wall_s": 19.18
+      "wall_s": 22.296
     },
     "roll_rate": {
       "valid": true,
@@ -526,7 +526,7 @@
           "max_sideslip_deg": 6.9
         }
       ],
-      "wall_s": 3.538
+      "wall_s": 3.934
     },
     "pitch_pull": {
       "valid": true,
@@ -552,7 +552,7 @@
           "load_factor_at_cl_max": 6.93
         }
       ],
-      "wall_s": 1.33
+      "wall_s": 1.331
     },
     "loop": {
       "valid": true,
@@ -568,7 +568,7 @@
         "height_change_m": 16.9
       },
       "notes": [],
-      "wall_s": 1.301
+      "wall_s": 1.383
     },
     "turn_60": {
       "valid": true,
@@ -598,7 +598,7 @@
           "held": true
         }
       ],
-      "wall_s": 9.262
+      "wall_s": 11.164
     },
     "rudder_step": {
       "valid": true,
@@ -624,7 +624,7 @@
           "pitch_change_deg": -6.9
         }
       ],
-      "wall_s": 1.689
+      "wall_s": 1.902
     },
     "knife_edge": {
       "valid": true,
@@ -709,7 +709,7 @@
           "sustained": false
         }
       ],
-      "wall_s": 9.441
+      "wall_s": 10.567
     },
     "knife_edge_full_rudder": {
       "valid": true,
@@ -794,7 +794,7 @@
           "sustained": false
         }
       ],
-      "wall_s": 9.633
+      "wall_s": 10.566
     },
     "inverted": {
       "valid": true,
@@ -808,7 +808,7 @@
         "vertical_speed_mps": 0.02
       },
       "notes": [],
-      "wall_s": 3.786
+      "wall_s": 4.165
     },
     "spin": {
       "valid": true,
@@ -842,25 +842,40 @@
           "entered": "spin"
         }
       ],
-      "wall_s": 3.532
+      "wall_s": 4.688
     },
     "takeoff": {
-      "valid": false,
-      "metrics": {},
-      "notes": [
-        "no qualified runway start for this aircraft"
-      ],
-      "skipped": true,
-      "wall_s": 0.0
+      "valid": true,
+      "metrics": {
+        "liftoff_speed_mps": 15.27,
+        "liftoff_speed_vs": 1.45,
+        "ground_roll_m": 14.5,
+        "time_to_liftoff_s": 3.11,
+        "rotation_attitude_deg": 8.0,
+        "max_rudder_stick": 0.17,
+        "max_heading_error_deg": 2.0,
+        "rudder_free_heading_change_3_s_deg": 6.5
+      },
+      "notes": [],
+      "wall_s": 3.489
     },
     "landing": {
-      "valid": false,
-      "metrics": {},
-      "notes": [
-        "no qualified runway start for this aircraft"
-      ],
-      "skipped": true,
-      "wall_s": 0.0
+      "valid": true,
+      "metrics": {
+        "approach_speed_mps": 13.66,
+        "touchdown_speed_mps": 12.92,
+        "touchdown_speed_vs": 1.23,
+        "touchdown_sink_mps": 0.53,
+        "touchdown_pitch_deg": 7.2,
+        "touchdown_past_threshold_m": 13.1,
+        "bounced": false,
+        "rollout_m": 88.3,
+        "rollout_time_s": 11.4,
+        "max_heading_error_deg": 0.9,
+        "flare_height_m": 0.955210391453086
+      },
+      "notes": [],
+      "wall_s": 18.424
     }
   }
 }

@@ -168,7 +168,7 @@
           "rpm": 17203
         }
       ],
-      "wall_s": 17.512
+      "wall_s": 20.31
     },
     "stall_power_off": {
       "valid": false,
@@ -177,7 +177,7 @@
         "no stall break within 40 s",
         "stall_power_off: no trim at 13.3 m/s, started at 19.7 m/s"
       ],
-      "wall_s": 23.283
+      "wall_s": 26.955
     },
     "vmax": {
       "valid": true,
@@ -193,7 +193,7 @@
         "height_error_run_m": 0.37
       },
       "notes": [],
-      "wall_s": 5.482
+      "wall_s": 6.153
     },
     "modes": {
       "valid": true,
@@ -217,7 +217,7 @@
           "spiral_time_to_half_s": null
         }
       ],
-      "wall_s": 1.969
+      "wall_s": 2.101
     },
     "stall_power_on": {
       "valid": true,
@@ -236,7 +236,7 @@
       "notes": [
         "stall_power_on: no trim at 13.3 m/s, started at 19.7 m/s"
       ],
-      "wall_s": 20.695
+      "wall_s": 23.999
     },
     "throttle_response": {
       "valid": true,
@@ -249,7 +249,7 @@
         "speed_gain_in_6_s_mps": 17.41
       },
       "notes": [],
-      "wall_s": 5.799
+      "wall_s": 6.724
     },
     "hands_off": {
       "valid": true,
@@ -267,7 +267,7 @@
         "reached_floor_s": null
       },
       "notes": [],
-      "wall_s": 13.816
+      "wall_s": 16.011
     },
     "climb": {
       "valid": true,
@@ -319,7 +319,7 @@
           "rpm": 14351
         }
       ],
-      "wall_s": 43.871
+      "wall_s": 52.907
     },
     "glide": {
       "valid": true,
@@ -368,7 +368,7 @@
           "rpm": 8822
         }
       ],
-      "wall_s": 45.764
+      "wall_s": 53.794
     },
     "roll_rate": {
       "valid": true,
@@ -432,7 +432,7 @@
           "max_sideslip_deg": 5.8
         }
       ],
-      "wall_s": 21.424
+      "wall_s": 24.428
     },
     "pitch_pull": {
       "valid": true,
@@ -458,7 +458,7 @@
           "load_factor_at_cl_max": 10.27
         }
       ],
-      "wall_s": 3.373
+      "wall_s": 3.731
     },
     "loop": {
       "valid": true,
@@ -474,7 +474,7 @@
         "height_change_m": 13.4
       },
       "notes": [],
-      "wall_s": 2.337
+      "wall_s": 2.58
     },
     "turn_60": {
       "valid": true,
@@ -504,7 +504,7 @@
           "held": true
         }
       ],
-      "wall_s": 17.761
+      "wall_s": 22.009
     },
     "rudder_step": {
       "valid": true,
@@ -530,7 +530,7 @@
           "pitch_change_deg": -61.6
         }
       ],
-      "wall_s": 3.266
+      "wall_s": 5.773
     },
     "knife_edge": {
       "valid": false,
@@ -612,7 +612,7 @@
           "sustained": false
         }
       ],
-      "wall_s": 27.162
+      "wall_s": 26.597
     },
     "knife_edge_full_rudder": {
       "valid": true,
@@ -692,7 +692,7 @@
           "sustained": false
         }
       ],
-      "wall_s": 35.528
+      "wall_s": 27.051
     },
     "inverted": {
       "valid": true,
@@ -706,7 +706,7 @@
         "vertical_speed_mps": 0.04
       },
       "notes": [],
-      "wall_s": 7.416
+      "wall_s": 9.041
     },
     "spin": {
       "valid": true,
@@ -742,7 +742,7 @@
           "entered": "spin"
         }
       ],
-      "wall_s": 23.55
+      "wall_s": 25.292
     },
     "takeoff": {
       "valid": true,
@@ -757,7 +757,7 @@
         "rudder_free_heading_change_3_s_deg": 0.7
       },
       "notes": [],
-      "wall_s": 5.964
+      "wall_s": 6.648
     },
     "landing": {
       "valid": true,
@@ -777,7 +777,7 @@
       "notes": [
         "landing: no trim at 12.4 m/s, started at 20.1 m/s"
       ],
-      "wall_s": 21.525
+      "wall_s": 28.737
     }
   }
 }

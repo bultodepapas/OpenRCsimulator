@@ -1,6 +1,6 @@
 # Flight-test comparison
 
-Baseline `tmp\ft-base1`, candidate `tmp\ft-mutant`; tolerance max(0.01, 0.01 × |baseline|).
+Baseline `run A`, candidate `P-51 with controls.max_throw.elevator × 1.2 (disposable copy)`; tolerance max(0.01, 0.01 × |baseline|).
 
 Card ft-card-v2 → ft-card-v2; commit d2c8bcebbb → d2c8bcebbb (candidate dirty).
 
