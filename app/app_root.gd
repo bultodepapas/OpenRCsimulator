@@ -577,6 +577,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	if flight.session != null:
 		screens.set_session(flight.session)
 		flight.pause_requested.connect(open_pause)
+		if flight.has_signal("restart_requested"):
+			flight.restart_requested.connect(_request_flight_restart)
 		if has_home:
 			flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
 			if flight.has_signal("scenario_changed"):
@@ -842,8 +844,7 @@ func _route_controller_restart(event: InputEvent) -> bool:
 	if actions.is_empty() or flight == null or flight.session == null: return false
 	if screens.top() != null or flight.session.calibration != null: return false
 	if previous.is_empty():
-		open_pause()
-		restart_flight()
+		_request_flight_restart()
 	return true
 
 
@@ -1143,6 +1144,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if controllers != null: controllers.attach_session(flight.session)
 	_keyboard_reader = flight.session.read_raw
 	flight.pause_requested.connect(open_pause)
+	flight.restart_requested.connect(_request_flight_restart)
 	flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
 	flight._note = tr("Experimental Workshop trial · Esc to return")
 
@@ -1496,14 +1498,31 @@ func continue_flight() -> void:
 	session.resume()
 
 
+## Keyboard, controller and accident-report restarts use the same shell transaction.
+func _request_flight_restart() -> void:
+	if flight == null or screens.top() != null:
+		return
+	open_pause()
+	restart_flight()
+
+
 func restart_flight() -> void:
 	if not screens.is_top("pause"):
 		return
-	_close_pause()
+	# Keep the menu hold until reset succeeds; rejected starts remain reviewable and frozen.
 	flight.session.reset() # the selected launch; the recorder closes its file on reset
-	if controllers != null and flight.session.radio.connected:
-		open_pause()
+	var session: Node = flight.session
+	if not session.start_error.is_empty() or not session.is_flyable():
+		pause_menu.refresh()
+		pause_menu.set_note(tr("Could not restart flight: %s") % (session.start_error if not session.start_error.is_empty() else session.pause_reason))
+		return
+	if controllers != null and (session.radio.connected or session._controller_lost):
+		pause_menu.refresh()
 		pause_menu.set_note(tr("Flight restarted. Select Continue when the controls are ready."))
+		pause_menu.continue_button.grab_focus()
+	else:
+		_close_pause()
+		session.resume()
 
 
 ## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again

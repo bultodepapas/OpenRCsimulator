@@ -184,6 +184,36 @@ func _run() -> void:
 	_check("Restart: a fresh trimmed flight", app.pause_menu == null and not session.sim.paused and session.sim.fault_reason == ""
 		and session.sim.time() < 0.5, "t=%.2f" % session.sim.time())
 
+	# A rejected runway restart must keep the same menu and frozen flight, including on keyboard.
+	app.open_pause()
+	var held_menu: Node = app.pause_menu
+	var runway_field: Dictionary = session._runway_field
+	session._runway_field = {}
+	var rejected_state := var_to_bytes([session.sim.state, session.sim.aux, session.sim.continuous, session.sim.tick])
+	app.restart_flight()
+	await _wait(0.1)
+	_check("rejected restart keeps its menu, hold and explanation", app.pause_menu == held_menu
+		and session.holds.has("menu") and session.sim.paused and "Could not restart" in held_menu.note_label.text)
+	_check("rejected restart preserves the frozen flight", rejected_state == var_to_bytes(
+		[session.sim.state, session.sim.aux, session.sim.continuous, session.sim.tick]))
+	session._runway_field = runway_field
+	app.restart_flight()
+	_check("retry after rejected restart resumes keyboard flight", app.pause_menu == null and not session.sim.paused
+		and session.start_error.is_empty())
+
+	for cycle in 3:
+		await ui.tap(KEY_ESCAPE)
+		_check("keyboard cycle %d pauses again" % cycle, app.pause_menu != null and session.sim.paused)
+		app.restart_flight()
+		await _wait(0.05)
+		_check("keyboard cycle %d restarts and advances" % cycle, app.pause_menu == null and session.holds.is_empty()
+			and not session.sim.paused and session.sim.tick > 0 and session.engine_running)
+		_check("keyboard cycle %d stays at runway idle without throttle input" % cycle,
+			session.commands.throttle == 0.0 and session.sim.inputs[3] == 0.0)
+	await ui.tap(KEY_R)
+	_check("keyboard R shares the successful restart flow", app.pause_menu == null and not session.sim.paused
+		and session.start_error.is_empty())
+
 	# --- UI-03: End flight saves an active trace, then shows Home.
 	var recorder: RefCounted = main.recorder # outlives the flight scene, which End frees
 	recorder.start(session.trace_meta())

@@ -832,6 +832,9 @@ msgstr "Suelta las palancas, los gatillos y los botones; después pulsa Continua
 msgid "Controls ready. Select Continue to fly."
 msgstr "Controles listos. Pulsa Continuar para volar."
 
+msgid "Could not restart flight: %s"
+msgstr "No se pudo reiniciar el vuelo: %s"
+
 msgid "Flight restarted. Select Continue when the controls are ready."
 msgstr "Vuelo reiniciado. Pulsa Continuar cuando los controles estén listos."
 

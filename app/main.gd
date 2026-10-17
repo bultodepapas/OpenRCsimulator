@@ -68,6 +68,7 @@ const WATER_CHECKPOINT_FIELDS: Array[String] = ["format", "visual", "water_rende
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
+signal restart_requested
 ## The player changed the flight overlays (X, [F2], [F3]); Home saves them (docs/plans/flight-overlays.md).
 signal overlay_settings_changed(settings: Dictionary)
 signal scenario_changed(scenario: Dictionary)
@@ -682,7 +683,7 @@ func _ready() -> void:
 		_accident_report.name = "AccidentReport"
 		add_child(_accident_report)
 		_accident_incident.assessment_changed.connect(_on_accident_assessment)
-		_accident_report.restart_requested.connect(session.reset)
+		_accident_report.restart_requested.connect(_request_restart)
 		session.contact_events_changed.connect(_on_accident_contacts)
 		var archived: Dictionary = _accident_incident.load_archive()
 		if not archived.is_empty():
@@ -1234,6 +1235,14 @@ func _notification(what: int) -> void:
 		_clear_wheel_brake()
 
 
+## The shell owns controller readiness and the visible Continue action after a restart.
+func _request_restart() -> void:
+	if restart_requested.has_connections():
+		restart_requested.emit()
+	else:
+		session.reset() # standalone research/test scenes have no shell
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if _smoke_assignment != null:
 		return
@@ -1297,7 +1306,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_J:
 				_begin_smoke_assignment()
 			KEY_R:
-				session.reset()
+				_request_restart()
+				get_viewport().set_input_as_handled()
 			KEY_P:
 				session.resume()
 			KEY_T:

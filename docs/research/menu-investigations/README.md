@@ -1,5 +1,23 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+## UI-02-R1 — pause and restart recovery, 2026-10-17
+
+Native Windows Godot 4.7.2 probes reproduced four defects against `1ef60b44`: R and the accident report reset the selected controller's session into a pause with no visible Continue action; restarting after controller loss resumed simulation without explicit device recovery; rejected keyboard runway restarts closed Pause; and the runway reset installed idle simulation inputs but left pilot commands at the generic 50% throttle default. The next keyboard sample or staged gamepad resume reapplied that power. The shell now owns these interactive restart routes and holds the menu through reset validation. Failed starts retain their error, successful controller restarts focus Continue, and runway commands match their solved zero-throttle inputs.
+
+The same synthetic-device probe before/after the repair observed:
+
+| Restart source | Before | After |
+| --- | --- | --- |
+| R | Paused, no menu | Paused, Continue visible |
+| Accident report | Paused, no menu | Paused, Continue visible |
+| Lost controller | Running, no recovery menu | Paused, recovery menu visible |
+
+[Controller recovery](../../../app/tests/test_controller_pause_recovery.gd) passed 60/60 checks: repeated restart/Continue cycles, actual engine RPM response, zero throttle after Continue, frozen state, rejected runway reset/retry, report restart, focus loss and explicit keyboard recovery. [Keyboard Pause](../../../app/tests/test_ui_pause.gd) also checks rejected-reset state preservation and repeated pause/restart. Native headless runs passed the runway fleet, controller integration/routing, screen stack, session guards, RC input, accident integration, glow session, language and four golden-flight regressions. No force law, aircraft data or golden recording changed. These checks use synthetic device events and do not establish physical controller or pilot acceptance.
+
+The [neutral-input recording script](UI-06b/pause-restart-2026-10-17/record_neutral.gd) ran the same 120 keyboard-input ticks at 240 Hz, with two markers. Before the initializer repair, [baseline.orfl](UI-06b/pause-restart-2026-10-17/baseline.orfl) recorded 50% demand despite zero raw input. Its [exact replay](UI-06b/pause-restart-2026-10-17/baseline-exact.json) completed before the repair with `solver_changed: false`. The single [idle candidate](UI-06b/pause-restart-2026-10-17/idle-candidate.orfl) retains zero demand on the identical raw-input tape; [baseline CSV](UI-06b/pause-restart-2026-10-17/baseline.csv), [candidate CSV](UI-06b/pause-restart-2026-10-17/idle-candidate.csv) and [candidate export/identity report](UI-06b/pause-restart-2026-10-17/idle-candidate-export.json) retain the observations. Their post-conditioning commands intentionally differ, so they are not an exact-equivalence comparison. Replaying the original 50% command tape through the repaired source completed as a [candidate run](UI-06b/pause-restart-2026-10-17/command-tape-candidate.json), `solver_changed: true` because the session source changed, with [zero trajectory differences](UI-06b/pause-restart-2026-10-17/command-tape-comparison.json). This isolates the input initialization correction from the unchanged flight laws; it does not establish physical realism.
+
+## Earlier investigations
+
 2026-10-15 refinement: [UI-28-R3 — compact flows, categorized Settings and menu sounds](UI-28-R3/README.md). Native EN/ES 720p–4K, enlarged-text Settings, route/persistence checks and a native mixer recording.
 
 2026-10-15 implementation: [UI-22–26-R2 — grounded Home, bounded menus and native 720p–4K evidence](UI-25-R2/README.md). Includes the new scene/scale/theme, compact Home/Pause, Settings/Conditions and EN/ES behavior checks.

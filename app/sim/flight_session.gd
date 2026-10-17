@@ -2145,6 +2145,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 		fresh.restart()
 		_failures = fresh
 	commands = Commands.neutral_commands()
+	commands.throttle = 0.0 # match the solved runway inputs; neutral_commands defaults to airborne half power
 	engine_running = not glow_is_active()
 	sim.inputs = inputs
 	aux.append_array(_initial_gear_aux(true))
