@@ -1,6 +1,6 @@
 # OpenRC Simulator — cinematic trailer production plan
 
-2026-10-17 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** planning only; no trailer footage, capture tool or runtime change delivered.
+2026-10-17 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** production authorized and underway; final delivery evidence will record the accepted edit and remaining review limits.
 
 User brief: an **exactly 60-second, very cinematic, AAA-style game trailer**, entirely in **English**, showing every current vehicle, aerobatics, crashes, controls and several airplanes performing together in the spirit of an airshow. **Helicopter, both cars, electrical storms and physical wind are mandatory.** Review the complete player-facing feature inventory and select its strongest visual moments. **Prices mean the estimated accident/repair cost displayed after a crash, not the simulator's purchase price or vehicle shopping prices.** This revision replaces the longer first-cut proposal.
 
@@ -263,4 +263,4 @@ Dependency order: TRA-01 → TRA-02 → TRA-03 → TRA-04/05 → TRA-06 → TRA-
 | New source features are absent from the public download | Label development footage and verify the CTA/package again before delivery. |
 | Music rights or Content ID are unresolved | Choose another cleared free track; the edit project keeps music replaceable. |
 
-This request ends at the Markdown plan. Capture-tool implementation, filming, editing and publication are future steps; none are represented as completed here.
+The subsequent user instruction authorizes producing the complete trailer. Capture and editing now use the external [trailer tools](../../tools/trailer/README.md). Publication remains outside the requested production scope. The storyboard above records creative targets; the delivery evidence records what was actually filmed and accepted.

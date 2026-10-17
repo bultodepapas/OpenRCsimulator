@@ -40,10 +40,10 @@ def tracked(draw, xy, text, size, spacing, color, regular=False):
     return x
 
 
-def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795)):
+def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795), gradient=True):
     im = Image.new("RGBA", (W, H))
     d = ImageDraw.Draw(im)
-    if label or title:
+    if gradient and (label or title):
         for y in range(750, H):
             a = int(155 * ((y - 750) / (H - 750)) ** 1.35)
             d.line((0, y, W, y), fill=(3, 9, 15, a))
@@ -53,7 +53,8 @@ def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, t
         if subtitle:
             tracked(d, (113, 941), subtitle, 23, 2.6, (200, 215, 226, 255), True)
     if title:
-        d.text(tuple(title_xy), title, font=font(74), fill=(250, 250, 250, 255), stroke_width=1)
+        d.text(tuple(title_xy), title, font=font(74), fill=(250, 250, 250, 255),
+               stroke_width=1 if gradient else 2, stroke_fill=(4, 12, 20, 170))
     if cinematic:
         d.rectangle((78, 68, 510, 111), fill=(4, 12, 20, 160))
         tracked(d, (92, 72), "CINEMATIC FORMATION SEQUENCE", 23, 1.3, (243, 247, 252, 255), True)
@@ -125,6 +126,10 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work):
             assert source.exists(), source
             input_args = ["-ss", shot.get("start", 0), "-i", source]
         vf = "fps=60,scale=1920:1080:flags=lanczos,setsar=1,setpts=PTS-STARTPTS"
+        if shot.get("remove_empty_ui_marker", False):
+            # Hidden overlays leave a 20x16 empty panel at (8,8) in this build.
+            # Remove only that non-informative panel, never gameplay/report data.
+            vf += ",delogo=x=6:y=6:w=24:h=20:show=0"
         if shot.get("grade", True):
             vf += ",eq=contrast=1.035:brightness=-0.012:saturation=1.025:gamma=0.985"
         overlay = shot.get("graphics", {})
