@@ -20,6 +20,8 @@ python tools/audio/check_captures.py /absolute/output/review --out=/absolute/out
 
 The probe flies the actual physics scene with keyboard-rate throttle commands, then pauses, resumes, switches camera and restarts. Standard aircraft, weather, time-of-day and scenery arguments pass through. It captures stereo mix output after the limiter, event timestamps, source/listener distances, dropped frames and adapter timing; rendered runs also save a PNG. Use `--fps=30/60/144` in separate runs. These requested frame caps are not measured render-frame guarantees.
 
+`check_parity.gd` pairs every fixed-wing catalog aircraft through `main.tscn` with audio off and on, and requires identical full checkpoints each tick. Its input tape drives the four primary controls and keeps any extra channels (gear, flaps, smoke) at their accepted start values. Each pair is judged by its own checks. Rotorcraft use another route and are listed under `skipped` in the report, not silently passed.
+
 `check_environment.gd` inspects live wind/sun values and suppression of the old scenery bed. Repeat with `--scenery=on --soundscape=off`, then with `--soundscape=legacy`, to check routing compatibility.
 
 `profile_native.py --help` describes the Windows thread-CPU probe. Named thread CPU deltas are average work, not a per-buffer deadline or hardware latency measurement. A missing thread name or zero/unavailable counter must remain unqualified. Avoid simultaneous native audio probes and isolate preferences for parallel full suites (`XDG_DATA_HOME` on Linux).

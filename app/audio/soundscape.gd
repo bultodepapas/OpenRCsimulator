@@ -40,6 +40,10 @@ var absorption_filter: AudioEffectLowPassFilter = AudioEffectLowPassFilter.new()
 var screen_filter: AudioEffectHighShelfFilter = AudioEffectHighShelfFilter.new()
 var last_absorption_cutoff_hz: float = 0.0
 var _absorption_primed: bool = false
+var _absorption_target_hz: float = 0.0
+var _absorption_clock: float = 0.0
+## The target refreshes at 10 Hz like screening (about 12 us per solve on the dev VM); the 0.15 s glide spans it.
+const ABSORPTION_REFRESH_S: float = 0.1
 var last_delay_s: float = 0.0
 var _history_times: PackedFloat64Array = PackedFloat64Array()
 var _history_positions: PackedVector3Array = PackedVector3Array()
@@ -470,13 +474,18 @@ func _update_path_filters(snapshot: Dictionary, source: Vector3, listener: Vecto
 	var pressure_pa: float = float(snapshot.get("pressure_pa", Model.ISO_REFERENCE_PRESSURE_PA))
 	var humidity: float = float(snapshot.get("humidity_molar_pct",
 		Model.humidity_molar_pct(Model.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)))
-	var target: float = Model.absorption_cutoff_hz(source.distance_to(listener), temperature_k, pressure_pa, humidity)
+	var primed: bool = _absorption_primed and last_absorption_cutoff_hz > 0.0
+	_absorption_clock -= dt
+	if not primed or _absorption_clock <= 0.0:
+		_absorption_clock = ABSORPTION_REFRESH_S
+		_absorption_target_hz = Model.absorption_cutoff_hz(source.distance_to(listener), temperature_k, pressure_pa, humidity)
 	# Log-frequency smoothing: a camera cut or history restart must not step the coefficients (a step clicks).
-	if not _absorption_primed or last_absorption_cutoff_hz <= 0.0:
-		last_absorption_cutoff_hz = target
+	if not primed:
+		last_absorption_cutoff_hz = _absorption_target_hz
 		_absorption_primed = true
 	else:
-		last_absorption_cutoff_hz = exp(lerpf(log(last_absorption_cutoff_hz), log(target), 1.0 - exp(-dt / ABSORPTION_SMOOTHING_S)))
+		last_absorption_cutoff_hz = exp(lerpf(log(last_absorption_cutoff_hz), log(_absorption_target_hz),
+			1.0 - exp(-dt / ABSORPTION_SMOOTHING_S)))
 	absorption_filter.cutoff_hz = last_absorption_cutoff_hz
 	screen_filter.cutoff_hz = lerpf(6500.0, 1500.0, screened)
 	screen_filter.gain = db_to_linear(0.5 * SCREEN_SHELF_DB * screened) # the shelf applies gain squared

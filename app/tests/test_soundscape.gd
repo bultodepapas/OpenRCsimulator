@@ -3,6 +3,7 @@ extends SceneTree
 const SoundscapeScript = preload("res://audio/soundscape.gd")
 const Model = preload("res://audio/soundscape_model.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const Atmosphere = preload("res://physics/atmosphere.gd")
 
 var _failures: int = 0
 var _checks: int = 0
@@ -27,6 +28,7 @@ func _run() -> void:
 		quit(1)
 		return
 	_test_propagation_runtime(field)
+	_test_absorption_runtime(field)
 
 	# A Soundscape must use its own seeded generator. Preserve the global RNG sequence
 	# across configure and a long run of scheduler stimuli through update_sound().
@@ -348,8 +350,114 @@ func _test_propagation_runtime(field: Dictionary) -> void:
 	rig.free()
 
 
+## AUD-11b: ISO 9613-1 against a published table and against the simulator's own humidity model.
+func _test_absorption_model() -> void:
+	# 10 C, 70 % RH, 101.325 kPa, octave bands at exact midband frequencies 1000 * 10^(n/10). Table as printed in
+	# earlier ISO 9613-2 editions (EMD windPRO, Appendix A), dB/km: tolerance is half its last printed digit.
+	var table: Array[float] = [0.1, 0.4, 1.0, 1.9, 3.7, 9.7, 32.8, 117.0]
+	var temperature: float = 283.15
+	var humidity: float = Model.humidity_molar_pct(70.0, temperature)
+	var worst: float = 0.0
+	var within: bool = true
+	for band: int in table.size():
+		var frequency: float = 1000.0 * pow(10.0, float(3 * band - 12) / 10.0)
+		var computed: float = 1000.0 * Model.absorption_db_per_m(frequency, temperature, Model.ISO_REFERENCE_PRESSURE_PA, humidity)
+		var tolerance: float = 0.5 if table[band] >= 100.0 else 0.05
+		within = within and absf(computed - table[band]) <= tolerance
+		worst = maxf(worst, absf(computed - table[band]) / tolerance)
+	_check("ISO 9613-1 absorption reproduces the published 10 C / 70 % octave table", within,
+		"worst error %.2f of the rounding tolerance" % worst)
+	# ISO Annex B saturation against the atmosphere model's Buck formula, through its public API.
+	var saturation_agrees: bool = true
+	for celsius: float in [0.0, 10.0, 20.0, 30.0, 40.0]:
+		var air: Dictionary = Atmosphere.evaluate(0.0, celsius, 1013.25, 100.0)
+		var from_atmosphere: float = 100.0 * float(air.vapor_pressure_pa) / float(air.pressure_pa)
+		var from_iso: float = Model.humidity_molar_pct(100.0, celsius + 273.15, float(air.pressure_pa))
+		saturation_agrees = saturation_agrees and absf(from_iso / from_atmosphere - 1.0) < 0.002
+	_check("ISO saturation humidity matches the atmosphere model within 0.2 %", saturation_agrees)
+	var humid: float = Model.humidity_molar_pct(50.0, 293.15)
+	var cutoff: float = Model.absorption_cutoff_hz(300.0, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, humid)
+	var loss: float = Model.absorption_db_per_m(cutoff, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, humid) * 300.0
+	# Literal 3 dB: the Butterworth low-pass measures -3.01 dB at its cutoff, so the knee is a contract, not a tunable.
+	_check("the absorption cutoff sits where the path loss reaches 3 dB", absf(loss - 3.0) < 1e-6,
+		"cutoff=%.1f Hz loss=%.9f dB" % [cutoff, loss])
+	_check("a short path keeps the full ceiling", Model.absorption_cutoff_hz(5.0, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, humid)
+		== Model.ABSORPTION_CEILING_HZ)
+	var falling: bool = true
+	var previous: float = INF
+	for path: float in [10.0, 30.0, 100.0, 300.0, 600.0, 1000.0, 1500.0]:
+		var value: float = Model.absorption_cutoff_hz(path, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, humid)
+		falling = falling and value <= previous and value >= Model.ABSORPTION_FLOOR_HZ
+		previous = value
+	_check("the absorption cutoff falls with distance and stays bounded", falling, "1500 m: %.0f Hz" % previous)
+	var dry: float = Model.absorption_cutoff_hz(300.0, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, 0.0)
+	_check("dry air absorbs less than humid air at 300 m", dry > cutoff, "dry=%.0f humid=%.0f Hz" % [dry, cutoff])
+
+
+func _test_absorption_runtime(field: Dictionary) -> void:
+	var rig: Variant = SoundscapeScript.new()
+	root.add_child(rig)
+	rig.configure(field, "glow_prop", 93400)
+	var aircraft_bus: int = AudioServer.get_bus_index(rig.voices[0].bus)
+	var wired: bool = AudioServer.get_bus_effect_count(aircraft_bus) == 2
+	for effect_index: int in AudioServer.get_bus_effect_count(aircraft_bus):
+		var filter: AudioEffectFilter = AudioServer.get_bus_effect(aircraft_bus, effect_index) as AudioEffectFilter
+		wired = wired and filter != null and AudioServer.is_bus_effect_enabled(aircraft_bus, effect_index) \
+			and filter.db == AudioEffectFilter.FILTER_6DB and is_equal_approx(filter.resonance, SoundscapeScript.FILTER_BUTTERWORTH_Q)
+	_check("aircraft bus carries enabled 12 dB/octave Butterworth absorption and screening filters", wired)
+	_check("aircraft voices leave the doubled 3D distance shelf off; ambience keeps it",
+		rig.voices[0].attenuation_filter_db == 0.0 and rig.voices[2].attenuation_filter_db == 0.0
+		and rig.voices[3].attenuation_filter_db == -12.0)
+	var far: Dictionary = _flight_snapshot()
+	far.source = Vector3(300.0, 0.0, 0.0)
+	far.temperature_c = 20.0
+	var humid: float = Model.humidity_molar_pct(Model.REFERENCE_RELATIVE_HUMIDITY_PCT, 293.15)
+	var at_300: float = Model.absorption_cutoff_hz(300.0, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, humid)
+	rig.update_sound(far, 1.0 / 60.0)
+	_check("the first update places the cutoff on the heard path at once",
+		absf(float(rig.absorption_filter.cutoff_hz) - at_300) < 1e-3, "cutoff=%.1f expected=%.1f" % [float(rig.absorption_filter.cutoff_hz), at_300])
+	var near: Dictionary = far.duplicate()
+	near.source = Vector3(20.0, 0.0, 0.0)
+	var at_20: float = Model.absorption_cutoff_hz(20.0, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, humid)
+	# No frame may take more than a fifth of the jump in log frequency (a coefficient step clicks, filter probe);
+	# the 10 Hz target refresh starts the glide within 0.1 s and it settles within 2 s.
+	var jump: float = log(at_20 / at_300)
+	var largest_step: float = 0.0
+	var first_move: int = -1
+	var previous: float = float(rig.absorption_filter.cutoff_hz)
+	for step: int in 120:
+		rig.update_sound(near, 1.0 / 60.0)
+		var current: float = float(rig.absorption_filter.cutoff_hz)
+		largest_step = maxf(largest_step, absf(log(current / previous)))
+		if first_move < 0 and current > previous:
+			first_move = step
+		previous = current
+	_check("a path jump glides in log frequency instead of stepping the filter",
+		largest_step < 0.2 * jump and first_move >= 0 and first_move <= 6 and absf(previous / at_20 - 1.0) < 0.01,
+		"largest step %.3f of %.3f, moves at frame %d, settled=%.0f target=%.0f" % [largest_step, jump, first_move, previous, at_20])
+	rig.reset_observer()
+	rig.update_sound(far, 1.0 / 60.0)
+	_check("observer reset re-primes the cutoff without a glide", absf(float(rig.absorption_filter.cutoff_hz) - at_300) < 1e-3)
+	var given: Dictionary = far.duplicate()
+	given.humidity_molar_pct = 0.0
+	rig.reset_observer()
+	rig.update_sound(given, 1.0 / 60.0)
+	_check("the snapshot humidity drives absorption", absf(float(rig.absorption_filter.cutoff_hz)
+		- Model.absorption_cutoff_hz(300.0, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, 0.0)) < 1e-3)
+	rig.screened = 1.0
+	rig._update_path_filters(far, far.source, far.listener, 1.0 / 60.0)
+	var full_screen: bool = is_equal_approx(float(rig.screen_filter.gain), db_to_linear(0.5 * SoundscapeScript.SCREEN_SHELF_DB)) \
+		and is_equal_approx(float(rig.screen_filter.cutoff_hz), 1500.0)
+	rig.screened = 0.0
+	rig._update_path_filters(far, far.source, far.listener, 1.0 / 60.0)
+	_check("screening shelf reaches its authored -24 dB (gain squared) and is flat when clear",
+		full_screen and float(rig.screen_filter.gain) == 1.0)
+	rig.free()
+
+
 func _test_model_contracts() -> void:
 	_test_propagation_model()
+	_test_absorption_model()
 	var source: Vector3 = Vector3(100.0, 0.0, 0.0)
 	var listener: Vector3 = Vector3.ZERO
 	var approaching: float = Model.doppler(source, listener, Vector3(-20.0, 0.0, 0.0), Vector3.ZERO)
