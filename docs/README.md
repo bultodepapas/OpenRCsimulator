@@ -20,6 +20,7 @@ Status: current documentation and ownership index, checked 2026-10-14. Runtime c
 | Research and verification evidence | [Research index](research/README.md); [phase knowledge base](research/roadmap-investigations/README.md) |
 | Published build contents | [Release notes](releases/); fixed per tag |
 | README images and licenses | [Media provenance](media/README.md) |
+| Cinematic trailer, storyboard and filming workflow | [Trailer production plan](plans/cinematic-trailer.md) |
 
 Each download is described by its tagged release notes and FIRST-LAUNCH; historical reports are not current operating instructions.
 
@@ -65,6 +66,7 @@ This registry owns file boundaries and prefixes. Each linked guide/plan owns its
 | Desktop delivery | [Active desktop plan](DESKTOP-DELIVERY-PLAN.md) | DT-00…13; Gate DT | Export/CI maintainer; UI-23 implements display | Desktop-delivery research; installers and delivery tooling remain proposed | [Desktop research](research/README.md#desktop-delivery) |
 | Smoke | [Integrated feature and remaining acceptance](SMOKE-PLAN.md) | SM-00…09 | Model exhaust anchor, controls and wind | `app/render/smoke/`, optional AUX profile/UI, smoke tests and `tools/smoke/` | [Implementation evidence](research/smoke-investigations/SM-00-09/README.md) |
 | Releases | [Notes by tag](releases/) | v* tags; PT1 | CI/export maintainers | `docs/releases/`, export build identity and packaging | [v0.1.0 qualification](research/release-readiness/PT1-v0.1.0/README.md) |
+| Cinematic trailer | [Production plan](plans/cinematic-trailer.md) | TRA-00…08 | Presentation only; CAM/FL/CR/RCV/HELI and model owners retain runtime interfaces; WEB owns publication | Planned `tools/trailer/`, `docs/research/cinematic-trailer/`; raw media in ignored `tmp/trailer/` | [Source investigation, 2026-10-17](research/cinematic-trailer/2026-10-17.md) |
 | Project website | [Website guide](../site/README.md) | WEB-01/02/03/04/05 | Presentation only; published releases and runtime guides own feature claims | `site/`; isolated `gh-pages` publication | Design sources and verification in the website guide |
 
 ## Step-ID namespaces

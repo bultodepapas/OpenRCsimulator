@@ -21,6 +21,10 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ## Entry points per track
 
+### Cinematic trailer
+
+[TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records current vehicle/capture/economics boundaries and primary trailer, airshow and free-tool references. The [production plan](../plans/cinematic-trailer.md) owns the English storyboard, formation approach and remaining delivery gates.
+
 ### Flight logging
 
 - [FL-01…04: flight logging design, sources and verification](flight-logging/FL-01/README.md); [current manual](../FLIGHT-LOGGING.md). Bounded fixed-wing recorder, exact replay, explicit candidate experiments and CSV analysis.
