@@ -1,0 +1,421 @@
+- generic [active] [ref=f1e1]:
+  - link "Skip to content" [ref=f1e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=f1e3]:
+    - link "OPENRC SIMULATOR" [ref=f1e4] [cursor=pointer]:
+      - /url: "#"
+      - text: OPENRC
+      - generic [ref=f1e5]: SIMULATOR
+    - generic [ref=f1e6]:
+      - button "Switch to day theme" [ref=f1e7] [cursor=pointer]: ☀
+      - button "Cambiar a español" [ref=f1e8] [cursor=pointer]: ES
+      - link "Download" [ref=f1e9] [cursor=pointer]:
+        - /url: "#download"
+        - generic [aria-hidden] [ref=f1e11]: ↗
+  - main [ref=f1e12]:
+    - region [ref=f1e13]:
+      - generic [ref=f1e14]:
+        - generic [ref=f1e15]: MODEL AVIATION · OPEN SOURCE
+        - generic [ref=f1e16]: EARLY ALPHA / 0.1.2
+      - heading "OpenRC" [level=1] [ref=f1e18]:
+        - text: OpenRC
+        - generic [aria-hidden] [ref=f1e19]: ✳
+      - generic:
+        - generic:
+          - img "Orange and violet Ventage Jet, a render of the simulator model"
+      - button "Pause scene" [ref=f1e21] [cursor=pointer]:
+        - generic [aria-hidden] [ref=f1e22]: Ⅱ
+      - generic [ref=f1e24]:
+        - heading "The flying field is open." [level=2] [ref=f1e25]: The flying fieldis open.
+        - paragraph [ref=f1e26]: Your transmitter. Your next flight.An RC simulator we’re building in the open.
+        - generic [ref=f1e27]:
+          - link "Download" [ref=f1e28] [cursor=pointer]:
+            - /url: "#download"
+            - generic [aria-hidden] [ref=f1e30]: ↗
+          - button "Explore the jet" [ref=f1e31] [cursor=pointer]:
+            - generic [aria-hidden] [ref=f1e33]: ↗
+      - generic [ref=f1e34]:
+        - generic [ref=f1e35]: WINDOWS / LINUX / macOS
+        - link "SUPPORTED BY OpenAI" [ref=f1e36] [cursor=pointer]:
+          - /url: "#support"
+          - generic [ref=f1e37]: SUPPORTED BY
+          - strong [ref=f1e38]: OpenAI
+    - region [ref=f1e39]:
+      - generic [ref=f1e40]:
+        - generic [ref=f1e41]: THE SUPPORT BEHIND THE PROJECT
+        - generic [ref=f1e42]: PRINCIPAL SPONSOR
+      - generic [ref=f1e43]:
+        - link "OpenAI" [ref=f1e44] [cursor=pointer]:
+          - /url: https://openai.com/
+          - img "OpenAI" [ref=f1e45]
+        - generic [ref=f1e46]:
+          - heading "Thank you for supporting what we build in the open." [level=2] [ref=f1e47]: Thank you for supportingwhat we build in the open.
+          - paragraph [ref=f1e48]: OpenAI supports this project with a ChatGPT Pro subscription. That support gives us more room to research, build and share OpenRC with the model aviation community.
+          - link "Thank you, OpenAI ↗" [ref=f1e49] [cursor=pointer]:
+            - /url: https://openai.com/
+      - generic [ref=f1e50]:
+        - paragraph [ref=f1e51]: Ideas to explore.Code to share.
+        - link "ChatGPT Pro Support for open-source development" [ref=f1e52] [cursor=pointer]:
+          - /url: https://chatgpt.com/
+          - generic [ref=f1e53]:
+            - strong [ref=f1e54]: ChatGPT Pro
+            - generic [ref=f1e55]: Support for open-source development
+          - generic [aria-hidden] [ref=f1e56]: ↗
+        - link "Codex AI development contributor" [ref=f1e57] [cursor=pointer]:
+          - /url: https://openai.com/codex/
+          - generic [ref=f1e58]:
+            - strong [ref=f1e59]: Codex
+            - generic [ref=f1e60]: AI development contributor
+          - generic [aria-hidden] [ref=f1e61]: ↗
+      - generic [ref=f1e62]:
+        - generic [ref=f1e63]: ALSO ALONG FOR THE FLIGHT
+        - link [ref=f1e64] [cursor=pointer]:
+          - /url: "#partners"
+          - img "Savox" [ref=f1e65]
+        - paragraph [ref=f1e66]: "Savox, SonicModell and Hitec: thank you for welcoming your products into the project."
+    - region [ref=f1e67]:
+      - generic [ref=f1e68]:
+        - paragraph [ref=f1e69]: 01 / THE HANGAR
+        - heading "Every aircraft. A different character." [level=2] [ref=f1e70]: Every aircraft.A different character.
+        - paragraph [ref=f1e71]: Five airplanes and an experimental helicopter.Choose a model and explore it from every angle.
+      - group "Select an aircraft" [ref=f1e72]:
+        - button "01 Ventage Jet" [pressed] [ref=f1e73] [cursor=pointer]
+        - button "02 Ugly Stik" [ref=f1e74] [cursor=pointer]
+        - button "03 Extra 300S" [ref=f1e75] [cursor=pointer]
+        - button "04 P-51D" [ref=f1e76] [cursor=pointer]
+        - button "05 Turbo Lumber" [ref=f1e77] [cursor=pointer]
+        - button "06 Helicopter" [ref=f1e78] [cursor=pointer]
+      - generic [ref=f1e79]:
+        - figure "01 / 06 RENDERS OF THE ACTUAL MODEL" [ref=f1e80]:
+          - generic [ref=f1e81]: AIRCRAFT STUDY / OPENRC
+          - img "Ventage Jet — studio view" [ref=f1e82]
+          - generic:
+            - generic: 01 / 06
+            - generic: RENDERS OF THE ACTUAL MODEL
+            - generic [aria-hidden]: +
+        - generic [ref=f1e83]:
+          - paragraph [ref=f1e84]: A DIFFERENT PACE
+          - heading "Ventage Jet" [level=3] [ref=f1e85]: VentageJet
+          - paragraph [ref=f1e86]: Turbine propulsion and a clean silhouette. This experimental configuration starts airborne, with flaps and landing gear retracted.
+          - generic [ref=f1e87]:
+            - generic [ref=f1e88]:
+              - term [ref=f1e89]: Wingspan
+              - definition [ref=f1e90]: 2.00 m
+            - generic [ref=f1e91]:
+              - term [ref=f1e92]: Powerplant
+              - definition [ref=f1e93]: JetCat P100-RX
+            - generic [ref=f1e94]:
+              - term [ref=f1e95]: Landing gear
+              - definition [ref=f1e96]: Retracted at start
+          - generic [ref=f1e97]: Experimental
+          - link "Explore the model" [ref=f1e98] [cursor=pointer]:
+            - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/AVANTI-S-PLAN.md
+            - generic [aria-hidden] [ref=f1e100]: ↗
+      - generic [ref=f1e101]:
+        - paragraph [ref=f1e102]: Drag to explore · Use the slider to change the angle.
+        - paragraph [ref=f1e103]: "ALSO IN THE STIK: MAX-61FX · MAX-55AX · FS-64V. Three experimental two- and four-stroke glow installations."
+      - button "Closer. Explore in 3D. Orbit freely, change the view and discover the details." [ref=f1e104] [cursor=pointer]:
+        - generic [aria-hidden] [ref=f1e105]: ↗
+        - generic [ref=f1e106]:
+          - strong [ref=f1e107]: Closer. Explore in 3D.
+          - generic [ref=f1e108]: Orbit freely, change the view and discover the details.
+      - paragraph [ref=f1e109]: CURRENT SOURCE CATALOGUE. Models are experimental and still need measurements and pilot validation. The latest published download, v0.1.2, represents its own snapshot.
+    - region [ref=f1e110]:
+      - figure "01 / 03 ACTUAL MODEL · STUDIO RENDER" [ref=f1e111]:
+        - img "Close-up of the Ventage Jet canopy" [ref=f1e112]
+        - generic [ref=f1e113]:
+          - generic [ref=f1e114]: 01 / 03
+          - generic [ref=f1e115]: ACTUAL MODEL · STUDIO RENDER
+      - generic [ref=f1e116]:
+        - paragraph [ref=f1e117]: VENTAGE JET / A CLOSER LOOK
+        - heading "Ventage Jet. Up close." [level=2] [ref=f1e118]: Ventage Jet.Up close.
+        - paragraph [ref=f1e119]: Canopy, wing and empennage. Three views of the model that you can explore in 3D.
+        - group "Jet detail views" [ref=f1e120]:
+          - button [pressed] [ref=f1e121] [cursor=pointer]:
+            - text: "01"
+            - strong [ref=f1e122]: Canopy
+          - button [ref=f1e123] [cursor=pointer]:
+            - text: "02"
+            - strong [ref=f1e124]: Wing
+          - button [ref=f1e125] [cursor=pointer]:
+            - text: "03"
+            - strong [ref=f1e126]: Empennage
+        - button "Explore this detail in 3D" [ref=f1e127] [cursor=pointer]:
+          - generic [aria-hidden] [ref=f1e129]: ↗
+        - status [ref=f1e130]
+    - region [ref=f1e131]:
+      - generic [ref=f1e132]:
+        - paragraph [ref=f1e133]: 02 / YOUR NEXT TAKEOFF
+        - generic [ref=f1e134]: v0.1.2 / STABLE SOFTWARE
+      - heading "Less watching. More flying." [level=2] [ref=f1e135]: Less watching.More flying.
+      - paragraph [ref=f1e136]: Download, extract the ZIP and launch.No Godot installation needed.
+      - paragraph [ref=f1e137]: v0.1.2 adds display and accessibility settings, configurable gamepad actions, simulated flaps and retractable gear for the P-51D and Ventage Jet, and MONSTER CAR 2 nitro. Flight behavior remains experimental.
+      - generic [ref=f1e138]:
+        - link "Windows x86_64 · ZIP" [ref=f1e139] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/openrc-simulator-v0.1.2-windows-x86_64.zip
+          - generic [aria-hidden] [ref=f1e140]: "01"
+          - strong [ref=f1e141]: Windows
+          - generic [ref=f1e142]: x86_64 · ZIP
+          - generic [aria-hidden] [ref=f1e143]: ↓
+        - link "Linux x86_64 · ZIP" [ref=f1e144] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/openrc-simulator-v0.1.2-linux-x86_64.zip
+          - generic [aria-hidden] [ref=f1e145]: "02"
+          - strong [ref=f1e146]: Linux
+          - generic [ref=f1e147]: x86_64 · ZIP
+          - generic [aria-hidden] [ref=f1e148]: ↓
+        - link "macOS Universal · ZIP" [ref=f1e149] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/openrc-simulator-v0.1.2-macos-universal.zip
+          - generic [aria-hidden] [ref=f1e150]: "03"
+          - strong [ref=f1e151]: macOS
+          - generic [ref=f1e152]: Universal · ZIP
+          - generic [aria-hidden] [ref=f1e153]: ↓
+      - generic [ref=f1e154]:
+        - paragraph [ref=f1e155]: Latest stable release v0.1.2. Packages are unsigned.Aircraft and experimental features remain under evaluation.
+        - generic [ref=f1e156]:
+          - link "First-flight guide ↗" [ref=f1e157] [cursor=pointer]:
+            - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/FIRST-LAUNCH.md
+          - link "Release notes ↗" [ref=f1e158] [cursor=pointer]:
+            - /url: https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.2
+          - link "SHA256SUMS ↗" [ref=f1e159] [cursor=pointer]:
+            - /url: https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/SHA256SUMS
+      - complementary [ref=f1e160]:
+        - text: LATEST STABLE RELEASE · v0.1.2
+        - generic [ref=f1e161]:
+          - heading "v0.1.2 is available" [level=3] [ref=f1e162]
+          - paragraph [ref=f1e163]: Download the stable v0.1.2 release for Windows, Linux or macOS. It includes experimental aircraft and features.
+          - paragraph [ref=f1e164]: "Independent evaluation of experimental aircraft remains open:"
+          - list [ref=f1e165]:
+            - listitem [ref=f1e166]: Independent validation of Ugly Stik rudder response remains open.
+            - listitem [ref=f1e167]: R02 yaw damping remains under evaluation; its model comparison is not a physical measurement.
+            - listitem [ref=f1e168]: Experimental P-51D P51-22 powered takeoff and inside-loop acceptance remain pending.
+        - link "v0.1.2 release notes ↗" [ref=f1e169] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.2/docs/releases/v0.1.2.md
+    - region [ref=f1e170]:
+      - img "Aerial view of the OpenRC flying field, grass runway and pilot area" [ref=f1e171]
+      - generic [ref=f1e173]:
+        - paragraph [ref=f1e174]: 03 / SEE YOU AT THE FIELD
+        - heading "That place you always come back to." [level=2] [ref=f1e175]: That placeyou alwayscome back to.
+        - paragraph [ref=f1e176]: The grass runway. The trees on the horizon.Fly from the pilot’s position or follow your aircraft with the flight cameras.
+      - generic [ref=f1e177]:
+        - generic [ref=f1e178]: IN-SIMULATOR CAPTURE · GODOT
+        - group "Field lighting" [ref=f1e179]:
+          - button "Day" [pressed] [ref=f1e180] [cursor=pointer]
+          - button "Night" [ref=f1e181] [cursor=pointer]
+        - generic [ref=f1e182]: 01 / 02
+    - generic [ref=f1e183]:
+      - generic [ref=f1e184]:
+        - paragraph [ref=f1e185]: 04 / UNDER THE COWLING
+        - heading "Physics matters. So does evidence." [level=2] [ref=f1e186]: Physics matters.So does evidence.
+        - paragraph [ref=f1e187]: We’re building an RC simulator one step at a time. With code you can read, flights you can repeat, and questions we’re still working through.
+        - link "Explore the source" [ref=f1e188] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator
+          - generic [aria-hidden] [ref=f1e190]: ↗
+      - generic [ref=f1e191]:
+        - paragraph [ref=f1e192]: IMPLEMENTED IN CURRENT SOURCE
+        - article [ref=f1e193]:
+          - generic [ref=f1e194]: 240Hz
+          - generic [ref=f1e195]:
+            - heading "A flight solver of its own." [level=3] [ref=f1e196]
+            - paragraph [ref=f1e197]: Six degrees of freedom, calculated in float64. Local aerodynamic loads, servo dynamics and aircraft-specific propulsion.
+        - article [ref=f1e198]:
+          - generic [ref=f1e199]: USB
+          - generic [ref=f1e200]:
+            - heading "Your controls, in the loop." [level=3] [ref=f1e201]
+            - paragraph [ref=f1e202]: USB transmitter, gamepad or keyboard. Saved calibration, throttle arming and a disconnection failsafe.
+        - article [ref=f1e203]:
+          - generic [ref=f1e204]: ↺
+          - generic [ref=f1e205]:
+            - heading "Fly. Record. Compare." [level=3] [ref=f1e206]
+            - paragraph [ref=f1e207]: Flight logs, exact replay and CSV export to study aircraft behavior with the same recorded inputs.
+      - complementary [ref=f1e208]:
+        - text: EARLY ALPHA
+        - paragraph [ref=f1e209]: Software is checked. Realism must be demonstrated. Independent physical validation and pilot evaluation remain open.
+        - link "See what’s next ↗" [ref=f1e210] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/ROADMAP.md
+          - generic [ref=f1e211]: See what’s next
+          - text: ↗
+      - generic [ref=f1e212]:
+        - generic [ref=f1e213]:
+          - paragraph [ref=f1e214]: ANATOMY OF THE SIMULATION
+          - heading "From a movement of the stick to the response of the aircraft." [level=3] [ref=f1e215]: From a movement of the stickto the response of the aircraft.
+          - paragraph [ref=f1e216]: Explore the systems already in the source. Each area links to its documentation and current limits.
+          - generic [aria-hidden] [ref=f1e217]:
+            - generic [ref=f1e218]: INPUT
+            - generic [ref=f1e219]: →
+            - generic [ref=f1e220]: 240 Hz
+            - generic [ref=f1e221]: →
+            - generic [ref=f1e222]: FLIGHT
+        - generic [ref=f1e223]:
+          - group [ref=f1e224]:
+            - generic "01 Aerodynamics and flight dynamics" [ref=f1e225] [cursor=pointer]:
+              - generic [ref=f1e226]: "01"
+              - heading "Aerodynamics and flight dynamics" [level=4] [ref=f1e227]
+              - generic [aria-hidden] [ref=f1e228]: +
+            - generic [ref=f1e229]:
+              - paragraph [ref=f1e230]: A custom six-degree-of-freedom solver with RK4 integration at 240 Hz and float64 state. Local wing and tail loads, trim, stalls, spins and control-surface dynamics.
+              - list [ref=f1e231]:
+                - listitem [ref=f1e232]: Downwash, pitch damping and propeller wake where configured.
+                - listitem [ref=f1e233]: Optional wing and tail ground effect, declared for the Stik.
+                - listitem [ref=f1e234]: A dedicated body, rotor, inflow and control session for the helicopter.
+              - link "Simulator architecture ↗" [ref=f1e235] [cursor=pointer]:
+                - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/STACK.md
+          - group [ref=f1e236]:
+            - generic "02 Four ways to make power" [ref=f1e237] [cursor=pointer]:
+              - generic [ref=f1e238]: "02"
+              - heading "Four ways to make power" [level=4] [ref=f1e239]
+              - generic [aria-hidden] [ref=f1e240]: +
+          - group [ref=f1e241]:
+            - generic "03 Flight starts on the ground, too" [ref=f1e242] [cursor=pointer]:
+              - generic [ref=f1e243]: "03"
+              - heading "Flight starts on the ground, too" [level=4] [ref=f1e244]
+              - generic [aria-hidden] [ref=f1e245]: +
+          - group [ref=f1e246]:
+            - generic "04 Air, light and flying conditions" [ref=f1e247] [cursor=pointer]:
+              - generic [ref=f1e248]: "04"
+              - heading "Air, light and flying conditions" [level=4] [ref=f1e249]
+              - generic [aria-hidden] [ref=f1e250]: +
+          - group [ref=f1e251]:
+            - generic "05 Transmitters, instruments and practice" [ref=f1e252] [cursor=pointer]:
+              - generic [ref=f1e253]: "05"
+              - heading "Transmitters, instruments and practice" [level=4] [ref=f1e254]
+              - generic [aria-hidden] [ref=f1e255]: +
+          - group [ref=f1e256]:
+            - generic "06 A field you can see and hear" [ref=f1e257] [cursor=pointer]:
+              - generic [ref=f1e258]: "06"
+              - heading "A field you can see and hear" [level=4] [ref=f1e259]
+              - generic [aria-hidden] [ref=f1e260]: +
+          - group [ref=f1e261]:
+            - generic "07 Sourced data. Repeatable flights." [ref=f1e262] [cursor=pointer]:
+              - generic [ref=f1e263]: "07"
+              - heading "Sourced data. Repeatable flights." [level=4] [ref=f1e264]
+              - generic [aria-hidden] [ref=f1e265]: +
+    - region [ref=f1e266]:
+      - generic [ref=f1e267]:
+        - paragraph [ref=f1e268]: 05 / THE OPENRC WORLD
+        - heading "Much more than a runway." [level=2] [ref=f1e269]: Much morethan a runway.
+        - paragraph [ref=f1e270]: Models, scenery, sounds and instruments. Original and freely available resources with their sources and licenses.
+      - generic [ref=f1e271]:
+        - article [ref=f1e272]:
+          - img "OpenRC model flying club, pits, pilots and parked vehicles" [ref=f1e273]
+          - generic [ref=f1e274]:
+            - text: THE FIELD / GODOT CAPTURE
+            - heading "A small world of model aviation." [level=3] [ref=f1e275]
+            - paragraph [ref=f1e276]: Clubhouse, pits, parked aircraft, vehicles, people, trees and a lake. Vegetation and materials from free sources, with credits preserved.
+            - link "Explore assets and credits ↗" [ref=f1e277] [cursor=pointer]:
+              - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/app/assets/landscape/UPGRADE_CREDITS.md
+        - article [ref=f1e278]:
+          - img "Orange Bisonte MT8 model render with suspension and off-road tires" [ref=f1e279]
+          - generic [ref=f1e280]:
+            - text: ALSO ON WHEELS / MODEL RENDER
+            - heading "Bisonte MT8 & Monster Car 2." [level=3] [ref=f1e281]
+            - paragraph [ref=f1e282]: "Two experimental RC vehicles in current source: a garage, driving course, suspension and separate physics. Bisonte is shown here; Monster Car 2 extends the activity with nitro propulsion."
+            - link "Explore the RC vehicle activity ↗" [ref=f1e283] [cursor=pointer]:
+              - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/research/rc-monster-truck/README.md
+      - generic [ref=f1e284]:
+        - link "01 Models and geometry Sources, generators and articulation ↗" [ref=f1e285] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/tree/main/assets/aircraft
+          - generic [ref=f1e286]: "01"
+          - strong [ref=f1e287]: Models and geometry
+          - generic [ref=f1e288]: Sources, generators and articulation
+          - generic [ref=f1e289]: ↗
+        - link "02 The soundscape Engines, wind, foliage and wildlife ↗" [ref=f1e290] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/tree/main/app/assets/audio
+          - generic [ref=f1e291]: "02"
+          - strong [ref=f1e292]: The soundscape
+          - generic [ref=f1e293]: Engines, wind, foliage and wildlife
+          - generic [ref=f1e294]: ↗
+        - link "03 Flight instrumentation Telemetry, sticks, warnings and diagnostics ↗" [ref=f1e295] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/plans/flight-overlays.md
+          - generic [ref=f1e296]: "03"
+          - strong [ref=f1e297]: Flight instrumentation
+          - generic [ref=f1e298]: Telemetry, sticks, warnings and diagnostics
+          - generic [ref=f1e299]: ↗
+    - region [ref=f1e300]:
+      - generic [ref=f1e301]:
+        - paragraph [ref=f1e302]: 06 / PROJECT PARTNERS
+        - heading "Support moves the controls, too." [level=2] [ref=f1e303]: Support movesthe controls, too.
+        - paragraph [ref=f1e304]: Thank you to Savox, SonicModell and Hitec for authorizing representations of their products.
+      - generic [ref=f1e305]:
+        - article [ref=f1e306]:
+          - link [ref=f1e307] [cursor=pointer]:
+            - /url: https://www.teamsavox.com/
+            - img "Savox" [ref=f1e308]
+          - heading "Savox" [level=3] [ref=f1e309]
+          - text: PARTNER / RC SERVOS
+          - paragraph [ref=f1e310]: Savox authorizes representations of its products. Thank you for opening the catalogue to simulation and offering an engineering contact.
+          - paragraph [ref=f1e311]: Servo catalogue selection is planned.
+          - link "Visit the manufacturer ↗" [ref=f1e312] [cursor=pointer]:
+            - /url: https://www.teamsavox.com/
+        - article [ref=f1e313]:
+          - link [ref=f1e314] [cursor=pointer]:
+            - /url: https://www.sonicmodell.com/
+            - img "SonicModell" [ref=f1e315]
+          - heading "SonicModell" [level=3] [ref=f1e316]
+          - text: PARTNER / FPV AIRCRAFT
+          - paragraph [ref=f1e317]: SonicModell authorizes the appearance, names and branding of the models covered by our request, including Skyhunter models.
+          - paragraph [ref=f1e318]: Permission is limited to the agreed use. Integration is pending.
+          - link "Visit the manufacturer ↗" [ref=f1e319] [cursor=pointer]:
+            - /url: https://www.sonicmodell.com/
+        - article [ref=f1e320]:
+          - link [ref=f1e321] [cursor=pointer]:
+            - /url: https://www.hitecrcd.com/
+            - img "Hitec RCD" [ref=f1e322]
+          - heading "Hitec RCD" [level=3] [ref=f1e323]
+          - text: PARTNER / RC SERVOS
+          - paragraph [ref=f1e324]: Hitec authorizes OpenRC Simulator to feature servos published on its websites, with references and official product links.
+          - paragraph [ref=f1e325]: Integration is pending. This permission does not announce radio compatibility.
+          - link "Visit the manufacturer ↗" [ref=f1e326] [cursor=pointer]:
+            - /url: https://www.hitecrcd.com/
+      - paragraph [ref=f1e327]: Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models.
+    - region [ref=f1e328]:
+      - generic [ref=f1e329]:
+        - paragraph [ref=f1e330]: 07 / DEVELOPMENT IN THE OPEN
+        - heading "A project moving forward. Without skipping the questions." [level=2] [ref=f1e331]: A project moving forward.Without skipping the questions.
+      - generic [ref=f1e332]:
+        - article [ref=f1e333]:
+          - text: AVAILABLE
+          - heading "Download and fly." [level=3] [ref=f1e334]
+          - paragraph [ref=f1e335]: Desktop release v0.1.2. Its release notes describe exactly what the package contains.
+          - link "Go to downloads ↑" [ref=f1e336] [cursor=pointer]:
+            - /url: "#download"
+        - article [ref=f1e337]:
+          - text: IN DEVELOPMENT
+          - heading "Test and refine." [level=3] [ref=f1e338]
+          - paragraph [ref=f1e339]: Experimental aircraft, engines, ground, controls, helicopter and RC vehicles. Current source keeps evolving.
+          - link "Project changes ↗" [ref=f1e340] [cursor=pointer]:
+            - /url: https://github.com/bultodepapas/OpenRCsimulator/commits/main/
+        - article [ref=f1e341]:
+          - text: STILL TO DEMONSTRATE
+          - heading "Measure in the real world." [level=3] [ref=f1e342]
+          - paragraph [ref=f1e343]: Mass, center of gravity, inertia, propulsion, maneuvers and pilot evaluation. The next step needs evidence.
+          - link "Roadmap and acceptance gates ↗" [ref=f1e344] [cursor=pointer]:
+            - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/ROADMAP.md
+      - paragraph [ref=f1e345]: "IN RESEARCH: FPV racing. A flyable drone and race mode are not yet available."
+    - generic [ref=f1e346]:
+      - paragraph [ref=f1e347]: AN OPEN PROJECT. A SHARED EFFORT.
+      - heading "The next improvement could start with you." [level=2] [ref=f1e348]: The next improvementcould start with you.
+      - generic [ref=f1e349]:
+        - paragraph [ref=f1e350]: A test with your transmitter. A real measurement. A code improvement. Every contribution helps build the next flight.
+        - link "Contribute on GitHub ↗" [ref=f1e351] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/CONTRIBUTING.md
+          - generic [ref=f1e352]: Contribute on GitHub
+          - text: ↗
+        - link "Share your experience ↗" [ref=f1e353] [cursor=pointer]:
+          - /url: https://github.com/bultodepapas/OpenRCsimulator/issues/new?template=pilot_feedback.md
+          - generic [ref=f1e354]: Share your experience
+          - text: ↗
+  - contentinfo [ref=f1e355]:
+    - generic [ref=f1e356]:
+      - link "OPENRC SIMULATOR" [ref=f1e357] [cursor=pointer]:
+        - /url: "#"
+        - text: OPENRC
+        - generic [ref=f1e358]: SIMULATOR
+      - paragraph [ref=f1e359]: With OpenAI’s support for development.Thanks to Savox, SonicModell and Hitec for their product-representation permissions.
+      - link "GitHub ↗" [ref=f1e360] [cursor=pointer]:
+        - /url: https://github.com/bultodepapas/OpenRCsimulator
+    - generic [ref=f1e361]:
+      - generic [ref=f1e362]: MIT CODE · ASSETS RETAIN THEIR OWN LICENSES
+      - link "Project imagery & credits ↗" [ref=f1e363] [cursor=pointer]:
+        - /url: https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/media/README.md
+      - link "Back to top ↑" [ref=f1e364] [cursor=pointer]:
+        - /url: "#"

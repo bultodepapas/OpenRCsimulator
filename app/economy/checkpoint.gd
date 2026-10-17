@@ -168,6 +168,18 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 	for id: String in forced:
 		if not value.assessment.components.has(id):
 			return fail("Assessment omitted a confirmed propeller decision.")
+	# CR-39d: a retained non-propeller contact may name its mapped parts as pending inspection.
+	var contact_inspections := {}
+	var contact_map: Variant = dossier.get("contact_components", {})
+	if contact_map is Dictionary:
+		for event: Dictionary in value.journal:
+			if event.source == "propeller" and event.event_type == "strike":
+				continue
+			var contact_id := str(event.get("contact_id", ""))
+			for key: String in [contact_id, str(event.get("probe_id", "")), "%s/%s" % [event.source, contact_id]]:
+				if not key.is_empty() and contact_map.get(key) is Array:
+					for mapped: Variant in contact_map[key]:
+						contact_inspections[str(mapped)] = true
 	for id: Variant in latest_decisions:
 		if not value.assessment.components.has(id):
 			return fail("Assessment omitted an inspected component.")
@@ -175,7 +187,8 @@ static func prepare(value: Variant, incident: RefCounted, tick: int, bindings: D
 		var decision: Dictionary = value.assessment.components[id]
 		if decision.has("quantity") and (not decision.quantity is int or decision.quantity <= 0):
 			return fail("Checkpoint decisions require positive affected quantities.")
-		if decision != latest_decisions.get(id) and decision != forced.get(id):
+		if decision != latest_decisions.get(id) and decision != forced.get(id) \
+			and not (contact_inspections.has(id) and decision == {disposition = "inspect"}):
 			return fail("Assessment has no matching inspection or confirmed propeller decision.")
 	if (value.facts.has("propeller_strike") or value.facts.has("restored_propeller_strike")) \
 		and value.assessment.components.get(prop_id, {}).get("disposition") in ["reuse", "repair"]:

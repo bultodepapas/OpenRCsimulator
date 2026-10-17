@@ -15,6 +15,7 @@ const MAX_EVENTS := 128
 const ARCHIVE_PATH := "user://last_accident.json"
 const ARCHIVE_MAX_BYTES := 262144
 const MAX_INSPECTIONS := 16
+const BINDING_NOTE := "Prices were authored for an earlier revision of this aircraft; its priced parts and contacts were verified unchanged."
 
 var dossier: Dictionary = {}
 var report: Dictionary = {}
@@ -31,6 +32,7 @@ var _confirmed_facts: Dictionary = {}
 var _catalog_hash := ""
 var _identity: Dictionary = {}
 var _catalog_errors: Array = []
+var _binding := "exact"
 var _offer_sources: Dictionary = {}
 var _dirty := false
 var _revision := 0
@@ -63,6 +65,7 @@ func begin(aircraft_id: String, source_hash: String) -> void:
 func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: String) -> void:
 	dossier = loaded.get("dossier", {}).duplicate(true) if loaded.get("ok", false) else {}
 	_catalog_errors = Array(loaded.get("errors", []))
+	_binding = str(loaded.get("binding", "exact"))
 	_catalog_hash = str(loaded.get("catalog_hash", ""))
 	_offer_sources = loaded.get("offer_sources", {}).duplicate(true)
 	_identity = {aircraft_id = aircraft_id, source_sha256 = dossier.get("source_sha256", source_hash),
@@ -240,7 +243,8 @@ func observe(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored
 		var key := str(event.event_id) + ":" + str(event.response)
 		if _seen.has(key):
 			continue
-		if journal.size() < MAX_EVENTS:
+		var retained := journal.size() < MAX_EVENTS
+		if retained:
 			_seen[key] = true
 			journal.append(event.duplicate(true))
 			changed = true
@@ -254,11 +258,9 @@ func observe(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored
 				_mark_propeller()
 				changed = true
 		else:
-			var mapped := _contact_components(event)
-			if mapped.is_empty():
-				changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
-			else:
-				changed = _mark_contact_inspection(mapped) or changed
+			changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
+			if retained: # Checkpoints re-derive these inspections from the retained journal.
+				changed = _mark_contact_inspection(_contact_components(event)) or changed
 		if event.source == "lake" and event.get("material") == "water":
 			if not _confirmed_facts.has("water_exposure"):
 				_confirmed_facts.water_exposure = event.duplicate(true)
@@ -329,16 +331,14 @@ func _contact_components(event: Dictionary) -> Array:
 	return result
 
 
-## A mapped contact makes its parts pending inspection; it never downgrades a confirmed replacement.
+## A mapped contact names its parts as pending inspection beside the structural note; it never
+## overrides an existing decision, so a confirmed replacement or receipt outcome is kept.
 func _mark_contact_inspection(component_ids: Array) -> bool:
 	var changed := false
 	for component_id: String in component_ids:
 		if not _assessment.components.has(component_id):
 			_assessment.components[component_id] = {disposition = "inspect"}
 			changed = true
-		elif _assessment.components[component_id].get("disposition") not in ["inspect", "replace", "unrecoverable"]:
-			# A later contact on an already assessed part reopens its condition.
-			changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
 	return changed
 
 
@@ -381,6 +381,8 @@ func _recalculate() -> void:
 		for field: String in source:
 			line[field] = source[field]
 	report["assumptions"] = ["USD prices exclude tax, shipping and transmitter/field equipment."]
+	if _binding == "physical_signature" and not dossier.is_empty():
+		report.assumptions.append(BINDING_NOTE)
 	for receipt: Dictionary in _inspections:
 		report.assumptions.append("%s [%s]: %s" % [receipt.inspection_id, receipt.basis, receipt.evidence])
 	report["inspections"] = _inspections.duplicate(true)

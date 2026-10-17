@@ -12,7 +12,7 @@ const TOP_KEYS := ["format", "currency", "price_date", "generated_from", "produc
 const GENERATED_KEYS := ["price_catalog_sha256", "aircraft_costing_sha256", "aircraft_catalog_sha256", "price_research_components_sha256", "price_research_fleet_sha256"]
 const PRODUCT_KEYS := ["id", "brand", "sku", "name", "category", "physical_compatibility", "partner_status"]
 const OFFER_KEYS := ["id", "product_id", "amount_minor", "currency", "observed_on", "seller_domain", "market", "condition", "price_kind", "availability", "sold_package_quantity", "package_description", "tax_shipping", "source_url", "evidence_quality", "notes"]
-const DOSSIER_KEYS := ["format", "aircraft_id", "source_sha256", "currency", "price_date", "valuation_kind", "components", "exclusions", "missing", "complete", "contact_components", "propeller_component_id", "propeller_inspection_ids"]
+const DOSSIER_KEYS := ["format", "aircraft_id", "source_sha256", "currency", "price_date", "valuation_kind", "components", "exclusions", "missing", "complete", "contact_components", "propeller_component_id", "propeller_inspection_ids", "physical_signature"]
 const COMPONENT_KEYS := ["id", "quantity", "unit_minor", "low_unit_minor", "high_unit_minor", "physical_inventory_ids", "price_basis", "offer_id", "notes"]
 const EXCLUSION_KEYS := ["id", "scope", "physical_inventory_ids", "reason"]
 
@@ -29,6 +29,8 @@ static func load_for(aircraft_id: String, physical_source_hash: String = "") -> 
 	if catalog_bytes.is_empty():
 		return _failure(["cannot read economics catalog: " + CATALOG_PATH])
 	var catalog_hash: String = _sha256(catalog_bytes)
+	var binding := "exact"
+	var bound_hash := ""
 	var catalog_json := JSON.new()
 	if catalog_json.parse(catalog_bytes.get_string_from_utf8()) != OK:
 		return _failure(["economics catalog JSON error at line %d: %s" % [catalog_json.get_error_line(), catalog_json.get_error_message()], catalog_hash])
@@ -55,18 +57,84 @@ static func load_for(aircraft_id: String, physical_source_hash: String = "") -> 
 				errors.append("aircraft source ID does not match requested route")
 			var dossier: Dictionary = _find_dossier(doc, aircraft_id)
 			if not dossier.is_empty() and str(dossier.get("source_sha256", "")) != actual_hash:
-				errors.append("economics dossier is stale for current aircraft source")
+				if _physical_signature_matches(dossier.get("physical_signature"), physical):
+					binding = "physical_signature"
+					bound_hash = actual_hash
+				else:
+					errors.append("economics dossier is stale for current aircraft source")
 	if not errors.is_empty():
 		return _failure(errors, catalog_hash)
 	var dossier: Dictionary = _find_dossier(doc, aircraft_id).duplicate(true)
 	_normalize_dossier_integer_fields(dossier)
+	if binding == "physical_signature":
+		# Receipts and reports identify the aircraft actually flown, not the authored revision.
+		dossier["source_sha256"] = bound_hash
 	return {
 		"ok": true,
 		"errors": [],
 		"dossier": dossier,
 		"catalog_hash": catalog_hash,
 		"offer_sources": _offer_sources(doc),
+		"binding": binding,
 	}
+
+
+## CR-39b: true when the priced physical facts (item names, masses and energy sources, contact
+## IDs, propulsion identity) still equal the generator's signature, although other bytes changed.
+static func _physical_signature_matches(expected: Variant, source: Dictionary) -> bool:
+	if typeof(expected) != TYPE_DICTIONARY or typeof(expected.get("inventory")) != TYPE_DICTIONARY \
+		or typeof(expected.get("propulsion")) != TYPE_DICTIONARY or typeof(expected.get("contacts")) != TYPE_ARRAY:
+		return false
+	var inventory: Variant = source.get("inventory", [])
+	if typeof(inventory) != TYPE_ARRAY or inventory.size() != expected.inventory.size():
+		return false
+	for row: Variant in inventory:
+		if typeof(row) != TYPE_DICTIONARY:
+			return false
+		var signed: Variant = expected.inventory.get(str(row.get("id", "")))
+		if typeof(signed) != TYPE_DICTIONARY:
+			return false
+		var mass: Variant = row.get("mass")
+		var mass_value: Variant = mass.get("value") if typeof(mass) == TYPE_DICTIONARY else null
+		var mass_unit: String = str(mass.get("unit", "")) if typeof(mass) == TYPE_DICTIONARY else ""
+		if str(signed.get("name")) != str(row.get("name", "")) or str(signed.get("mass_unit")) != mass_unit \
+			or str(signed.get("energy_source")) != str(row.get("energy_source", "")) \
+			or not _same_number(signed.get("mass"), mass_value):
+			return false
+	var propulsion: Variant = source.get("propulsion")
+	if typeof(propulsion) != TYPE_DICTIONARY:
+		propulsion = {}
+	if str(expected.propulsion.get("id")) != str(propulsion.get("id", "")) \
+		or str(expected.propulsion.get("kind")) != str(propulsion.get("kind", "")) \
+		or expected.propulsion.get("propeller") != (typeof(propulsion.get("propeller")) == TYPE_DICTIONARY):
+		return false
+	var contacts: Dictionary = {}
+	var hull_ids: Variant = source.get("crash_hull_ids", [])
+	if typeof(hull_ids) == TYPE_ARRAY:
+		for id: Variant in hull_ids:
+			if typeof(id) == TYPE_STRING:
+				contacts[id] = true
+	var gear: Variant = source.get("landing_gear")
+	if typeof(gear) == TYPE_DICTIONARY and typeof(gear.get("contacts")) == TYPE_ARRAY:
+		for contact: Variant in gear.contacts:
+			if typeof(contact) == TYPE_DICTIONARY and typeof(contact.get("id")) == TYPE_STRING:
+				contacts[contact.id] = true
+	if typeof(propulsion.get("id")) == TYPE_STRING and typeof(propulsion.get("propeller")) == TYPE_DICTIONARY:
+		contacts["propeller/" + propulsion.id] = true
+	if contacts.size() != expected.contacts.size():
+		return false
+	for id: Variant in expected.contacts:
+		if not contacts.has(str(id)):
+			return false
+	return true
+
+
+static func _same_number(left: Variant, right: Variant) -> bool:
+	if left == null or right == null:
+		return left == null and right == null
+	if typeof(left) not in [TYPE_INT, TYPE_FLOAT] or typeof(right) not in [TYPE_INT, TYPE_FLOAT]:
+		return false
+	return absf(float(left) - float(right)) <= 1.0e-12 * maxf(1.0, absf(float(left)))
 
 
 static func _offer_sources(doc: Dictionary) -> Dictionary:
@@ -245,7 +313,8 @@ static func _validate_document(node: Variant, verify_physical_aircraft_id: Strin
 		elif source_ok:
 			if str(source.get("id", "")) != aircraft_id:
 				errors.append(path + " physical source ID does not match route")
-			if _sha256(FileAccess.get_file_as_bytes(data_path)) != str(item.get("source_sha256", "")):
+			if _sha256(FileAccess.get_file_as_bytes(data_path)) != str(item.get("source_sha256", "")) \
+				and not _physical_signature_matches(item.get("physical_signature"), source):
 				errors.append(path + " source_sha256 is stale")
 			var inventory: Variant = source.get("inventory")
 			if typeof(inventory) != TYPE_ARRAY and AircraftCatalog.is_rotorcraft(aircraft_id) and not source.has("inventory"):

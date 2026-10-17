@@ -24,6 +24,23 @@ const websiteCopy = {
   developmentKicker:'07 / DEVELOPMENT IN THE OPEN',developmentHeading:'A project moving forward.<br>Without skipping the questions.',devAvailable:'AVAILABLE',devAvailableTitle:'Download and fly.',devAvailableCopy:'Desktop release v0.1.2. Its release notes describe exactly what the package contains.',devDownload:'Go to downloads ↑',devActive:'IN DEVELOPMENT',devActiveTitle:'Test and refine.',devActiveCopy:'Experimental aircraft, engines, ground, controls, helicopter and RC vehicles. Current source keeps evolving.',devChanges:'Project changes ↗',devOpen:'STILL TO DEMONSTRATE',devOpenTitle:'Measure in the real world.',devOpenCopy:'Mass, center of gravity, inertia, propulsion, maneuvers and pilot evaluation. The next step needs evidence.',devRoadmap:'Roadmap and acceptance gates ↗',droneNote:'IN RESEARCH: FPV racing. A flyable drone and race mode are not yet available.'
 };
 
+Object.assign(websiteCopy, {
+  "savoxEarly": "Savox, SonicModell and Hitec: thank you for welcoming your products into the project.",
+  "partnersIntro": "Thank you to Savox, SonicModell and Hitec for authorizing representations of their products.",
+  "savoxCopy": "Savox authorizes representations of its products. Thank you for opening the catalogue to simulation and offering an engineering contact.",
+  "savoxStatus": "Servo catalogue selection is planned.",
+  "sonicmodellRole": "PARTNER / FPV AIRCRAFT",
+  "sonicmodellCopy": "SonicModell authorizes the appearance, names and branding of the models covered by our request, including Skyhunter models.",
+  "sonicmodellStatus": "Permission is limited to the agreed use. Integration is pending.",
+  "hitecRole": "PARTNER / RC SERVOS",
+  "hitecCopy": "Hitec authorizes OpenRC Simulator to feature servos published on its websites, with references and official product links.",
+  "hitecStatus": "Integration is pending. This permission does not announce radio compatibility.",
+  "partnerVisit": "Visit the manufacturer ↗",
+  "partnersNote": "Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models."
+});
+
+Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br> New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});
+
 const themeButton = document.querySelector('.theme-toggle');
 let theme = 'day';
 try {theme = localStorage.getItem('openrc-theme') === 'night' ? 'night' : 'day';} catch {}
@@ -33,7 +50,7 @@ function applyTheme() {
   const night = theme === 'night';
   themeButton.firstElementChild.textContent = night ? '☀' : '☾';
   themeButton.setAttribute('aria-label', english ? (night ? 'Switch to day theme' : 'Switch to night theme') : (night ? 'Activar modo día' : 'Activar modo noche'));
-  document.querySelectorAll('img[src*="brands/"]').forEach(img => {
+  document.querySelectorAll('img[src*="brands/"]:not(.partner-logo img):not(.allies-logos img)').forEach(img => {
     const source = img.getAttribute('src');
     const next = source.replace(night ? 'Black' : 'White', night ? 'White' : 'Black');
     if(source !== next) img.src = next;

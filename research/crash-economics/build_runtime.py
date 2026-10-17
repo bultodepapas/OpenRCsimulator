@@ -196,6 +196,33 @@ def _source_contact_ids(source: dict[str, Any]) -> set[str]:
     return valid
 
 
+def _physical_signature(source: dict[str, Any], aircraft_id: str) -> dict[str, Any]:
+    """CR-39b: the physical facts a dossier prices. A raw-byte change elsewhere (text,
+    aero or tuning) keeps this equal, so the runtime can keep costs available; a changed
+    item name, mass, energy source, contact or propulsion identity does not."""
+    inventory: dict[str, Any] = {}
+    for row in _inventory_rows(source, aircraft_id):
+        mass = row.get("mass")
+        inventory[str(row["id"])] = {
+            "name": str(row.get("name", "")),
+            "mass": mass.get("value") if isinstance(mass, dict) else None,
+            "mass_unit": str(mass.get("unit", "")) if isinstance(mass, dict) else "",
+            "energy_source": str(row.get("energy_source", "")),
+        }
+    propulsion = source.get("propulsion")
+    if not isinstance(propulsion, dict):
+        propulsion = {}
+    return {
+        "inventory": inventory,
+        "propulsion": {
+            "id": str(propulsion.get("id", "")),
+            "kind": str(propulsion.get("kind", "")),
+            "propeller": isinstance(propulsion.get("propeller"), dict),
+        },
+        "contacts": sorted(_source_contact_ids(source)),
+    }
+
+
 def _products_and_offers(price_catalog: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, dict[str, Any]]]:
     products_raw = price_catalog.get("products")
     observations_raw = price_catalog.get("observations")
@@ -601,6 +628,7 @@ def _dossier(
         "contact_components": {} if contact_components is None else contact_components,
         "propeller_component_id": propeller_component_id,
         "propeller_inspection_ids": [] if propeller_inspection_ids is None else propeller_inspection_ids,
+        "physical_signature": _physical_signature(source, aircraft_id),
     }
 
 
@@ -724,8 +752,10 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
         if _is_virtual_inventory(row) and row["id"] not in source_exclusions:
             _fail(f"baseline virtual inventory lacks an explicit source exclusion: {row['id']}")
 
-    # The only authored event binding in this slice is the Stik propeller. It is
-    # tied to the validated physical source and is inherited only with its BOM.
+    # Stik event bindings are tied to the validated physical source and inherited only
+    # with its BOM. CR-39d: the airframe, tail and both gear legs share one coverage
+    # group, so every hull/gear contact opens that group's inspection; a spinner hit
+    # also inspects the engine, as a prop strike does.
     propulsion = base_source.get("propulsion", {})
     if not isinstance(propulsion, dict) or propulsion.get("id") != "propulsion_main" or not isinstance(propulsion.get("propeller"), dict):
         _fail("baseline propeller contact binding does not match the physical source")
@@ -747,7 +777,14 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
         components=components,
         exclusions=exclusions,
         missing=[],
-        contact_components={"propeller/propulsion_main": ["propeller"]},
+        contact_components={
+            "propeller/propulsion_main": ["propeller"],
+            **{contact_id: ["covered_airframe_and_installation_hardware"] for contact_id in (
+                "probe_wing_left_tip", "probe_wing_right_tip", "probe_tail_end", "probe_stabilizer_left_tip",
+                "probe_stabilizer_right_tip", "probe_fin_top", "probe_belly_main",
+                "contact_main_left", "contact_main_right", "contact_nose")},
+            "probe_spinner_tip": ["covered_airframe_and_installation_hardware", "engine_and_muffler"],
+        },
         propeller_component_id="propeller",
         propeller_inspection_ids=["engine_and_muffler", "covered_airframe_and_installation_hardware"],
     )
@@ -779,6 +816,7 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
             inherited = json.loads(json.dumps(dossiers[baseline_id]))
             inherited["aircraft_id"] = aircraft_id
             inherited["source_sha256"] = route["source_sha256"]
+            inherited["physical_signature"] = _physical_signature(source, aircraft_id)
             inherited["valuation_kind"] = "inherited_complete_inventory_coverage_with_cost_estimates"
             if has_overrides:
                 inherited["components"] = _variant_components(
@@ -903,6 +941,8 @@ def validate_runtime_document(document: dict[str, Any], context: dict[str, Any])
             _fail(f"{aircraft_id}: source_sha256 must be a lowercase SHA-256")
         if source_hash != route["source_sha256"]:
             _fail(f"{aircraft_id}: physical source hash is stale or mismatched")
+        if dossier.get("physical_signature") != _physical_signature(source, aircraft_id):
+            _fail(f"{aircraft_id}: physical_signature does not match the physical source")
         if dossier.get("currency") != "USD" or dossier.get("price_date") != context["price_date"]:
             _fail(f"{aircraft_id}: currency or price date mismatch")
         _require_string(dossier.get("valuation_kind"), f"{aircraft_id}.valuation_kind")

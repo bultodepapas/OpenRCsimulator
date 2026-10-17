@@ -12,6 +12,17 @@ import build_runtime
 import build_catalog
 
 
+# CR-39d: every Stik hull/gear contact opens its single airframe coverage group.
+STIK_CONTACTS = {
+    "propeller/propulsion_main": ["propeller"],
+    **{contact_id: ["covered_airframe_and_installation_hardware"] for contact_id in (
+        "probe_wing_left_tip", "probe_wing_right_tip", "probe_tail_end", "probe_stabilizer_left_tip",
+        "probe_stabilizer_right_tip", "probe_fin_top", "probe_belly_main",
+        "contact_main_left", "contact_main_right", "contact_nose")},
+    "probe_spinner_tip": ["covered_airframe_and_installation_hardware", "engine_and_muffler"],
+}
+
+
 class RuntimeEconomicsTests(unittest.TestCase):
     def test_price_generator_rejects_crlf_sources_before_hashing(self) -> None:
         original = Path.read_bytes
@@ -132,7 +143,10 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertEqual(set(bound + excluded), source_ids)
             self.assertTrue(any(row["unit_minor"] is None for row in parts))
         electric = self.dossiers["turbo-lumber-evolution"]
-        self.assertEqual(electric["propeller_component_id"], "")
+        # CR-39d: the priced electric propeller is bound to the strike event.
+        self.assertEqual(electric["propeller_component_id"], "propeller_main")
+        self.assertEqual(electric["contact_components"]["propeller/propulsion_main"], ["propeller_main"])
+        self.assertEqual(electric["propeller_inspection_ids"], ["motor_main", "fuselage_main"])
         prop = next(row for row in electric["components"] if row["id"] == "propeller_main")
         self.assertEqual(prop["unit_minor"], 1698)
         self.assertIsNone(prop["offer_id"])  # Composite estimate, not a fabricated retail SKU.
@@ -255,7 +269,9 @@ class RuntimeEconomicsTests(unittest.TestCase):
         self.assertEqual(parts["propeller"]["unit_minor"], 539)
         self.assertIsNone(parts["muffler_main"]["unit_minor"])
         self.assertIsNone(parts["engine_main"]["unit_minor"])
-        self.assertEqual(dossier["contact_components"], {"propeller/propulsion_main": ["propeller"]})
+        self.assertEqual(dossier["contact_components"]["propeller/propulsion_main"], ["propeller"])
+        self.assertEqual(dossier["contact_components"]["probe_wing_left_le"], ["wing_main"])
+        self.assertEqual(dossier["contact_components"]["contact_tail"], ["landing_gear_tail"])
         covered = [item for row in parts.values() for item in row["physical_inventory_ids"]]
         source_ids = {row["id"] for row in self.context["route_sources"]["gp-extra-300s-60"]["inventory_rows"]}
         self.assertEqual(set(covered) | {"ballast_reference"}, source_ids)
@@ -306,7 +322,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
                 self.assertEqual(parts["propeller"]["unit_minor"], self.context["offer_by_id"][prop_offer]["amount_minor"])
                 for component_id in base.keys() - {"engine_and_muffler", "propeller"}:
                     self.assertEqual(parts[component_id], base[component_id])
-                self.assertEqual(dossier["contact_components"], {"propeller/propulsion_main": ["propeller"]})
+                self.assertEqual(dossier["contact_components"], STIK_CONTACTS)
                 self.assertEqual(parts["engine_and_muffler"]["physical_inventory_ids"], ["item_engine_main", "item_muffler_main"])
 
     def test_variant_identity_guards_refuse_unreviewed_hardware(self) -> None:
@@ -363,7 +379,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
     def test_stik_propeller_event_bindings_resolve_to_component_ids(self) -> None:
         for aircraft_id in ("jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t"):
             dossier = self.dossiers[aircraft_id]
-            self.assertEqual(dossier["contact_components"], {"propeller/propulsion_main": ["propeller"]})
+            self.assertEqual(dossier["contact_components"], STIK_CONTACTS)
             self.assertEqual(dossier["propeller_component_id"], "propeller")
             self.assertEqual(
                 dossier["propeller_inspection_ids"],

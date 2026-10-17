@@ -6,7 +6,7 @@ WEB-01/02/03/04/05 own `site/` and the isolated `gh-pages` deployment. No simula
 
 Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typography, original dark studio renders, ivory paper and field green.
 
-Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and Savox introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → Savox partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.2; the site distinguishes released features from ongoing aircraft evaluation.
+Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.2; the site distinguishes released features from ongoing aircraft evaluation.
 
 Interaction thesis: a short hero entrance, restrained section reveals and real aircraft turntables with drag, angle slider and play/pause controls. Reduced-motion preference disables autoplay and offers deliberate single-frame steps; core content, technical disclosures and downloads work without JavaScript. The viewer loads only near the hangar, pauses offscreen/when hidden, and retains at most two decoded sheets.
 
@@ -143,3 +143,12 @@ and `SHA256SUMS` to v0.1.2, and identifies the remaining experimental-aircraft
 limits in both languages. Public browser checks at 1280×900 and 390×844 in
 English and Spanish found no horizontal overflow, console warnings or errors.
 A cache-refresh request returned HTTP 200 with the published release links.
+
+
+## WEB-06 — Manufacturer acknowledgments, 2026-10-17
+
+The README and partner section credit Savox, SonicModell and Hitec within their product-representation permission scopes. Official SonicModell and Hitec logos are retained unchanged; [brand provenance and permission scope](BRANDS.md) remain authoritative. The website uses three responsive columns, a single-column mobile layout, Spanish/English copy and both themes. Integration remains planned/pending and no physical validation is claimed.
+
+Verification: JavaScript syntax checks passed. Browser checks at 1280×900 and 390×900, both languages × both themes, found three decoded logos, no missing translations and no horizontal overflow. Desktop/day and mobile/night captures were visually reviewed. Console: zero errors or warnings. Captures are local under `output/playwright/partners-*`.
+
+WEB-06 support-strip refinement: centered the support content at a maximum 1280 px, enlarged development credits, replaced the single tiny Savox introduction with all three official logos and a clear partner link. Verified 3714, 1280 and 390 px widths × ES/EN × day/night: no overflow, missing translations or failed logo decodes. Desktop and mobile night captures were visually reviewed.

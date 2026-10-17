@@ -25,6 +25,7 @@ func _capture() -> void:
 	var show_price_sources := false
 	var show_repair_details := false
 	var settled := false
+	var hull_crash := false
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):
 			output_path = argument.trim_prefix("--out=")
@@ -50,6 +51,8 @@ func _capture() -> void:
 		elif argument == "--repair-details":
 			expanded = true
 			show_repair_details = true
+		elif argument == "--hull-crash":
+			hull_crash = true # CR-39c: terminal crash without a prop strike.
 		elif argument == "--settled":
 			settled = true
 		elif argument == "--details-bottom":
@@ -102,11 +105,22 @@ func _capture() -> void:
 		"total_loss": false,
 		"unresolved": ["Propeller strike: inspect the powertrain, shaft and mount before return to service."],
 	}
+	if hull_crash:
+		assessment = {
+			"components": {"covered_airframe_and_installation_hardware": {"disposition": "inspect"}},
+			"terminal": true,
+			"total_loss": false,
+			"unresolved": ["Impact or surface contact requires structural inspection.",
+				"Crash inspection pending; component survival is not yet established."],
+		}
 	var report_data: Dictionary = Calculator.calculate(dossier, assessment)
 	if show_parts_comparison:
 		report_data.replacement_comparison = ReplacementQuote.quote(dossier, assessment)
-	if not bool(report_data.get("ok", false)) or report_data.get("known_subtotal_minor") != 539 \
-		or report_data.get("low_minor") != 539 or report_data.get("high_minor") != null \
+	# Terminal cases carry the CR-39c whole-aircraft ceiling; a settled prop strike has no upper bound.
+	var expected_low: int = 0 if hull_crash else 539
+	var expected_high: Variant = null if settled else 133134
+	if not bool(report_data.get("ok", false)) or report_data.get("known_subtotal_minor") != expected_low \
+		or report_data.get("low_minor") != expected_low or report_data.get("high_minor") != expected_high \
 		or report_data.get("total_minor") != null or bool(report_data.get("complete", true)) \
 		or str(report_data.get("outcome", "")) != "inspection":
 		push_error("The prop-strike capture report does not match the incomplete lower-bound baseline case: %s" % str(report_data))

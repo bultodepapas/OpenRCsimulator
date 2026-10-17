@@ -23,10 +23,10 @@ func _initialize() -> void:
 	_run.call_deferred()
 
 
-func _make(enabled: bool, aircraft_id := "jensen-das-ugly-stik-60") -> Variant:
+func _make(enabled: bool, aircraft_id := "jensen-das-ugly-stik-60", effects := false) -> Variant:
 	var main: Variant = MainScene.instantiate()
 	main.aircraft_id = aircraft_id
-	main.crash_effects_enabled = false
+	main.crash_effects_enabled = effects
 	main.accident_reports_enabled = enabled
 	main.accident_archive_path = ARCHIVE
 	root.add_child(main)
@@ -144,6 +144,7 @@ func _run() -> void:
 	_test_bounds(session)
 	_test_cadence(session)
 	_test_variant_strikes()
+	await _test_terminal_determinism()
 	enabled.queue_free()
 	disabled.queue_free()
 	await process_frame
@@ -338,3 +339,36 @@ func _crash(session: Variant) -> void:
 	session.sim.previous = s.duplicate()
 	session.sim.previous[RB.POS + 2] -= 0.05
 	session._physics_process(session.sim.dt())
+
+
+## CR-39h: one production hull crash, with crash effects on/off and different publication
+## cadences, must yield the same report; only the incident identity may differ.
+func _test_terminal_determinism() -> void:
+	var expected: Dictionary = {}
+	for spec: Array in [[false, 1], [true, 1], [false, 5]]:
+		var main: Variant = _make(true, "jensen-das-ugly-stik-60", spec[0])
+		var session: Variant = main.session
+		session.reset()
+		session.sim.set_paused(false)
+		for tick in 10:
+			session.sim.step()
+			if tick % spec[1] == 0:
+				main._update_accident_report()
+		_crash(session)
+		for frame in spec[1]:
+			main._update_accident_report()
+		var report: Dictionary = main._accident_incident.report.duplicate(true)
+		var amount: String = main._accident_report.find_child("ReportAmount", true, false).text
+		report.erase("identity")
+		report.erase("incident_id")
+		var label := "effects %s, publication every %d" % ["on" if spec[0] else "off", spec[1]]
+		check("terminal hull crash has the effects director only when requested (%s)" % label, (main._crash_director != null) == spec[0])
+		check("terminal hull crash headlines the whole-aircraft ceiling (%s)" % label, not session.crash.is_empty() and report.get("terminal", false)
+			and report.get("high_minor") == 133134 and report.get("total_minor") == null and amount == "Up to US$1,331")
+		check("terminal hull crash names the covered airframe inspection (%s)" % label,
+			str(report.get("lines", [])).contains("covered_airframe_and_installation_hardware"))
+		if expected.is_empty():
+			expected = report
+		check("terminal crash report is independent of effects and publication cadence (%s)" % label, report == expected)
+		main.queue_free()
+		await process_frame
