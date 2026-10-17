@@ -23,7 +23,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Cinematic trailer
 
-[TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records current vehicle/capture/economics boundaries and primary trailer, airshow and free-tool references. The [production plan](../plans/cinematic-trailer.md) owns the English storyboard, formation approach and remaining delivery gates.
+[TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records current vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. The [production plan](../plans/cinematic-trailer.md) owns the English 60-second storyboard, formation approach and remaining delivery gates.
 
 ### Flight logging
 

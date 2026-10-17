@@ -6,6 +6,8 @@ User brief: an **exactly 60-second, very cinematic, AAA-style game trailer**, en
 
 This is the authoritative production plan. The [dated investigation](../research/cinematic-trailer/2026-10-17.md) records source findings and research limits. Runtime facts below were checked against source commit `049df2034de017e6fedc649a55194eb5977191cd`; refresh the inventory when freezing the filming build.
 
+Research expansion: **16 internet investigations**, a parallel **five-track music shortlist**, and comparisons of code-video skills and generative-video tools are recorded in the [research ledger](../research/cinematic-trailer/2026-10-17.md#expanded-investigation-16-research-topics). The chosen additions below improve the same minute; music audition and effect pilots remain production work.
+
 ## 1. Creative direction
 
 **Working title: EVERY INPUT MATTERS.**
@@ -18,6 +20,8 @@ The minute moves through four acts: **machines (0–31 s), changing conditions a
 - **Sound:** actual propeller, turbine, rotor and nitro voices carry the edit. One licensed instrumental cue builds in acts; a brief near-silence at the crash makes the repair estimate land. No narration in the first cut; the film must work without sound.
 - **Typography:** small vehicle identifiers and at most three large editorial title beats: `TAKE CONTROL.`, `EVERY MISTAKE HAS A COST.`, and the end-card `EVERY INPUT MATTERS.` The actual report and cinematic label remain legible. No scrolling feature list or prolonged menu tour.
 - **Composition:** foreground grass, runway markings and shadows establish RC scale. Alternate an intimate mechanical detail, a readable full maneuver and a wider environmental shot. Preserve an uninterrupted action beat before cutting to its result.
+
+**Signature moments:** turbine sound pulls the viewer into an immediate low pass; wing banks and circular mechanical forms motivate cuts between vehicles; a grounded helicopter hover gives way to the weight of a truck landing; lightning briefly reveals the storm silhouette; the crash interrupts the music and exposes its actual cost; the restart releases into a wide formation and coordinated fan-out. Favor these six memorable moments over additional title cards or more cuts. Use one or two well-matched transitions where the existing shot boundaries permit them, rather than inserting a new mechanical montage.
 
 The main cut should contain at least 45 seconds of captured, actually simulated driving/flying and its UI. Reserve **7 seconds** for the clearly identified formation cinematic and **3 seconds** for the closing card. Mechanical inserts are brief; protect the 3–5 second hero actions, readable cost report and continuous formation shot.
 
@@ -50,8 +54,8 @@ Times are edit targets, not an assertion that these shots have been captured. Pr
 | 00:08–00:12 | **G, Extra:** one complete axial roll | Hold a clear horizon and the entire aircraft. Cut after recovery; no artificial speed-up. | Small vehicle identifier. |
 | 00:12–00:15 | **G, Mustang:** banked pass with gear transition | Match the previous screen direction; golden-hour rim on the fuselage. | `P-51D Mustang 1/4` |
 | 00:15–00:18 | **G, Turbo Lumber:** low electric circuit over grass | Quiet electric voice against the prior gasoline engine; grass foreground and visible aircraft shadow. | `Turbo Lumber Evolution` |
-| 00:18–00:23 | **G, helicopter:** rotor detail, hover/yaw into forward flight | A brief mechanical close-up opens to a sustained full-model shot with ground reference. Preserve a distinct five-second helicopter beat. | `RC Helicopter Research Trainer` |
-| 00:23–00:27 | **G, Bisonte:** ramp jump and suspension loading on landing | One low three-quarter view spans takeoff and landing. If no clean jump fits, use the supported corner/suspension alternative. | `Bisonte MT8` |
+| 00:18–00:23 | **G, helicopter:** rotor detail, hover/yaw into forward flight | Match the outgoing propeller's circular form where framing allows; open quickly to a sustained full-model shot with ground reference. Preserve a distinct five-second helicopter beat. | `RC Helicopter Research Trainer` |
+| 00:23–00:27 | **G, Bisonte:** ramp jump and suspension loading on landing | One low three-quarter view spans takeoff and landing; foreground and suspension communicate weight. Test a tiny rotational camera impulse at contact. If no clean jump fits, use the supported corner/suspension alternative. | `Bisonte MT8` |
 | 00:27–00:31 | **G, MONSTER CAR 2:** nitro corner exit and acceleration | Tires, steering and chassis movement; distinct nitro sound. A second car gets its own hero, not a background glimpse. | `MONSTER CAR 2` |
 | 00:31–00:38 | **G, storms and wind:** 31–34 s electrical-storm tower, branched lightning and distant rain curtains; 34–38 s airplane correcting in configured gusts/turbulence | Night/dusk silhouette and a restrained flash, then a separate readable wind-response shot with windsock/smoke cues. Reuse actual delayed thunder. Aircraft remain visible. | No new large title; actual weather/wind overlay only if it helps. |
 | 00:38–00:42 | **G, control:** synchronized stick overlay, moving surfaces and recovery | Keep the aircraft on screen; use the real active input profile. A brief native control guide/glyph row establishes device choices without a menu tour. | `TAKE CONTROL.` with small `USB RADIO · GAMEPAD · KEYBOARD` |
@@ -76,7 +80,7 @@ The current review found no production formation director or multiplayer route. 
 5. Reuse production articulation, propeller and smoke behavior where available. Smoke history, sound, gear and surface channels need explicit filming support; numerical flight replay does not supply a finished visual replay.
 6. Finish with four aircraft splitting into individually readable lanes. Test a six-aircraft delta only after the four-aircraft shot passes framing, clearance and render checks. Choose one formation version for the seven-second slot; do not extend the minute.
 
-**One-minute choreography:** diamond entry/climbing bank → fan-out. A six-ship delta or formation roll can replace the first action only if it remains readable within four uninterrupted seconds; these are alternatives, not additional beats. The official airshow manual is a provisional reference found through indexed text; its diagrams could not be retrieved during this investigation. Verify them before detailed choreography boards, using RC proportions and a fictional team identity. No unsupported wake interaction, midair collision or shared-player session is advertised.
+**One-minute choreography:** diamond entry/climbing bank → fan-out. A six-ship delta or formation roll can replace the first action only if it remains readable within four uninterrupted seconds; these are alternatives, not additional beats. The [RAF display description](https://www.raf.mod.uk/display-teams/red-arrows/displays/) supports the creative progression from precise formation to dynamic release. The Blue Angels manual remains provisional: indexed text was found, but its diagrams were not retrieved. Verify any detailed maneuver reference before boards, using RC proportions and a fictional team identity. No unsupported wake interaction, midair collision or shared-player session is advertised.
 
 **Fallback:** if the in-engine filming scene cannot render a clean simultaneous shot, stage the same current production models in Blender with existing tools and licensed resources. Keep the whole shot labeled `CINEMATIC SEQUENCE`; disclose its production method in the description. Do not quietly replace the requested formation with solo cuts. This fallback changes production method, not the simulator's feature claims.
 
@@ -139,7 +143,32 @@ Use [FIRST-LAUNCH](../FIRST-LAUNCH.md), [Workshop](../AIRCRAFT-WORKSHOP.md), [he
 
 - Reuse the [cinema pipeline](../../site/CINEMA.md), [eight-vehicle studio tooling](../media/README.md), native models, field, licensed fonts and bundled input glyphs. Existing studio clips are 24 fps/1280×800 and the tour is a small GIF: use them for the animatic, then recapture suitable master footage.
 - Use free downloadable tools: **OBS Studio** for real-time gameplay, **Godot Movie Maker** for repeatable offline staging, **Blender VSE** for the editable timeline/compositing, and **FFmpeg/ffprobe** for encoding and inspection. Reuse the project's checked FFmpeg distribution before downloading another. Record exact versions and hashes; change no engine pin for filming.
-- Download suitable licensed music and limited accent SFX instead of building an audio generator, editor, recorder or new aircraft assets. Existing game audio remains the vehicle sound source. [Research sources](../research/cinematic-trailer/2026-10-17.md#external-references) identify candidate libraries; no track is selected or cleared yet.
+- Download suitable licensed music and limited accent SFX instead of building an audio generator, editor, recorder or new aircraft assets. Existing game audio remains the vehicle sound source. The [five-track shortlist](../research/cinematic-trailer/2026-10-17.md#music-shortlist-and-edit-plan) prioritizes Vanguard and Uprising for audition; asset acquisition and final release checks are pending.
+
+### Programmed effects and camera treatment
+
+All entries are **planned**, not delivered. Use existing engine/compositor features first. Small adapters belong under `tools/trailer/`; they read presentation data and never change vehicle physics. The [research ledger R06–R14](../research/cinematic-trailer/2026-10-17.md#expanded-investigation-16-research-topics) provides the technical sources.
+
+| Priority / treatment | How to produce it | Slot and visual acceptance |
+| --- | --- | --- |
+| Core — engine-led reveal | Start the existing turbine audio before the aircraft enters frame; keyframe a restrained camera pan | 00–04 s: first vehicle and RC scale are clear before the slot ends. |
+| Core — motion/form match cuts | Match screen direction, bank angle or circular propeller/rotor/wheel shapes using source selection and frame-aligned cuts | Existing 12 s, 18 s or 23 s boundaries: choose at most two that actually match. No added slot or rapid insert chain. |
+| Core — low camera and controlled tracking | Reuse current viewpoints; where necessary use `Path3D`/`PathFollow3D` in the external filming scene and aim at detached recorded poses | Takeoff, helicopter and truck shots: entire vehicle remains readable; foreground reinforces scale. Check camera clearance and avoid wall/ground clipping. |
+| Core — storm silhouette and light continuity | Rehearse the actual storm event; expose for both aircraft silhouette and cloud/bolt detail, then use restrained editorial grading | 31–38 s: a single readable event, separate real wind response, real delayed thunder. Preserve the storm's implemented limits. |
+| Core — impact, silence and report | Automate music gain around the real contact; retain wreck sound; hold the original report with an optional gentle crop that retains every qualification | 42–50 s: no impact-obscuring flash, no animated invented money counter; the actual report is static and readable for 45–48 s. |
+| Core — simultaneous formation director | Place recorded visual actors on one shot clock, with authored offsets and distinct exit paths; keep smoke history and camera bounds explicit | 50–57 s: four-second uninterrupted wide formation, then fan-out; staged label remains readable. |
+| Optional — contact impulse | Apply a seeded, decaying rotational camera offset for roughly 0.2–0.4 s; tune visually in the pilot | Truck landing or main impact, not both by default. Ground contact and vehicle silhouette remain readable. This is camera motion, not simulated wind. |
+| Optional — glow/highlight streak | Use supported Godot glow or Blender's existing Glare node with a conservative threshold; compare before/after frames | Sunlit pass or storm highlight. No washed-out fuselage, enlarged lightning show or bloom over text. |
+| Optional — jet heat shimmer | Reuse a screen-reading shader technique in a masked background region of a staged insert | Only if the pilot preserves silhouette and transparency correctly; omit if it requires renderer migration. No added gameplay heat feature. |
+| Core — timed English graphics and music envelopes | Keyframe existing Blender tools, or use one reviewed video framework; encode/measure with FFmpeg | 3,600-frame timeline, title limits, three-second end card and preserved report hold. Account for transition overlap. |
+
+The project's Godot 4.7 Compatibility renderer supports useful glow and adjustments; its built-in depth-of-field blur, volumetric fog and CompositorEffects are unavailable. Obtain depth from lighting and composition. An optional Blender studio treatment must retain its presentation identity. Do not migrate the renderer or add a new weather system for filming.
+
+### Optional video skills
+
+The [tool comparison](../research/cinematic-trailer/2026-10-17.md#skills-and-production-tool-decision) identifies **HyperFrames** as the first new skill candidate for code-driven editing/titles, with **Remotion** as a React alternative subject to its license eligibility. Both assemble supplied footage. Baseline production can proceed with Blender and FFmpeg; use at most one additional framework if a short pilot demonstrates a benefit. Preserve this storyboard when evaluating templates, and pin exact versions before adoption.
+
+Runway was found as an available, unconnected plugin. Generative video is optional for previs or abstract graphics, with service-specific credits and watermark constraints. Actual vehicle, control, weather and damage demonstrations must come from the simulator. No skill installation, service connection, generated clip or new tool dependency is part of this planning delivery.
 
 ### Two capture lanes
 
@@ -153,17 +182,21 @@ The [flight logger](../FLIGHT-LOGGING.md) provides F10 recording, F11 markers, e
 
 1. Freeze the source build, asset/config identities, English locale, vehicle selection, environment and controls profile. Preserve player preferences by using an isolated filming profile. Keep physics/data and golden flights unchanged.
 2. Produce a short technical pilot covering actual gust response, an electrical-storm event, one impact with its report, and a four-actor formation test. Check image quality, clock, lightning/thunder timing, sound and valuation before filling the shot list.
-3. Build an exactly **60-second animatic** from existing references and temporary timing cards. Lock the helicopter's five seconds, both cars' four-second slots, the seven-second storm/wind block, three-second report hold and seven-second formation before polishing transitions. Replace every placeholder before final delivery.
+3. Audition Vanguard and Uprising against an exactly **60-second animatic** from existing references and temporary timing cards; test Five Armies if neither fits. Lock the helicopter's five seconds, both cars' four-second slots, the seven-second storm/wind block, three-second report hold and seven-second formation before polishing transitions. Replace every placeholder before final delivery.
 4. Rehearse and capture 3–5 takes of each hero action, with roughly two seconds of edit handles. Record clean and useful-HUD views; retain the actual UI capture for claims.
 5. Build the formation sequence and camera paths. Capture smoke warm-up, scene reset and clean starts deterministically; never assume replay includes presentation effects.
-6. Assemble picture in Blender VSE, then sound, restrained grading, English titles and subtitles for any added speech. Keep source shots and their edits traceable.
+6. Assemble picture in Blender VSE, or the single code-video alternative selected in the pilot, then sound, restrained grading, English titles and subtitles for any added speech. Keep source shots and their edits traceable.
 7. Review the whole film at speed, muted, on headphones and at phone size; inspect crash/formation sequences frame by frame. Export and decode the complete deliverable before marking it ready.
 
 Slow motion uses actual higher-rate capture or explicit frame retiming; no AI-generated collision/interpolation frames. Use speed ramps only around editorial transitions, not to misrepresent aircraft capability. A trailer cadence is not a runtime performance benchmark.
 
 ## 8. Sound and graphic design
 
-The cue should have a spare intro, a driving middle, a usable stop and a final lift. Audition three freely downloadable tracks around 110–130 BPM; tempo is an editorial preference, not a requirement. Choose a commercial/promotional license that covers the final video, retain attribution and any Content ID certificate, and avoid competing vocals.
+The cue should have a spare intro, a driving middle, a usable stop and a final lift. **Audition [Vanguard — Scott Buckley](https://www.scottbuckley.com.au/library/vanguard/) first**, with [Uprising](https://www.scottbuckley.com.au/library/uprising/) as backup. Both creator pages offer full-mix MP3s under CC BY 4.0 with attribution. Five Armies, Aphelion and Simulacra complete the [researched shortlist](../research/cinematic-trailer/2026-10-17.md#music-shortlist-and-edit-plan). These are provisional choices based on descriptions; listening, final source offsets and musical joins remain pending. No fixed BPM is required.
+
+Music arc: **0–4 s anticipation → 4–31 s rising drive with distinct engine voices → 31–42 s storm/control tension → 42–45 s impact drop → 45–48 s spare report bed → 48–50 s restart pickup → 50–57 s formation climax → 57–60 s resolution.** Cut at musical phrases and preserve the picture timing; do not compress a whole track to one minute. The composer identifies Uprising's heroic section at source time 2:07, which is an audition lead, not a committed edit point.
+
+Retain the chosen track's download identity, source page, license and required credit, and note edits. Include attribution in the release description and handoff credits; use a small credit inside the existing end card if the destination has no description. Scott Buckley's [claim guide](https://www.scottbuckley.com.au/library/copyright-claims-release/) explains attribution checks and possible third-party claims. No extra credits tail, paid stems or Content ID exemption is assumed.
 
 Record clean turbine, glow two-stroke, four-stroke, electric motor, helicopter rotor, tires, impact, wind, thunder and field ambience. Save game audio and music separately. Use a quiet environmental bed to connect cuts; reserve large accents for takeoff, the main impact and formation release. Let actual distance-delayed thunder bridge the storm and wind shots; retain enough source handles to capture it. Do not turn every prop aircraft into a full-size fighter jet.
 
@@ -177,7 +210,7 @@ English editorial titles: `TAKE CONTROL.` · `EVERY MISTAKE HAS A COST.` · `EVE
 | --- | --- |
 | Main English trailer | Exactly 60 s / 3,600 frames at 60 fps; 16:9; H.264/AAC stereo MP4; 1080p60 delivery, optional native 4K60 master after the pilot |
 | Optional English derivatives, after the main film | 30-second teaser or 15–20-second 1080×1920 vertical cut; no extra shooting requirement. Reframe individually without clipping wings or report qualifications. |
-| Editable project | Blender timeline, used source clips, title assets, audio stems and render settings |
+| Editable project | Blender timeline, or the single selected code-video composition, plus used source clips, title assets, separate game/music audio and render settings |
 | Poster | A genuine final-video frame; no fictional vehicle or unfilmed screenshot |
 | Evidence / credits | Shot manifest, build and input identities, price-report references, asset licenses and source links |
 
@@ -191,7 +224,7 @@ Estimates are planning ranges for focused production work, excluding unattended 
 
 | ID | Work | Proof / status | Effort |
 | --- | --- | --- | --- |
-| TRA-00 | Inspect source and all player-facing feature families; incorporate 60-second/English/crash-price brief and mandatory helicopter/cars/storm/wind beats | Delivered as documentation only; [research snapshot](../research/cinematic-trailer/2026-10-17.md) | Completed planning |
+| TRA-00 | Inspect source and all player-facing feature families; incorporate the one-minute brief; complete 16 expanded web investigations, parallel music shortlist and effect/skill comparison | Delivered as documentation only; [research snapshot](../research/cinematic-trailer/2026-10-17.md) | Completed planning/research |
 | TRA-01 | Freeze filming build; audit all 11 configurations and one usable priced incident; inventory tools/licenses | Pending: selected build, shot coverage matrix, incident/report and exact tool versions | 2–4 h |
 | TRA-02 | Technical pilot: real-time capture, gusts, storm event, offline timing/audio and four-actor shot | Pending: short pilot, frame/audio inspection, actual weather behavior and supported crash-report path | 4–8 h |
 | TRA-03 | Animatic, camera boards, music audition and final capture list | Pending: English 60-second timing cut with every distinct vehicle and all mandatory beats allocated | 2–4 h |
