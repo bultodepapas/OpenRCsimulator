@@ -83,7 +83,8 @@ func _run() -> void:
 		arguments = args, aircraft = scene.aircraft_id, fps = FPS, mix_rate = AudioServer.get_mix_rate(),
 		driver = AudioServer.get_driver_name(), frames = frame, events = events, focus_resumes = focus_resumes,
 		columns = ["t", "rpm", "throttle", "distance_m", "doppler", "motor_gain", "motor_pitch", "prop_gain", "prop_pitch",
-			"motor_volume_db", "motor_pitch_scale", "listener_x", "listener_y", "listener_z", "paused", "crash", "exhaust_angle_deg"],
+			"motor_volume_db", "motor_pitch_scale", "listener_x", "listener_y", "listener_z", "paused", "crash", "exhaust_angle_deg",
+			"delay_s"],
 		rows = rows,
 		audio_sources_sha256 = {
 			adapter = FileAccess.get_sha256("res://audio/flight_audio.gd"),
@@ -124,7 +125,8 @@ func _record(t: float) -> void:
 		float(targets.get("motor_gain", 0.0)), float(targets.get("motor_pitch", 0.0)),
 		float(targets.get("prop_gain", 0.0)), float(targets.get("prop_pitch", 0.0)),
 		mix.voices[0].volume_db, mix.voices[0].pitch_scale, listener.x, listener.y, listener.z,
-		session.sim.paused, not session.crash.is_empty(), float(targets.get("exhaust_angle_deg", -1.0))])
+		session.sim.paused, not session.crash.is_empty(), float(targets.get("exhaust_angle_deg", -1.0)),
+		float(mix.last_delay_s)])
 
 
 func _stage_at(timeline: Array, t: float) -> String:
