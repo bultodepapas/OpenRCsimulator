@@ -39,7 +39,7 @@ Object.assign(websiteCopy, {
   "partnersNote": "Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models."
 });
 
-Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br>New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});
+Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br> New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});
 
 const themeButton = document.querySelector('.theme-toggle');
 let theme = 'day';
