@@ -39,6 +39,8 @@ Object.assign(websiteCopy, {
   "partnersNote": "Permissions have specific scopes. They do not imply financial sponsorship or validation of our physical models."
 });
 
+Object.assign(websiteCopy, {alongside:'MANUFACTURERS ALONG FOR THE FLIGHT', alliesCopy:'Real products.<br>New possibilities in the simulator.', alliesLink:'Meet our partners ↗'});
+
 const themeButton = document.querySelector('.theme-toggle');
 let theme = 'day';
 try {theme = localStorage.getItem('openrc-theme') === 'night' ? 'night' : 'day';} catch {}
@@ -48,7 +50,7 @@ function applyTheme() {
   const night = theme === 'night';
   themeButton.firstElementChild.textContent = night ? '☀' : '☾';
   themeButton.setAttribute('aria-label', english ? (night ? 'Switch to day theme' : 'Switch to night theme') : (night ? 'Activar modo día' : 'Activar modo noche'));
-  document.querySelectorAll('img[src*="brands/"]:not(.partner-logo img)').forEach(img => {
+  document.querySelectorAll('img[src*="brands/"]:not(.partner-logo img):not(.allies-logos img)').forEach(img => {
     const source = img.getAttribute('src');
     const next = source.replace(night ? 'Black' : 'White', night ? 'White' : 'Black');
     if(source !== next) img.src = next;
