@@ -115,6 +115,8 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 		candidate.free()
 		return {ok = false, error = "soundscape=off unexpectedly created automatic FlightAudio"}
 
+	# Judge this pair by its own checks; earlier aircraft's failures stay in the run status, not in this result.
+	var failures_before_pair: int = _failures.size()
 	var seed_probe := RandomNumberGenerator.new()
 	seed_probe.seed = SEED
 	var seeded_audio_rng_state: int = seed_probe.state
@@ -149,6 +151,8 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 	elif not configure_read_only:
 		error_text = "FlightAudio.configure mutated the candidate session"
 	var previous_rng_state: int = int(candidate_sim.get("modes")[1])
+	# The tape drives the four primary controls; extra channels (gear, flaps, smoke) keep their accepted start values.
+	var start_inputs: PackedFloat64Array = (baseline_sim.get("inputs") as PackedFloat64Array).duplicate()
 	var highest_audio_update_usec := 0
 
 	for accepted_tick: int in TICKS:
@@ -178,7 +182,7 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 				error_text = "resume boundary differs at accepted tick %d" % accepted_tick
 				break
 
-		var accepted_input: PackedFloat64Array = _input_at(accepted_tick)
+		var accepted_input: PackedFloat64Array = _input_at(accepted_tick, start_inputs)
 		baseline_sim.set("inputs", accepted_input.duplicate())
 		candidate_sim.set("inputs", accepted_input.duplicate())
 		baseline_sim.call("step")
@@ -242,7 +246,7 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 		"aircraft_id": aircraft_id,
 		"propulsion_kind": kind,
 		"electric_demo": electric_demo,
-		"ok": error_text.is_empty() and final_baseline == final_candidate and compared_ticks == TICKS and restart_checkpoint_equal and restart_audio_read_only and configure_read_only and _failures.is_empty(),
+		"ok": error_text.is_empty() and final_baseline == final_candidate and compared_ticks == TICKS and restart_checkpoint_equal and restart_audio_read_only and configure_read_only and _failures.size() == failures_before_pair,
 		"accepted_ticks_compared": compared_ticks,
 		"simulated_seconds_per_run": float(TICKS) / 240.0,
 		"paired_simulated_seconds_total": 2.0 * float(TICKS) / 240.0,
@@ -267,11 +271,16 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 	return result
 
 
-func _input_at(tick: int) -> PackedFloat64Array:
+func _input_at(tick: int, layout: PackedFloat64Array) -> PackedFloat64Array:
+	var primary: Array = TAPE[-1].input
 	for segment: Dictionary in TAPE:
 		if tick < int(segment.end):
-			return PackedFloat64Array(segment.input)
-	return PackedFloat64Array(TAPE[-1].input)
+			primary = segment.input
+			break
+	var accepted: PackedFloat64Array = layout.duplicate()
+	for channel: int in mini(primary.size(), accepted.size()):
+		accepted[channel] = float(primary[channel])
+	return accepted
 
 
 func _render_accepted_pose(main: Node) -> void:
