@@ -26,6 +26,7 @@ func _run() -> void:
 		print("%d checks, %d failed" % [_checks, _failures])
 		quit(1)
 		return
+	_test_propagation_runtime(field)
 
 	# A Soundscape must use its own seeded generator. Preserve the global RNG sequence
 	# across configure and a long run of scheduler stimuli through update_sound().
@@ -246,7 +247,109 @@ func _run() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
+## AUD-11: a linear pass has an exact retarded time; compare with the closed-form root.
+func _test_propagation_model() -> void:
+	var c: float = 343.0
+	var times := PackedFloat64Array()
+	var positions := PackedVector3Array()
+	var steady := PackedVector3Array()
+	for i: int in 361:
+		var t: float = float(i) / 60.0
+		times.append(t)
+		positions.append(Vector3(60.0 * t - 200.0, 40.0, 0.0))
+		steady.append(Vector3(343.0, 0.0, 0.0))
+	var still: Dictionary = Model.retarded_emission(times, steady, Vector3.ZERO, 6.0, c)
+	_check("a source 343 m away is heard 1.000 s late", absf(float(still.delay) - 1.0) < 1e-9 and not still.truncated,
+		"delay=%.12f" % float(still.delay))
+	# c^2 (6 - u)^2 = (60u - 200)^2 + 40^2, root u < 6
+	var a: float = c * c - 3600.0
+	var b: float = -12.0 * c * c + 24000.0
+	var k: float = 36.0 * c * c - 40000.0 - 1600.0
+	var expected_emission: float = (-b - sqrt(b * b - 4.0 * a * k)) / (2.0 * a)
+	var moving: Dictionary = Model.retarded_emission(times, positions, Vector3.ZERO, 6.0, c)
+	var solved: float = lerpf(times[int(moving.index)], times[int(moving.index) + 1], float(moving.alpha))
+	# Presentation Vector3 is single precision (~1e-5 m here): 1 us is about 0.3 mm of sound travel.
+	_check("moving-source retarded time matches the closed-form root", absf(solved - expected_emission) < 1e-6
+		and absf(float(moving.delay) - (6.0 - expected_emission)) < 1e-6,
+		"solved=%.12f expected=%.12f" % [solved, expected_emission])
+	var short: Dictionary = Model.retarded_emission(times.slice(350), steady.slice(350), Vector3.ZERO, 6.0, c)
+	_check("a history shorter than the travel time returns its oldest sample", short.truncated and int(short.index) == 0)
+	var empty: Dictionary = Model.retarded_emission(PackedFloat64Array(), PackedVector3Array(), Vector3.ZERO, 0.0, c)
+	_check("an empty history has no emission sample", int(empty.index) == -1)
+	var here: Dictionary = Model.retarded_emission(PackedFloat64Array([1.0]), PackedVector3Array([Vector3.ZERO]), Vector3.ZERO, 1.0, c)
+	_check("a source at the listener has no delay", int(here.index) == 0 and float(here.delay) == 0.0)
+
+
+func _test_propagation_runtime(field: Dictionary) -> void:
+	var rig: Variant = SoundscapeScript.new()
+	root.add_child(rig)
+	rig.configure(field, "glow_prop", 93300)
+	# A level pass 40 m overhead at 60 m/s: pitch crosses neutral when the overhead emission arrives, 40 / 343 s late.
+	var crossings: Array[float] = []
+	for delayed: bool in [true, false]:
+		rig.reset_observer()
+		rig.propagation_delay = delayed
+		var crossing: float = -1.0
+		for i: int in 421:
+			var t: float = float(i) / 60.0
+			var pass_snapshot: Dictionary = _flight_snapshot()
+			pass_snapshot.time = t
+			pass_snapshot.source = Vector3(60.0 * t - 200.0, 40.0, 0.0)
+			pass_snapshot.source_velocity = Vector3(60.0, 0.0, 0.0)
+			rig.update_sound(pass_snapshot, 1.0 / 60.0)
+			if crossing < 0.0 and float(rig.last_doppler) < 1.0:
+				crossing = t
+		crossings.append(crossing)
+	var visual_pass: float = 200.0 / 60.0
+	_check("pitch drop lags the visual pass by h/c within one frame",
+		absf(crossings[0] - (visual_pass + 40.0 / 343.0)) <= 1.0 / 60.0,
+		"crossing=%.4f expected=%.4f" % [crossings[0], visual_pass + 40.0 / 343.0])
+	_check("--audio-delay=off drops pitch at the visual pass",
+		absf(crossings[1] - visual_pass) <= 1.0 / 60.0 and float(rig.last_delay_s) == 0.0,
+		"crossing=%.4f expected=%.4f" % [crossings[1], visual_pass])
+	# A throttle step 343 m away is heard one second later; listener-side values stay current.
+	rig.propagation_delay = true
+	rig.reset_observer()
+	var pitch_before: float = -1.0
+	var pitch_after: float = -1.0
+	var heard_wind: float = -1.0
+	for i: int in 241:
+		var t: float = float(i) / 60.0
+		var far: Dictionary = _flight_snapshot()
+		far.time = t
+		far.source = Vector3(343.0, 0.0, 0.0)
+		far.source_velocity = Vector3.ZERO
+		far.rpm = 3000.0 if t < 2.0 else 9000.0
+		far.wind_speed = 3.0 if t < 2.0 else 9.0
+		var heard: Dictionary = rig.heard_snapshot(far)
+		if i == 174: # t = 2.9 s
+			pitch_before = Model.targets(heard).motor_pitch
+			heard_wind = float(heard.wind_speed)
+		if i == 186: # t = 3.1 s
+			pitch_after = Model.targets(heard).motor_pitch
+	_check("an rpm step is heard after the travel time, not before",
+		absf(pitch_before - 0.5) < 1e-9 and absf(pitch_after - 1.5) < 1e-9,
+		"before=%.4f after=%.4f" % [pitch_before, pitch_after])
+	_check("listener-side snapshot values are not delayed", heard_wind == 9.0, "wind=%.1f" % heard_wind)
+	var rewind: Dictionary = _flight_snapshot()
+	rewind.time = 0.5
+	rewind.source = Vector3(343.0, 0.0, 0.0)
+	rig.heard_snapshot(rewind)
+	_check("a clock rewind restarts the pose history", rig._history.size() == 1 and float(rig.last_delay_s) == 0.0,
+		"samples=%d delay=%.3f" % [rig._history.size(), float(rig.last_delay_s)])
+	for i: int in 900:
+		var long_run: Dictionary = _flight_snapshot()
+		long_run.time = 1.0 + float(i) / 60.0
+		rig.heard_snapshot(long_run)
+	_check("the pose history stays bounded by its time window",
+		rig._history.size() <= ceili(SoundscapeScript.HISTORY_SECONDS * 60.0) + 2, "samples=%d" % rig._history.size())
+	var detached: Dictionary = _flight_snapshot()
+	_check("a snapshot without the accepted clock plays undelayed", rig.heard_snapshot(detached) == detached)
+	rig.free()
+
+
 func _test_model_contracts() -> void:
+	_test_propagation_model()
 	var source: Vector3 = Vector3(100.0, 0.0, 0.0)
 	var listener: Vector3 = Vector3.ZERO
 	var approaching: float = Model.doppler(source, listener, Vector3(-20.0, 0.0, 0.0), Vector3.ZERO)

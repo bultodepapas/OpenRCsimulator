@@ -9,6 +9,36 @@ static func doppler(source: Vector3, listener: Vector3, source_velocity: Vector3
 	return clampf((c + listener_velocity.dot(ray)) / maxf(c + source_velocity.dot(ray), c * 0.5), 0.65, 1.5)
 
 
+## AUD-11: emission point heard now. Solves now - t_e = |x(t_e) - listener| / c over a time-ordered pose history,
+## linear between samples. Returns {index, alpha, delay}: emission lies alpha of the way from sample index to
+## index + 1. A history too short for the delay returns its oldest sample with truncated = true.
+static func retarded_emission(times: PackedFloat64Array, positions: PackedVector3Array, listener: Vector3,
+		now: float, sound_speed: float = 343.0) -> Dictionary:
+	var count: int = mini(times.size(), positions.size())
+	if count == 0:
+		return {index = -1, alpha = 0.0, delay = 0.0, truncated = true}
+	var c: float = clampf(sound_speed, 300.0, 380.0)
+	# g = elapsed - travel time; negative at the newest sample, increasing into the past for any subsonic source.
+	var newer_g: float = (now - times[count - 1]) - positions[count - 1].distance_to(listener) / c
+	if newer_g >= 0.0:
+		return {index = count - 1, alpha = 0.0, delay = now - times[count - 1], truncated = false}
+	for k: int in range(count - 2, -1, -1):
+		var g: float = (now - times[k]) - positions[k].distance_to(listener) / c
+		if g >= 0.0:
+			var low: float = 0.0 # g >= 0 at alpha 0 (older sample), g < 0 at alpha 1
+			var high: float = 1.0
+			for iteration: int in 40:
+				var mid: float = 0.5 * (low + high)
+				var t_mid: float = lerpf(times[k], times[k + 1], mid)
+				if (now - t_mid) - positions[k].lerp(positions[k + 1], mid).distance_to(listener) / c >= 0.0:
+					low = mid
+				else:
+					high = mid
+			var alpha: float = 0.5 * (low + high)
+			return {index = k, alpha = alpha, delay = now - lerpf(times[k], times[k + 1], alpha), truncated = false}
+	return {index = 0, alpha = 0.0, delay = now - times[0], truncated = true}
+
+
 static func targets(snapshot: Dictionary) -> Dictionary:
 	var rpm: float = maxf(float(snapshot.get("rpm", 0.0)), 0.0)
 	var ratio: float = clampf(rpm / maxf(float(snapshot.get("max_rpm", 12000.0)), 1.0), 0.0, 1.4)

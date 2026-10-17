@@ -27,6 +27,8 @@ func configure(scene: Node3D) -> void:
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--audio-seed="):
 			audio_seed = int(argument.trim_prefix("--audio-seed="))
+		elif argument == "--audio-delay=off": # AUD-11 (D6): comparison and tests
+			soundscape.propagation_delay = false
 	var propulsion: Dictionary = flight.session.aircraft.model.propulsion
 	var glow_family: String = _glow_family(propulsion)
 	soundscape.configure(flight.field, str(propulsion.get("kind", "glow_prop")), audio_seed, glow_family)
@@ -103,7 +105,7 @@ func snapshot() -> Dictionary:
 		temperature_c = float(atmosphere.get("temperature_k", 288.15)) - 273.15,
 		wind_speed = wind.length(), wind_direction = wind,
 		source = flight._airplane.root.global_position, listener = flight._camera.global_position, source_velocity = velocity,
-		paused = session.sim.paused, sun_elevation = elevation,
+		paused = session.sim.paused, sun_elevation = elevation, time = session.sim.time(),
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 		glow = glow_state,
 	}
