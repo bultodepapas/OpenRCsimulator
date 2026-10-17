@@ -143,3 +143,10 @@ and `SHA256SUMS` to v0.1.2, and identifies the remaining experimental-aircraft
 limits in both languages. Public browser checks at 1280×900 and 390×844 in
 English and Spanish found no horizontal overflow, console warnings or errors.
 A cache-refresh request returned HTTP 200 with the published release links.
+
+
+## WEB-06 — Manufacturer acknowledgments, 2026-10-17
+
+The README and partner section credit Savox, SonicModell and Hitec within their product-representation permission scopes. Official SonicModell and Hitec logos are retained unchanged; [brand provenance and permission scope](BRANDS.md) remain authoritative. The website uses three responsive columns, a single-column mobile layout, Spanish/English copy and both themes. Integration remains planned/pending and no physical validation is claimed.
+
+Verification: JavaScript syntax checks passed. Browser checks at 1280×900 and 390×900, both languages × both themes, found three decoded logos, no missing translations and no horizontal overflow. Desktop/day and mobile/night captures were visually reviewed. Console: zero errors or warnings. Captures are local under `output/playwright/partners-*`.
