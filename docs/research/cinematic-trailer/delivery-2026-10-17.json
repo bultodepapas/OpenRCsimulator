@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-17",
+  "track": "TRA-01..07",
+  "status": "local film delivered; listening and asset release gates open",
+  "export_directory": "C:/DEVELOPMENT/OpenRCsimulator-exports/trailer-2026-10-17",
+  "film": "OpenRC-Every-Input-Matters-60s-1080p60.mp4",
+  "bytes": 250844422,
+  "sha256": "66e32950c082cf33a6c430bca91af67c00fbc28725c638c21fe6a45c470b2d19",
+  "duration_s": 60,
+  "fps": 60,
+  "frames": 3600,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "audio": {
+    "codec": "AAC",
+    "sample_rate": 48000,
+    "channels": 2,
+    "integrated_lufs": -13.96,
+    "true_peak_dbtp": -1.48,
+    "loudness_range_lu": 4.3,
+    "listening_review": false
+  },
+  "source_identity_scope": "No application/physics changes by the trailer track. Concurrent work changed source during capture. Trees identify handoff only, not one frozen revision for every take; not an exact-replay qualification.",
+  "handoff_head": "c15e0b7162d6a5f9280fa94ffb70b385a1278457",
+  "handoff_trees": {
+    "app": "6299d43140cb98187ba91b4f853173cfb30eae21",
+    "assets": "b7ea3efc620ebe1c525ae518ed99d7e070927c1a",
+    "research": "683789408e47231835a0e8d2ae99711a5c00d11d"
+  },
+  "shots": [
+    {
+      "id": "jet-pass",
+      "frames": 240,
+      "source": "sources/jet-pass.avi"
+    },
+    {
+      "id": "stik-bank",
+      "frames": 240,
+      "source": "sources/stik-bank.avi"
+    },
+    {
+      "id": "extra-roll",
+      "frames": 240,
+      "source": "sources/extra-roll.avi"
+    },
+    {
+      "id": "mustang-pass",
+      "frames": 180,
+      "source": "sources/mustang-pass.avi"
+    },
+    {
+      "id": "timber-pass",
+      "frames": 180,
+      "source": "sources/timber-pass.avi"
+    },
+    {
+      "id": "helicopter",
+      "frames": 300,
+      "source": "sources/helicopter.avi"
+    },
+    {
+      "id": "bisonte",
+      "frames": 240,
+      "source": "sources/bisonte.avi"
+    },
+    {
+      "id": "monster-car-2",
+      "frames": 240,
+      "source": "sources/monster-car-2.avi"
+    },
+    {
+      "id": "storm",
+      "frames": 180,
+      "source": "sources/storm.avi"
+    },
+    {
+      "id": "wind",
+      "frames": 240,
+      "source": "sources/wind.avi"
+    },
+    {
+      "id": "controls",
+      "frames": 240,
+      "source": "sources/controls.avi"
+    },
+    {
+      "id": "crash-approach",
+      "frames": 87,
+      "source": "sources/stik-crash.avi"
+    },
+    {
+      "id": "crash-aftermath",
+      "frames": 63,
+      "source": "sources/stik-crash.avi"
+    },
+    {
+      "id": "crash-report",
+      "frames": 210,
+      "source": "sources/crash-report-held.mkv"
+    },
+    {
+      "id": "restart",
+      "frames": 120,
+      "source": "sources/stik-crash.avi"
+    },
+    {
+      "id": "formation",
+      "frames": 420,
+      "source": "sources/formation-lossless.mkv"
+    },
+    {
+      "id": "end-card",
+      "frames": 180,
+      "source": "end-card.png"
+    }
+  ],
+  "formation": "Four authored render actors, continuously labeled; no multiplayer claim.",
+  "remaining_release_gates": [
+    "Listening review of joins and final balance",
+    "Full-motion small-screen review",
+    "Resolve existing Turbo Lumber internal-evaluation/redistribution notice"
+  ],
+  "published": false
+}

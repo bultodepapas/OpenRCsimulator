@@ -46,7 +46,7 @@ def package(out, work, ffmpeg):
     sheet.save(out / 'contact-sheet.jpg', quality=93)
     identities = {'repository':str(root), 'head_at_handoff':run('git', '-C', root, 'rev-parse', 'HEAD'),
                   'trees':{}, 'source_files':{}, 'editor_sha256':{},
-                  'scope':'No application/physics changes. Live working-tree capture; tree identities retained, not an exact-replay qualification.'}
+                  'scope':'No application/physics changes by the trailer track. Concurrent work changed source during capture. Trees identify handoff only, not one frozen revision for every take; not an exact-replay qualification.'}
     for path in ['app', 'assets', 'research']:
         identities['trees'][path] = run('git', '-C', root, 'rev-parse', f'HEAD:{path}')
     for path in sorted((out / 'sources').glob('*')):

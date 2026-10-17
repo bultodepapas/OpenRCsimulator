@@ -52,6 +52,13 @@ the upper-left corner by the current UI. It never removes report qualifications 
 The control/report shots keep their native UI. The disclosed formation uses a crossfaded engine
 bed from the captured Stik. Music remains separate and replaceable.
 
+Revision 2 opens with the full formation and uses manifest-level constant `music_gain` / `game_gain`
+settings. No music reductions depend on obsolete scene timestamps. The music renderer
+`audio_pipeline/revise_music.py` analyzes Uprising and produces a continuous 60-second cue with
+a mild tempo adjustment, startup de-click and final one-beat fade. Its measured environment uses
+NumPy **2.4.6** and Matplotlib **3.11.1**. Preserve `analysis.json` and the cue hash: onset proximity
+and a fitted pulse do not establish subjective musical phrasing or a listening review.
+
 Output checks cover resolution, 60 fps, 3,600 frames, duration, full decode and decoded AAC true peak.
 `render-manifest.json` retains source/output hashes and audio measurements. These checks do not
 replace listening review, prove physical realism, or establish exact replay equivalence.
