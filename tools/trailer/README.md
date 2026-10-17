@@ -74,6 +74,14 @@ twilight insert remains at 22–25 s and bypasses the generic grade to preserve 
 The current [revision evidence](../../docs/research/cinematic-trailer/revision-3-2026-10-17.md)
 records the accepted takes, measurement limits and output identity.
 
+Revision 4 replaces only the 34–38 s MONSTER CAR 2 insert with a real ramp jump.
+`capture_car_jump.gd` uses the production ground activity, supported `track_start` spawn and ordinary
+accelerator input, with a side-quarter tracking camera. The accepted source has a measured +3 frame
+offset between saved previews and AVI frames; its four surplus AVI frames are not all startup frames.
+Use the retained frame-match evidence and timeline trim, not the original estimated offset.
+The [revision-4 evidence](../../docs/research/cinematic-trailer/revision-4-2026-10-17.md) records the
+launch, airborne interval, native landing and alignment to the unchanged score.
+
 Output checks cover resolution, 60 fps, 3,600 frames, duration, full decode and decoded AAC true peak.
 `render-manifest.json` retains source/output hashes and audio measurements. These checks do not
 replace listening review, prove physical realism, or establish exact replay equivalence.

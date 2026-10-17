@@ -1,0 +1,153 @@
+{
+  "date": "2026-10-17",
+  "revision": 3,
+  "export_directory": "C:\\DEVELOPMENT\\OpenRCsimulator-exports\\trailer-2026-10-17-v3",
+  "film": "OpenRC-Every-Input-Matters-60s-1080p60.mp4",
+  "sha256": "aa11175b0e9dc24b44d88e0ccb0852ba94fd8392e2aa2d1ecc5794b3c689dc65",
+  "bytes": 250799473,
+  "duration_s": 60,
+  "fps": 60,
+  "frames": 3600,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "opening": "Five-second cinematic formation using source seconds 2-7",
+  "extra": {
+    "timeline_seconds": [
+      13,
+      19
+    ],
+    "normal_speed": true,
+    "roll_crossings_deg": {
+      "360": {
+        "frame": 187,
+        "capture_time_s": 3.11666666666667
+      },
+      "720": {
+        "frame": 342,
+        "capture_time_s": 5.7
+      }
+    },
+    "final_unwrapped_roll_deg": 777.923304850624,
+    "minimum_altitude_m": 145.618591381397,
+    "final_altitude_m": 179.0980094503,
+    "frame_mesh_bounds_fully_inside_viewport": 360,
+    "source_sha256": "144bcd5f7b94140b8df0a88e779ff7a591697375758bc80f569fc9ff34f90915"
+  },
+  "lumber": {
+    "timeline_seconds": [
+      22,
+      25
+    ],
+    "world_conditions": {
+      "preset": "",
+      "time_of_day": true,
+      "time_scale": 0.0,
+      "when": {
+        "day": 21,
+        "hour": 21.85,
+        "latitude_deg": 40.0,
+        "longitude_deg": -3.7,
+        "month": 6,
+        "utc_offset_h": 2.0,
+        "year": 2026
+      }
+    },
+    "field_world_lighting": true,
+    "native_color_preserved": true,
+    "source_sha256": "d660c8311e8708cc3bc5031f1a93c82aa53e627baa4631442160e6f654003f6a"
+  },
+  "music": {
+    "continuous": true,
+    "constant_gain": 0.9,
+    "game_gain": 0.65,
+    "sha256": "131e7d2d6d1fa62f12dafae6aee5a3e998d24daee42b88de4b0ffc89394c3d9c",
+    "nominal_tempo_bpm": 90,
+    "no_silent_half_second_windows": true,
+    "minimum_half_second_rms_dbfs_at_mix_gain": -20.64,
+    "ending_fade_s": 0.6666666666666666,
+    "direct_listening_available": false
+  },
+  "decoded_aac": {
+    "input_i": "-14.02",
+    "input_tp": "-3.22",
+    "input_lra": "1.90"
+  },
+  "shots": [
+    {
+      "id": "formation",
+      "frames": 300
+    },
+    {
+      "id": "jet-pass",
+      "frames": 240
+    },
+    {
+      "id": "stik-bank",
+      "frames": 240
+    },
+    {
+      "id": "extra-roll",
+      "frames": 360
+    },
+    {
+      "id": "mustang-pass",
+      "frames": 180
+    },
+    {
+      "id": "timber-pass",
+      "frames": 180
+    },
+    {
+      "id": "helicopter",
+      "frames": 300
+    },
+    {
+      "id": "bisonte",
+      "frames": 240
+    },
+    {
+      "id": "monster-car-2",
+      "frames": 240
+    },
+    {
+      "id": "storm",
+      "frames": 180
+    },
+    {
+      "id": "wind",
+      "frames": 240
+    },
+    {
+      "id": "controls",
+      "frames": 240
+    },
+    {
+      "id": "crash-approach",
+      "frames": 87
+    },
+    {
+      "id": "crash-aftermath",
+      "frames": 63
+    },
+    {
+      "id": "crash-report",
+      "frames": 210
+    },
+    {
+      "id": "restart",
+      "frames": 120
+    },
+    {
+      "id": "end-card",
+      "frames": 180
+    }
+  ],
+  "published": false,
+  "review_limits": [
+    "Signal analysis and sampled visuals; direct listening unavailable",
+    "Development footage; not physical-validation or exact ORFL replay evidence",
+    "Existing Turbo Lumber asset release notice remains unresolved"
+  ]
+}
