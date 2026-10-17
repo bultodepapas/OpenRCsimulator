@@ -20,6 +20,8 @@ var camera: Camera3D
 var scene: Dictionary
 var actors: Array[Dictionary] = []
 var minimum_separation := INF
+var minimum_screen_margin := INF
+var maximum_model_radius := 0.0
 var frame_records: Array[Dictionary] = []
 
 func _initialize() -> void:
@@ -45,7 +47,7 @@ func _run() -> void:
 		push_error(str(loaded.errors))
 		quit(1)
 		return
-	var conditions: Dictionary = Conditions.resolve(PackedStringArray(["--time_of_day=golden_hour"]))
+	var conditions: Dictionary = Conditions.resolve(PackedStringArray(["--time_of_day=afternoon"]))
 	scene = World.build(stage, loaded.field, Callable(), conditions)
 	camera = Camera3D.new()
 	camera.near = 0.1
@@ -73,7 +75,9 @@ func _run() -> void:
 		var blur: Node3D = PropBlur.attach(model, null, stage)
 		if blur != null:
 			blur.set_process(false)
-		actors.append({model = model, smoke = smoke, blur = blur})
+		var bounds: AABB = _bounds(model.root, Transform3D.IDENTITY)
+		maximum_model_radius = maxf(maximum_model_radius, bounds.size.length() * 0.5)
+		actors.append({model = model, smoke = smoke, blur = blur, bounds = bounds})
 	await process_frame
 	# Warm up real smoke history on the same presentation clock.
 	for f: int in range(-120, 0):
@@ -97,6 +101,8 @@ func _run() -> void:
 		width = 1920, height = 1080, classification = "cinematic choreography; not gameplay",
 		model = "jensen-das-ugly-stik-60", actors = 4,
 		minimum_center_separation_m = minimum_separation,
+		maximum_model_radius_m = maximum_model_radius,
+		minimum_screen_margin_px = minimum_screen_margin,
 		engine = Engine.get_version_info().string,
 		poses = frame_records
 	}
@@ -130,16 +136,34 @@ func _pose(t: float) -> void:
 		positions.append(p)
 		record.positions.append([p.x, p.y, p.z])
 	# Track the centroid with a gentle outward move for the break.
-	var distance: float = 23.5 + 7.0 * ease
-	var eye: Vector3 = center + Vector3(-0.47 * distance, 0.26 * distance, -0.88 * distance)
-	camera.look_at_from_position(eye, center + Vector3(0, 0.2, 0))
+	var distance: float = 16.5 + 14.0 * ease
+	var eye: Vector3 = center + Vector3(-0.57 * distance, -0.07 * distance, -0.82 * distance)
+	camera.look_at_from_position(eye, center + Vector3(0, 0.2 + 2.0 * ease, 0))
 	World.update(scene.environment, t + 2.0, Vector3(0.8, 0, 0.1), center, camera)
 	for i: int in range(actors.size()):
 		var actor: Dictionary = actors[i]
 		actor.smoke.advance(t + 2.0, actor.model.root.global_transform, "glow_prop", 9000.0, 2000.0, 12000.0, 0.8, Vector3(0.8, 0, 0.1), 1.0, true, camera.global_position.distance_to(positions[i]))
 		var screen: Vector2 = camera.unproject_position(positions[i])
 		record.screen.append([screen.x, screen.y])
+		if t >= 0.0:
+			var box: AABB = actor.bounds
+			for k: int in range(8):
+				var corner: Vector3 = actor.model.root.global_transform * box.get_endpoint(k)
+				var pixel: Vector2 = camera.unproject_position(corner)
+				minimum_screen_margin = minf(minimum_screen_margin, minf(minf(pixel.x, 1920.0 - pixel.x), minf(pixel.y, 1080.0 - pixel.y)))
 		for j: int in range(i):
 			minimum_separation = minf(minimum_separation, positions[i].distance_to(positions[j]))
 	if t >= 0.0:
 		frame_records.append(record)
+
+func _bounds(node: Node3D, parent_transform: Transform3D) -> AABB:
+	var tr: Transform3D = parent_transform * node.transform
+	var result := AABB()
+	if node is MeshInstance3D and node.visible and node.mesh != null:
+		result = tr * node.get_aabb()
+	for child: Node in node.get_children():
+		if child is Node3D and child.visible:
+			var box: AABB = _bounds(child, tr)
+			if box.size.length_squared() > 0.0:
+				result = box if result.size.length_squared() == 0.0 else result.merge(box)
+	return result
