@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# CR-39g: opt-in pre-push check that generated crash-cost data still matches its sources.
+# Enable once per clone: git config core.hooksPath tools/hooks
+set -euo pipefail
+ROOT="$(git rev-parse --show-toplevel)"
+PYTHON="$(command -v python3 || command -v python)"
+"$PYTHON" "$ROOT/research/crash-economics/build_catalog.py" --check
+"$PYTHON" "$ROOT/research/crash-economics/build_runtime.py" --check || {
+  echo "pre-push: regenerate with: python research/crash-economics/build_runtime.py" >&2
+  exit 1
+}
