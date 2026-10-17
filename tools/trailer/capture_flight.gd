@@ -5,6 +5,7 @@ extends SceneTree
 
 const MainScene := preload("res://main.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const WorldConditions := preload("res://render/world/conditions.gd")
 
 const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
@@ -134,6 +135,13 @@ func _run() -> void:
 	_main._camera.fov = 38.0
 	var project_root: String = ProjectSettings.globalize_path("res://")
 	var director_path: String = project_root.path_join("../tools/trailer/flight_director.gd").simplify_path()
+	if _options.has("director-script"):
+		director_path = str(_options["director-script"])
+		if not director_path.is_absolute_path():
+			_failure = "--director-script must be an absolute path"
+			_write_manifest(false)
+			quit(2)
+			return
 	var director_script: Script = load(director_path) as Script
 	if director_script == null:
 		_failure = "Could not load external flight director at " + director_path
@@ -260,6 +268,10 @@ func _write_manifest(ok: bool) -> void:
 		start_choice = str(session.start_choice) if session != null else "",
 		soft_hull_contacts = bool(session.soft_hull_contacts) if session != null else false,
 		sky_config = _main.sky_config.duplicate(true) if _main != null else {},
+		world_conditions = WorldConditions.resolve(),
+		field_world_lighting = bool(_main._field_world_lighting) if _main != null else false,
+		lighting_config = _main.lighting_config.duplicate(true) if _main != null else {},
+		director_script = str(_options.get("director-script", "tools/trailer/flight_director.gd")),
 		weather_config = session.weather_configuration() if session != null else {},
 		flight_tick_end = int(session.sim.tick) if session != null else -1,
 		flight_time_end_s = float(session.sim.time()) if session != null else 0.0,

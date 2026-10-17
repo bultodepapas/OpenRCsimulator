@@ -25,6 +25,15 @@ Movie Maker provides synchronized 48 kHz PCM audio. Trim the recorded startup fr
 manifest, not one shared offset: the accepted flight captures have 3 lead frames; vehicle routes
 have their own measured offsets.
 
+`capture_flight.gd --director-script=<absolute.gd>` selects a shot-specific command/camera driver.
+The capture manifest retains that path, resolved world conditions and native lighting settings.
+`extra_rolls_director.gd` supplies normal pilot commands for the six-second roll sequence and
+records aircraft attitude, inputs and framing. `timber_dusk_director.gd` changes only the camera
+for a closer front-quarter sunset view. Its accepted take uses native field lighting with
+`--time=21:51` (the world's reference location/date, not the computer's local timezone).
+Use `--movie-only` with Movie Maker and inspect extracted AVI frames; optional viewport PNGs
+can inherit a decorated window's client size even when Movie Maker records native 1920×1080.
+
 `capture_formation.gd` renders 420 PNGs using the production Stik models, field, smoke and propeller
 blur. Four render actors follow authored paths. Its manifest records camera framing and separation.
 It deliberately has no simulation session and is always labeled as a cinematic formation in the edit.
@@ -58,6 +67,12 @@ settings. No music reductions depend on obsolete scene timestamps. The music ren
 a mild tempo adjustment, startup de-click and final one-beat fade. Its measured environment uses
 NumPy **2.4.6** and Matplotlib **3.11.1**. Preserve `analysis.json` and the cue hash: onset proximity
 and a fitted pulse do not establish subjective musical phrasing or a listening review.
+
+Revision 3 retains that exact music stem. It opens with source seconds 2–7 of the formation and
+gives the Extra six seconds at 13–19 s for two continuous rolls with a climbing exit. The Lumber
+twilight insert remains at 22–25 s and bypasses the generic grade to preserve native sunset color.
+The current [revision evidence](../../docs/research/cinematic-trailer/revision-3-2026-10-17.md)
+records the accepted takes, measurement limits and output identity.
 
 Output checks cover resolution, 60 fps, 3,600 frames, duration, full decode and decoded AAC true peak.
 `render-manifest.json` retains source/output hashes and audio measurements. These checks do not
