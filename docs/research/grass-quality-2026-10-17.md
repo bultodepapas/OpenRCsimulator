@@ -315,7 +315,7 @@ Two additional local findings shape the recommendations. The [vegetation materia
 
 **Decision/proof — defer until habitat review:** Consider only sparse rough-margin accents if a specific field reference supports them. Use suitable existing/free geometry and the same import/alpha qualification as grass cards. Verify physical leaf scale, variation and total batch/triangle budget. Do not add an independent full-field layer, another mandatory draw or clover to the mown runway merely to increase asset variety.
 
-### R37 — Photorealistic Bermuda grass exceeds the entire geometry cap
+### R37 — The Bermuda grass model exceeds the entire geometry cap
 
 **Source:** [Poly Haven Grass Bermuda 01](https://polyhaven.com/a/grass_bermuda_01), CC0 model.
 
@@ -325,7 +325,7 @@ Two additional local findings shape the recommendations. The [vegetation materia
 
 ### R38 — A small GLB is a plausible control, not measured low cost
 
-**Source:** [Innerscene Grass tuft medium](https://www.innerscene.com/tools/library/3d-parts/low-poly-nature-grass-tuft-medium-bad03f50), distributor-listed CC0, added October 7, 2026.
+**Source:** [Innerscene Grass tuft medium](https://www.innerscene.com/tools/library/3d-parts/low-poly-nature-grass-tuft-medium-bad03f50), listed by Innerscene as its original CC0 model, added October 7, 2026.
 
 **Finding:** The listing offers a roughly 13 KB GLB, embedded materials and approximately 0.4 m dimensions. It does not publish a triangle count or claim Godot compatibility; it also gives an availability end date.
 

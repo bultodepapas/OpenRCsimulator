@@ -1,6 +1,6 @@
 # Grass texture, shape and motion improvement plan
 
-2026-10-17. **Status: proposed; no new runtime implementation or performance pass.** Owner: landscape **L**, coordinated with **VQ**, **SC/LU**, **M5** and **RCV**. Evidence: [20 source investigations and current-code audit](../research/grass-quality-2026-10-17.md).
+2026-10-17. **Status: proposed; no new runtime implementation or performance pass.** Owner: landscape **L**, coordinated with **VQ**, **SC/LU**, **M5** and **RCV**. Evidence: [44 source investigations and current-code audit](../research/grass-quality-2026-10-17.md), including **24 additional investigations** in the second round. Research decisions and conditional experiments are mapped in [section 9](#9-second-round-decisions-and-experiment-queue).
 
 Improve the impression of short, maintained turf near the runway and irregular living grass at rough margins. The result should read naturally from pilot, chase and low RC cameras, retain aircraft orientation cues, and fit measured frame-time headroom. Prioritize scale, stable sampling, silhouettes and coherent motion before increasing resolution or density.
 
@@ -19,6 +19,8 @@ The field already has filtered turf and procedural macro variation. RC activitie
 | Wind/state | Consume existing detached render wind and clock. M5 owns physical weather; simulation, tire contact, terrain identity and replay contracts stay unchanged. |
 
 Read Git status before each slice. Keep source meshes and generated data authoritative; regenerate derivatives through their existing pipeline. No new grass texture or plant mesh should be authored while a suitable free retained/downloadable asset meets the requirement. Record source URL, author, license, exact archive/map hashes, units, import settings and generator version for any new intake.
+
+Keep the initial comparison on retained assets. If those fail a named visual criterion, admit at most **two challengers per comparison**: a free cutout candidate to qualify in Compatibility and a free low-poly clump, selected from R35/R38. Inspect actual topology, UVs and material features before downloading more variants. Clover is an optional habitat accent, and the 224,000-triangle Bermuda source is reference-only under the current cap. Free availability does not establish fitness, redistribution terms for bundled content, or target performance. Tool candidates R31–R34 remain outside production unless an authoring requirement independently justifies them.
 
 ## 2. Target appearance by scale
 
@@ -65,15 +67,25 @@ Evidence for new L9e-R2 and L11a-R1/R2 work belongs under `docs/research/visual-
 
 **Preserve lighting.** Existing custom ground lighting does not provide a general grass specular lobe merely because a roughness map is bound. Treat new specular/backlight behavior as a separate conditional experiment. Start matte; match ground/root tone under both sun directions, clouds and night exposure. For clumps, retain tip normals and source texture detail; test only a modest root-normal/ground-color blend where a seam is demonstrated. No whole-clump emission, universal upward normals or per-blade dynamic shadows.
 
+**Qualify material conversion before wind (R27, R40–R43).** Add a per-source feature manifest: source material → effective imported material → wind adapter. Check UV transforms, albedo/vertex color, normal texture/scale, roughness/metallic textures and channels, alpha mode/cutoff, culling/back-face lighting, filtering and shadow reception. Mark unused features explicitly. The current adapter copies only a subset; implement only missing behavior used by the accepted source. Compare the original material with wind amplitude zero under front/back sun and headlights before comparing animation. Turning off grass shadow casting does not turn an incorrect received-shadow response into an acceptable result.
+
+**Separate normal operations (R22).** Only consider reoriented normal mapping when stacking distinct relief layers. Do not replace interpolation between alternative stochastic samples with a composition operator. Require flat-detail and detail-disabled controls before a visual comparison.
+
+**Diagnose alpha coverage before choosing cards (R23, R42).** Inspect cutout coverage and RGB borders across mips; use a no-mip control to locate distant disintegration, then inspect its shimmer cost. Keep the initial solution within existing import capabilities or choose another free source. Custom mip import remains outside the global plan's initial slice. No-mip, negative-bias and alpha-blend workarounds are not defaults.
+
 ## 5. Geometry, distribution and visibility specification
 
 First compare the existing 150-clump maximum with a different allocation **within 50,000 source triangles**. The wispy type consumes over half the current nominal total; shifting some instances to the retained 155-triangle short type creates room for coverage without inventing a new mesh. This is a hypothesis: reject it if the field becomes repetitive or loses useful silhouettes.
 
 Use deterministic source-row or world-cell identity for species, yaw, size and phase. Quality levels must form nested subsets; switching quality must not move retained plants. Reuse authoritative exclusion predicates and the existing mask-bounds optimization. An optional broad patch weight can organize tufts, but cannot introduce gaps along runway borders or move placement with camera jitter.
 
+If sparse profiles show accidental gaps, test progressive sample elimination as an **offline ordering experiment**, preserving the existing approximately 1/r radial density outside the central cap (R21). Rank eligible candidates within controlled radial/habitat strata and use stable tie-breaking. Compare ring counts, retained identities, nearest-neighbor distances and mask-edge holes. Store/validate the ordering through the existing generator; do not rank plants every frame or promise a uniform Poisson distribution. Conditional world cells also need deterministic shared-border handling to avoid seams.
+
 Count batches by actual mesh parts/material surfaces. The current grass capture ceiling is **+5 draws / +100,000 primitives relative to grass hidden**, alongside the imported 50,000 source-triangle cap. Start with three batches; a first split can partition the expensive wispy batch into up to three spatial groups, reaching five total if the source-part contract still holds. Do not ship an unrestricted cell-by-species grid under an unchanged five-draw claim. If splitting does not save work within the gate, keep three batches.
 
 Automatic mesh LOD does not provide per-plant LOD inside a batch. Qualify bounds and transitions explicitly. For imported clumps, prototype a root-preserving geometric shrink only when a visible range problem is demonstrated, retaining grounded base coordinates and suitable normals. Cull whole batches only once all their instances are outside the active envelope. Shader shrink/discard alone still submits work. Test from above, side-on and moving backward as well as toward the field.
+
+Keep apparent coverage and submitted work as separate results (R25, R44). A modest compensation experiment is justified only after a visible transition band remains; cap footprint growth and recheck exclusions/overlap. Do not adopt the mesh-shader implementation that inspired the idea. Open-field occlusion is deferred (R28); only an existing building that meaningfully hides whole grass bounds can justify an isolated occlusion comparison.
 
 Alpha-to-coverage is not a promised solution: the [research records the open upstream implementation](../research/grass-quality-2026-10-17.md#r11--msaa-does-not-prove-alpha-to-coverage-support). Favor existing opaque geometry; use scissored downloaded cards only if their silhouette, filtering and cost win in the pinned renderer. No alpha-blended grass carpet, TAA-dependent dither fade or Forward+-only visibility fade is part of the default design.
 
@@ -87,6 +99,8 @@ Compute a source-space root-to-tip weight from the asset's grounded bounds, rath
 
 Use `sim_clock`, including its existing wrap behavior. Calm must have zero wind-driven motion. Freeze/resume and restored scene time must be reproducible; additional world-space waves must remain continuous across clock wrap. Wind direction is the existing render-space velocity, not a newly interpreted compass convention. Retain the full maximum displacement in both culling bounds and runway/path clearance.
 
+Add translated, 90/180-degree-yawed and supported uniformly scaled copies to the wind fixture (R24, R39). Their roots must remain fixed and their bend must follow the same world direction. Reject unsupported nonuniform scale rather than silently assuming transpose equals inverse. Watch blade stretching before adding tip flutter; retain source vertex colors used for appearance. Per-plant phase/stiffness belongs in bounded custom data, not unique materials or batch-level instance uniforms. Compatibility's packed custom-data precision must be sufficient for the selected normalized values; keep world coordinates and identity hashes outside those channels.
+
 Compare grass, trees and windsock under the same recorded gust. A plausible animation does not calibrate physical wind response; it must not imply a strong gust absent from the simulation. Wheel flattening, propwash deformation and persistent tracks are deferred: they need a demonstrated benefit and a separate bounded, read-only presentation design. Grass appearance must not change grip, rolling resistance, terrain or flight handling.
 
 ## 7. Acceptance and measurement
@@ -95,12 +109,15 @@ The global plan's gates remain authoritative: frame pacing p95 <=18 ms and p99 <
 
 For timings, freeze engine/build/dirty-file hashes, field/asset identities, camera/FOV, input tape, weather, shader time, quality, resolution, VSync/cap, GPU/driver and power mode. Use 10 s warmup plus 60 s measurement, at least **five alternating baseline/candidate pairs** for this combined study; image capture stays outside timed runs. Keep raw failures and variation. Collect frame p50/p95/p99, CPU and GPU measurements where supported, draws, submitted primitives, texture payload/residency, construction/upload time and cold/warm scene load. Mark unavailable GPU metrics rather than calling wall time GPU time.
 
+Record monitor names, units, cadence and build availability (R30). Derive percentiles from frame durations, not sampled FPS. Preserve the existing rendered-primitives gate's harness semantics separately from source triangles; unsupported zero values are unavailable. Distinguish compressed payload, allocation and residency. If material readback is inconclusive, use a versioned RenderDoc capture on supported Windows/Linux OpenGL hardware to inspect actual submissions (R26); capture/replay stays outside timing.
+
 Screen each candidate on fixed representative pilot and RC workloads. Apply the paired protocol to each workload/profile whose performance is being qualified, including demonstrated worst cases and the final target hardware/output profiles. Use the remaining camera/lighting matrix for visual regression, adding timed cases when those views reveal a cost concern. State the covered profiles explicitly and retain the global plan's final complete-session requirements.
 
 | Gate | Required evidence |
 | --- | --- |
 | Appearance and scale | Paired 720p/1080p images/clips: pilot normal/zoom, runway threshold, rough edge, chase, overhead and both RC vehicles in low orbit. Fixed sunlight, low sun, dusk and headlights/night. Owner checks scale, shape, ground contact and overall preference. |
 | Temporal stability | Slow grazing pan, straight driving, turn, low flight pass, camera cut and movement through all LOD/fade boundaries. No new repeatable crawling, ring, synchronized sway or disappearing tuft. Static screenshots do not pass. |
+| Material and transform fidelity | Source versus zero-wind material at fixed time; front/back light, local light, an occluder and translated/yawed/scaled instances. Preserve the features actually used, receiving-light response and fixed roots. Optional cards also need mip-coverage/edge crops and moving controls. |
 | Near/far seam | Reuse the existing [grass seam protocol](../../tools/grass/README.md); extend the actual imported/candidate path and its envelope. Preserve the existing 3% channel-change / FLIP p99 0.1 engineering limits where applicable; include local strip checks and a deliberately bad seam control. Do not compare differently timed wind frames. |
 | Alias attribution | Extend the [ground filtering protocol](../../tools/ground/README.md): known camera motion, detail-off control and independently supersampled reference. Subtract expected image movement; retain near-detail controls so deleting the feature cannot pass. |
 | Flight readability | Reuse L6c/VQ visibility clips with contrasting aircraft and runway edge checks. Randomized A/B order; no repeatable loss of attitude or landing cue. Independent owner flight remains required. |
@@ -122,3 +139,23 @@ Reuse existing commands rather than introducing another toolchain:
 - [Vegetation source regeneration/checks](../../tools/landscape/vegetation/README.md), repository [test/capture/export workflow](../TOOLS.md).
 
 Keep candidate selection explicit in research fixtures until each gate passes; production keeps the last accepted configuration. Reverting a material, placement or motion slice must not require a physics/data migration. Publish each adopted slice with its before/after evidence and measured limits; retain rejected experiments only as concise findings in the owning evidence report. Do not estimate a delivery date until the baseline identifies the actual bottleneck and target hardware is named.
+
+## 9. Second-round decisions and experiment queue
+
+This queue strengthens the existing steps; it does not create 24 implementation tasks or override global sequencing. Complete required audits first. Run a conditional experiment only when its trigger exists, and stop at the simplest candidate that passes the stated visual and cost gates. The [dated research](../research/grass-quality-2026-10-17.md#second-round-24-additional-investigations) owns external links, licenses and version observations.
+
+| Priority / disposition | Research → owner | Trigger, concrete work and exit |
+| --- | --- | --- |
+| Required audit | R27, R30, R40–R43 → VQ-02a/VQ-01c, SC/LU | Add used-material feature manifest and counter semantics to the existing capture kit. Exit with actual route/material identity, zero-wind reference and light/transform controls; make only reproduced corrections. |
+| Conditional diagnostic | R26 → VQ-02a | Unexplained readback/render discrepancy: inspect one versioned API frame capture. Exit with the responsible binding/pass identified, or record the unresolved limitation; never substitute capture timing for paired runs. |
+| Conditional free-asset comparison | R35, R38 → L11a-R1 | Retained assets fail silhouette/shape review: inspect at most two free challengers at equal apparent coverage and existing caps. An atlas requires suitable free geometry. Exit adopt/reject with license/hash, imported topology/materials and motion evidence. |
+| Conditional alpha repair | R23, R42 → VQ-02a/L11a-R1 | A chosen card loses blades or develops fringes: isolate cutoff, mip and border effects. Accept an existing-import/source solution or reject the card. Custom mip generation is deferred. |
+| Conditional shading comparison | R22, R40, R41, R43 → L9e-R2/L11a-R1 | Demonstrated flattened relief or contact-light seam: separate normal composition, material lighting and source normals. Require identity controls plus day/night and back-face comparisons; no universal upward-normal fix. |
+| Conditional placement comparison | R21 → L11a-R1 | Low-quality selection creates accidental holes: compare deterministic offline progressive ordering while retaining radial density and masks. Exit with stable nested subsets and improved field views inside unchanged budgets. |
+| Required wind constraints | R24, R27, R39 → L15c | Before enabling wind on the imported route, pass zero-amplitude material fidelity, fixed roots, world direction and yaw/scale checks. Add bend correction/detail only if the simple candidate fails. |
+| Conditional transition comparison | R25, R44 → L11a-R2 | A demonstrated pop/band remains: test root-preserving transition and, only if necessary, capped coverage compensation. Record visual continuity and actual submission separately. |
+| Conditional first-use repair | R29 → global loading owner, coordinated with L15c | Reproduce a Compatibility compile stall on first visible grass. Compare bounded in-view loading warmup with baseline; preserve startup, cancellation and scene-lifetime gates. Resource preload or hidden nodes alone are not proof. |
+| Deferred authoring options | R31, R32 → L/SC/LU | Only a documented editing bottleneck can trigger a disposable ProtonScatter or SimpleGrassTextured trial. Pin exact version/commit, preserve masks, test save/reopen/export and compare maintenance cost. Install neither by default. |
+| Deferred/reference/rejected | R28, R33, R34, R36, R37 → owning track | No field-wide occlusion, terrain migration, legacy scatter port, mandatory clover layer or full-detail Bermuda scatter. Revisit only if the named prerequisite and existing total budgets change through the owning plan. |
+
+The resulting minimum implementation remains small: establish material fidelity and a reproducible baseline, qualify retained ground detail, improve existing clump allocation/placement, then add bounded imported-grass wind and any demonstrated transition repair. Research breadth narrows the implementation choices; it does not justify enabling every technique.

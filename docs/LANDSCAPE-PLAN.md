@@ -40,13 +40,22 @@ The [global implementation plan](plans/global-performance-visual-quality.md#3-or
 
 For L15a/c, compare the currently static windsock against already wind-driven vegetation on the same supported gust before changing it. A source-shader wind input is not independent calibration of the visual response. This delivery does not reopen completed foliage/audio work.
 
-The [grass quality plan](plans/grass-quality.md) refines texture, silhouette, placement and motion work under the existing global budgets, with [20 dated source investigations](research/grass-quality-2026-10-17.md). It owns the pending details for the following reserved follow-ups; existing VQ-02a, L9e-R1, L15c and L9d-05/06 retain their original owners. Default imported near grass is currently static; the scenery-off fallback's wind/fade proof does not apply to that route.
+The [grass quality plan](plans/grass-quality.md) refines texture, silhouette, placement and motion work under the existing global budgets, with [44 dated source investigations](research/grass-quality-2026-10-17.md), including 24 additional technical, asset, tool and community investigations. It owns the pending details for the following reserved follow-ups; existing VQ-02a, L9e-R1, L15c and L9d-05/06 retain their original owners. Default imported near grass is currently static; the scenery-off fallback's wind/fade proof does not apply to that route.
 
 | ID | Work | Status / acceptance home |
 | --- | --- | --- |
 | L9e-R2 | Compare a grass-only binding of retained 2K Grass001 in shared flight/Home after the L9e-R1 outcome. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 | L11a-R1 | Qualify imported-grass silhouette, species allocation, root/ground match and habitat placement using retained free assets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 | L11a-R2 | Repair a demonstrated grass batch-culling or transition defect within measured budgets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
+
+The [tree and forest quality plan](plans/tree-forest-quality.md) owns proposed source selection, tree materials, woodland composition and density work, supported by the [2026-10-17 source/code audit](research/tree-forest-quality-2026-10-17.md). It requires downloaded assets, preserves existing cards as a comparison baseline and coordinates physical tree envelopes with SC/LU. No new tree implementation or acceptance is claimed.
+
+| Reserved IDs | Scope | Acceptance home |
+| --- | --- | --- |
+| L6a-R1, L6b-R2 | Additional downloaded silhouettes and qualified material/palette changes; L6b-R1 retains the separate alpha experiment. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
+| L7-R1, L7-R2 | Same-count woodland composition, then measured batching/density changes with explicit world identity. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
+| L8a, L8b | Optional downloaded mesh/LOD/card qualification; existing impostor tooling only for a demonstrated residual need. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
+| L15b-R1 | Imported-tree wind qualification, preserving field cards and shared grass consumers. | [Tree implementation sequence](plans/tree-forest-quality.md#7-reviewable-implementation-sequence). |
 
 ## Landscape integration
 
