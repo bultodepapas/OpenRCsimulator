@@ -74,4 +74,4 @@ Source identities (SHA-256 prefixes): `flight_audio.gd` 5f0f2fb17350a42d, `sound
 
 - Owner listening of both A/B pairs (AUD-13).
 - Ambience voices still use the doubled 3D shelf; any change needs the AUD-05 listening acceptance repeated.
-- The explicit glow-cycle voice reaches 2.8–3.5 ms peak `update_sound` in parity runs, before and after this change (likely its generator's first buffer fill); owner: NITRO/audio.
+- The explicit glow-cycle voice reaches 2.8–3.5 ms peak `update_sound` in parity runs, before and after this change; its steady cost under real mixing is measured in [AUD-12](../AUD-12/README.md#limits-and-open-work) (about 6× the stock voices); owner: NITRO/audio.
