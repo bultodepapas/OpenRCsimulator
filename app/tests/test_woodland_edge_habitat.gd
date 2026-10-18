@@ -3,6 +3,7 @@
 extends SceneTree
 
 const WoodlandEdges = preload("res://scenery/woodland_edge_habitat.gd")
+const Hedge = preload("res://scenery/imported_hedge.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const SceneryLoader = preload("res://scenery/scenery_loader.gd")
 const LakeLoader = preload("res://data/lake_loader.gd")
@@ -76,6 +77,10 @@ func _run() -> void:
 	var high_again: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
 	_check("high rebuild preserves ordered plant records",
 		JSON.stringify(high_plants) == JSON.stringify(high_again.get_meta("plants", [])))
+	_check("high tier emits four 12-card shrub patch batches",
+		_shrub_layout_contract(high), str(_shrub_batch_counts(high)))
+	_check("high tier preserves shrub render settings and cached source material",
+		_shrub_render_contract(high))
 
 	var balanced: Node3D = WoodlandEdges.build(field, scenery, "balanced", lake)
 	var balanced_plants: Array = balanced.get_meta("plants", [])
@@ -89,6 +94,8 @@ func _run() -> void:
 	var balanced_again: Node3D = WoodlandEdges.build(field, scenery, "balanced", lake)
 	_check("balanced rebuild preserves ordered plant records",
 		JSON.stringify(balanced_plants) == JSON.stringify(balanced_again.get_meta("plants", [])))
+	_check("all final shrub batches own separate MultiMesh and card meshes",
+		_shrub_resources_are_independent([high, high_again, balanced, balanced_again]))
 
 	var low: Node3D = WoodlandEdges.build(field, scenery, "low", lake)
 	_check("low tier builds zero woodland plants, triangles and batches",
@@ -124,6 +131,87 @@ func _run() -> void:
 		custom_field_root, custom_scenery_root, custom_lake_root]:
 		node.free()
 	_finish()
+
+
+func _shrub_layout_contract(root: Node3D) -> bool:
+	var batches := _shrub_batches(root)
+	if batches.size() != 4:
+		return false
+	for batch_value: Variant in batches.values():
+		var batch: MultiMeshInstance3D = batch_value
+		if batch.multimesh == null or batch.multimesh.instance_count != 12:
+			return false
+	return true
+
+
+func _shrub_render_contract(root: Node3D) -> bool:
+	var batches := _shrub_batches(root)
+	var manifest := Hedge._manifest()
+	var frame_value: Variant = manifest.get("frame_world_size_m", [])
+	var frame_size := maxf(float(frame_value[0]), 0.001) if frame_value is Array and not frame_value.is_empty() else 2.16
+	for batch_value: Variant in batches.values():
+		var batch: MultiMeshInstance3D = batch_value
+		var multimesh := batch.multimesh
+		if multimesh == null or not multimesh.mesh is QuadMesh:
+			return false
+		var card := multimesh.mesh as QuadMesh
+		if card.size != Vector2(frame_size, frame_size):
+			return false
+		if multimesh.transform_format != MultiMesh.TRANSFORM_3D or not multimesh.use_colors or not multimesh.use_custom_data:
+			return false
+		if batch.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
+			return false
+		if batch.get_meta("source_asset_id", "") != Hedge.BUSH_SOURCE_ID:
+			return false
+		if batch.material_override != Hedge._impostor_material():
+			return false
+		var material := batch.material_override as ShaderMaterial
+		if material == null or material.shader != Hedge.ImpostorShader:
+			return false
+		if material.get_shader_parameter("impostor_atlas") != Hedge._atlas():
+			return false
+		if not is_equal_approx(float(material.get_shader_parameter("alpha_cutoff")), 0.32):
+			return false
+		if not is_equal_approx(float(material.get_shader_parameter("atlas_frames")), 4.0):
+			return false
+	return batches.size() == 4
+
+
+func _shrub_resources_are_independent(roots: Array[Node3D]) -> bool:
+	var multimesh_ids: Dictionary = {}
+	var mesh_ids: Dictionary = {}
+	var material_ids: Dictionary = {}
+	for root: Node3D in roots:
+		for batch_value: Variant in _shrub_batches(root).values():
+			var batch: MultiMeshInstance3D = batch_value
+			if batch.multimesh == null or batch.multimesh.mesh == null or batch.material_override == null:
+				return false
+			var multimesh_id := batch.multimesh.get_instance_id()
+			var mesh_id := batch.multimesh.mesh.get_instance_id()
+			var material_id := batch.material_override.get_instance_id()
+			if multimesh_ids.has(multimesh_id) or mesh_ids.has(mesh_id):
+				return false
+			multimesh_ids[multimesh_id] = true
+			mesh_ids[mesh_id] = true
+			material_ids[material_id] = true
+	return multimesh_ids.size() == 16 and mesh_ids.size() == 16 and material_ids.size() == 1
+
+
+func _shrub_batches(root: Node3D) -> Dictionary:
+	var result: Dictionary = {}
+	for child: Node in root.get_children():
+		if child is MultiMeshInstance3D and str(child.name).ends_with("_Shrubs"):
+			result[str(child.name)] = child
+	return result
+
+
+func _shrub_batch_counts(root: Node3D) -> Dictionary:
+	var result: Dictionary = {}
+	var batches := _shrub_batches(root)
+	for batch_name: Variant in batches:
+		var batch: MultiMeshInstance3D = batches[batch_name]
+		result[batch_name] = -1 if batch.multimesh == null else batch.multimesh.instance_count
+	return result
 
 
 func _plant_index(plants: Array) -> Dictionary:

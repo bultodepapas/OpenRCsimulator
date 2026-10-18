@@ -233,6 +233,26 @@ func _initialize() -> void:
 		absf(log(back) - (log(World.view_exposure(dark)) + (log(light_goal) - log(World.view_exposure(dark))) * k_dark)) < 0.021, "%f" % back)
 	_check("the light shaders see the exposure in use", is_equal_approx(Exposure.last, env.tonemap_exposure))
 	_check("looking down at the lit field lowers the exposure", World.view_exposure(dark, 1.0) < World.view_exposure(dark, 0.0) * 0.5)
+	# Zero-gain daylight must ignore target/ground lighting, then resume it immediately at dusk.
+	# Retain the night adaptation state here to make any leaked artificial term observable.
+	var saved_sun_elevation: float = Atmosphere.state.sun_elevation_deg
+	var saved_profile: String = World._night_profile
+	var legacy_lit_exposure := World.view_exposure(lit, 1.0)
+	World._night_profile = "off"
+	var unlit_exposure := World.view_exposure(lit, 1.0)
+	World._night_profile = saved_profile
+	for elevation: float in [3.0, 3.001, 45.0]:
+		Atmosphere.state.sun_elevation_deg = elevation
+		var expected_day: float = unlit_exposure if LandscapeOptions.enabled() else legacy_lit_exposure
+		_check("daylight exposure at %.3f degrees preserves the lighting route" % elevation,
+			World.view_exposure(lit, 1.0) == expected_day)
+	Atmosphere.state.sun_elevation_deg = -4.0
+	_check("artificial adaptation resumes after crossing from day to night",
+		World.view_exposure(lit, 1.0) < unlit_exposure)
+	World._night_profile = "off"
+	_check("disabled night lights do not affect exposure", World.view_exposure(lit, 1.0) == unlit_exposure)
+	World._night_profile = saved_profile
+	Atmosphere.state.sun_elevation_deg = saved_sun_elevation
 	var cam := Camera3D.new()
 	cam.fov = 50.0
 	adapt_holder.add_child(cam)

@@ -59,25 +59,19 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 		push_error("Woodland source geometry changed; requalify its budget")
 		return root
 	for patch: Dictionary in data.patches:
-		var pieces: Array[MultiMeshInstance3D] = []
 		var shrub_records: Array[Dictionary] = []
-		var holders: Array[Node3D] = []
 		for path_index in patch.paths_ne_m.size():
 			var points: Array[Vector2] = []
 			for point: Array in patch.paths_ne_m[path_index]:
 				points.append(Vector2(float(point[1]), -float(point[0])))
-			var hedge := Hedge.build(points, float(patch.shrub_height_m), float(patch.shrub_width_m),
-				int(patch.path_seeds[path_index]), quality, false)
-			holders.append(hedge)
-			for child in hedge.get_children():
-				if child is MultiMeshInstance3D: pieces.append(child)
-			for record: Dictionary in hedge.get_meta("cpu_placements", []):
+			var placements := Hedge.layout(points, float(patch.shrub_height_m), float(patch.shrub_width_m),
+				int(patch.path_seeds[path_index]), quality)
+			for record: Dictionary in placements:
 				shrub_records.append(record)
 				var location: Vector2 = record.position
 				plants.append({id = record.id, asset_id = Hedge.BUSH_SOURCE_ID,
 					north = -location.y, east = location.x, height_m = record.height_m, patch = patch.id})
-		var merged := _merge_shrubs(pieces, shrub_records, surfaces.rects, terrain_lake)
-		for holder in holders: holder.free()
+		var merged := _merge_shrubs(shrub_records, surfaces.rects, terrain_lake)
 		if merged != null:
 			merged.name = str(patch.id) + "_Shrubs"
 			root.add_child(merged)
@@ -113,16 +107,19 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 
 
 ## Reuse the existing card geometry/material; combine the short source paths in each patch.
-static func _merge_shrubs(pieces: Array[MultiMeshInstance3D], records: Array[Dictionary], surfaces: PackedFloat64Array,
+static func _merge_shrubs(records: Array[Dictionary], surfaces: PackedFloat64Array,
 	lake: Dictionary) -> MultiMeshInstance3D:
-	if pieces.is_empty(): return null
 	var count := records.size()
 	if count == 0: return null
+	var manifest := Hedge._manifest()
+	var frame_size := Hedge._frame_size(manifest)
+	var card_mesh := QuadMesh.new()
+	card_mesh.size = Vector2(frame_size, frame_size)
 	var mesh := MultiMesh.new()
 	mesh.transform_format = MultiMesh.TRANSFORM_3D
 	mesh.use_colors = true
 	mesh.use_custom_data = true
-	mesh.mesh = pieces[0].multimesh.mesh
+	mesh.mesh = card_mesh
 	mesh.instance_count = count
 	var bounds := AABB()
 	var cursor := 0
@@ -143,7 +140,7 @@ static func _merge_shrubs(pieces: Array[MultiMeshInstance3D], records: Array[Dic
 	mesh.custom_aabb = bounds
 	var instance := MultiMeshInstance3D.new()
 	instance.multimesh = mesh
-	instance.material_override = pieces[0].material_override
+	instance.material_override = Hedge._impostor_material()
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	instance.set_meta("source_asset_id", Hedge.BUSH_SOURCE_ID)
 	return instance

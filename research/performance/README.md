@@ -4,6 +4,11 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`woodland_build_probe.gd` compares the current woodland builder with an explicit reference
+using native-renderer scene snapshots and alternating construction timings. Its
+[measurement report and commands](../../docs/research/visual-quality-implementation/L6c/tree-completion/optimization/woodland/README.md)
+define the retained baseline, quality tiers, resource-ownership checks and timing limits.
+
 ## Home/Fly loading and lake geometry
 
 `loading_probe.gd` uses the real Home Fly signal and End flight route, private settings
