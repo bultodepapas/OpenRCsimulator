@@ -213,6 +213,6 @@ func load_checks(model: Dictionary) -> void:
 	check("full-angle/rate sweep is finite", finite)
 	check("scalar loads agree with independent helper composition", equivalent < 1e-10, str(equivalent))
 	check("horizontal coverage height does not move aerodynamic pressure arm", check_height)
-	check("default Stik remains unconfigured", AD.load_file("res://data/aircraft/jensen_ugly_stik_60.json").model.propulsion.get("slipstream", {}).is_empty())
+	check("default Stik configures legacy slipstream without smooth profile opt-in", not AD.load_file("res://data/aircraft/jensen_ugly_stik_60.json").model.propulsion.get("slipstream", {}).has("edge_fraction"))
 
 var check_height: bool = true

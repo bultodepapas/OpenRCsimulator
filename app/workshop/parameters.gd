@@ -9,9 +9,12 @@ const MIN_POWER_MULTIPLIER := 0.5
 const MAX_POWER_MULTIPLIER := 2.0
 const MIN_CONTROL_MULTIPLIER := 0.5
 const MAX_CONTROL_MULTIPLIER := 1.5
+const CONTROL_SURFACES := ["aileron", "elevator", "rudder"]
 const MASS_POLICIES := ["constant_wing_loading", "geometric"]
 const ALLOWED_KEYS := [
-	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier", "id", "name",
+	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
+	"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
+	"id", "name",
 ]
 
 
@@ -31,7 +34,11 @@ static func validate(recipe: Dictionary) -> Dictionary:
 	for key: Variant in recipe.keys():
 		if key not in ALLOWED_KEYS:
 			errors.append("recipe.%s: unknown key" % str(key))
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+	var numeric_keys := [
+		"scale", "weight_multiplier", "power_multiplier", "control_multiplier",
+		"control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder",
+	]
+	for key: String in numeric_keys:
 		if not recipe.has(key):
 			continue
 		var candidate: Variant = recipe[key]
@@ -41,13 +48,15 @@ static func validate(recipe: Dictionary) -> Dictionary:
 		var number := float(candidate)
 		if not is_finite(number):
 			errors.append("recipe.%s: expected a finite number" % key)
-			continue
 		values[key] = number
 	var bounds := {
 		"scale": [MIN_SCALE, MAX_SCALE],
 		"weight_multiplier": [MIN_WEIGHT_MULTIPLIER, MAX_WEIGHT_MULTIPLIER],
 		"power_multiplier": [MIN_POWER_MULTIPLIER, MAX_POWER_MULTIPLIER],
 		"control_multiplier": [MIN_CONTROL_MULTIPLIER, MAX_CONTROL_MULTIPLIER],
+		"control_multiplier_aileron": [MIN_CONTROL_MULTIPLIER, MAX_CONTROL_MULTIPLIER],
+		"control_multiplier_elevator": [MIN_CONTROL_MULTIPLIER, MAX_CONTROL_MULTIPLIER],
+		"control_multiplier_rudder": [MIN_CONTROL_MULTIPLIER, MAX_CONTROL_MULTIPLIER],
 	}
 	for key: String in bounds:
 		if not recipe.has(key) or typeof(recipe[key]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(recipe[key])):

@@ -322,6 +322,32 @@ func _run() -> void:
 		_check("copy leaves the source history untouched",
 			Store.load_variant(metadata_recipe.id, store_root).variant.revision == 2)
 
+	# Verify advanced control surface throws toggle and sliders
+	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	var adv_toggle := _find(workshop, "AdvancedControlThrows") as CheckButton
+	var adv_box := _find(workshop, "AdvancedControlsBox") as VBoxContainer
+	_check("advanced controls toggle and box exist", adv_toggle != null and adv_box != null)
+	if adv_toggle != null and adv_box != null:
+		_check("advanced controls box hidden by default", not adv_box.visible and not adv_toggle.button_pressed)
+		adv_toggle.button_pressed = true
+		await _ui.settle()
+		_check("advanced controls box visible when toggled", adv_box.visible)
+		var aileron_slider: HSlider = workshop.get("_factor_sliders").get("control_multiplier_aileron")
+		var elevator_slider: HSlider = workshop.get("_factor_sliders").get("control_multiplier_elevator")
+		var rudder_slider: HSlider = workshop.get("_factor_sliders").get("control_multiplier_rudder")
+		_check("all three surface sliders exist", aileron_slider != null and elevator_slider != null and rudder_slider != null)
+		if aileron_slider != null and elevator_slider != null:
+			aileron_slider.value = 1.3
+			elevator_slider.value = 0.8
+			await _ui.settle()
+			var custom_recipe: Dictionary = workshop.get_recipe()
+			_check("per-surface control throws update recipe independently",
+				is_equal_approx(float(custom_recipe.get("control_multiplier_aileron", 1.0)), 1.3)
+				and is_equal_approx(float(custom_recipe.get("control_multiplier_elevator", 1.0)), 0.8)
+				and is_equal_approx(float(custom_recipe.get("control_multiplier_rudder", 1.0)), 1.0))
+			var compiled: Dictionary = workshop.get_compiled()
+			_check("independent throws compile successfully", compiled.ok)
+
 	workshop.queue_free()
 	await _ui.settle()
 	var absolute_root := ProjectSettings.globalize_path(store_root)

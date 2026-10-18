@@ -986,6 +986,12 @@
         "kind": "estimated",
         "source": "Width of the smooth transition from attached flow to flat-plate flow (PicaSim uses a cosine ramp of about 10 deg, YASim a stall-width parameter); the start is solved so the lift peak equals CL_max"
       },
+      "stall_plateau": {
+        "value": 0.70,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Viterna post-stall plateau factor: preserves 70 % of peak suction post-stall, preventing abrupt wing drop"
+      },
       "CD90": {
         "value": 1.2,
         "unit": "1",
@@ -1025,10 +1031,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "CLq": {
-        "value": 2.003,
+        "value": 2.006,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0064. Model-derived, not measured or physically validated."
       },
       "CLde": {
         "value": 0.0983,
@@ -1151,10 +1157,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cmq": {
-        "value": -8.009,
+        "value": -8.008,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8011 and CLq=2.0064; ARP Cmq=-8.008 includes the CLq lift arm. Model-derived, not measured or physically validated."
       },
       "Cmde": {
         "value": -0.8488,
@@ -1181,10 +1187,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnr": {
-        "value": -0.1335,
+        "value": -0.1336,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13; ARP Cnr=-0.1336 includes the CYr side-force arm. Model-derived, not measured or physically validated."
       },
       "Cnda_right": {
         "value": 0.0287,
@@ -1247,6 +1253,28 @@
         "unit": "1",
         "kind": "borrowed",
         "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; same flat-plate approximation as wing"
+      },
+      "body_side_area": {
+        "value": 0.185,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "fuselage lateral projected profile area (length 1.15 m x mean depth 0.161 m)"
+      },
+      "body_side_cd": {
+        "value": 1.1,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fuselage crossflow box drag coefficient in sideslip/knife-edge"
+      },
+      "body_side_position": {
+        "value": [
+          0.06,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "fuselage lateral area centroid relative to LE datum"
       },
       "horizontal": {
         "area": {
@@ -1511,6 +1539,194 @@
         "unit": "m",
         "kind": "derived",
         "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
+      },
+      "thrust_angles": {
+        "value": [
+          0.0,
+          0.0
+        ],
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Axial shaft along the nominal datum line in assets/aircraft/ugly-stik-60/geometry.json (down and right thrust angles not specified on the Jensen plan)"
+      },
+      "slipstream": {
+        "hub": {
+          "value": [
+            -0.293276,
+            0.0,
+            0.0
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe"
+        },
+        "wash_factor": {
+          "value": [
+            0.8,
+            1.8
+          ],
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "velocity added at the tail per disc induced velocity w (Selig, AIAA 2010-7938, eqs. 17-19, m = V/(V + w)): 0.8 at m = 0 and 1.8 at m >= 0.75, read off the plot of Fig. 5 (approximate)"
+        },
+        "swirl_factor": {
+          "value": 0.6,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8; Selig: the swirl offsets ~40 % of the torque roll"
+        },
+        "vertical_drift": {
+          "value": 0.543,
+          "unit": "1",
+          "kind": "derived",
+          "source": "1 - d(eps)/d(alpha) = 1 - 0.457: the wake drifts with the downwashed flow"
+        },
+        "propeller_sidewash": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, applied as published (1); also selects the piecewise swirl quadrature of the legacy pieces (P51-26)"
+        },
+        "wing_wash_factor": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "inboard wing/aileron axial slipstream wash multiplier (1.0 = same axial wake increment w.dv as the tail wake); enables low/zero-airspeed aileron authority and root lift in 3D hover/harrier"
+        },
+        "pieces": [
+          {
+            "surface": "vertical",
+            "area": {
+              "value": 0.04758883929,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: fin + rudder projected polygon area"
+            },
+            "root": {
+              "value": [
+                0.8609,
+                0.0,
+                -0.02667
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b3b/geometry.json: vertical tail aerodynamic reference x and lower outline z"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b3b/geometry.json: upward vertical span direction in LE frame"
+            },
+            "span": {
+              "value": 0.209804,
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: vertical tail span from -0.02667 m to 0.183134 m"
+            },
+            "chords": {
+              "value": [
+                0.28937,
+                0.16428
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: linear root/tip chord matching the vertical tail area over 0.209804 m span"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.04629457865,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: right horizontal stabilizer + elevator projected polygon area"
+            },
+            "root": {
+              "value": [
+                0.8409,
+                0.0,
+                -0.04064
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b3b/geometry.json: horizontal tail aerodynamic reference x and neutral coverage z"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b3b/geometry.json: right horizontal span direction in LE frame"
+            },
+            "span": {
+              "value": 0.2794,
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: horizontal tail semi-span (11 in)"
+            },
+            "chords": {
+              "value": [
+                0.179388,
+                0.151998
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: root chord 0.179388 m and area-equivalent tip chord over 0.2794 m semi-span"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.04629457865,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: left horizontal stabilizer + elevator projected polygon area"
+            },
+            "root": {
+              "value": [
+                0.8409,
+                0.0,
+                -0.04064
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b3b/geometry.json: horizontal tail aerodynamic reference x and neutral coverage z"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                -1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b3b/geometry.json: left horizontal span direction in LE frame"
+            },
+            "span": {
+              "value": 0.2794,
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: horizontal tail semi-span (11 in)"
+            },
+            "chords": {
+              "value": [
+                0.179388,
+                0.151998
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "docs/research/propwash/E0b2/geometry.json: root chord 0.179388 m and area-equivalent tip chord over 0.2794 m semi-span"
+            }
+          }
+        ]
       }
     },
     "kind": "glow_prop",

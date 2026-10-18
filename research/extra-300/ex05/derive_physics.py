@@ -201,7 +201,7 @@ Cm0 = note("aero", "Cm0 about ARP", -slope_h * Sh / S * l_h / c_ref * inc_eff, "
 ail_c = W["aileron_chord"]
 elev_c = T["elevator_root_corner"][1] - T["elevator_hinge_z"]
 rud_c = T["rudder_te_low"][0] - T["rudder_hinge_z"]
-LOW_RATE_TRAVEL = {"aileron": 0.4, "elevator": 0.6, "rudder": 0.6}  # manual p43 LOW rate / HIGH rate travel (D6e)
+LOW_RATE_TRAVEL = {"aileron": 0.65, "elevator": 0.75, "rudder": 0.75}  # aerobatic sport rates (D6e); F4 toggles to full 3D throws
 throws = {
     "aileron": note("controls", "aileron (deg)", math.degrees(math.asin(0.625 * IN / ail_c)), f"5/8 in on a {ail_c / IN:.2f} in chord"),
     "elevator": note("controls", "elevator (deg)", math.degrees(math.asin(1.25 * IN / elev_c)), f"1-1/4 in on a {elev_c / IN:.2f} in chord"),
@@ -558,7 +558,7 @@ data = {
                 **{k: q(math.asin(LOW_RATE_TRAVEL[k] * math.sin(math.radians(throws[k]))) / math.radians(throws[k]), "1", "derived",
                        f"{MANUAL} p43 LOW rate: {LOW_RATE_TRAVEL[k]:.1f} of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)")
                   for k in ["aileron", "elevator", "rudder"]},
-                **{k + "_expo": q(0.0, "1", "estimated", f"{MANUAL} lists no expo; 0 until a transmitter setup is documented") for k in ["aileron", "elevator", "rudder"]},
+                **{k + "_expo": q(0.25, "1", "estimated", f"expo for smooth center-stick precision with aerobatic throws; {MANUAL} lists no expo") for k in ["aileron", "elevator", "rudder"]},
             },
         },
     },
@@ -568,6 +568,7 @@ data = {
             "CL_max": q(CL_max, "1", "estimated", "13 % symmetric section clmax ~1.15 at Re 3e5 x 0.9 for the wing; no polar identified (EX-09)"),
             "CL_min": q(-0.98, "1", "estimated", "symmetric section: about the positive value, slightly less with the -0.5 deg tail"),
             "stall_blend_width": q(6.0, "deg", "estimated", "same blend as the Ugly Stik data (PicaSim/YASim class)"),
+            "stall_plateau": q(0.75, "1", "estimated", "Viterna post-stall plateau factor: preserves 75 % of peak suction post-stall, preventing abrupt wing drop in stall and snap maneuvers"),
             "CD90": q(1.11 + 0.018 * AR, "1", "derived", "Viterna CDmax = 1.11 + 0.018 AR (NASA CR-1983)"),
             "sideslip_blend": stik["aero"]["envelope"]["sideslip_blend"],
         },
@@ -581,6 +582,9 @@ data = {
             "tail_CD0": same("tail_CD0"),
             "tail_k": same("tail_k"),
             "tail_CD90": same("tail_CD90"),
+            "body_side_area": q(0.245, "m2", "derived", "fuselage lateral projected profile area (length 1.25 m x mean depth 0.196 m)"),
+            "body_side_cd": q(1.1, "1", "estimated", "fuselage crossflow cylinder/box drag coefficient in sideslip/knife-edge"),
+            "body_side_position": q([0.05, 0.0, 0.0], "m", "derived", "fuselage lateral area centroid relative to LE datum"),
             "horizontal": {
                 "area": q(Sh, "m2", "derived", D("stab + elevator planform polygon from " + GEO_SRC)),
                 "position": q(le(xh_ac, T["stab_y"]), "m", "derived", D("quarter chord of the stab MAC")),
@@ -612,6 +616,24 @@ p["propeller"]["thrust_angles"] = q([down_deg, right_deg], "deg", "manual",
 p["propeller"]["thrust_line_offset"] = q(prop_hub_offset, "m", "derived",
     D("visual thrust_frame pivot/rotation and propeller child transform to actual hub; hub minus loaded inventory CG in [x_aft,y_right,z_up]"))
 p["propeller"]["rotating_inertia"] = dict(p["propeller"]["rotating_inertia"], source=p["propeller"]["rotating_inertia"]["source"] + " (2-1/2 in spinner here, within the estimate)")
+x_fin = xv_ac
+fin_root_y = fus_top(x_fin)
+fin_te_at = lambda y: T["rudder_te_low"][0] + (T["rudder_top_te_z"] - T["rudder_te_low"][0]) * (y - T["rudder_te_low"][1]) / (T["fin_top_y"] - T["rudder_te_low"][1])
+fin_chords = [fin_te_at(fin_root_y) - fin_le_at(fin_root_y), fin_te_at(T["fin_top_y"]) - fin_le_at(T["fin_top_y"])]
+slip_pieces = [
+    {"surface": "vertical", "area": Sv, "root": le(x_fin, fin_root_y), "span_dir": [0.0, 0.0, 1.0], "span": T["fin_top_y"] - fin_root_y, "chords": fin_chords},
+    {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, 1.0, 0.0], "span": T["stab_half_span"], "chords": [crh, cth]},
+    {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, -1.0, 0.0], "span": T["stab_half_span"], "chords": [crh, cth]},
+]
+p["propeller"]["slipstream"] = {
+    "hub": q(prop_hub_le, "m", "derived", D("propeller disc centre on the thrust line (le frame)")),
+    "wash_factor": q([0.8, 1.8], "1", "borrowed", "velocity added at the tail per disc induced velocity w (Selig, AIAA 2010-7938, eqs. 17-19, m = V/(V + w)): 0.8 at m = 0 and 1.8 at m >= 0.75, read off the plot of Fig. 5 (approximate); the text gives ~1 at static thrust (free-jet theory) and 'approaches but does not reach 2' (ideal) away from it because of the fuselage"),
+    "swirl_factor": q(0.6, "1", "estimated", "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8; Selig: the swirl offsets ~40 % of the torque roll"),
+    "vertical_drift": q(1 - deps, "1", "derived", D("1 - d(eps)/d(alpha): the wake drifts with the downwashed flow")),
+    "propeller_sidewash": q(1.0, "1", "borrowed", "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, h(a)*v_c + g(a)*N/(2*mdot), applied as published (1); also selects the piecewise swirl quadrature of the legacy pieces (P51-26)"),
+    "wing_wash_factor": q(1.0, "1", "estimated", "inboard wing/aileron axial slipstream wash multiplier (1.0 = same axial wake increment w.dv as the tail wake); enables low/zero-airspeed aileron authority and root lift in 3D hover/harrier"),
+    "pieces": [{k: (q(v, "m2" if k == "area" else ("1" if k == "span_dir" else "m"), "derived", D("tail piece from geometry.json")) if k != "surface" else v) for k, v in pc.items()} for pc in slip_pieces],
+}
 
 # The loader's exact consistency rules (aircraft_data.gd _surfaces) must hold: recompute them from the rounded file.
 def check_consistency(d):

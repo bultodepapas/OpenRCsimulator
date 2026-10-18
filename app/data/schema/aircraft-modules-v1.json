@@ -322,6 +322,7 @@
           "diameter",
           "name",
           "rotating_inertia",
+          "slipstream",
           "thrust_angles",
           "thrust_line_offset"
         ]
@@ -436,6 +437,11 @@
     },
     {
       "family": "glow_prop",
+      "path": "propeller.slipstream",
+      "law": "propeller.slipstream.v1"
+    },
+    {
+      "family": "electric_prop",
       "path": "propeller.slipstream",
       "law": "propeller.slipstream.v1"
     }

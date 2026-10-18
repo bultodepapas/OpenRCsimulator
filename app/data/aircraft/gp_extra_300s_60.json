@@ -888,40 +888,40 @@
     "rates": {
       "normal": {
         "aileron": {
-          "value": 0.394705,
+          "value": 0.644018,
           "unit": "1",
           "kind": "derived",
-          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.4 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.7 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
         },
         "elevator": {
-          "value": 0.588627,
+          "value": 0.740122,
           "unit": "1",
           "kind": "derived",
-          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.6 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.8 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
         },
         "rudder": {
-          "value": 0.581888,
+          "value": 0.734115,
           "unit": "1",
           "kind": "derived",
-          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.6 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
+          "source": "Great Planes Extra 300S .60 manual EXT6P03 p43 LOW rate: 0.8 of the high-rate travel at the widest part, as the command fraction asin(f sin d)/d of the angular throw (EX-08 airborne audit)"
         },
         "aileron_expo": {
-          "value": 0.0,
+          "value": 0.25,
           "unit": "1",
           "kind": "estimated",
-          "source": "Great Planes Extra 300S .60 manual EXT6P03 lists no expo; 0 until a transmitter setup is documented"
+          "source": "expo for smooth center-stick precision with aerobatic throws; Great Planes Extra 300S .60 manual EXT6P03 lists no expo"
         },
         "elevator_expo": {
-          "value": 0.0,
+          "value": 0.25,
           "unit": "1",
           "kind": "estimated",
-          "source": "Great Planes Extra 300S .60 manual EXT6P03 lists no expo; 0 until a transmitter setup is documented"
+          "source": "expo for smooth center-stick precision with aerobatic throws; Great Planes Extra 300S .60 manual EXT6P03 lists no expo"
         },
         "rudder_expo": {
-          "value": 0.0,
+          "value": 0.25,
           "unit": "1",
           "kind": "estimated",
-          "source": "Great Planes Extra 300S .60 manual EXT6P03 lists no expo; 0 until a transmitter setup is documented"
+          "source": "expo for smooth center-stick precision with aerobatic throws; Great Planes Extra 300S .60 manual EXT6P03 lists no expo"
         }
       }
     }
@@ -946,6 +946,12 @@
         "unit": "deg",
         "kind": "estimated",
         "source": "same blend as the Ugly Stik data (PicaSim/YASim class)"
+      },
+      "stall_plateau": {
+        "value": 0.75,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Viterna post-stall plateau factor: preserves 75 % of peak suction post-stall, preventing abrupt wing drop in stall and snap maneuvers"
       },
       "CD90": {
         "value": 1.209097,
@@ -1209,6 +1215,28 @@
         "kind": "borrowed",
         "source": "same provisional value as the Ugly Stik surface model (same flat-plate approximation as wing)"
       },
+      "body_side_area": {
+        "value": 0.245,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "fuselage lateral projected profile area (length 1.25 m x mean depth 0.196 m)"
+      },
+      "body_side_cd": {
+        "value": 1.1,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fuselage crossflow cylinder/box drag coefficient in sideslip/knife-edge"
+      },
+      "body_side_position": {
+        "value": [
+          0.05,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "fuselage lateral area centroid relative to LE datum"
+      },
       "horizontal": {
         "area": {
           "value": 0.099444,
@@ -1455,6 +1483,185 @@
         "unit": "deg",
         "kind": "manual",
         "source": "Original plan thrust-frame notes transcribed in assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); ordered [down, right] to match the v2 propulsion contract"
+      },
+      "slipstream": {
+        "hub": {
+          "value": [
+            -0.265897,
+            0.00014,
+            -3.5e-05
+          ],
+          "unit": "m",
+          "kind": "derived",
+          "source": "research/extra-300/ex05/derive_physics.py: propeller disc centre on the thrust line (le frame)"
+        },
+        "wash_factor": {
+          "value": [
+            0.8,
+            1.8
+          ],
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "velocity added at the tail per disc induced velocity w (Selig, AIAA 2010-7938, eqs. 17-19, m = V/(V + w)): 0.8 at m = 0 and 1.8 at m >= 0.75, read off the plot of Fig. 5 (approximate); the text gives ~1 at static thrust (free-jet theory) and 'approaches but does not reach 2' (ideal) away from it because of the fuselage"
+        },
+        "swirl_factor": {
+          "value": 0.6,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8; Selig: the swirl offsets ~40 % of the torque roll"
+        },
+        "vertical_drift": {
+          "value": 0.526555,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/extra-300/ex05/derive_physics.py: 1 - d(eps)/d(alpha): the wake drifts with the downwashed flow"
+        },
+        "propeller_sidewash": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, h(a)*v_c + g(a)*N/(2*mdot), applied as published (1); also selects the piecewise swirl quadrature of the legacy pieces (P51-26)"
+        },
+        "wing_wash_factor": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "inboard wing/aileron axial slipstream wash multiplier (1.0 = same axial wake increment w.dv as the tail wake); enables low/zero-airspeed aileron authority and root lift in 3D hover/harrier"
+        },
+        "pieces": [
+          {
+            "surface": "vertical",
+            "area": {
+              "value": 0.051391,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "root": {
+              "value": [
+                0.849684,
+                0.0,
+                0.047264
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "span": {
+              "value": 0.235836,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "chords": {
+              "value": [
+                0.257349,
+                0.1082
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.049722,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "root": {
+              "value": [
+                0.837779,
+                0.0,
+                0.0262
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "span": {
+              "value": 0.3125,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "chords": {
+              "value": [
+                0.1951,
+                0.1357
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.049722,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "root": {
+              "value": [
+                0.837779,
+                0.0,
+                0.0262
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                -1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "span": {
+              "value": 0.3125,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            },
+            "chords": {
+              "value": [
+                0.1951,
+                0.1357
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/extra-300/ex05/derive_physics.py: tail piece from geometry.json"
+            }
+          }
+        ]
       }
     },
     "kind": "glow_prop",

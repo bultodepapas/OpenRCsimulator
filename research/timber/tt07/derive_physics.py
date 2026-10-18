@@ -160,6 +160,9 @@ def derive(inputs=None):
     surfaces={"wing_aileron_effectiveness":q(effectiveness,"1"),"wing_section_cm_ac":eq("wing_section_moment","1"),
         "attached_limit":eq("attached_limit","deg"),"tail_local_limit":eq("tail_local_limit","deg"),"tail_stall_end":eq("tail_stall_end","deg"),
         "tail_CD0":eq("tail_CD0","1"),"tail_k":eq("tail_k","1"),"tail_CD90":q(1.11+0.018*ar,"1"),
+        "body_side_area":q(0.21,"m2","derived","fuselage lateral projected profile area (length 1.05 m x mean depth 0.20 m)"),
+        "body_side_cd":q(1.1,"1","estimated","fuselage crossflow box drag coefficient in sideslip/knife-edge"),
+        "body_side_position":q([0.05,0.0,0.0],"m","derived","fuselage lateral area centroid relative to LE datum"),
         "horizontal":dict(area=g["tail"]["area"],position=q([xh,0,zh],"m"),lift_slope=q(ah,"1/rad"),control_effectiveness=q(ceh,"1"),incidence=q(ih,"rad"),downwash_gradient=q(deps,"1")),
         "vertical":dict(area=g["fin"]["area_above_fuselage"],position=q([xv,0,zv],"m"),lift_slope=q(av,"1/rad"),control_effectiveness=q(cev,"1"),incidence=q(0.0,"rad"))}
     # Static support shares from the actual tilted contact plane (not horizontal body geometry).
@@ -198,6 +201,19 @@ def derive(inputs=None):
     for field,estimate in [("ct_table","ct_scale"),("cp_table","cp_scale")]:
         prop[field]["value"]=[[x,y*v(estimate)] for x,y in prop[field]["value"]]
         prop[field]["source"]+=f"; explicit estimated mismatch multiplier {v(estimate)}; saturation outside J endpoints, unmeasured static-to-tunnel bridge"
+    prop["slipstream"] = dict(
+        hub=q([hub[2], hub[0], hub[1]], "m", "measured", "TT-02 imported propeller_spin origin in D0 structural axes"),
+        wash_factor=q([0.8, 1.8], "1", "borrowed", "Selig, AIAA 2010-7938, eqs. 17-19, Fig. 5: axial velocity increment per disc induced velocity w at m = 0 and m >= 0.75"),
+        swirl_factor=q(0.6, "1", "estimated", "fraction of propeller angular momentum reaching the tail (Selig / research synthesis 0.5-0.8)"),
+        vertical_drift=q(1 - deps, "1", "derived", SOURCE + ": 1 - d(eps)/d(alpha) downwashed wake drift"),
+        propeller_sidewash=q(1.0, "1", "borrowed", "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, applied as published (1); also selects piecewise swirl quadrature (P51-26)"),
+        wing_wash_factor=q(1.0, "1", "estimated", "inboard wing/aileron axial slipstream wash multiplier (1.0 = same axial wake increment w.dv as the tail wake); enables low/zero-airspeed aileron authority and root lift in 3D hover/harrier"),
+        pieces=[
+            dict(surface="vertical", area=g["fin"]["area_above_fuselage"], root=q([xv, 0.0, gv("fin", "root_y")], "m"), span_dir=q([0.0, 0.0, 1.0], "1"), span=q(hv, "m"), chords=q([gv("fin", "root_chord"), gv("fin", "tip_chord")], "m")),
+            dict(surface="horizontal", area=q(sh / 2, "m2"), root=q([xh, 0.0, zh], "m"), span_dir=q([0.0, 1.0, 0.0], "1"), span=q(bh / 2, "m"), chords=q([gv("tail", "root_chord"), gv("tail", "tip_chord")], "m")),
+            dict(surface="horizontal", area=q(sh / 2, "m2"), root=q([xh, 0.0, zh], "m"), span_dir=q([0.0, -1.0, 0.0], "1"), span=q(bh / 2, "m"), chords=q([gv("tail", "root_chord"), gv("tail", "tip_chord")], "m")),
+        ],
+    )
     landmarks=g["landmarks"]
     # R1's tip landmark selected a navigation lens, while r2's max-span cap selects an aft vertex.
     # Use a stable leading-skin sample for collision: outermost measured right-wing station, mirrored left.
@@ -238,7 +254,7 @@ def derive(inputs=None):
       inventory=items,start=dict(level_speed=q(speed,"m/s",source=SOURCE+": 1.6 times clean 1-g stall from manual mass, measured model area and estimated CL_max")),
       controls=dict(surface_ids={"aileron_left":"surface_aileron_left","aileron_right":"surface_aileron_right","elevator":"surface_elevator","rudder":"surface_rudder"},max_throw={key:q(throw_degrees(g["controls"]["manual_mm"][key]["high"],g["controls"][key]["r"]["value"]),"deg",source=SOURCE+": 2 asin(manual displacement/(2 measured hinge radius)); TT-02 assumed measurement station") for key in ["aileron","elevator","rudder"]},servo_full_throw_time=eq("servo_full_throw_time","s")),
       aero=dict(source=SOURCE+": geometry/textbook estimate, no identified Timber aerodynamics",conventions=i["conventions"],coefficients=coefficients,surfaces=surfaces,reference_coefficients=dict(CLadot=q(2*ah_free*sh/s*(xh-cg_x)/c*deps,"1/rad")),
-          envelope=dict(CL_max=eq("CL_max","1"),CL_min=eq("CL_min","1"),stall_blend_width=eq("stall_blend_width","deg"),CD90=q(1.11+0.018*ar,"1"),sideslip_blend=q([15,25],"deg","estimated","TT-07 linear-to-sine sideslip blend"))),
+          envelope=dict(CL_max=eq("CL_max","1"),CL_min=eq("CL_min","1"),stall_blend_width=eq("stall_blend_width","deg"),stall_plateau=q(0.75,"1","estimated","Viterna post-stall plateau factor: preserves 75 % of peak suction post-stall, preventing abrupt wing drop in stall and snap maneuvers"),CD90=q(1.11+0.018*ar,"1"),sideslip_blend=q([15,25],"deg","estimated","TT-07 linear-to-sine sideslip blend"))),
       propulsion=propulsion,landing_gear=dict(contacts=gc,rolling_resistance=eq("rolling_resistance","1"),side_friction=eq("side_friction","1"),peak_slip_angle=eq("peak_slip_angle","deg"),breakaway_factor=eq("breakaway_factor","1")),
       crash_hull=q(hull,"m",source=SOURCE+": TT-19 outermost measured wing leading-skin station mirrored left/right (not max-span cap or nav lens), imported nose/tail extrema, tail tips, fuselage skin bottoms and rotor lower envelope; wheels excluded"),
       crash_hull_ids=hull_ids,

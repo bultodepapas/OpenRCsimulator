@@ -765,6 +765,28 @@
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
       },
+      "body_side_area": {
+        "value": 0.21,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "fuselage lateral projected profile area (length 1.05 m x mean depth 0.20 m)"
+      },
+      "body_side_cd": {
+        "value": 1.1,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fuselage crossflow box drag coefficient in sideslip/knife-edge"
+      },
+      "body_side_position": {
+        "value": [
+          0.05,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "fuselage lateral area centroid relative to LE datum"
+      },
       "horizontal": {
         "area": {
           "value": 0.075715,
@@ -870,6 +892,12 @@
         "unit": "deg",
         "kind": "estimated",
         "source": "TT-07 inputs.json: Attached-to-flat-plate stall blending width, degrees"
+      },
+      "stall_plateau": {
+        "value": 0.75,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Viterna post-stall plateau factor: preserves 75 % of peak suction post-stall, preventing abrupt wing drop in stall and snap maneuvers"
       },
       "CD90": {
         "value": 1.2430994443544023,
@@ -1189,6 +1217,185 @@
         "unit": "m",
         "kind": "derived",
         "source": "research/timber/tt07/derive_physics.py: imported propeller hub minus inventory CG, structural axes"
+      },
+      "slipstream": {
+        "hub": {
+          "value": [
+            -0.2515,
+            0.0,
+            0.0
+          ],
+          "unit": "m",
+          "kind": "measured",
+          "source": "TT-02 imported propeller_spin origin in D0 structural axes"
+        },
+        "wash_factor": {
+          "value": [
+            0.8,
+            1.8
+          ],
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Selig, AIAA 2010-7938, eqs. 17-19, Fig. 5: axial velocity increment per disc induced velocity w at m = 0 and m >= 0.75"
+        },
+        "swirl_factor": {
+          "value": 0.6,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "fraction of propeller angular momentum reaching the tail (Selig / research synthesis 0.5-0.8)"
+        },
+        "vertical_drift": {
+          "value": 0.6273336046469419,
+          "unit": "1",
+          "kind": "derived",
+          "source": "research/timber/tt07/derive_physics.py: 1 - d(eps)/d(alpha) downwashed wake drift"
+        },
+        "propeller_sidewash": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, applied as published (1); also selects piecewise swirl quadrature (P51-26)"
+        },
+        "wing_wash_factor": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "estimated",
+          "source": "inboard wing/aileron axial slipstream wash multiplier (1.0 = same axial wake increment w.dv as the tail wake); enables low/zero-airspeed aileron authority and root lift in 3D hover/harrier"
+        },
+        "pieces": [
+          {
+            "surface": "vertical",
+            "area": {
+              "value": 0.024848,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "assets/aircraft/turbo-lumber-evolution/build_geometry.py: trapezoid between root_y and top_y"
+            },
+            "root": {
+              "value": [
+                0.718243398432685,
+                0.0,
+                0.03
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                0.0,
+                1.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "span": {
+              "value": 0.148,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "chords": {
+              "value": [
+                0.216549,
+                0.11924
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.0378575,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "root": {
+              "value": [
+                0.6598155,
+                0.0,
+                -0.032
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "span": {
+              "value": 0.298,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "chords": {
+              "value": [
+                0.147511,
+                0.106568
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            }
+          },
+          {
+            "surface": "horizontal",
+            "area": {
+              "value": 0.0378575,
+              "unit": "m2",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "root": {
+              "value": [
+                0.6598155,
+                0.0,
+                -0.032
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "span_dir": {
+              "value": [
+                0.0,
+                -1.0,
+                0.0
+              ],
+              "unit": "1",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "span": {
+              "value": 0.298,
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            },
+            "chords": {
+              "value": [
+                0.147511,
+                0.106568
+              ],
+              "unit": "m",
+              "kind": "derived",
+              "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
+            }
+          }
+        ]
       }
     },
     "id": "propulsion_main"

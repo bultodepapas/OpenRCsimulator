@@ -158,6 +158,7 @@ def aircraft(two, install, suffix='', fx61=False):
     prop['rotating_inertia']=q(prop_polar+crank_polar,'kg·m2','derived',
                               EST+'; uniform-box prop polar m*(diameter^2+thickness^2)/12 plus estimated crank polar '+str(crank_polar)+' kg m^2; no measured blade mass distribution')
     prop['thrust_angles']=q([0.,0.],'deg')
+    prop.pop('slipstream', None)
     for contact in raw['landing_gear']['contacts']:
         for key in ['stiffness','damping']:
             if key in contact:

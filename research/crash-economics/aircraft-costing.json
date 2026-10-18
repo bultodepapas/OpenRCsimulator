@@ -369,7 +369,7 @@
       ],
       "notes": "Own physical inventory coverage, with explicit null prices and five servo units. Full replacement total remains unknown. No baseline BOM inheritance.",
       "dossier": {
-        "expected_source_sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62",
+        "expected_source_sha256": "a9066a07c01cf35309ae6b307d611ff68baaf9702e79f7094d3c78a1c6437ddc",
         "lines": [
           {
             "id": "engine_main",
@@ -1259,7 +1259,7 @@
       ],
       "notes": "Independent partial inventory coverage, reviewed 2026-10-16. Known replacement-parts subtotal $465.87 across seven physical rows; five physical groups and assembly remain unpriced. Wing and propeller/spinner values are composite estimates from separate offers. Six servo proxies are counted once: four in the wing and two in tail_servos. Complete package alternatives remain excluded. Automatic propeller billing remains disabled because propeller_main also includes its spinner.",
       "dossier": {
-        "expected_source_sha256": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+        "expected_source_sha256": "fea3abd9c95e874ee31f2b95de185d1a612c1e63b4cebb21e207b2900fbb6559",
         "lines": [
           {
             "id": "wing_main",
