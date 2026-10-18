@@ -35,7 +35,20 @@ Run `app/export.sh` in a fresh clone to verify every pack without loose-file fal
 
 `python3 tools/trees/place.py` regenerates only `objects` in the default field. `--check` verifies the committed data without writing it. Positions are pilot-relative NED offsets on a 0.25 m grid, marked as derived estimates rather than surveyed geography. The L6b recipe remains frozen at 480 near trees, seed `610602`, radius 270–570 m; its position digest is `9b42b61ff36e5df25ef0245702e4d75965ea805f81de56a1c353fd1f0c722875`.
 
-L7 adds 1,200 far trees from seed `610607`: twelve 100-tree clusters with 55 m patch radii, tree centers in the 600–1,500 m ring, 4.5 m minimum within-patch spacing and the same two crown-cleared gaps and runway/mown corridor. They share the existing eight azimuth-sector MultiMeshes, so the model keeps six triangles per tree and adds no draw calls. The field loader caps the combined set at 1,680 positions and 1,500 m.
+The historical `existing` control places 1,200 far trees from seed `610607`: twelve 100-tree clusters with 55 m patch radii, tree centers in the 600–1,500 m ring, 4.5 m minimum within-patch spacing and the same two crown-cleared gaps and runway/mown corridor. The canonical habitat recipe shares the existing eight azimuth-sector MultiMeshes, so the model keeps six triangles per tree and adds no draw calls. The field loader caps the combined set at 1,680 positions and 1,500 m.
+
+After native field-load and capture review, `habitat-v1` is the canonical default. It keeps the frozen 480 near coordinates and 1,200 far-tree budget, but varies twelve far-patch counts (55, 64, 72, 82, 88, 92, 96, 102, 110, 124, 142 and 173), anisotropic axes (68–155 m by 43–92 m), orientation and irregular notched margins. Patch envelopes leave intervening gaps; every crown still clears the existing viewing gaps and runway/mown corridor, and all far trees retain at least 4.5 m spacing on the 0.25 m grid. Seed `610617` produces bounds N `-1326.50..1205.25` m and E `-1266.00..1176.25` m. The field provenance records the seed, counts, overall bounds and position hashes; generator JSON also lists each patch center, shape and bounds. These are estimated visual-composition data, not surveyed geography or an ecological simulation. The explicit `--recipe existing` option retains the previous circular-patch layout as a historical control.
+
+Verify the canonical field and, when comparing the historical control, generate it in a copy of the production field:
+
+```powershell
+New-Item -ItemType Directory -Force tmp/tree-quality-implementation | Out-Null
+python3 tools/trees/place.py --check
+python3 tools/trees/place.py --recipe habitat-v1 --check
+Copy-Item app/data/fields/default.json tmp/tree-quality-implementation/historical-field.json
+python3 tools/trees/place.py --recipe existing --field tmp/tree-quality-implementation/historical-field.json
+python3 tools/trees/place.py --recipe existing --field tmp/tree-quality-implementation/historical-field.json --check
+```
 
 The CPU and shader keep the original +2400 identity hash coordinates for every L6b position. They use +8192 only when a south/west coordinate falls below that original unsigned range. Packed transforms use four exact bytes with +8192, which covers the full L7 radius through Compatibility's float16 instance-data path. Near instances form a prefix in each sector; `near_instance_count` and `far_instance_count` metadata let captures show only the near ring through `MultiMesh.visible_instance_count`.
 

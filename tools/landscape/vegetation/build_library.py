@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Extract the pinned, unmodified Quaternius vegetation source into the Godot app."""
+"""Build a pinned Quaternius vegetation library with a narrow runtime color repair."""
 
 from __future__ import annotations
 
 import argparse
 import hashlib
 import json
-from pathlib import Path, PurePosixPath
+import math
+from pathlib import Path, PurePosixPath, PureWindowsPath
+import struct
 import sys
 from zipfile import BadZipFile, ZipFile
 
@@ -66,11 +68,16 @@ SOURCE_NOTICES = {
 }
 
 # These are direct glTF mesh exports from the Standard archive. The pipeline
-# copies them byte-for-byte; it does not author or rebuild plant geometry.
+# preserves their geometry and source files; only runtime tree COLOR_0 buffer
+# values within the reviewed float tolerance may be derived below.
 ASSETS = (
     ("common_tree_1", "CommonTree_1", "tree", "mature broadleaf tree"),
+    ("common_tree_2", "CommonTree_2", "tree", "fuller branching broadleaf tree"),
     ("common_tree_3", "CommonTree_3", "tree", "upright broadleaf tree"),
+    ("common_tree_4", "CommonTree_4", "tree", "sparse crown broadleaf tree"),
     ("pine_1", "Pine_1", "tree", "mature pine tree"),
+    ("pine_2", "Pine_2", "tree", "broad-cone pine tree"),
+    ("pine_3", "Pine_3", "tree", "open-lower-trunk pine tree"),
     ("bush_common", "Bush_Common", "shrub", "leafy shrub"),
     ("bush_common_flowers", "Bush_Common_Flowers", "shrub", "flowering shrub"),
     ("grass_common_short", "Grass_Common_Short", "grass", "short meadow grass clump"),
@@ -89,6 +96,12 @@ CROP_ASSETS = (
 
 REED_ASSETS = (
     ("reed_aredon", "reed", "low-poly reed clump"),
+)
+
+TREE_COLOR_OVERSHOOT_LIMIT = 1.0002
+TREE_COLOR_DERIVATION_METHOD = (
+    "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; "
+    "reject negative, non-finite, over-limit, or unsupported color accessors."
 )
 
 
@@ -111,7 +124,15 @@ def sha256_file(path: Path) -> str:
 def archive_path(value: str) -> str:
     """Accept only a safe, archive-relative POSIX path."""
     parsed = PurePosixPath(value)
-    if parsed.is_absolute() or not parsed.parts or any(part in ("", ".", "..") for part in parsed.parts):
+    windows = PureWindowsPath(value)
+    if (
+        parsed.is_absolute()
+        or windows.drive
+        or windows.root
+        or not parsed.parts
+        or any(part in ("", ".", "..") for part in parsed.parts)
+        or ":" in value
+    ):
         raise BuildError(f"unsafe archive path: {value!r}")
     if "\\" in value or "\x00" in value:
         raise BuildError(f"unsafe archive path: {value!r}")
@@ -223,6 +244,139 @@ def gltf_metadata(archive: ZipFile, source_name: str, gltf_bytes: bytes) -> dict
     }
 
 
+def derive_tree_color_buffer(
+    source_name: str,
+    gltf_bytes: bytes,
+    buffer_bytes: bytes,
+    buffer_index: int,
+) -> tuple[bytes, dict]:
+    """Repair only the reviewed float COLOR_0 overshoot in a runtime tree buffer."""
+    try:
+        gltf = json.loads(gltf_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BuildError(f"invalid JSON in glTF {source_name}: {exc}") from exc
+
+    buffers = gltf.get("buffers", [])
+    if buffer_index >= len(buffers) or buffer_index < 0:
+        raise BuildError(f"{source_name}: tree buffer index is missing")
+    declared_buffer_bytes = buffers[buffer_index].get("byteLength")
+    if not isinstance(declared_buffer_bytes, int) or declared_buffer_bytes != len(buffer_bytes):
+        raise BuildError(
+            f"{source_name}: tree buffer byteLength does not match its source member"
+        )
+    if gltf.get("animations") or gltf.get("skins"):
+        raise BuildError(f"{source_name}: animated or skinned tree buffers are unsupported")
+
+    accessors = gltf.get("accessors", [])
+    buffer_views = gltf.get("bufferViews", [])
+    color_indices: set[int] = set()
+    other_indices: set[int] = set()
+    for mesh in gltf.get("meshes", []):
+        for primitive in mesh.get("primitives", []):
+            if primitive.get("targets"):
+                raise BuildError(f"{source_name}: morph-target tree buffers are unsupported")
+            attributes = primitive.get("attributes", {})
+            for semantic, index in attributes.items():
+                if not isinstance(index, int) or index < 0 or index >= len(accessors):
+                    raise BuildError(f"{source_name}: invalid accessor for {semantic}")
+                (color_indices if semantic == "COLOR_0" else other_indices).add(index)
+            index_accessor = primitive.get("indices")
+            if index_accessor is not None:
+                if not isinstance(index_accessor, int) or index_accessor < 0 or index_accessor >= len(accessors):
+                    raise BuildError(f"{source_name}: invalid primitive index accessor")
+                other_indices.add(index_accessor)
+    if not color_indices:
+        raise BuildError(f"{source_name}: tree has no COLOR_0 accessor to inspect")
+    if color_indices & other_indices:
+        raise BuildError(f"{source_name}: COLOR_0 accessor is reused by another semantic")
+
+    # Also protect unreferenced accessors: no unrelated accessor may share bytes
+    # with a color range that this derivation would touch.
+    other_indices.update(set(range(len(accessors))) - color_indices)
+    patch_offsets: set[int] = set()
+    source_color_values: dict[int, float] = {}
+    for accessor_index in sorted(color_indices):
+        accessor = accessors[accessor_index]
+        if accessor.get("componentType") != 5126 or accessor.get("type") not in ("VEC3", "VEC4"):
+            raise BuildError(f"{source_name}: COLOR_0 accessor must use FLOAT VEC3/VEC4")
+        if accessor.get("normalized") or accessor.get("sparse"):
+            raise BuildError(f"{source_name}: normalized or sparse COLOR_0 is unsupported")
+        view_index = accessor.get("bufferView")
+        if not isinstance(view_index, int) or view_index < 0 or view_index >= len(buffer_views):
+            raise BuildError(f"{source_name}: COLOR_0 accessor has no valid bufferView")
+        view = buffer_views[view_index]
+        if view.get("buffer") != buffer_index:
+            raise BuildError(f"{source_name}: COLOR_0 accessor points to another buffer")
+        count = accessor.get("count")
+        if not isinstance(count, int) or count <= 0:
+            raise BuildError(f"{source_name}: COLOR_0 accessor has invalid count")
+        components = 3 if accessor["type"] == "VEC3" else 4
+        element_bytes = components * 4
+        stride = view.get("byteStride", element_bytes)
+        view_offset = view.get("byteOffset", 0)
+        accessor_offset = accessor.get("byteOffset", 0)
+        view_length = view.get("byteLength")
+        if (
+            not isinstance(stride, int)
+            or stride < element_bytes
+            or stride % 4 != 0
+            or not isinstance(view_offset, int)
+            or not isinstance(accessor_offset, int)
+            or view_offset < 0
+            or accessor_offset < 0
+            or not isinstance(view_length, int)
+            or view_length < 0
+            or view_offset + view_length > len(buffer_bytes)
+            or accessor_offset % 4 != 0
+        ):
+            raise BuildError(f"{source_name}: invalid COLOR_0 bufferView layout")
+        first = view_offset + accessor_offset
+        if first + (count - 1) * stride + element_bytes > view_offset + view_length:
+            raise BuildError(f"{source_name}: COLOR_0 accessor exceeds its bufferView")
+        for element in range(count):
+            for component in range(components):
+                offset = first + element * stride + component * 4
+                value = struct.unpack_from("<f", buffer_bytes, offset)[0]
+                if not math.isfinite(value) or value < 0.0 or value > TREE_COLOR_OVERSHOOT_LIMIT:
+                    raise BuildError(
+                        f"{source_name}: COLOR_0 value outside reviewed range at byte {offset}: {value!r}"
+                    )
+                if offset in source_color_values:
+                    raise BuildError(f"{source_name}: overlapping COLOR_0 component ranges")
+                source_color_values[offset] = value
+                if value > 1.0:
+                    patch_offsets.add(offset)
+
+    for accessor_index in sorted(other_indices):
+        accessor = accessors[accessor_index]
+        view_index = accessor.get("bufferView")
+        if view_index is None:
+            continue
+        if not isinstance(view_index, int) or view_index < 0 or view_index >= len(buffer_views):
+            raise BuildError(f"{source_name}: non-color accessor has invalid bufferView")
+        view = buffer_views[view_index]
+        if view.get("buffer") != buffer_index:
+            continue
+        start = view.get("byteOffset", 0)
+        length = view.get("byteLength")
+        if not isinstance(start, int) or not isinstance(length, int) or start < 0 or length < 0:
+            raise BuildError(f"{source_name}: non-color accessor has invalid bufferView bounds")
+        end = start + length
+        if any(start < offset + 4 and offset < end for offset in patch_offsets):
+            raise BuildError(f"{source_name}: COLOR_0 patch overlaps non-color accessor storage")
+
+    runtime_bytes = bytearray(buffer_bytes)
+    for offset in patch_offsets:
+        struct.pack_into("<f", runtime_bytes, offset, 1.0)
+    result = bytes(runtime_bytes)
+    return result, {
+        "method": TREE_COLOR_DERIVATION_METHOD,
+        "derivation_count": len(patch_offsets),
+        "source_buffer_sha256": sha256_bytes(buffer_bytes),
+        "runtime_buffer_sha256": sha256_bytes(result),
+    }
+
+
 def obj_metadata(source_name: str, obj_bytes: bytes) -> dict:
     try:
         source_text = obj_bytes.decode("utf-8")
@@ -286,7 +440,11 @@ def obj_metadata(source_name: str, obj_bytes: bytes) -> dict:
     }
 
 
-def catalog_for(archive: ZipFile, crops_archive: ZipFile, reed_archive: ZipFile) -> tuple[dict, dict[str, bytes]]:
+def catalog_for(
+    archive: ZipFile,
+    crops_archive: ZipFile,
+    reed_archive: ZipFile,
+) -> tuple[dict, dict[str, bytes]]:
     license_bytes = read_member(archive, LICENSE_ENTRY)
     if sha256_bytes(license_bytes) != LICENSE_SHA256:
         raise BuildError("embedded Standard license hash does not match the pinned CC0 evidence")
@@ -301,30 +459,65 @@ def catalog_for(archive: ZipFile, crops_archive: ZipFile, reed_archive: ZipFile)
         metadata = gltf_metadata(archive, source_entry, gltf_bytes)
         runtime_scene = f"res://assets/landscape/vegetation/models/{model_name}.gltf"
         file_entries = list(metadata["dependencies"])
+        tree_buffer_entry: str | None = None
+        tree_buffer_index: int | None = None
+        tree_buffer_derivation: dict | None = None
+        if role == "tree":
+            try:
+                tree_gltf = json.loads(gltf_bytes)
+            except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                raise BuildError(f"invalid JSON in glTF {source_entry}: {exc}") from exc
+            tree_buffers = tree_gltf.get("buffers", [])
+            if len(tree_buffers) != 1 or not isinstance(tree_buffers[0].get("uri"), str):
+                raise BuildError(f"{source_entry}: expected exactly one external tree buffer")
+            tree_buffer_index = 0
+            tree_buffer_entry = (
+                PurePosixPath(source_entry).parent
+                / archive_path(tree_buffers[0]["uri"])
+            ).as_posix()
+            if tree_buffer_entry not in file_entries:
+                raise BuildError(f"{source_entry}: tree buffer is absent from dependency list")
 
         for entry in file_entries:
             if entry not in source_member_bytes:
                 source_member_bytes[entry] = read_member(archive, entry)
             relative = PurePosixPath(entry).relative_to("glTF")
             runtime_path = f"models/{relative.as_posix()}"
-            pending_files[runtime_path] = source_member_bytes[entry]
+            runtime_bytes = source_member_bytes[entry]
+            if role == "tree" and entry == tree_buffer_entry:
+                assert tree_buffer_index is not None
+                runtime_bytes, tree_buffer_derivation = derive_tree_color_buffer(
+                    source_entry,
+                    gltf_bytes,
+                    source_member_bytes[entry],
+                    tree_buffer_index,
+                )
+                tree_buffer_derivation = {
+                    **tree_buffer_derivation,
+                    "path": runtime_path,
+                    "source_entry": entry,
+                }
+            pending_files[runtime_path] = runtime_bytes
             file_origins[runtime_path] = entry
 
-        assets.append(
-            {
-                "id": asset_id,
-                "source_id": "quaternius_standard",
-                "source_name": model_name,
-                "description": description,
-                "role": role,
-                "scene": runtime_scene,
-                "source_entry": source_entry,
-                "source_sha256": sha256_bytes(gltf_bytes),
-                "source_format": "glTF 2.0",
-                **metadata,
-                "lod": {"source_supplied": False, "godot_import_generate": True},
-            }
-        )
+        asset_record = {
+            "id": asset_id,
+            "source_id": "quaternius_standard",
+            "source_name": model_name,
+            "description": description,
+            "role": role,
+            "scene": runtime_scene,
+            "source_entry": source_entry,
+            "source_sha256": sha256_bytes(gltf_bytes),
+            "source_format": "glTF 2.0",
+            **metadata,
+            "lod": {"source_supplied": False, "godot_import_generate": True},
+        }
+        if role == "tree":
+            if tree_buffer_derivation is None:
+                raise BuildError(f"{source_entry}: tree color buffer derivation did not run")
+            asset_record["buffer_derivation"] = tree_buffer_derivation
+        assets.append(asset_record)
 
     def add_obj_family(
         source_archive: ZipFile,
@@ -455,7 +648,10 @@ def catalog_for(archive: ZipFile, crops_archive: ZipFile, reed_archive: ZipFile)
         "sources": source_records,
         "import": {
             "format": "glTF 2.0 and Wavefront OBJ/MTL",
-            "geometry_policy": "unmodified downloaded geometry",
+            "geometry_policy": (
+                "source geometry and glTF files are preserved; runtime trees derive their external "
+                "buffer by clamping only finite float COLOR_0 values in (1, 1.0002] to 1"
+            ),
             "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; Wavefront OBJ assets use supplied geometry",
             "shared_material_policy": "original downloaded glTF materials and textures or OBJ/MTL diffuse materials; shared source files extracted once",
         },
@@ -486,10 +682,61 @@ def write_if_changed(path: Path, data: bytes) -> None:
     temporary.replace(path)
 
 
-def main() -> int:
+def output_path(output_root: Path, relative: str) -> Path:
+    """Resolve a generated relative path and refuse to write outside its root."""
+    safe_relative = archive_path(relative)
+    root = output_root.resolve()
+    target = root.joinpath(*PurePosixPath(safe_relative).parts)
+    try:
+        target.resolve().relative_to(root)
+    except ValueError as exc:
+        raise BuildError(f"generated path escapes output root: {relative!r}") from exc
+    return target
+
+
+def expected_outputs(
+    catalog: dict,
+    library_files: dict[str, bytes],
+    output_root: Path,
+    *,
+    write_source_evidence: bool,
+) -> dict[Path, bytes]:
+    expected = {
+        output_path(output_root, relative): data
+        for relative, data in library_files.items()
+    }
+    expected[output_path(output_root, "catalog.json")] = (
+        json.dumps(catalog, indent=2, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    if write_source_evidence:
+        expected[SOURCE_LICENSE] = library_files["LICENSE.txt"]
+        expected.update(SOURCE_NOTICES)
+    return expected
+
+
+def display_path(path: Path) -> str:
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="verify archive and generated files without writing")
-    args = parser.parse_args()
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        help=(
+            "write the generated library here instead of app/assets/landscape/vegetation; "
+            "relative paths are resolved from the repository root"
+        ),
+    )
+    args = parser.parse_args(argv)
+    output_root = args.output_root or RUNTIME
+    if not output_root.is_absolute():
+        output_root = ROOT / output_root
+    output_root = output_root.resolve()
 
     pinned_archives = (
         (ARCHIVE, ARCHIVE_BYTES, ARCHIVE_SHA256, "Quaternius Standard"),
@@ -510,26 +757,30 @@ def main() -> int:
     try:
         with ZipFile(ARCHIVE) as archive:
             with ZipFile(CROPS_ARCHIVE) as crops_archive, ZipFile(REED_ARCHIVE) as reed_archive:
-                catalog, runtime_files = catalog_for(archive, crops_archive, reed_archive)
+                catalog, runtime_files = catalog_for(
+                    archive,
+                    crops_archive,
+                    reed_archive,
+                )
     except BadZipFile as exc:
         raise BuildError(f"source archive is not a valid ZIP: {exc}") from exc
 
-    expected: dict[Path, bytes] = {
-        RUNTIME / relative: data for relative, data in runtime_files.items()
-    }
-    expected[SOURCE_LICENSE] = runtime_files["LICENSE.txt"]
-    expected.update(SOURCE_NOTICES)
-    expected[RUNTIME_CATALOG] = (json.dumps(catalog, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+    expected = expected_outputs(
+        catalog,
+        runtime_files,
+        output_root,
+        write_source_evidence=args.output_root is None,
+    )
 
     if args.check:
         errors: list[str] = []
         for path, expected_bytes in expected.items():
             if not path.is_file():
-                errors.append(f"missing generated file: {path.relative_to(ROOT).as_posix()}")
+                errors.append(f"missing generated file: {display_path(path)}")
                 continue
             actual = path.read_bytes()
             if actual != expected_bytes:
-                errors.append(f"generated file differs: {path.relative_to(ROOT).as_posix()}")
+                errors.append(f"generated file differs: {display_path(path)}")
         if errors:
             raise BuildError("\n".join(errors))
     else:
@@ -539,7 +790,8 @@ def main() -> int:
         f"{len(catalog['assets'])} imported vegetation assets, "
         f"{catalog['counts']['source_triangles_one_of_each']:,} source triangles, "
         f"{len(catalog['files'])} verified runtime files; "
-        f"{len(pinned_archives)} pinned source archives verified"
+        f"{len(pinned_archives)} pinned source archives verified; "
+        f"output={display_path(output_root)}"
     )
     return 0
 

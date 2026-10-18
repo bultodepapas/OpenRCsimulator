@@ -326,7 +326,7 @@ void fragment() {
 		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
 	}
 	float detail_weight = turf_weight(turf_dx, turf_dy, d);
-	float photo_weight = rc_surface_enabled ? rc_near_weight(turf_dx, turf_dy, d) : 0.0;
+	float photo_weight = (rc_surface_enabled || grass_photo_enabled) ? rc_near_weight(turf_dx, turf_dy, d) : 0.0;
 	detail_weight *= 1.0 - photo_weight;
 	if (detail_weight > 0.0) {
 		vec3 detail = turf_sample(world_pos.xz, turf_dx, turf_dy);
@@ -343,13 +343,13 @@ void fragment() {
 	METALLIC = 0.0;
 	SPECULAR = 0.0;
 	rc_soil_specular = 0.0;
-	if (rc_surface_enabled) {
+	if (rc_surface_enabled || grass_photo_enabled) {
 		vec2 uv_a;
 		vec2 uv_b;
 		float uv_blend;
 		rc_uvs(world_pos.xz, 1.4, uv_a, uv_b, uv_blend);
 		vec3 base_normal = normalize(NORMAL);
-		float dirt_weight = rc_track_surface ? smoothstep(0.0, 1.0, clamp(rc_coverage, 0.0, 1.0)) : 0.0;
+		float dirt_weight = (rc_surface_enabled && rc_track_surface) ? smoothstep(0.0, 1.0, clamp(rc_coverage, 0.0, 1.0)) : 0.0;
 		if (photo_weight > 0.0 && dirt_weight < 1.0) {
 			vec3 grass_color;
 			vec3 grass_normal;

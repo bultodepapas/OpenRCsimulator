@@ -1,0 +1,3812 @@
+{
+	"assets": [
+		{
+			"available": true,
+			"catalog": {
+				"grounded_bounds_m": {
+					"max": [
+						0.283228,
+						1.334103,
+						0.257887
+					],
+					"min": [
+						-0.355642,
+						0.0,
+						-0.479378
+					],
+					"size": [
+						0.63887,
+						1.334103,
+						0.737265
+					]
+				},
+				"lod": {
+					"godot_import_generate": true,
+					"source_supplied": false
+				},
+				"scene": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+				"source_bounds_m": {
+					"ground_offset": 0.022385,
+					"height": 1.334103,
+					"max": [
+						0.283228,
+						1.311718,
+						0.257887
+					],
+					"min": [
+						-0.355642,
+						-0.022385,
+						-0.479378
+					],
+					"size": [
+						0.63887,
+						1.334103,
+						0.737265
+					]
+				},
+				"source_id": "quaternius_standard",
+				"source_materials_manifest": 1.0,
+				"source_name": "Grass_Common_Short",
+				"source_sha256_manifest": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
+				"source_surfaces_manifest": 1.0,
+				"source_triangles_manifest": 155.0
+			},
+			"diagnostics": [
+				{
+					"code": "material_source_gltf_to_effective_import_mismatch",
+					"message": "vertex_color differs at source_gltf_to_effective_import.",
+					"severity": "warning"
+				}
+			],
+			"feature_fidelity": [],
+			"id": "grass_common_short",
+			"import_settings": {
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf.import",
+				"values": {
+					"gltf/embedded_image_handling": 1,
+					"gltf/texture_map_mode": 1,
+					"materials/extract": 0,
+					"materials/extract_format": 0,
+					"meshes/create_shadow_meshes": true,
+					"meshes/ensure_tangents": true,
+					"meshes/generate_lods": true,
+					"nodes/apply_root_scale": true,
+					"nodes/root_scale": 1.0
+				}
+			},
+			"parts": [
+				{
+					"local_bounds": {
+						"end": [
+							0.283228069543839,
+							1.31171822547913,
+							0.257887184619904
+						],
+						"position": [
+							-0.355642408132553,
+							-0.0223852153867483,
+							-0.479378283023834
+						],
+						"size": [
+							0.638870477676392,
+							1.33410346508026,
+							0.737265467643738
+						]
+					},
+					"mesh_class": "ArrayMesh",
+					"mesh_name": "Grass_Common_Short_Plane_014",
+					"mesh_resource_path": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf::ArrayMesh_6u4bf",
+					"part_index": 0,
+					"part_transform": {
+						"basis_x": [
+							1.0,
+							0.0,
+							0.0
+						],
+						"basis_y": [
+							0.0,
+							1.0,
+							0.0
+						],
+						"basis_z": [
+							0.0,
+							0.0,
+							1.0
+						],
+						"origin": [
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					"scene_bounds": {
+						"end": [
+							0.283228069543839,
+							1.31171822547913,
+							0.257887184619904
+						],
+						"position": [
+							-0.355642408132553,
+							-0.0223852153867483,
+							-0.479378283023834
+						],
+						"size": [
+							0.638870477676392,
+							1.33410346508026,
+							0.737265467643738
+						]
+					},
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"effective_import_material": {
+								"available": true,
+								"class": "StandardMaterial3D",
+								"generated_shader_inspection": {
+									"material_has_get_rid": true,
+									"material_has_get_shader_rid": false,
+									"rendering_server_has_material_get_shader": false,
+									"rendering_server_has_shader_get_code": true,
+									"shader_code": "unavailable: generated StandardMaterial3D shader code was not queried",
+									"status": "unavailable: required RenderingServer method absent in this build"
+								},
+								"instance_id_runtime_only": "-9223372007846967843",
+								"properties": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_antialiasing_mode": {
+										"enum_hint": "Disabled,Alpha Edge Blend,Alpha Edge Clip",
+										"value": 0
+									},
+									"alpha_scissor_threshold": 0.5,
+									"anisotropy_enabled": false,
+									"ao_enabled": false,
+									"ao_texture": null,
+									"backlight_enabled": false,
+									"clearcoat_enabled": false,
+									"cull_mode": {
+										"enum_hint": "Back,Front,Disabled",
+										"value": 2
+									},
+									"depth_draw_mode": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"detail_enabled": false,
+									"diffuse_mode": {
+										"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+										"value": 0
+									},
+									"emission": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"emission_enabled": false,
+									"emission_texture": null,
+									"heightmap_enabled": false,
+									"metallic": 0.0,
+									"metallic_texture": null,
+									"metallic_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"normal_enabled": false,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"roughness": 1.0,
+									"roughness_texture": null,
+									"roughness_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"shading_mode": {
+										"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+										"value": 1
+									},
+									"specular_mode": {
+										"enum_hint": "SchlickGGX,Toon,Disabled",
+										"value": 0
+									},
+									"texture_filter": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"texture_repeat": true,
+									"transparency": {
+										"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+										"value": 0
+									},
+									"uv1_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"uv1_triplanar": false,
+									"uv2_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv2_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false,
+									"vertex_color_use_as_albedo": false
+								},
+								"resource_name": "Grass",
+								"resource_path": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf::StandardMaterial3D_wewa5"
+							},
+							"feature_fidelity": [
+								{
+									"effective_import": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"feature": "base_color_factor",
+									"finding": "",
+									"mapping": "copied by adapter when BaseMaterial3D",
+									"production_zero_wind": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"source": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									]
+								},
+								{
+									"effective_import": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"feature": "base_color_texture",
+									"finding": "",
+									"mapping": "copied with use flag and UV1 transform",
+									"production_zero_wind": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"source": {
+										"image_index": 0,
+										"image_uri": "Grass.png",
+										"index": 0,
+										"sampler": {
+											"magFilter": 9729.0,
+											"minFilter": 9987.0
+										},
+										"sampler_index": 0,
+										"status": "present",
+										"tex_coord": 0,
+										"texture_transform": "absent"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"enabled": true,
+										"texture": {
+											"class": "CompressedTexture2D",
+											"image": {
+												"alpha_mode": 0,
+												"format": 5,
+												"has_mipmaps": false,
+												"height": 512,
+												"width": 512
+											},
+											"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+											"size": [
+												512.0,
+												512.0
+											]
+										}
+									}
+								},
+								{
+									"effective_import": false,
+									"feature": "vertex_color",
+									"finding": "One or more fidelity stages differ; inspect stage_statuses to identify which boundary differs.",
+									"mapping": "copied by adapter when BaseMaterial3D",
+									"production_zero_wind": false,
+									"source": {
+										"mesh_color_data": {
+											"available": true,
+											"count": 153,
+											"max_rgba": [
+												1.0,
+												1.0,
+												1.0,
+												1.0
+											],
+											"min_rgba": [
+												0.0,
+												0.0,
+												0.0,
+												1.0
+											],
+											"nonwhite": true,
+											"nonwhite_count": 135
+										},
+										"source_attribute": 0.0
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "mismatch"
+									},
+									"status": "mismatch",
+									"wind_adapter_zero_strength": {
+										"enabled": false,
+										"srgb": false
+									}
+								},
+								{
+									"effective_import": {
+										"uv1_offset": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0,
+											1.0
+										]
+									},
+									"feature": "uv0_transform",
+									"finding": "",
+									"mapping": "UV1 scale/offset copied; UV2 and advanced transforms not exposed",
+									"production_zero_wind": {
+										"uv1_offset": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0,
+											1.0
+										]
+									},
+									"source": {
+										"source_attribute": 3.0,
+										"source_texture_ref": {
+											"image_index": 0,
+											"image_uri": "Grass.png",
+											"index": 0,
+											"sampler": {
+												"magFilter": 9729.0,
+												"minFilter": 9987.0
+											},
+											"sampler_index": 0,
+											"status": "present",
+											"tex_coord": 0,
+											"texture_transform": "absent"
+										}
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"uv1_offset": [
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0
+										]
+									}
+								},
+								{
+									"effective_import": 0.0,
+									"feature": "metallic_factor",
+									"finding": "",
+									"mapping": "scalar copied by adapter when BaseMaterial3D",
+									"production_zero_wind": 0.0,
+									"source": 0.0,
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": 0.0
+								},
+								{
+									"effective_import": 1.0,
+									"feature": "roughness_factor",
+									"finding": "",
+									"mapping": "scalar copied by adapter when BaseMaterial3D",
+									"production_zero_wind": 1.0,
+									"source": 1.0,
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": 1.0
+								},
+								{
+									"effective_import": null,
+									"feature": "metallic_roughness_texture",
+									"finding": "",
+									"mapping": "unsupported if source/import uses a metallic-roughness texture",
+									"production_zero_wind": null,
+									"source": {
+										"status": "absent_in_source"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": "no adapter uniform"
+								},
+								{
+									"effective_import": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									},
+									"feature": "normal_texture",
+									"finding": "",
+									"mapping": "normal texture and scale copied when enabled",
+									"production_zero_wind": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									},
+									"source": {
+										"status": "absent_in_source"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									}
+								},
+								{
+									"effective_import": {
+										"threshold": 0.5,
+										"transparency": {
+											"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+											"value": 0
+										}
+									},
+									"feature": "alpha_mode",
+									"finding": "",
+									"mapping": "only ALPHA_SCISSOR is mapped; blend/hash/coverage modes are unsupported",
+									"production_zero_wind": {
+										"threshold": 0.5,
+										"transparency": {
+											"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+											"value": 0
+										}
+									},
+									"source": {
+										"cutoff_raw": "omitted",
+										"gltf_default": "OPAQUE",
+										"raw": "omitted"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"scissor_enabled": false,
+										"threshold": 0.5
+									}
+								},
+								{
+									"effective_import": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"feature": "depth_draw_mode",
+									"finding": "",
+									"mapping": "opaque geometry uses depth_draw_opaque in adapter",
+									"production_zero_wind": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"source": {
+										"alpha_mode": "OPAQUE"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"cull_mode": {
+											"enum_hint": "Back,Front,Disabled",
+											"value": 2
+										}
+									},
+									"feature": "double_sided_culling",
+									"finding": "",
+									"mapping": "adapter hard-codes cull_disabled",
+									"production_zero_wind": {
+										"cull_mode": {
+											"enum_hint": "Back,Front,Disabled",
+											"value": 2
+										}
+									},
+									"source": {
+										"source_double_sided": true
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"render_mode": [
+											"cull_disabled"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"diffuse_mode": {
+											"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+											"value": 0
+										},
+										"shading_mode": {
+											"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+											"value": 1
+										},
+										"specular_mode": {
+											"enum_hint": "SchlickGGX,Toon,Disabled",
+											"value": 0
+										}
+									},
+									"feature": "shading_modes",
+									"finding": "",
+									"mapping": "adapter render modes are fixed in the shader; source diffuse/specular enum names are also recorded",
+									"production_zero_wind": {
+										"diffuse_mode": {
+											"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+											"value": 0
+										},
+										"shading_mode": {
+											"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+											"value": 1
+										},
+										"specular_mode": {
+											"enum_hint": "SchlickGGX,Toon,Disabled",
+											"value": 0
+										}
+									},
+									"source": {
+										"source_model": "glTF metallic-roughness PBR"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "unavailable"
+									},
+									"status": "comparison_unavailable",
+									"wind_adapter_zero_strength": {
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"feature": "texture_filter",
+									"finding": "",
+									"mapping": "adapter sampler qualifier is fixed; generated/import filter parity not proven by this field alone",
+									"production_zero_wind": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"source": {
+										"image_index": 0,
+										"image_uri": "Grass.png",
+										"index": 0,
+										"sampler": {
+											"magFilter": 9729.0,
+											"minFilter": 9987.0
+										},
+										"sampler_index": 0,
+										"status": "present",
+										"tex_coord": 0,
+										"texture_transform": "absent"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": "source_color, filter_linear_mipmap;"
+								},
+								{
+									"effective_import": {
+										"ao_enabled": false,
+										"ao_texture": null,
+										"emission_enabled": false,
+										"emission_texture": null
+									},
+									"feature": "secondary_or_extra_material_features",
+									"finding": "",
+									"mapping": "unsupported if an emission or occlusion feature is used by the imported material",
+									"production_zero_wind": {
+										"ao_enabled": false,
+										"ao_texture": null,
+										"emission_enabled": false,
+										"emission_texture": null
+									},
+									"source": {
+										"emissive_factor": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissive_texture": {
+											"status": "absent_in_source"
+										},
+										"occlusion_texture": {
+											"status": "absent_in_source"
+										}
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": "no adapter uniforms"
+								}
+							],
+							"mesh_array_counts": {
+								"bones": 0,
+								"color": 153,
+								"color_summary": {
+									"available": true,
+									"count": 153,
+									"max_rgba": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"min_rgba": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"nonwhite": true,
+									"nonwhite_count": 135
+								},
+								"index": 465,
+								"normal": 153,
+								"tangent": 612,
+								"uv0": 153,
+								"uv1": 0,
+								"vertex": 153,
+								"weights": 0
+							},
+							"production_zero_wind_material": {
+								"available": true,
+								"class": "StandardMaterial3D",
+								"generated_shader_inspection": {
+									"material_has_get_rid": true,
+									"material_has_get_shader_rid": false,
+									"rendering_server_has_material_get_shader": false,
+									"rendering_server_has_shader_get_code": true,
+									"shader_code": "unavailable: generated StandardMaterial3D shader code was not queried",
+									"status": "unavailable: required RenderingServer method absent in this build"
+								},
+								"instance_id_runtime_only": "-9223372007846967843",
+								"properties": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_antialiasing_mode": {
+										"enum_hint": "Disabled,Alpha Edge Blend,Alpha Edge Clip",
+										"value": 0
+									},
+									"alpha_scissor_threshold": 0.5,
+									"anisotropy_enabled": false,
+									"ao_enabled": false,
+									"ao_texture": null,
+									"backlight_enabled": false,
+									"clearcoat_enabled": false,
+									"cull_mode": {
+										"enum_hint": "Back,Front,Disabled",
+										"value": 2
+									},
+									"depth_draw_mode": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"detail_enabled": false,
+									"diffuse_mode": {
+										"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+										"value": 0
+									},
+									"emission": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"emission_enabled": false,
+									"emission_texture": null,
+									"heightmap_enabled": false,
+									"metallic": 0.0,
+									"metallic_texture": null,
+									"metallic_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"normal_enabled": false,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"roughness": 1.0,
+									"roughness_texture": null,
+									"roughness_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"shading_mode": {
+										"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+										"value": 1
+									},
+									"specular_mode": {
+										"enum_hint": "SchlickGGX,Toon,Disabled",
+										"value": 0
+									},
+									"texture_filter": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"texture_repeat": true,
+									"transparency": {
+										"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+										"value": 0
+									},
+									"uv1_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"uv1_triplanar": false,
+									"uv2_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv2_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false,
+									"vertex_color_use_as_albedo": false
+								},
+								"resource_name": "Grass",
+								"resource_path": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf::StandardMaterial3D_wewa5"
+							},
+							"source_gltf_material": {
+								"alpha_cutoff_effective_gltf_default": 0.5,
+								"alpha_cutoff_raw": "omitted",
+								"alpha_mode_effective_gltf_default": "OPAQUE",
+								"alpha_mode_raw": "omitted",
+								"base_color_factor_raw": "omitted",
+								"base_color_texture": {
+									"image_index": 0,
+									"image_uri": "Grass.png",
+									"index": 0,
+									"sampler": {
+										"magFilter": 9729.0,
+										"minFilter": 9987.0
+									},
+									"sampler_index": 0,
+									"status": "present",
+									"tex_coord": 0,
+									"texture_transform": "absent"
+								},
+								"double_sided": true,
+								"emissive_factor_raw": "omitted",
+								"emissive_texture": {
+									"status": "absent_in_source"
+								},
+								"extensions": {},
+								"index": 0,
+								"metallic_factor_raw": 0.0,
+								"metallic_roughness_texture": {
+									"status": "absent_in_source"
+								},
+								"name": "Grass",
+								"normal_texture": {
+									"status": "absent_in_source"
+								},
+								"occlusion_texture": {
+									"status": "absent_in_source"
+								},
+								"roughness_factor_raw": "omitted",
+								"status": "present"
+							},
+							"source_primitive": {
+								"attributes": {
+									"COLOR_0": 0.0,
+									"NORMAL": 2.0,
+									"POSITION": 1.0,
+									"TEXCOORD_0": 3.0
+								},
+								"indices": 4.0,
+								"material": 0.0
+							},
+							"surface_index": 0,
+							"triangle_count": 155,
+							"wind_adapter_at_zero_strength": {
+								"available": true,
+								"instance_parameters": {
+									"sim_clock_and_wind_vec": "unavailable: global uniform values require a running scene/render state",
+									"wind_direction": [
+										0.800000011920929,
+										0.600000023841858
+									],
+									"wind_strength_before_zeroing": 0.0375,
+									"wind_strength_zeroed_for_audit": 0.0
+								},
+								"material": {
+									"available": true,
+									"class": "ShaderMaterial",
+									"instance_id_runtime_only": "-9223372007494646305",
+									"properties": {},
+									"resource_name": "",
+									"resource_path": "",
+									"shader": {
+										"available": true,
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										],
+										"resource_path": "res://scenery/imported_vegetation_wind.gdshader",
+										"sampler_filter": "source_color, filter_linear_mipmap;",
+										"sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437",
+										"source_code_sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437"
+									}
+								},
+								"shader": {
+									"available": true,
+									"render_modes": [
+										"cull_disabled",
+										"depth_draw_opaque",
+										"diffuse_burley",
+										"specular_schlick_ggx"
+									],
+									"resource_path": "res://scenery/imported_vegetation_wind.gdshader",
+									"sampler_filter": "source_color, filter_linear_mipmap;",
+									"sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437",
+									"source_code_sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437"
+								},
+								"shader_parameters": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_scissor_threshold": 0.5,
+									"metallic": 0.0,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"plant_base_y": -0.0223852153867483,
+									"plant_height": 1.334103,
+									"roughness": 1.0,
+									"use_albedo_texture": true,
+									"use_alpha_scissor": false,
+									"use_normal_texture": false,
+									"use_vertex_color": false,
+									"uv1_offset": [
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false
+								},
+								"unsupported_or_unavailable": []
+							}
+						}
+					],
+					"triangle_count": 155
+				}
+			],
+			"source_gltf": {
+				"images": [
+					{
+						"mimeType": "image/png",
+						"name": "Grass",
+						"uri": "Grass.png"
+					}
+				],
+				"material_summary": [
+					{
+						"alpha_cutoff_effective_gltf_default": 0.5,
+						"alpha_cutoff_raw": "omitted",
+						"alpha_mode_effective_gltf_default": "OPAQUE",
+						"alpha_mode_raw": "omitted",
+						"base_color_factor_raw": "omitted",
+						"base_color_texture": {
+							"image_index": 0,
+							"image_uri": "Grass.png",
+							"index": 0,
+							"sampler": {
+								"magFilter": 9729.0,
+								"minFilter": 9987.0
+							},
+							"sampler_index": 0,
+							"status": "present",
+							"tex_coord": 0,
+							"texture_transform": "absent"
+						},
+						"double_sided": true,
+						"emissive_factor_raw": "omitted",
+						"emissive_texture": {
+							"status": "absent_in_source"
+						},
+						"extensions": {},
+						"index": 0,
+						"metallic_factor_raw": 0.0,
+						"metallic_roughness_texture": {
+							"status": "absent_in_source"
+						},
+						"name": "Grass",
+						"normal_texture": {
+							"status": "absent_in_source"
+						},
+						"occlusion_texture": {
+							"status": "absent_in_source"
+						},
+						"roughness_factor_raw": "omitted",
+						"status": "present"
+					}
+				],
+				"materials": [
+					{
+						"doubleSided": true,
+						"name": "Grass",
+						"pbrMetallicRoughness": {
+							"baseColorTexture": {
+								"index": 0.0
+							},
+							"metallicFactor": 0.0
+						}
+					}
+				],
+				"meshes": [
+					{
+						"name": "Plane.014",
+						"primitives": [
+							{
+								"attributes": {
+									"COLOR_0": 0.0,
+									"NORMAL": 2.0,
+									"POSITION": 1.0,
+									"TEXCOORD_0": 3.0
+								},
+								"material": 0.0,
+								"mode": 4
+							}
+						]
+					}
+				],
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+				"sha256_actual": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
+				"sha256_matches_catalog": true,
+				"textures": [
+					{
+						"sampler": 0.0,
+						"source": 0.0
+					}
+				],
+				"version": "2.0"
+			},
+			"source_textures": [
+				{
+					"available": true,
+					"import_settings": {
+						"available": true,
+						"path": "res://assets/landscape/vegetation/models/Grass.png.import",
+						"values": {
+							"compress/high_quality": false,
+							"compress/lossy_quality": 0.7,
+							"compress/mode": 0,
+							"compress/normal_map": 0,
+							"detect_3d/compress_to": 1,
+							"mipmaps/generate": false,
+							"process/fix_alpha_border": true,
+							"process/premult_alpha": false,
+							"roughness/mode": 0
+						}
+					},
+					"imported_texture": {
+						"class": "CompressedTexture2D",
+						"image": {
+							"alpha_mode": 0,
+							"format": 5,
+							"has_mipmaps": false,
+							"height": 512,
+							"width": 512
+						},
+						"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+						"size": [
+							512.0,
+							512.0
+						]
+					},
+					"path": "res://assets/landscape/vegetation/models/Grass.png",
+					"role": "source_gltf_dependency",
+					"source_image": {
+						"alpha_mode": 0,
+						"format": 5,
+						"has_mipmaps": false,
+						"height": 512,
+						"width": 512
+					},
+					"source_sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
+				}
+			],
+			"triangle_totals": {
+				"catalog_match": true,
+				"catalog_source_triangles": 155,
+				"loaded_source_triangles": 155,
+				"material_slots": 1,
+				"surface_count": 1
+			},
+			"unsupported_or_unavailable": [
+				"renderer-generated StandardMaterial3D shader source is reported only when this Godot build exposes the required RenderingServer APIs",
+				"shader compile success and zero-wind pixel parity require a rendered run and are not tested here",
+				"GPU resident texture bytes and draw/frame cost require a GPU capture and are not measured here"
+			]
+		},
+		{
+			"available": true,
+			"catalog": {
+				"grounded_bounds_m": {
+					"max": [
+						0.491522,
+						1.872695,
+						0.514078
+					],
+					"min": [
+						-0.403568,
+						0.0,
+						-0.479033
+					],
+					"size": [
+						0.895089,
+						1.872695,
+						0.993112
+					]
+				},
+				"lod": {
+					"godot_import_generate": true,
+					"source_supplied": false
+				},
+				"scene": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf",
+				"source_bounds_m": {
+					"ground_offset": 0.031362,
+					"height": 1.872695,
+					"max": [
+						0.491522,
+						1.841333,
+						0.514078
+					],
+					"min": [
+						-0.403568,
+						-0.031362,
+						-0.479033
+					],
+					"size": [
+						0.895089,
+						1.872695,
+						0.993112
+					]
+				},
+				"source_id": "quaternius_standard",
+				"source_materials_manifest": 1.0,
+				"source_name": "Grass_Common_Tall",
+				"source_sha256_manifest": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70",
+				"source_surfaces_manifest": 1.0,
+				"source_triangles_manifest": 326.0
+			},
+			"diagnostics": [
+				{
+					"code": "material_source_gltf_to_effective_import_mismatch",
+					"message": "vertex_color differs at source_gltf_to_effective_import.",
+					"severity": "warning"
+				}
+			],
+			"feature_fidelity": [],
+			"id": "grass_common_tall",
+			"import_settings": {
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf.import",
+				"values": {
+					"gltf/embedded_image_handling": 1,
+					"gltf/texture_map_mode": 1,
+					"materials/extract": 0,
+					"materials/extract_format": 0,
+					"meshes/create_shadow_meshes": true,
+					"meshes/ensure_tangents": true,
+					"meshes/generate_lods": true,
+					"nodes/apply_root_scale": true,
+					"nodes/root_scale": 1.0
+				}
+			},
+			"parts": [
+				{
+					"local_bounds": {
+						"end": [
+							0.491521596908569,
+							1.84133303165436,
+							0.514078497886658
+						],
+						"position": [
+							-0.403567671775818,
+							-0.0313622504472733,
+							-0.479033350944519
+						],
+						"size": [
+							0.895089268684387,
+							1.87269532680511,
+							0.993111848831177
+						]
+					},
+					"mesh_class": "ArrayMesh",
+					"mesh_name": "Grass_Common_Tall_Plane_013",
+					"mesh_resource_path": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf::ArrayMesh_83gxs",
+					"part_index": 0,
+					"part_transform": {
+						"basis_x": [
+							1.0,
+							0.0,
+							0.0
+						],
+						"basis_y": [
+							0.0,
+							1.0,
+							0.0
+						],
+						"basis_z": [
+							0.0,
+							0.0,
+							1.0
+						],
+						"origin": [
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					"scene_bounds": {
+						"end": [
+							0.491521596908569,
+							1.84133303165436,
+							0.514078497886658
+						],
+						"position": [
+							-0.403567671775818,
+							-0.0313622504472733,
+							-0.479033350944519
+						],
+						"size": [
+							0.895089268684387,
+							1.87269532680511,
+							0.993111848831177
+						]
+					},
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"effective_import_material": {
+								"available": true,
+								"class": "StandardMaterial3D",
+								"generated_shader_inspection": {
+									"material_has_get_rid": true,
+									"material_has_get_shader_rid": false,
+									"rendering_server_has_material_get_shader": false,
+									"rendering_server_has_shader_get_code": true,
+									"shader_code": "unavailable: generated StandardMaterial3D shader code was not queried",
+									"status": "unavailable: required RenderingServer method absent in this build"
+								},
+								"instance_id_runtime_only": "-9223372006790003231",
+								"properties": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_antialiasing_mode": {
+										"enum_hint": "Disabled,Alpha Edge Blend,Alpha Edge Clip",
+										"value": 0
+									},
+									"alpha_scissor_threshold": 0.5,
+									"anisotropy_enabled": false,
+									"ao_enabled": false,
+									"ao_texture": null,
+									"backlight_enabled": false,
+									"clearcoat_enabled": false,
+									"cull_mode": {
+										"enum_hint": "Back,Front,Disabled",
+										"value": 2
+									},
+									"depth_draw_mode": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"detail_enabled": false,
+									"diffuse_mode": {
+										"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+										"value": 0
+									},
+									"emission": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"emission_enabled": false,
+									"emission_texture": null,
+									"heightmap_enabled": false,
+									"metallic": 0.0,
+									"metallic_texture": null,
+									"metallic_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"normal_enabled": false,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"roughness": 1.0,
+									"roughness_texture": null,
+									"roughness_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"shading_mode": {
+										"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+										"value": 1
+									},
+									"specular_mode": {
+										"enum_hint": "SchlickGGX,Toon,Disabled",
+										"value": 0
+									},
+									"texture_filter": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"texture_repeat": true,
+									"transparency": {
+										"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+										"value": 0
+									},
+									"uv1_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"uv1_triplanar": false,
+									"uv2_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv2_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false,
+									"vertex_color_use_as_albedo": false
+								},
+								"resource_name": "Grass",
+								"resource_path": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf::StandardMaterial3D_eor4u"
+							},
+							"feature_fidelity": [
+								{
+									"effective_import": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"feature": "base_color_factor",
+									"finding": "",
+									"mapping": "copied by adapter when BaseMaterial3D",
+									"production_zero_wind": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"source": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									]
+								},
+								{
+									"effective_import": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"feature": "base_color_texture",
+									"finding": "",
+									"mapping": "copied with use flag and UV1 transform",
+									"production_zero_wind": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"source": {
+										"image_index": 0,
+										"image_uri": "Grass.png",
+										"index": 0,
+										"sampler": {
+											"magFilter": 9729.0,
+											"minFilter": 9987.0
+										},
+										"sampler_index": 0,
+										"status": "present",
+										"tex_coord": 0,
+										"texture_transform": "absent"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"enabled": true,
+										"texture": {
+											"class": "CompressedTexture2D",
+											"image": {
+												"alpha_mode": 0,
+												"format": 5,
+												"has_mipmaps": false,
+												"height": 512,
+												"width": 512
+											},
+											"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+											"size": [
+												512.0,
+												512.0
+											]
+										}
+									}
+								},
+								{
+									"effective_import": false,
+									"feature": "vertex_color",
+									"finding": "One or more fidelity stages differ; inspect stage_statuses to identify which boundary differs.",
+									"mapping": "copied by adapter when BaseMaterial3D",
+									"production_zero_wind": false,
+									"source": {
+										"mesh_color_data": {
+											"available": true,
+											"count": 303,
+											"max_rgba": [
+												1.0,
+												1.0,
+												1.0,
+												1.0
+											],
+											"min_rgba": [
+												0.0,
+												0.0,
+												0.0,
+												1.0
+											],
+											"nonwhite": true,
+											"nonwhite_count": 274
+										},
+										"source_attribute": 0.0
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "mismatch"
+									},
+									"status": "mismatch",
+									"wind_adapter_zero_strength": {
+										"enabled": false,
+										"srgb": false
+									}
+								},
+								{
+									"effective_import": {
+										"uv1_offset": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0,
+											1.0
+										]
+									},
+									"feature": "uv0_transform",
+									"finding": "",
+									"mapping": "UV1 scale/offset copied; UV2 and advanced transforms not exposed",
+									"production_zero_wind": {
+										"uv1_offset": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0,
+											1.0
+										]
+									},
+									"source": {
+										"source_attribute": 3.0,
+										"source_texture_ref": {
+											"image_index": 0,
+											"image_uri": "Grass.png",
+											"index": 0,
+											"sampler": {
+												"magFilter": 9729.0,
+												"minFilter": 9987.0
+											},
+											"sampler_index": 0,
+											"status": "present",
+											"tex_coord": 0,
+											"texture_transform": "absent"
+										}
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"uv1_offset": [
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0
+										]
+									}
+								},
+								{
+									"effective_import": 0.0,
+									"feature": "metallic_factor",
+									"finding": "",
+									"mapping": "scalar copied by adapter when BaseMaterial3D",
+									"production_zero_wind": 0.0,
+									"source": 0.0,
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": 0.0
+								},
+								{
+									"effective_import": 1.0,
+									"feature": "roughness_factor",
+									"finding": "",
+									"mapping": "scalar copied by adapter when BaseMaterial3D",
+									"production_zero_wind": 1.0,
+									"source": 1.0,
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": 1.0
+								},
+								{
+									"effective_import": null,
+									"feature": "metallic_roughness_texture",
+									"finding": "",
+									"mapping": "unsupported if source/import uses a metallic-roughness texture",
+									"production_zero_wind": null,
+									"source": {
+										"status": "absent_in_source"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": "no adapter uniform"
+								},
+								{
+									"effective_import": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									},
+									"feature": "normal_texture",
+									"finding": "",
+									"mapping": "normal texture and scale copied when enabled",
+									"production_zero_wind": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									},
+									"source": {
+										"status": "absent_in_source"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									}
+								},
+								{
+									"effective_import": {
+										"threshold": 0.5,
+										"transparency": {
+											"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+											"value": 0
+										}
+									},
+									"feature": "alpha_mode",
+									"finding": "",
+									"mapping": "only ALPHA_SCISSOR is mapped; blend/hash/coverage modes are unsupported",
+									"production_zero_wind": {
+										"threshold": 0.5,
+										"transparency": {
+											"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+											"value": 0
+										}
+									},
+									"source": {
+										"cutoff_raw": "omitted",
+										"gltf_default": "OPAQUE",
+										"raw": "omitted"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"scissor_enabled": false,
+										"threshold": 0.5
+									}
+								},
+								{
+									"effective_import": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"feature": "depth_draw_mode",
+									"finding": "",
+									"mapping": "opaque geometry uses depth_draw_opaque in adapter",
+									"production_zero_wind": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"source": {
+										"alpha_mode": "OPAQUE"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"cull_mode": {
+											"enum_hint": "Back,Front,Disabled",
+											"value": 2
+										}
+									},
+									"feature": "double_sided_culling",
+									"finding": "",
+									"mapping": "adapter hard-codes cull_disabled",
+									"production_zero_wind": {
+										"cull_mode": {
+											"enum_hint": "Back,Front,Disabled",
+											"value": 2
+										}
+									},
+									"source": {
+										"source_double_sided": true
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"render_mode": [
+											"cull_disabled"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"diffuse_mode": {
+											"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+											"value": 0
+										},
+										"shading_mode": {
+											"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+											"value": 1
+										},
+										"specular_mode": {
+											"enum_hint": "SchlickGGX,Toon,Disabled",
+											"value": 0
+										}
+									},
+									"feature": "shading_modes",
+									"finding": "",
+									"mapping": "adapter render modes are fixed in the shader; source diffuse/specular enum names are also recorded",
+									"production_zero_wind": {
+										"diffuse_mode": {
+											"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+											"value": 0
+										},
+										"shading_mode": {
+											"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+											"value": 1
+										},
+										"specular_mode": {
+											"enum_hint": "SchlickGGX,Toon,Disabled",
+											"value": 0
+										}
+									},
+									"source": {
+										"source_model": "glTF metallic-roughness PBR"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "unavailable"
+									},
+									"status": "comparison_unavailable",
+									"wind_adapter_zero_strength": {
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"feature": "texture_filter",
+									"finding": "",
+									"mapping": "adapter sampler qualifier is fixed; generated/import filter parity not proven by this field alone",
+									"production_zero_wind": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"source": {
+										"image_index": 0,
+										"image_uri": "Grass.png",
+										"index": 0,
+										"sampler": {
+											"magFilter": 9729.0,
+											"minFilter": 9987.0
+										},
+										"sampler_index": 0,
+										"status": "present",
+										"tex_coord": 0,
+										"texture_transform": "absent"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": "source_color, filter_linear_mipmap;"
+								},
+								{
+									"effective_import": {
+										"ao_enabled": false,
+										"ao_texture": null,
+										"emission_enabled": false,
+										"emission_texture": null
+									},
+									"feature": "secondary_or_extra_material_features",
+									"finding": "",
+									"mapping": "unsupported if an emission or occlusion feature is used by the imported material",
+									"production_zero_wind": {
+										"ao_enabled": false,
+										"ao_texture": null,
+										"emission_enabled": false,
+										"emission_texture": null
+									},
+									"source": {
+										"emissive_factor": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissive_texture": {
+											"status": "absent_in_source"
+										},
+										"occlusion_texture": {
+											"status": "absent_in_source"
+										}
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": "no adapter uniforms"
+								}
+							],
+							"mesh_array_counts": {
+								"bones": 0,
+								"color": 303,
+								"color_summary": {
+									"available": true,
+									"count": 303,
+									"max_rgba": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"min_rgba": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"nonwhite": true,
+									"nonwhite_count": 274
+								},
+								"index": 978,
+								"normal": 303,
+								"tangent": 1212,
+								"uv0": 303,
+								"uv1": 0,
+								"vertex": 303,
+								"weights": 0
+							},
+							"production_zero_wind_material": {
+								"available": true,
+								"class": "StandardMaterial3D",
+								"generated_shader_inspection": {
+									"material_has_get_rid": true,
+									"material_has_get_shader_rid": false,
+									"rendering_server_has_material_get_shader": false,
+									"rendering_server_has_shader_get_code": true,
+									"shader_code": "unavailable: generated StandardMaterial3D shader code was not queried",
+									"status": "unavailable: required RenderingServer method absent in this build"
+								},
+								"instance_id_runtime_only": "-9223372006790003231",
+								"properties": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_antialiasing_mode": {
+										"enum_hint": "Disabled,Alpha Edge Blend,Alpha Edge Clip",
+										"value": 0
+									},
+									"alpha_scissor_threshold": 0.5,
+									"anisotropy_enabled": false,
+									"ao_enabled": false,
+									"ao_texture": null,
+									"backlight_enabled": false,
+									"clearcoat_enabled": false,
+									"cull_mode": {
+										"enum_hint": "Back,Front,Disabled",
+										"value": 2
+									},
+									"depth_draw_mode": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"detail_enabled": false,
+									"diffuse_mode": {
+										"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+										"value": 0
+									},
+									"emission": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"emission_enabled": false,
+									"emission_texture": null,
+									"heightmap_enabled": false,
+									"metallic": 0.0,
+									"metallic_texture": null,
+									"metallic_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"normal_enabled": false,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"roughness": 1.0,
+									"roughness_texture": null,
+									"roughness_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"shading_mode": {
+										"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+										"value": 1
+									},
+									"specular_mode": {
+										"enum_hint": "SchlickGGX,Toon,Disabled",
+										"value": 0
+									},
+									"texture_filter": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"texture_repeat": true,
+									"transparency": {
+										"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+										"value": 0
+									},
+									"uv1_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"uv1_triplanar": false,
+									"uv2_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv2_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false,
+									"vertex_color_use_as_albedo": false
+								},
+								"resource_name": "Grass",
+								"resource_path": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf::StandardMaterial3D_eor4u"
+							},
+							"source_gltf_material": {
+								"alpha_cutoff_effective_gltf_default": 0.5,
+								"alpha_cutoff_raw": "omitted",
+								"alpha_mode_effective_gltf_default": "OPAQUE",
+								"alpha_mode_raw": "omitted",
+								"base_color_factor_raw": "omitted",
+								"base_color_texture": {
+									"image_index": 0,
+									"image_uri": "Grass.png",
+									"index": 0,
+									"sampler": {
+										"magFilter": 9729.0,
+										"minFilter": 9987.0
+									},
+									"sampler_index": 0,
+									"status": "present",
+									"tex_coord": 0,
+									"texture_transform": "absent"
+								},
+								"double_sided": true,
+								"emissive_factor_raw": "omitted",
+								"emissive_texture": {
+									"status": "absent_in_source"
+								},
+								"extensions": {},
+								"index": 0,
+								"metallic_factor_raw": 0.0,
+								"metallic_roughness_texture": {
+									"status": "absent_in_source"
+								},
+								"name": "Grass",
+								"normal_texture": {
+									"status": "absent_in_source"
+								},
+								"occlusion_texture": {
+									"status": "absent_in_source"
+								},
+								"roughness_factor_raw": "omitted",
+								"status": "present"
+							},
+							"source_primitive": {
+								"attributes": {
+									"COLOR_0": 0.0,
+									"NORMAL": 2.0,
+									"POSITION": 1.0,
+									"TEXCOORD_0": 3.0
+								},
+								"indices": 4.0,
+								"material": 0.0
+							},
+							"surface_index": 0,
+							"triangle_count": 326,
+							"wind_adapter_at_zero_strength": {
+								"available": true,
+								"instance_parameters": {
+									"sim_clock_and_wind_vec": "unavailable: global uniform values require a running scene/render state",
+									"wind_direction": [
+										0.800000011920929,
+										0.600000023841858
+									],
+									"wind_strength_before_zeroing": 0.0375,
+									"wind_strength_zeroed_for_audit": 0.0
+								},
+								"material": {
+									"available": true,
+									"class": "ShaderMaterial",
+									"instance_id_runtime_only": "-9223372006538344988",
+									"properties": {},
+									"resource_name": "",
+									"resource_path": "",
+									"shader": {
+										"available": true,
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										],
+										"resource_path": "res://scenery/imported_vegetation_wind.gdshader",
+										"sampler_filter": "source_color, filter_linear_mipmap;",
+										"sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437",
+										"source_code_sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437"
+									}
+								},
+								"shader": {
+									"available": true,
+									"render_modes": [
+										"cull_disabled",
+										"depth_draw_opaque",
+										"diffuse_burley",
+										"specular_schlick_ggx"
+									],
+									"resource_path": "res://scenery/imported_vegetation_wind.gdshader",
+									"sampler_filter": "source_color, filter_linear_mipmap;",
+									"sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437",
+									"source_code_sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437"
+								},
+								"shader_parameters": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_scissor_threshold": 0.5,
+									"metallic": 0.0,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"plant_base_y": -0.0313622504472733,
+									"plant_height": 1.872695,
+									"roughness": 1.0,
+									"use_albedo_texture": true,
+									"use_alpha_scissor": false,
+									"use_normal_texture": false,
+									"use_vertex_color": false,
+									"uv1_offset": [
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false
+								},
+								"unsupported_or_unavailable": []
+							}
+						}
+					],
+					"triangle_count": 326
+				}
+			],
+			"source_gltf": {
+				"images": [
+					{
+						"mimeType": "image/png",
+						"name": "Grass",
+						"uri": "Grass.png"
+					}
+				],
+				"material_summary": [
+					{
+						"alpha_cutoff_effective_gltf_default": 0.5,
+						"alpha_cutoff_raw": "omitted",
+						"alpha_mode_effective_gltf_default": "OPAQUE",
+						"alpha_mode_raw": "omitted",
+						"base_color_factor_raw": "omitted",
+						"base_color_texture": {
+							"image_index": 0,
+							"image_uri": "Grass.png",
+							"index": 0,
+							"sampler": {
+								"magFilter": 9729.0,
+								"minFilter": 9987.0
+							},
+							"sampler_index": 0,
+							"status": "present",
+							"tex_coord": 0,
+							"texture_transform": "absent"
+						},
+						"double_sided": true,
+						"emissive_factor_raw": "omitted",
+						"emissive_texture": {
+							"status": "absent_in_source"
+						},
+						"extensions": {},
+						"index": 0,
+						"metallic_factor_raw": 0.0,
+						"metallic_roughness_texture": {
+							"status": "absent_in_source"
+						},
+						"name": "Grass",
+						"normal_texture": {
+							"status": "absent_in_source"
+						},
+						"occlusion_texture": {
+							"status": "absent_in_source"
+						},
+						"roughness_factor_raw": "omitted",
+						"status": "present"
+					}
+				],
+				"materials": [
+					{
+						"doubleSided": true,
+						"name": "Grass",
+						"pbrMetallicRoughness": {
+							"baseColorTexture": {
+								"index": 0.0
+							},
+							"metallicFactor": 0.0
+						}
+					}
+				],
+				"meshes": [
+					{
+						"name": "Plane.013",
+						"primitives": [
+							{
+								"attributes": {
+									"COLOR_0": 0.0,
+									"NORMAL": 2.0,
+									"POSITION": 1.0,
+									"TEXCOORD_0": 3.0
+								},
+								"material": 0.0,
+								"mode": 4
+							}
+						]
+					}
+				],
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf",
+				"sha256_actual": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70",
+				"sha256_matches_catalog": true,
+				"textures": [
+					{
+						"sampler": 0.0,
+						"source": 0.0
+					}
+				],
+				"version": "2.0"
+			},
+			"source_textures": [
+				{
+					"available": true,
+					"import_settings": {
+						"available": true,
+						"path": "res://assets/landscape/vegetation/models/Grass.png.import",
+						"values": {
+							"compress/high_quality": false,
+							"compress/lossy_quality": 0.7,
+							"compress/mode": 0,
+							"compress/normal_map": 0,
+							"detect_3d/compress_to": 1,
+							"mipmaps/generate": false,
+							"process/fix_alpha_border": true,
+							"process/premult_alpha": false,
+							"roughness/mode": 0
+						}
+					},
+					"imported_texture": {
+						"class": "CompressedTexture2D",
+						"image": {
+							"alpha_mode": 0,
+							"format": 5,
+							"has_mipmaps": false,
+							"height": 512,
+							"width": 512
+						},
+						"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+						"size": [
+							512.0,
+							512.0
+						]
+					},
+					"path": "res://assets/landscape/vegetation/models/Grass.png",
+					"role": "source_gltf_dependency",
+					"source_image": {
+						"alpha_mode": 0,
+						"format": 5,
+						"has_mipmaps": false,
+						"height": 512,
+						"width": 512
+					},
+					"source_sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
+				}
+			],
+			"triangle_totals": {
+				"catalog_match": true,
+				"catalog_source_triangles": 326,
+				"loaded_source_triangles": 326,
+				"material_slots": 1,
+				"surface_count": 1
+			},
+			"unsupported_or_unavailable": [
+				"renderer-generated StandardMaterial3D shader source is reported only when this Godot build exposes the required RenderingServer APIs",
+				"shader compile success and zero-wind pixel parity require a rendered run and are not tested here",
+				"GPU resident texture bytes and draw/frame cost require a GPU capture and are not measured here"
+			]
+		},
+		{
+			"available": true,
+			"catalog": {
+				"grounded_bounds_m": {
+					"max": [
+						0.800828,
+						1.671802,
+						0.775125
+					],
+					"min": [
+						-0.739245,
+						0.0,
+						-0.818591
+					],
+					"size": [
+						1.540073,
+						1.671802,
+						1.593716
+					]
+				},
+				"lod": {
+					"godot_import_generate": true,
+					"source_supplied": false
+				},
+				"scene": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+				"source_bounds_m": {
+					"ground_offset": 0.036052,
+					"height": 1.671802,
+					"max": [
+						0.800828,
+						1.635751,
+						0.775125
+					],
+					"min": [
+						-0.739245,
+						-0.036052,
+						-0.818591
+					],
+					"size": [
+						1.540073,
+						1.671802,
+						1.593716
+					]
+				},
+				"source_id": "quaternius_standard",
+				"source_materials_manifest": 1.0,
+				"source_name": "Grass_Wispy_Tall",
+				"source_sha256_manifest": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b",
+				"source_surfaces_manifest": 1.0,
+				"source_triangles_manifest": 622.0
+			},
+			"diagnostics": [
+				{
+					"code": "material_source_gltf_to_effective_import_mismatch",
+					"message": "vertex_color differs at source_gltf_to_effective_import.",
+					"severity": "warning"
+				}
+			],
+			"feature_fidelity": [],
+			"id": "grass_wispy_tall",
+			"import_settings": {
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf.import",
+				"values": {
+					"gltf/embedded_image_handling": 1,
+					"gltf/texture_map_mode": 1,
+					"materials/extract": 0,
+					"materials/extract_format": 0,
+					"meshes/create_shadow_meshes": true,
+					"meshes/ensure_tangents": true,
+					"meshes/generate_lods": true,
+					"nodes/apply_root_scale": true,
+					"nodes/root_scale": 1.0
+				}
+			},
+			"parts": [
+				{
+					"local_bounds": {
+						"end": [
+							0.800827980041504,
+							1.63575053215027,
+							0.77512526512146
+						],
+						"position": [
+							-0.739244699478149,
+							-0.0360518172383308,
+							-0.818590641021729
+						],
+						"size": [
+							1.54007267951965,
+							1.67180240154266,
+							1.59371590614319
+						]
+					},
+					"mesh_class": "ArrayMesh",
+					"mesh_name": "Grass_Wispy_Tall_Plane_017",
+					"mesh_resource_path": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf::ArrayMesh_yvq5u",
+					"part_index": 0,
+					"part_transform": {
+						"basis_x": [
+							1.0,
+							0.0,
+							0.0
+						],
+						"basis_y": [
+							0.0,
+							1.0,
+							0.0
+						],
+						"basis_z": [
+							0.0,
+							0.0,
+							1.0
+						],
+						"origin": [
+							0.0,
+							0.0,
+							0.0
+						]
+					},
+					"scene_bounds": {
+						"end": [
+							0.800827980041504,
+							1.63575053215027,
+							0.77512526512146
+						],
+						"position": [
+							-0.739244699478149,
+							-0.0360518172383308,
+							-0.818590641021729
+						],
+						"size": [
+							1.54007267951965,
+							1.67180240154266,
+							1.59371590614319
+						]
+					},
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"effective_import_material": {
+								"available": true,
+								"class": "StandardMaterial3D",
+								"generated_shader_inspection": {
+									"material_has_get_rid": true,
+									"material_has_get_shader_rid": false,
+									"rendering_server_has_material_get_shader": false,
+									"rendering_server_has_shader_get_code": true,
+									"shader_code": "unavailable: generated StandardMaterial3D shader code was not queried",
+									"status": "unavailable: required RenderingServer method absent in this build"
+								},
+								"instance_id_runtime_only": "-9223372005833701928",
+								"properties": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_antialiasing_mode": {
+										"enum_hint": "Disabled,Alpha Edge Blend,Alpha Edge Clip",
+										"value": 0
+									},
+									"alpha_scissor_threshold": 0.5,
+									"anisotropy_enabled": false,
+									"ao_enabled": false,
+									"ao_texture": null,
+									"backlight_enabled": false,
+									"clearcoat_enabled": false,
+									"cull_mode": {
+										"enum_hint": "Back,Front,Disabled",
+										"value": 2
+									},
+									"depth_draw_mode": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"detail_enabled": false,
+									"diffuse_mode": {
+										"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+										"value": 0
+									},
+									"emission": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"emission_enabled": false,
+									"emission_texture": null,
+									"heightmap_enabled": false,
+									"metallic": 0.0,
+									"metallic_texture": null,
+									"metallic_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"normal_enabled": false,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"roughness": 1.0,
+									"roughness_texture": null,
+									"roughness_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"shading_mode": {
+										"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+										"value": 1
+									},
+									"specular_mode": {
+										"enum_hint": "SchlickGGX,Toon,Disabled",
+										"value": 0
+									},
+									"texture_filter": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"texture_repeat": true,
+									"transparency": {
+										"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+										"value": 0
+									},
+									"uv1_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"uv1_triplanar": false,
+									"uv2_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv2_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false,
+									"vertex_color_use_as_albedo": false
+								},
+								"resource_name": "Grass",
+								"resource_path": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf::StandardMaterial3D_ei868"
+							},
+							"feature_fidelity": [
+								{
+									"effective_import": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"feature": "base_color_factor",
+									"finding": "",
+									"mapping": "copied by adapter when BaseMaterial3D",
+									"production_zero_wind": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"source": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									]
+								},
+								{
+									"effective_import": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"feature": "base_color_texture",
+									"finding": "",
+									"mapping": "copied with use flag and UV1 transform",
+									"production_zero_wind": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"source": {
+										"image_index": 0,
+										"image_uri": "Grass.png",
+										"index": 0,
+										"sampler": {
+											"magFilter": 9729.0,
+											"minFilter": 9987.0
+										},
+										"sampler_index": 0,
+										"status": "present",
+										"tex_coord": 0,
+										"texture_transform": "absent"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"enabled": true,
+										"texture": {
+											"class": "CompressedTexture2D",
+											"image": {
+												"alpha_mode": 0,
+												"format": 5,
+												"has_mipmaps": false,
+												"height": 512,
+												"width": 512
+											},
+											"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+											"size": [
+												512.0,
+												512.0
+											]
+										}
+									}
+								},
+								{
+									"effective_import": false,
+									"feature": "vertex_color",
+									"finding": "One or more fidelity stages differ; inspect stage_statuses to identify which boundary differs.",
+									"mapping": "copied by adapter when BaseMaterial3D",
+									"production_zero_wind": false,
+									"source": {
+										"mesh_color_data": {
+											"available": true,
+											"count": 644,
+											"max_rgba": [
+												1.0,
+												1.0,
+												1.0,
+												1.0
+											],
+											"min_rgba": [
+												0.0,
+												0.0,
+												0.0,
+												1.0
+											],
+											"nonwhite": true,
+											"nonwhite_count": 618
+										},
+										"source_attribute": 0.0
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "mismatch"
+									},
+									"status": "mismatch",
+									"wind_adapter_zero_strength": {
+										"enabled": false,
+										"srgb": false
+									}
+								},
+								{
+									"effective_import": {
+										"uv1_offset": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0,
+											1.0
+										]
+									},
+									"feature": "uv0_transform",
+									"finding": "",
+									"mapping": "UV1 scale/offset copied; UV2 and advanced transforms not exposed",
+									"production_zero_wind": {
+										"uv1_offset": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0,
+											1.0
+										]
+									},
+									"source": {
+										"source_attribute": 3.0,
+										"source_texture_ref": {
+											"image_index": 0,
+											"image_uri": "Grass.png",
+											"index": 0,
+											"sampler": {
+												"magFilter": 9729.0,
+												"minFilter": 9987.0
+											},
+											"sampler_index": 0,
+											"status": "present",
+											"tex_coord": 0,
+											"texture_transform": "absent"
+										}
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"uv1_offset": [
+											0.0,
+											0.0
+										],
+										"uv1_scale": [
+											1.0,
+											1.0
+										]
+									}
+								},
+								{
+									"effective_import": 0.0,
+									"feature": "metallic_factor",
+									"finding": "",
+									"mapping": "scalar copied by adapter when BaseMaterial3D",
+									"production_zero_wind": 0.0,
+									"source": 0.0,
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": 0.0
+								},
+								{
+									"effective_import": 1.0,
+									"feature": "roughness_factor",
+									"finding": "",
+									"mapping": "scalar copied by adapter when BaseMaterial3D",
+									"production_zero_wind": 1.0,
+									"source": 1.0,
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": 1.0
+								},
+								{
+									"effective_import": null,
+									"feature": "metallic_roughness_texture",
+									"finding": "",
+									"mapping": "unsupported if source/import uses a metallic-roughness texture",
+									"production_zero_wind": null,
+									"source": {
+										"status": "absent_in_source"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": "no adapter uniform"
+								},
+								{
+									"effective_import": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									},
+									"feature": "normal_texture",
+									"finding": "",
+									"mapping": "normal texture and scale copied when enabled",
+									"production_zero_wind": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									},
+									"source": {
+										"status": "absent_in_source"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": {
+										"enabled": false,
+										"scale": 1.0,
+										"texture": null
+									}
+								},
+								{
+									"effective_import": {
+										"threshold": 0.5,
+										"transparency": {
+											"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+											"value": 0
+										}
+									},
+									"feature": "alpha_mode",
+									"finding": "",
+									"mapping": "only ALPHA_SCISSOR is mapped; blend/hash/coverage modes are unsupported",
+									"production_zero_wind": {
+										"threshold": 0.5,
+										"transparency": {
+											"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+											"value": 0
+										}
+									},
+									"source": {
+										"cutoff_raw": "omitted",
+										"gltf_default": "OPAQUE",
+										"raw": "omitted"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"scissor_enabled": false,
+										"threshold": 0.5
+									}
+								},
+								{
+									"effective_import": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"feature": "depth_draw_mode",
+									"finding": "",
+									"mapping": "opaque geometry uses depth_draw_opaque in adapter",
+									"production_zero_wind": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"source": {
+										"alpha_mode": "OPAQUE"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"cull_mode": {
+											"enum_hint": "Back,Front,Disabled",
+											"value": 2
+										}
+									},
+									"feature": "double_sided_culling",
+									"finding": "",
+									"mapping": "adapter hard-codes cull_disabled",
+									"production_zero_wind": {
+										"cull_mode": {
+											"enum_hint": "Back,Front,Disabled",
+											"value": 2
+										}
+									},
+									"source": {
+										"source_double_sided": true
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": {
+										"render_mode": [
+											"cull_disabled"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"diffuse_mode": {
+											"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+											"value": 0
+										},
+										"shading_mode": {
+											"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+											"value": 1
+										},
+										"specular_mode": {
+											"enum_hint": "SchlickGGX,Toon,Disabled",
+											"value": 0
+										}
+									},
+									"feature": "shading_modes",
+									"finding": "",
+									"mapping": "adapter render modes are fixed in the shader; source diffuse/specular enum names are also recorded",
+									"production_zero_wind": {
+										"diffuse_mode": {
+											"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+											"value": 0
+										},
+										"shading_mode": {
+											"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+											"value": 1
+										},
+										"specular_mode": {
+											"enum_hint": "SchlickGGX,Toon,Disabled",
+											"value": 0
+										}
+									},
+									"source": {
+										"source_model": "glTF metallic-roughness PBR"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "unavailable"
+									},
+									"status": "comparison_unavailable",
+									"wind_adapter_zero_strength": {
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										]
+									}
+								},
+								{
+									"effective_import": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"feature": "texture_filter",
+									"finding": "",
+									"mapping": "adapter sampler qualifier is fixed; generated/import filter parity not proven by this field alone",
+									"production_zero_wind": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"source": {
+										"image_index": 0,
+										"image_uri": "Grass.png",
+										"index": 0,
+										"sampler": {
+											"magFilter": 9729.0,
+											"minFilter": 9987.0
+										},
+										"sampler_index": 0,
+										"status": "present",
+										"tex_coord": 0,
+										"texture_transform": "absent"
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "matched",
+										"production_zero_wind_to_adapter_zero_strength": "matched",
+										"source_gltf_to_effective_import": "matched"
+									},
+									"status": "matched",
+									"wind_adapter_zero_strength": "source_color, filter_linear_mipmap;"
+								},
+								{
+									"effective_import": {
+										"ao_enabled": false,
+										"ao_texture": null,
+										"emission_enabled": false,
+										"emission_texture": null
+									},
+									"feature": "secondary_or_extra_material_features",
+									"finding": "",
+									"mapping": "unsupported if an emission or occlusion feature is used by the imported material",
+									"production_zero_wind": {
+										"ao_enabled": false,
+										"ao_texture": null,
+										"emission_enabled": false,
+										"emission_texture": null
+									},
+									"source": {
+										"emissive_factor": [
+											0.0,
+											0.0,
+											0.0
+										],
+										"emissive_texture": {
+											"status": "absent_in_source"
+										},
+										"occlusion_texture": {
+											"status": "absent_in_source"
+										}
+									},
+									"stage_statuses": {
+										"effective_import_to_production_zero_wind": "not_used_by_asset",
+										"production_zero_wind_to_adapter_zero_strength": "not_used_by_asset",
+										"source_gltf_to_effective_import": "not_used_by_asset"
+									},
+									"status": "not_used_by_asset",
+									"wind_adapter_zero_strength": "no adapter uniforms"
+								}
+							],
+							"mesh_array_counts": {
+								"bones": 0,
+								"color": 644,
+								"color_summary": {
+									"available": true,
+									"count": 644,
+									"max_rgba": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"min_rgba": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"nonwhite": true,
+									"nonwhite_count": 618
+								},
+								"index": 1866,
+								"normal": 644,
+								"tangent": 2576,
+								"uv0": 644,
+								"uv1": 0,
+								"vertex": 644,
+								"weights": 0
+							},
+							"production_zero_wind_material": {
+								"available": true,
+								"class": "StandardMaterial3D",
+								"generated_shader_inspection": {
+									"material_has_get_rid": true,
+									"material_has_get_shader_rid": false,
+									"rendering_server_has_material_get_shader": false,
+									"rendering_server_has_shader_get_code": true,
+									"shader_code": "unavailable: generated StandardMaterial3D shader code was not queried",
+									"status": "unavailable: required RenderingServer method absent in this build"
+								},
+								"instance_id_runtime_only": "-9223372005833701928",
+								"properties": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_antialiasing_mode": {
+										"enum_hint": "Disabled,Alpha Edge Blend,Alpha Edge Clip",
+										"value": 0
+									},
+									"alpha_scissor_threshold": 0.5,
+									"anisotropy_enabled": false,
+									"ao_enabled": false,
+									"ao_texture": null,
+									"backlight_enabled": false,
+									"clearcoat_enabled": false,
+									"cull_mode": {
+										"enum_hint": "Back,Front,Disabled",
+										"value": 2
+									},
+									"depth_draw_mode": {
+										"enum_hint": "Opaque Only,Always,Never",
+										"value": 0
+									},
+									"detail_enabled": false,
+									"diffuse_mode": {
+										"enum_hint": "Burley,Lambert,Lambert Wrap,Toon",
+										"value": 0
+									},
+									"emission": [
+										0.0,
+										0.0,
+										0.0,
+										1.0
+									],
+									"emission_enabled": false,
+									"emission_texture": null,
+									"heightmap_enabled": false,
+									"metallic": 0.0,
+									"metallic_texture": null,
+									"metallic_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"normal_enabled": false,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"roughness": 1.0,
+									"roughness_texture": null,
+									"roughness_texture_channel": {
+										"enum_hint": "Red,Green,Blue,Alpha,Gray",
+										"value": 0
+									},
+									"shading_mode": {
+										"enum_hint": "Unshaded,Per-Pixel,Per-Vertex",
+										"value": 1
+									},
+									"specular_mode": {
+										"enum_hint": "SchlickGGX,Toon,Disabled",
+										"value": 0
+									},
+									"texture_filter": {
+										"enum_hint": "Nearest,Linear,Nearest Mipmap,Linear Mipmap,Nearest Mipmap Anisotropic,Linear Mipmap Anisotropic",
+										"value": 3
+									},
+									"texture_repeat": true,
+									"transparency": {
+										"enum_hint": "Disabled,Alpha,Alpha Scissor,Alpha Hash,Depth Pre-Pass",
+										"value": 0
+									},
+									"uv1_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"uv1_triplanar": false,
+									"uv2_offset": [
+										0.0,
+										0.0,
+										0.0
+									],
+									"uv2_scale": [
+										1.0,
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false,
+									"vertex_color_use_as_albedo": false
+								},
+								"resource_name": "Grass",
+								"resource_path": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf::StandardMaterial3D_ei868"
+							},
+							"source_gltf_material": {
+								"alpha_cutoff_effective_gltf_default": 0.5,
+								"alpha_cutoff_raw": "omitted",
+								"alpha_mode_effective_gltf_default": "OPAQUE",
+								"alpha_mode_raw": "omitted",
+								"base_color_factor_raw": "omitted",
+								"base_color_texture": {
+									"image_index": 0,
+									"image_uri": "Grass.png",
+									"index": 0,
+									"sampler": {
+										"magFilter": 9729.0,
+										"minFilter": 9987.0
+									},
+									"sampler_index": 0,
+									"status": "present",
+									"tex_coord": 0,
+									"texture_transform": "absent"
+								},
+								"double_sided": true,
+								"emissive_factor_raw": "omitted",
+								"emissive_texture": {
+									"status": "absent_in_source"
+								},
+								"extensions": {},
+								"index": 0,
+								"metallic_factor_raw": 0.0,
+								"metallic_roughness_texture": {
+									"status": "absent_in_source"
+								},
+								"name": "Grass",
+								"normal_texture": {
+									"status": "absent_in_source"
+								},
+								"occlusion_texture": {
+									"status": "absent_in_source"
+								},
+								"roughness_factor_raw": "omitted",
+								"status": "present"
+							},
+							"source_primitive": {
+								"attributes": {
+									"COLOR_0": 0.0,
+									"NORMAL": 2.0,
+									"POSITION": 1.0,
+									"TEXCOORD_0": 3.0
+								},
+								"indices": 4.0,
+								"material": 0.0
+							},
+							"surface_index": 0,
+							"triangle_count": 622,
+							"wind_adapter_at_zero_strength": {
+								"available": true,
+								"instance_parameters": {
+									"sim_clock_and_wind_vec": "unavailable: global uniform values require a running scene/render state",
+									"wind_direction": [
+										0.800000011920929,
+										0.600000023841858
+									],
+									"wind_strength_before_zeroing": 0.0375,
+									"wind_strength_zeroed_for_audit": 0.0
+								},
+								"material": {
+									"available": true,
+									"class": "ShaderMaterial",
+									"instance_id_runtime_only": "-9223372005582043672",
+									"properties": {},
+									"resource_name": "",
+									"resource_path": "",
+									"shader": {
+										"available": true,
+										"render_modes": [
+											"cull_disabled",
+											"depth_draw_opaque",
+											"diffuse_burley",
+											"specular_schlick_ggx"
+										],
+										"resource_path": "res://scenery/imported_vegetation_wind.gdshader",
+										"sampler_filter": "source_color, filter_linear_mipmap;",
+										"sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437",
+										"source_code_sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437"
+									}
+								},
+								"shader": {
+									"available": true,
+									"render_modes": [
+										"cull_disabled",
+										"depth_draw_opaque",
+										"diffuse_burley",
+										"specular_schlick_ggx"
+									],
+									"resource_path": "res://scenery/imported_vegetation_wind.gdshader",
+									"sampler_filter": "source_color, filter_linear_mipmap;",
+									"sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437",
+									"source_code_sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437"
+								},
+								"shader_parameters": {
+									"albedo_color": [
+										1.0,
+										1.0,
+										1.0,
+										1.0
+									],
+									"albedo_texture": {
+										"class": "CompressedTexture2D",
+										"image": {
+											"alpha_mode": 0,
+											"format": 5,
+											"has_mipmaps": false,
+											"height": 512,
+											"width": 512
+										},
+										"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+										"size": [
+											512.0,
+											512.0
+										]
+									},
+									"alpha_scissor_threshold": 0.5,
+									"metallic": 0.0,
+									"normal_scale": 1.0,
+									"normal_texture": null,
+									"plant_base_y": -0.0360518172383308,
+									"plant_height": 1.671802,
+									"roughness": 1.0,
+									"use_albedo_texture": true,
+									"use_alpha_scissor": false,
+									"use_normal_texture": false,
+									"use_vertex_color": false,
+									"uv1_offset": [
+										0.0,
+										0.0
+									],
+									"uv1_scale": [
+										1.0,
+										1.0
+									],
+									"vertex_color_is_srgb": false
+								},
+								"unsupported_or_unavailable": []
+							}
+						}
+					],
+					"triangle_count": 622
+				}
+			],
+			"source_gltf": {
+				"images": [
+					{
+						"mimeType": "image/png",
+						"name": "Grass",
+						"uri": "Grass.png"
+					}
+				],
+				"material_summary": [
+					{
+						"alpha_cutoff_effective_gltf_default": 0.5,
+						"alpha_cutoff_raw": "omitted",
+						"alpha_mode_effective_gltf_default": "OPAQUE",
+						"alpha_mode_raw": "omitted",
+						"base_color_factor_raw": "omitted",
+						"base_color_texture": {
+							"image_index": 0,
+							"image_uri": "Grass.png",
+							"index": 0,
+							"sampler": {
+								"magFilter": 9729.0,
+								"minFilter": 9987.0
+							},
+							"sampler_index": 0,
+							"status": "present",
+							"tex_coord": 0,
+							"texture_transform": "absent"
+						},
+						"double_sided": true,
+						"emissive_factor_raw": "omitted",
+						"emissive_texture": {
+							"status": "absent_in_source"
+						},
+						"extensions": {},
+						"index": 0,
+						"metallic_factor_raw": 0.0,
+						"metallic_roughness_texture": {
+							"status": "absent_in_source"
+						},
+						"name": "Grass",
+						"normal_texture": {
+							"status": "absent_in_source"
+						},
+						"occlusion_texture": {
+							"status": "absent_in_source"
+						},
+						"roughness_factor_raw": "omitted",
+						"status": "present"
+					}
+				],
+				"materials": [
+					{
+						"doubleSided": true,
+						"name": "Grass",
+						"pbrMetallicRoughness": {
+							"baseColorTexture": {
+								"index": 0.0
+							},
+							"metallicFactor": 0.0
+						}
+					}
+				],
+				"meshes": [
+					{
+						"name": "Plane.017",
+						"primitives": [
+							{
+								"attributes": {
+									"COLOR_0": 0.0,
+									"NORMAL": 2.0,
+									"POSITION": 1.0,
+									"TEXCOORD_0": 3.0
+								},
+								"material": 0.0,
+								"mode": 4
+							}
+						]
+					}
+				],
+				"path": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+				"sha256_actual": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b",
+				"sha256_matches_catalog": true,
+				"textures": [
+					{
+						"sampler": 0.0,
+						"source": 0.0
+					}
+				],
+				"version": "2.0"
+			},
+			"source_textures": [
+				{
+					"available": true,
+					"import_settings": {
+						"available": true,
+						"path": "res://assets/landscape/vegetation/models/Grass.png.import",
+						"values": {
+							"compress/high_quality": false,
+							"compress/lossy_quality": 0.7,
+							"compress/mode": 0,
+							"compress/normal_map": 0,
+							"detect_3d/compress_to": 1,
+							"mipmaps/generate": false,
+							"process/fix_alpha_border": true,
+							"process/premult_alpha": false,
+							"roughness/mode": 0
+						}
+					},
+					"imported_texture": {
+						"class": "CompressedTexture2D",
+						"image": {
+							"alpha_mode": 0,
+							"format": 5,
+							"has_mipmaps": false,
+							"height": 512,
+							"width": 512
+						},
+						"resource_path": "res://assets/landscape/vegetation/models/Grass.png",
+						"size": [
+							512.0,
+							512.0
+						]
+					},
+					"path": "res://assets/landscape/vegetation/models/Grass.png",
+					"role": "source_gltf_dependency",
+					"source_image": {
+						"alpha_mode": 0,
+						"format": 5,
+						"has_mipmaps": false,
+						"height": 512,
+						"width": 512
+					},
+					"source_sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
+				}
+			],
+			"triangle_totals": {
+				"catalog_match": true,
+				"catalog_source_triangles": 622,
+				"loaded_source_triangles": 622,
+				"material_slots": 1,
+				"surface_count": 1
+			},
+			"unsupported_or_unavailable": [
+				"renderer-generated StandardMaterial3D shader source is reported only when this Godot build exposes the required RenderingServer APIs",
+				"shader compile success and zero-wind pixel parity require a rendered run and are not tested here",
+				"GPU resident texture bytes and draw/frame cost require a GPU capture and are not measured here"
+			]
+		}
+	],
+	"created_utc": "2026-10-17 20:44:23",
+	"diagnostics": [
+		{
+			"code": "material_source_gltf_to_effective_import_mismatch",
+			"message": "vertex_color differs at source_gltf_to_effective_import.",
+			"severity": "warning"
+		},
+		{
+			"code": "material_source_gltf_to_effective_import_mismatch",
+			"message": "vertex_color differs at source_gltf_to_effective_import.",
+			"severity": "warning"
+		},
+		{
+			"code": "material_source_gltf_to_effective_import_mismatch",
+			"message": "vertex_color differs at source_gltf_to_effective_import.",
+			"severity": "warning"
+		}
+	],
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-grass-material-audit v1",
+	"ground_maps": [
+		{
+			"available": true,
+			"binding": "Ground.TURF_DETAIL / turf_detail",
+			"import_settings": {
+				"available": true,
+				"path": "res://assets/landscape/turf/detail.png.import",
+				"values": {
+					"compress/high_quality": false,
+					"compress/lossy_quality": 0.7,
+					"compress/mode": 0,
+					"compress/normal_map": 2,
+					"detect_3d/compress_to": 0,
+					"mipmaps/generate": true,
+					"mipmaps/limit": -1,
+					"process/fix_alpha_border": false,
+					"process/normal_map_invert_y": false,
+					"process/premult_alpha": false,
+					"roughness/mode": 0
+				}
+			},
+			"imported_texture": {
+				"class": "CompressedTexture2D",
+				"image": {
+					"alpha_mode": 2,
+					"format": 5,
+					"has_mipmaps": true,
+					"height": 1024,
+					"width": 1024
+				},
+				"resource_path": "res://assets/landscape/turf/detail.png",
+				"size": [
+					1024.0,
+					1024.0
+				]
+			},
+			"path": "res://assets/landscape/turf/detail.png",
+			"role": "turf_detail",
+			"runtime_gpu_residency": "unavailable: not queried by headless audit",
+			"source_image": {
+				"alpha_mode": 2,
+				"format": 5,
+				"has_mipmaps": false,
+				"height": 1024,
+				"width": 1024
+			},
+			"source_sha256": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e",
+			"unsupported_or_unavailable": []
+		}
+	],
+	"project": {
+		"msaa_3d": 2,
+		"msaa_3d_label": "4x",
+		"renderer_driver": "unavailable: project setting does not identify the active Compatibility backend driver",
+		"renderer_method": "gl_compatibility"
+	},
+	"scope": {
+		"gpu_residency": "unavailable: no GPU capture or residency query",
+		"gpu_timing": "unavailable: headless resource inspection only",
+		"material_shader_rid_introspection": {
+			"BaseMaterial3D.get_rid": true,
+			"BaseMaterial3D.get_shader_rid": false,
+			"RenderingServer.material_get_shader": false,
+			"RenderingServer.shader_get_code": true,
+			"RenderingServer.shader_get_spirv": false
+		},
+		"rendered": false,
+		"zero_wind_image_parity": "unavailable: no rendered comparison in this audit"
+	},
+	"source_identity": {
+		"catalog_asset_count": 15,
+		"records": [
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/catalog.json",
+				"sha256": "65d8df415bbcb162405ecbdd7231c38ec41e83e5c9940e8d3a708f2c976a1c99"
+			},
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Short.gltf",
+				"sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a"
+			},
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Short.bin",
+				"sha256": "7a0f0f7a9ac39cfa4b303bac03a6594f43e48d873b73553fa06a79e4df1271e9"
+			},
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass.png",
+				"sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
+			},
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf",
+				"sha256": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70"
+			},
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Common_Tall.bin",
+				"sha256": "d7422b9360dd644f4095ac77a00dfa5d1f1078af71ebf18865a28ef031651379"
+			},
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf",
+				"sha256": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b"
+			},
+			{
+				"available": true,
+				"path": "res://assets/landscape/vegetation/models/Grass_Wispy_Tall.bin",
+				"sha256": "a46e091f39958242a96722ea331efa8d7fb055c6e24d21aea6b0ac091a7b1b66"
+			},
+			{
+				"available": true,
+				"path": "res://scenery/imported_vegetation.gd",
+				"sha256": "0a01882d56c0de5d884b26b65cb8f03a6032fae1a533f4ffd1165c042bc079c4"
+			},
+			{
+				"available": true,
+				"path": "res://scenery/imported_vegetation_wind.gdshader",
+				"sha256": "b3af2833db0827396a79374cb2f84e36cec5aae6967ebe3c4c055da2e9643437"
+			},
+			{
+				"available": true,
+				"path": "res://render/ground.gd",
+				"sha256": "b3756a152f7d67d8d8f8f452b2d03ef0c0003d971ef557814a906ba013923367"
+			},
+			{
+				"available": true,
+				"path": "res://render/ground.gdshader",
+				"sha256": "5221a0d9aa12c107c5991f640ad2a2e8abde657a3963a32090ace8cdf35d5b0b"
+			},
+			{
+				"available": true,
+				"path": "res://render/turf_detail.gdshaderinc",
+				"sha256": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1"
+			}
+		]
+	}
+}

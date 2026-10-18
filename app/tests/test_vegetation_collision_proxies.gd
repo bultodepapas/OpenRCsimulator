@@ -1,6 +1,7 @@
 extends SceneTree
 
 const CollisionWorld := preload("res://scenery/collision_world.gd")
+const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 const VegetationPlacement := preload("res://scenery/vegetation_placement.gd")
 const Palette := preload("res://scenery/palette.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
@@ -97,9 +98,12 @@ func _initialize() -> void:
 	_check("same imported vegetation records keep collision identity", repeated.ok
 		and repeated.world.identity == world.identity)
 
-	var tree_hit: SceneryCollision.Event = _sweep(world, 100.0, 50.0, float(crown.down))
+	var tree_hit: SceneryCollision.Event = _sweep(world, 100.0, 50.0, float(crown.down),
+		_crown_sweep_half_length(crown))
 	_check("shade-tree imported crown remains a physical soft-contact proxy",
-		tree_hit != null and tree_hit.obstacle_part == "crown" and not tree_hit.terminal)
+		tree_hit != null and tree_hit.obstacle_id == str(crown.id)
+		and tree_hit.obstacle_part == "crown" and not tree_hit.terminal)
+	_test_all_tree_sources_hit_crown(field)
 	var bush_hit: SceneryCollision.Event = _sweep(world, 40.0, -20.0, float(bush.down))
 	_check("bush imported bounds remain a physical soft-contact proxy",
 		bush_hit != null and bush_hit.obstacle_part == "bush" and not bush_hit.terminal)
@@ -111,9 +115,58 @@ func _initialize() -> void:
 	quit(1 if failures > 0 else 0)
 
 
-func _sweep(world: Dictionary, north: float, east: float, down: float) -> SceneryCollision.Event:
-	var previous := _state(north - 3.0, east, down, 20.0)
-	var candidate := _state(north + 3.0, east, down, 20.0)
+func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
+	var expected_tree_ids: Dictionary = {}
+	for asset_value: Dictionary in ImportedVegetation.catalog().get("assets", []):
+		if str(asset_value.get("role", "")) == "tree":
+			expected_tree_ids[str(asset_value.get("id", ""))] = true
+	var source_seeds: Dictionary = {}
+	for seed in range(4096):
+		var tree: Dictionary = VegetationPlacement.spec("shade_tree", seed)
+		var asset_id := str(tree.get("asset_id", ""))
+		if expected_tree_ids.has(asset_id) and not source_seeds.has(asset_id):
+			source_seeds[asset_id] = seed
+		if source_seeds.size() == expected_tree_ids.size():
+			break
+	_check("shade-tree aliases expose every retained collision source", source_seeds.size() == 7)
+	var source_ids: Array = expected_tree_ids.keys()
+	source_ids.sort()
+	for index in range(source_ids.size()):
+		var asset_id := str(source_ids[index])
+		if not source_seeds.has(asset_id):
+			_check("%s has an alias seed for collision coverage" % asset_id, false)
+			continue
+		var north := 100.0 + float(index) * 24.0
+		var east := 50.0
+		var scenery := {groups = [{id = "tree-variants", type = "instances", placements = [
+			{north = north, east = east, heading = 37.0, prefab = "shade_tree",
+				seed = int(source_seeds[asset_id])},
+		]}]}
+		var built: Dictionary = CollisionWorld.build(field, scenery)
+		_check("%s collision world builds" % asset_id, bool(built.get("ok", false)))
+		if not bool(built.get("ok", false)):
+			continue
+		var crown_id := "tree:shade-tree:tree-variants:00:crown"
+		var crown := _proxy(built.world, crown_id)
+		_check("%s has a physical crown proxy" % asset_id, not crown.is_empty())
+		if crown.is_empty():
+			continue
+		var hit: SceneryCollision.Event = _sweep(built.world, north, east, float(crown.down),
+			_crown_sweep_half_length(crown))
+		_check("%s crown responds as soft foliage without trunk contact" % asset_id,
+			hit != null and hit.obstacle_id == crown_id and hit.obstacle_part == "crown"
+			and hit.response_class == "soft_foliage_impulse" and not hit.terminal)
+
+
+func _crown_sweep_half_length(crown: Dictionary) -> float:
+	# Start beyond the proxy's full horizontal bounding radius so broad source crowns begin outside contact.
+	return Vector2(float(crown.get("half_x", 0.0)), float(crown.get("half_z", 0.0))).length() + 0.25
+
+
+func _sweep(world: Dictionary, north: float, east: float, down: float,
+		half_length_m: float = 3.0) -> SceneryCollision.Event:
+	var previous := _state(north - half_length_m, east, down, 20.0)
+	var candidate := _state(north + half_length_m, east, down, 20.0)
 	return SceneryCollision.first_hit(previous, candidate, PackedFloat64Array([0.0, 0.0, 0.0]),
 		world, 1, 1.0, PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]))
 

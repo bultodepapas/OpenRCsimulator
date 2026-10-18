@@ -9,23 +9,30 @@ const Frames := preload("res://render/frames.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 
-const FORMAT: String = "openrc-l11a-grass-capture v1"
+const FORMAT: String = "openrc-l11a-grass-capture v2"
 const WIDTH: int = 1280
 const HEIGHT: int = 720
 const FOV_DEG: float = 50.0
 const FAR_M: float = 21000.0
 const SETTLE_FRAMES: int = 3
 const GRASS_SHADER_PATH: String = "res://render/near_grass.gdshader"
+const IMPORTED_GRASS_SHADER_PATH: String = "res://scenery/imported_grass.gdshader"
 const GRASS_DATA_PATH: String = "res://data/fields/grass.json"
 const WIND: Vector3 = Vector3(5.0, 0.0, 0.0)
 const IMPORTED_GRASS_IDS: Array[String] = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]
 const IMPORTED_FLOWER_IDS: Array[String] = ["clover_1", "flower_3_group", "flower_4_group"]
-const IMPORTED_GRASS_COUNTS: Dictionary = {
+const STATIC_IMPORTED_GRASS_COUNTS: Dictionary = {
 	"grass_common_short": 67,
 	"grass_common_tall": 42,
 	"grass_wispy_tall": 41,
 }
+const ENHANCED_IMPORTED_GRASS_COUNTS: Dictionary = {
+	"grass_common_short": 100,
+	"grass_common_tall": 30,
+	"grass_wispy_tall": 20,
+}
 const IMPORTED_GRASS_TOTAL: int = 150
+const ENHANCED_IMPORTED_GRASS_TRIANGLES: int = 37720
 const IMPORTED_GRASS_TRIANGLE_BUDGET: int = 50000
 
 var _args: Dictionary = {}
@@ -141,21 +148,13 @@ func _run() -> void:
 				return
 			_cases.append(on_case)
 
-	if _mode == "candidate" and not _smoke:
+	if not _smoke and (_mode == "candidate" or \
+			(_mode == "scenery" and _grass_report.get("material_mode", "") == "qualified_wind")):
 		var wind_scenario: Dictionary = _scenarios()[0]
-		_near_grass.visible = true
-		for wind_case: Dictionary in [
-			{"id": "windless-t1", "time": 1.0, "wind": Vector3.ZERO},
-			{"id": "wind-on-t0", "time": 0.0, "wind": WIND},
-			{"id": "wind-on-t1", "time": 1.0, "wind": WIND},
-			{"id": "wind-on-t1024", "time": 1024.0, "wind": WIND},
-		]:
-			var captured: Dictionary = await _capture(wind_scenario, str(wind_case.id),
-				float(wind_case.time), wind_case.wind)
-			if captured.is_empty():
-				_world.queue_free()
-				return
-			_cases.append(captured)
+		var wind_ok: bool = await _capture_wind_probes(wind_scenario)
+		if not wind_ok:
+			_world.queue_free()
+			return
 
 	var manifest: Dictionary = {
 		"format": FORMAT,
@@ -166,8 +165,9 @@ func _run() -> void:
 		"viewport": {"width": root.get_viewport().size.x, "height": root.get_viewport().size.y},
 		"renderer": RenderingServer.get_video_adapter_name(),
 		"scenery_on": scenery_on,
+		"near_grass_material_mode": str(_grass_report.get("material_mode", "not_present")),
 		"environment": "Atmosphere.environment() + Atmosphere.create_sun()",
-		"clock_policy": "clouds/ground frozen at t=0; ShaderClock wind probes cover only legacy shader grass",
+		"clock_policy": "clouds/ground frozen at t=0; ShaderClock varies only in emitted wind-probe cases",
 		"grass": _grass_report if _mode != "baseline" else {"present": false},
 		"flowers": _flower_report,
 		"cases": _cases,
@@ -185,6 +185,22 @@ func _run() -> void:
 	quit(0)
 
 
+func _capture_wind_probes(wind_scenario: Dictionary) -> bool:
+	_near_grass.visible = true
+	for wind_case: Dictionary in [
+		{"id": "windless-t1", "time": 1.0, "wind": Vector3.ZERO},
+		{"id": "wind-on-t0", "time": 0.0, "wind": WIND},
+		{"id": "wind-on-t1", "time": 1.0, "wind": WIND},
+		{"id": "wind-on-t1024", "time": 1024.0, "wind": WIND},
+	]:
+		var captured: Dictionary = await _capture(wind_scenario, str(wind_case.id),
+			float(wind_case.time), wind_case.wind)
+		if captured.is_empty():
+			return false
+		_cases.append(captured)
+	return true
+
+
 func _build_world() -> Dictionary:
 	var world: Node3D = Node3D.new()
 	world.name = "GrassCaptureWorld"
@@ -194,6 +210,8 @@ func _build_world() -> Dictionary:
 	environment_node.environment = _environment
 	world.add_child(environment_node)
 	_field_node = FieldBuilder.build(_field_data)
+	_field_node.process_mode = Node.PROCESS_MODE_DISABLED
+	_freeze_other_vegetation(_field_node)
 	# This probe varies grass wind only; L15b has a separate tree-wind capture.
 	# Permit older baseline shaders without the ablation uniform.
 	var grove: Node3D = _field_node.get_node_or_null("treeline") as Node3D
@@ -213,6 +231,36 @@ func _build_world() -> Dictionary:
 	world.add_child(camera)
 	camera.current = true
 	return {"world": world, "field": _field_node, "environment": _environment, "camera": camera}
+
+
+## Attribute this fixture's moving pixels to grass. Other vegetation has its own wind proof.
+## Duplicate overrides so cached source materials and other scenes are never mutated.
+func _freeze_other_vegetation(node: Node) -> void:
+	if node.name == "NearGrass":
+		return
+	if node is MultiMeshInstance3D:
+		var instance := node as MultiMeshInstance3D
+		var mesh := instance.multimesh.mesh
+		for index: int in mesh.get_surface_count():
+			var material := mesh.surface_get_material(index) as ShaderMaterial
+			if material == null:
+				continue
+			var frozen := material.duplicate() as ShaderMaterial
+			var changed := false
+			for parameter: Dictionary in RenderingServer.get_shader_parameter_list(material.shader.get_rid()):
+				var name := str(parameter.name)
+				if name == "wind_enabled":
+					frozen.set_shader_parameter(name, false)
+					instance.set_instance_shader_parameter(name, false)
+					changed = true
+				elif name == "wind_strength":
+					frozen.set_shader_parameter(name, 0.0)
+					instance.set_instance_shader_parameter(name, 0.0)
+					changed = true
+			if changed:
+				mesh.surface_set_material(index, frozen)
+	for child: Node in node.get_children():
+		_freeze_other_vegetation(child)
 
 
 func _scenarios() -> Array[Dictionary]:
@@ -434,6 +482,7 @@ func _inspect_grass(grass: Node3D) -> Dictionary:
 	return {
 		"present": true,
 		"implementation": "legacy_shader_material",
+		"material_mode": "legacy_procedural",
 		"node_count": 1,
 		"multimesh_chunks": chunks.size(),
 		"clumps": total_clumps,
@@ -455,6 +504,19 @@ func _inspect_grass(grass: Node3D) -> Dictionary:
 
 func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float, pilot_e: float,
 		runway: Dictionary) -> Dictionary:
+	var qualified_wind: bool = bool(grass.get_meta("grass_wind", false))
+	var material_mode: String = "qualified_wind" if qualified_wind else "static_baseline"
+	var qualified_shader: Shader
+	var shader_sha256: String = ""
+	var expected_counts: Dictionary = STATIC_IMPORTED_GRASS_COUNTS
+	if qualified_wind:
+		expected_counts = ENHANCED_IMPORTED_GRASS_COUNTS
+		qualified_shader = load(IMPORTED_GRASS_SHADER_PATH) as Shader
+		if qualified_shader == null or qualified_shader.resource_path != IMPORTED_GRASS_SHADER_PATH \
+				or not _qualified_grass_shader_is_opaque_and_lit(qualified_shader):
+			_fail("winded imported grass must use the exact opaque, per-pixel qualified shader path")
+			return {}
+		shader_sha256 = qualified_shader.code.sha256_text()
 	var expected_ids: Array[String] = IMPORTED_GRASS_IDS.duplicate()
 	expected_ids.sort()
 	var raw_ids: Variant = grass.get_meta("source_assets", null)
@@ -480,6 +542,7 @@ func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float,
 	var source_triangles: int = 0
 	var textured_surfaces: int = 0
 	var lit_surfaces: int = 0
+	var matched_material_surfaces: int = 0
 	var total_clumps: int = 0
 	var max_radius: float = 0.0
 	var min_radius: float = INF
@@ -495,7 +558,7 @@ func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float,
 			_fail("imported NearGrass must retain one named source part per batch: " + child_name)
 			return {}
 		var asset_id: String = child_name.substr(0, part_marker)
-		if not IMPORTED_GRASS_COUNTS.has(asset_id) or batch_counts.has(asset_id):
+		if not expected_counts.has(asset_id) or batch_counts.has(asset_id):
 			_fail("imported NearGrass has an unknown or duplicate source batch: " + child_name)
 			return {}
 		var part_index: int = child_name.substr(part_marker + 6).to_int()
@@ -503,7 +566,7 @@ func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float,
 		if part_index < 0 or part_index >= source_parts.size():
 			_fail("imported NearGrass batch does not resolve to its source mesh: " + child_name)
 			return {}
-		var expected_count: int = int(IMPORTED_GRASS_COUNTS[asset_id])
+		var expected_count: int = int(expected_counts[asset_id])
 		if instance.multimesh.instance_count != expected_count:
 			_fail("imported grass %s has %d clumps; expected %d" % [asset_id, instance.multimesh.instance_count, expected_count])
 			return {}
@@ -521,23 +584,37 @@ func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float,
 			if mesh.surface_get_primitive_type(surface_index) != Mesh.PRIMITIVE_TRIANGLES:
 				_fail("imported grass source surfaces must remain triangle meshes")
 				return {}
-			var material: StandardMaterial3D = mesh.surface_get_material(surface_index) as StandardMaterial3D
-			if material == null or material.albedo_texture == null:
-				_fail("imported grass must retain its textured StandardMaterial3D source surface")
+			var source_material: StandardMaterial3D = source_mesh.surface_get_material(surface_index) as StandardMaterial3D
+			var material: Material = mesh.surface_get_material(surface_index)
+			if source_material == null or source_material.albedo_texture == null:
+				_fail("imported grass source surface must retain its textured StandardMaterial3D")
 				return {}
-			if material.shading_mode != BaseMaterial3D.SHADING_MODE_PER_PIXEL:
-				_fail("imported grass source materials must remain per-pixel lit")
+			if source_material.shading_mode != BaseMaterial3D.SHADING_MODE_PER_PIXEL \
+					or source_material.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED \
+					or source_material.depth_draw_mode != BaseMaterial3D.DEPTH_DRAW_OPAQUE_ONLY \
+					or source_material.alpha_antialiasing_mode != BaseMaterial3D.ALPHA_ANTIALIASING_OFF \
+					or source_material.diffuse_mode != BaseMaterial3D.DIFFUSE_BURLEY \
+					or source_material.specular_mode != BaseMaterial3D.SPECULAR_SCHLICK_GGX \
+					or source_material.cull_mode != BaseMaterial3D.CULL_DISABLED:
+				_fail("imported grass source must remain opaque, double-sided and per-pixel lit")
 				return {}
-			if source_mesh.surface_get_material(surface_index) != material:
-				_fail("imported grass source material was replaced: " + asset_id)
-				return {}
+			if qualified_wind:
+				var wind_material: ShaderMaterial = material as ShaderMaterial
+				if wind_material == null or wind_material.shader != qualified_shader \
+						or not _qualified_material_matches_source(wind_material, source_material):
+					_fail("qualified grass material must match source albedo, UV, vertex-color, roughness and specular parameters: " + asset_id)
+					return {}
+			else:
+				if material != source_material:
+					_fail("static imported baseline must retain its exact StandardMaterial3D source material: " + asset_id)
+					return {}
+			matched_material_surfaces += 1
 			textured_surfaces += 1
 			lit_surfaces += 1
 			var arrays: Array = mesh.surface_get_arrays(surface_index)
 			var source_arrays: Array = source_mesh.surface_get_arrays(surface_index)
-			if arrays[Mesh.ARRAY_VERTEX] != source_arrays[Mesh.ARRAY_VERTEX] \
-					or arrays[Mesh.ARRAY_INDEX] != source_arrays[Mesh.ARRAY_INDEX]:
-				_fail("imported grass source mesh geometry was changed: " + asset_id)
+			if not _same_surface_geometry(arrays, source_arrays):
+				_fail("imported grass source mesh geometry arrays were changed: " + asset_id)
 				return {}
 			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 			var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
@@ -567,10 +644,15 @@ func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float,
 	var reported_triangles: int = int(grass.get_meta("source_triangles", -1))
 	if batch_counts.size() != IMPORTED_GRASS_IDS.size() or total_clumps != IMPORTED_GRASS_TOTAL \
 			or int(grass.get_meta("clumps", -1)) != total_clumps:
-		_fail("imported NearGrass clump inventory does not match the accepted high-quality layout")
+		_fail("imported NearGrass clump inventory does not match the selected 150-clump profile")
 		return {}
-	if source_triangles != reported_triangles or source_triangles <= 0 or source_triangles > IMPORTED_GRASS_TRIANGLE_BUDGET:
-		_fail("imported grass source triangle readback disagrees with its metadata or exceeds its budget")
+	var triangle_profile_matches: bool = false
+	if qualified_wind:
+		triangle_profile_matches = source_triangles == ENHANCED_IMPORTED_GRASS_TRIANGLES
+	else:
+		triangle_profile_matches = source_triangles > 0 and source_triangles <= IMPORTED_GRASS_TRIANGLE_BUDGET
+	if source_triangles != reported_triangles or not triangle_profile_matches:
+		_fail("imported grass triangle readback disagrees with its metadata or selected material profile budget")
 		return {}
 	if not shadow_nodes.is_empty():
 		_fail("imported NearGrass must not cast shadows: " + str(shadow_nodes))
@@ -584,17 +666,63 @@ func _inspect_imported_grass(grass: Node3D, chunks: Array[Node], pilot_n: float,
 		"source_batches": batch_counts,
 		"clumps": total_clumps,
 		"source_triangles": source_triangles,
-		"source_meshes_preserved": true,
+		"source_geometry_preserved": true,
+		"source_material_parameters_matched": matched_material_surfaces == textured_surfaces,
 		"textured_surfaces": textured_surfaces,
 		"per_pixel_lit_surfaces": lit_surfaces,
-		"material_contract": "unchanged textured per-pixel-lit StandardMaterial3D source surfaces",
+		"material_mode": material_mode,
+		"material_shader_path": IMPORTED_GRASS_SHADER_PATH if qualified_wind else "",
+		"material_shader_sha256": shader_sha256,
+		"material_contract": "qualified imported grass shader; source albedo, UV, vertex-color, roughness, metallic and specular parameters matched" \
+			if qualified_wind else "static baseline: exact textured per-pixel-lit StandardMaterial3D source surfaces",
 		"pilot_radius_m": 30.0,
 		"observed_radius_m": {"min": min_radius, "max": max_radius},
 		"runway_clumps": 0,
 		"casts_shadows": false,
 		"placement_path": GRASS_DATA_PATH,
-		"wind_animation": "static imported source meshes; ShaderClock does not drive this path",
+		"wind_animation": "qualified imported shader; ShaderClock wind probes are captured" \
+			if qualified_wind else "static baseline source materials; no imported-grass wind adapter",
+		"wind_probe_cases": qualified_wind,
 	}
+
+
+func _qualified_grass_shader_is_opaque_and_lit(shader: Shader) -> bool:
+	var source: String = shader.code
+	var alpha_match: RegExMatch = RegEx.create_from_string("\\bALPHA\\b").search(source)
+	return source.contains("render_mode cull_disabled, depth_draw_opaque, diffuse_burley, specular_schlick_ggx;") \
+		and source.find("vertex_lighting") < 0 and source.find("unshaded") < 0 and alpha_match == null
+
+
+func _qualified_material_matches_source(material: ShaderMaterial, source: StandardMaterial3D) -> bool:
+	var texture_value: Variant = material.get_shader_parameter("albedo_texture")
+	var color_value: Variant = material.get_shader_parameter("albedo_color")
+	var uv_scale_value: Variant = material.get_shader_parameter("uv1_scale")
+	var uv_offset_value: Variant = material.get_shader_parameter("uv1_offset")
+	var vertex_color_value: Variant = material.get_shader_parameter("use_vertex_color")
+	var roughness_value: Variant = material.get_shader_parameter("roughness")
+	var metallic_value: Variant = material.get_shader_parameter("metallic")
+	var specular_value: Variant = material.get_shader_parameter("specular")
+	if texture_value != source.albedo_texture or color_value != source.albedo_color:
+		return false
+	if uv_scale_value != Vector2(source.uv1_scale.x, source.uv1_scale.y) \
+			or uv_offset_value != Vector2(source.uv1_offset.x, source.uv1_offset.y):
+		return false
+	if typeof(vertex_color_value) != TYPE_BOOL or bool(vertex_color_value) != source.vertex_color_use_as_albedo:
+		return false
+	if source.vertex_color_use_as_albedo and source.vertex_color_is_srgb:
+		return false
+	return typeof(roughness_value) == TYPE_FLOAT and is_equal_approx(float(roughness_value), source.roughness) \
+		and typeof(metallic_value) == TYPE_FLOAT and is_equal_approx(float(metallic_value), source.metallic) \
+		and typeof(specular_value) == TYPE_FLOAT and is_equal_approx(float(specular_value), source.metallic_specular)
+
+
+func _same_surface_geometry(arrays: Array, source_arrays: Array) -> bool:
+	if arrays.size() != source_arrays.size():
+		return false
+	for array_index: int in arrays.size():
+		if arrays[array_index] != source_arrays[array_index]:
+			return false
+	return true
 
 
 func _inspect_flowers(field_node: Node3D) -> Dictionary:

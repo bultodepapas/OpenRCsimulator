@@ -1,0 +1,7 @@
+Poly Haven source intake — Pine Sapling Small (1K glTF)
+Asset: https://polyhaven.com/a/pine_sapling_small
+Files/API manifest: https://api.polyhaven.com/files/pine_sapling_small
+Metadata/API: https://api.polyhaven.com/info/pine_sapling_small
+License: CC0 — https://polyhaven.com/license (asset listing labels CC0). Redistribution, commercial use, and modification are allowed without attribution; attribution is retained here for provenance.
+Authors: Rico Cilliers (modeling); Rob Tuytel (photography).
+Downloaded from official Poly Haven API and dl.polyhaven.org on 2026-10-17. Keep original source files unchanged. The 1K glTF package is 21,891,339 bytes across eight files; source checksums, file URLs and sizes are in download-manifest.json. This is an intake source, not runtime-approved geometry.
