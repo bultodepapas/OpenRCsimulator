@@ -1,0 +1,17 @@
+{
+  "results": {
+    "jensen-das-ugly-stik-60": {
+      "exact_except_created_utc": true,
+      "samples": 721,
+      "normalized_baseline_sha256": "dffcfe82f556de12e83a28dc8bf24b838ff7a9a29de20adcd10d509f29b54d83",
+      "normalized_candidate_sha256": "dffcfe82f556de12e83a28dc8bf24b838ff7a9a29de20adcd10d509f29b54d83"
+    },
+    "p51d-mustang-120": {
+      "exact_except_created_utc": true,
+      "samples": 721,
+      "normalized_baseline_sha256": "8c05e47f9f800f36e23ac08362cd69b019d22cf4db913401f47b72008ed4d946",
+      "normalized_candidate_sha256": "8c05e47f9f800f36e23ac08362cd69b019d22cf4db913401f47b72008ed4d946"
+    }
+  },
+  "scope": "Same 3-second scripted trim inputs in frozen baseline/enhanced snapshots. Numerical invariance only; not physical or full-session validation."
+}

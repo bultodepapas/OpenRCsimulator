@@ -39,7 +39,7 @@ Root darkening was not adopted. No emission, universal upward-normal replacement
 
 ## Field controls
 
-[Before](evidence/before.png) · [Photographic detail probe](evidence/photo-probe.png). Final combined captures and machine-readable comparisons are retained with the verification results.
+[Final baseline, low view](evidence/raw/field/final-baseline/low_near_grass.png) · [Final enhanced, same view](evidence/raw/field/final-enhanced/low_near_grass.png) · [Enhanced pilot edge](evidence/raw/field/final-enhanced/pilot_runway_edge.png). The earlier [photographic detail probe](evidence/photo-probe.png) isolates the ground experiment before species reallocation.
 
 The default-mode control retains identical mesh and instance hashes. Of 58 matched images, 53 are pixel-identical; the other five moving frames differ in only 1–3 pixels, by one 8-bit channel level at most. This is a bounded numerical difference, not a claim of universal byte identity. All repeat/wrap controls are exact within each run.
 
@@ -48,6 +48,32 @@ Before reallocating species, grass-only binding versus the existing RC photograp
 The complete-field draw/primitive counters match in the four fixed views even though MultiMesh instance allocation changes. These engine counters are retained separately from the expanded source-triangle sum; their equality is not evidence of equal instanced geometry work or a GPU speedup.
 
 Native full-session attempt: 10 s warmup, 60 s measured, 3,594 frames; p95 17.321 ms and p99 18.342 ms. **Ineligible:** simulation paused for about 30 s after focus loss, with simulation/wall ratio 0.5008. The collection is valid, but its pacing result is not an active-flight performance pass. Focus safety was not disabled. This is the reason default adoption remains blocked by qualification, not evidence that the new grass exceeds its budget.
+
+## Five-pair render measurement
+
+Five serial, alternating baseline/enhanced pairs each completed 10 s warmup and at least 60 s measurement. All paired camera, engine, field, wind and clock inputs match. The high tier uses the fixed low view at 720p with uncapped offscreen rendering; this is not the 60 Hz full-session gate. Windows power plan: Balanced; NVIDIA power limit: 350 W. No other Godot process was admitted during this campaign.
+
+| Pair | Baseline wall p95, ms | Enhanced wall p95, ms | Wall p95 delta, ms | Viewport GPU p95 delta, ms |
+| --- | ---: | ---: | ---: | ---: |
+| 1 | 2.257 | 1.963 | -0.294 | -0.169 |
+| 2 | 1.839 | 2.061 | +0.222 | +0.099 |
+| 3 | 2.104 | 1.987 | -0.117 | -0.045 |
+| 4 | 1.751 | 1.778 | +0.027 | +0.033 |
+| 5 | 1.803 | 2.180 | +0.377 | +0.202 |
+
+Median paired wall-p95 change: **+0.027 ms**; worst pair: **+0.377 ms**. Median GPU-p95 change: **+0.033 ms**. These measurements do not establish a speedup, other hardware performance, or the combined budget of concurrently developed scenery features. [Reduction](evidence/profile-comparison.json), [raw records and hashes](evidence/retained-artifacts.json). All eight grass-owned runtime files in the integrated checkout match the frozen, profiled candidate [byte for byte](evidence/runtime-identities.json).
+
+## Integration verification
+
+The native integration import and load check loaded **989 GDScripts** without null resources or engine errors. Eleven related test scripts passed: imported near grass (59 checks), wind adapter (167), grass ground binding (38), procedural fallback (38), mask bounds (23), RC material, imported vegetation, terrain (21), ground surfaces, shader clock (7), and flight logging/replay (3,247). This is a targeted verification set, not a claim that the entire `app/test.sh` suite ran. [Retained logs](evidence/raw/checks/parse-all.log).
+
+The final native material fixture passes all source/calm/repeat/wrap controls under four lighting arrangements. Its 36 PNGs, manifest and [machine-readable result](evidence/material-final-comparison.json) are retained under [material evidence](evidence/raw/material/manifest.json). World-direction/root/displacement contracts are checked separately in the adapter tests; a changed image alone would not prove them.
+
+Stik and P-51 each produce **721 identical trace samples over 3 seconds** between frozen baseline and enhanced snapshots. The comparison excludes only the creation timestamp; remaining metadata and rows match. [Trace result](evidence/state-trace-comparison.json). This is numerical invariance for those scripted trim scenarios, not physical validation or a substitute for an interactive recorded-flight comparison.
+
+The existing placement generator initially failed its exact-byte check on Windows because Git had converted its final LF to CRLF. A narrow `.gitattributes` rule now preserves LF; regeneration used `tools/grass/place.py`. The row digest remains `5d5345f1fdf447a9e77e2a53112556e9ae888751694a63aeb92782d1a5b2ee34`: no placement changed. Generator checks and all five placement tests pass locally and in a fresh local clone with `core.autocrlf=true` and the new attributes applied before checkout.
+
+The [default comparison](evidence/default-comparison.json), [enhanced comparison](evidence/enhanced-comparison.json) and [night comparison](evidence/night-comparison.json) retain every frame's metrics and identity. Four fixed-view PNGs per run are committed; remaining traverse PNGs remain in local `tmp/grass-quality/final-*`. Compressed manifests and all ten raw timing records preserve their original bytes. The [artifact inventory](evidence/retained-artifacts.json) records hashes and decompression instructions; missing traverse PNGs must be recaptured before rerunning a complete image reduction on another machine.
 
 ## Reproduction and limits
 
@@ -58,6 +84,7 @@ Use the same external capture script with `--path` pointing to each imported app
   --script "$PWD/tools/grass/quality_capture.gd" -- --mode=capture --out=<new-absolute-directory>
 & .tools/Godot_v4.7.2-stable_win64_console.exe --path <candidate-app> --audio-driver Dummy `
   --script "$PWD/tools/grass/material_capture.gd" -- --out=<new-absolute-directory>
+python tools/grass/material_compare.py <new-absolute-directory>/manifest.json --out <new-report.json>
 ```
 
 `--ground=photo` is an explicit research probe using the existing RC binder; it is not the production grass-only binding. Add `--night` for the matched midnight fixture. `--mode=profile --variant=baseline|candidate --pair=1..5` uses 10 s warmup and 60 s measured wall time. Profiles exercise nonzero wind with a recorded clock protocol and contain no image readback during measurement. Wall interval, viewport CPU and viewport GPU metrics remain separate; unsupported zero GPU readings are unavailable.

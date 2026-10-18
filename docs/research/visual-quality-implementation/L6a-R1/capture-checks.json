@@ -1,0 +1,22 @@
+{
+  "assets": [
+    "common_tree_1",
+    "common_tree_2",
+    "common_tree_3",
+    "common_tree_4",
+    "pine_1",
+    "pine_2",
+    "pine_3"
+  ],
+  "checks": {
+    "native_compatibility": true,
+    "explicit_wind_control": true,
+    "all_calm_sources_pixel_exact": true,
+    "wind_off_clock_control_static": true,
+    "repeat_pixel_exact": true,
+    "clock_wrap_pixel_exact": true,
+    "wind_moves": true,
+    "wind_reversal_changes_image": true
+  },
+  "passed": true
+}

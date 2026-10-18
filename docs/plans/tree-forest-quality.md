@@ -1,14 +1,16 @@
 # Tree and forest realism improvement plan
 
-2026-10-17. **Status: proposed; no runtime changes, new asset integration or performance acceptance.** Owner: landscape **L**, coordinated with **SC/LU**, **VQ**, **M5**, **FW/TOD** and **RCV**. [Dated research and source audit](../research/tree-forest-quality-2026-10-17.md).
+2026-10-17. **Status: first implementation delivered; flight/owner acceptance remains open.** Owner: landscape **L**, coordinated with **SC/LU**, **VQ**, **M5**, **FW/TOD** and **RCV**. [Dated research and source audit](../research/tree-forest-quality-2026-10-17.md), [implementation and native evidence](../research/visual-quality-implementation/L6a-R1/README.md).
 
 Improve tree silhouettes, bark and foliage materials, natural color variation, woodland composition and perceived density from pilot, chase and ground cameras. Use existing or freely downloadable trees and textures. **Do not model trees, generate new tree geometry, paint replacement tree textures or build a tree-authoring tool.** Importing, validating, converting and baking representations of licensed downloaded models are integration work; source assets remain intact.
 
-The recommended first delivery compares retained CC0 shapes with a small realistic **LOLIPOP Pine + Maple** selection, using downloaded meshes and supplied LODs. Improve woodland composition at the existing count before increasing population. Select a coherent visual family from actual Godot captures; retaining stylized sources is a low-cost control, not proof of photorealism. The [second research round](../research/tree-forest-quality-2026-10-17.md#second-round-25-additional-investigations) adds **25 investigations** with source findings, limits and proposed tests.
+The implemented first delivery integrates four more retained CC0 forms (seven total), preserves source materials, adds bounded imported-tree wind and replaces circular far patches with irregular groups at the existing count. LOLIPOP Pine/Maple could not be downloaded through the available unauthenticated access; a verified Poly Haven sapling supplies the realistic source comparison and stays outside runtime. Mature realistic-source/LOD qualification remains open. Retaining stylized sources is not proof of photorealism. The [second research round](../research/tree-forest-quality-2026-10-17.md#second-round-25-additional-investigations) adds **25 investigations** with source findings, limits and proposed tests.
 
 The [global visual/performance plan](global-performance-visual-quality.md) owns shared budgets and sequencing. This plan refines existing L6c/L15b and optional L8, and registers follow-ups in the [landscape registry](../LANDSCAPE-PLAN.md). The [grass plan](grass-quality.md) owns turf and grass; coordinate shared vegetation materials, habitat masks and ground transitions there.
 
 ## 1. Starting point and file ownership
+
+The table below records the pre-implementation baseline. Current implemented behavior and measurements are recorded in the linked evidence and pipeline guides.
 
 The current implementation already contains two distinct tree systems. Details and current-source qualifications are in the [audit](../research/tree-forest-quality-2026-10-17.md#current-project-findings).
 
@@ -115,7 +117,7 @@ Enable imported-tree wind only after confirming that the adapter preserves every
 
 ## 7. Reviewable implementation sequence
 
-All implementation rows are pending. The two documents produced by this planning task are research/design inputs, not completion of these steps. New evidence belongs under `docs/research/visual-quality-implementation/<STEP-ID>/`; scripts extend existing tree/vegetation tools. Existing steps retain their canonical evidence homes.
+The [L6a-R1 implementation checkpoint](../research/visual-quality-implementation/L6a-R1/README.md) records seven integrated source forms and native source comparisons, the precision-only vertex-color repair, L7-R1's same-count habitat placement, L15b-R1's tree-only wind, and opt-in L7-R2 spatial cells. The source-fidelity part of L6b-R2 is implemented; palette/near-far qualification, mature realistic-source selection, density growth and optional L8 work remain open. Static captures and lifecycle checks do not close flight, readability or owner gates. New evidence belongs under the owning step's evidence home; existing steps retain their canonical homes.
 
 | ID | Work | Required proof / dependency |
 | --- | --- | --- |

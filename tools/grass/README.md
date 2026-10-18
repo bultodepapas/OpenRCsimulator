@@ -11,7 +11,7 @@ $env:OPENRC_GRASS_QUALITY = 'enhanced'
 
 Clear the variable (`Remove-Item Env:OPENRC_GRASS_QUALITY`) before launching to restore the original route. Unknown values also select the original route. No preference or physics data is changed. [Implementation evidence and outstanding gates](../../docs/research/visual-quality-implementation/grass-quality/README.md).
 
-`quality_capture.gd` captures the complete field at fixed views and through a short moving sequence; `quality_compare.py capture` verifies identities, image hashes and repeat controls. `quality_compare.py profile` reduces five alternating baseline/candidate pairs. `material_capture.gd` isolates source material parity under front/back/shadow/local lights and transformed copies. Both render tools require a native renderer, not `--headless`. Their detailed protocol is in the evidence report.
+`quality_capture.gd` captures the complete field at fixed views and through a short moving sequence; `quality_compare.py capture` verifies identities, image hashes and repeat controls. `quality_compare.py profile` reduces five alternating baseline/candidate pairs. `material_capture.gd` isolates source material parity under front/back/shadow/local lights and transformed copies; `material_compare.py <manifest.json> --out <new-report.json>` verifies its pixel controls. Both render tools require a native renderer, not `--headless`. Their detailed protocol is in the evidence report.
 
 The resource audit is read-only and may run headless, with a new output file:
 

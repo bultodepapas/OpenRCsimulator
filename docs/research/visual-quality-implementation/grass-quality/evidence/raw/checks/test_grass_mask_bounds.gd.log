@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   every validated row fits the culling radius
+ok   expanded boundary stays inclusive: north_max
+ok   strictly separated boundary is removed: north_max
+ok   expanded boundary stays inclusive: north_min
+ok   strictly separated boundary is removed: north_min
+ok   expanded boundary stays inclusive: east_max
+ok   strictly separated boundary is removed: east_max
+ok   expanded boundary stays inclusive: east_min
+ok   strictly separated boundary is removed: east_min
+ok   moving the pilot reevaluates the mask list
+ok   absent bounds and non-dictionaries cannot exclude finite points
+ok   indeterminate bound remains for the point predicate: north_min
+ok   indeterminate bound remains for the point predicate: north_max
+ok   indeterminate bound remains for the point predicate: east_min
+ok   indeterminate bound remains for the point predicate: east_max
+ok   indeterminate pilot coordinates do not create a false gap
+ok   overlapping bounds leave polygon decisions to the original predicate
+ok   full 61-by-61 square agrees at pilot (0.0, 0.0)
+ok   full 61-by-61 square agrees at pilot (12.25, -8.5)
+ok   full 61-by-61 square agrees at pilot (100.0, 100.0)
+ok   full 61-by-61 square agrees at pilot (-40000.0, 40000.0)
+ok   input masks are unchanged
+ok   clearance and sampling edge decisions agree
+grass mask bounds: 23 checks, 0 failed

@@ -1,4 +1,14 @@
 # Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
+# Grass placement is compared byte-for-byte with its LF generator output.
+/app/data/fields/grass.json text eol=lf
+# Downloaded vegetation and generated tree-color buffers carry exact file hashes.
+# Preserve upstream text bytes as well as binary geometry across native/WSL checkouts.
+/app/assets/landscape/vegetation/models/** -text
+/app/assets/landscape/vegetation/LICENSE.txt -text
+/assets/landscape/vegetation/source/*.txt -text
+/assets/landscape/vegetation/source/polyhaven_pine_sapling_small/*.gltf -text
+# Retain the exact native grass capture, profile and trace receipts.
+/docs/research/visual-quality-implementation/grass-quality/evidence/raw/** -text whitespace=cr-at-eol
 # Workshop descriptors bind exact aircraft bytes on every platform.
 /app/data/aircraft/*.json text eol=crlf
 /app/data/rotorcraft/*.json text eol=crlf

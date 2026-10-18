@@ -1,0 +1,1132 @@
+{
+  "format": "openrc-gltf-source-validation v1",
+  "result": "passed_with_warnings",
+  "generatedAt": "2026-10-18T02:11:41.090Z",
+  "tools": {
+    "validator": "Khronos glTF Validator",
+    "package": "gltf-validator",
+    "pinnedPackageVersion": "2.0.0-dev.3.10",
+    "validatorVersion": "2.0.0-dev.3.10",
+    "node": "v24.12.0"
+  },
+  "scope": "Read-only validation of original JSON glTF files plus locally referenced external buffers/images. No source file was modified.",
+  "disposition": {
+    "errorGate": "Every input must report zero validator errors and load every external resource.",
+    "warnings": "All warnings are retained with code, message, pointer, and review disposition; none are suppressed.",
+    "limitations": "Khronos format validation does not establish Godot import success, visual quality, runtime suitability, or performance."
+  },
+  "summary": {
+    "assets": 8,
+    "errors": 0,
+    "warnings": 13,
+    "unresolvedResources": 0,
+    "passed": true
+  },
+  "assets": [
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_1.gltf",
+      "bytes": 3869,
+      "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+      "dependencies": [
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+          "bytes": 4384496,
+          "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Bark_NormalTree.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+          "bytes": 3894788,
+          "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "CommonTree_1.bin",
+          "path": "app/assets/landscape/vegetation/models/CommonTree_1.bin",
+          "bytes": 491576,
+          "sha256": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "path": "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+          "bytes": 158796,
+          "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 1,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_2.gltf",
+      "bytes": 3866,
+      "sha256": "67160975f0ac991b4a2ffb2add4ab4037b5e9c1bef9f66dac5235fcf0ba9bd52",
+      "dependencies": [
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+          "bytes": 4384496,
+          "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Bark_NormalTree.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+          "bytes": 3894788,
+          "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "CommonTree_2.bin",
+          "path": "app/assets/landscape/vegetation/models/CommonTree_2.bin",
+          "bytes": 423024,
+          "sha256": "f30942a64a7886ff55014faefc4b544cf0ddd8731aba6ebc77e3b3f4c5265b60",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "path": "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+          "bytes": 158796,
+          "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 1,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_3.gltf",
+      "bytes": 3864,
+      "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+      "dependencies": [
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+          "bytes": 4384496,
+          "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Bark_NormalTree.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+          "bytes": 3894788,
+          "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "CommonTree_3.bin",
+          "path": "app/assets/landscape/vegetation/models/CommonTree_3.bin",
+          "bytes": 296984,
+          "sha256": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "path": "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+          "bytes": 158796,
+          "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 1,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_4.gltf",
+      "bytes": 3865,
+      "sha256": "ddf0e8837705702871d3f03de8cf7aeed61ad4bf8ee92052b6f95bdd771297b6",
+      "dependencies": [
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+          "bytes": 4384496,
+          "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Bark_NormalTree.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+          "bytes": 3894788,
+          "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "CommonTree_4.bin",
+          "path": "app/assets/landscape/vegetation/models/CommonTree_4.bin",
+          "bytes": 307596,
+          "sha256": "295b8f91b628f55465e7f949f1a156682f2de2ca57a2e1c458a4be40eed865ab",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "path": "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+          "bytes": 158796,
+          "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 1,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_1.gltf",
+      "bytes": 3832,
+      "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+      "dependencies": [
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+          "bytes": 4384496,
+          "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Bark_NormalTree.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+          "bytes": 3894788,
+          "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Leaf_Pine_C.png",
+          "path": "app/assets/landscape/vegetation/models/Leaf_Pine_C.png",
+          "bytes": 70055,
+          "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Pine_1.bin",
+          "path": "app/assets/landscape/vegetation/models/Pine_1.bin",
+          "bytes": 275492,
+          "sha256": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 1,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_2.gltf",
+      "bytes": 3833,
+      "sha256": "57bd4732170b6c7e51bcf78fe5adaabf142f95a50378d8d3051d1f20a04d3c2f",
+      "dependencies": [
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+          "bytes": 4384496,
+          "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Bark_NormalTree.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+          "bytes": 3894788,
+          "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Leaf_Pine_C.png",
+          "path": "app/assets/landscape/vegetation/models/Leaf_Pine_C.png",
+          "bytes": 70055,
+          "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Pine_2.bin",
+          "path": "app/assets/landscape/vegetation/models/Pine_2.bin",
+          "bytes": 258336,
+          "sha256": "48993e400c418e78a1562f8a43ebc5a0c4feba8907dc0133e7f07a9992cee8f6",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 1,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_3.gltf",
+      "bytes": 3827,
+      "sha256": "54c72a4d614f053dd4b3d4404076a361de6085ec6a34560e42a76d7e79d89830",
+      "dependencies": [
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+          "bytes": 4384496,
+          "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Bark_NormalTree.png",
+          "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+          "bytes": 3894788,
+          "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Leaf_Pine_C.png",
+          "path": "app/assets/landscape/vegetation/models/Leaf_Pine_C.png",
+          "bytes": 70055,
+          "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Pine_3.bin",
+          "path": "app/assets/landscape/vegetation/models/Pine_3.bin",
+          "bytes": 345288,
+          "sha256": "d8743b6353257ae241b61158f3c00b13e9a76667f98ced8e5595ad17304a8fbb",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 1,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 1,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 1
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+      "bytes": 11442,
+      "sha256": "f358c01926861dd082f32dba60f7c9fba232b585a985cf38c0d2229eecf4bc48",
+      "dependencies": [
+        {
+          "uri": "pine_sapling_small.bin",
+          "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small.bin",
+          "bytes": 17771796,
+          "sha256": "b4d2fc73d53f1d8717eb5ef9a2c66957d2a53152787e543aace88fcd6fca94ef",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "textures/pine_sapling_small_bark_arm_1k.jpg",
+          "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_arm_1k.jpg",
+          "bytes": 801278,
+          "sha256": "336a4680cd571b6076b67afee2310b290b8900d9d126eb39ec1ae92e95be2ea9",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "textures/pine_sapling_small_bark_diff_1k.jpg",
+          "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_diff_1k.jpg",
+          "bytes": 725265,
+          "sha256": "5c76836b01c3536fa0e24207b67bf4f3315b53ebe2b4ecc6f08dfcf3f8d74929",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "textures/pine_sapling_small_bark_nor_gl_1k.jpg",
+          "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_nor_gl_1k.jpg",
+          "bytes": 1016849,
+          "sha256": "05c46455531781b6cf18cae0648cf627f60ee942adaa8bcbfd1592fc2506a9e0",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "textures/pine_sapling_small_twig_arm_1k.jpg",
+          "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_arm_1k.jpg",
+          "bytes": 394056,
+          "sha256": "2eb0aa44124b5a4ae9401e00b23b3c916f4c3f421616ce1bb932f248fc061288",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "textures/pine_sapling_small_twig_diff_1k.jpg",
+          "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_diff_1k.jpg",
+          "bytes": 477942,
+          "sha256": "54af7d6fb664b5a38bcb118b557bc50e01e86ec54d6f1a573c3e32c649a53362",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "textures/pine_sapling_small_twig_nor_gl_1k.jpg",
+          "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_nor_gl_1k.jpg",
+          "bytes": 692711,
+          "sha256": "76af87821d7ff00e25768d5d97a449394fe64a21ae55d099da7f5ed46d9098c8",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 6,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 6,
+          "countsByCode": {
+            "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE": 6
+          },
+          "messages": [
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            },
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/0/primitives/1/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            },
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/1/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            },
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/1/primitives/1/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            },
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/2/primitives/0/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            },
+            {
+              "severity": 1,
+              "level": "warning",
+              "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+              "pointer": "/meshes/2/primitives/1/material",
+              "disposition": "review listed warning; source bytes were left unchanged",
+              "count": 1,
+              "examples": [
+                "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations."
+              ]
+            }
+          ]
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+      "bytes": 4384496,
+      "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_1.gltf",
+          "uri": "Bark_NormalTree_Normal.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_2.gltf",
+          "uri": "Bark_NormalTree_Normal.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_3.gltf",
+          "uri": "Bark_NormalTree_Normal.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_4.gltf",
+          "uri": "Bark_NormalTree_Normal.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_1.gltf",
+          "uri": "Bark_NormalTree_Normal.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_2.gltf",
+          "uri": "Bark_NormalTree_Normal.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_3.gltf",
+          "uri": "Bark_NormalTree_Normal.png"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png",
+      "bytes": 3894788,
+      "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_1.gltf",
+          "uri": "Bark_NormalTree.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_2.gltf",
+          "uri": "Bark_NormalTree.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_3.gltf",
+          "uri": "Bark_NormalTree.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_4.gltf",
+          "uri": "Bark_NormalTree.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_1.gltf",
+          "uri": "Bark_NormalTree.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_2.gltf",
+          "uri": "Bark_NormalTree.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_3.gltf",
+          "uri": "Bark_NormalTree.png"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_1.bin",
+      "bytes": 491576,
+      "sha256": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_1.gltf",
+          "uri": "CommonTree_1.bin"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_1.gltf",
+      "bytes": 3869,
+      "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_2.bin",
+      "bytes": 423024,
+      "sha256": "f30942a64a7886ff55014faefc4b544cf0ddd8731aba6ebc77e3b3f4c5265b60",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_2.gltf",
+          "uri": "CommonTree_2.bin"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_2.gltf",
+      "bytes": 3866,
+      "sha256": "67160975f0ac991b4a2ffb2add4ab4037b5e9c1bef9f66dac5235fcf0ba9bd52",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_3.bin",
+      "bytes": 296984,
+      "sha256": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_3.gltf",
+          "uri": "CommonTree_3.bin"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_3.gltf",
+      "bytes": 3864,
+      "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_4.bin",
+      "bytes": 307596,
+      "sha256": "295b8f91b628f55465e7f949f1a156682f2de2ca57a2e1c458a4be40eed865ab",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_4.gltf",
+          "uri": "CommonTree_4.bin"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_4.gltf",
+      "bytes": 3865,
+      "sha256": "ddf0e8837705702871d3f03de8cf7aeed61ad4bf8ee92052b6f95bdd771297b6",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Leaf_Pine_C.png",
+      "bytes": 70055,
+      "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_1.gltf",
+          "uri": "Leaf_Pine_C.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_2.gltf",
+          "uri": "Leaf_Pine_C.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_3.gltf",
+          "uri": "Leaf_Pine_C.png"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+      "bytes": 158796,
+      "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_1.gltf",
+          "uri": "Leaves_NormalTree_C.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_2.gltf",
+          "uri": "Leaves_NormalTree_C.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_3.gltf",
+          "uri": "Leaves_NormalTree_C.png"
+        },
+        {
+          "document": "app/assets/landscape/vegetation/models/CommonTree_4.gltf",
+          "uri": "Leaves_NormalTree_C.png"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_1.bin",
+      "bytes": 275492,
+      "sha256": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_1.gltf",
+          "uri": "Pine_1.bin"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_1.gltf",
+      "bytes": 3832,
+      "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_2.bin",
+      "bytes": 258336,
+      "sha256": "48993e400c418e78a1562f8a43ebc5a0c4feba8907dc0133e7f07a9992cee8f6",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_2.gltf",
+          "uri": "Pine_2.bin"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_2.gltf",
+      "bytes": 3833,
+      "sha256": "57bd4732170b6c7e51bcf78fe5adaabf142f95a50378d8d3051d1f20a04d3c2f",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_3.bin",
+      "bytes": 345288,
+      "sha256": "d8743b6353257ae241b61158f3c00b13e9a76667f98ced8e5595ad17304a8fbb",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "app/assets/landscape/vegetation/models/Pine_3.gltf",
+          "uri": "Pine_3.bin"
+        }
+      ]
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_3.gltf",
+      "bytes": 3827,
+      "sha256": "54c72a4d614f053dd4b3d4404076a361de6085ec6a34560e42a76d7e79d89830",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+      "bytes": 11442,
+      "sha256": "f358c01926861dd082f32dba60f7c9fba232b585a985cf38c0d2229eecf4bc48",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small.bin",
+      "bytes": 17771796,
+      "sha256": "b4d2fc73d53f1d8717eb5ef9a2c66957d2a53152787e543aace88fcd6fca94ef",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+          "uri": "pine_sapling_small.bin"
+        }
+      ]
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_arm_1k.jpg",
+      "bytes": 801278,
+      "sha256": "336a4680cd571b6076b67afee2310b290b8900d9d126eb39ec1ae92e95be2ea9",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+          "uri": "textures/pine_sapling_small_bark_arm_1k.jpg"
+        }
+      ]
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_diff_1k.jpg",
+      "bytes": 725265,
+      "sha256": "5c76836b01c3536fa0e24207b67bf4f3315b53ebe2b4ecc6f08dfcf3f8d74929",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+          "uri": "textures/pine_sapling_small_bark_diff_1k.jpg"
+        }
+      ]
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_nor_gl_1k.jpg",
+      "bytes": 1016849,
+      "sha256": "05c46455531781b6cf18cae0648cf627f60ee942adaa8bcbfd1592fc2506a9e0",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+          "uri": "textures/pine_sapling_small_bark_nor_gl_1k.jpg"
+        }
+      ]
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_arm_1k.jpg",
+      "bytes": 394056,
+      "sha256": "2eb0aa44124b5a4ae9401e00b23b3c916f4c3f421616ce1bb932f248fc061288",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+          "uri": "textures/pine_sapling_small_twig_arm_1k.jpg"
+        }
+      ]
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_diff_1k.jpg",
+      "bytes": 477942,
+      "sha256": "54af7d6fb664b5a38bcb118b557bc50e01e86ec54d6f1a573c3e32c649a53362",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+          "uri": "textures/pine_sapling_small_twig_diff_1k.jpg"
+        }
+      ]
+    },
+    {
+      "path": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_nor_gl_1k.jpg",
+      "bytes": 692711,
+      "sha256": "76af87821d7ff00e25768d5d97a449394fe64a21ae55d099da7f5ed46d9098c8",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf",
+          "uri": "textures/pine_sapling_small_twig_nor_gl_1k.jpg"
+        }
+      ]
+    }
+  ]
+}

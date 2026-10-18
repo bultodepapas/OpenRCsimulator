@@ -1,0 +1,82 @@
+{
+  "active_flight_qualifier_count": 0,
+  "campaign_reasons": [
+    "campaign has fewer than 3 runs",
+    "one or more runs failed an individual performance gate"
+  ],
+  "collection_valid": true,
+  "collection_valid_count": 1,
+  "complete": true,
+  "duration_eligible_count": 1,
+  "failures": [],
+  "format": "openrc-native-frame-summary v1",
+  "hardware_acceptance": "not claimed; this reducer evaluates report integrity and declared software pacing gates only",
+  "input_pattern": "run-*.json with same-stem .log files",
+  "minimum_runs": 3,
+  "performance_pass": false,
+  "performance_pass_count": 0,
+  "policy": {
+    "active_nonadvancing_interval_max_usec": 250000,
+    "minimum_runs": 3,
+    "minimum_sample_s": 60.0,
+    "minimum_warmup_s": 10.0,
+    "p95_max_ms": 18.0,
+    "p99_max_ms": 25.0,
+    "simulation_wall_ratio_max": 1.01,
+    "simulation_wall_ratio_min": 0.99
+  },
+  "run_count": 1,
+  "runs": [
+    {
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.000777,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-1.log",
+      "log_sha256": "a23db6b414c494ca8b00513592fe466c2517348c01f26a217fee11beb8d39f91",
+      "metrics": {
+        "frame_ms": {
+          "max": 94.962,
+          "p50": 16.662,
+          "p95": 17.320999999999998,
+          "p99": 18.342000000000002
+        },
+        "max_frame_interval_usec": 94962,
+        "max_nonadvancing_interval_usec": 29943400,
+        "sample_simulation_span_s": 30.04166666666667,
+        "sample_simulation_ticks": 7210,
+        "sample_wall_span_excluding_first_interval_s": 59.987316,
+        "simulation_wall_ratio": 0.5008003136307461,
+        "tick_wall_ratio": 0.500800313630746
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": true,
+        "p99_max_ms": 25.0,
+        "p99_pass": true,
+        "pass": false,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": false
+      },
+      "performance_pass": false,
+      "report": "run-1.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "07a03abb6da3cbea0226812d5cf7e2fb7b6ab94585a62e5cf4f21155fe3734a5"
+    }
+  ]
+}

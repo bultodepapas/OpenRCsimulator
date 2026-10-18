@@ -48,7 +48,7 @@ The [grass quality plan](plans/grass-quality.md) refines texture, silhouette, pl
 | L11a-R1 | Qualify imported-grass silhouette, species allocation, root/ground match and habitat placement using retained free assets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 | L11a-R2 | Repair a demonstrated grass batch-culling or transition defect within measured budgets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 
-The [tree and forest quality plan](plans/tree-forest-quality.md) owns proposed source selection, tree materials, woodland composition and density work, supported by the [2026-10-17 source/code audit](research/tree-forest-quality-2026-10-17.md). It requires downloaded assets, preserves existing cards as a comparison baseline and coordinates physical tree envelopes with SC/LU. No new tree implementation or acceptance is claimed.
+The [tree and forest quality plan](plans/tree-forest-quality.md) owns source selection, tree materials, woodland composition and density work, supported by the [2026-10-17 source/code audit](research/tree-forest-quality-2026-10-17.md). The [first implementation](research/visual-quality-implementation/L6a-R1/README.md) integrates seven retained tree forms, same-count irregular far patches, source-preserving imported-tree wind and optional spatial cells. Realistic-source/LOD, density, combined flight performance and owner acceptance remain open. Physical tree envelopes and changed world identities remain coordinated with SC/LU.
 
 | Reserved IDs | Scope | Acceptance home |
 | --- | --- | --- |

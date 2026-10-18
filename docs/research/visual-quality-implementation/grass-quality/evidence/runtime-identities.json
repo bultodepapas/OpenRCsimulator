@@ -1,0 +1,53 @@
+{
+  "files": [
+    {
+      "path": "app/render/grass_quality.gd",
+      "sha256": "2bb90ea1c3d83334a92e45fe5689641301d4e1c5f2b9757bda7e23e95e4aa36d",
+      "frozen_sha256": "2bb90ea1c3d83334a92e45fe5689641301d4e1c5f2b9757bda7e23e95e4aa36d",
+      "exact": true
+    },
+    {
+      "path": "app/render/grass_ground_material.gd",
+      "sha256": "69f067ca5ff95fc9546efc0fa0409eb00165438e576a738d379080cb15030c9e",
+      "frozen_sha256": "69f067ca5ff95fc9546efc0fa0409eb00165438e576a738d379080cb15030c9e",
+      "exact": true
+    },
+    {
+      "path": "app/render/ground.gd",
+      "sha256": "2c96be9d1844edbf7ddb99dc9ba5244c5bd61a368493831598b6cac8c85f2876",
+      "frozen_sha256": "2c96be9d1844edbf7ddb99dc9ba5244c5bd61a368493831598b6cac8c85f2876",
+      "exact": true
+    },
+    {
+      "path": "app/render/ground.gdshader",
+      "sha256": "ad2643bf9a169fea37d8cc69d4a36caf6d5da2a3a849a7a57736b00c4b9a15bf",
+      "frozen_sha256": "ad2643bf9a169fea37d8cc69d4a36caf6d5da2a3a849a7a57736b00c4b9a15bf",
+      "exact": true
+    },
+    {
+      "path": "app/render/rc_ground_detail.gdshaderinc",
+      "sha256": "b944309ab3996e92699b1fbd22f25fb8efa4281d52ee26e05ccdfb182ac18eca",
+      "frozen_sha256": "b944309ab3996e92699b1fbd22f25fb8efa4281d52ee26e05ccdfb182ac18eca",
+      "exact": true
+    },
+    {
+      "path": "app/scenery/imported_near_grass.gd",
+      "sha256": "024bc3791a64ff71b2a2273d255885327e53aca5b08740bc45b2dfc7088106c7",
+      "frozen_sha256": "024bc3791a64ff71b2a2273d255885327e53aca5b08740bc45b2dfc7088106c7",
+      "exact": true
+    },
+    {
+      "path": "app/scenery/imported_grass.gdshader",
+      "sha256": "0f78242b88037a670795074d0d6a882a461798ab7913a3e4b99d3f56d5685f10",
+      "frozen_sha256": "0f78242b88037a670795074d0d6a882a461798ab7913a3e4b99d3f56d5685f10",
+      "exact": true
+    },
+    {
+      "path": "app/scenery/imported_grass_material.gd",
+      "sha256": "5485ba933f036a7f8b8679bf0cfc3f0f0632cc80fcd23c90cf8da7bdd20dbb33",
+      "frozen_sha256": "5485ba933f036a7f8b8679bf0cfc3f0f0632cc80fcd23c90cf8da7bdd20dbb33",
+      "exact": true
+    }
+  ],
+  "scope": "Grass-owned runtime files are identical to the frozen candidate profiled in all five pairs. Unrelated shared-checkout changes are not included in timing qualification."
+}

@@ -1,0 +1,1645 @@
+{
+  "candidate_minus_baseline_delta_summary": {
+    "viewport_cpu_ms": {
+      "p50": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.07000002264976501,
+        "median_pair_delta_ms": 0.014000028371810913,
+        "min_pair_delta_ms": -0.08299997448921204
+      },
+      "p95": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.3179999589920044,
+        "median_pair_delta_ms": -0.038999974727630615,
+        "min_pair_delta_ms": -0.14899998903274536
+      },
+      "p99": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.3539999723434448,
+        "median_pair_delta_ms": 0.008000016212463379,
+        "min_pair_delta_ms": -0.16100001335144043
+      }
+    },
+    "viewport_gpu_ms": {
+      "p50": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.053000032901763916,
+        "median_pair_delta_ms": 0.03600001335144043,
+        "min_pair_delta_ms": 0.018000006675720215
+      },
+      "p95": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.20200002193450928,
+        "median_pair_delta_ms": 0.03299999237060547,
+        "min_pair_delta_ms": -0.16899991035461426
+      },
+      "p99": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.09399998188018799,
+        "median_pair_delta_ms": 0.02799999713897705,
+        "min_pair_delta_ms": -0.4299999475479126
+      }
+    },
+    "wall_interval_ms": {
+      "p50": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.14700000000000002,
+        "median_pair_delta_ms": 0.04499999999999993,
+        "min_pair_delta_ms": -0.06699999999999995
+      },
+      "p95": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.3770000000000002,
+        "median_pair_delta_ms": 0.027000000000000135,
+        "min_pair_delta_ms": -0.29400000000000004
+      },
+      "p99": {
+        "available_pairs": 5,
+        "max_pair_delta_ms": 0.26400000000000023,
+        "median_pair_delta_ms": -0.10999999999999988,
+        "min_pair_delta_ms": -0.43199999999999994
+      }
+    }
+  },
+  "comparison_kind": "five alternating baseline/candidate profile pairs",
+  "format": "openrc-grass-quality-comparison v1",
+  "paired_protocol_order": [
+    "baseline",
+    "candidate",
+    "baseline",
+    "candidate",
+    "baseline",
+    "candidate",
+    "baseline",
+    "candidate",
+    "baseline",
+    "candidate"
+  ],
+  "pairs": [
+    {
+      "baseline": {
+        "actual_sample_duration_s": 60.001264,
+        "actual_warmup_s": 10.0015,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-1-baseline\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.5569999814033508,
+            "p95": 0.9760000109672546,
+            "p99": 1.3530000448226929,
+            "sample_count": 41816,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7360000014305115,
+            "p95": 1.4759999513626099,
+            "p99": 2.2730000019073486,
+            "sample_count": 41816,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.293,
+            "p95": 2.257,
+            "p99": 3.112,
+            "sample_count": 41816,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 1,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 41816,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "baseline",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate": {
+        "actual_sample_duration_s": 60.000661,
+        "actual_warmup_s": 10.00199,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-1-candidate\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.4740000069141388,
+            "p95": 0.8270000219345093,
+            "p99": 1.1920000314712524,
+            "sample_count": 44835,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7540000081062317,
+            "p95": 1.3070000410079956,
+            "p99": 1.843000054359436,
+            "sample_count": 44835,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.226,
+            "p95": 1.963,
+            "p99": 2.68,
+            "sample_count": 44835,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 1,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 44835,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "candidate",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate_minus_baseline_ms": {
+        "viewport_cpu_ms": {
+          "p50": -0.08299997448921204,
+          "p95": -0.14899998903274536,
+          "p99": -0.16100001335144043
+        },
+        "viewport_gpu_ms": {
+          "p50": 0.018000006675720215,
+          "p95": -0.16899991035461426,
+          "p99": -0.4299999475479126
+        },
+        "wall_interval_ms": {
+          "p50": -0.06699999999999995,
+          "p95": -0.29400000000000004,
+          "p99": -0.43199999999999994
+        }
+      },
+      "pair": 1
+    },
+    {
+      "baseline": {
+        "actual_sample_duration_s": 60.000106,
+        "actual_warmup_s": 10.000598,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-2-baseline\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.4449999928474426,
+            "p95": 0.7429999709129333,
+            "p99": 1.062999963760376,
+            "sample_count": 47357,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.718999981880188,
+            "p95": 1.2289999723434448,
+            "p99": 1.7289999723434448,
+            "sample_count": 47357,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.156,
+            "p95": 1.839,
+            "p99": 2.557,
+            "sample_count": 47357,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 2,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 47357,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "baseline",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate": {
+        "actual_sample_duration_s": 60.000507,
+        "actual_warmup_s": 10.000648,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-2-candidate\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.4880000054836273,
+            "p95": 0.9319999814033508,
+            "p99": 1.3370000123977661,
+            "sample_count": 43443,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7590000033378601,
+            "p95": 1.3279999494552612,
+            "p99": 1.8229999542236328,
+            "sample_count": 43443,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.25,
+            "p95": 2.061,
+            "p99": 2.821,
+            "sample_count": 43443,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 2,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 43443,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "candidate",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate_minus_baseline_ms": {
+        "viewport_cpu_ms": {
+          "p50": 0.04300001263618469,
+          "p95": 0.18900001049041748,
+          "p99": 0.27400004863739014
+        },
+        "viewport_gpu_ms": {
+          "p50": 0.04000002145767212,
+          "p95": 0.0989999771118164,
+          "p99": 0.09399998188018799
+        },
+        "wall_interval_ms": {
+          "p50": 0.09400000000000008,
+          "p95": 0.22199999999999998,
+          "p99": 0.26400000000000023
+        }
+      },
+      "pair": 2
+    },
+    {
+      "baseline": {
+        "actual_sample_duration_s": 60.000898,
+        "actual_warmup_s": 10.000478,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-3-baseline\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.47099998593330383,
+            "p95": 0.9419999718666077,
+            "p99": 1.312000036239624,
+            "sample_count": 44012,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7279999852180481,
+            "p95": 1.3880000114440918,
+            "p99": 2.049999952316284,
+            "sample_count": 44012,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.218,
+            "p95": 2.104,
+            "p99": 2.897,
+            "sample_count": 44012,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 3,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 44012,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "baseline",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate": {
+        "actual_sample_duration_s": 60.001172,
+        "actual_warmup_s": 10.000755,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-3-candidate\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.48500001430511475,
+            "p95": 0.902999997138977,
+            "p99": 1.2079999446868896,
+            "sample_count": 44345,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7540000081062317,
+            "p95": 1.343000054359436,
+            "p99": 1.8229999542236328,
+            "sample_count": 44345,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.236,
+            "p95": 1.987,
+            "p99": 2.593,
+            "sample_count": 44345,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 3,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 44345,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "candidate",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate_minus_baseline_ms": {
+        "viewport_cpu_ms": {
+          "p50": 0.014000028371810913,
+          "p95": -0.038999974727630615,
+          "p99": -0.10400009155273438
+        },
+        "viewport_gpu_ms": {
+          "p50": 0.026000022888183594,
+          "p95": -0.04499995708465576,
+          "p99": -0.22699999809265137
+        },
+        "wall_interval_ms": {
+          "p50": 0.018000000000000016,
+          "p95": -0.11699999999999999,
+          "p99": -0.3039999999999998
+        }
+      },
+      "pair": 3
+    },
+    {
+      "baseline": {
+        "actual_sample_duration_s": 60.000867,
+        "actual_warmup_s": 10.000087,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-4-baseline\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.43299999833106995,
+            "p95": 0.6909999847412109,
+            "p99": 1.0219999551773071,
+            "sample_count": 48384,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.718999981880188,
+            "p95": 1.1990000009536743,
+            "p99": 1.5920000076293945,
+            "sample_count": 48384,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.139,
+            "p95": 1.751,
+            "p99": 2.477,
+            "sample_count": 48384,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 4,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 48384,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "baseline",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate": {
+        "actual_sample_duration_s": 60.000005,
+        "actual_warmup_s": 10.000934,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-4-candidate\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.44699999690055847,
+            "p95": 0.640999972820282,
+            "p99": 1.0299999713897705,
+            "sample_count": 47080,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7549999952316284,
+            "p95": 1.2319999933242798,
+            "p99": 1.6200000047683716,
+            "sample_count": 47080,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.184,
+            "p95": 1.778,
+            "p99": 2.367,
+            "sample_count": 47080,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 4,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 47080,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "candidate",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate_minus_baseline_ms": {
+        "viewport_cpu_ms": {
+          "p50": 0.013999998569488525,
+          "p95": -0.050000011920928955,
+          "p99": 0.008000016212463379
+        },
+        "viewport_gpu_ms": {
+          "p50": 0.03600001335144043,
+          "p95": 0.03299999237060547,
+          "p99": 0.02799999713897705
+        },
+        "wall_interval_ms": {
+          "p50": 0.04499999999999993,
+          "p95": 0.027000000000000135,
+          "p99": -0.10999999999999988
+        }
+      },
+      "pair": 4
+    },
+    {
+      "baseline": {
+        "actual_sample_duration_s": 60.000449,
+        "actual_warmup_s": 10.00072,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-5-baseline\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.43799999356269836,
+            "p95": 0.6610000133514404,
+            "p99": 1.00600004196167,
+            "sample_count": 47161,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7319999933242798,
+            "p95": 1.2200000286102295,
+            "p99": 1.8559999465942383,
+            "sample_count": 47161,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.167,
+            "p95": 1.803,
+            "p99": 2.667,
+            "sample_count": 47161,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 5,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 47161,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "baseline",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate": {
+        "actual_sample_duration_s": 60.000987,
+        "actual_warmup_s": 10.000507,
+        "camera_motion": "fixed profile view during warmup and measurement",
+        "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+        "engine": {
+          "build": "official",
+          "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+          "hex": 263938,
+          "major": 4,
+          "minor": 7,
+          "patch": 2,
+          "status": "stable",
+          "string": "4.7.2-stable (official)",
+          "timestamp": 0
+        },
+        "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+        "frame_step_s": 0.016666666666666666,
+        "ground_probe": "default",
+        "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-5-candidate\\manifest.json",
+        "measurement_resets_clock_after_warmup": true,
+        "metrics": {
+          "viewport_cpu_ms": {
+            "available": true,
+            "p50": 0.5080000162124634,
+            "p95": 0.9789999723434448,
+            "p99": 1.3600000143051147,
+            "sample_count": 41476,
+            "unit": "ms per viewport frame"
+          },
+          "viewport_gpu_ms": {
+            "available": true,
+            "p50": 0.7850000262260437,
+            "p95": 1.4220000505447388,
+            "p99": 1.934000015258789,
+            "sample_count": 41476,
+            "unit": "ms per viewport frame"
+          },
+          "wall_interval_ms": {
+            "available": true,
+            "p50": 1.314,
+            "p95": 2.18,
+            "p99": 2.808,
+            "sample_count": 41476,
+            "unit": "ms per frame interval"
+          }
+        },
+        "night": false,
+        "night_lighting_config": {},
+        "pair": 5,
+        "qualification_minimum_met": true,
+        "quality": "high",
+        "renderer_adapter": "NVIDIA GeForce RTX 3090",
+        "renderer_driver": "opengl3",
+        "renderer_method": "gl_compatibility",
+        "requested_sample_duration_s": 60.0,
+        "requested_warmup_s": 10.0,
+        "sample_count": 41476,
+        "seed": 20261017,
+        "sequence_spans_warmup_and_sample": false,
+        "sim_time_formula": "profile_frame_index * frame_step_s",
+        "variant": "candidate",
+        "view_id": "low_near_grass",
+        "viewport": [
+          1280,
+          720
+        ],
+        "wind_render_mps": [
+          5.0,
+          0.0,
+          0.0
+        ]
+      },
+      "candidate_minus_baseline_ms": {
+        "viewport_cpu_ms": {
+          "p50": 0.07000002264976501,
+          "p95": 0.3179999589920044,
+          "p99": 0.3539999723434448
+        },
+        "viewport_gpu_ms": {
+          "p50": 0.053000032901763916,
+          "p95": 0.20200002193450928,
+          "p99": 0.07800006866455078
+        },
+        "wall_interval_ms": {
+          "p50": 0.14700000000000002,
+          "p95": 0.3770000000000002,
+          "p99": 0.14100000000000001
+        }
+      },
+      "pair": 5
+    }
+  ],
+  "profile_input_mismatches": [],
+  "qualification_minimum_met_for_all_runs": true,
+  "qualification_statement": "profile-only comparison; full-session, target-hardware, input-tape and total visual-budget qualification are not established",
+  "runs": [
+    {
+      "actual_sample_duration_s": 60.001264,
+      "actual_warmup_s": 10.0015,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-1-baseline\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.5569999814033508,
+          "p95": 0.9760000109672546,
+          "p99": 1.3530000448226929,
+          "sample_count": 41816,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7360000014305115,
+          "p95": 1.4759999513626099,
+          "p99": 2.2730000019073486,
+          "sample_count": 41816,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.293,
+          "p95": 2.257,
+          "p99": 3.112,
+          "sample_count": 41816,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 1,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 41816,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "baseline",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000661,
+      "actual_warmup_s": 10.00199,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-1-candidate\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.4740000069141388,
+          "p95": 0.8270000219345093,
+          "p99": 1.1920000314712524,
+          "sample_count": 44835,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7540000081062317,
+          "p95": 1.3070000410079956,
+          "p99": 1.843000054359436,
+          "sample_count": 44835,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.226,
+          "p95": 1.963,
+          "p99": 2.68,
+          "sample_count": 44835,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 1,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 44835,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "candidate",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000106,
+      "actual_warmup_s": 10.000598,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-2-baseline\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.4449999928474426,
+          "p95": 0.7429999709129333,
+          "p99": 1.062999963760376,
+          "sample_count": 47357,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.718999981880188,
+          "p95": 1.2289999723434448,
+          "p99": 1.7289999723434448,
+          "sample_count": 47357,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.156,
+          "p95": 1.839,
+          "p99": 2.557,
+          "sample_count": 47357,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 2,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 47357,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "baseline",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000507,
+      "actual_warmup_s": 10.000648,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-2-candidate\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.4880000054836273,
+          "p95": 0.9319999814033508,
+          "p99": 1.3370000123977661,
+          "sample_count": 43443,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7590000033378601,
+          "p95": 1.3279999494552612,
+          "p99": 1.8229999542236328,
+          "sample_count": 43443,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.25,
+          "p95": 2.061,
+          "p99": 2.821,
+          "sample_count": 43443,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 2,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 43443,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "candidate",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000898,
+      "actual_warmup_s": 10.000478,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-3-baseline\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.47099998593330383,
+          "p95": 0.9419999718666077,
+          "p99": 1.312000036239624,
+          "sample_count": 44012,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7279999852180481,
+          "p95": 1.3880000114440918,
+          "p99": 2.049999952316284,
+          "sample_count": 44012,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.218,
+          "p95": 2.104,
+          "p99": 2.897,
+          "sample_count": 44012,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 3,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 44012,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "baseline",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.001172,
+      "actual_warmup_s": 10.000755,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-3-candidate\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.48500001430511475,
+          "p95": 0.902999997138977,
+          "p99": 1.2079999446868896,
+          "sample_count": 44345,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7540000081062317,
+          "p95": 1.343000054359436,
+          "p99": 1.8229999542236328,
+          "sample_count": 44345,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.236,
+          "p95": 1.987,
+          "p99": 2.593,
+          "sample_count": 44345,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 3,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 44345,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "candidate",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000867,
+      "actual_warmup_s": 10.000087,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-4-baseline\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.43299999833106995,
+          "p95": 0.6909999847412109,
+          "p99": 1.0219999551773071,
+          "sample_count": 48384,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.718999981880188,
+          "p95": 1.1990000009536743,
+          "p99": 1.5920000076293945,
+          "sample_count": 48384,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.139,
+          "p95": 1.751,
+          "p99": 2.477,
+          "sample_count": 48384,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 4,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 48384,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "baseline",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000005,
+      "actual_warmup_s": 10.000934,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-4-candidate\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.44699999690055847,
+          "p95": 0.640999972820282,
+          "p99": 1.0299999713897705,
+          "sample_count": 47080,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7549999952316284,
+          "p95": 1.2319999933242798,
+          "p99": 1.6200000047683716,
+          "sample_count": 47080,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.184,
+          "p95": 1.778,
+          "p99": 2.367,
+          "sample_count": 47080,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 4,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 47080,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "candidate",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000449,
+      "actual_warmup_s": 10.00072,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-5-baseline\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.43799999356269836,
+          "p95": 0.6610000133514404,
+          "p99": 1.00600004196167,
+          "sample_count": 47161,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7319999933242798,
+          "p95": 1.2200000286102295,
+          "p99": 1.8559999465942383,
+          "sample_count": 47161,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.167,
+          "p95": 1.803,
+          "p99": 2.667,
+          "sample_count": 47161,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 5,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 47161,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "baseline",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "actual_sample_duration_s": 60.000987,
+      "actual_warmup_s": 10.000507,
+      "camera_motion": "fixed profile view during warmup and measurement",
+      "clock_protocol": "profile-frame-index-sim-time-reset-v1",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "frame_step_s": 0.016666666666666666,
+      "ground_probe": "default",
+      "manifest": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-quality\\profile-5-candidate\\manifest.json",
+      "measurement_resets_clock_after_warmup": true,
+      "metrics": {
+        "viewport_cpu_ms": {
+          "available": true,
+          "p50": 0.5080000162124634,
+          "p95": 0.9789999723434448,
+          "p99": 1.3600000143051147,
+          "sample_count": 41476,
+          "unit": "ms per viewport frame"
+        },
+        "viewport_gpu_ms": {
+          "available": true,
+          "p50": 0.7850000262260437,
+          "p95": 1.4220000505447388,
+          "p99": 1.934000015258789,
+          "sample_count": 41476,
+          "unit": "ms per viewport frame"
+        },
+        "wall_interval_ms": {
+          "available": true,
+          "p50": 1.314,
+          "p95": 2.18,
+          "p99": 2.808,
+          "sample_count": 41476,
+          "unit": "ms per frame interval"
+        }
+      },
+      "night": false,
+      "night_lighting_config": {},
+      "pair": 5,
+      "qualification_minimum_met": true,
+      "quality": "high",
+      "renderer_adapter": "NVIDIA GeForce RTX 3090",
+      "renderer_driver": "opengl3",
+      "renderer_method": "gl_compatibility",
+      "requested_sample_duration_s": 60.0,
+      "requested_warmup_s": 10.0,
+      "sample_count": 41476,
+      "seed": 20261017,
+      "sequence_spans_warmup_and_sample": false,
+      "sim_time_formula": "profile_frame_index * frame_step_s",
+      "variant": "candidate",
+      "view_id": "low_near_grass",
+      "viewport": [
+        1280,
+        720
+      ],
+      "wind_render_mps": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

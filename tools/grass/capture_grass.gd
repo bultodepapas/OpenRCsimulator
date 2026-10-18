@@ -10,6 +10,7 @@ const ShaderClock := preload("res://render/shader_clock.gd")
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 
 const FORMAT: String = "openrc-l11a-grass-capture v2"
+const ANIMATION_ISOLATION_PROTOCOL: String = "non-near-grass-pinned-shader-inputs-v1"
 const WIDTH: int = 1280
 const HEIGHT: int = 720
 const FOV_DEG: float = 50.0
@@ -48,6 +49,9 @@ var _world: Node3D
 var _environment: Environment
 var _grass_report: Dictionary = {}
 var _flower_report: Dictionary = {"count": 0, "names": []}
+var _frozen_shader_cache: Dictionary = {}
+var _frozen_shader_sources: Dictionary = {}
+var _frozen_material_bindings: int = 0
 
 
 func _initialize() -> void:
@@ -167,7 +171,16 @@ func _run() -> void:
 		"scenery_on": scenery_on,
 		"near_grass_material_mode": str(_grass_report.get("material_mode", "not_present")),
 		"environment": "Atmosphere.environment() + Atmosphere.create_sun()",
-		"clock_policy": "clouds/ground frozen at t=0; ShaderClock varies only in emitted wind-probe cases",
+		"clock_policy": "capture-only material clones pin non-NearGrass sim_clock/wind_vec at zero; NearGrass alone receives the logged wind-probe clock",
+		"animation_isolation": {
+			"protocol": ANIMATION_ISOLATION_PROTOCOL,
+			"scope": "ShaderMaterials on Field GeometryInstance3D surfaces outside the NearGrass subtree",
+			"pinned_shader_inputs": {"sim_clock": 0.0, "wind_vec": [0.0, 0.0, 0.0]},
+			"pinned_local_wind_controls": {"wind_enabled": false, "wind_strength": 0.0},
+			"material_bindings_overridden": _frozen_material_bindings,
+			"shader_sources": _sorted_source_keys(_frozen_shader_sources),
+			"node_geometry_visibility_unchanged": true,
+		},
 		"grass": _grass_report if _mode != "baseline" else {"present": false},
 		"flowers": _flower_report,
 		"cases": _cases,
@@ -212,15 +225,6 @@ func _build_world() -> Dictionary:
 	_field_node = FieldBuilder.build(_field_data)
 	_field_node.process_mode = Node.PROCESS_MODE_DISABLED
 	_freeze_other_vegetation(_field_node)
-	# This probe varies grass wind only; L15b has a separate tree-wind capture.
-	# Permit older baseline shaders without the ablation uniform.
-	var grove: Node3D = _field_node.get_node_or_null("treeline") as Node3D
-	if grove != null:
-		for child: MultiMeshInstance3D in grove.get_children():
-			var tree_material: ShaderMaterial = child.multimesh.mesh.surface_get_material(0) as ShaderMaterial
-			for parameter: Dictionary in tree_material.shader.get_shader_uniform_list():
-				if parameter.name == "wind_enabled":
-					tree_material.set_shader_parameter("wind_enabled", false)
 	world.add_child(_field_node)
 	Atmosphere.create_sun(world)
 	var camera: Camera3D = Camera3D.new()
@@ -233,34 +237,107 @@ func _build_world() -> Dictionary:
 	return {"world": world, "field": _field_node, "environment": _environment, "camera": camera}
 
 
-## Attribute this fixture's moving pixels to grass. Other vegetation has its own wind proof.
-## Duplicate overrides so cached source materials and other scenes are never mutated.
+## Attribute this fixture's moving pixels to grass. Pin time and wind only on capture-owned
+## clones outside NearGrass, leaving production geometry, visibility, and cached materials intact.
 func _freeze_other_vegetation(node: Node) -> void:
 	if node.name == "NearGrass":
 		return
-	if node is MultiMeshInstance3D:
-		var instance := node as MultiMeshInstance3D
-		var mesh := instance.multimesh.mesh
-		for index: int in mesh.get_surface_count():
-			var material := mesh.surface_get_material(index) as ShaderMaterial
-			if material == null:
-				continue
-			var frozen := material.duplicate() as ShaderMaterial
-			var changed := false
-			for parameter: Dictionary in RenderingServer.get_shader_parameter_list(material.shader.get_rid()):
-				var name := str(parameter.name)
-				if name == "wind_enabled":
-					frozen.set_shader_parameter(name, false)
-					instance.set_instance_shader_parameter(name, false)
-					changed = true
-				elif name == "wind_strength":
-					frozen.set_shader_parameter(name, 0.0)
-					instance.set_instance_shader_parameter(name, 0.0)
-					changed = true
-			if changed:
-				mesh.surface_set_material(index, frozen)
+	if node is GeometryInstance3D:
+		_freeze_geometry_materials(node as GeometryInstance3D)
 	for child: Node in node.get_children():
 		_freeze_other_vegetation(child)
+
+
+func _freeze_geometry_materials(instance: GeometryInstance3D) -> void:
+	var override_material: ShaderMaterial = instance.material_override as ShaderMaterial
+	if override_material != null:
+		var frozen_override: ShaderMaterial = _frozen_shader_material(override_material)
+		if frozen_override != null:
+			instance.material_override = frozen_override
+	if instance is MultiMeshInstance3D:
+		var multi_instance: MultiMeshInstance3D = instance as MultiMeshInstance3D
+		if multi_instance.multimesh == null or multi_instance.multimesh.mesh == null:
+			return
+		var source_mesh: Mesh = multi_instance.multimesh.mesh
+		var frozen_mesh: Mesh = _freeze_mesh_materials(source_mesh)
+		if frozen_mesh != null:
+			var frozen_multi: MultiMesh = multi_instance.multimesh.duplicate() as MultiMesh
+			frozen_multi.mesh = frozen_mesh
+			multi_instance.multimesh = frozen_multi
+	elif instance is MeshInstance3D:
+		var mesh_instance: MeshInstance3D = instance as MeshInstance3D
+		if mesh_instance.mesh == null:
+			return
+		var frozen_mesh: Mesh = _freeze_mesh_materials(mesh_instance.mesh)
+		if frozen_mesh != null:
+			mesh_instance.mesh = frozen_mesh
+
+
+func _freeze_mesh_materials(source_mesh: Mesh) -> Mesh:
+	var frozen_mesh: Mesh
+	for surface_index: int in source_mesh.get_surface_count():
+		var source_material: ShaderMaterial = source_mesh.surface_get_material(surface_index) as ShaderMaterial
+		if source_material == null:
+			continue
+		var frozen_material: ShaderMaterial = _frozen_shader_material(source_material)
+		if frozen_material == null:
+			continue
+		if frozen_mesh == null:
+			frozen_mesh = source_mesh.duplicate() as Mesh
+		frozen_mesh.surface_set_material(surface_index, frozen_material)
+	return frozen_mesh
+
+
+func _frozen_shader_material(source_material: ShaderMaterial) -> ShaderMaterial:
+	var source_shader: Shader = source_material.shader
+	if source_shader == null:
+		return null
+	var source_code: String = source_shader.code
+	var frozen_code: String = source_code
+	var local_clock: bool = source_code.contains("global uniform float sim_clock;")
+	var local_wind: bool = source_code.contains("global uniform vec3 wind_vec;")
+	if local_clock:
+		frozen_code = frozen_code.replace("global uniform float sim_clock;", "uniform float sim_clock = 0.0;")
+	if local_wind:
+		frozen_code = frozen_code.replace("global uniform vec3 wind_vec;", "uniform vec3 wind_vec = vec3(0.0);")
+	var local_wind_controls: Dictionary = {}
+	for parameter: Dictionary in RenderingServer.get_shader_parameter_list(source_shader.get_rid()):
+		var parameter_name: String = str(parameter.get("name", ""))
+		if parameter_name == "wind_enabled":
+			local_wind_controls[parameter_name] = false
+		elif parameter_name == "wind_strength":
+			local_wind_controls[parameter_name] = 0.0
+	if frozen_code == source_code and local_wind_controls.is_empty():
+		return null
+	var frozen_material: ShaderMaterial = source_material.duplicate() as ShaderMaterial
+	if frozen_code != source_code:
+		var shader_key: int = source_shader.get_instance_id()
+		var frozen_shader: Shader = _frozen_shader_cache.get(shader_key) as Shader
+		if frozen_shader == null:
+			frozen_shader = Shader.new()
+			frozen_shader.code = frozen_code
+			_frozen_shader_cache[shader_key] = frozen_shader
+			var source_id: String = source_shader.resource_path
+			if source_id.is_empty():
+				source_id = "sha256:" + source_code.sha256_text()
+			_frozen_shader_sources[source_id] = true
+		frozen_material.shader = frozen_shader
+		if local_clock:
+			frozen_material.set_shader_parameter("sim_clock", 0.0)
+		if local_wind:
+			frozen_material.set_shader_parameter("wind_vec", Vector3.ZERO)
+	for parameter_name: String in local_wind_controls:
+		frozen_material.set_shader_parameter(parameter_name, local_wind_controls[parameter_name])
+	_frozen_material_bindings += 1
+	return frozen_material
+
+
+func _sorted_source_keys(source_map: Dictionary) -> Array[String]:
+	var result: Array[String] = []
+	for key: Variant in source_map.keys():
+		result.append(str(key))
+	result.sort()
+	return result
 
 
 func _scenarios() -> Array[Dictionary]:

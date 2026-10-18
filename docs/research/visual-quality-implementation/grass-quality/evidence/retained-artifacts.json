@@ -1,0 +1,943 @@
+{
+  "files": [
+    {
+      "path": "default-comparison.json",
+      "source": "tmp/grass-quality/default-comparison.json",
+      "sha256": "b4435c539a07a4bd8cdbc4051ccfd332f6482036b5cf7e6cfb8c0baf31d95d29",
+      "bytes": 67112,
+      "decoded_sha256": "b4435c539a07a4bd8cdbc4051ccfd332f6482036b5cf7e6cfb8c0baf31d95d29",
+      "gzip": false
+    },
+    {
+      "path": "enhanced-comparison.json",
+      "source": "tmp/grass-quality/enhanced-comparison.json",
+      "sha256": "baad234957c0bc1d08ecfaebf5869eb33b70616b3417d54d4f368926b1d05769",
+      "bytes": 69136,
+      "decoded_sha256": "baad234957c0bc1d08ecfaebf5869eb33b70616b3417d54d4f368926b1d05769",
+      "gzip": false
+    },
+    {
+      "path": "night-comparison.json",
+      "source": "tmp/grass-quality/night-comparison.json",
+      "sha256": "051af8fa11f6141367cc25578d07e1124713dc8d840981607e34c9fc0b515f47",
+      "bytes": 66933,
+      "decoded_sha256": "051af8fa11f6141367cc25578d07e1124713dc8d840981607e34c9fc0b515f47",
+      "gzip": false
+    },
+    {
+      "path": "profile-comparison.json",
+      "source": "tmp/grass-quality/profile-comparison.json",
+      "sha256": "81db4b8c0e89ef2de625b550b77e285cd79480726bbe70086c0ea1f4989f8644",
+      "bytes": 54951,
+      "decoded_sha256": "81db4b8c0e89ef2de625b550b77e285cd79480726bbe70086c0ea1f4989f8644",
+      "gzip": false
+    },
+    {
+      "path": "material-final-comparison.json",
+      "source": "tmp/grass-quality/material-final-comparison.json",
+      "sha256": "e4c16022d5307974bca2a8fbf49a9a7aeb5f1654cb62ffbdb492bc0126da8674",
+      "bytes": 13009,
+      "decoded_sha256": "e4c16022d5307974bca2a8fbf49a9a7aeb5f1654cb62ffbdb492bc0126da8674",
+      "gzip": false
+    },
+    {
+      "path": "native-baseline-one-summary.json",
+      "source": "tmp/grass-quality/native-baseline-one-summary.json",
+      "sha256": "1e39789a52af3e3cca8994987dd3184992af8b92e2362beb6bbe0e0b47fae68d",
+      "bytes": 2652,
+      "decoded_sha256": "1e39789a52af3e3cca8994987dd3184992af8b92e2362beb6bbe0e0b47fae68d",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-baseline/manifest.json.gz",
+      "source": "tmp/grass-quality/final-baseline/manifest.json",
+      "sha256": "c2012fdb8714c3bbc5bf9c1430eb6de879cd2da7f14f1b4069b88d918ae6d4b9",
+      "bytes": 167225,
+      "decoded_sha256": "1e2aaa995200d4d30e7841d052fa18af73acd37e31ed5092a1a52d7fa7f98788",
+      "gzip": true
+    },
+    {
+      "path": "raw/field/final-baseline/engine.log",
+      "source": "tmp/grass-quality/final-baseline.log",
+      "sha256": "defa34ba5e213d5831f162e8c119db714ceca674b0c00ddd7a59f45701e77c45",
+      "bytes": 267,
+      "decoded_sha256": "defa34ba5e213d5831f162e8c119db714ceca674b0c00ddd7a59f45701e77c45",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-baseline/pilot_runway_edge.png",
+      "source": "tmp/grass-quality/final-baseline/pilot_runway_edge.png",
+      "sha256": "fb247abc808d1282667f8f6e7a81a4fa3599a89b205cac0ca1b8e093fe82bb93",
+      "bytes": 1031347,
+      "decoded_sha256": "fb247abc808d1282667f8f6e7a81a4fa3599a89b205cac0ca1b8e093fe82bb93",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-baseline/low_near_grass.png",
+      "source": "tmp/grass-quality/final-baseline/low_near_grass.png",
+      "sha256": "a6fe01725723ef0b382b4b62b41cefa4e4f9b1ac07880f936c80cf2dba198e57",
+      "bytes": 1019863,
+      "decoded_sha256": "a6fe01725723ef0b382b4b62b41cefa4e4f9b1ac07880f936c80cf2dba198e57",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-baseline/overhead.png",
+      "source": "tmp/grass-quality/final-baseline/overhead.png",
+      "sha256": "7113a83dcef05b80b5d40649a47373a7d1db15047bfd032ad0f80b51a28245b3",
+      "bytes": 1193152,
+      "decoded_sha256": "7113a83dcef05b80b5d40649a47373a7d1db15047bfd032ad0f80b51a28245b3",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-baseline/zoom_far.png",
+      "source": "tmp/grass-quality/final-baseline/zoom_far.png",
+      "sha256": "e0b167a17a751fbd44b93dd386e5761887d72530d77e3a3c17a0f0c692d28cda",
+      "bytes": 649900,
+      "decoded_sha256": "e0b167a17a751fbd44b93dd386e5761887d72530d77e3a3c17a0f0c692d28cda",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-default/manifest.json.gz",
+      "source": "tmp/grass-quality/final-default/manifest.json",
+      "sha256": "e81e7f45b738abc72ff9b47775a61c12a1c49928f0a24f7d8a85594571a087f7",
+      "bytes": 168081,
+      "decoded_sha256": "c83b150327db2cba1a0ca88cbeba85e5eb000a54ba23130b5990db0d433e2156",
+      "gzip": true
+    },
+    {
+      "path": "raw/field/final-default/engine.log",
+      "source": "tmp/grass-quality/final-default.log",
+      "sha256": "1bb3e3bc79fe6794ccdbe6ebfa2cba77854cd0bfd2220d893505bb457c13f83d",
+      "bytes": 266,
+      "decoded_sha256": "1bb3e3bc79fe6794ccdbe6ebfa2cba77854cd0bfd2220d893505bb457c13f83d",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-default/pilot_runway_edge.png",
+      "source": "tmp/grass-quality/final-default/pilot_runway_edge.png",
+      "sha256": "fb247abc808d1282667f8f6e7a81a4fa3599a89b205cac0ca1b8e093fe82bb93",
+      "bytes": 1031347,
+      "decoded_sha256": "fb247abc808d1282667f8f6e7a81a4fa3599a89b205cac0ca1b8e093fe82bb93",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-default/low_near_grass.png",
+      "source": "tmp/grass-quality/final-default/low_near_grass.png",
+      "sha256": "a6fe01725723ef0b382b4b62b41cefa4e4f9b1ac07880f936c80cf2dba198e57",
+      "bytes": 1019863,
+      "decoded_sha256": "a6fe01725723ef0b382b4b62b41cefa4e4f9b1ac07880f936c80cf2dba198e57",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-default/overhead.png",
+      "source": "tmp/grass-quality/final-default/overhead.png",
+      "sha256": "7113a83dcef05b80b5d40649a47373a7d1db15047bfd032ad0f80b51a28245b3",
+      "bytes": 1193152,
+      "decoded_sha256": "7113a83dcef05b80b5d40649a47373a7d1db15047bfd032ad0f80b51a28245b3",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-default/zoom_far.png",
+      "source": "tmp/grass-quality/final-default/zoom_far.png",
+      "sha256": "e0b167a17a751fbd44b93dd386e5761887d72530d77e3a3c17a0f0c692d28cda",
+      "bytes": 649900,
+      "decoded_sha256": "e0b167a17a751fbd44b93dd386e5761887d72530d77e3a3c17a0f0c692d28cda",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-enhanced/manifest.json.gz",
+      "source": "tmp/grass-quality/final-enhanced/manifest.json",
+      "sha256": "915f46132578cb0e31deafef1841a38b6d3b2d0e49a218360634b26cae90d874",
+      "bytes": 169111,
+      "decoded_sha256": "77e63c89cbb8899b0b4b973be630096040096aee7005f1401b88f246274e32ba",
+      "gzip": true
+    },
+    {
+      "path": "raw/field/final-enhanced/engine.log",
+      "source": "tmp/grass-quality/final-enhanced.log",
+      "sha256": "2bc3f4de1d42e3cc82790a7761d237367c7c15b8f0d4b6384329c71964c7e51c",
+      "bytes": 267,
+      "decoded_sha256": "2bc3f4de1d42e3cc82790a7761d237367c7c15b8f0d4b6384329c71964c7e51c",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-enhanced/pilot_runway_edge.png",
+      "source": "tmp/grass-quality/final-enhanced/pilot_runway_edge.png",
+      "sha256": "9fc38017cb2a65a662b848ccff6ddc230afebaf8941ecfeb6e88375b374ab1b6",
+      "bytes": 1397768,
+      "decoded_sha256": "9fc38017cb2a65a662b848ccff6ddc230afebaf8941ecfeb6e88375b374ab1b6",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-enhanced/low_near_grass.png",
+      "source": "tmp/grass-quality/final-enhanced/low_near_grass.png",
+      "sha256": "de2627a7cc97565fe0b30fc7f2a6e95763228b1619db5cf54caa4660bdced841",
+      "bytes": 1342837,
+      "decoded_sha256": "de2627a7cc97565fe0b30fc7f2a6e95763228b1619db5cf54caa4660bdced841",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-enhanced/overhead.png",
+      "source": "tmp/grass-quality/final-enhanced/overhead.png",
+      "sha256": "f91f41dfefd2eae7a3986eaa55f55646780a64f3adbd04a9d32a89c2d3a15e50",
+      "bytes": 1193090,
+      "decoded_sha256": "f91f41dfefd2eae7a3986eaa55f55646780a64f3adbd04a9d32a89c2d3a15e50",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-enhanced/zoom_far.png",
+      "source": "tmp/grass-quality/final-enhanced/zoom_far.png",
+      "sha256": "24dcd33a971b8cce1b0f9c2e5d334d2d85084ddf0546229256b90ef3d3767268",
+      "bytes": 763469,
+      "decoded_sha256": "24dcd33a971b8cce1b0f9c2e5d334d2d85084ddf0546229256b90ef3d3767268",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-baseline/manifest.json.gz",
+      "source": "tmp/grass-quality/final-night-baseline/manifest.json",
+      "sha256": "cb120a2f9fee286eaae5d66a7e5b78fedf8cacb77abca11c24e1e0da4aece0d3",
+      "bytes": 161994,
+      "decoded_sha256": "9aad8cbca9fd3a9997d90adaa3d821f6ef2926691e2e59869639195d79b8377b",
+      "gzip": true
+    },
+    {
+      "path": "raw/field/final-night-baseline/engine.log",
+      "source": "tmp/grass-quality/final-night-baseline.log",
+      "sha256": "b5f493303b2c9c1edea083fa4a36f7292c9140fea139ac31d99bfffa342f69d1",
+      "bytes": 273,
+      "decoded_sha256": "b5f493303b2c9c1edea083fa4a36f7292c9140fea139ac31d99bfffa342f69d1",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-baseline/pilot_runway_edge.png",
+      "source": "tmp/grass-quality/final-night-baseline/pilot_runway_edge.png",
+      "sha256": "559d1b440a7603725b0c140ed872a3b4d447f4239302fef4b97c11cb930bfb62",
+      "bytes": 23833,
+      "decoded_sha256": "559d1b440a7603725b0c140ed872a3b4d447f4239302fef4b97c11cb930bfb62",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-baseline/low_near_grass.png",
+      "source": "tmp/grass-quality/final-night-baseline/low_near_grass.png",
+      "sha256": "0091fc7c9fac77addee68052c4ca0f6bfc647d288761617d992e789c3c9c60f5",
+      "bytes": 27214,
+      "decoded_sha256": "0091fc7c9fac77addee68052c4ca0f6bfc647d288761617d992e789c3c9c60f5",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-baseline/overhead.png",
+      "source": "tmp/grass-quality/final-night-baseline/overhead.png",
+      "sha256": "fd5f022231a477dc8fa0567527b1dce5e816aff46825c0f88da2e16bc4cac36c",
+      "bytes": 5326,
+      "decoded_sha256": "fd5f022231a477dc8fa0567527b1dce5e816aff46825c0f88da2e16bc4cac36c",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-baseline/zoom_far.png",
+      "source": "tmp/grass-quality/final-night-baseline/zoom_far.png",
+      "sha256": "64ee1f698de2a1a7f969ed8225f00be4e022aff71d0b8c541b7ddfe5c11b614f",
+      "bytes": 20252,
+      "decoded_sha256": "64ee1f698de2a1a7f969ed8225f00be4e022aff71d0b8c541b7ddfe5c11b614f",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-enhanced/manifest.json.gz",
+      "source": "tmp/grass-quality/final-night-enhanced/manifest.json",
+      "sha256": "27af3d01c2590babfd616153264b055d578de95ac3338a8daa97e8f4860a0104",
+      "bytes": 162979,
+      "decoded_sha256": "0e71900ee6b21d65f02a7137f1a75d0582218b9c914f616e5fcc4a73acbb8625",
+      "gzip": true
+    },
+    {
+      "path": "raw/field/final-night-enhanced/engine.log",
+      "source": "tmp/grass-quality/final-night-enhanced.log",
+      "sha256": "187b41d186982e0b509147105bc0b736ba29edd6bb8499fdb3809dd4f1b9750e",
+      "bytes": 273,
+      "decoded_sha256": "187b41d186982e0b509147105bc0b736ba29edd6bb8499fdb3809dd4f1b9750e",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-enhanced/pilot_runway_edge.png",
+      "source": "tmp/grass-quality/final-night-enhanced/pilot_runway_edge.png",
+      "sha256": "559d1b440a7603725b0c140ed872a3b4d447f4239302fef4b97c11cb930bfb62",
+      "bytes": 23833,
+      "decoded_sha256": "559d1b440a7603725b0c140ed872a3b4d447f4239302fef4b97c11cb930bfb62",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-enhanced/low_near_grass.png",
+      "source": "tmp/grass-quality/final-night-enhanced/low_near_grass.png",
+      "sha256": "0091fc7c9fac77addee68052c4ca0f6bfc647d288761617d992e789c3c9c60f5",
+      "bytes": 27214,
+      "decoded_sha256": "0091fc7c9fac77addee68052c4ca0f6bfc647d288761617d992e789c3c9c60f5",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-enhanced/overhead.png",
+      "source": "tmp/grass-quality/final-night-enhanced/overhead.png",
+      "sha256": "fd5f022231a477dc8fa0567527b1dce5e816aff46825c0f88da2e16bc4cac36c",
+      "bytes": 5326,
+      "decoded_sha256": "fd5f022231a477dc8fa0567527b1dce5e816aff46825c0f88da2e16bc4cac36c",
+      "gzip": false
+    },
+    {
+      "path": "raw/field/final-night-enhanced/zoom_far.png",
+      "source": "tmp/grass-quality/final-night-enhanced/zoom_far.png",
+      "sha256": "64ee1f698de2a1a7f969ed8225f00be4e022aff71d0b8c541b7ddfe5c11b614f",
+      "bytes": 20252,
+      "decoded_sha256": "64ee1f698de2a1a7f969ed8225f00be4e022aff71d0b8c541b7ddfe5c11b614f",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-calm-t1.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-calm-t1.png",
+      "sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+      "bytes": 72493,
+      "decoded_sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-calm.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-calm.png",
+      "sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+      "bytes": 72493,
+      "decoded_sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-wind-prewrap.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-wind-prewrap.png",
+      "sha256": "5f728d286973d0a4a4ed7541c5c9893d82df0eb9a9907d84fcf2751cd168f45f",
+      "bytes": 72590,
+      "decoded_sha256": "5f728d286973d0a4a4ed7541c5c9893d82df0eb9a9907d84fcf2751cd168f45f",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-wind-repeat.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-wind-repeat.png",
+      "sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+      "bytes": 72662,
+      "decoded_sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-wind-reverse.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-wind-reverse.png",
+      "sha256": "5c454c68e5f0c8aa2391fa1e8ee859f3aedc047041a38b10f5e84af02367a160",
+      "bytes": 73236,
+      "decoded_sha256": "5c454c68e5f0c8aa2391fa1e8ee859f3aedc047041a38b10f5e84af02367a160",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-wind-t0.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-wind-t0.png",
+      "sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+      "bytes": 72662,
+      "decoded_sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-wind-t1.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-wind-t1.png",
+      "sha256": "9891f06b9c689de36ecec8caa6f2e6e4bdd7e30e2600c3f9e1abb4fa0e59f07d",
+      "bytes": 72724,
+      "decoded_sha256": "9891f06b9c689de36ecec8caa6f2e6e4bdd7e30e2600c3f9e1abb4fa0e59f07d",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-candidate-wind-wrap.png",
+      "source": "tmp/grass-quality/material-final/back-candidate-wind-wrap.png",
+      "sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+      "bytes": 72662,
+      "decoded_sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/back-source-calm.png",
+      "source": "tmp/grass-quality/material-final/back-source-calm.png",
+      "sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+      "bytes": 72493,
+      "decoded_sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-calm-t1.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-calm-t1.png",
+      "sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+      "bytes": 72804,
+      "decoded_sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-calm.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-calm.png",
+      "sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+      "bytes": 72804,
+      "decoded_sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-wind-prewrap.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-wind-prewrap.png",
+      "sha256": "344adae28aa1e44d1eea70961cc0e0737290c185f90ac49f0f5365e694adaed2",
+      "bytes": 73044,
+      "decoded_sha256": "344adae28aa1e44d1eea70961cc0e0737290c185f90ac49f0f5365e694adaed2",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-wind-repeat.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-wind-repeat.png",
+      "sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+      "bytes": 73114,
+      "decoded_sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-wind-reverse.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-wind-reverse.png",
+      "sha256": "d32897c3727eb45c5dcf3e6513a0aab7e37cbf532bda948e2e93939b099a6271",
+      "bytes": 73884,
+      "decoded_sha256": "d32897c3727eb45c5dcf3e6513a0aab7e37cbf532bda948e2e93939b099a6271",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-wind-t0.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-wind-t0.png",
+      "sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+      "bytes": 73114,
+      "decoded_sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-wind-t1.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-wind-t1.png",
+      "sha256": "eaad4e281f0fb4aafa3ba83b98a6f64b32ce73cefc224f77de168e6b3cdbecd6",
+      "bytes": 73043,
+      "decoded_sha256": "eaad4e281f0fb4aafa3ba83b98a6f64b32ce73cefc224f77de168e6b3cdbecd6",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-candidate-wind-wrap.png",
+      "source": "tmp/grass-quality/material-final/front-candidate-wind-wrap.png",
+      "sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+      "bytes": 73114,
+      "decoded_sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/front-source-calm.png",
+      "source": "tmp/grass-quality/material-final/front-source-calm.png",
+      "sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+      "bytes": 72804,
+      "decoded_sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-calm-t1.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-calm-t1.png",
+      "sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+      "bytes": 74173,
+      "decoded_sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-calm.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-calm.png",
+      "sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+      "bytes": 74173,
+      "decoded_sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-wind-prewrap.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-wind-prewrap.png",
+      "sha256": "abf27e0f781c415a3d1ef0a33f2d85dfc1f27185b62773897f539f18811ac5ed",
+      "bytes": 74392,
+      "decoded_sha256": "abf27e0f781c415a3d1ef0a33f2d85dfc1f27185b62773897f539f18811ac5ed",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-wind-repeat.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-wind-repeat.png",
+      "sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+      "bytes": 74481,
+      "decoded_sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-wind-reverse.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-wind-reverse.png",
+      "sha256": "934556f0d3a16927c474b96da2db2555298087a2cdbecf1efd54780ea7cf5242",
+      "bytes": 74894,
+      "decoded_sha256": "934556f0d3a16927c474b96da2db2555298087a2cdbecf1efd54780ea7cf5242",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-wind-t0.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-wind-t0.png",
+      "sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+      "bytes": 74481,
+      "decoded_sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-wind-t1.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-wind-t1.png",
+      "sha256": "93fb58197b6a08f5ae0f5d4d8e90ffd2e569b4d4274a91c974ef507d696d17a1",
+      "bytes": 74459,
+      "decoded_sha256": "93fb58197b6a08f5ae0f5d4d8e90ffd2e569b4d4274a91c974ef507d696d17a1",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-candidate-wind-wrap.png",
+      "source": "tmp/grass-quality/material-final/local-candidate-wind-wrap.png",
+      "sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+      "bytes": 74481,
+      "decoded_sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/local-source-calm.png",
+      "source": "tmp/grass-quality/material-final/local-source-calm.png",
+      "sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+      "bytes": 74173,
+      "decoded_sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/manifest.json",
+      "source": "tmp/grass-quality/material-final/manifest.json",
+      "sha256": "2784667c56111a11b99e77b9227efe7e4d622bc5c7aafe75e2dad1e96fb58a37",
+      "bytes": 9301,
+      "decoded_sha256": "2784667c56111a11b99e77b9227efe7e4d622bc5c7aafe75e2dad1e96fb58a37",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-calm-t1.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-calm-t1.png",
+      "sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+      "bytes": 75772,
+      "decoded_sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-calm.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-calm.png",
+      "sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+      "bytes": 75772,
+      "decoded_sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-wind-prewrap.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-wind-prewrap.png",
+      "sha256": "ec8b06eba749eb39f82fe3fad2068ce8b87d55b970749e09c02de7b4a1a954e8",
+      "bytes": 75892,
+      "decoded_sha256": "ec8b06eba749eb39f82fe3fad2068ce8b87d55b970749e09c02de7b4a1a954e8",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-wind-repeat.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-wind-repeat.png",
+      "sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+      "bytes": 75939,
+      "decoded_sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-wind-reverse.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-wind-reverse.png",
+      "sha256": "dbd4556f6d27e23bdd62fccd4cef92f4feafd23f70cc24b174c12316e5a7a284",
+      "bytes": 76466,
+      "decoded_sha256": "dbd4556f6d27e23bdd62fccd4cef92f4feafd23f70cc24b174c12316e5a7a284",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-wind-t0.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-wind-t0.png",
+      "sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+      "bytes": 75939,
+      "decoded_sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-wind-t1.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-wind-t1.png",
+      "sha256": "c4f71121617f00ac53c79e932b699e1559644aa4855cf31046424f1682cf3cf4",
+      "bytes": 75957,
+      "decoded_sha256": "c4f71121617f00ac53c79e932b699e1559644aa4855cf31046424f1682cf3cf4",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-candidate-wind-wrap.png",
+      "source": "tmp/grass-quality/material-final/shadow-candidate-wind-wrap.png",
+      "sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+      "bytes": 75939,
+      "decoded_sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/shadow-source-calm.png",
+      "source": "tmp/grass-quality/material-final/shadow-source-calm.png",
+      "sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+      "bytes": 75772,
+      "decoded_sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+      "gzip": false
+    },
+    {
+      "path": "raw/material/engine.log",
+      "source": "tmp/grass-quality/material-final.log",
+      "sha256": "85bfaf19653e69fae86f636664dc623bf1bf39efa1e30f95dc7cbeb759467fc6",
+      "bytes": 270,
+      "decoded_sha256": "85bfaf19653e69fae86f636664dc623bf1bf39efa1e30f95dc7cbeb759467fc6",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-1-baseline.json.gz",
+      "source": "tmp/grass-quality/profile-1-baseline/manifest.json",
+      "sha256": "a2bb2c6018cdbf1aab6060fd12f8fa4b63d893d9b9279578e4ab95071e11aea8",
+      "bytes": 910281,
+      "decoded_sha256": "d397e27460eadef7c5209cc99fd951e153854b949bb6e30b0e08a9017b6fdea5",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-1-baseline.log",
+      "source": "tmp/grass-quality/profile-1-baseline.log",
+      "sha256": "4a90dc4b1447c0ec68af39e3cc37fc5d13fb61323ac5c95f3ba0c0ced01aaf42",
+      "bytes": 271,
+      "decoded_sha256": "4a90dc4b1447c0ec68af39e3cc37fc5d13fb61323ac5c95f3ba0c0ced01aaf42",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-1-candidate.json.gz",
+      "source": "tmp/grass-quality/profile-1-candidate/manifest.json",
+      "sha256": "d23446cd5c15af8a69132921fb18fc731414e79692cab5fe8d949481a1fae6c2",
+      "bytes": 941108,
+      "decoded_sha256": "837a8cf688c3607e11e5ea9ea581fae64455244868e988f74e0f3c396a5da71d",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-1-candidate.log",
+      "source": "tmp/grass-quality/profile-1-candidate.log",
+      "sha256": "d34e08cb74c6c69e53c1915d0e7ffcca410fda230af4eaa4e37a628889ab61a1",
+      "bytes": 272,
+      "decoded_sha256": "d34e08cb74c6c69e53c1915d0e7ffcca410fda230af4eaa4e37a628889ab61a1",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-2-baseline.json.gz",
+      "source": "tmp/grass-quality/profile-2-baseline/manifest.json",
+      "sha256": "d3ae1bc3aca953e7067bf64817a91ee15b16c86c660cadadce7236dd8606fec3",
+      "bytes": 953712,
+      "decoded_sha256": "54702b6e20e7d3d37e4d86c7bb643b60d58c5d6e4f53d5bdf6f371a319c459bc",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-2-baseline.log",
+      "source": "tmp/grass-quality/profile-2-baseline.log",
+      "sha256": "2cc7250ac429e60560864c98680cc77209fadee52b6956a0446b4aabdc5f9946",
+      "bytes": 271,
+      "decoded_sha256": "2cc7250ac429e60560864c98680cc77209fadee52b6956a0446b4aabdc5f9946",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-2-candidate.json.gz",
+      "source": "tmp/grass-quality/profile-2-candidate/manifest.json",
+      "sha256": "bc3640fe51316b1928e00d367f324a84f1fa81b9430591a7b8e31e60e68c9660",
+      "bytes": 919670,
+      "decoded_sha256": "8e5b704f2c254f740e9579279e2774631d122bc8001a691e9e09b728d6f52d04",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-2-candidate.log",
+      "source": "tmp/grass-quality/profile-2-candidate.log",
+      "sha256": "5cef4337dafadc7779b76548fc097744ea77a06289c99df1892fe7e7b5f8ae9f",
+      "bytes": 272,
+      "decoded_sha256": "5cef4337dafadc7779b76548fc097744ea77a06289c99df1892fe7e7b5f8ae9f",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-3-baseline.json.gz",
+      "source": "tmp/grass-quality/profile-3-baseline/manifest.json",
+      "sha256": "0838b65d0d82343673aa9c954331f0b221e06ec6219418168bfc0a3da2530670",
+      "bytes": 927844,
+      "decoded_sha256": "56d88538422feac9e9234f3782ff41334414140051228fcaa602715436564fc8",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-3-baseline.log",
+      "source": "tmp/grass-quality/profile-3-baseline.log",
+      "sha256": "507a701a86e3f82d017c388e3027fb5761bc27920aabb76d2594c7788d727821",
+      "bytes": 271,
+      "decoded_sha256": "507a701a86e3f82d017c388e3027fb5761bc27920aabb76d2594c7788d727821",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-3-candidate.json.gz",
+      "source": "tmp/grass-quality/profile-3-candidate/manifest.json",
+      "sha256": "b46ec08ad0aff5ede17cfaa67f183a2f990114c7b8b62d3fa9c7808e8d21d896",
+      "bytes": 937359,
+      "decoded_sha256": "fe226c78a168f51802575d9950ca342e661b5292034e45d8b4e3a7ad77457f74",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-3-candidate.log",
+      "source": "tmp/grass-quality/profile-3-candidate.log",
+      "sha256": "d17dad160580508135434b3c59fed2dc4c76661e1d0d1f577637e7b5babdff86",
+      "bytes": 272,
+      "decoded_sha256": "d17dad160580508135434b3c59fed2dc4c76661e1d0d1f577637e7b5babdff86",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-4-baseline.json.gz",
+      "source": "tmp/grass-quality/profile-4-baseline/manifest.json",
+      "sha256": "21bcc084baa9281fc2368b2b9c4d9a72d29eded33d5d98166ed87a57eaabe052",
+      "bytes": 948458,
+      "decoded_sha256": "ceef3fdfbc2f39850e6290cffb8bb2aa90a108764b60a251cdabedf796ea54de",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-4-baseline.log",
+      "source": "tmp/grass-quality/profile-4-baseline.log",
+      "sha256": "4e52e1b681512287b68c18401a94cf1ceb8ca55179ddf7c4a8a0c1856ee32fb2",
+      "bytes": 271,
+      "decoded_sha256": "4e52e1b681512287b68c18401a94cf1ceb8ca55179ddf7c4a8a0c1856ee32fb2",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-4-candidate.json.gz",
+      "source": "tmp/grass-quality/profile-4-candidate/manifest.json",
+      "sha256": "a5ba2e93970280d14479723e9498c3d2d5a883815a3d776db81ba5bccd1e325f",
+      "bytes": 936649,
+      "decoded_sha256": "50308c97f2c7967f2c6b538354469b6f8ea6a082f7c73ccd700db86e692c2c4b",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-4-candidate.log",
+      "source": "tmp/grass-quality/profile-4-candidate.log",
+      "sha256": "37b6accccc32320e76f3f9632ef966b7d8f143176b9b8edc2bee27b1dc72f065",
+      "bytes": 272,
+      "decoded_sha256": "37b6accccc32320e76f3f9632ef966b7d8f143176b9b8edc2bee27b1dc72f065",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-5-baseline.json.gz",
+      "source": "tmp/grass-quality/profile-5-baseline/manifest.json",
+      "sha256": "7fcaa757419f9e9b8977a54fbb9a523bf48c6cc8e37b546635007e70117809f6",
+      "bytes": 936709,
+      "decoded_sha256": "247dc140a16e0e5d06b7cbfafeea19fd196ad0eec8c73a958d23afb0779e9beb",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-5-baseline.log",
+      "source": "tmp/grass-quality/profile-5-baseline.log",
+      "sha256": "f86904579f75758c96d4acb1191800b52e6080378cbfe9467016ade0434968f2",
+      "bytes": 271,
+      "decoded_sha256": "f86904579f75758c96d4acb1191800b52e6080378cbfe9467016ade0434968f2",
+      "gzip": false
+    },
+    {
+      "path": "raw/profiles/profile-5-candidate.json.gz",
+      "source": "tmp/grass-quality/profile-5-candidate/manifest.json",
+      "sha256": "1ecac2d78b9a447b38c807f777528c1f1105d02a179c1be4d46f18853fe58f95",
+      "bytes": 891339,
+      "decoded_sha256": "0a28e3ad5e5d89ff7be688bb350eb073094f8951862ff1a605bdff1eb9ffc8ad",
+      "gzip": true
+    },
+    {
+      "path": "raw/profiles/profile-5-candidate.log",
+      "source": "tmp/grass-quality/profile-5-candidate.log",
+      "sha256": "045337e3b0b198e7ee85b146621bb1d878b00e212d12f8129fc3f2b9d182770f",
+      "bytes": 272,
+      "decoded_sha256": "045337e3b0b198e7ee85b146621bb1d878b00e212d12f8129fc3f2b9d182770f",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/import.log",
+      "source": "tmp/grass-quality/integrated-checks/import.log",
+      "sha256": "a53dc83dd9ce4cbd9dcbfac8d997c7f0579d87b11284e00464be220a70563a72",
+      "bytes": 5278,
+      "decoded_sha256": "a53dc83dd9ce4cbd9dcbfac8d997c7f0579d87b11284e00464be220a70563a72",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/parse-all.log",
+      "source": "tmp/grass-quality/integrated-checks/parse-all.log",
+      "sha256": "38a78e9105128b86b1f7a20b128fb043471030ba1c7090b48766e4fc47a5966b",
+      "bytes": 163,
+      "decoded_sha256": "38a78e9105128b86b1f7a20b128fb043471030ba1c7090b48766e4fc47a5966b",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_flight_log.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_flight_log.gd.log",
+      "sha256": "6be8024e1f8609f9bde3e20be2d58f3c1e8842d19cfed50074560f02caa1d31f",
+      "bytes": 5621,
+      "decoded_sha256": "6be8024e1f8609f9bde3e20be2d58f3c1e8842d19cfed50074560f02caa1d31f",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_grass_ground_material.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_grass_ground_material.gd.log",
+      "sha256": "4b221f6af76238f15e8cb43eff0d5b5930de9a076fa0b00c8b6d14962d8ef0b7",
+      "bytes": 2578,
+      "decoded_sha256": "4b221f6af76238f15e8cb43eff0d5b5930de9a076fa0b00c8b6d14962d8ef0b7",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_grass_mask_bounds.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_grass_mask_bounds.gd.log",
+      "sha256": "fd01951c504fd5f35410fc6c675a6fcbbe6663d64f8f0d31507958756d04f5f1",
+      "bytes": 1435,
+      "decoded_sha256": "fd01951c504fd5f35410fc6c675a6fcbbe6663d64f8f0d31507958756d04f5f1",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_ground_surfaces.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_ground_surfaces.gd.log",
+      "sha256": "d6a18da5595e6cae48b0c24ecf12c53c91b8a180bca705d2f449fcec4ba2a434",
+      "bytes": 3655,
+      "decoded_sha256": "d6a18da5595e6cae48b0c24ecf12c53c91b8a180bca705d2f449fcec4ba2a434",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_ground_terrain.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_ground_terrain.gd.log",
+      "sha256": "2f769f95da3d33e20357ff596570ecb87125cf65459b10d79e0d3c495e16cd7d",
+      "bytes": 3181,
+      "decoded_sha256": "2f769f95da3d33e20357ff596570ecb87125cf65459b10d79e0d3c495e16cd7d",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_imported_grass_wind.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_imported_grass_wind.gd.log",
+      "sha256": "52b0e123015ff76918b1451042384adc3de2621359c441a746cbe6f2d0ca0247",
+      "bytes": 12816,
+      "decoded_sha256": "52b0e123015ff76918b1451042384adc3de2621359c441a746cbe6f2d0ca0247",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_imported_near_grass.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_imported_near_grass.gd.log",
+      "sha256": "2274dd87c1b70322567a2d571e01ad81e3fbdf45c7fec60d4bcf3cd14707cac4",
+      "bytes": 118,
+      "decoded_sha256": "2274dd87c1b70322567a2d571e01ad81e3fbdf45c7fec60d4bcf3cd14707cac4",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_imported_vegetation.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_imported_vegetation.gd.log",
+      "sha256": "7ce87d314abb4ca88769de2512b9eeff62f5e889470fd09028ff61c2de6f9145",
+      "bytes": 109,
+      "decoded_sha256": "7ce87d314abb4ca88769de2512b9eeff62f5e889470fd09028ff61c2de6f9145",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_near_grass.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_near_grass.gd.log",
+      "sha256": "309e494d8f0ec913336927dae711c873d85abf34beacdda577b207e44679bc3a",
+      "bytes": 2405,
+      "decoded_sha256": "309e494d8f0ec913336927dae711c873d85abf34beacdda577b207e44679bc3a",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_rcv_ground_material.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_rcv_ground_material.gd.log",
+      "sha256": "f11e6f0b34287b1a68745d2801b486cd67103f4443bd786574da44a187e45ae8",
+      "bytes": 1218,
+      "decoded_sha256": "f11e6f0b34287b1a68745d2801b486cd67103f4443bd786574da44a187e45ae8",
+      "gzip": false
+    },
+    {
+      "path": "raw/checks/test_shader_clock.gd.log",
+      "source": "tmp/grass-quality/integrated-checks/test_shader_clock.gd.log",
+      "sha256": "f8e846c8cca73ea05b35499ceee917f3be9a51d918527f62b7cac8ab4a6dfc90",
+      "bytes": 95,
+      "decoded_sha256": "f8e846c8cca73ea05b35499ceee917f3be9a51d918527f62b7cac8ab4a6dfc90",
+      "gzip": false
+    },
+    {
+      "path": "raw/ineligible-session/baseline.json",
+      "source": "tmp/grass-quality/native-session/baseline.json",
+      "sha256": "07a03abb6da3cbea0226812d5cf7e2fb7b6ab94585a62e5cf4f21155fe3734a5",
+      "bytes": 881219,
+      "decoded_sha256": "07a03abb6da3cbea0226812d5cf7e2fb7b6ab94585a62e5cf4f21155fe3734a5",
+      "gzip": false
+    },
+    {
+      "path": "raw/ineligible-session/baseline.log",
+      "source": "tmp/grass-quality/native-session/baseline.log",
+      "sha256": "a23db6b414c494ca8b00513592fe466c2517348c01f26a217fee11beb8d39f91",
+      "bytes": 420,
+      "decoded_sha256": "a23db6b414c494ca8b00513592fe466c2517348c01f26a217fee11beb8d39f91",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/baseline-jensen-das-ugly-stik-60.csv",
+      "source": "tmp/grass-quality/state-traces/baseline-jensen-das-ugly-stik-60.csv",
+      "sha256": "5cf3216135a415e2778c56417a7b9941485486e157535d610c68f19fa6c39a02",
+      "bytes": 309297,
+      "decoded_sha256": "5cf3216135a415e2778c56417a7b9941485486e157535d610c68f19fa6c39a02",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/baseline-jensen-das-ugly-stik-60.csv.log",
+      "source": "tmp/grass-quality/state-traces/baseline-jensen-das-ugly-stik-60.csv.log",
+      "sha256": "cec035bd5f53832294a92dc3acd1e350bd7e11094c42f3fe8a00294cf776d902",
+      "bytes": 293,
+      "decoded_sha256": "cec035bd5f53832294a92dc3acd1e350bd7e11094c42f3fe8a00294cf776d902",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/candidate-jensen-das-ugly-stik-60.csv",
+      "source": "tmp/grass-quality/state-traces/candidate-jensen-das-ugly-stik-60.csv",
+      "sha256": "8f26dc0855a6914ee26e333188018395077872ee71b9e7473c6417473512cf56",
+      "bytes": 309297,
+      "decoded_sha256": "8f26dc0855a6914ee26e333188018395077872ee71b9e7473c6417473512cf56",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/candidate-jensen-das-ugly-stik-60.csv.log",
+      "source": "tmp/grass-quality/state-traces/candidate-jensen-das-ugly-stik-60.csv.log",
+      "sha256": "48bd222b9ee2dda5029209b8f9c7e0b761942ec6e98bc38422477c7f194962bf",
+      "bytes": 294,
+      "decoded_sha256": "48bd222b9ee2dda5029209b8f9c7e0b761942ec6e98bc38422477c7f194962bf",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/baseline-p51d-mustang-120.csv",
+      "source": "tmp/grass-quality/state-traces/baseline-p51d-mustang-120.csv",
+      "sha256": "d0aad447e76947ba9c33616e698e33a28b7ffbaadc286a4fdf3581ec91374b53",
+      "bytes": 370484,
+      "decoded_sha256": "d0aad447e76947ba9c33616e698e33a28b7ffbaadc286a4fdf3581ec91374b53",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/baseline-p51d-mustang-120.csv.log",
+      "source": "tmp/grass-quality/state-traces/baseline-p51d-mustang-120.csv.log",
+      "sha256": "7fd581324429422f92cffe5517112f49c95cd0fba897c065b5a14fb542aff7e9",
+      "bytes": 325,
+      "decoded_sha256": "7fd581324429422f92cffe5517112f49c95cd0fba897c065b5a14fb542aff7e9",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/candidate-p51d-mustang-120.csv",
+      "source": "tmp/grass-quality/state-traces/candidate-p51d-mustang-120.csv",
+      "sha256": "03a9e52a2ce2a56570b2c2c293897c5ab1bdb67ad0c14c08654b639395e30d58",
+      "bytes": 370484,
+      "decoded_sha256": "03a9e52a2ce2a56570b2c2c293897c5ab1bdb67ad0c14c08654b639395e30d58",
+      "gzip": false
+    },
+    {
+      "path": "raw/traces/candidate-p51d-mustang-120.csv.log",
+      "source": "tmp/grass-quality/state-traces/candidate-p51d-mustang-120.csv.log",
+      "sha256": "48a6c14a4b4c98628d4e855ad66dcf0312af0323f8730392149855b7f9e04972",
+      "bytes": 193,
+      "decoded_sha256": "48a6c14a4b4c98628d4e855ad66dcf0312af0323f8730392149855b7f9e04972",
+      "gzip": false
+    }
+  ],
+  "field_images": "Four fixed views retained per run. Moving-frame reductions and SHA-256 records retained; remaining PNGs stay in the local tmp/grass-quality captures.",
+  "profile_reproduction": "Decompress profile-<pair>-<variant>.json.gz without modifying bytes; pass the ten JSON files in alternating order to tools/grass/quality_compare.py profile.",
+  "material_reproduction": "python tools/grass/material_compare.py <evidence>/raw/material/manifest.json --out <new-report.json>"
+}

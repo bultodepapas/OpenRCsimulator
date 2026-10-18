@@ -1,0 +1,943 @@
+{
+	"asset": {
+		"asset_url": "https://polyhaven.com/a/pine_sapling_small",
+		"authors": [
+			"Rico Cilliers",
+			"Rob Tuytel"
+		],
+		"download_url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/pine_sapling_small/pine_sapling_small_1k.gltf",
+		"license": "CC0",
+		"license_url": "https://polyhaven.com/license",
+		"title": "Pine Sapling Small"
+	},
+	"capture_settings": {
+		"adapter": "NVIDIA GeForce RTX 3090",
+		"api": "3.3.0 NVIDIA 617.42",
+		"height": 1280,
+		"mesh_decimation": false,
+		"msaa": "4x",
+		"orthographic_frame_height_m": 1.65,
+		"renderer": "gl_compatibility",
+		"requested": true,
+		"source_materials_mutated": false,
+		"width": 1280
+	},
+	"captures": [
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				0.0335303544998169,
+				0.633994579315186,
+				3.23972845077515
+			],
+			"path": "a-front.png",
+			"sha256": "b6b66e54e651ca059dc0f1ef185e66b9f6a4731954010e3242ff148859e4b84e",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				0.0335303544998169,
+				0.633994579315186,
+				-0.0076652467250824
+			],
+			"up_world": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"variant": "pine_sapling_small_a",
+			"view": "front"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				0.0335303544998169,
+				0.633994579315186,
+				-3.25505876541138
+			],
+			"path": "a-back.png",
+			"sha256": "2cb452a13f0254212a45adedf52ddc712a723965aa8ce7637eee9811a18c51f5",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				0.0335303544998169,
+				0.633994579315186,
+				-0.0076652467250824
+			],
+			"up_world": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"variant": "pine_sapling_small_a",
+			"view": "back"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				0.0335303544998169,
+				-2.61339902877808,
+				-0.0076652467250824
+			],
+			"path": "a-underside.png",
+			"sha256": "a969fc395a82bf814ecbe27026c25ff142c787661773fda89b0f72485d5b3ad5",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				0.0335303544998169,
+				0.633994579315186,
+				-0.0076652467250824
+			],
+			"up_world": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"variant": "pine_sapling_small_a",
+			"view": "underside"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				0.999135911464691,
+				0.523719668388367,
+				2.64782118797302
+			],
+			"path": "b-front.png",
+			"sha256": "9b3e46e34fe3d2ab543aad53c59040e1542e9a7e855db4418e35f9dc95bef1be",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				0.999135911464691,
+				0.523719668388367,
+				0.033800333738327
+			],
+			"up_world": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"variant": "pine_sapling_small_b",
+			"view": "front"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				0.999135911464691,
+				0.523719668388367,
+				-2.58022046089172
+			],
+			"path": "b-back.png",
+			"sha256": "2fefa695bfb3e1f216ab8bacbbebfecdceb2d50df295870d4232bfa62aba7f50",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				0.999135911464691,
+				0.523719668388367,
+				0.033800333738327
+			],
+			"up_world": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"variant": "pine_sapling_small_b",
+			"view": "back"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				0.999135911464691,
+				-2.09030103683472,
+				0.033800333738327
+			],
+			"path": "b-underside.png",
+			"sha256": "a61828aec44bd45db8bad5cb9a818c6f55303685b115bfa4c1008e886c60affe",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				0.999135911464691,
+				0.523719668388367,
+				0.033800333738327
+			],
+			"up_world": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"variant": "pine_sapling_small_b",
+			"view": "underside"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				2.02536058425903,
+				0.481350094079971,
+				2.37260389328003
+			],
+			"path": "c-front.png",
+			"sha256": "7ef0a3570bc4f8fcbd8a04cb71c9a102d826728e56bf6a305d89f5001c71b2b3",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				2.02536058425903,
+				0.481350094079971,
+				-0.0307098627090454
+			],
+			"up_world": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"variant": "pine_sapling_small_c",
+			"view": "front"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				2.02536058425903,
+				0.481350094079971,
+				-2.4340238571167
+			],
+			"path": "c-back.png",
+			"sha256": "42b3683653531d1a5e8e9754af1565dce8dc39425efaf603f1b43b0bb6f8845c",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				2.02536058425903,
+				0.481350094079971,
+				-0.0307098627090454
+			],
+			"up_world": [
+				0.0,
+				1.0,
+				0.0
+			],
+			"variant": "pine_sapling_small_c",
+			"view": "back"
+		},
+		{
+			"camera_frame_height_m": 1.65,
+			"camera_projection": "orthographic",
+			"eye_world_m": [
+				2.02536058425903,
+				-1.92196381092072,
+				-0.0307098627090454
+			],
+			"path": "c-underside.png",
+			"sha256": "ccecb9dcd4df58de36fe8da210a7049b6b34f9b8c4bb7f172b822b15b31e2a29",
+			"size_px": [
+				1280,
+				1280
+			],
+			"source_scale_preserved": true,
+			"target_world_m": [
+				2.02536058425903,
+				0.481350094079971,
+				-0.0307098627090454
+			],
+			"up_world": [
+				0.0,
+				0.0,
+				-1.0
+			],
+			"variant": "pine_sapling_small_c",
+			"view": "underside"
+		}
+	],
+	"complete": true,
+	"format": "openrc-tree-source-gallery v1",
+	"godot": "4.7.2-stable (official)",
+	"source": {
+		"bytes": 11442,
+		"dependencies": [
+			{
+				"actual_bytes": 11442,
+				"actual_sha256": "f358c01926861dd082f32dba60f7c9fba232b585a985cf38c0d2229eecf4bc48",
+				"api_md5": "237a7672645631550ae571743aa9f55b",
+				"expected_bytes": 11442,
+				"expected_sha256": "f358c01926861dd082f32dba60f7c9fba232b585a985cf38c0d2229eecf4bc48",
+				"path": "pine_sapling_small_1k.gltf",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/pine_sapling_small/pine_sapling_small_1k.gltf",
+				"verified_against_manifest": true
+			},
+			{
+				"actual_bytes": 394056,
+				"actual_sha256": "2eb0aa44124b5a4ae9401e00b23b3c916f4c3f421616ce1bb932f248fc061288",
+				"api_md5": "b5062030fc42ec7bd12eb3f052054104",
+				"expected_bytes": 394056,
+				"expected_sha256": "2eb0aa44124b5a4ae9401e00b23b3c916f4c3f421616ce1bb932f248fc061288",
+				"path": "textures/pine_sapling_small_twig_arm_1k.jpg",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_twig_arm_1k.jpg",
+				"verified_against_manifest": true
+			},
+			{
+				"actual_bytes": 477942,
+				"actual_sha256": "54af7d6fb664b5a38bcb118b557bc50e01e86ec54d6f1a573c3e32c649a53362",
+				"api_md5": "dacc918bb421968e9ccc1956d78a2dbe",
+				"expected_bytes": 477942,
+				"expected_sha256": "54af7d6fb664b5a38bcb118b557bc50e01e86ec54d6f1a573c3e32c649a53362",
+				"path": "textures/pine_sapling_small_twig_diff_1k.jpg",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_twig_diff_1k.jpg",
+				"verified_against_manifest": true
+			},
+			{
+				"actual_bytes": 1016849,
+				"actual_sha256": "05c46455531781b6cf18cae0648cf627f60ee942adaa8bcbfd1592fc2506a9e0",
+				"api_md5": "bb6e3a6eea777d992cef48fabfdc538c",
+				"expected_bytes": 1016849,
+				"expected_sha256": "05c46455531781b6cf18cae0648cf627f60ee942adaa8bcbfd1592fc2506a9e0",
+				"path": "textures/pine_sapling_small_bark_nor_gl_1k.jpg",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_bark_nor_gl_1k.jpg",
+				"verified_against_manifest": true
+			},
+			{
+				"actual_bytes": 17771796,
+				"actual_sha256": "b4d2fc73d53f1d8717eb5ef9a2c66957d2a53152787e543aace88fcd6fca94ef",
+				"api_md5": "76dd1802d8de128c812f2e124a258b35",
+				"expected_bytes": 17771796,
+				"expected_sha256": "b4d2fc73d53f1d8717eb5ef9a2c66957d2a53152787e543aace88fcd6fca94ef",
+				"path": "pine_sapling_small.bin",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/pine_sapling_small/pine_sapling_small.bin",
+				"verified_against_manifest": true
+			},
+			{
+				"actual_bytes": 725265,
+				"actual_sha256": "5c76836b01c3536fa0e24207b67bf4f3315b53ebe2b4ecc6f08dfcf3f8d74929",
+				"api_md5": "7d3a558ed614c7e75594c7be3bf80311",
+				"expected_bytes": 725265,
+				"expected_sha256": "5c76836b01c3536fa0e24207b67bf4f3315b53ebe2b4ecc6f08dfcf3f8d74929",
+				"path": "textures/pine_sapling_small_bark_diff_1k.jpg",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_bark_diff_1k.jpg",
+				"verified_against_manifest": true
+			},
+			{
+				"actual_bytes": 801278,
+				"actual_sha256": "336a4680cd571b6076b67afee2310b290b8900d9d126eb39ec1ae92e95be2ea9",
+				"api_md5": "21d1abd15e40951825a4f3da110b20ea",
+				"expected_bytes": 801278,
+				"expected_sha256": "336a4680cd571b6076b67afee2310b290b8900d9d126eb39ec1ae92e95be2ea9",
+				"path": "textures/pine_sapling_small_bark_arm_1k.jpg",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_bark_arm_1k.jpg",
+				"verified_against_manifest": true
+			},
+			{
+				"actual_bytes": 692711,
+				"actual_sha256": "76af87821d7ff00e25768d5d97a449394fe64a21ae55d099da7f5ed46d9098c8",
+				"api_md5": "eebc5a81f8f6231d8e18ec4ad7292798",
+				"expected_bytes": 692711,
+				"expected_sha256": "76af87821d7ff00e25768d5d97a449394fe64a21ae55d099da7f5ed46d9098c8",
+				"path": "textures/pine_sapling_small_twig_nor_gl_1k.jpg",
+				"url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_twig_nor_gl_1k.jpg",
+				"verified_against_manifest": true
+			}
+		],
+		"format": "glTF 2.0",
+		"manifest": {
+			"path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\polyhaven_pine_sapling_small/download-manifest.json",
+			"sha256": "e17c2fbb214084d568fcf7f19b4d5bb0e71dfd0ecf7aece6fb6f7771fdd1bd85"
+		},
+		"path": "C:\\DEVELOPMENT\\OpenRCsimulator\\assets\\landscape\\vegetation\\source\\polyhaven_pine_sapling_small\\pine_sapling_small_1k.gltf",
+		"sha256": "f358c01926861dd082f32dba60f7c9fba232b585a985cf38c0d2229eecf4bc48"
+	},
+	"variants": [
+		{
+			"id": "pine_sapling_small_a",
+			"lod": {
+				"basis": "Original glTF node and mesh inventory; no LOD generation or mesh_lod_threshold substitution.",
+				"present": false
+			},
+			"mesh_instance_count": 1,
+			"node_class": "MeshInstance3D",
+			"node_path": "pine_sapling_small_a",
+			"source_node_basis_columns": [
+				[
+					1.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					1.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					1.0
+				]
+			],
+			"source_node_scale": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"source_node_translation_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"surfaces": [
+				{
+					"index_count": 1620,
+					"material": {
+						"class": "StandardMaterial3D",
+						"name": "pine_sapling_small_bark",
+						"properties": {
+							"albedo_color": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedo_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_diff",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"alpha_scissor_threshold": 0.5,
+							"ao_texture": "<Object#null>",
+							"cull_mode": 2,
+							"metallic": 0.0,
+							"metallic_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"normal_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_nor_gl",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"roughness": 1.0,
+							"roughness_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"shading_mode": 1,
+							"transparency": 0
+						},
+						"resource_path": ""
+					},
+					"mesh": "pine_sapling_small_1k_pine_sapling_small_a",
+					"node": "pine_sapling_small_a",
+					"primitive_type": 3,
+					"surface_index": 0,
+					"surface_name": "pine_sapling_small_bark",
+					"triangle_count": 540,
+					"vertex_count": 351
+				},
+				{
+					"index_count": 425898,
+					"material": {
+						"class": "StandardMaterial3D",
+						"name": "pine_sapling_small_twig",
+						"properties": {
+							"albedo_color": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedo_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_diff",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"alpha_scissor_threshold": 0.5,
+							"ao_texture": "<Object#null>",
+							"cull_mode": 2,
+							"metallic": 0.0,
+							"metallic_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"normal_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_nor_gl",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"roughness": 1.0,
+							"roughness_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"shading_mode": 1,
+							"transparency": 2
+						},
+						"resource_path": ""
+					},
+					"mesh": "pine_sapling_small_1k_pine_sapling_small_a",
+					"node": "pine_sapling_small_a",
+					"primitive_type": 3,
+					"surface_index": 1,
+					"surface_name": "pine_sapling_small_twig",
+					"triangle_count": 141966,
+					"vertex_count": 145144
+				}
+			],
+			"triangle_count": 142506,
+			"world_bounds_m": {
+				"center": [
+					0.0335303544998169,
+					0.633994579315186,
+					-0.0076652467250824
+				],
+				"position": [
+					-0.360306441783905,
+					-0.0154841551557183,
+					-0.371375888586044
+				],
+				"size": [
+					0.787673592567444,
+					1.29895746707916,
+					0.727421283721924
+				]
+			}
+		},
+		{
+			"id": "pine_sapling_small_b",
+			"lod": {
+				"basis": "Original glTF node and mesh inventory; no LOD generation or mesh_lod_threshold substitution.",
+				"present": false
+			},
+			"mesh_instance_count": 1,
+			"node_class": "MeshInstance3D",
+			"node_path": "pine_sapling_small_b",
+			"source_node_basis_columns": [
+				[
+					1.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					1.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					1.0
+				]
+			],
+			"source_node_scale": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"source_node_translation_m": [
+				1.0,
+				0.0,
+				0.0
+			],
+			"surfaces": [
+				{
+					"index_count": 1458,
+					"material": {
+						"class": "StandardMaterial3D",
+						"name": "pine_sapling_small_bark",
+						"properties": {
+							"albedo_color": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedo_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_diff",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"alpha_scissor_threshold": 0.5,
+							"ao_texture": "<Object#null>",
+							"cull_mode": 2,
+							"metallic": 0.0,
+							"metallic_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"normal_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_nor_gl",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"roughness": 1.0,
+							"roughness_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"shading_mode": 1,
+							"transparency": 0
+						},
+						"resource_path": ""
+					},
+					"mesh": "pine_sapling_small_1k_pine_sapling_small_b",
+					"node": "pine_sapling_small_b",
+					"primitive_type": 3,
+					"surface_index": 0,
+					"surface_name": "pine_sapling_small_bark",
+					"triangle_count": 486,
+					"vertex_count": 315
+				},
+				{
+					"index_count": 365247,
+					"material": {
+						"class": "StandardMaterial3D",
+						"name": "pine_sapling_small_twig",
+						"properties": {
+							"albedo_color": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedo_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_diff",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"alpha_scissor_threshold": 0.5,
+							"ao_texture": "<Object#null>",
+							"cull_mode": 2,
+							"metallic": 0.0,
+							"metallic_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"normal_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_nor_gl",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"roughness": 1.0,
+							"roughness_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"shading_mode": 1,
+							"transparency": 2
+						},
+						"resource_path": ""
+					},
+					"mesh": "pine_sapling_small_1k_pine_sapling_small_b",
+					"node": "pine_sapling_small_b",
+					"primitive_type": 3,
+					"surface_index": 1,
+					"surface_name": "pine_sapling_small_twig",
+					"triangle_count": 121749,
+					"vertex_count": 124481
+				}
+			],
+			"triangle_count": 122235,
+			"world_bounds_m": {
+				"center": [
+					0.999135911464691,
+					0.523719668388367,
+					0.033800333738327
+				],
+				"position": [
+					0.734755277633667,
+					0.000915498880203813,
+					-0.331372886896133
+				],
+				"size": [
+					0.528761267662048,
+					1.04560828208923,
+					0.730346441268921
+				]
+			}
+		},
+		{
+			"id": "pine_sapling_small_c",
+			"lod": {
+				"basis": "Original glTF node and mesh inventory; no LOD generation or mesh_lod_threshold substitution.",
+				"present": false
+			},
+			"mesh_instance_count": 1,
+			"node_class": "MeshInstance3D",
+			"node_path": "pine_sapling_small_c",
+			"source_node_basis_columns": [
+				[
+					1.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					1.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					1.0
+				]
+			],
+			"source_node_scale": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"source_node_translation_m": [
+				2.0,
+				0.0,
+				0.0
+			],
+			"surfaces": [
+				{
+					"index_count": 1584,
+					"material": {
+						"class": "StandardMaterial3D",
+						"name": "pine_sapling_small_bark",
+						"properties": {
+							"albedo_color": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedo_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_diff",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"alpha_scissor_threshold": 0.5,
+							"ao_texture": "<Object#null>",
+							"cull_mode": 2,
+							"metallic": 0.0,
+							"metallic_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"normal_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_nor_gl",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"roughness": 1.0,
+							"roughness_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_bark_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"shading_mode": 1,
+							"transparency": 0
+						},
+						"resource_path": ""
+					},
+					"mesh": "pine_sapling_small_1k_pine_sapling_small_c",
+					"node": "pine_sapling_small_c",
+					"primitive_type": 3,
+					"surface_index": 0,
+					"surface_name": "pine_sapling_small_bark",
+					"triangle_count": 528,
+					"vertex_count": 344
+				},
+				{
+					"index_count": 398625,
+					"material": {
+						"class": "StandardMaterial3D",
+						"name": "pine_sapling_small_twig",
+						"properties": {
+							"albedo_color": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedo_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_diff",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"alpha_scissor_threshold": 0.5,
+							"ao_texture": "<Object#null>",
+							"cull_mode": 2,
+							"metallic": 0.0,
+							"metallic_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"normal_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_nor_gl",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"roughness": 1.0,
+							"roughness_texture": {
+								"class": "ImageTexture",
+								"name": "pine_sapling_small_twig_rough",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"shading_mode": 1,
+							"transparency": 2
+						},
+						"resource_path": ""
+					},
+					"mesh": "pine_sapling_small_1k_pine_sapling_small_c",
+					"node": "pine_sapling_small_c",
+					"primitive_type": 3,
+					"surface_index": 1,
+					"surface_name": "pine_sapling_small_twig",
+					"triangle_count": 132875,
+					"vertex_count": 135721
+				}
+			],
+			"triangle_count": 133403,
+			"world_bounds_m": {
+				"center": [
+					2.02536058425903,
+					0.481350094079971,
+					-0.0307098627090454
+				],
+				"position": [
+					1.76896750926971,
+					0.000687308085616678,
+					-0.320692598819733
+				],
+				"size": [
+					0.512786030769348,
+					0.961325585842133,
+					0.579965472221375
+				]
+			}
+		}
+	]
+}

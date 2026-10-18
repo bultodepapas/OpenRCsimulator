@@ -14,8 +14,8 @@ The field already has filtered turf and procedural macro variation. RC activitie
 
 | Boundary | Owned paths / coordination |
 | --- | --- |
-| Ground appearance | [ground shader](../../app/render/ground.gdshader), [grass sampling](../../app/render/grass_surface.gdshaderinc), [turf detail](../../app/render/turf_detail.gdshaderinc), [RC detail](../../app/render/rc_ground_detail.gdshaderinc), [material binder](../../app/render/rc_ground_material.gd); L/VQ, with RCV for track shoulders |
-| Imported grass | [placement](../../app/scenery/imported_near_grass.gd), [vegetation library](../../app/scenery/imported_vegetation.gd), [wind shader](../../app/scenery/imported_vegetation_wind.gdshader); coordinate SC/LU because trees/flowers reuse the library |
+| Ground appearance | [ground shader](../../app/render/ground.gdshader), [grass sampling](../../app/render/grass_surface.gdshaderinc), [turf detail](../../app/render/turf_detail.gdshaderinc), [RC detail](../../app/render/rc_ground_detail.gdshaderinc), [grass binder](../../app/render/grass_ground_material.gd), [RC binder](../../app/render/rc_ground_material.gd); L/VQ, with RCV for track shoulders |
+| Imported grass | [placement](../../app/scenery/imported_near_grass.gd), [grass adapter](../../app/scenery/imported_grass_material.gd), [grass wind shader](../../app/scenery/imported_grass.gdshader), [shared vegetation library](../../app/scenery/imported_vegetation.gd); coordinate SC/LU because trees/flowers reuse the library |
 | Fallback and integration | [near grass](../../app/render/near_grass.gd), its shader, [field builder](../../app/render/field.gd); preserve both construction paths and isolated material lifetime |
 | Assets and tools | [RC intake](../../assets/landscape/rc-ground/README.md), [vegetation source pipeline](../../tools/landscape/vegetation/README.md), [grass tools](../../tools/grass/README.md), [ground tools](../../tools/ground/README.md) |
 | Wind/state | Consume existing detached render wind and clock. M5 owns physical weather; simulation, tire contact, terrain identity and replay contracts stay unchanged. |
@@ -55,7 +55,7 @@ Every row ends with an adopt/reject decision and retained evidence. Conditional 
 | L9d-05 | If RC driving still exposes missing nearby silhouette, evaluate a bounded world-anchored placement window using existing assets. | Conditional; world-cell stability, authoritative ground/exclusions, bounded uploads and lifecycle. No change to the normal fixed-pilot placement. |
 | L9d-06, L6c, VQ-06c | Qualify accepted combination across RC, flight and Home, supported native hardware and packaged resources. | Pending; existing open gates remain open until their actual evidence is collected. |
 
-Evidence for new L9e-R2 and L11a-R1/R2 work belongs under `docs/research/visual-quality-implementation/<STEP-ID>/`; experiments extend the existing ground/grass tools or root `research/` workflows. Those are future outputs. Other rows retain their existing evidence homes. Record adopted design changes in DECISIONS only after choosing the implementation, then consolidate completed plan details into the canonical guide.
+The combined L9e-R2, L11a-R1 and imported-grass L15c evidence lives in [grass-quality](../research/visual-quality-implementation/grass-quality/README.md), including five paired render measurements and the independent acceptance limits. Extend that home for the remaining grass gates rather than creating parallel status reports. Other tracks retain their existing evidence homes. The opt-in implementation decision is recorded in DECISIONS; consolidate this plan only when its remaining acceptance work is complete or superseded.
 
 ## 4. Material specification
 

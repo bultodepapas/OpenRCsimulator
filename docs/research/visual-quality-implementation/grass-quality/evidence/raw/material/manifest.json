@@ -1,0 +1,436 @@
+{
+	"adapter": "res://scenery/imported_grass_material.gd",
+	"adapter_sha256": "5485ba933f036a7f8b8679bf0cfc3f0f0632cc80fcd23c90cf8da7bdd20dbb33",
+	"captures": [
+		{
+			"file": "front-source-calm.png",
+			"id": "front-source-calm",
+			"sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-calm.png",
+			"id": "front-candidate-calm",
+			"sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-calm-t1.png",
+			"id": "front-candidate-calm-t1",
+			"sha256": "08347dd9955b674e5a1e62f26833c533d2bacfb0783d3e65fec3a5445ccd6bf2",
+			"shader_clock": 1.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-wind-t0.png",
+			"id": "front-candidate-wind-t0",
+			"sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-wind-t1.png",
+			"id": "front-candidate-wind-t1",
+			"sha256": "eaad4e281f0fb4aafa3ba83b98a6f64b32ce73cefc224f77de168e6b3cdbecd6",
+			"shader_clock": 1.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-wind-wrap.png",
+			"id": "front-candidate-wind-wrap",
+			"sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-wind-prewrap.png",
+			"id": "front-candidate-wind-prewrap",
+			"sha256": "344adae28aa1e44d1eea70961cc0e0737290c185f90ac49f0f5365e694adaed2",
+			"shader_clock": 1023.999,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-wind-repeat.png",
+			"id": "front-candidate-wind-repeat",
+			"sha256": "6e0870db5671e4477294f363401fcdc66b109d23614b95216385d8edee945b85",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "front-candidate-wind-reverse.png",
+			"id": "front-candidate-wind-reverse",
+			"sha256": "d32897c3727eb45c5dcf3e6513a0aab7e37cbf532bda948e2e93939b099a6271",
+			"shader_clock": 0.0,
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-source-calm.png",
+			"id": "back-source-calm",
+			"sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-calm.png",
+			"id": "back-candidate-calm",
+			"sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-calm-t1.png",
+			"id": "back-candidate-calm-t1",
+			"sha256": "4e4edeb692b09a4179a47d567ee037131d5510ef70717ac327f6afebb585f1bc",
+			"shader_clock": 1.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-wind-t0.png",
+			"id": "back-candidate-wind-t0",
+			"sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-wind-t1.png",
+			"id": "back-candidate-wind-t1",
+			"sha256": "9891f06b9c689de36ecec8caa6f2e6e4bdd7e30e2600c3f9e1abb4fa0e59f07d",
+			"shader_clock": 1.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-wind-wrap.png",
+			"id": "back-candidate-wind-wrap",
+			"sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-wind-prewrap.png",
+			"id": "back-candidate-wind-prewrap",
+			"sha256": "5f728d286973d0a4a4ed7541c5c9893d82df0eb9a9907d84fcf2751cd168f45f",
+			"shader_clock": 1023.999,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-wind-repeat.png",
+			"id": "back-candidate-wind-repeat",
+			"sha256": "36b9fe37a9231e3ba0d0b8d47d22c2565734238e95d9d397551537f19bb0ed9d",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "back-candidate-wind-reverse.png",
+			"id": "back-candidate-wind-reverse",
+			"sha256": "5c454c68e5f0c8aa2391fa1e8ee859f3aedc047041a38b10f5e84af02367a160",
+			"shader_clock": 0.0,
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-source-calm.png",
+			"id": "shadow-source-calm",
+			"sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-calm.png",
+			"id": "shadow-candidate-calm",
+			"sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-calm-t1.png",
+			"id": "shadow-candidate-calm-t1",
+			"sha256": "83d51eec86ed9d4636376469c5e54bb5d9bfdfcf817e0ccfcbb213fca26e82cb",
+			"shader_clock": 1.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-wind-t0.png",
+			"id": "shadow-candidate-wind-t0",
+			"sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-wind-t1.png",
+			"id": "shadow-candidate-wind-t1",
+			"sha256": "c4f71121617f00ac53c79e932b699e1559644aa4855cf31046424f1682cf3cf4",
+			"shader_clock": 1.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-wind-wrap.png",
+			"id": "shadow-candidate-wind-wrap",
+			"sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-wind-prewrap.png",
+			"id": "shadow-candidate-wind-prewrap",
+			"sha256": "ec8b06eba749eb39f82fe3fad2068ce8b87d55b970749e09c02de7b4a1a954e8",
+			"shader_clock": 1023.999,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-wind-repeat.png",
+			"id": "shadow-candidate-wind-repeat",
+			"sha256": "920963f3c04f801f20cdbd7d20edd24ba6b62fe838cae5aaafdd5e5bd7ff0e93",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "shadow-candidate-wind-reverse.png",
+			"id": "shadow-candidate-wind-reverse",
+			"sha256": "dbd4556f6d27e23bdd62fccd4cef92f4feafd23f70cc24b174c12316e5a7a284",
+			"shader_clock": 0.0,
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-source-calm.png",
+			"id": "local-source-calm",
+			"sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-calm.png",
+			"id": "local-candidate-calm",
+			"sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+			"shader_clock": 0.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-calm-t1.png",
+			"id": "local-candidate-calm-t1",
+			"sha256": "a6bbfe95c3206969e4411188adf8214c3324170d99e9841264c4f02d5844b8cf",
+			"shader_clock": 1.0,
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-wind-t0.png",
+			"id": "local-candidate-wind-t0",
+			"sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-wind-t1.png",
+			"id": "local-candidate-wind-t1",
+			"sha256": "93fb58197b6a08f5ae0f5d4d8e90ffd2e569b4d4274a91c974ef507d696d17a1",
+			"shader_clock": 1.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-wind-wrap.png",
+			"id": "local-candidate-wind-wrap",
+			"sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-wind-prewrap.png",
+			"id": "local-candidate-wind-prewrap",
+			"sha256": "abf27e0f781c415a3d1ef0a33f2d85dfc1f27185b62773897f539f18811ac5ed",
+			"shader_clock": 1023.999,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-wind-repeat.png",
+			"id": "local-candidate-wind-repeat",
+			"sha256": "8a07b0ec08c012cd3cf8f3497a34b60147c0b81e022e84520654bcfc3020b989",
+			"shader_clock": 0.0,
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"file": "local-candidate-wind-reverse.png",
+			"id": "local-candidate-wind-reverse",
+			"sha256": "934556f0d3a16927c474b96da2db2555298087a2cdbecf1efd54780ea7cf5242",
+			"shader_clock": 0.0,
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"device": "NVIDIA GeForce RTX 3090",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-grass-material-capture v1",
+	"heights_m": [
+		0.12,
+		0.25
+	],
+	"msaa": 4,
+	"renderer": "gl_compatibility",
+	"species": [
+		"grass_common_short",
+		"grass_common_tall",
+		"grass_wispy_tall"
+	],
+	"viewport": [
+		1280,
+		720
+	],
+	"yaw_degrees": [
+		0,
+		90,
+		180,
+		270
+	]
+}

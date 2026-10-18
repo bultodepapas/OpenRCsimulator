@@ -1,6 +1,8 @@
 # L6a tree authoring pipeline
 
-The three Quaternius sources are **offline authoring geometry**. `app/` ships only the 1024² albedo atlas, JSON catalog and license. A runtime tree is three crossed quads (six triangles, one lit alpha-scissor surface). This step does not place trees in the field; L6b owns distribution and L6c owns flight readability. The source GLBs are not approved as L8 close-range LODs.
+For the current downloaded-tree/forest improvement, see the [implementation evidence](../../docs/research/visual-quality-implementation/L6a-R1/README.md). The sections below distinguish the established card baker from the imported-tree comparison tools.
+
+The three Quaternius sources in this card pipeline are **offline authoring geometry**. This field-tree route ships the 1024² albedo atlas, JSON catalog and license. Each field tree is three crossed quads (six triangles, one lit alpha-scissor surface). Separate close scenery uses the [downloaded vegetation library](../landscape/vegetation/README.md); these are different populations, not a mesh/card LOD transition. L6b/L7 own distribution and L6c owns flight readability. The source GLBs are not approved as L8 close-range LODs.
 
 ```sh
 npm ci --prefix tools/trees
@@ -67,3 +69,31 @@ The render-only tree response is ready for M5's shared `wind_vec`; production re
 ```
 
 Use a fresh output directory. The baseline is optional for later regression runs; initial acceptance includes baseline parity. The complete capture wrapper also runs this check. See [L15b evidence](../../docs/research/visual-quality-implementation/L15b/README.md) for the card-specific root rotation, parameter estimates, culling proof and limits.
+
+
+## Native imported-tree comparisons
+
+`quality_capture.gd` runs externally against an already imported, frozen `app` folder. `--mode=field` captures the production field; `--mode=gallery` captures retained source IDs at identical height with front/back/underside/overhead and deterministic wind controls. It requires native Compatibility, a new/empty `--out`, and writes PNGs plus hashes/renderer identities. `--wind=on|off`, `--cell=0|64|128|256` and `--tree_shadows=off` isolate tree treatments. The shader clock and all other scene processing are frozen for images; timed runs update the shared clock with the same 5 m/s wind. These are static scenes, not flight simulation.
+
+Use `--ids=common_tree_1,common_tree_2,common_tree_3,common_tree_4,pine_1,pine_2,pine_3` to cover all seven mature forms. Native script example (substitute a matching Godot executable and an imported frozen project):
+
+```powershell
+& $GodotWindows --path C:/captures/tree-candidate/app --audio-driver Dummy --script "$PWD/tools/trees/quality_capture.gd" -- --mode=gallery --wind=on --ids=common_tree_1,common_tree_2,common_tree_3,common_tree_4,pine_1,pine_2,pine_3 --out=C:/captures/tree-gallery-wind
+python tools/trees/check_quality_capture.py --source C:/captures/tree-gallery-static --wind C:/captures/tree-gallery-wind
+python tools/trees/profile_compare.py --godot C:/Tools/Godot_v4.7.2-stable_win64.exe --baseline C:/captures/tree-baseline/app --candidate C:/captures/tree-candidate/app --out C:/captures/tree-paired --pairs 5 --warmup 10 --seconds 60 --view car_park
+```
+
+Produce the source gallery with the same command and IDs, `--wind=off` and a different output. The checker verifies source/calm pixel equality, an unchanged wind-off clock control, movement/reversal, repeated time and the 1024-second wrap. The profile runner alternates AB/BA order, launches one native process at a time, rejects engine errors or changed identities, retains every sample/log and reports paired p95 differences. Keep GPU work and other benchmarks out of the measurement interval. CPU static-memory counters are not GPU residency; imported and OS file caches are not reset.
+
+`inspect_scene.gd` prints normalized close-tree choices, source triangle totals and collision identity with lights deliberately omitted. A changed population or mesh envelope changes that world; it cannot be presented as exact replay of the previous world.
+
+`source_gallery.gd` is the narrow Poly Haven Pine Sapling Small intake fixture. It loads the downloaded glTF outside `app/`, isolates each supplied A/B/C tree at original metre scale, preserves materials, verifies the download manifest and captures front/back/underside. Use `--source=<absolute glTF> --out=<new absolute folder> --capture=on --frame_height_m=1.65` with an isolated native Compatibility project; `--capture=off` allows metadata inspection headlessly. It does not create tree geometry or export a runtime derivative.
+
+```powershell
+npm ci --prefix tools/trees --ignore-scripts
+node tools/trees/validate_sources.mjs --out tmp/tree-source-validation.json
+```
+
+The validator defaults to all seven runtime trees and the retained Poly Haven comparison; optional explicit glTF paths replace that selection. It resolves local external buffers/images, records hashes, preserves warnings, refuses missing resources and exits nonzero on validator errors. See the vegetation pipeline for the reviewed precision-only color repair.
+
+Actual flight throughput and pilot readability remain separate. Use the existing `--frametimes` and [flight logging](../../docs/FLIGHT-LOGGING.md) workflows; headless numerical replay does not replay a camera through a changed forest.
