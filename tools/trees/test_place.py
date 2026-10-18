@@ -87,7 +87,7 @@ class HistoricalPlacementRecipeTests(unittest.TestCase):
             self.assertFalse(_inside_flight_corridor(north, pilot_north, strips, 0.0))
 
     def test_far_spacing_and_repeated_generation_are_stable(self) -> None:
-        second, second_manifest = generate(self.field)
+        second, second_manifest = generate(self.field, "existing")
         self.assertEqual(self.object_data, second)
         self.assertEqual(self.manifest, second_manifest)
         for cluster_index in range(FAR_CLUSTER_COUNT):

@@ -51,7 +51,7 @@
   ],
   "import": {
     "format": "glTF 2.0 and Wavefront OBJ/MTL",
-    "geometry_policy": "unmodified downloaded geometry",
+    "geometry_policy": "source geometry and glTF files are preserved; runtime trees derive their external buffer by clamping only finite float COLOR_0 values in (1, 1.0002] to 1",
     "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; Wavefront OBJ assets use supplied geometry",
     "shared_material_policy": "original downloaded glTF materials and textures or OBJ/MTL diffuse materials; shared source files extracted once"
   },
@@ -160,7 +160,7 @@
       "path": "models/CommonTree_1.bin",
       "source_entry": "glTF/CommonTree_1.bin",
       "bytes": 491576,
-      "sha256": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae"
+      "sha256": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1"
     },
     {
       "path": "models/CommonTree_1.gltf",
@@ -172,7 +172,7 @@
       "path": "models/CommonTree_2.bin",
       "source_entry": "glTF/CommonTree_2.bin",
       "bytes": 423024,
-      "sha256": "a273d69de31a675a9d7e3eb3c43f804aef2d1b031692111b9e76eb3b0b686d0c"
+      "sha256": "f30942a64a7886ff55014faefc4b544cf0ddd8731aba6ebc77e3b3f4c5265b60"
     },
     {
       "path": "models/CommonTree_2.gltf",
@@ -184,7 +184,7 @@
       "path": "models/CommonTree_3.bin",
       "source_entry": "glTF/CommonTree_3.bin",
       "bytes": 296984,
-      "sha256": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49"
+      "sha256": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3"
     },
     {
       "path": "models/CommonTree_3.gltf",
@@ -196,7 +196,7 @@
       "path": "models/CommonTree_4.bin",
       "source_entry": "glTF/CommonTree_4.bin",
       "bytes": 307596,
-      "sha256": "4fa52cc5bb9aa42d5ce1eee6cffca0f0a7f25dd07fe4431e371548e89bc30233"
+      "sha256": "295b8f91b628f55465e7f949f1a156682f2de2ca57a2e1c458a4be40eed865ab"
     },
     {
       "path": "models/CommonTree_4.gltf",
@@ -316,7 +316,7 @@
       "path": "models/Pine_1.bin",
       "source_entry": "glTF/Pine_1.bin",
       "bytes": 275492,
-      "sha256": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2"
+      "sha256": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365"
     },
     {
       "path": "models/Pine_1.gltf",
@@ -328,7 +328,7 @@
       "path": "models/Pine_2.bin",
       "source_entry": "glTF/Pine_2.bin",
       "bytes": 258336,
-      "sha256": "5ba81ed2b131243bf02f5fb18e278083205ce16b0f30c364ccbe9355e7637c60"
+      "sha256": "48993e400c418e78a1562f8a43ebc5a0c4feba8907dc0133e7f07a9992cee8f6"
     },
     {
       "path": "models/Pine_2.gltf",
@@ -340,7 +340,7 @@
       "path": "models/Pine_3.bin",
       "source_entry": "glTF/Pine_3.bin",
       "bytes": 345288,
-      "sha256": "73edd69d7e789b12bfa32ab202c62d74ae98f0bba67975205211bf51906d8c82"
+      "sha256": "d8743b6353257ae241b61158f3c00b13e9a76667f98ced8e5595ad17304a8fbb"
     },
     {
       "path": "models/Pine_3.gltf",
@@ -423,6 +423,14 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      },
+      "buffer_derivation": {
+        "method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+        "derivation_count": 9034,
+        "source_buffer_sha256": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae",
+        "runtime_buffer_sha256": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1",
+        "path": "models/CommonTree_1.bin",
+        "source_entry": "glTF/CommonTree_1.bin"
       }
     },
     {
@@ -498,6 +506,14 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      },
+      "buffer_derivation": {
+        "method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+        "derivation_count": 7679,
+        "source_buffer_sha256": "a273d69de31a675a9d7e3eb3c43f804aef2d1b031692111b9e76eb3b0b686d0c",
+        "runtime_buffer_sha256": "f30942a64a7886ff55014faefc4b544cf0ddd8731aba6ebc77e3b3f4c5265b60",
+        "path": "models/CommonTree_2.bin",
+        "source_entry": "glTF/CommonTree_2.bin"
       }
     },
     {
@@ -573,6 +589,14 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      },
+      "buffer_derivation": {
+        "method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+        "derivation_count": 5281,
+        "source_buffer_sha256": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49",
+        "runtime_buffer_sha256": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3",
+        "path": "models/CommonTree_3.bin",
+        "source_entry": "glTF/CommonTree_3.bin"
       }
     },
     {
@@ -648,6 +672,14 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      },
+      "buffer_derivation": {
+        "method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+        "derivation_count": 5427,
+        "source_buffer_sha256": "4fa52cc5bb9aa42d5ce1eee6cffca0f0a7f25dd07fe4431e371548e89bc30233",
+        "runtime_buffer_sha256": "295b8f91b628f55465e7f949f1a156682f2de2ca57a2e1c458a4be40eed865ab",
+        "path": "models/CommonTree_4.bin",
+        "source_entry": "glTF/CommonTree_4.bin"
       }
     },
     {
@@ -723,6 +755,14 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      },
+      "buffer_derivation": {
+        "method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+        "derivation_count": 4948,
+        "source_buffer_sha256": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2",
+        "runtime_buffer_sha256": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365",
+        "path": "models/Pine_1.bin",
+        "source_entry": "glTF/Pine_1.bin"
       }
     },
     {
@@ -798,6 +838,14 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      },
+      "buffer_derivation": {
+        "method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+        "derivation_count": 4628,
+        "source_buffer_sha256": "5ba81ed2b131243bf02f5fb18e278083205ce16b0f30c364ccbe9355e7637c60",
+        "runtime_buffer_sha256": "48993e400c418e78a1562f8a43ebc5a0c4feba8907dc0133e7f07a9992cee8f6",
+        "path": "models/Pine_2.bin",
+        "source_entry": "glTF/Pine_2.bin"
       }
     },
     {
@@ -873,6 +921,14 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": true
+      },
+      "buffer_derivation": {
+        "method": "Clamp finite float COLOR_0 components above 1 and at or below 1.0002 to 1; reject negative, non-finite, over-limit, or unsupported color accessors.",
+        "derivation_count": 6285,
+        "source_buffer_sha256": "73edd69d7e789b12bfa32ab202c62d74ae98f0bba67975205211bf51906d8c82",
+        "runtime_buffer_sha256": "d8743b6353257ae241b61158f3c00b13e9a76667f98ced8e5595ad17304a8fbb",
+        "path": "models/Pine_3.bin",
+        "source_entry": "glTF/Pine_3.bin"
       }
     },
     {

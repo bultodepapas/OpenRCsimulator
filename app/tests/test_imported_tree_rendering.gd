@@ -197,6 +197,10 @@ func _test_wind_modes_and_material_preservation() -> void:
 
 
 func _test_tree_wind_transform_guard() -> void:
+	var parts := ImportedVegetation.get_parts("common_tree_1")
+	var separate_crown: Array[Dictionary] = [parts[0], parts[0]]
+	_check("separate source crown and stem parts retain source materials until a shared bend frame is qualified",
+		not ImportedVegetation._tree_asset_wind_supported("multipart-fixture", separate_crown, []))
 	var yaw := Transform3D(Basis(Vector3.UP, 0.7), Vector3(3.0, 0.0, -2.0))
 	var tilt := Transform3D(Basis(Vector3.RIGHT, 0.1), Vector3.ZERO)
 	var nonuniform := Transform3D(Basis.from_scale(Vector3(1.0, 1.1, 1.0)), Vector3.ZERO)

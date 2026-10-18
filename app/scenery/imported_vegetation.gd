@@ -356,6 +356,11 @@ static func _record_groups(records: Array, cell_size: int) -> Array[Dictionary]:
 
 
 static func _tree_asset_wind_supported(asset_id: String, parts: Array[Dictionary], records: Array) -> bool:
+	# The reviewed trees contain one mesh with bark/foliage surfaces. Independent
+	# part-local height ramps would pull separately modeled crowns off their stems.
+	if parts.size() != 1:
+		_warn_tree_wind_once(asset_id + ":parts", "Tree wind is disabled for %s: a shared multi-part bend frame is not qualified" % asset_id)
+		return false
 	for part: Dictionary in parts:
 		var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
 		var transform_reason := _tree_wind_transform_support_reason(part_transform)

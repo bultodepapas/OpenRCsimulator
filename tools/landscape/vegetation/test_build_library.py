@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from pathlib import Path, PurePosixPath
+import struct
 import subprocess
 import sys
 import tempfile
@@ -57,6 +59,48 @@ def file_snapshot(root: Path) -> dict[str, str]:
     }
 
 
+def accessor_elements(gltf: dict, binary: bytes, accessor_index: int) -> list[bytes]:
+    accessor = gltf["accessors"][accessor_index]
+    view = gltf["bufferViews"][accessor["bufferView"]]
+    component_bytes = {
+        5120: 1,
+        5121: 1,
+        5122: 2,
+        5123: 2,
+        5125: 4,
+        5126: 4,
+    }[accessor["componentType"]]
+    component_count = {
+        "SCALAR": 1,
+        "VEC2": 2,
+        "VEC3": 3,
+        "VEC4": 4,
+        "MAT2": 4,
+        "MAT3": 9,
+        "MAT4": 16,
+    }[accessor["type"]]
+    element_bytes = component_bytes * component_count
+    stride = view.get("byteStride", element_bytes)
+    start = view.get("byteOffset", 0) + accessor.get("byteOffset", 0)
+    return [
+        binary[start + index * stride : start + index * stride + element_bytes]
+        for index in range(accessor["count"])
+    ]
+
+
+def color_accessor_offsets(gltf: dict, accessor_index: int) -> list[int]:
+    accessor = gltf["accessors"][accessor_index]
+    view = gltf["bufferViews"][accessor["bufferView"]]
+    component_count = {"VEC3": 3, "VEC4": 4}[accessor["type"]]
+    stride = view.get("byteStride", component_count * 4)
+    start = view.get("byteOffset", 0) + accessor.get("byteOffset", 0)
+    return [
+        start + vertex * stride + component * 4
+        for vertex in range(accessor["count"])
+        for component in range(component_count)
+    ]
+
+
 class BuildLibraryTests(unittest.TestCase):
     def test_archive_and_output_paths_reject_traversal(self) -> None:
         for unsafe in ("../outside", "/absolute/file", "folder\\file", "nul\x00byte"):
@@ -104,7 +148,123 @@ class BuildLibraryTests(unittest.TestCase):
                             + PurePosixPath(dependency).relative_to("glTF").as_posix()
                         )
                         source_bytes = standard.read(dependency)
-                        self.assertEqual(library_files[output_name], source_bytes)
+                        if output_name == asset.get("buffer_derivation", {}).get("path"):
+                            self.assertNotEqual(library_files[output_name], source_bytes)
+                        else:
+                            self.assertEqual(library_files[output_name], source_bytes)
+
+    def test_all_tree_buffers_clamp_only_reviewed_color_components(self) -> None:
+        with ZipFile(library.ARCHIVE) as standard, ZipFile(library.CROPS_ARCHIVE) as crops, ZipFile(
+            library.REED_ARCHIVE
+        ) as reeds:
+            catalog, library_files = library.catalog_for(standard, crops, reeds)
+            trees = [asset for asset in catalog["assets"] if asset["role"] == "tree"]
+            self.assertEqual(len(trees), 7)
+
+            for asset in trees:
+                with self.subTest(tree=asset["id"]):
+                    gltf_bytes = standard.read(asset["source_entry"])
+                    gltf = json.loads(gltf_bytes)
+                    derivation = asset["buffer_derivation"]
+                    source_binary = standard.read(derivation["source_entry"])
+                    runtime_binary = library_files[derivation["path"]]
+                    for dependency in asset["dependencies"]:
+                        runtime_path = (
+                            "models/"
+                            + PurePosixPath(dependency).relative_to("glTF").as_posix()
+                        )
+                        if runtime_path == derivation["path"]:
+                            continue
+                        self.assertEqual(library_files[runtime_path], standard.read(dependency))
+                    self.assertEqual(
+                        hashlib.sha256(source_binary).hexdigest(),
+                        derivation["source_buffer_sha256"],
+                    )
+                    self.assertEqual(
+                        hashlib.sha256(runtime_binary).hexdigest(),
+                        derivation["runtime_buffer_sha256"],
+                    )
+
+                    colors: set[int] = set()
+                    others: set[int] = set()
+                    for mesh in gltf["meshes"]:
+                        for primitive in mesh["primitives"]:
+                            for semantic, index in primitive["attributes"].items():
+                                (colors if semantic == "COLOR_0" else others).add(index)
+                            if "indices" in primitive:
+                                others.add(primitive["indices"])
+                    self.assertTrue(colors)
+                    self.assertFalse(colors & others)
+
+                    expected_offsets: set[int] = set()
+                    source_values_above_one = 0
+                    for index in colors:
+                        accessor = gltf["accessors"][index]
+                        self.assertEqual(accessor["componentType"], 5126)
+                        self.assertIn(accessor["type"], ("VEC3", "VEC4"))
+                        for offset in color_accessor_offsets(gltf, index):
+                            value = struct.unpack_from("<f", source_binary, offset)[0]
+                            self.assertTrue(math.isfinite(value))
+                            self.assertGreaterEqual(value, 0.0)
+                            self.assertLessEqual(value, library.TREE_COLOR_OVERSHOOT_LIMIT)
+                            if value > 1.0:
+                                source_values_above_one += 1
+                                expected_offsets.add(offset)
+                                self.assertEqual(
+                                    struct.unpack_from("<f", runtime_binary, offset)[0], 1.0
+                                )
+                            else:
+                                self.assertEqual(
+                                    struct.unpack_from("<f", runtime_binary, offset)[0], value
+                                )
+                    self.assertEqual(derivation["derivation_count"], source_values_above_one)
+                    self.assertGreater(source_values_above_one, 0)
+
+                    changed_byte_offsets = {
+                        offset
+                        for offset, (source_byte, runtime_byte) in enumerate(
+                            zip(source_binary, runtime_binary, strict=True)
+                        )
+                        if source_byte != runtime_byte
+                    }
+                    expected_changed_byte_offsets = {
+                        byte_offset
+                        for component_offset in expected_offsets
+                        for byte_offset in range(component_offset, component_offset + 4)
+                        if source_binary[byte_offset] != runtime_binary[byte_offset]
+                    }
+                    self.assertEqual(changed_byte_offsets, expected_changed_byte_offsets)
+
+                    for accessor_index in others:
+                        self.assertEqual(
+                            accessor_elements(gltf, source_binary, accessor_index),
+                            accessor_elements(gltf, runtime_binary, accessor_index),
+                            f"non-color accessor {accessor_index} changed",
+                        )
+
+                    file_record = next(
+                        item for item in catalog["files"] if item["path"] == derivation["path"]
+                    )
+                    self.assertEqual(file_record["sha256"], derivation["runtime_buffer_sha256"])
+
+    def test_tree_color_derivation_refuses_overshoot_beyond_reviewed_limit(self) -> None:
+        with ZipFile(library.ARCHIVE) as standard:
+            source_name = "glTF/Pine_1.gltf"
+            gltf_bytes = standard.read(source_name)
+            gltf = json.loads(gltf_bytes)
+            buffer_uri = gltf["buffers"][0]["uri"]
+            binary_name = (PurePosixPath(source_name).parent / buffer_uri).as_posix()
+            binary = bytearray(standard.read(binary_name))
+            color_index = next(
+                primitive["attributes"]["COLOR_0"]
+                for mesh in gltf["meshes"]
+                for primitive in mesh["primitives"]
+                if "COLOR_0" in primitive["attributes"]
+            )
+            offset = color_accessor_offsets(gltf, color_index)[0]
+            struct.pack_into("<f", binary, offset, library.TREE_COLOR_OVERSHOOT_LIMIT + 0.01)
+            with self.assertRaisesRegex(library.BuildError, "outside reviewed range"):
+                library.derive_tree_color_buffer(source_name, gltf_bytes, bytes(binary), 0)
 
     def test_default_generation_check_and_repeat_are_deterministic(self) -> None:
         trial_root = ROOT / "tmp/tree-retained-intake"
@@ -125,6 +285,10 @@ class BuildLibraryTests(unittest.TestCase):
             source_evidence_before = {
                 path: path.read_bytes()
                 for path in (library.SOURCE_LICENSE, *library.SOURCE_NOTICES.keys())
+            }
+            source_archive_hashes_before = {
+                path: hashlib.sha256(path.read_bytes()).hexdigest()
+                for path in (library.ARCHIVE, library.CROPS_ARCHIVE, library.REED_ARCHIVE)
             }
 
             generated = subprocess.run(
@@ -164,6 +328,13 @@ class BuildLibraryTests(unittest.TestCase):
             self.assertEqual(
                 {path: path.read_bytes() for path in source_evidence_before},
                 source_evidence_before,
+            )
+            self.assertEqual(
+                {
+                    path: hashlib.sha256(path.read_bytes()).hexdigest()
+                    for path in source_archive_hashes_before
+                },
+                source_archive_hashes_before,
             )
 
 

@@ -39,6 +39,8 @@ Root darkening was not adopted. No emission, universal upward-normal replacement
 
 ## Field controls
 
+[Before](evidence/before.png) · [Photographic detail probe](evidence/photo-probe.png). Final combined captures and machine-readable comparisons are retained with the verification results.
+
 The default-mode control retains identical mesh and instance hashes. Of 58 matched images, 53 are pixel-identical; the other five moving frames differ in only 1–3 pixels, by one 8-bit channel level at most. This is a bounded numerical difference, not a claim of universal byte identity. All repeat/wrap controls are exact within each run.
 
 Before reallocating species, grass-only binding versus the existing RC photographic probe produces exact pixels in all four fixed daytime views. This isolates the new grass binder from changes to clump allocation. The final baseline/enhanced midnight fixtures match in all 58 images. Midnight does not exercise lit grass detail; the local-light material fixture supplies the separate lighting control.
