@@ -77,7 +77,7 @@ func _run() -> void:
 	if _ground_probe not in ["default", "photo"]:
 		_fail("--ground must be default or photo")
 		return
-	if _mode == "profile" and (_variant not in ["baseline", "candidate"] or _pair <= 0):
+	if _mode == "profile" and (_variant not in ["baseline", "candidate"] or _pair < 1 or _pair > 5):
 		_fail("profile mode requires --variant=baseline|candidate and --pair=1..5")
 		return
 	if _mode == "profile" and (not is_finite(_warmup_s) or not is_finite(_duration_s)
@@ -264,6 +264,7 @@ func _capture_all() -> bool:
 		capture["repeat_of"] = str(probe.repeat_of)
 		_captures.append(capture)
 	for wind_case: Dictionary in _wind_cases():
+		var motion_start: Dictionary = detail_view.duplicate(true)
 		for step: int in MOTION_STEPS:
 			var fraction: float = float(step) / float(MOTION_STEPS - 1)
 			var view: Dictionary = detail_view.duplicate(true)
@@ -278,7 +279,31 @@ func _capture_all() -> bool:
 			capture["sequence"] = str(wind_case.id)
 			capture["sequence_step"] = step
 			_captures.append(capture)
+		var wrap_capture: Dictionary = await _capture(
+			"motion_%s_t1024" % str(wind_case.id), motion_start, 1024.0, wind_case.wind_render)
+		if wrap_capture.is_empty():
+			return false
+		wrap_capture["sequence"] = str(wind_case.id)
+		wrap_capture["sequence_role"] = "same pose as step 00 at wrapped t=1024"
+		_captures.append(wrap_capture)
+		var repeated_end: Dictionary = _view_at_motion_step(detail_view, MOTION_STEPS - 1)
+		var repeat_capture: Dictionary = await _capture(
+			"motion_%s_t1_repeat" % str(wind_case.id), repeated_end, 1.0, wind_case.wind_render)
+		if repeat_capture.is_empty():
+			return false
+		repeat_capture["sequence"] = str(wind_case.id)
+		repeat_capture["sequence_role"] = "same pose and clock as step 11"
+		_captures.append(repeat_capture)
 	return true
+
+
+func _view_at_motion_step(source: Dictionary, step: int) -> Dictionary:
+	var view: Dictionary = source.duplicate(true)
+	var fraction: float = float(step) / float(MOTION_STEPS - 1)
+	var displacement: Vector3 = Vector3(0.0, 0.0, -MOTION_LENGTH_M * fraction)
+	view.eye_render += displacement
+	view.target_render += displacement
+	return view
 
 
 func _clock_probes() -> Array[Dictionary]:
@@ -343,6 +368,8 @@ func _capture(case_id: String, view: Dictionary, sim_time_s: float, wind_render:
 		"fov_deg": float(view.fov_deg),
 		"viewport_visible_draw_calls": _draw_calls(),
 		"viewport_visible_primitives": _primitives(),
+		"viewport_visible_counters_available": _draw_calls() > 0 and _primitives() > 0,
+		"viewport_counter_source": "RenderingServer.viewport_get_render_info(VIEWPORT_RENDER_INFO_TYPE_VISIBLE, DRAW_CALLS_IN_FRAME / PRIMITIVES_IN_FRAME)",
 		"draw_call_unit": "visible draw calls in final SubViewport frame",
 		"primitive_unit": "renderer-submitted visible primitive counter; not source triangles",
 	}
@@ -447,6 +474,7 @@ func _collect_scene(node: Node, path: String, mesh_records: Dictionary, material
 			if node is MultiMeshInstance3D:
 				var mm: MultiMesh = (node as MultiMeshInstance3D).multimesh
 				instance_record["multimesh_transforms"] = _multimesh_transforms(mm)
+				instance_record["multimesh_colors"] = _multimesh_colors(mm)
 				instance_record["multimesh_custom_data"] = _multimesh_custom_data(mm)
 			instances.append(instance_record)
 			for surface_index: int in mesh.get_surface_count():
@@ -474,6 +502,7 @@ func _mesh_record(mesh: Mesh) -> Dictionary:
 		if arrays.size() > Mesh.ARRAY_INDEX and arrays[Mesh.ARRAY_INDEX] is PackedInt32Array:
 			index_count = (arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size()
 		var array_bytes: PackedByteArray = var_to_bytes(arrays)
+		var blend_shapes: Array = mesh.surface_get_blend_shape_arrays(surface_index)
 		surfaces.append({
 			"index": surface_index,
 			"primitive": mesh.surface_get_primitive_type(surface_index),
@@ -481,6 +510,7 @@ func _mesh_record(mesh: Mesh) -> Dictionary:
 			"vertex_count": vertex_count,
 			"index_count": index_count,
 			"array_sha256": _digest_bytes(array_bytes),
+			"blend_shape_sha256": _digest_bytes(var_to_bytes(blend_shapes)),
 		})
 	var record: Dictionary = {
 		"class": mesh.get_class(),
@@ -611,6 +641,16 @@ func _multimesh_custom_data(multimesh: MultiMesh) -> Array:
 	return result
 
 
+func _multimesh_colors(multimesh: MultiMesh) -> Array:
+	var result: Array = []
+	if multimesh == null or not multimesh.use_colors:
+		return result
+	var count: int = multimesh.visible_instance_count if multimesh.visible_instance_count >= 0 else multimesh.instance_count
+	for index: int in count:
+		result.append(_stable_value(multimesh.get_instance_color(index)))
+	return result
+
+
 func _transform3d(transform: Transform3D) -> Array:
 	return [
 		[transform.basis.x.x, transform.basis.x.y, transform.basis.x.z],
@@ -677,6 +717,7 @@ func _write_manifest() -> bool:
 		"field_builder_sha256": _sha256_res_path("res://render/field.gd"),
 		"ground_shader_sha256": _sha256_res_path("res://render/ground.gdshader"),
 		"rc_ground_material_sha256": _sha256_res_path("res://render/rc_ground_material.gd"),
+		"harness_sha256": _harness_sha256(),
 		"views": _view_records(),
 		"scene_identity": _scene_identity,
 		"captures": _captures,
@@ -739,6 +780,13 @@ func _sha256_res_path(path: String) -> String:
 	if not FileAccess.file_exists(absolute_path):
 		return ""
 	return FileAccess.get_sha256(absolute_path)
+
+
+func _harness_sha256() -> String:
+	for argument: String in OS.get_cmdline_args():
+		if argument.ends_with("quality_capture.gd") and FileAccess.file_exists(argument):
+			return FileAccess.get_sha256(argument)
+	return ""
 
 
 func _digest(value: Variant) -> String:

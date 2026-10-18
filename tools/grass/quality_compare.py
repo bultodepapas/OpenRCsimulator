@@ -264,6 +264,28 @@ def verify_repeat_images(manifest: dict[str, Any], captures: dict[str, dict[str,
                     **metrics,
                 }
             )
+    for group in WIND_GROUPS:
+        for first_id, second_id in (
+            (f"motion_{group}_00", f"motion_{group}_t1024"),
+            (f"motion_{group}_11", f"motion_{group}_t1_repeat"),
+        ):
+            if first_id not in captures or second_id not in captures:
+                checks.append({"first": first_id, "second": second_id, "exact_pixels_match": False, "error": "required motion repeat case is missing"})
+                continue
+            first_record = captures[first_id]
+            second_record = captures[second_id]
+            first_pixels = decode_png(manifest_image_path(manifest, first_record))
+            second_pixels = decode_png(manifest_image_path(manifest, second_record))
+            metrics = compare_pixels(first_pixels, second_pixels)
+            checks.append(
+                {
+                    "first": first_id,
+                    "second": second_id,
+                    "first_image_sha256": first_record.get("image_sha256"),
+                    "second_image_sha256": second_record.get("image_sha256"),
+                    **metrics,
+                }
+            )
     return {
         "checks": checks,
         "all_exact_pixels_match": bool(checks) and all(item.get("exact_pixels_match") is True for item in checks),
@@ -280,6 +302,7 @@ def capture_input_comparison(baseline: dict[str, Any], candidate: dict[str, Any]
         "renderer_method",
         "renderer_driver",
         "renderer_adapter",
+        "engine",
         "viewport",
         "viewport_msaa_3d",
     )
@@ -304,6 +327,11 @@ def run_capture_compare(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         raise EvidenceError(f"capture IDs differ; candidate missing={missing_candidate}, baseline missing={missing_baseline}")
     required_missing = [case for case in CAPTURE_CASES if case not in baseline_captures]
     expected_motion = [f"motion_{wind}_{step:02d}" for wind in WIND_GROUPS for step in range(12)]
+    expected_motion.extend(
+        capture_id
+        for wind in WIND_GROUPS
+        for capture_id in (f"motion_{wind}_t1024", f"motion_{wind}_t1_repeat")
+    )
     required_missing.extend(case for case in expected_motion if case not in baseline_captures)
     if required_missing:
         raise EvidenceError(f"capture set is incomplete: missing {required_missing}")
@@ -319,6 +347,18 @@ def run_capture_compare(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
                 "id": case_id,
                 "baseline_image_sha256": baseline_record.get("image_sha256"),
                 "candidate_image_sha256": candidate_record.get("image_sha256"),
+                "baseline_visible_draw_calls": baseline_record.get("viewport_visible_draw_calls"),
+                "candidate_visible_draw_calls": candidate_record.get("viewport_visible_draw_calls"),
+                "visible_draw_call_delta": (
+                    candidate_record.get("viewport_visible_draw_calls", 0)
+                    - baseline_record.get("viewport_visible_draw_calls", 0)
+                ),
+                "baseline_visible_primitives": baseline_record.get("viewport_visible_primitives"),
+                "candidate_visible_primitives": candidate_record.get("viewport_visible_primitives"),
+                "visible_primitive_delta": (
+                    candidate_record.get("viewport_visible_primitives", 0)
+                    - baseline_record.get("viewport_visible_primitives", 0)
+                ),
                 **compare_pixels(baseline_pixels, candidate_pixels),
             }
         )
@@ -391,11 +431,14 @@ def profile_metrics(manifest: dict[str, Any]) -> dict[str, Any]:
             if not isinstance(sample, dict):
                 continue
             value = sample.get(column)
-            if isinstance(value, (int, float)) and math.isfinite(float(value)) and float(value) >= 0:
-                values.append(float(value))
+            if not isinstance(value, (int, float)) or not math.isfinite(float(value)):
+                continue
+            if column == "wall_interval_ms" and float(value) < 0.0:
+                continue
+            if column != "wall_interval_ms" and float(value) <= 0.0:
+                continue
+            values.append(float(value))
         available = bool(values)
-        if column == "viewport_gpu_ms" and values and all(value == 0.0 for value in values):
-            available = False
         metrics[column] = {
             "available": available,
             "sample_count": len(values) if available else 0,
@@ -412,6 +455,11 @@ def profile_metrics(manifest: dict[str, Any]) -> dict[str, Any]:
         "ground_probe": manifest.get("ground_probe"),
         "field_sha256": manifest.get("field_sha256"),
         "renderer_adapter": manifest.get("renderer_adapter"),
+        "renderer_method": manifest.get("renderer_method"),
+        "renderer_driver": manifest.get("renderer_driver"),
+        "engine": manifest.get("engine"),
+        "seed": manifest.get("seed"),
+        "viewport": manifest.get("viewport"),
         "view_id": profile.get("view_id"),
         "requested_warmup_s": profile.get("requested_warmup_s"),
         "actual_warmup_s": profile.get("actual_warmup_s"),
@@ -440,7 +488,18 @@ def run_profile_compare(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         reduced.append(profile_metrics(manifest))
 
     pair_reports = []
-    compatibility_keys = ("quality", "ground_probe", "field_sha256", "renderer_adapter", "view_id")
+    compatibility_keys = (
+        "quality",
+        "ground_probe",
+        "field_sha256",
+        "renderer_adapter",
+        "renderer_method",
+        "renderer_driver",
+        "engine",
+        "seed",
+        "viewport",
+        "view_id",
+    )
     mismatches: list[dict[str, Any]] = []
     for pair_index in range(5):
         baseline = reduced[pair_index * 2]
