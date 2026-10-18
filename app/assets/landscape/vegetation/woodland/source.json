@@ -1,0 +1,23 @@
+{
+  "asset": "Forest Leaves 02",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0",
+  "asset_url": "https://polyhaven.com/a/forest_leaves_02",
+  "license_url": "https://polyhaven.com/license",
+  "download_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/forest_leaves_02/forest_leaves_02_diffuse_1k.jpg",
+  "downloaded": "2026-10-18",
+  "sha256": "2bac85cdc76927fa7dc311037bbbc4dfa2633ea56eb0a24c9cabe163a68c9aa5",
+  "bytes": 437891,
+  "resolution": [
+    1024,
+    1024
+  ],
+  "source_tile_m": [
+    3.0009725,
+    3.0009801
+  ],
+  "runtime_tile_m": 3.0,
+  "processing": "Downloaded JPG bytes unchanged; Godot downsizes to 512 and generates opaque mipmaps for the restrained 4 m litter patches.",
+  "scope": "Localized litter under default woodland margin plants; no displacement, collision or PBR-normal changes",
+  "runtime_import_size_limit_px": 512
+}

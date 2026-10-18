@@ -59,14 +59,14 @@ func _run() -> void:
 	var high_plants: Array = high.get_meta("plants", [])
 	var high_index := _plant_index(high_plants)
 	var high_geometry := _geometry_totals(high)
-	_check("high tier realizes all 1,956 source triangles", int(high.get_meta("triangles", -1)) == 1956,
+	_check("high tier realizes all 1,988 source triangles", int(high.get_meta("triangles", -1)) == 1988,
 		str(high.get_meta("triangles", -1)))
-	_check("high tier realizes five merged batches", int(high.get_meta("batches", -1)) == 5,
+	_check("high tier realizes six merged batches", int(high.get_meta("batches", -1)) == 6,
 		str(high.get_meta("batches", -1)))
-	_check("high-tier mesh surfaces independently total 1,956 triangles",
-		bool(high_geometry.valid) and int(high_geometry.triangles) == 1956, str(high_geometry))
-	_check("high-tier subtree independently contains five MultiMesh batches",
-		int(high_geometry.batches) == 5, str(high_geometry))
+	_check("high-tier mesh surfaces independently total 1,988 triangles",
+		bool(high_geometry.valid) and int(high_geometry.triangles) == 1988, str(high_geometry))
+	_check("high-tier subtree independently contains six render batches",
+		int(high_geometry.batches) == 6, str(high_geometry))
 	_check("geometry counts agree with emitted metadata",
 		int(high_geometry.triangles) == int(high.get_meta("triangles", -1))
 		and int(high_geometry.batches) == int(high.get_meta("batches", -1)), str(high_geometry))
@@ -74,12 +74,21 @@ func _run() -> void:
 	_check("all high-tier plant IDs are unique", bool(high_index.unique), str(high_index.ids.keys()))
 	_check("high-tier subtree contains no CollisionObject3D", not _has_collision_object(high))
 
+	var mix_counts: Dictionary = {}
+	for plant: Dictionary in high_plants:
+		mix_counts[plant.asset_id] = int(mix_counts.get(plant.asset_id, 0)) + 1
+	_check("source mix has 24 ferns, 16 tall grasses, 8 flowering shrubs and 12 mesh grasses",
+		mix_counts == {fern_1 = 24, grass_common_tall = 16, bush_common_flowers = 8, grass_common_short = 12}, str(mix_counts))
+	var floor_mesh: MeshInstance3D = high.get_node("WoodlandLitter")
+	_check("litter uses 32 terrain triangles and casts no shadow",
+		_mesh_triangle_count(floor_mesh.mesh) == 32 and floor_mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+
 	var high_again: Node3D = WoodlandEdges.build(field, scenery, "high", lake)
 	_check("high rebuild preserves ordered plant records",
 		JSON.stringify(high_plants) == JSON.stringify(high_again.get_meta("plants", [])))
 	_check("high tier emits four 12-card shrub patch batches",
 		_shrub_layout_contract(high), str(_shrub_batch_counts(high)))
-	_check("high tier preserves shrub render settings and cached source material",
+	_check("high tier preserves shrub render settings and shared source-atlas material",
 		_shrub_render_contract(high))
 
 	var balanced: Node3D = WoodlandEdges.build(field, scenery, "balanced", lake)
@@ -161,14 +170,15 @@ func _shrub_render_contract(root: Node3D) -> bool:
 			return false
 		if batch.cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:
 			return false
-		if batch.get_meta("source_asset_id", "") != Hedge.BUSH_SOURCE_ID:
+		if batch.get_meta("source_asset_ids", []) != WoodlandEdges.SPECIES:
 			return false
-		if batch.material_override != Hedge._impostor_material():
+		if batch.material_override != WoodlandEdges._material():
 			return false
 		var material := batch.material_override as ShaderMaterial
-		if material == null or material.shader != Hedge.ImpostorShader:
+		if material == null or material.shader.resource_path != "res://scenery/woodland_cards.gdshader":
 			return false
-		if material.get_shader_parameter("impostor_atlas") != Hedge._atlas():
+		if material.get_shader_parameter("impostor_atlas") != Hedge._atlas() \
+			or material.get_shader_parameter("plain_atlas") == null or material.get_shader_parameter("fern_atlas") == null:
 			return false
 		if not is_equal_approx(float(material.get_shader_parameter("alpha_cutoff")), 0.32):
 			return false
@@ -262,6 +272,7 @@ func _geometry_totals(node: Node) -> Dictionary:
 				result.valid = false
 			else:
 				result.triangles += surface_count
+				result.batches += 1
 	for child: Node in node.get_children():
 		var child_totals := _geometry_totals(child)
 		result.triangles += int(child_totals.triangles)

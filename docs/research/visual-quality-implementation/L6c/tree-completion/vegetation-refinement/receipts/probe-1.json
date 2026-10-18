@@ -1,0 +1,111 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"batches": 6,
+	"checked_cards": 48,
+	"checked_floor_vertices": 36,
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"failures": [],
+	"first_calls_us": {
+		"candidate": 69862,
+		"reference": 53587
+	},
+	"litter_texture": {
+		"bytes_with_mips": 1048575,
+		"has_mips": true,
+		"height": 512,
+		"width": 512
+	},
+	"samples_us": {
+		"balanced": {
+			"candidate": [
+				9277,
+				9088,
+				7798,
+				9050,
+				7054,
+				8182,
+				10687,
+				8504,
+				9379
+			],
+			"reference": [
+				5738,
+				4995,
+				5164,
+				6065,
+				5262,
+				7444,
+				6544,
+				5769,
+				5540
+			]
+		},
+		"high": {
+			"candidate": [
+				10622,
+				10198,
+				7718,
+				9703,
+				7453,
+				7234,
+				8482,
+				10478,
+				10284
+			],
+			"reference": [
+				7368,
+				5971,
+				5157,
+				6341,
+				6825,
+				6802,
+				5391,
+				5558,
+				5859
+			]
+		},
+		"low": {
+			"candidate": [
+				5,
+				3,
+				3,
+				2,
+				3,
+				2,
+				3,
+				2,
+				3
+			],
+			"reference": [
+				14,
+				3,
+				2,
+				3,
+				3,
+				3,
+				2,
+				2,
+				3
+			]
+		}
+	},
+	"scope": "Native CPU build calls only; not frame time. Shared dependencies warm within each process.",
+	"source_sha256": {
+		"res://data/woodland_edges.json": "2c3b98bd8e65e08e4e486761aeefcfff84a8ac0ba26b68e457023a6eefc860c6",
+		"res://scenery/woodland_cards.gdshader": "df53a8caca7967fe9a2a63bef0d19ab20b7aba50ec36cfc0337229e12bdb4e18",
+		"res://scenery/woodland_edge_habitat.gd": "3dbdac2e0e79f55443ff1b2df3423cf13834cd6a58a04f28b6829235d48d7bfb",
+		"res://scenery/woodland_floor.gdshader": "57362ec06f860d387c0a24c89c6856085ccf9b021382d94933f4a246c6fe82fc"
+	},
+	"triangles": 1988
+}

@@ -1,0 +1,721 @@
+{
+  "field_id": "default",
+  "format": "openrc-woodland-edges v1",
+  "patches": [
+    {
+      "grass_height_m": 0.25,
+      "grass_ne_m": [
+        [
+          251.88788,
+          527.977804
+        ],
+        [
+          245.62713,
+          530.127761
+        ],
+        [
+          243.287937,
+          532.764691
+        ]
+      ],
+      "id": "woodland-edge-east-north",
+      "path_seeds": [
+        710000,
+        710001,
+        710002,
+        710003,
+        710004,
+        710005,
+        710006,
+        710007,
+        710008,
+        710009,
+        710010,
+        710011
+      ],
+      "paths_ne_m": [
+        [
+          [
+            250.313049,
+            534.268439
+          ],
+          [
+            251.885761,
+            534.562683
+          ]
+        ],
+        [
+          [
+            250.361612,
+            533.933534
+          ],
+          [
+            249.005172,
+            532.908806
+          ]
+        ],
+        [
+          [
+            249.073404,
+            533.899487
+          ],
+          [
+            249.905498,
+            535.551795
+          ]
+        ],
+        [
+          [
+            247.758611,
+            536.079156
+          ],
+          [
+            249.403685,
+            536.20655
+          ]
+        ],
+        [
+          [
+            248.457972,
+            533.785047
+          ],
+          [
+            247.604512,
+            535.482577
+          ]
+        ],
+        [
+          [
+            251.462782,
+            536.300943
+          ],
+          [
+            251.073058,
+            534.800737
+          ]
+        ],
+        [
+          [
+            249.625618,
+            537.178369
+          ],
+          [
+            250.09064,
+            535.460185
+          ]
+        ],
+        [
+          [
+            250.231735,
+            536.033895
+          ],
+          [
+            251.132345,
+            537.380485
+          ]
+        ],
+        [
+          [
+            250.879069,
+            533.782607
+          ],
+          [
+            251.808785,
+            532.171635
+          ]
+        ],
+        [
+          [
+            249.911066,
+            531.478274
+          ],
+          [
+            251.272324,
+            532.529642
+          ]
+        ],
+        [
+          [
+            248.376992,
+            534.219302
+          ],
+          [
+            248.435828,
+            532.27019
+          ]
+        ],
+        [
+          [
+            247.677726,
+            532.789872
+          ],
+          [
+            246.6401,
+            533.981396
+          ]
+        ]
+      ],
+      "shrub_height_m": 0.8,
+      "shrub_width_m": 0.9
+    },
+    {
+      "grass_height_m": 0.25,
+      "grass_ne_m": [
+        [
+          -244.303752,
+          530.323781
+        ],
+        [
+          -250.772261,
+          528.221092
+        ],
+        [
+          -254.037478,
+          529.846547
+        ]
+      ],
+      "id": "woodland-edge-east-south",
+      "path_seeds": [
+        710100,
+        710101,
+        710102,
+        710103,
+        710104,
+        710105,
+        710106,
+        710107,
+        710108,
+        710109,
+        710110,
+        710111
+      ],
+      "paths_ne_m": [
+        [
+          [
+            -247.635932,
+            534.825956
+          ],
+          [
+            -248.695694,
+            536.024666
+          ]
+        ],
+        [
+          [
+            -248.573809,
+            532.911631
+          ],
+          [
+            -248.906935,
+            534.578673
+          ]
+        ],
+        [
+          [
+            -250.248325,
+            533.981381
+          ],
+          [
+            -249.024705,
+            535.368917
+          ]
+        ],
+        [
+          [
+            -250.543167,
+            534.717227
+          ],
+          [
+            -251.799103,
+            535.787331
+          ]
+        ],
+        [
+          [
+            -251.194938,
+            534.538691
+          ],
+          [
+            -250.319328,
+            532.852481
+          ]
+        ],
+        [
+          [
+            -248.368423,
+            537.156181
+          ],
+          [
+            -248.980499,
+            535.732151
+          ]
+        ],
+        [
+          [
+            -249.440363,
+            535.805522
+          ],
+          [
+            -251.048167,
+            536.569304
+          ]
+        ],
+        [
+          [
+            -249.024543,
+            537.239566
+          ],
+          [
+            -250.578987,
+            536.78338
+          ]
+        ],
+        [
+          [
+            -246.573191,
+            533.691695
+          ],
+          [
+            -247.732759,
+            535.145999
+          ]
+        ],
+        [
+          [
+            -247.656101,
+            532.435366
+          ],
+          [
+            -246.755401,
+            533.900678
+          ]
+        ],
+        [
+          [
+            -248.776662,
+            533.206872
+          ],
+          [
+            -250.557822,
+            532.413166
+          ]
+        ],
+        [
+          [
+            -250.619664,
+            531.369617
+          ],
+          [
+            -250.881232,
+            532.927815
+          ]
+        ]
+      ],
+      "shrub_height_m": 1.0,
+      "shrub_width_m": 0.9
+    },
+    {
+      "grass_height_m": 0.25,
+      "grass_ne_m": [
+        [
+          -547.539422,
+          205.976202
+        ],
+        [
+          -547.359402,
+          199.408363
+        ],
+        [
+          -550.17358,
+          195.925796
+        ]
+      ],
+      "id": "woodland-edge-southwest",
+      "path_seeds": [
+        710200,
+        710201,
+        710202,
+        710203,
+        710204,
+        710205,
+        710206,
+        710207,
+        710208,
+        710209,
+        710210,
+        710211
+      ],
+      "paths_ne_m": [
+        [
+          [
+            -553.50517,
+            202.281304
+          ],
+          [
+            -553.128408,
+            203.836312
+          ]
+        ],
+        [
+          [
+            -552.24137,
+            202.758972
+          ],
+          [
+            -551.745872,
+            201.132786
+          ]
+        ],
+        [
+          [
+            -554.086852,
+            201.749271
+          ],
+          [
+            -552.348002,
+            201.117685
+          ]
+        ],
+        [
+          [
+            -554.244148,
+            199.391212
+          ],
+          [
+            -554.501678,
+            201.02099
+          ]
+        ],
+        [
+          [
+            -553.616891,
+            199.636108
+          ],
+          [
+            -551.911043,
+            200.472818
+          ]
+        ],
+        [
+          [
+            -554.96403,
+            203.530985
+          ],
+          [
+            -553.968052,
+            202.343329
+          ]
+        ],
+        [
+          [
+            -554.406888,
+            200.625891
+          ],
+          [
+            -555.320412,
+            202.153593
+          ]
+        ],
+        [
+          [
+            -554.87856,
+            201.508477
+          ],
+          [
+            -556.016598,
+            202.661415
+          ]
+        ],
+        [
+          [
+            -552.193681,
+            202.7494
+          ],
+          [
+            -551.756219,
+            204.557224
+          ]
+        ],
+        [
+          [
+            -551.522001,
+            202.65179
+          ],
+          [
+            -550.154269,
+            203.694722
+          ]
+        ],
+        [
+          [
+            -551.402634,
+            201.73207
+          ],
+          [
+            -551.603136,
+            199.792406
+          ]
+        ],
+        [
+          [
+            -551.979172,
+            199.078954
+          ],
+          [
+            -550.678766,
+            199.976362
+          ]
+        ]
+      ],
+      "shrub_height_m": 1.1,
+      "shrub_width_m": 0.9
+    },
+    {
+      "grass_height_m": 0.25,
+      "grass_ne_m": [
+        [
+          196.669895,
+          -548.304859
+        ],
+        [
+          203.634009,
+          -547.248463
+        ],
+        [
+          206.69952,
+          -549.037867
+        ]
+      ],
+      "id": "woodland-edge-northwest",
+      "path_seeds": [
+        710300,
+        710301,
+        710302,
+        710303,
+        710304,
+        710305,
+        710306,
+        710307,
+        710308,
+        710309,
+        710310,
+        710311
+      ],
+      "paths_ne_m": [
+        [
+          [
+            200.804413,
+            -553.60332
+          ],
+          [
+            199.204571,
+            -553.625794
+          ]
+        ],
+        [
+          [
+            200.227389,
+            -551.593703
+          ],
+          [
+            201.595109,
+            -552.603327
+          ]
+        ],
+        [
+          [
+            200.709643,
+            -552.941802
+          ],
+          [
+            202.485779,
+            -553.459334
+          ]
+        ],
+        [
+          [
+            202.177207,
+            -554.280398
+          ],
+          [
+            203.785619,
+            -553.912284
+          ]
+        ],
+        [
+          [
+            202.611042,
+            -551.580326
+          ],
+          [
+            203.179578,
+            -553.39327
+          ]
+        ],
+        [
+          [
+            200.953869,
+            -555.125064
+          ],
+          [
+            199.633087,
+            -554.31387
+          ]
+        ],
+        [
+          [
+            202.562558,
+            -554.234496
+          ],
+          [
+            201.202544,
+            -555.38287
+          ]
+        ],
+        [
+          [
+            200.624187,
+            -555.042787
+          ],
+          [
+            201.936879,
+            -555.992123
+          ]
+        ],
+        [
+          [
+            199.561489,
+            -551.547744
+          ],
+          [
+            198.877491,
+            -553.27741
+          ]
+        ],
+        [
+          [
+            199.576388,
+            -552.061354
+          ],
+          [
+            199.478706,
+            -550.34413
+          ]
+        ],
+        [
+          [
+            201.993006,
+            -552.361022
+          ],
+          [
+            202.027216,
+            -550.411322
+          ]
+        ],
+        [
+          [
+            203.969325,
+            -551.178046
+          ],
+          [
+            202.442383,
+            -550.772032
+          ]
+        ]
+      ],
+      "shrub_height_m": 0.9,
+      "shrub_width_m": 0.9
+    }
+  ],
+  "pilot_origin_ne_m": [
+    0.0,
+    0.0
+  ],
+  "scope": "default-field visual placements in absolute north/east metres; estimated layout, not surveyed geography",
+  "shrub_include_sparse_trees": false,
+  "shrub_quality": "high",
+  "source_geometry": {
+    "computed_source_triangle_budget": 1956,
+    "grass_instance_count": 12,
+    "grass_mesh_max_horizontal_radius_m_at_grass_height": 0.11185338,
+    "grass_source_asset_id": "grass_common_short",
+    "grass_source_asset_sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
+    "grass_source_triangles_per_instance": 155,
+    "layout_jitter_bound_m": 0.362801599,
+    "path_sweep_envelope_m_including_clearance": 2.553315208,
+    "shrub_card_asset_id": "bush_common_flowers_4view_impostor",
+    "shrub_card_instance_count": 48,
+    "shrub_card_triangles_per_instance": 2,
+    "shrub_full_quad_horizontal_radius_m_at_max_height": 1.190513609,
+    "shrub_full_quad_side_m_at_max_height": 1.683640492,
+    "shrub_full_quad_sphere_radius_m_at_max_height": 1.190513609,
+    "shrub_max_height_m": 1.232,
+    "shrub_source_asset_id": "bush_common_flowers",
+    "shrub_source_geometry_sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+    "shrub_source_triangles": 1368,
+    "tree_envelope": {
+      "tree_clearance_used_m": 15.0,
+      "tree_max_frame_size_m": 1.125001,
+      "tree_max_horizontal_radius_with_wind_m": 14.351042315,
+      "tree_max_identity_height_m": 25.0,
+      "tree_max_wind_sweep_m_at_10mps": 0.288529815,
+      "tree_runtime_clearance_radius_m": 15.0
+    }
+  },
+  "source_sha256_normalized_text": {
+    "app/assets/landscape/trees/catalog.json": "afab65435415f13816afe4c55856dd07cb74e00ac0d811ab174f7ff0d2b3a661",
+    "app/assets/landscape/vegetation/catalog.json": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
+    "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "28e9a9a32da8dce203a9c3fb3f36648ad2b780e1a6189e375d0eb025b4ca18a2",
+    "app/data/field_loader.gd": "b81b1b0d3c0ee75a16bf65daba8575186c579aeb4f432ace22c1a36c98b25a11",
+    "app/data/fields/default.json": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/data/scenery/default.json": "43e05d91e8cc3a0c3ecd3c24db7b3bf60da6b092249289e2763f4f1484002681",
+    "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
+    "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
+    "app/render/treeline.gd": "4713a0674f8e3fb39305fa16fcfa6695a9f8736629b939c5f8686500d2c087f8",
+    "app/scenery/imported_hedge.gd": "67bde34184e298295085757de642964fa4461fce29f84b0b3304165c6f96937c",
+    "app/scenery/imported_vegetation.gd": "23c5152a7db3f28433f9a14ca7a9de4a9371f1b260921497e2144db7af440bf2",
+    "app/scenery/models.gd": "fb93bbb19b8155f3b9aa71be4cf17b1532b9b130d4b02c8cbfe8edcb2be619c9",
+    "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
+    "app/scenery/prefabs.gd": "83fa18a7cdfc4860bf538c3ee2be4337215fea319661385b16d83a45a5efa7d8",
+    "app/scenery/vegetation_placement.gd": "d9aeb35700c781ce94cd3c9aad6f81731d48e54caca8628ac2d22c45b18dba45",
+    "tools/trees/place.py": "c580ad4196e6b589bf0580073ecf9a855e74f658c0de70b2b9a3fbbb30743c8c"
+  },
+  "source_triangle_budget": 1956,
+  "validation": {
+    "all_current_treeline_positions_checked": 1680,
+    "all_scenery_placement_envelopes_checked": 136,
+    "card_nearest_neighbor_distance_max_m": 1.774227,
+    "card_nearest_neighbor_distance_min_m": 0.622872,
+    "cards_per_short_segment_max": 1,
+    "cards_per_short_segment_min": 1,
+    "grass_to_shrub_bound_clearance_m": 2.27133,
+    "independent_shrub_segment_count": 48,
+    "layout_cards_reproduced_from_imported_hedge_contract": 48,
+    "minimum_margins_m_or_degrees": {
+      "edge_ring_inner_m": 11.397602,
+      "edge_ring_outer_m": 4.605929,
+      "hedge_fence_clearance_m": 204.313938,
+      "lake_bank_clearance_m": 375.537048,
+      "props_clearance_m": 230.207594,
+      "protected_gap_clearance_deg": 26.386204,
+      "rotorpad_corridor_margin_m": 540.583368,
+      "rough_surface_margin_m": 19441.430087,
+      "runway_corridor_margin_m": 139.558042,
+      "scenery_patch_clearance_m": 536.906095,
+      "track_clearance_m": 442.048593,
+      "tree_clearance_m": 6.8536
+    },
+    "minimum_tree_center_distance_to_plant_centers_m": 22.965453,
+    "passed": true,
+    "path_sweep_samples_at_0_25m": 404,
+    "plant_geometry_centers_checked": 464,
+    "scenery_hedge_fence_segments_checked": 10,
+    "scenery_patch_polygons_checked": 1,
+    "scenery_track_segments_checked": 29,
+    "segment_length_max_m": 1.95,
+    "segment_length_min_m": 1.55,
+    "segment_seed_count": 48,
+    "segment_yaw_30_degree_bin_count": 12
+  }
+}
