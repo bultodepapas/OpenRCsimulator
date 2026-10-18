@@ -35,7 +35,7 @@ EXPECTED_MSAA_3D = 2  # Viewport.MSAA_4X in Godot 4.7.2.
 WARMUP_SECONDS = 10
 SAMPLE_SECONDS = 60
 MAX_FPS = 60
-MINIMUM_PAIRS = 3
+MINIMUM_PAIRS = 5
 DEFAULT_TIMEOUT_SECONDS = 180
 
 APP_RUNTIME_SUFFIXES = {
@@ -169,6 +169,8 @@ def build_command(godot: Path, app: Path, report_path: Path) -> list[str]:
 def validate_report_contract(report: dict[str, Any]) -> list[str]:
     """Check effective route/render metadata after the shared reducer accepts it."""
     errors: list[str] = []
+    if report.get("route") != "live-input":
+        errors.append("effective frametime route is not live-input")
     if not str(report.get("godot", "")).startswith(EXPECTED_GODOT_PREFIX):
         errors.append(f"runtime is not Godot {EXPECTED_GODOT_PREFIX} (stable) family")
     if report.get("backend") != EXPECTED_BACKEND:
@@ -368,7 +370,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--godot", type=Path, default=DEFAULT_GODOT, help="pinned Godot 4.7.2 stable binary")
     parser.add_argument("--app", type=Path, default=ROOT / "app", help="Godot app checkout to profile")
     parser.add_argument("--out", type=Path, required=True, help="new output directory; existing paths are refused")
-    parser.add_argument("--pairs", type=int, default=MINIMUM_PAIRS, help="complete AB/BA pairs (minimum 3; default 3)")
+    parser.add_argument("--pairs", type=int, default=MINIMUM_PAIRS, help="complete AB/BA pairs (minimum 5; default 5)")
     parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT_SECONDS, help="per-process timeout in seconds")
     return parser
 
@@ -420,6 +422,12 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
             "pair_order": "default/enhanced on odd pairs; enhanced/default on even pairs",
             "timeout_s_per_process": args.timeout,
             "reducer_policy": dict(native_summary.DEFAULT_POLICY),
+        },
+        "verification_limits": {
+            "live_input_route": "checked against the frametime report route field",
+            "camera_autozoom_and_mode": "checked against effective camera metadata",
+            "scenery_enabled_and_quality": "requested CLI settings only; openrc-frametimes v2 does not report effective scenery settings",
+            "grass_selector": "requested child-process environment only; openrc-frametimes v2 does not report the selected grass helper, material, or instance count",
         },
         "environment_delta": {
             GRASS_SELECTOR: {"default": "unset", "enhanced": "enhanced"},

@@ -33,9 +33,12 @@ class ProfileOrderTests(unittest.TestCase):
             ],
         )
 
-    def test_requested_pair_count_below_three_is_rejected(self):
-        with self.assertRaisesRegex(ValueError, "at least 3"):
-            profile_session.validate_pair_count(2)
+    def test_combined_study_requires_five_pairs_and_defaults_to_five(self):
+        with self.assertRaisesRegex(ValueError, "at least 5"):
+            profile_session.validate_pair_count(4)
+        profile_session.validate_pair_count(5)
+        arguments = profile_session._parser().parse_args(["--out", "out"])
+        self.assertEqual(arguments.pairs, 5)
 
     def test_command_keeps_live_route_and_pins_render_conditions(self):
         command = profile_session.build_command(
@@ -68,6 +71,22 @@ class ProfileOrderTests(unittest.TestCase):
 
 
 class RunEligibilityTests(unittest.TestCase):
+    def test_effective_live_input_route_is_checked(self):
+        report = {
+            "route": "live-input",
+            "godot": "4.7.2.stable.official",
+            "backend": "gl_compatibility",
+            "window": "1280x720",
+            "camera": {"viewport": [1280, 720], "autozoom": False, "mode": "pilot"},
+            "render_settings": {"msaa_3d": 2},
+        }
+        self.assertEqual(profile_session.validate_report_contract(report), [])
+        report["route"] = "scripted-fixed"
+        self.assertIn(
+            "effective frametime route is not live-input",
+            profile_session.validate_report_contract(report),
+        )
+
     def test_nonzero_abort_rejects_even_a_valid_native_report(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             summary = reduce_fixture(Path(temp_dir), test_native_summary.sustained_report())
@@ -148,6 +167,8 @@ class ProvenanceAndOutputTests(unittest.TestCase):
             (1, 16.0, 15.0, 20.0, 19.0),
             (2, 17.0, 18.0, 21.0, 20.0),
             (3, 18.0, 15.0, 23.0, 22.0),
+            (4, 19.0, 17.0, 25.0, 23.0),
+            (5, 21.0, 20.0, 27.0, 26.0),
         ):
             pairs.append({
                 "pair": index,

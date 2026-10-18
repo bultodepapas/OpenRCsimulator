@@ -14,6 +14,7 @@ const UiDriver := preload("res://tests/ui_driver.gd")
 
 const PREFS_BASE := "user://grass_quality_lifecycle_"
 const FIXED_WING_ID := "jensen-das-ugly-stik-60"
+const DEFAULT_FIELD_PATH := "res://data/fields/default.json"
 const GRASS_GROUND_SHADER := "res://render/ground.gdshader"
 const TREE_SHADER := "res://render/treeline.gdshader"
 const IMPORTED_GRASS_SHADER := "res://scenery/imported_grass.gdshader"
@@ -35,6 +36,7 @@ var _app: Node
 var _ui: RefCounted
 var _home_node_baseline := -1
 var _post_warm_object_count := -1
+var _abort_run := false
 var _tree_reference: Dictionary = {}
 var _source_mesh_reference: Dictionary = {}
 var _quality := "default"
@@ -48,12 +50,12 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_options = _parse_options(OS.get_cmdline_user_args())
-	if not bool(_options.get("ok", false)):
+	if _options.get("ok", false) != true:
 		printerr(str(_options.get("error", "invalid arguments")))
 		quit(2)
 		return
 	_quality = str(_options.quality)
-	_capture = bool(_options.capture)
+	_capture = _options.capture == true
 	_headless = DisplayServer.get_name() == "headless"
 	if _capture and _headless:
 		printerr("--capture=on requires a native display; headless lifecycle checks cannot produce render evidence.")
@@ -84,7 +86,7 @@ func _run() -> void:
 		return
 	_app.set("user_args", PackedStringArray())
 	_app.set("preferences_path", _preferences_path)
-	_app.set("field_path", "res://data/fields/default.json")
+	_app.set("field_path", DEFAULT_FIELD_PATH)
 	_app.set("random_seed_source", func() -> int: return 610708)
 	get_root().add_child(_app)
 	await _settle(12)
@@ -94,6 +96,7 @@ func _run() -> void:
 	_home_node_baseline = _count_nodes(_app)
 	for cycle in range(int(_options.cycles)):
 		if not _assert_home("cycle %d start" % (cycle + 1)):
+			_abort_run = true
 			break
 		if cycle > 0:
 			_check("Home node count remains stable after cycle %d" % cycle,
@@ -104,19 +107,25 @@ func _run() -> void:
 			await _capture_route("home", _app.get("home_scene") as Node)
 		var home_owner := _app.get("home_scene") as Node
 		var home_field := _active_field(home_owner)
-		var home_snapshot := _inspect_field("Home", home_owner, home_field, false, "")
+		_inspect_field("Home", home_owner, home_field, false, "")
 		if home_field == null:
+			_abort_run = true
 			break
-		var old_home := _weak_scene_snapshot(home_owner, home_field, false)
+		var old_home := _weak_scene_snapshot(home_owner, home_field)
 		var home_control := _app.get("home") as Control
 		if home_control == null or home_control.get("fly_button") == null:
 			_fail("Home exposes its production Fly button")
+			_abort_run = true
 			break
 		(home_control.get("fly_button") as Button).pressed.emit()
 		var flight := _app.get("flight") as Node
 		if flight == null:
 			_fail("Home Fly button launches the fixed-wing route")
+			_abort_run = true
 			break
+		home_owner = null
+		home_field = null
+		home_control = null
 		var flight_field := _active_field(flight)
 		var flight_snapshot := _inspect_field("FixedWing", flight, flight_field, false, "")
 		_check("Home and fixed-wing fields own distinct mutable render resources",
@@ -125,6 +134,7 @@ func _run() -> void:
 		if cycle == 0:
 			await _capture_route("flight", flight)
 		_check("departing Home scene is freed after Fly", _weak_refs_expired(old_home.refs))
+		old_home = {}
 		var pause := _app.get("pause_menu") as CanvasLayer
 		if pause == null:
 			_app.call("open_pause")
@@ -132,37 +142,53 @@ func _run() -> void:
 			pause = _app.get("pause_menu") as CanvasLayer
 		if pause == null or pause.get("end_button") == null:
 			_fail("fixed-wing pause menu exposes End flight")
+			_abort_run = true
 			break
 		(pause.get("end_button") as Button).pressed.emit()
+		pause = null
+		flight = null
+		flight_field = null
 		await _settle(12)
-		_check("End flight returns through AppRoot to Home", _assert_home("after fixed-wing"))
+		var home_after_flight_ok := _assert_home("after fixed-wing")
+		_check("End flight returns through AppRoot to Home", home_after_flight_ok)
+		if not home_after_flight_ok:
+			_abort_run = true
 		_check("fixed-wing scene resources release on return Home", _weak_refs_expired(flight_snapshot.refs))
-		_check("fixed-wing field scene releases on return Home", _weak_refs_expired(old_home.field_refs))
-		if cycle == 0:
-			await _capture_route("home-after-flight", _app.get("home_scene") as Node)
+		flight_snapshot = {}
+		if _abort_run:
+			break
 		for vehicle_id in GroundCatalog.IDS:
 			if not _assert_home("before RC %s" % vehicle_id):
+				_abort_run = true
 				break
 			home_owner = _app.get("home_scene") as Node
 			home_field = _active_field(home_owner)
-			home_snapshot = _inspect_field("Home", home_owner, home_field, false, "")
-			old_home = _weak_scene_snapshot(home_owner, home_field, false)
+			_inspect_field("Home", home_owner, home_field, false, "")
+			old_home = _weak_scene_snapshot(home_owner, home_field)
 			home_control = _app.get("home") as Control
-			if home_control == null:
+			if home_control == null or home_field == null:
 				_fail("Home control exists before opening RC vehicle")
+				_abort_run = true
 				break
 			home_control.set("ground_vehicle_id", str(vehicle_id))
 			var choice := home_control.get("ground_vehicle_choice") as OptionButton
 			var garage_button := home_control.get("ground_vehicle_button") as Button
 			if choice == null or garage_button == null:
 				_fail("Home garage exposes vehicle selector and launch button")
+				_abort_run = true
 				break
 			choice.select(GroundCatalog.IDS.find(str(vehicle_id)))
 			garage_button.pressed.emit()
 			var rc_scene := _app.get("ground_vehicle") as Node3D
 			if rc_scene == null:
 				_fail("Home garage launches actual RC vehicle %s" % vehicle_id)
+				_abort_run = true
 				break
+			home_owner = null
+			home_field = null
+			home_control = null
+			choice = null
+			garage_button = null
 			_check("AppRoot selected requested RC vehicle %s" % vehicle_id,
 				str(rc_scene.get("vehicle_id")) == str(vehicle_id))
 			var rc_field := _active_field(rc_scene)
@@ -174,29 +200,37 @@ func _run() -> void:
 				await _capture_route("rc-" + str(vehicle_id), rc_scene)
 			_check("departing Home scene is freed after RC launch %s" % vehicle_id,
 				_weak_refs_expired(old_home.refs))
-			_check("RC vehicle %s returns through its real Home action" % vehicle_id,
-				rc_scene.has_method("handle_action"))
-			if rc_scene.has_method("handle_action"):
-				rc_scene.call("handle_action", "home")
+			old_home = {}
+			var has_home_action := rc_scene.has_method("handle_action")
+			_check("RC vehicle %s returns through its real Home action" % vehicle_id, has_home_action)
+			if not has_home_action:
+				_abort_run = true
+				break
+			rc_scene.call("handle_action", "home")
+			rc_field = null
+			rc_scene = null
 			await _settle(12)
-			_check("RC %s Home action returns through AppRoot" % vehicle_id,
-				_assert_home("after RC " + str(vehicle_id)))
+			var rc_return_ok := _assert_home("after RC " + str(vehicle_id))
+			_check("RC %s Home action returns through AppRoot" % vehicle_id, rc_return_ok)
+			if not rc_return_ok:
+				_abort_run = true
 			_check("RC scene resources release after %s returns Home" % vehicle_id,
 				_weak_refs_expired(rc_snapshot.refs))
-			_check("RC field scene releases after %s returns Home" % vehicle_id,
-				_weak_refs_expired(old_home.field_refs))
-			if cycle == 0:
-				await _capture_route("home-after-" + str(vehicle_id), _app.get("home_scene") as Node)
-		_check("Home node count remains at baseline after RC %s" % vehicle_id,
-			_count_nodes(_app) == _home_node_baseline,
-			"expected %d, got %d" % [_home_node_baseline, _count_nodes(_app)])
+			rc_snapshot = {}
+			_check("Home node count remains at baseline after RC %s" % vehicle_id,
+				_count_nodes(_app) == _home_node_baseline,
+				"expected %d, got %d" % [_home_node_baseline, _count_nodes(_app)])
+			if _abort_run:
+				break
+		if _abort_run:
+			break
 		if cycle == 0:
 			_post_warm_object_count = Performance.get_monitor(Performance.OBJECT_COUNT)
 		else:
 			var current_objects := Performance.get_monitor(Performance.OBJECT_COUNT)
 			_check("live Object count does not grow after warm cycle %d" % cycle,
-				current_objects <= _post_warm_object_count + 16,
-				"warm=%d current=%d (16-object allowance for engine/UI transients)" % [_post_warm_object_count, current_objects])
+				current_objects <= _post_warm_object_count,
+				"warm=%d current=%d" % [_post_warm_object_count, current_objects])
 		_observations.append({
 			"cycle": cycle + 1,
 			"active_route": "home",
@@ -293,7 +327,7 @@ func _assert_home(label: String) -> bool:
 	if field == null:
 		_check(label + ": Home contains its Field", false)
 		return false
-	_check(label + ": Home field remains in the default field route", str(field.get_meta("field_id", "default")) == "default")
+	_check(label + ": Home uses the production default field path", str(_app.get("field_path")) == DEFAULT_FIELD_PATH)
 	_check(label + ": Home active camera belongs to HomeScene", _active_camera_owned_by(home_scene))
 	_check(label + ": Home WorldEnvironment belongs to HomeScene", _main_view_environment_owned_by(home_scene))
 	return true
@@ -306,20 +340,26 @@ func _active_field(owner: Node) -> Node3D:
 
 
 func _inspect_field(route: String, owner: Node, field: Node3D, is_rc: bool, vehicle_id: String) -> Dictionary:
-	if field == null:
-		_check(route + " field exists", false)
-		return {"ids": {}, "refs": [], "field_refs": []}
+	if owner == null or field == null:
+		_check(route + " active scene and Field exist", false)
+		return {"ids": {}, "refs": []}
 	_check(route + " field is owned by its active scene", field.get_parent() == owner)
-	_check(route + " field has grass and enabled scenery", field.get_node_or_null("NearGrass") != null
-		and field.get_node_or_null("Scenery") != null)
+	var near_node := field.get_node_or_null("NearGrass")
+	var scenery_node := field.get_node_or_null("Scenery")
+	_check(route + " field has grass and enabled scenery", near_node != null and scenery_node != null)
+	if near_node == null or scenery_node == null:
+		return {"ids": {}, "refs": [weakref(owner), weakref(field)]}
 	var near := field.get_node_or_null("NearGrass") as Node3D
+	if near == null:
+		_check(route + " NearGrass is a Node3D", false)
+		return {"ids": {}, "refs": [weakref(owner), weakref(field)]}
 	var source_meshes := _source_grass_meshes(route, near)
 	_check(route + " near grass uses the high fixed subset", str(near.get_meta("quality", "")) == "high")
 	_check(route + " near grass contains retained clumps", int(near.get_meta("clumps", 0)) > 0)
 	_check(route + " near grass stays within source triangle budget",
 		int(near.get_meta("source_triangles", 0)) <= 50000)
 	_check(route + " enhanced wind mode matches the selected quality",
-		bool(near.get_meta("grass_wind", false)) == (_quality == "enhanced"))
+		near.get_meta("grass_wind", false) == (_quality == "enhanced"))
 	if _quality == "enhanced":
 		_check(route + " grass-only adapter uses its qualified shader", _near_grass_uses_shader(near, IMPORTED_GRASS_SHADER))
 	else:
@@ -327,9 +367,9 @@ func _inspect_field(route: String, owner: Node, field: Node3D, is_rc: bool, vehi
 	var ground_materials := _ground_materials(field)
 	_check(route + " field exposes ground shader materials", not ground_materials.is_empty())
 	for material: ShaderMaterial in ground_materials:
-		_check(route + " grass photo binder matches quality", bool(material.get_shader_parameter("grass_photo_enabled")) == (_quality == "enhanced"))
+		_check(route + " grass photo binder matches quality", material.get_shader_parameter("grass_photo_enabled") == (_quality == "enhanced"))
 		_check(route + " ground field keeps RC track switch disabled",
-			not bool(material.get_shader_parameter("rc_track_surface")))
+			material.get_shader_parameter("rc_track_surface") == false)
 	if is_rc:
 		_check(route + " RC dirt binder is enabled on its field materials",
 			not ground_materials.is_empty() and _all_ground_params(ground_materials, "rc_surface_enabled", true))
@@ -339,7 +379,7 @@ func _inspect_field(route: String, owner: Node, field: Node3D, is_rc: bool, vehi
 		var track_material := track.material_override as ShaderMaterial if track != null else null
 		_check(route + " actual DirtLoopSurface has its RC material", track_material != null
 			and str(track_material.shader.resource_path) == GRASS_GROUND_SHADER
-			and bool(track_material.get_shader_parameter("rc_track_surface")))
+			and track_material.get_shader_parameter("rc_track_surface") == true)
 		_check(route + " dirt track material is private to its intended surface",
 			track_material != null and not ground_materials.has(track_material)
 			and _only_surface_has_track_flag(owner, track))
@@ -366,7 +406,7 @@ func _inspect_field(route: String, owner: Node, field: Node3D, is_rc: bool, vehi
 	else:
 		_check(route + " deterministic tree source and instance buffers match prior field builds",
 			tree_signature == _tree_reference)
-	var resources := _owned_field_resources(owner, field, is_rc)
+	var resources := _owned_field_resources(owner, field)
 	_observations.append({
 		"route": route,
 		"vehicle_id": vehicle_id,
@@ -375,13 +415,15 @@ func _inspect_field(route: String, owner: Node, field: Node3D, is_rc: bool, vehi
 		"grass_clumps": int(near.get_meta("clumps", 0)),
 		"grass_batches": int(near.get_meta("batches", near.get_child_count())),
 		"grass_source_triangles": int(near.get_meta("source_triangles", 0)),
-		"grass_wind": bool(near.get_meta("grass_wind", false)),
+		"grass_wind": near.get_meta("grass_wind", false),
 		"grass_source_meshes": source_meshes,
 		"tree_signature": tree_signature,
 		"owned_resource_ids": resources.ids,
 		"instance_count": Performance.get_monitor(Performance.OBJECT_COUNT),
 	})
-	return {"ids": resources.ids, "refs": resources.refs, "field_refs": [weakref(field)]}
+	var route_refs: Array = [weakref(owner), weakref(field)]
+	route_refs.append_array(resources.refs)
+	return {"ids": resources.ids, "refs": route_refs}
 
 
 func _source_grass_meshes(route: String, near: Node3D) -> Dictionary:
@@ -488,7 +530,7 @@ func _all_ground_params(materials: Array[ShaderMaterial], parameter: String, exp
 	if materials.is_empty():
 		return false
 	for material: ShaderMaterial in materials:
-		if bool(material.get_shader_parameter(parameter)) != expected:
+		if material.get_shader_parameter(parameter) != expected:
 			return false
 	return true
 
@@ -514,7 +556,7 @@ func _ground_params_null(materials: Array[ShaderMaterial], parameter: String) ->
 func _only_surface_has_track_flag(owner: Node, expected_surface: MeshInstance3D) -> bool:
 	var count := 0
 	for material: ShaderMaterial in _ground_materials(owner):
-		if bool(material.get_shader_parameter("rc_track_surface")):
+		if material.get_shader_parameter("rc_track_surface") == true:
 			count += 1
 			if expected_surface == null or material != expected_surface.material_override:
 				return false
@@ -539,7 +581,7 @@ func _near_grass_uses_shader(near: Node3D, shader_path: String) -> bool:
 	return found
 
 
-func _owned_field_resources(owner: Node, field: Node3D, is_rc: bool) -> Dictionary:
+func _owned_field_resources(owner: Node, field: Node3D) -> Dictionary:
 	var ids: Dictionary = {}
 	var refs: Array = []
 	var seen: Dictionary = {}
@@ -589,9 +631,11 @@ func _add_owned_resource(resource: Resource, ids: Dictionary, refs: Array, seen:
 	refs.append(weakref(resource))
 
 
-func _weak_scene_snapshot(owner: Node, field: Node3D, is_rc: bool) -> Dictionary:
-	var resources := _owned_field_resources(owner, field, is_rc)
-	return {"ids": resources.ids, "refs": resources.refs, "field_refs": [weakref(field)], "scene_refs": [weakref(owner)]}
+func _weak_scene_snapshot(owner: Node, field: Node3D) -> Dictionary:
+	var resources := _owned_field_resources(owner, field)
+	var refs: Array = [weakref(owner), weakref(field)]
+	refs.append_array(resources.refs)
+	return {"ids": resources.ids, "refs": refs}
 
 
 func _not_shared_ids(previous: Dictionary, current: Dictionary) -> bool:
@@ -669,7 +713,7 @@ func _mesh_hash(mesh: Mesh) -> String:
 
 
 func _hash_value(value: Variant) -> String:
-	return _sha256_bytes(var_to_bytes(value, false))
+	return _sha256_bytes(var_to_bytes(value))
 
 
 func _sha256_bytes(bytes: PackedByteArray) -> String:
