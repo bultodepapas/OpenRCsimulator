@@ -73,6 +73,7 @@ func start(destination := "") -> Error:
 		collision_world = _session.collision_world(), lake = _session.lake_context(),
 		weather = _session.weather_configuration(), shaft_integrator = _session.shaft_integrator(),
 		soft_hull_contacts = _session.soft_hull_contacts,
+		rates = "normal" if _session.rates_active() else "full",
 		input_boundary = "post conditioning/rates/trim, before failure and servo; drives interval ending at tick",
 		loads_boundary = "RK4 k1, interval start; initial row uses initial loads",
 		layout = {state = 13, loads = 6, inputs = _session.sim.inputs.size(), aux = _session.sim.aux.size(),
@@ -90,6 +91,7 @@ func start(destination := "") -> Error:
 	_session.sim.faulted.connect(_faulted)
 	_session.sim.paused_changed.connect(_paused)
 	_session.resetting.connect(_resetting)
+	_session.rate_profile_changed.connect(_rates)
 	# Persist the initial snapshot immediately; later blocks flush at most once per simulated second.
 	_flush_rows()
 	note = "Flight log REC: " + ProjectSettings.globalize_path(path)
@@ -130,7 +132,8 @@ func stop(reason := "stopped") -> Error:
 
 func _disconnect() -> void:
 	for pair in [[_session.sim.before_step, _before_step], [_session.sim.stepped, _stepped],
-		[_session.sim.faulted, _faulted], [_session.sim.paused_changed, _paused], [_session.resetting, _resetting]]:
+		[_session.sim.faulted, _faulted], [_session.sim.paused_changed, _paused], [_session.resetting, _resetting],
+		[_session.rate_profile_changed, _rates]]:
 		if pair[0].is_connected(pair[1]):
 			pair[0].disconnect(pair[1])
 
@@ -205,6 +208,12 @@ func _paused(value: bool) -> void:
 	if recording:
 		_event("pause" if value else "resume", _session.pause_reason.left(160))
 		_flush_rows()
+
+
+## D6e-R1: the rate switch takes effect at the next tick's input sample, which the recorded inputs already carry.
+func _rates(active: bool) -> void:
+	if recording:
+		_event("rates", "normal" if active else "full")
 
 
 func _faulted(reason: String) -> void:

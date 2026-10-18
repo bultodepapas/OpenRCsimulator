@@ -104,7 +104,7 @@ func _run() -> void:
 	# Helicopter flight commands were added after the old 29-row fixture.
 	var expected := [
 		[],
-		["restart_flight", "trim_left", "trim_right", "trim_up", "trim_down", "overlay_preset", "throttle_cut", "lights_cycle",
+		["restart_flight", "trim_left", "trim_right", "trim_up", "trim_down", "overlay_preset", "throttle_cut", "lights_cycle", "rates_toggle",
 			"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer"],
 		["camera_cycle", "view_reset", "camera_previous", "camera_pilot", "camera_chase", "camera_orbit",
 			"camera_zoom_in", "camera_zoom_out", "camera_auto_zoom"],

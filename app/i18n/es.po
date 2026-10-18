@@ -856,6 +856,15 @@ msgstr "Recorridos: normales"
 msgid "Rates: full"
 msgstr "Recorridos: máximos"
 
+msgid "Rates: normal / full"
+msgstr "Recorridos: normales / máximos"
+
+msgid "The radio sets its own rates."
+msgstr "La radio aplica sus propios recorridos."
+
+msgid "This aircraft has no rate profile."
+msgstr "Este avión no tiene perfil de recorridos."
+
 msgid "Flight overlays"
 msgstr "Indicadores de vuelo"
 
