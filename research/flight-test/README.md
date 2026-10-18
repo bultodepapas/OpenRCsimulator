@@ -44,6 +44,8 @@ python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tm
 - `<out>/run.json`: card version, git commit and dirty paths, Godot version, `--app`, and each aircraft's data-file SHA-256, exit status and valid count.
 - `<out>/summary.md`: the comparison table across aircraft.
 
+`python research/flight-test/spin_state.py <out> [aircraft ...]` reads the spin traces offline. It prints each aircraft's state averaged over the card's steady window (4.0–6.25 s): α, |β|, airspeed, body rates, Ωb/2V, pitch-rate swing and sink. Beside each aircraft it prints the measured NASA FASER (Ultra Stick 120) spin from the same entry, with its airspeed scaled to that aircraft's wing loading. That row compares another airframe; it is not an acceptance band ([sources](../../docs/research/flight-dynamics/rc-aero-data-sources.md)).
+
 It exits 1 when a run fails or Godot reports a script error. A test that is not valid is a result, not a run failure. Runs are deterministic: two runs of the full battery compare with no change.
 
 You can also run one aircraft directly: `<godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- --aircraft=<id> --out=<dir> [--only=a,b]`, or list the aircraft with `-- --list`.
