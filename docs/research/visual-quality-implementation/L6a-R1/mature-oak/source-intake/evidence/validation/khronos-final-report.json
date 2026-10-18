@@ -1,0 +1,110 @@
+{
+  "format": "openrc-gltf-source-validation v1",
+  "result": "passed",
+  "generatedAt": "2026-10-18T12:54:07.538Z",
+  "tools": {
+    "validator": "Khronos glTF Validator",
+    "package": "gltf-validator",
+    "pinnedPackageVersion": "2.0.0-dev.3.10",
+    "validatorVersion": "2.0.0-dev.3.10",
+    "node": "v24.12.0"
+  },
+  "scope": "Read-only validation of original JSON glTF files plus locally referenced external buffers/images. No source file was modified.",
+  "disposition": {
+    "errorGate": "Every input must report zero validator errors and load every external resource.",
+    "warnings": "All warnings are retained with code, message, pointer, and review disposition; none are suppressed.",
+    "limitations": "Khronos format validation does not establish Godot import success, visual quality, runtime suitability, or performance."
+  },
+  "summary": {
+    "assets": 1,
+    "errors": 0,
+    "warnings": 0,
+    "unresolvedResources": 0,
+    "passed": true
+  },
+  "assets": [
+    {
+      "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+      "bytes": 1970,
+      "sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7",
+      "dependencies": [
+        {
+          "uri": "oak_lod0.bin",
+          "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin",
+          "bytes": 341388,
+          "sha256": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c",
+          "roles": [
+            "buffer"
+          ],
+          "loaded": true
+        },
+        {
+          "uri": "Quercus_A_1024.png",
+          "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png",
+          "bytes": 1623204,
+          "sha256": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015",
+          "roles": [
+            "image"
+          ],
+          "loaded": true
+        }
+      ],
+      "validation": {
+        "status": "validated",
+        "validatorVersion": "2.0.0-dev.3.10",
+        "issues": {
+          "numErrors": 0,
+          "numWarnings": 0,
+          "numInfos": 0,
+          "numHints": 0,
+          "messageCount": 0,
+          "countsByCode": {},
+          "messages": []
+        },
+        "ok": true
+      },
+      "resourceLoadErrors": []
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin",
+      "bytes": 341388,
+      "sha256": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c",
+      "roles": [
+        "external resource",
+        "buffer"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+          "uri": "oak_lod0.bin"
+        }
+      ]
+    },
+    {
+      "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+      "bytes": 1970,
+      "sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7",
+      "roles": [
+        "gltf"
+      ],
+      "references": []
+    },
+    {
+      "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png",
+      "bytes": 1623204,
+      "sha256": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015",
+      "roles": [
+        "external resource",
+        "image"
+      ],
+      "references": [
+        {
+          "document": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+          "uri": "Quercus_A_1024.png"
+        }
+      ]
+    }
+  ]
+}

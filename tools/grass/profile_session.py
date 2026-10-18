@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 from datetime import datetime, timezone
 import hashlib
 import json
@@ -37,10 +38,12 @@ SAMPLE_SECONDS = 60
 MAX_FPS = 60
 MINIMUM_PAIRS = 5
 DEFAULT_TIMEOUT_SECONDS = 180
+PROCESS_INVENTORY_TIMEOUT_SECONDS = 10
 
 APP_RUNTIME_SUFFIXES = {
     ".cfg", ".godot", ".gd", ".gdshader", ".gdshaderinc", ".gdextension",
-    ".gltf", ".glb", ".obj", ".mtl", ".import", ".json", ".mp3", ".ogg",
+    ".gltf", ".glb", ".bin", ".obj", ".mtl", ".import", ".json", ".mp3", ".ogg",
+    ".dll", ".so", ".dylib",
     ".po", ".png", ".res", ".svg", ".tscn", ".tres", ".scn", ".ttf",
     ".otf", ".wav", ".webp", ".jpg", ".jpeg",
 }
@@ -56,6 +59,10 @@ IDENTITY_KEYS = (
 
 class CampaignStop(RuntimeError):
     """A measurement cannot safely continue or compare with the other variant."""
+
+
+class ProcessInventoryError(RuntimeError):
+    """The host process list could not be checked within the bounded preflight."""
 
 
 def utc_now() -> str:
@@ -164,6 +171,72 @@ def build_command(godot: Path, app: Path, report_path: Path) -> list[str]:
         "--scenery=on",
         "--scenery_quality=high",
     ]
+
+
+def godot_process_inventory() -> dict[str, Any]:
+    """List Godot process images once, with a bounded OS-native command."""
+    system = platform.system()
+    if system == "Windows":
+        command = ["tasklist", "/FO", "CSV", "/NH"]
+        scope = "tasklist CSV image names containing 'godot'"
+        run_options: dict[str, Any] = {
+            "capture_output": True,
+            "text": True,
+            "timeout": PROCESS_INVENTORY_TIMEOUT_SECONDS,
+            "check": False,
+            "creationflags": getattr(subprocess, "CREATE_NO_WINDOW", 0x08000000),
+        }
+    elif system in {"Linux", "Darwin", "FreeBSD", "OpenBSD", "NetBSD"}:
+        command = ["ps", "-A", "-o", "pid=,comm="]
+        scope = "ps process command names containing 'godot'"
+        run_options = {
+            "capture_output": True,
+            "text": True,
+            "timeout": PROCESS_INVENTORY_TIMEOUT_SECONDS,
+            "check": False,
+        }
+    else:
+        raise ProcessInventoryError(f"process inventory unavailable for operating system {system!r}")
+
+    try:
+        result = subprocess.run(command, **run_options)
+    except (OSError, UnicodeError, subprocess.SubprocessError) as error:
+        raise ProcessInventoryError(f"cannot run bounded process inventory {command!r}: {error}") from error
+    if result.returncode != 0:
+        detail = (result.stderr or result.stdout or "").strip()
+        raise ProcessInventoryError(
+            f"process inventory command {command!r} exited {result.returncode}: {detail}"
+        )
+
+    godot_processes: list[dict[str, str]] = []
+    if system == "Windows":
+        try:
+            rows = csv.reader(result.stdout.splitlines())
+            for row in rows:
+                if len(row) < 2:
+                    continue
+                image = row[0].strip()
+                if "godot" in image.replace("\\", "/").rsplit("/", 1)[-1].casefold():
+                    godot_processes.append({"image": image, "pid": row[1].strip()})
+        except csv.Error as error:
+            raise ProcessInventoryError(f"tasklist returned invalid CSV: {error}") from error
+    else:
+        for line in result.stdout.splitlines():
+            fields = line.strip().split(None, 1)
+            if len(fields) < 2:
+                continue
+            pid, image = fields[0], fields[1].strip()
+            if "godot" in image.replace("\\", "/").rsplit("/", 1)[-1].casefold():
+                godot_processes.append({"image": image, "pid": pid})
+
+    return {
+        "status": "available",
+        "platform": system,
+        "scope": scope,
+        "command": command,
+        "timeout_s": PROCESS_INVENTORY_TIMEOUT_SECONDS,
+        "godot_processes": godot_processes,
+    }
 
 
 def validate_report_contract(report: dict[str, Any]) -> list[str]:
@@ -434,6 +507,7 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
             "other_variables": "inherited unchanged from the invoking process",
         },
         "runs": [],
+        "process_preflights": [],
         "pairs": [],
         "comparison": None,
         "stop_reason": None,
@@ -457,7 +531,61 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
                 log_path = report_path.with_suffix(".log")
                 attempt = {"pair": pair_index, "variant": variant, "report": str(report_path), "log": str(log_path)}
                 campaign["current_attempt"] = attempt
+                try:
+                    preflight = godot_process_inventory()
+                except ProcessInventoryError as error:
+                    preflight = {
+                        "status": "unavailable",
+                        "platform": platform.system(),
+                        "scope": "unavailable",
+                        "command": None,
+                        "timeout_s": PROCESS_INVENTORY_TIMEOUT_SECONDS,
+                        "godot_processes": [],
+                        "error": str(error),
+                    }
+                preflight_record = {
+                    "pair": pair_index,
+                    "variant": variant,
+                    "checked_utc": utc_now(),
+                    **preflight,
+                }
+                campaign["process_preflights"].append(preflight_record)
+                attempt["process_preflight"] = preflight_record
                 _write_campaign(campaign_path, campaign)
+
+                process_list = preflight.get("godot_processes", [])
+                if preflight.get("status") != "available":
+                    reason = (
+                        f"Godot process preflight unavailable before {attempt['variant']} in pair {pair_index}: "
+                        f"{preflight.get('error', 'inventory status unavailable')}; no launch was attempted "
+                        "and the current pair is not qualified"
+                    )
+                elif process_list:
+                    process_labels = ", ".join(
+                        f"PID {item.get('pid', '?')} ({item.get('image', 'Godot')})"
+                        for item in process_list
+                    )
+                    reason = (
+                        f"Godot process preflight found another process before {attempt['variant']} "
+                        f"in pair {pair_index}: {process_labels}; no launch was attempted and the current pair "
+                        "is not qualified"
+                    )
+                else:
+                    reason = ""
+                if reason:
+                    pair_record["status"] = "stopped_preflight"
+                    pair_record["qualified"] = False
+                    pair_record["stop_reason"] = reason
+                    campaign["status"] = "stopped"
+                    campaign["stop_reason"] = reason
+                    campaign["comparison"] = paired_comparison(
+                        [pair for pair in campaign["pairs"] if pair.get("status") == "complete"]
+                    )
+                    campaign.pop("current_attempt", None)
+                    _write_campaign(campaign_path, campaign)
+                    stop_reason = reason
+                    raise CampaignStop(stop_reason)
+
                 print(
                     f"Pair {pair_index}/{args.pairs}, {variant}: start the live flight in the visible Godot window; "
                     "do not use scripted input or change focus/pause behavior.",

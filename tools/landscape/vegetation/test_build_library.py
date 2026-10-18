@@ -117,16 +117,21 @@ class BuildLibraryTests(unittest.TestCase):
             ZipFile(library.ARCHIVE) as standard,
             ZipFile(library.CROPS_ARCHIVE) as crops,
             ZipFile(library.REED_ARCHIVE) as reeds,
+            library.open_oak_conversion_archive() as oak,
         ):
-            catalog, library_files = library.catalog_for(standard, crops, reeds)
+            catalog, library_files = library.catalog_for(standard, crops, reeds, oak)
 
             installed_catalog = json.loads(library.RUNTIME_CATALOG.read_text(encoding="utf-8"))
-            self.assertEqual(
-                [asset["id"] for asset in catalog["assets"]],
-                [asset["id"] for asset in installed_catalog["assets"]],
-            )
-            self.assertEqual(catalog["counts"]["total_assets"], 19)
-            self.assertEqual(catalog["counts"]["trees"], 7)
+            candidate_ids = {asset["id"] for asset in catalog["assets"]}
+            installed_ids = {asset["id"] for asset in installed_catalog["assets"]}
+            expected_installed_ids = candidate_ids - {library.OAK_ASSET_ID}
+            if library.OAK_ASSET_ID in installed_ids:
+                expected_installed_ids.add(library.OAK_ASSET_ID)
+            self.assertEqual(installed_ids, expected_installed_ids)
+            self.assertIn(library.OAK_ASSET_ID, candidate_ids)
+            self.assertEqual(catalog["counts"]["total_assets"], 20)
+            self.assertEqual(catalog["counts"]["trees"], 8)
+            self.assertEqual(len(catalog["sources"]), 4)
 
             candidates = {
                 asset["id"]: asset
@@ -153,12 +158,16 @@ class BuildLibraryTests(unittest.TestCase):
                         else:
                             self.assertEqual(library_files[output_name], source_bytes)
 
-    def test_all_tree_buffers_clamp_only_reviewed_color_components(self) -> None:
+    def test_all_quaternius_tree_buffers_clamp_only_reviewed_color_components(self) -> None:
         with ZipFile(library.ARCHIVE) as standard, ZipFile(library.CROPS_ARCHIVE) as crops, ZipFile(
             library.REED_ARCHIVE
-        ) as reeds:
-            catalog, library_files = library.catalog_for(standard, crops, reeds)
-            trees = [asset for asset in catalog["assets"] if asset["role"] == "tree"]
+        ) as reeds, library.open_oak_conversion_archive() as oak:
+            catalog, library_files = library.catalog_for(standard, crops, reeds, oak)
+            trees = [
+                asset
+                for asset in catalog["assets"]
+                if asset["role"] == "tree" and asset["source_id"] == "quaternius_standard"
+            ]
             self.assertEqual(len(trees), 7)
 
             for asset in trees:
@@ -247,6 +256,133 @@ class BuildLibraryTests(unittest.TestCase):
                     )
                     self.assertEqual(file_record["sha256"], derivation["runtime_buffer_sha256"])
 
+    def test_oak_lod0_catalog_contract_and_source_provenance(self) -> None:
+        with (
+            ZipFile(library.ARCHIVE) as standard,
+            ZipFile(library.CROPS_ARCHIVE) as crops,
+            ZipFile(library.REED_ARCHIVE) as reeds,
+            library.open_oak_conversion_archive() as oak_archive,
+        ):
+            catalog, library_files = library.catalog_for(
+                standard,
+                crops,
+                reeds,
+                oak_archive,
+            )
+
+        self.assertEqual(catalog["counts"]["total_assets"], 20)
+        self.assertEqual(catalog["counts"]["trees"], 8)
+        self.assertEqual(len(catalog["sources"]), 4)
+        oak = next(asset for asset in catalog["assets"] if asset["id"] == library.OAK_ASSET_ID)
+        self.assertEqual(oak["source_id"], library.OAK_SOURCE_ID)
+        self.assertEqual(oak["source_triangles"], 5_303)
+        self.assertEqual(oak["source_surfaces"], 1)
+        self.assertEqual(oak["source_materials"], 1)
+        self.assertEqual(oak["source_material_names"], ["M_Quercus"])
+        self.assertEqual(oak["source_lod"], "LOD0 only; supplier LOD1 and LOD2 are excluded")
+        self.assertTrue(oak["lod"]["source_supplied"])
+        self.assertEqual(oak["lod"]["imported_supplied_levels"], ["LOD0"])
+        self.assertEqual(oak["lod"]["alternate_source_lods_included"], [])
+        self.assertTrue(oak["lod"]["godot_import_generate"])
+        material_policy = catalog["import"]["shared_material_policy"]
+        self.assertIn("oak legacy M_Quercus material", material_policy)
+        self.assertIn("packed atlas", material_policy)
+        self.assertIn("Principled BSDF base color", material_policy)
+        self.assertIn("roughness 1.0", material_policy)
+        self.assertIn("BLEND alpha", material_policy)
+        self.assertIn("metallic_specular at its native 0.5 default", material_policy)
+        self.assertIn("conversion proof", material_policy)
+        self.assertEqual(oak["source_bounds_m"]["min"], [-5.828022, -0.858131, -4.772417])
+        self.assertEqual(oak["source_bounds_m"]["max"], [5.003101, 10.793035, 4.425439])
+        self.assertEqual(oak["source_bounds_m"]["size"], [10.831124, 11.651166, 9.197856])
+
+        converted_gltf_path = library.OAK_CONVERSION_DIR / "oak_lod0.gltf"
+        converted_gltf = json.loads(converted_gltf_path.read_text(encoding="utf-8"))
+        self.assertEqual(len(converted_gltf["nodes"]), 1)
+        self.assertIn("mesh", converted_gltf["nodes"][0])
+        self.assertFalse(
+            {"matrix", "translation", "rotation", "scale"}
+            & set(converted_gltf["nodes"][0])
+        )
+        self.assertEqual(len(converted_gltf["meshes"]), 1)
+        self.assertEqual(len(converted_gltf["meshes"][0]["primitives"]), 1)
+        self.assertEqual(len(converted_gltf["materials"]), 1)
+        converted_material = converted_gltf["materials"][0]
+        self.assertEqual(converted_material["alphaMode"], "BLEND")
+        self.assertEqual(converted_material["pbrMetallicRoughness"]["metallicFactor"], 0.0)
+        self.assertEqual(converted_material["pbrMetallicRoughness"]["roughnessFactor"], 1.0)
+        self.assertNotIn("KHR_materials_specular", converted_material.get("extensions", {}))
+
+        output_files = {
+            item["path"]: item
+            for item in catalog["files"]
+        }
+        self.assertEqual(library_files[library.OAK_LICENSE_OUTPUT], library.OAK_LICENSE_SOURCE.read_bytes())
+        self.assertEqual(
+            hashlib.sha256(library_files[library.OAK_LICENSE_OUTPUT]).hexdigest(),
+            library.OAK_LICENSE_SHA256,
+        )
+        self.assertEqual(library.sha256_file(library.OAK_ARCHIVE), library.OAK_ARCHIVE_SHA256)
+        with ZipFile(library.OAK_ARCHIVE) as original_archive:
+            original_blend = original_archive.read(library.OAK_BLEND_ENTRY)
+        self.assertEqual(hashlib.sha256(original_blend).hexdigest(), library.OAK_BLEND_SHA256)
+        self.assertEqual(library.OAK_BLEND.read_bytes(), original_blend)
+
+        license_text = library_files[library.OAK_LICENSE_OUTPUT].decode("utf-8")
+        for required_notice in (
+            "Oak Tree by lauris71",
+            library.OAK_SOURCE_URL,
+            library.OAK_DOWNLOAD_URL,
+            library.OAK_RETRIEVED,
+            "CC BY-SA 3.0",
+            library.OAK_LICENSE_URL,
+            library.OAK_ARCHIVE_SHA256.upper(),
+            library.OAK_BLEND_SHA256.upper(),
+            "Changes made for OpenRCsimulator",
+            "same license",
+        ):
+            self.assertIn(required_notice, license_text)
+
+        for conversion_file in library.OAK_CONVERSION_FILES:
+            source_path = library.OAK_CONVERSION_DIR / conversion_file["entry"]
+            source_bytes = source_path.read_bytes()
+            runtime_path = f"models/oak_tree/{conversion_file['entry']}"
+            self.assertEqual(library_files[runtime_path], source_bytes)
+            self.assertEqual(hashlib.sha256(source_bytes).hexdigest(), conversion_file["sha256"])
+            self.assertEqual(output_files[runtime_path]["sha256"], conversion_file["sha256"])
+            self.assertEqual(
+                oak["source_dependency_sha256"][source_path.relative_to(library.ROOT).as_posix()],
+                conversion_file["sha256"],
+            )
+
+        oak_source = next(source for source in catalog["sources"] if source["id"] == library.OAK_SOURCE_ID)
+        self.assertEqual(oak_source["archive_sha256"], library.OAK_ARCHIVE_SHA256)
+        self.assertEqual(oak_source["source_blend_sha256"], library.OAK_BLEND_SHA256)
+        self.assertEqual(
+            oak_source["conversion_proof_sha256"],
+            library.OAK_CONVERSION_PROOF_SHA256,
+        )
+        self.assertEqual(
+            oak_source["license_sha256"],
+            library.OAK_LICENSE_SHA256,
+        )
+        proof = json.loads(library.OAK_CONVERSION_PROOF.read_text(encoding="utf-8"))
+        conversion = oak_source["conversion"]
+        self.assertEqual(conversion["source_parts_joined"], 36)
+        self.assertEqual(conversion["source_triangles"], 5_303)
+        self.assertEqual(conversion["baked_triangles"], 5_303)
+        self.assertEqual(conversion["max_source_to_baked_loop_error"]["world_position_m"], 0.0)
+        self.assertEqual(conversion["max_source_to_baked_loop_error"]["uv_unitless"], 0.0)
+        self.assertAlmostEqual(
+            conversion["max_source_to_baked_loop_error"]["normal_unit_vector"],
+            0.00038462484739224553,
+        )
+        self.assertTrue(proof["conversion"]["polygons_preserved"])
+        self.assertEqual(proof["conversion"]["baked_polygon_count"], 2_791)
+        self.assertEqual(proof["material_mapping"]["glTF_roughness_factor"], 1.0)
+        self.assertEqual(proof["material_mapping"]["alpha_mode"], "BLEND")
+        self.assertIn("Godot 4.7 ignores it", proof["material_mapping"]["specular_note"])
+
     def test_tree_color_derivation_refuses_overshoot_beyond_reviewed_limit(self) -> None:
         with ZipFile(library.ARCHIVE) as standard:
             source_name = "glTF/Pine_1.gltf"
@@ -284,11 +420,24 @@ class BuildLibraryTests(unittest.TestCase):
             production_before = file_snapshot(library.RUNTIME)
             source_evidence_before = {
                 path: path.read_bytes()
-                for path in (library.SOURCE_LICENSE, *library.SOURCE_NOTICES.keys())
+                for path in (
+                    library.SOURCE_LICENSE,
+                    *library.SOURCE_NOTICES.keys(),
+                    library.OAK_LICENSE_SOURCE,
+                )
             }
             source_archive_hashes_before = {
                 path: hashlib.sha256(path.read_bytes()).hexdigest()
-                for path in (library.ARCHIVE, library.CROPS_ARCHIVE, library.REED_ARCHIVE)
+                for path in (
+                    library.ARCHIVE,
+                    library.CROPS_ARCHIVE,
+                    library.REED_ARCHIVE,
+                    library.OAK_ARCHIVE,
+                    library.OAK_BLEND,
+                    library.OAK_LICENSE_SOURCE,
+                    library.OAK_CONVERSION_PROOF,
+                    *(library.OAK_CONVERSION_DIR / item["entry"] for item in library.OAK_CONVERSION_FILES),
+                )
             }
 
             generated = subprocess.run(
@@ -300,8 +449,8 @@ class BuildLibraryTests(unittest.TestCase):
             )
             self.assertEqual(generated.returncode, 0, generated.stderr)
             catalog = json.loads((candidate_root / "catalog.json").read_text(encoding="utf-8"))
-            self.assertEqual(catalog["counts"]["total_assets"], 19)
-            self.assertEqual(catalog["counts"]["trees"], 7)
+            self.assertEqual(catalog["counts"]["total_assets"], 20)
+            self.assertEqual(catalog["counts"]["trees"], 8)
             first_snapshot = file_snapshot(candidate_root)
 
             checked = subprocess.run(

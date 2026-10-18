@@ -1,0 +1,138 @@
+{
+	"asset": {
+		"generator": "Khronos glTF Blender I/O v5.2.40",
+		"version": "2.0"
+	},
+	"scene": 0,
+	"scenes": [
+		{
+			"name": "Scene",
+			"nodes": [
+				0
+			]
+		}
+	],
+	"nodes": [
+		{
+			"mesh": 0,
+			"name": "Quercus_A_LOD0"
+		}
+	],
+	"materials": [
+		{
+			"alphaMode": "BLEND",
+			"doubleSided": true,
+			"name": "M_Quercus",
+			"pbrMetallicRoughness": {
+				"baseColorTexture": {
+					"index": 0
+				},
+				"metallicFactor": 0.0,
+				"roughnessFactor": 1.0
+			}
+		}
+	],
+	"meshes": [
+		{
+			"name": "Quercus_A_LOD0_Mesh",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2
+					},
+					"indices": 3,
+					"material": 0
+				}
+			]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		}
+	],
+	"images": [
+		{
+			"mimeType": "image/png",
+			"name": "Quercus_A_1024",
+			"uri": "Quercus_A_1024.png"
+		}
+	],
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 9674,
+			"max": [
+				5.003101348876953,
+				10.793034553527832,
+				4.42543888092041
+			],
+			"min": [
+				-5.828022480010986,
+				-0.8581314086914062,
+				-4.772417068481445
+			],
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 9674,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 9674,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5123,
+			"count": 15909,
+			"type": "SCALAR"
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 116088,
+			"byteOffset": 0,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 116088,
+			"byteOffset": 116088,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 77392,
+			"byteOffset": 232176,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 31818,
+			"byteOffset": 309568,
+			"target": 34963
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 341388,
+			"uri": "oak_lod0.bin"
+		}
+	]
+}

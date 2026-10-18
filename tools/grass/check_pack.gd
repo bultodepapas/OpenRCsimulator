@@ -181,7 +181,9 @@ func _finish() -> void:
 		"platform_binary_executed": false,
 		"gpu_capture_or_timing": false,
 	}
-	_write_report()
+	if not _write_report():
+		quit(1)
+		return
 	print("Grass Windows-preset PCK smoke: %d checks, %d failures" % [_checks, _failures])
 	print("GRASS_PACK_REPORT=" + _report_path)
 	quit(1 if _failures > 0 else 0)
@@ -801,15 +803,20 @@ func _check(label: String, passed: bool, detail: String = "") -> void:
 		printerr("FAIL: %s %s" % [label, detail])
 
 
-func _write_report() -> void:
+func _write_report() -> bool:
 	var parent := _report_path.get_base_dir()
 	var mkdir_error := DirAccess.make_dir_recursive_absolute(parent)
 	if mkdir_error != OK and not DirAccess.dir_exists_absolute(parent):
 		printerr("Could not create grass pack evidence directory: " + parent)
-		return
+		return false
 	var file := FileAccess.open(_report_path, FileAccess.WRITE)
 	if file == null:
 		printerr("Could not write grass pack evidence: " + _report_path)
-		return
+		return false
 	file.store_string(JSON.stringify(_report, "\t") + "\n")
+	var write_error := file.get_error()
 	file.close()
+	if write_error != OK:
+		printerr("Could not finish grass pack evidence: " + _report_path)
+		return false
+	return true

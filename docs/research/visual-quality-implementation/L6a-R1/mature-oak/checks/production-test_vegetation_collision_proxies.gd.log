@@ -1,0 +1,46 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok imported vegetation proxy world builds
+ok shade-tree source spec resolves
+ok bush source spec resolves
+ok sapling source spec resolves
+ok stable shade-tree trunk and crown proxy IDs remain present
+ok stable bush proxy ID remains present
+ok sapling reuses the tree trunk/crown proxy profile with a distinct ID
+ok trunk width comes from source bounds with its wind allowance
+ok crown spans the imported upper uniform-height bounds
+ok shade-tree damage keys remain stable by source placement and part
+ok sapling stem is bounded from its imported size and wind allowance
+ok sapling crown spans its imported uniform-height bounds
+ok sapling damage keys retain the source placement group and part
+ok bush box uses imported uniform-height source bounds and wind margin
+ok same imported vegetation records keep collision identity
+ok shade-tree imported crown remains a physical soft-contact proxy
+ok mature and sapling aliases expose every retained collision source
+ok common_tree_1 collision world builds
+ok common_tree_1 has a physical crown proxy
+ok common_tree_1 crown responds as soft foliage without trunk contact
+ok common_tree_2 collision world builds
+ok common_tree_2 has a physical crown proxy
+ok common_tree_2 crown responds as soft foliage without trunk contact
+ok common_tree_3 collision world builds
+ok common_tree_3 has a physical crown proxy
+ok common_tree_3 crown responds as soft foliage without trunk contact
+ok common_tree_4 collision world builds
+ok common_tree_4 has a physical crown proxy
+ok common_tree_4 crown responds as soft foliage without trunk contact
+ok oak_tree collision world builds
+ok oak_tree has a physical crown proxy
+ok oak_tree crown responds as soft foliage without trunk contact
+ok pine_1 collision world builds
+ok pine_1 has a physical crown proxy
+ok pine_1 crown responds as soft foliage without trunk contact
+ok pine_2 collision world builds
+ok pine_2 has a physical crown proxy
+ok pine_2 crown responds as soft foliage without trunk contact
+ok pine_3 collision world builds
+ok pine_3 has a physical crown proxy
+ok pine_3 crown responds as soft foliage without trunk contact
+ok bush imported bounds remain a physical soft-contact proxy
+ok sapling imported crown remains a physical soft-contact proxy
+vegetation collision proxies: 43 checks, 0 failures

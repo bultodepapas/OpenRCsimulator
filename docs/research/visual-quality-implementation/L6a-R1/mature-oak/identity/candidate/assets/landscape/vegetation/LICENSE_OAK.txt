@@ -1,0 +1,43 @@
+Oak Tree by lauris71
+====================
+
+Source: https://opengameart.org/content/oak-tree
+Original download: https://opengameart.org/sites/default/files/quercus_A_packed_v1_0.zip
+Downloaded: 2026-10-18
+
+License selected from the licenses listed on the source page: Creative Commons
+Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0).
+License deed and legal code: https://creativecommons.org/licenses/by-sa/3.0/
+
+The source page credits lauris71 and states that the model is from the
+Khayyam/Shinya game project. This asset and its adapted derivative are provided
+under CC BY-SA 3.0. The adapted derivative must retain this attribution and
+license notice, and adaptations must be distributed under the same license.
+This use does not imply endorsement by the author.
+
+Source files retained in this folder:
+- quercus_A_packed_v1_0.zip — SHA-256:
+  496F250C29EB1F56E391E55989530028E156AE43A3D1EB9F52AB09AA1BCCBEBF
+- quercus_A_packed_v1.blend — SHA-256:
+  3B32573ACD4E8EB5B7E0A96AA363932EC785A854D6E8C71F56F29B10F5ABD37C
+
+Changes made for OpenRCsimulator: the supplied LOD0 parts were consolidated
+into one glTF mesh with their original positions baked into the mesh, then
+exported from Blender 5.2.2 LTS as glTF 2.0. The supplied polygons, 5,303
+triangles, UV coordinates and diffuse/alpha atlas were retained; no geometry
+was modeled, decimated, or replaced. The original diffuse and alpha channels
+were connected to a core glTF PBR material (metallic factor 0, scalar roughness
+factor 1, alphaMode BLEND, double-sided). Roughness 1 is a reviewed scalar
+legacy-material adaptation to remove strong leaf/trunk highlights; the source
+has no authored roughness texture, and no roughness map was added.
+
+The original legacy material has specular intensity 0.0. Core glTF metallic-
+roughness does not encode that scalar. The standard KHR_materials_specular
+extension was tested, but Godot 4.7.2 imports it as its default StandardMaterial3D
+specular value 0.5, so this Godot-facing asset omits the unsupported extension
+and no runtime workaround is used. The scalar specular mismatch is documented
+in CONVERSION-PROOF-LOD0.json.
+
+The `gltf/lod0/` folder contains the adapted LOD0 glTF, binary buffer, atlas,
+and deterministic conversion proof.
+

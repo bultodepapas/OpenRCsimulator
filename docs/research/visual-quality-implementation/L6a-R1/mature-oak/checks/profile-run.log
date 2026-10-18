@@ -1,0 +1,21 @@
+START 01-baseline
+DONE 01-baseline: wall p95=15.877 ms; GPU p95=3.447 ms
+START 01-candidate
+DONE 01-candidate: wall p95=16.147 ms; GPU p95=3.076 ms
+START 02-candidate
+DONE 02-candidate: wall p95=16.139 ms; GPU p95=3.045 ms
+START 02-baseline
+DONE 02-baseline: wall p95=15.918 ms; GPU p95=3.446 ms
+START 03-baseline
+DONE 03-baseline: wall p95=15.963 ms; GPU p95=3.458 ms
+START 03-candidate
+DONE 03-candidate: wall p95=16.164 ms; GPU p95=3.085 ms
+START 04-candidate
+DONE 04-candidate: wall p95=16.176 ms; GPU p95=3.181 ms
+START 04-baseline
+DONE 04-baseline: wall p95=15.884 ms; GPU p95=3.452 ms
+START 05-baseline
+DONE 05-baseline: wall p95=15.952 ms; GPU p95=3.457 ms
+START 05-candidate
+DONE 05-candidate: wall p95=16.229 ms; GPU p95=3.046 ms
+{"median_paired_wall_p95_delta_ms": 0.26959999999999695, "median_paired_gpu_p95_delta_ms": -0.3725999116897625}

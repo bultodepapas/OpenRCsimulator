@@ -1,0 +1,437 @@
+{
+  "format": "openrc-tree-static-profile v1",
+  "complete": true,
+  "scope": "Uncapped static Compatibility viewport; excludes aircraft simulation, UI, audio, active-flight ratio and owner acceptance.",
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "fixture_sha256": "a883b087ef4de0ba6ba9d6979d78f3b9d30809363a7a23cd08bc903ac3360078",
+  "identities": {
+    "baseline": {
+      "project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+      "data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "data/scenery/default.json": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61",
+      "scenery/scenery.gd": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7",
+      "scenery/imported_vegetation.gd": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6",
+      "scenery/imported_vegetation_wind.gdshader": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6",
+      "assets/landscape/vegetation/catalog.json": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9",
+      "assets/landscape/vegetation/models/Bark_NormalTree.png.import": "0c2fdc30ae8e06e4550bfce0ec0117549f23071d6607c73297613c42e6e13827",
+      "assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import": "93cc66c2bdfd4339dbf1331832e8dcf829c22161a0ddf853fff507e153b2d1d3",
+      "assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import": "4cca679886ba79c13dc127dae82be588309ea26acd41e4f0cf97f3c0ccf12911",
+      "assets/landscape/vegetation/models/Leaf_Pine_C.png.import": "5fd284904bca112772489f8f48f20ed102d42ea2932f7c09c0756299ccd5282b",
+      "assets/landscape/vegetation/LICENSE_OAK.txt": null,
+      "assets/landscape/vegetation/models/oak_tree/oak_lod0.gltf.import": null,
+      "assets/landscape/vegetation/models/oak_tree/Quercus_A_1024.png.import": null
+    },
+    "candidate": {
+      "project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+      "data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "data/scenery/default.json": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61",
+      "scenery/scenery.gd": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7",
+      "scenery/imported_vegetation.gd": "23c5152a7db3f28433f9a14ca7a9de4a9371f1b260921497e2144db7af440bf2",
+      "scenery/imported_vegetation_wind.gdshader": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6",
+      "assets/landscape/vegetation/catalog.json": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
+      "assets/landscape/vegetation/models/Bark_NormalTree.png.import": "ab4ecfd8e3170b9cdd1dc0ff059a933e3253615a075ef8edaee0b91dd76e37f0",
+      "assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import": "bfa6a9bcf20adc484c219abb886bcff2312a0ca16919f8a7e79409939f2abd21",
+      "assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import": "8be38fb5f5355b24ef29d7c4ba6d8aebfb3b6217247e90fb4da410c2e5f6586d",
+      "assets/landscape/vegetation/models/Leaf_Pine_C.png.import": "2dc1f64f22d49f8adfa4e8d6308577d5087fbf81a3099240e3ffffb3070b3929",
+      "assets/landscape/vegetation/LICENSE_OAK.txt": "1be8dab83f4107623eeba4d77e3d66091068e839e1a8b688ea1bf867c2b43e40",
+      "assets/landscape/vegetation/models/oak_tree/oak_lod0.gltf.import": "c5e7c79ea680a7da081b832c3a8b47f96ccdd6d1a02a68c337765e4bf4924e0e",
+      "assets/landscape/vegetation/models/oak_tree/Quercus_A_1024.png.import": "d8c5bd7c4b3c45cfd5ef97ccb10a51fdcf62f9586e94edd9a38d6883a7449a4f"
+    }
+  },
+  "arguments": {
+    "godot": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "baseline": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-mips\\baseline\\app",
+    "candidate": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-oak\\candidate\\app",
+    "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-oak\\profiles",
+    "pairs": 5,
+    "seconds": 60.0,
+    "warmup": 10.0,
+    "view": "oak_close",
+    "width": 1280,
+    "height": 720,
+    "candidate_cell": 0,
+    "candidate_wind": "on"
+  },
+  "runs": [
+    {
+      "id": "01-baseline",
+      "label": "baseline",
+      "report_sha256": "8b355db615e90992e286a9c0edf5e5f971cac7a7ded8e57b6a6347ddee4bed7c",
+      "sample_count": 8032,
+      "duration_s": 60.001093,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.2015,
+          "p95": 15.87745,
+          "p99": 17.24104999999998
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.12199997901917,
+          "p95": 1.89400005340576,
+          "p99": 2.151379995346071
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.54700005054474,
+          "p95": 3.44700002670288,
+          "p99": 4.910210013389581
+        }
+      },
+      "counters": {
+        "draws": 148,
+        "primitives": 280413,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "01-candidate",
+      "label": "candidate",
+      "report_sha256": "0b5052b7b8e35ad4bd00b29c2fc4a7d3f522384d606cccb7920d807a2343a3db",
+      "sample_count": 8040,
+      "duration_s": 60.015172,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.0235,
+          "p95": 16.147049999999997,
+          "p99": 18.22983
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.11300003528595,
+          "p95": 1.9010500192642172,
+          "p99": 2.1314399170875524
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.56450003385544,
+          "p95": 3.0760999798774726,
+          "p99": 4.554609856605527
+        }
+      },
+      "counters": {
+        "draws": 145,
+        "primitives": 279451,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "02-candidate",
+      "label": "candidate",
+      "report_sha256": "1b6dfa418fd49635afc57eb44922bc9d4fd530b7306b7e1ce26bf88ec9342d10",
+      "sample_count": 8072,
+      "duration_s": 60.001798,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.0535,
+          "p95": 16.13945,
+          "p99": 17.808059999999998
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.11699998378754,
+          "p95": 1.888450032472608,
+          "p99": 2.13499999046326
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.57400000095367,
+          "p95": 3.04489995241165,
+          "p99": 4.475580000877382
+        }
+      },
+      "counters": {
+        "draws": 145,
+        "primitives": 279451,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "02-baseline",
+      "label": "baseline",
+      "report_sha256": "bb803bd719ca6ea84a0395f37cbcfd71696a814d34bde60097997887b2b55b7b",
+      "sample_count": 8006,
+      "duration_s": 60.000111,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.2425,
+          "p95": 15.91775,
+          "p99": 17.466949999999997
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.12300002574921,
+          "p95": 1.8867499828338625,
+          "p99": 2.1470000743866
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.5440000295639,
+          "p95": 3.4457500576972975,
+          "p99": 4.804849839210507
+        }
+      },
+      "counters": {
+        "draws": 148,
+        "primitives": 280413,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "03-baseline",
+      "label": "baseline",
+      "report_sha256": "1985dcbf642d06e60e00ba5bb99ace82dfbac0cb83c87ba2b10b20cbc9458a7f",
+      "sample_count": 7995,
+      "duration_s": 60.007822,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.26,
+          "p95": 15.962599999999998,
+          "p99": 17.339539999999992
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.13300001621246,
+          "p95": 1.8872999787330613,
+          "p99": 2.154300036430358
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.51600003242493,
+          "p95": 3.45799994468689,
+          "p99": 4.877359857559197
+        }
+      },
+      "counters": {
+        "draws": 148,
+        "primitives": 280413,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "03-candidate",
+      "label": "candidate",
+      "report_sha256": "cec010a866571e5699a733f96817458d018e24291a491fcb734050d274926bf3",
+      "sample_count": 8030,
+      "duration_s": 60.002517,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.0115,
+          "p95": 16.164099999999998,
+          "p99": 18.23297
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.13999998569489,
+          "p95": 1.9140999734401685,
+          "p99": 2.1887099123001126
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.55499994754791,
+          "p95": 3.0854000329971276,
+          "p99": 4.521940040588377
+        }
+      },
+      "counters": {
+        "draws": 145,
+        "primitives": 279451,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "04-candidate",
+      "label": "candidate",
+      "report_sha256": "803dfbd0d6e6b02a0333955e586e0ebee574ab7c971d174560fd4672cd1195ac",
+      "sample_count": 8022,
+      "duration_s": 60.014248,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.0715,
+          "p95": 16.175949999999997,
+          "p99": 18.18574
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.12800002098084,
+          "p95": 1.9189500272273978,
+          "p99": 2.1853701043128955
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.54700005054474,
+          "p95": 3.1809499979019122,
+          "p99": 4.669949979782107
+        }
+      },
+      "counters": {
+        "draws": 145,
+        "primitives": 279451,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "04-baseline",
+      "label": "baseline",
+      "report_sha256": "bce391f81df4c171b1aa9acee676af910de50e0e809ac9da02a444e583a2e1f9",
+      "sample_count": 8001,
+      "duration_s": 60.005524,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.159,
+          "p95": 15.884,
+          "p99": 17.349
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.11099994182587,
+          "p95": 1.86000001430511,
+          "p99": 2.12700009346008
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.53799998760223,
+          "p95": 3.45199990272522,
+          "p99": 4.70300006866455
+        }
+      },
+      "counters": {
+        "draws": 148,
+        "primitives": 280413,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "05-baseline",
+      "label": "baseline",
+      "report_sha256": "7e21be71a45b3d6335982527ac3b3ead83ffaeaafeaa9808bf03dfbc3cd9350d",
+      "sample_count": 8003,
+      "duration_s": 60.005055,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.249,
+          "p95": 15.9519,
+          "p99": 17.54863999999997
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.1139999628067,
+          "p95": 1.8909000277519257,
+          "p99": 2.167979984283445
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.55599999427795,
+          "p95": 3.45700001716614,
+          "p99": 4.732979803085325
+        }
+      },
+      "counters": {
+        "draws": 148,
+        "primitives": 280413,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "05-candidate",
+      "label": "candidate",
+      "report_sha256": "31f373f80a2556d1f6452c71a069816c2d34e93a6026222fea28a207eeaaa9a8",
+      "sample_count": 8016,
+      "duration_s": 60.002099,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.0175,
+          "p95": 16.22925,
+          "p99": 18.208700000000015
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.11550003290176,
+          "p95": 1.8862500190734874,
+          "p99": 2.13199996948242
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.54299998283386,
+          "p95": 3.0455000400543253,
+          "p99": 4.567799782752997
+        }
+      },
+      "counters": {
+        "draws": 145,
+        "primitives": 279451,
+        "shadow_draws": 0
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "index": 1,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "wall_p95_delta_ms": 0.26959999999999695,
+      "gpu_p95_delta_ms": -0.37090004682540734
+    },
+    {
+      "index": 2,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "wall_p95_delta_ms": 0.22170000000000023,
+      "gpu_p95_delta_ms": -0.40085010528564746
+    },
+    {
+      "index": 3,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "wall_p95_delta_ms": 0.20149999999999935,
+      "gpu_p95_delta_ms": -0.3725999116897625
+    },
+    {
+      "index": 4,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "wall_p95_delta_ms": 0.2919499999999964,
+      "gpu_p95_delta_ms": -0.27104990482330793
+    },
+    {
+      "index": 5,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "wall_p95_delta_ms": 0.2773500000000002,
+      "gpu_p95_delta_ms": -0.41149997711181463
+    }
+  ],
+  "backend": {
+    "godot": "4.7.2-stable (official)",
+    "renderer": "gl_compatibility",
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "viewport": [
+      1280,
+      720
+    ],
+    "msaa": "4x"
+  },
+  "median_paired_wall_p95_delta_ms": 0.26959999999999695,
+  "median_paired_gpu_p95_delta_ms": -0.3725999116897625
+}

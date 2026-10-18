@@ -1,0 +1,11 @@
+{
+  "format": "openrc-vegetation-fresh-checkout v1",
+  "scope": "Isolated Git index/checkout of builder, source inputs and generated vegetation; actual checkout attributes, no imported cache. Not a full application clone or platform release.",
+  "checked_out_files": 123,
+  "tree": "38e7aaf23f7ec42f5425572acc8453cdedc4cd98",
+  "converter_sha256": "4d0b04587e6944ea99cede3d145438f9a10c9f8720760b3259bb37bd4f245b36",
+  "converter_matches_conversion_proof": true,
+  "exit_code": 0,
+  "stdout": "20 imported vegetation assets, 45,269 source triangles, 51 verified runtime files; 4 pinned source archives verified; output=app/assets/landscape/vegetation\n",
+  "stderr": ""
+}

@@ -39,6 +39,7 @@ var _post_warm_object_count := -1
 var _abort_run := false
 var _tree_reference: Dictionary = {}
 var _source_mesh_reference: Dictionary = {}
+var _track_flag_diagnostics: Array[Dictionary] = []
 var _quality := "default"
 var _capture := false
 var _headless := false
@@ -366,23 +367,25 @@ func _inspect_field(route: String, owner: Node, field: Node3D, is_rc: bool, vehi
 		_check(route + " default imported grass remains on its source material", not _near_grass_uses_shader(near, IMPORTED_GRASS_SHADER))
 	var ground_materials := _ground_materials(field)
 	_check(route + " field exposes ground shader materials", not ground_materials.is_empty())
+	var track := owner.find_child("DirtLoopSurface", true, false) as MeshInstance3D if is_rc else null
+	var track_material := track.material_override as ShaderMaterial if track != null else null
 	for material: ShaderMaterial in ground_materials:
-		_check(route + " grass photo binder matches quality", material.get_shader_parameter("grass_photo_enabled") == (_quality == "enhanced"))
-		_check(route + " ground field keeps RC track switch disabled",
-			material.get_shader_parameter("rc_track_surface") == false)
+		var photo_enabled: bool = material.get_shader_parameter("grass_photo_enabled") == true
+		_check(route + " grass photo binder matches quality", photo_enabled == (_quality == "enhanced"))
+		if not is_rc or material != track_material:
+			_check(route + " ground field keeps RC track switch disabled",
+				material.get_shader_parameter("rc_track_surface") != true)
 	if is_rc:
 		_check(route + " RC dirt binder is enabled on its field materials",
 			not ground_materials.is_empty() and _all_ground_params(ground_materials, "rc_surface_enabled", true))
 		_check(route + " RC field binds retained dirt/albedo maps",
 			_ground_params_nonnull(ground_materials, "rc_dirt_albedo"))
-		var track := owner.find_child("DirtLoopSurface", true, false) as MeshInstance3D
-		var track_material := track.material_override as ShaderMaterial if track != null else null
 		_check(route + " actual DirtLoopSurface has its RC material", track_material != null
 			and str(track_material.shader.resource_path) == GRASS_GROUND_SHADER
 			and track_material.get_shader_parameter("rc_track_surface") == true)
-		_check(route + " dirt track material is private to its intended surface",
-			track_material != null and not ground_materials.has(track_material)
-			and _only_surface_has_track_flag(owner, track))
+		var track_is_private := track_material != null and _only_surface_has_track_flag(owner, track)
+		_check(route + " dirt track material is private to its intended surface", track_is_private,
+			JSON.stringify(_track_flag_diagnostics))
 	else:
 		var all_ground := _ground_materials(field)
 		_check(route + " non-RC route keeps RC dirt coverage disabled",
@@ -496,20 +499,20 @@ func _ground_materials(owner: Node) -> Array[ShaderMaterial]:
 	if owner == null:
 		return found
 	for node: Node in _all_nodes(owner):
-		if node.has_meta("lighting_materials"):
-			for material_value: Variant in node.get_meta("lighting_materials", []):
-				_add_ground_material(material_value, found, seen)
 		if node is MeshInstance3D:
 			var mesh_instance := node as MeshInstance3D
-			_add_ground_material(mesh_instance.material_override, found, seen)
 			if mesh_instance.mesh != null:
 				for surface in mesh_instance.mesh.get_surface_count():
-					_add_ground_material(mesh_instance.mesh.surface_get_material(surface), found, seen)
+					_add_ground_material(mesh_instance.get_active_material(surface), found, seen)
 		elif node is MultiMeshInstance3D:
-			var multi := (node as MultiMeshInstance3D).multimesh
+			var multi_instance := node as MultiMeshInstance3D
+			var multi := multi_instance.multimesh
 			if multi != null and multi.mesh != null:
 				for surface in multi.mesh.get_surface_count():
-					_add_ground_material(multi.mesh.surface_get_material(surface), found, seen)
+					var active_material: Material = multi_instance.material_override
+					if active_material == null:
+						active_material = multi.mesh.surface_get_material(surface)
+					_add_ground_material(active_material, found, seen)
 	return found
 
 
@@ -530,7 +533,8 @@ func _all_ground_params(materials: Array[ShaderMaterial], parameter: String, exp
 	if materials.is_empty():
 		return false
 	for material: ShaderMaterial in materials:
-		if material.get_shader_parameter(parameter) != expected:
+		var enabled: bool = material.get_shader_parameter(parameter) == true
+		if enabled != expected:
 			return false
 	return true
 
@@ -554,13 +558,56 @@ func _ground_params_null(materials: Array[ShaderMaterial], parameter: String) ->
 
 
 func _only_surface_has_track_flag(owner: Node, expected_surface: MeshInstance3D) -> bool:
+	_track_flag_diagnostics.clear()
+	if owner == null or expected_surface == null:
+		return false
+	if expected_surface.mesh == null or expected_surface.mesh.get_surface_count() == 0:
+		return false
+	var expected_material := expected_surface.get_active_material(0) as ShaderMaterial
+	if expected_material == null:
+		return false
 	var count := 0
-	for material: ShaderMaterial in _ground_materials(owner):
-		if material.get_shader_parameter("rc_track_surface") == true:
-			count += 1
-			if expected_surface == null or material != expected_surface.material_override:
-				return false
+	for node: Node in _all_nodes(owner):
+		if node is MeshInstance3D:
+			var mesh_instance := node as MeshInstance3D
+			if mesh_instance.mesh != null:
+				for surface_index in mesh_instance.mesh.get_surface_count():
+					var active_material := mesh_instance.get_active_material(surface_index)
+					if _track_flag_enabled(active_material):
+						count += 1
+						_track_flag_diagnostics.append({
+							"node": str(mesh_instance.get_path()),
+							"material_id": (active_material as Resource).get_instance_id(),
+							"expected_node": mesh_instance == expected_surface,
+							"expected_material": active_material == expected_material,
+						})
+						if mesh_instance != expected_surface or active_material != expected_material:
+							return false
+		elif node is MultiMeshInstance3D:
+			var multi_instance := node as MultiMeshInstance3D
+			var multi := multi_instance.multimesh
+			if multi != null and multi.mesh != null:
+				for surface_index in multi.mesh.get_surface_count():
+					var active_material: Material = multi_instance.material_override
+					if active_material == null:
+						active_material = multi.mesh.surface_get_material(surface_index)
+					if _track_flag_enabled(active_material):
+						_track_flag_diagnostics.append({
+							"node": str(node.get_path()),
+							"material_id": (active_material as Resource).get_instance_id(),
+							"expected_node": false,
+							"expected_material": active_material == expected_material,
+						})
+						return false
 	return count == 1
+
+
+func _track_flag_enabled(value: Variant) -> bool:
+	if not value is ShaderMaterial:
+		return false
+	var material := value as ShaderMaterial
+	return (material.shader != null and str(material.shader.resource_path) == GRASS_GROUND_SHADER
+		and material.get_shader_parameter("rc_track_surface") == true)
 
 
 func _near_grass_uses_shader(near: Node3D, shader_path: String) -> bool:
@@ -591,22 +638,22 @@ func _owned_field_resources(owner: Node, field: Node3D) -> Dictionary:
 			var private_mesh := mesh_instance.name == "DirtLoopSurface" or mesh_instance.get_parent() == field.get_node_or_null("treeline")
 			if private_mesh and mesh_instance.mesh != null:
 				_add_owned_resource(mesh_instance.mesh, ids, refs, seen)
-			_add_owned_material(mesh_instance.material_override, ids, refs, seen)
 			if mesh_instance.mesh != null:
 				for surface in mesh_instance.mesh.get_surface_count():
-					_add_owned_material(mesh_instance.mesh.surface_get_material(surface), ids, refs, seen)
+					_add_owned_material(mesh_instance.get_active_material(surface), ids, refs, seen)
 		elif node is MultiMeshInstance3D:
-			var mm := (node as MultiMeshInstance3D).multimesh
+			var multi_instance := node as MultiMeshInstance3D
+			var mm := multi_instance.multimesh
 			if mm == null or mm.mesh == null:
 				continue
 			var parent := node.get_parent()
 			if parent == field.get_node_or_null("NearGrass") or parent == field.get_node_or_null("treeline"):
 				_add_owned_resource(mm.mesh, ids, refs, seen)
 			for surface in mm.mesh.get_surface_count():
-				_add_owned_material(mm.mesh.surface_get_material(surface), ids, refs, seen)
-		if node.has_meta("lighting_materials"):
-			for value: Variant in node.get_meta("lighting_materials", []):
-				_add_owned_material(value, ids, refs, seen)
+				var active_material: Material = multi_instance.material_override
+				if active_material == null:
+					active_material = mm.mesh.surface_get_material(surface)
+				_add_owned_material(active_material, ids, refs, seen)
 	return {"ids": ids, "refs": refs}
 
 
@@ -695,7 +742,43 @@ func _capture_route(label: String, owner: Node) -> void:
 			"height": viewport_image.get_height(),
 			"sha256": _sha256_bytes(viewport_image.get_data()),
 			"settle_frames": 12,
+			"framing": _framing_snapshot(owner),
 		})
+
+
+func _framing_snapshot(owner: Node) -> Dictionary:
+	var framing: Dictionary = {}
+	var camera := get_root().get_camera_3d()
+	if camera != null:
+		framing.camera = {
+			"path": str(camera.get_path()),
+			"position": _vector3_array(camera.global_position),
+			"rotation_degrees": _vector3_array(camera.global_rotation_degrees),
+			"basis": [
+				_vector3_array(camera.global_basis.x),
+				_vector3_array(camera.global_basis.y),
+				_vector3_array(camera.global_basis.z),
+			],
+			"fov_degrees": camera.fov,
+			"projection": camera.projection,
+		}
+	var owner_vehicle_id: Variant = owner.get("vehicle_id") if owner != null else null
+	if owner_vehicle_id is String and not (owner_vehicle_id as String).is_empty():
+		framing.vehicle_id = owner_vehicle_id
+		var visual_value: Variant = owner.get("visual")
+		if visual_value is Dictionary:
+			var visual_root := (visual_value as Dictionary).get("root") as Node3D
+			if visual_root != null:
+				framing.vehicle_root = {
+					"path": str(visual_root.get_path()),
+					"position": _vector3_array(visual_root.global_position),
+					"rotation_degrees": _vector3_array(visual_root.global_rotation_degrees),
+				}
+	return framing
+
+
+func _vector3_array(value: Vector3) -> Array[float]:
+	return [value.x, value.y, value.z]
 
 
 func _settle(frames: int) -> void:
@@ -762,7 +845,7 @@ func _finish() -> void:
 		"renderer": DisplayServer.get_name(),
 		"headless": _headless,
 		"capture_requested": _capture,
-		"capture_scope": "first cycle only; each image is after 12 process frames",
+		"capture_scope": "first cycle only; 12 process-frame settle per route. Home is the startup menu, fixedwing is startup waiting for radio, and both RC scenes are paused. Images verify lifecycle/framing only, not active flight/driving or visual preference acceptance.",
 		"viewport_target": {"width": 1280, "height": 720},
 		"environment_used": _env_used,
 		"home_preferences": {"path": _preferences_path, "aircraft": FIXED_WING_ID, "time_of_day": "day", "weather": "validated calm defaults", "first_flight_hint_seen": true},

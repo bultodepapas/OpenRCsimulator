@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import math
+from io import BytesIO
 from pathlib import Path, PurePosixPath, PureWindowsPath
 import struct
 import sys
@@ -41,6 +42,49 @@ REED_ARCHIVE_SHA256 = "03fd4f90d92618090829bac1152e4280327edb179139ae3f0c66542af
 REED_ARCHIVE_BYTES = 140_207
 REED_SOURCE_URL = "https://opengameart.org/content/lowpoly-reed"
 REED_NOTICE = ROOT / "assets/landscape/vegetation/source/Aredon_Reed_CC0.txt"
+
+OAK_SOURCE_DIR = ROOT / "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026"
+OAK_ARCHIVE = OAK_SOURCE_DIR / "quercus_A_packed_v1_0.zip"
+OAK_ARCHIVE_BYTES = 2_222_050
+OAK_ARCHIVE_SHA256 = "496f250c29eb1f56e391e55989530028e156ae43a3d1eb9f52ab09aa1bccbebf"
+OAK_BLEND_ENTRY = "quercus_A_packed_v1.blend"
+OAK_BLEND = OAK_SOURCE_DIR / OAK_BLEND_ENTRY
+OAK_BLEND_BYTES = 2_856_188
+OAK_BLEND_SHA256 = "3b32573acd4e8eb5b7e0a96aa363932ec785a854d6e8c71f56f29b10f5abd37c"
+OAK_CONVERSION_DIR = OAK_SOURCE_DIR / "gltf/lod0"
+OAK_CONVERSION_PROOF = OAK_SOURCE_DIR / "CONVERSION-PROOF-LOD0.json"
+OAK_CONVERSION_PROOF_BYTES = 4_573
+OAK_CONVERSION_PROOF_SHA256 = "2a3b0c2d6e4bd940c53cdf4bee5af31ff9753b3b77b032962867a3fa89f72014"
+OAK_LICENSE_SOURCE = OAK_SOURCE_DIR / "LICENSE_OAK.txt"
+OAK_LICENSE_BYTES = 2_245
+OAK_LICENSE_SHA256 = "1be8dab83f4107623eeba4d77e3d66091068e839e1a8b688ea1bf867c2b43e40"
+OAK_LICENSE_OUTPUT = "LICENSE_OAK.txt"
+OAK_SOURCE_URL = "https://opengameart.org/content/oak-tree"
+OAK_DOWNLOAD_URL = "https://opengameart.org/sites/default/files/quercus_A_packed_v1_0.zip"
+OAK_LICENSE_URL = "https://creativecommons.org/licenses/by-sa/3.0/"
+OAK_AUTHOR = "lauris71"
+OAK_RETRIEVED = "2026-10-18"
+OAK_CONVERSION_FILES = (
+    {
+        "entry": "oak_lod0.gltf",
+        "bytes": 1_970,
+        "sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7",
+    },
+    {
+        "entry": "oak_lod0.bin",
+        "bytes": 341_388,
+        "sha256": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c",
+    },
+    {
+        "entry": "Quercus_A_1024.png",
+        "bytes": 1_623_204,
+        "sha256": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015",
+    },
+)
+OAK_GLTF_ENTRY = "glTF/oak_lod0.gltf"
+OAK_ASSET_ID = "oak_tree"
+OAK_SOURCE_ID = "opengameart_oak_tree_lod_2026"
+OAK_DESCRIPTION = "Oak tree, supplier LOD0"
 
 SOURCE_NOTICES = {
     CROPS_NOTICE: (
@@ -145,6 +189,117 @@ def read_member(archive: ZipFile, name: str) -> bytes:
         return archive.read(safe_name)
     except KeyError as exc:
         raise BuildError(f"missing source archive member: {safe_name}") from exc
+
+
+def read_oak_conversion_proof() -> tuple[bytes, dict]:
+    if not OAK_CONVERSION_PROOF.is_file():
+        raise BuildError(f"missing pinned oak LOD0 conversion proof: {OAK_CONVERSION_PROOF}")
+    proof_bytes = OAK_CONVERSION_PROOF.read_bytes()
+    if (
+        len(proof_bytes) != OAK_CONVERSION_PROOF_BYTES
+        or sha256_bytes(proof_bytes) != OAK_CONVERSION_PROOF_SHA256
+    ):
+        raise BuildError("oak LOD0 conversion proof changed from its reviewed pin")
+    try:
+        proof = json.loads(proof_bytes)
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise BuildError(f"invalid JSON in oak LOD0 conversion proof: {exc}") from exc
+
+    conversion = proof.get("conversion", {})
+    if (
+        proof.get("format") != "openrc-oak-conversion-proof v2"
+        or conversion.get("source_object_count") != 36
+        or conversion.get("source_vertex_count_sum") != 4_407
+        or conversion.get("baked_vertex_count") != 4_407
+        or conversion.get("source_polygon_count_sum") != 2_791
+        or conversion.get("baked_polygon_count") != 2_791
+        or conversion.get("source_triangulated_triangle_count") != 5_303
+        or conversion.get("baked_triangulated_triangle_count") != 5_303
+        or conversion.get("source_material_names") != ["M_Quercus"]
+        or conversion.get("triangles_preserved") is not True
+        or conversion.get("polygons_preserved") is not True
+        or conversion.get("custom_loop_normals") is not True
+        or conversion.get("decimation") is not False
+        or conversion.get("geometry_created") is not False
+    ):
+        raise BuildError("oak LOD0 conversion proof does not match the reviewed source contract")
+
+    inputs = proof.get("inputs", {})
+    if (
+        inputs.get("archive", {}).get("sha256") != OAK_ARCHIVE_SHA256
+        or inputs.get("blend", {}).get("sha256") != OAK_BLEND_SHA256
+    ):
+        raise BuildError("oak conversion proof does not pin the reviewed original inputs")
+
+    material_mapping = proof.get("material_mapping", {})
+    if (
+        material_mapping.get("alpha_mode") != "BLEND"
+        or material_mapping.get("glTF_metallic_factor") != 0.0
+        or material_mapping.get("glTF_roughness_factor") != 1.0
+        or material_mapping.get("source_legacy_specular_intensity") != 0.0
+        or "Godot 4.7 ignores it" not in material_mapping.get("specular_note", "")
+    ):
+        raise BuildError("oak material mapping proof does not match the reviewed matte BLEND import")
+
+    loop_errors = conversion.get("max_source_to_baked_error", {})
+    if loop_errors.get("world_position_m") != 0.0 or loop_errors.get("uv_unitless") != 0.0:
+        raise BuildError("oak LOD0 conversion proof reports changed source positions or UVs")
+
+    proof_outputs = {
+        item.get("path"): (item.get("bytes"), item.get("sha256"))
+        for item in proof.get("outputs", [])
+    }
+    expected_outputs = {
+        item["entry"]: (item["bytes"], item["sha256"])
+        for item in OAK_CONVERSION_FILES
+    }
+    if proof_outputs != expected_outputs:
+        raise BuildError("oak LOD0 conversion proof output hashes do not match the pinned files")
+    return proof_bytes, proof
+
+
+def read_oak_license() -> bytes:
+    if not OAK_LICENSE_SOURCE.is_file():
+        raise BuildError(f"missing oak attribution/license notice: {OAK_LICENSE_SOURCE}")
+    license_bytes = OAK_LICENSE_SOURCE.read_bytes()
+    if len(license_bytes) != OAK_LICENSE_BYTES or sha256_bytes(license_bytes) != OAK_LICENSE_SHA256:
+        raise BuildError("oak attribution/license notice changed from its reviewed pin")
+    return license_bytes
+
+
+def open_oak_conversion_archive() -> ZipFile:
+    """Verify pinned oak inputs/exports and expose the separate glTF files in memory."""
+    if not OAK_ARCHIVE.is_file():
+        raise BuildError(f"missing pinned oak source archive: {OAK_ARCHIVE}")
+    if OAK_ARCHIVE.stat().st_size != OAK_ARCHIVE_BYTES or sha256_file(OAK_ARCHIVE) != OAK_ARCHIVE_SHA256:
+        raise BuildError("oak source archive does not match the pinned OpenGameArt download")
+    if not OAK_BLEND.is_file():
+        raise BuildError(f"missing extracted oak source blend: {OAK_BLEND}")
+    blend_bytes = OAK_BLEND.read_bytes()
+    if len(blend_bytes) != OAK_BLEND_BYTES or sha256_bytes(blend_bytes) != OAK_BLEND_SHA256:
+        raise BuildError("extracted oak source blend does not match the pinned archive member")
+    try:
+        with ZipFile(OAK_ARCHIVE) as original_archive:
+            archived_blend = read_member(original_archive, OAK_BLEND_ENTRY)
+    except BadZipFile as exc:
+        raise BuildError(f"oak source archive is not a valid ZIP: {exc}") from exc
+    if archived_blend != blend_bytes:
+        raise BuildError("extracted oak blend differs from the original downloaded archive member")
+    read_oak_conversion_proof()
+    read_oak_license()
+
+    conversion_buffer = BytesIO()
+    with ZipFile(conversion_buffer, "w") as conversion_archive:
+        for item in OAK_CONVERSION_FILES:
+            source_path = OAK_CONVERSION_DIR / item["entry"]
+            if not source_path.is_file():
+                raise BuildError(f"missing pinned oak conversion output: {source_path}")
+            data = source_path.read_bytes()
+            if len(data) != item["bytes"] or sha256_bytes(data) != item["sha256"]:
+                raise BuildError(f"oak conversion output changed from its pin: {source_path}")
+            conversion_archive.writestr(f"glTF/{archive_path(item['entry'])}", data)
+    conversion_buffer.seek(0)
+    return ZipFile(conversion_buffer)
 
 
 def gltf_metadata(archive: ZipFile, source_name: str, gltf_bytes: bytes) -> dict:
@@ -444,6 +599,7 @@ def catalog_for(
     archive: ZipFile,
     crops_archive: ZipFile,
     reed_archive: ZipFile,
+    oak_archive: ZipFile,
 ) -> tuple[dict, dict[str, bytes]]:
     license_bytes = read_member(archive, LICENSE_ENTRY)
     if sha256_bytes(license_bytes) != LICENSE_SHA256:
@@ -583,6 +739,70 @@ def catalog_for(
         "reed",
     )
 
+    oak_gltf_bytes = read_member(oak_archive, OAK_GLTF_ENTRY)
+    oak_metadata = gltf_metadata(oak_archive, OAK_GLTF_ENTRY, oak_gltf_bytes)
+    oak_source_dir = OAK_CONVERSION_DIR.relative_to(ROOT).as_posix()
+    oak_runtime_dir = "models/oak_tree"
+    oak_source_hashes: dict[str, str] = {}
+    for entry in oak_metadata["dependencies"]:
+        source_bytes = read_member(oak_archive, entry)
+        relative = PurePosixPath(entry).relative_to("glTF")
+        runtime_path = f"{oak_runtime_dir}/{relative.as_posix()}"
+        source_path = f"{oak_source_dir}/{relative.as_posix()}"
+        pending_files[runtime_path] = source_bytes
+        file_origins[runtime_path] = source_path
+        oak_source_hashes[source_path] = sha256_bytes(source_bytes)
+
+    oak_source_entry = f"{oak_source_dir}/oak_lod0.gltf"
+    oak_license_bytes = read_oak_license()
+    pending_files[OAK_LICENSE_OUTPUT] = oak_license_bytes
+    file_origins[OAK_LICENSE_OUTPUT] = OAK_LICENSE_SOURCE.relative_to(ROOT).as_posix()
+
+    oak_textures = [
+        {
+            **texture,
+            "source_entry": f"{oak_source_dir}/{PurePosixPath(texture['uri']).as_posix()}",
+        }
+        for texture in oak_metadata["textures"]
+    ]
+    oak_dependencies = [
+        f"{oak_source_dir}/{PurePosixPath(entry).relative_to('glTF').as_posix()}"
+        for entry in oak_metadata["dependencies"]
+    ]
+    oak_source_metadata = {
+        **oak_metadata,
+        "textures": sorted(oak_textures, key=lambda item: item["uri"].lower()),
+        "dependencies": sorted(set(oak_dependencies), key=str.lower),
+    }
+    oak_proof_bytes, oak_proof = read_oak_conversion_proof()
+    oak_conversion = oak_proof["conversion"]
+    oak_material = oak_conversion["source_material_names"][0]
+    assets.append(
+        {
+            "id": OAK_ASSET_ID,
+            "source_id": OAK_SOURCE_ID,
+            "source_name": "Quercus_A_LOD0",
+            "description": OAK_DESCRIPTION,
+            "role": "tree",
+            "scene": f"res://assets/landscape/vegetation/{oak_runtime_dir}/oak_lod0.gltf",
+            "source_entry": oak_source_entry,
+            "source_sha256": sha256_bytes(oak_gltf_bytes),
+            "source_dependency_sha256": oak_source_hashes,
+            "source_format": "glTF 2.0 converted from the licensed Blender LOD0",
+            "source_lod": "LOD0 only; supplier LOD1 and LOD2 are excluded",
+            "source_material_names": [oak_material],
+            "source_conversion_proof_sha256": sha256_bytes(oak_proof_bytes),
+            **oak_source_metadata,
+            "lod": {
+                "source_supplied": True,
+                "source_lod": "LOD0",
+                "imported_supplied_levels": ["LOD0"],
+                "alternate_source_lods_included": [],
+                "godot_import_generate": True,
+            },
+        }
+    )
+
     file_records = [
         {
             "path": runtime_path,
@@ -629,6 +849,44 @@ def catalog_for(
             "license": "CC0-1.0, as shown on the OpenGameArt source page",
             "license_evidence": REED_NOTICE.relative_to(ROOT).as_posix(),
         },
+        {
+            "id": OAK_SOURCE_ID,
+            "title": "Oak tree, supplier LOD0",
+            "author": OAK_AUTHOR,
+            "url": OAK_SOURCE_URL,
+            "download_url": OAK_DOWNLOAD_URL,
+            "retrieved": OAK_RETRIEVED,
+            "archive": OAK_ARCHIVE.relative_to(ROOT).as_posix(),
+            "archive_bytes": OAK_ARCHIVE_BYTES,
+            "archive_sha256": OAK_ARCHIVE_SHA256,
+            "source_blend": OAK_BLEND.relative_to(ROOT).as_posix(),
+            "source_blend_bytes": OAK_BLEND_BYTES,
+            "source_blend_sha256": OAK_BLEND_SHA256,
+            "license": "CC BY-SA 3.0",
+            "license_url": OAK_LICENSE_URL,
+            "license_evidence": OAK_LICENSE_SOURCE.relative_to(ROOT).as_posix(),
+            "license_sha256": sha256_bytes(oak_license_bytes),
+            "conversion_proof": OAK_CONVERSION_PROOF.relative_to(ROOT).as_posix(),
+            "conversion_proof_bytes": len(oak_proof_bytes),
+            "conversion_proof_sha256": sha256_bytes(oak_proof_bytes),
+            "conversion": {
+                "tool": "Blender 5.2.2 LTS; Khronos glTF Blender I/O v5.2.40",
+                "source_method": oak_conversion["method"],
+                "source_parts_joined": oak_conversion["source_object_count"],
+                "source_triangles": oak_conversion["source_triangulated_triangle_count"],
+                "baked_triangles": oak_conversion["baked_triangulated_triangle_count"],
+                "max_source_to_baked_loop_error": oak_conversion["max_source_to_baked_error"],
+                "material_mapping": oak_proof["material_mapping"],
+                "outputs": [
+                    {
+                        "path": f"{oak_source_dir}/{item['path']}",
+                        "bytes": item["bytes"],
+                        "sha256": item["sha256"],
+                    }
+                    for item in oak_proof["outputs"]
+                ],
+            },
+        },
     ]
 
     catalog = {
@@ -649,11 +907,18 @@ def catalog_for(
         "import": {
             "format": "glTF 2.0 and Wavefront OBJ/MTL",
             "geometry_policy": (
-                "source geometry and glTF files are preserved; runtime trees derive their external "
-                "buffer by clamping only finite float COLOR_0 values in (1, 1.0002] to 1"
+                "original source archives are preserved; Quaternius runtime tree buffers clamp only "
+                "finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source "
+                "parts while preserving positions and UVs exactly and normals within the conversion proof"
             ),
-            "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; Wavefront OBJ assets use supplied geometry",
-            "shared_material_policy": "original downloaded glTF materials and textures or OBJ/MTL diffuse materials; shared source files extracted once",
+            "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; the oak source contributes LOD0 only, with supplier LOD1/LOD2 excluded; Wavefront OBJ assets use supplied geometry",
+            "shared_material_policy": (
+                "original Quaternius glTF materials and textures are preserved; the oak legacy "
+                "M_Quercus material maps its packed atlas to Principled BSDF base color with "
+                "roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot "
+                "4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials "
+                "are preserved; shared source files are extracted once"
+            ),
         },
         "counts": {
             "trees": sum(item["role"] == "tree" for item in assets),
@@ -742,6 +1007,7 @@ def main(argv: list[str] | None = None) -> int:
         (ARCHIVE, ARCHIVE_BYTES, ARCHIVE_SHA256, "Quaternius Standard"),
         (CROPS_ARCHIVE, CROPS_ARCHIVE_BYTES, CROPS_ARCHIVE_SHA256, "Quaternius crops"),
         (REED_ARCHIVE, REED_ARCHIVE_BYTES, REED_ARCHIVE_SHA256, "Aredon reed"),
+        (OAK_ARCHIVE, OAK_ARCHIVE_BYTES, OAK_ARCHIVE_SHA256, "OpenGameArt oak"),
     )
     for archive_path_value, expected_bytes, expected_hash, label in pinned_archives:
         if not archive_path_value.is_file():
@@ -755,13 +1021,15 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     try:
-        with ZipFile(ARCHIVE) as archive:
-            with ZipFile(CROPS_ARCHIVE) as crops_archive, ZipFile(REED_ARCHIVE) as reed_archive:
-                catalog, runtime_files = catalog_for(
-                    archive,
-                    crops_archive,
-                    reed_archive,
-                )
+        with ZipFile(ARCHIVE) as archive, ZipFile(CROPS_ARCHIVE) as crops_archive, ZipFile(
+            REED_ARCHIVE
+        ) as reed_archive, open_oak_conversion_archive() as oak_archive:
+            catalog, runtime_files = catalog_for(
+                archive,
+                crops_archive,
+                reed_archive,
+                oak_archive,
+            )
     except BadZipFile as exc:
         raise BuildError(f"source archive is not a valid ZIP: {exc}") from exc
 

@@ -47,23 +47,84 @@
       "archive_sha256": "03fd4f90d92618090829bac1152e4280327edb179139ae3f0c66542af31b89bd",
       "license": "CC0-1.0, as shown on the OpenGameArt source page",
       "license_evidence": "assets/landscape/vegetation/source/Aredon_Reed_CC0.txt"
+    },
+    {
+      "id": "opengameart_oak_tree_lod_2026",
+      "title": "Oak tree, supplier LOD0",
+      "author": "lauris71",
+      "url": "https://opengameart.org/content/oak-tree",
+      "download_url": "https://opengameart.org/sites/default/files/quercus_A_packed_v1_0.zip",
+      "retrieved": "2026-10-18",
+      "archive": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/quercus_A_packed_v1_0.zip",
+      "archive_bytes": 2222050,
+      "archive_sha256": "496f250c29eb1f56e391e55989530028e156ae43a3d1eb9f52ab09aa1bccbebf",
+      "source_blend": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/quercus_A_packed_v1.blend",
+      "source_blend_bytes": 2856188,
+      "source_blend_sha256": "3b32573acd4e8eb5b7e0a96aa363932ec785a854d6e8c71f56f29b10f5abd37c",
+      "license": "CC BY-SA 3.0",
+      "license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+      "license_evidence": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt",
+      "license_sha256": "1be8dab83f4107623eeba4d77e3d66091068e839e1a8b688ea1bf867c2b43e40",
+      "conversion_proof": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/CONVERSION-PROOF-LOD0.json",
+      "conversion_proof_bytes": 4573,
+      "conversion_proof_sha256": "2a3b0c2d6e4bd940c53cdf4bee5af31ff9753b3b77b032962867a3fa89f72014",
+      "conversion": {
+        "tool": "Blender 5.2.2 LTS; Khronos glTF Blender I/O v5.2.40",
+        "source_method": "batched the 36 supplied Collection 1 LOD0 mesh parts into one glTF primitive; baked source object transforms; preserved supplied positions, polygons, UVs, and inverse-transpose loop normals",
+        "source_parts_joined": 36,
+        "source_triangles": 5303,
+        "baked_triangles": 5303,
+        "max_source_to_baked_loop_error": {
+          "normal_unit_vector": 0.00038462484739224553,
+          "uv_unitless": 0.0,
+          "world_position_m": 0.0
+        },
+        "material_mapping": {
+          "added_maps": [],
+          "alpha_mode": "BLEND",
+          "alpha_source": "original packed diffuse/alpha atlas; unchanged",
+          "glTF_metallic_factor": 0.0,
+          "glTF_roughness_factor": 1.0,
+          "roughness_note": "reviewed scalar legacy-material adaptation; not authored roughness texture data",
+          "source_legacy_specular_intensity": 0.0,
+          "source_principled_specular_ior_level": 0.0,
+          "specular_note": "glTF core metallic-roughness does not encode source specular_intensity 0.0. KHR_materials_specular was tested but Godot 4.7 ignores it, so omitted. Godot's imported StandardMaterial3D metallic_specular remains default 0.5; no runtime workaround is applied."
+        },
+        "outputs": [
+          {
+            "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+            "bytes": 1970,
+            "sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7"
+          },
+          {
+            "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin",
+            "bytes": 341388,
+            "sha256": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c"
+          },
+          {
+            "path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png",
+            "bytes": 1623204,
+            "sha256": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015"
+          }
+        ]
+      }
     }
   ],
   "import": {
     "format": "glTF 2.0 and Wavefront OBJ/MTL",
-    "geometry_policy": "source geometry and glTF files are preserved; runtime trees derive their external buffer by clamping only finite float COLOR_0 values in (1, 1.0002] to 1",
-    "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; Wavefront OBJ assets use supplied geometry",
-    "shared_material_policy": "original downloaded glTF materials and textures or OBJ/MTL diffuse materials; shared source files extracted once"
+    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof",
+    "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; the oak source contributes LOD0 only, with supplier LOD1/LOD2 excluded; Wavefront OBJ assets use supplied geometry",
+    "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once"
   },
   "counts": {
-    "trees": 7,
+    "trees": 8,
     "shrubs": 2,
     "grass_and_herbs": 4,
     "flowers": 3,
     "crops": 2,
     "reeds": 1,
-    "total_assets": 19,
-    "source_triangles_one_of_each": 39966
+    "total_assets": 20,
+    "source_triangles_one_of_each": 45269
   },
   "files": [
     {
@@ -71,6 +132,12 @@
       "source_entry": "License_Standard.txt",
       "bytes": 852,
       "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "path": "LICENSE_OAK.txt",
+      "source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt",
+      "bytes": 2245,
+      "sha256": "1be8dab83f4107623eeba4d77e3d66091068e839e1a8b688ea1bf867c2b43e40"
     },
     {
       "path": "models/additional/aredon_reed/reed.mtl",
@@ -311,6 +378,24 @@
       "source_entry": "glTF/Leaves_TwistedTree_C.png",
       "bytes": 70353,
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
+    },
+    {
+      "path": "models/oak_tree/oak_lod0.bin",
+      "source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin",
+      "bytes": 341388,
+      "sha256": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c"
+    },
+    {
+      "path": "models/oak_tree/oak_lod0.gltf",
+      "source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+      "bytes": 1970,
+      "sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7"
+    },
+    {
+      "path": "models/oak_tree/Quercus_A_1024.png",
+      "source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png",
+      "bytes": 1623204,
+      "sha256": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015"
     },
     {
       "path": "models/Pine_1.bin",
@@ -1715,6 +1800,86 @@
       "lod": {
         "source_supplied": false,
         "godot_import_generate": false
+      }
+    },
+    {
+      "id": "oak_tree",
+      "source_id": "opengameart_oak_tree_lod_2026",
+      "source_name": "Quercus_A_LOD0",
+      "description": "Oak tree, supplier LOD0",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/oak_tree/oak_lod0.gltf",
+      "source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+      "source_sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c",
+        "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7",
+        "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015"
+      },
+      "source_format": "glTF 2.0 converted from the licensed Blender LOD0",
+      "source_lod": "LOD0 only; supplier LOD1 and LOD2 are excluded",
+      "source_material_names": [
+        "M_Quercus"
+      ],
+      "source_conversion_proof_sha256": "2a3b0c2d6e4bd940c53cdf4bee5af31ff9753b3b77b032962867a3fa89f72014",
+      "source_triangles": 5303,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min": [
+          -5.828022,
+          -0.858131,
+          -4.772417
+        ],
+        "max": [
+          5.003101,
+          10.793035,
+          4.425439
+        ],
+        "size": [
+          10.831124,
+          11.651166,
+          9.197856
+        ],
+        "height": 11.651166,
+        "ground_offset": 0.858131
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -5.828022,
+          0.0,
+          -4.772417
+        ],
+        "max": [
+          5.003101,
+          11.651166,
+          4.425439
+        ],
+        "size": [
+          10.831124,
+          11.651166,
+          9.197856
+        ]
+      },
+      "textures": [
+        {
+          "uri": "Quercus_A_1024.png",
+          "source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin",
+        "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+        "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png"
+      ],
+      "lod": {
+        "source_supplied": true,
+        "source_lod": "LOD0",
+        "imported_supplied_levels": [
+          "LOD0"
+        ],
+        "alternate_source_lods_included": [],
+        "godot_import_generate": true
       }
     }
   ]

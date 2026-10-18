@@ -1,0 +1,1134 @@
+{
+	"capture_requested": false,
+	"capture_scope": "first cycle only; each image is after 12 process frames",
+	"checks": 448,
+	"cycles_requested": 2,
+	"date": "2026-10-18",
+	"environment_used": {
+		"OPENRC_GRASS_QUALITY": "",
+		"OPENRC_SCENERY": "on",
+		"OPENRC_SCENERY_AUDIO": "off",
+		"OPENRC_SCENERY_QUALITY": "high"
+	},
+	"failed_checks": [],
+	"format": "openrc-grass-lifecycle-v1",
+	"headless": true,
+	"home_preferences": {
+		"aircraft": "jensen-das-ugly-stik-60",
+		"first_flight_hint_seen": true,
+		"path": "user://grass_quality_lifecycle_61336.cfg",
+		"time_of_day": "day",
+		"weather": "validated calm defaults"
+	},
+	"node_count_home_baseline": 568,
+	"object_count_after_first_cycle": 3774,
+	"observations": [
+		{
+			"field_instance_id": 169282110992,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 3598.0,
+			"owned_resource_ids": {
+				"-9223371867488778562": "ShaderMaterial",
+				"-9223371866868021742": "ArrayMesh",
+				"-9223371866834467302": "ShaderMaterial",
+				"-9223371840896890978": "ArrayMesh",
+				"-9223371840846559324": "ArrayMesh",
+				"-9223371840796227670": "ArrayMesh"
+			},
+			"route": "Home",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 291722235815,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 6151.0,
+			"owned_resource_ids": {
+				"-9223371745065431315": "ShaderMaterial",
+				"-9223371744813772827": "ArrayMesh",
+				"-9223371744780218405": "ShaderMaterial",
+				"-9223371736408387714": "ArrayMesh",
+				"-9223371736358056155": "ArrayMesh",
+				"-9223371736307724291": "ArrayMesh"
+			},
+			"route": "FixedWing",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 355274331964,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 3706.0,
+			"owned_resource_ids": {
+				"-9223371681513334976": "ShaderMaterial",
+				"-9223371681261676733": "ArrayMesh",
+				"-9223371681228122277": "ShaderMaterial",
+				"-9223371672856292453": "ArrayMesh",
+				"-9223371672805960821": "ArrayMesh",
+				"-9223371672755629167": "ArrayMesh"
+			},
+			"route": "Home",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 420017606832,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 5056.0,
+			"owned_resource_ids": {
+				"-9223371616770060108": "ShaderMaterial",
+				"-9223371616518401863": "ArrayMesh",
+				"-9223371616484847429": "ShaderMaterial",
+				"-9223371608113016568": "ArrayMesh",
+				"-9223371608062684914": "ArrayMesh",
+				"-9223371608012353260": "ArrayMesh",
+				"-9223371606082973206": "ArrayMesh",
+				"-9223371606049419615": "ShaderMaterial"
+			},
+			"route": "RC",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": "mt8-bisonte"
+		},
+		{
+			"field_instance_id": 443069503489,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 3778.0,
+			"owned_resource_ids": {
+				"-9223371593718163654": "ShaderMaterial",
+				"-9223371593466508420": "ArrayMesh",
+				"-9223371593432950981": "ShaderMaterial",
+				"-9223371585061124482": "ArrayMesh",
+				"-9223371585010792799": "ArrayMesh",
+				"-9223371584960460143": "ArrayMesh"
+			},
+			"route": "Home",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 528331314984,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 7065.0,
+			"owned_resource_ids": {
+				"-9223371508456351958": "ShaderMaterial",
+				"-9223371508204693715": "ArrayMesh",
+				"-9223371508171139280": "ShaderMaterial",
+				"-9223371499799308404": "ArrayMesh",
+				"-9223371499748976750": "ArrayMesh",
+				"-9223371499698645096": "ArrayMesh",
+				"-9223371497769264784": "ArrayMesh",
+				"-9223371497735710350": "ShaderMaterial"
+			},
+			"route": "RC",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": "monster-car-2"
+		},
+		{
+			"active_route": "home",
+			"cycle": 1,
+			"grass_quality": "default",
+			"node_count": 568,
+			"object_count": 3774.0
+		},
+		{
+			"field_instance_id": 553698464556,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 3780.0,
+			"owned_resource_ids": {
+				"-9223371483089201149": "ShaderMaterial",
+				"-9223371482837546181": "ArrayMesh",
+				"-9223371482803988478": "ShaderMaterial",
+				"-9223371474432161819": "ArrayMesh",
+				"-9223371474381830154": "ArrayMesh",
+				"-9223371474331498642": "ArrayMesh"
+			},
+			"route": "Home",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 616931790904,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 6247.0,
+			"owned_resource_ids": {
+				"-9223371419855874622": "ShaderMaterial",
+				"-9223371419604218137": "ArrayMesh",
+				"-9223371419570663700": "ShaderMaterial",
+				"-9223371411198831400": "ArrayMesh",
+				"-9223371411148499574": "ArrayMesh",
+				"-9223371411098167158": "ArrayMesh"
+			},
+			"route": "FixedWing",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 679594694446,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 3780.0,
+			"owned_resource_ids": {
+				"-9223371357192972499": "ShaderMaterial",
+				"-9223371356941314254": "ArrayMesh",
+				"-9223371356907759785": "ShaderMaterial",
+				"-9223371348535931257": "ArrayMesh",
+				"-9223371348485597508": "ArrayMesh",
+				"-9223371348435265855": "ArrayMesh"
+			},
+			"route": "Home",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 728919709879,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 5090.0,
+			"owned_resource_ids": {
+				"-9223371307867957062": "ShaderMaterial",
+				"-9223371307616298820": "ArrayMesh",
+				"-9223371307582744389": "ShaderMaterial",
+				"-9223371299210915714": "ArrayMesh",
+				"-9223371299160581922": "ArrayMesh",
+				"-9223371299110252388": "ArrayMesh",
+				"-9223371297180871424": "ArrayMesh",
+				"-9223371297147318620": "ShaderMaterial"
+			},
+			"route": "RC",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": "mt8-bisonte"
+		},
+		{
+			"field_instance_id": 751317292088,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 3780.0,
+			"owned_resource_ids": {
+				"-9223371285470374104": "ShaderMaterial",
+				"-9223371285218718755": "ArrayMesh",
+				"-9223371285185161433": "ShaderMaterial",
+				"-9223371276813330424": "ArrayMesh",
+				"-9223371276763000439": "ArrayMesh",
+				"-9223371276712667472": "ArrayMesh"
+			},
+			"route": "Home",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": ""
+		},
+		{
+			"field_instance_id": 836042231618,
+			"field_node_count": 215,
+			"grass_batches": 3,
+			"grass_clumps": 150,
+			"grass_source_meshes": {
+				"grass_common_short_Part_00": {
+					"asset_id": "grass_common_short",
+					"draw_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24",
+					"part_index": 0,
+					"source_sha256": "38d4512e19286ac53a00ecb5074be4b608570875fd01c8bd9e939ac7f1cd7f24"
+				},
+				"grass_common_tall_Part_00": {
+					"asset_id": "grass_common_tall",
+					"draw_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b",
+					"part_index": 0,
+					"source_sha256": "8892e63905db68aead9752d04a064f7b3c993881ad49fb5b9ff926058b290f6b"
+				},
+				"grass_wispy_tall_Part_00": {
+					"asset_id": "grass_wispy_tall",
+					"draw_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d",
+					"part_index": 0,
+					"source_sha256": "f52dad6f0bb6411130db14aecd22db107f026e5a6a3be7707a2cb3636e5b053d"
+				}
+			},
+			"grass_source_triangles": 49579,
+			"grass_wind": false,
+			"instance_count": 7065.0,
+			"owned_resource_ids": {
+				"-9223371200745435399": "ShaderMaterial",
+				"-9223371200493775230": "ArrayMesh",
+				"-9223371200460220800": "ShaderMaterial",
+				"-9223371192088389836": "ArrayMesh",
+				"-9223371192038058169": "ArrayMesh",
+				"-9223371191987726512": "ArrayMesh",
+				"-9223371190058349126": "ArrayMesh",
+				"-9223371190024794682": "ShaderMaterial"
+			},
+			"route": "RC",
+			"tree_signature": {
+				"Sector0": {
+					"bounds": "8387668d9add545e356a1a1ef7872bc9da7b91f5beb4368766f4bca4a56adb1d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 148,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector1": {
+					"bounds": "a8025c5ce68a3d6eba9e74730f3aeab37bf02dff6af2d7308b7fe5a1e806fe2d",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 205,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector2": {
+					"bounds": "bc1351219b093fc5dd865a87c32cc392191d4bc42483f6a3c2a091a5cf082492",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 119,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector3": {
+					"bounds": "4a30efe68b1d9e3230b67b2801440a5ba618992eac83427e23cd4ac8b556d82c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 180,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector4": {
+					"bounds": "0e57d40312b3cb3752986db8d1fb3856fa8014cdfdf3fcde5354f296f8c19192",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 125,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector5": {
+					"bounds": "5d5fb175400d1ddcbc3f3259db6dab89fd5a9c44622ce4feb2d07de4edc1804e",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 451,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector6": {
+					"bounds": "c0f1e17b3de6b3d675ff383a9549be4dae0b7e490a1305f31f5a619ce3c346a0",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 141,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				},
+				"Sector7": {
+					"bounds": "3b402528383585ca1ffd92618d38ef943dccab15fcdc2a64a5881ac18e245d4c",
+					"buffer_sha256": "9d4ac218fb54041e3a70a8e14db1ea1af9f570f4842b4702ef9323f1ad8f0ec4",
+					"instance_count": 311,
+					"mesh_sha256": "49700da4b7ad6eb45a02f2ac7e598c54dcabe97277b798dad250b0928217fe55"
+				}
+			},
+			"vehicle_id": "monster-car-2"
+		},
+		{
+			"active_route": "home",
+			"cycle": 2,
+			"grass_quality": "default",
+			"node_count": 568,
+			"object_count": 3774.0
+		}
+	],
+	"qualification": "scene lifecycle and material/mesh ownership only; not a visual preference, complete-session, or performance qualification",
+	"quality": "default",
+	"renderer": "headless",
+	"screenshots": [],
+	"sequence": [
+		"Home",
+		"fixedwing",
+		"Home",
+		"mt8-bisonte",
+		"Home",
+		"monster-car-2",
+		"Home"
+	],
+	"viewport_target": {
+		"height": 720,
+		"width": 1280
+	}
+}

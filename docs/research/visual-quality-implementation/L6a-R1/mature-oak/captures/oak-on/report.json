@@ -1,0 +1,302 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"arguments": {
+		"ids": "oak_tree",
+		"mode": "gallery",
+		"out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-oak\\native\\oak-on",
+		"wind": "on"
+	},
+	"assets": [
+		{
+			"dependencies": [
+				"assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin",
+				"assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+				"assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png"
+			],
+			"description": "Oak tree, supplier LOD0",
+			"grounded_bounds_m": {
+				"max": [
+					5.003101,
+					11.651166,
+					4.425439
+				],
+				"min": [
+					-5.828022,
+					0.0,
+					-4.772417
+				],
+				"size": [
+					10.831124,
+					11.651166,
+					9.197856
+				]
+			},
+			"id": "oak_tree",
+			"lod": {
+				"alternate_source_lods_included": [],
+				"godot_import_generate": true,
+				"imported_supplied_levels": [
+					"LOD0"
+				],
+				"source_lod": "LOD0",
+				"source_supplied": true
+			},
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/oak_tree/oak_lod0.gltf",
+			"source_bounds_m": {
+				"ground_offset": 0.858131,
+				"height": 11.651166,
+				"max": [
+					5.003101,
+					10.793035,
+					4.425439
+				],
+				"min": [
+					-5.828022,
+					-0.858131,
+					-4.772417
+				],
+				"size": [
+					10.831124,
+					11.651166,
+					9.197856
+				]
+			},
+			"source_conversion_proof_sha256": "2a3b0c2d6e4bd940c53cdf4bee5af31ff9753b3b77b032962867a3fa89f72014",
+			"source_dependency_sha256": {
+				"assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015",
+				"assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.bin": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c",
+				"assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7"
+			},
+			"source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/oak_lod0.gltf",
+			"source_format": "glTF 2.0 converted from the licensed Blender LOD0",
+			"source_id": "opengameart_oak_tree_lod_2026",
+			"source_lod": "LOD0 only; supplier LOD1 and LOD2 are excluded",
+			"source_material_names": [
+				"M_Quercus"
+			],
+			"source_materials": 1.0,
+			"source_name": "Quercus_A_LOD0",
+			"source_sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7",
+			"source_surfaces": 1.0,
+			"source_triangles": 5303.0,
+			"textures": [
+				{
+					"source_entry": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/gltf/lod0/Quercus_A_1024.png",
+					"uri": "Quercus_A_1024.png"
+				}
+			]
+		}
+	],
+	"batch_count": 1,
+	"captures": [
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 3,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "oak_tree",
+			"sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				-20.0
+			],
+			"fov": 36.0,
+			"id": "back",
+			"sha256": "6ae9ab2a13a28b947f2fdd19caf356f88535c5711f731c3093ffe27db6571b66",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 2,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				0.5,
+				12.0
+			],
+			"fov": 50.0,
+			"id": "underside",
+			"sha256": "c89a8634c56194905340d0408ad9b01a029b86e13ff6b1bb9416849b94ecd8ef",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 3,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				25.0,
+				0.00999999977648258
+			],
+			"fov": 40.0,
+			"id": "overhead",
+			"sha256": "ff66567fc52f15df46bf02945414dc6b9b3a9fa85b28506f18978a7017ffbe4b",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 3,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_start",
+			"sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"counters": {
+				"draws": 3,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_one",
+			"sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"counters": {
+				"draws": 3,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_repeat",
+			"sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1024.0,
+			"counters": {
+				"draws": 3,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_wrap",
+			"sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16",
+			"wind": [
+				5.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 1.0,
+			"counters": {
+				"draws": 3,
+				"primitives": 5303,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				5.0,
+				20.0
+			],
+			"fov": 36.0,
+			"id": "wind_reverse",
+			"sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16",
+			"wind": [
+				-5.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 35.747,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 60432815,
+	"format": "openrc-tree-quality v1",
+	"godot": "4.7.2-stable (official)",
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "gallery",
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance.",
+	"vegetation_catalog_sha256": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
+	"viewport": [
+		1280,
+		720
+	]
+}

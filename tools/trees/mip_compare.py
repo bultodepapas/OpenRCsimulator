@@ -33,6 +33,7 @@ EXPECTED_MIP_TEXTURES = {
     "Leaves_NormalTree_C.png": "2",
     "Leaf_Pine_C.png": "2",
 }
+BARK_TEXTURES = {"Bark_NormalTree.png", "Bark_NormalTree_Normal.png"}
 
 
 def sha256_file(path: Path) -> str:
@@ -89,7 +90,13 @@ def capture_key(record: dict[str, Any]) -> tuple[str, int, int, int, int]:
     )
 
 
-def validate_capture_pair(baseline: dict[str, Any], candidate: dict[str, Any]) -> dict[str, Any]:
+def validate_capture_pair(
+    baseline: dict[str, Any], candidate: dict[str, Any], mip_scope: str
+) -> dict[str, Any]:
+    if mip_scope not in {"all", "bark"}:
+        raise ValueError(f"unsupported mip scope: {mip_scope}")
+    if baseline.get("mip_scope") != mip_scope or candidate.get("mip_scope") != mip_scope:
+        raise ValueError(f"capture manifests do not both report requested mip scope {mip_scope!r}")
     if baseline.get("identity") != candidate.get("identity"):
         raise ValueError("runtime project, renderer script, wind shader, or catalog identity changed between captures")
     if baseline.get("fixture") != candidate.get("fixture"):
@@ -118,6 +125,8 @@ def validate_capture_pair(baseline: dict[str, Any], candidate: dict[str, Any]) -
             + ", ".join(sorted(changed_configs))
         )
 
+    active_mip_textures: list[str] = []
+    candidate_mipmap_counts: dict[str, int] = {}
     for basename, normal_mode in EXPECTED_MIP_TEXTURES.items():
         pair = texture_pair.get(basename)
         if pair is None:
@@ -128,8 +137,12 @@ def validate_capture_pair(baseline: dict[str, Any], candidate: dict[str, Any]) -
         cand_config = str(cand.get("import_config_text", ""))
         if not re.search(r"(?m)^mipmaps/generate=false\s*$", base_config):
             raise ValueError(f"baseline must have mipmaps disabled for {basename}")
-        if not re.search(r"(?m)^mipmaps/generate=true\s*$", cand_config):
-            raise ValueError(f"candidate must generate mipmaps for {basename}")
+        candidate_should_mip = mip_scope == "all" or basename in BARK_TEXTURES
+        candidate_mip_setting = "true" if candidate_should_mip else "false"
+        if not re.search(rf"(?m)^mipmaps/generate={candidate_mip_setting}\s*$", cand_config):
+            raise ValueError(
+                f"candidate must set mipmaps/generate={candidate_mip_setting} for {basename} in {mip_scope} scope"
+            )
         if not re.search(rf"(?m)^compress/normal_map={normal_mode}\s*$", cand_config):
             raise ValueError(f"candidate normal-map import mode {normal_mode} missing for {basename}")
         if not re.search(r"(?m)^detect_3d/compress_to=0\s*$", cand_config):
@@ -138,8 +151,15 @@ def validate_capture_pair(baseline: dict[str, Any], candidate: dict[str, Any]) -
             raise ValueError(f"candidate must use lossless import for {basename}")
         if base.get("decoded_image_has_mipmaps") or int(base.get("decoded_image_mipmap_count", -1)) != 0:
             raise ValueError(f"baseline decoded image unexpectedly has mips: {basename}")
-        if not cand.get("decoded_image_has_mipmaps") or int(cand.get("decoded_image_mipmap_count", 0)) <= 0:
-            raise ValueError(f"candidate decoded image has no mip chain: {basename}")
+        candidate_mipmap_count = int(cand.get("decoded_image_mipmap_count", 0))
+        candidate_has_mips = bool(cand.get("decoded_image_has_mipmaps"))
+        candidate_mipmap_counts[basename] = candidate_mipmap_count
+        if candidate_should_mip:
+            if not candidate_has_mips or candidate_mipmap_count <= 0:
+                raise ValueError(f"candidate decoded image has no mip chain: {basename}")
+            active_mip_textures.append(basename)
+        elif candidate_has_mips or candidate_mipmap_count != 0:
+            raise ValueError(f"bark-only candidate unexpectedly has leaf mip chain: {basename}")
 
     flower = texture_pair.get("Flowers.png")
     if flower is None:
@@ -151,11 +171,10 @@ def validate_capture_pair(baseline: dict[str, Any], candidate: dict[str, Any]) -
 
     return {
         "changed_import_configs": sorted(changed_configs),
+        "mip_scope": mip_scope,
+        "active_mipmap_textures": sorted(active_mip_textures),
         "source_png_hashes_match": True,
-        "candidate_mipmap_counts": {
-            basename: int(texture_pair[basename]["candidate"]["decoded_image_mipmap_count"])
-            for basename in sorted(EXPECTED_MIP_TEXTURES)
-        },
+        "candidate_mipmap_counts": candidate_mipmap_counts,
         "texture_inventory": texture_pair,
     }
 
@@ -255,14 +274,21 @@ def analyze_group(
     }
 
 
-def run_capture(godot: Path, app: Path, output: Path, log_path: Path, timeout_s: int) -> None:
+def run_capture(
+    godot: Path,
+    app: Path,
+    output: Path,
+    log_path: Path,
+    timeout_s: int,
+    mip_scope: str,
+) -> None:
     command = [
         str(godot.resolve()),
         "--path", str(app.resolve()),
         "--rendering-driver", "opengl3",
         "--audio-driver", "Dummy",
         "--script", str(CAPTURE_SCRIPT.resolve()),
-        "--", f"--out={output.resolve()}",
+        "--", f"--out={output.resolve()}", f"--mip-scope={mip_scope}",
     ]
     with log_path.open("w", encoding="utf-8", newline="\n") as log:
         log.write("COMMAND: " + json.dumps(command) + "\n")
@@ -293,6 +319,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--baseline", type=Path, required=True, help="frozen no-mipmap app or parent directory")
     parser.add_argument("--candidate", type=Path, required=True, help="frozen explicit-mipmap app or parent directory")
     parser.add_argument("--out", type=Path, required=True, help="new paired-capture directory")
+    parser.add_argument(
+        "--mip-scope", choices=("all", "bark"), default="all",
+        help="require mip chains on all four tree maps, or only bark albedo/normal maps",
+    )
     parser.add_argument("--timeout-s", type=int, default=900, help="per-project native capture timeout")
     return parser.parse_args()
 
@@ -319,13 +349,13 @@ def main() -> int:
             raise ValueError("--timeout-s must be positive")
 
         print(f"Capturing baseline Compatibility frames: {baseline_app}", flush=True)
-        run_capture(godot, baseline_app, baseline_dir, baseline_log, args.timeout_s)
+        run_capture(godot, baseline_app, baseline_dir, baseline_log, args.timeout_s, args.mip_scope)
         print(f"Capturing mip candidate Compatibility frames: {candidate_app}", flush=True)
-        run_capture(godot, candidate_app, candidate_dir, candidate_log, args.timeout_s)
+        run_capture(godot, candidate_app, candidate_dir, candidate_log, args.timeout_s, args.mip_scope)
 
         baseline = parse_capture(baseline_dir / "report.json")
         candidate = parse_capture(candidate_dir / "report.json")
-        texture_info = validate_capture_pair(baseline, candidate)
+        texture_info = validate_capture_pair(baseline, candidate, args.mip_scope)
         base_by_key = {capture_key(record): record for record in baseline["captures"]}
         candidate_by_key = {capture_key(record): record for record in candidate["captures"]}
         if set(base_by_key) != set(candidate_by_key):
@@ -349,6 +379,7 @@ def main() -> int:
         result = {
             "format": FORMAT,
             "complete": True,
+            "mip_scope": args.mip_scope,
             "scope": "Fixed imported source geometry/materials, native Compatibility, 4x MSAA, fixed lighting, wind disabled, matched camera and subpixel offsets.",
             "mask": {
                 "method": "RGB max-channel distance from top-left background sample",
@@ -371,6 +402,8 @@ def main() -> int:
             "source_identities": baseline["identity"],
             "assets": baseline["assets"],
             "texture_import_audit": {
+                "mip_scope": texture_info["mip_scope"],
+                "active_mipmap_textures": texture_info["active_mipmap_textures"],
                 "changed_import_configs": texture_info["changed_import_configs"],
                 "source_png_hashes_match": texture_info["source_png_hashes_match"],
                 "candidate_mipmap_counts": texture_info["candidate_mipmap_counts"],

@@ -1,0 +1,4 @@
+Native lifecycle probe source identity
+Run SHA-256: A00CD109F8C4A3D4EEDD0EAF8A285881BFCCC25C0EE9766738B2CD4BF8B027BC
+Current producer SHA-256: FD2EBCBB695156EB911A2D3B7DDA05B9E26E6B17C99C7BBFEB2BCDEF76E44469
+Post-run source delta: capture_scope wording now names Home startup, fixedwing waiting for radio, paused RC scenes, and the lifecycle-only screenshot limitation; run logic and captured reports are unchanged.

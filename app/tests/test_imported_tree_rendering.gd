@@ -17,10 +17,12 @@ var _failures := 0
 
 func _initialize() -> void:
 	ShaderClock.register()
+	_test_tree_texture_imports()
 	_test_opt_in_tree_cells_and_damage()
 	_test_tree_wind_with_tree_cells()
 	_test_wind_modes_and_material_preservation()
 	_test_all_tree_sources_accept_tree_wind()
+	_test_oak_blend_fails_closed_to_static_source_material()
 	_test_tree_wind_transform_guard()
 	_test_invalid_cell_option_falls_back()
 	if _failures == 0:
@@ -300,8 +302,11 @@ func _test_all_tree_sources_accept_tree_wind() -> void:
 	for asset_id: String in EXPECTED_TREE_LEAF_TEXTURES:
 		expected_tree_ids.append(asset_id)
 	expected_tree_ids.sort()
-	_check("tree-wind source fixture covers all seven retained tree forms",
-		actual_tree_ids == expected_tree_ids)
+	var expected_all_tree_ids := expected_tree_ids.duplicate()
+	expected_all_tree_ids.append("oak_tree")
+	expected_all_tree_ids.sort()
+	_check("catalog covers seven wind-qualified trees plus the static oak source",
+		actual_tree_ids == expected_all_tree_ids)
 
 	var batches: Dictionary = {}
 	var expected_surfaces := 0
@@ -391,7 +396,7 @@ func _test_all_tree_sources_accept_tree_wind() -> void:
 				_check("%s surface %d has its expected bark or foliage atlas (texture=%s)" % [
 					asset_id, surface_index, albedo_name,
 				], false)
-	_check("tree-wind conversion covers every retained source tree", seen_tree_ids.size() == 7 and accepted_all)
+	_check("tree-wind conversion covers all seven qualified source trees", seen_tree_ids.size() == 7 and accepted_all)
 	_check("tree-wind converts every source surface", converted_surfaces == expected_surfaces)
 	for asset_id: String in expected_tree_ids:
 		var source_surfaces := 0
@@ -402,6 +407,58 @@ func _test_all_tree_sources_accept_tree_wind() -> void:
 		_check("%s converts every bark and foliage surface" % asset_id,
 			int(converted_surface_counts.get(asset_id, 0)) == source_surfaces)
 	wind_root.free()
+
+
+func _test_oak_blend_fails_closed_to_static_source_material() -> void:
+	var oak := ImportedVegetation.get_asset("oak_tree")
+	var parts := ImportedVegetation.get_parts("oak_tree")
+	_check("oak source metadata retains its 5,303-triangle one-surface LOD0",
+		str(oak.get("source_id", "")) == "opengameart_oak_tree_lod_2026"
+		and int(oak.get("source_triangles", 0)) == 5303
+		and int(oak.get("source_surfaces", 0)) == 1)
+	_check("oak has one imported mesh part", parts.size() == 1)
+	if parts.size() != 1:
+		return
+	var oak_mesh: Mesh = parts[0].get("mesh")
+	var source_materials: Array = parts[0].get("materials", [])
+	_check("oak source mesh preserves one atlas surface and 5,303 triangles",
+		oak_mesh != null
+		and oak_mesh.get_surface_count() == 1
+		and oak_mesh.get_faces().size() / 3 == 5303)
+	_check("oak source material array maps one material to its one surface",
+		source_materials.size() == 1
+		and oak_mesh != null
+		and oak_mesh.surface_get_material(0) == source_materials[0])
+	if source_materials.size() != 1 or not source_materials[0] is BaseMaterial3D:
+		return
+	var oak_material := source_materials[0] as BaseMaterial3D
+	_check("oak preserves the packed Quercus base-color atlas with BLEND depth pre-pass",
+		oak_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_DEPTH_PRE_PASS
+		and _texture_filename(oak_material.albedo_texture) == "Quercus_A_1024.png")
+	_check("oak uses the matte roughness mapping and records Godot's native specular default",
+		is_equal_approx(float(oak_material.get("roughness")), 1.0)
+		and is_equal_approx(float(oak_material.get("metallic_specular")), 0.5))
+	_check("BLEND alpha is rejected by the tree-wind material gate",
+		ImportedVegetation._tree_material_support_reason(oak_material).contains("transparency mode"))
+
+	var batches: Dictionary = {}
+	_check("oak queues as its exact retained source ID",
+		ImportedVegetation.queue(batches, "oak_tree", Transform3D.IDENTITY, 408) == "oak_tree")
+	var static_root := ImportedVegetation.build(batches, false, {"tree_wind": true})
+	var checked_static_source := false
+	for child in static_root.get_children():
+		if not child is MultiMeshInstance3D or not str(child.name).begins_with("oak_tree_Part_"):
+			continue
+		var instance := child as MultiMeshInstance3D
+		var static_mesh: Mesh = instance.multimesh.mesh
+		_check("oak BLEND fallback leaves tree wind disabled",
+			not bool(instance.get_meta("_imported_vegetation_tree_wind_enabled", false)))
+		_check("oak BLEND fallback retains its original material reference",
+			static_mesh.get_surface_count() == 1
+			and static_mesh.surface_get_material(0) == oak_material)
+		checked_static_source = true
+	_check("oak BLEND fallback emits its static source mesh", checked_static_source)
+	static_root.free()
 
 
 func _test_invalid_cell_option_falls_back() -> void:
@@ -786,3 +843,43 @@ func _check(label: String, condition: bool) -> void:
 	if not condition:
 		_failures += 1
 		push_error("FAIL: %s" % label)
+
+
+func _test_tree_texture_imports() -> void:
+	# Regression: headless editor imports silently kept the four 3D maps without mips.
+	# Pinned settings protect fresh checkouts; native execution checks decoded resources.
+	for filename in ["Bark_NormalTree.png", "Bark_NormalTree_Normal.png", "Leaves_NormalTree_C.png", "Leaf_Pine_C.png"]:
+		var path: String = "res://assets/landscape/vegetation/models/" + filename
+		var settings := ConfigFile.new()
+		var loaded := settings.load(path + ".import") == OK
+		_check(filename + " has a pinned import recipe", loaded)
+		if not loaded:
+			continue
+		_check(filename + " keeps its reviewed mip policy and lossless full-size import",
+			settings.get_value("params", "mipmaps/generate", null) == filename.begins_with("Bark_")
+			and settings.get_value("params", "mipmaps/limit", 0) == -1
+			and settings.get_value("params", "compress/mode", -1) == 0
+			and settings.get_value("params", "process/size_limit", -1) == 0
+			and settings.get_value("params", "detect_3d/compress_to", -1) == 0)
+		var expected_normal := 1 if filename == "Bark_NormalTree_Normal.png" else 2
+		_check(filename + " declares color or renormalized normal-map mip semantics",
+			settings.get_value("params", "compress/normal_map", -1) == expected_normal)
+		_check(filename + " retains straight alpha, repaired borders and original normal direction",
+			settings.get_value("params", "process/fix_alpha_border", false)
+			and not settings.get_value("params", "process/premult_alpha", true)
+			and not settings.get_value("params", "process/normal_map_invert_y", true))
+		if DisplayServer.get_name() == "headless":
+			continue # Dummy cannot establish native texture readback or GPU sampling.
+		var texture := load(path) as Texture2D
+		_check(filename + " loads a native texture", texture != null)
+		if texture == null:
+			continue
+		var picture := texture.get_image()
+		_check(filename + " has native image data", picture != null and not picture.is_empty())
+		if picture == null or picture.is_empty():
+			continue
+		var dimension := 1024 if filename == "Leaves_NormalTree_C.png" else 2048
+		var levels := 11 if filename.begins_with("Bark_") else 0
+		_check(filename + " retains source dimensions and its complete mip chain",
+			picture.get_width() == dimension and picture.get_height() == dimension
+			and picture.get_mipmap_count() == levels and picture.has_mipmaps() == (levels > 0))

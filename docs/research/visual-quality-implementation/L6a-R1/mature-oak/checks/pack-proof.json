@@ -1,0 +1,61 @@
+{
+  "catalog_sha256": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
+  "cc0_license_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+  "oak_license_sha256": "1be8dab83f4107623eeba4d77e3d66091068e839e1a8b688ea1bf867c2b43e40",
+  "packaged_credits_sha256": "3029d71d26022390454c06d18bdc530af62c22d3b45b7a339fdd15cbe22e7b1e",
+  "pck_sha256": "27a04ac140b873d948bacc5a42951486d63166183cce422e77109a6f380aa29c",
+  "pck_bytes": 168537880,
+  "source_and_pack_identical": true,
+  "textures": {
+    "res://assets/landscape/vegetation/models/Bark_NormalTree.png": {
+      "base_image_sha256": "e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5",
+      "decoded_bytes": 22369620,
+      "format": 5,
+      "height": 2048,
+      "image_sha256": "33e3b158a5deb02e85bf2e1dc001433dfb78d06b2ccc2d171b23e00f5fac543c",
+      "mipmap_count": 11,
+      "mipmaps": true,
+      "width": 2048
+    },
+    "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png": {
+      "base_image_sha256": "d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a",
+      "decoded_bytes": 22369620,
+      "format": 5,
+      "height": 2048,
+      "image_sha256": "7be89874ad285cb1597dfb46877efdb2fbcff50694413567a72df1db2409e68e",
+      "mipmap_count": 11,
+      "mipmaps": true,
+      "width": 2048
+    },
+    "res://assets/landscape/vegetation/models/Leaf_Pine_C.png": {
+      "base_image_sha256": "3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d",
+      "decoded_bytes": 16777216,
+      "format": 5,
+      "height": 2048,
+      "image_sha256": "3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d",
+      "mipmap_count": 0,
+      "mipmaps": false,
+      "width": 2048
+    },
+    "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png": {
+      "base_image_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+      "decoded_bytes": 4194304,
+      "format": 5,
+      "height": 1024,
+      "image_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+      "mipmap_count": 0,
+      "mipmaps": false,
+      "width": 1024
+    },
+    "res://assets/landscape/vegetation/models/oak_tree/Quercus_A_1024.png": {
+      "base_image_sha256": "0384150ef80b605223abd927071cfc6f7797456c901c586b2a11e77a17cf0e6a",
+      "decoded_bytes": 4194304,
+      "format": 5,
+      "height": 1024,
+      "image_sha256": "0384150ef80b605223abd927071cfc6f7797456c901c586b2a11e77a17cf0e6a",
+      "mipmap_count": 0,
+      "mipmaps": false,
+      "width": 1024
+    }
+  }
+}

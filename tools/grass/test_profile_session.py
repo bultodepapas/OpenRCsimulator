@@ -1,9 +1,13 @@
 from __future__ import annotations
 
+import argparse
+import json
 import tempfile
 import unittest
 from pathlib import Path
 import sys
+from types import SimpleNamespace
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -87,6 +91,81 @@ class RunEligibilityTests(unittest.TestCase):
             profile_session.validate_report_contract(report),
         )
 
+    def test_windows_inventory_uses_hidden_tasklist_csv_and_finds_godot(self):
+        output = (
+            '"Godot_v4.7.2-stable_win64_console.exe","12796","Console","1,024 K"\r\n'
+            '"editor.exe","8","Console","2,048 K"\r\n'
+        )
+        with patch.object(profile_session.platform, "system", return_value="Windows"), patch.object(
+            profile_session.subprocess,
+            "run",
+            return_value=SimpleNamespace(returncode=0, stdout=output, stderr=""),
+        ) as run:
+            inventory = profile_session.godot_process_inventory()
+
+        self.assertEqual(run.call_args.args[0], ["tasklist", "/FO", "CSV", "/NH"])
+        self.assertEqual(run.call_args.kwargs["creationflags"], getattr(profile_session.subprocess, "CREATE_NO_WINDOW", 0x08000000))
+        self.assertEqual(inventory["godot_processes"], [
+            {"image": "Godot_v4.7.2-stable_win64_console.exe", "pid": "12796"}
+        ])
+
+    def test_preflight_stops_before_second_launch_and_preserves_first_report(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            app = root / "app"
+            app.mkdir()
+            (app / "project.godot").write_text("config_version=5\n", encoding="utf-8")
+            godot = root / "Godot_v4.7.2-stable_win64_console.exe"
+            godot.write_bytes(b"test engine identity")
+            output = root / "campaign"
+            args = argparse.Namespace(app=app, godot=godot, out=output, pairs=5, timeout=180)
+            inventories = iter((
+                {
+                    "status": "available", "platform": "Windows", "scope": "test process inventory",
+                    "command": ["tasklist"], "timeout_s": 10, "godot_processes": [],
+                },
+                {
+                    "status": "available", "platform": "Windows", "scope": "test process inventory",
+                    "command": ["tasklist"], "timeout_s": 10,
+                    "godot_processes": [{"image": "Godot_v4.7.2-stable_win64_console.exe", "pid": "12796"}],
+                },
+            ))
+
+            def fake_launch(**kwargs):
+                kwargs["report_path"].write_text('{"preserved": true}\n', encoding="utf-8")
+                kwargs["log_path"].write_text("preserved raw log\n", encoding="utf-8")
+                return {
+                    "id": f"pair-{kwargs['pair_index']:02d}-{kwargs['variant']}",
+                    "variant": kwargs["variant"],
+                    "report_identity": {"godot": "4.7.2.stable.official"},
+                    "rejection_reasons": [],
+                    "interrupted": False,
+                    "metrics": {"frame_ms": {"p95": 16.0, "p99": 20.0}},
+                }
+
+            with patch.object(
+                profile_session, "godot_process_inventory", side_effect=lambda: next(inventories)
+            ) as inventory_check, patch.object(
+                profile_session, "_launch_and_summarize", side_effect=fake_launch
+            ) as launch:
+                with self.assertRaisesRegex(profile_session.CampaignStop, "PID 12796"):
+                    profile_session.run_campaign(args)
+
+            campaign = json.loads((output / "campaign.json").read_text(encoding="utf-8"))
+            first_report = output / "runs" / "default" / "run-01-default.json"
+            first_log = output / "runs" / "default" / "run-01-default.log"
+            self.assertEqual(inventory_check.call_count, 2)
+            self.assertEqual(launch.call_count, 1)
+            self.assertEqual(first_report.read_text(encoding="utf-8"), '{"preserved": true}\n')
+            self.assertEqual(first_log.read_text(encoding="utf-8"), "preserved raw log\n")
+            self.assertEqual(campaign["status"], "stopped")
+            self.assertIn("PID 12796", campaign["stop_reason"])
+            self.assertEqual(campaign["pairs"][0]["status"], "stopped_preflight")
+            self.assertFalse(campaign["pairs"][0]["qualified"])
+            self.assertEqual(campaign["comparison"]["complete_pair_count"], 0)
+            self.assertFalse(campaign["comparison"]["minimum_pairs_met"])
+            self.assertEqual(len(campaign["runs"]), 1)
+
     def test_nonzero_abort_rejects_even_a_valid_native_report(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             summary = reduce_fixture(Path(temp_dir), test_native_summary.sustained_report())
@@ -141,6 +220,34 @@ class ProvenanceAndOutputTests(unittest.TestCase):
             self.assertEqual(profile_session.provenance_rejection_reasons(before, docs_only, "a", "a"), [])
             runtime.write_text("extends Node\n# changed runtime\n", encoding="utf-8")
             after = profile_session.app_runtime_snapshot(app)
+            reasons = profile_session.provenance_rejection_reasons(before, after, "a", "a")
+            self.assertIn("app runtime source/config changed during the campaign", reasons)
+
+    def test_external_buffers_and_native_extension_binaries_are_hashed(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            app = Path(temp_dir) / "app"
+            binary_dir = app / "native" / "ground_vehicle"
+            binary_dir.mkdir(parents=True)
+            asset_names = (
+                "mesh.bin",
+                "ground_vehicle.dll",
+                "ground_vehicle.so",
+                "ground_vehicle.dylib",
+            )
+            for asset_name in asset_names:
+                (binary_dir / asset_name).write_bytes(b"original binary data")
+
+            before = profile_session.app_runtime_snapshot(app)
+            for asset_name in asset_names:
+                self.assertIn(f"native/ground_vehicle/{asset_name}", before["files_sha256"])
+
+            changed = binary_dir / "ground_vehicle.dll"
+            changed.write_bytes(b"changed native extension")
+            after = profile_session.app_runtime_snapshot(app)
+            self.assertNotEqual(
+                before["files_sha256"]["native/ground_vehicle/ground_vehicle.dll"],
+                after["files_sha256"]["native/ground_vehicle/ground_vehicle.dll"],
+            )
             reasons = profile_session.provenance_rejection_reasons(before, after, "a", "a")
             self.assertIn("app runtime source/config changed during the campaign", reasons)
 

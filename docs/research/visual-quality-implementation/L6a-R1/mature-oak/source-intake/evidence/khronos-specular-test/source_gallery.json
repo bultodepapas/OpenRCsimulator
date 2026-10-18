@@ -1,0 +1,141 @@
+{
+	"asset": {
+		"asset_url": "https://opengameart.org/content/oak-tree",
+		"authors": [
+			"lauris71"
+		],
+		"download_date": "2026-10-18",
+		"download_url": "https://opengameart.org/sites/default/files/quercus_A_packed_v1_0.zip",
+		"license": "CC BY-SA 3.0",
+		"license_url": "https://creativecommons.org/licenses/by-sa/3.0/",
+		"notice_path": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt",
+		"source_archive_sha256": "496f250c29eb1f56e391e55989530028e156ae43a3d1eb9f52ab09aa1bccbebf",
+		"source_blend_sha256": "3b32573acd4e8eb5b7e0a96aa363932ec785a854d6e8c71f56f29b10f5abd37c",
+		"title": "Oak Tree (Quercus robur)"
+	},
+	"capture_settings": {
+		"height": null,
+		"mesh_decimation": false,
+		"msaa": null,
+		"orthographic_frame_height_m": null,
+		"renderer": "not_initialized",
+		"requested": false,
+		"source_materials_mutated": false,
+		"status": "metadata_only; no viewport or renderer capture was requested",
+		"width": null
+	},
+	"captures": [],
+	"complete": true,
+	"format": "openrc-tree-source-gallery v1",
+	"godot": "4.7.2-stable (official)",
+	"source": {
+		"bytes": 2639,
+		"dependencies": [],
+		"format": "glTF 2.0",
+		"manifest": null,
+		"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-continuation-assets/gltf-khr-test/oak_lod0.gltf",
+		"sha256": "5493a71700e8cc67e00dd10149ddd2db4181e7cbdd651fe41736ec1e5242c57e"
+	},
+	"variants": [
+		{
+			"id": "Quercus_A_LOD0",
+			"lod": {
+				"basis": "Original glTF node and mesh inventory; no LOD generation or mesh_lod_threshold substitution.",
+				"present": false
+			},
+			"mesh_instance_count": 1,
+			"node_class": "MeshInstance3D",
+			"node_path": "Quercus_A_LOD0",
+			"source_node_basis_columns": [
+				[
+					1.0,
+					0.0,
+					0.0
+				],
+				[
+					0.0,
+					1.0,
+					0.0
+				],
+				[
+					0.0,
+					0.0,
+					1.0
+				]
+			],
+			"source_node_scale": [
+				1.0,
+				1.0,
+				1.0
+			],
+			"source_node_translation_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"surfaces": [
+				{
+					"index_count": 15909,
+					"material": {
+						"class": "StandardMaterial3D",
+						"name": "M_Quercus",
+						"properties": {
+							"albedo_color": [
+								1.0,
+								1.0,
+								1.0,
+								1.0
+							],
+							"albedo_texture": {
+								"class": "ImageTexture",
+								"name": "Quercus_A_1024",
+								"resource_path": "",
+								"size_px": [
+									1024,
+									1024
+								]
+							},
+							"alpha_scissor_threshold": 0.5,
+							"ao_texture": "<Object#null>",
+							"cull_mode": 2,
+							"metallic": 0.0,
+							"metallic_specular": 0.5,
+							"metallic_texture": "<Object#null>",
+							"normal_texture": "<Object#null>",
+							"roughness": 1.0,
+							"roughness_texture": "<Object#null>",
+							"shading_mode": 1,
+							"transparency": 4
+						},
+						"resource_path": ""
+					},
+					"mesh": "oak_lod0_Quercus_A_LOD0_Mesh",
+					"node": "Quercus_A_LOD0",
+					"primitive_type": 3,
+					"surface_index": 0,
+					"surface_name": "M_Quercus",
+					"triangle_count": 5303,
+					"vertex_count": 9674
+				}
+			],
+			"triangle_count": 5303,
+			"world_bounds_m": {
+				"center": [
+					-0.412460803985596,
+					4.96745157241821,
+					-0.173489093780518
+				],
+				"position": [
+					-5.82802248001099,
+					-0.858131408691406,
+					-4.77241706848145
+				],
+				"size": [
+					10.8311233520508,
+					11.6511659622192,
+					9.19785594940186
+				]
+			}
+		}
+	]
+}

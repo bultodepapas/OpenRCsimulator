@@ -23,16 +23,16 @@ func _initialize() -> void:
 func _test_catalog_and_parts() -> void:
 	var data := ImportedVegetation.catalog()
 	var counts: Dictionary = data.get("counts", {})
-	_check("seven downloaded tree variants", counts.get("trees", 0) == 7)
+	_check("eight retained tree variants", counts.get("trees", 0) == 8)
 	_check("two downloaded shrubs", counts.get("shrubs", 0) == 2)
 	_check("four downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 4)
 	_check("three downloaded flowering assets", counts.get("flowers", 0) == 3)
 	_check("two downloaded crops", counts.get("crops", 0) == 2)
 	_check("one downloaded reed clump", counts.get("reeds", 0) == 1)
-	_check("all pinned sources are cataloged", data.get("sources", []).size() == 3)
+	_check("all pinned sources are cataloged", data.get("sources", []).size() == 4)
 
 	var assets: Array = data.get("assets", [])
-	_check("19 assets are cataloged", assets.size() == 19)
+	_check("20 assets are cataloged", assets.size() == 20)
 	for asset_value in assets:
 		var asset: Dictionary = asset_value
 		var asset_id := str(asset.get("id", ""))
@@ -54,15 +54,39 @@ func _test_catalog_and_parts() -> void:
 		_check("%s triangle count matches source" % asset_id, triangles == int(asset.get("source_triangles", -1)))
 		_check("%s surface count matches source" % asset_id, surfaces == int(asset.get("source_surfaces", -1)))
 
+	var oak := ImportedVegetation.get_asset("oak_tree")
+	var oak_parts := ImportedVegetation.get_parts("oak_tree")
+	_check("oak entry pins the OpenGameArt source and retained LOD0 geometry",
+		oak.get("source_id", "") == "opengameart_oak_tree_lod_2026"
+		and oak.get("role", "") == "tree"
+		and int(oak.get("source_triangles", 0)) == 5303
+		and int(oak.get("source_surfaces", 0)) == 1)
+	_check("oak LOD0 imports as one original mesh part", oak_parts.size() == 1)
+	if oak_parts.size() == 1:
+		var oak_mesh: Mesh = oak_parts[0].get("mesh")
+		var oak_materials: Array = oak_parts[0].get("materials", [])
+		_check("oak source mesh has one surface and 5,303 triangles",
+			oak_mesh != null
+			and oak_mesh.get_surface_count() == 1
+			and oak_mesh.get_faces().size() / 3 == 5303)
+		_check("oak part preserves the imported source material reference",
+			oak_materials.size() == 1
+			and oak_mesh != null
+			and oak_mesh.surface_get_material(0) == oak_materials[0])
+
 
 func _test_fit_and_aliases() -> void:
-	_check("shade tree alias resolves by seed", ImportedVegetation.resolve_id("shade_tree", 7) == "common_tree_1")
+	_check("shade tree alias starts with the new mature oak source", ImportedVegetation.resolve_id("shade_tree", 7) == "oak_tree")
 	var mature_forms: Dictionary = {}
 	for seed in range(-7, 7):
 		var id := ImportedVegetation.resolve_id("shade_tree", seed)
 		mature_forms[id] = true
 		_check("tree aliases share the same deterministic source", id == ImportedVegetation.resolve_id("tree", seed))
-	_check("mature trees use seven retained source forms", mature_forms.size() == 7 and not mature_forms.has(""))
+	_check("mature aliases retain seven forms with oak replacing the first common-tree slot",
+		mature_forms.size() == 7
+		and mature_forms.has("oak_tree")
+		and not mature_forms.has("common_tree_1")
+		and not mature_forms.has(""))
 	_check("sapling alias is restricted to downloaded broadleaf variants",
 		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
 		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"

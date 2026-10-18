@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for multipart-fixture: a shared multi-part bend frame is not qualified
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:362)
+       [2] _test_tree_wind_transform_guard (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:275)
+       [3] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:25)
+WARNING: Tree wind is disabled for common_tree_1 because a placement transform is unsupported (part is not upright around local Y)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:392)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] _test_tree_wind_transform_guard (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:288)
+       [4] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:25)
+WARNING: ImportedVegetation option tree_cell_size_m must be 0, 64, 128, or 256; using legacy batching
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_option_once (res://scenery/imported_vegetation.gd:334)
+       [1] _tree_cell_size_from_options (res://scenery/imported_vegetation.gd:322)
+       [2] build (res://scenery/imported_vegetation.gd:113)
+       [3] _test_invalid_cell_option_falls_back (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:414)
+       [4] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:26)
+WARNING: ImportedVegetation option tree_wind must be a boolean; ignoring it
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_option_once (res://scenery/imported_vegetation.gd:334)
+       [1] _tree_wind_from_options (res://scenery/imported_vegetation.gd:303)
+       [2] build (res://scenery/imported_vegetation.gd:114)
+       [3] _test_invalid_cell_option_falls_back (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:416)
+       [4] _initialize (C:/DEVELOPMENT/OpenRCsimulator/tmp/tree-mips/test_imported_tree_rendering.gd:26)
+imported tree rendering tests passed

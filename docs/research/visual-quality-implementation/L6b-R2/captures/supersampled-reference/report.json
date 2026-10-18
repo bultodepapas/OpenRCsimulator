@@ -1,0 +1,252 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"assets": {
+		"bush_common_flowers": {
+			"catalog_source_sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+			"height_m": 1.581786,
+			"parts": 1,
+			"role": "shrub",
+			"scene": "res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf",
+			"scene_sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+			"surfaces": [
+				{
+					"albedo_texture": "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+					"alpha_scissor_threshold": 0.200000002980232,
+					"cull_mode": 2,
+					"material_class": "StandardMaterial3D",
+					"material_resource": "res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf::StandardMaterial3D_fh42s",
+					"normal_texture": "",
+					"part_index": 0,
+					"surface_index": 0,
+					"transparency": 2
+				},
+				{
+					"albedo_texture": "res://assets/landscape/vegetation/models/Flowers.png",
+					"alpha_scissor_threshold": 0.200000002980232,
+					"cull_mode": 2,
+					"material_class": "StandardMaterial3D",
+					"material_resource": "res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf::StandardMaterial3D_5wkht",
+					"normal_texture": "",
+					"part_index": 0,
+					"surface_index": 1,
+					"transparency": 2
+				}
+			],
+			"triangles": 1368
+		},
+		"common_tree_3": {
+			"catalog_source_sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+			"height_m": 9.42519,
+			"parts": 1,
+			"role": "tree",
+			"scene": "res://assets/landscape/vegetation/models/CommonTree_3.gltf",
+			"scene_sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+			"surfaces": [
+				{
+					"albedo_texture": "res://assets/landscape/vegetation/models/Bark_NormalTree.png",
+					"alpha_scissor_threshold": 0.200000002980232,
+					"cull_mode": 2,
+					"material_class": "StandardMaterial3D",
+					"material_resource": "res://assets/landscape/vegetation/models/CommonTree_3.gltf::StandardMaterial3D_1ifny",
+					"normal_texture": "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+					"part_index": 0,
+					"surface_index": 0,
+					"transparency": 2
+				},
+				{
+					"albedo_texture": "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+					"alpha_scissor_threshold": 0.200000002980232,
+					"cull_mode": 2,
+					"material_class": "StandardMaterial3D",
+					"material_resource": "res://assets/landscape/vegetation/models/CommonTree_3.gltf::StandardMaterial3D_okkcp",
+					"normal_texture": "",
+					"part_index": 0,
+					"surface_index": 1,
+					"transparency": 2
+				}
+			],
+			"triangles": 3505
+		}
+	},
+	"captures": [
+		{
+			"asset_id": "common_tree_3",
+			"distance_m": 128.0,
+			"filename": "common_tree_3__d128__5120x2880__p00.png",
+			"height": 2880,
+			"phase_index": 0,
+			"sha256": "8f823cf3ceddc7aab4b5c39cb6ce0f988fa41d260f7bd2ac139702038854a316",
+			"subpixel_offset_x_px": 0.0,
+			"width": 5120,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "common_tree_3",
+			"distance_m": 128.0,
+			"filename": "common_tree_3__d128__3840x2160__p00.png",
+			"height": 2160,
+			"phase_index": 0,
+			"sha256": "6cee67237cc2e5b68c625f5642bf32dbf4a6fa0858036c1bb8762f13dc8b6ad8",
+			"subpixel_offset_x_px": 0.0,
+			"width": 3840,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"distance_m": 128.0,
+			"filename": "bush_common_flowers__d128__5120x2880__p00.png",
+			"height": 2880,
+			"phase_index": 0,
+			"sha256": "7882ded0b9115e852ebdc269ddeba2fbbafdcc5f45a6181f1863b6b96207ad09",
+			"subpixel_offset_x_px": 0.0,
+			"width": 5120,
+			"world_offset_x_m": 0.0
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"distance_m": 128.0,
+			"filename": "bush_common_flowers__d128__3840x2160__p00.png",
+			"height": 2160,
+			"phase_index": 0,
+			"sha256": "68723d5c9a8e619e3113cb5bb54f43c7eef7f44e9881ec63931cf87c6acc1a7c",
+			"subpixel_offset_x_px": 0.0,
+			"width": 3840,
+			"world_offset_x_m": 0.0
+		}
+	],
+	"complete": true,
+	"fixture": {
+		"asset_ids": [
+			"common_tree_3",
+			"bush_common_flowers"
+		],
+		"background_rgba": [
+			0.0350000001490116,
+			0.189999997615814,
+			0.839999973773956,
+			1.0
+		],
+		"capture_process_mode": "disabled",
+		"distances_m": [
+			128.0
+		],
+		"fov_degrees": 50.0,
+		"interpretation": "Subpixel camera translations probe raster coverage sensitivity for fixed geometry. Adjacent-mask changes are a sampling-instability proxy, not real-time shimmer or flight evidence.",
+		"msaa": "4x",
+		"phase_count": 1,
+		"phase_offsets_pixels": [
+			0.0
+		],
+		"shadow_enabled": false,
+		"view_sizes": [
+			[
+				5120,
+				2880
+			],
+			[
+				3840,
+				2160
+			]
+		],
+		"wind_clock_seconds": 0.0,
+		"wind_enabled": false,
+		"wind_vector_mps": [
+			0.0,
+			0.0,
+			0.0
+		]
+	},
+	"format": "openrc-tree-mipmap-reference v1",
+	"godot": "4.7.2-stable (official)",
+	"identity": {
+		"res://assets/landscape/vegetation/catalog.json": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9",
+		"res://project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+		"res://scenery/imported_vegetation.gd": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6",
+		"res://scenery/imported_vegetation_wind.gdshader": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6"
+	},
+	"renderer": "gl_compatibility",
+	"textures": {
+		"res://assets/landscape/vegetation/models/Bark_NormalTree.png": {
+			"basename": "Bark_NormalTree.png",
+			"decoded_image_data_bytes": 16777216,
+			"decoded_image_data_sha256": "e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5",
+			"decoded_image_has_mipmaps": false,
+			"decoded_image_mipmap_count": 0,
+			"image_format": 5,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://c0q7wmsydqmpw\"\npath=\"res://.godot/imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex\"\nmetadata={\n\"vram_texture\": false\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/Bark_NormalTree.png\"\ndest_files=[\"res://.godot/imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex\"]\n\n[params]\n\ncompress/mode=0\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=false\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+			"import_sha256": "0c2fdc30ae8e06e4550bfce0ec0117549f23071d6607c73297613c42e6e13827",
+			"source_png_sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"common_tree_3"
+			]
+		},
+		"res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png": {
+			"basename": "Bark_NormalTree_Normal.png",
+			"decoded_image_data_bytes": 16777216,
+			"decoded_image_data_sha256": "d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a",
+			"decoded_image_has_mipmaps": false,
+			"decoded_image_mipmap_count": 0,
+			"image_format": 5,
+			"image_size": [
+				2048,
+				2048
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://g18e3bx1mudu\"\npath=\"res://.godot/imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex\"\nmetadata={\n\"vram_texture\": false\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png\"\ndest_files=[\"res://.godot/imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex\"]\n\n[params]\n\ncompress/mode=0\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=false\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+			"import_sha256": "93cc66c2bdfd4339dbf1331832e8dcf829c22161a0ddf853fff507e153b2d1d3",
+			"source_png_sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"common_tree_3"
+			]
+		},
+		"res://assets/landscape/vegetation/models/Flowers.png": {
+			"basename": "Flowers.png",
+			"decoded_image_data_bytes": 3955392,
+			"decoded_image_data_sha256": "15608518ed3c4806e12ed3803587b5b97f36ca918a286e7195e82d00e9f31290",
+			"decoded_image_has_mipmaps": false,
+			"decoded_image_mipmap_count": 0,
+			"image_format": 5,
+			"image_size": [
+				1008,
+				981
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://dxfu6yeh20vm\"\npath=\"res://.godot/imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.ctex\"\nmetadata={\n\"vram_texture\": false\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/Flowers.png\"\ndest_files=[\"res://.godot/imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.ctex\"]\n\n[params]\n\ncompress/mode=0\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=false\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/Flowers.png.import",
+			"import_sha256": "48baf5f4e428cf7254c6d945e827e0c4c89b69e6e3ae55851cdfcd29d2e840cf",
+			"source_png_sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"bush_common_flowers"
+			]
+		},
+		"res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png": {
+			"basename": "Leaves_NormalTree_C.png",
+			"decoded_image_data_bytes": 4194304,
+			"decoded_image_data_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+			"decoded_image_has_mipmaps": false,
+			"decoded_image_mipmap_count": 0,
+			"image_format": 5,
+			"image_size": [
+				1024,
+				1024
+			],
+			"import_config_text": "[remap]\n\nimporter=\"texture\"\ntype=\"CompressedTexture2D\"\nuid=\"uid://0rvagyjf5jn1\"\npath=\"res://.godot/imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.ctex\"\nmetadata={\n\"vram_texture\": false\n}\n\n[deps]\n\nsource_file=\"res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png\"\ndest_files=[\"res://.godot/imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.ctex\"]\n\n[params]\n\ncompress/mode=0\ncompress/high_quality=false\ncompress/lossy_quality=0.7\ncompress/uastc_level=0\ncompress/rdo_quality_loss=0.0\ncompress/hdr_compression=1\ncompress/normal_map=0\ncompress/channel_pack=0\nmipmaps/generate=false\nmipmaps/limit=-1\nroughness/mode=0\nroughness/src_normal=\"\"\nprocess/channel_remap/red=0\nprocess/channel_remap/green=1\nprocess/channel_remap/blue=2\nprocess/channel_remap/alpha=3\nprocess/fix_alpha_border=true\nprocess/premult_alpha=false\nprocess/normal_map_invert_y=false\nprocess/hdr_as_srgb=false\nprocess/hdr_clamp_exposure=false\nprocess/size_limit=0\ndetect_3d/compress_to=1\n",
+			"import_path": "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+			"import_sha256": "4cca679886ba79c13dc127dae82be588309ea26acd41e4f0cf97f3c0ccf12911",
+			"source_png_sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3",
+			"texture_class": "CompressedTexture2D",
+			"used_by": [
+				"common_tree_3",
+				"bush_common_flowers"
+			]
+		}
+	}
+}

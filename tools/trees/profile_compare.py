@@ -21,10 +21,22 @@ IDENTITY_FILES = (
     "assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
     "assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
 )
+OPTIONAL_IDENTITY_FILES = (
+    "assets/landscape/vegetation/LICENSE_OAK.txt",
+    "assets/landscape/vegetation/models/oak_tree/oak_lod0.gltf.import",
+    "assets/landscape/vegetation/models/oak_tree/Quercus_A_1024.png.import",
+)
 
 
 def digest(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def project_identity(project: Path) -> dict[str, str | None]:
+    result = {name: digest(project / name) for name in IDENTITY_FILES}
+    result.update({name: digest(project / name) if (project / name).is_file() else None
+                   for name in OPTIONAL_IDENTITY_FILES})
+    return result
 
 
 def percentile(values: list[float], fraction: float) -> float:
@@ -77,8 +89,7 @@ def main() -> None:
         if not (project / ".godot").is_dir():
             parser.error(f"import this frozen project first: {project}")
     output.mkdir(parents=True)
-    identities = {label: {name: digest(project / name) for name in IDENTITY_FILES}
-                  for label, project in projects.items()}
+    identities = {label: project_identity(project) for label, project in projects.items()}
     summary = {
         "format": "openrc-tree-static-profile v1", "complete": False,
         "scope": "Uncapped static Compatibility viewport; excludes aircraft simulation, UI, audio, active-flight ratio and owner acceptance.",
@@ -121,7 +132,7 @@ def main() -> None:
             "wall_p95_delta_ms": pair["candidate"]["metrics"]["wall_ms"]["p95"] - pair["baseline"]["metrics"]["wall_ms"]["p95"],
             "gpu_p95_delta_ms": pair["candidate"]["metrics"]["gpu_ms"]["p95"] - pair["baseline"]["metrics"]["gpu_ms"]["p95"]})
     for label, project in projects.items():
-        if identities[label] != {name: digest(project / name) for name in IDENTITY_FILES}:
+        if identities[label] != project_identity(project):
             raise RuntimeError(f"{label} changed during measurements")
     summary["backend"] = expected_backend
     summary["median_paired_wall_p95_delta_ms"] = statistics.median(p["wall_p95_delta_ms"] for p in summary["pairs"])

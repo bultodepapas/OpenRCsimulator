@@ -20,6 +20,39 @@ The resource audit is read-only and may run headless, with a new output file:
   --script "$PWD/tools/grass/audit_materials.gd" -- --out="$PWD/tmp/grass-audit-new.json"
 ```
 
+`check_pack.gd` verifies a Windows-preset PCK from a new, empty project directory. Export with the repository's configured `Windows Desktop` preset; supply absolute paths to the resource-only probe:
+
+```powershell
+New-Item -ItemType Directory tmp/grass-pack-new/empty
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app `
+  --export-pack 'Windows Desktop' "$PWD/tmp/grass-pack-new/openrc.pck"
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path "$PWD/tmp/grass-pack-new/empty" `
+  --script "$PWD/tools/grass/check_pack.gd" -- `
+  "$PWD/tmp/grass-pack-new/openrc.pck" "$PWD/app" "$PWD/tmp/grass-pack-new/result.json"
+```
+
+The checker mounts the pack itself, loads grass resources and compares them with the source project's imported textures. It does not start the packaged application's native extensions or qualify GPU output. Check the export and probe logs as well as exit codes.
+
+`check_lifecycle.gd` exercises the actual Home buttons, fixed-wing End flight and both RC garage routes using private preferences. It checks rendered surface bindings, scene-owned material isolation, source geometry, released scene references and stable node/object counts. It captures only the first cycle's four startup/paused views, not driving or flight acceptance:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --path app `
+  --script "$PWD/tools/grass/check_lifecycle.gd" -- `
+  --quality=enhanced --cycles=20 --capture=on --out="$PWD/tmp/grass-lifecycle-new"
+```
+
+Use `--quality=default --cycles=2` for the control. Headless contract checks require `--capture=off`. Run the native capture outside timing campaigns. The full DT reset/Workshop and long-duration soak requirements remain separate.
+
+`profile_session.py` collects a normal visible flight with live input, five alternating default/enhanced pairs, 10 seconds warmup and 60 seconds measured per run. Use an idle host and keep the flight window focused; run captures and other tests separately:
+
+```powershell
+python tools/grass/profile_session.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe `
+  --app app --out tmp/grass-native-profile-new
+python -m unittest discover -s tools/grass -p test_profile_session.py
+```
+
+Before each launch, one bounded OS process inventory rejects another Godot process or an unavailable inventory; it never terminates other work. It does not poll subprocesses inside timed intervals or prove that no unrelated process starts later. The runner stops at the first invalid, paused, incomplete or mismatched run and retains its log, raw data and partial campaign. Eligible pacing misses are retained without being recategorized as collection failures. Runtime source/config, glTF buffers, native libraries and engine hashes bracket the campaign. Reports verify the live-input route, camera and render settings; the existing logger does not expose effective scenery/grass selection, which remains declared intent in this tool. Paired p95/p99 changes do not close exact-input, owner or combined visual-budget acceptance.
+
 ## Placement source
 
 `place.py` generates the committed `app/data/fields/grass.json` disk of 6,000 pilot-relative clump offsets. The disk is universal: the renderer clips it to the actual rough field and removes centers inside every runway or mown rectangle expanded by 0.4 m.

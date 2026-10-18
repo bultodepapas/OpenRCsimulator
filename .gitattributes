@@ -14,8 +14,19 @@
 # Raw engine output and unified-diff context retain meaningful source whitespace.
 /docs/research/visual-quality-implementation/L6a-R1/**/*.log -whitespace
 /docs/research/visual-quality-implementation/L6a-R1/*.patch -whitespace
+# Bark-mip evidence and downloaded oak derivatives bind exact file hashes.
+/docs/research/visual-quality-implementation/L6b-R2/** -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/L6b-R2/**/*.log -whitespace
+/assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/** -text whitespace=cr-at-eol
+/assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
+/app/assets/landscape/vegetation/LICENSE_OAK.txt -text whitespace=-blank-at-eof,cr-at-eol
+/tools/landscape/vegetation/convert_oak.py -text whitespace=cr-at-eol
+# License snapshots retain the exact reviewed notice and upstream whitespace.
+/docs/research/visual-quality-implementation/L6a-R1/mature-oak/**/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
+/docs/research/visual-quality-implementation/L6b-R2/source/quaternius-standard/LICENSE.txt whitespace=-blank-at-eol,cr-at-eol
 # Retain the exact native grass capture, profile and trace receipts.
 /docs/research/visual-quality-implementation/grass-quality/evidence/raw/** -text whitespace=cr-at-eol
+/docs/research/visual-quality-implementation/grass-quality/evidence/pack-2026-10-18/** -text whitespace=cr-at-eol
 # Workshop descriptors bind exact aircraft bytes on every platform.
 /app/data/aircraft/*.json text eol=crlf
 /app/data/rotorcraft/*.json text eol=crlf

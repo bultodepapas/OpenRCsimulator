@@ -160,6 +160,8 @@ func _field() -> bool:
 		var source: Dictionary = Postcards.VIEWS[id]
 		views.append({id = id, eye = Frames.ned_to_render(source.eye), at = Frames.ned_to_render(source.at), fov = source.fov})
 	views.append({id = "forest_overview", eye = Vector3(0, 1900, 1250), at = Vector3(0, 0, -100), fov = 70.0})
+	# Fixed camera at the unchanged shade-trees:06 placement; identical for old and new sources.
+	views.append({id = "oak_close", eye = Vector3(27, 7, 49), at = Vector3(10.5, 5, 32), fov = 42.0})
 	return true
 
 

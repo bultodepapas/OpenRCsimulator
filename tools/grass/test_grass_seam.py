@@ -1,5 +1,6 @@
 """Projection and evidence-preservation regressions for the imported seam check."""
 import subprocess
+import json
 import sys
 import tempfile
 import unittest
@@ -38,6 +39,24 @@ class GrassSeamTests(unittest.TestCase):
             self.assertEqual(result.returncode, 2, result.stderr)
             self.assertIn('never overwritten', result.stderr)
             self.assertEqual(output.read_bytes(), sentinel)
+
+    def test_failed_imported_comparison_retains_report_and_control(self):
+        root = Path(__file__).resolve().parents[2]
+        captures = root / ('docs/research/visual-quality-implementation/grass-quality/evidence/raw/'
+                           'field-contract/field-contract-final-enhanced-06')
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder) / 'failed.json'
+            result = subprocess.run([sys.executable, str(Path(__file__).with_name('check_grass_seam.py')),
+                                     '--mode', 'imported', '--captures', str(captures),
+                                     '--out', str(output), '--self-test'], capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1, result.stderr)
+            report = json.loads(output.read_text())
+            self.assertTrue(report['complete'])
+            self.assertFalse(report['passed'])
+            self.assertTrue(report['failed_cells'])
+            self.assertTrue(report['mutation']['identical_reference_passed'])
+            self.assertTrue(report['mutation']['rejected'])
+            self.assertEqual(report['mutation']['reference'], 'grass-off')
 
 
 if __name__ == '__main__':

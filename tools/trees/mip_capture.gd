@@ -21,6 +21,7 @@ var stage: Node3D
 var report: Dictionary = {
 	"format": "openrc-tree-mipmap-sweep v1",
 	"complete": false,
+	"mip_scope": "all",
 	"assets": {},
 	"textures": {},
 	"captures": [],
@@ -31,6 +32,11 @@ func _initialize() -> void:
 	for argument in OS.get_cmdline_user_args():
 		var pair := argument.trim_prefix("--").split("=", true, 1)
 		args[pair[0]] = pair[1] if pair.size() == 2 else "on"
+	var mip_scope := str(args.get("mip-scope", "all"))
+	if mip_scope not in ["all", "bark"]:
+		_fail("--mip-scope must be all or bark")
+		return
+	report["mip_scope"] = mip_scope
 	if args.has("check-only"):
 		print("MIP CAPTURE SCRIPT PARSED")
 		quit(0)
@@ -104,6 +110,7 @@ func _run() -> void:
 		"shadow_enabled": false,
 		"capture_process_mode": "disabled",
 		"interpretation": "Subpixel camera translations probe raster coverage sensitivity for fixed geometry. Adjacent-mask changes are a sampling-instability proxy, not real-time shimmer or flight evidence.",
+		"mip_scope": str(report.get("mip_scope", "all")),
 	}
 
 	for asset_id in ASSET_IDS:
