@@ -986,6 +986,12 @@
         "kind": "estimated",
         "source": "Width of the smooth transition from attached flow to flat-plate flow (PicaSim uses a cosine ramp of about 10 deg, YASim a stall-width parameter); the start is solved so the lift peak equals CL_max"
       },
+      "stall_plateau": {
+        "value": 0.7,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Viterna post-stall plateau factor: preserves 70 % of peak suction post-stall, preventing abrupt wing drop"
+      },
       "CD90": {
         "value": 1.2,
         "unit": "1",
@@ -1025,10 +1031,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "CLq": {
-        "value": 2.003,
+        "value": 2.006,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0064. Model-derived, not measured or physically validated."
       },
       "CLde": {
         "value": 0.0983,
@@ -1151,10 +1157,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cmq": {
-        "value": -8.009,
+        "value": -8.008,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8011 and CLq=2.0064; ARP Cmq=-8.008 includes the CLq lift arm. Model-derived, not measured or physically validated."
       },
       "Cmde": {
         "value": -0.8488,
@@ -1181,10 +1187,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnr": {
-        "value": -0.1335,
+        "value": -0.1336,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13; ARP Cnr=-0.1336 includes the CYr side-force arm. Model-derived, not measured or physically validated."
       },
       "Cnda_right": {
         "value": 0.0287,
@@ -1247,6 +1253,28 @@
         "unit": "1",
         "kind": "borrowed",
         "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; same flat-plate approximation as wing"
+      },
+      "body_side_area": {
+        "value": 0.185,
+        "unit": "m2",
+        "kind": "derived",
+        "source": "fuselage lateral projected profile area (length 1.15 m x mean depth 0.161 m)"
+      },
+      "body_side_cd": {
+        "value": 1.1,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "fuselage crossflow box drag coefficient in sideslip/knife-edge"
+      },
+      "body_side_position": {
+        "value": [
+          0.06,
+          0.0,
+          0.0
+        ],
+        "unit": "m",
+        "kind": "derived",
+        "source": "fuselage lateral area centroid relative to LE datum"
       },
       "horizontal": {
         "area": {

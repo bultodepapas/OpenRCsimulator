@@ -60,7 +60,19 @@ static func _tail_plane_speed(s: PackedFloat64Array, air: Dictionary, model: Dic
 static func lift_alpha(alpha: float, a: Dictionary, env: Dictionary) -> float:
 	var base: float = a.CL0 + a.CLa * alpha
 	var w := stall_weight(alpha, env)
-	return base if w == 0.0 else (1.0 - w) * base + w * 0.5 * float(env.CD90) * M.sin_(2.0 * alpha)
+	if w == 0.0:
+		return base
+	var cd90: float = float(env.CD90)
+	var sep_cl := 0.5 * cd90 * M.sin_(2.0 * alpha)
+	var plateau: float = env.get("stall_plateau", 0.0)
+	if plateau > 0.0:
+		var cl_stall: float = (float(env.a1) * float(a.CLa) + float(a.CL0)) if alpha >= 0.0 else (-float(env.n1) * float(a.CLa) + float(a.CL0))
+		var plateau_cl: float = plateau * cl_stall * M.cos_(alpha) * M.cos_(alpha)
+		if alpha >= 0.0:
+			sep_cl = maxf(sep_cl, plateau_cl)
+		else:
+			sep_cl = minf(sep_cl, plateau_cl)
+	return (1.0 - w) * base + w * sep_cl
 
 
 ## Nondimensional coefficients for the given air data, body rates (rad/s) and deflections (data conventions).
@@ -129,9 +141,8 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 	var co_cl: float = cl0 + cla * alpha + cl_controls
 	var cd_aero: float = cd0 + a.k_induced * M.pow_(co_cl - a.CL_minD, 2)
 	if not env.is_empty():
-		var base: float = cl0 + cla * alpha
 		var cd90: float = env.CD90
-		co_cl = (base if w == 0.0 else (1.0 - w) * base + w * 0.5 * cd90 * M.sin_(2.0 * alpha)) + cl_controls
+		co_cl = lift_alpha(alpha, a, env) + cl_controls
 		var sin_alpha := M.sin_(alpha)
 		cd_aero = (1.0 - w) * cd_aero + w * (cd0 + cd90 * sin_alpha * sin_alpha)
 	var co_cd: float = cd_aero + absf(a.CDda_each * dar) + absf(a.CDda_each * dal) + absf(a.CDdr * dr) + absf(a.CDde * de)
@@ -274,6 +285,8 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 	var ys: PackedFloat64Array = model.envelope.station_ys
 	var twist: PackedFloat64Array = model.surfaces.get("station_incidence", PackedFloat64Array())
 	var angles := PackedFloat64Array()
+	var clean_angles := PackedFloat64Array()
+	var aileron_shifts := PackedFloat64Array()
 	var speeds := PackedFloat64Array()
 	var sources := PackedFloat64Array()
 	var flap_shifts := PackedFloat64Array()
@@ -289,9 +302,14 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 		var f2: float = v[2] + (p*y - q*arm[0])
 		var vp := M.sqrt_(f0*f0 + f2*f2)
 		var control: float = d.aileron_right if ys[i] > 0.0 else d.aileron_left
-		var angle := wrapf(M.atan2_(f2, f0) + float(model.surfaces.wing_aileron_effectiveness)*control, -PI, PI)
+		var aileron_shift := float(model.surfaces.wing_aileron_effectiveness)*control
+		var raw_angle := M.atan2_(f2, f0)
+		var angle := wrapf(raw_angle + aileron_shift, -PI, PI)
+		var clean_angle := raw_angle
 		if not twist.is_empty():
 			angle = wrapf(angle + twist[i], -PI, PI)
+			if aileron_shift != 0.0:
+				clean_angle = wrapf(clean_angle + twist[i], -PI, PI)
 		var flap_shift := 0.0
 		if flap_active and i < flap_coverage.size():
 			# A plain flap changes section camber only while air flows over the wing's forward-facing plane.
@@ -302,7 +320,13 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 			var bounded_shift := limit * M.tanh_(raw_shift / limit)
 			flap_shift = bounded_shift * flap_coverage[i] * float(flap_model.aerodynamic_gain) * maxf(M.cos_(angle), 0.0)
 			angle = wrapf(angle + flap_shift, -PI, PI)
+			if aileron_shift != 0.0:
+				clean_angle = wrapf(clean_angle + flap_shift, -PI, PI)
+		if aileron_shift == 0.0:
+			clean_angle = angle
 		angles.append(angle)
+		clean_angles.append(clean_angle)
+		aileron_shifts.append(aileron_shift)
 		speeds.append(vp)
 		flap_shifts.append(flap_shift)
 		reference_speed = maxf(reference_speed, M.sqrt_(f0*f0 + f1*f1 + f2*f2))
@@ -310,9 +334,9 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 	# camber shift; absent keeps the whole shift without any added arithmetic.
 	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
 	for i in ys.size():
-		var source_angle: float = angles[i] if stall_back == 0.0 else angles[i] - stall_back * flap_shifts[i]
+		var source_angle: float = clean_angles[i] if stall_back == 0.0 else clean_angles[i] - stall_back * flap_shifts[i]
 		sources.append((speeds[i]/reference_speed) * (1.0-stall_weight(source_angle, model.envelope)) if reference_speed > 0.0 else 0.0)
-	return {angles = angles, speeds = speeds, sources = sources, flap_shifts = flap_shifts, reference_speed = reference_speed}
+	return {angles = angles, clean_angles = clean_angles, aileron_shifts = aileron_shifts, speeds = speeds, sources = sources, flap_shifts = flap_shifts, reference_speed = reference_speed}
 
 
 static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> float:
@@ -339,7 +363,17 @@ static func _section_coefficients(alpha: float, base: float, env: Dictionary, po
 		weight = 1.0 - sample[2]
 		cd = sample[1] + sample[2] * induced_scale * k_induced * M.pow_(cl - cl_min_d, 2)
 	else:
-		cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * alpha)
+		var sep_cl := 0.5 * cd90 * M.sin_(2.0 * alpha)
+		var plateau: float = env.get("stall_plateau", 0.0)
+		if plateau > 0.0:
+			var slope: float = float(env.get("strip_slope", 4.5))
+			var cl_stall := (a1 * slope) if alpha >= 0.0 else (-n1 * slope)
+			var plateau_cl := plateau * cl_stall * M.cos_(alpha) * M.cos_(alpha)
+			if alpha >= 0.0:
+				sep_cl = maxf(sep_cl, plateau_cl)
+			else:
+				sep_cl = minf(sep_cl, plateau_cl)
+		cl = base if weight == 0.0 else (1.0 - weight) * base + weight * sep_cl
 		cd = cd0 + (1.0-weight)*induced_scale*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(alpha), 2)
 	return PackedFloat64Array([cl, cd, weight])
 
@@ -396,6 +430,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	# D11d: geometric strip angles first, then the induced-flow map (AircraftData._induced_map) couples them.
 	var wing_flow := _wing_flow(s, air, d, model)
 	var angles: PackedFloat64Array = wing_flow.angles
+	var clean_angles: PackedFloat64Array = wing_flow.clean_angles
+	var aileron_shifts: PackedFloat64Array = wing_flow.aileron_shifts
 	var plane_speeds: PackedFloat64Array = wing_flow.speeds
 	var source_weights: PackedFloat64Array = wing_flow.sources
 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
@@ -422,8 +458,9 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var f1: float = v1 + (r*ax - p*az)
 		var f2: float = v2 + (p*arm_y - q*ax)
 		var effective: float = angles[i]
-		# Stall and the flat plate follow the geometric angle; attached lift uses the induced (effective) angles.
-		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
+		var clean_angle: float = clean_angles[i]
+		# Stall and the flat plate follow the clean geometric angle; attached lift uses the induced (effective) angles.
+		var stall_angle: float = clean_angle if stall_back == 0.0 else clean_angle - stall_back * flap_shifts[i]
 		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
 			else _smoothstep((-stall_angle - n1) / n_span)
 		var base: float
@@ -440,18 +477,18 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			# Ground effect frees (1 − σ_i) of the strip's induced angle a0·(α_i + α_s) − base/a0 and scales its
 			# induced drag at the same CL by σ_i; the flat-plate (separated) share is unchanged.
 			base += (1.0 - ge[i]) * (strip_slope * (effective + float(env.strip_alpha_zero)) - base)
-			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
-			cd = cd0 + (1.0-weight)*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * clean_angle)
+			cd = cd0 + (1.0-weight)*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(clean_angle), 2)
 			if not polar.is_empty():
-				var sample := WingPolar.evaluate(effective, base, polar)
+				var sample := WingPolar.evaluate(clean_angle, base, polar)
 				cl = sample[0]
 				weight = 1.0-sample[2]
 				cd = sample[1] + sample[2]*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2)
 		else:
-			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
-			cd = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * clean_angle)
+			cd = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(clean_angle), 2)
 			if not polar.is_empty():
-				var sample := WingPolar.evaluate(effective, base, polar)
+				var sample := WingPolar.evaluate(clean_angle, base, polar)
 				cl = sample[0]
 				weight = 1.0-sample[2]
 				cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
@@ -463,7 +500,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			# retains this bounded gain past stall, while cos(alpha) removes it at edge-on/reverse flow.
 			# `weight` is separation for both laws: the tabulated polar's attached fraction
 			# is converted to 1 - attached immediately above.
-			flap_lift_delta = strip_slope * flap_shifts[i] * weight * maxf(M.cos_(effective), 0.0)
+			flap_lift_delta = strip_slope * flap_shifts[i] * weight * maxf(M.cos_(clean_angle), 0.0)
 			var pre_extension_cl: float = cl
 			cl += flap_lift_delta
 			var induced_factor: float = ge[i] if ge_active else 1.0
@@ -474,16 +511,16 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			# Hinge/pressure drag estimate, quadratic with deflection and absent at zero.
 			# The coefficient is normalized to covered wing-strip reference area, not panel surface area.
 			flap_profile_drag = float(flap_model.profile_drag_coefficient) * flap_coverage[i] * float(flap_model.aerodynamic_gain) \
-				* M.pow_(M.sin_(flap_angle), 2) * maxf(M.cos_(effective), 0.0)
+				* M.pow_(M.sin_(flap_angle), 2) * maxf(M.cos_(clean_angle), 0.0)
 			cd += flap_profile_drag
 			# Independently evaluate the same strip with flap camber removed so pitch
 			# follows the actual nonlinear ΔCL after coupling, stall, and separation.
-			var clean_effective: float = effective - flap_shifts[i]
+			var clean_effective: float = clean_angle - flap_shifts[i]
 			var clean_base: float
 			if coupled:
 				var clean_mapped := 0.0
 				for k in stations:
-					var clean_angle_k: float = angles[k] - flap_shifts[k]
+					var clean_angle_k: float = clean_angles[k] - flap_shifts[k]
 					var clean_weight_k := _smoothstep((clean_angle_k - a1) / a_span) if clean_angle_k >= 0.0 \
 						else _smoothstep((-clean_angle_k - n1) / n_span)
 					var clean_source_k: float = (plane_speeds[k] / reference_speed) * (1.0 - clean_weight_k) if reference_speed > 0.0 else 0.0
@@ -496,6 +533,15 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			var clean_coeff := _section_coefficients(clean_effective, clean_base, env, polar, cd0, cd90,
 				k_induced, cl_min_d, induced_factor)
 			flap_delta_cl = cl - clean_coeff[0]
+		if aileron_shifts[i] != 0.0 and weight != 0.0:
+			# Aileron trailing-edge camber retains positive roll authority through stall and deep post-stall
+			# instead of shifting the strip's separation boundary (which would reverse dCL/d(delta_a) on the stall ramp).
+			var aileron_lift_delta: float = strip_slope * aileron_shifts[i] * weight * maxf(M.cos_(clean_angle), 0.0)
+			var pre_aileron_cl: float = cl
+			cl += aileron_lift_delta
+			var aileron_induced_factor: float = ge[i] if ge_active else 1.0
+			var aileron_induced_delta: float = M.pow_(cl - cl_min_d, 2) - M.pow_(pre_aileron_cl - cl_min_d, 2)
+			cd += maxf(aileron_induced_delta, 0.0) * (1.0 - weight) * aileron_induced_factor * k_induced
 		wing_cl += (plane_speeds[i] * cl) / stations
 		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
 		if plane_speeds[i] == 0.0:
@@ -579,6 +625,24 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var body_cn: float = surfaces.get("body_cn_beta", 0.0)
 	if body_cn != 0.0:
 		mz_sum += 0.5 * rho * float(ref.S) * float(ref.b) * body_cn * v0 * v1 * (1.0 - sideslip_weight(air.beta, env))
+	var body_side_area: float = surfaces.get("body_side_area", 0.0)
+	if body_side_area > 0.0:
+		var fuse_pos: PackedFloat64Array = surfaces.get("body_side_position", ref.arp_le)
+		var fuse_arm := _arm(fuse_pos, cg)
+		var fuse_flow := M.add(v, M.cross(M.v3(p, q, r), fuse_arm))
+		var f0_fuse: float = fuse_flow[0]
+		var f1_fuse: float = fuse_flow[1]
+		var side_plane_speed := M.sqrt_(f0_fuse * f0_fuse + f1_fuse * f1_fuse)
+		if side_plane_speed > 0.0 and f1_fuse != 0.0:
+			var body_side_cd: float = surfaces.get("body_side_cd", 1.0)
+			var side_scale: float = -0.5 * rho * side_plane_speed * body_side_area * body_side_cd
+			var side_fy: float = f1_fuse * side_scale
+			var side_fx: float = absf(f1_fuse) * (f0_fuse / side_plane_speed) * side_scale
+			fy_sum += side_fy
+			fx_sum += side_fx
+			mx_sum -= fuse_arm[2] * side_fy
+			my_sum += fuse_arm[2] * side_fx
+			mz_sum += fuse_arm[0] * side_fy - fuse_arm[1] * side_fx
 	return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
 
 
@@ -799,6 +863,8 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var aileron_effect: float = surfaces.wing_aileron_effectiveness
 	var wing_flow := _wing_flow(s, air, d, model)
 	var angles: PackedFloat64Array = wing_flow.angles
+	var clean_angles: PackedFloat64Array = wing_flow.clean_angles
+	var aileron_shifts: PackedFloat64Array = wing_flow.aileron_shifts
 	var plane_speeds: PackedFloat64Array = wing_flow.speeds
 	var source_weights: PackedFloat64Array = wing_flow.sources
 	var flap_shifts: PackedFloat64Array = wing_flow.flap_shifts
@@ -819,7 +885,8 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var polar: Dictionary = env.get("wing_polar", {})
 	for i in stations:
 		var effective: float = angles[i]
-		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
+		var clean_angle: float = clean_angles[i]
+		var stall_angle: float = clean_angle if stall_back == 0.0 else clean_angle - stall_back * flap_shifts[i]
 		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
 			else _smoothstep((-stall_angle - n1) / n_span)
 		var base: float
@@ -830,16 +897,25 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 			base = strip_cl0[i] + strip_slope * mapped
 		else:
 			base = float(a.CL0) + float(a.CLa) * effective
-		if ge_active: # M5-GE-1, exactly _local_loads' strip law
-			base += (1.0 - ge[i]) * (strip_slope * (effective + float(env.strip_alpha_zero)) - base)
-		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+		var sep_cl := 0.5 * cd90 * M.sin_(2.0 * clean_angle)
+		var plateau: float = env.get("stall_plateau", 0.0)
+		if plateau > 0.0:
+			var cl_stall := (a1 * strip_slope) if clean_angle >= 0.0 else (-n1 * strip_slope)
+			var plateau_cl := plateau * cl_stall * M.cos_(clean_angle) * M.cos_(clean_angle)
+			if clean_angle >= 0.0:
+				sep_cl = maxf(sep_cl, plateau_cl)
+			else:
+				sep_cl = minf(sep_cl, plateau_cl)
+		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * sep_cl
 		if not polar.is_empty():
-			var sample := WingPolar.evaluate(effective, base, polar)
+			var sample := WingPolar.evaluate(clean_angle, base, polar)
 			cl = sample[0]
 			weight = 1.0 - sample[2]
 		if flap_active and i < flap_shifts.size():
 			# Match the strip's bounded separated-lift extension when producing the dimensional wake state.
-			cl += strip_slope * flap_shifts[i] * weight * maxf(M.cos_(effective), 0.0)
+			cl += strip_slope * flap_shifts[i] * weight * maxf(M.cos_(clean_angle), 0.0)
+		if aileron_shifts[i] != 0.0 and weight != 0.0:
+			cl += strip_slope * aileron_shifts[i] * weight * maxf(M.cos_(clean_angle), 0.0)
 		wing_cl += (plane_speeds[i] * cl if dimensional else cl) / stations
 	return wing_cl
 

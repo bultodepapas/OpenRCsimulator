@@ -22,6 +22,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const SwirlLoads = preload("res://physics/swirl_loads.gd")
+const WingPolar := preload("res://physics/wing_polar.gd")
 
 ## The mass-flow speed u + w used for the swirl never falls below this (m/s).
 const SWIRL_SPEED_FLOOR := 1.0
@@ -229,6 +230,14 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		o3 += washed[3] - free[3]
 		o4 += washed[4] - free[4]
 		o5 += washed[5] - free[5]
+	if ss.has("wing_wash_factor") and float(ss.wing_wash_factor) > 0.0 and w.w > 0.0:
+		var wing_loads := _wing_strip_increment(state, v, d, model, w, ax, rho)
+		o0 += wing_loads[0]
+		o1 += wing_loads[1]
+		o2 += wing_loads[2]
+		o3 += wing_loads[3]
+		o4 += wing_loads[4]
+		o5 += wing_loads[5]
 	if smooth:
 		var result: PackedFloat64Array = PackedFloat64Array([o0*fade, o1*fade, o2*fade, o3*fade, o4*fade, o5*fade])
 		if w.swirl != 0.0:
@@ -559,3 +568,164 @@ static func _add_tail_load(out: PackedFloat64Array, law: PackedFloat64Array, sig
 	out[3] += sign * (arm_1 * fz - arm_2 * fy)
 	out[4] += sign * (arm_2 * fx - arm_0 * fz)
 	out[5] += sign * (arm_0 * fy - arm_1 * fx)
+
+
+## Inboard wing and aileron slipstream increment (washed minus free strip loads on the slipstream-immersed span).
+## Preserves low/zero-airspeed aileron roll authority, roll damping, and inboard root lift under power (3D hover,
+## harriers, stall turns) while leaving unwashed strips and zero-thrust states untouched.
+static func _wing_strip_increment(state: PackedFloat64Array, v: PackedFloat64Array, d: Dictionary, model: Dictionary,
+		w: Dictionary, ax: PackedFloat64Array, rho: float) -> PackedFloat64Array:
+	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var env: Dictionary = model.get("envelope", {})
+	var ys: PackedFloat64Array = env.get("station_ys", PackedFloat64Array())
+	var stations: int = ys.size()
+	if stations == 0:
+		return out
+	var ss: Dictionary = model.propulsion.slipstream
+	var ref: Dictionary = model.reference
+	var arp: PackedFloat64Array = ref.arp_le
+	var hub: PackedFloat64Array = ss.hub
+	var ax_le_0: float = -ax[0]
+	var ax_le_1: float = ax[1]
+	var ax_le_2: float = -ax[2]
+	var dist: float = maxf(arp[0] - hub[0], 0.01)
+	var shaft_scale: float = dist / ax_le_0
+	var centre_1: float = hub[1] + ax_le_1 * shaft_scale
+	var centre_2: float = hub[2] + ax_le_2 * shaft_scale
+	var v0: float = v[0]
+	var v1: float = v[1]
+	var v2: float = v[2]
+	var speed: float = M.sqrt_(v0 * v0 + v1 * v1 + v2 * v2)
+	if speed > 1e-6 and float(w.vs) > 1e-6:
+		var lean_ratio: float = minf(speed / (float(w.u) + float(w.w)), 1.0)
+		var lean: float = lean_ratio * dist / speed
+		centre_1 -= v1 * lean
+		centre_2 += v2 * lean * float(ss.vertical_drift)
+	var dz: float = arp[2] - centre_2
+	var rs: float = maxf(float(w.rs), 0.5 * float(model.propulsion.diameter))
+	if dz * dz >= rs * rs:
+		return out
+	var half: float = M.sqrt_(rs * rs - dz * dz)
+	var jet_y_lo: float = centre_1 - half
+	var jet_y_hi: float = centre_1 + half
+	var dv_wing: float = float(ss.wing_wash_factor) * float(w.dv)
+	var wash_0: float = ax[0] * dv_wing
+	var wash_1: float = ax[1] * dv_wing
+	var wash_2: float = ax[2] * dv_wing
+	@warning_ignore("integer_division")
+	var n_per_side: int = stations / 2
+	var chords: PackedFloat64Array = ref.get("chords", PackedFloat64Array())
+	var edges := _wing_edges(float(ref.b), chords, n_per_side)
+	var cg: PackedFloat64Array = model.cg_le
+	var arm_0: float = -(arp[0] - cg[0])
+	var arm_2: float = -(arp[2] - cg[2])
+	var p: float = state[RB.RATE]
+	var q: float = state[RB.RATE + 1]
+	var r: float = state[RB.RATE + 2]
+	var surfaces: Dictionary = model.surfaces
+	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
+	var station_area: float = float(ref.S) / float(stations)
+	for i in stations:
+		var y_lo: float = edges[i]
+		var y_hi: float = edges[i + 1]
+		var a_y: float = maxf(y_lo, jet_y_lo)
+		var b_y: float = minf(y_hi, jet_y_hi)
+		if b_y <= a_y:
+			continue
+		var frac: float = (b_y - a_y) / (y_hi - y_lo)
+		var area_i: float = station_area * frac
+		var y_imm: float = 0.5 * (a_y + b_y)
+		var arm_1: float = (arp[1] - cg[1]) + y_imm
+		var rate_0: float = q * arm_2 - r * arm_1
+		var rate_1: float = r * arm_0 - p * arm_2
+		var rate_2: float = p * arm_1 - q * arm_0
+		var twist_i: float = twist[i] if not twist.is_empty() else 0.0
+		var control: float = float(d.aileron_right) if ys[i] > 0.0 else float(d.aileron_left)
+		var aileron_i: float = float(surfaces.wing_aileron_effectiveness) * control
+		_add_wing_strip_load(out, 1.0, v0 + wash_0 + rate_0, v1 + wash_1 + rate_1, v2 + wash_2 + rate_2,
+			i, twist_i, aileron_i, arm_0, arm_1, arm_2, area_i, model, rho)
+		_add_wing_strip_load(out, -1.0, v0 + rate_0, v1 + rate_1, v2 + rate_2,
+			i, twist_i, aileron_i, arm_0, arm_1, arm_2, area_i, model, rho)
+	return out
+
+
+static func _add_wing_strip_load(out: PackedFloat64Array, sign: float, f0: float, _f1: float, f2: float,
+		i: int, clean_shift: float, aileron_shift: float, arm_0: float, arm_1: float, arm_2: float,
+		area_i: float, model: Dictionary, rho: float) -> void:
+	var plane_speed: float = M.sqrt_(f0 * f0 + f2 * f2)
+	if plane_speed == 0.0:
+		return
+	var aero: Dictionary = model.aero
+	var env: Dictionary = model.envelope
+	var surfaces: Dictionary = model.surfaces
+	var clean_angle: float = wrapf(M.atan2_(f2, f0) + clean_shift, -PI, PI)
+	var effective: float = wrapf(clean_angle + aileron_shift, -PI, PI)
+	var a1: float = float(env.a1)
+	var a_span: float = float(env.a2) - a1
+	var n1: float = float(env.n1)
+	var n_span: float = float(env.n2) - n1
+	var weight: float = Aero._smoothstep((clean_angle - a1) / a_span) if clean_angle >= 0.0 \
+		else Aero._smoothstep((-clean_angle - n1) / n_span)
+	var strip_slope: float = float(env.get("strip_slope", aero.CLa))
+	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
+	var row_sums: PackedFloat64Array = env.get("strip_row_sum", PackedFloat64Array())
+	var base: float
+	if i < strip_cl0.size() and i < row_sums.size():
+		base = strip_cl0[i] + strip_slope * row_sums[i] * effective
+	else:
+		base = float(aero.CL0) + float(aero.CLa) * effective
+	var cd0: float = float(aero.CD0)
+	var k_induced: float = float(aero.k_induced)
+	var cl_min_d: float = float(aero.CL_minD)
+	var cd90: float = float(env.CD90)
+	var polar: Dictionary = env.get("wing_polar", {})
+	var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * clean_angle)
+	var cd: float = cd0 + (1.0 - weight) * k_induced * M.pow_(cl - cl_min_d, 2) + weight * cd90 * M.pow_(M.sin_(clean_angle), 2)
+	if not polar.is_empty():
+		var sample := WingPolar.evaluate(clean_angle, base, polar)
+		cl = sample[0]
+		weight = 1.0 - sample[2]
+		cd = sample[1] + sample[2] * k_induced * M.pow_(cl - cl_min_d, 2)
+	if aileron_shift != 0.0 and weight != 0.0:
+		var aileron_lift_delta: float = strip_slope * aileron_shift * weight * maxf(M.cos_(clean_angle), 0.0)
+		var pre_aileron_cl: float = cl
+		cl += aileron_lift_delta
+		var aileron_induced_delta: float = M.pow_(cl - cl_min_d, 2) - M.pow_(pre_aileron_cl - cl_min_d, 2)
+		cd += maxf(aileron_induced_delta, 0.0) * (1.0 - weight) * k_induced
+	var q_half: float = 0.5 * rho
+	var force_scale: float = -q_half * plane_speed * area_i * cd
+	var lift: float = q_half * plane_speed * plane_speed * area_i * cl
+	var fx: float = f0 * force_scale + lift * f2 / plane_speed
+	var fz: float = f2 * force_scale - lift * f0 / plane_speed
+	out[0] += sign * fx
+	out[2] += sign * fz
+	out[3] += sign * (arm_1 * fz)
+	out[4] += sign * (arm_2 * fx - arm_0 * fz)
+	out[5] += sign * (-arm_1 * fx)
+	var cm_ac: float = float(surfaces.get("wing_cm_ac", 0.0))
+	if cm_ac != 0.0:
+		var station_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array())
+		if i < station_chords.size():
+			out[4] += sign * (q_half * plane_speed * plane_speed * area_i * station_chords[i] * cm_ac)
+
+
+static func _wing_edges(span: float, chords: PackedFloat64Array, n_per_side: int) -> PackedFloat64Array:
+	var h: float = 0.5 * span
+	var edges := PackedFloat64Array()
+	edges.resize(2 * n_per_side + 1)
+	edges[n_per_side] = 0.0
+	if chords.size() < 2 or absf(chords[0] - chords[1]) <= 1e-12:
+		for k in n_per_side:
+			var y: float = float(k + 1) / float(n_per_side) * h
+			edges[n_per_side + 1 + k] = y
+			edges[n_per_side - 1 - k] = -y
+	else:
+		var cr: float = chords[0]
+		var slope: float = (chords[1] - cr) / h
+		var total: float = cr * h + 0.5 * slope * h * h
+		for k in n_per_side:
+			var target: float = total * float(k + 1) / float(n_per_side)
+			var y: float = h if k == n_per_side - 1 else (-cr + M.sqrt_(cr * cr + 2.0 * slope * target)) / slope
+			edges[n_per_side + 1 + k] = y
+			edges[n_per_side - 1 - k] = -y
+	return edges

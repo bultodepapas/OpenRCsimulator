@@ -1060,7 +1060,7 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 		errors.append("propulsion.esc.command_mapping: only 'identity' is supported")
 	var prop_raw := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
 	_reject_unknown_keys(errors, "propulsion.propeller", prop_raw, [
-		"name", "diameter", "thrust_line_offset", "rotating_inertia", "ct_table", "cp_table", "thrust_angles",
+		"name", "diameter", "thrust_line_offset", "rotating_inertia", "ct_table", "cp_table", "thrust_angles", "slipstream",
 	])
 	if prop_raw.has("name") and typeof(prop_raw.name) != TYPE_STRING:
 		errors.append("propulsion.propeller.name: expected a string")
@@ -1078,6 +1078,11 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 	var angles: Variant = null
 	if prop_raw.has("thrust_angles"):
 		angles = _electric_q(errors, "propulsion.propeller.thrust_angles", prop_raw.get("thrust_angles"), "deg", -10.0, 10.0, 2)
+	var slipstream: Variant = null
+	if prop_raw.has("slipstream"):
+		if not prop_raw.has("thrust_angles"):
+			errors.append("propulsion.propeller.slipstream: needs thrust_angles (give [0, 0] for an axial shaft)")
+		slipstream = _slipstream(errors, prop_raw.get("slipstream"))
 	if not errors.is_empty():
 		return {}
 	# Cross-field checks and derived values only run after every raw quantity is known finite and in range.
@@ -1096,6 +1101,8 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 		var down := deg_to_rad(angles[0])
 		var right := deg_to_rad(angles[1])
 		axis = PackedFloat64Array([M.cos_(down) * M.cos_(right), M.cos_(down) * M.sin_(right), M.sin_(down)])
+	if slipstream != null and slipstream.has("edge_fraction") and axis != PackedFloat64Array([1.0, 0.0, 0.0]):
+		errors.append("propulsion.propeller.slipstream: smooth profile currently requires an axial shaft")
 	var max_rpm: float = kv * reference_voltage
 	if not is_finite(max_rpm) or max_rpm <= 0.0:
 		if battery_raw.get("kind") == "fixed_voltage":
@@ -1117,6 +1124,8 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 		cp = cp,
 		axis = axis,
 	}
+	if slipstream != null:
+		out.slipstream = slipstream
 	var cp_min: float = 0.0
 	for i in range(1, cp.size(), 2):
 		cp_min = minf(cp_min, cp[i])
@@ -1299,6 +1308,8 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 		out.propeller_sidewash = _q(errors, "slipstream.propeller_sidewash", ss.get("propeller_sidewash"), "1", 0.0, 1.0)
 		if smooth or ss.has("transport_speed_floor"):
 			errors.append("slipstream.propeller_sidewash: requires the legacy slipstream (no edge_fraction or transport_speed_floor)")
+	if ss.has("wing_wash_factor"):
+		out.wing_wash_factor = _q(errors, "propulsion.propeller.slipstream.wing_wash_factor", ss.get("wing_wash_factor"), "1", 0.0, 2.0)
 	var raw := _array(errors, "propulsion.propeller.slipstream.pieces", ss.get("pieces"))
 	if smooth and (raw.is_empty() or raw.size() > 8):
 		errors.append("slipstream.pieces: smooth profile needs 1..8 pieces")
@@ -1574,7 +1585,12 @@ static func _envelope(errors: PackedStringArray, node: Variant, aero: Dictionary
 				errors.append("aero.envelope: %s sampled stall peak does not reach the requested lift limit" % label)
 	if not errors.is_empty():
 		return {}
-	return { a1 = a1, a2 = a1 + w, n1 = n1, n2 = n1 + w, b1 = deg_to_rad(sb[0]), b2 = deg_to_rad(sb[1]), CD90 = cd90, CL_max = cl_max, CL_min = cl_min }
+	var env_dict: Dictionary = { a1 = a1, a2 = a1 + w, n1 = n1, n2 = n1 + w, b1 = deg_to_rad(sb[0]), b2 = deg_to_rad(sb[1]), CD90 = cd90, CL_max = cl_max, CL_min = cl_min }
+	if node.has("stall_plateau"):
+		var plateau = _q(errors, "aero.envelope.stall_plateau", node.get("stall_plateau"), "1", 0.0, 1.0)
+		if plateau != null:
+			env_dict.stall_plateau = float(plateau)
+	return env_dict
 
 
 ## M5-GE-1 (optional): aero.ground_effect, the wing's image-vortex correction near the ground (physics/ground_effect.gd):
@@ -1849,6 +1865,18 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var body_cn = _q(errors, "aero.surfaces.body_cn_beta", node.get("body_cn_beta"), "1/rad", -0.5, 0.0)
 		if body_cn != null:
 			out.body_cn_beta = float(body_cn)
+	if node.has("body_side_area"):
+		var side_area = _q(errors, "aero.surfaces.body_side_area", node.get("body_side_area"), "m2", 0.001, 2.0)
+		if side_area != null:
+			out.body_side_area = float(side_area)
+	if node.has("body_side_cd"):
+		var side_cd = _q(errors, "aero.surfaces.body_side_cd", node.get("body_side_cd"), "1", 0.1, 3.0)
+		if side_cd != null:
+			out.body_side_cd = float(side_cd)
+	if node.has("body_side_position"):
+		var side_pos = _q(errors, "aero.surfaces.body_side_position", node.get("body_side_position"), "m", -3.0, 3.0, 3)
+		if side_pos != null:
+			out.body_side_position = PackedFloat64Array(side_pos)
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name

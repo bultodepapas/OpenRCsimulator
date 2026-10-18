@@ -20,6 +20,9 @@ const RECIPE_KEYS: PackedStringArray = [
 	"weight_multiplier",
 	"power_multiplier",
 	"control_multiplier",
+	"control_multiplier_aileron",
+	"control_multiplier_elevator",
+	"control_multiplier_rudder",
 	"id",
 	"name",
 ]
@@ -587,7 +590,7 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 		errors.append("Recipe scale must be a finite positive number.")
 	if recipe.has("mass_policy") and (typeof(recipe["mass_policy"]) != TYPE_STRING or not ["constant_wing_loading", "geometric"].has(str(recipe["mass_policy"]))):
 		errors.append("Recipe mass_policy must be constant_wing_loading or geometric.")
-	for key: String in ["weight_multiplier", "power_multiplier", "control_multiplier"]:
+	for key: String in ["weight_multiplier", "power_multiplier", "control_multiplier", "control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder"]:
 		if recipe.has(key) and not _positive_number(recipe[key]):
 			errors.append("Recipe %s must be a finite positive number." % key)
 	if recipe.has("id") and (typeof(recipe["id"]) != TYPE_STRING or not _valid_uuid(str(recipe["id"]))):

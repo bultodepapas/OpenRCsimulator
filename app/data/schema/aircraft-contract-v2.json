@@ -418,7 +418,8 @@
         "CL_min",
         "stall_blend_width",
         "CD90",
-        "sideslip_blend"
+        "sideslip_blend",
+        "stall_plateau"
       ]
     },
     {
@@ -439,6 +440,9 @@
         "wing_station_incidence",
         "wing_section_cm_ac",
         "body_cn_beta",
+        "body_side_area",
+        "body_side_cd",
+        "body_side_position",
         "attached_limit",
         "tail_local_limit",
         "tail_stall_end",
@@ -746,7 +750,8 @@
         "rotating_inertia",
         "ct_table",
         "cp_table",
-        "thrust_angles"
+        "thrust_angles",
+        "slipstream"
       ]
     },
     {
@@ -767,7 +772,8 @@
         "transport_speed_floor",
         "edge_fraction",
         "reverse_fade",
-        "propeller_sidewash"
+        "propeller_sidewash",
+        "wing_wash_factor"
       ]
     },
     {

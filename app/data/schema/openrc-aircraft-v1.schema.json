@@ -915,6 +915,19 @@
                   "const": "deg"
                 }
               }
+            },
+            "stall_plateau": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
             }
           },
           "additionalProperties": true
@@ -1065,6 +1078,50 @@
                 },
                 "unit": {
                   "const": "1/rad"
+                }
+              }
+            },
+            "body_side_area": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.001,
+                  "maximum": 2.0
+                },
+                "unit": {
+                  "const": "m2"
+                }
+              }
+            },
+            "body_side_cd": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.1,
+                  "maximum": 3.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            },
+            "body_side_position": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "array",
+                  "minItems": 3,
+                  "maxItems": 3,
+                  "items": {
+                    "type": "number",
+                    "minimum": -3.0,
+                    "maximum": 3.0
+                  }
+                },
+                "unit": {
+                  "const": "m"
                 }
               }
             },
@@ -2715,6 +2772,19 @@
               "const": "1"
             }
           }
+        },
+        "wing_wash_factor": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 2.0
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
         }
       },
       "allOf": [
@@ -3735,7 +3805,15 @@
               }
             }
           ]
+        },
+        "slipstream": {
+          "$ref": "#/$defs/slipstream"
         }
+      },
+      "dependentRequired": {
+        "slipstream": [
+          "thrust_angles"
+        ]
       },
       "additionalProperties": false
     },

@@ -39,6 +39,10 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	var weight_multiplier: float = float(values.weight_multiplier)
 	var power_multiplier: float = float(values.power_multiplier)
 	var control_multiplier: float = float(values.control_multiplier)
+	var ctrl_aileron: float = float(values.get("control_multiplier_aileron", control_multiplier))
+	var ctrl_elevator: float = float(values.get("control_multiplier_elevator", control_multiplier))
+	var ctrl_rudder: float = float(values.get("control_multiplier_rudder", control_multiplier))
+	var any_control_change: bool = control_multiplier != 1.0 or ctrl_aileron != 1.0 or ctrl_elevator != 1.0 or ctrl_rudder != 1.0
 	var scale_power: float = 2.0 if values.mass_policy == "constant_wing_loading" else 3.0
 	var mass_ratio: float = pow(scale, scale_power) * weight_multiplier
 	if scale != 1.0 and not support.scale:
@@ -47,15 +51,15 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 		parsed.errors.append("weight_multiplier: unsupported for this aircraft module combination. " + str(support.note))
 	if power_multiplier != 1.0 and not support.power:
 		parsed.errors.append("power_multiplier: unsupported; only the validated prescribed-RPM propeller adapter is available. " + str(support.note))
-	if control_multiplier != 1.0 and not support.controls:
+	if any_control_change and not support.controls:
 		parsed.errors.append("control_multiplier: unsupported because the aircraft has no declared conventional surface controls")
 	if not parsed.errors.is_empty():
 		return _failure(parsed.errors)
 
 	var candidate_raw: Dictionary = base_raw.duplicate(true)
-	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or control_multiplier != 1.0:
+	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or any_control_change:
 		_transform_candidate(candidate_raw, base_id, scale, mass_ratio, power_multiplier,
-			control_multiplier, str(values.mass_policy))
+			control_multiplier, ctrl_aileron, ctrl_elevator, ctrl_rudder, str(values.mass_policy))
 	if values.has("id"):
 		candidate_raw.id = effective_id
 
@@ -138,7 +142,8 @@ static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
 
 
 static func _transform_candidate(raw: Dictionary, base_id: String, scale: float, mass_ratio: float,
-		power_multiplier: float, control_multiplier: float, mass_policy: String) -> void:
+		power_multiplier: float, control_multiplier: float, ctrl_aileron: float, ctrl_elevator: float,
+		ctrl_rudder: float, mass_policy: String) -> void:
 	var geometry_policy := "uniform " + mass_policy + " virtual scale s=" + str(scale)
 	_transform_q(raw.reference, "wing_area", scale * scale, base_id, geometry_policy + ": area × s²")
 	_transform_q(raw.reference, "wing_span", scale, base_id, geometry_policy + ": length × s")
@@ -211,9 +216,16 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 
 	var controls: Dictionary = raw.get("controls", {})
 	var throws: Dictionary = controls.get("max_throw", {})
+	var surface_factors := {
+		"aileron": ctrl_aileron,
+		"elevator": ctrl_elevator,
+		"rudder": ctrl_rudder,
+	}
 	for throw_key: Variant in throws.keys():
-		_transform_q(throws, str(throw_key), control_multiplier, base_id,
-			"virtual surface travel × " + str(control_multiplier) + "; normalized servo timing retained")
+		var key_str := str(throw_key)
+		var factor: float = float(surface_factors.get(key_str, control_multiplier))
+		_transform_q(throws, key_str, factor, base_id,
+			"virtual surface travel × " + str(factor) + "; normalized servo timing retained")
 
 
 static func _transform_slipstream(node: Variant, base_id: String, scale: float) -> void:
@@ -359,6 +371,9 @@ static func _summary(base_model: Dictionary, model: Dictionary, values: Dictiona
 		"wing_loading_kg_m2": float(model.mass_kg) / float(model.reference.S),
 		"power_multiplier": float(values.power_multiplier),
 		"control_multiplier": float(values.control_multiplier),
+		"control_multiplier_aileron": float(values.get("control_multiplier_aileron", values.control_multiplier)),
+		"control_multiplier_elevator": float(values.get("control_multiplier_elevator", values.control_multiplier)),
+		"control_multiplier_rudder": float(values.get("control_multiplier_rudder", values.control_multiplier)),
 		"capabilities": support.duplicate(true),
 		"compiler_version": COMPILER_VERSION,
 	}

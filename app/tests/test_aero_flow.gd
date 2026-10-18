@@ -6,10 +6,12 @@ const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
+const Slipstream := preload("res://physics/slipstream.gd")
 const M := preload("res://physics/math3d.gd")
 const Reference := preload("res://tests/aero_flow_reference.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const TIMBER := "turbo-lumber-evolution"
+const TARGET_3D_IDS := ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "turbo-lumber-evolution"]
 var checks := 0
 var failures := 0
 
@@ -56,6 +58,9 @@ func _initialize() -> void:
 	print("H4 local flow: %d byte-exact comparisons, %d failed (legacy frozen weight plus independently evaluated R02 rate guard)" % [checks, failures])
 	_check_local_loads()
 	_check_wing_section_couple()
+	_check_post_stall_aileron_non_reversal()
+	_check_static_hover_propwash_authority()
+	_check_knife_edge_side_force()
 	quit(1 if failures else 0)
 
 
@@ -238,3 +243,150 @@ func _smoothstep(x: float) -> float:
 	if x >= 1.0:
 		return 1.0
 	return x * x * (3.0 - 2.0 * x)
+
+
+func _check_post_stall_aileron_non_reversal() -> void:
+	var sub_checks := 0
+	var sub_failures := 0
+	for id: String in TARGET_3D_IDS:
+		var flight := Flight.new()
+		flight.setup(Catalog.entry(id).data, id)
+		root.add_child(flight)
+		var model: Dictionary = flight.aircraft.model.duplicate(true)
+		var state: PackedFloat64Array = flight.sim.state.duplicate()
+		for axis in 3:
+			state[RB.RATE + axis] = 0.0
+		var d_right: Dictionary = flight._deflections(flight.sim.aux).duplicate()
+		var d_left: Dictionary = flight._deflections(flight.sim.aux).duplicate()
+		d_right.elevator = 0.0
+		d_right.rudder = 0.0
+		d_right.aileron_right = -0.35
+		d_right.aileron_left = 0.35
+		d_left.elevator = 0.0
+		d_left.rudder = 0.0
+		d_left.aileron_right = 0.35
+		d_left.aileron_left = -0.35
+		var speed := 15.0
+		for deg in range(0, 85, 5):
+			var alpha_rad := deg_to_rad(float(deg))
+			state[RB.VEL] = speed * M.cos_(alpha_rad)
+			state[RB.VEL + 1] = 0.0
+			state[RB.VEL + 2] = speed * M.sin_(alpha_rad)
+			var air: Dictionary = Air.compute(state, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+			var loads_right: PackedFloat64Array = Aero.loads(state, air, d_right, model, Air.RHO_SEA_LEVEL)
+			var loads_left: PackedFloat64Array = Aero.loads(state, air, d_left, model, Air.RHO_SEA_LEVEL)
+			var delta_mx: float = loads_right[3] - loads_left[3]
+			sub_checks += 1
+			checks += 1
+			if not (is_finite(delta_mx) and loads_right[3] > 0.0 and loads_left[3] < 0.0 and delta_mx > 0.0):
+				sub_failures += 1
+				failures += 1
+				printerr("FAIL post-stall aileron reversal on %s at alpha=%d deg: Mx_right=%.6f, Mx_left=%.6f"
+					% [id, deg, loads_right[3], loads_left[3]])
+		flight.free()
+	print("Post-stall aileron authority (0..80 deg alpha on Stik, Extra, Timber): %d checks, %d failed" % [sub_checks, sub_failures])
+
+
+func _check_static_hover_propwash_authority() -> void:
+	var sub_checks := 0
+	var sub_failures := 0
+	var rpm := 9000.0
+	for id: String in TARGET_3D_IDS:
+		var flight := Flight.new()
+		flight.setup(Catalog.entry(id).data, id)
+		root.add_child(flight)
+		var model: Dictionary = flight.aircraft.model.duplicate(true)
+		var state: PackedFloat64Array = flight.sim.state.duplicate()
+		for axis in 3:
+			state[RB.VEL + axis] = 0.0
+			state[RB.RATE + axis] = 0.0
+		var air: Dictionary = Air.compute(state, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+		var d_base: Dictionary = flight._deflections(flight.sim.aux).duplicate()
+		d_base.elevator = 0.0
+		d_base.rudder = 0.0
+		d_base.aileron_right = 0.0
+		d_base.aileron_left = 0.0
+
+		var d_up := d_base.duplicate()
+		d_up.elevator = -0.4
+		var d_down := d_base.duplicate()
+		d_down.elevator = 0.4
+		var loads_up: PackedFloat64Array = Slipstream.loads(state, air, d_up, model, rpm, Air.RHO_SEA_LEVEL)
+		var loads_down: PackedFloat64Array = Slipstream.loads(state, air, d_down, model, rpm, Air.RHO_SEA_LEVEL)
+		var delta_my: float = loads_up[4] - loads_down[4]
+
+		var d_rud_r := d_base.duplicate()
+		d_rud_r.rudder = -0.4
+		var d_rud_l := d_base.duplicate()
+		d_rud_l.rudder = 0.4
+		var loads_rud_r: PackedFloat64Array = Slipstream.loads(state, air, d_rud_r, model, rpm, Air.RHO_SEA_LEVEL)
+		var loads_rud_l: PackedFloat64Array = Slipstream.loads(state, air, d_rud_l, model, rpm, Air.RHO_SEA_LEVEL)
+		var delta_mz: float = loads_rud_r[5] - loads_rud_l[5]
+
+		var d_ail_r := d_base.duplicate()
+		d_ail_r.aileron_right = -0.35
+		d_ail_r.aileron_left = 0.35
+		var d_ail_l := d_base.duplicate()
+		d_ail_l.aileron_right = 0.35
+		d_ail_l.aileron_left = -0.35
+		var loads_ail_r: PackedFloat64Array = Slipstream.loads(state, air, d_ail_r, model, rpm, Air.RHO_SEA_LEVEL)
+		var loads_ail_l: PackedFloat64Array = Slipstream.loads(state, air, d_ail_l, model, rpm, Air.RHO_SEA_LEVEL)
+		var delta_mx: float = loads_ail_r[3] - loads_ail_l[3]
+
+		sub_checks += 3
+		checks += 3
+		if not (is_finite(delta_my) and delta_my > 0.5):
+			sub_failures += 1
+			failures += 1
+			printerr("FAIL static V=0 propwash elevator authority on %s: ΔMy=%.6f Nm" % [id, delta_my])
+		if not (is_finite(delta_mz) and delta_mz > 0.2):
+			sub_failures += 1
+			failures += 1
+			printerr("FAIL static V=0 propwash rudder authority on %s: ΔMz=%.6f Nm" % [id, delta_mz])
+		if not (is_finite(delta_mx) and delta_mx > 0.08):
+			sub_failures += 1
+			failures += 1
+			printerr("FAIL static V=0 propwash aileron authority on %s: ΔMx=%.6f Nm" % [id, delta_mx])
+		print("Static V=0 propwash authority (%s @ %.0f RPM): ΔMx=%.3f Nm, ΔMy=%.3f Nm, ΔMz=%.3f Nm"
+			% [id, rpm, delta_mx, delta_my, delta_mz])
+		flight.free()
+	print("Static V=0 hover propwash 3-axis authority: %d checks, %d failed" % [sub_checks, sub_failures])
+
+
+func _check_knife_edge_side_force() -> void:
+	var sub_checks := 0
+	var sub_failures := 0
+	var speed := 22.0
+	# 20 deg sideslip
+	var beta_rad := deg_to_rad(20.0)
+	for id: String in TARGET_3D_IDS:
+		var flight := Flight.new()
+		flight.setup(Catalog.entry(id).data, id)
+		root.add_child(flight)
+		var model: Dictionary = flight.aircraft.model.duplicate(true)
+		var state: PackedFloat64Array = flight.sim.state.duplicate()
+		for axis in 3:
+			state[RB.RATE + axis] = 0.0
+		state[RB.VEL] = speed * M.cos_(beta_rad)
+		state[RB.VEL + 1] = -speed * M.sin_(beta_rad) # relative wind from right (sideslip)
+		state[RB.VEL + 2] = 0.0
+		var air: Dictionary = Air.compute(state, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
+		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()
+		d.elevator = 0.0
+		d.rudder = 0.0
+		d.aileron_right = 0.0
+		d.aileron_left = 0.0
+		var loads: PackedFloat64Array = Aero.loads(state, air, d, model, Air.RHO_SEA_LEVEL)
+		var side_force_fy: float = loads[1]
+		sub_checks += 1
+		checks += 1
+		# With body side area modeled, a 20 deg sideslip at 22 m/s must generate significant restoring/support side force Fy > 10 N
+		if not (is_finite(side_force_fy) and side_force_fy > 10.0):
+			sub_failures += 1
+			failures += 1
+			printerr("FAIL knife-edge side force on %s at beta=20 deg: Fy=%.3f N (expected > 10 N)"
+				% [id, side_force_fy])
+		print("Knife-edge side force (%s @ 22 m/s, beta=20 deg): Fy=%.3f N" % [id, side_force_fy])
+		flight.free()
+	print("Knife-edge side force: %d checks, %d failed" % [sub_checks, sub_failures])
+

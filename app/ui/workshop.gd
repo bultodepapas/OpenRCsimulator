@@ -21,6 +21,9 @@ const FACTOR_CAPABILITIES := {
 	"weight_multiplier": "weight",
 	"power_multiplier": "power",
 	"control_multiplier": "controls",
+	"control_multiplier_aileron": "controls",
+	"control_multiplier_elevator": "controls",
+	"control_multiplier_rudder": "controls",
 }
 const PRESETS := {
 	"mini": {"scale": 0.5, "mass_policy": "constant_wing_loading", "weight_multiplier": 1.0, "power_multiplier": 1.0, "control_multiplier": 0.9},
@@ -67,6 +70,8 @@ var _mass_policy_selector: OptionButton
 var _factor_sliders: Dictionary = {}
 var _factor_values: Dictionary = {}
 var _factor_hints: Dictionary = {}
+var _advanced_controls_toggle: CheckButton
+var _advanced_controls_box: VBoxContainer
 var _preset_buttons: Dictionary = {}
 var _summary_label: Label
 var _errors_label: Label
@@ -502,6 +507,22 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	_add_factor_row(content, "power_multiplier", "Power multiplier")
 	_add_factor_row(content, "control_multiplier", "Control travel")
 
+	_advanced_controls_toggle = CheckButton.new()
+	_advanced_controls_toggle.name = "AdvancedControlThrows"
+	_advanced_controls_toggle.text = tr("Advanced control surface setup")
+	_advanced_controls_toggle.focus_mode = Control.FOCUS_ALL
+	_advanced_controls_toggle.toggled.connect(_on_advanced_controls_toggled)
+	content.add_child(_advanced_controls_toggle)
+
+	_advanced_controls_box = VBoxContainer.new()
+	_advanced_controls_box.name = "AdvancedControlsBox"
+	_advanced_controls_box.add_theme_constant_override("separation", 6)
+	_advanced_controls_box.visible = false
+	_add_factor_row(_advanced_controls_box, "control_multiplier_aileron", "  · Aileron travel")
+	_add_factor_row(_advanced_controls_box, "control_multiplier_elevator", "  · Elevator travel")
+	_add_factor_row(_advanced_controls_box, "control_multiplier_rudder", "  · Rudder travel")
+	content.add_child(_advanced_controls_box)
+
 	_scale_support_hint = _label("", "SecondaryLabel", true)
 	_scale_support_hint.name = "ScaleSupport"
 	content.add_child(_scale_support_hint)
@@ -571,7 +592,7 @@ func _factor_bounds(key: String) -> Vector2:
 			return Vector2(Parameters.MIN_WEIGHT_MULTIPLIER, Parameters.MAX_WEIGHT_MULTIPLIER)
 		"power_multiplier":
 			return Vector2(Parameters.MIN_POWER_MULTIPLIER, Parameters.MAX_POWER_MULTIPLIER)
-		"control_multiplier":
+		"control_multiplier", "control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder":
 			return Vector2(Parameters.MIN_CONTROL_MULTIPLIER, Parameters.MAX_CONTROL_MULTIPLIER)
 	return Vector2.ONE
 
@@ -896,9 +917,23 @@ func _on_factor_value_changed(value: float, key: String) -> void:
 		_capture_undo()
 		_slider_gesture = _slider_dragging
 	var bounds := _factor_bounds(key)
-	_recipe[key] = clampf(value, bounds.x, bounds.y)
-	_factor_values[key].text = String.num(value, 4) + "×"
+	var clamped_value := clampf(value, bounds.x, bounds.y)
+	_recipe[key] = clamped_value
+	_factor_values[key].text = String.num(clamped_value, 4) + "×"
+	if key == "control_multiplier":
+		for surface_key in ["control_multiplier_aileron", "control_multiplier_elevator", "control_multiplier_rudder"]:
+			_recipe[surface_key] = clamped_value
+			if _factor_sliders.has(surface_key):
+				_factor_sliders[surface_key].step = 0.0
+				_factor_sliders[surface_key].set_value_no_signal(clamped_value)
+				_factor_sliders[surface_key].step = FACTOR_STEP
+				_factor_values[surface_key].text = String.num(clamped_value, 4) + "×"
 	_compile_recipe()
+
+
+func _on_advanced_controls_toggled(pressed: bool) -> void:
+	if is_instance_valid(_advanced_controls_box):
+		_advanced_controls_box.visible = pressed
 
 
 func _on_slider_drag_started() -> void:
@@ -1055,6 +1090,15 @@ func _sync_controls() -> void:
 			tr("Range %.2f×–%.2f× · experimental adjustment.") % [bounds.x, bounds.y]
 			if supported else tr("Not available for this engine type.")
 		)
+	if is_instance_valid(_advanced_controls_toggle):
+		_advanced_controls_toggle.disabled = not bool(_capabilities.get("controls", false))
+		var cm := float(_recipe.get("control_multiplier", 1.0))
+		var custom_surfaces := not is_equal_approx(float(_recipe.get("control_multiplier_aileron", cm)), cm) \
+			or not is_equal_approx(float(_recipe.get("control_multiplier_elevator", cm)), cm) \
+			or not is_equal_approx(float(_recipe.get("control_multiplier_rudder", cm)), cm)
+		_advanced_controls_toggle.set_pressed_no_signal(custom_surfaces)
+		if is_instance_valid(_advanced_controls_box):
+			_advanced_controls_box.visible = custom_surfaces
 	_syncing_controls = false
 	_update_capabilities()
 	_update_undo_button()
@@ -1149,6 +1193,24 @@ func _format_summary(summary_value: Variant, model: Dictionary) -> String:
 	var current_cg_percent := _cg_percent(model)
 	if is_finite(base_cg_percent) and is_finite(current_cg_percent):
 		lines.append(_format_metric_change(tr("CG (% chord)"), base_cg_percent, current_cg_percent, "%", 1))
+	var base_controls: Dictionary = _base_model.get("controls", {})
+	var current_controls: Dictionary = model.get("controls", {})
+	if base_controls.has("throw_deg") and current_controls.has("throw_deg"):
+		var base_throws: Dictionary = base_controls.throw_deg
+		var current_throws: Dictionary = current_controls.throw_deg
+		var surface_labels := {
+			"aileron": tr("Aileron throw"),
+			"elevator": tr("Elevator throw"),
+			"rudder": tr("Rudder throw"),
+		}
+		for surf_key: String in ["aileron", "elevator", "rudder"]:
+			if base_throws.has(surf_key) and current_throws.has(surf_key):
+				lines.append(_format_metric_change(
+					surface_labels[surf_key],
+					float(base_throws[surf_key]),
+					float(current_throws[surf_key]),
+					"°", 1
+				))
 	return "\n".join(lines)
 
 

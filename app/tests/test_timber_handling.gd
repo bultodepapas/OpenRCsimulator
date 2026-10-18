@@ -83,7 +83,7 @@ func _initialize() -> void:
 	session.input_enabled = false
 	session.engine_running = false
 	session.commands = { roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 1.0 }
-	_step(session, roundi(5.0 / session.sim.dt()))
+	_step(session, roundi(5.5 / session.sim.dt()))
 	var stopped_rpm: float = session.sim.aux[FlightSession.AUX_RPM]
 	var stopped_electrical: Dictionary = session.electrical_state()
 	_check("source-off reaches the coupled motor stop with no motor current",

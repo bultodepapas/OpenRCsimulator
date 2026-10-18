@@ -1362,6 +1362,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_F2:
 				if _overlays != null:
 					_overlays.cycle_preset()
+			KEY_F4, KEY_3:
+				session.rate_profile = "full" if session.rate_profile == "normal" else "normal"
+				_note = tr("Rates: %s") % (tr("Full (3D)") if session.rate_profile == "full" else tr("Normal"))
+				get_viewport().set_input_as_handled()
 			KEY_F5:
 				_note = session.reload() if _experimental_aircraft_path.is_empty() else "Experimental polar is fixed for this flight; restart the application to load another file."
 				_update_cg_model()
