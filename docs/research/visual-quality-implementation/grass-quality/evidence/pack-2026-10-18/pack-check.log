@@ -1,0 +1,110 @@
+COMMAND: "C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64_console.exe" --headless --path tmp/grass-quality-followup/pack/empty --audio-driver Dummy --script "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\check_pack.gd" -- "C:\DEVELOPMENT\OpenRCsimulator\tmp\grass-quality-followup\pack\openrc-windows.pck" "C:\DEVELOPMENT\OpenRCsimulator\app" "C:\DEVELOPMENT\OpenRCsimulator\docs\research\visual-quality-implementation\grass-quality\evidence\pack-2026-10-18\pack-smoke.json"
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: PCK has a readable SHA-256 identity
+PASS: Windows-preset PCK mounts from the empty project directory
+PASS: all grass, ground and field loader scripts load from the mounted PCK
+PASS: packed grass adapter exposes both quality tables and triangle budget
+PASS: mounted PCK exposes the vegetation catalog
+PASS: packed catalog retains all source asset rows
+PASS: packed grass quality selector defaults to static
+PASS: required source identity is byte-identical in PCK: res://assets/landscape/vegetation/catalog.json
+PASS: required source identity is byte-identical in PCK: res://assets/landscape/vegetation/LICENSE.txt
+PASS: required source identity is byte-identical in PCK: res://assets/landscape/rc-ground/manifest.json
+PASS: required source identity is byte-identical in PCK: res://assets/landscape/rc-ground/LICENSES.txt
+PASS: required source identity is byte-identical in PCK: res://data/fields/default.json
+PASS: required source identity is byte-identical in PCK: res://data/fields/grass.json
+PASS: runtime code resource loads from PCK: res://scenery/imported_vegetation.gd
+PASS: runtime code resource loads from PCK: res://scenery/imported_near_grass.gd
+PASS: runtime code resource loads from PCK: res://scenery/imported_grass_material.gd
+PASS: runtime code resource loads from PCK: res://scenery/imported_grass.gdshader
+PASS: runtime code resource loads from PCK: res://render/grass_quality.gd
+PASS: runtime code resource loads from PCK: res://render/ground.gd
+PASS: runtime code resource loads from PCK: res://render/ground.gdshader
+PASS: runtime code resource loads from PCK: res://render/grass_ground_material.gd
+PASS: runtime code resource loads from PCK: res://render/rc_ground_material.gd
+PASS: runtime code resource loads from PCK: res://render/turf_detail.gdshaderinc
+PASS: runtime code resource loads from PCK: res://render/rc_ground_detail.gdshaderinc
+PASS: Quaternius CC0 license matches the packed vegetation manifest
+PASS: ambientCG Grass 001 CC0 evidence remains in the packed license/manifest
+PASS: grass_common_short source glTF identity matches its retained catalog hash
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:549)
+       [1] get_parts (res://scenery/imported_vegetation.gd:67)
+       [2] _verify_grass_source_assets (C:/DEVELOPMENT/OpenRCsimulator/tools/grass/check_pack.gd:242)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tools/grass/check_pack.gd:143)
+PASS: grass_common_short packaged imported mesh and source material load
+PASS: grass_common_tall source glTF identity matches its retained catalog hash
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:549)
+       [1] get_parts (res://scenery/imported_vegetation.gd:67)
+       [2] _verify_grass_source_assets (C:/DEVELOPMENT/OpenRCsimulator/tools/grass/check_pack.gd:242)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tools/grass/check_pack.gd:143)
+PASS: grass_common_tall packaged imported mesh and source material load
+PASS: grass_wispy_tall source glTF identity matches its retained catalog hash
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:549)
+       [1] get_parts (res://scenery/imported_vegetation.gd:67)
+       [2] _verify_grass_source_assets (C:/DEVELOPMENT/OpenRCsimulator/tools/grass/check_pack.gd:242)
+       [3] _run (C:/DEVELOPMENT/OpenRCsimulator/tools/grass/check_pack.gd:143)
+PASS: grass_wispy_tall packaged imported mesh and source material load
+PASS: exactly three requested imported grass meshes are present
+FAIL: Grass001 albedo texture loads and decoded base pixels match source source=(2048, 2048) pack=(2048, 2048) source_mips=false pack_mips=true
+PASS: Grass001 albedo imported mipmap state is retained
+FAIL: Grass001 normal texture loads and decoded base pixels match source source=(2048, 2048) pack=(2048, 2048) source_mips=false pack_mips=true
+PASS: Grass001 normal imported mipmap state is retained
+FAIL: Grass001 roughness texture loads and decoded base pixels match source source=(2048, 2048) pack=(2048, 2048) source_mips=false pack_mips=true
+PASS: Grass001 roughness imported mipmap state is retained
+FAIL: RC dirt albedo texture loads and decoded base pixels match source source=(2048, 2048) pack=(2048, 2048) source_mips=false pack_mips=true
+PASS: RC dirt albedo imported mipmap state is retained
+FAIL: RC dirt normal texture loads and decoded base pixels match source source=(2048, 2048) pack=(2048, 2048) source_mips=false pack_mips=true
+PASS: RC dirt normal imported mipmap state is retained
+FAIL: RC dirt roughness texture loads and decoded base pixels match source source=(2048, 2048) pack=(2048, 2048) source_mips=false pack_mips=true
+PASS: RC dirt roughness imported mipmap state is retained
+PASS: Quaternius grass atlas texture loads and decoded base pixels match source
+PASS: Quaternius grass atlas imported mipmap state is retained
+PASS: existing turf detail texture loads and decoded base pixels match source
+PASS: existing turf detail imported mipmap state is retained
+PASS: grass-only wind shader loads from PCK with the qualified opaque contract
+PASS: grass-only material adapter loads from PCK
+PASS: packed default field data validates
+PASS: default low profile keeps its exact source-family counts
+PASS: default low profile remains within the 50,000 source-triangle cap
+PASS: default low placements are nested in the preceding quality tier
+PASS: default balanced profile keeps its exact source-family counts
+PASS: default balanced profile remains within the 50,000 source-triangle cap
+PASS: default balanced placements are nested in the preceding quality tier
+PASS: default high profile keeps its exact source-family counts
+PASS: default high profile remains within the 50,000 source-triangle cap
+PASS: default high placements are nested in the preceding quality tier
+PASS: default high-tier root preserves all three source meshes, arrays and counts
+PASS: default high-tier root uses only its intended grass material route
+PASS: enhanced selector activates from the packaged helper
+PASS: enhanced low profile keeps its exact source-family counts
+PASS: enhanced low profile remains within the 50,000 source-triangle cap
+PASS: enhanced low placements are nested in the preceding quality tier
+PASS: enhanced balanced profile keeps its exact source-family counts
+PASS: enhanced balanced profile remains within the 50,000 source-triangle cap
+PASS: enhanced balanced placements are nested in the preceding quality tier
+PASS: enhanced high profile keeps its exact source-family counts
+PASS: enhanced high profile remains within the 50,000 source-triangle cap
+PASS: enhanced high placements are nested in the preceding quality tier
+PASS: enhanced high-tier root preserves all three source meshes, arrays and counts
+PASS: enhanced high-tier root uses only its intended grass material route
+PASS: enhanced high-tier root preserves all three source meshes, arrays and counts
+PASS: enhanced high-tier root uses only its intended grass material route
+PASS: independent enhanced builds own distinct ArrayMesh and ShaderMaterial resources
+PASS: default ground keeps optional photo and RC surface bindings disabled
+PASS: RC binder enables its own dirt/track route without mutating ordinary grass
+PASS: ordinary and RC ground materials are independent
+PASS: enhanced grass binder selects photo grass without enabling RC coverage
+PASS: enhanced grass binder owns a private material and does not leak into RC
+Grass Windows-preset PCK smoke: 83 checks, 6 failures
+GRASS_PACK_REPORT=C:/DEVELOPMENT/OpenRCsimulator/docs/research/visual-quality-implementation/grass-quality/evidence/pack-2026-10-18/pack-smoke.json
+EXIT_CODE: 1

@@ -16,6 +16,10 @@ IDENTITY_FILES = (
     "project.godot", "data/fields/default.json", "data/scenery/default.json",
     "scenery/scenery.gd", "scenery/imported_vegetation.gd",
     "scenery/imported_vegetation_wind.gdshader", "assets/landscape/vegetation/catalog.json",
+    "assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+    "assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+    "assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+    "assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
 )
 
 
