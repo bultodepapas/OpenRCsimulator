@@ -202,6 +202,7 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 				instance.set_meta("_imported_vegetation_wind_enabled", use_legacy_wind)
 				instance.set_meta("_imported_vegetation_tree_wind_enabled", use_tree_wind)
 				if use_tree_wind and has_cull_bounds:
+					multi_mesh.custom_aabb = cull_bounds
 					instance.custom_aabb = cull_bounds
 				root.add_child(instance)
 				(state["multimeshes"] as Array).append(multi_mesh)
@@ -427,6 +428,8 @@ static func _tree_material_support_reason(source_material: Material) -> String:
 		return "UV2 transforms are not supported"
 	if material.roughness_texture != null or material.metallic_texture != null:
 		return "roughness and metallic textures are not supported"
+	if material.orm_texture != null:
+		return "ORM textures are not supported"
 	if material.alpha_antialiasing_mode != 0:
 		return "alpha antialiasing is not supported"
 	if material.get_feature(BaseMaterial3D.FEATURE_EMISSION):
@@ -575,7 +578,11 @@ static func _prepare_mesh(
 		if enable_wind:
 			var wind_template := _wind_material(base_material, source_height, bounds_value.position.y)
 			if wind_template != null:
-				var cache_key := "%s:%s" % ["tree" if tree_wind else "legacy", wind_template.get_instance_id()]
+				var cache_key := "%s:%s:%0.6f" % [
+					"tree" if tree_wind else "legacy",
+					wind_template.get_instance_id(),
+				default_strength,
+				]
 				if not root_wind_materials.has(cache_key):
 					var root_material := wind_template.duplicate() as ShaderMaterial
 					root_material.set_shader_parameter("tree_wind_mode", tree_wind)

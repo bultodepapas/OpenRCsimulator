@@ -87,10 +87,27 @@ func _test_wind_modes_and_material_preservation() -> void:
 				if output_material is ShaderMaterial:
 					saw_tree_shader = true
 					var shader_material := output_material as ShaderMaterial
+					var source_material := source_materials[surface_index] as BaseMaterial3D
 					_check("tree wind material uses the compatibility-safe shader",
 						shader_material.shader == tree_mode_shader
 						and bool(shader_material.get_shader_parameter("tree_wind_mode")))
-					_check("tree wind material keeps supported source values",
+					_check("tree wind preserves source color and texture",
+						shader_material.get_shader_parameter("albedo_color") == source_material.albedo_color
+						and shader_material.get_shader_parameter("albedo_texture") == source_material.albedo_texture)
+					_check("tree wind preserves source UV, roughness, metallic and specular values",
+						shader_material.get_shader_parameter("uv1_scale") == Vector2(source_material.uv1_scale.x, source_material.uv1_scale.y)
+						and shader_material.get_shader_parameter("uv1_offset") == Vector2(source_material.uv1_offset.x, source_material.uv1_offset.y)
+						and is_equal_approx(float(shader_material.get_shader_parameter("roughness")), source_material.roughness)
+						and is_equal_approx(float(shader_material.get_shader_parameter("metallic")), source_material.metallic)
+						and is_equal_approx(float(shader_material.get_shader_parameter("specular")), source_material.metallic_specular))
+					_check("tree wind preserves source normal-map and alpha-scissor settings",
+						bool(shader_material.get_shader_parameter("use_normal_texture"))
+							== (source_material.normal_enabled and source_material.normal_texture != null)
+						and bool(shader_material.get_shader_parameter("use_alpha_scissor"))
+							== (source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR)
+						and is_equal_approx(float(shader_material.get_shader_parameter("alpha_scissor_threshold")),
+							source_material.alpha_scissor_threshold))
+					_check("tree wind keeps per-part height coordinates",
 						is_equal_approx(float(shader_material.get_shader_parameter("plant_height")),
 							float(parts[part_index].get("bounds", AABB()).size.y)))
 				else:
@@ -152,14 +169,20 @@ func _test_invalid_cell_option_falls_back() -> void:
 	var legacy := ImportedVegetation.build(batches)
 	var invalid_a := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 32})
 	var invalid_b := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 32})
+	var invalid_wind_a := ImportedVegetation.build(batches, false, {"tree_wind": "true"})
+	var invalid_wind_b := ImportedVegetation.build(batches, false, {"tree_wind": "true"})
 	_check("unsupported cell sizes fail back to legacy grouping",
 		invalid_a.get_child_count() == legacy.get_child_count()
 		and invalid_b.get_child_count() == legacy.get_child_count())
 	_check("unsupported cell fallback preserves transforms",
 		_tree_transform_signatures(invalid_a) == _tree_transform_signatures(legacy))
+	_check("non-boolean tree wind options fail closed without enabling wind",
+		_not_tree_wind_enabled(invalid_wind_a) and _not_tree_wind_enabled(invalid_wind_b))
 	legacy.free()
 	invalid_a.free()
 	invalid_b.free()
+	invalid_wind_a.free()
+	invalid_wind_b.free()
 
 
 func _sample_batches() -> Dictionary:
@@ -249,6 +272,13 @@ func _color_key(color: Color) -> String:
 func _all_children_are_flat_multimeshes(root: Node3D) -> bool:
 	for child in root.get_children():
 		if not child is MultiMeshInstance3D or child.get_child_count() != 0:
+			return false
+	return true
+
+
+func _not_tree_wind_enabled(root: Node3D) -> bool:
+	for child in root.get_children():
+		if bool(child.get_meta("_imported_vegetation_tree_wind_enabled", false)):
 			return false
 	return true
 
