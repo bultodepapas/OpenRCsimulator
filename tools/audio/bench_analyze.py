@@ -4,7 +4,8 @@ Usage: python3 tools/audio/bench_analyze.py <prefix> [<prefix> ...] [--out=summa
 Each <prefix> names <prefix>.wav and <prefix>.json written by tools/audio/bench.sh.
 
 Metrics are mixer diagnostics, not calibrated acoustics:
-- level: BS.1770 K-weighted RMS per segment (LKFS-like, ungated), and dBFS sample peak;
+- level: BS.1770 K-weighted RMS per segment (LKFS-like, ungated), dBFS sample peak, 4x-oversampled
+  true peak (dBTP) and the count of full-scale samples (clipping in the integer capture);
 - spectrum: centroid and 95 % energy bandwidth;
 - pitch: strongest spectral peak 40-4000 Hz (the motor's dominant line);
 - periodicity: autocorrelation of the 10 ms RMS envelope, lags 0.15-3 s (repeating loop texture);
@@ -105,6 +106,23 @@ def clicks(x: np.ndarray, rate: int) -> list[float]:
     return times
 
 
+def true_peak(audio: np.ndarray) -> float:
+    """BS.1770-4 Annex 2 style: 4x oversampling with a 48-tap-per-phase windowed-sinc FIR, then |peak|."""
+    factor, taps = 4, 48
+    n = np.arange(factor * taps) - (factor * taps - 1) / 2.0
+    kernel = np.sinc(n / factor) * np.blackman(n.size)
+    kernel *= factor / kernel.sum()
+    peak = 0.0
+    for channel in audio.T:
+        stuffed = np.zeros(channel.size * factor)
+        stuffed[::factor] = channel
+        size = stuffed.size + kernel.size - 1
+        fft = 1 << (size - 1).bit_length()
+        up = np.fft.irfft(np.fft.rfft(stuffed, fft) * np.fft.rfft(kernel, fft), fft)[:size]
+        peak = max(peak, float(np.abs(up).max()))
+    return peak
+
+
 def analyze(prefix: Path) -> dict:
     audio, rate = read_wav(prefix.with_suffix(".wav"))
     report = json.loads(prefix.with_suffix(".json").read_text())
@@ -143,6 +161,9 @@ def analyze(prefix: Path) -> dict:
         "duration_s": round(mono.size / rate, 3), "telemetry_frames": report["frames"],
         "audio_frames_per_video_frame": per_frame, "focus_resumes": report.get("focus_resumes", 0),
         "peak_dbfs": round(db(float(np.abs(audio).max())), 2),
+        "true_peak_dbtp": round(db(true_peak(audio)), 2),
+        # Movie Maker writes integer PCM, so a mix above 0 dBFS lands as full-scale samples.
+        "full_scale_samples": int(np.count_nonzero(np.abs(audio) >= 1.0 - 2.0 ** -23)),
         "segments": segments,
         "doppler_min": round(float(doppler.min()), 4), "doppler_max": round(float(doppler.max()), 4),
         "doppler_jump_times_s": frame_jumps,
@@ -161,6 +182,7 @@ def main() -> int:
     results = [analyze(p) for p in prefixes]
     for r in results:
         print(f"\n{r['capture']} ({r['aircraft']}, {r['scenario']}) peak {r['peak_dbfs']} dBFS, "
+              f"true peak {r['true_peak_dbtp']} dBTP, full-scale samples {r['full_scale_samples']}, "
               f"doppler {r['doppler_min']}..{r['doppler_max']}, jumps {r['doppler_jump_times_s'][:8]}, clicks {r['click_times_s'][:8]}")
         print(f"{'stage':12s} {'t':>11s} {'rpm':>8s} {'dist':>6s} {'pitch':>6s} {'vol_dB':>7s} {'K_dB':>7s} {'cent':>6s} {'bw95':>6s} {'dom':>7s} {'ac':>5s} {'per':>5s} {'loop':>5s}")
         for s in r["segments"]:

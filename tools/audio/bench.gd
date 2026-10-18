@@ -23,8 +23,11 @@ const SCENARIOS: Dictionary = {
 		[4.0, "inspect_on"], [4.5, "idle"], [5.0, "inspect_off"], [5.5, "up"], [8.5, "full"], [14.0, "end"]],
 	# The pilot station moves 250 m ahead of the start, 30 m to the right: approach, pass, recede.
 	flyby = [[0.0, "up"], [2.0, "approach"], [4.0, "passing"], [7.0, "recede"], [11.0, "end"]],
+	# AUD-12: full-power dive into the ground; the crash hold keeps rendering, so impact and aftermath sound mix.
+	crash = [[0.0, "up"], [1.5, "dive"], [10.0, "end"]],
 }
-const THROTTLE: Dictionary = {up = 1.0, down = -1.0, approach = 1.0, passing = 1.0, recede = 1.0}
+const THROTTLE: Dictionary = {up = 1.0, down = -1.0, approach = 1.0, passing = 1.0, recede = 1.0, dive = 1.0}
+const PITCH: Dictionary = {dive = -1.0}
 
 
 func _initialize() -> void:
@@ -138,4 +141,4 @@ func _stage_at(timeline: Array, t: float) -> String:
 
 
 func _controls() -> Dictionary:
-	return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = float(THROTTLE.get(stage, 0.0))}
+	return {roll = 0.0, pitch = float(PITCH.get(stage, 0.0)), yaw = 0.0, throttle = float(THROTTLE.get(stage, 0.0))}
