@@ -41,6 +41,8 @@ var _category_buttons: Array[Button] = []
 var _pages: Array[VBoxContainer] = []
 var _volume_slider: HSlider
 var _volume_value: Label
+var _master_slider: HSlider
+var _master_value: Label
 var _test_sound_button: Button
 var _status: Label
 var _keep_button: Button
@@ -181,24 +183,14 @@ func _build() -> void:
 	_add_row(interface_page, "Interface language", _language_picker)
 	interface_page.add_child(_label("Language is saved immediately.", "SecondaryLabel", true))
 
-	var volume_control := HBoxContainer.new()
-	volume_control.name = "VolumeControl"
-	volume_control.add_theme_constant_override("separation", 12)
-	_volume_slider = HSlider.new()
-	_volume_slider.name = "MenuVolume"
-	_volume_slider.min_value = 0.0
-	_volume_slider.max_value = 1.0
-	_volume_slider.step = 0.05
-	_volume_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_volume_slider.custom_minimum_size.y = 48.0
-	_volume_slider.value_changed.connect(_volume_changed)
-	_volume_slider.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
-	volume_control.add_child(_volume_slider)
-	_volume_value = _label("", "SecondaryLabel")
-	_volume_value.name = "VolumeValue"
-	_volume_value.custom_minimum_size.x = 78.0
-	_volume_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	volume_control.add_child(_volume_value)
+	var master_control := _volume_control("MasterVolumeControl", "MasterVolume", "MasterVolumeValue", _master_volume_changed)
+	_master_slider = master_control.get_child(0) as HSlider
+	_master_value = master_control.get_child(1) as Label
+	_add_row(sound_page, "Game volume", master_control)
+	sound_page.add_child(_label("Everything you hear: aircraft, scenery, weather, crashes and menus.", "SecondaryLabel", true))
+	var volume_control := _volume_control("VolumeControl", "MenuVolume", "VolumeValue", _volume_changed)
+	_volume_slider = volume_control.get_child(0) as HSlider
+	_volume_value = volume_control.get_child(1) as Label
 	_add_row(sound_page, "Menu volume", volume_control)
 	sound_page.add_child(_label("Subtle cues for focus, selection and navigation.", "SecondaryLabel", true))
 	_test_sound_button = _button("Test sound", "QuietButton", "TestSound")
@@ -241,6 +233,35 @@ func _show_category(index: int) -> void:
 	_scroll.scroll_vertical = 0
 
 
+func _volume_control(container_name: String, slider_name: String, value_name: String, on_changed: Callable) -> HBoxContainer:
+	var control := HBoxContainer.new()
+	control.name = container_name
+	control.add_theme_constant_override("separation", 12)
+	var slider := HSlider.new()
+	slider.name = slider_name
+	slider.min_value = 0.0
+	slider.max_value = 1.0
+	slider.step = 0.05
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.custom_minimum_size.y = 48.0
+	slider.value_changed.connect(on_changed)
+	slider.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
+	control.add_child(slider)
+	var value := _label("", "SecondaryLabel")
+	value.name = value_name
+	value.custom_minimum_size.x = 78.0
+	value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	control.add_child(value)
+	return control
+
+
+func _master_volume_changed(value: float) -> void:
+	_draft.master_volume = value
+	_refresh_volume_text()
+	_emit_presentation()
+	_sync_action_buttons()
+
+
 func _volume_changed(value: float) -> void:
 	_draft.menu_volume = value
 	_refresh_volume_text()
@@ -251,8 +272,14 @@ func _volume_changed(value: float) -> void:
 func _refresh_volume_text() -> void:
 	if _volume_value == null:
 		return
-	_volume_value.text = tr("Muted") if float(_draft.menu_volume) <= 0.0 else "%d%%" % roundi(float(_draft.menu_volume) * 100.0)
+	_volume_value.text = _volume_text(float(_draft.menu_volume))
+	if _master_value != null:
+		_master_value.text = _volume_text(float(_draft.get("master_volume", 1.0)))
 	_test_sound_button.disabled = float(_draft.menu_volume) <= 0.0
+
+
+func _volume_text(level: float) -> String:
+	return tr("Muted") if level <= 0.0 else "%d%%" % roundi(level * 100.0)
 
 
 func _add_row(parent: Control, caption: String, input: Control) -> void:
@@ -371,6 +398,7 @@ func _sync_controls() -> void:
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
 	_select_metadata(_language_picker, _language)
 	_volume_slider.set_value_no_signal(float(_draft.menu_volume))
+	_master_slider.set_value_no_signal(float(_draft.get("master_volume", 1.0)))
 	_refresh_volume_text()
 	_sync_action_buttons()
 
@@ -400,7 +428,7 @@ func _update_layout() -> void:
 		row.vertical = stack_rows
 		row.add_theme_constant_override("separation", 8 if stack_rows else 24)
 		var input := row.get_child(1) as Control
-		if input is OptionButton or input.name == "VolumeControl":
+		if input is OptionButton or input.name in ["VolumeControl", "MasterVolumeControl"]:
 			input.custom_minimum_size.x = minf(300.0 * ScreenTheme.text_scale, _layout_panel.custom_minimum_size.x - 64.0)
 			input.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN if stack_rows else Control.SIZE_SHRINK_END
 		else:

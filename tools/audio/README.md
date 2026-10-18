@@ -22,6 +22,8 @@ The probe flies the actual physics scene with keyboard-rate throttle commands, t
 
 `make_bus_layout.gd` generates `app/default_bus_layout.tres` (AUD-12): Master ends in one `AudioEffectHardLimiter`, ceiling −1 dBFS, release 2 s, after every per-scene bus. Edit its constants and regenerate (`godot --headless --path app --script /absolute/repo/tools/audio/make_bus_layout.gd`); `-- --check` fails on a stale or hand-edited layout and runs in `app/test.sh`.
 
+`fleet_loudness.py <prefix>...` tabulates full-power and idle K level at 100 m per aircraft from source-level sweeps (`--engine-only --audio-delay=off --audio-absorption=off`), relative to the Stik, and marks stages with a crash or pause as invalid.
+
 The Movie Maker bench (`bench.sh`, usage in its header) adds a `crash` scenario (full-power dive into the ground) and `--view=chase` for a listener near the aircraft. `bench_analyze.py` reports a 4× oversampled true peak (dBTP) and the count of full-scale samples, since the integer capture clips above 0 dBFS.
 
 `check_parity.gd` pairs every fixed-wing catalog aircraft through `main.tscn` with audio off and on, and requires identical full checkpoints each tick. Its input tape drives the four primary controls and keeps any extra channels (gear, flaps, smoke) at their accepted start values. Each pair is judged by its own checks. Rotorcraft use another route and are listed under `skipped` in the report, not silently passed.

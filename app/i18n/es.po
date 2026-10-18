@@ -3100,6 +3100,12 @@ msgstr "Los cambios de pantalla completa se revierten automáticamente a los 15 
 msgid "Language is saved immediately."
 msgstr "El idioma se guarda al instante."
 
+msgid "Game volume"
+msgstr "Volumen general"
+
+msgid "Everything you hear: aircraft, scenery, weather, crashes and menus."
+msgstr "Todo lo que oyes: aviones, paisaje, clima, choques y menús."
+
 msgid "Menu volume"
 msgstr "Volumen del menú"
 

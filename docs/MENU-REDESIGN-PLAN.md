@@ -305,7 +305,7 @@ Each phase leaves a working, reviewable app. Do not style all screens before Hom
 
 **Next gates:** inspect the delivered native result, then complete the remaining dense-tab/accessibility, lighting, performance and export evidence. Catalog thumbnails and optional motion/blur remain separate follow-ups; they are not required to preserve the corrected compact layout.
 
-Prior work remains in [UI-20-R1](research/menu-investigations/UI-20-R1/README.md), [UI-21](research/menu-investigations/UI-21/README.md) and [UI-22–26-R1](research/menu-investigations/UI-22-26-R1/README.md). UI-27 functionality belongs to [HUD](plans/flight-overlays.md). Safe-margin settings, paused-weather staging and loading performance remain explicit open tasks. Menu volume and feedback are delivered in UI-28-R3; a general flight-audio mixer is outside this slice.
+Prior work remains in [UI-20-R1](research/menu-investigations/UI-20-R1/README.md), [UI-21](research/menu-investigations/UI-21/README.md) and [UI-22–26-R1](research/menu-investigations/UI-22-26-R1/README.md). UI-27 functionality belongs to [HUD](plans/flight-overlays.md). Safe-margin settings, paused-weather staging and loading performance remain explicit open tasks. Menu volume and feedback are delivered in UI-28-R3; the whole-game volume on the same Sound page is owned by the [audio plan](plans/audio-realism.md) (AUD-12b).
 
 ## 10. Acceptance and completion
 

@@ -5,6 +5,7 @@ extends SceneTree
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
+const AppRoot := preload("res://app_root.gd")
 const PREFS := "user://test_settings_ui_display.cfg"
 
 var _failures := 0
@@ -36,6 +37,14 @@ func _run() -> void:
 		var invalid_audio := DisplayPreferences.DEFAULTS.duplicate(true)
 		invalid_audio.menu_volume = invalid_volume
 		_check("invalid menu volume rejected: %s" % str(invalid_volume), not DisplayPreferences.validate(invalid_audio).ok)
+		var invalid_master := DisplayPreferences.DEFAULTS.duplicate(true)
+		invalid_master.master_volume = invalid_volume
+		_check("invalid game volume rejected: %s" % str(invalid_volume), not DisplayPreferences.validate(invalid_master).ok)
+	var legacy_master := DisplayPreferences.DEFAULTS.duplicate(true)
+	legacy_master.erase("master_volume")
+	legacy_master.erase("menu_volume")
+	_check("older display settings receive the full game volume", DisplayPreferences.validate(legacy_master).ok
+		and DisplayPreferences.validate(legacy_master).config.master_volume == 1.0)
 
 	var candidate := DisplayPreferences.DEFAULTS.duplicate(true)
 	candidate.window_mode = "borderless"
@@ -109,6 +118,33 @@ func _run() -> void:
 	default_settings.close()
 	_check("Close restores the kept volume", default_settings._draft.menu_volume == 0.0
 		and DisplayPreferences.load_from(PREFS).menu_volume == 0.0)
+	# AUD-12b: game volume follows the same preview, Keep, Revert and Close contract.
+	_presentations.clear()
+	default_settings.presentation_changed.connect(_capture_presentation)
+	default_settings._master_volume_changed(0.5)
+	_check("game volume previews through the presentation signal", not _presentations.is_empty()
+		and float(_presentations.back().master_volume) == 0.5 and default_settings._master_value.text == "50%")
+	default_settings.keep_changes()
+	_check("Keep persists the game volume", DisplayPreferences.load_from(PREFS).master_volume == 0.5)
+	default_settings._master_volume_changed(0.0)
+	_check("zero game volume reads Muted", default_settings._master_value.text == tr("Muted"))
+	default_settings._revert()
+	_check("Revert restores the kept game volume and slider", default_settings._draft.master_volume == 0.5
+		and default_settings._master_slider.value == 0.5)
+	default_settings._master_volume_changed(0.2)
+	default_settings.close()
+	_check("Close restores the kept game volume", float(_presentations.back().master_volume) == 0.5
+		and DisplayPreferences.load_from(PREFS).master_volume == 0.5)
+	var master_bus: int = AudioServer.get_bus_index(&"Master")
+	AppRoot.apply_master_volume(0.5)
+	var half_db: float = AudioServer.get_bus_volume_db(master_bus)
+	var half_muted: bool = AudioServer.is_bus_mute(master_bus)
+	AppRoot.apply_master_volume(0.0)
+	var zero_muted: bool = AudioServer.is_bus_mute(master_bus)
+	AppRoot.apply_master_volume(1.0)
+	_check("game volume drives the Master bus: 50 % = -6.02 dB, 0 mutes, 100 % restores 0 dB",
+		absf(half_db - linear_to_db(0.5)) < 1e-4 and not half_muted and zero_muted
+		and AudioServer.get_bus_volume_db(master_bus) == 0.0 and not AudioServer.is_bus_mute(master_bus))
 	default_settings.queue_free()
 	await process_frame
 

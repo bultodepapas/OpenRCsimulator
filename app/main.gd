@@ -1593,7 +1593,7 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 		_scenery_damage_director.sync(true)
 	_visual_context_status = decoded.context_status
 	_prop_angle = 0.0 # propeller phase was never part of the physical checkpoint contract
-	if _engine_audio != null:
+	if _engine_audio != null and _soundscape_audio == null: # AUD-07 F12: the soundscape owns its voices
 		_engine_audio.stream_paused = true
 	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
 	_refresh_sky()

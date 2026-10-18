@@ -66,6 +66,17 @@ func _run() -> void:
 	settings._revert_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("Revert restores live menu volume", is_equal_approx(app.menu_audio.get_volume(), DisplayPreferences.DEFAULTS.menu_volume))
+	# AUD-12b: the game volume drives the Master bus live, through the real app presentation path.
+	var master_bus: int = AudioServer.get_bus_index(&"Master")
+	settings._master_slider.grab_focus()
+	await ui.tap(KEY_HOME)
+	await ui.settle()
+	_check("keyboard game volume preview mutes Master without saving", AudioServer.is_bus_mute(master_bus)
+		and DisplayPreferences.load_from(PREFS + ".display").master_volume == DisplayPreferences.DEFAULTS.master_volume)
+	settings._revert_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Revert restores the live Master level", not AudioServer.is_bus_mute(master_bus)
+		and AudioServer.get_bus_volume_db(master_bus) == 0.0)
 	settings._category_buttons[0].grab_focus()
 	await ui.tap(KEY_ENTER)
 

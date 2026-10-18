@@ -1,0 +1,165 @@
+{
+ "reference": "jensen-das-ugly-stik-60",
+ "rows": [
+  {
+   "aircraft": "jensen-das-ugly-stik-60",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -41.3,
+    "k_db": -46.25,
+    "distance_m": 176.6,
+    "rpm": 11149,
+    "centroid_hz": 369.4
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -55.5,
+    "k_db": -52.68,
+    "distance_m": 72.7,
+    "rpm": 2800,
+    "centroid_hz": 106.9
+   }
+  },
+  {
+   "aircraft": "stik-glow-61fx-2t",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -45.9,
+    "k_db": -52.91,
+    "distance_m": 223.1,
+    "rpm": 16738,
+    "centroid_hz": 406.2
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -48.6,
+    "k_db": -57.1,
+    "distance_m": 265.4,
+    "rpm": 12544,
+    "centroid_hz": 362.0
+   }
+  },
+  {
+   "aircraft": "stik-glow-55ax-2t",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -45.9,
+    "k_db": -52.71,
+    "distance_m": 220.2,
+    "rpm": 14423,
+    "centroid_hz": 358.3
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -49.3,
+    "k_db": -58.64,
+    "distance_m": 291.7,
+    "rpm": 10227,
+    "centroid_hz": 282.4
+   }
+  },
+  {
+   "aircraft": "stik-glow-fs64v-4t",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -47.6,
+    "k_db": -53.45,
+    "distance_m": 196.4,
+    "rpm": 11505,
+    "centroid_hz": 168.6
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -50.3,
+    "k_db": -59.21,
+    "distance_m": 279.6,
+    "rpm": 8942,
+    "centroid_hz": 155.0
+   }
+  },
+  {
+   "aircraft": "gp-extra-300s-60",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -41.0,
+    "k_db": -46.13,
+    "distance_m": 180.5,
+    "rpm": 11149,
+    "centroid_hz": 367.6
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -56.1,
+    "k_db": -57.34,
+    "distance_m": 115.3,
+    "rpm": 2800,
+    "centroid_hz": 117.2
+   }
+  },
+  {
+   "aircraft": "p51d-mustang-120",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -44.8,
+    "k_db": -53.97,
+    "distance_m": 287.6,
+    "rpm": 6738,
+    "centroid_hz": 307.9
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -56.8,
+    "k_db": -69.57,
+    "distance_m": 433.1,
+    "rpm": 2174,
+    "centroid_hz": 121.0
+   }
+  },
+  {
+   "aircraft": "sebart-avanti-s-a200-p100rx",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -37.2,
+    "k_db": -46.24,
+    "distance_m": 282.5,
+    "rpm": 154000,
+    "centroid_hz": 2088.0
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -47.7,
+    "k_db": -58.56,
+    "distance_m": 348.3,
+    "rpm": 44011,
+    "centroid_hz": 1325.6
+   }
+  },
+  {
+   "aircraft": "turbo-lumber-evolution",
+   "source_level": true,
+   "full": {
+    "valid": true,
+    "k_at_100m_db": -47.0,
+    "k_db": -47.28,
+    "distance_m": 103.3,
+    "rpm": 9433,
+    "centroid_hz": 704.6
+   },
+   "idle": {
+    "valid": true,
+    "k_at_100m_db": -65.9,
+    "k_db": -65.86,
+    "distance_m": 99.5,
+    "rpm": 701,
+    "centroid_hz": 198.5
+   }
+  }
+ ]
+}

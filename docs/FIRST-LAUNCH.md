@@ -108,7 +108,7 @@ On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF,
 
 ## Current source
 
-**Menu/display changes (2026-10-15 source):** Home pins Fly and the utility actions; scroll the setup area for Workshop, practice and RC cars. Settings is available from Home and Pause. It offers windowed/borderless display, 100–200% themed text, opaque panels, reduced motion, language, Controls and Help/About. Display previews revert after 15 seconds unless kept. Close/Back discards unkept display changes; language is saved immediately. These display preferences are separate from aircraft and controller profiles.
+**Menu/display changes (2026-10-15 source):** Home pins Fly and the utility actions; scroll the setup area for Workshop, practice and RC cars. Settings is available from Home and Pause. It offers windowed/borderless display, 100–200% themed text, opaque panels, reduced motion, language, Controls and Help/About. **Sound** sets the **Game volume** (everything you hear, previewed live, also from Pause during a flight) and the menu cue volume; Keep saves them like the display options. Display previews revert after 15 seconds unless kept. Close/Back discards unkept display changes; language is saved immediately. These display preferences are separate from aircraft and controller profiles.
 
 Pause groups secondary actions under **Session options** and **Exit options**. Esc closes the top page or open group first; returning from Settings keeps the flight paused. Large text uses scrolling with focus following the selected action. The interactive UI scales automatically through native 4K without lowering 3D resolution. [Verification and remaining qualification](research/menu-investigations/UI-22-26-R1/README.md).
 

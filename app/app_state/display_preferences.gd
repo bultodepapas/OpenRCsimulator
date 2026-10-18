@@ -11,7 +11,9 @@ const DEFAULTS := {
 	"opaque_panels": false,
 	"reduced_motion": false,
 	"menu_volume": 0.35,
+	"master_volume": 1.0, # AUD-12b: whole-game level on the Master bus (flight, scenery, crash, menu)
 }
+const OPTIONAL_KEYS: Array[String] = ["menu_volume", "master_volume"] # schema-1 extensions; older files keep defaults
 
 var path: String
 var config: Dictionary
@@ -70,6 +72,7 @@ static func load_from(file_path: String) -> Dictionary:
 	raw.opaque_panels = cfg.get_value("accessibility", "opaque_panels", DEFAULTS.opaque_panels)
 	raw.reduced_motion = cfg.get_value("accessibility", "reduced_motion", DEFAULTS.reduced_motion)
 	raw.menu_volume = cfg.get_value("audio", "menu_volume", DEFAULTS.menu_volume)
+	raw.master_volume = cfg.get_value("audio", "master_volume", DEFAULTS.master_volume)
 	var checked := validate(raw)
 	if checked.ok:
 		result.merge(checked.config, true)
@@ -97,6 +100,7 @@ static func save_to(file_path: String, candidate: Dictionary) -> Error:
 	cfg.set_value("accessibility", "opaque_panels", checked.config.opaque_panels)
 	cfg.set_value("accessibility", "reduced_motion", checked.config.reduced_motion)
 	cfg.set_value("audio", "menu_volume", checked.config.menu_volume)
+	cfg.set_value("audio", "master_volume", checked.config.master_volume)
 	return cfg.save(file_path)
 
 
@@ -106,7 +110,7 @@ static func validate(raw: Variant) -> Dictionary:
 	if not raw is Dictionary:
 		return {"ok": false, "config": {}, "errors": PackedStringArray(["display settings must be a dictionary"])}
 	for key: String in DEFAULTS:
-		if not raw.has(key) and key != "menu_volume": # optional schema-1 extension; older files/callers retain defaults
+		if not raw.has(key) and key not in OPTIONAL_KEYS:
 			errors.append("missing %s" % key)
 	if typeof(raw.get("window_mode")) != TYPE_STRING or raw.get("window_mode") not in WINDOW_MODES:
 		errors.append("window_mode must be windowed or borderless")
@@ -118,10 +122,11 @@ static func validate(raw: Variant) -> Dictionary:
 	for key: String in ["opaque_panels", "reduced_motion"]:
 		if typeof(raw.get(key)) != TYPE_BOOL:
 			errors.append("%s must be a boolean" % key)
-	var volume: Variant = raw.get("menu_volume", DEFAULTS.menu_volume)
-	if typeof(volume) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(volume)) \
-			or float(volume) < 0.0 or float(volume) > 1.0:
-		errors.append("menu_volume must be finite and between 0 and 1")
+	for key: String in OPTIONAL_KEYS:
+		var level: Variant = raw.get(key, DEFAULTS[key])
+		if typeof(level) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(level)) \
+				or float(level) < 0.0 or float(level) > 1.0:
+			errors.append("%s must be finite and between 0 and 1" % key)
 	if not errors.is_empty():
 		return {"ok": false, "config": {}, "errors": errors}
 	var normalized := {
@@ -129,7 +134,8 @@ static func validate(raw: Variant) -> Dictionary:
 		"ui_scale": float(raw.ui_scale),
 		"opaque_panels": raw.opaque_panels,
 		"reduced_motion": raw.reduced_motion,
-		"menu_volume": float(volume),
+		"menu_volume": float(raw.get("menu_volume", DEFAULTS.menu_volume)),
+		"master_volume": float(raw.get("master_volume", DEFAULTS.master_volume)),
 	}
 	return {"ok": true, "config": normalized, "errors": errors}
 

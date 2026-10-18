@@ -624,9 +624,18 @@ func _menu_feedback(cue: StringName) -> void:
 		menu_audio.play(cue)
 
 
+## AUD-12b: the whole game, on Master (linear amplitude, as the menu volume). Zero mutes instead of -inf dB.
+static func apply_master_volume(level: float) -> void:
+	var master: int = AudioServer.get_bus_index(&"Master")
+	var clamped: float = clampf(level, 0.0, 1.0)
+	AudioServer.set_bus_mute(master, clamped <= 0.0)
+	AudioServer.set_bus_volume_db(master, linear_to_db(clamped) if clamped > 0.0 else -80.0)
+
+
 func _apply_presentation(config: Dictionary) -> void:
 	if is_instance_valid(menu_audio):
 		menu_audio.set_volume(float(config.get("menu_volume", DisplayPreferences.DEFAULTS.menu_volume)))
+	apply_master_volume(float(config.get("master_volume", DisplayPreferences.DEFAULTS.master_volume)))
 	# Audio, motion policy and window mode do not change Theme resources. A volume drag
 	# must not rebuild every screen and invalidate its text/layout on each slider step.
 	var theme_changed := not is_equal_approx(UiTheme.text_scale, float(config.ui_scale)) \
