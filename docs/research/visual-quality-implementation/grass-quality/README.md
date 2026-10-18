@@ -1,6 +1,8 @@
 # Grass quality implementation
 
-2026-10-17. Owner: landscape L, coordinated with VQ and RCV. Implementation and verification in progress. The [plan](../../../plans/grass-quality.md) owns remaining acceptance; the [44 investigations](../../grass-quality-2026-10-17.md) own external references. This report owns the experiment decisions below.
+2026-10-17. Owner: landscape L, coordinated with VQ and RCV. Implemented as an opt-in preview; verification results and unresolved gates are separated below. The [plan](../../../plans/grass-quality.md) owns remaining acceptance; the [44 investigations](../../grass-quality-2026-10-17.md) own external references. This report owns the experiment decisions below.
+
+Set `OPENRC_GRASS_QUALITY=enhanced` before launching to preview the combined change. Otherwise, including unknown selector values, the original ground binding, static imported materials and original allocation remain selected. [Launch and tool commands](../../../../tools/grass/README.md#enhanced-grass-preview).
 
 ## Frozen comparison
 
@@ -17,6 +19,8 @@ Baseline: `9e721d479ab14f2d2da614f305012241004576c7`. Separate imported worktree
 | L9e-R1 | Reject the three-band Laplacian candidate after visual screening. It preserves disabled-detail and aerial pixels exactly, but gives no clear improvement to the needle-like close texture. It requires eight source-level filtered fetches instead of two. No runtime timing or performance benefit is claimed for the rejected candidate. |
 | L9e-R2 | Candidate: reuse retained ambientCG Grass001 albedo/normal/roughness at the existing 1.4 m scale in shared ground. A separate grass binder enables grass without enabling RC soil. The RC binder and track coverage retain their existing route. The photograph gives more convincing close turf than the procedural blade pattern. |
 | L15c | Candidate: a grass-only material adapter and opaque vertex shader. Source geometry, UVs, scalar PBR settings, vertex-color enablement and source texture are retained. Root-weighted bending follows existing world-space render wind. Trees, flowers and the scenery-off fallback keep their existing paths. |
+| L11a-R1 | Preview allocation: short/tall/wispy = 100/30/20 at high, 50/16/10 at balanced and 25/8/5 at low. The high tier keeps 150 clumps and three batches, reducing source triangles from 49,579 to 37,720 (23.92%). Source rows, yaw, height range, nested subsets and exclusions are retained. The pilot-edge comparison preserves the visible foreground silhouettes. No additional habitat noise, ordering or mesh authoring is justified by this comparison. |
+| L11a-R2 | No batch partition or geometric fade added. The wind displacement margin is included explicitly. The bounded comparison did not identify a new culling defect; broader range/FOV and driving qualification remains open rather than being inferred from these captures. |
 
 Ground detail remains in the existing ground pass. The photographic weight attenuates the older turf detail and fades with distance/pixel footprint; it does not stack full-strength normals. Dirt requires both `rc_surface_enabled` and `rc_track_surface`. Every scene owns its material; the immutable imported textures are shared. No assets are generated or downloaded by this slice.
 
@@ -32,6 +36,16 @@ The native fixture contains all three species, four yaw rotations and two suppor
 - An earlier candidate explicitly flipped `NORMAL` for back faces and failed source parity. That extra flip was removed. The final result is established for the pinned engine and these source materials, not asserted as a universal shader rule.
 
 Root darkening was not adopted. No emission, universal upward-normal replacement, vertex-color importer change, new alpha technique or mesh replacement is bundled with the wind change.
+
+## Field controls
+
+The default-mode control retains identical mesh and instance hashes. Of 58 matched images, 53 are pixel-identical; the other five moving frames differ in only 1–3 pixels, by one 8-bit channel level at most. This is a bounded numerical difference, not a claim of universal byte identity. All repeat/wrap controls are exact within each run.
+
+Before reallocating species, grass-only binding versus the existing RC photographic probe produces exact pixels in all four fixed daytime views. This isolates the new grass binder from changes to clump allocation. The final baseline/enhanced midnight fixtures match in all 58 images. Midnight does not exercise lit grass detail; the local-light material fixture supplies the separate lighting control.
+
+The complete-field draw/primitive counters match in the four fixed views even though MultiMesh instance allocation changes. These engine counters are retained separately from the expanded source-triangle sum; their equality is not evidence of equal instanced geometry work or a GPU speedup.
+
+Native full-session attempt: 10 s warmup, 60 s measured, 3,594 frames; p95 17.321 ms and p99 18.342 ms. **Ineligible:** simulation paused for about 30 s after focus loss, with simulation/wall ratio 0.5008. The collection is valid, but its pacing result is not an active-flight performance pass. Focus safety was not disabled. This is the reason default adoption remains blocked by qualification, not evidence that the new grass exceeds its budget.
 
 ## Reproduction and limits
 

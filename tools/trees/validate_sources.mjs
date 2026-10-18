@@ -119,23 +119,35 @@ function disposition(severity) {
 }
 
 function compactIssues(report) {
-	const messages = report.issues.messages.map(issue => ({
-		severity: issue.severity,
-		level: severityName(issue.severity),
-		code: issue.code,
-		message: issue.message,
-		pointer: issue.pointer ?? '',
-		disposition: disposition(issue.severity),
-	}));
+	const groups = new Map();
+	for (const issue of report.issues.messages) {
+		const key = `${issue.severity}\u0000${issue.code}\u0000${issue.pointer ?? ''}`;
+		let group = groups.get(key);
+		if (!group) {
+			group = {
+				severity: issue.severity,
+				level: severityName(issue.severity),
+				code: issue.code,
+				pointer: issue.pointer ?? '',
+				disposition: disposition(issue.severity),
+				count: 0,
+				examples: [],
+			};
+			groups.set(key, group);
+		}
+		group.count++;
+		if (group.examples.length < 5 && !group.examples.includes(issue.message)) group.examples.push(issue.message);
+	}
+	const messages = [...groups.values()].sort((a, b) => a.severity - b.severity || a.code.localeCompare(b.code) || a.pointer.localeCompare(b.pointer));
+	const countsByCode = {};
+	for (const group of messages) countsByCode[group.code] = (countsByCode[group.code] ?? 0) + group.count;
 	return {
 		numErrors: report.issues.numErrors,
 		numWarnings: report.issues.numWarnings,
 		numInfos: report.issues.numInfos,
 		numHints: report.issues.numHints,
-		countsByCode: messages.reduce((counts, issue) => {
-			counts[issue.code] = (counts[issue.code] ?? 0) + 1;
-			return counts;
-		}, {}),
+		messageCount: report.issues.messages.length,
+		countsByCode,
 		messages,
 	};
 }

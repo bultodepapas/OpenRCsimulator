@@ -3,8 +3,8 @@
 
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import math
 from pathlib import Path
 import subprocess
@@ -45,11 +45,11 @@ def _sector(north: float, east: float) -> int:
     return min(7, int((math.atan2(east, north) % math.tau) / (math.tau / 8.0)))
 
 
-class FarForestPlacementTests(unittest.TestCase):
+class HistoricalPlacementRecipeTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.field = json.loads(FIELD_PATH.read_text(encoding="utf-8"))
-        cls.object_data, cls.manifest = generate(cls.field)
+        cls.object_data, cls.manifest = generate(cls.field, "existing")
         cls.points = cls.object_data["positions"]["value"]
         cls.near = cls.points[:NEAR_COUNT]
         cls.far = cls.points[NEAR_COUNT:]
@@ -96,10 +96,18 @@ class FarForestPlacementTests(unittest.TestCase):
                 for other in cluster[:index]:
                     self.assertGreaterEqual(math.hypot(point[0] - other[0], point[1] - other[1]), 4.5)
 
-    def test_committed_default_matches_the_generator(self) -> None:
-        self.assertEqual(self.field["objects"], [self.object_data])
+    def test_existing_recipe_remains_a_reproducible_historical_control(self) -> None:
+        self.assertEqual(self.manifest["recipe"], "existing")
         self.assertEqual(self.manifest["near_positions_sha256"], NEAR_POSITIONS_SHA256)
-        self.assertEqual(self.manifest["far_count"], 1200)
+        self.assertEqual(self.manifest["far_count"], FAR_COUNT)
+        self.assertEqual(
+            self.manifest["far_positions_sha256"],
+            "7c8ee96a60c22241ea1f58f0fdadcba6c010e540c6d9f0fe82b7bbe10d9b442c",
+        )
+        self.assertEqual(
+            self.manifest["positions_sha256"],
+            "772d1207da670718c575c20e5b6246d8d2e6e7cdf70e006e006642c9e95ff2f3",
+        )
 
 
 class HabitatRecipeTests(unittest.TestCase):
@@ -107,7 +115,7 @@ class HabitatRecipeTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.field_bytes = FIELD_PATH.read_bytes()
         cls.field = json.loads(cls.field_bytes)
-        cls.object_data, cls.manifest = generate(cls.field, "habitat-v1")
+        cls.object_data, cls.manifest = generate(cls.field)
         cls.points = cls.object_data["positions"]["value"]
         cls.near = cls.points[:NEAR_COUNT]
         cls.far = cls.points[NEAR_COUNT:]
@@ -123,6 +131,12 @@ class HabitatRecipeTests(unittest.TestCase):
         self.assertEqual(self.manifest["far_count"], HABITAT_FAR_COUNT)
         self.assertEqual(self.manifest["recipe"], "habitat-v1")
         self.assertEqual(HABITAT_FAR_SEED, 610617)
+        self.assertEqual(self.field["objects"], [self.object_data])
+        self.assertEqual(self.manifest["near_positions_sha256"], NEAR_POSITIONS_SHA256)
+        self.assertEqual(
+            self.manifest["far_positions_sha256"],
+            "c24d479e2a5063f895a106a7a6e687736b8bfc2b8c5c62cf6c60554a6d58594e",
+        )
 
     def test_habitat_patches_have_varied_counts_shapes_and_bounds(self) -> None:
         patches = self.manifest["patches"]
@@ -146,6 +160,8 @@ class HabitatRecipeTests(unittest.TestCase):
         self.assertIn("not surveyed", self.object_data["positions"]["source"])
         self.assertIn("ecological simulation", self.object_data["positions"]["source"])
         self.assertIn(self.manifest["far_positions_sha256"], self.object_data["positions"]["source"])
+        self.assertIn("collision proxies are derived by the runtime", self.object_data["positions"]["source"])
+        self.assertIn("no terrain or aerodynamics change", self.object_data["positions"]["source"])
 
         for patch in patches:
             with self.subTest(patch=patch["sector"], count=patch["count"]):
@@ -185,59 +201,55 @@ class HabitatRecipeTests(unittest.TestCase):
             spacing_grid.setdefault(cell, []).append((north, east))
 
     def test_habitat_generation_is_deterministic(self) -> None:
-        second_object, second_manifest = generate(self.field, "habitat-v1")
+        second_object, second_manifest = generate(self.field)
         self.assertEqual(self.object_data, second_object)
         self.assertEqual(self.manifest, second_manifest)
         self.assertEqual(_positions_sha256(self.far), "c24d479e2a5063f895a106a7a6e687736b8bfc2b8c5c62cf6c60554a6d58594e")
 
-    def test_habitat_cli_requires_a_stage_and_never_writes_production_default(self) -> None:
+    def test_habitat_cli_is_default_and_existing_remains_explicit_control(self) -> None:
         production_hash = hashlib.sha256(FIELD_PATH.read_bytes()).hexdigest()
-        without_field = subprocess.run(
-            [sys.executable, str(PLACE_SCRIPT), "--recipe", "habitat-v1"],
+        default_check = subprocess.run(
+            [sys.executable, str(PLACE_SCRIPT), "--check"],
             cwd=ROOT,
             capture_output=True,
             text=True,
         )
-        self.assertNotEqual(without_field.returncode, 0)
-        self.assertIn("requires an explicit staged --field path", without_field.stderr)
+        self.assertEqual(default_check.returncode, 0, default_check.stderr)
+        self.assertEqual(json.loads(default_check.stdout)["recipe"], "habitat-v1")
 
-        with_default = subprocess.run(
-            [sys.executable, str(PLACE_SCRIPT), "--recipe", "habitat-v1", "--field", str(FIELD_PATH)],
+        explicit_habitat_check = subprocess.run(
+            [sys.executable, str(PLACE_SCRIPT), "--recipe", "habitat-v1", "--check"],
             cwd=ROOT,
             capture_output=True,
             text=True,
         )
-        self.assertNotEqual(with_default.returncode, 0)
-        self.assertIn("not approved for the production default field", with_default.stderr)
+        self.assertEqual(explicit_habitat_check.returncode, 0, explicit_habitat_check.stderr)
 
         HABITAT_TRIAL_ROOT.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="place-habitat-test-", dir=HABITAT_TRIAL_ROOT) as temp:
-            stage_path = Path(temp) / "field.json"
-            stage_path.write_bytes(self.field_bytes)
-            command = [
+            historical_path = Path(temp) / "historical-field.json"
+            historical_path.write_bytes(self.field_bytes)
+            historical_object, historical_manifest = generate(self.field, "existing")
+            historical_command = [
                 sys.executable,
                 str(PLACE_SCRIPT),
-                "--recipe",
-                "habitat-v1",
                 "--field",
-                str(stage_path),
+                str(historical_path),
+                "--recipe",
+                "existing",
             ]
-            generated = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+            generated = subprocess.run(historical_command, cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(generated.returncode, 0, generated.stderr)
-            stage_bytes = stage_path.read_bytes()
+            stage_bytes = historical_path.read_bytes()
             staged_field = json.loads(stage_bytes)
-            self.assertEqual(staged_field["objects"], [self.object_data])
+            self.assertEqual(staged_field["objects"], [historical_object])
             output = json.loads(generated.stdout)
-            self.assertEqual(output["patch_counts"], self.manifest["patch_counts"])
-            self.assertEqual(output["bounds_m"], self.manifest["bounds_m"])
+            self.assertEqual(output["recipe"], "existing")
+            self.assertEqual(output["positions_sha256"], historical_manifest["positions_sha256"])
 
-            checked = subprocess.run([*command, "--check"], cwd=ROOT, capture_output=True, text=True)
+            checked = subprocess.run([*historical_command, "--check"], cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(checked.returncode, 0, checked.stderr)
-            self.assertEqual(stage_path.read_bytes(), stage_bytes)
-
-            repeated = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
-            self.assertEqual(repeated.returncode, 0, repeated.stderr)
-            self.assertEqual(stage_path.read_bytes(), stage_bytes)
+            self.assertEqual(historical_path.read_bytes(), stage_bytes)
 
         self.assertEqual(hashlib.sha256(FIELD_PATH.read_bytes()).hexdigest(), production_hash)
 

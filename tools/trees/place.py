@@ -39,8 +39,8 @@ POSITION_GRID_M = 0.25
 FAR_CENTER_ATTEMPTS = 50000
 FAR_POINT_ATTEMPTS = 20000
 
-# L7-R1 is an opt-in visual composition. Its uneven patch counts sum to the
-# existing 1,200-tree far budget; all source coordinates remain estimates.
+# L7-R1 habitat-v1 is the reviewed default composition. Its uneven patch counts
+# sum to the existing 1,200-tree far budget; all source coordinates remain estimates.
 HABITAT_FAR_SEED = 610617
 HABITAT_PATCH_SPECS = (
     (55, 68.0, 43.0),
@@ -460,7 +460,7 @@ def generate_habitat_far(
     return far_points, patches
 
 
-def generate(field: dict[str, Any], recipe: str = "existing") -> tuple[dict[str, Any], dict[str, Any]]:
+def generate(field: dict[str, Any], recipe: str = "habitat-v1") -> tuple[dict[str, Any], dict[str, Any]]:
     near_points = generate_near(field)
     if recipe == "existing":
         far_points, patches = generate_far(field)
@@ -503,7 +503,8 @@ def generate(field: dict[str, Any], recipe: str = "existing") -> tuple[dict[str,
             f"E={far_bounds['east_min_m']:.2f}..{far_bounds['east_max_m']:.2f} m; 0.25 m grid. "
             f"Near, far and combined position SHA-256: {near_hash}, {far_hash}, {combined_hash}. "
             "Maintains the existing crown-cleared viewing gaps, runway/mown flight corridor and "
-            "4.5 m minimum tree spacing. Flat visual vegetation; no collision, terrain or aerodynamics."
+            "4.5 m minimum tree spacing. Estimated scenery placement; collision proxies are "
+            "derived by the runtime; no terrain or aerodynamics change."
         )
         return_manifest = {
             "recipe": "habitat-v1",
@@ -536,17 +537,12 @@ def main() -> None:
     parser.add_argument(
         "--recipe",
         choices=("existing", "habitat-v1"),
-        default="existing",
-        help="existing frozen layout (default) or opt-in L7-R1 visual habitat layout",
+        default="habitat-v1",
+        help="reviewed L7-R1 visual habitat layout (default) or explicit historical existing layout",
     )
     parser.add_argument("--check", action="store_true")
     args = parser.parse_args()
     production_field = Path(__file__).resolve().parents[2] / "app/data/fields/default.json"
-    if args.recipe == "habitat-v1":
-        if args.field is None:
-            parser.error("--recipe habitat-v1 requires an explicit staged --field path")
-        if args.field.resolve() == production_field.resolve():
-            parser.error("habitat-v1 is not approved for the production default field")
     field_path = args.field or production_field
     field = json.loads(field_path.read_text(encoding="utf-8"))
     obj, manifest = generate(field, args.recipe)
