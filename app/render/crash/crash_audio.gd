@@ -28,7 +28,8 @@ func setup() -> void:
 		return
 	# Godot's Dummy driver has no mixer to retire AudioStreamPlaybackWAV references.
 	# Keep the pool and bus available for tests, but never queue playback on that backend.
-	_dummy_audio_driver = AudioServer.get_driver_name() == "Dummy"
+	# Movie Maker (--write-movie) also reports Dummy but does mix: keep crash sound in captures (AUD-12).
+	_dummy_audio_driver = AudioServer.get_driver_name() == "Dummy" and Engine.get_write_movie_path().is_empty()
 	var audio_seed: int = Time.get_ticks_usec()
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--audio-seed="):

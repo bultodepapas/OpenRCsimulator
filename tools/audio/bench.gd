@@ -55,6 +55,10 @@ func _run() -> void:
 	scene.session.read_raw = _controls
 	if scenario == "flyby":
 		_place_station_ahead(250.0, 30.0)
+	if args.has("view"):
+		# Presentation only, like a player's view key: e.g. --view=chase puts the listener near the aircraft.
+		scene._rig.set_view(str(args.view))
+		events.append({frame = 0, t = 0.0, stage = "view", view = str(args.view)})
 	if args.has("engine-only"):
 		# Calibration aid: silence the environment bus (wind, foliage, wildlife) so levels are the aircraft alone.
 		AudioServer.set_bus_mute(AudioServer.get_bus_index(adapter.soundscape._bus_names[2]), true)

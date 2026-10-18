@@ -3,6 +3,8 @@
 # Usage: tools/audio/bench.sh <out-dir> <name> <scenario> [flight args...]
 #   e.g. tools/audio/bench.sh /tmp/bench stik-sweep sweep --audio-seed=4102026
 #   --engine-only mutes the environment bus for loudness calibration.
+#   Scenarios: sweep, runway, flyby, crash. --view=chase (or another camera view) moves the listener;
+#   --audio-delay=off and --audio-absorption=off remove propagation effects for source-level calibration.
 # Needs Xvfb on a display-less host. Analyze with tools/audio/bench_analyze.py.
 # OPENRC_APP=<dir> renders another copy of app/ (e.g. a disposable baseline before a change).
 set -euo pipefail
