@@ -1,0 +1,12 @@
+{
+  "flight-20/command.json": "320cfaf366af4589a8ae32cbdd550ef01111e45862dc4047c11449fe3233a609",
+  "flight-20/console.log": "13f189fca14f964988f1116b1dba2d9a79a32270a913dc94ed929e582bc09438",
+  "flight-20/fixture.gd": "9a559fae1a71a92472a80dbf5bf8cbba8a6d855ae23bce1454289fa6fbdc40e0",
+  "flight-20/report.json": "c1843358f67ba4cd4644104ed7b634b13f287440ee8da8a9c31f5d0c935fe504",
+  "rc-reset-2/command.json": "fff4f95d2d60ab2d65f7d26756b8f0db37ef8d809150ee9a40f45344aab5de51",
+  "rc-reset-2/console.log": "80b2bf4ba2eb4c96d956186093aca744d2f37fb89e2b3cd2da182e939e2caae6",
+  "rc-reset-2/fixture.gd": "a12134cd0d84597be78205ad6d90f75cc93e738655751c3aa524a40ba6ccdac4",
+  "rc-reset-2/report.json": "b18a4b265a5166202a070781ec317679e5cf2bd29a8d816b0fd311b229dcdefd",
+  "rejected-rc-same-frame/console.log": "385b0170d3ff973d7d116e0855bd22312a7c858cd07864b76babe18935daca0e",
+  "rejected-rc-same-frame/fixture-diagnostic.gd": "3c3edbf28e600470a84a0ba9c1451b5781e7268eb980353aabe4f6bd82f93f4e"
+}

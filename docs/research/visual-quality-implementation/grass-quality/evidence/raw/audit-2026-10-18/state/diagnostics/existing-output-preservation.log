@@ -1,0 +1,9 @@
+Regression: existing output directory is refused without writing into it.
+Command: python tools/grass/check_state_invariance.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out tmp/grass-completion/state/preservation-regression
+Captured runner output:
+FAIL: Refusing to overwrite output directory: C:\DEVELOPMENT\OpenRCsimulator\tmp\grass-completion\state\preservation-regression
+Exit code: 1
+Sentinel SHA-256 before: 031818a443e242a52d04a5ba06a0de986375b48576d70e1667152e2ce2da556d
+Sentinel SHA-256 after:  031818a443e242a52d04a5ba06a0de986375b48576d70e1667152e2ce2da556d
+Files after invocation: sentinel.txt
+PASS: sentinel unchanged; no summary.json or other file was created.

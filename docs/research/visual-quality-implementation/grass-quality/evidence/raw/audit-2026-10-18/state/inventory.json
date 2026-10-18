@@ -1,0 +1,912 @@
+{
+  "format": "openrc-grass-state-invariance-retention-inventory v1",
+  "source_run": "tmp/grass-completion/state/run-20261018-n",
+  "retained_at": "docs/research/visual-quality-implementation/grass-quality/evidence/raw/audit-2026-10-18/state",
+  "run_status": "ok",
+  "execution_scope": "headless CPU-only process; actual Field.build materials inspected; no GPU frame rendered",
+  "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+  "tapes": {
+    "stik_runway_current": {
+      "source_sha256": "a9ffabb42258e661f28e5f658dd822a1a026ce2304404db28bee11cd168f5a2c",
+      "rows": 2881,
+      "first_tick": 0,
+      "final_tick": 2880,
+      "solver_changed": false,
+      "exact_preflight": {
+        "path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/exact-preflight/replay.json",
+        "format": "openrc-flight-log-report v1",
+        "complete": true,
+        "mode": "exact",
+        "rows": 2881,
+        "first_tick": 0,
+        "final_tick": 2880,
+        "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "scenario_evidence": {
+          "path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/recording.json",
+          "capture_kind": "existing FlightLog API; scripted fixed-step neutral-input recording",
+          "purpose": "software state/contact invariance only; not physical or owner acceptance",
+          "aircraft_kind": "stik",
+          "initial_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "final_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "initial_gear_compressions_m": [
+            0.016744461064475392,
+            0.015888039243372624,
+            0.02292380260837428
+          ],
+          "launch_ground_anchors": "[15.179286583960165,-47.09571043451714,1.0,14.819287959705688,-47.09570732896868,1.0,14.999293090601812,-46.74469574670566,1.0]",
+          "complete": true,
+          "rows": 2881,
+          "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df"
+        }
+      },
+      "state_invariance": "byte-identical exact replay",
+      "rc_vehicle_ids": [
+        "mt8-bisonte",
+        "monster-car-2"
+      ],
+      "rc_vehicles": {
+        "monster-car-2": {
+          "backend": "gdscript_reference",
+          "backend_identity": {
+            "abi_version": 1,
+            "backend": "gdscript_reference",
+            "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "binary_sha256": "",
+            "implementation_artifact_kind": "gdscript_source",
+            "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+            "toolchain_sha256": ""
+          },
+          "checkpoint_control_tape_replay_exact": true,
+          "checkpoint_sha256": "bdfe1fe49ba0ee97d68b75ff052de8517e9977993fe71f78474009d547963947",
+          "course_identity": {
+            "format": "openrc-ground-course",
+            "id": "mt8-practice-course-estimate-v1",
+            "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+            "version": "1"
+          },
+          "model_identity": {
+            "format": "openrc-ground-vehicle",
+            "id": "monster-car-2",
+            "sha256": "974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc",
+            "version": "1"
+          },
+          "native_backend_used": false,
+          "recorded_samples": 241,
+          "recorded_samples_sha256": "f374d7384b488ba5a60b91ff761be223b7749cd87556fe8adc339d24a74ee897",
+          "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+          "recording_complete": true,
+          "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+          "state_damage_controls_events_sha256": "991a0a0341c0a90604bde4e91b663b1734f980d5e0963181933c22cd64037896",
+          "ticks": 240,
+          "vehicle_id": "monster-car-2"
+        },
+        "mt8-bisonte": {
+          "backend": "gdscript_reference",
+          "backend_identity": {
+            "abi_version": 1,
+            "backend": "gdscript_reference",
+            "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "binary_sha256": "",
+            "implementation_artifact_kind": "gdscript_source",
+            "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+            "toolchain_sha256": ""
+          },
+          "checkpoint_control_tape_replay_exact": true,
+          "checkpoint_sha256": "90123d808103702ebb9e263c25ac0e9b84707d842eaa10d85e47a3a68dfcd5b3",
+          "course_identity": {
+            "format": "openrc-ground-course",
+            "id": "mt8-practice-course-estimate-v1",
+            "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+            "version": "1"
+          },
+          "model_identity": {
+            "format": "openrc-ground-vehicle",
+            "id": "mt8-bisonte-electric-4wd-estimate-v1",
+            "sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+            "version": "1"
+          },
+          "native_backend_used": false,
+          "recorded_samples": 241,
+          "recorded_samples_sha256": "4632588fbc377b0fec650dbd830c3668176f50b982a47c2beff34372f55b8f20",
+          "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+          "recording_complete": true,
+          "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+          "state_damage_controls_events_sha256": "9b304a98cc6f8ac5d7290fba98e1966f45ccd6fc1c509717d4d18130b895dcc0",
+          "ticks": 240,
+          "vehicle_id": "mt8-bisonte"
+        }
+      },
+      "renderer": {
+        "default": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": false,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 67,
+            "grass_common_tall": 42,
+            "grass_wispy_tall": 41
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "StandardMaterial3D",
+            "StandardMaterial3D",
+            "StandardMaterial3D"
+          ],
+          "near_grass_source_triangles": 49579,
+          "rough_grass_photo_enabled": false,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        },
+        "enhanced": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": true,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 100,
+            "grass_common_tall": 30,
+            "grass_wispy_tall": 20
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader"
+          ],
+          "near_grass_source_triangles": 37720,
+          "rough_grass_photo_enabled": true,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "enhanced",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        }
+      }
+    },
+    "p51_runway_current": {
+      "source_sha256": "a6f5f33796c26160d8fecf581b4d143e8ff36d6201ddea432553571bb555e670",
+      "rows": 2881,
+      "first_tick": 0,
+      "final_tick": 2880,
+      "solver_changed": false,
+      "exact_preflight": {
+        "path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/exact-preflight/replay.json",
+        "format": "openrc-flight-log-report v1",
+        "complete": true,
+        "mode": "exact",
+        "rows": 2881,
+        "first_tick": 0,
+        "final_tick": 2880,
+        "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "scenario_evidence": {
+          "path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/recording.json",
+          "capture_kind": "existing FlightLog API; scripted fixed-step neutral-input recording",
+          "purpose": "software state/contact invariance only; not physical or owner acceptance",
+          "aircraft_kind": "p51",
+          "initial_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "final_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "initial_gear_compressions_m": [
+            0.019753526885550942,
+            0.01945805551720475,
+            0.027883133807740382
+          ],
+          "launch_ground_anchors": "[15.450437285502273,-46.741450661042904,1.0,14.548438027438594,-46.741735118261246,1.0,14.999826750434895,-48.03617239229511,1.0]",
+          "complete": true,
+          "rows": 2881,
+          "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df"
+        }
+      },
+      "state_invariance": "byte-identical exact replay",
+      "rc_vehicle_ids": [
+        "mt8-bisonte",
+        "monster-car-2"
+      ],
+      "rc_vehicles": {
+        "monster-car-2": {
+          "backend": "gdscript_reference",
+          "backend_identity": {
+            "abi_version": 1,
+            "backend": "gdscript_reference",
+            "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "binary_sha256": "",
+            "implementation_artifact_kind": "gdscript_source",
+            "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+            "toolchain_sha256": ""
+          },
+          "checkpoint_control_tape_replay_exact": true,
+          "checkpoint_sha256": "bdfe1fe49ba0ee97d68b75ff052de8517e9977993fe71f78474009d547963947",
+          "course_identity": {
+            "format": "openrc-ground-course",
+            "id": "mt8-practice-course-estimate-v1",
+            "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+            "version": "1"
+          },
+          "model_identity": {
+            "format": "openrc-ground-vehicle",
+            "id": "monster-car-2",
+            "sha256": "974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc",
+            "version": "1"
+          },
+          "native_backend_used": false,
+          "recorded_samples": 241,
+          "recorded_samples_sha256": "f374d7384b488ba5a60b91ff761be223b7749cd87556fe8adc339d24a74ee897",
+          "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+          "recording_complete": true,
+          "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+          "state_damage_controls_events_sha256": "991a0a0341c0a90604bde4e91b663b1734f980d5e0963181933c22cd64037896",
+          "ticks": 240,
+          "vehicle_id": "monster-car-2"
+        },
+        "mt8-bisonte": {
+          "backend": "gdscript_reference",
+          "backend_identity": {
+            "abi_version": 1,
+            "backend": "gdscript_reference",
+            "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "binary_sha256": "",
+            "implementation_artifact_kind": "gdscript_source",
+            "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+            "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+            "toolchain_sha256": ""
+          },
+          "checkpoint_control_tape_replay_exact": true,
+          "checkpoint_sha256": "90123d808103702ebb9e263c25ac0e9b84707d842eaa10d85e47a3a68dfcd5b3",
+          "course_identity": {
+            "format": "openrc-ground-course",
+            "id": "mt8-practice-course-estimate-v1",
+            "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+            "version": "1"
+          },
+          "model_identity": {
+            "format": "openrc-ground-vehicle",
+            "id": "mt8-bisonte-electric-4wd-estimate-v1",
+            "sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+            "version": "1"
+          },
+          "native_backend_used": false,
+          "recorded_samples": 241,
+          "recorded_samples_sha256": "4632588fbc377b0fec650dbd830c3668176f50b982a47c2beff34372f55b8f20",
+          "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+          "recording_complete": true,
+          "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+          "state_damage_controls_events_sha256": "9b304a98cc6f8ac5d7290fba98e1966f45ccd6fc1c509717d4d18130b895dcc0",
+          "ticks": 240,
+          "vehicle_id": "mt8-bisonte"
+        }
+      },
+      "renderer": {
+        "default": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": false,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 67,
+            "grass_common_tall": 42,
+            "grass_wispy_tall": 41
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "StandardMaterial3D",
+            "StandardMaterial3D",
+            "StandardMaterial3D"
+          ],
+          "near_grass_source_triangles": 49579,
+          "rough_grass_photo_enabled": false,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        },
+        "enhanced": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": true,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 100,
+            "grass_common_tall": 30,
+            "grass_wispy_tall": 20
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader"
+          ],
+          "near_grass_source_triangles": 37720,
+          "rough_grass_photo_enabled": true,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "enhanced",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        }
+      }
+    }
+  },
+  "csv_retention": [
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/exact-preflight/flight.csv",
+      "original_relative_path": "stik_runway_current/capture/exact-preflight/flight.csv",
+      "original_size_bytes": 2290740,
+      "original_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "compression": "gzip",
+      "retained_path": "stik_runway_current/capture/exact-preflight/flight.csv.gz",
+      "retained_size_bytes": 497457,
+      "retained_bytes_sha256": "af3fc299c6e55ee7228a01c84e1027e12e1f11558d0708643e9e399cdb6f79fd",
+      "decompressed_size_bytes": 2290740,
+      "decompressed_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/default/exact.csv",
+      "original_relative_path": "stik_runway_current/default/exact.csv",
+      "original_size_bytes": 2290740,
+      "original_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "compression": "gzip",
+      "retained_path": "stik_runway_current/default/exact.csv.gz",
+      "retained_size_bytes": 497457,
+      "retained_bytes_sha256": "af3fc299c6e55ee7228a01c84e1027e12e1f11558d0708643e9e399cdb6f79fd",
+      "decompressed_size_bytes": 2290740,
+      "decompressed_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/enhanced/exact.csv",
+      "original_relative_path": "stik_runway_current/enhanced/exact.csv",
+      "original_size_bytes": 2290740,
+      "original_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "compression": "gzip",
+      "retained_path": "stik_runway_current/enhanced/exact.csv.gz",
+      "retained_size_bytes": 497457,
+      "retained_bytes_sha256": "af3fc299c6e55ee7228a01c84e1027e12e1f11558d0708643e9e399cdb6f79fd",
+      "decompressed_size_bytes": 2290740,
+      "decompressed_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/exact-preflight/flight.csv",
+      "original_relative_path": "p51_runway_current/capture/exact-preflight/flight.csv",
+      "original_size_bytes": 2394351,
+      "original_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "compression": "gzip",
+      "retained_path": "p51_runway_current/capture/exact-preflight/flight.csv.gz",
+      "retained_size_bytes": 620396,
+      "retained_bytes_sha256": "5867c6c52974c0de6fb053765debf09eb966c7241b0e158266d6036e67f32e56",
+      "decompressed_size_bytes": 2394351,
+      "decompressed_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/default/exact.csv",
+      "original_relative_path": "p51_runway_current/default/exact.csv",
+      "original_size_bytes": 2394351,
+      "original_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "compression": "gzip",
+      "retained_path": "p51_runway_current/default/exact.csv.gz",
+      "retained_size_bytes": 620396,
+      "retained_bytes_sha256": "5867c6c52974c0de6fb053765debf09eb966c7241b0e158266d6036e67f32e56",
+      "decompressed_size_bytes": 2394351,
+      "decompressed_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/enhanced/exact.csv",
+      "original_relative_path": "p51_runway_current/enhanced/exact.csv",
+      "original_size_bytes": 2394351,
+      "original_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "compression": "gzip",
+      "retained_path": "p51_runway_current/enhanced/exact.csv.gz",
+      "retained_size_bytes": 620396,
+      "retained_bytes_sha256": "5867c6c52974c0de6fb053765debf09eb966c7241b0e158266d6036e67f32e56",
+      "decompressed_size_bytes": 2394351,
+      "decompressed_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "verified": true
+    }
+  ],
+  "tool_producer_hashes": [
+    {
+      "path": "tools/grass/check_state_invariance.py",
+      "size_bytes": 22654,
+      "sha256": "d6b2ee462a97d15ddfb5b3943ab232c74eb2e1ecf29ea371fc2a458cc1a9babc",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "tools/grass/check_state_invariance.gd",
+      "size_bytes": 25144,
+      "sha256": "a7fd05800c1648190e12b4da06317f8be000b7cb420e787eca5cfd69a55a2432",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "tools/flight_log/flight_log.py",
+      "size_bytes": 36929,
+      "sha256": "516e616559b5647b6a79d2c3e91ec479bfdf3e95615744595444ca31dda55afd",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/tools/flight_log_cli.gd",
+      "size_bytes": 17230,
+      "sha256": "e3f288aa1d4af35db5adc56320d5fc024226478a135a09009962305346aa00e1",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/sim/flight_log.gd",
+      "size_bytes": 11754,
+      "sha256": "fbfc1ffb2ae5e416537c02a433dff9f17576fcd4a4dae874ab1e05215c8242ae",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "size_bytes": 194355,
+      "sha256": "10bc9796f370bffca5a8592338f87d63e803e444fdcf691b6ca4e46d8a77d460",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "size_bytes": 97917,
+      "sha256": "a81cb2d3974ce574552eff2f99e107d1e7fd5989a1ffe6ca77c035a466e3f1bc",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+      "size_bytes": 103839,
+      "sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/data/field_loader.gd",
+      "size_bytes": 62064,
+      "sha256": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/render/field.gd",
+      "size_bytes": 8107,
+      "sha256": "213c2cd3677184cc6fc5d74a8e4d5649a71961e9b1814ee283055786fd06812e",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/render/grass_quality.gd",
+      "size_bytes": 227,
+      "sha256": "2bb90ea1c3d83334a92e45fe5689641301d4e1c5f2b9757bda7e23e95e4aa36d",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/render/ground.gd",
+      "size_bytes": 9803,
+      "sha256": "2c96be9d1844edbf7ddb99dc9ba5244c5bd61a368493831598b6cac8c85f2876",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/scenery/scenery.gd",
+      "size_bytes": 29479,
+      "sha256": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": "app/scenery/imported_near_grass.gd",
+      "size_bytes": 11569,
+      "sha256": "c39ae8319fa336b24a5837ab7a01583487fcc56142a592b4c5bccebb228ccbe6",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    },
+    {
+      "path": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "size_bytes": 198152,
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "capture_phase": "retention_time_after_run; not_run_identity"
+    }
+  ],
+  "diagnostics": {
+    "old_solver_mismatch": {
+      "retained_files": [
+        "diagnostics/old-solver-mismatch/godot.log",
+        "diagnostics/old-solver-mismatch/replay.json"
+      ],
+      "description": "Solver sources differ. Exact replay refused; use explicit --candidate for an experiment.",
+      "baseline_solver_sha256": "3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123",
+      "current_solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+      "solver_changed": true,
+      "status": "error"
+    },
+    "existing_output_preservation": {
+      "retained_file": "diagnostics/existing-output-preservation.log",
+      "expected_exit_code": 1,
+      "actual_exit_code": 1,
+      "sentinel_sha256_before": "031818a443e242a52d04a5ba06a0de986375b48576d70e1667152e2ce2da556d",
+      "sentinel_sha256_after": "031818a443e242a52d04a5ba06a0de986375b48576d70e1667152e2ce2da556d",
+      "directory_files_after": [
+        "sentinel.txt"
+      ],
+      "summary_written": false
+    }
+  },
+  "artifacts": [
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/summary.json",
+      "retained_path": "summary.json",
+      "size_bytes": 25006,
+      "sha256": "6fca8c99b61c4b79d8a53933b1d725c7151f93467edd2aaf27d785ee687a710e",
+      "retained_size_bytes": 25006,
+      "retained_bytes_sha256": "6fca8c99b61c4b79d8a53933b1d725c7151f93467edd2aaf27d785ee687a710e",
+      "verified": true,
+      "description": "Successful CPU/headless state-invariance run summary."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/stik-runway-current.orfl",
+      "retained_path": "stik_runway_current/capture/stik-runway-current.orfl",
+      "size_bytes": 2136972,
+      "sha256": "a9ffabb42258e661f28e5f658dd822a1a026ce2304404db28bee11cd168f5a2c",
+      "retained_size_bytes": 2136972,
+      "retained_bytes_sha256": "a9ffabb42258e661f28e5f658dd822a1a026ce2304404db28bee11cd168f5a2c",
+      "verified": true,
+      "description": "Fresh complete scripted runway tape recorded through the existing FlightLog API; software state/contact fixture only."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/recording.json",
+      "retained_path": "stik_runway_current/capture/recording.json",
+      "size_bytes": 2989,
+      "sha256": "d310ae7e2dca698d1b0ea14cff1fd0ba7ba428bc5f851c773494ac20f0030376",
+      "retained_size_bytes": 2989,
+      "retained_bytes_sha256": "d310ae7e2dca698d1b0ea14cff1fd0ba7ba428bc5f851c773494ac20f0030376",
+      "verified": true,
+      "description": "Existing FlightLog recorder completion and contact/scenario receipt."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/godot-record.log",
+      "retained_path": "stik_runway_current/capture/godot-record.log",
+      "size_bytes": 566,
+      "sha256": "ee709ac8094a9f0b6bcf9331e3b0609a070a53b04e5ca8fff5da1230688d9e11",
+      "retained_size_bytes": 566,
+      "retained_bytes_sha256": "ee709ac8094a9f0b6bcf9331e3b0609a070a53b04e5ca8fff5da1230688d9e11",
+      "verified": true,
+      "description": "Headless capture process log."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/godot-replay.log",
+      "retained_path": "stik_runway_current/capture/godot-exact-preflight.log",
+      "size_bytes": 271,
+      "sha256": "a09571d0a4a978ad4faa1c8bce7a90cb911c452e7e573b47661dd727c9d62415",
+      "retained_size_bytes": 271,
+      "retained_bytes_sha256": "a09571d0a4a978ad4faa1c8bce7a90cb911c452e7e573b47661dd727c9d62415",
+      "verified": true,
+      "description": "Existing flight-log replay CLI log for the fresh tape exact-preflight."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/exact-preflight/replay.json",
+      "retained_path": "stik_runway_current/capture/exact-preflight/replay.json",
+      "size_bytes": 6618,
+      "sha256": "441913469079ba8410bc2ba5f8afd59667ccd4b9cec5fd12cf54c6b953d1a42f",
+      "retained_size_bytes": 6618,
+      "retained_bytes_sha256": "441913469079ba8410bc2ba5f8afd59667ccd4b9cec5fd12cf54c6b953d1a42f",
+      "verified": true,
+      "description": "Complete exact replay preflight receipt; solver identity unchanged."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/exact-preflight/godot.log",
+      "retained_path": "stik_runway_current/capture/exact-preflight/godot.log",
+      "size_bytes": 208,
+      "sha256": "f1f8b4c04d24d19631b0bd8bdfa6679db0ae57781b92031b4477f605e1df0128",
+      "retained_size_bytes": 208,
+      "retained_bytes_sha256": "f1f8b4c04d24d19631b0bd8bdfa6679db0ae57781b92031b4477f605e1df0128",
+      "verified": true,
+      "description": "Godot process log for exact preflight."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/exact-preflight/flight.csv",
+      "original_relative_path": "stik_runway_current/capture/exact-preflight/flight.csv",
+      "original_size_bytes": 2290740,
+      "original_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "compression": "gzip",
+      "retained_path": "stik_runway_current/capture/exact-preflight/flight.csv.gz",
+      "retained_size_bytes": 497457,
+      "retained_bytes_sha256": "af3fc299c6e55ee7228a01c84e1027e12e1f11558d0708643e9e399cdb6f79fd",
+      "decompressed_size_bytes": 2290740,
+      "decompressed_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/default/exact.csv",
+      "original_relative_path": "stik_runway_current/default/exact.csv",
+      "original_size_bytes": 2290740,
+      "original_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "compression": "gzip",
+      "retained_path": "stik_runway_current/default/exact.csv.gz",
+      "retained_size_bytes": 497457,
+      "retained_bytes_sha256": "af3fc299c6e55ee7228a01c84e1027e12e1f11558d0708643e9e399cdb6f79fd",
+      "decompressed_size_bytes": 2290740,
+      "decompressed_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/default/replay.json",
+      "retained_path": "stik_runway_current/default/replay.json",
+      "size_bytes": 6940,
+      "sha256": "b8ae0d5ca61cb53fa392d8c571a966d46e0bc9748cc856338c1bfd01f83a9803",
+      "retained_size_bytes": 6940,
+      "retained_bytes_sha256": "b8ae0d5ca61cb53fa392d8c571a966d46e0bc9748cc856338c1bfd01f83a9803",
+      "verified": true,
+      "description": "Same-process production Field material initialization and complete exact replay report."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/default/godot.log",
+      "retained_path": "stik_runway_current/default/godot.log",
+      "size_bytes": 247,
+      "sha256": "c20df447071316bb8c87046e118244e2c82b5194705794947572f0d159843538",
+      "retained_size_bytes": 247,
+      "retained_bytes_sha256": "c20df447071316bb8c87046e118244e2c82b5194705794947572f0d159843538",
+      "verified": true,
+      "description": "Headless CPU process log; includes effective material-route observations."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/enhanced/exact.csv",
+      "original_relative_path": "stik_runway_current/enhanced/exact.csv",
+      "original_size_bytes": 2290740,
+      "original_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "compression": "gzip",
+      "retained_path": "stik_runway_current/enhanced/exact.csv.gz",
+      "retained_size_bytes": 497457,
+      "retained_bytes_sha256": "af3fc299c6e55ee7228a01c84e1027e12e1f11558d0708643e9e399cdb6f79fd",
+      "decompressed_size_bytes": 2290740,
+      "decompressed_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/enhanced/replay.json",
+      "retained_path": "stik_runway_current/enhanced/replay.json",
+      "size_bytes": 7005,
+      "sha256": "837c24ca87d48b400c7558eb6c6a443464688bd0a57dc195d1c38f1dbec29d25",
+      "retained_size_bytes": 7005,
+      "retained_bytes_sha256": "837c24ca87d48b400c7558eb6c6a443464688bd0a57dc195d1c38f1dbec29d25",
+      "verified": true,
+      "description": "Same-process production Field material initialization and complete exact replay report."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current/enhanced/godot.log",
+      "retained_path": "stik_runway_current/enhanced/godot.log",
+      "size_bytes": 248,
+      "sha256": "1abe076c39c06d0265381a6a431314c20d9d72070a2b4d2f798b511ba36d453b",
+      "retained_size_bytes": 248,
+      "retained_bytes_sha256": "1abe076c39c06d0265381a6a431314c20d9d72070a2b4d2f798b511ba36d453b",
+      "verified": true,
+      "description": "Headless CPU process log; includes effective material-route observations."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/p51-runway-current.orfl",
+      "retained_path": "p51_runway_current/capture/p51-runway-current.orfl",
+      "size_bytes": 2290536,
+      "sha256": "a6f5f33796c26160d8fecf581b4d143e8ff36d6201ddea432553571bb555e670",
+      "retained_size_bytes": 2290536,
+      "retained_bytes_sha256": "a6f5f33796c26160d8fecf581b4d143e8ff36d6201ddea432553571bb555e670",
+      "verified": true,
+      "description": "Fresh complete scripted runway tape recorded through the existing FlightLog API; software state/contact fixture only."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/recording.json",
+      "retained_path": "p51_runway_current/capture/recording.json",
+      "size_bytes": 2816,
+      "sha256": "0e4ab29487ff48976908a46d0c3a9c9efcb1e7b595fe14c80b87c93c50ea569e",
+      "retained_size_bytes": 2816,
+      "retained_bytes_sha256": "0e4ab29487ff48976908a46d0c3a9c9efcb1e7b595fe14c80b87c93c50ea569e",
+      "verified": true,
+      "description": "Existing FlightLog recorder completion and contact/scenario receipt."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/godot-record.log",
+      "retained_path": "p51_runway_current/capture/godot-record.log",
+      "size_bytes": 467,
+      "sha256": "934494bcc26906c7683d40444d674fd13fc21b3a4edad7342ef5ad95515e422c",
+      "retained_size_bytes": 467,
+      "retained_bytes_sha256": "934494bcc26906c7683d40444d674fd13fc21b3a4edad7342ef5ad95515e422c",
+      "verified": true,
+      "description": "Headless capture process log."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/godot-replay.log",
+      "retained_path": "p51_runway_current/capture/godot-exact-preflight.log",
+      "size_bytes": 269,
+      "sha256": "129b8f09dfc0fd9e63863b6dc480a25621d5050bede7154a6418b108676ea123",
+      "retained_size_bytes": 269,
+      "retained_bytes_sha256": "129b8f09dfc0fd9e63863b6dc480a25621d5050bede7154a6418b108676ea123",
+      "verified": true,
+      "description": "Existing flight-log replay CLI log for the fresh tape exact-preflight."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/exact-preflight/replay.json",
+      "retained_path": "p51_runway_current/capture/exact-preflight/replay.json",
+      "size_bytes": 7006,
+      "sha256": "e89684d4ac67613ce47a4728673a339d8a22a3d7771dfebedbe5e6ba298d514f",
+      "retained_size_bytes": 7006,
+      "retained_bytes_sha256": "e89684d4ac67613ce47a4728673a339d8a22a3d7771dfebedbe5e6ba298d514f",
+      "verified": true,
+      "description": "Complete exact replay preflight receipt; solver identity unchanged."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/exact-preflight/godot.log",
+      "retained_path": "p51_runway_current/capture/exact-preflight/godot.log",
+      "size_bytes": 114,
+      "sha256": "e29a5070dff5f84f32b52a5ba5bd394d3d5c15da24338f92b72b950e5d2bcf59",
+      "retained_size_bytes": 114,
+      "retained_bytes_sha256": "e29a5070dff5f84f32b52a5ba5bd394d3d5c15da24338f92b72b950e5d2bcf59",
+      "verified": true,
+      "description": "Godot process log for exact preflight."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/exact-preflight/flight.csv",
+      "original_relative_path": "p51_runway_current/capture/exact-preflight/flight.csv",
+      "original_size_bytes": 2394351,
+      "original_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "compression": "gzip",
+      "retained_path": "p51_runway_current/capture/exact-preflight/flight.csv.gz",
+      "retained_size_bytes": 620396,
+      "retained_bytes_sha256": "5867c6c52974c0de6fb053765debf09eb966c7241b0e158266d6036e67f32e56",
+      "decompressed_size_bytes": 2394351,
+      "decompressed_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/default/exact.csv",
+      "original_relative_path": "p51_runway_current/default/exact.csv",
+      "original_size_bytes": 2394351,
+      "original_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "compression": "gzip",
+      "retained_path": "p51_runway_current/default/exact.csv.gz",
+      "retained_size_bytes": 620396,
+      "retained_bytes_sha256": "5867c6c52974c0de6fb053765debf09eb966c7241b0e158266d6036e67f32e56",
+      "decompressed_size_bytes": 2394351,
+      "decompressed_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/default/replay.json",
+      "retained_path": "p51_runway_current/default/replay.json",
+      "size_bytes": 6766,
+      "sha256": "96889878b1e4318662d2be41e59f255599078b664c15fb01251956850ec57dc8",
+      "retained_size_bytes": 6766,
+      "retained_bytes_sha256": "96889878b1e4318662d2be41e59f255599078b664c15fb01251956850ec57dc8",
+      "verified": true,
+      "description": "Same-process production Field material initialization and complete exact replay report."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/default/godot.log",
+      "retained_path": "p51_runway_current/default/godot.log",
+      "size_bytes": 153,
+      "sha256": "ee15e1890c337843cb4276434e7440c7cb7d7c751b9fa22d1cfff95920f56486",
+      "retained_size_bytes": 153,
+      "retained_bytes_sha256": "ee15e1890c337843cb4276434e7440c7cb7d7c751b9fa22d1cfff95920f56486",
+      "verified": true,
+      "description": "Headless CPU process log; includes effective material-route observations."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/enhanced/exact.csv",
+      "original_relative_path": "p51_runway_current/enhanced/exact.csv",
+      "original_size_bytes": 2394351,
+      "original_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "compression": "gzip",
+      "retained_path": "p51_runway_current/enhanced/exact.csv.gz",
+      "retained_size_bytes": 620396,
+      "retained_bytes_sha256": "5867c6c52974c0de6fb053765debf09eb966c7241b0e158266d6036e67f32e56",
+      "decompressed_size_bytes": 2394351,
+      "decompressed_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "verified": true
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/enhanced/replay.json",
+      "retained_path": "p51_runway_current/enhanced/replay.json",
+      "size_bytes": 6831,
+      "sha256": "4133a9222944569dc59a5e7b989d0a6288ce7ef44c1e9be9933213a94ab9ff35",
+      "retained_size_bytes": 6831,
+      "retained_bytes_sha256": "4133a9222944569dc59a5e7b989d0a6288ce7ef44c1e9be9933213a94ab9ff35",
+      "verified": true,
+      "description": "Same-process production Field material initialization and complete exact replay report."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current/enhanced/godot.log",
+      "retained_path": "p51_runway_current/enhanced/godot.log",
+      "size_bytes": 154,
+      "sha256": "b1f632136e9025079130cfceee1814bc362ad5fb2460442a572e560909919189",
+      "retained_size_bytes": 154,
+      "retained_bytes_sha256": "b1f632136e9025079130cfceee1814bc362ad5fb2460442a572e560909919189",
+      "verified": true,
+      "description": "Headless CPU process log; includes effective material-route observations."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/probe-stik-current/godot.log",
+      "retained_path": "diagnostics/old-solver-mismatch/godot.log",
+      "size_bytes": 165,
+      "sha256": "67eb21e6ee1d9d7d0759be0c2bc4eb3703f70d620e664174d7c998ea25ee1086",
+      "retained_size_bytes": 165,
+      "retained_bytes_sha256": "67eb21e6ee1d9d7d0759be0c2bc4eb3703f70d620e664174d7c998ea25ee1086",
+      "verified": true,
+      "description": "Historical exact-replay refusal: recorded baseline solver SHA 3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123 differed from current solver SHA 0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df; this is a rejection, not accepted evidence."
+    },
+    {
+      "source_path": "tmp/grass-completion/state/probe-stik-current/replay.json",
+      "retained_path": "diagnostics/old-solver-mismatch/replay.json",
+      "size_bytes": 9302,
+      "sha256": "a3ba2950b0d4c5feb000e82038d9351474458a36f3fe9fcfb377e5f7907d42db",
+      "retained_size_bytes": 9302,
+      "retained_bytes_sha256": "a3ba2950b0d4c5feb000e82038d9351474458a36f3fe9fcfb377e5f7907d42db",
+      "verified": true,
+      "description": "Historical exact-replay receipt records status=error and solver_changed=true; retained to show why the stale tape was rejected."
+    },
+    {
+      "source_path": "generated retention regression transcript",
+      "retained_path": "diagnostics/existing-output-preservation.log",
+      "size_bytes": 689,
+      "sha256": "855220c22cca15b38666df6fae329a212badf05028ee3f2f0b89ea24db7c23f3",
+      "retained_size_bytes": 689,
+      "retained_bytes_sha256": "855220c22cca15b38666df6fae329a212badf05028ee3f2f0b89ea24db7c23f3",
+      "verified": true,
+      "description": "Factual rerun of the existing-output preservation regression; expected refusal exit 1, sentinel hash unchanged, and only sentinel.txt remained in the pre-existing target."
+    }
+  ],
+  "verification": {
+    "copied_artifacts_byte_hashes_verified": true,
+    "compressed_csvs_decompressed_and_original_hashes_verified": true,
+    "paired_default_enhanced_csvs_equal_before_compression": true,
+    "target_was_fresh_before_retention": true,
+    "target_created_with_exist_ok_false": true
+  },
+  "tool_producer_hashes_capture_note": "Retention-time only: captured after run-n completed; do not use as run-time source identity. run-n did not bracket these source hashes. See sibling state-final inventory and summary for the final run-p before/after grass-source bracket."
+}

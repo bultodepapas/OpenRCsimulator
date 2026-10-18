@@ -1,0 +1,772 @@
+{
+	"check_count": 92,
+	"checks": [
+		{
+			"detail": "",
+			"label": "mask edge fixture actually excludes its selected boundary point",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "far mask fixture lies outside the placement window",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "only the checksum-validated placement rows are present",
+			"ok": true
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "default/default_open/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/default_open/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "default_open",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "default",
+			"quality": "low",
+			"source_triangles": 12441
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "default/default_open/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/default_open/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "default_open",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "default",
+			"quality": "balanced",
+			"source_triangles": 25178
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "default/default_open/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/default_open/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "default_open",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "default",
+			"quality": "high",
+			"source_triangles": 49579
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "default/translated_open/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/translated_open/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "translated_open",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "default",
+			"quality": "low",
+			"source_triangles": 12441
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "default/translated_open/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/translated_open/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "translated_open",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "default",
+			"quality": "balanced",
+			"source_triangles": 25178
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "default/translated_open/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/translated_open/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "translated_open",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "default",
+			"quality": "high",
+			"source_triangles": 49579
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "default/bounded_rough_field/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/bounded_rough_field/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "bounded_rough_field",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "default",
+			"quality": "low",
+			"source_triangles": 12441
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "default/bounded_rough_field/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/bounded_rough_field/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "bounded_rough_field",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "default",
+			"quality": "balanced",
+			"source_triangles": 25178
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "default/bounded_rough_field/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/bounded_rough_field/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "bounded_rough_field",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "default",
+			"quality": "high",
+			"source_triangles": 49579
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "default/mask_near_selected_row/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_near_selected_row/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_near_selected_row/low removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_near_selected_row",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "default",
+			"quality": "low",
+			"source_triangles": 12441
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "default/mask_near_selected_row/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_near_selected_row/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_near_selected_row/balanced removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_near_selected_row",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "default",
+			"quality": "balanced",
+			"source_triangles": 25178
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "default/mask_near_selected_row/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_near_selected_row/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_near_selected_row/high removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_near_selected_row",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "default",
+			"quality": "high",
+			"source_triangles": 49579
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "default/mask_edge_through_selected_row/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_edge_through_selected_row/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_edge_through_selected_row/low removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_edge_through_selected_row",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "default",
+			"quality": "low",
+			"source_triangles": 12441
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "default/mask_edge_through_selected_row/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_edge_through_selected_row/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_edge_through_selected_row/balanced removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_edge_through_selected_row",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "default",
+			"quality": "balanced",
+			"source_triangles": 25178
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "default/mask_edge_through_selected_row/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_edge_through_selected_row/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_edge_through_selected_row/high removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_edge_through_selected_row",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "default",
+			"quality": "high",
+			"source_triangles": 49579
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "default/mask_bounds_outside_window/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_bounds_outside_window/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "mask_bounds_outside_window",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "default",
+			"quality": "low",
+			"source_triangles": 12441
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "default/mask_bounds_outside_window/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_bounds_outside_window/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "mask_bounds_outside_window",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "default",
+			"quality": "balanced",
+			"source_triangles": 25178
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "default/mask_bounds_outside_window/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "default/mask_bounds_outside_window/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "mask_bounds_outside_window",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "default",
+			"quality": "high",
+			"source_triangles": 49579
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "enhanced/default_open/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/default_open/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "default_open",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "enhanced",
+			"quality": "low",
+			"source_triangles": 9593
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "enhanced/default_open/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/default_open/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "default_open",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "enhanced",
+			"quality": "balanced",
+			"source_triangles": 19186
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "enhanced/default_open/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/default_open/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "default_open",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "enhanced",
+			"quality": "high",
+			"source_triangles": 37720
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "enhanced/translated_open/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/translated_open/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "translated_open",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "enhanced",
+			"quality": "low",
+			"source_triangles": 9593
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "enhanced/translated_open/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/translated_open/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "translated_open",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "enhanced",
+			"quality": "balanced",
+			"source_triangles": 19186
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "enhanced/translated_open/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/translated_open/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "translated_open",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "enhanced",
+			"quality": "high",
+			"source_triangles": 37720
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "enhanced/bounded_rough_field/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/bounded_rough_field/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "bounded_rough_field",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "enhanced",
+			"quality": "low",
+			"source_triangles": 9593
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "enhanced/bounded_rough_field/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/bounded_rough_field/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "bounded_rough_field",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "enhanced",
+			"quality": "balanced",
+			"source_triangles": 19186
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "enhanced/bounded_rough_field/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/bounded_rough_field/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "bounded_rough_field",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "enhanced",
+			"quality": "high",
+			"source_triangles": 37720
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "enhanced/mask_near_selected_row/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_near_selected_row/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_near_selected_row/low removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_near_selected_row",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "enhanced",
+			"quality": "low",
+			"source_triangles": 9593
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "enhanced/mask_near_selected_row/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_near_selected_row/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_near_selected_row/balanced removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_near_selected_row",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "enhanced",
+			"quality": "balanced",
+			"source_triangles": 19186
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "enhanced/mask_near_selected_row/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_near_selected_row/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_near_selected_row/high removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_near_selected_row",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "enhanced",
+			"quality": "high",
+			"source_triangles": 37720
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "enhanced/mask_edge_through_selected_row/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_edge_through_selected_row/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_edge_through_selected_row/low removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_edge_through_selected_row",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "enhanced",
+			"quality": "low",
+			"source_triangles": 9593
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "enhanced/mask_edge_through_selected_row/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_edge_through_selected_row/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_edge_through_selected_row/balanced removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_edge_through_selected_row",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "enhanced",
+			"quality": "balanced",
+			"source_triangles": 19186
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "enhanced/mask_edge_through_selected_row/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_edge_through_selected_row/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_edge_through_selected_row/high removes the fixture's selected row",
+			"ok": true
+		},
+		{
+			"case": "mask_edge_through_selected_row",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "enhanced",
+			"quality": "high",
+			"source_triangles": 37720
+		},
+		{
+			"detail": "new=38 old=38",
+			"label": "enhanced/mask_bounds_outside_window/low exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_bounds_outside_window/low source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "mask_bounds_outside_window",
+			"exact_parity": true,
+			"placements": 38,
+			"profile": "enhanced",
+			"quality": "low",
+			"source_triangles": 9593
+		},
+		{
+			"detail": "new=76 old=76",
+			"label": "enhanced/mask_bounds_outside_window/balanced exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_bounds_outside_window/balanced source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "mask_bounds_outside_window",
+			"exact_parity": true,
+			"placements": 76,
+			"profile": "enhanced",
+			"quality": "balanced",
+			"source_triangles": 19186
+		},
+		{
+			"detail": "new=150 old=150",
+			"label": "enhanced/mask_bounds_outside_window/high exact legacy dictionary/order parity",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_bounds_outside_window/high source triangle total unchanged",
+			"ok": true
+		},
+		{
+			"case": "mask_bounds_outside_window",
+			"exact_parity": true,
+			"placements": 150,
+			"profile": "enhanced",
+			"quality": "high",
+			"source_triangles": 37720
+		},
+		{
+			"detail": "",
+			"label": "default far mask leaves output exact",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced far mask leaves output exact",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "rank cache was rebuilt for the current 6,000-row validated source",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "rank cache rebuilds when row count changes",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "restoring the validated rows restores the original ranking exactly",
+			"ok": true
+		}
+	],
+	"failures": 0,
+	"format": "openrc-grass-layout-benchmark v1",
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"selector": "enhanced",
+	"source_file": "res://scenery/imported_near_grass.gd",
+	"source_sha256": "c39ae8319fa336b24a5837ab7a01583487fcc56142a592b4c5bccebb228ccbe6",
+	"timings": [],
+	"tool_sha256": "a6b599fb51a234bb74ec7da66bb6928a81a0d6ac05d7ed346a10310b7baf1f3c",
+	"validated_rows": 6000
+}

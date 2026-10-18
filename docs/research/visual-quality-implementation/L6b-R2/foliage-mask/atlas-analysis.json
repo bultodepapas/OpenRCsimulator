@@ -1,0 +1,206 @@
+{
+  "schema": "openrc-tree-atlas-analysis v1",
+  "raw_capture_size_px": 1024,
+  "atlas_size_px": 1024,
+  "tile_size_px": 512,
+  "atlas_variant": "adapted_albedo",
+  "runtime_alpha_reference": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\assets\\landscape\\trees\\atlas.png",
+  "foliage_mask": {
+    "variant": "adapted_foliage_mask",
+    "channel": "red",
+    "space": "linear data; do not mark as source_color in the runtime shader",
+    "source": "exact glTF material identity; no RGB classification or hand painting",
+    "downsampling": "2x2 BOX with source silhouette alpha weighting, aligned with the albedo atlas"
+  },
+  "silhouette_iou_minimum": 0.995,
+  "downsampling": {
+    "method": "2x2 BOX; RGB is alpha-weighted in straight-alpha space, alpha is the arithmetic mean.",
+    "transparent_rgb": "zero when every input sample in a 2x2 block is transparent"
+  },
+  "reserved_fourth_slot": "transparent",
+  "species": [
+    {
+      "id": "CommonTree_1",
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_NormalTree",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "material_mask_alpha_exactly_matches_adapted_albedo": true,
+      "material_mask_raw_visible_pixel_counts": {
+        "visible_bark_pixels": 40094,
+        "visible_foliage_pixels": 166817
+      },
+      "runtime_mask_alpha_exactly_matches_runtime_atlas": true,
+      "runtime_mask_alpha_alignment_before_edge_reconciliation": {
+        "coverage_iou_nonzero": 0.9992186457797343,
+        "coverage_iou_at_cutoff_0_5": 0.9992705493914846,
+        "alpha_differing_pixels": 138,
+        "alpha_mean_absolute_difference_0_255": 0.035037994384765625,
+        "runtime_only_nonzero_pixels": 6,
+        "bake_only_nonzero_pixels": 35
+      },
+      "runtime_only_edge_labels_filled_from_nearest_source_material_id": 6,
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 206911,
+        "mean_absolute_rgb_difference_0_255": 4.8329958291245995e-06,
+        "mean_absolute_difference_by_channel_0_255": [
+          9.665991658249199e-06,
+          4.8329958291245995e-06,
+          0.0
+        ],
+        "maximum_absolute_rgb_difference_0_255": 1,
+        "fraction_pixels_above_two_rgb_levels": 0.0
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        140,
+        40,
+        373,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 140,
+        "top": 40,
+        "right": 138,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "CommonTree_3",
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_NormalTree",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "material_mask_alpha_exactly_matches_adapted_albedo": true,
+      "material_mask_raw_visible_pixel_counts": {
+        "visible_bark_pixels": 32225,
+        "visible_foliage_pixels": 123025
+      },
+      "runtime_mask_alpha_exactly_matches_runtime_atlas": true,
+      "runtime_mask_alpha_alignment_before_edge_reconciliation": {
+        "coverage_iou_nonzero": 0.9988427964076375,
+        "coverage_iou_at_cutoff_0_5": 0.9992350256266415,
+        "alpha_differing_pixels": 151,
+        "alpha_mean_absolute_difference_0_255": 0.036930084228515625,
+        "runtime_only_nonzero_pixels": 2,
+        "bake_only_nonzero_pixels": 44
+      },
+      "runtime_only_edge_labels_filled_from_nearest_source_material_id": 2,
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 155250,
+        "mean_absolute_rgb_difference_0_255": 2.147074610842727e-06,
+        "mean_absolute_difference_by_channel_0_255": [
+          6.44122383252818e-06,
+          0.0,
+          0.0
+        ],
+        "maximum_absolute_rgb_difference_0_255": 1,
+        "fraction_pixels_above_two_rgb_levels": 0.0
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        169,
+        40,
+        343,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 169,
+        "top": 40,
+        "right": 168,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "Pine_1",
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_Pine",
+      "silhouette_alpha_iou": {
+        "albedo": {
+          "source_variant": "source_albedo",
+          "adapted_variant": "adapted_albedo",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        },
+        "lit": {
+          "source_variant": "source_lit",
+          "adapted_variant": "adapted_lit",
+          "iou": 1.0,
+          "minimum_iou": 0.995
+        }
+      },
+      "material_mask_alpha_exactly_matches_adapted_albedo": true,
+      "material_mask_raw_visible_pixel_counts": {
+        "visible_bark_pixels": 21737,
+        "visible_foliage_pixels": 144295
+      },
+      "runtime_mask_alpha_exactly_matches_runtime_atlas": true,
+      "runtime_mask_alpha_alignment_before_edge_reconciliation": {
+        "coverage_iou_nonzero": 0.9989927147508726,
+        "coverage_iou_at_cutoff_0_5": 0.9991437745272922,
+        "alpha_differing_pixels": 165,
+        "alpha_mean_absolute_difference_0_255": 0.04157257080078125,
+        "runtime_only_nonzero_pixels": 0,
+        "bake_only_nonzero_pixels": 43
+      },
+      "runtime_only_edge_labels_filled_from_nearest_source_material_id": 0,
+      "opaque_rgb_difference_source_albedo_vs_adapted_albedo": {
+        "compared_opaque_pixels": 166032,
+        "mean_absolute_rgb_difference_0_255": 2.2084096238476116e-05,
+        "mean_absolute_difference_by_channel_0_255": [
+          2.4091741351064854e-05,
+          3.0114676688831068e-05,
+          1.2045870675532427e-05
+        ],
+        "maximum_absolute_rgb_difference_0_255": 1,
+        "fraction_pixels_above_two_rgb_levels": 0.0
+      },
+      "atlas_tile_alpha_bbox_px_inclusive": [
+        107,
+        30,
+        404,
+        483
+      ],
+      "transparent_padding_px": {
+        "left": 107,
+        "top": 30,
+        "right": 107,
+        "bottom": 28
+      },
+      "adapted_albedo_raw_alpha_values": [
+        0,
+        255
+      ]
+    }
+  ]
+}

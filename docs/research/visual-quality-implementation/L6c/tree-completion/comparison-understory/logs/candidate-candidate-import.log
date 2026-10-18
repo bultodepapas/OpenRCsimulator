@@ -1,0 +1,1895 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] first_scan_filesystem | Started Project initialization (5 steps)
+[   0% ] first_scan_filesystem | Scanning file structure...
+[  16% ] first_scan_filesystem | Loading global class names...
+[  33% ] first_scan_filesystem | Verifying GDExtensions...
+[  50% ] first_scan_filesystem | Creating autoload scripts...
+[  66% ] first_scan_filesystem | Initializing plugins...
+[  83% ] first_scan_filesystem | Starting file scan...
+[ DONE ] first_scan_filesystem
+
+[   0% ] update_scripts_classes | Started Registering global classes... (991 steps)
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   0% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   1% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   2% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   3% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   4% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | 
+[   5% ] update_scripts_classes | NitroEngineAudio
+[   5% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | 
+[   6% ] update_scripts_classes | ComponentResolver
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | PackageOptimizer
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | 
+[   7% ] update_scripts_classes | ThermalBudget
+[   7% ] update_scripts_classes | SkyConfig
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   8% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[   9% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  10% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  11% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | GroundVehicleDamage
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  12% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  13% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  14% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | AircraftContract
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | AircraftModules
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  15% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | ControlSurfaces
+[  16% ] update_scripts_classes | CruiseTrim
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  16% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  17% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  18% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | 
+[  19% ] update_scripts_classes | WindConfig
+[  20% ] update_scripts_classes | WindField
+[  20% ] update_scripts_classes | WindTurbulence
+[  20% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | 
+[  20% ] update_scripts_classes | CrashCause
+[  20% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | CrashSeverity
+[  21% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | Wreck
+[  21% ] update_scripts_classes | 
+[  21% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | WaterEffects
+[  22% ] update_scripts_classes | LakeWaterMaterial
+[  22% ] update_scripts_classes | AirfieldLighting
+[  22% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | 
+[  22% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  23% ] update_scripts_classes | 
+[  24% ] update_scripts_classes | 
+[  24% ] update_scripts_classes | 
+[  24% ] update_scripts_classes | 
+[  24% ] update_scripts_classes | 
+[  24% ] update_scripts_classes | HeliNightRotor
+[  24% ] update_scripts_classes | HeliRotorBlur
+[  24% ] update_scripts_classes | HeliRotorVisual
+[  24% ] update_scripts_classes | HeliWreck
+[  24% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  25% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  26% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  27% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  28% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  29% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | NaturalRandom
+[  30% ] update_scripts_classes | ScenarioConfig
+[  30% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  30% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  31% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | ImportedVegetation
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  32% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  33% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | GroundVehicleSession
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  34% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  35% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  36% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  37% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  38% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  39% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  40% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  41% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  42% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  43% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  44% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  45% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  46% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  47% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  48% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  49% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  50% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  51% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  52% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  53% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  54% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  55% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  56% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  57% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  58% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  59% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  60% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  61% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  62% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  63% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  64% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  65% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  66% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  67% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  68% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  69% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  70% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  71% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  72% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  73% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  74% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  75% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  76% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  77% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  78% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  79% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  80% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  81% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  82% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  83% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  84% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  85% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  86% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  87% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  88% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  89% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  90% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  91% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  92% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | 
+[  93% ] update_scripts_classes | ControllerPrompts
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  94% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | MenuAudio
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  95% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  96% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | GroundDamageView
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  97% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | 
+[  98% ] update_scripts_classes | WorkshopCompiler
+[  98% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | WorkshopParameters
+[  99% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[  99% ] update_scripts_classes | 
+[ DONE ] update_scripts_classes
+
+[   0% ] _update_scan_actions | Started Scanning actions... (222 steps)
+[   0% ] _update_scan_actions | livery.svg
+[   0% ] _update_scan_actions | avanti_s.glb
+[   0% ] _update_scan_actions | hx-700.glb
+[   1% ] _update_scan_actions | hx-700_hx700_botalon_mascaras.png
+[   1% ] _update_scan_actions | hx-700_hx700_carenado_v7_A.png
+[   2% ] _update_scan_actions | hx-700_hx700_carenado_v7_A_2.png
+[   2% ] _update_scan_actions | hx-700.glb
+[   3% ] _update_scan_actions | hx-700_hx700_botalon_mascaras.png
+[   3% ] _update_scan_actions | hx-700_hx700_carenado_mascaras.png
+[   4% ] _update_scan_actions | hx-700_hx700_carenado_mascaras_2.png
+[   4% ] _update_scan_actions | timber.glb
+[   4% ] _update_scan_actions | crack_heavy.wav
+[   5% ] _update_scan_actions | crack_light.wav
+[   5% ] _update_scan_actions | debris.wav
+[   6% ] _update_scan_actions | engine_cut.wav
+[   6% ] _update_scan_actions | fire_loop.wav
+[   7% ] _update_scan_actions | impact_dirt.wav
+[   7% ] _update_scan_actions | impact_grass.wav
+[   8% ] _update_scan_actions | impact_hard.wav
+[   8% ] _update_scan_actions | scrape.wav
+[   8% ] _update_scan_actions | secondary_hit.wav
+[   9% ] _update_scan_actions | tear.wav
+[   9% ] _update_scan_actions | turbine_spool.wav
+[  10% ] _update_scan_actions | bird_01.wav
+[  10% ] _update_scan_actions | bird_02.wav
+[  11% ] _update_scan_actions | bird_03.wav
+[  11% ] _update_scan_actions | bird_04.wav
+[  12% ] _update_scan_actions | cricket_01.wav
+[  12% ] _update_scan_actions | cricket_02.wav
+[  13% ] _update_scan_actions | crow_01.wav
+[  13% ] _update_scan_actions | crow_02.wav
+[  13% ] _update_scan_actions | crow_03.wav
+[  14% ] _update_scan_actions | dog_01.wav
+[  14% ] _update_scan_actions | dog_02.wav
+[  15% ] _update_scan_actions | dog_03.wav
+[  15% ] _update_scan_actions | owl_01.wav
+[  16% ] _update_scan_actions | owl_02.wav
+[  16% ] _update_scan_actions | owl_03.wav
+[  17% ] _update_scan_actions | airframe.wav
+[  17% ] _update_scan_actions | birds_01.wav
+[  17% ] _update_scan_actions | birds_02.wav
+[  18% ] _update_scan_actions | birds_03.wav
+[  18% ] _update_scan_actions | birds_04.wav
+[  19% ] _update_scan_actions | birds_05.wav
+[  19% ] _update_scan_actions | birds_06.wav
+[  20% ] _update_scan_actions | foliage.wav
+[  20% ] _update_scan_actions | motor_combustion.wav
+[  21% ] _update_scan_actions | motor_electric.wav
+[  21% ] _update_scan_actions | motor_propeller.wav
+[  21% ] _update_scan_actions | turbine_roar.wav
+[  22% ] _update_scan_actions | turbine_whine.wav
+[  22% ] _update_scan_actions | wind_high.wav
+[  23% ] _update_scan_actions | wind_low.wav
+[  23% ] _update_scan_actions | thunder_01.ogg
+[  24% ] _update_scan_actions | peludo-splash1.wav
+[  24% ] _update_scan_actions | peludo-splash2.wav
+[  25% ] _update_scan_actions | randommind-vistula-short.mp3
+[  25% ] _update_scan_actions | flame.png
+[  26% ] _update_scan_actions | smoke.png
+[  26% ] _update_scan_actions | button.svg
+[  26% ] _update_scan_actions | shoulder_left.svg
+[  27% ] _update_scan_actions | shoulder_right.svg
+[  27% ] _update_scan_actions | stick_press.svg
+[  28% ] _update_scan_actions | back.svg
+[  28% ] _update_scan_actions | dpad_down.svg
+[  29% ] _update_scan_actions | dpad_left.svg
+[  29% ] _update_scan_actions | dpad_right.svg
+[  30% ] _update_scan_actions | dpad_up.svg
+[  30% ] _update_scan_actions | face_bottom.svg
+[  30% ] _update_scan_actions | face_left.svg
+[  31% ] _update_scan_actions | face_right.svg
+[  31% ] _update_scan_actions | face_top.svg
+[  32% ] _update_scan_actions | menu.svg
+[  32% ] _update_scan_actions | shoulder_left.svg
+[  33% ] _update_scan_actions | shoulder_right.svg
+[  33% ] _update_scan_actions | stick_left_press.svg
+[  34% ] _update_scan_actions | stick_right_press.svg
+[  34% ] _update_scan_actions | back.svg
+[  34% ] _update_scan_actions | dpad_down.svg
+[  35% ] _update_scan_actions | dpad_left.svg
+[  35% ] _update_scan_actions | dpad_right.svg
+[  36% ] _update_scan_actions | dpad_up.svg
+[  36% ] _update_scan_actions | face_bottom.svg
+[  37% ] _update_scan_actions | face_left.svg
+[  37% ] _update_scan_actions | face_right.svg
+[  38% ] _update_scan_actions | face_top.svg
+[  38% ] _update_scan_actions | menu.svg
+[  39% ] _update_scan_actions | shoulder_left.svg
+[  39% ] _update_scan_actions | shoulder_right.svg
+[  39% ] _update_scan_actions | stick_left_press.svg
+[  40% ] _update_scan_actions | stick_right_press.svg
+[  40% ] _update_scan_actions | back.svg
+[  41% ] _update_scan_actions | dpad_down.svg
+[  41% ] _update_scan_actions | dpad_left.svg
+[  42% ] _update_scan_actions | dpad_right.svg
+[  42% ] _update_scan_actions | dpad_up.svg
+[  43% ] _update_scan_actions | face_bottom.svg
+[  43% ] _update_scan_actions | face_left.svg
+[  43% ] _update_scan_actions | face_right.svg
+[  44% ] _update_scan_actions | face_top.svg
+[  44% ] _update_scan_actions | menu.svg
+[  45% ] _update_scan_actions | shoulder_left.svg
+[  45% ] _update_scan_actions | shoulder_right.svg
+[  46% ] _update_scan_actions | stick_left_press.svg
+[  46% ] _update_scan_actions | stick_right_press.svg
+[  47% ] _update_scan_actions | Metal026_1K-JPG_Color.jpg
+[  47% ] _update_scan_actions | Metal026_1K-JPG_Metalness.jpg
+[  47% ] _update_scan_actions | Metal026_1K-JPG_NormalGL.jpg
+[  48% ] _update_scan_actions | Metal026_1K-JPG_Roughness.jpg
+[  48% ] _update_scan_actions | Wood049_1K-JPG_Color.jpg
+[  49% ] _update_scan_actions | Wood049_1K-JPG_NormalGL.jpg
+[  49% ] _update_scan_actions | Wood049_1K-JPG_Roughness.jpg
+[  50% ] _update_scan_actions | colormap.png
+[  50% ] _update_scan_actions | campfire-pit.glb
+[  51% ] _update_scan_actions | flames-8x10.png
+[  51% ] _update_scan_actions | lamp-head.glb
+[  52% ] _update_scan_actions | Concrete034_1K-JPG_Color.jpg
+[  52% ] _update_scan_actions | Concrete034_1K-JPG_NormalGL.jpg
+[  52% ] _update_scan_actions | Concrete034_1K-JPG_Roughness.jpg
+[  53% ] _update_scan_actions | Metal032_1K-JPG_NormalGL.jpg
+[  53% ] _update_scan_actions | Metal032_1K-JPG_Roughness.jpg
+[  54% ] _update_scan_actions | Wood050_1K-JPG_Color.jpg
+[  54% ] _update_scan_actions | Wood050_1K-JPG_NormalGL.jpg
+[  55% ] _update_scan_actions | Wood050_1K-JPG_Roughness.jpg
+[  55% ] _update_scan_actions | dirt-albedo.jpg
+[  56% ] _update_scan_actions | dirt-normal.jpg
+[  56% ] _update_scan_actions | dirt-roughness.jpg
+[  56% ] _update_scan_actions | grass-albedo.jpg
+[  57% ] _update_scan_actions | grass-normal.jpg
+[  57% ] _update_scan_actions | grass-roughness.jpg
+[  58% ] _update_scan_actions | atlas.png
+[  58% ] _update_scan_actions | foliage_mask.png
+[  59% ] _update_scan_actions | detail.png
+[  59% ] _update_scan_actions | bush_common_4view.png
+[  60% ] _update_scan_actions | bush_common_flowers_4view.png
+[  60% ] _update_scan_actions | reed.obj
+[  60% ] _update_scan_actions | Corn_4.obj
+[  61% ] _update_scan_actions | Wheat_4.obj
+[  61% ] _update_scan_actions | oak_lod0.gltf
+[  62% ] _update_scan_actions | Quercus_A_1024.png
+[  62% ] _update_scan_actions | Bark_NormalTree.png
+[  63% ] _update_scan_actions | Bark_NormalTree_Normal.png
+[  63% ] _update_scan_actions | Bush_Common.gltf
+[  64% ] _update_scan_actions | Bush_Common_Flowers.gltf
+[  64% ] _update_scan_actions | Clover_1.gltf
+[  65% ] _update_scan_actions | CommonTree_1.gltf
+[  65% ] _update_scan_actions | CommonTree_2.gltf
+[  65% ] _update_scan_actions | CommonTree_3.gltf
+[  66% ] _update_scan_actions | CommonTree_4.gltf
+[  66% ] _update_scan_actions | Fern_1.gltf
+[  67% ] _update_scan_actions | Flowers.png
+[  67% ] _update_scan_actions | Flower_3_Group.gltf
+[  68% ] _update_scan_actions | Flower_4_Group.gltf
+[  68% ] _update_scan_actions | Grass.png
+[  69% ] _update_scan_actions | Grass_Common_Short.gltf
+[  69% ] _update_scan_actions | Grass_Common_Tall.gltf
+[  69% ] _update_scan_actions | Grass_Wispy_Tall.gltf
+[  70% ] _update_scan_actions | Leaf_Pine_C.png
+[  70% ] _update_scan_actions | Leaves.png
+[  71% ] _update_scan_actions | Leaves_NormalTree_C.png
+[  71% ] _update_scan_actions | Leaves_TwistedTree_C.png
+[  72% ] _update_scan_actions | Pine_1.gltf
+[  72% ] _update_scan_actions | Pine_2.gltf
+[  73% ] _update_scan_actions | Pine_3.gltf
+[  73% ] _update_scan_actions | Fabric001_1K-JPG_Color.jpg
+[  73% ] _update_scan_actions | Fabric001_1K-JPG_NormalGL.jpg
+[  74% ] _update_scan_actions | Fabric001_1K-JPG_Roughness.jpg
+[  74% ] _update_scan_actions | 3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png
+[  75% ] _update_scan_actions | 3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png
+[  75% ] _update_scan_actions | 8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png
+[  76% ] _update_scan_actions | 9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png
+[  76% ] _update_scan_actions | 10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png
+[  77% ] _update_scan_actions | 12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png
+[  77% ] _update_scan_actions | 62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png
+[  78% ] _update_scan_actions | 1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png
+[  78% ] _update_scan_actions | 161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png
+[  78% ] _update_scan_actions | a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png
+[  79% ] _update_scan_actions | ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png
+[  79% ] _update_scan_actions | b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png
+[  80% ] _update_scan_actions | b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png
+[  80% ] _update_scan_actions | d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png
+[  81% ] _update_scan_actions | e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png
+[  81% ] _update_scan_actions | ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png
+[  82% ] _update_scan_actions | efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png
+[  82% ] _update_scan_actions | f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png
+[  82% ] _update_scan_actions | f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png
+[  83% ] _update_scan_actions | crossover.glb
+[  83% ] _update_scan_actions | hatch.glb
+[  84% ] _update_scan_actions | pilot.glb
+[  84% ] _update_scan_actions | sedan.glb
+[  85% ] _update_scan_actions | sitting.glb
+[  85% ] _update_scan_actions | standing.glb
+[  86% ] _update_scan_actions | FX_CloudAlpha03.png
+[  86% ] _update_scan_actions | FX_CloudAlpha06.png
+[  86% ] _update_scan_actions | broken.png
+[  87% ] _update_scan_actions | cirrus.png
+[  87% ] _update_scan_actions | classic.png
+[  88% ] _update_scan_actions | clear.png
+[  88% ] _update_scan_actions | distant_storm.png
+[  89% ] _update_scan_actions | electrical_storm.png
+[  89% ] _update_scan_actions | fair_cumulus.png
+[  90% ] _update_scan_actions | overcast.png
+[  90% ] _update_scan_actions | prestorm.png
+[  91% ] _update_scan_actions | accept.ogg
+[  91% ] _update_scan_actions | back.ogg
+[  91% ] _update_scan_actions | navigation.ogg
+[  92% ] _update_scan_actions | press.ogg
+[  92% ] _update_scan_actions | range_tick.ogg
+[  93% ] _update_scan_actions | reject.ogg
+[  93% ] _update_scan_actions | selection.ogg
+[  94% ] _update_scan_actions | monster_truck_nitro_1.glb
+[  94% ] _update_scan_actions | monster_truck_nitro_1_banda_parabrisas.png
+[  95% ] _update_scan_actions | monster_truck_nitro_1_carroceria_color.jpg
+[  95% ] _update_scan_actions | monster_truck_nitro_1_carroceria_emision.png
+[  95% ] _update_scan_actions | monster_truck_nitro_1_carroceria_mr.png
+[  96% ] _update_scan_actions | monster_truck_nitro_1_fibra_carbono.png
+[  96% ] _update_scan_actions | monster_truck_nitro_1_placa.png
+[  97% ] _update_scan_actions | MT8_Bisonte.glb
+[  97% ] _update_scan_actions | visual-gear-extra.png
+[  98% ] _update_scan_actions | visual-gear-p51.png
+[  98% ] _update_scan_actions | visual-gear-stik.png
+[  99% ] _update_scan_actions | slider_grabber.svg
+[ DONE ] _update_scan_actions
+
+[   0% ] reimport | Started (Re)Importing Assets (222 steps)
+[   0% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Preparing files to reimport...
+[   1% ] reimport | Preparing files to reimport...
+[   1% ] reimport | Preparing files to reimport...
+[   2% ] reimport | Preparing files to reimport...
+[   2% ] reimport | Preparing files to reimport...
+[   3% ] reimport | Preparing files to reimport...
+[   3% ] reimport | Preparing files to reimport...
+[   4% ] reimport | Preparing files to reimport...
+[   4% ] reimport | Preparing files to reimport...
+[   4% ] reimport | Preparing files to reimport...
+[   5% ] reimport | Preparing files to reimport...
+[   5% ] reimport | Preparing files to reimport...
+[   6% ] reimport | Preparing files to reimport...
+[   6% ] reimport | Preparing files to reimport...
+[   7% ] reimport | Preparing files to reimport...
+[   7% ] reimport | Preparing files to reimport...
+[   8% ] reimport | Preparing files to reimport...
+[   8% ] reimport | Preparing files to reimport...
+[   8% ] reimport | Preparing files to reimport...
+[   9% ] reimport | Preparing files to reimport...
+[   9% ] reimport | Preparing files to reimport...
+[  10% ] reimport | Preparing files to reimport...
+[  10% ] reimport | Preparing files to reimport...
+[  11% ] reimport | Preparing files to reimport...
+[  11% ] reimport | Preparing files to reimport...
+[  12% ] reimport | Preparing files to reimport...
+[  12% ] reimport | Preparing files to reimport...
+[  13% ] reimport | Preparing files to reimport...
+[  13% ] reimport | Preparing files to reimport...
+[  13% ] reimport | Preparing files to reimport...
+[  14% ] reimport | Preparing files to reimport...
+[  14% ] reimport | Preparing files to reimport...
+[  15% ] reimport | Preparing files to reimport...
+[  15% ] reimport | Preparing files to reimport...
+[  16% ] reimport | Preparing files to reimport...
+[  16% ] reimport | Preparing files to reimport...
+[  17% ] reimport | Preparing files to reimport...
+[  17% ] reimport | Preparing files to reimport...
+[  17% ] reimport | Preparing files to reimport...
+[  18% ] reimport | Preparing files to reimport...
+[  18% ] reimport | Preparing files to reimport...
+[  19% ] reimport | Preparing files to reimport...
+[  19% ] reimport | Preparing files to reimport...
+[  20% ] reimport | Preparing files to reimport...
+[  20% ] reimport | Preparing files to reimport...
+[  21% ] reimport | Preparing files to reimport...
+[  21% ] reimport | Preparing files to reimport...
+[  21% ] reimport | Preparing files to reimport...
+[  22% ] reimport | Preparing files to reimport...
+[  22% ] reimport | Preparing files to reimport...
+[  23% ] reimport | Preparing files to reimport...
+[  23% ] reimport | Preparing files to reimport...
+[  24% ] reimport | Preparing files to reimport...
+[  24% ] reimport | Preparing files to reimport...
+[  25% ] reimport | Preparing files to reimport...
+[  25% ] reimport | Preparing files to reimport...
+[  26% ] reimport | Preparing files to reimport...
+[  26% ] reimport | Preparing files to reimport...
+[  26% ] reimport | Preparing files to reimport...
+[  27% ] reimport | Preparing files to reimport...
+[  27% ] reimport | Preparing files to reimport...
+[  28% ] reimport | Preparing files to reimport...
+[  28% ] reimport | Preparing files to reimport...
+[  29% ] reimport | Preparing files to reimport...
+[  29% ] reimport | Preparing files to reimport...
+[  30% ] reimport | Preparing files to reimport...
+[  30% ] reimport | Preparing files to reimport...
+[  30% ] reimport | Preparing files to reimport...
+[  31% ] reimport | Preparing files to reimport...
+[  31% ] reimport | Preparing files to reimport...
+[  32% ] reimport | Preparing files to reimport...
+[  32% ] reimport | Preparing files to reimport...
+[  33% ] reimport | Preparing files to reimport...
+[  33% ] reimport | Preparing files to reimport...
+[  34% ] reimport | Preparing files to reimport...
+[  34% ] reimport | Preparing files to reimport...
+[  34% ] reimport | Preparing files to reimport...
+[  35% ] reimport | Preparing files to reimport...
+[  35% ] reimport | Preparing files to reimport...
+[  36% ] reimport | Preparing files to reimport...
+[  36% ] reimport | Preparing files to reimport...
+[  37% ] reimport | Preparing files to reimport...
+[  37% ] reimport | Preparing files to reimport...
+[  38% ] reimport | Preparing files to reimport...
+[  38% ] reimport | Preparing files to reimport...
+[  39% ] reimport | Preparing files to reimport...
+[  39% ] reimport | Preparing files to reimport...
+[  39% ] reimport | Preparing files to reimport...
+[  40% ] reimport | Preparing files to reimport...
+[  40% ] reimport | Preparing files to reimport...
+[  41% ] reimport | Preparing files to reimport...
+[  41% ] reimport | Preparing files to reimport...
+[  42% ] reimport | Preparing files to reimport...
+[  42% ] reimport | Preparing files to reimport...
+[  43% ] reimport | Preparing files to reimport...
+[  43% ] reimport | Preparing files to reimport...
+[  43% ] reimport | Preparing files to reimport...
+[  44% ] reimport | Preparing files to reimport...
+[  44% ] reimport | Preparing files to reimport...
+[  45% ] reimport | Preparing files to reimport...
+[  45% ] reimport | Preparing files to reimport...
+[  46% ] reimport | Preparing files to reimport...
+[  46% ] reimport | Preparing files to reimport...
+[  47% ] reimport | Preparing files to reimport...
+[  47% ] reimport | Preparing files to reimport...
+[  47% ] reimport | Preparing files to reimport...
+[  48% ] reimport | Preparing files to reimport...
+[  48% ] reimport | Preparing files to reimport...
+[  49% ] reimport | Preparing files to reimport...
+[  49% ] reimport | Preparing files to reimport...
+[  50% ] reimport | Preparing files to reimport...
+[  50% ] reimport | Preparing files to reimport...
+[  51% ] reimport | Preparing files to reimport...
+[  51% ] reimport | Preparing files to reimport...
+[  52% ] reimport | Preparing files to reimport...
+[  52% ] reimport | Preparing files to reimport...
+[  52% ] reimport | Preparing files to reimport...
+[  53% ] reimport | Preparing files to reimport...
+[  53% ] reimport | Preparing files to reimport...
+[  54% ] reimport | Preparing files to reimport...
+[  54% ] reimport | Preparing files to reimport...
+[  55% ] reimport | Preparing files to reimport...
+[  55% ] reimport | Preparing files to reimport...
+[  56% ] reimport | Preparing files to reimport...
+[  56% ] reimport | Preparing files to reimport...
+[  56% ] reimport | Preparing files to reimport...
+[  57% ] reimport | Preparing files to reimport...
+[  57% ] reimport | Preparing files to reimport...
+[  58% ] reimport | Preparing files to reimport...
+[  58% ] reimport | Preparing files to reimport...
+[  59% ] reimport | Preparing files to reimport...
+[  59% ] reimport | Preparing files to reimport...
+[  60% ] reimport | Preparing files to reimport...
+[  60% ] reimport | Preparing files to reimport...
+[  60% ] reimport | Preparing files to reimport...
+[  61% ] reimport | Preparing files to reimport...
+[  61% ] reimport | Preparing files to reimport...
+[  62% ] reimport | Preparing files to reimport...
+[  62% ] reimport | Preparing files to reimport...
+[  63% ] reimport | Preparing files to reimport...
+[  63% ] reimport | Preparing files to reimport...
+[  64% ] reimport | Preparing files to reimport...
+[  64% ] reimport | Preparing files to reimport...
+[  65% ] reimport | Preparing files to reimport...
+[  65% ] reimport | Preparing files to reimport...
+[  65% ] reimport | Preparing files to reimport...
+[  66% ] reimport | Preparing files to reimport...
+[  66% ] reimport | Preparing files to reimport...
+[  67% ] reimport | Preparing files to reimport...
+[  67% ] reimport | Preparing files to reimport...
+[  68% ] reimport | Preparing files to reimport...
+[  68% ] reimport | Preparing files to reimport...
+[  69% ] reimport | Preparing files to reimport...
+[  69% ] reimport | Preparing files to reimport...
+[  69% ] reimport | Preparing files to reimport...
+[  70% ] reimport | Preparing files to reimport...
+[  70% ] reimport | Preparing files to reimport...
+[  71% ] reimport | Preparing files to reimport...
+[  71% ] reimport | Preparing files to reimport...
+[  72% ] reimport | Preparing files to reimport...
+[  72% ] reimport | Preparing files to reimport...
+[  73% ] reimport | Preparing files to reimport...
+[  73% ] reimport | Preparing files to reimport...
+[  73% ] reimport | Preparing files to reimport...
+[  74% ] reimport | Preparing files to reimport...
+[  74% ] reimport | Preparing files to reimport...
+[  75% ] reimport | Preparing files to reimport...
+[  75% ] reimport | Preparing files to reimport...
+[  76% ] reimport | Preparing files to reimport...
+[  76% ] reimport | Preparing files to reimport...
+[  77% ] reimport | Preparing files to reimport...
+[  77% ] reimport | Preparing files to reimport...
+[  78% ] reimport | Preparing files to reimport...
+[  78% ] reimport | Preparing files to reimport...
+[  78% ] reimport | Preparing files to reimport...
+[  79% ] reimport | Preparing files to reimport...
+[  79% ] reimport | Preparing files to reimport...
+[  80% ] reimport | Preparing files to reimport...
+[  80% ] reimport | Preparing files to reimport...
+[  81% ] reimport | Preparing files to reimport...
+[  81% ] reimport | Preparing files to reimport...
+[  82% ] reimport | Preparing files to reimport...
+[  82% ] reimport | Preparing files to reimport...
+[  82% ] reimport | Preparing files to reimport...
+[  83% ] reimport | Preparing files to reimport...
+[  83% ] reimport | Preparing files to reimport...
+[  84% ] reimport | Preparing files to reimport...
+[  84% ] reimport | Preparing files to reimport...
+[  85% ] reimport | Preparing files to reimport...
+[  85% ] reimport | Preparing files to reimport...
+[  86% ] reimport | Preparing files to reimport...
+[  86% ] reimport | Preparing files to reimport...
+[  86% ] reimport | Preparing files to reimport...
+[  87% ] reimport | Preparing files to reimport...
+[  87% ] reimport | Preparing files to reimport...
+[  88% ] reimport | Preparing files to reimport...
+[  88% ] reimport | Preparing files to reimport...
+[  89% ] reimport | Preparing files to reimport...
+[  89% ] reimport | Preparing files to reimport...
+[  90% ] reimport | Preparing files to reimport...
+[  90% ] reimport | Preparing files to reimport...
+[  91% ] reimport | Preparing files to reimport...
+[  91% ] reimport | Preparing files to reimport...
+[  91% ] reimport | Preparing files to reimport...
+[  92% ] reimport | Preparing files to reimport...
+[  92% ] reimport | Preparing files to reimport...
+[  93% ] reimport | Preparing files to reimport...
+[  93% ] reimport | Preparing files to reimport...
+[  94% ] reimport | Preparing files to reimport...
+[  94% ] reimport | Preparing files to reimport...
+[  95% ] reimport | Preparing files to reimport...
+[  95% ] reimport | Preparing files to reimport...
+[  95% ] reimport | Preparing files to reimport...
+[  96% ] reimport | Preparing files to reimport...
+[  96% ] reimport | Preparing files to reimport...
+[  97% ] reimport | Preparing files to reimport...
+[  97% ] reimport | Preparing files to reimport...
+[  98% ] reimport | Preparing files to reimport...
+[  98% ] reimport | Preparing files to reimport...
+[  99% ] reimport | Preparing files to reimport...
+[   0% ] reimport | Executing pre-reimport operations...
+[   0% ] preload_reimporting_scene | Started Preparing scenes for reload (1 steps)
+[   0% ] preload_reimporting_scene | Analyzing scene [empty]
+[  50% ] preload_reimporting_scene | Preparation done.
+[ DONE ] preload_reimporting_scene
+
+[   0% ] reimport | randommind-vistula-short.mp3
+[   0% ] reimport | randommind-vistula-short.mp3
+[   0% ] reimport | thunder_01.ogg
+[   1% ] reimport | accept.ogg
+[   1% ] reimport | back.ogg
+[   2% ] reimport | navigation.ogg
+[   2% ] reimport | press.ogg
+[   3% ] reimport | range_tick.ogg
+[   3% ] reimport | reject.ogg
+[   4% ] reimport | randommind-vistula-short.mp3
+[   4% ] reimport | thunder_01.ogg
+[   4% ] reimport | accept.ogg
+[   5% ] reimport | back.ogg
+[   5% ] reimport | navigation.ogg
+[   6% ] reimport | press.ogg
+[   6% ] reimport | range_tick.ogg
+[   7% ] reimport | reject.ogg
+[   7% ] reimport | selection.ogg
+[   8% ] reimport | foliage_mask.png
+[   8% ] reimport | atlas.png
+[   8% ] reimport | grass-roughness.jpg
+[   9% ] reimport | grass-normal.jpg
+[   9% ] reimport | grass-albedo.jpg
+[  10% ] reimport | dirt-roughness.jpg
+[  10% ] reimport | dirt-normal.jpg
+[  11% ] reimport | dirt-albedo.jpg
+[  11% ] reimport | Wood050_1K-JPG_Roughness.jpg
+[  12% ] reimport | Wood050_1K-JPG_NormalGL.jpg
+[  12% ] reimport | detail.png
+[  13% ] reimport | bush_common_4view.png
+[  13% ] reimport | bush_common_flowers_4view.png
+[  13% ] reimport | Quercus_A_1024.png
+[  14% ] reimport | Bark_NormalTree.png
+[  14% ] reimport | Bark_NormalTree_Normal.png
+[  15% ] reimport | Flowers.png
+[  15% ] reimport | Grass.png
+[  16% ] reimport | Leaf_Pine_C.png
+[  16% ] reimport | Leaves.png
+[  17% ] reimport | face_left.svg
+[  17% ] reimport | face_right.svg
+[  17% ] reimport | face_top.svg
+[  18% ] reimport | menu.svg
+[  18% ] reimport | shoulder_left.svg
+[  19% ] reimport | shoulder_right.svg
+[  19% ] reimport | stick_left_press.svg
+[  20% ] reimport | stick_right_press.svg
+[  20% ] reimport | Metal026_1K-JPG_Color.jpg
+[  21% ] reimport | Metal026_1K-JPG_Metalness.jpg
+[  21% ] reimport | Metal026_1K-JPG_NormalGL.jpg
+[  21% ] reimport | Metal026_1K-JPG_Roughness.jpg
+[  22% ] reimport | Wood049_1K-JPG_Color.jpg
+[  22% ] reimport | Wood049_1K-JPG_NormalGL.jpg
+[  23% ] reimport | Wood049_1K-JPG_Roughness.jpg
+[  23% ] reimport | colormap.png
+[  24% ] reimport | flames-8x10.png
+[  24% ] reimport | Concrete034_1K-JPG_Color.jpg
+[  25% ] reimport | Concrete034_1K-JPG_NormalGL.jpg
+[  25% ] reimport | Concrete034_1K-JPG_Roughness.jpg
+[  26% ] reimport | Metal032_1K-JPG_NormalGL.jpg
+[  26% ] reimport | Metal032_1K-JPG_Roughness.jpg
+[  26% ] reimport | Wood050_1K-JPG_Color.jpg
+[  27% ] reimport | f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png
+[  27% ] reimport | FX_CloudAlpha03.png
+[  28% ] reimport | FX_CloudAlpha06.png
+[  28% ] reimport | broken.png
+[  29% ] reimport | cirrus.png
+[  29% ] reimport | classic.png
+[  30% ] reimport | clear.png
+[  30% ] reimport | distant_storm.png
+[  30% ] reimport | electrical_storm.png
+[  31% ] reimport | fair_cumulus.png
+[  31% ] reimport | overcast.png
+[  32% ] reimport | prestorm.png
+[  32% ] reimport | monster_truck_nitro_1_banda_parabrisas.png
+[  33% ] reimport | monster_truck_nitro_1_carroceria_color.jpg
+[  33% ] reimport | monster_truck_nitro_1_carroceria_emision.png
+[  34% ] reimport | monster_truck_nitro_1_carroceria_mr.png
+[  34% ] reimport | monster_truck_nitro_1_fibra_carbono.png
+[  34% ] reimport | monster_truck_nitro_1_placa.png
+[  35% ] reimport | visual-gear-extra.png
+[  35% ] reimport | visual-gear-p51.png
+[  36% ] reimport | visual-gear-stik.png
+[  36% ] reimport | slider_grabber.svg
+[  37% ] reimport | Leaves_NormalTree_C.png
+[  37% ] reimport | Leaves_TwistedTree_C.png
+[  38% ] reimport | Fabric001_1K-JPG_Color.jpg
+[  38% ] reimport | Fabric001_1K-JPG_NormalGL.jpg
+[  39% ] reimport | Fabric001_1K-JPG_Roughness.jpg
+[  39% ] reimport | 3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png
+[  39% ] reimport | 3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png
+[  40% ] reimport | 8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png
+[  40% ] reimport | 9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png
+[  41% ] reimport | 10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png
+[  41% ] reimport | 12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png
+[  42% ] reimport | 62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png
+[  42% ] reimport | 1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png
+[  43% ] reimport | 161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png
+[  43% ] reimport | a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png
+[  43% ] reimport | ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png
+[  44% ] reimport | b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png
+[  44% ] reimport | b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png
+[  45% ] reimport | d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png
+[  45% ] reimport | e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png
+[  46% ] reimport | ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png
+[  46% ] reimport | efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png
+[  47% ] reimport | f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png
+[  47% ] reimport | shoulder_left.svg
+[  47% ] reimport | menu.svg
+[  48% ] reimport | face_top.svg
+[  48% ] reimport | face_right.svg
+[  49% ] reimport | face_left.svg
+[  49% ] reimport | face_bottom.svg
+[  50% ] reimport | dpad_up.svg
+[  50% ] reimport | dpad_right.svg
+[  51% ] reimport | dpad_left.svg
+[  51% ] reimport | dpad_down.svg
+[  52% ] reimport | back.svg
+[  52% ] reimport | stick_press.svg
+[  52% ] reimport | shoulder_right.svg
+[  53% ] reimport | shoulder_left.svg
+[  53% ] reimport | button.svg
+[  54% ] reimport | smoke.png
+[  54% ] reimport | flame.png
+[  55% ] reimport | hx-700_hx700_carenado_mascaras_2.png
+[  55% ] reimport | hx-700_hx700_carenado_mascaras.png
+[  56% ] reimport | hx-700_hx700_botalon_mascaras.png
+[  56% ] reimport | hx-700_hx700_carenado_v7_A_2.png
+[  56% ] reimport | hx-700_hx700_carenado_v7_A.png
+[  57% ] reimport | hx-700_hx700_botalon_mascaras.png
+[  57% ] reimport | livery.svg
+[  58% ] reimport | face_bottom.svg
+[  58% ] reimport | dpad_up.svg
+[  59% ] reimport | dpad_right.svg
+[  59% ] reimport | dpad_left.svg
+[  60% ] reimport | dpad_down.svg
+[  60% ] reimport | back.svg
+[  60% ] reimport | stick_right_press.svg
+[  61% ] reimport | stick_left_press.svg
+[  61% ] reimport | shoulder_right.svg
+[  62% ] reimport | shoulder_left.svg
+[  62% ] reimport | menu.svg
+[  63% ] reimport | face_top.svg
+[  63% ] reimport | shoulder_right.svg
+[  64% ] reimport | stick_left_press.svg
+[  64% ] reimport | randommind-vistula-short.mp3
+[  65% ] reimport | thunder_01.ogg
+[  65% ] reimport | accept.ogg
+[  65% ] reimport | back.ogg
+[  66% ] reimport | navigation.ogg
+[  66% ] reimport | press.ogg
+[  67% ] reimport | range_tick.ogg
+[  67% ] reimport | reject.ogg
+[  68% ] reimport | selection.ogg
+[  68% ] reimport | foliage_mask.png
+[  69% ] reimport | atlas.png
+[  69% ] reimport | grass-roughness.jpg
+[  69% ] reimport | grass-normal.jpg
+[  70% ] reimport | grass-albedo.jpg
+[  70% ] reimport | dirt-roughness.jpg
+[  71% ] reimport | dirt-normal.jpg
+[  71% ] reimport | dirt-albedo.jpg
+[  72% ] reimport | Wood050_1K-JPG_Roughness.jpg
+[  72% ] reimport | Wood050_1K-JPG_NormalGL.jpg
+[  73% ] reimport | detail.png
+[  73% ] reimport | bush_common_4view.png
+[  73% ] reimport | bush_common_flowers_4view.png
+[  74% ] reimport | Quercus_A_1024.png
+[  74% ] reimport | Bark_NormalTree.png
+[  75% ] reimport | Bark_NormalTree_Normal.png
+[  75% ] reimport | Flowers.png
+[  76% ] reimport | Grass.png
+[  76% ] reimport | Leaf_Pine_C.png
+[  77% ] reimport | Leaves.png
+[  77% ] reimport | face_left.svg
+[  78% ] reimport | face_right.svg
+[  78% ] reimport | face_top.svg
+[  78% ] reimport | menu.svg
+[  79% ] reimport | shoulder_left.svg
+[  79% ] reimport | shoulder_right.svg
+[  80% ] reimport | stick_left_press.svg
+[  80% ] reimport | stick_right_press.svg
+[  81% ] reimport | Metal026_1K-JPG_Color.jpg
+[  81% ] reimport | Metal026_1K-JPG_Metalness.jpg
+[  82% ] reimport | Metal026_1K-JPG_NormalGL.jpg
+[  82% ] reimport | Metal026_1K-JPG_Roughness.jpg
+[  82% ] reimport | Wood049_1K-JPG_Color.jpg
+[  83% ] reimport | Wood049_1K-JPG_NormalGL.jpg
+[  83% ] reimport | Wood049_1K-JPG_Roughness.jpg
+[  84% ] reimport | Wheat_4.obj
+WARNING: OBJ: Ambient light for material 'Yellow' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+[  84% ] reimport | Corn_4.obj
+WARNING: OBJ: Ambient light for material 'DarkGreen2' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Green' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Yellow' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+[  85% ] reimport | reed.obj
+WARNING: OBJ: Ambient light for material 'Material.011' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Material.014' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Material.015' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Material.016' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+[  85% ] reimport | hx-700.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  86% ] reimport | MT8_Bisonte.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  86% ] reimport | campfire-pit.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  86% ] reimport | hx-700.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  87% ] reimport | avanti_s.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  87% ] reimport | oak_lod0.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  88% ] reimport | lamp-head.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  88% ] reimport | monster_truck_nitro_1.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  89% ] reimport | Bush_Common_Flowers.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  89% ] reimport | timber.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  90% ] reimport | Clover_1.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  90% ] reimport | CommonTree_1.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  91% ] reimport | CommonTree_2.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  91% ] reimport | CommonTree_3.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  91% ] reimport | Pine_3.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  92% ] reimport | Pine_2.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  92% ] reimport | Pine_1.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  93% ] reimport | crossover.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  93% ] reimport | hatch.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  94% ] reimport | pilot.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  94% ] reimport | sedan.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  95% ] reimport | sitting.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  95% ] reimport | standing.glb
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  95% ] reimport | Grass_Wispy_Tall.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  96% ] reimport | Grass_Common_Tall.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  96% ] reimport | Grass_Common_Short.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  97% ] reimport | Flower_4_Group.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  97% ] reimport | Flower_3_Group.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  98% ] reimport | Bush_Common.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  98% ] reimport | Fern_1.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  99% ] reimport | CommonTree_4.gltf
+[   0% ] import | Started Import Scene (104 steps)
+[   0% ] import | Importing Scene...
+[   1% ] import | Running Custom Script...
+[  99% ] import | Saving...
+[ DONE ] import
+
+[  99% ] reimport | Finalizing Asset Import...
+[ DONE ] reimport
+
+[   0% ] reimport | Started (Re)Importing Assets (222 steps)
+[   0% ] reimport | Executing post-reimport operations...
+[ DONE ] reimport
+
+[   0% ] loading_editor_layout | Started Loading editor (5 steps)
+[   0% ] loading_editor_layout | Loading editor layout...
+[  16% ] loading_editor_layout | Loading docks...
+[ DONE ] loading_editor_layout
+

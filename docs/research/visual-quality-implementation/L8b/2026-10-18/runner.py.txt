@@ -1,0 +1,32 @@
+from pathlib import Path
+import subprocess, json, hashlib, time
+
+ROOT = Path(__file__).resolve().parents[2]
+PROJECT = ROOT / 'tmp/tree-completion/impostor-prototype'
+OUT = ROOT / 'tmp/tree-completion/impostor-evaluation'
+OUT.mkdir(exist_ok=False)
+ENGINE = ROOT / '.tools/Godot_v4.7.2-stable_win64.exe'
+commands = []
+for name, args in [
+    ('bake', ['--script', 'res://addons/octahedral_impostor_lod/tools/octa_bake_cli.gd', '--',
+              '--scene=res://tree.tscn', '--nodes=Tree', '--preset=fast', '--hemisphere=false',
+              '--compression=lossless', '--material-maps=false', '--emission=false', '--fade=none',
+              '--save-scene', '--out=res://baked']),
+    ('evaluate', ['--script', 'res://evaluate.gd', '--', f'--out={OUT / "views"}']),
+]:
+    command = [str(ENGINE), '--path', str(PROJECT), '--audio-driver', 'Dummy', *args]
+    start = time.monotonic()
+    with (OUT / f'{name}.log').open('w') as log:
+        result = subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, timeout=300)
+    commands.append({'name': name, 'command': command, 'exit_code': result.returncode,
+                     'elapsed_seconds': time.monotonic() - start})
+    (OUT / 'commands.json').write_text(json.dumps(commands, indent=2) + '\n')
+    print(name, result.returncode, flush=True)
+    if result.returncode or 'ERROR:' in (OUT / f'{name}.log').read_text():
+        raise RuntimeError(f'{name} failed; retain log and reject this prototype')
+report = json.loads((OUT / 'views/report.json').read_text())
+assert report['complete'] and len(report['views']) == 48
+for view in report['views']:
+    for role in ['mesh', 'impostor']:
+        assert hashlib.sha256((OUT / 'views' / f'{view["id"]}-{role}.png').read_bytes()).hexdigest() == view[f'{role}_sha256']
+print('48 paired views verified', flush=True)

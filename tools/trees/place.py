@@ -214,12 +214,15 @@ def generate_far(field: dict[str, Any]) -> tuple[list[list[float | int]], list[d
         center = _make_cluster_center(rng, sector, pilot_north, strips, previous_centers)
         cluster_points = _make_far_cluster(rng, center, pilot_north, strips)
         previous_centers.append(center)
+        start_index = len(far_points)
         far_points.extend(cluster_points)
         cluster_metadata.append({
             "sector": sector,
             "north_m": center[0],
             "east_m": center[1],
             "count": len(cluster_points),
+            "start_index": start_index,
+            "end_index": start_index + len(cluster_points),
             "radius_m": FAR_CLUSTER_RADIUS_M,
         })
     return far_points, cluster_metadata
@@ -448,10 +451,17 @@ def generate_habitat_far(
             "semi_major_m": semi_major,
             "semi_minor_m": semi_minor,
             "orientation_deg": round(math.degrees(orientation), 3),
+            "orientation_rad": orientation,
+            # Keep the unrounded outline inputs in the manifest so CPU diagnostics
+            # can measure the actual generated habitat boundary deterministically.
+            "outline_phase_rad": phase,
+            "notch_angle_rad": notch_angle,
+            "notch_width_rad": notch_width,
             "outer_radius_m": round(outer_radius, 3),
             "notch_angle_deg": round(math.degrees(notch_angle), 3),
             "notch_width_deg": round(math.degrees(notch_width), 3),
             "notch_depth": round(notch_depth, 4),
+            "outline_notch_depth": notch_depth,
             "bounds_m": _point_bounds(patch_points),
         })
 

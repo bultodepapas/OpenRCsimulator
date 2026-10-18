@@ -443,3 +443,13 @@ Enable lossless mip chains only for the two shared bark maps; explicitly renorma
 ### 2026-10-18 — Reuse a licensed mature oak with a static material fallback (L6a-R1)
 
 Replace one existing mature alias selection with lauris71's downloaded CC BY-SA 3.0 oak LOD0. Preserve the source archive and atlas, consolidate only the supplied parts, and export the separate notice. Translate the legacy material with reviewed scalar roughness 1; retain Godot's imported BLEND/depth-prepass material and its documented specular limitation. The existing wind gate remains closed for this unsupported alpha mode. Keep the same 17 close trees and all placement records, while deriving the wider collision envelope from the new source and recording a new world identity. Supplier LOD1/LOD2 remain unqualified. [Conversion, native comparison and limits](docs/research/visual-quality-implementation/L6a-R1/mature-oak/README.md).
+
+### 2026-10-18 — Derive foliage identity from downloaded material assignments (L6b-R2)
+
+Bake a separate linear-data mask from the retained glTF leaf/bark material names. Replace the atlas RGB heuristic and apply restrained world-space patch and individual variation only to foliage. Keep the original color atlas, UVs, alpha silhouette and physical tree identities. Align the derived mask to the retained atlas only after a 0.995 silhouette-IoU gate; preserve identical alpha through imported mip levels. No hand-painted texture or new tree geometry is introduced. Retain the exact aligned-bake manifest and runtime hashes in the [material proof](docs/research/visual-quality-implementation/L6b-R2/foliage-mask/README.md).
+
+### 2026-10-18 — Bound woodland margins and reject the tested impostor candidate (L7-R1/L8b)
+
+Reuse the existing downloaded shrub atlas and grass mesh for four default-field margins: 48 shrub cards and 12 grass clumps add 1,956 source triangles, bringing complete scenery to 649,919 under the existing 650,000 ceiling. Keep them decorative, with generated full-envelope exclusions, deterministic quality subsets and a guard against altered field/scenery/lake inputs. Do not turn these margins into physical hedge groups or describe scaled mature forms as new saplings.
+
+Keep current field cards after testing the pinned hdrsniped octahedral baker outside production. The fast full-sphere candidate fails its appearance gate and adds 42.331 MiB of decoded images for one source. This rejects the measured configuration, not all possible impostors; larger atlases and new density are not justified automatically. [Completion evidence and limits](docs/research/visual-quality-implementation/L6c/tree-completion/README.md).

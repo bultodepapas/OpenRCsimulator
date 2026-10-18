@@ -3,12 +3,19 @@ extends SceneTree
 
 const IDS: Array[String] = ["CommonTree_1", "CommonTree_3", "Pine_1"]
 const SLOTS: Array[Vector2i] = [Vector2i(0, 0), Vector2i(512, 0), Vector2i(0, 512)]
+const BARK_MATERIAL_NAME: String = "Bark_NormalTree"
+const FOLIAGE_MATERIAL_NAMES: Dictionary = {
+	"CommonTree_1": "Leaves_NormalTree",
+	"CommonTree_3": "Leaves_NormalTree",
+	"Pine_1": "Leaves_Pine",
+}
 var output: String = ""
 var viewport: SubViewport
 var stage: Node3D
 var camera: Camera3D
 var report: Dictionary = {"species": []}
 var bad: bool = false
+var alpha_texture_cache: Dictionary = {}
 
 
 func _model(path: String) -> Node3D:
@@ -69,6 +76,7 @@ func _bounds(model: Node3D) -> AABB:
 
 func _capture(id: String, variant: String, frame: float) -> Image:
 	var original: bool = variant.begins_with("source")
+	var foliage_mask: bool = variant == "adapted_foliage_mask"
 	var model: Node3D = _model("res://trees/%s%s.glb" % [id, "-reference" if original else ""])
 	if model == null:
 		bad = true
@@ -88,8 +96,22 @@ func _capture(id: String, variant: String, frame: float) -> Image:
 	for node: MeshInstance3D in _meshes(model):
 		node.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		for surface: int in range(node.mesh.get_surface_count()):
-			var material: StandardMaterial3D = node.get_active_material(surface).duplicate(true) as StandardMaterial3D
-			if variant.ends_with("albedo"):
+			var source_material: StandardMaterial3D = node.get_active_material(surface) as StandardMaterial3D
+			if source_material == null:
+				bad = true
+				continue
+			var material: StandardMaterial3D = source_material.duplicate(true) as StandardMaterial3D
+			if foliage_mask:
+				var expected_foliage_name: String = str(FOLIAGE_MATERIAL_NAMES.get(id, ""))
+				var names: Array[String] = [source_material.resource_name, node.mesh.surface_get_name(surface)]
+				var is_foliage: bool = names.has(expected_foliage_name)
+				var is_bark: bool = names.has(BARK_MATERIAL_NAME)
+				if expected_foliage_name.is_empty() or is_foliage == is_bark:
+					bad = true
+					printerr("%s surface %d has no unique source foliage/bark material identity: %s" % [id, surface, names])
+					continue
+				material = _identity_mask_material(source_material, is_foliage)
+			elif variant.ends_with("albedo"):
 				material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 			node.set_surface_override_material(surface, material)
 	camera.size = frame
@@ -103,6 +125,41 @@ func _capture(id: String, variant: String, frame: float) -> Image:
 		bad = true
 	model.free()
 	return picture
+
+
+func _identity_mask_material(source: StandardMaterial3D, foliage: bool) -> StandardMaterial3D:
+	var material: StandardMaterial3D = source.duplicate(true) as StandardMaterial3D
+	var source_texture: Texture2D = source.albedo_texture
+	if source_texture != null:
+		material.albedo_texture = _alpha_only_texture(source_texture)
+	elif foliage:
+		bad = true
+		printerr("Foliage identity mask requires the original alpha-bearing albedo texture")
+		return material
+	material.albedo_color = Color(1.0 if foliage else 0.0, 1.0 if foliage else 0.0, 1.0 if foliage else 0.0, source.albedo_color.a)
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.vertex_color_use_as_albedo = false
+	return material
+
+
+func _alpha_only_texture(source: Texture2D) -> Texture2D:
+	var key: int = source.get_instance_id()
+	if alpha_texture_cache.has(key):
+		return alpha_texture_cache[key] as Texture2D
+	var image: Image = source.get_image()
+	if image == null or image.is_empty():
+		bad = true
+		printerr("Cannot read source albedo alpha for material identity mask")
+		return null
+	var alpha_image: Image = Image.create(image.get_width(), image.get_height(), false, Image.FORMAT_RGBA8)
+	for y: int in image.get_height():
+		for x: int in image.get_width():
+			alpha_image.set_pixel(x, y, Color(1.0, 1.0, 1.0, image.get_pixel(x, y).a))
+	if image.has_mipmaps():
+		alpha_image.generate_mipmaps()
+	var texture: ImageTexture = ImageTexture.create_from_image(alpha_image)
+	alpha_texture_cache[key] = texture
+	return texture
 
 
 func _run() -> void:
@@ -151,10 +208,12 @@ func _run() -> void:
 		var bounds: AABB = _bounds(model)
 		var frame: float = snappedf(maxf(1.0, bounds.size.x) * 1.125 + 0.000001, 0.000001)
 		model.free()
-		for variant: String in ["source_lit", "source_albedo", "adapted_lit", "adapted_albedo"]:
+		for variant: String in ["source_lit", "source_albedo", "adapted_lit", "adapted_albedo", "adapted_foliage_mask"]:
 			await _capture(id, variant, frame)
 		report.species.append({"id": id, 
 			"frame_size_m": frame, "pivot_y_m": 0.5,
+			"bark_material_name": BARK_MATERIAL_NAME,
+			"foliage_material_name": FOLIAGE_MATERIAL_NAMES[id],
 			"atlas_rect_px": [SLOTS[index].x, SLOTS[index].y, 512, 512]})
 	report["renderer"] = RenderingServer.get_current_rendering_method()
 	report["adapter"] = RenderingServer.get_video_adapter_name()

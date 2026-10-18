@@ -1,0 +1,619 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"atlas_file_bytes": 3482964,
+	"atlas_sha256": "37511a0209c9745b6ba8a079dd71a14d33100e3ce1389e1294195d98af667205",
+	"builtin_quality": {
+		"bad_pct": 24.751530874082263,
+		"cards": 1,
+		"good": false,
+		"iou": 0.9232454894048702,
+		"name": "TreeComparison",
+		"suggestion": "Re-bake with Complex shapes > Split parts on and Quality = Ultra.",
+		"worst_iou": 0.8712871287128713
+	},
+	"complete": true,
+	"godot": "4.7.2-stable (official)",
+	"grid_size": 10,
+	"hemisphere": false,
+	"quality": 2,
+	"scope": "Static same-source mesh/impostor inspection at 24 azimuth/elevation pairs and two sun rotations. Upstream IoU/error metrics are screening heuristics, not pilot acceptance. No runtime integration or performance claim.",
+	"textures": [
+		{
+			"channel": "albedo",
+			"compressed": false,
+			"format": 5,
+			"height": 2040,
+			"image_data_bytes": 22193872,
+			"mipmaps": 10,
+			"width": 2040
+		},
+		{
+			"channel": "normal_depth",
+			"compressed": false,
+			"format": 5,
+			"height": 2040,
+			"image_data_bytes": 22193872,
+			"mipmaps": 10,
+			"width": 2040
+		}
+	],
+	"views": [
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": -70,
+			"id": "sun30-el-70-az0",
+			"impostor_sha256": "f8ed08779559ba0ecc3801543aa93eabfcb94c3f0700ac3fee79f92d28fc2ca9",
+			"mesh_sha256": "74e1a9e921c7d13ef1449ec39b8af5337b6d3e4b4258a901492d684f3abeaf94",
+			"metrics": {
+				"bad": 0.2828488372093023,
+				"iou": 0.8833333333333333
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": -70,
+			"id": "sun30-el-70-az90",
+			"impostor_sha256": "3a4064a29c19b541475a6b792350ec8692f4f04a9f10eac28e01a34046d51f71",
+			"mesh_sha256": "d6c44f373c4069a9f8a9f5a822173fc1ec11af76bdea744d689901373f6a449e",
+			"metrics": {
+				"bad": 0.28370278755589384,
+				"iou": 0.8862144420131292
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": -70,
+			"id": "sun30-el-70-az180",
+			"impostor_sha256": "a6e005f432dd118c5bdc1544b03efdd9987cbd19498eb213171bb6d02026f52a",
+			"mesh_sha256": "e5371a48999670c33b8a491f8b89cc7b0339a995403d69816b86c1f0b5b044fb",
+			"metrics": {
+				"bad": 0.4237455551165547,
+				"iou": 0.8834452785460293
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": -70,
+			"id": "sun30-el-70-az270",
+			"impostor_sha256": "0152eafff2e0cc1cea9338bfc501640716362975c3b7346ef94e2948cd71669b",
+			"mesh_sha256": "c3fa4c6374e7852ad5a2c080609d3f39895fc52f7ac4170f53c8c059fc8bdb91",
+			"metrics": {
+				"bad": 0.4003729603729604,
+				"iou": 0.8894172494172494
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": -20,
+			"id": "sun30-el-20-az0",
+			"impostor_sha256": "d4b640c8c50a9ffac413bb387afbbdd06a6bdba345f43cc934d304643be96430",
+			"mesh_sha256": "2370be9c1bf49d4f47b5698677b1642df4ccf1cadb993f1a5373742db0f3d5a0",
+			"metrics": {
+				"bad": 0.09988623435722412,
+				"iou": 0.9444823663253697
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": -20,
+			"id": "sun30-el-20-az90",
+			"impostor_sha256": "528d455545306966455c70ad28cbc512a2cf07602f3093d17eebeba7d74f156e",
+			"mesh_sha256": "8fafa1aa6189b428501c09e54b63831a96db08d06e94d66651c7b06f537879e5",
+			"metrics": {
+				"bad": 0.11068761667703796,
+				"iou": 0.9430616054760423
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": -20,
+			"id": "sun30-el-20-az180",
+			"impostor_sha256": "b4eafb3691511518fa755124172a2befd3848816ada0810a7cfd322c0bfa6bfc",
+			"mesh_sha256": "e8bbd61a59db99a5218fd15bc6b8e1d7d847f6c8586402826a9d7a9902a17750",
+			"metrics": {
+				"bad": 0.391865229928669,
+				"iou": 0.9405827894976476
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": -20,
+			"id": "sun30-el-20-az270",
+			"impostor_sha256": "88be3ea6d2d68abd7d16c98d767bc8cf0d63fa5919d774349d44c0312dc86284",
+			"mesh_sha256": "395282bd59a6b1a622fad9c7e0b87b5195d622d9858bfb78c3ca8a5de6b6461e",
+			"metrics": {
+				"bad": 0.21701454298847112,
+				"iou": 0.9410745233968805
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 0,
+			"id": "sun30-el0-az0",
+			"impostor_sha256": "4321c43c27fab466dd2f9e1c330551cf08c001b577108bd1c15f368d60d44b5f",
+			"mesh_sha256": "a7416ce18c65faf1616790e7d5e95c5f1e727095811858b0cd89ca4c3ff91a7a",
+			"metrics": {
+				"bad": 0.1088929219600726,
+				"iou": 0.9390925589836661
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 0,
+			"id": "sun30-el0-az90",
+			"impostor_sha256": "e6f900eabcad88aa20bd2362bb2eb3531f67510677aa9926f256637fd7491736",
+			"mesh_sha256": "a4f3c2abd8282bfa6c0d8f683d07ce069ca310533b0b8e7491a13637b1c3d912",
+			"metrics": {
+				"bad": 0.09782128661857795,
+				"iou": 0.9464890328279111
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 0,
+			"id": "sun30-el0-az180",
+			"impostor_sha256": "183a59aee6d16cf450190adfd85ecf755505eeaf0dd935a9653a394b7c41af57",
+			"mesh_sha256": "c63776e07773f0cfb3ed299681878af577ba82835a2359e129ff7e3c4f6bf051",
+			"metrics": {
+				"bad": 0.3153523974581167,
+				"iou": 0.9492345465049105
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 0,
+			"id": "sun30-el0-az270",
+			"impostor_sha256": "d199edea3f269e3fe13b31819a3586da85e78b4acd9856f1fc15295ccefd9410",
+			"mesh_sha256": "4f41ad0da552b256ec27c11796080ede279a1e7f75a53dcc1cdeed961b4797d2",
+			"metrics": {
+				"bad": 0.13478546889847234,
+				"iou": 0.953439076090929
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 25,
+			"id": "sun30-el25-az0",
+			"impostor_sha256": "a11bfc8c0d405145795d68222f7037cec600d8a9079c0eae9f0652460cfbb98b",
+			"mesh_sha256": "e1d6713039d066a7d9c0203d568c594fa4a3c8f9eb47249de7ac78addae5311b",
+			"metrics": {
+				"bad": 0.32931309350523325,
+				"iou": 0.9249324183822001
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 25,
+			"id": "sun30-el25-az90",
+			"impostor_sha256": "bcb97f0ad2c446797b6b053226e7b50138d02bfbf374a49feaf42dede325e652",
+			"mesh_sha256": "d20df129db4ac99346e79eca7793caae1d549fe7a01425094b3c2c24565137b8",
+			"metrics": {
+				"bad": 0.15955434097120033,
+				"iou": 0.9410693013804219
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 25,
+			"id": "sun30-el25-az180",
+			"impostor_sha256": "fbc6f74c56b00ce352f14ed38f26ddff6b384e029c207257ad62bd0b9e97736f",
+			"mesh_sha256": "fa588e383d1acced91c1958bb9cc6ad9761077a37651bf3579cc70ba34cdb698",
+			"metrics": {
+				"bad": 0.19708478751796346,
+				"iou": 0.9463491411756655
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 25,
+			"id": "sun30-el25-az270",
+			"impostor_sha256": "fe5afea7998aca4d10a6cc96d10932b8330cf2cabb7e6fef5afd49ba59a1f476",
+			"mesh_sha256": "be004eb5e586386b5ca355c0c9a0c59625fa7a332eb5d661e37a8833b7e4dd67",
+			"metrics": {
+				"bad": 0.11867314841292537,
+				"iou": 0.9290105804975693
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 60,
+			"id": "sun30-el60-az0",
+			"impostor_sha256": "62f51993f278b11ad90f3330cd8ff4ef52f3d143338923546a9b736253dbab2e",
+			"mesh_sha256": "8c4755a7f79398f73657a51cd7ed1334466428b77192e8d6ff6ecba0862826d5",
+			"metrics": {
+				"bad": 0.6517376763123455,
+				"iou": 0.9142067762105569
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 60,
+			"id": "sun30-el60-az90",
+			"impostor_sha256": "b34ef48185641a0e5346f825e755daa73050eef1dcc181af3ed73c24e4743d43",
+			"mesh_sha256": "3f735cccfefba846eda94a2b25c6788f6cca2f2edcba7328f99e96e745c0e428",
+			"metrics": {
+				"bad": 0.4299268312293962,
+				"iou": 0.9220069148508483
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 60,
+			"id": "sun30-el60-az180",
+			"impostor_sha256": "69ef152971fad5c85571543978dc96d0693ebf52b708b2ba1e273e7822165a4d",
+			"mesh_sha256": "9aa9149d0e5a69f67d87b5ff3e76408ef90561b8645c7db66afb6ee71133242b",
+			"metrics": {
+				"bad": 0.12527250077857366,
+				"iou": 0.9123326066645905
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 60,
+			"id": "sun30-el60-az270",
+			"impostor_sha256": "82429af97af4e88026b70f18039dfbafe90fce0818526552b594088e52f85b9f",
+			"mesh_sha256": "cd76d2539614e36869d1be305f70bd16d1eab5dfb029ccda48cb52e25d1e4fe8",
+			"metrics": {
+				"bad": 0.22779043280182232,
+				"iou": 0.9128321943811694
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 85,
+			"id": "sun30-el85-az0",
+			"impostor_sha256": "57f328962828bb810eb5c28513b62d8025ed900f9db1d737b799512438375d3b",
+			"mesh_sha256": "d5667b65b2e33582bbcdb0e078e0c773e703ff4de59836a56fb6c15e43974dae",
+			"metrics": {
+				"bad": 0.4729650920603182,
+				"iou": 0.9343497458968592
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 85,
+			"id": "sun30-el85-az90",
+			"impostor_sha256": "ceafa1fa1318ab75760035080e89278977c825c87156b80866e3e23c1a81ddde",
+			"mesh_sha256": "e870f5498e1c9dd190b38d299bd668a6d2e605f0bb5e10458b4adf75feda0f81",
+			"metrics": {
+				"bad": 0.43562119895742835,
+				"iou": 0.9397046046915726
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 85,
+			"id": "sun30-el85-az180",
+			"impostor_sha256": "4d3c0c98175dc31ba0650996bf46749466abecc97b36ff34db5fadfcb86928c3",
+			"mesh_sha256": "112753cc4e58688ffe1c96ec0d092c03227dc1aae669e50074f845c20e304212",
+			"metrics": {
+				"bad": 0.3555303756646038,
+				"iou": 0.9430837618757082
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 85,
+			"id": "sun30-el85-az270",
+			"impostor_sha256": "23eee8b1571e95d270074e5caac8d2f5b72dca36d5c14535ca60d35479edec33",
+			"mesh_sha256": "6da44c920acca23b858ebf753a60c8c84f331d3954724fadb2bb25b40a9535a0",
+			"metrics": {
+				"bad": 0.3894922960343521,
+				"iou": 0.9362633661699082
+			},
+			"sun_azimuth_rotation_deg": 30
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": -70,
+			"id": "sun150-el-70-az0",
+			"impostor_sha256": "df9f3894c5e8fe873565df03b4c17643ab323df64fa32b34f290d5b47c4b714f",
+			"mesh_sha256": "24eda8360027099e40b2d4a443f0527cf081db5c2a7a5b47d69db2323888b110",
+			"metrics": {
+				"bad": 0.4702519379844961,
+				"iou": 0.8833333333333333
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": -70,
+			"id": "sun150-el-70-az90",
+			"impostor_sha256": "0c9ec4d690bc7677c1e632142376af15ebd227c5660480128c9de1b0c6a99e6a",
+			"mesh_sha256": "60a2e97d03c7ced63566bf81a1763fec17c4ff66a9a83e7daa2d78bb3fa9cabb",
+			"metrics": {
+				"bad": 0.31528874512415567,
+				"iou": 0.8862144420131292
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": -70,
+			"id": "sun150-el-70-az180",
+			"impostor_sha256": "4a8ac8693ad19a822d58dbea952e150a55f7adc2e61bcab3e63a7c01410e8547",
+			"mesh_sha256": "001cc174e8e6711ef3b4d00655fe965149a9b84ac68b169ace9f728cf0bcc1f1",
+			"metrics": {
+				"bad": 0.31519162386408534,
+				"iou": 0.8834452785460293
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": -70,
+			"id": "sun150-el-70-az270",
+			"impostor_sha256": "3dd73d66ddb6c104594ee29da7690665246aa5a3f43bc7d5f28447c4cfa48d4a",
+			"mesh_sha256": "c1899df6883871109a018ecd9a85c2f4e80d979a67869ae4006533f514eed147",
+			"metrics": {
+				"bad": 0.41762237762237764,
+				"iou": 0.8894172494172494
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": -20,
+			"id": "sun150-el-20-az0",
+			"impostor_sha256": "dcbf614c1661b8038b48674b7a290d300646637f04bb77e0a2b85973a76555ca",
+			"mesh_sha256": "c9a7e49c8aceb4c010e392371c5e5af98a393aaede3ba8ab678cd04decb25564",
+			"metrics": {
+				"bad": 0.3657186196435343,
+				"iou": 0.9444823663253697
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": -20,
+			"id": "sun150-el-20-az90",
+			"impostor_sha256": "18f95725ee3fced7114880790d1ef63265450701bc32bb567d29688f09662e32",
+			"mesh_sha256": "c84fbf63ae5f4c0e24c438f97bce22a3f111de8ead34f2b01e15307e46b70ebd",
+			"metrics": {
+				"bad": 0.11068761667703796,
+				"iou": 0.9430616054760423
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": -20,
+			"id": "sun150-el-20-az180",
+			"impostor_sha256": "ca121f1249a4159671f3b4da27df1eb94e9fd503e1b029807875f457fb21fac9",
+			"mesh_sha256": "0e1ff34c0a39eba36dac775cf9f100f6ce6997064a85c82f8996ae2190aedaa6",
+			"metrics": {
+				"bad": 0.10616178479283654,
+				"iou": 0.9405827894976476
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": -20,
+			"id": "sun150-el-20-az270",
+			"impostor_sha256": "6c3e387b48ae16f3dd51e1fe75fa118753df3d4ca159e3a2bf492e36be4c38bf",
+			"mesh_sha256": "c4eccc235c06cd6ae441f1abc329be9831b34cc6c17190a941f1b3a664455247",
+			"metrics": {
+				"bad": 0.24188079270590007,
+				"iou": 0.9410745233968805
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 0,
+			"id": "sun150-el0-az0",
+			"impostor_sha256": "82f8840587d42f4ed009ff6f41391bf2a1ec6004b1ce21e06c5f911948d2e1c6",
+			"mesh_sha256": "21fb0fac821be0727655e55d28ce999af1c75dc5ff4b56bc7a9085179ae6a7a3",
+			"metrics": {
+				"bad": 0.3030852994555354,
+				"iou": 0.9390925589836661
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 0,
+			"id": "sun150-el0-az90",
+			"impostor_sha256": "1b41bb352d023a4dcb15d36c47deda26aebf8a98b6a576c31a6d6fb64e4d923c",
+			"mesh_sha256": "20d4fea5611787dab40387d0dfd84e1e7604bec8921f937fd5aaa9e756579035",
+			"metrics": {
+				"bad": 0.10282643898130428,
+				"iou": 0.9464890328279111
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 0,
+			"id": "sun150-el0-az180",
+			"impostor_sha256": "f74132d144bc5a52fed8afe0eaed49d3b8e2854034f03f7bc85f605e4f759cac",
+			"mesh_sha256": "94c28cb8ca07f6e7f791072b6c608deaa09ffa8ec6e0b786aec86bb948412ac2",
+			"metrics": {
+				"bad": 0.10275852108607741,
+				"iou": 0.9492345465049105
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 0,
+			"id": "sun150-el0-az270",
+			"impostor_sha256": "c81daf6dadbbec474166a1e42cf01bdfa094d240e5614d4da7a22221d0db64c1",
+			"mesh_sha256": "7a3a07089824a4c25a1160d8c7edbb701a367b050c5110b4d239e99c79c8a313",
+			"metrics": {
+				"bad": 0.15474015057378845,
+				"iou": 0.953439076090929
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 25,
+			"id": "sun150-el25-az0",
+			"impostor_sha256": "70a980d68b703f63fa8183fec4a17fb5af939b8d3a38149e55d73ebf1ef7141c",
+			"mesh_sha256": "cfbb9af64a5765a8bc0987388b6de17e0352f65bd159797cd807b7a553b6f94b",
+			"metrics": {
+				"bad": 0.1964372357385458,
+				"iou": 0.9249324183822001
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 25,
+			"id": "sun150-el25-az90",
+			"impostor_sha256": "27bec5b67af60c92ba21b17bd55789159078fc551005a040e84c34efd2288541",
+			"mesh_sha256": "b64603b07140043bde58d57fa352031a894984380b72edc1f329898cacee475f",
+			"metrics": {
+				"bad": 0.197883820334945,
+				"iou": 0.9410693013804219
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 25,
+			"id": "sun150-el25-az180",
+			"impostor_sha256": "b9440afe3087b615b3e0a1c7dbd0eb75a9e54f4333295173be69fa1c9e5f300c",
+			"mesh_sha256": "151d85d99f725cf1f61548c63d2d3191ea7272370111cf514645af4a77c55782",
+			"metrics": {
+				"bad": 0.32991172243892425,
+				"iou": 0.9463491411756655
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 25,
+			"id": "sun150-el25-az270",
+			"impostor_sha256": "139d58a369da331e4466667475f734a3ee7d7079db7acb520f896f1dc32dec92",
+			"mesh_sha256": "bc99e06cf7a17ce6cdf07af1fc1ee0a6d7738074b3d75dc3559cb55760a84f51",
+			"metrics": {
+				"bad": 0.13204175007148986,
+				"iou": 0.9290105804975693
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 60,
+			"id": "sun150-el60-az0",
+			"impostor_sha256": "75940e2e17e0295bff88c4728e8a043ce70454767250cf8c4dcfa7b09617de7d",
+			"mesh_sha256": "ccff687dacdc4b426ad53032f5865f326511c780c9d5277567ed10da1b370d72",
+			"metrics": {
+				"bad": 0.13319761523920315,
+				"iou": 0.9142067762105569
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 60,
+			"id": "sun150-el60-az90",
+			"impostor_sha256": "fa57dcd0a0a934d37ee47e952b6dd2c49da67f20d9ea7f12b95671e5603bdfc5",
+			"mesh_sha256": "a3e883d78b9f04f704f879af8fdd10b9ddd0460e539ee34b8d9fa2ba4462af7a",
+			"metrics": {
+				"bad": 0.5754603200128648,
+				"iou": 0.9220069148508483
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 60,
+			"id": "sun150-el60-az180",
+			"impostor_sha256": "be799ee0f9b018825aed2747c4b5b9f47f265e69b685dd640212f5631819db07",
+			"mesh_sha256": "ecaa2a0a99f775a38725e2e5cbb465693f2267f7f92ba83e97556cdd506c6436",
+			"metrics": {
+				"bad": 0.6405325443786982,
+				"iou": 0.9123326066645905
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 60,
+			"id": "sun150-el60-az270",
+			"impostor_sha256": "13429eb53bc263b75d09be1ccef6b7475944b682de429d878cbc5df59eae2e86",
+			"mesh_sha256": "eabce0c4dc4968bbefed0fb5d1be43e4800935b87643e52545ff5910f7d13ffd",
+			"metrics": {
+				"bad": 0.2164009111617312,
+				"iou": 0.9128321943811694
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 0,
+			"elevation_deg": 85,
+			"id": "sun150-el85-az0",
+			"impostor_sha256": "e9cd8077a2e37619b7e07c8a0c8edacf2b8a8efdb93115b3b4abe80d10601718",
+			"mesh_sha256": "7e4ac1b5e70f3d757cf2775f259089647867bdaa642634129a601a4d11827459",
+			"metrics": {
+				"bad": 0.4371407148212947,
+				"iou": 0.9343497458968592
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 90,
+			"elevation_deg": 85,
+			"id": "sun150-el85-az90",
+			"impostor_sha256": "f0eeaef2b1f2c742b462945416aae2c09ab052314d04a2630a41545d00775873",
+			"mesh_sha256": "70b246ce6e6c044d65057384d17875519699d5dedf745286641945dc24204be3",
+			"metrics": {
+				"bad": 0.5244135534317984,
+				"iou": 0.9397046046915726
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 180,
+			"elevation_deg": 85,
+			"id": "sun150-el85-az180",
+			"impostor_sha256": "9bbb754d5fa173e5d76c60000da07df8677f73b4885383797b52b536b799736e",
+			"mesh_sha256": "aadee10b9cdaa6f0658fa7d35ed1cb46a1e2e0b90386902d09e10c754e03cfd4",
+			"metrics": {
+				"bad": 0.5321188878235859,
+				"iou": 0.9430837618757082
+			},
+			"sun_azimuth_rotation_deg": 150
+		},
+		{
+			"azimuth_deg": 270,
+			"elevation_deg": 85,
+			"id": "sun150-el85-az270",
+			"impostor_sha256": "895a6222adc9acfecdc9f3e0cab780522bf1280a2243ab4865cc1c2c37aab89a",
+			"mesh_sha256": "b4e924c4a26a0974fac523eea34080fb9756d3cc849a3d25a7cf3cc061b930b4",
+			"metrics": {
+				"bad": 0.4416940304790772,
+				"iou": 0.9362633661699082
+			},
+			"sun_azimuth_rotation_deg": 150
+		}
+	]
+}

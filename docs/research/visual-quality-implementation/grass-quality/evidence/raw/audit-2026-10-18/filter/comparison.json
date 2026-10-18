@@ -1,0 +1,69 @@
+{
+  "format": "openrc-grass-filter-comparison v1",
+  "complete": true,
+  "passed": true,
+  "independent_native_repeat_exact": true,
+  "views": [
+    {
+      "height_m": 0.55,
+      "spatial_linear_rgb_rms": {
+        "filtered": 0.010127884104051842,
+        "raw": 0.03767540516592066,
+        "reference8": 0.004146146948679868,
+        "reference16": 0.0,
+        "repeat": 0.010127884104051842
+      },
+      "temporal_residual_error_rms": {
+        "filtered": 0.01324676587937015,
+        "raw": 0.05328292046210038,
+        "reference8": 0.005701719964108939,
+        "reference16": 0.0,
+        "repeat": 0.01324676587937015
+      },
+      "photo_signal_rms": 0.015261802974213668,
+      "gates": {
+        "visible_photo_detail": true,
+        "spatial_improvement_exceeds_reference_uncertainty": true,
+        "motion_improvement_exceeds_reference_uncertainty": true
+      },
+      "passed": true,
+      "background_motion_rms": 0.011533899679564611
+    },
+    {
+      "height_m": 1.7,
+      "spatial_linear_rgb_rms": {
+        "filtered": 0.005851384577429331,
+        "raw": 0.03291701807369783,
+        "reference8": 0.004761863821151186,
+        "reference16": 0.0,
+        "repeat": 0.005851384577429331
+      },
+      "temporal_residual_error_rms": {
+        "filtered": 0.00696860403242451,
+        "raw": 0.046505423052678685,
+        "reference8": 0.006695930347705298,
+        "reference16": 0.0,
+        "repeat": 0.00696860403242451
+      },
+      "photo_signal_rms": 0.007245431525837455,
+      "gates": {
+        "visible_photo_detail": true,
+        "spatial_improvement_exceeds_reference_uncertainty": true,
+        "motion_improvement_exceeds_reference_uncertainty": true
+      },
+      "passed": true,
+      "background_motion_rms": 0.009031421709804432
+    }
+  ],
+  "filtered_1x_matches_active_production_shader": true,
+  "production_parity_pose_count": 6,
+  "capture_manifests_sha256": {
+    "filtered": "b58160f3be4674b9d14483a039c57884305f00c63519199acd9badc387a33db7",
+    "raw": "1337b97947e22586b5f498ed3ce00b83b946616c48eb009b6443b38fc8167506",
+    "reference8": "f7c4f3a3c42f40578a8ff08c444e0e09f216b7bd68a67fef1a9f404e53e29b5c",
+    "reference16": "d0aef3be71ad6477c060facf88852db16a6c984807dc78d690598b4953092f59",
+    "repeat": "b58160f3be4674b9d14483a039c57884305f00c63519199acd9badc387a33db7"
+  },
+  "method": "Decode SDR sRGB PNGs to linear, box-average raw LOD0 8x/16x references, subtract matched photo-off frame, compare native residual and camera-motion differences to the 16x reference. Improvement must exceed twice 8x/16x disagreement. Require visible photo signal >0.001 linear RMS, exact 1x production-shader image parity at all six poses, and projected-world-point crop agreement.",
+  "limits": "Two cropped ground views, three 20mm camera moves, Compatibility local device only. The supersampled reference keeps high-resolution geometric coverage and texture sampling while scaling derivative-driven photo/turf weights and terrain-relief footprint to base-pixel scale; nonlinear turf suppression interactions remain in scope. An engineering sampling check, not universal shimmer absence, actual driving, or owner preference."
+}

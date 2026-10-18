@@ -1,0 +1,88 @@
+## Isolated evaluation using hdrsniped's unchanged Octahedral Impostor LOD API.
+extends SceneTree
+
+func _initialize() -> void:
+	_run.call_deferred()
+
+func _run() -> void:
+	var output := ""
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--out="): output = arg.trim_prefix("--out=")
+	if output.is_empty() or DirAccess.dir_exists_absolute(output) or DisplayServer.get_name() == "headless":
+		quit(2)
+		return
+	DirAccess.make_dir_recursive_absolute(output)
+	var packed: PackedScene = load("res://tree.tscn")
+	var scene: Node3D = packed.instantiate()
+	root.add_child(scene)
+	for frame in 3: await process_frame
+	var cards := OctaLOD.find_cards_below(scene)
+	if cards.size() != 1:
+		push_error("Expected one downloaded-source impostor")
+		quit(1)
+		return
+	var bounds: Vector4 = OctaBaker._collect(scene).bounds
+	var atlas: OctaAtlas = cards[0].atlas
+	var textures: Array[Dictionary] = []
+	for channel in ["albedo", "normal_depth", "back_depth", "orm", "emission", "max_coverage"]:
+		var texture: Texture2D = atlas.get(channel)
+		if texture == null: continue
+		var image: Image = texture.get_image()
+		textures.append({channel = channel, width = image.get_width(), height = image.get_height(),
+			format = image.get_format(), compressed = image.is_compressed(), mipmaps = image.get_mipmap_count(),
+			image_data_bytes = image.get_data().size()})
+	var builtin := await OctaQuality.measure(scene, root)
+	var rig := Node.new()
+	root.add_child(rig)
+	var real := OctaQuality._make_view(rig)
+	var fake := OctaQuality._make_view(rig)
+	for view in [real, fake]:
+		view.vp.size = Vector2i(384, 384)
+		var copy: Node3D = packed.instantiate()
+		view.world.add_child(copy)
+		for node in copy.find_children("*", "GeometryInstance3D", true, false):
+			node.visibility_parent = NodePath()
+			node.visibility_range_begin = 0.0
+			node.visibility_range_end = 0.0
+			node.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_DISABLED
+		for geometry in OctaLOD.geometry_below(copy): geometry.visible = view == real
+		for card in OctaLOD.find_cards_below(copy): card.visible = view == fake
+	var center := Vector3(bounds.x, bounds.y, bounds.z)
+	var samples: Array[Dictionary] = []
+	for sun_angle in [30, 150]:
+		for view in [real, fake]:
+			for sun: DirectionalLight3D in view.world.find_children("*", "DirectionalLight3D", true, false):
+				sun.rotation_degrees = Vector3(-50, sun_angle, 0)
+		for elevation in [-70, -20, 0, 25, 60, 85]:
+			for azimuth in [0, 90, 180, 270]:
+				var e := deg_to_rad(float(elevation))
+				var az := deg_to_rad(float(azimuth))
+				var dir := Vector3(cos(e) * sin(az), sin(e), cos(e) * cos(az))
+				for view in [real, fake]:
+					view.cam.look_at_from_position(center + dir * bounds.w * 3.5, center, Vector3.UP)
+					view.vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+				for frame in 3: await RenderingServer.frame_post_draw
+				var original: Image = real.vp.get_texture().get_image()
+				var impostor: Image = fake.vp.get_texture().get_image()
+				var stem := "sun%d-el%d-az%d" % [sun_angle, elevation, azimuth]
+				if original.save_png(output.path_join(stem + "-mesh.png")) != OK or impostor.save_png(output.path_join(stem + "-impostor.png")) != OK:
+					quit(1)
+					return
+				samples.append({id = stem, elevation_deg = elevation, azimuth_deg = azimuth,
+					sun_azimuth_rotation_deg = sun_angle, metrics = OctaQuality._compare(original, impostor),
+					mesh_sha256 = FileAccess.get_sha256(output.path_join(stem + "-mesh.png")),
+					impostor_sha256 = FileAccess.get_sha256(output.path_join(stem + "-impostor.png"))})
+	var file := FileAccess.open(output.path_join("report.json"), FileAccess.WRITE)
+	file.store_string(JSON.stringify({complete = samples.size() == 48, builtin_quality = builtin, views = samples,
+		textures = textures, atlas_sha256 = FileAccess.get_sha256(atlas.resource_path),
+		atlas_file_bytes = FileAccess.get_file_as_bytes(atlas.resource_path).size(),
+		grid_size = atlas.grid_size, hemisphere = atlas.hemisphere, quality = cards[0].quality,
+		adapter = RenderingServer.get_video_adapter_name(), api = RenderingServer.get_video_adapter_api_version(),
+		godot = Engine.get_version_info().string,
+		scope = "Static same-source mesh/impostor inspection at 24 azimuth/elevation pairs and two sun rotations. Upstream IoU/error metrics are screening heuristics, not pilot acceptance. No runtime integration or performance claim."}, "\t", true, true) + "\n")
+	file.close()
+	rig.queue_free()
+	scene.queue_free()
+	await process_frame
+	print("IMPOSTOR_EVALUATION_OK")
+	quit(0)

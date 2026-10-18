@@ -1,0 +1,9 @@
+test_contract_and_source_derived_triangle_budget (test_place_woodland_edges.WoodlandEdgePlacementTests.test_contract_and_source_derived_triangle_budget) ... ok
+test_full_layout_envelopes_and_existing_masks_are_clear (test_place_woodland_edges.WoodlandEdgePlacementTests.test_full_layout_envelopes_and_existing_masks_are_clear) ... ok
+test_generated_document_is_deterministic_and_current (test_place_woodland_edges.WoodlandEdgePlacementTests.test_generated_document_is_deterministic_and_current) ... ok
+test_source_hashes_cover_reproducible_inputs_without_mutation (test_place_woodland_edges.WoodlandEdgePlacementTests.test_source_hashes_cover_reproducible_inputs_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.238s
+
+OK

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-oak\\fixtures\\loading_probe.gd",
+    "--",
+    "--cycles=20",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\lifecycle-final\\report.json"
+  ],
+  "exit_code": 0,
+  "fixture_sha256": "9a559fae1a71a92472a80dbf5bf8cbba8a6d855ae23bce1454289fa6fbdc40e0"
+}

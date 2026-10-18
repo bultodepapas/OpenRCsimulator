@@ -1,0 +1,43 @@
+[
+  {
+    "name": "bake",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\impostor-prototype",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://addons/octahedral_impostor_lod/tools/octa_bake_cli.gd",
+      "--",
+      "--scene=res://tree.tscn",
+      "--nodes=Tree",
+      "--preset=fast",
+      "--hemisphere=false",
+      "--compression=lossless",
+      "--material-maps=false",
+      "--emission=false",
+      "--fade=none",
+      "--save-scene",
+      "--out=res://baked"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.5939999999973224
+  },
+  {
+    "name": "evaluate",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\impostor-prototype",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://evaluate.gd",
+      "--",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\impostor-evaluation\\views"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 4.921999999991385
+  }
+]

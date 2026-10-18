@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ERROR: Resource file not found: res://assets/landscape/trees/foliage_mask.png (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:325)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/treeline.gd:86)
+       [1] build (res://render/field.gd:60)
+       [2] _run (C:\DEVELOPMENT/OpenRCsimulator/tools/grass/filter_capture.gd:72)
+ERROR: L6b tree atlas/catalog/material mask missing or invalid
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/treeline.gd:88)
+       [1] build (res://render/field.gd:60)
+       [2] _run (C:\DEVELOPMENT/OpenRCsimulator/tools/grass/filter_capture.gd:72)
+Grass filter reference saved: C:\DEVELOPMENT\OpenRCsimulator/tmp/grass-completion/filter/filtered-repeat-01

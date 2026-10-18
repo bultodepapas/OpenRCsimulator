@@ -1,0 +1,61 @@
+{
+  "format": "openrc-verification-log-hashes-v1",
+  "logs": [
+    {
+      "path": "app-test-fullsuite-2026-10-18.log.gz",
+      "source_path": "tmp/tree-fullsuite-20261018.log",
+      "source_bytes": 1156033,
+      "source_sha256": "da4a83085b0be7df165529a62f4b6ba82a6cdf947651624fe2aab5d127eaabf3",
+      "stored_bytes": 225486,
+      "stored_sha256": "736a60d560b6fd0e0809c9d042c8c767b45b746409b0e83f15e44ada9ee0f14f"
+    },
+    {
+      "path": "focused-overlay-tests-2026-10-18.log.gz",
+      "source_path": "tmp/final-overlay-focused-tests.log",
+      "source_bytes": 23038,
+      "source_sha256": "ec80d3d755621d60b4484577077757b6c38ec808d9e043ae2e8cc696ec8d1be8",
+      "stored_bytes": 5839,
+      "stored_sha256": "418fcb7090fd86bc94d6111bd59244761fff431c0f33897d59d9044ac862966c"
+    },
+    {
+      "path": "post-normalization-focused-2026-10-18.log.gz",
+      "source_path": "tmp/post-normalization-focused.log",
+      "source_bytes": 15086,
+      "source_sha256": "b13d523c905269d9893e1ab2d94bebbecc42ad900415c3348cc3657a5000072d",
+      "stored_bytes": 4521,
+      "stored_sha256": "963aac8804ca96c90f6952a3f81d08069a278a9b27060ad31e1a95a36f5c7d88"
+    },
+    {
+      "path": "landscape-vegetation-2026-10-18.log.gz",
+      "source_path": "tmp/final-landscape-vegetation.log",
+      "source_bytes": 3302,
+      "source_sha256": "e0cd11573f60df82d9a5e2b2be2d974df2ac4b8ea5f7257c1e2a6d62f4eea9d4",
+      "stored_bytes": 1356,
+      "stored_sha256": "f0e017224e25234b9dcbd29862d12c433318b33ef3e83b946fe7dba2c5dfbfdd"
+    },
+    {
+      "path": "export-and-pack-2026-10-18.log.gz",
+      "source_path": "tmp/final-overlay-export-20261018.log",
+      "source_bytes": 199452,
+      "source_sha256": "db8ade2550aec34fe11535bfdeb4dc0b643dfb408334703d5c2816c6504258ad",
+      "stored_bytes": 10673,
+      "stored_sha256": "c40b407a019a5b9b8de08a7ba4fc09512ecd6ff24ebfc819879308cee9bfe826"
+    },
+    {
+      "path": "woodland-pck-probe-2026-10-18.log.gz",
+      "source_path": "tmp/final-woodland-pck-probe.log",
+      "source_bytes": 3917,
+      "source_sha256": "3975b5933aa67f27174e8598c4f499313af3c1f3a0abc7a20a03bb4a62d15d5f",
+      "stored_bytes": 669,
+      "stored_sha256": "804001fd24f600b308d4597e2ca5871fe7a29674914eed31365e7e291146260b"
+    },
+    {
+      "path": "tree-pack-probe-2026-10-18.log.gz",
+      "source_path": "tmp/final-tree-pack-probe.log",
+      "source_bytes": 6689,
+      "source_sha256": "19f1e1da33bc78c0b2d155068d7f5eb235af05e12941b91d75e42ad00d60001a",
+      "stored_bytes": 1015,
+      "stored_sha256": "f21410d31f76b0500ffc0d136198d0582f1aa9b7a261b0911bc1bbcb8d6b709b"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads
+ok   default scenery loads
+ok   default lake loads
+ok   the exact default field/scenery/lake pair is applicable
+ok   the documented recipe hash is readable
+ok   high tier realizes all 1,956 source triangles
+ok   high tier realizes five merged batches
+ok   high-tier mesh surfaces independently total 1,956 triangles
+ok   high-tier subtree independently contains five MultiMesh batches
+ok   geometry counts agree with emitted metadata
+ok   high tier realizes 60 plants
+ok   all high-tier plant IDs are unique
+ok   high-tier subtree contains no CollisionObject3D
+ok   high rebuild preserves ordered plant records
+ok   balanced tier is a stable strict subset of high
+ok   balanced rebuild preserves ordered plant records
+ok   low tier builds zero woodland plants, triangles and batches
+ok   custom field is not applicable
+ok   custom scenery is not applicable
+ok   custom lake is not applicable
+ok   all custom inputs skip woodland geometry
+ok   field/scenery/lake dictionaries are read-only
+ok   recipe, field, scenery and lake input hashes are unchanged
+woodland-edge habitat: 23 checks, 0 failures

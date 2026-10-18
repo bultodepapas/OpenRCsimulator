@@ -35,6 +35,7 @@ func _initialize() -> void:
 	_check("catalog format is openrc-tree-assets v1", data.format == "openrc-tree-assets v1")
 	_check("catalog covers exactly the three baked species", data.species.size() == EXPECTED.size(), str(data.species.size()))
 	_check("catalog atlas is 1024 square with 512 tiles", data.atlas_size_px == 1024 and data.tile_size_px == 512)
+	_check("catalog declares the aligned source-material mask", data.get("foliage_mask", "") == "res://assets/landscape/trees/foliage_mask.png")
 	_check("catalog alpha cutoff is 0.5", is_equal_approx(float(data.alpha_cutoff), ALPHA_CUTOFF), str(data.alpha_cutoff))
 	for id in EXPECTED:
 		var entry := _entry(data, id)
@@ -46,6 +47,7 @@ func _initialize() -> void:
 		_check(id + " catalog entry has no runtime scene reference", not entry.has("scene"))
 
 	var opaque_base_rows := _test_atlas(data)
+	_test_foliage_mask(data)
 	_test_cards(data, opaque_base_rows)
 	_test_unknown_ids()
 	print("%d checks, %d failed" % [_checks, _failures])
@@ -84,6 +86,45 @@ func _test_atlas(data: Dictionary) -> Dictionary:
 		_check(id + " atlas tile contains transparent pixels", alpha_present[id])
 		_check(id + " atlas tile contains opaque pixels", opaque_present[id])
 	return lowest_opaque_y
+
+
+func _test_foliage_mask(data: Dictionary) -> void:
+	var atlas: Texture2D = load(String(data.atlas)) as Texture2D
+	var mask: Texture2D = load(String(data.foliage_mask)) as Texture2D
+	_check("source-material mask loads as a texture", mask != null)
+	if atlas == null or mask == null:
+		return
+	_check("source-material mask shares the 1024 square atlas layout", mask.get_width() == 1024 and mask.get_height() == 1024)
+	var atlas_image: Image = atlas.get_image()
+	var mask_image: Image = mask.get_image()
+	_check("source-material mask uses the atlas mip policy", atlas_image.has_mipmaps() and mask_image.has_mipmaps())
+	_check("source-material mask alpha matches the runtime atlas through every mip", _image_alpha_equal(atlas_image, mask_image))
+	for origin: Vector2i in [Vector2i(0, 0), Vector2i(512, 0), Vector2i(0, 512)]:
+		var has_bark := false
+		var has_foliage := false
+		for y in range(origin.y, origin.y + 512, 8):
+			for x in range(origin.x, origin.x + 512, 8):
+				var alpha := atlas_image.get_pixel(x, y).a
+				if alpha < ALPHA_CUTOFF:
+					continue
+				var identity := mask_image.get_pixel(x, y).r
+				has_bark = has_bark or identity <= 0.5
+				has_foliage = has_foliage or identity > 0.5
+		_check("source-material mask tile contains both bark and foliage", has_bark and has_foliage, str(origin))
+
+
+func _image_alpha_equal(left: Image, right: Image) -> bool:
+	if left == null or right == null or left.get_size() != right.get_size() \
+			or left.get_format() != Image.FORMAT_RGBA8 or right.get_format() != Image.FORMAT_RGBA8:
+		return false
+	var left_data: PackedByteArray = left.get_data()
+	var right_data: PackedByteArray = right.get_data()
+	if left_data.size() != right_data.size():
+		return false
+	for alpha_index in range(3, left_data.size(), 4):
+		if left_data[alpha_index] != right_data[alpha_index]:
+			return false
+	return true
 
 
 func _test_cards(data: Dictionary, opaque_base_rows: Dictionary) -> void:

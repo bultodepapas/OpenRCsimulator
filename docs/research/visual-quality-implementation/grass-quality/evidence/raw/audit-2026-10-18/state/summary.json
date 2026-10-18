@@ -1,0 +1,567 @@
+{
+  "format": "openrc-grass-state-invariance-report v1",
+  "status": "ok",
+  "error": "",
+  "godot": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+  "execution": "headless CPU-only process; actual Field.build materials inspected; no GPU frame rendered",
+  "tapes": {
+    "stik_runway_current": {
+      "capture_status": "recorded and complete exact-preflight passed",
+      "capture_kind": "existing FlightLog API; scripted fixed-step runway recording",
+      "aircraft_kind": "stik",
+      "source": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/stik-runway-current.orfl",
+      "purpose": "software state/contact invariance only; not physical or owner flight acceptance",
+      "source_sha256": "a9ffabb42258e661f28e5f658dd822a1a026ce2304404db28bee11cd168f5a2c",
+      "exact_preflight": {
+        "path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/exact-preflight/replay.json",
+        "format": "openrc-flight-log-report v1",
+        "complete": true,
+        "mode": "exact",
+        "rows": 2881,
+        "first_tick": 0,
+        "final_tick": 2880,
+        "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "scenario_evidence": {
+          "path": "tmp/grass-completion/state/run-20261018-n/stik_runway_current_capture/recording.json",
+          "capture_kind": "existing FlightLog API; scripted fixed-step neutral-input recording",
+          "purpose": "software state/contact invariance only; not physical or owner acceptance",
+          "aircraft_kind": "stik",
+          "initial_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "final_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "initial_gear_compressions_m": [
+            0.016744461064475392,
+            0.015888039243372624,
+            0.02292380260837428
+          ],
+          "launch_ground_anchors": "[15.179286583960165,-47.09571043451714,1.0,14.819287959705688,-47.09570732896868,1.0,14.999293090601812,-46.74469574670566,1.0]",
+          "complete": true,
+          "rows": 2881,
+          "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df"
+        }
+      },
+      "grass_mode_runs": {
+        "default": {
+          "status": "complete exact replay",
+          "rows": 2881,
+          "csv_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+          "report": "stik_runway_current/default/replay.json"
+        },
+        "enhanced": {
+          "status": "complete exact replay",
+          "rows": 2881,
+          "csv_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+          "report": "stik_runway_current/enhanced/replay.json"
+        }
+      },
+      "state_invariance": "byte-identical exact replay",
+      "csv_sha256": "10895bcfdec00ecce958d423880506e85f5a64a3e7fcbb15c5b0073dd78629fa",
+      "rows": 2881,
+      "first_tick": 0,
+      "final_tick": 2880,
+      "source_configuration_identity": {
+        "checkpoint_sha256": "87549abc95862fa9eb1550f437f58039a7bfc62f4e74c0d45c8cc176674c81e4",
+        "aircraft_path": "res://data/aircraft/jensen_ugly_stik_60.json",
+        "aircraft_identity": {
+          "format": "openrc-aircraft v2",
+          "sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723"
+        },
+        "configuration": "virtual-balanced-reference-v1",
+        "engine": "4.7.2-stable (official)",
+        "dt_s": 0.004166666666666667,
+        "baseline_solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "current_solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "ground_field_id": "default",
+        "ground_surfaces": [
+          9.0,
+          21.0,
+          -50.0,
+          50.0,
+          0.8,
+          2.5,
+          3.0,
+          9.0,
+          -3.0,
+          3.0,
+          0.7,
+          0.5,
+          -20000.0,
+          20000.0,
+          -20000.0,
+          20000.0,
+          0.7,
+          7.5,
+          -Infinity,
+          Infinity,
+          -Infinity,
+          Infinity,
+          0.7,
+          7.5
+        ],
+        "ground_description": "3 profiled spring-damper gear contacts; deterministic bounded grass relief (GP-01, at most 7 mm), terrain-normal projection, field-scaled friction and wheel-radius-corrected rolling resistance; steering and continuous relative wheel spin; brakes off (no brake command exposed); field 'default'",
+        "collision_world_identity": "",
+        "lake_id": ""
+      },
+      "solver_changed": false,
+      "rc_ground_vehicle_state_invariance": "byte-identical GDScript session recording and checkpoint/control-tape replay",
+      "rc_ground_vehicle": {
+        "backend": "gdscript_reference",
+        "backend_identity": {
+          "abi_version": 1,
+          "backend": "gdscript_reference",
+          "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+          "binary_sha256": "",
+          "implementation_artifact_kind": "gdscript_source",
+          "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+          "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+          "toolchain_sha256": ""
+        },
+        "native_backend_used": false,
+        "vehicle_ids": [
+          "mt8-bisonte",
+          "monster-car-2"
+        ],
+        "vehicles": {
+          "monster-car-2": {
+            "backend": "gdscript_reference",
+            "backend_identity": {
+              "abi_version": 1,
+              "backend": "gdscript_reference",
+              "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "binary_sha256": "",
+              "implementation_artifact_kind": "gdscript_source",
+              "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+              "toolchain_sha256": ""
+            },
+            "checkpoint_control_tape_replay_exact": true,
+            "checkpoint_sha256": "bdfe1fe49ba0ee97d68b75ff052de8517e9977993fe71f78474009d547963947",
+            "course_identity": {
+              "format": "openrc-ground-course",
+              "id": "mt8-practice-course-estimate-v1",
+              "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+              "version": "1"
+            },
+            "model_identity": {
+              "format": "openrc-ground-vehicle",
+              "id": "monster-car-2",
+              "sha256": "974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc",
+              "version": "1"
+            },
+            "native_backend_used": false,
+            "recorded_samples": 241,
+            "recorded_samples_sha256": "f374d7384b488ba5a60b91ff761be223b7749cd87556fe8adc339d24a74ee897",
+            "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+            "recording_complete": true,
+            "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+            "state_damage_controls_events_sha256": "991a0a0341c0a90604bde4e91b663b1734f980d5e0963181933c22cd64037896",
+            "ticks": 240,
+            "vehicle_id": "monster-car-2"
+          },
+          "mt8-bisonte": {
+            "backend": "gdscript_reference",
+            "backend_identity": {
+              "abi_version": 1,
+              "backend": "gdscript_reference",
+              "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "binary_sha256": "",
+              "implementation_artifact_kind": "gdscript_source",
+              "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+              "toolchain_sha256": ""
+            },
+            "checkpoint_control_tape_replay_exact": true,
+            "checkpoint_sha256": "90123d808103702ebb9e263c25ac0e9b84707d842eaa10d85e47a3a68dfcd5b3",
+            "course_identity": {
+              "format": "openrc-ground-course",
+              "id": "mt8-practice-course-estimate-v1",
+              "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+              "version": "1"
+            },
+            "model_identity": {
+              "format": "openrc-ground-vehicle",
+              "id": "mt8-bisonte-electric-4wd-estimate-v1",
+              "sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+              "version": "1"
+            },
+            "native_backend_used": false,
+            "recorded_samples": 241,
+            "recorded_samples_sha256": "4632588fbc377b0fec650dbd830c3668176f50b982a47c2beff34372f55b8f20",
+            "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+            "recording_complete": true,
+            "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+            "state_damage_controls_events_sha256": "9b304a98cc6f8ac5d7290fba98e1966f45ccd6fc1c509717d4d18130b895dcc0",
+            "ticks": 240,
+            "vehicle_id": "mt8-bisonte"
+          }
+        }
+      },
+      "renderer": {
+        "default": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": false,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 67,
+            "grass_common_tall": 42,
+            "grass_wispy_tall": 41
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "StandardMaterial3D",
+            "StandardMaterial3D",
+            "StandardMaterial3D"
+          ],
+          "near_grass_source_triangles": 49579,
+          "rough_grass_photo_enabled": false,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        },
+        "enhanced": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": true,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 100,
+            "grass_common_tall": 30,
+            "grass_wispy_tall": 20
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader"
+          ],
+          "near_grass_source_triangles": 37720,
+          "rough_grass_photo_enabled": true,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "enhanced",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        }
+      },
+      "files": {
+        "default": {
+          "csv": "stik_runway_current/default/exact.csv",
+          "report": "stik_runway_current/default/replay.json",
+          "log": "stik_runway_current/default/godot.log"
+        },
+        "enhanced": {
+          "csv": "stik_runway_current/enhanced/exact.csv",
+          "report": "stik_runway_current/enhanced/replay.json",
+          "log": "stik_runway_current/enhanced/godot.log"
+        }
+      }
+    },
+    "p51_runway_current": {
+      "capture_status": "recorded and complete exact-preflight passed",
+      "capture_kind": "existing FlightLog API; scripted fixed-step runway recording",
+      "aircraft_kind": "p51",
+      "source": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/p51-runway-current.orfl",
+      "purpose": "software state/contact invariance only; not physical or owner flight acceptance",
+      "source_sha256": "a6f5f33796c26160d8fecf581b4d143e8ff36d6201ddea432553571bb555e670",
+      "exact_preflight": {
+        "path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/exact-preflight/replay.json",
+        "format": "openrc-flight-log-report v1",
+        "complete": true,
+        "mode": "exact",
+        "rows": 2881,
+        "first_tick": 0,
+        "final_tick": 2880,
+        "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "scenario_evidence": {
+          "path": "tmp/grass-completion/state/run-20261018-n/p51_runway_current_capture/recording.json",
+          "capture_kind": "existing FlightLog API; scripted fixed-step neutral-input recording",
+          "purpose": "software state/contact invariance only; not physical or owner acceptance",
+          "aircraft_kind": "p51",
+          "initial_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "final_contact_indices": [
+            0,
+            1,
+            2
+          ],
+          "initial_gear_compressions_m": [
+            0.019753526885550942,
+            0.01945805551720475,
+            0.027883133807740382
+          ],
+          "launch_ground_anchors": "[15.450437285502273,-46.741450661042904,1.0,14.548438027438594,-46.741735118261246,1.0,14.999826750434895,-48.03617239229511,1.0]",
+          "complete": true,
+          "rows": 2881,
+          "solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df"
+        }
+      },
+      "grass_mode_runs": {
+        "default": {
+          "status": "complete exact replay",
+          "rows": 2881,
+          "csv_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+          "report": "p51_runway_current/default/replay.json"
+        },
+        "enhanced": {
+          "status": "complete exact replay",
+          "rows": 2881,
+          "csv_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+          "report": "p51_runway_current/enhanced/replay.json"
+        }
+      },
+      "state_invariance": "byte-identical exact replay",
+      "csv_sha256": "0a94cecdee110ad0bdd2647bc54ac84fab945e06a41f0c92283c90a31dd02166",
+      "rows": 2881,
+      "first_tick": 0,
+      "final_tick": 2880,
+      "source_configuration_identity": {
+        "checkpoint_sha256": "5c2bf0d5671550a25ad06fa5019cb9920dcfef16892ba9da8fe9ef4353b3663a",
+        "aircraft_path": "res://data/aircraft/p51d_mustang_120.json",
+        "aircraft_identity": {
+          "format": "openrc-aircraft v2",
+          "sha256": "a37f7f4296b789b2fec3d48d73bfadd3ad83177954d2db5b1348db557be5a321"
+        },
+        "configuration": "virtual-balanced-reference-v1",
+        "engine": "4.7.2-stable (official)",
+        "dt_s": 0.004166666666666667,
+        "baseline_solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "current_solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+        "ground_field_id": "default",
+        "ground_surfaces": [
+          9.0,
+          21.0,
+          -50.0,
+          50.0,
+          0.8,
+          2.5,
+          3.0,
+          9.0,
+          -3.0,
+          3.0,
+          0.7,
+          0.5,
+          -20000.0,
+          20000.0,
+          -20000.0,
+          20000.0,
+          0.7,
+          7.5,
+          -Infinity,
+          Infinity,
+          -Infinity,
+          Infinity,
+          0.7,
+          7.5
+        ],
+        "ground_description": "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock",
+        "collision_world_identity": "",
+        "lake_id": ""
+      },
+      "solver_changed": false,
+      "rc_ground_vehicle_state_invariance": "byte-identical GDScript session recording and checkpoint/control-tape replay",
+      "rc_ground_vehicle": {
+        "backend": "gdscript_reference",
+        "backend_identity": {
+          "abi_version": 1,
+          "backend": "gdscript_reference",
+          "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+          "binary_sha256": "",
+          "implementation_artifact_kind": "gdscript_source",
+          "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+          "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+          "toolchain_sha256": ""
+        },
+        "native_backend_used": false,
+        "vehicle_ids": [
+          "mt8-bisonte",
+          "monster-car-2"
+        ],
+        "vehicles": {
+          "monster-car-2": {
+            "backend": "gdscript_reference",
+            "backend_identity": {
+              "abi_version": 1,
+              "backend": "gdscript_reference",
+              "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "binary_sha256": "",
+              "implementation_artifact_kind": "gdscript_source",
+              "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+              "toolchain_sha256": ""
+            },
+            "checkpoint_control_tape_replay_exact": true,
+            "checkpoint_sha256": "bdfe1fe49ba0ee97d68b75ff052de8517e9977993fe71f78474009d547963947",
+            "course_identity": {
+              "format": "openrc-ground-course",
+              "id": "mt8-practice-course-estimate-v1",
+              "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+              "version": "1"
+            },
+            "model_identity": {
+              "format": "openrc-ground-vehicle",
+              "id": "monster-car-2",
+              "sha256": "974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc",
+              "version": "1"
+            },
+            "native_backend_used": false,
+            "recorded_samples": 241,
+            "recorded_samples_sha256": "f374d7384b488ba5a60b91ff761be223b7749cd87556fe8adc339d24a74ee897",
+            "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+            "recording_complete": true,
+            "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+            "state_damage_controls_events_sha256": "991a0a0341c0a90604bde4e91b663b1734f980d5e0963181933c22cd64037896",
+            "ticks": 240,
+            "vehicle_id": "monster-car-2"
+          },
+          "mt8-bisonte": {
+            "backend": "gdscript_reference",
+            "backend_identity": {
+              "abi_version": 1,
+              "backend": "gdscript_reference",
+              "backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "binary_sha256": "",
+              "implementation_artifact_kind": "gdscript_source",
+              "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+              "source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+              "toolchain_sha256": ""
+            },
+            "checkpoint_control_tape_replay_exact": true,
+            "checkpoint_sha256": "90123d808103702ebb9e263c25ac0e9b84707d842eaa10d85e47a3a68dfcd5b3",
+            "course_identity": {
+              "format": "openrc-ground-course",
+              "id": "mt8-practice-course-estimate-v1",
+              "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+              "version": "1"
+            },
+            "model_identity": {
+              "format": "openrc-ground-vehicle",
+              "id": "mt8-bisonte-electric-4wd-estimate-v1",
+              "sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+              "version": "1"
+            },
+            "native_backend_used": false,
+            "recorded_samples": 241,
+            "recorded_samples_sha256": "4632588fbc377b0fec650dbd830c3668176f50b982a47c2beff34372f55b8f20",
+            "recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+            "recording_complete": true,
+            "replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+            "state_damage_controls_events_sha256": "9b304a98cc6f8ac5d7290fba98e1966f45ccd6fc1c509717d4d18130b895dcc0",
+            "ticks": 240,
+            "vehicle_id": "mt8-bisonte"
+          }
+        }
+      },
+      "renderer": {
+        "default": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": false,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 67,
+            "grass_common_tall": 42,
+            "grass_wispy_tall": 41
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "StandardMaterial3D",
+            "StandardMaterial3D",
+            "StandardMaterial3D"
+          ],
+          "near_grass_source_triangles": 49579,
+          "rough_grass_photo_enabled": false,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        },
+        "enhanced": {
+          "bundled_scenery_file": "res://data/scenery/default.json",
+          "enhanced": true,
+          "field_built_in_same_process_as_replay": true,
+          "field_id": "default",
+          "gpu_frame_rendered": false,
+          "material_route_ok": true,
+          "near_grass_clumps": 150,
+          "near_grass_counts_by_asset": {
+            "grass_common_short": 100,
+            "grass_common_tall": 30,
+            "grass_wispy_tall": 20
+          },
+          "near_grass_imported": true,
+          "near_grass_material_paths_or_types": [
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader",
+            "res://scenery/imported_grass.gdshader"
+          ],
+          "near_grass_source_triangles": 37720,
+          "rough_grass_photo_enabled": true,
+          "rough_material_shader": "res://render/ground.gdshader",
+          "scene_tree_initialized": true,
+          "scenery_enabled": true,
+          "scenery_file_explicit": true,
+          "scenery_quality": "high",
+          "selector": "enhanced",
+          "tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+          "tree_only_object_types_omitted": [
+            "treeline"
+          ],
+          "tree_only_objects_omitted_for_headless_probe": 1
+        }
+      },
+      "files": {
+        "default": {
+          "csv": "p51_runway_current/default/exact.csv",
+          "report": "p51_runway_current/default/replay.json",
+          "log": "p51_runway_current/default/godot.log"
+        },
+        "enhanced": {
+          "csv": "p51_runway_current/enhanced/exact.csv",
+          "report": "p51_runway_current/enhanced/replay.json",
+          "log": "p51_runway_current/enhanced/godot.log"
+        }
+      }
+    }
+  }
+}

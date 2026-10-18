@@ -53,8 +53,15 @@ APP_EXCLUDED_DIRS = {
 }
 IDENTITY_KEYS = (
     "godot", "os", "backend", "adapter", "api", "aircraft_id", "window",
-    "vsync", "render_settings",
+    "vsync", "render_settings", "effective_grass_shared",
 )
+
+EXPECTED_GRASS_COUNTS = {
+    "default": {"grass_common_short": 67, "grass_common_tall": 42, "grass_wispy_tall": 41},
+    "enhanced": {"grass_common_short": 100, "grass_common_tall": 30, "grass_wispy_tall": 20},
+}
+EXPECTED_GRASS_SOURCE_TRIANGLES = {"default": 49_579, "enhanced": 37_720}
+EXPECTED_GROUND_GRASS_PHOTO = {"default": False, "enhanced": True}
 
 
 class CampaignStop(RuntimeError):
@@ -80,6 +87,14 @@ def sha256_file(path: Path) -> str:
 def _canonical_hash(value: Any) -> str:
     encoded = json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def engine_binary_snapshot(godot: Path) -> dict[str, str]:
+    """The Windows console executable launches the sibling engine executable."""
+    binaries = [godot.resolve()]
+    if godot.name.lower().endswith("_console.exe"):
+        binaries.append(godot.with_name(godot.name[:-len("_console.exe")] + ".exe").resolve())
+    return {str(path): sha256_file(path) for path in binaries}
 
 
 def app_runtime_snapshot(app: Path) -> dict[str, Any]:
@@ -239,8 +254,8 @@ def godot_process_inventory() -> dict[str, Any]:
     }
 
 
-def validate_report_contract(report: dict[str, Any]) -> list[str]:
-    """Check effective route/render metadata after the shared reducer accepts it."""
+def validate_report_contract(report: dict[str, Any], variant: str) -> list[str]:
+    """Check the effective render route after the shared reducer accepts the report."""
     errors: list[str] = []
     if report.get("route") != "live-input":
         errors.append("effective frametime route is not live-input")
@@ -263,6 +278,93 @@ def validate_report_contract(report: dict[str, Any]) -> list[str]:
     render_settings = report.get("render_settings")
     if not isinstance(render_settings, dict) or render_settings.get("msaa_3d") != EXPECTED_MSAA_3D:
         errors.append("effective 3D MSAA is not 4x")
+    errors.extend(validate_effective_grass_state(report, variant))
+    return errors
+
+
+def validate_effective_grass_state(report: dict[str, Any], variant: str) -> list[str]:
+    """Require the built scene to match this variant's grass profile and shared field settings."""
+    errors: list[str] = []
+    if variant not in EXPECTED_GRASS_COUNTS:
+        return [f"unknown grass profile variant {variant!r}"]
+    state = report.get("effective_grass")
+    if not isinstance(state, dict):
+        return ["effective grass scene metadata is missing"]
+    if state.get("format") != "openrc-effective-grass-state v1":
+        errors.append("effective grass scene metadata format is unsupported")
+    if state.get("verified") is not True:
+        details = state.get("errors")
+        suffix = ": " + "; ".join(str(item) for item in details) if isinstance(details, list) and details else ""
+        errors.append("effective grass scene bindings are unverified" + suffix)
+
+    scenery = state.get("scenery")
+    if not isinstance(scenery, dict) or scenery.get("enabled") is not True:
+        errors.append("effective scenery is not enabled")
+    if not isinstance(scenery, dict) or scenery.get("quality") != "high":
+        errors.append("effective scenery quality is not high")
+
+    ground = state.get("ground")
+    if not isinstance(ground, dict):
+        ground = {}
+        errors.append("effective ground grass metadata is missing")
+    if ground.get("shader_path") != "res://render/ground.gdshader":
+        errors.append("effective ground shader is not the production ground shader")
+    if not isinstance(ground.get("shader_sha256"), str) or len(ground["shader_sha256"]) != 64:
+        errors.append("effective ground shader source hash is missing")
+    if ground.get("grass_photo_enabled") is not EXPECTED_GROUND_GRASS_PHOTO[variant]:
+        expected = "enabled" if EXPECTED_GROUND_GRASS_PHOTO[variant] else "disabled"
+        errors.append(f"effective ground grass photo detail is not {expected} for {variant}")
+    if ground.get("turf_detail_enabled") is not True or ground.get("turf_detail_strength") != 1.0:
+        errors.append("effective ground turf detail is not enabled at full strength")
+    if not isinstance(ground.get("material_count"), int) or ground["material_count"] <= 0:
+        errors.append("effective ground material bindings are missing")
+    if EXPECTED_GROUND_GRASS_PHOTO[variant]:
+        normal_paths = ground.get("normal_texture_paths")
+        roughness_paths = ground.get("roughness_texture_paths")
+        if not isinstance(normal_paths, list) or "res://assets/landscape/rc-ground/grass-normal.jpg" not in normal_paths:
+            errors.append("enhanced ground grass normal texture is not bound")
+        if not isinstance(roughness_paths, list) or "res://assets/landscape/rc-ground/grass-roughness.jpg" not in roughness_paths:
+            errors.append("enhanced ground grass roughness texture is not bound")
+
+    near_grass = state.get("near_grass")
+    if not isinstance(near_grass, dict):
+        near_grass = {}
+        errors.append("effective NearGrass metadata is missing")
+    if near_grass.get("present") is not True or near_grass.get("route") != "imported":
+        errors.append("effective NearGrass route is not imported")
+    if near_grass.get("quality") != "high":
+        errors.append("effective NearGrass quality is not high")
+    if near_grass.get("material_variant") != ("qualified-wind" if variant == "enhanced" else "source-static"):
+        errors.append(f"effective NearGrass material variant is incorrect for {variant}")
+    if near_grass.get("grass_wind") is not (variant == "enhanced"):
+        errors.append(f"effective NearGrass wind shader state is incorrect for {variant}")
+    expected_shader_paths = ["res://scenery/imported_grass.gdshader"] if variant == "enhanced" else []
+    if near_grass.get("shader_paths") != expected_shader_paths:
+        errors.append(f"effective NearGrass shader path is incorrect for {variant}")
+    material_bindings = near_grass.get("material_bindings")
+    expected_material_class = "ShaderMaterial" if variant == "enhanced" else "StandardMaterial3D"
+    if not isinstance(material_bindings, list) or not material_bindings:
+        errors.append("effective NearGrass material bindings are missing")
+    else:
+        for binding in material_bindings:
+            if not isinstance(binding, dict) or binding.get("class") != expected_material_class:
+                errors.append(f"effective NearGrass active material class is incorrect for {variant}")
+                break
+            expected_path = expected_shader_paths[0] if variant == "enhanced" else ""
+            if binding.get("shader_path") != expected_path:
+                errors.append(f"effective NearGrass active material shader is incorrect for {variant}")
+                break
+            if variant == "enhanced" and (not isinstance(binding.get("shader_sha256"), str) or len(binding["shader_sha256"]) != 64):
+                errors.append("effective NearGrass shader source hash is missing")
+                break
+    if near_grass.get("species_counts") != EXPECTED_GRASS_COUNTS[variant]:
+        errors.append(f"effective NearGrass species counts are incorrect for {variant}")
+    if near_grass.get("batch_count") != 3 or near_grass.get("clump_count") != 150:
+        errors.append("effective NearGrass batch or clump count is incorrect")
+    if near_grass.get("source_triangles") != EXPECTED_GRASS_SOURCE_TRIANGLES[variant]:
+        errors.append(f"effective NearGrass source triangle count is incorrect for {variant}")
+    if not isinstance(near_grass.get("texture_paths"), list) or not near_grass["texture_paths"]:
+        errors.append("effective NearGrass source textures are missing")
     return errors
 
 
@@ -291,7 +393,24 @@ def run_rejection_reasons(
 
 
 def report_identity(report: dict[str, Any]) -> dict[str, Any]:
-    return {key: report.get(key) for key in IDENTITY_KEYS}
+    identity = {key: report.get(key) for key in IDENTITY_KEYS if key != "effective_grass_shared"}
+    state = report.get("effective_grass")
+    if not isinstance(state, dict):
+        identity["effective_grass_shared"] = None
+        return identity
+    scenery = state.get("scenery") if isinstance(state.get("scenery"), dict) else {}
+    ground = state.get("ground") if isinstance(state.get("ground"), dict) else {}
+    near_grass = state.get("near_grass") if isinstance(state.get("near_grass"), dict) else {}
+    identity["effective_grass_shared"] = {
+        "scenery_enabled": scenery.get("enabled"),
+        "scenery_quality": scenery.get("quality"),
+        "ground_shader_path": ground.get("shader_path"),
+        "near_grass_route": near_grass.get("route"),
+        "near_grass_quality": near_grass.get("quality"),
+        "near_grass_batch_count": near_grass.get("batch_count"),
+        "near_grass_clump_count": near_grass.get("clump_count"),
+    }
+    return identity
 
 
 def compare_identity(reference: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
@@ -403,7 +522,7 @@ def _launch_and_summarize(
             loaded = json.loads(report_path.read_text(encoding="utf-8"))
             if isinstance(loaded, dict):
                 raw_report = loaded
-                report_errors.extend(validate_report_contract(raw_report))
+                report_errors.extend(validate_report_contract(raw_report, variant))
             else:
                 report_errors.append("frame-time report root is not an object")
         except (OSError, UnicodeError, json.JSONDecodeError) as error:
@@ -461,6 +580,7 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
     output = ensure_new_output(args.out, app)
 
     engine_hash_before = sha256_file(godot)
+    engine_binaries_before = engine_binary_snapshot(godot)
     app_before = app_runtime_snapshot(app)
     campaign_path = output / "campaign.json"
     campaign: dict[str, Any] = {
@@ -475,6 +595,8 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
             "expected_version_prefix": EXPECTED_GODOT_PREFIX,
             "sha256_before": engine_hash_before,
             "sha256_after": None,
+            "binary_files_sha256_before": engine_binaries_before,
+            "binary_files_sha256_after": None,
         },
         "app_runtime_snapshot": {"before": app_before, "after": None, "unchanged": None},
         "host": {"platform": platform.platform(), "machine": platform.machine()},
@@ -499,8 +621,8 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
         "verification_limits": {
             "live_input_route": "checked against the frametime report route field",
             "camera_autozoom_and_mode": "checked against effective camera metadata",
-            "scenery_enabled_and_quality": "requested CLI settings only; openrc-frametimes v2 does not report effective scenery settings",
-            "grass_selector": "requested child-process environment only; openrc-frametimes v2 does not report the selected grass helper, material, or instance count",
+            "scenery_enabled_and_quality": "observed from the built field's Scenery node stats at report serialization; the runner requires enabled/high and a verified effective snapshot",
+            "grass_selector": "observed from active ground and NearGrass render bindings at report serialization; the runner checks per-variant grass settings plus shared route, material, and instance invariants",
         },
         "environment_delta": {
             GRASS_SELECTOR: {"default": "unset", "enhanced": "enhanced"},
@@ -657,12 +779,16 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
         try:
             app_after = app_runtime_snapshot(app)
             engine_hash_after = sha256_file(godot)
+            engine_binaries_after = engine_binary_snapshot(godot)
             campaign["app_runtime_snapshot"]["after"] = app_after
             campaign["app_runtime_snapshot"]["unchanged"] = source_snapshots_match(app_before, app_after)
             campaign["godot"]["sha256_after"] = engine_hash_after
+            campaign["godot"]["binary_files_sha256_after"] = engine_binaries_after
             provenance_reasons = provenance_rejection_reasons(
                 app_before, app_after, engine_hash_before, engine_hash_after
             )
+            if engine_binaries_before != engine_binaries_after:
+                provenance_reasons.append("Godot launcher or runtime binary changed during the campaign")
             if provenance_reasons:
                 campaign["status"] = "stopped"
                 campaign["complete"] = False

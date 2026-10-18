@@ -1,6 +1,6 @@
 # Tree and forest realism improvement plan
 
-2026-10-17. **Status: retained variety, bark filtering and one mature oak integrated; flight/owner acceptance remains open.** Owner: landscape **L**, coordinated with **SC/LU**, **VQ**, **M5**, **FW/TOD** and **RCV**. [Dated research and source audit](../research/tree-forest-quality-2026-10-17.md), [implementation and native evidence](../research/visual-quality-implementation/L6a-R1/README.md).
+2026-10-17; updated 2026-10-18. **Status: bounded implementation and automated verification complete; five paired 720p flights meet the numerical targets under recorded desktop load. Independent owner and broader hardware acceptance remain open.** Owner: landscape **L**, coordinated with **SC/LU**, **VQ**, **M5**, **FW/TOD** and **RCV**. [Dated research and source audit](../research/tree-forest-quality-2026-10-17.md), [initial implementation](../research/visual-quality-implementation/L6a-R1/README.md), [completion evidence](../research/visual-quality-implementation/L6c/tree-completion/README.md).
 
 Improve tree silhouettes, bark and foliage materials, natural color variation, woodland composition and perceived density from pilot, chase and ground cameras. Use existing or freely downloadable trees and textures. **Do not model trees, generate new tree geometry, paint replacement tree textures or build a tree-authoring tool.** Importing, validating, converting and baking representations of licensed downloaded models are integration work; source assets remain intact.
 
@@ -14,7 +14,7 @@ The table below records the pre-implementation baseline. Current implemented beh
 
 The current implementation already contains two distinct tree systems. Details and current-source qualifications are in the [audit](../research/tree-forest-quality-2026-10-17.md#current-project-findings).
 
-| System | Current behavior | Consequence for this plan |
+| System | Pre-implementation behavior | Consequence for this plan |
 | --- | --- | --- |
 | Field treeline | 480 trees at 270–570 m and 1,200 farther trees at 600–1,500 m; eight sector MultiMeshes, six triangles per tree, three shapes in one 1024² atlas | Preserve this inexpensive control. More convincing silhouettes and placement may help before adding geometry. Eight draws describe the treeline main-pass contract, not the whole scene. |
 | Imported scenery trees | `CommonTree_1`, `CommonTree_3`, `Pine_1`; 6,265 / 3,505 / 3,947 source triangles, two material surfaces each, automatic imported LODs | Already-downloadable 3D assets are integrated. Measure source parts, surface submissions, shadows and batch extent before replacing or multiplying them. |
@@ -118,7 +118,7 @@ Enable imported-tree wind only after confirming that the adapter preserves every
 
 ## 7. Reviewable implementation sequence
 
-The [first L6a-R1 checkpoint](../research/visual-quality-implementation/L6a-R1/README.md) records seven Quaternius forms, the precision-only vertex-color repair, L7-R1's same-count habitat placement, L15b-R1's tree-only wind and opt-in spatial cells. The [2026-10-18 oak continuation](../research/visual-quality-implementation/L6a-R1/mature-oak/README.md) adds a CC BY-SA 3.0 mature source as one replacement among the same 17 close trees; its wider envelope changes world identity. Its BLEND material remains static. [L6b-R2](../research/visual-quality-implementation/L6b-R2/README.md) qualifies lossless bark-only mipmaps and rejects ordinary leaf mips because they fill crown gaps. Palette/near-far matching, additional realistic families, density growth and optional L8 work remain open. Static captures and lifecycle checks do not close flight, readability or owner gates. New evidence stays under the owning step's evidence home.
+The [first L6a-R1 checkpoint](../research/visual-quality-implementation/L6a-R1/README.md) records seven Quaternius forms, the precision-only vertex-color repair, L7-R1's same-count habitat placement, L15b-R1's tree-only wind and opt-in spatial cells. The [2026-10-18 oak continuation](../research/visual-quality-implementation/L6a-R1/mature-oak/README.md) adds a CC BY-SA 3.0 mature source as one replacement among the same 17 close trees; its wider envelope changes world identity. Its BLEND material remains static. [L6b-R2](../research/visual-quality-implementation/L6b-R2/README.md) qualifies lossless bark-only mipmaps and rejects ordinary leaf mips because they fill crown gaps. The [source-derived foliage mask](../research/visual-quality-implementation/L6b-R2/foliage-mask/README.md) now separates leaves from bark and supplies restrained patch and individual variation; [native readback](../research/visual-quality-implementation/L6c/tree-completion/palette/README.md) verifies the production world-space computation at every field position. [Completion evidence](../research/visual-quality-implementation/L6c/tree-completion/README.md) owns the final comparison and explicit conditional dispositions. Static captures and lifecycle checks do not close independent owner gates.
 
 | ID | Work | Required proof / dependency |
 | --- | --- | --- |
@@ -133,6 +133,23 @@ The [first L6a-R1 checkpoint](../research/visual-quality-implementation/L6a-R1/R
 | L6c, Gate L/SC, VQ-06c | Qualify the accepted combination in actual flight, RC and Home views and exported builds | Combined performance, independent owner readability/preference and named target hardware. Software checks alone do not close pilot gates. |
 
 Keep each material, representation, placement and wind delivery independently selectable in research fixtures. Adopt only the winning comparison; do not stack several unmeasured candidates and then attempt to attribute the result. No promised delivery date precedes the baseline and asset intake.
+
+### Implementation dispositions, 2026-10-18
+
+The [completion record](../research/visual-quality-implementation/L6c/tree-completion/README.md) is the authoritative evidence home. Conditional experiments are decisions, not promises to integrate every downloaded package.
+
+| ID | Engineering disposition |
+| --- | --- |
+| L6a-R1 | Eight downloaded mature forms integrated. Original maps, source archives, licenses and conversion receipts retained. No newly modeled trees. True young forms and additional families remain outside this bounded delivery: the inspected realistic sapling is too heavy for the remaining geometry budget. |
+| L6b-R2 | Bark-only mipmaps and source-material foliage mask integrated; restrained world-space patch color validated by native readback. Ordinary leaf mipmaps rejected because they filled crown gaps. |
+| L7-R1 | Twelve irregular far habitat patches at the same 1,680 field trees; four small decorative shrub/grass margins reuse existing assets. No new proxy from these margins. Complete scenery: 649,919 source triangles. Forest-floor texture ownership stays with the ground/grass track. |
+| L7-R2 | 64/128/256 m spatial batching evaluated and retained only as an opt-in control. Default batching unchanged. Density growth rejected for this delivery: no demonstrated composition benefit justifies revising the loader contract and shared budget. |
+| L8a | Native approach/orbit/pan recordings expose the current representation limits. Retain imported mesh LODs and separate far cards; no unqualified mesh-to-card handoff or supplier oak LOD substitution. The optional 1,000-triangle near-tree target is not claimed. |
+| L8b | Existing baker pinned and tested with one unchanged downloaded source. Its bounded fast full-sphere candidate failed the appearance gate; no plugin added to production. |
+| L15b-R1 | Supported imported trees use shared wind/clock with root, bounds, wrap and material guards. Oak keeps its static BLEND fallback. No physical wind or simulation change. |
+| L6c / VQ-06c | Visual/replay evidence, 20 Fly and 20 RC/reset cycles, frozen full suite, final overlay checks and three-platform exports complete. Five alternating 720p live-flight pairs meet p95/p99, simulation/wall and +0.5 ms delta targets under the recorded desktop load. Independent pilot preference/recognition, lower-end hardware, idle-host qualification and the combined grass/tree release remain acceptance work. |
+
+This plan stays active only for those acceptance gates and any explicitly approved follow-up. Do not resume rejected density, custom geometry or an impostor framework merely to mark every optional research idea as integrated.
 
 ## 8. Acceptance and rollback
 

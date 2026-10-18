@@ -23,7 +23,77 @@ def reduce_fixture(directory: Path, report: dict, name: str = "run-01") -> dict:
     return native_summary.summarize_run(report_path, native_summary.DEFAULT_POLICY)
 
 
+def grass_contract_report(variant: str) -> dict:
+    enhanced = variant == "enhanced"
+    species_counts = (
+        {"grass_common_short": 100, "grass_common_tall": 30, "grass_wispy_tall": 20}
+        if enhanced else
+        {"grass_common_short": 67, "grass_common_tall": 42, "grass_wispy_tall": 41}
+    )
+    shader_paths = ["res://scenery/imported_grass.gdshader"] if enhanced else []
+    return {
+        "route": "live-input",
+        "godot": "4.7.2.stable.official",
+        "backend": "gl_compatibility",
+        "window": "1280x720",
+        "camera": {"viewport": [1280, 720], "autozoom": False, "mode": "pilot"},
+        "render_settings": {"msaa_3d": 2},
+        "effective_grass": {
+            "format": "openrc-effective-grass-state v1",
+            "verified": True,
+            "errors": [],
+            "scenery": {"enabled": True, "quality": "high"},
+            "ground": {
+                "shader_path": "res://render/ground.gdshader",
+                "shader_sha256": "a" * 64,
+                "material_count": 1,
+                "grass_photo_enabled": enhanced,
+                "turf_detail_enabled": True,
+                "turf_detail_strength": 1.0,
+                "normal_texture_paths": ["res://assets/landscape/rc-ground/grass-normal.jpg"] if enhanced else [],
+                "roughness_texture_paths": ["res://assets/landscape/rc-ground/grass-roughness.jpg"] if enhanced else [],
+            },
+            "near_grass": {
+                "present": True,
+                "route": "imported",
+                "material_variant": "qualified-wind" if enhanced else "source-static",
+                "grass_wind": enhanced,
+                "quality": "high",
+                "batch_count": 3,
+                "clump_count": 150,
+                "source_triangles": 37_720 if enhanced else 49_579,
+                "species_counts": species_counts,
+                "shader_paths": shader_paths,
+                "material_bindings": [{
+                    "class": "ShaderMaterial" if enhanced else "StandardMaterial3D",
+                    "resource_path": "",
+                    "shader_path": shader_paths[0] if enhanced else "",
+                    "shader_sha256": "b" * 64 if enhanced else "",
+                    "texture_paths": ["res://assets/grass/albedo.png"],
+                }],
+                "texture_paths": ["res://assets/grass/albedo.png"],
+            },
+        },
+    }
+
+
 class ProfileOrderTests(unittest.TestCase):
+    def test_windows_runtime_change_is_detected_with_unchanged_console_launcher(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            console = folder / "Godot_console.exe"
+            runtime = folder / "Godot.exe"
+            console.write_bytes(b"unchanged launcher")
+            runtime.write_bytes(b"engine version one")
+            before = profile_session.engine_binary_snapshot(console)
+            runtime.write_bytes(b"engine version two")
+            after = profile_session.engine_binary_snapshot(console)
+            self.assertEqual(before[str(console.resolve())], after[str(console.resolve())])
+            self.assertNotEqual(before, after)
+            runtime.unlink()
+            with self.assertRaises(FileNotFoundError):
+                profile_session.engine_binary_snapshot(console)
+
     def test_order_alternates_ab_ba_for_pairs(self):
         self.assertEqual(
             [profile_session.pair_order(index) for index in range(1, 7)],
@@ -76,19 +146,48 @@ class ProfileOrderTests(unittest.TestCase):
 
 class RunEligibilityTests(unittest.TestCase):
     def test_effective_live_input_route_is_checked(self):
-        report = {
-            "route": "live-input",
-            "godot": "4.7.2.stable.official",
-            "backend": "gl_compatibility",
-            "window": "1280x720",
-            "camera": {"viewport": [1280, 720], "autozoom": False, "mode": "pilot"},
-            "render_settings": {"msaa_3d": 2},
-        }
-        self.assertEqual(profile_session.validate_report_contract(report), [])
+        report = grass_contract_report("default")
+        self.assertEqual(profile_session.validate_report_contract(report, "default"), [])
         report["route"] = "scripted-fixed"
         self.assertIn(
             "effective frametime route is not live-input",
-            profile_session.validate_report_contract(report),
+            profile_session.validate_report_contract(report, "default"),
+        )
+
+    def test_effective_grass_contract_requires_each_variant_and_compares_shared_settings(self):
+        default = grass_contract_report("default")
+        enhanced = grass_contract_report("enhanced")
+        self.assertEqual(profile_session.validate_report_contract(default, "default"), [])
+        self.assertEqual(profile_session.validate_report_contract(enhanced, "enhanced"), [])
+        self.assertNotEqual(
+            default["effective_grass"]["ground"]["grass_photo_enabled"],
+            enhanced["effective_grass"]["ground"]["grass_photo_enabled"],
+        )
+        self.assertNotEqual(
+            default["effective_grass"]["near_grass"]["species_counts"],
+            enhanced["effective_grass"]["near_grass"]["species_counts"],
+        )
+        self.assertEqual(
+            profile_session.report_identity(default),
+            profile_session.report_identity(enhanced),
+        )
+
+    def test_effective_grass_contract_rejects_wrong_route_or_variant_specific_features(self):
+        report = grass_contract_report("default")
+        report["effective_grass"]["near_grass"]["route"] = "procedural-fallback"
+        report["effective_grass"]["ground"]["grass_photo_enabled"] = True
+        report["effective_grass"]["near_grass"]["species_counts"]["grass_common_short"] = 100
+        errors = profile_session.validate_report_contract(report, "default")
+        self.assertTrue(any("NearGrass route is not imported" in error for error in errors))
+        self.assertTrue(any("grass photo detail is not disabled" in error for error in errors))
+        self.assertTrue(any("species counts are incorrect" in error for error in errors))
+
+    def test_variant_run_requires_observed_grass_scene(self):
+        report = grass_contract_report("enhanced")
+        report.pop("effective_grass")
+        self.assertIn(
+            "effective grass scene metadata is missing",
+            profile_session.validate_report_contract(report, "enhanced"),
         )
 
     def test_windows_inventory_uses_hidden_tasklist_csv_and_finds_godot(self):
@@ -117,6 +216,7 @@ class RunEligibilityTests(unittest.TestCase):
             (app / "project.godot").write_text("config_version=5\n", encoding="utf-8")
             godot = root / "Godot_v4.7.2-stable_win64_console.exe"
             godot.write_bytes(b"test engine identity")
+            (root / "Godot_v4.7.2-stable_win64.exe").write_bytes(b"test runtime identity")
             output = root / "campaign"
             args = argparse.Namespace(app=app, godot=godot, out=output, pairs=5, timeout=180)
             inventories = iter((

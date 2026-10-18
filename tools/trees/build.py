@@ -23,12 +23,19 @@ IDS = ('CommonTree_1', 'CommonTree_3', 'Pine_1')
 
 def run(command, log, env=None, timeout=180):
     with Path(log).open('w') as stream:
-        child = subprocess.Popen([str(x) for x in command], stdout=stream, stderr=subprocess.STDOUT,
-                                 env=env, start_new_session=True)
+        process_options = {'stdout': stream, 'stderr': subprocess.STDOUT, 'env': env}
+        if os.name == 'nt':
+            process_options['creationflags'] = subprocess.CREATE_NEW_PROCESS_GROUP
+        else:
+            process_options['start_new_session'] = True
+        child = subprocess.Popen([str(x) for x in command], **process_options)
         try:
             status = child.wait(timeout=timeout)
         except subprocess.TimeoutExpired:
-            os.killpg(child.pid, signal.SIGKILL)
+            if os.name == 'nt':
+                child.kill()
+            else:
+                os.killpg(child.pid, signal.SIGKILL)
             child.wait()
             raise RuntimeError(f'timed out: {command[0]}; see {log}')
     text = Path(log).read_text(errors='replace')
@@ -69,11 +76,23 @@ def inspect_mips(folder):
 def main():
     parser = argparse.ArgumentParser(__doc__)
     parser.add_argument('--out', required=True, type=Path)
-    parser.add_argument('--godot', type=Path, default=ROOT / '.tools/Godot_v4.7.2-stable_linux.x86_64')
+    parser.add_argument('--match-atlas', type=Path,
+                        help='Align the generated material-mask alpha to an existing runtime atlas without replacing it')
+    default_godot = ROOT / ('.tools/Godot_v4.7.2-stable_win64.exe' if os.name == 'nt'
+                            else '.tools/Godot_v4.7.2-stable_linux.x86_64')
+    parser.add_argument('--godot', type=Path, default=default_godot)
     args = parser.parse_args()
     out = args.out.resolve()
+    match_atlas = args.match_atlas.resolve() if args.match_atlas else None
     if out.exists() and any(out.iterdir()):
         raise RuntimeError('--out must be new or empty; never reuse stale evidence')
+    if match_atlas is not None and not match_atlas.is_file():
+        raise RuntimeError(f'--match-atlas does not exist: {match_atlas}')
+    if match_atlas is not None:
+        try:
+            match_atlas.relative_to(ROOT)
+        except ValueError as error:
+            raise RuntimeError('--match-atlas must identify an input inside this repository') from error
     out.mkdir(parents=True, exist_ok=True)
     godot = args.godot.resolve()
     version = subprocess.check_output([str(godot), '--version'], text=True).strip()
@@ -90,17 +109,27 @@ def main():
         raw = out / 'raw'
         raw.mkdir()
         env = {**os.environ, 'LP_NUM_THREADS': '1'}
-        run(['xvfb-run', '-a', godot, '--path', project, '--rendering-driver', 'opengl3',
-             '--audio-driver', 'Dummy', '--script', TOOLS / 'bake.gd', '--', '--out=' + str(raw)],
+        bake_command = [godot, '--path', project, '--rendering-driver', 'opengl3',
+                        '--audio-driver', 'Dummy', '--script', TOOLS / 'bake.gd', '--', '--out=' + str(raw)]
+        if os.name != 'nt':
+            bake_command = ['xvfb-run', '-a', *bake_command]
+        run(bake_command,
             out / 'bake.log', env=env)
         import sys
-        run([sys.executable, TOOLS / 'process_atlas.py', '--bake', raw, '--out', out / 'atlas'], out / 'process.log')
+        process_command = [sys.executable, TOOLS / 'process_atlas.py', '--bake', raw, '--out', out / 'atlas']
+        if match_atlas is not None:
+            process_command.extend(['--runtime-atlas', match_atlas])
+        run(process_command, out / 'process.log')
         run([godot, '--headless', '--path', project, '--script', TOOLS / 'fix_atlas.gd', '--', out / 'atlas'], out / 'mips.log')
         inspect_mips(out / 'atlas')
     # Keep input hashes with the bake, so reproducing an image never relies on a script filename alone.
     inputs = list(TOOLS.glob('*.gd')) + list(TOOLS.glob('*.py')) + list(TOOLS.glob('*.mjs')) + [TOOLS/'package-lock.json']
     inputs += list((ROOT/'assets/landscape/trees/source').glob('*'))
+    inputs.append(ROOT/'.gitattributes')
+    if match_atlas is not None:
+        inputs.append(match_atlas)
     report = {'format':'openrc-tree-bake v1', 'godot':version,
+              'runtime_alpha_reference': str(match_atlas.relative_to(ROOT).as_posix()) if match_atlas else None,
               'inputs_sha256':{str(p.relative_to(ROOT)):sha(p) for p in sorted(inputs) if p.is_file()},
               'outputs_sha256':{str(p.relative_to(out)):sha(p) for folder in ('derived','atlas')
                                 for p in sorted((out/folder).glob('*')) if p.is_file()},

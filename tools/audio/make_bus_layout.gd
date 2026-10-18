@@ -35,7 +35,7 @@ func _initialize() -> void:
 	if check:
 		var expected: String = FileAccess.get_file_as_string(OUTPUT)
 		var generated: String = FileAccess.get_file_as_string(target)
-		if expected != generated:
+		if _without_root_uid(expected) != _without_root_uid(generated):
 			printerr(OUTPUT, " is stale or hand-edited; regenerate with make_bus_layout.gd")
 			quit(1)
 			return
@@ -43,3 +43,16 @@ func _initialize() -> void:
 	else:
 		print("wrote ", OUTPUT)
 	quit(0)
+
+
+## Editor import assigns a project-local UID to the root resource. It is not an
+## audio setting. Ignore only this header attribute; every other byte stays checked.
+static func _without_root_uid(text: String) -> String:
+	var newline := text.find("\n")
+	var header := text if newline < 0 else text.left(newline)
+	if not header.begins_with("[gd_resource "):
+		return text
+	var uid := RegEx.new()
+	uid.compile(' uid="uid://[a-z0-9]+"')
+	var normalized := uid.sub(header, "", false)
+	return normalized + ("" if newline < 0 else text.substr(newline))

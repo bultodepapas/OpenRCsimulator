@@ -1,0 +1,9 @@
+config_version=5
+[application]
+config/name="Isolated downloaded-tree impostor evaluation"
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=720

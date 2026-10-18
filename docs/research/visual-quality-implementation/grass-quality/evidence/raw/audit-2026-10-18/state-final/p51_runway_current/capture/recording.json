@@ -1,0 +1,83 @@
+{
+	"error": "",
+	"format": "openrc-grass-state-capture v1",
+	"mode": "default",
+	"recording": {
+		"aircraft_identity": {
+			"format": "openrc-aircraft v2",
+			"sha256": "a37f7f4296b789b2fec3d48d73bfadd3ad83177954d2db5b1348db557be5a321"
+		},
+		"aircraft_kind": "p51",
+		"aircraft_path": "res://data/aircraft/p51d_mustang_120.json",
+		"capture_kind": "existing FlightLog API; scripted fixed-step neutral-input recording",
+		"complete": true,
+		"configuration": "virtual-balanced-reference-v1",
+		"dt_s": 0.004166666666666667,
+		"engine": "4.7.2-stable (official)",
+		"final_contact_indices": [
+			0,
+			1,
+			2
+		],
+		"final_gear_compressions_m": [
+			0.019750956315358666,
+			0.01946233548480704,
+			0.0278325676462157
+		],
+		"final_tick": 2880,
+		"first_tick": 0,
+		"ground_description": "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock",
+		"ground_field_id": "default",
+		"initial_contact_indices": [
+			0,
+			1,
+			2
+		],
+		"initial_gear_compressions_m": [
+			0.019753526885550942,
+			0.01945805551720475,
+			0.027883133807740382
+		],
+		"launch_choice": "runway",
+		"launch_ground_anchors": "[15.450437285502273,-46.741450661042904,1.0,14.548438027438594,-46.741735118261246,1.0,14.999826750434895,-48.03617239229511,1.0]",
+		"purpose": "software state/contact invariance only; not physical or owner acceptance",
+		"rows": 2881,
+		"solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+		"source": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-completion\\state\\run-20261018-p\\p51_runway_current_capture\\p51-runway-current.orfl",
+		"source_sha256": "151c481f58519adc25fe35b3027198996e7cf5a5ac72b2b882fc370d96ee74a8"
+	},
+	"renderer": {
+		"bundled_scenery_file": "res://data/scenery/default.json",
+		"enhanced": false,
+		"field_built_in_same_process_as_replay": true,
+		"field_id": "default",
+		"gpu_frame_rendered": false,
+		"material_route_ok": true,
+		"near_grass_clumps": 150,
+		"near_grass_counts_by_asset": {
+			"grass_common_short": 67,
+			"grass_common_tall": 42,
+			"grass_wispy_tall": 41
+		},
+		"near_grass_imported": true,
+		"near_grass_material_paths_or_types": [
+			"StandardMaterial3D",
+			"StandardMaterial3D",
+			"StandardMaterial3D"
+		],
+		"near_grass_source_triangles": 49579,
+		"rough_grass_photo_enabled": false,
+		"rough_material_shader": "res://render/ground.gdshader",
+		"scene_tree_initialized": true,
+		"scenery_enabled": true,
+		"scenery_file_explicit": true,
+		"scenery_quality": "high",
+		"selector": "",
+		"tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+		"tree_only_object_types_omitted": [
+			"treeline"
+		],
+		"tree_only_objects_omitted_for_headless_probe": 1
+	},
+	"status": "ok"
+}

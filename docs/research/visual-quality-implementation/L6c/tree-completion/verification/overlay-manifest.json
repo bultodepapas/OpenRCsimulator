@@ -1,0 +1,188 @@
+{
+  "format": "openrc-l6c-final-overlay-verification-v1",
+  "date": "2026-10-18",
+  "snapshot": {
+    "tree_sha256": "965fe642699358824b4d4e0bb6f1fc4c7673cfc6",
+    "fullsuite_scope": "app/test.sh ran once on this frozen pre-woodland-edge snapshot; the final L7-R1 overlay is qualified by focused checks and exports below.",
+    "verification_clone_head": "090bbf2e303b2edbd961a786048b24dea18439de"
+  },
+  "final_overlay": {
+    "files": [
+      {
+        "path": "app/scenery/scenery.gd",
+        "bytes": 29367,
+        "sha256": "7f062a9af5c4559c4f87ea984a1e51d44ceb8082963ec3617a9d35dda1777265"
+      },
+      {
+        "path": "app/scenery/woodland_edge_habitat.gd",
+        "bytes": 7437,
+        "sha256": "2d407c0957c48b96e7ad563b93ba6401d00fc30374f7e0b09eabef7780dc72b2"
+      },
+      {
+        "path": "app/scenery/woodland_edge_habitat.gd.uid",
+        "bytes": 20,
+        "sha256": "8bc49bdbe0db9c8de1baa4ecb675e949a213f7f60ad6778c48f6e7b90f1fd283"
+      },
+      {
+        "path": "app/data/woodland_edges.json",
+        "bytes": 15425,
+        "sha256": "beab81a8c7247d151f258936f82d40d23aeb2f118563471aadb07a439f2b19fe"
+      },
+      {
+        "path": "app/tests/test_woodland_edge_habitat.gd",
+        "bytes": 9505,
+        "sha256": "6715801f3a8561942483e8b4ac9aad4f3af0c2e3071f522225a89f347f04b9bd"
+      },
+      {
+        "path": "app/tests/test_woodland_edge_habitat.gd.uid",
+        "bytes": 20,
+        "sha256": "d868876ebe19771a9ae8e1b0130d2f405df6d2aadafeb32e414c7f18e37e5915"
+      },
+      {
+        "path": "app/test.sh",
+        "bytes": 26494,
+        "sha256": "ce0609f9e976685ed24828b2cd38b6a35d055550129d1f49ee4d2946755add16"
+      },
+      {
+        "path": "tools/trees/place_woodland_edges.py",
+        "bytes": 45113,
+        "sha256": "254d71b502d6a7c5252c9f34b29aa9745303d64d98d43302b4e7cb4fb17d4414"
+      },
+      {
+        "path": "tools/trees/test_place_woodland_edges.py",
+        "bytes": 7695,
+        "sha256": "0c78ee80e6c9b11af6736405b4504679a9bffb43d31caca27661aeb2acad5fbf"
+      }
+    ],
+    "tracked_diff_vs_snapshot": {
+      "app/scenery/scenery.gd": "8 added lines: WoodlandEdges preload, build call, and stats/timing metadata.",
+      "app/test.sh": "4 added lines: L7-R1 placement recipe --check and four-test generator suite."
+    },
+    "line_endings": {
+      "app/test.sh": {
+        "bytes": 26494,
+        "lf_count": 440,
+        "crlf_count": 0
+      },
+      "app/scenery/scenery.gd": {
+        "crlf_count": 0,
+        "normalized_to_lf_in_verification_clone": true
+      }
+    },
+    "overlay_manifest_sha256": null
+  },
+  "fullsuite": {
+    "command": "app/test.sh",
+    "exit_code": 0,
+    "parse_sweep": {
+      "gd_scripts": 990,
+      "result": "all parsed"
+    },
+    "unit_partition": {
+      "scripts": 528,
+      "passed": 528,
+      "failed": 0
+    },
+    "r02_yaw_alpha_gate": "one pending case retained under the existing explicit allow-flag flow; no gate was bypassed or rewritten.",
+    "final_reported_subgate": {
+      "name": "E5b tail-up pitch threshold, rigid tail lift and synthetic resistance patches",
+      "checks": 125,
+      "failures": 0,
+      "expected_failure": null,
+      "scope_note": "125 is this final E5b subresult, not the total app/test.sh check count."
+    },
+    "aud12": {
+      "generated_layout_current": true,
+      "freshness_test_checks": 6,
+      "audio_behavior_changed_by_uid_fix": false,
+      "note": "Only the editor-assigned root uid:// header attribute is normalized during the freshness comparison; other bytes/settings remain compared."
+    }
+  },
+  "final_overlay_checks": {
+    "headless_editor_import_parse": "passed after LF normalization",
+    "woodland_habitat": {
+      "checks": 23,
+      "failures": 0,
+      "triangles": 1956,
+      "batches": 5,
+      "high_tier_plants": 60,
+      "collision_objects": 0
+    },
+    "placement_generator": {
+      "recipe_check": "passed",
+      "python_tests": 4,
+      "failures": 0,
+      "patches": 4,
+      "triangles": 1956
+    },
+    "scenery_build_fixture": {
+      "result": "passed",
+      "triangles": 625575,
+      "limit": 650000,
+      "build_time_ms_observed": 583.926,
+      "time_threshold_ms": 800,
+      "scope_note": "Small scenery-only test fixture; not the complete lake+scenery result."
+    },
+    "complete_lake_scenery": {
+      "test": "test_landscape_vegetation.gd",
+      "checks": 36,
+      "failures": 0,
+      "triangles": 649919,
+      "limit": 650000,
+      "trees": 17,
+      "downloaded_tree_forms": 8
+    },
+    "tree_and_collision_tests": {
+      "tree_assets_checks": 68,
+      "treeline_checks": 28631,
+      "vegetation_collision_proxy_checks": 43,
+      "imported_vegetation": "passed",
+      "imported_tree_rendering": "passed",
+      "landscape_tree_bounds": "passed (192 deterministic/theme builds; zero failures)"
+    },
+    "pre_line_ending_normalization_focused_batch": "passed; final normalized parse, habitat, scenery, full-scene, and placement checks are captured separately in post-normalization log."
+  },
+  "exports": {
+    "command": "app/export.sh",
+    "exit_code": 0,
+    "platforms": [
+      "Linux x86_64",
+      "Windows x86_64",
+      "macOS universal"
+    ],
+    "web_export": false,
+    "build_identity": "v0.1.3-36-g090bbf2e-dirty",
+    "release_artifacts": [
+      {
+        "name": "openrc-simulator-v0.1.3-36-g090bbf2e-dirty-linux-x86_64.zip",
+        "sha256": "04a866475ecb929b744a6b6242655f759838b7bf299528272c56a48504e74a93",
+        "bytes": 174225543
+      },
+      {
+        "name": "openrc-simulator-v0.1.3-36-g090bbf2e-dirty-macos-universal.zip",
+        "sha256": "82577be01f9224ee76e6afc65ac16c8a99a4326271b5f83399d965ebe07d185d",
+        "bytes": 206234368
+      },
+      {
+        "name": "openrc-simulator-v0.1.3-36-g090bbf2e-dirty-windows-x86_64.zip",
+        "sha256": "188576f3ee77c2109b652b4dd75c66c9a7b65a8e423d757ad2f298541cb043da",
+        "bytes": 183617838
+      }
+    ],
+    "checks": [
+      "Linux exported binary trimmed-flight trace: 720 ticks, 3.0 s, finite samples, level altitude; build identity matched.",
+      "macOS universal app bundle had x86_64 and arm64 ad-hoc signatures; Windows VERSIONINFO and macOS Info.plist both matched 0.1.3.",
+      "app/tests/check_field_pack.gd validated each pack, including source-material mask alpha equality with runtime atlas through mip chain and tree/lake content.",
+      "External absolute test_woodland_edge_habitat.gd ran 23/23 against Linux, Windows, and macOS packs from an empty project root.",
+      "tools/trees/check_imported_pack.gd verified seven imported tree sources, 14 material surfaces, seven bark normal maps, catalog/license, and pinned oak source image against all three packs."
+    ],
+    "pack_probe_setup": "The empty project contained only project.godot plus the matching Linux GDExtension sidecar needed by the Linux host editor. Tested resources and scripts under res:// were served by each main pack; the habitat test itself was loaded by absolute filesystem path.",
+    "known_nonfatal_warning": "Pack export/import logged invalid UIDs embedded in several downloaded glTF texture references and resolved them by their res:// text paths. All pack/resource tests passed."
+  },
+  "pre_timing_audit": {
+    "reported_by": "root",
+    "scope": "246 retained evidence hashes across tree completion, plan, tree guide, and landscape guide subsets; it was not a blanket clean-worktree audit.",
+    "result": "zero missing files, zero hash mismatches, zero broken local links; git diff --check clean on owned tracked paths."
+  },
+  "gpu_and_performance_scope": "This verification agent ran no GPU captures or performance comparisons. The separate R3 visual evidence is linked from the sibling woodland-edges report; root owns subsequent timing."
+}

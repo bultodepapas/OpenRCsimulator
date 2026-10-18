@@ -1,0 +1,40 @@
+from pathlib import Path
+import subprocess, json, hashlib, csv, re, os
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT/'tmp/tree-completion/world-final'
+OUT.mkdir(exist_ok=False)
+ENGINE = ROOT/'.tools/Godot_v4.7.2-stable_win64.exe'
+rows = []
+for case in ['trim','runway']:
+    for label in ['baseline','candidate','candidate-wind-off']:
+        app = ROOT/'tmp/tree-completion/frozen'/('candidate' if label.startswith('candidate') else 'baseline')/'app'
+        prefix = OUT/f'{label}-{case}'
+        env = dict(os.environ, OPENRC_TREE_WIND='on' if label=='candidate' else 'off', OPENRC_TREE_CELL_SIZE_M='0')
+        common = [str(ENGINE),'--headless','--path',str(app),'--audio-driver','Dummy']
+        record = common + ['--script',str(ROOT/'tools/trees/world_replay.gd'),'--',f'--output={prefix}.json',f'--case={case}','--warmup-ticks=240','--sample-ticks=2160']
+        replay = common + ['--script','res://tools/flight_log_cli.gd','--',f'--log={prefix}.json.orfl',f'--csv={prefix}.csv',f'--report={prefix}-replay.json','--replay']
+        for phase, command in [('record',record),('replay',replay)]:
+            log = OUT/f'{label}-{case}-{phase}.log'
+            with log.open('w') as handle:
+                result = subprocess.run(command,stdout=handle,stderr=subprocess.STDOUT,env=env,timeout=180)
+            text = log.read_text()
+            if result.returncode or re.search(r'^(SCRIPT |SHADER )?ERROR:',text,re.M):
+                raise RuntimeError(f'Failed {phase}: {prefix}')
+        report = json.loads(Path(str(prefix)+'-replay.json').read_text())
+        assert report['complete'] and not report.get('solver_changed',True) and report['status']=='ok' and report['mode']=='exact',report
+        rows.append({'label':label,'case':case,'record_command':record,'replay_command':replay,'record':json.loads(Path(str(prefix)+'.json').read_text()),'replay':report})
+        print(label,case,report['status'],flush=True)
+comparisons = []
+for case in ['trim','runway']:
+    for other in ['baseline','candidate-wind-off']:
+        a=list(csv.DictReader((OUT/f'candidate-{case}.csv').open()))
+        b=list(csv.DictReader((OUT/f'{other}-{case}.csv').open()))
+        assert len(a)==len(b)==2401
+        differences={}
+        for key in a[0]:
+            try: delta=max(abs(float(x[key])-float(y[key])) for x,y in zip(a,b))
+            except ValueError: delta=0 if all(x[key]==y[key] for x,y in zip(a,b)) else 'non-numeric difference'
+            if delta: differences[key]=delta
+        comparisons.append({'case':case,'comparison':f'candidate vs {other}','rows':len(a),'differences':differences,'scope':'Exact within-world replay is verified separately. Cross-world equal sampled state is only evidence for this input tape, not general equivalence.'})
+(OUT/'summary.json').write_text(json.dumps({'runs':rows,'comparisons':comparisons},indent=2)+'\n')
+(OUT/'sha256.json').write_text(json.dumps({p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in OUT.iterdir() if p.is_file()},indent=2)+'\n')

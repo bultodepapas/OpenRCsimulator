@@ -1,0 +1,53 @@
+from pathlib import Path
+import hashlib
+import json
+import re
+import shutil
+import subprocess
+
+ROOT = Path(__file__).resolve().parents[2]
+OUT = ROOT / 'tmp/tree-completion/frozen'
+HISTORICAL = ROOT / 'tmp/tree-quality-implementation/baseline/app'
+
+def sha(p):
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+def hashes(app):
+    return {p.relative_to(app).as_posix(): sha(p) for p in sorted(app.rglob('*'))
+            if p.is_file() and '.godot' not in p.parts}
+
+if OUT.exists():
+    raise RuntimeError('New snapshot directory required')
+for label in ['baseline', 'candidate']:
+    target = OUT / label
+    shutil.copytree(ROOT / 'app', target / 'app', ignore=shutil.ignore_patterns('.godot', 'captures', '__pycache__', 'tmp'))
+    # The accepted aircraft source identity checks use these files outside res://.
+    shutil.copytree(ROOT / 'tmp/tree-oak/candidate/assets', target / 'assets')
+    shutil.copytree(ROOT / 'tools/audio', target / 'tools/audio')
+
+baseline = OUT / 'baseline/app'
+for relative in ['render/treeline.gd', 'render/treeline.gdshader', 'render/tree_identity.gdshaderinc', 'data/fields/default.json']:
+    shutil.copy2(HISTORICAL / relative, baseline / relative)
+for name in ['Bark_NormalTree.png', 'Bark_NormalTree_Normal.png', 'Leaves_NormalTree_C.png', 'Leaf_Pine_C.png']:
+    relative = 'assets/landscape/vegetation/models/' + name + '.import'
+    shutil.copy2(HISTORICAL / relative, baseline / relative)
+library = baseline / 'scenery/imported_vegetation.gd'
+source = library.read_text()
+old = (HISTORICAL / 'scenery/imported_vegetation.gd').read_text()
+for alias in ['shade_tree', 'tree', 'sapling']:
+    pattern = r'"' + alias + r'": \[[^\]]*\]'
+    match = re.search(pattern, old)
+    if match is None:
+        raise RuntimeError('Historical alias missing: ' + alias)
+    source, count = re.subn(pattern, lambda _: match.group(0), source)
+    assert count == 1
+library.write_bytes(source.encode())
+
+before = hashes(baseline)
+after = hashes(OUT / 'candidate/app')
+diff = {p: {'baseline': before.get(p), 'candidate': after.get(p)} for p in sorted(before.keys() | after.keys()) if before.get(p) != after.get(p)}
+receipt = {'format': 'openrc-tree-comparison-freeze v1', 'git_head': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+           'scope': 'Current shared runtime in both snapshots. Historical pre-plan card shaders, field, imported-tree alias selection and mip settings restored only in baseline. Extra unused source assets remain in both snapshots. Baseline imported-tree wind is disabled by OPENRC_TREE_WIND=off in the runner. This is a reconstructed visual control, not a historical full build.',
+           'differences': diff, 'baseline': before, 'candidate': after}
+(OUT / 'freeze.json').write_text(json.dumps(receipt, indent=2) + '\n')
+print('Frozen sources', len(before), len(after), 'differences', len(diff), flush=True)

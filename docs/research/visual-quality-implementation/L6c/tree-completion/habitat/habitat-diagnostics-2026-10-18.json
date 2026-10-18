@@ -1,0 +1,1515 @@
+{
+  "authoritative_exclusions": {
+    "lake_bank_polygon_used": "bank_offsets_ne_m",
+    "lake_bank_vertices": 20,
+    "lake_geometry_separate_from_scenery_groups": true,
+    "lake_source_format": "openrc-lake v1",
+    "lake_source_id": "near_runway",
+    "note": "The default openrc-lake v1 source is app/data/fields/lake.json; its bank polygon is used for full card-envelope exclusions. The scenery file also provides three checked track polylines. No separate RC course geometry is configured in the checked default scenery; do not treat those tracks as a complete course layout.",
+    "scenery_track_ids_checked": [
+      "access-track",
+      "worn-parking-door",
+      "worn-door-pits"
+    ],
+    "separate_rc_course_geometry_found_in_default_scenery": false
+  },
+  "classification": "estimated visual composition, not surveyed geography or ecological simulation",
+  "committed_habitat_matches_generator": true,
+  "committed_tree_count": 1680,
+  "density_increments": {
+    "plus_25_percent": {
+      "additional_card_triangles_at_6_per_tree": 2520,
+      "candidate_positions_generated": false,
+      "current_draw_call_contract_changes": false,
+      "disposition": "defer; candidate exceeds the field loader limit and has no same-target performance or flight readability evidence",
+      "extra_tree_count": 420,
+      "hypothetical_total_tree_count": 2100,
+      "loader_limit": 1680,
+      "positions_over_current_loader_limit": 420
+    },
+    "plus_50_percent": {
+      "additional_card_triangles_at_6_per_tree": 5040,
+      "candidate_positions_generated": false,
+      "current_draw_call_contract_changes": false,
+      "disposition": "defer; candidate exceeds the field loader limit and has no same-target performance or flight readability evidence",
+      "extra_tree_count": 840,
+      "hypothetical_total_tree_count": 2520,
+      "loader_limit": 1680,
+      "positions_over_current_loader_limit": 840
+    }
+  },
+  "format": "openrc-forest-habitat-diagnostics v2",
+  "recipe_comparison": {
+    "existing": {
+      "clearances": {
+        "counts": {
+          "far": 1200,
+          "near": 480,
+          "total": 1680
+        },
+        "far_spacing_violations_below_4_5m": 0,
+        "grid_or_flatness_failures": 0,
+        "inside_expected_ring_failures": 0,
+        "lake_bank_full_envelope_hits": 0,
+        "maximum_tree_swept_horizontal_radius_m": 14.34389421384595,
+        "near_spacing_violations_below_9m": 0,
+        "nearest_neighbor_distances_m": {
+          "far": {
+            "count": 1200,
+            "max_m": 16.035117710824576,
+            "median_m": 6.116051571966241,
+            "min_m": 4.5,
+            "p05_m": 4.650268809434569,
+            "p25_m": 5.25594901040716,
+            "p75_m": 7.301540933255117,
+            "p95_m": 10.077822185373186
+          },
+          "near": {
+            "count": 480,
+            "max_m": 70.26067534545906,
+            "median_m": 18.490477713561113,
+            "min_m": 9.013878188659973,
+            "p05_m": 9.946853969045769,
+            "p25_m": 13.315873985585775,
+            "p75_m": 25.056186860733618,
+            "p95_m": 37.681271526998714
+          }
+        },
+        "protected_gap_crown_hits": 0,
+        "rotorpad_full_envelope_hits": 0,
+        "rough_surface_full_envelope_failures": 0,
+        "runway_mown_full_envelope_hits": 0,
+        "scenery_track_full_envelope_hits": {
+          "access-track": 0,
+          "worn-door-pits": 0,
+          "worn-parking-door": 0
+        },
+        "wind_envelope": {
+          "clearance_margin_m": 0.6489576848313181,
+          "max_frame_size_m": 1.125001,
+          "max_horizontal_radius_with_wind_m": 14.351042315168682,
+          "max_identity_height_m": 25.0,
+          "max_rigid_wind_sweep_m_at_10mps": 0.2885298151686824,
+          "max_static_half_width_m": 14.062512499999999,
+          "max_vertex_radius_from_root_m": 30.055304492307386,
+          "runtime_clearance_covers_wind_envelope": true,
+          "runtime_clearance_radius_m": 15.0
+        }
+      },
+      "composition": {
+        "cell_size_m": 1.0,
+        "eligible_area_weighted_card_disk_occupancy_fraction": 0.9866343927594192,
+        "eligible_patch_area_ha": 11.402399999999998,
+        "far_stems_per_ha_of_eligible_patch_area": 105.24100189433805,
+        "interpretation": "Patch area is a deterministic center-sampled mask clipped by the far ring, protected gaps, full card/wind envelope, field surfaces, the authoritative lake-bank polygon, and current scenery tracks. Card occupancy treats each crossed-card tree as a conservative disk using its deterministic height and wind sweep; it is an upper-envelope proxy, not visible leaf cover.",
+        "patch_occupancy_summary": {
+          "count": 12,
+          "max_m": 0.9954708236781125,
+          "median_m": 0.9880572940605414,
+          "min_m": 0.9710343374763009,
+          "p05_m": 0.9738894998340387,
+          "p25_m": 0.9827093102083062,
+          "p75_m": 0.9935557210404509,
+          "p95_m": 0.9952425354984076
+        },
+        "patch_stems_per_ha_summary": {
+          "count": 12,
+          "max_m": 105.32968190436064,
+          "median_m": 105.21885987837035,
+          "min_m": 105.17458981909971,
+          "p05_m": 105.18676024291635,
+          "p25_m": 105.19671786240269,
+          "p75_m": 105.2797888971428,
+          "p95_m": 105.32968190436064
+        },
+        "patch_tree_count_range": [
+          100,
+          100
+        ],
+        "patches": [
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 240.5,
+            "center_north_m": 878.75,
+            "eligible_area_ha": 0.9494,
+            "eligible_cells": 9494,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 13.752272539475067,
+              "median_m": 5.771698190307598,
+              "min_m": 4.589389937671455,
+              "p05_m": 4.75,
+              "p25_m": 5.062114182829147,
+              "p75_m": 7.072129013904627,
+              "p95_m": 10.557330789176602
+            },
+            "occupied_cells": 9219,
+            "patch_index": 0,
+            "sector": 0,
+            "shape": "circle",
+            "stems_per_ha": 105.32968190436064,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9710343374763009
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 1256.5,
+            "center_north_m": 567.0,
+            "eligible_area_ha": 0.9502,
+            "eligible_cells": 9502,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 12.39455525624054,
+              "median_m": 6.041522986797286,
+              "min_m": 4.5,
+              "p05_m": 4.650268809434569,
+              "p25_m": 5.129571132170798,
+              "p75_m": 6.946221994724902,
+              "p95_m": 10.846513527957352
+            },
+            "occupied_cells": 9372,
+            "patch_index": 1,
+            "sector": 1,
+            "shape": "circle",
+            "stems_per_ha": 105.24100189433803,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.986318669753736
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 1084.75,
+            "center_north_m": -143.25,
+            "eligible_area_ha": 0.9506,
+            "eligible_cells": 9506,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 16.035117710824576,
+              "median_m": 6.067295571083436,
+              "min_m": 4.589389937671455,
+              "p05_m": 4.6097722286464435,
+              "p25_m": 5.5901699437494745,
+              "p75_m": 7.458216945088149,
+              "p95_m": 10.910683546815166
+            },
+            "occupied_cells": 9459,
+            "patch_index": 2,
+            "sector": 2,
+            "shape": "circle",
+            "stems_per_ha": 105.19671786240269,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9950557542604671
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 512.75,
+            "center_north_m": -954.25,
+            "eligible_area_ha": 0.9506,
+            "eligible_cells": 9506,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 11.070794912742265,
+              "median_m": 6.031160138096717,
+              "min_m": 4.670385423067351,
+              "p05_m": 4.8541219597369,
+              "p25_m": 5.458487239182621,
+              "p75_m": 7.64689737001934,
+              "p95_m": 9.52623703985386
+            },
+            "occupied_cells": 9409,
+            "patch_index": 3,
+            "sector": 3,
+            "shape": "circle",
+            "stems_per_ha": 105.19671786240269,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9897959183673469
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -29.75,
+            "center_north_m": -1323.25,
+            "eligible_area_ha": 0.9506,
+            "eligible_cells": 9506,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 11.104616157256405,
+              "median_m": 5.9940548457729665,
+              "min_m": 4.5069390943299865,
+              "p05_m": 4.5069390943299865,
+              "p25_m": 5.1478150704935,
+              "p75_m": 7.267220926874317,
+              "p95_m": 9.86293490144017
+            },
+            "occupied_cells": 9423,
+            "patch_index": 4,
+            "sector": 4,
+            "shape": "circle",
+            "stems_per_ha": 105.19671786240269,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9912686724174206
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -1012.75,
+            "center_north_m": -620.75,
+            "eligible_area_ha": 0.9506,
+            "eligible_cells": 9506,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 13.509256086106296,
+              "median_m": 6.485560885536423,
+              "min_m": 4.5,
+              "p05_m": 4.589389937671455,
+              "p25_m": 5.55090082779363,
+              "p75_m": 7.324775994832283,
+              "p95_m": 9.290615294937451
+            },
+            "occupied_cells": 9280,
+            "patch_index": 5,
+            "sector": 5,
+            "shape": "circle",
+            "stems_per_ha": 105.19671786240269,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.976225541763097
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -551.25,
+            "center_north_m": 438.75,
+            "eligible_area_ha": 0.9506,
+            "eligible_cells": 9506,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 14.252192813739224,
+              "median_m": 6.282403628999656,
+              "min_m": 4.6097722286464435,
+              "p05_m": 4.6097722286464435,
+              "p25_m": 5.202163011671203,
+              "p75_m": 6.9731628404906765,
+              "p95_m": 10.086188391621151
+            },
+            "occupied_cells": 9444,
+            "patch_index": 6,
+            "sector": 6,
+            "shape": "circle",
+            "stems_per_ha": 105.19671786240269,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.993477803492531
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -92.25,
+            "center_north_m": 929.5,
+            "eligible_area_ha": 0.9494,
+            "eligible_cells": 9494,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 10.5,
+              "median_m": 6.5262899335384645,
+              "min_m": 4.5,
+              "p05_m": 4.808846015417836,
+              "p25_m": 5.393803594836531,
+              "p75_m": 7.501041377475454,
+              "p95_m": 9.081551132457893
+            },
+            "occupied_cells": 9275,
+            "patch_index": 7,
+            "sector": 7,
+            "shape": "circle",
+            "stems_per_ha": 105.32968190436064,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.976932799662945
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -1177.0,
+            "center_north_m": 777.5,
+            "eligible_area_ha": 0.9502,
+            "eligible_cells": 9502,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 13.306483382171264,
+              "median_m": 6.324555320336759,
+              "min_m": 4.527692569068709,
+              "p05_m": 4.650268809434569,
+              "p25_m": 5.287041021429995,
+              "p75_m": 7.524955037644413,
+              "p95_m": 9.172632389923818
+            },
+            "occupied_cells": 9356,
+            "patch_index": 8,
+            "sector": 6,
+            "shape": "circle",
+            "stems_per_ha": 105.24100189433803,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9846348137234266
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 760.75,
+            "center_north_m": -1187.5,
+            "eligible_area_ha": 0.9494,
+            "eligible_cells": 9494,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 14.562365879210699,
+              "median_m": 6.302276944034533,
+              "min_m": 4.596194077712559,
+              "p05_m": 4.743416490252569,
+              "p25_m": 5.291492713186266,
+              "p75_m": 7.823227161546367,
+              "p95_m": 10.477516393130797
+            },
+            "occupied_cells": 9451,
+            "patch_index": 9,
+            "sector": 3,
+            "shape": "circle",
+            "stems_per_ha": 105.32968190436064,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9954708236781125
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 369.75,
+            "center_north_m": 1162.0,
+            "eligible_area_ha": 0.9508,
+            "eligible_cells": 9508,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 15.598477489806497,
+              "median_m": 6.054347560169554,
+              "min_m": 4.5069390943299865,
+              "p05_m": 4.6073872121003046,
+              "p25_m": 5.291492713186266,
+              "p75_m": 7.403546447480424,
+              "p95_m": 11.093576125695485
+            },
+            "occupied_cells": 9371,
+            "patch_index": 10,
+            "sector": 0,
+            "shape": "circle",
+            "stems_per_ha": 105.17458981909971,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9855910811947833
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -811.0,
+            "center_north_m": -428.0,
+            "eligible_area_ha": 0.95,
+            "eligible_cells": 9500,
+            "nearest_neighbor_m": {
+              "count": 100,
+              "max_m": 10.419332992087353,
+              "median_m": 6.005203820042826,
+              "min_m": 4.562071897723665,
+              "p05_m": 4.756574397610112,
+              "p25_m": 5.024926236687195,
+              "p75_m": 6.614332912878326,
+              "p95_m": 8.902814426628312
+            },
+            "occupied_cells": 9441,
+            "patch_index": 11,
+            "sector": 5,
+            "shape": "circle",
+            "stems_per_ha": 105.26315789473685,
+            "tree_count": 100,
+            "wind_swept_card_disk_occupancy_fraction": 0.9937894736842106
+          }
+        ]
+      },
+      "counts": {
+        "far": 1200,
+        "near": 480,
+        "total": 1680
+      },
+      "far_positions_sha256": "7c8ee96a60c22241ea1f58f0fdadcba6c010e540c6d9f0fe82b7bbe10d9b442c",
+      "near_positions_sha256": "9b42b61ff36e5df25ef0245702e4d75965ea805f81de56a1c353fd1f0c722875",
+      "nearest_neighbor_distances_m": {
+        "combined": {
+          "count": 1680,
+          "max_m": 70.26067534545906,
+          "median_m": 6.96419413859206,
+          "min_m": 4.5,
+          "p05_m": 4.749670824512629,
+          "p25_m": 5.55090082779363,
+          "p75_m": 11.672617529928752,
+          "p95_m": 28.2311132611199
+        },
+        "far": {
+          "count": 1200,
+          "max_m": 16.035117710824576,
+          "median_m": 6.116051571966241,
+          "min_m": 4.5,
+          "p05_m": 4.650268809434569,
+          "p25_m": 5.25594901040716,
+          "p75_m": 7.301540933255117,
+          "p95_m": 10.077822185373186
+        },
+        "near": {
+          "count": 480,
+          "max_m": 70.26067534545906,
+          "median_m": 18.490477713561113,
+          "min_m": 9.013878188659973,
+          "p05_m": 9.946853969045769,
+          "p25_m": 13.315873985585775,
+          "p75_m": 25.056186860733618,
+          "p95_m": 37.681271526998714
+        }
+      },
+      "positions_sha256": "772d1207da670718c575c20e5b6246d8d2e6e7cdf70e006e006642c9e95ff2f3",
+      "recipe": "existing",
+      "seed_far": 610607,
+      "seed_near": 610602,
+      "skyline_proxy": {
+        "combined": {
+          "angular_coverage_percent": 82.84722222222223,
+          "interpretation": "Horizontal wind-swept card-envelope proxy from the pilot; no elevation, alpha texture, terrain, camera FOV, or lighting is evaluated.",
+          "largest_open_interval_deg": 20.5,
+          "open_azimuth_intervals": [
+            {
+              "center_deg": 210.0,
+              "start_deg": 199.75,
+              "width_deg": 20.5
+            },
+            {
+              "center_deg": 30.125,
+              "start_deg": 22.0,
+              "width_deg": 16.25
+            },
+            {
+              "center_deg": 86.875,
+              "start_deg": 80.25,
+              "width_deg": 13.25
+            },
+            {
+              "center_deg": 271.5,
+              "start_deg": 265.75,
+              "width_deg": 11.5
+            },
+            {
+              "center_deg": 345.875,
+              "start_deg": 345.75,
+              "width_deg": 0.25
+            }
+          ],
+          "sample_step_deg": 0.25
+        },
+        "far": {
+          "angular_coverage_percent": 19.72222222222222,
+          "interpretation": "Horizontal wind-swept card-envelope proxy from the pilot; no elevation, alpha texture, terrain, camera FOV, or lighting is evaluated.",
+          "largest_open_interval_deg": 54.25,
+          "open_azimuth_intervals": [
+            {
+              "center_deg": 273.375,
+              "start_deg": 246.25,
+              "width_deg": 54.25
+            },
+            {
+              "center_deg": 209.75,
+              "start_deg": 184.25,
+              "width_deg": 51.0
+            },
+            {
+              "center_deg": 122.875,
+              "start_deg": 101.25,
+              "width_deg": 43.25
+            },
+            {
+              "center_deg": 41.875,
+              "start_deg": 20.75,
+              "width_deg": 42.25
+            },
+            {
+              "center_deg": 331.875,
+              "start_deg": 313.5,
+              "width_deg": 36.75
+            },
+            {
+              "center_deg": 81.375,
+              "start_deg": 68.5,
+              "width_deg": 25.75
+            },
+            {
+              "center_deg": 167.0,
+              "start_deg": 155.5,
+              "width_deg": 23.0
+            },
+            {
+              "center_deg": 4.625,
+              "start_deg": 358.25,
+              "width_deg": 12.75
+            }
+          ],
+          "sample_step_deg": 0.25
+        },
+        "near": {
+          "angular_coverage_percent": 82.63888888888889,
+          "interpretation": "Horizontal wind-swept card-envelope proxy from the pilot; no elevation, alpha texture, terrain, camera FOV, or lighting is evaluated.",
+          "largest_open_interval_deg": 20.5,
+          "open_azimuth_intervals": [
+            {
+              "center_deg": 210.0,
+              "start_deg": 199.75,
+              "width_deg": 20.5
+            },
+            {
+              "center_deg": 30.125,
+              "start_deg": 22.0,
+              "width_deg": 16.25
+            },
+            {
+              "center_deg": 86.875,
+              "start_deg": 80.25,
+              "width_deg": 13.25
+            },
+            {
+              "center_deg": 271.5,
+              "start_deg": 265.75,
+              "width_deg": 11.5
+            },
+            {
+              "center_deg": 67.375,
+              "start_deg": 67.0,
+              "width_deg": 0.75
+            },
+            {
+              "center_deg": 345.875,
+              "start_deg": 345.75,
+              "width_deg": 0.25
+            }
+          ],
+          "sample_step_deg": 0.25
+        }
+      }
+    },
+    "habitat-v1": {
+      "clearances": {
+        "counts": {
+          "far": 1200,
+          "near": 480,
+          "total": 1680
+        },
+        "far_spacing_violations_below_4_5m": 0,
+        "grid_or_flatness_failures": 0,
+        "inside_expected_ring_failures": 0,
+        "lake_bank_full_envelope_hits": 0,
+        "maximum_tree_swept_horizontal_radius_m": 14.34389421384595,
+        "near_spacing_violations_below_9m": 0,
+        "nearest_neighbor_distances_m": {
+          "far": {
+            "count": 1200,
+            "max_m": 23.723669614964713,
+            "median_m": 7.7721434382782775,
+            "min_m": 4.5,
+            "p05_m": 4.697073557013984,
+            "p25_m": 6.010407640085654,
+            "p75_m": 10.277402395547233,
+            "p95_m": 14.9164338901763
+          },
+          "near": {
+            "count": 480,
+            "max_m": 70.26067534545906,
+            "median_m": 18.490477713561113,
+            "min_m": 9.013878188659973,
+            "p05_m": 9.946853969045769,
+            "p25_m": 13.315873985585775,
+            "p75_m": 25.056186860733618,
+            "p95_m": 37.681271526998714
+          }
+        },
+        "protected_gap_crown_hits": 0,
+        "rotorpad_full_envelope_hits": 0,
+        "rough_surface_full_envelope_failures": 0,
+        "runway_mown_full_envelope_hits": 0,
+        "scenery_track_full_envelope_hits": {
+          "access-track": 0,
+          "worn-door-pits": 0,
+          "worn-parking-door": 0
+        },
+        "wind_envelope": {
+          "clearance_margin_m": 0.6489576848313181,
+          "max_frame_size_m": 1.125001,
+          "max_horizontal_radius_with_wind_m": 14.351042315168682,
+          "max_identity_height_m": 25.0,
+          "max_rigid_wind_sweep_m_at_10mps": 0.2885298151686824,
+          "max_static_half_width_m": 14.062512499999999,
+          "max_vertex_radius_from_root_m": 30.055304492307386,
+          "runtime_clearance_covers_wind_envelope": true,
+          "runtime_clearance_radius_m": 15.0
+        }
+      },
+      "composition": {
+        "cell_size_m": 1.0,
+        "eligible_area_weighted_card_disk_occupancy_fraction": 0.8355692406770111,
+        "eligible_patch_area_ha": 24.8445,
+        "far_stems_per_ha_of_eligible_patch_area": 48.30042866630441,
+        "interpretation": "Patch area is a deterministic center-sampled mask clipped by the far ring, protected gaps, full card/wind envelope, field surfaces, the authoritative lake-bank polygon, and current scenery tracks. Card occupancy treats each crossed-card tree as a conservative disk using its deterministic height and wind sweep; it is an upper-envelope proxy, not visible leaf cover.",
+        "patch_occupancy_summary": {
+          "count": 12,
+          "max_m": 0.9159335288367546,
+          "median_m": 0.8697084117862673,
+          "min_m": 0.7696032949376541,
+          "p05_m": 0.7784866601404661,
+          "p25_m": 0.8118720692086469,
+          "p75_m": 0.8961285300422321,
+          "p95_m": 0.9134888184190966
+        },
+        "patch_stems_per_ha_summary": {
+          "count": 12,
+          "max_m": 61.46491377838484,
+          "median_m": 52.4433717306909,
+          "min_m": 39.1500147095431,
+          "p05_m": 40.58269128172677,
+          "p25_m": 45.193757946476794,
+          "p75_m": 57.2282611375867,
+          "p95_m": 61.19951500335556
+        },
+        "patch_tree_count_range": [
+          55,
+          173
+        ],
+        "patches": [
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 64.0,
+            "center_north_m": 1113.25,
+            "eligible_area_ha": 0.9019,
+            "eligible_cells": 9019,
+            "nearest_neighbor_m": {
+              "count": 55,
+              "max_m": 16.592543506045118,
+              "median_m": 7.057797106746552,
+              "min_m": 4.5069390943299865,
+              "p05_m": 4.589389937671455,
+              "p25_m": 5.801325042576449,
+              "p75_m": 8.792741204971993,
+              "p95_m": 12.25826480194744
+            },
+            "occupied_cells": 8090,
+            "patch_index": 0,
+            "sector": 0,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 60.98237055105887,
+            "tree_count": 55,
+            "wind_swept_card_disk_occupancy_fraction": 0.8969952322873933
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 1123.25,
+            "center_north_m": 476.5,
+            "eligible_area_ha": 1.1185,
+            "eligible_cells": 11185,
+            "nearest_neighbor_m": {
+              "count": 64,
+              "max_m": 17.251811499086116,
+              "median_m": 6.914658342969665,
+              "min_m": 4.5,
+              "p05_m": 4.589273586603,
+              "p25_m": 5.70087712549569,
+              "p75_m": 8.69500498289198,
+              "p95_m": 12.284202508636078
+            },
+            "occupied_cells": 10195,
+            "patch_index": 1,
+            "sector": 1,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 57.21949038891372,
+            "tree_count": 64,
+            "wind_swept_card_disk_occupancy_fraction": 0.9114886008046491
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 827.0,
+            "center_north_m": -293.5,
+            "eligible_area_ha": 1.1714,
+            "eligible_cells": 11714,
+            "nearest_neighbor_m": {
+              "count": 72,
+              "max_m": 14.363582422223224,
+              "median_m": 7.088372477723638,
+              "min_m": 4.589389937671455,
+              "p05_m": 4.6036620607261955,
+              "p25_m": 5.564128352127286,
+              "p75_m": 10.040542814011602,
+              "p95_m": 13.458877823385079
+            },
+            "occupied_cells": 10349,
+            "patch_index": 2,
+            "sector": 2,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 61.46491377838484,
+            "tree_count": 72,
+            "wind_swept_card_disk_occupancy_fraction": 0.8834727676284787
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 408.0,
+            "center_north_m": -1007.75,
+            "eligible_area_ha": 1.4322,
+            "eligible_cells": 14322,
+            "nearest_neighbor_m": {
+              "count": 82,
+              "max_m": 18.915932438026946,
+              "median_m": 7.532601567448063,
+              "min_m": 4.5069390943299865,
+              "p05_m": 5.315072906367325,
+              "p25_m": 5.9751745757251244,
+              "p75_m": 10.065411069598698,
+              "p95_m": 15.407810417999
+            },
+            "occupied_cells": 13118,
+            "patch_index": 3,
+            "sector": 3,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 57.254573383605646,
+            "tree_count": 82,
+            "wind_swept_card_disk_occupancy_fraction": 0.9159335288367546
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -305.25,
+            "center_north_m": -1229.25,
+            "eligible_area_ha": 1.6445,
+            "eligible_cells": 16445,
+            "nearest_neighbor_m": {
+              "count": 88,
+              "max_m": 23.723669614964713,
+              "median_m": 8.00390529679106,
+              "min_m": 4.5069390943299865,
+              "p05_m": 4.589389937671455,
+              "p25_m": 6.269968101992227,
+              "p75_m": 10.624952458760388,
+              "p95_m": 14.790075631825456
+            },
+            "occupied_cells": 14076,
+            "patch_index": 4,
+            "sector": 4,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 53.51170568561873,
+            "tree_count": 88,
+            "wind_swept_card_disk_occupancy_fraction": 0.855944055944056
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -1202.5,
+            "center_north_m": -521.25,
+            "eligible_area_ha": 1.6323,
+            "eligible_cells": 16323,
+            "nearest_neighbor_m": {
+              "count": 92,
+              "max_m": 21.755746367339366,
+              "median_m": 7.520804478245662,
+              "min_m": 4.596194077712559,
+              "p05_m": 4.7762432936357,
+              "p25_m": 6.082657678249175,
+              "p75_m": 10.167837514749468,
+              "p95_m": 14.694960204832114
+            },
+            "occupied_cells": 14591,
+            "patch_index": 5,
+            "sector": 5,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 56.36218832322489,
+            "tree_count": 92,
+            "wind_swept_card_disk_occupancy_fraction": 0.8938920541567114
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -826.5,
+            "center_north_m": 751.0,
+            "eligible_area_ha": 1.9361,
+            "eligible_cells": 19361,
+            "nearest_neighbor_m": {
+              "count": 96,
+              "max_m": 19.03943276465977,
+              "median_m": 7.925409220728151,
+              "min_m": 4.527692569068709,
+              "p05_m": 4.650268809434569,
+              "p25_m": 5.926634795564849,
+              "p75_m": 9.14334636925274,
+              "p95_m": 13.530049677981532
+            },
+            "occupied_cells": 15213,
+            "patch_index": 6,
+            "sector": 6,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 49.58421569133826,
+            "tree_count": 96,
+            "wind_swept_card_disk_occupancy_fraction": 0.785754868033676
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -214.0,
+            "center_north_m": 962.5,
+            "eligible_area_ha": 1.9854,
+            "eligible_cells": 19854,
+            "nearest_neighbor_m": {
+              "count": 102,
+              "max_m": 21.1482859825566,
+              "median_m": 7.660202092423095,
+              "min_m": 4.5069390943299865,
+              "p05_m": 5.220153254455275,
+              "p25_m": 6.241690804893978,
+              "p75_m": 10.620553517638069,
+              "p95_m": 14.492744452479986
+            },
+            "occupied_cells": 17786,
+            "patch_index": 7,
+            "sector": 7,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 51.37503777576307,
+            "tree_count": 102,
+            "wind_swept_card_disk_occupancy_fraction": 0.8958396292938451
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": 764.75,
+            "center_north_m": 712.75,
+            "eligible_area_ha": 2.4238,
+            "eligible_cells": 24238,
+            "nearest_neighbor_m": {
+              "count": 110,
+              "max_m": 19.97029043354152,
+              "median_m": 7.433034373659253,
+              "min_m": 4.562071897723665,
+              "p05_m": 4.751367731159668,
+              "p25_m": 5.88430114796991,
+              "p75_m": 10.034818233549759,
+              "p95_m": 13.915343357347323
+            },
+            "occupied_cells": 19501,
+            "patch_index": 8,
+            "sector": 1,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 45.38328244904695,
+            "tree_count": 110,
+            "wind_swept_card_disk_occupancy_fraction": 0.8045630827626041
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -741.25,
+            "center_north_m": -341.75,
+            "eligible_area_ha": 2.7787,
+            "eligible_cells": 27787,
+            "nearest_neighbor_m": {
+              "count": 124,
+              "max_m": 20.19436802675439,
+              "median_m": 7.9469834023780885,
+              "min_m": 4.5069390943299865,
+              "p05_m": 4.7762432936357,
+              "p25_m": 6.020797289396148,
+              "p75_m": 10.502975768800002,
+              "p95_m": 14.887074930959407
+            },
+            "occupied_cells": 22973,
+            "patch_index": 9,
+            "sector": 5,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 44.625184438766325,
+            "tree_count": 124,
+            "wind_swept_card_disk_occupancy_fraction": 0.8267535178320797
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -990.75,
+            "center_north_m": -791.25,
+            "eligible_area_ha": 3.4008,
+            "eligible_cells": 34008,
+            "nearest_neighbor_m": {
+              "count": 142,
+              "max_m": 21.13202545900416,
+              "median_m": 8.00390529679106,
+              "min_m": 4.5069390943299865,
+              "p05_m": 4.808846015417836,
+              "p25_m": 6.097519983417934,
+              "p75_m": 11.492182403073539,
+              "p95_m": 14.950227921099211
+            },
+            "occupied_cells": 27693,
+            "patch_index": 10,
+            "sector": 5,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 41.75488120442249,
+            "tree_count": 142,
+            "wind_swept_card_disk_occupancy_fraction": 0.8143083980239944
+          },
+          {
+            "cell_size_m": 1.0,
+            "center_east_m": -580.0,
+            "center_north_m": 1065.25,
+            "eligible_area_ha": 4.4189,
+            "eligible_cells": 44189,
+            "nearest_neighbor_m": {
+              "count": 173,
+              "max_m": 20.024984394500787,
+              "median_m": 8.97566153550812,
+              "min_m": 4.527692569068709,
+              "p05_m": 4.808846015417836,
+              "p25_m": 7.079901129253148,
+              "p75_m": 11.149551560488879,
+              "p95_m": 16.738394658060976
+            },
+            "occupied_cells": 34008,
+            "patch_index": 11,
+            "sector": 7,
+            "shape": "irregular_anisotropic_ellipse",
+            "stems_per_ha": 39.1500147095431,
+            "tree_count": 173,
+            "wind_swept_card_disk_occupancy_fraction": 0.7696032949376541
+          }
+        ]
+      },
+      "counts": {
+        "far": 1200,
+        "near": 480,
+        "total": 1680
+      },
+      "far_positions_sha256": "c24d479e2a5063f895a106a7a6e687736b8bfc2b8c5c62cf6c60554a6d58594e",
+      "near_positions_sha256": "9b42b61ff36e5df25ef0245702e4d75965ea805f81de56a1c353fd1f0c722875",
+      "nearest_neighbor_distances_m": {
+        "combined": {
+          "count": 1680,
+          "max_m": 70.26067534545906,
+          "median_m": 9.572094859538323,
+          "min_m": 4.5,
+          "p05_m": 4.808846015417836,
+          "p25_m": 6.708203932499369,
+          "p75_m": 14.327629301297572,
+          "p95_m": 28.2311132611199
+        },
+        "far": {
+          "count": 1200,
+          "max_m": 23.723669614964713,
+          "median_m": 7.7721434382782775,
+          "min_m": 4.5,
+          "p05_m": 4.697073557013984,
+          "p25_m": 6.010407640085654,
+          "p75_m": 10.277402395547233,
+          "p95_m": 14.9164338901763
+        },
+        "near": {
+          "count": 480,
+          "max_m": 70.26067534545906,
+          "median_m": 18.490477713561113,
+          "min_m": 9.013878188659973,
+          "p05_m": 9.946853969045769,
+          "p25_m": 13.315873985585775,
+          "p75_m": 25.056186860733618,
+          "p95_m": 37.681271526998714
+        }
+      },
+      "positions_sha256": "3a978919258ae1c07c819068cbbfe5a91be07a66d17c491198025aad3357ee8c",
+      "recipe": "habitat-v1",
+      "seed_far": 610617,
+      "seed_near": 610602,
+      "skyline_proxy": {
+        "combined": {
+          "angular_coverage_percent": 82.91666666666667,
+          "interpretation": "Horizontal wind-swept card-envelope proxy from the pilot; no elevation, alpha texture, terrain, camera FOV, or lighting is evaluated.",
+          "largest_open_interval_deg": 20.5,
+          "open_azimuth_intervals": [
+            {
+              "center_deg": 210.0,
+              "start_deg": 199.75,
+              "width_deg": 20.5
+            },
+            {
+              "center_deg": 30.125,
+              "start_deg": 22.0,
+              "width_deg": 16.25
+            },
+            {
+              "center_deg": 86.875,
+              "start_deg": 80.25,
+              "width_deg": 13.25
+            },
+            {
+              "center_deg": 271.5,
+              "start_deg": 265.75,
+              "width_deg": 11.5
+            }
+          ],
+          "sample_step_deg": 0.25
+        },
+        "far": {
+          "angular_coverage_percent": 32.5,
+          "interpretation": "Horizontal wind-swept card-envelope proxy from the pilot; no elevation, alpha texture, terrain, camera FOV, or lighting is evaluated.",
+          "largest_open_interval_deg": 53.75,
+          "open_azimuth_intervals": [
+            {
+              "center_deg": 281.625,
+              "start_deg": 254.75,
+              "width_deg": 53.75
+            },
+            {
+              "center_deg": 134.125,
+              "start_deg": 115.75,
+              "width_deg": 36.75
+            },
+            {
+              "center_deg": 23.375,
+              "start_deg": 6.25,
+              "width_deg": 34.25
+            },
+            {
+              "center_deg": 87.25,
+              "start_deg": 70.75,
+              "width_deg": 33.0
+            },
+            {
+              "center_deg": 212.0,
+              "start_deg": 197.75,
+              "width_deg": 28.5
+            },
+            {
+              "center_deg": 176.75,
+              "start_deg": 163.5,
+              "width_deg": 26.5
+            },
+            {
+              "center_deg": 58.0,
+              "start_deg": 53.0,
+              "width_deg": 10.0
+            },
+            {
+              "center_deg": 321.0,
+              "start_deg": 316.5,
+              "width_deg": 9.0
+            },
+            {
+              "center_deg": 356.25,
+              "start_deg": 352.75,
+              "width_deg": 7.0
+            },
+            {
+              "center_deg": 339.625,
+              "start_deg": 337.5,
+              "width_deg": 4.25
+            }
+          ],
+          "sample_step_deg": 0.25
+        },
+        "near": {
+          "angular_coverage_percent": 82.63888888888889,
+          "interpretation": "Horizontal wind-swept card-envelope proxy from the pilot; no elevation, alpha texture, terrain, camera FOV, or lighting is evaluated.",
+          "largest_open_interval_deg": 20.5,
+          "open_azimuth_intervals": [
+            {
+              "center_deg": 210.0,
+              "start_deg": 199.75,
+              "width_deg": 20.5
+            },
+            {
+              "center_deg": 30.125,
+              "start_deg": 22.0,
+              "width_deg": 16.25
+            },
+            {
+              "center_deg": 86.875,
+              "start_deg": 80.25,
+              "width_deg": 13.25
+            },
+            {
+              "center_deg": 271.5,
+              "start_deg": 265.75,
+              "width_deg": 11.5
+            },
+            {
+              "center_deg": 67.375,
+              "start_deg": 67.0,
+              "width_deg": 0.75
+            },
+            {
+              "center_deg": 345.875,
+              "start_deg": 345.75,
+              "width_deg": 0.25
+            }
+          ],
+          "sample_step_deg": 0.25
+        }
+      }
+    }
+  },
+  "representation_dispositions": {
+    "L8a": {
+      "current_cards": [
+        "CommonTree_1",
+        "CommonTree_3",
+        "Pine_1"
+      ],
+      "imported_mature_forms_without_matching_cards": [
+        "common_tree_2",
+        "common_tree_4",
+        "oak_tree",
+        "pine_2",
+        "pine_3"
+      ],
+      "next_evidence": "Capture a named same-source mesh/card defect at fixed projected sizes and camera FOVs before trialing the retained oak supplier LODs or another downloaded mesh. Include close, chase, overhead, and ground views; qualify the alternate envelope, pre-rendered texture, transitions, and scene budget before adoption.",
+      "oak_current_runtime_source_lod": "LOD0",
+      "oak_supplier_alternates_available_but_excluded": {
+        "current_runtime_supplied_levels": [
+          "LOD0"
+        ],
+        "disposition": "Supplier LOD1/LOD2 remain excluded: their alternate envelopes and prerendered branches/foliage representation have not been qualified. Runtime imports supplier LOD0 and enables Godot-generated mesh LODs.",
+        "godot_importer_generated_lods_enabled": true,
+        "levels": [
+          {
+            "level": "LOD1",
+            "triangles": 842
+          },
+          {
+            "level": "LOD2",
+            "triangles": 14
+          }
+        ],
+        "source_archive": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/quercus_A_packed_v1_0.zip",
+        "source_evidence": "docs/research/visual-quality-implementation/L6a-R1/mature-oak/source-intake/oga-listing-audit.md"
+      },
+      "qualifying_defect_capture_present": false,
+      "runtime_supplier_alternate_lod_form_count": 0,
+      "status": "conditional; not qualified"
+    },
+    "L8b": {
+      "custom_baker_or_impostor_framework_added": false,
+      "qualifying_residual_representation_problem_present": false,
+      "required_before_trial": [
+        "A named residual defect after L8a/card comparisons or L7-R2 batching evidence",
+        "Existing baker with pinned revision and resolved license/provenance",
+        "Compatibility angle/light/underside/top/transition and export-memory evidence"
+      ],
+      "status": "defer; dependent need not demonstrated"
+    }
+  },
+  "resources": {
+    "age_class_assessment": {
+      "assessment": "The imported tree-role catalog contains mature-height sources only. Existing sapling aliases are a separate near-club scenery group; no forest-margin age layer is configured in the default layout.",
+      "named_sapling_farthest_instance_from_origin_m": 73.348483283569,
+      "named_sapling_instances": 7,
+      "named_sapling_zones": [
+        "club"
+      ],
+      "tree_role_forms_below_5m_source_height": []
+    },
+    "card_form_count": 3,
+    "card_form_ids": [
+      "CommonTree_1",
+      "CommonTree_3",
+      "Pine_1"
+    ],
+    "configured_woody_and_understory_group_counts_by_zone": {
+      "club": 30
+    },
+    "current_source_card_assessment": "The far atlas reuses 3 cards; 5 of 8 imported mature forms have no same-named card. The card identity height is 12-25 m and its frame is about 1.125 m tall before scale, while imported source mesh heights are listed separately. This is a measurable representation difference, not proof of a visible defect or a reason to add geometry.",
+    "existing_nearfield_vegetation_groups": {
+      "bush": [
+        {
+          "count": 6,
+          "group_id": "bushes",
+          "max_radius_from_origin_m": 25.700194551792794,
+          "source": "Planting around the pavilion",
+          "zone": "club"
+        }
+      ],
+      "flower_clump": [
+        {
+          "count": 7,
+          "group_id": "flower-border",
+          "max_radius_from_origin_m": 16.28649747490233,
+          "source": "Flower border in front of the veranda",
+          "zone": "club"
+        }
+      ],
+      "sapling": [
+        {
+          "count": 7,
+          "group_id": "saplings",
+          "max_radius_from_origin_m": 73.348483283569,
+          "source": "LU-22 downloaded CommonTree_1/CommonTree_3 saplings behind the club; outside the lake bank and north approach",
+          "zone": "club"
+        }
+      ],
+      "shade_tree": [
+        {
+          "count": 10,
+          "group_id": "shade-trees",
+          "max_radius_from_origin_m": 59.53990258641679,
+          "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; shade-tree clump behind the car row",
+          "zone": "club"
+        }
+      ]
+    },
+    "far_card_identity_height_range_m": [
+      12.0,
+      25.0
+    ],
+    "far_card_quad_height_range_m": [
+      13.500011999999998,
+      28.125024999999997
+    ],
+    "far_card_quad_top_from_root_range_m": [
+      12.750006,
+      26.5625125
+    ],
+    "imported_form_match_count": 3,
+    "imported_forms_with_a_same_named_card": [
+      "common_tree_1",
+      "common_tree_3",
+      "pine_1"
+    ],
+    "imported_forms_without_a_same_named_card": [
+      "common_tree_2",
+      "common_tree_4",
+      "oak_tree",
+      "pine_2",
+      "pine_3"
+    ],
+    "imported_mature_tree_form_count": 8,
+    "imported_tree_form_ids": [
+      "common_tree_1",
+      "common_tree_2",
+      "common_tree_3",
+      "common_tree_4",
+      "oak_tree",
+      "pine_1",
+      "pine_2",
+      "pine_3"
+    ],
+    "imported_tree_source_height_range_m": [
+      7.264785,
+      11.651166
+    ],
+    "oak_supplier_lods_excluded_from_runtime": {
+      "current_runtime_supplied_levels": [
+        "LOD0"
+      ],
+      "disposition": "Supplier LOD1/LOD2 remain excluded: their alternate envelopes and prerendered branches/foliage representation have not been qualified. Runtime imports supplier LOD0 and enables Godot-generated mesh LODs.",
+      "godot_importer_generated_lods_enabled": true,
+      "levels": [
+        {
+          "level": "LOD1",
+          "triangles": 842
+        },
+        {
+          "level": "LOD2",
+          "triangles": 14
+        }
+      ],
+      "source_archive": "assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/quercus_A_packed_v1_0.zip",
+      "source_evidence": "docs/research/visual-quality-implementation/L6a-R1/mature-oak/source-intake/oga-listing-audit.md"
+    },
+    "sapling_group_zone_counts": [
+      {
+        "count": 7,
+        "group_id": "saplings",
+        "max_radius_from_origin_m": 73.348483283569,
+        "source": "LU-22 downloaded CommonTree_1/CommonTree_3 saplings behind the club; outside the lake bank and north approach",
+        "zone": "club"
+      }
+    ],
+    "sapling_prefab_source_contract": "size = Vector3(3.0, 4.8, 3.1), tier = \"standard\", shadow = true, imported_vegetation = true, variable = true, kind = \"estimated\", source = \"LU-22 Quaternius Standard CommonTree_1 and CommonTree_3, uniformly fitted to 3.2\u20134.8 m\"},",
+    "scenery_course_group_count": 0,
+    "scenery_lake_or_water_group_count": 0,
+    "scenery_water_or_course_groups_found": [],
+    "tree_forms_without_runtime_supplier_alternate_lod": [
+      "common_tree_1",
+      "common_tree_2",
+      "common_tree_3",
+      "common_tree_4",
+      "oak_tree",
+      "pine_1",
+      "pine_2",
+      "pine_3"
+    ],
+    "tree_source_lod_inventory": {
+      "common_tree_1": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [],
+        "importer_generated": true,
+        "source_height_m": 7.264785,
+        "source_lod": null,
+        "source_supplied": false,
+        "source_triangles": 6265
+      },
+      "common_tree_2": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [],
+        "importer_generated": true,
+        "source_height_m": 7.642996,
+        "source_lod": null,
+        "source_supplied": false,
+        "source_triangles": 5648
+      },
+      "common_tree_3": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [],
+        "importer_generated": true,
+        "source_height_m": 9.42519,
+        "source_lod": null,
+        "source_supplied": false,
+        "source_triangles": 3505
+      },
+      "common_tree_4": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [],
+        "importer_generated": true,
+        "source_height_m": 9.438381,
+        "source_lod": null,
+        "source_supplied": false,
+        "source_triangles": 4066
+      },
+      "oak_tree": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [
+          "LOD0"
+        ],
+        "importer_generated": true,
+        "source_height_m": 11.651166,
+        "source_lod": "LOD0",
+        "source_supplied": true,
+        "source_triangles": 5303
+      },
+      "pine_1": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [],
+        "importer_generated": true,
+        "source_height_m": 7.316918,
+        "source_lod": null,
+        "source_supplied": false,
+        "source_triangles": 3947
+      },
+      "pine_2": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [],
+        "importer_generated": true,
+        "source_height_m": 7.376238,
+        "source_lod": null,
+        "source_supplied": false,
+        "source_triangles": 3648
+      },
+      "pine_3": {
+        "alternate_source_lods": [],
+        "imported_supplied_levels": [],
+        "importer_generated": true,
+        "source_height_m": 7.392199,
+        "source_lod": null,
+        "source_supplied": false,
+        "source_triangles": 4964
+      }
+    },
+    "understory_assessment": "Shrub, herb, grass, flower, and reed sources exist in the vegetation catalog. The named sapling placements are in the club zone rather than the far forest patches; the diagnostic does not infer that those resources are ecologically appropriate or that shade/water masks are approved.",
+    "understory_margin_assessment": {
+      "assessment": "Catalog sources exist, but current configured vegetation groups are near-club placements or procedural ground layers. A woodland margin still needs an owning grass/terrain mask and habitat review.",
+      "catalog_roles_available": [
+        "flower",
+        "grass",
+        "herb",
+        "reed",
+        "shrub"
+      ],
+      "configured_instances_in_countryside_or_forest_zones": 0
+    },
+    "understory_source_inventory_by_role": {
+      "crop": {
+        "asset_ids": [
+          "corn_4",
+          "wheat_4"
+        ],
+        "count": 2,
+        "max_height_m": 1.967097,
+        "min_height_m": 0.947993
+      },
+      "flower": {
+        "asset_ids": [
+          "clover_1",
+          "flower_3_group",
+          "flower_4_group"
+        ],
+        "count": 3,
+        "max_height_m": 2.486768,
+        "min_height_m": 1.144732
+      },
+      "grass": {
+        "asset_ids": [
+          "grass_common_short",
+          "grass_common_tall",
+          "grass_wispy_tall"
+        ],
+        "count": 3,
+        "max_height_m": 1.872695,
+        "min_height_m": 1.334103
+      },
+      "herb": {
+        "asset_ids": [
+          "fern_1"
+        ],
+        "count": 1,
+        "max_height_m": 2.688778,
+        "min_height_m": 2.688778
+      },
+      "reed": {
+        "asset_ids": [
+          "reed_aredon"
+        ],
+        "count": 1,
+        "max_height_m": 3.033149,
+        "min_height_m": 3.033149
+      },
+      "shrub": {
+        "asset_ids": [
+          "bush_common",
+          "bush_common_flowers"
+        ],
+        "count": 2,
+        "max_height_m": 1.581786,
+        "min_height_m": 1.581786
+      },
+      "tree": {
+        "asset_ids": [
+          "common_tree_1",
+          "common_tree_2",
+          "common_tree_3",
+          "common_tree_4",
+          "oak_tree",
+          "pine_1",
+          "pine_2",
+          "pine_3"
+        ],
+        "count": 8,
+        "max_height_m": 11.651166,
+        "min_height_m": 7.264785
+      }
+    }
+  },
+  "runtime_contracts": {
+    "card_radius_m": 15.0,
+    "flight_corridor_half_width_m": 35.0,
+    "max_treeline_positions": 1680,
+    "tree_height_hash_divisor": 1023.0,
+    "tree_height_hash_modulus": 1024,
+    "tree_height_min_m": 12.0,
+    "tree_height_span_m": 13.0,
+    "wind_lean_m": 0.24,
+    "wind_speed_cap_mps": 10.0
+  },
+  "sampling": {
+    "eligible_area_cell_size_m": 1.0,
+    "full_tree_clearance_radius_m": 15.0,
+    "near_and_far_count_is_same_between_recipes": true,
+    "skyline_azimuth_bins": 1440,
+    "wind_speed_cap_mps": 10.0
+  },
+  "scope_note": "Track clearances are checked against current scenery polylines. Source/card and understory inventories describe current files; they do not claim that the assets are visually or ecologically qualified.",
+  "source_sha256": {
+    "card_catalog": "57e340b61c442e766edfad1336efb3155231ef37e35f57a35bdce06982f1db0a",
+    "diagnostics_tool": "0cb719ff962fdefda897d39417b830511af503bcedbcadc4908373604cc0cbc4",
+    "field": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "field_loader": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+    "lake": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "placement_generator": "7c8bc8be811951b09f2127d2eb028b8528664826788701682183188cf61b2058",
+    "prefabs": "ec73d2ebe780e77decb02c5ec857e73f6fd2334d8dfe1900eba8a7985873f227",
+    "scenery": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61",
+    "tree_wind": "23186f9443854cb53874441b9750c5eaa8adf4d416cb07ce9e7cdd3063e4e20a",
+    "treeline": "7359176c641960dc94879d7772984fcecf5b9d77bd92d4146eaeb8949c605213",
+    "vegetation_catalog": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7"
+  }
+}

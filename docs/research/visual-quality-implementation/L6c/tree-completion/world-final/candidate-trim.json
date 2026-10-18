@@ -1,0 +1,19 @@
+{
+	"aircraft": "jensen-das-ugly-stik-60",
+	"case_id": "trim",
+	"complete": true,
+	"completed_ticks": 2400,
+	"failure": "",
+	"format": "openrc-tree-world-recording v1",
+	"input_reads": 2400,
+	"log_final_tick": 2400,
+	"log_first_tick": 0,
+	"log_rows": 2401,
+	"log_sha256": "de9a274694d1c4167f26a54c08abc522af397a8f20aa10355bdbc8d99e3bfcf9",
+	"measurement_boundary_tick": 240,
+	"proxy_count": 4980,
+	"requested_ticks": 2400,
+	"scope": "Detached production callbacks with complete installed scenery, field and lake. Exact replay is a separate required CLI check. Cross-world comparisons are not exact equivalence or physical validation.",
+	"solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+	"world_identity": "6f6168e1d27274c28f07a6213017802c841788fd711e858d25df6f8d99654036"
+}

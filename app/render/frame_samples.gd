@@ -7,6 +7,7 @@ const VERSION := 2
 const MAX_WARMUP_SECONDS := 3600.0
 const MAX_SAMPLE_SECONDS := 300.0
 const MICROSECONDS_PER_SECOND := 1000000
+const GrassSceneSnapshot := preload("res://render/grass_scene_snapshot.gd")
 
 var warmup_s: float = 1.0
 var sample_s: float = 20.0
@@ -173,6 +174,11 @@ func _fail(reason: String) -> bool:
 	failure = reason
 	finished = true
 	return false
+
+
+## Read-only scene observation after frame collection has finished.
+static func effective_grass_state(field_root: Node) -> Dictionary:
+	return GrassSceneSnapshot.effective_grass_state(field_root)
 
 
 func report() -> Dictionary:

@@ -1,0 +1,28 @@
+................E..
+======================================================================
+ERROR: test_preflight_stops_before_second_launch_and_preserves_first_report (test_profile_session.RunEligibilityTests.test_preflight_stops_before_second_launch_and_preserves_first_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\test_profile_session.py", line 251, in test_preflight_stops_before_second_launch_and_preserves_first_report
+    profile_session.run_campaign(args)
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 583, in run_campaign
+    engine_binaries_before = engine_binary_snapshot(godot)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 97, in engine_binary_snapshot
+    return {str(path): sha256_file(path) for path in binaries}
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 97, in <dictcomp>
+    return {str(path): sha256_file(path) for path in binaries}
+                       ^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 81, in sha256_file
+    with path.open("rb") as stream:
+         ^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\bulto\\AppData\\Local\\Temp\\tmpx4_p_56u\\Godot_v4.7.2-stable_win64.exe'
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.159s
+
+FAILED (errors=1)
