@@ -5,6 +5,7 @@ extends RefCounted
 const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const GrassQuality := preload("res://render/grass_quality.gd")
 const TURF_DETAIL := preload("res://assets/landscape/turf/detail.png")
 
 const SIZE := 256
@@ -83,6 +84,9 @@ static func grass_material(lighting: Dictionary = {}) -> ShaderMaterial:
 	var material := Atmosphere.ground_material(ImageTexture.create_from_image(_default_grass_image()), lighting)
 	material.set_shader_parameter("turf_detail", TURF_DETAIL)
 	material.set_shader_parameter("turf_detail_strength", 1.0)
+	if GrassQuality.enhanced():
+		var grass_detail := load("res://render/grass_ground_material.gd")
+		grass_detail.configure(material)
 	return material
 
 

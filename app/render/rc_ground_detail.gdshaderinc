@@ -2,6 +2,7 @@
 // UVs are world X/Z metres. Translation-only decorrelation keeps normal orientation.
 uniform bool rc_surface_enabled = false;
 uniform bool rc_track_surface = false;
+uniform bool grass_photo_enabled = false;
 uniform sampler2D rc_dirt_albedo : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D rc_dirt_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D rc_dirt_roughness : filter_linear_mipmap_anisotropic, repeat_enable;

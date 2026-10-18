@@ -491,6 +491,9 @@ def generate(field: dict[str, Any], recipe: str = "existing") -> tuple[dict[str,
     else:
         far_bounds = _point_bounds(far_points)
         patch_counts = [int(patch["count"]) for patch in patches]
+        near_hash = _positions_sha256(near_points)
+        far_hash = _positions_sha256(far_points)
+        combined_hash = _positions_sha256(points)
         source = (
             "L7-R1 habitat-v1 tools/trees/place.py. Estimated visual composition, not surveyed "
             f"or an ecological simulation: 480 frozen near trees from seed {NEAR_SEED}, plus "
@@ -498,6 +501,7 @@ def generate(field: dict[str, Any], recipe: str = "existing") -> tuple[dict[str,
             f"irregular anisotropic patches with counts {','.join(map(str, patch_counts))}; "
             f"far bounds N={far_bounds['north_min_m']:.2f}..{far_bounds['north_max_m']:.2f} m, "
             f"E={far_bounds['east_min_m']:.2f}..{far_bounds['east_max_m']:.2f} m; 0.25 m grid. "
+            f"Near, far and combined position SHA-256: {near_hash}, {far_hash}, {combined_hash}. "
             "Maintains the existing crown-cleared viewing gaps, runway/mown flight corridor and "
             "4.5 m minimum tree spacing. Flat visual vegetation; no collision, terrain or aerodynamics."
         )
@@ -505,9 +509,9 @@ def generate(field: dict[str, Any], recipe: str = "existing") -> tuple[dict[str,
             "recipe": "habitat-v1",
             "near_count": len(near_points),
             "far_count": len(far_points),
-            "near_positions_sha256": _positions_sha256(near_points),
-            "far_positions_sha256": _positions_sha256(far_points),
-            "positions_sha256": _positions_sha256(points),
+            "near_positions_sha256": near_hash,
+            "far_positions_sha256": far_hash,
+            "positions_sha256": combined_hash,
             "bounds_m": _point_bounds(points),
             "far_bounds_m": far_bounds,
             "patch_counts": patch_counts,

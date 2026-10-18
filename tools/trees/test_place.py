@@ -145,6 +145,7 @@ class HabitatRecipeTests(unittest.TestCase):
         self.assertEqual(self.object_data["positions"]["kind"], "derived")
         self.assertIn("not surveyed", self.object_data["positions"]["source"])
         self.assertIn("ecological simulation", self.object_data["positions"]["source"])
+        self.assertIn(self.manifest["far_positions_sha256"], self.object_data["positions"]["source"])
 
         for patch in patches:
             with self.subTest(patch=patch["sector"], count=patch["count"]):

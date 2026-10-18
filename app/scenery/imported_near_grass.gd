@@ -6,6 +6,8 @@ const GrassMask := preload("res://render/landscape_upgrade/scenery_grass_mask.gd
 const Frames := preload("res://render/frames.gd")
 const Palette := preload("res://scenery/palette.gd")
 const PlantLibrary := preload("res://scenery/imported_vegetation.gd")
+const GrassMaterial := preload("res://scenery/imported_grass_material.gd")
+const GrassQuality := preload("res://render/grass_quality.gd")
 
 const ASSET_IDS: Array[String] = [
 	"grass_common_short",
@@ -17,20 +19,26 @@ const MIN_HEIGHT_M := 0.12
 const MAX_HEIGHT_M := 0.25
 const MAX_SOURCE_TRIANGLES := 50000
 const QUALITY_LIMITS := {
+	"low": {"grass_common_short": 17, "grass_common_tall": 11, "grass_wispy_tall": 10},
+	"balanced": {"grass_common_short": 34, "grass_common_tall": 21, "grass_wispy_tall": 21},
+	"high": {"grass_common_short": 67, "grass_common_tall": 42, "grass_wispy_tall": 41},
+}
+## Same clump counts and nested source rows; fewer expensive wispy silhouettes.
+const ENHANCED_QUALITY_LIMITS := {
 	"low": {
-		"grass_common_short": 17,
-		"grass_common_tall": 11,
-		"grass_wispy_tall": 10,
+		"grass_common_short": 25,
+		"grass_common_tall": 8,
+		"grass_wispy_tall": 5,
 	},
 	"balanced": {
-		"grass_common_short": 34,
-		"grass_common_tall": 21,
-		"grass_wispy_tall": 21,
+		"grass_common_short": 50,
+		"grass_common_tall": 16,
+		"grass_wispy_tall": 10,
 	},
 	"high": {
-		"grass_common_short": 67,
-		"grass_common_tall": 42,
-		"grass_wispy_tall": 41,
+		"grass_common_short": 100,
+		"grass_common_tall": 30,
+		"grass_wispy_tall": 20,
 	},
 }
 
@@ -80,7 +88,8 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 			"seed": SEED + row_index,
 		})
 
-	var quality_limits: Dictionary = QUALITY_LIMITS.get(quality, QUALITY_LIMITS.high)
+	var limits: Dictionary = ENHANCED_QUALITY_LIMITS if GrassQuality.enhanced() else QUALITY_LIMITS
+	var quality_limits: Dictionary = limits.get(quality, limits.high)
 	var triangles := 0
 	for asset_id: String in ASSET_IDS:
 		var candidates: Array = candidates_by_asset[asset_id]
@@ -182,6 +191,8 @@ static func build(field: Dictionary, quality: String = "high", exclusions: Array
 		group_stats[queued_id] = group_record
 
 	var root := PlantLibrary.build(batches, false)
+	if GrassQuality.enhanced() and root.get_child_count() > 0:
+		GrassMaterial.apply(root)
 	root.name = "NearGrass"
 	for child: Node in root.get_children():
 		if child is MultiMeshInstance3D:

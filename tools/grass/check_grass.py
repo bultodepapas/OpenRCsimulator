@@ -21,8 +21,8 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE_SCRIPT = Path(__file__).with_name("capture_grass.gd")
-FORMAT = "openrc-l11a-grass-capture v1"
-SUMMARY_FORMAT = "openrc-l11a-grass-review v1"
+FORMAT = "openrc-l11a-grass-capture v2"
+SUMMARY_FORMAT = "openrc-l11a-grass-review v2"
 WIDTH = 1280
 HEIGHT = 720
 FOV_DEG = 50.0
@@ -39,9 +39,12 @@ STANDARD_SCENARIOS = tuple(
 WIND_CASES = ("windless-t1", "wind-on-t0", "wind-on-t1", "wind-on-t1024")
 SCENERY_SCENARIO = "scenery-runway-edge"
 IMPORTED_GRASS_IDS = ("grass_common_short", "grass_common_tall", "grass_wispy_tall")
-IMPORTED_GRASS_COUNTS = {"grass_common_short": 67, "grass_common_tall": 42, "grass_wispy_tall": 41}
-IMPORTED_GRASS_TOTAL = sum(IMPORTED_GRASS_COUNTS.values())
+STATIC_IMPORTED_GRASS_COUNTS = {"grass_common_short": 67, "grass_common_tall": 42, "grass_wispy_tall": 41}
+ENHANCED_IMPORTED_GRASS_COUNTS = {"grass_common_short": 100, "grass_common_tall": 30, "grass_wispy_tall": 20}
+IMPORTED_GRASS_TOTAL = 150
+ENHANCED_IMPORTED_GRASS_TRIANGLES = 37_720
 IMPORTED_GRASS_TRIANGLE_BUDGET = 50_000
+IMPORTED_GRASS_SHADER_PATH = "res://scenery/imported_grass.gdshader"
 IMPORTED_FLOWER_IDS = ("clover_1", "flower_3_group", "flower_4_group")
 RUNTIME_SUFFIXES = {
     ".cfg", ".gd", ".gdshader", ".gdshaderinc", ".gdextension", ".godot", ".gltf", ".glb",
@@ -134,13 +137,18 @@ def checked_run(command: list[str], log_path: Path, env: dict[str, str], timeout
         raise RuntimeError(f"engine capture failed ({result.returncode}) or logged an error: {log_path}")
 
 
-def expected_ids(mode: str) -> set[str]:
+def expected_ids(mode: str, material_mode: str | None = None) -> set[str]:
     if mode == "baseline":
         return {f"{scenario}-grass-off" for scenario in STANDARD_SCENARIOS}
     if mode == "candidate":
         return {f"{scenario}-grass-{state}" for scenario in STANDARD_SCENARIOS for state in ("off", "on")} | set(WIND_CASES)
     if mode == "scenery":
-        return {f"{SCENERY_SCENARIO}-grass-{state}" for state in ("off", "on")}
+        result = {f"{SCENERY_SCENARIO}-grass-{state}" for state in ("off", "on")}
+        if material_mode == "qualified_wind":
+            return result | set(WIND_CASES)
+        if material_mode in (None, "static_baseline"):
+            return result
+        raise RuntimeError(f"unsupported imported grass material mode {material_mode!r}")
     raise RuntimeError(f"unknown mode {mode}")
 
 
@@ -266,16 +274,23 @@ def load_run(folder: Path, mode: str) -> tuple[dict[str, Any], dict[str, dict[st
     if mode == "baseline":
         if manifest.get("grass") != {"present": False}:
             raise RuntimeError(f"{manifest_path}: baseline mode must record the absent NearGrass child")
+        if manifest.get("near_grass_material_mode") != "not_present":
+            raise RuntimeError(f"{manifest_path}: no-grass baseline material scope mismatch")
     else:
         grass = manifest.get("grass", {})
         if grass.get("present") is not True or grass.get("node_count") != 1:
             raise RuntimeError(f"{manifest_path}: missing or duplicated production NearGrass")
+        material_mode = grass.get("material_mode")
+        if manifest.get("near_grass_material_mode") != material_mode:
+            raise RuntimeError(f"{manifest_path}: top-level and NearGrass material scopes differ")
         bounds = grass.get("observed_radius_m", {})
         if float(bounds.get("max", 1e9)) > 30.001:
             raise RuntimeError(f"{manifest_path}: grass exceeds its 30 m pilot radius")
         if grass.get("runway_clumps") != 0 or grass.get("casts_shadows") is not False:
             raise RuntimeError(f"{manifest_path}: grass runway exclusion or no-shadow contract failed")
         if mode == "candidate":
+            if material_mode != "legacy_procedural":
+                raise RuntimeError(f"{manifest_path}: candidate capture must identify the legacy procedural material scope")
             if grass.get("implementation") != "legacy_shader_material":
                 raise RuntimeError(f"{manifest_path}: candidate mode must capture the legacy shader-grass path")
             if not 1 <= int(grass.get("multimesh_chunks", 0)) <= 4:
@@ -302,22 +317,53 @@ def load_run(folder: Path, mode: str) -> tuple[dict[str, Any], dict[str, dict[st
                 raise RuntimeError(f"{manifest_path}: scenery mode must capture the imported source-grass path")
             if grass.get("source_ids") != list(IMPORTED_GRASS_IDS):
                 raise RuntimeError(f"{manifest_path}: imported grass source IDs mismatch")
-            if grass.get("source_batches") != IMPORTED_GRASS_COUNTS:
+            if material_mode == "static_baseline":
+                expected_grass_counts = STATIC_IMPORTED_GRASS_COUNTS
+            elif material_mode == "qualified_wind":
+                expected_grass_counts = ENHANCED_IMPORTED_GRASS_COUNTS
+            else:
+                raise RuntimeError(f"{manifest_path}: imported grass material mode must be static_baseline or qualified_wind")
+            if grass.get("source_batches") != expected_grass_counts:
                 raise RuntimeError(f"{manifest_path}: imported grass source batch counts mismatch")
             if grass.get("multimesh_chunks") != len(IMPORTED_GRASS_IDS) or grass.get("clumps") != IMPORTED_GRASS_TOTAL:
                 raise RuntimeError(f"{manifest_path}: imported grass must contain exactly 150 clumps in three batches")
+            triangle_count = grass.get("source_triangles")
+            triangles_match_profile = (
+                triangle_count == ENHANCED_IMPORTED_GRASS_TRIANGLES
+                if material_mode == "qualified_wind"
+                else type(triangle_count) is int and 0 < triangle_count <= IMPORTED_GRASS_TRIANGLE_BUDGET
+            )
             if (
-                type(grass.get("source_triangles")) is not int
-                or not 0 < grass["source_triangles"] <= IMPORTED_GRASS_TRIANGLE_BUDGET
-                or grass.get("source_meshes_preserved") is not True
+                type(triangle_count) is not int
+                or not triangles_match_profile
+                or triangle_count > IMPORTED_GRASS_TRIANGLE_BUDGET
+                or grass.get("source_geometry_preserved") is not True
+                or grass.get("source_material_parameters_matched") is not True
                 or grass.get("textured_surfaces") != len(IMPORTED_GRASS_IDS)
                 or grass.get("per_pixel_lit_surfaces") != len(IMPORTED_GRASS_IDS)
             ):
-                raise RuntimeError(f"{manifest_path}: imported grass lost its textured, lit source meshes or exceeded budget")
-            if grass.get("material_contract") != "unchanged textured per-pixel-lit StandardMaterial3D source surfaces":
-                raise RuntimeError(f"{manifest_path}: imported grass source material contract mismatch")
-            if grass.get("wind_animation") != "static imported source meshes; ShaderClock does not drive this path":
-                raise RuntimeError(f"{manifest_path}: imported grass wind scope metadata mismatch")
+                raise RuntimeError(f"{manifest_path}: imported grass changed source geometry/material data or failed its selected triangle profile/budget")
+            if material_mode == "static_baseline":
+                if (
+                    grass.get("material_shader_path") != ""
+                    or grass.get("material_shader_sha256") != ""
+                    or grass.get("material_contract") != "static baseline: exact textured per-pixel-lit StandardMaterial3D source surfaces"
+                    or grass.get("wind_animation") != "static baseline source materials; no imported-grass wind adapter"
+                    or grass.get("wind_probe_cases") is not False
+                ):
+                    raise RuntimeError(f"{manifest_path}: static imported-material baseline metadata mismatch")
+            elif material_mode == "qualified_wind":
+                if (
+                    grass.get("material_shader_path") != IMPORTED_GRASS_SHADER_PATH
+                    or not isinstance(grass.get("material_shader_sha256"), str)
+                    or re.fullmatch(r"[0-9a-f]{64}", grass["material_shader_sha256"]) is None
+                    or grass.get("material_contract") != "qualified imported grass shader; source albedo, UV, vertex-color, roughness, metallic and specular parameters matched"
+                    or grass.get("wind_animation") != "qualified imported shader; ShaderClock wind probes are captured"
+                    or grass.get("wind_probe_cases") is not True
+                ):
+                    raise RuntimeError(f"{manifest_path}: qualified imported-wind material metadata mismatch")
+            else:
+                raise RuntimeError(f"{manifest_path}: imported grass material mode must be static_baseline or qualified_wind")
         else:
             raise RuntimeError(f"{manifest_path}: unsupported grass capture mode {mode!r}")
     if expected_scenery:
@@ -344,7 +390,7 @@ def load_run(folder: Path, mode: str) -> tuple[dict[str, Any], dict[str, dict[st
     if not isinstance(cases_node, list):
         raise RuntimeError(f"{manifest_path}: cases must be a list")
     ids = [str(case.get("id", "")) for case in cases_node]
-    expected = expected_ids(mode)
+    expected = expected_ids(mode, material_mode if mode == "scenery" else None)
     if len(ids) != len(set(ids)) or set(ids) != expected:
         raise RuntimeError(
             f"{manifest_path}: case inventory mismatch; missing={sorted(expected - set(ids))}, "
@@ -413,6 +459,66 @@ def expected_cameras(app: Path) -> tuple[float, float, dict[str, tuple[float, fl
     return n, e, scenarios
 
 
+def verify_wind_probes(folder: Path, cases: dict[str, dict[str, Any]], reference: dict[str, Any],
+                       pilot_north: float, pilot_east: float, material_scope: str) -> dict[str, Any]:
+    wind_cases = {case_id: cases[case_id] for case_id in WIND_CASES}
+    windless_t1 = wind_cases["windless-t1"]
+    wind_t0 = wind_cases["wind-on-t0"]
+    wind_t1 = wind_cases["wind-on-t1"]
+    wind_t1024 = wind_cases["wind-on-t1024"]
+    for case_id, case, time_s, expected_clock, expected_wind in (
+        ("windless-t1", windless_t1, 1.0, 1.0, [0.0, 0.0, 0.0]),
+        ("wind-on-t0", wind_t0, 0.0, 0.0, [5.0, 0.0, 0.0]),
+        ("wind-on-t1", wind_t1, 1.0, 1.0, [5.0, 0.0, 0.0]),
+        ("wind-on-t1024", wind_t1024, 1024.0, 0.0, [5.0, 0.0, 0.0]),
+    ):
+        if case.get("scenario_id") != reference.get("scenario_id") or case.get("grass") != "on":
+            raise RuntimeError(f"{case_id}: {material_scope} wind camera or grass-state mismatch")
+        if float(case.get("shader_time_s", -1.0)) != time_s or float(case.get("shader_clock", -1.0)) != expected_clock:
+            raise RuntimeError(f"{case_id}: shader clock metadata mismatch")
+        if case.get("wind_vec") != expected_wind:
+            raise RuntimeError(f"{case_id}: wind vector metadata mismatch")
+        for key in ("camera_north_m", "camera_east_m", "camera_height_m", "azimuth_deg", "elevation_deg", "camera_fov_deg"):
+            if case.get(key) != reference.get(key):
+                raise RuntimeError(f"{case_id}: camera differs from the zero-wind t=0 reference")
+    if float(reference.get("shader_time_s", -1.0)) != 0.0 or reference.get("wind_vec") != [0.0, 0.0, 0.0]:
+        raise RuntimeError(f"{material_scope}: grass-on reference must be at t=0 with zero wind")
+
+    windless_equal = image_rgb(folder / reference["image"]).tobytes() == image_rgb(folder / windless_t1["image"]).tobytes()
+    wind_repeat_equal = image_rgb(folder / wind_t0["image"]).tobytes() == image_rgb(folder / wind_t1024["image"]).tobytes()
+    if not windless_equal:
+        raise RuntimeError("zero-wind grass changed between sim_clock t=0 and t=1 while the environment was frozen")
+    if not wind_repeat_equal:
+        raise RuntimeError("winded grass did not repeat at the ShaderClock t=0 / t=1024 wrap")
+    moving = compare_images(folder, wind_t0, folder, wind_t1)
+    if moving["changed_pixels"] <= 0:
+        raise RuntimeError(f"nonzero Vector3 wind produced no {material_scope} image motion from t=0 to t=1")
+    wind_footprint, _unused_band = projected_ground_masks(wind_t1, pilot_north, pilot_east)
+    a = image_rgb(folder / wind_t0["image"])
+    b = image_rgb(folder / wind_t1["image"])
+    wind_changed = np.abs(a.astype(np.int16) - b.astype(np.int16)).max(axis=2) != 0
+    outside_wind = int(np.count_nonzero(wind_changed & ~wind_footprint))
+    if outside_wind:
+        raise RuntimeError(f"wind changed {outside_wind} pixels outside the projected grass envelope")
+    fixed_root_contract = (
+        "all 14 y=0 mesh vertices have UV.y=0; shader offsets are weighted by UV.y squared"
+        if material_scope == "legacy procedural grass"
+        else "source vertices below plant_base_y have zero height weight; displacement uses blade_height squared"
+    )
+    return {
+        "material_scope": material_scope,
+        "windless_t0_case": reference["id"],
+        "windless_t1_sha256": image_digest(folder / windless_t1["image"]),
+        "windless_t0_t1_byte_identical": windless_equal,
+        "wind_t0_t1": moving,
+        "wind_changed_pixels_outside_grass_footprint": outside_wind,
+        "wind_t0_t1024_byte_identical": wind_repeat_equal,
+        "wind_clock_wrap": 1024.0,
+        "wind_vector": [5.0, 0.0, 0.0],
+        "fixed_roots_supported_by": fixed_root_contract,
+    }
+
+
 def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, dict[str, Any]],
                      app: Path) -> dict[str, Any]:
     pilot_north, pilot_east, scenario_cameras = expected_cameras(app)
@@ -458,56 +564,8 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
     if not positive_draw or not positive_primitives:
         raise RuntimeError("grass-on captures show no positive draw and primitive increment")
 
-    wind_id_to_case = {case_id: cases[case_id] for case_id in WIND_CASES}
     pilot_case = cases["pilot-az000-el10-grass-on"]
-    windless_t1 = wind_id_to_case["windless-t1"]
-    wind_t0 = wind_id_to_case["wind-on-t0"]
-    wind_t1 = wind_id_to_case["wind-on-t1"]
-    wind_t1024 = wind_id_to_case["wind-on-t1024"]
-    wind_metrics: dict[str, Any] = {}
-    for case_id, case, time_s, expected_clock, expected_wind in (
-        ("windless-t1", windless_t1, 1.0, 1.0, [0.0, 0.0, 0.0]),
-        ("wind-on-t0", wind_t0, 0.0, 0.0, [5.0, 0.0, 0.0]),
-        ("wind-on-t1", wind_t1, 1.0, 1.0, [5.0, 0.0, 0.0]),
-        ("wind-on-t1024", wind_t1024, 1024.0, 0.0, [5.0, 0.0, 0.0]),
-    ):
-        if case.get("scenario_id") != pilot_case.get("scenario_id") or case.get("grass") != "on":
-            raise RuntimeError(f"{case_id}: wind case camera or grass-state mismatch")
-        if float(case.get("shader_time_s", -1.0)) != time_s or float(case.get("shader_clock", -1.0)) != expected_clock:
-            raise RuntimeError(f"{case_id}: shader clock metadata mismatch")
-        if case.get("wind_vec") != expected_wind:
-            raise RuntimeError(f"{case_id}: wind vector metadata mismatch")
-        for key in ("camera_north_m", "camera_east_m", "camera_height_m", "azimuth_deg", "elevation_deg", "camera_fov_deg"):
-            if case.get(key) != pilot_case.get(key):
-                raise RuntimeError(f"{case_id}: camera differs from the t=0 pilot reference")
-
-    windless_equal = image_rgb(folder / pilot_case["image"]).tobytes() == image_rgb(folder / windless_t1["image"]).tobytes()
-    wind_repeat_equal = image_rgb(folder / wind_t0["image"]).tobytes() == image_rgb(folder / wind_t1024["image"]).tobytes()
-    if not windless_equal:
-        raise RuntimeError("zero-wind grass changed between sim_clock t=0 and t=1 while the environment was frozen")
-    if not wind_repeat_equal:
-        raise RuntimeError("winded grass did not repeat at the ShaderClock t=0 / t=1024 wrap")
-    moving = compare_images(folder, wind_t0, folder, wind_t1)
-    if moving["changed_pixels"] <= 0:
-        raise RuntimeError("nonzero Vector3 wind produced no grass image motion from t=0 to t=1")
-    wind_footprint, _unused_band = projected_ground_masks(wind_t1, pilot_north, pilot_east)
-    a = image_rgb(folder / wind_t0["image"])
-    b = image_rgb(folder / wind_t1["image"])
-    wind_changed = np.abs(a.astype(np.int16) - b.astype(np.int16)).max(axis=2) != 0
-    outside_wind = int(np.count_nonzero(wind_changed & ~wind_footprint))
-    if outside_wind:
-        raise RuntimeError(f"wind changed {outside_wind} pixels outside the projected grass envelope")
-    wind_metrics = {
-        "windless_t0_case": pilot_case["id"],
-        "windless_t1_sha256": image_digest(folder / windless_t1["image"]),
-        "windless_t0_t1_byte_identical": windless_equal,
-        "wind_t0_t1": moving,
-        "wind_changed_pixels_outside_grass_footprint": outside_wind,
-        "wind_t0_t1024_byte_identical": wind_repeat_equal,
-        "wind_clock_wrap": 1024.0,
-        "wind_vector": [5.0, 0.0, 0.0],
-        "fixed_roots_supported_by": "all 14 y=0 mesh vertices have UV.y=0; shader offsets are weighted by UV.y squared",
-    }
+    wind_metrics = verify_wind_probes(folder, cases, pilot_case, pilot_north, pilot_east, "legacy procedural grass")
     return {
         "pairs": pairs,
         "wind": wind_metrics,
@@ -520,7 +578,7 @@ def verify_candidate(folder: Path, manifest: dict[str, Any], cases: dict[str, di
     }
 
 
-def verify_scenery(folder: Path, cases: dict[str, dict[str, Any]], pilot_north: float,
+def verify_scenery(folder: Path, manifest: dict[str, Any], cases: dict[str, dict[str, Any]], pilot_north: float,
                    pilot_east: float, scenario_cameras: dict[str, tuple[float, float, float, float, float]]) -> dict[str, Any]:
     off = cases[f"{SCENERY_SCENARIO}-grass-off"]
     on = cases[f"{SCENERY_SCENARIO}-grass-on"]
@@ -536,7 +594,15 @@ def verify_scenery(folder: Path, cases: dict[str, dict[str, Any]], pilot_north: 
         raise RuntimeError("scenery-on grass primitive increment exceeds the 100,000 primitive budget")
     if metrics["changed_pixels_outside_projected_grass_footprint"]:
         raise RuntimeError("scenery-on grass pair changes pixels outside the projected grass envelope")
-    return metrics
+    grass = manifest.get("grass", {})
+    material_mode = str(grass.get("material_mode", ""))
+    if material_mode == "qualified_wind":
+        wind = verify_wind_probes(folder, cases, on, pilot_north, pilot_east, "qualified imported grass")
+    elif material_mode == "static_baseline":
+        wind = {"captured": False, "scope": "static imported-material baseline; wind adapter is absent"}
+    else:
+        raise RuntimeError(f"unsupported imported-grass material scope {material_mode!r}")
+    return {**metrics, "material_mode": material_mode, "wind": wind}
 
 
 def compare_repeat_runs(first_folder: Path, first: dict[str, dict[str, Any]],
@@ -645,7 +711,7 @@ def main() -> int:
     }
     pilot_north, pilot_east, scenario_cameras = expected_cameras(app)
     candidate_review = verify_candidate(out / "candidate-repeat-1", *loaded["candidate"]["1"], app)
-    scenery_review = verify_scenery(out / "scenery-repeat-1", loaded["scenery"]["1"][1],
+    scenery_review = verify_scenery(out / "scenery-repeat-1", loaded["scenery"]["1"][0], loaded["scenery"]["1"][1],
                                     pilot_north, pilot_east, scenario_cameras)
 
     baseline_parity: dict[str, Any] | None = None
@@ -707,7 +773,8 @@ def main() -> int:
         "capture_set": {
             "production_paired_scenarios": list(STANDARD_SCENARIOS),
             "production_images_per_process": len(expected_ids("candidate")),
-            "scenery_images_per_process": len(expected_ids("scenery")),
+            "scenery_images_per_process": len(expected_ids(
+                "scenery", loaded["scenery"]["1"][0]["grass"]["material_mode"])),
             "independent_candidate_processes": 2,
             "independent_scenery_processes": 2,
             "baseline_app": str(baseline_app) if baseline_app else None,
@@ -731,8 +798,9 @@ def main() -> int:
     }
     summary_path = out / "capture-summary.json"
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    scenery_count = len(expected_ids("scenery", loaded["scenery"]["1"][0]["grass"]["material_mode"]))
     print(f"L11a grass: {len(expected_ids('candidate'))} candidate images/process and "
-          f"{len(expected_ids('scenery'))} scenery images/process; two-process byte repeat passed")
+          f"{scenery_count} scenery images/process; two-process byte repeat passed")
     print(f"Report: {summary_path}")
     return 0
 

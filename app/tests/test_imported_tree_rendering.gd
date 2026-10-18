@@ -1,6 +1,15 @@
 extends SceneTree
 
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
+const EXPECTED_TREE_LEAF_TEXTURES := {
+	"common_tree_1": "Leaves_NormalTree_C.png",
+	"common_tree_2": "Leaves_NormalTree_C.png",
+	"common_tree_3": "Leaves_NormalTree_C.png",
+	"common_tree_4": "Leaves_NormalTree_C.png",
+	"pine_1": "Leaf_Pine_C.png",
+	"pine_2": "Leaf_Pine_C.png",
+	"pine_3": "Leaf_Pine_C.png",
+}
 
 var _failures := 0
 
@@ -8,6 +17,7 @@ var _failures := 0
 func _initialize() -> void:
 	_test_opt_in_tree_cells_and_damage()
 	_test_wind_modes_and_material_preservation()
+	_test_all_tree_sources_accept_tree_wind()
 	_test_tree_wind_transform_guard()
 	_test_invalid_cell_option_falls_back()
 	if _failures == 0:
@@ -204,10 +214,126 @@ func _test_tree_wind_transform_guard() -> void:
 	guarded_root.free()
 
 
+func _test_all_tree_sources_accept_tree_wind() -> void:
+	var actual_tree_ids: Array[String] = []
+	for asset_value: Dictionary in ImportedVegetation.catalog().get("assets", []):
+		if str(asset_value.get("role", "")) == "tree":
+			actual_tree_ids.append(str(asset_value.get("id", "")))
+	actual_tree_ids.sort()
+	var expected_tree_ids: Array[String] = []
+	for asset_id: String in EXPECTED_TREE_LEAF_TEXTURES:
+		expected_tree_ids.append(asset_id)
+	expected_tree_ids.sort()
+	_check("tree-wind source fixture covers all seven retained tree forms",
+		actual_tree_ids == expected_tree_ids)
+
+	var batches: Dictionary = {}
+	var expected_surfaces := 0
+	for index in range(expected_tree_ids.size()):
+		var asset_id := expected_tree_ids[index]
+		var parts := ImportedVegetation.get_parts(asset_id)
+		_check("%s has imported parts for tree-wind coverage" % asset_id, not parts.is_empty())
+		for part: Dictionary in parts:
+			var mesh: Mesh = part.get("mesh")
+			if mesh != null:
+				expected_surfaces += mesh.get_surface_count()
+		var placement := Transform3D(
+			Basis(Vector3.UP, float(index) * 0.19),
+			Vector3(float(index) * 12.0, 0.0, float(index % 2) * 6.0)
+		)
+		_check("%s queues as a retained source ID" % asset_id,
+			ImportedVegetation.queue(batches, asset_id, placement, 100 + index) == asset_id)
+
+	var wind_root := ImportedVegetation.build(batches, false, {
+		"tree_wind": true,
+		"tree_cell_size_m": 0,
+	})
+	var seen_tree_ids: Dictionary = {}
+	var converted_surface_counts: Dictionary = {}
+	var accepted_all := true
+	var converted_surfaces := 0
+	for child in wind_root.get_children():
+		if not child is MultiMeshInstance3D:
+			continue
+		var instance := child as MultiMeshInstance3D
+		var asset_id := str(instance.name).get_slice("_Part_", 0)
+		if not EXPECTED_TREE_LEAF_TEXTURES.has(asset_id):
+			continue
+		seen_tree_ids[asset_id] = true
+		_check("%s instance opts into tree-only wind" % asset_id,
+			bool(instance.get_meta("_imported_vegetation_tree_wind_enabled", false))
+			and not bool(instance.get_meta("_imported_vegetation_wind_enabled", false)))
+		var part_suffix := str(instance.name).get_slice("_Part_", 1)
+		var part_index := int(part_suffix.get_slice("_", 0))
+		var source_parts := ImportedVegetation.get_parts(asset_id)
+		if part_index < 0 or part_index >= source_parts.size():
+			accepted_all = false
+			_check("%s output part index maps to a source part" % asset_id, false)
+			continue
+		var source_materials: Array = source_parts[part_index].get("materials", [])
+		var draw_mesh: Mesh = instance.multimesh.mesh
+		_check("%s wind mesh retains its imported surface count" % asset_id,
+			draw_mesh.get_surface_count() == source_materials.size())
+		for surface_index in range(mini(draw_mesh.get_surface_count(), source_materials.size())):
+			var source_value: Variant = source_materials[surface_index]
+			var output_material := draw_mesh.surface_get_material(surface_index)
+			if not source_value is BaseMaterial3D or not output_material is ShaderMaterial:
+				accepted_all = false
+				_check("%s surface %d is accepted for opt-in tree wind" % [asset_id, surface_index], false)
+				continue
+			var source_material := source_value as BaseMaterial3D
+			var wind_material := output_material as ShaderMaterial
+			converted_surfaces += 1
+			converted_surface_counts[asset_id] = int(converted_surface_counts.get(asset_id, 0)) + 1
+			_check("%s surface %d uses tree-wind mode" % [asset_id, surface_index],
+				bool(wind_material.get_shader_parameter("tree_wind_mode")))
+			_check("%s surface %d preserves imported albedo features" % [asset_id, surface_index],
+				wind_material.get_shader_parameter("albedo_texture") == source_material.albedo_texture
+				and bool(wind_material.get_shader_parameter("use_albedo_texture")) == (source_material.albedo_texture != null)
+				and wind_material.get_shader_parameter("albedo_color") == source_material.albedo_color)
+			var albedo_name := _texture_filename(source_material.albedo_texture)
+			if albedo_name == "Bark_NormalTree.png":
+				_check("%s bark keeps its source normal map and alpha scissor" % asset_id,
+					source_material.normal_enabled
+					and _texture_filename(source_material.normal_texture) == "Bark_NormalTree_Normal.png"
+					and bool(wind_material.get_shader_parameter("use_normal_texture"))
+					and wind_material.get_shader_parameter("normal_texture") == source_material.normal_texture
+					and source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+					and bool(wind_material.get_shader_parameter("use_alpha_scissor"))
+					and is_equal_approx(float(wind_material.get_shader_parameter("alpha_scissor_threshold")),
+						source_material.alpha_scissor_threshold))
+			elif albedo_name == str(EXPECTED_TREE_LEAF_TEXTURES[asset_id]):
+				_check("%s foliage keeps its expected source atlas and alpha scissor" % asset_id,
+					(not source_material.normal_enabled or source_material.normal_texture == null)
+					and not bool(wind_material.get_shader_parameter("use_normal_texture"))
+					and source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+					and bool(wind_material.get_shader_parameter("use_alpha_scissor"))
+					and is_equal_approx(float(wind_material.get_shader_parameter("alpha_scissor_threshold")),
+						source_material.alpha_scissor_threshold))
+			else:
+				accepted_all = false
+				_check("%s surface %d has its expected bark or foliage atlas (texture=%s)" % [
+					asset_id, surface_index, albedo_name,
+				], false)
+	_check("tree-wind conversion covers every retained source tree", seen_tree_ids.size() == 7 and accepted_all)
+	_check("tree-wind converts every source surface", converted_surfaces == expected_surfaces)
+	for asset_id: String in expected_tree_ids:
+		var source_surfaces := 0
+		for part: Dictionary in ImportedVegetation.get_parts(asset_id):
+			var mesh: Mesh = part.get("mesh")
+			if mesh != null:
+				source_surfaces += mesh.get_surface_count()
+		_check("%s converts every bark and foliage surface" % asset_id,
+			int(converted_surface_counts.get(asset_id, 0)) == source_surfaces)
+	wind_root.free()
+
+
 func _test_invalid_cell_option_falls_back() -> void:
 	var batches := _sample_batches()
 	var legacy := ImportedVegetation.build(batches)
 	var explicit_disabled := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 0})
+	_check("explicit zero cell size is accepted without an option warning",
+		not ImportedVegetation._option_warnings.has("tree_cell_size_m_range"))
 	var invalid_a := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 32})
 	var invalid_b := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 32})
 	var invalid_wind_a := ImportedVegetation.build(batches, false, {"tree_wind": "true"})
@@ -339,6 +465,10 @@ func _legacy_wind_materials_have_strength(root: Node3D, expected: float) -> bool
 				float((material as ShaderMaterial).get_shader_parameter("wind_strength")), expected):
 				return false
 	return true
+
+
+func _texture_filename(texture: Texture2D) -> String:
+	return texture.resource_path.get_file() if texture != null else ""
 
 
 func _check(label: String, condition: bool) -> void:
