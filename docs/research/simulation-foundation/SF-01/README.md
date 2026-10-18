@@ -1,6 +1,6 @@
 # SF-00…02 — Simulation charter, `VehicleModel` contract, fixed-wing and rotorcraft adapters
 
-2026-10-15 · **Status: implemented. Every flyable airplane and the research helicopter (hover and pad start) fingerprint byte-identically against HEAD (10/10); focused kernel, checkpoint, replay, propulsion and helicopter suites pass; every one of the 466 HEAD test programs has the same status and check count on this tree (seven pre-existing HEAD failures, none new), and the two new programs pass.** Steps SF-00, SF-01 and SF-02 of the [simulation foundation plan](../../../plans/simulation-foundation.md). This verifies structure and numerical identity; it does not change or validate any vehicle's physics.
+2026-10-15 · **Status: implemented. Every flyable airplane and the research helicopter (hover and pad start) fingerprint byte-identically against HEAD (10/10); focused kernel, checkpoint, replay, propulsion and helicopter suites pass; every one of the 466 HEAD test programs has the same status and check count on this tree (seven pre-existing HEAD failures, none new), and the two new programs pass.** Steps SF-00, SF-01 and SF-02 of the [simulation foundation plan](../README.md). This verifies structure and numerical identity; it does not change or validate any vehicle's physics.
 
 ## Change
 

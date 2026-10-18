@@ -1,0 +1,32 @@
+# body_cn_beta candidate: exit codes (test_controls fails only because the disposable copy lacks ../assets; it passes 17/17 in the tree)
+test_aero 0
+test_aircraft_contract 0
+test_aircraft_data 0
+test_controls 1
+test_damping_regimes 0
+test_envelope 0
+test_golden 1
+test_handling 0
+test_modes 1
+test_regime_consistency 0
+test_sf_law_properties 0
+test_spin 0
+test_trim 0
+test_yaw_damping 1
+## test_modes
+FAIL 10 m/s dutch roll Hz 0.4466 vs 0.5686
+FAIL 10 m/s dutch roll ζ 0.3656 vs 0.3026
+FAIL 10 m/s signed spiral eigenvalue 0.4230 vs 0.4869
+FAIL 15 m/s dutch roll Hz 0.5304 vs 0.7445
+FAIL 15 m/s dutch roll ζ 0.3257 vs 0.2486
+FAIL 15 m/s signed spiral eigenvalue -0.0498 vs 0.0769
+FAIL 25 m/s dutch roll Hz 0.8225 vs 1.1934
+FAIL 25 m/s dutch roll ζ 0.3279 vs 0.2342
+FAIL 25 m/s signed spiral eigenvalue -0.0542 vs 0.0288
+## test_yaw_damping
+FAIL local Cnβ within 3 % of the fin-derived Cnβ about the CG 0.1214 at α 0–11°  worst 44.35 %
+FAIL OPEN R02 INTEGRATION GATE: local Cnr remains within 7% of fin-plus-wing-profile estimate over α 0–11°  worst 7.75 % at α 11.0°; current-law result retained as a failure pending like-for-like physical comparison
+## test_golden
+FAIL golden roll_15 replays (600 ticks): worst error: position 0.9581244717137167 m, velocity 1.1731091389598605 m/s, attitude 0.1268870604390993, rate 0.5448517993563333 rad/s; auxiliary/discrete mismatch
+FAIL golden pull_throttle replays (720 ticks): worst error: position 2.423675542841295 m, velocity 0.8181853627372517 m/s, attitude 0.052350946506557194, rate 0.13998914731236078 rad/s; auxiliary/discrete mismatch
+FAIL golden rudder_doublet replays (720 ticks): worst error: position 0.9555785714576501 m, velocity 3.160267033646275 m/s, attitude 0.0787905504451929, rate 0.7946794295235875 rad/s; auxiliary/discrete mismatch

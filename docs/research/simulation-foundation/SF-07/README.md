@@ -1,6 +1,6 @@
 # SF-07 — Environment contract
 
-2026-10-15 · **Status: implemented, byte-identical: the three vehicle sessions consume one environment object (physical weather, the owner's turbulence sample, the field's surface table with the terrain sampler, the lake, a ground-vehicle course, gravity); every fleet fingerprint stays identical to the SF-05 commit.** Step SF-07 of the [simulation foundation plan](../../../plans/simulation-foundation.md).
+2026-10-15 · **Status: implemented, byte-identical: the three vehicle sessions consume one environment object (physical weather, the owner's turbulence sample, the field's surface table with the terrain sampler, the lake, a ground-vehicle course, gravity); every fleet fingerprint stays identical to the SF-05 commit.** Step SF-07 of the [simulation foundation plan](../README.md).
 
 ## The contract
 

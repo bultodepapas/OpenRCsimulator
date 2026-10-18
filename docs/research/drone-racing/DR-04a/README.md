@@ -1,6 +1,6 @@
 # DR-04a…06a — Multirotor foundation slice: the plant on the shared kernel
 
-2026-10-15 · **Status: research-grade kernels only; no session, catalog or presentation route. The quad plant runs on the shared `Simulation` kernel through the `VehicleModel` contract and passes its known answers and sign contracts (15 checks).** The first new consumer of the simulation foundation ([plan](../../../plans/simulation-foundation.md), owner decision D6: multirotor before boats), delivered as the base rung of the drone plan's fidelity ladder ([drone plan §4.1](../../../plans/drone-racing.md)). Nothing here is validated against flight data.
+2026-10-15 · **Status: research-grade kernels only; no session, catalog or presentation route. The quad plant runs on the shared `Simulation` kernel through the `VehicleModel` contract and passes its known answers and sign contracts (15 checks).** The first new consumer of the simulation foundation ([plan](../../simulation-foundation/README.md), owner decision D6: multirotor before boats), delivered as the base rung of the drone plan's fidelity ladder ([drone plan §4.1](../../../plans/drone-racing.md)). Nothing here is validated against flight data.
 
 ## What exists
 

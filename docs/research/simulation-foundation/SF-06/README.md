@@ -1,6 +1,6 @@
 # SF-06 — Law property harness
 
-2026-10-15 · **Status: implemented. 203 checks over 26 registered laws pass with no exemptions.** Step SF-06 of the [simulation foundation plan](../../../plans/simulation-foundation.md). The harness verifies mathematical properties of the current laws; it does not validate any of them physically.
+2026-10-15 · **Status: implemented. 203 checks over 26 registered laws pass with no exemptions.** Step SF-06 of the [simulation foundation plan](../README.md). The harness verifies mathematical properties of the current laws; it does not validate any of them physically.
 
 ## What it checks
 

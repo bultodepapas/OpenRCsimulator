@@ -1,6 +1,6 @@
 # SF-05 — Stiff-contact substepping
 
-2026-10-15 · **Status: implemented. A 240 Hz tick with two substeps is byte-identical to two 480 Hz ticks; substeps refine a stiff touchdown three times better than one stiff step; no tick gains energy; the current fleet derives one substep and every fleet fingerprint stays identical to HEAD.** Step SF-05 of the [simulation foundation plan](../../../plans/simulation-foundation.md). This removes a numerical ceiling; it does not calibrate any gear.
+2026-10-15 · **Status: implemented. A 240 Hz tick with two substeps is byte-identical to two 480 Hz ticks; substeps refine a stiff touchdown three times better than one stiff step; no tick gains energy; the current fleet derives one substep and every fleet fingerprint stays identical to HEAD.** Step SF-05 of the [simulation foundation plan](../README.md). This removes a numerical ceiling; it does not calibrate any gear.
 
 ## Change
 

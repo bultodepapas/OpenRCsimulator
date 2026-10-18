@@ -123,7 +123,7 @@ func _initialize() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
-## D6e-R1: the in-flight rate switch. It toggles only where a profile exists, reports the effective state, and a
+## D6e-R2: the in-flight rate switch. It toggles only where a profile exists, reports the effective state, and a
 ## flight log that crosses a switch records it as an event and still replays exactly (inputs are post-rates).
 func _rate_switch(avanti: Node, timber: Node) -> void:
 	var seen: Array = []

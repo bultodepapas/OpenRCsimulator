@@ -6,6 +6,8 @@
 # to locate a crossing; accepted states never cross. This is the EL1d rotor-stop algorithm (physics/electric_stop.gd
 # remains its compatibility wrapper); its numerics are unchanged, so existing trajectories are byte-identical.
 # Local tick time and the absolute clock have different precision: the bracket tolerance applies to the former.
+# SF-04b: the derivative must accept those beyond-boundary stage states (a smooth continuation); a law that refuses
+# them belongs behind a domain-guarded step policy such as physics/rotorcraft/simulation_step_adapter.gd.
 extends RefCounted
 
 const RK: Script = preload("res://physics/integrator.gd")

@@ -1,6 +1,6 @@
 # SF-09 — Generalized-coordinate kernel
 
-2026-10-15 · **Status: implemented, byte-identical: the RC ground vehicle's mass-matrix assembly, block factorization, solves and inversion moved verbatim into a shared float64 kernel with the sizes as parameters; the truck lost 175 lines and keeps its trajectories; the kernel passes a cart–pendulum known answer.** Step SF-09 of the [simulation foundation plan](../../../plans/simulation-foundation.md).
+2026-10-15 · **Status: implemented, byte-identical: the RC ground vehicle's mass-matrix assembly, block factorization, solves and inversion moved verbatim into a shared float64 kernel with the sizes as parameters; the truck lost 175 lines and keeps its trajectories; the kernel passes a cart–pendulum known answer.** Step SF-09 of the [simulation foundation plan](../README.md).
 
 ## What moved
 

@@ -277,6 +277,12 @@ func step() -> void:
 			_fail_safe("step rejected: substep count is not an integer within 1..%d" % MAX_SUBSTEPS)
 			return
 		substeps = declared_substeps
+	# SF-04b: a step policy owns the whole tick and is never split. Refuse the tick rather than integrate a stiff
+	# contact over the full dt, where the loader's per-substep ω·dt rule would silently not hold.
+	if substeps > 1 and model.step_policy.is_valid():
+		aux = old_aux
+		_fail_safe("step rejected: the step policy owns the tick and cannot honour %d contact substeps" % substeps)
+		return
 	var policy_result: Variant
 	if model.step_policy.is_valid():
 		policy_result = model.step_policy.call(combined, t, dt(), f, first)

@@ -1,6 +1,10 @@
 # HELI-17b: consume one complete Simulation fixed tick around a rotor-stop event.
 # The callback contract matches VehicleModel.step_policy(state,t,dt,f,first); since SF-04 the accepted result is
 # {state, events} so the kernel records each located rotor stop ({type, time_s, time_error_bound_s}).
+# SF-04b: this is the kernel's domain-guarded locator. The rotorcraft law refuses Ω < 0 and a refused stage faults
+# the tick, so no stage beyond zero is ever evaluated (the shared physics/event_step.gd needs that continuation).
+# Qualified against an analytic stop and cross-checked with event_step: fourth order, agreement to 1e-10 s
+# (tests/test_sf_event_refinement.gd).
 extends RefCounted
 
 const RK = preload("res://physics/integrator.gd")

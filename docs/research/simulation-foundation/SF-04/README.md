@@ -1,6 +1,6 @@
 # SF-04 — One event protocol: declared boundaries, the kernel's locator and a per-tick event record
 
-2026-10-15 · **Status: implemented, byte-identical: 24/24 fleet runs (eight airplanes and two synthetic electric fixtures, each plain and with a source cut, helicopter hover, hover with rotor hold and pad start, and the truck) hash identically against HEAD; the 38-check protocol test and the event, kernel, electric, glow, helicopter and replay suites pass; the full test loop matches HEAD program for program.** Step SF-04 of the [simulation foundation plan](../../../plans/simulation-foundation.md).
+2026-10-15 · **Status: implemented, byte-identical: 24/24 fleet runs (eight airplanes and two synthetic electric fixtures, each plain and with a source cut, helicopter hover, hover with rotor hold and pad start, and the truck) hash identically against HEAD; the 38-check protocol test and the event, kernel, electric, glow, helicopter and replay suites pass; the full test loop matches HEAD program for program.** Step SF-04 of the [simulation foundation plan](../README.md).
 
 ## What the protocol is
 

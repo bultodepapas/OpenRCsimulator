@@ -1,0 +1,17 @@
+MODES id V_mps SP_Hz SP_zeta DR_Hz DR_zeta roll_tau_s spiral_tau_s
+MODES jensen-das-ugly-stik-60 15.00 1.184 1.040 0.744 0.247 0.0513 -12.66
+MODES jensen-das-ugly-stik-60 21.00 1.597 1.091 1.012 0.235 0.0364 -25.06
+MODES stik-glow-61fx-2t 20.00 1.526 1.085 0.967 0.236 0.0383 -23.05
+MODES stik-glow-61fx-2t 28.00 unavailable: unexpected mode structure: longitudinal { &"oscillatory": [], &"real": [-28.0680825655982, -21.2683453033128, -8.15155427684698, -0.87372842564431, -0.09713112761505] }, lateral { &"oscillatory": [{ &"wn": 8.35596968675809, &"zeta": 0.23106884791416 }], &"real": [-36.6683818038769, 0.02324419323646] }
+MODES stik-glow-55ax-2t 20.00 2.999 0.966 1.036 0.248 0.0383 -23.95
+MODES stik-glow-55ax-2t 28.00 0.044 1.733 1.429 0.244 0.0273 -44.07
+MODES stik-glow-fs64v-4t 20.00 0.061 1.632 1.042 0.251 0.0384 -23.91
+MODES stik-glow-fs64v-4t 28.00 unavailable: no trim at 28.0 m/s: nonfinite iterated trim residual
+MODES gp-extra-300s-60 17.00 1.721 0.888 1.124 0.249 0.0427 -6.88
+MODES gp-extra-300s-60 23.80 2.421 0.876 1.571 0.240 0.0304 -11.67
+MODES p51d-mustang-120 25.00 0.770 0.964 0.527 0.278 0.0832 99.47
+MODES p51d-mustang-120 35.00 1.097 0.937 0.710 0.273 0.0591 48.63
+MODES sebart-avanti-s-a200-p100rx 29.00 0.891 0.782 1.088 0.174 0.0460 -28.86
+MODES sebart-avanti-s-a200-p100rx 40.60 1.248 0.779 1.502 0.161 0.0326 -57.55
+MODES turbo-lumber-evolution 13.10 1.754 0.625 0.639 0.197 0.0416 -8.97
+MODES turbo-lumber-evolution 18.34 2.325 0.659 0.873 0.177 0.0296 -20.53

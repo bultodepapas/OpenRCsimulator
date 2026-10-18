@@ -420,7 +420,7 @@ signal scenery_damage_changed
 ## Accepted contact observations changed, including decisions made between integration steps.
 ## Consumers read the detached contact_events() snapshot; no signal is emitted for rejected candidates.
 signal contact_events_changed
-## D6e-R1: the in-flight rate switch changed the profile; `active` is rates_active() afterwards.
+## D6e-R2: the in-flight rate switch changed the profile; `active` is rates_active() afterwards.
 signal rate_profile_changed(active: bool)
 
 ## Auxiliary simulation state (advanced once per tick in _pre_step): engine rpm, then the servos' actual positions
@@ -2269,7 +2269,7 @@ func rates_active() -> bool:
 		and not (radio.connected and not radio.is_gamepad())
 
 
-## D6e-R1: the transmitter's dual-rate switch for keyboard and gamepad sticks (normal ⇄ full). Refused when the aircraft
+## D6e-R2: the transmitter's dual-rate switch for keyboard and gamepad sticks (normal ⇄ full). Refused when the aircraft
 ## has no controls.rates or a radio is connected (it keeps its own rates). Only the input layer changes: the next tick
 ## samples the new shaping, and flight logs record post-rate inputs, so a replay reproduces the switch exactly.
 func toggle_rate_profile() -> bool:

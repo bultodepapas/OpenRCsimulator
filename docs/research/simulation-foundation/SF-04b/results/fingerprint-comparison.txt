@@ -1,0 +1,26 @@
+baseline: HEAD candidate: working tree (SF-04b) ticks 960 heli_ticks 1200 godot 4.7.2-stable (official)
+SAME gp-extra-300s-60 9c5686653fa81b30 fault='' events=0 ticks=960
+SAME gp-extra-300s-60/cut ffc258f53f4db42b fault='' events=0 ticks=960
+SAME ground-vehicle/default 0dd293ffa0a84119 fault='' events=None ticks=960
+SAME helicopter/airborne 6dd21915b882ddea fault='' events=0 ticks=1200
+SAME helicopter/airborne-hold 89474c773d9962e3 fault='' events=0 ticks=1200
+SAME helicopter/ground c9f2661466e2cab9 fault='' events=0 ticks=1200
+SAME jensen-das-ugly-stik-60 6d7594a9390caf3c fault='' events=0 ticks=960
+SAME jensen-das-ugly-stik-60/cut 5fb09382b78efd8e fault='' events=0 ticks=960
+SAME p51d-mustang-120 6c94ed2e39c315c2 fault='' events=0 ticks=960
+SAME p51d-mustang-120/cut 91d9f499b764e66a fault='' events=0 ticks=960
+SAME sebart-avanti-s-a200-p100rx da1187e6a69bbc1c fault='' events=0 ticks=960
+SAME sebart-avanti-s-a200-p100rx/cut ad516348ee601f64 fault='tick 300: step rejected: joint stage evaluation is nonfinite or malformed' events=0 ticks=301
+SAME stik-glow-55ax-2t 7ec157b10abd7896 fault='' events=0 ticks=960
+SAME stik-glow-55ax-2t/cut 968220bb40549cc6 fault='' events=0 ticks=960
+SAME stik-glow-61fx-2t a974bd15d095bf03 fault='' events=0 ticks=960
+SAME stik-glow-61fx-2t/cut c4b566c4b3229162 fault='' events=0 ticks=960
+SAME stik-glow-fs64v-4t e542ac154a68e6a8 fault='' events=0 ticks=960
+SAME stik-glow-fs64v-4t/cut 0ae7d0d7d6c2bf20 fault='' events=0 ticks=960
+SAME synthetic_stik_electric_4s bb7a43f9b23410af fault='' events=0 ticks=960
+SAME synthetic_stik_electric_4s/cut 49e47bb60b081fbd fault='' events=0 ticks=960
+SAME synthetic_stik_electric_4s_battery edfbf3c8fcbdd5af fault='' events=0 ticks=960
+SAME synthetic_stik_electric_4s_battery/cut 73d9e22c82d766d6 fault='' events=0 ticks=960
+SAME turbo-lumber-evolution cbb362ffe861a4bc fault='' events=0 ticks=960
+SAME turbo-lumber-evolution/cut 15fff27e2a71ad81 fault='' events=0 ticks=960
+24/24 identical

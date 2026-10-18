@@ -1,6 +1,6 @@
 # SF-03 — RC ground vehicle on the shared Simulation kernel
 
-2026-10-15 · **Status: implemented. The truck's 960-tick scripted run fingerprints byte-identically against HEAD; the whole fleet stays identical (11/11); the SF-03 kernel test passes 23 checks; every one of the 466 HEAD test programs has the same status and check count on this tree (seven pre-existing HEAD failures, none new).** Step SF-03 of the [simulation foundation plan](../../../plans/simulation-foundation.md). This changes who owns the truck's tick, not its physics; nothing here validates the vehicle physically.
+2026-10-15 · **Status: implemented. The truck's 960-tick scripted run fingerprints byte-identically against HEAD; the whole fleet stays identical (11/11); the SF-03 kernel test passes 23 checks; every one of the 466 HEAD test programs has the same status and check count on this tree (seven pre-existing HEAD failures, none new).** Step SF-03 of the [simulation foundation plan](../README.md). This changes who owns the truck's tick, not its physics; nothing here validates the vehicle physically.
 
 ## Change
 

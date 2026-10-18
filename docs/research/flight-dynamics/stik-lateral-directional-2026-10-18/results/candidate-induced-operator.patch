@@ -1,0 +1,38 @@
+--- app/physics/aero.gd	2026-10-15 22:16:48.106977622 +0000
++++ app/physics/aero.gd	2026-10-18 15:23:00.748186715 +0000
+@@ -311,7 +311,7 @@
+ 	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
+ 	for i in ys.size():
+ 		var source_angle: float = angles[i] if stall_back == 0.0 else angles[i] - stall_back * flap_shifts[i]
+-		sources.append((speeds[i]/reference_speed) * (1.0-stall_weight(source_angle, model.envelope)) if reference_speed > 0.0 else 0.0)
++		sources.append(speeds[i] * (1.0-stall_weight(source_angle, model.envelope)))
+ 	return {angles = angles, speeds = speeds, sources = sources, flap_shifts = flap_shifts, reference_speed = reference_speed}
+ 
+ 
+@@ -430,7 +430,7 @@
+ 		if coupled:
+ 			var mapped := 0.0
+ 			for k in stations:
+-				mapped += e_map[i * stations + k] * angles[k] * (1.0 if k == i else source_weights[k])
++				mapped += e_map[i * stations + k] * angles[k] * (1.0 if k == i else (source_weights[k] / plane_speeds[i] if plane_speeds[i] > 0.0 else 0.0))
+ 			base = strip_cl0[i] + strip_slope * mapped
+ 		else:
+ 			base = cl0 + cla * effective
+@@ -486,7 +486,7 @@
+ 					var clean_angle_k: float = angles[k] - flap_shifts[k]
+ 					var clean_weight_k := _smoothstep((clean_angle_k - a1) / a_span) if clean_angle_k >= 0.0 \
+ 						else _smoothstep((-clean_angle_k - n1) / n_span)
+-					var clean_source_k: float = (plane_speeds[k] / reference_speed) * (1.0 - clean_weight_k) if reference_speed > 0.0 else 0.0
++					var clean_source_k: float = (plane_speeds[k] / plane_speeds[i]) * (1.0 - clean_weight_k) if plane_speeds[i] > 0.0 else 0.0
+ 					clean_mapped += e_map[i * stations + k] * clean_angle_k * (1.0 if k == i else clean_source_k)
+ 				clean_base = strip_cl0[i] + strip_slope * clean_mapped
+ 			else:
+@@ -826,7 +826,7 @@
+ 		if coupled:
+ 			var mapped := 0.0
+ 			for k in stations:
+-				mapped += e_map[i * stations + k] * angles[k] * (1.0 if k == i else source_weights[k])
++				mapped += e_map[i * stations + k] * angles[k] * (1.0 if k == i else (source_weights[k] / plane_speeds[i] if plane_speeds[i] > 0.0 else 0.0))
+ 			base = strip_cl0[i] + strip_slope * mapped
+ 		else:
+ 			base = float(a.CL0) + float(a.CLa) * effective

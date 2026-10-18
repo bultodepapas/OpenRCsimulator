@@ -1,0 +1,48 @@
+# cand: exit codes of 37 aero programs
+test_aero 0
+test_aero_continuity 0
+test_aero_flow 0
+test_avanti_handling 0
+test_damping_regimes 1
+test_downwash_lag 0
+test_dynamics 0
+test_envelope 0
+test_envelope_integrity 0
+test_extra_handling 0
+test_extra_installation 0
+test_extra_runway 0
+test_flaps_session 0
+test_golden 1
+test_ground_effect 0
+test_half_power_start 0
+test_handling 0
+test_modes 1
+test_p51_envelope 0
+test_p51_ground 0
+test_p51_handling 0
+test_pilot_trim 0
+test_regime_consistency 0
+test_rudder_authority 1
+test_sf_law_properties 0
+test_spin 0
+test_stall_solver 0
+test_swirl_accuracy 0
+test_swirl_torque 0
+test_tail_downwash 0
+test_takeoff_roll 0
+test_trim 0
+test_trim_density 0
+test_trim_integrity 0
+test_yaw_damping 1
+## test_modes
+FAIL 10 m/s dutch roll ζ 0.2825 vs 0.3026
+FAIL 10 m/s signed spiral eigenvalue 0.4243 vs 0.4869
+## test_yaw_damping
+FAIL local Cnr h=0.05 matches the complete independent attached-law derivative over α 0–11°  worst absolute Cnr error 0.003861887
+FAIL local Cnr h=0.0125 converges to the complete independent derivative over α 0–11°  worst absolute Cnr error 0.003861294
+## test_golden
+FAIL golden roll_15 replays (600 ticks): worst error: position 0.008462145077714922 m, velocity 0.0020585761486247023 m/s, attitude 0.00019603758382236158, rate 0.0010892850257724351 rad/s; auxiliary/discrete mismatch
+FAIL golden pull_throttle replays (720 ticks): worst error: position 0.19147564816471174 m, velocity 0.07223156986840884 m/s, attitude 0.006569601508827988, rate 0.01089601811038865 rad/s; auxiliary/discrete mismatch
+FAIL golden rudder_doublet replays (720 ticks): worst error: position 0.29855323018070123 m, velocity 0.16730773491032735 m/s, attitude 0.00953648651159536, rate 0.03748637989616327 rad/s; auxiliary/discrete mismatch
+## test_damping_regimes
+FAIL D11g: data Cnr -0.1335, -0.1299 about the CG, = the local model's -0.1307 at the 15 m/s trim (α 4.18°) within 0.5 %  

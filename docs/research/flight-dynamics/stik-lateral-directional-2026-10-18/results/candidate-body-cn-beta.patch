@@ -1,0 +1,24 @@
+--- app/data/aircraft/jensen_ugly_stik_60.json	2026-10-15 17:31:40.709722106 +0000
++++ app/data/aircraft/jensen_ugly_stik_60.json	2026-10-18 15:37:33.788667267 +0000
+@@ -1169,7 +1169,7 @@
+         "source": "OpenFlightSim UltraStick25e"
+       },
+       "Cnb": {
+-        "value": 0.12741288623702934,
++        "value": 0.07421288623702935,
+         "unit": "1/rad",
+         "kind": "derived",
+         "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
+@@ -1206,6 +1206,12 @@
+       }
+     },
+     "surfaces": {
++      "body_cn_beta": {
++        "value": -0.0532,
++        "unit": "1/rad",
++        "kind": "estimated",
++        "source": "CANDIDATE 2026-10-18, research/flight-dynamics/stik-lateral-directional/directional_prediction.py: (DATCOM high-wing fin efficiency 0.684 - 1) x fin term + Raymer eq. 16.50 fuselage term; not measured"
++      },
+       "wing_aileron_effectiveness": {
+         "value": 0.144,
+         "unit": "1",

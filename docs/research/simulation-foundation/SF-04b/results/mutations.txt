@@ -1,0 +1,17 @@
+SF-04b deliberate mutations, 2026-10-18, run on disposable copies of app/ (scratchpad), test: res://tests/test_sf_event_refinement.gd
+
+mut1: delete the kernel guard in app/sim/simulation.gd ("if substeps > 1 and model.step_policy.is_valid(): ... cannot honour ...")
+FAIL a policy tick asking for 2 contact substeps is refused, not integrated over the full dt
+FAIL the refused tick rolled back
+51 checks, 2 failed
+
+mut2: degrade the rotorcraft adapter's main integrator from RK4 to explicit midpoint (result += h * k2) in app/physics/rotorcraft/simulation_step_adapter.gd
+FAIL adapter: stop time within 2e-9 s of the analytic root at 240 Hz 9.55e-6
+FAIL adapter: roll rate within 4e-9 rad/s of the analytic integral at 240 Hz 1.79e-5
+FAIL adapter 240→480 Hz: fourth-order refinement (error ratios 3.9, 3.9 ≥ 12)
+FAIL adapter 480→960 Hz: fourth-order refinement (error ratios 4.0, 4.0 ≥ 12)
+FAIL the two locators agree on the stop within 1e-10 s at every rate 9.55e-6
+FAIL adapter: restart from rest without an event, Ω(0.1 s) within 1e-7 of the analytic 6.883388 -8.53e-4
+51 checks, 6 failed
+
+Unmutated tree: 51 checks, 0 failed.

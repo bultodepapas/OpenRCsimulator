@@ -30,7 +30,9 @@ Effect, from the [elevator harness](../../../../research/flight-dynamics/elevato
 
 At 21 m/s a full pull no longer reaches the stall at entry. Holding full up from the start speed until the airplane runs out of speed still stalls it, as on a real model. The roll that follows is the open post-stall item, D8b-R2.
 
-## D6e-R1: in-flight rate switch (2026-10-18)
+## D6e-R2: in-flight rate switch (2026-10-18)
+
+Step ID corrected on 2026-10-18: this step was first committed as "D6e-R1", which already names the [pilot elevator trim](../../flight-dynamics/climb-trim/README.md).
 
 The [elevator investigation](../../flight-dynamics/elevator-repair-2026-10-13.md#11-implementation-record-2026-10-13) left the in-flight switch open; before this step the profile was fixed at launch (`--rates`). `FlightSession.toggle_rate_profile()` now flips normal ⇄ full like a transmitter's D/R switch: **N** on the keyboard, or the optional gamepad action `rates_toggle` (unbound by default, listed under Flight in the controller setup and the controls guide). It is refused, with a note, when the aircraft has no `controls.rates` or a radio is connected (radios keep their own rates). The O2 transmitter overlay and the legacy HUD already show the live profile.
 

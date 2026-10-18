@@ -210,7 +210,7 @@ func _paused(value: bool) -> void:
 		_flush_rows()
 
 
-## D6e-R1: the rate switch takes effect at the next tick's input sample, which the recorded inputs already carry.
+## D6e-R2: the rate switch takes effect at the next tick's input sample, which the recorded inputs already carry.
 func _rates(active: bool) -> void:
 	if recording:
 		_event("rates", "normal" if active else "full")

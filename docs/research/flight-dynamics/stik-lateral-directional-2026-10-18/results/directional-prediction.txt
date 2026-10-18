@@ -1,0 +1,9 @@
+wing S 0.464515 m2, b 1.524 m, AR 5.000; data Cnβ (fin only, efficiency 1) 0.12741 /rad
+fuselage stations -0.291..+0.791 m (firewall to tail; engine and spinner excluded): length 1.082 m, volume 7.28 L, max section 99.5 cm2 (h 0.0963, w 0.1034), max height 0.0973 m
+wing root quarter chord at z -0.0388 m, y +0.0510 m; fuselage centreline y -0.0085 m -> z_w -0.0595 m (positive down), z_w/h -0.612
+fin + rudder area S_v 0.0484 m2, S_v/S 0.1042
+DATCOM fin efficiency η_v(1 + dσ/dβ) = 0.724 + 0.1594 -0.2448 + 0.0450 = 0.684
+fuselage Cnβ: Raymer -0.01296 /rad; Munk (fineness 9.61, k2 − k1 0.936) -0.01924 /rad
+predicted Cnβ (Raymer body) = 0.684 × 0.12741 -0.01296 = 0.0741 /rad
+predicted Cnβ (Munk body) = 0.684 × 0.12741 -0.01924 = 0.0679 /rad
+for comparison (not an input): Ultra Stick 25e OpenFlightSim Cnβ 0.0723 /rad

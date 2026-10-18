@@ -55,10 +55,15 @@ var step_policy: Callable
 ## above zero; `transition(state, index) -> state` applies the discrete change at the located boundary. The kernel
 ## runs the locator when no step_policy is set and exactly one event is declared; a model composing several
 ## boundaries keeps its own step_policy and reports its events through it.
+## SF-04b: the locator evaluates RK stages beyond the boundary while it brackets a crossing, so the stage law must
+## continue smoothly there (as the electric shaft does). A law that refuses the far side (the rotorcraft law faults
+## for Ω < 0) needs a domain-guarded step_policy instead: physics/rotorcraft/simulation_step_adapter.gd never
+## evaluates a stage beyond zero. Both are fourth order and agree to 1e-10 s (tests/test_sf_event_refinement.gd).
 var events: Array[Dictionary] = []
 ## SF-05: substeps(body, continuous, t) -> int in 1..Simulation.MAX_SUBSTEPS, evaluated once per tick. The kernel
 ## integrates its own RK4 and the declared-event locator in that many substeps of dt/n (stiff contacts within
-## reach). A step_policy owns the whole tick and receives no substeps. Unset = 1.
+## reach). A step_policy owns the whole tick and is never split: a tick that asks for more than one substep under a
+## policy is refused (SF-04b). Unset = 1.
 var substeps: Callable
 
 
