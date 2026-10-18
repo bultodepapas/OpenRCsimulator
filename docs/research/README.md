@@ -142,6 +142,8 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 ### Visual quality and landscape
 
+Grass-specific follow-up: [20 source investigations, 2026-10-17](grass-quality-2026-10-17.md), covering Godot documentation, free assets, papers, libraries, forums and Reddit. The [grass quality plan](../plans/grass-quality.md) owns proposed work; no new runtime result is claimed.
+
 Current implementation guidance is in the [visual quality guide](../VISUAL-QUALITY-PLAN.md) and [landscape guide](../LANDSCAPE-PLAN.md). The [landscape-upgrade evidence index](landscape-upgrade/README.md) preserves LU-00…27 verification and remaining limits. Evidence entry points:
 
 - Direction, sources and baseline: [landscape research](landscape-research.md), [visual tools](visual-quality-tools-2026-10-05.md), [tree resources](tree-resource-review-2026-10-06/README.md), and [asset-source catalog](asset-sources-catalog-2026-10-06.md).

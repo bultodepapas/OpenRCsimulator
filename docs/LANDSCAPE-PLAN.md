@@ -1,6 +1,6 @@
 # Landscape plan: current field and open work
 
-2026-10-16 · Revision 8 · Step prefix: **L**
+2026-10-17 · Revision 9 · Step prefix: **L**
 
 **Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…27 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
 
@@ -39,6 +39,14 @@ The [global implementation plan](plans/global-performance-visual-quality.md#3-or
 | LU-22-R1 | Correct one confirmed shore/material discontinuity using existing boundary/depth data. | Conditional on pilot/overview review after ground work; visual/contact alignment and no new water physics or general authoring system. |
 
 For L15a/c, compare the currently static windsock against already wind-driven vegetation on the same supported gust before changing it. A source-shader wind input is not independent calibration of the visual response. This delivery does not reopen completed foliage/audio work.
+
+The [grass quality plan](plans/grass-quality.md) refines texture, silhouette, placement and motion work under the existing global budgets, with [20 dated source investigations](research/grass-quality-2026-10-17.md). It owns the pending details for the following reserved follow-ups; existing VQ-02a, L9e-R1, L15c and L9d-05/06 retain their original owners. Default imported near grass is currently static; the scenery-off fallback's wind/fade proof does not apply to that route.
+
+| ID | Work | Status / acceptance home |
+| --- | --- | --- |
+| L9e-R2 | Compare a grass-only binding of retained 2K Grass001 in shared flight/Home after the L9e-R1 outcome. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
+| L11a-R1 | Qualify imported-grass silhouette, species allocation, root/ground match and habitat placement using retained free assets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
+| L11a-R2 | Repair a demonstrated grass batch-culling or transition defect within measured budgets. | [Grass implementation sequence](plans/grass-quality.md#3-reviewable-implementation-sequence). |
 
 ## Landscape integration
 
