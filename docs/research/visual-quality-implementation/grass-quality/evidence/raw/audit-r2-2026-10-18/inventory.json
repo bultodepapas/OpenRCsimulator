@@ -1,0 +1,122 @@
+{
+  "format": "openrc-grass-audit-artifacts v1",
+  "retained_utc": "2026-10-18T22:44:29.279741+00:00",
+  "scope": "Second grass audit; validation fixes and reconfirmation of previous layout optimization. No new qualified native performance pair.",
+  "files": {
+    "frame-snapshot-tests.log": {
+      "sha256": "c9c5b841e242ba2f87c59498e6d6db52f5e4fafaf0ffce1c26673039f3a0cf66",
+      "bytes": 3765
+    },
+    "grass-ground-tests.log": {
+      "sha256": "4b221f6af76238f15e8cb43eff0d5b5930de9a076fa0b00c8b6d14962d8ef0b7",
+      "bytes": 2578
+    },
+    "grass-wind-tests.log": {
+      "sha256": "dc1c6cedd3104fa6a2ffb1431a60c9fd842103dc48826269771401948c011b2f",
+      "bytes": 15915
+    },
+    "import-final.log": {
+      "sha256": "2e4226df6d711973135a93faa2e7aae43ea4a7b652b0916c3bd37aad1cb6d11a",
+      "bytes": 1367
+    },
+    "import.log": {
+      "sha256": "2e4226df6d711973135a93faa2e7aae43ea4a7b652b0916c3bd37aad1cb6d11a",
+      "bytes": 1367
+    },
+    "layout-default.json": {
+      "sha256": "8a623bfceab05a3338cad3930193878025a0d99041bf9a9511bbf121479da241",
+      "bytes": 3391
+    },
+    "layout-default.log": {
+      "sha256": "4e87a2b3790047ec187147fd24cb18e721242dec7feda8862ffccec0788e45fe",
+      "bytes": 1938
+    },
+    "layout-enhanced.json": {
+      "sha256": "8e90e2824a79e1432855acdc1ae91caa48d36db47b64a09909d65b2102a3f80e",
+      "bytes": 3403
+    },
+    "layout-enhanced.log": {
+      "sha256": "e7216bd7d715f6d09cdd648716b77e7d82f2cabc602c1ea32ac73799c3972111",
+      "bytes": 1940
+    },
+    "native-campaign-original.json.gz": {
+      "sha256": "7d4f49943600584fe13e0845a177cd1292707d5feab629e77dc0cfc2c41e55fb",
+      "bytes": 101333
+    },
+    "native-collector.log": {
+      "sha256": "c4d27940d7f21506da4bf05889f86b6141f3ed0a48e1c86ce645cc198a1292be",
+      "bytes": 908
+    },
+    "native-engine.log": {
+      "sha256": "bd4d7c94920c474f161edbec351bf85379bdd2dac17948afebe8f1558bdf344e",
+      "bytes": 1515
+    },
+    "near-grass-tests.log": {
+      "sha256": "2274dd87c1b70322567a2d571e01ad81e3fbdf45c7fec60d4bcf3cd14707cac4",
+      "bytes": 118
+    },
+    "python-tests-with-flip.log": {
+      "sha256": "2b8044da25a7e32e14bc54e38ac0908e212aa09cf68c8e47ef0d2e39dfadb804",
+      "bytes": 1328
+    },
+    "python-tests.log": {
+      "sha256": "40cca5f44b41d5418c20519b0cae0d33948eb59c122760a70cd2d24fc7c3fb0c",
+      "bytes": 2415
+    },
+    "uv-baseline-manifest.json.gz": {
+      "sha256": "d2481587edc91d354ed3e632b182b5adf2ac198338e39c74479b90655fa869dd",
+      "bytes": 174340
+    },
+    "uv-baseline.log": {
+      "sha256": "a9a23b41c8a41710ac6f629c661f6cc5884b4277353987cd65c20530a786b71a",
+      "bytes": 1441
+    },
+    "uv-guard-probe.gd.txt": {
+      "sha256": "5c70515b10d1880a12c20417aad0065f11e52fc45c68a4cb6d33d89e7cd2e1f9",
+      "bytes": 43585
+    }
+  },
+  "source_sha256_at_retention": {
+    "app/render/grass_scene_snapshot.gd": "4160864e003f16bb1a3b101cf06828f6352cda955dc0d68a04fddad10ff58c0f",
+    "app/scenery/imported_grass_material.gd": "dbefe91f495fd0c7ab2a15a66e7645bbc7b1db47283bb45eeb79bbd83c3caffa",
+    "app/tests/test_frame_samples.gd": "9616178c3865c73675c8e9c92e16455ee7b320bd36e19896aa27e1aff93dc836",
+    "app/tests/test_imported_grass_wind.gd": "ed7573919a07a9748130cc91d03daa11e96ec6d7d1cc4c1c93d38705728f6712",
+    "tools/grass/profile_session.py": "2fc1c502a05403412366dd5efd80d8d33af494307ab5d1a92b9156ccd90a0d2e",
+    "tools/grass/test_profile_session.py": "fe2430ff3290d2825a342de2e9483057fd3e87a45576da89c6b4c0e2a8e8cc70",
+    "tools/grass/layout_benchmark.gd": "a6b599fb51a234bb74ec7da66bb6928a81a0d6ac05d7ed346a10310b7baf1f3c",
+    "app/scenery/imported_near_grass.gd": "c39ae8319fa336b24a5837ab7a01583487fcc56142a592b4c5bccebb228ccbe6",
+    "app/render/ground.gdshader": "ad2643bf9a169fea37d8cc69d4a36caf6d5da2a3a849a7a57736b00c4b9a15bf"
+  },
+  "source_identity_limit": "Retention-time identities, not a before/after bracket. Benchmark receipts carry their producer hashes; original native campaign contains its own source and engine bracket.",
+  "checks": {
+    "python_grass_tests": 51,
+    "frame_snapshot_checks": 68,
+    "grass_wind_checks": 204,
+    "grass_ground_checks": 38,
+    "near_grass_checks": 59,
+    "benchmark_assertions_per_mode": 5,
+    "final_headless_editor_import_exit": 0
+  },
+  "python_environment": {
+    "interpreter": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "executable": "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "PYTHONPATH": "tmp/grass-quality-followup/python-packages",
+    "flip_wheel": "flip_evaluator-1.7-cp311-cp311-win_amd64.whl",
+    "flip_wheel_sha256": "12ccbc9e91eed9b0e6422dddcfaa2836a0b0edac1bbc241d9058742188af88c5"
+  },
+  "commands": [
+    "python -m unittest discover -s tools/grass -p test_*.py (with the PYTHONPATH above)",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_frame_samples.gd",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_imported_grass_wind.gd",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_grass_ground_material.gd",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_imported_near_grass.gd",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --editor --quit"
+  ],
+  "limits": [
+    "Initial Python run lacked isolated FLIP on PYTHONPATH; retained failed log is environmental evidence. Full suite passed after reusing the existing pinned wheel without installing or upgrading dependencies.",
+    "No native frame-time report exists for the crashed default session. Original campaign remains unmodified, including the old in_progress status defect. No completed pair or FPS qualification.",
+    "UV shader experiment stopped at an invalid baseline capture during concurrent woodland work. No candidate capture or paired timings. Production ground shader unchanged.",
+    "Invalid baseline PNGs remain only under tmp/grass-audit-r2/uv-baseline; compressed manifest and probe text are diagnostic, not visual acceptance.",
+    "No physics, solver, goldens or accepted asset density changed in this round."
+  ]
+}

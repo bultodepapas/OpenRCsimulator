@@ -12,6 +12,7 @@ const SUPPORTED_ASSET_IDS: Array[String] = [
 ]
 const UNSUPPORTED_MATERIAL_FEATURES: Array[String] = [
 	"normal_enabled",
+	"bent_normal_enabled",
 	"emission_enabled",
 	"rim_enabled",
 	"clearcoat_enabled",
@@ -20,9 +21,22 @@ const UNSUPPORTED_MATERIAL_FEATURES: Array[String] = [
 	"backlight_enabled",
 	"heightmap_enabled",
 	"subsurf_scatter_enabled",
-	"transmittance_enabled",
+	"subsurf_scatter_transmittance_enabled",
 	"refraction_enabled",
 	"detail_enabled",
+	"albedo_texture_msdf",
+	"disable_specular_occlusion",
+	"shadow_to_opacity",
+	"proximity_fade_enabled",
+	"uv1_world_triplanar",
+	"uv2_world_triplanar",
+	"billboard_keep_scale",
+	"fixed_size",
+	"use_point_size",
+	"use_particle_trails",
+	"use_z_clip_scale",
+	"use_fov_override",
+	"grow",
 ]
 
 
@@ -149,6 +163,10 @@ static func _validate_batch(batch: MultiMeshInstance3D, root: Node3D, source_sta
 
 
 static func _material_rejection_reason(material: StandardMaterial3D) -> String:
+	if material.next_pass != null:
+		return "uses a next-pass material that the qualified grass shader does not preserve"
+	if material.render_priority != 0:
+		return "uses a render priority that the qualified grass shader does not preserve"
 	if material.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED:
 		return "uses transparency mode unsupported by the opaque grass shader"
 	if material.shading_mode != BaseMaterial3D.SHADING_MODE_PER_PIXEL:
@@ -161,12 +179,20 @@ static func _material_rejection_reason(material: StandardMaterial3D) -> String:
 		return "is not double-sided"
 	if material.depth_draw_mode != BaseMaterial3D.DEPTH_DRAW_OPAQUE_ONLY:
 		return "depth draw mode is not opaque-only"
+	if material.depth_test != BaseMaterial3D.DEPTH_TEST_DEFAULT:
+		return "uses a depth test mode unsupported by the qualified grass shader"
+	if material.distance_fade_mode != BaseMaterial3D.DISTANCE_FADE_DISABLED:
+		return "uses distance fading unsupported by the qualified grass shader"
+	if material.billboard_mode != BaseMaterial3D.BILLBOARD_DISABLED:
+		return "uses billboard rendering unsupported by the qualified grass shader"
+	if material.stencil_mode != BaseMaterial3D.STENCIL_MODE_DISABLED:
+		return "uses a stencil mode unsupported by the qualified grass shader"
 	if material.alpha_antialiasing_mode != BaseMaterial3D.ALPHA_ANTIALIASING_OFF:
 		return "uses unsupported alpha antialiasing"
 	if material.albedo_texture == null:
 		return "has no imported albedo texture for the qualified grass shader"
-	if material.metallic_texture != null or material.roughness_texture != null:
-		return "uses metallic/roughness textures not represented by the grass shader"
+	if material.orm_texture != null or material.metallic_texture != null or material.roughness_texture != null:
+		return "uses ORM/metallic/roughness textures not represented by the grass shader"
 	if material.texture_filter != BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS:
 		return "albedo texture filter is not linear mipmapped"
 	if not material.texture_repeat:

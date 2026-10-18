@@ -136,6 +136,32 @@ The final full-session attempt used a stable imported app snapshot with only the
 
 The [artifact inventory](evidence/raw/audit-2026-10-18/inventory.json) records exact byte hashes and retention limits. Complete transition PNGs and the 8×/16× reference PNGs remain in local `tmp/grass-completion`; retained boundary/native images, every manifest and full reductions support review. Missing PNGs must be recaptured before a complete reduction on another machine. The first live-tree filter matrix and the v2 null-override failure are retained as diagnostics, not qualification. Visual captures used the earlier stable snapshot; the exact layout-parity check covers the later selection optimization. No simulation kernel, physics data or golden flight was changed.
 
+## 2026-10-18 second audit: measurement integrity and material fidelity
+
+Scope: L9e-R2/L11a-R1/L15c follow-up on the existing grass implementation. No new asset, density, shader or simulation change was adopted in this round.
+
+| Finding | Correction | Runtime scope |
+| --- | --- | --- |
+| A missing native report produces `pacing_gate: null`; the runner dereferenced it and lost the run record. The campaign remained `in_progress` despite having a finish timestamp. | Retain the invalid run with no pacing verdict; finalize unexpected collection failures as stopped and retain attempted report/log paths. | Offline collection tool. |
+| Two ground materials could have identical texture-path sets with different albedo/normal assignments and still verify. The profile validator also accepted expected maps in the wrong combined ground channel list. | Compare uniform-to-resource bindings, publish the slot map, and require the intended turf/photo maps in their exact uniforms. | One report-time observation; no frame-loop work. |
+| The grass wind adapter accepted material options its replacement shader cannot preserve, including distance/proximity fading and additional material passes. Its transmittance property name was also wrong. | Reject unsupported source features before replacing any mesh, material or culling margin; preserve the static imported fallback. | Scene construction only; supported pinned source materials retain their appearance. |
+
+A fresh nine-sample alternating CPU run reconfirms the **previously implemented** rank-cache optimization. This is not a new speedup from the validation changes:
+
+| High-tier case | Default legacy → cached median, ms | Enhanced legacy → cached median, ms |
+| --- | ---: | ---: |
+| Open field | 64.856 → 0.951 | 52.298 → 0.883 |
+| Narrow rough field | 50.723 → 0.930 | 48.439 → 0.906 |
+| Nearby exclusion mask | 81.866 → 1.714 | 57.765 → 1.091 |
+
+The first open-field call, including rank-cache construction with source assets already loaded, took 9.303 ms default and 6.924 ms enhanced. All five benchmark assertions passed per mode. Raw sample arrays, alternating order and source/tool hashes are retained in [default](evidence/raw/audit-r2-2026-10-18/layout-default.json) and [enhanced](evidence/raw/audit-r2-2026-10-18/layout-enhanced.json). These numbers measure layout selection, not whole-scene loading or FPS; no new GPU improvement is claimed.
+
+The native session attempt passed process preflight and launched the default live-input flight. Its log records a prop strike and landing-gear crash with closed throttle; the process ended without a frame-time JSON. The old collector then threw `AttributeError` on the null pacing result. Keep the [original campaign](evidence/raw/audit-r2-2026-10-18/native-campaign-original.json.gz), [engine log](evidence/raw/audit-r2-2026-10-18/native-engine.log) and [collector traceback](evidence/raw/audit-r2-2026-10-18/native-collector.log) unchanged as failure evidence. No enhanced run or completed pair exists. The fixed collector's regression exercises the actual native reducer with a missing report, separately from an injected collection exception; these checks are not flight timings.
+
+A proposed shader experiment moved grass UV anti-tiling calculations inside the existing photo-detail branch. Its baseline capture encountered `Woodland edge recipe is missing or invalid` while another track was changing woodland data; an unrelated headless scenery test was also observed. The capture is diagnostic only. No candidate capture, paired timing, pixel-parity claim or production shader edit was accepted. The [baseline log](evidence/raw/audit-r2-2026-10-18/uv-baseline.log), compressed manifest and temporary probe source are retained; its PNG set stays in local `tmp/grass-audit-r2/uv-baseline` and is not qualification evidence.
+
+Verification passes **51 Python tests**, **68 frame-snapshot checks**, **204 grass-wind checks**, **38 ground-material checks** and **59 imported-placement checks**. The final headless editor import exits cleanly. The first full Python invocation lacked FLIP on its module path; reusing the existing isolated FLIP 1.7 wheel resolves that environment error without changing dependencies. Interruption tests also verify terminal pair status and retention of the original cause when final provenance inspection fails. Verification receipts and exact retained-byte hashes are listed in the [round inventory](evidence/raw/audit-r2-2026-10-18/inventory.json). The enhanced preview remains opt-in. Full-session pacing, the existing static seam limit, owner/RC moving-view review and other-hardware acceptance remain open.
+
 ## Reproduction and limits
 
 Use the same external capture script with `--path` pointing to each imported app snapshot. Output directories must be new. Inspect engine logs as well as exit status.

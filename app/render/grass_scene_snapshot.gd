@@ -4,6 +4,11 @@ extends RefCounted
 const GROUND_SHADER_PATH := "res://render/ground.gdshader"
 const PROCEDURAL_GRASS_SHADER_PATH := "res://render/near_grass.gdshader"
 const IMPORTED_GRASS_SHADER_PATH := "res://scenery/imported_grass.gdshader"
+const GROUND_TEXTURE_PARAMETERS: Array[StringName] = [
+	&"grass", &"turf_detail",
+	&"rc_dirt_albedo", &"rc_dirt_normal", &"rc_dirt_roughness",
+	&"rc_grass_albedo", &"rc_grass_normal", &"rc_grass_roughness",
+]
 
 
 ## Snapshot the built grass/scenery route and active material bindings once at report time.
@@ -90,6 +95,7 @@ static func _ground_state(materials: Array[ShaderMaterial], errors: PackedString
 		"turf_detail_strength": float(turf_strength_value) if typeof(turf_strength_value) == TYPE_FLOAT or typeof(turf_strength_value) == TYPE_INT else -1.0,
 		"turf_detail_enabled": (float(turf_strength_value) > 0.0) if typeof(turf_strength_value) == TYPE_FLOAT or typeof(turf_strength_value) == TYPE_INT else false,
 		"texture_paths": _material_texture_paths(first),
+		"texture_bindings": _ground_texture_bindings(first),
 		"normal_texture_paths": _material_texture_paths_for(first, [&"rc_dirt_normal", &"rc_grass_normal"]),
 		"roughness_texture_paths": _material_texture_paths_for(first, [&"rc_dirt_roughness", &"rc_grass_roughness"]),
 		"albedo_texture_paths": _material_texture_paths_for(first, [&"turf_detail", &"rc_dirt_albedo", &"rc_grass_albedo"]),
@@ -97,7 +103,7 @@ static func _ground_state(materials: Array[ShaderMaterial], errors: PackedString
 	var first_signature := JSON.stringify({
 		"grass_photo_enabled": ground_state.grass_photo_enabled,
 		"turf_detail_strength": ground_state.turf_detail_strength,
-		"texture_paths": ground_state.texture_paths,
+		"texture_bindings": _ground_texture_binding_ids(first),
 	})
 	for index in range(1, materials.size()):
 		var material: ShaderMaterial = materials[index]
@@ -106,7 +112,7 @@ static func _ground_state(materials: Array[ShaderMaterial], errors: PackedString
 		var signature := JSON.stringify({
 			"grass_photo_enabled": bool(photo_value) if typeof(photo_value) == TYPE_BOOL else false,
 			"turf_detail_strength": float(detail_value) if typeof(detail_value) == TYPE_FLOAT or typeof(detail_value) == TYPE_INT else -1.0,
-			"texture_paths": _material_texture_paths(material),
+			"texture_bindings": _ground_texture_binding_ids(material),
 		})
 		if str(material.shader.resource_path) != GROUND_SHADER_PATH or signature != first_signature:
 			errors.append("active ground material bindings disagree on shader or grass detail settings")
@@ -353,6 +359,27 @@ static func _material_texture_paths(material: Material) -> PackedStringArray:
 		&"rc_grass_albedo", &"rc_grass_normal", &"rc_grass_roughness",
 	]
 	return _material_texture_paths_for(material, parameter_names)
+
+
+## Keep the effective uniform-to-resource mapping in the report. A sorted path list loses slot identity.
+static func _ground_texture_bindings(material: ShaderMaterial) -> Dictionary:
+	var bindings: Dictionary = {}
+	for parameter: StringName in GROUND_TEXTURE_PARAMETERS:
+		var value: Variant = material.get_shader_parameter(parameter)
+		bindings[str(parameter)] = {
+			"bound": value is Texture2D,
+			"resource_path": str((value as Texture2D).resource_path) if value is Texture2D else "",
+		}
+	return bindings
+
+
+## Compare resource identity as well as uniform name; pathless generated textures also need to agree.
+static func _ground_texture_binding_ids(material: ShaderMaterial) -> Dictionary:
+	var bindings: Dictionary = {}
+	for parameter: StringName in GROUND_TEXTURE_PARAMETERS:
+		var value: Variant = material.get_shader_parameter(parameter)
+		bindings[str(parameter)] = (value as Texture2D).get_instance_id() if value is Texture2D else 0
+	return bindings
 
 
 static func _material_texture_paths_for(material: Material, parameter_names: Array[StringName]) -> PackedStringArray:

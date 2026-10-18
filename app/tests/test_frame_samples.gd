@@ -7,6 +7,9 @@ const GroundShader: Shader = preload("res://render/ground.gdshader")
 const ImportedGrassShader: Shader = preload("res://scenery/imported_grass.gdshader")
 const ProceduralGrassShader: Shader = preload("res://render/near_grass.gdshader")
 const TurfDetail: Texture2D = preload("res://assets/landscape/turf/detail.png")
+const RcGrassAlbedo: Texture2D = preload("res://assets/landscape/rc-ground/grass-albedo.jpg")
+const RcGrassNormal: Texture2D = preload("res://assets/landscape/rc-ground/grass-normal.jpg")
+const RcGrassRoughness: Texture2D = preload("res://assets/landscape/rc-ground/grass-roughness.jpg")
 const FieldLoader := preload("res://data/field_loader.gd")
 const SceneryLoader := preload("res://scenery/scenery_loader.gd")
 const ImportedNearGrass := preload("res://scenery/imported_near_grass.gd")
@@ -147,6 +150,45 @@ func _test_effective_grass_state() -> void:
 	_check("imported route and species count come from the active MultiMesh", baseline.near_grass.route == "imported" and baseline.near_grass.material_variant == "source-static" and baseline.near_grass.species_counts == {"grass_common_short": 1} and baseline.near_grass.clump_count == 1, str(baseline.near_grass))
 	_check("shader identity and source texture paths are stable resource evidence", baseline.near_grass.material_bindings.size() == 1 and baseline.near_grass.material_bindings[0]["class"] == "StandardMaterial3D", str(baseline.near_grass.material_bindings))
 
+	var generated_grass_texture := ImageTexture.create_from_image(Image.create(1, 1, false, Image.FORMAT_RGB8))
+	var matching_ground := _grass_fixture(false, _imported_grass_fixture(StandardMaterial3D.new()))
+	var matching_first := (matching_ground.get_child(0) as MeshInstance3D).material_override as ShaderMaterial
+	_configure_test_ground_textures(matching_first, generated_grass_texture)
+	var matching_second_node := MeshInstance3D.new()
+	matching_second_node.mesh = PlaneMesh.new()
+	var matching_second := ShaderMaterial.new()
+	matching_second.shader = GroundShader
+	_configure_test_ground_textures(matching_second, generated_grass_texture)
+	matching_second_node.material_override = matching_second
+	matching_ground.add_child(matching_second_node)
+	var matching_state: Dictionary = FrameSamples.effective_grass_state(matching_ground)
+	_check("distinct ground materials with matching texture slots verify", matching_state.verified and matching_state.ground.material_count == 2, str(matching_state.errors))
+	var matching_texture_bindings: Dictionary = matching_state.ground.get("texture_bindings", {})
+	var generated_grass_binding: Dictionary = matching_texture_bindings.get("grass", {})
+	var imported_grass_binding: Dictionary = matching_texture_bindings.get("rc_grass_albedo", {})
+	_check("ground texture snapshot reports pathless and imported slot bindings", generated_grass_binding.get("bound", false) and str(generated_grass_binding.get("resource_path", "")).is_empty() and imported_grass_binding.get("bound", false) and imported_grass_binding.get("resource_path", "") == RcGrassAlbedo.resource_path, str(matching_texture_bindings))
+	matching_ground.free()
+
+	var mismatched_ground := _grass_fixture(false, _imported_grass_fixture(StandardMaterial3D.new()))
+	var first_ground := mismatched_ground.get_child(0) as MeshInstance3D
+	var first_material := first_ground.material_override as ShaderMaterial
+	_configure_test_ground_textures(first_material, generated_grass_texture)
+	var second_ground := MeshInstance3D.new()
+	second_ground.mesh = PlaneMesh.new()
+	var second_material := first_material.duplicate() as ShaderMaterial
+	second_material.set_shader_parameter("rc_grass_albedo", RcGrassNormal)
+	second_material.set_shader_parameter("rc_grass_normal", RcGrassAlbedo)
+	second_ground.material_override = second_material
+	mismatched_ground.add_child(second_ground)
+	var original_paths := PackedStringArray([RcGrassAlbedo.resource_path, RcGrassNormal.resource_path, RcGrassRoughness.resource_path])
+	var permuted_paths := PackedStringArray([RcGrassNormal.resource_path, RcGrassAlbedo.resource_path, RcGrassRoughness.resource_path])
+	original_paths.sort()
+	permuted_paths.sort()
+	_check("ground texture swap fixture preserves the same resource-path set", original_paths == permuted_paths)
+	var mismatched_state: Dictionary = FrameSamples.effective_grass_state(mismatched_ground)
+	_check("ground texture binding snapshot detects swapped uniform slots", not mismatched_state.verified and str(mismatched_state.errors).contains("active ground material bindings disagree"), str(mismatched_state))
+	mismatched_ground.free()
+
 	var enhanced_field := _grass_fixture(true, _imported_grass_fixture(_grass_shader_material(ImportedGrassShader)))
 	var enhanced: Dictionary = FrameSamples.effective_grass_state(enhanced_field)
 	_check("enhanced route is recognized from the bound imported grass shader", enhanced.verified and enhanced.near_grass.route == "imported" and enhanced.near_grass.material_variant == "qualified-wind" and enhanced.near_grass.grass_wind and enhanced.ground.grass_photo_enabled, str(enhanced))
@@ -169,6 +211,16 @@ func _test_effective_grass_state() -> void:
 	missing_near.free()
 	wrong_route.free()
 	missing_ground.free()
+
+
+func _configure_test_ground_textures(material: ShaderMaterial, grass_texture: Texture2D) -> void:
+	material.set_shader_parameter("grass_photo_enabled", false)
+	material.set_shader_parameter("grass", grass_texture)
+	material.set_shader_parameter("turf_detail_strength", 1.0)
+	material.set_shader_parameter("turf_detail", TurfDetail)
+	material.set_shader_parameter("rc_grass_albedo", RcGrassAlbedo)
+	material.set_shader_parameter("rc_grass_normal", RcGrassNormal)
+	material.set_shader_parameter("rc_grass_roughness", RcGrassRoughness)
 
 
 func _grass_fixture(grass_photo_enabled: bool, near_grass: Node) -> Node3D:

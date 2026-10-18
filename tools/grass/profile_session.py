@@ -62,6 +62,12 @@ EXPECTED_GRASS_COUNTS = {
 }
 EXPECTED_GRASS_SOURCE_TRIANGLES = {"default": 49_579, "enhanced": 37_720}
 EXPECTED_GROUND_GRASS_PHOTO = {"default": False, "enhanced": True}
+EXPECTED_GROUND_TEXTURE_BINDINGS = {
+    "turf_detail": "res://assets/landscape/turf/detail.png",
+    "rc_grass_albedo": "res://assets/landscape/rc-ground/grass-albedo.jpg",
+    "rc_grass_normal": "res://assets/landscape/rc-ground/grass-normal.jpg",
+    "rc_grass_roughness": "res://assets/landscape/rc-ground/grass-roughness.jpg",
+}
 
 
 class CampaignStop(RuntimeError):
@@ -318,13 +324,18 @@ def validate_effective_grass_state(report: dict[str, Any], variant: str) -> list
         errors.append("effective ground turf detail is not enabled at full strength")
     if not isinstance(ground.get("material_count"), int) or ground["material_count"] <= 0:
         errors.append("effective ground material bindings are missing")
+    texture_bindings = ground.get("texture_bindings")
+    _require_ground_texture_binding(
+        texture_bindings, "turf_detail", EXPECTED_GROUND_TEXTURE_BINDINGS["turf_detail"], errors
+    )
     if EXPECTED_GROUND_GRASS_PHOTO[variant]:
-        normal_paths = ground.get("normal_texture_paths")
-        roughness_paths = ground.get("roughness_texture_paths")
-        if not isinstance(normal_paths, list) or "res://assets/landscape/rc-ground/grass-normal.jpg" not in normal_paths:
-            errors.append("enhanced ground grass normal texture is not bound")
-        if not isinstance(roughness_paths, list) or "res://assets/landscape/rc-ground/grass-roughness.jpg" not in roughness_paths:
-            errors.append("enhanced ground grass roughness texture is not bound")
+        for uniform_name in ("rc_grass_albedo", "rc_grass_normal", "rc_grass_roughness"):
+            _require_ground_texture_binding(
+                texture_bindings,
+                uniform_name,
+                EXPECTED_GROUND_TEXTURE_BINDINGS[uniform_name],
+                errors,
+            )
 
     near_grass = state.get("near_grass")
     if not isinstance(near_grass, dict):
@@ -368,6 +379,19 @@ def validate_effective_grass_state(report: dict[str, Any], variant: str) -> list
     return errors
 
 
+def _require_ground_texture_binding(
+    bindings: Any, uniform_name: str, expected_path: str, errors: list[str]
+) -> None:
+    """Require the expected texture in its actual shader slot, not just in a path set."""
+    binding = bindings.get(uniform_name) if isinstance(bindings, dict) else None
+    if (
+        not isinstance(binding, dict)
+        or binding.get("bound") is not True
+        or binding.get("resource_path") != expected_path
+    ):
+        errors.append(f"effective ground {uniform_name} texture binding is not {expected_path}")
+
+
 def run_rejection_reasons(
     run: dict[str, Any], summary: dict[str, Any], report_errors: Sequence[str] = (),
 ) -> list[str]:
@@ -382,12 +406,27 @@ def run_rejection_reasons(
     if run.get("return_code") != 0:
         reasons.append(f"process exit code was {run.get('return_code')!r}, expected 0")
     if not summary.get("collection_valid"):
-        reasons.extend(summary.get("collection_reasons", []) or ["native report collection is invalid"])
+        collection_reasons = summary.get("collection_reasons")
+        reasons.extend(
+            collection_reasons
+            if isinstance(collection_reasons, list) and collection_reasons
+            else ["native report collection is invalid"]
+        )
     if not summary.get("active_flight_qualifier"):
-        reasons.extend(summary.get("active_flight_reasons", []) or ["run is not active-flight eligible"])
+        active_reasons = summary.get("active_flight_reasons")
+        reasons.extend(
+            active_reasons
+            if isinstance(active_reasons, list) and active_reasons
+            else ["run is not active-flight eligible"]
+        )
     duration = summary.get("duration_eligibility")
     if not isinstance(duration, dict) or not duration.get("eligible"):
-        reasons.extend((duration or {}).get("reasons", []) or ["run does not meet native duration policy"])
+        duration_reasons = duration.get("reasons") if isinstance(duration, dict) else None
+        reasons.extend(
+            duration_reasons
+            if isinstance(duration_reasons, list) and duration_reasons
+            else ["run does not meet native duration policy"]
+        )
     reasons.extend(report_errors)
     return list(dict.fromkeys(str(reason) for reason in reasons))
 
@@ -530,6 +569,7 @@ def _launch_and_summarize(
     else:
         report_errors.append("frame-time report is missing")
 
+    pacing_gate = summary.get("pacing_gate")
     run: dict[str, Any] = {
         "id": f"pair-{pair_index:02d}-{variant}",
         "pair": pair_index,
@@ -548,7 +588,7 @@ def _launch_and_summarize(
         "launch_error": launch_error,
         "native_summary": summary,
         "metrics": _run_metrics(summary),
-        "individual_pacing_pass": summary.get("pacing_gate", {}).get("pass"),
+        "individual_pacing_pass": pacing_gate.get("pass") if isinstance(pacing_gate, dict) else None,
         "report_contract_errors": report_errors,
     }
     run["rejection_reasons"] = run_rejection_reasons(run, summary, report_errors)
@@ -742,7 +782,14 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
                 # Preserve eligible pacing failures as evidence; only collection,
                 # duration, active-flight, or identity failures stop acquisition.
                 if run["interrupted"]:
-                    raise CampaignStop("campaign interrupted by the operator")
+                    stop_reason = "campaign interrupted by the operator"
+                    pair_record["status"] = "stopped_interrupted"
+                    pair_record["qualified"] = False
+                    pair_record["stop_reason"] = stop_reason
+                    campaign["status"] = "stopped"
+                    campaign["complete"] = False
+                    campaign["stop_reason"] = stop_reason
+                    raise CampaignStop(stop_reason)
 
             default_id = pair_record["runs"]["default"]
             enhanced_id = pair_record["runs"]["enhanced"]
@@ -769,7 +816,31 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
         pass
     except KeyboardInterrupt:
         stop_reason = "campaign interrupted by the operator"
+        failed_attempt = campaign.pop("current_attempt", None)
+        if isinstance(failed_attempt, dict):
+            campaign["failed_attempt"] = failed_attempt
+        for pair_record in reversed(campaign["pairs"]):
+            if pair_record.get("status") == "in_progress":
+                pair_record["status"] = "stopped_interrupted"
+                pair_record["qualified"] = False
+                pair_record["stop_reason"] = stop_reason
+                break
         campaign["status"] = "stopped"
+        campaign["complete"] = False
+        campaign["stop_reason"] = stop_reason
+    except Exception as error:
+        stop_reason = f"campaign failed while collecting evidence ({type(error).__name__}): {error}"
+        failed_attempt = campaign.pop("current_attempt", None)
+        if isinstance(failed_attempt, dict):
+            campaign["failed_attempt"] = failed_attempt
+        for pair_record in reversed(campaign["pairs"]):
+            if pair_record.get("status") == "in_progress":
+                pair_record["status"] = "stopped_error"
+                pair_record["qualified"] = False
+                pair_record["stop_reason"] = stop_reason
+                break
+        campaign["status"] = "stopped"
+        campaign["complete"] = False
         campaign["stop_reason"] = stop_reason
     finally:
         campaign["finished_utc"] = utc_now()
@@ -794,7 +865,8 @@ def run_campaign(args: argparse.Namespace) -> dict[str, Any]:
                 campaign["complete"] = False
                 stop_reason = "; ".join(filter(None, [stop_reason, *provenance_reasons]))
         except OSError as error:
-            stop_reason = f"final provenance snapshot failed: {error}"
+            provenance_error = f"final provenance snapshot failed: {error}"
+            stop_reason = "; ".join(filter(None, [stop_reason, provenance_error]))
             campaign["status"] = "stopped"
             campaign["complete"] = False
         if stop_reason:

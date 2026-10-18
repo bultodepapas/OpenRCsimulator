@@ -1,0 +1,155 @@
+{
+	"check_count": 5,
+	"checks": [
+		{
+			"detail": "",
+			"label": "mask edge fixture actually excludes its selected boundary point",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "far mask fixture lies outside the placement window",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/default_open benchmark layout agrees with legacy",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/bounded_rough_field benchmark layout agrees with legacy",
+			"ok": true
+		},
+		{
+			"detail": "",
+			"label": "enhanced/mask_near_selected_row benchmark layout agrees with legacy",
+			"ok": true
+		}
+	],
+	"failures": 0,
+	"format": "openrc-grass-layout-benchmark v1",
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"selector": "enhanced",
+	"source_file": "res://scenery/imported_near_grass.gd",
+	"source_sha256": "c39ae8319fa336b24a5837ab7a01583487fcc56142a592b4c5bccebb228ccbe6",
+	"timings": [
+		{
+			"case": "default_open",
+			"legacy_median_ms": 52.298,
+			"legacy_usec_in_collection_order": [
+				48187,
+				52298,
+				61176,
+				54866,
+				51059,
+				50764,
+				61145,
+				48007,
+				52606
+			],
+			"measurement": "headless layout CPU time; no FPS/render claim",
+			"optimized_first_call_ms": 6.924,
+			"optimized_median_ms": 0.883,
+			"optimized_usec_in_collection_order": [
+				848,
+				750,
+				1328,
+				1216,
+				883,
+				898,
+				843,
+				715,
+				1112
+			],
+			"order": "legacy/optimized on even zero-based indices; optimized/legacy on odd indices",
+			"profile": "enhanced",
+			"quality": "high",
+			"rank_cache_prebuilt": false,
+			"samples_per_algorithm": 9,
+			"warm_median_speedup": 59.2276330690827
+		},
+		{
+			"case": "bounded_rough_field",
+			"legacy_median_ms": 48.439,
+			"legacy_usec_in_collection_order": [
+				46692,
+				56053,
+				47587,
+				48439,
+				47045,
+				50693,
+				44781,
+				49001,
+				49070
+			],
+			"measurement": "headless layout CPU time; no FPS/render claim",
+			"optimized_first_call_ms": 1.058,
+			"optimized_median_ms": 0.906,
+			"optimized_usec_in_collection_order": [
+				932,
+				811,
+				1297,
+				851,
+				909,
+				817,
+				906,
+				798,
+				1413
+			],
+			"order": "legacy/optimized on even zero-based indices; optimized/legacy on odd indices",
+			"profile": "enhanced",
+			"quality": "high",
+			"rank_cache_prebuilt": true,
+			"samples_per_algorithm": 9,
+			"warm_median_speedup": 53.4646799116998
+		},
+		{
+			"case": "mask_near_selected_row",
+			"legacy_median_ms": 57.765,
+			"legacy_usec_in_collection_order": [
+				53829,
+				58792,
+				55389,
+				66898,
+				57892,
+				57765,
+				64517,
+				56115,
+				55331
+			],
+			"measurement": "headless layout CPU time; no FPS/render claim",
+			"optimized_first_call_ms": 2.014,
+			"optimized_median_ms": 1.091,
+			"optimized_usec_in_collection_order": [
+				1122,
+				882,
+				995,
+				843,
+				1133,
+				1091,
+				1523,
+				1303,
+				1073
+			],
+			"order": "legacy/optimized on even zero-based indices; optimized/legacy on odd indices",
+			"profile": "enhanced",
+			"quality": "high",
+			"rank_cache_prebuilt": true,
+			"samples_per_algorithm": 9,
+			"warm_median_speedup": 52.9468377635197
+		}
+	],
+	"tool_sha256": "a6b599fb51a234bb74ec7da66bb6928a81a0d6ac05d7ed346a10310b7baf1f3c",
+	"validated_rows": 6000
+}

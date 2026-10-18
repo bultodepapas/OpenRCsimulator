@@ -50,6 +50,24 @@ def grass_contract_report(variant: str) -> dict:
                 "grass_photo_enabled": enhanced,
                 "turf_detail_enabled": True,
                 "turf_detail_strength": 1.0,
+                "texture_bindings": {
+                    "turf_detail": {
+                        "bound": True,
+                        "resource_path": "res://assets/landscape/turf/detail.png",
+                    },
+                    "rc_grass_albedo": {
+                        "bound": enhanced,
+                        "resource_path": "res://assets/landscape/rc-ground/grass-albedo.jpg" if enhanced else "",
+                    },
+                    "rc_grass_normal": {
+                        "bound": enhanced,
+                        "resource_path": "res://assets/landscape/rc-ground/grass-normal.jpg" if enhanced else "",
+                    },
+                    "rc_grass_roughness": {
+                        "bound": enhanced,
+                        "resource_path": "res://assets/landscape/rc-ground/grass-roughness.jpg" if enhanced else "",
+                    },
+                },
                 "normal_texture_paths": ["res://assets/landscape/rc-ground/grass-normal.jpg"] if enhanced else [],
                 "roughness_texture_paths": ["res://assets/landscape/rc-ground/grass-roughness.jpg"] if enhanced else [],
             },
@@ -182,6 +200,55 @@ class RunEligibilityTests(unittest.TestCase):
         self.assertTrue(any("grass photo detail is not disabled" in error for error in errors))
         self.assertTrue(any("species counts are incorrect" in error for error in errors))
 
+    def test_enhanced_ground_texture_slots_must_match_their_expected_resources(self):
+        mutations = (
+            (
+                "swapped albedo and normal",
+                lambda bindings: (
+                    bindings.__setitem__(
+                        "rc_grass_albedo",
+                        {"bound": True, "resource_path": "res://assets/landscape/rc-ground/grass-normal.jpg"},
+                    ),
+                    bindings.__setitem__(
+                        "rc_grass_normal",
+                        {"bound": True, "resource_path": "res://assets/landscape/rc-ground/grass-albedo.jpg"},
+                    ),
+                ),
+                "rc_grass_albedo texture binding is not",
+            ),
+            (
+                "missing enhanced albedo",
+                lambda bindings: bindings.__setitem__("rc_grass_albedo", {"bound": False, "resource_path": ""}),
+                "rc_grass_albedo texture binding is not",
+            ),
+            (
+                "normal rebound to dirt while legacy path list still claims grass",
+                lambda bindings: bindings.__setitem__(
+                    "rc_grass_normal",
+                    {"bound": True, "resource_path": "res://assets/landscape/rc-ground/dirt-normal.jpg"},
+                ),
+                "rc_grass_normal texture binding is not",
+            ),
+        )
+        for label, mutate, expected_error in mutations:
+            with self.subTest(label=label):
+                report = grass_contract_report("enhanced")
+                bindings = report["effective_grass"]["ground"]["texture_bindings"]
+                mutate(bindings)
+                errors = profile_session.validate_report_contract(report, "enhanced")
+                self.assertTrue(any(expected_error in error for error in errors), errors)
+
+    def test_baseline_and_enhanced_ground_require_the_expected_turf_detail_slot(self):
+        for variant in ("default", "enhanced"):
+            with self.subTest(variant=variant):
+                report = grass_contract_report(variant)
+                report["effective_grass"]["ground"]["texture_bindings"]["turf_detail"] = {
+                    "bound": True,
+                    "resource_path": "res://assets/landscape/rc-ground/grass-albedo.jpg",
+                }
+                errors = profile_session.validate_report_contract(report, variant)
+                self.assertTrue(any("turf_detail texture binding is not" in error for error in errors), errors)
+
     def test_variant_run_requires_observed_grass_scene(self):
         report = grass_contract_report("enhanced")
         report.pop("effective_grass")
@@ -301,6 +368,182 @@ class RunEligibilityTests(unittest.TestCase):
         self.assertTrue(summary["active_flight_qualifier"])
         self.assertFalse(summary["pacing_gate"]["pass"])
         self.assertEqual(profile_session.run_rejection_reasons(run, summary), [])
+
+
+class CampaignFailureTests(unittest.TestCase):
+    @staticmethod
+    def make_campaign_inputs(root: Path) -> argparse.Namespace:
+        app = root / "app"
+        app.mkdir()
+        (app / "project.godot").write_text("config_version=5\n", encoding="utf-8")
+        godot = root / "godot.exe"
+        godot.write_bytes(b"test engine identity")
+        return argparse.Namespace(
+            app=app,
+            godot=godot,
+            out=root / "campaign",
+            pairs=5,
+            timeout=180,
+        )
+
+    @staticmethod
+    def available_inventory() -> dict:
+        return {
+            "status": "available",
+            "platform": "Windows",
+            "scope": "test process inventory",
+            "command": ["tasklist"],
+            "timeout_s": 10,
+            "godot_processes": [],
+        }
+
+    def test_missing_native_report_is_retained_as_invalid_run_and_stops_campaign(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            args = self.make_campaign_inputs(root)
+
+            def fake_popen(_command, **kwargs):
+                kwargs["stdout"].write(b"ERROR: flight ended after the throttle closed\n")
+                return SimpleNamespace(returncode=0, wait=lambda timeout: 0, poll=lambda: 0)
+
+            with patch.object(
+                profile_session, "godot_process_inventory", return_value=self.available_inventory()
+            ), patch.object(profile_session.platform, "platform", return_value="Windows-Test"), patch.object(
+                profile_session.platform, "machine", return_value="AMD64"
+            ), patch.object(profile_session.subprocess, "Popen", side_effect=fake_popen):
+                with self.assertRaisesRegex(profile_session.CampaignStop, "frame-time report is missing"):
+                    profile_session.run_campaign(args)
+
+            campaign = json.loads((args.out / "campaign.json").read_text(encoding="utf-8"))
+            run = campaign["runs"][0]
+            raw_log = args.out / "runs" / "default" / "run-01-default.log"
+            self.assertEqual(campaign["status"], "stopped")
+            self.assertFalse(campaign["complete"])
+            self.assertTrue(campaign["finished_utc"])
+            self.assertEqual(campaign["pairs"][0]["status"], "stopped_ineligible")
+            self.assertEqual(len(campaign["runs"]), 1)
+            self.assertIsNone(run["individual_pacing_pass"])
+            self.assertIsNone(run["native_summary"]["pacing_gate"])
+            self.assertTrue(any("report is missing" in reason for reason in run["rejection_reasons"]))
+            self.assertIn("ERROR: flight ended after the throttle closed", raw_log.read_text(encoding="utf-8"))
+
+    def test_unexpected_collection_exception_finalizes_campaign_and_keeps_attempt_paths(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            args = self.make_campaign_inputs(root)
+
+            def fail_after_writing_evidence(**kwargs):
+                kwargs["report_path"].write_text("partial report\n", encoding="utf-8")
+                kwargs["log_path"].write_text("raw log\n", encoding="utf-8")
+                raise AttributeError("simulated report reducer failure")
+
+            with patch.object(
+                profile_session, "godot_process_inventory", return_value=self.available_inventory()
+            ), patch.object(profile_session, "_launch_and_summarize", side_effect=fail_after_writing_evidence):
+                with self.assertRaisesRegex(profile_session.CampaignStop, "simulated report reducer failure"):
+                    profile_session.run_campaign(args)
+
+            campaign = json.loads((args.out / "campaign.json").read_text(encoding="utf-8"))
+            failed_attempt = campaign["failed_attempt"]
+            self.assertEqual(campaign["status"], "stopped")
+            self.assertFalse(campaign["complete"])
+            self.assertTrue(campaign["finished_utc"])
+            self.assertEqual(campaign["pairs"][0]["status"], "stopped_error")
+            self.assertFalse(campaign["pairs"][0]["qualified"])
+            self.assertNotIn("current_attempt", campaign)
+            self.assertTrue(Path(failed_attempt["report"]).is_file())
+            self.assertTrue(Path(failed_attempt["log"]).is_file())
+            self.assertIn("AttributeError", campaign["stop_reason"])
+
+    def test_keyboard_interrupt_finalizes_pair_and_preserves_current_attempt(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            args = self.make_campaign_inputs(root)
+            with patch.object(
+                profile_session, "godot_process_inventory", side_effect=KeyboardInterrupt
+            ), patch.object(profile_session.platform, "platform", return_value="Windows-Test"), patch.object(
+                profile_session.platform, "machine", return_value="AMD64"
+            ):
+                with self.assertRaisesRegex(profile_session.CampaignStop, "campaign interrupted by the operator"):
+                    profile_session.run_campaign(args)
+
+            campaign = json.loads((args.out / "campaign.json").read_text(encoding="utf-8"))
+            self.assertEqual(campaign["status"], "stopped")
+            self.assertFalse(campaign["complete"])
+            self.assertEqual(campaign["pairs"][0]["status"], "stopped_interrupted")
+            self.assertFalse(campaign["pairs"][0]["qualified"])
+            self.assertNotIn("current_attempt", campaign)
+            self.assertEqual(campaign["failed_attempt"]["variant"], "default")
+            self.assertIn("campaign interrupted by the operator", campaign["stop_reason"])
+
+    def test_interrupted_run_marks_its_pair_terminal(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            args = self.make_campaign_inputs(root)
+
+            def interrupted_launch(**kwargs):
+                return {
+                    "id": f"pair-{kwargs['pair_index']:02d}-{kwargs['variant']}",
+                    "variant": kwargs["variant"],
+                    "report_identity": {},
+                    "rejection_reasons": [],
+                    "eligible_for_pair": True,
+                    "interrupted": True,
+                    "metrics": {},
+                }
+
+            with patch.object(
+                profile_session, "godot_process_inventory", return_value=self.available_inventory()
+            ), patch.object(
+                profile_session, "_launch_and_summarize", side_effect=interrupted_launch
+            ):
+                with self.assertRaisesRegex(profile_session.CampaignStop, "campaign interrupted by the operator"):
+                    profile_session.run_campaign(args)
+
+            campaign = json.loads((args.out / "campaign.json").read_text(encoding="utf-8"))
+            self.assertEqual(campaign["status"], "stopped")
+            self.assertFalse(campaign["complete"])
+            self.assertEqual(campaign["pairs"][0]["status"], "stopped_interrupted")
+            self.assertFalse(campaign["pairs"][0]["qualified"])
+            self.assertEqual(len(campaign["runs"]), 1)
+
+    def test_final_provenance_error_is_appended_to_original_stop_reason(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            args = self.make_campaign_inputs(root)
+            snapshot_calls = 0
+
+            def fail_final_snapshot(_app):
+                nonlocal snapshot_calls
+                snapshot_calls += 1
+                if snapshot_calls == 1:
+                    return {"app": "initial snapshot"}
+                raise OSError("final source tree became unavailable")
+
+            def invalid_launch(**kwargs):
+                return {
+                    "id": f"pair-{kwargs['pair_index']:02d}-{kwargs['variant']}",
+                    "variant": kwargs["variant"],
+                    "report_identity": {},
+                    "rejection_reasons": ["native frame report is invalid"],
+                    "eligible_for_pair": False,
+                    "interrupted": False,
+                    "metrics": {},
+                }
+
+            with patch.object(
+                profile_session, "godot_process_inventory", return_value=self.available_inventory()
+            ), patch.object(
+                profile_session, "_launch_and_summarize", side_effect=invalid_launch
+            ), patch.object(profile_session, "app_runtime_snapshot", side_effect=fail_final_snapshot):
+                with self.assertRaisesRegex(profile_session.CampaignStop, "native frame report is invalid"):
+                    profile_session.run_campaign(args)
+
+            campaign = json.loads((args.out / "campaign.json").read_text(encoding="utf-8"))
+            self.assertEqual(campaign["status"], "stopped")
+            self.assertFalse(campaign["complete"])
+            self.assertIn("pair-01-default rejected: native frame report is invalid", campaign["stop_reason"])
+            self.assertIn("final provenance snapshot failed: final source tree became unavailable", campaign["stop_reason"])
 
 
 class ProvenanceAndOutputTests(unittest.TestCase):
