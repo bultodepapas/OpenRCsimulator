@@ -19,12 +19,15 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const FlightModes := preload("res://physics/flight_modes.gd")
+const Aero := preload("res://physics/aero.gd")
+const Air := preload("res://physics/air_data.gd")
+const GroundEffect := preload("res://physics/ground_effect.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const P := preload("pilot.gd")
 
 const G := 9.80665
 const RHO := 1.225
-const VERSION := "ft-card-v2"
+const VERSION := "ft-card-v3"
 const HIGH := 250.0 # m, airborne tests that may lose height
 const CSV_EVERY := 12 # 240 Hz ticks per committed CSV row (20 Hz)
 
@@ -34,6 +37,7 @@ var aircraft_id := ""
 var out_dir := ""
 var only: PackedStringArray = []
 var full_traces := false
+var diagnostics := false
 var v_start := 0.0
 var vs_estimate := 0.0
 var vs := 0.0 # measured power-off stall speed, else the CL_max estimate
@@ -59,6 +63,8 @@ func _initialize() -> void:
 			only = arg.substr(7).split(",")
 		elif arg == "--full-traces":
 			full_traces = true
+		elif arg == "--diagnostics":
+			diagnostics = true
 	if aircraft_id.is_empty() or out_dir.is_empty():
 		push_error("usage: -- --aircraft=<catalog id> --out=<dir>")
 		quit(2)
@@ -97,6 +103,7 @@ func _initialize() -> void:
 	_run("stall_power_off", _stall_power_off)
 	_run("vmax", _vmax)
 	_run("modes", _modes)
+	_run("aero_sweep", _aero_sweep)
 	_run("stall_power_on", _stall_power_on)
 	_run("throttle_response", _throttle_response)
 	_run("hands_off", _hands_off)
@@ -196,6 +203,9 @@ func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop
 		metadata.test = name
 	rec.start(metadata)
 	var ctx := { start_throttle = float(session.start.get("throttle", 0.0)) }
+	var aero_rows := PackedStringArray()
+	if diagnostics:
+		aero_rows.append(_aero_diagnostic(0.0))
 	var crashed := ""
 	var dt: float = sim.dt()
 	var t := 0.0
@@ -219,6 +229,8 @@ func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop
 			crashed = "simulation fault: " + sim.fault_reason
 			break
 		sim.step()
+		if diagnostics and (k + 1) % CSV_EVERY == 0:
+			aero_rows.append(_aero_diagnostic((k + 1) * dt))
 		if stop.is_valid() and stop.call(t, sim.state, ctx):
 			break
 		if not runway and P.altitude(sim.state) < float(start.get("floor", FLOOR)):
@@ -227,7 +239,55 @@ func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop
 			break
 	rec.detach()
 	_save_trace(name + ("" if not ctx.has("suffix") else "_" + str(ctx.suffix)), rec.trace)
+	if diagnostics:
+		_save_aero_diagnostics(name + ("" if not ctx.has("suffix") else "_" + str(ctx.suffix)), aero_rows)
 	return { ok = true, trace = rec.trace, crashed = crashed, ctx = ctx, dt = dt, t_end = t }
+
+
+## --diagnostics: the aerodynamic state at the current tick, recomputed read-only with the session's own inputs (state,
+## servo deflections, air density, wind, downwash lag, ground height): α, β, speed, the production local-flow and
+## sideslip weights, and body-axis coefficients from the oracle, the local model and the blended production loads.
+## `lerp_residual` is |blended − (oracle + w·(local − oracle))| (largest component, N or N·m); production blends exactly
+## that way except with flaps, whose clean/flapped split it does not reproduce.
+func _aero_diagnostic(t: float) -> String:
+	var s: PackedFloat64Array = session.sim.state
+	var a: PackedFloat64Array = session.sim.aux
+	var rho: float = session.air_density(s)
+	var air: Dictionary = Air.compute(s, session.wind_at(t), rho)
+	var d: Dictionary = session._deflections(a)
+	var lag: int = session.downwash_index()
+	var downwash: float = a[lag] if lag >= 0 and lag < a.size() else NAN
+	var ground_up: float = session._ground_up(s)
+	var ge: PackedFloat64Array = GroundEffect.factors(s, model, ground_up)
+	var oracle: PackedFloat64Array = Aero._global_loads(s, air, d, model, rho, downwash, ge)
+	var local: PackedFloat64Array = Aero._local_loads(s, air, d, model, rho, downwash, null, ge)
+	var blended: PackedFloat64Array = Aero.loads(s, air, d, model, rho, downwash, ground_up)
+	var weight: float = Aero.local_flow_weight(s, air, d, model, downwash, ge)
+	var speed: float = float(air.V)
+	var qs: float = 0.5 * rho * speed * speed * float(model.reference.S)
+	var lengths := [1.0, 1.0, 1.0, float(model.reference.b), float(model.reference.c), float(model.reference.b)]
+	var residual := 0.0
+	for i in 6:
+		residual = maxf(residual, absf(blended[i] - (oracle[i] + weight * (local[i] - oracle[i]))))
+	var row := PackedStringArray([String.num(t, 4), String.num(rad_to_deg(float(air.alpha)), 4), String.num(rad_to_deg(float(air.beta)), 4),
+		String.num(speed, 4), String.num(weight, 4), String.num(Aero.sideslip_weight(float(air.beta), model.envelope), 4)])
+	for loads in [oracle, local, blended]:
+		for i in 6:
+			row.append(String.num(loads[i] / (qs * lengths[i]), 6) if qs > 0.0 else "nan")
+	row.append(String.num(residual, 9))
+	return ",".join(row)
+
+
+func _save_aero_diagnostics(name: String, rows: PackedStringArray) -> void:
+	var header := PackedStringArray(["t_s", "alpha_deg", "beta_deg", "airspeed_mps", "local_weight", "sideslip_weight"])
+	for source in ["oracle", "local", "blended"]:
+		for c in ["CX", "CY", "CZ", "Cl", "Cm", "Cn"]:
+			header.append("%s_%s" % [c, source])
+	header.append("lerp_residual")
+	var f := FileAccess.open(out_dir.path_join(name + ".aero.csv"), FileAccess.WRITE)
+	if f != null:
+		f.store_string("# %s %s aerodynamic diagnostics every %d ticks (research/flight-test --diagnostics)\n" % [aircraft_id, name, CSV_EVERY]
+			+ ",".join(header) + "\n" + "\n".join(rows) + "\n")
 
 
 func _note(text: String) -> void:
@@ -1016,6 +1076,86 @@ func _modes() -> Dictionary:
 			spiral_time_to_half_s = snappedf(spiral * log(2.0), 0.1) if spiral > 0.0 else NAN })
 	# The start-speed case defines the test; a speed without a level trim is the airplane's answer, kept as a note.
 	return _result(rows.any(func(r): return r.case == "start"), {}, notes, { table = rows })
+
+
+## Static aerodynamics at the start speed with every control neutral, no flight: which model carries the loads and what
+## each one gives. A sideslip sweep at the level-trim α (CY, Cn, Cl) and an α sweep at zero sideslip (CL, CD, Cm), each
+## from the coefficient oracle, the local surface model, the blended production loads, and the production local-flow
+## weight (0 = oracle, 1 = local). Body-axis loads about the CG on wing area, span and chord; CL/CD in wind axes.
+## Summaries locate the regime seams and the side force a knife-edge needs at the knife-edge test speed (0.8 Vmax).
+func _aero_sweep() -> Dictionary:
+	var notes := []
+	var trim: Dictionary = session.trim_at(v_start, "level")
+	var alpha_trim: float = P.alpha(trim.state) if trim.get("ok", false) else 0.0
+	if not trim.get("ok", false):
+		notes.append("no level trim at the start speed; sideslip sweep at α 0°")
+	var neutral := { elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
+	var qs: float = 0.5 * RHO * v_start * v_start * float(model.reference.S)
+	var span: float = float(model.reference.b)
+	var chord: float = float(model.reference.c)
+	var all_finite := true
+	var beta_rows := []
+	var weight_full_beta := NAN
+	var cy_blended_max := 0.0
+	for beta_deg in [0.0, 5.0, 10.0, 15.0, 20.0, 25.0, 30.0, 45.0, 60.0, 90.0]:
+		var e := _aero_point(alpha_trim, deg_to_rad(beta_deg), neutral)
+		all_finite = all_finite and e.finite
+		if is_nan(weight_full_beta) and e.weight >= 1.0:
+			weight_full_beta = beta_deg
+		if beta_deg <= 30.0:
+			cy_blended_max = maxf(cy_blended_max, absf(e.blended[1] / qs))
+		beta_rows.append({ case = "beta_%02d" % int(beta_deg), beta_deg = beta_deg, local_weight = snappedf(e.weight, 0.001),
+			cy_oracle = snappedf(e.oracle[1] / qs, 0.0001), cy_local = snappedf(e.local[1] / qs, 0.0001), cy = snappedf(e.blended[1] / qs, 0.0001),
+			cn_oracle = snappedf(e.oracle[5] / (qs * span), 0.0001), cn_local = snappedf(e.local[5] / (qs * span), 0.0001), cn = snappedf(e.blended[5] / (qs * span), 0.0001),
+			cl_oracle = snappedf(e.oracle[3] / (qs * span), 0.0001), cl_local = snappedf(e.local[3] / (qs * span), 0.0001), cl = snappedf(e.blended[3] / (qs * span), 0.0001) })
+	var alpha_rows := []
+	var weight_full_alpha := NAN
+	for alpha_deg in [-10.0, -5.0, 0.0, 5.0, 10.0, 15.0, 20.0, 30.0]:
+		var a := deg_to_rad(alpha_deg)
+		var e := _aero_point(a, 0.0, neutral)
+		all_finite = all_finite and e.finite
+		if is_nan(weight_full_alpha) and alpha_deg > 0.0 and e.weight >= 1.0:
+			weight_full_alpha = alpha_deg
+		var row := { case = ("alpha_m%02d" % int(-alpha_deg)) if alpha_deg < 0.0 else ("alpha_%02d" % int(alpha_deg)), alpha_deg = alpha_deg, local_weight = snappedf(e.weight, 0.001) }
+		for named in [["oracle", e.oracle], ["local", e.local], ["", e.blended]]:
+			var f: PackedFloat64Array = named[1]
+			var suffix: String = "" if named[0] == "" else "_" + named[0]
+			row["cl_lift" + suffix] = snappedf((-f[2] * cos(a) + f[0] * sin(a)) / qs, 0.0001)
+			row["cd" + suffix] = snappedf((-f[0] * cos(a) - f[2] * sin(a)) / qs, 0.0001)
+			row["cm" + suffix] = snappedf(f[4] / (qs * chord), 0.0001)
+		alpha_rows.append(row)
+	var at20: Dictionary = beta_rows.filter(func(r): return r.case == "beta_20")[0]
+	var v_knife := 0.8 * vmax
+	var required: float = model.mass_kg * G / (0.5 * RHO * v_knife * v_knife * float(model.reference.S))
+	var metrics := { trim_alpha_deg = snappedf(rad_to_deg(alpha_trim), 0.01),
+		local_weight_full_at_beta_deg = weight_full_beta, local_weight_full_at_alpha_deg = weight_full_alpha,
+		cy_at_beta20 = at20.cy, cy_oracle_at_beta20 = at20.cy_oracle,
+		cy_max_beta_le_30 = snappedf(cy_blended_max, 0.0001),
+		knife_edge_cy_needed_at_0_8vmax = snappedf(required, 0.0001),
+		knife_edge_side_force_margin = snappedf(cy_blended_max / required, 0.001) }
+	if is_finite(weight_full_beta) and weight_full_beta < rad_to_deg(float(model.envelope.get("b2", deg_to_rad(25.0)))):
+		notes.append("with controls neutral the local model carries all loads from β %.0f° at the trim α, before the sideslip blend ends (%.0f°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)" % [weight_full_beta, rad_to_deg(float(model.envelope.get("b2", NAN)))])
+	if not results.has("vmax") and not results.has("trim_sweep"):
+		notes.append("Vmax was not measured in this run; 2 × start speed stands in for the knife-edge speed")
+	if cy_blended_max < required:
+		notes.append("no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| %.3f of %.3f)" % [cy_blended_max, required])
+	return _result(all_finite, metrics, notes, { table = beta_rows + alpha_rows })
+
+
+## Body-axis loads [Fx, Fy, Fz, Mx, My, Mz] at the start speed for α, β: oracle, local, blended production, local weight.
+func _aero_point(alpha: float, beta: float, d: Dictionary) -> Dictionary:
+	var s := PackedFloat64Array([0.0, 0.0, -HIGH, v_start * cos(alpha) * cos(beta), v_start * sin(beta), v_start * sin(alpha) * cos(beta),
+		1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	var air: Dictionary = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), RHO)
+	var oracle: PackedFloat64Array = Aero._global_loads(s, air, d, model, RHO)
+	var local: PackedFloat64Array = Aero._local_loads(s, air, d, model, RHO)
+	var blended: PackedFloat64Array = Aero.loads(s, air, d, model, RHO)
+	var weight: float = Aero.local_flow_weight(s, air, d, model)
+	var finite := is_finite(weight)
+	for f in [oracle, local, blended]:
+		for x in f:
+			finite = finite and is_finite(x)
+	return { oracle = oracle, local = local, blended = blended, weight = weight, finite = finite }
 
 
 ## Hands off for 30 s from the trimmed start at 400 m after two small disturbances: 0.2 up elevator for 0.5 s at 1 s (phugoid,
