@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 
@@ -46,7 +47,7 @@ def compare(path: Path) -> dict:
     return {
         "format": "openrc-grass-material-comparison v1",
         "source_manifest": str(path),
-        "manifest_sha256": quality.hashlib.sha256(path.read_bytes()).hexdigest(),
+        "manifest_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
         "adapter_sha256": manifest["adapter_sha256"],
         "results": results,
         "passed": passed,

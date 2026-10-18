@@ -873,6 +873,238 @@
       "gzip": false
     },
     {
+      "path": "raw/laplacian/baseline/manifest.json.gz",
+      "source": "tmp/grass-quality/laplacian-baseline/manifest.json",
+      "sha256": "6354ab6ef52f6d20cdcd5b2e6cfdc9deada0046df579ba1c76d0bea126e3df1c",
+      "bytes": 1950,
+      "decoded_sha256": "9e8c31ccaf38990fa4715f185d93460a6c270b348b26dfab37e2912ee4a9fc3b",
+      "gzip": true
+    },
+    {
+      "path": "raw/laplacian/baseline/close_detail-on.png",
+      "source": "tmp/grass-quality/laplacian-baseline/close_detail-on.png",
+      "sha256": "d43797be24b0e0dd3af7af47f898e07e46654b12bece8525ac00ece1eab59886",
+      "bytes": 1123483,
+      "decoded_sha256": "d43797be24b0e0dd3af7af47f898e07e46654b12bece8525ac00ece1eab59886",
+      "gzip": false
+    },
+    {
+      "path": "raw/laplacian/baseline/engine.log",
+      "source": "tmp/grass-quality/laplacian-baseline.log",
+      "sha256": "a049313efa8e78e0ba93aed1d62f23c25adee2875fc8dbac5d1a36ecb398b9e6",
+      "bytes": 270,
+      "decoded_sha256": "a049313efa8e78e0ba93aed1d62f23c25adee2875fc8dbac5d1a36ecb398b9e6",
+      "gzip": false
+    },
+    {
+      "path": "raw/laplacian/candidate/manifest.json.gz",
+      "source": "tmp/grass-quality/laplacian-candidate/manifest.json",
+      "sha256": "b9a9e23511304db4576250f5e68d61945bbb3f3da2a25c66a5046bc7aa5ad88c",
+      "bytes": 1944,
+      "decoded_sha256": "6498eb99ee7e4a618981f3b58ee3848514eddceb028c711d286d883ae03c37a8",
+      "gzip": true
+    },
+    {
+      "path": "raw/laplacian/candidate/close_detail-on.png",
+      "source": "tmp/grass-quality/laplacian-candidate/close_detail-on.png",
+      "sha256": "149d8b7577c7c25f3db1771179a6a53b95808395254b144540216c20bacccffd",
+      "bytes": 1115832,
+      "decoded_sha256": "149d8b7577c7c25f3db1771179a6a53b95808395254b144540216c20bacccffd",
+      "gzip": false
+    },
+    {
+      "path": "raw/laplacian/candidate/engine.log",
+      "source": "tmp/grass-quality/laplacian-candidate.log",
+      "sha256": "1bdb0b392199e15d78b08e0e8b0ff0ec350d64ebb4b8fb421a809a4528c0738e",
+      "bytes": 271,
+      "decoded_sha256": "1bdb0b392199e15d78b08e0e8b0ff0ec350d64ebb4b8fb421a809a4528c0738e",
+      "gzip": false
+    },
+    {
+      "path": "field-contract-final.json",
+      "source": "tmp/grass-quality/field-contract-final.json",
+      "sha256": "8c82d0393ee0b711c2e8fe2446ab210c4a491265987eb61e4c39aa9cc846ac92",
+      "bytes": 13594,
+      "decoded_sha256": "8c82d0393ee0b711c2e8fe2446ab210c4a491265987eb61e4c39aa9cc846ac92",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-default-02/capture-manifest.json",
+      "source": "tmp/grass-quality/field-contract-final-default-02/capture-manifest.json",
+      "sha256": "b09b2dd2291f910a7d39e56ff224c57a9e4c1b6c803ad58c80f2eccf758cff44",
+      "bytes": 4346,
+      "decoded_sha256": "b09b2dd2291f910a7d39e56ff224c57a9e4c1b6c803ad58c80f2eccf758cff44",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-default-02/capture-scenery-runway-edge-grass-off.png",
+      "source": "tmp/grass-quality/field-contract-final-default-02/capture-scenery-runway-edge-grass-off.png",
+      "sha256": "b0ab003cd5b2cda0e13c3efa8ca1fb0a4dd3e66d3b6bfb515c0d8874a2f3391f",
+      "bytes": 964716,
+      "decoded_sha256": "b0ab003cd5b2cda0e13c3efa8ca1fb0a4dd3e66d3b6bfb515c0d8874a2f3391f",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-default-02/capture-scenery-runway-edge-grass-on.png",
+      "source": "tmp/grass-quality/field-contract-final-default-02/capture-scenery-runway-edge-grass-on.png",
+      "sha256": "f709fd9ade5b2aef5d3b0cd2e20294ad60650cd651cd377b43ea3a39e16f5f6e",
+      "bytes": 976940,
+      "decoded_sha256": "f709fd9ade5b2aef5d3b0cd2e20294ad60650cd651cd377b43ea3a39e16f5f6e",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-default-03/capture-manifest.json",
+      "source": "tmp/grass-quality/field-contract-final-default-03/capture-manifest.json",
+      "sha256": "b09b2dd2291f910a7d39e56ff224c57a9e4c1b6c803ad58c80f2eccf758cff44",
+      "bytes": 4346,
+      "decoded_sha256": "b09b2dd2291f910a7d39e56ff224c57a9e4c1b6c803ad58c80f2eccf758cff44",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-default-03/capture-scenery-runway-edge-grass-off.png",
+      "source": "tmp/grass-quality/field-contract-final-default-03/capture-scenery-runway-edge-grass-off.png",
+      "sha256": "b0ab003cd5b2cda0e13c3efa8ca1fb0a4dd3e66d3b6bfb515c0d8874a2f3391f",
+      "bytes": 964716,
+      "decoded_sha256": "b0ab003cd5b2cda0e13c3efa8ca1fb0a4dd3e66d3b6bfb515c0d8874a2f3391f",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-default-03/capture-scenery-runway-edge-grass-on.png",
+      "source": "tmp/grass-quality/field-contract-final-default-03/capture-scenery-runway-edge-grass-on.png",
+      "sha256": "f709fd9ade5b2aef5d3b0cd2e20294ad60650cd651cd377b43ea3a39e16f5f6e",
+      "bytes": 976940,
+      "decoded_sha256": "f709fd9ade5b2aef5d3b0cd2e20294ad60650cd651cd377b43ea3a39e16f5f6e",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-manifest.json",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-manifest.json",
+      "sha256": "4ec8490ff76ad0886dc391da8dfc55aac0859d0929d491f465d6520ab1ebf1dd",
+      "bytes": 7772,
+      "decoded_sha256": "4ec8490ff76ad0886dc391da8dfc55aac0859d0929d491f465d6520ab1ebf1dd",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-scenery-runway-edge-grass-off.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-scenery-runway-edge-grass-off.png",
+      "sha256": "8d7c175c7e5f00f9f7ceeaf905b27b0bae8ae0754cd1733e811eb143b2b63f38",
+      "bytes": 1338591,
+      "decoded_sha256": "8d7c175c7e5f00f9f7ceeaf905b27b0bae8ae0754cd1733e811eb143b2b63f38",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-scenery-runway-edge-grass-on.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-scenery-runway-edge-grass-on.png",
+      "sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "bytes": 1344116,
+      "decoded_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-wind-on-t0.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-wind-on-t0.png",
+      "sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "bytes": 1343978,
+      "decoded_sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-wind-on-t1.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-wind-on-t1.png",
+      "sha256": "d95e7548eb1a8a8344963785020989102d22a21169b5c34c1b382b0fee10950f",
+      "bytes": 1344236,
+      "decoded_sha256": "d95e7548eb1a8a8344963785020989102d22a21169b5c34c1b382b0fee10950f",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-wind-on-t1024.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-wind-on-t1024.png",
+      "sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "bytes": 1343978,
+      "decoded_sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-windless-t0-repeat.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-windless-t0-repeat.png",
+      "sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "bytes": 1344116,
+      "decoded_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-06/capture-windless-t1.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-06/capture-windless-t1.png",
+      "sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "bytes": 1344116,
+      "decoded_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-manifest.json",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-manifest.json",
+      "sha256": "4ec8490ff76ad0886dc391da8dfc55aac0859d0929d491f465d6520ab1ebf1dd",
+      "bytes": 7772,
+      "decoded_sha256": "4ec8490ff76ad0886dc391da8dfc55aac0859d0929d491f465d6520ab1ebf1dd",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-scenery-runway-edge-grass-off.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-scenery-runway-edge-grass-off.png",
+      "sha256": "8d7c175c7e5f00f9f7ceeaf905b27b0bae8ae0754cd1733e811eb143b2b63f38",
+      "bytes": 1338591,
+      "decoded_sha256": "8d7c175c7e5f00f9f7ceeaf905b27b0bae8ae0754cd1733e811eb143b2b63f38",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-scenery-runway-edge-grass-on.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-scenery-runway-edge-grass-on.png",
+      "sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "bytes": 1344116,
+      "decoded_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-wind-on-t0.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-wind-on-t0.png",
+      "sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "bytes": 1343978,
+      "decoded_sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-wind-on-t1.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-wind-on-t1.png",
+      "sha256": "d95e7548eb1a8a8344963785020989102d22a21169b5c34c1b382b0fee10950f",
+      "bytes": 1344236,
+      "decoded_sha256": "d95e7548eb1a8a8344963785020989102d22a21169b5c34c1b382b0fee10950f",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-wind-on-t1024.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-wind-on-t1024.png",
+      "sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "bytes": 1343978,
+      "decoded_sha256": "d47d15328d043f2962e7f4908013abfbc59f18f439ff55f1fe2264e7b9419168",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-windless-t0-repeat.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-windless-t0-repeat.png",
+      "sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "bytes": 1344116,
+      "decoded_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "gzip": false
+    },
+    {
+      "path": "raw/field-contract/field-contract-final-enhanced-07/capture-windless-t1.png",
+      "source": "tmp/grass-quality/field-contract-final-enhanced-07/capture-windless-t1.png",
+      "sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "bytes": 1344116,
+      "decoded_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+      "gzip": false
+    },
+    {
       "path": "raw/traces/baseline-jensen-das-ugly-stik-60.csv",
       "source": "tmp/grass-quality/state-traces/baseline-jensen-das-ugly-stik-60.csv",
       "sha256": "5cf3216135a415e2778c56417a7b9941485486e157535d610c68f19fa6c39a02",

@@ -1,0 +1,88 @@
+{
+  "results": {
+    "pilot_near_ground": {
+      "off": {
+        "exact": true,
+        "changed_pixels": 0,
+        "mean_absolute_rgb_error_0_255": 0.0,
+        "max_channel_error_0_255": 0
+      },
+      "on": {
+        "exact": false,
+        "changed_pixels": 292549,
+        "mean_absolute_rgb_error_0_255": 0.3523708767361111,
+        "max_channel_error_0_255": 11
+      },
+      "baseline_repeat_exact": true,
+      "candidate_repeat_exact": true
+    },
+    "close_detail": {
+      "off": {
+        "exact": true,
+        "changed_pixels": 0,
+        "mean_absolute_rgb_error_0_255": 0.0,
+        "max_channel_error_0_255": 0
+      },
+      "on": {
+        "exact": false,
+        "changed_pixels": 328739,
+        "mean_absolute_rgb_error_0_255": 0.546181640625,
+        "max_channel_error_0_255": 18
+      },
+      "baseline_repeat_exact": true,
+      "candidate_repeat_exact": true
+    },
+    "low_pass": {
+      "off": {
+        "exact": true,
+        "changed_pixels": 0,
+        "mean_absolute_rgb_error_0_255": 0.0,
+        "max_channel_error_0_255": 0
+      },
+      "on": {
+        "exact": false,
+        "changed_pixels": 200860,
+        "mean_absolute_rgb_error_0_255": 0.14192021122685186,
+        "max_channel_error_0_255": 6
+      },
+      "baseline_repeat_exact": true,
+      "candidate_repeat_exact": true
+    },
+    "runway_threshold": {
+      "off": {
+        "exact": true,
+        "changed_pixels": 0,
+        "mean_absolute_rgb_error_0_255": 0.0,
+        "max_channel_error_0_255": 0
+      },
+      "on": {
+        "exact": false,
+        "changed_pixels": 198362,
+        "mean_absolute_rgb_error_0_255": 0.22774486400462962,
+        "max_channel_error_0_255": 10
+      },
+      "baseline_repeat_exact": true,
+      "candidate_repeat_exact": true
+    },
+    "aerial": {
+      "off": {
+        "exact": true,
+        "changed_pixels": 0,
+        "mean_absolute_rgb_error_0_255": 0.0,
+        "max_channel_error_0_255": 0
+      },
+      "on": {
+        "exact": true,
+        "changed_pixels": 0,
+        "mean_absolute_rgb_error_0_255": 0.0,
+        "max_channel_error_0_255": 0
+      },
+      "baseline_repeat_exact": true,
+      "candidate_repeat_exact": true
+    }
+  },
+  "decision": "Rejected after visual screening: no clear close-detail improvement justifying eight source-level filtered fetches versus two. No runtime performance claim.",
+  "baseline_include_sha256": "1c84904c75acdf7488470fa5aa9118ec5438ce38a0f07fed9653bf3784641aa3",
+  "candidate_include_sha256": "283ebc0dfd33dd8df091450e57c246393610d151c9ddb66a82e4bf7a2908857e",
+  "scope": "Five-pose native screen; all original PNG hashes checked locally. Close-view PNGs and compressed manifests retained. Other original PNGs remain in local tmp/grass-quality/laplacian-*; no moving-view or timing qualification."
+}

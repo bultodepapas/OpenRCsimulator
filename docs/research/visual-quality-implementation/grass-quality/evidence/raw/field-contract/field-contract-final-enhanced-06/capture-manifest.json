@@ -1,0 +1,283 @@
+{
+  "animation_isolation": {
+    "global_shader_inputs": {
+      "sim_clock": 0.0,
+      "wind_vec": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "near_grass_material_bindings_overridden": 3,
+    "near_grass_scope": "capture-owned ShaderMaterials on NearGrass geometry only",
+    "near_grass_shader_inputs": "local sim_clock and wind_vec set from each logged case",
+    "near_grass_shader_sources": [
+      {
+        "identity": {
+          "replaced_declarations": [
+            "global uniform float sim_clock;",
+            "global uniform vec3 wind_vec;"
+          ],
+          "source_sha256": "0f78242b88037a670795074d0d6a882a461798ab7913a3e4b99d3f56d5685f10"
+        },
+        "path": "res://scenery/imported_grass.gdshader"
+      }
+    ],
+    "node_geometry_visibility_unchanged": true,
+    "protocol": "global-pinned-local-grass-inputs-v1",
+    "replacement_scope": "only global sim_clock/wind_vec declarations become local declarations; shader bodies and source geometry stay unchanged",
+    "source_shader_identity_qualified_before_clone": true
+  },
+  "cases": [
+    {
+      "azimuth_deg": 45.0,
+      "camera_east_m": 0.0,
+      "camera_fov_deg": 50.0,
+      "camera_height_m": 1.7,
+      "camera_north_m": 6.0,
+      "draw_calls": 95,
+      "elevation_deg": -10.0,
+      "flower_count": 68,
+      "grass": "off",
+      "id": "scenery-runway-edge-grass-off",
+      "image": "capture-scenery-runway-edge-grass-off.png",
+      "objects": 95,
+      "primitives": 190183,
+      "scenario_id": "scenery-runway-edge",
+      "shader_clock": 0.0,
+      "shader_time_s": 0.0,
+      "visual_scope": "scenery-runway-edge",
+      "wind_vec": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "azimuth_deg": 45.0,
+      "camera_east_m": 0.0,
+      "camera_fov_deg": 50.0,
+      "camera_height_m": 1.7,
+      "camera_north_m": 6.0,
+      "draw_calls": 98,
+      "elevation_deg": -10.0,
+      "flower_count": 68,
+      "grass": "on",
+      "id": "scenery-runway-edge-grass-on",
+      "image": "capture-scenery-runway-edge-grass-on.png",
+      "objects": 98,
+      "primitives": 191286,
+      "scenario_id": "scenery-runway-edge",
+      "shader_clock": 0.0,
+      "shader_time_s": 0.0,
+      "visual_scope": "scenery-runway-edge",
+      "wind_vec": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "azimuth_deg": 45.0,
+      "camera_east_m": 0.0,
+      "camera_fov_deg": 50.0,
+      "camera_height_m": 1.7,
+      "camera_north_m": 6.0,
+      "draw_calls": 98,
+      "elevation_deg": -10.0,
+      "flower_count": 68,
+      "grass": "on",
+      "id": "windless-t1",
+      "image": "capture-windless-t1.png",
+      "objects": 98,
+      "primitives": 191286,
+      "scenario_id": "scenery-runway-edge",
+      "shader_clock": 1.0,
+      "shader_time_s": 1.0,
+      "visual_scope": "scenery-runway-edge",
+      "wind_vec": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "azimuth_deg": 45.0,
+      "camera_east_m": 0.0,
+      "camera_fov_deg": 50.0,
+      "camera_height_m": 1.7,
+      "camera_north_m": 6.0,
+      "draw_calls": 98,
+      "elevation_deg": -10.0,
+      "flower_count": 68,
+      "grass": "on",
+      "id": "wind-on-t0",
+      "image": "capture-wind-on-t0.png",
+      "objects": 98,
+      "primitives": 191286,
+      "scenario_id": "scenery-runway-edge",
+      "shader_clock": 0.0,
+      "shader_time_s": 0.0,
+      "visual_scope": "scenery-runway-edge",
+      "wind_vec": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "azimuth_deg": 45.0,
+      "camera_east_m": 0.0,
+      "camera_fov_deg": 50.0,
+      "camera_height_m": 1.7,
+      "camera_north_m": 6.0,
+      "draw_calls": 98,
+      "elevation_deg": -10.0,
+      "flower_count": 68,
+      "grass": "on",
+      "id": "wind-on-t1",
+      "image": "capture-wind-on-t1.png",
+      "objects": 98,
+      "primitives": 191286,
+      "scenario_id": "scenery-runway-edge",
+      "shader_clock": 1.0,
+      "shader_time_s": 1.0,
+      "visual_scope": "scenery-runway-edge",
+      "wind_vec": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "azimuth_deg": 45.0,
+      "camera_east_m": 0.0,
+      "camera_fov_deg": 50.0,
+      "camera_height_m": 1.7,
+      "camera_north_m": 6.0,
+      "draw_calls": 98,
+      "elevation_deg": -10.0,
+      "flower_count": 68,
+      "grass": "on",
+      "id": "wind-on-t1024",
+      "image": "capture-wind-on-t1024.png",
+      "objects": 98,
+      "primitives": 191286,
+      "scenario_id": "scenery-runway-edge",
+      "shader_clock": 0.0,
+      "shader_time_s": 1024.0,
+      "visual_scope": "scenery-runway-edge",
+      "wind_vec": [
+        5.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "azimuth_deg": 45.0,
+      "camera_east_m": 0.0,
+      "camera_fov_deg": 50.0,
+      "camera_height_m": 1.7,
+      "camera_north_m": 6.0,
+      "draw_calls": 98,
+      "elevation_deg": -10.0,
+      "flower_count": 68,
+      "grass": "on",
+      "id": "windless-t0-repeat",
+      "image": "capture-windless-t0-repeat.png",
+      "objects": 98,
+      "primitives": 191286,
+      "scenario_id": "scenery-runway-edge",
+      "shader_clock": 0.0,
+      "shader_time_s": 0.0,
+      "visual_scope": "scenery-runway-edge",
+      "wind_vec": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "clock_policy": "global sim_clock/wind_vec stay at zero for every case; only capture-owned NearGrass shader clones receive per-case local values",
+  "environment": "Atmosphere.environment() + Atmosphere.create_sun()",
+  "field": "res://data/fields/default.json",
+  "field_id": "default",
+  "flowers": {
+    "asset_counts": {
+      "clover_1": 58,
+      "flower_3_group": 9,
+      "flower_4_group": 1
+    },
+    "count": 68,
+    "names": [
+      "clover_1_Part_00",
+      "flower_3_group_Part_00",
+      "flower_4_group_Part_00"
+    ],
+    "source_ids": [
+      "clover_1",
+      "flower_3_group",
+      "flower_4_group"
+    ],
+    "unique_names": true
+  },
+  "format": "openrc-l11a-grass-capture v3",
+  "grass": {
+    "casts_shadows": false,
+    "clumps": 150,
+    "implementation": "imported_source_meshes",
+    "material_contract": "qualified imported grass shader; source albedo, UV, vertex-color, roughness, metallic and specular parameters matched",
+    "material_mode": "qualified_wind",
+    "material_shader_path": "res://scenery/imported_grass.gdshader",
+    "material_shader_sha256": "0f78242b88037a670795074d0d6a882a461798ab7913a3e4b99d3f56d5685f10",
+    "multimesh_chunks": 3,
+    "node_count": 1,
+    "observed_radius_m": {
+      "max": 29.9650192260742,
+      "min": 1.3345935344696
+    },
+    "per_pixel_lit_surfaces": 3,
+    "pilot_radius_m": 30.0,
+    "placement_path": "res://data/fields/grass.json",
+    "present": true,
+    "runway_clumps": 0,
+    "source_batches": {
+      "grass_common_short": 100,
+      "grass_common_tall": 30,
+      "grass_wispy_tall": 20
+    },
+    "source_geometry_preserved": true,
+    "source_ids": [
+      "grass_common_short",
+      "grass_common_tall",
+      "grass_wispy_tall"
+    ],
+    "source_material_parameters_matched": true,
+    "source_triangles": 37720,
+    "textured_surfaces": 3,
+    "wind_animation": "qualified imported shader; ShaderClock wind probes are captured",
+    "wind_probe_cases": true
+  },
+  "mode": "scenery",
+  "near_grass_material_mode": "qualified_wind",
+  "render_setup": {
+    "camera_physics_interpolation": "off",
+    "settle_frames_after_camera_pose": 3,
+    "warmup_frames": 12,
+    "warmup_near_grass_visible": true,
+    "warmup_scenario": "scenery-runway-edge",
+    "warmup_shader_clock": 0.0,
+    "warmup_wind_vec": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "renderer": "NVIDIA GeForce RTX 3090",
+  "scenery_on": true,
+  "smoke": false,
+  "viewport": {
+    "height": 720,
+    "width": 1280
+  }
+}

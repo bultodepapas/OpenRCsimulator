@@ -9,12 +9,13 @@ const Frames := preload("res://render/frames.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 
-const FORMAT: String = "openrc-l11a-grass-capture v2"
-const ANIMATION_ISOLATION_PROTOCOL: String = "non-near-grass-pinned-shader-inputs-v1"
+const FORMAT: String = "openrc-l11a-grass-capture v3"
+const ANIMATION_ISOLATION_PROTOCOL: String = "global-pinned-local-grass-inputs-v1"
 const WIDTH: int = 1280
 const HEIGHT: int = 720
 const FOV_DEG: float = 50.0
 const FAR_M: float = 21000.0
+const WARMUP_FRAMES: int = 12
 const SETTLE_FRAMES: int = 3
 const GRASS_SHADER_PATH: String = "res://render/near_grass.gdshader"
 const IMPORTED_GRASS_SHADER_PATH: String = "res://scenery/imported_grass.gdshader"
@@ -49,9 +50,10 @@ var _world: Node3D
 var _environment: Environment
 var _grass_report: Dictionary = {}
 var _flower_report: Dictionary = {"count": 0, "names": []}
-var _frozen_shader_cache: Dictionary = {}
-var _frozen_shader_sources: Dictionary = {}
-var _frozen_material_bindings: int = 0
+var _near_grass_shader_cache: Dictionary = {}
+var _near_grass_shader_sources: Dictionary = {}
+var _near_grass_material_bindings: int = 0
+var _near_grass_shader_materials: Array[Dictionary] = []
 
 
 func _initialize() -> void:
@@ -116,6 +118,7 @@ func _run() -> void:
 		if _grass_report.is_empty():
 			_world.queue_free()
 			return
+		_localize_near_grass_animation(_near_grass)
 	if scenery_on:
 		_flower_report = _inspect_flowers(_field_node)
 		if int(_flower_report.get("count", 0)) <= 0:
@@ -126,11 +129,12 @@ func _run() -> void:
 		_world.queue_free()
 		return
 
-	# Keep clouds and all ground materials frozen at production time zero. Only ShaderClock changes in the wind probe.
+	# Keep the global clock and wind frozen. The NearGrass capture clones receive the per-case local clock and wind.
 	Atmosphere.update_clouds(_environment, 0.0)
 	var scenarios: Array[Dictionary] = _scenarios()
 	if _smoke and _mode != "scenery":
 		scenarios = [scenarios[0]]
+	await _warmup_render_pipeline(scenarios[0])
 	for scenario: Dictionary in scenarios:
 		if _mode == "baseline":
 			var baseline_case: Dictionary = await _capture(scenario, "off", 0.0, Vector3.ZERO)
@@ -171,14 +175,25 @@ func _run() -> void:
 		"scenery_on": scenery_on,
 		"near_grass_material_mode": str(_grass_report.get("material_mode", "not_present")),
 		"environment": "Atmosphere.environment() + Atmosphere.create_sun()",
-		"clock_policy": "capture-only material clones pin non-NearGrass sim_clock/wind_vec at zero; NearGrass alone receives the logged wind-probe clock",
+		"render_setup": {
+			"warmup_frames": WARMUP_FRAMES,
+			"warmup_scenario": str(scenarios[0].id),
+			"warmup_near_grass_visible": _mode != "baseline" and _near_grass != null,
+			"warmup_shader_clock": 0.0,
+			"warmup_wind_vec": [0.0, 0.0, 0.0],
+			"settle_frames_after_camera_pose": SETTLE_FRAMES,
+			"camera_physics_interpolation": "off",
+		},
+		"clock_policy": "global sim_clock/wind_vec stay at zero for every case; only capture-owned NearGrass shader clones receive per-case local values",
 		"animation_isolation": {
 			"protocol": ANIMATION_ISOLATION_PROTOCOL,
-			"scope": "ShaderMaterials on Field GeometryInstance3D surfaces outside the NearGrass subtree",
-			"pinned_shader_inputs": {"sim_clock": 0.0, "wind_vec": [0.0, 0.0, 0.0]},
-			"pinned_local_wind_controls": {"wind_enabled": false, "wind_strength": 0.0},
-			"material_bindings_overridden": _frozen_material_bindings,
-			"shader_sources": _sorted_source_keys(_frozen_shader_sources),
+			"global_shader_inputs": {"sim_clock": 0.0, "wind_vec": [0.0, 0.0, 0.0]},
+			"near_grass_scope": "capture-owned ShaderMaterials on NearGrass geometry only",
+			"source_shader_identity_qualified_before_clone": true,
+			"near_grass_material_bindings_overridden": _near_grass_material_bindings,
+			"near_grass_shader_inputs": "local sim_clock and wind_vec set from each logged case",
+			"near_grass_shader_sources": _sorted_source_identities(_near_grass_shader_sources),
+			"replacement_scope": "only global sim_clock/wind_vec declarations become local declarations; shader bodies and source geometry stay unchanged",
 			"node_geometry_visibility_unchanged": true,
 		},
 		"grass": _grass_report if _mode != "baseline" else {"present": false},
@@ -211,7 +226,21 @@ func _capture_wind_probes(wind_scenario: Dictionary) -> bool:
 		if captured.is_empty():
 			return false
 		_cases.append(captured)
+	var calm_repeat: Dictionary = await _capture(wind_scenario, "windless-t0-repeat", 0.0, Vector3.ZERO)
+	if calm_repeat.is_empty():
+		return false
+	_cases.append(calm_repeat)
 	return true
+
+
+func _warmup_render_pipeline(scenario: Dictionary) -> void:
+	if _near_grass != null:
+		_near_grass.visible = _mode != "baseline"
+	ShaderClock.update(0.0, Vector3.ZERO)
+	_set_near_grass_shader_inputs(0.0, Vector3.ZERO)
+	_set_camera_pose(scenario)
+	for _frame: int in WARMUP_FRAMES:
+		await RenderingServer.frame_post_draw
 
 
 func _build_world() -> Dictionary:
@@ -224,7 +253,6 @@ func _build_world() -> Dictionary:
 	world.add_child(environment_node)
 	_field_node = FieldBuilder.build(_field_data)
 	_field_node.process_mode = Node.PROCESS_MODE_DISABLED
-	_freeze_other_vegetation(_field_node)
 	world.add_child(_field_node)
 	Atmosphere.create_sun(world)
 	var camera: Camera3D = Camera3D.new()
@@ -232,104 +260,133 @@ func _build_world() -> Dictionary:
 	camera.fov = FOV_DEG
 	camera.near = 0.1
 	camera.far = FAR_M
+	camera.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	world.add_child(camera)
 	camera.current = true
 	return {"world": world, "field": _field_node, "environment": _environment, "camera": camera}
 
 
-## Attribute this fixture's moving pixels to grass. Pin time and wind only on capture-owned
-## clones outside NearGrass, leaving production geometry, visibility, and cached materials intact.
-func _freeze_other_vegetation(node: Node) -> void:
-	if node.name == "NearGrass":
-		return
+## The global clock remains zero so scenery never sees a grass probe. NearGrass's source material is
+## qualified first, then its capture-owned clone receives the probe through local shader uniforms.
+func _localize_near_grass_animation(node: Node) -> void:
 	if node is GeometryInstance3D:
-		_freeze_geometry_materials(node as GeometryInstance3D)
+		_localize_geometry_materials(node as GeometryInstance3D)
 	for child: Node in node.get_children():
-		_freeze_other_vegetation(child)
+		_localize_near_grass_animation(child)
 
 
-func _freeze_geometry_materials(instance: GeometryInstance3D) -> void:
+func _localize_geometry_materials(instance: GeometryInstance3D) -> void:
 	var override_material: ShaderMaterial = instance.material_override as ShaderMaterial
 	if override_material != null:
-		var frozen_override: ShaderMaterial = _frozen_shader_material(override_material)
-		if frozen_override != null:
-			instance.material_override = frozen_override
+		var local_override: ShaderMaterial = _localized_shader_material(override_material)
+		if local_override != null:
+			instance.material_override = local_override
+			_track_near_grass_material(override_material, local_override)
 	if instance is MultiMeshInstance3D:
 		var multi_instance: MultiMeshInstance3D = instance as MultiMeshInstance3D
 		if multi_instance.multimesh == null or multi_instance.multimesh.mesh == null:
 			return
 		var source_mesh: Mesh = multi_instance.multimesh.mesh
-		var frozen_mesh: Mesh = _freeze_mesh_materials(source_mesh)
-		if frozen_mesh != null:
+		var local_mesh: Mesh = _localize_mesh_materials(source_mesh)
+		if local_mesh != null:
 			var frozen_multi: MultiMesh = multi_instance.multimesh.duplicate() as MultiMesh
-			frozen_multi.mesh = frozen_mesh
+			frozen_multi.mesh = local_mesh
 			multi_instance.multimesh = frozen_multi
 	elif instance is MeshInstance3D:
 		var mesh_instance: MeshInstance3D = instance as MeshInstance3D
 		if mesh_instance.mesh == null:
 			return
-		var frozen_mesh: Mesh = _freeze_mesh_materials(mesh_instance.mesh)
-		if frozen_mesh != null:
-			mesh_instance.mesh = frozen_mesh
+		var local_mesh: Mesh = _localize_mesh_materials(mesh_instance.mesh)
+		if local_mesh != null:
+			mesh_instance.mesh = local_mesh
 
 
-func _freeze_mesh_materials(source_mesh: Mesh) -> Mesh:
-	var frozen_mesh: Mesh
+func _localize_mesh_materials(source_mesh: Mesh) -> Mesh:
+	var local_mesh: Mesh
 	for surface_index: int in source_mesh.get_surface_count():
 		var source_material: ShaderMaterial = source_mesh.surface_get_material(surface_index) as ShaderMaterial
 		if source_material == null:
 			continue
-		var frozen_material: ShaderMaterial = _frozen_shader_material(source_material)
-		if frozen_material == null:
+		var local_material: ShaderMaterial = _localized_shader_material(source_material)
+		if local_material == null:
 			continue
-		if frozen_mesh == null:
-			frozen_mesh = source_mesh.duplicate() as Mesh
-		frozen_mesh.surface_set_material(surface_index, frozen_material)
-	return frozen_mesh
+		if local_mesh == null:
+			local_mesh = source_mesh.duplicate() as Mesh
+		local_mesh.surface_set_material(surface_index, local_material)
+		_track_near_grass_material(source_material, local_material)
+	return local_mesh
 
 
-func _frozen_shader_material(source_material: ShaderMaterial) -> ShaderMaterial:
+func _localized_shader_material(source_material: ShaderMaterial) -> ShaderMaterial:
 	var source_shader: Shader = source_material.shader
 	if source_shader == null:
 		return null
 	var source_code: String = source_shader.code
-	var frozen_code: String = source_code
 	var local_clock: bool = source_code.contains("global uniform float sim_clock;")
 	var local_wind: bool = source_code.contains("global uniform vec3 wind_vec;")
+	if not local_clock and not local_wind:
+		return null
+	var localized_code: String = source_code
 	if local_clock:
-		frozen_code = frozen_code.replace("global uniform float sim_clock;", "uniform float sim_clock = 0.0;")
+		localized_code = localized_code.replace("global uniform float sim_clock;", "uniform float sim_clock = 0.0;")
 	if local_wind:
-		frozen_code = frozen_code.replace("global uniform vec3 wind_vec;", "uniform vec3 wind_vec = vec3(0.0);")
-	var local_wind_controls: Dictionary = {}
-	for parameter: Dictionary in RenderingServer.get_shader_parameter_list(source_shader.get_rid()):
-		var parameter_name: String = str(parameter.get("name", ""))
-		if parameter_name == "wind_enabled":
-			local_wind_controls[parameter_name] = false
-		elif parameter_name == "wind_strength":
-			local_wind_controls[parameter_name] = 0.0
-	if frozen_code == source_code and local_wind_controls.is_empty():
+		localized_code = localized_code.replace("global uniform vec3 wind_vec;", "uniform vec3 wind_vec = vec3(0.0);")
+	var expected_code: String = source_code
+	if local_clock:
+		expected_code = expected_code.replace("global uniform float sim_clock;", "uniform float sim_clock = 0.0;")
+	if local_wind:
+		expected_code = expected_code.replace("global uniform vec3 wind_vec;", "uniform vec3 wind_vec = vec3(0.0);")
+	if localized_code != expected_code:
+		_fail("NearGrass shader localization changed text outside the two clock/wind declarations")
 		return null
 	var frozen_material: ShaderMaterial = source_material.duplicate() as ShaderMaterial
-	if frozen_code != source_code:
-		var shader_key: int = source_shader.get_instance_id()
-		var frozen_shader: Shader = _frozen_shader_cache.get(shader_key) as Shader
-		if frozen_shader == null:
-			frozen_shader = Shader.new()
-			frozen_shader.code = frozen_code
-			_frozen_shader_cache[shader_key] = frozen_shader
-			var source_id: String = source_shader.resource_path
-			if source_id.is_empty():
-				source_id = "sha256:" + source_code.sha256_text()
-			_frozen_shader_sources[source_id] = true
-		frozen_material.shader = frozen_shader
-		if local_clock:
-			frozen_material.set_shader_parameter("sim_clock", 0.0)
-		if local_wind:
-			frozen_material.set_shader_parameter("wind_vec", Vector3.ZERO)
-	for parameter_name: String in local_wind_controls:
-		frozen_material.set_shader_parameter(parameter_name, local_wind_controls[parameter_name])
-	_frozen_material_bindings += 1
+	var shader_key: int = source_shader.get_instance_id()
+	var localized_shader: Shader = _near_grass_shader_cache.get(shader_key) as Shader
+	if localized_shader == null:
+		localized_shader = Shader.new()
+		localized_shader.code = localized_code
+		_near_grass_shader_cache[shader_key] = localized_shader
+		var source_path: String = source_shader.resource_path
+		if source_path.is_empty():
+			source_path = "<built-in>"
+		_near_grass_shader_sources[source_path] = {
+			"source_sha256": source_code.sha256_text(),
+			"replaced_declarations": [
+				"global uniform float sim_clock;" if local_clock else "",
+				"global uniform vec3 wind_vec;" if local_wind else "",
+			].filter(func(item: String) -> bool: return not item.is_empty()),
+		}
+	frozen_material.shader = localized_shader
+	if local_clock:
+		frozen_material.set_shader_parameter("sim_clock", 0.0)
+	if local_wind:
+		frozen_material.set_shader_parameter("wind_vec", Vector3.ZERO)
+	_near_grass_material_bindings += 1
 	return frozen_material
+
+
+func _track_near_grass_material(source_material: ShaderMaterial, local_material: ShaderMaterial) -> void:
+	if source_material.shader == null:
+		return
+	var source_code: String = source_material.shader.code
+	var has_local_clock: bool = source_code.contains("global uniform float sim_clock;")
+	var has_local_wind: bool = source_code.contains("global uniform vec3 wind_vec;")
+	if has_local_clock or has_local_wind:
+		_near_grass_shader_materials.append({"material": local_material,
+			"clock": has_local_clock, "wind": has_local_wind})
+
+
+func _set_near_grass_shader_inputs(shader_time: float, wind: Vector3) -> void:
+	var local_clock: float = fposmod(shader_time, ShaderClock.WRAP_S)
+	for material_record: Dictionary in _near_grass_shader_materials:
+		var material: ShaderMaterial = material_record.get("material") as ShaderMaterial
+		if material == null:
+			_fail("NearGrass capture material was lost after shader localization")
+			return
+		if bool(material_record.get("clock", false)):
+			material.set_shader_parameter("sim_clock", local_clock)
+		if bool(material_record.get("wind", false)):
+			material.set_shader_parameter("wind_vec", wind)
 
 
 func _sorted_source_keys(source_map: Dictionary) -> Array[String]:
@@ -337,6 +394,14 @@ func _sorted_source_keys(source_map: Dictionary) -> Array[String]:
 	for key: Variant in source_map.keys():
 		result.append(str(key))
 	result.sort()
+	return result
+
+
+func _sorted_source_identities(source_map: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var keys: Array[String] = _sorted_source_keys(source_map)
+	for key: String in keys:
+		result.append({"path": key, "identity": source_map[key]})
 	return result
 
 
@@ -371,17 +436,10 @@ func _capture(scenario: Dictionary, grass_state: String, shader_time: float, win
 			_near_grass.visible = false
 	elif _near_grass != null:
 		_near_grass.visible = true
-	ShaderClock.update(shader_time, wind)
-	var camera_position: Vector3 = Frames.ned_to_render([
-		float(scenario.north), float(scenario.east), float(_field_data.pilot.down) - float(scenario.height),
-	])
-	var azimuth: float = deg_to_rad(float(scenario.azimuth))
-	var elevation: float = deg_to_rad(float(scenario.elevation))
-	var direction: Vector3 = Frames.ned_to_render([
-		cos(azimuth) * cos(elevation), sin(azimuth) * cos(elevation), -sin(elevation),
-	])
-	_camera.position = camera_position
-	_camera.look_at(camera_position + direction * 1000.0, Vector3.UP)
+	# No scene-wide shader may see the probe tape; only the capture-owned NearGrass clones do.
+	ShaderClock.update(0.0, Vector3.ZERO)
+	_set_near_grass_shader_inputs(shader_time, wind)
+	_set_camera_pose(scenario)
 	for _frame: int in SETTLE_FRAMES:
 		await RenderingServer.frame_post_draw
 	var image: Image = root.get_texture().get_image()
@@ -403,7 +461,7 @@ func _capture(scenario: Dictionary, grass_state: String, shader_time: float, win
 		"scenario_id": str(scenario.id),
 		"grass": grass_state if grass_state == "on" or grass_state == "off" else "on",
 		"shader_time_s": shader_time,
-		"shader_clock": ShaderClock.last_clock,
+		"shader_clock": fposmod(shader_time, ShaderClock.WRAP_S),
 		"wind_vec": [wind.x, wind.y, wind.z],
 		"camera_north_m": float(scenario.north),
 		"camera_east_m": float(scenario.east),
@@ -417,6 +475,20 @@ func _capture(scenario: Dictionary, grass_state: String, shader_time: float, win
 		"objects": int(Performance.get_monitor(Performance.RENDER_TOTAL_OBJECTS_IN_FRAME)),
 		"flower_count": int(_flower_report.get("count", 0)),
 	}
+
+
+func _set_camera_pose(scenario: Dictionary) -> void:
+	var camera_position: Vector3 = Frames.ned_to_render([
+		float(scenario.north), float(scenario.east), float(_field_data.pilot.down) - float(scenario.height),
+	])
+	var azimuth: float = deg_to_rad(float(scenario.azimuth))
+	var elevation: float = deg_to_rad(float(scenario.elevation))
+	var direction: Vector3 = Frames.ned_to_render([
+		cos(azimuth) * cos(elevation), sin(azimuth) * cos(elevation), -sin(elevation),
+	])
+	_camera.transform = Transform3D(Basis.looking_at(direction, Vector3.UP), camera_position)
+	_camera.reset_physics_interpolation()
+	_camera.force_update_transform()
 
 
 func _inspect_grass(grass: Node3D) -> Dictionary:

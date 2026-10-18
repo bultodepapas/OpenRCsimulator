@@ -21,11 +21,14 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 CAPTURE_SCRIPT = Path(__file__).with_name("capture_grass.gd")
-FORMAT = "openrc-l11a-grass-capture v2"
-SUMMARY_FORMAT = "openrc-l11a-grass-review v2"
+FORMAT = "openrc-l11a-grass-capture v3"
+SUMMARY_FORMAT = "openrc-l11a-grass-review v3"
+ANIMATION_ISOLATION_PROTOCOL = "global-pinned-local-grass-inputs-v1"
 WIDTH = 1280
 HEIGHT = 720
 FOV_DEG = 50.0
+WARMUP_FRAMES = 12
+SETTLE_FRAMES = 3
 DRAW_BUDGET = 5
 PRIMITIVE_BUDGET = 100_000
 SEAM_PERCENT_BUDGET = 3.0
@@ -36,7 +39,7 @@ STANDARD_SCENARIOS = tuple(
     for elevation in PILOT_ELEVATIONS
     for azimuth in PILOT_AZIMUTHS
 ) + ("raised-low-pass", "near-runway", "band-25-35m", "fade-camera-35m")
-WIND_CASES = ("windless-t1", "wind-on-t0", "wind-on-t1", "wind-on-t1024")
+WIND_CASES = ("windless-t1", "wind-on-t0", "wind-on-t1", "wind-on-t1024", "windless-t0-repeat")
 SCENERY_SCENARIO = "scenery-runway-edge"
 IMPORTED_GRASS_IDS = ("grass_common_short", "grass_common_tall", "grass_wispy_tall")
 STATIC_IMPORTED_GRASS_COUNTS = {"grass_common_short": 67, "grass_common_tall": 42, "grass_wispy_tall": 41}
@@ -271,11 +274,36 @@ def load_run(folder: Path, mode: str) -> tuple[dict[str, Any], dict[str, dict[st
     expected_scenery = mode == "scenery"
     if manifest.get("scenery_on") is not expected_scenery:
         raise RuntimeError(f"{manifest_path}: scenery switch metadata mismatch")
+    render_setup = manifest.get("render_setup", {})
+    expected_warmup_scenario = SCENERY_SCENARIO if mode == "scenery" else STANDARD_SCENARIOS[0]
+    if (
+        render_setup.get("warmup_frames") != WARMUP_FRAMES
+        or render_setup.get("warmup_scenario") != expected_warmup_scenario
+        or render_setup.get("warmup_near_grass_visible") is not (mode != "baseline")
+        or render_setup.get("warmup_shader_clock") != 0.0
+        or render_setup.get("warmup_wind_vec") != [0.0, 0.0, 0.0]
+        or render_setup.get("settle_frames_after_camera_pose") != SETTLE_FRAMES
+        or render_setup.get("camera_physics_interpolation") != "off"
+    ):
+        raise RuntimeError(f"{manifest_path}: deterministic renderer warmup/camera setup mismatch")
+    animation = manifest.get("animation_isolation", {})
+    if (
+        animation.get("protocol") != ANIMATION_ISOLATION_PROTOCOL
+        or animation.get("global_shader_inputs") != {"sim_clock": 0.0, "wind_vec": [0.0, 0.0, 0.0]}
+        or animation.get("node_geometry_visibility_unchanged") is not True
+        or animation.get("source_shader_identity_qualified_before_clone") is not True
+    ):
+        raise RuntimeError(f"{manifest_path}: missing the global-clock/local-grass isolation contract")
+    local_shader_sources = animation.get("near_grass_shader_sources")
+    if not isinstance(local_shader_sources, list):
+        raise RuntimeError(f"{manifest_path}: NearGrass local shader source identities must be a list")
     if mode == "baseline":
         if manifest.get("grass") != {"present": False}:
             raise RuntimeError(f"{manifest_path}: baseline mode must record the absent NearGrass child")
         if manifest.get("near_grass_material_mode") != "not_present":
             raise RuntimeError(f"{manifest_path}: no-grass baseline material scope mismatch")
+        material_mode = "not_present"
+        grass = {}
     else:
         grass = manifest.get("grass", {})
         if grass.get("present") is not True or grass.get("node_count") != 1:
@@ -366,6 +394,57 @@ def load_run(folder: Path, mode: str) -> tuple[dict[str, Any], dict[str, dict[st
                 raise RuntimeError(f"{manifest_path}: imported grass material mode must be static_baseline or qualified_wind")
         else:
             raise RuntimeError(f"{manifest_path}: unsupported grass capture mode {mode!r}")
+
+    expected_local_shader_path = ""
+    expected_local_shader_hash = ""
+    if mode == "candidate":
+        expected_local_shader_path = "res://render/near_grass.gdshader"
+        expected_local_shader_hash = str(grass.get("shader_sha256", ""))
+    elif mode == "scenery" and material_mode == "qualified_wind":
+        expected_local_shader_path = IMPORTED_GRASS_SHADER_PATH
+        expected_local_shader_hash = str(grass.get("material_shader_sha256", ""))
+    source_paths: list[str] = []
+    allowed_replacements = {
+        "global uniform float sim_clock;",
+        "global uniform vec3 wind_vec;",
+    }
+    for source in local_shader_sources:
+        if not isinstance(source, dict):
+            raise RuntimeError(f"{manifest_path}: malformed NearGrass source identity")
+        source_path = source.get("path")
+        identity = source.get("identity")
+        if not isinstance(source_path, str) or not isinstance(identity, dict):
+            raise RuntimeError(f"{manifest_path}: malformed NearGrass source identity")
+        source_hash = identity.get("source_sha256")
+        replacements = identity.get("replaced_declarations")
+        if (
+            re.fullmatch(r"res://[^\\]+", source_path) is None
+            or not isinstance(source_hash, str)
+            or re.fullmatch(r"[0-9a-f]{64}", source_hash) is None
+            or not isinstance(replacements, list)
+            or not replacements
+            or any(item not in allowed_replacements for item in replacements)
+            or len(replacements) != len(set(replacements))
+        ):
+            raise RuntimeError(f"{manifest_path}: invalid NearGrass source path, hash or localized declaration list")
+        source_paths.append(source_path)
+    if source_paths != sorted(set(source_paths)):
+        raise RuntimeError(f"{manifest_path}: NearGrass shader sources must be sorted and unique")
+    local_binding_count = animation.get("near_grass_material_bindings_overridden")
+    if type(local_binding_count) is not int or local_binding_count < 0:
+        raise RuntimeError(f"{manifest_path}: invalid NearGrass localized material count")
+    if expected_local_shader_path:
+        matching_sources = [source for source in local_shader_sources if source.get("path") == expected_local_shader_path]
+        if (
+            len(local_shader_sources) != 1
+            or len(matching_sources) != 1
+            or matching_sources[0]["identity"].get("source_sha256") != expected_local_shader_hash
+            or set(matching_sources[0]["identity"].get("replaced_declarations", [])) != allowed_replacements
+            or local_binding_count <= 0
+        ):
+            raise RuntimeError(f"{manifest_path}: NearGrass localization does not match its qualified source shader")
+    elif local_shader_sources or local_binding_count != 0:
+        raise RuntimeError(f"{manifest_path}: static or absent NearGrass must not have a localized shader")
     if expected_scenery:
         flowers = manifest.get("flowers", {})
         flower_counts = flowers.get("asset_counts", {})
@@ -466,11 +545,13 @@ def verify_wind_probes(folder: Path, cases: dict[str, dict[str, Any]], reference
     wind_t0 = wind_cases["wind-on-t0"]
     wind_t1 = wind_cases["wind-on-t1"]
     wind_t1024 = wind_cases["wind-on-t1024"]
+    calm_repeat = wind_cases["windless-t0-repeat"]
     for case_id, case, time_s, expected_clock, expected_wind in (
         ("windless-t1", windless_t1, 1.0, 1.0, [0.0, 0.0, 0.0]),
         ("wind-on-t0", wind_t0, 0.0, 0.0, [5.0, 0.0, 0.0]),
         ("wind-on-t1", wind_t1, 1.0, 1.0, [5.0, 0.0, 0.0]),
         ("wind-on-t1024", wind_t1024, 1024.0, 0.0, [5.0, 0.0, 0.0]),
+        ("windless-t0-repeat", calm_repeat, 0.0, 0.0, [0.0, 0.0, 0.0]),
     ):
         if case.get("scenario_id") != reference.get("scenario_id") or case.get("grass") != "on":
             raise RuntimeError(f"{case_id}: {material_scope} wind camera or grass-state mismatch")
@@ -485,11 +566,14 @@ def verify_wind_probes(folder: Path, cases: dict[str, dict[str, Any]], reference
         raise RuntimeError(f"{material_scope}: grass-on reference must be at t=0 with zero wind")
 
     windless_equal = image_rgb(folder / reference["image"]).tobytes() == image_rgb(folder / windless_t1["image"]).tobytes()
+    calm_repeat_equal = image_rgb(folder / reference["image"]).tobytes() == image_rgb(folder / calm_repeat["image"]).tobytes()
     wind_repeat_equal = image_rgb(folder / wind_t0["image"]).tobytes() == image_rgb(folder / wind_t1024["image"]).tobytes()
     if not windless_equal:
         raise RuntimeError("zero-wind grass changed between sim_clock t=0 and t=1 while the environment was frozen")
     if not wind_repeat_equal:
         raise RuntimeError("winded grass did not repeat at the ShaderClock t=0 / t=1024 wrap")
+    if not calm_repeat_equal:
+        raise RuntimeError("calm t=0 image changed after the wind-probe sequence")
     moving = compare_images(folder, wind_t0, folder, wind_t1)
     if moving["changed_pixels"] <= 0:
         raise RuntimeError(f"nonzero Vector3 wind produced no {material_scope} image motion from t=0 to t=1")
@@ -510,6 +594,8 @@ def verify_wind_probes(folder: Path, cases: dict[str, dict[str, Any]], reference
         "windless_t0_case": reference["id"],
         "windless_t1_sha256": image_digest(folder / windless_t1["image"]),
         "windless_t0_t1_byte_identical": windless_equal,
+        "calm_t0_repeat_after_probes_byte_identical": calm_repeat_equal,
+        "calm_t0_repeat_case": calm_repeat["id"],
         "wind_t0_t1": moving,
         "wind_changed_pixels_outside_grass_footprint": outside_wind,
         "wind_t0_t1024_byte_identical": wind_repeat_equal,

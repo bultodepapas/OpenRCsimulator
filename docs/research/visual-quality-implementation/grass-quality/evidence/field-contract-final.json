@@ -1,0 +1,398 @@
+{
+  "capture_protocol": {
+    "camera_physics_interpolation": "off",
+    "cases": {
+      "qualified_wind": [
+        "scenery-runway-edge-grass-off",
+        "scenery-runway-edge-grass-on",
+        "windless-t1",
+        "wind-on-t0",
+        "wind-on-t1",
+        "wind-on-t1024",
+        "windless-t0-repeat"
+      ],
+      "static_baseline": [
+        "scenery-runway-edge-grass-off",
+        "scenery-runway-edge-grass-on"
+      ]
+    },
+    "global_shader_inputs": {
+      "sim_clock": 0.0,
+      "wind_vec": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "manifest_format": "openrc-l11a-grass-capture v3",
+    "near_grass_probes": "capture-owned clones with local sim_clock/wind_vec; source shader identity qualified before cloning; only the two global declarations are replaced",
+    "per_pose_settle_frames": 3,
+    "viewport": {
+      "height": 720,
+      "width": 1280
+    },
+    "warmup_frames": 12,
+    "warmup_grass_visible": true,
+    "warmup_shader_clock_s": 0.0,
+    "warmup_wind_vec": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "default_profile": {
+    "independent_process_repeat": {
+      "byte_identical": true,
+      "case_count": 2,
+      "image_mismatches": [],
+      "manifests_byte_identical": true
+    },
+    "runs": [
+      {
+        "case_count": 2,
+        "checker": "pass",
+        "folder": "C:/DEVELOPMENT/OpenRCsimulator/tmp/grass-quality/field-contract-final-default-02",
+        "manifest_format": "openrc-l11a-grass-capture v3",
+        "material_mode": "static_baseline",
+        "render_setup": {
+          "camera_physics_interpolation": "off",
+          "settle_frames_after_camera_pose": 3,
+          "warmup_frames": 12,
+          "warmup_near_grass_visible": true,
+          "warmup_scenario": "scenery-runway-edge",
+          "warmup_shader_clock": 0.0,
+          "warmup_wind_vec": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "renderer": "NVIDIA GeForce RTX 3090",
+        "review": {
+          "changed_pixels": 1237,
+          "changed_pixels_outside_projected_grass_footprint": 0,
+          "draw_calls": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "grass_off_sha256": "b0ab003cd5b2cda0e13c3efa8ca1fb0a4dd3e66d3b6bfb515c0d8874a2f3391f",
+          "grass_on_sha256": "f709fd9ade5b2aef5d3b0cd2e20294ad60650cd651cd377b43ea3a39e16f5f6e",
+          "material_mode": "static_baseline",
+          "objects": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "primitives": {
+            "delta": 1103,
+            "off": 190183,
+            "on": 191286
+          },
+          "projected_grass_footprint_pixels": 575606,
+          "projected_seam_band_pixels": 29651,
+          "scenario_id": "scenery-runway-edge",
+          "seam_band_baseline_rgb_mean": [
+            100.953357,
+            123.996762,
+            60.784763
+          ],
+          "seam_band_max_channel_percent": 0.092394,
+          "seam_band_mean_abs_percent_of_baseline": [
+            0.087326,
+            0.092394,
+            0.067302
+          ],
+          "seam_band_mean_abs_rgb_delta": [
+            0.088159,
+            0.114566,
+            0.040909
+          ],
+          "wind": {
+            "captured": false,
+            "scope": "static imported-material baseline; wind adapter is absent"
+          }
+        },
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      {
+        "case_count": 2,
+        "checker": "pass",
+        "folder": "C:/DEVELOPMENT/OpenRCsimulator/tmp/grass-quality/field-contract-final-default-03",
+        "manifest_format": "openrc-l11a-grass-capture v3",
+        "material_mode": "static_baseline",
+        "render_setup": {
+          "camera_physics_interpolation": "off",
+          "settle_frames_after_camera_pose": 3,
+          "warmup_frames": 12,
+          "warmup_near_grass_visible": true,
+          "warmup_scenario": "scenery-runway-edge",
+          "warmup_shader_clock": 0.0,
+          "warmup_wind_vec": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "renderer": "NVIDIA GeForce RTX 3090",
+        "review": {
+          "changed_pixels": 1237,
+          "changed_pixels_outside_projected_grass_footprint": 0,
+          "draw_calls": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "grass_off_sha256": "b0ab003cd5b2cda0e13c3efa8ca1fb0a4dd3e66d3b6bfb515c0d8874a2f3391f",
+          "grass_on_sha256": "f709fd9ade5b2aef5d3b0cd2e20294ad60650cd651cd377b43ea3a39e16f5f6e",
+          "material_mode": "static_baseline",
+          "objects": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "primitives": {
+            "delta": 1103,
+            "off": 190183,
+            "on": 191286
+          },
+          "projected_grass_footprint_pixels": 575606,
+          "projected_seam_band_pixels": 29651,
+          "scenario_id": "scenery-runway-edge",
+          "seam_band_baseline_rgb_mean": [
+            100.953357,
+            123.996762,
+            60.784763
+          ],
+          "seam_band_max_channel_percent": 0.092394,
+          "seam_band_mean_abs_percent_of_baseline": [
+            0.087326,
+            0.092394,
+            0.067302
+          ],
+          "seam_band_mean_abs_rgb_delta": [
+            0.088159,
+            0.114566,
+            0.040909
+          ],
+          "wind": {
+            "captured": false,
+            "scope": "static imported-material baseline; wind adapter is absent"
+          }
+        },
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      }
+    ]
+  },
+  "engine": "Godot v4.7.2.stable.official.ed1daf0bf",
+  "enhanced_profile": {
+    "independent_process_repeat": {
+      "byte_identical": true,
+      "case_count": 7,
+      "image_mismatches": [],
+      "manifests_byte_identical": true
+    },
+    "runs": [
+      {
+        "case_count": 7,
+        "checker": "pass",
+        "folder": "C:/DEVELOPMENT/OpenRCsimulator/tmp/grass-quality/field-contract-final-enhanced-06",
+        "manifest_format": "openrc-l11a-grass-capture v3",
+        "material_mode": "qualified_wind",
+        "render_setup": {
+          "camera_physics_interpolation": "off",
+          "settle_frames_after_camera_pose": 3,
+          "warmup_frames": 12,
+          "warmup_near_grass_visible": true,
+          "warmup_scenario": "scenery-runway-edge",
+          "warmup_shader_clock": 0.0,
+          "warmup_wind_vec": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "renderer": "NVIDIA GeForce RTX 3090",
+        "review": {
+          "changed_pixels": 891,
+          "changed_pixels_outside_projected_grass_footprint": 0,
+          "draw_calls": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "grass_off_sha256": "8d7c175c7e5f00f9f7ceeaf905b27b0bae8ae0754cd1733e811eb143b2b63f38",
+          "grass_on_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+          "material_mode": "qualified_wind",
+          "objects": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "primitives": {
+            "delta": 1103,
+            "off": 190183,
+            "on": 191286
+          },
+          "projected_grass_footprint_pixels": 575606,
+          "projected_seam_band_pixels": 29651,
+          "scenario_id": "scenery-runway-edge",
+          "seam_band_baseline_rgb_mean": [
+            100.953357,
+            123.996762,
+            60.784763
+          ],
+          "seam_band_max_channel_percent": 0.084072,
+          "seam_band_mean_abs_percent_of_baseline": [
+            0.083451,
+            0.084072,
+            0.062641
+          ],
+          "seam_band_mean_abs_rgb_delta": [
+            0.084247,
+            0.104246,
+            0.038076
+          ],
+          "wind": {
+            "calm_t0_repeat_after_probes_byte_identical": true,
+            "calm_t0_repeat_case": "windless-t0-repeat",
+            "fixed_roots_supported_by": "source vertices below plant_base_y have zero height weight; displacement uses blade_height squared",
+            "material_scope": "qualified imported grass",
+            "wind_changed_pixels_outside_grass_footprint": 0,
+            "wind_clock_wrap": 1024.0,
+            "wind_t0_t1": {
+              "changed_pixel_fraction": 0.0004448784722222222,
+              "changed_pixels": 410,
+              "mean_abs_rgb_delta": 0.003917100694444444,
+              "p99_max_channel_delta": 0.0
+            },
+            "wind_t0_t1024_byte_identical": true,
+            "wind_vector": [
+              5.0,
+              0.0,
+              0.0
+            ],
+            "windless_t0_case": "scenery-runway-edge-grass-on",
+            "windless_t0_t1_byte_identical": true,
+            "windless_t1_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7"
+          }
+        },
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      {
+        "case_count": 7,
+        "checker": "pass",
+        "folder": "C:/DEVELOPMENT/OpenRCsimulator/tmp/grass-quality/field-contract-final-enhanced-07",
+        "manifest_format": "openrc-l11a-grass-capture v3",
+        "material_mode": "qualified_wind",
+        "render_setup": {
+          "camera_physics_interpolation": "off",
+          "settle_frames_after_camera_pose": 3,
+          "warmup_frames": 12,
+          "warmup_near_grass_visible": true,
+          "warmup_scenario": "scenery-runway-edge",
+          "warmup_shader_clock": 0.0,
+          "warmup_wind_vec": [
+            0.0,
+            0.0,
+            0.0
+          ]
+        },
+        "renderer": "NVIDIA GeForce RTX 3090",
+        "review": {
+          "changed_pixels": 891,
+          "changed_pixels_outside_projected_grass_footprint": 0,
+          "draw_calls": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "grass_off_sha256": "8d7c175c7e5f00f9f7ceeaf905b27b0bae8ae0754cd1733e811eb143b2b63f38",
+          "grass_on_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7",
+          "material_mode": "qualified_wind",
+          "objects": {
+            "delta": 3,
+            "off": 95,
+            "on": 98
+          },
+          "primitives": {
+            "delta": 1103,
+            "off": 190183,
+            "on": 191286
+          },
+          "projected_grass_footprint_pixels": 575606,
+          "projected_seam_band_pixels": 29651,
+          "scenario_id": "scenery-runway-edge",
+          "seam_band_baseline_rgb_mean": [
+            100.953357,
+            123.996762,
+            60.784763
+          ],
+          "seam_band_max_channel_percent": 0.084072,
+          "seam_band_mean_abs_percent_of_baseline": [
+            0.083451,
+            0.084072,
+            0.062641
+          ],
+          "seam_band_mean_abs_rgb_delta": [
+            0.084247,
+            0.104246,
+            0.038076
+          ],
+          "wind": {
+            "calm_t0_repeat_after_probes_byte_identical": true,
+            "calm_t0_repeat_case": "windless-t0-repeat",
+            "fixed_roots_supported_by": "source vertices below plant_base_y have zero height weight; displacement uses blade_height squared",
+            "material_scope": "qualified imported grass",
+            "wind_changed_pixels_outside_grass_footprint": 0,
+            "wind_clock_wrap": 1024.0,
+            "wind_t0_t1": {
+              "changed_pixel_fraction": 0.0004448784722222222,
+              "changed_pixels": 410,
+              "mean_abs_rgb_delta": 0.003917100694444444,
+              "p99_max_channel_delta": 0.0
+            },
+            "wind_t0_t1024_byte_identical": true,
+            "wind_vector": [
+              5.0,
+              0.0,
+              0.0
+            ],
+            "windless_t0_case": "scenery-runway-edge-grass-on",
+            "windless_t0_t1_byte_identical": true,
+            "windless_t1_sha256": "c20d645cb76e7940f0f3c2cf3a2227f73faba7021ec29aed25bc10c818af57a7"
+          }
+        },
+        "viewport": {
+          "height": 720,
+          "width": 1280
+        }
+      }
+    ]
+  },
+  "format": "openrc-l11a-grass-field-contract-final v1",
+  "initial_failure_diagnosis": {
+    "bounding_box_xyxy": [
+      529,
+      232,
+      838,
+      234
+    ],
+    "changed_pixels": 601,
+    "earlier_capture": "C:/DEVELOPMENT/OpenRCsimulator/tmp/grass-quality/field-contract-final-enhanced-03",
+    "mechanism": "The capture evidence supports a cold first-render/setup difference; the internal GPU mechanism was not established.",
+    "result": "The first three-frame capture showed a one-time cold first-render/setup difference. A 12-frame warmup with NearGrass visible, followed by three settled frames per pose, made zero-wind t0, zero-wind t1, and the post-probe t0 repeat byte-identical."
+  },
+  "renderer": "NVIDIA GeForce RTX 3090",
+  "rendering_api": "OpenGL 3.3.0 Compatibility",
+  "scope": "native production FieldBuilder scenery-on capture fixture; does not qualify a full simulator session or subjective appearance"
+}
