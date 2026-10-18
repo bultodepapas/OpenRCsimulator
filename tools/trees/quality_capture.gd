@@ -41,6 +41,9 @@ func _run() -> void:
 	if RenderingServer.get_current_rendering_method() != "gl_compatibility":
 		_fail("Compatibility is required")
 		return
+	if float(args.get("profile", "0")) < 0.0 or float(args.get("warmup", "10")) < 0.0:
+		_fail("profile and warmup must be nonnegative")
+		return
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_MINIMIZED)
 	RenderingServer.render_loop_enabled = false
@@ -89,10 +92,12 @@ func _run() -> void:
 	RenderingServer.viewport_set_measure_render_time(viewport.get_viewport_rid(), true)
 	var duration := float(args.get("profile", "0"))
 	if duration > 0.0:
-		await _profile(duration)
+		if not await _profile(duration):
+			return
 	else:
 		for view in views:
-			await _capture(view, str(view.id), 0.0, Vector3.ZERO)
+			if not await _capture(view, str(view.id), 0.0, Vector3.ZERO):
+				return
 		if mode == "gallery":
 			var view: Dictionary = views[0]
 			for state in [
@@ -102,7 +107,8 @@ func _run() -> void:
 				["wind_wrap", 1024.0, Vector3(5, 0, 0)],
 				["wind_reverse", 1.0, Vector3(-5, 0, 0)],
 			]:
-				await _capture(view, state[0], state[1], state[2])
+				if not await _capture(view, state[0], state[1], state[2]):
+					return
 	report.complete = true
 	var file := FileAccess.open(output.path_join("report.json"), FileAccess.WRITE)
 	if file == null:
@@ -119,6 +125,10 @@ func _field() -> bool:
 	OS.set_environment("OPENRC_SCENERY", "on")
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off")
 	OS.set_environment("OPENRC_SCENERY_BIRDS", "off")
+	if args.has("wind"):
+		OS.set_environment("OPENRC_TREE_WIND", str(args.wind))
+	if args.has("cell"):
+		OS.set_environment("OPENRC_TREE_CELL_SIZE_M", str(args.cell))
 	var path := str(args.get("field", Loader.DEFAULT_PATH))
 	var loaded: Dictionary = Loader.load_from(path)
 	if not loaded.ok:
@@ -131,6 +141,7 @@ func _field() -> bool:
 	for id in ["pilot_north", "car_park", "postcard_meadow", "aerial_overview"]:
 		var source: Dictionary = Postcards.VIEWS[id]
 		views.append({id = id, eye = Frames.ned_to_render(source.eye), at = Frames.ned_to_render(source.at), fov = source.fov})
+	views.append({id = "forest_overview", eye = Vector3(0, 1900, 1250), at = Vector3(0, 0, -100), fov = 70.0})
 	return true
 
 
@@ -192,7 +203,7 @@ func _counters() -> Dictionary:
 	}
 
 
-func _capture(view: Dictionary, id: String, clock: float, wind: Vector3) -> void:
+func _capture(view: Dictionary, id: String, clock: float, wind: Vector3) -> bool:
 	_place(view)
 	Clock.update(clock, wind)
 	for _index in 4:
@@ -201,16 +212,23 @@ func _capture(view: Dictionary, id: String, clock: float, wind: Vector3) -> void
 	var image := viewport.get_texture().get_image()
 	if image.is_empty() or image.save_png(path) != OK:
 		_fail("empty/failed capture " + id)
-		return
+		return false
 	report.captures.append({id = id, sha256 = FileAccess.get_sha256(path), counters = _counters(),
 		clock = clock, wind = [wind.x, wind.y, wind.z], eye = [view.eye.x, view.eye.y, view.eye.z], fov = view.fov})
+	return true
 
 
-func _profile(duration: float) -> void:
+func _profile(duration: float) -> bool:
 	var view: Dictionary = views[0]
+	var requested := str(args.get("view", view.id))
+	var found := false
 	for candidate in views:
-		if candidate.id == str(args.get("view", "")):
+		if candidate.id == requested:
 			view = candidate
+			found = true
+	if not found:
+		_fail("unknown view " + requested)
+		return false
 	_place(view)
 	var warmup := float(args.get("warmup", "10"))
 	var started := Time.get_ticks_usec()
@@ -230,6 +248,7 @@ func _profile(duration: float) -> void:
 	report["warmup_s"] = warmup
 	report["view"] = view.id
 	report["counters"] = _counters()
+	return true
 
 
 func _fail(message: String) -> void:

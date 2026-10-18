@@ -68,33 +68,25 @@ class BuildLibraryTests(unittest.TestCase):
             with self.subTest(path=unsafe), self.assertRaises(library.BuildError):
                 library.output_path(root, unsafe)
 
-    def test_default_selection_and_retained_variant_metadata_are_source_exact(self) -> None:
+    def test_default_selection_and_reviewed_tree_sources_are_exact(self) -> None:
         with (
             ZipFile(library.ARCHIVE) as standard,
             ZipFile(library.CROPS_ARCHIVE) as crops,
             ZipFile(library.REED_ARCHIVE) as reeds,
         ):
-            default_catalog, _ = library.catalog_for(standard, crops, reeds)
-            candidate_catalog, candidate_files = library.catalog_for(
-                standard,
-                crops,
-                reeds,
-                include_reviewed_tree_variants=True,
-            )
+            catalog, library_files = library.catalog_for(standard, crops, reeds)
 
             installed_catalog = json.loads(library.RUNTIME_CATALOG.read_text(encoding="utf-8"))
             self.assertEqual(
-                [asset["id"] for asset in default_catalog["assets"]],
+                [asset["id"] for asset in catalog["assets"]],
                 [asset["id"] for asset in installed_catalog["assets"]],
             )
-            self.assertEqual(default_catalog["counts"]["total_assets"], 15)
-            self.assertEqual(default_catalog["counts"]["trees"], 3)
-            self.assertEqual(candidate_catalog["counts"]["total_assets"], 19)
-            self.assertEqual(candidate_catalog["counts"]["trees"], 7)
+            self.assertEqual(catalog["counts"]["total_assets"], 19)
+            self.assertEqual(catalog["counts"]["trees"], 7)
 
             candidates = {
                 asset["id"]: asset
-                for asset in candidate_catalog["assets"]
+                for asset in catalog["assets"]
                 if asset["id"] in RETAINED_TREE_FACTS
             }
             self.assertEqual(set(candidates), set(RETAINED_TREE_FACTS))
@@ -112,9 +104,9 @@ class BuildLibraryTests(unittest.TestCase):
                             + PurePosixPath(dependency).relative_to("glTF").as_posix()
                         )
                         source_bytes = standard.read(dependency)
-                        self.assertEqual(candidate_files[output_name], source_bytes)
+                        self.assertEqual(library_files[output_name], source_bytes)
 
-    def test_candidate_generation_check_and_repeat_are_deterministic(self) -> None:
+    def test_default_generation_check_and_repeat_are_deterministic(self) -> None:
         trial_root = ROOT / "tmp/tree-retained-intake"
         trial_root.mkdir(parents=True, exist_ok=True)
         with tempfile.TemporaryDirectory(prefix="build-library-test-", dir=trial_root) as temp:
@@ -127,7 +119,6 @@ class BuildLibraryTests(unittest.TestCase):
                 str(script),
                 "--output-root",
                 relative_output,
-                "--include-reviewed-tree-variants",
             ]
 
             production_before = file_snapshot(library.RUNTIME)
@@ -146,6 +137,7 @@ class BuildLibraryTests(unittest.TestCase):
             self.assertEqual(generated.returncode, 0, generated.stderr)
             catalog = json.loads((candidate_root / "catalog.json").read_text(encoding="utf-8"))
             self.assertEqual(catalog["counts"]["total_assets"], 19)
+            self.assertEqual(catalog["counts"]["trees"], 7)
             first_snapshot = file_snapshot(candidate_root)
 
             checked = subprocess.run(

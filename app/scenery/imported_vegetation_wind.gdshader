@@ -28,7 +28,8 @@ uniform float wind_strength = 0.0;
 const float MAX_TREE_WIND_STRENGTH = 0.025;
 
 void vertex() {
-	float normalized_height = clamp((VERTEX.y - plant_base_y) / max(plant_height, 0.001), 0.0, 1.0);
+	float raw_height = (VERTEX.y - plant_base_y) / max(plant_height, 0.001);
+	float normalized_height = clamp(raw_height, 0.0, 1.0);
 	vec3 local_wind = transpose(mat3(MODEL_MATRIX)) * vec3(wind_vec.x, 0.0, wind_vec.z);
 	float wind_speed = length(wind_vec.xz);
 	vec2 direction = local_wind.xz / max(length(local_wind.xz), 0.001);
@@ -40,9 +41,46 @@ void vertex() {
 		phase += dot(VERTEX.xz, wind_direction) * 0.7;
 	}
 	float bounded_strength = tree_wind_mode ? clamp(wind_strength, 0.0, MAX_TREE_WIND_STRENGTH) : wind_strength;
-	float sway = sin(phase) * bounded_strength * min(wind_speed / 5.0, 1.0)
+	float phase_amplitude = sin(phase) * bounded_strength * min(wind_speed / 5.0, 1.0);
+	float sway = phase_amplitude
 		* normalized_height * normalized_height;
 	VERTEX.xz += direction * sway;
+	if (tree_wind_mode && raw_height > 0.0 && raw_height < 1.0) {
+		// F(p) = p + (direction.x, 0, direction.y) * sway(y).
+		// Apply the inverse-transpose Jacobian to normals, and the Jacobian to
+		// the tangent frame so bark normal maps follow the same shear.
+		float sway_gradient_y = 2.0 * phase_amplitude * normalized_height / max(plant_height, 0.001);
+		if (sway_gradient_y != 0.0) {
+			vec3 source_normal = NORMAL;
+			vec3 corrected_normal = vec3(
+				source_normal.x,
+				source_normal.y - sway_gradient_y * dot(direction, source_normal.xz),
+				source_normal.z
+			);
+			NORMAL = normalize(corrected_normal);
+			if (use_normal_texture) {
+				vec3 source_tangent = TANGENT;
+				vec3 source_binormal = BINORMAL;
+				vec3 corrected_tangent = vec3(
+					source_tangent.x + direction.x * sway_gradient_y * source_tangent.y,
+					source_tangent.y,
+					source_tangent.z + direction.y * sway_gradient_y * source_tangent.y
+				);
+				vec3 corrected_binormal = vec3(
+					source_binormal.x + direction.x * sway_gradient_y * source_binormal.y,
+					source_binormal.y,
+					source_binormal.z + direction.y * sway_gradient_y * source_binormal.y
+				);
+				corrected_tangent -= NORMAL * dot(NORMAL, corrected_tangent);
+				corrected_binormal -= NORMAL * dot(NORMAL, corrected_binormal);
+				corrected_binormal -= normalize(corrected_tangent) * dot(
+					normalize(corrected_tangent), corrected_binormal
+				);
+				TANGENT = normalize(corrected_tangent);
+				BINORMAL = normalize(corrected_binormal);
+			}
+		}
+	}
 }
 
 vec3 srgb_to_linear(vec3 value) {

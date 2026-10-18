@@ -56,6 +56,8 @@ static func options() -> Dictionary:
 		quality = get.call("scenery_quality", "OPENRC_SCENERY_QUALITY", "high"),
 		audio = on.call(get.call("scenery_audio", "OPENRC_SCENERY_AUDIO", "on")),
 		birds = on.call(get.call("scenery_birds", "OPENRC_SCENERY_BIRDS", "on")),
+		tree_wind = on.call(get.call("tree_wind", "OPENRC_TREE_WIND", "on")),
+		tree_cell_size_m = float(get.call("tree_cell_size_m", "OPENRC_TREE_CELL_SIZE_M", "0")),
 		file = get.call("scenery_file", "OPENRC_SCENERY_FILE", Loader.DEFAULT_PATH),
 		file_explicit = args.has("scenery_file") or not OS.get_environment("OPENRC_SCENERY_FILE").is_empty(),
 	}
@@ -374,7 +376,10 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 				# The downloaded habitat library owns default meadow flowers; the rejected procedural cushions are retired.
 				pass
 		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
-	var vegetation := ImportedVegetation.build(vegetation_batches)
+	var vegetation := ImportedVegetation.build(vegetation_batches, false, {
+		tree_wind = bool(opts.get("tree_wind", true)),
+		tree_cell_size_m = opts.get("tree_cell_size_m", 0),
+	})
 	root.add_child(vegetation)
 	stats.vegetation_triangles = vegetation_triangles
 	stats.vegetation_instances = vegetation_batches.values().reduce(func(total: int, list: Array) -> int: return total + list.size(), 0)

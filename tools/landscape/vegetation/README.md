@@ -1,20 +1,20 @@
 # Downloaded vegetation asset pipeline
 
-`build_library.py` extracts a pinned selection of source geometry without creating or editing any plant geometry. It retains the source archives and license evidence under `assets/landscape/vegetation/source/`, copies exact glTF or OBJ/MTL members into the library output, and writes `catalog.json` with source hashes, source and grounded bounds, surface counts and triangle counts. The default output remains `app/assets/landscape/vegetation/` and keeps the existing 15-asset selection.
+`build_library.py` extracts a pinned selection of source geometry without creating or editing any plant geometry. It retains the source archives and license evidence under `assets/landscape/vegetation/source/`, copies exact glTF or OBJ/MTL members into the library output, and writes `catalog.json` with source hashes, source and grounded bounds, surface counts and triangle counts. The default output is `app/assets/landscape/vegetation/` and contains 19 assets, including seven reviewed trees.
 
-The runtime library contains 3 trees, 2 shrubs, 4 grass/herb assets, 3 flowering assets, 2 crops and 1 reed clump. Quaternius's Stylized Nature MegaKit Standard supplies the trees, shrubs, grass, herbs and flowers under CC0-1.0. A second Quaternius CC0 pack supplies mature corn and wheat; Aredon's CC0 low-poly reed supplies the reed clump. Source pages, archive hashes and license evidence are recorded in the catalog and source notices.
+The runtime library contains 7 trees, 2 shrubs, 4 grass/herb assets, 3 flowering assets, 2 crops and 1 reed clump. Quaternius's Stylized Nature MegaKit Standard supplies the trees, shrubs, grass, herbs and flowers under CC0-1.0. A second Quaternius CC0 pack supplies mature corn and wheat; Aredon's CC0 low-poly reed supplies the reed clump. Source pages, archive hashes and license evidence are recorded in the catalog and source notices.
 
 ```powershell
 python tools/landscape/vegetation/build_library.py
 python tools/landscape/vegetation/build_library.py --check
-python tools/landscape/vegetation/build_library.py --output-root tmp/tree-retained-intake --include-reviewed-tree-variants
-python tools/landscape/vegetation/build_library.py --output-root tmp/tree-retained-intake --include-reviewed-tree-variants --check
+python tools/landscape/vegetation/build_library.py --output-root tmp/tree-retained-intake
+python tools/landscape/vegetation/build_library.py --output-root tmp/tree-retained-intake --check
 python tools/landscape/vegetation/test_build_library.py
 ```
 
 `--output-root` stages the library files and catalog at a chosen directory; paths relative to the repository root are supported. Staged catalogs retain the eventual runtime `res://assets/landscape/vegetation/...` paths and reference the pinned source notices under `assets/landscape/vegetation/source/`. Staging does not write to `app/` or rewrite those source notices. The staged directory is an intake package, not a runnable Godot project.
 
-`--include-reviewed-tree-variants` explicitly adds the four retained Quaternius Standard sources below. Without this flag, generated output and catalog asset selection stay at the existing 15 assets. The candidate command above writes only under ignored `tmp/`; it does not integrate the added sources into the runtime library.
+The four retained Quaternius Standard sources below are part of the default library. They preserve the original downloaded geometry byte-for-byte; their inclusion follows a visual review of crown shape and silhouette variety. The table records source-space geometry facts from the pinned archive, not Godot-imported LOD or shadow costs.
 
 | Source | Source triangles | Surfaces | Source bounds size (X × Y × Z, m) | glTF SHA-256 |
 | --- | ---: | ---: | --- | --- |

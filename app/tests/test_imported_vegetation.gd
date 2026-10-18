@@ -23,7 +23,7 @@ func _initialize() -> void:
 func _test_catalog_and_parts() -> void:
 	var data := ImportedVegetation.catalog()
 	var counts: Dictionary = data.get("counts", {})
-	_check("three downloaded tree variants", counts.get("trees", 0) == 3)
+	_check("seven downloaded tree variants", counts.get("trees", 0) == 7)
 	_check("two downloaded shrubs", counts.get("shrubs", 0) == 2)
 	_check("four downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 4)
 	_check("three downloaded flowering assets", counts.get("flowers", 0) == 3)
@@ -32,7 +32,7 @@ func _test_catalog_and_parts() -> void:
 	_check("all pinned sources are cataloged", data.get("sources", []).size() == 3)
 
 	var assets: Array = data.get("assets", [])
-	_check("15 assets are cataloged", assets.size() == 15)
+	_check("19 assets are cataloged", assets.size() == 19)
 	for asset_value in assets:
 		var asset: Dictionary = asset_value
 		var asset_id := str(asset.get("id", ""))
@@ -56,7 +56,13 @@ func _test_catalog_and_parts() -> void:
 
 
 func _test_fit_and_aliases() -> void:
-	_check("shade tree alias resolves by seed", ImportedVegetation.resolve_id("shade_tree", 7) == "common_tree_3")
+	_check("shade tree alias resolves by seed", ImportedVegetation.resolve_id("shade_tree", 7) == "common_tree_1")
+	var mature_forms: Dictionary = {}
+	for seed in range(-7, 7):
+		var id := ImportedVegetation.resolve_id("shade_tree", seed)
+		mature_forms[id] = true
+		_check("tree aliases share the same deterministic source", id == ImportedVegetation.resolve_id("tree", seed))
+	_check("mature trees use seven retained source forms", mature_forms.size() == 7 and not mature_forms.has(""))
 	_check("sapling alias is restricted to downloaded broadleaf variants",
 		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
 		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"

@@ -69,8 +69,12 @@ SOURCE_NOTICES = {
 # copies them byte-for-byte; it does not author or rebuild plant geometry.
 ASSETS = (
     ("common_tree_1", "CommonTree_1", "tree", "mature broadleaf tree"),
+    ("common_tree_2", "CommonTree_2", "tree", "fuller branching broadleaf tree"),
     ("common_tree_3", "CommonTree_3", "tree", "upright broadleaf tree"),
+    ("common_tree_4", "CommonTree_4", "tree", "sparse crown broadleaf tree"),
     ("pine_1", "Pine_1", "tree", "mature pine tree"),
+    ("pine_2", "Pine_2", "tree", "broad-cone pine tree"),
+    ("pine_3", "Pine_3", "tree", "open-lower-trunk pine tree"),
     ("bush_common", "Bush_Common", "shrub", "leafy shrub"),
     ("bush_common_flowers", "Bush_Common_Flowers", "shrub", "flowering shrub"),
     ("grass_common_short", "Grass_Common_Short", "grass", "short meadow grass clump"),
@@ -80,16 +84,6 @@ ASSETS = (
     ("flower_3_group", "Flower_3_Group", "flower", "flower group, family 3"),
     ("flower_4_group", "Flower_4_Group", "flower", "flower group, family 4"),
     ("clover_1", "Clover_1", "flower", "clover groundcover"),
-)
-
-# Exact glTF members retained in the pinned Quaternius Standard archive. These
-# are an optional comparison set: no geometry is authored or changed here, and
-# the production library remains at its existing asset selection by default.
-REVIEWED_TREE_VARIANTS = (
-    ("common_tree_2", "CommonTree_2", "tree", "additional broadleaf tree variant"),
-    ("common_tree_4", "CommonTree_4", "tree", "additional broadleaf tree variant"),
-    ("pine_2", "Pine_2", "tree", "additional pine tree variant"),
-    ("pine_3", "Pine_3", "tree", "additional pine tree variant"),
 )
 
 CROP_ASSETS = (
@@ -308,8 +302,6 @@ def catalog_for(
     archive: ZipFile,
     crops_archive: ZipFile,
     reed_archive: ZipFile,
-    *,
-    include_reviewed_tree_variants: bool = False,
 ) -> tuple[dict, dict[str, bytes]]:
     license_bytes = read_member(archive, LICENSE_ENTRY)
     if sha256_bytes(license_bytes) != LICENSE_SHA256:
@@ -319,10 +311,7 @@ def catalog_for(
     file_origins: dict[str, str] = {"LICENSE.txt": LICENSE_ENTRY}
     source_member_bytes: dict[str, bytes] = {}
     assets: list[dict] = []
-    selected_assets = ASSETS + (
-        REVIEWED_TREE_VARIANTS if include_reviewed_tree_variants else ()
-    )
-    for asset_id, model_name, role, description in selected_assets:
+    for asset_id, model_name, role, description in ASSETS:
         source_entry = f"glTF/{model_name}.gltf"
         gltf_bytes = read_member(archive, source_entry)
         metadata = gltf_metadata(archive, source_entry, gltf_bytes)
@@ -563,11 +552,6 @@ def main(argv: list[str] | None = None) -> int:
             "relative paths are resolved from the repository root"
         ),
     )
-    parser.add_argument(
-        "--include-reviewed-tree-variants",
-        action="store_true",
-        help="include retained CommonTree_2, CommonTree_4, Pine_2 and Pine_3 source assets",
-    )
     args = parser.parse_args(argv)
     output_root = args.output_root or RUNTIME
     if not output_root.is_absolute():
@@ -597,7 +581,6 @@ def main(argv: list[str] | None = None) -> int:
                     archive,
                     crops_archive,
                     reed_archive,
-                    include_reviewed_tree_variants=args.include_reviewed_tree_variants,
                 )
     except BadZipFile as exc:
         raise BuildError(f"source archive is not a valid ZIP: {exc}") from exc

@@ -8,6 +8,7 @@ var _failures := 0
 func _initialize() -> void:
 	_test_opt_in_tree_cells_and_damage()
 	_test_wind_modes_and_material_preservation()
+	_test_tree_wind_transform_guard()
 	_test_invalid_cell_option_falls_back()
 	if _failures == 0:
 		print("imported tree rendering tests passed")
@@ -66,10 +67,18 @@ func _test_wind_modes_and_material_preservation() -> void:
 	var shader_text := FileAccess.get_file_as_string("res://scenery/imported_vegetation_wind.gdshader")
 	_check("shared wind shader does not rely on unsupported per-instance uniforms",
 		not shader_text.contains("instance uniform"))
+	_check("tree wind applies the analytic inverse-transpose normal correction",
+		shader_text.contains("source_normal.y - sway_gradient_y * dot(direction, source_normal.xz)"))
+	_check("tree wind applies the analytic Jacobian to normal-map tangents",
+		shader_text.contains("source_tangent.x + direction.x * sway_gradient_y * source_tangent.y")
+		and shader_text.contains("source_binormal.z + direction.y * sway_gradient_y * source_binormal.y"))
+	_check("zero tree-wind gradient preserves the source normal frame exactly",
+		shader_text.contains("if (sway_gradient_y != 0.0)"))
 	var checked_tree := false
 	var checked_crop := false
 	var saw_tree_shader := false
 	var saw_tree_source_material := false
+	var saw_tree_normal_map := false
 	for child in tree_wind_root.get_children():
 		var instance := child as MultiMeshInstance3D
 		var asset_id := str(instance.name).get_slice("_Part_", 0)
@@ -107,6 +116,7 @@ func _test_wind_modes_and_material_preservation() -> void:
 							== (source_material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR)
 						and is_equal_approx(float(shader_material.get_shader_parameter("alpha_scissor_threshold")),
 							source_material.alpha_scissor_threshold))
+					saw_tree_normal_map = saw_tree_normal_map or bool(shader_material.get_shader_parameter("use_normal_texture"))
 					_check("tree wind keeps per-part height coordinates",
 						is_equal_approx(float(shader_material.get_shader_parameter("plant_height")),
 							float(parts[part_index].get("bounds", AABB()).size.y)))
@@ -129,6 +139,9 @@ func _test_wind_modes_and_material_preservation() -> void:
 					instance.multimesh.mesh.surface_get_material(surface_index) == crop_materials[surface_index])
 	_check("tree-only wind build includes a tree batch", checked_tree)
 	_check("tree-only wind build includes a non-tree control batch", checked_crop)
+	if saw_tree_shader:
+		_check("tree wind enables imported tangent-space bark normal maps",
+			saw_tree_normal_map)
 	_check("tree asset is either wholly converted or wholly fail-closed",
 		not (saw_tree_shader and saw_tree_source_material))
 	if saw_tree_shader:
@@ -150,23 +163,51 @@ func _test_wind_modes_and_material_preservation() -> void:
 		static_tree_root.free()
 	var legacy_wind_root := ImportedVegetation.build(batches, true)
 	var checked_legacy_roles := {"common_tree_1": false, "wheat_4": false}
+	var legacy_wind_strengths: Dictionary = {}
 	for child in legacy_wind_root.get_children():
 		var instance := child as MultiMeshInstance3D
 		var asset_id := str(instance.name).get_slice("_Part_", 0)
 		if asset_id in checked_legacy_roles:
-			checked_legacy_roles[asset_id] = instance.multimesh.mesh.surface_get_material(0) is ShaderMaterial
+			var output_material := instance.multimesh.mesh.surface_get_material(0)
+			checked_legacy_roles[asset_id] = output_material is ShaderMaterial
+			if output_material is ShaderMaterial:
+				legacy_wind_strengths[asset_id] = float((output_material as ShaderMaterial).get_shader_parameter("wind_strength"))
 			_check("legacy enable_wind still covers role %s" % asset_id,
 				bool(checked_legacy_roles[asset_id]))
+	_check("legacy role-specific wind defaults remain unchanged",
+		is_equal_approx(float(legacy_wind_strengths.get("common_tree_1", -1.0)), 0.01)
+		and is_equal_approx(float(legacy_wind_strengths.get("wheat_4", -1.0)), 0.0375))
 	ImportedVegetation.set_wind(legacy_wind_root, 0.0)
 	_check("legacy enable_wind remains all-role",
 		bool(checked_legacy_roles["common_tree_1"]) and bool(checked_legacy_roles["wheat_4"]))
+	_check("legacy set_wind updates all role materials",
+		_legacy_wind_materials_have_strength(legacy_wind_root, 0.0))
 	tree_wind_root.free()
 	legacy_wind_root.free()
+
+
+func _test_tree_wind_transform_guard() -> void:
+	var yaw := Transform3D(Basis(Vector3.UP, 0.7), Vector3(3.0, 0.0, -2.0))
+	var tilt := Transform3D(Basis(Vector3.RIGHT, 0.1), Vector3.ZERO)
+	var nonuniform := Transform3D(Basis.from_scale(Vector3(1.0, 1.1, 1.0)), Vector3.ZERO)
+	_check("tree wind accepts upright yaw and uniform scale transforms",
+		ImportedVegetation._tree_wind_transform_support_reason(yaw) == "")
+	_check("tree wind rejects source or placement pitch and roll",
+		not ImportedVegetation._tree_wind_transform_support_reason(tilt).is_empty())
+	_check("tree wind rejects non-uniform source or placement scale",
+		not ImportedVegetation._tree_wind_transform_support_reason(nonuniform).is_empty())
+	var batches: Dictionary = {}
+	ImportedVegetation.queue(batches, "common_tree_1", tilt, 17)
+	var guarded_root := ImportedVegetation.build(batches, false, {"tree_wind": true})
+	_check("tilted tree batches fail closed to source materials",
+		_not_tree_wind_enabled(guarded_root))
+	guarded_root.free()
 
 
 func _test_invalid_cell_option_falls_back() -> void:
 	var batches := _sample_batches()
 	var legacy := ImportedVegetation.build(batches)
+	var explicit_disabled := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 0})
 	var invalid_a := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 32})
 	var invalid_b := ImportedVegetation.build(batches, false, {"tree_cell_size_m": 32})
 	var invalid_wind_a := ImportedVegetation.build(batches, false, {"tree_wind": "true"})
@@ -174,11 +215,15 @@ func _test_invalid_cell_option_falls_back() -> void:
 	_check("unsupported cell sizes fail back to legacy grouping",
 		invalid_a.get_child_count() == legacy.get_child_count()
 		and invalid_b.get_child_count() == legacy.get_child_count())
+	_check("explicit zero cell size disables batching without changing legacy grouping",
+		explicit_disabled.get_child_count() == legacy.get_child_count()
+		and _tree_transform_signatures(explicit_disabled) == _tree_transform_signatures(legacy))
 	_check("unsupported cell fallback preserves transforms",
 		_tree_transform_signatures(invalid_a) == _tree_transform_signatures(legacy))
 	_check("non-boolean tree wind options fail closed without enabling wind",
 		_not_tree_wind_enabled(invalid_wind_a) and _not_tree_wind_enabled(invalid_wind_b))
 	legacy.free()
+	explicit_disabled.free()
 	invalid_a.free()
 	invalid_b.free()
 	invalid_wind_a.free()
@@ -280,6 +325,19 @@ func _not_tree_wind_enabled(root: Node3D) -> bool:
 	for child in root.get_children():
 		if bool(child.get_meta("_imported_vegetation_tree_wind_enabled", false)):
 			return false
+	return true
+
+
+func _legacy_wind_materials_have_strength(root: Node3D, expected: float) -> bool:
+	for child in root.get_children():
+		if not bool(child.get_meta("_imported_vegetation_wind_enabled", false)):
+			continue
+		var instance := child as MultiMeshInstance3D
+		for surface_index in range(instance.multimesh.mesh.get_surface_count()):
+			var material := instance.multimesh.mesh.surface_get_material(surface_index)
+			if not material is ShaderMaterial or not is_equal_approx(
+				float((material as ShaderMaterial).get_shader_parameter("wind_strength")), expected):
+				return false
 	return true
 
 

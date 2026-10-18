@@ -37,6 +37,19 @@ Run `app/export.sh` in a fresh clone to verify every pack without loose-file fal
 
 L7 adds 1,200 far trees from seed `610607`: twelve 100-tree clusters with 55 m patch radii, tree centers in the 600–1,500 m ring, 4.5 m minimum within-patch spacing and the same two crown-cleared gaps and runway/mown corridor. They share the existing eight azimuth-sector MultiMeshes, so the model keeps six triangles per tree and adds no draw calls. The field loader caps the combined set at 1,680 positions and 1,500 m.
 
+The default `existing` recipe remains unchanged. The opt-in `habitat-v1` trial keeps the frozen 480 near coordinates and 1,200 far-tree budget, but varies twelve far-patch counts (55, 64, 72, 82, 88, 92, 96, 102, 110, 124, 142 and 173), anisotropic axes (68–155 m by 43–92 m), orientation and irregular notched margins. Patch envelopes leave intervening gaps; every crown still clears the existing viewing gaps and runway/mown corridor, and all far centers retain at least 4.5 m spacing on the 0.25 m grid. Seed `610617` produces the staged trial bounds N `-1326.50..1205.25` m and E `-1266.00..1176.25` m. Its exact seed, counts, bounds, patch centers, shapes and position hashes are included in the field's provenance and the generator's JSON output. These are estimated visual-composition data, not surveyed geography or an ecological simulation.
+
+Stage the alternative in a copy of the current field; habitat mode requires a custom field path and rejects `app/data/fields/default.json`:
+
+```powershell
+New-Item -ItemType Directory -Force tmp/tree-quality-implementation | Out-Null
+Copy-Item app/data/fields/default.json tmp/tree-quality-implementation/habitat-field.json
+python3 tools/trees/place.py --recipe habitat-v1 --field tmp/tree-quality-implementation/habitat-field.json
+python3 tools/trees/place.py --recipe habitat-v1 --field tmp/tree-quality-implementation/habitat-field.json --check
+```
+
+Keep this recipe staged until native aerial/pilot captures have been reviewed. Do not copy it into the production field based on CPU generation checks alone.
+
 The CPU and shader keep the original +2400 identity hash coordinates for every L6b position. They use +8192 only when a south/west coordinate falls below that original unsigned range. Packed transforms use four exact bytes with +8192, which covers the full L7 radius through Compatibility's float16 instance-data path. Near instances form a prefix in each sector; `near_instance_count` and `far_instance_count` metadata let captures show only the near ring through `MultiMesh.visible_instance_count`.
 
 The tree shader scales alpha gently from the screen-space mip footprint for far instances only. This compensates for the atlas's averaged alpha mips in the Compatibility renderer, where alpha-to-coverage is unavailable. Near trees keep the L6b alpha path unchanged.

@@ -4,12 +4,17 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import math
 from pathlib import Path
+import subprocess
+import sys
+import tempfile
 import unittest
 
 from place import (
     CROWN_RADIUS_M,
+    FAR_MIN_SPACING_M,
     FAR_CLUSTER_COUNT,
     FAR_CLUSTER_RADIUS_M,
     FAR_COUNT,
@@ -17,6 +22,9 @@ from place import (
     FAR_RADIUS_MIN_M,
     FAR_TREES_PER_CLUSTER,
     GAPS,
+    HABITAT_FAR_COUNT,
+    HABITAT_FAR_SEED,
+    HABITAT_PATCH_COUNT,
     NEAR_COUNT,
     NEAR_POSITIONS_SHA256,
     _angular_distance,
@@ -29,6 +37,8 @@ from place import (
 
 ROOT = Path(__file__).resolve().parents[2]
 FIELD_PATH = ROOT / "app/data/fields/default.json"
+PLACE_SCRIPT = ROOT / "tools/trees/place.py"
+HABITAT_TRIAL_ROOT = ROOT / "tmp/tree-quality-implementation"
 
 
 def _sector(north: float, east: float) -> int:
@@ -90,6 +100,145 @@ class FarForestPlacementTests(unittest.TestCase):
         self.assertEqual(self.field["objects"], [self.object_data])
         self.assertEqual(self.manifest["near_positions_sha256"], NEAR_POSITIONS_SHA256)
         self.assertEqual(self.manifest["far_count"], 1200)
+
+
+class HabitatRecipeTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.field_bytes = FIELD_PATH.read_bytes()
+        cls.field = json.loads(cls.field_bytes)
+        cls.object_data, cls.manifest = generate(cls.field, "habitat-v1")
+        cls.points = cls.object_data["positions"]["value"]
+        cls.near = cls.points[:NEAR_COUNT]
+        cls.far = cls.points[NEAR_COUNT:]
+
+    def test_habitat_keeps_frozen_near_prefix_and_total_count(self) -> None:
+        frozen_near = generate_near(self.field)
+        self.assertEqual(self.near, frozen_near)
+        self.assertEqual(_positions_sha256(self.near), NEAR_POSITIONS_SHA256)
+        self.assertEqual(len(self.near), NEAR_COUNT)
+        self.assertEqual(len(self.far), HABITAT_FAR_COUNT)
+        self.assertEqual(len(self.points), 1680)
+        self.assertEqual(self.manifest["near_count"], NEAR_COUNT)
+        self.assertEqual(self.manifest["far_count"], HABITAT_FAR_COUNT)
+        self.assertEqual(self.manifest["recipe"], "habitat-v1")
+        self.assertEqual(HABITAT_FAR_SEED, 610617)
+
+    def test_habitat_patches_have_varied_counts_shapes_and_bounds(self) -> None:
+        patches = self.manifest["patches"]
+        self.assertEqual(len(patches), HABITAT_PATCH_COUNT)
+        self.assertEqual(HABITAT_PATCH_COUNT, 12)
+        self.assertEqual(len({patch["count"] for patch in patches}), HABITAT_PATCH_COUNT)
+        self.assertEqual(sum(patch["count"] for patch in patches), HABITAT_FAR_COUNT)
+        self.assertEqual(self.manifest["patch_counts"], [patch["count"] for patch in patches])
+        self.assertTrue({patch["sector"] for patch in patches} >= set(range(8)))
+        self.assertTrue(
+            {_sector(patch["north_m"], patch["east_m"]) for patch in patches} >= set(range(8))
+        )
+        self.assertEqual(
+            len({(patch["semi_major_m"], patch["semi_minor_m"]) for patch in patches}),
+            HABITAT_PATCH_COUNT,
+        )
+        self.assertTrue(all(patch["semi_major_m"] > patch["semi_minor_m"] for patch in patches))
+        self.assertEqual(len({patch["orientation_deg"] for patch in patches}), HABITAT_PATCH_COUNT)
+        self.assertIn("far_bounds_m", self.manifest)
+        self.assertEqual(self.object_data["positions"]["kind"], "derived")
+        self.assertIn("not surveyed", self.object_data["positions"]["source"])
+        self.assertIn("ecological simulation", self.object_data["positions"]["source"])
+
+        for patch in patches:
+            with self.subTest(patch=patch["sector"], count=patch["count"]):
+                self.assertEqual(patch["end_index"] - patch["start_index"], patch["count"])
+                points = self.far[patch["start_index"]:patch["end_index"]]
+                self.assertEqual(len(points), patch["count"])
+                self.assertEqual(patch["bounds_m"]["north_min_m"], min(p[0] for p in points))
+                self.assertEqual(patch["bounds_m"]["north_max_m"], max(p[0] for p in points))
+                self.assertEqual(patch["bounds_m"]["east_min_m"], min(p[1] for p in points))
+                self.assertEqual(patch["bounds_m"]["east_max_m"], max(p[1] for p in points))
+
+    def test_habitat_keeps_ring_gaps_corridor_grid_and_spacing(self) -> None:
+        pilot_north = self.field["pilot"]["north"]["value"]
+        strips = [surface for surface in self.field["surfaces"] if surface["type"] in ("runway", "mown")]
+        spacing_grid: dict[tuple[int, int], list[tuple[float, float]]] = {}
+        for north, east, down in self.far:
+            self.assertEqual(down, 0)
+            self.assertTrue(FAR_RADIUS_MIN_M <= math.hypot(north, east) <= FAR_RADIUS_MAX_M)
+            self.assertAlmostEqual(north / 0.25, round(north / 0.25))
+            self.assertAlmostEqual(east / 0.25, round(east / 0.25))
+            radius = math.hypot(north, east)
+            angle = math.degrees(math.atan2(east, north)) % 360.0
+            margin = math.degrees(math.asin(CROWN_RADIUS_M / radius))
+            self.assertTrue(all(_angular_distance(angle, center) > half + margin for center, half in GAPS))
+            self.assertFalse(_inside_flight_corridor(north, pilot_north, strips, 0.0))
+            cell = (math.floor(north / FAR_MIN_SPACING_M), math.floor(east / FAR_MIN_SPACING_M))
+            for offset_north in (-1, 0, 1):
+                for offset_east in (-1, 0, 1):
+                    for other_north, other_east in spacing_grid.get(
+                        (cell[0] + offset_north, cell[1] + offset_east),
+                        (),
+                    ):
+                        self.assertGreaterEqual(
+                            math.hypot(north - other_north, east - other_east),
+                            FAR_MIN_SPACING_M,
+                        )
+            spacing_grid.setdefault(cell, []).append((north, east))
+
+    def test_habitat_generation_is_deterministic(self) -> None:
+        second_object, second_manifest = generate(self.field, "habitat-v1")
+        self.assertEqual(self.object_data, second_object)
+        self.assertEqual(self.manifest, second_manifest)
+        self.assertEqual(_positions_sha256(self.far), "c24d479e2a5063f895a106a7a6e687736b8bfc2b8c5c62cf6c60554a6d58594e")
+
+    def test_habitat_cli_requires_a_stage_and_never_writes_production_default(self) -> None:
+        production_hash = hashlib.sha256(FIELD_PATH.read_bytes()).hexdigest()
+        without_field = subprocess.run(
+            [sys.executable, str(PLACE_SCRIPT), "--recipe", "habitat-v1"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(without_field.returncode, 0)
+        self.assertIn("requires an explicit staged --field path", without_field.stderr)
+
+        with_default = subprocess.run(
+            [sys.executable, str(PLACE_SCRIPT), "--recipe", "habitat-v1", "--field", str(FIELD_PATH)],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+        )
+        self.assertNotEqual(with_default.returncode, 0)
+        self.assertIn("not approved for the production default field", with_default.stderr)
+
+        HABITAT_TRIAL_ROOT.mkdir(parents=True, exist_ok=True)
+        with tempfile.TemporaryDirectory(prefix="place-habitat-test-", dir=HABITAT_TRIAL_ROOT) as temp:
+            stage_path = Path(temp) / "field.json"
+            stage_path.write_bytes(self.field_bytes)
+            command = [
+                sys.executable,
+                str(PLACE_SCRIPT),
+                "--recipe",
+                "habitat-v1",
+                "--field",
+                str(stage_path),
+            ]
+            generated = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(generated.returncode, 0, generated.stderr)
+            stage_bytes = stage_path.read_bytes()
+            staged_field = json.loads(stage_bytes)
+            self.assertEqual(staged_field["objects"], [self.object_data])
+            output = json.loads(generated.stdout)
+            self.assertEqual(output["patch_counts"], self.manifest["patch_counts"])
+            self.assertEqual(output["bounds_m"], self.manifest["bounds_m"])
+
+            checked = subprocess.run([*command, "--check"], cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(checked.returncode, 0, checked.stderr)
+            self.assertEqual(stage_path.read_bytes(), stage_bytes)
+
+            repeated = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+            self.assertEqual(repeated.returncode, 0, repeated.stderr)
+            self.assertEqual(stage_path.read_bytes(), stage_bytes)
+
+        self.assertEqual(hashlib.sha256(FIELD_PATH.read_bytes()).hexdigest(), production_hash)
 
 
 if __name__ == "__main__":

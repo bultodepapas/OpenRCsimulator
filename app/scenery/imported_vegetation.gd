@@ -8,8 +8,8 @@ const MAX_TREE_WIND_STRENGTH := 0.025
 const TREE_CELL_SIZES_M := [64, 128, 256]
 
 const ALIASES := {
-	"shade_tree": ["common_tree_1", "common_tree_3", "pine_1"],
-	"tree": ["common_tree_1", "common_tree_3", "pine_1"],
+	"shade_tree": ["common_tree_1", "common_tree_3", "pine_1", "common_tree_2", "pine_2", "common_tree_4", "pine_3"],
+	"tree": ["common_tree_1", "common_tree_3", "pine_1", "common_tree_2", "pine_2", "common_tree_4", "pine_3"],
 	"sapling": ["common_tree_1", "common_tree_3"],
 	"bush": [
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common_flowers",
@@ -129,7 +129,7 @@ static func build(batches: Dictionary, enable_wind: bool = false, options: Dicti
 		var asset: Dictionary = _asset_index.get(asset_id, {})
 		var role := str(asset.get("role", ""))
 		var tree_opt_in := tree_wind_requested and role == "tree"
-		var use_tree_wind := tree_opt_in and _tree_asset_wind_supported(asset_id, parts)
+		var use_tree_wind := tree_opt_in and _tree_asset_wind_supported(asset_id, parts, records)
 		var use_legacy_wind := enable_wind and not tree_opt_in
 		var groups := _record_groups(records, tree_cell_size if role == "tree" else 0)
 		for part_index in range(parts.size()):
@@ -312,14 +312,16 @@ static func _tree_cell_size_from_options(options: Dictionary) -> int:
 	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
 		_warn_option_once(
 			"tree_cell_size_m_value",
-			"ImportedVegetation option tree_cell_size_m must be 64, 128, or 256; using legacy batching"
+			"ImportedVegetation option tree_cell_size_m must be 0, 64, 128, or 256; using legacy batching"
 		)
 		return 0
 	var size := float(value)
+	if size == 0.0:
+		return 0
 	if size != 64.0 and size != 128.0 and size != 256.0:
 		_warn_option_once(
 			"tree_cell_size_m_range",
-			"ImportedVegetation option tree_cell_size_m must be 64, 128, or 256; using legacy batching"
+			"ImportedVegetation option tree_cell_size_m must be 0, 64, 128, or 256; using legacy batching"
 		)
 		return 0
 	return int(size)
@@ -353,8 +355,16 @@ static func _record_groups(records: Array, cell_size: int) -> Array[Dictionary]:
 	return groups
 
 
-static func _tree_asset_wind_supported(asset_id: String, parts: Array[Dictionary]) -> bool:
+static func _tree_asset_wind_supported(asset_id: String, parts: Array[Dictionary], records: Array) -> bool:
 	for part: Dictionary in parts:
+		var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
+		var transform_reason := _tree_wind_transform_support_reason(part_transform)
+		if not transform_reason.is_empty():
+			_warn_tree_wind_once(
+				asset_id + ":transform",
+				"Tree wind is disabled for %s because a source part transform is unsupported (%s)" % [asset_id, transform_reason]
+			)
+			return false
 		var mesh: Mesh = part.get("mesh")
 		if mesh == null or mesh.get_surface_count() <= 0:
 			_warn_tree_wind_once(asset_id + ":mesh", "Tree wind is disabled for %s: source part has no surfaces" % asset_id)
@@ -370,7 +380,44 @@ static func _tree_asset_wind_supported(asset_id: String, parts: Array[Dictionary
 					"Tree wind is disabled for %s because source material %s is unsupported (%s)" % [asset_id, material_id, reason]
 				)
 				return false
+	for record: Dictionary in records:
+		var plant_transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
+		var transform_reason := _tree_wind_transform_support_reason(plant_transform)
+		if not transform_reason.is_empty():
+			_warn_tree_wind_once(
+				asset_id + ":placement_transform",
+				"Tree wind is disabled for %s because a placement transform is unsupported (%s)" % [asset_id, transform_reason]
+			)
+			return false
 	return true
+
+
+static func _tree_wind_transform_support_reason(transform: Transform3D) -> String:
+	if not transform.is_finite():
+		return "transform is not finite"
+	var basis := transform.basis
+	var x_length := basis.x.length()
+	var y_length := basis.y.length()
+	var z_length := basis.z.length()
+	var scale_max := maxf(x_length, maxf(y_length, z_length))
+	if scale_max <= 0.000001:
+		return "basis has zero scale"
+	if absf(x_length - y_length) > scale_max * 0.0001 \
+		or absf(y_length - z_length) > scale_max * 0.0001 \
+		or absf(z_length - x_length) > scale_max * 0.0001:
+		return "non-uniform scale is unsupported"
+	var x_axis := basis.x / x_length
+	var y_axis := basis.y / y_length
+	var z_axis := basis.z / z_length
+	if absf(x_axis.dot(y_axis)) > 0.0001 \
+		or absf(y_axis.dot(z_axis)) > 0.0001 \
+		or absf(z_axis.dot(x_axis)) > 0.0001:
+		return "shear is unsupported"
+	if y_axis.dot(Vector3.UP) < 0.99999:
+		return "part is not upright around local Y"
+	if basis.determinant() <= 0.0:
+		return "mirrored transforms are unsupported"
+	return ""
 
 
 static func _warn_tree_wind_once(key: String, message: String) -> void:

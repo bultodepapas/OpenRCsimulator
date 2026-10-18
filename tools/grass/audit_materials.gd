@@ -1,6 +1,6 @@
 ## Headless, read-only audit of imported near-grass source materials, the zero-wind
 ## production/adapter paths, imported geometry, and related ground texture imports.
-## Run from the repository root with the pinned console build; this does not render.
+## Run with --out=<new-path.json>; this does not render or overwrite existing output.
 extends SceneTree
 
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
@@ -46,6 +46,10 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var output_path := _resolve_output_path()
+	if output_path.is_empty():
+		quit(2)
+		return
 	var catalog: Dictionary = ImportedVegetation.catalog()
 	var msaa_setting: Variant = ProjectSettings.get_setting("rendering/anti_aliasing/quality/msaa_3d", "unavailable")
 	var report: Dictionary = {
@@ -85,7 +89,6 @@ func _run() -> void:
 				"path": str(map_record.get("path", "")),
 				"message": str(map_record.get("error", "missing map")),
 			})
-	var output_path := ProjectSettings.globalize_path("res://../tmp/grass-quality/material-audit-baseline.json")
 	var output_dir := output_path.get_base_dir()
 	if DirAccess.make_dir_recursive_absolute(output_dir) != OK:
 		printerr("Cannot create audit output directory: " + output_dir)
@@ -104,6 +107,30 @@ func _run() -> void:
 		(report["diagnostics"] as Array).size(),
 	])
 	quit(0)
+
+
+func _resolve_output_path() -> String:
+	var output_argument := ""
+	for argument: String in OS.get_cmdline_user_args():
+		if not argument.begins_with("--out="):
+			printerr("Unknown audit argument: " + argument)
+			return ""
+		if not output_argument.is_empty():
+			printerr("Pass exactly one --out=<new-path.json> argument")
+			return ""
+		output_argument = argument.trim_prefix("--out=").strip_edges()
+	if output_argument.is_empty():
+		printerr("Required: --out=<new-path.json>")
+		return ""
+	var output_path := output_argument
+	if output_path.begins_with("res://") or output_path.begins_with("user://"):
+		output_path = ProjectSettings.globalize_path(output_path)
+	elif not output_path.is_absolute_path():
+		output_path = ProjectSettings.globalize_path("res://").path_join(output_path)
+	if FileAccess.file_exists(output_path) or DirAccess.dir_exists_absolute(output_path):
+		printerr("Refusing to overwrite existing audit output: " + output_path)
+		return ""
+	return output_path
 
 
 func _inspect_asset(asset_id: String, catalog: Dictionary) -> Dictionary:

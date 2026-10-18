@@ -56,14 +56,14 @@
     "shared_material_policy": "original downloaded glTF materials and textures or OBJ/MTL diffuse materials; shared source files extracted once"
   },
   "counts": {
-    "trees": 3,
+    "trees": 7,
     "shrubs": 2,
     "grass_and_herbs": 4,
     "flowers": 3,
     "crops": 2,
     "reeds": 1,
-    "total_assets": 15,
-    "source_triangles_one_of_each": 21640
+    "total_assets": 19,
+    "source_triangles_one_of_each": 39966
   },
   "files": [
     {
@@ -169,6 +169,18 @@
       "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
     },
     {
+      "path": "models/CommonTree_2.bin",
+      "source_entry": "glTF/CommonTree_2.bin",
+      "bytes": 423024,
+      "sha256": "a273d69de31a675a9d7e3eb3c43f804aef2d1b031692111b9e76eb3b0b686d0c"
+    },
+    {
+      "path": "models/CommonTree_2.gltf",
+      "source_entry": "glTF/CommonTree_2.gltf",
+      "bytes": 3866,
+      "sha256": "67160975f0ac991b4a2ffb2add4ab4037b5e9c1bef9f66dac5235fcf0ba9bd52"
+    },
+    {
       "path": "models/CommonTree_3.bin",
       "source_entry": "glTF/CommonTree_3.bin",
       "bytes": 296984,
@@ -179,6 +191,18 @@
       "source_entry": "glTF/CommonTree_3.gltf",
       "bytes": 3864,
       "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976"
+    },
+    {
+      "path": "models/CommonTree_4.bin",
+      "source_entry": "glTF/CommonTree_4.bin",
+      "bytes": 307596,
+      "sha256": "4fa52cc5bb9aa42d5ce1eee6cffca0f0a7f25dd07fe4431e371548e89bc30233"
+    },
+    {
+      "path": "models/CommonTree_4.gltf",
+      "source_entry": "glTF/CommonTree_4.gltf",
+      "bytes": 3865,
+      "sha256": "ddf0e8837705702871d3f03de8cf7aeed61ad4bf8ee92052b6f95bdd771297b6"
     },
     {
       "path": "models/Fern_1.bin",
@@ -299,6 +323,30 @@
       "source_entry": "glTF/Pine_1.gltf",
       "bytes": 3832,
       "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc"
+    },
+    {
+      "path": "models/Pine_2.bin",
+      "source_entry": "glTF/Pine_2.bin",
+      "bytes": 258336,
+      "sha256": "5ba81ed2b131243bf02f5fb18e278083205ce16b0f30c364ccbe9355e7637c60"
+    },
+    {
+      "path": "models/Pine_2.gltf",
+      "source_entry": "glTF/Pine_2.gltf",
+      "bytes": 3833,
+      "sha256": "57bd4732170b6c7e51bcf78fe5adaabf142f95a50378d8d3051d1f20a04d3c2f"
+    },
+    {
+      "path": "models/Pine_3.bin",
+      "source_entry": "glTF/Pine_3.bin",
+      "bytes": 345288,
+      "sha256": "73edd69d7e789b12bfa32ab202c62d74ae98f0bba67975205211bf51906d8c82"
+    },
+    {
+      "path": "models/Pine_3.gltf",
+      "source_entry": "glTF/Pine_3.gltf",
+      "bytes": 3827,
+      "sha256": "54c72a4d614f053dd4b3d4404076a361de6085ec6a34560e42a76d7e79d89830"
     }
   ],
   "assets": [
@@ -370,6 +418,81 @@
         "glTF/Bark_NormalTree_Normal.png",
         "glTF/CommonTree_1.bin",
         "glTF/CommonTree_1.gltf",
+        "glTF/Leaves_NormalTree_C.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "common_tree_2",
+      "source_id": "quaternius_standard",
+      "source_name": "CommonTree_2",
+      "description": "fuller branching broadleaf tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/CommonTree_2.gltf",
+      "source_entry": "glTF/CommonTree_2.gltf",
+      "source_sha256": "67160975f0ac991b4a2ffb2add4ab4037b5e9c1bef9f66dac5235fcf0ba9bd52",
+      "source_format": "glTF 2.0",
+      "source_triangles": 5648,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min": [
+          -2.223014,
+          -0.242772,
+          -1.85147
+        ],
+        "max": [
+          2.241288,
+          7.400224,
+          2.424383
+        ],
+        "size": [
+          4.464302,
+          7.642996,
+          4.275852
+        ],
+        "height": 7.642996,
+        "ground_offset": 0.242772
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -2.223014,
+          0.0,
+          -1.85147
+        ],
+        "max": [
+          2.241288,
+          7.642996,
+          2.424383
+        ],
+        "size": [
+          4.464302,
+          7.642996,
+          4.275852
+        ]
+      },
+      "textures": [
+        {
+          "uri": "Bark_NormalTree.png",
+          "source_entry": "glTF/Bark_NormalTree.png"
+        },
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "source_entry": "glTF/Bark_NormalTree_Normal.png"
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "source_entry": "glTF/Leaves_NormalTree_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bark_NormalTree.png",
+        "glTF/Bark_NormalTree_Normal.png",
+        "glTF/CommonTree_2.bin",
+        "glTF/CommonTree_2.gltf",
         "glTF/Leaves_NormalTree_C.png"
       ],
       "lod": {
@@ -453,6 +576,81 @@
       }
     },
     {
+      "id": "common_tree_4",
+      "source_id": "quaternius_standard",
+      "source_name": "CommonTree_4",
+      "description": "sparse crown broadleaf tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/CommonTree_4.gltf",
+      "source_entry": "glTF/CommonTree_4.gltf",
+      "source_sha256": "ddf0e8837705702871d3f03de8cf7aeed61ad4bf8ee92052b6f95bdd771297b6",
+      "source_format": "glTF 2.0",
+      "source_triangles": 4066,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min": [
+          -1.797095,
+          -0.242772,
+          -2.07961
+        ],
+        "max": [
+          2.02843,
+          9.195609,
+          1.675763
+        ],
+        "size": [
+          3.825526,
+          9.438381,
+          3.755373
+        ],
+        "height": 9.438381,
+        "ground_offset": 0.242772
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -1.797095,
+          0.0,
+          -2.07961
+        ],
+        "max": [
+          2.02843,
+          9.438381,
+          1.675763
+        ],
+        "size": [
+          3.825526,
+          9.438381,
+          3.755373
+        ]
+      },
+      "textures": [
+        {
+          "uri": "Bark_NormalTree.png",
+          "source_entry": "glTF/Bark_NormalTree.png"
+        },
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "source_entry": "glTF/Bark_NormalTree_Normal.png"
+        },
+        {
+          "uri": "Leaves_NormalTree_C.png",
+          "source_entry": "glTF/Leaves_NormalTree_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bark_NormalTree.png",
+        "glTF/Bark_NormalTree_Normal.png",
+        "glTF/CommonTree_4.bin",
+        "glTF/CommonTree_4.gltf",
+        "glTF/Leaves_NormalTree_C.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
       "id": "pine_1",
       "source_id": "quaternius_standard",
       "source_name": "Pine_1",
@@ -521,6 +719,156 @@
         "glTF/Leaf_Pine_C.png",
         "glTF/Pine_1.bin",
         "glTF/Pine_1.gltf"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "pine_2",
+      "source_id": "quaternius_standard",
+      "source_name": "Pine_2",
+      "description": "broad-cone pine tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/Pine_2.gltf",
+      "source_entry": "glTF/Pine_2.gltf",
+      "source_sha256": "57bd4732170b6c7e51bcf78fe5adaabf142f95a50378d8d3051d1f20a04d3c2f",
+      "source_format": "glTF 2.0",
+      "source_triangles": 3648,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min": [
+          -2.891958,
+          -0.235089,
+          -2.693699
+        ],
+        "max": [
+          2.836127,
+          7.14115,
+          2.527508
+        ],
+        "size": [
+          5.728085,
+          7.376238,
+          5.221207
+        ],
+        "height": 7.376238,
+        "ground_offset": 0.235089
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -2.891958,
+          0.0,
+          -2.693699
+        ],
+        "max": [
+          2.836127,
+          7.376238,
+          2.527508
+        ],
+        "size": [
+          5.728085,
+          7.376238,
+          5.221207
+        ]
+      },
+      "textures": [
+        {
+          "uri": "Bark_NormalTree.png",
+          "source_entry": "glTF/Bark_NormalTree.png"
+        },
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "source_entry": "glTF/Bark_NormalTree_Normal.png"
+        },
+        {
+          "uri": "Leaf_Pine_C.png",
+          "source_entry": "glTF/Leaf_Pine_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bark_NormalTree.png",
+        "glTF/Bark_NormalTree_Normal.png",
+        "glTF/Leaf_Pine_C.png",
+        "glTF/Pine_2.bin",
+        "glTF/Pine_2.gltf"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "pine_3",
+      "source_id": "quaternius_standard",
+      "source_name": "Pine_3",
+      "description": "open-lower-trunk pine tree",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/Pine_3.gltf",
+      "source_entry": "glTF/Pine_3.gltf",
+      "source_sha256": "54c72a4d614f053dd4b3d4404076a361de6085ec6a34560e42a76d7e79d89830",
+      "source_format": "glTF 2.0",
+      "source_triangles": 4964,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min": [
+          -2.113737,
+          -0.235089,
+          -2.292339
+        ],
+        "max": [
+          1.497658,
+          7.15711,
+          1.703465
+        ],
+        "size": [
+          3.611395,
+          7.392199,
+          3.995804
+        ],
+        "height": 7.392199,
+        "ground_offset": 0.235089
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -2.113737,
+          0.0,
+          -2.292339
+        ],
+        "max": [
+          1.497658,
+          7.392199,
+          1.703465
+        ],
+        "size": [
+          3.611395,
+          7.392199,
+          3.995804
+        ]
+      },
+      "textures": [
+        {
+          "uri": "Bark_NormalTree.png",
+          "source_entry": "glTF/Bark_NormalTree.png"
+        },
+        {
+          "uri": "Bark_NormalTree_Normal.png",
+          "source_entry": "glTF/Bark_NormalTree_Normal.png"
+        },
+        {
+          "uri": "Leaf_Pine_C.png",
+          "source_entry": "glTF/Leaf_Pine_C.png"
+        }
+      ],
+      "dependencies": [
+        "glTF/Bark_NormalTree.png",
+        "glTF/Bark_NormalTree_Normal.png",
+        "glTF/Leaf_Pine_C.png",
+        "glTF/Pine_3.bin",
+        "glTF/Pine_3.gltf"
       ],
       "lod": {
         "source_supplied": false,

@@ -814,6 +814,7 @@ func _write_manifest() -> bool:
 	var manifest: Dictionary = {
 		"format": FORMAT,
 		"mode": _mode,
+		"grass_quality_environment": OS.get_environment("OPENRC_GRASS_QUALITY"),
 		"variant": _variant,
 		"pair": _pair,
 		"field_path": _field_path,
