@@ -32,6 +32,7 @@ const SHORTCUTS := [
 	[[KEY_J], "Assign smoke AUX"],
 	[[KEY_G, KEY_B], "Gear toggle · wheel brake (hold)"],
 	[[KEY_F], "Flaps: next position (Shift+F previous)"],
+	[[KEY_N], "Rates: normal / full"],
 	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
 	[[KEY_F2, KEY_F3], "Overlay preset · developer overlays"],
 	[[KEY_F5], "Reload the aircraft data file"],

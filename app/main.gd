@@ -1109,6 +1109,13 @@ func controller_action(action: String) -> bool:
 		"trim_down": session.adjust_elevator_trim(0.1)
 		"overlay_preset":
 			if _overlays != null: _overlays.cycle_preset()
+		"rates_toggle":
+			if session.toggle_rate_profile():
+				_note = tr("Rates: normal") if session.rates_active() else tr("Rates: full")
+			elif session.radio.connected and not session.radio.is_gamepad():
+				_note = tr("The radio sets its own rates.")
+			else:
+				_note = tr("This aircraft has no rate profile.")
 		"throttle_cut": session.controller_throttle_cut()
 		"calibrate": session.start_calibration()
 		"accept":
@@ -1290,6 +1297,9 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 			KEY_F:
 				_step_flaps(-1 if event.shift_pressed else 1)
+				get_viewport().set_input_as_handled()
+			KEY_N:
+				controller_action("rates_toggle")
 				get_viewport().set_input_as_handled()
 			KEY_B:
 				if not session.sim.paused and session.gear_is_retractable() and session.set_wheel_brake(1.0):
