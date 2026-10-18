@@ -42,12 +42,30 @@ The Ultra Stick is the closest documented relative of the Ugly Stik: a high-wing
 | --- | --- | --- |
 | ShowTime 50 (b 1.45 m, S 46.58 dm², 2.90 kg; Stik S 46.45 dm²) | Selig 2010 sec. III.C/IV.C; Selig 2014 table 1, figs. 20–23 | Component model behind FS One: fuselage segments with side lift over ±180°. **Simulated** knife-edge on held right rudder until the fuselage stalls near β −65°; side-force generators make it climb. A model, not a flight measurement. |
 | Edge 540, Extra 260 EFL, Ultimate TOC | Selig 2014 table 1 | Specifications and simulated maneuvers (harrier, rolling harrier, inverted spin). |
+| Extra 260 35 %, the UIUC Aero Testbed (17.01 kg, b 2.667 m, S 1.312 m²; Ixx 1.53, Iyy 4.86, Izz 6.06 kg·m²) | Ragheb, Selig 2013, table 1 and section IV | More than 20 flight spins recorded with an IMU. Baseline: power off, full rudder, full up, neutral ailerons, low rates. Measured: pitch −55 to −57°, sink 15.5–16.8 m/s, p 235–238°/s, r 150–155°/s, Ωb/2V 0.20. Pro-spin ailerons lower the nose 5°, raise the sink 66 % and roll rate 50 %, and halve Ωb/2V. |
 | Sukhoi 29S 35 % (16.37 kg, 2.6 m, 130 dm²) | Dantsker, Selig 2015; Dantsker et al. 2013 | High-α flight data; coefficients in figures only. |
 | Glow scale Cessna 182 (b 2.05 m, 4 kg) | Fischer et al., ICAS 2022-0873, table 1 | Output-error identification: CYβ −2.97, Clβ −0.050, Cnβ 0.161, Clp −0.068, Cmq −5.41. The normalization is not stated, and CYβ and Clp are far from typical values. Clr, Cnp, Cnr and Cnδa have Cramér-Rao bounds of 81–214 %, so they are unidentified. |
 | Rudderless UAV, 1.28 kg, b 0.97 m | Venkataraman, Seiler 2019 | Flight Dutch roll ζ 0.12, ωn 4.8 rad/s (the initial model gave 0.06 and 7 rad/s); roll τ 0.078 s; spiral not excited. |
 | Vector-P pusher UAV, 31.5 kg | Fischer et al., ICAS 2018-0764 | Clβ −0.0285, Cnβ 0.090, CYβ printed +0.029 (sign unexplained). Not an RC sport class. |
 
 Identified Cnβ spans 0.046/rad (Ultra Stick 25e) to 0.161/rad (scale Cessna), against the Stik's 0.074/rad after D10-R2. Directional stability follows each airframe's own tail volume and body. The spread bounds plausibility; it does not set a target.
+
+## Spin, knife-edge and fuselage crossflow references
+
+- **NASA spin-mode classes** (Burk et al. 1977, TP-1009), by angle of attack: steep 20–30°, moderately steep 30–45°, moderately flat 45–65°, flat 65–90°. In that spin-tunnel study, the tail configuration decided between flat and steeper modes.
+- **NASA/Piper radio-controlled stall/spin models** (Burk, Wilson 1975, TM-80510). RC scale-model spins and recoveries correlated with the full-scale airplane. The paper warns that a dynamically scaled model has much less tail volume than a conventional RC model and reacts very differently to controls.
+- **Method and niche cases.**
+  - Bihrle 1976 (CR-144995) correlates analytical spin prediction with flight of a 1/10-scale RC fighter, as a method reference.
+  - Blanchard 1981 (CR-156871): 1/6-scale RC Piper Tomahawk, ultra-deep-stall descents.
+  - Langley 1979 (TP-1589): leading-edge droop study combining tunnel, RC model and full-scale flight; not yet read in detail.
+- **Fuselage crossflow** (Polhamus 1959, TR R-29, which supersedes NACA TN 4176; companions TR R-46 and the 1984 review CR-3809).
+  - Figure 11 gives the subcritical drag of square cylinders with the flow face-on: about 2.0 with sharp corners (r/b ≤ 0.021), 1.6 at r/b 0.08 and 1.2 at r/b 0.245. Beyond 30° of incidence it is about 1.5 for every radius. These values are read from the figure.
+  - The corner radius strongly moves the critical Reynolds number. A Stik-sized slab side in knife-edge works near Re 10⁵, which is subcritical.
+  - The section side force can be large and can change sign with Reynolds number.
+- **Knife-edge practice, not measurements.**
+  - The commercial Aerofly FS 2 simulator models the fuselage as 2–16 round or rectangular stations. Its starting values are a sideways drag Cdy of 1.0–1.5 and a side lift Cly of 0.6; a higher Cly holds a knife-edge with less sideslip.
+  - Model Airplane News (2018) reports that side-force generators made a large Ultra Stick's knife-edge much slower.
+  - No instrumented RC knife-edge flight was found.
 
 ## Method references
 
@@ -57,10 +75,16 @@ Identified Cnβ spans 0.046/rad (Ultra Stick 25e) to 0.161/rad (scale Cessna), a
 - Raymer eq. 16.50 fuselage Cnβ, as implemented in FAST-GA (link in the manifest).
 - Chambers et al., NASA TN D-5361: lateral-directional stability at high α (Cnβ,dyn, LCDP). This is a departure-criteria method, not RC data.
 
-The manifest's `links` list records the leads without a usable file: MDPI Aerospace 10(4):350 (PDF returned 403), the Piper Cub J-3 RPV identification (record only), Olson's Ultra Stick 120 spin page (no numbers), unchecked UMN Baldr flights 12, 13 and 17, and an unchecked UIUC thesis on unsteady high-α aerodynamics.
+The manifest's `links` list records the leads without a downloaded file and why: blocked or record-only papers (MDPI Aerospace 10(4):350, the Piper Cub J-3 RPV identification), pages without numbers (Olson's Ultra Stick 120 spins), and unchecked candidates. The unchecked ones are UMN Baldr flights 12, 13 and 17, the UIUC unsteady high-α thesis, the GA rotary-balance and spin-tunnel companions, and two spin theses.
 
 ## Open uses
 
-- [`spin_state.py`](../../../research/flight-test/spin_state.py) compares the flight-test battery's `spin` card with the FASER spin. On the D10-R2 run, every Stik variant matches FASER's airspeed once scaled to its wing loading: 21–23 m/s against 21–22. Its Ωb/2V is close (0.16–0.19 against 0.14), and its pitch oscillates in the same way. The spin is made up differently, though. The model's is roll-dominated (r 78–100°/s) at α 19–21° with |β| 16–21°. FASER's had r about 160°/s at α 30° and β 5°. This is a different airframe with a large printed Ixz, and there is no Stik spin measurement, so this is an observation, not a defect.
+- [`spin_state.py`](../../../research/flight-test/spin_state.py) compares the flight-test battery's `spin` card with the FASER and Aero Testbed spins, which were flown with the same entry. On the D10-R2 run, Ωb/2V is close to both references and roll rate is similar, but both references show the same three differences:
+  - **Less yaw.** The model's spins are roll-dominated: r 78–100°/s on the Stik variants and 99–112°/s on the Extra, against about 160 (FASER) and 150–155°/s (Extra 260).
+  - **Lower α, nose lower.** The model flies α 19–23° and θ −62 to −66°. FASER flew α 30°, and the Extra 260 flew θ −55 to −57°, which implies α of about 33–35° for a near-vertical path.
+  - **Far less vertical force.** The Extra 300S sinks 21.2–21.6 m/s at 7.1 kg/m², a vertical-force coefficient 2(W/S)g/(ρV²) of 0.25. The Extra 260 sinks 15.5–16.8 m/s at 13.0 kg/m², a coefficient of 0.74–0.86.
+
+  The model's developed spin is therefore steeper and faster than the measured RC spins, with about a third of their vertical force. These are other airframes, with their own throws and inertias. The card's window, 4.0–6.25 s, is about three turns in, while the airspeed still rises about 1 m/s per second. So this is a consistent finding to investigate in the post-stall model, not yet a proven defect. A longer pro-spin hold would show whether the model settles at a higher α.
 - Check the aero model's roll and yaw damping against the FASER α trends: constant to stall, then loss of roll damping.
+- Use the Polhamus subcritical crossflow drag, 1.6–2.0 for the Stik's slab sides, in any knife-edge fuselage side-force estimate. The D10-R2 Allen–Perkins estimate assumed about 1.5.
 - Add FASER as an `openrc-reference v1` dataset once a quantity with a printed value and a defined scaling is chosen.

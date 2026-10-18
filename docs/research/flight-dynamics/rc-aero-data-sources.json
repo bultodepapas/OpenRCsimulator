@@ -200,6 +200,123 @@
    "parsed_ok": true
   },
   {
+   "path": "references/rc-aero-data/ragheb-selig-2013-aiaa-2013-2806-extra260-stall-spin.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/RaghebSelig-2013-AIAA-2013-2806-StallSpin.pdf",
+   "bytes": 11731465,
+   "sha256": "f3c482ab78eacc37ac01cd9cbf17181bb6254dff01a7bd9e73277b060ed02047",
+   "file_type": "PDF, 31 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "UIUC Aero Testbed = Hangar 9 35 % Extra 260 (17.01 kg, b 2.667 m, S 1.312 m2, Ixx 1.53, Iyy 4.86, Izz 6.06 kg m2; table 1). Over 20 IMU-recorded flight spins. Baseline T0R1E1A0 (power off, full rudder, full up, neutral ailerons, low rates): pitch -55..-57 deg, sink 15.5-16.8 m/s, p 235-238 deg/s, r 150-155 deg/s, Omega b/2V 0.20. Pro-spin ailerons: nose 5 deg lower, sink +66 %, p +50 %, spin parameter halved.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/burk-wilson-1975-nasa-tm-80510-rc-model-stall-spin.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19790022002/downloads/19790022002.pdf",
+   "bytes": 2471562,
+   "sha256": "5eb7e3f0e4f72f1c7b4ca1555d887af7f58eb8bd86f1b121f1ace30533e3df27",
+   "file_type": "PDF, 63 pages",
+   "kind": "paper",
+   "license": "NASA Technical Memorandum (SAE 1975 paper, NASA and Piper authors). Reference only.",
+   "use": "NASA/Piper radio-controlled model stall/spin technique: model construction, inertia measurement, thrust scaling; RC scale-model spins and recoveries correlated with the full-scale airplane. Notes that a dynamically scaled model has much less tail volume than a conventional RC model and reacts very differently to controls.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/bihrle-1976-nasa-cr-144995-rc-model-spin-correlation.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19760020126/downloads/19760020126.pdf",
+   "bytes": 11382141,
+   "sha256": "313c2c802cf42991d7bb557b04fbf23908c407d4393136ea88864cc71abefc6f",
+   "file_type": "PDF, 154 pages",
+   "kind": "report",
+   "license": "NASA Contractor Report (Grumman). Reference only.",
+   "use": "Correlation of analytical spin prediction (static, forced-oscillation and rotary-balance data of an exact replica) with flight spins of an unpowered 1/10-scale RC fighter model. Method reference for spin simulation against RC flight; not our fleet.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/burk-1977-nasa-tp-1009-spin-tunnel-low-wing-a.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19770026167/downloads/19770026167.pdf",
+   "bytes": 50083766,
+   "sha256": "df0bb4e21895f842b2f4c7022cb8f4d8ab815a8d59dcf7b2d71c222464300315",
+   "file_type": "PDF, 94 pages",
+   "kind": "report",
+   "license": "NASA Technical Paper (US Government work).",
+   "use": "Spin tunnel, low-wing GA model A, nine tails. Spin-mode classes by angle of attack: steep 20-30, moderately steep 30-45, moderately flat 45-65, flat 65-90 deg. Tail configuration decides flat versus steeper modes and recovery.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/langley-1979-nasa-tp-1589-leading-edge-stall-spin.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19800004771/downloads/19800004771.pdf",
+   "bytes": 3920608,
+   "sha256": "d96e58a0a4b961ae1235f9eb10f4dc0174e05a325abb925230fcc63ba964bf13",
+   "file_type": "PDF, 100 pages",
+   "kind": "report",
+   "license": "NASA Technical Paper (US Government work).",
+   "use": "Langley staff: wing leading-edge droop modifications on a light GA airplane, combining wind-tunnel, radio-controlled model and full-scale flight tests of stall/spin behaviour. Not yet read in detail.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/blanchard-1981-nasa-cr-156871-pa38-rc-deep-stall.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19810012555/downloads/19810012555.pdf",
+   "bytes": 392953,
+   "sha256": "695c5211e8162aecf9d8a425d406e6c3af05879b7553ea14a4e01cb266a0c2b1",
+   "file_type": "PDF, 9 pages",
+   "kind": "report",
+   "license": "NASA Contractor Report. Reference only.",
+   "use": "1/6-scale RC Piper PA-38 Tomahawk (3.5 kg, all-moving tail): more than 50 ultra-deep-stall descents and spin recoveries; full-scale-equivalent power-off deep-stall sink about 13.4 m/s at 685.8 kg.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/polhamus-1959-nasa-tr-r-29-noncircular-cylinders.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20090017489/downloads/20090017489.pdf",
+   "bytes": 1338076,
+   "sha256": "0b050e46f6e7af04860d00ea5c4d372375866c532ff4150663dc8c488e782c09",
+   "file_type": "PDF, 27 pages",
+   "kind": "report",
+   "license": "NASA Technical Report (US Government work); supersedes NACA TN 4176.",
+   "use": "Crossflow forces of noncircular 2-D cylinders vs flow incidence and Reynolds number, applied to directional stability and spinning. Fig. 11, subcritical square cylinders face-on: Cd about 2.0 (sharp, r/b 0-0.021), 1.6 (r/b 0.08), 1.2 (r/b 0.245); about 1.5 for all radii beyond 30 deg incidence (read from the figure). Side force can be large and change sign with Reynolds number.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/polhamus-1959-nasa-tr-r-46-noncircular-cylinders-pressure.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19980227840/downloads/19980227840.pdf",
+   "bytes": 2240486,
+   "sha256": "c11d3e8009477d6daf4582ed2c8ccd1672c06151b411cd56a8baca4daefbad21",
+   "file_type": "PDF, 44 pages",
+   "kind": "report",
+   "license": "NASA Technical Report (US Government work).",
+   "use": "Polhamus, Geller, Grunwald: pressure and force characteristics of noncircular cylinders vs Reynolds number, with a potential-flow method for arbitrary shapes. Companion of TR R-29.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/polhamus-1984-nasa-cr-3809-reynolds-bodies-high-alpha.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19840023027/downloads/19840023027.pdf",
+   "bytes": 7086760,
+   "sha256": "aac5ac04dcc09d270c590009f9a39e1ddebcf6d3a8017f72213e910e3589a06f",
+   "file_type": "PDF, 126 pages",
+   "kind": "report",
+   "license": "NASA Contractor Report. Reference only.",
+   "use": "Polhamus review of Reynolds-number effects on bodies at high angles of attack, including noncircular cylinders and flow incidence.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
    "path": "references/rc-aero-data/lutze-vt-aoe3134-yaw-moment.pdf",
    "url": "https://archive.aoe.vt.edu/lutze/AOE3134/YawMoment.pdf",
    "bytes": 224881,
@@ -292,6 +409,41 @@
    "url": "https://de3mirror.flightgear.org/fgdata/fgdata_2024_1/Aircraft-uiuc/models/",
    "status": "link only",
    "note": "UIUC aircraft model specifications used by FlightGear (LaRCsim UIUC models)."
+  },
+  {
+   "url": "https://ntrs.nasa.gov/citations/19800023828",
+   "status": "not downloaded",
+   "note": "Bihrle CR: rotary-balance data of a high-wing single-engine GA model (model B), alpha 8-90 deg, Omega b/2V 0-0.9; data without analysis. Low-wing companions: 19790021974, 19790022978."
+  },
+  {
+   "url": "https://ntrs.nasa.gov/citations/19780004097",
+   "status": "not downloaded",
+   "note": "NASA TP spin-tunnel part 2: low-wing model A, further tail/fuselage parametric studies."
+  },
+  {
+   "url": "https://uwe-repository.worktribe.com/file/1490886/1/Analysis%20of%20the%20spin%20dynamics%20of%20a%20single-engine%20low-wing%20aeroplane",
+   "status": "not checked",
+   "note": "UWE: spin dynamics of a single-engine low-wing aeroplane (full scale)."
+  },
+  {
+   "url": "https://purl.stanford.edu/wt901gg8724",
+   "status": "not checked",
+   "note": "Stanford thesis: automatic spin detection and recovery for small aircraft."
+  },
+  {
+   "url": "https://aerofly.com/dokuwiki/doku.php/aircraft:tmd:aerofuselage",
+   "status": "link only",
+   "note": "Aerofly FS 2 (commercial simulator) fuselage element: 2-16 stations, round or rectangular sections, starting values Cdy 1.0-1.5 (sideways drag), Cly 0.6 (side lift; higher needs less knife-edge sideslip), Cdz 1.2, Clz 0.5, Cm 0 or slightly positive. Tuning guidance, not measured data."
+  },
+  {
+   "url": "https://www.pressreader.com/usa/model-airplane-news/20180801/282106342345481",
+   "status": "link only",
+   "note": "Model Airplane News 2018-08: side-force generators on a large Ultra Stick give much slower knife-edge flight. Qualitative."
+  },
+  {
+   "url": "https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/2592296",
+   "status": "not downloaded",
+   "note": "Gryte et al. 2018 (ICUAS): Skywalker X8 flying-wing 6-DOF model, design tools versus wind tunnel; accepted version open. A 2025 CEAS Aeronautical Journal flight identification (Low-Hansen et al.) is cited elsewhere as open access; not checked."
   },
   {
    "url": "https://fast-ga.readthedocs.io/en/stable/_modules/fastga/models/aerodynamics/components/fuselage/compute_cn_beta_fuselage.html",
