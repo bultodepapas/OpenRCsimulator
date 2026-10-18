@@ -1,0 +1,16 @@
+D10-R2 small-bank spiral, full nonlinear FlightSession (2026-10-18). Trimmed 15 m/s start moved to 300 m, a 0.3 s aileron
+pulse of the given stick fraction at 1.0 s, then hands off for 40 s; bank angle in degrees.
+
+Data Cnβ 0.1274 (before):
+  pulse  0.00: 2s -0.00  5s -0.00  10s -0.00  20s -0.00  30s -0.00  40s -0.00
+  pulse +0.04: 2s +1.44  5s +1.96  10s +3.40  20s +10.20 30s +27.91 40s +43.07
+  pulse -0.04: 2s -1.44  5s -1.94  10s -3.13  20s -7.08  30s -12.12 40s -14.94
+  pulse +0.08: 2s +2.87  5s +3.94  10s +6.95  20s +20.53 30s +39.98 40s +44.70
+D10-R2 data Cnβ 0.0742 (trimmed with the new data):
+  pulse  0.00: 2s -0.00  5s -0.00  10s -0.00  20s -0.00  30s -0.00  40s -0.00
+  pulse +0.04: 2s +0.91  5s +0.98  10s +0.95  20s +0.78  30s +0.65  40s +0.53
+  pulse -0.04: 2s -0.91  5s -0.97  10s -0.88  20s -0.66  30s -0.51  40s -0.40
+  pulse +0.08: 2s +1.82  5s +1.98  10s +1.97  20s +1.70  30s +1.47  40s +1.27
+
+Control (rejected method): Cnβ 0.0742 written into the session after a trim solved with 0.1274 drifts with no input
+(pulse 0.00: 5s +2.50, 20s +11.01, 40s +32.34): the old trim sideslip leaves Cnβ·β_trim unbalanced.

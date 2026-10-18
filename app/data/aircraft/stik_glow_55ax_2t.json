@@ -1169,10 +1169,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnb": {
-        "value": 0.12741288623702934,
+        "value": 0.07421288623702935,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
+        "source": "docs/research/flight-repair-implementation.md fin term a_v*S_v/S*l/b plus aero.surfaces.body_cn_beta (D10-R2, docs/research/flight-dynamics/stik-lateral-directional-2026-10-18); estimated, not measured flight data"
       },
       "Cnp": {
         "value": 0.118,
@@ -1206,6 +1206,12 @@
       }
     },
     "surfaces": {
+      "body_cn_beta": {
+        "value": -0.0532,
+        "unit": "1/rad",
+        "kind": "estimated",
+        "source": "D10-R2 (docs/research/flight-dynamics/stik-lateral-directional-2026-10-18, research/flight-dynamics/stik-lateral-directional/directional_prediction.py): (0.684 - 1) x fin term 0.12741 for the DATCOM high-wing fin efficiency eta_v(1 + dsigma/dbeta), plus Raymer eq. 16.50 fuselage term -0.0130 from the plan stations; placed in the body couple as the P-51 does; not measured"
+      },
       "wing_aileron_effectiveness": {
         "value": 0.144,
         "unit": "1",

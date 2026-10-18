@@ -453,8 +453,8 @@ msgstr "Experimental: motor eléctrico estimado y datos de otra hélice. Tren fi
 msgid "Flight model under evaluation."
 msgstr "Modelo de vuelo en evaluación."
 
-msgid "Rudder recovery and R02 yaw damping acceptance remain pending."
-msgstr "Pendiente validar la recuperación de guiñada y su amortiguación R02."
+msgid "Full-rudder sideslip and R02 yaw damping acceptance remain pending."
+msgstr "Pendiente validar el resbalamiento a fondo de timón y la amortiguación de guiñada R02."
 
 msgid "Experimental: first physics estimate from the plans, not yet flight-tested."
 msgstr "Experimental: primera estimación física a partir de los planos, aún sin contrastar en vuelo."

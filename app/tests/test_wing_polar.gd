@@ -96,6 +96,7 @@ func _initialize() -> void:
 		var wing_only: Dictionary = model.duplicate(true)
 		wing_only.surfaces.horizontal.area = 0.0
 		wing_only.surfaces.vertical.area = 0.0
+		wing_only.surfaces.erase("body_cn_beta") # D10-R2: the fuselage couple is not a wing load
 		telemetry_ok = telemetry_ok and loads == Aero._local_loads(state,air,ZERO,wing_only,1.225)
 		var power := M.dot(loads.slice(0,3),air.v_air)+M.dot(loads.slice(3,6),state.slice(RB.RATE,RB.RATE+3))
 		power_ok = power_ok and power <= 1e-10

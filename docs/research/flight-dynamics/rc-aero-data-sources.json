@@ -382,6 +382,45 @@
    "parsed_ok": true
   },
   {
+   "path": "references/rc-aero-data/hartman-biermann-1938-naca-report-641-negative-thrust.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19930091716/downloads/19930091716.pdf",
+   "bytes": 18241499,
+   "sha256": "281d1e2845088e51a12253e678a89bc1b4abd1742d36e155761e02dcea8d9c77",
+   "file_type": "PDF, 24 pages",
+   "kind": "report",
+   "license": "NACA Report (US Government work).",
+   "use": "Negative thrust and torque of 2-, 3- and 4-blade 10-ft propellers (Clark Y, RAF 6), blade angles 15-90 deg. Fig. 13, 3-blade locked (nD/V 0), Tc = T/(rho V2 D2) read from the figure: about -0.040 at 0 deg, -0.038 at 10, -0.035 at 20, -0.025 at 40, -0.011 at 60, -0.002 at 80 deg (0.75R). Fig. 12: per-blade coefficients differ little between 2, 3 and 4 blades. Basis for stopped-propeller drag D = |Tc| rho V2 D2.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/hartman-1933-naca-report-464-negative-thrust-locked.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19930091538/downloads/19930091538.pdf",
+   "bytes": 12304031,
+   "sha256": "6b5d9edac2e3bb5b07e84db27a26edc3942f8551dad54c1dcffbb04d2f549e96",
+   "file_type": "PDF, 16 pages",
+   "kind": "report",
+   "license": "NACA Report (US Government work).",
+   "use": "Adjustable-pitch 4-ft metal propeller before a cowled nacelle: negative thrust and torque from V 0 to n 0, and locked-propeller drag 0-90 deg (fig. 12): Tc drops from 0.0227 at 22 deg to 0.0014 at 80 deg (feathered). Discusses locked, idling and free-wheeling propeller drag; body behind the propeller changes negative thrust.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/hedrick-douglass-1944-naca-arr-4h26-propeller-brakes.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19930093338/downloads/19930093338.pdf",
+   "bytes": 13740556,
+   "sha256": "a15414f890c9a1a822b44acbd84241fa8b86db622538a45fd8c4576c798216f0",
+   "file_type": "PDF, 30 pages",
+   "kind": "report",
+   "license": "NACA Advance Restricted Report (US Government work).",
+   "use": "Thrust and torque of propellers used as aerodynamic brakes (Ames). Not yet read in detail.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
    "path": "references/rc-aero-data/lutze-vt-aoe3134-yaw-moment.pdf",
    "url": "https://archive.aoe.vt.edu/lutze/AOE3134/YawMoment.pdf",
    "bytes": 224881,
@@ -529,6 +568,16 @@
    "url": "https://yadda.icm.edu.pl/baztech/element/bwmeta1.element.baztech-article-BAT6-0015-0034/c/httpwww_ein_org_plsitesdefaultfiles2013-03-12.pdf",
    "status": "not checked",
    "note": "Grass-runway rolling friction (cites Stinton): about 0.05 short grass, 0.08 long grass, 0.13 long wet grass; full-scale wheels, a rough bound for RC grass takeoffs."
+  },
+  {
+   "url": "https://www.um.edu.mt/library/oar/handle/123456789/93085",
+   "status": "not checked",
+   "note": "University of Malta: windmilling versus locked propeller drag (CD against J and against V)."
+  },
+  {
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/AnandaDetersSelig-2014-AIAA-2014-2152.pdf",
+   "status": "not downloaded",
+   "note": "Ananda, Deters, Selig 2014: flat-plate wings behind propellers at Re 60,000-90,000; lift-curve slope falls when the tractor propeller is near the windmill-brake state."
   },
   {
    "url": "https://fast-ga.readthedocs.io/en/stable/_modules/fastga/models/aerodynamics/components/fuselage/compute_cn_beta_fuselage.html",

@@ -1,5 +1,8 @@
 # D10-R1: rudder authority and recovery through the real flight-session paths.
-# The 15 m/s doublet limits are estimated engineering screens from docs/research/ugly-stik-rudder-audit.md, not flight data.
+# The 15 m/s doublet |β| and |r| peak limits are estimated engineering screens from docs/research/ugly-stik-rudder-audit.md,
+# not flight data; 25° is the end of the airplane's oracle-to-local sideslip blend (aero.envelope.sideslip_blend).
+# D10-R2 (docs/research/flight-dynamics/stik-lateral-directional-2026-10-18): recovery is judged phase-independently against
+# the flight-identified Ultra Stick 25e and Ultra Stick 120, replacing a single r(3 s) sample of a still-oscillating Dutch roll.
 # Other amplitudes, pulse lengths, and speeds are numerical/route samples only; they have no doublet limits.
 # Run: godot --headless --path . --script res://tests/test_rudder_authority.gd
 extends SceneTree
@@ -8,11 +11,24 @@ const Session := preload("res://sim/flight_session.gd")
 const Maneuvers := preload("res://sim/maneuvers.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const Trace := preload("res://sim/trace.gd")
+const FlightModes := preload("res://physics/flight_modes.gd")
 
 const REFERENCE_HZ := 240
 const BETA_LIMIT_DEG := 25.0 # estimated screen in docs/research/ugly-stik-rudder-audit.md
 const YAW_RATE_LIMIT_DEG_S := 120.0 # estimated screen in docs/research/ugly-stik-rudder-audit.md
-const RELEASE_YAW_RATE_LIMIT_DEG_S := 15.0 # at 1.5 s after release; estimated screen in docs/research/ugly-stik-rudder-audit.md
+# D10-R2 recovery bands, fixed from the references before measuring. Ultra Stick 25e flight identification (Dorobantu et al.
+# 2013, research/sensitivity/sensitivity.gd): 19 m/s, 1.959 kg, S 0.31 m², b 1.27 m, Dutch roll 4.96 rad/s, ζ 0.33. A sister
+# airframe, not the Jensen: ±20 % on ω·b/2V and ζ. The Froude-scaled Ultra Stick 120 spiral is stable; ours may at most
+# double in 20 s. Its Dutch-roll decay ζω·b/2V = 0.0547 is σ = 1.08 1/s on our span at 15 m/s, an envelope of 6.8 % 2.5 s
+# after release; 10 % admits σ ≥ 0.92 1/s.
+const REFERENCE_25E := { V = 19.0, m = 1.959, S = 0.31, b = 1.27, dutch_roll_wn = 4.96, dutch_roll_zeta = 0.33 }
+const REFERENCE_BAND := 0.2
+const SPIRAL_MIN_DOUBLING_S := 20.0
+const RELEASE_S := 1.5
+const DECAY_WINDOW_S := [4.0, 5.5] # 2.5–4.0 s after release
+const DECAY_LIMIT_FRACTION := 0.10
+const G := 9.80665
+const RHO := 1.225
 const AUDITED_BORROWED_CNDR := -0.1811 # old borrowed datum, documented in docs/research/ugly-stik-rudder-audit.md
 const FINITE_COLUMNS := Trace.COLUMNS
 const DEVICE_ID := 61
@@ -29,13 +45,14 @@ func _check(label: String, ok: bool, detail := "") -> void:
 		_failures += 1
 
 
-# Only the reference 240 Hz rudder recovery screen may be allow-listed as experimental acceptance.
-# Direct invocation remains strict; finite state, stability screens and timestep convergence stay mandatory.
-func _check_pending_stik_rudder_recovery(label: String, ok: bool, eligible_for_pending: bool, detail := "") -> void:
-	if not ok and eligible_for_pending and OS.get_cmdline_user_args().has("--allow-known-stik-rudder-recovery"):
+# D10-R2: only the right-first 240 Hz reference |β| screen may be allow-listed as experimental acceptance. With the
+# fin-efficiency/body Cnβ it peaks 0.42° past the blend end under the estimated 25° rudder throw, which is unmeasured.
+# Direct invocation remains strict; recovery, rate screens, finite state and timestep convergence stay mandatory.
+func _check_pending_stik_rudder_sideslip(label: String, ok: bool, eligible_for_pending: bool, detail := "") -> void:
+	if not ok and eligible_for_pending and OS.get_cmdline_user_args().has("--allow-known-stik-rudder-sideslip"):
 		_count += 1
 		_pending += 1
-		print("PENDING STIK RUDDER RECOVERY: " + label + " " + detail)
+		print("PENDING STIK RUDDER SIDESLIP: " + label + " " + detail)
 	else:
 		_check(label, ok, detail)
 
@@ -68,6 +85,64 @@ func _doublet(reverse := false) -> Dictionary:
 		maneuver.sticks = func(t: float, _state: PackedFloat64Array) -> Dictionary:
 			return _pulse(t, 0.5, 1.0, -1.0) if t < 1.0 else _pulse(t, 1.0, 1.5, 1.0)
 	return maneuver
+
+
+## The reference doublet flown to 5.5 s so that 2.5–4.0 s after release can be observed.
+func _recovery_doublet(reverse := false) -> Dictionary:
+	var maneuver := _doublet(reverse)
+	maneuver.duration = DECAY_WINDOW_S[1]
+	return maneuver
+
+
+## D10-R2: |r| peak up to the 3 s reference window and the envelope of the uncoordinated yaw rate
+## |r − (g/V)·sinφ·cosθ| (yaw the commanded bank does not explain) over the decay window.
+func _decay_stats(trace: RefCounted) -> Dictionary:
+	var out := { r_peak_deg_s = 0.0, decay_deg_s = 0.0, complete = false, finite = trace.row_count() > 1 }
+	if trace.row_count() <= 1:
+		return out
+	var t0: float = trace.value(0, "t_s")
+	for row in trace.row_count():
+		var t: float = trace.value(row, "t_s") - t0
+		var speed: float = trace.value(row, "speed_mps")
+		var r: float = rad_to_deg(trace.value(row, "r_radps"))
+		var turn: float = rad_to_deg(G / speed * sin(deg_to_rad(trace.value(row, "roll_deg"))) * cos(deg_to_rad(trace.value(row, "pitch_deg")))) \
+			if speed > 0.0 else NAN
+		if not is_finite(r) or not is_finite(turn):
+			out.finite = false
+		if t <= 3.0 + 1e-9:
+			out.r_peak_deg_s = maxf(out.r_peak_deg_s, absf(r))
+		if t >= DECAY_WINDOW_S[0] - 1e-9 and t <= DECAY_WINDOW_S[1] + 1e-9:
+			out.decay_deg_s = maxf(out.decay_deg_s, absf(r - turn))
+			out.complete = t >= DECAY_WINDOW_S[1] - 1e-9
+	return out
+
+
+func _check_decay(label: String, run: Dictionary) -> void:
+	var decay := _decay_stats(run.trace)
+	_check("%s flies the decay window without a fault" % label, run.fault.is_empty() and decay.finite and decay.complete, str(run.fault))
+	_check("%s: uncoordinated yaw over 2.5–4.0 s after release ≤ 10 %% of the |r| peak (25e decay envelope 6.8 %%)" % label,
+		decay.r_peak_deg_s > 0.0 and decay.decay_deg_s <= DECAY_LIMIT_FRACTION * decay.r_peak_deg_s,
+		"max |r − r_turn| %.2f°/s = %.1f %% of |r| peak %.2f°/s" % [decay.decay_deg_s,
+			100.0 * decay.decay_deg_s / decay.r_peak_deg_s if decay.r_peak_deg_s > 0.0 else NAN, decay.r_peak_deg_s])
+
+
+## D10-R2: linear Dutch roll and spiral at the Ultra Stick 25e trim CL (bands above).
+func _check_reference_modes(model: Dictionary) -> void:
+	var cl: float = 2.0 * REFERENCE_25E.m * G / (RHO * REFERENCE_25E.V * REFERENCE_25E.V * REFERENCE_25E.S)
+	var speed: float = sqrt(2.0 * model.mass_kg * G / (RHO * model.reference.S * cl))
+	var modes: Dictionary = FlightModes.analyze(model, speed)
+	_check("linear modes solve at the Ultra Stick 25e CL %.3f (%.2f m/s)" % [cl, speed], modes.ok, str(modes.get("message", "")))
+	if not modes.ok:
+		return
+	var ratio: float = (TAU * modes.dutch_roll.f_hz * model.reference.b / (2.0 * speed)) \
+		/ (REFERENCE_25E.dutch_roll_wn * REFERENCE_25E.b / (2.0 * REFERENCE_25E.V))
+	_check("Dutch roll ω·b/2V within ±20 % of the flight-identified Ultra Stick 25e", absf(ratio - 1.0) <= REFERENCE_BAND,
+		"%.3f× (%.3f Hz at %.2f m/s)" % [ratio, modes.dutch_roll.f_hz, speed])
+	_check("Dutch roll ζ within ±20 % of the Ultra Stick 25e's 0.33", absf(modes.dutch_roll.zeta / REFERENCE_25E.dutch_roll_zeta - 1.0) <= REFERENCE_BAND,
+		"ζ %.3f" % modes.dutch_roll.zeta)
+	var doubling: float = INF if modes.spiral_tau > 0.0 else -modes.spiral_tau * log(2.0)
+	_check("spiral stable or doubling in ≥ 20 s (the Froude-scaled Ultra Stick 120 is stable)", doubling >= SPIRAL_MIN_DOUBLING_S,
+		"τ %.2f s (%s)" % [modes.spiral_tau, "stable" if is_inf(doubling) else "doubles in %.1f s" % doubling])
 
 
 func _pulse_maneuver(speed: float, amplitude: float, pulse_s: float, direction: float, mode := "level") -> Dictionary:
@@ -233,6 +308,7 @@ func _run() -> void:
 	var reference_session := _new_session()
 	var throws: Dictionary = reference_session.aircraft.model.controls.throw_deg
 	var rudder_throw_deg: float = throws.rudder
+	_check_reference_modes(reference_session.aircraft.model)
 	reference_session.free()
 
 	# Reference ± doublet through the real session → commands → servo → aero → RK4 path.
@@ -245,13 +321,10 @@ func _run() -> void:
 	_check("right-first doublet yaws in both commanded directions",
 		right_stats.first_phase_yaw_deg_s > 0.0 and right_stats.second_phase_yaw_deg_s < 0.0,
 		"right-phase r %.2f°/s, left-phase r %.2f°/s" % [right_stats.first_phase_yaw_deg_s, right_stats.second_phase_yaw_deg_s])
-	_check("reference doublet |β| peak ≤25° (estimated screen)", right_stats.beta_peak_deg <= BETA_LIMIT_DEG, _stats_detail(right_stats))
+	_check_pending_stik_rudder_sideslip("reference doublet |β| peak ≤25° (estimated screen)", right_stats.beta_peak_deg <= BETA_LIMIT_DEG,
+		right_first.fault.is_empty() and right_stats.finite, _stats_detail(right_stats))
 	_check("reference doublet |r| peak ≤120°/s (estimated screen)", right_stats.r_peak_deg_s <= YAW_RATE_LIMIT_DEG_S, _stats_detail(right_stats))
-	var recovery_sample_valid: bool = right_stats.has_r_at_3s and is_finite(right_stats.r_at_3s_deg_s)
-	_check("reference recovery sample exists and is finite", recovery_sample_valid, _stats_detail(right_stats))
-	_check_pending_stik_rudder_recovery("right-first reference |r| at 3.0 s (1.5 s after release) ≤15°/s (estimated recovery screen)",
-		absf(right_stats.r_at_3s_deg_s) <= RELEASE_YAW_RATE_LIMIT_DEG_S, recovery_sample_valid,
-		_stats_detail(right_stats))
+	_check_decay("right-first reference doublet", _run_maneuver(_recovery_doublet(false), REFERENCE_HZ))
 	print("RUDDER_REFERENCE 15 m/s, 240 Hz: " + _stats_detail(right_stats))
 	var old_cndr := _run_maneuver(_doublet(false), REFERENCE_HZ, true)
 	var old_cndr_stats := _trace_stats(old_cndr.trace, rudder_throw_deg)
@@ -269,9 +342,9 @@ func _run() -> void:
 		"δr left %.2f°, right %.2f°; phase r %.2f°/s then %.2f°/s" % [left_stats.rudder_left_delta_deg,
 			left_stats.rudder_right_delta_deg, left_stats.first_phase_yaw_min_deg_s, left_stats.second_phase_yaw_max_deg_s])
 
-	_check("mirrored reference doublet respects the same authority/recovery screens",
-		left_stats.beta_peak_deg <= BETA_LIMIT_DEG and left_stats.r_peak_deg_s <= YAW_RATE_LIMIT_DEG_S
-		and left_stats.has_r_at_3s and absf(left_stats.r_at_3s_deg_s) <= RELEASE_YAW_RATE_LIMIT_DEG_S, _stats_detail(left_stats))
+	_check("mirrored reference doublet respects the same authority screens",
+		left_stats.beta_peak_deg <= BETA_LIMIT_DEG and left_stats.r_peak_deg_s <= YAW_RATE_LIMIT_DEG_S, _stats_detail(left_stats))
+	_check_decay("left-first reference doublet", _run_maneuver(_recovery_doublet(true), REFERENCE_HZ))
 
 	# Timestep comparison at the same 15 m/s reference maneuver; event times align exactly at both rates.
 	var fine := _run_maneuver(_doublet(false), 2 * REFERENCE_HZ)
@@ -369,7 +442,7 @@ func _run() -> void:
 		_stats_detail(gamepad_left.stats))
 
 	Engine.physics_ticks_per_second = saved_hz
-	print("%d checks, %d failed, %d pending Stik recovery" % [_count, _failures, _pending])
+	print("%d checks, %d failed, %d pending Stik sideslip" % [_count, _failures, _pending])
 	quit(1 if _failures > 0 else 0)
 
 

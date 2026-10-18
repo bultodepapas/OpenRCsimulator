@@ -77,6 +77,11 @@ func _initialize() -> void:
 		return
 	var worst_fin := 0.0
 	var worst_cnb := 0.0
+	# D10-R2: the fuselage's Munk couple (aero.surfaces.body_cn_beta) is checked apart from the fin.
+	var body_cn: float = float(model.surfaces.get("body_cn_beta", 0.0))
+	var no_body := model.duplicate(true)
+	no_body.surfaces.erase("body_cn_beta")
+	var worst_body := 0.0
 	var worst_analytic_h005 := 0.0
 	var worst_analytic_h00125 := 0.0
 	var worst_consistency := 0.0
@@ -109,13 +114,14 @@ func _initialize() -> void:
 			every_refinement_converged = false
 		var fin_part := total - _cnr(no_fin, a)
 		var cnb := _cnb(model, a)
+		var fin_cnb := _cnb(no_body, a) if body_cn != 0.0 else cnb
 		var consistency_error := absf(total / consistent - 1.0)
 		var sample_values_finite: bool = is_finite(total) and is_finite(refined) \
 			and is_finite(float(analytic.total_cnr)) and is_finite(float(analytic.fin_lift_cnr)) \
 			and is_finite(float(analytic.fin_profile_cnr)) and is_finite(float(analytic.wing_profile_cnr)) \
 			and is_finite(float(analytic.wing_induced_cnr)) and is_finite(float(analytic.wing_lift_cnr)) \
 			and is_finite(error_h005) and is_finite(error_h00125) and is_finite(fin_part) \
-			and is_finite(cnb) and is_finite(consistency_error)
+			and is_finite(cnb) and is_finite(fin_cnb) and is_finite(consistency_error)
 		comparison_samples_finite = comparison_samples_finite and sample_values_finite
 		if consistency_error > worst_consistency:
 			worst_consistency = consistency_error
@@ -126,12 +132,18 @@ func _initialize() -> void:
 		if deg == 0.0:
 			alpha0_local_cnr = total
 		worst_fin = maxf(worst_fin, absf(fin_part / fin_invariant - 1.0))
-		worst_cnb = maxf(worst_cnb, absf(cnb / cnb_fin - 1.0))
+		worst_cnb = maxf(worst_cnb, absf(fin_cnb / cnb_fin - 1.0))
+		if body_cn != 0.0:
+			# ½ρSb·Cnβ_B·u·v with u = V cos α cos β, v = V sin β: dCn/dβ at β → 0 is Cnβ_B·cos α.
+			worst_body = maxf(worst_body, absf((cnb - fin_cnb) / (body_cn * cos(a)) - 1.0))
 	_check("fin: local yaw-rate damping = −2·(l_v/b)·Cnβ_fin = %.4f within 2 %% at α 0–11° (consistent velocity, force, arm)" % fin_invariant,
 		worst_fin < 0.02, "worst %.2f %%" % (100.0 * worst_fin))
 	# The data's Cnb uses the fin arm from the ARP (loader contract); the local fin acts about the CG.
-	_check("local Cnβ within 3 %% of the fin-derived Cnβ about the CG %.4f at α 0–11°" % cnb_fin, worst_cnb < 0.03,
+	_check("local fin Cnβ within 3 %% of the fin-derived Cnβ about the CG %.4f at α 0–11°" % cnb_fin, worst_cnb < 0.03,
 		"worst %.2f %%" % (100.0 * worst_cnb))
+	if body_cn != 0.0:
+		_check("local body couple adds Cnβ_B·cos α (Cnβ_B %.4f) within 0.5 %% at α 0–11°" % body_cn, worst_body < 0.005,
+			"worst %.3f %%" % (100.0 * worst_body))
 	_check("α=0 local Cnr within 7 %% of the fin-plus-wing-profile approximation %.4f" % consistent,
 		absf(alpha0_local_cnr / consistent - 1.0) < 0.07, "local %.6f" % alpha0_local_cnr)
 	var comparison_metrics_finite: bool = comparison_samples_finite and is_finite(consistent) and is_finite(alpha0_local_cnr) \

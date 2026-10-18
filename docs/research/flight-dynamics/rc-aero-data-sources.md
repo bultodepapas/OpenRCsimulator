@@ -57,6 +57,13 @@ Identified Cnβ spans 0.046/rad (Ultra Stick 25e) to 0.167/rad (T-2), against th
   - Wind tunnel (table 2): CD0 0.0503, K 0.0764 (e 0.53), CL0 0.257, CLα 0.1122/deg.
   - Flight: automated glides and slow-downs recover CD0 within 10 %; manual glides miss it by about 70 %.
   - Stationary propellers add 0.01–0.03 to CD, depending on where the blades stop.
+- **Locked-propeller drag** (Hartman, Biermann 1938, NACA Report 641; Hartman 1933, Report 464).
+  - Report 641, fig. 13, gives the locked 3-blade thrust coefficient Tc = T/(ρV²D²), read from the figure: about −0.040 at 0°, −0.035 at 20°, −0.025 at 40° and −0.002 at 80° blade angle at 0.75R.
+  - Fig. 12 shows that the per-blade coefficients differ little between 2, 3 and 4 blades.
+  - Report 464 gives 0.0227 for a locked propeller at 22°, falling to 0.0014 when feathered at 80°. That matches Report 641 scaled to two blades (2/3 × 0.034).
+  - Its drag on the wing reference is ΔCD = 2|Tc|D²/S per propeller.
+  - Cross-check: for the FliTePlat's two 12×6 propellers this predicts 0.019, inside the 0.01–0.03 that Southampton measured.
+  - These are full-scale Reynolds numbers; small propellers have more blade drag at Re below 10⁵ (Deters, Ananda, Selig 2014), so the RC value may be higher.
 - **FASER tunnel** (Ritchie 2013): CL0 0.113, CLα 0.0762/deg (section "Ultra Stick family").
 - **Low-Reynolds CLmax** (Vahora, Ananda, Selig 2018, UIUC GA-USTAR 1/5-scale RC Cessna 182). At the model's stall Re of 230,000, the full-scale NACA 2412 loses Clmax; full scale gives 1.75 (XFOIL) and 1.62 (measured at Re 3.1·10⁶). A new airfoil, VAS1715, was needed to match the full-scale lift slope and Clmax. A scale model with the full-size airfoil therefore stalls earlier than the airplane it copies.
 - **Small-UAV identification, low relevance.** Jayanti et al. 2026 validate a 2.43 m, 7.5 kg twin's CFD model against flight. The BYU drag-polar thesis (Ostler 2006) was blocked (403) and is kept as a link.
@@ -88,24 +95,16 @@ Identified Cnβ spans 0.046/rad (Ultra Stick 25e) to 0.167/rad (T-2), against th
 
 The manifest's `links` list records the leads without a downloaded file and why: blocked or record-only papers (MDPI Aerospace 10(4):350, the Piper Cub J-3 RPV identification), pages without numbers (Olson's Ultra Stick 120 spins), and unchecked candidates. The unchecked ones are UMN Baldr flights 12, 13 and 17, the UIUC unsteady high-α thesis, the GA rotary-balance and spin-tunnel companions, and two spin theses.
 
-## Open uses
+## Uses
 
-- [`spin_state.py`](../../../research/flight-test/spin_state.py) compares the flight-test battery's `spin` card with the FASER and Aero Testbed spins, which were flown with the same entry. On the D10-R2 run, Ωb/2V is close to both references and roll rate is similar, but both references show the same three differences:
-  - **Less yaw.** The model's spins are roll-dominated: r 78–100°/s on the Stik variants and 99–112°/s on the Extra, against about 160 (FASER) and 150–155°/s (Extra 260).
-  - **Lower α, nose lower.** The model flies α 19–23° and θ −62 to −66°. FASER flew α 30°, and the Extra 260 flew θ −55 to −57°, which implies α of about 33–35° for a near-vertical path.
-  - **Far less vertical force.** The Extra 300S sinks 21.2–21.6 m/s at 7.1 kg/m², a vertical-force coefficient 2(W/S)g/(ρV²) of 0.25. The Extra 260 sinks 15.5–16.8 m/s at 13.0 kg/m², a coefficient of 0.74–0.86.
+Comparisons made so far, with numbers and caveats, live in [FT-03](../flight-test/FT-03/README.md#against-measured-rc-class-data). In brief:
 
-  The model's developed spin is therefore steeper and faster than the measured RC spins, with about a third of their vertical force. These are other airframes, with their own throws and inertias. The card's window, 4.0–6.25 s, is about three turns in, while the airspeed still rises about 1 m/s per second. So this is a consistent finding to investigate in the post-stall model, not yet a proven defect. A longer pro-spin hold would show whether the model settles at a higher α.
-- [`polar_fit.py`](../../../research/flight-test/polar_fit.py) fits each aircraft's airframe polar from `aero_sweep` and compares it with the idle glides. Results on the D10-R2 run:
-  - **Stik lift matches the Ultra Stick 120 tunnel.** CL at α 0 is 0.107 against FASER's 0.113, and CLα is 0.0799 against 0.0762/deg, both within 5 %.
-  - **Fleet polars sit in the measured RC range.** CDmin is 0.029–0.043 and e 0.75–0.79, against CD0 0.050 and e 0.53 for the FliTePlat. The fit needs the offset CL at least drag: without it, the cambered Stik and Timber give e of about 1.7, which is a fitting artifact.
-  - **Idle glides add 0.003–0.024 to CD on the glow-idling and turbine aircraft.** This is the propeller at idle plus trim drag, the same order as the FliTePlat's 0.01–0.03.
-  - **The Timber's propeller stops at zero throttle, and the model then adds no drag.** [`propulsion.gd`](../../../app/physics/propulsion.gd) returns zero loads below 1 rpm for non-glow propellers. Scaled by propeller disc to wing area, the FliTePlat's stopped-propeller increment would be 0.006–0.019. That would lower the Timber's best idle glide ratio from 13.9 to about 10.6–12.6. This candidate gap belongs to the propulsion owners.
-  - **The glow Stik variants do not descend at idle at 1.3 and 1.6 Vs.** Their idle turns 5,000–8,800 rpm in the glide. This is FT-01 finding 2, now seen in the glide.
-- **Static lateral derivatives.** These come from `aero_sweep` row `beta_05` divided by 5° in radians, at each aircraft's trim α, on the D10-R2 run. Results:
-  - **Avanti:** CYβ −0.90, Clβ −0.138, Cnβ 0.187. The T-2's flight model at α 4° gives −0.83, −0.149 and 0.191: the same order for a different jet layout.
-  - **Stik:** Cnβ 0.062 lies within the identified range. Its Clβ of −0.079 at trim α is twice the Ultra Stick 25e's flight-identified −0.039; the D10-R2 table lists the base value, −0.0545. That points to a CL-dependent dihedral effect worth reviewing against the sister airframe.
-  - **Others:** Extra CYβ −0.52, Clβ −0.024, Cnβ 0.162; P-51 −0.46, −0.064, 0.046; Timber −0.32, −0.080, 0.049.
+- [`spin_state.py`](../../../research/flight-test/spin_state.py) compares the `spin` card with the FASER and Extra 260 spins. The model's spin matches their Ωb/2V and roll rate, but it is roll-dominated, steeper (α 19–23° against about 30–35°) and holds about a third of the Extra 260's vertical force.
+- [`polar_fit.py`](../../../research/flight-test/polar_fit.py) fits the airframe polars. The Stik's lift matches the FASER tunnel within 5 %, and the fleet's CDmin and e lie in the measured range. Its glide check found a candidate propulsion gap: a stopped non-glow propeller adds no drag (NACA Report 641 basis above).
+- The static lateral derivatives screen the Avanti against the T-2 jet and the Stik against the Ultra Stick 25e. The Stik's Clβ at trim is twice the 25e's.
+
+Still open:
+
 - Check the aero model's roll and yaw damping against the FASER α trends: constant to stall, then loss of roll damping. The T-2 table gives a jet's Clp and Cnr for the same check on the Avanti.
-- Use the Polhamus subcritical crossflow drag, 1.6–2.0 for the Stik's slab sides, in any knife-edge fuselage side-force estimate. The D10-R2 Allen–Perkins estimate assumed about 1.5.
+- Use the Polhamus subcritical crossflow drag, 1.6–2.0 for the Stik's slab sides, in any knife-edge fuselage side-force estimate. The D10-R2 Allen–Perkins estimate has been updated to this range.
 - Add FASER as an `openrc-reference v1` dataset once a quantity with a printed value and a defined scaling is chosen.

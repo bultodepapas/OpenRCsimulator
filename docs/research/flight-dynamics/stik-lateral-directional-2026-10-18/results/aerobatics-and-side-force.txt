@@ -1,0 +1,26 @@
+Exploratory aerobatic probe, 2026-10-18 (removed afterwards: research/flight-test FT already flies these maneuvers), 240 Hz, from 150 m.
+Before = data Cnβ 0.1274; D10-R2 = Cnβ 0.0742 (trimmed with its own data).
+
+before  loop 20 m/s: 360° pitch in 2.92 s; min speed 22.4 m/s, height span 23.9 m (top 23.2 m above entry), exit heading change +2.5°, exit bank -3.8°, max |β| 0.6°
+D10-R2  loop 20 m/s: 360° pitch in 2.92 s; min speed 22.4 m/s, height span 23.9 m (top 23.2 m above entry), exit heading change +2.3°, exit bank -3.8°, max |β| 0.7°
+before  axial roll 20 m/s: 360° in 1.63 s; max p 255°/s, altitude change -4.3 m, heading change -6.0°, max |β| 6.3°
+D10-R2  axial roll 20 m/s: 360° in 1.77 s; max p 239°/s, altitude change -2.9 m, heading change -8.6°, max |β| 9.5°
+before  knife-edge 18/22/26 m/s: rudder at full left (cmd -0.98 includes trim), β +17.3°, bank 80°, speed 33 m/s, altitude rate -4.9/-4.6/-4.2 m/s
+D10-R2  knife-edge 18/22/26 m/s: rudder at full left, β +20.7°, bank 83°, speed 37 m/s, altitude rate -12.5/-12.2/-11.8 m/s
+
+Side-force probe (folded into research/flight-test aero_sweep), V 30 m/s, α 3°, controls neutral (identical CY for both data sets; Cn differs):
+beta  CY_oracle  CY_local  CY_blended  local_weight
+  5    -0.0464   -0.0219   -0.0464     0.00
+ 10    -0.0918   -0.0441   -0.0677     0.51
+ 15    -0.1352   -0.0611   -0.0611     1.00
+ 20    -0.1740   -0.0552   -0.0552     1.00
+ 30    -0.2340   -0.0642   -0.0642     1.00
+ 45    -0.2759   -0.0914   -0.0914     1.00
+ 90    -0.0445   -0.1263   -0.1263     1.00
+Knife-edge needs CY = W/(qS) = 0.110 at 30 m/s and 0.205 at 22 m/s (2.885 kg).
+
+In-flight regime (research/flight-test --diagnostics, knife_edge_full_rudder right 100pct, mean after 6 s):
+before  beta 17.3°, local weight 0.13 (= sideslip weight 0.13), CY oracle -0.104, local -0.017, flown -0.092, airspeed 32.9 m/s
+D10-R2  beta 20.7°, local weight 0.60 (= sideslip weight 0.60), CY oracle -0.130, local -0.031, flown -0.070, airspeed 36.5 m/s
+Diagnostics reproduce the production blend exactly: worst |blended - (oracle + w(local - oracle))| = 0 over 9438 rows (38 Stik flights).
+With and without --diagnostics the Stik profile compares with 0 changes (--fail-on-change exit 0).

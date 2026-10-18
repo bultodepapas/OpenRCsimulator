@@ -1,0 +1,48 @@
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+FT stik-glow-55ax-2t: 2.62 kg, S 0.465 m2, start 20.0 m/s, CL_max 1.10 -> Vs estimate 9.1 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.101,"first_untrimmable_mps":37.0,"points":22,"slowest_trim_mps":15.0}
+   note: no level trim below 15.0 m/s (5 slower speeds failed)
+FT stall_power_off          INVALID {}
+   note: no stall break within 40 s
+   note: stall_power_off: no trim at 12.7 m/s, started at 15.4 m/s
+FT vmax                     valid {"height_error_end_m":0.38,"height_error_run_m":0.41,"initial_acceleration_mps2":3.48,"max_level_speed_kmh":140.1,"max_level_speed_mps":38.91,"rpm_at_max":15888,"time_plus_10_mps_s":2.28,"time_plus_5_mps_s":1.28,"time_to_90_percent_s":5.5}
+FT modes                    valid {}
+   note: 1.3Vs: no trim at 11.8 m/s: nonfinite iterated trim residual
+   note: 0.8Vmax: longitudinal roots do not separate into short period and phugoid; phugoid not reported
+FT aero_sweep               valid {"cy_at_beta20":-0.0553,"cy_max_beta_le_30":0.0678,"cy_oracle_at_beta20":-0.1736,"knife_edge_cy_needed_at_0_8vmax":0.0933,"knife_edge_side_force_margin":0.726,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":1.49}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.068 of 0.093)
+FT stall_power_on           valid {"altitude_lost_m":12.4,"bank_in_first_second_deg":-90.7,"break_kind":"wing drop or sink","deceleration_before_break_mps2":1.26,"max_bank_in_recovery_deg":90.7,"ratio_to_cl_max_estimate":0.816,"recovery_time_s":2.82,"stall_alpha_deg":17.1,"stall_speed_mps":7.39,"wing_drop":"left"}
+   note: stall_power_on: no trim at 12.7 m/s, started at 15.4 m/s
+FT throttle_response        valid {"rpm_full":15493,"rpm_idle_end":8917,"rpm_trimmed":8120,"speed_gain_in_6_s_mps":17.26,"spool_down_90_10_s":3.517,"spool_up_10_90_s":3.463}
+FT hands_off                valid {"bank_10_s_deg":1.7,"bank_30_s_deg":4.3,"bank_after_aileron_pulse_deg":12.9,"heading_change_10_s_deg":24.9,"heading_change_30_s_deg":72.5,"height_change_10_s_m":2.8,"height_change_30_s_m":-4.56,"phugoid_period_s":null,"reached_floor_s":null,"speed_change_10_s_mps":1.14,"speed_change_30_s_mps":0.41}
+FT climb                    valid {"best":{"case":"2.0Vs","path_angle_deg":63.5,"pitch_deg":65.2,"rpm":11374,"speed_mps":17.91,"vertical_speed_mps":16.23,"vs_factor":2.0}}
+   note: 1.3 Vs: thrust exceeds the climb need; at 74° pitch it holds 16.05 m/s, not 11.79
+   note: 1.6 Vs: thrust exceeds the climb need; at 73° pitch it holds 16.32 m/s, not 14.51
+   note: climb: no trim at 11.8 m/s, started at 15.0 m/s
+   note: climb: no trim at 14.5 m/s, started at 15.2 m/s
+FT glide                    valid {"best":{"case":"1.3Vs","path_angle_deg":0.7,"pitch_deg":7.5,"rpm":5089,"speed_mps":11.79,"vertical_speed_mps":0.15,"vs_factor":1.3}}
+   note: glide: no trim at 11.8 m/s, started at 15.0 m/s
+   note: glide: no trim at 14.5 m/s, started at 15.2 m/s
+FT roll_rate                valid {}
+   note: roll_rate: no trim at 11.8 m/s, started at 15.0 m/s
+FT pitch_pull               valid {}
+FT loop                     valid {"alpha_target_deg":10.1,"entry_speed_mps":31.13,"heading_change_deg":0.5,"height_change_m":13.5,"loop_height_m":41.5,"loop_time_s":3.73,"max_load_factor_g":11.07,"max_sideslip_deg":3.2,"min_speed_mps":26.9}
+FT turn_60                  valid {}
+FT rudder_step              valid {}
+FT knife_edge               INVALID {}
+   note: left 50 %: bank -90.0°, vertical speed -0.57 m/s, rudder saturated 0 % 
+FT knife_edge_full_rudder   valid {}
+FT inverted                 valid {"alpha_deg":-3.4,"elevator_servo":-0.019,"elevator_stick":-0.019,"speed_mps":23.37,"throttle":0.29,"upright_throttle":0.187,"vertical_speed_mps":0.04}
+FT spin                     valid {}
+   note: spin: no trim at 10.9 m/s, started at 15.3 m/s
+FT takeoff                  valid {"ground_roll_m":16.3,"liftoff_speed_mps":15.56,"liftoff_speed_vs":1.72,"max_heading_error_deg":0.2,"max_rudder_stick":0.02,"rotation_attitude_deg":8.0,"rudder_free_heading_change_3_s_deg":0.2,"time_to_liftoff_s":3.9}
+FT landing                  valid {"approach_speed_mps":11.79,"bounced":false,"flare_height_m":0.824117143225668,"max_heading_error_deg":0.3,"rollout_m":98.0,"rollout_time_s":8.73,"touchdown_past_threshold_m":46.9,"touchdown_pitch_deg":0.1,"touchdown_sink_mps":0.44,"touchdown_speed_mps":19.45,"touchdown_speed_vs":2.15}
+   note: landing: no trim at 11.8 m/s, started at 15.0 m/s
+FT report: tmp/ft-v3-main-d10r2/stik-glow-55ax-2t/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+     at: _stringify (core/io/json.cpp:86)
+     GDScript backtrace (most recent call first):
+         [0] _run (research/flight-test/flight_test.gd:153)
+         [1] _initialize (research/flight-test/flight_test.gd:109)

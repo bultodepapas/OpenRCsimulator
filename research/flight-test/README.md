@@ -1,6 +1,6 @@
 # Standard flight-test battery (FT)
 
-2026-10-16 · **Status: research tool, card `ft-card-v3`** (v3, 2026-10-18: adds `aero_sweep`). Flies one standard test card through the real session loop for every fixed-wing catalog aircraft. It writes a profile per aircraft and compares two runs case by case. [Baseline profiles and findings](../../docs/research/flight-test/FT-01/README.md)
+2026-10-16 · **Status: research tool, card `ft-card-v3`** (v3, 2026-10-18: adds `aero_sweep`). Flies one standard test card through the real session loop for every fixed-wing catalog aircraft. It writes a profile per aircraft and compares two runs case by case. Baseline profiles and findings: [FT-01](../../docs/research/flight-test/FT-01/README.md) (card v2) and [FT-03](../../docs/research/flight-test/FT-03/README.md) (card v3 on the D10-R2 tree, with measured-RC comparisons)
 
 The card measures what a test pilot would measure on a real model:
 
@@ -44,7 +44,7 @@ python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tm
 - `<out>/run.json`: card version, git commit and dirty paths, Godot version, `--app`, and each aircraft's data-file SHA-256, exit status and valid count.
 - `<out>/summary.md`: the comparison table across aircraft.
 
-`python research/flight-test/spin_state.py <out> [aircraft ...]` reads the spin traces offline. It prints each aircraft's state averaged over the card's steady window (4.0–6.25 s): α, |β|, airspeed, body rates, Ωb/2V, pitch angle, pitch-rate swing and sink. Beside each aircraft it prints two spins measured in flight with the same entry: NASA FASER (Ultra Stick 120) and the UIUC Aero Testbed (35 % Extra 260). Their speeds are scaled to that aircraft's wing loading. These rows compare other airframes; they are not acceptance bands ([sources and current findings](../../docs/research/flight-dynamics/rc-aero-data-sources.md#open-uses)).
+`python research/flight-test/spin_state.py <out> [aircraft ...]` reads the spin traces offline. It prints each aircraft's state averaged over the card's steady window (4.0–6.25 s): α, |β|, airspeed, body rates, Ωb/2V, pitch angle, pitch-rate swing and sink. Beside each aircraft it prints two spins measured in flight with the same entry: NASA FASER (Ultra Stick 120) and the UIUC Aero Testbed (35 % Extra 260). Their speeds are scaled to that aircraft's wing loading. These rows compare other airframes; they are not acceptance bands ([sources](../../docs/research/flight-dynamics/rc-aero-data-sources.md), [current findings](../../docs/research/flight-test/FT-03/README.md#against-measured-rc-class-data)).
 
 `python research/flight-test/polar_fit.py <out> [aircraft ...]` works the same way for lift and drag (card v3 or later). It fits each airframe polar from `aero_sweep`: CL at α 0, CLα, and CD = CDmin + K(CL − CL_md)² with e. It then compares the idle glides with that polar, so the excess shows the idle propeller and trim drag. It also prints the NASA FASER and Southampton FliTePlat wind-tunnel references.
 
