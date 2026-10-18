@@ -68,6 +68,7 @@ func _run() -> void:
 	stage.add_child(camera)
 	camera.current = true
 	var mode := str(args.get("mode", "field"))
+	var construction_started := Time.get_ticks_usec()
 	if mode == "gallery":
 		if not _gallery():
 			return
@@ -77,6 +78,9 @@ func _run() -> void:
 	else:
 		_fail("mode must be field or gallery")
 		return
+	report["construction_ms"] = float(Time.get_ticks_usec() - construction_started) / 1000.0
+	report["engine_static_memory_bytes"] = int(Performance.get_monitor(Performance.MEMORY_STATIC))
+	report["memory_scope"] = "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset."
 	content.process_mode = Node.PROCESS_MODE_DISABLED
 	if str(args.get("tree_shadows", "on")) == "off":
 		_disable_tree_shadows(content)

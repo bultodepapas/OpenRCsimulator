@@ -210,6 +210,8 @@ func _build_world() -> Dictionary:
 	environment_node.environment = _environment
 	world.add_child(environment_node)
 	_field_node = FieldBuilder.build(_field_data)
+	_field_node.process_mode = Node.PROCESS_MODE_DISABLED
+	_freeze_other_vegetation(_field_node)
 	# This probe varies grass wind only; L15b has a separate tree-wind capture.
 	# Permit older baseline shaders without the ablation uniform.
 	var grove: Node3D = _field_node.get_node_or_null("treeline") as Node3D
@@ -229,6 +231,36 @@ func _build_world() -> Dictionary:
 	world.add_child(camera)
 	camera.current = true
 	return {"world": world, "field": _field_node, "environment": _environment, "camera": camera}
+
+
+## Attribute this fixture's moving pixels to grass. Other vegetation has its own wind proof.
+## Duplicate overrides so cached source materials and other scenes are never mutated.
+func _freeze_other_vegetation(node: Node) -> void:
+	if node.name == "NearGrass":
+		return
+	if node is MultiMeshInstance3D:
+		var instance := node as MultiMeshInstance3D
+		var mesh := instance.multimesh.mesh
+		for index: int in mesh.get_surface_count():
+			var material := mesh.surface_get_material(index) as ShaderMaterial
+			if material == null:
+				continue
+			var frozen := material.duplicate() as ShaderMaterial
+			var changed := false
+			for parameter: Dictionary in RenderingServer.get_shader_parameter_list(material.shader.get_rid()):
+				var name := str(parameter.name)
+				if name == "wind_enabled":
+					frozen.set_shader_parameter(name, false)
+					instance.set_instance_shader_parameter(name, false)
+					changed = true
+				elif name == "wind_strength":
+					frozen.set_shader_parameter(name, 0.0)
+					instance.set_instance_shader_parameter(name, 0.0)
+					changed = true
+			if changed:
+				mesh.surface_set_material(index, frozen)
+	for child: Node in node.get_children():
+		_freeze_other_vegetation(child)
 
 
 func _scenarios() -> Array[Dictionary]:
