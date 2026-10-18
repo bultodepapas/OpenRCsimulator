@@ -2,13 +2,15 @@
 extends SceneTree
 
 var _textures: Dictionary = {}
+var _require_mipmaps := false
 
 
 func _initialize() -> void:
 	var args := OS.get_cmdline_user_args()
-	if args.size() != 2:
-		_fail("expected catalog and license SHA-256 arguments")
+	if args.size() < 2 or args.size() > 3 or (args.size() == 3 and args[2] != "--require-mipmaps"):
+		_fail("expected catalog and license SHA-256 arguments, optionally --require-mipmaps")
 		return
+	_require_mipmaps = args.size() == 3
 	var paths := ["res://assets/landscape/vegetation/catalog.json", "res://assets/landscape/vegetation/LICENSE.txt"]
 	for index in range(paths.size()):
 		if not FileAccess.file_exists(paths[index]) or FileAccess.get_sha256(paths[index]) != args[index]:
@@ -52,13 +54,23 @@ func _texture_valid(texture: Texture2D) -> bool:
 	var picture := texture.get_image()
 	if picture == null or picture.is_empty():
 		return false
+	if _require_mipmaps and not picture.has_mipmaps():
+		printerr("missing imported mip chain: " + texture.resource_path)
+		return false
 	var context := HashingContext.new()
 	context.start(HashingContext.HASH_SHA256)
 	context.update(picture.get_data())
+	var base_image := picture.duplicate() as Image
+	base_image.clear_mipmaps()
+	var base_context := HashingContext.new()
+	base_context.start(HashingContext.HASH_SHA256)
+	base_context.update(base_image.get_data())
 	# Mip availability is an observed source property, not an export assumption.
 	_textures[texture.resource_path] = {
 		"width": picture.get_width(), "height": picture.get_height(),
 		"format": picture.get_format(), "mipmaps": picture.has_mipmaps(),
+		"mipmap_count": picture.get_mipmap_count(), "decoded_bytes": picture.get_data().size(),
+		"base_image_sha256": base_context.finish().hex_encode(),
 		"image_sha256": context.finish().hex_encode(),
 	}
 	return true
