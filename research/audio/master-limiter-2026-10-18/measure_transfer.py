@@ -10,7 +10,7 @@ import wave
 import numpy as np
 
 RAMP_S, HOLD_S, F0 = 6.0, 4.0, 1000.0
-LEVELS = [-12.0, -6.0, -4.0, -3.0, -2.5, -2.1, -1.9, -1.5, -1.0, 0.0, 3.0, 6.0]
+LEVELS = [-11.5, -6.0, -4.0, -3.0, -2.5, -2.1, -1.9, -1.5, -1.0, 0.0, 3.0, 6.0]
 
 
 def read(path):
@@ -43,7 +43,7 @@ def main():
         print(path)
         for level in LEVELS:
             centre = start + int((level + 12.0) / 18.0 * RAMP_S * rate)
-            peak, distortion = window_stats(x[centre - win // 2:centre + win // 2], rate)
+            peak, distortion = window_stats(x[max(0, centre - win // 2):centre + win // 2], rate)
             print(f"  in {level:+5.1f} dBFS -> peak {peak:+6.2f} dBFS, distortion {distortion:6.1f} dB")
         for after in (0.5, 1.0, 2.0, 3.5):
             centre = start + int((RAMP_S + after) * rate)
