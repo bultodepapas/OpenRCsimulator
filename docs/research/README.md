@@ -23,7 +23,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Cinematic trailer
 
-[TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. [TRA-01…07 production evidence](cinematic-trailer/production-2026-10-17.md) records the first delivery and source identities; [revision 2](cinematic-trailer/revision-2-2026-10-17.md) opens with formation and continuous music. The [production plan](../plans/cinematic-trailer.md) retains creative targets and remaining release gates.
+[TRA-00 source investigation, 2026-10-17](cinematic-trailer/2026-10-17.md) records vehicle/capture/economics boundaries, 16 expanded web investigations, five music candidates, code-effect references and video-skill comparisons. [TRA-01…07 production evidence](cinematic-trailer/production-2026-10-17.md) records the first delivery and source identities; [revision 6](cinematic-trailer/revision-6-2026-10-17.md) removes the abrupt ending reset for a 58-second cut, retaining the cinematic feature titles, MONSTER CAR 2 jump, twilight Lumber, two Extra rolls, formation opening and continuous score. The [production plan](../plans/cinematic-trailer.md) retains creative targets and remaining release gates.
 
 ### Flight logging
 

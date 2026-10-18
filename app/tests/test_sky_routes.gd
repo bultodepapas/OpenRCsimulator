@@ -57,6 +57,13 @@ func _run() -> void:
 	app.time_of_day_dialog._on_apply()
 	check("paused sky apply commits and stays paused", app.time_of_day_dialog == null and app.pause_menu != null \
 		and flight.session.sim.paused and flight.sky_config.preset == "electrical_storm")
+	var thunder: Node = flight._storm_fx.get_node("StormAudio")
+	var soundscape: Node = flight._soundscape_audio.soundscape
+	var thunder_routed: bool = thunder._players.size() == thunder.MAX_VOICES
+	for player: AudioStreamPlayer3D in thunder._players:
+		thunder_routed = thunder_routed and player.bus == soundscape.environment_bus()
+	check("production storm routes every thunder voice through its flight mix", thunder_routed
+		and AudioServer.get_bus_send(AudioServer.get_bus_index(soundscape.environment_bus())) == soundscape.output_bus())
 	check("paused sky preserves full physics and lighting", var_to_bytes(flight.session.checkpoint()) == physical and flight.lighting_config == lighting)
 	check("paused sky selection persists", Preferences.load_from(PREFS).sky_config == flight.sky_config)
 	app.open_time_of_day()

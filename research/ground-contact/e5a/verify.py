@@ -70,6 +70,12 @@ def main():
             original_geometry = geometry_path.read_bytes()
             session_path = clone / REL / "session.gd"
             original_session = session_path.read_text()
+            # Fresh clones have no imported textures. FlightSession now reaches
+            # scenery preload dependencies even though these checks are headless.
+            code, _ = run([str(godot), "--headless", "--path", str(clone / "app"), "--editor", "--import"],
+                          clone, args.out / "clone-import.log")
+            if code:
+                raise RuntimeError("resource import failed in fresh clone")
             code, _ = run(["python3", "research/extra-300/ex05/derive_physics.py", "--check"],
                           clone, args.out / "clone-generator.log")
             if code:
@@ -96,13 +102,17 @@ def main():
                     session_path.write_text(original_session.replace(before, "flight.commands.throttle = 0.0 if"))
                 else:
                     data["crash_hull"]["value"].append(data["landing_gear"]["contacts"][0]["position"]["value"])
+                    data["crash_hull_ids"].append("probe_e5a_wheel_mutation")
+                    data["crash_hull_components"].append(data["crash_hull_components"][0])
                 (clone / DATA).write_text(json.dumps(data, indent=2) + "\n")
                 results[mutation] = checked_program(clone, godot, script, args.out / (mutation + ".log"), True)
-                expected_marker = {"steering_sign": "gp-extra-300s-60: +right command",
+                # The v2 loader now rejects reversed taildragger steering before
+                # the force-sign probe; require that specific diagnostic.
+                expected_marker = {"steering_sign": "taildragger steering contact must be aft of plan CG with negative steering",
                                    "tail_position": "gp-extra-300s-60: generator wheel bottoms",
                                    "missing_wheel_radius": "gp-extra-300s-60: generator wheel bottoms",
                                    "inert_throttle": "pulse produces resolved RPM response",
-                                   "wheel_crash_hull": "completes without crash/fault"}[mutation]
+                                   "wheel_crash_hull": "support contact 'contact_main_left' is also a crash-hull probe"}[mutation]
                 failed_lines = [line for line in (args.out / (mutation + ".log")).read_text().splitlines()
                                 if line.startswith("FAIL ")]
                 if not any(expected_marker in line for line in failed_lines):

@@ -181,6 +181,7 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `propulsion.propeller.slipstream.pieces[].root` | m | length 3…3, each(≥-3, ≤3) | AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state |
 | `propulsion.propeller.slipstream.pieces[].span` | m | ≥0.01, ≤2 | AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state |
 | `propulsion.propeller.slipstream.pieces[].span_dir` | 1 | length 3…3, each(≥-1, ≤1) | AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state |
+| `propulsion.propeller.slipstream.propeller_sidewash` | 1 | ≥0, ≤1 | AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state |
 | `propulsion.propeller.slipstream.reverse_fade` | 1 | length 2…2, each(≥0.01, ≤0.5) | AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state |
 | `propulsion.propeller.slipstream.swirl_factor` | 1 | ≥0, ≤1 | AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state |
 | `propulsion.propeller.slipstream.transport_speed_floor` | m/s | ≥0.1, ≤5 | AircraftData._slipstream → Slipstream.loads / SwirlLoads module / session wake state |
@@ -198,4 +199,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 184 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 185 distinct quantity paths. Shared paths retain branch-dependent ranges.

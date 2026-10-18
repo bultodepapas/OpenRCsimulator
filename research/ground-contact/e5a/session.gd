@@ -1,5 +1,5 @@
 # E5a: Extra taildragger through the real session (servos, engine, aero, surfaces and crash checks).
-# Test-only starts; Home continues to offer runway starts only for the Stik.
+# Stationary trials use the supported runway equilibrium; rolling trials retain test-only starts.
 extends SceneTree
 
 const Flight: Script = preload("res://sim/flight_session.gd")
@@ -11,6 +11,13 @@ const Field: Script = preload("res://data/field_loader.gd")
 var failures: int = 0
 var count: int = 0
 var results: Dictionary = {}
+
+
+func anchor_flags(flight: Node) -> Array:
+	var flags: Array = []
+	for i in flight.anchor_count():
+		flags.append(flight.sim.aux[Flight.AUX_ANCHORS + i * Ground.ANCHOR_STRIDE + 2])
+	return flags
 
 
 func check(label: String, ok: bool, detail: String = "") -> void:
@@ -28,8 +35,10 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 	flight.input_enabled = false
 	var field: Dictionary = Field.load_from(Field.DEFAULT_PATH)
 	if not flight.aircraft.ok or not flight.start.get("ok", false) or not flight.set_field(field.get("field", field)):
+		var setup_error: String = "setup failed: %s; %s; %s" % [str(flight.aircraft.get("errors", [])),
+			str(flight.start.get("message", "")), flight.pause_reason]
 		flight.free()
-		return {ok = false, message = "setup failed"}
+		return {ok = false, message = setup_error}
 	var gear: Dictionary = flight.aircraft.model.landing_gear
 	if gear.is_empty():
 		flight.free()
@@ -44,6 +53,14 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 	flight.reset()
 	flight.trims = {roll = 0.0, pitch = 0.0, yaw = 0.0}
 	flight.commands = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	if initial_speed == 0.0:
+		# Extra now has stiction: retain the product's solved support pose and loaded anchors,
+		# rather than attaching initially unloaded airborne-reset anchors to an approximate pose.
+		var parked: Dictionary = flight.try_runway_start(15.0, -30.0, PI / 2.0)
+		if not parked.ok:
+			flight.free()
+			return {ok = false, message = str(parked.message)}
+		state = flight.sim.state.duplicate()
 	flight.engine_running = powered
 	flight.sim.inputs = flight._inputs()
 	var aux: PackedFloat64Array = flight.sim.aux.duplicate()
@@ -57,6 +74,9 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 	flight.sim.continuous = flight._settled_continuous(state, aux)
 	flight.sim.reset(state)
 	flight.sim.set_paused(false)
+	var initial_anchors: Array = anchor_flags(flight)
+	var previous_anchors: Array = initial_anchors.duplicate()
+	var anchor_events: Array = []
 	var rows: Array = []
 	var maximum_compression: float = 0.0
 	var peak_rpm: float = float(aux[0])
@@ -72,6 +92,11 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 			break
 		flight.sim.step()
 		completed += 1
+		var current_anchors: Array = anchor_flags(flight)
+		for i in current_anchors.size():
+			if current_anchors[i] != previous_anchors[i]:
+				anchor_events.append({tick = completed - 1, time_s = time, contact = i, stuck = current_anchors[i] == 1.0})
+		previous_anchors = current_anchors
 		peak_rpm = maxf(peak_rpm, float(flight.sim.aux[0]))
 		if not flight.sim.fault_reason.is_empty():
 			break
@@ -93,22 +118,35 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 		distance_m = sqrt((end[0] - state[0]) ** 2 + (end[1] - state[1]) ** 2),
 		final_speed_m_s = sqrt(end[3] ** 2 + end[4] ** 2 + end[5] ** 2), rpm = flight.sim.aux[0],
 		peak_rpm = peak_rpm, expected_idle_rpm = flight.aircraft.model.propulsion.idle_rpm}
+	result.initial_anchors = initial_anchors
+	result.final_anchors = previous_anchors
+	result.anchor_events = anchor_events
 	flight.free()
 	return result
 
 
 func _initialize() -> void:
 	var original_hz: int = Engine.physics_ticks_per_second
-	for scenario in ["coast_left", "coast_right", "idle", "pulse"]:
+	for scenario in ["coast_left", "coast_right", "idle", "pulse", "rolling_idle", "rolling_pulse"]:
 		var coasting: bool = scenario.begins_with("coast")
 		var yaw: float = -0.3 if scenario == "coast_left" else (0.3 if scenario == "coast_right" else 0.0)
 		var pair: Array = []
 		for hz in [240, 480, 960]:
-			var result: Dictionary = trial(hz, 3.0 if coasting else 0.0, yaw, not coasting, scenario == "pulse")
+			var rolling: bool = coasting or scenario.begins_with("rolling")
+			var result: Dictionary = trial(hz, 3.0 if rolling else 0.0, yaw, not coasting, scenario.ends_with("pulse"))
 			check("%s at %d Hz completes without crash/fault" % [scenario, hz], result.ok, str(result.get("message", "")))
 			pair.append(result)
 			if result.ok:
 				check("%s retains three wheel contacts" % scenario, result.min_contacts == 3, str(result.min_contacts))
+				if scenario.begins_with("rolling"):
+					check("%s remains sliding throughout the refinement interval" % scenario,
+						result.initial_anchors == [0.0, 0.0, 0.0] and result.anchor_events.is_empty(), str(result.anchor_events))
+				if scenario == "pulse":
+					check("from-rest pulse exercises stick-to-slip breakaway",
+						result.initial_anchors == [1.0, 1.0, 1.0] and result.final_anchors == [0.0, 0.0, 0.0]
+						and not result.anchor_events.is_empty()
+						and result.anchor_events.all(func(event: Dictionary) -> bool: return event.time_s >= 0.5 and event.time_s < 1.5),
+						str(result.anchor_events))
 				if scenario == "idle":
 					check("idle engine remains running near its configured idle", result.rpm >= 0.9 * result.expected_idle_rpm,
 						str(result.rpm))
@@ -130,20 +168,24 @@ func _initialize() -> void:
 			check("%s refinement level %d: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s" % [scenario, level],
 				maxima[0] < 0.002 and maxima[1] < 0.01 and maxima[2] < 0.001 and maxima[3] < 0.005, str(maxima))
 			differences.append(Array(maxima))
-		if differences.size() == 2:
+		# A once-per-tick stick/slip transition has grid-dependent timing, so its global error
+		# need not shrink monotonically. Keep both absolute bounds for the from-rest pulse;
+		# the matched rolling pulse/control retain the strict smooth-branch order check.
+		if differences.size() == 2 and scenario != "pulse":
 			for group in range(4):
 				check("%s component group %d difference shrinks on second refinement" % [scenario, group],
 					differences[1][group] <= maxf(1e-7, differences[0][group] / 1.5),
 					str([differences[0][group], differences[1][group]]))
 		results[scenario + "_refinement"] = differences
-	for index in range(3):
-		var idle: Dictionary = results.idle[index]
-		var pulse: Dictionary = results.pulse[index]
-		if idle.ok and pulse.ok:
-			check("pulse produces resolved RPM response at %d Hz" % pulse.hz, pulse.peak_rpm > idle.peak_rpm + 100.0,
-				str([idle.peak_rpm, pulse.peak_rpm]))
-			check("pulse moves farther than idle by more than the refinement allowance", pulse.distance_m > idle.distance_m + 0.01,
-				str([idle.distance_m, pulse.distance_m]))
+	for prefix in ["", "rolling_"]:
+		for index in range(3):
+			var idle: Dictionary = results[prefix + "idle"][index]
+			var pulse: Dictionary = results[prefix + "pulse"][index]
+			if idle.ok and pulse.ok:
+				check("%spulse produces resolved RPM response at %d Hz" % [prefix, pulse.hz], pulse.peak_rpm > idle.peak_rpm + 100.0,
+					str([idle.peak_rpm, pulse.peak_rpm]))
+				check("%spulse moves farther than idle by more than the refinement allowance" % prefix, pulse.distance_m > idle.distance_m + 0.01,
+					str([idle.distance_m, pulse.distance_m]))
 	Engine.physics_ticks_per_second = original_hz
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):

@@ -3,6 +3,7 @@ extends SceneTree
 const StormEvents = preload("res://environment/storm_events.gd")
 const Lightning = preload("res://render/weather/lightning.gd")
 const StormAudio = preload("res://audio/storm_audio.gd")
+const Soundscape = preload("res://audio/soundscape.gd")
 
 var _checks: int = 0
 var _failures: int = 0
@@ -22,6 +23,7 @@ func _run_tests() -> void:
 	await _test_cloud_mask_contract()
 	await _test_repeated_configuration_and_silent_audio()
 	await _test_pause_resume_and_restored_thunder()
+	await _test_scene_audio_bus_lifecycle()
 	print("storm event checks=%d failures=%d" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -215,6 +217,49 @@ func _test_pause_resume_and_restored_thunder() -> void:
 		and _pending_count(audio, event_id) == 0)
 	node.queue_free()
 	await process_frame
+
+
+func _test_scene_audio_bus_lifecycle() -> void:
+	var buses_before: int = AudioServer.bus_count
+	var soundscape: Soundscape = Soundscape.new()
+	var other_soundscape: Soundscape = Soundscape.new()
+	root.add_child(soundscape)
+	root.add_child(other_soundscape)
+	soundscape.configure({}, "electric_prop")
+	other_soundscape.configure({}, "electric_prop")
+	var audio: StormAudio = StormAudio.new()
+	root.add_child(audio)
+	audio.configure(_storm_config("full"))
+	audio.update_at(0.0, Vector3.ZERO, false)
+	audio.bind_soundscape(soundscape)
+	audio.bind_soundscape(soundscape) # per-frame binding must remain idempotent
+	var correctly_routed: bool = true
+	for player: AudioStreamPlayer3D in audio._players:
+		correctly_routed = correctly_routed and player.bus == soundscape.environment_bus() \
+			and player.bus != other_soundscape.environment_bus()
+	_check("thunder uses its own flight environment bus", correctly_routed)
+	var bus_index: int = AudioServer.get_bus_index(soundscape.environment_bus())
+	_check("thunder's environment bus feeds the scene limiter", AudioServer.get_bus_send(bus_index) == soundscape.output_bus())
+	audio._start_voice({"channel_world": Vector3.ZERO, "intensity": 1.0}, 0.0)
+	_check("thunder plays before scene suspension", audio._players[0].playing)
+	root.remove_child(soundscape)
+	_check("thunder stops before its scene bus is released", not audio._players[0].playing)
+	root.add_child(soundscape)
+	audio.update_at(0.1, Vector3.ZERO, false)
+	_check("reattached scene restores thunder routing", audio._players[0].bus == soundscape.environment_bus()
+		and AudioServer.get_bus_index(audio._players[0].bus) > 0)
+	audio.bind_soundscape(other_soundscape)
+	audio._start_voice({"channel_world": Vector3.ZERO, "intensity": 1.0}, 0.1)
+	soundscape.free()
+	_check("rebinding releases the previous scene subscription", audio._players[0].playing
+		and audio._players[0].bus == other_soundscape.environment_bus())
+	other_soundscape.free()
+	audio.bind_soundscape(null)
+	_check("released scene returns safely to standalone routing", not audio._players[0].playing
+		and audio._players[0].bus == &"Master")
+	audio.queue_free()
+	await process_frame
+	_check("thunder routing lifecycle leaks no buses", AudioServer.bus_count == buses_before)
 
 
 func _storm_config(flashes: String) -> Dictionary:

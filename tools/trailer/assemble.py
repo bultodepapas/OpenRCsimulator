@@ -40,14 +40,21 @@ def tracked(draw, xy, text, size, spacing, color, regular=False):
     return x
 
 
-def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795), gradient=True):
+def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, title_xy=(88, 795), gradient=True, compact=False):
     im = Image.new("RGBA", (W, H))
     d = ImageDraw.Draw(im)
-    if gradient and (label or title):
+    if gradient and (label or title) and not compact:
         for y in range(750, H):
             a = int(155 * ((y - 750) / (H - 750)) ** 1.35)
             d.line((0, y, W, y), fill=(3, 9, 15, a))
-    if label:
+    if label and compact:
+        f = font(29)
+        width = d.textlength(label, font=f)
+        x = W - 96 - width
+        d.rounded_rectangle((x - 22, 956, W - 76, 1009), radius=4, fill=(4, 12, 20, 155))
+        d.rectangle((x - 20, 966, x - 17, 998), fill=(255, 178, 91, 255))
+        d.text((x, 963), label, font=f, fill=(235, 242, 247, 255))
+    elif label:
         d.rectangle((88, 897, 92, 956), fill=(255, 170, 77, 255))
         d.text((111, 887), label, font=font(43), fill=(245, 246, 248, 255))
         if subtitle:
@@ -56,13 +63,68 @@ def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, t
         d.text(tuple(title_xy), title, font=font(74), fill=(250, 250, 250, 255),
                stroke_width=1 if gradient else 2, stroke_fill=(4, 12, 20, 170))
     if cinematic:
-        d.rectangle((78, 68, 510, 111), fill=(4, 12, 20, 160))
-        tracked(d, (92, 72), "CINEMATIC FORMATION SEQUENCE", 23, 1.3, (243, 247, 252, 255), True)
+        cy = 963 if compact else 72
+        d.rectangle((78, cy - 4, 510, cy + 39), fill=(4, 12, 20, 160))
+        tracked(d, (92, cy), "CINEMATIC FORMATION SEQUENCE", 23, 1.3, (243, 247, 252, 255), True)
     if brand:
         brand_x = 1640 if cinematic else 88
         d.text((brand_x, 72), "OpenRC", font=font(38), fill=(255, 255, 255, 240))
         tracked(d, (brand_x + 1, 119), "SIMULATOR", 20, 4, (230, 239, 247, 230), True)
     im.save(path)
+
+
+def feature_plate(path, cue):
+    """Render a transparent, bounded feature title; motion lives in the edit.
+
+    Typography stays in the upper negative space. The background is a feathered
+    local scrim, not a full-frame grade, so native models and report UI stay clear.
+    Return measured text bounds for export inspection.
+    """
+    im = Image.new("RGBA", (W, H))
+    d = ImageDraw.Draw(im)
+    x, y = cue.get("xy", [96, 88])
+    size = cue.get("size", 82)
+    lines = cue["headline"]
+    assert 1 <= len(lines) <= 2
+    kicker = cue.get("kicker", "")
+    detail = cue.get("detail", "")
+    f = font(size)
+    rows = []
+    if kicker:
+        rows.append((kicker, (x + 53, y + 2), font(25, True), (212, 224, 233, 255)))
+    title_y = y + 42
+    for i, line in enumerate(lines):
+        rows.append((line, (x, title_y + i * (size - 2)), f,
+                     (255, 183, 99, 255) if i == len(lines) - 1 else (248, 250, 252, 255)))
+    if detail:
+        rows.append((detail, (x + 2, title_y + len(lines) * (size - 2) + 18), font(31, True), (234, 241, 247, 255)))
+    bounds = [d.textbbox(pos, text, font=face, stroke_width=1) for text, pos, face, color in rows]
+    assert all(72 <= b[0] and b[2] <= W - 72 and 64 <= b[1] and b[3] <= 450 for b in bounds), bounds
+    right = max(b[2] for b in bounds)
+    bottom = max(b[3] for b in bounds)
+    # Small-resolution mask is smoothly resampled once instead of painting a
+    # costly per-pixel HD gradient. Text remains native-resolution vector type.
+    mask = Image.new("L", (W // 4, H // 4))
+    pixels = mask.load()
+    for py in range(min(H // 4, (bottom + 160) // 4)):
+        yy = py * 4
+        fy = math.exp(-((yy - (y + bottom) / 2) / 200) ** 2)
+        fy *= min(1.0, max(0.0, (bottom + 160 - yy) / 100))
+        for px in range(min(W // 4, (right + 360) // 4)):
+            xx = px * 4
+            fx = math.exp(-((xx - (x + right) / 2) / (right - x + 190)) ** 2)
+            fx *= min(1.0, max(0.0, (right + 360 - xx) / 160))
+            pixels[px, py] = int(115 * fx * fy)
+    scrim = Image.new("RGBA", (W, H), (3, 9, 16, 0))
+    scrim.putalpha(mask.resize((W, H), Image.Resampling.BICUBIC))
+    im.alpha_composite(scrim)
+    d = ImageDraw.Draw(im)
+    if kicker:
+        d.line((x, y + 19, x + 33, y + 19), fill=(255, 183, 99, 255), width=3)
+    for text, pos, face, color in rows:
+        d.text(pos, text, font=face, fill=color, stroke_width=1, stroke_fill=(3, 9, 16, 80))
+    im.save(path)
+    return {"text_bounds": bounds, "safe_area": [72, 64, W - 72, 450], "scrim_bottom": bottom + 160}
 
 
 def end_card(path):
@@ -104,7 +166,10 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
         for key in ("source", "audio"):
             if shot.get(key):
                 shot[key] = str(media_path(shot[key]))
-    assert sum(s["frames"] for s in shots) == 3600
+    assert spec.get("fps", FPS) == FPS
+    assert shots and all(isinstance(s["frames"], int) and s["frames"] > 0 for s in shots)
+    total_frames = sum(s["frames"] for s in shots)
+    total_duration = total_frames / FPS
     out.mkdir(parents=True, exist_ok=True)
     work.mkdir(parents=True, exist_ok=True)
     end_card(work / "end-card.png")
@@ -152,6 +217,9 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
             vf += ",eq=contrast=1.035:brightness=-0.012:saturation=1.025:gamma=0.985"
         overlay = shot.get("graphics", {})
         cmd = [ffmpeg, "-y", "-hide_banner", "-loglevel", "warning", *input_args]
+        filters = [f"[0:v]{vf}[base]"]
+        current = "base"
+        input_index = 1
         if overlay:
             graphic = work / f"{index:02}-graphics.png"
             plate(graphic, **overlay)
@@ -160,9 +228,39 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
             fade_start = max(0.2, show - 0.35)
             # A formation disclosure must be present for the whole staged shot.
             anim = "format=rgba" if overlay.get("cinematic") else f"format=rgba,fade=t=in:st=0.10:d=0.25:alpha=1,fade=t=out:st={fade_start}:d=0.35:alpha=1"
-            cmd += ["-filter_complex", f"[0:v]{vf}[base];[1:v]{anim}[plate];[base][plate]overlay=shortest=1[v]", "-map", "[v]"]
-        else:
-            cmd += ["-vf", vf]
+            filters += [f"[{input_index}:v]{anim}[plate]", f"[{current}][plate]overlay=shortest=1[labels]"]
+            current = "labels"
+            input_index += 1
+        for cue_index, cue in enumerate(shot.get("features", [])):
+            graphic = work / f"{index:02}-feature-{cue_index}.png"
+            feature_plate(graphic, cue)
+            cmd += ["-loop", "1", "-framerate", FPS, "-i", graphic]
+            start, end = float(cue.get("start", 0)), float(cue.get("end", duration))
+            fade_in, fade_out = .25, .25
+            anim = "format=rgba"
+            if start >= 0:
+                anim += f",fade=t=in:st={start}:d={fade_in}:alpha=1"
+            if end <= duration:
+                anim += f",fade=t=out:st={max(0, end-fade_out)}:d={fade_out}:alpha=1"
+            # Negative start carries a title continuously across adjacent cuts.
+            shift = f"18*pow(1-clip((t-({start}))/{fade_in},0,1),3)"
+            next_label = f"featured{cue_index}"
+            filters += [f"[{input_index}:v]{anim}[feature{cue_index}]",
+                        f"[{current}][feature{cue_index}]overlay=x='{shift}':y=0:shortest=1[{next_label}]"]
+            current = next_label
+            input_index += 1
+        fades = []
+        if shot.get("fade_in_frames", 0):
+            fades.append(f"fade=t=in:st=0:d={shot['fade_in_frames']/FPS}")
+        if shot.get("fade_out_frames", 0):
+            fade_frames = shot["fade_out_frames"]
+            assert 1 < fade_frames < frames
+            # The last encoded frame reaches black, not one frame after EOF.
+            fades.append(f"fade=t=out:st={(frames-fade_frames)/FPS}:d={(fade_frames-1)/FPS}")
+        if fades:
+            filters.append(f"[{current}]{','.join(fades)}[transition]")
+            current = "transition"
+        cmd += ["-filter_complex", ";".join(filters), "-map", f"[{current}]"]
         cmd += ["-an", "-frames:v", frames, "-c:v", "libx264", "-threads", "6", "-preset", "medium", "-crf", "16", "-pix_fmt", "yuv420p", "-r", FPS, "-video_track_timescale", 60000, target]
         run(cmd)
         video_clips.append(target)
@@ -197,7 +295,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     # from an older edit; prominence is explicit in the portable manifest.
     mix_filter = (f"[0:a]volume={game_gain}[g];[1:a]volume={music_gain}[m];"
                   "[g][m]amix=inputs=2:normalize=0:duration=longest,"
-                  "alimiter=limit=0.89:level=false:latency=true,atrim=duration=60[a]")
+                  f"alimiter=limit=0.89:level=false:latency=true,atrim=duration={total_duration}[a]")
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-i", game, "-i", spec["music"],
          "-filter_complex", mix_filter,
          "-map", "[a]", "-ar", 48000, "-c:a", "pcm_s24le", mixed])
@@ -209,14 +307,14 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     normalizer = ("loudnorm=I=-14:TP=-1.5:LRA=11:linear=true:"
                   f"measured_I={loud['input_i']}:measured_TP={loud['input_tp']}:measured_LRA={loud['input_lra']}:"
                   f"measured_thresh={loud['input_thresh']}:offset={loud['target_offset']}")
-    final = out / "OpenRC-Every-Input-Matters-60s-1080p60.mp4"
+    final = out / spec.get("output_filename", f"OpenRC-Every-Input-Matters-{total_duration:g}s-1080p60.mp4")
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-i", picture, "-i", mixed, "-map", "0:v:0", "-map", "1:a:0",
-         "-c:v", "copy", "-af", normalizer, "-ar", 48000, "-c:a", "aac", "-b:a", "320k", "-t", 60, "-movflags", "+faststart",
+         "-c:v", "copy", "-af", normalizer, "-ar", 48000, "-c:a", "aac", "-b:a", "320k", "-t", total_duration, "-movflags", "+faststart",
          "-metadata", "title=OpenRC Simulator — Every Input Matters", "-metadata", "comment=Actual simulator captures and labeled cinematic formation. Music: Uprising by Scott Buckley, CC BY 4.0.", final])
     probe = json.loads(run([ffprobe, "-v", "error", "-show_streams", "-show_format", "-of", "json", final]).stdout)
     v = next(s for s in probe["streams"] if s["codec_type"] == "video")
-    assert (v["width"], v["height"], v["r_frame_rate"], int(v["nb_frames"])) == (1920, 1080, "60/1", 3600), v
-    assert abs(float(probe["format"]["duration"]) - 60) < .05
+    assert (v["width"], v["height"], v["r_frame_rate"], int(v["nb_frames"])) == (1920, 1080, "60/1", total_frames), v
+    assert abs(float(probe["format"]["duration"]) - total_duration) < .05
     run([ffmpeg, "-hide_banner", "-v", "error", "-i", final, "-f", "null", "-"])
     decoded_measure = run([ffmpeg, "-hide_banner", "-i", final, "-vn", "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=json", "-f", "null", "-"])
     decoded_loud = json.JSONDecoder().raw_decode(decoded_measure.stderr[decoded_measure.stderr.rfind("{"):])[0]

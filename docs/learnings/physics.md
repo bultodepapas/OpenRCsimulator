@@ -24,6 +24,8 @@ A refinement ratio near two can come from a wheel bouncing across the ground-con
 
 The whole session can also converge near first order during control transients while every wheel remains loaded: sampled servos and engine updates precede RK4. Compare constant-control contact trials with the complete session at three tick rates before attributing a millimetre-scale difference to the contact law. ([E5a](../research/ground-contact/E5a/README.md))
 
+Tick-located stick/slip transitions do not guarantee a monotonic three-grid difference ratio, even when errors stay bounded. Record wheel-mode transition times, retain strict absolute cross-rate bounds across breakaway, and test the expected order in a matched case that proves no mode changes. State a correction to the test requirement explicitly; bounded numerical consistency does not establish physical accuracy or convergence of the event timing. ([E5a hybrid-session fixture](../../research/ground-contact/e5a/README.md))
+
 ### Every coupled continuous state needs the same integration stages
 
 Updating a continuous wake or other lag once per tick while integrating the body with RK4 creates a split, lower-order system. Put coupled continuous variables in the integrator workspace and evaluate them at each RK stage; use a nonautonomous analytic oracle because ordinary autonomous flight traces will not reveal a solver that freezes stage time. Sampled controls and discrete modes still need explicit update boundaries. ([H8a](../research/simulation-state/H8a/README.md), [E0b5](../research/propwash/E0b5/README.md))

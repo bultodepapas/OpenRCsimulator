@@ -63,6 +63,23 @@ exit 0
         self.assertEqual(result.returncode, 1, result.stdout)
         self.assertIn("engine error during", result.stdout)
 
+    def test_p51_envelope_has_a_full_flight_budget(self):
+        (self.root / "tests" / "test_p51_envelope.gd").touch()
+        timeout = self.root / "timeout"
+        timeout.write_text('''#!/usr/bin/env bash
+seconds="$1"
+shift
+for arg in "$@"; do
+  case "$arg" in res://tests/*) echo "BUDGET ${arg##*/} $seconds" ;; esac
+done
+"$@"
+''', encoding="utf-8", newline="\n")
+        timeout.chmod(0o755)
+        result = self.run_partition(0, 1, PATH=str(self.root) + os.pathsep + os.environ["PATH"])
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn("BUDGET test_p51_envelope.gd 180", result.stdout)
+        self.assertIn("BUDGET test_probe_00.gd 60", result.stdout)
+
     def test_invalid_and_empty_partitions_are_rejected(self):
         for shard, count in [(8, 8), (-1, 8), (0, 0), (0, "08"), (0, 129), (19, 20)]:
             with self.subTest(shard=shard, count=count):

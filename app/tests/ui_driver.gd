@@ -85,8 +85,11 @@ func close_app(app: Node) -> void:
 			audio.set_process(false)
 			audio.set_physics_process(false)
 	_release_audio_players(app)
-	# A real audio mix interval releases stopped playback in headless runs.
-	await _tree.create_timer(0.05).timeout
+	# Mixer playback drains in wall time; a cold frame's simulation delta can
+	# consume a SceneTreeTimer immediately, before stopped playback is released.
+	var drain_until_usec: int = Time.get_ticks_usec() + 50000
+	while Time.get_ticks_usec() < drain_until_usec:
+		await _tree.process_frame
 	if app.get_parent() == _tree.root:
 		_tree.root.remove_child(app)
 	app.free()

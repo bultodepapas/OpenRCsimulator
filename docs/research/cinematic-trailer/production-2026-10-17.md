@@ -2,7 +2,7 @@
 
 2026-10-17 · TRA-01…07 · Local film delivered; publication was not requested.
 
-Latest edit: [revision 2](revision-2-2026-10-17.md) opens with the formation and replaces the score with a continuous rhythmic passage. This report retains the first delivery's capture and export evidence.
+Latest edit: [revision 6](revision-6-2026-10-17.md) removes the abrupt reset before the logo and ends at 58 seconds. Feature titles, native ramp jump, formation opening, continuous score, twilight Lumber and two Extra rolls are retained. This report retains the first delivery's capture and export evidence.
 
 The [production plan](../../plans/cinematic-trailer.md) and [16-topic research ledger](2026-10-17.md)
 led to a complete **60-second English trailer** with eight distinct vehicles, real flying/driving,
