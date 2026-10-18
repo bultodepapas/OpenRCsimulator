@@ -71,12 +71,15 @@ func _run() -> void:
 			restored_loops = restored_loops and rig.voices[voice_index].playing
 		_check("reattached flight restores its audio buses", AudioServer.bus_count == buses_before + 3)
 		_check("reattached flight restarts its continuous audio", restored_loops)
-		# AUD-07d: the stateless limiter recovers after an overshoot; Godot 4.7.2's HardLimiter does not.
+		# AUD-12: the output bus has no clipper; Master's generated layout carries the single safety limiter.
 		var mix_index: int = AudioServer.get_bus_index(rig.output_bus())
-		_check("mix bus limits with the recovering stateless limiter at -1 dBFS",
-			AudioServer.get_bus_effect_count(mix_index) == 1
-			and AudioServer.get_bus_effect(mix_index, 0) is AudioEffectLimiter
-			and is_equal_approx((AudioServer.get_bus_effect(mix_index, 0) as AudioEffectLimiter).ceiling_db, -1.0))
+		var master_index: int = AudioServer.get_bus_index(&"Master")
+		var master_limiter: AudioEffectHardLimiter = AudioServer.get_bus_effect(master_index, 0) as AudioEffectHardLimiter \
+			if AudioServer.get_bus_effect_count(master_index) > 0 else null
+		_check("mix bus has no clipper and Master ends in the generated -1 dBFS safety limiter",
+			AudioServer.get_bus_effect_count(mix_index) == 0 and master_limiter != null
+			and AudioServer.is_bus_effect_enabled(master_index, 0)
+			and is_equal_approx(master_limiter.ceiling_db, -1.0) and is_equal_approx(master_limiter.release, 2.0))
 		var output_bus: StringName = rig.output_bus()
 		var aircraft_bus: StringName = rig.voices[0].bus
 		var environment_bus: StringName = rig.voices[3].bus

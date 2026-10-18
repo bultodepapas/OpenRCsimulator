@@ -200,13 +200,9 @@ func _setup_buses() -> void:
 		screen_filter.gain = 1.0
 	AudioServer.add_bus_effect(AudioServer.get_bus_index(_bus_names[1]), absorption_filter)
 	AudioServer.add_bus_effect(AudioServer.get_bus_index(_bus_names[1]), screen_filter)
-	# AUD-07d: Godot 4.7.2's AudioEffectHardLimiter never fully releases: after an overshoot it stays about
-	# 0.15 dB·s / release low for the rest of the session (-1.3 dB at 0.12 s). This stateless limiter recovers
-	# at once and holds the same -1 dBFS ceiling (research/audio/review-2026-10-13, limiter probe).
-	var limiter: AudioEffectLimiter = AudioEffectLimiter.new()
-	limiter.ceiling_db = -1.0
-	limiter.threshold_db = -1.0
-	AudioServer.add_bus_effect(AudioServer.get_bus_index(_bus_names[0]), limiter)
+	# AUD-12: no limiter here. The AUD-07d AudioEffectLimiter is a discontinuous clipper above -2 dBFS, which the
+	# jet's chase view came within 0.8 dB of; Master's single safety limiter (default_bus_layout.tres) protects the
+	# sum of every bus instead (research/audio/master-limiter-2026-10-18).
 
 
 func _voice(label: String, asset: String, bus_name: StringName, reference_distance: float) -> void:
