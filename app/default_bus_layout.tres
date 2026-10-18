@@ -1,0 +1,10 @@
+[gd_resource type="AudioBusLayout" format=3]
+
+[sub_resource type="AudioEffectHardLimiter" id="aud12_master_limiter"]
+resource_name = "AUD-12 Master safety limiter"
+ceiling_db = -1.0
+release = 2.0
+
+[resource]
+bus/0/effect/0/effect = SubResource("aud12_master_limiter")
+bus/0/effect/0/enabled = true

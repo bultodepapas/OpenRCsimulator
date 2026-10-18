@@ -88,6 +88,9 @@ echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
 python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
 python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
 
+echo "== AUD-12: generated Master safety-limiter bus layout stays current"
+run --script "$HERE/../tools/audio/make_bus_layout.gd" -- --check
+
 echo "== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current"
 python3 "$HERE/../research/glow-engines/build_profiles.py" --check
 python3 "$HERE/../research/glow-engines/build_installations.py" --check
