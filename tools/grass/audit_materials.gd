@@ -38,8 +38,6 @@ const MATERIAL_CODE_PATHS: Array[String] = [
 	"res://render/ground.gd",
 	"res://render/ground.gdshader",
 	"res://render/turf_detail.gdshaderinc",
-	"res://render/rc_ground_material.gd",
-	"res://render/rc_ground_detail.gdshaderinc",
 ]
 
 
@@ -49,14 +47,16 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var catalog: Dictionary = ImportedVegetation.catalog()
+	var msaa_setting: Variant = ProjectSettings.get_setting("rendering/anti_aliasing/quality/msaa_3d", "unavailable")
 	var report: Dictionary = {
 		"format": FORMAT,
-		"created_utc": Time.get_datetime_string_from_system(true),
+		"created_utc": Time.get_datetime_string_from_system(false, true),
 		"engine": Engine.get_version_info(),
 		"project": {
 			"renderer_method": ProjectSettings.get_setting("rendering/renderer/rendering_method", "unavailable"),
 			"renderer_driver": "unavailable: project setting does not identify the active Compatibility backend driver",
-			"msaa_3d": ProjectSettings.get_setting("rendering/anti_aliasing/quality/msaa_3d", "unavailable"),
+			"msaa_3d": msaa_setting,
+			"msaa_3d_label": "4x" if int(msaa_setting) == Viewport.MSAA_4X else "enum %s" % str(msaa_setting),
 		},
 		"scope": {
 			"rendered": false,
@@ -374,7 +374,7 @@ func _feature_fidelity(
 	var adapter_shader: Dictionary = adapter.get("shader", {})
 	var records: Array[Dictionary] = []
 	_append_feature(records, "base_color_factor", pbr.get("baseColorFactor", [1.0, 1.0, 1.0, 1.0]), effective.get("albedo_color", "unavailable"), static_values.get("albedo_color", "unavailable"), adapter_values.get("albedo_color", "unavailable"), "copied by adapter when BaseMaterial3D")
-	_append_feature(records, "base_color_texture", source_material.get("base_color_texture", {}), effective.get("albedo_texture", "unavailable"), static_values.get("albedo_texture", "unavailable"), adapter_values.get("albedo_texture", "unavailable"), "copied with use flag and UV1 transform")
+	_append_feature(records, "base_color_texture", source_material.get("base_color_texture", {}), effective.get("albedo_texture", "unavailable"), static_values.get("albedo_texture", "unavailable"), {"enabled": adapter_values.get("use_albedo_texture", false), "texture": adapter_values.get("albedo_texture", null)}, "copied with use flag and UV1 transform")
 	_append_feature(records, "vertex_color", {"source_attribute": attributes.get("COLOR_0", "absent"), "mesh_color_data": _color_array_summary(mesh_arrays)}, effective.get("vertex_color_use_as_albedo", "unavailable"), static_values.get("vertex_color_use_as_albedo", "unavailable"), {"enabled": adapter_values.get("use_vertex_color", "unavailable"), "srgb": adapter_values.get("vertex_color_is_srgb", "unavailable")}, "copied by adapter when BaseMaterial3D")
 	_append_feature(records, "uv0_transform", {"source_attribute": attributes.get("TEXCOORD_0", "absent"), "source_texture_ref": source_material.get("base_color_texture", {})}, {"uv1_scale": effective.get("uv1_scale", "unavailable"), "uv1_offset": effective.get("uv1_offset", "unavailable")}, {"uv1_scale": static_values.get("uv1_scale", "unavailable"), "uv1_offset": static_values.get("uv1_offset", "unavailable")}, {"uv1_scale": adapter_values.get("uv1_scale", "unavailable"), "uv1_offset": adapter_values.get("uv1_offset", "unavailable")}, "UV1 scale/offset copied; UV2 and advanced transforms not exposed")
 	_append_feature(records, "metallic_factor", pbr.get("metallicFactor", "glTF default 1.0"), effective.get("metallic", "unavailable"), static_values.get("metallic", "unavailable"), adapter_values.get("metallic", "unavailable"), "scalar copied by adapter when BaseMaterial3D")
@@ -382,6 +382,7 @@ func _feature_fidelity(
 	_append_feature(records, "metallic_roughness_texture", source_material.get("metallic_roughness_texture", {}), effective.get("metallic_texture", "unavailable"), static_values.get("metallic_texture", "unavailable"), "no adapter uniform", "unsupported if source/import uses a metallic-roughness texture")
 	_append_feature(records, "normal_texture", source_material.get("normal_texture", {}), {"enabled": effective.get("normal_enabled", "unavailable"), "texture": effective.get("normal_texture", "unavailable"), "scale": effective.get("normal_scale", "unavailable")}, {"enabled": static_values.get("normal_enabled", "unavailable"), "texture": static_values.get("normal_texture", "unavailable"), "scale": static_values.get("normal_scale", "unavailable")}, {"enabled": adapter_values.get("use_normal_texture", "unavailable"), "texture": adapter_values.get("normal_texture", "unavailable"), "scale": adapter_values.get("normal_scale", "unavailable")}, "normal texture and scale copied when enabled")
 	_append_feature(records, "alpha_mode", {"raw": source_material.get("alpha_mode_raw", "unavailable"), "gltf_default": source_material.get("alpha_mode_effective_gltf_default", "unavailable"), "cutoff_raw": source_material.get("alpha_cutoff_raw", "unavailable")}, {"transparency": effective.get("transparency", "unavailable"), "threshold": effective.get("alpha_scissor_threshold", "unavailable")}, {"transparency": static_values.get("transparency", "unavailable"), "threshold": static_values.get("alpha_scissor_threshold", "unavailable")}, {"scissor_enabled": adapter_values.get("use_alpha_scissor", "unavailable"), "threshold": adapter_values.get("alpha_scissor_threshold", "unavailable")}, "only ALPHA_SCISSOR is mapped; blend/hash/coverage modes are unsupported")
+	_append_feature(records, "depth_draw_mode", {"alpha_mode": source_material.get("alpha_mode_effective_gltf_default", "unavailable")}, effective.get("depth_draw_mode", "unavailable"), static_values.get("depth_draw_mode", "unavailable"), {"render_modes": adapter_shader.get("render_modes", [])}, "opaque geometry uses depth_draw_opaque in adapter")
 	_append_feature(records, "double_sided_culling", {"source_double_sided": source_material.get("double_sided", "unavailable")}, {"cull_mode": effective.get("cull_mode", "unavailable")}, {"cull_mode": static_values.get("cull_mode", "unavailable")}, {"render_mode": adapter_shader.get("render_modes", []).filter(func(mode: String) -> bool: return mode.begins_with("cull_"))}, "adapter hard-codes cull_disabled")
 	_append_feature(records, "shading_modes", {"source_model": "glTF metallic-roughness PBR"}, {"shading_mode": effective.get("shading_mode", "unavailable"), "diffuse_mode": effective.get("diffuse_mode", "unavailable"), "specular_mode": effective.get("specular_mode", "unavailable")}, {"shading_mode": static_values.get("shading_mode", "unavailable"), "diffuse_mode": static_values.get("diffuse_mode", "unavailable"), "specular_mode": static_values.get("specular_mode", "unavailable")}, {"render_modes": adapter_shader.get("render_modes", [])}, "adapter render modes are fixed in the shader; source diffuse/specular enum names are also recorded")
 	_append_feature(records, "texture_filter", source_material.get("base_color_texture", {}), effective.get("texture_filter", "unavailable"), static_values.get("texture_filter", "unavailable"), adapter_shader.get("sampler_filter", "unavailable"), "adapter sampler qualifier is fixed; generated/import filter parity not proven by this field alone")
@@ -462,6 +463,11 @@ func _feature_stage_status(feature: String, stage: String, source_value: Variant
 				var actual_mode := int(_enum_value(imported_alpha.get("transparency", -1)))
 				var expected_mode := BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR if mode == "MASK" else BaseMaterial3D.TRANSPARENCY_DISABLED
 				return "matched" if actual_mode == expected_mode else "mismatch"
+			"depth_draw_mode":
+				var source_record: Dictionary = source_value if source_value is Dictionary else {}
+				var imported_mode := int(_enum_value(imported_value))
+				var expected_mode := BaseMaterial3D.DEPTH_DRAW_OPAQUE_ONLY if str(source_record.get("alpha_mode", "OPAQUE")) in ["OPAQUE", "MASK"] else BaseMaterial3D.DEPTH_DRAW_ALWAYS
+				return "matched" if imported_mode == expected_mode else "mismatch"
 			"double_sided_culling":
 				var source_record: Dictionary = source_value if source_value is Dictionary else {}
 				var imported_record: Dictionary = imported_value if imported_value is Dictionary else {}
@@ -471,27 +477,30 @@ func _feature_stage_status(feature: String, stage: String, source_value: Variant
 				return "unavailable"
 			"texture_filter":
 				var source_record: Dictionary = source_value if source_value is Dictionary else {}
-				var sampler: Dictionary = source_record.get("sampler", {}) if source_record.get("sampler", {}) is Dictionary else {}
-				var expected := 3 if int(sampler.get("minFilter", 9987)) in [9986, 9987] else 1
-				return "matched" if int(_enum_value(imported_value)) == expected else "mismatch"
+				var expected: Variant = _texture_filter_expectation(source_record)
+				if expected == null:
+					return "unavailable"
+				return "matched" if int(_enum_value(imported_value)) == int(expected) else "mismatch"
 			_:
 				return "unavailable"
 	if stage == "static_to_adapter":
 		match feature:
 			"base_color_factor":
-				return "matched" if _approximately_equal(static_value, _shader_parameter_for_feature(adapter_value, "albedo_color", null)) else "mismatch"
+				return "matched" if _approximately_equal(static_value, adapter_value) else "mismatch"
 			"base_color_texture":
 				var source_record: Dictionary = source_value if source_value is Dictionary else {}
 				var uri := str(source_record.get("image_uri", ""))
-				return "matched" if uri != "" and bool(_shader_parameter_for_feature(adapter_value, "use_albedo_texture", false)) and _texture_uri_matches(uri, _shader_parameter_for_feature(adapter_value, "albedo_texture", null)) else "mismatch"
+				var adapter_record: Dictionary = adapter_value if adapter_value is Dictionary else {}
+				return "matched" if uri != "" and bool(adapter_record.get("enabled", false)) and _texture_uri_matches(uri, adapter_record.get("texture", null)) else "mismatch"
 			"vertex_color":
-				return "matched" if bool(static_value) == bool(_shader_parameter_for_feature(adapter_value, "use_vertex_color", false)) else "mismatch"
+				var adapter_record: Dictionary = adapter_value if adapter_value is Dictionary else {}
+				return "matched" if bool(static_value) == bool(adapter_record.get("enabled", false)) else "mismatch"
 			"uv0_transform":
 				return "matched" if _uv_xy_matches(static_value, {"uv1_scale": _shader_parameter_for_feature(adapter_value, "uv1_scale", []), "uv1_offset": _shader_parameter_for_feature(adapter_value, "uv1_offset", [])}) else "mismatch"
 			"metallic_factor":
-				return "matched" if _approximately_equal(static_value, _shader_parameter_for_feature(adapter_value, "metallic", null)) else "mismatch"
+				return "matched" if _approximately_equal(static_value, adapter_value) else "mismatch"
 			"roughness_factor":
-				return "matched" if _approximately_equal(static_value, _shader_parameter_for_feature(adapter_value, "roughness", null)) else "mismatch"
+				return "matched" if _approximately_equal(static_value, adapter_value) else "mismatch"
 			"normal_texture":
 				var static_normal: Dictionary = static_value if static_value is Dictionary else {}
 				var adapter_normal: Dictionary = adapter_value if adapter_value is Dictionary else {}
@@ -501,6 +510,10 @@ func _feature_stage_status(feature: String, stage: String, source_value: Variant
 				var mode := str(source_record.get("gltf_default", "OPAQUE"))
 				var adapter_alpha: Dictionary = adapter_value if adapter_value is Dictionary else {}
 				return "matched" if bool(adapter_alpha.get("scissor_enabled", false)) == (mode == "MASK") else "mismatch"
+			"depth_draw_mode":
+				var source_record: Dictionary = source_value if source_value is Dictionary else {}
+				var adapter_record: Dictionary = adapter_value if adapter_value is Dictionary else {}
+				return "matched" if adapter_record.get("render_modes", []).has("depth_draw_opaque") == (str(source_record.get("alpha_mode", "OPAQUE")) == "OPAQUE") else "mismatch"
 			"double_sided_culling":
 				var source_record: Dictionary = source_value if source_value is Dictionary else {}
 				var adapter_record: Dictionary = adapter_value if adapter_value is Dictionary else {}
@@ -511,9 +524,10 @@ func _feature_stage_status(feature: String, stage: String, source_value: Variant
 				return "matched" if modes.has("diffuse_burley") and modes.has("specular_schlick_ggx") else "mismatch"
 			"texture_filter":
 				var source_record: Dictionary = source_value if source_value is Dictionary else {}
-				var sampler: Dictionary = source_record.get("sampler", {}) if source_record.get("sampler", {}) is Dictionary else {}
-				var expected := 3 if int(sampler.get("minFilter", 9987)) in [9986, 9987] else 1
-				return "matched" if str(adapter_value).contains("filter_linear_mipmap") == (expected == 3) else "mismatch"
+				var expected_sampler: Variant = _texture_filter_expectation(source_record, true)
+				if expected_sampler == null:
+					return "unavailable"
+				return "matched" if str(adapter_value).contains(str(expected_sampler)) else "mismatch"
 			_:
 				return "unavailable"
 	return "unavailable"
@@ -523,7 +537,9 @@ func _mapping_unsupported_for_asset(feature: String, source_value: Variant, impo
 	if feature == "alpha_mode":
 		var source_record: Dictionary = source_value if source_value is Dictionary else {}
 		var raw_mode := str(source_record.get("raw", "omitted"))
-		return raw_mode == "BLEND" or (raw_mode == "MASK" and not bool(_shader_parameter_for_feature(imported_value, "scissor_enabled", false)))
+		var imported_alpha: Dictionary = imported_value if imported_value is Dictionary else {}
+		var imported_mode := int(_enum_value(imported_alpha.get("transparency", -1)))
+		return raw_mode == "BLEND" or (raw_mode == "MASK" and imported_mode != BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR)
 	if not mapping.begins_with("unsupported") and not mapping.begins_with("no adapter"):
 		return false
 	return not _is_feature_inactive(feature, source_value, imported_value)
@@ -564,71 +580,38 @@ func _shader_parameter_for_feature(value: Variant, key: String, fallback: Varian
 	return value.get(key, fallback) if value is Dictionary else fallback
 
 
-func _feature_parity(feature: String, source_value: Variant, imported_value: Variant, static_value: Variant, adapter_value: Variant) -> Variant:
-	if feature == "base_color_factor" or feature == "metallic_factor" or feature == "roughness_factor":
-		var source_number: Variant = source_value
-		if source_number is Array:
-			return _approximately_equal(source_number, imported_value) and _approximately_equal(imported_value, static_value) and _approximately_equal(static_value, adapter_value)
-		if not source_number is float and not source_number is int:
-			return null
-		return _approximately_equal(source_number, imported_value) and _approximately_equal(imported_value, static_value) and _approximately_equal(static_value, adapter_value)
-	if feature == "base_color_texture":
-		var source_record: Dictionary = source_value if source_value is Dictionary else {}
-		var source_uri := str(source_record.get("image_uri", ""))
-		return source_uri != "" and _texture_uri_matches(source_uri, imported_value) and _texture_uri_matches(source_uri, static_value) and bool(_shader_parameter_for_feature(adapter_value, "use_albedo_texture", false)) and _texture_uri_matches(source_uri, _shader_parameter_for_feature(adapter_value, "albedo_texture", null))
-	if feature == "vertex_color":
-		var src: Dictionary = source_value if source_value is Dictionary else {}
-		var source_present: bool = str(src.get("source_attribute", "absent")) != "absent"
-		var color_summary: Dictionary = src.get("mesh_color_data", {})
-		var data_nonwhite := bool(color_summary.get("nonwhite", false))
-		var imported_enabled := bool(imported_value)
-		var static_enabled := bool(static_value)
-		var adapter_enabled := bool(_shader_parameter_for_feature(adapter_value, "enabled", false))
-		return not data_nonwhite or (source_present and imported_enabled and static_enabled and adapter_enabled)
-	if feature == "uv0_transform":
-		var imported_uv: Dictionary = imported_value if imported_value is Dictionary else {}
-		var static_uv: Dictionary = static_value if static_value is Dictionary else {}
-		var adapter_uv: Dictionary = adapter_value if adapter_value is Dictionary else {}
-		return _uv_xy_matches(imported_uv, static_uv) and _uv_xy_matches(static_uv, adapter_uv)
-	if feature == "normal_texture":
-		var imported_normal: Dictionary = imported_value if imported_value is Dictionary else {}
-		var static_normal: Dictionary = static_value if static_value is Dictionary else {}
-		var adapter_normal: Dictionary = adapter_value if adapter_value is Dictionary else {}
-		return bool(imported_normal.get("enabled", false)) == bool(adapter_normal.get("enabled", false)) and _texture_uri_matches_dict(imported_normal.get("texture", ""), adapter_normal.get("texture", null)) and _approximately_equal(imported_normal.get("scale", 1.0), adapter_normal.get("scale", 1.0)) and bool(static_normal.get("enabled", false)) == bool(adapter_normal.get("enabled", false))
-	if feature == "alpha_mode":
-		var imported_alpha: Dictionary = imported_value if imported_value is Dictionary else {}
-		var static_alpha: Dictionary = static_value if static_value is Dictionary else {}
-		var adapter_alpha: Dictionary = adapter_value if adapter_value is Dictionary else {}
-		var mode := str((source_value as Dictionary).get("gltf_default", "OPAQUE"))
-		if mode == "MASK":
-			return int(_enum_value(imported_alpha.get("transparency", -1))) == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR and int(_enum_value(static_alpha.get("transparency", -1))) == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR and bool(adapter_alpha.get("scissor_enabled", false)) and _approximately_equal(imported_alpha.get("threshold", 0.5), adapter_alpha.get("threshold", 0.5))
-		return int(_enum_value(imported_alpha.get("transparency", -1))) == BaseMaterial3D.TRANSPARENCY_DISABLED and int(_enum_value(static_alpha.get("transparency", -1))) == BaseMaterial3D.TRANSPARENCY_DISABLED and not bool(adapter_alpha.get("scissor_enabled", false))
-	if feature == "double_sided_culling":
-		var source_record: Dictionary = source_value if source_value is Dictionary else {}
-		var expected_disabled := bool(source_record.get("source_double_sided", false))
-		var imported_record: Dictionary = imported_value if imported_value is Dictionary else {}
-		var static_record: Dictionary = static_value if static_value is Dictionary else {}
-		var adapter_record: Dictionary = adapter_value if adapter_value is Dictionary else {}
-		var disabled_value := BaseMaterial3D.CULL_DISABLED if expected_disabled else BaseMaterial3D.CULL_BACK
-		return int(_enum_value(imported_record.get("cull_mode", -1))) == disabled_value and int(_enum_value(static_record.get("cull_mode", -1))) == disabled_value and adapter_record.get("render_mode", []).has("cull_disabled") == expected_disabled
-	if feature == "shading_modes":
-		var imported_record: Dictionary = imported_value if imported_value is Dictionary else {}
-		var static_record: Dictionary = static_value if static_value is Dictionary else {}
-		var adapter_record: Dictionary = adapter_value if adapter_value is Dictionary else {}
-		var modes: Array = adapter_record.get("render_modes", [])
-		return int(_enum_value(imported_record.get("shading_mode", -1))) == BaseMaterial3D.SHADING_MODE_PER_PIXEL and int(_enum_value(static_record.get("shading_mode", -1))) == BaseMaterial3D.SHADING_MODE_PER_PIXEL and int(_enum_value(imported_record.get("diffuse_mode", -1))) == BaseMaterial3D.DIFFUSE_BURLEY and int(_enum_value(static_record.get("diffuse_mode", -1))) == BaseMaterial3D.DIFFUSE_BURLEY and int(_enum_value(imported_record.get("specular_mode", -1))) == BaseMaterial3D.SPECULAR_SCHLICK_GGX and int(_enum_value(static_record.get("specular_mode", -1))) == BaseMaterial3D.SPECULAR_SCHLICK_GGX and modes.has("diffuse_burley") and modes.has("specular_schlick_ggx")
-	if feature == "texture_filter":
-		var sampler: Dictionary = source_value.get("sampler", {}) if source_value is Dictionary else {}
-		var imported_enum := int(_enum_value(imported_value))
-		var static_enum := int(_enum_value(static_value))
-		var filter_text := str(adapter_value)
-		var expected := 3 if int(sampler.get("minFilter", 9987)) in [9986, 9987] else 1
-		return imported_enum == expected and static_enum == expected and filter_text.contains("filter_linear_mipmap") == (expected == 3)
-	return null
-
-
 func _enum_value(value: Variant) -> Variant:
 	return value.get("value", "unavailable") if value is Dictionary else value
+
+
+func _texture_filter_expectation(source_record: Dictionary, shader_qualifier: bool = false) -> Variant:
+	var sampler: Dictionary = source_record.get("sampler", {}) if source_record.get("sampler", {}) is Dictionary else {}
+	var min_filter := int(sampler.get("minFilter", 9987))
+	if shader_qualifier:
+		match min_filter:
+			9728:
+				return "filter_nearest"
+			9729:
+				return "filter_linear"
+			9984:
+				return "filter_nearest_mipmap"
+			9985:
+				return "filter_linear_mipmap"
+			9987:
+				return "filter_linear_mipmap"
+			_:
+				return null
+	match min_filter:
+		9728:
+			return 0
+		9729:
+			return 1
+		9984:
+			return 2
+		9985, 9987:
+			return 3
+		_:
+			return null
 
 
 func _texture_uri_matches(uri: String, value: Variant) -> bool:

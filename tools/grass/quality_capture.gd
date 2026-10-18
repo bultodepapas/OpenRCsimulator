@@ -9,6 +9,8 @@ const Frames := preload("res://render/frames.gd")
 const RcGroundMaterial := preload("res://render/rc_ground_material.gd")
 const Scenery := preload("res://scenery/scenery.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
+const TimeOfDayConfig := preload("res://environment/time_of_day_config.gd")
+const TimeOfDayLighting := preload("res://render/time_of_day_lighting.gd")
 
 const FORMAT: String = "openrc-grass-quality v1"
 const WIDTH: int = 1280
@@ -28,6 +30,7 @@ var _out_dir: String = ""
 var _mode: String = "capture"
 var _quality: String = "high"
 var _ground_probe: String = "default"
+var _night: bool = false
 var _field_path: String = ""
 var _seed: int = DEFAULT_SEED
 var _variant: String = ""
@@ -38,6 +41,8 @@ var _duration_s: float = PROFILE_MIN_DURATION_S
 var _profile_actual_warmup_s: float = 0.0
 var _profile_actual_duration_s: float = 0.0
 var _field: Dictionary = {}
+var _lighting: Dictionary = {}
+var _night_config: Dictionary = {}
 var _world: Node3D
 var _field_node: Node3D
 var _environment: Environment
@@ -61,6 +66,7 @@ func _run() -> void:
 	_mode = str(_args.get("mode", "capture"))
 	_quality = str(_args.get("quality", "high")).to_lower()
 	_ground_probe = str(_args.get("ground", "default")).to_lower()
+	_night = _flag_enabled("night")
 	_field_path = str(_args.get("field", FieldLoader.DEFAULT_PATH))
 	_seed = int(_args.get("seed", str(DEFAULT_SEED)))
 	_variant = str(_args.get("variant", ""))
@@ -132,17 +138,25 @@ func _run() -> void:
 		_fail("field failed validation: " + str(loaded.get("errors", [])))
 		return
 	_field = loaded.get("field", {})
+	if _night:
+		_night_config = TimeOfDayConfig.defaults()
+		_night_config.mode = "astronomical"
+		_night_config.local_seconds = 0
+		_lighting = TimeOfDayLighting.snapshot(_night_config)
 
 	_world = Node3D.new()
 	_world.name = "GrassQualityWorld"
 	_viewport.add_child(_world)
 	var environment_node := WorldEnvironment.new()
-	_environment = Atmosphere.environment()
+	_environment = Atmosphere.environment(_lighting)
 	environment_node.environment = _environment
 	_world.add_child(environment_node)
-	_field_node = FieldBuilder.build(_field)
+	_field_node = FieldBuilder.build(_field, _lighting)
+	# Freeze scenery node processing so exact repeat captures depend only on the
+	# explicit camera, shader clock, and render-space wind values.
+	_field_node.process_mode = Node.PROCESS_MODE_DISABLED
 	_world.add_child(_field_node)
-	Atmosphere.create_sun(_world)
+	Atmosphere.create_sun(_world, _lighting)
 	Atmosphere.update_clouds(_environment, 0.0)
 	_camera = Camera3D.new()
 	_camera.name = "GrassQualityCamera"
@@ -236,6 +250,7 @@ func _make_views() -> Array[Dictionary]:
 			"eye_render": pilot_ground + Vector3(0.0, 110.0, 0.0),
 			"target_render": pilot_ground,
 			"fov_deg": 70.0,
+			"up_render": Vector3.FORWARD,
 			"relative_to": "pilot station; camera height 110 m, nadir",
 		},
 		{
@@ -409,7 +424,11 @@ func _profile() -> bool:
 func _place_camera(view: Dictionary) -> void:
 	_camera.set_perspective(float(view.fov_deg), _camera.near, _camera.far)
 	_camera.position = view.eye_render
-	_camera.look_at(view.target_render, Vector3.UP)
+	var up: Vector3 = view.get("up_render", Vector3.UP)
+	var direction: Vector3 = view.target_render - view.eye_render
+	if direction.length_squared() > 0.0 and absf(direction.normalized().dot(up.normalized())) > 0.99:
+		up = Vector3.FORWARD
+	_camera.look_at(view.target_render, up)
 
 
 func _render_frame() -> void:
@@ -423,12 +442,20 @@ func _inspect_scene() -> Dictionary:
 	var bindings: Array[Dictionary] = []
 	var instances: Array[Dictionary] = []
 	_collect_scene(_field_node, "Field", mesh_records, material_records, bindings, instances)
+	if _finished:
+		return {}
+	if mesh_records.is_empty():
+		_fail("production field scene contains no mesh records")
+		return {}
+	if material_records.is_empty():
+		_fail("production field scene contains no material records")
+		return {}
 	bindings.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.binding) < str(b.binding))
 	instances.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.path) < str(b.path))
 	var mesh_list: Array = mesh_records.values()
 	var material_list: Array = material_records.values()
-	mesh_list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.hash) < str(b.hash))
-	material_list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a.hash) < str(b.hash))
+	mesh_list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a["hash"]) < str(b["hash"]))
+	material_list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return str(a["hash"]) < str(b["hash"]))
 	var geometry_hash: String = _digest(mesh_list)
 	var instance_hash: String = _digest(instances)
 	var materials_hash: String = _digest({"materials": material_list, "bindings": bindings})
@@ -448,6 +475,8 @@ func _inspect_scene() -> Dictionary:
 
 func _collect_scene(node: Node, path: String, mesh_records: Dictionary, material_records: Dictionary,
 		bindings: Array[Dictionary], instances: Array[Dictionary]) -> void:
+	if _finished or node == null:
+		return
 	if node is GeometryInstance3D:
 		var geometry: GeometryInstance3D = node as GeometryInstance3D
 		var mesh: Mesh
@@ -461,11 +490,15 @@ func _collect_scene(node: Node, path: String, mesh_records: Dictionary, material
 				mesh_instance_count = multimesh.visible_instance_count if multimesh.visible_instance_count >= 0 else multimesh.instance_count
 		if mesh != null:
 			var mesh_record: Dictionary = _mesh_record(mesh)
-			mesh_records[mesh_record.hash] = mesh_record
+			if not mesh_record.has("hash") or str(mesh_record["hash"]).is_empty():
+				_fail("mesh record has no hash at " + path)
+				return
+			var mesh_hash: String = str(mesh_record["hash"])
+			mesh_records[mesh_hash] = mesh_record
 			var instance_record: Dictionary = {
 				"path": path,
 				"class": node.get_class(),
-				"mesh_hash": str(mesh_record.hash),
+				"mesh_hash": mesh_hash,
 				"instance_count": mesh_instance_count,
 				"visible": geometry.visible,
 				"cast_shadow": geometry.cast_shadow,
@@ -482,12 +515,18 @@ func _collect_scene(node: Node, path: String, mesh_records: Dictionary, material
 				if effective == null:
 					continue
 				var material_record: Dictionary = _material_record(effective)
-				material_records[material_record.hash] = material_record
+				if not material_record.has("hash") or str(material_record["hash"]).is_empty():
+					_fail("material record has no hash at %s surface %d" % [path, surface_index])
+					return
+				var material_hash: String = str(material_record["hash"])
+				material_records[material_hash] = material_record
 				bindings.append({
 					"binding": "%s#surface_%d" % [path, surface_index],
-					"material_hash": material_record.hash,
+					"material_hash": material_hash,
 				})
 	for child: Node in node.get_children():
+		if _finished:
+			return
 		_collect_scene(child, path + "/" + str(child.name), mesh_records, material_records, bindings, instances)
 
 
@@ -503,10 +542,16 @@ func _mesh_record(mesh: Mesh) -> Dictionary:
 			index_count = (arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size()
 		var array_bytes: PackedByteArray = var_to_bytes(arrays)
 		var blend_shapes: Array = mesh.surface_get_blend_shape_arrays(surface_index)
+		var primitive_type: int = Mesh.PRIMITIVE_TRIANGLES
+		var format_flags: int = -1
+		if mesh is ArrayMesh:
+			var array_mesh: ArrayMesh = mesh as ArrayMesh
+			primitive_type = array_mesh.surface_get_primitive_type(surface_index)
+			format_flags = array_mesh.surface_get_format(surface_index)
 		surfaces.append({
 			"index": surface_index,
-			"primitive": mesh.surface_get_primitive_type(surface_index),
-			"format": mesh.surface_get_format(surface_index),
+			"primitive": primitive_type,
+			"format": format_flags,
 			"vertex_count": vertex_count,
 			"index_count": index_count,
 			"array_sha256": _digest_bytes(array_bytes),
@@ -543,21 +588,28 @@ func _material_record(material: Material) -> Dictionary:
 		var shader: Shader = shader_material.shader
 		if shader != null:
 			var uniforms: Array[Dictionary] = []
-			var declarations: Array = shader.get_shader_uniform_list()
+			var declarations: Array = RenderingServer.get_shader_parameter_list(shader.get_rid())
 			declarations.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
 				return str(a.get("name", "")) < str(b.get("name", "")))
 			for declaration: Dictionary in declarations:
 				var uniform_name: String = str(declaration.get("name", ""))
-				var default_value: Variant = RenderingServer.shader_get_parameter_default(shader.get_rid(), uniform_name)
 				var live_value: Variant = shader_material.get_shader_parameter(uniform_name)
+				var value_source: String = "material" if live_value != null else "shader_default"
+				var effective_value: Variant = live_value
+				if effective_value == null:
+					effective_value = shader.get_default_texture_parameter(uniform_name)
+				if effective_value == null:
+					effective_value = RenderingServer.shader_get_parameter_default(shader.get_rid(), uniform_name)
 				uniforms.append({
 					"name": uniform_name,
 					"type": int(declaration.get("type", -1)),
-					"effective_value": _stable_value(default_value if live_value == null else live_value),
+					"hint_string": str(declaration.get("hint_string", "")),
+					"value_source": value_source,
+					"effective_value": _stable_value(effective_value),
 				})
 			source["shader"] = {
 				"resource_path": shader.resource_path,
-				"source_sha256": shader.source_code.sha256_text(),
+				"source_sha256": shader.code.sha256_text(),
 				"uniforms": uniforms,
 			}
 	else:
@@ -683,6 +735,10 @@ func _view_by_id(wanted: String) -> Dictionary:
 	return {}
 
 
+func _flag_enabled(name: String) -> bool:
+	return str(_args.get(name, "off")).to_lower() in ["1", "true", "yes", "on"]
+
+
 func _write_manifest() -> bool:
 	var renderer: String = RenderingServer.get_current_rendering_method()
 	var adapter: String = RenderingServer.get_video_adapter_name()
@@ -701,6 +757,8 @@ func _write_manifest() -> bool:
 		"scenery_audio": false,
 		"scenery_birds": false,
 		"ground_probe": _ground_probe,
+		"night": _night,
+		"night_lighting_config": _stable_value(_night_config),
 		"ground_probe_scope": "none; production ground route" if _ground_probe == "default" else "existing RC ground binder on all matching field ground materials; includes soil and grass; not a grass-only production binding",
 		"weather_policy": "default production Environment; clouds frozen at time zero; no simulation weather is injected",
 		"clock_policy": "ShaderClock is set explicitly per case; clock wraps at 1024 seconds; wind is render-space m/s",
