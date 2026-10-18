@@ -317,6 +317,71 @@
    "parsed_ok": true
   },
   {
+   "path": "references/rc-aero-data/weishaupl-mclay-sobester-2024-aerj-drag-curves-small-uav.pdf",
+   "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/453B48240E5861B1360B9D33288C5C88/S0001924023000611a.pdf/experimental-evaluation-of-the-drag-curves-of-small-fixed-wing-uavs.pdf",
+   "bytes": 2671471,
+   "sha256": "60695c9b9fc49741d4a978925c7773448a00064edcbc228d143b4a1650191f04",
+   "file_type": "PDF, 30 pages",
+   "kind": "paper",
+   "license": "Aeronautical Journal 128 (2024) 655-684, doi 10.1017/aer.2023.61, open access (Cambridge). Reference only.",
+   "use": "Southampton FliTePlat (5.5 kg twin, b 1.96 m, S 0.488 m2, stall 11 m/s, cruise 20 m/s). Table 2: wind tunnel CD0 0.0503, K 0.0764, CL0 0.257, CLalpha 0.1122/deg; automated glides CD0 0.0552, slow-down 0.0526; manual glides off by about 70 %. Stationary propellers add 0.01-0.03 to CD depending on blade orientation.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/vahora-ananda-selig-2018-aiaa-2018-1277-airfoil-scaling-c182.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/VahoraAnandaSelig-2018-AIAA-Paper-2018-1277-DesMethodforAirfoilScaling.pdf",
+   "bytes": 1890364,
+   "sha256": "bc3f423cb1302ba34510a4ae99faa93543a90a97f02acb1a9a43a37c701782bc",
+   "file_type": "PDF, 14 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "UIUC GA-USTAR 1/5-scale RC Cessna 182: the NACA 2412 loses Clmax at the model's stall Re 230,000 against 2.7e6 full scale (Clmax 1.75 XFOIL, 1.62 measured at 3.1e6); the VAS1715 airfoil was designed and tunnel-verified to match full-scale Clalpha and Clmax.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/jayanti-2026-pptr-small-uav-cfd-flight-validation.pdf",
+   "url": "https://pp.bme.hu/tr/article/download/41190/24214/239555",
+   "bytes": 3036305,
+   "sha256": "9d62ae4e84dc10e403f851a6f7c1b1c2c0b990f6b46304205b18e9032312fc7f",
+   "file_type": "PDF, 17 pages",
+   "kind": "paper",
+   "license": "Periodica Polytechnica Transportation Engineering 54(1) 88-104, CC BY.",
+   "use": "2.43 m, 7.5 kg twin-engine EPO mapping UAV: CFD-derived 6-DOF model against three flight tests (phugoid, short period, lateral modes). Low relevance.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/morelli-2012-nasa-airstar-t2-global-aero-modeling.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20120001458/downloads/20120001458.pdf",
+   "bytes": 1870927,
+   "sha256": "f307f4a80a45117a6b9782f671a65bbff211d174055e6952cd40e09172e63589",
+   "file_type": "PDF, 26 pages",
+   "kind": "paper",
+   "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+   "use": "Morelli, Efficient Global Aerodynamic Modeling from Flight Data. NASA AirSTAR T-2: 5.5 % dynamically scaled twin-turbine jet transport, b 2.088 m, S 0.548 m2, c 0.279 m, 23.1 kg, Ix 1.60, Iy 6.13, Iz 7.49, Ixz 0.29 kg m2 (table 3). Global lateral model from flight (table 6, /rad): CYbeta -0.548 (CYbeta-alpha -4.04), Clbeta -0.130 (Clbeta-alpha -0.271), Cnbeta 0.167 (Cnbeta-alpha +0.342), Clp -0.317, Clr 0.285, Cnr -0.889, Cnp -0.447 plus alpha and control cross terms. Closest jet reference for the Avanti, not a sport jet.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/morelli-2011-nasa-airstar-t2-flight-test-maneuvers.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20110014634/downloads/20110014634.pdf",
+   "bytes": 639260,
+   "sha256": "528541160f82276659bdbd62770d4ec1f6b652994164fcfa44b1fcba925ce65b",
+   "file_type": "PDF, 18 pages",
+   "kind": "paper",
+   "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+   "use": "Morelli, Flight Test Maneuvers for Efficient Aerodynamic Modeling: orthogonal optimized multi-sine inputs on the T-2, real-time frequency-domain equation error. Method reference for flight-test excitation.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
    "path": "references/rc-aero-data/lutze-vt-aoe3134-yaw-moment.pdf",
    "url": "https://archive.aoe.vt.edu/lutze/AOE3134/YawMoment.pdf",
    "bytes": 224881,
@@ -444,6 +509,26 @@
    "url": "https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/2592296",
    "status": "not downloaded",
    "note": "Gryte et al. 2018 (ICUAS): Skywalker X8 flying-wing 6-DOF model, design tools versus wind tunnel; accepted version open. A 2025 CEAS Aeronautical Journal flight identification (Low-Hansen et al.) is cited elsewhere as open access; not checked."
+  },
+  {
+   "url": "https://scholarsarchive.byu.edu/etd/387",
+   "status": "blocked (403)",
+   "note": "Ostler 2006 BYU thesis: drag polars of small electric UAVs from flight data with tunnel-measured propeller efficiency; search summary quotes CD0 0.021 for one aircraft (not verified, PDF blocked)."
+  },
+  {
+   "url": "https://scholars.csus.edu/esploro/outputs/graduate/Basic-interchangeability-of-flight-test-methodology/99257830905501671",
+   "status": "not checked",
+   "note": "Cal State Sacramento thesis: flight-test methodology on a model aircraft; reports a measured stall speed."
+  },
+  {
+   "url": "https://wiredspace.wits.ac.za/items/3fad4647-a736-4ce9-be81-32a6100ef34c",
+   "status": "not checked",
+   "note": "Padayachee 2016 Wits thesis: aerodynamic identification of a low-cost UAV; pitch damping derivatives not identifiable."
+  },
+  {
+   "url": "https://yadda.icm.edu.pl/baztech/element/bwmeta1.element.baztech-article-BAT6-0015-0034/c/httpwww_ein_org_plsitesdefaultfiles2013-03-12.pdf",
+   "status": "not checked",
+   "note": "Grass-runway rolling friction (cites Stinton): about 0.05 short grass, 0.08 long grass, 0.13 long wet grass; full-scale wheels, a rough bound for RC grass takeoffs."
   },
   {
    "url": "https://fast-ga.readthedocs.io/en/stable/_modules/fastga/models/aerodynamics/components/fuselage/compute_cn_beta_fuselage.html",

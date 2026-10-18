@@ -46,9 +46,20 @@ The Ultra Stick is the closest documented relative of the Ugly Stik: a high-wing
 | Sukhoi 29S 35 % (16.37 kg, 2.6 m, 130 dm²) | Dantsker, Selig 2015; Dantsker et al. 2013 | High-α flight data; coefficients in figures only. |
 | Glow scale Cessna 182 (b 2.05 m, 4 kg) | Fischer et al., ICAS 2022-0873, table 1 | Output-error identification: CYβ −2.97, Clβ −0.050, Cnβ 0.161, Clp −0.068, Cmq −5.41. The normalization is not stated, and CYβ and Clp are far from typical values. Clr, Cnp, Cnr and Cnδa have Cramér-Rao bounds of 81–214 %, so they are unidentified. |
 | Rudderless UAV, 1.28 kg, b 0.97 m | Venkataraman, Seiler 2019 | Flight Dutch roll ζ 0.12, ωn 4.8 rad/s (the initial model gave 0.06 and 7 rad/s); roll τ 0.078 s; spiral not excited. |
+| NASA AirSTAR T-2: 5.5 % dynamically scaled twin-turbine jet transport (23.1 kg, b 2.088 m, S 0.548 m²; Ix 1.60, Iy 6.13, Iz 7.49, Ixz 0.29 kg·m²) | Morelli 2012, tables 3 and 6; Morelli 2011 (multi-sine maneuvers) | Global lateral model identified from flight, /rad: CYβ −0.548 (CYβα −4.04), Clβ −0.130 (Clβα −0.271), Cnβ 0.167 (Cnβα +0.342), Clp −0.317, Clr 0.285, Cnr −0.889, Cnp −0.447, plus α and control cross terms. The closest turbine-jet reference for the Avanti; a transport layout, not a sport jet. |
 | Vector-P pusher UAV, 31.5 kg | Fischer et al., ICAS 2018-0764 | Clβ −0.0285, Cnβ 0.090, CYβ printed +0.029 (sign unexplained). Not an RC sport class. |
 
-Identified Cnβ spans 0.046/rad (Ultra Stick 25e) to 0.161/rad (scale Cessna), against the Stik's 0.074/rad after D10-R2. Directional stability follows each airframe's own tail volume and body. The spread bounds plausibility; it does not set a target.
+Identified Cnβ spans 0.046/rad (Ultra Stick 25e) to 0.167/rad (T-2), against the Stik's 0.074/rad after D10-R2. Directional stability follows each airframe's own tail volume and body. The spread bounds plausibility; it does not set a target.
+
+## Lift, drag and propeller-drag references
+
+- **Southampton FliTePlat** (Weishäupl, McLay, Sóbester 2024, open access): a 5.5 kg twin with b 1.96 m and S 0.488 m², stalling at 11 m/s.
+  - Wind tunnel (table 2): CD0 0.0503, K 0.0764 (e 0.53), CL0 0.257, CLα 0.1122/deg.
+  - Flight: automated glides and slow-downs recover CD0 within 10 %; manual glides miss it by about 70 %.
+  - Stationary propellers add 0.01–0.03 to CD, depending on where the blades stop.
+- **FASER tunnel** (Ritchie 2013): CL0 0.113, CLα 0.0762/deg (section "Ultra Stick family").
+- **Low-Reynolds CLmax** (Vahora, Ananda, Selig 2018, UIUC GA-USTAR 1/5-scale RC Cessna 182). At the model's stall Re of 230,000, the full-scale NACA 2412 loses Clmax; full scale gives 1.75 (XFOIL) and 1.62 (measured at Re 3.1·10⁶). A new airfoil, VAS1715, was needed to match the full-scale lift slope and Clmax. A scale model with the full-size airfoil therefore stalls earlier than the airplane it copies.
+- **Small-UAV identification, low relevance.** Jayanti et al. 2026 validate a 2.43 m, 7.5 kg twin's CFD model against flight. The BYU drag-polar thesis (Ostler 2006) was blocked (403) and is kept as a link.
 
 ## Spin, knife-edge and fuselage crossflow references
 
@@ -85,6 +96,16 @@ The manifest's `links` list records the leads without a downloaded file and why:
   - **Far less vertical force.** The Extra 300S sinks 21.2–21.6 m/s at 7.1 kg/m², a vertical-force coefficient 2(W/S)g/(ρV²) of 0.25. The Extra 260 sinks 15.5–16.8 m/s at 13.0 kg/m², a coefficient of 0.74–0.86.
 
   The model's developed spin is therefore steeper and faster than the measured RC spins, with about a third of their vertical force. These are other airframes, with their own throws and inertias. The card's window, 4.0–6.25 s, is about three turns in, while the airspeed still rises about 1 m/s per second. So this is a consistent finding to investigate in the post-stall model, not yet a proven defect. A longer pro-spin hold would show whether the model settles at a higher α.
-- Check the aero model's roll and yaw damping against the FASER α trends: constant to stall, then loss of roll damping.
+- [`polar_fit.py`](../../../research/flight-test/polar_fit.py) fits each aircraft's airframe polar from `aero_sweep` and compares it with the idle glides. Results on the D10-R2 run:
+  - **Stik lift matches the Ultra Stick 120 tunnel.** CL at α 0 is 0.107 against FASER's 0.113, and CLα is 0.0799 against 0.0762/deg, both within 5 %.
+  - **Fleet polars sit in the measured RC range.** CDmin is 0.029–0.043 and e 0.75–0.79, against CD0 0.050 and e 0.53 for the FliTePlat. The fit needs the offset CL at least drag: without it, the cambered Stik and Timber give e of about 1.7, which is a fitting artifact.
+  - **Idle glides add 0.003–0.024 to CD on the glow-idling and turbine aircraft.** This is the propeller at idle plus trim drag, the same order as the FliTePlat's 0.01–0.03.
+  - **The Timber's propeller stops at zero throttle, and the model then adds no drag.** [`propulsion.gd`](../../../app/physics/propulsion.gd) returns zero loads below 1 rpm for non-glow propellers. Scaled by propeller disc to wing area, the FliTePlat's stopped-propeller increment would be 0.006–0.019. That would lower the Timber's best idle glide ratio from 13.9 to about 10.6–12.6. This candidate gap belongs to the propulsion owners.
+  - **The glow Stik variants do not descend at idle at 1.3 and 1.6 Vs.** Their idle turns 5,000–8,800 rpm in the glide. This is FT-01 finding 2, now seen in the glide.
+- **Static lateral derivatives.** These come from `aero_sweep` row `beta_05` divided by 5° in radians, at each aircraft's trim α, on the D10-R2 run. Results:
+  - **Avanti:** CYβ −0.90, Clβ −0.138, Cnβ 0.187. The T-2's flight model at α 4° gives −0.83, −0.149 and 0.191: the same order for a different jet layout.
+  - **Stik:** Cnβ 0.062 lies within the identified range. Its Clβ of −0.079 at trim α is twice the Ultra Stick 25e's flight-identified −0.039; the D10-R2 table lists the base value, −0.0545. That points to a CL-dependent dihedral effect worth reviewing against the sister airframe.
+  - **Others:** Extra CYβ −0.52, Clβ −0.024, Cnβ 0.162; P-51 −0.46, −0.064, 0.046; Timber −0.32, −0.080, 0.049.
+- Check the aero model's roll and yaw damping against the FASER α trends: constant to stall, then loss of roll damping. The T-2 table gives a jet's Clp and Cnr for the same check on the Avanti.
 - Use the Polhamus subcritical crossflow drag, 1.6–2.0 for the Stik's slab sides, in any knife-edge fuselage side-force estimate. The D10-R2 Allen–Perkins estimate assumed about 1.5.
 - Add FASER as an `openrc-reference v1` dataset once a quantity with a printed value and a defined scaling is chosen.

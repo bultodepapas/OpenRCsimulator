@@ -46,6 +46,8 @@ python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tm
 
 `python research/flight-test/spin_state.py <out> [aircraft ...]` reads the spin traces offline. It prints each aircraft's state averaged over the card's steady window (4.0–6.25 s): α, |β|, airspeed, body rates, Ωb/2V, pitch angle, pitch-rate swing and sink. Beside each aircraft it prints two spins measured in flight with the same entry: NASA FASER (Ultra Stick 120) and the UIUC Aero Testbed (35 % Extra 260). Their speeds are scaled to that aircraft's wing loading. These rows compare other airframes; they are not acceptance bands ([sources and current findings](../../docs/research/flight-dynamics/rc-aero-data-sources.md#open-uses)).
 
+`python research/flight-test/polar_fit.py <out> [aircraft ...]` works the same way for lift and drag (card v3 or later). It fits each airframe polar from `aero_sweep`: CL at α 0, CLα, and CD = CDmin + K(CL − CL_md)² with e. It then compares the idle glides with that polar, so the excess shows the idle propeller and trim drag. It also prints the NASA FASER and Southampton FliTePlat wind-tunnel references.
+
 It exits 1 when a run fails or Godot reports a script error. A test that is not valid is a result, not a run failure. Runs are deterministic: two runs of the full battery compare with no change.
 
 You can also run one aircraft directly: `<godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- --aircraft=<id> --out=<dir> [--only=a,b]`, or list the aircraft with `-- --list`.
