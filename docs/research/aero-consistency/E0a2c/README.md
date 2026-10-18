@@ -1,6 +1,6 @@
 # E0a2c, D11i, D11j, D8a-R2: one pitch dynamics per aircraft in both aero regimes
 
-2026-10-13 · Status: implemented and verified by software checks; physical validation open. Diagnosis and plan: [elevator-flight-dynamics-repair.md](../../../plans/elevator-flight-dynamics-repair.md). Harness and reduced results: [research/flight-dynamics/elevator-repair](../../../../research/flight-dynamics/elevator-repair/README.md).
+2026-10-13 · Status: implemented and verified by software checks; physical validation open. Diagnosis: [elevator investigation](../../flight-dynamics/elevator-repair-2026-10-13.md). Harness and reduced results: [research/flight-dynamics/elevator-repair](../../../../research/flight-dynamics/elevator-repair/README.md).
 
 ## What changed
 

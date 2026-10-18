@@ -1,6 +1,6 @@
 # D6e: dual rates and expo as stick shaping
 
-2026-10-13 · Status: implemented with software checks; owner flight acceptance open. Origin: [elevator investigation](../../../plans/elevator-flight-dynamics-repair.md) §6 P1 and §3.4.
+2026-10-13 · Status: implemented with software checks; owner flight acceptance open. Origin: [elevator investigation](../../flight-dynamics/elevator-repair-2026-10-13.md) §6 P1 and §3.4.
 
 ## Why
 
@@ -29,6 +29,12 @@ Effect, from the [elevator harness](../../../../research/flight-dynamics/elevato
 | 15 m/s, start speed | α reaches 12.2° at the end of the 1.5 s hold; 126 °/s maximum roll, speed down to 5.9 m/s | α 17.2° in 0.5 s, 269 °/s roll |
 
 At 21 m/s a full pull no longer reaches the stall at entry. Holding full up from the start speed until the airplane runs out of speed still stalls it, as on a real model. The roll that follows is the open post-stall item, D8b-R2.
+
+## D6e-R1: in-flight rate switch (2026-10-18)
+
+The [elevator investigation](../../flight-dynamics/elevator-repair-2026-10-13.md#11-implementation-record-2026-10-13) left the in-flight switch open; before this step the profile was fixed at launch (`--rates`). `FlightSession.toggle_rate_profile()` now flips normal ⇄ full like a transmitter's D/R switch: **N** on the keyboard, or the optional gamepad action `rates_toggle` (unbound by default, listed under Flight in the controller setup and the controls guide). It is refused, with a note, when the aircraft has no `controls.rates` or a radio is connected (radios keep their own rates). The O2 transmitter overlay and the legacy HUD already show the live profile.
+
+Only the input layer changes. The `.orfl` input boundary is post-rates, so the log format is unchanged; the header adds `rates` (the starting profile) and each switch is a `rates` event. Checks (2026-10-18): `test_rates.gd` 41/0, including a Stik flight logged across a switch at tick 40 (the same 0.6 stick: 0.6817 → 0.3529 of elevator throw, trim included), one `rates` event at that tick and an exact 120-tick replay; `test_flight_log` 3247/0, `test_controls_reference`, `test_controller_sections` 105/105, `test_controller_extended_actions` 104, `test_controller_flight_actions` 31/0, `test_overlay_manager` 97/0, `test_ui_help`, `test_ui_language`, `test_ui_modal_responsive` and `--check-only` parsing of every edited script. Not yet checked: a native in-flight press and the owner's feel.
 
 ## Checks
 

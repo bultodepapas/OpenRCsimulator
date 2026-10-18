@@ -944,7 +944,7 @@ data = {
             "wing_station_incidence": q([float(x) for x in strip_inc], "rad", "derived", D("per-strip angle offsets root -> tip, zero mean: linear washout + Schrenk loading + Re-dependent section clmax (NACA TN 1945); see derivation.md 'stall'")),
             # D11j: the cambered section's pitching moment about its aerodynamic centre, carried by every strip of the
             # local wing as a pure couple; the oracle's Cm0 already contains cm_ac x MAC / c_ref, so the two regimes
-            # agree statically (docs/plans/elevator-flight-dynamics-repair.md).
+            # agree statically (docs/research/flight-dynamics/elevator-repair-2026-10-13.md).
             "wing_section_cm_ac": q(cm_ac, "1", "derived", D("section Cm_ac: thin-airfoil over the UIUC NAA 45-100 root and tip camber lines (research/p51/p51-13/section.json), blended root -> tip and chord-weighted, x 0.8 (theory/measured, NACA TN 1945)")),
             "attached_limit": same("attached_limit"),
             "tail_local_limit": same("tail_local_limit"),
@@ -960,7 +960,7 @@ data = {
                 "incidence": q(inc_eff, "rad", "derived", D(f"(stab incidence - eps0) / (1 - deps/dalpha) with the +2 deg leading-edge-up setting, plus a {math.degrees(d_inc * (1 - deps)):+.2f} deg local-flow correction CALIBRATED to the XP-51 glide trim curves (NACA MR L-566 Fig. 10, elevator rms {rms_geo:.2f} -> {rms_cal:.2f} deg; P51-19)")),
                 # E0a2c: the loader derives the free tail law from this (free slope CLa_h eta, physical elevator tau,
                 # downwash as the lagged wing lift); without it the local tail would use the downwashed slope for pitch
-                # rate and the inflated tau for its stall (docs/plans/elevator-flight-dynamics-repair.md).
+                # rate and the inflated tau for its stall (docs/research/flight-dynamics/elevator-repair-2026-10-13.md).
                 "downwash_gradient": q(deps, "1", "derived", D("d(eps)/d(alpha) at the tail: elliptic-wing estimate 2 CLa_w / (pi AR), the same value folded into lift_slope, control_effectiveness and incidence")),
             },
             "vertical": {

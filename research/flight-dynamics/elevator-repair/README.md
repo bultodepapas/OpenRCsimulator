@@ -1,6 +1,6 @@
 # Elevator flight-dynamics investigation: reproducible harness
 
-2026-10-12/13. Scripts and reduced results behind [docs/plans/elevator-flight-dynamics-repair.md](../../../docs/plans/elevator-flight-dynamics-repair.md). Diagnosis only: nothing under `app/` is modified by these scripts; every variant edits a loaded model in memory, and the oracle-only counterfactual ran on a disposable copy of `app/`.
+2026-10-12/13. Scripts and reduced results behind [docs/research/flight-dynamics/elevator-repair-2026-10-13.md](../../../docs/research/flight-dynamics/elevator-repair-2026-10-13.md). Diagnosis only: nothing under `app/` is modified by these scripts; every variant edits a loaded model in memory, and the oracle-only counterfactual ran on a disposable copy of `app/`.
 
 ## Scripts
 
