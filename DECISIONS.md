@@ -424,3 +424,10 @@ Use one host-owned, two-voice service with a pinned CC0 sound subset, active-scr
 ### 2026-10-16 — Default catalog airplanes to the runway (UI-06d-R3)
 
 Use the existing static ground-start solver for every catalog airplane on Home and Quick Flight. Keep airborne as the secondary explicit selection and preserve valid saved choices. Invalid preferences recover to runway; a failed ground solve refuses launch instead of silently starting airborne. Keep technical trace fixtures explicit and preserve their existing reference default. Extra receives an attributed provisional stiction parameter through its generator; this does not close physical handling acceptance. [Behavior and regression evidence](docs/research/menu-investigations/UI-06b/README.md#2026-10-16--fleet-runway-default-ui-06d-r3).
+
+
+### 2026-10-17 — Expand downloaded tree forms before increasing the forest population (L6a-R1/L7-R1/L15b-R1)
+
+Use seven retained CC0 source forms for the same 17 close trees, preserve the 480-point near-field prefix, and vary the 1,200 far trees through a deterministic irregular-patch recipe. Keep the existing card representation and density ceiling. Treat changed placements/source envelopes as a new collision world. Repair only the known tiny COLOR_0 overflow through the source generator; retain original archives and all non-color geometry bytes.
+
+Enable qualified imported-tree wind through shared simulation clock/wind, material-feature guards and bounded culling envelopes. Keep 64/128/256 m batching optional: native controls increased submissions for this compact population. Retain the downloaded high-resolution realistic sapling outside runtime for source comparison; full mature-realistic/LOD, flight/readability and owner acceptance remain open. [Implementation, paired native measurements and limits](docs/research/visual-quality-implementation/L6a-R1/README.md).

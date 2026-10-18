@@ -1,0 +1,28 @@
+{
+  "suite_pid": 421,
+  "terminated_descendants": [
+    48612,
+    48613,
+    48615,
+    48616
+  ],
+  "commands": {
+    "421": "bash app/test.sh ",
+    "48612": "bash app/test.sh ",
+    "48613": "tee /tmp/tmp.uW8j70zTT4 ",
+    "48615": "timeout 60 /home/bulto/openrc-tree-quality-20261017/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-tree-quality-20261017/app --audio-driver Dummy --script res://tests/test_prop_strike.gd ",
+    "48616": "/home/bulto/openrc-tree-quality-20261017/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-tree-quality-20261017/app --audio-driver Dummy --script res://tests/test_prop_strike.gd "
+  },
+  "status": "partial audit intentionally stopped",
+  "reason": "The unmodified required suite already stops at the separately reproduced baseline AUD-12 serialization defect. Tree-specific native tests, package checks, source regeneration and lifecycle checks completed; this broader remainder audit is auxiliary and is not a full-suite pass.",
+  "suites_started": 321,
+  "completed_suites_lower_bound": 320,
+  "last_started_suite": "test_prop_strike.gd",
+  "engine_error_lines": 0,
+  "script_error_lines": 0,
+  "strict_full_suite_passed": false,
+  "auxiliary_remainder_complete": false,
+  "source_snapshot": "linux-remainder-snapshot.json",
+  "audit_patch": "remainder-suite-audit.patch",
+  "log": "linux-full-test-remainder.log"
+}

@@ -3,27 +3,33 @@
   "changed_app_files": {
     "assets/landscape/vegetation/catalog.json": {
       "baseline": "4ea2676f66d94c0f82dcbdd58eecb1795a74d75332d869eec106caba90f9a85e",
-      "candidate": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9"
+      "candidate": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9",
+      "newline_only": false
     },
     "assets/landscape/vegetation/models/Bush_Common.gltf": {
       "baseline": "907bbcb33c284f1dea465319ff5598d0980f7d80c64db7edcf3a216f992ec88f",
-      "candidate": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90"
+      "candidate": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Bush_Common_Flowers.gltf": {
       "baseline": "1fed797eb20bf1ea37599c66eb8a32d678f99e91bbbb0c3443f001ca33b0b350",
-      "candidate": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea"
+      "candidate": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Clover_1.gltf": {
       "baseline": "207baead664921225281b0e9bd6c033e796abe5ec9c7fc996fb171593c09bb02",
-      "candidate": "05fe48cdf1f3db879371a6ba0d843fcd407667b7680def5716c9f286efe0306b"
+      "candidate": "05fe48cdf1f3db879371a6ba0d843fcd407667b7680def5716c9f286efe0306b",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/CommonTree_1.bin": {
       "baseline": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae",
-      "candidate": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1"
+      "candidate": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1",
+      "newline_only": false
     },
     "assets/landscape/vegetation/models/CommonTree_1.gltf": {
       "baseline": "917e581203dd6499e683921701b6bb9d994bd6dac089709cc79b743566e7b333",
-      "candidate": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
+      "candidate": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/CommonTree_2.bin": {
       "baseline": null,
@@ -35,11 +41,13 @@
     },
     "assets/landscape/vegetation/models/CommonTree_3.bin": {
       "baseline": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49",
-      "candidate": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3"
+      "candidate": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3",
+      "newline_only": false
     },
     "assets/landscape/vegetation/models/CommonTree_3.gltf": {
       "baseline": "48002e286c353799916ad64fc513929946cce4bcb4f3cce280017976115a5731",
-      "candidate": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976"
+      "candidate": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/CommonTree_4.bin": {
       "baseline": null,
@@ -51,35 +59,43 @@
     },
     "assets/landscape/vegetation/models/Fern_1.gltf": {
       "baseline": "04450c2147012a4d820b671fde7d1d4d55ff611a4c214644e549d0a4c25440b7",
-      "candidate": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab"
+      "candidate": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Flower_3_Group.gltf": {
       "baseline": "1dc92301637cf9c9456236324356ad3b85f6e0ba5e1f8a8b5b577549ab3c9c5c",
-      "candidate": "4df1612371982c543f930d6b213967372e0d459622d7eff7fc2ed1ddbfaa3b6c"
+      "candidate": "4df1612371982c543f930d6b213967372e0d459622d7eff7fc2ed1ddbfaa3b6c",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Flower_4_Group.gltf": {
       "baseline": "626e920e94761132aa01c091e6637023fc71a65909c600054a9aefcd0584ee47",
-      "candidate": "69ead56b36b50f06a0cf18380797fce7434302e9b2da7bf68a85014b993c6134"
+      "candidate": "69ead56b36b50f06a0cf18380797fce7434302e9b2da7bf68a85014b993c6134",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Grass_Common_Short.gltf": {
       "baseline": "39a5aeba0536dff0d254532bec9b9998600d00b261fd2f32981b7c37e46eda93",
-      "candidate": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a"
+      "candidate": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Grass_Common_Tall.gltf": {
       "baseline": "4d0798e45fce1040e7308a630d80dd915420520f8e59f91cb67ed806afc33f4f",
-      "candidate": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70"
+      "candidate": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf": {
       "baseline": "3b86e799d88147622c70e8486f395effb044b5768f22344feca3ad23936e9c53",
-      "candidate": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b"
+      "candidate": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Pine_1.bin": {
       "baseline": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2",
-      "candidate": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365"
+      "candidate": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365",
+      "newline_only": false
     },
     "assets/landscape/vegetation/models/Pine_1.gltf": {
       "baseline": "1f44dda04b6a279253a5fe2a9395b6129a052c73ecb36c7bbf77065bceaa4256",
-      "candidate": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc"
+      "candidate": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/Pine_2.bin": {
       "baseline": null,
@@ -99,43 +115,53 @@
     },
     "assets/landscape/vegetation/models/additional/aredon_reed/reed.mtl": {
       "baseline": "28c9b16b2d47a982e0c2e884983a89d3b827d71440b3e7304a0ef722da6aad59",
-      "candidate": "4ab5740f9bb8d9319614a0e5e33fdd405eb842d39fb390fc028b693e4cca0e14"
+      "candidate": "4ab5740f9bb8d9319614a0e5e33fdd405eb842d39fb390fc028b693e4cca0e14",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/additional/aredon_reed/reed.obj": {
       "baseline": "19fe530d9839c2312f0403bcb092d200860ff0131e1c6fa946f7b9d39e658be6",
-      "candidate": "58a7224445ea159f1a90315e0e68ece3dd46bc69a1e8aea70febd58ce7ed9774"
+      "candidate": "58a7224445ea159f1a90315e0e68ece3dd46bc69a1e8aea70febd58ce7ed9774",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.mtl": {
       "baseline": "91756baa6f618ecd578c3aafaf4cc94a9f9a2d6b25f48dcc4535fc35f75df966",
-      "candidate": "25a6abdaf9bc8e9b49e8a1e2c9511ab8c40f1e882c0cbb165e06fee732718548"
+      "candidate": "25a6abdaf9bc8e9b49e8a1e2c9511ab8c40f1e882c0cbb165e06fee732718548",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj": {
       "baseline": "1ee39160337ea0fd2a3e2e414e69fd1e4285fb13bf2bc76374850338f485ed9b",
-      "candidate": "b04cf3a5d23a276f9e72aa9ca49d5b65b86b4661ad576c91add11ae77dd19102"
+      "candidate": "b04cf3a5d23a276f9e72aa9ca49d5b65b86b4661ad576c91add11ae77dd19102",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.mtl": {
       "baseline": "c8171842ef5869626c2cd71983f846c77f8aa273a66e747362df0bca3eb199b7",
-      "candidate": "dce58b2d125b0ed1b0b1ddfba47697ce8eacea09bbf3087b1ab70261d279456e"
+      "candidate": "dce58b2d125b0ed1b0b1ddfba47697ce8eacea09bbf3087b1ab70261d279456e",
+      "newline_only": true
     },
     "assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj": {
       "baseline": "0e28e03e736d7410fc5328c941be35201859f074f77c6eb7b07b963c21b83411",
-      "candidate": "d56017278085219ca8d035883bf33abd913e6b35d14baa7af50bea7a4723ed4c"
+      "candidate": "d56017278085219ca8d035883bf33abd913e6b35d14baa7af50bea7a4723ed4c",
+      "newline_only": true
     },
     "data/fields/default.json": {
       "baseline": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
-      "candidate": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+      "candidate": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "newline_only": false
     },
     "scenery/imported_vegetation.gd": {
       "baseline": "d4d80c9149a90f0750d32463299fc5074eea83a4c2f37252cd17b48ad5b2ff16",
-      "candidate": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6"
+      "candidate": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6",
+      "newline_only": false
     },
     "scenery/imported_vegetation_wind.gdshader": {
       "baseline": "9f008960d441eda443dbfa6b141ce8b7c52a462b3738c34c1a7ab4b62676bf5e",
-      "candidate": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6"
+      "candidate": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6",
+      "newline_only": false
     },
     "scenery/scenery.gd": {
       "baseline": "831fec7a25a310815947b89de820172cf25dca4384fa30c909681278055cec5e",
-      "candidate": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7"
+      "candidate": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7",
+      "newline_only": false
     },
     "tests/test_imported_tree_rendering.gd": {
       "baseline": null,
@@ -143,15 +169,18 @@
     },
     "tests/test_imported_vegetation.gd": {
       "baseline": "fb91ea34a791f0a4ff179fa5ebaf9545956cb2ec2c37ddf7db031e87efa375a2",
-      "candidate": "d83a6cf2bf503765a1c18e253577ccf27776cdc5594209f241780bcba572e33d"
+      "candidate": "d83a6cf2bf503765a1c18e253577ccf27776cdc5594209f241780bcba572e33d",
+      "newline_only": false
     },
     "tests/test_landscape_vegetation.gd": {
       "baseline": "87883b954ccc407c92e6633012e7421593962dd3ffb2b1f91a9bd6f69738bcfb",
-      "candidate": "bbbc8ee958dcee0dba6786ed7e439b672b3dd61cea7318f68e4d0fe9716c1d1e"
+      "candidate": "bbbc8ee958dcee0dba6786ed7e439b672b3dd61cea7318f68e4d0fe9716c1d1e",
+      "newline_only": false
     },
     "tests/test_vegetation_collision_proxies.gd": {
       "baseline": "902c998bf33b9e8d143d4d31bec7a6326799e35ff6207b17d57fe6cf9700ee6a",
-      "candidate": "bbd72a07e998fc515f63973a4e3862dc6bf9bf072bb1989f10ebd92f1ee746b0"
+      "candidate": "bbd72a07e998fc515f63973a4e3862dc6bf9bf072bb1989f10ebd92f1ee746b0",
+      "newline_only": false
     }
   },
   "scope": "Imported caches, generated import metadata and UID sidecars excluded; complete frozen app content SHA-256 maps follow.",

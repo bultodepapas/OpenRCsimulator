@@ -73,7 +73,7 @@ Use a fresh output directory. The baseline is optional for later regression runs
 
 ## Native imported-tree comparisons
 
-`quality_capture.gd` runs externally against an already imported, frozen `app` folder. `--mode=field` captures the production field; `--mode=gallery` captures retained source IDs at identical height with front/back/underside/overhead and deterministic wind controls. It requires native Compatibility, a new/empty `--out`, and writes PNGs plus hashes/renderer identities. `--wind=on|off`, `--cell=0|64|128|256` and `--tree_shadows=off` isolate tree treatments. The shader clock and all other scene processing are frozen for images; timed runs update the shared clock with the same 5 m/s wind. These are static scenes, not flight simulation.
+`quality_capture.gd` runs externally against an already imported, frozen `app` folder. `--mode=field` captures the production field; `--mode=gallery` captures retained source IDs at identical height with front/back/underside/overhead and deterministic wind controls. It requires native Compatibility, a new/empty `--out`, and writes PNGs plus hashes/renderer identities. `--wind=on|off`, `--cell=0|64|128|256` and `--tree_shadows=off` isolate tree treatments; `--engine_shadows=on|off` separately controls the directional light. The report records its actual shadow setting, since Compatibility's raw shadow counter may be zero while shadows are enabled. The shader clock and all other scene processing are frozen for images; timed runs update the shared clock with the same 5 m/s wind. These are static scenes, not flight simulation.
 
 Use `--ids=common_tree_1,common_tree_2,common_tree_3,common_tree_4,pine_1,pine_2,pine_3` to cover all seven mature forms. Native script example (substitute a matching Godot executable and an imported frozen project):
 
@@ -95,5 +95,7 @@ node tools/trees/validate_sources.mjs --out tmp/tree-source-validation.json
 ```
 
 The validator defaults to all seven runtime trees and the retained Poly Haven comparison; optional explicit glTF paths replace that selection. It resolves local external buffers/images, records hashes, preserves warnings, refuses missing resources and exits nonzero on validator errors. See the vegetation pipeline for the reviewed precision-only color repair.
+
+After exporting a frozen project's Windows preset to a PCK, run `check_imported_pack.gd` with native Compatibility from an otherwise empty project root, using `--main-pack <absolute PCK> --script <absolute checker> -- <catalog SHA-256> <license SHA-256>`. It checks the seven tree forms, materials, texture image data and license; run it against the source project with the same hashes to compare `TREE_TEXTURE_INVENTORY` records. Mip availability is recorded explicitly rather than assumed. The L6a-R1 evidence retains the matching source/pack inventories; full platform release checks remain in the repository export workflow.
 
 Actual flight throughput and pilot readability remain separate. Use the existing `--frametimes` and [flight logging](../../docs/FLIGHT-LOGGING.md) workflows; headless numerical replay does not replay a camera through a changed forest.

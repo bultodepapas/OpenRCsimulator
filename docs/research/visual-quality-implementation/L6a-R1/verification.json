@@ -1,0 +1,163 @@
+{
+  "scope": "native Windows headless focused suites, with resolved external baseline aircraft-source fixture for test_treeline; final logs inspected for engine/script errors",
+  "suites": [
+    {
+      "test": "test_imported_vegetation",
+      "passed": true,
+      "log": "checks/final-test_imported_vegetation.log",
+      "sha256": "7ce87d314abb4ca88769de2512b9eeff62f5e889470fd09028ff61c2de6f9145",
+      "initial_attempt": {
+        "test": "test_imported_vegetation",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_imported_tree_rendering",
+      "passed": true,
+      "log": "checks/final-test_imported_tree_rendering.log",
+      "sha256": "0509c323db94206625c37066bf3db5d12bc9674c902a1619d0eaf85887ae2dc4",
+      "initial_attempt": {
+        "test": "test_imported_tree_rendering",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_vegetation_collision_proxies",
+      "passed": true,
+      "log": "checks/final-test_vegetation_collision_proxies.log",
+      "sha256": "984483528dfa18d5441552c09ab8b9d68a66d0bc9649f859a000a1ca0d880df3",
+      "initial_attempt": {
+        "test": "test_vegetation_collision_proxies",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_landscape_vegetation",
+      "passed": true,
+      "log": "checks/final-test_landscape_vegetation.log",
+      "sha256": "83a9fc2367770cbe63a823c650ca9b7ae2071b81082be07d14544d6b83f19042",
+      "initial_attempt": {
+        "test": "test_landscape_vegetation",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_landscape_tree_bounds",
+      "passed": true,
+      "log": "checks/final-test_landscape_tree_bounds.log",
+      "sha256": "2eca5fc7b7b1aabb656d1465eba3e6c016d9104ed9e74e6b0c6da9f126285210",
+      "initial_attempt": {
+        "test": "test_landscape_tree_bounds",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_tree_assets",
+      "passed": true,
+      "log": "checks/final-test_tree_assets.log",
+      "sha256": "92c0dd8c3c819f5a88e65cee1f19cb31ca60f7804c9b297fe8b740e029df2951",
+      "initial_attempt": {
+        "test": "test_tree_assets",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_tree_wind",
+      "passed": true,
+      "log": "checks/final-test_tree_wind.log",
+      "sha256": "4d61011aaf3f05d10498b83ce03bc44eba72b12a984a6d2660b74d46d99c3d01",
+      "initial_attempt": {
+        "test": "test_tree_wind",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_far_forest",
+      "passed": true,
+      "log": "checks/final-test_far_forest.log",
+      "sha256": "937ebb2906c803a6ffa5b49479e4b7788f4130fe0f7be01514530594d0a8c3f7",
+      "initial_attempt": {
+        "test": "test_far_forest",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_treeline",
+      "passed": true,
+      "log": "checks/final-test_treeline.gd-lifecycle.log",
+      "sha256": "9ede61e05acf99f1f0401addc1478daaeafd193a2a66ec6e7a65149a757cd69d",
+      "initial_attempt": {
+        "test": "test_treeline",
+        "passed": false,
+        "exit": 1
+      }
+    },
+    {
+      "test": "test_treeline_data",
+      "passed": true,
+      "log": "checks/final-test_treeline_data.log",
+      "sha256": "d3a342275030118931d0f69684c3233c823df4c2c8886f6deaebde2c7be6a57b",
+      "initial_attempt": {
+        "test": "test_treeline_data",
+        "passed": true,
+        "exit": 0
+      }
+    },
+    {
+      "test": "test_landscape_collision",
+      "passed": true,
+      "log": "checks/final-test_landscape_collision.log",
+      "sha256": "3b34094c17c1d388e8fbb2d0d1d08e3d593d8d15102644d5dcb71b3e9ea39213",
+      "initial_attempt": {
+        "test": "test_landscape_collision",
+        "passed": true,
+        "exit": 0
+      }
+    }
+  ],
+  "all_passed": true,
+  "native_gpu_treeline": {
+    "passed": true,
+    "checks": 31986,
+    "log": "checks/final-test_treeline-native.log"
+  },
+  "lifecycle": {
+    "passed": true,
+    "cycles": 20,
+    "report": "candidate-native-lifecycle.json"
+  },
+  "source_linux_snapshot": {
+    "passed": true,
+    "tests": 5,
+    "log": "source-verification-linux.log",
+    "identity": "source-snapshot.json"
+  },
+  "combined_wind_and_cells": {
+    "passed": true,
+    "cell_sizes_m": [
+      64,
+      128,
+      256
+    ],
+    "headless_log": "checks/combined-headless.log",
+    "native_log": "checks/combined-native.log",
+    "test_sha256": "3762b76d9b2c5ba96f8f8d78c01f7cf6d4b50f9afebdbaee8ae84c3817953eb8",
+    "native_checks": "per-tree transform/tint/seed-phase buffer equality; cull coverage; total/root bounds; damage hide/restore",
+    "headless_limit": "Dummy does not expose MultiMesh buffers; fallback verifies group seed/transform/tint records, custom-data configuration and bounds."
+  },
+  "full_suite": {
+    "passed": false,
+    "blocked_by": "baseline AUD-12 audio resource UID/text serialization mismatch",
+    "original_log": "linux-full-test-original.log",
+    "auxiliary_audit_complete": false,
+    "auxiliary_audit": "linux-remainder-stop.json"
+  }
+}

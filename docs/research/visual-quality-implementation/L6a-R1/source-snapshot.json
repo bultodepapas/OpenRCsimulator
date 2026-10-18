@@ -1,0 +1,434 @@
+{
+  "base_commit": "52c21939e2ac8cc6cd0126d3d214401ca1028ae2",
+  "snapshot_tree": "1d5302a680789a322256b04ce51b1a170e50f498",
+  "paths": [
+    ".gitattributes",
+    "tools/landscape/vegetation",
+    "assets/landscape/vegetation",
+    "app/assets/landscape/vegetation"
+  ],
+  "archive_sha256": "9e65bc1301a69c9bd7d78917078e7eaf8509ab3baaa671071c5e103517c31604",
+  "method": "isolated Git index; exact Git tree archive; no commit or change to the shared index except the two upstream license-byte repairs",
+  "files": {
+    ".gitattributes": {
+      "bytes": 5913,
+      "sha256": "973ca8ba48edc6caa3edc40b2b3a7376a06fe16002e687227ab02cb328076e79"
+    },
+    "app/assets/landscape/vegetation/LICENSE.txt": {
+      "bytes": 852,
+      "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    "app/assets/landscape/vegetation/catalog.json": {
+      "bytes": 48995,
+      "sha256": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_4view.gdshader": {
+      "bytes": 2123,
+      "sha256": "475b87fe3d33c252a6f7e606cde60a568eb1ea8cb74f310d9b67a876b3fb15c2"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_4view.gdshader.uid": {
+      "bytes": 21,
+      "sha256": "4fea2ad444dcb396b0ca9ab1a02ded786c0aa3b999b7a547a03c4cd2056e9a33"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_4view.json": {
+      "bytes": 4339,
+      "sha256": "a5edd61c74228db18157e51975261b638ea72a20425ab69e577d4d849f600006"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_4view.png": {
+      "bytes": 176082,
+      "sha256": "954bb172b6825494aa308fa13144ab7bd1140129db587ab1a97df3c58395f878"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_4view.png.import": {
+      "bytes": 1033,
+      "sha256": "5ef4352e546d9511ec742c83e96285d4951352460912f3b23268cad0173c0881"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": {
+      "bytes": 5743,
+      "sha256": "1c673aea5119ad0de5a040d3271fd5ba979e70363a20ede170437c02177e3c85"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.png": {
+      "bytes": 207658,
+      "sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d"
+    },
+    "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.png.import": {
+      "bytes": 1057,
+      "sha256": "97c3ba4df27fe7c60d5af9018efdc3b894c975618cc589a71f71c2c01e65e990"
+    },
+    "app/assets/landscape/vegetation/models/Bark_NormalTree.png": {
+      "bytes": 3894788,
+      "sha256": "f36e94fdd73255347325b998e02a0b2575fdf714b0315bfe5e8ff34bc8e13603"
+    },
+    "app/assets/landscape/vegetation/models/Bark_NormalTree.png.import": {
+      "bytes": 984,
+      "sha256": "0c2fdc30ae8e06e4550bfce0ec0117549f23071d6607c73297613c42e6e13827"
+    },
+    "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png": {
+      "bytes": 4384496,
+      "sha256": "852f6155404b8c39e100e41e26970e02a6a5c81b482d3726618dab28e3ad03a2"
+    },
+    "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import": {
+      "bytes": 1004,
+      "sha256": "93cc66c2bdfd4339dbf1331832e8dcf829c22161a0ddf853fff507e153b2d1d3"
+    },
+    "app/assets/landscape/vegetation/models/Bush_Common.bin": {
+      "bytes": 91800,
+      "sha256": "a5e1a773c8ba78fd9c05a8b342131eba4879302a8fddd2c5186cab9ee1ef4966"
+    },
+    "app/assets/landscape/vegetation/models/Bush_Common.gltf": {
+      "bytes": 2101,
+      "sha256": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90"
+    },
+    "app/assets/landscape/vegetation/models/Bush_Common.gltf.import": {
+      "bytes": 1186,
+      "sha256": "3ea0637e401b2ebdd3d0ae7a5fcf7cf6e07d0e9db3b4f4f66f14f8a3c8eb7b3c"
+    },
+    "app/assets/landscape/vegetation/models/Bush_Common_Flowers.bin": {
+      "bytes": 128928,
+      "sha256": "15f56a013afe0eecaded0eb97fd8f323305af11e1f0f7bb9b68472ec4cdc20d5"
+    },
+    "app/assets/landscape/vegetation/models/Bush_Common_Flowers.gltf": {
+      "bytes": 3654,
+      "sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea"
+    },
+    "app/assets/landscape/vegetation/models/Bush_Common_Flowers.gltf.import": {
+      "bytes": 1209,
+      "sha256": "968abd1e13631635da86a5864385d308722577107aa38059a664ba064d12c2b8"
+    },
+    "app/assets/landscape/vegetation/models/Clover_1.bin": {
+      "bytes": 12956,
+      "sha256": "788fabaffc3f8f2825ad88399bd4725d8bc397225d93d00926c3223fdee9516b"
+    },
+    "app/assets/landscape/vegetation/models/Clover_1.gltf": {
+      "bytes": 2074,
+      "sha256": "05fe48cdf1f3db879371a6ba0d843fcd407667b7680def5716c9f286efe0306b"
+    },
+    "app/assets/landscape/vegetation/models/Clover_1.gltf.import": {
+      "bytes": 1176,
+      "sha256": "3c32c6d46707ffa55b7e3f319e10c2c9fd1c533acedac55c11311da98e1fbe95"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_1.bin": {
+      "bytes": 491576,
+      "sha256": "ad2063df8b9b47fcdaaaef20ae59c21c911d27b31735b38cb8aa21f1dec99fa1"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_1.gltf": {
+      "bytes": 3869,
+      "sha256": "b51cdea6545edb51d102dd6c27caafe62aa75e3c328ac8f9039f4e7bfd690bfa"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_1.gltf.import": {
+      "bytes": 1189,
+      "sha256": "736e7e3939e98d957f766919354cfc8f45e32b53c7f32069296a1c13b7395080"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_2.bin": {
+      "bytes": 423024,
+      "sha256": "f30942a64a7886ff55014faefc4b544cf0ddd8731aba6ebc77e3b3f4c5265b60"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_2.gltf": {
+      "bytes": 3866,
+      "sha256": "67160975f0ac991b4a2ffb2add4ab4037b5e9c1bef9f66dac5235fcf0ba9bd52"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_2.gltf.import": {
+      "bytes": 1189,
+      "sha256": "888c00f8c146681307b248e4eaab5e2fea4c78fc8628073d803fda01305fda90"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_3.bin": {
+      "bytes": 296984,
+      "sha256": "8c6c167a144de305ecef3d31f61d1eca0da36d0221ef9e20fae8d9c664b5c6c3"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_3.gltf": {
+      "bytes": 3864,
+      "sha256": "17c6537aa8042bb7255fbb501bf7aeb2b6db87c16766f794f9c37be3ce70c976"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_3.gltf.import": {
+      "bytes": 1189,
+      "sha256": "c2cd66ca44509e4f0416e2c0316132fe29cd3ddeaf236b7e741bd01c4f67a17b"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_4.bin": {
+      "bytes": 307596,
+      "sha256": "295b8f91b628f55465e7f949f1a156682f2de2ca57a2e1c458a4be40eed865ab"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_4.gltf": {
+      "bytes": 3865,
+      "sha256": "ddf0e8837705702871d3f03de8cf7aeed61ad4bf8ee92052b6f95bdd771297b6"
+    },
+    "app/assets/landscape/vegetation/models/CommonTree_4.gltf.import": {
+      "bytes": 1189,
+      "sha256": "c341fcb4ee5cc1c760486b368e3d4b995a812a74288948f2224e176931164260"
+    },
+    "app/assets/landscape/vegetation/models/Fern_1.bin": {
+      "bytes": 11448,
+      "sha256": "5e92b87a27f81a69fe15347a533df3c77d567b48298dceeef43168ccb7c22853"
+    },
+    "app/assets/landscape/vegetation/models/Fern_1.gltf": {
+      "bytes": 2058,
+      "sha256": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab"
+    },
+    "app/assets/landscape/vegetation/models/Fern_1.gltf.import": {
+      "bytes": 1171,
+      "sha256": "96bc5c31775681bbdf2b05570b5024c57735fcae402898b4f47e992fde743630"
+    },
+    "app/assets/landscape/vegetation/models/Flower_3_Group.bin": {
+      "bytes": 27772,
+      "sha256": "5ab387dd3d6fe181df3af4eeac4df85533e4c27e77545ae39a61e0c2aaaab248"
+    },
+    "app/assets/landscape/vegetation/models/Flower_3_Group.gltf": {
+      "bytes": 3629,
+      "sha256": "4df1612371982c543f930d6b213967372e0d459622d7eff7fc2ed1ddbfaa3b6c"
+    },
+    "app/assets/landscape/vegetation/models/Flower_3_Group.gltf.import": {
+      "bytes": 1195,
+      "sha256": "73aa39d528df88ad64ea9c4ab1bb9aaa11c0c65b87a3fcdc39398d7a0352e77f"
+    },
+    "app/assets/landscape/vegetation/models/Flower_4_Group.bin": {
+      "bytes": 62220,
+      "sha256": "3ac30b4c9eaa5078a17c061aa29e2e9618cc9eb58cb6d5d2ab0c07fa0b851ae1"
+    },
+    "app/assets/landscape/vegetation/models/Flower_4_Group.gltf": {
+      "bytes": 3645,
+      "sha256": "69ead56b36b50f06a0cf18380797fce7434302e9b2da7bf68a85014b993c6134"
+    },
+    "app/assets/landscape/vegetation/models/Flower_4_Group.gltf.import": {
+      "bytes": 1195,
+      "sha256": "d7387c4dec0a58386d274c09a2f2f5b246608d8c6fe5e62ff56ae1db37a16447"
+    },
+    "app/assets/landscape/vegetation/models/Flowers.png": {
+      "bytes": 444609,
+      "sha256": "5c531f2329c241c625aafd6cb769de29f33b480ef2a16491c2489f3c68e62a6a"
+    },
+    "app/assets/landscape/vegetation/models/Flowers.png.import": {
+      "bytes": 959,
+      "sha256": "48baf5f4e428cf7254c6d945e827e0c4c89b69e6e3ae55851cdfcd29d2e840cf"
+    },
+    "app/assets/landscape/vegetation/models/Grass.png": {
+      "bytes": 33605,
+      "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
+    },
+    "app/assets/landscape/vegetation/models/Grass.png.import": {
+      "bytes": 953,
+      "sha256": "a70b2b58f69dd4244e04f9bf6b87eebff7642c050d5d77d7b276bb0a5655bf3b"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Common_Short.bin": {
+      "bytes": 7052,
+      "sha256": "7a0f0f7a9ac39cfa4b303bac03a6594f43e48d873b73553fa06a79e4df1271e9"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Common_Short.gltf": {
+      "bytes": 2023,
+      "sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Common_Short.gltf.import": {
+      "bytes": 1206,
+      "sha256": "99ea8fac323f9e4f31adbbe0fdf13cb00ea5d3f0350e0ab75fcab3be9e8cc8a4"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Common_Tall.bin": {
+      "bytes": 14076,
+      "sha256": "d7422b9360dd644f4095ac77a00dfa5d1f1078af71ebf18865a28ef031651379"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Common_Tall.gltf": {
+      "bytes": 2025,
+      "sha256": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Common_Tall.gltf.import": {
+      "bytes": 1204,
+      "sha256": "7823ad66e99752290ce24a8e9723aad7bd927bc15ee99aa543cd7bc83b7840fc"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Wispy_Tall.bin": {
+      "bytes": 29492,
+      "sha256": "a46e091f39958242a96722ea331efa8d7fb055c6e24d21aea6b0ac091a7b1b66"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf": {
+      "bytes": 2023,
+      "sha256": "a05e3ac05e43abbdb89c5b61134e367c7d33e285ff8d2a6e0a40180cb335af0b"
+    },
+    "app/assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf.import": {
+      "bytes": 1200,
+      "sha256": "9219c87e11f14553bfad7bb25cf7307467f151f9b9f3432dd58073401a123ea2"
+    },
+    "app/assets/landscape/vegetation/models/Leaf_Pine_C.png": {
+      "bytes": 70055,
+      "sha256": "86f7ff7a214f5424de48d269568f36a15485e61c80677e426c7be9f45181eef9"
+    },
+    "app/assets/landscape/vegetation/models/Leaf_Pine_C.png.import": {
+      "bytes": 972,
+      "sha256": "5fd284904bca112772489f8f48f20ed102d42ea2932f7c09c0756299ccd5282b"
+    },
+    "app/assets/landscape/vegetation/models/Leaves.png": {
+      "bytes": 2586432,
+      "sha256": "23248cebe28a24e78add32db3c2ee2f4d7b9219e9d2467279722f0197a7b6bd5"
+    },
+    "app/assets/landscape/vegetation/models/Leaves.png.import": {
+      "bytes": 957,
+      "sha256": "59f269a4a1d3a93f0b8138d88697a567efa67982cd844109de114f2d7f1a0d02"
+    },
+    "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png": {
+      "bytes": 158796,
+      "sha256": "998612bdf0b76a22f5f54d65cd7a457815d2842d89653fa4348a4ebb42933ad3"
+    },
+    "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import": {
+      "bytes": 995,
+      "sha256": "4cca679886ba79c13dc127dae82be588309ea26acd41e4f0cf97f3c0ccf12911"
+    },
+    "app/assets/landscape/vegetation/models/Leaves_TwistedTree_C.png": {
+      "bytes": 70353,
+      "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
+    },
+    "app/assets/landscape/vegetation/models/Leaves_TwistedTree_C.png.import": {
+      "bytes": 999,
+      "sha256": "77343a299215dec6335f07521ce5ecd766aa1d08ec10f8d1cf36c279bf3d4092"
+    },
+    "app/assets/landscape/vegetation/models/Pine_1.bin": {
+      "bytes": 275492,
+      "sha256": "6e9dbd8def0a049c6f4534ce996c3662195730bd1542322c82270bde8fd57365"
+    },
+    "app/assets/landscape/vegetation/models/Pine_1.gltf": {
+      "bytes": 3832,
+      "sha256": "adc85a72e6f46f71317ca5f7630876bfb207f687427bc9e37cd97ec4af5f2cbc"
+    },
+    "app/assets/landscape/vegetation/models/Pine_1.gltf.import": {
+      "bytes": 1171,
+      "sha256": "1e9f0f0ad131ec578995b590e03c0a56fb1f2b144e2dc8958bfdfadc5c3d4406"
+    },
+    "app/assets/landscape/vegetation/models/Pine_2.bin": {
+      "bytes": 258336,
+      "sha256": "48993e400c418e78a1562f8a43ebc5a0c4feba8907dc0133e7f07a9992cee8f6"
+    },
+    "app/assets/landscape/vegetation/models/Pine_2.gltf": {
+      "bytes": 3833,
+      "sha256": "57bd4732170b6c7e51bcf78fe5adaabf142f95a50378d8d3051d1f20a04d3c2f"
+    },
+    "app/assets/landscape/vegetation/models/Pine_2.gltf.import": {
+      "bytes": 1170,
+      "sha256": "596183362c7364c974133cb301154ec0c572eeedfa86acde33caf9cd2e095617"
+    },
+    "app/assets/landscape/vegetation/models/Pine_3.bin": {
+      "bytes": 345288,
+      "sha256": "d8743b6353257ae241b61158f3c00b13e9a76667f98ced8e5595ad17304a8fbb"
+    },
+    "app/assets/landscape/vegetation/models/Pine_3.gltf": {
+      "bytes": 3827,
+      "sha256": "54c72a4d614f053dd4b3d4404076a361de6085ec6a34560e42a76d7e79d89830"
+    },
+    "app/assets/landscape/vegetation/models/Pine_3.gltf.import": {
+      "bytes": 1171,
+      "sha256": "2832293d66a7546a07127ef05268d4040bf20c9a5d40033649661bae77c2c76e"
+    },
+    "app/assets/landscape/vegetation/models/additional/aredon_reed/reed.mtl": {
+      "bytes": 795,
+      "sha256": "4ab5740f9bb8d9319614a0e5e33fdd405eb842d39fb390fc028b693e4cca0e14"
+    },
+    "app/assets/landscape/vegetation/models/additional/aredon_reed/reed.obj": {
+      "bytes": 26870,
+      "sha256": "58a7224445ea159f1a90315e0e68ece3dd46bc69a1e8aea70febd58ce7ed9774"
+    },
+    "app/assets/landscape/vegetation/models/additional/aredon_reed/reed.obj.import": {
+      "bytes": 737,
+      "sha256": "e5b60908492d0a0b059e37345016417fcdd611fc83c2c2ed8ee065ec902ad6d5"
+    },
+    "app/assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.mtl": {
+      "bytes": 595,
+      "sha256": "25a6abdaf9bc8e9b49e8a1e2c9511ab8c40f1e882c0cbb165e06fee732718548"
+    },
+    "app/assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj": {
+      "bytes": 48075,
+      "sha256": "b04cf3a5d23a276f9e72aa9ca49d5b65b86b4661ad576c91add11ae77dd19102"
+    },
+    "app/assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj.import": {
+      "bytes": 752,
+      "sha256": "6869b895d82611e14b7ae58339f12b1cea01d875102eac5b8ccd360d5182fc99"
+    },
+    "app/assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.mtl": {
+      "bytes": 235,
+      "sha256": "dce58b2d125b0ed1b0b1ddfba47697ce8eacea09bbf3087b1ab70261d279456e"
+    },
+    "app/assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj": {
+      "bytes": 4439,
+      "sha256": "d56017278085219ca8d035883bf33abd913e6b35d14baa7af50bea7a4723ed4c"
+    },
+    "app/assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj.import": {
+      "bytes": 757,
+      "sha256": "abced549a6e05f2460e00c2ca759aed14c0f91a41745f1e10a9f73874fa48e39"
+    },
+    "assets/landscape/vegetation/source/Aredon_Reed_CC0.txt": {
+      "bytes": 406,
+      "sha256": "9c5117d686cab062822870f679c922551dca5d1dc71aa550a09f5c2011cd7e61"
+    },
+    "assets/landscape/vegetation/source/License_Standard.txt": {
+      "bytes": 852,
+      "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    "assets/landscape/vegetation/source/Quaternius_Crops_CC0.txt": {
+      "bytes": 433,
+      "sha256": "306b4ec1e5cf1bc05ca668055839be0224889d75bd519c83427eb449a384ba06"
+    },
+    "assets/landscape/vegetation/source/aredon_lowpoly_reed_cc0.zip": {
+      "bytes": 140207,
+      "sha256": "03fd4f90d92618090829bac1152e4280327edb179139ae3f0c66542af31b89bd"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/INSPECTION.md": {
+      "bytes": 1637,
+      "sha256": "a27e98fb784f2f377c40c31cb6a6b9d3356446d7d04d77e501bde1a1ac4f2c65"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/SOURCE_CC0.txt": {
+      "bytes": 813,
+      "sha256": "bee9e0f1da924318915d276e13a998960cd5a0e15615b95fd5d0ffb92ed0c389"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/download-manifest.json": {
+      "bytes": 2807,
+      "sha256": "e17c2fbb214084d568fcf7f19b4d5bb0e71dfd0ecf7aece6fb6f7771fdd1bd85"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small.bin": {
+      "bytes": 17771796,
+      "sha256": "b4d2fc73d53f1d8717eb5ef9a2c66957d2a53152787e543aace88fcd6fca94ef"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/pine_sapling_small_1k.gltf": {
+      "bytes": 11442,
+      "sha256": "f358c01926861dd082f32dba60f7c9fba232b585a985cf38c0d2229eecf4bc48"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_arm_1k.jpg": {
+      "bytes": 801278,
+      "sha256": "336a4680cd571b6076b67afee2310b290b8900d9d126eb39ec1ae92e95be2ea9"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_diff_1k.jpg": {
+      "bytes": 725265,
+      "sha256": "5c76836b01c3536fa0e24207b67bf4f3315b53ebe2b4ecc6f08dfcf3f8d74929"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_bark_nor_gl_1k.jpg": {
+      "bytes": 1016849,
+      "sha256": "05c46455531781b6cf18cae0648cf627f60ee942adaa8bcbfd1592fc2506a9e0"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_arm_1k.jpg": {
+      "bytes": 394056,
+      "sha256": "2eb0aa44124b5a4ae9401e00b23b3c916f4c3f421616ce1bb932f248fc061288"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_diff_1k.jpg": {
+      "bytes": 477942,
+      "sha256": "54af7d6fb664b5a38bcb118b557bc50e01e86ec54d6f1a573c3e32c649a53362"
+    },
+    "assets/landscape/vegetation/source/polyhaven_pine_sapling_small/textures/pine_sapling_small_twig_nor_gl_1k.jpg": {
+      "bytes": 692711,
+      "sha256": "76af87821d7ff00e25768d5d97a449394fe64a21ae55d099da7f5ed46d9098c8"
+    },
+    "assets/landscape/vegetation/source/quaternius_lowpoly_crops_cc0.zip": {
+      "bytes": 13368975,
+      "sha256": "48de7f1e092750a3832501e79d1463abeec8218c76090fc4b81fa8dfccacdb52"
+    },
+    "assets/landscape/vegetation/source/quaternius_stylized_nature_megakit_standard.zip": {
+      "bytes": 104088529,
+      "sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9"
+    },
+    "tools/landscape/vegetation/README.md": {
+      "bytes": 6220,
+      "sha256": "cd02b841cebff86fc6c3ae771ef989e308a42361c3ab57282b0fadf6ae737406"
+    },
+    "tools/landscape/vegetation/bake_hedge_impostor.py": {
+      "bytes": 25515,
+      "sha256": "920ed10c3d72e191996ca294ea44c927a37cf61a87f1f27d3ff4c1c198a8987d"
+    },
+    "tools/landscape/vegetation/build_library.py": {
+      "bytes": 36221,
+      "sha256": "685479a806c260b694510cb1623b72d1533d82fca6efde9c9a15c8f603291447"
+    },
+    "tools/landscape/vegetation/test_build_library.py": {
+      "bytes": 15243,
+      "sha256": "afa30b2ee9523cd889e6d169ebf5358fd1e155c30b56c78ad5b3c852fbefdbfb"
+    }
+  }
+}

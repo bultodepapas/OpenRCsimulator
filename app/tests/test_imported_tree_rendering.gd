@@ -1,6 +1,7 @@
 extends SceneTree
 
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
+const ShaderClock := preload("res://render/shader_clock.gd")
 const EXPECTED_TREE_LEAF_TEXTURES := {
 	"common_tree_1": "Leaves_NormalTree_C.png",
 	"common_tree_2": "Leaves_NormalTree_C.png",
@@ -15,7 +16,9 @@ var _failures := 0
 
 
 func _initialize() -> void:
+	ShaderClock.register()
 	_test_opt_in_tree_cells_and_damage()
+	_test_tree_wind_with_tree_cells()
 	_test_wind_modes_and_material_preservation()
 	_test_all_tree_sources_accept_tree_wind()
 	_test_tree_wind_transform_guard()
@@ -67,6 +70,75 @@ func _test_opt_in_tree_cells_and_damage() -> void:
 		and is_equal_approx(after_restore.end.x, before_hide.end.x))
 	legacy.free()
 	damaged_root.free()
+
+
+func _test_tree_wind_with_tree_cells() -> void:
+	var batches := _sample_batches()
+	var records: Array = batches["common_tree_1"]
+	var parts := ImportedVegetation.get_parts("common_tree_1")
+	var expected_tree_instances := records.size() * parts.size()
+	var baseline := ImportedVegetation.build(batches, false, {
+		"tree_wind": true,
+		"tree_cell_size_m": 0,
+	})
+	# The Dummy headless renderer exposes no MultiMesh buffer; its branch checks grouped seed records and custom-data setup.
+	# Native Compatibility validates the per-instance transforms, colors and phase stored in the renderer buffer.
+	var phase_buffer_available := _tree_multimesh_buffers_available(baseline)
+	_check("wind-only baseline keeps one tree state per source record and part",
+		_tree_wind_state_matches_records(baseline, records, parts, 0, phase_buffer_available)
+		and _tree_state_bounds_count(baseline, "common_tree_1") == expected_tree_instances)
+	_check("wind-only baseline has complete expanded tree bounds",
+		_tree_wind_cull_bounds_match_state(baseline, expected_tree_instances, 0))
+	var baseline_tree_bounds := _tree_state_bounds(baseline, "common_tree_1")
+	var baseline_all_bounds := ImportedVegetation.bounds(baseline)
+
+	for candidate_size in [64, 128, 256]:
+		var cell_root := ImportedVegetation.build(batches, false, {
+			"tree_wind": true,
+			"tree_cell_size_m": candidate_size,
+		})
+		var expected_cells := _expected_cell_count(records, candidate_size)
+		var expected_tree_parts := parts.size()
+		var crop_parts := ImportedVegetation.get_parts("wheat_4").size()
+		_check("%d m wind batching keeps flat tree/crop children" % candidate_size,
+			cell_root.get_child_count() == expected_cells * expected_tree_parts + crop_parts
+			and _all_children_are_flat_multimeshes(cell_root))
+		_check("%d m regrouping preserves each tree transform, tint and seed-derived wind phase" % candidate_size,
+			_tree_wind_state_matches_records(cell_root, records, parts, candidate_size, phase_buffer_available))
+		_check("%d m regrouping retains the same number of tree bounds" % candidate_size,
+			_tree_state_bounds_count(cell_root, "common_tree_1") == expected_tree_instances)
+		_check("%d m per-cell cull bounds cover all expanded tree instances" % candidate_size,
+			_tree_wind_cull_bounds_match_state(cell_root, expected_tree_instances, candidate_size))
+		_check("%d m regrouping preserves the complete expanded tree bounds" % candidate_size,
+			_aabb_approx_equal(_tree_state_bounds(cell_root, "common_tree_1"), baseline_tree_bounds))
+		_check("%d m regrouping preserves total imported vegetation bounds" % candidate_size,
+			_aabb_approx_equal(ImportedVegetation.bounds(cell_root), baseline_all_bounds))
+
+		var damage_entries := _damage_entries(cell_root, "tree-cell-edge")
+		var before_hide_phase_state: Array[String] = []
+		if phase_buffer_available:
+			before_hide_phase_state = _tree_wind_phase_signatures(cell_root)
+		var before_hide_tree_bounds := _tree_state_bounds(cell_root, "common_tree_1")
+		_check("%d m wind batching has all source-part damage entries" % candidate_size,
+			damage_entries.size() == _damage_record_count(records) * parts.size())
+		_check("%d m wind tree damage hides every mapped instance" % candidate_size,
+			ImportedVegetation.set_damage_hidden(cell_root, "tree-cell-edge", true)
+			and _damage_instances_match_hidden_state(cell_root, "tree-cell-edge", true))
+		_check("%d m wind tree damage removes the hidden tree from bounds" % candidate_size,
+			_tree_state_bounds_count(cell_root, "common_tree_1") == expected_tree_instances - damage_entries.size()
+			and not _aabb_approx_equal(_tree_state_bounds(cell_root, "common_tree_1"), before_hide_tree_bounds))
+		_check("%d m wind tree damage restores every mapped instance" % candidate_size,
+			ImportedVegetation.set_damage_hidden(cell_root, "tree-cell-edge", false)
+			and _damage_instances_match_hidden_state(cell_root, "tree-cell-edge", false))
+		_check("%d m wind damage restoration restores bounds and seed phases" % candidate_size,
+			_tree_state_bounds_count(cell_root, "common_tree_1") == expected_tree_instances
+			and _aabb_approx_equal(_tree_state_bounds(cell_root, "common_tree_1"), before_hide_tree_bounds)
+			and _aabb_approx_equal(ImportedVegetation.bounds(cell_root), baseline_all_bounds)
+			and (not phase_buffer_available
+				or (_tree_wind_phase_signatures(cell_root) == before_hide_phase_state
+					and _tree_wind_state_matches_records(cell_root, records, parts, candidate_size, true))))
+		cell_root.free()
+	baseline.free()
 
 
 func _test_wind_modes_and_material_preservation() -> void:
@@ -405,6 +477,241 @@ func _tree_transform_signatures(root: Node3D) -> Array[String]:
 			])
 	signatures.sort()
 	return signatures
+
+
+func _tree_wind_phase_signatures(root: Node3D) -> Array[String]:
+	var signatures: Array[String] = []
+	for child in root.get_children():
+		var instance := child as MultiMeshInstance3D
+		if not str(instance.name).begins_with("common_tree_1_"):
+			continue
+		for index in range(instance.multimesh.instance_count):
+			var transform := instance.multimesh.get_instance_transform(index)
+			var phase_state := instance.multimesh.get_instance_custom_data(index)
+			var tint := instance.multimesh.get_instance_color(index)
+			signatures.append(_transform_phase_signature(transform, phase_state.r, tint))
+	signatures.sort()
+	return signatures
+
+
+func _tree_wind_phase_signatures_from_records(records: Array, parts: Array[Dictionary]) -> Array[String]:
+	var signatures: Array[String] = []
+	for record: Dictionary in records:
+		var plant_transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
+		var seed_value := float(record.get("seed", 0))
+		var phase := fposmod(seed_value * 0.61803398875, 1.0)
+		var tint: Color = record.get("tint", Color.WHITE)
+		for part: Dictionary in parts:
+			var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
+			signatures.append(_transform_phase_signature(plant_transform * part_transform, phase, tint))
+	signatures.sort()
+	return signatures
+
+
+func _transform_phase_signature(transform: Transform3D, phase: float, tint: Color) -> String:
+	return "%.5f,%.5f,%.5f|%.5f,%.5f,%.5f|%.5f,%.5f,%.5f|%.5f,%.5f,%.5f|%.3f|%.3f,%.3f,%.3f,%.3f" % [
+		transform.origin.x, transform.origin.y, transform.origin.z,
+		transform.basis.x.x, transform.basis.x.y, transform.basis.x.z,
+		transform.basis.y.x, transform.basis.y.y, transform.basis.y.z,
+		transform.basis.z.x, transform.basis.z.y, transform.basis.z.z,
+		phase, tint.r, tint.g, tint.b, tint.a,
+	]
+
+
+func _tree_wind_cull_bounds_match_state(root: Node3D, expected_instance_count: int, cell_size: int) -> bool:
+	if _tree_state_bounds_count(root, "common_tree_1") != expected_instance_count:
+		return false
+	var has_cull_bounds := false
+	var cull_bounds := AABB()
+	var expected_cells: Dictionary = {}
+	var state: Dictionary = root.get_meta("_imported_vegetation_state", {})
+	for record: Dictionary in state.get("bounds", []):
+		if str(record.get("asset_id", "")) != "common_tree_1" or bool(record.get("hidden", false)):
+			continue
+		var transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
+		var cell := Vector2i.ZERO
+		if cell_size > 0:
+			cell = Vector2i(
+				floori(transform.origin.x / float(cell_size)),
+				floori(transform.origin.z / float(cell_size))
+			)
+		var key := "all" if cell_size == 0 else "%d_%d" % [cell.x, cell.y]
+		var transformed_bounds := ImportedVegetation._transform_aabb(record.get("bounds", AABB()), transform)
+		if not expected_cells.has(key):
+			expected_cells[key] = {"bounds": transformed_bounds, "count": 1}
+		else:
+			var cell_record: Dictionary = expected_cells[key]
+			cell_record["bounds"] = (cell_record["bounds"] as AABB).merge(transformed_bounds)
+			cell_record["count"] = int(cell_record["count"]) + 1
+			expected_cells[key] = cell_record
+	var seen_cells: Dictionary = {}
+	for child in root.get_children():
+		if not child is MultiMeshInstance3D:
+			continue
+		var instance := child as MultiMeshInstance3D
+		if not bool(instance.get_meta("_imported_vegetation_tree_wind_enabled", false)):
+			continue
+		if instance.multimesh == null or instance.multimesh.mesh == null:
+			return false
+		var key := "all"
+		if cell_size > 0:
+			var cell_value := str(instance.name).get_slice("_Cell_", 1)
+			if cell_value.is_empty():
+				return false
+			key = "%s_%s" % [cell_value.get_slice("_", 0), cell_value.get_slice("_", 1)]
+		if not expected_cells.has(key) or seen_cells.has(key):
+			return false
+		var expected_cell: Dictionary = expected_cells[key]
+		var child_bounds: AABB = instance.custom_aabb
+		if int(expected_cell.get("count", 0)) != instance.multimesh.instance_count \
+			or not _aabb_approx_equal(child_bounds, expected_cell.get("bounds", AABB())) \
+			or not _aabb_approx_equal(instance.multimesh.custom_aabb, child_bounds):
+			return false
+		seen_cells[key] = true
+		if not has_cull_bounds:
+			cull_bounds = child_bounds
+			has_cull_bounds = true
+		else:
+			cull_bounds = cull_bounds.merge(child_bounds)
+	return has_cull_bounds and seen_cells.size() == expected_cells.size() and _aabb_approx_equal(
+		cull_bounds,
+		_tree_state_bounds(root, "common_tree_1")
+	)
+
+
+func _tree_state_bounds_count(root: Node3D, asset_id: String) -> int:
+	var count := 0
+	var state: Dictionary = root.get_meta("_imported_vegetation_state", {})
+	for record: Dictionary in state.get("bounds", []):
+		if str(record.get("asset_id", "")) == asset_id and not bool(record.get("hidden", false)):
+			count += 1
+	return count
+
+
+func _tree_state_bounds(root: Node3D, asset_id: String) -> AABB:
+	var have_bounds := false
+	var result := AABB()
+	var state: Dictionary = root.get_meta("_imported_vegetation_state", {})
+	for record: Dictionary in state.get("bounds", []):
+		if str(record.get("asset_id", "")) != asset_id or bool(record.get("hidden", false)):
+			continue
+		var local_bounds: AABB = record.get("bounds", AABB())
+		var transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
+		var world_bounds := ImportedVegetation._transform_aabb(local_bounds, transform)
+		if not have_bounds:
+			result = world_bounds
+			have_bounds = true
+		else:
+			result = result.merge(world_bounds)
+	return result if have_bounds else AABB()
+
+
+func _damage_entries(root: Node3D, damage_id: String) -> Array:
+	var state: Dictionary = root.get_meta("_imported_vegetation_state", {})
+	var damage: Dictionary = state.get("damage", {})
+	return damage.get(damage_id, [])
+
+
+func _damage_instances_match_hidden_state(root: Node3D, damage_id: String, hidden: bool) -> bool:
+	var entries := _damage_entries(root, damage_id)
+	if entries.is_empty():
+		return false
+	var zero_transform := Transform3D(Basis.from_scale(Vector3.ZERO), Vector3.ZERO)
+	var state: Dictionary = root.get_meta("_imported_vegetation_state", {})
+	var bounds_records: Array = state.get("bounds", [])
+	for item: Dictionary in entries:
+		var multimesh: MultiMesh = item.get("multimesh")
+		var index := int(item.get("index", -1))
+		if multimesh == null or index < 0 or index >= multimesh.instance_count:
+			return false
+		if _multimesh_buffer_available(multimesh):
+			var actual := multimesh.get_instance_transform(index)
+			var expected: Transform3D = zero_transform if hidden else item.get("transform", Transform3D.IDENTITY)
+			if not actual.is_equal_approx(expected):
+				return false
+		var bounds_index := int(item.get("bounds_index", -1))
+		if bounds_index < 0 or bounds_index >= bounds_records.size():
+			return false
+		if bool(bounds_records[bounds_index].get("hidden", false)) != hidden:
+			return false
+	return true
+
+
+func _tree_multimesh_buffers_available(root: Node3D) -> bool:
+	var found_tree := false
+	for child in root.get_children():
+		if not child is MultiMeshInstance3D or not str(child.name).begins_with("common_tree_1_"):
+			continue
+		found_tree = true
+		if not _multimesh_buffer_available((child as MultiMeshInstance3D).multimesh):
+			return false
+	return found_tree
+
+
+func _multimesh_buffer_available(multimesh: MultiMesh) -> bool:
+	if multimesh == null:
+		return false
+	var expected_values := multimesh.instance_count * 12
+	if multimesh.use_colors:
+		expected_values += multimesh.instance_count * 4
+	if multimesh.use_custom_data:
+		expected_values += multimesh.instance_count * 4
+	return multimesh.buffer.size() == expected_values
+
+
+func _tree_wind_state_matches_records(
+	root: Node3D,
+	records: Array,
+	parts: Array[Dictionary],
+	cell_size: int,
+	phase_buffer_available: bool
+) -> bool:
+	if phase_buffer_available:
+		return _tree_wind_phase_signatures(root) == _tree_wind_phase_signatures_from_records(records, parts)
+	return _tree_wind_groups_preserve_records(root, records, parts, cell_size)
+
+
+func _tree_wind_groups_preserve_records(
+	root: Node3D,
+	records: Array,
+	parts: Array[Dictionary],
+	cell_size: int
+) -> bool:
+	var expected_counts: Dictionary = {}
+	var expected_phase_signatures := _tree_wind_phase_signatures_from_records(records, parts)
+	if expected_phase_signatures.size() != records.size() * parts.size():
+		return false
+	var grouped_phase_signatures: Array[String] = []
+	for group: Dictionary in ImportedVegetation._record_groups(records, cell_size):
+		var group_records: Array = group.get("records", [])
+		var cell: Vector2i = group.get("cell", Vector2i.ZERO)
+		var key := "all" if cell_size == 0 else "%d_%d" % [cell.x, cell.y]
+		expected_counts[key] = group_records.size() * parts.size()
+		grouped_phase_signatures.append_array(_tree_wind_phase_signatures_from_records(group_records, parts))
+	grouped_phase_signatures.sort()
+	if grouped_phase_signatures != expected_phase_signatures:
+		return false
+	var seen: Dictionary = {}
+	for child in root.get_children():
+		if not child is MultiMeshInstance3D or not str(child.name).begins_with("common_tree_1_"):
+			continue
+		var instance := child as MultiMeshInstance3D
+		var key := "all"
+		if cell_size > 0:
+			var cell_value := str(instance.name).get_slice("_Cell_", 1)
+			if cell_value.is_empty():
+				return false
+			key = "%s_%s" % [cell_value.get_slice("_", 0), cell_value.get_slice("_", 1)]
+		if not expected_counts.has(key) or seen.has(key):
+			return false
+		if instance.multimesh.instance_count != int(expected_counts[key]) or not instance.multimesh.use_custom_data:
+			return false
+		seen[key] = true
+	return seen.size() == expected_counts.size()
+
+
+func _aabb_approx_equal(left: AABB, right: AABB) -> bool:
+	return left.position.is_equal_approx(right.position) and left.size.is_equal_approx(right.size)
 
 
 func _tree_state_tints_match_records(root: Node3D, records: Array, part_count: int) -> bool:

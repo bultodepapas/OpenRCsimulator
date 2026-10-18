@@ -1,0 +1,423 @@
+{
+  "format": "openrc-tree-static-profile v1",
+  "complete": true,
+  "scope": "Uncapped static Compatibility viewport; excludes aircraft simulation, UI, audio, active-flight ratio and owner acceptance.",
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "fixture_sha256": "0ac99af02e101df94ea35354479d01d827846f3b1840543275da87492ce4729a",
+  "identities": {
+    "baseline": {
+      "project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+      "data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "data/scenery/default.json": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61",
+      "scenery/scenery.gd": "831fec7a25a310815947b89de820172cf25dca4384fa30c909681278055cec5e",
+      "scenery/imported_vegetation.gd": "d4d80c9149a90f0750d32463299fc5074eea83a4c2f37252cd17b48ad5b2ff16",
+      "scenery/imported_vegetation_wind.gdshader": "9f008960d441eda443dbfa6b141ce8b7c52a462b3738c34c1a7ab4b62676bf5e",
+      "assets/landscape/vegetation/catalog.json": "4ea2676f66d94c0f82dcbdd58eecb1795a74d75332d869eec106caba90f9a85e"
+    },
+    "candidate": {
+      "project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+      "data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "data/scenery/default.json": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61",
+      "scenery/scenery.gd": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7",
+      "scenery/imported_vegetation.gd": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6",
+      "scenery/imported_vegetation_wind.gdshader": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6",
+      "assets/landscape/vegetation/catalog.json": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9"
+    }
+  },
+  "arguments": {
+    "godot": ".tools\\Godot_v4.7.2-stable_win64.exe",
+    "baseline": "tmp\\tree-quality-implementation\\baseline\\app",
+    "candidate": "tmp\\tree-quality-implementation\\candidate\\app",
+    "out": "tmp\\tree-quality-implementation\\paired-native",
+    "pairs": 5,
+    "seconds": 60.0,
+    "warmup": 10.0,
+    "view": "car_park",
+    "width": 1280,
+    "height": 720,
+    "candidate_cell": 0,
+    "candidate_wind": "on"
+  },
+  "runs": [
+    {
+      "id": "01-baseline",
+      "label": "baseline",
+      "report_sha256": "31fa9216654d0c56ffe9522102bffeaecbeb6b33bae7000c4b909ebb9d30d0e6",
+      "sample_count": 8288,
+      "duration_s": 60.004369,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.8865,
+          "p95": 15.713,
+          "p99": 16.80926
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.656000018119812,
+          "p95": 0.972000002861023,
+          "p99": 1.2273900008201568
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.12700009346008,
+          "p95": 3.23200011253357,
+          "p99": 3.706260070800784
+        }
+      },
+      "counters": {
+        "draws": 68,
+        "primitives": 230369,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "01-candidate",
+      "label": "candidate",
+      "report_sha256": "a5874336de9fed6ebe07e3ccf779ca71976f6de8035b971f3f2c0d2864868e2c",
+      "sample_count": 8246,
+      "duration_s": 60.001853,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.879,
+          "p95": 15.76125,
+          "p99": 16.700850000000003
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.675000011920929,
+          "p95": 0.972000002861023,
+          "p99": 1.254549974203112
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.05100011825562,
+          "p95": 3.2207499742507926,
+          "p99": 3.7495500326156628
+        }
+      },
+      "counters": {
+        "draws": 84,
+        "primitives": 241793,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "02-candidate",
+      "label": "candidate",
+      "report_sha256": "c66fa082876b36ef9b0d089225cfaba98fa8be10fc29960efcb2923fa23b5fa6",
+      "sample_count": 8260,
+      "duration_s": 60.008832,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.9190000000000005,
+          "p95": 15.814099999999998,
+          "p99": 16.888329999999996
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.695999979972839,
+          "p95": 1.1270499765872917,
+          "p99": 1.4998199915885926
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.0550000667572,
+          "p95": 3.267049956321717,
+          "p99": 3.7124099612236052
+        }
+      },
+      "counters": {
+        "draws": 84,
+        "primitives": 241793,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "02-baseline",
+      "label": "baseline",
+      "report_sha256": "f940dbbc9c5ff26704b91b8f2b65f6e4e4d7a6493c0dc73f1334f05dae9ac868",
+      "sample_count": 8243,
+      "duration_s": 60.009742,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.031,
+          "p95": 16.2126,
+          "p99": 18.590639999999993
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.800000011920929,
+          "p95": 1.26699995994568,
+          "p99": 1.557740006446837
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.13199996948242,
+          "p95": 3.309899950027465,
+          "p99": 3.8870600175857493
+        }
+      },
+      "counters": {
+        "draws": 68,
+        "primitives": 230369,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "03-baseline",
+      "label": "baseline",
+      "report_sha256": "447e03e67d3f149c6af02496b7cbeb6504f142520af932e0eb76043c25b4267d",
+      "sample_count": 8311,
+      "duration_s": 60.013878,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.887,
+          "p95": 15.8235,
+          "p99": 17.007599999999996
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.677999973297119,
+          "p95": 1.08700001239777,
+          "p99": 1.41499996185303
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.11899995803833,
+          "p95": 3.23300004005432,
+          "p99": 3.7377999305725096
+        }
+      },
+      "counters": {
+        "draws": 68,
+        "primitives": 230369,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "03-candidate",
+      "label": "candidate",
+      "report_sha256": "b9d630a3b8097941099f6b567ac7cb6de35b700e900f2f55ab392888a39bded0",
+      "sample_count": 8221,
+      "duration_s": 60.001197,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.971,
+          "p95": 15.77,
+          "p99": 17.213600000000003
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.737999975681305,
+          "p95": 1.36800003051758,
+          "p99": 2.246400070190433
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.08500003814697,
+          "p95": 3.27699995040894,
+          "p99": 3.822999906539915
+        }
+      },
+      "counters": {
+        "draws": 84,
+        "primitives": 241793,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "04-candidate",
+      "label": "candidate",
+      "report_sha256": "747bbafbe3ee29f2d5e1ca70e2bd12f46278e32ea5ab0e1ccf852f32ef411706",
+      "sample_count": 7953,
+      "duration_s": 60.005987,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.881,
+          "p95": 16.0428,
+          "p99": 19.12111999999997
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 1.01800000667572,
+          "p95": 1.9172000169754009,
+          "p99": 5.1405200004577445
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.11300003528595,
+          "p95": 2.6316000938415507,
+          "p99": 4.626959857940674
+        }
+      },
+      "counters": {
+        "draws": 84,
+        "primitives": 241793,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "04-baseline",
+      "label": "baseline",
+      "report_sha256": "0f6e97b490c0e1eb54c7b81d79275daf8b32c99ae62463adbc1eb11de2c9aa7c",
+      "sample_count": 8214,
+      "duration_s": 60.00237,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 5.054,
+          "p95": 15.886349999999998,
+          "p99": 17.93079
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.790000021457672,
+          "p95": 1.35199999809265,
+          "p99": 1.6504800140857665
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.06200003623962,
+          "p95": 3.2840499997138988,
+          "p99": 3.9918300223350527
+        }
+      },
+      "counters": {
+        "draws": 68,
+        "primitives": 230369,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "05-baseline",
+      "label": "baseline",
+      "report_sha256": "0b0ba7ab53aa93d70218bc71e54b82178d02edbefdac8551e193d42312d16c27",
+      "sample_count": 8223,
+      "duration_s": 60.00512,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.976,
+          "p95": 15.935,
+          "p99": 17.739699999999985
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.788999974727631,
+          "p95": 1.3618999838829056,
+          "p99": 2.4354600429534856
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 2.00600004196167,
+          "p95": 3.234699916839603,
+          "p99": 3.840260057449339
+        }
+      },
+      "counters": {
+        "draws": 68,
+        "primitives": 230369,
+        "shadow_draws": 0
+      }
+    },
+    {
+      "id": "05-candidate",
+      "label": "candidate",
+      "report_sha256": "3d7b54bd782a4d81eb9a4e9e90bf0388a0b21abfffdf384fb7ae89e586c4622d",
+      "sample_count": 7944,
+      "duration_s": 60.006053,
+      "metrics": {
+        "wall_ms": {
+          "available": true,
+          "p50": 4.984,
+          "p95": 16.09685,
+          "p99": 19.308159999999972
+        },
+        "cpu_ms": {
+          "available": true,
+          "p50": 0.967000007629395,
+          "p95": 1.72500002384186,
+          "p99": 4.666830167770377
+        },
+        "gpu_ms": {
+          "available": true,
+          "p50": 1.17799997329712,
+          "p95": 2.829549920558924,
+          "p99": 4.958570141792297
+        }
+      },
+      "counters": {
+        "draws": 84,
+        "primitives": 241793,
+        "shadow_draws": 0
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "index": 1,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "wall_p95_delta_ms": 0.048250000000001236,
+      "gpu_p95_delta_ms": -0.011250138282777211
+    },
+    {
+      "index": 2,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "wall_p95_delta_ms": -0.3985000000000003,
+      "gpu_p95_delta_ms": -0.042849993705747824
+    },
+    {
+      "index": 3,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "wall_p95_delta_ms": -0.05349999999999966,
+      "gpu_p95_delta_ms": 0.04399991035462003
+    },
+    {
+      "index": 4,
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "wall_p95_delta_ms": 0.1564500000000013,
+      "gpu_p95_delta_ms": -0.6524499058723481
+    },
+    {
+      "index": 5,
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "wall_p95_delta_ms": 0.16184999999999938,
+      "gpu_p95_delta_ms": -0.40514999628067905
+    }
+  ],
+  "backend": {
+    "godot": "4.7.2-stable (official)",
+    "renderer": "gl_compatibility",
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "viewport": [
+      1280,
+      720
+    ],
+    "msaa": "4x"
+  },
+  "median_paired_wall_p95_delta_ms": 0.048250000000001236,
+  "median_paired_gpu_p95_delta_ms": -0.042849993705747824
+}

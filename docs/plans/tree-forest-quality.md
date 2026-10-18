@@ -117,7 +117,7 @@ Enable imported-tree wind only after confirming that the adapter preserves every
 
 ## 7. Reviewable implementation sequence
 
-The [L6a-R1 implementation checkpoint](../research/visual-quality-implementation/L6a-R1/README.md) records seven integrated source forms and native source comparisons, the precision-only vertex-color repair, L7-R1's same-count habitat placement, L15b-R1's tree-only wind, and opt-in L7-R2 spatial cells. The source-fidelity part of L6b-R2 is implemented; palette/near-far qualification, mature realistic-source selection, density growth and optional L8 work remain open. Static captures and lifecycle checks do not close flight, readability or owner gates. New evidence belongs under the owning step's evidence home; existing steps retain their canonical homes.
+The [L6a-R1 implementation checkpoint](../research/visual-quality-implementation/L6a-R1/README.md) records seven integrated source forms and native source comparisons, the precision-only vertex-color repair, L7-R1's same-count habitat placement, L15b-R1's tree-only wind, and opt-in L7-R2 spatial cells. The source-fidelity part of L6b-R2 is implemented; palette/near-far qualification, mature realistic-source selection, density growth and optional L8 work remain open. Its Windows PCK/source inventory also identifies four shared tree textures without mipmaps in the frozen import; L6b-R1/R2 must compare mip generation and foliage coverage in motion before changing that import policy. Static captures and lifecycle checks do not close flight, readability or owner gates. New evidence belongs under the owning step's evidence home; existing steps retain their canonical homes.
 
 | ID | Work | Required proof / dependency |
 | --- | --- | --- |

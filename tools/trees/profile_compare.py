@@ -62,7 +62,8 @@ def main() -> None:
     parser.add_argument("--candidate-cell", type=int, choices=(0, 64, 128, 256), default=0)
     parser.add_argument("--candidate-wind", choices=("on", "off"), default="on")
     args = parser.parse_args()
-    if args.pairs < 1 or args.seconds <= 0 or args.warmup < 0 or min(args.width, args.height) < 128:
+    if (args.pairs < 1 or not math.isfinite(args.seconds) or not math.isfinite(args.warmup)
+            or args.seconds <= 0 or args.warmup < 0 or min(args.width, args.height) < 128):
         parser.error("positive pairs/duration/dimensions and nonnegative warmup required")
     output = args.out.resolve()
     if output.exists():

@@ -1,0 +1,30 @@
+{
+  "baseline": "5b1773fe76a21ba1bedb06421e15b3238377660e",
+  "scope": "restore external aircraft JSON identities required by the export validator in the app-only frozen snapshot",
+  "file_count": 22,
+  "bytes": 1390565,
+  "files": {
+    "assets/aircraft/avanti-s-a200/blender-geometry.json": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+    "assets/aircraft/avanti-s-a200/geometry.json": "babdfa24af01402e24857dd589fe6685037ab9e612bb7ce783c091370b474b3a",
+    "assets/aircraft/avanti-s-a200/source-manifest.json": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f",
+    "assets/aircraft/avanti-s-a200/source/geometry_blender.json": "77880ace41f6c2ebd0bf30f832ec0414505570850ca0ee21bd1ac7378c14805a",
+    "assets/aircraft/extra-300s-60/appearance.json": "70ecc6fb8bddcbefc555856b5ef666417bc8d76e2228b1982a219d233480d7ad",
+    "assets/aircraft/extra-300s-60/geometry.json": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c",
+    "assets/aircraft/hx-700/articulated/construction.json": "e3a045e3da856cac11c53bb4a417b020d6737769d9c67a0f7370035bd01539d2",
+    "assets/aircraft/hx-700/articulated/export-report.json": "17c861eeefb303d885c00951a6ce526f98c8bf65354139a2daa3ef8dae3f7006",
+    "assets/aircraft/hx-700/articulated/motion-source.json": "24f99dd8c7c1c9a79e4421198c27c837e44b3aa8eed9c4dfd0b4ee0293f13db3",
+    "assets/aircraft/hx-700/articulated/neutral-reference.json": "4eef82d44fb3869f36eaf855ddb2134c12d61907d9c804143fb7cb7f0cc18e7b",
+    "assets/aircraft/hx-700/rotor_profiles.json": "3c410cf978494e0c30ffc8b21a28850811a9954d5e4d64639acc225b56b4c959",
+    "assets/aircraft/hx-700/source-manifest.json": "234cd892c6d9a50ba4727a238e624fea36f3bda97980c73cbe205fbcad0e0db9",
+    "assets/aircraft/model-bindings.json": "1533b885aa0128acef19ca1b9be509db0964ff4ae0fd2faad9e1c4ac9ec78195",
+    "assets/aircraft/p51d-mustang-120/appearance.json": "604ddc69780cb8009fe5f0bb59cf2031d3d5f6fe517f1a940234d607f92299a3",
+    "assets/aircraft/p51d-mustang-120/geometry.json": "7fdac38dd17a8264c06bd211cc643019f06b50046f03b3ed4de2006acd16d7a9",
+    "assets/aircraft/p51d-mustang-120/source.json": "efff07d21b2b7c36695c7bf51f155a31e886870eb30b3ad4c65cdb4305f24bee",
+    "assets/aircraft/turbo-lumber-evolution/geometry.json": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+    "assets/aircraft/turbo-lumber-evolution/manual.json": "7018fc436d98686a18daa8712b649eb22f216c26b1f97f9a2278e84adddb219d",
+    "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70",
+    "assets/aircraft/turbo-lumber-evolution/source-manifest.json": "ff2d525adf48b59ca429d33dd4b6c9d72071b3538c7dbaf58e476618b575548a",
+    "assets/aircraft/ugly-stik-60/appearance.json": "2cf221b2fe9a8b238a7f048d01de4261baa726da105bc1c6ad9dcd76223119c8",
+    "assets/aircraft/ugly-stik-60/geometry.json": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108"
+  }
+}

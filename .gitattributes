@@ -4,9 +4,16 @@
 # Downloaded vegetation and generated tree-color buffers carry exact file hashes.
 # Preserve upstream text bytes as well as binary geometry across native/WSL checkouts.
 /app/assets/landscape/vegetation/models/** -text
-/app/assets/landscape/vegetation/LICENSE.txt -text
+/app/assets/landscape/vegetation/LICENSE.txt -text whitespace=-blank-at-eol,cr-at-eol
+/app/assets/landscape/vegetation/catalog.json text eol=lf
 /assets/landscape/vegetation/source/*.txt -text
+/assets/landscape/vegetation/source/License_Standard.txt whitespace=-blank-at-eol,cr-at-eol
 /assets/landscape/vegetation/source/polyhaven_pine_sapling_small/*.gltf -text
+# Native tree evidence includes hashed raw reports and exact fixture snapshots.
+/docs/research/visual-quality-implementation/L6a-R1/** -text whitespace=cr-at-eol
+# Raw engine output and unified-diff context retain meaningful source whitespace.
+/docs/research/visual-quality-implementation/L6a-R1/**/*.log -whitespace
+/docs/research/visual-quality-implementation/L6a-R1/*.patch -whitespace
 # Retain the exact native grass capture, profile and trace receipts.
 /docs/research/visual-quality-implementation/grass-quality/evidence/raw/** -text whitespace=cr-at-eol
 # Workshop descriptors bind exact aircraft bytes on every platform.

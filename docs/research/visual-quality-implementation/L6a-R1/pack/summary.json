@@ -1,0 +1,99 @@
+{
+  "scope": "Windows preset PCK mounted as main pack from an otherwise empty project root; no source-tree resource fallback",
+  "pack_bytes": 165056352,
+  "pack_sha256": "7c8fa097cc2cdf9a0150f09cd148a0ffa7ec226e972c2d18e528a1120edadd9c",
+  "catalog_sha256": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9",
+  "license_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+  "checks": [
+    {
+      "label": "source",
+      "passed": true,
+      "returncode": 0,
+      "errors": [],
+      "log": "source-resources-final.log"
+    },
+    {
+      "label": "pack",
+      "passed": true,
+      "returncode": 0,
+      "errors": [],
+      "log": "pack-resources-final.log"
+    },
+    {
+      "check": "pack-vegetation-contracts",
+      "returncode": 0,
+      "errors": [],
+      "passed": true,
+      "log": "pack-vegetation-contracts.log"
+    }
+  ],
+  "texture_inventories": {
+    "source": {
+      "res://assets/landscape/vegetation/models/Bark_NormalTree.png": {
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5",
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png": {
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a",
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaf_Pine_C.png": {
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d",
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png": {
+        "format": 5,
+        "height": 1024,
+        "image_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+        "mipmaps": false,
+        "width": 1024
+      }
+    },
+    "pack": {
+      "res://assets/landscape/vegetation/models/Bark_NormalTree.png": {
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5",
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png": {
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a",
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaf_Pine_C.png": {
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d",
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png": {
+        "format": 5,
+        "height": 1024,
+        "image_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+        "mipmaps": false,
+        "width": 1024
+      }
+    }
+  },
+  "source_pack_image_data_equal": true,
+  "source_mipmaps_present": false,
+  "all_passed": true,
+  "checker_sha256": "c84fb28fbdaea777d48c4f8e0574c04336d3e9180d0c30fa405fd8b9f7113ddb",
+  "export_presets_sha256": "1bc6fcb08291afc84e90edbec92515c81d37b63463099ce40c8ee28fc6ea4275",
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "export_initial_failure": "The app-only snapshot lacked external aircraft JSON authoring identities. Exact baseline source JSON was restored outside app; the final export exits zero with no engine errors."
+}

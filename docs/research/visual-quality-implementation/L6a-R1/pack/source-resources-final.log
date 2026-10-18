@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Tree pack: seven sources, 14 material surfaces, seven bark normal maps, catalog and CC0 license verified
+TREE_TEXTURE_INVENTORY={"res://assets/landscape/vegetation/models/Bark_NormalTree.png":{"format":5,"height":2048,"image_sha256":"e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5","mipmaps":false,"width":2048},"res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png":{"format":5,"height":2048,"image_sha256":"d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a","mipmaps":false,"width":2048},"res://assets/landscape/vegetation/models/Leaf_Pine_C.png":{"format":5,"height":2048,"image_sha256":"3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d","mipmaps":false,"width":2048},"res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png":{"format":5,"height":1024,"image_sha256":"6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a","mipmaps":false,"width":1024}}

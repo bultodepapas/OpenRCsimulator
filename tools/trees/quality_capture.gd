@@ -49,6 +49,8 @@ func _run() -> void:
 	RenderingServer.render_loop_enabled = false
 	Clock.register()
 	Clock.update(0.0, Vector3.ZERO)
+	if args.has("engine_shadows"):
+		Atmosphere.engine_shadows = str(args.engine_shadows) == "on"
 	viewport = SubViewport.new()
 	viewport.size = Vector2i(int(args.get("width", "1280")), int(args.get("height", "720")))
 	viewport.msaa_3d = Viewport.MSAA_4X
@@ -61,7 +63,9 @@ func _run() -> void:
 	env.environment = Atmosphere.environment()
 	Atmosphere.update_clouds(env.environment, 0.0)
 	stage.add_child(env)
-	Atmosphere.create_sun(stage)
+	var sun := Atmosphere.create_sun(stage)
+	report["directional_shadows_enabled"] = sun.shadow_enabled
+	report["directional_shadow_distance_m"] = sun.directional_shadow_max_distance
 	camera = Camera3D.new()
 	camera.near = 0.1
 	camera.far = 21000.0
@@ -140,6 +144,16 @@ func _field() -> bool:
 		return false
 	content = Field.build(loaded.field)
 	stage.add_child(content)
+	var plants := content.get_node_or_null("Scenery/ImportedVegetationBatches")
+	var tree_batches := 0
+	var tree_instances := 0
+	if plants != null:
+		for child in plants.get_children():
+			if child is MultiMeshInstance3D and Library.get_asset(str(child.name).get_slice("_Part_", 0)).get("role", "") == "tree":
+				tree_batches += 1
+				tree_instances += child.multimesh.instance_count
+	report["imported_tree_batches"] = tree_batches
+	report["imported_tree_instances"] = tree_instances
 	report["field_sha256"] = FileAccess.get_sha256(path)
 	report["vegetation_catalog_sha256"] = FileAccess.get_sha256(Library.CATALOG_PATH)
 	for id in ["pilot_north", "car_park", "postcard_meadow", "aerial_overview"]:

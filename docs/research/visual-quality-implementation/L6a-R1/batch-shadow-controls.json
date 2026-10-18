@@ -1,0 +1,164 @@
+[
+  {
+    "id": "cells-0",
+    "tree_batches": 7,
+    "trees": 17,
+    "directional_shadows": true,
+    "car_park": {
+      "clock": 0.0,
+      "counters": {
+        "draws": 84,
+        "primitives": 241793,
+        "shadow_draws": 0
+      },
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "fov": 45.0,
+      "id": "car_park",
+      "sha256": "f0832bcb0da74e52b181408da8e2492c675592025ad8a9775693edcf59a28498",
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "id": "cells-64",
+    "tree_batches": 12,
+    "trees": 17,
+    "directional_shadows": true,
+    "car_park": {
+      "clock": 0.0,
+      "counters": {
+        "draws": 88,
+        "primitives": 245884,
+        "shadow_draws": 0
+      },
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "fov": 45.0,
+      "id": "car_park",
+      "sha256": "2ae2cda4c027f87bbd57abca722206c166bb1f195c8fcd764f57a7689c476bb9",
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "id": "cells-128",
+    "tree_batches": 10,
+    "trees": 17,
+    "directional_shadows": true,
+    "car_park": {
+      "clock": 0.0,
+      "counters": {
+        "draws": 88,
+        "primitives": 245884,
+        "shadow_draws": 0
+      },
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "fov": 45.0,
+      "id": "car_park",
+      "sha256": "4e7d568302ee30eff43477779064246503948c4e790ccf8402a77bc5ab2e7bbc",
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "id": "cells-256",
+    "tree_batches": 10,
+    "trees": 17,
+    "directional_shadows": true,
+    "car_park": {
+      "clock": 0.0,
+      "counters": {
+        "draws": 88,
+        "primitives": 245884,
+        "shadow_draws": 0
+      },
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "fov": 45.0,
+      "id": "car_park",
+      "sha256": "2ae2cda4c027f87bbd57abca722206c166bb1f195c8fcd764f57a7689c476bb9",
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "id": "tree-shadow-off",
+    "tree_batches": 7,
+    "trees": 17,
+    "directional_shadows": true,
+    "car_park": {
+      "clock": 0.0,
+      "counters": {
+        "draws": 62,
+        "primitives": 241793,
+        "shadow_draws": 0
+      },
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "fov": 45.0,
+      "id": "car_park",
+      "sha256": "4f820047ad791c8f0c729811c9793b162fb77b9d20ef5ceebff5b48dd26cca0c",
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  {
+    "id": "all-engine-shadows-off",
+    "tree_batches": 7,
+    "trees": 17,
+    "directional_shadows": false,
+    "car_park": {
+      "clock": 0.0,
+      "counters": {
+        "draws": 62,
+        "primitives": 241793,
+        "shadow_draws": 0
+      },
+      "eye": [
+        8.0,
+        3.0,
+        30.0
+      ],
+      "fov": 45.0,
+      "id": "car_park",
+      "sha256": "da45bd98ae7a354a5d7f3a7e0850dae4a1e5690057bb0279dc48a422f3090f3b",
+      "wind": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  }
+]

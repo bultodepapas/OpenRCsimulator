@@ -1,0 +1,33 @@
+{
+  "clone_commit": "303054811496a94ce2f7ed444f350dc967444237",
+  "files": {
+    "app/test.sh": "2cda5bf4b31edf3240e873a6233c34f0df5d809e1f23fd0bb692b17d0d5f42d4",
+    "app/scenery/imported_vegetation.gd": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6",
+    "app/scenery/imported_vegetation_wind.gdshader": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6",
+    "app/scenery/scenery.gd": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7",
+    "app/tests/test_imported_tree_rendering.gd": "c7e0fe3d25208f3d1354007b540a4123c7f61805bf4007f4d27bed7fb5e679fe",
+    "app/data/fields/default.json": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
+    "app/assets/landscape/vegetation/catalog.json": "108818aebe5ba200bb4531a209df4beeb39c6dc4ce31a42f94ae2d253a86e088",
+    "app/assets/landscape/vegetation/models/CommonTree_1.bin": "9dd689e84e1aa2f5b08db8def591254d582783c73737af54ba0d89b3e549c3ae",
+    "app/assets/landscape/vegetation/models/CommonTree_2.bin": "a273d69de31a675a9d7e3eb3c43f804aef2d1b031692111b9e76eb3b0b686d0c",
+    "app/assets/landscape/vegetation/models/CommonTree_3.bin": "24541f46fd9553e2389aba15575f2697009226e82118ed76868284114fd12b49",
+    "app/assets/landscape/vegetation/models/CommonTree_4.bin": "4fa52cc5bb9aa42d5ce1eee6cffca0f0a7f25dd07fe4431e371548e89bc30233",
+    "app/assets/landscape/vegetation/models/Pine_1.bin": "0cc0900d156359cab7028d87cd5d8897fbcb0479ddf1ddf524d5462c11e17af2",
+    "app/assets/landscape/vegetation/models/Pine_2.bin": "5ba81ed2b131243bf02f5fb18e278083205ce16b0f30c364ccbe9355e7637c60",
+    "app/assets/landscape/vegetation/models/Pine_3.bin": "73edd69d7e789b12bfa32ab202c62d74ae98f0bba67975205211bf51906d8c82"
+  },
+  "scope": "Auxiliary full-suite remainder audit, with only the proven baseline AUD-12 check bypassed in the disposable clone. Snapshot precedes the precision-only COLOR_0 regeneration; final repaired buffers and the later combined-mode test are verified separately by native focused checks.",
+  "differences_from_current_workspace": [
+    "app/test.sh",
+    "app/data/fields/default.json",
+    "app/assets/landscape/vegetation/catalog.json",
+    "app/assets/landscape/vegetation/models/CommonTree_1.bin",
+    "app/assets/landscape/vegetation/models/CommonTree_2.bin",
+    "app/assets/landscape/vegetation/models/CommonTree_3.bin",
+    "app/assets/landscape/vegetation/models/CommonTree_4.bin",
+    "app/assets/landscape/vegetation/models/Pine_1.bin",
+    "app/assets/landscape/vegetation/models/Pine_2.bin",
+    "app/assets/landscape/vegetation/models/Pine_3.bin"
+  ],
+  "field_semantically_equal_to_candidate": true
+}
