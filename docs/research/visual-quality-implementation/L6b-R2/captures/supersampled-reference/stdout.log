@@ -1,0 +1,7 @@
+COMMAND: ['C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe', '--path', 'C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-mips\\baseline\\app', '--rendering-driver', 'opengl3', '--audio-driver', 'Dummy', '--script', 'C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-mips\\draft\\mip_supersample_capture.gd', '--', '--out=C:\\DEVELOPMENT\\OpenRCsimulator/tmp/tree-mips/supersampled-reference']
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+MIP CAPTURE ASSET: common_tree_3
+MIP CAPTURE ASSET: bush_common_flowers
+MIP CAPTURE COMPLETE: C:\DEVELOPMENT\OpenRCsimulator/tmp/tree-mips/supersampled-reference

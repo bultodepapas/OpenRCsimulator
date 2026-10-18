@@ -1,0 +1,334 @@
+{
+  "analysis_script": {
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-mips\\draft\\analyze_bark_reference.py",
+    "sha256": "de9b35e5ce3a09f9ae37362c09d368a7eda9a14bfe0c63a9328cc533a7ee8d93"
+  },
+  "capture_identity": {
+    "res://assets/landscape/vegetation/catalog.json": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9",
+    "res://project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+    "res://scenery/imported_vegetation.gd": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6",
+    "res://scenery/imported_vegetation_wind.gdshader": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6"
+  },
+  "cases": [
+    {
+      "asset_id": "common_tree_3",
+      "baseline": {
+        "binary_coverage_fraction": 0.0006770833333333334,
+        "binary_coverage_pixels": 624,
+        "coverage_bias_vs_supersampled_area_percent": 3.2578343158547938,
+        "interior_empty_fraction": 0.05167173252279635,
+        "interior_fill_fraction": 0.9483282674772037,
+        "mask_iou_vs_box_rgb_reference": 0.8783592644978784,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -65,
+          "envelope_area_pixels": 658,
+          "interior_fill_delta_vs_reference": -0.025392341098176674,
+          "interior_fill_fraction": 0.9483282674772037,
+          "max_outline_edge_error_px": 4.0,
+          "mean_outline_edge_error_px": 0.6160714285714286,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 56
+        },
+        "rgb_mae_over_union_channel_levels": 14.91308368007397,
+        "rgb_p95_absolute_error_channel_levels": 54.0,
+        "rgb_rmse_over_union_channel_levels": 25.405349981343026,
+        "soft_coverage_mae": 7.765028567519039e-05,
+        "soft_coverage_mae_over_union": 0.09925451129674911
+      },
+      "candidate": {
+        "binary_coverage_fraction": 0.0006770833333333334,
+        "binary_coverage_pixels": 624,
+        "coverage_bias_vs_supersampled_area_percent": 3.2578343158547938,
+        "interior_empty_fraction": 0.05167173252279635,
+        "interior_fill_fraction": 0.9483282674772037,
+        "mask_iou_vs_box_rgb_reference": 0.8783592644978784,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -65,
+          "envelope_area_pixels": 658,
+          "interior_fill_delta_vs_reference": -0.025392341098176674,
+          "interior_fill_fraction": 0.9483282674772037,
+          "max_outline_edge_error_px": 4.0,
+          "mean_outline_edge_error_px": 0.6160714285714286,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 56
+        },
+        "rgb_mae_over_union_channel_levels": 14.55709662505779,
+        "rgb_p95_absolute_error_channel_levels": 54.0,
+        "rgb_rmse_over_union_channel_levels": 25.232043779430576,
+        "soft_coverage_mae": 7.765028567519039e-05,
+        "soft_coverage_mae_over_union": 0.09925451129674911
+      },
+      "candidate_minus_baseline": {
+        "binary_coverage_pixels": 0,
+        "interior_fill_fraction": 0.0,
+        "mean_outline_edge_error_px": 0.0,
+        "rgb_mae_over_union_channel_levels": -0.3559870550161808,
+        "soft_coverage_mae": 0.0
+      },
+      "distance_m": 128,
+      "height": 720,
+      "phase_index": 0,
+      "reference": {
+        "box_rgb_binary_coverage_pixels": 704,
+        "mask_threshold_channel_levels": 12,
+        "rgb_box_downsampled_to": [
+          1280,
+          720
+        ],
+        "soft_coverage_pixel_count": 263,
+        "source_frame": "common_tree_3__d128__5120x2880__p00.png",
+        "source_treatment": "No-mipmap baseline rendered directly at supersampled resolution; binary source mask then averaged for soft coverage comparison.",
+        "supersample_scale": 4,
+        "supersampled_binary_area_in_native_pixels": 604.3125
+      },
+      "width": 1280
+    },
+    {
+      "asset_id": "common_tree_3",
+      "baseline": {
+        "binary_coverage_fraction": 0.000667920524691358,
+        "binary_coverage_pixels": 1385,
+        "coverage_bias_vs_supersampled_area_percent": 1.2797074954296161,
+        "interior_empty_fraction": 0.06734006734006734,
+        "interior_fill_fraction": 0.9326599326599326,
+        "mask_iou_vs_box_rgb_reference": 0.9194407456724367,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -75,
+          "envelope_area_pixels": 1485,
+          "interior_fill_delta_vs_reference": -0.027596477596477653,
+          "interior_fill_fraction": 0.9326599326599326,
+          "max_outline_edge_error_px": 9.0,
+          "mean_outline_edge_error_px": 0.5963855421686747,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 83
+        },
+        "rgb_mae_over_union_channel_levels": 14.001769520017696,
+        "rgb_p95_absolute_error_channel_levels": 54.0,
+        "rgb_rmse_over_union_channel_levels": 25.931741341925964,
+        "soft_coverage_mae": 5.618248542305082e-05,
+        "soft_coverage_mae_over_union": 0.07730590552091599
+      },
+      "candidate": {
+        "binary_coverage_fraction": 0.000667920524691358,
+        "binary_coverage_pixels": 1385,
+        "coverage_bias_vs_supersampled_area_percent": 1.2797074954296161,
+        "interior_empty_fraction": 0.06734006734006734,
+        "interior_fill_fraction": 0.9326599326599326,
+        "mask_iou_vs_box_rgb_reference": 0.9194407456724367,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -75,
+          "envelope_area_pixels": 1485,
+          "interior_fill_delta_vs_reference": -0.027596477596477653,
+          "interior_fill_fraction": 0.9326599326599326,
+          "max_outline_edge_error_px": 9.0,
+          "mean_outline_edge_error_px": 0.5963855421686747,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 83
+        },
+        "rgb_mae_over_union_channel_levels": 13.691661136916611,
+        "rgb_p95_absolute_error_channel_levels": 54.0,
+        "rgb_rmse_over_union_channel_levels": 25.762677455131783,
+        "soft_coverage_mae": 5.618248542305082e-05,
+        "soft_coverage_mae_over_union": 0.07730590552091599
+      },
+      "candidate_minus_baseline": {
+        "binary_coverage_pixels": 0,
+        "interior_fill_fraction": 0.0,
+        "mean_outline_edge_error_px": 0.0,
+        "rgb_mae_over_union_channel_levels": -0.3101083831010847,
+        "soft_coverage_mae": 0.0
+      },
+      "distance_m": 128,
+      "height": 1080,
+      "phase_index": 0,
+      "reference": {
+        "box_rgb_binary_coverage_pixels": 1498,
+        "mask_threshold_channel_levels": 12,
+        "rgb_box_downsampled_to": [
+          1920,
+          1080
+        ],
+        "soft_coverage_pixel_count": 277,
+        "source_frame": "common_tree_3__d128__3840x2160__p00.png",
+        "source_treatment": "No-mipmap baseline rendered directly at supersampled resolution; binary source mask then averaged for soft coverage comparison.",
+        "supersample_scale": 2,
+        "supersampled_binary_area_in_native_pixels": 1367.5
+      },
+      "width": 1920
+    },
+    {
+      "asset_id": "bush_common_flowers",
+      "baseline": {
+        "binary_coverage_fraction": 6.944444444444444e-05,
+        "binary_coverage_pixels": 64,
+        "coverage_bias_vs_supersampled_area_percent": 13.399778516057586,
+        "interior_empty_fraction": 0.0,
+        "interior_fill_fraction": 1.0,
+        "mask_iou_vs_box_rgb_reference": 0.8493150684931506,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -8,
+          "envelope_area_pixels": 64,
+          "interior_fill_delta_vs_reference": 0.01388888888888884,
+          "interior_fill_fraction": 1.0,
+          "max_outline_edge_error_px": 2.0,
+          "mean_outline_edge_error_px": 0.6666666666666666,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 9
+        },
+        "rgb_mae_over_union_channel_levels": 19.608888888888888,
+        "rgb_p95_absolute_error_channel_levels": 68.79999999999998,
+        "rgb_rmse_over_union_channel_levels": 28.980299822082202,
+        "soft_coverage_mae": 1.3088650121062528e-05,
+        "soft_coverage_mae_over_union": 0.16083332896232605
+      },
+      "candidate": {
+        "binary_coverage_fraction": 6.944444444444444e-05,
+        "binary_coverage_pixels": 64,
+        "coverage_bias_vs_supersampled_area_percent": 13.399778516057586,
+        "interior_empty_fraction": 0.0,
+        "interior_fill_fraction": 1.0,
+        "mask_iou_vs_box_rgb_reference": 0.8493150684931506,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -8,
+          "envelope_area_pixels": 64,
+          "interior_fill_delta_vs_reference": 0.01388888888888884,
+          "interior_fill_fraction": 1.0,
+          "max_outline_edge_error_px": 2.0,
+          "mean_outline_edge_error_px": 0.6666666666666666,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 9
+        },
+        "rgb_mae_over_union_channel_levels": 19.608888888888888,
+        "rgb_p95_absolute_error_channel_levels": 68.79999999999998,
+        "rgb_rmse_over_union_channel_levels": 28.980299822082202,
+        "soft_coverage_mae": 1.3088650121062528e-05,
+        "soft_coverage_mae_over_union": 0.16083332896232605
+      },
+      "candidate_minus_baseline": {
+        "binary_coverage_pixels": 0,
+        "interior_fill_fraction": 0.0,
+        "mean_outline_edge_error_px": 0.0,
+        "rgb_mae_over_union_channel_levels": 0.0,
+        "soft_coverage_mae": 0.0
+      },
+      "distance_m": 128,
+      "height": 720,
+      "phase_index": 0,
+      "reference": {
+        "box_rgb_binary_coverage_pixels": 71,
+        "mask_threshold_channel_levels": 12,
+        "rgb_box_downsampled_to": [
+          1280,
+          720
+        ],
+        "soft_coverage_pixel_count": 38,
+        "source_frame": "bush_common_flowers__d128__5120x2880__p00.png",
+        "source_treatment": "No-mipmap baseline rendered directly at supersampled resolution; binary source mask then averaged for soft coverage comparison.",
+        "supersample_scale": 4,
+        "supersampled_binary_area_in_native_pixels": 56.4375
+      },
+      "width": 1280
+    },
+    {
+      "asset_id": "bush_common_flowers",
+      "baseline": {
+        "binary_coverage_fraction": 6.413966049382716e-05,
+        "binary_coverage_pixels": 133,
+        "coverage_bias_vs_supersampled_area_percent": 3.90625,
+        "interior_empty_fraction": 0.014814814814814815,
+        "interior_fill_fraction": 0.9851851851851852,
+        "mask_iou_vs_box_rgb_reference": 0.8733333333333333,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -14,
+          "envelope_area_pixels": 135,
+          "interior_fill_delta_vs_reference": -0.008103405418841692,
+          "interior_fill_fraction": 0.9851851851851852,
+          "max_outline_edge_error_px": 2.0,
+          "mean_outline_edge_error_px": 0.6153846153846154,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 13
+        },
+        "rgb_mae_over_union_channel_levels": 20.30242825607064,
+        "rgb_p95_absolute_error_channel_levels": 62.39999999999998,
+        "rgb_rmse_over_union_channel_levels": 32.54017723765248,
+        "soft_coverage_mae": 9.40393510973081e-06,
+        "soft_coverage_mae_over_union": 0.12913906574249268
+      },
+      "candidate": {
+        "binary_coverage_fraction": 6.413966049382716e-05,
+        "binary_coverage_pixels": 133,
+        "coverage_bias_vs_supersampled_area_percent": 3.90625,
+        "interior_empty_fraction": 0.014814814814814815,
+        "interior_fill_fraction": 0.9851851851851852,
+        "mask_iou_vs_box_rgb_reference": 0.8733333333333333,
+        "outline_vs_box_rgb_reference": {
+          "envelope_area_delta_pixels": -14,
+          "envelope_area_pixels": 135,
+          "interior_fill_delta_vs_reference": -0.008103405418841692,
+          "interior_fill_fraction": 0.9851851851851852,
+          "max_outline_edge_error_px": 2.0,
+          "mean_outline_edge_error_px": 0.6153846153846154,
+          "p95_outline_edge_error_px": 2.0,
+          "row_presence_mismatches": 0,
+          "shared_outline_rows": 13
+        },
+        "rgb_mae_over_union_channel_levels": 20.30242825607064,
+        "rgb_p95_absolute_error_channel_levels": 62.39999999999998,
+        "rgb_rmse_over_union_channel_levels": 32.54017723765248,
+        "soft_coverage_mae": 9.40393510973081e-06,
+        "soft_coverage_mae_over_union": 0.12913906574249268
+      },
+      "candidate_minus_baseline": {
+        "binary_coverage_pixels": 0,
+        "interior_fill_fraction": 0.0,
+        "mean_outline_edge_error_px": 0.0,
+        "rgb_mae_over_union_channel_levels": 0.0,
+        "soft_coverage_mae": 0.0
+      },
+      "distance_m": 128,
+      "height": 1080,
+      "phase_index": 0,
+      "reference": {
+        "box_rgb_binary_coverage_pixels": 148,
+        "mask_threshold_channel_levels": 12,
+        "rgb_box_downsampled_to": [
+          1920,
+          1080
+        ],
+        "soft_coverage_pixel_count": 44,
+        "source_frame": "bush_common_flowers__d128__3840x2160__p00.png",
+        "source_treatment": "No-mipmap baseline rendered directly at supersampled resolution; binary source mask then averaged for soft coverage comparison.",
+        "supersample_scale": 2,
+        "supersampled_binary_area_in_native_pixels": 128.0
+      },
+      "width": 1920
+    }
+  ],
+  "complete": true,
+  "fixture_snapshot": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "api": "3.3.0 NVIDIA 617.42",
+    "godot_version": "4.7.2-stable (official)",
+    "native_reference_count": 4,
+    "native_reference_png_sha256": {
+      "bush_common_flowers__d128__3840x2160__p00.png": "68723d5c9a8e619e3113cb5bb54f43c7eef7f44e9881ec63931cf87c6acc1a7c",
+      "bush_common_flowers__d128__5120x2880__p00.png": "7882ded0b9115e852ebdc269ddeba2fbbafdcc5f45a6181f1863b6b96207ad09",
+      "common_tree_3__d128__3840x2160__p00.png": "6cee67237cc2e5b68c625f5642bf32dbf4a6fa0858036c1bb8762f13dc8b6ad8",
+      "common_tree_3__d128__5120x2880__p00.png": "8f823cf3ceddc7aab4b5c39cb6ce0f988fa41d260f7bd2ac139702038854a316"
+    },
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-mips\\draft\\mip_supersample_capture.gd",
+    "renderer": "gl_compatibility",
+    "sha256": "0e5a5f4f34256895198c0361bdde2ce4bef8911fc9381c07e808bc1f94905078"
+  },
+  "format": "openrc-tree-mipmap-supersample-check v1",
+  "outline_metric": "Per scanline, take the leftmost/rightmost foreground pixel and sum those row spans. Interior fill is foreground pixels divided by that envelope area; it is a row-span proxy, not a connected-component or topological hole count. Branch gaps also count as interior empty area.",
+  "reference_limitations": "A finite 4x/2x raster reference is an approximation, not analytic ground truth. RGB BOX downsampling and a thresholded background mask do not recover a shader alpha channel; soft coverage is derived from the high-resolution binary mask.",
+  "scope": "Two highest-risk distant cutout sources at identical phase/distance/FOV. Four no-mipmap baseline renders were taken at 4x720p and 2x1080p, then BOX-downsampled to native dimensions."
+}

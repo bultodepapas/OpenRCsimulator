@@ -1,0 +1,137 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"arguments": {
+		"mode": "field",
+		"out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-oak\\native\\field-candidate",
+		"wind": "on"
+	},
+	"captures": [
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 64,
+				"primitives": 184856,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				1.70000004768372,
+				0.0
+			],
+			"fov": 50.0,
+			"id": "pilot_north",
+			"sha256": "dd0ae1d17d828e78fa91adabcc11c27910de595b26d9d1f33e00d94641d72446",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 86,
+				"primitives": 244922,
+				"shadow_draws": 0
+			},
+			"eye": [
+				8.0,
+				3.0,
+				30.0
+			],
+			"fov": 45.0,
+			"id": "car_park",
+			"sha256": "e4579e5b7e98700137c206d44724c092d5673fa61e0e1aa4a26506c4e79ce1b1",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 70,
+				"primitives": 153735,
+				"shadow_draws": 0
+			},
+			"eye": [
+				40.0,
+				6.0,
+				-30.0
+			],
+			"fov": 40.0,
+			"id": "postcard_meadow",
+			"sha256": "27900634403cfbe638859a367e436888e0d2ba27488ca06a6656181004c9c375",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 148,
+				"primitives": 296464,
+				"shadow_draws": 0
+			},
+			"eye": [
+				160.0,
+				140.0,
+				-140.0
+			],
+			"fov": 50.0,
+			"id": "aerial_overview",
+			"sha256": "4bc96f9cafc7ebb26799a3d7cc5146f60a2745b7249402f55205905c69753e9a",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		},
+		{
+			"clock": 0.0,
+			"counters": {
+				"draws": 150,
+				"primitives": 295339,
+				"shadow_draws": 0
+			},
+			"eye": [
+				0.0,
+				1900.0,
+				1250.0
+			],
+			"fov": 70.0,
+			"id": "forest_overview",
+			"sha256": "576f0282fa8237216315fbdb06383bd6d77b9585829e22d8a5acdb857d999bb5",
+			"wind": [
+				0.0,
+				0.0,
+				0.0
+			]
+		}
+	],
+	"complete": true,
+	"construction_ms": 1897.438,
+	"directional_shadow_distance_m": 300.0,
+	"directional_shadows_enabled": true,
+	"engine_static_memory_bytes": 96094182,
+	"field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+	"format": "openrc-tree-quality v1",
+	"godot": "4.7.2-stable (official)",
+	"imported_tree_batches": 8,
+	"imported_tree_instances": 17,
+	"memory_scope": "Engine static CPU memory only; GPU residency is not measured. OS file caches are not reset.",
+	"mode": "field",
+	"msaa": "4x",
+	"renderer": "gl_compatibility",
+	"samples": [],
+	"scope": "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance.",
+	"vegetation_catalog_sha256": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
+	"viewport": [
+		1280,
+		720
+	]
+}

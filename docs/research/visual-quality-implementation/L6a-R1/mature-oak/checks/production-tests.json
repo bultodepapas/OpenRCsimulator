@@ -1,0 +1,32 @@
+[
+  {
+    "test": "test_imported_tree_rendering.gd",
+    "exit_code": 0,
+    "errors": [],
+    "log": "production-test_imported_tree_rendering.gd.log"
+  },
+  {
+    "test": "test_imported_vegetation.gd",
+    "exit_code": 0,
+    "errors": [],
+    "log": "production-test_imported_vegetation.gd.log"
+  },
+  {
+    "test": "test_vegetation_collision_proxies.gd",
+    "exit_code": 0,
+    "errors": [],
+    "log": "production-test_vegetation_collision_proxies.gd.log"
+  },
+  {
+    "test": "test_landscape_vegetation.gd",
+    "exit_code": 0,
+    "errors": [],
+    "log": "production-test_landscape_vegetation.gd.log"
+  },
+  {
+    "test": "test_landscape_tree_bounds.gd",
+    "exit_code": 0,
+    "errors": [],
+    "log": "production-test_landscape_tree_bounds.gd.log"
+  }
+]

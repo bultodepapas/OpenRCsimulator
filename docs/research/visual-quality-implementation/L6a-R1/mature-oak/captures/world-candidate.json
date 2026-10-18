@@ -1,0 +1,340 @@
+{
+  "proxy_count": 4958,
+  "tree_counts": {
+    "common_tree_1": 4,
+    "common_tree_2": 1,
+    "common_tree_3": 4,
+    "common_tree_4": 1,
+    "oak_tree": 1,
+    "pine_1": 2,
+    "pine_2": 2,
+    "pine_3": 2
+  },
+  "tree_source_triangles": 79215,
+  "trees": [
+    {
+      "id": "prop:shade-trees:00",
+      "placement": {
+        "east": -22.0,
+        "heading": 169.9,
+        "north": -49.0,
+        "prefab": "shade_tree",
+        "seed": 793901810
+      },
+      "spec": {
+        "asset_id": "pine_1",
+        "depth": 6.17330947043786,
+        "height": 9.95275192260742,
+        "scale": 1.36023827554271,
+        "triangles": 3947,
+        "width": 6.72596748059949,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:01",
+      "placement": {
+        "east": -13.0,
+        "heading": 326.4,
+        "north": -52.5,
+        "prefab": "shade_tree",
+        "seed": 793909729
+      },
+      "spec": {
+        "asset_id": "pine_2",
+        "depth": 7.19950770502133,
+        "height": 10.1710739135742,
+        "scale": 1.37889719848712,
+        "triangles": 3648,
+        "width": 7.89844035919608,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:02",
+      "placement": {
+        "east": -4.0,
+        "heading": 192.0,
+        "north": -48.5,
+        "prefab": "shade_tree",
+        "seed": 793917648
+      },
+      "spec": {
+        "asset_id": "pine_3",
+        "depth": 5.28999560936499,
+        "height": 9.78644104003906,
+        "scale": 1.32388766049711,
+        "triangles": 4964,
+        "width": 4.78108127768095,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:03",
+      "placement": {
+        "east": 4.5,
+        "heading": 21.4,
+        "north": -53.0,
+        "prefab": "shade_tree",
+        "seed": 793925567
+      },
+      "spec": {
+        "asset_id": "common_tree_3",
+        "depth": 4.41105945504944,
+        "height": 9.80295181274414,
+        "scale": 1.04008002095917,
+        "triangles": 3505,
+        "width": 4.22568495283387,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:04",
+      "placement": {
+        "east": 12.0,
+        "heading": 181.2,
+        "north": -49.5,
+        "prefab": "shade_tree",
+        "seed": 793933486
+      },
+      "spec": {
+        "asset_id": "common_tree_2",
+        "depth": 5.56440514028859,
+        "height": 9.94625778198242,
+        "scale": 1.30135587955069,
+        "triangles": 5648,
+        "width": 5.80964565578991,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:05",
+      "placement": {
+        "east": -9.0,
+        "heading": 124.0,
+        "north": -31.5,
+        "prefab": "shade_tree",
+        "seed": 793941405
+      },
+      "spec": {
+        "asset_id": "common_tree_4",
+        "depth": 3.8834957584143,
+        "height": 9.76039199829101,
+        "scale": 1.03411718580666,
+        "triangles": 4066,
+        "width": 3.95604218135019,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:06",
+      "placement": {
+        "east": 10.5,
+        "heading": 247.1,
+        "north": -32.0,
+        "prefab": "shade_tree",
+        "seed": 793949324
+      },
+      "spec": {
+        "asset_id": "oak_tree",
+        "depth": 7.85412489946319,
+        "height": 9.94902648925781,
+        "scale": 0.85390822594561,
+        "triangles": 5303,
+        "width": 9.24878587983692,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:07",
+      "placement": {
+        "east": -52.0,
+        "heading": 86.1,
+        "north": -28.0,
+        "prefab": "shade_tree",
+        "seed": 793957243
+      },
+      "spec": {
+        "asset_id": "pine_1",
+        "depth": 6.20289957001318,
+        "height": 10.0004577636719,
+        "scale": 1.36675821208764,
+        "triangles": 3947,
+        "width": 6.75820659779333,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:08",
+      "placement": {
+        "east": 52.0,
+        "heading": 207.0,
+        "north": -29.0,
+        "prefab": "shade_tree",
+        "seed": 793965162
+      },
+      "spec": {
+        "asset_id": "pine_2",
+        "depth": 6.79865046894618,
+        "height": 9.60476455688477,
+        "scale": 1.30212237686538,
+        "triangles": 3648,
+        "width": 7.45866765508695,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:shade-trees:09",
+      "placement": {
+        "east": -40.0,
+        "heading": 203.6,
+        "north": -44.0,
+        "prefab": "shade_tree",
+        "seed": 793973081
+      },
+      "spec": {
+        "asset_id": "pine_3",
+        "depth": 5.43930363594275,
+        "height": 10.0626594543457,
+        "scale": 1.36125386428933,
+        "triangles": 4964,
+        "width": 4.91602539922516,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:saplings:00",
+      "placement": {
+        "east": -32.0,
+        "heading": 172.5,
+        "north": -66.0,
+        "prefab": "sapling",
+        "seed": 1720058360
+      },
+      "spec": {
+        "asset_id": "common_tree_1",
+        "depth": 2.46002119791446,
+        "height": 3.9040283203125,
+        "scale": 0.537390758337996,
+        "triangles": 6265,
+        "width": 2.31691887548588,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:saplings:01",
+      "placement": {
+        "east": -22.0,
+        "heading": 80.2,
+        "north": -66.0,
+        "prefab": "sapling",
+        "seed": 1720066279
+      },
+      "spec": {
+        "asset_id": "common_tree_3",
+        "depth": 1.95809476251741,
+        "height": 4.3515869140625,
+        "scale": 0.461697526953038,
+        "triangles": 3505,
+        "width": 1.87580595059104,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:saplings:02",
+      "placement": {
+        "east": -12.0,
+        "heading": 317.4,
+        "north": -66.0,
+        "prefab": "sapling",
+        "seed": 1720074198
+      },
+      "spec": {
+        "asset_id": "common_tree_1",
+        "depth": 2.37636364721839,
+        "height": 3.7712646484375,
+        "scale": 0.519115796054185,
+        "triangles": 6265,
+        "width": 2.23812778277132,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:saplings:03",
+      "placement": {
+        "east": -2.0,
+        "heading": 85.0,
+        "north": -66.0,
+        "prefab": "sapling",
+        "seed": 1720082117
+      },
+      "spec": {
+        "asset_id": "common_tree_3",
+        "depth": 1.57754056528801,
+        "height": 3.505859375,
+        "scale": 0.371966970957615,
+        "triangles": 3505,
+        "width": 1.51124452008726,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:saplings:04",
+      "placement": {
+        "east": 8.0,
+        "heading": 284.7,
+        "north": -66.0,
+        "prefab": "sapling",
+        "seed": 1720090036
+      },
+      "spec": {
+        "asset_id": "common_tree_1",
+        "depth": 2.12831393272344,
+        "height": 3.3776123046875,
+        "scale": 0.464929423883501,
+        "triangles": 6265,
+        "width": 2.00450741150808,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:saplings:05",
+      "placement": {
+        "east": 18.0,
+        "heading": 111.3,
+        "north": -66.0,
+        "prefab": "sapling",
+        "seed": 1720097955
+      },
+      "spec": {
+        "asset_id": "common_tree_3",
+        "depth": 1.73663487215779,
+        "height": 3.859423828125,
+        "scale": 0.409479684560736,
+        "triangles": 3505,
+        "width": 1.66365289849885,
+        "wind_margin": 0.06
+      }
+    },
+    {
+      "id": "prop:saplings:06",
+      "placement": {
+        "east": 28.0,
+        "heading": 257.7,
+        "north": -66.0,
+        "prefab": "sapling",
+        "seed": 1720105874
+      },
+      "spec": {
+        "asset_id": "common_tree_1",
+        "depth": 2.41946928477823,
+        "height": 3.8396728515625,
+        "scale": 0.528532207293471,
+        "triangles": 6265,
+        "width": 2.27872591476584,
+        "wind_margin": 0.06
+      }
+    }
+  ],
+  "world_identity_without_lights": "3fab9b2d3696d00bd50f1be534a56f08afb9fc582334dcb6be8c251201d85b89"
+}

@@ -1,0 +1,38 @@
+{
+  "positions_headings_seeds_preserved": true,
+  "placement_count": 17,
+  "proxy_count_before": 4958,
+  "proxy_count_after": 4958,
+  "before_world": "5dd45231f977010fc272bb1c34dd82210c92fbdde68a7d5dba4e7c868f62b3ca",
+  "after_world": "3fab9b2d3696d00bd50f1be534a56f08afb9fc582334dcb6be8c251201d85b89",
+  "changes": [
+    {
+      "id": "prop:shade-trees:06",
+      "placement": {
+        "east": 10.5,
+        "heading": 247.1,
+        "north": -32.0,
+        "prefab": "shade_tree",
+        "seed": 793949324
+      },
+      "before": {
+        "asset_id": "common_tree_1",
+        "depth": 6.26911847305135,
+        "height": 9.94902648925781,
+        "scale": 1.3694867073503,
+        "triangles": 6265,
+        "width": 5.90443648826433,
+        "wind_margin": 0.06
+      },
+      "after": {
+        "asset_id": "oak_tree",
+        "depth": 7.85412489946319,
+        "height": 9.94902648925781,
+        "scale": 0.85390822594561,
+        "triangles": 5303,
+        "width": 9.24878587983692,
+        "wind_margin": 0.06
+      }
+    }
+  ]
+}

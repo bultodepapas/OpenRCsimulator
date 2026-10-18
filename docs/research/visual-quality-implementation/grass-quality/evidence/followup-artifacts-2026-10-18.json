@@ -1,0 +1,162 @@
+{
+  "format": "openrc-grass-followup-artifacts v1",
+  "date": "2026-10-18",
+  "files": [
+    {
+      "path": "pack-2026-10-18/pack-check.log",
+      "bytes": 8899,
+      "sha256": "ea8f09d7996709ea59e5f96a820cdd5a68e9acad3605a922201d7e4c6573c632"
+    },
+    {
+      "path": "pack-2026-10-18/pack-export.log",
+      "bytes": 162169,
+      "sha256": "dc99aec8833b77e474675eb862aefb7a3a29d292116aafee430b64801d042941"
+    },
+    {
+      "path": "pack-2026-10-18/pack-smoke.json",
+      "bytes": 42727,
+      "sha256": "4ac7863cfaadc63a3a4c17b0a4b2ce7b8b51c8042fc696532768cfc90cd9c70b"
+    },
+    {
+      "path": "raw/seam-2026-10-18/seam-default.json",
+      "bytes": 24753,
+      "sha256": "82d8c278c2ff41e50965d4a81c7ed25fd5484a20fb500bed8f3f87bf578772d6"
+    },
+    {
+      "path": "raw/seam-2026-10-18/seam-enhanced.json",
+      "bytes": 23066,
+      "sha256": "572dbb23cab4bb0d2a6e2fca5ce53fb1c880d041fcd219e2b9bf57ed0d3173ae"
+    },
+    {
+      "path": "raw/seam-2026-10-18/tests.log",
+      "bytes": 107,
+      "sha256": "f88f20366a736bc2bfd6a21e76bb28ac5770a4bbcd7d75b8a7179b56272a9e13"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/default-native-2/console.log",
+      "bytes": 26921,
+      "sha256": "5168f46f5f56162f7677c1798fc01b8697d17a662d45f947e98b41c4a380b716"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/default-native-2/flight.png",
+      "bytes": 831231,
+      "sha256": "b255d9a147b388609603a1c0c3dbbb9a308bd90d6f71489ece9a202263439197"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/default-native-2/home.png",
+      "bytes": 977120,
+      "sha256": "1f3a03864b88914e5e90ea14ae8294f07a77bf76221a5802b6c90884f67402af"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/default-native-2/lifecycle.json",
+      "bytes": 53249,
+      "sha256": "53a0109cee74075755dd838600ac1aeaf73e6f44a0a2ba7fe802d111e60d19e1"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/default-native-2/rc-monster-car-2.png",
+      "bytes": 1699024,
+      "sha256": "6e37e769a9836e7f8558a1d10de842e1f6ebdf80901703a4fabcaf7b53bac6ee"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/default-native-2/rc-mt8-bisonte.png",
+      "bytes": 1615248,
+      "sha256": "c6121c6f7b9110b6b3b6808d223add87445a1f3de18eb82257c338b5d2d67990"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/enhanced-native-20/console.log",
+      "bytes": 264858,
+      "sha256": "008caf4e2fb8a20ad56c113b30d18c524ed19abdcdb574b5beb695f824d1d4a7"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/enhanced-native-20/flight.png",
+      "bytes": 984575,
+      "sha256": "86db6de890cc7a2f84fa4962010212c136560e73fd14410804a53fd37cf653e6"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/enhanced-native-20/home.png",
+      "bytes": 1277780,
+      "sha256": "0c49a2697141e2e17e647592bcd66baf0527537537976011289b8d15bbda8e11"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/enhanced-native-20/lifecycle.json",
+      "bytes": 500530,
+      "sha256": "5e96938054514e8c0250ead27fdb048e37109c7260ffccaacaa469ccc26b38af"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/enhanced-native-20/rc-monster-car-2.png",
+      "bytes": 1698777,
+      "sha256": "134474d7ee1f82530ec584d0cf0496096a10f1f43e9cb6baf73bc5324d01bb63"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/enhanced-native-20/rc-mt8-bisonte.png",
+      "bytes": 1614852,
+      "sha256": "ddccf0b8f1316bd85221756d50bee5c6182a96a9758993e05978955db754ff42"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/headless-default-2.json",
+      "bytes": 48952,
+      "sha256": "5c336371ff4ccfce0d06b841342f58ba3500f86bab88b8d5ca5e7173c7a0cfc5"
+    },
+    {
+      "path": "raw/lifecycle-2026-10-18/run-tool-source.txt",
+      "bytes": 416,
+      "sha256": "78b775efd392a4a5cdb3fdce37f64277c239dc25e559bb488005b1b76e71fd88"
+    },
+    {
+      "path": "raw/native-preflight-2026-10-18/campaign.json.gz",
+      "bytes": 99361,
+      "sha256": "ae7db219cca7eda16bf76564dcb3225ecece1861b433e3875521d7fff95dbdb3",
+      "decoded_sha256": "7404856d27a65da86fe16c23955c7175855b112ccc828fb0f02ba98b6adf26b8"
+    },
+    {
+      "path": "raw/native-preflight-2026-10-18/freeze-receipt.json.gz",
+      "bytes": 146361,
+      "sha256": "071a9066ac37a4bed6df3e8b57e916484322753bdf837be6d039ffb8079b65b1",
+      "decoded_sha256": "874191f28b5c82bc64f9603478236a8be97c1d5dc408c26a9b560ad21bb5d9a7"
+    },
+    {
+      "path": "raw/native-preflight-2026-10-18/frozen-import-receipt.json.gz",
+      "bytes": 74050,
+      "sha256": "c6d90c172b1751b6cea8f8754d854edca9a5cecff38eb7b57d1e2616879cd0d8",
+      "decoded_sha256": "8bd0386398ba3ce4efbf11bfd3c23acd6b1716fb37f2a3255ecba203f5da155b"
+    },
+    {
+      "path": "raw/native-preflight-2026-10-18/profile-tests.log",
+      "bytes": 319,
+      "sha256": "5a36e18c2645ab810720b46aa57ac829ae1d30221d94bfc1168f19e3a99012a8"
+    },
+    {
+      "path": "raw/native-preflight-2026-10-18/seam-tests.log",
+      "bytes": 101,
+      "sha256": "a5d17f9b1408b84190def446b1248aa188961ab9ba198ddd3a018c83c3b94267"
+    },
+    {
+      "path": "raw/native-preflight-2026-10-18/snapshot-import.log",
+      "bytes": 1033,
+      "sha256": "b728de0c23f24d9aa31bc7608b177d7ca13857d7c3aca862a08506d00675123b"
+    }
+  ],
+  "tool_sha256": {
+    "tools/grass/check_pack.gd": "9d35918514dd34523bbb55ef97efa92918f9c423ef29669082a42f8028cd386c",
+    "tools/grass/check_lifecycle.gd": "fd2ebcbb695156eb911a2d3b7dda05b9e26e6b17c99c7bbfeb2bcdef76e44469",
+    "tools/grass/check_grass_seam.py": "fd3b0f40a7a3ac938cef473012bd2c63aeb1ca7f71c821497985ed076d98f547",
+    "tools/grass/test_grass_seam.py": "110b915b26cc1ae085f1d79c474ffb43e8292556bf64bc345d23ba4ff506cdf5",
+    "tools/grass/profile_session.py": "49937275b94ac8641d13536548f8c35fae0e5cf2c94f23b6694ff6b5c6716bf7",
+    "tools/grass/test_profile_session.py": "5cbef51f233433391b4716efed4dd02110fe1d2600f16edac70bd575954ec60d"
+  },
+  "tool_hash_scope": "Current Windows working-tree bytes. Lifecycle run used the earlier wording-only version recorded in raw/lifecycle-2026-10-18/run-tool-source.txt.",
+  "gzip_instructions": "Decode each .gz using Python gzip.decompress(path.read_bytes()); compare decoded_sha256 to the original JSON bytes.",
+  "qualification": {
+    "pack_resource_checks": 83,
+    "native_default_lifecycle_checks": 452,
+    "native_enhanced_lifecycle_checks": 4502,
+    "native_enhanced_cycles": 20,
+    "profile_runner_tests": 15,
+    "seam_checker_tests": 4,
+    "seam_default_passed": false,
+    "seam_enhanced_passed": false,
+    "native_timing_runs_collected": 0
+  },
+  "noncanonical_duplicate_directory": "evidence/lifecycle-2026-10-18 contains redundant intermediate copies; command policy rejected cleanup. Use the raw/lifecycle-2026-10-18 receipts listed here.",
+  "limits": "Pack resource smoke and startup/paused lifecycle only. Seam limit fails both variants. Native timing attempt stopped before launch because another Godot process was present. No complete-session performance or owner visual acceptance is claimed."
+}

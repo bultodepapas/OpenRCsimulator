@@ -1,0 +1,147 @@
+{
+  "conversion": {
+    "baked_loop_count": 10885,
+    "baked_polygon_count": 2791,
+    "baked_triangulated_triangle_count": 5303,
+    "baked_vertex_count": 4407,
+    "bounds_blender_xyz_m": {
+      "max": [
+        5.003101348876953,
+        4.772417068481445,
+        10.793034553527832
+      ],
+      "min": [
+        -5.828022480010986,
+        -4.42543888092041,
+        -0.8581314086914062
+      ],
+      "size": [
+        10.83112382888794,
+        9.197855949401855,
+        11.651165962219238
+      ]
+    },
+    "custom_loop_normals": true,
+    "decimation": false,
+    "geometry_created": false,
+    "max_source_to_baked_error": {
+      "normal_unit_vector": 0.00038462484739224553,
+      "uv_unitless": 0.0,
+      "world_position_m": 0.0
+    },
+    "method": "batched the 36 supplied Collection 1 LOD0 mesh parts into one glTF primitive; baked source object transforms; preserved supplied positions, polygons, UVs, and inverse-transpose loop normals",
+    "polygons_preserved": true,
+    "source_material_names": [
+      "M_Quercus"
+    ],
+    "source_object_count": 36,
+    "source_object_names": [
+      "Branch_1.001",
+      "Branch_1.003",
+      "Branch_1B.001",
+      "Branch_1B.002",
+      "Branch_1B.003",
+      "Branch_1B.004",
+      "Branch_2.001",
+      "Branch_2.002",
+      "Branch_2.003",
+      "Branch_2.004",
+      "Branch_2.005",
+      "Branch_2B.001",
+      "Branch_2B.002",
+      "Branch_2B.003",
+      "Branch_2B.004",
+      "Branch_2B.005",
+      "Branch_2B.006",
+      "Branch_2B.007",
+      "Branch_2B.008",
+      "Branch_2B.009",
+      "Branch_3.001",
+      "Branch_3.002",
+      "Branch_3.003",
+      "Branch_3.004",
+      "Branch_3.005",
+      "Branch_3.006",
+      "Branch_3B.001",
+      "Branch_3B.002",
+      "Branch_3B.003",
+      "Branch_3B.004",
+      "Branch_3B.005",
+      "Branch_3B.006",
+      "Branch_3B.007",
+      "Branch_3B.008",
+      "Branch_3B.009",
+      "Quercus_A"
+    ],
+    "source_polygon_count_sum": 2791,
+    "source_triangulated_triangle_count": 5303,
+    "source_vertex_count_sum": 4407,
+    "triangles_preserved": true
+  },
+  "format": "openrc-oak-conversion-proof v2",
+  "inputs": {
+    "archive": {
+      "bytes": 2222050,
+      "path": "quercus_A_packed_v1_0.zip",
+      "sha256": "496f250c29eb1f56e391e55989530028e156ae43a3d1eb9f52ab09aa1bccbebf"
+    },
+    "archive_blend_member": {
+      "path": "quercus_A_packed_v1.blend",
+      "sha256": "3b32573acd4e8eb5b7e0a96aa363932ec785a854d6e8c71f56f29b10f5abd37c"
+    },
+    "blend": {
+      "bytes": 2856188,
+      "path": "quercus_A_packed_v1.blend",
+      "sha256": "3b32573acd4e8eb5b7e0a96aa363932ec785a854d6e8c71f56f29b10f5abd37c"
+    },
+    "packed_images": [
+      {
+        "bytes": 1623204,
+        "name": "I_Quercus",
+        "path": "textures/Quercus_A_1024.png",
+        "sha256": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015"
+      },
+      {
+        "bytes": 395002,
+        "name": "I_Quercus_LOD1",
+        "path": "textures/Quercus_A_LOD1_LOD2_512.png",
+        "sha256": "d2d3b172d158078be46c63fcf0ce81c9fd25da1e815cfec1d3073c2174a4eb88"
+      }
+    ]
+  },
+  "material_mapping": {
+    "added_maps": [],
+    "alpha_mode": "BLEND",
+    "alpha_source": "original packed diffuse/alpha atlas; unchanged",
+    "glTF_metallic_factor": 0.0,
+    "glTF_roughness_factor": 1.0,
+    "roughness_note": "reviewed scalar legacy-material adaptation; not authored roughness texture data",
+    "source_legacy_specular_intensity": 0.0,
+    "source_principled_specular_ior_level": 0.0,
+    "specular_note": "glTF core metallic-roughness does not encode source specular_intensity 0.0. KHR_materials_specular was tested but Godot 4.7 ignores it, so omitted. Godot's imported StandardMaterial3D metallic_specular remains default 0.5; no runtime workaround is applied."
+  },
+  "output_directory": "external_test_output",
+  "outputs": [
+    {
+      "bytes": 1970,
+      "path": "oak_lod0.gltf",
+      "sha256": "03f2c728f1b21f52d3278ee7abf81b91cf135d4cc4e4bc819e1b5a26b41491d7"
+    },
+    {
+      "bytes": 341388,
+      "path": "oak_lod0.bin",
+      "sha256": "61e23239d35d78f84693d15350b90961cc42185aac16660df0a4416668cfd93c"
+    },
+    {
+      "bytes": 1623204,
+      "path": "Quercus_A_1024.png",
+      "sha256": "2f3b85071d918bc7ca69b7cc65e726d6fea4f5a3540ef67a8b930eb0f6bb4015"
+    }
+  ],
+  "toolchain": {
+    "blender": "5.2.2 LTS",
+    "converter": "tools/landscape/vegetation/convert_oak.py",
+    "converter_sha256": "4d0b04587e6944ea99cede3d145438f9a10c9f8720760b3259bb37bd4f245b36",
+    "gltf_exporter": "Khronos glTF Blender I/O v5.2.40"
+  }
+}

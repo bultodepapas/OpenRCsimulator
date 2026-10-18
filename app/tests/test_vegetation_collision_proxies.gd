@@ -121,14 +121,16 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 		if str(asset_value.get("role", "")) == "tree":
 			expected_tree_ids[str(asset_value.get("id", ""))] = true
 	var source_seeds: Dictionary = {}
-	for seed in range(4096):
-		var tree: Dictionary = VegetationPlacement.spec("shade_tree", seed)
-		var asset_id := str(tree.get("asset_id", ""))
-		if expected_tree_ids.has(asset_id) and not source_seeds.has(asset_id):
-			source_seeds[asset_id] = seed
-		if source_seeds.size() == expected_tree_ids.size():
-			break
-	_check("shade-tree aliases expose every retained collision source", source_seeds.size() == 7)
+	for prefab: String in ["shade_tree", "sapling"]:
+		for seed in range(4096):
+			var tree: Dictionary = VegetationPlacement.spec(prefab, seed)
+			var asset_id := str(tree.get("asset_id", ""))
+			if expected_tree_ids.has(asset_id) and not source_seeds.has(asset_id):
+				source_seeds[asset_id] = {seed = seed, prefab = prefab}
+			if source_seeds.size() == expected_tree_ids.size():
+				break
+	_check("mature and sapling aliases expose every retained collision source", source_seeds.size() == 8
+		and source_seeds.size() == expected_tree_ids.size())
 	var source_ids: Array = expected_tree_ids.keys()
 	source_ids.sort()
 	for index in range(source_ids.size()):
@@ -139,14 +141,14 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 		var north := 100.0 + float(index) * 24.0
 		var east := 50.0
 		var scenery := {groups = [{id = "tree-variants", type = "instances", placements = [
-			{north = north, east = east, heading = 37.0, prefab = "shade_tree",
-				seed = int(source_seeds[asset_id])},
+			{north = north, east = east, heading = 37.0, prefab = str(source_seeds[asset_id].prefab),
+				seed = int(source_seeds[asset_id].seed)},
 		]}]}
 		var built: Dictionary = CollisionWorld.build(field, scenery)
 		_check("%s collision world builds" % asset_id, bool(built.get("ok", false)))
 		if not bool(built.get("ok", false)):
 			continue
-		var crown_id := "tree:shade-tree:tree-variants:00:crown"
+		var crown_id := "tree:%s:tree-variants:00:crown" % str(source_seeds[asset_id].prefab).replace("_", "-")
 		var crown := _proxy(built.world, crown_id)
 		_check("%s has a physical crown proxy" % asset_id, not crown.is_empty())
 		if crown.is_empty():

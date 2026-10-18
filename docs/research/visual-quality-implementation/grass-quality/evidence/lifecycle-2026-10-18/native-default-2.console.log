@@ -1,0 +1,458 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   startup: AppRoot owns Home only
+ok   startup: Home uses the production default field path
+ok   startup: Home active camera belongs to HomeScene
+ok   startup: Home WorldEnvironment belongs to HomeScene
+ok   cycle 1 start: AppRoot owns Home only
+ok   cycle 1 start: Home uses the production default field path
+ok   cycle 1 start: Home active camera belongs to HomeScene
+ok   cycle 1 start: Home WorldEnvironment belongs to HomeScene
+ok   save first-cycle home screenshot at 1280x720
+ok   Home field is owned by its active scene
+ok   Home field has grass and enabled scenery
+ok   Home grass_common_short:part_0 draw mesh preserves source geometry
+ok   Home grass_common_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   Home near grass uses the high fixed subset
+ok   Home near grass contains retained clumps
+ok   Home near grass stays within source triangle budget
+ok   Home enhanced wind mode matches the selected quality
+ok   Home default imported grass remains on its source material
+ok   Home field exposes ground shader materials
+ok   Home grass photo binder matches quality
+ok   Home ground field keeps RC track switch disabled
+ok   Home non-RC route keeps RC dirt coverage disabled
+ok   Home non-RC route leaves RC dirt maps unbound
+ok   Home field has its committed treeline
+ok   Home Sector0 mesh preserves tree source geometry
+ok   Home Sector1 mesh preserves tree source geometry
+ok   Home Sector2 mesh preserves tree source geometry
+ok   Home Sector3 mesh preserves tree source geometry
+ok   Home Sector4 mesh preserves tree source geometry
+ok   Home Sector5 mesh preserves tree source geometry
+ok   Home Sector6 mesh preserves tree source geometry
+ok   Home Sector7 mesh preserves tree source geometry
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   FixedWing field is owned by its active scene
+ok   FixedWing field has grass and enabled scenery
+ok   FixedWing grass_common_short:part_0 draw mesh preserves source geometry
+ok   FixedWing grass_common_short:part_0 source identity is unchanged
+ok   FixedWing grass_common_tall:part_0 draw mesh preserves source geometry
+ok   FixedWing grass_common_tall:part_0 source identity is unchanged
+ok   FixedWing grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   FixedWing grass_wispy_tall:part_0 source identity is unchanged
+ok   FixedWing near grass uses the high fixed subset
+ok   FixedWing near grass contains retained clumps
+ok   FixedWing near grass stays within source triangle budget
+ok   FixedWing enhanced wind mode matches the selected quality
+ok   FixedWing default imported grass remains on its source material
+ok   FixedWing field exposes ground shader materials
+ok   FixedWing grass photo binder matches quality
+ok   FixedWing ground field keeps RC track switch disabled
+ok   FixedWing non-RC route keeps RC dirt coverage disabled
+ok   FixedWing non-RC route leaves RC dirt maps unbound
+ok   fixed-wing route has no Home scene or RC activity
+ok   fixed-wing active camera belongs to flight
+ok   fixed-wing WorldEnvironment belongs to flight
+ok   FixedWing field has its committed treeline
+ok   FixedWing Sector0 mesh preserves tree source geometry
+ok   FixedWing Sector1 mesh preserves tree source geometry
+ok   FixedWing Sector2 mesh preserves tree source geometry
+ok   FixedWing Sector3 mesh preserves tree source geometry
+ok   FixedWing Sector4 mesh preserves tree source geometry
+ok   FixedWing Sector5 mesh preserves tree source geometry
+ok   FixedWing Sector6 mesh preserves tree source geometry
+ok   FixedWing Sector7 mesh preserves tree source geometry
+ok   FixedWing deterministic tree source and instance buffers match prior field builds
+ok   Home and fixed-wing fields own distinct mutable render resources
+ok   save first-cycle flight screenshot at 1280x720
+ok   departing Home scene is freed after Fly
+ok   after fixed-wing: AppRoot owns Home only
+ok   after fixed-wing: Home uses the production default field path
+ok   after fixed-wing: Home active camera belongs to HomeScene
+ok   after fixed-wing: Home WorldEnvironment belongs to HomeScene
+ok   End flight returns through AppRoot to Home
+ok   fixed-wing scene resources release on return Home
+ok   before RC mt8-bisonte: AppRoot owns Home only
+ok   before RC mt8-bisonte: Home uses the production default field path
+ok   before RC mt8-bisonte: Home active camera belongs to HomeScene
+ok   before RC mt8-bisonte: Home WorldEnvironment belongs to HomeScene
+ok   Home field is owned by its active scene
+ok   Home field has grass and enabled scenery
+ok   Home grass_common_short:part_0 draw mesh preserves source geometry
+ok   Home grass_common_short:part_0 source identity is unchanged
+ok   Home grass_common_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_common_tall:part_0 source identity is unchanged
+ok   Home grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_wispy_tall:part_0 source identity is unchanged
+ok   Home near grass uses the high fixed subset
+ok   Home near grass contains retained clumps
+ok   Home near grass stays within source triangle budget
+ok   Home enhanced wind mode matches the selected quality
+ok   Home default imported grass remains on its source material
+ok   Home field exposes ground shader materials
+ok   Home grass photo binder matches quality
+ok   Home ground field keeps RC track switch disabled
+ok   Home non-RC route keeps RC dirt coverage disabled
+ok   Home non-RC route leaves RC dirt maps unbound
+ok   Home field has its committed treeline
+ok   Home Sector0 mesh preserves tree source geometry
+ok   Home Sector1 mesh preserves tree source geometry
+ok   Home Sector2 mesh preserves tree source geometry
+ok   Home Sector3 mesh preserves tree source geometry
+ok   Home Sector4 mesh preserves tree source geometry
+ok   Home Sector5 mesh preserves tree source geometry
+ok   Home Sector6 mesh preserves tree source geometry
+ok   Home Sector7 mesh preserves tree source geometry
+ok   Home deterministic tree source and instance buffers match prior field builds
+ok   AppRoot selected requested RC vehicle mt8-bisonte
+ok   RC field is owned by its active scene
+ok   RC field has grass and enabled scenery
+ok   RC grass_common_short:part_0 draw mesh preserves source geometry
+ok   RC grass_common_short:part_0 source identity is unchanged
+ok   RC grass_common_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_common_tall:part_0 source identity is unchanged
+ok   RC grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_wispy_tall:part_0 source identity is unchanged
+ok   RC near grass uses the high fixed subset
+ok   RC near grass contains retained clumps
+ok   RC near grass stays within source triangle budget
+ok   RC enhanced wind mode matches the selected quality
+ok   RC default imported grass remains on its source material
+ok   RC field exposes ground shader materials
+ok   RC grass photo binder matches quality
+ok   RC ground field keeps RC track switch disabled
+ok   RC RC dirt binder is enabled on its field materials
+ok   RC RC field binds retained dirt/albedo maps
+ok   RC actual DirtLoopSurface has its RC material
+ok   RC dirt track material is private to its intended surface
+ok   RC route has no Home or flight scene
+ok   RC mt8-bisonte active camera belongs to its scene
+ok   RC mt8-bisonte WorldEnvironment belongs to its scene
+ok   RC field has its committed treeline
+ok   RC Sector0 mesh preserves tree source geometry
+ok   RC Sector1 mesh preserves tree source geometry
+ok   RC Sector2 mesh preserves tree source geometry
+ok   RC Sector3 mesh preserves tree source geometry
+ok   RC Sector4 mesh preserves tree source geometry
+ok   RC Sector5 mesh preserves tree source geometry
+ok   RC Sector6 mesh preserves tree source geometry
+ok   RC Sector7 mesh preserves tree source geometry
+ok   RC deterministic tree source and instance buffers match prior field builds
+ok   Home and RC fields own distinct mutable render resources for mt8-bisonte
+ok   save first-cycle rc-mt8-bisonte screenshot at 1280x720
+ok   departing Home scene is freed after RC launch mt8-bisonte
+ok   RC vehicle mt8-bisonte returns through its real Home action
+ok   after RC mt8-bisonte: AppRoot owns Home only
+ok   after RC mt8-bisonte: Home uses the production default field path
+ok   after RC mt8-bisonte: Home active camera belongs to HomeScene
+ok   after RC mt8-bisonte: Home WorldEnvironment belongs to HomeScene
+ok   RC mt8-bisonte Home action returns through AppRoot
+ok   RC scene resources release after mt8-bisonte returns Home
+ok   Home node count remains at baseline after RC mt8-bisonte
+ok   before RC monster-car-2: AppRoot owns Home only
+ok   before RC monster-car-2: Home uses the production default field path
+ok   before RC monster-car-2: Home active camera belongs to HomeScene
+ok   before RC monster-car-2: Home WorldEnvironment belongs to HomeScene
+ok   Home field is owned by its active scene
+ok   Home field has grass and enabled scenery
+ok   Home grass_common_short:part_0 draw mesh preserves source geometry
+ok   Home grass_common_short:part_0 source identity is unchanged
+ok   Home grass_common_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_common_tall:part_0 source identity is unchanged
+ok   Home grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_wispy_tall:part_0 source identity is unchanged
+ok   Home near grass uses the high fixed subset
+ok   Home near grass contains retained clumps
+ok   Home near grass stays within source triangle budget
+ok   Home enhanced wind mode matches the selected quality
+ok   Home default imported grass remains on its source material
+ok   Home field exposes ground shader materials
+ok   Home grass photo binder matches quality
+ok   Home ground field keeps RC track switch disabled
+ok   Home non-RC route keeps RC dirt coverage disabled
+ok   Home non-RC route leaves RC dirt maps unbound
+ok   Home field has its committed treeline
+ok   Home Sector0 mesh preserves tree source geometry
+ok   Home Sector1 mesh preserves tree source geometry
+ok   Home Sector2 mesh preserves tree source geometry
+ok   Home Sector3 mesh preserves tree source geometry
+ok   Home Sector4 mesh preserves tree source geometry
+ok   Home Sector5 mesh preserves tree source geometry
+ok   Home Sector6 mesh preserves tree source geometry
+ok   Home Sector7 mesh preserves tree source geometry
+ok   Home deterministic tree source and instance buffers match prior field builds
+ok   AppRoot selected requested RC vehicle monster-car-2
+ok   RC field is owned by its active scene
+ok   RC field has grass and enabled scenery
+ok   RC grass_common_short:part_0 draw mesh preserves source geometry
+ok   RC grass_common_short:part_0 source identity is unchanged
+ok   RC grass_common_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_common_tall:part_0 source identity is unchanged
+ok   RC grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_wispy_tall:part_0 source identity is unchanged
+ok   RC near grass uses the high fixed subset
+ok   RC near grass contains retained clumps
+ok   RC near grass stays within source triangle budget
+ok   RC enhanced wind mode matches the selected quality
+ok   RC default imported grass remains on its source material
+ok   RC field exposes ground shader materials
+ok   RC grass photo binder matches quality
+ok   RC ground field keeps RC track switch disabled
+ok   RC RC dirt binder is enabled on its field materials
+ok   RC RC field binds retained dirt/albedo maps
+ok   RC actual DirtLoopSurface has its RC material
+ok   RC dirt track material is private to its intended surface
+ok   RC route has no Home or flight scene
+ok   RC monster-car-2 active camera belongs to its scene
+ok   RC monster-car-2 WorldEnvironment belongs to its scene
+ok   RC field has its committed treeline
+ok   RC Sector0 mesh preserves tree source geometry
+ok   RC Sector1 mesh preserves tree source geometry
+ok   RC Sector2 mesh preserves tree source geometry
+ok   RC Sector3 mesh preserves tree source geometry
+ok   RC Sector4 mesh preserves tree source geometry
+ok   RC Sector5 mesh preserves tree source geometry
+ok   RC Sector6 mesh preserves tree source geometry
+ok   RC Sector7 mesh preserves tree source geometry
+ok   RC deterministic tree source and instance buffers match prior field builds
+ok   Home and RC fields own distinct mutable render resources for monster-car-2
+ok   save first-cycle rc-monster-car-2 screenshot at 1280x720
+ok   departing Home scene is freed after RC launch monster-car-2
+ok   RC vehicle monster-car-2 returns through its real Home action
+ok   after RC monster-car-2: AppRoot owns Home only
+ok   after RC monster-car-2: Home uses the production default field path
+ok   after RC monster-car-2: Home active camera belongs to HomeScene
+ok   after RC monster-car-2: Home WorldEnvironment belongs to HomeScene
+ok   RC monster-car-2 Home action returns through AppRoot
+ok   RC scene resources release after monster-car-2 returns Home
+ok   Home node count remains at baseline after RC monster-car-2
+ok   cycle 2 start: AppRoot owns Home only
+ok   cycle 2 start: Home uses the production default field path
+ok   cycle 2 start: Home active camera belongs to HomeScene
+ok   cycle 2 start: Home WorldEnvironment belongs to HomeScene
+ok   Home node count remains stable after cycle 1
+ok   Home field is owned by its active scene
+ok   Home field has grass and enabled scenery
+ok   Home grass_common_short:part_0 draw mesh preserves source geometry
+ok   Home grass_common_short:part_0 source identity is unchanged
+ok   Home grass_common_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_common_tall:part_0 source identity is unchanged
+ok   Home grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_wispy_tall:part_0 source identity is unchanged
+ok   Home near grass uses the high fixed subset
+ok   Home near grass contains retained clumps
+ok   Home near grass stays within source triangle budget
+ok   Home enhanced wind mode matches the selected quality
+ok   Home default imported grass remains on its source material
+ok   Home field exposes ground shader materials
+ok   Home grass photo binder matches quality
+ok   Home ground field keeps RC track switch disabled
+ok   Home non-RC route keeps RC dirt coverage disabled
+ok   Home non-RC route leaves RC dirt maps unbound
+ok   Home field has its committed treeline
+ok   Home Sector0 mesh preserves tree source geometry
+ok   Home Sector1 mesh preserves tree source geometry
+ok   Home Sector2 mesh preserves tree source geometry
+ok   Home Sector3 mesh preserves tree source geometry
+ok   Home Sector4 mesh preserves tree source geometry
+ok   Home Sector5 mesh preserves tree source geometry
+ok   Home Sector6 mesh preserves tree source geometry
+ok   Home Sector7 mesh preserves tree source geometry
+ok   Home deterministic tree source and instance buffers match prior field builds
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   FixedWing field is owned by its active scene
+ok   FixedWing field has grass and enabled scenery
+ok   FixedWing grass_common_short:part_0 draw mesh preserves source geometry
+ok   FixedWing grass_common_short:part_0 source identity is unchanged
+ok   FixedWing grass_common_tall:part_0 draw mesh preserves source geometry
+ok   FixedWing grass_common_tall:part_0 source identity is unchanged
+ok   FixedWing grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   FixedWing grass_wispy_tall:part_0 source identity is unchanged
+ok   FixedWing near grass uses the high fixed subset
+ok   FixedWing near grass contains retained clumps
+ok   FixedWing near grass stays within source triangle budget
+ok   FixedWing enhanced wind mode matches the selected quality
+ok   FixedWing default imported grass remains on its source material
+ok   FixedWing field exposes ground shader materials
+ok   FixedWing grass photo binder matches quality
+ok   FixedWing ground field keeps RC track switch disabled
+ok   FixedWing non-RC route keeps RC dirt coverage disabled
+ok   FixedWing non-RC route leaves RC dirt maps unbound
+ok   fixed-wing route has no Home scene or RC activity
+ok   fixed-wing active camera belongs to flight
+ok   fixed-wing WorldEnvironment belongs to flight
+ok   FixedWing field has its committed treeline
+ok   FixedWing Sector0 mesh preserves tree source geometry
+ok   FixedWing Sector1 mesh preserves tree source geometry
+ok   FixedWing Sector2 mesh preserves tree source geometry
+ok   FixedWing Sector3 mesh preserves tree source geometry
+ok   FixedWing Sector4 mesh preserves tree source geometry
+ok   FixedWing Sector5 mesh preserves tree source geometry
+ok   FixedWing Sector6 mesh preserves tree source geometry
+ok   FixedWing Sector7 mesh preserves tree source geometry
+ok   FixedWing deterministic tree source and instance buffers match prior field builds
+ok   Home and fixed-wing fields own distinct mutable render resources
+ok   departing Home scene is freed after Fly
+ok   after fixed-wing: AppRoot owns Home only
+ok   after fixed-wing: Home uses the production default field path
+ok   after fixed-wing: Home active camera belongs to HomeScene
+ok   after fixed-wing: Home WorldEnvironment belongs to HomeScene
+ok   End flight returns through AppRoot to Home
+ok   fixed-wing scene resources release on return Home
+ok   before RC mt8-bisonte: AppRoot owns Home only
+ok   before RC mt8-bisonte: Home uses the production default field path
+ok   before RC mt8-bisonte: Home active camera belongs to HomeScene
+ok   before RC mt8-bisonte: Home WorldEnvironment belongs to HomeScene
+ok   Home field is owned by its active scene
+ok   Home field has grass and enabled scenery
+ok   Home grass_common_short:part_0 draw mesh preserves source geometry
+ok   Home grass_common_short:part_0 source identity is unchanged
+ok   Home grass_common_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_common_tall:part_0 source identity is unchanged
+ok   Home grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_wispy_tall:part_0 source identity is unchanged
+ok   Home near grass uses the high fixed subset
+ok   Home near grass contains retained clumps
+ok   Home near grass stays within source triangle budget
+ok   Home enhanced wind mode matches the selected quality
+ok   Home default imported grass remains on its source material
+ok   Home field exposes ground shader materials
+ok   Home grass photo binder matches quality
+ok   Home ground field keeps RC track switch disabled
+ok   Home non-RC route keeps RC dirt coverage disabled
+ok   Home non-RC route leaves RC dirt maps unbound
+ok   Home field has its committed treeline
+ok   Home Sector0 mesh preserves tree source geometry
+ok   Home Sector1 mesh preserves tree source geometry
+ok   Home Sector2 mesh preserves tree source geometry
+ok   Home Sector3 mesh preserves tree source geometry
+ok   Home Sector4 mesh preserves tree source geometry
+ok   Home Sector5 mesh preserves tree source geometry
+ok   Home Sector6 mesh preserves tree source geometry
+ok   Home Sector7 mesh preserves tree source geometry
+ok   Home deterministic tree source and instance buffers match prior field builds
+ok   AppRoot selected requested RC vehicle mt8-bisonte
+ok   RC field is owned by its active scene
+ok   RC field has grass and enabled scenery
+ok   RC grass_common_short:part_0 draw mesh preserves source geometry
+ok   RC grass_common_short:part_0 source identity is unchanged
+ok   RC grass_common_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_common_tall:part_0 source identity is unchanged
+ok   RC grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_wispy_tall:part_0 source identity is unchanged
+ok   RC near grass uses the high fixed subset
+ok   RC near grass contains retained clumps
+ok   RC near grass stays within source triangle budget
+ok   RC enhanced wind mode matches the selected quality
+ok   RC default imported grass remains on its source material
+ok   RC field exposes ground shader materials
+ok   RC grass photo binder matches quality
+ok   RC ground field keeps RC track switch disabled
+ok   RC RC dirt binder is enabled on its field materials
+ok   RC RC field binds retained dirt/albedo maps
+ok   RC actual DirtLoopSurface has its RC material
+ok   RC dirt track material is private to its intended surface
+ok   RC route has no Home or flight scene
+ok   RC mt8-bisonte active camera belongs to its scene
+ok   RC mt8-bisonte WorldEnvironment belongs to its scene
+ok   RC field has its committed treeline
+ok   RC Sector0 mesh preserves tree source geometry
+ok   RC Sector1 mesh preserves tree source geometry
+ok   RC Sector2 mesh preserves tree source geometry
+ok   RC Sector3 mesh preserves tree source geometry
+ok   RC Sector4 mesh preserves tree source geometry
+ok   RC Sector5 mesh preserves tree source geometry
+ok   RC Sector6 mesh preserves tree source geometry
+ok   RC Sector7 mesh preserves tree source geometry
+ok   RC deterministic tree source and instance buffers match prior field builds
+ok   Home and RC fields own distinct mutable render resources for mt8-bisonte
+ok   departing Home scene is freed after RC launch mt8-bisonte
+ok   RC vehicle mt8-bisonte returns through its real Home action
+ok   after RC mt8-bisonte: AppRoot owns Home only
+ok   after RC mt8-bisonte: Home uses the production default field path
+ok   after RC mt8-bisonte: Home active camera belongs to HomeScene
+ok   after RC mt8-bisonte: Home WorldEnvironment belongs to HomeScene
+ok   RC mt8-bisonte Home action returns through AppRoot
+ok   RC scene resources release after mt8-bisonte returns Home
+ok   Home node count remains at baseline after RC mt8-bisonte
+ok   before RC monster-car-2: AppRoot owns Home only
+ok   before RC monster-car-2: Home uses the production default field path
+ok   before RC monster-car-2: Home active camera belongs to HomeScene
+ok   before RC monster-car-2: Home WorldEnvironment belongs to HomeScene
+ok   Home field is owned by its active scene
+ok   Home field has grass and enabled scenery
+ok   Home grass_common_short:part_0 draw mesh preserves source geometry
+ok   Home grass_common_short:part_0 source identity is unchanged
+ok   Home grass_common_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_common_tall:part_0 source identity is unchanged
+ok   Home grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   Home grass_wispy_tall:part_0 source identity is unchanged
+ok   Home near grass uses the high fixed subset
+ok   Home near grass contains retained clumps
+ok   Home near grass stays within source triangle budget
+ok   Home enhanced wind mode matches the selected quality
+ok   Home default imported grass remains on its source material
+ok   Home field exposes ground shader materials
+ok   Home grass photo binder matches quality
+ok   Home ground field keeps RC track switch disabled
+ok   Home non-RC route keeps RC dirt coverage disabled
+ok   Home non-RC route leaves RC dirt maps unbound
+ok   Home field has its committed treeline
+ok   Home Sector0 mesh preserves tree source geometry
+ok   Home Sector1 mesh preserves tree source geometry
+ok   Home Sector2 mesh preserves tree source geometry
+ok   Home Sector3 mesh preserves tree source geometry
+ok   Home Sector4 mesh preserves tree source geometry
+ok   Home Sector5 mesh preserves tree source geometry
+ok   Home Sector6 mesh preserves tree source geometry
+ok   Home Sector7 mesh preserves tree source geometry
+ok   Home deterministic tree source and instance buffers match prior field builds
+ok   AppRoot selected requested RC vehicle monster-car-2
+ok   RC field is owned by its active scene
+ok   RC field has grass and enabled scenery
+ok   RC grass_common_short:part_0 draw mesh preserves source geometry
+ok   RC grass_common_short:part_0 source identity is unchanged
+ok   RC grass_common_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_common_tall:part_0 source identity is unchanged
+ok   RC grass_wispy_tall:part_0 draw mesh preserves source geometry
+ok   RC grass_wispy_tall:part_0 source identity is unchanged
+ok   RC near grass uses the high fixed subset
+ok   RC near grass contains retained clumps
+ok   RC near grass stays within source triangle budget
+ok   RC enhanced wind mode matches the selected quality
+ok   RC default imported grass remains on its source material
+ok   RC field exposes ground shader materials
+ok   RC grass photo binder matches quality
+ok   RC ground field keeps RC track switch disabled
+ok   RC RC dirt binder is enabled on its field materials
+ok   RC RC field binds retained dirt/albedo maps
+ok   RC actual DirtLoopSurface has its RC material
+ok   RC dirt track material is private to its intended surface
+ok   RC route has no Home or flight scene
+ok   RC monster-car-2 active camera belongs to its scene
+ok   RC monster-car-2 WorldEnvironment belongs to its scene
+ok   RC field has its committed treeline
+ok   RC Sector0 mesh preserves tree source geometry
+ok   RC Sector1 mesh preserves tree source geometry
+ok   RC Sector2 mesh preserves tree source geometry
+ok   RC Sector3 mesh preserves tree source geometry
+ok   RC Sector4 mesh preserves tree source geometry
+ok   RC Sector5 mesh preserves tree source geometry
+ok   RC Sector6 mesh preserves tree source geometry
+ok   RC Sector7 mesh preserves tree source geometry
+ok   RC deterministic tree source and instance buffers match prior field builds
+ok   Home and RC fields own distinct mutable render resources for monster-car-2
+ok   departing Home scene is freed after RC launch monster-car-2
+ok   RC vehicle monster-car-2 returns through its real Home action
+ok   after RC monster-car-2: AppRoot owns Home only
+ok   after RC monster-car-2: Home uses the production default field path
+ok   after RC monster-car-2: Home active camera belongs to HomeScene
+ok   after RC monster-car-2: Home WorldEnvironment belongs to HomeScene
+ok   RC monster-car-2 Home action returns through AppRoot
+ok   RC scene resources release after monster-car-2 returns Home
+ok   Home node count remains at baseline after RC monster-car-2
+ok   live Object count does not grow after warm cycle 1
+grass lifecycle: 452 checks, 0 failed; report=C:\DEVELOPMENT\OpenRCsimulator\tmp\grass-quality-followup\lifecycle\native-default-2/lifecycle.json

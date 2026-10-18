@@ -1,0 +1,95 @@
+{
+  "date": "2026-10-18",
+  "textures": {
+    "baseline": {
+      "res://assets/landscape/vegetation/models/Bark_NormalTree.png": {
+        "base_image_sha256": "e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5",
+        "decoded_bytes": 16777216,
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5",
+        "mipmap_count": 0,
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png": {
+        "base_image_sha256": "d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a",
+        "decoded_bytes": 16777216,
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a",
+        "mipmap_count": 0,
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaf_Pine_C.png": {
+        "base_image_sha256": "3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d",
+        "decoded_bytes": 16777216,
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d",
+        "mipmap_count": 0,
+        "mipmaps": false,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png": {
+        "base_image_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+        "decoded_bytes": 4194304,
+        "format": 5,
+        "height": 1024,
+        "image_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+        "mipmap_count": 0,
+        "mipmaps": false,
+        "width": 1024
+      }
+    },
+    "candidate": {
+      "res://assets/landscape/vegetation/models/Bark_NormalTree.png": {
+        "base_image_sha256": "e4916c0a3a5bbb75a7ef35752a15ba91996c9122627c612e3ed72fa7181066f5",
+        "decoded_bytes": 22369620,
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "33e3b158a5deb02e85bf2e1dc001433dfb78d06b2ccc2d171b23e00f5fac543c",
+        "mipmap_count": 11,
+        "mipmaps": true,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png": {
+        "base_image_sha256": "d67ab2a54f7c08ab275c36fec6ad1912d77177c8a52eee0d643e1d2231471f9a",
+        "decoded_bytes": 22369620,
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "7be89874ad285cb1597dfb46877efdb2fbcff50694413567a72df1db2409e68e",
+        "mipmap_count": 11,
+        "mipmaps": true,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaf_Pine_C.png": {
+        "base_image_sha256": "3987fccb886e9555cb27484c1db50bc674af2c7aa1c7ec9f1d1a0f9c6327323d",
+        "decoded_bytes": 22369620,
+        "format": 5,
+        "height": 2048,
+        "image_sha256": "bbc0ecbaebc7c7dc9b8259965e791d3fa89269d3054e75b8fe199326f5363b87",
+        "mipmap_count": 11,
+        "mipmaps": true,
+        "width": 2048
+      },
+      "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png": {
+        "base_image_sha256": "6b0d54ea07d68d4f3d515b78012ce9c446b73bde4f3ec444b9a209dd327cc60a",
+        "decoded_bytes": 5592404,
+        "format": 5,
+        "height": 1024,
+        "image_sha256": "cb2d9ce7468267b0fb465f331799eef713a4fa6f4a45fbc8ffeba6a4355bd709",
+        "mipmap_count": 10,
+        "mipmaps": true,
+        "width": 1024
+      }
+    }
+  },
+  "base_pixels_identical": true,
+  "decoded_bytes": {
+    "baseline": 54525952,
+    "candidate": 72701264
+  },
+  "scope": "Decoded RGBA8 image bytes, not driver-reported GPU residency."
+}

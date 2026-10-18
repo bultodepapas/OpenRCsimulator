@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for oak_tree because source material -9223371953539119518 is unsupported (transparency mode is not opaque or alpha scissor)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] _gallery (C:/DEVELOPMENT/OpenRCsimulator/tools/trees/quality_capture.gd:184)
+       [4] _run (C:/DEVELOPMENT/OpenRCsimulator/tools/trees/quality_capture.gd:77)
+TREE QUALITY COMPLETE: C:\DEVELOPMENT\OpenRCsimulator\tmp\tree-oak\native\oak-on

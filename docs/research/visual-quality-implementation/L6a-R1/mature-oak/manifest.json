@@ -1,0 +1,1054 @@
+{
+  "format": "openrc-mature-oak-evidence v1",
+  "date": "2026-10-18",
+  "retained_files": 209,
+  "retained_bytes": 62156898,
+  "scope": "Native source/field comparisons, serial static profiles, lifecycle, source-to-PCK parity and source pipeline checks. Full app copies, caches, PCK and source binaries are excluded.",
+  "files": [
+    {
+      "path": "captures/field-bark/aerial_overview.png",
+      "bytes": 1130623,
+      "sha256": "99d019ac78f29a0ee935059a1a368dfcb1884fda7da0b62dd3a64e5020d04ede"
+    },
+    {
+      "path": "captures/field-bark/car_park.png",
+      "bytes": 1023301,
+      "sha256": "3ba472ad056008bfe356782d57b7aaaa9b3e681e9dcad1227dfcdfe96fa0bf7a"
+    },
+    {
+      "path": "captures/field-bark/forest_overview.png",
+      "bytes": 887000,
+      "sha256": "c41a50e11cf23567d2494a2d230ef108adbbb80fa405c4c1fb89f69cd6704493"
+    },
+    {
+      "path": "captures/field-bark/pilot_north.png",
+      "bytes": 854381,
+      "sha256": "dd0ae1d17d828e78fa91adabcc11c27910de595b26d9d1f33e00d94641d72446"
+    },
+    {
+      "path": "captures/field-bark/postcard_meadow.png",
+      "bytes": 739479,
+      "sha256": "c320d45acad58eebafb9a1fa07e0567856cfe50321100dfbe2817149604774c8"
+    },
+    {
+      "path": "captures/field-bark/report.json",
+      "bytes": 2699,
+      "sha256": "609c5459dcfdb51ddd329bcc8b2c1cdac8863586ce2272c2a50d79d3562f0c3b"
+    },
+    {
+      "path": "captures/field-bark.log",
+      "bytes": 258,
+      "sha256": "6b88ce173345c57e05f9c2a4f74321354668d0857875092c3487cf0bac619048"
+    },
+    {
+      "path": "captures/field-baseline/aerial_overview.png",
+      "bytes": 1130658,
+      "sha256": "3842cd6c6b4a3100d1a1c07d0c6bbd1f3f0d635c4912a6c4ab002a2d2f6bd9a4"
+    },
+    {
+      "path": "captures/field-baseline/car_park.png",
+      "bytes": 1038353,
+      "sha256": "3492c49cd14805a32ad3961568b690034ce7cc107fa360acde4cfd7ab9b094ca"
+    },
+    {
+      "path": "captures/field-baseline/forest_overview.png",
+      "bytes": 887000,
+      "sha256": "e2b289e847eb089de7099a6592302a05c3e877739f0ad7b2f452242f1937150d"
+    },
+    {
+      "path": "captures/field-baseline/pilot_north.png",
+      "bytes": 854381,
+      "sha256": "dd0ae1d17d828e78fa91adabcc11c27910de595b26d9d1f33e00d94641d72446"
+    },
+    {
+      "path": "captures/field-baseline/postcard_meadow.png",
+      "bytes": 739472,
+      "sha256": "4b04889dc26190c4819a8cf9b2f36af21a400bf2b5995ea82a830c1d4b7116f3"
+    },
+    {
+      "path": "captures/field-baseline/report.json",
+      "bytes": 2703,
+      "sha256": "f97341664cb12372e7d4b8b12078dcb696732ff39e5b3be706c0353c00a9eb1e"
+    },
+    {
+      "path": "captures/field-baseline.log",
+      "bytes": 262,
+      "sha256": "9baaff5f934d2adb82dfb7e2850493326c9a9412b54c5ca326b863c3660cf644"
+    },
+    {
+      "path": "captures/field-candidate/aerial_overview.png",
+      "bytes": 1130939,
+      "sha256": "4bc96f9cafc7ebb26799a3d7cc5146f60a2745b7249402f55205905c69753e9a"
+    },
+    {
+      "path": "captures/field-candidate/car_park.png",
+      "bytes": 1023308,
+      "sha256": "e4579e5b7e98700137c206d44724c092d5673fa61e0e1aa4a26506c4e79ce1b1"
+    },
+    {
+      "path": "captures/field-candidate/forest_overview.png",
+      "bytes": 887003,
+      "sha256": "576f0282fa8237216315fbdb06383bd6d77b9585829e22d8a5acdb857d999bb5"
+    },
+    {
+      "path": "captures/field-candidate/pilot_north.png",
+      "bytes": 854381,
+      "sha256": "dd0ae1d17d828e78fa91adabcc11c27910de595b26d9d1f33e00d94641d72446"
+    },
+    {
+      "path": "captures/field-candidate/postcard_meadow.png",
+      "bytes": 739483,
+      "sha256": "27900634403cfbe638859a367e436888e0d2ba27488ca06a6656181004c9c375"
+    },
+    {
+      "path": "captures/field-candidate/report.json",
+      "bytes": 2704,
+      "sha256": "00417bc20d870122fb2984c49b37090b53c6d0c37b2fc848fc31e7c2e6002843"
+    },
+    {
+      "path": "captures/field-candidate.log",
+      "bytes": 1063,
+      "sha256": "896d78943ccc62153f850a0318db97823ff1b7513b3add7a49e25a4a73821385"
+    },
+    {
+      "path": "captures/field-close-bark/aerial_overview.png",
+      "bytes": 1130623,
+      "sha256": "99d019ac78f29a0ee935059a1a368dfcb1884fda7da0b62dd3a64e5020d04ede"
+    },
+    {
+      "path": "captures/field-close-bark/car_park.png",
+      "bytes": 1023301,
+      "sha256": "3ba472ad056008bfe356782d57b7aaaa9b3e681e9dcad1227dfcdfe96fa0bf7a"
+    },
+    {
+      "path": "captures/field-close-bark/forest_overview.png",
+      "bytes": 887000,
+      "sha256": "c41a50e11cf23567d2494a2d230ef108adbbb80fa405c4c1fb89f69cd6704493"
+    },
+    {
+      "path": "captures/field-close-bark/oak_close.png",
+      "bytes": 919375,
+      "sha256": "287a081b03ab899cfa5935a43bc5a387ae2426c9a9024fcc2c0bb32bbe106fef"
+    },
+    {
+      "path": "captures/field-close-bark/pilot_north.png",
+      "bytes": 854381,
+      "sha256": "dd0ae1d17d828e78fa91adabcc11c27910de595b26d9d1f33e00d94641d72446"
+    },
+    {
+      "path": "captures/field-close-bark/postcard_meadow.png",
+      "bytes": 739476,
+      "sha256": "3480e7b83f06e3c3abf4445e4fa443b0c93dc3784af3d11339bc105588f3d48d"
+    },
+    {
+      "path": "captures/field-close-bark/report.json",
+      "bytes": 3029,
+      "sha256": "c09fec4010066091bd1830f33dca526c7cac099d0b29011b4acf69fc165e7ddf"
+    },
+    {
+      "path": "captures/field-close-bark.log",
+      "bytes": 264,
+      "sha256": "2bd1c98730d153a5a21243490d819e48ee7d3735ce2970ea50c248c48826b6da"
+    },
+    {
+      "path": "captures/field-close-candidate/aerial_overview.png",
+      "bytes": 1130939,
+      "sha256": "4bc96f9cafc7ebb26799a3d7cc5146f60a2745b7249402f55205905c69753e9a"
+    },
+    {
+      "path": "captures/field-close-candidate/car_park.png",
+      "bytes": 1023308,
+      "sha256": "e4579e5b7e98700137c206d44724c092d5673fa61e0e1aa4a26506c4e79ce1b1"
+    },
+    {
+      "path": "captures/field-close-candidate/forest_overview.png",
+      "bytes": 887003,
+      "sha256": "576f0282fa8237216315fbdb06383bd6d77b9585829e22d8a5acdb857d999bb5"
+    },
+    {
+      "path": "captures/field-close-candidate/oak_close.png",
+      "bytes": 977766,
+      "sha256": "0ffc007fe534425673fc23db5714b404dd6ebe7e35fe7570a05dcf6b40ecbd87"
+    },
+    {
+      "path": "captures/field-close-candidate/pilot_north.png",
+      "bytes": 854381,
+      "sha256": "dd0ae1d17d828e78fa91adabcc11c27910de595b26d9d1f33e00d94641d72446"
+    },
+    {
+      "path": "captures/field-close-candidate/postcard_meadow.png",
+      "bytes": 739489,
+      "sha256": "ca9b3c0803e1530914eb3a46adab1bd0665978e2b34366e26e8b69e317a62cee"
+    },
+    {
+      "path": "captures/field-close-candidate/report.json",
+      "bytes": 3034,
+      "sha256": "542d68fc7faf4fc954adb1cfda98cda7c06d1bb05f2cdcc9414d1e8da9715f7c"
+    },
+    {
+      "path": "captures/field-close-candidate.log",
+      "bytes": 1069,
+      "sha256": "156994e6a616f9b1341690d4a14336328c3560e23b553b13aa8fc99a6b866922"
+    },
+    {
+      "path": "captures/gallery-check.json",
+      "bytes": 509,
+      "sha256": "cfa2312dd4bb3dee3ff4442a5a14d75408909419e74bd7cbf32688d0aa1025b1"
+    },
+    {
+      "path": "captures/gallery-off/back.png",
+      "bytes": 492907,
+      "sha256": "8d15f3d601c1c9aa07f1ddc5ee00d3879c28311be52ef6265b5287c1841bc943"
+    },
+    {
+      "path": "captures/gallery-off/common_tree_1.png",
+      "bytes": 395412,
+      "sha256": "09cef07ea1b3414a245cc8f967d45c82bba7e5b39d3501342f1016908d64b079"
+    },
+    {
+      "path": "captures/gallery-off/common_tree_2.png",
+      "bytes": 391866,
+      "sha256": "4c5bc441b08144d4ceca8213666e490e035537a6b169bb3ce8e5ce6290d58180"
+    },
+    {
+      "path": "captures/gallery-off/common_tree_3.png",
+      "bytes": 388289,
+      "sha256": "b706f134b269024670fa7f53bf64bdcfed509ff4c0597f18bbb67db3c9e45381"
+    },
+    {
+      "path": "captures/gallery-off/common_tree_4.png",
+      "bytes": 371127,
+      "sha256": "5ce351aa05b59bf4d4ba03ec05f210d43d85a587dcf501053e4b06efc4de8bfc"
+    },
+    {
+      "path": "captures/gallery-off/oak_tree.png",
+      "bytes": 498104,
+      "sha256": "dc6c5063c00e7581ecacc88bc1f810c173b48c4db3a407b79d763f6dea9b2be5"
+    },
+    {
+      "path": "captures/gallery-off/overhead.png",
+      "bytes": 149385,
+      "sha256": "bf3addde78d7abf332df5988680c5076655e018488a90d4b6a29d4f946627a12"
+    },
+    {
+      "path": "captures/gallery-off/pine_1.png",
+      "bytes": 344448,
+      "sha256": "7e2bd0f131b0841ee7337076ecd85ad9a93a17b7396e43154705c757a6e8dbc7"
+    },
+    {
+      "path": "captures/gallery-off/pine_2.png",
+      "bytes": 353384,
+      "sha256": "2591bc402490b6a9908bcdb7b47377435adbeae41b34b06b029ac1543264100b"
+    },
+    {
+      "path": "captures/gallery-off/pine_3.png",
+      "bytes": 343621,
+      "sha256": "c99622ac36e36e65e2d96bcb3c905a65821e6ba66bfd5c2eec2f6e1ef67a5e7d"
+    },
+    {
+      "path": "captures/gallery-off/report.json",
+      "bytes": 23295,
+      "sha256": "dc0a11a14dee8fd9602b8fde13f8140ae04a22fb066621432cdba63023b74e4a"
+    },
+    {
+      "path": "captures/gallery-off/underside.png",
+      "bytes": 714993,
+      "sha256": "480cc764f083a70938a00ac27519a2e8742acf283be7a638405504d6e30e72b9"
+    },
+    {
+      "path": "captures/gallery-off/wind_one.png",
+      "bytes": 395412,
+      "sha256": "09cef07ea1b3414a245cc8f967d45c82bba7e5b39d3501342f1016908d64b079"
+    },
+    {
+      "path": "captures/gallery-off/wind_repeat.png",
+      "bytes": 395412,
+      "sha256": "09cef07ea1b3414a245cc8f967d45c82bba7e5b39d3501342f1016908d64b079"
+    },
+    {
+      "path": "captures/gallery-off/wind_reverse.png",
+      "bytes": 395412,
+      "sha256": "09cef07ea1b3414a245cc8f967d45c82bba7e5b39d3501342f1016908d64b079"
+    },
+    {
+      "path": "captures/gallery-off/wind_start.png",
+      "bytes": 395412,
+      "sha256": "09cef07ea1b3414a245cc8f967d45c82bba7e5b39d3501342f1016908d64b079"
+    },
+    {
+      "path": "captures/gallery-off/wind_wrap.png",
+      "bytes": 395412,
+      "sha256": "09cef07ea1b3414a245cc8f967d45c82bba7e5b39d3501342f1016908d64b079"
+    },
+    {
+      "path": "captures/gallery-off.log",
+      "bytes": 259,
+      "sha256": "6c29e7f8bd921042fc9102e650c3446521a215fd05728595c87dc6b25f187ca2"
+    },
+    {
+      "path": "captures/gallery-on/back.png",
+      "bytes": 492907,
+      "sha256": "8d15f3d601c1c9aa07f1ddc5ee00d3879c28311be52ef6265b5287c1841bc943"
+    },
+    {
+      "path": "captures/gallery-on/common_tree_1.png",
+      "bytes": 395412,
+      "sha256": "09cef07ea1b3414a245cc8f967d45c82bba7e5b39d3501342f1016908d64b079"
+    },
+    {
+      "path": "captures/gallery-on/common_tree_2.png",
+      "bytes": 391866,
+      "sha256": "4c5bc441b08144d4ceca8213666e490e035537a6b169bb3ce8e5ce6290d58180"
+    },
+    {
+      "path": "captures/gallery-on/common_tree_3.png",
+      "bytes": 388289,
+      "sha256": "b706f134b269024670fa7f53bf64bdcfed509ff4c0597f18bbb67db3c9e45381"
+    },
+    {
+      "path": "captures/gallery-on/common_tree_4.png",
+      "bytes": 371127,
+      "sha256": "5ce351aa05b59bf4d4ba03ec05f210d43d85a587dcf501053e4b06efc4de8bfc"
+    },
+    {
+      "path": "captures/gallery-on/oak_tree.png",
+      "bytes": 498104,
+      "sha256": "dc6c5063c00e7581ecacc88bc1f810c173b48c4db3a407b79d763f6dea9b2be5"
+    },
+    {
+      "path": "captures/gallery-on/overhead.png",
+      "bytes": 149385,
+      "sha256": "bf3addde78d7abf332df5988680c5076655e018488a90d4b6a29d4f946627a12"
+    },
+    {
+      "path": "captures/gallery-on/pine_1.png",
+      "bytes": 344448,
+      "sha256": "7e2bd0f131b0841ee7337076ecd85ad9a93a17b7396e43154705c757a6e8dbc7"
+    },
+    {
+      "path": "captures/gallery-on/pine_2.png",
+      "bytes": 353384,
+      "sha256": "2591bc402490b6a9908bcdb7b47377435adbeae41b34b06b029ac1543264100b"
+    },
+    {
+      "path": "captures/gallery-on/pine_3.png",
+      "bytes": 343621,
+      "sha256": "c99622ac36e36e65e2d96bcb3c905a65821e6ba66bfd5c2eec2f6e1ef67a5e7d"
+    },
+    {
+      "path": "captures/gallery-on/report.json",
+      "bytes": 23293,
+      "sha256": "b7ea37c058480c5023b239c0766a0530c2ae0fe66eea195ba3047ad06f56bd22"
+    },
+    {
+      "path": "captures/gallery-on/underside.png",
+      "bytes": 714993,
+      "sha256": "480cc764f083a70938a00ac27519a2e8742acf283be7a638405504d6e30e72b9"
+    },
+    {
+      "path": "captures/gallery-on/wind_one.png",
+      "bytes": 396608,
+      "sha256": "c49d1ab17a673db3d8c7ba15c4ce17bdeaf139f3542432aa4d3e4e86696e1504"
+    },
+    {
+      "path": "captures/gallery-on/wind_repeat.png",
+      "bytes": 396608,
+      "sha256": "c49d1ab17a673db3d8c7ba15c4ce17bdeaf139f3542432aa4d3e4e86696e1504"
+    },
+    {
+      "path": "captures/gallery-on/wind_reverse.png",
+      "bytes": 395008,
+      "sha256": "d3e4c9e144a427f51175b87cc971747b97466ba914c29d6a25cd4a053a015958"
+    },
+    {
+      "path": "captures/gallery-on/wind_start.png",
+      "bytes": 395273,
+      "sha256": "1858d1bf0663743c702da769a9df00652dce66d5a46a400c3f8849b91f011cd3"
+    },
+    {
+      "path": "captures/gallery-on/wind_wrap.png",
+      "bytes": 395273,
+      "sha256": "1858d1bf0663743c702da769a9df00652dce66d5a46a400c3f8849b91f011cd3"
+    },
+    {
+      "path": "captures/gallery-on.log",
+      "bytes": 916,
+      "sha256": "f7e5193c56b0c9ce1b8ab1238dd6a92e5d948c6c20a79bc0fed0fd153d5c91ec"
+    },
+    {
+      "path": "captures/oak-off/back.png",
+      "bytes": 609575,
+      "sha256": "6ae9ab2a13a28b947f2fdd19caf356f88535c5711f731c3093ffe27db6571b66"
+    },
+    {
+      "path": "captures/oak-off/oak_tree.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-off/overhead.png",
+      "bytes": 486832,
+      "sha256": "ff66567fc52f15df46bf02945414dc6b9b3a9fa85b28506f18978a7017ffbe4b"
+    },
+    {
+      "path": "captures/oak-off/report.json",
+      "bytes": 6430,
+      "sha256": "858dff4a4e4945651ff2f8fffb99af06e94df998f9d9a04df4218773244a8fbb"
+    },
+    {
+      "path": "captures/oak-off/underside.png",
+      "bytes": 880363,
+      "sha256": "c89a8634c56194905340d0408ad9b01a029b86e13ff6b1bb9416849b94ecd8ef"
+    },
+    {
+      "path": "captures/oak-off/wind_one.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-off/wind_repeat.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-off/wind_reverse.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-off/wind_start.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-off/wind_wrap.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-off.log",
+      "bytes": 255,
+      "sha256": "cf87adc25b68436055cbb470a501139171e903ee3177452f700d69233d7b1b89"
+    },
+    {
+      "path": "captures/oak-on/back.png",
+      "bytes": 609575,
+      "sha256": "6ae9ab2a13a28b947f2fdd19caf356f88535c5711f731c3093ffe27db6571b66"
+    },
+    {
+      "path": "captures/oak-on/oak_tree.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-on/overhead.png",
+      "bytes": 486832,
+      "sha256": "ff66567fc52f15df46bf02945414dc6b9b3a9fa85b28506f18978a7017ffbe4b"
+    },
+    {
+      "path": "captures/oak-on/report.json",
+      "bytes": 6428,
+      "sha256": "bb6087c667cc940cb71245730bd673c5f5d9dab178ff625a5d80c0ddcc389ea3"
+    },
+    {
+      "path": "captures/oak-on/underside.png",
+      "bytes": 880363,
+      "sha256": "c89a8634c56194905340d0408ad9b01a029b86e13ff6b1bb9416849b94ecd8ef"
+    },
+    {
+      "path": "captures/oak-on/wind_one.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-on/wind_repeat.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-on/wind_reverse.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-on/wind_start.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-on/wind_wrap.png",
+      "bytes": 498307,
+      "sha256": "0deacbaaebdc065f5c777314daa8ce743f8ee82ffae8a7b379fd1b2f18f0ea16"
+    },
+    {
+      "path": "captures/oak-on.log",
+      "bytes": 912,
+      "sha256": "f118d14b1f20d7b80b6d1f1388d2d8616ca1216ded8cb73bc45778aa2a1d8c6d"
+    },
+    {
+      "path": "captures/oak-static-check.json",
+      "bytes": 96,
+      "sha256": "df66a1b8b07be260036196389b62432f1d62b621ef631e93438dae7aad1d52f7"
+    },
+    {
+      "path": "captures/rendering-regression.log",
+      "bytes": 3226,
+      "sha256": "19e6dca2072d7c865395d84f743d4e7979393b95b5a3f31c0d40dc1488df7ce5"
+    },
+    {
+      "path": "captures/world-baseline.json",
+      "bytes": 8511,
+      "sha256": "a0bd751b10773a9ed315cec58414e3c4ce53df43b8c014ed28a64b6af12bf12d"
+    },
+    {
+      "path": "captures/world-baseline.log",
+      "bytes": 7426,
+      "sha256": "0827e90a180a3c4354ac92c631fba2bc6609c3e62f6e7f76bd3d5969702c37d5"
+    },
+    {
+      "path": "captures/world-candidate.json",
+      "bytes": 8527,
+      "sha256": "744c4a2bb50adc8ac7d87075a7f146bd2c399de17a613a5adb93ed4231addde1"
+    },
+    {
+      "path": "captures/world-candidate.log",
+      "bytes": 7440,
+      "sha256": "df16cd8a33d4188a399e757111751040023939721fba273d339856b493302633"
+    },
+    {
+      "path": "checks/builder-check.log",
+      "bytes": 158,
+      "sha256": "8a2a45227569d29d65dd2da195ba87706a15bf1124df7fed9127f75489664dcc"
+    },
+    {
+      "path": "checks/builder-tests.log",
+      "bytes": 109,
+      "sha256": "5c65efed71faf3afd8e91c5ba7ad5133a338e81997b2037a7d60a189002dc2f4"
+    },
+    {
+      "path": "checks/export.log",
+      "bytes": 160600,
+      "sha256": "0d696d68c9ec6c0daa90ad61a50546f0ff31ff58b9f3ec90ba2b1cfc1f32ed1e"
+    },
+    {
+      "path": "checks/fresh-checkout-proof.json",
+      "bytes": 682,
+      "sha256": "1e0ae0fe8bef357d5bcbcc144b099258f4435d3c2aa974946836702918ef74bb"
+    },
+    {
+      "path": "checks/native-lifecycle.json",
+      "bytes": 6990,
+      "sha256": "06186323a23984610bb465ea6e2be84da517bb84ca49cd3a1f2afb2f7629afcb"
+    },
+    {
+      "path": "checks/native-lifecycle.log",
+      "bytes": 3065,
+      "sha256": "e78e81c3140049c45db6e46eef0e6f0f5d5e10dc50821a1ce4896cc5804cb888"
+    },
+    {
+      "path": "checks/pack-inventory.log",
+      "bytes": 2230,
+      "sha256": "d215a51c72ad6aecd27469b94ba175e1653c756b9c08b2308ae164dcfd8f631b"
+    },
+    {
+      "path": "checks/pack-proof.json",
+      "bytes": 2638,
+      "sha256": "5365b1a6724307a9ac8829c928c303abf78f9df83d84509d5c2e0d56a5d8b73c"
+    },
+    {
+      "path": "checks/population-comparison.json",
+      "bytes": 1081,
+      "sha256": "cfbbec8b6c164d2c28b07584c34dbc143c1af17570252487b481b4dc7b09db99"
+    },
+    {
+      "path": "checks/production-import.log",
+      "bytes": 3016,
+      "sha256": "bbee7b3d885d4c768cab2ae74062865525481739da5994ca6754bdd2b95bccbf"
+    },
+    {
+      "path": "checks/production-test_imported_tree_rendering.gd.log",
+      "bytes": 3129,
+      "sha256": "d00b85ed03d0b153e7a0115391ead274453da2be8a04f59864197d7605ce170f"
+    },
+    {
+      "path": "checks/production-test_imported_vegetation.gd.log",
+      "bytes": 109,
+      "sha256": "7ce87d314abb4ca88769de2512b9eeff62f5e889470fd09028ff61c2de6f9145"
+    },
+    {
+      "path": "checks/production-test_landscape_tree_bounds.gd.log",
+      "bytes": 260,
+      "sha256": "2eca5fc7b7b1aabb656d1465eba3e6c016d9104ed9e74e6b0c6da9f126285210"
+    },
+    {
+      "path": "checks/production-test_landscape_vegetation.gd.log",
+      "bytes": 3335,
+      "sha256": "f166b04247660fe5b990f5a61f8c70c68b0b0a434c0d9c006d5a09098f82eb0e"
+    },
+    {
+      "path": "checks/production-test_vegetation_collision_proxies.gd.log",
+      "bytes": 2411,
+      "sha256": "8b440e84cbb95bb0dbc1421a85fe88b143054607117c6b4417a0c56f62e4d009"
+    },
+    {
+      "path": "checks/production-tests.json",
+      "bytes": 797,
+      "sha256": "11fda0a30fd418f94546c644d944d0ba23d5bec58817ef210496ef3653ac53e4"
+    },
+    {
+      "path": "checks/production-world.json",
+      "bytes": 8527,
+      "sha256": "744c4a2bb50adc8ac7d87075a7f146bd2c399de17a613a5adb93ed4231addde1"
+    },
+    {
+      "path": "checks/production-world.log",
+      "bytes": 7440,
+      "sha256": "df16cd8a33d4188a399e757111751040023939721fba273d339856b493302633"
+    },
+    {
+      "path": "checks/profile-run.log",
+      "bytes": 873,
+      "sha256": "36aa8163b27e139571e11a0a5dfc67a8e2845007e20d6e2ddd4afbbe32b2cdf8"
+    },
+    {
+      "path": "checks/source-inventory.log",
+      "bytes": 2230,
+      "sha256": "d215a51c72ad6aecd27469b94ba175e1653c756b9c08b2308ae164dcfd8f631b"
+    },
+    {
+      "path": "fixtures/app/tests/test_imported_tree_rendering.gd",
+      "bytes": 44454,
+      "sha256": "9ce493b21b46192a8383351733be36cc68f10b8879fda91a741df7d73d4d02ac"
+    },
+    {
+      "path": "fixtures/app/tests/test_imported_vegetation.gd",
+      "bytes": 11988,
+      "sha256": "d79aa1e1767055de0dec9772711ac62a0d34f8d528833efa83c5c82626437af0"
+    },
+    {
+      "path": "fixtures/app/tests/test_landscape_vegetation.gd",
+      "bytes": 15503,
+      "sha256": "538452e5a73a6c49eda3549a0292a0aee3bfdd234c2f660b3895cb1a144f01c3"
+    },
+    {
+      "path": "fixtures/app/tests/test_vegetation_collision_proxies.gd",
+      "bytes": 11135,
+      "sha256": "bf5d8e7609d911e3be2ee70fbc4c6d0e9fd2ec70ae6302d5a447c23fc1b4884e"
+    },
+    {
+      "path": "fixtures/check_imported_pack.gd",
+      "bytes": 15055,
+      "sha256": "0f4b5c60d020a585394abb3f17113473d1d1ef99c78aae27a24fb507954d28a8"
+    },
+    {
+      "path": "fixtures/check_quality_capture.py",
+      "bytes": 2568,
+      "sha256": "d440daaa192e2034b82e7bb0d84e8a63e446976245d4455de7559b643a1df612"
+    },
+    {
+      "path": "fixtures/inspect_scene.gd",
+      "bytes": 1684,
+      "sha256": "0d3fe6ec791e4446650eb2e9ba9d55ac2aff20bc8e661394baec4e480027825d"
+    },
+    {
+      "path": "fixtures/loading_probe.gd",
+      "bytes": 7465,
+      "sha256": "9a559fae1a71a92472a80dbf5bf8cbba8a6d855ae23bce1454289fa6fbdc40e0"
+    },
+    {
+      "path": "fixtures/profile_compare.py",
+      "bytes": 8006,
+      "sha256": "5fc16ccc0d7b0b5a478beb744c8658f8d6579cf67bcfa19961e5e577c1b1968b"
+    },
+    {
+      "path": "fixtures/quality_capture-field5.gd",
+      "bytes": 11046,
+      "sha256": "b33bec048a7e02ea5fb514ebc434befde2cd757367ea27d320ca767ce2e626b3"
+    },
+    {
+      "path": "fixtures/quality_capture.gd",
+      "bytes": 11239,
+      "sha256": "a883b087ef4de0ba6ba9d6979d78f3b9d30809363a7a23cd08bc903ac3360078"
+    },
+    {
+      "path": "fixtures/tools/landscape/vegetation/build_library.py",
+      "bytes": 48356,
+      "sha256": "cb606f9c4fa6adefb724dcee29aacd84732856d524e83c087a95aa40eeb23c25"
+    },
+    {
+      "path": "fixtures/tools/landscape/vegetation/convert_oak.py",
+      "bytes": 22486,
+      "sha256": "4d0b04587e6944ea99cede3d145438f9a10c9f8720760b3259bb37bd4f245b36"
+    },
+    {
+      "path": "fixtures/tools/landscape/vegetation/test_build_library.py",
+      "bytes": 22853,
+      "sha256": "c69960b281b9e4f5bd919c73e80e58e80d1fc26cc7077eee1d1271a5c3a1596c"
+    },
+    {
+      "path": "identity/baseline/assets/landscape/vegetation/catalog.json",
+      "bytes": 48995,
+      "sha256": "65dda4519ced099e043262c4ee5a821210d6bc86665cdcfb3a622247617dd7f9"
+    },
+    {
+      "path": "identity/baseline/assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+      "bytes": 984,
+      "sha256": "0c2fdc30ae8e06e4550bfce0ec0117549f23071d6607c73297613c42e6e13827"
+    },
+    {
+      "path": "identity/baseline/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+      "bytes": 1004,
+      "sha256": "93cc66c2bdfd4339dbf1331832e8dcf829c22161a0ddf853fff507e153b2d1d3"
+    },
+    {
+      "path": "identity/baseline/assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
+      "bytes": 972,
+      "sha256": "5fd284904bca112772489f8f48f20ed102d42ea2932f7c09c0756299ccd5282b"
+    },
+    {
+      "path": "identity/baseline/assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+      "bytes": 995,
+      "sha256": "4cca679886ba79c13dc127dae82be588309ea26acd41e4f0cf97f3c0ccf12911"
+    },
+    {
+      "path": "identity/baseline/data/fields/default.json",
+      "bytes": 158788,
+      "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+    },
+    {
+      "path": "identity/baseline/data/scenery/default.json",
+      "bytes": 20201,
+      "sha256": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61"
+    },
+    {
+      "path": "identity/baseline/project.godot",
+      "bytes": 2198,
+      "sha256": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c"
+    },
+    {
+      "path": "identity/baseline/scenery/imported_vegetation.gd",
+      "bytes": 30573,
+      "sha256": "75ec666a814891aa3e2f43d2b31d0bf2f4a09d753a041cc780e3d16eb16e44c6"
+    },
+    {
+      "path": "identity/baseline/scenery/imported_vegetation_wind.gdshader",
+      "bytes": 4482,
+      "sha256": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6"
+    },
+    {
+      "path": "identity/baseline/scenery/scenery.gd",
+      "bytes": 29479,
+      "sha256": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/catalog.json",
+      "bytes": 56929,
+      "sha256": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/LICENSE_OAK.txt",
+      "bytes": 2245,
+      "sha256": "1be8dab83f4107623eeba4d77e3d66091068e839e1a8b688ea1bf867c2b43e40"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+      "bytes": 983,
+      "sha256": "ab4ecfd8e3170b9cdd1dc0ff059a933e3253615a075ef8edaee0b91dd76e37f0"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+      "bytes": 1003,
+      "sha256": "bfa6a9bcf20adc484c219abb886bcff2312a0ca16919f8a7e79409939f2abd21"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
+      "bytes": 972,
+      "sha256": "2dc1f64f22d49f8adfa4e8d6308577d5087fbf81a3099240e3ffffb3070b3929"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+      "bytes": 995,
+      "sha256": "8be38fb5f5355b24ef29d7c4ba6d8aebfb3b6217247e90fb4da410c2e5f6586d"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/models/oak_tree/oak_lod0.gltf.import",
+      "bytes": 1186,
+      "sha256": "c5e7c79ea680a7da081b832c3a8b47f96ccdd6d1a02a68c337765e4bf4924e0e"
+    },
+    {
+      "path": "identity/candidate/assets/landscape/vegetation/models/oak_tree/Quercus_A_1024.png.import",
+      "bytes": 989,
+      "sha256": "d8c5bd7c4b3c45cfd5ef97ccb10a51fdcf62f9586e94edd9a38d6883a7449a4f"
+    },
+    {
+      "path": "identity/candidate/data/fields/default.json",
+      "bytes": 158788,
+      "sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+    },
+    {
+      "path": "identity/candidate/data/scenery/default.json",
+      "bytes": 20201,
+      "sha256": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61"
+    },
+    {
+      "path": "identity/candidate/project.godot",
+      "bytes": 2198,
+      "sha256": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c"
+    },
+    {
+      "path": "identity/candidate/scenery/imported_vegetation.gd",
+      "bytes": 30563,
+      "sha256": "23c5152a7db3f28433f9a14ca7a9de4a9371f1b260921497e2144db7af440bf2"
+    },
+    {
+      "path": "identity/candidate/scenery/imported_vegetation_wind.gdshader",
+      "bytes": 4482,
+      "sha256": "0785e3995195ec712857952f79db6d27a76e44890a6519e6dca19b09630561b6"
+    },
+    {
+      "path": "identity/candidate/scenery/scenery.gd",
+      "bytes": 29479,
+      "sha256": "95cc2275806db94d1765f530a34f159c8ee00376259ca686e20c97b848236ac7"
+    },
+    {
+      "path": "profiles/01-baseline/report.json",
+      "bytes": 732170,
+      "sha256": "8b355db615e90992e286a9c0edf5e5f971cac7a7ded8e57b6a6347ddee4bed7c"
+    },
+    {
+      "path": "profiles/01-baseline.log",
+      "bytes": 261,
+      "sha256": "2df106f809eb28c849a42ac2756bf4b991fff38e7162f8f909682e30c22987ec"
+    },
+    {
+      "path": "profiles/01-candidate/report.json",
+      "bytes": 732841,
+      "sha256": "0b5052b7b8e35ad4bd00b29c2fc4a7d3f522384d606cccb7920d807a2343a3db"
+    },
+    {
+      "path": "profiles/01-candidate.log",
+      "bytes": 1062,
+      "sha256": "d684e3d8f0786ccd304c6c3d1b759391524987ab72d5feee13d494eb12807f66"
+    },
+    {
+      "path": "profiles/02-baseline/report.json",
+      "bytes": 729634,
+      "sha256": "bb803bd719ca6ea84a0395f37cbcfd71696a814d34bde60097997887b2b55b7b"
+    },
+    {
+      "path": "profiles/02-baseline.log",
+      "bytes": 261,
+      "sha256": "842eae325a811f1ddd68960742f42665f97a990d72c665c688af812b1436d958"
+    },
+    {
+      "path": "profiles/02-candidate/report.json",
+      "bytes": 735439,
+      "sha256": "1b6dfa418fd49635afc57eb44922bc9d4fd530b7306b7e1ce26bf88ec9342d10"
+    },
+    {
+      "path": "profiles/02-candidate.log",
+      "bytes": 1062,
+      "sha256": "7e2b2f8e684ee1bd25d6bdccfbaf2957c5767877c49073b48e719c5cca963b11"
+    },
+    {
+      "path": "profiles/03-baseline/report.json",
+      "bytes": 728756,
+      "sha256": "1985dcbf642d06e60e00ba5bb99ace82dfbac0cb83c87ba2b10b20cbc9458a7f"
+    },
+    {
+      "path": "profiles/03-baseline.log",
+      "bytes": 261,
+      "sha256": "18a6285e4d6e2b698a6e3cb8bc5459007500e57aba573931a1b763506f4a867d"
+    },
+    {
+      "path": "profiles/03-candidate/report.json",
+      "bytes": 731654,
+      "sha256": "cec010a866571e5699a733f96817458d018e24291a491fcb734050d274926bf3"
+    },
+    {
+      "path": "profiles/03-candidate.log",
+      "bytes": 1062,
+      "sha256": "a3847da9d9f03a8381fe9c5fd3713bd51b058d498d307b06a9e9fe65b6415a86"
+    },
+    {
+      "path": "profiles/04-baseline/report.json",
+      "bytes": 729023,
+      "sha256": "bce391f81df4c171b1aa9acee676af910de50e0e809ac9da02a444e583a2e1f9"
+    },
+    {
+      "path": "profiles/04-baseline.log",
+      "bytes": 261,
+      "sha256": "14c042404c08e456429ce9779be36502c0c280668ce7ed79ea32fae0e97cbd5f"
+    },
+    {
+      "path": "profiles/04-candidate/report.json",
+      "bytes": 731282,
+      "sha256": "803dfbd0d6e6b02a0333955e586e0ebee574ab7c971d174560fd4672cd1195ac"
+    },
+    {
+      "path": "profiles/04-candidate.log",
+      "bytes": 1062,
+      "sha256": "98993a54f0e62023d391035a040372363ceb8166eea005c3425710a7e643dda0"
+    },
+    {
+      "path": "profiles/05-baseline/report.json",
+      "bytes": 729732,
+      "sha256": "7e21be71a45b3d6335982527ac3b3ead83ffaeaafeaa9808bf03dfbc3cd9350d"
+    },
+    {
+      "path": "profiles/05-baseline.log",
+      "bytes": 261,
+      "sha256": "6f5115429eba26ea9e0956921738ec9278a9a52e1dafa4642a966d74aa82b7e5"
+    },
+    {
+      "path": "profiles/05-candidate/report.json",
+      "bytes": 730533,
+      "sha256": "31f373f80a2556d1f6452c71a069816c2d34e93a6026222fea28a207eeaaa9a8"
+    },
+    {
+      "path": "profiles/05-candidate.log",
+      "bytes": 1062,
+      "sha256": "e0b50ea542de9418c3377276cd4ca085d26e8714c12d8be337e0fe53da0d7bbe"
+    },
+    {
+      "path": "profiles/summary.json",
+      "bytes": 14292,
+      "sha256": "b5bc59720f609e00668c9f41831fff2be75d27a6925fbced1610626f2c984635"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8659,
+      "sha256": "de877a53266b68dc67f7578766aa273ff4b440b7c93004cca8b33a0b6087ea87"
+    },
+    {
+      "path": "source-intake/evidence/captures/final/oak-lod0-back.png",
+      "bytes": 707582,
+      "sha256": "55a50dc2746ca916fe961001b20260c1f353851893dbb74fdb37979df8708b48"
+    },
+    {
+      "path": "source-intake/evidence/captures/final/oak-lod0-underside.png",
+      "bytes": 1182811,
+      "sha256": "09be1d0606c1a4bdb9b3258a355c8b3463c459870b837a364b6b3cf8b23e84a3"
+    },
+    {
+      "path": "source-intake/evidence/captures/final/source_gallery.json",
+      "bytes": 4530,
+      "sha256": "41544aa53e83989a96ece7e678243e247026312fa339fb4f60572c4cdeb42377"
+    },
+    {
+      "path": "source-intake/evidence/captures/rough05-default/oak-lod0-back.png",
+      "bytes": 710025,
+      "sha256": "730ef38373ae88911237f6329a6ce687274e7f4e4988a310cc8d05a186efe66d"
+    },
+    {
+      "path": "source-intake/evidence/captures/rough05-default/oak-lod0-underside.png",
+      "bytes": 1186024,
+      "sha256": "dc3428e8b07c5cf7c216f3408dd74313684930ad5b949fea7a024ec4dd7669ab"
+    },
+    {
+      "path": "source-intake/evidence/captures/rough05-default/source_gallery.json",
+      "bytes": 5634,
+      "sha256": "a30a14d24b3be8792737853757ce381ecaeeb90e1c23855f39fb98969a42a273"
+    },
+    {
+      "path": "source-intake/evidence/captures/rough1-spec0/oak-lod0-rough1-spec0-back.png",
+      "bytes": 707344,
+      "sha256": "3d7ee5245e7a449f7051b6c4d0d7b2cdf40d0bb6febd9bec0217bcac0c10f975"
+    },
+    {
+      "path": "source-intake/evidence/captures/rough1-spec0/oak-lod0-rough1-spec0-underside.png",
+      "bytes": 1183366,
+      "sha256": "71e58a1cb5706ef210fc806fa6ef4b307a9fe4afc619c4bdec3bfa53f9f6e642"
+    },
+    {
+      "path": "source-intake/evidence/captures/rough1-spec0/source_gallery.json",
+      "bytes": 4621,
+      "sha256": "057ae132e8b30c16ef7cffec2612c0c16df4662546b0d1829d30f1b0b21560ad"
+    },
+    {
+      "path": "source-intake/evidence/conversion/CONVERSION-PROOF-LOD0.json",
+      "bytes": 4573,
+      "sha256": "2a3b0c2d6e4bd940c53cdf4bee5af31ff9753b3b77b032962867a3fa89f72014"
+    },
+    {
+      "path": "source-intake/evidence/conversion/REPEAT-CONVERSION-PROOF-LOD0.json",
+      "bytes": 4584,
+      "sha256": "1d9719da520997fcb1a358ecbac9d80d0c3a4a9a65614063d112ab7e8bfce351"
+    },
+    {
+      "path": "source-intake/evidence/khronos-specular-test/source_gallery.json",
+      "bytes": 3362,
+      "sha256": "39c1599d919897f762ef76f95c4342f4f822a134a0555b5ad6f96e8359dc22f4"
+    },
+    {
+      "path": "source-intake/evidence/material/rough1-spec05-diagnostic-source_gallery.json",
+      "bytes": 4623,
+      "sha256": "c5250205bec338db988659d419bbae82de59124967eb23804c980ab3250e2b1d"
+    },
+    {
+      "path": "source-intake/evidence/validation/khronos-final-report.json",
+      "bytes": 3658,
+      "sha256": "51bf49c4ec3f0339a64781b0ef087430583b1d3f7aac5fe3421b240a5a4ff72f"
+    },
+    {
+      "path": "source-intake/fixture/project.godot",
+      "bytes": 75,
+      "sha256": "52b85572e67aa2da3f763475970f0f1849250286ce154a793d168cbc44d32386"
+    },
+    {
+      "path": "source-intake/fixture/runners/run_oak_gallery.py",
+      "bytes": 1069,
+      "sha256": "ed856f78c1348bed925c6aa44266bc2ed35351d45aee4a3fe838f993541c7266"
+    },
+    {
+      "path": "source-intake/fixture/runners/run_oak_gallery_final.py",
+      "bytes": 947,
+      "sha256": "d2bfd23ead4296ebca8a5d063998801181de9f871b309ffad1ec9f02479dfaf7"
+    },
+    {
+      "path": "source-intake/fixture/runners/run_oak_gallery_matdiag.py",
+      "bytes": 1082,
+      "sha256": "07cede86773f0a735697f103f127c7e05069befbaae9af1953a5815276717778"
+    },
+    {
+      "path": "source-intake/fixture/runners/run_oak_gltf_khr_import.py",
+      "bytes": 815,
+      "sha256": "7889ce80c09cef4dcec3ad291f651fdd989186d3194e3fb361501501c2ccab91"
+    },
+    {
+      "path": "source-intake/fixture/scripts/oak_source_gallery.gd",
+      "bytes": 18164,
+      "sha256": "101814c6f9c92f4cbc814aaf4b83082bdee482419ba16eb323a27c904ce16712"
+    },
+    {
+      "path": "source-intake/fixture/scripts/oak_source_gallery_matdiag.gd",
+      "bytes": 20420,
+      "sha256": "e89476640a9d5394e339ad8500fc79b7d414f416d8b34fd5274029341265f4da"
+    },
+    {
+      "path": "source-intake/fixture/scripts/oak_source_gallery_materialinspect.gd",
+      "bytes": 18804,
+      "sha256": "5e76c5a4068ea975617cbf2c73d740c0af9fafb2d07e423c871b86fb62e7418e"
+    },
+    {
+      "path": "source-intake/material-diagnostics.md",
+      "bytes": 3268,
+      "sha256": "1e9e48e644a1448d944f858497468fc7b8d0abdc87642c042ee839bc5e403b22"
+    },
+    {
+      "path": "source-intake/native-run-record.md",
+      "bytes": 1811,
+      "sha256": "6373dd8cc757dc7bf997f05a3a589dcdec7c03b68dc80cf63460af38cd6b6e8d"
+    },
+    {
+      "path": "source-intake/oga-listing-audit.md",
+      "bytes": 4315,
+      "sha256": "2237e6c7eea442422a1e54491025143fe6e48b22d90055dee8ca78800763bb61"
+    },
+    {
+      "path": "source-intake/README.md",
+      "bytes": 2021,
+      "sha256": "3dc2c2ca9566ecbe9fd9af27b7a8528da12ea523dd31cc383bd3da97f5484945"
+    }
+  ]
+}
