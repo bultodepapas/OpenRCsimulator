@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import hashlib
+from collections import Counter
 import unittest
 
 import place_woodland_edges as woodland
@@ -19,11 +20,12 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
 
     def test_contract_and_source_derived_triangle_budget(self) -> None:
         document = woodland.build_document()
-        self.assertEqual(document["format"], "openrc-woodland-edges v1")
+        self.assertEqual(document["format"], "openrc-woodland-edges v2")
         self.assertEqual(document["field_id"], "default")
         self.assertEqual(document["pilot_origin_ne_m"], [0.0, 0.0])
         patches = document["patches"]
         self.assertEqual(len(patches), 4)
+        self.assertEqual([patch["id"] for patch in patches], [patch["id"] for patch in woodland.PATCHES])
         self.assertEqual([patch["path_seeds"] for patch in patches], [
             [710000 + patch_index * 100 + path_index for path_index in range(12)]
             for patch_index in range(4)
@@ -34,8 +36,15 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
             woodland.PALETTE_SOURCE_PATH.read_text(encoding="utf-8"),
         )
         segment_yaw_bins: set[int] = set()
-        for patch in patches:
+        expected_species = dict(woodland.SHRUB_SPECIES_COUNTS)
+        for patch_index, patch in enumerate(patches):
             self.assertEqual(len(patch["paths_ne_m"]), 12)
+            self.assertEqual(len(patch["shrub_species"]), 12)
+            self.assertEqual(len(patch["shrub_heights_m"]), 12)
+            self.assertEqual(Counter(patch["shrub_species"]), Counter(expected_species))
+            self.assertGreaterEqual(min(patch["shrub_heights_m"]), patch["shrub_height_m"] * 0.55 - 1e-6)
+            self.assertEqual(max(patch["shrub_heights_m"]), patch["shrub_height_m"])
+            self.assertGreaterEqual(len(set(patch["shrub_heights_m"])), 8)
             for path in patch["paths_ne_m"]:
                 self.assertEqual(len(path), 2)
                 length = woodland.math.dist(path[0], path[1])
@@ -44,8 +53,13 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
                 yaw = woodland.math.atan2(path[1][1] - path[0][1], path[1][0] - path[0][0]) % woodland.math.tau
                 segment_yaw_bins.add(int(yaw / (woodland.math.pi / 6.0)))
             self.assertEqual(len(patch["grass_ne_m"]), 3)
+            self.assertEqual(len(patch["grass_heights_m"]), 3)
             self.assertEqual(patch["shrub_width_m"], 0.90)
             self.assertEqual(patch["grass_height_m"], 0.25)
+            self.assertGreaterEqual(min(patch["grass_heights_m"]), 0.25 * 0.45 - 1e-6)
+            self.assertEqual(max(patch["grass_heights_m"]), 0.25)
+            self.assertEqual(patch["floor_center_ne_m"], woodland.PATCHES[patch_index]["center_ne_m"])
+            self.assertEqual(patch["floor_half_size_m"], 2.0)
             grass = patch["grass_ne_m"]
             area_twice = abs(
                 (grass[1][0] - grass[0][0]) * (grass[2][1] - grass[0][1])
@@ -59,8 +73,31 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
         self.assertEqual(source["grass_instance_count"], 12)
         self.assertEqual(source["shrub_card_triangles_per_instance"], 2)
         self.assertEqual(source["grass_source_triangles_per_instance"], 155)
-        self.assertEqual(document["source_triangle_budget"], 48 * 2 + 12 * 155)
-        self.assertEqual(document["source_triangle_budget"], 1956)
+        self.assertEqual(source["shrub_source_asset_role"], "maximum_card_envelope_reference_only")
+        self.assertEqual(source["shrub_species_source_ids"], list(expected_species))
+        self.assertEqual(source["shrub_species_instances_per_patch"], expected_species)
+        self.assertEqual(source["shrub_species_instance_counts"], {
+            source_id: count * 4 for source_id, count in expected_species.items()
+        })
+        self.assertEqual(list(source["shrub_species_source_metadata"]), list(expected_species))
+        for source_id, manifest_path in woodland.SHRUB_SPECIES_MANIFEST_PATHS.items():
+            manifest = woodland._read_json(manifest_path)
+            metadata = source["shrub_species_source_metadata"][source_id]
+            self.assertEqual(metadata["impostor_asset_id"], manifest["asset_id"])
+            self.assertEqual(metadata["source_geometry_sha256"], manifest["source_geometry_sha256"])
+            self.assertEqual(metadata["atlas_sha256"], manifest["atlas_sha256"])
+            self.assertAlmostEqual(
+                metadata["source_height_to_frame_ratio"],
+                manifest["source_height_m"] / max(manifest["frame_world_size_m"]),
+                places=8,
+            )
+        self.assertEqual(source["floor_patch_count"], 4)
+        self.assertEqual(source["floor_half_size_m"], 2.0)
+        self.assertEqual(source["floor_grid_cells_per_side"], 2)
+        self.assertEqual(source["floor_triangles_per_patch"], 8)
+        self.assertEqual(source["floor_triangle_count"], 32)
+        self.assertEqual(document["source_triangle_budget"], 48 * 2 + 12 * 155 + 32)
+        self.assertEqual(document["source_triangle_budget"], 1988)
         self.assertEqual(source["computed_source_triangle_budget"], document["source_triangle_budget"])
         self.assertEqual(source["shrub_source_geometry_sha256"],
                          "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea")
@@ -79,6 +116,9 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
         self.assertEqual(validation["layout_cards_reproduced_from_imported_hedge_contract"], 48)
         self.assertEqual(validation["independent_shrub_segment_count"], 48)
         self.assertEqual(validation["segment_seed_count"], 48)
+        self.assertEqual(validation["shrub_species_instance_counts"], {
+            source_id: count * 4 for source_id, count in woodland.SHRUB_SPECIES_COUNTS.items()
+        })
         self.assertEqual(validation["cards_per_short_segment_min"], 1)
         self.assertEqual(validation["cards_per_short_segment_max"], 1)
         self.assertGreaterEqual(validation["segment_length_min_m"], 1.5)
@@ -89,7 +129,8 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
                         validation["card_nearest_neighbor_distance_max_m"])
         self.assertGreater(validation["path_sweep_samples_at_0_25m"], 350)
         self.assertEqual(validation["plant_geometry_centers_checked"],
-                         48 + 12 + validation["path_sweep_samples_at_0_25m"])
+                         48 + 12 + 4 + validation["path_sweep_samples_at_0_25m"])
+        self.assertEqual(validation["floor_rectangles_checked"], 4)
         self.assertEqual(validation["all_current_treeline_positions_checked"], 1680)
         self.assertEqual(validation["all_scenery_placement_envelopes_checked"], 136)
         self.assertEqual(validation["scenery_track_segments_checked"], 29)
@@ -109,6 +150,11 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
                              tree["tree_runtime_clearance_radius_m"])
         self.assertLessEqual(tree["tree_clearance_used_m"], 15.0)
         self.assertGreater(validation["grass_to_shrub_bound_clearance_m"], 0.0)
+        limits = document["source_geometry"]["patch_radial_envelope_limits_m"]
+        used = validation["patch_radial_envelope_used_m"]
+        self.assertEqual(set(used), set(limits))
+        for patch_id, limit in limits.items():
+            self.assertLessEqual(used[patch_id], limit)
 
     def test_source_hashes_cover_reproducible_inputs_without_mutation(self) -> None:
         watched = (woodland.FIELD_PATH, woodland.SCENERY_PATH, woodland.LAKE_PATH)
@@ -122,6 +168,8 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
         self.assertIn("app/data/fields/lake.json", hashes)
         self.assertIn("app/scenery/imported_hedge.gd", hashes)
         self.assertIn("app/render/landscape_upgrade/scenery_grass_mask.gd", hashes)
+        self.assertIn("app/assets/landscape/vegetation/impostors/grass_common_tall_4view.json", hashes)
+        self.assertIn("app/assets/landscape/vegetation/impostors/fern_1_4view.json", hashes)
         self.assertTrue(all(len(value) == 64 for value in hashes.values()))
         self.assertFalse(any(key in document for key in ("groups", "collision_proxies")))
 

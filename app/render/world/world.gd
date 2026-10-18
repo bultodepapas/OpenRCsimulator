@@ -385,9 +385,15 @@ static func view_exposure(target: Vector3, ground_share := 0.0) -> float:
 		return float(Spec.ATMOSPHERE.exposure)
 	var extra := 0.0
 	if not _lights.is_empty() and _night_profile != "off":
-		extra = FieldLights.illuminance_point(_lights, target) + clampf(ground_share, 0.0, 1.0) * ADAPT_GROUND_WEIGHT * _ground_light
-		if LandscapeOptions.enabled():
-			extra *= AirfieldLighting._night_factor({sun_elevation_deg = float(Atmosphere.state.sun_elevation_deg)})
+		var light_gain := 1.0
+		var upgraded_lights := LandscapeOptions.enabled()
+		if upgraded_lights:
+			light_gain = AirfieldLighting._night_factor({sun_elevation_deg = float(Atmosphere.state.sun_elevation_deg)})
+		# Daylight disables both artificial-light terms; avoid the per-frame fixture scan.
+		if light_gain != 0.0 or not is_finite(ground_share) or not target.is_finite():
+			extra = FieldLights.illuminance_point(_lights, target) + clampf(ground_share, 0.0, 1.0) * ADAPT_GROUND_WEIGHT * _ground_light
+			if upgraded_lights:
+				extra *= light_gain
 	return float(SkyState.adapt(Atmosphere.state, extra).exposure)
 
 

@@ -1,0 +1,16 @@
+[
+  "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+  "--path",
+  "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+  "--audio-driver",
+  "Dummy",
+  "--resolution",
+  "1280x720",
+  "--max-fps",
+  "60",
+  "--script",
+  "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+  "--",
+  "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-optimization-integration-20261018\\report.json",
+  "--cycles=3"
+]

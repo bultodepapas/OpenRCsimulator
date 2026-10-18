@@ -1,0 +1,7 @@
+{
+	"candidate_sha256": "ddc0cb0a3aea734615ccee54469abe0b28ca2090c612b7e1dd223726fd37c835",
+	"failures": [],
+	"point_cases": 1680,
+	"reference_sha256": "74bba9c29683c2b1f985bd5eaa51fa732e67264ec91889d19078c0c1e21f927c",
+	"transition_cases": 360
+}

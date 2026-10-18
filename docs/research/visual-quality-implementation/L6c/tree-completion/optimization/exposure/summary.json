@@ -1,0 +1,275 @@
+{
+  "format": "openrc-exposure-optimization-v1",
+  "host": "Windows-10-10.0.26100-SP0",
+  "engine": "Godot 4.7.2 stable Windows x86_64, headless CPU measurement",
+  "processes": 3,
+  "alternating_pairs_per_case_per_process": 7,
+  "calls_per_side_per_block": 2000,
+  "cases": [
+    {
+      "landscape": "on",
+      "preset": "noon",
+      "reference_median_us": 35.7675,
+      "candidate_median_us": 8.842,
+      "median_paired_delta_us": -27.455,
+      "process_medians_us": [
+        {
+          "reference": 35.1645,
+          "candidate": 8.3805
+        },
+        {
+          "reference": 35.447,
+          "candidate": 8.803
+        },
+        {
+          "reference": 39.438,
+          "candidate": 9.9625
+        }
+      ]
+    },
+    {
+      "landscape": "on",
+      "preset": "golden_hour",
+      "reference_median_us": 35.165,
+      "candidate_median_us": 8.679,
+      "median_paired_delta_us": -26.392000000000003,
+      "process_medians_us": [
+        {
+          "reference": 35.165,
+          "candidate": 8.586
+        },
+        {
+          "reference": 34.9455,
+          "candidate": 8.5615
+        },
+        {
+          "reference": 35.9035,
+          "candidate": 8.8265
+        }
+      ]
+    },
+    {
+      "landscape": "on",
+      "preset": "sunset",
+      "reference_median_us": 36.476,
+      "candidate_median_us": 36.3975,
+      "median_paired_delta_us": -0.2809999999999988,
+      "process_medians_us": [
+        {
+          "reference": 35.5105,
+          "candidate": 35.846
+        },
+        {
+          "reference": 37.868,
+          "candidate": 37.047
+        },
+        {
+          "reference": 36.567,
+          "candidate": 36.359
+        }
+      ]
+    },
+    {
+      "landscape": "on",
+      "preset": "blue_hour",
+      "reference_median_us": 35.1015,
+      "candidate_median_us": 36.091,
+      "median_paired_delta_us": 0.6715000000000018,
+      "process_medians_us": [
+        {
+          "reference": 36.4235,
+          "candidate": 36.193
+        },
+        {
+          "reference": 35.696,
+          "candidate": 36.3805
+        },
+        {
+          "reference": 34.383,
+          "candidate": 34.4735
+        }
+      ]
+    },
+    {
+      "landscape": "on",
+      "preset": "night",
+      "reference_median_us": 35.691,
+      "candidate_median_us": 36.7135,
+      "median_paired_delta_us": 0.7645000000000053,
+      "process_medians_us": [
+        {
+          "reference": 35.111,
+          "candidate": 35.0975
+        },
+        {
+          "reference": 35.5465,
+          "candidate": 36.7135
+        },
+        {
+          "reference": 36.949,
+          "candidate": 37.7655
+        }
+      ]
+    },
+    {
+      "landscape": "on",
+      "preset": "legacy",
+      "reference_median_us": 0.4645,
+      "candidate_median_us": 0.4665,
+      "median_paired_delta_us": 0.020000000000000018,
+      "process_medians_us": [
+        {
+          "reference": 0.431,
+          "candidate": 0.4655
+        },
+        {
+          "reference": 0.4815,
+          "candidate": 0.5055
+        },
+        {
+          "reference": 0.4645,
+          "candidate": 0.456
+        }
+      ]
+    },
+    {
+      "landscape": "off",
+      "preset": "noon",
+      "reference_median_us": 33.329,
+      "candidate_median_us": 33.6485,
+      "median_paired_delta_us": 0.02750000000000341,
+      "process_medians_us": [
+        {
+          "reference": 33.0645,
+          "candidate": 33.328
+        },
+        {
+          "reference": 33.252,
+          "candidate": 33.6485
+        },
+        {
+          "reference": 34.7025,
+          "candidate": 34.223
+        }
+      ]
+    },
+    {
+      "landscape": "off",
+      "preset": "golden_hour",
+      "reference_median_us": 34.5205,
+      "candidate_median_us": 33.9735,
+      "median_paired_delta_us": -0.6764999999999972,
+      "process_medians_us": [
+        {
+          "reference": 33.2795,
+          "candidate": 32.611
+        },
+        {
+          "reference": 34.3005,
+          "candidate": 33.9735
+        },
+        {
+          "reference": 38.836,
+          "candidate": 37.12
+        }
+      ]
+    },
+    {
+      "landscape": "off",
+      "preset": "sunset",
+      "reference_median_us": 35.5915,
+      "candidate_median_us": 33.821,
+      "median_paired_delta_us": -0.661999999999999,
+      "process_medians_us": [
+        {
+          "reference": 33.3475,
+          "candidate": 32.316
+        },
+        {
+          "reference": 35.9805,
+          "candidate": 34.6745
+        },
+        {
+          "reference": 37.526,
+          "candidate": 36.1405
+        }
+      ]
+    },
+    {
+      "landscape": "off",
+      "preset": "blue_hour",
+      "reference_median_us": 33.8695,
+      "candidate_median_us": 33.945,
+      "median_paired_delta_us": -0.014499999999998181,
+      "process_medians_us": [
+        {
+          "reference": 32.9415,
+          "candidate": 33.6075
+        },
+        {
+          "reference": 33.7505,
+          "candidate": 33.1905
+        },
+        {
+          "reference": 36.26,
+          "candidate": 37.9845
+        }
+      ]
+    },
+    {
+      "landscape": "off",
+      "preset": "night",
+      "reference_median_us": 34.7385,
+      "candidate_median_us": 34.7065,
+      "median_paired_delta_us": 0.07400000000000517,
+      "process_medians_us": [
+        {
+          "reference": 35.689,
+          "candidate": 34.0305
+        },
+        {
+          "reference": 33.5985,
+          "candidate": 33.7405
+        },
+        {
+          "reference": 40.1005,
+          "candidate": 39.513
+        }
+      ]
+    },
+    {
+      "landscape": "off",
+      "preset": "legacy",
+      "reference_median_us": 0.4765,
+      "candidate_median_us": 0.493,
+      "median_paired_delta_us": 0.005500000000000005,
+      "process_medians_us": [
+        {
+          "reference": 0.501,
+          "candidate": 0.516
+        },
+        {
+          "reference": 0.4115,
+          "candidate": 0.4915
+        },
+        {
+          "reference": 0.4775,
+          "candidate": 0.493
+        }
+      ]
+    }
+  ],
+  "scope": "Component CPU timing, not frame time or GPU performance; desktop background load uncontrolled. First exploratory prototype excluded.",
+  "checks": {
+    "exact_exposure_cases": 2160,
+    "additional_boundary_input_cases": 1680,
+    "adaptation_transitions": 360,
+    "failures": 0,
+    "all_timed_block_checksums_match": true
+  },
+  "runtime_source_sha256": "ddc0cb0a3aea734615ccee54469abe0b28ca2090c612b7e1dd223726fd37c835",
+  "runtime_matches_candidate_after_newline_normalization": true,
+  "observed_head_after_measurement": "74945825ea679476e0f770c0066edf8158fefa33",
+  "reference_capture_commit": "21038122",
+  "concurrent_history_note": "HEAD advanced through unrelated simulation/docs commits during this round. git diff from21038122 to74945825 contains no exposure, sky, field-light, landscape-option or woodland source/data edits. These are paired component measurements with explicitly pinned scripts, not whole-project frame measurements."
+}

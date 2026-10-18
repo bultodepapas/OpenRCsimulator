@@ -12,6 +12,8 @@ The new foliage mask comes from the exact downloaded glTF material assignments. 
 
 | Evidence | What it establishes |
 | --- | --- |
+| [Mixed understory refinement](vegetation-refinement/README.md) | Subsequent v2 margins mix ferns, tall grass and fewer flowering shrubs with downloaded CC0 litter. Current total: 649,951 triangles; prior captures and timings below remain historical evidence of the preceding version. |
+| [CPU optimization follow-up](optimization/README.md) | Equivalent woodland batches with lower construction cost, skipped zero-contribution daylight exposure queries, focused regressions and three combined Home/Fly cycles. Component timings do not establish an FPS gain. |
 | [Habitat diagnostics](habitat/README.md) | Deterministic placement, spacing, full-envelope exclusions, geometric density/skyline proxies and source inventory. |
 | [Woodland margins](woodland-edges/README.md) | Four source-derived decorative shrub/grass clusters, native composition review and independent geometry/placement checks. Straight-row and ring trials were rejected. |
 | [World and wind replay](world/README.md) | Six complete exact replays; render wind controls preserve sampled state. Different forest worlds remain explicitly identified. |

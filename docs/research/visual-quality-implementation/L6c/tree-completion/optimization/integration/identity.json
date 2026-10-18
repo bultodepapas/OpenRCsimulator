@@ -1,0 +1,14 @@
+{
+  "observed_head": "74945825ea679476e0f770c0066edf8158fefa33",
+  "scope": "Combined current-source loading/teardown smoke test, not a frozen whole-repository comparison or timing baseline.",
+  "sha256": {
+    "app/render/world/world.gd": "ddc0cb0a3aea734615ccee54469abe0b28ca2090c612b7e1dd223726fd37c835",
+    "app/scenery/woodland_edge_habitat.gd": "3be7f31aa77046dec10e4e42ab309044f1d886f2329aa2adfc4499ae378bdd0a",
+    "app/tests/test_world_field_lights.gd": "5262a376c63a577743f06fcb77478453442f777bd75cd35cc07a60cfe9cb7242",
+    "app/tests/test_woodland_edge_habitat.gd": "eb48df095533e52db1e3a149ebb8734c64bfc995718bf1188d6219460f690aef",
+    "research/performance/loading_probe.gd": "9a559fae1a71a92472a80dbf5bf8cbba8a6d855ae23bce1454289fa6fbdc40e0",
+    "docs/research/visual-quality-implementation/L6c/tree-completion/optimization/integration/command.json": "82edd3ea73ce994db9115524d560cbb25002819c83ff373f77a6954429bcb5b0",
+    "docs/research/visual-quality-implementation/L6c/tree-completion/optimization/integration/report.json": "747ebfbc9a5650afab8d95ad9cd2f3839511fddac549a892e01eec085736b974",
+    "docs/research/visual-quality-implementation/L6c/tree-completion/optimization/integration/run.log": "53dde58ca0b1fa13be1e5ef9c9a664a0179f0ab23dfb83d7d3ab35f7199986e5"
+  }
+}

@@ -1,9 +1,19 @@
 {
   "field_id": "default",
-  "format": "openrc-woodland-edges v1",
+  "format": "openrc-woodland-edges v2",
   "patches": [
     {
+      "floor_center_ne_m": [
+        249.5,
+        534.5
+      ],
+      "floor_half_size_m": 2.0,
       "grass_height_m": 0.25,
+      "grass_heights_m": [
+        0.25,
+        0.229051,
+        0.130298
+      ],
       "grass_ne_m": [
         [
           251.88788,
@@ -36,130 +46,168 @@
       "paths_ne_m": [
         [
           [
-            250.313049,
-            534.268439
+            249.77921,
+            534.383858
           ],
           [
-            251.885761,
-            534.562683
+            251.417772,
+            534.54805
           ]
         ],
         [
           [
-            250.361612,
-            533.933534
+            250.392667,
+            534.059824
           ],
           [
-            249.005172,
-            532.908806
+            248.969717,
+            533.11588
           ]
         ],
         [
           [
-            249.073404,
-            533.899487
+            249.323653,
+            533.761153
           ],
           [
-            249.905498,
-            535.551795
+            249.758355,
+            535.441823
           ]
         ],
         [
           [
-            247.758611,
-            536.079156
+            247.893092,
+            535.695879
           ],
           [
-            249.403685,
-            536.20655
+            249.54728,
+            535.541121
           ]
         ],
         [
           [
-            248.457972,
-            533.785047
+            248.682353,
+            533.698253
           ],
           [
-            247.604512,
-            535.482577
+            248.083255,
+            535.419499
           ]
         ],
         [
           [
-            251.462782,
-            536.300943
+            250.94584,
+            536.091853
           ],
           [
-            251.073058,
-            534.800737
+            250.65697,
+            534.478365
           ]
         ],
         [
           [
-            249.625618,
-            537.178369
+            249.477649,
+            536.819825
           ],
           [
-            250.09064,
-            535.460185
+            249.807579,
+            535.117201
           ]
         ],
         [
           [
-            250.231735,
-            536.033895
+            249.797032,
+            535.606884
           ],
           [
-            251.132345,
-            537.380485
+            250.815688,
+            536.888224
           ]
         ],
         [
           [
-            250.879069,
-            533.782607
+            250.12972,
+            534.131888
           ],
           [
-            251.808785,
-            532.171635
+            251.261498,
+            532.701996
           ]
         ],
         [
           [
-            249.911066,
-            531.478274
+            249.717423,
+            532.253904
           ],
           [
-            251.272324,
-            532.529642
+            251.217219,
+            533.283332
           ]
         ],
         [
           [
-            248.376992,
-            534.219302
+            248.692504,
+            534.647035
           ],
           [
-            248.435828,
-            532.27019
+            248.985516,
+            532.719175
           ]
         ],
         [
           [
-            247.677726,
-            532.789872
+            248.472989,
+            533.00656
           ],
           [
-            246.6401,
-            533.981396
+            247.362125,
+            534.168622
           ]
         ]
       ],
       "shrub_height_m": 0.8,
+      "shrub_heights_m": [
+        0.561781,
+        0.58473,
+        0.448525,
+        0.445884,
+        0.45769,
+        0.578382,
+        0.499733,
+        0.53212,
+        0.8,
+        0.696965,
+        0.608809,
+        0.62542
+      ],
+      "shrub_species": [
+        "grass_common_tall",
+        "grass_common_tall",
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "grass_common_tall",
+        "grass_common_tall",
+        "bush_common_flowers",
+        "bush_common_flowers"
+      ],
       "shrub_width_m": 0.9
     },
     {
+      "floor_center_ne_m": [
+        -249.5,
+        534.5
+      ],
+      "floor_half_size_m": 2.0,
       "grass_height_m": 0.25,
+      "grass_heights_m": [
+        0.25,
+        0.140786,
+        0.167205
+      ],
       "grass_ne_m": [
         [
           -244.303752,
@@ -192,130 +240,168 @@
       "paths_ne_m": [
         [
           [
-            -247.635932,
-            534.825956
+            -248.017104,
+            534.597979
           ],
           [
-            -248.695694,
-            536.024666
+            -248.851456,
+            536.054787
           ]
         ],
         [
           [
-            -248.573809,
-            532.911631
+            -248.783351,
+            533.262182
           ],
           [
-            -248.906935,
-            534.578673
+            -249.216523,
+            534.873672
           ]
         ],
         [
           [
-            -250.248325,
-            533.981381
+            -249.973566,
+            533.863692
           ],
           [
-            -249.024705,
-            535.368917
+            -249.025906,
+            535.36423
           ]
         ],
         [
           [
-            -250.543167,
-            534.717227
+            -250.023502,
+            534.478639
           ],
           [
-            -251.799103,
-            535.787331
+            -251.225588,
+            535.676749
           ]
         ],
         [
           [
-            -251.194938,
-            534.538691
+            -250.88416,
+            534.591155
           ],
           [
-            -250.319328,
-            532.852481
+            -250.153234,
+            532.868675
           ]
         ],
         [
           [
-            -248.368423,
-            537.156181
+            -248.554496,
+            536.429831
           ],
           [
-            -248.980499,
-            535.732151
+            -249.436364,
+            535.155151
           ]
         ],
         [
           [
-            -249.440363,
-            535.805522
+            -249.294914,
+            535.304677
           ],
           [
-            -251.048167,
-            536.569304
+            -250.998334,
+            535.854253
           ]
         ],
         [
           [
-            -249.024543,
-            537.239566
+            -248.795135,
+            536.36731
           ],
           [
-            -250.578987,
-            536.78338
+            -250.489787,
+            536.076478
           ]
         ],
         [
           [
-            -246.573191,
-            533.691695
+            -247.351462,
+            533.928348
           ],
           [
-            -247.732759,
-            535.145999
+            -248.559984,
+            535.221892
           ]
         ],
         [
           [
-            -247.656101,
-            532.435366
+            -248.55764,
+            532.923998
           ],
           [
-            -246.755401,
-            533.900678
+            -247.389538,
+            534.118798
           ]
         ],
         [
           [
-            -248.776662,
-            533.206872
+            -248.912128,
+            533.668612
           ],
           [
-            -250.557822,
-            532.413166
+            -250.65622,
+            532.796462
           ]
         ],
         [
           [
-            -250.619664,
-            531.369617
+            -250.553986,
+            532.076247
           ],
           [
-            -250.881232,
-            532.927815
+            -250.611784,
+            533.625169
           ]
         ]
       ],
       "shrub_height_m": 1.0,
+      "shrub_heights_m": [
+        0.737471,
+        0.906724,
+        0.649918,
+        0.665049,
+        0.572431,
+        0.849293,
+        0.678112,
+        0.869285,
+        0.754219,
+        1.0,
+        0.716534,
+        0.63621
+      ],
+      "shrub_species": [
+        "grass_common_tall",
+        "grass_common_tall",
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "bush_common_flowers",
+        "fern_1",
+        "bush_common_flowers",
+        "grass_common_tall",
+        "grass_common_tall",
+        "fern_1",
+        "fern_1"
+      ],
       "shrub_width_m": 0.9
     },
     {
+      "floor_center_ne_m": [
+        -553.0,
+        201.5
+      ],
+      "floor_half_size_m": 2.0,
       "grass_height_m": 0.25,
+      "grass_heights_m": [
+        0.156566,
+        0.147769,
+        0.25
+      ],
       "grass_ne_m": [
         [
           -547.539422,
@@ -348,130 +434,168 @@
       "paths_ne_m": [
         [
           [
-            -553.50517,
-            202.281304
+            -553.510863,
+            201.7055
           ],
           [
-            -553.128408,
-            203.836312
+            -553.181767,
+            203.253876
           ]
         ],
         [
           [
-            -552.24137,
-            202.758972
+            -552.647865,
+            202.593025
           ],
           [
-            -551.745872,
-            201.132786
+            -551.899555,
+            201.111707
           ]
         ],
         [
           [
-            -554.086852,
-            201.749271
+            -554.147355,
+            201.441167
           ],
           [
-            -552.348002,
-            201.117685
+            -552.259591,
+            201.182055
           ]
         ],
         [
           [
-            -554.244148,
-            199.391212
+            -554.049267,
+            199.728426
           ],
           [
-            -554.501678,
-            201.02099
+            -554.194855,
+            201.382274
           ]
         ],
         [
           [
-            -553.616891,
-            199.636108
+            -553.749508,
+            200.145942
           ],
           [
-            -551.911043,
-            200.472818
+            -551.941898,
+            200.84647
           ]
         ],
         [
           [
-            -554.96403,
-            203.530985
+            -554.516477,
+            203.190761
           ],
           [
-            -553.968052,
-            202.343329
+            -553.402351,
+            202.113159
           ]
         ],
         [
           [
-            -554.406888,
-            200.625891
+            -554.014322,
+            200.652673
           ],
           [
-            -555.320412,
-            202.153593
+            -554.926164,
+            202.116565
           ]
         ],
         [
           [
-            -554.87856,
-            201.508477
+            -554.408975,
+            201.231709
           ],
           [
-            -556.016598,
-            202.661415
+            -555.387193,
+            202.640819
           ]
         ],
         [
           [
-            -552.193681,
-            202.7494
+            -552.323117,
+            201.913277
           ],
           [
-            -551.756219,
-            204.557224
+            -552.277443,
+            203.861053
           ]
         ],
         [
           [
-            -551.522001,
-            202.65179
+            -551.990271,
+            202.286043
           ],
           [
-            -550.154269,
-            203.694722
+            -550.612135,
+            203.263655
           ]
         ],
         [
           [
-            -551.402634,
-            201.73207
+            -551.897243,
+            201.933354
           ],
           [
-            -551.603136,
-            199.792406
+            -552.010785,
+            199.986662
           ]
         ],
         [
           [
-            -551.979172,
-            199.078954
+            -552.529357,
+            199.839637
           ],
           [
-            -550.678766,
-            199.976362
+            -551.170547,
+            200.585383
           ]
         ]
       ],
       "shrub_height_m": 1.1,
+      "shrub_heights_m": [
+        0.876783,
+        0.928565,
+        0.760355,
+        0.657932,
+        0.921083,
+        1.085377,
+        0.74876,
+        0.640762,
+        0.675646,
+        0.79884,
+        1.1,
+        0.818173
+      ],
+      "shrub_species": [
+        "bush_common_flowers",
+        "grass_common_tall",
+        "fern_1",
+        "fern_1",
+        "grass_common_tall",
+        "bush_common_flowers",
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "grass_common_tall",
+        "grass_common_tall"
+      ],
       "shrub_width_m": 0.9
     },
     {
+      "floor_center_ne_m": [
+        201.5,
+        -553.0
+      ],
+      "floor_half_size_m": 2.0,
       "grass_height_m": 0.25,
+      "grass_heights_m": [
+        0.25,
+        0.239327,
+        0.132965
+      ],
       "grass_ne_m": [
         [
           196.669895,
@@ -504,126 +628,154 @@
       "paths_ne_m": [
         [
           [
-            200.804413,
-            -553.60332
+            201.041767,
+            -553.348182
           ],
           [
-            199.204571,
-            -553.625794
+            199.526727,
+            -553.675528
           ]
         ],
         [
           [
-            200.227389,
-            -551.593703
+            200.341677,
+            -551.953845
           ],
           [
-            201.595109,
-            -552.603327
+            201.637327,
+            -552.970295
           ]
         ],
         [
           [
-            200.709643,
-            -552.941802
+            200.553433,
+            -553.078129
           ],
           [
-            202.485779,
-            -553.459334
+            202.402555,
+            -553.536419
           ]
         ],
         [
           [
-            202.177207,
-            -554.280398
+            201.923971,
+            -553.825246
           ],
           [
-            203.785619,
-            -553.912284
+            203.495433,
+            -553.551092
           ]
         ],
         [
           [
-            202.611042,
-            -551.580326
+            202.070424,
+            -551.764989
           ],
           [
-            203.179578,
-            -553.39327
+            202.728958,
+            -553.568249
           ]
         ],
         [
           [
-            200.953869,
-            -555.125064
+            201.323883,
+            -554.831314
           ],
           [
-            199.633087,
-            -554.31387
+            200.017433,
+            -553.833452
           ]
         ],
         [
           [
-            202.562558,
-            -554.234496
+            202.566854,
+            -553.802031
           ],
           [
-            201.202544,
-            -555.38287
+            201.190516,
+            -554.866615
           ]
         ],
         [
           [
-            200.624187,
-            -555.042787
+            200.655175,
+            -554.515969
           ],
           [
-            201.936879,
-            -555.992123
+            202.103367,
+            -555.200663
           ]
         ],
         [
           [
-            199.561489,
-            -551.547744
+            200.236824,
+            -551.797226
           ],
           [
-            198.877491,
-            -553.27741
+            199.808764,
+            -553.527586
           ]
         ],
         [
           [
-            199.576388,
-            -552.061354
+            200.100941,
+            -552.784767
           ],
           [
-            199.478706,
-            -550.34413
+            199.957457,
+            -550.964835
           ]
         ],
         [
           [
-            201.993006,
-            -552.361022
+            201.737188,
+            -552.692771
           ],
           [
-            202.027216,
-            -550.411322
+            202.167136,
+            -550.790761
           ]
         ],
         [
           [
-            203.969325,
-            -551.178046
+            203.521656,
+            -551.98126
           ],
           [
-            202.442383,
-            -550.772032
+            202.115814,
+            -551.295686
           ]
         ]
       ],
       "shrub_height_m": 0.9,
+      "shrub_heights_m": [
+        0.616646,
+        0.510059,
+        0.619273,
+        0.743669,
+        0.898523,
+        0.721807,
+        0.591314,
+        0.699534,
+        0.565094,
+        0.640982,
+        0.9,
+        0.750542
+      ],
+      "shrub_species": [
+        "fern_1",
+        "fern_1",
+        "fern_1",
+        "grass_common_tall",
+        "grass_common_tall",
+        "bush_common_flowers",
+        "fern_1",
+        "bush_common_flowers",
+        "fern_1",
+        "fern_1",
+        "grass_common_tall",
+        "grass_common_tall"
+      ],
       "shrub_width_m": 0.9
     }
   ],
@@ -635,13 +787,24 @@
   "shrub_include_sparse_trees": false,
   "shrub_quality": "high",
   "source_geometry": {
-    "computed_source_triangle_budget": 1956,
+    "computed_source_triangle_budget": 1988,
+    "floor_grid_cells_per_side": 2,
+    "floor_half_size_m": 2.0,
+    "floor_patch_count": 4,
+    "floor_triangle_count": 32,
+    "floor_triangles_per_patch": 8,
     "grass_instance_count": 12,
     "grass_mesh_max_horizontal_radius_m_at_grass_height": 0.11185338,
     "grass_source_asset_id": "grass_common_short",
     "grass_source_asset_sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
     "grass_source_triangles_per_instance": 155,
     "layout_jitter_bound_m": 0.362801599,
+    "patch_radial_envelope_limits_m": {
+      "woodland-edge-east-north": 8.057428,
+      "woodland-edge-east-south": 7.778322,
+      "woodland-edge-northwest": 7.847895,
+      "woodland-edge-southwest": 8.172611
+    },
     "path_sweep_envelope_m_including_clearance": 2.553315208,
     "shrub_card_asset_id": "bush_common_flowers_4view_impostor",
     "shrub_card_instance_count": 48,
@@ -651,8 +814,62 @@
     "shrub_full_quad_sphere_radius_m_at_max_height": 1.190513609,
     "shrub_max_height_m": 1.232,
     "shrub_source_asset_id": "bush_common_flowers",
+    "shrub_source_asset_role": "maximum_card_envelope_reference_only",
     "shrub_source_geometry_sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
     "shrub_source_triangles": 1368,
+    "shrub_species_instance_counts": {
+      "bush_common_flowers": 8,
+      "fern_1": 24,
+      "grass_common_tall": 16
+    },
+    "shrub_species_instances_per_patch": {
+      "bush_common_flowers": 2,
+      "fern_1": 6,
+      "grass_common_tall": 4
+    },
+    "shrub_species_source_ids": [
+      "grass_common_tall",
+      "bush_common_flowers",
+      "fern_1"
+    ],
+    "shrub_species_source_metadata": {
+      "bush_common_flowers": {
+        "atlas_sha256": "8508a7f5677dfac4534756b65c06d89041d6d8955eec46ead05c7ef4a1c4d93d",
+        "frame_world_size_m": [
+          2.161655,
+          2.161655
+        ],
+        "impostor_asset_id": "bush_common_flowers_4view_impostor",
+        "source_geometry_sha256": "08768c680e3abeafd25858c9d3f369bcb7eed014661d3b6825a397f2a6a3deea",
+        "source_height_m": 1.581786,
+        "source_height_to_frame_ratio": 0.731747666,
+        "source_triangles": 1368
+      },
+      "fern_1": {
+        "atlas_sha256": "6177218399bb6554d67971c5c3e2a0172d3febb40d4799fd0b9de2999fb3ad9f",
+        "frame_world_size_m": [
+          3.109627,
+          3.109627
+        ],
+        "impostor_asset_id": "fern_1_4view_impostor",
+        "source_geometry_sha256": "d41915cffe9dbbde1ae88be381eb9c60f7caa2274511436cc78fe4de627468ab",
+        "source_height_m": 0.840243,
+        "source_height_to_frame_ratio": 0.270207006,
+        "source_triangles": 288
+      },
+      "grass_common_tall": {
+        "atlas_sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c",
+        "frame_world_size_m": [
+          2.059965,
+          2.059965
+        ],
+        "impostor_asset_id": "grass_common_tall_4view_impostor",
+        "source_geometry_sha256": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70",
+        "source_height_m": 1.872695,
+        "source_height_to_frame_ratio": 0.909090688,
+        "source_triangles": 326
+      }
+    },
     "tree_envelope": {
       "tree_clearance_used_m": 15.0,
       "tree_max_frame_size_m": 1.125001,
@@ -666,6 +883,8 @@
     "app/assets/landscape/trees/catalog.json": "afab65435415f13816afe4c55856dd07cb74e00ac0d811ab174f7ff0d2b3a661",
     "app/assets/landscape/vegetation/catalog.json": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
     "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "28e9a9a32da8dce203a9c3fb3f36648ad2b780e1a6189e375d0eb025b4ca18a2",
+    "app/assets/landscape/vegetation/impostors/fern_1_4view.json": "55a875ac3c278dcf08f4c2d6f5df4f3ba1b399f0265f9f62d5f04cfd8ed729b5",
+    "app/assets/landscape/vegetation/impostors/grass_common_tall_4view.json": "7e5e5df58a41ca89ae18f2b4a871856129f5faf787ce52d2e5a125ee8a3d238b",
     "app/data/field_loader.gd": "b81b1b0d3c0ee75a16bf65daba8575186c579aeb4f432ace22c1a36c98b25a11",
     "app/data/fields/default.json": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
     "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
@@ -681,41 +900,57 @@
     "app/scenery/vegetation_placement.gd": "d9aeb35700c781ce94cd3c9aad6f81731d48e54caca8628ac2d22c45b18dba45",
     "tools/trees/place.py": "c580ad4196e6b589bf0580073ecf9a855e74f658c0de70b2b9a3fbbb30743c8c"
   },
-  "source_triangle_budget": 1956,
+  "source_triangle_budget": 1988,
   "validation": {
     "all_current_treeline_positions_checked": 1680,
     "all_scenery_placement_envelopes_checked": 136,
-    "card_nearest_neighbor_distance_max_m": 1.774227,
-    "card_nearest_neighbor_distance_min_m": 0.622872,
+    "card_nearest_neighbor_distance_max_m": 1.418671,
+    "card_nearest_neighbor_distance_min_m": 0.42426,
     "cards_per_short_segment_max": 1,
     "cards_per_short_segment_min": 1,
-    "grass_to_shrub_bound_clearance_m": 2.27133,
+    "floor_rectangles_checked": 4,
+    "grass_height_range_m": [
+      0.130298,
+      0.25
+    ],
+    "grass_to_shrub_bound_clearance_m": 3.025051,
     "independent_shrub_segment_count": 48,
     "layout_cards_reproduced_from_imported_hedge_contract": 48,
     "minimum_margins_m_or_degrees": {
       "edge_ring_inner_m": 11.397602,
-      "edge_ring_outer_m": 4.605929,
-      "hedge_fence_clearance_m": 204.313938,
-      "lake_bank_clearance_m": 375.537048,
-      "props_clearance_m": 230.207594,
+      "edge_ring_outer_m": 5.185955,
+      "hedge_fence_clearance_m": 204.367494,
+      "lake_bank_clearance_m": 375.546421,
+      "props_clearance_m": 230.26115,
       "protected_gap_clearance_deg": 26.386204,
       "rotorpad_corridor_margin_m": 540.583368,
-      "rough_surface_margin_m": 19441.430087,
+      "rough_surface_margin_m": 19442.059492,
       "runway_corridor_margin_m": 139.558042,
-      "scenery_patch_clearance_m": 536.906095,
+      "scenery_patch_clearance_m": 536.951834,
       "track_clearance_m": 442.048593,
       "tree_clearance_m": 6.8536
     },
     "minimum_tree_center_distance_to_plant_centers_m": 22.965453,
     "passed": true,
-    "path_sweep_samples_at_0_25m": 404,
-    "plant_geometry_centers_checked": 464,
+    "patch_radial_envelope_used_m": {
+      "woodland-edge-east-north": 8.057428,
+      "woodland-edge-east-south": 7.778322,
+      "woodland-edge-northwest": 7.847895,
+      "woodland-edge-southwest": 8.130807
+    },
+    "path_sweep_samples_at_0_25m": 402,
+    "plant_geometry_centers_checked": 466,
     "scenery_hedge_fence_segments_checked": 10,
     "scenery_patch_polygons_checked": 1,
     "scenery_track_segments_checked": 29,
-    "segment_length_max_m": 1.95,
+    "segment_length_max_m": 1.950001,
     "segment_length_min_m": 1.55,
     "segment_seed_count": 48,
-    "segment_yaw_30_degree_bin_count": 12
+    "segment_yaw_30_degree_bin_count": 12,
+    "shrub_species_instance_counts": {
+      "bush_common_flowers": 8,
+      "fern_1": 24,
+      "grass_common_tall": 16
+    }
   }
 }

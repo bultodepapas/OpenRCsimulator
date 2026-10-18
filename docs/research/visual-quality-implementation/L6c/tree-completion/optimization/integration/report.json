@@ -1,0 +1,77 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"app_load_and_instantiate_usec": 2806806,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"complete": true,
+	"cycles": [
+		{
+			"cycle": 1,
+			"fly_first_draw_usec": 4499108,
+			"fly_sync_usec": 4246582,
+			"nodes_at_home": 611,
+			"nodes_in_flight": 1090,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": true,
+			"return_first_draw_usec": 1475434,
+			"return_sync_usec": 1366594,
+			"tick_at_first_draw": 0
+		},
+		{
+			"cycle": 2,
+			"fly_first_draw_usec": 2210808,
+			"fly_sync_usec": 2106401,
+			"nodes_at_home": 611,
+			"nodes_in_flight": 1090,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": true,
+			"return_first_draw_usec": 1451718,
+			"return_sync_usec": 1275917,
+			"tick_at_first_draw": 0
+		},
+		{
+			"cycle": 3,
+			"fly_first_draw_usec": 2017814,
+			"fly_sync_usec": 1923383,
+			"nodes_at_home": 611,
+			"nodes_in_flight": 1090,
+			"orphan_nodes": 0,
+			"paused_at_first_draw": true,
+			"return_first_draw_usec": 1205827,
+			"return_sync_usec": 1112909,
+			"tick_at_first_draw": 0
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-loading-probe v1",
+	"home_first_draw_engine_elapsed_usec": 10404653,
+	"home_first_draw_from_load_usec": 6872851,
+	"home_sync_usec": 2945479,
+	"max_fps": 60,
+	"renderer": "gl_compatibility",
+	"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 259341,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"viewport_size": [
+		1280,
+		720
+	],
+	"vsync_mode": 1
+}

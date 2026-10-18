@@ -1,0 +1,157 @@
+{
+  "format": "openrc-vegetation-impostor v1",
+  "asset_id": "grass_common_tall_4view_impostor",
+  "derived_from_asset_id": "grass_common_tall",
+  "source_name": "Grass_Common_Tall",
+  "source_scene": "res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf",
+  "source_geometry_sha256": "783466c838163bf7da44e10675ace3851b8c9fb83322387125df7a080b05cd70",
+  "source_triangles": 326,
+  "source_surfaces": 1,
+  "source_materials": 1,
+  "source_archive_sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
+  "license": "CC0-1.0, embedded License_Standard.txt",
+  "license_evidence": "assets/landscape/vegetation/source/License_Standard.txt",
+  "license_evidence_sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
+  "source_textures": [
+    {
+      "uri": "Grass.png",
+      "source_entry": "glTF/Grass.png",
+      "sha256": "5d69048193b246a73c996b892607fb36c75d0c60afcb2dab8aa12de3c0b2d9bd"
+    }
+  ],
+  "source_base_color_factors": [
+    {
+      "material": "Grass",
+      "gltf_value": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "explicit_in_source": false,
+      "gltf_default_when_omitted": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "source_vertex_colors": {
+    "attributes": [
+      {
+        "mesh": "Grass_Common_Tall",
+        "name": "Color",
+        "gltf_semantic": "COLOR_0",
+        "domain": "CORNER",
+        "data_type": "BYTE_COLOR",
+        "sample_count": 978,
+        "mean_rgba": [
+          0.43157793,
+          0.43157793,
+          0.43157793,
+          1.0
+        ],
+        "min_rgba": [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "max_rgba": [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      }
+    ]
+  },
+  "source_bounds_m": {
+    "min": [
+      -0.403568,
+      -0.031362,
+      -0.479033
+    ],
+    "max": [
+      0.491522,
+      1.841333,
+      0.514078
+    ],
+    "size": [
+      0.895089,
+      1.872695,
+      0.993112
+    ],
+    "height": 1.872695,
+    "ground_offset": 0.031362
+  },
+  "source_mesh_bounds_blender_z_up_m": {
+    "min": [
+      -0.403568,
+      -0.514078,
+      0.0
+    ],
+    "max": [
+      0.491522,
+      0.479033,
+      1.872695
+    ]
+  },
+  "source_height_m": 1.872695,
+  "frame_world_size_m": [
+    2.059965,
+    2.059965
+  ],
+  "baked_azimuth_deg": [
+    0,
+    90,
+    180,
+    270
+  ],
+  "view_up": "source Y-up, imported and rendered with Blender Z-up",
+  "frame_size_px": [
+    256,
+    256
+  ],
+  "atlas_size_px": [
+    1024,
+    256
+  ],
+  "atlas_path": "res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png",
+  "atlas_sha256": "da8c1ffadb27b4db066de3a535cbbcb9d67aa4f1c9f3ad4d6cb6be5395bcf44c",
+  "color_pipeline": {
+    "source_color": "glTF material Base Color input, routed directly to Emission Color",
+    "source_color_chain": "full Blender-imported Principled Base Color socket link, including the source image and COLOR_0 node chain",
+    "lighting": "unshaded emission only; no light objects and world strength 0",
+    "view_transform": "Standard",
+    "look": "None",
+    "exposure": 0.0,
+    "gamma": 1.0,
+    "output_colorspace": "sRGB PNG",
+    "alpha": "source glTF Alpha input thresholded with Greater Than at glTF alphaCutoff",
+    "alpha_cutoff": 0.5,
+    "alpha_mode": "OPAQUE",
+    "png_channels": "RGBA",
+    "png_bit_depth": 8,
+    "alpha_mode_storage": "straight",
+    "material_routes": [
+      {
+        "material": "Grass",
+        "base_color_source": "complete imported glTF Principled Base Color input link, routed to Emission",
+        "base_color_input_network": [
+          "MIX",
+          "TEX_IMAGE",
+          "VERTEX_COLOR"
+        ],
+        "alpha_source": "complete imported glTF Principled Alpha input link, thresholded",
+        "alpha_input_network": [],
+        "alpha_mode": "OPAQUE",
+        "alpha_cutoff": 0.5,
+        "surface_render_method": "DITHERED"
+      }
+    ]
+  },
+  "renderer": "Blender 5.2.2 LTS EEVEE, unshaded source Base Color/Alpha, Standard view transform, transparent background",
+  "rebuild_command": "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- --source-asset-id grass_common_tall --output-stem grass_common_tall_4view --frame-size 256"
+}

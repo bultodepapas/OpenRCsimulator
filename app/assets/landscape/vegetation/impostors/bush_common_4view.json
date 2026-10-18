@@ -5,6 +5,9 @@
   "source_name": "Bush_Common",
   "source_scene": "res://assets/landscape/vegetation/models/Bush_Common.gltf",
   "source_geometry_sha256": "77811fca92610cb254713d3d49d5029ab6cf13050c3afb61aa942786a7b2ca90",
+  "source_triangles": 900,
+  "source_surfaces": 1,
+  "source_materials": 1,
   "source_archive_sha256": "298f6732b872e4cf7b30e6e7abf9641c7f6dc6b326df37ac089533ed7e3d58c9",
   "license": "CC0-1.0, embedded License_Standard.txt",
   "license_evidence": "assets/landscape/vegetation/source/License_Standard.txt",
@@ -16,21 +19,24 @@
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
     }
   ],
-  "source_base_color_factor": {
-    "gltf_value": [
-      1.0,
-      1.0,
-      1.0,
-      1.0
-    ],
-    "explicit_in_source": false,
-    "gltf_default_when_omitted": [
-      1.0,
-      1.0,
-      1.0,
-      1.0
-    ]
-  },
+  "source_base_color_factors": [
+    {
+      "material": "Leaves_TwistedTree",
+      "gltf_value": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      "explicit_in_source": false,
+      "gltf_default_when_omitted": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
   "source_vertex_colors": {
     "attributes": [
       {
@@ -124,7 +130,7 @@
     "gamma": 1.0,
     "output_colorspace": "sRGB PNG",
     "alpha": "source glTF Alpha input thresholded with Greater Than at glTF alphaCutoff",
-    "alpha_cutoff": 0.2,
+    "alpha_cutoff": 0.20000000298023224,
     "alpha_mode": "MASK",
     "png_channels": "RGBA",
     "png_bit_depth": 8,
@@ -147,11 +153,11 @@
           "VERTEX_COLOR"
         ],
         "alpha_mode": "MASK",
-        "alpha_cutoff": 0.2,
+        "alpha_cutoff": 0.20000000298023224,
         "surface_render_method": "DITHERED"
       }
     ]
   },
   "renderer": "Blender 5.2.2 LTS EEVEE, unshaded source Base Color/Alpha, Standard view transform, transparent background",
-  "rebuild_command": "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- --frame-size 256"
+  "rebuild_command": "blender --background --python tools/landscape/vegetation/bake_hedge_impostor.py -- --source-asset-id bush_common --output-stem bush_common_4view --frame-size 256"
 }

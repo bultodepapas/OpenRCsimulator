@@ -1,0 +1,17 @@
+{
+  "scope": "Median of three per-process warm medians in microseconds, not frame time. Nine alternating pairs per quality per process. First-side order reference/candidate/reference.",
+  "warm_us": {
+    "low": {
+      "reference": 3,
+      "candidate": 3
+    },
+    "balanced": {
+      "reference": 5738,
+      "candidate": 8071
+    },
+    "high": {
+      "reference": 6551,
+      "candidate": 9387
+    }
+  }
+}

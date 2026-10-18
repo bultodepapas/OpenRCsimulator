@@ -1,0 +1,920 @@
+{
+	"matches": 720,
+	"mismatches": 0,
+	"rows": [
+		{
+			"preset": "noon",
+			"selector": "on",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 15536
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 70448
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 17404
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 70194
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 17203
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 70329
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 17684
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 71535
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 15653
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 68425
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 15762
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 69538
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 16761
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 73504
+					}
+				}
+			]
+		},
+		{
+			"preset": "golden_hour",
+			"selector": "on",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 1270.2853792795,
+						"usec": 19980
+					},
+					"reference": {
+						"checksum": 1270.2853792795,
+						"usec": 70330
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.2853792795,
+						"usec": 16778
+					},
+					"reference": {
+						"checksum": 1270.2853792795,
+						"usec": 64899
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.2853792795,
+						"usec": 16782
+					},
+					"reference": {
+						"checksum": 1270.2853792795,
+						"usec": 67900
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.2853792795,
+						"usec": 16945
+					},
+					"reference": {
+						"checksum": 1270.2853792795,
+						"usec": 71524
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.2853792795,
+						"usec": 17172
+					},
+					"reference": {
+						"checksum": 1270.2853792795,
+						"usec": 69231
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.2853792795,
+						"usec": 17202
+					},
+					"reference": {
+						"checksum": 1270.2853792795,
+						"usec": 75875
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.2853792795,
+						"usec": 17358
+					},
+					"reference": {
+						"checksum": 1270.2853792795,
+						"usec": 71256
+					}
+				}
+			]
+		},
+		{
+			"preset": "sunset",
+			"selector": "on",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 3690.72884326939,
+						"usec": 73650
+					},
+					"reference": {
+						"checksum": 3690.72884326939,
+						"usec": 71021
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.72884326939,
+						"usec": 70095
+					},
+					"reference": {
+						"checksum": 3690.72884326939,
+						"usec": 71828
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.72884326939,
+						"usec": 71574
+					},
+					"reference": {
+						"checksum": 3690.72884326939,
+						"usec": 73441
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.72884326939,
+						"usec": 71692
+					},
+					"reference": {
+						"checksum": 3690.72884326939,
+						"usec": 69132
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.72884326939,
+						"usec": 73756
+					},
+					"reference": {
+						"checksum": 3690.72884326939,
+						"usec": 70887
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.72884326939,
+						"usec": 73414
+					},
+					"reference": {
+						"checksum": 3690.72884326939,
+						"usec": 72068
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.72884326939,
+						"usec": 71089
+					},
+					"reference": {
+						"checksum": 3690.72884326939,
+						"usec": 68466
+					}
+				}
+			]
+		},
+		{
+			"preset": "blue_hour",
+			"selector": "on",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 74516.7149265864,
+						"usec": 71443
+					},
+					"reference": {
+						"checksum": 74516.7149265864,
+						"usec": 69188
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265864,
+						"usec": 74892
+					},
+					"reference": {
+						"checksum": 74516.7149265864,
+						"usec": 76517
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265864,
+						"usec": 74190
+					},
+					"reference": {
+						"checksum": 74516.7149265864,
+						"usec": 72847
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265864,
+						"usec": 72386
+					},
+					"reference": {
+						"checksum": 74516.7149265864,
+						"usec": 75478
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265864,
+						"usec": 70534
+					},
+					"reference": {
+						"checksum": 74516.7149265864,
+						"usec": 71442
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265864,
+						"usec": 67067
+					},
+					"reference": {
+						"checksum": 74516.7149265864,
+						"usec": 75167
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265864,
+						"usec": 73578
+					},
+					"reference": {
+						"checksum": 74516.7149265864,
+						"usec": 70138
+					}
+				}
+			]
+		},
+		{
+			"preset": "night",
+			"selector": "on",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 68448
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 73711
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 71458
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 65521
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 72863
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 64838
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 68630
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 70222
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 70195
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 70770
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 94863
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 80269
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 69183
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 64817
+					}
+				}
+			]
+		},
+		{
+			"preset": "legacy",
+			"selector": "on",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 911
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 1012
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 1009
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 861
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 932
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 855
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 979
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 939
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 918
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 824
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 911
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 862
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 931
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 894
+					}
+				}
+			]
+		},
+		{
+			"preset": "noon",
+			"selector": "off",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 66279
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 65611
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 66656
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 66601
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 64497
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 66129
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 66981
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 64656
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 65942
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 65593
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 67087
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 69757
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 67481
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 69706
+					}
+				}
+			]
+		},
+		{
+			"preset": "golden_hour",
+			"selector": "off",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 1270.28300173143,
+						"usec": 67673
+					},
+					"reference": {
+						"checksum": 1270.28300173143,
+						"usec": 63175
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.28300173143,
+						"usec": 64928
+					},
+					"reference": {
+						"checksum": 1270.28300173143,
+						"usec": 66559
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.28300173143,
+						"usec": 66132
+					},
+					"reference": {
+						"checksum": 1270.28300173143,
+						"usec": 68016
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.28300173143,
+						"usec": 63749
+					},
+					"reference": {
+						"checksum": 1270.28300173143,
+						"usec": 66346
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.28300173143,
+						"usec": 65222
+					},
+					"reference": {
+						"checksum": 1270.28300173143,
+						"usec": 65221
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.28300173143,
+						"usec": 63796
+					},
+					"reference": {
+						"checksum": 1270.28300173143,
+						"usec": 69456
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1270.28300173143,
+						"usec": 65284
+					},
+					"reference": {
+						"checksum": 1270.28300173143,
+						"usec": 69041
+					}
+				}
+			]
+		},
+		{
+			"preset": "sunset",
+			"selector": "off",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 3690.71142199825,
+						"usec": 64632
+					},
+					"reference": {
+						"checksum": 3690.71142199825,
+						"usec": 64552
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.71142199825,
+						"usec": 63520
+					},
+					"reference": {
+						"checksum": 3690.71142199825,
+						"usec": 60807
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.71142199825,
+						"usec": 66842
+					},
+					"reference": {
+						"checksum": 3690.71142199825,
+						"usec": 66516
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.71142199825,
+						"usec": 63434
+					},
+					"reference": {
+						"checksum": 3690.71142199825,
+						"usec": 66695
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.71142199825,
+						"usec": 66191
+					},
+					"reference": {
+						"checksum": 3690.71142199825,
+						"usec": 69160
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.71142199825,
+						"usec": 64100
+					},
+					"reference": {
+						"checksum": 3690.71142199825,
+						"usec": 67190
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 3690.71142199825,
+						"usec": 66365
+					},
+					"reference": {
+						"checksum": 3690.71142199825,
+						"usec": 67689
+					}
+				}
+			]
+		},
+		{
+			"preset": "blue_hour",
+			"selector": "off",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 74516.7149265857,
+						"usec": 64374
+					},
+					"reference": {
+						"checksum": 74516.7149265857,
+						"usec": 65883
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265857,
+						"usec": 65059
+					},
+					"reference": {
+						"checksum": 74516.7149265857,
+						"usec": 65088
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265857,
+						"usec": 67215
+					},
+					"reference": {
+						"checksum": 74516.7149265857,
+						"usec": 65010
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265857,
+						"usec": 68834
+					},
+					"reference": {
+						"checksum": 74516.7149265857,
+						"usec": 66176
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265857,
+						"usec": 67890
+					},
+					"reference": {
+						"checksum": 74516.7149265857,
+						"usec": 65707
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265857,
+						"usec": 66850
+					},
+					"reference": {
+						"checksum": 74516.7149265857,
+						"usec": 67739
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 74516.7149265857,
+						"usec": 70126
+					},
+					"reference": {
+						"checksum": 74516.7149265857,
+						"usec": 68814
+					}
+				}
+			]
+		},
+		{
+			"preset": "night",
+			"selector": "off",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 63240
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 72770
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 65403
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 73993
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 68061
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 67846
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 69915
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 72982
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 79761
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 69236
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 73410
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 71378
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 66718153.8022452,
+						"usec": 67617
+					},
+					"reference": {
+						"checksum": 66718153.8022452,
+						"usec": 67367
+					}
+				}
+			]
+		},
+		{
+			"preset": "legacy",
+			"selector": "off",
+			"timings": [
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 897
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 923
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 1086
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 1140
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 648
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 1002
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 652
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 953
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 1074
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 1071
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 1032
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 945
+					}
+				},
+				{
+					"candidate": {
+						"checksum": 1200.0,
+						"usec": 1072
+					},
+					"reference": {
+						"checksum": 1200.0,
+						"usec": 1084
+					}
+				}
+			]
+		}
+	],
+	"source_candidate": "fba0b28d8a6e948d217ce742372fede1a112c186cf90d6d5690b8d5d3fe0949b",
+	"source_reference": "74bba9c29683c2b1f985bd5eaa51fa732e67264ec91889d19078c0c1e21f927c"
+}
