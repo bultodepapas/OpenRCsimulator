@@ -27,6 +27,8 @@ const DELAYED_CONTINUOUS: Array[String] = ["source", "source_velocity", "exhaust
 	"throttle", "airspeed", "jet_velocity", "jet_velocity_max"]
 const DELAYED_DISCRETE: Array[String] = ["running", "blades", "max_rpm"]
 var propagation_delay: bool = true
+## AUD-11b: false holds the absorption filter at its ceiling (source-level calibration, comparison runs).
+var air_absorption: bool = true
 ## AUD-11b: all aircraft voices share one source, so their path filters live on the aircraft bus. Measured on Godot
 ## 4.7.2 (research/audio/air-absorption-2026-10-17): FILTER_6DB is one 12 dB/octave biquad, resonance 0.7071 makes it
 ## Butterworth, a shelf's effect is gain squared, and enabling an effect mid-stream clicks, so both stay enabled.
@@ -478,7 +480,8 @@ func _update_path_filters(snapshot: Dictionary, source: Vector3, listener: Vecto
 	_absorption_clock -= dt
 	if not primed or _absorption_clock <= 0.0:
 		_absorption_clock = ABSORPTION_REFRESH_S
-		_absorption_target_hz = Model.absorption_cutoff_hz(source.distance_to(listener), temperature_k, pressure_pa, humidity)
+		_absorption_target_hz = Model.absorption_cutoff_hz(source.distance_to(listener), temperature_k, pressure_pa, humidity) \
+			if air_absorption else Model.ABSORPTION_CEILING_HZ
 	# Log-frequency smoothing: a camera cut or history restart must not step the coefficients (a step clicks).
 	if not primed:
 		last_absorption_cutoff_hz = _absorption_target_hz

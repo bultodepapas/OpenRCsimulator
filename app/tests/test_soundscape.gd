@@ -444,6 +444,12 @@ func _test_absorption_runtime(field: Dictionary) -> void:
 	rig.update_sound(given, 1.0 / 60.0)
 	_check("the snapshot humidity drives absorption", absf(float(rig.absorption_filter.cutoff_hz)
 		- Model.absorption_cutoff_hz(300.0, 293.15, Model.ISO_REFERENCE_PRESSURE_PA, 0.0)) < 1e-3)
+	rig.air_absorption = false
+	rig.reset_observer()
+	rig.update_sound(far, 1.0 / 60.0)
+	_check("--audio-absorption=off holds the filter at its ceiling",
+		float(rig.absorption_filter.cutoff_hz) == Model.ABSORPTION_CEILING_HZ)
+	rig.air_absorption = true
 	rig.screened = 1.0
 	rig._update_path_filters(far, far.source, far.listener, 1.0 / 60.0)
 	var full_screen: bool = is_equal_approx(float(rig.screen_filter.gain), db_to_linear(0.5 * SoundscapeScript.SCREEN_SHELF_DB)) \

@@ -30,6 +30,8 @@ func configure(scene: Node3D) -> void:
 			audio_seed = int(argument.trim_prefix("--audio-seed="))
 		elif argument == "--audio-delay=off": # AUD-11 (D6): comparison and tests
 			soundscape.propagation_delay = false
+		elif argument == "--audio-absorption=off": # AUD-11b: source-level calibration and comparison
+			soundscape.air_absorption = false
 	var propulsion: Dictionary = flight.session.aircraft.model.propulsion
 	var glow_family: String = _glow_family(propulsion)
 	soundscape.configure(flight.field, str(propulsion.get("kind", "glow_prop")), audio_seed, glow_family)
