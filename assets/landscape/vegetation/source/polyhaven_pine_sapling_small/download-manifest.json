@@ -1,0 +1,58 @@
+[
+  {
+    "path": "pine_sapling_small_1k.gltf",
+    "size_bytes": 11442,
+    "api_md5": "237a7672645631550ae571743aa9f55b",
+    "sha256": "f358c01926861dd082f32dba60f7c9fba232b585a985cf38c0d2229eecf4bc48",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/pine_sapling_small/pine_sapling_small_1k.gltf"
+  },
+  {
+    "path": "textures/pine_sapling_small_twig_arm_1k.jpg",
+    "size_bytes": 394056,
+    "api_md5": "b5062030fc42ec7bd12eb3f052054104",
+    "sha256": "2eb0aa44124b5a4ae9401e00b23b3c916f4c3f421616ce1bb932f248fc061288",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_twig_arm_1k.jpg"
+  },
+  {
+    "path": "textures/pine_sapling_small_twig_diff_1k.jpg",
+    "size_bytes": 477942,
+    "api_md5": "dacc918bb421968e9ccc1956d78a2dbe",
+    "sha256": "54af7d6fb664b5a38bcb118b557bc50e01e86ec54d6f1a573c3e32c649a53362",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_twig_diff_1k.jpg"
+  },
+  {
+    "path": "textures/pine_sapling_small_bark_nor_gl_1k.jpg",
+    "size_bytes": 1016849,
+    "api_md5": "bb6e3a6eea777d992cef48fabfdc538c",
+    "sha256": "05c46455531781b6cf18cae0648cf627f60ee942adaa8bcbfd1592fc2506a9e0",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_bark_nor_gl_1k.jpg"
+  },
+  {
+    "path": "pine_sapling_small.bin",
+    "size_bytes": 17771796,
+    "api_md5": "76dd1802d8de128c812f2e124a258b35",
+    "sha256": "b4d2fc73d53f1d8717eb5ef9a2c66957d2a53152787e543aace88fcd6fca94ef",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/pine_sapling_small/pine_sapling_small.bin"
+  },
+  {
+    "path": "textures/pine_sapling_small_bark_diff_1k.jpg",
+    "size_bytes": 725265,
+    "api_md5": "7d3a558ed614c7e75594c7be3bf80311",
+    "sha256": "5c76836b01c3536fa0e24207b67bf4f3315b53ebe2b4ecc6f08dfcf3f8d74929",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_bark_diff_1k.jpg"
+  },
+  {
+    "path": "textures/pine_sapling_small_bark_arm_1k.jpg",
+    "size_bytes": 801278,
+    "api_md5": "21d1abd15e40951825a4f3da110b20ea",
+    "sha256": "336a4680cd571b6076b67afee2310b290b8900d9d126eb39ec1ae92e95be2ea9",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_bark_arm_1k.jpg"
+  },
+  {
+    "path": "textures/pine_sapling_small_twig_nor_gl_1k.jpg",
+    "size_bytes": 692711,
+    "api_md5": "eebc5a81f8f6231d8e18ec4ad7292798",
+    "sha256": "76af87821d7ff00e25768d5d97a449394fe64a21ae55d099da7f5ed46d9098c8",
+    "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_small/pine_sapling_small_twig_nor_gl_1k.jpg"
+  }
+]

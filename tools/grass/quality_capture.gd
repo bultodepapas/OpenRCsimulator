@@ -21,9 +21,29 @@ const DEFAULT_SEED: int = 20261017
 const PROFILE_MIN_WARMUP_S: float = 10.0
 const PROFILE_MIN_DURATION_S: float = 60.0
 const PROFILE_VIEW: String = "low_near_grass"
+const PROFILE_CLOCK_PROTOCOL: String = "profile-frame-index-sim-time-reset-v1"
+const PROFILE_FRAME_STEP_S: float = 1.0 / 60.0
+const PROFILE_WIND_X_MPS: float = 5.0
 const MOTION_STEPS: int = 12
 const MOTION_LENGTH_M: float = 3.0
 const WIND_X_MPS: float = 5.0
+const SOURCE_IDENTITY_REQUIRED_SCRIPTS: Array[String] = [
+	"res://render/field.gd",
+	"res://render/ground.gd",
+	"res://render/atmosphere.gd",
+	"res://render/rc_ground_material.gd",
+	"res://render/near_grass.gd",
+	"res://scenery/imported_near_grass.gd",
+	"res://scenery/imported_vegetation.gd",
+	"res://scenery/scenery.gd",
+	"res://scenery/vegetation.gd",
+	"res://scenery/vegetation_placement.gd",
+]
+const SOURCE_IDENTITY_REQUIRED_SHADERS: Array[String] = [
+	"res://render/ground.gdshader",
+	"res://render/near_grass.gdshader",
+	"res://scenery/imported_vegetation_wind.gdshader",
+]
 
 var _args: Dictionary = {}
 var _out_dir: String = ""
@@ -40,6 +60,10 @@ var _warmup_s: float = PROFILE_MIN_WARMUP_S
 var _duration_s: float = PROFILE_MIN_DURATION_S
 var _profile_actual_warmup_s: float = 0.0
 var _profile_actual_duration_s: float = 0.0
+var _profile_frame_index: int = 0
+var _profile_warmup_last_frame_index: int = -1
+var _profile_first_sample_frame_index: int = 0
+var _profile_last_sample_frame_index: int = -1
 var _field: Dictionary = {}
 var _lighting: Dictionary = {}
 var _night_config: Dictionary = {}
@@ -76,6 +100,12 @@ func _run() -> void:
 	_duration_s = float(_args.get("duration", str(PROFILE_MIN_DURATION_S)))
 	if _mode not in ["capture", "profile"]:
 		_fail("--mode must be capture or profile")
+		return
+	if DisplayServer.get_name().to_lower() == "headless":
+		_fail("capture/profile evidence requires a real display server; headless rendering is invalid")
+		return
+	if not _is_app_resource_path(_field_path):
+		_fail("--field must be an app-local res:// resource path")
 		return
 	if _quality not in ["high", "balanced", "low"]:
 		_fail("--quality must be high, balanced or low")
@@ -396,29 +426,44 @@ func _profile() -> bool:
 		_fail("requested profile view is unavailable: " + _profile_view_id)
 		return false
 	_place_camera(view)
-	ShaderClock.update(0.0, Vector3.ZERO)
+	_profile_frame_index = 0
 	var warmup_started: int = Time.get_ticks_usec()
 	while float(Time.get_ticks_usec() - warmup_started) / 1000000.0 < _warmup_s:
-		await _render_frame()
+		await _profile_render_frame()
 	_profile_actual_warmup_s = float(Time.get_ticks_usec() - warmup_started) / 1000000.0
+	_profile_warmup_last_frame_index = _profile_frame_index - 1
+	_profile_frame_index = 0
+	_profile_first_sample_frame_index = 0
 	var sample_started: int = Time.get_ticks_usec()
 	var previous_tick: int = sample_started
 	while float(Time.get_ticks_usec() - sample_started) / 1000000.0 < _duration_s:
-		await _render_frame()
+		var frame_record: Dictionary = await _profile_render_frame()
 		var now: int = Time.get_ticks_usec()
 		var cpu_ms: float = RenderingServer.viewport_get_measured_render_time_cpu(_viewport.get_viewport_rid())
 		var gpu_ms: float = RenderingServer.viewport_get_measured_render_time_gpu(_viewport.get_viewport_rid())
 		_profile_samples.append({
+			"profile_frame_index": int(frame_record["frame_index"]),
+			"sim_time_s": float(frame_record["sim_time_s"]),
 			"wall_interval_ms": float(now - previous_tick) / 1000.0,
 			"viewport_cpu_ms": cpu_ms,
 			"viewport_gpu_ms": gpu_ms,
 		})
+		_profile_last_sample_frame_index = int(frame_record["frame_index"])
 		previous_tick = now
 	_profile_actual_duration_s = float(Time.get_ticks_usec() - sample_started) / 1000000.0
 	if _profile_samples.is_empty():
 		_fail("profile completed without a wall interval sample")
 		return false
 	return true
+
+
+func _profile_render_frame() -> Dictionary:
+	var frame_index: int = _profile_frame_index
+	var sim_time_s: float = float(frame_index) * PROFILE_FRAME_STEP_S
+	ShaderClock.update(sim_time_s, Vector3(PROFILE_WIND_X_MPS, 0.0, 0.0))
+	_profile_frame_index += 1
+	await _render_frame()
+	return {"frame_index": frame_index, "sim_time_s": sim_time_s}
 
 
 func _place_camera(view: Dictionary) -> void:
@@ -459,6 +504,9 @@ func _inspect_scene() -> Dictionary:
 	var geometry_hash: String = _digest(mesh_list)
 	var instance_hash: String = _digest(instances)
 	var materials_hash: String = _digest({"materials": material_list, "bindings": bindings})
+	var source_identity: Dictionary = _source_identity(material_list)
+	if _finished:
+		return {}
 	return {
 		"mesh_hash": geometry_hash,
 		"instance_hash": instance_hash,
@@ -470,6 +518,7 @@ func _inspect_scene() -> Dictionary:
 		"materials": material_list,
 		"material_bindings": bindings,
 		"instances": instances,
+		"source_identity": source_identity,
 	}
 
 
@@ -515,6 +564,8 @@ func _collect_scene(node: Node, path: String, mesh_records: Dictionary, material
 				if effective == null:
 					continue
 				var material_record: Dictionary = _material_record(effective)
+				if _finished:
+					return
 				if not material_record.has("hash") or str(material_record["hash"]).is_empty():
 					_fail("material record has no hash at %s surface %d" % [path, surface_index])
 					return
@@ -531,6 +582,9 @@ func _collect_scene(node: Node, path: String, mesh_records: Dictionary, material
 
 
 func _mesh_record(mesh: Mesh) -> Dictionary:
+	var mesh_resource_path: String = _safe_resource_path(mesh.resource_path, "mesh")
+	if _finished:
+		return {}
 	var surfaces: Array[Dictionary] = []
 	for surface_index: int in mesh.get_surface_count():
 		var arrays: Array = mesh.surface_get_arrays(surface_index)
@@ -559,7 +613,7 @@ func _mesh_record(mesh: Mesh) -> Dictionary:
 		})
 	var record: Dictionary = {
 		"class": mesh.get_class(),
-		"resource_path": mesh.resource_path,
+		"resource_path": mesh_resource_path,
 		"surfaces": surfaces,
 	}
 	record["hash"] = _digest(record)
@@ -578,15 +632,21 @@ func _effective_material(node: Node, mesh: Mesh, surface_index: int) -> Material
 
 
 func _material_record(material: Material) -> Dictionary:
+	var material_resource_path: String = _safe_resource_path(material.resource_path, "material")
+	if _finished:
+		return {}
 	var source: Dictionary = {
 		"class": material.get_class(),
-		"resource_path": material.resource_path,
-		"source_file_sha256": _resource_path_sha256(material.resource_path),
+		"resource_path": material_resource_path,
+		"source_file_sha256": _resource_path_sha256(material_resource_path),
 	}
 	if material is ShaderMaterial:
 		var shader_material: ShaderMaterial = material as ShaderMaterial
 		var shader: Shader = shader_material.shader
 		if shader != null:
+			var shader_resource_path: String = _safe_resource_path(shader.resource_path, "shader")
+			if _finished:
+				return {}
 			var uniforms: Array[Dictionary] = []
 			var declarations: Array = RenderingServer.get_shader_parameter_list(shader.get_rid())
 			declarations.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
@@ -600,15 +660,18 @@ func _material_record(material: Material) -> Dictionary:
 					effective_value = shader.get_default_texture_parameter(uniform_name)
 				if effective_value == null:
 					effective_value = RenderingServer.shader_get_parameter_default(shader.get_rid(), uniform_name)
+				var stable_uniform_value: Variant = _stable_value(effective_value)
+				if _finished:
+					return {}
 				uniforms.append({
 					"name": uniform_name,
 					"type": int(declaration.get("type", -1)),
 					"hint_string": str(declaration.get("hint_string", "")),
 					"value_source": value_source,
-					"effective_value": _stable_value(effective_value),
+					"effective_value": stable_uniform_value,
 				})
 			source["shader"] = {
-				"resource_path": shader.resource_path,
+				"resource_path": shader_resource_path,
 				"source_sha256": shader.code.sha256_text(),
 				"uniforms": uniforms,
 			}
@@ -620,7 +683,10 @@ func _material_record(material: Material) -> Dictionary:
 			var property_name: String = str(property.get("name", ""))
 			if property_name in ["resource_name", "resource_path", "resource_local_to_scene"]:
 				continue
-			properties[property_name] = _stable_value(material.get(property_name))
+			var property_value: Variant = _stable_value(material.get(property_name))
+			if _finished:
+				return {}
+			properties[property_name] = property_value
 		source["stored_properties"] = properties
 	source["hash"] = _digest(source)
 	return source
@@ -629,15 +695,18 @@ func _material_record(material: Material) -> Dictionary:
 func _stable_value(value: Variant) -> Variant:
 	if value is Resource:
 		var resource: Resource = value as Resource
+		var resource_path: String = _safe_resource_path(resource.resource_path, "material uniform resource")
+		if _finished:
+			return {}
 		var result: Dictionary = {
 			"class": resource.get_class(),
-			"path": resource.resource_path,
-			"sha256": _resource_path_sha256(resource.resource_path),
+			"path": resource_path,
+			"sha256": _resource_path_sha256(resource_path),
 		}
 		if value is Texture2D:
 			var texture: Texture2D = value as Texture2D
 			result["size"] = [texture.get_width(), texture.get_height()]
-			if resource.resource_path.is_empty():
+			if resource_path.is_empty():
 				var image: Image = texture.get_image()
 				if image != null and not image.is_empty():
 					result["image_sha256"] = _digest_bytes(image.get_data())
@@ -778,6 +847,7 @@ func _write_manifest() -> bool:
 		"harness_sha256": _harness_sha256(),
 		"views": _view_records(),
 		"scene_identity": _scene_identity,
+		"source_identity": _scene_identity.get("source_identity", {}),
 		"captures": _captures,
 	}
 	if _mode == "profile":
@@ -790,6 +860,17 @@ func _write_manifest() -> bool:
 			"eye_render_m": _vector3(_view_by_id(_profile_view_id).eye_render),
 			"target_render_m": _vector3(_view_by_id(_profile_view_id).target_render),
 			"fov_deg": float(_view_by_id(_profile_view_id).fov_deg),
+			"clock_protocol": PROFILE_CLOCK_PROTOCOL,
+			"sim_time_formula": "profile_frame_index * frame_step_s",
+			"frame_step_s": PROFILE_FRAME_STEP_S,
+			"wind_render_mps": _vector3(Vector3(PROFILE_WIND_X_MPS, 0.0, 0.0)),
+			"camera_motion": "fixed profile view during warmup and measurement",
+			"sequence_spans_warmup_and_sample": false,
+			"measurement_resets_clock_after_warmup": true,
+			"warmup_first_frame_index": 0,
+			"warmup_last_frame_index": _profile_warmup_last_frame_index,
+			"first_sample_frame_index": _profile_first_sample_frame_index,
+			"last_sample_frame_index": _profile_last_sample_frame_index,
 			"requested_warmup_s": _warmup_s,
 			"actual_warmup_s": _profile_actual_warmup_s,
 			"requested_sample_duration_s": _duration_s,
@@ -799,7 +880,7 @@ func _write_manifest() -> bool:
 			"qualification_minimum_met": qualification_minimum_met,
 			"qualification_statement": "single chosen-view harness sample only; full-session qualification is not established",
 			"sample_count": _profile_samples.size(),
-			"raw_sample_columns": ["wall_interval_ms", "viewport_cpu_ms", "viewport_gpu_ms"],
+			"raw_sample_columns": ["profile_frame_index", "sim_time_s", "wall_interval_ms", "viewport_cpu_ms", "viewport_gpu_ms"],
 			"gpu_zero_means_unavailable": true,
 			"samples": _profile_samples,
 		}
@@ -827,6 +908,131 @@ func _view_records() -> Array[Dictionary]:
 	return result
 
 
+func _source_identity(materials: Array) -> Dictionary:
+	var script_hashes: Dictionary = {}
+	for source_path: String in SOURCE_IDENTITY_REQUIRED_SCRIPTS:
+		if not _record_source_hash(source_path, script_hashes):
+			return {}
+	for source_directory: String in ["res://render", "res://scenery"]:
+		if not _scan_binding_scripts(source_directory, script_hashes):
+			return {}
+
+	var shader_paths: Dictionary = {}
+	for shader_path: String in SOURCE_IDENTITY_REQUIRED_SHADERS:
+		shader_paths[shader_path] = true
+	for material_record: Dictionary in materials:
+		var shader_record: Variant = material_record.get("shader", {})
+		if shader_record is Dictionary:
+			var shader_path: String = str(shader_record.get("resource_path", ""))
+			if not shader_path.is_empty():
+				shader_paths[shader_path] = true
+	var shader_hashes: Dictionary = {}
+	var include_hashes: Dictionary = {}
+	var visited_shaders: Dictionary = {}
+	var sorted_shader_paths: Array = shader_paths.keys()
+	sorted_shader_paths.sort()
+	for shader_path_value: Variant in sorted_shader_paths:
+		if not _collect_shader_sources(str(shader_path_value), shader_hashes, include_hashes, visited_shaders):
+			return {}
+	return {
+		"scope": "app-local res:// files only",
+		"scripts_sha256": script_hashes,
+		"shaders_sha256": shader_hashes,
+		"shader_includes_sha256": include_hashes,
+	}
+
+
+func _scan_binding_scripts(resource_directory: String, destination: Dictionary) -> bool:
+	if not _is_app_resource_path(resource_directory):
+		_fail("source identity scan directory is outside the active app")
+		return false
+	var directory: DirAccess = DirAccess.open(resource_directory)
+	if directory == null:
+		_fail("cannot scan app-local source identity directory: " + resource_directory)
+		return false
+	for filename: String in directory.get_files():
+		if filename.get_extension().to_lower() != "gd":
+			continue
+		var source_path: String = resource_directory.path_join(filename).replace("\\", "/")
+		var lowered: String = source_path.to_lower()
+		if not lowered.contains("grass") and not lowered.contains("ground") and not lowered.contains("adapter"):
+			continue
+		if not _record_source_hash(source_path, destination):
+			return false
+	for child_name: String in directory.get_directories():
+		if not _scan_binding_scripts(resource_directory.path_join(child_name), destination):
+			return false
+	return true
+
+
+func _record_source_hash(resource_path: String, destination: Dictionary) -> bool:
+	if destination.has(resource_path):
+		return true
+	var safe_path: String = _safe_resource_path(resource_path, "source identity")
+	if _finished:
+		return false
+	var absolute_path: String = ProjectSettings.globalize_path(safe_path)
+	if not FileAccess.file_exists(absolute_path):
+		_fail("required app-local source identity file is missing")
+		return false
+	var digest: String = FileAccess.get_sha256(absolute_path)
+	if digest.is_empty():
+		_fail("could not hash an app-local source identity file")
+		return false
+	destination[safe_path] = digest
+	return true
+
+
+func _collect_shader_sources(shader_path: String, shader_hashes: Dictionary, include_hashes: Dictionary,
+		visited: Dictionary) -> bool:
+	if visited.has(shader_path):
+		return true
+	visited[shader_path] = true
+	var destination: Dictionary = include_hashes if shader_path.get_extension().to_lower() == "gdshaderinc" else shader_hashes
+	if not _record_source_hash(shader_path, destination):
+		return false
+	var absolute_path: String = ProjectSettings.globalize_path(shader_path)
+	var source_file: FileAccess = FileAccess.open(absolute_path, FileAccess.READ)
+	if source_file == null:
+		_fail("cannot read app-local shader source identity file")
+		return false
+	var source_text: String = source_file.get_as_text()
+	source_file.close()
+	for line: String in source_text.split("\n"):
+		var directive_index: int = line.find("#include")
+		if directive_index < 0:
+			continue
+		var quote_start: int = line.find("\"", directive_index)
+		var quote_end: int = line.find("\"", quote_start + 1)
+		if quote_start < 0 or quote_end <= quote_start + 1:
+			continue
+		var include_path: String = line.substr(quote_start + 1, quote_end - quote_start - 1)
+		if not _collect_shader_sources(include_path, shader_hashes, include_hashes, visited):
+			return false
+	return true
+
+
+func _is_app_resource_path(resource_path: String) -> bool:
+	if not resource_path.begins_with("res://"):
+		return false
+	var relative_path: String = resource_path.trim_prefix("res://").replace("\\", "/")
+	for component: String in relative_path.split("/"):
+		if component == "..":
+			return false
+	var project_root: String = ProjectSettings.globalize_path("res://").replace("\\", "/").trim_suffix("/").to_lower()
+	var absolute_path: String = ProjectSettings.globalize_path(resource_path).replace("\\", "/").to_lower()
+	return absolute_path.begins_with(project_root + "/")
+
+
+func _safe_resource_path(resource_path: String, resource_kind: String) -> String:
+	if resource_path.is_empty():
+		return ""
+	if not _is_app_resource_path(resource_path):
+		_fail(resource_kind + " resource path is not contained in the active app")
+		return ""
+	return resource_path
+
+
 func _resource_path_sha256(path: String) -> String:
 	if path.is_empty():
 		return ""
@@ -834,7 +1040,10 @@ func _resource_path_sha256(path: String) -> String:
 
 
 func _sha256_res_path(path: String) -> String:
-	var absolute_path: String = ProjectSettings.globalize_path(path)
+	var safe_path: String = _safe_resource_path(path, "SHA-256 source")
+	if _finished or safe_path.is_empty():
+		return ""
+	var absolute_path: String = ProjectSettings.globalize_path(safe_path)
 	if not FileAccess.file_exists(absolute_path):
 		return ""
 	return FileAccess.get_sha256(absolute_path)

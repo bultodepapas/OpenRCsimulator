@@ -6,7 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-from pathlib import Path, PurePosixPath
+from pathlib import Path, PurePosixPath, PureWindowsPath
 import sys
 from zipfile import BadZipFile, ZipFile
 
@@ -82,6 +82,16 @@ ASSETS = (
     ("clover_1", "Clover_1", "flower", "clover groundcover"),
 )
 
+# Exact glTF members retained in the pinned Quaternius Standard archive. These
+# are an optional comparison set: no geometry is authored or changed here, and
+# the production library remains at its existing asset selection by default.
+REVIEWED_TREE_VARIANTS = (
+    ("common_tree_2", "CommonTree_2", "tree", "additional broadleaf tree variant"),
+    ("common_tree_4", "CommonTree_4", "tree", "additional broadleaf tree variant"),
+    ("pine_2", "Pine_2", "tree", "additional pine tree variant"),
+    ("pine_3", "Pine_3", "tree", "additional pine tree variant"),
+)
+
 CROP_ASSETS = (
     ("corn_4", "Corn_4", "mature corn plant"),
     ("wheat_4", "Wheat_4", "mature wheat stalk"),
@@ -111,7 +121,15 @@ def sha256_file(path: Path) -> str:
 def archive_path(value: str) -> str:
     """Accept only a safe, archive-relative POSIX path."""
     parsed = PurePosixPath(value)
-    if parsed.is_absolute() or not parsed.parts or any(part in ("", ".", "..") for part in parsed.parts):
+    windows = PureWindowsPath(value)
+    if (
+        parsed.is_absolute()
+        or windows.drive
+        or windows.root
+        or not parsed.parts
+        or any(part in ("", ".", "..") for part in parsed.parts)
+        or ":" in value
+    ):
         raise BuildError(f"unsafe archive path: {value!r}")
     if "\\" in value or "\x00" in value:
         raise BuildError(f"unsafe archive path: {value!r}")
@@ -286,7 +304,13 @@ def obj_metadata(source_name: str, obj_bytes: bytes) -> dict:
     }
 
 
-def catalog_for(archive: ZipFile, crops_archive: ZipFile, reed_archive: ZipFile) -> tuple[dict, dict[str, bytes]]:
+def catalog_for(
+    archive: ZipFile,
+    crops_archive: ZipFile,
+    reed_archive: ZipFile,
+    *,
+    include_reviewed_tree_variants: bool = False,
+) -> tuple[dict, dict[str, bytes]]:
     license_bytes = read_member(archive, LICENSE_ENTRY)
     if sha256_bytes(license_bytes) != LICENSE_SHA256:
         raise BuildError("embedded Standard license hash does not match the pinned CC0 evidence")
@@ -295,7 +319,10 @@ def catalog_for(archive: ZipFile, crops_archive: ZipFile, reed_archive: ZipFile)
     file_origins: dict[str, str] = {"LICENSE.txt": LICENSE_ENTRY}
     source_member_bytes: dict[str, bytes] = {}
     assets: list[dict] = []
-    for asset_id, model_name, role, description in ASSETS:
+    selected_assets = ASSETS + (
+        REVIEWED_TREE_VARIANTS if include_reviewed_tree_variants else ()
+    )
+    for asset_id, model_name, role, description in selected_assets:
         source_entry = f"glTF/{model_name}.gltf"
         gltf_bytes = read_member(archive, source_entry)
         metadata = gltf_metadata(archive, source_entry, gltf_bytes)
@@ -486,10 +513,66 @@ def write_if_changed(path: Path, data: bytes) -> None:
     temporary.replace(path)
 
 
-def main() -> int:
+def output_path(output_root: Path, relative: str) -> Path:
+    """Resolve a generated relative path and refuse to write outside its root."""
+    safe_relative = archive_path(relative)
+    root = output_root.resolve()
+    target = root.joinpath(*PurePosixPath(safe_relative).parts)
+    try:
+        target.resolve().relative_to(root)
+    except ValueError as exc:
+        raise BuildError(f"generated path escapes output root: {relative!r}") from exc
+    return target
+
+
+def expected_outputs(
+    catalog: dict,
+    library_files: dict[str, bytes],
+    output_root: Path,
+    *,
+    write_source_evidence: bool,
+) -> dict[Path, bytes]:
+    expected = {
+        output_path(output_root, relative): data
+        for relative, data in library_files.items()
+    }
+    expected[output_path(output_root, "catalog.json")] = (
+        json.dumps(catalog, indent=2, ensure_ascii=False) + "\n"
+    ).encode("utf-8")
+    if write_source_evidence:
+        expected[SOURCE_LICENSE] = library_files["LICENSE.txt"]
+        expected.update(SOURCE_NOTICES)
+    return expected
+
+
+def display_path(path: Path) -> str:
+    try:
+        return path.relative_to(ROOT).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="verify archive and generated files without writing")
-    args = parser.parse_args()
+    parser.add_argument(
+        "--output-root",
+        type=Path,
+        help=(
+            "write the generated library here instead of app/assets/landscape/vegetation; "
+            "relative paths are resolved from the repository root"
+        ),
+    )
+    parser.add_argument(
+        "--include-reviewed-tree-variants",
+        action="store_true",
+        help="include retained CommonTree_2, CommonTree_4, Pine_2 and Pine_3 source assets",
+    )
+    args = parser.parse_args(argv)
+    output_root = args.output_root or RUNTIME
+    if not output_root.is_absolute():
+        output_root = ROOT / output_root
+    output_root = output_root.resolve()
 
     pinned_archives = (
         (ARCHIVE, ARCHIVE_BYTES, ARCHIVE_SHA256, "Quaternius Standard"),
@@ -510,26 +593,31 @@ def main() -> int:
     try:
         with ZipFile(ARCHIVE) as archive:
             with ZipFile(CROPS_ARCHIVE) as crops_archive, ZipFile(REED_ARCHIVE) as reed_archive:
-                catalog, runtime_files = catalog_for(archive, crops_archive, reed_archive)
+                catalog, runtime_files = catalog_for(
+                    archive,
+                    crops_archive,
+                    reed_archive,
+                    include_reviewed_tree_variants=args.include_reviewed_tree_variants,
+                )
     except BadZipFile as exc:
         raise BuildError(f"source archive is not a valid ZIP: {exc}") from exc
 
-    expected: dict[Path, bytes] = {
-        RUNTIME / relative: data for relative, data in runtime_files.items()
-    }
-    expected[SOURCE_LICENSE] = runtime_files["LICENSE.txt"]
-    expected.update(SOURCE_NOTICES)
-    expected[RUNTIME_CATALOG] = (json.dumps(catalog, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
+    expected = expected_outputs(
+        catalog,
+        runtime_files,
+        output_root,
+        write_source_evidence=args.output_root is None,
+    )
 
     if args.check:
         errors: list[str] = []
         for path, expected_bytes in expected.items():
             if not path.is_file():
-                errors.append(f"missing generated file: {path.relative_to(ROOT).as_posix()}")
+                errors.append(f"missing generated file: {display_path(path)}")
                 continue
             actual = path.read_bytes()
             if actual != expected_bytes:
-                errors.append(f"generated file differs: {path.relative_to(ROOT).as_posix()}")
+                errors.append(f"generated file differs: {display_path(path)}")
         if errors:
             raise BuildError("\n".join(errors))
     else:
@@ -539,7 +627,8 @@ def main() -> int:
         f"{len(catalog['assets'])} imported vegetation assets, "
         f"{catalog['counts']['source_triangles_one_of_each']:,} source triangles, "
         f"{len(catalog['files'])} verified runtime files; "
-        f"{len(pinned_archives)} pinned source archives verified"
+        f"{len(pinned_archives)} pinned source archives verified; "
+        f"output={display_path(output_root)}"
     )
     return 0
 

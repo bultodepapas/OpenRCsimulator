@@ -70,6 +70,19 @@ func run() -> void:
 	world.add_child(camera)
 	camera.look_at(Vector3(0.0, 0.1, 0.0))
 	camera.current = true
+	var local_light := OmniLight3D.new()
+	local_light.position = Vector3(0.0, 0.65, 0.9)
+	local_light.omni_range = 4.0
+	local_light.light_color = Color(1.0, 0.88, 0.72)
+	local_light.light_energy = 1.5
+	local_light.shadow_enabled = true
+	world.add_child(local_light)
+	var occluder := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = Vector3(0.12, 0.5, 0.12)
+	occluder.mesh = box
+	occluder.position = Vector3(0.0, 0.25, 0.25)
+	world.add_child(occluder)
 	var batches: Dictionary = {}
 	for species: int in IDS.size():
 		for yaw: int in 4:
@@ -85,15 +98,20 @@ func run() -> void:
 		for batch: MultiMeshInstance3D in plants.get_children():
 			batch.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		world.add_child(plants)
-	for rotation: Vector3 in [Vector3(-35.0, -25.0, 0.0), Vector3(-35.0, 155.0, 0.0)]:
-		light.rotation_degrees = rotation
-		var side := "front" if rotation.y < 0.0 else "back"
+	for side: String in ["front", "back", "shadow", "local"]:
+		light.rotation_degrees = Vector3(-35.0, 155.0 if side == "back" else -25.0, 0.0)
+		light.visible = side != "local"
+		light.shadow_enabled = side == "shadow"
+		local_light.visible = side == "local"
+		occluder.visible = side in ["shadow", "local"]
+		environment.ambient_light_energy = 0.05 if side == "local" else 0.25
 		await capture(side + "-source-calm", false, 0.0, Vector3.ZERO)
 		await capture(side + "-candidate-calm", true, 0.0, Vector3.ZERO)
 		await capture(side + "-candidate-calm-t1", true, 1.0, Vector3.ZERO)
 		await capture(side + "-candidate-wind-t0", true, 0.0, Vector3(5.0, 0.0, 0.0))
 		await capture(side + "-candidate-wind-t1", true, 1.0, Vector3(5.0, 0.0, 0.0))
 		await capture(side + "-candidate-wind-wrap", true, 1024.0, Vector3(5.0, 0.0, 0.0))
+		await capture(side + "-candidate-wind-prewrap", true, 1023.999, Vector3(5.0, 0.0, 0.0))
 		await capture(side + "-candidate-wind-repeat", true, 0.0, Vector3(5.0, 0.0, 0.0))
 		await capture(side + "-candidate-wind-reverse", true, 0.0, Vector3(-5.0, 0.0, 0.0))
 	var file := FileAccess.open(out_dir.path_join("manifest.json"), FileAccess.WRITE)

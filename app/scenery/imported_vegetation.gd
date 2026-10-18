@@ -4,6 +4,8 @@ extends RefCounted
 const CATALOG_PATH := "res://assets/landscape/vegetation/catalog.json"
 const WIND_SHADER_PATH := "res://scenery/imported_vegetation_wind.gdshader"
 const DEFAULT_WIND_STRENGTH := 0.025
+const MAX_TREE_WIND_STRENGTH := 0.025
+const TREE_CELL_SIZES_M := [64, 128, 256]
 
 const ALIASES := {
 	"shade_tree": ["common_tree_1", "common_tree_3", "pine_1"],
@@ -28,6 +30,8 @@ static var _asset_index: Dictionary = {}
 static var _parts_cache: Dictionary = {}
 static var _wind_shader: Shader
 static var _wind_material_cache: Dictionary = {}
+static var _option_warnings: Dictionary = {}
+static var _tree_wind_warnings: Dictionary = {}
 
 
 static func catalog() -> Dictionary:
@@ -105,9 +109,12 @@ static func queue(
 	return canonical_id
 
 
-static func build(batches: Dictionary, enable_wind: bool = false) -> Node3D:
+static func build(batches: Dictionary, enable_wind: bool = false, options: Dictionary = {}) -> Node3D:
+	var tree_cell_size := _tree_cell_size_from_options(options)
+	var tree_wind_requested := _tree_wind_from_options(options)
 	var root := Node3D.new()
 	root.name = "ImportedVegetationBatches"
+	var wind_materials: Dictionary = {}
 	var state := {
 		"damage": {},
 		"bounds": [],
@@ -121,6 +128,10 @@ static func build(batches: Dictionary, enable_wind: bool = false) -> Node3D:
 			continue
 		var asset: Dictionary = _asset_index.get(asset_id, {})
 		var role := str(asset.get("role", ""))
+		var tree_opt_in := tree_wind_requested and role == "tree"
+		var use_tree_wind := tree_opt_in and _tree_asset_wind_supported(asset_id, parts)
+		var use_legacy_wind := enable_wind and not tree_opt_in
+		var groups := _record_groups(records, tree_cell_size if role == "tree" else 0)
 		for part_index in range(parts.size()):
 			var part: Dictionary = parts[part_index]
 			var source_mesh: Mesh = part.get("mesh")
@@ -131,63 +142,83 @@ static func build(batches: Dictionary, enable_wind: bool = false) -> Node3D:
 			var draw_mesh := _prepare_mesh(
 				source_mesh,
 				part.get("materials", []),
-				source_height,
+				source_bounds.size.y if use_tree_wind else source_height,
 				source_bounds,
-				enable_wind
+				use_legacy_wind or use_tree_wind,
+				use_tree_wind,
+				_wind_strength_for_role(role),
+				wind_materials
 			)
-			var multi_mesh := MultiMesh.new()
-			multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
-			multi_mesh.use_colors = true
-			multi_mesh.use_custom_data = true
-			multi_mesh.mesh = draw_mesh
-			multi_mesh.instance_count = records.size()
 			var part_transform: Transform3D = part.get("transform", Transform3D.IDENTITY)
-			var bounds_indices: Array[int] = []
-			for instance_index in range(records.size()):
-				var record: Dictionary = records[instance_index]
-				var plant_transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
-				var instance_transform := plant_transform * part_transform
-				multi_mesh.set_instance_transform(instance_index, instance_transform)
-				var phase := fposmod(float(record.get("seed", 0)) * 0.61803398875, 1.0)
-				multi_mesh.set_instance_custom_data(instance_index, Color(phase, 0.0, 0.0, 1.0))
-				var instance_tint: Color = record.get("tint", Color.WHITE)
-				multi_mesh.set_instance_color(instance_index, instance_tint)
-				var damage_id := str(record.get("damage_id", ""))
-				var bounds_index := (state["bounds"] as Array).size()
-				(state["bounds"] as Array).append({
-					"asset_id": asset_id,
-					"bounds": source_bounds,
-					"transform": instance_transform,
-					"damage_id": damage_id,
-					"tint": instance_tint,
-					"hidden": false,
-				})
-				bounds_indices.append(bounds_index)
-
-			var instance := MultiMeshInstance3D.new()
-			instance.name = "%s_Part_%02d" % [asset_id, part_index]
-			instance.multimesh = multi_mesh
-			instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
-			instance.set_meta("_imported_vegetation_wind_enabled", enable_wind)
-			if enable_wind:
-				instance.set_instance_shader_parameter("wind_direction", Vector2(0.8, 0.6).normalized())
-				instance.set_instance_shader_parameter("wind_strength", _wind_strength_for_role(role))
-			root.add_child(instance)
-			(state["multimeshes"] as Array).append(multi_mesh)
-
-			for instance_index in range(records.size()):
-				var record: Dictionary = records[instance_index]
-				var damage_id := str(record.get("damage_id", ""))
-				if damage_id.is_empty():
+			for group in groups:
+				var cell_records: Array = group.get("records", [])
+				if cell_records.is_empty():
 					continue
-				if not (state["damage"] as Dictionary).has(damage_id):
-					(state["damage"] as Dictionary)[damage_id] = []
-				((state["damage"] as Dictionary)[damage_id] as Array).append({
-					"multimesh": multi_mesh,
-					"index": instance_index,
-					"transform": multi_mesh.get_instance_transform(instance_index),
-					"bounds_index": bounds_indices[instance_index],
-				})
+				var multi_mesh := MultiMesh.new()
+				multi_mesh.transform_format = MultiMesh.TRANSFORM_3D
+				multi_mesh.use_colors = true
+				multi_mesh.use_custom_data = true
+				multi_mesh.mesh = draw_mesh
+				multi_mesh.instance_count = cell_records.size()
+				var bounds_indices: Array[int] = []
+				var has_cull_bounds := false
+				var cull_bounds := AABB()
+				for instance_index in range(cell_records.size()):
+					var record: Dictionary = cell_records[instance_index]
+					var plant_transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
+					var instance_transform := plant_transform * part_transform
+					multi_mesh.set_instance_transform(instance_index, instance_transform)
+					var phase := fposmod(float(record.get("seed", 0)) * 0.61803398875, 1.0)
+					multi_mesh.set_instance_custom_data(instance_index, Color(phase, 0.0, 0.0, 1.0))
+					var instance_tint: Color = record.get("tint", Color.WHITE)
+					multi_mesh.set_instance_color(instance_index, instance_tint)
+					var damage_id := str(record.get("damage_id", ""))
+					var render_bounds := source_bounds.grow(MAX_TREE_WIND_STRENGTH) if use_tree_wind else source_bounds
+					var bounds_index := (state["bounds"] as Array).size()
+					(state["bounds"] as Array).append({
+						"asset_id": asset_id,
+						"bounds": render_bounds,
+						"transform": instance_transform,
+						"damage_id": damage_id,
+						"tint": instance_tint,
+						"hidden": false,
+					})
+					bounds_indices.append(bounds_index)
+					if use_tree_wind:
+						var transformed_bounds := _transform_aabb(render_bounds, instance_transform)
+						if not has_cull_bounds:
+							cull_bounds = transformed_bounds
+							has_cull_bounds = true
+						else:
+							cull_bounds = cull_bounds.merge(transformed_bounds)
+
+				var instance := MultiMeshInstance3D.new()
+				var cell: Vector2i = group.get("cell", Vector2i.ZERO)
+				instance.name = "%s_Part_%02d" % [asset_id, part_index]
+				if int(group.get("cell_size", 0)) > 0:
+					instance.name += "_Cell_%d_%d" % [cell.x, cell.y]
+				instance.multimesh = multi_mesh
+				instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+				instance.set_meta("_imported_vegetation_wind_enabled", use_legacy_wind)
+				instance.set_meta("_imported_vegetation_tree_wind_enabled", use_tree_wind)
+				if use_tree_wind and has_cull_bounds:
+					instance.custom_aabb = cull_bounds
+				root.add_child(instance)
+				(state["multimeshes"] as Array).append(multi_mesh)
+
+				for instance_index in range(cell_records.size()):
+					var record: Dictionary = cell_records[instance_index]
+					var damage_id := str(record.get("damage_id", ""))
+					if damage_id.is_empty():
+						continue
+					if not (state["damage"] as Dictionary).has(damage_id):
+						(state["damage"] as Dictionary)[damage_id] = []
+					((state["damage"] as Dictionary)[damage_id] as Array).append({
+						"multimesh": multi_mesh,
+						"index": instance_index,
+						"transform": multi_mesh.get_instance_transform(instance_index),
+						"bounds_index": bounds_indices[instance_index],
+					})
 
 	root.set_meta("_imported_vegetation_state", state)
 	return root
@@ -242,8 +273,187 @@ static func set_wind(root: Node3D, strength: float, direction: Vector2 = Vector2
 	var normalized_direction := direction.normalized()
 	for child in root.get_children():
 		if child is MultiMeshInstance3D and bool(child.get_meta("_imported_vegetation_wind_enabled", false)):
-			(child as MultiMeshInstance3D).set_instance_shader_parameter("wind_strength", maxf(strength, 0.0))
-			(child as MultiMeshInstance3D).set_instance_shader_parameter("wind_direction", normalized_direction)
+			_set_batch_wind_parameters(child as MultiMeshInstance3D, maxf(strength, 0.0), normalized_direction)
+		elif child is MultiMeshInstance3D and bool(child.get_meta("_imported_vegetation_tree_wind_enabled", false)):
+			_set_batch_wind_parameters(
+				child as MultiMeshInstance3D,
+				clampf(strength, 0.0, MAX_TREE_WIND_STRENGTH),
+				normalized_direction
+			)
+
+
+static func _set_batch_wind_parameters(instance: MultiMeshInstance3D, strength: float, direction: Vector2) -> void:
+	if instance.multimesh == null or instance.multimesh.mesh == null:
+		return
+	var mesh := instance.multimesh.mesh
+	for surface_index in range(mesh.get_surface_count()):
+		var material := mesh.surface_get_material(surface_index)
+		if not material is ShaderMaterial or (material as ShaderMaterial).shader != _wind_shader:
+			continue
+		(material as ShaderMaterial).set_shader_parameter("wind_strength", strength)
+		(material as ShaderMaterial).set_shader_parameter("wind_direction", direction)
+
+
+static func _tree_wind_from_options(options: Dictionary) -> bool:
+	if not options.has("tree_wind"):
+		return false
+	var value: Variant = options["tree_wind"]
+	if typeof(value) != TYPE_BOOL:
+		_warn_option_once("tree_wind_type", "ImportedVegetation option tree_wind must be a boolean; ignoring it")
+		return false
+	return value
+
+
+static func _tree_cell_size_from_options(options: Dictionary) -> int:
+	if not options.has("tree_cell_size_m"):
+		return 0
+	var value: Variant = options["tree_cell_size_m"]
+	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
+		_warn_option_once(
+			"tree_cell_size_m_value",
+			"ImportedVegetation option tree_cell_size_m must be 64, 128, or 256; using legacy batching"
+		)
+		return 0
+	var size := float(value)
+	if size != 64.0 and size != 128.0 and size != 256.0:
+		_warn_option_once(
+			"tree_cell_size_m_range",
+			"ImportedVegetation option tree_cell_size_m must be 64, 128, or 256; using legacy batching"
+		)
+		return 0
+	return int(size)
+
+
+static func _warn_option_once(key: String, message: String) -> void:
+	if _option_warnings.has(key):
+		return
+	_option_warnings[key] = true
+	push_warning(message)
+
+
+static func _record_groups(records: Array, cell_size: int) -> Array[Dictionary]:
+	var groups: Array[Dictionary] = []
+	if cell_size <= 0:
+		groups.append({"cell": Vector2i.ZERO, "cell_size": 0, "records": records})
+		return groups
+	var group_indices: Dictionary = {}
+	for value in records:
+		var record: Dictionary = value
+		var transform: Transform3D = record.get("transform", Transform3D.IDENTITY)
+		var cell := Vector2i(
+			floori(transform.origin.x / float(cell_size)),
+			floori(transform.origin.z / float(cell_size))
+		)
+		if not group_indices.has(cell):
+			group_indices[cell] = groups.size()
+			groups.append({"cell": cell, "cell_size": cell_size, "records": []})
+		var group_index := int(group_indices[cell])
+		(groups[group_index]["records"] as Array).append(record)
+	return groups
+
+
+static func _tree_asset_wind_supported(asset_id: String, parts: Array[Dictionary]) -> bool:
+	for part: Dictionary in parts:
+		var mesh: Mesh = part.get("mesh")
+		if mesh == null or mesh.get_surface_count() <= 0:
+			_warn_tree_wind_once(asset_id + ":mesh", "Tree wind is disabled for %s: source part has no surfaces" % asset_id)
+			return false
+		var materials: Array = part.get("materials", [])
+		for surface_index in range(mesh.get_surface_count()):
+			var source_material: Material = materials[surface_index] if surface_index < materials.size() else mesh.surface_get_material(surface_index)
+			var reason := _tree_material_support_reason(source_material)
+			if not reason.is_empty():
+				var material_id := str(source_material.get_instance_id()) if source_material != null else "null"
+				_warn_tree_wind_once(
+					asset_id + ":" + material_id,
+					"Tree wind is disabled for %s because source material %s is unsupported (%s)" % [asset_id, material_id, reason]
+				)
+				return false
+	return true
+
+
+static func _warn_tree_wind_once(key: String, message: String) -> void:
+	if _tree_wind_warnings.has(key):
+		return
+	_tree_wind_warnings[key] = true
+	push_warning(message)
+
+
+static func _tree_material_support_reason(source_material: Material) -> String:
+	if not source_material is BaseMaterial3D:
+		return "material is not BaseMaterial3D"
+	var material := source_material as BaseMaterial3D
+	if material.cull_mode != BaseMaterial3D.CULL_DISABLED:
+		return "cull mode is not disabled"
+	if material.shading_mode != BaseMaterial3D.SHADING_MODE_PER_PIXEL:
+		return "shading mode is not per-pixel"
+	if material.diffuse_mode != BaseMaterial3D.DIFFUSE_BURLEY:
+		return "diffuse mode is not Burley"
+	if material.specular_mode != BaseMaterial3D.SPECULAR_SCHLICK_GGX:
+		return "specular mode is not Schlick-GGX"
+	if material.depth_draw_mode != BaseMaterial3D.DEPTH_DRAW_OPAQUE_ONLY:
+		return "depth draw mode is not opaque-only"
+	if material.depth_test != BaseMaterial3D.DEPTH_TEST_DEFAULT or material.no_depth_test:
+		return "non-default depth testing is not supported"
+	if material.blend_mode != BaseMaterial3D.BLEND_MODE_MIX:
+		return "blend mode is not mix"
+	if material.transparency != BaseMaterial3D.TRANSPARENCY_DISABLED \
+		and material.transparency != BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+		return "transparency mode is not opaque or alpha scissor"
+	if material.billboard_mode != BaseMaterial3D.BILLBOARD_DISABLED or material.fixed_size:
+		return "billboarding or fixed-size rendering is not supported"
+	if material.grow or material.use_point_size or material.use_z_clip_scale:
+		return "material vertex expansion is not supported"
+	if material.distance_fade_mode != 0 or material.proximity_fade_enabled:
+		return "material distance fading is not supported"
+	if material.disable_ambient_light or material.disable_fog or material.disable_receive_shadows \
+		or material.disable_specular_occlusion or material.shadow_to_opacity:
+		return "material lighting or shadow flags are not supported"
+	if material.albedo_texture_msdf:
+		return "MSDF albedo textures are not supported"
+	if not material.texture_repeat:
+		return "non-repeating textures are not supported"
+	if material.stencil_flags != 0:
+		return "stencil rendering is not supported"
+	if material.next_pass != null:
+		return "material next pass is not supported"
+	if material.texture_filter != BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS:
+		return "texture filter is not linear with mipmaps"
+	if material.uv1_triplanar or material.uv1_world_triplanar or material.uv2_triplanar or material.uv2_world_triplanar:
+		return "triplanar UVs are not supported"
+	if not is_equal_approx(material.uv1_scale.z, 1.0) or not is_zero_approx(material.uv1_offset.z):
+		return "UV1 triplanar components are not supported"
+	if material.uv2_scale != Vector3.ONE or material.uv2_offset != Vector3.ZERO:
+		return "UV2 transforms are not supported"
+	if material.roughness_texture != null or material.metallic_texture != null:
+		return "roughness and metallic textures are not supported"
+	if material.alpha_antialiasing_mode != 0:
+		return "alpha antialiasing is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_EMISSION):
+		return "emission is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_RIM):
+		return "rim lighting is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_CLEARCOAT):
+		return "clearcoat is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_ANISOTROPY):
+		return "anisotropy is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_AMBIENT_OCCLUSION):
+		return "ambient occlusion is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_HEIGHT_MAPPING):
+		return "height mapping is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_SUBSURFACE_SCATTERING):
+		return "subsurface scattering is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_SUBSURFACE_TRANSMITTANCE):
+		return "subsurface transmittance is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_BACKLIGHT):
+		return "backlight is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_REFRACTION):
+		return "refraction is not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_DETAIL):
+		return "detail textures are not supported"
+	if material.get_feature(BaseMaterial3D.FEATURE_BENT_NORMAL_MAPPING):
+		return "bent normal mapping is not supported"
+	return ""
 
 
 static func _ensure_catalog() -> void:
@@ -353,14 +563,26 @@ static func _prepare_mesh(
 	source_materials: Array,
 	source_height: float,
 	bounds_value: AABB,
-	enable_wind: bool
+	enable_wind: bool,
+	tree_wind: bool,
+	default_strength: float,
+	root_wind_materials: Dictionary
 ) -> Mesh:
 	var draw_mesh := source_mesh.duplicate() as Mesh
 	for surface_index in range(draw_mesh.get_surface_count()):
 		var base_material: Material = source_materials[surface_index] if surface_index < source_materials.size() else source_mesh.surface_get_material(surface_index)
 		var output_material := base_material
 		if enable_wind:
-			output_material = _wind_material(base_material, source_height, bounds_value.position.y)
+			var wind_template := _wind_material(base_material, source_height, bounds_value.position.y)
+			if wind_template != null:
+				var cache_key := "%s:%s" % ["tree" if tree_wind else "legacy", wind_template.get_instance_id()]
+				if not root_wind_materials.has(cache_key):
+					var root_material := wind_template.duplicate() as ShaderMaterial
+					root_material.set_shader_parameter("tree_wind_mode", tree_wind)
+					root_material.set_shader_parameter("wind_direction", Vector2(0.8, 0.6).normalized())
+					root_material.set_shader_parameter("wind_strength", default_strength)
+					root_wind_materials[cache_key] = root_material
+				output_material = root_wind_materials[cache_key]
 		draw_mesh.surface_set_material(surface_index, output_material)
 	return draw_mesh
 
@@ -373,8 +595,10 @@ static func _wind_material(base_material: Material, source_height: float, base_y
 		return _wind_material_cache[key]
 	var material := ShaderMaterial.new()
 	material.shader = _wind_shader
+	material.render_priority = base_material.render_priority if base_material != null else 0
 	material.set_shader_parameter("plant_height", maxf(source_height, 0.001))
 	material.set_shader_parameter("plant_base_y", base_y)
+	material.set_shader_parameter("tree_wind_mode", false)
 	if base_material is BaseMaterial3D:
 		var standard := base_material as BaseMaterial3D
 		material.set_shader_parameter("uv1_scale", Vector2(standard.uv1_scale.x, standard.uv1_scale.y))
@@ -386,6 +610,7 @@ static func _wind_material(base_material: Material, source_height: float, base_y
 		material.set_shader_parameter("vertex_color_is_srgb", standard.vertex_color_is_srgb)
 		material.set_shader_parameter("roughness", standard.roughness)
 		material.set_shader_parameter("metallic", standard.metallic)
+		material.set_shader_parameter("specular", standard.metallic_specular)
 		material.set_shader_parameter("use_normal_texture", standard.normal_enabled and standard.normal_texture != null)
 		material.set_shader_parameter("normal_texture", standard.normal_texture)
 		material.set_shader_parameter("normal_scale", standard.normal_scale)

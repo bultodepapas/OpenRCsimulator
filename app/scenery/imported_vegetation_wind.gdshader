@@ -16,22 +16,31 @@ uniform bool use_normal_texture = false;
 uniform float normal_scale = 1.0;
 uniform float roughness = 1.0;
 uniform float metallic = 0.0;
+uniform float specular = 0.5;
 uniform bool use_alpha_scissor = false;
 uniform float alpha_scissor_threshold = 0.5;
 uniform float plant_height = 1.0;
 uniform float plant_base_y = 0.0;
+uniform bool tree_wind_mode = false;
+uniform vec2 wind_direction = vec2(0.8, 0.6);
+uniform float wind_strength = 0.0;
 
-instance uniform vec2 wind_direction = vec2(1.0, 0.0);
-instance uniform float wind_strength = 0.0;
+const float MAX_TREE_WIND_STRENGTH = 0.025;
 
 void vertex() {
 	float normalized_height = clamp((VERTEX.y - plant_base_y) / max(plant_height, 0.001), 0.0, 1.0);
 	vec3 local_wind = transpose(mat3(MODEL_MATRIX)) * vec3(wind_vec.x, 0.0, wind_vec.z);
 	float wind_speed = length(wind_vec.xz);
 	vec2 direction = local_wind.xz / max(length(local_wind.xz), 0.001);
-	float phase = 6.2831853 * fract((256.0 / 1024.0) * sim_clock + INSTANCE_CUSTOM.r)
-		+ dot(VERTEX.xz, wind_direction) * 0.7;
-	float sway = sin(phase) * wind_strength * min(wind_speed / 5.0, 1.0)
+	float phase = 6.2831853 * fract((256.0 / 1024.0) * sim_clock + INSTANCE_CUSTOM.r);
+	if (tree_wind_mode) {
+		// One stable phase per queued tree, shared by all of its source parts and spatial cells.
+		phase += 6.2831853 * atan(wind_direction.y, wind_direction.x) / 6.2831853;
+	} else {
+		phase += dot(VERTEX.xz, wind_direction) * 0.7;
+	}
+	float bounded_strength = tree_wind_mode ? clamp(wind_strength, 0.0, MAX_TREE_WIND_STRENGTH) : wind_strength;
+	float sway = sin(phase) * bounded_strength * min(wind_speed / 5.0, 1.0)
 		* normalized_height * normalized_height;
 	VERTEX.xz += direction * sway;
 }
@@ -66,6 +75,7 @@ void fragment() {
 	ALBEDO = color.rgb;
 	ROUGHNESS = roughness;
 	METALLIC = metallic;
+	SPECULAR = specular;
 	if (use_normal_texture) {
 		NORMAL_MAP = texture(normal_texture, material_uv).rgb;
 		NORMAL_MAP_DEPTH = normal_scale;

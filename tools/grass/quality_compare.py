@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import statistics
@@ -17,6 +18,11 @@ from typing import Any
 FORMAT = "openrc-grass-quality v1"
 CAPTURE_CASES = ("pilot_runway_edge", "low_near_grass", "overhead", "zoom_far")
 WIND_GROUPS = ("calm", "wind_x_positive", "wind_x_negative")
+PROFILE_CLOCK_PROTOCOL = "profile-frame-index-sim-time-reset-v1"
+PROFILE_SIM_TIME_FORMULA = "profile_frame_index * frame_step_s"
+PROFILE_FRAME_STEP_S = 1.0 / 60.0
+PROFILE_WIND_RENDER_MPS = [5.0, 0.0, 0.0]
+PROFILE_CAMERA_MOTION = "fixed profile view during warmup and measurement"
 
 
 class EvidenceError(Exception):
@@ -39,7 +45,91 @@ def manifest_image_path(manifest: dict[str, Any], capture: dict[str, Any]) -> Pa
     image_name = capture.get("image")
     if not isinstance(image_name, str) or not image_name:
         raise EvidenceError(f"capture {capture.get('id')} has no image path")
-    return Path(manifest["_manifest_dir"]) / image_name
+    manifest_dir = Path(manifest["_manifest_dir"]).resolve()
+    image_path = (manifest_dir / image_name).resolve()
+    try:
+        image_path.relative_to(manifest_dir)
+    except ValueError as error:
+        raise EvidenceError(f"capture {capture.get('id')} image path escapes its evidence directory") from error
+    return image_path
+
+
+def verified_image_sha256(
+    manifest: dict[str, Any], capture: dict[str, Any], cache: dict[Path, str]
+) -> tuple[Path, str]:
+    path = manifest_image_path(manifest, capture)
+    expected = capture.get("image_sha256")
+    if not isinstance(expected, str) or len(expected) != 64:
+        raise EvidenceError(f"capture {capture.get('id')} has no valid SHA-256 image identity")
+    try:
+        int(expected, 16)
+    except ValueError as error:
+        raise EvidenceError(f"capture {capture.get('id')} has a malformed image SHA-256") from error
+    if path not in cache:
+        try:
+            digest = hashlib.sha256()
+            with path.open("rb") as image_file:
+                for chunk in iter(lambda: image_file.read(1024 * 1024), b""):
+                    digest.update(chunk)
+            cache[path] = digest.hexdigest()
+        except OSError as error:
+            raise EvidenceError(f"cannot hash image {path}: {error}") from error
+    actual = cache[path]
+    if actual.lower() != expected.lower():
+        raise EvidenceError(f"capture {capture.get('id')} image SHA-256 does not match the manifest")
+    return path, actual
+
+
+def png_dimensions(path: Path) -> tuple[int, int]:
+    try:
+        with path.open("rb") as image_file:
+            header = image_file.read(33)
+    except OSError as error:
+        raise EvidenceError(f"cannot read PNG header from {path}: {error}") from error
+    if len(header) != 33 or not header.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise EvidenceError(f"{path} is not a complete PNG header")
+    if struct.unpack_from(">I", header, 8)[0] != 13 or header[12:16] != b"IHDR":
+        raise EvidenceError(f"{path} has no valid PNG IHDR chunk")
+    expected_crc = struct.unpack_from(">I", header, 29)[0]
+    if zlib.crc32(header[12:29]) & 0xFFFFFFFF != expected_crc:
+        raise EvidenceError(f"{path} has an invalid PNG IHDR checksum")
+    width, height = struct.unpack_from(">II", header, 16)
+    if width <= 0 or height <= 0:
+        raise EvidenceError(f"{path} has invalid PNG dimensions")
+    return width, height
+
+
+def exact_image_metrics(width: int, height: int) -> dict[str, Any]:
+    pixels = width * height
+    return {
+        "width": width,
+        "height": height,
+        "exact_pixels_match": True,
+        "mean_absolute_channel_error_0_255": 0.0,
+        "p95_absolute_channel_error_0_255": 0,
+        "max_absolute_channel_error_0_255": 0,
+        "changed_pixel_fraction": 0.0,
+        "changed_pixels": 0,
+        "pixel_count": pixels,
+    }
+
+
+def compare_image_records(
+    first_manifest: dict[str, Any],
+    first_record: dict[str, Any],
+    second_manifest: dict[str, Any],
+    second_record: dict[str, Any],
+    hash_cache: dict[Path, str],
+) -> dict[str, Any]:
+    first_path, first_hash = verified_image_sha256(first_manifest, first_record, hash_cache)
+    second_path, second_hash = verified_image_sha256(second_manifest, second_record, hash_cache)
+    if first_hash == second_hash:
+        first_dimensions = png_dimensions(first_path)
+        second_dimensions = png_dimensions(second_path)
+        if first_dimensions != second_dimensions:
+            raise EvidenceError("byte-identical PNG hashes have inconsistent dimensions")
+        return exact_image_metrics(*first_dimensions)
+    return compare_pixels(decode_png(first_path), decode_png(second_path))
 
 
 def decode_png(path: Path) -> tuple[int, int, bytes]:
@@ -233,7 +323,9 @@ def capture_map(manifest: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
-def verify_repeat_images(manifest: dict[str, Any], captures: dict[str, dict[str, Any]]) -> dict[str, Any]:
+def verify_repeat_images(
+    manifest: dict[str, Any], captures: dict[str, dict[str, Any]], hash_cache: dict[Path, str]
+) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     for group in WIND_GROUPS:
         comparisons = [(f"clock_{group}_t0", f"clock_{group}_t1024")]
@@ -252,9 +344,7 @@ def verify_repeat_images(manifest: dict[str, Any], captures: dict[str, dict[str,
                 continue
             first_record = captures[first_id]
             second_record = captures[second_id]
-            first_pixels = decode_png(manifest_image_path(manifest, first_record))
-            second_pixels = decode_png(manifest_image_path(manifest, second_record))
-            metrics = compare_pixels(first_pixels, second_pixels)
+            metrics = compare_image_records(manifest, first_record, manifest, second_record, hash_cache)
             checks.append(
                 {
                     "first": first_id,
@@ -274,9 +364,7 @@ def verify_repeat_images(manifest: dict[str, Any], captures: dict[str, dict[str,
                 continue
             first_record = captures[first_id]
             second_record = captures[second_id]
-            first_pixels = decode_png(manifest_image_path(manifest, first_record))
-            second_pixels = decode_png(manifest_image_path(manifest, second_record))
-            metrics = compare_pixels(first_pixels, second_pixels)
+            metrics = compare_image_records(manifest, first_record, manifest, second_record, hash_cache)
             checks.append(
                 {
                     "first": first_id,
@@ -339,11 +427,13 @@ def run_capture_compare(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         raise EvidenceError(f"capture set is incomplete: missing {required_missing}")
 
     image_comparisons = []
+    verified_hashes: dict[Path, str] = {}
     for case_id in sorted(baseline_captures):
         baseline_record = baseline_captures[case_id]
         candidate_record = candidate_captures[case_id]
-        baseline_pixels = decode_png(manifest_image_path(baseline, baseline_record))
-        candidate_pixels = decode_png(manifest_image_path(candidate, candidate_record))
+        pixel_metrics = compare_image_records(
+            baseline, baseline_record, candidate, candidate_record, verified_hashes
+        )
         image_comparisons.append(
             {
                 "id": case_id,
@@ -361,7 +451,7 @@ def run_capture_compare(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
                     candidate_record.get("viewport_visible_primitives", 0)
                     - baseline_record.get("viewport_visible_primitives", 0)
                 ),
-                **compare_pixels(baseline_pixels, candidate_pixels),
+                **pixel_metrics,
             }
         )
 
@@ -369,8 +459,8 @@ def run_capture_compare(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
     candidate_identity = candidate.get("scene_identity", {})
     geometry_match = baseline_identity.get("mesh_hash") == candidate_identity.get("mesh_hash")
     instances_match = baseline_identity.get("instance_hash") == candidate_identity.get("instance_hash")
-    baseline_repeats = verify_repeat_images(baseline, baseline_captures)
-    candidate_repeats = verify_repeat_images(candidate, candidate_captures)
+    baseline_repeats = verify_repeat_images(baseline, baseline_captures, verified_hashes)
+    candidate_repeats = verify_repeat_images(candidate, candidate_captures, verified_hashes)
     material_only_geometry_preserved = geometry_match and instances_match
     report = {
         "format": "openrc-grass-quality-comparison v1",
@@ -425,6 +515,57 @@ def profile_metrics(manifest: dict[str, Any]) -> dict[str, Any]:
     samples = profile.get("samples")
     if not isinstance(samples, list) or not samples:
         raise EvidenceError(f"{manifest['_manifest_path']} has no raw profile samples")
+    if profile.get("clock_protocol") != PROFILE_CLOCK_PROTOCOL:
+        raise EvidenceError(f"{manifest['_manifest_path']} does not use {PROFILE_CLOCK_PROTOCOL}")
+    if profile.get("sim_time_formula") != PROFILE_SIM_TIME_FORMULA:
+        raise EvidenceError(f"{manifest['_manifest_path']} has an unsupported profile time formula")
+    frame_step = profile.get("frame_step_s")
+    if not isinstance(frame_step, (int, float)) or not math.isclose(
+        float(frame_step), PROFILE_FRAME_STEP_S, rel_tol=0.0, abs_tol=1e-12
+    ):
+        raise EvidenceError(f"{manifest['_manifest_path']} has an unsupported profile frame step")
+    if profile.get("wind_render_mps") != PROFILE_WIND_RENDER_MPS:
+        raise EvidenceError(f"{manifest['_manifest_path']} has an unsupported profile wind protocol")
+    if profile.get("camera_motion") != PROFILE_CAMERA_MOTION:
+        raise EvidenceError(f"{manifest['_manifest_path']} has an unsupported profile camera protocol")
+    if profile.get("sequence_spans_warmup_and_sample") is not False:
+        raise EvidenceError(f"{manifest['_manifest_path']} does not record separate warmup and measurement clock sequences")
+    if profile.get("measurement_resets_clock_after_warmup") is not True:
+        raise EvidenceError(f"{manifest['_manifest_path']} does not reset profile time before measurement")
+    first_sample_index = profile.get("first_sample_frame_index")
+    last_sample_index = profile.get("last_sample_frame_index")
+    warmup_last_index = profile.get("warmup_last_frame_index")
+    if (
+        not isinstance(first_sample_index, int)
+        or isinstance(first_sample_index, bool)
+        or not isinstance(last_sample_index, int)
+        or isinstance(last_sample_index, bool)
+        or not isinstance(warmup_last_index, int)
+        or isinstance(warmup_last_index, bool)
+        or first_sample_index != 0
+        or last_sample_index != len(samples) - 1
+        or warmup_last_index < 0
+    ):
+        raise EvidenceError(f"{manifest['_manifest_path']} has inconsistent profile sample frame indices")
+    if profile.get("warmup_first_frame_index") != 0:
+        raise EvidenceError(f"{manifest['_manifest_path']} has an invalid profile warmup sequence")
+    for offset, sample in enumerate(samples):
+        if not isinstance(sample, dict):
+            raise EvidenceError(f"{manifest['_manifest_path']} contains a malformed profile sample")
+        expected_index = offset
+        sample_index = sample.get("profile_frame_index")
+        sim_time = sample.get("sim_time_s")
+        if (
+            not isinstance(sample_index, int)
+            or isinstance(sample_index, bool)
+            or sample_index != expected_index
+            or not isinstance(sim_time, (int, float))
+            or isinstance(sim_time, bool)
+            or not math.isclose(
+                float(sim_time), expected_index * PROFILE_FRAME_STEP_S, rel_tol=0.0, abs_tol=1e-9
+            )
+        ):
+            raise EvidenceError(f"{manifest['_manifest_path']} has a discontinuous or mistimed profile sample")
     columns = ("wall_interval_ms", "viewport_cpu_ms", "viewport_gpu_ms")
     metrics: dict[str, Any] = {}
     for column in columns:
@@ -457,6 +598,13 @@ def profile_metrics(manifest: dict[str, Any]) -> dict[str, Any]:
         "ground_probe": manifest.get("ground_probe"),
         "night": manifest.get("night"),
         "night_lighting_config": manifest.get("night_lighting_config"),
+        "clock_protocol": profile.get("clock_protocol"),
+        "sim_time_formula": profile.get("sim_time_formula"),
+        "frame_step_s": profile.get("frame_step_s"),
+        "wind_render_mps": profile.get("wind_render_mps"),
+        "camera_motion": profile.get("camera_motion"),
+        "sequence_spans_warmup_and_sample": profile.get("sequence_spans_warmup_and_sample"),
+        "measurement_resets_clock_after_warmup": profile.get("measurement_resets_clock_after_warmup"),
         "field_sha256": manifest.get("field_sha256"),
         "renderer_adapter": manifest.get("renderer_adapter"),
         "renderer_method": manifest.get("renderer_method"),
@@ -497,6 +645,13 @@ def run_profile_compare(args: argparse.Namespace) -> tuple[dict[str, Any], int]:
         "ground_probe",
         "night",
         "night_lighting_config",
+        "clock_protocol",
+        "sim_time_formula",
+        "frame_step_s",
+        "wind_render_mps",
+        "camera_motion",
+        "sequence_spans_warmup_and_sample",
+        "measurement_resets_clock_after_warmup",
         "field_sha256",
         "renderer_adapter",
         "renderer_method",
