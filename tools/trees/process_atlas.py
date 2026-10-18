@@ -19,7 +19,13 @@ TILE_SIZE = 512
 RAW_SIZE = 1024
 ALPHA_IOU_MINIMUM = 0.995
 MIN_TRANSPARENT_PADDING = 16
-VARIANTS = ("source_albedo", "adapted_albedo", "source_lit", "adapted_lit")
+VARIANTS = ("source_albedo", "adapted_albedo", "source_lit", "adapted_lit", "adapted_foliage_mask")
+EXPECTED_BARK_MATERIAL_NAME = "Bark_NormalTree"
+EXPECTED_FOLIAGE_MATERIAL_NAMES = {
+    "CommonTree_1": "Leaves_NormalTree",
+    "CommonTree_3": "Leaves_NormalTree",
+    "Pine_1": "Leaves_Pine",
+}
 EXPECTED_SLOTS = {
     "CommonTree_1": (0, 0, TILE_SIZE, TILE_SIZE),
     "CommonTree_3": (TILE_SIZE, 0, TILE_SIZE, TILE_SIZE),
@@ -107,6 +113,10 @@ def _load_bake(bake_dir: Path) -> list[dict[str, Any]]:
 
     for item in species:
         tree_id = item["id"]
+        _require(item.get("bark_material_name") == EXPECTED_BARK_MATERIAL_NAME,
+                 f"{tree_id}: bark mask identity must be {EXPECTED_BARK_MATERIAL_NAME!r}.")
+        _require(item.get("foliage_material_name") == EXPECTED_FOLIAGE_MATERIAL_NAMES[tree_id],
+                 f"{tree_id}: foliage mask identity must be {EXPECTED_FOLIAGE_MATERIAL_NAMES[tree_id]!r}.")
         frame_size = item.get("frame_size_m")
         _require(type(frame_size) in (int, float) and math.isfinite(frame_size) and frame_size > 0,
                  f"{tree_id}: frame_size_m must be a finite positive number.")
@@ -152,18 +162,115 @@ def _opaque_rgb_difference(source: np.ndarray, adapted: np.ndarray) -> dict[str,
     }
 
 
+def validate_foliage_mask(mask: np.ndarray, albedo: np.ndarray, tree_id: str) -> dict[str, int]:
+    """Require an exact source-material mask with identical rendered coverage."""
+    _require(np.array_equal(mask[:, :, 3], albedo[:, :, 3]),
+             f"{tree_id}: material mask alpha must match adapted albedo exactly.")
+    rgb = mask[:, :, :3]
+    _require(bool(np.array_equal(rgb[:, :, 0], rgb[:, :, 1])
+                  and np.array_equal(rgb[:, :, 0], rgb[:, :, 2])),
+             f"{tree_id}: material identity mask must be grayscale.")
+    classes = rgb[:, :, 0]
+    _require(bool(np.logical_or(classes == 0, classes == 255).all()),
+             f"{tree_id}: raw material identity mask must contain only bark 0 or foliage 255.")
+    opaque = albedo[:, :, 3] == 255
+    foliage_pixels = int(np.logical_and(opaque, classes == 255).sum())
+    bark_pixels = int(np.logical_and(opaque, classes == 0).sum())
+    _require(foliage_pixels > 0 and bark_pixels > 0,
+             f"{tree_id}: material identity mask must contain visible bark and foliage.")
+    return {"visible_bark_pixels": bark_pixels, "visible_foliage_pixels": foliage_pixels}
+
+
 def _save_png(path: Path, pixels: np.ndarray) -> None:
     Image.fromarray(pixels, mode="RGBA").save(path, format="PNG", optimize=False, compress_level=9)
 
 
-def process_bake(bake_dir: Path, out_dir: Path) -> dict[str, Path]:
-    """Validate captures and write atlas.png, catalog.json, and atlas-analysis.json."""
+def _runtime_alpha_alignment(source_alpha: np.ndarray, runtime_alpha: np.ndarray, tree_id: str) -> dict[str, Any]:
+    source_silhouette = source_alpha > 0
+    runtime_silhouette = runtime_alpha > 0
+    source_cutoff = source_alpha >= 128
+    runtime_cutoff = runtime_alpha >= 128
+
+    def iou(left: np.ndarray, right: np.ndarray) -> float:
+        union = int(np.logical_or(left, right).sum())
+        return float(np.logical_and(left, right).sum() / union) if union else 1.0
+
+    metrics = {
+        "coverage_iou_nonzero": iou(source_silhouette, runtime_silhouette),
+        "coverage_iou_at_cutoff_0_5": iou(source_cutoff, runtime_cutoff),
+        "alpha_differing_pixels": int(np.not_equal(source_alpha, runtime_alpha).sum()),
+        "alpha_mean_absolute_difference_0_255": float(
+            np.abs(source_alpha.astype(np.int16) - runtime_alpha.astype(np.int16)).mean()
+        ),
+        "runtime_only_nonzero_pixels": int(np.logical_and(runtime_silhouette, ~source_silhouette).sum()),
+        "bake_only_nonzero_pixels": int(np.logical_and(source_silhouette, ~runtime_silhouette).sum()),
+    }
+    _require(metrics["coverage_iou_nonzero"] >= ALPHA_IOU_MINIMUM
+             and metrics["coverage_iou_at_cutoff_0_5"] >= ALPHA_IOU_MINIMUM,
+             f"{tree_id}: runtime atlas alpha silhouette alignment is below {ALPHA_IOU_MINIMUM:.3f}: {metrics}.")
+    return metrics
+
+
+def _align_mask_alpha_to_runtime(mask_tile: np.ndarray, runtime_alpha: np.ndarray, tree_id: str) -> int:
+    """Match runtime alpha; fill runtime-only edge labels from the nearest source-material ID."""
+    source_valid = mask_tile[:, :, 3] > 0
+    runtime_valid = runtime_alpha > 0
+    missing_labels = np.argwhere(np.logical_and(runtime_valid, ~source_valid))
+    for y_value, x_value in missing_labels:
+        y = int(y_value)
+        x = int(x_value)
+        found: tuple[int, int] | None = None
+        for radius in range(1, 5):
+            y0 = max(0, y - radius)
+            y1 = min(mask_tile.shape[0], y + radius + 1)
+            x0 = max(0, x - radius)
+            x1 = min(mask_tile.shape[1], x + radius + 1)
+            local_valid = source_valid[y0:y1, x0:x1]
+            local_y, local_x = np.nonzero(local_valid)
+            if local_y.size == 0:
+                continue
+            local_y = local_y + y0
+            local_x = local_x + x0
+            distance = (local_y - y) ** 2 + (local_x - x) ** 2
+            nearest = int(np.argmin(distance))
+            found = (int(local_y[nearest]), int(local_x[nearest]))
+            break
+        _require(found is not None,
+                 f"{tree_id}: runtime-only alpha at ({x},{y}) is too far from every baked source-material label.")
+        source_y, source_x = found
+        mask_tile[y, x, :3] = mask_tile[source_y, source_x, :3]
+        source_valid[y, x] = True
+
+    mask_tile[:, :, 3] = runtime_alpha
+    _require(np.array_equal(mask_tile[:, :, 3], runtime_alpha),
+             f"{tree_id}: final material-mask alpha does not match runtime atlas alpha exactly.")
+    return int(missing_labels.shape[0])
+
+
+def process_bake(bake_dir: Path, out_dir: Path, runtime_atlas_path: Path | None = None) -> dict[str, Path]:
+    """Validate captures and write albedo/mask atlases plus catalog and analysis."""
     bake_dir = Path(bake_dir)
     out_dir = Path(out_dir)
     _require(bake_dir.is_dir(), f"Bake directory does not exist: {bake_dir}")
     species = _load_bake(bake_dir)
+    runtime_atlas: np.ndarray | None = None
+    if runtime_atlas_path is not None:
+        try:
+            with Image.open(runtime_atlas_path) as image:
+                _require(image.format == "PNG", "Runtime atlas alpha reference must be a PNG.")
+                _require(image.size == (ATLAS_SIZE, ATLAS_SIZE),
+                         f"Runtime atlas alpha reference must be {ATLAS_SIZE}x{ATLAS_SIZE}.")
+                image.load()
+                runtime_atlas = np.asarray(image.convert("RGBA"), dtype=np.uint8).copy()
+        except PipelineError:
+            raise
+        except (OSError, ValueError) as error:
+            raise PipelineError(f"Cannot read runtime atlas alpha reference {runtime_atlas_path}: {error}") from error
+        _require(not np.any(runtime_atlas[TILE_SIZE:, TILE_SIZE:, 3]),
+                 "Runtime atlas fourth tile must remain transparent.")
 
     atlas = np.zeros((ATLAS_SIZE, ATLAS_SIZE, 4), dtype=np.uint8)
+    foliage_mask_atlas = np.zeros((ATLAS_SIZE, ATLAS_SIZE, 4), dtype=np.uint8)
     analysis_species: list[dict[str, Any]] = []
     for item in species:
         tree_id = item["id"]
@@ -193,13 +300,29 @@ def process_bake(bake_dir: Path, out_dir: Path) -> dict[str, Path]:
         _require(rgb_difference["mean_absolute_rgb_difference_0_255"] <= 0.05
                  and rgb_difference["fraction_pixels_above_two_rgb_levels"] <= 0.001,
                  f"{tree_id}: normalized albedo color drift exceeds MAE 0.05 or 0.1% pixels >2 levels.")
+        mask_counts = validate_foliage_mask(frames["adapted_foliage_mask"], frames["adapted_albedo"], tree_id)
         tile = weighted_box_downsample_rgba(frames["adapted_albedo"])
+        mask_tile = weighted_box_downsample_rgba(frames["adapted_foliage_mask"])
         padding, bbox = _transparent_padding(tile)
         x, y, width, height = item["atlas_rect_px"]
+        runtime_alignment: dict[str, Any] | None = None
+        filled_runtime_labels = 0
+        if runtime_atlas is not None:
+            runtime_alpha = runtime_atlas[y:y + height, x:x + width, 3]
+            runtime_alignment = _runtime_alpha_alignment(tile[:, :, 3], runtime_alpha, tree_id)
+            filled_runtime_labels = _align_mask_alpha_to_runtime(mask_tile, runtime_alpha, tree_id)
         atlas[y:y + height, x:x + width] = tile
+        foliage_mask_atlas[y:y + height, x:x + width] = mask_tile
         analysis_species.append({
             "id": tree_id,
+            "bark_material_name": item["bark_material_name"],
+            "foliage_material_name": item["foliage_material_name"],
             "silhouette_alpha_iou": alpha_checks,
+            "material_mask_alpha_exactly_matches_adapted_albedo": True,
+            "material_mask_raw_visible_pixel_counts": mask_counts,
+            "runtime_mask_alpha_exactly_matches_runtime_atlas": runtime_alignment is not None,
+            "runtime_mask_alpha_alignment_before_edge_reconciliation": runtime_alignment,
+            "runtime_only_edge_labels_filled_from_nearest_source_material_id": filled_runtime_labels,
             "opaque_rgb_difference_source_albedo_vs_adapted_albedo": rgb_difference,
             "atlas_tile_alpha_bbox_px_inclusive": bbox,
             "transparent_padding_px": padding,
@@ -208,9 +331,12 @@ def process_bake(bake_dir: Path, out_dir: Path) -> dict[str, Path]:
 
     empty_slot = atlas[TILE_SIZE:, TILE_SIZE:, :]
     _require(not np.any(empty_slot[:, :, 3]), "Reserved fourth atlas tile must remain transparent.")
+    empty_mask_slot = foliage_mask_atlas[TILE_SIZE:, TILE_SIZE:, :]
+    _require(not np.any(empty_mask_slot[:, :, 3]), "Reserved fourth material-mask tile must remain transparent.")
     catalog = {
         "format": "openrc-tree-assets v1",
         "atlas": "res://assets/landscape/trees/atlas.png",
+        "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
         "atlas_size_px": ATLAS_SIZE,
         "tile_size_px": TILE_SIZE,
         "alpha_cutoff": 0.5,
@@ -222,6 +348,14 @@ def process_bake(bake_dir: Path, out_dir: Path) -> dict[str, Path]:
         "atlas_size_px": ATLAS_SIZE,
         "tile_size_px": TILE_SIZE,
         "atlas_variant": "adapted_albedo",
+        "runtime_alpha_reference": str(runtime_atlas_path) if runtime_atlas_path is not None else None,
+        "foliage_mask": {
+            "variant": "adapted_foliage_mask",
+            "channel": "red",
+            "space": "linear data; do not mark as source_color in the runtime shader",
+            "source": "exact glTF material identity; no RGB classification or hand painting",
+            "downsampling": "2x2 BOX with source silhouette alpha weighting, aligned with the albedo atlas",
+        },
         "silhouette_iou_minimum": ALPHA_IOU_MINIMUM,
         "downsampling": {
             "method": "2x2 BOX; RGB is alpha-weighted in straight-alpha space, alpha is the arithmetic mean.",
@@ -235,23 +369,27 @@ def process_bake(bake_dir: Path, out_dir: Path) -> dict[str, Path]:
     atlas_path = out_dir / "atlas.png"
     catalog_path = out_dir / "catalog.json"
     analysis_path = out_dir / "atlas-analysis.json"
+    foliage_mask_path = out_dir / "foliage_mask.png"
     _save_png(atlas_path, atlas)
+    _save_png(foliage_mask_path, foliage_mask_atlas)
     catalog_path.write_text(json.dumps(catalog, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     analysis_path.write_text(json.dumps(analysis, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    return {"atlas": atlas_path, "catalog": catalog_path, "analysis": analysis_path}
+    return {"atlas": atlas_path, "foliage_mask": foliage_mask_path, "catalog": catalog_path, "analysis": analysis_path}
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bake", required=True, type=Path, help="Godot raw bake directory containing bake.json and 12 PNGs")
-    parser.add_argument("--out", required=True, type=Path, help="Output directory for atlas.png and catalog/analysis JSON")
+    parser.add_argument("--out", required=True, type=Path, help="Output directory for atlas, mask and catalog/analysis JSON")
+    parser.add_argument("--runtime-atlas", type=Path,
+                        help="Optional existing runtime atlas whose alpha coverage the generated material mask must match")
     return parser.parse_args(argv)
 
 
 def main(argv: list[str] | None = None) -> int:
     args = _parse_args(argv)
     try:
-        outputs = process_bake(args.bake, args.out)
+        outputs = process_bake(args.bake, args.out, args.runtime_atlas)
     except PipelineError as error:
         print(f"process_atlas: {error}", file=sys.stderr)
         return 1

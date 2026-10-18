@@ -7,11 +7,11 @@ The three Quaternius sources in this card pipeline are **offline authoring geome
 ```sh
 npm ci --prefix tools/trees
 PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" -m unittest discover -s tools/trees -p 'test_*.py'
-PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-bake-A
-PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-bake-B
+PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-bake-A --match-atlas app/assets/landscape/trees/atlas.png
+PYTHONDONTWRITEBYTECODE=1 "$(app/tests/visual-env.sh)" tools/trees/build.py --out /tmp/tree-bake-B --match-atlas app/assets/landscape/trees/atlas.png
 ```
 
-Requires pinned Godot 4.7.2 (`app/get-godot.sh`), Node 24, Xvfb and the existing pinned visual Python environment. `--out` must be new/empty. The pipeline verifies source hashes, validates glTF/GLB, normalizes tree height to 1 m, decodes both GLBs with GLTFDocument in an isolated project, renders source/derived comparisons, assembles the atlas, repairs alpha borders and inspects all mip levels. Subprocesses have timeouts and engine-error gates. Nothing writes back to `app/` automatically.
+Requires pinned Godot 4.7.2 (`app/get-godot.sh`), Node 24 and the existing pinned visual Python environment. Linux captures use Xvfb; Windows runs Godot natively. `--out` must be new/empty. The pipeline verifies source hashes, validates glTF/GLB, normalizes tree height to 1 m, decodes both GLBs with GLTFDocument in an isolated project, renders source/derived comparisons, assembles the atlas, repairs alpha borders and inspects all mip levels. Subprocesses have timeouts and engine-error gates. Nothing writes back to `app/` automatically.
 
 Normalization preserves topology, UVs, normals, textures and alpha cutoff. The upstream glTF has COLOR_0 components up to 1.00016785; the adapter permits only that reviewed small excursion (<=1.0002) and clamps it to 1. Any other source validation error is refused. The remaining Khronos warning is generated tangent space on the normal-mapped bark; Godot's importer ensures tangents. This is irrelevant to the unshaded albedo bake, and retained in the lit diagnostic.
 
@@ -19,7 +19,9 @@ Source and derived decoders explicitly use lossless images, generated mipmaps, f
 
 Each 1024² binary-alpha raw image is resolved to a 512² tile with alpha-weighted RGB and coverage alpha. Margins must be >=16 px. Acceptance is silhouette IoU >=0.995, RGB MAE <=0.05/255 and <=0.1% common opaque pixels differing by >2 channel levels. High per-pixel errors at rare leaf occlusion boundaries are reported, not hidden; float32 normalization changes a few raster edge samples. A source or palette change still needs human review. Runtime import is lossless, straight alpha, fix-alpha-border and mipmaps, with 3D auto-compression disabled.
 
-After inspecting source/derived, mips and repeat hashes, copy only `atlas/atlas.png` and `atlas/catalog.json` into `app/assets/landscape/trees/`; retain the exact source license. Refresh `assets/landscape/PROVENANCE.json` and proof reports. Do not overwrite imported assets during a running editor/test.
+After inspecting source/derived, mips and repeat hashes, promote the generated color atlas only when it is byte-identical to the frozen runtime atlas. For a mask-only palette change, use `--match-atlas app/assets/landscape/trees/atlas.png`; this checks the baked silhouette against the existing atlas and sets the mask's final alpha channel to the runtime alpha exactly. It fills the few runtime-only edge texels from the nearest material-ID label in the source-derived mask and rejects silhouette IoU below 0.995. Copy only the accepted `foliage_mask.png` and catalog metadata into `app/assets/landscape/trees/`; retain the exact source license. Refresh `assets/landscape/PROVENANCE.json` and proof reports. Do not overwrite imported assets during a running editor/test.
+
+The generated `foliage_mask.png` shares the color atlas UVs. Its red channel encodes each source glTF surface material by exact name (`Leaves_NormalTree` / `Leaves_Pine` versus `Bark_NormalTree`); it is derived from the unmodified source material assignment and alpha texture, not painted or inferred from RGB. The bake rejects unknown identities and requires raw mask alpha to match the adapted albedo coverage byte-for-byte. The atlas processor alpha-weights the aligned mask downsample, leaving silhouette edges fractional. Runtime samples red as linear data and applies the forest palette variation to foliage only. Copy this generated mask alongside the atlas; its fourth tile remains transparent.
 
 ```sh
 app/test.sh
@@ -60,7 +62,7 @@ Run the recipe regression with `python3 tools/trees/test_place.py` and the app's
 
 ## L15b tree wind
 
-The render-only tree response is ready for M5's shared `wind_vec`; production remains calm. Run the focused GPU evidence with:
+The render-only tree response consumes the session's shared `wind_vec` and simulation clock. Imported-tree wind defaults on for supported materials; the downloaded oak retains its static fallback. The calm weather preset naturally supplies zero wind. Run the focused GPU evidence with:
 
 ```sh
 "$(app/tests/visual-env.sh)" tools/trees/check_wind.py \
@@ -105,3 +107,23 @@ The two shared bark maps use lossless mip chains; the normal map explicitly enab
 `mip_compare.py --godot <exe> --baseline <frozen-app> --candidate <frozen-app> --mip-scope bark --out <new-folder>` runs the paired eight-asset, three-distance, two-resolution, eight-phase fixture. `--mip-scope all` retains the rejected experiment for reproduction. Keep these filtering controls separate from geometry and placement changes.
 
 Actual flight throughput and pilot readability remain separate. Use the existing `--frametimes` and [flight logging](../../docs/FLIGHT-LOGGING.md) workflows; headless numerical replay does not replay a camera through a changed forest.
+
+## Native flight and forest review
+
+The [completion evidence](../../docs/research/visual-quality-implementation/L6c/tree-completion/README.md) separates active-flight timing, offline camera tracks, aircraft contrast measurements and exact numerical replay. Use the direct native Godot executable on Windows; its console wrapper may return before the child finishes.
+
+`flight_quality.py --baseline <frozen-app> --candidate <frozen-app> --pairs 5 --warmup 10 --sample 60 --out <new-folder>` runs alternating AB/BA pairs through the normal flight scene and input callback. Both apps must share simulation and measurement code. The tree comparison explicitly uses imported-tree wind off/on and unchanged default grass. Environment selectors are recorded; changing field layout is a separately identified world. Run timing alone and retain raw clocks, input reads, viewport CPU/GPU metrics, memory counters and actual renderer settings. Monitor values are estimates reported by Godot, not a vendor memory-residency trace.
+
+`temporal_quality.py --app <frozen-app> --out <new-folder>` records five native flight/control camera routes at 720p and 1080p. It uses fixed 24 fps movie capture and retains per-frame camera/aircraft poses; these videos do not measure live throughput. `quality_capture.gd --motion=oak-approach|card-orbit|forest-pan --frames=192` adds prescribed camera tracks around production trees. Pass the normal `--out`, `--width` and `--height` options. Those tracks contain no aircraft simulation; a mesh approach is not a mesh-to-card transition because the current imported-tree and field-card populations are distinct.
+
+`readability_compare.py --godot <native-exe> --app <frozen-app> --out <new-folder>` captures two aircraft at 20/50/100 m against tree/sky backgrounds, with normal/autozoom views and noon/low-sun/sunset/night lighting. It reuses the existing contrast metrics, verifies image hashes and exposes invisible targets or background mismatches. Synthetic poses and pixel contrast do not establish human attitude recognition. Night cases exclude the optional aircraft night kit.
+
+`world_replay.gd --output=<new-absolute-json> --case=trim|runway --warmup-ticks=240 --sample-ticks=2160` reuses the detached production session fixture with the complete collision world and lake. Replay the adjacent `.orfl` with `app/tools/flight_log_cli.gd` and require complete exact replay with unchanged solver identity. Equal sampled state across different worlds only applies to the tested input tape.
+
+`palette_probe.gd --out=<new-absolute-json>` uses native Compatibility readback to compare the production world-space patch function against the CPU reference at all field-tree positions, including a translated parent. See the [retained command and exact fixture](../../docs/research/visual-quality-implementation/L6c/tree-completion/palette/README.md) for its versioned arguments and tolerance.
+
+## Decorative woodland margins
+
+`python tools/trees/place_woodland_edges.py --check` validates the generated `app/data/woodland_edges.json`; omit `--check` to regenerate it. `python tools/trees/test_place_woodland_edges.py` checks determinism, source geometry bounds and field/scenery exclusions. The runtime builder in `app/scenery/woodland_edge_habitat.gd` reuses the existing downloaded shrub atlas and short-grass mesh. It adds four small default-field patches, with five high-quality batches and 1,956 triangles; balanced quality is a stable subset and low quality omits this decoration.
+
+The complete high-quality scenery contains 649,919 source triangles under its 650,000 cap. Margins do not enter field/scenery data or the collision world. Inputs that differ from the bundled default field, scenery groups or lake skip the recipe. Source hashes in the generated report describe provenance; runtime does not compare text hashes across platform line endings. Re-run the generator and `test_woodland_edge_habitat.gd` plus complete scenery-budget checks after changing the bundled sources or exclusions.

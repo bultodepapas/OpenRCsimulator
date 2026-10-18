@@ -1,0 +1,9 @@
+{
+  "views": 48,
+  "mean_iou": 0.9273336756079237,
+  "minimum_iou": 0.8833333333333333,
+  "mean_bad_percent": 29.423717974647506,
+  "maximum_bad_percent": 65.17376763123454,
+  "decoded_image_bytes": 44387744,
+  "decoded_image_mib": 42.331451416015625
+}

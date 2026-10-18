@@ -51,7 +51,34 @@ python tools/grass/profile_session.py --godot .tools/Godot_v4.7.2-stable_win64_c
 python -m unittest discover -s tools/grass -p test_profile_session.py
 ```
 
-Before each launch, one bounded OS process inventory rejects another Godot process or an unavailable inventory; it never terminates other work. It does not poll subprocesses inside timed intervals or prove that no unrelated process starts later. The runner stops at the first invalid, paused, incomplete or mismatched run and retains its log, raw data and partial campaign. Eligible pacing misses are retained without being recategorized as collection failures. Runtime source/config, glTF buffers, native libraries and engine hashes bracket the campaign. Reports verify the live-input route, camera and render settings; the existing logger does not expose effective scenery/grass selection, which remains declared intent in this tool. Paired p95/p99 changes do not close exact-input, owner or combined visual-budget acceptance.
+Before each launch, one bounded OS process inventory rejects another Godot process or an unavailable inventory; it never terminates other work. It does not poll subprocesses inside timed intervals or prove that no unrelated process starts later. The runner stops at the first invalid, paused, incomplete or mismatched run and retains its log, raw data and partial campaign. Eligible pacing misses are retained without being recategorized as collection failures. Runtime source/config, glTF buffers, native libraries and engine hashes bracket the campaign, including both the Windows console launcher and its sibling runtime executable. Reports verify the live-input route, camera and render settings. The report-time `grass_scene_snapshot.gd` observer verifies effective ground/grass material bindings, species allocation and scenery quality; hidden or unsubmitted grass cannot qualify. It runs after frame collection and does not measure GPU visibility. Paired p95/p99 changes do not close exact-input, owner or combined visual-budget acceptance.
+
+## Audit and optimization checks
+
+The imported placement selector caches only deterministic per-species rank indices (6,000 packed 64-bit keys). It rechecks field and exclusion acceptance on every call and stops when each species quota is filled. `layout_benchmark.gd` compares complete output dictionaries/order against the independent previous algorithm across field, mask and quality cases. Run timings separately on an idle host:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app `
+  --script "$PWD/tools/grass/layout_benchmark.gd" -- --mode=check --report="$PWD/tmp/grass-layout-check.json"
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app `
+  --script "$PWD/tools/grass/layout_benchmark.gd" -- --mode=benchmark --grass-mode=enhanced `
+  --report="$PWD/tmp/grass-layout-timing.json"
+```
+
+Use a new report path; `--grass-mode=default` measures the other profile. Timings cover layout selection, not full scene loading or FPS. Cold rank-cache construction and warm alternating measurements are separate; raw microsecond samples are retained.
+
+`transition_capture.gd -- --material=default|enhanced --quality=low|balanced|high --out=<new-directory>` captures 92 matched visible/hidden poses per profile through the production field. Run it natively with the pinned engine and `--path app`; do not use headless mode. `python tools/grass/transition_compare.py --captures <six-directories> --out <new-report.json>` checks the complete matrix and reports moving-boundary residuals. These are diagnostics, not an automatic pop or static-seam pass.
+
+`filter_capture.gd -- --sampling=filtered|raw --scale=1|8|16 --out=<new-directory>` checks photographic grass sampling natively. Collect filtered 1× twice independently, raw 1×, raw 8× and raw 16×. Then run:
+
+```powershell
+python tools/grass/filter_compare.py --filtered <filtered> --raw <raw> `
+  --reference8 <reference8> --reference16 <reference16> --repeat <filtered-repeat> --out <new-report.json>
+```
+
+The probe verifies active production material bindings, shader-default provenance, crop projection, six-pose production parity and independent repeats. It compares linear-light photographic residuals with supersampled references while preserving base-pixel derivative fade decisions. The reference uncertainty remains part of the gate. This is a bounded sampling check, not universal shimmer or owner acceptance.
+
+`python tools/grass/check_state_invariance.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --out <new-directory>` records current Stik/P-51 runway tapes, exact-preflights them, then compares default/enhanced replay in the same process that builds and inspects the grass route. Both RC vehicles use their existing GDScript recorder/checkpoint replay. The headless fixture omits only the independent treeline object and renders no GPU frame. Before/after hashes reject drift in grass/checker sources; flight-log identities independently guard the solver. Existing output is never overwritten. See the [audit evidence](../../docs/research/visual-quality-implementation/grass-quality/README.md#2026-10-18-audit-and-optimization).
 
 ## Placement source
 

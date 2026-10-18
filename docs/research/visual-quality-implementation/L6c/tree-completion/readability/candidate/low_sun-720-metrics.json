@@ -1,0 +1,4396 @@
+{
+  "format": "openrc-tree-readability-metrics v1",
+  "captures": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-020m-sky-normal-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-sky-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "3ba23a3b849f732f423792093e3fc621c51e12b19871c8dc68ac27178ea41eb0",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-sky-normal-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 416,
+        "weber_contrast": -0.6197,
+        "share_low_contrast": 0.0529,
+        "delta_e": 41.14,
+        "background_saturation": 23.5,
+        "delta_e_p10": 9.53,
+        "bbox_px": {
+          "width": 52,
+          "height": 21,
+          "centre": [
+            631.5,
+            358.3
+          ]
+        },
+        "background": {
+          "pixels": 1247,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-020m-sky-normal-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-sky-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "562f577eafa5d51de6c878d95c69d786f332865f179cf60e47ca3143b165ee8e",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-sky-normal-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 404,
+        "weber_contrast": -0.542,
+        "share_low_contrast": 0.052,
+        "delta_e": 36.26,
+        "background_saturation": 24.3,
+        "delta_e_p10": 10.21,
+        "bbox_px": {
+          "width": 52,
+          "height": 20,
+          "centre": [
+            631.0,
+            360.4
+          ]
+        },
+        "background": {
+          "pixels": 1241,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-020m-sky-zoom-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-sky-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "3ba23a3b849f732f423792093e3fc621c51e12b19871c8dc68ac27178ea41eb0",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 416,
+        "weber_contrast": -0.6197,
+        "share_low_contrast": 0.0529,
+        "delta_e": 41.14,
+        "background_saturation": 23.5,
+        "delta_e_p10": 9.53,
+        "bbox_px": {
+          "width": 52,
+          "height": 21,
+          "centre": [
+            631.5,
+            358.3
+          ]
+        },
+        "background": {
+          "pixels": 1247,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-020m-sky-zoom-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-sky-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "562f577eafa5d51de6c878d95c69d786f332865f179cf60e47ca3143b165ee8e",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 404,
+        "weber_contrast": -0.542,
+        "share_low_contrast": 0.052,
+        "delta_e": 36.26,
+        "background_saturation": 24.3,
+        "delta_e_p10": 10.21,
+        "bbox_px": {
+          "width": 52,
+          "height": 20,
+          "centre": [
+            631.0,
+            360.4
+          ]
+        },
+        "background": {
+          "pixels": 1241,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-020m-trees-normal-background.png",
+      "background_sha256": "a142ade356a35f7c5f4443add9259089085a8fdb008996500df09cfd26fba5ac",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-trees-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "3258e5e9f91eaf2049d7b8a871c20d9d64eab5a69cb227b7181d0a5b1f2bc1b0",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-trees-normal-without-trees.png",
+      "without_trees_sha256": "ecb69c10f956e58b8fa0b8cea5b53f855a9530ef48eed5f6d14e4222323473e7",
+      "metrics": {
+        "pixels": 346,
+        "weber_contrast": -0.4714,
+        "share_low_contrast": 0.0231,
+        "delta_e": 38.1,
+        "background_saturation": 22.5,
+        "delta_e_p10": 10.52,
+        "bbox_px": {
+          "width": 52,
+          "height": 17,
+          "centre": [
+            630.7,
+            359.0
+          ]
+        },
+        "background": {
+          "pixels": 1195,
+          "trees": 0.5138,
+          "sky": 0.4862,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-020m-trees-normal-background.png",
+      "background_sha256": "a142ade356a35f7c5f4443add9259089085a8fdb008996500df09cfd26fba5ac",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-trees-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "01ac17d0ddeb4bdde68e8243dcce2a9a98ceb79046cddf4e01b80f0251dad5b5",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-trees-normal-without-trees.png",
+      "without_trees_sha256": "ecb69c10f956e58b8fa0b8cea5b53f855a9530ef48eed5f6d14e4222323473e7",
+      "metrics": {
+        "pixels": 344,
+        "weber_contrast": -0.4385,
+        "share_low_contrast": 0.032,
+        "delta_e": 39.22,
+        "background_saturation": 23.2,
+        "delta_e_p10": 11.4,
+        "bbox_px": {
+          "width": 52,
+          "height": 17,
+          "centre": [
+            630.6,
+            359.9
+          ]
+        },
+        "background": {
+          "pixels": 1187,
+          "trees": 0.5425,
+          "sky": 0.4575,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-020m-trees-zoom-background.png",
+      "background_sha256": "a142ade356a35f7c5f4443add9259089085a8fdb008996500df09cfd26fba5ac",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-trees-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "3258e5e9f91eaf2049d7b8a871c20d9d64eab5a69cb227b7181d0a5b1f2bc1b0",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "876e124136e008d47cf1e343b1eb5969f8a1ce798e1864985787d1f071ebd315",
+      "metrics": {
+        "pixels": 346,
+        "weber_contrast": -0.4714,
+        "share_low_contrast": 0.0231,
+        "delta_e": 38.1,
+        "background_saturation": 22.5,
+        "delta_e_p10": 10.52,
+        "bbox_px": {
+          "width": 52,
+          "height": 17,
+          "centre": [
+            630.7,
+            359.0
+          ]
+        },
+        "background": {
+          "pixels": 1195,
+          "trees": 0.5138,
+          "sky": 0.4862,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-020m-trees-zoom-background.png",
+      "background_sha256": "a142ade356a35f7c5f4443add9259089085a8fdb008996500df09cfd26fba5ac",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-020m-trees-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 58.76416711007712,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "01ac17d0ddeb4bdde68e8243dcce2a9a98ceb79046cddf4e01b80f0251dad5b5",
+      "without_trees_png": "jensen-das-ugly-stik-60-020m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "876e124136e008d47cf1e343b1eb5969f8a1ce798e1864985787d1f071ebd315",
+      "metrics": {
+        "pixels": 344,
+        "weber_contrast": -0.4385,
+        "share_low_contrast": 0.032,
+        "delta_e": 39.22,
+        "background_saturation": 23.2,
+        "delta_e_p10": 11.4,
+        "bbox_px": {
+          "width": 52,
+          "height": 17,
+          "centre": [
+            630.6,
+            359.9
+          ]
+        },
+        "background": {
+          "pixels": 1187,
+          "trees": 0.5425,
+          "sky": 0.4575,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-050m-sky-normal-background.png",
+      "background_sha256": "fb9e716d55677747227d504877bf90092b7765aa6ec458f1d51c3427f4776adf",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-050m-sky-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 23.505668637371045,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "32ed88f73dcf4010cdfe4e94eef06a438a2d8aedb1e0b565e7010cb82560ee7d",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-sky-normal-without-trees.png",
+      "without_trees_sha256": "4d0a9760603d2c93c866d2d8c30b9c12ab93ed3a668c6405e8acac2ef1db423b",
+      "metrics": {
+        "pixels": 77,
+        "weber_contrast": -0.5588,
+        "share_low_contrast": 0.039,
+        "delta_e": 33.4,
+        "background_saturation": 24.7,
+        "delta_e_p10": 11.38,
+        "bbox_px": {
+          "width": 21,
+          "height": 9,
+          "centre": [
+            636.4,
+            359.2
+          ]
+        },
+        "background": {
+          "pixels": 546,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-050m-sky-normal-background.png",
+      "background_sha256": "fb9e716d55677747227d504877bf90092b7765aa6ec458f1d51c3427f4776adf",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-050m-sky-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 23.505668637371045,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "c4c06c1221910d7ccfbbe898a1970b53c247083952fdef6b498d1f0aeb604496",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-sky-normal-without-trees.png",
+      "without_trees_sha256": "4d0a9760603d2c93c866d2d8c30b9c12ab93ed3a668c6405e8acac2ef1db423b",
+      "metrics": {
+        "pixels": 77,
+        "weber_contrast": -0.4917,
+        "share_low_contrast": 0.026,
+        "delta_e": 29.24,
+        "background_saturation": 24.8,
+        "delta_e_p10": 7.73,
+        "bbox_px": {
+          "width": 21,
+          "height": 9,
+          "centre": [
+            636.1,
+            359.9
+          ]
+        },
+        "background": {
+          "pixels": 550,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-050m-sky-zoom-background.png",
+      "background_sha256": "208dbeb67f5cb00dc0400761820273a5864ff3e8f04b5421a8005aeca7b74341",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 40.140811920166016,
+      "png": "jensen-das-ugly-stik-60-050m-sky-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 29.999998618512905,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "fee20c65da6ee32dda2df71e9ffd14dfff334a00efcb245714c18abd6b867ad8",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "e1061c1607ffe5b3adece800932d3a034cd734e392b12eee555f27823f89f7ac",
+      "metrics": {
+        "pixels": 120,
+        "weber_contrast": -0.5772,
+        "share_low_contrast": 0.0417,
+        "delta_e": 36.04,
+        "background_saturation": 24.8,
+        "delta_e_p10": 8.69,
+        "bbox_px": {
+          "width": 27,
+          "height": 11,
+          "centre": [
+            635.5,
+            359.0
+          ]
+        },
+        "background": {
+          "pixels": 671,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-050m-sky-zoom-background.png",
+      "background_sha256": "208dbeb67f5cb00dc0400761820273a5864ff3e8f04b5421a8005aeca7b74341",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 40.140811920166016,
+      "png": "jensen-das-ugly-stik-60-050m-sky-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 29.999998618512905,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "f9f23d00b9cd27862a35e57954a69c8e0dd08b28f4fee464880bd93ae6dfb440",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "e1061c1607ffe5b3adece800932d3a034cd734e392b12eee555f27823f89f7ac",
+      "metrics": {
+        "pixels": 120,
+        "weber_contrast": -0.5129,
+        "share_low_contrast": 0.0667,
+        "delta_e": 32.05,
+        "background_saturation": 24.8,
+        "delta_e_p10": 7.58,
+        "bbox_px": {
+          "width": 27,
+          "height": 11,
+          "centre": [
+            635.2,
+            360.0
+          ]
+        },
+        "background": {
+          "pixels": 671,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-050m-trees-normal-background.png",
+      "background_sha256": "bebc040b6a9338e1f2bc896d86ef91f6036dffdad7dce23336d0a1008effdf87",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-050m-trees-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 23.505668637371045,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "e749a8967c85601b80e59fe9368f86ee38b3711d88acbe3b2fd9e198530ed761",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5bac549ee5a0ac5aeddb0410a027a01f6163f36316c765c480f799a00febb25f",
+      "metrics": {
+        "pixels": 64,
+        "weber_contrast": -0.4315,
+        "share_low_contrast": 0.0625,
+        "delta_e": 32.64,
+        "background_saturation": 32.5,
+        "delta_e_p10": 10.97,
+        "bbox_px": {
+          "width": 21,
+          "height": 7,
+          "centre": [
+            636.1,
+            359.3
+          ]
+        },
+        "background": {
+          "pixels": 527,
+          "trees": 0.7097,
+          "sky": 0.2903,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-050m-trees-normal-background.png",
+      "background_sha256": "bebc040b6a9338e1f2bc896d86ef91f6036dffdad7dce23336d0a1008effdf87",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-050m-trees-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 23.505668637371045,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "ab4535f2704554b98244423c76df70af5b1e5943b6e43bb9617e05cf5878fffc",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5bac549ee5a0ac5aeddb0410a027a01f6163f36316c765c480f799a00febb25f",
+      "metrics": {
+        "pixels": 67,
+        "weber_contrast": -0.3793,
+        "share_low_contrast": 0.0896,
+        "delta_e": 32.78,
+        "background_saturation": 32.4,
+        "delta_e_p10": 9.08,
+        "bbox_px": {
+          "width": 21,
+          "height": 7,
+          "centre": [
+            636.1,
+            359.7
+          ]
+        },
+        "background": {
+          "pixels": 529,
+          "trees": 0.7164,
+          "sky": 0.2836,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-050m-trees-zoom-background.png",
+      "background_sha256": "b475d0d12c598ee7a5602ca75e96c2a752f225af9d8c879a980f9ef64da2ebf8",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 40.140811920166016,
+      "png": "jensen-das-ugly-stik-60-050m-trees-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 29.999998618512905,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "f783d3671d2e2cb9587e412d2aabc68ad21ac6394223b40598c11aabba0dc901",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "05ea854592c06c78386180bca32abb6a2dba40798203815aa13b8011f9bce23e",
+      "metrics": {
+        "pixels": 100,
+        "weber_contrast": -0.3745,
+        "share_low_contrast": 0.04,
+        "delta_e": 35.73,
+        "background_saturation": 34.3,
+        "delta_e_p10": 12.21,
+        "bbox_px": {
+          "width": 27,
+          "height": 9,
+          "centre": [
+            634.9,
+            359.3
+          ]
+        },
+        "background": {
+          "pixels": 640,
+          "trees": 0.7375,
+          "sky": 0.2625,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-050m-trees-zoom-background.png",
+      "background_sha256": "b475d0d12c598ee7a5602ca75e96c2a752f225af9d8c879a980f9ef64da2ebf8",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 40.140811920166016,
+      "png": "jensen-das-ugly-stik-60-050m-trees-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 29.999998618512905,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "8866b271a7fdbab049577ea7b6d6a6cb08498b8138f485a4bc48e17f989425c2",
+      "without_trees_png": "jensen-das-ugly-stik-60-050m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "05ea854592c06c78386180bca32abb6a2dba40798203815aa13b8011f9bce23e",
+      "metrics": {
+        "pixels": 101,
+        "weber_contrast": -0.3043,
+        "share_low_contrast": 0.0792,
+        "delta_e": 35.95,
+        "background_saturation": 34.6,
+        "delta_e_p10": 10.71,
+        "bbox_px": {
+          "width": 27,
+          "height": 9,
+          "centre": [
+            634.6,
+            359.7
+          ]
+        },
+        "background": {
+          "pixels": 641,
+          "trees": 0.7566,
+          "sky": 0.2434,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-sky-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "433ad7e670bcba264c7069038f9c0ea7629deed2c7806974c3f171b9b50fc6f2",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 28,
+        "weber_contrast": -0.4731,
+        "share_low_contrast": 0.0,
+        "delta_e": 23.82,
+        "background_saturation": 24.8,
+        "delta_e_p10": 13.04,
+        "bbox_px": {
+          "width": 11,
+          "height": 5,
+          "centre": [
+            638.0,
+            359.4
+          ]
+        },
+        "background": {
+          "pixels": 341,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-sky-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "02c2c1cbef9261b3ec212fd71b8183a803627c4424a1067b8292a8d27d1b9d25",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 27,
+        "weber_contrast": -0.4347,
+        "share_low_contrast": 0.0,
+        "delta_e": 22.13,
+        "background_saturation": 24.8,
+        "delta_e_p10": 11.73,
+        "bbox_px": {
+          "width": 11,
+          "height": 4,
+          "centre": [
+            637.6,
+            359.6
+          ]
+        },
+        "background": {
+          "pixels": 328,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-sky-normal-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "a8bb72fcac2ca5452d5fe856cd5bf68b6146b264c801362a70e5a11095b2490f",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 55,
+        "weber_contrast": -0.6416,
+        "share_low_contrast": 0.0,
+        "delta_e": 41.73,
+        "background_saturation": 24.8,
+        "delta_e_p10": 16.99,
+        "bbox_px": {
+          "width": 10,
+          "height": 12,
+          "centre": [
+            637.9,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 418,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-sky-normal-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "0adafad32f132ce60518c6ac57eb7f538d9b117df74c01cb35fe47a01b7c71a2",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 54,
+        "weber_contrast": -0.5877,
+        "share_low_contrast": 0.0185,
+        "delta_e": 42.22,
+        "background_saturation": 24.8,
+        "delta_e_p10": 15.02,
+        "bbox_px": {
+          "width": 10,
+          "height": 12,
+          "centre": [
+            638.0,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 414,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-sky-normal-climb.png",
+      "pose": "climb",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "2b49d9a0dbba7f29251695eb0b48275d8ef87842fee26a3942ce163db6b633ba",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 27,
+        "weber_contrast": -0.4068,
+        "share_low_contrast": 0.1481,
+        "delta_e": 22.23,
+        "background_saturation": 24.7,
+        "delta_e_p10": 5.96,
+        "bbox_px": {
+          "width": 9,
+          "height": 8,
+          "centre": [
+            638.4,
+            360.5
+          ]
+        },
+        "background": {
+          "pixels": 349,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-sky-normal-dive.png",
+      "pose": "dive",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "fbcc8cd9f661fb17dd8f36b4a03471cc571b03e6dd6fd40d0f7b3970f4a56544",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 28,
+        "weber_contrast": -0.3396,
+        "share_low_contrast": 0.25,
+        "delta_e": 24.81,
+        "background_saturation": 24.9,
+        "delta_e_p10": 10.57,
+        "bbox_px": {
+          "width": 8,
+          "height": 9,
+          "centre": [
+            638.4,
+            358.4
+          ]
+        },
+        "background": {
+          "pixels": 351,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-zoom-background.png",
+      "background_sha256": "d3e752ee16672e8260de2ea75b2fb467643296fbe0074ef524876657c41fbe61",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-sky-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "d377d37c9cfd0987aa38f0a0a3b3b94fac9b0a3dbf70960a4ee0ec3fe0cd51b7",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "d728ce7becbf3aa8379cebef950e162680eb3b474f4c7143dd9bb24a9cb2cc45",
+      "metrics": {
+        "pixels": 120,
+        "weber_contrast": -0.5696,
+        "share_low_contrast": 0.0417,
+        "delta_e": 35.13,
+        "background_saturation": 24.9,
+        "delta_e_p10": 9.09,
+        "bbox_px": {
+          "width": 27,
+          "height": 11,
+          "centre": [
+            635.5,
+            359.0
+          ]
+        },
+        "background": {
+          "pixels": 671,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-zoom-background.png",
+      "background_sha256": "d3e752ee16672e8260de2ea75b2fb467643296fbe0074ef524876657c41fbe61",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-sky-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "9d636be878ee25a79977a26dbeb5ed478550ab1794061381656a1cee8037003a",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "d728ce7becbf3aa8379cebef950e162680eb3b474f4c7143dd9bb24a9cb2cc45",
+      "metrics": {
+        "pixels": 120,
+        "weber_contrast": -0.5099,
+        "share_low_contrast": 0.0583,
+        "delta_e": 31.74,
+        "background_saturation": 24.9,
+        "delta_e_p10": 7.66,
+        "bbox_px": {
+          "width": 27,
+          "height": 11,
+          "centre": [
+            635.2,
+            360.0
+          ]
+        },
+        "background": {
+          "pixels": 671,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-zoom-background.png",
+      "background_sha256": "d3e752ee16672e8260de2ea75b2fb467643296fbe0074ef524876657c41fbe61",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-sky-zoom-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "0db7b1c93bd3c5171e32971e85df1cdc99a59ab554fd80342a94a9c88493df66",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "d728ce7becbf3aa8379cebef950e162680eb3b474f4c7143dd9bb24a9cb2cc45",
+      "metrics": {
+        "pixels": 286,
+        "weber_contrast": -0.697,
+        "share_low_contrast": 0.0105,
+        "delta_e": 48.41,
+        "background_saturation": 24.8,
+        "delta_e_p10": 16.81,
+        "bbox_px": {
+          "width": 27,
+          "height": 30,
+          "centre": [
+            636.2,
+            359.7
+          ]
+        },
+        "background": {
+          "pixels": 917,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-zoom-background.png",
+      "background_sha256": "d3e752ee16672e8260de2ea75b2fb467643296fbe0074ef524876657c41fbe61",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-sky-zoom-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "c343d408d51f4a5887d71e80c0b257dc25fbc182baa28f9af72ddcf508d195f3",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "d728ce7becbf3aa8379cebef950e162680eb3b474f4c7143dd9bb24a9cb2cc45",
+      "metrics": {
+        "pixels": 288,
+        "weber_contrast": -0.686,
+        "share_low_contrast": 0.0104,
+        "delta_e": 48.49,
+        "background_saturation": 24.8,
+        "delta_e_p10": 15.24,
+        "bbox_px": {
+          "width": 27,
+          "height": 30,
+          "centre": [
+            636.2,
+            359.4
+          ]
+        },
+        "background": {
+          "pixels": 917,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-zoom-background.png",
+      "background_sha256": "d3e752ee16672e8260de2ea75b2fb467643296fbe0074ef524876657c41fbe61",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-sky-zoom-climb.png",
+      "pose": "climb",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "f1f3d08f918439deacb229106b9a5f5714a84929ac7f0aa37175c16d63b82020",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "d728ce7becbf3aa8379cebef950e162680eb3b474f4c7143dd9bb24a9cb2cc45",
+      "metrics": {
+        "pixels": 113,
+        "weber_contrast": -0.5512,
+        "share_low_contrast": 0.0265,
+        "delta_e": 33.43,
+        "background_saturation": 24.7,
+        "delta_e_p10": 10.78,
+        "bbox_px": {
+          "width": 22,
+          "height": 21,
+          "centre": [
+            636.6,
+            361.8
+          ]
+        },
+        "background": {
+          "pixels": 700,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-sky-zoom-background.png",
+      "background_sha256": "d3e752ee16672e8260de2ea75b2fb467643296fbe0074ef524876657c41fbe61",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-sky-zoom-dive.png",
+      "pose": "dive",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "89c6e4ad142a393bd38894de55155c4dd244f47f3a81eff770bf7f6e3d965473",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "d728ce7becbf3aa8379cebef950e162680eb3b474f4c7143dd9bb24a9cb2cc45",
+      "metrics": {
+        "pixels": 119,
+        "weber_contrast": -0.51,
+        "share_low_contrast": 0.1261,
+        "delta_e": 36.72,
+        "background_saturation": 25.0,
+        "delta_e_p10": 11.33,
+        "bbox_px": {
+          "width": 21,
+          "height": 22,
+          "centre": [
+            636.7,
+            356.3
+          ]
+        },
+        "background": {
+          "pixels": 688,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-trees-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "ba745024eae26063225925c476e501b0c85584bb05603efd32fc09894e8cf7eb",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5638a54b0209ad7bb8703fd7441b1906327e2740d24623e0b5c006c619313eb6",
+      "metrics": {
+        "pixels": 24,
+        "weber_contrast": -0.1212,
+        "share_low_contrast": 0.125,
+        "delta_e": 19.62,
+        "background_saturation": 40.8,
+        "delta_e_p10": 7.68,
+        "bbox_px": {
+          "width": 11,
+          "height": 4,
+          "centre": [
+            637.8,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 326,
+          "trees": 0.908,
+          "sky": 0.092,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-trees-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "89bc7a6ef7a397c3ee1e9ae488838b870de2fb53891acc3de0cfbd2de1e5c547",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5638a54b0209ad7bb8703fd7441b1906327e2740d24623e0b5c006c619313eb6",
+      "metrics": {
+        "pixels": 24,
+        "weber_contrast": -0.2763,
+        "share_low_contrast": 0.1667,
+        "delta_e": 22.1,
+        "background_saturation": 40.9,
+        "delta_e_p10": 10.21,
+        "bbox_px": {
+          "width": 11,
+          "height": 4,
+          "centre": [
+            637.4,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 325,
+          "trees": 0.92,
+          "sky": 0.08,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-trees-normal-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "a80549b8bfe2129d1a4b68fe7b6db483635b86877bb0085a008ff8b93e8bd3d5",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5638a54b0209ad7bb8703fd7441b1906327e2740d24623e0b5c006c619313eb6",
+      "metrics": {
+        "pixels": 54,
+        "weber_contrast": -0.329,
+        "share_low_contrast": 0.2222,
+        "delta_e": 34.28,
+        "background_saturation": 38.8,
+        "delta_e_p10": 16.52,
+        "bbox_px": {
+          "width": 10,
+          "height": 12,
+          "centre": [
+            637.9,
+            359.4
+          ]
+        },
+        "background": {
+          "pixels": 418,
+          "trees": 0.9139,
+          "sky": 0.0861,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-trees-normal-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "bf40976df9fe67bf3e1f33b573d174b05687de6641ff99e0798f3abf53875c02",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5638a54b0209ad7bb8703fd7441b1906327e2740d24623e0b5c006c619313eb6",
+      "metrics": {
+        "pixels": 54,
+        "weber_contrast": -0.262,
+        "share_low_contrast": 0.3148,
+        "delta_e": 35.91,
+        "background_saturation": 38.9,
+        "delta_e_p10": 16.33,
+        "bbox_px": {
+          "width": 10,
+          "height": 12,
+          "centre": [
+            638.0,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 419,
+          "trees": 0.9141,
+          "sky": 0.0859,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-trees-normal-climb.png",
+      "pose": "climb",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "d836702fc5b12e37e830f8fee8990df8818080f43967b40d3a86aa670bbaf410",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5638a54b0209ad7bb8703fd7441b1906327e2740d24623e0b5c006c619313eb6",
+      "metrics": {
+        "pixels": 25,
+        "weber_contrast": 0.2194,
+        "share_low_contrast": 0.24,
+        "delta_e": 24.07,
+        "background_saturation": 42.1,
+        "delta_e_p10": 8.64,
+        "bbox_px": {
+          "width": 9,
+          "height": 8,
+          "centre": [
+            638.4,
+            360.7
+          ]
+        },
+        "background": {
+          "pixels": 349,
+          "trees": 0.9914,
+          "sky": 0.0086,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": false,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "jensen-das-ugly-stik-60-100m-trees-normal-dive.png",
+      "pose": "dive",
+      "projected_span_px": 11.752834318685522,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "eaebaa35951e851013ef3355ff6654f5c6a3535f5097bc83207581be937fdd50",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "5638a54b0209ad7bb8703fd7441b1906327e2740d24623e0b5c006c619313eb6",
+      "metrics": {
+        "pixels": 25,
+        "weber_contrast": -0.0212,
+        "share_low_contrast": 0.16,
+        "delta_e": 25.0,
+        "background_saturation": 40.8,
+        "delta_e_p10": 12.21,
+        "bbox_px": {
+          "width": 8,
+          "height": 9,
+          "centre": [
+            638.3,
+            358.4
+          ]
+        },
+        "background": {
+          "pixels": 349,
+          "trees": 0.9656,
+          "sky": 0.0344,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-zoom-background.png",
+      "background_sha256": "fcf3c70115b7b1d5a3577ff63e242ec746cf4c2d760c5d0806cea0ef02cac513",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-trees-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "43568740289b7a0a4825e4b176cc8f85ffc559c13a76b4e70986e35716563fe5",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "fc5bd47be75df5ddb1443d5bac7ca762e265b6274b3e904497d888a27866d4c0",
+      "metrics": {
+        "pixels": 100,
+        "weber_contrast": 0.2426,
+        "share_low_contrast": 0.02,
+        "delta_e": 35.4,
+        "background_saturation": 44.5,
+        "delta_e_p10": 10.84,
+        "bbox_px": {
+          "width": 27,
+          "height": 9,
+          "centre": [
+            634.9,
+            359.3
+          ]
+        },
+        "background": {
+          "pixels": 640,
+          "trees": 0.9969,
+          "sky": 0.0031,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-zoom-background.png",
+      "background_sha256": "fcf3c70115b7b1d5a3577ff63e242ec746cf4c2d760c5d0806cea0ef02cac513",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-trees-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "26b17e0f1f1240cf500d5edaba4ea55d5a71af4ec0fefd76aae9243ebb3f30bc",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "fc5bd47be75df5ddb1443d5bac7ca762e265b6274b3e904497d888a27866d4c0",
+      "metrics": {
+        "pixels": 101,
+        "weber_contrast": 0.2546,
+        "share_low_contrast": 0.0495,
+        "delta_e": 35.87,
+        "background_saturation": 45.1,
+        "delta_e_p10": 10.97,
+        "bbox_px": {
+          "width": 27,
+          "height": 9,
+          "centre": [
+            634.6,
+            359.7
+          ]
+        },
+        "background": {
+          "pixels": 641,
+          "trees": 0.9969,
+          "sky": 0.0031,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-zoom-background.png",
+      "background_sha256": "fcf3c70115b7b1d5a3577ff63e242ec746cf4c2d760c5d0806cea0ef02cac513",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-trees-zoom-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "d280e7ff7c392bccd4493928b2244e46691c3ca82bf8fd29a68353766a5f87e1",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "fc5bd47be75df5ddb1443d5bac7ca762e265b6274b3e904497d888a27866d4c0",
+      "metrics": {
+        "pixels": 288,
+        "weber_contrast": -0.0515,
+        "share_low_contrast": 0.1007,
+        "delta_e": 39.98,
+        "background_saturation": 44.0,
+        "delta_e_p10": 17.21,
+        "bbox_px": {
+          "width": 26,
+          "height": 30,
+          "centre": [
+            636.1,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 904,
+          "trees": 0.9978,
+          "sky": 0.0022,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-zoom-background.png",
+      "background_sha256": "fcf3c70115b7b1d5a3577ff63e242ec746cf4c2d760c5d0806cea0ef02cac513",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-trees-zoom-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "d2604591dc2dd0cdc4b2b1c455b0d5d2fd1dafcdaddd7a49708cc53ffe53ff46",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "fc5bd47be75df5ddb1443d5bac7ca762e265b6274b3e904497d888a27866d4c0",
+      "metrics": {
+        "pixels": 291,
+        "weber_contrast": -0.0052,
+        "share_low_contrast": 0.1718,
+        "delta_e": 40.85,
+        "background_saturation": 44.4,
+        "delta_e_p10": 17.32,
+        "bbox_px": {
+          "width": 27,
+          "height": 30,
+          "centre": [
+            636.1,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 916,
+          "trees": 0.9978,
+          "sky": 0.0022,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-zoom-background.png",
+      "background_sha256": "fcf3c70115b7b1d5a3577ff63e242ec746cf4c2d760c5d0806cea0ef02cac513",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-trees-zoom-climb.png",
+      "pose": "climb",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "2519298e0b5db804e196068cd96e9911fedea85458e5fbb0f27fab8384fd3aa0",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "fc5bd47be75df5ddb1443d5bac7ca762e265b6274b3e904497d888a27866d4c0",
+      "metrics": {
+        "pixels": 97,
+        "weber_contrast": 0.3241,
+        "share_low_contrast": 0.0309,
+        "delta_e": 34.36,
+        "background_saturation": 42.7,
+        "delta_e_p10": 10.66,
+        "bbox_px": {
+          "width": 22,
+          "height": 20,
+          "centre": [
+            636.4,
+            362.2
+          ]
+        },
+        "background": {
+          "pixels": 681,
+          "trees": 0.9985,
+          "sky": 0.0015,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "background_png": "jensen-das-ugly-stik-60-100m-trees-zoom-background.png",
+      "background_sha256": "fcf3c70115b7b1d5a3577ff63e242ec746cf4c2d760c5d0806cea0ef02cac513",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 20.70541000366211,
+      "png": "jensen-das-ugly-stik-60-100m-trees-zoom-dive.png",
+      "pose": "dive",
+      "projected_span_px": 30.00000109536132,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "fee8ee72b4f1779deaaa9002b11fbdd4ed5f42cdf468c5ff86158b8808eaba1d",
+      "without_trees_png": "jensen-das-ugly-stik-60-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "fc5bd47be75df5ddb1443d5bac7ca762e265b6274b3e904497d888a27866d4c0",
+      "metrics": {
+        "pixels": 100,
+        "weber_contrast": 0.3937,
+        "share_low_contrast": 0.05,
+        "delta_e": 34.4,
+        "background_saturation": 41.3,
+        "delta_e_p10": 11.33,
+        "bbox_px": {
+          "width": 20,
+          "height": 22,
+          "centre": [
+            636.7,
+            356.4
+          ]
+        },
+        "background": {
+          "pixels": 678,
+          "trees": 0.9971,
+          "sky": 0.0029,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-020m-sky-normal-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-sky-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "e0c850537cb46daf9149465f18a692ffaa7c5d8909e549fbcf35a0e78f15ac06",
+      "without_trees_png": "p51d-mustang-120-020m-sky-normal-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 1558,
+        "weber_contrast": -0.444,
+        "share_low_contrast": 0.0789,
+        "delta_e": 25.04,
+        "background_saturation": 23.2,
+        "delta_e_p10": 7.09,
+        "bbox_px": {
+          "width": 96,
+          "height": 40,
+          "centre": [
+            624.2,
+            357.5
+          ]
+        },
+        "background": {
+          "pixels": 2151,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-020m-sky-normal-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-sky-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "3f9b5ebfe0f1d7b022f2202a662140fa6262f775bb79f8c5626d7b7789cc01f0",
+      "without_trees_png": "p51d-mustang-120-020m-sky-normal-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 1567,
+        "weber_contrast": -0.5065,
+        "share_low_contrast": 0.1149,
+        "delta_e": 28.5,
+        "background_saturation": 22.6,
+        "delta_e_p10": 7.17,
+        "bbox_px": {
+          "width": 96,
+          "height": 41,
+          "centre": [
+            624.0,
+            361.3
+          ]
+        },
+        "background": {
+          "pixels": 2115,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-020m-sky-zoom-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-sky-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "e0c850537cb46daf9149465f18a692ffaa7c5d8909e549fbcf35a0e78f15ac06",
+      "without_trees_png": "p51d-mustang-120-020m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 1558,
+        "weber_contrast": -0.444,
+        "share_low_contrast": 0.0789,
+        "delta_e": 25.04,
+        "background_saturation": 23.2,
+        "delta_e_p10": 7.09,
+        "bbox_px": {
+          "width": 96,
+          "height": 40,
+          "centre": [
+            624.2,
+            357.5
+          ]
+        },
+        "background": {
+          "pixels": 2151,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-020m-sky-zoom-background.png",
+      "background_sha256": "722e83132e8b3a36d48b50a9289737a0cda79b4d4a76643c3c50146632439f92",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643449127674103,
+        -0.02716456726193428,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405790507793427,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-sky-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "sky",
+      "requested_distance_m": 20,
+      "sha256": "3f9b5ebfe0f1d7b022f2202a662140fa6262f775bb79f8c5626d7b7789cc01f0",
+      "without_trees_png": "p51d-mustang-120-020m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "20728781d7e15011b945e141db068391bbac6c2aa0935b8565ed01edd15387a0",
+      "metrics": {
+        "pixels": 1567,
+        "weber_contrast": -0.5065,
+        "share_low_contrast": 0.1149,
+        "delta_e": 28.5,
+        "background_saturation": 22.6,
+        "delta_e_p10": 7.17,
+        "bbox_px": {
+          "width": 96,
+          "height": 41,
+          "centre": [
+            624.0,
+            361.3
+          ]
+        },
+        "background": {
+          "pixels": 2115,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-020m-trees-normal-background.png",
+      "background_sha256": "6c8a9d4ef86dac16c7b882e2d60b508ee177bdc5fa1ed791473705367f36af9e",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-trees-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "5399ca6f69007ba4f856f4482d87ac28f6d6e7c43dc7f105c524be477f7d0068",
+      "without_trees_png": "p51d-mustang-120-020m-trees-normal-without-trees.png",
+      "without_trees_sha256": "51f7c1cd079f55d61af08defe6715854591f013b552a9e0deb2cceb550e01274",
+      "metrics": {
+        "pixels": 1502,
+        "weber_contrast": -0.2761,
+        "share_low_contrast": 0.032,
+        "delta_e": 32.48,
+        "background_saturation": 16.2,
+        "delta_e_p10": 12.84,
+        "bbox_px": {
+          "width": 96,
+          "height": 38,
+          "centre": [
+            623.6,
+            357.1
+          ]
+        },
+        "background": {
+          "pixels": 2147,
+          "trees": 0.388,
+          "sky": 0.612,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-020m-trees-normal-background.png",
+      "background_sha256": "6c8a9d4ef86dac16c7b882e2d60b508ee177bdc5fa1ed791473705367f36af9e",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-trees-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "6a80b150e5e4d5557f7022a3247de8802829d209923afdf099ac13ee7e933e15",
+      "without_trees_png": "p51d-mustang-120-020m-trees-normal-without-trees.png",
+      "without_trees_sha256": "51f7c1cd079f55d61af08defe6715854591f013b552a9e0deb2cceb550e01274",
+      "metrics": {
+        "pixels": 1514,
+        "weber_contrast": -0.1798,
+        "share_low_contrast": 0.0416,
+        "delta_e": 31.84,
+        "background_saturation": 19.5,
+        "delta_e_p10": 10.52,
+        "bbox_px": {
+          "width": 96,
+          "height": 38,
+          "centre": [
+            623.7,
+            361.8
+          ]
+        },
+        "background": {
+          "pixels": 2103,
+          "trees": 0.5378,
+          "sky": 0.4622,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-020m-trees-zoom-background.png",
+      "background_sha256": "a142ade356a35f7c5f4443add9259089085a8fdb008996500df09cfd26fba5ac",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-trees-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "5399ca6f69007ba4f856f4482d87ac28f6d6e7c43dc7f105c524be477f7d0068",
+      "without_trees_png": "p51d-mustang-120-020m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "51f7c1cd079f55d61af08defe6715854591f013b552a9e0deb2cceb550e01274",
+      "metrics": {
+        "pixels": 1502,
+        "weber_contrast": -0.2761,
+        "share_low_contrast": 0.032,
+        "delta_e": 32.48,
+        "background_saturation": 16.2,
+        "delta_e_p10": 12.84,
+        "bbox_px": {
+          "width": 96,
+          "height": 38,
+          "centre": [
+            623.6,
+            357.1
+          ]
+        },
+        "background": {
+          "pixels": 2147,
+          "trees": 0.388,
+          "sky": 0.612,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-020m-trees-zoom-background.png",
+      "background_sha256": "a142ade356a35f7c5f4443add9259089085a8fdb008996500df09cfd26fba5ac",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643446147441864,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630844235420227,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 20.0,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-020m-trees-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 108.9522627347765,
+      "requested_background": "trees",
+      "requested_distance_m": 20,
+      "sha256": "6a80b150e5e4d5557f7022a3247de8802829d209923afdf099ac13ee7e933e15",
+      "without_trees_png": "p51d-mustang-120-020m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "51f7c1cd079f55d61af08defe6715854591f013b552a9e0deb2cceb550e01274",
+      "metrics": {
+        "pixels": 1514,
+        "weber_contrast": -0.1798,
+        "share_low_contrast": 0.0416,
+        "delta_e": 31.84,
+        "background_saturation": 19.5,
+        "delta_e_p10": 10.52,
+        "bbox_px": {
+          "width": 96,
+          "height": 38,
+          "centre": [
+            623.7,
+            361.8
+          ]
+        },
+        "background": {
+          "pixels": 2103,
+          "trees": 0.5378,
+          "sky": 0.4622,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-050m-sky-normal-background.png",
+      "background_sha256": "fb9e716d55677747227d504877bf90092b7765aa6ec458f1d51c3427f4776adf",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-sky-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "349dcff4d9eca1b2ed027c957f340d898aed5246c6213a13e30b1665d15f5b54",
+      "without_trees_png": "p51d-mustang-120-050m-sky-normal-without-trees.png",
+      "without_trees_sha256": "4d0a9760603d2c93c866d2d8c30b9c12ab93ed3a668c6405e8acac2ef1db423b",
+      "metrics": {
+        "pixels": 273,
+        "weber_contrast": -0.4255,
+        "share_low_contrast": 0.0769,
+        "delta_e": 22.21,
+        "background_saturation": 23.6,
+        "delta_e_p10": 7.09,
+        "bbox_px": {
+          "width": 38,
+          "height": 16,
+          "centre": [
+            633.6,
+            358.7
+          ]
+        },
+        "background": {
+          "pixels": 848,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-050m-sky-normal-background.png",
+      "background_sha256": "fb9e716d55677747227d504877bf90092b7765aa6ec458f1d51c3427f4776adf",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-sky-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "14bd27dc8c75aca8a9239c55a0b1c28b4e49e5525a24687ab3ae2803f7ad0ea2",
+      "without_trees_png": "p51d-mustang-120-050m-sky-normal-without-trees.png",
+      "without_trees_sha256": "4d0a9760603d2c93c866d2d8c30b9c12ab93ed3a668c6405e8acac2ef1db423b",
+      "metrics": {
+        "pixels": 273,
+        "weber_contrast": -0.4843,
+        "share_low_contrast": 0.0989,
+        "delta_e": 25.7,
+        "background_saturation": 24.3,
+        "delta_e_p10": 7.36,
+        "bbox_px": {
+          "width": 38,
+          "height": 16,
+          "centre": [
+            633.5,
+            360.3
+          ]
+        },
+        "background": {
+          "pixels": 850,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-050m-sky-zoom-background.png",
+      "background_sha256": "fb9e716d55677747227d504877bf90092b7765aa6ec458f1d51c3427f4776adf",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-sky-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "349dcff4d9eca1b2ed027c957f340d898aed5246c6213a13e30b1665d15f5b54",
+      "without_trees_png": "p51d-mustang-120-050m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "4d0a9760603d2c93c866d2d8c30b9c12ab93ed3a668c6405e8acac2ef1db423b",
+      "metrics": {
+        "pixels": 273,
+        "weber_contrast": -0.4255,
+        "share_low_contrast": 0.0769,
+        "delta_e": 22.21,
+        "background_saturation": 23.6,
+        "delta_e_p10": 7.09,
+        "bbox_px": {
+          "width": 38,
+          "height": 16,
+          "centre": [
+            633.6,
+            358.7
+          ]
+        },
+        "background": {
+          "pixels": 848,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-050m-sky-zoom-background.png",
+      "background_sha256": "fb9e716d55677747227d504877bf90092b7765aa6ec458f1d51c3427f4776adf",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.02716456539928913,
+        0.9848077893257141,
+        0.17151030898094177,
+        -0.15405789017677307,
+        -0.17364820837974548,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-sky-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "sky",
+      "requested_distance_m": 50,
+      "sha256": "14bd27dc8c75aca8a9239c55a0b1c28b4e49e5525a24687ab3ae2803f7ad0ea2",
+      "without_trees_png": "p51d-mustang-120-050m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "4d0a9760603d2c93c866d2d8c30b9c12ab93ed3a668c6405e8acac2ef1db423b",
+      "metrics": {
+        "pixels": 273,
+        "weber_contrast": -0.4843,
+        "share_low_contrast": 0.0989,
+        "delta_e": 25.7,
+        "background_saturation": 24.3,
+        "delta_e_p10": 7.36,
+        "bbox_px": {
+          "width": 38,
+          "height": 16,
+          "centre": [
+            633.5,
+            360.3
+          ]
+        },
+        "background": {
+          "pixels": 850,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-050m-trees-normal-background.png",
+      "background_sha256": "bebc040b6a9338e1f2bc896d86ef91f6036dffdad7dce23336d0a1008effdf87",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-trees-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "fdb4353e8d89c1062528853540c4a8cb24c2a2a3a820bb9a23f25325eb749e74",
+      "without_trees_png": "p51d-mustang-120-050m-trees-normal-without-trees.png",
+      "without_trees_sha256": "239a857dce95d4cad99515dd9be07683b979c5bed11b821b26f04ca208fe5b20",
+      "metrics": {
+        "pixels": 263,
+        "weber_contrast": -0.211,
+        "share_low_contrast": 0.0722,
+        "delta_e": 32.55,
+        "background_saturation": 24.2,
+        "delta_e_p10": 11.09,
+        "bbox_px": {
+          "width": 38,
+          "height": 15,
+          "centre": [
+            633.3,
+            358.5
+          ]
+        },
+        "background": {
+          "pixels": 842,
+          "trees": 0.5048,
+          "sky": 0.4952,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-050m-trees-normal-background.png",
+      "background_sha256": "bebc040b6a9338e1f2bc896d86ef91f6036dffdad7dce23336d0a1008effdf87",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-trees-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "f5f237f901428e1cc4bc62eb125fdb2644e9cef521d0eda361cea3ef41ee58bc",
+      "without_trees_png": "p51d-mustang-120-050m-trees-normal-without-trees.png",
+      "without_trees_sha256": "239a857dce95d4cad99515dd9be07683b979c5bed11b821b26f04ca208fe5b20",
+      "metrics": {
+        "pixels": 262,
+        "weber_contrast": -0.1413,
+        "share_low_contrast": 0.0992,
+        "delta_e": 31.33,
+        "background_saturation": 25.2,
+        "delta_e_p10": 9.91,
+        "bbox_px": {
+          "width": 38,
+          "height": 15,
+          "centre": [
+            633.4,
+            360.5
+          ]
+        },
+        "background": {
+          "pixels": 855,
+          "trees": 0.5942,
+          "sky": 0.4058,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-050m-trees-zoom-background.png",
+      "background_sha256": "bebc040b6a9338e1f2bc896d86ef91f6036dffdad7dce23336d0a1008effdf87",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-trees-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "fdb4353e8d89c1062528853540c4a8cb24c2a2a3a820bb9a23f25325eb749e74",
+      "without_trees_png": "p51d-mustang-120-050m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "239a857dce95d4cad99515dd9be07683b979c5bed11b821b26f04ca208fe5b20",
+      "metrics": {
+        "pixels": 263,
+        "weber_contrast": -0.211,
+        "share_low_contrast": 0.0722,
+        "delta_e": 32.55,
+        "background_saturation": 24.2,
+        "delta_e_p10": 11.09,
+        "bbox_px": {
+          "width": 38,
+          "height": 15,
+          "centre": [
+            633.3,
+            358.5
+          ]
+        },
+        "background": {
+          "pixels": 842,
+          "trees": 0.5048,
+          "sky": 0.4952,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-050m-trees-zoom-background.png",
+      "background_sha256": "bebc040b6a9338e1f2bc896d86ef91f6036dffdad7dce23336d0a1008effdf87",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996581047773,
+        0.9991944432258606,
+        0.03963771089911461,
+        -0.15630845725536346,
+        -0.04013180360198021,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 49.999996185302734,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-050m-trees-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 43.580908418870045,
+      "requested_background": "trees",
+      "requested_distance_m": 50,
+      "sha256": "f5f237f901428e1cc4bc62eb125fdb2644e9cef521d0eda361cea3ef41ee58bc",
+      "without_trees_png": "p51d-mustang-120-050m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "239a857dce95d4cad99515dd9be07683b979c5bed11b821b26f04ca208fe5b20",
+      "metrics": {
+        "pixels": 262,
+        "weber_contrast": -0.1413,
+        "share_low_contrast": 0.0992,
+        "delta_e": 31.33,
+        "background_saturation": 25.2,
+        "delta_e_p10": 9.91,
+        "bbox_px": {
+          "width": 38,
+          "height": 15,
+          "centre": [
+            633.4,
+            360.5
+          ]
+        },
+        "background": {
+          "pixels": 855,
+          "trees": 0.5942,
+          "sky": 0.4058,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": false
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-sky-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "0a9adeed615605c4db1ff4a7424faf5b48c5a97025c5f1168d12173d1f222e61",
+      "without_trees_png": "p51d-mustang-120-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 77,
+        "weber_contrast": -0.3989,
+        "share_low_contrast": 0.0649,
+        "delta_e": 19.94,
+        "background_saturation": 24.9,
+        "delta_e_p10": 6.93,
+        "bbox_px": {
+          "width": 20,
+          "height": 8,
+          "centre": [
+            636.6,
+            359.0
+          ]
+        },
+        "background": {
+          "pixels": 491,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-sky-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "16c3437a6ba493ecb88599fc2e755746be77408f7bddaa64ec3f344cd7abb69f",
+      "without_trees_png": "p51d-mustang-120-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 74,
+        "weber_contrast": -0.4244,
+        "share_low_contrast": 0.0541,
+        "delta_e": 20.97,
+        "background_saturation": 24.8,
+        "delta_e_p10": 6.03,
+        "bbox_px": {
+          "width": 20,
+          "height": 8,
+          "centre": [
+            636.4,
+            359.9
+          ]
+        },
+        "background": {
+          "pixels": 487,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-sky-normal-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "9eaae18e3aed09127d5fcdf16bf76d6e6a1cf83583c01a8300457f8fb290e038",
+      "without_trees_png": "p51d-mustang-120-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 141,
+        "weber_contrast": -0.4286,
+        "share_low_contrast": 0.0638,
+        "delta_e": 19.21,
+        "background_saturation": 24.7,
+        "delta_e_p10": 7.28,
+        "bbox_px": {
+          "width": 20,
+          "height": 22,
+          "centre": [
+            637.5,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 687,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-sky-normal-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "739136bc905dd1e1075e46a0f243cb99dc26a5bb8fb6850f8ca534253c2a2837",
+      "without_trees_png": "p51d-mustang-120-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 142,
+        "weber_contrast": -0.4336,
+        "share_low_contrast": 0.0704,
+        "delta_e": 19.92,
+        "background_saturation": 24.7,
+        "delta_e_p10": 6.13,
+        "bbox_px": {
+          "width": 20,
+          "height": 22,
+          "centre": [
+            637.5,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 687,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-sky-normal-climb.png",
+      "pose": "climb",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "86883f3706f68bf68d3549269c1bfff5fe757f6a8a5e76141a080a08e86eddb4",
+      "without_trees_png": "p51d-mustang-120-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 73,
+        "weber_contrast": -0.4272,
+        "share_low_contrast": 0.0274,
+        "delta_e": 20.44,
+        "background_saturation": 24.6,
+        "delta_e_p10": 7.03,
+        "bbox_px": {
+          "width": 16,
+          "height": 13,
+          "centre": [
+            637.2,
+            361.4
+          ]
+        },
+        "background": {
+          "pixels": 497,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-sky-normal-background.png",
+      "background_sha256": "52df8e22b93487b71b14f464cb3b85bac0904fc7b9d357e62ac82475e1123423",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-sky-normal-dive.png",
+      "pose": "dive",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "dde306a056206bd9a85e442d47f7fc2255c9df34e26f48e9e3bb826cda5838a3",
+      "without_trees_png": "p51d-mustang-120-100m-sky-normal-without-trees.png",
+      "without_trees_sha256": "5ca2f2f0d8f19c7203a9bd986902a2d9e068f810589cdca9c124ad337e4690ab",
+      "metrics": {
+        "pixels": 73,
+        "weber_contrast": -0.4169,
+        "share_low_contrast": 0.137,
+        "delta_e": 21.23,
+        "background_saturation": 24.8,
+        "delta_e_p10": 7.72,
+        "bbox_px": {
+          "width": 15,
+          "height": 16,
+          "centre": [
+            637.6,
+            357.1
+          ]
+        },
+        "background": {
+          "pixels": 521,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-sky-zoom-background.png",
+      "background_sha256": "d9d112619fb95a6b4c4c1e0a8fc68cd2b40d2b7ea1be5838af3542f9f53b2c0a",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-sky-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "8577e9b6f9fde580d99865e9a49ecd77ededdf020e532ada6b36223b472013e3",
+      "without_trees_png": "p51d-mustang-120-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "f4dcd9d450680ce57a1748ba7d0cd2f4e752a48382c504a4952063daa14edb6c",
+      "metrics": {
+        "pixels": 141,
+        "weber_contrast": -0.3903,
+        "share_low_contrast": 0.1206,
+        "delta_e": 20.41,
+        "background_saturation": 24.9,
+        "delta_e_p10": 4.5,
+        "bbox_px": {
+          "width": 26,
+          "height": 12,
+          "centre": [
+            635.3,
+            359.0
+          ]
+        },
+        "background": {
+          "pixels": 615,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-sky-zoom-background.png",
+      "background_sha256": "d9d112619fb95a6b4c4c1e0a8fc68cd2b40d2b7ea1be5838af3542f9f53b2c0a",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-sky-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "a5e9a4ec4264433dd7a5e409ee0a3f75592898136add8ea269f71e655ff4469f",
+      "without_trees_png": "p51d-mustang-120-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "f4dcd9d450680ce57a1748ba7d0cd2f4e752a48382c504a4952063daa14edb6c",
+      "metrics": {
+        "pixels": 139,
+        "weber_contrast": -0.4364,
+        "share_low_contrast": 0.1367,
+        "delta_e": 21.88,
+        "background_saturation": 24.8,
+        "delta_e_p10": 4.67,
+        "bbox_px": {
+          "width": 26,
+          "height": 12,
+          "centre": [
+            635.3,
+            360.0
+          ]
+        },
+        "background": {
+          "pixels": 621,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-sky-zoom-background.png",
+      "background_sha256": "d9d112619fb95a6b4c4c1e0a8fc68cd2b40d2b7ea1be5838af3542f9f53b2c0a",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-sky-zoom-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "0f7990692669a57c8e994e405bd89a089abdf9a3f8ce334a11321ecda212e62d",
+      "without_trees_png": "p51d-mustang-120-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "f4dcd9d450680ce57a1748ba7d0cd2f4e752a48382c504a4952063daa14edb6c",
+      "metrics": {
+        "pixels": 253,
+        "weber_contrast": -0.4248,
+        "share_low_contrast": 0.0553,
+        "delta_e": 19.23,
+        "background_saturation": 24.7,
+        "delta_e_p10": 7.35,
+        "bbox_px": {
+          "width": 26,
+          "height": 30,
+          "centre": [
+            636.9,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 888,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-sky-zoom-background.png",
+      "background_sha256": "d9d112619fb95a6b4c4c1e0a8fc68cd2b40d2b7ea1be5838af3542f9f53b2c0a",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-sky-zoom-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "f579fbcd97d5a94d1c9b77b44a53b4c8bf68f4697c059a4537687dfff1bfde68",
+      "without_trees_png": "p51d-mustang-120-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "f4dcd9d450680ce57a1748ba7d0cd2f4e752a48382c504a4952063daa14edb6c",
+      "metrics": {
+        "pixels": 255,
+        "weber_contrast": -0.4392,
+        "share_low_contrast": 0.0431,
+        "delta_e": 19.65,
+        "background_saturation": 24.7,
+        "delta_e_p10": 7.33,
+        "bbox_px": {
+          "width": 26,
+          "height": 30,
+          "centre": [
+            636.9,
+            359.4
+          ]
+        },
+        "background": {
+          "pixels": 887,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-sky-zoom-background.png",
+      "background_sha256": "d9d112619fb95a6b4c4c1e0a8fc68cd2b40d2b7ea1be5838af3542f9f53b2c0a",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-sky-zoom-climb.png",
+      "pose": "climb",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "596a332f71c22d95aa18f8c14edcb3115d6c075e3c98505b51ee7a2da80087fe",
+      "without_trees_png": "p51d-mustang-120-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "f4dcd9d450680ce57a1748ba7d0cd2f4e752a48382c504a4952063daa14edb6c",
+      "metrics": {
+        "pixels": 132,
+        "weber_contrast": -0.4173,
+        "share_low_contrast": 0.1136,
+        "delta_e": 21.05,
+        "background_saturation": 24.6,
+        "delta_e_p10": 6.82,
+        "bbox_px": {
+          "width": 23,
+          "height": 19,
+          "centre": [
+            636.0,
+            362.2
+          ]
+        },
+        "background": {
+          "pixels": 658,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-sky-zoom-background.png",
+      "background_sha256": "d9d112619fb95a6b4c4c1e0a8fc68cd2b40d2b7ea1be5838af3542f9f53b2c0a",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.027164561673998833,
+        0.9848077893257141,
+        0.17151029407978058,
+        -0.15405789017677307,
+        -0.1736481934785843,
+        0.9726831316947937,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-sky-zoom-dive.png",
+      "pose": "dive",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "sky",
+      "requested_distance_m": 100,
+      "sha256": "e05a4c5e253f4b76a4acdff75a26773f6e709fff30a2728bb72003e61a153b76",
+      "without_trees_png": "p51d-mustang-120-100m-sky-zoom-without-trees.png",
+      "without_trees_sha256": "f4dcd9d450680ce57a1748ba7d0cd2f4e752a48382c504a4952063daa14edb6c",
+      "metrics": {
+        "pixels": 131,
+        "weber_contrast": -0.4048,
+        "share_low_contrast": 0.1069,
+        "delta_e": 22.79,
+        "background_saturation": 24.9,
+        "delta_e_p10": 8.79,
+        "bbox_px": {
+          "width": 20,
+          "height": 22,
+          "centre": [
+            636.9,
+            356.2
+          ]
+        },
+        "background": {
+          "pixels": 660,
+          "trees": 0.0,
+          "sky": 1.0,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-trees-normal-level.png",
+      "pose": "level",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "db44763d96e8b1fd48b39b4f55d9225494d7907bf58d52b6002bf057a24031b4",
+      "without_trees_png": "p51d-mustang-120-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "d0d1a387b2a99c41fec5dba1a287d120e4e595a8d70bb97b6e29c5ce0e2421b8",
+      "metrics": {
+        "pixels": 74,
+        "weber_contrast": -0.0603,
+        "share_low_contrast": 0.0811,
+        "delta_e": 31.03,
+        "background_saturation": 32.7,
+        "delta_e_p10": 10.78,
+        "bbox_px": {
+          "width": 20,
+          "height": 8,
+          "centre": [
+            636.5,
+            359.0
+          ]
+        },
+        "background": {
+          "pixels": 495,
+          "trees": 0.7152,
+          "sky": 0.2848,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-trees-normal-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "7d536e3c893b5b2420bef4eb0568f88d866b93561824afbf5031ac410408f220",
+      "without_trees_png": "p51d-mustang-120-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "d0d1a387b2a99c41fec5dba1a287d120e4e595a8d70bb97b6e29c5ce0e2421b8",
+      "metrics": {
+        "pixels": 75,
+        "weber_contrast": -0.0762,
+        "share_low_contrast": 0.08,
+        "delta_e": 28.6,
+        "background_saturation": 33.1,
+        "delta_e_p10": 7.71,
+        "bbox_px": {
+          "width": 20,
+          "height": 8,
+          "centre": [
+            636.4,
+            359.9
+          ]
+        },
+        "background": {
+          "pixels": 486,
+          "trees": 0.7387,
+          "sky": 0.2613,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-trees-normal-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "3839071454ba43cfd84e1ad6c67a379b84c707dcf093c2a9962f91ad6bc8bab2",
+      "without_trees_png": "p51d-mustang-120-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "d0d1a387b2a99c41fec5dba1a287d120e4e595a8d70bb97b6e29c5ce0e2421b8",
+      "metrics": {
+        "pixels": 142,
+        "weber_contrast": 0.2779,
+        "share_low_contrast": 0.0211,
+        "delta_e": 33.07,
+        "background_saturation": 31.1,
+        "delta_e_p10": 10.93,
+        "bbox_px": {
+          "width": 19,
+          "height": 22,
+          "centre": [
+            637.4,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 674,
+          "trees": 0.7893,
+          "sky": 0.2107,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-trees-normal-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "e43fb3e64b0d1bd1f99f7e2c24f2baf3423988f536967ca389ff7131f182228f",
+      "without_trees_png": "p51d-mustang-120-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "d0d1a387b2a99c41fec5dba1a287d120e4e595a8d70bb97b6e29c5ce0e2421b8",
+      "metrics": {
+        "pixels": 141,
+        "weber_contrast": 0.304,
+        "share_low_contrast": 0.0426,
+        "delta_e": 33.36,
+        "background_saturation": 31.2,
+        "delta_e_p10": 11.08,
+        "bbox_px": {
+          "width": 19,
+          "height": 22,
+          "centre": [
+            637.5,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 674,
+          "trees": 0.7908,
+          "sky": 0.2092,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-trees-normal-climb.png",
+      "pose": "climb",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "731d0a29ced94e9c180f66cf4a8b096667ece00caaa2d324caaea001d074dff4",
+      "without_trees_png": "p51d-mustang-120-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "d0d1a387b2a99c41fec5dba1a287d120e4e595a8d70bb97b6e29c5ce0e2421b8",
+      "metrics": {
+        "pixels": 71,
+        "weber_contrast": 0.5007,
+        "share_low_contrast": 0.1268,
+        "delta_e": 31.24,
+        "background_saturation": 33.6,
+        "delta_e_p10": 11.56,
+        "bbox_px": {
+          "width": 16,
+          "height": 13,
+          "centre": [
+            636.9,
+            361.4
+          ]
+        },
+        "background": {
+          "pixels": 500,
+          "trees": 0.844,
+          "sky": 0.156,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": false,
+      "background_png": "p51d-mustang-120-100m-trees-normal-background.png",
+      "background_sha256": "2277a01ce1d8c2bceeca2d7ebe8a082eb497c24689ba3773a0699bbde409dc6b",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 50.0,
+      "png": "p51d-mustang-120-100m-trees-normal-dive.png",
+      "pose": "dive",
+      "projected_span_px": 21.790454209435023,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "f2958710a9a11abb71d319929534d6042ebb4c4e011c902ad7e75003ad1e2a98",
+      "without_trees_png": "p51d-mustang-120-100m-trees-normal-without-trees.png",
+      "without_trees_sha256": "d0d1a387b2a99c41fec5dba1a287d120e4e595a8d70bb97b6e29c5ce0e2421b8",
+      "metrics": {
+        "pixels": 67,
+        "weber_contrast": 0.4682,
+        "share_low_contrast": 0.0746,
+        "delta_e": 31.88,
+        "background_saturation": 37.6,
+        "delta_e_p10": 13.03,
+        "bbox_px": {
+          "width": 13,
+          "height": 16,
+          "centre": [
+            637.6,
+            357.0
+          ]
+        },
+        "background": {
+          "pixels": 499,
+          "trees": 0.8778,
+          "sky": 0.1222,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-trees-zoom-background.png",
+      "background_sha256": "6c7cb0a84849b879347bcd66c69259ef43c5deadf6c35db77c4d5a572b49bbd4",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-trees-zoom-level.png",
+      "pose": "level",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "1071df62eacd860f93274f54a7e5857b734e2e9f9cb586c2f43cf969021c06c5",
+      "without_trees_png": "p51d-mustang-120-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "284a2572d6629a4456e5832bc7c33355298fbfea5ac88035665ba060cb954cd0",
+      "metrics": {
+        "pixels": 137,
+        "weber_contrast": 0.0266,
+        "share_low_contrast": 0.1095,
+        "delta_e": 31.66,
+        "background_saturation": 35.4,
+        "delta_e_p10": 10.41,
+        "bbox_px": {
+          "width": 26,
+          "height": 11,
+          "centre": [
+            635.3,
+            358.9
+          ]
+        },
+        "background": {
+          "pixels": 605,
+          "trees": 0.7504,
+          "sky": 0.2496,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-trees-zoom-background.png",
+      "background_sha256": "6c7cb0a84849b879347bcd66c69259ef43c5deadf6c35db77c4d5a572b49bbd4",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-trees-zoom-inverted.png",
+      "pose": "inverted",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "3441c5579381e42c84d7acb86ee6510d4c49a7915814683fea15f188c7ac946c",
+      "without_trees_png": "p51d-mustang-120-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "284a2572d6629a4456e5832bc7c33355298fbfea5ac88035665ba060cb954cd0",
+      "metrics": {
+        "pixels": 138,
+        "weber_contrast": 0.1126,
+        "share_low_contrast": 0.1304,
+        "delta_e": 30.35,
+        "background_saturation": 36.4,
+        "delta_e_p10": 10.19,
+        "bbox_px": {
+          "width": 26,
+          "height": 11,
+          "centre": [
+            635.1,
+            360.1
+          ]
+        },
+        "background": {
+          "pixels": 609,
+          "trees": 0.798,
+          "sky": 0.202,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-trees-zoom-background.png",
+      "background_sha256": "6c7cb0a84849b879347bcd66c69259ef43c5deadf6c35db77c4d5a572b49bbd4",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-trees-zoom-knife_left.png",
+      "pose": "knife_left",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "d6dd7168e58872e62422c3449f7e366f16df63b5b8667731d221716926b7f2fa",
+      "without_trees_png": "p51d-mustang-120-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "284a2572d6629a4456e5832bc7c33355298fbfea5ac88035665ba060cb954cd0",
+      "metrics": {
+        "pixels": 256,
+        "weber_contrast": 0.4474,
+        "share_low_contrast": 0.0195,
+        "delta_e": 35.02,
+        "background_saturation": 34.3,
+        "delta_e_p10": 10.95,
+        "bbox_px": {
+          "width": 26,
+          "height": 30,
+          "centre": [
+            636.9,
+            359.4
+          ]
+        },
+        "background": {
+          "pixels": 895,
+          "trees": 0.8235,
+          "sky": 0.1765,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-trees-zoom-background.png",
+      "background_sha256": "6c7cb0a84849b879347bcd66c69259ef43c5deadf6c35db77c4d5a572b49bbd4",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-trees-zoom-knife_right.png",
+      "pose": "knife_right",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "fb99b732ed630a9418035fa0d6cb01beae159221771fdf2186b146fd871a7a6c",
+      "without_trees_png": "p51d-mustang-120-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "284a2572d6629a4456e5832bc7c33355298fbfea5ac88035665ba060cb954cd0",
+      "metrics": {
+        "pixels": 257,
+        "weber_contrast": 0.4462,
+        "share_low_contrast": 0.0428,
+        "delta_e": 35.02,
+        "background_saturation": 34.4,
+        "delta_e_p10": 11.52,
+        "bbox_px": {
+          "width": 26,
+          "height": 30,
+          "centre": [
+            636.8,
+            359.5
+          ]
+        },
+        "background": {
+          "pixels": 893,
+          "trees": 0.8231,
+          "sky": 0.1769,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-trees-zoom-background.png",
+      "background_sha256": "6c7cb0a84849b879347bcd66c69259ef43c5deadf6c35db77c4d5a572b49bbd4",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-trees-zoom-climb.png",
+      "pose": "climb",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "b75ca3a531523edcc66fdd9f43f24f6df51a72ccd8e323ca205f8f59105c2e48",
+      "without_trees_png": "p51d-mustang-120-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "284a2572d6629a4456e5832bc7c33355298fbfea5ac88035665ba060cb954cd0",
+      "metrics": {
+        "pixels": 128,
+        "weber_contrast": 0.8703,
+        "share_low_contrast": 0.0703,
+        "delta_e": 32.7,
+        "background_saturation": 37.1,
+        "delta_e_p10": 10.99,
+        "bbox_px": {
+          "width": 22,
+          "height": 19,
+          "centre": [
+            636.0,
+            362.2
+          ]
+        },
+        "background": {
+          "pixels": 645,
+          "trees": 0.9209,
+          "sky": 0.0791,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "background_png": "p51d-mustang-120-100m-trees-zoom-background.png",
+      "background_sha256": "6c7cb0a84849b879347bcd66c69259ef43c5deadf6c35db77c4d5a572b49bbd4",
+      "camera_transform": [
+        0.9876883625984192,
+        0.0,
+        0.15643447637557983,
+        -0.006277996115386486,
+        0.9991944432258606,
+        0.03963770717382431,
+        -0.15630845725536346,
+        -0.04013179987668991,
+        0.9868927001953125,
+        0.0,
+        1.7000000476837158,
+        0.0
+      ],
+      "distance_m": 99.99999237060547,
+      "fov_deg": 37.422672271728516,
+      "png": "p51d-mustang-120-100m-trees-zoom-dive.png",
+      "pose": "dive",
+      "projected_span_px": 29.999999503499783,
+      "requested_background": "trees",
+      "requested_distance_m": 100,
+      "sha256": "cac6d8fff11aa0cf8ce415101fffb589fdc115c8cf4548b97af40bb91fba0183",
+      "without_trees_png": "p51d-mustang-120-100m-trees-zoom-without-trees.png",
+      "without_trees_sha256": "284a2572d6629a4456e5832bc7c33355298fbfea5ac88035665ba060cb954cd0",
+      "metrics": {
+        "pixels": 128,
+        "weber_contrast": 0.6438,
+        "share_low_contrast": 0.0469,
+        "delta_e": 33.24,
+        "background_saturation": 39.1,
+        "delta_e_p10": 11.22,
+        "bbox_px": {
+          "width": 19,
+          "height": 22,
+          "centre": [
+            636.8,
+            356.0
+          ]
+        },
+        "background": {
+          "pixels": 645,
+          "trees": 0.9023,
+          "sky": 0.0977,
+          "ground": 0.0,
+          "other": 0.0
+        }
+      },
+      "background_matches_request": true
+    }
+  ],
+  "viewport": [
+    1280,
+    720
+  ],
+  "lighting": {
+    "config": {
+      "date": "2026-03-20",
+      "format": "openrc-lighting v1",
+      "latitude_deg": 0.0,
+      "local_seconds": 63600,
+      "location_name": "Reference field (synthetic)",
+      "longitude_deg": 0.0,
+      "mode": "astronomical",
+      "utc_offset_minutes": 0
+    },
+    "config_sha256": "ef225da95a90649435da0413035abaab21bb4fe68caa409e6fe4ac083c5ae215",
+    "exposure": 0.6,
+    "format": "openrc-visual-context v1",
+    "illumination_kind": "estimated",
+    "mode": "fixed",
+    "moon": "not-modelled",
+    "profile": "openrc-lighting-curves v1",
+    "solar": {
+      "azimuth_deg": 270.0496746271151,
+      "direction_ned": [
+        0.0008607995339795912,
+        -0.99286438189334,
+        -0.11924587284983193
+      ],
+      "elevation_deg": 6.8485817696414575,
+      "errors": [],
+      "hour_angle_deg": 83.15141568088688,
+      "julian_date": 2461120.236111111,
+      "ok": true
+    }
+  },
+  "build_options": {
+    "landscape_upgrade": true,
+    "scenery": {
+      "audio": false,
+      "birds": false,
+      "enabled": true,
+      "file": "res://data/scenery/default.json",
+      "file_explicit": true,
+      "quality": "high",
+      "theme": "",
+      "tree_cell_size_m": 0.0,
+      "tree_wind": true
+    },
+    "sun_glare": 1.0
+  },
+  "renderer": "gl_compatibility",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "api": "3.3.0 NVIDIA 617.42",
+  "godot": "4.7.2-stable (official)",
+  "zero_pixel_cases": [],
+  "background_mismatch_cases": [
+    "jensen-das-ugly-stik-60-020m-trees-normal-level.png",
+    "jensen-das-ugly-stik-60-020m-trees-normal-inverted.png",
+    "jensen-das-ugly-stik-60-020m-trees-zoom-level.png",
+    "jensen-das-ugly-stik-60-020m-trees-zoom-inverted.png",
+    "p51d-mustang-120-020m-trees-normal-level.png",
+    "p51d-mustang-120-020m-trees-normal-inverted.png",
+    "p51d-mustang-120-020m-trees-zoom-level.png",
+    "p51d-mustang-120-020m-trees-zoom-inverted.png",
+    "p51d-mustang-120-050m-trees-normal-level.png",
+    "p51d-mustang-120-050m-trees-normal-inverted.png",
+    "p51d-mustang-120-050m-trees-zoom-level.png",
+    "p51d-mustang-120-050m-trees-zoom-inverted.png"
+  ],
+  "scope": "Existing L6c pixel/contrast metrics. Missing pixels or mismatched backgrounds remain explicit failures of those cases. No human recognition score is inferred."
+}

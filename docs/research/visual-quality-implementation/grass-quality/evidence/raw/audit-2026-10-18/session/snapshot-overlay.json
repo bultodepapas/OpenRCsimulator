@@ -1,0 +1,12 @@
+{
+  "scope": "Stable prior application snapshot with only grass layout optimization and report-time scene observation overlaid. Other concurrent tree/audio changes are not included. Full source hashes are bracketed by profile_session.",
+  "base": "tmp\\grass-quality-followup\\profile-snapshot\\app",
+  "snapshot": "tmp\\grass-completion\\final-snapshot\\app",
+  "overlay_sha256": {
+    "scenery/imported_near_grass.gd": "c39ae8319fa336b24a5837ab7a01583487fcc56142a592b4c5bccebb228ccbe6",
+    "render/frame_samples.gd": "b4b32c91f66839a22e024de931895f715d5de5b9dbd30e9972a925374bf1ab4f",
+    "render/grass_scene_snapshot.gd": "d51b5a6d17dcdf0172fa18a69590dd499fb41aab6d690f189342bd1b7e8c1b76",
+    "main.gd": "94dccb96597a4bacf4f6796d35cbb91be131ce20356ab204c57a78a544fcd2c1"
+  },
+  "main_change": "Add effective_grass at report serialization only."
+}

@@ -4,6 +4,7 @@
 extends RefCounted
 
 const CATALOG_PATH := "res://assets/landscape/trees/catalog.json"
+const FOLIAGE_MASK_PATH := "res://assets/landscape/trees/foliage_mask.png"
 const FORMAT := "openrc-tree-assets v1"
 const ATLAS_SIZE_PX := 1024
 const TILE_SIZE_PX := 512
@@ -31,6 +32,8 @@ static func catalog() -> Dictionary:
 		errors.append("format must be '%s'" % FORMAT)
 	if raw.get("atlas") != "res://assets/landscape/trees/atlas.png":
 		errors.append("atlas must be res://assets/landscape/trees/atlas.png")
+	if raw.get("foliage_mask") != FOLIAGE_MASK_PATH:
+		errors.append("foliage_mask must be %s" % FOLIAGE_MASK_PATH)
 	if raw.get("atlas_size_px") != ATLAS_SIZE_PX:
 		errors.append("atlas_size_px must be %d" % ATLAS_SIZE_PX)
 	if raw.get("tile_size_px") != TILE_SIZE_PX:

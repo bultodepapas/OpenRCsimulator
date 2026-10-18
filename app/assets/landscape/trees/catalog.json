@@ -1,6 +1,7 @@
 {
   "format": "openrc-tree-assets v1",
   "atlas": "res://assets/landscape/trees/atlas.png",
+  "foliage_mask": "res://assets/landscape/trees/foliage_mask.png",
   "atlas_size_px": 1024,
   "tile_size_px": 512,
   "alpha_cutoff": 0.5,
@@ -12,6 +13,8 @@
         512,
         512
       ],
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_NormalTree",
       "frame_size_m": 1.125001,
       "id": "CommonTree_1",
       "pivot_y_m": 0.5
@@ -23,6 +26,8 @@
         512,
         512
       ],
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_NormalTree",
       "frame_size_m": 1.125001,
       "id": "CommonTree_3",
       "pivot_y_m": 0.5
@@ -34,6 +39,8 @@
         512,
         512
       ],
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_Pine",
       "frame_size_m": 1.125001,
       "id": "Pine_1",
       "pivot_y_m": 0.5

@@ -2295,6 +2295,7 @@ func _log_frame_time(delta: float) -> void:
 			step_usec_smoothed = sim.step_usec,
 		},
 		measured_simulation = sample_simulation,
+		effective_grass = FrameSamples.effective_grass_state(_field_node),
 		code_provenance = VisualEvidence.provenance(),
 		note = "Frame intervals use monotonic Time.get_ticks_usec wall time; legacy seconds/fps_mean/frame_ms use that clock. Godot delta is recorded separately under engine_*. The first _process call primes the clock, excluding ready/startup. The scripted-fixed route disables input and advances its visual clock from elapsed wall time. preset=current-default reports current rendering settings; the app has no named performance presets. Software renderers such as llvmpipe are not target-hardware performance numbers.",
 	}, true)

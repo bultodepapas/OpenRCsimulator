@@ -65,6 +65,9 @@ class HistoricalPlacementRecipeTests(unittest.TestCase):
         self.assertEqual(len(clusters), FAR_CLUSTER_COUNT)
         self.assertTrue(all(cluster["count"] == FAR_TREES_PER_CLUSTER for cluster in clusters))
         self.assertTrue(all(cluster["radius_m"] == FAR_CLUSTER_RADIUS_M for cluster in clusters))
+        for index, cluster in enumerate(clusters):
+            self.assertEqual(cluster["start_index"], index * FAR_TREES_PER_CLUSTER)
+            self.assertEqual(cluster["end_index"], (index + 1) * FAR_TREES_PER_CLUSTER)
         self.assertEqual(len(self.far), FAR_COUNT)
         self.assertTrue(set(cluster["sector"] for cluster in clusters) >= set(range(8)))
         self.assertTrue(set(_sector(point[0], point[1]) for point in self.far) >= set(range(8)))
@@ -172,6 +175,10 @@ class HabitatRecipeTests(unittest.TestCase):
                 self.assertEqual(patch["bounds_m"]["north_max_m"], max(p[0] for p in points))
                 self.assertEqual(patch["bounds_m"]["east_min_m"], min(p[1] for p in points))
                 self.assertEqual(patch["bounds_m"]["east_max_m"], max(p[1] for p in points))
+                self.assertTrue(0.0 <= patch["outline_phase_rad"] < math.tau)
+                self.assertTrue(0.0 <= patch["notch_angle_rad"] < math.tau)
+                self.assertGreater(patch["notch_width_rad"], 0.0)
+                self.assertGreater(patch["outline_notch_depth"], 0.0)
 
     def test_habitat_keeps_ring_gaps_corridor_grid_and_spacing(self) -> None:
         pilot_north = self.field["pilot"]["north"]["value"]

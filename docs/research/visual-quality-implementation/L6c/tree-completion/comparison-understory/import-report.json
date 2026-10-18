@@ -1,0 +1,79 @@
+{
+  "format": "openrc-tree-understory-native-import-report-v1",
+  "receipt_sha256": "b6ab0c198517c6002dbd825bd577efbdeea15471abcbe9d7b3c55e0dd86b4bc4",
+  "engine_path": ".tools/Godot_v4.7.2-stable_win64.exe",
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "status": "passed",
+  "baseline": {
+    "label": "baseline",
+    "project": "tmp/tree-completion/frozen-understory/baseline/app",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--editor",
+      "--import",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-understory\\baseline\\app",
+      "--log-file",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-understory-import-20261018\\baseline-import.log"
+    ],
+    "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "exit_code": 0,
+    "elapsed_s": 45.5,
+    "contains_error": false,
+    "error_lines": [],
+    "source_sha256_before": "7779dc69800cddd1e73547626dfd4dc4903213df5617b32865594509f4a7db3b",
+    "source_files_before": 2749,
+    "source_sha256_after": "c68f596064dd2b35a5bc2443278204c720ca5d70d96935ca2f38417fb9722083",
+    "source_files_after": 2750,
+    "source_changes": {
+      "scenery/woodland_edge_habitat.gd.uid": {
+        "before": null,
+        "after": {
+          "sha256": "8bc49bdbe0db9c8de1baa4ecb675e949a213f7f60ad6778c48f6e7b90f1fd283",
+          "size_bytes": 20
+        }
+      }
+    },
+    "stdout_path": "tmp/tree-completion/frozen-understory-import-20261018/baseline-stdout.log",
+    "stderr_path": "tmp/tree-completion/frozen-understory-import-20261018/baseline-stderr.log",
+    "log_path": "tmp/tree-completion/frozen-understory-import-20261018/baseline-import.log",
+    "passed": true
+  },
+  "candidate": {
+    "label": "candidate",
+    "project": "tmp/tree-completion/frozen-understory/candidate/app",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--editor",
+      "--import",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-understory\\candidate\\app",
+      "--log-file",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-understory-import-20261018\\candidate-import.log"
+    ],
+    "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "exit_code": 0,
+    "elapsed_s": 51.656,
+    "contains_error": false,
+    "error_lines": [],
+    "source_sha256_before": "2bfe3bd15659c9b88f2a5ef5a8307fa0ecd99696885ec01832d3ed028a8ce20e",
+    "source_files_before": 2750,
+    "source_sha256_after": "2bfe3bd15659c9b88f2a5ef5a8307fa0ecd99696885ec01832d3ed028a8ce20e",
+    "source_files_after": 2750,
+    "source_changes": {},
+    "stdout_path": "tmp/tree-completion/frozen-understory-import-20261018/candidate-stdout.log",
+    "stderr_path": "tmp/tree-completion/frozen-understory-import-20261018/candidate-stderr.log",
+    "log_path": "tmp/tree-completion/frozen-understory-import-20261018/candidate-import.log",
+    "passed": true
+  },
+  "generated_uid": {
+    "generated_by_baseline_import": true,
+    "relative_path": "scenery/woodland_edge_habitat.gd.uid",
+    "sha256": "8bc49bdbe0db9c8de1baa4ecb675e949a213f7f60ad6778c48f6e7b90f1fd283",
+    "propagation_action": "copied_baseline_generated_uid_to_working_app_and_candidate",
+    "working_app_copy_matches": true,
+    "candidate_copy_matches_before_and_after_import": true
+  }
+}

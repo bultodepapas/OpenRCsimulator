@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Movie Maker mode enabled, recording movie in 1280×720 @ 24 FPS...
+WARNING: Tree wind is disabled for oak_tree because source material -9223371831216436863 is unsupported (transparency mode is not opaque or alpha scissor)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:379)
+       [4] attach (res://scenery/scenery.gd:173)
+       [5] build (res://render/field.gd:82)
+       [6] _build_field (res://main.gd:2059)
+       [7] build (res://render/world/world.gd:260)
+       [8] _build_world (res://main.gd:2015)
+       [9] _ready (res://main.gd:434)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/tools/trees/flight_quality_probe.gd:107)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+{"complete":true,"format":"openrc-tree-temporal-v1","frames":120,"report":"C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\probe.json","route":"slow-pan"}
+--------------------------------------------------------------------------------
+Done recording movie at path: C:\DEVELOPMENT\OpenRCsimulator\tmp\tree-completion\temporal-raw-avi-final-20261018-r1\slow-pan-1280x720.avi
+123 frames at 24 FPS (movie length: 00:00:05:03), recorded in 00:00:13 (38% of real-time speed).
+CPU render time: 0.35 seconds (average: 2.85 ms/frame)
+GPU render time: 0.40 seconds (average: 3.26 ms/frame)
+Encoding time: 1.38 seconds (average: 11.21 ms/frame)
+--------------------------------------------------------------------------------

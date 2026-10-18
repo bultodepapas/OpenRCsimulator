@@ -10,6 +10,8 @@ const POSITION_PACK_OFFSET: int = 8192
 const LEGACY_HASH_OFFSET: int = 2400
 const EXTENDED_HASH_OFFSET: int = 8192
 const FAR_RING_START_M: float = 600.0
+const PATCH_SPACING_M: float = 180.0
+const PATCH_HASH_OFFSET: int = 32768
 # Must match tree_wind.gdshaderinc; angle <= lean/height, even beyond 10m/s.
 const WIND_LEAN_M: float = 0.24
 
@@ -29,6 +31,29 @@ static func identity(north: float, east: float) -> Dictionary:
 	h = (h * 25173 + 13849) % 65521
 	var r: int = (h * 25173 + 13849) % 65521
 	return {species = h % 3, height = 12.0 + 13.0 * float(h % 1024) / 1023.0, yaw = TAU * float(r) / 65521.0}
+
+
+## CPU mirror of the shader's smooth world-space foliage patch field, for deterministic checks.
+static func foliage_patch_value(north: float, east: float) -> float:
+	var grid_north: float = north / PATCH_SPACING_M
+	var grid_east: float = east / PATCH_SPACING_M
+	var cell_north: int = floori(grid_north)
+	var cell_east: int = floori(grid_east)
+	var blend_north: float = grid_north - float(cell_north)
+	var blend_east: float = grid_east - float(cell_east)
+	blend_north = blend_north * blend_north * (3.0 - 2.0 * blend_north)
+	blend_east = blend_east * blend_east * (3.0 - 2.0 * blend_east)
+	var lower: float = lerpf(_patch_value(cell_north, cell_east), _patch_value(cell_north + 1, cell_east), blend_north)
+	var upper: float = lerpf(_patch_value(cell_north, cell_east + 1), _patch_value(cell_north + 1, cell_east + 1), blend_north)
+	return lerpf(lower, upper, blend_east)
+
+
+static func _patch_value(cell_north: int, cell_east: int) -> float:
+	var hash_north: int = cell_north + PATCH_HASH_OFFSET
+	var hash_east: int = cell_east + PATCH_HASH_OFFSET
+	var value: int = posmod(hash_north * 7381 + hash_east * 19391 + 6113, 65521)
+	value = posmod(value * 25173 + 13849, 65521)
+	return float(value % 997) / 498.0 - 1.0
 
 
 ## Compatibility packs custom data as float16: use four exact integer bytes, not metre floats.
@@ -57,8 +82,9 @@ static func build(object_data: Dictionary, pilot: Dictionary) -> Node3D:
 	result.position = Frames.ned_to_render([pilot.north, pilot.east, pilot.down])
 	var catalog: Dictionary = Assets.catalog()
 	var mesh: ArrayMesh = Assets.card_mesh("CommonTree_1")
-	if not catalog.ok or mesh == null:
-		push_error("L6b tree atlas/catalog missing or invalid")
+	var foliage_mask: Texture2D = load(String(catalog.catalog.get("foliage_mask", ""))) as Texture2D
+	if not catalog.ok or mesh == null or foliage_mask == null:
+		push_error("L6b tree atlas/catalog/material mask missing or invalid")
 		return result
 	var sizes: Vector3 = Vector3.ZERO
 	var ids: Array[String] = ["CommonTree_1", "CommonTree_3", "Pine_1"]
@@ -67,6 +93,7 @@ static func build(object_data: Dictionary, pilot: Dictionary) -> Node3D:
 	var material: ShaderMaterial = ShaderMaterial.new()
 	material.shader = TREE_SHADER
 	material.set_shader_parameter("atlas", load(catalog.catalog.atlas))
+	material.set_shader_parameter("foliage_mask", foliage_mask)
 	material.set_shader_parameter("frame_sizes", sizes)
 	mesh.surface_set_material(0, material)
 	var near_groups: Array = []

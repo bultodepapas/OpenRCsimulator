@@ -1,0 +1,48 @@
+{
+  "format": "openrc-tree-foliage-mask-audit v1",
+  "runtime_alpha_reference": "app/assets/landscape/trees/atlas.png",
+  "runtime_atlas_sha256": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
+  "mask_sha256": "cfc8f109896a25a60327d827798fe27dca86155d950678ec02440087c8010b1a",
+  "catalog_sha256": "57e340b61c442e766edfad1336efb3155231ef37e35f57a35bdce06982f1db0a",
+  "analysis_sha256": "dead9662ac3dbbfae4a09f582116e933a0cb14da2b06d7a71ebb68f00d6569ea",
+  "bake_manifest_sha256": "cde702dfb7dd63af0487a394e05b6b2c86dc633c917aec29329276deec38bacd",
+  "mask_alpha_matches_runtime_atlas_exactly": true,
+  "silhouette_iou_minimum": 0.995,
+  "full_build_outputs_checked": 27,
+  "runtime_import_mipmaps_enabled": true,
+  "species": [
+    {
+      "id": "CommonTree_1",
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_NormalTree",
+      "coverage_iou_nonzero_before_edge_reconciliation": 0.9992186457797343,
+      "coverage_iou_cutoff_0_5_before_edge_reconciliation": 0.9992705493914846,
+      "alpha_differing_pixels_before_edge_reconciliation": 138,
+      "runtime_only_edge_labels_filled": 6,
+      "visible_bark_pixels_at_alpha_128": 10124,
+      "visible_foliage_pixels_at_alpha_128": 41936
+    },
+    {
+      "id": "CommonTree_3",
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_NormalTree",
+      "coverage_iou_nonzero_before_edge_reconciliation": 0.9988427964076375,
+      "coverage_iou_cutoff_0_5_before_edge_reconciliation": 0.9992350256266415,
+      "alpha_differing_pixels_before_edge_reconciliation": 151,
+      "runtime_only_edge_labels_filled": 2,
+      "visible_bark_pixels_at_alpha_128": 8107,
+      "visible_foliage_pixels_at_alpha_128": 31082
+    },
+    {
+      "id": "Pine_1",
+      "bark_material_name": "Bark_NormalTree",
+      "foliage_material_name": "Leaves_Pine",
+      "coverage_iou_nonzero_before_edge_reconciliation": 0.9989927147508726,
+      "coverage_iou_cutoff_0_5_before_edge_reconciliation": 0.9991437745272922,
+      "alpha_differing_pixels_before_edge_reconciliation": 165,
+      "runtime_only_edge_labels_filled": 0,
+      "visible_bark_pixels_at_alpha_128": 5622,
+      "visible_foliage_pixels_at_alpha_128": 36387
+    }
+  ]
+}

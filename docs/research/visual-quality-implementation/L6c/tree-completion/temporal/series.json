@@ -1,0 +1,1824 @@
+{
+  "app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+  "capture": "Godot native --write-movie AVI; ffmpeg H.264 MP4 encoding when available",
+  "clips": [
+    {
+      "aircraft_motion_m": 74.34374997980616,
+      "aircraft_position_end": [
+        34.8489761352539,
+        30.0054168701172,
+        -60.2090110778809
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                -0.573576211929321,
+                0.0,
+                0.819152235984802
+              ],
+              [
+                0.280166536569595,
+                0.939692676067352,
+                0.19617460668087
+              ],
+              [
+                -0.769751310348511,
+                0.342020094394684,
+                -0.538985311985016
+              ]
+            ],
+            "position": [
+              -41.8436546325684,
+              31.0413436889648,
+              -61.6424369812012
+            ]
+          },
+          "view": "orbit"
+        }
+      ],
+      "camera_motion_m": 74.13174049534075,
+      "clip_id": "slow-pan-1280x720",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1280x720.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\slow-pan-1280x720.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:12:19Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 12992988,
+      "frame_trace_monotonic_start_usec": 8600977,
+      "frames_requested": 120,
+      "input_tape_sha256": "eb66f48abe5a5b41c13941a0e01d3afc66260d53c69da23e98506c18d5372047",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "858420645aad13d1e63383ecd054f6be6af7522c3988ebbf7b5e58c83de30ff3",
+        "size_bytes": 14610898
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\probe.json",
+      "probe_report_sha256": "5c996c1527d6d8124b8974731064aebd0e9e09f96050e5c6135e527d783fa15a",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1280x720.avi",
+          "--",
+          "--mode=temporal",
+          "--route=slow-pan",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1280x720.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 13.672,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:12:19Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:12:06Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1280x720.avi",
+      "raw_avi_sha256": "858420645aad13d1e63383ecd054f6be6af7522c3988ebbf7b5e58c83de30ff3",
+      "raw_avi_size_bytes": 14610898,
+      "resolution": [
+        1280,
+        720
+      ],
+      "route": "slow-pan",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:12:06Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1280x720\\slow-pan-1280x720.mp4",
+      "video_sha256": "32f02544c6008e1194c583c799d3962b8b4ed0814cd140a5b9dc7b2f209f5112",
+      "video_size_bytes": 4823198
+    },
+    {
+      "aircraft_motion_m": 82.37119471414687,
+      "aircraft_position_end": [
+        42.3444442749023,
+        38.2560691833496,
+        -55.6047744750977
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.99619472026825,
+                0.087155744433403
+              ],
+              [
+                0.0,
+                -0.087155744433403,
+                0.99619472026825
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "pilot"
+        }
+      ],
+      "camera_motion_m": 0.0,
+      "clip_id": "pilot-input-pulse-1280x720",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1280x720.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\pilot-input-pulse-1280x720.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:12:34Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 13127412,
+      "frame_trace_monotonic_start_usec": 8580441,
+      "frames_requested": 120,
+      "input_tape_sha256": "431c5b9068f4de160e31f15c0cdeaad23099a14f3c5360811a741d5d602f5a47",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "d8ba61f22db5cf9c33e86cd1c4fc65c69114238220bbbf41081b947700704c61",
+        "size_bytes": 12324958
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\probe.json",
+      "probe_report_sha256": "2e73e849b1412cb764d8498efea242889e04749638a24bba9a4e2454b056242e",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1280x720.avi",
+          "--",
+          "--mode=temporal",
+          "--route=pilot-input-pulse",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1280x720.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 13.891,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:12:34Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:12:20Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1280x720.avi",
+      "raw_avi_sha256": "d8ba61f22db5cf9c33e86cd1c4fc65c69114238220bbbf41081b947700704c61",
+      "raw_avi_size_bytes": 12324958,
+      "resolution": [
+        1280,
+        720
+      ],
+      "route": "pilot-input-pulse",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:12:20Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1280x720\\pilot-input-pulse-1280x720.mp4",
+      "video_sha256": "e9edde252cca6d3c56adc578a5e8bfdb137f3ed3b33ed1ba68d3fdb45dd98aa9",
+      "video_size_bytes": 250607
+    },
+    {
+      "aircraft_motion_m": 74.70488396138163,
+      "aircraft_position_end": [
+        33.218204498291,
+        26.572509765625,
+        -43.2115249633789
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.99619472026825,
+                0.087155744433403
+              ],
+              [
+                0.0,
+                -0.087155744433403,
+                0.99619472026825
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "pilot"
+        }
+      ],
+      "camera_motion_m": 0.0,
+      "clip_id": "pilot-bank-reversal-1280x720",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1280x720.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\pilot-bank-reversal-1280x720.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:12:50Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 14367336,
+      "frame_trace_monotonic_start_usec": 9807698,
+      "frames_requested": 120,
+      "input_tape_sha256": "f2861ec68601fa7e2d2d3d78a601488194a0ba24d0fc05265d22158f48b32218",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "5d4577a68d9ec0277ee994dc10b9a78f1db287aa495e5d131790aef590140a18",
+        "size_bytes": 12328364
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\probe.json",
+      "probe_report_sha256": "2ff81ff6984585c74b1c0700eb1e99f29977bd134aba7a51060ecf3e222585b4",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1280x720.avi",
+          "--",
+          "--mode=temporal",
+          "--route=pilot-bank-reversal",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1280x720.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 15.11,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:12:50Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:12:34Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1280x720.avi",
+      "raw_avi_sha256": "5d4577a68d9ec0277ee994dc10b9a78f1db287aa495e5d131790aef590140a18",
+      "raw_avi_size_bytes": 12328364,
+      "resolution": [
+        1280,
+        720
+      ],
+      "route": "pilot-bank-reversal",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:12:34Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1280x720\\pilot-bank-reversal-1280x720.mp4",
+      "video_sha256": "ccefbab2564a5619d0fb53984f601efa726b2d79ad5a6750a1900c42382abb0d",
+      "video_size_bytes": 226346
+    },
+    {
+      "aircraft_motion_m": 98.34951474391488,
+      "aircraft_position_end": [
+        51.4631881713867,
+        58.3848152160645,
+        -84.3722534179688
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.0,
+                0.0,
+                1.0
+              ],
+              [
+                0.330350369215012,
+                0.94385838508606,
+                0.0
+              ],
+              [
+                -0.94385838508606,
+                0.330350369215012,
+                0.0
+              ]
+            ],
+            "position": [
+              -44.8282051086426,
+              31.8648700714111,
+              -60.0013961791992
+            ]
+          },
+          "view": "chase"
+        }
+      ],
+      "camera_motion_m": 98.4368471893658,
+      "clip_id": "chase-control-pulse-1280x720",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1280x720.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\chase-control-pulse-1280x720.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:13:06Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 15124627,
+      "frame_trace_monotonic_start_usec": 10094948,
+      "frames_requested": 120,
+      "input_tape_sha256": "c769a8f9e033ea503d2bdd2b0633988f48cc0cb4a5a51a9abacb0e5dbd2e9132",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "d7c82959da03bd0754ca264efc81e8a6686083c189f90d1a40d25d9e0d46b5c7",
+        "size_bytes": 13268520
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\probe.json",
+      "probe_report_sha256": "f9b3484988f837202f81c5142fc3a6087f1848157abb3aa23b201bceaddc7f74",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1280x720.avi",
+          "--",
+          "--mode=temporal",
+          "--route=chase-control-pulse",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1280x720.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 15.891,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:13:06Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:12:50Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1280x720.avi",
+      "raw_avi_sha256": "d7c82959da03bd0754ca264efc81e8a6686083c189f90d1a40d25d9e0d46b5c7",
+      "raw_avi_size_bytes": 13268520,
+      "resolution": [
+        1280,
+        720
+      ],
+      "route": "chase-control-pulse",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:12:50Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1280x720\\chase-control-pulse-1280x720.mp4",
+      "video_sha256": "4a1b1bd76f4b338a1b2276d8a239835230bc136497641c9c53a8cf0b700ae715",
+      "video_size_bytes": 4697555
+    },
+    {
+      "aircraft_motion_m": 74.34374997980616,
+      "aircraft_position_end": [
+        34.8489761352539,
+        30.0054168701172,
+        -60.2090110778809
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.835254669189453,
+                0.0,
+                -0.549863278865814
+              ],
+              [
+                0.201544240117073,
+                0.930404186248779,
+                0.30615022778511
+              ],
+              [
+                0.511595070362091,
+                -0.366535186767578,
+                0.777124464511871
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "pilot"
+        },
+        {
+          "tick": 488,
+          "time_s": 2.03333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.987650632858276,
+                0.0,
+                -0.156672194600105
+              ],
+              [
+                0.0660811960697174,
+                0.906698286533356,
+                0.416571259498596
+              ],
+              [
+                0.142054408788681,
+                -0.421779960393906,
+                0.89550107717514
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "chase"
+        },
+        {
+          "tick": 728,
+          "time_s": 3.03333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.00214656046591699,
+                0.0,
+                0.999997735023499
+              ],
+              [
+                0.238970652222633,
+                0.971026659011841,
+                -0.000512966129463166
+              ],
+              [
+                -0.971024453639984,
+                0.238971218466759,
+                0.0020843674428761
+              ]
+            ],
+            "position": [
+              0.140380382537842,
+              31.8648700714111,
+              -60.1169891357422
+            ]
+          },
+          "view": "orbit"
+        },
+        {
+          "tick": 968,
+          "time_s": 4.03333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.00197104178369045,
+                0.0,
+                0.999998092651367
+              ],
+              [
+                0.298930764198303,
+                0.954274654388428,
+                -0.000589206116273999
+              ],
+              [
+                -0.95427280664444,
+                0.298931360244751,
+                0.00188091513700783
+              ]
+            ],
+            "position": [
+              14.515323638916,
+              31.8648700714111,
+              -60.1571350097656
+            ]
+          },
+          "view": "closeup"
+        }
+      ],
+      "camera_motion_m": 75.4352454959918,
+      "clip_id": "camera-cut-1280x720",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1280x720.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\camera-cut-1280x720.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:13:22Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 14082093,
+      "frame_trace_monotonic_start_usec": 9344920,
+      "frames_requested": 120,
+      "input_tape_sha256": "00baa539770ab359bb975bf2175aa89d6ca593538bc7ebe399b9003c1693e4c1",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "f107336c2725cfc250d3cae705071afc78d61830ca5c9a4f07da7866ca5de661",
+        "size_bytes": 12498236
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\probe.json",
+      "probe_report_sha256": "45dc1d3f744defa370ea1f082da8e242eb0e7d24667f09e8525d741237bbf860",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1280x720.avi",
+          "--",
+          "--mode=temporal",
+          "--route=camera-cut",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1280x720.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 14.859,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:13:22Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:13:07Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1280x720.avi",
+      "raw_avi_sha256": "f107336c2725cfc250d3cae705071afc78d61830ca5c9a4f07da7866ca5de661",
+      "raw_avi_size_bytes": 12498236,
+      "resolution": [
+        1280,
+        720
+      ],
+      "route": "camera-cut",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:13:07Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1280x720\\camera-cut-1280x720.mp4",
+      "video_sha256": "8e00395478ba19da7ecc6bfce2de91c8d9b5fa2e4abd56cb491fd32195cfa516",
+      "video_size_bytes": 3786410
+    },
+    {
+      "aircraft_motion_m": 74.34374997980616,
+      "aircraft_position_end": [
+        34.8489761352539,
+        30.0054168701172,
+        -60.2090110778809
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                -0.573576211929321,
+                0.0,
+                0.819152235984802
+              ],
+              [
+                0.280166536569595,
+                0.939692676067352,
+                0.19617460668087
+              ],
+              [
+                -0.769751310348511,
+                0.342020094394684,
+                -0.538985311985016
+              ]
+            ],
+            "position": [
+              -41.8436546325684,
+              31.0413436889648,
+              -61.6424369812012
+            ]
+          },
+          "view": "orbit"
+        }
+      ],
+      "camera_motion_m": 74.13174049534075,
+      "clip_id": "slow-pan-1920x1080",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1920x1080.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\slow-pan-1920x1080.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:13:41Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 17948722,
+      "frame_trace_monotonic_start_usec": 10105926,
+      "frames_requested": 120,
+      "input_tape_sha256": "eb66f48abe5a5b41c13941a0e01d3afc66260d53c69da23e98506c18d5372047",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "e95bb63ee55ab6c3997595403ae2d6ab381a684f164de9785e4276cb6b3493d0",
+        "size_bytes": 13169192
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\probe.json",
+      "probe_report_sha256": "d2021a2bb72ea2b88a056ad72ace4d8cf89880f82bcb8d186e3367fa903d8a63",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1920x1080",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1920x1080.avi",
+          "--",
+          "--mode=temporal",
+          "--route=slow-pan",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1920x1080.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 18.797,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:13:41Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:13:23Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\slow-pan-1920x1080.avi",
+      "raw_avi_sha256": "e95bb63ee55ab6c3997595403ae2d6ab381a684f164de9785e4276cb6b3493d0",
+      "raw_avi_size_bytes": 13169192,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "route": "slow-pan",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:13:23Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\slow-pan-1920x1080\\slow-pan-1920x1080.mp4",
+      "video_sha256": "d72e3471946e3cbb08370a52cf85cc0dc4960b65b7277b3dd6dba1303219b20a",
+      "video_size_bytes": 4566043
+    },
+    {
+      "aircraft_motion_m": 82.37119471414687,
+      "aircraft_position_end": [
+        42.3444442749023,
+        38.2560691833496,
+        -55.6047744750977
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.99619472026825,
+                0.087155744433403
+              ],
+              [
+                0.0,
+                -0.087155744433403,
+                0.99619472026825
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "pilot"
+        }
+      ],
+      "camera_motion_m": 0.0,
+      "clip_id": "pilot-input-pulse-1920x1080",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1920x1080.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\pilot-input-pulse-1920x1080.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:14:00Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 16845638,
+      "frame_trace_monotonic_start_usec": 9748819,
+      "frames_requested": 120,
+      "input_tape_sha256": "431c5b9068f4de160e31f15c0cdeaad23099a14f3c5360811a741d5d602f5a47",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "ccedf3fd75ec2d590c94392e8b40038b401642d0d947b29be8e1cf297d4939ba",
+        "size_bytes": 10905046
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\probe.json",
+      "probe_report_sha256": "5c3cde02c22d6ea614235a933d69163496641427f526bdac259974eeff9fd9c7",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1920x1080",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1920x1080.avi",
+          "--",
+          "--mode=temporal",
+          "--route=pilot-input-pulse",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1920x1080.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 17.719,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:14:00Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:13:42Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-input-pulse-1920x1080.avi",
+      "raw_avi_sha256": "ccedf3fd75ec2d590c94392e8b40038b401642d0d947b29be8e1cf297d4939ba",
+      "raw_avi_size_bytes": 10905046,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "route": "pilot-input-pulse",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:13:42Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-input-pulse-1920x1080\\pilot-input-pulse-1920x1080.mp4",
+      "video_sha256": "7641700bdb47abd78ab9e1590193aaec5302ddf0fe475c45953ae752c14a4098",
+      "video_size_bytes": 207143
+    },
+    {
+      "aircraft_motion_m": 74.70488396138163,
+      "aircraft_position_end": [
+        33.218204498291,
+        26.572509765625,
+        -43.2115249633789
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.99619472026825,
+                0.087155744433403
+              ],
+              [
+                0.0,
+                -0.087155744433403,
+                0.99619472026825
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "pilot"
+        }
+      ],
+      "camera_motion_m": 0.0,
+      "clip_id": "pilot-bank-reversal-1920x1080",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1920x1080.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\pilot-bank-reversal-1920x1080.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:14:19Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 17363668,
+      "frame_trace_monotonic_start_usec": 10598917,
+      "frames_requested": 120,
+      "input_tape_sha256": "f2861ec68601fa7e2d2d3d78a601488194a0ba24d0fc05265d22158f48b32218",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "2a489c6977704334c185b304f58b8ab01ddeaea533efe51f28a30a45cb0694df",
+        "size_bytes": 10908818
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\probe.json",
+      "probe_report_sha256": "17556324668f44a5a1e5bd04084545b6f0a2debcaf862135027d39af4bf423d9",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1920x1080",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1920x1080.avi",
+          "--",
+          "--mode=temporal",
+          "--route=pilot-bank-reversal",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1920x1080.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 18.125,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:14:19Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:14:01Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\pilot-bank-reversal-1920x1080.avi",
+      "raw_avi_sha256": "2a489c6977704334c185b304f58b8ab01ddeaea533efe51f28a30a45cb0694df",
+      "raw_avi_size_bytes": 10908818,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "route": "pilot-bank-reversal",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:14:01Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\pilot-bank-reversal-1920x1080\\pilot-bank-reversal-1920x1080.mp4",
+      "video_sha256": "9644d487b5046d8c0db801f5545728438d2ac69e2b72258db24f97c825a14a3b",
+      "video_size_bytes": 188741
+    },
+    {
+      "aircraft_motion_m": 98.34951474391488,
+      "aircraft_position_end": [
+        51.4631881713867,
+        58.3848152160645,
+        -84.3722534179688
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.0,
+                0.0,
+                1.0
+              ],
+              [
+                0.330350369215012,
+                0.94385838508606,
+                0.0
+              ],
+              [
+                -0.94385838508606,
+                0.330350369215012,
+                0.0
+              ]
+            ],
+            "position": [
+              -44.8282051086426,
+              31.8648700714111,
+              -60.0013961791992
+            ]
+          },
+          "view": "chase"
+        }
+      ],
+      "camera_motion_m": 98.4368471893658,
+      "clip_id": "chase-control-pulse-1920x1080",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1920x1080.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\chase-control-pulse-1920x1080.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:14:35Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 15259700,
+      "frame_trace_monotonic_start_usec": 8459565,
+      "frames_requested": 120,
+      "input_tape_sha256": "c769a8f9e033ea503d2bdd2b0633988f48cc0cb4a5a51a9abacb0e5dbd2e9132",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "24eb9b41d404baed34aadd2cfa0e2372ed6635bd54fee1c9f2c9eaabac256bd5",
+        "size_bytes": 11849208
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\probe.json",
+      "probe_report_sha256": "cfc7a05db34763c2582c25b14a301abecd195d46f81faaaba00174deebe0fcd0",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1920x1080",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1920x1080.avi",
+          "--",
+          "--mode=temporal",
+          "--route=chase-control-pulse",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1920x1080.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 16.047,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:14:35Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:14:19Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\chase-control-pulse-1920x1080.avi",
+      "raw_avi_sha256": "24eb9b41d404baed34aadd2cfa0e2372ed6635bd54fee1c9f2c9eaabac256bd5",
+      "raw_avi_size_bytes": 11849208,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "route": "chase-control-pulse",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:14:19Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\chase-control-pulse-1920x1080\\chase-control-pulse-1920x1080.mp4",
+      "video_sha256": "622450111c49bb3b54e4188e64e766ad856a132ac88c0e2e8fea810616e5ecb7",
+      "video_size_bytes": 4247953
+    },
+    {
+      "aircraft_motion_m": 74.34374997980616,
+      "aircraft_position_end": [
+        34.8489761352539,
+        30.0054168701172,
+        -60.2090110778809
+      ],
+      "aircraft_position_start": [
+        -39.4944839477539,
+        30.0054168701172,
+        -60.0013961791992
+      ],
+      "camera_events": [
+        {
+          "tick": 8,
+          "time_s": 0.0333333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.835254669189453,
+                0.0,
+                -0.549863278865814
+              ],
+              [
+                0.201544240117073,
+                0.930404186248779,
+                0.30615022778511
+              ],
+              [
+                0.511595070362091,
+                -0.366535186767578,
+                0.777124464511871
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "pilot"
+        },
+        {
+          "tick": 488,
+          "time_s": 2.03333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.987650632858276,
+                0.0,
+                -0.156672194600105
+              ],
+              [
+                0.0660811960697174,
+                0.906698286533356,
+                0.416571259498596
+              ],
+              [
+                0.142054408788681,
+                -0.421779960393906,
+                0.89550107717514
+              ]
+            ],
+            "position": [
+              0.0,
+              1.70000004768372,
+              0.0
+            ]
+          },
+          "view": "chase"
+        },
+        {
+          "tick": 728,
+          "time_s": 3.03333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.00214656046591699,
+                0.0,
+                0.999997735023499
+              ],
+              [
+                0.238970652222633,
+                0.971026659011841,
+                -0.000512966129463166
+              ],
+              [
+                -0.971024453639984,
+                0.238971218466759,
+                0.0020843674428761
+              ]
+            ],
+            "position": [
+              0.140380382537842,
+              31.8648700714111,
+              -60.1169891357422
+            ]
+          },
+          "view": "orbit"
+        },
+        {
+          "tick": 968,
+          "time_s": 4.03333333333333,
+          "transform": {
+            "basis_columns": [
+              [
+                0.00197104178369045,
+                0.0,
+                0.999998092651367
+              ],
+              [
+                0.298930764198303,
+                0.954274654388428,
+                -0.000589206116273999
+              ],
+              [
+                -0.95427280664444,
+                0.298931360244751,
+                0.00188091513700783
+              ]
+            ],
+            "position": [
+              14.515323638916,
+              31.8648700714111,
+              -60.1571350097656
+            ]
+          },
+          "view": "closeup"
+        }
+      ],
+      "camera_motion_m": 75.4352454959918,
+      "clip_id": "camera-cut-1920x1080",
+      "complete": true,
+      "duration_requested_s": 5.0,
+      "encoder": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe",
+          "-hide_banner",
+          "-loglevel",
+          "error",
+          "-y",
+          "-i",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1920x1080.avi",
+          "-an",
+          "-c:v",
+          "libx264",
+          "-preset",
+          "medium",
+          "-crf",
+          "18",
+          "-pix_fmt",
+          "yuv420p",
+          "-movflags",
+          "+faststart",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\camera-cut-1920x1080.mp4"
+        ],
+        "exit_code": 0,
+        "ffmpeg": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\tree-review-ffmpeg\\imageio_ffmpeg\\binaries\\ffmpeg-win-x86_64-v7.1.exe"
+      },
+      "finished_utc": "2026-10-18T16:14:52Z",
+      "fps": 24,
+      "frame_trace_count": 120,
+      "frame_trace_monotonic_end_usec": 15487066,
+      "frame_trace_monotonic_start_usec": 8706053,
+      "frames_requested": 120,
+      "input_tape_sha256": "00baa539770ab359bb975bf2175aa89d6ca593538bc7ebe399b9003c1693e4c1",
+      "manifest_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\manifest.json",
+      "native_avi_capture": {
+        "duration_s": 5.124918,
+        "frame_duration_usec": 41666,
+        "frames": 123,
+        "sha256": "56a23b85ea17723e3afaf8629978b3b878516ee63b357fc0072f64d613f6f945",
+        "size_bytes": 11080870
+      },
+      "physics_ticks_per_second": 240,
+      "probe_report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\probe.json",
+      "probe_report_sha256": "9b6e22de24b9aea93a6a97bce9cf581f08d7e8ac56254fa7290461df86dfaa74",
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1920x1080",
+          "--disable-vsync",
+          "--max-fps",
+          "24",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\console.log.engine.log",
+          "--fixed-fps",
+          "24",
+          "--write-movie",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1920x1080.avi",
+          "--",
+          "--mode=temporal",
+          "--route=camera-cut",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\probe.json",
+          "--clip=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1920x1080.avi",
+          "--frames=120",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 16.328,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T16:14:52Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\console.log.engine.log",
+        "started_utc": "2026-10-18T16:14:36Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\console.log",
+        "timed_out": false
+      },
+      "raw_avi_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1\\camera-cut-1920x1080.avi",
+      "raw_avi_sha256": "56a23b85ea17723e3afaf8629978b3b878516ee63b357fc0072f64d613f6f945",
+      "raw_avi_size_bytes": 11080870,
+      "resolution": [
+        1920,
+        1080
+      ],
+      "route": "camera-cut",
+      "simulation": {
+        "crash": false,
+        "elapsed_ticks": 1190,
+        "end_tick": 1198,
+        "end_time_s": 4.99166666666667,
+        "fault": "",
+        "input_enabled": true,
+        "paused": false,
+        "physics_enabled": true,
+        "physics_ticks_per_second": 240,
+        "start_tick": 8,
+        "start_time_s": 0.0333333333333333
+      },
+      "started_utc": "2026-10-18T16:14:36Z",
+      "video_format": "mp4/h264",
+      "video_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal\\camera-cut-1920x1080\\camera-cut-1920x1080.mp4",
+      "video_sha256": "2f5588932f33603aa3e9a4db163c415ee00bc2431e1667c1b11a3a0a9d706bee",
+      "video_size_bytes": 3532490
+    }
+  ],
+  "duration_s": 5.0,
+  "engine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "environment_overrides": {
+    "OPENRC_TREE_WIND": "on"
+  },
+  "finished_utc": "2026-10-18T16:14:54Z",
+  "format": "openrc-tree-temporal-series-v1",
+  "fps": 24,
+  "frames_per_clip": 120,
+  "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\temporal",
+  "owner_review": "Software produces repeatable flight footage and camera/input traces; human readability approval is not inferred.",
+  "probe_script_path": "tools\\trees\\flight_quality_probe.gd",
+  "probe_script_sha256": "795d0983fe3d159abc6bae52cd25f294b28fd0c7a8afbaf5593fa7fdf17f4f7d",
+  "project_source_files_after": 2747,
+  "project_source_files_before": 2747,
+  "project_source_sha256_after": "1300b6a77533315e4f67c0689a3064f7bf6bd8b4792ada6460f968fecef1d1cc",
+  "project_source_sha256_before": "1300b6a77533315e4f67c0689a3064f7bf6bd8b4792ada6460f968fecef1d1cc",
+  "project_source_unchanged": true,
+  "raw_avi_out": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\temporal-raw-avi-final-20261018-r1",
+  "resolution_heights": [
+    720,
+    1080
+  ],
+  "routes": [
+    "slow-pan",
+    "pilot-input-pulse",
+    "pilot-bank-reversal",
+    "chase-control-pulse",
+    "camera-cut"
+  ],
+  "source_note": "All clips use actual interactive flight and deterministic tick-scheduled input; camera routes call the production CameraRig. This report does not decide software readability or owner approval.",
+  "started_utc": "2026-10-18T16:12:05Z",
+  "status": "collected"
+}

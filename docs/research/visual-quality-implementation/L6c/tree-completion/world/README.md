@@ -1,0 +1,9 @@
+# Forest world and render-only replay
+
+2026-10-18. Six native headless recordings each contain 2,400 accepted ticks and 2,401 rows. All six exact replays finish with `complete=true`, `mode=exact`, `status=ok` and `solver_changed=false`. The two input cases are the established detached-session trim and idle runway cases, with 240 warm-up ticks and 2,160 subsequent ticks. They call the production input and simulation callbacks; they are not native frame-time measurements or a piloted circuit.
+
+The reconstructed historical tree world is `c26fc412f37ca8487d83847194d5d4e7e8cb15e726fadeae8874f4efe2b5dcd3`; the candidate is `6f6168e1d27274c28f07a6213017802c841788fd711e858d25df6f8d99654036`. Each installs 4,980 scenery/field proxies and the authoritative lake. The broader tree population/envelope changes intentionally change world identity.
+
+[Summary and commands](summary.json) retain each recording/replay receipt. Across the sampled trim and runway tapes, every exported column is equal between the two worlds. This does **not** establish equivalence for routes contacting changed trees. Within the candidate world, the explicit imported-tree wind-on/off controls also produce identical exported states and retain the same world identity. No simulation, aircraft, obstacle or golden-flight data was tuned to obtain these results.
+
+Original `.orfl` and CSV bytes are retained with deterministic gzip compression. Decompress copies before using `app/tools/flight_log_cli.gd`; [original hashes](sha256.json) identify the decompressed files, and [stored hashes](stored-sha256.json) identify the compressed evidence and exact fixture sources. The `.gd.txt` files are evidence snapshots, not runtime scripts. `record_final.py.txt` records the campaign runner and original absolute paths; change only output/project paths when reproducing against the frozen comparison inputs described in the parent report.

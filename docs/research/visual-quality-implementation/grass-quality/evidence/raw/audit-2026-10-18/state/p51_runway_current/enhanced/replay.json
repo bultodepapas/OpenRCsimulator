@@ -1,0 +1,203 @@
+{
+	"error": "",
+	"format": "openrc-grass-state-invariance v1",
+	"mode": "enhanced",
+	"rc_ground_vehicle": {
+		"backend": "gdscript_reference",
+		"backend_identity": {
+			"abi_version": 1,
+			"backend": "gdscript_reference",
+			"backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+			"binary_sha256": "",
+			"implementation_artifact_kind": "gdscript_source",
+			"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+			"source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+			"toolchain_sha256": ""
+		},
+		"native_backend_used": false,
+		"vehicle_ids": [
+			"mt8-bisonte",
+			"monster-car-2"
+		],
+		"vehicles": {
+			"monster-car-2": {
+				"backend": "gdscript_reference",
+				"backend_identity": {
+					"abi_version": 1,
+					"backend": "gdscript_reference",
+					"backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+					"binary_sha256": "",
+					"implementation_artifact_kind": "gdscript_source",
+					"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+					"source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+					"toolchain_sha256": ""
+				},
+				"checkpoint_control_tape_replay_exact": true,
+				"checkpoint_sha256": "bdfe1fe49ba0ee97d68b75ff052de8517e9977993fe71f78474009d547963947",
+				"course_identity": {
+					"format": "openrc-ground-course",
+					"id": "mt8-practice-course-estimate-v1",
+					"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+					"version": "1"
+				},
+				"model_identity": {
+					"format": "openrc-ground-vehicle",
+					"id": "monster-car-2",
+					"sha256": "974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc",
+					"version": "1"
+				},
+				"native_backend_used": false,
+				"recorded_samples": 241,
+				"recorded_samples_sha256": "f374d7384b488ba5a60b91ff761be223b7749cd87556fe8adc339d24a74ee897",
+				"recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+				"recording_complete": true,
+				"replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+				"state_damage_controls_events_sha256": "991a0a0341c0a90604bde4e91b663b1734f980d5e0963181933c22cd64037896",
+				"ticks": 240,
+				"vehicle_id": "monster-car-2"
+			},
+			"mt8-bisonte": {
+				"backend": "gdscript_reference",
+				"backend_identity": {
+					"abi_version": 1,
+					"backend": "gdscript_reference",
+					"backend_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+					"binary_sha256": "",
+					"implementation_artifact_kind": "gdscript_source",
+					"solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+					"source_sha256": "b20d2d1bf8124db825c5e300520d7089a8229fcf4c642d55046c460da576ff6f",
+					"toolchain_sha256": ""
+				},
+				"checkpoint_control_tape_replay_exact": true,
+				"checkpoint_sha256": "90123d808103702ebb9e263c25ac0e9b84707d842eaa10d85e47a3a68dfcd5b3",
+				"course_identity": {
+					"format": "openrc-ground-course",
+					"id": "mt8-practice-course-estimate-v1",
+					"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+					"version": "1"
+				},
+				"model_identity": {
+					"format": "openrc-ground-vehicle",
+					"id": "mt8-bisonte-electric-4wd-estimate-v1",
+					"sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+					"version": "1"
+				},
+				"native_backend_used": false,
+				"recorded_samples": 241,
+				"recorded_samples_sha256": "4632588fbc377b0fec650dbd830c3668176f50b982a47c2beff34372f55b8f20",
+				"recorder_api": "ground_vehicle.Session.start_recording/stop_recording",
+				"recording_complete": true,
+				"replay_api": "ground_vehicle.Session.restore_checkpoint/replay",
+				"state_damage_controls_events_sha256": "9b304a98cc6f8ac5d7290fba98e1966f45ccd6fc1c509717d4d18130b895dcc0",
+				"ticks": 240,
+				"vehicle_id": "mt8-bisonte"
+			}
+		}
+	},
+	"renderer": {
+		"bundled_scenery_file": "res://data/scenery/default.json",
+		"enhanced": true,
+		"field_built_in_same_process_as_replay": true,
+		"field_id": "default",
+		"gpu_frame_rendered": false,
+		"material_route_ok": true,
+		"near_grass_clumps": 150,
+		"near_grass_counts_by_asset": {
+			"grass_common_short": 100,
+			"grass_common_tall": 30,
+			"grass_wispy_tall": 20
+		},
+		"near_grass_imported": true,
+		"near_grass_material_paths_or_types": [
+			"res://scenery/imported_grass.gdshader",
+			"res://scenery/imported_grass.gdshader",
+			"res://scenery/imported_grass.gdshader"
+		],
+		"near_grass_source_triangles": 37720,
+		"rough_grass_photo_enabled": true,
+		"rough_material_shader": "res://render/ground.gdshader",
+		"scene_tree_initialized": true,
+		"scenery_enabled": true,
+		"scenery_file_explicit": true,
+		"scenery_quality": "high",
+		"selector": "enhanced",
+		"tree_branch_omission_scope": "one default-field treeline object passed to Treeline.build; field surfaces and flight cues remain present",
+		"tree_only_object_types_omitted": [
+			"treeline"
+		],
+		"tree_only_objects_omitted_for_headless_probe": 1
+	},
+	"replay": {
+		"aircraft_identity": {
+			"format": "openrc-aircraft v2",
+			"sha256": "a37f7f4296b789b2fec3d48d73bfadd3ad83177954d2db5b1348db557be5a321"
+		},
+		"aircraft_path": "res://data/aircraft/p51d_mustang_120.json",
+		"baseline_solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+		"checkpoint_sha256": "5c2bf0d5671550a25ad06fa5019cb9920dcfef16892ba9da8fe9ef4353b3663a",
+		"collision_world_identity": "",
+		"compared_fields": [
+			"state",
+			"loads",
+			"inputs",
+			"aux",
+			"continuous",
+			"modes",
+			"air"
+		],
+		"complete": true,
+		"configuration": "virtual-balanced-reference-v1",
+		"current_solver_sha256": "0ab1447f1eb0c6d1b1d9822f96ef23d5e409b6a4d605e7846fa762042a65c8df",
+		"dt_s": 0.004166666666666667,
+		"engine": "4.7.2-stable (official)",
+		"events": [
+			{
+				"detail": "Grass state invariance software fixture; scripted p51 runway gear contact; not physical acceptance.",
+				"kind": "marker",
+				"tick": 0
+			},
+			{
+				"detail": "completed scripted 12-second runway state tape",
+				"kind": "stop",
+				"tick": 2880
+			}
+		],
+		"final_tick": 2880,
+		"first_tick": 0,
+		"ground_description": "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock",
+		"ground_field_id": "default",
+		"ground_surfaces": [
+			9.0,
+			21.0,
+			-50.0,
+			50.0,
+			0.8,
+			2.5,
+			3.0,
+			9.0,
+			-3.0,
+			3.0,
+			0.7,
+			0.5,
+			-20000.0,
+			20000.0,
+			-20000.0,
+			20000.0,
+			0.7,
+			7.5,
+			-1e99999,
+			1e99999,
+			-1e99999,
+			1e99999,
+			0.7,
+			7.5
+		],
+		"lake_id": "",
+		"mode": "exact",
+		"rows": 2881,
+		"solver_changed": false,
+		"source_sha256": "a6f5f33796c26160d8fecf581b4d143e8ff36d6201ddea432553571bb555e670"
+	},
+	"source": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\grass-completion\\state\\run-20261018-n\\p51_runway_current_capture\\p51-runway-current.orfl",
+	"status": "ok"
+}

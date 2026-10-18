@@ -99,7 +99,11 @@ func _run() -> void:
 	report["scope"] = "Prescribed static rendering; no aircraft physics, active-flight ratio or pilot acceptance."
 	RenderingServer.viewport_set_measure_render_time(viewport.get_viewport_rid(), true)
 	var duration := float(args.get("profile", "0"))
-	if duration > 0.0:
+	if args.has("motion"):
+		if mode != "field" or duration > 0.0 or not await _motion():
+			_fail("Motion requires field mode without profiling and valid route/frame count")
+			return
+	elif duration > 0.0:
 		if not await _profile(duration):
 			return
 	else:
@@ -234,7 +238,47 @@ func _capture(view: Dictionary, id: String, clock: float, wind: Vector3) -> bool
 		_fail("empty/failed capture " + id)
 		return false
 	report.captures.append({id = id, sha256 = FileAccess.get_sha256(path), counters = _counters(),
-		clock = clock, wind = [wind.x, wind.y, wind.z], eye = [view.eye.x, view.eye.y, view.eye.z], fov = view.fov})
+		clock = clock, wind = [wind.x, wind.y, wind.z], eye = [view.eye.x, view.eye.y, view.eye.z],
+		at = [view.at.x, view.at.y, view.at.z], fov = view.fov})
+	return true
+
+
+func _motion() -> bool:
+	var route := str(args.motion)
+	var count := int(args.get("frames", "192"))
+	if route not in ["oak-approach", "card-orbit", "forest-pan"] or count < 24 or count > 480:
+		return false
+	var loaded: Dictionary = Loader.load_from(str(args.get("field", Loader.DEFAULT_PATH)))
+	var treeline: Dictionary = {}
+	for item: Dictionary in loaded.field.objects:
+		if item.type == "treeline": treeline = item
+	if treeline.is_empty(): return false
+	var first: Array = treeline.positions[0]
+	var identity: Dictionary = load("res://render/treeline.gd").identity(float(first[0]), float(first[1]))
+	var card: Vector3 = Frames.ned_to_render([float(first[0]) + float(loaded.field.pilot.north),
+		float(first[1]) + float(loaded.field.pilot.east), -float(identity.height) * 0.55])
+	report["scope"] = "Offline prescribed camera motion through production trees at 24 samples/s; no aircraft simulation or native frame pacing. Geometry/render counters qualify only the captured route."
+	report["motion"] = {route = route, fps = 24, frames = count, card_north_east = first,
+		card_identity = identity, tree_mesh_lod_threshold_pixels = viewport.mesh_lod_threshold}
+	for index in count:
+		var phase := float(index) / float(count - 1)
+		var view := {id = "frame-%04d" % index, eye = Vector3.ZERO, at = Vector3.ZERO, fov = 50.0}
+		match route:
+			"oak-approach":
+				var distance := 8.0 + 242.0 * sin(PI * phase)
+				view.at = Vector3(10.5, 5.0, 32.0)
+				view.eye = view.at + Vector3(0.70, 0.03, 0.714).normalized() * distance
+				view.fov = 42.0
+			"card-orbit":
+				var angle := phase * TAU
+				view.at = card
+				view.eye = card + Vector3(cos(angle) * 27.0, -4.0 + 18.0 * sin(PI * phase), sin(angle) * 27.0)
+			"forest-pan":
+				view.eye = Vector3(0.0, 1.7, 0.0)
+				var angle := deg_to_rad(-35.0 + 70.0 * phase)
+				view.at = view.eye + Vector3(sin(angle), 0.03, -cos(angle)) * 500.0
+		if not await _capture(view, view.id, float(index) / 24.0, Vector3(5.0, 0.0, 0.0)):
+			return false
 	return true
 
 

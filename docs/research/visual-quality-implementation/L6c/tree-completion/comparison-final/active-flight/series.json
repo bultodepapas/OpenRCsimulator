@@ -1,0 +1,2448 @@
+{
+  "comparison_summary": {
+    "candidate_frame_targets": {
+      "all_p95_at_or_below_18ms": true,
+      "all_p99_at_or_below_25ms": true,
+      "p95_ms_max": 17.807,
+      "p99_ms_max": 19.464
+    },
+    "candidate_simulation_wall_ratio": {
+      "all_within_0_99_1_01": true,
+      "median": 0.999860273745784
+    },
+    "frame_max_delta_ms": {
+      "all_at_or_below_plus_0_5ms": null,
+      "max": 46.763999999999996,
+      "median": -7.811999999999998,
+      "min": -13.876999999999995
+    },
+    "frame_p50_delta_ms": {
+      "all_at_or_below_plus_0_5ms": null,
+      "max": 0.006000000000000227,
+      "median": -0.003999999999997783,
+      "min": -0.009000000000000341
+    },
+    "frame_p95_delta_ms": {
+      "all_at_or_below_plus_0_5ms": true,
+      "max": 0.07499999999999929,
+      "median": 0.03599999999999781,
+      "min": -0.13400000000000034
+    },
+    "frame_p99_delta_ms": {
+      "all_at_or_below_plus_0_5ms": null,
+      "max": 0.19000000000000128,
+      "median": -0.20599999999999952,
+      "min": -0.46499999999999986
+    },
+    "note": "These comparisons expose the plan's targets; they do not certify hardware coverage, readability or owner acceptance.",
+    "pairs": 5
+  },
+  "engine": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "environment_overrides": {
+    "baseline": {
+      "OPENRC_TREE_WIND": "off"
+    },
+    "candidate": {
+      "OPENRC_TREE_WIND": "on"
+    }
+  },
+  "finished_utc": "2026-10-18T17:15:33Z",
+  "format": "openrc-tree-flight-quality-series-v1",
+  "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+  "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+  "out": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight",
+  "pairs": [
+    {
+      "cpu_render_ms_p95": {
+        "baseline": 1.01499998569489,
+        "candidate": 1.05200004577637
+      },
+      "draw_calls_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "draw_calls_visible_p95": {
+        "baseline": 75.0,
+        "candidate": 76.0
+      },
+      "frame_ms": {
+        "max": {
+          "baseline": 26.81,
+          "candidate": 73.574,
+          "delta_candidate_minus_baseline": 46.763999999999996
+        },
+        "p50": {
+          "baseline": 16.663,
+          "candidate": 16.654,
+          "delta_candidate_minus_baseline": -0.009000000000000341
+        },
+        "p95": {
+          "baseline": 17.726,
+          "candidate": 17.714,
+          "delta_candidate_minus_baseline": -0.012000000000000455
+        },
+        "p99": {
+          "baseline": 18.822,
+          "candidate": 18.616,
+          "delta_candidate_minus_baseline": -0.20599999999999952
+        }
+      },
+      "gpu_render_ms_p95": {
+        "baseline": 3.87199997901917,
+        "candidate": 5.22100019454956
+      },
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "memory_bytes_p95": {
+        "buffer_bytes": {
+          "baseline": 46395782.0,
+          "candidate": 48579702.0
+        },
+        "cpu_static_bytes": {
+          "baseline": 201865313.0,
+          "candidate": 203030665.0
+        },
+        "texture_bytes": {
+          "baseline": 320398057.0,
+          "candidate": 331582865.0
+        },
+        "video_bytes": {
+          "baseline": 366793839.0,
+          "candidate": 380162567.0
+        }
+      },
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 1,
+      "primitives_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "primitives_visible_p95": {
+        "baseline": 186956.0,
+        "candidate": 187111.0
+      },
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "simulation_wall_ratio": {
+        "baseline": 1.00003700136905,
+        "candidate": 0.999514437414401
+      }
+    },
+    {
+      "cpu_render_ms_p95": {
+        "baseline": 1.03699994087219,
+        "candidate": 1.1360000371933
+      },
+      "draw_calls_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "draw_calls_visible_p95": {
+        "baseline": 75.0,
+        "candidate": 76.0
+      },
+      "frame_ms": {
+        "max": {
+          "baseline": 71.559,
+          "candidate": 63.747,
+          "delta_candidate_minus_baseline": -7.811999999999998
+        },
+        "p50": {
+          "baseline": 16.659,
+          "candidate": 16.655,
+          "delta_candidate_minus_baseline": -0.003999999999997783
+        },
+        "p95": {
+          "baseline": 17.732,
+          "candidate": 17.807,
+          "delta_candidate_minus_baseline": 0.07499999999999929
+        },
+        "p99": {
+          "baseline": 19.58,
+          "candidate": 19.464,
+          "delta_candidate_minus_baseline": -0.11599999999999966
+        }
+      },
+      "gpu_render_ms_p95": {
+        "baseline": 4.75899982452393,
+        "candidate": 4.98000001907349
+      },
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "memory_bytes_p95": {
+        "buffer_bytes": {
+          "baseline": 46395782.0,
+          "candidate": 46449510.0
+        },
+        "cpu_static_bytes": {
+          "baseline": 201866333.0,
+          "candidate": 203030997.0
+        },
+        "texture_bytes": {
+          "baseline": 320398057.0,
+          "candidate": 331582865.0
+        },
+        "video_bytes": {
+          "baseline": 366793839.0,
+          "candidate": 378032375.0
+        }
+      },
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 2,
+      "primitives_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "primitives_visible_p95": {
+        "baseline": 186956.0,
+        "candidate": 187111.0
+      },
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "simulation_wall_ratio": {
+        "baseline": 0.999832197665649,
+        "candidate": 0.999954078241164
+      }
+    },
+    {
+      "cpu_render_ms_p95": {
+        "baseline": 1.05200004577637,
+        "candidate": 1.08200001716614
+      },
+      "draw_calls_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "draw_calls_visible_p95": {
+        "baseline": 75.0,
+        "candidate": 76.0
+      },
+      "frame_ms": {
+        "max": {
+          "baseline": 71.526,
+          "candidate": 62.911,
+          "delta_candidate_minus_baseline": -8.614999999999995
+        },
+        "p50": {
+          "baseline": 16.663,
+          "candidate": 16.663,
+          "delta_candidate_minus_baseline": 0.0
+        },
+        "p95": {
+          "baseline": 17.823,
+          "candidate": 17.689,
+          "delta_candidate_minus_baseline": -0.13400000000000034
+        },
+        "p99": {
+          "baseline": 19.912,
+          "candidate": 19.447,
+          "delta_candidate_minus_baseline": -0.46499999999999986
+        }
+      },
+      "gpu_render_ms_p95": {
+        "baseline": 3.78900003433228,
+        "candidate": 4.71600008010864
+      },
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "memory_bytes_p95": {
+        "buffer_bytes": {
+          "baseline": 46395782.0,
+          "candidate": 48579702.0
+        },
+        "cpu_static_bytes": {
+          "baseline": 201863737.0,
+          "candidate": 203031297.0
+        },
+        "texture_bytes": {
+          "baseline": 320398057.0,
+          "candidate": 331582865.0
+        },
+        "video_bytes": {
+          "baseline": 366793839.0,
+          "candidate": 380162567.0
+        }
+      },
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 3,
+      "primitives_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "primitives_visible_p95": {
+        "baseline": 186956.0,
+        "candidate": 187111.0
+      },
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "simulation_wall_ratio": {
+        "baseline": 0.999745666258096,
+        "candidate": 0.999930239621677
+      }
+    },
+    {
+      "cpu_render_ms_p95": {
+        "baseline": 1.02100002765656,
+        "candidate": 1.03400003910065
+      },
+      "draw_calls_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "draw_calls_visible_p95": {
+        "baseline": 75.0,
+        "candidate": 76.0
+      },
+      "frame_ms": {
+        "max": {
+          "baseline": 78.352,
+          "candidate": 79.995,
+          "delta_candidate_minus_baseline": 1.6430000000000007
+        },
+        "p50": {
+          "baseline": 16.654,
+          "candidate": 16.66,
+          "delta_candidate_minus_baseline": 0.006000000000000227
+        },
+        "p95": {
+          "baseline": 17.724,
+          "candidate": 17.786,
+          "delta_candidate_minus_baseline": 0.062000000000001165
+        },
+        "p99": {
+          "baseline": 19.089,
+          "candidate": 19.279,
+          "delta_candidate_minus_baseline": 0.19000000000000128
+        }
+      },
+      "gpu_render_ms_p95": {
+        "baseline": 5.24200010299683,
+        "candidate": 4.375
+      },
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "memory_bytes_p95": {
+        "buffer_bytes": {
+          "baseline": 46395782.0,
+          "candidate": 48579702.0
+        },
+        "cpu_static_bytes": {
+          "baseline": 201865341.0,
+          "candidate": 203030593.0
+        },
+        "texture_bytes": {
+          "baseline": 320398057.0,
+          "candidate": 331582865.0
+        },
+        "video_bytes": {
+          "baseline": 366793839.0,
+          "candidate": 380162567.0
+        }
+      },
+      "order": [
+        "candidate",
+        "baseline"
+      ],
+      "pair": 4,
+      "primitives_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "primitives_visible_p95": {
+        "baseline": 186956.0,
+        "candidate": 187111.0
+      },
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "simulation_wall_ratio": {
+        "baseline": 0.999698449884378,
+        "candidate": 0.999781552209963
+      }
+    },
+    {
+      "cpu_render_ms_p95": {
+        "baseline": 1.01300001144409,
+        "candidate": 1.0440000295639
+      },
+      "draw_calls_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "draw_calls_visible_p95": {
+        "baseline": 75.0,
+        "candidate": 76.0
+      },
+      "frame_ms": {
+        "max": {
+          "baseline": 84.1,
+          "candidate": 70.223,
+          "delta_candidate_minus_baseline": -13.876999999999995
+        },
+        "p50": {
+          "baseline": 16.662,
+          "candidate": 16.654,
+          "delta_candidate_minus_baseline": -0.007999999999999119
+        },
+        "p95": {
+          "baseline": 17.73,
+          "candidate": 17.766,
+          "delta_candidate_minus_baseline": 0.03599999999999781
+        },
+        "p99": {
+          "baseline": 19.28,
+          "candidate": 19.017,
+          "delta_candidate_minus_baseline": -0.2630000000000017
+        }
+      },
+      "gpu_render_ms_p95": {
+        "baseline": 5.19899988174438,
+        "candidate": 4.59800004959106
+      },
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "memory_bytes_p95": {
+        "buffer_bytes": {
+          "baseline": 46395782.0,
+          "candidate": 48579702.0
+        },
+        "cpu_static_bytes": {
+          "baseline": 201866441.0,
+          "candidate": 203031921.0
+        },
+        "texture_bytes": {
+          "baseline": 320398057.0,
+          "candidate": 331582865.0
+        },
+        "video_bytes": {
+          "baseline": 366793839.0,
+          "candidate": 380162567.0
+        }
+      },
+      "order": [
+        "baseline",
+        "candidate"
+      ],
+      "pair": 5,
+      "primitives_shadow_p95": {
+        "baseline": 0.0,
+        "candidate": 0.0
+      },
+      "primitives_visible_p95": {
+        "baseline": 186956.0,
+        "candidate": 187111.0
+      },
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "simulation_wall_ratio": {
+        "baseline": 0.999629525851156,
+        "candidate": 0.999860273745784
+      }
+    }
+  ],
+  "project_purpose": {
+    "baseline": "same-revision tree baseline frozen by the qualification owner",
+    "candidate": "same-revision tree candidate frozen by the qualification owner"
+  },
+  "projects": {
+    "baseline": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+    "candidate": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app"
+  },
+  "qualification_note": "Collected native active-flight measurements. Human readability, flight quality and target-hardware sign-off remain separate evidence gates.",
+  "runs": [
+    {
+      "build_name": "baseline",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "c5a8412cf7fabcd0b58fa52f7ff6b9284f9b73a7947f805c612a294cc948df6b",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 1,
+      "pair": 1,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-1-baseline\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-01-1-baseline",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-1-baseline\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 78.125,
+        "environment": {
+          "OPENRC_TREE_WIND": "off"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:03:51Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-1-baseline\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:02:32Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-1-baseline\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-1-baseline\\frametimes.json.gz",
+      "run_id": "pair-01-1-baseline",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 26.5516666666667,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 16.667
+        },
+        "engine_seconds": 60.0157509999996,
+        "frame_ms": {
+          "max": 26.81,
+          "p50": 16.663,
+          "p95": 17.726,
+          "p99": 18.822
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.999084333333,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.99778,
+          "wall_end_monotonic_usec": 77485141,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17487361
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 46395782.0,
+            "p50": 46395782.0,
+            "p95": 46395782.0,
+            "p99": 46395782.0
+          },
+          "cpu_static_bytes": {
+            "max": 202281497.0,
+            "p50": 201584049.0,
+            "p95": 201865313.0,
+            "p99": 201866833.0
+          },
+          "texture_bytes": {
+            "max": 320398057.0,
+            "p50": 320398057.0,
+            "p95": 320398057.0,
+            "p99": 320398057.0
+          },
+          "video_bytes": {
+            "max": 366793839.0,
+            "p50": 366793839.0,
+            "p95": 366793839.0,
+            "p99": 366793839.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 1.91700005531311,
+            "p50": 0.816999971866608,
+            "p95": 1.01499998569489,
+            "p99": 1.27699995040894
+          },
+          "gpu_render_ms": {
+            "max": 15.6669998168945,
+            "p50": 2.5699999332428,
+            "p95": 3.87199997901917,
+            "p99": 7.16200017929077
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 75.0,
+            "p50": 74.0,
+            "p95": 75.0,
+            "p99": 75.0
+          },
+          "visible_primitives": {
+            "max": 186956.0,
+            "p50": 186764.0,
+            "p95": 186956.0,
+            "p99": 186956.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 60.0,
+          "end_tick": 16789,
+          "end_time_s": 69.9541666666667,
+          "fault": "",
+          "measured_engine_s": 59.999084333333,
+          "measured_wall_s": 59.99778,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16789,
+          "start_tick": 2389,
+          "start_time_s": 9.95416666666667,
+          "ticks": 14400,
+          "wall_ratio": 1.00003700136905
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.023523,
+        "wall_frame_ms": {
+          "max": 26.81,
+          "p50": 16.663,
+          "p95": 17.726,
+          "p99": 18.822
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-01-1-baseline/frametimes.json.gz",
+        "stored_sha256": "b972b2b6d6abb687bf0c0a600ba4498a93a2561180666a593abe6a25b404b227",
+        "stored_bytes": 152744,
+        "original_uncompressed_path": "runs/pair-01-1-baseline/frametimes.json",
+        "original_uncompressed_sha256": "c5a8412cf7fabcd0b58fa52f7ff6b9284f9b73a7947f805c612a294cc948df6b",
+        "original_uncompressed_bytes": 1689131,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "candidate",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "20d7d6ad88965ad8eacce00aec7cafc77122ba8c0a07ee71c86407c1dd0420dc",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 2,
+      "pair": 1,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-2-candidate\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-01-2-candidate",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-2-candidate\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 78.0,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:05:09Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-2-candidate\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:03:51Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-2-candidate\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-01-2-candidate\\frametimes.json.gz",
+      "run_id": "pair-01-2-candidate",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 53.9723333333333,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 16.7076666666667
+        },
+        "engine_seconds": 59.9766876666657,
+        "frame_ms": {
+          "max": 73.574,
+          "p50": 16.654,
+          "p95": 17.714,
+          "p99": 18.616
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.9600236666657,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.987461,
+          "wall_end_monotonic_usec": 77548914,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17561453
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 48579702.0,
+            "p50": 48579702.0,
+            "p95": 48579702.0,
+            "p99": 48579702.0
+          },
+          "cpu_static_bytes": {
+            "max": 203037925.0,
+            "p50": 202749413.0,
+            "p95": 203030665.0,
+            "p99": 203032541.0
+          },
+          "texture_bytes": {
+            "max": 331582865.0,
+            "p50": 331582865.0,
+            "p95": 331582865.0,
+            "p99": 331582865.0
+          },
+          "video_bytes": {
+            "max": 380162567.0,
+            "p50": 380162567.0,
+            "p95": 380162567.0,
+            "p99": 380162567.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.31399989128113,
+            "p50": 0.822000026702881,
+            "p95": 1.05200004577637,
+            "p99": 1.32000005245209
+          },
+          "gpu_render_ms": {
+            "max": 16.0279998779297,
+            "p50": 2.53999996185303,
+            "p95": 5.22100019454956,
+            "p99": 6.77500009536743
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 76.0,
+            "p50": 75.0,
+            "p95": 76.0,
+            "p99": 76.0
+          },
+          "visible_primitives": {
+            "max": 187111.0,
+            "p50": 186919.0,
+            "p95": 187111.0,
+            "p99": 187111.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9583333333333,
+          "end_tick": 16795,
+          "end_time_s": 69.9791666666667,
+          "fault": "",
+          "measured_engine_s": 59.9600236666657,
+          "measured_wall_s": 59.987461,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16795,
+          "start_tick": 2405,
+          "start_time_s": 10.0208333333333,
+          "ticks": 14390,
+          "wall_ratio": 0.999514437414401
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.007346,
+        "wall_frame_ms": {
+          "max": 73.574,
+          "p50": 16.654,
+          "p95": 17.714,
+          "p99": 18.616
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-01-2-candidate/frametimes.json.gz",
+        "stored_sha256": "f64369a89f81510966f6fd1d470ddfebfd1b58869fc77603dbed309d52324026",
+        "stored_bytes": 154256,
+        "original_uncompressed_path": "runs/pair-01-2-candidate/frametimes.json",
+        "original_uncompressed_sha256": "20d7d6ad88965ad8eacce00aec7cafc77122ba8c0a07ee71c86407c1dd0420dc",
+        "original_uncompressed_bytes": 1686788,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "candidate",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "74837a575f0b9df13c894b6950315ff9a4b6392baae6fdd48fa2c0f3c9e7b851",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 1,
+      "pair": 2,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-1-candidate\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-02-1-candidate",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-1-candidate\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 77.86,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:06:26Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-1-candidate\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:05:09Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-1-candidate\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-1-candidate\\frametimes.json.gz",
+      "run_id": "pair-02-1-candidate",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 52.417,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 17.1713333333333
+        },
+        "engine_seconds": 59.9980726666657,
+        "frame_ms": {
+          "max": 63.747,
+          "p50": 16.655,
+          "p95": 17.807,
+          "p99": 19.464
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.9814063333324,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.986088,
+          "wall_end_monotonic_usec": 77384952,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17398864
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 46449510.0,
+            "p50": 46449510.0,
+            "p95": 46449510.0,
+            "p99": 46449510.0
+          },
+          "cpu_static_bytes": {
+            "max": 203446053.0,
+            "p50": 202749209.0,
+            "p95": 203030997.0,
+            "p99": 203033385.0
+          },
+          "texture_bytes": {
+            "max": 331582865.0,
+            "p50": 331582865.0,
+            "p95": 331582865.0,
+            "p99": 331582865.0
+          },
+          "video_bytes": {
+            "max": 378032375.0,
+            "p50": 378032375.0,
+            "p95": 378032375.0,
+            "p99": 378032375.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 3.2409999370575,
+            "p50": 0.84799998998642,
+            "p95": 1.1360000371933,
+            "p99": 1.49899995326996
+          },
+          "gpu_render_ms": {
+            "max": 30.2639999389648,
+            "p50": 2.54699993133545,
+            "p95": 4.98000001907349,
+            "p99": 7.37400007247925
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 76.0,
+            "p50": 75.0,
+            "p95": 76.0,
+            "p99": 76.0
+          },
+          "visible_primitives": {
+            "max": 187111.0,
+            "p50": 186919.0,
+            "p95": 187111.0,
+            "p99": 187111.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9833333333333,
+          "end_tick": 16793,
+          "end_time_s": 69.9708333333333,
+          "fault": "",
+          "measured_engine_s": 59.9814063333324,
+          "measured_wall_s": 59.986088,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16793,
+          "start_tick": 2397,
+          "start_time_s": 9.9875,
+          "ticks": 14396,
+          "wall_ratio": 0.999954078241164
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.011508,
+        "wall_frame_ms": {
+          "max": 63.747,
+          "p50": 16.655,
+          "p95": 17.807,
+          "p99": 19.464
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-02-1-candidate/frametimes.json.gz",
+        "stored_sha256": "482d501f605b6789ee169422197c3aa1d13a0fc706e934e3bb91a79ff232ce89",
+        "stored_bytes": 156795,
+        "original_uncompressed_path": "runs/pair-02-1-candidate/frametimes.json",
+        "original_uncompressed_sha256": "74837a575f0b9df13c894b6950315ff9a4b6392baae6fdd48fa2c0f3c9e7b851",
+        "original_uncompressed_bytes": 1686496,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "baseline",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "4456ab03d6d248bdd3eba4f6ec3711cefd598b1068c0b8f53153bf8a97322998",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 2,
+      "pair": 2,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-2-baseline\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-02-2-baseline",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-2-baseline\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 78.0,
+        "environment": {
+          "OPENRC_TREE_WIND": "off"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:07:44Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-2-baseline\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:06:26Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-2-baseline\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-02-2-baseline\\frametimes.json.gz",
+      "run_id": "pair-02-2-baseline",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 53.8563333333317,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 17.117
+        },
+        "engine_seconds": 59.9946357777768,
+        "frame_ms": {
+          "max": 71.559,
+          "p50": 16.659,
+          "p95": 17.732,
+          "p99": 19.58
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.9779691111101,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.989233,
+          "wall_end_monotonic_usec": 77511889,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17522656
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 46395782.0,
+            "p50": 46395782.0,
+            "p95": 46395782.0,
+            "p99": 46395782.0
+          },
+          "cpu_static_bytes": {
+            "max": 201874645.0,
+            "p50": 201583729.0,
+            "p95": 201866333.0,
+            "p99": 201866797.0
+          },
+          "texture_bytes": {
+            "max": 320398057.0,
+            "p50": 320398057.0,
+            "p95": 320398057.0,
+            "p99": 320398057.0
+          },
+          "video_bytes": {
+            "max": 366793839.0,
+            "p50": 366793839.0,
+            "p95": 366793839.0,
+            "p99": 366793839.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.21099996566772,
+            "p50": 0.820999979972839,
+            "p95": 1.03699994087219,
+            "p99": 1.34800004959106
+          },
+          "gpu_render_ms": {
+            "max": 17.9740009307861,
+            "p50": 2.57999992370605,
+            "p95": 4.75899982452393,
+            "p99": 6.75
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 75.0,
+            "p50": 74.0,
+            "p95": 75.0,
+            "p99": 75.0
+          },
+          "visible_primitives": {
+            "max": 186956.0,
+            "p50": 186764.0,
+            "p95": 186956.0,
+            "p99": 186956.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9791666666667,
+          "end_tick": 16801,
+          "end_time_s": 70.0041666666667,
+          "fault": "",
+          "measured_engine_s": 59.9779691111101,
+          "measured_wall_s": 59.989233,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16801,
+          "start_tick": 2406,
+          "start_time_s": 10.025,
+          "ticks": 14395,
+          "wall_ratio": 0.999832197665649
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.016596,
+        "wall_frame_ms": {
+          "max": 71.559,
+          "p50": 16.659,
+          "p95": 17.732,
+          "p99": 19.58
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-02-2-baseline/frametimes.json.gz",
+        "stored_sha256": "4ee4ca7ab9db0bf53551c099197035803096e02c1390236f1a2c852d2f3dc175",
+        "stored_bytes": 153888,
+        "original_uncompressed_path": "runs/pair-02-2-baseline/frametimes.json",
+        "original_uncompressed_sha256": "4456ab03d6d248bdd3eba4f6ec3711cefd598b1068c0b8f53153bf8a97322998",
+        "original_uncompressed_bytes": 1687595,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "baseline",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "3eee82f9c786fcb9f6db5e721114a3819b83a6c3faa5e4504fda611c6ed977b7",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 1,
+      "pair": 3,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-1-baseline\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-03-1-baseline",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-1-baseline\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 77.984,
+        "environment": {
+          "OPENRC_TREE_WIND": "off"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:09:02Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-1-baseline\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:07:45Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-1-baseline\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-1-baseline\\frametimes.json.gz",
+      "run_id": "pair-03-1-baseline",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 52.201,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 17.646
+        },
+        "engine_seconds": 60.0005749999996,
+        "frame_ms": {
+          "max": 71.526,
+          "p50": 16.663,
+          "p95": 17.823,
+          "p99": 19.912
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.9839126666663,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.998593,
+          "wall_end_monotonic_usec": 77479425,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17480832
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 46395782.0,
+            "p50": 46395782.0,
+            "p95": 46395782.0,
+            "p99": 46395782.0
+          },
+          "cpu_static_bytes": {
+            "max": 202280325.0,
+            "p50": 201583801.0,
+            "p95": 201863737.0,
+            "p99": 201865661.0
+          },
+          "texture_bytes": {
+            "max": 320398057.0,
+            "p50": 320398057.0,
+            "p95": 320398057.0,
+            "p99": 320398057.0
+          },
+          "video_bytes": {
+            "max": 366793839.0,
+            "p50": 366793839.0,
+            "p95": 366793839.0,
+            "p99": 366793839.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.67700004577637,
+            "p50": 0.837999999523163,
+            "p95": 1.05200004577637,
+            "p99": 1.32599997520447
+          },
+          "gpu_render_ms": {
+            "max": 11.1099996566772,
+            "p50": 2.56100010871887,
+            "p95": 3.78900003433228,
+            "p99": 5.23400020599365
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 75.0,
+            "p50": 74.0,
+            "p95": 75.0,
+            "p99": 75.0
+          },
+          "visible_primitives": {
+            "max": 186956.0,
+            "p50": 186764.0,
+            "p95": 186956.0,
+            "p99": 186956.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9833333333333,
+          "end_tick": 16800,
+          "end_time_s": 70.0,
+          "fault": "",
+          "measured_engine_s": 59.9839126666663,
+          "measured_wall_s": 59.998593,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16800,
+          "start_tick": 2404,
+          "start_time_s": 10.0166666666667,
+          "ticks": 14396,
+          "wall_ratio": 0.999745666258096
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.027762,
+        "wall_frame_ms": {
+          "max": 71.526,
+          "p50": 16.663,
+          "p95": 17.823,
+          "p99": 19.912
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-03-1-baseline/frametimes.json.gz",
+        "stored_sha256": "032a9356377d3505382f10a06620a6491ae822ae76ca08ed1804c9077902a6e0",
+        "stored_bytes": 153172,
+        "original_uncompressed_path": "runs/pair-03-1-baseline/frametimes.json",
+        "original_uncompressed_sha256": "3eee82f9c786fcb9f6db5e721114a3819b83a6c3faa5e4504fda611c6ed977b7",
+        "original_uncompressed_bytes": 1684918,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "candidate",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "1ef4bc46f20c257974e8c7a3254718788a2431c9840aa26f83f898e5f5d79a87",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 2,
+      "pair": 3,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-2-candidate\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-03-2-candidate",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-2-candidate\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 78.218,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:10:21Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-2-candidate\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:09:03Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-2-candidate\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-03-2-candidate\\frametimes.json.gz",
+      "run_id": "pair-03-2-candidate",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 52.2866666666654,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 17.2703333333333
+        },
+        "engine_seconds": 60.008815999999,
+        "frame_ms": {
+          "max": 62.911,
+          "p50": 16.663,
+          "p95": 17.689,
+          "p99": 19.447
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.9921493333323,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.995852,
+          "wall_end_monotonic_usec": 77733944,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17738092
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 48579702.0,
+            "p50": 48579702.0,
+            "p95": 48579702.0,
+            "p99": 48579702.0
+          },
+          "cpu_static_bytes": {
+            "max": 203041589.0,
+            "p50": 202750037.0,
+            "p95": 203031297.0,
+            "p99": 203032517.0
+          },
+          "texture_bytes": {
+            "max": 331582865.0,
+            "p50": 331582865.0,
+            "p95": 331582865.0,
+            "p99": 331582865.0
+          },
+          "video_bytes": {
+            "max": 380162567.0,
+            "p50": 380162567.0,
+            "p95": 380162567.0,
+            "p99": 380162567.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.85500001907349,
+            "p50": 0.833000004291534,
+            "p95": 1.08200001716614,
+            "p99": 1.51400005817413
+          },
+          "gpu_render_ms": {
+            "max": 19.3969993591309,
+            "p50": 2.53099989891052,
+            "p95": 4.71600008010864,
+            "p99": 6.69600009918213
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 76.0,
+            "p50": 75.0,
+            "p95": 76.0,
+            "p99": 76.0
+          },
+          "visible_primitives": {
+            "max": 187111.0,
+            "p50": 186919.0,
+            "p95": 187111.0,
+            "p99": 187111.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9916666666667,
+          "end_tick": 16798,
+          "end_time_s": 69.9916666666667,
+          "fault": "",
+          "measured_engine_s": 59.9921493333323,
+          "measured_wall_s": 59.995852,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16798,
+          "start_tick": 2400,
+          "start_time_s": 10.0,
+          "ticks": 14398,
+          "wall_ratio": 0.999930239621677
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.019983,
+        "wall_frame_ms": {
+          "max": 62.911,
+          "p50": 16.663,
+          "p95": 17.689,
+          "p99": 19.447
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-03-2-candidate/frametimes.json.gz",
+        "stored_sha256": "133c9fada634c9a83f464b7635846c9a834986e55d090bc6116f427cab7c0708",
+        "stored_bytes": 155142,
+        "original_uncompressed_path": "runs/pair-03-2-candidate/frametimes.json",
+        "original_uncompressed_sha256": "1ef4bc46f20c257974e8c7a3254718788a2431c9840aa26f83f898e5f5d79a87",
+        "original_uncompressed_bytes": 1686214,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "candidate",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "c77ab825fffa8122fbb7a37481dd0d261dbd23483de81af39f07f2d68310b713",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 1,
+      "pair": 4,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-1-candidate\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-04-1-candidate",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-1-candidate\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 78.046,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:11:39Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-1-candidate\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:10:21Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-1-candidate\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-1-candidate\\frametimes.json.gz",
+      "run_id": "pair-04-1-candidate",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 54.0876666666669,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 16.684
+        },
+        "engine_seconds": 60.0026673333329,
+        "frame_ms": {
+          "max": 79.995,
+          "p50": 16.66,
+          "p95": 17.786,
+          "p99": 19.279
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.9860006666663,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 60.000607,
+          "wall_end_monotonic_usec": 77562930,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17562323
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 48579702.0,
+            "p50": 48579702.0,
+            "p95": 48579702.0,
+            "p99": 48579702.0
+          },
+          "cpu_static_bytes": {
+            "max": 203447757.0,
+            "p50": 202750905.0,
+            "p95": 203030593.0,
+            "p99": 203032169.0
+          },
+          "texture_bytes": {
+            "max": 331582865.0,
+            "p50": 331582865.0,
+            "p95": 331582865.0,
+            "p99": 331582865.0
+          },
+          "video_bytes": {
+            "max": 380162567.0,
+            "p50": 380162567.0,
+            "p95": 380162567.0,
+            "p99": 380162567.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.03299999237061,
+            "p50": 0.837999999523163,
+            "p95": 1.03400003910065,
+            "p99": 1.27400004863739
+          },
+          "gpu_render_ms": {
+            "max": 15.6090002059937,
+            "p50": 2.56100010871887,
+            "p95": 4.375,
+            "p99": 6.04899978637695
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 76.0,
+            "p50": 75.0,
+            "p95": 76.0,
+            "p99": 76.0
+          },
+          "visible_primitives": {
+            "max": 187111.0,
+            "p50": 186919.0,
+            "p95": 187111.0,
+            "p99": 187111.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9875,
+          "end_tick": 16759,
+          "end_time_s": 69.8291666666667,
+          "fault": "",
+          "measured_engine_s": 59.9860006666663,
+          "measured_wall_s": 60.000607,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16759,
+          "start_tick": 2362,
+          "start_time_s": 9.84166666666667,
+          "ticks": 14397,
+          "wall_ratio": 0.999781552209963
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.028623,
+        "wall_frame_ms": {
+          "max": 79.995,
+          "p50": 16.66,
+          "p95": 17.786,
+          "p99": 19.279
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-04-1-candidate/frametimes.json.gz",
+        "stored_sha256": "fce548e0e12f007a8e7ec9af153579b25e050fd2a8409a817e3f26bb40908613",
+        "stored_bytes": 153283,
+        "original_uncompressed_path": "runs/pair-04-1-candidate/frametimes.json",
+        "original_uncompressed_sha256": "c77ab825fffa8122fbb7a37481dd0d261dbd23483de81af39f07f2d68310b713",
+        "original_uncompressed_bytes": 1686591,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "baseline",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "9762073b72697783dfb7335c333b99e4ea8ae311ef1b4c42456a6b59cff86c9e",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 2,
+      "pair": 4,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-2-baseline\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-04-2-baseline",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-2-baseline\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 77.89,
+        "environment": {
+          "OPENRC_TREE_WIND": "off"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:12:57Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-2-baseline\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:11:39Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-2-baseline\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-04-2-baseline\\frametimes.json.gz",
+      "run_id": "pair-04-2-baseline",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 50.6833333333334,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 16.668
+        },
+        "engine_seconds": 59.9863803333327,
+        "frame_ms": {
+          "max": 78.352,
+          "p50": 16.654,
+          "p95": 17.724,
+          "p99": 19.089
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.969713666666,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.988923,
+          "wall_end_monotonic_usec": 77419191,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17430268
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 46395782.0,
+            "p50": 46395782.0,
+            "p95": 46395782.0,
+            "p99": 46395782.0
+          },
+          "cpu_static_bytes": {
+            "max": 202280601.0,
+            "p50": 201582517.0,
+            "p95": 201865341.0,
+            "p99": 201867025.0
+          },
+          "texture_bytes": {
+            "max": 320398057.0,
+            "p50": 320398057.0,
+            "p95": 320398057.0,
+            "p99": 320398057.0
+          },
+          "video_bytes": {
+            "max": 366793839.0,
+            "p50": 366793839.0,
+            "p95": 366793839.0,
+            "p99": 366793839.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.16700005531311,
+            "p50": 0.814000010490417,
+            "p95": 1.02100002765656,
+            "p99": 1.39999997615814
+          },
+          "gpu_render_ms": {
+            "max": 14.8459997177124,
+            "p50": 2.68300008773804,
+            "p95": 5.24200010299683,
+            "p99": 7.16499996185303
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 75.0,
+            "p50": 74.0,
+            "p95": 75.0,
+            "p99": 75.0
+          },
+          "visible_primitives": {
+            "max": 186956.0,
+            "p50": 186764.0,
+            "p95": 186956.0,
+            "p99": 186956.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9708333333333,
+          "end_tick": 16800,
+          "end_time_s": 70.0,
+          "fault": "",
+          "measured_engine_s": 59.969713666666,
+          "measured_wall_s": 59.988923,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16800,
+          "start_tick": 2407,
+          "start_time_s": 10.0291666666667,
+          "ticks": 14393,
+          "wall_ratio": 0.999698449884378
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.018709,
+        "wall_frame_ms": {
+          "max": 78.352,
+          "p50": 16.654,
+          "p95": 17.724,
+          "p99": 19.089
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-04-2-baseline/frametimes.json.gz",
+        "stored_sha256": "27a47bb7eb36e9969d10d83a808e24b42a17a0d0a001934372d30c8c9d9164c5",
+        "stored_bytes": 155396,
+        "original_uncompressed_path": "runs/pair-04-2-baseline/frametimes.json",
+        "original_uncompressed_sha256": "9762073b72697783dfb7335c333b99e4ea8ae311ef1b4c42456a6b59cff86c9e",
+        "original_uncompressed_bytes": 1686296,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "baseline",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "0f9e55b6e9c06e5e41b596d835ad873adba7418ad2fd0e792dff663a2cfd091e",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 1,
+      "pair": 5,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-1-baseline\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-05-1-baseline",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-1-baseline\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 77.968,
+        "environment": {
+          "OPENRC_TREE_WIND": "off"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:14:15Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-1-baseline\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:12:57Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-1-baseline\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\baseline\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-1-baseline\\frametimes.json.gz",
+      "run_id": "pair-05-1-baseline",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 49.7026666666667,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 17.0138888888889
+        },
+        "engine_seconds": 59.9819963333327,
+        "frame_ms": {
+          "max": 84.1,
+          "p50": 16.662,
+          "p95": 17.73,
+          "p99": 19.28
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.965329666666,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.988891,
+          "wall_end_monotonic_usec": 77468261,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17479370
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 46395782.0,
+            "p50": 46395782.0,
+            "p95": 46395782.0,
+            "p99": 46395782.0
+          },
+          "cpu_static_bytes": {
+            "max": 201874297.0,
+            "p50": 201581069.0,
+            "p95": 201866441.0,
+            "p99": 201867313.0
+          },
+          "texture_bytes": {
+            "max": 320398057.0,
+            "p50": 320398057.0,
+            "p95": 320398057.0,
+            "p99": 320398057.0
+          },
+          "video_bytes": {
+            "max": 366793839.0,
+            "p50": 366793839.0,
+            "p95": 366793839.0,
+            "p99": 366793839.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.09400010108948,
+            "p50": 0.816999971866608,
+            "p95": 1.01300001144409,
+            "p99": 1.27199995517731
+          },
+          "gpu_render_ms": {
+            "max": 16.6490001678467,
+            "p50": 2.63599991798401,
+            "p95": 5.19899988174438,
+            "p99": 7.23000001907349
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 75.0,
+            "p50": 74.0,
+            "p95": 75.0,
+            "p99": 75.0
+          },
+          "visible_primitives": {
+            "max": 186956.0,
+            "p50": 186764.0,
+            "p95": 186956.0,
+            "p99": 186956.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9666666666667,
+          "end_tick": 16798,
+          "end_time_s": 69.9916666666667,
+          "fault": "",
+          "measured_engine_s": 59.965329666666,
+          "measured_wall_s": 59.988891,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16798,
+          "start_tick": 2406,
+          "start_time_s": 10.025,
+          "ticks": 14392,
+          "wall_ratio": 0.999629525851156
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.021692,
+        "wall_frame_ms": {
+          "max": 84.1,
+          "p50": 16.662,
+          "p95": 17.73,
+          "p99": 19.28
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-05-1-baseline/frametimes.json.gz",
+        "stored_sha256": "3032531d18d14b2ac34debf35c97235f4c1da38926fbb9f918f921be61ec01ce",
+        "stored_bytes": 155452,
+        "original_uncompressed_path": "runs/pair-05-1-baseline/frametimes.json",
+        "original_uncompressed_sha256": "0f9e55b6e9c06e5e41b596d835ad873adba7418ad2fd0e792dff663a2cfd091e",
+        "original_uncompressed_bytes": 1686271,
+        "round_trip_sha256_verified": true
+      }
+    },
+    {
+      "build_name": "candidate",
+      "complete": true,
+      "failures": [],
+      "frame_report_sha256": "23bedcd2a1921ef9302d903695cdd75478f638379a3a6b6481eaef785fe51198",
+      "frame_samples_sha256": "780a700a9f0590351d4deb8446824a46f012ee29067ba6b41125cb9b2842473c",
+      "input_tape_sha256": "b987a7cf4df577bb3d96fd290cdefa1824604cdec525642a6deacd87ffdcd6e5",
+      "order_in_pair": 2,
+      "pair": 5,
+      "process": {
+        "command": [
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+          "--path",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+          "--script",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\trees\\flight_quality_probe.gd",
+          "--resolution",
+          "1280x720",
+          "--disable-vsync",
+          "--max-fps",
+          "60",
+          "--log-file",
+          "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-2-candidate\\console.log.engine.log",
+          "--",
+          "--mode=performance",
+          "--case=pair-05-2-candidate",
+          "--route=performance-neutral-trim",
+          "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-2-candidate\\frametimes.json",
+          "--probe-warmup=10",
+          "--probe-sample=60",
+          "--quick-flight",
+          "--start=airborne",
+          "--aircraft=jensen-das-ugly-stik-60",
+          "--weather=calm",
+          "--time-of-day=12:00",
+          "--date=2026-10-18",
+          "--rates=normal",
+          "--view=pilot",
+          "--autozoom=0"
+        ],
+        "contains_error": false,
+        "elapsed_monotonic_s": 77.875,
+        "environment": {
+          "OPENRC_TREE_WIND": "on"
+        },
+        "exit_code": 0,
+        "finished_utc": "2026-10-18T17:15:33Z",
+        "godot_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-2-candidate\\console.log.engine.log",
+        "started_utc": "2026-10-18T17:14:15Z",
+        "stdout_log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-2-candidate\\console.log",
+        "timed_out": false
+      },
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-natural\\candidate\\app",
+      "report_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\L6c\\tree-completion\\comparison-final\\active-flight\\runs\\pair-05-2-candidate\\frametimes.json.gz",
+      "run_id": "pair-05-2-candidate",
+      "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+      "summary": {
+        "engine_frame_ms": {
+          "max": 51.8923333333318,
+          "p50": 16.6666666666667,
+          "p95": 16.6666666666667,
+          "p99": 16.6686666666667
+        },
+        "engine_seconds": 60.0052116666655,
+        "frame_ms": {
+          "max": 70.223,
+          "p50": 16.654,
+          "p95": 17.766,
+          "p99": 19.017
+        },
+        "measured_clocks": {
+          "engine_elapsed_s": 59.9885449999989,
+          "engine_source": "Godot process delta samples",
+          "wall_elapsed_s": 59.995883,
+          "wall_end_monotonic_usec": 77376462,
+          "wall_source": "monotonic frame-end microsecond timestamps",
+          "wall_start_monotonic_usec": 17380579
+        },
+        "measured_memory": {
+          "buffer_bytes": {
+            "max": 48579702.0,
+            "p50": 48579702.0,
+            "p95": 48579702.0,
+            "p99": 48579702.0
+          },
+          "cpu_static_bytes": {
+            "max": 203039777.0,
+            "p50": 202752149.0,
+            "p95": 203031921.0,
+            "p99": 203033341.0
+          },
+          "texture_bytes": {
+            "max": 331582865.0,
+            "p50": 331582865.0,
+            "p95": 331582865.0,
+            "p99": 331582865.0
+          },
+          "video_bytes": {
+            "max": 380162567.0,
+            "p50": 380162567.0,
+            "p95": 380162567.0,
+            "p99": 380162567.0
+          }
+        },
+        "measured_render": {
+          "cpu_render_ms": {
+            "max": 2.25999999046326,
+            "p50": 0.822000026702881,
+            "p95": 1.0440000295639,
+            "p99": 1.37999999523163
+          },
+          "gpu_render_ms": {
+            "max": 18.4829998016357,
+            "p50": 2.46199989318848,
+            "p95": 4.59800004959106,
+            "p99": 6.60099983215332
+          },
+          "shadow_draw_calls": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "shadow_primitives": {
+            "max": 0.0,
+            "p50": 0.0,
+            "p95": 0.0,
+            "p99": 0.0
+          },
+          "visible_draw_calls": {
+            "max": 76.0,
+            "p50": 75.0,
+            "p95": 76.0,
+            "p99": 76.0
+          },
+          "visible_primitives": {
+            "max": 187111.0,
+            "p50": 186919.0,
+            "p95": 187111.0,
+            "p99": 187111.0
+          }
+        },
+        "render_settings": {
+          "msaa_3d": 2,
+          "msaa_4x": true,
+          "scaling_3d_scale": 1.0,
+          "screen_space_aa": 0
+        },
+        "simulation": {
+          "crash": false,
+          "elapsed_time_s": 59.9875,
+          "end_tick": 16803,
+          "end_time_s": 70.0125,
+          "fault": "",
+          "measured_engine_s": 59.9885449999989,
+          "measured_wall_s": 59.995883,
+          "paused": false,
+          "physics_ticks_per_second": 240,
+          "read_raw_calls": 16803,
+          "start_tick": 2406,
+          "start_time_s": 10.025,
+          "ticks": 14397,
+          "wall_ratio": 0.999860273745784
+        },
+        "viewport_render_timing": {
+          "cpu": {
+            "available": true,
+            "reason": "Godot viewport CPU render timer returned positive samples."
+          },
+          "gpu": {
+            "available": true,
+            "reason": "Godot viewport GPU render timer returned positive samples."
+          }
+        },
+        "wall_elapsed_seconds": 70.028082,
+        "wall_frame_ms": {
+          "max": 70.223,
+          "p50": 16.654,
+          "p95": 17.766,
+          "p99": 19.017
+        },
+        "window": {
+          "height": 720,
+          "width": 1280
+        }
+      },
+      "report_storage": {
+        "compression": "gzip",
+        "stored_path": "runs/pair-05-2-candidate/frametimes.json.gz",
+        "stored_sha256": "d005bc808cd61564419451f1e360833cf200ab27f068ece2c4f16a71dd9a2825",
+        "stored_bytes": 152809,
+        "original_uncompressed_path": "runs/pair-05-2-candidate/frametimes.json",
+        "original_uncompressed_sha256": "23bedcd2a1921ef9302d903695cdd75478f638379a3a6b6481eaef785fe51198",
+        "original_uncompressed_bytes": 1688108,
+        "round_trip_sha256_verified": true
+      }
+    }
+  ],
+  "scenario_sha256": "b0512c277c023bd34c1716f2790f508749722e7c13efbb810daf1d1da6a1b336",
+  "settings": {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "camera": "pilot camera fixed at azimuth 0/elevation 5 degrees; auto-zoom off",
+    "fps_cap": 60,
+    "height": 720,
+    "lighting": "2026-10-18 12:00 local simulation time",
+    "logger": "app/render/frame_samples.gd, invoked directly by the external research probe",
+    "pairs": 5,
+    "render_settings": "root viewport MSAA_4X; actual viewport size is asserted against the run's requested dimensions",
+    "route": "neutral tick-indexed input through FlightSession.read_raw",
+    "sample_s": 60.0,
+    "start": "airborne, --quick-flight",
+    "vsync": "disabled; identical software cap via Godot --max-fps",
+    "warmup_s": 10.0,
+    "weather": "calm",
+    "width": 1280
+  },
+  "started_utc": "2026-10-18T17:02:32Z",
+  "status": "collected",
+  "report_storage": {
+    "compression": "deterministic gzip (mtime=0, empty embedded filename)",
+    "receipt": "report-storage-receipt.json",
+    "report_sha256_fields_hash_uncompressed_json": true
+  }
+}

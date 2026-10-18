@@ -1,0 +1,16 @@
+WARNING: OBJ: Ambient light for material 'Yellow' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'DarkGreen2' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Green' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Yellow' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Material.011' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Material.014' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Material.015' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)
+WARNING: OBJ: Ambient light for material 'Material.016' is ignored in PBR
+   at: _parse_material_library (editor/import/3d/resource_importer_obj.cpp:60)

@@ -1,0 +1,20 @@
+from pathlib import Path
+import shutil,json,hashlib,subprocess
+ROOT=Path(__file__).resolve().parents[2]
+SRC=ROOT/'tmp/tree-completion/impostor-source'
+OUT=ROOT/'tmp/tree-completion/impostor-prototype'
+OUT.mkdir(exist_ok=False)
+shutil.copytree(SRC/'addons',OUT/'addons')
+models=Path('assets/landscape/vegetation/models')
+target=OUT/models
+target.mkdir(parents=True)
+for name in ['CommonTree_1.gltf','CommonTree_1.bin','Bark_NormalTree.png','Bark_NormalTree_Normal.png','Leaves_NormalTree_C.png']:
+    shutil.copy2(ROOT/'app'/models/name,target/name)
+    imported=ROOT/'app'/models/(name+'.import')
+    if imported.exists(): shutil.copy2(imported,target/imported.name)
+(OUT/'project.godot').write_text('config_version=5\n[application]\nconfig/name="Isolated downloaded-tree impostor evaluation"\n[rendering]\nrenderer/rendering_method="gl_compatibility"\nrenderer/rendering_method.mobile="gl_compatibility"\n[display]\nwindow/size/viewport_width=1280\nwindow/size/viewport_height=720\n')
+(OUT/'tree.tscn').write_text('[gd_scene load_steps=2 format=3]\n[ext_resource type="PackedScene" path="res://assets/landscape/vegetation/models/CommonTree_1.gltf" id="1"]\n[node name="TreeComparison" type="Node3D"]\n[node name="Tree" parent="." instance=ExtResource("1")]\nposition = Vector3(0, 0.242772, 0)\n')
+(OUT/'source-receipt.json').write_text(json.dumps({'repository':'https://github.com/hdrsniped/octahedral-impostor-lod-godot','commit':subprocess.check_output(['git','-C',str(SRC),'rev-parse','HEAD'],text=True).strip(),'credit':'Octahedral Impostor LOD by hdrsniped. Isolated evaluation only; not integrated into the simulator.','files':{p.relative_to(OUT).as_posix():hashlib.sha256(p.read_bytes()).hexdigest() for p in OUT.rglob('*') if p.is_file()}},indent=2)+'\n')
+with (OUT/'import.log').open('w') as log:
+    r=subprocess.run([str(ROOT/'.tools/Godot_v4.7.2-stable_win64.exe'),'--headless','--path',str(OUT),'--editor','--import'],stdout=log,stderr=subprocess.STDOUT,timeout=120)
+print('import',r.returncode,'errors','ERROR:' in (OUT/'import.log').read_text(),flush=True)

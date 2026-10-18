@@ -1,0 +1,18 @@
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\filter_compare.py", line 276, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\filter_compare.py", line 268, in main
+    result = compare({name: getattr(args, name) for name in ('filtered', 'raw', 'reference8', 'reference16', 'repeat')})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\filter_compare.py", line 198, in compare
+    loaded = {name: load(path, 'filtered' if name in ('filtered', 'repeat') else 'raw',
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\filter_compare.py", line 198, in <dictcomp>
+    loaded = {name: load(path, 'filtered' if name in ('filtered', 'repeat') else 'raw',
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\filter_compare.py", line 155, in load
+    _validate_actual_route(manifest, path)
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\filter_compare.py", line 113, in _validate_actual_route
+    raise ValueError(f'capture did not use the active production grass-only material route: {path}')
+ValueError: capture did not use the active production grass-only material route: tmp\grass-completion\filter\filtered-v2\manifest.json

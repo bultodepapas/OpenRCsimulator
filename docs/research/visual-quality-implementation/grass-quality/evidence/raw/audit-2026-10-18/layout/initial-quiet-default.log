@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+LAYOUT TIMING {"case":"default_open","legacy_median_ms":53.116,"measurement":"headless layout CPU time; no FPS/render claim","optimized_first_call_ms":6.353,"optimized_median_ms":0.955,"profile":"default","quality":"high","rank_cache_prebuilt":false,"samples_per_algorithm":9,"warm_median_speedup":55.6188481675393}
+LAYOUT TIMING {"case":"bounded_rough_field","legacy_median_ms":44.994,"measurement":"headless layout CPU time; no FPS/render claim","optimized_first_call_ms":1.212,"optimized_median_ms":1.014,"profile":"default","quality":"high","rank_cache_prebuilt":true,"samples_per_algorithm":9,"warm_median_speedup":44.3727810650888}
+LAYOUT TIMING {"case":"mask_near_selected_row","legacy_median_ms":51.392,"measurement":"headless layout CPU time; no FPS/render claim","optimized_first_call_ms":1.045,"optimized_median_ms":1.055,"profile":"default","quality":"high","rank_cache_prebuilt":true,"samples_per_algorithm":9,"warm_median_speedup":48.7127962085308}
+Imported grass layout: 5 checks, 0 failed

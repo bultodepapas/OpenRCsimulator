@@ -1,0 +1,1071 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"captures": [
+		{
+			"at": "(535.2045, 0.381863, -249.572)",
+			"eye": "(543.2045, 5.001863, -241.572)",
+			"fov": 50.0,
+			"ground_samples_valid": true,
+			"height": 720,
+			"id": "woodland-edge-east-north_close",
+			"mean_ground_world_up_m": 0.00186254175148404,
+			"patch_id": "woodland-edge-east-north",
+			"plant_ids": [
+				"hedge:710001:bush:0",
+				"hedge:710001:bush:1",
+				"hedge:710001:bush:2",
+				"hedge:710001:bush:3",
+				"hedge:710001:bush:4",
+				"hedge:710001:bush:5",
+				"hedge:710002:bush:0",
+				"hedge:710002:bush:1",
+				"hedge:710002:bush:2",
+				"hedge:710002:bush:3",
+				"hedge:710002:bush:4",
+				"hedge:710002:bush:5",
+				"woodland-edge-east-north:grass:0",
+				"woodland-edge-east-north:grass:1",
+				"woodland-edge-east-north:grass:2"
+			],
+			"sha256": "135dcb953cb39379a9f77868492327db0d2944f5befd65dab9e29894a41f0e4a",
+			"target_east_m": 535.20448219401,
+			"target_north_m": 249.571961531576,
+			"width": 1280
+		},
+		{
+			"at": "(535.1793, 0.380716, 249.6092)",
+			"eye": "(543.1793, 5.000716, 257.6092)",
+			"fov": 50.0,
+			"ground_samples_valid": true,
+			"height": 720,
+			"id": "woodland-edge-east-south_close",
+			"mean_ground_world_up_m": 0.000716119372786231,
+			"patch_id": "woodland-edge-east-south",
+			"plant_ids": [
+				"hedge:710011:bush:0",
+				"hedge:710011:bush:1",
+				"hedge:710011:bush:2",
+				"hedge:710011:bush:3",
+				"hedge:710011:bush:4",
+				"hedge:710011:bush:5",
+				"hedge:710012:bush:0",
+				"hedge:710012:bush:1",
+				"hedge:710012:bush:2",
+				"hedge:710012:bush:3",
+				"hedge:710012:bush:4",
+				"hedge:710012:bush:5",
+				"woodland-edge-east-south:grass:0",
+				"woodland-edge-east-south:grass:1",
+				"woodland-edge-east-south:grass:2"
+			],
+			"sha256": "aba64e9e83ce74fc5aa3df7c96c715abc3c4c5ce36f5bc08db6c4859020a4f3b",
+			"target_east_m": 535.179348567708,
+			"target_north_m": -249.609186547852,
+			"width": 1280
+		},
+		{
+			"at": "(-555.2203, 0.38121, -202.0489)",
+			"eye": "(-547.2203, 5.00121, -194.0489)",
+			"fov": 50.0,
+			"ground_samples_valid": true,
+			"height": 720,
+			"id": "woodland-edge-northwest_close",
+			"mean_ground_world_up_m": 0.00120986600969366,
+			"patch_id": "woodland-edge-northwest",
+			"plant_ids": [
+				"hedge:710031:bush:0",
+				"hedge:710031:bush:1",
+				"hedge:710031:bush:2",
+				"hedge:710031:bush:3",
+				"hedge:710031:bush:4",
+				"hedge:710031:bush:5",
+				"hedge:710032:bush:0",
+				"hedge:710032:bush:1",
+				"hedge:710032:bush:2",
+				"hedge:710032:bush:3",
+				"hedge:710032:bush:4",
+				"hedge:710032:bush:5",
+				"woodland-edge-northwest:grass:0",
+				"woodland-edge-northwest:grass:1",
+				"woodland-edge-northwest:grass:2"
+			],
+			"sha256": "4c8a930297d58dae8b1b78c4dc5b5f748c2a6d7e1b6234a34f0eb50c68e94848",
+			"target_east_m": -555.220336979167,
+			"target_north_m": 202.048933650716,
+			"width": 1280
+		},
+		{
+			"at": "(202.0098, 0.380002, 555.2034)",
+			"eye": "(210.0098, 5.000002, 563.2034)",
+			"fov": 50.0,
+			"ground_samples_valid": true,
+			"height": 720,
+			"id": "woodland-edge-southwest_close",
+			"mean_ground_world_up_m": 0.00000183837203791493,
+			"patch_id": "woodland-edge-southwest",
+			"plant_ids": [
+				"hedge:710021:bush:0",
+				"hedge:710021:bush:1",
+				"hedge:710021:bush:2",
+				"hedge:710021:bush:3",
+				"hedge:710021:bush:4",
+				"hedge:710021:bush:5",
+				"hedge:710022:bush:0",
+				"hedge:710022:bush:1",
+				"hedge:710022:bush:2",
+				"hedge:710022:bush:3",
+				"hedge:710022:bush:4",
+				"hedge:710022:bush:5",
+				"woodland-edge-southwest:grass:0",
+				"woodland-edge-southwest:grass:1",
+				"woodland-edge-southwest:grass:2"
+			],
+			"sha256": "a1f6f20c96045e4a7bdd993f85e367fb72da0be8d31de4f3d6b66cbf6e4dd946",
+			"target_east_m": 202.009796980794,
+			"target_north_m": -555.203413671875,
+			"width": 1280
+		},
+		{
+			"at": "(0.0, 0.0, -100.0)",
+			"eye": "(0.0, 1350.0, 980.0)",
+			"fov": 58.0,
+			"height": 720,
+			"id": "woodland_edges_field_wide",
+			"sha256": "a192a18c0c023d83baa954d7eae29396a020d19c6fbe407f48f46aa27ec96ac1",
+			"width": 1280
+		}
+	],
+	"complete": true,
+	"field_build_ms": 1922.794,
+	"field_id": "default",
+	"format": "openrc-woodland-edge-capture v1",
+	"godot": "4.7.2-stable (official)",
+	"landscape_lighting": {
+		"directional_shadow_distance_m": 300.0,
+		"directional_shadows_enabled": true,
+		"engine_shadows": true,
+		"environment_background": "production Atmosphere.environment()"
+	},
+	"msaa": "4x",
+	"plants": [
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 531.440002441406,
+			"ground_sample_ned_m": [
+				-0.00188061613488843,
+				-0.00257788442955712,
+				-0.0222505167279262
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00188061613488843,
+			"id": "hedge:710001:bush:0",
+			"north_m": 251.494613647461,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.601044677734375
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 532.250915527344,
+			"ground_sample_ned_m": [
+				0.00372698154710235,
+				0.0107393831937034,
+				0.00253916374461811
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00372698154710235,
+			"id": "hedge:710001:bush:1",
+			"north_m": 250.505294799805,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.619732421875
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 532.589538574219,
+			"ground_sample_ned_m": [
+				0.00495297062397469,
+				-0.0030292241929962,
+				-0.0239301056925915
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00495297062397469,
+			"id": "hedge:710001:bush:2",
+			"north_m": 249.15495300293,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.666945251464844
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 532.860778808594,
+			"ground_sample_ned_m": [
+				-0.00144829484965024,
+				0.0114786205276115,
+				-0.0096826725590022
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00144829484965024,
+			"id": "hedge:710001:bush:3",
+			"north_m": 247.972595214844,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.622821411132812
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 533.725158691406,
+			"ground_sample_ned_m": [
+				0.000677078922632687,
+				-0.0296784032862918,
+				0.0250723253324714
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.000677078922632687,
+			"id": "hedge:710001:bush:4",
+			"north_m": 246.773056030273,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.652554534912109
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 533.873901367188,
+			"ground_sample_ned_m": [
+				-0.00324378467269865,
+				-0.011623968140685,
+				-0.00649606882312334
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00324378467269865,
+			"id": "hedge:710001:bush:5",
+			"north_m": 245.488052368164,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.677647766113281
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 534.790832519531,
+			"ground_sample_ned_m": [
+				0.00403029567000655,
+				0.00301203213203613,
+				0.00474384704186536
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00403029567000655,
+			"id": "hedge:710002:bush:0",
+			"north_m": 253.194046020508,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.634235290527344
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 534.975463867188,
+			"ground_sample_ned_m": [
+				0.00146032181411972,
+				-0.0320909246614897,
+				0.0260786140610057
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00146032181411972,
+			"id": "hedge:710002:bush:1",
+			"north_m": 251.901794433594,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.758913177490234
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 535.934204101563,
+			"ground_sample_ned_m": [
+				-0.00176880994309604,
+				0.0025698620400368,
+				0.0322053005505748
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00176880994309604,
+			"id": "hedge:710002:bush:2",
+			"north_m": 250.561630249023,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.723123840332031
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 536.242370605469,
+			"ground_sample_ned_m": [
+				0.00236255165466151,
+				-0.0189603485960685,
+				0.0151623093123341
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00236255165466151,
+			"id": "hedge:710002:bush:3",
+			"north_m": 249.329040527344,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.680509246826172
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 536.977966308594,
+			"ground_sample_ned_m": [
+				0.00426802204628888,
+				0.00519869761830094,
+				0.0130070994381885
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00426802204628888,
+			"id": "hedge:710002:bush:4",
+			"north_m": 248.330184936523,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.586070770263672
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 537.665100097656,
+			"ground_sample_ned_m": [
+				-0.000923157477871602,
+				-0.00616664431600728,
+				-0.0103356621173883
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.000923157477871602,
+			"id": "hedge:710002:bush:5",
+			"north_m": 246.900161743164,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.609818176269531
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 537.106,
+			"ground_sample_ned_m": [
+				0.00631595339332809,
+				0.00101974780457098,
+				-0.00999994366965738
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00631595339332809,
+			"id": "woodland-edge-east-north:grass:0",
+			"north_m": 253.105,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 538.374,
+			"ground_sample_ned_m": [
+				0.00299728180670847,
+				-0.00126977575158765,
+				0.0258220656740668
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00299728180670847,
+			"id": "woodland-edge-east-north:grass:1",
+			"north_m": 250.386,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 539.261,
+			"ground_sample_ned_m": [
+				0.00641133187164258,
+				-0.00158726696212843,
+				-0.0048143108701219
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00641133187164258,
+			"id": "woodland-edge-east-north:grass:2",
+			"north_m": 248.483,
+			"patch": "woodland-edge-east-north",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 534.391357421875,
+			"ground_sample_ned_m": [
+				-0.00421030997646878,
+				0.0101818828762904,
+				-0.0240570614549375
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00421030997646878,
+			"id": "hedge:710011:bush:0",
+			"north_m": -245.25700378418,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.731121887207031
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 533.638549804688,
+			"ground_sample_ned_m": [
+				0.00328174548436353,
+				-0.0181396509104417,
+				-0.00526005872501797
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00328174548436353,
+			"id": "hedge:710011:bush:1",
+			"north_m": -246.667129516602,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.628710998535156
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 532.92138671875,
+			"ground_sample_ned_m": [
+				0.00471378510606417,
+				0.00658421980359388,
+				0.00731662582614837
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00471378510606417,
+			"id": "hedge:710011:bush:2",
+			"north_m": -247.915893554688,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.600208343505859
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 532.648620605469,
+			"ground_sample_ned_m": [
+				0.00358208155026111,
+				0.00342972381850789,
+				0.00228979487920955
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00358208155026111,
+			"id": "hedge:710011:bush:3",
+			"north_m": -249.267822265625,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.675792449951172
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 531.951477050781,
+			"ground_sample_ned_m": [
+				-0.000150483753728786,
+				-0.00135942038186004,
+				0.00282135212116713
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.000150483753728786,
+			"id": "hedge:710011:bush:4",
+			"north_m": -250.086868286133,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.731624969482422
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 531.371032714844,
+			"ground_sample_ned_m": [
+				-0.0041843975857732,
+				-0.000515330822620489,
+				0.0324562727136769
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.0041843975857732,
+			"id": "hedge:710011:bush:5",
+			"north_m": -251.662887573242,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.592831939697266
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 537.490966796875,
+			"ground_sample_ned_m": [
+				0.00382942281439566,
+				0.0125585594776612,
+				-0.0246617426702875
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00382942281439566,
+			"id": "hedge:710012:bush:0",
+			"north_m": -246.774276733398,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.608638977050781
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 536.975708007813,
+			"ground_sample_ned_m": [
+				0.00381740572924259,
+				0.0253060897018823,
+				-0.0194712955786733
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00381740572924259,
+			"id": "hedge:710012:bush:1",
+			"north_m": -248.085479736328,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.727936767578125
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 536.455627441406,
+			"ground_sample_ned_m": [
+				0.0051552912912822,
+				0.0144343706492005,
+				0.00610531746563037
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.0051552912912822,
+			"id": "hedge:710012:bush:2",
+			"north_m": -249.277130126953,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.637833770751953
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 535.750610351563,
+			"ground_sample_ned_m": [
+				-0.00311859849071512,
+				-0.0178062622315648,
+				0.0383062765574655
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00311859849071512,
+			"id": "hedge:710012:bush:3",
+			"north_m": -250.687622070313,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.726655029296875
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 535.511535644531,
+			"ground_sample_ned_m": [
+				0.00163993315432826,
+				0.00765196576037885,
+				0.00872167910016418
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00163993315432826,
+			"id": "hedge:710012:bush:4",
+			"north_m": -251.855163574219,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.611317810058594
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 534.602355957031,
+			"ground_sample_ned_m": [
+				-0.00374778085721053,
+				-0.0121424726794255,
+				-0.0039302485428976
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00374778085721053,
+			"id": "hedge:710012:bush:5",
+			"north_m": -252.996520996094,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.66792578125
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 539.135,
+			"ground_sample_ned_m": [
+				-0.00349639597027487,
+				0.00752671663832022,
+				-0.0175168131963505
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00349639597027487,
+			"id": "woodland-edge-east-south:grass:0",
+			"north_m": -248.754,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 537.867,
+			"ground_sample_ned_m": [
+				0.00582943363584036,
+				-0.0105565019094174,
+				0.0114440459326073
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00582943363584036,
+			"id": "woodland-edge-east-south:grass:1",
+			"north_m": -251.473,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 536.979,
+			"ground_sample_ned_m": [
+				-0.00219934153981314,
+				-0.011617660752765,
+				0.000309076074081278
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00219934153981314,
+			"id": "woodland-edge-east-south:grass:2",
+			"north_m": -253.377,
+			"patch": "woodland-edge-east-south",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 204.427932739258,
+			"ground_sample_ned_m": [
+				-0.000191713688838591,
+				-0.0233896100302873,
+				0.0115156041574468
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.000191713688838591,
+			"id": "hedge:710021:bush:0",
+			"north_m": -551.572998046875,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.756904052734375
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 203.112777709961,
+			"ground_sample_ned_m": [
+				-0.00338434775123719,
+				-0.0208715885692001,
+				-0.00390946107943744
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00338434775123719,
+			"id": "hedge:710021:bush:1",
+			"north_m": -552.055480957031,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.71632421875
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 201.914932250977,
+			"ground_sample_ned_m": [
+				0.000163000101249141,
+				0.00534160898414917,
+				-0.0435724488428733
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.000163000101249141,
+			"id": "hedge:710021:bush:2",
+			"north_m": -552.706970214844,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.764286865234375
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 200.62678527832,
+			"ground_sample_ned_m": [
+				-0.00342178438914818,
+				-0.00911814309284541,
+				0.000151835542965868
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00342178438914818,
+			"id": "hedge:710021:bush:3",
+			"north_m": -553.103576660156,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.709963592529297
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 199.199203491211,
+			"ground_sample_ned_m": [
+				0.00000245210088126267,
+				0.00533713331291431,
+				-0.0386295732211833
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00000245210088126267,
+			"id": "hedge:710021:bush:4",
+			"north_m": -553.583312988281,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.639262908935547
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 198.107513427734,
+			"ground_sample_ned_m": [
+				-0.00121403212006848,
+				0.0168868657960182,
+				0.0137634861867962
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00121403212006848,
+			"id": "hedge:710021:bush:5",
+			"north_m": -553.687744140625,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.710767883300781
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 205.58952331543,
+			"ground_sample_ned_m": [
+				-0.000239495000532578,
+				-0.0030815553857337,
+				0.0301674244300807
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.000239495000532578,
+			"id": "hedge:710022:bush:0",
+			"north_m": -554.879821777344,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.597231506347656
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 204.166244506836,
+			"ground_sample_ned_m": [
+				-0.00301207131539037,
+				0.024813475401697,
+				-0.0169041267596909
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00301207131539037,
+			"id": "hedge:710022:bush:1",
+			"north_m": -555.250549316406,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.734704345703125
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 203.033508300781,
+			"ground_sample_ned_m": [
+				0.00474179031727644,
+				0.00656743105897779,
+				0.0125059092341106
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00474179031727644,
+			"id": "hedge:710022:bush:2",
+			"north_m": -555.70947265625,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.772441925048828
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 201.688629150391,
+			"ground_sample_ned_m": [
+				-0.00101612211174001,
+				0.0185445186756875,
+				0.00959966651169941
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00101612211174001,
+			"id": "hedge:710022:bush:3",
+			"north_m": -556.311706542969,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.578723205566406
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 200.424194335938,
+			"ground_sample_ned_m": [
+				-0.00224684055185159,
+				0.0175256814124162,
+				-0.00593334530268647
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00224684055185159,
+			"id": "hedge:710022:bush:4",
+			"north_m": -556.893493652344,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.5792294921875
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": 199.221710205078,
+			"ground_sample_ned_m": [
+				0.00386990314211975,
+				0.0142131783588201,
+				0.00829830499335699
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00386990314211975,
+			"id": "hedge:710022:bush:5",
+			"north_m": -557.455078125,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.604771331787109
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 205.415,
+			"ground_sample_ned_m": [
+				0.00604738992883459,
+				-0.00121213505967767,
+				0.021487578396267
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00604738992883459,
+			"id": "woodland-edge-southwest:grass:0",
+			"north_m": -557.357,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 202.596,
+			"ground_sample_ned_m": [
+				0.00311303677146803,
+				0.000888487617488247,
+				0.0334606993928304
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00311303677146803,
+			"id": "woodland-edge-southwest:grass:1",
+			"north_m": -558.383,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": 200.623,
+			"ground_sample_ned_m": [
+				-0.0031835898524535,
+				-0.00387880154833266,
+				-0.0112243511448049
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.0031835898524535,
+			"id": "woodland-edge-southwest:grass:2",
+			"north_m": -559.101,
+			"patch": "woodland-edge-southwest",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -554.286193847656,
+			"ground_sample_ned_m": [
+				-0.00208276680204755,
+				0.00343153954712408,
+				0.000915985085595128
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00208276680204755,
+			"id": "hedge:710031:bush:0",
+			"north_m": 197.828598022461,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.66356787109375
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -553.380126953125,
+			"ground_sample_ned_m": [
+				-0.000386667637697024,
+				0.0232704728228762,
+				-0.0117787820100578
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.000386667637697024,
+			"id": "hedge:710031:bush:1",
+			"north_m": 199.172286987305,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.774521545410156
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -552.998229980469,
+			"ground_sample_ned_m": [
+				0.00364612127110427,
+				0.00546606144267583,
+				-0.0143102277860554
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00364612127110427,
+			"id": "hedge:710031:bush:2",
+			"north_m": 200.563522338867,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.729840148925781
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -552.740539550781,
+			"ground_sample_ned_m": [
+				0.00427180704474846,
+				-0.00298201402302134,
+				0.00531048299599951
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00427180704474846,
+			"id": "hedge:710031:bush:3",
+			"north_m": 201.872482299805,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.663551849365234
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -552.298278808594,
+			"ground_sample_ned_m": [
+				0.00383215087387959,
+				-0.00984494113135776,
+				0.00382578396650147
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00383215087387959,
+			"id": "hedge:710031:bush:4",
+			"north_m": 203.164489746094,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.598945831298828
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -551.371459960938,
+			"ground_sample_ned_m": [
+				0.00376495734121256,
+				0.00270560215034812,
+				-0.0000884091471379045
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00376495734121256,
+			"id": "hedge:710031:bush:5",
+			"north_m": 203.916625976563,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.70683935546875
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -557.039611816406,
+			"ground_sample_ned_m": [
+				0.0026344948200831,
+				0.00424493026862941,
+				0.0213503161904602
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.0026344948200831,
+			"id": "hedge:710032:bush:0",
+			"north_m": 198.883255004883,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.754866088867187
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -557.038635253906,
+			"ground_sample_ned_m": [
+				0.00648346553960522,
+				0.00696923481101312,
+				-0.0142478141385586
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00648346553960522,
+			"id": "hedge:710032:bush:1",
+			"north_m": 200.604446411133,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.649395050048828
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -556.532104492188,
+			"ground_sample_ned_m": [
+				0.00271356661642023,
+				0.0168989211965955,
+				-0.0314068608368276
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00271356661642023,
+			"id": "hedge:710032:bush:2",
+			"north_m": 201.726531982422,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.777648986816406
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -555.892028808594,
+			"ground_sample_ned_m": [
+				-0.00263629424638733,
+				-0.015074491499347,
+				-0.0144177980205903
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00263629424638733,
+			"id": "hedge:710032:bush:3",
+			"north_m": 203.110778808594,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.623129028320312
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -555.202209472656,
+			"ground_sample_ned_m": [
+				-0.000132982499496516,
+				-0.0228235914471283,
+				0.0127931404894778
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.000132982499496516,
+			"id": "hedge:710032:bush:4",
+			"north_m": 204.071716308594,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.672469543457031
+		},
+		{
+			"asset_id": "bush_common_flowers",
+			"east_m": -555.301635742188,
+			"ground_sample_ned_m": [
+				0.00462812821174357,
+				0.00316168175136511,
+				-0.0225161286399601
+			],
+			"ground_valid": true,
+			"ground_world_up_m": 0.00462812821174357,
+			"id": "hedge:710032:bush:5",
+			"north_m": 205.493270874023,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.669819549560547
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": -558.998,
+			"ground_sample_ned_m": [
+				-0.00150537885396406,
+				-0.0231979382785997,
+				0.000743268678608049
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00150537885396406,
+			"id": "woodland-edge-northwest:grass:0",
+			"north_m": 200.905,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": -557.972,
+			"ground_sample_ned_m": [
+				-0.00543210292081867,
+				0.00233498201157109,
+				0.00869120107211951
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00543210292081867,
+			"id": "woodland-edge-northwest:grass:1",
+			"north_m": 203.724,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.25
+		},
+		{
+			"asset_id": "grass_common_short",
+			"east_m": -557.254,
+			"ground_sample_ned_m": [
+				-0.00165050861298102,
+				0.00245933394445815,
+				-0.0367823415091239
+			],
+			"ground_valid": true,
+			"ground_world_up_m": -0.00165050861298102,
+			"id": "woodland-edge-northwest:grass:2",
+			"north_m": 205.697,
+			"patch": "woodland-edge-northwest",
+			"plant_height_m": 0.25
+		}
+	],
+	"renderer": "gl_compatibility",
+	"scope": "Static visual fixture from full production Field.build with field surfaces, scenery, woodland edges, lake, default atmosphere and sun. No aircraft simulation or user-acceptance claim.",
+	"source_sha256": {
+		"field": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+		"lake": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+		"scenery": "810679d690d8034952f668d726418e4a979cb55e57405f12b845918ed1170e61",
+		"woodland_builder": "f41e9a530a7a6072c3bb3715533d85e261be76586dc5507214d731f37c79b137",
+		"woodland_recipe": "2aac25ed51f62459510f71ccd838318150b5bd6145ead2ac6bd3e09cbf200311"
+	},
+	"viewport": [
+		1280,
+		720
+	],
+	"woodland_summary": {
+		"batches": 5,
+		"plant_count": 60,
+		"triangles": 1956
+	}
+}

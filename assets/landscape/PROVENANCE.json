@@ -75,14 +75,16 @@
   },
   "recipe": "tools/trees/README.md",
   "proof": "docs/research/visual-quality-implementation/L6a/README.md",
-  "scope": "Only atlas/catalog/license in runtime; detailed GLBs are offline bake sources, not L8 close meshes.",
+  "scope": "Runtime ships the atlas, source-material foliage mask, catalog and license; detailed source GLBs/textures remain offline bake inputs, not L8 close meshes.",
   "runtime_sha256": {
     "app/assets/landscape/trees/LICENSE.txt": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58",
     "app/assets/landscape/trees/atlas.png": "87d1a194c9d5e3fdd2734936c0c26913e59e27bae707e26955a26413b63d9f43",
     "app/assets/landscape/trees/atlas.png.import": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413",
-    "app/assets/landscape/trees/catalog.json": "69c4de2c6f31b9c7729aaecf3671f4d9dbaf93b68408c94d4a09e9fdc29fcd89"
+    "app/assets/landscape/trees/catalog.json": "57e340b61c442e766edfad1336efb3155231ef37e35f57a35bdce06982f1db0a",
+    "app/assets/landscape/trees/foliage_mask.png": "cfc8f109896a25a60327d827798fe27dca86155d950678ec02440087c8010b1a",
+    "app/assets/landscape/trees/foliage_mask.png.import": "2c6661ec8cc680141cd3569b2b3b36e66d6b549f11199c22afe73db38852ebfa"
   },
-  "bake_manifest_sha256": "3b217d7671d9a5632659c91e271ad661881b36359ba91b981672fafa5e9ab1c2",
+  "bake_manifest_sha256": "cde702dfb7dd63af0487a394e05b6b2c86dc633c917aec29329276deec38bacd",
   "offline_triangle_limit": 10000,
   "runtime_triangles_per_tree": 6,
   "runtime_surfaces_per_tree": 1,

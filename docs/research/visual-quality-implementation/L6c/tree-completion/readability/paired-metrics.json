@@ -1,0 +1,572 @@
+{
+  "apps": {
+    "aircraft": [
+      "jensen-das-ugly-stik-60",
+      "p51d-mustang-120"
+    ],
+    "background_screen": {
+      "meaning": "case-identity guard in the reducer, not an aircraft quality score",
+      "sky_min_share": 0.9,
+      "trees_min_share": 0.6
+    },
+    "baseline": "tmp/tree-completion/frozen/baseline/app",
+    "baseline_raw_output": "tmp/tree-completion/readability-baseline-r2",
+    "camera_modes": [
+      "normal",
+      "autozoom"
+    ],
+    "candidate": "tmp/tree-completion/frozen/candidate/app",
+    "candidate_raw_output": "tmp/tree-completion/readability-final-r2",
+    "captures_per_config_per_app": 80,
+    "configs": [
+      "noon-720",
+      "low_sun-720",
+      "sunset-720",
+      "night-720",
+      "noon-1080",
+      "low_sun-1080",
+      "sunset-1080",
+      "night-1080"
+    ],
+    "lights": [
+      "noon",
+      "low_sun",
+      "sunset",
+      "night"
+    ],
+    "poses": {
+      "100m": [
+        "level",
+        "inverted",
+        "knife_left",
+        "knife_right",
+        "climb",
+        "dive"
+      ],
+      "20m": [
+        "level",
+        "inverted"
+      ],
+      "50m": [
+        "level",
+        "inverted"
+      ]
+    },
+    "requested_backgrounds": [
+      "sky",
+      "trees"
+    ],
+    "requested_distances_m": [
+      20,
+      50,
+      100
+    ],
+    "resolutions": [
+      [
+        1280,
+        720
+      ],
+      [
+        1920,
+        1080
+      ]
+    ],
+    "total_baseline_captures": 640,
+    "total_candidate_captures": 640
+  },
+  "date": "2026-10-18",
+  "format": "openrc-tree-readability-paired-evidence v1",
+  "invalid_diagnostics": [
+    {
+      "id": "readability-final-r1",
+      "status": "invalid_fixture_diagnostic_not_acceptance",
+      "raw_output": "tmp/tree-completion/readability-final",
+      "reason": "Aircraft ground shadows contaminated the background reference. R2 disables shadow casting on inspection aircraft only; scenery shadows remain enabled.",
+      "complete_configs": [
+        {"case": "noon-720", "captures": 80, "zero_pixel_cases": 0, "background_mismatches": 38, "metrics_sha256": "3e8e7e7e84984d373f9f8cd525114d828562f5163d59224bc8b7b35c9a96c4b6"},
+        {"case": "low_sun-720", "captures": 80, "zero_pixel_cases": 0, "background_mismatches": 21, "metrics_sha256": "4d975614ad0494cfb24795c65ad27bb3681619575dec222ba31e640687497244"},
+        {"case": "sunset-720", "captures": 80, "zero_pixel_cases": 0, "background_mismatches": 12, "metrics_sha256": "4e7336e5ae49ab8345a4395bbf28531503143f61b04fff69c1de6fed9baffa50"},
+        {"case": "night-720", "captures": 80, "zero_pixel_cases": 64, "background_mismatches": 72, "metrics_sha256": "882f554801dc588d22887dc060f1390fdb8c44a4f275fbaa4bec643b6de243ea"}
+      ],
+      "partial_config_without_metrics": "noon-1080",
+      "interpretation": "Counts preserve the initial failed attempt only. They must not be pooled with or treated as acceptance results for R2."
+    }
+  ],
+  "night": {
+    "background_mismatch_breakdown": {
+      "applies_at_each_resolution": {
+        "baseline_mismatch_count": 72,
+        "candidate_mismatch_count": 72,
+        "interpretation": "The 64 zero-pixel cases have no aircraft ring for background identity measurement. The eight visible 20 m tree-request rows are classified as sky in both apps under near-black lighting. These are not evidence that the daylight forest layout has no trees or that the requested tree background was correctly verified at night.",
+        "mismatch_case_sets_identical": true,
+        "positive_20m_tree_cases": [
+          "jensen-das-ugly-stik-60-020m-trees-normal-level.png",
+          "jensen-das-ugly-stik-60-020m-trees-normal-inverted.png",
+          "jensen-das-ugly-stik-60-020m-trees-zoom-level.png",
+          "jensen-das-ugly-stik-60-020m-trees-zoom-inverted.png",
+          "p51d-mustang-120-020m-trees-normal-level.png",
+          "p51d-mustang-120-020m-trees-normal-inverted.png",
+          "p51d-mustang-120-020m-trees-zoom-level.png",
+          "p51d-mustang-120-020m-trees-zoom-inverted.png"
+        ],
+        "positive_tree_case_count": 8,
+        "positive_tree_case_measured_background": {
+          "ground": 0.0,
+          "other": 0.0,
+          "sky": 1.0,
+          "trees": 0.0
+        },
+        "zero_pixel_mismatches": 64
+      }
+    },
+    "interpretation": "At each resolution the same 64 of 80 night cases have zero aircraft pixels in baseline and candidate. All 16 positive cases are the 20 m cases and their measured metrics are identical. This is not a human readability pass; the fixture uses normal aircraft materials without the optional night kit.",
+    "positive_case_metrics_equal_candidate_to_baseline": true,
+    "positive_case_names_shared_at_both_resolutions": [
+      "jensen-das-ugly-stik-60-020m-sky-normal-inverted.png",
+      "jensen-das-ugly-stik-60-020m-sky-normal-level.png",
+      "jensen-das-ugly-stik-60-020m-sky-zoom-inverted.png",
+      "jensen-das-ugly-stik-60-020m-sky-zoom-level.png",
+      "jensen-das-ugly-stik-60-020m-trees-normal-inverted.png",
+      "jensen-das-ugly-stik-60-020m-trees-normal-level.png",
+      "jensen-das-ugly-stik-60-020m-trees-zoom-inverted.png",
+      "jensen-das-ugly-stik-60-020m-trees-zoom-level.png",
+      "p51d-mustang-120-020m-sky-normal-inverted.png",
+      "p51d-mustang-120-020m-sky-normal-level.png",
+      "p51d-mustang-120-020m-sky-zoom-inverted.png",
+      "p51d-mustang-120-020m-sky-zoom-level.png",
+      "p51d-mustang-120-020m-trees-normal-inverted.png",
+      "p51d-mustang-120-020m-trees-normal-level.png",
+      "p51d-mustang-120-020m-trees-zoom-inverted.png",
+      "p51d-mustang-120-020m-trees-zoom-level.png"
+    ],
+    "zero_case_set_equal_candidate_to_baseline": true,
+    "zero_pixel_case_names_shared_at_both_resolutions": [
+      "jensen-das-ugly-stik-60-050m-sky-normal-inverted.png",
+      "jensen-das-ugly-stik-60-050m-sky-normal-level.png",
+      "jensen-das-ugly-stik-60-050m-sky-zoom-inverted.png",
+      "jensen-das-ugly-stik-60-050m-sky-zoom-level.png",
+      "jensen-das-ugly-stik-60-050m-trees-normal-inverted.png",
+      "jensen-das-ugly-stik-60-050m-trees-normal-level.png",
+      "jensen-das-ugly-stik-60-050m-trees-zoom-inverted.png",
+      "jensen-das-ugly-stik-60-050m-trees-zoom-level.png",
+      "jensen-das-ugly-stik-60-100m-sky-normal-climb.png",
+      "jensen-das-ugly-stik-60-100m-sky-normal-dive.png",
+      "jensen-das-ugly-stik-60-100m-sky-normal-inverted.png",
+      "jensen-das-ugly-stik-60-100m-sky-normal-knife_left.png",
+      "jensen-das-ugly-stik-60-100m-sky-normal-knife_right.png",
+      "jensen-das-ugly-stik-60-100m-sky-normal-level.png",
+      "jensen-das-ugly-stik-60-100m-sky-zoom-climb.png",
+      "jensen-das-ugly-stik-60-100m-sky-zoom-dive.png",
+      "jensen-das-ugly-stik-60-100m-sky-zoom-inverted.png",
+      "jensen-das-ugly-stik-60-100m-sky-zoom-knife_left.png",
+      "jensen-das-ugly-stik-60-100m-sky-zoom-knife_right.png",
+      "jensen-das-ugly-stik-60-100m-sky-zoom-level.png",
+      "jensen-das-ugly-stik-60-100m-trees-normal-climb.png",
+      "jensen-das-ugly-stik-60-100m-trees-normal-dive.png",
+      "jensen-das-ugly-stik-60-100m-trees-normal-inverted.png",
+      "jensen-das-ugly-stik-60-100m-trees-normal-knife_left.png",
+      "jensen-das-ugly-stik-60-100m-trees-normal-knife_right.png",
+      "jensen-das-ugly-stik-60-100m-trees-normal-level.png",
+      "jensen-das-ugly-stik-60-100m-trees-zoom-climb.png",
+      "jensen-das-ugly-stik-60-100m-trees-zoom-dive.png",
+      "jensen-das-ugly-stik-60-100m-trees-zoom-inverted.png",
+      "jensen-das-ugly-stik-60-100m-trees-zoom-knife_left.png",
+      "jensen-das-ugly-stik-60-100m-trees-zoom-knife_right.png",
+      "jensen-das-ugly-stik-60-100m-trees-zoom-level.png",
+      "p51d-mustang-120-050m-sky-normal-inverted.png",
+      "p51d-mustang-120-050m-sky-normal-level.png",
+      "p51d-mustang-120-050m-sky-zoom-inverted.png",
+      "p51d-mustang-120-050m-sky-zoom-level.png",
+      "p51d-mustang-120-050m-trees-normal-inverted.png",
+      "p51d-mustang-120-050m-trees-normal-level.png",
+      "p51d-mustang-120-050m-trees-zoom-inverted.png",
+      "p51d-mustang-120-050m-trees-zoom-level.png",
+      "p51d-mustang-120-100m-sky-normal-climb.png",
+      "p51d-mustang-120-100m-sky-normal-dive.png",
+      "p51d-mustang-120-100m-sky-normal-inverted.png",
+      "p51d-mustang-120-100m-sky-normal-knife_left.png",
+      "p51d-mustang-120-100m-sky-normal-knife_right.png",
+      "p51d-mustang-120-100m-sky-normal-level.png",
+      "p51d-mustang-120-100m-sky-zoom-climb.png",
+      "p51d-mustang-120-100m-sky-zoom-dive.png",
+      "p51d-mustang-120-100m-sky-zoom-inverted.png",
+      "p51d-mustang-120-100m-sky-zoom-knife_left.png",
+      "p51d-mustang-120-100m-sky-zoom-knife_right.png",
+      "p51d-mustang-120-100m-sky-zoom-level.png",
+      "p51d-mustang-120-100m-trees-normal-climb.png",
+      "p51d-mustang-120-100m-trees-normal-dive.png",
+      "p51d-mustang-120-100m-trees-normal-inverted.png",
+      "p51d-mustang-120-100m-trees-normal-knife_left.png",
+      "p51d-mustang-120-100m-trees-normal-knife_right.png",
+      "p51d-mustang-120-100m-trees-normal-level.png",
+      "p51d-mustang-120-100m-trees-zoom-climb.png",
+      "p51d-mustang-120-100m-trees-zoom-dive.png",
+      "p51d-mustang-120-100m-trees-zoom-inverted.png",
+      "p51d-mustang-120-100m-trees-zoom-knife_left.png",
+      "p51d-mustang-120-100m-trees-zoom-knife_right.png",
+      "p51d-mustang-120-100m-trees-zoom-level.png"
+    ]
+  },
+  "representative_images": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/noon-720__jensen-das-ugly-stik-60-100m-trees-zoom-level.png",
+      "light": "noon",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "ede8b0916ec5afc2ff7d654bf5e209a192f1f3683ce710d798f0d67047bc0953",
+      "source": "candidate/noon-720/jensen-das-ugly-stik-60-100m-trees-zoom-level.png"
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/noon-720__p51d-mustang-120-100m-trees-zoom-level.png",
+      "light": "noon",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "c721aa8316806596ff5361fc684274d3c59e21d34b3480be4a2b27780a5fbcac",
+      "source": "candidate/noon-720/p51d-mustang-120-100m-trees-zoom-level.png"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/low_sun-720__jensen-das-ugly-stik-60-100m-trees-zoom-level.png",
+      "light": "low_sun",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "43568740289b7a0a4825e4b176cc8f85ffc559c13a76b4e70986e35716563fe5",
+      "source": "candidate/low_sun-720/jensen-das-ugly-stik-60-100m-trees-zoom-level.png"
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/low_sun-720__p51d-mustang-120-100m-trees-zoom-level.png",
+      "light": "low_sun",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "1071df62eacd860f93274f54a7e5857b734e2e9f9cb586c2f43cf969021c06c5",
+      "source": "candidate/low_sun-720/p51d-mustang-120-100m-trees-zoom-level.png"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/sunset-720__jensen-das-ugly-stik-60-100m-trees-zoom-level.png",
+      "light": "sunset",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "33747636ab09ddc5aec944d55e2ba7a866ddfe01f27f8ee3b887a0b848551d84",
+      "source": "candidate/sunset-720/jensen-das-ugly-stik-60-100m-trees-zoom-level.png"
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/sunset-720__p51d-mustang-120-100m-trees-zoom-level.png",
+      "light": "sunset",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "9a9d6e02fac6be024ff8e1187f6ab3856a9a04cd1e322a50b186b4496b4d5c0d",
+      "source": "candidate/sunset-720/p51d-mustang-120-100m-trees-zoom-level.png"
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/night-720__jensen-das-ugly-stik-60-100m-trees-zoom-level.png",
+      "light": "night",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "574119d91dff531df2d2f0ae14963d27305d7524daae89f4efede7bba5b5e982",
+      "source": "candidate/night-720/jensen-das-ugly-stik-60-100m-trees-zoom-level.png"
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "autozoom": true,
+      "distance_m": 100,
+      "file": "representative/night-720__p51d-mustang-120-100m-trees-zoom-level.png",
+      "light": "night",
+      "pose": "level",
+      "requested_background": "trees",
+      "sha256": "4406af7b79eb2f8b4e22b8d91fd647fa7dae7a6eb1c95fac0731120772c87a76",
+      "source": "candidate/night-720/p51d-mustang-120-100m-trees-zoom-level.png"
+    },
+    {
+      "file": "representative/noon-720__jensen-das-ugly-stik-60-020m-trees-normal-level.png",
+      "reason": "mixed-canopy control below the 60% tree-share screen",
+      "sha256": "db4efe601a16fda5f41d6e6c5f3fc4b215dda749ba97b7c2bd59ce831e499b8e",
+      "source": "candidate/noon-720/jensen-das-ugly-stik-60-020m-trees-normal-level.png"
+    },
+    {
+      "file": "representative/noon-720__p51d-mustang-120-050m-trees-normal-level.png",
+      "reason": "mixed-canopy control below the 60% tree-share screen",
+      "sha256": "7f7be2e664f3be0f93f3bb04ab38322c1caf56c1efeff075dee066b7c6123614",
+      "source": "candidate/noon-720/p51d-mustang-120-050m-trees-normal-level.png"
+    }
+  ],
+  "reproduction": {
+    "baseline": "python tools/trees/readability_compare.py --godot .tools/Godot_v4.7.2-stable_win64.exe --app tmp/tree-completion/frozen/baseline/app --out tmp/tree-completion/readability-baseline-r2",
+    "candidate": "python tools/trees/readability_compare.py --godot .tools/Godot_v4.7.2-stable_win64.exe --app tmp/tree-completion/frozen/candidate/app --out tmp/tree-completion/readability-final-r2"
+  },
+  "runner": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "aircraft_ground_shadows": "disabled for all aircraft geometry in inspection fixture",
+    "aircraft_shadow_sources_disabled_per_capture_manifest": 252,
+    "app_file_count_baseline": 1707,
+    "app_file_count_candidate": 1707,
+    "baseline_source_identity_sha256": "00f617af79baaba80a58b8e2022db7355b8d7928798a9ce45660a03cd3f050de",
+    "candidate_baseline_changed_app_paths": [
+      "assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+      "assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+      "assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
+      "assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+      "data/fields/default.json",
+      "render/tree_identity.gdshaderinc",
+      "render/treeline.gd",
+      "render/treeline.gdshader",
+      "scenery/imported_vegetation.gd"
+    ],
+    "candidate_source_identity_sha256": "2a789c8d1b5af66b8ab8bd65d495868b1e2c2912fdf2530948820a96c30ecb52",
+    "fixture_sha256": "a5ec0c63df33deae7f2f8e31a5281cd64771bdb1672e50d827a866ad37042243",
+    "godot": "4.7.2-stable (official)",
+    "godot_engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "msaa": "4x",
+    "reducer_sha256": "29e2b64a8ac999f980e70f4cf0cde5d00b2289a0c27ea22ad75b3102cb2b9cc5",
+    "renderer": "gl_compatibility",
+    "scenery_shadow_casting": "unchanged",
+    "source_identity_excludes_uid_files": true
+  },
+  "runs": [
+    {
+      "baseline_background_mismatch_count": 12,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "26873aca8f92b57d870a5b32b18df3f3902d06e236a2e1a016226457e837f7e1",
+      "baseline_metrics_sha256": "5495842f9f5465869ff753f5d00d66f402f8522bb058741b8094e21bd2841f53",
+      "baseline_only_background_mismatches": [],
+      "baseline_zero_pixel_count": 0,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 12,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "163fd3dccc6a5200bd50d8f174e37cab9c337dcc20494bb52c960b5e58b818ba",
+      "candidate_metrics_sha256": "7309f4561ecff35ed8486ed0ad6b01f5225181c59b4045e530207a4203f11c4b",
+      "candidate_only_background_mismatches": [],
+      "candidate_zero_pixel_count": 0,
+      "captures_per_app": 80,
+      "case": "noon-720",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 12,
+      "tree_metric_changed_count": 40,
+      "viewport": [
+        1280,
+        720
+      ],
+      "visible_capture_metric_difference_count": 40,
+      "zero_pixel_case_sets_identical": true
+    },
+    {
+      "baseline_background_mismatch_count": 14,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "58842b4ff5daca2ffd92823a839f1769860a58aa1ac507211ba025afac234f4a",
+      "baseline_metrics_sha256": "db27c93cd16a8e20f4125fb0ff3028fc4265c50c483f873b3e4b4cab2ae77a6b",
+      "baseline_only_background_mismatches": [
+        "p51d-mustang-120-100m-trees-normal-inverted.png",
+        "p51d-mustang-120-100m-trees-normal-level.png"
+      ],
+      "baseline_zero_pixel_count": 0,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 12,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "4cec6f80c704fa7fc6943434f4b7e09ee0a13341cd65698d908413cf1f862c2a",
+      "candidate_metrics_sha256": "6d5199505c9184b2e27e901c792231098bb7f6b861ea4a2820b3a52dc01aa782",
+      "candidate_only_background_mismatches": [],
+      "candidate_zero_pixel_count": 0,
+      "captures_per_app": 80,
+      "case": "low_sun-720",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 12,
+      "tree_metric_changed_count": 40,
+      "viewport": [
+        1280,
+        720
+      ],
+      "visible_capture_metric_difference_count": 40,
+      "zero_pixel_case_sets_identical": true
+    },
+    {
+      "baseline_background_mismatch_count": 12,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "9dca32de36b9ba23c0af90204d3648716053b71f531a46e6020d6a179e58f8ff",
+      "baseline_metrics_sha256": "d440a401b799e2e38cd344edf4a462db19991d09c6583b6a76e4b2ae2fbacfb1",
+      "baseline_only_background_mismatches": [],
+      "baseline_zero_pixel_count": 0,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 12,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "1ca581517d353d0b4d3adc54b4949c6dafab838de4dbcd9a595aa3d52bcc0379",
+      "candidate_metrics_sha256": "afa5ed11aba8ae5f26ab37cae3e55f0f70a08082eeca43812a2d76fee5270cae",
+      "candidate_only_background_mismatches": [],
+      "candidate_zero_pixel_count": 0,
+      "captures_per_app": 80,
+      "case": "sunset-720",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 12,
+      "tree_metric_changed_count": 40,
+      "viewport": [
+        1280,
+        720
+      ],
+      "visible_capture_metric_difference_count": 40,
+      "zero_pixel_case_sets_identical": true
+    },
+    {
+      "baseline_background_mismatch_count": 72,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "08b59cb01096a9bf4787cc220b31a74f5f9a8adb5653315e5fa559de612f61d9",
+      "baseline_metrics_sha256": "95fc7fd6aea1537436c7ffbda26782e6e700462e9145818da1e99d7d31ab8de5",
+      "baseline_only_background_mismatches": [],
+      "baseline_zero_pixel_count": 64,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 72,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "d98135c016a8049be2a7be1fdc2a7379783433210df30707c870ae698f47a14e",
+      "candidate_metrics_sha256": "882f554801dc588d22887dc060f1390fdb8c44a4f275fbaa4bec643b6de243ea",
+      "candidate_only_background_mismatches": [],
+      "candidate_zero_pixel_count": 64,
+      "captures_per_app": 80,
+      "case": "night-720",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 72,
+      "tree_metric_changed_count": 0,
+      "viewport": [
+        1280,
+        720
+      ],
+      "visible_capture_metric_difference_count": 0,
+      "zero_pixel_case_sets_identical": true
+    },
+    {
+      "baseline_background_mismatch_count": 10,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "735a2db2c29238c8c0f0eba88a2d20de880c595cd039b705c827d164e83a3393",
+      "baseline_metrics_sha256": "ba1d18effbe386bd2abc500fff046d3ed88c0509f3fa6c98011c0bb90d6fb386",
+      "baseline_only_background_mismatches": [],
+      "baseline_zero_pixel_count": 0,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 10,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "812bda568019480d6be83f9026b6a2aede2fa4945c983ff7eaab9841486dd17a",
+      "candidate_metrics_sha256": "9bc0251209ec111172a14bc1f559ed457e5711322f02da6474d9e853941f07fb",
+      "candidate_only_background_mismatches": [],
+      "candidate_zero_pixel_count": 0,
+      "captures_per_app": 80,
+      "case": "noon-1080",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 10,
+      "tree_metric_changed_count": 40,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "visible_capture_metric_difference_count": 40,
+      "zero_pixel_case_sets_identical": true
+    },
+    {
+      "baseline_background_mismatch_count": 14,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "008dd66abae1f4742eab4470a634a0771da51fdb59b07d64ea9dee49f31b6e38",
+      "baseline_metrics_sha256": "8ba197d30c280526b5609ae1c1fad40cc0dd28337181e9f41ca0e4de955a8c68",
+      "baseline_only_background_mismatches": [
+        "jensen-das-ugly-stik-60-100m-trees-normal-knife_left.png",
+        "p51d-mustang-120-100m-trees-zoom-inverted.png",
+        "p51d-mustang-120-100m-trees-zoom-level.png"
+      ],
+      "baseline_zero_pixel_count": 0,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 12,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "09ca353feb743e0605b01f340a96bbd910796dcfd4ad6b04966dc4fccd04020b",
+      "candidate_metrics_sha256": "e4fcd7767726d4b44182d6f98f6cc16bdcdd1d7199cee98b78d94c93c1b09313",
+      "candidate_only_background_mismatches": [
+        "jensen-das-ugly-stik-60-050m-trees-normal-level.png"
+      ],
+      "candidate_zero_pixel_count": 0,
+      "captures_per_app": 80,
+      "case": "low_sun-1080",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 11,
+      "tree_metric_changed_count": 40,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "visible_capture_metric_difference_count": 40,
+      "zero_pixel_case_sets_identical": true
+    },
+    {
+      "baseline_background_mismatch_count": 10,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "19e73fc77eaacaf9569faec37edaae61b9b1449879337a8d1f7774394b21c2a6",
+      "baseline_metrics_sha256": "cc450fb0b187228bc76197f73dca0da59fd420bdd9a5c6d4370eef08f8398bca",
+      "baseline_only_background_mismatches": [],
+      "baseline_zero_pixel_count": 0,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 10,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "6d1a370c3f45cb42da9a5a8c8c563e551a643b20126f39880489fbb5ef3a9908",
+      "candidate_metrics_sha256": "84196fbb0d7a332d98efa17ec3459e4d6a09aacd73f3eb771d269c4baed49bb5",
+      "candidate_only_background_mismatches": [],
+      "candidate_zero_pixel_count": 0,
+      "captures_per_app": 80,
+      "case": "sunset-1080",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 10,
+      "tree_metric_changed_count": 40,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "visible_capture_metric_difference_count": 40,
+      "zero_pixel_case_sets_identical": true
+    },
+    {
+      "baseline_background_mismatch_count": 72,
+      "baseline_field_sha256": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+      "baseline_manifest_sha256": "57ed63b21431c0910bae208459299a65014d9c4765085fd80fc7d6410de612c9",
+      "baseline_metrics_sha256": "e49fc7ed618b3a9d7ffabfbf78c5aaf8a78fb36e13ec58dd9a7e2bb39404f6ee",
+      "baseline_only_background_mismatches": [],
+      "baseline_zero_pixel_count": 64,
+      "camera_and_projection_equal": true,
+      "candidate_background_mismatch_count": 72,
+      "candidate_field_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "candidate_manifest_sha256": "1e00d51292e8dc5bac8400e9eb807d7ee54d047c21712594b69596d12916b8f5",
+      "candidate_metrics_sha256": "e49fc7ed618b3a9d7ffabfbf78c5aaf8a78fb36e13ec58dd9a7e2bb39404f6ee",
+      "candidate_only_background_mismatches": [],
+      "candidate_zero_pixel_count": 64,
+      "captures_per_app": 80,
+      "case": "night-1080",
+      "non_tree_metric_changed_count": 0,
+      "paired_capture_keys_equal": true,
+      "shared_background_mismatch_count": 72,
+      "tree_metric_changed_count": 0,
+      "viewport": [
+        1920,
+        1080
+      ],
+      "visible_capture_metric_difference_count": 0,
+      "zero_pixel_case_sets_identical": true
+    }
+  ],
+  "scope": "Native static inspection only; aircraft recognition, physical flight quality, and performance are not inferred."
+}

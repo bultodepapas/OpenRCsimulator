@@ -16,6 +16,13 @@ func _initialize() -> void:
 	call_deferred("run")
 
 func run() -> void:
+	var patch_a: float = Trees.foliage_patch_value(-0.001, -0.001)
+	var patch_b: float = Trees.foliage_patch_value(-0.001, -0.001)
+	check("foliage patch field is deterministic", patch_a == patch_b)
+	check("foliage patch field stays bounded", patch_a >= -1.0 and patch_a <= 1.0)
+	var patch_left: float = Trees.foliage_patch_value(-0.001, 179.999)
+	var patch_right: float = Trees.foliage_patch_value(-0.001, 180.001)
+	check("foliage patch field interpolates continuously", absf(patch_right - patch_left) < 0.001)
 	var loaded: Dictionary = Loader.load_from()
 	check("default validates", loaded.ok)
 	if not loaded.ok:
@@ -27,6 +34,13 @@ func run() -> void:
 	var trees: Node3D = field.get_node("treeline")
 	var other: Node3D = second.get_node("treeline")
 	check("eight azimuth sectors", trees.get_child_count() == 8)
+	var tree_material: ShaderMaterial = trees.get_child(0).multimesh.mesh.surface_get_material(0) as ShaderMaterial
+	var foliage_mask: Texture2D = tree_material.get_shader_parameter("foliage_mask") as Texture2D
+	check("source material-ID mask is aligned with the runtime atlas", foliage_mask != null and foliage_mask.get_width() == 1024 and foliage_mask.get_height() == 1024)
+	if foliage_mask != null:
+		var mask_image: Image = foliage_mask.get_image()
+		check("each card species mask retains visible bark and foliage", _mask_tile_has_both(mask_image, 0, 0)
+			and _mask_tile_has_both(mask_image, 512, 0) and _mask_tile_has_both(mask_image, 0, 512))
 	var committed_positions: Array = loaded.field.objects[0].positions
 	check("combined near and far placement has 1,680 trees", committed_positions.size() == 1680)
 	var count: int = 0
@@ -95,6 +109,19 @@ func signature(grove: Node3D) -> Array:
 	for node: MultiMeshInstance3D in grove.get_children():
 		values.append([node.name, node.multimesh.buffer, node.multimesh.custom_aabb])
 	return values
+
+
+func _mask_tile_has_both(image: Image, origin_x: int, origin_y: int) -> bool:
+	var has_bark: bool = false
+	var has_foliage: bool = false
+	for y: int in range(origin_y, origin_y + 512, 8):
+		for x: int in range(origin_x, origin_x + 512, 8):
+			var pixel: Color = image.get_pixel(x, y)
+			if pixel.a < 0.5:
+				continue
+			has_foliage = has_foliage or pixel.r > 0.5
+			has_bark = has_bark or pixel.r <= 0.5
+	return has_bark and has_foliage
 
 func transition() -> void:
 	var ui: RefCounted = preload("res://tests/ui_driver.gd").new(self)

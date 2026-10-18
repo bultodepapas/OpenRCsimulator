@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\tmp\grass-completion\state\run-20261018-n\stik_runway_current_capture\stik-runway-current.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\tmp\grass-completion\state\run-20261018-n\stik_runway_current_capture\stik-runway-current.orfl (2880 ticks)
+PASS: current-solver stik runway tape recorded by the existing FlightLog recorder (2881 rows).

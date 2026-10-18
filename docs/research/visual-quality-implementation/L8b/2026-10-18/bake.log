@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+octa_bake_cli: baking 1 object(s) from res://tree.tscn -> res://baked/tree_tree.res
+octa_bake_cli: baked Tree - 1 card(s), 1 atlas entry, grid 10, res://baked/tree_tree.res
+octa_bake_cli: done - 1 card(s) in 1 atlas, scene saved (2.0 s)

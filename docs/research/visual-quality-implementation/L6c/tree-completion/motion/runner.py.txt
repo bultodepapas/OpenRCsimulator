@@ -1,0 +1,40 @@
+from pathlib import Path
+import subprocess, json, re, hashlib, shutil
+ROOT=Path(__file__).resolve().parents[2]
+OUT=ROOT/'tmp/tree-completion/motion-final'
+OUT.mkdir(exist_ok=False)
+ENGINE=ROOT/'.tools/Godot_v4.7.2-stable_win64.exe'
+APP=ROOT/'tmp/tree-completion/frozen/candidate/app'
+FFMPEG=ROOT/'.tools/tree-review-ffmpeg/imageio_ffmpeg/binaries/ffmpeg-win-x86_64-v7.1.exe'
+series=[]
+for label in ['baseline','candidate']:
+    name=f'field-{label}'
+    folder=OUT/name
+    app=ROOT/'tmp/tree-completion/frozen'/label/'app'
+    command=[str(ENGINE),'--path',str(app),'--audio-driver','Dummy','--script',str(ROOT/'tools/trees/quality_capture.gd'),'--',f'--out={folder}','--mode=field','--wind='+('on' if label=='candidate' else 'off')]
+    with (OUT/f'{name}.log').open('w') as log:
+        process=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=180)
+    assert not process.returncode and 'ERROR:' not in (OUT/f'{name}.log').read_text()
+    report=json.loads((folder/'report.json').read_text())
+    assert report['complete']
+    series.append({'name':name,'command':command,'report_sha256':hashlib.sha256((folder/'report.json').read_bytes()).hexdigest()})
+    print(name,'complete',flush=True)
+for resolution in [720,1080]:
+    for route in ['oak-approach','card-orbit','forest-pan']:
+        name=f'{route}-{resolution}'
+        folder=OUT/name
+        command=[str(ENGINE),'--path',str(APP),'--audio-driver','Dummy','--script',str(ROOT/'tools/trees/quality_capture.gd'),'--',f'--out={folder}',f'--motion={route}','--frames=192','--wind=on',f'--width={1280 if resolution==720 else 1920}',f'--height={resolution}']
+        with (OUT/f'{name}.log').open('w') as log:
+            process=subprocess.run(command,stdout=log,stderr=subprocess.STDOUT,timeout=300)
+        if process.returncode or re.search(r'^(SCRIPT |SHADER )?ERROR:',(OUT/f'{name}.log').read_text(),re.M):
+            raise RuntimeError(name)
+        report=json.loads((folder/'report.json').read_text())
+        assert report['complete'] and len(report['captures'])==192
+        for frame in report['captures']:
+            assert hashlib.sha256((folder/(frame['id']+'.png')).read_bytes()).hexdigest()==frame['sha256']
+        movie=OUT/f'{name}.mp4'
+        encode=[str(FFMPEG),'-hide_banner','-loglevel','error','-framerate','24','-i',str(folder/'frame-%04d.png'),'-an','-c:v','libx264','-preset','medium','-crf','18','-pix_fmt','yuv420p','-movflags','+faststart',str(movie)]
+        subprocess.run(encode,check=True,timeout=120)
+        series.append({'name':name,'command':command,'encode':encode,'report_sha256':hashlib.sha256((folder/'report.json').read_bytes()).hexdigest(),'mp4_sha256':hashlib.sha256(movie.read_bytes()).hexdigest(),'mp4_bytes':movie.stat().st_size})
+        print(name,'complete',flush=True)
+(OUT/'series.json').write_text(json.dumps({'scope':'Offline camera samples, not active-flight pacing; original PNGs have exact hashes in each report. MP4 is a compressed review aid.','clips':series},indent=2)+'\n')

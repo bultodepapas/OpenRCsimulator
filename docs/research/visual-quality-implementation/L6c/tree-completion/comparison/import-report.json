@@ -1,0 +1,54 @@
+{
+  "all_imports_clean": true,
+  "format": "openrc-tree-frozen-import-check-v1",
+  "results": [
+    {
+      "changed_files": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--editor",
+        "--import",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\baseline\\app",
+        "--log-file",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-import-20261018\\baseline-import.log"
+      ],
+      "console_tail": "import\u001b[22m | Flower_3_Group.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  98% ] \u001b[90m\u001b[1mreimport\u001b[22m | Bush_Common.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  98% ] \u001b[90m\u001b[1mreimport\u001b[22m | Fern_1.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  99% ] \u001b[90m\u001b[1mreimport\u001b[22m | CommonTree_4.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  99% ] \u001b[90m\u001b[1mreimport\u001b[22m | Finalizing Asset Import...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (222 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing post-reimport operations...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n",
+      "contains_error": false,
+      "elapsed_s": 46.78481912612915,
+      "engine_log_path": null,
+      "exit_code": 0,
+      "label": "baseline",
+      "log_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-import-20261018\\baseline-import.log",
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\baseline\\app",
+      "source_sha256_after": "a2d3f76093fcc37e528bd7c53bcb65dce4ecbfbc501508db104db6f5465edc8a",
+      "source_sha256_before": "a2d3f76093fcc37e528bd7c53bcb65dce4ecbfbc501508db104db6f5465edc8a",
+      "source_unchanged": true
+    },
+    {
+      "changed_files": [],
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--editor",
+        "--import",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+        "--log-file",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-import-20261018\\candidate-import.log"
+      ],
+      "console_tail": "import\u001b[22m | Flower_3_Group.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  98% ] \u001b[90m\u001b[1mreimport\u001b[22m | Bush_Common.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  98% ] \u001b[90m\u001b[1mreimport\u001b[22m | Fern_1.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  99% ] \u001b[90m\u001b[1mreimport\u001b[22m | CommonTree_4.gltf\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Started Import Scene (104 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mimport\u001b[22m | Importing Scene...\u001b[39m\u001b[0m\n[   1% ] \u001b[90m\u001b[1mimport\u001b[22m | Running Custom Script...\u001b[39m\u001b[0m\n[  99% ] \u001b[90m\u001b[1mimport\u001b[22m | Saving...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mimport\u001b[22m\n\u001b[0m\n[  99% ] \u001b[90m\u001b[1mreimport\u001b[22m | Finalizing Asset Import...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Started (Re)Importing Assets (222 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mreimport\u001b[22m | Executing post-reimport operations...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mreimport\u001b[22m\n\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Started Loading editor (5 steps)\u001b[39m\u001b[0m\n[   0% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading editor layout...\u001b[39m\u001b[0m\n[  16% ] \u001b[90m\u001b[1mloading_editor_layout\u001b[22m | Loading docks...\u001b[39m\u001b[0m\n\u001b[92m[ DONE ]\u001b[39m \u001b[1mloading_editor_layout\u001b[22m\n\u001b[0m\n",
+      "contains_error": false,
+      "elapsed_s": 55.741804361343384,
+      "engine_log_path": null,
+      "exit_code": 0,
+      "label": "candidate",
+      "log_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-import-20261018\\candidate-import.log",
+      "project": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen\\candidate\\app",
+      "source_sha256_after": "1300b6a77533315e4f67c0689a3064f7bf6bd8b4792ada6460f968fecef1d1cc",
+      "source_sha256_before": "1300b6a77533315e4f67c0689a3064f7bf6bd8b4792ada6460f968fecef1d1cc",
+      "source_unchanged": true
+    }
+  ]
+}

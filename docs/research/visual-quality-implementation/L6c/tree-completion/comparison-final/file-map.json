@@ -1,0 +1,40 @@
+{
+  "format": "openrc-tree-natural-overlay-file-map-v1",
+  "snapshot_pair": "tmp/tree-completion/frozen-natural/{baseline,candidate}/app",
+  "freeze_receipt": "freeze-natural.json",
+  "parent": {
+    "pair": "tmp/tree-completion/frozen-understory/{baseline,candidate}/app",
+    "freeze_receipt": "tmp/tree-completion/frozen-understory/freeze-understory.json",
+    "freeze_receipt_sha256": "b6ab0c198517c6002dbd825bd577efbdeea15471abcbe9d7b3c55e0dd86b4bc4",
+    "app_source_sha256": {
+      "baseline": "c68f596064dd2b35a5bc2443278204c720ca5d70d96935ca2f38417fb9722083",
+      "candidate": "2bfe3bd15659c9b88f2a5ef5a8307fa0ecd99696885ec01832d3ed028a8ce20e"
+    }
+  },
+  "approved_native_capture": {
+    "report": "../woodland-edges/candidate-native-r3-final/report.json",
+    "report_sha256": "e3c2883b894ef303ab8628cc5ca27efc864deda379e91dbafd4f2d1752b38390"
+  },
+  "overlay_to_both_labels": {
+    "app/data/woodland_edges.json": {
+      "parent_sha256": "2aac25ed51f62459510f71ccd838318150b5bd6145ead2ac6bd3e09cbf200311",
+      "final_sha256": "beab81a8c7247d151f258936f82d40d23aeb2f118563471aadb07a439f2b19fe"
+    },
+    "app/scenery/woodland_edge_habitat.gd": {
+      "parent_sha256": "f41e9a530a7a6072c3bb3715533d85e261be76586dc5507214d731f37c79b137",
+      "final_sha256": "2d407c0957c48b96e7ad563b93ba6401d00fc30374f7e0b09eabef7780dc72b2",
+      "difference": "one reviewed comment line; executable statements unchanged"
+    }
+  },
+  "inherited": {
+    "app/scenery/woodland_edge_habitat.gd.uid": "8bc49bdbe0db9c8de1baa4ecb675e949a213f7f60ad6778c48f6e7b90f1fd283",
+    "all_other_app_source": "unchanged from each label's diagnostic parent",
+    ".godot": "full per-label cache manifest and hash recorded in freeze-natural.json; copied byte-for-byte",
+    "assets_and_tools": "full per-label manifest and hashes recorded in freeze-natural.json; copied byte-for-byte"
+  },
+  "final_app_source_sha256": {
+    "baseline": "0900a8238274cdd3d63d40ee43a185c1a036b3bba00f5514fd491d495d706cba",
+    "candidate": "b18a46dfa66d800e8179b7e32be5ea7a27b8e253bacab7da2c23141ca85c3eea"
+  },
+  "import_and_timing": "not performed"
+}

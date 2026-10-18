@@ -60,6 +60,15 @@ func _initialize() -> void:
 		printerr("Pack tree catalog rejected: ", catalog.errors)
 		quit(1)
 		return
+	var tree_atlas: Texture2D = load(String(catalog.catalog.atlas)) as Texture2D
+	var foliage_mask: Texture2D = load(String(catalog.catalog.foliage_mask)) as Texture2D
+	if tree_atlas == null or foliage_mask == null or tree_atlas.get_width() != 1024 \
+			or tree_atlas.get_height() != 1024 or foliage_mask.get_width() != 1024 \
+			or foliage_mask.get_height() != 1024 or not _image_alpha_equal(tree_atlas.get_image(), foliage_mask.get_image()):
+		printerr("Pack tree material mask missing or not alpha-aligned with its atlas")
+		quit(1)
+		return
+	print("Pack source-material mask alpha matches its runtime atlas")
 	for entry: Dictionary in catalog.catalog.species:
 		var mesh: ArrayMesh = trees.card_mesh(entry.id)
 		if mesh == null:
@@ -139,6 +148,20 @@ func _initialize() -> void:
 		return
 	print("Pack tree catalog, imported atlas, license and %d-tree field validated" % expected_count)
 	quit(0)
+
+
+func _image_alpha_equal(left: Image, right: Image) -> bool:
+	if left == null or right == null or left.get_size() != right.get_size() \
+			or left.get_format() != Image.FORMAT_RGBA8 or right.get_format() != Image.FORMAT_RGBA8:
+		return false
+	var left_data: PackedByteArray = left.get_data()
+	var right_data: PackedByteArray = right.get_data()
+	if left_data.size() != right_data.size():
+		return false
+	for alpha_index in range(3, left_data.size(), 4):
+		if left_data[alpha_index] != right_data[alpha_index]:
+			return false
+	return true
 
 
 ## Export coverage: require real source meshes/materials and nonempty instance data.

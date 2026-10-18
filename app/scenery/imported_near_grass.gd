@@ -43,6 +43,10 @@ const ENHANCED_QUALITY_LIMITS := {
 }
 
 static var _rows_cache: Array = []
+static var _ranked_row_keys_by_asset: Array[PackedInt64Array] = []
+static var _ranked_row_count := -1
+static var _ranked_row_seed := -1
+static var _ranked_row_asset_signature := ""
 
 
 ## Stable nested quality subsets over the existing, checksum-validated rows.
@@ -51,64 +55,88 @@ static func layout(field: Dictionary, quality: String = "high", exclusions: Arra
 	var result: Array[Dictionary] = []
 	if rows.is_empty() or not field.has("pilot") or not field.has("surfaces"):
 		return result
-	var candidates_by_asset: Dictionary = {}
 	var triangle_counts: Dictionary = {}
 	for asset_id: String in ASSET_IDS:
-		candidates_by_asset[asset_id] = []
 		var asset := PlantLibrary.get_asset(asset_id)
 		triangle_counts[asset_id] = int(asset.get("source_triangles", 0))
 	var pilot: Dictionary = field.get("pilot", {})
 	var pilot_north := float(pilot.get("north", 0.0))
 	var pilot_east := float(pilot.get("east", 0.0))
 	var local_exclusions := _nearby_exclusions(pilot_north, pilot_east, exclusions)
-	for row_index: int in range(rows.size()):
-		var row: Array = rows[row_index]
-		var north := pilot_north + float(row[0]) * 0.001
-		var east := pilot_east + float(row[1]) * 0.001
-		if not NearGrass.accepts(north, east, field, local_exclusions):
-			continue
-		var asset_index := int(Palette.hash01(SEED, row_index, 101) * float(ASSET_IDS.size()))
-		var asset_id := ASSET_IDS[mini(asset_index, ASSET_IDS.size() - 1)]
-		var source_triangles := int(triangle_counts.get(asset_id, 0))
-		if source_triangles <= 0:
-			continue
-		var yaw_u16 := int(row[2])
-		var size_u8 := int(row[3])
-		(candidates_by_asset[asset_id] as Array).append({
-			"asset_id": asset_id,
-			"source_triangles": source_triangles,
-			"row_index": row_index,
-			"rank": int(Palette.hash01(SEED, row_index, 202) * 65536.0),
-			"north": north,
-			"east": east,
-			"yaw_u16": yaw_u16,
-			"yaw_rad": float(yaw_u16) * TAU / 65536.0,
-			"size_u8": size_u8,
-			"height_m": lerpf(MIN_HEIGHT_M, MAX_HEIGHT_M, float(size_u8) / 255.0),
-			"seed": SEED + row_index,
-		})
-
 	var limits: Dictionary = ENHANCED_QUALITY_LIMITS if GrassQuality.enhanced() else QUALITY_LIMITS
 	var quality_limits: Dictionary = limits.get(quality, limits.high)
+	var ranked_row_keys := _ranked_row_keys(rows)
 	var triangles := 0
-	for asset_id: String in ASSET_IDS:
-		var candidates: Array = candidates_by_asset[asset_id]
-		candidates.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
-			var left_rank := int(left.get("rank", 0))
-			var right_rank := int(right.get("rank", 0))
-			if left_rank != right_rank:
-				return left_rank < right_rank
-			return int(left.get("row_index", 0)) < int(right.get("row_index", 0))
-		)
-		var keep_count := mini(int(quality_limits.get(asset_id, 0)), candidates.size())
-		for candidate_index: int in range(keep_count):
-			var candidate: Dictionary = candidates[candidate_index]
-			triangles += int(candidate.source_triangles)
-			result.append(candidate.duplicate(true))
+	for asset_index: int in range(ASSET_IDS.size()):
+		var asset_id: String = ASSET_IDS[asset_index]
+		var source_triangles := int(triangle_counts.get(asset_id, 0))
+		var keep_count := int(quality_limits.get(asset_id, 0))
+		if source_triangles <= 0 or keep_count <= 0:
+			continue
+		var accepted_count := 0
+		for ranked_key: int in ranked_row_keys[asset_index]:
+			var row_index := ranked_key % rows.size()
+			var row: Array = rows[row_index]
+			var north := pilot_north + float(row[0]) * 0.001
+			var east := pilot_east + float(row[1]) * 0.001
+			if not NearGrass.accepts(north, east, field, local_exclusions):
+				continue
+			var yaw_u16 := int(row[2])
+			var size_u8 := int(row[3])
+			result.append({
+				"asset_id": asset_id,
+				"source_triangles": source_triangles,
+				"row_index": row_index,
+				"rank": _rank_from_key(ranked_key, rows.size()),
+				"north": north,
+				"east": east,
+				"yaw_u16": yaw_u16,
+				"yaw_rad": float(yaw_u16) * TAU / 65536.0,
+				"size_u8": size_u8,
+				"height_m": lerpf(MIN_HEIGHT_M, MAX_HEIGHT_M, float(size_u8) / 255.0),
+				"seed": SEED + row_index,
+			})
+			triangles += source_triangles
+			accepted_count += 1
+			if accepted_count >= keep_count:
+				break
 	if triangles > MAX_SOURCE_TRIANGLES:
 		push_error("Downloaded near grass exceeds its %d source-triangle budget (%d)" % [MAX_SOURCE_TRIANGLES, triangles])
 		return []
 	return result
+
+
+## Per-asset order depends only on the validated row indices and the fixed seed/species list.
+## The composite key sorts by rank then row index, matching the former candidate sort exactly.
+## Field acceptance stays live in layout(), so translated fields and new masks cannot stale this cache.
+static func _ranked_row_keys(rows: Array) -> Array[PackedInt64Array]:
+	var asset_signature := str(ASSET_IDS)
+	if _ranked_row_count == rows.size() and _ranked_row_seed == SEED \
+		and _ranked_row_asset_signature == asset_signature \
+		and _ranked_row_keys_by_asset.size() == ASSET_IDS.size():
+		return _ranked_row_keys_by_asset
+	var ranked: Array = []
+	for _asset_id: String in ASSET_IDS:
+		ranked.append([])
+	for row_index: int in range(rows.size()):
+		var asset_index := mini(int(Palette.hash01(SEED, row_index, 101) * float(ASSET_IDS.size())), ASSET_IDS.size() - 1)
+		var rank := int(Palette.hash01(SEED, row_index, 202) * 65536.0)
+		(ranked[asset_index] as Array).append(rank * rows.size() + row_index)
+	var packed_ranked: Array[PackedInt64Array] = []
+	for asset_keys_value: Variant in ranked:
+		var asset_keys: Array = asset_keys_value
+		asset_keys.sort()
+		packed_ranked.append(PackedInt64Array(asset_keys))
+	_ranked_row_count = rows.size()
+	_ranked_row_seed = SEED
+	_ranked_row_asset_signature = asset_signature
+	_ranked_row_keys_by_asset = packed_ranked
+	return _ranked_row_keys_by_asset
+
+
+static func _rank_from_key(ranked_key: int, row_count: int) -> int:
+	@warning_ignore("integer_division")
+	return ranked_key / row_count
 
 
 ## Validated placement rows stay inside the pilot's 30 m square. Remove only

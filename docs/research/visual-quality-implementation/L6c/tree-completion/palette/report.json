@@ -1,0 +1,28 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"api": "3.3.0 NVIDIA 617.42",
+	"checks": [
+		{
+			"maximum_error": 1.3059189780673108e-06,
+			"offset_render": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"samples": 1680
+		},
+		{
+			"maximum_error": 1.0091675290979651e-06,
+			"offset_render": [
+				321.0,
+				0.0,
+				-123.0
+			],
+			"samples": 1680
+		}
+	],
+	"complete": true,
+	"godot": "4.7.2-stable (official)",
+	"scope": "Production patch noise through actual MultiMesh MODEL_MATRIX, all 1680 field positions at two parent translations; binary GPU readback with 1e-6 quantization.",
+	"shader_sha256": "e0895d0239ed87a0695081a366bdb90c872d027104c1de8454b990553fa8c353"
+}

@@ -1,0 +1,16 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\frozen-understory\\candidate\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\rc_lifecycle_r2.gd",
+    "--",
+    "--cycles=2",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\tree-completion\\rc-lifecycle-r2-2/report.json"
+  ],
+  "exit_code": 0,
+  "fixture_sha256": "a12134cd0d84597be78205ad6d90f75cc93e738655751c3aa524a40ba6ccdac4"
+}
