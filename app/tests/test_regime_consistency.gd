@@ -3,7 +3,7 @@
 # central differences: pitch stiffness Cmα, pitch damping Cmq, elevator power Cmδe, lift slope CLα and the static
 # pitching moment itself; Cmq is also compared at α 0, 4 and 8° with neutral elevator. Any input can move the flight
 # between the regimes (the blend follows wing and tail angles, elevator included), so a mismatch is a change of
-# dynamics the pilot did not command. Investigation and bands: docs/plans/elevator-flight-dynamics-repair.md.
+# dynamics the pilot did not command. Investigation and bands: docs/research/flight-dynamics/elevator-repair-2026-10-13.md.
 # CLq is reported, not checked: the strips sit on the aerodynamic reference line and cannot carry the oracle's wing term.
 # Run: godot --headless --path . --script res://tests/test_regime_consistency.gd
 extends SceneTree

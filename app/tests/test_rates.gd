@@ -11,6 +11,8 @@ const Commands := preload("res://input/commands.gd")
 const AD := preload("res://physics/aircraft_data.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const FlightLog := preload("res://sim/flight_log.gd")
+const Reader := preload("res://tools/flight_log_cli.gd")
 
 var _failures := 0
 var _count := 0
@@ -116,5 +118,82 @@ func _initialize() -> void:
 		timber_session.commands = { roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = timber_session.start.throttle }
 		_check("Timber under 'normal': no profile, so the maximum throws", not timber_session.rates_active()
 			and timber_session.flown_commands().pitch == clampf(1.0 + timber_session.trims.pitch, -1.0, 1.0))
+	_rate_switch(session, timber_session)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## D6e-R1: the in-flight rate switch. It toggles only where a profile exists, reports the effective state, and a
+## flight log that crosses a switch records it as an event and still replays exactly (inputs are post-rates).
+func _rate_switch(avanti: Node, timber: Node) -> void:
+	var seen: Array = []
+	avanti.rate_profile_changed.connect(func(active: bool) -> void: seen.append(active))
+	avanti.rate_profile = "full"
+	_check("switch: full → normal", avanti.toggle_rate_profile() and avanti.rate_profile == "normal" and avanti.rates_active())
+	_check("switch: normal → full", avanti.toggle_rate_profile() and avanti.rate_profile == "full" and not avanti.rates_active())
+	_check("switch reports the effective state each time", seen == [true, false], str(seen))
+	var timber_profile: String = timber.rate_profile
+	_check("switch is refused without controls.rates and leaves the profile", not timber.toggle_rate_profile()
+		and timber.rate_profile == timber_profile)
+
+	var flight := FlightSession.new()
+	flight.input_enabled = false
+	flight.setup()
+	if not flight.is_flyable():
+		_check("switch log: Stik is flyable", false)
+		flight.free()
+		return
+	var directory := ProjectSettings.globalize_path("res://../tmp/rate-switch-%d" % Time.get_ticks_usec())
+	DirAccess.make_dir_recursive_absolute(directory)
+	var path := directory.path_join("switch.orfl")
+	var logger := FlightLog.new(flight)
+	_check("switch log starts", logger.start(path) == OK)
+	var first_tick: int = flight.sim.tick
+	flight.commands = { roll = 0.3, pitch = 0.6, yaw = 0.0, throttle = flight.start.throttle }
+	var pitch_before := 0.0
+	var pitch_after := 0.0
+	for tick in 120:
+		if tick == 40:
+			_check("switch accepted mid-flight", flight.toggle_rate_profile() and flight.rates_active())
+		flight.sim.inputs = flight._inputs() # the session's own sampling of the shaped sticks
+		if tick == 39: pitch_before = flight.sim.inputs[1]
+		if tick == 40: pitch_after = flight.sim.inputs[1]
+		flight.sim.step()
+	_check("the same stick flies %.4f before and %.4f after the switch" % [pitch_before, pitch_after],
+		pitch_after < pitch_before - 0.1)
+	_check("switch log stops", logger.stop() == OK)
+	var read: Dictionary = Reader.inspect(path)
+	_check("switch log is complete", read.ok and read.get("complete", false))
+	if not read.ok:
+		flight.free()
+		return
+	_check("header records the starting rates", read.header.get("rates", "") == "full")
+	var events: Array = read.events.filter(func(event: Dictionary) -> bool: return event.kind == "rates")
+	_check("the switch is one logged event at its tick", events.size() == 1 and events[0].detail == "normal"
+		and int(events[0].tick) == first_tick + 40, str(events))
+	var replay: Dictionary = Reader.prepare_replay(read.header)
+	_check("switch log replay prepares", replay.ok)
+	if replay.ok:
+		var stream := FileAccess.open(path, FileAccess.READ)
+		stream.seek(8)
+		FlightLog.read_packet(stream)
+		var observer := FlightLog.new(replay.flight)
+		var first := true
+		var mismatches := 0
+		var rows := 0
+		while stream.get_position() < stream.get_length():
+			var block: Dictionary = FlightLog.read_packet(stream).value
+			if block.kind == "footer": break
+			for row: Dictionary in block.rows:
+				if first:
+					first = false
+					continue
+				for key in row.intervention: replay.flight.sim.set(key, row.intervention[key].duplicate())
+				replay.flight.sim.inputs = row.inputs.duplicate()
+				replay.flight.sim.step()
+				rows += 1
+				if not Reader.disagreement(row, observer._sample({})).is_empty(): mismatches += 1
+		stream.close()
+		_check("replay across the switch is exact (%d ticks, %d mismatches)" % [rows, mismatches], rows == 120 and mismatches == 0)
+		replay.flight.free()
+	flight.free()
