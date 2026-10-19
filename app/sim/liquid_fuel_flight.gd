@@ -40,7 +40,10 @@ static func properties(owner: Node, values: PackedFloat64Array, trial: bool = fa
 	if not valid(owner, values, trial):
 		return {ok = false}
 	var config: Dictionary = owner.aircraft.model.propulsion.liquid_fuel
-	var amount: float = maxf(0.0, values[owner._liquid_index()]) + float(config.unusable_kg)
+	# The usable coordinate was validated against capacity-unusable. Reconstructing
+	# absolute mass can round one ulp above capacity when residue is nonzero.
+	var amount: float = clampf(maxf(0.0, values[owner._liquid_index()]) + float(config.unusable_kg),
+		float(config.unusable_kg), float(config.capacity_kg))
 	return Liquid.properties(config, {str(config.tank_id): amount})
 
 
@@ -49,7 +52,8 @@ static func sample(owner: Node, values: PackedFloat64Array) -> Dictionary:
 	if not live.get("ok", false):
 		return {ok = false}
 	var config: Dictionary = owner.aircraft.model.propulsion.liquid_fuel
-	var amount: float = values[owner._liquid_index()] + float(config.unusable_kg)
+	var amount: float = clampf(values[owner._liquid_index()] + float(config.unusable_kg),
+		float(config.unusable_kg), float(config.capacity_kg))
 	var result: Dictionary = Sample.build(live, owner.aircraft.model.fuel_system.tanks,
 		{str(config.tank_id): amount}, owner.sim.tick, owner.sim.time(), true)
 	if result.get("ok", false):
@@ -128,8 +132,8 @@ static func contact_sampler(owner: Node, before: PackedFloat64Array, after: Pack
 		return Callable()
 	var config: Dictionary = owner.aircraft.model.propulsion.liquid_fuel
 	var index: int = owner._liquid_index()
-	var start: float = before[index] + float(config.unusable_kg)
-	var end: float = after[index] + float(config.unusable_kg)
+	var start: float = clampf(before[index] + float(config.unusable_kg), float(config.unusable_kg), float(config.capacity_kg))
+	var end: float = clampf(after[index] + float(config.unusable_kg), float(config.unusable_kg), float(config.capacity_kg))
 	var tanks: Array = owner.aircraft.model.fuel_system.tanks
 	var contact_tick: int = owner.sim.tick + 1
 	var start_time: float = owner.sim.time()

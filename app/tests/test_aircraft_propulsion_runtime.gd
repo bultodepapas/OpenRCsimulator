@@ -4,6 +4,7 @@ const Runtime: Script = preload("res://sim/aircraft_propulsion_runtime.gd")
 const Flight: Script = preload("res://sim/flight_session.gd")
 const Catalog: Script = preload("res://app_state/aircraft_catalog.gd")
 const Propulsion: Script = preload("res://physics/propulsion.gd")
+const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 
 const CALLBACK_FIELDS: PackedStringArray = [
 	"step_policy",
@@ -270,9 +271,11 @@ func _test_preparation_before_endpoint_state() -> void:
 	var blank_result: Dictionary = Runtime.prepare_callbacks(blank_probe)
 	_check("uninitialized session probe prepares callbacks without a trace snapshot",
 		blank_result.get("ok", false) and blank_probe.trace_meta_calls == 0)
-	_check("preparation binds the selected coupled route",
-		blank_result.get("stage") == Callable(blank_probe, "_coupled_evaluate")
-		and blank_result.get("stage_rotor_momentum") == Callable(blank_probe, "_coupled_rotor"))
+	_check("preparation binds the finite-liquid stage and declared exhaustion event",
+		blank_result.get("stage") == LiquidFlight.evaluate.bind(blank_probe)
+		and not blank_result.stage_rotor_momentum.is_valid()
+		and blank_result.events.size() == 1 and blank_result.events[0].type == "fuel_exhausted"
+		and blank_result.events[0].index == 13 + incoming._liquid_index())
 	blank_probe.sim.free()
 	blank_probe.free()
 

@@ -1,10 +1,13 @@
-"""Mass/CG trace v14 mutations and base-family projection."""
+"""Accepted mass/CG v14 and finite-liquid v15 mutations and projection."""
 import csv
 from pathlib import Path
 import tempfile
 import unittest
 
-from mass_trace_contract import COLUMNS, FORMAT, SAMPLE_TIMING, SCHEMA, project
+from mass_trace_contract import (
+    COLUMNS, FORMAT, LIQUID_COLUMNS, LIQUID_FORMAT, LIQUID_SCHEMA, LIQUID_MODEL,
+    LIQUID_FUEL_SCHEMA, LIQUID_LAYOUT, SAMPLE_TIMING, SCHEMA, project,
+)
 
 
 class MassTraceContract(unittest.TestCase):
@@ -43,8 +46,8 @@ class MassTraceContract(unittest.TestCase):
         self.assertEqual(metadata['format'], 'openrc-trace v3')
         self.assertNotIn('mass_trace_schema', metadata)
         table = list(csv.reader(line for line in lines if not line.startswith('#')))
-        self.assertEqual(table[0], self.header[:-len(COLUMNS)])
-        self.assertEqual(len(table[1]), len(self.header) - len(COLUMNS))
+        self.assertEqual(table[0], ['tick', 't_s', 'alt_m'])
+        self.assertEqual(len(table[1]), 3)
         return {'format': metadata['format'], 'columns': table[0]}
 
     def test_valid_v14_mass_suffix_is_checked_then_projected(self):
@@ -58,10 +61,100 @@ class MassTraceContract(unittest.TestCase):
         self.assertEqual(result['columns'], self.header)
         self.assertEqual(self.path.read_bytes(), original, 'projection leaves evidence unchanged')
 
+    def test_valid_v15_liquid_and_mass_suffixes_are_checked_then_projected(self):
+        self.metadata.update({
+            'format': LIQUID_FORMAT,
+            'liquid_fuel_trace_schema': LIQUID_SCHEMA,
+            'liquid_fuel_model': LIQUID_MODEL,
+            'liquid_fuel_schema': LIQUID_FUEL_SCHEMA,
+            'fuel_consumption_law': 'gasoline_bsfc_v1',
+            'fuel_store_id': 'main_tank',
+            'fuel_capacity_kg': '1.0',
+            'fuel_unusable_kg': '0.03',
+            'fuel_state_index': '0',
+            'fuel_start_fill_known': 'true',
+            'fuel_start_fill': '0.6',
+            'fuel_registry_sha256': 'a' * 64,
+            'fuel_blend': 'gasoline_regular',
+            'fuel_family': 'gasoline',
+            'fuel_density_kg_m3': '800.0',
+            'fuel_reserve_fraction': '0.12',
+            'fuel_reserve_basis': 'estimated reserve',
+            'fuel_reserve_estimated': 'true',
+            'propulsion_model': 'propeller-shaft-coupled-rk4-v1',
+            'continuous_layout': 'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled; '
+                                 + LIQUID_LAYOUT,
+            'recording_start_tick': '0',
+            'recording_start_continuous': '[0.57, 1.0]',
+        })
+        self.header = ['tick', 't_s', 'alt_m', *LIQUID_COLUMNS, *COLUMNS]
+        self.rows = [
+            ['0', '0.000000000', '10', '0.6', '0.57', '0.6', '0.12', '1', '1.2', '0', '0', '0'],
+            ['1', '0.004166667', '10.1', '0.59', '0.56', '0.59', '0.12', '1', '1.19', '0.01', '-0.02', '0.03'],
+        ]
+        self.write()
+        original = self.path.read_bytes()
+        handled, result = project(self.path, self.validate_base)
+        self.assertTrue(handled)
+        self.assertEqual(result['format'], LIQUID_FORMAT)
+        self.assertEqual(result['liquid_fuel_trace_schema'], LIQUID_SCHEMA)
+        self.assertEqual(result['fuel_samples'], 2)
+        self.assertEqual(result['fuel_store_id'], 'main_tank')
+        self.assertEqual(result['columns'], self.header)
+        self.assertEqual(self.path.read_bytes(), original, 'projection leaves evidence unchanged')
+
+    def test_v15_refuses_inconsistent_liquid_identity_or_samples(self):
+        self.metadata.update({
+            'format': LIQUID_FORMAT,
+            'liquid_fuel_trace_schema': LIQUID_SCHEMA,
+            'liquid_fuel_model': LIQUID_MODEL,
+            'liquid_fuel_schema': LIQUID_FUEL_SCHEMA,
+            'fuel_consumption_law': 'gasoline_bsfc_v1',
+            'fuel_store_id': 'main_tank',
+            'fuel_capacity_kg': '1.0',
+            'fuel_unusable_kg': '0.03',
+            'fuel_state_index': '0',
+            'fuel_start_fill_known': 'true',
+            'fuel_start_fill': '0.6',
+            'fuel_registry_sha256': 'a' * 64,
+            'fuel_blend': 'gasoline_regular',
+            'fuel_family': 'gasoline',
+            'fuel_density_kg_m3': '800.0',
+            'fuel_reserve_fraction': '0.12',
+            'fuel_reserve_basis': 'estimated reserve',
+            'fuel_reserve_estimated': 'true',
+            'propulsion_model': 'propeller-shaft-coupled-rk4-v1',
+            'continuous_layout': 'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled; '
+                                 + LIQUID_LAYOUT,
+            'recording_start_tick': '0',
+            'recording_start_continuous': '[0.57, 1.0]',
+        })
+        header = ['tick', 't_s', 'alt_m', *LIQUID_COLUMNS, *COLUMNS]
+        rows = [
+            ['0', '0.000000000', '10', '0.6', '0.57', '0.6', '0.12', '1', '1.2', '0', '0', '0'],
+            ['1', '0.004166667', '10.1', '0.59', '0.56', '0.59', '0.12', '1', '1.19', '0.01', '-0.02', '0.03'],
+        ]
+        self.write(header=header, rows=rows)
+        cases = [
+            ('missing trace schema', {k: v for k, v in self.metadata.items() if k != 'liquid_fuel_trace_schema'}, rows),
+            ('wrong store model', dict(self.metadata, liquid_fuel_model='other'), rows),
+            ('bad registry identity', dict(self.metadata, fuel_registry_sha256='x' * 64), rows),
+            ('wrong continuous suffix', dict(self.metadata, recording_start_continuous='[0.5, 1.0]'), rows),
+            ('inventory grew', self.metadata, [rows[0], [*rows[1][:3], '0.61', *rows[1][4:]]]),
+            ('fill inconsistent', self.metadata, [rows[0], [*rows[1][:5], '0.5', *rows[1][6:]]]),
+            ('source latched with empty store', self.metadata,
+             [rows[0], [*rows[1][:3], '0.03', '0.0', '0.03', '0.12', '1', *rows[1][8:]]]),
+        ]
+        for label, metadata, candidate_rows in cases:
+            with self.subTest(label=label):
+                self.write(metadata=metadata, header=header, rows=candidate_rows)
+                with self.assertRaises(ValueError):
+                    project(self.path, self.validate_base)
+
     def test_non_v14_with_mass_claim_is_refused(self):
         changed = dict(self.metadata, format='openrc-trace v3')
         self.write(metadata=changed)
-        with self.assertRaisesRegex(ValueError, 'requires openrc-trace v14'):
+        with self.assertRaisesRegex(ValueError, 'requires openrc-trace v14 or v15'):
             project(self.path, self.validate_base)
 
     def test_missing_or_unknown_mass_identity_is_refused(self):

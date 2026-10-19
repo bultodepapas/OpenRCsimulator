@@ -28,9 +28,10 @@ func _initialize() -> void:
 	var first: Node3D = Windsock.build(cue)
 	var second: Node3D = Windsock.build(cue)
 	_check("NED placement", first.position == Vector3(cue.east, 0.0, -cue.north))
-	_check("two visual meshes and no update callback", first.get_child_count() == 2 and not first.is_processing())
+	_check("three visual meshes and no update callback", first.get_child_count() == 3 and not first.is_processing())
 	var fabric: MeshInstance3D = first.get_node("Fabric") as MeshInstance3D
 	var support: MeshInstance3D = first.get_node("Support") as MeshInstance3D
+	var basket: MeshInstance3D = first.get_node("Basket") as MeshInstance3D
 	var arrays: Array = fabric.mesh.surface_get_arrays(0)
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
@@ -40,7 +41,7 @@ func _initialize() -> void:
 	var rigid: bool = true
 	for i: int in range(1, centres.size()):
 		arc += centres[i].distance_to(centres[i - 1])
-		if float(i) / Windsock.SECTIONS <= 0.375:
+		if i <= 5:
 			rigid = rigid and is_equal_approx(centres[i].y, centres[0].y)
 	_check("cloth centreline follows field length", absf(arc - cue.length) < 0.002 * cue.length)
 	_check("first 3/8 is held open, remainder hangs", rigid and centres[-1].y < centres[0].y - 1.0)
@@ -48,8 +49,9 @@ func _initialize() -> void:
 	var lower: Vector3 = Windsock.cloth_point(0.0, PI, cue) + centres[0]
 	_check("throat diameter comes from field and is present in built mesh",
 		is_equal_approx(upper.distance_to(lower), cue.throat_diameter) and _contains(vertices, upper) and _contains(vertices, lower))
-	_check("cloth stays clear of ground", fabric.mesh.get_aabb().position.y > 0.1)
-	_check("pole and throat bounds follow mount height", is_equal_approx(support.mesh.get_aabb().end.y, cue.pole_height + cue.throat_diameter * 0.5 + 0.0045))
+	_check("deformed cloth stays clear of ground", fabric.custom_aabb.position.y > 0.1)
+	_check("pole and throat bounds follow mount height", absf((first.get_meta("visual_bounds") as AABB).end.y
+		- (cue.pole_height + cue.throat_diameter * 0.5)) < 0.05)
 	var transitions: int = 0
 	var last: Color = colours[0]
 	for i: int in Windsock.SECTIONS:
@@ -69,8 +71,10 @@ func _initialize() -> void:
 	_check("opaque double-sided cloth, no engine shadow", material != null and not material.shader.code.contains("ALPHA")
 		and material.shader.code.contains("cull_disabled")
 		and fabric.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
-	var triangle_count: int = (vertices.size() + support.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size()) / 3
-	_check("two draws and fewer than 6000 triangles", fabric.mesh.get_surface_count() == 1 and support.mesh.get_surface_count() == 1 and triangle_count < 6000)
+	var triangle_count: int = (vertices.size() + support.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size()
+		+ basket.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size()) / 3
+	_check("three draws and fewer than 6000 triangles", fabric.mesh.get_surface_count() == 1
+		and support.mesh.get_surface_count() == 1 and basket.mesh.get_surface_count() == 1 and triangle_count < 6000)
 	var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
 	var tangents: PackedFloat32Array = arrays[Mesh.ARRAY_TANGENT]
 	var mapped := uvs.size() == vertices.size() and tangents.size() == vertices.size() * 4

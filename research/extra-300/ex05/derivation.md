@@ -6,7 +6,7 @@ EX-08 flies the envelope, EX-09 looks for an independent contrast.
 
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: 324 original leaves preserved, 1 relocated CLadot leaves, 32 explicit compatibility-default leaves added, 0 differences.
 
-Dry empty-tank reference 3.273 kg at 29.99 % MAC (manual target 29.99 % MAC); loaded full-tank reference 3.578 kg at 25.99 % MAC, static margin at loaded CG 16.47 % MAC, 1-g stall 10.66 m/s, start 17 m/s.
+Dry empty-tank reference 3.273 kg at 29.99 % MAC (manual target 29.99 % MAC); loaded full-tank reference 3.578 kg at 25.99 % MAC, static margin at loaded CG 16.47 % MAC, 1-g stall 10.66 m/s, start 22 m/s.
 Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 
 ## Intermediate quantities
@@ -61,8 +61,8 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | balance | Jxx Jyy Jzz (kg m2) | 0.1669, 0.3232, 0.4667 | component boxes + parallel axis |
 | aero | CL_max | 1.05 | estimated: 13 % symmetric section clmax ~1.15 at Re 3e5, x0.9 wing (no polar identified) |
 | aero | 1-g stall (m/s) | 10.66 | flight mass, CL_max |
-| aero | start speed (m/s) | 17 | 1.6 x the 1-g stall, rounded: the trimmed in-air start |
-| aero | CL_ref | 0.4129 | level flight at the start speed; CL-dependent cross terms are frozen there |
+| aero | start speed (m/s) | 22 | estimated from the installed O.S. 61FX candidate trim envelope: 22 m/s is the lowest whole-m/s setting tested with a six-axis root and at least 1% throttle for full and 10% tank at reference and hot-high conditions; the original 17 m/s estimate stalls at the minimum throttle command at reference conditions |
+| aero | CL_ref | 0.2466 | level flight at the start speed; CL-dependent cross terms are frozen there |
 | lateral | fin effective AR | 3.176 | geometric h2/Sv x 1.55 end-plate factor (fuselage + stab, DATCOM range 1.4-1.7) |
 | lateral | (1 + dsigma/dbeta) eta_v | 1.007 | Nelson/DATCOM: 0.724 + 3.06 (Sv/S)/(1 + cos sweep) + 0.4 z_w/d + 0.009 AR (low wing: z_w down positive) |
 | lateral | effective fin slope (1/rad) | 3.317 |  |
@@ -70,9 +70,9 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | lateral | CYb body (1/rad) | -0.1242 | -2 K_i S0/S, K_i 1.3 low wing (DATCOM), S0 0.8 w d |
 | lateral | Cnb body, omitted (1/rad) | -0.01826 | DATCOM -K_N K_Rl (S_side/S)(L/b), K_N ~0.001/deg, K_Rl 1.4: destabilizing; not in v1 (Cnb must equal the fin term), same as the Stik |
 | lateral | Clb low-wing interference (1/rad) | 0.01308 | DATCOM: 1.2 sqrt(AR) (z_w/b)(2d/b), destabilizing for a low wing |
-| lateral | Clb wing at CL_ref (1/rad) | -0.01404 | DATCOM Clb/CL ~ -0.0006/deg for an unswept AR 5.5 taper 0.5 wing (estimated) |
+| lateral | Clb wing at CL_ref (1/rad) | -0.008383 | DATCOM Clb/CL ~ -0.0006/deg for an unswept AR 5.5 taper 0.5 wing (estimated) |
 | aero | aileron lift-increment centre (chord fraction) | 0.4363 | thin airfoil: 1/4 + dCm_c/4 / dCl for the flap |
-| drag | CD0 | 0.03137 | skin friction (40 % laminar on surfaces) x form factors (Raymer ch. 12) + gear + engine, x1.1 excrescences: wing 0.0046 m2, tails 0.0016 m2, fuselage 0.0034 m2, main gear, pants, tail wheel 0.0025 m2, exposed cylinder head, cooling flow 0.0015 m2 |
+| drag | CD0 | 0.03004 | skin friction (40 % laminar on surfaces) x form factors (Raymer ch. 12) + gear + engine, x1.1 excrescences: wing 0.0043 m2, tails 0.0015 m2, fuselage 0.0033 m2, main gear, pants, tail wheel 0.0025 m2, exposed cylinder head, cooling flow 0.0015 m2 |
 | drag | Oswald e | 0.78 | estimated: Stik/UltraStick identified value (0.78) at similar AR and Re; Raymer's 0.885 is optimistic at Re 3e5 |
 | gear | three-point pitch (deg), tail load share, static sag (mm) | 10.86, 0.1293, 21.02 | E5a: point-contact rest geometry; stiffness shares use ground-projected CG moment arms |
 | propulsion | propeller shaft axis (body FRD) | 0.9994, 0.0349, 0.008727 | geometry.json thrust frame: 0.5 deg down, 2 deg right; [cos(down)cos(right), cos(down)sin(right), sin(down)] |
@@ -88,7 +88,7 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | CLq | 5.6445 | derived |
 | CLde | 0.41482 | derived |
 | CLda_each | 0.53882 | derived |
-| CD0 | 0.03137 | derived |
+| CD0 | 0.030042 | derived |
 | CL_minD | 0 | estimated |
 | k_induced | 0.074126 | derived |
 | CDda_each | 0.0151 | borrowed |
@@ -98,9 +98,9 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | CYp | -0.064824 | derived |
 | CYr | 0.32903 | derived |
 | CYdr | 0.24259 | derived |
-| Clb | -0.03337 | derived |
+| Clb | -0.027714 | derived |
 | Clp | -0.59677 | derived |
-| Clr | 0.13326 | derived |
+| Clr | 0.091673 | derived |
 | Clda_right | -0.16977 | derived |
 | Clda_left | 0.16977 | derived |
 | Cldr | 0.02656 | derived |
@@ -110,10 +110,10 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 | Cmde | -1.0551 | derived |
 | Cmda_each | -0.10207 | derived |
 | Cnb | 0.16666 | derived |
-| Cnp | -0.021585 | derived |
+| Cnp | -0.000789 | derived |
 | Cnr | -0.18118 | derived |
-| Cnda_right | 0.02103 | derived |
-| Cnda_left | -0.02103 | derived |
+| Cnda_right | 0.012557 | derived |
+| Cnda_left | -0.012557 | derived |
 | Cndr | -0.11385 | derived |
 
 ## Known simplifications
@@ -123,5 +123,5 @@ Throws (manual p43 high rate): aileron 17.6°, elevator 23.9°, rudder 30.0°.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
-- CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = 0.41.
+- CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = 0.25.
 - No propwash. Finite 61FX glow consumption uses the existing candidate profile (torque and combustion estimates remain unvalidated); no Extra-specific carburetor-feed calibration is available, so feed-pressure/starvation behavior is not represented. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.

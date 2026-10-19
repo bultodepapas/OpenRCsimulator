@@ -48,6 +48,7 @@ static func silence_legacy_ambience(scene: Node) -> void:
 
 func snapshot() -> Dictionary:
 	var session: Node = flight.session
+	var source_running: bool = propulsion_source_running(session)
 	var wind: Vector3 = Frames.ned_to_render(Array(session.wind_at(session.sim.time())))
 	var prop: Dictionary = session.aircraft.model.propulsion
 	var atmosphere: Dictionary = session.atmosphere_configuration()
@@ -76,7 +77,7 @@ func snapshot() -> Dictionary:
 		glow_state["family"] = str(glow_state.get("family", glow_family))
 		glow_state["rpm"] = float(glow_state.get("rpm", rpm))
 		glow_state["max_rpm"] = float(glow_state.get("max_rpm", operation.get("max_rpm", EngineSound.reference_rpm(prop))))
-		glow_state["running"] = bool(glow_state.get("running", session.engine_running))
+		glow_state["running"] = source_running and bool(glow_state.get("running", true))
 		glow_state["firing_fraction"] = float(glow_state.get("firing_fraction", 1.0))
 		glow_state["load"] = float(glow_state.get("load", load_amount))
 		glow_state["throttle"] = float(glow_state.get("throttle", session.sim.inputs[3]))
@@ -109,7 +110,7 @@ func snapshot() -> Dictionary:
 	# Turbine load uses throttle; propellers use accepted-state aerodynamic torque.
 	return {
 		rpm = rpm, max_rpm = EngineSound.reference_rpm(prop),
-		load = load_amount, throttle = session.sim.inputs[3], running = session.engine_running,
+		load = load_amount, throttle = session.sim.inputs[3], running = source_running,
 		blades = blades, sound_speed = sqrt(1.4 * 287.05 * float(atmosphere.get("temperature_k", 288.15))),
 		airspeed = air.V,
 		temperature_c = temperature_k - 273.15, pressure_pa = pressure_pa, humidity_molar_pct = humidity,
@@ -119,6 +120,12 @@ func snapshot() -> Dictionary:
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 		glow = glow_state,
 	}
+
+
+static func propulsion_source_running(session: Node) -> bool:
+	if session.has_method("propulsion_source_running"):
+		return bool(session.call("propulsion_source_running"))
+	return bool(session.get("engine_running"))
 
 
 static func _glow_family(propulsion: Dictionary) -> String:

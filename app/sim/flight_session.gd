@@ -146,7 +146,7 @@ func glow_state() -> Dictionary:
 
 
 ## FUEL-07: the start fill of a finite-fuel tank as a fraction (0, 1] of the authored full tank. Every reset
-## refuels to it; a checkpoint stores the actual fuel, so exact replay needs no extra identity.
+## refuels to it; checkpoints store both actual fuel and the selected reset/provenance policy.
 var fuel_start_fill: float = 1.0
 const FUEL_SESSION_FORMAT := "openrc-fuel-session v1"
 var _fuel_start_fill_known := true
@@ -156,6 +156,8 @@ func set_fuel_start_fill(fill: float) -> bool:
 	if not is_finite(fill) or fill <= 0.0 or fill > 1.0:
 		return false
 	if liquid_fuel_is_active() and fill * float(aircraft.model.propulsion.liquid_fuel.capacity_kg) <= float(aircraft.model.propulsion.liquid_fuel.unusable_kg):
+		return false
+	if glow_is_active() and fill * float(aircraft.model.propulsion.glow.capacity_fuel_kg) <= float(aircraft.model.propulsion.glow.unusable_fuel_kg):
 		return false
 	fuel_start_fill = fill
 	_fuel_start_fill_known = true
@@ -206,13 +208,10 @@ func mass_properties() -> Dictionary:
 	if liquid_fuel_is_active() and _flight_ready():
 		return LiquidFlight.sample(self, sim.continuous)
 	if glow_is_active() and _flight_ready():
-		var live: Dictionary = GlowFlight.properties(self, sim.continuous[1])
-		if not live.get("ok", false):
+		var context: Dictionary = GlowFlight.mass_context(self, sim.continuous)
+		if not context.get("ok", false):
 			return {ok = false}
-		var tanks: Array = aircraft.model.get("fuel_system", {}).get("tanks", [])
-		if tanks.size() != 1:
-			return {ok = false}
-		var sample: Dictionary = FuelSample.build(live, tanks, {str(tanks[0].id): maxf(0.0, sim.continuous[1])},
+		var sample: Dictionary = FuelSample.build(context.properties, context.tanks, context.remaining,
 			sim.tick, sim.time(), true)
 		sample.law = GlowFlight.LAW
 		sample.registry_sha256 = str(aircraft.model.fuel_system.registry_sha256)
@@ -535,8 +534,10 @@ func _trim_model(model: Dictionary) -> Dictionary:
 	var prop: Dictionary = model.get("propulsion", {})
 	var properties: Dictionary = {}
 	if Propulsion.is_glow(prop):
-		properties = MassInventory.evaluate_reference(prop.glow.mass_reference,
-			PackedFloat64Array([float(prop.glow.capacity_fuel_kg) * fuel_start_fill]))
+		var amounts := PackedFloat64Array([float(prop.glow.capacity_fuel_kg) * fuel_start_fill])
+		if prop.glow.has("feed_line"):
+			amounts.append(float(prop.glow.feed_line.reference_mass_kg))
+		properties = MassInventory.evaluate_reference(prop.glow.mass_reference, amounts)
 	elif not prop.get("liquid_fuel", {}).is_empty():
 		properties = LiquidFuel.properties(prop.liquid_fuel,
 			{str(prop.liquid_fuel.tank_id): float(prop.liquid_fuel.capacity_kg) * fuel_start_fill})
@@ -1850,22 +1851,26 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 	if not glow_is_active() or previous_values.size() != GlowFlight.SIZE + wheel_count() \
 			or candidate_values.size() != previous_values.size():
 		return Callable()
-	var initial_fuel: float = aircraft.model.propulsion.glow.get("capacity_fuel_kg", aircraft.model.propulsion.glow.initial_fuel_kg)
+	if not GlowFlight.mass_context(self, previous_values).get("ok", false) or not GlowFlight.mass_context(self, candidate_values).get("ok", false):
+		return Callable()
 	var before: float = previous_values[1]
 	var after: float = candidate_values[1]
-	if not is_finite(before) or not is_finite(after) or before < 0.0 or after < 0.0 \
-			or before > initial_fuel or after > initial_fuel:
-		return Callable()
+	var before_line: float = previous_values[GlowFlight.LINE_FUEL_INDEX]
+	var after_line: float = candidate_values[GlowFlight.LINE_FUEL_INDEX]
 	var contact_tick: int = sim.tick + 1
 	var start_time: float = sim.time()
 	var dt: float = sim.dt()
-	var tanks: Array = aircraft.model.fuel_system.tanks
 	return func(fraction: float) -> Dictionary:
 		if not is_finite(fraction) or fraction < 0.0 or fraction > 1.0:
 			return {ok = false, reason = "contact mass fraction is outside the tick"}
-		var amount: float = lerpf(before, after, fraction)
-		var result: Dictionary = FuelSample.build(GlowFlight.properties(self, amount), tanks,
-			{str(tanks[0].id): amount}, contact_tick, start_time + fraction * dt, true)
+		var values: PackedFloat64Array = previous_values.duplicate()
+		values[1] = lerpf(before, after, fraction)
+		values[GlowFlight.LINE_FUEL_INDEX] = lerpf(before_line, after_line, fraction)
+		var context: Dictionary = GlowFlight.mass_context(self, values)
+		if not context.get("ok", false):
+			return {ok = false}
+		var result: Dictionary = FuelSample.build(context.properties, context.tanks, context.remaining,
+			contact_tick, start_time + fraction * dt, true)
 		result.sample_boundary = "swept_contact_linear_inventory"
 		result.impact_fraction = fraction
 		result.law = GlowFlight.LAW
@@ -2806,7 +2811,7 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 			# Geometry reach is independent of fuel; avoid any new mass/contact work in free flight.
 			if -s[RB.POS + 2] <= float(_hull_contact.reach):
-				var sampled: Dictionary = HullContact.loads_at_properties(s, _hull_contact, properties if not properties.is_empty() else GlowFlight.properties(self, values[1]))
+				var sampled: Dictionary = HullContact.loads_at_properties(s, _hull_contact, properties if not properties.is_empty() else GlowFlight.properties(self, values[1], values[GlowFlight.LINE_FUEL_INDEX]))
 				if not sampled.get("ok", false):
 					return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 				hull = sampled.loads
@@ -3636,11 +3641,14 @@ func trace_meta() -> Dictionary:
 		metadata.continuous_layout = wheel_suffix if current_layout == "none" else current_layout + "; " + wheel_suffix
 		metadata.metadata_schema = "openrc-flight-meta v6"
 	if glow_is_active():
-		metadata.metadata_schema="openrc-flight-meta v7"
+		metadata.metadata_schema="openrc-flight-meta v10"
 		metadata.propulsion_model=GlowFlight.LAW
 		metadata.glow_identity=JSON.stringify(prop.glow.identity,"",true,true)
+		metadata.glow_fuel_tank_id = str(prop.glow.fuel_tank.id)
+		metadata.glow_feed_line_inventory_id = str(prop.glow.get("feed_line", {}).get("liquid_inventory_id", ""))
+		metadata.glow_fuel_registry_sha256 = str(model.fuel_system.registry_sha256)
 		metadata.glow_family=prop.glow.profile.family
-		metadata.continuous_layout="rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+		metadata.continuous_layout=GlowFlight.CONTINUOUS_LAYOUT
 		if wheel_count() > 0: # GP-06a: rim speeds follow the glow slots (wheel_index() == GlowFlight.SIZE)
 			metadata.continuous_layout += "; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
@@ -3756,7 +3764,7 @@ func checkpoint() -> Dictionary:
 	if shaft_is_coupled():
 		boundary.format = "openrc-flight-checkpoint v4"
 		boundary.shaft_integrator = shaft_integrator()
-		boundary.weather_config = weather_configuration()
+		boundary.weather_config = WeatherConfig.defaults() if weather_is_calm() and atmosphere_is_reference() else weather_configuration()
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		boundary.format = "openrc-flight-checkpoint v6" if battery_is_dynamic() else "openrc-flight-checkpoint v5"
 		boundary.electric_law = electric_law()
@@ -3922,6 +3930,10 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			return false
 		restored_fuel_fill = float(fuel_session.start_fill)
 		if not is_finite(restored_fuel_fill) or restored_fuel_fill <= 0.0 or restored_fuel_fill > 1.0:
+			return false
+		if liquid_fuel_is_active() and restored_fuel_fill * float(aircraft.model.propulsion.liquid_fuel.capacity_kg) <= float(aircraft.model.propulsion.liquid_fuel.unusable_kg):
+			return false
+		if glow_is_active() and restored_fuel_fill * float(aircraft.model.propulsion.glow.capacity_fuel_kg) <= float(aircraft.model.propulsion.glow.unusable_fuel_kg):
 			return false
 		restored_fuel_fill_known = bool(fuel_session.selection_known)
 	if not aircraft.model.get("envelope", {}).is_empty():

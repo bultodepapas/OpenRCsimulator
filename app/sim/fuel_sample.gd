@@ -52,11 +52,12 @@ static func build(properties: Dictionary, tanks: Array, remaining: Dictionary,
 				or not is_finite(density) or density <= 0.0 or not is_finite(reserve) or reserve < unusable or reserve > capacity:
 			return {ok = false}
 		var volume: float = amount / density * 1.0e6
-		var store: Dictionary = {id = id, blend = str(tank.get("fuel", "")), family = str(tank.get("family", "")),
+		var kind: String = str(tank.get("kind", "tank"))
+		var store: Dictionary = {id = id, kind = kind, blend = str(tank.get("fuel", "")), family = str(tank.get("family", "")),
 			density_kg_m3 = density, capacity_kg = capacity, unusable_kg = unusable, remaining_kg = amount,
 			usable_kg = maxf(0.0, amount - unusable), fill_fraction = amount / capacity,
 			volume_ml = volume, reserve_fraction = reserve / capacity,
-			reserve_estimated = bool(tank.get("reserve_estimated", true)), low_fuel = amount <= reserve}
+			reserve_estimated = bool(tank.get("reserve_estimated", true)), low_fuel = kind != "feed_line" and amount <= reserve}
 		out.stores.append(store)
 		total_remaining += amount
 		out.fuel_capacity_kg += capacity

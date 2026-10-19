@@ -149,7 +149,8 @@ func _bounds(sock: Node3D) -> Array[float]:
 			continue
 		var box: AABB
 		if mesh is MeshInstance3D:
-			box = mesh.mesh.get_aabb()
+			# Shader-deformed cloth needs its current bounds, separate from the fixed pole.
+			box = mesh.get_meta("visual_bounds", mesh.mesh.get_aabb())
 		elif mesh is MultiMeshInstance3D:
 			box = mesh.multimesh.get_aabb()
 		else:

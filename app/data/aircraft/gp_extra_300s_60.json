@@ -52,10 +52,10 @@
   },
   "start": {
     "level_speed": {
-      "value": 17.0,
+      "value": 22.0,
       "unit": "m/s",
-      "kind": "derived",
-      "source": "research/extra-300/ex05/derive_physics.py: 1.6 x the 1-g stall at the flight mass and CL_max, rounded"
+      "kind": "estimated",
+      "source": "estimated from the installed O.S. 61FX candidate trim envelope: 22 m/s is the lowest whole-m/s setting tested with a six-axis root and at least 1% throttle for full and 10% tank at reference and hot-high conditions; the original 17 m/s estimate stalls at the minimum throttle command at reference conditions"
     }
   },
   "balance": {
@@ -1043,7 +1043,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: strip theory over the aileron span"
       },
       "CD0": {
-        "value": 0.03137,
+        "value": 0.030042,
         "unit": "1",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: component drag build-up at 16 m/s, see derivation.md"
@@ -1103,7 +1103,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.03337,
+        "value": -0.027714,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: wing at CL_ref + low-wing interference + fin"
@@ -1115,7 +1115,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.133264,
+        "value": 0.091673,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: CL_ref/4 + fin"
@@ -1175,7 +1175,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": -0.021585,
+        "value": -0.000789,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: -CL_ref/8 + fin"
@@ -1187,13 +1187,13 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
       },
       "Cnda_right": {
-        "value": 0.02103,
+        "value": 0.012557,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.5, taper 0.5)"
       },
       "Cnda_left": {
-        "value": -0.02103,
+        "value": -0.012557,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw"

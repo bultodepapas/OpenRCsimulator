@@ -143,6 +143,11 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 	var tank_result: Dictionary = _fuel_tank(raw, model, profile)
 	if not tank_result.get("ok", false):
 		return _fail(str(tank_result.get("message", "Invalid glow fuel inventory")))
+	var line_result: Dictionary = {ok = true}
+	if tank_result.normalized.has("feed_line"):
+		line_result = _fuel_line(raw, model, tank_result)
+		if not line_result.get("ok", false):
+			return _fail(str(line_result.get("message", "Invalid Glow feed-line inventory")))
 	if settings.starter_prime_kg >= tank_result.mass_kg and settings.starter_prime_kg > 0.0:
 		return _fail("starter_prime_kg must remain below the installed fuel inventory")
 	var feed: Dictionary = {}
@@ -151,12 +156,11 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		if not feed.get("ok", false):
 			return _fail(str(feed.get("message", "Invalid glow fuel feed")))
 		feed.erase("ok")
+	if bool(tank_result.get("has_pickup_position", false)) and feed.is_empty():
+		return _fail("An authored Glow pickup position requires the calibrated fuel_feed block")
 	var axis_result: Dictionary = _propeller_axis(model_propulsion)
 	if not axis_result.get("ok", false):
 		return _fail(str(axis_result.get("message", "Invalid glow propeller axis")))
-	var carrier_result: Dictionary = _carrier_inertia(tank_result.dry_properties, model_propulsion, axis_result.axis)
-	if not carrier_result.get("ok", false):
-		return _fail(str(carrier_result.get("message", "Invalid dry carrier inertia")))
 
 	var bytes: PackedByteArray = source_bytes
 	if bytes.is_empty():
@@ -175,6 +179,8 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		initial_fuel_kg = tank_result.mass_kg,
 		reference_fuel_kg = tank_result.mass_kg,
 		capacity_fuel_kg = tank_result.capacity_kg,
+		total_capacity_kg = tank_result.capacity_kg + float(line_result.get("capacity_kg", 0.0)),
+		total_reference_fuel_kg = tank_result.mass_kg + float(line_result.get("reference_mass_kg", 0.0)),
 		unusable_fuel_kg = tank_result.unusable_kg,
 		reserve_fuel_kg = tank_result.reserve_kg,
 		fuel_start_fill = tank_result.start_fill,
@@ -188,13 +194,39 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		},
 		provenance = value.duplicate(true),
 	}
+	if bool(tank_result.get("has_pickup_position", false)):
+		install.pickup_position = tank_result.pickup_position.duplicate()
+		install.pickup_position_source = tank_result.pickup_position_source.duplicate(true)
+		install.has_pickup_position = true
+	if line_result.has("line"):
+		install.feed_line = line_result.line.duplicate(true)
 	if not feed.is_empty():
 		install.fuel_feed = feed
 	# FUEL-04: prepare the shared fixed-datum resource inventory once; flight stages only evaluate it.
-	install.mass_reference = FuelMass.prepare(float(model.mass_kg), model.inertia, tank_result.mass_kg,
-		tank_result.position, tank_result.size, tank_result.capacity_kg, tank_result.id)
+	if line_result.has("line"):
+		var resources: Array = [
+			{id = tank_result.id, reference_mass_kg = tank_result.mass_kg,
+				capacity_mass_kg = tank_result.capacity_kg, center_body_m = tank_result.position,
+				size_body_m = tank_result.size},
+			{id = line_result.line.liquid_inventory_id, reference_mass_kg = line_result.line.reference_mass_kg,
+				capacity_mass_kg = line_result.line.capacity_kg, center_body_m = line_result.line.position,
+				size_body_m = line_result.line.size},
+		]
+		install.mass_reference = FuelMass.prepare_resources(float(model.mass_kg), model.inertia, resources)
+		if install.mass_reference.get("ok", false):
+			install.dry_properties = FuelMass.evaluate_resources(install.mass_reference, PackedFloat64Array([0.0, 0.0]))
+	else:
+		install.mass_reference = FuelMass.prepare(float(model.mass_kg), model.inertia, tank_result.mass_kg,
+			tank_result.position, tank_result.size, tank_result.capacity_kg, tank_result.id)
+		install.dry_properties = tank_result.dry_properties
 	if not install.mass_reference.get("ok", false):
 		return _fail("Glow fuel mass reference is invalid: " + str(install.mass_reference.get("error", "")))
+	if not install.dry_properties.get("ok", false):
+		return _fail("Glow dry resource carrier properties are invalid")
+	var carrier_result: Dictionary = _carrier_inertia(install.dry_properties, model_propulsion, axis_result.axis)
+	if not carrier_result.get("ok", false):
+		return _fail(str(carrier_result.get("message", "Invalid dry carrier inertia")))
+	install.rotor_carrier_factor = float(carrier_result.carrier_factor)
 	var out: Dictionary = model.duplicate(true)
 	var out_propulsion: Dictionary = out.propulsion
 	# A missing thrust-angle quantity means the historical axial (+x) installation convention.
@@ -341,6 +373,18 @@ static func _fuel_tank(raw: Dictionary, model: Dictionary, profile: Dictionary) 
 		position_values[1] - cg[1],
 		cg[2] - position_values[2],
 	])
+	var pickup_position := PackedFloat64Array()
+	if normalized.has("pickup_position_inventory_le_m"):
+		var pickup_values: Variant = normalized.get("pickup_position_inventory_le_m")
+		var pickup_source: Variant = normalized.get("pickup_position_source")
+		if not pickup_values is PackedFloat64Array or pickup_values.size() != 3 \
+				or not pickup_source is Dictionary or _quantity_vector(pickup_source, "m") != pickup_values:
+			return {ok = false, message = "Normalized Glow pickup position or provenance is malformed"}
+		for coordinate: float in pickup_values:
+			if absf(coordinate) > 3.0:
+				return {ok = false, message = "Glow pickup position must lie within 3 m of the inventory datum"}
+		pickup_position = PackedFloat64Array([cg[0] - pickup_values[0],
+			pickup_values[1] - cg[1], cg[2] - pickup_values[2]])
 	var tank_id: String = str(normalized_id)
 	var dry: Dictionary = FuelMass.evaluate(float(model_mass), model_inertia, reference_mass, 0.0,
 		position, size, capacity, tank_id)
@@ -349,7 +393,76 @@ static func _fuel_tank(raw: Dictionary, model: Dictionary, profile: Dictionary) 
 	return {ok = true, id = tank_id, liquid_id = str(liquid_id), shell_id = str(shell_id),
 		mass_kg = reference_mass, capacity_kg = capacity,
 		unusable_kg = unusable, reserve_kg = reserve, start_fill = start_fill, density_kg_m3 = density,
-		position = position, size = size, dry_properties = dry, normalized = normalized.duplicate(true)}
+		position = position, size = size, dry_properties = dry, normalized = normalized.duplicate(true),
+		has_pickup_position = normalized.has("pickup_position_inventory_le_m"),
+		pickup_position = pickup_position,
+		pickup_position_source = normalized.get("pickup_position_source", {})}
+
+
+## Bind the optional normalized pre-primed line to its distinct liquid inventory item and fixed-datum geometry.
+static func _fuel_line(raw: Dictionary, model: Dictionary, tank: Dictionary) -> Dictionary:
+	var normalized: Variant = tank.normalized.get("feed_line", null)
+	if not normalized is Dictionary:
+		return {ok = false, message = "Normalized Glow feed line is malformed"}
+	var line_id: Variant = normalized.get("id", null)
+	var liquid_id: Variant = normalized.get("liquid_inventory_id", null)
+	var fuel: Dictionary = tank.normalized
+	if not line_id is String or line_id.strip_edges().is_empty() or not liquid_id is String \
+			or liquid_id.strip_edges().is_empty() or line_id == tank.id or liquid_id in [tank.id, tank.liquid_id, tank.shell_id]:
+		return {ok = false, message = "Glow feed line needs stable IDs distinct from its tank, liquid and shell"}
+	if normalized.get("family") != "glow" or normalized.get("family") != fuel.get("family") \
+			or normalized.get("density_kg_m3") != fuel.get("density_kg_m3"):
+		return {ok = false, message = "Glow feed line blend family and density must match its tank"}
+	var capacity: float = float(normalized.get("capacity_kg", NAN))
+	var capacity_m3: float = float(normalized.get("capacity_m3", NAN))
+	var reference: float = float(normalized.get("reference_mass_kg", NAN))
+	var density: float = float(normalized.get("density_kg_m3", NAN))
+	if not is_finite(capacity) or capacity <= 0.0 or capacity > tank.capacity_kg \
+			or not is_finite(capacity_m3) or capacity_m3 <= 0.0 \
+			or not is_finite(reference) or reference <= 0.0 or reference > capacity \
+			or not is_finite(density) or density <= 0.0 \
+			or absf(capacity - capacity_m3 * density) > maxf(1.0e-12, capacity * 1.0e-9):
+		return {ok = false, message = "Glow feed-line capacity and authored fill are inconsistent"}
+	var inventory: Variant = raw.get("inventory", null)
+	if not inventory is Array:
+		return {ok = false, message = "Glow feed line requires the validated inventory array"}
+	var matches: Array[Dictionary] = []
+	for item: Variant in inventory:
+		if item is Dictionary and item.get("id") == liquid_id:
+			matches.append(item)
+	if matches.size() != 1:
+		return {ok = false, message = "Glow feed-line liquid ID must resolve to exactly one inventory item"}
+	var item: Dictionary = matches[0]
+	var mass: float = _quantity(item.get("mass"), "kg")
+	var source: Variant = normalized.get("source", null)
+	var position: Variant = normalized.get("position_inventory_le_m", null)
+	var size: Variant = normalized.get("size_m", null)
+	var cg: Variant = model.get("cg_inventory_le", null)
+	if item.get("energy_source") != "glow_fuel" or not is_finite(mass) \
+			or absf(mass - reference) > maxf(1.0e-12, reference * 1.0e-9) \
+			or mass > capacity or not source is Dictionary \
+			or not source.has_all(["capacity", "mass", "position", "size"]) \
+			or absf(_quantity(source.get("capacity"), "l") * 0.001 - capacity_m3) > 1.0e-12 \
+			or absf(_quantity(source.get("mass"), "kg") - mass) > maxf(1.0e-12, mass * 1.0e-9) \
+			or not position is PackedFloat64Array or position.size() != 3 \
+			or not size is PackedFloat64Array or size.size() != 3 \
+			or _quantity_vector(source.get("position"), "m") != position \
+			or _quantity_vector(source.get("size"), "m") != size \
+			or _quantity_vector(item.get("position"), "m") != position \
+			or _quantity_vector(item.get("size"), "m") != size \
+			or not cg is PackedFloat64Array or cg.size() != 3:
+		return {ok = false, message = "Glow feed-line inventory quantity, blend or provenance is inconsistent"}
+	var box_volume: float = size[0] * size[1] * size[2]
+	if box_volume + 1.0e-12 < capacity_m3:
+		return {ok = false, message = "Glow feed-line liquid box cannot hold its normalized capacity"}
+	var center := PackedFloat64Array([cg[0] - position[0], position[1] - cg[1], cg[2] - position[2]])
+	return {ok = true, line = {id = str(line_id), liquid_inventory_id = str(liquid_id),
+		capacity_kg = capacity, capacity_m3 = capacity_m3, reference_mass_kg = reference,
+		family = "glow", fuel = str(fuel.get("fuel", "")), density_kg_m3 = density,
+		position = center, size = size.duplicate(), sample_store = {id = str(liquid_id),
+		fuel = str(fuel.get("fuel", "")), family = "glow", density_kg_m3 = density,
+		capacity_kg = capacity, unusable_kg = 0.0, reserve_kg = 0.0,
+		reserve_estimated = false, kind = "feed_line"}, source = source.duplicate(true)}}
 
 
 ## NITRO-05: the fuel-feed block in body FRD about the wet-CG datum, with the premix density of the profile's fuel,

@@ -1,0 +1,305 @@
+Gmail message ID: 1a1536cc3495022d
+Message-ID: <b3012216-1cc6-4b5f-8843-23f7586f5ae6@jetimodel.cz>
+Date: Mon, 19 Oct 2026 11:09:49 +0200
+Subject: Re: Fwd: Fwd: JETI model Transmitters + OpenRC Simulator — Open-Source Integration Collaboration
+From: "Jakub Uhlík" <j.uhlik@jetimodel.cz>
+To: fireboxcorp@gmail.com
+
+Hi Giuseppe,
+
+thank you for your will to support our transmitters in your RC simulator 
+app. I will try to help you understand how our transmitters works and 
+how to interpret it's inputs.
+
+When connected to a PC, our transmitters implements USB HID protocol. So 
+they are detected as a "gaming device" without any further 
+configuration. First thing you are probably interested in is USB VID and 
+PID numbers. They are as follows:
+
+  * 0x0483 (Vendor ID, it corresponds to STMicroelectronics -
+    manufacturer of our MCU)
+  * 0xA07C (Product ID)
+
+In the attachment you can find dumped USB descriptors, co you can find 
+valuable information there. I decided to put rest of the information in 
+a pdf document. It will be better to read than here in a email. In 
+short, I tried a transmitter in your simulator and basic functionality 
+worked out-of-box. I was able to take off and control the airplane. The 
+only problem was with buttons and I tried to explain how they works and 
+maps to the transmitter in the document. Also a 
+"controller_profiles.cfg" file created by the simulator is attached to 
+the email. The pdf document was made in rush, but I hope it will help.
+
+If you have more questions or want further assistance then you can write 
+directly to me. I am afraid that I won't be able to give you enough 
+support at work, but I am willing to help you in my free time. I am able 
+to test a "JETI" controller profile or even help you to create a one. I 
+won't be so responsive, but I think during evenings/weekends I will find 
+some time to help.
+
+Best regards,
+
+Jakub Uhlík
+
+
+> -------- Přeposlaná zpráva --------
+> Předmět: 	JETI model Transmitters + OpenRC Simulator — Open-Source 
+> Integration Collaboration
+> Datum: 	Tue, 13 Oct 2026 06:57:34 -0700
+> Od: 	Giusepe Rojas <fireboxcorp@gmail.com>
+> Komu: 	info@jetimodel.cz
+>
+>
+>
+> Hello JETI model Team,
+>
+> I’m Giuseppe Rojas, an RC aviation enthusiast and the solo developer 
+> of *OpenRC Simulator*, a free, open-source RC flight simulator built 
+> in Godot.
+>
+> *GitHub:* https://github.com/bultodepapas/OpenRCsimulator
+>
+> The early alpha currently simulates *fixed-wing RC airplanes*, with a 
+> custom six-degree-of-freedom flight solver, wind, engine dynamics, and 
+> USB controller support. Real-world performance validation and improved 
+> hardware support are ongoing, and I intend to keep the official 
+> simulator free.
+>
+> I’d love to explore a technical collaboration involving Jeti Duplex 
+> transmitters. A priority for me is making real transmitters feel 
+> natural in the simulator, so pilots can train with their own controls 
+> instead of learning an unrelated gamepad.
+>
+> Where your team could help
+>
+> Would your engineers be open to sharing *public/non-confidential 
+> technical details* about USB simulator mode and advanced radio 
+> channel/switch mapping, or testing the simulator with your equipment? 
+> I don’t need proprietary firmware, confidential protocols or 
+> schematics. Even advice on supported modes, or access to a loaner/demo 
+> transmitter, would be valuable.
+>
+> With approval, I’d love to list verified transmitter compatibility in 
+> the project, include JETI model in credits and link to official 
+> products or instructions. Any logos or 3D representations of 
+> transmitters would be included only with permission, under separate 
+> terms from our MIT-licensed code.
+>
+> Engineers and developers are also welcome to contribute compatible 
+> controller profiles, testing tools, documentation or *GitHub pull 
+> requests* that we can review and integrate.
+>
+> Optional support
+>
+> As a solo developer I fund 3D modelling, engineering, testing and 
+> AI-assisted tools. Optional help — PayPal donations, development 
+> subscriptions or API credits, demonstration radios, spare parts or 
+> branded merchandise — is sincerely appreciated but absolutely not 
+> required. I can privately provide a *US shipping address* for physical 
+> contributions.
+>
+> *Technical guidance alone would be a fantastic contribution.* Could 
+> you direct me to the right person for developer relations, product 
+> testing or simulator compatibility?
+>
+> Thank you for your time and for supporting RC flying!
+>
+> Best regards,
+>
+> *Giuseppe Rojas*
+> Creator & Lead Developer — OpenRC Simulator
+> https://github.com/bultodepapas/OpenRCsimulator
+>
+-- 
+*Jakub Uhlík*
+R&D Specialist
+
+JETI model s.r.o.
+Lomená 1530
+742 58 Příbor
+Czech Republic
+
+Phone: +420 556 810 708
+
+Logo Jetimodel
+
+http://www.jetimodel.com
+
+
+========================================================================
+
+Gmail message ID: 1a154a608b3cacca
+To: j.uhlik@jetimodel.cz
+Subject: Re: Fwd: Fwd: JETI model Transmitters + OpenRC Simulator — Open-Source Integration Collaboration
+Date: Mon, 19 Oct 2026 07:52:09 -0700
+From: Giusepe Rojas <fireboxcorp@gmail.com>
+
+Hi Jakub!
+
+First of all, thank you so much for taking the time to download and actually test OpenRC Simulator with your DC-16II! I was genuinely excited to read your email.
+
+I have to confess that I'm a huge JETI fan. I've always considered your transmitters among the finest in the RC world. Unfortunately, I'm a JETI fan with a Ferrari taste and a bicycle budget! Haha! My dream transmitter is a JETI, but my bank account keeps reminding me that I'm just a poor open-source developer. So having someone from JETI actually test my little project is a real honor!
+
+Thank you also for the detailed technical information, USB descriptors, PDF, and configuration file. This is incredibly valuable.
+
+I'll start working on proper JETI controller support, including the HID identification, VID/PID information, and especially the switch and button mapping you described.
+
+I'd also love to introduce a dedicated transmitter selection screen in the simulator, where pilots could choose their actual radio and see a recognizable 3D representation of it. Starting with a recent JETI model would be fantastic, provided we have your permission to use its name and a simplified exterior representation.
+
+And I'm especially happy that you managed to take off and fly an aircraft already! That's very encouraging for a project still in its early alpha stage.
+
+If you're willing, once I have an initial JETI profile ready, I'd love to send it to you for testing. Your feedback would be invaluable.
+
+Thank you again, Jakub. I'm genuinely delighted to have your interest and support, and I hope this is the beginning of a great collaboration with JETI and the RC community.
+
+Best regards,
+
+Giuseppe Rojas
+Creator & Developer — OpenRC Simulator
+https://github.com/bultodepapas/OpenRCsimulator
+
+On Mon, 19 Oct 2026 11:09:49 +0200, "Jakub Uhlík" <j.uhlik@jetimodel.cz> wrote:
+> Hi Giuseppe,
+> 
+> thank you for your will to support our transmitters in your RC
+> simulator app. I will try to help you understand how our
+> transmitters works and how to interpret it's inputs.
+> 
+> When connected to a PC, our transmitters implements USB HID
+> protocol. So they are detected as a "gaming device" without any
+> further configuration. First thing you are probably interested in
+> is USB VID and PID numbers. They are as follows:
+> 
+> - 0x0483 (Vendor ID, it corresponds to STMicroelectronics -
+> manufacturer of our MCU)
+> 
+> - 0xA07C (Product ID)
+> 
+> In the attachment you can find dumped USB descriptors, co you can
+> find valuable information there. I decided to put rest of the
+> information in a pdf document. It will be better to read than here
+> in a email. In short, I tried a transmitter in your simulator and
+> basic functionality worked out-of-box. I was able to take off and
+> control the airplane. The only problem was with buttons and I
+> tried to explain how they works and maps to the transmitter in the
+> document. Also a "controller_profiles.cfg" file created by the
+> simulator is attached to the email. The pdf document was made in
+> rush, but I hope it will help.
+> 
+> If you have more questions or want further assistance then you
+> can write directly to me. I am afraid that I won't be able to give
+> you enough support at work, but I am willing to help you in my
+> free time. I am able to test a "JETI" controller profile or even
+> help you to create a one. I won't be so responsive, but I think
+> during evenings/weekends I will find some time to help.
+> 
+> Best regards,
+> 
+> Jakub Uhlík
+> 
+> -------- Přeposlaná zpráva
+> --------
+> 
+> Předmět:
+> 
+> JETI model Transmitters + OpenRC Simulator —
+> Open-Source Integration Collaboration
+> 
+> Datum:
+> 
+> Tue, 13 Oct 2026 06:57:34 -0700
+> 
+> Od:
+> 
+> Giusepe Rojas [<fireboxcorp@gmail.com>](mailto:fireboxcorp@gmail.com)
+> 
+> Komu:
+> 
+> info@jetimodel.cz
+> 
+> Hello JETI model Team,
+> 
+> I’m Giuseppe Rojas, an RC aviation enthusiast and the solo
+> developer of OpenRC Simulator, a free,
+> open-source RC flight simulator built in Godot.
+> 
+> GitHub: https://github.com/bultodepapas/OpenRCsimulator
+> 
+> The early alpha currently simulates fixed-wing RC
+> airplanes, with a custom six-degree-of-freedom
+> flight solver, wind, engine dynamics, and USB controller
+> support. Real-world performance validation and improved
+> hardware support are ongoing, and I intend to keep the
+> official simulator free.
+> 
+> I’d love to explore a technical collaboration involving
+> Jeti Duplex transmitters. A priority for me is making real
+> transmitters feel natural in the simulator, so pilots can
+> train with their own controls instead of learning an
+> unrelated gamepad.
+> 
+> Where your team could help
+> 
+> Would your engineers be open to sharing public/non-confidential
+> technical details about USB simulator mode and
+> advanced radio channel/switch mapping, or testing the
+> simulator with your equipment? I don’t need proprietary
+> firmware, confidential protocols or schematics. Even advice
+> on supported modes, or access to a loaner/demo transmitter,
+> would be valuable.
+> 
+> With approval, I’d love to list verified transmitter
+> compatibility in the project, include JETI model in credits
+> and link to official products or instructions. Any logos or
+> 3D representations of transmitters would be included only
+> with permission, under separate terms from our MIT-licensed
+> code.
+> 
+> Engineers and developers are also welcome to contribute
+> compatible controller profiles, testing tools, documentation
+> or GitHub pull requests that we can review
+> and integrate.
+> 
+> Optional support
+> 
+> As a solo developer I fund 3D modelling, engineering,
+> testing and AI-assisted tools. Optional help — PayPal
+> donations, development subscriptions or API credits,
+> demonstration radios, spare parts or branded merchandise —
+> is sincerely appreciated but absolutely not required. I can
+> privately provide a US shipping address
+> for physical contributions.
+> 
+> Technical guidance alone would be a fantastic
+> contribution. Could you direct me to the right
+> person for developer relations, product testing or simulator
+> compatibility?
+> 
+> Thank you for your time and for supporting RC flying!
+> 
+> Best regards,
+> 
+> Giuseppe Rojas
+> 
+> Creator & Lead Developer — OpenRC Simulator
+> 
+> https://github.com/bultodepapas/OpenRCsimulator
+> 
+> --
+> 
+> Jakub Uhlík
+> 
+> R&D Specialist
+> 
+> JETI model s.r.o.
+> 
+> Lomená 1530
+> 
+> 742 58 Příbor
+> 
+> Czech Republic
+> 
+> Phone: +420 556 810 708
+> 
+> http://www.jetimodel.com
+

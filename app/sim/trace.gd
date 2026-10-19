@@ -71,14 +71,28 @@ const BATTERY_KEYS: Array[String] = ["soc", "remaining_charge_c", "consumed_char
 const PACK_COLUMNS: Array = ["battery_soc", "battery_soc_weak", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "polarization_v", "cell_voltage_avg_v", "cell_voltage_min_v", "pack_temperature_k", "ambient_temperature_k", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "esc_sensed_voltage_v", "esc_limit", "esc_effective_duty", "esc_detected_cells", "esc_phase", "pack_exhausted"]
 const PACK_KEYS: Array[String] = ["soc", "soc_weak", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "polarization_v", "cell_voltage_avg_v", "cell_voltage_min_v", "temperature_k", "ambient_k", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "esc_sensed_voltage_v", "esc_limit", "effective_duty", "esc_detected_cells"]
 const PACK_PHASES: Array[String] = ["normal", "debounce", "soft_cut", "hard_cut", "off"]
-const GLOW_COLUMNS: Array[String] = [
+const GLOW_COLUMNS_V2: Array[String] = [
 	"glow_fuel_kg", "glow_temperature_k", "glow_running", "glow_stop_reason_code",
 	"glow_phase_revolutions", "glow_mixture_command_phi", "glow_fuel_transport_kg_s",
 	"glow_opportunity_count", "glow_fire_count", "glow_fire_events", "glow_firing_accumulator",
 	"glow_shaft_work_j", "glow_propeller_work_j", "glow_thrust_work_j", "glow_chemical_work_j",
 ]
-const GLOW_CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
-const GLOW_TRACE_SCHEMA: String = "openrc-glow-trace v1"
+const GLOW_COLUMNS_V3: Array[String] = [
+	"glow_fuel_kg", "glow_temperature_k", "glow_running", "glow_stop_reason_code",
+	"glow_phase_revolutions", "glow_mixture_command_phi", "glow_fuel_transport_kg_s",
+	"glow_opportunity_count", "glow_fire_count", "glow_fire_events", "glow_firing_accumulator",
+	"glow_shaft_work_j", "glow_propeller_work_j", "glow_thrust_work_j", "glow_chemical_work_j",
+	"glow_line_fuel_kg", "glow_fuel_source_mode",
+]
+const GLOW_CONTINUOUS_LAYOUT_V2: String = "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+const GLOW_CONTINUOUS_LAYOUT_V3: String = GLOW_CONTINUOUS_LAYOUT_V2 + "; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
+const GLOW_TRACE_SCHEMA_V1: String = "openrc-glow-trace v1"
+const GLOW_TRACE_SCHEMA_V2: String = "openrc-glow-trace v2"
+const GLOW_TRACE_SCHEMA: String = GLOW_TRACE_SCHEMA_V2
+const GLOW_LAW_V2: String = "glow-mean-cycle-finite-tank-hub-inflow-v2"
+const GLOW_LAW_V3: String = "glow-mean-cycle-finite-tank-line-pickup-v3"
+const GLOW_REASONS_V2: Array[String] = ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat"]
+const GLOW_REASONS_V3: Array[String] = ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
 const GLOW_LAW: String = GlowFlight.LAW
 const GEAR_TRACE_SCHEMA: String = "openrc-gear-trace v1"
 const GEAR_LAW: String = "retractable-point-gear-v1"
@@ -96,8 +110,17 @@ var _glow_family: String = ""
 var _glow_cycle_revolutions: float = NAN
 var _glow_recording_start: Dictionary = {}
 var _glow_recording_start_continuous: PackedFloat64Array = PackedFloat64Array()
+var _glow_state_size: int = 0
+var _glow_line_layout: bool = false
+var _glow_reason_codes: Array[String] = []
+var _glow_fuel_tank_id: String = ""
+var _glow_feed_line_inventory_id: String = ""
+var _glow_registry_sha256: String = ""
 var _glow_start_fuel_kg: float = NAN
 var _glow_last_fuel_kg: float = NAN
+var _glow_start_line_fuel_kg: float = NAN
+var _glow_last_line_fuel_kg: float = NAN
+var _glow_last_main_fuel_kg: float = NAN
 var _glow_last_opportunities: int = -1
 var _glow_last_fires: int = -1
 var _glow_wheel_count: int = 0 # GP-06a: rim speeds appended after the glow slots
@@ -148,8 +171,17 @@ func clear() -> void:
 	_glow_cycle_revolutions = NAN
 	_glow_recording_start = {}
 	_glow_recording_start_continuous = PackedFloat64Array()
+	_glow_state_size = 0
+	_glow_line_layout = false
+	_glow_reason_codes = []
+	_glow_fuel_tank_id = ""
+	_glow_feed_line_inventory_id = ""
+	_glow_registry_sha256 = ""
 	_glow_start_fuel_kg = NAN
 	_glow_last_fuel_kg = NAN
+	_glow_start_line_fuel_kg = NAN
+	_glow_last_line_fuel_kg = NAN
+	_glow_last_main_fuel_kg = NAN
 	_glow_last_opportunities = -1
 	_glow_last_fires = -1
 	_glow_wheel_count = 0
@@ -224,7 +256,8 @@ func _prepare_weather() -> void:
 		var supported_metadata_schema: bool = meta.get("metadata_schema") == "openrc-flight-meta v5" \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v6" \
 				and meta.get("wheel_state_model") == "relative-wheel-rim-speed-rk4-v1") \
-			or (meta.get("metadata_schema") == "openrc-flight-meta v7" and meta.get("propulsion_model") == GLOW_LAW) \
+			or (meta.get("metadata_schema") == "openrc-flight-meta v7" and meta.get("propulsion_model") == GLOW_LAW_V2) \
+			or (meta.get("metadata_schema") == "openrc-flight-meta v10" and meta.get("propulsion_model") == GLOW_LAW_V3) \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v8" and _has_gear_metadata_claim()) \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v9" and _has_flap_metadata_claim())
 		if meta.get("atmosphere_model") != _weather.atmosphere_law() \
@@ -616,6 +649,13 @@ func _prepare_turbine_metadata() -> void:
 
 ## Glow traces have their own continuous layout and validation; keep the established shaft paths intact.
 func _prepare_glow_metadata() -> void:
+	var law: String = str(meta.get("propulsion_model", ""))
+	var legacy_layout: bool = law == GLOW_LAW_V2
+	var line_layout: bool = law == GLOW_LAW_V3
+	var state_size: int = 17 if legacy_layout else 19 if line_layout else 0
+	var expected_schema: String = "openrc-flight-meta v7" if legacy_layout else "openrc-flight-meta v10" if line_layout else ""
+	var expected_layout: String = GLOW_CONTINUOUS_LAYOUT_V2 if legacy_layout else GLOW_CONTINUOUS_LAYOUT_V3
+	var expected_trace_schema: String = GLOW_TRACE_SCHEMA_V1 if legacy_layout else GLOW_TRACE_SCHEMA_V2
 	var family: String = str(meta.get("glow_family", ""))
 	var cycle: float = 1.0 if family == "glow_2t" else (2.0 if family == "glow_4t" else NAN)
 	var identity: Variant = JSON.parse_string(str(meta.get("glow_identity", "null")))
@@ -624,7 +664,11 @@ func _prepare_glow_metadata() -> void:
 	var aux_start: Variant = JSON.parse_string(str(meta.get("recording_start_aux", "null")))
 	var dt: Variant = meta.get("dt_s")
 	var start_tick: Variant = meta.get("recording_start_tick")
-	var start_reason: int = GlowFlight.REASONS.find(str(start.get("stop_reason", ""))) if start is Dictionary else -1
+	var reason_codes: Array[String] = GLOW_REASONS_V2 if legacy_layout else GLOW_REASONS_V3
+	var start_reason: int = reason_codes.find(str(start.get("stop_reason", ""))) if start is Dictionary else -1
+	var fuel_tank_id: Variant = meta.get("glow_fuel_tank_id", "")
+	var feed_line_inventory_id: Variant = meta.get("glow_feed_line_inventory_id", "")
+	var fuel_registry_sha256: Variant = meta.get("glow_fuel_registry_sha256", "")
 	var profile_identity: Variant = start.get("profile_identity", {}) if start is Dictionary else {}
 	var installation_profile: Variant = identity.get("profile", {}) if identity is Dictionary else {}
 	# GP-06a: a profiled wheel set appends its rim speeds after the glow slots, as on the shaft and turbine paths.
@@ -642,7 +686,7 @@ func _prepare_glow_metadata() -> void:
 				or not _is_sha256(str(meta.get("wheel_profile_input_sha256", ""))) \
 				or meta.get("wheel_profile_hash_convention") != "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes" \
 				or not layout is Array or layout.is_empty() \
-				or not launch is Array or launch.size() != GlowFlight.SIZE + layout.size() \
+			or not launch is Array or launch.size() != state_size + layout.size() \
 				or not brakes is Array or brakes.size() != layout.size():
 			_invalid_weather = true
 			return
@@ -652,7 +696,7 @@ func _prepare_glow_metadata() -> void:
 			var entry: Variant = layout[i]
 			if not entry is Dictionary or typeof(entry.get("index")) not in [TYPE_INT, TYPE_FLOAT] \
 					or not is_finite(float(entry.index)) or float(entry.index) != float(int(entry.index)) \
-					or int(entry.index) != GlowFlight.SIZE + i or typeof(entry.get("contact")) != TYPE_STRING \
+				or int(entry.index) != state_size + i or typeof(entry.get("contact")) != TYPE_STRING \
 					or str(entry.contact).is_empty() or contacts.has(entry.contact) or entry.get("unit") != "m/s rim speed":
 				_invalid_weather = true
 				return
@@ -669,17 +713,26 @@ func _prepare_glow_metadata() -> void:
 			if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
 				_invalid_weather = true
 				return
-	if meta.get("metadata_schema") != "openrc-flight-meta v7" or meta.get("propulsion_model") != GLOW_LAW \
-			or family not in ["glow_2t", "glow_4t"] or not is_finite(cycle) \
-			or meta.get("continuous_layout") != GLOW_CONTINUOUS_LAYOUT \
+	if not (legacy_layout or line_layout) or meta.get("metadata_schema") != expected_schema \
+			or law != (GLOW_LAW_V2 if legacy_layout else GLOW_LAW_V3) \
+			or meta.get("continuous_layout") != expected_layout \
 				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else "") \
+			or (legacy_layout and (meta.has("glow_fuel_tank_id") or meta.has("glow_feed_line_inventory_id") \
+				or meta.has("glow_fuel_registry_sha256") \
+				or (start is Dictionary and (start.has("main_fuel_kg") or start.has("feed_line_fuel_kg") \
+				or start.has("fuel_source_mode"))))) \
+			or (line_layout and (typeof(fuel_tank_id) != TYPE_STRING or str(fuel_tank_id).is_empty() \
+				or typeof(feed_line_inventory_id) != TYPE_STRING \
+				or (not str(feed_line_inventory_id).is_empty() and str(feed_line_inventory_id) == str(fuel_tank_id)) \
+				or typeof(fuel_registry_sha256) != TYPE_STRING or not _is_sha256(str(fuel_registry_sha256)))) \
+			or family not in ["glow_2t", "glow_4t"] or not is_finite(cycle) \
 			or not identity is Dictionary or not installation_profile is Dictionary \
 			or not _is_sha256(str(installation_profile.get("sha256", ""))) \
 			or not start is Dictionary or start.get("ok") != true or start.get("family") != family \
 			or not profile_identity is Dictionary \
 			or profile_identity.get("input_sha256") != installation_profile.get("sha256") \
 			or start.get("cycle_revolutions") != cycle or start_reason < 0 \
-			or not start_continuous is Array or start_continuous.size() != GlowFlight.SIZE + wheel_count \
+			or not start_continuous is Array or start_continuous.size() != state_size + wheel_count \
 			or not aux_start is Array or aux_start.size() != 4 \
 			or typeof(dt) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(dt)) or float(dt) <= 0.0 \
 			or typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start_tick)) \
@@ -700,6 +753,13 @@ func _prepare_glow_metadata() -> void:
 		if typeof(start.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start[key])):
 			_invalid_weather = true
 			return
+	if line_layout:
+		for key: String in ["main_fuel_kg", "feed_line_fuel_kg", "fuel_source_mode"]:
+			if typeof(start.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start[key])):
+				_invalid_weather = true
+				return
+	var start_line_fuel: float = float(start.get("feed_line_fuel_kg", 0.0)) if line_layout else 0.0
+	var start_source_mode: float = float(start.get("fuel_source_mode", 0.0)) if line_layout else 0.0
 	if typeof(start.get("running")) != TYPE_BOOL or float(start.rpm) < 0.0 \
 			or float(start.fuel_kg) < 0.0 or float(start.temperature_k) <= 0.0 \
 			or float(start.phase_revolutions) < 0.0 or float(start.phase_revolutions) >= cycle \
@@ -709,6 +769,12 @@ func _prepare_glow_metadata() -> void:
 			or float(start.fire_count) != floor(float(start.fire_count)) \
 			or int(start.fire_count) > int(start.opportunity_count) \
 			or float(start.firing_accumulator) < 0.0 or float(start.firing_accumulator) >= 1.0 \
+			or (line_layout and (start_line_fuel < 0.0 or start_line_fuel > float(start.fuel_kg) \
+				or absf(float(start.main_fuel_kg) + start_line_fuel - float(start.fuel_kg)) > maxf(1e-10, float(start.fuel_kg) * 1e-10) \
+				or start_source_mode != floor(start_source_mode) or start_source_mode not in [0.0, 1.0, 2.0] \
+				or (start_source_mode == 1.0 and float(start.main_fuel_kg) <= 0.0) \
+				or (start_source_mode == 2.0 and start_line_fuel <= 0.0))) \
+			or meta.get("glow_trace_schema") not in [null, expected_trace_schema] \
 			or absf(float(aux_start[0]) - float(start.rpm)) > maxf(1e-9, absf(float(start.rpm)) * 1e-12) \
 			or meta.get("recording_start_engine_running") != str(bool(start.running)):
 		_invalid_weather = true
@@ -718,15 +784,22 @@ func _prepare_glow_metadata() -> void:
 	_glow_cycle_revolutions = cycle
 	_glow_recording_start = start.duplicate(true)
 	_glow_recording_start_continuous = PackedFloat64Array(start_continuous)
+	_glow_state_size = state_size
+	_glow_line_layout = line_layout
+	_glow_reason_codes = reason_codes.duplicate()
+	_glow_fuel_tank_id = str(fuel_tank_id) if line_layout else ""
+	_glow_feed_line_inventory_id = str(feed_line_inventory_id) if line_layout else ""
+	_glow_registry_sha256 = str(fuel_registry_sha256) if line_layout else ""
 	_glow_wheel_count = wheel_count
 	_glow_start_fuel_kg = float(start.fuel_kg)
+	_glow_start_line_fuel_kg = start_line_fuel
 	_weather_meta = meta.duplicate(true)
-	_columns.append_array(GLOW_COLUMNS)
+	_columns.append_array(GLOW_COLUMNS_V3 if line_layout else GLOW_COLUMNS_V2)
 
 
 func _prepare_shaft_metadata() -> void:
 	var liquid_claim: bool = _has_liquid_metadata_claim()
-	var glow_metadata: bool = meta.get("propulsion_model") == GLOW_LAW or meta.has("glow_identity") \
+	var glow_metadata: bool = meta.get("propulsion_model") in [GLOW_LAW_V2, GLOW_LAW_V3] or meta.has("glow_identity") \
 		or meta.has("glow_family") or meta.has("glow_recording_start")
 	if glow_metadata:
 		if liquid_claim:
@@ -1005,7 +1078,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		return
 	var glow_row := PackedFloat64Array()
 	if _glow:
-		glow_row = _glow_sample(continuous, tick, t, aux)
+		glow_row = _glow_sample(continuous, tick, t, aux, mass_sample)
 		if _invalid_weather:
 			return
 	var electric_row: PackedFloat64Array = PackedFloat64Array()
@@ -1137,6 +1210,9 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_glow_last_opportunities = int(continuous[9])
 		_glow_last_fires = int(continuous[10])
 		_glow_last_fuel_kg = continuous[1]
+		_glow_last_line_fuel_kg = continuous[17] if _glow_line_layout else 0.0
+		if _glow_line_layout and _mass_trace:
+			_glow_last_main_fuel_kg = _glow_store_remaining(mass_sample, _glow_fuel_tank_id)
 
 
 func _valid_mass_sample(sample: Dictionary, tick: int, t: float) -> bool:
@@ -1252,10 +1328,11 @@ func _liquid_sample(sample: Dictionary, tick: int, t: float, continuous: PackedF
 	return PackedFloat64Array([amount, usable, fill, reserve, continuous[_liquid_state_index + 1]])
 
 
-func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFloat64Array) -> PackedFloat64Array:
+func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFloat64Array,
+		mass_sample: Dictionary) -> PackedFloat64Array:
 	var dt: float = float(meta.get("dt_s", NAN))
 	var expected_time: float = float(tick) * dt
-	if values.size() != GlowFlight.SIZE + _glow_wheel_count or not _finite(values) or tick < 0 or not is_finite(t) \
+	if values.size() != _glow_state_size + _glow_wheel_count or not _finite(values) or tick < 0 or not is_finite(t) \
 			or absf(t - expected_time) > maxf(1e-12, absf(expected_time) * 1e-12) \
 			or aux.size() < 4 or not _finite(aux) \
 			or absf(aux[0] - values[0]) > maxf(1e-9, absf(values[0]) * 1e-12) \
@@ -1276,26 +1353,129 @@ func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFl
 			return PackedFloat64Array()
 	var reason: int = int(values[8])
 	var fuel_tolerance: float = maxf(1e-12, absf(_glow_start_fuel_kg) * 2e-12)
+	var line_fuel: float = float(values[17]) if _glow_line_layout else 0.0
+	var source_mode: float = float(values[18]) if _glow_line_layout else 0.0
+	var main_fuel: float = values[1] - line_fuel
 	if values[0] < 0.0 or values[1] < 0.0 or values[1] > _glow_start_fuel_kg + fuel_tolerance \
 			or values[2] <= 0.0 or values[3] < 0.0 or values[3] > 1.0 \
 			or values[4] < 0.0 or values[4] > 1.0 or values[5] < 0.0 \
 			or values[6] < 0.0 or values[6] >= _glow_cycle_revolutions \
 			or values[7] not in [0.0, 1.0] or values[8] != floor(values[8]) \
-			or reason < 0 or reason >= GlowFlight.REASONS.size() \
+			or reason < 0 or reason >= _glow_reason_codes.size() \
 			or values[9] < 0.0 or values[9] != floor(values[9]) \
 			or values[10] < 0.0 or values[10] != floor(values[10]) or values[10] > values[9] \
-			or values[11] < 0.0 or values[11] >= 1.0 or values[12] < 0.0 or values[12] > 2.8:
+			or values[11] < 0.0 or values[11] >= 1.0 or values[12] < 0.0 or values[12] > 2.8 \
+			or (_glow_line_layout and (line_fuel < 0.0 or line_fuel > values[1] + fuel_tolerance \
+				or source_mode != floor(source_mode) or source_mode not in [0.0, 1.0, 2.0] \
+				or (source_mode == 0.0 and values[5] > 1e-12) \
+				or (source_mode == 1.0 and main_fuel <= 0.0) \
+				or (source_mode == 2.0 and line_fuel <= 0.0))):
 		_invalid_weather = true
 		return PackedFloat64Array()
+	if _glow_line_layout and not _rows.is_empty():
+		var line_tolerance: float = maxf(1e-12, absf(_glow_last_line_fuel_kg) * 2e-12)
+		if line_fuel > _glow_last_line_fuel_kg + line_tolerance:
+			_invalid_weather = true
+			return PackedFloat64Array()
 	var opportunity_delta: int = 0 if _rows.is_empty() else int(values[9]) - _glow_last_opportunities
 	var fire_events: int = 0 if _rows.is_empty() else int(values[10]) - _glow_last_fires
 	if fire_events > opportunity_delta:
 		_invalid_weather = true
 		return PackedFloat64Array()
-	return PackedFloat64Array([
+	if _glow_line_layout and _mass_trace and not _glow_fuel_sample_matches(mass_sample, values, tick, t):
+		_invalid_weather = true
+		return PackedFloat64Array()
+	var row := PackedFloat64Array([
 		values[1], values[2], values[7], values[8], values[6], values[12], values[5],
 		values[9], values[10], fire_events, values[11], values[13], values[14], values[15], values[16],
 	])
+	if _glow_line_layout:
+		row.append(line_fuel)
+		row.append(source_mode)
+	return row
+
+
+func _glow_fuel_sample_matches(sample: Dictionary, values: PackedFloat64Array, tick: int, t: float) -> bool:
+	var stores: Variant = sample.get("stores")
+	var expected_line_count: int = 0 if _glow_feed_line_inventory_id.is_empty() else 1
+	if sample.get("format") != "openrc-mass-sample v1" or sample.get("finite_fuel") != true \
+			or sample.get("law") != GLOW_LAW_V3 \
+			or typeof(sample.get("tick")) not in [TYPE_INT, TYPE_FLOAT] or float(sample.tick) != float(tick) \
+			or typeof(sample.get("time_s")) not in [TYPE_INT, TYPE_FLOAT] or absf(float(sample.time_s) - t) > maxf(1e-12, absf(t) * 1e-12) \
+			or sample.get("registry_sha256") != _glow_registry_sha256 \
+			or typeof(sample.get("fuel_remaining_kg")) not in [TYPE_INT, TYPE_FLOAT] \
+			or not is_finite(float(sample.fuel_remaining_kg)) \
+			or absf(float(sample.fuel_remaining_kg) - values[1]) > maxf(1e-10, absf(values[1]) * 1e-9) \
+			or not stores is Array or stores.size() != 1 + expected_line_count:
+		return false
+	var by_id: Dictionary = {}
+	var total_remaining: float = 0.0
+	var total_capacity: float = 0.0
+	var total_usable: float = 0.0
+	for store: Variant in stores:
+		if not store is Dictionary or typeof(store.get("id")) != TYPE_STRING or str(store.id).is_empty() \
+				or by_id.has(str(store.id)):
+			return false
+		for key: String in ["capacity_kg", "unusable_kg", "remaining_kg", "usable_kg", "density_kg_m3", "fill_fraction", "volume_ml"]:
+			if typeof(store.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(store[key])):
+				return false
+		var capacity: float = float(store.capacity_kg)
+		var unusable: float = float(store.unusable_kg)
+		var remaining: float = float(store.remaining_kg)
+		var usable: float = float(store.usable_kg)
+		var density: float = float(store.density_kg_m3)
+		var tolerance: float = maxf(1e-10, capacity * 1e-9)
+		if capacity <= 0.0 or unusable < 0.0 or unusable >= capacity or remaining < unusable - tolerance \
+				or remaining > capacity + tolerance or usable < 0.0 or usable > capacity - unusable + tolerance \
+				or absf(remaining - usable - unusable) > tolerance or density <= 0.0 \
+				or absf(float(store.fill_fraction) - remaining / capacity) > 1e-9 \
+				or absf(float(store.volume_ml) - remaining / density * 1e6) > maxf(1e-6, float(store.volume_ml) * 1e-9):
+			return false
+		by_id[str(store.id)] = store
+		total_remaining += remaining
+		total_capacity += capacity
+		total_usable += usable
+	var main: Variant = by_id.get(_glow_fuel_tank_id)
+	if not main is Dictionary or absf(float(main.remaining_kg) - (values[1] - values[17])) > maxf(1e-10, absf(values[1]) * 1e-9):
+		return false
+	var line_remaining: float = 0.0
+	if expected_line_count == 1:
+		var line: Variant = by_id.get(_glow_feed_line_inventory_id)
+		if not line is Dictionary or line.get("kind") != "feed_line" or float(line.unusable_kg) != 0.0 \
+				or float(line.get("reserve_fraction", NAN)) != 0.0 or line.get("reserve_estimated") != false \
+				or str(line.get("blend", "")) != str(main.get("blend", "")) \
+				or str(line.get("family", "")) != str(main.get("family", "")) \
+				or float(line.density_kg_m3) != float(main.density_kg_m3):
+			return false
+		line_remaining = float(line.remaining_kg)
+	elif by_id.size() != 1 or values[17] != 0.0:
+		return false
+	if absf(line_remaining - values[17]) > maxf(1e-10, absf(values[17]) * 1e-9) \
+			or absf(total_remaining - values[1]) > maxf(1e-10, absf(values[1]) * 1e-9) \
+			or typeof(sample.get("fuel_capacity_kg")) not in [TYPE_INT, TYPE_FLOAT] \
+			or absf(float(sample.fuel_capacity_kg) - total_capacity) > maxf(1e-10, total_capacity * 1e-9) \
+			or typeof(sample.get("fuel_usable_kg")) not in [TYPE_INT, TYPE_FLOAT] \
+			or absf(float(sample.fuel_usable_kg) - total_usable) > maxf(1e-10, total_usable * 1e-9):
+		return false
+	var mode: float = values[18]
+	if (mode == 1.0 and float(main.usable_kg) <= 0.0) \
+			or (mode == 2.0 and (expected_line_count == 0 or line_remaining <= 0.0)):
+		return false
+	if not _rows.is_empty():
+		var inventory_tolerance: float = maxf(1e-10, total_capacity * 1e-9)
+		if float(main.remaining_kg) > _glow_last_main_fuel_kg + inventory_tolerance:
+			return false
+	return true
+
+
+func _glow_store_remaining(sample: Dictionary, store_id: String) -> float:
+	var stores: Variant = sample.get("stores")
+	if not stores is Array:
+		return NAN
+	for store: Variant in stores:
+		if store is Dictionary and store.get("id") == store_id:
+			return float(store.get("remaining_kg", NAN))
+	return NAN
 
 
 func _glow_start_matches(values: PackedFloat64Array) -> bool:
@@ -1315,8 +1495,16 @@ func _glow_start_matches(values: PackedFloat64Array) -> bool:
 		var recorded: float = float(start.get(pair[1], NAN))
 		if not is_finite(recorded) or absf(observed - recorded) > maxf(1e-12, absf(recorded) * 2e-12):
 			return false
+	if _glow_line_layout:
+		var line_fuel: float = values[17]
+		var main_fuel: float = values[1] - line_fuel
+		var source_mode: float = values[18]
+		if absf(float(start.get("main_fuel_kg", NAN)) - main_fuel) > maxf(1e-12, absf(main_fuel) * 2e-12) \
+				or absf(float(start.get("feed_line_fuel_kg", NAN)) - line_fuel) > maxf(1e-12, absf(line_fuel) * 2e-12) \
+				or float(start.get("fuel_source_mode", NAN)) != source_mode:
+			return false
 	return typeof(start.get("running")) == TYPE_BOOL and values[7] == (1.0 if start.running else 0.0) \
-		and str(start.get("stop_reason", "")) == GlowFlight.REASONS[int(values[8])]
+		and str(start.get("stop_reason", "")) == _glow_reason_codes[int(values[8])]
 
 
 ## Ticks that are missing between consecutive rows (a recorder that drops samples must be visible).
@@ -1362,10 +1550,12 @@ func to_csv() -> String:
 		written_meta.fuel_reserve_basis = _liquid_identity.reserve_basis
 		written_meta.fuel_reserve_estimated = _liquid_identity.reserve_estimated
 	if _glow:
-		written_meta.glow_trace_schema = GLOW_TRACE_SCHEMA
-		written_meta.glow_stop_reason_codes = JSON.stringify(GlowFlight.REASONS)
+		written_meta.glow_trace_schema = GLOW_TRACE_SCHEMA_V2 if _glow_line_layout else GLOW_TRACE_SCHEMA_V1
+		written_meta.glow_stop_reason_codes = JSON.stringify(_glow_reason_codes)
 		written_meta.glow_event_semantics = "glow_fire_events is the per-row delta of successful accepted fires; counts are cumulative within this trace"
 		written_meta.glow_mode_semantics = "glow_running: 0 stopped, 1 running; stop reason is a separate enumerated code"
+		if _glow_line_layout:
+			written_meta.glow_supply_mode_semantics = "glow_fuel_source_mode: 0 starved, 1 main tank, 2 pre-primed line; glow_line_fuel_kg is liquid mass remaining in the feed line"
 	# Physical metadata stays frozen at the first sample. Paused visual edits can extend the same recording.
 	for visual_key: String in ["visual_context", "visual_timeline"]:
 		if meta.has(visual_key):

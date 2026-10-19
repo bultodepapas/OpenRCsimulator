@@ -64,6 +64,9 @@ var _windowed_size := Vector2i(1280, 720)
 var _windowed_position := Vector2i.ZERO
 var _windowed_borderless := false
 var _windowed_mode := DisplayServer.WINDOW_MODE_WINDOWED
+var _auto_accept_quit_tree: SceneTree
+var _auto_accept_quit_before_root := true
+var _wm_close_pending := false
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
@@ -129,6 +132,14 @@ var _workshop_previous_keyboard: Callable
 var _workshop_previous_sky_transport: Dictionary = {}
 var _workshop_previous_world_context: Dictionary = {}
 var _workshop_home_detached := false
+
+
+func _enter_tree() -> void:
+	_auto_accept_quit_tree = get_tree()
+	if not is_instance_valid(_auto_accept_quit_tree):
+		return
+	_auto_accept_quit_before_root = _auto_accept_quit_tree.auto_accept_quit
+	_auto_accept_quit_tree.set_auto_accept_quit(false)
 
 
 func _ready() -> void:
@@ -292,7 +303,7 @@ func show_home() -> void:
 	home.aircraft_requested.connect(set_aircraft)
 	home.landscape_requested.connect(set_landscape)
 	home.start_requested.connect(set_start_choice)
-	home.quit_requested.connect(func() -> void: get_tree().quit())
+	home.quit_requested.connect(quit_app)
 	home.language_requested.connect(set_language)
 	home.help_requested.connect(open_help)
 	home.controls_requested.connect(open_controls)
@@ -1036,6 +1047,12 @@ func _on_update_download(url: String) -> void:
 
 
 func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		# Defer mutations until this notification has finished propagating through the tree.
+		if not _wm_close_pending:
+			_wm_close_pending = true
+			_handle_wm_close_deferred.call_deferred()
+		return
 	# Losing focus already pauses the simulation (simulation.gd); show the menu so continuing is one visible action.
 	# Never during captures and traces (their sessions take no input).
 	# Deferred: the notification is propagated through the whole tree, which refuses add_child() meanwhile.
@@ -1043,6 +1060,13 @@ func _notification(what: int) -> void:
 		_clear_controller_actions()
 		flight.session.controller_focus_lost()
 		open_pause.call_deferred()
+
+
+func _handle_wm_close_deferred() -> void:
+	_wm_close_pending = false
+	if not is_inside_tree():
+		return
+	quit_app()
 
 
 ## Freezes the flight under the pause menu. A running calibration is cancelled first (Esc already does that).
@@ -1244,6 +1268,9 @@ func _exit_tree() -> void:
 		_workshop_previous_flight.free()
 	if _workshop_home_detached and is_instance_valid(home_scene):
 		home_scene.free()
+	if is_instance_valid(_auto_accept_quit_tree):
+		_auto_accept_quit_tree.set_auto_accept_quit(_auto_accept_quit_before_root)
+		_auto_accept_quit_tree = null
 
 
 ## HUD-06: the flight overlays panel over the pause menu; changes apply and save at once.
@@ -1634,15 +1661,20 @@ func end_flight() -> void:
 
 
 func quit_app() -> void:
+	if not is_inside_tree():
+		return
 	if flight != null and not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press Quit again to quit without it."):
 		return
 	if is_instance_valid(_workshop_previous_flight) and _workshop_previous_flight.recorder != null \
 		and _workshop_previous_flight.recorder.recording:
 		var err: Error = _workshop_previous_flight.recorder.stop()
 		if err != OK:
-			if pause_menu != null:
-				pause_menu.set_note(tr("Could not save the flight trace (error %d). Press Quit again to quit without it.") % err)
+			_show_trace_save_error("Could not save the flight trace (error %d). Press Quit again to quit without it.", err)
 			return
+	_request_app_quit()
+
+
+func _request_app_quit() -> void:
 	get_tree().quit()
 
 
@@ -1662,9 +1694,24 @@ func _trace_saved_or_discarded(message: String) -> bool:
 	var err: Error = recorder.stop()
 	if err == OK:
 		return true
-	if pause_menu != null:
-		pause_menu.set_note(tr(message) % err)
+	_show_trace_save_error(message, err)
 	return false
+
+
+func _show_trace_save_error(message: String, err: Error) -> void:
+	var visible_message := tr(message) % err
+	var top: Node = screens.top()
+	if top != null and top.has_method("set_note"):
+		top.call("set_note", visible_message)
+		return
+	if flight != null:
+		if pause_menu == null:
+			open_pause()
+		if pause_menu != null:
+			pause_menu.set_note(visible_message)
+			return
+	if home != null:
+		home.set_note(visible_message)
 
 
 func _has_property(object: Object, property_name: String) -> bool:

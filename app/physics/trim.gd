@@ -99,6 +99,7 @@ static func solve(mode: String, V: float, model: Dictionary, g: float, throws: D
 
 static func _solve_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary, x2: float, rho: float, engine_charge_ratio: float) -> Dictionary:
 	var x := PackedFloat64Array([0.05, -0.05, x2, 0.0, 0.0, 0.0])
+	var bounded_glow_level: bool = mode == "level" and Propulsion.is_glow(model.propulsion)
 	var r := _residual(x, mode, V, model, g, rho, engine_charge_ratio)
 	var iterations := 0
 	var residual_norm: float = _norm(r)
@@ -111,19 +112,47 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 			jac.append(PackedFloat64Array([0, 0, 0, 0, 0, 0]))
 		for k in N:
 			var h := 1e-7 * maxf(1.0, absf(x[k]))
+			var direction: float = 1.0
+			if bounded_glow_level and k == 2 and x[k] + h > 1.0:
+				direction = -1.0
 			var xp := x.duplicate()
-			xp[k] += h
+			xp[k] += direction * h
 			var rp := _residual(xp, mode, V, model, g, rho, engine_charge_ratio)
 			if not _all_finite(rp):
 				return _numerical_failure("nonfinite perturbed trim residual", mode, V, iterations)
 			for i in N:
-				jac[i][k] = (rp[i] - r[i]) / h
+				jac[i][k] = (rp[i] - r[i]) / (direction * h)
 		var neg := PackedFloat64Array()
 		for i in N:
 			neg.append(-r[i])
 		var dx := solve_linear(jac, neg)
 		if dx.is_empty():
 			return _numerical_failure("singular or nonfinite Jacobian (no trim near this condition)", mode, V, iterations)
+		if bounded_glow_level:
+			var step_scale: float = 1.0
+			if dx[2] > 0.0 and x[2] + dx[2] > 1.0:
+				step_scale = (1.0 - x[2]) / dx[2]
+			elif dx[2] < 0.0 and x[2] + dx[2] < 0.0:
+				step_scale = (0.0 - x[2]) / dx[2]
+			step_scale = clampf(step_scale, 0.0, 1.0)
+			var accepted_step: bool = false
+			while step_scale >= 1e-8:
+				var candidate: PackedFloat64Array = x.duplicate()
+				for k in N:
+					candidate[k] += step_scale * dx[k]
+				if candidate[2] >= 0.0 and candidate[2] <= 1.0 and _all_finite(candidate):
+					var candidate_residual: PackedFloat64Array = _residual(candidate, mode, V, model, g, rho, engine_charge_ratio)
+					var candidate_norm: float = _norm(candidate_residual)
+					if is_finite(candidate_norm) and candidate_norm < residual_norm:
+						x = candidate
+					r = candidate_residual
+					residual_norm = candidate_norm
+					accepted_step = true
+					break
+				step_scale *= 0.5
+			if not accepted_step:
+				return _result(false, "glow trim stalled: no finite residual-decreasing step within throttle [0,1]", x, mode, V, r, iterations, throws, model, g, rho, engine_charge_ratio)
+			continue
 		for k in N:
 			x[k] += dx[k]
 		if not _all_finite(x):
@@ -143,7 +172,7 @@ static func _solve_from(mode: String, V: float, model: Dictionary, g: float, thr
 
 
 ## Electric trim uses the same six-axis equations, with structured source failures and bounded duty probes.
-## The legacy glow/turbine Newton path above remains unchanged.
+## Non-electric trim continues through the source propulsion's steady-RPM path.
 static func _solve_electric_from(mode: String, V: float, model: Dictionary, g: float, throws: Dictionary,
 		duty_guess: float, rho: float) -> Dictionary:
 	var x := PackedFloat64Array([0.05, -0.05, duty_guess, 0.0, 0.0, 0.0])

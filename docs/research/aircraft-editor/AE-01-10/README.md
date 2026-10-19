@@ -106,3 +106,21 @@ These findings do not invalidate the reproduced fixes or close the remaining per
 The six-size real-tick matrix uses constant wing loading and default weight/power. Geometric policy and other factors have algebra/validator tests, not an exhaustive combined flight envelope. A 240-tick run proves startup and bounded immediate numerical behavior, not sustained flight performance. No goldens were re-recorded.
 
 The compiler's 20 synthetic identities prove that names do not dispatch transformations; they are not 20 distinct aircraft assets or a fresh exported application. The dependency store currently detects changed external resources instead of supplying a historical resource bundle. Full engine-family editing, runway starts, CG/components, rich authoring bindings, crash/replay/recording matrix, long flight/refinement tests and physical/pilot validation remain open in the AE plan.
+
+## Source checks — 2026-10-19
+
+Diagnostic checks during documentation reconciliation used native Windows Godot 4.7.2 on an actively changing local tree based at `653345bc3`. These are not frozen conformance or release evidence. The initial 2026-10-13 results above remain historical: Extra now uses finite glow, so its former prescribed-RPM scale fixtures no longer describe the catalog configuration.
+
+Commands are in [TOOLS](../../../TOOLS.md#aircraft-workshop); [combined output](2026-10-19-checks.log) retains the observed results. No generated data or runtime code was changed by the documentation task.
+
+| Check | Final observed result |
+| --- | --- |
+| Model manifests / Workshop descriptor generation | Pass: five visual families / eight airplane descriptors current |
+| Native import / Spanish 1080p capture command | Pass; rendered capture returned `error=0` on OpenGL/NVIDIA RTX 3090 |
+| Descriptor / Store / UI suites | Pass: 102 / 108 checks with zero failures; UI reports zero failed assertions |
+| Compiler suite | 299 checks, 21 failures: fixtures still request legacy scale transforms on finite-glow data; Extra no-op trim also reports a nonfinite residual |
+| Trial suite | 37 checks, 2 failures: explicit v1 descriptor launch and resolved-model identity |
+| Integration suite | 3 failed assertions plus engine errors: tank/fuel-mass result, Extra scale startups, and missing windsock `advance`/`update` APIs during concurrent scenery work |
+| Checkout fixture test | Earlier run: 7/8 passed; descriptor generation failed before the concurrent registry/descriptor updates. Not rerun afterward |
+
+The full app suite, cross-platform packages and physical/pilot acceptance were not run. Current fleet/module qualification and the remaining persistence, presentation and flight-test gates stay in the [AE plan](../../../plans/aircraft-editor.md).

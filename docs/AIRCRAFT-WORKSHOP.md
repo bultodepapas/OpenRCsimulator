@@ -6,6 +6,7 @@ The Workbench feature is named **Aircraft Workshop** in the application (**Talle
 | --- | --- |
 | Use the editor; understand supported adjustments, scaling and saved variants | This guide, checked against source on 2026-10-19 |
 | Develop the feature; find pending steps and acceptance gates | [Consolidated AE plan](plans/aircraft-editor.md) |
+| Explore proposed customization, smoke presets and easy experiment ideas | [Future Workbench backlog](plans/aircraft-editor.md#5-planned-player-facing-work) |
 | Author physical data, stable IDs and model manifests | [Aircraft contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard) |
 | Generate descriptors, run checks or capture the editor | [Workshop commands](TOOLS.md#aircraft-workshop) |
 | Inspect dated results and limitations | [Verification and evidence](#verification) |
@@ -26,7 +27,7 @@ The preview is a separate still scene with a scale grid. Keyboard focus stays in
 | Size | 50%, 75%, 100%, 125%, 150%, 200% | Uniform physical and visual scale |
 | Mass scaling | Constant wing loading; geometric | Scale dry inventory mass with area or volume, before applying the weight multiplier |
 | Weight | 0.50–2.00× | Multiplies dry inventory mass; declared tank liquid follows tank scaling |
-| Tank capacity | 0.50–2.00× | Estimated tank sizing for aircraft with validated `fuel_system`; preserves fill and fuel density |
+| Tank capacity | 0.50–2.00× | Compiler sizing proposal for validated tanks; trial mass/fill integration remains under verification |
 | Power | 0.50–2.00× | Virtual prescribed-RPM propeller static-power multiplier after size/mass scaling |
 | Control travel | 0.50–1.50× | Surface throw limits; does not change transmitter expo or servo speed |
 
@@ -36,7 +37,7 @@ Presets are Mini, Giant, Light, Heavy, More power, More travel and Light / low p
 
 The catalog has eight airplane configurations; the Workshop filters out the separate rotorcraft entry. Size, dry-weight and virtual-power transforms require the simple prescribed-RPM capability, currently provided by the baseline Stik. Extra now uses a finite-glow installation, so it keeps those transforms disabled like the three finite-glow Stiks. Tank capacity is a separate operation for classified aircraft with validated tanks; conventional control travel follows the registered surface capability. The compiler contains no aircraft-ID transformation branches.
 
-Descriptor freshness is a separate launch gate. The latest checks found stale Extra, P-51 and Ventage descriptors and unresolved trial/trim failures; see the [dated verification](research/aircraft-editor/AE-01-10/README.md#source-checks--2026-10-19). Fuel software and physical acceptance stay with the [fuel-mass plan](plans/fuel-mass-balance.md).
+Descriptor freshness is a separate launch gate. The current generator check passes all eight airplane descriptors; compiler, legacy-trial and integration failures remain in the [dated verification](research/aircraft-editor/AE-01-10/README.md#source-checks--2026-10-19). Fuel software and physical acceptance stay with the [fuel-mass plan](plans/fuel-mass-balance.md).
 
 These changes retain estimated aerodynamic coefficients and do not model Reynolds-number changes or certify a real miniature/giant aircraft. Runway trials, component/CG editing, editable hardware packages, measured performance experiments, portable import/export and wider ranges remain planned.
 
@@ -57,7 +58,7 @@ The Workshop reads each catalog entry's main `data` source. Timber trials theref
 
 After adding or regenerating an aircraft through its owning pipeline, follow the [descriptor generation and verification sequence](TOOLS.md#aircraft-workshop). Resolve unsupported module classifications before generation; do not edit the generated descriptor to bypass a refusal.
 
-Commit the generated `app/data/workshop/<catalog-id>.json` with its source change. Identified aircraft use the closed `openrc-aircraft-workshop v3` descriptor: inventory bindings contain only the authored physical ID as `key`, and the resolver finds components by ID regardless of name or order. Exact aircraft bytes, shared module assertions, visual family, model-manifest hash and stable root remain pinned. The descriptor contains no copied physical constants. Renaming/reordering an inventory still requires regeneration because the source-byte hash changes, while component keys survive. ID-less sources generate v2 index/name-hash bindings; explicit v1/v2 readers preserve those historical semantics. Existing saved records are not rewritten or automatically rebased. Model manifests and their generator are defined in the [aircraft contract](AIRCRAFT_CONTRACT.md#model-and-package-contract).
+Include the generated `app/data/workshop/<catalog-id>.json` with its source change. Identified sources use v3 ID bindings; historical descriptors retain explicit versioned readers. Exact source and model-manifest pins require regeneration after input changes, even when component IDs survive. The [Workshop authoring contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard) owns those schema/binding rules; the [model contract](AIRCRAFT_CONTRACT.md#model-and-package-contract) owns presentation manifests. Saved records are not automatically rebased.
 
 The v1 descriptor reader remains explicit for saved variants. Structural validation never resolves current model dependencies, so an unavailable/changed model cannot hide a saved record. Trial preparation verifies the current dependencies and passes its accepted model hash to the renderer; a replacement between freezing and building is rejected. The library record stays unchanged.
 
@@ -65,7 +66,9 @@ Adding an aircraft with existing supported capabilities requires catalog/data/as
 
 ### Scale policy
 
-For size `s`, weight multiplier `w`, and tank-capacity multiplier `c`, the dry-mass ratio `r_dry` is `s²w` under constant wing loading or `s³w` under geometric scaling. Declared liquid mass, capacity, unusable volume and reserve scale by `s³c`; tank box dimensions scale by `s·c^(1/3)`, preserving density and fill. Other positions scale by `s`. Total mass ratio is `r_total = (M_dry·r_dry + M_liquid·s³c)/(M_dry + M_liquid)`. The compiler re-derives inertia from transformed inventory and the loader rechecks CG at the declared fuel state; mixed dry/tank scaling can shift the live CG or invalidate the candidate. Start speed uses `sqrt(r_total)/s`; runway suspension uses `r_total` and still passes normal validation.
+For size `s`, weight multiplier `w`, and tank-capacity multiplier `c`, the compiler uses dry-mass ratio `r_dry = s²w` under constant wing loading or `s³w` under geometric scaling. Its tank transform multiplies declared liquid mass, capacity, unusable volume and reserve by `s³c` and box dimensions by `s·c^(1/3)`, intending to preserve density and fill. The trial capacity/accepted-fuel-mass integration check currently fails; these equations describe the compiler policy, not a qualified flight result.
+
+Other positions scale by `s`. Proposed total mass ratio is `r_total = (M_dry·r_dry + M_liquid·s³c)/(M_dry + M_liquid)`. The compiler re-derives inertia from inventory and the loader rechecks CG at the declared fuel state; mixed dry/tank scaling can shift CG or invalidate a candidate. Declared start speed uses `sqrt(r_total)/s`; suspension uses `r_total`. The real session must still accept trim, timestep and start checks.
 
 The virtual legacy propeller uses the dry ratio: diameter scales by `s`, rotating inertia by `r_dry s²`, maximum RPM by `sqrt(r_dry)/s² × power^(1/3)`, and idle RPM by `sqrt(r_dry)/s²`. The static coefficient-law result therefore scales thrust by `r_dry × power^(2/3)` and power by `r_dry^(3/2)/s × power`. This is a virtual propeller policy, not a substituted physical engine specification.
 
