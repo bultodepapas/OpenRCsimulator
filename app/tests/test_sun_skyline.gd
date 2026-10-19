@@ -32,6 +32,16 @@ static func _toward(azimuth_deg: float, elevation_deg: float) -> Vector3:
 	return Vector3(sin(az) * cos(el), sin(el), -cos(az) * cos(el)) # north = −z, east = +x
 
 
+## Whether this renderer keeps MultiMesh instance transforms readable (the headless dummy renderer does not).
+static func _multimesh_readback() -> bool:
+	var mm := MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.mesh = BoxMesh.new()
+	mm.instance_count = 1
+	mm.set_instance_transform(0, Transform3D(Basis.IDENTITY, Vector3(1.0, 2.0, 3.0)))
+	return mm.get_instance_transform(0).origin.is_equal_approx(Vector3(1.0, 2.0, 3.0))
+
+
 func _field() -> Node3D:
 	var field := Node3D.new()
 	field.name = "Field"
@@ -64,7 +74,7 @@ func _field() -> Node3D:
 	var roof := BoxMesh.new()
 	roof.size = Vector3(2.0, 0.2, 2.0)
 	shelter.mesh = roof
-	shelter.position = Vector3(0.0, 3.0, 2.0)
+	shelter.position = Vector3(0.0, 3.0, 1.0) # every corner within EXCLUDE_RADIUS_M
 	field.add_child(shelter)
 	# A hidden 50 m mast west: ignored.
 	var mast := MeshInstance3D.new()
@@ -83,20 +93,33 @@ func _run() -> void:
 	var sky := Skyline.new(field, EYE)
 	sky.finish()
 	_check("built", sky.done)
+	# The tree at x = 3 m is 1.72° east of north and its crown spans ±0.8°; the gap at due north lets the sun through.
+	# The headless dummy renderer keeps no MultiMesh instance data (every instance reads back at the origin, inside the
+	# exclusion radius), so the tree checks need a real renderer: `xvfb-run … --rendering-driver opengl3`.
 	var tree_top := atan2(10.0 - EYE.y, 100.0)
-	_check("trees raise the north skyline to their tops", absf(sky.elevation(_toward(0.0, 0.0)) - tree_top) < 0.01,
-		str(rad_to_deg(sky.elevation(_toward(0.0, 0.0)))))
-	_check("…over their row only", sky.elevation(_toward(40.0, 0.0)) < 0.0)
-	var roof_top := atan2(20.0 - EYE.y, 55.0) # nearest roof edge, 55 m east
-	_check("a building gives its roof's elevation", absf(sky.elevation(_toward(90.0, 0.0)) - roof_top) < 0.02,
+	var tree_az := rad_to_deg(atan2(3.0, 100.0))
+	var trees_kept := _multimesh_readback()
+	if trees_kept:
+		_check("a tree raises the skyline to its top", absf(sky.elevation(_toward(tree_az, 0.0)) - tree_top) < 0.01,
+			str(rad_to_deg(sky.elevation(_toward(tree_az, 0.0)))))
+		_check("the gap between crowns stays open", sky.elevation(_toward(0.0, 0.0)) == Skyline.EMPTY)
+	else:
+		print("skipped: this renderer keeps no MultiMesh instance data (headless); tree checks need opengl3")
+	_check("the sky beside the row stays open", sky.elevation(_toward(40.0, 0.0)) == Skyline.EMPTY)
+	# Due east lies between the building's corners (84.8° and 95.2°): its edges cover the face at the roof's height.
+	var roof_top := atan2(20.0 - EYE.y, 55.0)
+	_check("a building's whole face gives its roof's elevation", absf(sky.elevation(_toward(90.0, 0.0)) - roof_top) < 0.01,
 		str(rad_to_deg(sky.elevation(_toward(90.0, 0.0)))))
 	_check("flat ground, the near shelter and a hidden mast add nothing",
 		sky.elevation(_toward(180.0, 0.0)) == Skyline.EMPTY and sky.elevation(_toward(270.0, 0.0)) == Skyline.EMPTY)
+	# Visibility against the building's roof (vertex data is kept by every renderer).
 	var r := deg_to_rad(0.27)
-	_check("a sun below the treetops is hidden", sky.visibility(_toward(0.0, rad_to_deg(tree_top) - 1.0), r) == 0.0)
-	_check("a sun above them is clear", sky.visibility(_toward(0.0, rad_to_deg(tree_top) + 1.0), r) == 1.0)
-	var edge := sky.visibility(_toward(0.0, rad_to_deg(tree_top)), r)
-	_check("half the disc at the treetop line", absf(edge - 0.5) < 0.01, str(edge))
+	_check("a sun below the roof is hidden", sky.visibility(_toward(90.0, rad_to_deg(roof_top) - 1.0), r) == 0.0)
+	_check("a sun above it is clear", sky.visibility(_toward(90.0, rad_to_deg(roof_top) + 1.0), r) == 1.0)
+	var edge := sky.visibility(_toward(90.0, rad_to_deg(roof_top)), r)
+	_check("half the disc at the roof line", absf(edge - 0.5) < 0.01, str(edge))
+	if trees_kept:
+		_check("a sun below the treetops is hidden", sky.visibility(_toward(tree_az, rad_to_deg(tree_top) - 1.0), r) == 0.0)
 	_check("an open azimuth is clear", sky.visibility(_toward(200.0, 2.0), r) == 1.0)
 	# The work budget only changes when it finishes, not what it builds.
 	var stepped := Skyline.new(field, EYE)

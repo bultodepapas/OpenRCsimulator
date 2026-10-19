@@ -93,7 +93,7 @@ const GLOW_LAW_V2: String = "glow-mean-cycle-finite-tank-hub-inflow-v2"
 const GLOW_LAW_V3: String = "glow-mean-cycle-finite-tank-line-pickup-v3"
 ## NITRO-06: the barrel opening replaces the per-cycle admission in the continuous slot; the layout size is unchanged.
 const GLOW_LAW_V4: String = "glow-mean-cycle-carburettor-v4"
-const GLOW_CONTINUOUS_LAYOUT_V4: String = GLOW_CONTINUOUS_LAYOUT_V3.replace("servo, admission", "servo, throttle opening")
+const GLOW_CONTINUOUS_LAYOUT_V4: String = "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
 const GLOW_REASONS_V2: Array[String] = ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat"]
 const GLOW_REASONS_V3: Array[String] = ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
 const GLOW_LAW: String = GlowFlight.LAW
@@ -810,7 +810,7 @@ func _prepare_glow_metadata() -> void:
 
 func _prepare_shaft_metadata() -> void:
 	var liquid_claim: bool = _has_liquid_metadata_claim()
-	var glow_metadata: bool = meta.get("propulsion_model") in [GLOW_LAW_V2, GLOW_LAW_V3] or meta.has("glow_identity") \
+	var glow_metadata: bool = meta.get("propulsion_model") in [GLOW_LAW_V2, GLOW_LAW_V3, GLOW_LAW_V4] or meta.has("glow_identity") \
 		or meta.has("glow_family") or meta.has("glow_recording_start")
 	if glow_metadata:
 		if liquid_claim:
@@ -1411,7 +1411,7 @@ func _glow_fuel_sample_matches(sample: Dictionary, values: PackedFloat64Array, t
 	var stores: Variant = sample.get("stores")
 	var expected_line_count: int = 0 if _glow_feed_line_inventory_id.is_empty() else 1
 	if sample.get("format") != "openrc-mass-sample v1" or sample.get("finite_fuel") != true \
-			or sample.get("law") != GLOW_LAW_V3 \
+			or sample.get("law") not in [GLOW_LAW_V3, GLOW_LAW_V4] \
 			or typeof(sample.get("tick")) not in [TYPE_INT, TYPE_FLOAT] or float(sample.tick) != float(tick) \
 			or typeof(sample.get("time_s")) not in [TYPE_INT, TYPE_FLOAT] or absf(float(sample.time_s) - t) > maxf(1e-12, absf(t) * 1e-12) \
 			or sample.get("registry_sha256") != _glow_registry_sha256 \

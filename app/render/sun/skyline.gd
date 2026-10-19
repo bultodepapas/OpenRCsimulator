@@ -5,8 +5,10 @@
 # replays complete it on the same frame on any machine) and a flight never hitches; until it is done the callers keep
 # SunOptics' constant skyline prior.
 # - MultiMesh instances taller than MIN_HEIGHT_M (trees, shrubs, people, cars): the top of each instance's box, over
-#   CROWN_SHARE of its horizontal size (a crown is narrower than its rotated box).
-# - Meshes: their vertices (merged scenery cells, ridges, terrain), at most MAX_SAMPLES_PER_MESH per mesh (stride).
+#   CROWN_SHARE of its horizontal size (a crown is narrower than its rotated box). Gaps between crowns stay open.
+# - Meshes (merged scenery cells, ridges, terrain): their triangles' edges, each raising the bins it spans to the lower
+#   of its two ends (a wall's top edge covers the wall, never more), at most MAX_SAMPLES_PER_MESH triangles per mesh
+#   (stride). Corners alone left gaps across every flat face. Meshes whose top is at or below the eye are skipped.
 # Geometry within EXCLUDE_RADIUS_M of the eye (the pilot's own shelter) is ignored. Render axes (y up, −z north).
 extends RefCounted
 
@@ -15,6 +17,8 @@ const MIN_HEIGHT_M := 1.0
 const CROWN_SHARE := 0.35
 const MAX_SAMPLES_PER_MESH := 20000
 const EXCLUDE_RADIUS_M := 3.0
+## An edge spanning more azimuth than this (a huge triangle near the eye) only marks its ends.
+const MAX_EDGE_SPAN := PI / 6.0
 ## No scenery in a bin: the elevation reported.
 const EMPTY := -PI / 2.0
 
@@ -34,7 +38,7 @@ func _init(field: Node, eye_position: Vector3) -> void:
 	done = _stack.is_empty()
 
 
-## Processes at most `samples` points (instances or vertices); returns true once the skyline is complete.
+## Processes at most `samples` instances or triangles; returns true once the skyline is complete.
 func step(samples: int) -> bool:
 	var left := maxi(samples, 1)
 	while not done and left > 0:
@@ -70,8 +74,7 @@ func visibility(dir: Vector3, radius: float) -> float:
 
 
 static func azimuth_bin(dir: Vector3) -> int:
-	var az := fposmod(atan2(dir.x, -dir.z), TAU) # clockwise from north (render −z), east = +x
-	return mini(int(az / TAU * BINS), BINS - 1)
+	return posmod(int(floor(fposmod(atan2(dir.x, -dir.z), TAU) / TAU * BINS)), BINS) # clockwise from north (−z)
 
 
 func _start(node: Node) -> void:
@@ -89,7 +92,7 @@ func _start(node: Node) -> void:
 		if box.size.y < MIN_HEIGHT_M:
 			return
 		var count := mm.visible_instance_count if mm.visible_instance_count >= 0 else mm.instance_count
-		_job = {kind = "instances", node = node, index = 0, count = count, box = box,
+		_job = {kind = "instances", node = node, index = 0, count = count, stride = 1, box = box,
 			transform = (node as Node3D).global_transform}
 	elif node is MeshInstance3D:
 		var mesh: Mesh = (node as MeshInstance3D).mesh
@@ -102,20 +105,32 @@ func _start(node: Node) -> void:
 		if world_box.end.y <= eye.y:
 			return
 		var vertices := PackedVector3Array()
+		var indices := PackedInt32Array()
 		for surface in mesh.get_surface_count():
 			if mesh is ArrayMesh and (mesh as ArrayMesh).surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
 				continue
-			vertices.append_array(mesh.surface_get_arrays(surface)[Mesh.ARRAY_VERTEX])
-		if vertices.is_empty():
+			var arrays: Array = mesh.surface_get_arrays(surface)
+			var surface_vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var surface_indices: Variant = arrays[Mesh.ARRAY_INDEX]
+			var base := vertices.size()
+			if surface_indices is PackedInt32Array and not (surface_indices as PackedInt32Array).is_empty():
+				for index: int in surface_indices:
+					indices.append(base + index)
+			else:
+				for index in surface_vertices.size():
+					indices.append(base + index)
+			vertices.append_array(surface_vertices)
+		var triangles := indices.size() / 3
+		if triangles == 0:
 			return
-		_job = {kind = "vertices", node = node, index = 0, count = vertices.size(), vertices = vertices,
-			stride = maxi(1, ceili(float(vertices.size()) / MAX_SAMPLES_PER_MESH)), transform = transform}
+		_job = {kind = "triangles", node = node, index = 0, count = triangles, vertices = vertices, indices = indices,
+			stride = maxi(1, ceili(float(triangles) / MAX_SAMPLES_PER_MESH)), transform = transform}
 
 
-## Advances the job by up to `items` samples; returns how many it used.
+## Advances the job by up to `items` samples (instances or triangles); returns how many it used.
 func _advance(items: int) -> int:
 	var job := _job
-	var stride := int(job.stride) if job.kind == "vertices" else 1
+	var stride := int(job.stride)
 	var start := int(job.index)
 	var end := mini(start + items * stride, int(job.count))
 	if job.kind == "instances":
@@ -128,9 +143,15 @@ func _advance(items: int) -> int:
 			_add(Vector3(centre.x, world.end.y, centre.z), CROWN_SHARE * maxf(world.size.x, world.size.z))
 	else:
 		var vertices: PackedVector3Array = job.vertices
+		var indices: PackedInt32Array = job.indices
 		var base: Transform3D = job.transform
-		for i in range(start, end, stride):
-			_add(base * vertices[i], 0.0)
+		for t in range(start, end, stride):
+			var a: Vector3 = base * vertices[indices[3 * t]]
+			var b: Vector3 = base * vertices[indices[3 * t + 1]]
+			var c: Vector3 = base * vertices[indices[3 * t + 2]]
+			_add_edge(a, b)
+			_add_edge(b, c)
+			_add_edge(c, a)
 	job.index = end
 	if end >= int(job.count):
 		_job = {}
@@ -146,9 +167,32 @@ func _add(point: Vector3, half_width: float) -> void:
 	var el := atan2(offset.y, distance)
 	var centre := fposmod(atan2(offset.x, -offset.z), TAU)
 	var half := atan2(half_width, distance) if half_width > 0.0 else 0.0
-	var first := int(floor((centre - half) / TAU * BINS))
-	var last := int(floor((centre + half) / TAU * BINS))
-	for b in range(first, last + 1):
-		var index := posmod(b, BINS)
+	_raise(centre - half, centre + half, el)
+
+
+## Raises the bins an edge spans to the lower of its ends' elevations (each end also to its own).
+func _add_edge(a: Vector3, b: Vector3) -> void:
+	_add(a, 0.0)
+	_add(b, 0.0)
+	var oa := a - eye
+	var ob := b - eye
+	var da := Vector2(oa.x, oa.z).length()
+	var db := Vector2(ob.x, ob.z).length()
+	if da < EXCLUDE_RADIUS_M or db < EXCLUDE_RADIUS_M or not oa.is_finite() or not ob.is_finite():
+		return
+	var az_a := fposmod(atan2(oa.x, -oa.z), TAU)
+	var span := wrapf(fposmod(atan2(ob.x, -ob.z), TAU) - az_a, -PI, PI)
+	if absf(span) > MAX_EDGE_SPAN:
+		return
+	var from := az_a if span >= 0.0 else az_a + span
+	_raise(from, from + absf(span), minf(atan2(oa.y, da), atan2(ob.y, db)))
+
+
+## Raises every bin from azimuth `first` to `last` (rad, `last` ≥ `first`, may wrap) to `el`.
+func _raise(first: float, last: float, el: float) -> void:
+	var a := int(floor(first / TAU * BINS))
+	var b := int(floor(last / TAU * BINS))
+	for bin in range(a, b + 1):
+		var index := posmod(bin, BINS)
 		if el > bins[index]:
 			bins[index] = el
