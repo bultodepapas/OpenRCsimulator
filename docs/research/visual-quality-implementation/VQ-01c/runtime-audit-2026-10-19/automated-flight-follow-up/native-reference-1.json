@@ -1,0 +1,85 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"cases": [
+		{
+			"complete": false,
+			"crash": {},
+			"events": [],
+			"fault": "",
+			"final_state": [
+				15.0005223861229,
+				-46.9918582397678,
+				-0.233622295612264,
+				0.0211464194061579,
+				-0.000791685233181812,
+				-0.0000515387736096495,
+				0.706895553210913,
+				0.0116204583325996,
+				-0.0148639916350689,
+				0.707066265318499,
+				-0.00785428827717014,
+				-0.0114327474349784,
+				-0.000287956852935559
+			],
+			"frames": [
+				[
+					16496,
+					11,
+					0.122548,
+					8.266673,
+					0.0,
+					0.0,
+					209521127.0,
+					4233.0,
+					456.0,
+					451984272.0,
+					"chase"
+				]
+			],
+			"max_abs_bank_deg": 0.263216343797546,
+			"max_height_m": 0.23363488003447,
+			"min_height_m": 0.233622295612264,
+			"numeric_sha256": "",
+			"paused": true,
+			"physics_hz": 240,
+			"samples": [],
+			"scenario": "takeoff_maneuver",
+			"tick": 11,
+			"wall_usec": 172894
+		}
+	],
+	"complete": false,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-native-flight-audit v1",
+	"frame_columns": [
+		"interval_usec",
+		"tick",
+		"process_s",
+		"physics_s",
+		"render_cpu_ms",
+		"render_gpu_ms",
+		"static_bytes",
+		"objects",
+		"draw_calls",
+		"video_bytes",
+		"view"
+	],
+	"max_fps": 60,
+	"renderer": "gl_compatibility",
+	"resolution": [
+		1280,
+		720
+	],
+	"scope": "native normal-scheduler test pilot; session command contract; no manual steps; no keyboard/device input or Home flow qualification",
+	"vsync": 1
+}

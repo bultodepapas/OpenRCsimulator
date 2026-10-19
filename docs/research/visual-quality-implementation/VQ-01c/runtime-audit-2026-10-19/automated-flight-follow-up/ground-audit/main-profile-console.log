@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371803987015190 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2172)
+       [9] build (res://render/world/world.gd:288)
+       [10] _build_world (res://main.gd:2128)
+       [11] _ready (res://main.gd:493)
+       [12] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/ground-audit/main_profile.gd:138)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+fixture: report=native-reference-3.json scenario=landing tick=11040 t=46.000 body=13 continuous=3 aux=14 field=default landscape=club_field world_identity=ea53a3708ff4cac64e2f4c62f82809ba5f2bc02043d10f1fd6f2c5714daeff91 proxies=4980 bins=1196 local_bin_candidates=5 lake=true soft_hull=true delegates={stage:true,loads:true,post_tick:true,post_tick_joint:false,substeps:true,step_policy:false}
+{"accepted_ticks":480,"aux_size_from_reset":14,"callbacks":{"post_tick":{"calls":480,"mean_usec_per_call":257.466666666667,"usec":123584,"usec_per_accepted_tick":257.466666666667},"pre_tick":{"calls":480,"mean_usec_per_call":417.458333333333,"usec":200380,"usec_per_accepted_tick":417.458333333333},"rotor_momentum":{"calls":480,"mean_usec_per_call":2.54166666666667,"usec":1220,"usec_per_accepted_tick":2.54166666666667},"stage":{"calls":1920,"mean_usec_per_call":510.133333333333,"usec":979456,"usec_per_accepted_tick":2040.53333333333},"substeps":{"calls":480,"mean_usec_per_call":6.39791666666667,"usec":3071,"usec_per_accepted_tick":6.39791666666667}},"continuous_size_from_reset":3,"fault":"","format":"openrc-ground-main-callback-profile v1","kernel_step_usec_ema":2514.38245617834,"lake_enabled":true,"local_bin_candidate_count_at_fixture":5,"physics_hz":240,"requested_ticks":480,"scenario":"landing-final-body-with-fresh-main-session-aux-and-continuous","source_report":"native-reference-3.json","wall_usec":1443150,"wall_usec_per_tick":3006.5625,"world_bin_count":1196,"world_identity":"ea53a3708ff4cac64e2f4c62f82809ba5f2bc02043d10f1fd6f2c5714daeff91","world_proxy_count":4980}

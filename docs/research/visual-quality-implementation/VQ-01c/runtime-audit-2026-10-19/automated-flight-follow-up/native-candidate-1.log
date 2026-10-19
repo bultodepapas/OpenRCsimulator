@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+audit takeoff_maneuver 0.0s main=910us audio=227us focus=true
+audit pause=true tick=1066 stack=[{ "source": "C:\\DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight.gd", "function": "<anonymous lambda>", "line": 74 }, { "source": "res://sim/simulation.gd", "function": "set_paused", "line": 169 }, { "source": "res://sim/simulation.gd", "function": "_notification", "line": 175 }]

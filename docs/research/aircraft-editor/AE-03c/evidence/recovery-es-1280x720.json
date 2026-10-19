@@ -1,0 +1,126 @@
+{
+	"actions": {
+		"discard_removed_snapshot": true,
+		"later_kept_snapshot": true,
+		"restore_preserved_data": true
+	},
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"dialog": {
+		"action_buttons": [
+			{
+				"enabled": true,
+				"focus_mode": 2,
+				"inside_dialog_viewport": true,
+				"rect": [
+					407.0,
+					423.0,
+					450.0,
+					49.0
+				],
+				"text": "Restaurar como configuración nueva",
+				"visible": true
+			},
+			{
+				"enabled": true,
+				"focus_mode": 2,
+				"inside_dialog_viewport": true,
+				"rect": [
+					865.0,
+					423.0,
+					141.0,
+					49.0
+				],
+				"text": "Más tarde",
+				"visible": true
+			},
+			{
+				"enabled": true,
+				"focus_mode": 2,
+				"inside_dialog_viewport": true,
+				"rect": [
+					12.0,
+					423.0,
+					387.0,
+					49.0
+				],
+				"text": "Descartar borrador recuperado",
+				"visible": true
+			}
+		],
+		"actions_reachable": true,
+		"dialog_inside_main": true,
+		"dialog_rect": [
+			131.0,
+			120.0,
+			1018.0,
+			480.0
+		],
+		"dialog_viewport_size": [
+			1018.0,
+			480.0
+		],
+		"embedded_subwindows": true,
+		"fits": true,
+		"main_rect": [
+			0.0,
+			0.0,
+			1280.0,
+			720.0
+		]
+	},
+	"engine_version": "4.7.2-stable (official)",
+	"failures": [],
+	"format": "openrc-ae03c-recovery-capture v1",
+	"image": "recovery-es-1280x720.png",
+	"image_size": [
+		1280,
+		720
+	],
+	"isolated_from_player_library": true,
+	"language": "es",
+	"localization": {
+		"actual": {
+			"discard": "Descartar borrador recuperado",
+			"later": "Más tarde",
+			"restore": "Restaurar como configuración nueva",
+			"title": "Borrador recuperado"
+		},
+		"complete": true,
+		"expected": {
+			"discard": "Descartar borrador recuperado",
+			"later": "Más tarde",
+			"restore": "Restaurar como configuración nueva",
+			"title": "Borrador recuperado"
+		},
+		"locale": "es",
+		"source": {
+			"discard": "Discard recovered draft",
+			"later": "Later",
+			"restore": "Restore as a new build",
+			"title": "Recovered draft"
+		}
+	},
+	"performance_claim": false,
+	"power_loss_durability_claim": false,
+	"renderer": "gl_compatibility",
+	"requested_size": [
+		1280,
+		720
+	],
+	"scratch_root": "user://ae03c_recovery_capture_es_2360454",
+	"seed": {
+		"compatible": true,
+		"raw_color": "#BAD",
+		"raw_numeric": "invalid"
+	},
+	"stored_library_variants_before_discard": 0,
+	"summary": {
+		"found": true,
+		"invalid_values_visible": true,
+		"maximum": 102,
+		"scroll_to_end": true,
+		"text_contains_values": true,
+		"vertical": 102,
+		"visible_fraction": 0.7988165680473372
+	}
+}

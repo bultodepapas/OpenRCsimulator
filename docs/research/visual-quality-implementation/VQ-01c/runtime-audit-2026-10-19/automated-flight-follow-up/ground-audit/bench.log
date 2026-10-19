@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+setup: model=jensen-das-ugly-stik-60 gear_contacts=3 hull_points=8 ground_surfaces=0 lake=false hull_reach=0.899 altitude=0.250 deepest_gear_compression=-29.730 aux=14 values=3
+Ground.loads (dry/reference field inputs): 10.422 us/call; batches=[38074, 41686, 42522]
+HullContact.loads (near ground): 6.300 us/call; batches=[22568, 25200, 30340]
+FlightSession._ground_evaluation soft_hull_contacts=false: 68.792 us/call; batches=[249163, 275167, 342363]
+FlightSession._ground_evaluation soft_hull_contacts=true: 71.151 us/call; batches=[264169, 284604, 293660]
+
+Limit: synthetic standalone FlightSession initialized from the aircraft reset start; state then vertically adjusted so deepest gear compression was 0.01 m (CG altitude 0.25 m). No native field/lake table (0 ground-surface samples, empty lake). These are GDScript microtimings, not a native flight profile and not attribution of the 23.35 FPS landing result.

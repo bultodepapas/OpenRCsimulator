@@ -70,6 +70,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Aircraft Workshop
 
+[AE-03c recovery](aircraft-editor/AE-03c/README.md), [AE-12/13 measured mass and CG](aircraft-editor/AE-12-13/README.md), and [AE-24d.1 thumbnails](aircraft-editor/AE-24d-1/README.md), 2026-10-19, record detached invalid-draft recovery, fixed-station measured masses and copied-pixel library rendering. Their software/native scopes and remaining physical/platform gates are explicit.
+
 [AE-08b/09 interface delivery, 2026-10-19](aircraft-editor/AE-08b-09/README.md) records the current inspection, compact menus, full-payload draft guards, explicit trace recovery and storage-target safeguards, with software/native evidence and remaining acceptance.
 
 [AE-01–10 initial implementation](aircraft-editor/AE-01-10/README.md) records the initial compiler/store/descriptor/trial/UI checks and native captures. The [Workbench entry point and evidence map](../AIRCRAFT-WORKSHOP.md#verification) also links later identity, imported-model, menu and fuel integration evidence. The [consolidated AE plan](../plans/aircraft-editor.md) owns remaining acceptance.

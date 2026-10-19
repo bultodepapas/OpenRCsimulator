@@ -114,6 +114,7 @@ Presentation slot/source changes use `python3 research/aircraft-standardization/
 # $GodotWindows is the matching native console executable from developer setup.
 Get-ChildItem app/tests/test_workshop_*.gd | Sort-Object Name | ForEach-Object {
     & $GodotWindows --headless --path app --audio-driver Dummy --script ("res://tests/" + $_.Name)
+    if ($LASTEXITCODE -ne 0) { throw ("Workshop suite failed: " + $_.Name) }
 }
 & $GodotWindows --headless --path app --script res://tests/test_aircraft_customization.gd
 & $GodotWindows --headless --path app --script res://tests/test_smoke_profiles.gd
@@ -131,6 +132,18 @@ For a native rendered still:
 Arguments after `--`: `--language=en|es`, `--scale=<factor>` (default `2.0`), `--width=<px>`/`--height=<px>` (default 1280×720), `--1080p`, `--text-scale=1|1.5|2`, and `--out=<PNG-path>` (default `user://workshop-review.png`). Review cases: `--page=appearance|smoke|setup|compare`, `--preview`, `--dialog=library|save|guard|bundle-import`, `--invalid`, `--long-name`, `--opaque`, `--reduced-motion`, `--aircraft=<catalog-id>` and `--fullscreen`. Customization cases accept `--paint-color=#RRGGBBAA`, `--marking=RC-27`, `--smoke-preset=1..6`, and `--smoke-seconds=0..16`; inscription requires a registered mount. The script applies the shared canvas policy, writes a JSON geometry sidecar, and returns nonzero for out-of-bounds key actions/popups. Inspect the PNG as well; rectangles do not prove legibility. Fullscreen evidence must report the actual monitor/window pixels. A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
 
 The native GPU birth-color/lifecycle probe is `research/aircraft-editor/capture_smoke_profiles.gd`. Run it with the same display command in place of `capture_workshop.gd`; it writes rate captures and `metrics.json` under ignored `tmp/smoke-profile-native/`, returns nonzero when its checks fail, and allocates the production shared 768-particle profile budget. It is renderer evidence, not a portable performance benchmark.
+
+The recovery, measurement and thumbnail helpers create disposable libraries, exercise real UI/renderer paths, and return nonzero on failed assertions:
+
+```powershell
+$RecoveryOut = Join-Path (Get-Location).Path 'tmp/workshop-recovery-review'
+& $GodotWindows --path app --audio-driver Dummy --script (Resolve-Path research/aircraft-editor/capture_recovery.gd).Path -- --lang=es --size=1280x720 "--out=$RecoveryOut.png" "--evidence=$RecoveryOut.json"
+$MassOut = Join-Path (Get-Location).Path 'tmp/workshop-mass-review'
+& $GodotWindows --path app --audio-driver Dummy --script (Resolve-Path research/aircraft-editor/capture_mass.gd).Path -- --lang=es --size=1280x720 --text-scale=2 "--out-dir=$MassOut" "--evidence=$MassOut/report.json"
+& $GodotWindows --path app --audio-driver Dummy --script (Resolve-Path research/aircraft-editor/capture_thumbnails.gd).Path
+```
+
+These examples write ignored `tmp/` evidence; recovery and measurement require their output arguments. Use explicit phase paths from [AE-03c](research/aircraft-editor/AE-03c/README.md), [AE-12/13](research/aircraft-editor/AE-12-13/README.md) or [AE-24d.1](research/aircraft-editor/AE-24d-1/README.md) to reproduce those records. Native captures need a display. Headless companion suites are `test_workshop_drafts.gd`, `test_workshop_recovery_ui.gd`, `test_workshop_mass_edit.gd`, `test_workshop_mass_recipe.gd`, `test_workshop_mass_ui.gd` and `test_workshop_thumbnails.gd`. Recovery injection covers code boundaries; it does not establish hardware power-loss durability.
 
 For Library/profile-copy review, supply `--library-build=<local-bundle-json>` with `--dialog=library|profile-copy`; optional `--favorite` marks that fixture. The helper imports into a unique capture-only library and removes the fixture afterward; it never writes player variants. Captures scroll the saved actions or copy decisions into view. Example: add `--aircraft=gp-extra-300s-60 --scale=1 --language=es --width=1280 --height=720 --text-scale=2 --library-build=C:/captures/build.json --dialog=profile-copy` to the native capture command.
 

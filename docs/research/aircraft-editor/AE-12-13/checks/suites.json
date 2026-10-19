@@ -1,0 +1,692 @@
+{
+  "utc": "2026-10-19T23:15:02.694667+00:00",
+  "suite_count": 38,
+  "failed": 0,
+  "ok_lines_meaning": "Count of printed ok lines; some suites print summaries only.",
+  "suites": [
+    {
+      "suite": "test_aircraft_customization",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Aircraft customization: 153 checks, 0 failed",
+      "ok_lines": 0,
+      "log": "test_aircraft_customization.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_customization.gd"
+      ]
+    },
+    {
+      "suite": "test_controller_menu",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Controller menu: 48/48 checks passed",
+      "ok_lines": 0,
+      "log": "test_controller_menu.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_menu.gd"
+      ]
+    },
+    {
+      "suite": "test_menu_audio",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "ok   muting stops an already playing cue",
+      "ok_lines": 26,
+      "log": "test_menu_audio.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_menu_audio.gd"
+      ]
+    },
+    {
+      "suite": "test_presentation_sources",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Presentation source proofs: 76 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_presentation_sources.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_presentation_sources.gd"
+      ]
+    },
+    {
+      "suite": "test_smoke_profiles",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Profile smoke: 36 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_smoke_profiles.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_smoke_profiles.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_input",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "all UI input checks passed",
+      "ok_lines": 17,
+      "log": "test_ui_input.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_input.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_language",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "all UI language checks passed",
+      "ok_lines": 26,
+      "log": "test_ui_language.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_language.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_modal_responsive",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Responsive modals: 560 cases, 0 failures",
+      "ok_lines": 0,
+      "log": "test_ui_modal_responsive.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_modal_responsive.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_pause",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "all UI pause checks passed",
+      "ok_lines": 73,
+      "log": "test_ui_pause.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_pause.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_pause_responsive",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "all responsive Pause checks passed (422)",
+      "ok_lines": 422,
+      "log": "test_ui_pause_responsive.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_pause_responsive.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_quit",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "UI quit: 0 failed",
+      "ok_lines": 47,
+      "log": "test_ui_quit.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_quit.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_scale",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "ok   danger announcement chip uses readable text on red",
+      "ok_lines": 72,
+      "log": "test_ui_scale.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_scale.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_screen_stack",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "all UI screen stack checks passed",
+      "ok_lines": 38,
+      "log": "test_ui_screen_stack.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_screen_stack.gd"
+      ]
+    },
+    {
+      "suite": "test_ui_settings_integration",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "all Settings integration checks passed",
+      "ok_lines": 27,
+      "log": "test_ui_settings_integration.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_settings_integration.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_bundle",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop bundle: 28 checks, 0 failed",
+      "ok_lines": 0,
+      "log": "test_workshop_bundle.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_bundle.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_compiler",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop compiler: 314 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_workshop_compiler.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_compiler.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_customization",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop customization integration: 0 failures",
+      "ok_lines": 46,
+      "log": "test_workshop_customization.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_customization.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_descriptor",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "102 checks, 0 failed",
+      "ok_lines": 0,
+      "log": "test_workshop_descriptor.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_descriptor.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_drafts",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "98 checks, 0 failed",
+      "ok_lines": 0,
+      "log": "test_workshop_drafts.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_drafts.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_experiments",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop experiments: 95 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_workshop_experiments.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_experiments.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_integration",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop integration: 0 failed",
+      "ok_lines": 36,
+      "log": "test_workshop_integration.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_integration.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_json",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop strict JSON: 0 failures",
+      "ok_lines": 0,
+      "log": "test_workshop_json.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_json.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_library_preferences",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop library preferences: 67 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_workshop_library_preferences.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_library_preferences.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_mass_edit",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop mass edit: 66 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_workshop_mass_edit.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_mass_edit.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_mass_recipe",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop mass recipe: 39 checks, 0 failures",
+      "ok_lines": 39,
+      "log": "test_workshop_mass_recipe.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_mass_recipe.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_mass_ui",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop mass dialog: 21 checks, 0 failures",
+      "ok_lines": 21,
+      "log": "test_workshop_mass_ui.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_mass_ui.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_parameters",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop parameter metadata: 82 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_workshop_parameters.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_parameters.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_presentation",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop presentation: 52 checks, 0 failed",
+      "ok_lines": 0,
+      "log": "test_workshop_presentation.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_presentation.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_preview",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "workshop preview checks: 0 failures",
+      "ok_lines": 42,
+      "log": "test_workshop_preview.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_preview.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_profile_transfer",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop profile transfer: 18 checks, 0 failures",
+      "ok_lines": 0,
+      "log": "test_workshop_profile_transfer.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_profile_transfer.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_recovery_ui",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop recovery UI: 31 checks, 0 failures",
+      "ok_lines": 31,
+      "log": "test_workshop_recovery_ui.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_recovery_ui.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_reuse",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop reuse UI: 0 failures",
+      "ok_lines": 21,
+      "log": "test_workshop_reuse.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_reuse.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_smoke",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "   at: cleanup (core/object/object.cpp:2536)",
+      "ok_lines": 12,
+      "log": "test_workshop_smoke.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_smoke.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_starts",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop starts: 292 checks, 0 failed, 13 frozen variants",
+      "ok_lines": 0,
+      "log": "test_workshop_starts.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_starts.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_store",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "141 checks, 0 failed",
+      "ok_lines": 0,
+      "log": "test_workshop_store.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_store.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_thumbnails",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "45 checks, 0 failed",
+      "ok_lines": 45,
+      "log": "test_workshop_thumbnails.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_thumbnails.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_trial",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop trial: 44 checks, 0 failed",
+      "ok_lines": 0,
+      "log": "test_workshop_trial.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_trial.gd"
+      ]
+    },
+    {
+      "suite": "test_workshop_ui",
+      "exit_code": 0,
+      "errors": [],
+      "summary": "Workshop UI: 0 failed",
+      "ok_lines": 113,
+      "log": "test_workshop_ui.log",
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_ui.gd"
+      ]
+    }
+  ]
+}

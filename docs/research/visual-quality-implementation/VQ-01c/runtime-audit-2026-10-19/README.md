@@ -460,3 +460,16 @@ and [decoded-pixel comparisons](presentation-follow-up/round-2/gpu-comparison.js
 retain the limits and proof. The exact candidate patch and executed probes are
 retained alongside them. Full app suite, package/export and native FPS acceptance
 remain open.
+
+### Automated flight and cloud/runtime follow-up
+
+The [automated flight report](automated-flight-follow-up/README.md) retains native
+takeoff, bank reversals, camera changes and a separate landing/rollout, including
+failed attempts and unfavorable FPS measurements. Two repairs cover detached
+storm initialization and repeated cloud transport/shader-array work. Ten focused
+suites pass 469 checks; completed flights match every accepted numeric tick across
+16,800 ticks per two-scenario run. Three scripted Home/Fly/Home lifecycle cycles
+also pass. The isolated cloud path uses less CPU, but overall FPS improvement is
+unproven and low landing FPS remains unresolved under the recorded shared-host
+and focus limitations. Physics, timestep, input response and visual quality were
+preserved.

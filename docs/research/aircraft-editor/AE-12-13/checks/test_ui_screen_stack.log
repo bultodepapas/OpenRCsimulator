@@ -1,0 +1,62 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371827391231871 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:288)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:295)
+       [12] _ready (res://app_root.gd:235)
+ok   Home is the only screen
+ok   duplicate screen is rejected without attaching it
+ok   an attached screen cannot be registered under another ID
+ok   nonblocking overlays stay outside navigation
+ok   a modal refuses repeated or lower-screen actions
+ok   Help keeps keyboard focus inside its surface (0)
+ok   Help keeps keyboard focus inside its surface (1)
+ok   Help keeps keyboard focus inside its surface (2)
+ok   Help keeps keyboard focus inside its surface (3)
+ok   Help keeps keyboard focus inside its surface (4)
+ok   Help keeps keyboard focus inside its surface (5)
+ok   Help keeps keyboard focus inside its surface (6)
+ok   Help keeps keyboard focus inside its surface (7)
+ok   clicking covered Fly leaves Home and Help intact
+ok   Help restores the opener
+ok   logical Escape closes nested Controls and restores Settings focus
+ok   closing Settings restores Home after logical Escape
+ok   rebuilt lower controls do not break focus return
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly removes every menu (0)
+ok   nested Help blocks flight actions and keeps the session frozen (0)
+ok   closing Help keeps Pause and its hold (0)
+ok   End returns to one Home without node growth (0, 603 nodes)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly removes every menu (1)
+ok   nested Help blocks flight actions and keeps the session frozen (1)
+ok   closing Help keeps Pause and its hold (1)
+ok   End returns to one Home without node growth (1, 603 nodes)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly removes every menu (2)
+ok   nested Help blocks flight actions and keeps the session frozen (2)
+ok   closing Help keeps Pause and its hold (2)
+ok   End returns to one Home without node growth (2, 603 nodes)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly removes every menu (3)
+ok   nested Help blocks flight actions and keeps the session frozen (3)
+ok   closing Help keeps Pause and its hold (3)
+ok   End returns to one Home without node growth (3, 603 nodes)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Fly removes every menu (4)
+ok   nested Help blocks flight actions and keeps the session frozen (4)
+ok   closing Help keeps Pause and its hold (4)
+ok   End returns to one Home without node growth (4, 603 nodes)
+all UI screen stack checks passed

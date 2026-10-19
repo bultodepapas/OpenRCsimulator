@@ -103,7 +103,7 @@ static func decode(bytes: PackedByteArray) -> Dictionary:
 		"variant_revision": 0,
 	}
 	return {"ok": true, "errors": PackedStringArray(), "payload": payload,
-		"compiler_compatible": str(value["compiler_version"]) == Compiler.COMPILER_VERSION,
+		"compiler_compatible": str(value["compiler_version"]) == Compiler.version_for_recipe(value["recipe"]),
 		"presentation_profile_available": bool(content.get("profile_available", false))}
 
 
@@ -135,7 +135,7 @@ static func import_variant(bytes: PackedByteArray, store_root: String = Store.DE
 	if not bool(decoded.get("ok", false)):
 		return decoded
 	var payload: Dictionary = decoded["payload"]
-	if str(payload.get("compiler_version", "")) != Compiler.COMPILER_VERSION:
+	if str(payload.get("compiler_version", "")) != Compiler.version_for_recipe(payload.recipe):
 		return _failure("This bundle is pinned to a different Workshop compiler version and cannot be imported without migration.")
 	var profile_check: Dictionary = PresentationProfile.validate_stored(payload.get("presentation_profile", null))
 	if not bool(profile_check.get("ok", false)) or bool(profile_check.get("newer_version", false)):
@@ -143,6 +143,12 @@ static func import_variant(bytes: PackedByteArray, store_root: String = Store.DE
 	var current_profile: Dictionary = _resolve_current_profile(payload)
 	if not bool(current_profile.get("ok", false)):
 		return current_profile
+	# Complete candidate validation precedes publication, including stable component IDs.
+	var candidate := payload.duplicate(true)
+	candidate["presentation_profile"] = current_profile["profile"].duplicate(true)
+	var frozen: Dictionary = load("res://workshop/trial.gd").freeze(candidate)
+	if not bool(frozen.get("ok", false)):
+		return _result(false, frozen.get("errors", PackedStringArray()))
 	var recipe: Dictionary = payload["recipe"].duplicate(true)
 	recipe.erase("id")
 	if recipe.has("name"):

@@ -1,0 +1,75 @@
+{
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"baseline_cg_le_m": [
+		0.10939243735198129,
+		0.0,
+		0.00020837596465402724
+	],
+	"baseline_compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+	"baseline_mass_tensor_kg_m2": [
+		0.11573524791512214,
+		0.36923851279820086,
+		0.46611754023941204,
+		-0.00954,
+		0.007365102797190966,
+		0.0005484988723630101
+	],
+	"baseline_total_mass_kg": 2.8786621383897963,
+	"component_id": "item_engine_main",
+	"mass_delta_kg": 9.999999999998899e-05,
+	"measured_cg_le_m": [
+		0.1093807867736692,
+		0.0,
+		0.0002083687262663232
+	],
+	"measured_compiler": "openrc-aircraft-workshop-v1-measured-mass-1",
+	"measured_mass_kg": 0.5501,
+	"measured_mass_tensor_kg_m2": [
+		0.11573535208613073,
+		0.3692499278871611,
+		0.46612889282403036,
+		-0.00954,
+		0.00736509580866147,
+		0.0005484988723630101
+	],
+	"measured_total_mass_kg": 2.878762138389796,
+	"original_mass_kg": 0.55,
+	"position_le_m": [
+		-0.226,
+		0.0,
+		0.0
+	],
+	"redo_restored": true,
+	"source": "Calibrated scale; tiny-delta capture fixture, software evidence only.",
+	"trial_base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+	"trial_compiler": "openrc-aircraft-workshop-v1-measured-mass-1",
+	"trial_errors": [],
+	"trial_freeze_ok": true,
+	"trial_identity": {
+		"ancestor_revision": 0,
+		"ancestor_variant_id": "",
+		"base_id": "jensen-das-ugly-stik-60",
+		"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+		"compiler": "openrc-aircraft-workshop-v1-measured-mass-1",
+		"dependencies": {
+			"files": {
+				"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+			},
+			"format": "openrc-aircraft-workshop-dependencies v1"
+		},
+		"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+		"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+		"experimental": true,
+		"format": "openrc-aircraft-trial v1",
+		"presentation": {
+			"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+			"visual_family": "jensen-das-ugly-stik-60"
+		},
+		"recipe_sha256": "6ab7e9cebf78c1bf0058ec9fcbaa3ff62d51e95c6feb69bca27e098a99f9f894",
+		"resolved_model_sha256": "93adc60709e85b42100a4d1c733902c4023715b58a3482025d3a79713a1847e3",
+		"resolved_sha256": "149578c53ed2705a49764444b54800962a61fa82e30ae45e4e8a48438c7fba3d",
+		"trial_id": "workshop-9a875e55d4cabfed75cc16118cc8aff5"
+	},
+	"trial_resolved_model_sha256": "93adc60709e85b42100a4d1c733902c4023715b58a3482025d3a79713a1847e3",
+	"undo_restored": true
+}

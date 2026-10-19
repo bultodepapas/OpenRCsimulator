@@ -24,7 +24,12 @@ var _fields: Dictionary = {}
 var _field_rows: Dictionary = {}
 var _controls: VBoxContainer
 var _note: Label
+var _advanced: VBoxContainer
+var _advanced_button: Button
 var _syncing := false
+var _shown_slot := 0
+var _shown_palette := 0
+var _shown_marking := 0
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 12)
@@ -45,7 +50,7 @@ func _ready() -> void:
 	_slot.name = "PaintRegion" if page_kind == "appearance" else "SmokeEmitter"
 	_slot.fit_to_longest_item = false
 	_slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_slot.item_selected.connect(func(_index: int) -> void: sync_fields())
+	_slot.item_selected.connect(_select_slot)
 	add_child(_slot)
 	_controls = VBoxContainer.new()
 	_controls.add_theme_constant_override("separation", 10)
@@ -88,7 +93,7 @@ func _ready() -> void:
 	if page_kind == "smoke":
 		_palette_selector = options("Color steps", [])
 		_palette_selector.name = "SmokePaletteStep"
-		_palette_selector.item_selected.connect(func(_index: int) -> void: sync_fields())
+		_palette_selector.item_selected.connect(_select_palette_step)
 		var palette_actions := HFlowContainer.new()
 		for spec: Array in [["Add color step", 1], ["Remove last step", -1], ["Use single color", 0]]:
 			var action := Button.new()
@@ -116,9 +121,30 @@ func _ready() -> void:
 		number_field("pulse_period_s", "Pulse period", 0.1, 8.0, 0.1, "s")
 		number_field("pulse_duty", "Pulse on fraction", 0.05, 0.95, 0.05, "×")
 		label("Duration controls new emission; existing puffs fade for their full lifetime.", _controls)
+		_build_advanced_group(custom)
 	_error = label("")
 	_error.theme_type_variation = "ErrorLabel"
 	configure(_bindings, _profile)
+
+func _build_advanced_group(color_row: Control) -> void:
+	_advanced = VBoxContainer.new()
+	_advanced.name = "SmokeMoreOptions"
+	_advanced.add_theme_constant_override("separation", 10)
+	_advanced.visible = false
+	var basic: Array = [_enabled, _color, color_row, _field_rows.amount, _field_rows.width_m, _field_rows.lifetime_s, _shape]
+	for child: Node in _controls.get_children():
+		if child in basic or (child is Label and child.text == "Shape"): continue
+		_controls.remove_child(child)
+		_advanced.add_child(child)
+	_advanced_button = Button.new()
+	_advanced_button.name = "SmokeMoreOptionsButton"
+	_advanced_button.text = "More options"
+	_advanced_button.toggle_mode = true
+	_advanced_button.toggled.connect(func(expanded: bool) -> void:
+		_advanced.visible = expanded
+		_advanced_button.text = "Fewer options" if expanded else "More options")
+	_controls.add_child(_advanced_button)
+	_controls.add_child(_advanced)
 
 func label(text: String, parent: Node = self) -> Label:
 	var result := Label.new()
@@ -221,12 +247,94 @@ func sync_fields() -> void:
 			_fields[key].editable = relevant
 			_field_rows[key].visible = relevant
 	_syncing = false
+	_shown_slot = _slot.selected
+	if page_kind == "smoke": _shown_palette = _palette_selector.selected
 	validity_changed.emit(page_kind, has_pending_marking())
 
 func has_pending_color() -> bool:
 	if not is_instance_valid(_custom_color) or _syncing: return false
 	var entry := current_entry()
 	return not entry.is_empty() and _custom_color.text.to_upper() != selected_color(entry)
+
+func _select_slot(index: int) -> void:
+	_slot.select(_shown_slot)
+	if has_pending_color():
+		_error.text = "Apply or cancel the edited color before changing regions or emitters."
+		_custom_color.grab_focus()
+		return
+	_slot.select(index)
+	sync_fields()
+
+func _select_palette_step(index: int) -> void:
+	_palette_selector.select(_shown_palette)
+	if has_pending_color():
+		_error.text = "Apply or cancel the edited color before changing color steps."
+		_custom_color.grab_focus()
+		return
+	_palette_selector.select(index)
+	sync_fields()
+
+func _select_marking_slot(index: int) -> void:
+	_marking_slot.select(_shown_marking)
+	if has_pending_marking():
+		_error.text = "Apply or cancel the edited inscription before changing panels."
+		_marking_text.grab_focus()
+		return
+	_marking_slot.select(index)
+	sync_markings(false)
+
+## Recovery stores raw UI text separately from the accepted, launchable profile.
+func get_editor_state() -> Dictionary:
+	return {
+		"slot": str(_slot.get_item_metadata(_slot.selected)) if _slot.selected >= 0 and _slot.get_item_metadata(_slot.selected) != null else "",
+		"palette_step": maxi(_palette_selector.selected, 0) if page_kind == "smoke" else 0,
+		"color_text": _custom_color.text,
+		"marking_slot": str(_marking_slot.get_item_metadata(_marking_slot.selected)) if page_kind == "appearance" and _marking_slot.selected >= 0 else "",
+		"marking_text": _marking_text.text if page_kind == "appearance" else "",
+		"marking_color": _marking_color.selected if page_kind == "appearance" else 0,
+	}
+
+func restore_editor_state(state: Dictionary) -> bool:
+	var keys := ["slot", "palette_step", "color_text", "marking_slot", "marking_text", "marking_color"]
+	if state.size() != keys.size(): return false
+	for key: String in keys:
+		if not state.has(key): return false
+	for key: String in ["slot", "color_text", "marking_slot", "marking_text"]:
+		if typeof(state[key]) != TYPE_STRING: return false
+	if state.slot.length() > 80 or state.marking_slot.length() > 80 or state.color_text.length() > 9 or state.marking_text.length() > 12: return false
+	for key: String in ["palette_step", "marking_color"]:
+		if typeof(state[key]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(state[key])) or float(state[key]) != floor(float(state[key])): return false
+	if state.palette_step < 0 or state.palette_step >= Profile.MAX_PALETTE_COLORS or state.marking_color < 0 or state.marking_color > COLORS.size(): return false
+	var slot_index := _find_slot(_slot, state.slot)
+	var marking_index := _find_slot(_marking_slot, state.marking_slot) if page_kind == "appearance" else -1
+	if slot_index < 0 and not state.slot.is_empty(): return false
+	if marking_index < 0 and not state.marking_slot.is_empty(): return false
+	if page_kind == "smoke":
+		if not state.marking_slot.is_empty() or not state.marking_text.is_empty() or state.marking_color != 0: return false
+		# An unavailable palette step must not silently redirect a pending color.
+		var entries: Array = _profile.get("smoke", [])
+		var palette_size := 0
+		for entry: Dictionary in entries:
+			if entry.slot == state.slot: palette_size = entry.palette.size()
+		if int(state.palette_step) >= maxi(1, palette_size): return false
+	elif state.palette_step != 0: return false
+	if slot_index >= 0: _slot.select(slot_index)
+	if page_kind == "smoke": _palette_selector.select(int(state.palette_step))
+	sync_fields()
+	if page_kind == "appearance":
+		if marking_index >= 0: _marking_slot.select(marking_index)
+		sync_markings(false)
+		_marking_text.text = state.marking_text
+		_marking_color.select(int(state.marking_color))
+	_custom_color.text = state.color_text
+	validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
+	return true
+
+func _find_slot(selector: OptionButton, id: String) -> int:
+	if not is_instance_valid(selector): return -1
+	for index in selector.item_count:
+		if selector.get_item_metadata(index) != null and str(selector.get_item_metadata(index)) == id: return index
+	return -1
 
 func pending_control() -> Control:
 	return _marking_text if has_pending_marking() else _custom_color
@@ -299,10 +407,23 @@ func propose(next: Dictionary) -> bool:
 	if not checked.ok:
 		_error.text = "\n".join(PackedStringArray(checked.errors))
 		return false
+	var raw := get_editor_state()
+	var pending_color := has_pending_color()
+	var previous_color := selected_color(current_entry()) if not current_entry().is_empty() else ""
+	var pending_marking := has_pending_marking()
+	var previous_marking := current_marking()
 	_error.text = ""
 	_profile = checked.profile
 	profile_changed.emit(_profile.duplicate(true))
 	sync_fields()
+	# A different accepted setting must not consume unrelated, uncommitted text.
+	var state := get_editor_state()
+	if pending_color and raw.slot == state.slot and raw.palette_step == state.palette_step and previous_color == selected_color(current_entry()):
+		state.color_text = raw.color_text
+	if pending_marking and previous_marking == current_marking():
+		state.marking_text = raw.marking_text
+		state.marking_color = raw.marking_color
+	restore_editor_state(state)
 	return true
 
 func build_markings() -> void:
@@ -312,7 +433,7 @@ func build_markings() -> void:
 	label("Registration", _marking_box)
 	_marking_slot = OptionButton.new()
 	_marking_slot.name = "RegistrationPanel"
-	_marking_slot.item_selected.connect(func(_index: int) -> void: sync_markings(false))
+	_marking_slot.item_selected.connect(_select_marking_slot)
 	_marking_box.add_child(_marking_slot)
 	_marking_text = LineEdit.new()
 	_marking_text.name = "RegistrationText"
@@ -359,6 +480,7 @@ func sync_markings(refresh_slots := true) -> void:
 		_marking_text.text = str(entry.text)
 		_marking_color.select(COLORS.values().find(entry.color) if entry.color in COLORS.values() else COLORS.size())
 	_syncing = false
+	_shown_marking = _marking_slot.selected
 	validity_changed.emit(page_kind, has_pending_color())
 
 func has_pending_marking() -> bool:

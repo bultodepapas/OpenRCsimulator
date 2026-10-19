@@ -1,0 +1,83 @@
+[
+  {
+    "variant": "candidate",
+    "sha256": {
+      "render/atmosphere.gd": "6e1b7c3ad694ad684837f565c0c5abc9105568ee64b1515cfd4380a42dbd37e8",
+      "render/weather/storm_bank.gd": "d099042c21564879ef0994a8d303c71789c0f55686aca4bf8a2979154926b698"
+    },
+    "cases": [
+      {
+        "scenario": "takeoff_maneuver",
+        "tick": 5760,
+        "numeric_sha256": "c1e66cc035c1f898b2ef3d592c3bc885e58dd8a8ebc860a68a6ef892cb839cf2",
+        "focus_uninterrupted": true,
+        "focus_events": []
+      },
+      {
+        "scenario": "landing",
+        "tick": 11040,
+        "numeric_sha256": "77813c6e0d7311183808456f5600a19a25ba7bcd08dafd86cb35b945c7adc99a",
+        "focus_uninterrupted": true,
+        "focus_events": []
+      }
+    ]
+  },
+  {
+    "variant": "reference",
+    "sha256": {
+      "render/atmosphere.gd": "cf922c24ec5b7de731d316cc5e824e55690ca767511c7167c9103f8cd8c6f2b6",
+      "render/weather/storm_bank.gd": "6db7c4678efd8950bd529a144da588b7c1809d48518729fc7831c288cff126a5"
+    },
+    "cases": [
+      {
+        "scenario": "takeoff_maneuver",
+        "tick": 5760,
+        "numeric_sha256": "c1e66cc035c1f898b2ef3d592c3bc885e58dd8a8ebc860a68a6ef892cb839cf2",
+        "focus_uninterrupted": false,
+        "focus_events": [
+          {
+            "event": "focus_safety_pause",
+            "monotonic_usec": 16051095,
+            "tick": 1595
+          },
+          {
+            "event": "scripted_resume_after_focus_pause",
+            "focused": true,
+            "monotonic_usec": 16056696,
+            "tick": 1595
+          }
+        ]
+      },
+      {
+        "scenario": "landing",
+        "tick": 11040,
+        "numeric_sha256": "77813c6e0d7311183808456f5600a19a25ba7bcd08dafd86cb35b945c7adc99a",
+        "focus_uninterrupted": false,
+        "focus_events": [
+          {
+            "event": "focus_safety_pause",
+            "monotonic_usec": 57876887,
+            "tick": 3794
+          },
+          {
+            "event": "scripted_resume_after_focus_pause",
+            "focused": true,
+            "monotonic_usec": 57881100,
+            "tick": 3794
+          },
+          {
+            "event": "focus_safety_pause",
+            "monotonic_usec": 60520722,
+            "tick": 4258
+          },
+          {
+            "event": "scripted_resume_after_focus_pause",
+            "focused": false,
+            "monotonic_usec": 60632741,
+            "tick": 4258
+          }
+        ]
+      }
+    ]
+  }
+]

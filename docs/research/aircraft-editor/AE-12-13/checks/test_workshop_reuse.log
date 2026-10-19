@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   reusable source saves once
+ok   headless thumbnail failure leaves library actions and active preview intact
+ok   library displays a copied cached image without changing draft or camera
+ok   favorite preserves selected build and draft history
+ok   favorites filter keeps the chosen source
+ok   search hides unmatched records without replacing the draft
+ok   late thumbnail cannot display after its selection disappears
+ok   search matches saved name
+ok   copy previews accepted and skipped domains before mutation
+ok   Cancel is the initial review focus
+ok   closing copy review preserves draft and library
+ok   copy accepts registration and preserves paint with a different material contract
+ok   source exhaust absent on Extra is skipped explicitly
+ok   copy preserves physical recipe and counts as one Undo edit
+ok   Undo restores entire pre-copy presentation
+ok   Redo reapplies exact reviewed settings
+ok   stale review cannot overwrite a later presentation edit
+ok   source revision and content remain unchanged
+ok   favorite survives a fresh editor instance
+ok   missing favorite remains removable without allowing a load or profile copy
+ok   removing unavailable favorite releases its bounded metadata slot
+Workshop reuse UI: 0 failures

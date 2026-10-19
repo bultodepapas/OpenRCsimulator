@@ -1148,6 +1148,8 @@ func open_workshop(from: Control = null) -> void:
 	if not (screens.is_top("home") or screens.is_top("pause")):
 		return
 	var editor: CanvasLayer = load("res://ui/workshop.gd").new()
+	# Test/tool hosts use custom preference files and must not touch player recovery.
+	editor.set("recovery_enabled", preferences_path == Preferences.DEFAULT_PATH)
 	editor.initial_aircraft_id = flight.aircraft_id if flight != null else home.aircraft_id
 	editor.set("return_destination", "Pause" if screens.is_top("pause") else "Home")
 	var weather: Dictionary = flight.weather_config if flight != null else preferences.get("weather_config", WeatherSettings.defaults())

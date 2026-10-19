@@ -420,8 +420,8 @@ msgstr "OpenRC Simulator %s, versión de desarrollo (ejecutada desde el código 
 msgid "MIT licence"
 msgstr "licencia MIT"
 
-msgid "Jensen Das Ugly Stik designed by Phil Kraft · font Open Sans (SIL OFL)"
-msgstr "Jensen Das Ugly Stik diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"
+msgid "Ugly Stick designed by Phil Kraft · font Open Sans (SIL OFL)"
+msgstr "Ugly Stick diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"
 
 msgid "Aircraft %d of %d"
 msgstr "Avión %d de %d"
@@ -4273,3 +4273,231 @@ msgstr "Favorito no disponible %d"
 
 msgid "Restore this saved build or remove its favorite."
 msgstr "Restaura esta configuración o quita su favorito."
+
+msgid "More options"
+msgstr "Más opciones"
+
+msgid "Fewer options"
+msgstr "Menos opciones"
+
+msgid "Apply or cancel the edited color before changing regions or emitters."
+msgstr "Aplica o cancela el color editado antes de cambiar de región o emisor."
+
+msgid "Apply or cancel the edited color before changing color steps."
+msgstr "Aplica o cancela el color editado antes de cambiar de paso de color."
+
+msgid "Apply or cancel the edited inscription before changing panels."
+msgstr "Aplica o cancela la inscripción editada antes de cambiar de panel."
+
+msgid "Preparing thumbnail…"
+msgstr "Preparando miniatura…"
+
+msgid "Thumbnail unavailable. Build details and actions are still available."
+msgstr "Miniatura no disponible. Puedes consultar y usar la configuración."
+
+msgid "Recovered draft…"
+msgstr "Borrador recuperado…"
+
+msgid "Recovered draft"
+msgstr "Borrador recuperado"
+
+msgid "Restore as a new build"
+msgstr "Restaurar como configuración nueva"
+
+msgid "Later"
+msgstr "Más tarde"
+
+msgid "Discard recovered draft"
+msgstr "Descartar borrador recuperado"
+
+msgid "Restore keeps the saved library unchanged. Review all values and save a new build."
+msgstr "Restaurar conserva la biblioteca guardada. Revisa los valores y guarda una configuración nueva."
+
+msgid "This draft is unavailable with the current dependencies. Its stored data remains unchanged."
+msgstr "Este borrador no está disponible con las dependencias actuales. Se conservan sus datos guardados."
+
+msgid "Restore recovered draft"
+msgstr "Restaurar borrador recuperado"
+
+msgid "The recovered draft changed or is unavailable. Review it again."
+msgstr "El borrador recuperado cambió o no está disponible. Revísalo de nuevo."
+
+msgid "A recovered numeric field is unavailable. The stored draft remains unchanged."
+msgstr "Un campo numérico recuperado no está disponible. Se conserva el borrador guardado."
+
+msgid "A recovered text field is unavailable. The stored draft remains unchanged."
+msgstr "Un campo de texto recuperado no está disponible. Se conserva el borrador guardado."
+
+msgid "Draft restored. Review the values and save a new build."
+msgstr "Borrador restaurado. Revisa los valores y guarda una configuración nueva."
+
+msgid "Measured components…"
+msgstr "Componentes medidos…"
+
+msgid "Apply or cancel pending fields before editing measured components."
+msgstr "Aplica o cancela los campos pendientes antes de editar componentes medidos."
+
+msgid "The draft changed while measurements were open. Review the measurements again."
+msgstr "El borrador cambió mientras las mediciones estaban abiertas. Revísalas de nuevo."
+
+msgid "Measured components applied to the draft. The saved build is unchanged."
+msgstr "Componentes medidos aplicados al borrador. Se conserva la configuración guardada."
+
+msgid "Automatic draft recovery is paused until you restore or discard the recovered draft."
+msgstr "La recuperación automática se pausa hasta que restaures o descartes el borrador recuperado."
+
+msgid "Accepted settings"
+msgstr "Ajustes aceptados"
+
+msgid "Pending input"
+msgstr "Texto pendiente"
+
+msgid "Size"
+msgstr "Tamaño"
+
+msgid "Mass policy"
+msgstr "Criterio de masa"
+
+msgid "Weight"
+msgstr "Peso"
+
+msgid "Power"
+msgstr "Potencia"
+
+msgid "Setting"
+msgstr "Ajuste"
+
+msgid "Recovery data cannot be safely replaced. Review the recovery files before retrying."
+msgstr "No se pueden reemplazar los datos de recuperación de forma segura. Revisa los archivos antes de reintentar."
+
+msgid "Another session changed the recovered draft. Review it in Library before automatic recovery resumes."
+msgstr "Otra sesión cambió el borrador recuperado. Revísalo en Biblioteca antes de reanudar la recuperación automática."
+
+msgid "Measured component mass"
+msgstr "Masa medida de componentes"
+
+msgid "The recipe mass_edits value must be an array."
+msgstr "El valor mass_edits de la receta debe ser una lista."
+
+msgid "Apply to a new build"
+msgstr "Aplicar a una nueva versión"
+
+msgid "Record measured masses for existing source inventory components. Positions and geometry stay fixed; applying creates a new build."
+msgstr "Registra las masas medidas de componentes existentes del inventario. Las posiciones y la geometría permanecen fijas; al aplicar se crea una nueva versión."
+
+msgid "Measured component"
+msgstr "Componente medido"
+
+msgid "Measurement source"
+msgstr "Fuente de medición"
+
+msgid "Scale and component identification"
+msgstr "Báscula e identificación del componente"
+
+msgid "Add or update measurement"
+msgstr "Agregar o actualizar medición"
+
+msgid "No measured components staged."
+msgstr "No hay componentes medidos preparados."
+
+msgid "Weighing comparison and fixed-station proposal"
+msgstr "Comparación de pesaje y propuesta en estación fija"
+
+msgid "Weighing state: source declaration"
+msgstr "Estado de pesaje: declaración de la fuente"
+
+msgid "Observed total mass (kg)"
+msgstr "Masa total observada (kg)"
+
+msgid "x aft (m)"
+msgstr "x atrás (m)"
+
+msgid "y right (m)"
+msgstr "y derecha (m)"
+
+msgid "z up (m)"
+msgstr "z arriba (m)"
+
+msgid "Check mass and CG"
+msgstr "Comprobar masa y CG"
+
+msgid "Propose fixed-station mass"
+msgstr "Proponer masa en estación fija"
+
+msgid "Unavailable: "
+msgstr "No disponible: "
+
+msgid "Show source inventory details"
+msgstr "Mostrar detalles del inventario de origen"
+
+msgid "Hide source inventory details"
+msgstr "Ocultar detalles del inventario de origen"
+
+msgid "Weighing state (fixed to source declaration)"
+msgstr "Estado de pesaje (declarado por la fuente)"
+
+msgid "Stage or correct the current measurement before changing components."
+msgstr "Prepara o corrige la medición actual antes de cambiar de componente."
+
+msgid "Aircraft source is unavailable."
+msgstr "La fuente del avión no está disponible."
+
+msgid "No source inventory components are available for measurement."
+msgstr "No hay componentes del inventario disponibles para medir."
+
+msgid "Enter a finite component mass in kilograms within the source bounds."
+msgstr "Introduce una masa de componente finita en kilogramos dentro de los límites de la fuente."
+
+msgid "The 32 component-measurement limit has been reached."
+msgstr "Se alcanzó el límite de 32 mediciones de componentes."
+
+msgid "Staged measurements"
+msgstr "Mediciones preparadas"
+
+msgid "Enter a positive finite mass and three finite CG coordinates."
+msgstr "Introduce una masa positiva finita y tres coordenadas CG finitas."
+
+msgid "within tolerance"
+msgstr "dentro de la tolerancia"
+
+msgid "outside tolerance"
+msgstr "fuera de la tolerancia"
+
+msgid "inside source range"
+msgstr "dentro del rango de la fuente"
+
+msgid "outside source range"
+msgstr "fuera del rango de la fuente"
+
+msgid "Reference"
+msgstr "Referencia"
+
+msgid "state"
+msgstr "estado"
+
+msgid "Select an available source component first."
+msgstr "Selecciona primero un componente disponible de la fuente."
+
+msgid "Proposal only"
+msgstr "Solo propuesta"
+
+msgid "Predicted CG x/y/z"
+msgstr "CG prevista x/y/z"
+
+msgid "This derived value is not applied or labelled as a measurement."
+msgstr "Este valor derivado no se aplica ni se etiqueta como medición."
+
+msgid "Stage at least one measured component before applying."
+msgstr "Prepara al menos un componente medido antes de aplicar."
+
+msgid "The candidate did not pass validation. Review source inventory details for the reason."
+msgstr "La propuesta no superó la validación. Consulta los detalles del inventario de origen para ver el motivo."
+
+msgid "Record a measured component mass. Geometry stays fixed."
+msgstr "Registra la masa medida del componente. Se conserva la geometría."
+
+msgid "Source mass: %.4f kg"
+msgstr "Masa de origen: %.4f kg"
+
+msgid "Another session cleared the recovered draft. Automatic recovery will resume on your next edit."
+msgstr "Otra sesión eliminó el borrador recuperado. La recuperación automática continuará con tu próxima edición."

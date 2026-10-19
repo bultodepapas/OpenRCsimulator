@@ -47,6 +47,19 @@ func run() -> void:
 	var history_size: int = editor.get("_undo_history").size()
 	editor.call("_open_library")
 	select_build(editor, id)
+	var view_before: Dictionary = editor.get("_preview").get_view_state()
+	var thumbnail_identity: Dictionary = editor.get("_thumbnail_identity").duplicate(true)
+	await process_frame
+	await process_frame
+	check("headless thumbnail failure leaves library actions and active preview intact", editor.get("_thumbnail_note").visible and not editor.get("_load_button").disabled and editor.get("_preview").get_view_state() == view_before and not editor.get("_thumbnail").active_resources().viewport)
+	var pixels := Image.create(16, 16, false, Image.FORMAT_RGBA8)
+	pixels.fill(Color.CORNFLOWER_BLUE)
+	editor.get("_thumbnail").get("_cache").put_image(str(thumbnail_identity.get("sha256", "")), pixels)
+	editor.call("_close_library")
+	editor.call("_open_library")
+	await process_frame
+	await process_frame
+	check("library displays a copied cached image without changing draft or camera", editor.get("_thumbnail_image").visible and editor.get("_thumbnail_image").texture is ImageTexture and editor.get_recipe() == recipe_before and editor.get("_preview").get_view_state() == view_before)
 	editor.call("_toggle_favorite")
 	check("favorite preserves selected build and draft history", editor.get("_selected_variant_id") == id and id in editor.get("_favorites") and editor.get("_undo_history").size() == history_size and editor.get_recipe() == recipe_before)
 	editor.get("_favorites_only").button_pressed = true
@@ -55,6 +68,8 @@ func run() -> void:
 	search.text = "no such aircraft"
 	search.text_changed.emit(search.text)
 	check("search hides unmatched records without replacing the draft", editor.get("_variant_selector").item_count == 1 and editor.get_presentation() == target_before and editor.get_recipe() == recipe_before)
+	editor.call("_receive_thumbnail", thumbnail_identity, ImageTexture.create_from_image(pixels))
+	check("late thumbnail cannot display after its selection disappears", not editor.get("_thumbnail_image").visible and editor.get("_thumbnail_image").texture == null)
 	search.text = "blue"
 	search.text_changed.emit(search.text)
 	check("search matches saved name", editor.get("_variant_selector").item_count == 2)

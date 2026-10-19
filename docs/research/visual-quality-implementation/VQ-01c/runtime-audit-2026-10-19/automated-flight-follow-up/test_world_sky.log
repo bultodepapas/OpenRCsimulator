@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Unknown time of day 'teatime' (dawn, sunrise, morning, noon, afternoon, golden_hour, sunset, blue_hour, night, night_dark, moonrise, moonrise_golden); using the fixed sun
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] resolve (res://render/world/conditions.gd:136)
+       [1] _initialize (res://tests/test_world_sky.gd:50)
+WARNING: Bad --time '25h' (HH:MM); using the fixed sun
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] resolve (res://render/world/conditions.gd:131)
+       [1] _initialize (res://tests/test_world_sky.gd:51)
+38 checks, 0 failed

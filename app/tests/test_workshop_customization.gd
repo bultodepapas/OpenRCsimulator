@@ -63,6 +63,25 @@ func run() -> void:
 	var smoke_page: Node = editor.get("_page_nodes").smoke
 	smoke_page.call("apply_preset", 5)
 	check("Rainbow Burst selects a fan and a timed palette", smoke_page.call("current_entry").shape == "fan" and smoke_page.call("current_entry").palette.size() == 5)
+	var raw_state: Dictionary = smoke_page.call("get_editor_state")
+	raw_state.color_text = "#BAD"
+	check("recovery restores raw invalid text without changing the accepted profile", smoke_page.call("restore_editor_state", raw_state) and not editor.call("_edit_valid") and smoke_page.call("current_entry").shape == "fan")
+	var emitter: OptionButton = smoke_page.get("_slot")
+	var selected_emitter := emitter.selected
+	emitter.select((selected_emitter + 1) % emitter.item_count)
+	emitter.item_selected.emit(emitter.selected)
+	check("emitter navigation cannot discard pending text", emitter.selected == selected_emitter and smoke_page.get("_custom_color").text == "#BAD")
+	var step: OptionButton = smoke_page.get("_palette_selector")
+	step.select(1)
+	step.item_selected.emit(1)
+	check("palette navigation cannot redirect a pending color", step.selected == 0 and smoke_page.get("_custom_color").text == "#BAD")
+	smoke_page.call("change", "amount", 0.7)
+	check("unrelated accepted edits retain pending text and blocking state", smoke_page.get("_custom_color").text == "#BAD" and not editor.call("_edit_valid") and smoke_page.call("current_entry").amount == 0.7)
+	var malformed := raw_state.duplicate(true)
+	malformed.palette_step = 7
+	check("recovery refuses unavailable palette steps without mutation", not smoke_page.call("restore_editor_state", malformed) and smoke_page.call("get_editor_state").color_text == "#BAD")
+	smoke_page.call("cancel_pending_edit")
+	check("explicit cancel restores the accepted color and launch validity", editor.call("_edit_valid"))
 	smoke_page.call("edit_palette", 1)
 	smoke_page.get("_palette_selector").select(2)
 	smoke_page.call("change", "color", "#123456FF")

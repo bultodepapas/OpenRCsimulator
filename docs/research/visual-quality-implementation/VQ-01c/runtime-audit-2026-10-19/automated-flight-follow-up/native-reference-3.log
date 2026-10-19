@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+audit takeoff_maneuver 0.0s main=1027us audio=234us focus=true
+audit takeoff_maneuver 5.0s main=921us audio=193us focus=true
+audit takeoff_maneuver 10.0s main=706us audio=220us focus=true
+audit takeoff_maneuver 15.0s main=804us audio=231us focus=true
+audit takeoff_maneuver 20.0s main=1473us audio=305us focus=true
+native flight: takeoff_maneuver tick=5760 max_height=52.76 bank=16.13 events=[{ &"event": "airborne", &"tick": 685, &"time_s": 2.85416666666667, &"height_m": 0.25807537407979 }]
+audit pause=true tick=5760 stack=[{ "source": "C:\\DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight.gd", "function": "<anonymous lambda>", "line": 74 }, { "source": "res://sim/simulation.gd", "function": "set_paused", "line": 169 }, { "source": "C:\\DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight.gd", "function": "_fly", "line": 120 }]
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+audit landing 0.1s main=1174us audio=317us focus=true
+audit landing 5.0s main=1452us audio=246us focus=true
+audit landing 10.0s main=831us audio=226us focus=true
+audit landing 15.0s main=1397us audio=339us focus=true
+audit landing 20.0s main=894us audio=214us focus=true
+audit landing 25.0s main=893us audio=209us focus=true
+audit landing 30.0s main=847us audio=186us focus=true
+audit landing 35.0s main=936us audio=211us focus=true
+audit landing 40.0s main=973us audio=216us focus=true
+audit landing 45.0s main=767us audio=198us focus=true
+native flight: landing tick=11040 max_height=6.00 bank=0.62 events=[{ &"event": "airborne", &"tick": 1, &"time_s": 0.00416666666667, &"height_m": 6.00000010644408 }, { &"event": "touchdown", &"tick": 2045, &"time_s": 8.52083333333333, &"speed_mps": 10.4070089133586, &"north_m": 14.5655307078164, &"east_m": -45.0827183850507 }]
+audit pause=true tick=11040 stack=[{ "source": "C:\\DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight.gd", "function": "<anonymous lambda>", "line": 74 }, { "source": "res://sim/simulation.gd", "function": "set_paused", "line": 169 }, { "source": "C:\\DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight.gd", "function": "_fly", "line": 120 }]

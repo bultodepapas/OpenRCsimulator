@@ -1,0 +1,29 @@
+PASS real Workshop loads the selected catalog source
+PASS full aircraft model has projected native geometry
+PASS full model stays inside the preview camera frame
+PASS real Workshop viewport screenshot saved
+PASS Workshop exposes the measured-components action
+PASS measured-components action opens the real modal
+PASS fresh modal focuses safe-default Cancel
+PASS modal and footer actions fit the native viewport
+PASS all measurement and analysis actions are scroll-reachable
+PASS measured-components modal screenshot saved at the requested native size
+PASS measured-components actions are localized
+PASS Cancel closes the modal without changing the recipe
+PASS Cancel returns focus to the Workshop action
+PASS capture baseline variant is saved only in the isolated library
+PASS source inventory provides stable editable measurement rows
+PASS component picker contains exact source IDs
+PASS attempted component change preserves both dirty measurement fields
+PASS dirty-field guard explains why selection stayed fixed
+PASS staging records the tiny change as measured with its source
+PASS source aircraft data remains byte-for-byte equivalent after staging
+PASS small measured candidate passes the full compiler
+PASS Apply to a new build detaches saved ancestry without editing the original
+PASS applied total mass changes by the measured component delta
+PASS Undo restores the complete unmeasured recipe
+PASS Redo restores the measured recipe and its source record
+PASS measured compiler is distinct from the legacy compiler
+PASS measured mass/CG/tensor comparison is finite
+PASS Workshop trial request freezes exact measured build pins — []
+FAILURES 0

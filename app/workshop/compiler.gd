@@ -6,6 +6,7 @@ const AircraftModules := preload("res://physics/aircraft_modules.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Parameters := preload("res://workshop/parameters.gd")
 const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-2"
+const MEASURED_MASS_COMPILER_VERSION := "openrc-aircraft-workshop-v1-measured-mass-1"
 const REFERENCE_DENSITY_KG_M3 := 1.225
 ## FUEL-11a: tank volume follows airframe scale and an independent estimated capacity ratio;
 ## fill and density stay fixed while weight policy acts on dry inventory only.
@@ -55,10 +56,18 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 		parsed.errors.append("control_multiplier: unsupported because the aircraft has no declared conventional surface controls")
 	if tank_capacity_multiplier != 1.0 and not support.tank_capacity:
 		parsed.errors.append("tank_capacity_multiplier: unsupported because this aircraft has no declared fuel tanks")
+	var mass_edits: Array = values.get("mass_edits", [])
+	if not mass_edits.is_empty() and (scale != 1.0 or weight_multiplier != 1.0 or tank_capacity_multiplier != 1.0):
+		parsed.errors.append("mass_edits: measured components require original scale, weight and tank capacity")
 	if not parsed.errors.is_empty():
 		return _failure(parsed.errors)
 
 	var candidate_raw: Dictionary = base_raw.duplicate(true)
+	if not mass_edits.is_empty():
+		var measured: Dictionary = load("res://workshop/mass_edit.gd").apply_to_validated_base(base_raw, mass_edits)
+		if not measured.ok: return _failure(measured.errors)
+		candidate_raw = measured.raw.duplicate(true)
+	var mass_source: Dictionary = candidate_raw.duplicate(true) if not mass_edits.is_empty() else base_raw
 	if scale != 1.0 or mass_ratio != 1.0 or power_multiplier != 1.0 or control_multiplier != 1.0 \
 			or tank_capacity_multiplier != 1.0:
 		_transform_candidate(candidate_raw, base_id, scale, mass_ratio, power_multiplier,
@@ -78,7 +87,7 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	if not wheel_errors.is_empty():
 		return {"ok": false, "errors": wheel_errors, "raw": {}, "data": _invalid_data(wheel_errors), "summary": {}}
 	var actual_mass: float = float(candidate_data.model.mass_kg)
-	var expected_mass: float = _expected_mass(base_raw, mass_ratio, scale, tank_capacity_multiplier)
+	var expected_mass: float = _expected_mass(mass_source, mass_ratio, scale, tank_capacity_multiplier)
 	if absf(actual_mass - expected_mass) > maxf(1.0, expected_mass) * 1.0e-10:
 		var mass_error := PackedStringArray([
 			"inventory: compiled mass " + str(actual_mass) + " kg does not match target " + str(expected_mass) + " kg"
@@ -86,6 +95,9 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 		return {"ok": false, "errors": mass_error, "raw": {}, "data": _invalid_data(mass_error), "summary": {}}
 
 	var summary := _summary(base_data.model, candidate_data.model, values, mass_ratio, support)
+	if not mass_edits.is_empty():
+		summary.mass_ratio = actual_mass / float(base_data.model.mass_kg)
+		summary.measured_components = mass_edits.size()
 	return {"ok": true, "errors": PackedStringArray(), "raw": candidate_raw, "data": candidate_data, "summary": summary}
 
 
@@ -106,6 +118,12 @@ static func capabilities(base: Dictionary) -> Dictionary:
 
 static func defaults() -> Dictionary:
 	return Parameters.defaults()
+
+
+## Extensions select their own evaluator identity; legacy recipes retain compiler-2.
+static func version_for_recipe(recipe: Dictionary) -> String:
+	var edits: Variant = recipe.get("mass_edits", [])
+	return MEASURED_MASS_COMPILER_VERSION if edits is Array and not edits.is_empty() else COMPILER_VERSION
 
 
 static func _capabilities_for(raw: Dictionary, model: Dictionary) -> Dictionary:
@@ -475,7 +493,7 @@ static func _summary(base_model: Dictionary, model: Dictionary, values: Dictiona
 		"control_multiplier": float(values.control_multiplier),
 		"tank_capacity_multiplier": float(values.tank_capacity_multiplier),
 		"capabilities": support.duplicate(true),
-		"compiler_version": COMPILER_VERSION,
+		"compiler_version": version_for_recipe(values),
 	}
 	var propulsion: Dictionary = model.get("propulsion", {})
 	if support.power and propulsion.has("max_rpm") and propulsion.has("idle_rpm") and propulsion.has("diameter") \

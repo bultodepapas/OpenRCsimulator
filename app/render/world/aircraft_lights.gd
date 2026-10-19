@@ -37,6 +37,7 @@ const BELLY_STEP_M := 0.03
 ## Landing light: in the left wing's leading edge at this share of the semispan (the RC kit position).
 const LANDING_SPAN := 0.36 # its 16° beam then clears a propeller disc of up to ~40 % of the span
 const MODES := ["all", "nav", "off"]
+const GROUPS := ["navigation", "strobe", "landing", "orientation"]
 ## A diffuse LED strip's radiance in scene units (estimate: ~1,000–3,000 cd/m², a tenth of a bare LED).
 const STRIP_RADIANCE := 0.25
 const STRIP_WIDTH_M := 0.015
@@ -398,14 +399,42 @@ static func wing_piece(tris: PackedVector3Array, x: float) -> Array:
 
 ## FW-35b: ALL shows every light, NAV only the navigation lights and strobes, OFF none.
 static func set_mode(kit: Node3D, mode: String) -> void:
-	if kit == null:
+	if kit == null or mode not in MODES:
 		return
 	kit.visible = mode != "off"
-	for child in kit.get_children():
-		var name := String(child.name)
-		var nav := name.begins_with("nav_") or name.begins_with("strobe_")
-		(child as Node3D).visible = (mode == "all" or nav) and bool(child.get_meta("gate_open", true))
+	var groups: Dictionary = kit.get_meta("light_bindings", {})
+	var supported: Array = kit.get_meta("supported_light_groups", GROUPS)
+	for group: String in groups:
+		var enabled := mode != "off" and group in supported and (mode == "all" or group in ["navigation", "strobe"])
+		for light: Node3D in groups[group]:
+			if is_instance_valid(light):
+				light.visible = enabled and bool(light.get_meta("gate_open", true))
 	kit.set_meta("mode", mode)
+
+
+## Bind luminous presentation nodes (including emissive effects) once, relative to the kit or by reference.
+## Unsupported groups stay dark. Reject invalid/duplicate references before changing accepted bindings.
+static func bind_groups(kit: Node3D, bindings: Dictionary, supported: Array = GROUPS) -> bool:
+	if kit == null or supported.any(func(group: Variant) -> bool: return group not in GROUPS):
+		return false
+	var resolved := {}
+	var seen: Array[Node3D] = []
+	for group: String in bindings:
+		if group not in GROUPS or not bindings[group] is Array:
+			return false
+		var lights: Array[Node3D] = []
+		for reference: Variant in bindings[group]:
+			var light: Node3D = reference as Node3D if reference is Node3D else kit.get_node_or_null(NodePath(str(reference))) as Node3D
+			if light == null or light == kit or light in seen:
+				return false
+			lights.append(light)
+			seen.append(light)
+		resolved[group] = lights
+	set_mode(kit, "off")
+	kit.set_meta("light_bindings", resolved)
+	kit.set_meta("supported_light_groups", supported.duplicate())
+	set_mode(kit, "off")
+	return true
 
 
 ## P51-V13: the anchored position of one kit light, or the bounds-derived fallback.
@@ -515,6 +544,9 @@ static func sprite(name: String, color: Color, position: Vector3, size_m: float,
 
 ## Adds the kit under the airplane's root (a child named "NightKit") and returns it.
 static func attach(root: Node3D) -> Node3D:
+	var existing := root.get_node_or_null("NightKit") as Node3D
+	if existing != null:
+		return existing
 	var kit := Node3D.new()
 	kit.name = "NightKit"
 	var all: AABB = bounds(root).all
@@ -572,6 +604,12 @@ static func attach(root: Node3D) -> Node3D:
 	if not anchors.is_empty():
 		kit.set_meta("dynamic", true) # update_dynamic() has following or gated lights to serve
 	root.add_child(kit)
+	var bindings := {navigation = [], strobe = [], landing = [], orientation = []}
+	for child: Node3D in kit.get_children():
+		var label := str(child.name)
+		var group := "navigation" if label.begins_with("nav_") else "strobe" if label.begins_with("strobe_") else "landing" if label.begins_with("landing_") else "orientation"
+		bindings[group].append(child)
+	bind_groups(kit, bindings, root.get_meta("light_groups", GROUPS))
 	set_mode(kit, "all")
 	return kit
 
