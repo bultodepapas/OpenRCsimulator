@@ -5,8 +5,10 @@
 # stall damping comes from the table alone; profile CD keeps the fixture schedule; the negative branch is the fixture's
 # (retention 0.90, unmeasured). Four post-peak knots (strip angles 18, 24, 30, 36 deg, as fractions of the peak) are fitted
 # by deterministic coordinate search on J = (RMS retention error / 0.03)^2 + (RMS Clp error / 0.10)^2, with the bench's
-# definitions (post_stall_sweep.gd): retention peak-aligned over FASER 15-30 deg, Clp at FASER angles 10-35 deg. Viterna
-# continues beyond 36 deg. Analog-fitted EXPERIMENTAL candidate, not a Jensen measurement or a production selection.
+# definitions (post_stall_sweep.gd): retention aligned at the stall peaks over FASER 15-30 deg, Clp at FASER angles
+# 10-17.5 deg only (the measured term is Clp + Clbetadot*sin(alpha); deeper values are not like-for-like). Viterna
+# continues beyond 36 deg. The knots are constrained non-increasing (no post-stall lift recovery), which removes the
+# oscillating shapes an unconstrained fit chases in the digitized curve. Analog-fitted EXPERIMENTAL candidate, not a Jensen measurement or a production selection.
 # Run from the repository root (writes candidates/post-stall-v2.json; --check refits and compares):
 #   godot --headless --path app --script "$PWD/research/flight-robustness/d8b-r2/analog/make_v2.gd" [-- --check]
 extends SceneTree
@@ -21,11 +23,11 @@ const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 const ANALOG := "res://../research/flight-robustness/d8b-r2/analog/"
 const OUT := "res://../research/flight-robustness/d8b-r2/candidates/post-stall-v2.json"
 const KNOT_DEG := [18.0, 24.0, 30.0, 36.0]
-const START := [0.94, 0.88, 0.90, 0.85]
+const START := [0.94, 0.90, 0.86, 0.82]
 const STEPS := [0.04, 0.02, 0.01, 0.005]
 const LIMITS := [0.40, 1.00]
 const RETENTION_DEG := [15.0, 16.0, 17.0, 18.0, 20.0, 22.0, 25.0, 28.0, 30.0]
-const CLP_DEG := [10.0, 13.5, 15.0, 16.0, 17.5, 19.0, 20.0, 22.5, 25.0, 27.5, 30.0, 32.5, 35.0]
+const CLP_DEG := [10.0, 12.0, 13.5, 15.0, 16.0, 17.5] # like-for-like range, as post_stall_sweep.gd
 const SPEED := 25.0
 ## Peak alignment uses the lift maximum inside the stall region, not a later post-stall plateau value.
 const STALL_REGION_DEG := [8.0, 18.0]
@@ -103,6 +105,10 @@ func _initialize() -> void:
 
 func _score(knots: Array) -> Dictionary:
 	evaluations += 1
+	# Physical shape constraint: past the stall the section's lift does not grow again (non-increasing knots).
+	for k in range(1, knots.size()):
+		if float(knots[k]) > float(knots[k - 1]):
+			return {j = INF, retention = INF, clp = INF, peak = NAN, peak_alpha = NAN}
 	var data := AD.validate_and_derive(_candidate(knots))
 	if not data.ok:
 		return {j = INF, retention = INF, clp = INF, peak = NAN, peak_alpha = NAN}

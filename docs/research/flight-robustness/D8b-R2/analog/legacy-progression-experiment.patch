@@ -1,0 +1,35 @@
+--- app/physics/aero.gd	2026-10-19 00:55:59.421016506 +0000
++++ app/physics/aero.gd	2026-10-19 01:08:42.828537629 +0000
+@@ -425,7 +425,7 @@
+ 		var f2: float = v2 + (p*arm_y - q*ax)
+ 		var effective: float = angles[i]
+ 		# Stall and the flat plate follow the geometric angle; attached lift uses the induced (effective) angles.
+-		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
++		var stall_angle: float = (effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]) * _loading_ratio(env, i)
+ 		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
+ 			else _smoothstep((-stall_angle - n1) / n_span)
+ 		var base: float
+@@ -823,7 +823,7 @@
+ 	var strip_factor: PackedFloat64Array = polar.get("strip_factor", PackedFloat64Array()) # D8b-R2d, as in _local_loads
+ 	for i in stations:
+ 		var effective: float = angles[i]
+-		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
++		var stall_angle: float = (effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]) * _loading_ratio(env, i)
+ 		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
+ 			else _smoothstep((-stall_angle - n1) / n_span)
+ 		var base: float
+@@ -884,3 +884,14 @@
+ 	for k in 6:
+ 		global[k] = lerpf(global[k], local[k], blend)
+ 	return global
++
++
++## EXPERIMENT (D8b-R2d): legacy-blend separation angle scaled by the strip's relative loading.
++static func _loading_ratio(env: Dictionary, i: int) -> float:
++	var rs: PackedFloat64Array = env.get("strip_row_sum", PackedFloat64Array())
++	if rs.is_empty():
++		return 1.0
++	var mean := 0.0
++	for v in rs:
++		mean += v / rs.size()
++	return rs[i] / mean
