@@ -1815,7 +1815,13 @@ func _advance_trace_exit() -> void:
 		var recorder: RefCounted = _exit_request_recorders[_exit_request_recorder_index]
 		var result: Dictionary = _trace_recovery.save_if_recording(recorder)
 		if not bool(result.get("ok", false)):
-			_show_trace_recovery_dialog(int(result.get("error", ERR_CANT_CREATE)))
+			var error_code := int(result.get("error", ERR_CANT_CREATE))
+			# A dirty-editor decision can have just closed its own native exclusive dialog.
+			# Let Window release that child before presenting the next exclusive decision.
+			await get_tree().process_frame
+			if not _exit_request_active or _trace_recovery_dialog != null:
+				return
+			_show_trace_recovery_dialog(error_code)
 			return
 		_exit_request_recorder_index += 1
 	_finish_exit_request()
@@ -1824,7 +1830,7 @@ func _advance_trace_exit() -> void:
 func _show_trace_recovery_dialog(error_code: int) -> void:
 	var dialog := ConfirmationDialog.new()
 	dialog.title = tr("Trace not saved")
-	dialog.dialog_text = tr("Recording stopped, but the manual flight trace was not saved (error %d). Retry the retained trace, discard it and continue, or stay.") % error_code
+	dialog.dialog_text = tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
 	dialog.exclusive = true
 	dialog.get_ok_button().text = tr("Stay") # default action is the safe choice
 	dialog.get_cancel_button().hide() # Escape and the window close still map to Stay
@@ -1853,7 +1859,10 @@ func _on_trace_recovery_action(action: StringName) -> void:
 	if action == "retry":
 		var result: Dictionary = _trace_recovery.retry(recorder)
 		if not bool(result.get("ok", false)):
-			_show_trace_recovery_dialog(int(result.get("error", ERR_CANT_CREATE)))
+			var error_code := int(result.get("error", ERR_CANT_CREATE))
+			await get_tree().process_frame
+			if _exit_request_active and _trace_recovery_dialog == null:
+				_show_trace_recovery_dialog(error_code)
 			return
 	elif action == "discard":
 		_trace_recovery.discard(recorder)

@@ -233,12 +233,15 @@ func _check_workshop_suspended_recording() -> void:
 		return
 	var original: Node = app.flight
 	app.open_pause()
+	await ui.settle()
 	app.open_workshop()
 	var editor: Node = app.screens.top()
 	var close_button := editor.find_child("CloseWorkshop", true, false) as Button
 	_check("Workshop opened from Pause exposes its context-specific return label",
 		str(editor.get("return_destination")) == "Pause" and close_button != null
-		and close_button.text == "Back to Pause", close_button.text if close_button != null else "no Back button")
+		and close_button.text == "Back to Pause",
+		"top=%s pause_top=%s destination=%s label=%s" % [str(app.screens.top()), str(app.screens.is_top("pause")),
+		str(editor.get("return_destination")), close_button.text if close_button != null else "no Back button"])
 	editor.set_variant_name("Unsaved trial draft")
 	_check("Workshop test fixture has a dirty retained draft", editor.has_unsaved_changes())
 	var aircraft_data: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)

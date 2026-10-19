@@ -157,12 +157,16 @@ func _run() -> void:
 			and is_equal_approx(float(workshop.get_recipe().scale), requested_scale))
 
 	for preset_id: String in Workshop.PRESETS:
-		var preset_button := _find(workshop, "Preset" + preset_id.capitalize()) as Button
-		if preset_button != null:
-			preset_button.pressed.emit()
-			await _ui.settle()
+		var presets := _find(workshop, "StartingPreset") as OptionButton
+		for index in presets.item_count:
+			if presets.get_item_metadata(index) == preset_id:
+				presets.select(index)
+				presets.item_selected.emit(index)
+				break
+		await _ui.settle()
 		_check("%s preset produces a valid recipe" % preset_id.capitalize(),
 			bool(workshop.get_compiled().get("ok", false)))
+
 
 	var previous_recipe: Dictionary = workshop.get_recipe()
 	workshop.set_recipe({"scale": 0.5}, true)
@@ -465,11 +469,11 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 		and not editor.has_unsaved_changes() and editor.get("_guard_dialog") == null)
 	var saved_id: String = editor.get("_saved_variant_id")
 	var saved_revision: int = editor.get("_saved_variant_revision")
-	var locked_root := store_root.path_join("blocked-root")
-	var blocked := FileAccess.open(locked_root, FileAccess.WRITE)
-	blocked.store_string("not a directory")
-	blocked.close()
-	editor.variants_root = locked_root
+	var saved_record: Dictionary = Store.load_variant(saved_id, store_root).variant
+	var advanced := Store.save_variant("Concurrent save", saved_record.base_id, saved_record.base_bytes,
+		saved_record.recipe, saved_id, store_root, saved_record.workshop_descriptor, saved_record.dependencies,
+		saved_revision)
+	_check("save-failure fixture advances the expected revision", advanced.ok)
 	editor.set_recipe({power_multiplier = 1.3})
 	editor.request_navigation("Back to Home", proceed, cancel)
 	guard = editor.get("_guard_dialog")
@@ -477,7 +481,6 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 	_check("failed save leaves pending decision and full draft", result.continued == 1 and guard.visible
 		and editor.get_recipe().power_multiplier == 1.3 and editor.has_unsaved_changes())
 	guard.canceled.emit()
-	editor.variants_root = store_root
 
 	# A confirmation freezes UUID/revision independently of later library highlights.
 	editor.call("_open_library")
@@ -496,9 +499,9 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 	editor.call("_confirm_delete_selected")
 	var record: Dictionary = Store.load_variant(saved_id, store_root).variant
 	var concurrent := Store.save_variant("Advanced build", record.base_id, record.base_bytes, record.recipe,
-		saved_id, store_root, record.workshop_descriptor, record.dependencies, saved_revision)
+		saved_id, store_root, record.workshop_descriptor, record.dependencies, int(record.revision))
 	editor.get("_delete_dialog").confirmed.emit()
 	_check("stale confirmation refuses a newer revision", concurrent.ok and Store.load_variant(saved_id, store_root).ok
-		and Store.load_variant(saved_id, store_root).variant.revision == saved_revision + 1)
+		and Store.load_variant(saved_id, store_root).variant.revision == saved_revision + 2)
 	editor.call("_close_library")
 	await _ui.settle()

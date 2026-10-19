@@ -87,6 +87,7 @@ var _columns: BoxContainer
 var _aircraft_column: VBoxContainer
 var _recipe_selectors: GridContainer
 var _preset_grid: GridContainer
+var _preset_selector: OptionButton
 var _settle_frames := 3
 var _base_selector: OptionButton
 var _variant_selector: OptionButton
@@ -197,7 +198,7 @@ func set_note(message: String) -> void:
 	if _trial_pending:
 		_trial_pending = false
 	if is_instance_valid(_trial_button):
-		_trial_button.disabled = not bool(_compiled.get("ok", false))
+		_trial_button.disabled = not _edit_valid() or _library_dialog.visible or _name_dialog.visible or is_instance_valid(_guard_dialog)
 
 
 func _reveal_status() -> void:
@@ -407,7 +408,6 @@ func _resize_layout() -> void:
 	_view_button.visible = _compact
 	_view_button.text = tr("Edit") if _compact_view else tr("Preview")
 	_recipe_selectors.columns = 1 if enlarged else 2
-	_preset_grid.columns = 2 if enlarged else 3
 	_trial_button.custom_minimum_size.x = 0 if enlarged else 190
 	if _active_page == "compare" and _compact:
 		_compact_view = false
@@ -501,26 +501,22 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 
 
 func _build_presets_panel(parent: VBoxContainer) -> void:
-	var card := _card("PresetsCard")
-	parent.add_child(card)
-	var content := _card_content(card)
-	content.add_child(_section_label("STARTING PRESETS"))
-	var grid := GridContainer.new()
-	_preset_grid = grid
-	grid.name = "PresetGrid"
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 8)
-	grid.add_theme_constant_override("v_separation", 8)
-	for preset_id: String in PRESETS:
-		var preset_button := _button(PRESET_LABELS[preset_id], "", "Preset" + preset_id.capitalize())
-		preset_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		preset_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		preset_button.pressed.connect(_apply_preset.bind(preset_id))
-		grid.add_child(preset_button)
-		_preset_buttons[preset_id] = preset_button
-	content.add_child(grid)
-	var note := _label("Presets change only adjustments supported by the selected airframe.", "SecondaryLabel", true)
-	content.add_child(note)
+	var row := VBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.add_child(_label("Starting preset", "SectionLabel"))
+	_preset_selector = OptionButton.new()
+	_preset_selector.name = "StartingPreset"
+	_preset_selector.fit_to_longest_item = false
+	_preset_selector.add_item("Custom settings")
+	_preset_selector.set_item_metadata(0, "")
+	for id: String in PRESETS:
+		_preset_selector.add_item(PRESET_LABELS[id])
+		_preset_selector.set_item_metadata(_preset_selector.item_count - 1, id)
+	_preset_selector.item_selected.connect(func(index: int) -> void:
+		if index > 0: _apply_preset(str(_preset_selector.get_item_metadata(index))))
+	row.add_child(_preset_selector)
+	parent.add_child(row)
+
 
 
 func _build_recipe_panel(parent: VBoxContainer) -> void:
@@ -1036,6 +1032,8 @@ func _apply_preset(preset_id: String) -> void:
 		var capability := str(FACTOR_CAPABILITIES[key])
 		next[key] = preset.get(key, next.get(key, 1.0)) if bool(caps.get(capability, false)) else _recipe.get(key, next.get(key, 1.0))
 	_set_recipe(next, true)
+	for index in _preset_selector.item_count:
+		if _preset_selector.get_item_metadata(index) == preset_id: _preset_selector.select(index)
 	set_note(tr("Applied the %s preset where this aircraft supports it.") % tr(PRESET_LABELS[preset_id]))
 
 
@@ -1133,6 +1131,7 @@ func _sync_controls() -> void:
 	if not is_instance_valid(_scale_selector) or _recipe.is_empty():
 		return
 	_syncing_controls = true
+	_preset_selector.select(0)
 	var scale := float(_recipe.get("scale", 1.0))
 	while _scale_selector.item_count > SCALE_OPTIONS.size():
 		_scale_selector.remove_item(_scale_selector.item_count - 1)
@@ -1168,7 +1167,7 @@ func _sync_controls() -> void:
 			_factor_hints[key].text = tr("No declared finite tank.")
 		else:
 			_factor_hints[key].text = (
-				tr("Range %.2f×–%.2f× · experimental adjustment.") % [bounds.x, bounds.y]
+				tr("Range %.2f×–%.2f×") % [bounds.x, bounds.y]
 				if supported else tr("Not available for this engine type.")
 			)
 	_syncing_controls = false
