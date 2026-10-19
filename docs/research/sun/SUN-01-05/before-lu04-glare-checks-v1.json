@@ -1,0 +1,30 @@
+{
+  "format": "openrc-glare-verification v1",
+  "mean_rgb_difference_255": {
+    "clear": 1.2025889756944446,
+    "blocked": 0.0,
+    "partial": 0.41515082465277775,
+    "aircraft": 0.2854832175925926,
+    "side": 0.0,
+    "night": 0.0,
+    "cloud": 0.0,
+    "low_exposure": 0.33279007523148146,
+    "aircraft_left": 1.2065863715277778,
+    "aircraft_right": 1.2065986689814816,
+    "half": 0.6076142939814815
+  },
+  "checks": {
+    "visible_clear_glare": true,
+    "full_occlusion_exact_zero": true,
+    "partial_occlusion_reduces_glare": true,
+    "aircraft_transit_reduces_glare": true,
+    "off_axis_exact_zero": true,
+    "night_exact_zero": true,
+    "dense_cloud_reduces_glare": true,
+    "lower_exposure_reduces_glare": true,
+    "transit_recovers_on_both_sides": true,
+    "intensity_control_reduces_glare": true
+  },
+  "ok": true,
+  "limits": "Matched controlled optical fixtures, not photometric calibration or pilot recognition."
+}

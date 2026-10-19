@@ -158,17 +158,20 @@ func _process(_delta: float) -> void:
 	visible = veil
 	_secondary.visible = veil and lens
 	_after_layer.visible = eye and _show_afterimage(camera, sun_view, dose)
+	var background := float(src.e_over_b) * clouds
+	var coeff := SunOptics.aureole_background_coeff(rad_to_deg(asin(clampf(dir.y, -1.0, 1.0))), Atmosphere.aureole_aerosol_factor())
 	set_meta("strength", strength * prior)
+	set_meta("background_scale", background)
 	set_meta("illuminance", dose)
 	set_meta("afterimage", SunOptics.afterimage_dose(_afterimage))
 	set_meta("optics", optics)
+	set_meta("aureole_coeff", coeff)
+	set_meta("solar_uv", Vector2(-1.0, -1.0))
 	if not veil:
 		return
 	var values := {source_dir = dir, source_radius = float(src.radius), source_lin = src.disc_lin,
-		source_scale = strength, horizon_prior = prior, far_distance = camera.far,
-		aureole_coeff = SunOptics.aureole_background_coeff(rad_to_deg(asin(clampf(dir.y, -1.0, 1.0))), Atmosphere.aureole_aerosol_factor()),
-		exposure = maxf(environment.tonemap_exposure, 1e-6), optics = 1 if lens else 0}
-	set_meta("aureole_coeff", values.aureole_coeff)
+		source_scale = strength, background_scale = background, horizon_prior = prior, far_distance = camera.far,
+		aureole_coeff = coeff, exposure = maxf(environment.tonemap_exposure, 1e-6), optics = 1 if lens else 0}
 	for key: String in values:
 		_material.set_shader_parameter(key, values[key])
 		if lens:
@@ -220,7 +223,8 @@ func _show_afterimage(camera: Camera3D, sun_view: Vector3, dose: float) -> bool:
 		var patch: Dictionary = patches[i] if i < patches.size() else {}
 		var d: Vector3 = patch.get("dir", Vector3(0.0, 0.0, -1.0))
 		var radius := float(patch.get("radius", SunOptics.AFTER_BASE_RADIUS))
-		var alpha := alphas[i] if d.z < -0.05 else 0.0
+		# The strength control scales the masking too (bleaching itself saturates within a glance).
+		var alpha := alphas[i] * clampf(intensity, 0.0, 1.0) if d.z < -0.05 else 0.0
 		# View space to screen uv (top-left origin, as SCREEN_UV): x right, y up in view space.
 		var uv := Vector2(0.5 + d.x / -d.z / tan_half_height * 0.5 * size.y / size.x, 0.5 - d.y / -d.z / tan_half_height * 0.5) \
 			if d.z < -0.05 else Vector2(-10.0, -10.0)

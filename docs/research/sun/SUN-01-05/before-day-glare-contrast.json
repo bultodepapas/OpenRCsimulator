@@ -1,0 +1,54 @@
+{
+  "format": "openrc-glare-contrast v1",
+  "rows": [
+    {
+      "case": "glare_offset_3",
+      "aircraft_pixels": 348,
+      "glare_strength": 1.0,
+      "aureole_coeff": 0.0,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.41677087632561693,
+      "contrast_with_display": -0.35449086665501645,
+      "retained_display": 0.8505653508717292,
+      "retained_linear": 0.9106884015126407,
+      "background_display": 0.6562440117196304,
+      "angle_deg": 3.0,
+      "predicted_retained": 0.4915683979341342
+    }
+  ],
+  "crossings": {
+    "glare_crossing": {
+      "case": "glare_crossing",
+      "aircraft_pixels": 344,
+      "glare_strength": 1.0,
+      "aureole_coeff": 0.0,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.4016764693403116,
+      "contrast_with_display": -0.35296819448715094,
+      "retained_display": 0.878737544837625,
+      "retained_linear": 0.9285367679810463,
+      "background_display": 0.6270484587323302
+    },
+    "glare_crossing_late": {
+      "case": "glare_crossing_late",
+      "aircraft_pixels": 344,
+      "glare_strength": 1.0,
+      "aureole_coeff": 0.0,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.4016764693403116,
+      "contrast_with_display": -0.3533714748746511,
+      "retained_display": 0.8797415378974187,
+      "retained_linear": 0.9290832629976497,
+      "background_display": 0.6268198062015504
+    }
+  },
+  "checks": {
+    "at_least_six_angles": false,
+    "retained_grows_with_angle": true,
+    "veil_follows_the_model": false,
+    "crossing_hides_the_aircraft": false,
+    "aircraft_returns_as_the_eye_recovers": false
+  },
+  "ok": false,
+  "limits": "Display contrast of one model, attitude and distance against clear calibrated-day sky; not photometric calibration or a pilot detection threshold."
+}

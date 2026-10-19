@@ -18,6 +18,7 @@ uniform vec3 source_dir = vec3(0.0, 1.0, 0.0);     // world, toward the apparent
 uniform float source_radius = 0.0046251;          // rad
 uniform vec3 source_lin = vec3(1.0);              // the disc's mean radiance (pre-exposure): the colour a full veil reaches
 uniform float source_scale = 0.0;                 // E/B: sun illuminance / sky luminance around it, sr · clouds · strength (0 = off)
+uniform float background_scale = 0.0;             // E/B · clouds: the aureole behind the target (no strength, no occlusion)
 uniform float horizon_prior = 1.0;                // disc visibility assumed while it is off screen
 uniform float far_distance = 21000.0;
 uniform float exposure = 0.6;
@@ -128,8 +129,8 @@ float veil_alpha(vec3 ray, float scale) {
 		return 0.0;
 	}
 	float theta_deg = degrees(acos(clamp(dot(ray, sun_view), -1.0, 1.0)));
-	float e = scale; // E/B times the disc's visible fraction
-	float ratio = e * glare_excess(theta_deg) / (1.0 + e * aureole_background(theta_deg));
+	float e = scale; // E/B times the disc's visible fraction, clouds and strength
+	float ratio = e * glare_excess(theta_deg) / (1.0 + background_scale * aureole_background(theta_deg));
 	// Around the source on the plane of the sky: the angle φ for the corona and the starburst.
 	vec3 side = normalize(abs(sun_view.y) < 0.99 ? cross(sun_view, vec3(0.0, 1.0, 0.0)) : cross(sun_view, vec3(1.0, 0.0, 0.0)));
 	vec3 up = cross(side, sun_view);
@@ -170,7 +171,7 @@ void secondary_pass(vec3 ray, vec2 screen_uv, float scale, float aspect, out vec
 	for (int g = 0; g < 5; g++) {
 		vec2 at = sun_uv + axis * positions[g];
 		float r = length((screen_uv - at) * vec2(aspect, 1.0)) / sizes[g];
-		float disc = smoothstep(1.0, 0.85, r) * (0.35 + 0.65 * smoothstep(0.3, 1.0, r));
+		float disc = (1.0 - smoothstep(0.85, 1.0, r)) * (0.35 + 0.65 * smoothstep(0.3, 1.0, r));
 		float a = disc * 0.05 * min(scale, 1.5) * edge_fade;
 		color += tints[g] * a;
 		alpha += a;

@@ -275,6 +275,11 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	var moon_on: bool = moon_config.get("moon", "real") != "off"
 	var moon_k := MOON_FULL_RATIO * float(moon.flux) * (MOON_BRIGHT_FACTOR if moon_config.get("moonlight", "real") == "bright" else 1.0) \
 		* (1.0 if moon_on else 0.0)
+	# FW-MOON-10: an eclipse dims the moon's light and its sky by the shadow's transmission averaged over the disc.
+	var eclipse: Dictionary = moon.lunar.get("eclipse", {}) if not moon.lunar.is_empty() else {}
+	var eclipse_factor := Lunar.eclipse_disc_factor(eclipse)
+	if eclipse_factor != Vector3.ONE:
+		moon_k *= _lum(eclipse_factor)
 	var tint := MOON_TINT * moon_k
 
 	var floor_zenith := _lin(a.zenith) * NIGHT_FLOOR
@@ -349,7 +354,11 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	var shadow := smoothstep(MOON_SHADOW_SHARE_LOW, MOON_SHADOW_SHARE_HIGH, share / share_anchor) if moon_lights \
 		else sun_shadow_strength(sun_el)
 	# Reference: the unattenuated full moon (base × S0), so a low moon stays dimmer and redder than a high one.
+	# The eye adapts to the moon as it is lit: in totality it opens to the dim copper disc; in partial phases the sunlit
+	# part sets it and the umbra looks dark (FW-MOON-10).
 	var excess := _lum(base) * MOON_DISC * _lum(_lin(a.zenith)) * float(a.exposure) * gain / MOON_DISPLAY_PEAK
+	if eclipse_factor != Vector3.ONE:
+		excess *= _lum(eclipse_factor)
 	var display_scale := 1.0 / excess if excess > 1.0 else 1.0
 	var display_gamma := lerpf(1.0, MOON_DISPLAY_GAMMA, smoothstep(0.0, log(100.0), log(maxf(excess, 1.0))))
 	# FW-MOON-08a: the aureole, KS91's aerosol scattering around the moon, anchored to this sky's own moonlit zenith.
@@ -398,6 +407,12 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 		moon_display_scale = display_scale,
 		moon_display_gamma = display_gamma,
 		moon_aureole_lin = aureole,
+		moon_eclipse = eclipse_factor != Vector3.ONE,
+		moon_eclipse_factor = eclipse_factor,
+		moon_shadow_axis = Frames.ned_to_render(Array(eclipse.get("axis_ned", PackedFloat64Array([0.0, 0.0, 1.0])))),
+		moon_shadow_offset = Frames.ned_to_render(Array(eclipse.get("offset_ned", PackedFloat64Array([0.0, 0.0, 0.0])))),
+		moon_umbra_radius = float(eclipse.get("umbra_radius", 0.0)),
+		moon_penumbra_radius = float(eclipse.get("penumbra_radius", 0.0)),
 		moon_render_to_body = moon_render_to_body(moon.lunar),
 		moon_squash = moon_squash(float(moon.lunar.true_elevation_deg)) if not moon.lunar.is_empty() else 1.0,
 		moon_textured = not moon.lunar.is_empty(),

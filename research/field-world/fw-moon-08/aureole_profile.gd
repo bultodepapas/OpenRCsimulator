@@ -93,8 +93,11 @@ func _run() -> void:
 			off.save_png(out.path_join("linear-off.png"))
 			result.calibration = {reference = level, scale = scale, tonemap_exposure = env.tonemap_exposure,
 				flat_level = _decode(flat.get_pixel(VIEW_SIZE.x / 2, VIEW_SIZE.y / 4))}
+			var moon_lin: Vector3 = mat.get_shader_parameter("moon_lin")
+			var knee := pow(0.005, float(mat.get_shader_parameter("moon_display_gamma"))) * (0.2126 * moon_lin.x + 0.7152 * moon_lin.y + 0.0722 * moon_lin.z) \
+				* float(mat.get_shader_parameter("moon_display_scale")) * scale
 			result.profile = _profile(on, off, camera, moon, aureole, float(mat.get_shader_parameter("moon_display_gamma")),
-				float(mat.get_shader_parameter("moon_radius")), scale)
+				float(mat.get_shader_parameter("moon_radius")), scale, knee)
 			result.moon = {azimuth_deg = Atmosphere.state.moon_azimuth_deg, elevation_deg = Atmosphere.state.moon_elevation_deg,
 				aureole_lin = [aureole.x, aureole.y, aureole.z], gamma = mat.get_shader_parameter("moon_display_gamma"),
 				aerosol_factor = Atmosphere.aureole_aerosol_factor()}
@@ -126,9 +129,9 @@ func _capture(viewport: SubViewport) -> Image:
 
 
 ## Rendered vs predicted brightening along the row and the column through the moon (luminance, display linear).
-## `scale` is the measured sky radiance-to-display factor.
+## `scale` is the measured sky radiance-to-display factor; `knee` the shader's soft limit below the disc, in display units.
 func _profile(on: Image, off: Image, camera: Camera3D, moon: Vector3, aureole: Vector3, gamma: float, radius: float,
-		scale: float) -> Array:
+		scale: float, knee: float) -> Array:
 	var rows := []
 	var c := camera.unproject_position(camera.position + moon * 1000.0)
 	var cx := int(roundf(c.x))
@@ -152,6 +155,7 @@ func _profile(on: Image, off: Image, camera: Camera3D, moon: Vector3, aureole: V
 			var path := (1.0 - pow(10.0, -0.4 * 0.2 * airmass)) / (1.0 - pow(10.0, -0.4 * 0.2))
 			var la := (0.2126 * aureole.x + 0.7152 * aureole.y + 0.0722 * aureole.z) * shape * path * scale
 			var predicted := b * (pow(1.0 + la / maxf(b, 1e-9), gamma) - 1.0)
+			predicted = predicted * knee / (knee + predicted) if knee > 0.0 else predicted # the knee below the disc
 			rows.append({axis = axis, px = i, rho_deg = rho, background = b, rendered = a - b, predicted = predicted})
 	return rows
 

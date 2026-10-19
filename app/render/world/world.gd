@@ -64,9 +64,11 @@ const FLOW_AGX_BELOW_SUN_DEG := 10.0
 ## FW-MOON-06d frame_state: the slow sky terms interpolated between steps. Colours and exposure terms geometrically,
 ## shape terms linearly; the lobes only while the brighter lobe stays on the same side (dot of the two steps' lobe
 ## directions above LOBE_SWAP_DOT; one step moves it ~0.1°).
-const FRAME_COLOUR_KEYS := ["zenith_lin", "haze_lin", "cloud_lin", "ambient_lin", "moon_lin", "moon_earthshine", "moon_aureole_lin"]
+const FRAME_COLOUR_KEYS := ["zenith_lin", "haze_lin", "cloud_lin", "ambient_lin", "moon_lin", "moon_earthshine", "moon_aureole_lin",
+	"moon_eclipse_factor"]
 const FRAME_SCALAR_KEYS := ["exposure", "gain", "adapt_y", "adapt_y_anchor", "moon_display_scale"]
-const FRAME_LINEAR_KEYS := ["moon_radius", "moon_squash", "moon_display_gamma", "moon_phase_l", "moon_phase_k"]
+const FRAME_LINEAR_KEYS := ["moon_radius", "moon_squash", "moon_display_gamma", "moon_phase_l", "moon_phase_k", "moon_umbra_radius",
+	"moon_penumbra_radius"]
 const LOBE_SWAP_DOT := 0.99
 ## frame_sky_needed thresholds (estimates; see FW-MOON-06d evidence).
 const FRAME_SKY_MIN_LOG := 0.004
@@ -680,6 +682,9 @@ static func frame_state(now: Dictionary, next: Dictionary, f: float) -> Dictiona
 		out.moon_render_to_body = (now.moon_render_to_body as Basis).slerp(next.moon_render_to_body as Basis, f)
 	var lst := float(now.lst_deg)
 	out.lst_deg = lst + (fposmod(float(next.lst_deg) - lst + 180.0, 360.0) - 180.0) * f
+	if now.get("moon_eclipse", false) and next.get("moon_eclipse", false): # FW-MOON-10: the shadow edge moves smoothly
+		out.moon_shadow_offset = (now.moon_shadow_offset as Vector3).lerp(next.moon_shadow_offset, f)
+		out.moon_shadow_axis = (now.moon_shadow_axis as Vector3).slerp(next.moon_shadow_axis, f)
 	if now.light_source == next.light_source:
 		var c0: Color = (now.light_color as Color).srgb_to_linear()
 		var c1: Color = (next.light_color as Color).srgb_to_linear()

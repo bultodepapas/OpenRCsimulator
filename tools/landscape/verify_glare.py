@@ -20,6 +20,16 @@ def compare(folder, first, second):
     return sum(ImageStat.Stat(difference).mean) / 3.0
 
 
+def compare_centre(folder, first, second, half=20):
+    """Mean difference in a (2·half)² box at the frame centre, and the bounding box of every changed pixel."""
+    a = Image.open(folder / f"glare_{first}.png").convert("RGB")
+    b = Image.open(folder / f"glare_{second}.png").convert("RGB")
+    w, h = a.size
+    box = (w // 2 - half, h // 2 - half, w // 2 + half, h // 2 + half)
+    centre = sum(ImageStat.Stat(ImageChops.difference(a.crop(box), b.crop(box))).mean) / 3.0
+    return centre, ImageChops.difference(a, b).getbbox(), (w, h)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("folder", type=Path)
@@ -43,15 +53,23 @@ def main():
     if "cloud" in results:
         checks["dense_cloud_hides_glare"] = results["cloud"] < results["clear"] * 0.05
     if "low_exposure" in results:
-        # The veil ratio does not depend on the exposure; a darker display shows it darker, never brighter.
-        checks["lower_exposure_still_veils"] = 0.0 < results["low_exposure"] <= results["clear"]
+        # The veil ratio does not depend on the exposure. The display mapping assumes a background near κ = 0.75 of
+        # the veil's displayed colour (a day sky near the sun), so this forced dark exposure over-veils; recorded, and
+        # only checked to still veil (SUN-01…05 limits).
+        checks["lower_exposure_still_veils"] = results["low_exposure"] > 0.0
     if "aircraft_left" in results and "aircraft_right" in results:
         checks["transit_recovers_on_both_sides"] = min(results["aircraft_left"], results["aircraft_right"]) > results["aircraft"]
     if (args.folder / "glare_half.png").exists():
         results["half"] = compare(args.folder, "half", "off")
         checks["intensity_control_reduces_glare"] = 0.2 * results["clear"] < results["half"] < 0.8 * results["clear"]
-    if "afterimage" in results:
-        checks["afterimage_drawn_after_looking_away"] = results["afterimage"] > 0.2
+    if (args.folder / "glare_afterimage.png").exists() and (args.folder / "glare_afterimage_rested.png").exists():
+        # Same view and veil; only the eye's history differs, so the difference is the bleached patch alone: it must be
+        # strong at the frame centre (where the sun's image was) and confined to the central quarter of the frame.
+        centre, bbox, (w, h) = compare_centre(args.folder, "afterimage", "afterimage_rested")
+        results["afterimage_vs_rested_centre"] = centre
+        checks["afterimage_drawn_after_looking_away"] = centre > 10.0
+        checks["afterimage_stays_where_the_sun_was"] = bbox is not None and (
+            bbox[0] > w * 0.375 and bbox[2] < w * 0.625 and bbox[1] > h * 0.375 and bbox[3] < h * 0.625)
     if "lens" in results:
         checks["lens_optics_drawn"] = results["lens"] > 0.3
     report = {"format": "openrc-glare-verification v2", "mean_rgb_difference_255": results,

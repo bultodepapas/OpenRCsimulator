@@ -55,11 +55,12 @@ const LIMB_V := -0.23
 ## Aureole: Krisciunas & Schaefer's (1991) aerosol scattering, anchored to the sun's own illuminance at the ground
 ## (B/E = f(ρ)·(1 − 10^(−0.4·k·X))·NL_PER_FC_TO_SR, B in nL and E in fc → sr⁻¹), not to the zenith: this sky's disc
 ## is ~10⁴ times dimmer than the real one, so the shader then compresses the aureole against the disc
-## (aureole / (1 + aureole / (AUREOLE_DISC_SHARE·disc))) and a low reddened disc stays visible inside its glow.
+## (aureole / (1 + aureole / (AUREOLE_DISC_SHARE·disc))): below the disc's limb-darkened edge, so a low reddened disc
+## stays distinct inside its glow (0.8 dissolved the golden-hour disc in captures).
 const NL_PER_FC_TO_SR := 2.957e-7 # 1 nL = 3.183·10⁻⁶ cd/m²; 1 fc = 10.764 lx
 const KS91_AEROSOL_NORM := 1412537.5 # 10^6.15: the shader's shape is f(ρ)/10^6.15
 const AUREOLE_K := 0.2 # V extinction per airmass (the stars' and the moon aureole's value)
-const AUREOLE_DISC_SHARE := 0.8
+const AUREOLE_DISC_SHARE := 0.4
 ## Inside this angle the aureole is flat: the dim LDR disc cannot carry KS91's ρ⁻² peak.
 const AUREOLE_CORE_DEG := 1.0
 
@@ -68,16 +69,18 @@ const AUREOLE_CORE_DEG := 1.0
 const HORIZON_PRIOR_DEG := 3.0
 
 ## Afterimage (photostress): the bleached patch of retina where the sun's image fell, as a dose D in [0, 1] driven by the
-## sun's illuminance e relative to the calibrated day sun (illuminance_scale): dD/dt = e·(1 − D)/BLEACH_S − D/RECOVER_S, on simulation
-## time (the form of Ritschel & Eisemann 2012). The sun is ~58 times the 1 s afterimage threshold for a 0.15 s glance
-## (Ho et al. 2011), so bleaching takes a fraction of a second; acuity returns within 5–30 s (clinical photostress
-## recovery < 30 s), so the patch's masking fades with 8 s (estimate; its faint minutes-long tail is not drawn).
-const AFTER_BLEACH_S := 0.25
+## sun's illuminance e relative to the calibrated day sun (illuminance_scale): dD/dt = e·(1 − D)/BLEACH_S − D/RECOVER_S,
+## on simulation time (the form of Ritschel & Eisemann 2012). Cones half-bleach at ~2·10⁴ td in steady state with
+## pigment regeneration τ ≈ 90 s, i.e. ~2·10⁶ td·s per e-fold; the sun's image is ~8·10⁹ td, so it bleaches in
+## ~0.2 ms and its ~1° halo of scattered light (~10⁻³ of it) in ~0.2 s (SUN-00 §2). A cell covering disc and halo is
+## given 0.05 s (estimate): any passage of the sun's image bleaches its path, a 0.15 s glance leaves an afterimage
+## (Ho et al. 2011), and a dimmer sun (sunset, thin cloud) needs proportionally longer. Acuity returns within 5–30 s
+## (clinical photostress recovery < 30 s), so masking fades with 8 s (estimate; the minutes-long faint tail is not drawn).
+const AFTER_BLEACH_S := 0.05
 const AFTER_RECOVER_S := 8.0
-## The patch's angular radius (rad): the 0.27° disc smeared by fixational eye movements, then widened by any motion of
-## the sun's image across the retina during the exposure (dose-weighted spread), capped.
+## The bleached spot's angular radius (rad): the 0.27° disc plus the ~1° halo of scattered light that is also above the
+## afterimage threshold (SUN-00 §2.1).
 const AFTER_BASE_RADIUS := 0.02
-const AFTER_MAX_RADIUS := 0.09
 ## The sun only marks the retina inside the eye's field: full up to FIELD_FULL_DEG from the gaze, none past
 ## FIELD_NONE_DEG (brow and nose; estimates).
 const FIELD_FULL_DEG := 50.0
@@ -110,12 +113,15 @@ static func glare_excess(theta_deg: float, age := OBSERVER_AGE, pigment := OBSER
 	return glare_spread(theta_deg, age, pigment) - glare_spread(VEIL_CUT_DEG, age, pigment)
 
 
-## The veil over the luminance behind a target at `theta_deg` for a sun of `e_over_b` (E/B in sr, already multiplied
-## by visibility, clouds and the user's strength); `aureole_coeff` is aureole_background_coeff() for the sun's
-## elevation and the air (0 = sky only).
-static func veil_ratio(theta_deg: float, e_over_b: float, aureole_coeff := 0.0) -> float:
+## The veil over the luminance behind a target at `theta_deg`. `e_over_b`: the straylight's source, E/B in sr times the
+## disc's visible fraction, clouds and the user's strength. `background_e_over_b`: the aureole behind the target, which is
+## sky light and does not change when a model covers part of the disc or the strength is lowered (E/B times clouds;
+## negative = the same as `e_over_b`). `aureole_coeff`: aureole_background_coeff() for the sun's elevation and the air
+## (0 = sky only).
+static func veil_ratio(theta_deg: float, e_over_b: float, aureole_coeff := 0.0, background_e_over_b := -1.0) -> float:
 	var e := maxf(e_over_b, 0.0) if is_finite(e_over_b) else 0.0
-	return e * glare_excess(theta_deg) / (1.0 + e * aureole_background(theta_deg, aureole_coeff))
+	var b := e if background_e_over_b < 0.0 or not is_finite(background_e_over_b) else background_e_over_b
+	return e * glare_excess(theta_deg) / (1.0 + b * aureole_background(theta_deg, aureole_coeff))
 
 
 ## The aureole's luminance per unit sun illuminance (sr⁻¹) at `theta_deg`, above its 45° value: KS91's aerosol shape
@@ -236,75 +242,65 @@ static func field_weight(gaze_angle_rad: float) -> float:
 	return 1.0 - smoothstep(deg_to_rad(FIELD_FULL_DEG), deg_to_rad(FIELD_NONE_DEG), gaze_angle_rad)
 
 
-## The eye keeps up to AFTER_PATCHES separate patches (several glances, or the sun's image jumping across the retina
-## when the view swings); a new exposure joins the nearest patch within AFTER_MERGE_RAD, otherwise it starts a patch
-## in place of the weakest.
-const AFTER_PATCHES := 3
-const AFTER_MERGE_RAD := 0.05
+## The bleached retina as fixed cells of AFTER_BASE_RADIUS (view space, fixed to the gaze). The sun's image adds dose
+## to every cell near it, weighted by a Gaussian of its distance; where no cell lies within AFTER_MERGE_RAD a new one
+## starts, so a sun sweeping across the view leaves a chain of cells (a streak) and a steady one saturates a single
+## cell. At most AFTER_PATCHES cells; when all are visible a longer sweep stops leaving new ones.
+const AFTER_PATCHES := 8
+const AFTER_MERGE_RAD := 0.02
+## Below this dose a cell's masking is under ~5 %: it may give its place to a new one.
+const AFTER_EVICT_DOSE := 0.05
 
 
-## A rested eye's afterimage state: patches of {dose, dir (unit, view space; camera −z forward), spread (rad²), radius}.
+## A rested eye's afterimage state: cells of {dose, dir (unit, view space; camera −z forward)}.
 static func afterimage_rest() -> Dictionary:
 	return {patches = []}
 
 
-## Advances the afterimage by `dt` seconds of a constant sun of illuminance `e` (relative to the day sun,
-## already weighted by visibility, clouds and the eye's field) whose image falls at `sun_view` (unit, view space).
-## Exact for constant input, so the result does not depend on the frame rate. Returns a new state.
+## Advances the afterimage by `dt` seconds of a constant sun of illuminance `e` (relative to the day sun, already
+## weighted by visibility, clouds and the eye's field) whose image falls at `sun_view` (unit, view space). Exact for
+## constant input, so the result does not depend on the frame rate. Returns a new state.
 static func afterimage_step(state: Dictionary, dt: float, e: float, sun_view: Vector3) -> Dictionary:
 	var patches: Array = (state.get("patches", []) as Array).duplicate(true)
 	if not (dt > 0.0) or not is_finite(dt):
 		return {patches = patches}
 	var exposing := is_finite(e) and e > 0.0 and sun_view.is_finite() and sun_view.length_squared() > 0.0
 	var s := sun_view.normalized() if exposing else Vector3(0.0, 0.0, -1.0)
-	var target := -1
 	if exposing:
-		var nearest := AFTER_MERGE_RAD
-		for i in patches.size():
-			var angle: float = (patches[i].dir as Vector3).angle_to(s)
-			if angle <= nearest:
-				nearest = angle
-				target = i
-		if target < 0:
+		var nearest := INF
+		for patch: Dictionary in patches:
+			nearest = minf(nearest, (patch.dir as Vector3).angle_to(s))
+		if nearest > AFTER_MERGE_RAD:
+			# A full eye only gives up a cell that no longer shows: a visible patch never vanishes mid-sweep.
 			if patches.size() >= AFTER_PATCHES:
 				var weakest := 0
 				for i in patches.size():
 					if float(patches[i].dose) < float(patches[weakest].dose):
 						weakest = i
-				patches.remove_at(weakest)
-			patches.append({dose = 0.0, dir = s, spread = 0.0, radius = AFTER_BASE_RADIUS})
-			target = patches.size() - 1
-	var kept_patches: Array = []
-	for i in patches.size():
-		var patch: Dictionary = patches[i]
-		var next := _patch_step(patch, dt, e if i == target else 0.0, s)
-		if float(next.dose) > 1e-4 or i == target:
-			kept_patches.append(next)
-	return {patches = kept_patches}
+				if float(patches[weakest].dose) < AFTER_EVICT_DOSE:
+					patches.remove_at(weakest)
+			if patches.size() < AFTER_PATCHES:
+				patches.append({dose = 0.0, dir = s})
+	var kept: Array = []
+	for patch: Dictionary in patches:
+		var weight := 0.0
+		if exposing:
+			var x := (patch.dir as Vector3).angle_to(s) / AFTER_BASE_RADIUS
+			weight = exp(-x * x)
+		var out := patch.duplicate()
+		out.dose = bleach(float(patch.dose), dt, e * weight)
+		if float(out.dose) > 1e-4 or weight > 0.5:
+			kept.append(out)
+	return {patches = kept}
 
 
-static func _patch_step(patch: Dictionary, dt: float, e: float, s: Vector3) -> Dictionary:
-	var out := patch.duplicate()
+## One cell's dose after `dt` seconds of constant illuminance `e`: the exact solution of
+## dD/dt = e·(1 − D)/AFTER_BLEACH_S − D/AFTER_RECOVER_S.
+static func bleach(dose: float, dt: float, e: float) -> float:
 	var rate_in := maxf(e, 0.0) / AFTER_BLEACH_S
 	var k := rate_in + 1.0 / AFTER_RECOVER_S
-	var d0 := float(patch.dose)
 	var target := rate_in / k
-	var d1 := target + (d0 - target) * exp(-k * dt)
-	var kept := d0 * exp(-dt / AFTER_RECOVER_S) # what is left of the old patch
-	var added := maxf(d1 - kept, 0.0)
-	out.dose = clampf(d1, 0.0, 1.0)
-	if added > 0.0:
-		var old_dir: Vector3 = patch.dir
-		var mixed := old_dir * kept + s * added
-		var new_dir := mixed.normalized() if mixed.length_squared() > 1e-24 else s
-		# Dose-weighted angular spread (rad²) about the new centre: the image's motion during the exposure.
-		var a_old := old_dir.angle_to(new_dir)
-		var a_new := s.angle_to(new_dir)
-		var spread := (kept * (float(patch.spread) + a_old * a_old) + added * a_new * a_new) / maxf(kept + added, 1e-30)
-		out.dir = new_dir
-		out.spread = spread
-		out.radius = minf(sqrt(AFTER_BASE_RADIUS * AFTER_BASE_RADIUS + spread), AFTER_MAX_RADIUS)
-	return out
+	return clampf(target + (dose - target) * exp(-k * dt), 0.0, 1.0)
 
 
 ## The masking alpha of each patch (AFTER_PATCHES entries, zero-padded).

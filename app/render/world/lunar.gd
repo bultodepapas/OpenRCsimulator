@@ -262,6 +262,63 @@ static func _eclipse(sun_g: PackedFloat64Array, moon_g: PackedFloat64Array, to_n
 	}
 
 
+## FW-MOON-10: the sunlight reaching a point of the moon `d` moon radii from the shadow axis, per channel (R, G, B at
+## about 612, 550 and 465 nm), relative to the uneclipsed moon. Umbra and penumbra radii are in moon radii.
+## Penumbra: the visible fraction of the solar disc behind Earth's limb, which is nearly straight at the sun's size:
+## f = (π − acos t + t·√(1 − t²)) / π with t = 2·(d − r_u)/(r_p − r_u) − 1 (solar limb darkening ignored).
+## Umbra: refracted sunlight as Ugolnikov, Maslov & Korotkiy measured it during the deep 15 June 2011 eclipse (arXiv
+## 1106.6178, Fig. 2, outer western umbra at 677 and 503 nm, read to about ±0.1 dex; the deepest 503 nm parts from
+## their text, ~10⁻⁶), against u = d/r_u, interpolated in log brightness to each channel's wavelength. The larger of
+## the two joins them continuously at the umbra's edge. One eclipse's air: real eclipses vary (Danjon L 0–4).
+const UMBRA_U := [0.0, 0.18, 0.25, 0.41, 0.52, 0.62, 0.79, 0.9, 1.0]
+const UMBRA_LOG_677 := [-3.74, -3.74, -3.80, -3.52, -3.40, -3.26, -2.82, -2.6, -2.0]
+const UMBRA_LOG_503 := [-6.0, -5.6, -5.45, -5.1, -4.8, -4.3, -3.52, -2.9, -2.0]
+## Each channel's weight on the 677 nm curve against the 503 nm one: (λ − 503)/(677 − 503).
+const UMBRA_CHANNEL_W := [0.63, 0.27, -0.22]
+
+
+static func eclipse_transmission(d: float, umbra: float, penumbra: float) -> Vector3:
+	if d >= penumbra or penumbra <= umbra:
+		return Vector3.ONE
+	var t := clampf(2.0 * (d - umbra) / (penumbra - umbra) - 1.0, -1.0, 1.0)
+	var visible := (PI - acos(t) + t * sqrt(maxf(1.0 - t * t, 0.0))) / PI
+	var u := clampf(d / maxf(umbra, 1e-6), 0.0, 1.0)
+	var i := 0
+	while i < UMBRA_U.size() - 2 and u > float(UMBRA_U[i + 1]):
+		i += 1
+	var k := (u - float(UMBRA_U[i])) / (float(UMBRA_U[i + 1]) - float(UMBRA_U[i]))
+	var l677 := lerpf(float(UMBRA_LOG_677[i]), float(UMBRA_LOG_677[i + 1]), k)
+	var l503 := lerpf(float(UMBRA_LOG_503[i]), float(UMBRA_LOG_503[i + 1]), k)
+	var out := Vector3.ZERO
+	for c in 3:
+		var w: float = UMBRA_CHANNEL_W[c]
+		out[c] = maxf(visible, pow(10.0, l503 + w * (l677 - l503)))
+	return out
+
+
+## FW-MOON-10: the eclipse's transmission averaged over the moon's disc (area-weighted: the full moon is flat), per
+## channel; (1, 1, 1) outside the penumbra. Points of the disc are taken in the plane across the shadow axis, which
+## the line of sight nearly follows at an eclipse (the full moon is within a degree of the anti-solar point).
+static func eclipse_disc_factor(eclipse: Dictionary) -> Vector3:
+	if eclipse.is_empty() or float(eclipse.get("penumbral_magnitude", NO_ECLIPSE)) <= 0.0:
+		return Vector3.ONE
+	var offset: PackedFloat64Array = eclipse.offset_ned
+	var o := _norm(offset)
+	var umbra := float(eclipse.umbra_radius)
+	var penumbra := float(eclipse.penumbra_radius)
+	var total := Vector3.ZERO
+	var weight := 0.0
+	var rings := 24
+	var spokes := 48
+	for ri in rings:
+		var r := (ri + 0.5) / rings
+		for si in spokes:
+			var phi := TAU * (si + 0.5) / spokes
+			total += eclipse_transmission(sqrt(o * o + r * r + 2.0 * o * r * cos(phi)), umbra, penumbra) * r
+			weight += r
+	return total / weight
+
+
 ## Upper-limb elevation and wrapped topocentric hour angle (degrees) for event searches; cheaper than at_jd().
 static func _horizon_sample(jd: float, lat: float, lon: float) -> Dictionary:
 	var m := Ephemeris.moon(jd)

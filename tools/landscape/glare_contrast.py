@@ -42,10 +42,11 @@ def aureole(theta_deg, coeff):
     return ((max(near, far) if theta_deg < 30.0 else far) - 10.0 ** (6.15 - 45.0 / 40.0)) * coeff
 
 
-def predicted(theta_deg, e_over_b, coeff):
-    """1 / (1 + r) for the steady veil; the capture's glare_strength is the sun's E/B (sr) with clouds and strength."""
+def predicted(theta_deg, e_over_b, coeff, background):
+    """1 / (1 + r) for the steady veil: glare_strength is the straylight's E/B (clouds, strength, skyline prior),
+    background_scale the aureole's (E/B with clouds only)."""
     excess = 0.0 if theta_deg >= CUT_DEG else spread(theta_deg) - spread(CUT_DEG)
-    return 1.0 / (1.0 + e_over_b * excess / (1.0 + e_over_b * aureole(theta_deg, coeff)))
+    return 1.0 / (1.0 + e_over_b * excess / (1.0 + background * aureole(theta_deg, coeff)))
 
 
 def load(folder, name):
@@ -98,7 +99,8 @@ def main():
                "background_display": float(luma(hidden)[mask].mean())}
         if tag.startswith("glare_offset_"):
             row["angle_deg"] = float(tag.removeprefix("glare_offset_"))
-            row["predicted_retained"] = predicted(row["angle_deg"], strength, coeff)
+            row["predicted_retained"] = predicted(row["angle_deg"], strength, coeff,
+                                                  float(case.get("glare_background_scale", strength)))
             rows.append(row)
         else:
             crossings[tag] = row
