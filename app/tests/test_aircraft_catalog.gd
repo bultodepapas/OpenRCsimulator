@@ -55,6 +55,7 @@ func _initialize() -> void:
 		str(airplane_families))
 	_check("nine simulated entries include the experimental helicopter", Catalog.flyable_ids().size() == 9 and Catalog.flyable_ids().has("xcell-60-research")
 		and Catalog.flyable_entries().all(func(e): return e.data != "" and e.status != Catalog.PREVIEW), str(Catalog.flyable_ids()))
+	_check("Extra's finite glow store is exposed to fill selection", Catalog.has_finite_fuel(AirplaneBuilder.EXTRA_ID))
 	var helicopter_entry: Dictionary = Catalog.entry("xcell-60-research")
 	_check("research helicopter catalog identity and visual family are explicit",
 		helicopter_entry.get("vehicle", "") == "rotorcraft"
@@ -168,18 +169,18 @@ func _initialize() -> void:
 				standard_radius * diameter_m / float(StikGeometry.DATA.equipment.prop_diameter)))
 	standard_airplane.root.free()
 
-	# Extra specifics: the manual's EMPTY-TANK balance point is model z 0. The loaded CG moves when the prescribed
-	# fuel is added (EX-06). The throws remain the model team's manual-rate conversion.
+	# Extra specifics: the manual's EMPTY-TANK balance point is model z 0. The loaded CG moves when the full finite
+	# glow tank is added (EX-06). The throws remain the model team's manual-rate conversion.
 	var extra: Dictionary = AircraftData.load_file(Catalog.entry(AirplaneBuilder.EXTRA_ID).data).model
 	var datum := AirplaneBuilder.datum(AirplaneBuilder.EXTRA_ID)
 	var cg := Frames.cg_in_model_frame(extra.cg_le, datum.x, datum.y)
 	var raw_extra: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(AirplaneBuilder.EXTRA_ID).data))
 	var fuel_model_moment := 0.0
 	for component: Dictionary in raw_extra.inventory:
-		if component.name == "fuel (half tank)":
+		if component.id == "fuel_flight":
 			fuel_model_moment += float(component.mass.value) * (float(component.position.value[0]) + datum.x)
 	var expected_loaded_z: float = fuel_model_moment / extra.mass_kg # Dry mass has zero moment about model z=0.
-	_check("Extra: loaded CG = dry manual station plus prescribed fuel within 1 mm",
+	_check("Extra: loaded CG = dry manual station plus full finite glow fuel within 1 mm",
 		absf(cg.z - expected_loaded_z) < 0.001 and cg.z < 0.0, "z %.5f m, expected %.5f m" % [cg.z, expected_loaded_z])
 	var manual := Extra.manual_throws_deg()
 	var same := true
@@ -197,7 +198,8 @@ func _initialize() -> void:
 	await process_frame # ready (and session created) by the first frame
 	_check("flight scene: Extra model and Extra physics together", flight._airplane.aircraft_id == AirplaneBuilder.EXTRA_ID and flight.session.aircraft.model.id == AirplaneBuilder.EXTRA_ID)
 	_check("flight scene: trimmed at the Extra's start speed", is_equal_approx(float(flight.session.start.V), float(extra.start_speed)), str(flight.session.start.V))
-	_check("flight scene: trace header names the Extra and its speed", str(flight._trace_meta().aircraft).begins_with(AirplaneBuilder.EXTRA_ID) and str(flight._trace_meta().scenario).contains("17.0 m/s"),
+	_check("flight scene: trace header names the Extra and its speed", str(flight._trace_meta().aircraft).begins_with(AirplaneBuilder.EXTRA_ID)
+		and str(flight._trace_meta().scenario).contains("%.1f m/s" % float(extra.start_speed)),
 		str(flight._trace_meta().scenario))
 	flight.free()
 

@@ -39,6 +39,13 @@ def fixture(name: str) -> dict:
 
 
 class AircraftMigration(unittest.TestCase):
+    def test_current_extra_finite_glow_v2_is_idempotent(self):
+        source = json.loads((ROOT / "app/data/aircraft/gp_extra_300s_60.json").read_text(encoding="utf-8"))
+        self.assertEqual(upgrade(source), source)
+        self.assertEqual(source["capabilities"]["energy"], "finite_glow_fuel")
+        self.assertEqual(source["propulsion"]["engine"]["glow_installation"],
+                         "res://data/glow/extra_61fx_2t.json")
+
     def test_current_retractable_jet_v2_is_idempotent_without_changing_v1_policy(self):
         source = json.loads((ROOT / "app/data/aircraft/sebart_avanti_s_a200.json").read_text(encoding="utf-8"))
         self.assertEqual(upgrade(source), source)

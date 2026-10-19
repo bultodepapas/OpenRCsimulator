@@ -1,0 +1,78 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   Club field remains first and default
+ok   unknown IDs do not resolve
+ok   missing preferences retain Club field
+ok   invalid preference falls back: missing
+ok   invalid preference falls back: 7
+ok   invalid preference falls back: true
+ok   Green field validates
+ok   Green contains one flat grass plane
+ok   Green has independent nodes and materials
+ok   Green has no lake or obstacle inventory
+ok   Green supports shared lighting updates
+ok   Green night has no club fixtures
+WARNING: Tree wind is disabled for maple_tree because source material -9223371839621822392 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:384)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:82)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:275)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:271)
+       [12] _ready (res://app_root.gd:211)
+       [13] _run (res://tests/test_landscapes.gd:76)
+ok   fresh Home preserves Club runway launch
+ok   landscape selector is reachable by keyboard
+ok   keyboard switches Home to Green
+ok   selection is saved
+ok   Green explains the unavailable Natural Random activity
+ok   Green cannot enter a default-field scenario
+ok   previous Home world is released
+ok   save capture green-home.png
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   green_paradise flight loads
+ok   green_paradise flight shares the selected field
+ok   green_paradise visual and physical worlds agree
+ok   active flight cannot change landscape
+ok   green_paradise simulation advances
+ok   Green has no club lights or campfire
+ok   save capture green_paradise-flight.png
+ok   green_paradise restart retains landscape
+ok   green_paradise returns to matching Home
+ok   keyboard switches back to Club
+ok   Club restores Natural Random availability
+ok   save capture club-home.png
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   club_field flight loads
+ok   club_field flight shares the selected field
+ok   club_field visual and physical worlds agree
+ok   active flight cannot change landscape
+ok   club_field simulation advances
+ok   save capture club_field-flight.png
+ok   club_field restart retains landscape
+ok   club_field returns to matching Home
+ok   Green helicopter offers hover without a pad
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   green_paradise flight loads
+ok   green_paradise flight shares the selected field
+ok   green_paradise visual and physical worlds agree
+ok   active flight cannot change landscape
+ok   green_paradise simulation advances
+ok   Green has no club lights or campfire
+ok   save capture green-helicopter.png
+ok   green_paradise restart retains landscape
+ok   green_paradise returns to matching Home
+ok   Home retains Green after helicopter flight
+ok   landscape selector translates its label
+ok   relaunch restores Green field and selection
+ok   unknown selection preserves Home
+54 landscape checks, 0 failed

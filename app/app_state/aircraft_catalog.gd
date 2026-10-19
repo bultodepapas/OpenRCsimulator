@@ -61,7 +61,7 @@ const ENTRIES := [
 		name = "Great Planes Extra 300S .60",
 		summary = "Low-wing aerobat · 1.63 m · .61 glow",
 		status = EXPERIMENTAL,
-		status_note = "Experimental: first physics estimate from the plans, not yet flight-tested.",
+		status_note = "Experimental finite MAX-61FX glow installation from the NITRO candidate profile; Extra-specific fuel-feed calibration is unavailable, and physical validation is pending.",
 		data = "res://data/aircraft/gp_extra_300s_60.json",
 	},
 	{

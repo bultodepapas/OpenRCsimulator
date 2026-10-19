@@ -58,7 +58,7 @@ def left_to_right_sum(values):
         total += value
     return total
 
-def installation(two, diameter=13, pitch=6, fx61=False):
+def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True):
     family = 'glow_2t' if two else 'glow_4t'
     settings = {
         'idle_admission': q(.28 if two else .35),
@@ -99,7 +99,8 @@ def installation(two, diameter=13, pitch=6, fx61=False):
                     'induced_drag':q(.06 if two else .075, source=EST if two else
                         EST+'; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit'),
                 })
-    out['fuel_feed'] = fuel_feed(two)
+    if include_feed:
+        out['fuel_feed'] = fuel_feed(two)
     return out
 
 FEED = ('NITRO-05 estimate: fuel-feed pressure at the spray bar (carburetor suction plus tank pressurization); '
@@ -249,6 +250,10 @@ def outputs():
     install=installation(True,12,6,fx61=True)
     out[ROOT/'app/data/glow'/'stik_61fx_2t.json']=install
     out[ROOT/'app/data/aircraft'/'stik_glow_61fx_2t.json']=aircraft(True,install,'',fx61=True)
+    # The Extra uses the same MAX-61FX candidate and 12x6 prop diameter, but
+    # its carburetor location is not established by the Stik render. Omit the
+    # optional feed block until Extra-specific source/measurement exists.
+    out[ROOT/'app/data/glow'/'extra_61fx_2t.json']=installation(True,12,6,fx61=True,include_feed=False)
     return out
 
 def render_json(value):

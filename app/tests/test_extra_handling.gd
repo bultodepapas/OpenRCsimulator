@@ -42,6 +42,11 @@ func _initialize() -> void:
 	session.setup(Catalog.entry(EXTRA).data)
 	root.add_child(session)
 	_check("Extra data loads and trims at its own start speed", session.aircraft.ok and session.start.get("ok", false), str(session.start.get("V", "?")))
+	var glow: Dictionary = session.aircraft.model.get("propulsion", {}).get("glow", {})
+	_check("Extra session attaches its finite 61FX glow profile and full tank", not glow.is_empty()
+		and is_equal_approx(float(glow.get("fuel_start_fill", 0.0)), 1.0)
+		and is_equal_approx(float(glow.get("capacity_fuel_kg", 0.0)), float(glow.get("fuel_tank", {}).get("capacity_kg", -1.0))),
+		str(glow.get("fuel_tank", {})))
 	if not session.aircraft.ok:
 		print("%d checks, %d failed" % [_count, _failures + 1])
 		quit(1)

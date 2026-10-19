@@ -88,6 +88,33 @@ Callback timestamps are not USB polling intervals or physical stick-to-screen la
 
 Weather and time controls: [wind](research/wind-implementation/README.md), [atmosphere](research/atmosphere/M5-ATM-2/README.md), [time of day](research/time-of-day-investigations/TOD-05/README.md). Direct examples: `--weather=gusty`, `--weather=turbulent`, `--weather=hot-high`, or `--time-of-day=05:45 --date=2026-03-20`. Home edits persist; direct routes do not use preferences. `app/tests/check_wind_trace.py` and `check_atmosphere_trace.py` validate the corresponding trace formats. For direct v11 standard-column reading, run `python3 app/tests/check_atmosphere_trace.py TRACE.csv --column`; this lane accepts only the calm preset (zero wind, gust and turbulence), not arbitrary weather-v4 settings. Without `--column`, the atmosphere reader retains its custom-atmosphere v6/v10 path.
 
+## Aircraft Workshop
+
+The [Workbench guide](AIRCRAFT-WORKSHOP.md) owns the workflow, supported adjustments and evidence map; the [AE plan](plans/aircraft-editor.md) owns pending integration gates. Run these read-only checks from the repository root:
+
+```sh
+python3 research/aircraft-standardization/build_models.py --check
+python3 research/aircraft-editor/build_descriptors.py --check
+python3 research/aircraft-editor/test_descriptor_checkout.py
+```
+
+The checkout test creates and removes disposable Git fixture repositories, including fixture commits, under ignored `.tools/`; it never stages or commits the working repository. It checks LF/CRLF checkouts and generator consistency. A descriptor rejection must be resolved in the owning aircraft/module pipeline; do not weaken assertions or hand-edit generated descriptors.
+
+After intentionally changing aircraft/model sources through their owning generators, regenerate model manifests with `python3 research/aircraft-standardization/build_models.py`, then descriptors with `python3 research/aircraft-editor/build_descriptors.py`, and repeat the checks above. Exact aircraft bytes and model-manifest hashes are inputs; honor `.gitattributes` before regenerating. [Byte/EOL lesson](LEARNINGS.md#2026-10-13--cr-01d--run-a-generators---check-at-head-before-regenerating).
+
+`app/test.sh` runs the six focused suites as part of the full suite. For native Windows, import first using [developer setup](#developer-setup), then run all six:
+
+```powershell
+# $GodotWindows is the matching native console executable from developer setup.
+Get-ChildItem app/tests/test_workshop_*.gd | Sort-Object Name | ForEach-Object {
+    & $GodotWindows --headless --path app --audio-driver Dummy --script ("res://tests/" + $_.Name)
+}
+```
+
+Inspect each suite's assertions and engine errors as well as exit status. Focused passes do not replace the descriptor check, full app suite or physical/pilot acceptance.
+
+For a native rendered still, run `research/aircraft-editor/capture_workshop.gd` as Godot's `--script` with `--path app` and an absolute script path. User arguments after `--` are `--language=en` or `es`, `--scale=<factor>`, optional `--1080p`, and `--out=<PNG-path>` (default `user://workshop-review.png`). It uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+
 ## Aircraft measurement reducers
 
 All reducers are offline Python tools. They consume observations and do not rewrite flight data. Their examples are synthetic; physical campaigns need raw records, configuration, calibration and uncertainty.

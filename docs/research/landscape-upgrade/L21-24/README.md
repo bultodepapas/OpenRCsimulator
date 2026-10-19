@@ -7,11 +7,12 @@ the [implementation plan](../../../plans/landscape-selection.md) owns remaining 
 | Check | Result |
 | --- | --- |
 | Native `test_landscapes.gd` | 54 checks, zero failures; keyboard Club → Green → Club, saved relaunch, independent resources, night isolation, advancing fixed-wing/helicopter flights and restart. |
+| Headless `test_landscapes.gd` | 49 checks, zero failures; includes the Natural Random availability guard. |
 | `test_field_integration.gd` | Passed; customized-field injection and original default data preserved. |
 | `test_world_flow.gd`, `test_ui_time_of_day.gd` | Passed; existing world flow and lighting UI retained. |
 | Direct launches | Club and Green produce 61-row traces; unknown landscape exits 31 without a trace. Default and explicit Club traces match except `created_utc`, including identical simulation rows. |
 | Exported Windows resource pack | Both landscapes fly from a pack mounted in an empty host project, producing 25-row traces. `check_field_pack.gd` validates both registered fields and existing field resources with zero engine errors. |
-| Full fleet `test_ui_runway.gd` | Recheck pending after concurrent fuel/schema edits; the initial run refused P-51/jet energy capability values and a Timber battery-template hash. These paths were not changed by landscape work. |
+| Full fleet `test_ui_runway.gd` | Final run has one failed assertion: Timber launch is refused because its battery-template bytes do not match the pack's pinned hash. P-51/jet checks pass. Aircraft/battery data was concurrently edited and is outside this change. |
 
 The native captures are unedited test output. Home views verify selection presentation;
 flight overviews use a temporary camera at render (0, 85, 120) looking at (0, 0, −90).

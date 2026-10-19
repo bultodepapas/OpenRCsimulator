@@ -30,11 +30,11 @@ if str(FUEL_DIR) not in sys.path:
     sys.path.insert(0, str(FUEL_DIR))
 import fuel_registry  # noqa: E402
 
-# FUEL-05b: the manual's 12 oz tank, the registry glow blend, a fixed half tank (prescribed fuel: no burn).
+# FUEL-08: the manual's 12 oz tank and registry glow blend; finite-glow sessions default to the full tank (D4).
 TANK_L = 0.355
 TANK_SOURCE = "manual p3 GPMQ4105 12 oz tank (12 US fl oz = 0.355 l)"
 GLOW_BLEND = "glow_10n_18castor"
-FIXED_FILL = 0.5
+START_FILL = 1.0
 
 GEOMETRY = ROOT / "assets/aircraft/extra-300s-60/geometry.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
@@ -68,6 +68,16 @@ def q(value, unit, kind, source):
     elif isinstance(value, list):
         value = [[round(x, 6) for x in v] if isinstance(v, list) else round(v, 6) for v in value]
     return {"value": value, "unit": unit, "kind": kind, "source": source}
+
+
+def inventory_mass(item):
+    """Keep the full tank mass exactly equal to capacity × registry density."""
+    mass = q(float(item[1]), "kg", item[2], item[3])
+    if item[8] == "fuel_flight":
+        # q() rounds ordinary authored leaves to 6 decimals. Here that would
+        # round 0.3042066 kg above the actual 0.355 l capacity by 0.4 mg.
+        mass["value"] = float(item[1])
+    return mass
 
 
 def shoelace(points):
@@ -129,7 +139,7 @@ note("reference", "quarter-chord sweep (deg)", math.degrees(sweep_qc), "aft posi
 note("reference", "half-chord sweep (deg)", math.degrees(sweep_hc), "")
 
 # Manual p43 setup datum: 4-1/8 in aft of the rib-2D LE, at model z 0 (EX-01 reads 4.116 in).
-# This is the EMPTY-TANK balance target; the prescribed half-tank fuel is added after solving ballast.
+# This is the EMPTY-TANK balance target; finite fuel is added after solving dry ballast.
 cg_target_model_z = 0.0
 cg_target_mac = (cg_target_model_z - mac_le_z) / mac
 note("balance", "manual empty-tank target (% MAC)", 100 * cg_target_mac, "manual p43 first-flight balance point; range +-3/8 in")
@@ -241,7 +251,7 @@ note("aero", "Clda_right (1/rad)", Clda, "strip theory")
 # --- Inventory (le frame) -----------------------------------------------------------------------------------
 fw = g["firewall_z"]
 # CR-22b: which inventory items carry energy (crash fire/smoke presentation only).
-ENERGY_SOURCES = {"fuel (half tank)": "glow_fuel"}
+ENERGY_SOURCES = {"fuel (full tank)": "glow_fuel"}
 items = [
     ("engine O.S. MAX-61FX", 0.55, "manual", "O.S. catalog 17750 (same engine as the Stik); manual p3 prototype engine", le(fw - 0.045), [0.1, 0.05, 0.1], "estimated", "crankcase ~1.8 in ahead of the firewall", "engine_main"),
     ("in-cowl muffler Slimline Pitts #3217", 0.13, "estimated", "manual p3 names it; ~4.5 oz typical for a .61 Pitts-style muffler (no catalog mass found)", le(fw - 0.03, -0.06), None, "estimated", "below the engine inside the cowl", "muffler_main"),
@@ -264,8 +274,8 @@ items = [
     ("fin and rudder, covered", 0.07, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.22, 0.01, 0.3], "derived", "area centroid of the fin polygon", "vertical_tail"),
     ("pushrods, horns, hardware", 0.1, "estimated", "clevises, horns, pushrods, screws: rough sum", le(0.3), None, "estimated", "spread along the fuselage", "control_hardware"),
 ]
-fuel_item = ("fuel (half tank)", TANK_L * 1e-3 * fuel_registry.blend_density(GLOW_BLEND) * FIXED_FILL, "derived",
-             f"FUEL-05b: half of the {TANK_SOURCE} x {fuel_registry.blend_source(GLOW_BLEND)}; prescribed flight state (no consumption)",
+fuel_item = ("fuel (full tank)", TANK_L * 1e-3 * fuel_registry.blend_density(GLOW_BLEND) * START_FILL, "derived",
+             f"FUEL-08: full finite-glow start (D4): {TANK_SOURCE} x {fuel_registry.blend_source(GLOW_BLEND)}; finite 61FX consumption uses the existing NITRO candidate profile",
              le(fw + 0.07), [0.12, 0.065, 0.046], "estimated", "same as the tank; uniform liquid box holding the 0.355 l capacity", "fuel_flight")
 mass0 = sum(i[1] for i in items)
 mom0 = [sum(i[1] * i[4][k] for i in items) for k in range(3)]
@@ -284,7 +294,7 @@ dry_mass = mass0 + mb
 dry_cg = [sum(i[1] * i[4][k] for i in items) / dry_mass for k in range(3)]
 note("balance", "dry balanced reference (kg, CG x_aft m)", [dry_mass, dry_cg[0]], "manual p43 target with empty tank; virtual ballast is derived from the estimated inventory")
 
-# The flight reference adds the same fixed half-tank fuel only after the manual's dry balance condition is met.
+# The finite-glow flight reference adds the full tank only after the manual's dry balance condition is met.
 items.append(fuel_item)
 mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
@@ -292,11 +302,11 @@ cg_model_z, cg_model_y = cg[0] + LE0, cg[2]
 cg_loaded_mac = (cg_model_z - mac_le_z) / mac
 dry_cg_model_z = dry_cg[0] + LE0
 dry_cg_mac = (dry_cg_model_z - mac_le_z) / mac
-note("balance", "loaded half-tank reference (kg, CG x_aft m, CG % MAC)", [mass, cg[0], 100 * cg_loaded_mac], "derived after adding fixed half-tank fuel to the dry manual-balanced inventory; no fuel burn")
-sm = note("aero", "static margin at loaded half-tank CG (% MAC)", 100 * (x_np - cg_model_z) / mac,
-     f"neutral point at model z {x_np:.4f} ({100 * (x_np - mac_le_z) / mac:.1f} % MAC); loaded half-tank CG {100 * cg_loaded_mac:.2f} % MAC")
+note("balance", "loaded full-tank reference (kg, CG x_aft m, CG % MAC)", [mass, cg[0], 100 * cg_loaded_mac], "derived after adding the full finite-glow tank to the dry manual-balanced inventory; consumption changes mass, CG and inertia")
+sm = note("aero", "static margin at loaded full-tank CG (% MAC)", 100 * (x_np - cg_model_z) / mac,
+     f"neutral point at model z {x_np:.4f} ({100 * (x_np - mac_le_z) / mac:.1f} % MAC); loaded full-tank CG {100 * cg_loaded_mac:.2f} % MAC")
 Cma_cg = Cma + CLa * (cg_model_z - x_arp) / c_ref
-note("aero", "Cma about the loaded CG (1/rad, c_ref)", Cma_cg, "tail about the wing-body ac; transferred to derived loaded half-tank CG")
+note("aero", "Cma about the loaded CG (1/rad, c_ref)", Cma_cg, "tail about the wing-body ac; transferred to derived loaded full-tank CG")
 
 # Inertia (same box + parallel-axis model as the loader) for the report.
 def inertia(pt):
@@ -536,16 +546,16 @@ data = {
     },
     "start": {"level_speed": q(float(V_start), "m/s", "derived", D("1.6 x the 1-g stall at the flight mass and CL_max, rounded"))},
     "balance": {
-        "plan_cg": q(dry_cg, "m", "derived", "FUEL-05b: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); the flown inventory adds a fixed half tank; not a measured airplane"),
+        "plan_cg": q(dry_cg, "m", "derived", "FUEL-08: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); finite-glow flight reference starts with a full tank; not a measured airplane"),
         "firewall": q(le(fw), "m", "measured", "firewall station, " + GEO_SRC),
-        "configuration": "virtual-balanced-dry-manual-p43-plus-fixed-half-tank-v2",
+        "configuration": "virtual-balanced-dry-manual-p43-plus-full-finite-glow-tank-v2",
         "fuel_state": "empty_tanks",
         "cg_range": {"forward": q(dry_cg[0] - 0.009525, "m", "manual", MANUAL + " p43: balance point +-3/8 in, empty tank"),
                      "aft": q(dry_cg[0] + 0.009525, "m", "manual", MANUAL + " p43: balance point +-3/8 in, empty tank")},
-        "cg_tolerance": q(0.001, "m", "estimated", D("dry virtual reference build balanced to the manual p43 empty-tank point, then fixed half-tank fuel added; NOT a measured airplane")),
+        "cg_tolerance": q(0.001, "m", "estimated", D("dry virtual reference build balanced to the manual p43 empty-tank point, then full finite-glow fuel added; NOT a measured airplane")),
     },
     "inventory": [
-        dict({"id": it[8], "name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
+        dict({"id": it[8], "name": it[0], "mass": inventory_mass(it), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
              **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
@@ -626,7 +636,8 @@ data = {
 }
 p = data["propulsion"]
 p["id"] = "propulsion_main"
-p["description"] = "O.S. MAX-61FX prototype engine (manual p3); APC 12x6 Sport nominal propeller using borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived right/down shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified."
+p["description"] = "O.S. MAX-61FX prototype engine (manual p3), using the existing NITRO MAX-61FX candidate profile and a dedicated Extra glow installation; APC 12x6 Sport nominal propeller uses borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified. Fuel consumption is finite; Extra-specific carburetor-feed calibration is unavailable and omitted."
+p["engine"]["glow_installation"] = "res://data/glow/extra_61fx_2t.json"
 p["propeller"]["thrust_angles"] = q([down_deg, right_deg], "deg", "manual",
     "Original plan thrust-frame notes transcribed in " + GEO_SRC + "; ordered [down, right] to match the v2 propulsion contract")
 p["propeller"]["thrust_line_offset"] = q(prop_hub_offset, "m", "derived",
@@ -665,7 +676,7 @@ EX-08 flies the envelope, EX-09 looks for an independent contrast.
 
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
 
-Dry empty-tank reference {dry_mass:.3f} kg at {100 * dry_cg_mac:.2f} % MAC (manual target {100 * cg_target_mac:.2f} % MAC); loaded half-tank reference {mass:.3f} kg at {100 * cg_loaded_mac:.2f} % MAC, static margin at loaded CG {sm:.2f} % MAC, 1-g stall {Vs:.2f} m/s, start {V_start} m/s.
+Dry empty-tank reference {dry_mass:.3f} kg at {100 * dry_cg_mac:.2f} % MAC (manual target {100 * cg_target_mac:.2f} % MAC); loaded full-tank reference {mass:.3f} kg at {100 * cg_loaded_mac:.2f} % MAC, static margin at loaded CG {sm:.2f} % MAC, 1-g stall {Vs:.2f} m/s, start {V_start} m/s.
 Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {throws['elevator']:.1f}°, rudder {throws['rudder']:.1f}°.
 
 ## Intermediate quantities
@@ -684,7 +695,7 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
-- No propwash or fuel burn. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
+- No propwash. Finite 61FX glow consumption uses the existing candidate profile (torque and combustion estimates remain unvalidated); no Extra-specific carburetor-feed calibration is available, so feed-pressure/starvation behavior is not represented. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
 """
 
 if "--check" in sys.argv:

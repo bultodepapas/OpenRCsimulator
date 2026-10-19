@@ -110,11 +110,27 @@
     "energy": {
       "prescribed_fuel": {
         "module": "energy.prescribed_fuel.v1",
-        "law": "energy.prescribed_fuel_inventory_fixed.v1"
+        "law": "energy.prescribed_fuel_inventory_fixed.v1",
+        "presence_relations": [
+          {
+            "path": "propulsion.fuel_consumption",
+            "present": false
+          }
+        ]
       },
       "finite_glow_fuel": {
         "module": "energy.finite_glow_fuel.v1",
         "law": "energy.finite_glow_fuel.v1"
+      },
+      "finite_liquid_fuel": {
+        "module": "energy.finite_liquid_fuel.v1",
+        "law": "energy.finite_liquid_fuel.v1",
+        "presence_relations": [
+          {
+            "path": "propulsion.fuel_consumption",
+            "present": true
+          }
+        ]
       },
       "fixed_voltage": {
         "module": "energy.fixed_voltage.v1",
@@ -173,12 +189,14 @@
         ],
         "energy": [
           "prescribed_fuel",
-          "finite_glow_fuel"
+          "finite_glow_fuel",
+          "finite_liquid_fuel"
         ]
       },
       "fields": [
         "description",
         "engine",
+        "fuel_consumption",
         "kind",
         "propeller",
         "id"
@@ -211,7 +229,36 @@
           "slipstream",
           "thrust_angles",
           "thrust_line_offset"
+        ],
+        "fuel_consumption": [
+          "bsfc",
+          "idle_flow",
+          "law",
+          "tank_id"
         ]
+      },
+      "section_variants": {
+        "fuel_consumption": {
+          "selector_path": "fuel_consumption.law",
+          "selector_required": true,
+          "reject_unknown_selector": true,
+          "fields": {
+            "gasoline_bsfc_v1": [
+              "bsfc",
+              "idle_flow",
+              "law",
+              "tank_id"
+            ]
+          },
+          "required_fields_by_value": {
+            "gasoline_bsfc_v1": [
+              "law",
+              "tank_id",
+              "bsfc",
+              "idle_flow"
+            ]
+          }
+        }
       },
       "variants": [
         {
@@ -247,6 +294,25 @@
             "power": false
           },
           "compiler_reason": "coupled shaft propulsion has no V1 virtual scale/power transform"
+        },
+        {
+          "name": "finite_liquid_shaft",
+          "when": {
+            "engine.shaft": true,
+            "engine.glow_installation": false,
+            "fuel_consumption": true
+          },
+          "energy": "finite_liquid_fuel",
+          "law": "propulsion.glow_prop.shaft_balance.v1",
+          "modules": [
+            "propulsion.shaft.v1"
+          ],
+          "compiler_transforms": {
+            "scale": false,
+            "weight": false,
+            "power": false
+          },
+          "compiler_reason": "finite-liquid shaft propulsion keeps its validated engine/fuel-flow parameters fixed under V1 transforms"
         },
         {
           "name": "finite_glow_installation",
@@ -385,12 +451,14 @@
           "single_centerline_jet"
         ],
         "energy": [
-          "prescribed_fuel"
+          "prescribed_fuel",
+          "finite_liquid_fuel"
         ]
       },
       "fields": [
         "description",
         "engine",
+        "fuel_consumption",
         "intake_offset",
         "kind",
         "thrust_angles",
@@ -420,7 +488,30 @@
           "spool_integrator",
           "static_thrust",
           "throttle_map"
+        ],
+        "fuel_consumption": [
+          "law",
+          "tank_id"
         ]
+      },
+      "section_variants": {
+        "fuel_consumption": {
+          "selector_path": "fuel_consumption.law",
+          "selector_required": true,
+          "reject_unknown_selector": true,
+          "fields": {
+            "turbine_map_v1": [
+              "law",
+              "tank_id"
+            ]
+          },
+          "required_fields_by_value": {
+            "turbine_map_v1": [
+              "law",
+              "tank_id"
+            ]
+          }
+        }
       },
       "law": "propulsion.turbine.v1",
       "integrator_path": "engine.spool_integrator",

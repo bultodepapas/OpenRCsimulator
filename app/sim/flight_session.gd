@@ -201,8 +201,11 @@ func mass_properties() -> Dictionary:
 		var tanks: Array = aircraft.model.get("fuel_system", {}).get("tanks", [])
 		if tanks.size() != 1:
 			return {ok = false}
-		return FuelSample.build(live, tanks, {str(tanks[0].id): maxf(0.0, sim.continuous[1])},
+		var sample: Dictionary = FuelSample.build(live, tanks, {str(tanks[0].id): maxf(0.0, sim.continuous[1])},
 			sim.tick, sim.time(), true)
+		sample.law = GlowFlight.LAW
+		sample.registry_sha256 = str(aircraft.model.fuel_system.registry_sha256)
+		return sample
 	if sim == null or sim.inertia.size() != 6 or not is_finite(sim.mass) or sim.mass <= 0.0:
 		return {ok = false}
 	var properties := {ok = true, mass_kg = sim.mass, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
@@ -1854,6 +1857,8 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 			{str(tanks[0].id): amount}, contact_tick, start_time + fraction * dt, true)
 		result.sample_boundary = "swept_contact_linear_inventory"
 		result.impact_fraction = fraction
+		result.law = GlowFlight.LAW
+		result.registry_sha256 = str(aircraft.model.fuel_system.registry_sha256)
 		return result
 
 

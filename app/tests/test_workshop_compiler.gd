@@ -139,7 +139,7 @@ func _test_scale_policies(base: Dictionary) -> void:
 		_check("nondimensional ground-effect coefficients remain unchanged",
 			mini.raw.aero.get("ground_effect", {}) == base.aero.get("ground_effect", {}))
 		_check("changed inventory evidence is derived", mini.raw.inventory[0].mass.kind == "derived"
-			and "Workshop compiler v1" in mini.raw.inventory[0].mass.source)
+			and "Workshop compiler v2" in mini.raw.inventory[0].mass.source)
 	var geometric: Dictionary = Compiler.compile(base, {"scale": 1.5, "mass_policy": "geometric"})
 	_check("150% geometric recipe validates", geometric.ok, str(geometric.errors))
 	if geometric.ok:
@@ -296,6 +296,27 @@ func _test_tank_and_fill_scaling(base: Dictionary) -> void:
 
 func _test_tank_capacity_frozen_session(base: Dictionary) -> void:
 	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(P51_PATH)
+	var compiled: Dictionary = Compiler.compile(base, {"tank_capacity_multiplier": 1.25})
+	_check("finite-liquid fuel permits capacity-only Workshop scaling", compiled.get("ok", false), str(compiled.get("errors", [])))
+	if compiled.get("ok", false):
+		var base_data: Dictionary = AircraftData.validate_and_derive(base)
+		var base_fuel: Dictionary = base_data.model.propulsion.liquid_fuel
+		var compiled_fuel: Dictionary = compiled.data.model.propulsion.liquid_fuel
+		var base_tank: Dictionary = base_data.model.fuel_system.tanks[0]
+		var compiled_tank: Dictionary = compiled.data.model.fuel_system.tanks[0]
+		_check("capacity-only edit preserves fuel law, density and flow coefficients",
+			compiled.raw.propulsion.fuel_consumption == base.propulsion.fuel_consumption
+			and compiled_fuel.law == base_fuel.law and compiled_fuel.tank_id == base_fuel.tank_id
+			and is_equal_approx(compiled_tank.density_kg_m3, base_tank.density_kg_m3)
+			and is_equal_approx(compiled_fuel.bsfc_kg_kwh, base_fuel.bsfc_kg_kwh)
+			and is_equal_approx(compiled_fuel.idle_flow_kg_s, base_fuel.idle_flow_kg_s))
+		_check("capacity-only edit increases volume and maximum fuel mass while preserving authored fill",
+			is_equal_approx(compiled_tank.capacity_m3, base_tank.capacity_m3 * 1.25)
+			and is_equal_approx(compiled_tank.capacity_kg, base_tank.capacity_kg * 1.25)
+			and is_equal_approx(compiled_tank.liquid_mass_kg, base_tank.liquid_mass_kg * 1.25)
+			and is_equal_approx(compiled_tank.start_fill, base_tank.start_fill)
+			and is_equal_approx(compiled.data.model.mass_kg - compiled_tank.liquid_mass_kg,
+				base_data.model.mass_kg - base_tank.liquid_mass_kg))
 	var payload := {
 		"base_id": str(base.get("id", "")),
 		"base_bytes": bytes,

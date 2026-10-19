@@ -246,7 +246,7 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 		var offset: Dictionary = propeller.thrust_line_offset
 		offset.value = [scale * hub_le[0] - datum[0], scale * hub_le[1] - datum[1], scale * hub_le[2] - datum[2]]
 		offset.kind = "derived"
-		offset.source = "%s; Workshop compiler v1: %s: structural hub × s about the compiled inventory CG from %s" % [
+		offset.source = "%s; Workshop compiler v2: %s: structural hub × s about the compiled inventory CG from %s" % [
 			str(offset.get("source", "unspecified base evidence")), TANK_POLICY, base_id]
 	_transform_q(propeller, "rotating_inertia", rotor_factor, base_id,
 		"virtual rotor distribution: J × mass_ratio × s²; no manufacturer hardware claim")
@@ -315,7 +315,7 @@ static func _hub_le(raw: Dictionary) -> Variant:
 		datum[2] + float(offset.value[2])])
 
 
-## Target mass: the dry build × mass_ratio plus the tank liquid × s³ (FUEL-11a).
+## Target mass: the dry build × mass_ratio plus tank liquid × s³ × the independent capacity ratio (FUEL-11a).
 static func _expected_mass(base_raw: Dictionary, mass_ratio: float, scale: float,
 		tank_capacity_multiplier: float) -> float:
 	var liquid := _tank_liquid_ids(base_raw)
@@ -356,7 +356,7 @@ static func _transform_q(parent: Dictionary, key: String, factor: float, base_id
 	var original_source := str(quantity.get("source", "unspecified base evidence"))
 	quantity.value = _multiply_tree(quantity.value, factor)
 	quantity.kind = "derived"
-	quantity.source = "%s; Workshop compiler v1: %s from %s" % [original_source, operation, base_id]
+	quantity.source = "%s; Workshop compiler v2: %s from %s" % [original_source, operation, base_id]
 	parent[key] = quantity
 
 
@@ -419,7 +419,7 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 					quantity.value = new_value
 					quantity.kind = "derived"
 					quantity.source = str(quantity.get("source", "base wheel profile evidence")) \
-						+ "; Workshop compiler v1 wheel transform from " + base_id + " (factor " + str(factor) + ")"
+						+ "; Workshop compiler v2 wheel transform from " + base_id + " (factor " + str(factor) + ")"
 					source_provenance[field] = quantity
 			target_contact.wheel_provenance = source_provenance
 			var radius := float(target_contact.get("wheel_radius", 0.0))
@@ -443,7 +443,7 @@ static func _inherit_wheel_model(profiled_base: Dictionary, candidate_model: Dic
 				"value": largest_radius,
 				"unit": "m",
 				"kind": "derived",
-				"source": "maximum inherited wheel radius transformed from base %s by Workshop compiler v1" % base_id,
+				"source": "maximum inherited wheel radius transformed from base %s by Workshop compiler v2" % base_id,
 			}
 			candidate_model.landing_gear = candidate_gear
 	var inherited_identity: Dictionary = source_identity.duplicate(true)

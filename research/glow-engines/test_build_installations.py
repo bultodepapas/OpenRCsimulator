@@ -34,6 +34,14 @@ def _by_id(raw: dict) -> dict:
 
 
 class InventoryIdentityTests(unittest.TestCase):
+    def test_extra_install_uses_existing_61fx_candidate_without_stik_feed_geometry(self) -> None:
+        path = build_installations.ROOT / "app/data/glow/extra_61fx_2t.json"
+        generated = build_installations.outputs()[path]
+        self.assertEqual(generated["profile"], "res://data/glow/os_max_61fx_candidate.json")
+        self.assertEqual(generated["family"], "glow_2t")
+        self.assertAlmostEqual(generated["propeller"]["diameter_m"]["value"], 0.3048, delta=1e-12)
+        self.assertNotIn("fuel_feed", generated)
+
     def test_reordered_donor_inventory_edits_the_same_records(self) -> None:
         for two, fx61 in ((True, False), (False, False), (True, True)):
             with self.subTest(two=two, fx61=fx61):

@@ -53,6 +53,14 @@ def parity_invalid_sources() -> dict[str, dict[str, Any]]:
     turbine_integrator["propulsion"]["engine"]["spool_integrator"] = "semi_implicit"
     gear_relation = read_aircraft("sebart_avanti_s_a200.json")
     gear_relation["capabilities"]["gear"] = "fixed_tricycle"
+    liquid_field = read_aircraft("p51d_mustang_120.json")
+    liquid_field["propulsion"]["fuel_consumption"]["future_field"] = True
+    liquid_law = read_aircraft("p51d_mustang_120.json")
+    liquid_law["propulsion"]["fuel_consumption"]["law"] = "unknown_liquid_law"
+    liquid_missing_tank = read_aircraft("p51d_mustang_120.json")
+    del liquid_missing_tank["propulsion"]["fuel_consumption"]["tank_id"]
+    liquid_missing_block = read_aircraft("p51d_mustang_120.json")
+    del liquid_missing_block["propulsion"]["fuel_consumption"]
     return {
         "invalid:version": version,
         "invalid:capability_value": capability,
@@ -60,6 +68,10 @@ def parity_invalid_sources() -> dict[str, dict[str, Any]]:
         "invalid:battery_relation": battery_relation,
         "invalid:turbine_integrator": turbine_integrator,
         "invalid:gear_relation": gear_relation,
+        "invalid:liquid_consumption_field": liquid_field,
+        "invalid:liquid_consumption_law": liquid_law,
+        "invalid:liquid_consumption_missing_tank": liquid_missing_tank,
+        "invalid:missing_liquid_consumption": liquid_missing_block,
     }
 
 
@@ -90,6 +102,49 @@ class AircraftModuleTests(unittest.TestCase):
                 result = classify(read_aircraft(filename))
                 self.assertTrue(result["ok"], result["errors"])
                 self.assertIn(law, result["laws"])
+
+    def test_finite_liquid_gasoline_and_turbine_laws_are_registered(self):
+        p51 = classify(read_aircraft("p51d_mustang_120.json"))
+        self.assertTrue(p51["ok"], p51["errors"])
+        self.assertIn("energy.finite_liquid_fuel.v1", p51["laws"])
+        self.assertIn("propulsion.glow_prop.shaft_balance.v1", p51["laws"])
+        self.assertIn("propulsion.shaft.v1", p51["modules"])
+        self.assertFalse(p51["compiler_transforms"]["scale"])
+        self.assertFalse(p51["compiler_transforms"]["weight"])
+        self.assertFalse(p51["compiler_transforms"]["power"])
+
+        turbine = classify(read_aircraft("sebart_avanti_s_a200.json"))
+        self.assertTrue(turbine["ok"], turbine["errors"])
+        self.assertIn("energy.finite_liquid_fuel.v1", turbine["laws"])
+        self.assertIn("propulsion.turbine.spool.rk4.v1", turbine["laws"])
+
+    def test_fuel_consumption_block_is_closed_and_bound_to_finite_energy(self):
+        valid = read_aircraft("p51d_mustang_120.json")
+        unknown_field = json.loads(json.dumps(valid))
+        unknown_field["propulsion"]["fuel_consumption"]["future_field"] = True
+        result = classify(unknown_field)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any(item["code"] == "module.field.unknown" for item in result["diagnostics"]))
+        self.assertEqual(result["modules"], [])
+        self.assertEqual(result["laws"], [])
+
+        unknown_law = json.loads(json.dumps(valid))
+        unknown_law["propulsion"]["fuel_consumption"]["law"] = "unknown_liquid_law"
+        result = classify(unknown_law)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any(item["code"] == "module.section.selector.unknown" for item in result["diagnostics"]))
+
+        missing_binding = json.loads(json.dumps(valid))
+        del missing_binding["propulsion"]["fuel_consumption"]["tank_id"]
+        result = classify(missing_binding)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any(item["code"] == "module.section.field.missing" for item in result["diagnostics"]))
+
+        missing_block = json.loads(json.dumps(valid))
+        del missing_block["propulsion"]["fuel_consumption"]
+        result = classify(missing_block)
+        self.assertFalse(result["ok"])
+        self.assertTrue(any(item["code"] == "module.capability.relation" for item in result["diagnostics"]))
 
     def test_turbine_integrator_default_is_normalized(self):
         source = read_aircraft("sebart_avanti_s_a200.json")

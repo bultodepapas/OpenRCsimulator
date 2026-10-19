@@ -19,6 +19,7 @@ func _check(label: String, passed: bool, detail: String = "") -> void:
 func _initialize() -> void:
 	_check("malformed direct attachment is refused without an exception", not Installation.attach({}, {}).get("ok", false))
 	for entry: Dictionary in [
+		{"label": "Extra 61FX", "aircraft": "res://data/aircraft/gp_extra_300s_60.json"},
 		{"label": "2T", "aircraft": "res://data/aircraft/stik_glow_55ax_2t.json"},
 		{"label": "4T", "aircraft": "res://data/aircraft/stik_glow_fs64v_4t.json"},
 		{"label": "2T APC variant", "aircraft": "res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json"},

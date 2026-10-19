@@ -143,11 +143,32 @@ static func classify(base: Dictionary) -> Dictionary:
 		var selector_variant: Variant = section_variants.get(section_name, null)
 		if typeof(selector_variant) == TYPE_DICTIONARY:
 			var selector: Dictionary = selector_variant
-			var selected_field: Dictionary = _at_path(propulsion, str(selector.get("selector_path", "")))
-			if selected_field.exists and typeof(selected_field.value) == TYPE_STRING:
-				var per_value: Dictionary = selector.get("fields", {})
-				if per_value.has(selected_field.value):
-					section_fields = per_value[selected_field.value]
+			var selector_path: String = str(selector.get("selector_path", ""))
+			var selected_field: Dictionary = _at_path(propulsion, selector_path)
+			var per_value: Dictionary = selector.get("fields", {})
+			var required_by_value: Dictionary = selector.get("required_fields_by_value", {})
+			var selected_value: String = ""
+			if not selected_field.exists:
+				if bool(selector.get("selector_required", false)):
+					_issue(errors, diagnostics, "module.section.selector.missing", "propulsion." + selector_path,
+						"is required for this module section")
+			elif typeof(selected_field.value) != TYPE_STRING:
+				_issue(errors, diagnostics, "module.section.selector.type", "propulsion." + selector_path,
+					"must be a string selector")
+			else:
+				selected_value = str(selected_field.value)
+				if per_value.has(selected_value):
+					section_fields = per_value[selected_value]
+				elif bool(selector.get("reject_unknown_selector", false)):
+					_issue(errors, diagnostics, "module.section.selector.unknown", "propulsion." + selector_path,
+						"has unregistered value '%s'" % selected_value)
+			var required_fields: Array = required_by_value.get(selected_value, selector.get("required_fields", []))
+			for required_field_variant: Variant in required_fields:
+				var required_field: String = str(required_field_variant)
+				if not section.has(required_field):
+					_issue(errors, diagnostics, "module.section.field.missing",
+						"propulsion.%s.%s" % [section_name, required_field],
+						"is required for this module section")
 		for key_variant: Variant in section.keys():
 			var key := str(key_variant)
 			if not section_fields.has(key):

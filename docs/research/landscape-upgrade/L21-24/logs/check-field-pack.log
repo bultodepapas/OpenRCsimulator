@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407
+Pack landscape validated: club_field
+Pack landscape validated: green_paradise
+Pack default lake geometry and compiled source stamp validated
+Pack source-material mask alpha matches its runtime atlas
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a imported grass and 150 clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+WARNING: Tree wind is disabled for maple_tree because source material -9223371938187966564 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:384)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:82)
+       [6] _initialize (C:/DEVELOPMENT/OpenRCsimulator/app/tests/check_field_pack.gd:99)

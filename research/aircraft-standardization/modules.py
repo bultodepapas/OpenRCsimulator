@@ -185,9 +185,41 @@ def classify(base: Any) -> dict[str, Any]:
         section_fields = default_fields
         selector = section_variants.get(section_name)
         if isinstance(selector, dict):
-            selector_exists, selector_value = _at_path(propulsion, selector.get("selector_path", ""))
-            if selector_exists and type(selector_value) is str:
-                section_fields = selector.get("fields", {}).get(selector_value, default_fields)
+            selector_path = selector.get("selector_path", "")
+            selector_exists, selector_value = _at_path(propulsion, selector_path)
+            per_value = selector.get("fields", {})
+            required_by_value = selector.get("required_fields_by_value", {})
+            selected_value = ""
+            if not selector_exists:
+                if selector.get("selector_required", False):
+                    issue(
+                        "module.section.selector.missing",
+                        f"propulsion.{selector_path}",
+                        "is required for this module section",
+                    )
+            elif type(selector_value) is not str:
+                issue(
+                    "module.section.selector.type",
+                    f"propulsion.{selector_path}",
+                    "must be a string selector",
+                )
+            else:
+                selected_value = selector_value
+                if selected_value in per_value:
+                    section_fields = per_value[selected_value]
+                elif selector.get("reject_unknown_selector", False):
+                    issue(
+                        "module.section.selector.unknown",
+                        f"propulsion.{selector_path}",
+                        f"has unregistered value {selected_value!r}",
+                    )
+            for required_field in required_by_value.get(selected_value, selector.get("required_fields", [])):
+                if required_field not in section:
+                    issue(
+                        "module.section.field.missing",
+                        f"propulsion.{section_name}.{required_field}",
+                        "is required for this module section",
+                    )
         for key in sorted(set(section) - set(section_fields)):
             issue(
                 "module.field.unknown",

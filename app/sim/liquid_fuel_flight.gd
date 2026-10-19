@@ -55,6 +55,7 @@ static func sample(owner: Node, values: PackedFloat64Array) -> Dictionary:
 	if result.get("ok", false):
 		result.law = LAW
 		result.consumption_law = str(config.law)
+		result.registry_sha256 = str(owner.aircraft.model.fuel_system.registry_sha256)
 	return result
 
 
@@ -141,4 +142,7 @@ static func contact_sampler(owner: Node, before: PackedFloat64Array, after: Pack
 			contact_tick, start_time + fraction * dt, true)
 		result.sample_boundary = "swept_contact_linear_inventory"
 		result.impact_fraction = fraction
+		result.law = LAW
+		result.consumption_law = str(config.law)
+		result.registry_sha256 = str(owner.aircraft.model.fuel_system.registry_sha256)
 		return result

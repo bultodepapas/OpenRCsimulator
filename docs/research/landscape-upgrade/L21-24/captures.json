@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-19",
+  "engine": "Godot 4.7.2-stable ed1daf0bf",
+  "host": "Windows; Compatibility; NVIDIA RTX 3090",
+  "capture_sha256": {
+    "green-home.png": "fa10b2baad01ffb0907b37c09df7235c16dbec4f1954b819b1cbdeca9e0ea368",
+    "club-home.png": "236e8be1b85e24432ce89cee04e4df8e4be1b6810b900472f4b97316dcc658b1",
+    "green_paradise-flight.png": "c8299432836dc0f9ed47e246ffeab20569171ed377ede4a80cff0104a9deeccc",
+    "club_field-flight.png": "c49c75dcbd58c256d0f26aae8eaf050d4832bec76261610b26af81a578d21367",
+    "green-helicopter.png": "760f9d8a92c1866c6f8b35d1e841c692135097756102b66deeca59ec40850da6"
+  },
+  "source_sha256_at_evidence_collection": {
+    "app/landscapes/catalog.gd": "0a03e3c0278faa6d78d2bb70c303d4f34a78b7dbcbdbdf4b3869831cbc6b5d71",
+    "app/landscapes/club_field/landscape.gd": "b591ca209c8fca8824fad663fb69ee16070c4da4e39c45a825b662c4cc79a06f",
+    "app/landscapes/green_paradise/landscape.gd": "bbe99a46ce22b6764dfab6c0b82767a3d05d87dc325504d027aa949deff63465",
+    "app/landscapes/green_paradise/field.json": "4b77752bb26432804b787b4fae070c8c59ba5abdce92b500b3d1881d0768e97c",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "app/main.gd": "86e5a340c6fd19f4e72edcc3a8ef643376c6ee6ab9150c0d1eaa33254d1641e0",
+    "app/app_root.gd": "30636dd74bf2b1e8cad829918f6d3f2e86821894f17cca411169d15aa1fe8f17",
+    "app/ui/home.gd": "a015539eae34187c610f2bdb692a81c54e3ddb7683a8ff40ba99452c2ae3ff87",
+    "app/ui/home_scene.gd": "c72a9c4c9fb3d7842718a6c790ad18ed1c4baf02c977ea45a3cd8f56169d02df",
+    "app/app_state/preferences.gd": "7ecf79d91e5b7fd7203ebe94baa5c2c96d38567cd5e321a975868da945080897",
+    "app/render/world/world.gd": "e88b503a365b24505e419aeb0ad221325456fff4df3d0ce89be30038707c3ccc",
+    "app/helicopter_main.gd": "3033e726c9c4c26157c59b3b1ae56ca284b7ce9967ed44d5c420d6fd891575d3",
+    "app/tests/test_landscapes.gd": "dab2bbfb4a6eb5b73de81987ef8f2e729ffc4169ef36c1dcdcd635240a62d4c5",
+    "app/tests/check_field_pack.gd": "03c8a121b0d67748e57f9626415a5cc60beb177d4c791932053de36d81b4a1c2",
+    "app/export_presets.cfg": "f74ba10da3277b240d1543be2eaa9fa67d623328ee70def863f36a1def55e1f4"
+  },
+  "windows_resource_pack_sha256": "7e19d051581bce4bd4a61f25215f3236499d313080626eb4340e379ff265f8fb"
+}

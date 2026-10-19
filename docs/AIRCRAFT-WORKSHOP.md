@@ -1,6 +1,14 @@
 # Aircraft Workshop
 
-The Workshop creates experimental local variants without changing shipped aircraft data. Open **Aircraft Workshop** from Home or Pause; in Spanish the entry is **Laboratorio de aviones**. The [AE plan](plans/aircraft-editor.md) owns remaining development; [implementation evidence](research/aircraft-editor/AE-01-10/README.md) records the initial supported slice.
+The Workbench feature is named **Aircraft Workshop** in the application (**Taller de aviones** in Spanish). It creates experimental local variants without changing shipped aircraft data. Open it from Home or Pause.
+
+| Need | Authoritative home |
+| --- | --- |
+| Use the editor; understand supported adjustments, scaling and saved variants | This guide, checked against source on 2026-10-19 |
+| Develop the feature; find pending steps and acceptance gates | [Consolidated AE plan](plans/aircraft-editor.md) |
+| Author physical data, stable IDs and model manifests | [Aircraft contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard) |
+| Generate descriptors, run checks or capture the editor | [Workshop commands](TOOLS.md#aircraft-workshop) |
+| Inspect dated results and limitations | [Verification and evidence](#verification) |
 
 ## Using the Workshop
 
@@ -26,9 +34,13 @@ The six size choices are shortcuts. Loaded recipes may contain intermediate size
 
 Presets are Mini, Giant, Light, Heavy, More power, More travel and Light / low power. They apply only supported adjustments. Their names describe changes rather than measured flight performance. Valid slider values can still form an invalid combination: normal aircraft, trim and timestep checks remain authoritative.
 
-The catalog has eight airplane configurations; the Workshop filters out the separate rotorcraft entry. Size, dry-weight and virtual-power transforms are registered only for the simple prescribed-RPM Stik and Extra configurations. Tank capacity is a separate transform for classified aircraft with validated fuel tanks; the three finite-glow Stiks can use it without enabling size/weight/power changes. Conventional control travel follows the registered surface capability. P-51 and Ventage sources now declare finite-liquid fuel, but `aircraft-modules-v1.json` has not registered `finite_liquid_fuel`/`fuel_consumption`; `python research/aircraft-editor/build_descriptors.py --check` currently fails on those selections, so their current descriptors are not verified for Workshop use. Their fuel software and physical acceptance gates are tracked separately in the [fuel-mass plan](plans/fuel-mass-balance.md). The compiler contains no aircraft-ID transformation branches.
+The catalog has eight airplane configurations; the Workshop filters out the separate rotorcraft entry. Size, dry-weight and virtual-power transforms are registered only for the simple prescribed-RPM Stik and Extra configurations. Tank capacity is a separate transform for classified aircraft with validated fuel tanks, including the baseline prescribed-fuel Stik and the three finite-glow Stiks. The finite-glow variants keep size/weight/power changes disabled. Conventional control travel follows the registered surface capability. The compiler contains no aircraft-ID transformation branches.
+
+The P-51 and Ventage finite-liquid configurations currently fail module/descriptor checks; see the [contract integration limit](AIRCRAFT_CONTRACT.md#capabilities-and-conditional-modules). Their software and physical acceptance gates remain in the [fuel-mass plan](plans/fuel-mass-balance.md).
 
 These changes retain estimated aerodynamic coefficients and do not model Reynolds-number changes or certify a real miniature/giant aircraft. Runway trials, component/CG editing, editable hardware packages, measured performance experiments, portable import/export and wider ranges remain planned.
+
+The Workshop reads each catalog entry's main `data` source. Timber trials therefore use its fixed-voltage configuration; ordinary flights default to the separate finite 4S pack. The Workshop has no battery-mode selector. Missing family transforms and portable resource loading remain in the AE plan.
 
 ## Common implementation and authoring interface
 
@@ -43,14 +55,7 @@ These changes retain estimated aerodynamic coefficients and do not model Reynold
 | `app/ui/workshop.gd`, `workshop_preview.gd` | Common editor and isolated still preview |
 | `research/aircraft-editor/build_descriptors.py` | Catalog-discovered descriptor generator |
 
-After adding or regenerating an aircraft through its owning pipeline, run:
-
-```powershell
-python research/aircraft-standardization/build_models.py
-python research/aircraft-editor/build_descriptors.py
-python research/aircraft-editor/build_descriptors.py --check
-python research/aircraft-editor/test_descriptor_checkout.py
-```
+After adding or regenerating an aircraft through its owning pipeline, follow the [descriptor generation and verification sequence](TOOLS.md#aircraft-workshop). Resolve unsupported module classifications before generation; do not edit the generated descriptor to bypass a refusal.
 
 Commit the generated `app/data/workshop/<catalog-id>.json` with its source change. Identified aircraft use the closed `openrc-aircraft-workshop v3` descriptor: inventory bindings contain only the authored physical ID as `key`, and the resolver finds components by ID regardless of name or order. Exact aircraft bytes, shared module assertions, visual family, model-manifest hash and stable root remain pinned. The descriptor contains no copied physical constants. Renaming/reordering an inventory still requires regeneration because the source-byte hash changes, while component keys survive. ID-less sources generate v2 index/name-hash bindings; explicit v1/v2 readers preserve those historical semantics. Existing saved records are not rewritten or automatically rebased. Model manifests and their generator are defined in the [aircraft contract](AIRCRAFT_CONTRACT.md#model-and-package-contract).
 
@@ -65,6 +70,8 @@ For size `s`, weight multiplier `w`, and tank-capacity multiplier `c`, the dry-m
 The virtual legacy propeller uses the dry ratio: diameter scales by `s`, rotating inertia by `r_dry s²`, maximum RPM by `sqrt(r_dry)/s² × power^(1/3)`, and idle RPM by `sqrt(r_dry)/s²`. The static coefficient-law result therefore scales thrust by `r_dry × power^(2/3)` and power by `r_dry^(3/2)/s × power`. This is a virtual propeller policy, not a substituted physical engine specification.
 
 Virtual suspension uses `a=max(s,1)`: spring stiffness scales by `r_total/a`, damping by `r_total/sqrt(a)`, and travel by `a`. This preserves the small-model suspension timescale instead of shrinking travel with geometry. Contact positions, hull, wheel radius and wheel mass/inertia parameters follow their own transforms. Inherited wheel profiles retain their applied status so variant IDs do not disable wheel dynamics. Runway qualification remains AE-11.
+
+Without declared tank liquid, `r_total=r_dry`: CG/reference-chord ratio stays fixed and the full inertia tensor scales by `r_dry s²`. These are project similarity assumptions. The original policy rationale cites [NASA similarity parameters](https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/similarity-parameters/) and [UIUC propeller coefficient conventions](https://m-selig.ae.illinois.edu/props/propDB.html) (accessed 2026-10-13); neither validates resized aircraft or hardware. Normal trim and solver checks still apply to each candidate.
 
 ### Persistence and identity
 
@@ -82,4 +89,14 @@ External dependencies are **hash-pinned, not embedded and replayed from a bundle
 
 ## Verification
 
-`app/test.sh` discovers the six `test_workshop_*.gd` suites and checks generated descriptors plus fresh checkouts with both Git line-ending modes. See [AE evidence](research/aircraft-editor/AE-01-10/README.md) for the native Godot results, UI captures and remaining acceptance scope. Passing these checks establishes software behavior, not measured flight accuracy.
+Use the [focused commands](TOOLS.md#aircraft-workshop) before the full `app/test.sh` suite. The full runner discovers six `test_workshop_*.gd` suites and includes descriptor generation and checkout checks. A blocked generator is a failed integration gate, even if individual runtime suites pass.
+
+| Dated evidence | Scope |
+| --- | --- |
+| [AE-01–10, 2026-10-13](research/aircraft-editor/AE-01-10/README.md) | Initial compiler/store/trial/UI/integration checks, scaling fixtures, captures and persistence audit findings |
+| [AS-08 identity migration](research/aircraft-standardization/AS-08-identity/README.md) | Authored physical IDs and Workshop v3 bindings; historical readers remain explicit |
+| [AS-09/10 imported models](research/aircraft-standardization/AS-09-10-import/README.md) | Generated model-manifest and shared imported-presentation bindings |
+| [UI-29-R3, 2026-10-16](research/menu-investigations/UI-29-R3/README.md) | Native navigation, EN/ES and responsive shell captures; preview inspection remains limited |
+| [FUEL-00-R1, 2026-10-19](research/fuel-systems/FUEL-00-R1/README.md) | Fuel integration audit and Workshop classification gap |
+
+The initial six-size flight matrix covers constant wing loading and default weight/power for 240 ticks. Algebra checks and twenty synthetic IDs do not establish a full combination envelope, sustained flight, twenty distinct airframes or physical accuracy. The [plan](plans/aircraft-editor.md) owns remaining acceptance; historical logs retain their original scope.

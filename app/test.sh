@@ -227,6 +227,7 @@ for t in "$HERE"/tests/test_*.gd; do
   if [ "$(basename "$t")" = "test_crash_wreck.gd" ]; then test_timeout=180; fi
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
+    test_accident_integration.gd) test_timeout=180 ;; # Multiple complete aircraft/effects rebuilds; native 77-check gate, WSL mounted source exceeds 60 s.
     test_p51_envelope.gd) test_timeout=180 ;; # Segmented slipstream full-flight checks measured 61 s on the native editor.
     test_rcv_powertrain.gd) test_timeout=180 ;; # Nine complete powertrain checks; measured 64 s at 240/480 Hz.
     # Full scene transitions and subprocess startup can exceed 60 s; benchmark tools own timing gates.

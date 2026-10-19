@@ -12,7 +12,8 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA_PATH = ROOT / "app" / "data" / "schema" / "glow-installation-v1.schema.json"
-INSTALLATION_FILES = sorted((ROOT / "app" / "data" / "glow").glob("stik_*.json"))
+GLOW_DATA_DIRECTORY = ROOT / "app" / "data" / "glow"
+INSTALLATION_FILES = sorted([*GLOW_DATA_DIRECTORY.glob("stik_*.json"), *GLOW_DATA_DIRECTORY.glob("extra_*.json")])
 KINDS = ["manual", "measured", "borrowed", "estimated", "derived"]
 
 

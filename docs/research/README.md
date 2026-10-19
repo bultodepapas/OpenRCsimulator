@@ -43,7 +43,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Aircraft Workshop
 
-[AE-01–10 initial implementation](aircraft-editor/AE-01-10/README.md) records shared compiler/store/descriptor/trial/UI checks, native captures and the remaining acceptance scope. The [current guide](../AIRCRAFT-WORKSHOP.md) documents supported experiments; the [AE plan](../plans/aircraft-editor.md) owns engine-family editing and fleet continuation.
+[AE-01–10 initial implementation](aircraft-editor/AE-01-10/README.md) records the initial compiler/store/descriptor/trial/UI checks and native captures. The [Workbench entry point and evidence map](../AIRCRAFT-WORKSHOP.md#verification) also links later identity, imported-model, menu and fuel integration evidence. The [consolidated AE plan](../plans/aircraft-editor.md) owns remaining acceptance.
 
 ### RC monster truck
 

@@ -67,7 +67,7 @@
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "FUEL-05b: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); the flown inventory adds a fixed half tank; not a measured airplane"
+      "source": "FUEL-08: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); finite-glow flight reference starts with a full tank; not a measured airplane"
     },
     "firewall": {
       "value": [
@@ -79,7 +79,7 @@
       "kind": "measured",
       "source": "firewall station, assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology)"
     },
-    "configuration": "virtual-balanced-dry-manual-p43-plus-fixed-half-tank-v2",
+    "configuration": "virtual-balanced-dry-manual-p43-plus-full-finite-glow-tank-v2",
     "fuel_state": "empty_tanks",
     "cg_range": {
       "forward": {
@@ -99,7 +99,7 @@
       "value": 0.001,
       "unit": "m",
       "kind": "estimated",
-      "source": "research/extra-300/ex05/derive_physics.py: dry virtual reference build balanced to the manual p43 empty-tank point, then fixed half-tank fuel added; NOT a measured airplane"
+      "source": "research/extra-300/ex05/derive_physics.py: dry virtual reference build balanced to the manual p43 empty-tank point, then full finite-glow fuel added; NOT a measured airplane"
     }
   },
   "inventory": [
@@ -735,12 +735,12 @@
     },
     {
       "id": "fuel_flight",
-      "name": "fuel (half tank)",
+      "name": "fuel (full tank)",
       "mass": {
-        "value": 0.152103,
+        "value": 0.304207,
         "unit": "kg",
         "kind": "derived",
-        "source": "FUEL-05b: half of the manual p3 GPMQ4105 12 oz tank (12 US fl oz = 0.355 l) x app/data/fuels/openrc-fuel-registry.json blend glow_10n_18castor (856.92 kg/m3 at 298.15 K); prescribed flight state (no consumption)"
+        "source": "FUEL-08: full finite-glow start (D4): manual p3 GPMQ4105 12 oz tank (12 US fl oz = 0.355 l) x app/data/fuels/openrc-fuel-registry.json blend glow_10n_18castor (856.92 kg/m3 at 298.15 K); finite 61FX consumption uses the existing NITRO candidate profile"
       },
       "position": {
         "value": [
@@ -1025,7 +1025,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: Helmbold wing + downwashed tail"
       },
       "CLq": {
-        "value": 5.806488,
+        "value": 5.644474,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: tail volume + DATCOM wing term"
@@ -1085,13 +1085,13 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.065268,
+        "value": -0.064824,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin above the CG"
       },
       "CYr": {
-        "value": 0.326478,
+        "value": 0.329031,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin behind the CG"
@@ -1103,19 +1103,19 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.032996,
+        "value": -0.03337,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: wing at CL_ref + low-wing interference + fin"
       },
       "Clp": {
-        "value": -0.596853,
+        "value": -0.596772,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.128847,
+        "value": 0.133264,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: CL_ref/4 + fin"
@@ -1151,7 +1151,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: tail about the wing-body ac; the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -9.233061,
+        "value": -9.380349,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"
@@ -1175,25 +1175,25 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": -0.019419,
+        "value": -0.021585,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: -CL_ref/8 + fin"
       },
       "Cnr": {
-        "value": -0.178828,
+        "value": -0.181184,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
       },
       "Cnda_right": {
-        "value": 0.020136,
+        "value": 0.02103,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.5, taper 0.5)"
       },
       "Cnda_left": {
-        "value": -0.020136,
+        "value": -0.02103,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw"
@@ -1337,7 +1337,7 @@
     }
   },
   "propulsion": {
-    "description": "O.S. MAX-61FX prototype engine (manual p3); APC 12x6 Sport nominal propeller using borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived right/down shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified.",
+    "description": "O.S. MAX-61FX prototype engine (manual p3), using the existing NITRO MAX-61FX candidate profile and a dedicated Extra glow installation; APC 12x6 Sport nominal propeller uses borrowed UIUC APC 11x6 Ct/Cp measurements. The plan-derived shaft angles and visual propeller hub are applied; exact prototype propeller remains unidentified. Fuel consumption is finite; Extra-specific carburetor-feed calibration is unavailable and omitted.",
     "engine": {
       "name": "O.S. MAX-61FX (two-stroke glow)",
       "peak_power": {
@@ -1369,7 +1369,8 @@
         "unit": "s",
         "kind": "estimated",
         "source": "first-order throttle response of a glow engine; replace with a throttle-step measurement"
-      }
+      },
+      "glow_installation": "res://data/glow/extra_61fx_2t.json"
     },
     "propeller": {
       "name": "APC 12x6 Sport (LP12060)",
@@ -1478,9 +1479,9 @@
       },
       "thrust_line_offset": {
         "value": [
-          -0.368312,
+          -0.36247,
           0.00014,
-          0.023875
+          0.022858
         ],
         "unit": "m",
         "kind": "derived",
@@ -1516,13 +1517,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 691.171661,
+          "value": 726.728159,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 16.855831,
+          "value": 17.663515,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
@@ -1554,13 +1555,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 691.171661,
+          "value": 726.728159,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 16.855831,
+          "value": 17.663515,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
@@ -1592,13 +1593,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 215.891864,
+          "value": 215.744184,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 9.42053,
+          "value": 9.624112,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
@@ -1647,7 +1648,7 @@
     "controls": "conventional",
     "gear": "fixed_taildragger",
     "propulsion_layout": "single_tractor",
-    "energy": "prescribed_fuel",
+    "energy": "finite_glow_fuel",
     "damage": "terminal_hull",
     "flaps": "not_simulated"
   }
