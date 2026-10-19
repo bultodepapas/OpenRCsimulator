@@ -416,6 +416,7 @@ static func dress_aircraft(root: Node3D, config: Dictionary = {}, snapshot: Dict
 		kit = AircraftLights.attach(root)
 	if kit != null and str(kit.get_meta("mode", "")) != state.active_mode:
 		AircraftLights.set_mode(kit, state.active_mode)
+	AircraftLights.set_emission_mode(AircraftLights.prepare_emission(root), state.active_mode, state.gain)
 	return kit
 
 

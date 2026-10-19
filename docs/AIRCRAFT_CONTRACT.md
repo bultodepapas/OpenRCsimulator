@@ -209,6 +209,8 @@ Godot can compile scripts and convert imported resources during export. The airc
 
 The [Blender handoff](BLENDER-AIRCRAFT-HANDOFF.md) remains authoritative for authoring/export coordinates, pivots and sections. The common preflight adds generated-manifest, dependency, actual neutral/full-travel pose, independent-instance and package checks. It reports mesh counts; it does not establish a universal polygon budget or physical validation.
 
+Aircraft lighting uses the [shared presentation standard](AIRCRAFT-LIGHTING.md): flight-local manual overrides, a configurable 17:30 civil-time default, existing solar policy and per-model light anchors/groups. These bindings do not add simulation state or change the physical aircraft schema.
+
 ## Adding and tuning an aircraft
 
 1. Copy the [synthetic template](../research/aircraft-standardization/template/openrc-aircraft-v2.template.json); give it a unique ID and clearly mark its initial evidence as donor/estimated. Select only supported capabilities. Do not register it as flyable yet.

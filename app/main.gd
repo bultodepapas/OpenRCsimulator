@@ -252,6 +252,7 @@ const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
 var _night_kit: Node3D # FW-35c: lazy presentation kit; state belongs to this flight.
 var _aircraft_lights := World.AircraftLightState.new()
+var _aircraft_lights_hud_dirty := true
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
 var _overlays: CanvasLayer = null # OverlayManager when overlays_enabled
@@ -987,8 +988,9 @@ func _update_hud(telemetry_visible: bool = true, performance_visible: bool = tru
 		return
 	if _overlays != null and performance_visible:
 		_overlays.performance_label.text = Hud.perf_line(_frame_times, session.sim.step_usec).trim_suffix("  [F3]")
-	if not telemetry_visible:
+	if not telemetry_visible and not _aircraft_lights_hud_dirty:
 		return
+	_aircraft_lights_hud_dirty = false
 	var lines := PackedStringArray()
 	if _scripted or not session.aircraft.ok:
 		lines.append("synthetic inspection" if not _visual_pose.is_empty() else ("scripted circle" if _scripted else "no flight data"))
@@ -1127,6 +1129,7 @@ func _status() -> String:
 	else:
 		line += "\n[T] record trace"
 	line += "\n[Z] auto-zoom %s  [V] shadow: %s  [F5] reload aircraft data" % ["on" if _rig.auto_zoom else "off", _shadow_mode]
+	line += "\n[L] " + _aircraft_lights_text()
 	if _note != "":
 		line += "\n" + _note
 	return line
@@ -1472,14 +1475,15 @@ func _unhandled_input(event: InputEvent) -> void:
 ## FW-35c: existing keyboard/controller cycle establishes a flight-local manual override.
 func _cycle_night_lights() -> void:
 	_aircraft_lights.cycle_mode()
+	_aircraft_lights_hud_dirty = true
 	_update_aircraft_lights()
-	_note = _aircraft_lights_text()
 
 
 ## Shared selection API for UI/adapters: AUTO clears the override; invalid modes are refused.
 func set_aircraft_lights(mode: String) -> bool:
 	if not _aircraft_lights.set_mode(mode):
 		return false
+	_aircraft_lights_hud_dirty = true
 	_update_aircraft_lights()
 	return true
 
@@ -1495,12 +1499,15 @@ func _update_aircraft_lights(clock_s: float = -1.0) -> void:
 	if clock_s < 0.0:
 		clock_s = session.sim.time() if session != null else 0.0
 	var elevation := World.aircraft_sun_elevation(_lighting)
-	_aircraft_lights.update(World.aircraft_local_seconds(lighting_config, clock_s),
-		1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0)
+	if _aircraft_lights.update(World.aircraft_local_seconds(lighting_config, clock_s),
+			1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0):
+		_aircraft_lights_hud_dirty = true
 	if not is_instance_valid(_night_kit) and _aircraft_lights.active_mode != "off":
 		_night_kit = World.AircraftLights.attach(_airplane.root)
 	if is_instance_valid(_night_kit) and str(_night_kit.get_meta("mode", "")) != _aircraft_lights.active_mode:
 		World.AircraftLights.set_mode(_night_kit, _aircraft_lights.active_mode)
+	World.AircraftLights.set_emission_mode(World.AircraftLights.prepare_emission(_airplane.root),
+		_aircraft_lights.active_mode, _aircraft_lights.gain)
 
 
 ## CAM-04: mouse wheel zooms the current view; a right-button drag turns the orbit view. True when used.
@@ -2046,6 +2053,7 @@ func _exit_tree() -> void:
 ## One file never mixes two flights.
 func _on_resetting() -> void:
 	_aircraft_lights.reset()
+	_aircraft_lights_hud_dirty = true
 	World.flow_to(0.0)
 	_update_aircraft_lights(0.0)
 	if _accident_incident != null and not _accident_checkpoint_restoring:

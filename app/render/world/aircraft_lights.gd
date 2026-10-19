@@ -38,6 +38,8 @@ const BELLY_STEP_M := 0.03
 const LANDING_SPAN := 0.36 # its 16° beam then clears a propeller disc of up to ~40 % of the span
 const MODES := ["all", "nav", "off"]
 const GROUPS := ["navigation", "strobe", "landing", "orientation"]
+## Existing imported RC lens material names; models can publish light_material_groups to extend/replace this map.
+const MATERIAL_GROUPS := {light_red = "navigation", light_green = "navigation"}
 ## A diffuse LED strip's radiance in scene units (estimate: ~1,000–3,000 cd/m², a tenth of a bare LED).
 const STRIP_RADIANCE := 0.25
 const STRIP_WIDTH_M := 0.015
@@ -435,6 +437,49 @@ static func bind_groups(kit: Node3D, bindings: Dictionary, supported: Array = GR
 	kit.set_meta("supported_light_groups", supported.duplicate())
 	set_mode(kit, "off")
 	return true
+
+
+## Own only emission overrides, never the imported mesh or its shared material. Prepare before the first frame,
+## even when no kit is fitted yet: an imported emissive lens must also be dark in automatic daylight/OFF.
+static func prepare_emission(root: Node3D) -> Dictionary:
+	if root.has_meta("aircraft_light_emission"):
+		return root.get_meta("aircraft_light_emission")
+	var names: Dictionary = root.get_meta("light_material_groups", MATERIAL_GROUPS)
+	var private_materials := {}
+	var bindings := {materials = [], mode = "", gain = -1.0, supported = root.get_meta("light_groups", GROUPS)}
+	for node: MeshInstance3D in root.find_children("*", "MeshInstance3D", true, false):
+		if node.mesh == null:
+			continue
+		for surface: int in (1 if node.material_override != null else node.mesh.get_surface_count()):
+			var source := node.get_active_material(surface) as BaseMaterial3D
+			if source == null or not source.emission_enabled or not names.has(source.resource_name):
+				continue
+			var group := str(names[source.resource_name])
+			if group not in GROUPS:
+				continue
+			var id := source.get_instance_id()
+			if not private_materials.has(id):
+				var material := source.duplicate() as BaseMaterial3D
+				private_materials[id] = material
+				bindings.materials.append({material = material, group = group, energy = source.emission_energy_multiplier})
+			if node.material_override != null:
+				node.material_override = private_materials[id]
+			else:
+				node.set_surface_override_material(surface, private_materials[id])
+	root.set_meta("aircraft_light_emission", bindings)
+	return bindings
+
+
+static func set_emission_mode(bindings: Dictionary, mode: String, gain: float = 1.0) -> void:
+	if mode not in MODES or (bindings.mode == mode and bindings.gain == gain):
+		return
+	for binding: Dictionary in bindings.materials:
+		var enabled: bool = mode != "off" and binding.group in bindings.supported and (mode == "all" or binding.group in ["navigation", "strobe"])
+		var material: BaseMaterial3D = binding.material
+		material.emission_enabled = enabled
+		material.emission_energy_multiplier = float(binding.energy) * gain if enabled else 0.0
+	bindings.mode = mode
+	bindings.gain = gain
 
 
 ## P51-V13: the anchored position of one kit light, or the bounds-derived fallback.
