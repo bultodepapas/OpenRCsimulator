@@ -55,7 +55,12 @@ More: [disc at Day, golden hour and sunset](sun-disc.jpg), [low sun](sun-low.jpg
   - Cloud mirror: 32-bit hash, overcast, layered stratus.
   - Glare source and sky mirror; `Atmosphere._set_sun_uniforms` (golden hour, a moonlit night with no sun aureole, the calibrated day).
   - Shader constants pinned to `SunOptics`.
-- **Existing suites** after the change, run individually: sky render 30, atmosphere 47, world sky 38, moon sky 62, moon aureole 23, moon light 33, moon flow 31, world flow 26, TOD render 203, TOD render update 94, landscape lighting 54, landscape twilight 394, sky checkpoint 45, camera views 39, camera route 19, horizon 19, pilot aids 22, presentation context 17 and stars 22 checks pass. Sky routes passes 16 checks but logs engine errors for two soundscape files left unimported by another track's asset update; the full-suite run records the outcome after `test.sh`'s import.
+- **Whole unit set**, 2026-10-19 ~19:30 UTC, on a tree that other tracks were also changing (a merge and two commits landed during the run): **548 of 570 `app/tests/test_*.gd` pass** under `test.sh`'s rule (exit 0 and no engine `ERROR:` line), four in parallel. Every sky, atmosphere, world, moon, time-of-day, landscape-lighting and camera suite passes. None of the 22 failures involves this step:
+  - Two pass when run alone (`test_overlay_fuel_flight`, `test_scenery_build`: parallel artifacts).
+  - Three fail identically with this step's files reverted (`test_golden`, `test_extra_runway`, `test_downloaded_habitats`).
+  - Five fail identically with the glare node removed (`OPENRC_LANDSCAPE_UPGRADE=off`: `test_time_of_day_edit`, `test_ui_home`, `test_ui_pause`, `test_ui_natural_random`, `test_replay_policy`).
+  - The rest are fuel-system, coupled-shaft, Workshop and handling work in progress. `test_time_of_day_checkpoint` stops at the P-51 coupled-shaft checkpoint; its visual part passes. None of their messages touches rendering.
+  - `app/test.sh` itself stops before the unit tests at CR-29, on a stale committed `research/crash-economics/worked-examples.json`. That is another track's generated file, left as found.
 - **Review.** An independent read-only review found 9 issues; all were fixed before these captures. They were:
   - the veil's background aureole scaled with strength and occlusion;
   - the aureole broke the horizon fog seam under a low sun;

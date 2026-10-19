@@ -4,6 +4,7 @@ extends RefCounted
 ## Cycle work stays averaged; accepted opportunity events are available to replay/audio.
 const Source := preload("res://physics/glow/source.gd")
 const Thermal := preload("res://physics/glow/thermal.gd")
+const Carb := preload("res://physics/glow/carburetor.gd")
 
 const FAMILIES := ["glow_2t", "glow_4t"]
 const CONTINUOUS_KEYS := [
@@ -18,6 +19,11 @@ const PHASE_TOLERANCE := 1.0e-12
 const FIRE_TOLERANCE := 1.0e-12
 const MAX_OPPORTUNITIES_PER_ACCEPT := 64
 const LOW_FLOW := 1.0e-15
+## NITRO-06: no model-aircraft carburettor passes more than this open area (a 113 mm bore).
+const MAX_THROTTLE_AREA_M2 := 1.0e-2
+## NITRO-06: barrel travel exponents outside this band would make the barrel jump open or stay shut over most of the stick.
+const MIN_TRAVEL_EXPONENT := 0.1
+const MAX_TRAVEL_EXPONENT := 10.0
 
 
 ## Immutable installation snapshot for repeated RK stages. Dynamic lifecycle state
@@ -26,12 +32,15 @@ class PreparedEvaluator extends RefCounted:
 	var _model: Dictionary
 	var _settings: Dictionary
 	var _source: Source.PreparedEvaluator
+	var _throttle: Dictionary # NITRO-06: idle offset, capacity, displacement and cycle of the carburettor law
 
-	func _init(model: Dictionary, settings: Dictionary, source: Source.PreparedEvaluator) -> void:
+	func _init(model: Dictionary, settings: Dictionary, source: Source.PreparedEvaluator, throttle: Dictionary) -> void:
 		_model = model.duplicate(true)
 		_settings = settings.duplicate(true)
+		_throttle = throttle.duplicate(true)
 		_make_read_only(_model)
 		_make_read_only(_settings)
+		_make_read_only(_throttle)
 		_source = source
 
 	func _make_read_only(value: Variant) -> void:
@@ -53,7 +62,9 @@ static func candidate_settings_for_tests(family: String) -> Dictionary:
 	return {
 		"evidence_kind": "estimated",
 		"evidence_source": "synthetic software fixture only; not measured installation data",
-		"idle_admission": 0.08,
+		"throttle_effective_area_m2": 2.0e-5,
+		"idle_opening": 0.012,
+		"throttle_travel_exponent": 0.7,
 		"servo_time_constant_s": 0.06,
 		"air_time_constant_s": 0.10,
 		"fuel_transport_time_constant_s": 0.15,
@@ -132,7 +143,13 @@ static func create(
 	var family: String = str(model.family)
 	var cycle_revolutions: float = 1.0 if family == "glow_2t" else 2.0
 	var active: bool = running and fuel_kg > unusable_fuel_kg
-	var admission: float = float(settings.idle_admission)
+	# NITRO-06: the barrel rests at its idle stop; the charge it admits follows from the speed.
+	var terms: Dictionary = _throttle_terms(model, settings)
+	var opening_now: float = float(terms.idle_opening)
+	var admission: float = Carb.admission(opening_now, rpm, Source.breathing(model, rpm), float(terms.displacement_m3),
+		float(terms.cycle_revolutions), float(terms.capacity_m3_s))
+	if not is_finite(admission):
+		return _fail("Initial carburettor admission is nonfinite")
 	var initial_flow: float = 0.0
 	if active:
 		var reference_density: float = float(operation.reference_dry_density_kg_m3)
@@ -148,7 +165,7 @@ static func create(
 		"fuel_kg": fuel_kg,
 		"temperature_k": temperature_k,
 		"servo_fraction": 0.0,
-		"air_fraction": admission,
+		"air_fraction": opening_now,
 		"fuel_transport_kg_s": initial_flow,
 		"phase_revolutions": 0.0,
 		"running": active,
@@ -199,7 +216,7 @@ static func prepare_evaluator(profile: Dictionary, settings: Dictionary) -> Dict
 	var source_result: Dictionary = Source.prepare_evaluator(model)
 	if not source_result.get("ok", false):
 		return _fail("Glow source preparation failed: " + str(source_result.get("message", "unknown profile error")))
-	var evaluator := PreparedEvaluator.new(model, settings, source_result.evaluator)
+	var evaluator := PreparedEvaluator.new(model, settings, source_result.evaluator, _throttle_terms(model, settings))
 	return {ok = true, message = "", evaluator = evaluator}
 
 
@@ -224,7 +241,7 @@ static func evaluate_prepared(
 		return _fail(state_error)
 	return _evaluate_validated(evaluator._model, evaluator._settings, state, rpm,
 		throttle, mixture, dry_density_kg_m3, ambient_k, cooling_airspeed_mps,
-		evaluator._source, feed_factor, unusable_fuel_kg)
+		evaluator._source, feed_factor, unusable_fuel_kg, evaluator._throttle)
 
 
 static func _evaluate_validated(
@@ -239,7 +256,8 @@ static func _evaluate_validated(
 		cooling_airspeed_mps: float,
 		prepared_source: Variant = null,
 		feed_factor: float = 1.0,
-		unusable_fuel_kg: float = 0.0
+		unusable_fuel_kg: float = 0.0,
+		throttle_terms: Dictionary = {}
 ) -> Dictionary:
 	if str(state.family) != str(model.family):
 		return _fail("Profile family does not match lifecycle state")
@@ -264,8 +282,15 @@ static func _evaluate_validated(
 	var raw_servo: float = float(state.servo_fraction)
 	var raw_air: float = float(state.air_fraction)
 	var servo: float = clampf(raw_servo, 0.0, 1.0)
-	var admission: float = clampf(raw_air, 0.0, 1.0)
-	var air_target: float = float(settings.idle_admission) + servo * (1.0 - float(settings.idle_admission))
+	# NITRO-06: `air_fraction` is the lagged open-area fraction of the barrel; the charge per cycle it admits at
+	# this speed comes from the carburettor's flow restriction (physics/glow/carburetor.gd).
+	var terms: Dictionary = throttle_terms if not throttle_terms.is_empty() else _throttle_terms(model, settings)
+	var opening_now: float = clampf(raw_air, float(terms.idle_opening), 1.0)
+	var admission: float = Carb.admission(opening_now, rpm, Source.breathing(model, rpm), float(terms.displacement_m3),
+		float(terms.cycle_revolutions), float(terms.capacity_m3_s))
+	if not is_finite(admission):
+		return _fail("Carburettor admission is nonfinite")
+	var air_target: float = Carb.opening(servo, float(terms.idle_offset), float(terms.travel_exponent))
 	var servo_rate: float = (throttle - raw_servo) / float(settings.servo_time_constant_s)
 	var air_rate: float = (air_target - raw_air) / float(settings.air_time_constant_s)
 
@@ -363,6 +388,7 @@ static func _evaluate_validated(
 			"family": model.family,
 			"cycle_revolutions": int(state.cycle_revolutions),
 			"admission": admission,
+			"throttle_opening": opening_now,
 			"air_target": air_target,
 			"commanded_throttle": throttle,
 			"servo_fraction": servo,
@@ -643,7 +669,7 @@ static func _configuration_error(profile: Dictionary, settings: Dictionary) -> S
 		if not _finite_number(operation.get(name)) or float(operation[name]) <= 0.0:
 			return "Glow profile operation has an invalid " + name
 	var required: Array[String] = [
-		"idle_admission", "servo_time_constant_s", "air_time_constant_s",
+		"throttle_effective_area_m2", "idle_opening", "throttle_travel_exponent", "servo_time_constant_s", "air_time_constant_s",
 		"fuel_transport_time_constant_s", "stall_rpm", "minimum_start_rpm",
 		"temperature_firing_min_k", "temperature_firing_full_k",
 		"temperature_firing_hot_full_k", "temperature_firing_hot_zero_k",
@@ -656,8 +682,12 @@ static func _configuration_error(profile: Dictionary, settings: Dictionary) -> S
 	for name: String in ["servo_time_constant_s", "air_time_constant_s", "fuel_transport_time_constant_s", "stall_rpm", "minimum_start_rpm", "temperature_firing_min_k"]:
 		if float(settings[name]) <= 0.0:
 			return "Lifecycle setting must be positive: " + name
-	if float(settings.idle_admission) < 0.0 or float(settings.idle_admission) > 1.0:
-		return "idle_admission must be in [0, 1]"
+	if float(settings.throttle_effective_area_m2) <= 0.0 or float(settings.throttle_effective_area_m2) > MAX_THROTTLE_AREA_M2:
+		return "throttle_effective_area_m2 must be positive and at most %s m2" % str(MAX_THROTTLE_AREA_M2)
+	if float(settings.idle_opening) <= 0.0 or float(settings.idle_opening) >= 1.0:
+		return "idle_opening must be strictly between zero and one"
+	if float(settings.throttle_travel_exponent) < MIN_TRAVEL_EXPONENT or float(settings.throttle_travel_exponent) > MAX_TRAVEL_EXPONENT:
+		return "throttle_travel_exponent must be in [%s, %s]" % [str(MIN_TRAVEL_EXPONENT), str(MAX_TRAVEL_EXPONENT)]
 	if float(settings.minimum_start_rpm) <= float(settings.stall_rpm) or float(settings.minimum_start_rpm) >= float(operation.max_rpm):
 		return "minimum_start_rpm must exceed stall_rpm and remain below max_rpm"
 	if not (float(settings.temperature_firing_min_k) < float(settings.temperature_firing_full_k)
@@ -725,3 +755,16 @@ static func _finite_number(value: Variant) -> bool:
 
 static func _fail(message: String) -> Dictionary:
 	return {"ok": false, "message": message}
+
+
+## NITRO-06: the derived constants of the carburettor law for a validated profile and settings pair.
+static func _throttle_terms(model: Dictionary, settings: Dictionary) -> Dictionary:
+	var idle_opening: float = float(settings.idle_opening)
+	return {
+		idle_opening = idle_opening,
+		idle_offset = Carb.idle_offset(idle_opening),
+		travel_exponent = float(settings.throttle_travel_exponent),
+		capacity_m3_s = Carb.capacity_m3_s(float(settings.throttle_effective_area_m2)),
+		displacement_m3 = float(model.parameters.displacement_m3),
+		cycle_revolutions = 1.0 if str(model.family) == "glow_2t" else 2.0,
+	}

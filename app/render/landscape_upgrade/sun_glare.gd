@@ -5,7 +5,7 @@
 ## Chase, orbit and close-up cameras are lenses: a smaller veil and a starburst (pass 0), ghosts (pass 1), no bleaching.
 ## Reads the actual sky material and exposure each frame, so FW flow, TOD edits and weather cannot leave stale solar
 ## inputs; never writes the sky except LU-04's one-time disc cloud occlusion. Math and constants:
-## render/sun/sun_optics.gd. The glare source is generic: see source() for adding another one (FW-MOON-08 moon glare).
+## render/sun/sun_optics.gd. The glare source is generic: at night source() returns the moon (FW-MOON-08).
 extends MeshInstance3D
 
 const Options := preload("res://render/landscape_upgrade/options.gd")
@@ -15,6 +15,8 @@ const SunOptics := preload("res://render/sun/sun_optics.gd")
 const SkyMirror := preload("res://render/sun/sky_mirror.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const MoonGlare := preload("res://render/world/moon_glare.gd")
+const Skyline := preload("res://render/sun/skyline.gd")
 
 ## The sky uniforms SkyMirror.transmission reads.
 const CLOUD_UNIFORMS: Array[StringName] = [&"layered_appearance", &"cloud_coverage", &"cloud_offset", &"cloud_scale",
@@ -24,6 +26,10 @@ const CLOUD_UNIFORMS: Array[StringName] = [&"layered_appearance", &"cloud_covera
 const OPTICS_META := &"openrc_optics"
 ## The afterimage overlay's canvas layer: above the 3D image, below every interface layer (HUD 1, notices 20+).
 const AFTERIMAGE_LAYER := -10
+## SUN-09: the skyline is built from this many samples per frame (a fixed amount of work, so captures and replays
+## finish it on the same frame), and rebuilt when the eye moves farther than this.
+const SKYLINE_SAMPLES_PER_FRAME := 2000
+const SKYLINE_REBUILD_M := 2.0
 
 var environment: Environment
 var intensity := 1.0
@@ -41,6 +47,8 @@ var _after_clock := -1.0
 ## SkyMirror.transmission is recomputed only when its inputs change (cloud offsets move at Spec cloud_update_s).
 var _cloud_key: Array = []
 var _cloud_transmission := 1.0
+## SUN-09: the field's skyline from the pilot's eye (null until an eye view needs it).
+var _skyline: Skyline
 
 static func attach(parent: Node, env: Environment) -> MeshInstance3D:
 	var script: GDScript = load("res://render/landscape_upgrade/sun_glare.gd")
@@ -109,25 +117,35 @@ static func _configure_overlay(node: MeshInstance3D) -> void:
 
 ## The glare source the sky shows now: {dir (render, toward the apparent disc), radius (rad), disc_lin (the disc's mean
 ## radiance, pre-exposure), illuminance (relative to the calibrated day sun: drives bleaching), e_over_b (its
-## illuminance over the sky's luminance around it, sr: drives the veil)}; zeros when the disc is off. The sky's
-## sun_lin carries Atmosphere.shadow_compensation (Compatibility's shadowed-light correction), divided out here. Another
-## source (the moon, FW-MOON-08) returns the same keys: its absolute illuminance is ~10⁻⁶ of the sun's, so it veils
-## a dark-adapted view but never bleaches.
-static func source(sky: ShaderMaterial, shadow_compensation := 1.0) -> Dictionary:
+## illuminance over the sky's luminance around it, sr: drives the veil), kappa (the background's display level over
+## disc_lin's: SunOptics.KAPPA for the sun), and for the sun veil_lin (the veil's target colour: the disc's, never
+## below the sky around it, SunOptics.veil_colour)}. The sky's sun_lin carries Atmosphere.shadow_compensation
+## (Compatibility's shadowed-light correction), divided out here. While the sun's disc is off the source is the moon
+## (FW-MOON-08, render/world/moon_glare.gd; zeros without one): its illuminance is ~10⁻⁶ of the sun's, so it veils a
+## dark-adapted view but never bleaches. `exposure` (the environment's) sets the moon's kappa.
+static func source(sky: ShaderMaterial, shadow_compensation := 1.0, exposure := 1.0) -> Dictionary:
+	var disc: Variant = sky.get_shader_parameter("sun_disc")
+	if disc != null and float(disc) <= 0.0:
+		return MoonGlare.source(sky, exposure)
 	var occluded: bool = sky.get_shader_parameter("disc_cloud_occlusion") == true
 	var dir: Variant = sky.get_shader_parameter("disc_dir") if occluded else sky.get_shader_parameter("sun_dir")
 	var sun_lin: Variant = sky.get_shader_parameter("sun_lin")
-	var disc: Variant = sky.get_shader_parameter("sun_disc")
 	var radius: Variant = sky.get_shader_parameter("sun_radius")
 	if not dir is Vector3 or not sun_lin is Vector3 or (dir as Vector3).length_squared() < 1e-12:
-		return {dir = Vector3.UP, radius = 0.0, disc_lin = Vector3.ZERO, illuminance = 0.0, e_over_b = 0.0}
+		return {dir = Vector3.UP, radius = 0.0, disc_lin = Vector3.ZERO, illuminance = 0.0, e_over_b = 0.0, kappa = SunOptics.KAPPA}
 	var d: float = clampf(float(disc) if disc != null else 1.0, 0.0, 1.0)
 	var toward := (dir as Vector3).normalized()
 	var light := (sun_lin as Vector3) / maxf(shadow_compensation, 1e-6)
+	var disc_lin: Vector3 = (sun_lin as Vector3) * SunOptics.DISC_RADIANCE_FACTOR
+	# The sky the sky shader draws 1° from the disc: gradient, the L1a halo and the aureole's core.
+	var aureole: Variant = sky.get_shader_parameter("sun_aureole_lin")
+	var around: Vector3 = SkyMirror.background_radiance(sky, toward) + SunOptics.sky_halo(sun_lin, 1.0) \
+		+ (SunOptics.sky_aureole(aureole, sun_lin, 1.0, rad_to_deg(asin(clampf(toward.y, -1.0, 1.0)))) if aureole is Vector3 else Vector3.ZERO)
 	return {dir = toward, radius = float(radius) if radius != null else 0.0046251,
-		disc_lin = (sun_lin as Vector3) * SunOptics.DISC_RADIANCE_FACTOR,
+		disc_lin = disc_lin, veil_lin = SunOptics.veil_colour(disc_lin, around),
 		illuminance = SunOptics.illuminance_scale(light) * d,
-		e_over_b = SunOptics.illuminance_over_background(light, SkyMirror.background_luminance(sky, toward)) * d}
+		e_over_b = SunOptics.illuminance_over_background(light, SkyMirror.background_luminance(sky, toward)) * d,
+		kappa = SunOptics.KAPPA}
 
 
 func _process(_delta: float) -> void:
@@ -142,16 +160,16 @@ func _process(_delta: float) -> void:
 	# LU-04: the visible solar disc and the glare share cloud attenuation and apparent position.
 	if not sky.get_shader_parameter("disc_cloud_occlusion"):
 		sky.set_shader_parameter("disc_cloud_occlusion", true)
-	var src := source(sky, Atmosphere.shadow_compensation())
+	var src := source(sky, Atmosphere.shadow_compensation(), maxf(environment.tonemap_exposure, 1e-6))
 	var dir: Vector3 = src.dir
 	var clouds := _clouds(sky, dir)
-	var prior := SunOptics.horizon_prior(asin(clampf(dir.y, -1.0, 1.0)))
-	var strength := intensity * float(src.e_over_b) * clouds
-	var dose := intensity * float(src.illuminance) * clouds * prior
 	var optics := str(camera.get_meta(OPTICS_META, "eye"))
 	var lens := optics == "lens"
 	var perspective := camera.projection == Camera3D.PROJECTION_PERSPECTIVE
 	var eye := perspective and not lens
+	var prior := _skyline_prior(camera, dir, float(src.radius), eye)
+	var strength := intensity * float(src.e_over_b) * clouds
+	var dose := intensity * float(src.illuminance) * clouds * prior
 	var sun_view := camera.global_transform.basis.orthonormalized().inverse() * dir
 	_advance_afterimage(sun_view, dose if eye else 0.0)
 	var veil := perspective and strength > 0.0 and dir.y > -0.02 and veil_reaches_view(camera, dir)
@@ -166,12 +184,14 @@ func _process(_delta: float) -> void:
 	set_meta("afterimage", SunOptics.afterimage_dose(_afterimage))
 	set_meta("optics", optics)
 	set_meta("aureole_coeff", coeff)
+	set_meta("kappa", float(src.kappa))
 	set_meta("solar_uv", Vector2(-1.0, -1.0))
 	if not veil:
 		return
-	var values := {source_dir = dir, source_radius = float(src.radius), source_lin = src.disc_lin,
+	var values := {source_dir = dir, source_radius = float(src.radius), source_lin = src.get("veil_lin", src.disc_lin),
 		source_scale = strength, background_scale = background, horizon_prior = prior, far_distance = camera.far,
-		aureole_coeff = coeff, exposure = maxf(environment.tonemap_exposure, 1e-6), optics = 1 if lens else 0}
+		aureole_coeff = coeff, exposure = maxf(environment.tonemap_exposure, 1e-6), optics = 1 if lens else 0,
+		kappa = float(src.kappa)}
 	for key: String in values:
 		_material.set_shader_parameter(key, values[key])
 		if lens:
@@ -179,6 +199,32 @@ func _process(_delta: float) -> void:
 	var size := get_viewport().get_visible_rect().size
 	if size.x > 0.0 and size.y > 0.0 and not camera.is_position_behind(camera.global_position + dir * 1000.0):
 		set_meta("solar_uv", camera.unproject_position(camera.global_position + dir * 1000.0) / size)
+
+
+## The disc's visibility where the depth buffer cannot tell (off screen) and for the bleaching dose. In an eye view: the
+## field's skyline from that eye (SUN-09), built over the first frames; elsewhere, or until it is built, SunOptics'
+## constant 3° skyline. The geometric horizon always applies.
+func _skyline_prior(camera: Camera3D, dir: Vector3, radius: float, eye: bool) -> float:
+	var el := asin(clampf(dir.y, -1.0, 1.0))
+	var constant := SunOptics.horizon_prior(el)
+	if not eye:
+		return constant
+	var position := camera.global_position
+	if _skyline == null or _skyline.eye.distance_to(position) > SKYLINE_REBUILD_M:
+		var parent := get_parent()
+		var field: Node = parent.get_node_or_null("Field") if parent != null else null
+		if field == null:
+			return constant
+		_skyline = Skyline.new(field, position)
+	if not _skyline.step(SKYLINE_SAMPLES_PER_FRAME):
+		return constant
+	set_meta("skyline_elevation", _skyline.elevation(dir))
+	return minf(_skyline.visibility(dir, radius), smoothstep(-radius, radius, el))
+
+
+## The skyline in use (null before an eye view; tests and captures may finish() it).
+func skyline() -> Skyline:
+	return _skyline
 
 
 func _hide() -> void:

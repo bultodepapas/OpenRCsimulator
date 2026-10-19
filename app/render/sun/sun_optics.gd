@@ -230,6 +230,35 @@ static func aureole_path(elevation_deg: float) -> float:
 	return 1.0 - pow(10.0, -0.4 * AUREOLE_K * airmass)
 
 
+## sky.gdshader sun_aureole() at `rho_deg` from the sun for a sky point at `elevation_deg`: KS91's shape and path
+## term, compressed below AUREOLE_DISC_SHARE of the disc, faded over the last 2° above the horizon. `aureole_lin` and
+## `sun_lin` are the sky's uniforms.
+static func sky_aureole(aureole_lin: Vector3, sun_lin: Vector3, rho_deg: float, elevation_deg: float) -> Vector3:
+	var shape := aureole_shape(rho_deg)
+	if shape <= 0.0 or not aureole_lin.is_finite() or aureole_lin.x + aureole_lin.y + aureole_lin.z <= 0.0:
+		return Vector3.ZERO
+	var a := aureole_lin * shape * aureole_path(elevation_deg)
+	var disc := AUREOLE_DISC_SHARE * DISC_RADIANCE_FACTOR * luminance(sun_lin)
+	return a / (1.0 + luminance(a) / maxf(disc, 1e-12)) * smoothstep(0.0, 0.035, sin(deg_to_rad(elevation_deg)))
+
+
+## The legacy L1a halo the sky draws around the disc at `rho_deg` (sky.gdshader: (sun_lin/π)·0.35·e^(−18·ρ)).
+static func sky_halo(sun_lin: Vector3, rho_deg: float) -> Vector3:
+	return sun_lin / PI * 0.35 * exp(-18.0 * deg_to_rad(maxf(rho_deg, 0.0)))
+
+
+## The veil's target colour (pre-exposure): the disc's, raised per channel to VEIL_SKY_MARGIN times the sky around the
+## source. Straylight only adds light, so the overlay's mix toward this colour must never darken that sky (a mix toward
+## the disc alone darkened a bright golden-hour sky by up to 15 levels).
+const VEIL_SKY_MARGIN := 1.1
+
+
+static func veil_colour(disc_lin: Vector3, sky_around: Vector3) -> Vector3:
+	if not sky_around.is_finite():
+		return disc_lin
+	return disc_lin.max(sky_around * VEIL_SKY_MARGIN)
+
+
 ## Visibility of a disc at `elevation_rad` (apparent) when the depth buffer cannot tell: the skyline prior.
 static func horizon_prior(elevation_rad: float) -> float:
 	if not is_finite(elevation_rad):

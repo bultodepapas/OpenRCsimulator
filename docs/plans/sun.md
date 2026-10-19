@@ -43,7 +43,7 @@ The physics, sources and rejected alternatives are in [SUN-00](../research/sun/S
 | SUN-02 | Eye veil (CIE over sky plus aureole, E/B from the live sky), display mapping, per-camera projection in the shader (no frame lag, any FOV), CPU mirror of the sky (fixes LU-04's glare under layered weather), horizon prior. | Delivered: `test_sun_optics.gd`; `glare_offset_*` captures measured by `glare_contrast.py`. |
 | SUN-03 | Bleaching and afterimage on simulation time (pause and replay hold it; a jump rests the eye). | Delivered: exact-integration and patch checks; `glare_crossing*` and `glare_afterimage` captures. |
 | SUN-04 | Optics per view: eye (pilot) vs lens (chase, orbit, close-up): starburst and ghosts. | Delivered: `glare_lens` capture. |
-| SUN-05 | Regression: LU glare checks updated for the new physics, full suite, cost. | Delivered with the limits in the evidence. |
+| SUN-05 | Regression: LU glare checks updated for the new physics (13/13), whole unit set, review fixes. | Delivered; 548/570 unit tests pass, the 22 failures traced to other tracks or parallel runs ([SUN-01…05](../research/sun/SUN-01-05/README.md#2-measurements)). Target-GPU cost belongs to SUN-08. |
 | SUN-06 | Pilot eyewear: cap brim (blocks a sun high above the gaze) and sunglasses (lower bleaching, same veil ratio). Needs UI owner for a preference. | Open. |
 | SUN-07 | Moon glare as a second source of the same overlay (FW-MOON-08 owns it). | Open; API in `SunGlare.source()`. |
 | SUN-08 | Owner flight acceptance: fly across the sun on Day, golden hour and sunset; judge how long the model is lost, the afterimage streak, the veil and the lens flare. Tune `AFTER_RECOVER_S`, `AFTER_MAX_ALPHA`, the patch blur and the `--sun-glare` default from it. | Open (Gate). |

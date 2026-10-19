@@ -87,9 +87,22 @@ def load_case(family: str) -> dict[str, Any]:
     }
 
 
-def admission_for_command(case: dict[str, Any], command: float) -> float:
-    idle = quantity(case["install"]["settings"], "idle_admission")
-    return idle + (1.0 - idle) * command
+def opening_for_command(case: dict[str, Any], command: float) -> float:
+    """NITRO-06: the barrel's settled open-area fraction at a transmitter command (carburetor.py)."""
+    idle_offset = carburetor.idle_offset(quantity(case["install"]["settings"], "idle_opening"))
+    return carburetor.opening(command, idle_offset, quantity(case["install"]["settings"], "throttle_travel_exponent"))
+
+
+def admission_at(case: dict[str, Any], opening: float, rpm: float) -> float:
+    """NITRO-06: the charge per cycle the carburettor admits at this opening and speed, relative to wide open."""
+    profile = case["profile"]
+    parameters = profile["parameters"]
+    two = case["family"] == "glow_2t"
+    breathing = carburetor.sample_table(
+        parameters["delivery_ratio" if two else "volumetric_efficiency"]["value"], rpm)
+    capacity = carburetor.capacity_m3_s(quantity(case["install"]["settings"], "throttle_effective_area_m2"))
+    return carburetor.admission(opening, rpm, breathing, parameters["displacement_m3"]["value"],
+                                1.0 if two else 2.0, capacity)
 
 
 def indicated_density_rad(phase_rad: float, family: str, phase_shift_deg: float) -> float:
@@ -117,11 +130,11 @@ def pumping_density_rad(phase_rad: float, family: str) -> float:
     return 2.0 * math.sin(math.pi * (x - start) / width) ** 2 / width
 
 
-def closure(case: dict[str, Any], rpm: float, admission: float) -> dict[str, float]:
-    return source.family_inputs(case["profile"], rpm, admission=admission, mixture=MIXTURE, rho=RHO)
+def closure(case: dict[str, Any], rpm: float, opening: float) -> dict[str, float]:
+    return source.family_inputs(case["profile"], rpm, admission=admission_at(case, opening, rpm), mixture=MIXTURE, rho=RHO)
 
 
-def mean_root(case: dict[str, Any], admission: float) -> dict[str, float]:
+def mean_root(case: dict[str, Any], opening: float) -> dict[str, float]:
     profile = case["profile"]
     parameters = source.interp_parameters(profile)
     op_max = quantity(profile["operation"], "max_rpm")
@@ -129,7 +142,7 @@ def mean_root(case: dict[str, Any], admission: float) -> dict[str, float]:
     hi = min(float(parameters["mechanical_torque_nm"][-1][0]), op_max)
 
     def residual(rpm: float) -> float:
-        values = closure(case, rpm, admission)
+        values = closure(case, rpm, opening)
         prop = source.propeller_load(rpm, AIR_SPEED, RHO, case["prop"])
         if not prop["ideal_power_bound_pass"]:
             raise ValueError(f"installed propeller violates ideal-power lower bound at {rpm:.3f} RPM")
@@ -157,7 +170,7 @@ def mean_root(case: dict[str, Any], admission: float) -> dict[str, float]:
         rpm = 0.5 * (a + b)
         roots.append({"rpm": rpm, "residual_nm": residual(rpm)})
     if not roots:
-        raise ValueError(f"no restoring mean root for {case['family']} at admission {admission:.6f}")
+        raise ValueError(f"no restoring mean root for {case['family']} at opening {opening:.6f}")
     return roots[-1]
 
 
@@ -177,7 +190,7 @@ def _profile_torque(case: dict[str, Any], phase_rad: float, rpm: float,
     )
 
 
-def integrate_one_cycle(case: dict[str, Any], *, start_rpm: float, admission: float,
+def integrate_one_cycle(case: dict[str, Any], *, start_rpm: float, opening: float,
                         max_step_deg: float, inertia_multiplier: float = 1.0,
                         phase_shift_deg: float = 0.0) -> dict[str, float]:
     """One independently integrated opportunity; returns its crank-map endpoint."""
@@ -194,7 +207,7 @@ def integrate_one_cycle(case: dict[str, Any], *, start_rpm: float, admission: fl
     prop_work_j = 0.0
     rpm_min = start_rpm
     rpm_max = start_rpm
-    work = closure(case, start_rpm, admission)
+    work = closure(case, start_rpm, opening)
     angle_count = 0
     while phase < cycle_angle - 1e-12:
         dtheta = min(step_max, cycle_angle - phase)
@@ -250,7 +263,7 @@ def integrate_one_cycle(case: dict[str, Any], *, start_rpm: float, admission: fl
     }
 
 
-def periodic_orbit(case: dict[str, Any], *, mean_rpm: float, admission: float,
+def periodic_orbit(case: dict[str, Any], *, mean_rpm: float, opening: float,
                    max_step_deg: float, inertia_multiplier: float = 1.0,
                    phase_shift_deg: float = 0.0) -> dict[str, float]:
     """Find the stable cycle-start speed whose one-cycle energy map is periodic."""
@@ -261,7 +274,7 @@ def periodic_orbit(case: dict[str, Any], *, mean_rpm: float, admission: float,
     points = []
     for i in range(13):
         rpm = rpm_min + (rpm_max - rpm_min) * i / 12.0
-        trace = integrate_one_cycle(case, start_rpm=rpm, admission=admission,
+        trace = integrate_one_cycle(case, start_rpm=rpm, opening=opening,
                                     max_step_deg=max_step_deg,
                                     inertia_multiplier=inertia_multiplier,
                                     phase_shift_deg=phase_shift_deg)
@@ -277,7 +290,7 @@ def periodic_orbit(case: dict[str, Any], *, mean_rpm: float, admission: float,
     b, fb = hi
     for _ in range(28):
         mid = 0.5 * (a + b)
-        trace = integrate_one_cycle(case, start_rpm=mid, admission=admission,
+        trace = integrate_one_cycle(case, start_rpm=mid, opening=opening,
                                     max_step_deg=max_step_deg,
                                     inertia_multiplier=inertia_multiplier,
                                     phase_shift_deg=phase_shift_deg)
@@ -287,20 +300,20 @@ def periodic_orbit(case: dict[str, Any], *, mean_rpm: float, admission: float,
         else:
             b, fb = mid, fm
     root_rpm = 0.5 * (a + b)
-    trace = integrate_one_cycle(case, start_rpm=root_rpm, admission=admission,
+    trace = integrate_one_cycle(case, start_rpm=root_rpm, opening=opening,
                                 max_step_deg=max_step_deg,
                                 inertia_multiplier=inertia_multiplier,
                                 phase_shift_deg=phase_shift_deg)
     return trace
 
 
-def _admission_at(events: list[tuple[float, float]], time_s: float, case: dict[str, Any]) -> float:
+def _opening_at(events: list[tuple[float, float]], time_s: float, case: dict[str, Any]) -> float:
     command = events[0][1]
     for when, value in events:
         if time_s + 1e-12 < when:
             break
         command = value
-    return admission_for_command(case, command)
+    return opening_for_command(case, command)
 
 
 def simulate_phase(case: dict[str, Any], *, initial_rpm: float, duration_s: float,
@@ -320,8 +333,8 @@ def simulate_phase(case: dict[str, Any], *, initial_rpm: float, duration_s: floa
     energy = 0.5 * inertia * omega * omega
     phase = 0.0
     time_s = 0.0
-    current_admission = _admission_at(events, 0.0, case)
-    current_cycle = closure(case, initial_rpm, current_admission)
+    current_opening = _opening_at(events, 0.0, case)
+    current_cycle = closure(case, initial_rpm, current_opening)
     totals = {name: 0.0 for name in (
         "burned_fuel_kg", "delivered_premix_kg", "chemical_heat_j",
         "profile_indicated_work_j", "profile_net_shaft_work_j",
@@ -365,7 +378,7 @@ def simulate_phase(case: dict[str, Any], *, initial_rpm: float, duration_s: floa
             omega0 = _speed_from_energy(energy, inertia)
             rpm0 = omega0 * 60.0 / TAU
             next_boundary = cycle_angle - phase
-            admission_now = _admission_at(events, time_s, case)
+            opening_now = _opening_at(events, time_s, case)
             max_dtheta = min(step_max, next_boundary)
             remaining_t = target_t - time_s
             dtheta = min(max_dtheta, omega0 * remaining_t)
@@ -417,9 +430,9 @@ def simulate_phase(case: dict[str, Any], *, initial_rpm: float, duration_s: floa
             time_s += dt
             if phase >= cycle_angle - 1e-11:
                 phase = 0.0
-                current_admission = _admission_at(events, time_s, case)
+                current_opening = _opening_at(events, time_s, case)
                 rpm_boundary = _speed_from_energy(energy, inertia) * 60.0 / TAU
-                current_cycle = closure(case, rpm_boundary, current_admission)
+                current_cycle = closure(case, rpm_boundary, current_opening)
                 count_opportunity(current_cycle)
         rows.append({
             "time_s": target_t,
@@ -446,8 +459,8 @@ def _mean_rhs(case: dict[str, Any], time_s: float, state: list[float], events: l
     inertia = case["inertia"]
     omega = _speed_from_energy(energy, inertia)
     rpm = omega * 60.0 / TAU
-    admission = _admission_at(events, time_s, case)
-    values = closure(case, rpm, admission)
+    opening = _opening_at(events, time_s, case)
+    values = closure(case, rpm, opening)
     load = source.propeller_load(rpm, AIR_SPEED, RHO, case["prop"])
     if not load["ideal_power_bound_pass"]:
         raise ValueError(f"ideal-power refusal at {rpm:.6f} RPM")
@@ -592,17 +605,17 @@ def phase_event_metrics(mean: dict[str, Any], phase: dict[str, Any],
 
 def analyze_family(family: str) -> dict[str, Any]:
     case = load_case(family)
-    full_admission = 1.0
+    full_opening = 1.0
     low_command = TRANSIENT_EVENTS[0][1]
-    low_admission = admission_for_command(case, low_command)
-    full_root = mean_root(case, full_admission)
-    low_root = mean_root(case, low_admission)
+    low_opening = opening_for_command(case, low_command)
+    full_root = mean_root(case, full_opening)
+    low_root = mean_root(case, low_opening)
 
     steady_rows = []
     for inertia_multiple in INERTIA_MULTIPLIERS:
         for phase_shift in PHASE_CASES_DEG:
             result = periodic_orbit(
-                case, mean_rpm=full_root["rpm"], admission=full_admission,
+                case, mean_rpm=full_root["rpm"], opening=full_opening,
                 max_step_deg=0.25, inertia_multiplier=inertia_multiple,
                 phase_shift_deg=phase_shift,
             )
@@ -621,7 +634,7 @@ def analyze_family(family: str) -> dict[str, Any]:
     angle_rows = []
     for angle_step in REFINEMENT_STEPS_DEG:
         phase = periodic_orbit(
-            case, mean_rpm=full_root["rpm"], admission=full_admission,
+            case, mean_rpm=full_root["rpm"], opening=full_opening,
             max_step_deg=angle_step,
         )
         angle_rows.append({"step_deg_max": angle_step,
@@ -684,11 +697,11 @@ def analyze_family(family: str) -> dict[str, Any]:
             "supported_max_rpm": quantity(case["profile"]["operation"], "max_rpm"),
         },
         "operating_points": {
-            "full_admission": full_admission,
+            "full_opening": full_opening,
             "full_static_mean_root_rpm": full_root["rpm"],
             "full_static_mean_root_residual_nm": full_root["residual_nm"],
             "low_command": low_command,
-            "low_admission": low_admission,
+            "low_opening": low_opening,
             "low_static_mean_root_rpm": low_root["rpm"],
             "low_static_mean_root_residual_nm": low_root["residual_nm"],
         },
@@ -707,7 +720,7 @@ def analyze_family(family: str) -> dict[str, Any]:
         },
         "throttle_transient": {
             "events_command_fraction": [{"time_s": t, "command": c,
-                                         "admission": admission_for_command(case, c)}
+                                         "opening": opening_for_command(case, c)}
                                         for t, c in TRANSIENT_EVENTS],
             "duration_s": DURATION_S,
             "phase_reference": {"method": "independent crank-angle energy integration",

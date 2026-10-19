@@ -260,7 +260,7 @@ func glow_start() -> bool:
 	var next: Dictionary=started.state
 	next.fuel_kg-=prime
 	if mode==GlowFlight.MODE_FEED_LINE: line_fuel-=prime
-	var source: Dictionary=GlowFlight.Source.evaluate(install.profile,rpm,next.air_fraction,sim.continuous[12],1.225*engine_charge_ratio(),true)
+	var source: Dictionary=GlowFlight.Source.evaluate(install.profile,rpm,GlowFlight.admission_at(install,next.air_fraction,rpm),sim.continuous[12],1.225*engine_charge_ratio(),true)
 	if not source.ok: return false
 	next.fuel_transport_kg_s=source.delivered_fuel_kg_s
 	var candidate: PackedFloat64Array=GlowFlight.put_state(sim.continuous,next)

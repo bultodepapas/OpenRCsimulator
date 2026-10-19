@@ -36,7 +36,12 @@ Krisciunas & Schaefer give the moon's scattered sky brightness as f(ρ)·I*·10^
   | electrical storm | 3.6 |
 
 - **What the eye sees.** The disc is drawn as the eye adapted to the moon sees it (FW-MOON-03). The aureole gets the same local adaptation over the sky behind it: shown = background × ((1 + aureole/background)^γ − 1), with the disc's γ (0.55 at night, 1 = physical by day). Physically the glow would be ~340× the sky at 1° (a white blob).
-  - On the Night preset, over the zenith sky: ×26.5 at 1°, ×4.6 at 5°, ×1.9 at 20°, unchanged from 45°.
+  - On the Night preset, over the zenith sky and before the knee below: ×26.5 at 1°, ×4.6 at 5°, ×1.9 at 20°, unchanged from 45°.
+- **The knee.** A soft limit, shown·k/(k + shown), keeps the glow below the disc as shown. At the limb KS91 put the glow at ~0.5 % of the disc's radiance, which the disc's γ shows as k = 0.005^γ of the displayed disc (5 % at night).
+  - Without it, 1.2° close-ups washed out the limb.
+  - A first, arbitrary limit (a quarter of the disc) left a flat blue field around the moon and was replaced by this derived one.
+  - The bright core people see around the moon is mostly the eye's own straylight, the glare veil (open item).
+  - In an eclipse the knee follows the eclipsed disc ([FW-MOON-10](../FW-MOON-10/README.md)).
 - **By day** the coefficient is ~10⁻⁶ of the sky and dropped below 10⁻⁴, so the uniform stays zero and day skies stay byte-identical. Without a moon, or with it below the horizon, it is zero too.
 
 ## 2. Verification
@@ -44,7 +49,7 @@ Krisciunas & Schaefer give the moon's scattered sky brightness as f(ρ)·I*·10^
 | Check | Result |
 | --- | --- |
 | `test_world_moon_aureole.gd` | 23/23. Coefficient equals KS91's ratio at 30°, 60° and 85° moons. A moonlit night has an aureole; day, no moon and a moon below the horizon have none. Aerosols: default 1.9, clear < classic < storm, within the clamp. The KS91 shape is monotonic and continuous from the disc to 180° (≤ 6 % per 0.5 % of angle), eq. 19 near and eq. 21 far, the two forms meeting between 8° and 9°. The added peak is over 85 % of KS91's within 10° and zero from 45°. The night preset's glow stays under 60× at 1°, is clearly brighter within 5°, and adds nothing at 90°. Flow skies write the uniform with the aerosols; snapshots clear it. |
-| Rendered profile, [aureole_profile.gd](../../../../research/field-world/fw-moon-08/aureole_profile.gd) | Night preset, clear sky, a 70° view on the moon, linear tonemap at 10× exposure. The aureole is rendered on and off, and a uniform-sky calibration frame measures the actual radiance-to-display scale (0.996 of the tonemap exposure). Rendered/predicted brightening along the row and column through the moon ([data](aureole-profile.json)): **1.01** (p10–p90 0.98–1.04) from 10° to 30°, 1.00 at 40°, and exactly 0 from 45° (47 samples). |
+| Rendered profile, [aureole_profile.gd](../../../../research/field-world/fw-moon-08/aureole_profile.gd) | Night preset, clear sky, a 70° view on the moon, linear tonemap at 10× exposure. The aureole is rendered on and off, and a uniform-sky calibration frame measures the actual radiance-to-display scale (0.996 of the tonemap exposure). The prediction includes the knee. Rendered/predicted brightening along the row and column through the moon ([data](aureole-profile.json)): **1.01** (p10–p90 0.97–1.03) from 5° to 10°, **1.01** (0.99–1.04) from 10° to 30°, 1.02 from 30° to 45°, and exactly 0 from 45° (47 samples). The rendered brightening over the sky is ×1.57 at 6°, ×1.37 at 10°, ×1.36 at 16°, ×1.20 at 25° and ×1.05 at 40°. |
 | Weather gallery | The Night preset as played (AgX), without and with the aureole, for all nine sky profiles (below). |
 | Existing tests | `test_world_moon_light` 33/33, `test_world_flow` 26/26, `test_world_moon_flow` 31/31, `test_world_moon_sky` 62/62, `test_world_moon_config` 53/53, `test_world_moon_presets` 23/23, `test_world_sky` 38/38, `test_world_stars` 22/22, `test_landscape_twilight` 394/394, `test_sky_render` 30/30, `test_world_presentation_context` 17/17, `test_ui_moon_controls` 13/13, `test_landscape_horizon` 37/37, `test_atmosphere` 47/47. |
 | Cost | A handful of ALU operations per sky pixel (one `acos`, three `pow`), and nothing while the uniform is zero. Target-GPU cost is for FW-MOON-14. |

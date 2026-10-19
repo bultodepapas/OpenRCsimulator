@@ -33,7 +33,7 @@ const Runway := preload("card_field.gd")
 
 const G := 9.80665
 const RHO := 1.225
-const VERSION := "ft-card-v4"
+const VERSION := "ft-card-v5"
 const HIGH := 250.0 # m, airborne tests that may lose height
 const CSV_EVERY := 12 # 240 Hz ticks per committed CSV row (20 Hz)
 
@@ -145,6 +145,8 @@ func _initialize() -> void:
 	_run("spin_inverted", func() -> Dictionary: return Stalls.spin_inverted(self))
 	_run("dead_stick_landing", func() -> Dictionary: return Runway.dead_stick_landing(self))
 	_run("go_around", func() -> Dictionary: return Runway.go_around(self))
+	# Card v5 (D6e-R3): hands-off throttle steps, appended after the v4 tests.
+	_run("power_step", func() -> Dictionary: return Power.power_step(self))
 	_write_report()
 	quit(0)
 

@@ -62,6 +62,21 @@ static func evaluate(model: Dictionary, rpm: float, admission: float, mixture: f
 	return result
 
 
+## NITRO-06: the wide-open breathing of the engine at this speed, the delivery ratio (2T) or volumetric efficiency
+## (4T) that the carburettor's flow restriction scales. Tables are clamped outside their support.
+static func breathing(model: Dictionary, rpm: float) -> float:
+	var parameters: Dictionary = model.parameters
+	if str(model.family) == "glow_2t":
+		return TwoStroke._sample(parameters.delivery_ratio, rpm)
+	return FourStroke._sample(parameters.volumetric_efficiency, rpm)
+
+
+static func breathing_prepared(evaluator: PreparedEvaluator, rpm: float) -> float:
+	if evaluator._family == "glow_2t":
+		return TwoStroke._sample(evaluator._parameters.delivery_ratio, rpm)
+	return FourStroke._sample(evaluator._parameters.volumetric_efficiency, rpm)
+
+
 ## Validates a normalized model against its provenance once and returns an
 ## evaluator over a detached snapshot. This stays outside Profile.model so model
 ## serialization and deterministic comparisons remain data-only.

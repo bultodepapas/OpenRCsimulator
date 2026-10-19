@@ -169,7 +169,7 @@ func _test_bad_install_values(label: String, baseline: Dictionary, raw: Dictiona
 	value.family = "glow_4t" if baseline.family == "glow_2t" else "glow_2t"
 	cases.append({"label": "profile family mismatch", "value": value})
 	value = baseline.duplicate(true)
-	value.settings.idle_admission.unit = "percent"
+	value.settings.idle_opening.unit = "percent"
 	cases.append({"label": "quantity unit mismatch", "value": value})
 	value = baseline.duplicate(true)
 	value.settings.servo_time_constant_s.value = true
@@ -184,8 +184,14 @@ func _test_bad_install_values(label: String, baseline: Dictionary, raw: Dictiona
 	value.settings.servo_time_constant_s.value = 0.019
 	cases.append({"label": "transport time constant below integrator envelope", "value": value})
 	value = baseline.duplicate(true)
-	value.settings.idle_admission.value = 1.0
-	cases.append({"label": "idle admission upper bound", "value": value})
+	value.settings.idle_opening.value = 1.0
+	cases.append({"label": "idle opening upper bound", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.throttle_effective_area_m2.value = 0.0
+	cases.append({"label": "zero throttle area", "value": value})
+	value = baseline.duplicate(true)
+	value.settings.throttle_travel_exponent.value = 0.05
+	cases.append({"label": "travel exponent below its band", "value": value})
 	value = baseline.duplicate(true)
 	value.settings.temperature_firing_full_k.value = value.settings.temperature_firing_hot_full_k.value + 1.0
 	cases.append({"label": "cold full temperature crosses hot full", "value": value})
