@@ -60,12 +60,13 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
-## 2026-10-19 · D8b-R2d — a whole-aircraft polar is not a strip polar; judge post-stall laws on lift and roll damping together
+## 2026-10-19 · D8b-R2d — a quasi-steady strip law trades post-stall lift against autorotation; compare damping like for like
 
-A uniform strip table solved to match the measured Ultra Stick 120 static lift retention (within 0.002) made the deep stall stable in roll. The Stik then stopped spinning, although that airframe spins with the same inputs.
+Strip tables solved to the measured Ultra Stick 120 static lift and stall-onset roll damping (with or without spanwise progression) stopped the Stik spinning, although that airframe spins with the same inputs. In strip theory autorotation needs a negative local lift slope, and holding the measured post-stall lift removes it.
 
-- A wing's flat post-stall plateau comes from spanwise stall progression plus tail and body lift. The sections themselves keep a negative slope, and strip roll damping follows that local slope. A static whole-aircraft curve therefore fixes neither the damping nor the spin.
-- Score any post-stall change on the static lift and on dMx/dp against measured roll damping at once, before flying it. Forced-oscillation data get more unstable at lower frequency, so a quasi-steady model must meet at least their low-frequency values.
+- Judge a post-stall law on static lift, damping and a held-out spin together. Matching one curve can break the maneuver.
+- Forced-oscillation "Clp" is Clp + Clβ̇ sin α (NASA convention), so compare it with a model's dMx/dp only where sin α is small.
+- Rate- and history-dependent separation is the missing physics.
 
 Evidence: [D8b-R2d analog](docs/research/flight-robustness/D8b-R2/analog/README.md), [D10-R4](docs/research/flight-dynamics/spin-post-stall-2026-10-19/README.md).
 

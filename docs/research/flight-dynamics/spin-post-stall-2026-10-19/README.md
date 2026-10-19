@@ -3,8 +3,8 @@
 **Status: investigation complete; no runtime or aircraft-data change.**
 
 - The model's developed spin is steady and steeper than two measured RC spins.
-- Measured Ultra Stick 120 curves show that the production post-stall law loses about twice too much lift and has the wrong roll-damping sign in deep stall. This is analog evidence for the open step D8b-R2d.
-- The narrow autorotation band explains the spin's low α. No tested candidate meets both measured curves and the held-out spin.
+- Measured Ultra Stick 120 curves show that the production post-stall law loses about twice too much lift and is roll-unstable right at the stall, where the real airframe is still stable. This is analog evidence for the open step D8b-R2d.
+- The candidates that hold the measured post-stall lift stop the Stik from spinning, although the real airframe spins. The quasi-steady strip law trades lift against autorotation ([D8b-R2d analog](../../flight-robustness/D8b-R2/analog/README.md#conclusions)).
 
 Sources and caveats: [RC-class aerodynamic data sources](../rc-aero-data-sources.md). Origin: [FT-03 finding 1](../../flight-test/FT-03/README.md#findings-for-the-owning-tracks).
 
@@ -28,7 +28,7 @@ The vertical-force coefficient is m(g − a_sink)/(½ρV_sink²S); in a steady s
 
 The NASA FASER airframe (Hangar 9 Ultra Stick 120) has two measured wind-tunnel curves that bound the post-stall law of a Stik-class airplane: static whole-aircraft lift, and forced-oscillation roll damping. Their digitization, the scoring bench and every candidate result live in the [D8b-R2d analog evidence](../../flight-robustness/D8b-R2/analog/README.md). In short:
 - **Lift.** The production legacy blend keeps 45–56 % of its peak lift between 18° and 30°; FASER keeps 89–94 %.
-- **Roll damping.** The legacy blend concentrates its roll instability at 14–16°, about 10 times the measured magnitude, where FASER is still stable. From 18° up it is stable. FASER is mildly unstable from 20° to 35°, and more so at lower frequency.
+- **Roll damping.** The legacy blend concentrates its roll instability at 14–16°, about 10 times the measured magnitude, where FASER is still stable (−0.41). Above about 18°, FASER's measured term Clp + Clβ̇ sin α turns mildly unstable. That term is not comparable with a quasi-steady Clp, because the model has no β̇ term.
 
 ## 3. Held-out spin with the candidates
 
@@ -41,18 +41,19 @@ The spin was not used to choose anything. The same probe flies the Stik with eac
 | `intermediate` | 25.3 | 26.4 | 120 | −61 | 19.6 | 0.26 |
 | `retained` (left) | 20.9 (22.4) | 16.3 (17.2) | 88 (104) | −55 (−65) | 17.5 (19.0) | 0.32 (0.27) |
 | `faser-analog` (left) | 17.9 (17.9) | 15.1 (14.8) | 42 (27) | −30 (−24) | 6.2 (5.3) | – (no developed spin) |
+| `post-stall-v2`, progression and fit (left) | 18.4 (19.1) | 7.4 (5.8) | 38 (38) | −7 (−4) | 5.8 (5.0) | – (no developed spin) |
+| Legacy with spanwise progression, disposable copy (left) | 21.4 (21.2) | 22.0 (20.2) | 100 (96) | −65 (−66) | 21.7 (21.2) | 0.21 (0.22) |
 
 With `retained`, the right spin's nose rises to the Extra 260's −55°, sink falls by 5.4 m/s and the vertical force rises by 70 %; the left spin improves less. No fixture moves α toward 30°, cuts β toward 5° or raises r toward 150–160°/s. The fixtures that raise yaw do so with even more sideslip. The `faser-analog` candidate matches the static lift curve but makes the deep stall stable in roll. The Stik then only cycles through wing drops (bank up to 110°, nose −70…−87°, back to near level every 3–4 s) without a developed spin, while the FASER airframe spins with these inputs.
 
 ## 4. Reading and next steps
 
-- **Mechanism.** The model's autorotation, its roll instability, exists only in a narrow band just past the stall (14–20°). So the developed spin settles at α ≈ 20°, steep and roll-dominated.
-  - FASER's measured roll damping is mildly unstable from 20° to 35°, and its spin sits there at α 30°.
-  - The lift collapse explains part of the missing vertical force; the roll damping sign in deep stall explains the low α.
-  - A fuselage side force is not the main lever here: NACA TN 3551 measures it at about CY 0.015 at 20° for a Stik-like square body.
-- **Next.** The candidate law that the [D8b-R2d analog evidence](../../flight-robustness/D8b-R2/analog/README.md#conclusions-for-d8b-r2d) describes should be scored on both measured curves first, then flown on this probe.
-  - The law has section tables with a mildly negative post-stall slope, spanwise stall progression and fuselage crossflow lift.
-  - Promotion still needs the [pull-up plan](../../../UGLY-STIK-PULLUP-PLAN.md)'s gates, including the owner's flight review (D8b-R2h). Normal flights keep the legacy blend.
+- **Mechanism.** In the quasi-steady strip law, autorotation comes only from a negative local lift slope.
+  - The legacy blend has it only in a narrow band past the stall, so the developed spin settles at α ≈ 20°, steep and roll-dominated.
+  - Candidates that hold the measured post-stall lift remove it and the Stik stops spinning.
+  - The FASER airframe has both high post-stall lift and a spin, at α 30°.
+  - A fuselage side force is not the main lever: NACA TN 3551 measures it at about CY 0.015 at 20° for a Stik-like square body.
+- **Next.** Separated-flow dynamics (per-strip separation states with time lags, D8b-R2d-v3) is the mechanism that can keep the static lift and still autorotate ([D8b-R2d analog](../../flight-robustness/D8b-R2/analog/README.md#conclusions)). This probe is its held-out test. Promotion still needs the [pull-up plan](../../../UGLY-STIK-PULLUP-PLAN.md)'s gates, including the owner's flight review (D8b-R2h). Normal flights keep the legacy blend.
 - **Measurements that would close it.** A filmed spin of the owner's Jensen Stik with a stopwatch: turns, height lost per turn and nose attitude. Each closes a quantity in this report without new tooling.
 
 ## Reproduction
