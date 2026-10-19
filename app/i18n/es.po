@@ -1457,6 +1457,9 @@ msgstr "Valor"
 msgid "View the draft at its fitted size."
 msgstr "Ver el borrador ajustado al tamaño de la vista."
 
+msgid "View"
+msgstr "Ver"
+
 msgid "Wing area (m²)"
 msgstr "Superficie alar (m²)"
 
@@ -3865,3 +3868,12 @@ msgstr "%s %s · Botón %d"
 
 msgid "Switch"
 msgstr "Interruptor"
+
+msgid "Review issues"
+msgstr "Revisar problemas"
+
+msgid "Open camera controls."
+msgstr "Abrir los controles de cámara."
+
+msgid "Expand the preview for comfortable inspection."
+msgstr "Ampliar la vista previa para inspeccionarla cómodamente."

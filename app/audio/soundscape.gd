@@ -127,19 +127,23 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 	rng.seed = seed_value
 	_setup_buses()
 	_find_trees(field)
+	# Derived PCM loops are immutable and can be shared by voices that use the same source.
+	# Keep this cache local to one soundscape so temporary sessions do not retain old streams.
+	var loop_cache: Dictionary = {}
 	var motor_name: String = "" if not glow_family.is_empty() else ("motor_electric" if kind == "electric_prop" else ("turbine_whine" if kind == "turbine" else "motor_combustion"))
-	_voice("Motor", motor_name, AIRCRAFT_BUS, 8.0)
+	_voice("Motor", motor_name, AIRCRAFT_BUS, 8.0, loop_cache)
 	# A turbine has no propeller: its second aircraft voice carries the jet roar (AUD-10).
-	_voice("Propeller", "" if not glow_family.is_empty() else ("turbine_roar" if kind == "turbine" else "motor_propeller"), AIRCRAFT_BUS, 8.0)
-	_voice("Airframe", "airframe", AIRCRAFT_BUS, 10.0)
+	var propeller_name: String = "" if not glow_family.is_empty() else ("turbine_roar" if kind == "turbine" else "motor_propeller")
+	_voice("Propeller", propeller_name, AIRCRAFT_BUS, 8.0, loop_cache)
+	_voice("Airframe", "airframe", AIRCRAFT_BUS, 10.0, loop_cache)
 	if not glow_family.is_empty():
 		_create_glow_player()
-	_voice("WindLow", "wind_low", AMBIENCE_BUS, 20.0)
-	_voice("WindHigh", "wind_high", AMBIENCE_BUS, 20.0)
+	_voice("WindLow", "wind_low", AMBIENCE_BUS, 20.0, loop_cache)
+	_voice("WindHigh", "wind_high", AMBIENCE_BUS, 20.0, loop_cache)
 	for i: int in 4:
-		_voice("Foliage%d" % i, "foliage", AMBIENCE_BUS, 100.0)
+		_voice("Foliage%d" % i, "foliage", AMBIENCE_BUS, 100.0, loop_cache)
 	for i: int in 3:
-		_voice("Bird%d" % i, "", AMBIENCE_BUS, 70.0)
+		_voice("Bird%d" % i, "", AMBIENCE_BUS, 70.0, loop_cache)
 	for i: int in 6:
 		birds.append(load(PATH + "birds_%02d.wav" % (i + 1)) as AudioStreamWAV)
 	for i: int in 4:
@@ -158,7 +162,7 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 		lengths[species] = values
 	wildlife.configure(lengths, seed_value ^ 0xA005)
 	for i: int in 2:
-		_voice("Crickets%d" % i, "wildlife/cricket_%02d" % (i + 1), AMBIENCE_BUS, 40.0)
+		_voice("Crickets%d" % i, "wildlife/cricket_%02d" % (i + 1), AMBIENCE_BUS, 40.0, loop_cache)
 		voices[CRICKET_FIRST + i].global_position = cricket_anchors[i]
 	assert(voices.size() == MAX_VOICES)
 	_levels.resize(voices.size())
@@ -219,7 +223,8 @@ func _setup_buses() -> void:
 	# sum of every bus instead (research/audio/master-limiter-2026-10-18).
 
 
-func _voice(label: String, asset: String, bus_name: StringName, reference_distance: float) -> void:
+func _voice(label: String, asset: String, bus_name: StringName, reference_distance: float,
+		loop_cache: Dictionary) -> void:
 	var player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 	player.name = label
 	player.bus = _bus_names[1 if bus_name == AIRCRAFT_BUS else 2]
@@ -240,7 +245,11 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 		if source == null:
 			push_error("Missing soundscape source: " + asset)
 			return
-		var wav: AudioStreamWAV = seamless_loop(source)
+		var cache_key: String = source_path + asset + ".wav"
+		var wav: AudioStreamWAV = loop_cache.get(cache_key) as AudioStreamWAV
+		if wav == null:
+			wav = seamless_loop(source)
+			loop_cache[cache_key] = wav
 		player.stream = wav
 		# Motor, propeller and airframe start together: the blade-pass loop is a harmonic of the firing loop at the
 		# same pitch, so their phase decides level and timbre. A random offset changed the mix by up to 5 dB (AUD-07).

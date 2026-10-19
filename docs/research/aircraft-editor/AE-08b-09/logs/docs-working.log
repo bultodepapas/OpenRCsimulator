@@ -1,0 +1,20 @@
+{
+  "mode": "working tree",
+  "documents": [
+    "docs/AIRCRAFT-WORKSHOP.md",
+    "docs/plans/aircraft-editor.md",
+    "docs/TOOLS.md",
+    "docs/README.md",
+    "docs/FIRST-LAUNCH.md",
+    "docs/research/README.md",
+    "docs/research/aircraft-editor/AE-01-10/README.md",
+    "docs/MENU-REDESIGN-PLAN.md",
+    "docs/research/aircraft-editor/AE-08b-09/README.md"
+  ],
+  "links_checked": 822,
+  "incoming_links": 72,
+  "command_paths_checked": 13,
+  "focused_suites": 7,
+  "external_urls_preserved_not_fetched": 22,
+  "issues": []
+}

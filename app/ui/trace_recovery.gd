@@ -3,7 +3,7 @@
 extends RefCounted
 
 var _pending: Array[Dictionary] = []
-var _discarded: Array[RefCounted] = []
+var _discarded: Array[WeakRef] = []
 
 
 ## Stop an active recorder once. A stopped recorder whose last save failed is still pending.
@@ -11,11 +11,11 @@ func save_if_recording(recorder: RefCounted) -> Dictionary:
 	if recorder == null:
 		return {ok = true, pending = false, error = OK}
 	if bool(recorder.get("recording")):
-		_discarded.erase(recorder) # a new recording on this Recorder is a new recovery decision
+		_forget_discarded(recorder) # a new recording on this Recorder is a new recovery decision
 	var existing := _find(recorder)
 	if existing >= 0:
 		return {ok = false, pending = true, error = int(_pending[existing].error)}
-	if _discarded.has(recorder):
+	if _was_discarded(recorder):
 		return {ok = true, pending = false, error = OK}
 	if not bool(recorder.get("recording")):
 		var note := _property_text(recorder, "note")
@@ -39,7 +39,7 @@ func retry(recorder: RefCounted) -> Dictionary:
 	var error_code: Error = recorder.call("stop")
 	if error_code == OK:
 		_pending.remove_at(index)
-		_discarded.erase(recorder)
+		_forget_discarded(recorder)
 		return {ok = true, pending = false, error = OK}
 	_pending[index].error = error_code
 	return {ok = false, pending = true, error = error_code}
@@ -51,9 +51,19 @@ func discard(recorder: RefCounted) -> bool:
 	if index < 0:
 		return false
 	_pending.remove_at(index)
-	if not _discarded.has(recorder):
-		_discarded.append(recorder)
+	if not _was_discarded(recorder):
+		_discarded.append(weakref(recorder))
 	return true
+
+
+## Remove a resolved marker when its completed route releases the recorder.
+func forget_completed(recorder: RefCounted) -> void:
+	_forget_discarded(recorder)
+
+
+func discarded_count() -> int:
+	_prune_discarded()
+	return _discarded.size()
 
 
 func has_pending(recorder: RefCounted) -> bool:
@@ -73,6 +83,30 @@ func _find(recorder: RefCounted) -> int:
 		if _pending[index].recorder == recorder:
 			return index
 	return -1
+
+
+func _was_discarded(recorder: RefCounted) -> bool:
+	var found := false
+	for index in range(_discarded.size() - 1, -1, -1):
+		var retained: Object = _discarded[index].get_ref()
+		if retained == null:
+			_discarded.remove_at(index)
+		elif retained == recorder:
+			found = true
+	return found
+
+
+func _forget_discarded(recorder: RefCounted) -> void:
+	for index in range(_discarded.size() - 1, -1, -1):
+		var retained: Object = _discarded[index].get_ref()
+		if retained == null or retained == recorder:
+			_discarded.remove_at(index)
+
+
+func _prune_discarded() -> void:
+	for index in range(_discarded.size() - 1, -1, -1):
+		if _discarded[index].get_ref() == null:
+			_discarded.remove_at(index)
 
 
 func _property_text(object: Object, property_name: String) -> String:

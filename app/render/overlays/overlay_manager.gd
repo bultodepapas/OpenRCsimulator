@@ -272,7 +272,7 @@ func _dock_battery() -> void:
 
 ## Every frame: sticks() output ({} = nothing to show).
 func refresh_sticks(controls: Dictionary) -> void:
-	if controls.has("sticks"):
+	if visible and frames.transmitter.visible and controls.has("sticks"):
 		frames.transmitter.refresh(controls.sticks, controls.get("trims", {}), settings.stick_mode)
 
 

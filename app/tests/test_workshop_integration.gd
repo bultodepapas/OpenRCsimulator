@@ -41,7 +41,14 @@ func _run() -> void:
 	var source: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
 	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = source,
 		recipe = {scale = 2.0, tank_capacity_multiplier = 1.25}}
-	host._start_workshop_trial(payload)
+	editor.call("_set_page", "compare")
+	var preview: Control = editor.get("_preview")
+	preview.call("set_standard_view", "side")
+	preview.call("zoom_by", 1.2)
+	var preview_state: Dictionary = preview.call("get_view_state")
+	var trial_button := editor.find_child("TestFly", true, false) as Button
+	trial_button.grab_focus()
+	await ui.tap(KEY_ENTER)
 	check("200% trial starts", host.flight != null and host.flight.startup_error.is_empty())
 	if host.flight != null:
 		var flight: Node = host.flight
@@ -90,9 +97,12 @@ func _run() -> void:
 		check("trial return preserves draft and edit history", editor.get_recipe().scale == 2.0
 			and editor.get_recipe().tank_capacity_multiplier == 1.25
 			and editor.get("_undo_history").size() == editor_history_size)
+		check("trial return restores page, camera and focused action",
+			editor.get("_active_page") == "compare" and preview.call("get_view_state") == preview_state
+			and root.gui_get_focus_owner() == trial_button and not editor.get("_trial_pending"))
 		check("Home is still behind editor", host.home != null and host.home_scene.is_inside_tree())
 	for scale_value: float in [0.5, 2.0]:
-		editor.set_aircraft("gp-extra-300s-60")
+		editor.set_aircraft("gp-extra-300s-60", true)
 		editor.set_recipe({scale = scale_value})
 		var scale_control := editor.find_child("Scale", true, false) as OptionButton
 		var trial_control := editor.find_child("TestFly", true, false) as Button

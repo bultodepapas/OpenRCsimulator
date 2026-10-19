@@ -55,6 +55,11 @@ var _navigation_focus: Control
 var _library_button: Button
 var _build_identity: Label
 var _page_buttons: Dictionary = {}
+var _page_selector: OptionButton
+var _action_notes: VBoxContainer
+var _name_body: VBoxContainer
+var _name_error: Label
+var _review_button: Button
 var _page_nodes: Dictionary = {}
 var _active_page := "setup"
 var _compact := false
@@ -91,7 +96,6 @@ var _layout_panel: PanelContainer
 var _columns: BoxContainer
 var _aircraft_column: VBoxContainer
 var _recipe_selectors: GridContainer
-var _preset_grid: GridContainer
 var _preset_selector: OptionButton
 var _settle_frames := 3
 var _base_selector: OptionButton
@@ -108,7 +112,6 @@ var _mass_policy_selector: OptionButton
 var _factor_sliders: Dictionary = {}
 var _factor_values: Dictionary = {}
 var _factor_hints: Dictionary = {}
-var _preset_buttons: Dictionary = {}
 var _summary_label: Label
 var _errors_label: Label
 var _status_label: Label
@@ -199,15 +202,11 @@ func set_note(message: String) -> void:
 	if is_instance_valid(_status_label):
 		_status_label.text = tr(message) if message != "" else ""
 		_status_label.visible = message != ""
-		if message != "": _reveal_status.call_deferred()
+		_status_label.tooltip_text = message
 	if _trial_pending:
 		_trial_pending = false
 	if is_instance_valid(_trial_button):
 		_trial_button.disabled = not _edit_valid() or _library_dialog.visible or _name_dialog.visible or is_instance_valid(_guard_dialog)
-
-
-func _reveal_status() -> void:
-	pass # Status is pinned; ordinary notices never scroll or steal editor focus.
 
 
 func set_recipe(recipe: Dictionary, remember_current := true) -> void:
@@ -276,14 +275,20 @@ func _build_ui() -> void:
 	page.add_child(_header)
 	var heading := VBoxContainer.new()
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var title := _label("Aircraft Workshop", "CardTitle")
+	var title := _label("Aircraft Workshop", "CardTitle", true)
+	title.max_lines_visible = 1
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.name = "WorkshopTitle"
 	heading.add_child(title)
 	_build_identity = _label("", "SecondaryLabel", true, false)
 	_build_identity.name = "BuildIdentity"
+	_build_identity.max_lines_visible = 1
+	_build_identity.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	heading.add_child(_build_identity)
 	_header.add_child(heading)
 	var back := _button("Back to Pause" if return_destination == "Pause" else "Back to Home", "", "CloseWorkshop")
+	back.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	back.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	back.pressed.connect(_request_close)
 	_header.add_child(back)
 
@@ -302,6 +307,15 @@ func _build_ui() -> void:
 		tab.pressed.connect(_set_page.bind(spec[0]))
 		_identity_line.add_child(tab)
 		_page_buttons[spec[0]] = tab
+	_page_selector = OptionButton.new()
+	_page_selector.name = "WorkshopPage"
+	_page_selector.fit_to_longest_item = false
+	_page_selector.clip_text = true
+	_page_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_page_selector.add_item("Flight setup")
+	_page_selector.add_item("Compare")
+	_page_selector.item_selected.connect(func(index: int) -> void: _set_page("setup" if index == 0 else "compare"))
+	_identity_line.add_child(_page_selector)
 	var flexible := Control.new()
 	flexible.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_identity_line.add_child(flexible)
@@ -373,14 +387,23 @@ func _build_ui() -> void:
 	_footer.add_theme_constant_override("separation", 12)
 	page.add_child(_footer)
 	var notes := VBoxContainer.new()
+	_action_notes = notes
 	notes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_footer.add_child(notes)
 	_validation_label = _label("", "SecondaryLabel", true)
 	_validation_label.name = "ValidationLimit"
+	_validation_label.max_lines_visible = 2
+	_validation_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	notes.add_child(_validation_label)
 	_status_label = _label("", "SecondaryLabel", true)
 	_status_label.name = "WorkshopStatus"
+	_status_label.max_lines_visible = 2
+	_status_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	notes.add_child(_status_label)
+	_review_button = _button("Review issues", "", "ReviewBuildIssues")
+	_review_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_review_button.pressed.connect(_review_issues)
+	notes.add_child(_review_button)
 	var actions := HBoxContainer.new()
 	actions.add_theme_constant_override("separation", 8)
 	_footer.add_child(actions)
@@ -402,61 +425,37 @@ func _resize_layout() -> void:
 	var available := _screen.size - Vector2(48, 36)
 	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
 	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
+	var tight := enlarged and available.y < 600
 	_compact = available.x < 1050 or enlarged
-	_header.vertical = available.x < 700
+	var inspecting := _compact and _compact_view
+	_header.visible = not inspecting
+	_action_notes.visible = not inspecting
+	find_child("PreviewCaption", true, false).visible = not inspecting
+	_header.vertical = available.x < 650
+	var back := find_child("CloseWorkshop", true, false) as Button
+	back.custom_minimum_size.x = (200 if available.x < 1100 else 380) if enlarged else 200
+	back.text = tr("Back") if available.x < 1100 and enlarged else tr("Back to Pause" if return_destination == "Pause" else "Back to Home")
+	back.tooltip_text = tr("Back to Pause" if return_destination == "Pause" else "Back to Home")
+	for tab: Button in _page_buttons.values(): tab.visible = not _compact
+	_page_selector.visible = _compact and not inspecting
+	_library_button.visible = not inspecting
 	_identity_line.vertical = available.x < 650
 	_footer.vertical = available.x < 1100 or enlarged
 	_inspector.custom_minimum_size.x = 0 if _compact else (520 if available.x >= 1550 else 400)
 	_inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL if _compact else Control.SIZE_FILL
+	_preview.custom_minimum_size.y = 0 if _compact else 240
 	_aircraft_column.visible = not _compact or _compact_view
 	_inspector.visible = not _compact or not _compact_view
 	_view_button.visible = _compact
-	_view_button.text = tr("Edit") if _compact_view else tr("Preview")
+	_view_button.text = tr("Edit") if _compact_view else (tr("View") if enlarged else tr("Preview"))
+	_save_button.text = tr("Save") if available.x < 1100 and enlarged else tr("Save build")
+	var note_parent: Node = _page_nodes.setup.get_parent() if tight else _footer
+	if _action_notes.get_parent() != note_parent:
+		_action_notes.reparent(note_parent)
+		if not tight: _footer.move_child(_action_notes, 0)
 	_recipe_selectors.columns = 1 if enlarged else 2
 	_trial_button.custom_minimum_size.x = 0 if enlarged else 190
-	if _active_page == "compare" and _compact:
-		_compact_view = false
-		_aircraft_column.visible = false
-		_inspector.visible = true
-	if is_instance_valid(_library_dialog) and _library_dialog.visible:
-		_library_dialog.popup_centered_clamped(Vector2i(680, 520), 0.9)
-
-
-func _build_aircraft_panel(parent: VBoxContainer) -> void:
-	var card := _card("BaseAircraftCard")
-	parent.add_child(card)
-	var content := _card_content(card)
-	content.add_child(_section_label("AIRCRAFT"))
-	_base_selector = OptionButton.new()
-	_base_selector.fit_to_longest_item = false
-	_base_selector.name = "BaseAircraft"
-	_base_selector.focus_mode = Control.FOCUS_ALL
-	_base_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for entry: Dictionary in Catalog.airplane_flyable_entries():
-		_base_selector.add_item(str(entry.get("name", entry.get("id", "Aircraft"))))
-		var index := _base_selector.item_count - 1
-		_base_selector.set_item_metadata(index, str(entry.get("id", "")))
-		_base_selector.set_item_tooltip(index, str(entry.get("summary", "")) + "\n" + str(entry.get("status_note", "")))
-	_base_selector.item_selected.connect(_on_base_selected)
-	content.add_child(_base_selector)
-	_aircraft_summary_label = _label("", "SecondaryLabel", true)
-	_aircraft_summary_label.name = "AircraftSummary"
-	content.add_child(_aircraft_summary_label)
-	_aircraft_status_label = _label("", "SecondaryLabel", true)
-	_aircraft_status_label.name = "AircraftStatus"
-	content.add_child(_aircraft_status_label)
-
-	_preview = WorkshopPreview.new()
-	_preview.name = "AircraftPreview"
-	_preview.custom_minimum_size = Vector2(0, 250)
-	_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	content.add_child(_preview)
-	var preview_caption := _label("Still preview · no flight simulation", "SecondaryLabel", true)
-	preview_caption.name = "PreviewCaption"
-	content.add_child(preview_caption)
-	_validation_label = _label("Experimental simulation; handling may differ from a real aircraft.", "SecondaryLabel", true)
-	_validation_label.name = "ValidationLimit"
-	content.add_child(_validation_label)
+	
 
 
 func _build_variants_panel(parent: VBoxContainer) -> void:
@@ -472,7 +471,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_variant_selector.item_selected.connect(_on_variant_selected)
 	content.add_child(_variant_selector)
 
-	var variant_actions := HBoxContainer.new()
+	var variant_actions := HFlowContainer.new()
 	variant_actions.add_theme_constant_override("separation", 8)
 	_load_button = _button("Load", "", "LoadVariant")
 	_load_button.disabled = true
@@ -494,13 +493,13 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_variant_name.max_length = 64
 	_variant_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_variant_name.text_changed.connect(_on_variant_name_changed)
-	_name_dialog = null
 	_variant_name.visible = false
 	content.add_child(_variant_name)
 	_copy_button = _button("Save a copy", "", "CopyVariant")
 	_copy_button.pressed.connect(_request_copy)
 	content.add_child(_copy_button)
 	var rename := _button("Name or rename this build", "", "RenameBuild")
+	rename.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rename.pressed.connect(func() -> void: _show_name_dialog(false))
 	content.add_child(rename)
 
@@ -581,8 +580,6 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 
 
 func _build_results_panel(parent: VBoxContainer) -> void:
-	parent.add_child(_label("Original and draft", "CardTitle"))
-	parent.add_child(_label("Experimental values · static estimates, not measured flight performance.", "SecondaryLabel", true))
 	_all_values = CheckButton.new()
 	_all_values.text = "All values"
 	_all_values.name = "AllBuildValues"
@@ -593,6 +590,7 @@ func _build_results_panel(parent: VBoxContainer) -> void:
 	_comparison_grid.add_theme_constant_override("h_separation", 12)
 	_comparison_grid.add_theme_constant_override("v_separation", 12)
 	parent.add_child(_comparison_grid)
+	parent.add_child(_label("Experimental values · static estimates, not measured flight performance.", "SecondaryLabel", true))
 	_summary_label = _label("", "SecondaryLabel", true)
 	_summary_label.name = "BuildSummary"
 	_summary_label.visible = false
@@ -665,6 +663,7 @@ func _build_delete_dialog() -> void:
 	_delete_dialog.title = tr("Delete saved build?")
 	_delete_dialog.exclusive = true
 	_delete_dialog.theme = _screen.theme
+	_delete_dialog.dialog_autowrap = true
 	_delete_dialog.dialog_text = tr("Delete this saved build from this device?")
 	_delete_dialog.confirmed.connect(_delete_selected_variant)
 	_delete_dialog.canceled.connect(func() -> void:
@@ -874,7 +873,8 @@ func _save_variant() -> bool:
 	for key: String in _pending_numbers.keys(): _commit_number(key)
 	if not _edit_valid(): return false
 	var display_name := _variant_name.text.strip_edges()
-	if display_name.is_empty() or not bool(_compiled.get("ok", false)):
+	if display_name.is_empty():
+		set_note("Name this build before saving.")
 		return false
 	var result: Dictionary = Store.save_variant(
 		display_name,
@@ -914,7 +914,7 @@ func _confirm_delete_selected() -> void:
 		return
 	_delete_target = {id = str(loaded.variant.id), revision = int(loaded.variant.revision)}
 	_delete_dialog.dialog_text = tr("Delete %s · revision %d?") % [str(loaded.variant.name), _delete_target.revision]
-	_delete_dialog.popup_centered_clamped(Vector2i(560, 180), 0.9)
+	_delete_dialog.popup_centered_clamped(Vector2i(mini(900, int(get_viewport().get_visible_rect().size.x * 0.9)), 240), 0.9)
 	_delete_dialog.get_cancel_button().grab_focus()
 
 
@@ -1219,18 +1219,13 @@ func _compile_recipe() -> void:
 		_compiled = Compiler.compile(_base.duplicate(true), _recipe.duplicate(true))
 	var valid := bool(_compiled.get("ok", false))
 	_trial_button.disabled = not valid or not _invalid_fields.is_empty()
-	_errors_label.text = _messages(_compiled.get("errors", []), "")
-	_errors_label.visible = not valid and _errors_label.text != ""
 	var compiled_data: Dictionary = _compiled.get("data", {})
 	var compiled_model: Variant = compiled_data.get("model", {})
 	_summary_label.text = _format_summary(
 		_compiled.get("summary", {}),
 		compiled_model if compiled_model is Dictionary else {}
 	)
-	if valid:
-		_validation_label.text = tr("Ready for a trial · start in the air")
-	else:
-		_validation_label.text = tr("Build blocked until the listed validation errors are resolved.")
+	_refresh_issues()
 	_sync_save_button()
 	_refresh_comparison()
 
@@ -1362,20 +1357,7 @@ func _request_trial() -> void:
 
 
 func _request_close() -> void:
-	if is_instance_valid(_guard_dialog) and _guard_dialog.visible:
-		_navigation_abort()
-		return
-	if _delete_dialog.visible:
-		_delete_dialog.hide()
-		_delete_dialog.canceled.emit()
-		return
-	if _name_dialog.visible:
-		_name_dialog.hide()
-		_name_dialog.canceled.emit()
-		return
-	if _library_dialog.visible:
-		_close_library()
-		return
+	if dismiss_modal_for_exit(): return
 	var focused := get_viewport().gui_get_focus_owner()
 	for key: String in _factor_inputs:
 		if focused == _factor_inputs[key] and (_pending_numbers.has(key) or _invalid_fields.has(key)):
@@ -1391,6 +1373,25 @@ func _request_close() -> void:
 		return
 	if _closing: return
 	request_navigation("Back to Pause" if return_destination == "Pause" else "Back to Home", _finish_close)
+
+
+## Main-window close consumes one active editor modal before beginning an exit decision.
+func dismiss_modal_for_exit() -> bool:
+	if is_instance_valid(_guard_dialog) and _guard_dialog.visible:
+		_navigation_abort()
+		return true
+	if _delete_dialog.visible:
+		_delete_dialog.hide()
+		_delete_dialog.canceled.emit()
+		return true
+	if _name_dialog.visible:
+		_name_dialog.hide()
+		_name_dialog.canceled.emit()
+		return true
+	if _library_dialog.visible:
+		_close_library()
+		return true
+	return false
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -1444,7 +1445,14 @@ func _build_library() -> void:
 	add_child(_library_dialog)
 	var body := VBoxContainer.new()
 	body.add_theme_constant_override("separation", 16)
-	_library_dialog.add_child(body)
+	var scroll := ScrollContainer.new()
+	scroll.name = "LibraryScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.custom_minimum_size = Vector2(300, 100)
+	_library_dialog.add_child(scroll)
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(body)
 	body.add_child(_label("Stock aircraft", "CardTitle"))
 	_base_selector = OptionButton.new()
 	_base_selector.name = "BaseAircraft"
@@ -1485,11 +1493,22 @@ func _build_name_dialog() -> void:
 			if not succeeded: _saved_variant_id = previous
 		else:
 			succeeded = _save_variant()
-		if succeeded: _name_dialog.hide())
+		if succeeded:
+			_name_dialog.hide()
+			_trial_button.disabled = not _edit_valid()
+		else:
+			_name_error.text = _status_label.text)
 	_name_dialog.canceled.connect(func() -> void:
 		_variant_name.text = _name_before
-		_refresh_identity())
+		_refresh_identity()
+		_trial_button.disabled = not _edit_valid()
+		if _save_button.is_visible_in_tree(): _save_button.grab_focus())
 	add_child(_name_dialog)
+	_name_body = VBoxContainer.new()
+	_name_body.add_child(_label("Build name", "SecondaryLabel"))
+	_name_error = _label("", "ErrorLabel", true)
+	_name_body.add_child(_name_error)
+	_name_dialog.add_child(_name_body)
 	# The name field is created with library controls; saving a new draft can show it here.
 
 
@@ -1527,7 +1546,9 @@ func _show_name_dialog(as_copy: bool) -> void:
 	_close_library()
 	_name_as_copy = as_copy
 	_name_before = _variant_name.text
-	_variant_name.reparent(_name_dialog)
+	_variant_name.reparent(_name_body)
+	_name_body.move_child(_variant_name, 1)
+	_name_error.text = ""
 	_variant_name.visible = true
 	_name_dialog.title = tr("Save a copy") if as_copy else tr("Save build")
 	_name_dialog.popup_centered_clamped(Vector2i(560, 180), 0.9)
@@ -1558,6 +1579,7 @@ func _load_selected_variant() -> void:
 func _set_page(page: String) -> void:
 	if not _page_nodes.has(page): return
 	_active_page = page
+	_page_selector.select(0 if page == "setup" else 1)
 	_compact_view = false
 	for id: String in _page_nodes:
 		_page_nodes[id].visible = id == page
@@ -1594,6 +1616,7 @@ func _refresh_identity() -> void:
 	var state := tr("Unsaved changes") if has_unsaved_changes() else (tr("Saved") if not _saved_variant_id.is_empty() else tr("New build"))
 	var revision := " · " + tr("revision %d") % _saved_variant_revision if _saved_variant_revision > 0 else ""
 	_build_identity.text = "%s · %s%s · %s" % [display_name, tr(str(Catalog.entry(_base_id).get("name", _base_id))), revision, state]
+	_build_identity.tooltip_text = _build_identity.text
 
 
 func _edit_valid() -> bool:
@@ -1617,21 +1640,34 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	_guard_dialog = ConfirmationDialog.new()
 	_guard_dialog.name = "UnsavedBuildDialog"
 	_guard_dialog.title = tr("Unsaved changes")
-	_guard_dialog.dialog_text = tr("Save this build before continuing?") + "\n" + tr(destination)
 	_guard_dialog.theme = _screen.theme
 	_guard_dialog.exclusive = true
 	_guard_dialog.dialog_hide_on_ok = false
 	_guard_dialog.ok_button_text = tr("Save and continue")
 	_guard_dialog.cancel_button_text = tr("Cancel")
-	_guard_dialog.add_button(tr("Discard changes"), false, "discard")
+	var discard := _guard_dialog.add_button(tr("Discard changes"), false, "discard")
+	var host: Node = dialog_host if dialog_host != null else self
+	var popup_width := mini(1100, int(host.get_viewport().get_visible_rect().size.x * 0.9))
+	_guard_dialog.add_theme_constant_override("buttons_min_width", maxi(100, (popup_width - 64) / 3))
+	for button: Button in [_guard_dialog.get_ok_button(), _guard_dialog.get_cancel_button(), discard]:
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_guard_dialog.confirmed.connect(_navigation_save)
 	_guard_dialog.canceled.connect(_navigation_abort)
 	_guard_dialog.custom_action.connect(func(action: String) -> void:
 		if action == "discard": _navigation_finish())
-	var host: Node = dialog_host if dialog_host != null else self
 	host.add_child(_guard_dialog)
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.custom_minimum_size = Vector2(300, 100)
+	_guard_dialog.add_child(scroll)
 	var body := VBoxContainer.new()
-	_guard_dialog.add_child(body)
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 8)
+	scroll.add_child(body)
+	body.add_child(_label("Save this build before continuing?", "SecondaryLabel", true))
+	body.add_child(_label(destination, "SecondaryLabel", true))
 	_guard_name = LineEdit.new()
 	_guard_name.placeholder_text = tr("Name this build")
 	_guard_name.max_length = 64
@@ -1642,7 +1678,7 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	body.add_child(_guard_error)
 	_guard_dialog.get_ok_button().disabled = not _edit_valid()
 	if not _edit_valid(): _guard_error.text = tr("This build cannot be saved until its errors are resolved.")
-	_guard_dialog.popup_centered_clamped(Vector2i(600, 260), 0.9)
+	_guard_dialog.popup_centered_clamped(Vector2i(popup_width, 440), 0.9)
 	_guard_dialog.get_cancel_button().grab_focus()
 
 
@@ -1698,16 +1734,49 @@ func _number_changed(value: String, key: String) -> void:
 		_pending_numbers[key] = value
 	_trial_button.disabled = not _edit_valid()
 	_sync_save_button()
-	if _invalid_fields.has(key): set_note(_invalid_fields[key])
+	_refresh_issues()
 
 
 func _commit_number(key: String) -> void:
 	if not _pending_numbers.has(key) or _invalid_fields.has(key): return
 	var value := str(_pending_numbers[key]).to_float()
 	_pending_numbers.erase(key)
-	var next := _recipe.duplicate(true)
-	next[key] = value
-	_set_recipe(next, true)
+	if float(_recipe.get(key, 1.0)) != value:
+		_capture_undo()
+		_recipe[key] = value
+		_factor_values[key].text = String.num(value, 4) + "×"
+		_factor_sliders[key].step = 0.0
+		_factor_sliders[key].set_value_no_signal(value)
+		_factor_sliders[key].step = FACTOR_STEP
+	_compile_recipe()
+
+
+func _refresh_issues() -> void:
+	var messages := _messages(_compiled.get("errors", []), "")
+	for key: String in _factor_inputs:
+		var entry: LineEdit = _factor_inputs[key]
+		entry.tooltip_text = str(_invalid_fields.get(key, ""))
+		if _invalid_fields.has(key):
+			entry.add_theme_color_override("font_color", _screen.theme.get_color("font_color", "ErrorLabel"))
+			messages += ("\n" if not messages.is_empty() else "") + str(_invalid_fields[key])
+		else:
+			entry.remove_theme_color_override("font_color")
+	_errors_label.text = messages
+	_errors_label.visible = not messages.is_empty()
+	_review_button.visible = not _edit_valid()
+	_validation_label.text = tr("Ready for a trial · start in the air") if _edit_valid() else tr("Build blocked until the listed validation errors are resolved.")
+
+
+func _review_issues() -> void:
+	_set_page("setup")
+	for key: String in _invalid_fields:
+		var entry: LineEdit = _factor_inputs[key]
+		entry.grab_focus()
+		_body_scroll.ensure_control_visible(entry)
+		return
+	_errors_label.focus_mode = Control.FOCUS_ALL
+	_errors_label.grab_focus()
+	_body_scroll.ensure_control_visible(_errors_label)
 
 
 func _refresh_comparison() -> void:

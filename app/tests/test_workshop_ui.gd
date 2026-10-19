@@ -441,6 +441,14 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 		and editor.get_recipe().power_multiplier == 1.1)
 
 	# Invalid typed values are never silently clamped, saved or launched.
+	editor.call("_show_name_dialog", false)
+	var naming: ConfirmationDialog = editor.get("_name_dialog")
+	naming.confirmed.emit()
+	_check("blank save name stays in its dialog with a correction", naming.visible
+		and not str(editor.get("_name_error").text).is_empty())
+	naming.hide()
+	naming.canceled.emit()
+
 	var entry: LineEdit = editor.get("_factor_inputs")["weight_multiplier"]
 	entry.text = "not a number"
 	entry.text_changed.emit(entry.text)
@@ -454,6 +462,17 @@ func _guarded_journey(editor: Node, store_root: String) -> void:
 	_check("invalid draft offers discard/cancel but not false save", guard != null and guard.get_ok_button().disabled)
 	guard.canceled.emit()
 	_check("Cancel keeps invalid input visible for correction", entry.text == "not a number")
+	var power_entry: LineEdit = editor.get("_factor_inputs")["power_multiplier"]
+	power_entry.text = "1.237"
+	power_entry.text_changed.emit(power_entry.text)
+	power_entry.text_submitted.emit(power_entry.text)
+	_check("committing another number preserves invalid text and blocking state", entry.text == "not a number"
+		and editor.get("_invalid_fields").has("weight_multiplier") and editor.save_button.disabled
+		and is_equal_approx(editor.get_recipe().power_multiplier, 1.237)
+		and is_equal_approx(editor.get("_factor_sliders").power_multiplier.value, 1.237))
+	editor.call("_review_issues")
+	_check("Review issues focuses the invalid input on its page", entry.has_focus()
+		and editor.get("_active_page") == "setup")
 	entry.text = "0.731"
 	entry.text_changed.emit(entry.text)
 	entry.text_submitted.emit(entry.text)

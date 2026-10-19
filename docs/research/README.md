@@ -45,6 +45,8 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Aircraft Workshop
 
+[AE-08b/09 interface delivery, 2026-10-19](aircraft-editor/AE-08b-09/README.md) records the current inspection, compact menus, full-payload draft guards, explicit trace recovery and storage-target safeguards, with software/native evidence and remaining acceptance.
+
 [AE-01–10 initial implementation](aircraft-editor/AE-01-10/README.md) records the initial compiler/store/descriptor/trial/UI checks and native captures. The [Workbench entry point and evidence map](../AIRCRAFT-WORKSHOP.md#verification) also links later identity, imported-model, menu and fuel integration evidence. The [consolidated AE plan](../plans/aircraft-editor.md) owns remaining acceptance.
 
 [AE-00 customization investigation, 2026-10-19](aircraft-editor/AE-00/README.md) records the current code seams, official Godot research, moving-tree diagnostics and an isolated retained-color probe. Compiler/legacy-trial failures and the probe's pause/reset assertions remain open. The resulting requirements and subphases live in the [AE implementation packages](../plans/aircraft-editor.md#56-implementation-packages-and-order).

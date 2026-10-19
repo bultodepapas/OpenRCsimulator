@@ -1,0 +1,171 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   a source 343 m away is heard 1.000 s late — delay=1.000000000000
+ok   moving-source retarded time matches the closed-form root — solved=5.588614772430 expected=5.588614762208
+ok   a history shorter than the travel time returns its oldest sample
+ok   an empty history has no emission sample
+ok   a source at the listener has no delay
+ok   ISO 9613-1 absorption reproduces the published 10 C / 70 % octave table — worst error 0.87 of the rounding tolerance
+ok   ISO saturation humidity matches the atmosphere model within 0.2 %
+ok   the absorption cutoff sits where the path loss reaches 3 dB — cutoff=2016.8 Hz loss=3.000000000 dB
+ok   a short path keeps the full ceiling
+ok   the absorption cutoff falls with distance and stays bounded — 1500 m: 357 Hz
+ok   dry air absorbs less than humid air at 300 m — dry=7348 humid=2017 Hz
+ok   Doppler raises pitch for an approaching source — ratio=1.0619
+ok   Doppler lowers pitch for a receding source — ratio=0.9449
+ok   co-moving source and listener have no relative Doppler shift — ratio=1.000000
+ok   stationary source and listener have neutral Doppler — ratio=1.000000
+ok   occlusion is zero without a canopy or with an off-axis box
+ok   one intersected canopy screens one third of the high-frequency path
+ok   occlusion counts segment intersections and caps at three canopies
+ok   four blades double blade-passing frequency at equal shaft RPM
+ok   wind raises low wind, high wind and foliage targets
+ok   bird activity follows daylight and fades to zero at night
+ok   strong wind suppresses bird activity
+ok   stopped engine is silent while its windmilling prop remains audible — motor=0.000 prop=0.061
+ok   turbine whine pitch follows the shaft speed across its full x3.5 range — idle=0.534 full=1.871
+ok   jet roar follows jet velocity: near silent at idle, dominant at full power — roar idle=0.0326 full=2.394 whine full=0.491
+ok   roar is loudest behind the jet, whine ahead of the intake — roar aft/ahead=3.98 whine ahead/aft=2.00
+ok   a stopped turbine is silent
+ok   default field decodes for the soundscape fixture — []
+ok   decoded field has tree positions before trimming
+ok   pitch drop lags the visual pass by h/c within one frame — crossing=3.4500 expected=3.4500
+ok   --audio-delay=off drops pitch at the visual pass — crossing=3.3500 expected=3.3333
+ok   an rpm step is heard after the travel time, not before — before=0.5000 after=1.5000
+ok   listener-side snapshot values are not delayed — wind=9.0
+ok   a clock rewind restarts the pose history — samples=1 delay=0.000
+ok   the pose history stays bounded by its time window — samples=332
+ok   a snapshot without the accepted clock plays undelayed
+ok   aircraft bus carries enabled 12 dB/octave Butterworth absorption and screening filters
+ok   aircraft voices leave the doubled 3D distance shelf off; ambience keeps it
+ok   the first update places the cutoff on the heard path at once — cutoff=2016.8 expected=2016.8
+ok   a path jump glides in log frequency instead of stepping the filter — largest step 0.165 of 1.570, moves at frame 6, settled=9692 target=9692
+ok   observer reset re-primes the cutoff without a glide
+ok   the snapshot humidity drives absorption
+ok   --audio-absorption=off holds the filter at its ceiling
+ok   screening shelf reaches its authored -24 dB (gain squared) and is flat when clear
+ok   glow_prop configures exactly 14 bounded voices — voices=14
+FAIL four foliage voices share one derived PCM stream — unique streams=4
+ok   shared foliage stream retains four separate players
+ok   glow_prop adds three dedicated buses — before=1 after=4
+ok   loops start only after the first positioned update
+ok   each foliage player owns a separate playback
+ok   shared foliage loop preserves source bytes and appends the exact wrap guard
+ok   external audio can stop before its bus is removed
+ok   suspended audio releases its buses
+ok   reattached flight restores its audio buses
+ok   reattached flight restarts its continuous audio
+FAIL reattached foliage voices keep the shared stream
+ok   reattached foliage players receive separate playbacks
+ok   mix bus has no clipper and Master ends in the generated -1 dBFS safety limiter
+ok   mix, aircraft and environment route through separate live buses
+ok   propulsion kind loads its matching original motor source
+ok   ten bird phrases decode as usable WAV streams
+ok   imported PCM loops cover the complete source duration with a seamless wrap guard
+ok   bird scheduling emits several decoded phrases via update_sound — scheduled=11
+ok   successive bird calls use different phrases — [5, 2, 3, 8, 9, 5, 3, 4, 0, 3, 2]
+ok   every scheduled songbird uses one of the ten loaded phrases
+ok   unpaused mix reaches its active target — gain=1.000
+ok   pause fades down instead of cutting immediately — gain 1.000→0.792, motor -23.1→-25.1 dB
+ok   pause reaches the silent mix floor within 80 ms plus one render frame — elapsed=83.3 ms gain=0.00000000 motor=-92.0 dB ambience=-80.0 dB
+ok   resume fades in and unpauses the players — gain=0.048 motor=-49.5 dB
+ok   runtime detects an approaching source — ratio=1.0619
+ok   simulation velocity sets Doppler without frame differencing — ratio=1.13201
+ok   a camera cut does not chirp the Doppler ratio — ratio=1.00000
+ok   aircraft bus carries the near-field trim
+ok   motor voice volume is trimmed by the same amount — voice=-25.46 untrimmed=-13.46
+ok   scheduled birds are playing before observer reset
+ok   observer reset stops and cuts all bird voices
+ok   first update after reset has no stale Doppler spike — ratio=1.000000
+ok   voice budget stays bounded after repeated scheduler updates
+ok   reset retains both looping cricket colonies
+ok   warm night fades in both cricket patches
+ok   day change fades crickets instead of switching them abruptly
+ok   soundscape leaves the global random sequence untouched — expected=[510986264, 3491425032, 206504417, 2464457385, 127283640, 2593470517, 2686650995, 859030056] observed=[510986264, 3491425032, 206504417, 2464457385, 127283640, 2593470517, 2686650995, 859030056]
+ok   glow_prop node removal restores the audio bus count — expected=1 actual=1
+ok   glow_prop node removal leaves no dedicated buses
+ok   electric_prop configures exactly 14 bounded voices — voices=14
+FAIL four foliage voices share one derived PCM stream — unique streams=4
+ok   shared foliage stream retains four separate players
+ok   electric_prop adds three dedicated buses — before=1 after=4
+ok   loops start only after the first positioned update
+ok   each foliage player owns a separate playback
+ok   shared foliage loop preserves source bytes and appends the exact wrap guard
+ok   external audio can stop before its bus is removed
+ok   suspended audio releases its buses
+ok   reattached flight restores its audio buses
+ok   reattached flight restarts its continuous audio
+FAIL reattached foliage voices keep the shared stream
+ok   reattached foliage players receive separate playbacks
+ok   mix bus has no clipper and Master ends in the generated -1 dBFS safety limiter
+ok   mix, aircraft and environment route through separate live buses
+ok   propulsion kind loads its matching original motor source
+ok   ten bird phrases decode as usable WAV streams
+ok   imported PCM loops cover the complete source duration with a seamless wrap guard
+ok   bird scheduling emits several decoded phrases via update_sound — scheduled=9
+ok   successive bird calls use different phrases — [2, 0, 3, 5, 3, 2, 8, 6, 5]
+ok   every scheduled songbird uses one of the ten loaded phrases
+ok   unpaused mix reaches its active target — gain=1.000
+ok   pause fades down instead of cutting immediately — gain 1.000→0.792, motor -31.1→-33.1 dB
+ok   pause reaches the silent mix floor within 80 ms plus one render frame — elapsed=83.3 ms gain=0.00000000 motor=-92.0 dB ambience=-80.0 dB
+ok   resume fades in and unpauses the players — gain=0.048 motor=-57.5 dB
+ok   runtime detects an approaching source — ratio=1.0619
+ok   simulation velocity sets Doppler without frame differencing — ratio=1.13201
+ok   a camera cut does not chirp the Doppler ratio — ratio=1.00000
+ok   aircraft bus carries the near-field trim
+ok   motor voice volume is trimmed by the same amount — voice=-33.42 untrimmed=-21.42
+ok   scheduled birds are playing before observer reset
+ok   observer reset stops and cuts all bird voices
+ok   first update after reset has no stale Doppler spike — ratio=1.000000
+ok   voice budget stays bounded after repeated scheduler updates
+ok   reset retains both looping cricket colonies
+ok   warm night fades in both cricket patches
+ok   day change fades crickets instead of switching them abruptly
+ok   electric_prop node removal restores the audio bus count — expected=1 actual=1
+ok   electric_prop node removal leaves no dedicated buses
+ok   turbine configures exactly 14 bounded voices — voices=14
+FAIL four foliage voices share one derived PCM stream — unique streams=4
+ok   shared foliage stream retains four separate players
+ok   turbine adds three dedicated buses — before=1 after=4
+ok   loops start only after the first positioned update
+ok   each foliage player owns a separate playback
+ok   shared foliage loop preserves source bytes and appends the exact wrap guard
+ok   external audio can stop before its bus is removed
+ok   suspended audio releases its buses
+ok   reattached flight restores its audio buses
+ok   reattached flight restarts its continuous audio
+FAIL reattached foliage voices keep the shared stream
+ok   reattached foliage players receive separate playbacks
+ok   mix bus has no clipper and Master ends in the generated -1 dBFS safety limiter
+ok   mix, aircraft and environment route through separate live buses
+ok   propulsion kind loads its matching original motor source
+ok   ten bird phrases decode as usable WAV streams
+ok   imported PCM loops cover the complete source duration with a seamless wrap guard
+ok   bird scheduling emits several decoded phrases via update_sound — scheduled=9
+ok   successive bird calls use different phrases — [1, 7, 9, 2, 9, 3, 5, 2, 4]
+ok   every scheduled songbird uses one of the ten loaded phrases
+ok   unpaused mix reaches its active target — gain=1.000
+ok   pause fades down instead of cutting immediately — gain 1.000→0.792, motor -16.9→-19.0 dB
+ok   pause reaches the silent mix floor within 80 ms plus one render frame — elapsed=83.3 ms gain=0.00000000 motor=-92.0 dB ambience=-80.0 dB
+ok   resume fades in and unpauses the players — gain=0.048 motor=-43.4 dB
+ok   runtime detects an approaching source — ratio=1.0619
+ok   simulation velocity sets Doppler without frame differencing — ratio=1.13201
+ok   a camera cut does not chirp the Doppler ratio — ratio=1.00000
+ok   aircraft bus carries the near-field trim
+ok   motor voice volume is trimmed by the same amount — voice=-19.31 untrimmed=-7.31
+ok   scheduled birds are playing before observer reset
+ok   observer reset stops and cuts all bird voices
+ok   first update after reset has no stale Doppler spike — ratio=1.000000
+ok   voice budget stays bounded after repeated scheduler updates
+ok   reset retains both looping cricket colonies
+ok   warm night fades in both cricket patches
+ok   day change fades crickets instead of switching them abruptly
+ok   turbine node removal restores the audio bus count — expected=1 actual=1
+ok   turbine node removal leaves no dedicated buses
+ok   glow_2t generator starts
+ok   glow_2t reattachment restarts its generator on a live bus
+ok   glow_2t reattachment leaves no buses after disposal
+ok   glow_4t generator starts
+ok   glow_4t reattachment restarts its generator on a live bus
+ok   glow_4t reattachment leaves no buses after disposal
+168 checks, 6 failed

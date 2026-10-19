@@ -1,0 +1,44 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371815026423339 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2119)
+       [9] build (res://render/world/world.gd:288)
+       [10] _build_world (res://main.gd:2075)
+       [11] _ready (res://main.gd:472)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   hold -> roll +1 uses aircraft normal rate and trim
+ok   release -> stick re-centers, aileron back to trim
+ok   throttle rose and holds after release
+ok   reset -> throttle back to its trimmed setting
+ok   PgUp trims nose down through the servo
+ok   PgDn trims nose up
+ok   R restores the solved elevator trim
+ok   physics: trimmed level flight holds altitude hands-off
+ok   physics: throttle back → descends
+ok   physics: R restarts at 30 m
+CRASH at 15.0 m/s (sink 0.0 m/s, airframe contact (hull point 4), point speed 15.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 15.0 m/s, pitch 4°, bank 0°
+ok   physics: ground contact → impact and wreck shown
+ok   physics: wreck persists until explicit restart
+ok   physics: R restores flight after a crash
+ok   L0d: sim_clock = simulation time mod 1024 at three ticks
+ok   T: recording shows in the panel
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-19T20-56-14.csv (118 rows)
+ok   T again: trace saved with ~0.5 s of ticks
+ok   Timber direct session loads and trims its own electric data
+ok   Timber keyboard roll reaches the session
+ok   Timber keyboard pitch reaches the session
+ok   Timber keyboard rudder reaches the session
+ok   Timber keyboard throttle raises motor command above trim
+ok   Timber input path keeps every simulated rigid-body value finite
+all e2e checks passed

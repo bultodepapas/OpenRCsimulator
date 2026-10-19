@@ -1150,6 +1150,12 @@ func open_workshop(from: Control = null) -> void:
 	var editor: CanvasLayer = load("res://ui/workshop.gd").new()
 	editor.initial_aircraft_id = flight.aircraft_id if flight != null else home.aircraft_id
 	editor.set("return_destination", "Pause" if screens.is_top("pause") else "Home")
+	var weather: Dictionary = flight.weather_config if flight != null else preferences.get("weather_config", WeatherSettings.defaults())
+	var lighting: Dictionary = flight.lighting_config if flight != null else preferences.get("lighting_config", TimeOfDay.defaults())
+	var field_name := str(Landscapes.entry(landscape_id).get("name", landscape_id))
+	editor.set("trial_conditions", tr("Trial field: %s") % field_name + "\n" + tr("Wind: %s") % WeatherSettings.summary(weather)
+		+ "\n" + tr("Light: %s") % TimeOfDay.format_time(int(lighting.get("local_seconds", 43200)))
+		+ "\n" + tr("Full fuel · normal control rates · current controller"))
 	editor.closed.connect(close_workshop)
 	editor.trial_requested.connect(_start_workshop_trial)
 	screens.push("workshop", editor, from)
@@ -1164,6 +1170,10 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if not screens.is_top("workshop") or not _workshop_screens.is_empty():
 		return
 	var editor: Node = screens.top()
+	var chosen_start: Variant = payload.get("start_choice", "airborne")
+	if typeof(chosen_start) != TYPE_STRING or chosen_start not in ["airborne", "runway"]:
+		editor.set_note(tr("Choose an airborne or runway trial start."))
+		return
 	var trial: Dictionary = load("res://workshop/trial.gd").freeze(payload)
 	if not trial.get("ok", false):
 		editor.set_note("; ".join(trial.get("errors", [])))
@@ -1186,7 +1196,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.landscape_id = landscape_id
 	candidate.aircraft_id = base_id
 	candidate.workshop_trial = trial.duplicate(true)
-	candidate.start_choice = "airborne"
+	candidate.start_choice = chosen_start
 	candidate.interactive_start = true
 	candidate.external_controller_selection = controllers != null
 	candidate.weather_config = preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
@@ -1696,6 +1706,11 @@ func _close_pause() -> void:
 func _begin_exit_request(kind: String, recorders: Array, commit: Callable, guard_workshop := false) -> void:
 	if _exit_request_active:
 		return
+	if kind == "quit":
+		for editor: Node in _workshop_editors():
+			if is_instance_valid(editor) and editor.has_method("dismiss_modal_for_exit") \
+				and bool(editor.call("dismiss_modal_for_exit")):
+				return
 	_exit_request_active = true
 	_exit_request_kind = kind
 	_exit_request_commit = commit
@@ -1830,19 +1845,48 @@ func _advance_trace_exit() -> void:
 func _show_trace_recovery_dialog(error_code: int) -> void:
 	var dialog := ConfirmationDialog.new()
 	dialog.title = tr("Trace not saved")
-	dialog.dialog_text = tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
+	var recovery_message := tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
+	# Keep the native AcceptDialog label empty: its full translated minimum height can
+	# outgrow the clamped Window at enlarged text. Put the message in a bounded scroller.
+	dialog.dialog_text = ""
+	dialog.theme = UiTheme.build()
 	dialog.exclusive = true
 	dialog.get_ok_button().text = tr("Stay") # default action is the safe choice
 	dialog.get_cancel_button().hide() # Escape and the window close still map to Stay
 	_trace_retry_button = dialog.add_button(tr("Retry save"), false, "retry")
 	_trace_discard_button = dialog.add_button(tr("Discard trace and continue"), true, "discard")
+	var text_scale := clampf(UiTheme.text_scale, 1.0, 2.0)
+	var scroll := ScrollContainer.new()
+	scroll.name = "TraceRecoveryMessageScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.custom_minimum_size = Vector2(300.0, 100.0)
+	dialog.add_child(scroll)
+	var message := Label.new()
+	message.name = "TraceRecoveryMessage"
+	message.theme_type_variation = "SecondaryLabel"
+	message.text = recovery_message
+	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(message)
+	for button: Button in [dialog.get_ok_button(), _trace_retry_button, _trace_discard_button]:
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var visible_size: Vector2i = get_tree().root.size
+	var desired_size := Vector2i(roundi(560.0 * text_scale), roundi(220.0 * text_scale))
+	var viewport_limit := Vector2i(maxi(1, roundi(visible_size.x * 0.9)), maxi(1, roundi(visible_size.y * 0.9)))
+	var dialog_minimum := Vector2i(mini(desired_size.x, viewport_limit.x), mini(desired_size.y, viewport_limit.y))
+	dialog.add_theme_constant_override("buttons_min_width", maxi(1, roundi((dialog_minimum.x - 64.0) / 3.0)))
+	dialog.add_theme_constant_override("buttons_min_height", roundi(44.0 * text_scale))
+	dialog.min_size = dialog_minimum
+	dialog.size = dialog_minimum
 	dialog.custom_action.connect(_on_trace_recovery_action)
 	dialog.confirmed.connect(_cancel_exit_request)
 	dialog.canceled.connect(_cancel_exit_request)
 	dialog.close_requested.connect(_cancel_exit_request)
 	_trace_recovery_dialog = dialog
 	add_child(dialog)
-	dialog.popup_centered()
+	dialog.popup_centered_clamped(dialog_minimum, 0.9)
 	dialog.get_ok_button().grab_focus.call_deferred()
 
 
@@ -1875,6 +1919,11 @@ func _on_trace_recovery_action(action: StringName) -> void:
 
 func _finish_exit_request() -> void:
 	var commit := _exit_request_commit
+	# Quit tears down the recovery owner with the tree; its discard markers are weak
+	# and can still protect a later route if a host overrides the quit seam.
+	if _exit_request_kind != "quit":
+		for recorder: RefCounted in _exit_request_recorders:
+			_trace_recovery.forget_completed(recorder)
 	_clear_exit_request()
 	if commit.is_valid():
 		commit.call()

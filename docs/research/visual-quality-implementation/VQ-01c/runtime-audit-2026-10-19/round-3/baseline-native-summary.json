@@ -1,0 +1,42 @@
+{
+  "frames": 2666,
+  "seconds": 45.004776,
+  "frame_ms": {
+    "max": 163.474,
+    "p50": 16.665,
+    "p95": 17.186,
+    "p99": 20.869
+  },
+  "simulation": {
+    "elapsed_time_s": 10.0375,
+    "end_tick": 2412,
+    "end_time_s": 10.05,
+    "fault": "",
+    "paused": true,
+    "physics_enabled": true,
+    "physics_ticks_per_second": 240,
+    "scope": "first _process clock prime through sample completion; includes warm-up",
+    "start_tick": 3,
+    "start_time_s": 0.0125,
+    "step_usec_smoothed": 3183.35931956482,
+    "ticks": 2409
+  },
+  "pause_events": [
+    {
+      "crash": {
+        "impact": "<RefCounted#-9223371690807917100>",
+        "sink": 0.748585089518459,
+        "speed": 15.9961780033314,
+        "ticks_left": 360,
+        "why": "landing gear travel limit (nose)"
+      },
+      "elapsed_s": 10.52384,
+      "fault": "",
+      "holds": {},
+      "paused": true,
+      "tick": 2412
+    }
+  ],
+  "monitor_samples": 2940,
+  "engine_error_scope": "missing ignored generated native install; corrected after this run; not valid steady-flight acceptance"
+}

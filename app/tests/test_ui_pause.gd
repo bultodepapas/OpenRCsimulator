@@ -253,18 +253,42 @@ func _run() -> void:
 	_check("back on Home, flight freed", app.flight == null and app.home != null and app.home_scene != null and _count(root, "FlightSession") == 0)
 	_check("focus on Fly again", ui.focus_name() == "Fly", ui.focus_name())
 
-	# --- A trace that cannot be saved: the menu says so; End again ends without it.
+	# --- A failed manual trace remains an explicit decision until Stay, Retry, or Discard.
 	await ui.tap(KEY_ENTER) # Fly
 	await _wait(0.2)
-	app.flight.recorder = FakeRecorder.new()
+	var failed_recorder := FakeRecorder.new()
+	app.flight.recorder = failed_recorder
 	app.open_pause()
 	await ui.settle()
 	app.end_flight()
-	_check("failed save: still in the flight, the menu explains", app.flight != null and app.pause_menu.note_label.visible
-		and "Could not save" in app.pause_menu.note_label.text, app.pause_menu.note_label.text)
+	await ui.settle()
+	var recovery := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	var recovery_message := recovery.find_child("TraceRecoveryMessage", true, false) as Label if recovery != null else null
+	_check("failed save opens explicit recovery with Stay as the safe default",
+		recovery != null and recovery.visible and recovery.get_ok_button().text == "Stay"
+		and recovery_message != null and "was not saved" in recovery_message.text
+		and failed_recorder.stop_calls == 1,
+		recovery_message.text if recovery_message != null else "no recovery dialog message")
+	_check("failed-save decision keeps the current flight held", app.flight != null
+		and app.flight.session.holds.has("exit_guard"))
+	if recovery != null:
+		recovery.confirmed.emit() # Stay cancels this End request without resolving the trace.
+	await ui.settle()
+	_check("Stay keeps the failed trace pending and the flight in place", app.flight != null
+		and failed_recorder.stop_calls == 1
+		and app._trace_recovery.pending_count() == 1)
 	app.end_flight()
 	await ui.settle()
-	_check("End again: Home, without the trace", app.flight == null and app.home != null)
+	recovery = app.get("_trace_recovery_dialog") as ConfirmationDialog
+	_check("a later End reoffers recovery without stopping or discarding implicitly",
+		recovery != null and recovery.visible and failed_recorder.stop_calls == 1
+		and app._trace_recovery.pending_count() == 1)
+	if recovery != null:
+		recovery.custom_action.emit("discard")
+	await ui.settle()
+	_check("only explicit Discard trace and continue ends the flight", app.flight == null
+		and app.home != null and failed_recorder.stop_calls == 1
+		and app._trace_recovery.pending_count() == 0)
 
 	# --- Five Home -> Fly -> End cycles leave nothing behind.
 	var counts := []
@@ -440,9 +464,11 @@ static func _count(n: Node, script_name: String) -> int:
 ## Stands in for the recorder when the disk refuses the trace.
 class FakeRecorder extends RefCounted:
 	var recording := true
+	var stop_calls := 0
 	var note := ""
 
 	func stop(_path := "") -> Error:
+		stop_calls += 1
 		recording = false
 		note = "trace save failed: error %d" % ERR_CANT_CREATE
 		return ERR_CANT_CREATE

@@ -304,3 +304,100 @@ The official [Godot 4.7 profiler guide](https://docs.godotengine.org/en/4.7/tuto
 describes manual inclusive microsecond timing; [Performance monitor documentation](https://docs.godotengine.org/en/4.7/classes/class_performance.html)
 notes that some monitor values can lag by up to one second. Sampled engine counters
 are not independent per-frame or per-method measurements.
+
+## Round 3: frozen-source review and blocked qualification
+
+The next snapshot was clean commit `122889b8e846b501dc17ffd610e60bf340bd4786`;
+SHA-256 identities cover its 2,955 tracked app files. A 45-second live-input native
+run is excluded from steady-flight acceptance: a connected XInput controller changed
+the controls, followed by a crash at tick 2,412 (10.05 simulation seconds) and pause.
+Its copied import cache also referenced an absent ignored native installation.
+The installation was restored only after its binary hashes and source digest matched
+the receipt; no corrected performance run was completed.
+
+A bounded fixed-trim diagnostic probe and three injected timing scripts passed
+Godot 4.7.2 check-only. They were not run natively. The Linux full-suite attempt
+failed before `app/test.sh`: WSL returned I/O errors reading the engine and system
+tools, including `timeout` (wrapper exit 126), then failed to start. No round-3
+unit, full parse or integration coverage is claimed. A separate review found path
+mapping and aggregate-status defects in the unused scratch shell orchestrator;
+that orchestrator was never a suite result.
+
+The construction review rejected duplicate vegetation-spec reuse as too small to
+justify a performance change. Prior WIP construction timings are distinguished
+from current static input counts. The tooling guide now names the actual D10-R2
+sideslip-only pending check and flag; recovery assertions remain mandatory. No
+threshold, golden flight or physics law was changed in this round.
+
+At the user's cleanup request, the disposable round-3 checkout was removed after
+verifying its clean pinned source. Its commit and file identities remain available;
+the prepared probe needs that snapshot recreated before running. The older WIP
+snapshots and unique evidence were preserved with NTFS storage compression. All
+24 remaining registered worktrees exist and resolve a Git HEAD; three sampled
+older source files still match their recorded hashes. The shared tree advanced
+independently during the audit; results are qualified only for their identified sources.
+
+[Round-3 results and artifact identities](round-3/verification-summary.json) retain
+the failed native sample, wrapper logs, prepared probe and rejected experiments.
+The complete app suite, unexplained frame-stall root cause, long soak and target
+platform/device qualification remain open.
+
+## HUD-12 / AUD-03 — presentation follow-up, 2026-10-19
+
+This separate campaign starts from `d42ce9048`. The native application was flown,
+restarted and visually inspected on the RTX 3090. The connected gamepad closed the
+throttle during that exploratory flight; its pauses/crashes make its 60-second
+frame sample unsuitable for active-flight qualification. No flight law, input
+mapping, aircraft data, material or golden flight was changed.
+
+Three bounded repairs remove presentation work:
+
+- Hidden diagnostics no longer query air/gear/flap data, format labels or sort the
+  performance window every frame. An initial diagnostic snapshot and explicit
+  capture refresh remain available. Visible diagnostics keep their original frame
+  cadence; showing diagnostics/performance independently refreshes current data.
+- Hidden transmitter overlays no longer rebuild their gimbal drawings. Current
+  sticks return on the first visible refresh. Fuel/failure warnings and the existing
+  10 Hz sensor sampling remain active independently of diagnostic visibility.
+- Each Soundscape configuration prepares one immutable foliage PCM loop for its
+  four separate players. Source bytes, wrap guards, seeded offsets, playback
+  instances and detach/reattach behavior are preserved. The local cache expires at
+  the end of configuration. **3,043,284 derived PCM bytes (2.90 MiB)** are avoided
+  per configured soundscape; this is buffer accounting, not measured process RSS.
+
+The [executed CPU probe](presentation-follow-up/diagnostics_probe.gd) times the
+production `Main._process` callback after real session/kernel ticks outside the
+timed interval. Each process runs 60 warmup and 1,200 measured callbacks, with two
+240 Hz ticks per declared 120 Hz frame. This is a headless callback benchmark,
+with soundscape disabled, not a GPU, whole-frame or FPS measurement.
+
+| Pair | Reference p50/p95, µs | Candidate p50/p95, µs |
+| --- | ---: | ---: |
+| 1 | 1072 / 1470 | 808 / 1178 |
+| 2, reversed order | 549 / 841 | 475 / 780 |
+| 3 | 558 / 863 | 448 / 670 |
+
+Median of process medians: **558 → 475 µs, 14.87% less callback CPU time**. The
+first pair was substantially slower; the shared host was not reserved. All six
+processes completed 2,520 ticks unpaused and without a simulation fault. All
+measured numeric state/input fingerprints match
+`85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0`.
+This digest covers body, auxiliary and continuous state, inputs and tick, not every
+session/event/checkpoint field or physical validation.
+
+[Raw samples, process order and source hashes](presentation-follow-up/results.json)
+retain the comparison. Reproduce with the pinned console engine, `--headless
+--path app --audio-driver Dummy --script <probe> -- --subject=<Main script>
+--output=<new JSON path>`. The reference Main is the exact Git blob
+`146c5b8ffa50bde42c032612fc8a232f2d51c24d` at `d42ce9048:app/main.gd`;
+the candidate uses `res://main.gd` and the recorded candidate file hashes.
+
+The extended overlay test reports **127 checks, zero failures**; the soundscape
+test reports **168 checks, zero failures**. Running those assertions against
+disposable reference-script copies produces six expected failures in each suite.
+Battery/fuel overlays, keyboard input, frame collection, failure UI, camera routing
+and changed-script parsing have separate [verification records](presentation-follow-up/verification.json).
+Unrelated concurrent Workshop edits were preserved. The full app suite and export
+were not run. A separate native comparison did not publish a report and was stopped
+after Computer Use was cancelled with physical Escape; no native FPS improvement
+or completed before/after visual qualification is claimed.

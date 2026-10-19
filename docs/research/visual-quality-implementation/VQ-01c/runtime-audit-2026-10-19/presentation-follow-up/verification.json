@@ -1,0 +1,105 @@
+{
+  "date": "2026-10-19",
+  "scope": "Native Windows headless focused checks; all listed positive invocations exited zero; engine errors checked separately. Full app/test.sh and export not run.",
+  "results": [
+    {
+      "name": "overlay-tests",
+      "status": "pass",
+      "checks": 127,
+      "error_lines": [],
+      "log": "overlay-tests.log",
+      "sha256": "dcf0a065115349de34fbdc7f03cf27d4a87f9b1ea4b893a58b41691f41edf2f1"
+    },
+    {
+      "name": "test_soundscape",
+      "status": "pass",
+      "checks": 168,
+      "error_lines": [],
+      "log": "test_soundscape.log",
+      "sha256": "dcfa3706c4e6440f62cebf94692dd6148ea3186a640c53681ff7174f1926527b"
+    },
+    {
+      "name": "test_overlay_battery_flight",
+      "status": "pass",
+      "checks": 12,
+      "error_lines": [],
+      "log": "test_overlay_battery_flight.log",
+      "sha256": "43894e20e8613b9130772d31a80064b7d8816c0bc95ba2cc6811a06f992867ae"
+    },
+    {
+      "name": "test_overlay_fuel_flight",
+      "status": "pass",
+      "checks": 9,
+      "error_lines": [],
+      "log": "test_overlay_fuel_flight.log",
+      "sha256": "a735e34f5ddf1219445321c382696f6716efcd195e3779439cbb63f3698997ee"
+    },
+    {
+      "name": "test_e2e_input",
+      "status": "pass",
+      "checks": null,
+      "error_lines": [],
+      "log": "test_e2e_input.log",
+      "sha256": "c5120329d5c92bcc52e25bc6995f0b1594870182e37dffd6a995d1a9519bd71d"
+    },
+    {
+      "name": "test_camera_math",
+      "status": "pass",
+      "checks": 21,
+      "error_lines": [],
+      "log": "test_camera_math.log",
+      "sha256": "9f4bdbaa6b9bf452f92b9ea274412f6ff0a21ffdcc24491110727abb3a354e35"
+    },
+    {
+      "name": "test_camera_route",
+      "status": "pass",
+      "checks": 19,
+      "error_lines": [],
+      "log": "test_camera_route.log",
+      "sha256": "b383a18abecc47bd00c5501338042830c9b4202f80bae2a3ed9751d763920823"
+    },
+    {
+      "name": "test_frame_samples",
+      "status": "pass",
+      "checks": 68,
+      "error_lines": [],
+      "log": "test_frame_samples.log",
+      "sha256": "c9c5b841e242ba2f87c59498e6d6db52f5e4fafaf0ffce1c26673039f3a0cf66"
+    },
+    {
+      "name": "test_failure_routes",
+      "status": "pass",
+      "checks": null,
+      "error_lines": [],
+      "log": "test_failure_routes.log",
+      "sha256": "b65bca06ebfb9d4ff4e57f65273827b00ff1a42f4a189bc0ec9ddef4615afa1d"
+    },
+    {
+      "name": "parse-changed",
+      "status": "pass",
+      "checks": 5,
+      "error_lines": [],
+      "log": "parse-changed.log",
+      "sha256": "26b1995a699d39a4f6bafd171a29834decc0bb846d7c7d0def49ece0b5f9fe7d"
+    },
+    {
+      "name": "reference_overlay_negative_regression",
+      "status": "expected_failure",
+      "checks": 127,
+      "failed": 6,
+      "log": "overlay-baseline-regressions.log"
+    },
+    {
+      "name": "reference_audio_negative_regression",
+      "status": "expected_failure",
+      "checks": 168,
+      "failed": 6,
+      "log": "soundscape-baseline-regressions.log"
+    },
+    {
+      "name": "test_camera_rig",
+      "status": "invocation_error",
+      "reason": "Nonexistent test filename was initially requested. Correct test_camera_math and test_camera_route both passed."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+> python research/aircraft-standardization/build_models.py --check
+model manifests current (5 visual families)
+> python research/aircraft-editor/build_descriptors.py --check
+8 Workshop descriptors are current.

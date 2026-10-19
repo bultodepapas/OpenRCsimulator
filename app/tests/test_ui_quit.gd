@@ -3,6 +3,8 @@ extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const TraceRecovery := preload("res://ui/trace_recovery.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 const HOME_PREFS := "user://test_ui_quit_home.cfg"
 const DIRECT_PREFS := "user://test_ui_quit_direct.cfg"
 const WORKSHOP_PREFS := "user://test_ui_quit_workshop.cfg"
@@ -116,6 +118,15 @@ func _check_home_route(initial_auto_accept: bool) -> void:
 
 
 func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
+	var recovery_lifecycle := TraceRecovery.new()
+	var discarded_recorder: RefCounted = AlwaysFailRecorder.new()
+	recovery_lifecycle.save_if_recording(discarded_recorder)
+	recovery_lifecycle.discard(discarded_recorder)
+	var discarded_weak: WeakRef = weakref(discarded_recorder)
+	discarded_recorder = null
+	_check("a discarded Recorder is not retained after its owner releases it",
+		discarded_weak.get_ref() == null and recovery_lifecycle.discarded_count() == 0)
+
 	# A host that had disabled auto-accept before AppRoot must keep that policy after it leaves.
 	set_auto_accept_quit(false)
 	var app := QuitProbeAppRoot.new()
@@ -168,12 +179,13 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	await ui.settle()
 	var session: Node = app.flight.session
 	var failed_dialog := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	var failed_message := failed_dialog.find_child("TraceRecoveryMessage", true, false) as Label if failed_dialog != null else null
 	_check("duplicate failed Window close saves only once", failed_recorder.stop_calls == 1,
 		"stop_calls=%d" % failed_recorder.stop_calls)
 	_check("failed close opens explicit recovery with Stay as the default",
 		failed_dialog != null and failed_dialog.visible and failed_dialog.get_ok_button().text == "Stay"
-		and "was not saved" in failed_dialog.dialog_text and app.quit_requests == 0,
-		failed_dialog.dialog_text if failed_dialog != null else "no recovery dialog")
+		and failed_message != null and "was not saved" in failed_message.text and app.quit_requests == 0,
+		failed_message.text if failed_message != null else "no recovery dialog message")
 	_check("close decision holds the flight and masks it until the decision",
 		session.holds.has("exit_guard") and session.sim.paused)
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
@@ -193,11 +205,31 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	app.quit_requests = 0
 	var always_fails := AlwaysFailRecorder.new()
 	app.flight.recorder = always_fails
+	var previous_window_size: Vector2i = root.size
+	root.size = Vector2i(1280, 720) # Headless SceneTree starts at 64×64; exercise a normal desktop viewport.
+	await ui.settle()
+	var previous_text_scale: float = UiTheme.text_scale
+	UiTheme.text_scale = 2.0
 	app.quit_app()
 	await ui.settle()
 	var stay_dialog := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	var message_label := stay_dialog.find_child("TraceRecoveryMessage", true, false) as Label if stay_dialog != null else null
+	var desktop_size: Vector2i = root.size
+	_check("trace recovery uses the shared theme, wraps, and stays within the viewport at 200%",
+		stay_dialog != null and stay_dialog.theme.default_font_size >= 40
+		and message_label != null and message_label.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART
+		and stay_dialog.get_theme_constant("buttons_min_width") >= 300
+		and stay_dialog.get_theme_constant("buttons_min_height") >= 88
+		and stay_dialog.size.x <= desktop_size.x and stay_dialog.size.y <= desktop_size.y,
+		"font=%s buttons=%s/%s size=%s viewport=%s" % [str(stay_dialog.theme.default_font_size) if stay_dialog != null else "none",
+		str(stay_dialog.get_theme_constant("buttons_min_width")) if stay_dialog != null else "none",
+		str(stay_dialog.get_theme_constant("buttons_min_height")) if stay_dialog != null else "none",
+		str(stay_dialog.size) if stay_dialog != null else "none", str(desktop_size)])
 	if stay_dialog != null:
 		stay_dialog.confirmed.emit()
+	await ui.settle()
+	UiTheme.text_scale = previous_text_scale
+	root.size = previous_window_size
 	await ui.settle()
 	_check("Stay keeps an always-failing trace pending and the app open",
 		app.quit_requests == 0 and always_fails.stop_calls == 1 and app._trace_recovery.pending_count() == 1)
@@ -276,8 +308,38 @@ func _check_workshop_suspended_recording() -> void:
 		and close_button.text == "Back to Pause",
 		"top=%s pause_top=%s destination=%s label=%s" % [str(app.screens.top()), str(app.screens.is_top("pause")),
 		str(editor.get("return_destination")), close_button.text if close_button != null else "no Back button"])
+	var previous_recorder: RefCounted = original.recorder
+	if previous_recorder != null:
+		previous_recorder.detach()
+	var modal_recorder := FailOnceRecorder.new()
+	original.recorder = modal_recorder
 	editor.set_variant_name("Unsaved trial draft")
 	_check("Workshop test fixture has a dirty retained draft", editor.has_unsaved_changes())
+	editor.call("_show_name_dialog", false)
+	await ui.settle()
+	var name_dialog := editor.get("_name_dialog") as ConfirmationDialog
+	_check("Save build is open before the first Window close", name_dialog != null and name_dialog.visible)
+	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
+	await ui.settle()
+	_check("first Window close dismisses the Save dialog without prompting or stopping the recorder",
+		name_dialog != null and not name_dialog.visible and editor.get("_guard_dialog") == null
+		and editor.has_unsaved_changes() and original.recorder == modal_recorder
+		and modal_recorder.recording and modal_recorder.stop_calls == 0
+		and not original.session.holds.has("exit_guard"),
+		"dialog=%s stop_calls=%d" % [str(name_dialog.visible if name_dialog != null else "missing"), modal_recorder.stop_calls])
+	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
+	await ui.settle()
+	var modal_guard := editor.get("_guard_dialog") as ConfirmationDialog
+	_check("second Window close opens the dirty-draft guard after modal dismissal",
+		modal_guard != null and modal_guard.visible and modal_guard.get_parent() == app
+		and modal_recorder.recording and modal_recorder.stop_calls == 0,
+		"stop_calls=%d" % modal_recorder.stop_calls)
+	if modal_guard != null:
+		modal_guard.canceled.emit()
+	await ui.settle()
+	_check("Cancel from the second close keeps the paused flight and dirty draft",
+		editor.has_unsaved_changes() and app.flight == original and original.session.sim.paused
+		and not original.session.holds.has("exit_guard") and modal_recorder.recording)
 	var aircraft_data: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
 	app._start_workshop_trial({base_id = Catalog.DEFAULT_ID, base_bytes = aircraft_data, recipe = {scale = 1.0}})
 	_check("Workshop trial suspends the original flight", app.flight != null
@@ -369,6 +431,7 @@ func _check_workshop_suspended_recording() -> void:
 	_check("discarded trial trace stays resolved while retained failure is offered again",
 		trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 1
 		and retry_retained_dialog != null and app._trace_recovery.pending_count() == 1
+		and app._trace_recovery.discarded_count() == 1
 		and app.quit_requests == 0)
 	if retry_retained_dialog != null:
 		retry_retained_dialog.custom_action.emit("retry")
@@ -376,7 +439,8 @@ func _check_workshop_suspended_recording() -> void:
 	_check("Retry saves only the retained trace and completes quit",
 		trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 2
 		and retained_recorder.note.begins_with("trace saved:")
-		and app._trace_recovery.pending_count() == 0 and app.quit_requests == 1,
+		and app._trace_recovery.pending_count() == 0 and app._trace_recovery.discarded_count() == 1
+		and app.quit_requests == 1,
 		"trial=%d retained=%d" % [trial_recorder.stop_calls, retained_recorder.stop_calls])
 
 	# A real Return action remains the final route owner after both recorder outcomes are resolved.
@@ -384,7 +448,8 @@ func _check_workshop_suspended_recording() -> void:
 	await ui.settle()
 	_check("Return to Workshop restores the original flight and same dirty editor",
 		app.flight == original and app._workshop_previous_flight == null
-		and app.screens.is_top("workshop") and app.screens.top() == editor and editor.has_unsaved_changes())
+		and app.screens.is_top("workshop") and app.screens.top() == editor and editor.has_unsaved_changes()
+		and app._trace_recovery.discarded_count() == 0)
 	await ui.close_app(app)
 	_remove_prefs(WORKSHOP_PREFS)
 

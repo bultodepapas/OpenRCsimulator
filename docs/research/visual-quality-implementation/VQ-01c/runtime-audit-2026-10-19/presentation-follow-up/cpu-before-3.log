@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371814992868907 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/main-before.gd:2111)
+       [9] build (res://render/world/world.gd:288)
+       [10] _build_world (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/main-before.gd:2067)
+       [11] _ready (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/main-before.gd:472)
+       [12] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/diagnostics_probe.gd:19)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+{"fault":"","frames":1200,"numeric_sha256":"85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0","p50_usec":558.0,"p95_usec":863.0,"paused":false,"preset":"pilot","raw_usec":[],"scope":"manual Main._process CPU only; physics ticks outside timed interval; headless, no GPU/FPS claim","subject":"C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit/main-before.gd","tick":2520}

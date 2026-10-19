@@ -7,6 +7,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
 const Dependencies := preload("res://workshop/dependencies.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const PresentationProfile := preload("res://workshop/presentation.gd")
 var checks := 0
 var failures := 0
 
@@ -21,6 +22,11 @@ func _initialize() -> void:
 		quit(1)
 		return
 	check("trial identity hashes its resolved model manifest", first.identity.trial_id == _expected_trial_id(first.identity))
+	check("frozen trial exposes presentation identity separately from physical identity",
+		first.get("presentation_profile", {}) == PresentationProfile.defaults()
+		and first.get("presentation_identity", {}).get("format", "") == PresentationProfile.IDENTITY_FORMAT
+		and first.presentation_identity.get("sha256", "").length() == 64
+		and not first.identity.has("presentation_identity"))
 	var alternate_manifest_identity: Dictionary = first.identity.duplicate(true)
 	alternate_manifest_identity.presentation.model_manifest_sha256 = "f".repeat(64)
 	check("model manifest pin changes the trial identity", first.identity.trial_id != _expected_trial_id(alternate_manifest_identity))
@@ -38,6 +44,11 @@ func _initialize() -> void:
 	payload.recipe = Compiler.defaults()
 	var explicit := Trial.freeze(payload)
 	check("omitted and explicit defaults have the same identity", explicit.identity == first.identity)
+	var invalid_presentation: Dictionary = payload.duplicate(true)
+	invalid_presentation.presentation_profile = PresentationProfile.defaults()
+	invalid_presentation.presentation_profile.visual_seed = true
+	check("invalid profile value is refused before freezing", not Trial.freeze(invalid_presentation).get("ok", false))
+	_test_cosmetic_identity(payload, explicit)
 	var integer_payload: Dictionary = payload.duplicate(true)
 	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
 		integer_payload.recipe[key] = 1
@@ -179,6 +190,30 @@ func _expected_trial_id(identity: Dictionary) -> String:
 		+ str(identity.presentation.model_manifest_sha256) + ":" \
 		+ str(identity.dependencies_sha256) + ":" + str(identity.compiler)
 	return "workshop-" + _sha(material.to_utf8_buffer()).substr(0, 32)
+
+
+func _test_cosmetic_identity(payload: Dictionary, physical_trial: Dictionary) -> void:
+	if not ResourceLoader.exists("res://render/aircraft_customization.gd"):
+		return
+	var customization: Script = load("res://render/aircraft_customization.gd")
+	var described: Dictionary = customization.describe(str(payload.base_id))
+	if not bool(described.get("ok", false)) or typeof(described.get("bindings", null)) != TYPE_DICTIONARY:
+		return
+	var customized_payload: Dictionary = payload.duplicate(true)
+	customized_payload["presentation_profile"] = PresentationProfile.defaults(described.bindings)
+	customized_payload.presentation_profile.visual_seed = 37
+	var customized: Dictionary = Trial.freeze(customized_payload)
+	check("cosmetic profile freezes with the current sidecar", customized.get("ok", false))
+	if not customized.get("ok", false):
+		return
+	check("cosmetic-only trial keeps physical ID, resolved bytes and model", customized.identity == physical_trial.identity
+		and customized.raw_bytes == physical_trial.raw_bytes and customized.data == physical_trial.data)
+	check("cosmetic-only edit changes only the separate presentation identity",
+		customized.presentation_identity.sha256 != physical_trial.presentation_identity.sha256
+		and customized.presentation_profile.visual_seed == 37)
+	var stale_payload: Dictionary = customized_payload.duplicate(true)
+	stale_payload.presentation_profile.binding.slots_sha256 = "0".repeat(64)
+	check("stale presentation binding cannot freeze a trial", not Trial.freeze(stale_payload).get("ok", false))
 
 func _sha(bytes: PackedByteArray) -> String:
 	var hashing := HashingContext.new()

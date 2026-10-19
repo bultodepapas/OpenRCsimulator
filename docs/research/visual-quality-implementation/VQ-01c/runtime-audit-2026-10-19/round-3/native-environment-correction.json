@@ -1,0 +1,15 @@
+{
+  "reason": "Copied ignored .godot extension_list referenced absent generated install; restored matching already-installed binaries after receipt/source/hash verification",
+  "records": [
+    {
+      "platform": "windows",
+      "binary_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+      "source_sha256": "6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b"
+    },
+    {
+      "platform": "linux",
+      "binary_sha256": "fd0be43f0afaa061ef27f8633b89d2f1496a47244246ff8bfb687d7677dca3c2",
+      "source_sha256": "6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b"
+    }
+  ]
+}

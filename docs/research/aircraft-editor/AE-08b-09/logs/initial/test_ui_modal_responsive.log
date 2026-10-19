@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+checked en 1.0 settings
+checked en 1.0 help
+checked en 1.0 failures
+checked en 1.0 random
+SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.
+   at: _build_toolbar (res://ui/workshop_preview.gd:505)
+   GDScript backtrace (most recent call first):
+       [0] _build_toolbar (res://ui/workshop_preview.gd:505)
+       [1] _init (res://ui/workshop_preview.gd:88)
+       [2] _build_ui (res://ui/workshop.gd:340)
+       [3] _init (res://ui/workshop.gd:162)
+       [4] run (res://tests/test_ui_modal_responsive.gd:28)
+       [5] settle (res://tests/test_ui_modal_responsive.gd:10)
+checked en 1.0 workshop
+checked en 1.0 overlays
+checked en 2.0 settings
+checked en 2.0 help
+checked en 2.0 failures
+checked en 2.0 random
+SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.
+   at: _build_toolbar (res://ui/workshop_preview.gd:505)
+   GDScript backtrace (most recent call first):
+       [0] _build_toolbar (res://ui/workshop_preview.gd:505)
+       [1] _init (res://ui/workshop_preview.gd:88)
+       [2] _build_ui (res://ui/workshop.gd:340)
+       [3] _init (res://ui/workshop.gd:162)
+       [4] run (res://tests/test_ui_modal_responsive.gd:28)
+       [5] settle (res://tests/test_ui_modal_responsive.gd:10)
+checked en 2.0 workshop
+checked en 2.0 overlays
+checked es 1.0 settings
+checked es 1.0 help
+checked es 1.0 failures
+checked es 1.0 random
+SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.
+   at: _build_toolbar (res://ui/workshop_preview.gd:505)
+   GDScript backtrace (most recent call first):
+       [0] _build_toolbar (res://ui/workshop_preview.gd:505)
+       [1] _init (res://ui/workshop_preview.gd:88)
+       [2] _build_ui (res://ui/workshop.gd:340)
+       [3] _init (res://ui/workshop.gd:162)
+       [4] run (res://tests/test_ui_modal_responsive.gd:28)
+       [5] settle (res://tests/test_ui_modal_responsive.gd:10)
+checked es 1.0 workshop
+checked es 1.0 overlays
+checked es 2.0 settings
+checked es 2.0 help
+checked es 2.0 failures
+checked es 2.0 random
+SCRIPT ERROR: Invalid assignment of property or key 'focus_mode' with value of type 'int' on a base object of type 'PopupMenu'.
+   at: _build_toolbar (res://ui/workshop_preview.gd:505)
+   GDScript backtrace (most recent call first):
+       [0] _build_toolbar (res://ui/workshop_preview.gd:505)
+       [1] _init (res://ui/workshop_preview.gd:88)
+       [2] _build_ui (res://ui/workshop.gd:340)
+       [3] _init (res://ui/workshop.gd:162)
+       [4] run (res://tests/test_ui_modal_responsive.gd:28)
+       [5] settle (res://tests/test_ui_modal_responsive.gd:10)
+checked es 2.0 workshop
+checked es 2.0 overlays
+Responsive modals: 560 cases, 0 failures
+ERROR: 4 RID allocations of type 'N16RendererViewport8ViewportE' were leaked at exit.
+ERROR: 39 RID allocations of type 'PN13RendererDummy14TextureStorage12DummyTextureE' were leaked at exit.
+ERROR: 4 RID allocations of type 'PN18TextServerAdvanced22ShapedTextDataAdvancedE' were leaked at exit.
+ERROR: 1 RID allocations of type 'PN18TextServerAdvanced12FontAdvancedE' were leaked at exit.
+WARNING: 4 RIDs of type "Canvas" were leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2735)
+WARNING: 40 RIDs of type "CanvasItem" were leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2735)
+WARNING: 224 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

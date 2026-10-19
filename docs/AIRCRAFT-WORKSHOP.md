@@ -8,19 +8,26 @@ The Workbench feature is named **Aircraft Workshop** in the application (**Talle
 | Develop the feature; find pending steps and acceptance gates | [Consolidated AE plan](plans/aircraft-editor.md) |
 | Explore proposed customization, smoke presets and easy experiment ideas | [Future Workbench backlog](plans/aircraft-editor.md#5-planned-player-facing-work) |
 | Implement the next slice; find dependencies, contracts and tests | [Ordered work packages](plans/aircraft-editor.md#56-implementation-packages-and-order) and [required test matrix](plans/aircraft-editor.md#57-required-test-matrix) |
-| Design the menus, editing flow and model inspection | [Proposed interface contract](plans/aircraft-editor.md#59-menus-workflow-and-visual-design) |
+| Design the menus, editing flow and model inspection | [Interface contract and remaining gates](plans/aircraft-editor.md#59-menus-workflow-and-visual-design) |
 | Author physical data, stable IDs and model manifests | [Aircraft contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard) |
 | Generate descriptors, run checks or capture the editor | [Workshop commands](TOOLS.md#aircraft-workshop) |
 | Inspect dated results and limitations | [Verification and evidence](#verification) |
 
 ## Using the Workshop
 
-1. Choose a catalog airplane. Its supported adjustments are enabled automatically.
-2. Select a preset or edit size, weight, tank capacity, power and control travel. Inspect the original/proposed mass, span, area, wing loading, tank capacity, RPM, static thrust/power and reference-chord CG where available.
-3. Optionally name and **Save build**. Saving again creates an immutable revision of that variant; **Save a copy** creates a separate variant. Load restores the original source snapshot and saved recipe. Delete moves a variant to local trash; **Undo delete** restores the most recent deletion during this editor visit.
-4. Choose **Test fly**. Trials start in the air. Pause and return to Workshop to continue the same draft. If opened over an existing flight, that flight remains paused at its previous state. An invalid candidate leaves it untouched. Restoring a detached flight rebuilds its audio buses and restarts its continuous sound with a fade; the simulation state is preserved.
+1. Open **Library**, browse stock aircraft or saved builds, then explicitly open one. Browsing leaves the current draft unchanged.
+2. Use **Flight setup** for presets, size, mass, tank capacity, power and control travel. Sliders and numeric fields share the accepted bounds. Invalid text remains visible, blocks Save/Test fly, and can be corrected or cancelled with Back. **Review issues** focuses the blocking field.
+3. Use **Compare** for changed values in Original / Draft / Difference columns; **All values** and **Technical details** add context. These are static estimates, not measured flight performance.
+4. Choose **Save build** and provide a name, or **Save a copy** in Library. Repeated saves create immutable revisions. Loading restores exact saved inputs. Delete captures the selected UUID/revision; **Undo delete** restores that exact trash generation during this editor visit. Deleting the loaded record preserves its draft as a new unsaved build.
+5. Choose **Test fly** without requiring Save. Trials start airborne. Pause offers **Resume trial** and one direct **Return to Workshop** action. Return restores the same draft, history, page, camera, scroll and focused action. A retained original flight stays paused. Preparation failure preserves it; restored audio buses restart continuous sound with a fade.
 
-The preview is a separate still scene with a scale grid. Keyboard focus stays in the menu and follows the scroll area. The title and action footer remain visible at 720p and 1080p. English and Spanish labels are included. Reset restores defaults; Undo/Redo retain up to 32 recipe edits. One slider drag is one edit; a new edit clears the redo branch. Loading a variant or switching aircraft starts a separate history. A trial round trip preserves the draft and history, but unsaved drafts are not recovered after closing the editor or restarting the application.
+The independent still preview offers Inspect auto-fit, Compare size with a shared world scale, original/draft switching, Front/Side/Top, orbit, zoom and Reset. The grid spacing is 0.5 m. It requests redraws only after changes. The editor uses one scrolling inspector and an on-demand, scrolling library. Compact layouts provide a page selector and View/Edit; inspection expands the model area while keeping Edit and Save/Test fly reachable. A very short preview reports its inspection limit and exposes camera actions in a menu. English/Spanish and shared text scaling are supported; the [native evidence](research/aircraft-editor/AE-08b-09/README.md) states the tested sizes and limits.
+
+Back first cancels the active dialog or uncommitted number, then leaves compact inspection. Abandoning a changed draft offers **Save and continue**, **Discard changes**, or **Cancel**, with Cancel focused. The comparison includes exact source and dependency pins as well as recipe/name; camera/page changes do not mark a build dirty. Source changes, close, quit and window close use the same guard, including the detached editor during a trial. Window close first dismisses an active editor popup; it cannot stack an exit prompt over it. Save failure retains the draft and captured destination. Unsaved drafts do not survive closing the editor or restarting the application.
+
+If saving a manual trace fails during Return/Quit, recording has stopped. **Stay**, **Retry save**, and **Discard trace and continue** are explicit choices; a second exit request cannot imply discard. Trial and retained-flight outcomes are tracked separately. This recovery does not change streaming `.orfl` completeness rules.
+
+**Reset this page**, Undo and Redo affect physical recipe edits; history retains up to 32 entries. One slider drag or preset is one edit; a new edit clears Redo. Loading or replacing the source starts a new history. Undo marks the draft clean only when its full saved payload matches the baseline.
 
 ## Supported adjustments
 
@@ -39,7 +46,7 @@ Presets are Mini, Giant, Light, Heavy, More power, More travel and Light / low p
 
 The catalog has eight airplane configurations; the Workshop filters out the separate rotorcraft entry. Size, dry-weight and virtual-power transforms require the simple prescribed-RPM capability, currently provided by the baseline Stik. Extra now uses a finite-glow installation, so it keeps those transforms disabled like the three finite-glow Stiks. Tank capacity is a separate operation for classified aircraft with validated tanks; conventional control travel follows the registered surface capability. The compiler contains no aircraft-ID transformation branches.
 
-Descriptor freshness is a separate launch gate. The [latest diagnostic checks](research/aircraft-editor/AE-00/README.md#diagnostic-checks) pass all eight descriptors and the store/UI/integration suites; compiler and legacy-trial failures remain. These moving-tree results do not establish fleet acceptance. Fuel software and physical acceptance stay with the [fuel-mass plan](plans/fuel-mass-balance.md).
+Descriptor freshness is a separate launch gate. The [interface verification](research/aircraft-editor/AE-08b-09/README.md) reruns the generators and focused suites against the current fixtures. Earlier compiler/legacy-trial failures remain in their dated diagnostic report; passing software checks do not establish fleet acceptance. Fuel software and physical acceptance stay with the [fuel-mass plan](plans/fuel-mass-balance.md).
 
 These changes retain estimated aerodynamic coefficients and do not model Reynolds-number changes or certify a real miniature/giant aircraft. Runway trials, component/CG editing, editable hardware packages, measured performance experiments, portable import/export and wider ranges remain planned.
 
@@ -84,7 +91,7 @@ Variants live under Godot's `user://aircraft_variants/`. The record uses `format
 
 Trials normalize omitted recipe defaults and numeric representation (`1` and `1.0` have the same identity), validate metadata before hashing, and exclude cosmetic names from physical identity. Conflicting recipe/record ancestry is refused. The editor keeps physical recipe values separate from the saved record name and ID, including when loading historical records that duplicate them inside the recipe. Their fingerprint binds source, physical recipe, descriptor, resolved visual family/model-manifest hash, dependencies and compiler, including when a legacy descriptor supplies the visual binding. Trace metadata also records the ancestor variant/revision and exact resolved-input/model hashes. Saved ancestry requires an explicit descriptor, dependency and compiler pin plus a positive integer revision. Flight restart/reload uses the frozen in-memory result, not a newly read catalog source.
 
-Updating an existing variant requires its expected revision (`Store.save_variant`'s final argument); a stale editor must reload or save a copy. Saves, deletes and restores exclusively reserve the variant ID using an atomic directory operation. Each operation releases its reservation on ordinary success/failure, and temporary files have unique names. This prevents competing writers from overwriting a supposedly immutable revision.
+Updating an existing variant requires its expected revision (`Store.save_variant`'s final argument); a stale editor must reload or save a copy. First saves build and validate a complete `_staging` directory before publishing the UUID with one directory rename; interrupted staging is ignored by the library and is not silently promoted. Saves, deletes and restores exclusively reserve the variant ID using an atomic directory operation. Each operation releases its reservation on ordinary success/failure, and temporary files have unique names. Deletion rechecks the captured revision under that reservation. New trash generations use UUID tokens, so restore does not depend on wall-clock order. This prevents competing writers from overwriting an immutable revision or redirecting a confirmed delete.
 
 If the current manifest or its referenced revision is corrupt/incomplete, loading may recover an earlier valid revision through the manifest backup. The editor identifies the recovered revision; saving creates a new revision beyond existing files and preserves the usable backup. A saved record never silently acquires a missing historical descriptor pin.
 
@@ -94,10 +101,11 @@ External dependencies are **hash-pinned, not embedded and replayed from a bundle
 
 ## Verification
 
-Use the [focused commands](TOOLS.md#aircraft-workshop) before the full `app/test.sh` suite. The full runner discovers six `test_workshop_*.gd` suites and includes descriptor generation and checkout checks. A blocked generator is a failed integration gate, even if individual runtime suites pass.
+Use the [focused commands](TOOLS.md#aircraft-workshop) before the full `app/test.sh` suite. The full runner discovers seven `test_workshop_*.gd` suites and includes descriptor generation and checkout checks. A blocked generator is a failed integration gate, even if individual runtime suites pass.
 
 | Dated evidence | Scope |
 | --- | --- |
+| [AE-08b/09 interface delivery, 2026-10-19](research/aircraft-editor/AE-08b-09/README.md) | Inspection, compact menus, draft/trace guards, numeric validation, storage publication and native interface checks; remaining acceptance is explicit |
 | [AE-00 investigation, 2026-10-19](research/aircraft-editor/AE-00/README.md) | Current source seams, official Godot references, diagnostic suites and isolated birth-color probe with unresolved pause/reset assertions |
 | [AE-01–10, 2026-10-13](research/aircraft-editor/AE-01-10/README.md) | Initial compiler/store/trial/UI/integration checks, scaling fixtures, captures and persistence audit findings |
 | [AS-08 identity migration](research/aircraft-standardization/AS-08-identity/README.md) | Authored physical IDs and Workshop v3 bindings; historical readers remain explicit |

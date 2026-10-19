@@ -1,0 +1,9 @@
+state=FINISHED
+partition=integration
+mode=integration
+shard=0
+commit=122889b8e846b501dc17ffd610e60bf340bd4786
+engine_sha256=
+start_utc=2026-10-19T19:35:39Z
+end_utc=2026-10-19T19:35:39Z
+exit_code=126

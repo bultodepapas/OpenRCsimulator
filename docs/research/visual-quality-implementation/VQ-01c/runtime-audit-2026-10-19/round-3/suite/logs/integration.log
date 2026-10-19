@@ -1,0 +1,16 @@
+partition=integration
+mode=integration
+shard=0
+commit=122889b8e846b501dc17ffd610e60bf340bd4786
+/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/godot-audit-r3-20261019/suite/run_partition.sh: line 28: /usr/bin/sha256sum: Input/output error
+engine_sha256=
+start_utc=2026-10-19T19:35:39Z
+linux=Linux 6.18.54.1-microsoft-standard-WSL2 x86_64
+locale=C.UTF-8
+python=Python 3.12.3
+git_status_before=
+command=timeout --signal=TERM --kill-after=30s 4h env HOME=<isolated> XDG_*=<isolated> OPENRC_TEST_PART=integration OPENRC_UNIT_SHARDS=1 OPENRC_UNIT_SHARD=0 bash app/test.sh
+/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/godot-audit-r3-20261019/suite/run_partition.sh: line 35: /usr/bin/timeout: Input/output error
+
+--- post-run state ---
+git_status_after=

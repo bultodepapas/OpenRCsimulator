@@ -16,6 +16,16 @@ func _check(label: String, condition: bool, detail: String = "") -> void:
 		_failures += 1
 
 
+func _playbacks_are_unique(players: Array[AudioStreamPlayer3D], first: int, count: int) -> bool:
+	var playback_ids: Array[int] = []
+	for index: int in range(first, first + count):
+		var playback: AudioStreamPlayback = players[index].get_stream_playback()
+		if playback == null or playback_ids.has(playback.get_instance_id()):
+			return false
+		playback_ids.append(playback.get_instance_id())
+	return true
+
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -40,6 +50,11 @@ func _run() -> void:
 
 	var kinds: Array[String] = ["glow_prop", "electric_prop", "turbine"]
 	var motor_files: Array[String] = ["motor_combustion.wav", "motor_electric.wav", "turbine_whine.wav"]
+	var foliage_source: AudioStreamWAV = load("res://assets/audio/soundscape/foliage.wav") as AudioStreamWAV
+	var foliage_source_bytes: PackedByteArray = foliage_source.data.duplicate()
+	var foliage_source_loop_mode: int = foliage_source.loop_mode
+	var foliage_source_loop_begin: int = foliage_source.loop_begin
+	var foliage_source_loop_end: int = foliage_source.loop_end
 	var global_rng_checked: bool = false
 	for index: int in range(kinds.size()):
 		var buses_before: int = AudioServer.bus_count
@@ -47,6 +62,18 @@ func _run() -> void:
 		root.add_child(rig)
 		rig.configure(field, kinds[index], 93017 + index)
 		_check("%s configures exactly 14 bounded voices" % kinds[index], rig.voices.size() == 14, "voices=%d" % rig.voices.size())
+		var foliage_stream_ids: Array[int] = []
+		var foliage_player_ids: Array[int] = []
+		for voice_index: int in range(5, 9):
+			var foliage_player: AudioStreamPlayer3D = rig.voices[voice_index]
+			var foliage_loop: AudioStreamWAV = foliage_player.stream as AudioStreamWAV
+			if foliage_loop != null and not foliage_stream_ids.has(foliage_loop.get_instance_id()):
+				foliage_stream_ids.append(foliage_loop.get_instance_id())
+			if not foliage_player_ids.has(foliage_player.get_instance_id()):
+				foliage_player_ids.append(foliage_player.get_instance_id())
+		_check("four foliage voices share one derived PCM stream", foliage_stream_ids.size() == 1,
+			"unique streams=%d" % foliage_stream_ids.size())
+		_check("shared foliage stream retains four separate players", foliage_player_ids.size() == 4)
 		_check("%s adds three dedicated buses" % kinds[index], AudioServer.bus_count == buses_before + 3,
 			"before=%d after=%d" % [buses_before, AudioServer.bus_count])
 		# AUD-07e: nothing plays from the origin before the first update positions the voices (start pop).
@@ -58,6 +85,23 @@ func _run() -> void:
 		for voice_index: int in [0, 1, 2, 3, 4, 5, 6, 7, 8, 12, 13]:
 			loops_started = loops_started and rig.voices[voice_index].playing
 		_check("loops start only after the first positioned update", silent_until_positioned and loops_started)
+		_check("each foliage player owns a separate playback", _playbacks_are_unique(rig.voices, 5, 4))
+		var foliage_loop: AudioStreamWAV = rig.voices[5].stream as AudioStreamWAV
+		var foliage_sample_bytes: int = 2 if foliage_source.format == AudioStreamWAV.FORMAT_16_BITS else 1
+		var foliage_channel_count: int = 2 if foliage_source.stereo else 1
+		var foliage_frame_bytes: int = foliage_sample_bytes * foliage_channel_count
+		var foliage_guard_bytes: int = SoundscapeScript.LOOP_GUARD_FRAMES * foliage_frame_bytes
+		var foliage_bytes_match: bool = foliage_loop != null \
+			and foliage_source.data == foliage_source_bytes \
+			and foliage_source.loop_mode == foliage_source_loop_mode \
+			and foliage_source.loop_begin == foliage_source_loop_begin \
+			and foliage_source.loop_end == foliage_source_loop_end \
+			and foliage_loop.data.size() == foliage_source_bytes.size() + foliage_guard_bytes \
+			and foliage_loop.data.slice(0, foliage_source_bytes.size()) == foliage_source_bytes \
+			and foliage_loop.data.slice(foliage_source_bytes.size()) == foliage_source_bytes.slice(0, foliage_guard_bytes) \
+			and foliage_loop.loop_begin == 0 \
+			and foliage_loop.loop_end == int(foliage_source_bytes.size() / foliage_frame_bytes)
+		_check("shared foliage loop preserves source bytes and appends the exact wrap guard", foliage_bytes_match)
 		var release_order: Array[bool] = []
 		rig.buses_releasing.connect(func() -> void:
 			release_order.append(AudioServer.get_bus_index(rig.output_bus()) > 0))
@@ -71,6 +115,11 @@ func _run() -> void:
 			restored_loops = restored_loops and rig.voices[voice_index].playing
 		_check("reattached flight restores its audio buses", AudioServer.bus_count == buses_before + 3)
 		_check("reattached flight restarts its continuous audio", restored_loops)
+		var reattached_foliage_shared: bool = true
+		for voice_index: int in range(6, 9):
+			reattached_foliage_shared = reattached_foliage_shared and rig.voices[voice_index].stream == rig.voices[5].stream
+		_check("reattached foliage voices keep the shared stream", reattached_foliage_shared)
+		_check("reattached foliage players receive separate playbacks", _playbacks_are_unique(rig.voices, 5, 4))
 		# AUD-12: the output bus has no clipper; Master's generated layout carries the single safety limiter.
 		var mix_index: int = AudioServer.get_bus_index(rig.output_bus())
 		var master_index: int = AudioServer.get_bus_index(&"Master")
