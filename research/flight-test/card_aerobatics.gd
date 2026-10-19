@@ -268,7 +268,8 @@ static func _line_feedforward(ft) -> Dictionary:
 
 ## Slow roll both ways: one roll at a constant 90°/s (FAI: constant rate and flight path) from 0.8 Vmax at full throttle,
 ## with the line (height and heading) held by elevator and rudder at every bank through point_nose, with the knife-edge
-## and inverted feedforward (top rudder, knife-edge aileron, push). Height and heading change, roll-rate constancy, and the rudder and elevator it took.
+## and inverted feedforward (top rudder, knife-edge aileron, push). Height and heading change, roll-rate constancy, and
+## the rudder and elevator it took.
 static func slow_roll(ft) -> Dictionary:
 	return _roll(ft, "slow_roll", false)
 

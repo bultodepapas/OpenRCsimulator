@@ -14,7 +14,9 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Cloud Swift",
+      "SB-XC"
     ],
     "relevance": "Electric motorglider field campaign with 23 thermal encounters, total-energy control and atmospheric estimates.",
     "limitations": "Cloud Swift/4.27 m research motor glider, not a general sport RC airplane. Reported closed-loop soaring performance is not an open-loop aerodynamic identification.",
@@ -41,7 +43,11 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Cloud Swift",
+      "SB-XC",
+      "mass and inertia",
+      "propeller tests"
     ],
     "relevance": "CloudSwift flight-by-flight notes, 2005 soaring results and June 2006 appendices with inertia-swing measurements, configuration, propeller tests and PID/excitation maneuvers.",
     "limitations": "Flight summary and appendices, not a complete downloadable raw telemetry archive; overlaps Allen/Lin2007 and multiple configurations/test dates.",
@@ -97,7 +103,8 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Parkzone Radian Pro"
     ],
     "relevance": "Real small-RC-sailplane flights testing thermal estimation and energy-state control with ArduPlane.",
     "limitations": "Controller/thermal-estimator performance and closed-loop flights; not independent whole-airframe coefficient identification or raw flight logs.",
@@ -128,7 +135,8 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Parkzone Radian Pro"
     ],
     "relevance": "Paired field flights of RC motor gliders, comparing autonomous thermalling controllers under shared conditions.",
     "limitations": "Controller/thermal-estimator performance and closed-loop flights; not independent whole-airframe coefficient identification or raw flight logs.",
@@ -160,7 +168,8 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Parkzone Radian Pro"
     ],
     "relevance": "A two-metre glider flown in real thermals with recorded wind/attitude estimates; contrasts field evidence and numerical trials.",
     "limitations": "No assumption that navigation success identifies the airframe; signals include estimated winds and feedback-control effects.",
@@ -192,7 +201,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Measured glider dynamic-soaring trajectories and energy balance in ridge-leeward wind shear; associated public logger data.",
     "limitations": "Flight energy extraction depends on propulsion, wind estimate and trajectory; plots/derived power are not independent force measurements.",
@@ -224,7 +236,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Open-field dynamic-soaring flight experiments, companion to the author-published Muret logger/LIDAR collection.",
     "limitations": "Author project and HAL publication records checked; no full-text download link located. Companion campaign to the author-published Muret logger/LIDAR collection, not independent validation of an arbitrary RC glider.",
@@ -250,7 +265,9 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "SB-XC",
+      "AutoSOAR"
     ],
     "relevance": "Modified RnR SB-XC (4.2 m, 6.37 kg test installation) AutoSOAR development and Aberdeen field tests: nine flights, eleven total hours, 7.8 hours with autonomous soaring engaged. Includes flight energy/control response and atmospheric-estimation behavior.",
     "limitations": "Overlaps AutoSOAR papers; closed-loop control and atmospheric estimates are not open-loop coefficient identification. Test configuration differs from NASA Cloud Swift despite shared SB-XC ancestry.",
@@ -277,7 +294,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Escale Fox",
+      "hardware-in-the-loop",
+      "simulation"
     ],
     "relevance": "Escale Fox RC-sailplane wind estimation, airframe modeling and closed-loop soaring control evaluated in batch and hardware-in-the-loop simulations.",
     "limitations": "Simulation and hardware-in-the-loop results, not a new real-flight validation campaign; atmospheric and airframe assumptions must remain separate from measurements.",
@@ -304,7 +324,11 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "SB-XC",
+      "Silent Wings",
+      "hardware-in-the-loop",
+      "simulation"
     ],
     "relevance": "SB-XC model, XFLR5-derived aerodynamic terms, energy estimation and extremum-seeking control tested in Silent Wings hardware-in-the-loop simulations.",
     "limitations": "No actual flight campaign for the proposed controller: section 5.2.2 states flight testing was prevented by approval/time constraints. Comparisons to earlier published flights are not independent flight measurements.",
@@ -331,7 +355,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "SB-XC",
+      "Vulture",
+      "G2 Aviation Vera2V"
     ],
     "relevance": "SB-XC and Vulture platforms, speed-to-fly flight tests and in-situ atmospheric estimates compared with weather-model analyses and radiosondes; also numerical guidance studies.",
     "limitations": "Mixed field and simulation evidence. Solar-power response was simulated or used vertical air motion as surrogate because no solar-equipped aircraft was available; numerical energy savings are not measured flight savings. Vulture flight platform is based on G2 Aviation Vera2V; its polar was assumed similar to SB-XC because a flight-data polar was unavailable.",
@@ -359,7 +386,9 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "SB-XC",
+      "sink polar"
     ],
     "relevance": "Authors fit an SB-XC speed polar to flight data and compare performance at common wing loading.",
     "limitations": "Most design-space results are analytical; manned PW-5/Discus polars are comparators, not RC data.",
@@ -391,7 +420,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Escale Fox",
+      "hardware-in-the-loop",
+      "simulation"
     ],
     "relevance": "Escale Fox dynamic-soaring model using AVL and component drag, with guidance and control evaluated through simulation and hardware-in-the-loop experiments.",
     "limitations": "Numerical/hardware-in-the-loop evidence, not newly measured flight dynamics. The aircraft is an RC glider model with assumed aerodynamic characteristics.",
@@ -418,7 +450,8 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Kinetic 100"
     ],
     "relevance": "Author observations of high-speed RC dynamic soaring and a simplified energy model.",
     "limitations": "RC Soaring Digest practitioner article, not a wind-tunnel/sysID study or a calibrated full sensor log; observed speed records and model predictions remain separate.",
@@ -440,23 +473,27 @@
     "year": 2020,
     "type": "journal-article",
     "source_url": "https://www.mdpi.com/2226-4310/7/8/113",
-    "download_url": "https://www.mdpi.com/2226-4310/7/8/113/pdf",
-    "local_path": null,
+    "download_url": "https://pdfs.semanticscholar.org/38e3/2d33d8ca140b5821a848005ec8cfb4aa3bf4.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/lichota-2020-cularis-multi-axis.pdf",
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Multiplex Cularis",
+      "simulation",
+      "multi-axis excitation"
     ],
-    "relevance": "Multiplex Cularis geometry and experiment-design/identification methodology for independently actuated control surfaces.",
-    "limitations": "Source abstract describes exciting an aircraft model; do not claim real-flight validation without checking the full methods.",
-    "access": "download-failed",
-    "sha256": null,
-    "bytes": null,
-    "retrieved_utc": "2026-10-19T01:48:04.891650+00:00",
-    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
-    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "relevance": "Multiplex Cularis seven-control input-design study with geometry/inertia table and nonlinear simulation model, multistep and multisine parameter-identification experiments.",
+    "limitations": "Section 6 results use nonlinear model outputs with added measurement noise, not a raw flight dataset. Conclusion says inputs were used in a later flight campaign and refers to another paper for reconfiguration results; that statement does not make the reported simulation response a measured flight.",
+    "access": "downloaded",
+    "sha256": "b4a70d72794bdad7a950684f6278086b7daef94c7bd3e0d8351f8bffb453d7e8",
+    "bytes": 1367560,
+    "retrieved_utc": "2026-10-19T01:58:20.672318+00:00",
+    "license": "CC BY 4.0, stated on final page of published article",
+    "read_depth": "Title, abstract, model section, section 6 simulation methods, conclusions and final-page license inspected",
     "doi": "10.3390/aerospace7080113",
-    "error": "HTTP Error 403: Forbidden"
+    "verified": "PDF signature, full text parsing and title/DOI check",
+    "access_notes": "MDPI publication/PDF and public CDN endpoints returned 403. Published CC BY article obtained through the public Semantic Scholar PDF copy; scientific source remains the primary research article."
   },
   {
     "id": "condomines-2015-solius-wind-identification",
@@ -475,7 +512,9 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Multiplex Solius",
+      "wind estimation"
     ],
     "relevance": "Instrumented Multiplex Solius motorglider and wind-tunnel motor/propeller tests; wind and aerodynamic-estimation methods.",
     "limitations": "Preliminary flight/wind-estimation results; identification integration described as ongoing; sensor angle offsets and propulsion dependence matter.",
@@ -505,7 +544,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Diana 2",
+      "aeroelasticity",
+      "sensor calibration"
     ],
     "relevance": "Original metadata for the 2022 nine-flight aeroelastic campaign and sensor-calibration collection.",
     "limitations": "Companion artifact from the existing Diana dataset, not an independent study. Complete 2.57 GB flight archive is not mirrored; calibration files alone are not flight time histories.",
@@ -535,7 +577,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "Diana 2",
+      "aeroelasticity",
+      "sensor calibration"
     ],
     "relevance": "Wind-tunnel probe, IMU, strain and control-surface calibration artifacts supporting aeroelastic flight-test interpretation.",
     "limitations": "Companion artifact from the existing Diana dataset, not an independent study. Complete 2.57 GB flight archive is not mirrored; calibration files alone are not flight time histories.",
@@ -567,7 +612,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
     "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. Plain-text asynchronous message stream, not a uniform CSV. ACTUATORS/COMMANDS are not independently measured surface angles.",
@@ -600,7 +648,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
     "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. XML retains the original source basename in data_file; use repository_path to pair the locally renamed data stream.",
@@ -633,7 +684,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
     "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. Plain-text asynchronous message stream, not a uniform CSV. ACTUATORS/COMMANDS are not independently measured surface angles.",
@@ -666,7 +720,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
     "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. XML retains the original source basename in data_file; use repository_path to pair the locally renamed data stream.",
@@ -699,7 +756,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
     "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. LIDAR header specifies UTC+2; clock alignment to the onboard logs has not been established.",
@@ -732,7 +792,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
     "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied.",
@@ -765,7 +828,10 @@
     "topics": [
       "sailplanes",
       "soaring",
-      "flight dynamics"
+      "flight dynamics",
+      "dynamic soaring",
+      "Paparazzi",
+      "1.5 m hotliner"
     ],
     "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
     "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied.",

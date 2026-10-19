@@ -3,6 +3,8 @@
 # airborne start or its qualified runway start, flies a closed-loop test pilot (pilot.gd), records a trace and derives
 # metrics. Every test reports whether its pilot did what the card asks (target reached, controls saturated, crash):
 # a failed pilot is reported as such, never as an airplane property. Software evidence, not physical validation.
+# FT-04 (card v4) appends aerobatic and inverted (card_aerobatics.gd), power-off (card_power.gd), stall and spin
+# (card_stalls.gd) and runway (card_field.gd) tests after the v3 tests, which run exactly as before.
 #
 # Run (repository root):
 #   <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- \

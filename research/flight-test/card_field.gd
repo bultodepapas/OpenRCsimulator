@@ -84,7 +84,7 @@ static func dead_stick_landing(ft) -> Dictionary:
 		return ft._failed(flight)
 	var ctx: Dictionary = flight.ctx
 	var metrics := { engine_out = str(ctx.get("engine_out", "")), glide_speed_mps = snappedf(v_mean, 0.01), glide_sink_mps = snappedf(sink, 0.01),
-		glide_ratio = snappedf(ratio, 0.01), glide_path_deg = snappedf(rad_to_deg(gamma), 0.1), start_distance_to_threshold_m = snappedf(AIM_EAST - h0 / tan(gamma) - THRESHOLD_EAST, 0.1) }
+		glide_ratio = snappedf(ratio, 0.01), glide_path_deg = snappedf(rad_to_deg(gamma), 0.1), start_distance_to_threshold_m = snappedf(THRESHOLD_EAST - (AIM_EAST - h0 / tan(gamma)), 0.1) }
 	if not ctx.has("td_t"):
 		return ft._result(false, metrics, ["no touchdown " + flight.crashed])
 	var td_x: float = float(ctx.td_east) - THRESHOLD_EAST

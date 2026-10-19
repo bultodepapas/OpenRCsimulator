@@ -28,7 +28,7 @@ TOD-02a/b validate configuration and compute solar events from date and location
 | TOD-07 | Owner review of fixed selectable time, night readability and exported build. | Software/export checks are recorded; target GPU and pilot acceptance remain open. |
 | TOD-09c2 | Enable full tick-anchored progression through Home, pause, restart and saved checkpoints. | Partial: FW-61 supplies a deterministic Evening flow path at 20×. Exact fractional-clock restoration, edit lifecycle, midnight/year rollover and full controls remain open. |
 | TOD-09d | Select a supported accelerated rate beyond the named Evening preset. | Open; 30× remains a candidate until cost and transition behavior are measured. |
-| TOD-10/11/12 | Optional Moon/stars extension, broader night equipment and glare experiment. | Parked; none is a prerequisite for TOD-07. |
+| TOD-10/11/12 | Optional Moon/stars extension, broader night equipment and glare experiment. | Parked; none is a prerequisite for TOD-07. The moon part is proposed under [FW-MOON](plans/moon.md) (decision M-D1), including a moon on the astronomical TOD route (FW-MOON-09). |
 
 Do not claim the FW-61 visual flow proves the full TOD-09c2 checkpoint and UI contract. Keep celestial time outside physical weather hashes and aerodynamic state. Pauses freeze the world with simulation time; captures use equal simulation ticks for comparison. Calibration and hardware costs remain separate from pilot acceptance.
 
