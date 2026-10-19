@@ -363,6 +363,8 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	var display_gamma := lerpf(1.0, MOON_DISPLAY_GAMMA, smoothstep(0.0, log(100.0), log(maxf(excess, 1.0))))
 	# FW-MOON-08a: the aureole, KS91's aerosol scattering around the moon, anchored to this sky's own moonlit zenith.
 	var aureole := moon_aureole(k_zenith * tint * m.zenith, moon_el) if moon_el > -1.0 else Vector3.ZERO
+	if eclipse_factor != Vector3.ONE: # FW-MOON-10: the glow scatters the eclipsed moon's light: copper in totality
+		aureole *= eclipse_factor / maxf(_lum(eclipse_factor), 1e-30)
 	if _lum(aureole) < AUREOLE_FLOOR * _lum(zenith):
 		aureole = Vector3.ZERO # a 10⁻⁶ moon by day: invisible, and the day sky stays byte-identical
 

@@ -445,6 +445,19 @@
    "redistribution": "local-reference-only",
    "retrieved_at": "2026-10-19",
    "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/ugolnikov-2011-umbra-photometry-arxiv-1106.6178.pdf",
+   "url": "https://arxiv.org/pdf/1106.6178",
+   "bytes": 240981,
+   "sha256": "366b6bd302937530f52d8fc3768be26ebb75657dba5072a3bd07d0733b67c043",
+   "file_type": "PDF",
+   "kind": "paper",
+   "license": "arXiv preprint (Ugolnikov, Maslov, Korotkiy 2011). Reference only.",
+   "use": "FW-MOON-10: umbra relative brightness vs distance from the umbra centre at 503/677/867 nm, total eclipse of 2011-06-15 (Fig. 2, read to ±0.1 dex; ~1e-6 deepest at 503 nm from the text); Lunar.eclipse_transmission.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
   }
  ],
  "links": [
@@ -547,6 +560,16 @@
    "url": "https://unihedron.com/projects/darksky/NELM2BCalc.html",
    "status": "page",
    "note": "NELM vs sky brightness; attributed to Schaefer, primary source UNVERIFIED."
+  },
+  {
+   "url": "https://eclipse.gsfc.nasa.gov/LEdecade/LEdecade2021.html",
+   "status": "page",
+   "note": "Espenak, Lunar Eclipses 2021-2030: greatest eclipse (TD), umbral magnitude, partial and total durations; FW-MOON-10 contact checks (test_world_moon_eclipse.gd), read 2026-10-19."
+  },
+  {
+   "url": "https://skyandtelescope.org/astronomy-news/observing-news/octobers-ideal-lunareclipse/",
+   "status": "page",
+   "note": "Sky & Telescope: Helio Vital's network measured V = -0.8 ± 0.3 at mid-eclipse on 2022-05-16 (FW-MOON-10 totality brightness check)."
   }
  ]
 }
