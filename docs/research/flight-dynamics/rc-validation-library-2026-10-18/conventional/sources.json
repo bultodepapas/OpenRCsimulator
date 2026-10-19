@@ -184,7 +184,7 @@
       "Ony Arifianto"
     ],
     "year": 2014,
-    "source_url": "https://vtechworks.lib.vt.edu/bitstreams/10919/49301",
+    "source_url": "https://vtechworks.lib.vt.edu/handle/10919/49301",
     "download_url": "https://vtechworks.lib.vt.edu/bitstream/handle/10919/49301/Arifianto_O_D_2014.pdf?isAllowed=y&sequence=1",
     "local_path": "references/rc-validation-library-2026-10-18/conventional/arifianto-2014-telemaster-low-cost-uav-platform.pdf",
     "type": "doctoral-thesis",
@@ -222,7 +222,7 @@
     "year": 2026,
     "source_url": "https://pp.bme.hu/tr/article/view/41190",
     "download_url": "https://pp.bme.hu/tr/article/download/41190/24214/239555",
-    "local_path": "references/rc-validation-library-2026-10-18/conventional/jayanti-2026-uav-cfd-flight-validation.pdf",
+    "local_path": "references/rc-aero-data/jayanti-2026-pptr-small-uav-cfd-flight-validation.pdf",
     "type": "journal-article",
     "topics": [
       "small UAV",
@@ -239,7 +239,8 @@
     "license": "CC BY (publisher-stated)",
     "resolved_url": "https://pp.bme.hu/tr/article/download/41190/24214/239555",
     "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
-    "read_depth": "PDF and full text inspected for title, test approach and reported limits"
+    "read_depth": "PDF and full text inspected for title, test approach and reported limits",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
   },
   {
     "id": "x8-gryte-2018-static-model",
@@ -255,7 +256,7 @@
     "year": 2018,
     "source_url": "https://doi.org/10.1109/ICUAS.2018.8453370",
     "download_url": "https://fossen.biz/publications/2018%20Gryte%20et%20all%20ICUAS.pdf",
-    "local_path": "references/rc-validation-library-2026-10-18/conventional/gryte-2018-skywalker-x8-aerodynamic-model.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_wind_tunnel.pdf",
     "type": "conference-paper",
     "topics": [
       "Skywalker X8",
@@ -272,7 +273,8 @@
     "license": "Not stated; publicly accessible author copy, redistribution not inferred",
     "resolved_url": "https://fossen.biz/publications/2018%20Gryte%20et%20all%20ICUAS.pdf",
     "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
-    "read_depth": "Full ten-page paper inspected for model structure, tunnel/flight comparison and limitation"
+    "read_depth": "Full ten-page paper inspected for model structure, tunnel/flight comparison and limitation",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
   },
   {
     "id": "x8-farhadi-2018-lateral-sysid",
@@ -286,7 +288,7 @@
     "year": 2018,
     "source_url": "https://dspace.cvut.cz/entities/publication/2b72ef17-c781-4bb8-bffe-9efe0c5ca8fc",
     "download_url": "https://ojs.cvut.cz/ojs/index.php/ap/article/download/4685/4676/12170",
-    "local_path": "references/rc-validation-library-2026-10-18/conventional/farhadi-2018-skywalker-x8-lateral-flight-identification.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_lateral_flight.pdf",
     "type": "journal-article",
     "topics": [
       "Skywalker X8",
@@ -302,7 +304,8 @@
     "license": "CC BY 4.0 (publisher record)",
     "resolved_url": "https://ojs.cvut.cz/ojs/index.php/ap/article/download/4685/4676/12170",
     "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
-    "read_depth": "Full 15-page paper inspected for identification setup and validation"
+    "read_depth": "Full 15-page paper inspected for identification setup and validation",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
   },
   {
     "id": "x8-reinhardt-2022-flight-sysid",
@@ -315,7 +318,7 @@
     "year": 2022,
     "source_url": "https://doi.org/10.1109/ICUAS54217.2022.9836104",
     "download_url": "https://folk.ntnu.no/torarnj/sysid_paper_icuas.pdf",
-    "local_path": "references/rc-validation-library-2026-10-18/conventional/reinhardt-2022-skywalker-x8-flight-sysid.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2022_flight_sysid.pdf",
     "type": "conference-paper",
     "topics": [
       "Skywalker X8",
@@ -332,7 +335,8 @@
     "license": "Not stated; publicly accessible author copy, redistribution not inferred",
     "resolved_url": "https://folk.ntnu.no/torarnj/sysid_paper_icuas.pdf",
     "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
-    "read_depth": "Full ten-page paper inspected; abstract, model-comparison claims and flight validation checked"
+    "read_depth": "Full ten-page paper inspected; abstract, model-comparison claims and flight validation checked",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
   },
   {
     "id": "x8-low-hansen-2024-time-domain-sysid",
@@ -346,7 +350,7 @@
     "year": 2024,
     "source_url": "https://doi.org/10.2514/6.2024-4653",
     "download_url": "https://torarnj.folk.ntnu.no/l%C3%B8w-hansen-et-al-2024-time-domain-system-identification-and-validation-of-small-fixed-wing-uav-dynamics%20postprint.pdf",
-    "local_path": "references/rc-validation-library-2026-10-18/conventional/low-hansen-2024-skywalker-x8-time-domain-identification.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2024_time_domain_sysid.pdf",
     "type": "conference-paper",
     "topics": [
       "Skywalker X8",
@@ -363,7 +367,8 @@
     "license": "Not stated; publicly accessible author postprint, redistribution not inferred",
     "resolved_url": "https://torarnj.folk.ntnu.no/l%C3%B8w-hansen-et-al-2024-time-domain-system-identification-and-validation-of-small-fixed-wing-uav-dynamics%20postprint.pdf",
     "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
-    "read_depth": "Full 20-page paper text inspected for model structure, flight envelope and validation caveats"
+    "read_depth": "Full 20-page paper text inspected for model structure, flight envelope and validation caveats",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
   },
   {
     "id": "x8-u4tlyv-flight-dataset",
@@ -392,7 +397,9 @@
     "license": "CC0 1.0 (Dataverse record)",
     "resolved_url": "https://dataverse.no/api/access/dataset/:persistentId/?persistentId=doi:10.18710/U4TLYV&format=original",
     "verified": "Archive members and CRC verified with unzip -t",
-    "read_depth": "Dataset metadata and ZIP integrity verified; archive inventory inspected without extracting/reinterpreting measured series"
+    "read_depth": "Dataset metadata and ZIP integrity verified; archive inventory inspected without extracting/reinterpreting measured series",
+    "doi": "10.18710/U4TLYV",
+    "version_note": "Same clean-X8 dataset DOI and 36 byte-identical non-directory members as sibling ZIP; archive SHA-256 differs because ZIP containers differ. Both original containers are retained; not independent datasets."
   },
   {
     "id": "x8-low-hansen-2025-aero-angle-model",
@@ -424,7 +431,9 @@
     "license": "CC BY 4.0 (publisher and repository copy)",
     "resolved_url": "https://elib.dlr.de/212985/1/s13272-025-00816-3.pdf",
     "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
-    "read_depth": "Full 23-page paper inspected for aircraft parameters, model structure, validation and stated limitations"
+    "read_depth": "Full 23-page paper inspected for aircraft parameters, model structure, validation and stated limitations",
+    "doi": "10.1007/s13272-025-00816-3",
+    "version_note": "Same article DOI as the sibling collection copy. First page differs: conventional copy omits final volume/page line; flying-wings copy gives CEAS Aeronautical Journal (2025) 16:501-523 and online publication date. Different byte hashes retained as publication-file versions, not independent studies."
   },
   {
     "id": "ultrastick-25e-dorobantu-2012",

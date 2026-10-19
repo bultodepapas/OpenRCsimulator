@@ -24,10 +24,11 @@ const Air := preload("res://physics/air_data.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const P := preload("pilot.gd")
+const Acro := preload("card_aerobatics.gd")
 
 const G := 9.80665
 const RHO := 1.225
-const VERSION := "ft-card-v3"
+const VERSION := "ft-card-v4"
 const HIGH := 250.0 # m, airborne tests that may lose height
 const CSV_EVERY := 12 # 240 Hz ticks per committed CSV row (20 Hz)
 
@@ -120,6 +121,16 @@ func _initialize() -> void:
 	_run("spin", _spin)
 	_run("takeoff", _takeoff)
 	_run("landing", _landing)
+	# Card v4 (FT-04): appended after the v3 tests, which run exactly as before; each group lives in its own file.
+	_run("inverted_speeds", func() -> Dictionary: return Acro.inverted_speeds(self))
+	_run("inverted_turn", func() -> Dictionary: return Acro.inverted_turn(self))
+	_run("immelmann", func() -> Dictionary: return Acro.immelmann(self))
+	_run("split_s", func() -> Dictionary: return Acro.split_s(self))
+	_run("outside_loop", func() -> Dictionary: return Acro.outside_loop(self))
+	_run("slow_roll", func() -> Dictionary: return Acro.slow_roll(self))
+	_run("point_roll", func() -> Dictionary: return Acro.point_roll(self))
+	_run("snap_roll", func() -> Dictionary: return Acro.snap_roll(self))
+	_run("stall_turn", func() -> Dictionary: return Acro.stall_turn(self))
 	_write_report()
 	quit(0)
 
@@ -897,15 +908,26 @@ func _knife(name: String, full_rudder: bool) -> Dictionary:
 ## Inverted level pass at 0.6 Vmax (at least the start speed): roll over, hold 180°, the height through a bounded α
 ## and the speed with the throttle. Reports the elevator, α and throttle it needs.
 func _inverted() -> Dictionary:
+	var r := _inverted_pass("inverted", maxf(v_start, 0.6 * vmax), PI, deg_to_rad(160.0), "")
+	if not r.ok:
+		return _failed(r)
+	return _result(r.held, r.metrics, [] if r.held else [r.why])
+
+
+## Inverted pass at `pass_speed` (the `inverted` law, also flown by card_aerobatics.gd): roll to `bank` (π is wings
+## level inverted) with the elevator only damping until |roll| ≥ `over`, then hold the height and the speed as below.
+## `suffix` names the trace. Returns the flight plus { held, why, metrics } over the last 5 s.
+func _inverted_pass(name: String, pass_speed: float, bank: float, over: float, suffix: String, seconds := 16.0) -> Dictionary:
 	var alt0 := HIGH
-	var pass_speed := maxf(v_start, 0.6 * vmax)
-	var flight := _fly("inverted", { speed = pass_speed, altitude = alt0 }, 16.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+	var flight := _fly(name, { speed = pass_speed, altitude = alt0 }, seconds, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		if suffix != "":
+			ctx.suffix = suffix
 		var k := P.schedule(s, v_start)
 		var e := P.euler(s)
 		# Roll over with the elevator only damping, then hold the height through an angle of attack bounded by the
 		# negative stall start (+2°) and +5°: inverted, a climb needs a more negative α. Euler-free inner α loop.
 		var pitch: float = -k * 0.6 * s[RB.RATE + 1]
-		if not ctx.has("over_t") and absf(e[2]) >= deg_to_rad(160.0):
+		if not ctx.has("over_t") and absf(e[2]) >= over:
 			ctx.over_t = t
 			ctx.bank_i = 0.0 # the roll-over wound the bank integrator up; start the hold from zero
 			ctx.alpha_i = 0.0
@@ -917,20 +939,21 @@ func _inverted() -> Dictionary:
 			pitch = P.alpha_hold(s, wanted, k, ctx, 1.0 / 240.0)
 		var throttle: float = clampf(float(ctx.start_throttle) + 0.1 * (pass_speed - P.speed(s)) + 0.05 * float(ctx.get("thr_i", 0.0)), 0.0, 1.0)
 		ctx.thr_i = clampf(float(ctx.get("thr_i", 0.0)) + (pass_speed - P.speed(s)) / 240.0, -20.0, 20.0)
-		return { roll = P.bank_pi(s, PI, k, ctx, 1.0 / 240.0), pitch = pitch, yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = throttle })
+		return { roll = P.bank_pi(s, bank, k, ctx, 1.0 / 240.0), pitch = pitch, yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = throttle })
 	if not flight.ok:
-		return _failed(flight)
+		return flight
 	var trace: RefCounted = flight.trace
 	var n: int = trace.row_count()
-	var r0 := _row_at(trace, 11.0)
-	var bank := absf(_mean(PackedFloat64Array(range(r0, n).map(func(r): return absf(trace.value(r, "roll_deg"))))))
+	var r0 := _row_at(trace, seconds - 5.0)
+	var bank_mean := absf(_mean(PackedFloat64Array(range(r0, n).map(func(r): return absf(trace.value(r, "roll_deg"))))))
 	var rate := _slope(trace, "alt_m", r0, n)
-	var held: bool = bank > 170.0 and absf(rate) < 0.5 and flight.crashed == ""
-	return _result(held, { elevator_stick = snappedf(_mean(_col(trace, "cmd_pitch", r0)), 0.001), elevator_servo = snappedf(_mean(_col(trace, "srv_pitch", r0)), 0.001),
+	flight.held = bank_mean > 170.0 and absf(rate) < 0.5 and flight.crashed == ""
+	flight.why = "inverted hold not achieved: |bank| %.1f°, vertical speed %.2f m/s %s" % [bank_mean, rate, flight.crashed]
+	flight.metrics = { elevator_stick = snappedf(_mean(_col(trace, "cmd_pitch", r0)), 0.001), elevator_servo = snappedf(_mean(_col(trace, "srv_pitch", r0)), 0.001),
 		alpha_deg = snappedf(_mean(PackedFloat64Array(range(r0, n).map(func(r): return _alpha_deg(trace, r)))), 0.1),
 		throttle = snappedf(_mean(_col(trace, "cmd_throttle", r0)), 0.001), upright_throttle = snappedf(float(flight.ctx.start_throttle), 0.001),
-		speed_mps = snappedf(_mean(_col(trace, "speed_mps", r0)), 0.01), vertical_speed_mps = snappedf(rate, 0.01) },
-		[] if held else ["inverted hold not achieved: |bank| %.1f°, vertical speed %.2f m/s %s" % [bank, rate, flight.crashed]])
+		speed_mps = snappedf(_mean(_col(trace, "speed_mps", r0)), 0.01), vertical_speed_mps = snappedf(rate, 0.01) }
+	return flight
 
 
 ## Spins both ways: idle, full up and full rudder for 6 s from 1.2 Vs, then opposite rudder and stick half forward until

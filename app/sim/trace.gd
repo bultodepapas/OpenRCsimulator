@@ -75,6 +75,7 @@ var _glow_start_fuel_kg: float = NAN
 var _glow_last_fuel_kg: float = NAN
 var _glow_last_opportunities: int = -1
 var _glow_last_fires: int = -1
+var _glow_wheel_count: int = 0 # GP-06a: rim speeds appended after the glow slots
 var _gear: bool = false
 var _gear_aux_index: int = -1
 var _gear_meta: Dictionary = {}
@@ -111,6 +112,7 @@ func clear() -> void:
 	_glow_last_fuel_kg = NAN
 	_glow_last_opportunities = -1
 	_glow_last_fires = -1
+	_glow_wheel_count = 0
 	_gear = false
 	_gear_aux_index = -1
 	_gear_meta = {}
@@ -499,16 +501,59 @@ func _prepare_glow_metadata() -> void:
 	var start_reason: int = GlowFlight.REASONS.find(str(start.get("stop_reason", ""))) if start is Dictionary else -1
 	var profile_identity: Variant = start.get("profile_identity", {}) if start is Dictionary else {}
 	var installation_profile: Variant = identity.get("profile", {}) if identity is Dictionary else {}
+	# GP-06a: a profiled wheel set appends its rim speeds after the glow slots, as on the shaft and turbine paths.
+	var wheel_count: int = 0
+	var has_wheel_metadata: bool = meta.has("wheel_state_model") or meta.has("wheel_state_layout") \
+		or meta.has("wheel_profile_status") or meta.has("wheel_profile_sha256") or meta.has("wheel_profile_input_sha256") \
+		or meta.has("wheel_profile_hash_convention") or meta.has("wheel_brakes") or meta.has("launch_continuous")
+	if has_wheel_metadata:
+		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
+		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
+		var brakes: Variant = JSON.parse_string(str(meta.get("wheel_brakes", "null")))
+		if meta.get("wheel_state_model") != "relative-wheel-rim-speed-rk4-v1" \
+				or meta.get("wheel_profile_status") != "applied" \
+				or not _is_sha256(str(meta.get("wheel_profile_sha256", ""))) \
+				or not _is_sha256(str(meta.get("wheel_profile_input_sha256", ""))) \
+				or meta.get("wheel_profile_hash_convention") != "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes" \
+				or not layout is Array or layout.is_empty() \
+				or not launch is Array or launch.size() != GlowFlight.SIZE + layout.size() \
+				or not brakes is Array or brakes.size() != layout.size():
+			_invalid_weather = true
+			return
+		wheel_count = layout.size()
+		var contacts := {}
+		for i: int in wheel_count:
+			var entry: Variant = layout[i]
+			if not entry is Dictionary or typeof(entry.get("index")) not in [TYPE_INT, TYPE_FLOAT] \
+					or not is_finite(float(entry.index)) or float(entry.index) != float(int(entry.index)) \
+					or int(entry.index) != GlowFlight.SIZE + i or typeof(entry.get("contact")) != TYPE_STRING \
+					or str(entry.contact).is_empty() or contacts.has(entry.contact) or entry.get("unit") != "m/s rim speed":
+				_invalid_weather = true
+				return
+			contacts[entry.contact] = true
+			var brake: Variant = brakes[i]
+			var torque: Variant = brake.get("max_torque_nm") if brake is Dictionary else null
+			if not brake is Dictionary or brake.get("contact") != entry.contact \
+					or brake.get("availability") not in ["available", "none", "unspecified"] \
+					or typeof(torque) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(torque)) or float(torque) < 0.0 \
+					or (float(torque) > 0.0 and brake.availability != "available"):
+				_invalid_weather = true
+				return
+		for component: Variant in launch:
+			if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
+				_invalid_weather = true
+				return
 	if meta.get("metadata_schema") != "openrc-flight-meta v7" or meta.get("propulsion_model") != GLOW_LAW \
 			or family not in ["glow_2t", "glow_4t"] or not is_finite(cycle) \
 			or meta.get("continuous_layout") != GLOW_CONTINUOUS_LAYOUT \
+				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else "") \
 			or not identity is Dictionary or not installation_profile is Dictionary \
 			or not _is_sha256(str(installation_profile.get("sha256", ""))) \
 			or not start is Dictionary or start.get("ok") != true or start.get("family") != family \
 			or not profile_identity is Dictionary \
 			or profile_identity.get("input_sha256") != installation_profile.get("sha256") \
 			or start.get("cycle_revolutions") != cycle or start_reason < 0 \
-			or not start_continuous is Array or start_continuous.size() != GlowFlight.SIZE \
+			or not start_continuous is Array or start_continuous.size() != GlowFlight.SIZE + wheel_count \
 			or not aux_start is Array or aux_start.size() != 4 \
 			or typeof(dt) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(dt)) or float(dt) <= 0.0 \
 			or typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start_tick)) \
@@ -547,6 +592,7 @@ func _prepare_glow_metadata() -> void:
 	_glow_cycle_revolutions = cycle
 	_glow_recording_start = start.duplicate(true)
 	_glow_recording_start_continuous = PackedFloat64Array(start_continuous)
+	_glow_wheel_count = wheel_count
 	_glow_start_fuel_kg = float(start.fuel_kg)
 	_weather_meta = meta.duplicate(true)
 	_columns.append_array(GLOW_COLUMNS)
@@ -875,7 +921,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFloat64Array) -> PackedFloat64Array:
 	var dt: float = float(meta.get("dt_s", NAN))
 	var expected_time: float = float(tick) * dt
-	if values.size() != GlowFlight.SIZE or not _finite(values) or tick < 0 or not is_finite(t) \
+	if values.size() != GlowFlight.SIZE + _glow_wheel_count or not _finite(values) or tick < 0 or not is_finite(t) \
 			or absf(t - expected_time) > maxf(1e-12, absf(expected_time) * 1e-12) \
 			or aux.size() < 4 or not _finite(aux) \
 			or absf(aux[0] - values[0]) > maxf(1e-9, absf(values[0]) * 1e-12) \

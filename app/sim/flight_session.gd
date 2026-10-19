@@ -3370,6 +3370,8 @@ func trace_meta() -> Dictionary:
 		metadata.glow_identity=JSON.stringify(prop.glow.identity,"",true,true)
 		metadata.glow_family=prop.glow.profile.family
 		metadata.continuous_layout="rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+		if wheel_count() > 0: # GP-06a: rim speeds follow the glow slots (wheel_index() == GlowFlight.SIZE)
+			metadata.continuous_layout += "; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
 	if not workshop_identity.is_empty():

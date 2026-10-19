@@ -16,8 +16,9 @@ import zipfile
 ROOT = Path(__file__).resolve().parents[2]
 LIBRARY = ROOT / "docs/research/flight-dynamics/rc-validation-library-2026-10-18"
 FIELDS = (
-    "category", "id", "title", "year", "type", "access", "source_url",
-    "download_url", "local_path", "sha256", "bytes", "relevance", "limitations",
+    "category", "id", "title", "authors", "year", "type", "topics", "access",
+    "source_url", "download_url", "local_path", "sha256", "bytes",
+    "relevance", "limitations", "license", "read_depth",
 )
 
 
@@ -77,7 +78,7 @@ def main():
             failures.append(f"Reused-file metadata mismatch: {row['category']}:{row['id']}")
     bibliography_rows = {}
     for row in rows:
-        identity = row.get("sha256") or row["source_url"]
+        identity = str(row["doi"]).removeprefix("https://doi.org/").lower() if row.get("doi") else row.get("sha256") or row["source_url"]
         bibliography_rows.setdefault(identity, row)
     summary = {
         "format": "openrc-literature-inventory v1",
@@ -101,9 +102,13 @@ def main():
         raise SystemExit(1)
     if args.write:
         with (LIBRARY / "catalog.csv").open("w", newline="") as output:
-            writer = csv.DictWriter(output, fieldnames=FIELDS, extrasaction="ignore")
+            writer = csv.DictWriter(output, fieldnames=FIELDS, extrasaction="ignore", lineterminator="\n")
             writer.writeheader()
-            writer.writerows(rows)
+            writer.writerows({
+                **row,
+                "authors": "; ".join(row.get("authors", [])),
+                "topics": "; ".join(row.get("topics", [])),
+            } for row in rows)
         def tex(value):
             escapes = {
                 "\\": "\\textbackslash{}", "{": "\\{", "}": "\\}",

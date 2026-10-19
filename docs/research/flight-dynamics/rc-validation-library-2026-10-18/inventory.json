@@ -1,18 +1,22 @@
 {
   "format": "openrc-literature-inventory v1",
   "generator": "research/reference-library/catalog.py --write",
-  "checked_utc": "2026-10-19T01:26:52.933019+00:00",
-  "records": 120,
-  "bibliography_entries": 110,
-  "records_without_local_file": 17,
-  "verified_local_paths": 98,
-  "distinct_local_contents": 93,
-  "local_pdf_paths": 79,
-  "local_zip_paths": 12,
-  "new_collection_paths": 90,
-  "reused_reference_paths": 8,
-  "total_local_bytes": 617240034,
+  "checked_utc": "2026-10-19T01:41:46.606045+00:00",
+  "records": 151,
+  "bibliography_entries": 139,
+  "records_without_local_file": 27,
+  "verified_local_paths": 114,
+  "distinct_local_contents": 114,
+  "local_pdf_paths": 92,
+  "local_zip_paths": 13,
+  "new_collection_paths": 105,
+  "reused_reference_paths": 9,
+  "total_local_bytes": 802628453,
   "categories": {
+    "additional-flight-evidence": {
+      "records": 10,
+      "records_with_local_file": 7
+    },
     "conventional": {
       "records": 22,
       "records_with_local_file": 19
@@ -25,6 +29,10 @@
       "records": 24,
       "records_with_local_file": 19
     },
+    "latin-american": {
+      "records": 9,
+      "records_with_local_file": 4
+    },
     "low-reynolds": {
       "records": 41,
       "records_with_local_file": 40
@@ -34,8 +42,8 @@
       "records_with_local_file": 10
     },
     "unsteady-stall": {
-      "records": 0,
-      "records_with_local_file": 0
+      "records": 12,
+      "records_with_local_file": 10
     }
   },
   "failures": []

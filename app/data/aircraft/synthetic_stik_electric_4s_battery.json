@@ -714,11 +714,11 @@
           "value": [
             0.215,
             -0.18,
-            -0.2581
+            -0.2531
           ],
           "unit": "m",
-          "kind": "estimated",
-          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0381 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+          "kind": "derived",
+          "source": "GP-06b: wheel bottoms from research/ugly-stik/model-v3/equipment-handoff.json nominal_ground_contact_le_m (model-v3 axle at model y -0.22 m is 0.215 m below the thrust line, shaft_y -0.005 m; minus the wheel radius 0.0381 m), so physics and the rendered wheels touch the same ground. E1 read the axle as 0.22 m below the thrust line: every Stik contact sat 5 mm below its drawn wheel and the rendered wheels floated 5 mm. x: mains 0.094 m aft of the plan CG (D9d hull, model-v3 axle x_aft 0.215 m), nose 0.257 m ahead; track 0.36 m. Tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel"
         },
         "stiffness": {
           "value": 560.0,
@@ -736,7 +736,7 @@
           "value": 0.12,
           "unit": "m",
           "kind": "estimated",
-          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.253 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
         },
         "max_steering": {
           "value": 0,
@@ -751,11 +751,11 @@
           "value": [
             0.215,
             0.18,
-            -0.2581
+            -0.2531
           ],
           "unit": "m",
-          "kind": "estimated",
-          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0381 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+          "kind": "derived",
+          "source": "GP-06b: wheel bottoms from research/ugly-stik/model-v3/equipment-handoff.json nominal_ground_contact_le_m (model-v3 axle at model y -0.22 m is 0.215 m below the thrust line, shaft_y -0.005 m; minus the wheel radius 0.0381 m), so physics and the rendered wheels touch the same ground. E1 read the axle as 0.22 m below the thrust line: every Stik contact sat 5 mm below its drawn wheel and the rendered wheels floated 5 mm. x: mains 0.094 m aft of the plan CG (D9d hull, model-v3 axle x_aft 0.215 m), nose 0.257 m ahead; track 0.36 m. Tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel"
         },
         "stiffness": {
           "value": 560.0,
@@ -773,7 +773,7 @@
           "value": 0.12,
           "unit": "m",
           "kind": "estimated",
-          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.253 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
         },
         "max_steering": {
           "value": 0,
@@ -786,13 +786,13 @@
         "name": "nose",
         "position": {
           "value": [
-            -0.136,
+            -0.136276,
             0.0,
-            -0.2549
+            -0.249925
           ],
           "unit": "m",
-          "kind": "estimated",
-          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0349 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+          "kind": "derived",
+          "source": "GP-06b: wheel bottoms from research/ugly-stik/model-v3/equipment-handoff.json nominal_ground_contact_le_m (model-v3 axle at model y -0.22 m is 0.215 m below the thrust line, shaft_y -0.005 m; minus the wheel radius 0.034925 m), so physics and the rendered wheels touch the same ground. E1 read the axle as 0.22 m below the thrust line: every Stik contact sat 5 mm below its drawn wheel and the rendered wheels floated 5 mm. x: mains 0.094 m aft of the plan CG (D9d hull, model-v3 axle x_aft 0.215 m), nose 0.257 m ahead; track 0.36 m. Tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel"
         },
         "stiffness": {
           "value": 440.0,
@@ -810,7 +810,7 @@
           "value": 0.12,
           "unit": "m",
           "kind": "estimated",
-          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.253 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
         },
         "max_steering": {
           "value": 20.0,

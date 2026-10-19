@@ -1,0 +1,87 @@
+{
+ "format": "openrc-reference-manifest v1",
+ "topic": "Battery and energy-storage realism for electric RC vehicles: cell/pack models, RC-scale LiPo evidence, over-discharge damage, ESC/flight-controller battery behaviour and telemetry conventions",
+ "retrieved": "2026-10-19",
+ "note": "Local copies live in the gitignored references/battery-energy/. Guide: docs/research/battery/BAT-00/README.md. Plan: docs/plans/battery-realism.md. No file here is a measurement of a pack the simulator flies.",
+ "files": [
+  {
+   "path": "references/battery-energy/tremblay-dessaint-2009-evs24-generic-battery-model.pdf",
+   "url": "https://citelec.vub.ac.be/EVS24/files/proceedings/EVS-24-2230080.pdf",
+   "bytes": 798992,
+   "sha256": "126188c4ed2ef25ec2da4b002eb36427b053f51be0edf27f1898ef94c3bd9081",
+   "file_type": "PDF, 10 pages",
+   "kind": "conference paper",
+   "license": "Copyright the authors / EVS24; free proceedings download. Reference only.",
+   "use": "Modified-Shepherd generic model (Li-ion, NiMH, NiCd, lead-acid) with filtered-current polarisation and exponential zone; parameters from three points of a datasheet discharge curve. Candidate datasheet-tier template path (BAT-05) and NiMH receiver-pack template.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/battery-energy/guo-2016-overdischarge-mechanism-srep30248.pdf",
+   "url": "https://www.nature.com/articles/srep30248.pdf",
+   "bytes": 4469028,
+   "sha256": "90d74152d4b38e5734feed3fd96c26808f8f93b7d284dd61938eb502b265ddb0",
+   "file_type": "PDF, 9 pages",
+   "kind": "journal article (Scientific Reports 6:30248, doi 10.1038/srep30248)",
+   "license": "CC BY 4.0 (open access).",
+   "use": "Over-discharge mechanism: no discernible change when stopped early, a voltage plateau near -12 % SOC, Cu current-collector dissolution and internal short circuit beyond it. Anchors the severe band of the BAT-21 damage model; tested cells are large-format, not RC LiPo pouches.",
+   "redistribution": "allowed-with-attribution",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/battery-energy/saha-2011-predicting-battery-life-electric-uav.pdf",
+   "url": "https://c3.ndc.nasa.gov/dashlink/static/media/publication/2011_AIAA_UAVBHM.pdf",
+   "bytes": 943943,
+   "sha256": "78213c59bdbf2aa1aa25fd9a8a04d6840218d82947afd7cf5fa5eed8f06f8209",
+   "file_type": "PDF, 8 pages",
+   "kind": "conference paper (AIAA Infotech 2011, NASA)",
+   "license": "NASA-authored work; free download from NASA DASHlink. Reference only.",
+   "use": "33 % Edge 540T electric aircraft, four 18.5 V 6000 mAh Li-Po packs, 30 Hz per-pack V/I/T logging, flight loads as short pulses up to ~80 A, ~25 min ground-emulated flights, end-of-discharge prediction with a 2 min landing margin. RC-scale evidence for relaxation (RC) behaviour and for remaining-time alarms; no released raw data found.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/battery-energy/nyangweso-bole-2014-edge540-battery-testbed.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20140010625/downloads/20140010625.pdf",
+   "bytes": 524226,
+   "sha256": "19d38242dbefa6573bcb3bc540837e115b0d349c08f9d6301113154eda394b81",
+   "file_type": "PDF, 7 pages",
+   "kind": "NASA technical report",
+   "license": "NASA NTRS public document. Reference only.",
+   "use": "Edge 540T powertrain pack test bed: 5S2P Li-Po pouch packs, per-cell thermocouples, emulated flight loads. Template for the BAT-27 pack characterisation card.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/battery-energy/galeotti-2023-lipo-dataset-dib.xml",
+   "url": "https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10518458/fullTextXML",
+   "bytes": 76689,
+   "sha256": "fb084ad9ed6841130edb3eb1cc592a6604fb6ed50dcd667a56f235dea42300f9",
+   "file_type": "JATS XML full text",
+   "kind": "data article (Data in Brief 50:109561, doi 10.1016/j.dib.2023.109561)",
+   "license": "Article CC BY 4.0. Dataset licence on Mendeley (doi 10.17632/stcppt2r68.1) not yet verified.",
+   "use": "BAK LP-503562-IS-3 Li-Po, 3.7 V 1.1 Ah, five cells at 25 C: capacity tests, partial discharges with 300 s rests (pseudo-OCV ladder), EIS 0.2-5000 Hz and a fitted R0 + 2 R-CPE + Warburg + L model across SOC and SOH down to 70 %. Candidate free source for the Li-Po template and for R0/SOH trends (BAT-05).",
+   "redistribution": "allowed-with-attribution",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  }
+ ],
+ "links": [
+  {"url": "https://data.mendeley.com/datasets/stcppt2r68/1", "status": "not downloaded", "note": "Galeotti Li-Po EIS/capacity/ECM data. The public API returned non-JSON; download through the web page in BAT-01 and record its licence."},
+  {"url": "https://data.mendeley.com/datasets/b5mj79w5w9/2", "status": "not downloaded", "note": "Kollmeyer et al., LG 18650HG2 (3 Ah NMC) drive cycles at -20...40 C (McMaster). Li-ion template candidate; licence not confirmed in the search snippet."},
+  {"url": "https://arxiv.org/abs/2109.04741", "status": "not downloaded", "note": "Bauersfeld & Scaramuzza, range/endurance for multicopters: grey-box Li-Po model, 1.3 % (43.1 mV) cell-voltage error. Already summarised in DR-01; arXiv non-exclusive licence, cite numbers only; E_cell units to verify."},
+  {"url": "https://doi.org/10.3390/en15239249", "status": "cited earlier", "note": "Suti, Di Rito & Mattei 2022, 6S 1850 mAh fixed-wing Li-Po HPPC and hysteretic Thevenin model. Inspected in EL1a-R1/02-battery.md."},
+  {"url": "https://doi.org/10.3390/s23156937", "status": "cited earlier", "note": "Di Nisio et al. 2023, 4S 10 Ah UAV Li-Po test and discharge model. Inspected in EL1a-R1/02-battery.md."},
+  {"url": "https://docs.pybamm.org/en/latest/source/api/parameters/parameter_sets.html", "status": "tool", "note": "PyBaMM (BSD-3): Thevenin ECM with lumped thermal model and parameter sets (e.g. Chen2020 LG M50). Offline oracle and template generator only."},
+  {"url": "https://github.com/About-Energy-OpenSource/About-Energy-BPX-Parameterisation/", "status": "tool/data", "note": "Free BPX DFN parameterisations (NMC111 and LFP graphite cells); offline LFP/NMC reference curves via PyBaMM. Licence to record in BAT-01."},
+  {"url": "https://docs.px4.io/main/en/config/battery.html", "status": "behaviour reference", "note": "PX4 battery estimation: load compensation with an internal-resistance estimate (BAT1_R_INTERNAL, typical 5 mOhm per cell), V_EMPTY/V_CHARGED. Model for radio-side remaining-capacity estimates."},
+  {"url": "https://betaflight.com/docs/wiki/guides/current/Battery", "status": "behaviour reference", "note": "Betaflight cell-count auto-detection from vbat_max_cell_voltage (4.30 V), warning and critical per-cell thresholds (docs give 3.5/3.4 and 3.3 V). Behaviour lookup only; GPL code is never copied."},
+  {"url": "https://manual.edgetx.org/bw-radios/model-select/telemetry/common-telemetry-sensors", "status": "behaviour reference", "note": "EdgeTX sensors and calculated Cell formula (Lowest cell from Cels). Naming/semantics for the BAT-14 sensor emulation and the BAT-28 log reducer."},
+  {"url": "https://www.18650batterystore.com/21700-p/molicel-p42a.htm", "status": "reseller page", "note": "Molicel P42A 21700: 4.2 Ah, 2.5 V cutoff, 30 A continuous (45 A with 80 C monitoring), ~16 mOhm DC at 10 A. Reseller figures; fetch the official Molicel datasheet in BAT-01."},
+  {"url": "https://scholarworks.alaska.edu/uaf_grad_engineering/302", "status": "not downloaded", "note": "UAF thesis: LiCoO2 lithium-polymer model to -20 C; apparent cold capacity loss mainly from increased internal resistance."}
+ ]
+}

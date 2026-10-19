@@ -242,10 +242,12 @@ static func outside_loop(ft) -> Dictionary:
 # --- Rolls -------------------------------------------------------------------------------------------------------
 
 ## What a level line needs at each bank, from this run's knife-edge (100 % throttle, both ways) and inverted (0.8 Vmax)
-## results: top rudder and nose elevation in knife-edge, push and nose elevation inverted. A competent pilot puts them
-## in before the airplane needs them; the line PI corrects the rest. Missing results leave that term at zero.
+## results: top rudder, the aileron against the knife-edge rolling moment and the nose elevation in knife-edge, push and
+## nose elevation inverted. A competent pilot puts them in before the airplane needs them; the line PI and the roll
+## loop correct the rest. Missing results leave that term at zero.
 static func _line_feedforward(ft) -> Dictionary:
-	var out := { rudder_right = 0.0, rudder_left = 0.0, ke_elevation_right = 0.0, ke_elevation_left = 0.0, inverted_stick = 0.0, inverted_elevation = 0.0, notes = [] }
+	var out := { rudder_right = 0.0, rudder_left = 0.0, aileron_right = 0.0, aileron_left = 0.0, ke_elevation_right = 0.0, ke_elevation_left = 0.0,
+		inverted_stick = 0.0, inverted_elevation = 0.0, notes = [] }
 	var ke: Array = ft.results.get("knife_edge", {}).get("table", [])
 	for side in ["right", "left"]:
 		var rows := ke.filter(func(r): return str(r.get("case", "")) == side + "_100pct")
@@ -253,6 +255,7 @@ static func _line_feedforward(ft) -> Dictionary:
 			out.notes.append("no %s knife-edge result: no top-rudder feedforward that way" % side)
 			continue
 		out["rudder_" + side] = absf(float(rows[0].rudder_stick))
+		out["aileron_" + side] = float(rows[0].aileron_stick)
 		out["ke_elevation_" + side] = deg_to_rad(float(rows[0].pitch_attitude_deg))
 	var inv: Array = ft.results.get("inverted_speeds", {}).get("table", []).filter(func(r): return str(r.get("case", "")) == "0.8Vmax")
 	if inv.is_empty() or not inv[0].get("held", false):
@@ -265,7 +268,7 @@ static func _line_feedforward(ft) -> Dictionary:
 
 ## Slow roll both ways: one roll at a constant 90°/s (FAI: constant rate and flight path) from 0.8 Vmax at full throttle,
 ## with the line (height and heading) held by elevator and rudder at every bank through point_nose, with the knife-edge
-## and inverted feedforward. Height and heading change, roll-rate constancy, and the rudder and elevator it took.
+## and inverted feedforward (top rudder, knife-edge aileron, push). Height and heading change, roll-rate constancy, and the rudder and elevator it took.
 static func slow_roll(ft) -> Dictionary:
 	return _roll(ft, "slow_roll", false)
 
@@ -303,6 +306,7 @@ static func _roll(ft, name: String, points: bool) -> Dictionary:
 			var line := P.point_nose(s, P.direction(float(ctx.heading0), wanted), k,
 				PackedFloat64Array([float(ff.inverted_stick) * maxf(-c, 0.0), -sn * float(ff.rudder_right if right else ff.rudder_left)]))
 			var c_out := { pitch = line[0], yaw = line[1], throttle = 1.0, roll = 0.0 }
+			var aileron_ff: float = absf(sn) * float(ff.aileron_right if right else ff.aileron_left)
 			if t < 0.5:
 				c_out.roll = P.bank(s, 0.0, k)
 				return c_out
@@ -314,14 +318,14 @@ static func _roll(ft, name: String, points: bool) -> Dictionary:
 				if float(ctx.rolled) >= TAU - deg_to_rad(5.0):
 					ctx.done_t = t
 					ctx.erase("bank_i")
-				c_out.roll = P.roll_rate(s, side * SLOW_ROLL_RATE, k, ctx, DT) if not ctx.has("done_t") else P.bank_pi(s, 0.0, k, ctx, DT)
+				c_out.roll = clampf(P.roll_rate(s, side * SLOW_ROLL_RATE, k, ctx, DT) + aileron_ff, -1.0, 1.0) if not ctx.has("done_t") else P.bank_pi(s, 0.0, k, ctx, DT)
 				return c_out
 			# Four points: roll at the part-roll rate to within 10° of the next point, then hold it for the point time.
 			var seg: int = int(ctx.get("seg", 0))
 			var point: float = (seg + 1) * PI / 2.0
 			if not ctx.has("hold_t"):
 				if float(ctx.rolled) < point - deg_to_rad(10.0):
-					c_out.roll = P.roll_rate(s, side * POINT_ROLL_RATE, k, ctx, DT)
+					c_out.roll = clampf(P.roll_rate(s, side * POINT_ROLL_RATE, k, ctx, DT) + aileron_ff, -1.0, 1.0)
 					return c_out
 				ctx.hold_t = t
 				ctx.erase("bank_i")
@@ -332,15 +336,13 @@ static func _roll(ft, name: String, points: bool) -> Dictionary:
 				overs.append(-INF)
 			overs[seg] = maxf(float(overs[seg]), rad_to_deg(over))
 			ctx.overshoot = overs
-			if seg >= 1 and seg <= 2:
-				pass
 			var holds: Array = ctx.get("hold_sticks", [])
 			while holds.size() <= seg:
 				holds.append([])
 			if t > float(ctx.hold_t) + 0.5:
 				holds[seg].append([line[0], line[1]])
 			ctx.hold_sticks = holds
-			c_out.roll = P.bank_pi(s, target, k, ctx, DT)
+			c_out.roll = clampf(P.bank_pi(s, target, k, ctx, DT) + aileron_ff, -1.0, 1.0)
 			if t >= float(ctx.hold_t) + POINT_HOLD_S:
 				ctx.erase("hold_t")
 				ctx.erase("roll_rate_i")
@@ -408,16 +410,19 @@ static func _roll(ft, name: String, points: bool) -> Dictionary:
 	return ft._result(valid and rows.size() == 2, {}, notes, { table = rows })
 
 
-## Snap roll both ways (FAI 5B.8.7: a rapid auto-rotative roll with the wing stalled): from 1.6 Vs at the level-trim
-## throttle, full up elevator, full rudder and full aileron the same way until 270° of roll, then the sticks centred and
-## opposite rudder until the roll stops, then wings level. Whether the wing stalled before the roll built up (a snap,
-## not an aileron roll), the yaw in the rotation, where the rotation stopped, height and heading change.
+## Snap roll both ways (FAI 5B.8.7: a rapid auto-rotative roll with the wing stalled). From 1.6 Vs at the level-trim
+## throttle: full up elevator, full rudder and full aileron the same way, released early by 0.2 s of roll rate (at least
+## 20°) before 360°, or as soon as the autorotation dies (roll rate below a third of its peak) or after 4 s. Then the
+## sticks centred with rudder against the roll until it stops, wings levelled and the dive pulled out with half the
+## stall-start α, then height held. Judge's questions: did the wing stall before the roll built up (a snap, not an
+## aileron roll), is there yaw in the rotation (autorotation), did the autorotation last to the finish (FAI zeroes a snap
+## whose autorotation ends more than 90° short), where did the rotation stop, and the height and heading it cost.
 static func snap_roll(ft) -> Dictionary:
 	var rows := []
 	var notes := []
 	var entry: float = 1.6 * ft.vs
 	for side in [1.0, -1.0]:
-		var flight: Dictionary = ft._fly("snap_roll", { speed = entry, altitude = ft.HIGH }, 12.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		var flight: Dictionary = ft._fly("snap_roll", { speed = entry, altitude = ft.HIGH }, 16.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
 			ctx.suffix = _side(side)
 			var k := P.schedule(s, ft.v_start)
 			if t < 0.25:
@@ -428,20 +433,36 @@ static func snap_roll(ft) -> Dictionary:
 				if not ctx.has("alpha_at_45") and float(ctx.rolled) >= PI / 4.0:
 					ctx.alpha_at_45 = float(ctx.max_alpha)
 			if not ctx.has("release_t"):
-				ctx.p_sum = float(ctx.get("p_sum", 0.0)) + side * s[RB.RATE] * DT
+				var rate: float = side * s[RB.RATE]
+				ctx.p_sum = float(ctx.get("p_sum", 0.0)) + rate * DT
 				ctx.r_sum = float(ctx.get("r_sum", 0.0)) + side * s[RB.RATE + 2] * DT
-				if float(ctx.rolled) < 1.5 * PI:
+				ctx.peak_rate = maxf(float(ctx.get("peak_rate", 0.0)), rate)
+				var reason := ""
+				if float(ctx.rolled) >= TAU - maxf(deg_to_rad(20.0), 0.2 * rate):
+					reason = "finish point"
+				elif t > 1.0 and rate < float(ctx.peak_rate) / 3.0:
+					reason = "autorotation ended"
+				elif t > 4.25:
+					reason = "4 s"
+				if reason.is_empty():
 					return { pitch = 1.0, roll = side, yaw = side, throttle = ctx.start_throttle }
 				ctx.release_t = t
+				ctx.release_rolled = float(ctx.rolled)
+				ctx.release_reason = reason
 			if not ctx.has("stopped_t"):
-				if side * s[RB.RATE] > deg_to_rad(30.0) and t < float(ctx.release_t) + 3.0:
-					return { pitch = 0.0, roll = 0.0, yaw = -side, throttle = ctx.start_throttle }
+				if absf(s[RB.RATE]) > deg_to_rad(30.0) and t < float(ctx.release_t) + 3.0:
+					return { pitch = 0.0, roll = 0.0, yaw = -signf(s[RB.RATE]), throttle = ctx.start_throttle }
 				ctx.stopped_t = t
 				ctx.stop_rolled = float(ctx.rolled)
-				ctx.stop_alt = P.altitude(s)
-			return { roll = P.bank(s, 0.0, k), pitch = P.hold_altitude(s, float(ctx.stop_alt), k, ctx, DT), yaw = P.ball(s, k, ctx, DT), throttle = ctx.start_throttle }, \
+			# Wings level and pull out of the dive at half the stall-start α (a full height-hold pull would stall again).
+			if not ctx.has("level_t"):
+				if (absf(P.euler(s)[2]) > deg_to_rad(10.0) or P.climb_rate(s) < 0.0) and t < float(ctx.stopped_t) + 6.0:
+					return { roll = P.bank(s, 0.0, k), pitch = P.alpha_hold(s, 0.5 * ft.a1, k, ctx, DT), yaw = P.ball(s, k, ctx, DT), throttle = ctx.start_throttle }
+				ctx.level_t = t
+				ctx.level_alt = P.altitude(s)
+			return { roll = P.bank(s, 0.0, k), pitch = P.hold_altitude(s, float(ctx.level_alt), k, ctx, DT), yaw = P.ball(s, k, ctx, DT), throttle = ctx.start_throttle }, \
 			func(t: float, _s: PackedFloat64Array, ctx: Dictionary) -> bool:
-				return ctx.has("stopped_t") and t > float(ctx.stopped_t) + 3.0)
+				return ctx.has("level_t") and t > float(ctx.level_t) + 2.0)
 		if not flight.ok:
 			notes.append(flight.message)
 			continue
@@ -454,21 +475,29 @@ static func snap_roll(ft) -> Dictionary:
 		var autorotation_t: float = float(ctx.get("release_t", NAN)) - 0.25
 		var p_mean: float = float(ctx.get("p_sum", 0.0)) / autorotation_t if autorotation_t > 0.0 else NAN
 		var r_mean: float = float(ctx.get("r_sum", 0.0)) / autorotation_t if autorotation_t > 0.0 else NAN
+		var release_deg: float = rad_to_deg(float(ctx.get("release_rolled", NAN)))
+		var r_stop: int = ft._row_at(trace, float(ctx.get("stopped_t", 0.0)))
 		var row := { case = _side(side), direction = _side(side), entry_speed_mps = snappedf(entry, 0.01),
 			alpha_before_45_deg_of_roll_deg = snappedf(a45, 0.1), max_alpha_deg = snappedf(a_max, 0.1),
 			entered = "snap (stalled autorotation)" if stalled else "aileron roll (wing not stalled)",
-			time_to_270_s = snappedf(autorotation_t, 0.01), mean_roll_rate_dps = snappedf(rad_to_deg(p_mean), 0.1), mean_yaw_rate_dps = snappedf(rad_to_deg(r_mean), 0.1),
+			release_reason = str(ctx.get("release_reason", "")), release_after_deg = snappedf(release_deg, 0.1),
+			autorotation_short_of_finish_deg = snappedf(360.0 - release_deg, 0.1) if str(ctx.get("release_reason", "")) != "finish point" else 0.0,
+			time_to_release_s = snappedf(autorotation_t, 0.01), peak_roll_rate_dps = snappedf(rad_to_deg(float(ctx.get("peak_rate", NAN))), 0.1),
+			mean_roll_rate_dps = snappedf(rad_to_deg(p_mean), 0.1), mean_yaw_rate_dps = snappedf(rad_to_deg(r_mean), 0.1),
 			yaw_to_roll_ratio = snappedf(r_mean / p_mean, 0.001) if p_mean != 0.0 else NAN,
 			stop_after_deg = snappedf(rad_to_deg(float(ctx.get("stop_rolled", NAN))), 0.1),
 			stop_error_deg = snappedf(rad_to_deg(float(ctx.get("stop_rolled", NAN)) - TAU), 0.1),
 			peak_load_factor_g = snappedf(ft._max_load(trace), 0.01),
-			height_change_m = snappedf(float(ctx.get("stop_alt", NAN)) - trace.value(0, "alt_m"), 0.1),
-			heading_change_deg = snappedf(wrapf(trace.value(n - 1, "yaw_deg") - trace.value(0, "yaw_deg"), -180.0, 180.0), 0.1),
+			height_lost_m = snappedf(trace.value(0, "alt_m") - ft._min(ft._col(trace, "alt_m")), 0.1),
+			time_to_level_s = snappedf(float(ctx.get("level_t", NAN)) - float(ctx.get("stopped_t", NAN)), 0.01),
+			heading_change_at_stop_deg = snappedf(wrapf(trace.value(r_stop, "yaw_deg") - trace.value(0, "yaw_deg"), -180.0, 180.0), 0.1),
 			exit_bank_deg = snappedf(trace.value(n - 1, "roll_deg"), 0.1) }
-		var held: bool = ctx.has("stopped_t") and flight.crashed == "" and not ctx.has("floor_t") and absf(row.exit_bank_deg) < 15.0
+		var held: bool = ctx.has("level_t") and flight.crashed == "" and not ctx.has("floor_t") and absf(row.exit_bank_deg) < 15.0
 		row.recovered = held
 		if not held:
-			notes.append("%s snap: %s, exit bank %.1f° %s" % [_side(side), "stopped" if ctx.has("stopped_t") else "rotation not stopped", row.exit_bank_deg, flight.crashed])
+			notes.append("%s snap: %s, exit bank %.1f° %s" % [_side(side), "levelled" if ctx.has("level_t") else ("rotation stopped" if ctx.has("stopped_t") else "rotation not stopped"), row.exit_bank_deg, flight.crashed])
+		elif row.release_reason != "finish point":
+			notes.append("%s snap: autorotation ended %.0f° short of the finish (%s)" % [_side(side), row.autorotation_short_of_finish_deg, row.release_reason])
 		rows.append(row)
 	return ft._result(rows.size() == 2 and rows.all(func(r): return r.recovered), {}, notes, { table = rows })
 
@@ -477,106 +506,113 @@ static func snap_roll(ft) -> Dictionary:
 
 ## Stall turn (hammerhead) both ways (FAI 5B.8.11). From 0.8 Vmax at full throttle pull to a vertical up-line (α held
 ## 2° below the stall start), hold it with elevator and rudder (point_nose), close the throttle 0.5 s after the line is
-## set, kick full rudder at 0.35 Vs with a quarter-throttle blip of slipstream, ailerons stopping roll and the elevator
-## stopping pitch, until the nose is 70° below the horizon; hold the down-line 1 s at idle and pull out at half the
-## stall-start α. Reports the pivot as a judge would: radius in wingspans (≥ 2 is a wing-over), torque-off (roll during
-## the pivot), flop (pitch during the pivot), and a tail slide (the airplane moving backwards).
+## set, kick full rudder with a half-throttle blip of slipstream, ailerons stopping roll and the elevator stopping
+## pitch, until the nose is 70° below the horizon; hold the down-line 1 s at idle and pull out at half the stall-start
+## α. Two kicks: at 0.35 Vs, as the airplane comes to a stop (FAI), and early at 0.6 Vs, which a judge marks as a skid
+## but which leaves the rudder free-stream authority. Reports the pivot as a judge would: radius in wingspans (≥ 2 is a
+## wing-over), torque-off (roll during the pivot), flop (pitch during the pivot), and a tail slide (moving backwards).
 static func stall_turn(ft) -> Dictionary:
 	var rows := []
 	var notes := []
 	var entry: float = maxf(ft.v_start, 0.8 * ft.vmax)
-	var kick: float = 0.35 * ft.vs
 	var span: float = float(ft.model.reference.b)
-	for side in [1.0, -1.0]:
-		var flight: Dictionary = ft._fly("stall_turn", { speed = entry, altitude = ft.HIGH }, 40.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
-			ctx.suffix = _side(side)
-			var k := P.schedule(s, ft.v_start)
-			var elev := P.nose_elevation(s)
-			var phase: String = ctx.get("phase", "pull")
-			if phase == "pull":
-				if elev < deg_to_rad(80.0):
-					return { roll = P.roll_damper(s, k), pitch = P.alpha_hold(s, ft.a1 - deg_to_rad(2.0), k, ctx, DT), throttle = 1.0 }
-				ctx.phase = "up"
-				ctx.up_t = t
-				phase = "up"
-			if phase == "up":
-				var line := P.point_nose(s, M.v3(0.0, 0.0, -1.0), k)
-				if t < float(ctx.up_t) + 0.5 or P.speed(s) > kick:
-					if t > float(ctx.up_t) + 15.0:
-						ctx.phase = "stuck"
-					return { roll = P.roll_damper(s, k), pitch = line[0], yaw = line[1], throttle = 1.0 if t < float(ctx.up_t) + 0.5 else 0.0 }
-				ctx.phase = "pivot"
-				phase = "pivot"
-				ctx.kick_t = t
-				ctx.kick_v = P.speed(s)
-				ctx.kick_alt = P.altitude(s)
-				ctx.kick_n = s[RB.POS]
-				ctx.kick_e = s[RB.POS + 1]
-				ctx.kick_elev = elev
-			if phase == "pivot":
-				ctx.roll_rot = float(ctx.get("roll_rot", 0.0)) + s[RB.RATE] * DT
-				ctx.pitch_rot = float(ctx.get("pitch_rot", 0.0)) + s[RB.RATE + 1] * DT
-				ctx.max_roll_rot = maxf(float(ctx.get("max_roll_rot", 0.0)), absf(float(ctx.roll_rot)))
-				ctx.max_pitch_rot = maxf(float(ctx.get("max_pitch_rot", 0.0)), absf(float(ctx.pitch_rot)))
-				ctx.min_u = minf(float(ctx.get("min_u", INF)), s[RB.VEL])
-				ctx.radius = maxf(float(ctx.get("radius", 0.0)), sqrt((s[RB.POS] - float(ctx.kick_n)) ** 2 + (s[RB.POS + 1] - float(ctx.kick_e)) ** 2))
-				ctx.top_alt = maxf(float(ctx.get("top_alt", -INF)), P.altitude(s))
-				if elev > deg_to_rad(-70.0) and t < float(ctx.kick_t) + 6.0:
-					return { roll = P.roll_damper(s, k), pitch = clampf(-k * 0.6 * s[RB.RATE + 1], -1.0, 1.0), yaw = side, throttle = 0.25 }
-				ctx.phase = "down" if elev <= deg_to_rad(-70.0) else "no_pivot"
-				phase = ctx.phase
-				ctx.pivot_t = t
-			if phase == "down":
-				var line := P.point_nose(s, M.v3(0.0, 0.0, 1.0), k)
-				if t < float(ctx.pivot_t) + 1.0:
-					return { roll = P.roll_damper(s, k), pitch = line[0], yaw = line[1], throttle = 0.0 }
-				ctx.phase = "pullout"
-				ctx.pullout_t = t
-				ctx.pullout_alt = P.altitude(s)
-				ctx.erase("alpha_i")
-			return { roll = P.roll_damper(s, k), pitch = P.alpha_hold(s, 0.5 * ft.a1, k, ctx, DT), throttle = 0.0 }, \
-			func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
-				if ctx.get("phase", "") in ["stuck", "no_pivot"]:
-					return true
-				if ctx.get("phase", "") == "pullout" and P.climb_rate(s) > 0.0:
-					ctx.level_t = t
-					ctx.level_v = P.speed(s)
-					return true
-				return false)
-		if not flight.ok:
-			notes.append(flight.message)
-			continue
-		var trace: RefCounted = flight.trace
-		var ctx: Dictionary = flight.ctx
-		var pivoted: bool = ctx.has("pivot_t") and ctx.get("phase", "") != "no_pivot"
-		var radius_spans: float = float(ctx.get("radius", NAN)) / span
-		var outcome := "no up-line"
-		if ctx.get("phase", "") == "stuck":
-			outcome = "did not slow to the kick speed"
-		elif ctx.has("kick_t") and not pivoted:
-			outcome = "no pivot in 6 s"
-		elif pivoted:
-			if float(ctx.get("min_u", 0.0)) < -1.0:
-				outcome = "tail slide"
-			elif radius_spans >= 2.0:
-				outcome = "wing-over"
-			elif rad_to_deg(float(ctx.get("max_pitch_rot", 0.0))) > 45.0:
-				outcome = "flop"
-			else:
-				outcome = "pivot"
-		var row := { case = _side(side), direction = _side(side), entry_speed_mps = snappedf(entry, 0.01), kick_speed_target_mps = snappedf(kick, 0.01),
-			kick_speed_mps = snappedf(float(ctx.get("kick_v", NAN)), 0.01), up_line_time_s = snappedf(float(ctx.get("kick_t", NAN)) - float(ctx.get("up_t", NAN)), 0.01),
-			height_gain_to_kick_m = snappedf(float(ctx.get("kick_alt", NAN)) - trace.value(0, "alt_m"), 0.1),
-			pivot_time_s = snappedf(float(ctx.get("pivot_t", NAN)) - float(ctx.get("kick_t", NAN)), 0.01),
-			pivot_radius_m = snappedf(float(ctx.get("radius", NAN)), 0.01), pivot_radius_spans = snappedf(radius_spans, 0.01),
-			torque_off_deg = snappedf(rad_to_deg(float(ctx.get("max_roll_rot", NAN))), 0.1), pitch_during_pivot_deg = snappedf(rad_to_deg(float(ctx.get("max_pitch_rot", NAN))), 0.1),
-			min_forward_speed_mps = snappedf(float(ctx.get("min_u", NAN)), 0.01), outcome = outcome,
-			height_lost_top_to_level_m = snappedf(float(ctx.get("top_alt", NAN)) - ft._min(ft._col(trace, "alt_m", ft._row_at(trace, float(ctx.get("kick_t", 0.0))))), 0.1),
-			exit_speed_mps = snappedf(float(ctx.get("level_v", NAN)), 0.01) }
-		var done: bool = ctx.has("level_t") and flight.crashed == "" and not ctx.has("floor_t")
-		row.recovered = done
-		if not done or outcome != "pivot":
-			notes.append("%s: %s%s %s" % [_side(side), outcome, "" if done else ", not recovered", flight.crashed])
-		rows.append(row)
+	for kick_named in [["0.35Vs", 0.35], ["0.6Vs", 0.6]]:
+		for side in [1.0, -1.0]:
+			rows.append(_stall_turn_case(ft, entry, float(kick_named[1]) * ft.vs, "%s_%s" % [_side(side), kick_named[0]], side, span, notes))
+	rows = rows.filter(func(r): return not r.is_empty())
 	# The card is met when the pilot flew the figure and recovered; what the pivot looked like is the airplane's answer.
-	return ft._result(rows.size() == 2 and rows.all(func(r): return r.recovered), {}, notes, { table = rows })
+	return ft._result(rows.size() == 4 and rows.all(func(r): return r.recovered), {}, notes, { table = rows })
+
+
+static func _stall_turn_case(ft, entry: float, kick: float, name: String, side: float, span: float, notes: Array) -> Dictionary:
+	var flight: Dictionary = ft._fly("stall_turn", { speed = entry, altitude = ft.HIGH }, 40.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		ctx.suffix = name
+		var k := P.schedule(s, ft.v_start)
+		var elev := P.nose_elevation(s)
+		var phase: String = ctx.get("phase", "pull")
+		if phase == "pull":
+			if elev < deg_to_rad(80.0):
+				return { roll = P.roll_damper(s, k), pitch = P.alpha_hold(s, ft.a1 - deg_to_rad(2.0), k, ctx, DT), throttle = 1.0 }
+			ctx.phase = "up"
+			ctx.up_t = t
+			phase = "up"
+		if phase == "up":
+			var line := P.point_nose(s, M.v3(0.0, 0.0, -1.0), k)
+			if t < float(ctx.up_t) + 0.5 or P.speed(s) > kick:
+				if t > float(ctx.up_t) + 15.0:
+					ctx.phase = "stuck"
+				return { roll = P.roll_damper(s, k), pitch = line[0], yaw = line[1], throttle = 1.0 if t < float(ctx.up_t) + 0.5 else 0.0 }
+			ctx.phase = "pivot"
+			phase = "pivot"
+			ctx.kick_t = t
+			ctx.kick_v = P.speed(s)
+			ctx.kick_alt = P.altitude(s)
+			ctx.kick_n = s[RB.POS]
+			ctx.kick_e = s[RB.POS + 1]
+			ctx.kick_elev = elev
+		if phase == "pivot":
+			ctx.roll_rot = float(ctx.get("roll_rot", 0.0)) + s[RB.RATE] * DT
+			ctx.pitch_rot = float(ctx.get("pitch_rot", 0.0)) + s[RB.RATE + 1] * DT
+			ctx.max_roll_rot = maxf(float(ctx.get("max_roll_rot", 0.0)), absf(float(ctx.roll_rot)))
+			ctx.max_pitch_rot = maxf(float(ctx.get("max_pitch_rot", 0.0)), absf(float(ctx.pitch_rot)))
+			ctx.min_u = minf(float(ctx.get("min_u", INF)), s[RB.VEL])
+			ctx.radius = maxf(float(ctx.get("radius", 0.0)), sqrt((s[RB.POS] - float(ctx.kick_n)) ** 2 + (s[RB.POS + 1] - float(ctx.kick_e)) ** 2))
+			ctx.top_alt = maxf(float(ctx.get("top_alt", -INF)), P.altitude(s))
+			if elev > deg_to_rad(-70.0) and t < float(ctx.kick_t) + 6.0:
+				return { roll = P.roll_damper(s, k), pitch = clampf(-k * 0.6 * s[RB.RATE + 1], -1.0, 1.0), yaw = side, throttle = 0.5 }
+			ctx.pivoted = elev <= deg_to_rad(-70.0)
+			ctx.phase = "down"
+			phase = "down"
+			ctx.pivot_t = t
+		if phase == "down":
+			var line := P.point_nose(s, M.v3(0.0, 0.0, 1.0), k)
+			if t < float(ctx.pivot_t) + 1.0:
+				return { roll = P.roll_damper(s, k), pitch = line[0], yaw = line[1], throttle = 0.0 }
+			ctx.phase = "pullout"
+			ctx.pullout_t = t
+			ctx.pullout_alt = P.altitude(s)
+			ctx.erase("alpha_i")
+		return { roll = P.roll_damper(s, k), pitch = P.alpha_hold(s, 0.5 * ft.a1, k, ctx, DT), throttle = 0.0 }, \
+		func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+			if ctx.get("phase", "") == "stuck":
+				return true
+			if ctx.get("phase", "") == "pullout" and P.climb_rate(s) > 0.0:
+				ctx.level_t = t
+				ctx.level_v = P.speed(s)
+				return true
+			return false)
+	if not flight.ok:
+		notes.append(flight.message)
+		return {}
+	var trace: RefCounted = flight.trace
+	var ctx: Dictionary = flight.ctx
+	var pivoted: bool = ctx.get("pivoted", false)
+	var radius_spans: float = float(ctx.get("radius", NAN)) / span
+	var outcome := "no up-line"
+	if ctx.get("phase", "") == "stuck":
+		outcome = "did not slow to the kick speed"
+	elif ctx.has("kick_t") and not pivoted:
+		outcome = "no pivot in 6 s (nose not 70° down)"
+	elif pivoted:
+		if float(ctx.get("min_u", 0.0)) < -1.0:
+			outcome = "tail slide"
+		elif radius_spans >= 2.0:
+			outcome = "wing-over"
+		elif rad_to_deg(float(ctx.get("max_pitch_rot", 0.0))) > 45.0:
+			outcome = "flop"
+		else:
+			outcome = "pivot"
+	var row := { case = name, direction = _side(side), entry_speed_mps = snappedf(entry, 0.01), kick_speed_target_mps = snappedf(kick, 0.01),
+		kick_speed_mps = snappedf(float(ctx.get("kick_v", NAN)), 0.01), up_line_time_s = snappedf(float(ctx.get("kick_t", NAN)) - float(ctx.get("up_t", NAN)), 0.01),
+		height_gain_to_kick_m = snappedf(float(ctx.get("kick_alt", NAN)) - trace.value(0, "alt_m"), 0.1),
+		pivot_time_s = snappedf(float(ctx.get("pivot_t", NAN)) - float(ctx.get("kick_t", NAN)), 0.01),
+		pivot_radius_m = snappedf(float(ctx.get("radius", NAN)), 0.01), pivot_radius_spans = snappedf(radius_spans, 0.01),
+		torque_off_deg = snappedf(rad_to_deg(float(ctx.get("max_roll_rot", NAN))), 0.1), pitch_during_pivot_deg = snappedf(rad_to_deg(float(ctx.get("max_pitch_rot", NAN))), 0.1),
+		min_forward_speed_mps = snappedf(float(ctx.get("min_u", NAN)), 0.01), outcome = outcome,
+		height_lost_top_to_level_m = snappedf(float(ctx.get("top_alt", NAN)) - ft._min(ft._col(trace, "alt_m", ft._row_at(trace, float(ctx.get("kick_t", 0.0))))), 0.1),
+		exit_speed_mps = snappedf(float(ctx.get("level_v", NAN)), 0.01) }
+	var done: bool = ctx.has("level_t") and flight.crashed == "" and not ctx.has("floor_t")
+	row.recovered = done
+	if not done or outcome != "pivot":
+		notes.append("%s: %s%s %s" % [name, outcome, "" if done else ", not recovered", flight.crashed])
+	return row

@@ -1,0 +1,300 @@
+[
+  {
+    "id": "idf-ds-speedybee-lap001-grouped-flight-sample",
+    "title": "Fixed-Wing UAS Telemetry Benchmark (IDF_DS): 240 Flights for ML and Intelligent Trajectory Optimization — Speedybee grouped Lap001 sample",
+    "authors": [
+      "César García-Gascón"
+    ],
+    "year": 2025,
+    "source_url": "https://zenodo.org/records/16992976",
+    "download_url": "https://zenodo.org/records/16992976/files/Speedybee%20DataSet.zip?download=1",
+    "local_path": "references/rc-validation-library-2026-10-18/additional-flight-evidence/idf-ds-speedybee-lap001-grouped.csv",
+    "type": "flight-test-dataset-sample",
+    "topics": [
+      "fixed-wing flight telemetry",
+      "INAV/Speedybee",
+      "IMU",
+      "RC inputs",
+      "servo outputs",
+      "navigation",
+      "range-extracted sample"
+    ],
+    "relevance": "A real, roughly 444-second fixed-wing mission log with 126 telemetry fields and timestamped control, inertial, attitude, actuator, navigation, wind, battery, and ESC values. It supplements the already catalogued dataset metadata with one locally inspectable flight sample.",
+    "limitations": "Processed/grouped member of the published dataset, not original raw IMU/receiver packets. This is one autonomous waypoint mission, not a dedicated trim, frequency-sweep, stall, or spin test. Channel units/scales are not given by the embedded README, so raw telemetry values should not be converted by assumption. The README flags uncalibrated pitot data only for flights 117–120; this is Lap001. Firmware-derived telemetry is not independent ground truth.",
+    "access": "Public Zenodo archive. Only the selected ZIP member and directory metadata were fetched through ordinary HTTP Range requests; neither the 580,834,225-byte Speedybee ZIP nor the separate 2,121,941,653-byte Holybro ZIP was mirrored. The included source README is retained at references/rc-validation-library-2026-10-18/additional-flight-evidence/idf-ds-speedybee-readme.txt.",
+    "sha256": "5593ba124fdf6369d8f1d7da5cc64082a2469f90ce8007a904afe4e8862f6e9b",
+    "bytes": 21709805,
+    "retrieved_utc": "2026-10-19T01:32:14.864729+00:00",
+    "license": "CC BY 4.0 in Zenodo record metadata; the embedded README also says free use in education and research but states no separate standardized license.",
+    "read_depth": "Inspected complete CSV header, first row, all rows for row count/time bounds, and retained source README. Selected member path: Speedybee DataSet/processed/telemetry/Lap001.csv. ZIP method 8 (DEFLATE), compressed size 2,617,244 bytes, expanded size 21,709,805 bytes, CRC-32 2a10b186. Extraction CRC passed; an independent HTTP Range re-read matched the local bytes exactly. Initial extraction fetched 2,647,983 archive bytes in ranges; later re-verification fetched 2,647,178 range bytes. The CSV hash is not the whole-archive hash. Zenodo lists archive MD5 md5:fa6210078d8f615118027a5310dfc99c, not independently checked.",
+    "archive_member": "Speedybee DataSet/processed/telemetry/Lap001.csv",
+    "archive_size_bytes": 580834225,
+    "archive_member_compression": "ZIP method 8 (DEFLATE)",
+    "archive_member_compressed_bytes": 2617244,
+    "archive_member_crc32": "2a10b186",
+    "row_count": 27339,
+    "column_count": 126,
+    "time_column": "time (us)",
+    "time_bounds": [
+      176404364,
+      620114460
+    ],
+    "time_span_seconds": 443.710096,
+    "related_local_paths": [
+      "references/rc-validation-library-2026-10-18/additional-flight-evidence/idf-ds-speedybee-readme.txt"
+    ]
+  },
+  {
+    "id": "lehmkuehler-2016-small-uav-inertia-measurements",
+    "title": "Methods for Accurate Measurements of Small Fixed Wing UAV Inertial Properties",
+    "authors": [
+      "Kai Lehmkuehler",
+      "K. C. Wong",
+      "Dries Verstraete"
+    ],
+    "year": 2016,
+    "source_url": "https://doi.org/10.1017/aer.2016.105",
+    "download_url": "https://uav-flightresearch.com/wp-content/uploads/2023/02/aerj_inertia_kai.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/additional-flight-evidence/lehmkuehler-2016-small-uav-inertia-measurements.pdf",
+    "type": "journal-article",
+    "topics": [
+      "small fixed-wing UAV",
+      "moment of inertia",
+      "pendulum system identification",
+      "added mass"
+    ],
+    "relevance": "Compares a conventional one-degree-of-freedom pendulum with a three-degree-of-freedom method that estimates the inertia tensor from one swing, including model-scale aerodynamic added-mass correction evidence.",
+    "limitations": "The reported corrections are experiment- and scale-dependent; the paper finds full-scale correction methods inaccurate for its small UAV. This is ground-measurement methodology, not a flight log or universal inertia lookup.",
+    "access": "Public author-hosted PDF. Valid PDF signature and title/text verified.",
+    "sha256": "3b923e708f677fb255675a5576562a817ea01dfd59b93c0b696ea8a9472f2f8c",
+    "bytes": 2706933,
+    "retrieved_utc": "2026-10-19T01:32:17.573760+00:00",
+    "license": "No separate reuse license stated; public author copy, redistribution rights not inferred.",
+    "read_depth": "Read title, abstract, and selected method/results/conclusion passages. The abstract reports added-mass corrections up to 25%; no measurement table was independently transcribed or recomputed."
+  },
+  {
+    "id": "dantsker-2018-uav-inertia-rig-avistar",
+    "title": "High Fidelity Moment of Inertia Testing of Unmanned Aircraft",
+    "authors": [
+      "Or D. Dantsker",
+      "Moiz Vahora",
+      "Saym Imtiaz",
+      "Marco Caccamo"
+    ],
+    "year": 2018,
+    "source_url": "https://doi.org/10.2514/6.2018-4219",
+    "download_url": "https://uavdb.org/download/avistar/6.2018-4219.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/additional-flight-evidence/dantsker-2018-high-fidelity-uav-inertia-testing.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "RC trainer",
+      "Avistar",
+      "moment of inertia",
+      "torque rig",
+      "measurement error"
+    ],
+    "relevance": "Reports a torque-based inertia rig, validation against bars and a flat plate, and tests of a 62.5-inch, 3.945 kg Great Planes Avistar Elite-derived RC trainer plus a roughly one-fifth-scale Cirrus SR22T model.",
+    "limitations": "The Avistar was tested in pitch only; the Cirrus was tested in all three axes. It reports ground inertia tests, not flight-response logs. Use its exact aircraft and test configuration when comparing values.",
+    "access": "Public PDF copy hosted by UAVDB. Valid PDF signature, title, authors, method, and aircraft-results text verified.",
+    "sha256": "a911a8a2c2976bec15f56b4438ed46b674f9c36de61c35fcffd092a30b27bd81",
+    "bytes": 7539918,
+    "retrieved_utc": "2026-10-19T01:32:19.813785+00:00",
+    "license": "AIAA publication; no separate reuse license identified. Public download does not imply redistribution permission.",
+    "read_depth": "Read title, abstract, test-rig methods, and aircraft setup/results excerpts. Did not independently transcribe the full inertia tables or reproduce the analysis."
+  },
+  {
+    "id": "shen-2018-small-fixed-wing-aerodynamic-parameter-id",
+    "title": "Calculation and Identification of the Aerodynamic Parameters for Small-Scaled Fixed-Wing UAVs",
+    "authors": [
+      "Jieliang Shen",
+      "Yan Su",
+      "Qing Liang",
+      "Xinhua Zhu"
+    ],
+    "year": 2018,
+    "source_url": "https://doi.org/10.3390/s18010206",
+    "download_url": "https://www.mdpi.com/1424-8220/18/1/206/pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/additional-flight-evidence/shen-2018-extra300-aerodynamic-parameter-identification.pdf",
+    "type": "journal-article",
+    "topics": [
+      "small fixed-wing UAV",
+      "aerodynamic derivatives",
+      "EKF",
+      "actuator model",
+      "flight identification"
+    ],
+    "relevance": "Describes semi-empirical longitudinal/lateral derivatives followed by residual-parameter estimation with an EKF using airborne integrated-navigation attitude/velocity and multiple maneuvers; reports real flight tests of a propeller-driven small aircraft and includes actuator modeling.",
+    "limitations": "No raw time histories are published. Estimates depend on this aircraft, its MEMS/integrated-navigation sensors, maneuver design, small-angle assumptions, and chosen aerodynamic model; do not treat the coefficients as a general RC-aircraft set.",
+    "access": "Open-access publisher PDF; valid PDF signature, title, authors, abstract, and selected methods/results text verified.",
+    "sha256": "b6b83bfc5c7012a4edc9d24d1145528dc94a7219ab8c16ef9e7cebf1b8035af5",
+    "bytes": 3245169,
+    "retrieved_utc": "2026-10-19T01:32:20.741796+00:00",
+    "license": "Creative Commons Attribution 4.0 International (publisher article).",
+    "read_depth": "Read title, authors, abstract, aircraft/actuator and identification method sections, and conclusion. No raw-data extraction or parameter-table reproduction."
+  },
+  {
+    "id": "park-2013-fixed-wing-frequency-sweep",
+    "title": "Modeling with vortex lattice method and frequency sweep flight test for a fixed-wing UAV",
+    "authors": [
+      "Sanghyuk Park"
+    ],
+    "year": 2013,
+    "source_url": "https://doi.org/10.1016/j.conengprac.2013.09.002",
+    "download_url": null,
+    "local_path": null,
+    "type": "journal-article",
+    "topics": [
+      "small fixed-wing UAV",
+      "frequency sweep",
+      "servo dynamics",
+      "VLM",
+      "flight response"
+    ],
+    "relevance": "A distinct small-aircraft experiment compares a vortex-lattice dynamic model with measured servo and aircraft frequency responses; the public abstract reports control-power corrections and a propeller-normal-force term for the rudder response.",
+    "limitations": "The full article is subscription-gated at the publisher and no raw logs are available here. This entry is based on the publisher's public record and abstract, not a full protocol or coefficient audit.",
+    "access": "Publisher abstract and bibliographic page reviewed; full article download unavailable without subscription. No access workaround used.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:38:56+00:00",
+    "license": "No open reuse license identified.",
+    "read_depth": "Publisher record, highlights, and abstract; full text not retrieved."
+  },
+  {
+    "id": "franke-2026-small-fixed-wing-longitudinal-id",
+    "title": "Flight Test Based System Identification of an Unmanned Fixed-Wing Aircraft",
+    "authors": [
+      "Antonia Franke",
+      "Martin Guist",
+      "Sabine Wisbacher",
+      "Daniel Ossmann",
+      "Harald Pfifer"
+    ],
+    "year": 2026,
+    "source_url": "https://doi.org/10.82124/CEAS-GNC-2026-059",
+    "download_url": "https://fis.tu-dresden.de/portal/files/82577194/Flight_Test_Based_System_Identification_of_an_Unmanned_Fixed_Wing_Aircraft.pdf",
+    "local_path": null,
+    "type": "peer-reviewed-conference-paper",
+    "topics": [
+      "small fixed-wing UAV",
+      "flight-test identification",
+      "short period",
+      "phugoid",
+      "glide drag estimation"
+    ],
+    "relevance": "A 2026 flight-test campaign identifies longitudinal dynamics with short-period/phugoid maneuvers and glides for drag estimation, using grey-box estimation from recorded measurements to check a VLM-based initial model.",
+    "limitations": "No raw dataset is linked in the accessible record. Direct PDF retrieval returned HTTP 403, so detailed results were reviewed only through the official TU Dresden record and indexed PDF text; no local copy is retained.",
+    "access": "Official TU Dresden metadata and indexed paper text reviewed; the direct public PDF URL returned HTTP 403 to the retrieval client. No login or bypass was used.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:38:56+00:00",
+    "license": "The paper's first-page text states Creative Commons Attribution 4.0 International; official indexed text reviewed, but no PDF copy retained.",
+    "read_depth": "Official repository metadata, abstract, first-page license/authors, and indexed methods/results/conclusion passages; no raw measurements or full local PDF audit."
+  },
+  {
+    "id": "watkiss-1994-bluebird-flight-dynamics",
+    "title": "Flight Dynamics of an Unmanned Aerial Vehicle",
+    "authors": [
+      "Eric John Watkiss"
+    ],
+    "year": 1994,
+    "source_url": "https://hdl.handle.net/10945/28222",
+    "download_url": "https://calhoun.nps.edu/server/api/core/bitstreams/531bdd4d-c16c-4b91-a00e-8b051f5e9498/content",
+    "local_path": null,
+    "type": "masters-thesis",
+    "topics": [
+      "fixed-wing RC aircraft",
+      "Bluebird",
+      "inertia",
+      "stability derivatives",
+      "neutral point flight test"
+    ],
+    "relevance": "A historical fixed-wing UAV thesis describes experimentally determined inertia, estimated stability/control derivatives, and a flight-test neutral-point estimate on the RC Bluebird aircraft; its abstract reports agreement between measured and theoretical neutral point.",
+    "limitations": "The derivatives are estimates and the thesis calls for improved instrumentation and further dynamic flight tests. The aircraft, propulsion, instruments, and methods are dated; this is historical context rather than a ready-to-use model. No raw log dataset is provided.",
+    "access": "Official NPS Calhoun record and searchable thesis text reviewed. The direct Calhoun bitstream and content endpoints returned HTTP 403; no local copy or alternate-repository mirror retained.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:38:56+00:00",
+    "license": "Official repository marks the thesis approved for public release; no separate reuse license identified.",
+    "read_depth": "Official repository metadata/abstract, aircraft description, inertia/derivative and neutral-point discussion selectively reviewed through indexed text; full local PDF could not be retrieved."
+  },
+  {
+    "id": "nasa-2017-sbir-2016-ar-md-topic-list",
+    "title": "Funding and Strategic Alignment Guidance for Infusing Small Business Innovation Research Technology Into Aeronautics Research Mission Directorate Projects for 2016",
+    "authors": [
+      "Hung D. Nguyen",
+      "Gynelle C. Steele"
+    ],
+    "year": 2017,
+    "source_url": "https://ntrs.nasa.gov/citations/20170002626",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20170002626/downloads/20170002626.pdf?attachment=true",
+    "local_path": "references/rc-validation-library-2026-10-18/additional-flight-evidence/nasa-tm-2017-219458-sbir-2016-program.pdf",
+    "type": "NASA-technical-memorandum",
+    "topics": [
+      "NASA SBIR",
+      "A1.05-8105",
+      "UAS handling qualities project provenance"
+    ],
+    "relevance": "The official NASA program document lists SBIR topic A1.05-8105, “Defining Handling Qualities of Unmanned Aerial Systems,” helping trace the Phase I project referenced by the already catalogued NASA Phase II report.",
+    "limitations": "This is a NASA funding/topic guide, not the Phase I technical report and not a source of flight data, handling-quality results, or validated aircraft dynamics.",
+    "access": "Downloaded from NASA NTRS; PDF signature, title/authors, and A1.05-8105 topic-list passage verified.",
+    "sha256": "67657f488c6fe5f6f94633d6fa3d81e18f822ec6b1313edc90e45ba36a81b4e0",
+    "bytes": 1266136,
+    "retrieved_utc": "2026-10-19T01:34:50.421408+00:00",
+    "license": "NASA technical memorandum; NASA STI entry identifies it as public. Use attribution and verify any third-party material notices in the PDF.",
+    "read_depth": "Checked PDF signature/title and the A1.05-8105 topic list; did not read the unrelated SBIR project summaries in full."
+  },
+  {
+    "id": "navy-2021-nasa16-a105-uashq-transition-quad-chart",
+    "title": "NASA16-A105: Defining Handling Qualities of Unmanned Aerial Systems — Navy SBIR/STTR Transition Quad Chart",
+    "authors": [
+      "Systems Technology, Inc.",
+      "Department of the Navy SBIR/STTR Transition Program"
+    ],
+    "year": 2021,
+    "source_url": "https://navystp.com/vtm/open_file?id=N68335-19-C-0614&type=quad",
+    "download_url": "https://navystp.com/vtm/open_file?id=N68335-19-C-0614&type=quad",
+    "local_path": "references/rc-validation-library-2026-10-18/additional-flight-evidence/navy-stp-nasa16-a105-uashq-transition-quad-chart.pdf",
+    "type": "government-transition-program-quad-chart",
+    "topics": [
+      "NASA16-A105",
+      "UAS handling qualities",
+      "mission-task elements",
+      "flight-test program provenance"
+    ],
+    "relevance": "A public transition artifact identifies the Navy contract, UAS-HQ toolbox/specification, mission-task-element milestones, and the project's later flight-test milestone.",
+    "limitations": "A one-page transition chart, not a technical report, Phase III final report, test-data release, or fixed-wing validation source. Its December 2021 milestone explicitly calls for rotary-wing flight testing.",
+    "access": "Public Navy STP chart. Valid PDF signature and all chart text verified.",
+    "sha256": "fbc40ed2935aaa5ccf6aa072d440d80e9e6ba9deb8b7220c2f50377d2d5566ef",
+    "bytes": 58850,
+    "retrieved_utc": "2026-10-19T01:34:51.304417+00:00",
+    "license": "Distribution Statement A, approved for public release, unlimited distribution; NAVAIR Public Release 2021-714.",
+    "read_depth": "Read the full one-page chart and extracted PDF text. It lists the December 2021 rotary-wing flight-test milestone and August 2022 final prototype/software milestones."
+  },
+  {
+    "id": "idf-ds-speedybee-embedded-readme",
+    "title": "IDF-DS Speedybee dataset: embedded Readme.txt",
+    "authors": [
+      "César García-Gascón"
+    ],
+    "year": 2025,
+    "source_url": "https://zenodo.org/records/16992976",
+    "download_url": "https://zenodo.org/records/16992976/files/Speedybee%20DataSet.zip?download=1",
+    "local_path": "references/rc-validation-library-2026-10-18/additional-flight-evidence/idf-ds-speedybee-readme.txt",
+    "type": "dataset-documentation",
+    "topics": [
+      "dataset provenance",
+      "license notice",
+      "sensor caveats"
+    ],
+    "relevance": "Original documentation accompanying the retained Lap001 CSV. Preserves the education/research-use wording and pitot calibration caveat for flights 117-120.",
+    "limitations": "Companion documentation from the same dataset, not an independent study or flight. Extract Readme.txt from the linked Speedybee ZIP; the local hash identifies this member, not the whole archive.",
+    "access": "Retained archive README; the complete ZIP was not mirrored.",
+    "sha256": "9607ceb0d67f87bc501c665d046988c5f389a617f44092f6bc3205792d67d56f",
+    "bytes": 1333,
+    "retrieved_utc": "2026-10-19T01:32:14.864729+00:00",
+    "license": "CC BY 4.0 in Zenodo record metadata; the embedded README also says free use in education and research but states no separate standardized license.",
+    "read_depth": "Embedded README text inspected; source bytes retained unchanged.",
+    "archive_member_basename": "Readme.txt",
+    "related_record": "idf-ds-speedybee-lap001-grouped-flight-sample"
+  }
+]

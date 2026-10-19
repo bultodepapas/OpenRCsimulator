@@ -2,7 +2,7 @@
 
 Research snapshot: **2026-10-18** (library date); downloads and checks were made on 2026-10-19 UTC. This is a source collection for RC-aircraft physics comparison, not an adopted aerodynamic model or a claim of simulator validation. The [source manifest](sources.json) records 24 primary studies or datasets, including 19 downloaded originals and five useful link-only records.
 
-Original papers and datasets are local-only under `references/rc-validation-library-2026-10-18/flying-wings/`. The manifest records repository-relative paths, direct download URLs, sizes, SHA-256 values, access outcomes, license statements and limitations. Public availability does not imply permission to redistribute a paper; the local files are ignored by Git.
+Original papers and datasets are local-only under `references/rc-validation-library-2026-10-18/flying-wings/`; the byte-identical Ananda 2015 wing paper is reused from the sibling low-Reynolds collection. The manifest records repository-relative paths, direct download URLs, sizes, SHA-256 values, access outcomes, license statements and limitations. Public availability does not imply permission to redistribute a paper; the local files are ignored by Git.
 
 ## Strongest evidence for model comparison
 

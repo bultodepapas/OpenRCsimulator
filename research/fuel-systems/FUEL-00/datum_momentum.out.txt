@@ -1,0 +1,6 @@
+datum correction fuel 0.0041 kg |dv_cm|=7.248e-05 m/s
+no correction    fuel 0.0041 kg |dv_cm|=3.405e-02 m/s
+datum correction dt=1/120 |dP_total|=1.311e-04 kg m/s (P0=13.000)
+datum correction dt=1/240 |dP_total|=1.829e-05 kg m/s (P0=13.000)
+no correction    dt=1/120 |dP_total|=8.469e-02 kg m/s (P0=13.000)
+no correction    dt=1/240 |dP_total|=8.458e-02 kg m/s (P0=13.000)

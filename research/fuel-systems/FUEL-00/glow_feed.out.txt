@@ -1,0 +1,13 @@
+2T level 1g full head=42 Pa needled=42 Pa k_idle=1.000 k_wot=1.000
+2T level 1g empty head=-378 Pa needled=42 Pa k_idle=0.853 k_wot=0.965
+2T level 1g half head=-168 Pa needled=42 Pa k_idle=0.929 k_wot=0.982
+2T vertical upline 1g, 10% head=-1479 Pa needled=42 Pa k_idle=0.117 k_wot=0.865
+2T 3g pull, 10% head=-1008 Pa needled=42 Pa k_idle=0.565 k_wot=0.909
+4T level 1g full head=-168 Pa needled=-168 Pa k_idle=1.000 k_wot=1.000
+4T level 1g empty head=-588 Pa needled=-168 Pa k_idle=0.704 k_wot=0.944
+4T level 1g half head=-378 Pa needled=-168 Pa k_idle=0.865 k_wot=0.972
+4T vertical upline 1g, 10% head=-1143 Pa needled=-168 Pa k_idle=0.000 k_wot=0.863
+4T 3g pull, 10% head=-1639 Pa needled=-168 Pa k_idle=0.000 k_wot=0.785
+centripetal at tank q=2 rad/s: 0.88 m/s^2 (9% g)
+centripetal at tank q=3 rad/s: 1.99 m/s^2 (20% g)
+centripetal at tank q=5 rad/s: 5.52 m/s^2 (56% g)

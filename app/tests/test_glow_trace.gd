@@ -73,7 +73,8 @@ func _test_live_glow_traces() -> void:
 		_check("" + family + " trace accepts tick zero", trace.row_count() == 1 and trace.to_csv().begins_with("# format: openrc-trace v9\n"))
 		_check("" + family + " trace declares physical channels", trace.columns().slice(Trace.COLUMNS.size()) == GLOW_COLUMNS, str(trace.columns()))
 		_check("" + family + " metadata preserves cycle family", trace.meta.glow_family == family
-			and trace.meta.continuous_layout == "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J")
+			and trace.meta.continuous_layout == "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if session.wheel_count() > 0 else ""))
 		var initial_fuel: float = float(before.fuel_kg)
 		for _tick in 120:
 			session.sim.step()
@@ -155,3 +156,20 @@ func _test_bad_glow_samples(session: Node) -> void:
 		bad_event_count.row_count() == 1 and bad_event_count.to_csv().is_empty(),
 		"rows=%d csv=%d invalid=%s glow=%s opportunities=%s" % [bad_event_count.row_count(), bad_event_count.to_csv().length(),
 		bad_event_count._invalid_weather, bad_event_count._glow, continuous[9]])
+	if session.wheel_count() > 0:
+		# GP-06a: the wheel tail after the glow slots must be declared exactly; a dropped or shifted tail invalidates.
+		var no_suffix: Dictionary = metadata.duplicate(true)
+		no_suffix.continuous_layout = str(no_suffix.continuous_layout).get_slice("; wheel rim speeds", 0)
+		var shifted: Dictionary = metadata.duplicate(true)
+		var layout: Array = JSON.parse_string(shifted.wheel_state_layout)
+		layout[0].index = int(layout[0].index) - 1
+		shifted.wheel_state_layout = JSON.stringify(layout, "", true, true)
+		var no_wheels: PackedFloat64Array = continuous.slice(0, continuous.size() - session.wheel_count())
+		for case: Array in [["undeclared wheel tail", no_suffix, continuous], ["shifted wheel index", shifted, continuous],
+				["continuous state without its declared wheels", metadata, no_wheels]]:
+			var bad := Trace.new()
+			bad.meta = case[1].duplicate(true)
+			bad.record(session.sim.tick, session.sim.time(), session.sim.state, session.sim.last_loads,
+				session.sim.inputs, session.sim.aux, case[2])
+			_check(str(case[0]) + " invalidates the glow trace", bad.row_count() == 0 and bad.to_csv().is_empty(),
+				"rows=%d invalid=%s" % [bad.row_count(), bad._invalid_weather])

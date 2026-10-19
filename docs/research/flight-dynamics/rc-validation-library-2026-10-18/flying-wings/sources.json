@@ -2,13 +2,26 @@
   {
     "id": "skywalker-x8-2018-aerodynamic-model",
     "title": "Aerodynamic modeling of the Skywalker X8 Fixed-Wing Unmanned Aerial Vehicle",
-    "authors": ["Kristofer Gryte", "Richard Hann", "Mushfiqul Alam", "Jan Roháč", "Tor Arne Johansen", "Thor I. Fossen"],
+    "authors": [
+      "Kristofer Gryte",
+      "Richard Hann",
+      "Mushfiqul Alam",
+      "Jan Roháč",
+      "Tor Arne Johansen",
+      "Thor I. Fossen"
+    ],
     "year": 2018,
     "source_url": "https://doi.org/10.1109/ICUAS.2018.8453370",
     "download_url": "https://folk.ntnu.no/torarnj/icuasX8.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_wind_tunnel.pdf",
     "type": "conference-paper",
-    "topics": ["Skywalker X8", "wind-tunnel measurements", "static aerodynamic coefficients", "XFLR5", "modeling methodology"],
+    "topics": [
+      "Skywalker X8",
+      "wind-tunnel measurements",
+      "static aerodynamic coefficients",
+      "XFLR5",
+      "modeling methodology"
+    ],
     "relevance": "A whole-airframe X8 case study with measured static wind-tunnel force and moment coefficients and a simulation-oriented aerodynamic model.",
     "limitations": "Static loads were measured, but the final stability derivatives were supplied by XFLR5 rather than measured in the tunnel; match the paper's geometry, reference axes, and test conditions.",
     "access": "Downloaded public author copy; valid PDF signature and title/text verified.",
@@ -22,13 +35,24 @@
   {
     "id": "skywalker-x8-2018-lateral-flight-identification",
     "title": "Estimation of the Lateral Aerodynamic Coefficients for Skywalker X8 Flying Wing from Real Flight-Test Data",
-    "authors": ["Rahman Mohammadi Farhadi", "Vyacheslav Kortunov", "Andrii Molchanov", "Tatiana Solianyk"],
+    "authors": [
+      "Rahman Mohammadi Farhadi",
+      "Vyacheslav Kortunov",
+      "Andrii Molchanov",
+      "Tatiana Solianyk"
+    ],
     "year": 2018,
     "source_url": "https://doi.org/10.14311/AP.2018.58.0077",
     "download_url": "https://ojs.cvut.cz/ojs/index.php/ap/article/download/4685/4676/12170",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_lateral_flight.pdf",
     "type": "journal-article",
-    "topics": ["Skywalker X8", "flight-test identification", "lateral stability", "control derivatives", "PID closed loop"],
+    "topics": [
+      "Skywalker X8",
+      "flight-test identification",
+      "lateral stability",
+      "control derivatives",
+      "PID closed loop"
+    ],
     "relevance": "Direct X8 lateral stability and control derivative estimates from flight data, with comparison to analytical estimates and additional flight-test validation.",
     "limitations": "The flights used closed-loop PID control; the paper explicitly addresses collinearity with priors and constrained estimation, so the estimates are method-dependent and not raw open-loop response.",
     "access": "Downloaded from the publisher platform; valid PDF signature and article title/text verified.",
@@ -42,13 +66,21 @@
   {
     "id": "winter-2019-x8-icing-thesis",
     "title": "Systems Identification, Flight Performance, and Control of a Fixed-Wing UAV in Icing Conditions",
-    "authors": ["Adrian Winter"],
+    "authors": [
+      "Adrian Winter"
+    ],
     "year": 2019,
     "source_url": "https://richahan.folk.ntnu.no/Publications/2019_Winter_Thesis.pdf",
     "download_url": "https://richahan.folk.ntnu.no/Publications/2019_Winter_Thesis.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2019_icing_thesis.pdf",
     "type": "masters-thesis",
-    "topics": ["Skywalker X8", "icing", "CFD-ALE", "stability derivatives", "autopilot simulation"],
+    "topics": [
+      "Skywalker X8",
+      "icing",
+      "CFD-ALE",
+      "stability derivatives",
+      "autopilot simulation"
+    ],
     "relevance": "Detailed small-flying-wing icing methodology and software flight-performance/control analysis that complements the later flight-test work.",
     "limitations": "The abstract describes static and unsteady derivatives from CFD and software simulation; it explicitly says flight-test validation remains future work. Its reduced-frequency model has stated frequency/amplitude and separation limits.",
     "access": "Downloaded public author copy; valid PDF signature and title/abstract verified.",
@@ -62,13 +94,25 @@
   {
     "id": "winter-2019-x8-icing-cfd-corrected",
     "title": "Stability of a Flying Wing UAV in Icing Conditions (author-corrected version)",
-    "authors": ["Adrian Winter", "Richard Hann", "Andreas Wenz", "Kristoffer Gryte", "Tor Arne Johansen"],
+    "authors": [
+      "Adrian Winter",
+      "Richard Hann",
+      "Andreas Wenz",
+      "Kristoffer Gryte",
+      "Tor Arne Johansen"
+    ],
     "year": 2019,
     "source_url": "https://doi.org/10.13009/EUCASS2019-906",
     "download_url": "https://torarnj.folk.ntnu.no/eucass_final.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2019_icing_cfd_corrected.pdf",
     "type": "conference-paper-corrected-copy",
-    "topics": ["flying wing", "icing", "CFD-ALE", "quasi-static derivatives", "dynamic derivatives"],
+    "topics": [
+      "flying wing",
+      "icing",
+      "CFD-ALE",
+      "quasi-static derivatives",
+      "dynamic derivatives"
+    ],
     "relevance": "Provides an early low-Re flying-wing icing derivative model and its reduced-frequency CFD-ALE approach.",
     "limitations": "Numerical simulations at selected angles and reduced frequencies, not measured X8 icing flight data. The retained copy warns that the published version had errors in Figure 5 and Table 8; use this corrected copy and preserve its limited linear-amplitude/frequency assumptions.",
     "access": "Downloaded public author-corrected PDF; valid PDF signature and correction notice/title verified.",
@@ -82,13 +126,23 @@
   {
     "id": "reinhardt-2022-x8-flight-sysid",
     "title": "Modeling of the Skywalker X8 Fixed-Wing UAV: Flight Tests and System Identification",
-    "authors": ["Dirk Reinhardt", "Kristoffer Gryte", "Tor Arne Johansen"],
+    "authors": [
+      "Dirk Reinhardt",
+      "Kristoffer Gryte",
+      "Tor Arne Johansen"
+    ],
     "year": 2022,
     "source_url": "https://doi.org/10.1109/ICUAS54217.2022.9836114",
     "download_url": "https://folk.ntnu.no/torarnj/sysid_paper_icuas.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2022_flight_sysid.pdf",
     "type": "conference-paper",
-    "topics": ["Skywalker X8", "wind-tunnel data", "flight-test identification", "damping derivatives", "model validation"],
+    "topics": [
+      "Skywalker X8",
+      "wind-tunnel data",
+      "flight-test identification",
+      "damping derivatives",
+      "model validation"
+    ],
     "relevance": "Combines static X8 tunnel coefficients with flight-identified damping and critiques validation against tunnel fit alone.",
     "limitations": "Reuses the prior X8 tunnel dataset for much of the static model and uses flight data for damping; it is a particular campaign and modeling structure, not a universal coefficient set.",
     "access": "Downloaded public author copy; valid PDF signature and title/abstract verified.",
@@ -102,13 +156,24 @@
   {
     "id": "low-hansen-2024-x8-time-domain-sysid",
     "title": "Time-Domain System Identification and Validation of Small Fixed-Wing UAV Dynamics",
-    "authors": ["Bogdan Løw-Hansen", "Richard Hann", "Tor Arne Johansen", "Christoph Deiler"],
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Tor Arne Johansen",
+      "Christoph Deiler"
+    ],
     "year": 2024,
     "source_url": "https://doi.org/10.2514/6.2024-4653",
     "download_url": "https://folk.ntnu.no/richahan/Publications/2024_Aviaton_LoewHansen_System%20identification.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2024_time_domain_sysid.pdf",
     "type": "conference-paper",
-    "topics": ["Skywalker X8", "time-domain identification", "stability-frame coefficients", "elevons", "flight validation"],
+    "topics": [
+      "Skywalker X8",
+      "time-domain identification",
+      "stability-frame coefficients",
+      "elevons",
+      "flight validation"
+    ],
     "relevance": "Builds a six-degree-of-freedom X8 model from tunnel propulsion work and flight experiments, with model predictions for separate 10-second maneuvers near 18 m/s.",
     "limitations": "The model is identified and validated for the reported maneuvers and estimated airdata; weather, state estimation, propulsion and servo models contribute uncertainty. This is not a high-angle-of-attack or raw-data-only benchmark.",
     "access": "Downloaded public author postprint; valid PDF signature and title/abstract verified.",
@@ -122,13 +187,22 @@
   {
     "id": "x8-sysid-flight-data-2024",
     "title": "System identification campaign - Skywalker X8 UAV",
-    "authors": ["Bogdan Løw-Hansen", "Richard Hann"],
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann"
+    ],
     "year": 2024,
     "source_url": "https://doi.org/10.18710/U4TLYV",
     "download_url": "https://dataverse.no/api/access/dataset/:persistentId?persistentId=doi:10.18710/U4TLYV",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_sysid_campaign_2024.zip",
     "type": "flight-test-dataset",
-    "topics": ["Skywalker X8", "flight time series", "system identification", "elevon commands", "wind and airdata"],
+    "topics": [
+      "Skywalker X8",
+      "flight time series",
+      "system identification",
+      "elevon commands",
+      "wind and airdata"
+    ],
     "relevance": "CC0 archive with 17 X8 maneuvers (13 training, four validation), original MAT and interoperable CSV series, including accelerations, rates, states, control commands, and estimated airdata.",
     "limitations": "Signals were synchronized/resampled to 40 Hz and the README says synchronization was partly manual. Alpha/beta depend on estimated wind and airspeed; tests had strong north-west wind with a vertical component. Embedded README gives DOI `10.18710/U4TL`, unlike the canonical Dataverse DOI `10.18710/U4TLYV`.",
     "access": "Downloaded public DataverseNO dataset ZIP; ZIP CRC check passed and README/file structure inspected.",
@@ -137,18 +211,32 @@
     "retrieved_utc": "2026-10-19T01:15:44+00:00",
     "license": "DataverseNO metadata states CC0 1.0 Universal Public Domain Dedication",
     "verified": "ZIP CRC, official dataset metadata, embedded README, and file listing",
-    "read_depth": "Dataset metadata and README reviewed; flight arrays were not extracted or reprocessed"
+    "read_depth": "Dataset metadata and README reviewed; flight arrays were not extracted or reprocessed",
+    "doi": "10.18710/U4TLYV",
+    "version_note": "Same clean-X8 dataset DOI and 36 byte-identical non-directory members as sibling ZIP; archive SHA-256 differs because ZIP containers differ. Both original containers are retained; not independent datasets."
   },
   {
     "id": "low-hansen-2025-x8-estimated-aerodynamic-angles",
     "title": "Modeling and identification of a small fixed-wing UAV using estimated aerodynamic angles",
-    "authors": ["Bogdan Løw-Hansen", "Richard Hann", "Kristoffer Gryte", "Tor Arne Johansen", "Christoph Deiler"],
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Kristoffer Gryte",
+      "Tor Arne Johansen",
+      "Christoph Deiler"
+    ],
     "year": 2025,
     "source_url": "https://doi.org/10.1007/s13272-025-00816-3",
     "download_url": "https://link.springer.com/content/pdf/10.1007/s13272-025-00816-3.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2025_estimated_aerodynamic_angles.pdf",
     "type": "journal-article",
-    "topics": ["Skywalker X8", "hybrid output-error identification", "estimated angle of attack", "estimated sideslip", "six-degree-of-freedom model"],
+    "topics": [
+      "Skywalker X8",
+      "hybrid output-error identification",
+      "estimated angle of attack",
+      "estimated sideslip",
+      "six-degree-of-freedom model"
+    ],
     "relevance": "Open-access X8 flight identification in the stability frame, with a nonlinear model and separate longitudinal/lateral validation sequences.",
     "limitations": "Angle of attack, sideslip and wind are estimated by an EKF rather than directly measured throughout the campaign; environmental and estimation errors affect residuals. The fitted parameterization is specific to the stated airframe and campaign.",
     "access": "Downloaded open-access publisher PDF; valid PDF signature and title/abstract verified.",
@@ -157,18 +245,32 @@
     "retrieved_utc": "2026-10-19T01:15:49+00:00",
     "license": "Creative Commons Attribution 4.0 International",
     "verified": "PDF magic, title/authors, abstract, license, and model/validation text",
-    "read_depth": "Abstract and selected identification/validation sections; not a full coefficient reproduction"
+    "read_depth": "Abstract and selected identification/validation sections; not a full coefficient reproduction",
+    "doi": "10.1007/s13272-025-00816-3",
+    "version_note": "Same article DOI as the sibling collection copy. First page differs: conventional copy omits final volume/page line; flying-wings copy gives CEAS Aeronautical Journal (2025) 16:501-523 and online publication date. Different byte hashes retained as publication-file versions, not independent studies."
   },
   {
     "id": "low-hansen-2026-x8-icing-flight-identification",
     "title": "UAV icing: system identification of leading-edge rime-ice effects on a small fixed-wing drone",
-    "authors": ["Bogdan Løw-Hansen", "Markus Lindner", "Tor Arne Johansen", "Richard Hann", "Christoph Deiler"],
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Markus Lindner",
+      "Tor Arne Johansen",
+      "Richard Hann",
+      "Christoph Deiler"
+    ],
     "year": 2026,
     "source_url": "https://doi.org/10.1017/aer.2026.10234",
     "download_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/AD3B5D4E758CCF5A87B07ECF1C23EA0A/S0001924026102346a.pdf/uav-icing-system-identification-of-leading-edge-rime-ice-effects-on-a-small-fixed-wing-drone.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2026_icing_sysid.pdf",
     "type": "journal-article",
-    "topics": ["Skywalker X8", "flight-test system identification", "rime icing", "elevons", "stability changes"],
+    "topics": [
+      "Skywalker X8",
+      "flight-test system identification",
+      "rime icing",
+      "elevons",
+      "stability changes"
+    ],
     "relevance": "Direct clean-versus-iced flight identification on the X8, with reconstructed aerodynamic coefficients and identified changes in drag, lift slope, static margin, control effectiveness, and dynamics.",
     "limitations": "Closed-loop excitation at near-constant airspeed and intentionally generated/printed ice shapes; this is one airframe and icing setup, not a general natural-icing law.",
     "access": "Downloaded open-access Cambridge PDF; valid PDF signature, title, abstract, and license verified.",
@@ -182,13 +284,23 @@
   {
     "id": "x8-icing-flight-data-2026",
     "title": "Flight-Test System Identification of Leading-Edge Rime-Ice Effects on a Small Fixed-Wing UAV",
-    "authors": ["Bogdan Løw-Hansen", "Richard Hann", "Markus Lindner"],
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Markus Lindner"
+    ],
     "year": 2026,
     "source_url": "https://doi.org/10.18710/NNHVBP",
     "download_url": "https://dataverse.no/api/access/dataset/:persistentId?persistentId=doi:10.18710/NNHVBP",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2026_iced_flight_data.zip",
     "type": "flight-test-dataset",
-    "topics": ["Skywalker X8", "clean and iced flight data", "106 maneuvers", "MAT and CSV", "ice-shape geometry"],
+    "topics": [
+      "Skywalker X8",
+      "clean and iced flight data",
+      "106 maneuvers",
+      "MAT and CSV",
+      "ice-shape geometry"
+    ],
     "relevance": "Archive contains 53 clean and 53 iced longitudinal/lateral flight maneuvers in MAT and CSV, six printed leading-edge ice meshes, and parameter JSON files.",
     "limitations": "Processed closed-loop flight records, not original raw onboard log files. The README cautions that precomputed aero coefficients depend on the paper's propulsion model and that intervals jitter around a 20 Hz mean. Licensing conflicts: DataverseNO metadata says CC0 1.0, while the embedded README says CC-BY 4.0.",
     "access": "Downloaded public DataverseNO ZIP (82,876,659 bytes compressed); ZIP CRC check passed and README/file structure inspected.",
@@ -202,13 +314,27 @@
   {
     "id": "zagi-400x-virginia-tech-wind-tunnel-2002",
     "title": "Morphing Aircraft Design Team: Spring Semester Final Design Report (Zagi 400X wind-tunnel tests)",
-    "authors": ["Greg Eggleston", "Caroline Hutchison", "Chris Johnston", "Brian Koch", "Greg Wargo", "Kelley Williams"],
+    "authors": [
+      "Greg Eggleston",
+      "Caroline Hutchison",
+      "Chris Johnston",
+      "Brian Koch",
+      "Greg Wargo",
+      "Kelley Williams"
+    ],
     "year": 2002,
     "source_url": "https://archive.aoe.vt.edu/mason/Mason_f/FinalMorphRpt02.pdf",
     "download_url": "https://archive.aoe.vt.edu/mason/Mason_f/FinalMorphRpt02.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/zagi_400x_vt_2002_tunnel.pdf",
     "type": "senior-design-report",
-    "topics": ["Zagi 400X", "RC flying wing", "wind tunnel", "full-span elevons", "stall", "winglets"],
+    "topics": [
+      "Zagi 400X",
+      "RC flying wing",
+      "wind tunnel",
+      "full-span elevons",
+      "stall",
+      "winglets"
+    ],
     "relevance": "Whole-model tunnel tests of a 48-inch Zagi 400X include lift/moment trends, elevon deflections, winglet/sideslip cases, and stall observations near Re 379,000.",
     "limitations": "Student design report, not peer-reviewed; test conditions and support corrections are report-specific. The authors found VLM control-deflection predictions diverged from measurements, and report a 10-degree stall with reduced CLmax at the lower-speed condition.",
     "access": "Downloaded public Virginia Tech report; valid PDF signature and title/table-of-contents/test sections verified.",
@@ -222,13 +348,23 @@
   {
     "id": "platanitis-shkarayev-2005-zagi-autopilot",
     "title": "Integration of an Autopilot for a Micro Air Vehicle",
-    "authors": ["George Platanitis", "Sergey Shkarayev"],
+    "authors": [
+      "George Platanitis",
+      "Sergey Shkarayev"
+    ],
     "year": 2005,
     "source_url": "https://ntrs.nasa.gov/citations/20050185598",
     "download_url": "https://ntrs.nasa.gov/api/citations/20050185598/downloads/20050185598.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/zagi_2005_autopilot_tunnel.pdf",
     "type": "technical-report",
-    "topics": ["36-inch Zagi", "RC flying wing", "MH45 airfoil", "elevons", "wind tunnel", "autopilot flight test"],
+    "topics": [
+      "36-inch Zagi",
+      "RC flying wing",
+      "MH45 airfoil",
+      "elevons",
+      "wind tunnel",
+      "autopilot flight test"
+    ],
     "relevance": "Reports a 36-inch foam Zagi configuration, its analytical aerodynamic model, tunnel comparison, and autopilot integration/flight-testing context.",
     "limitations": "Tunnel model was half-scale at Re about 121,000 and only longitudinal loads were measured because transverse strain gauges failed. The report notes flexible surfaces and large discrepancies in several calculated coefficients; no raw flight time series is supplied.",
     "access": "Downloaded from NASA Technical Reports Server; valid PDF signature and title/contents/experiment text verified.",
@@ -242,13 +378,25 @@
   {
     "id": "shams-2020-fwmav-wind-tunnel-flight",
     "title": "Airfoil Selection Procedure, Wind Tunnel Experimentation and Implementation of 6DOF Modeling on a Flying Wing Micro Aerial Vehicle",
-    "authors": ["Taimur Ali Shams", "Syed Irtiza Ali Shah", "Ali Javed", "Syed Hossein Raza Hamdani"],
+    "authors": [
+      "Taimur Ali Shams",
+      "Syed Irtiza Ali Shah",
+      "Ali Javed",
+      "Syed Hossein Raza Hamdani"
+    ],
     "year": 2020,
     "source_url": "https://doi.org/10.3390/mi11060553",
     "download_url": "https://mdpi-res.com/d_attachment/micromachines/micromachines-11-00553/article_deploy/micromachines-11-00553-v2.pdf?version=1591102394",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/fwmav_2020_wind_tunnel_flight.pdf",
     "type": "journal-article",
-    "topics": ["flying-wing MAV", "Eppler 387", "low Reynolds number", "wind tunnel", "6DOF modeling", "flight test"],
+    "topics": [
+      "flying-wing MAV",
+      "Eppler 387",
+      "low Reynolds number",
+      "wind tunnel",
+      "6DOF modeling",
+      "flight test"
+    ],
     "relevance": "Full-scale 200 g EPP flying-wing study with measured static tunnel coefficients at 20 m/s, a six-degree-of-freedom model, and reported successful mission flights.",
     "limitations": "The paper calculates rate and elevon-control derivatives rather than measuring them directly. Flight evidence is qualitative and does not include a reusable identified flight log; its airframe/propeller differs from X8 and Zagi.",
     "access": "Downloaded open-access MDPI PDF; valid PDF signature and title/abstract verified.",
@@ -262,13 +410,26 @@
   {
     "id": "nasir-2017-tailless-bwb-elevons",
     "title": "The Effect of Elevons Deflection to Aerodynamic Coefficients of A Tail-less Blended Wing-Body Planform",
-    "authors": ["Rizal E. M. Nasir", "Ilyas H. Basri", "Aiman M. Ahmad", "Zulfazli A. A. Latif", "Wirachman Wisnoe", "Wahyu Kuntjoro"],
+    "authors": [
+      "Rizal E. M. Nasir",
+      "Ilyas H. Basri",
+      "Aiman M. Ahmad",
+      "Zulfazli A. A. Latif",
+      "Wirachman Wisnoe",
+      "Wahyu Kuntjoro"
+    ],
     "year": 2017,
     "source_url": "https://ir.uitm.edu.my/id/eprint/39162/",
     "download_url": "https://ir.uitm.edu.my/id/eprint/39162/1/39162.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/tailless_bwb_2017_elevons.pdf",
     "type": "journal-article",
-    "topics": ["elevon effectiveness", "control allocation", "tailless BWB", "wind tunnel", "force and moment coefficients"],
+    "topics": [
+      "elevon effectiveness",
+      "control allocation",
+      "tailless BWB",
+      "wind tunnel",
+      "force and moment coefficients"
+    ],
     "relevance": "Measures six force/moment coefficients for 31 combinations of four elevon deflections, useful for control coupling and allocation trends.",
     "limitations": "The model is a thin flat plate with BWB-like planform, tested at a fixed pitch angle and zero sideslip; it is an elevon-effectiveness analogue, not an exact RC airframe or full aerodynamic derivative sweep.",
     "access": "Downloaded from UiTM institutional repository; valid PDF signature and title/abstract verified.",
@@ -282,13 +443,23 @@
   {
     "id": "jiajan-2018-tailless-mini-wind-tunnel",
     "title": "Aerodynamic Investigations of Tailless Mini UAV by Using Subsonic Wind Tunnel",
-    "authors": ["Wanchai Jiajan", "Kanok Tongsawang", "Komkrit Kaewchai"],
+    "authors": [
+      "Wanchai Jiajan",
+      "Kanok Tongsawang",
+      "Komkrit Kaewchai"
+    ],
     "year": 2018,
     "source_url": "https://ph02.tci-thaijo.org/index.php/nkrafa-sct/article/view/159333",
     "download_url": "https://ph02.tci-thaijo.org/index.php/nkrafa-sct/article/download/159333/115243/",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/tailless_mini_uav_2018.pdf",
     "type": "journal-article",
-    "topics": ["tailless mini-UAV", "wind tunnel", "Reynolds 300000-400000", "CFD comparison", "static stability"],
+    "topics": [
+      "tailless mini-UAV",
+      "wind tunnel",
+      "Reynolds 300000-400000",
+      "CFD comparison",
+      "static stability"
+    ],
     "relevance": "Reports measured lift/drag trends for a tailless mini-UAV and compares them with CFD at low-subsonic Reynolds numbers.",
     "limitations": "The record provides no raw flight series or broad coefficient set; results are from one mini-UAV geometry and CFD agreement is not an independent flight validation. The article is in Thai with an English abstract.",
     "access": "Downloaded from journal platform; valid PDF signature and bilingual title/abstract verified.",
@@ -302,13 +473,23 @@
   {
     "id": "jiajan-2017-tailless-mini-design-cfd",
     "title": "Aerodynamic Study and Analysis of Airfoils and Wings of Tailless Mini-UAV",
-    "authors": ["Wanchai Jiajan", "Kanok Tongsawang", "Nukul Sukuprakan"],
+    "authors": [
+      "Wanchai Jiajan",
+      "Kanok Tongsawang",
+      "Nukul Sukuprakan"
+    ],
     "year": 2017,
     "source_url": "https://ph02.tci-thaijo.org/index.php/nkrafa-sct/article/view/142027",
     "download_url": "https://ph02.tci-thaijo.org/index.php/nkrafa-sct/article/download/142027/105149/",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/tailless_mini_uav_2017_design.pdf",
     "type": "journal-article",
-    "topics": ["tailless mini-UAV", "airfoil and planform design", "CFD", "XFLR5", "low Reynolds number"],
+    "topics": [
+      "tailless mini-UAV",
+      "airfoil and planform design",
+      "CFD",
+      "XFLR5",
+      "low Reynolds number"
+    ],
     "relevance": "Gives a companion tailless-mini design/modeling study and geometry/analysis context for the 2018 tunnel study.",
     "limitations": "Numerical CFD/XFLR5 analysis, not measured wind-tunnel or flight data; reported efficiency and stability conclusions should not be treated as observed aircraft performance.",
     "access": "Downloaded from journal platform; valid PDF signature and English title/abstract verified.",
@@ -322,13 +503,23 @@
   {
     "id": "ananda-2015-low-re-wings",
     "title": "Measured aerodynamic characteristics of wings at low Reynolds numbers",
-    "authors": ["G. K. Ananda", "P. P. Sukumar", "M. S. Selig"],
+    "authors": [
+      "G. K. Ananda",
+      "P. P. Sukumar",
+      "M. S. Selig"
+    ],
     "year": 2015,
     "source_url": "https://doi.org/10.1016/j.ast.2014.11.016",
     "download_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2015-AeroSciTech-LowReWings.pdf",
-    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/low_re_wings_2015.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/AnandaSukumarSelig-2015-AeroSciTech-LowReWings.pdf",
     "type": "journal-article",
-    "topics": ["low-Reynolds aerodynamics", "finite wings", "aspect ratio", "lift and drag", "aerodynamic center"],
+    "topics": [
+      "low-Reynolds aerodynamics",
+      "finite wings",
+      "aspect ratio",
+      "lift and drag",
+      "aerodynamic center"
+    ],
     "relevance": "Experimental force-balance measurements on ten finite wings, AR 2–5, provide a useful low-Re wing-level check for lift slope, maximum lift, efficiency, and Reynolds dependence.",
     "limitations": "Flat-plate straight/tapered wing models are not swept elevon flying wings; the study's no-hysteresis result applies to its tested geometries and conditions, not universally.",
     "access": "Downloaded public UIUC author copy; valid PDF signature and title/abstract verified.",
@@ -337,18 +528,29 @@
     "retrieved_utc": "2026-10-19T01:16:53+00:00",
     "license": "Not stated; publicly accessible author copy, redistribution not inferred",
     "verified": "PDF magic, title/authors, abstract, and experimental geometry/Re description",
-    "read_depth": "Abstract and selected experiment/results text; no digitization of plots"
+    "read_depth": "Abstract and selected experiment/results text; no digitization of plots",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
   },
   {
     "id": "sekino-maki-2024-opterra-dynamic-wind-tunnel",
     "title": "A flow-field integrated flight control: dynamic wind tunnel testing and simulation",
-    "authors": ["S. Sekino", "M. Maki"],
+    "authors": [
+      "S. Sekino",
+      "M. Maki"
+    ],
     "year": 2024,
     "source_url": "https://doi.org/10.1017/aer.2024.56",
     "download_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/025C25971EC149451E5DD4CE1AC88FBE/S0001924024000563a.pdf/flowfield_integrated_flight_control_dynamic_wind_tunnel_testing_and_simulation.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/opterra_2024_dynamic_wind_tunnel.pdf",
     "type": "journal-article",
-    "topics": ["Opterra 2m", "RC flying wing", "dynamic wind tunnel", "surface pressure", "elevons", "gust response"],
+    "topics": [
+      "Opterra 2m",
+      "RC flying wing",
+      "dynamic wind tunnel",
+      "surface pressure",
+      "elevons",
+      "gust response"
+    ],
     "relevance": "Uses an Opterra 2m RC flying wing with elevons and onboard surface-pressure sensing in a motion-capable wind-tunnel system; useful for dynamic test design and pressure response.",
     "limitations": "The reported control evaluation is dynamic wind-tunnel testing and simulation; the authors explain that outdoor flight was not the repeatable controlled experiment used here. It is not an identified full-airframe coefficient dataset.",
     "access": "Downloaded open-access Cambridge PDF; valid PDF signature, title/abstract, vehicle, and test-method text verified.",
@@ -362,13 +564,23 @@
   {
     "id": "hamada-2018-design-build-fly-wing",
     "title": "Design, Build and Fly a Flying Wing",
-    "authors": ["Ahmed A. Hamada", "Abdelrahman A. Sultan", "Mohamed M. Abdelrahman"],
+    "authors": [
+      "Ahmed A. Hamada",
+      "Abdelrahman A. Sultan",
+      "Mohamed M. Abdelrahman"
+    ],
     "year": 2018,
     "source_url": "https://www.athensjournals.gr/technology/2018-5-3-2-Hamada.pdf",
     "download_url": "https://www.athensjournals.gr/technology/2018-5-3-2-Hamada.pdf",
     "local_path": "references/rc-validation-library-2026-10-18/flying-wings/flying_wing_2018_design_build_fly.pdf",
     "type": "journal-article",
-    "topics": ["flying-wing design", "wind tunnel", "CFD", "flight test", "stability"],
+    "topics": [
+      "flying-wing design",
+      "wind tunnel",
+      "CFD",
+      "flight test",
+      "stability"
+    ],
     "relevance": "Describes an undergraduate flying-wing design/build project with analysis, wind-tunnel comparison, fabrication, and a real-flight check.",
     "limitations": "Graduation-project report with limited reusable flight measurements; aerodynamic design tools and flight observations are not a raw identification dataset or a controlled stall/spin campaign.",
     "access": "Downloaded public journal PDF; valid PDF signature and title/authors/abstract verified.",
@@ -382,13 +594,24 @@
   {
     "id": "li-2016-spin-probe-delta-uav",
     "title": "A miniature seven-hole probe air data system and its application on spin prediction",
-    "authors": ["Shaoze Li", "Yunsong Gu", "Jiexing Han", "Qite Wang"],
+    "authors": [
+      "Shaoze Li",
+      "Yunsong Gu",
+      "Jiexing Han",
+      "Qite Wang"
+    ],
     "year": 2016,
     "source_url": "https://doi.org/10.1177/1756829316660320",
     "download_url": "https://journals.sagepub.com/doi/pdf/10.1177/1756829316660320",
     "local_path": null,
     "type": "journal-article",
-    "topics": ["spin flight test", "seven-hole probe", "angle of attack", "sideslip", "delta-wing UAV"],
+    "topics": [
+      "spin flight test",
+      "seven-hole probe",
+      "angle of attack",
+      "sideslip",
+      "delta-wing UAV"
+    ],
     "relevance": "Reports synchronized airdata and angular-rate measurements through a complete spin on a small UAV; useful as an adjacent instrumentation and spin-entry example.",
     "limitations": "The tested vehicle is a slender-body delta-wing UAV, not a true flying wing, and this study is not an X8/Zagi coefficient source. Its SAGE PDF request returned 403 in this collection pass.",
     "access": "Link-only; publisher source and abstract were checked, but the official PDF endpoint returned HTTP 403 and no local copy was retained.",
@@ -402,13 +625,23 @@
   {
     "id": "gatto-2010-articulated-winglet-pressure",
     "title": "Experimental Investigation into Articulated Winglet Effects on Flying Wing Surface Pressure Aerodynamics",
-    "authors": ["A. Gatto", "P. Bourdin", "M. I. Friswell"],
+    "authors": [
+      "A. Gatto",
+      "P. Bourdin",
+      "M. I. Friswell"
+    ],
     "year": 2010,
     "source_url": "https://doi.org/10.2514/1.C000251",
     "download_url": null,
     "local_path": null,
     "type": "journal-article",
-    "topics": ["swept flying wing", "Zagi 12 airfoil", "articulated winglets", "surface pressure", "wind tunnel"],
+    "topics": [
+      "swept flying wing",
+      "Zagi 12 airfoil",
+      "articulated winglets",
+      "surface pressure",
+      "wind tunnel"
+    ],
     "relevance": "Measures wing/winglet pressure effects on a swept flying-wing model with Zagi 12 section, directly relevant to winglet loading questions.",
     "limitations": "Pressure changes are not full-aircraft force/moment coefficients or free-flight response. The institutional record did not expose a free full text; no copy was saved.",
     "access": "Link-only; DOI/publisher metadata and an abstract-level record checked; no verified lawful free full-text copy found.",
@@ -422,13 +655,25 @@
   {
     "id": "shams-2020-propeller-induced-flow-fwmav",
     "title": "Experimental Investigation of Propeller Induced Flow on Flying Wing Micro Aerial Vehicle for Improved 6DOF Modeling",
-    "authors": ["Taimur Ali Shams", "Syed Irtiza Ali Shah", "Aamer Shahzad", "Ali Javed", "Kashif Mehmood"],
+    "authors": [
+      "Taimur Ali Shams",
+      "Syed Irtiza Ali Shah",
+      "Aamer Shahzad",
+      "Ali Javed",
+      "Kashif Mehmood"
+    ],
     "year": 2020,
     "source_url": "https://doi.org/10.1109/ACCESS.2020.3026005",
     "download_url": null,
     "local_path": null,
     "type": "journal-article",
-    "topics": ["flying-wing MAV", "propeller-induced flow", "advance ratio", "wind tunnel", "aero-propulsive coupling"],
+    "topics": [
+      "flying-wing MAV",
+      "propeller-induced flow",
+      "advance ratio",
+      "wind tunnel",
+      "aero-propulsive coupling"
+    ],
     "relevance": "Direct low-aspect-ratio flying-wing tunnel study quantifying propeller-induced changes to aerodynamic coefficients with advance ratio.",
     "limitations": "This is a different MAV and powertrain from X8/Zagi. IEEE Xplore's official PDF endpoint returned challenge HTML in this pass; the response was discarded and no local copy retained.",
     "access": "Link-only; bibliographic record and abstract checked; official PDF download was blocked by challenge HTML.",
@@ -442,13 +687,22 @@
   {
     "id": "laurence-argrow-2018-x8-flush-airdata",
     "title": "Development and Flight Test Results of a Small UAS Distributed Flush Airdata System",
-    "authors": ["Roger J. Laurence III", "Brian M. Argrow"],
+    "authors": [
+      "Roger J. Laurence III",
+      "Brian M. Argrow"
+    ],
     "year": 2018,
     "source_url": "https://doi.org/10.1175/JTECH-D-17-0192.1",
     "download_url": null,
     "local_path": null,
     "type": "journal-article",
-    "topics": ["X-8 Skywalker", "flight-test airdata", "angle-of-attack estimate", "sideslip estimate", "pressure sensors"],
+    "topics": [
+      "X-8 Skywalker",
+      "flight-test airdata",
+      "angle-of-attack estimate",
+      "sideslip estimate",
+      "pressure sensors"
+    ],
     "relevance": "Compares a distributed flush airdata system on the X-8 Skywalker with a multihole-probe reference during flight; relevant to aerodynamic-state measurement limits.",
     "limitations": "This is sensor/airdata validation, not an aerodynamic force or control-derivative study. CFD is used for port placement and the paper notes a first-iteration system with training-domain and structural-flexibility limitations.",
     "access": "Link-only; the AMS full-text article page was readable, but a stable direct PDF was not verified or saved.",
@@ -462,13 +716,22 @@
   {
     "id": "shields-mohseni-2013-low-ar-damping",
     "title": "Aerodynamic damping derivatives of low aspect ratio wings at low Reynolds numbers",
-    "authors": ["Matthew C. Shields", "Kamran Mohseni"],
+    "authors": [
+      "Matthew C. Shields",
+      "Kamran Mohseni"
+    ],
     "year": 2013,
     "source_url": "https://doi.org/10.2514/6.2013-3192",
     "download_url": null,
     "local_path": null,
     "type": "conference-paper",
-    "topics": ["low aspect ratio wing", "forced oscillation", "dynamic derivatives", "Reynolds 75000", "pitch/yaw damping"],
+    "topics": [
+      "low aspect ratio wing",
+      "forced oscillation",
+      "dynamic derivatives",
+      "Reynolds 75000",
+      "pitch/yaw damping"
+    ],
     "relevance": "Experimental forced-oscillation measurements for a pure AR-1 wing provide a rare low-Re dynamic-derivative comparator for simple wing models.",
     "limitations": "Wing-only flat plate without fuselage, sweep or tail; not a full flying-wing aircraft model. No lawful free publisher/author copy was verified in this pass.",
     "access": "Link-only; DOI, abstract, and proceedings citation checked; full text not obtained.",

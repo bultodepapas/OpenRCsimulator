@@ -1,0 +1,21 @@
+/home/bulto/OpenRCsimulator/app/data/aircraft/stik_glow_61fx_2t.json M_wet=2.885058 tank_frd= [0.22090000000000004, 6.012784841685889e-19, 1.164977063076641e-18]
+ J_wet= ['0.115456', '0.387192', '0.484213', '-0.009540', '0.007240', '0.000455']
+ rem=0.120 m=2.885058 cg_x=-0.000000 m  I=[0.115456, 0.387192, 0.484213]  |FuelMass-MassInventory| dm=4.4e-16 dcg=2.9e-17 dI=5.6e-17
+ rem=0.060 m=2.825058 cg_x=-0.004692 m  I=[0.115431, 0.384149, 0.481170]  |FuelMass-MassInventory| dm=4.4e-16 dcg=2.8e-17 dI=5.6e-17
+ rem=0.000 m=2.765058 cg_x=-0.009587 m  I=[0.115406, 0.380976, 0.477997]  |FuelMass-MassInventory| dm=4.4e-16 dcg=2.8e-17 dI=5.6e-17
+ dry-vs-wet: dIxx=-0.04% dIyy=-1.61% dIzz=-1.28%
+ fuel box volume 225.0 ml; fuel volume at profile density 856.92: 140.0 ml; at 0.8: 150.0 ml
+/home/bulto/OpenRCsimulator/app/data/aircraft/stik_glow_55ax_2t.json M_wet=2.622899 tank_frd= [0.22090000000000004, 0.0, -2.0668011631275742e-19]
+ J_wet= ['0.115850', '0.321630', '0.417891', '-0.007696', '0.007854', '0.000604']
+ rem=0.120 m=2.622899 cg_x=-0.000000 m  I=[0.115850, 0.321630, 0.417891]  |FuelMass-MassInventory| dm=0.0e+00 dcg=3.2e-17 dI=5.6e-17
+ rem=0.060 m=2.562899 cg_x=-0.005171 m  I=[0.115825, 0.318580, 0.414842]  |FuelMass-MassInventory| dm=0.0e+00 dcg=3.3e-17 dI=5.6e-17
+ rem=0.000 m=2.502899 cg_x=-0.010591 m  I=[0.115800, 0.315387, 0.411649]  |FuelMass-MassInventory| dm=0.0e+00 dcg=3.3e-17 dI=5.6e-17
+ dry-vs-wet: dIxx=-0.04% dIyy=-1.94% dIzz=-1.49%
+ fuel box volume 225.0 ml; fuel volume at profile density 856.92: 140.0 ml; at 0.8: 150.0 ml
+/home/bulto/OpenRCsimulator/app/data/aircraft/stik_glow_fs64v_4t.json M_wet=2.593378 tank_frd= [0.22090000000000004, 0.0, -1.2541967831502448e-19]
+ J_wet= ['0.116078', '0.317079', '0.412716', '-0.002798', '0.009487', '0.000251']
+ rem=0.120 m=2.593378 cg_x=-0.000000 m  I=[0.116078, 0.317079, 0.412716]  |FuelMass-MassInventory| dm=0.0e+00 dcg=5.4e-17 dI=1.4e-17
+ rem=0.060 m=2.533378 cg_x=-0.005232 m  I=[0.116053, 0.314029, 0.409666]  |FuelMass-MassInventory| dm=0.0e+00 dcg=5.5e-17 dI=1.4e-17
+ rem=0.000 m=2.473378 cg_x=-0.010717 m  I=[0.116028, 0.310833, 0.406470]  |FuelMass-MassInventory| dm=0.0e+00 dcg=5.6e-17 dI=1.4e-17
+ dry-vs-wet: dIxx=-0.04% dIyy=-1.97% dIzz=-1.51%
+ fuel box volume 225.0 ml; fuel volume at profile density 856.92: 140.0 ml; at 0.8: 150.0 ml
