@@ -80,6 +80,10 @@ Identified Cnβ spans 0.046/rad (Ultra Stick 25e) to 0.167/rad (T-2), against th
   - Figure 11 gives the subcritical drag of square cylinders with the flow face-on: about 2.0 with sharp corners (r/b ≤ 0.021), 1.6 at r/b 0.08 and 1.2 at r/b 0.245. Beyond 30° of incidence it is about 1.5 for every radius. These values are read from the figure.
   - The corner radius strongly moves the critical Reynolds number. A Stik-sized slab side in knife-edge works near Re 10⁵, which is subcritical.
   - The section side force can be large and can change sign with Reynolds number.
+- **Fuselage side force, measured** (Letko and Williams 1955, NACA TN 3551). Fuselages of four sections (circular, square round-cornered, deep, shallow) were tested alone and with wings.
+  - The square body's normal force per side area (fig. 8a, read from the figure) is about 0.75 sin²α: 0.089 at 20° and 0.199 at 32°. By symmetry that is its side force against sideslip.
+  - A mid wing roughly doubles the body's side-force derivative at α 0 (fig. 18).
+  - On the Stik this gives CY ≈ −0.015 at 20° from the body alone; see the [D10-R2 knife-edge section](stik-lateral-directional-2026-10-18/README.md#7-knife-edge-the-ft-batterys-finding-measured-in-flight).
 - **Knife-edge practice, not measurements.**
   - The commercial Aerofly FS 2 simulator models the fuselage as 2–16 round or rectangular stations. Its starting values are a sideways drag Cdy of 1.0–1.5 and a side lift Cly of 0.6; a higher Cly holds a knife-edge with less sideslip.
   - Model Airplane News (2018) reports that side-force generators made a large Ultra Stick's knife-edge much slower.
