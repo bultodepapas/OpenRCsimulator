@@ -166,6 +166,7 @@ static func save_variant(
 	var is_existing_variant: bool = false
 	var created_at: int = int(Time.get_unix_time_from_system())
 	var directory_exists: bool = DirAccess.dir_exists_absolute(variant_dir)
+	var file_exists: bool = FileAccess.file_exists(variant_dir)
 	if directory_exists:
 		var existing_result: Dictionary = _load_from_directory(variant_dir, safe_id)
 		if not bool(existing_result["ok"]):
@@ -211,7 +212,7 @@ static func save_variant(
 		stored_dependencies = pinned_dependencies.duplicate(true)
 		created_at = int(existing_variant["created_at_unix"])
 		revision = maxi(int(existing_variant["revision"]) + 1, _next_revision(variant_dir))
-	elif FileAccess.file_exists(variant_dir):
+	elif file_exists:
 		errors.append("Variant ID collides with a file in the local store.")
 		return _result(false, errors)
 	elif expected_revision > 0:
@@ -229,7 +230,27 @@ static func save_variant(
 			errors.append_array(dependencies_result["errors"])
 			return _result(false, errors)
 		stored_dependencies = dependencies_result["manifest"]
-	var revisions_dir: String = variant_dir.path_join("revisions")
+	var write_dir: String = variant_dir
+	if not is_existing_variant:
+		var staging_root: String = root_path.path_join("_staging")
+		root_error = _make_directory(staging_root)
+		if root_error != OK:
+			errors.append("Could not create the first-save staging directory (%s)." % error_string(root_error))
+			return _result(false, errors)
+		var staging_dir: String = ""
+		for attempt: int in range(4):
+			var staging_nonce: String = _new_uuid()
+			if staging_nonce.is_empty():
+				break
+			var candidate: String = staging_root.path_join(safe_id + "-" + staging_nonce)
+			if DirAccess.make_dir_absolute(candidate) == OK:
+				staging_dir = candidate
+				break
+		if staging_dir.is_empty():
+			errors.append("Could not reserve a unique first-save staging directory.")
+			return _result(false, errors)
+		write_dir = staging_dir
+	var revisions_dir: String = write_dir.path_join("revisions")
 	root_error = _make_directory(revisions_dir)
 	if root_error != OK:
 		errors.append("Could not create the variant revisions directory (%s)." % error_string(root_error))
@@ -280,15 +301,60 @@ static func save_variant(
 		"revision": revision,
 	}
 	var index_bytes: PackedByteArray = (JSON.stringify(index, "\t", true, true) + "\n").to_utf8_buffer()
-	var index_result: Dictionary = _write_index_atomic(variant_dir, index_bytes, safe_id, previous_revision)
+	var index_result: Dictionary = _write_index_atomic(write_dir, index_bytes, safe_id, previous_revision)
 	if not bool(index_result["ok"]):
 		errors.append_array(index_result["errors"])
 		return _result(false, errors)
-	var loaded: Dictionary = _load_from_directory(variant_dir, safe_id)
+	var loaded: Dictionary = _load_from_directory(write_dir, safe_id)
 	if not bool(loaded["ok"]):
 		errors.append_array(loaded["errors"])
 		return _result(false, errors)
+	if not is_existing_variant:
+		var publication: Dictionary = _publish_staged_variant(write_dir, variant_dir, safe_id)
+		if not bool(publication["ok"]):
+			errors.append_array(publication["errors"])
+			return _result(false, errors)
+		loaded = publication
 	return _result(true, PackedStringArray(), loaded["variant"])
+
+
+static func _publish_staged_variant(
+		staging_dir: String,
+		variant_dir: String,
+		expected_id: String,
+		before_publish: Callable = Callable()
+) -> Dictionary:
+	var errors := PackedStringArray()
+	if not DirAccess.dir_exists_absolute(staging_dir):
+		errors.append("The complete first-save staging directory is unavailable.")
+		return _result(false, errors)
+	var staged: Dictionary = _load_from_directory(staging_dir, expected_id)
+	if not bool(staged["ok"]):
+		errors.append("First-save staging failed validation: " + "; ".join(staged["errors"]))
+		return _result(false, errors)
+	if DirAccess.dir_exists_absolute(variant_dir) or FileAccess.file_exists(variant_dir):
+		errors.append("Variant ID became occupied before first-save publication; staged data was not promoted.")
+		return _result(false, errors)
+	# Tests can inject a one-shot interruption at the publication boundary without
+	# mutating a global failpoint or exposing a switch on the public save API.
+	if before_publish.is_valid() and not bool(before_publish.call()):
+		errors.append("First-save publication was interrupted before the directory rename.")
+		return _result(false, errors)
+	if DirAccess.dir_exists_absolute(variant_dir) or FileAccess.file_exists(variant_dir):
+		errors.append("Variant ID became occupied before first-save publication; staged data was not promoted.")
+		return _result(false, errors)
+	var rename_error: Error = DirAccess.rename_absolute(staging_dir, variant_dir)
+	if rename_error != OK:
+		errors.append("Could not publish the complete first-save directory (%s)." % error_string(rename_error))
+		return _result(false, errors)
+	var published: Dictionary = _load_from_directory(variant_dir, expected_id)
+	if not bool(published["ok"]):
+		var rollback_error: Error = DirAccess.rename_absolute(variant_dir, staging_dir)
+		if rollback_error != OK:
+			errors.append("Published directory failed readback and could not return to staging (%s)." % error_string(rollback_error))
+		errors.append_array(published["errors"])
+		return _result(false, errors)
+	return published
 
 
 static func load_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
@@ -307,8 +373,11 @@ static func load_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
 	return _load_from_directory(variant_dir, id)
 
 
-static func delete_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
+static func delete_variant(id: String, root: String = DEFAULT_ROOT, expected_revision: int = -1) -> Dictionary:
 	var errors := PackedStringArray()
+	if expected_revision < -1:
+		errors.append("Expected revision must be -1 or a non-negative integer.")
+		return _result(false, errors)
 	var root_result: Dictionary = _resolve_root(root)
 	if not bool(root_result["ok"]):
 		errors.append_array(root_result["errors"])
@@ -325,21 +394,36 @@ static func delete_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionar
 	if not bool(loaded["ok"]):
 		errors.append_array(loaded["errors"])
 		return _result(false, errors)
+	var current_revision: int = int(loaded["variant"]["revision"])
+	if expected_revision >= 0 and current_revision != expected_revision:
+		errors.append("Saved variant changed from expected revision %d to revision %d; reload before deleting." % [expected_revision, current_revision])
+		return _result(false, errors)
 	var trash_root: String = root_path.path_join("_trash")
 	var err: Error = _make_directory(trash_root)
 	if err != OK:
 		errors.append("Could not create the local trash directory (%s)." % error_string(err))
 		return _result(false, errors)
-	var trash_name: String = "%s-%010d-%s" % [id, int(Time.get_unix_time_from_system()), _new_uuid().substr(0, 8)]
-	var trash_path: String = trash_root.path_join(trash_name)
+	var generation: String = ""
+	var trash_path: String = ""
+	for attempt: int in range(4):
+		generation = _new_uuid()
+		if generation.is_empty():
+			break
+		trash_path = trash_root.path_join(id + "-" + generation)
+		if not DirAccess.dir_exists_absolute(trash_path) and not FileAccess.file_exists(trash_path):
+			break
+		trash_path = ""
+	if generation.is_empty() or trash_path.is_empty():
+		errors.append("Could not reserve a unique local trash generation.")
+		return _result(false, errors)
 	err = DirAccess.rename_absolute(variant_dir, trash_path)
 	if err != OK:
 		errors.append("Could not move the variant to local trash (%s)." % error_string(err))
 		return _result(false, errors)
-	return _result(true, PackedStringArray(), loaded["variant"])
+	return _result(true, PackedStringArray(), loaded["variant"], generation)
 
 
-static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictionary:
+static func restore_variant(id: String, root: String = DEFAULT_ROOT, generation: String = "") -> Dictionary:
 	var errors := PackedStringArray()
 	var root_result: Dictionary = _resolve_root(root)
 	if not bool(root_result["ok"]):
@@ -347,6 +431,9 @@ static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictiona
 		return _result(false, errors)
 	if not _valid_uuid(id):
 		errors.append("Variant ID must be a lowercase UUID.")
+		return _result(false, errors)
+	if not generation.is_empty() and not _valid_uuid(generation):
+		errors.append("Trash generation must be a lowercase UUID returned by delete.")
 		return _result(false, errors)
 	var root_path: String = root_result["path"]
 	var write_guard := VariantWriteGuard.new(root_path, id)
@@ -357,24 +444,56 @@ static func restore_variant(id: String, root: String = DEFAULT_ROOT) -> Dictiona
 		errors.append("A live variant with this ID already exists.")
 		return _result(false, errors)
 	var trash_root: String = root_path.path_join("_trash")
-	var candidates: Array[String] = []
-	for entry: String in _directory_names(trash_root, true):
-		if entry == id or entry.begins_with(id + "-"):
-			candidates.append(entry)
-	candidates.sort()
-	candidates.reverse()
-	for entry: String in candidates:
-		var candidate: String = trash_root.path_join(entry)
-		var loaded: Dictionary = _load_from_directory(candidate, id)
-		if not bool(loaded["ok"]):
-			continue
-		var err: Error = DirAccess.rename_absolute(candidate, live_path)
-		if err != OK:
-			errors.append("Could not restore the variant from local trash (%s)." % error_string(err))
+	var candidate_name: String = ""
+	if not generation.is_empty():
+		candidate_name = id + "-" + generation
+		if not DirAccess.dir_exists_absolute(trash_root.path_join(candidate_name)):
+			errors.append("The requested trash generation does not exist.")
 			return _result(false, errors)
-		return _load_from_directory(live_path, id)
-	errors.append("No valid trashed variant with this ID was found.")
-	return _result(false, errors)
+	else:
+		var candidates: Array[String] = []
+		for entry: String in _directory_names(trash_root, true):
+			if _is_trash_generation_entry(entry, id):
+				candidates.append(entry)
+		if candidates.is_empty():
+			errors.append("No trash generation with this ID was found.")
+			return _result(false, errors)
+		if candidates.size() != 1:
+			errors.append("Multiple trash generations exist for this ID; supply the exact generation returned by delete.")
+			return _result(false, errors)
+		candidate_name = candidates[0]
+	var candidate: String = trash_root.path_join(candidate_name)
+	var loaded: Dictionary = _load_from_directory(candidate, id)
+	if not bool(loaded["ok"]):
+		errors.append_array(loaded["errors"])
+		return _result(false, errors)
+	var err: Error = DirAccess.rename_absolute(candidate, live_path)
+	if err != OK:
+		errors.append("Could not restore the variant from local trash (%s)." % error_string(err))
+		return _result(false, errors)
+	return _load_from_directory(live_path, id)
+
+
+static func _is_trash_generation_entry(entry: String, id: String) -> bool:
+	if entry == id:
+		return true
+	if not entry.begins_with(id + "-"):
+		return false
+	var suffix: String = entry.substr(id.length() + 1)
+	if _valid_uuid(suffix):
+		return true
+	# Retain compatibility with generation folders written by variant store v1.
+	if suffix.length() != 19 or suffix[10] != "-":
+		return false
+	for index: int in range(10):
+		var code: int = suffix.unicode_at(index)
+		if code < 48 or code > 57:
+			return false
+	for index: int in range(11, 19):
+		var code: int = suffix.unicode_at(index)
+		if not ((code >= 48 and code <= 57) or (code >= 97 and code <= 102)):
+			return false
+	return true
 
 
 static func _load_from_directory(variant_dir: String, expected_id: String) -> Dictionary:
@@ -1004,5 +1123,15 @@ static func _new_uuid() -> String:
 	return "%s-%s-%s-%s-%s" % [hex.substr(0, 8), hex.substr(8, 4), hex.substr(12, 4), hex.substr(16, 4), hex.substr(20, 12)]
 
 
-static func _result(ok: bool, errors: PackedStringArray, variant: Dictionary = {}) -> Dictionary:
-	return {"ok": ok, "errors": errors, "variant": variant}
+static func _result(
+		ok: bool,
+		errors: PackedStringArray,
+		variant: Dictionary = {},
+		trash_generation: String = ""
+) -> Dictionary:
+	return {
+		"ok": ok,
+		"errors": errors,
+		"variant": variant,
+		"trash_generation": trash_generation,
+	}

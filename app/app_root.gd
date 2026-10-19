@@ -22,6 +22,7 @@ const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const PauseMenu := preload("res://ui/pause_menu.gd")
+const TraceRecovery := preload("res://ui/trace_recovery.gd")
 const HeldKeys := preload("res://ui/held_keys.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const WeatherDialog := preload("res://ui/weather_dialog.gd")
@@ -67,6 +68,18 @@ var _windowed_mode := DisplayServer.WINDOW_MODE_WINDOWED
 var _auto_accept_quit_tree: SceneTree
 var _auto_accept_quit_before_root := true
 var _wm_close_pending := false
+var _exit_request_active := false
+var _exit_request_kind := ""
+var _exit_request_commit := Callable()
+var _exit_request_recorders: Array[RefCounted] = []
+var _exit_request_recorder_index := 0
+var _exit_request_editors: Array[Node] = []
+var _exit_authorized_editors: Array[Node] = []
+var _exit_request_holds: Array[Dictionary] = []
+var _trace_recovery := TraceRecovery.new()
+var _trace_recovery_dialog: ConfirmationDialog
+var _trace_retry_button: Button
+var _trace_discard_button: Button
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
@@ -1076,18 +1089,16 @@ func open_pause() -> void:
 	_release_controller_holds()
 	var session: Node = flight.session
 	session.cancel_calibration()
-	var pause_menu := PauseMenu.new(has_home)
+	var trial_pause := not _workshop_screens.is_empty()
+	var pause_menu := PauseMenu.new(has_home, trial_pause)
 	var helicopter_route: bool = Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
 	pause_menu.collective_control = helicopter_route
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.workshop_requested.connect(open_workshop)
-	pause_menu.workshop_button.visible = not helicopter_route
+	pause_menu.workshop_button.visible = not helicopter_route and not trial_pause
 	pause_menu.failure_settings_requested.connect(open_failures_settings)
 	pause_menu.failure_settings_button.visible = has_home and not helicopter_route
-	if not _workshop_screens.is_empty():
-		pause_menu.workshop_button.text = "Return to Workshop"
-		pause_menu.end_button.text = "Return to Workshop"
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.time_of_day_button.visible = not helicopter_route
 	pause_menu.time_of_day_button.text = tr("Sky and lighting")
@@ -1138,6 +1149,7 @@ func open_workshop(from: Control = null) -> void:
 		return
 	var editor: CanvasLayer = load("res://ui/workshop.gd").new()
 	editor.initial_aircraft_id = flight.aircraft_id if flight != null else home.aircraft_id
+	editor.set("return_destination", "Pause" if screens.is_top("pause") else "Home")
 	editor.closed.connect(close_workshop)
 	editor.trial_requested.connect(_start_workshop_trial)
 	screens.push("workshop", editor, from)
@@ -1221,14 +1233,16 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	flight.pause_requested.connect(open_pause)
 	flight.restart_requested.connect(_request_flight_restart)
 	flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
-	flight._note = tr("Experimental Workshop trial · Esc to return")
+	flight._note = tr("Experimental Workshop trial · Esc opens Pause · Return to Workshop is on Pause")
 
 
 func _return_to_workshop() -> void:
 	if _workshop_screens.is_empty() or flight == null:
 		return
-	if not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
-		return
+	_begin_exit_request("return_workshop", [_flight_recorder(flight)], Callable(self, "_commit_return_to_workshop"))
+
+
+func _commit_return_to_workshop() -> void:
 	screens.clear()
 	screens.set_session(null)
 	if flight.recorder != null:
@@ -1632,15 +1646,17 @@ func restart_flight() -> void:
 		session.resume()
 
 
-## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again
-## ends without it (an explicit discard).
+## End a flight or return from a trial only after a trace is saved or explicitly resolved.
 func end_flight() -> void:
 	if not _workshop_screens.is_empty():
 		_return_to_workshop()
 		return
-	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")) \
-		or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
+	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")):
 		return
+	_begin_exit_request("end_flight", [_flight_recorder(flight)], Callable(self, "_commit_end_flight"))
+
+
+func _commit_end_flight() -> void:
 	_menu_feedback(&"back")
 	var last_failure_status: Dictionary = {}
 	var session: Node = flight.get("session")
@@ -1663,15 +1679,7 @@ func end_flight() -> void:
 func quit_app() -> void:
 	if not is_inside_tree():
 		return
-	if flight != null and not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press Quit again to quit without it."):
-		return
-	if is_instance_valid(_workshop_previous_flight) and _workshop_previous_flight.recorder != null \
-		and _workshop_previous_flight.recorder.recording:
-		var err: Error = _workshop_previous_flight.recorder.stop()
-		if err != OK:
-			_show_trace_save_error("Could not save the flight trace (error %d). Press Quit again to quit without it.", err)
-			return
-	_request_app_quit()
+	_begin_exit_request("quit", _quit_recorders(), Callable(self, "_request_app_quit"), true)
 
 
 func _request_app_quit() -> void:
@@ -1685,33 +1693,203 @@ func _close_pause() -> void:
 	HeldKeys.mask(session, _keyboard_reader)
 
 
-## True when no trace is recording, or it was just saved. A failed save shows `message` and returns false once;
-## the recorder has stopped, so the next press goes through.
-func _trace_saved_or_discarded(message: String) -> bool:
-	var recorder: RefCounted = flight.recorder
-	if not recorder.recording:
-		return true
-	var err: Error = recorder.stop()
-	if err == OK:
-		return true
-	_show_trace_save_error(message, err)
-	return false
-
-
-func _show_trace_save_error(message: String, err: Error) -> void:
-	var visible_message := tr(message) % err
-	var top: Node = screens.top()
-	if top != null and top.has_method("set_note"):
-		top.call("set_note", visible_message)
+func _begin_exit_request(kind: String, recorders: Array, commit: Callable, guard_workshop := false) -> void:
+	if _exit_request_active:
 		return
-	if flight != null:
-		if pause_menu == null:
-			open_pause()
-		if pause_menu != null:
-			pause_menu.set_note(visible_message)
+	_exit_request_active = true
+	_exit_request_kind = kind
+	_exit_request_commit = commit
+	_exit_request_recorders.clear()
+	for recorder: Variant in recorders:
+		if recorder is RefCounted and not _exit_request_recorders.has(recorder):
+			_exit_request_recorders.append(recorder)
+	_exit_request_recorder_index = 0
+	_exit_authorized_editors.clear()
+	_hold_exit_sessions()
+	if guard_workshop:
+		_request_quit_draft_guard(0)
+	else:
+		_advance_trace_exit()
+
+
+func _request_quit_draft_guard(start_index: int) -> void:
+	if not _exit_request_active or _exit_request_kind != "quit":
+		return
+	_exit_request_editors = _workshop_editors()
+	for index in range(start_index, _exit_request_editors.size()):
+		var editor: Node = _exit_request_editors[index]
+		if _exit_authorized_editors.has(editor):
+			continue
+		if not is_instance_valid(editor) or not editor.has_method("has_unsaved_changes") \
+			or not bool(editor.call("has_unsaved_changes")):
+			continue
+		var next_index := index + 1
+		var proceed := func() -> void:
+			if not _exit_request_active:
+				return
+			if not _exit_authorized_editors.has(editor):
+				_exit_authorized_editors.append(editor)
+			_request_quit_draft_guard(next_index)
+		editor.call("request_navigation", "Quit", proceed, Callable(self, "_cancel_exit_request"), self)
+		return
+	_advance_trace_exit()
+
+
+func _workshop_editors() -> Array[Node]:
+	var editors: Array[Node] = []
+	var live_editor: Node = screens.get_screen("workshop")
+	if is_instance_valid(live_editor):
+		editors.append(live_editor)
+	for entry: Dictionary in _workshop_screens:
+		var editor: Variant = entry.get("node")
+		if editor is Node and is_instance_valid(editor) and not editors.has(editor):
+			editors.append(editor)
+	return editors
+
+
+func _quit_recorders() -> Array[RefCounted]:
+	var recorders: Array[RefCounted] = []
+	for owner: Node in [flight, _workshop_previous_flight]:
+		var recorder := _flight_recorder(owner)
+		if recorder != null and not recorders.has(recorder):
+			recorders.append(recorder)
+	return recorders
+
+
+func _flight_recorder(flight_node: Node) -> RefCounted:
+	if not is_instance_valid(flight_node) or not _has_property(flight_node, "recorder"):
+		return null
+	var recorder: Variant = flight_node.get("recorder")
+	return recorder as RefCounted if recorder is RefCounted else null
+
+
+func _hold_exit_sessions() -> void:
+	_exit_request_holds.clear()
+	for owner: Node in [flight, _workshop_previous_flight]:
+		if not is_instance_valid(owner) or not _has_property(owner, "session"):
+			continue
+		var session: Variant = owner.get("session")
+		if not session is Node or not session.has_method("hold"):
+			continue
+		if _exit_request_holds.any(func(entry: Dictionary) -> bool: return entry.session == session):
+			continue
+		var simulation: Variant = session.get("sim") if _has_property(session, "sim") else null
+		var holds_before: Variant = session.get("holds") if _has_property(session, "holds") else {}
+		_exit_request_holds.append({
+			session = session,
+			was_paused = bool(simulation.get("paused")) if simulation != null else false,
+			had_holds = holds_before is Dictionary and not holds_before.is_empty(),
+		})
+		session.call("hold", "exit_guard")
+		var reader := _keyboard_reader_for(session)
+		if reader.is_valid():
+			HeldKeys.mask(session, reader)
+
+
+func _keyboard_reader_for(session: Node) -> Callable:
+	if is_instance_valid(flight) and _has_property(flight, "session") and flight.session == session:
+		return _keyboard_reader
+	if is_instance_valid(_workshop_previous_flight) and _has_property(_workshop_previous_flight, "session") \
+		and _workshop_previous_flight.session == session:
+		return _workshop_previous_keyboard
+	return Callable()
+
+
+func _release_exit_sessions() -> void:
+	for entry: Dictionary in _exit_request_holds:
+		var session: Variant = entry.session
+		if not is_instance_valid(session):
+			continue
+		session.call("release", "exit_guard")
+		var holds: Variant = session.get("holds") if _has_property(session, "holds") else {}
+		if not bool(entry.was_paused) and not bool(entry.had_holds) \
+			and holds is Dictionary and holds.is_empty() and session.has_method("resume"):
+			session.call("resume")
+	_exit_request_holds.clear()
+
+
+func _advance_trace_exit() -> void:
+	if not _exit_request_active or _trace_recovery_dialog != null:
+		return
+	while _exit_request_recorder_index < _exit_request_recorders.size():
+		var recorder: RefCounted = _exit_request_recorders[_exit_request_recorder_index]
+		var result: Dictionary = _trace_recovery.save_if_recording(recorder)
+		if not bool(result.get("ok", false)):
+			_show_trace_recovery_dialog(int(result.get("error", ERR_CANT_CREATE)))
 			return
-	if home != null:
-		home.set_note(visible_message)
+		_exit_request_recorder_index += 1
+	_finish_exit_request()
+
+
+func _show_trace_recovery_dialog(error_code: int) -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.title = tr("Trace not saved")
+	dialog.dialog_text = tr("Recording stopped, but the manual flight trace was not saved (error %d). Retry the retained trace, discard it and continue, or stay.") % error_code
+	dialog.exclusive = true
+	dialog.get_ok_button().text = tr("Stay") # default action is the safe choice
+	dialog.get_cancel_button().hide() # Escape and the window close still map to Stay
+	_trace_retry_button = dialog.add_button(tr("Retry save"), false, "retry")
+	_trace_discard_button = dialog.add_button(tr("Discard trace and continue"), true, "discard")
+	dialog.custom_action.connect(_on_trace_recovery_action)
+	dialog.confirmed.connect(_cancel_exit_request)
+	dialog.canceled.connect(_cancel_exit_request)
+	dialog.close_requested.connect(_cancel_exit_request)
+	_trace_recovery_dialog = dialog
+	add_child(dialog)
+	dialog.popup_centered()
+	dialog.get_ok_button().grab_focus.call_deferred()
+
+
+func _on_trace_recovery_action(action: StringName) -> void:
+	if not _exit_request_active or _trace_recovery_dialog == null \
+		or _exit_request_recorder_index >= _exit_request_recorders.size():
+		return
+	var recorder: RefCounted = _exit_request_recorders[_exit_request_recorder_index]
+	var dialog := _trace_recovery_dialog
+	_trace_recovery_dialog = null
+	_trace_retry_button = null
+	_trace_discard_button = null
+	dialog.queue_free()
+	if action == "retry":
+		var result: Dictionary = _trace_recovery.retry(recorder)
+		if not bool(result.get("ok", false)):
+			_show_trace_recovery_dialog(int(result.get("error", ERR_CANT_CREATE)))
+			return
+	elif action == "discard":
+		_trace_recovery.discard(recorder)
+	else:
+		_cancel_exit_request()
+		return
+	_exit_request_recorder_index += 1
+	_advance_trace_exit()
+
+
+func _finish_exit_request() -> void:
+	var commit := _exit_request_commit
+	_clear_exit_request()
+	if commit.is_valid():
+		commit.call()
+
+
+func _cancel_exit_request() -> void:
+	_clear_exit_request()
+
+
+func _clear_exit_request() -> void:
+	var dialog := _trace_recovery_dialog
+	_trace_recovery_dialog = null
+	_trace_retry_button = null
+	_trace_discard_button = null
+	if is_instance_valid(dialog):
+		dialog.queue_free()
+	_release_exit_sessions()
+	_exit_request_active = false
+	_exit_request_kind = ""
+	_exit_request_commit = Callable()
+	_exit_request_recorders.clear()
+	_exit_request_recorder_index = 0
+	_exit_request_editors.clear()
+	_exit_authorized_editors.clear()
 
 
 func _has_property(object: Object, property_name: String) -> bool:

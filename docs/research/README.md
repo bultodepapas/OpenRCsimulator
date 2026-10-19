@@ -182,7 +182,7 @@ The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 so
 
 ### Smoke
 
-The [smoke guide](../SMOKE-PLAN.md) records the unintegrated feature and its probe-first constraints. Research entry points are [exhaust smoke](rc-exhaust-smoke.md), [smoke investigations](smoke-investigations/README.md), and the [Godot emission probe](smoke-investigations/godot-evidence/README.md).
+The [smoke guide](../SMOKE.md) owns current behavior; the [remaining plan](../SMOKE-PLAN.md) owns qualification and proposed customization. The [SM-00…09 evidence](smoke-investigations/SM-00-09/README.md) separates the original GPU campaign from current headless rechecks. Research entry points are [exhaust smoke](rc-exhaust-smoke.md), [smoke investigations](smoke-investigations/README.md), and the [Godot emission probe](smoke-investigations/godot-evidence/README.md).
 
 ### Wind
 

@@ -49,7 +49,7 @@ func _run() -> void:
 	_check("screen renders its title, preview and test action", title != null and preview != null and test_fly != null)
 	_check("airplane selector discovers every fixed-wing flyable aircraft",
 		base_selector != null and base_selector.item_count == airplane_entries.size())
-	_check("initial keyboard focus enters the aircraft selector", _ui.focus_name() == "BaseAircraft", _ui.focus_name())
+	_check("initial keyboard focus enters the library action", _ui.focus_name() == "OpenLibrary", _ui.focus_name())
 	_check("Workshop is a still editor with no flight session", workshop.get("_compiled").get("ok", false)
 		and workshop.get("_trial_pending") == false)
 
@@ -73,12 +73,12 @@ func _run() -> void:
 	TranslationServer.set_locale("en")
 	await _ui.settle()
 	await _ui.tap(KEY_TAB)
-	_check("Tab advances focus inside the editor", _ui.focus_name() != "" and _ui.focus_name() != "BaseAircraft", _ui.focus_name())
+	_check("Tab advances focus inside the editor", _ui.focus_name() != "" and _ui.focus_name() != "OpenLibrary", _ui.focus_name())
 
 	var unsupported_found := false
 	for entry: Dictionary in airplane_entries:
 		var aircraft_id := str(entry.get("id", ""))
-		workshop.set_aircraft(aircraft_id)
+		workshop.set_aircraft(aircraft_id, true)
 		await _ui.settle()
 		var selected_index := base_selector.get_selected_id()
 		var selected_matches := str(base_selector.get_item_metadata(selected_index)) == aircraft_id
@@ -107,7 +107,7 @@ func _run() -> void:
 		if not bool(caps.get("scale", false)):
 			unsupported_found = true
 	_check("catalog includes aircraft with restricted Workshop adjustments", unsupported_found)
-	workshop.set_aircraft("gp-extra-300s-60")
+	workshop.set_aircraft("gp-extra-300s-60", true)
 	await _ui.settle()
 	var glow_scale_hint := _find(workshop, "ScaleSupport") as Label
 	var glow_capacity_slider := workshop.get("_factor_sliders")["tank_capacity_multiplier"] as HSlider
@@ -118,7 +118,7 @@ func _run() -> void:
 	_check("finite-glow aircraft still exposes independent finite-tank sizing",
 		glow_capacity_slider.editable
 		and str(workshop.get("_factor_hints")["tank_capacity_multiplier"].text).contains("Estimated sizing proposal"))
-	workshop.set_aircraft("xcell-60-research")
+	workshop.set_aircraft("xcell-60-research", true)
 	await _ui.settle()
 	var rotorcraft_note := _find(workshop, "WorkshopStatus") as Label
 	_check("direct rotorcraft requests return to the fixed-wing default",
@@ -126,7 +126,7 @@ func _run() -> void:
 	_check("direct rotorcraft requests explain the Workshop limit",
 		rotorcraft_note != null and "fixed-wing" in rotorcraft_note.text.to_lower())
 
-	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
 	await _ui.settle()
 	var tank_capacity_slider := workshop.get("_factor_sliders")["tank_capacity_multiplier"] as HSlider
 	var tank_capacity_hint: Label = workshop.get("_factor_hints")["tank_capacity_multiplier"]
@@ -175,7 +175,7 @@ func _run() -> void:
 	_check("Reset returns every value to compiler defaults", workshop.get_recipe() == Compiler.defaults())
 
 	# History belongs to this source and handles a slider drag as one edit.
-	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
 	var undo_button := _find(workshop, "UndoRecipe") as Button
 	var redo_button := _find(workshop, "RedoRecipe") as Button
 	workshop.set_recipe({"scale": 0.5})
@@ -190,7 +190,7 @@ func _run() -> void:
 	undo_button.pressed.emit()
 	workshop.set_recipe({"scale": 1.5})
 	_check("new edit clears the redo branch", redo_button.disabled)
-	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
 	var power_slider: HSlider = workshop.get("_factor_sliders")["power_multiplier"]
 	power_slider.drag_started.emit()
 	power_slider.value = 1.15
@@ -205,7 +205,7 @@ func _run() -> void:
 	for edit_index: int in 40:
 		workshop.set_recipe({"scale": 0.5 if edit_index % 2 == 0 else 2.0})
 	_check("history is bounded", workshop.get("_undo_history").size() == Workshop.HISTORY_LIMIT)
-	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	workshop.set_aircraft(Catalog.DEFAULT_ID, true)
 	_check("changing source clears both history branches", undo_button.disabled and redo_button.disabled)
 
 	# The whole storage flow stays under a per-run user:// directory.
@@ -244,6 +244,7 @@ func _run() -> void:
 
 	workshop.set_recipe({"scale": 0.5}, false)
 	(_find(workshop, "LoadVariant") as Button).pressed.emit()
+	_discard_pending(workshop)
 	await _ui.settle()
 	_check("Load restores the saved recipe and original source bytes",
 		is_equal_approx(float(workshop.get_recipe().scale), 2.0)
@@ -292,6 +293,7 @@ func _run() -> void:
 	var exact_recipe: Dictionary = workshop.get_recipe()
 	workshop.set_recipe({"scale": 0.5})
 	(_find(workshop, "LoadVariant") as Button).pressed.emit()
+	_discard_pending(workshop)
 	_check("precise saved recipe round-trips without quantization", workshop.get_recipe() == exact_recipe)
 
 	# A removed catalog entry remains a readable library item, but cannot corrupt the open draft.
@@ -310,6 +312,7 @@ func _run() -> void:
 		var old_bytes: PackedByteArray = workshop.get("_base_bytes")
 		workshop.set("_selected_variant_id", removed.variant.id)
 		(_find(workshop, "LoadVariant") as Button).pressed.emit()
+		_discard_pending(workshop)
 		_check("unavailable source load preserves the entire current draft", workshop.get("_base_id") == old_base_id
 			and workshop.get("_base_bytes") == old_bytes and workshop.get_recipe() == exact_recipe
 			and workshop.get("_saved_variant_id") == old_saved_id)
@@ -321,6 +324,7 @@ func _run() -> void:
 	broken_manifest = null
 	workshop.set("_selected_variant_id", recovering_id)
 	(_find(workshop, "LoadVariant") as Button).pressed.emit()
+	_discard_pending(workshop)
 	_check("backup recovery visibly identifies the earlier revision", int(workshop.get("_saved_variant_revision")) == 1
 		and str(workshop.get("_status_label").text).contains("from backup"))
 	workshop.save_named_variant()
@@ -338,6 +342,7 @@ func _run() -> void:
 	if metadata_saved.get("ok", false):
 		workshop.set("_selected_variant_id", metadata_recipe.id)
 		workshop.call("_load_selected_variant")
+		_discard_pending(workshop)
 		_check("loaded draft separates recipe physics from record metadata",
 			not workshop.get_recipe().has("id") and not workshop.get_recipe().has("name"))
 		workshop.set_variant_name("Renamed historical build")
@@ -353,6 +358,7 @@ func _run() -> void:
 		_check("copy leaves the source history untouched",
 			Store.load_variant(metadata_recipe.id, store_root).variant.revision == 2)
 
+	await _guarded_journey(workshop, store_root)
 	workshop.queue_free()
 	await _ui.settle()
 	var absolute_root := ProjectSettings.globalize_path(store_root)
@@ -374,3 +380,125 @@ func _remove_fixture(path: String, fixture_root: String) -> void:
 		_remove_fixture(path.path_join(child), fixture_root)
 	directory = null
 	DirAccess.remove_absolute(path)
+
+
+func _discard_pending(editor: Node) -> void:
+	var dialog: ConfirmationDialog = editor.get("_guard_dialog")
+	if dialog != null: dialog.custom_action.emit("discard")
+
+
+func _guarded_journey(editor: Node, store_root: String) -> void:
+	editor.set_aircraft(Catalog.DEFAULT_ID, true)
+	_check("new source begins with a clean full-payload baseline", not editor.has_unsaved_changes())
+	editor.set_recipe({power_multiplier = 1.2})
+	var draft: Dictionary = editor.get_recipe()
+	var history_size: int = editor.get("_undo_history").size()
+	var result := {continued = 0, cancelled = 0}
+	var proceed := func() -> void: result.continued += 1
+	var cancel := func() -> void: result.cancelled += 1
+	editor.request_navigation("Back to Home", proceed, cancel)
+	var guard: ConfirmationDialog = editor.get("_guard_dialog")
+	_check("dirty transition opens an exclusive safe-default decision", guard != null and guard.visible
+		and guard.exclusive and guard.get_cancel_button().has_focus())
+	guard.canceled.emit()
+	_check("Cancel preserves draft, source and undo history", result.continued == 0 and result.cancelled == 1
+		and editor.get_recipe() == draft and editor.get("_undo_history").size() == history_size
+		and editor.has_unsaved_changes())
+	editor.call("_undo")
+	_check("undo to complete baseline clears changed state", not editor.has_unsaved_changes())
+	editor.call("_set_page", "compare")
+	editor.get("_preview").set_view_mode("compare")
+	_check("page and camera comparison do not change build identity", not editor.has_unsaved_changes())
+	editor.call("_set_page", "setup")
+	var previous_descriptor: Dictionary = editor.get("_workshop_descriptor").duplicate(true)
+	editor.set("_workshop_descriptor", {test_identity = "different pin"})
+	_check("persisted descriptor identity participates in dirty state", editor.has_unsaved_changes())
+	editor.set("_workshop_descriptor", previous_descriptor)
+	var previous_id: String = editor.get("_base_id")
+	editor.set("_base_id", "same-values-other-source")
+	_check("equal physical defaults cannot mask a changed source identity", editor.has_unsaved_changes())
+	editor.set("_base_id", previous_id)
+	_check("restored full baseline is clean", not editor.has_unsaved_changes())
+
+	# Stock browsing is observational; only explicit Open can replace a build.
+	editor.set_recipe({power_multiplier = 1.1})
+	editor.call("_open_library")
+	var selector: OptionButton = editor.get("_base_selector")
+	var other := 1 if selector.item_count > 1 else 0
+	selector.select(other)
+	selector.item_selected.emit(other)
+	_check("stock browsing keeps active source and draft", editor.get("_base_id") == previous_id
+		and editor.get_recipe().power_multiplier == 1.1)
+	(_find(editor, "OpenStockAircraft") as Button).pressed.emit()
+	guard = editor.get("_guard_dialog")
+	_check("opening another source is guarded before replacement", guard != null and editor.get("_base_id") == previous_id)
+	guard.canceled.emit()
+	_check("cancelled source replacement retains the outgoing draft", editor.get("_base_id") == previous_id
+		and editor.get_recipe().power_multiplier == 1.1)
+
+	# Invalid typed values are never silently clamped, saved or launched.
+	var entry: LineEdit = editor.get("_factor_inputs")["weight_multiplier"]
+	entry.text = "not a number"
+	entry.text_changed.emit(entry.text)
+	var saved_count := Store.list_variants(store_root).size()
+	_check("invalid numeric input blocks Save and Test fly", editor.save_button.disabled
+		and (_find(editor, "TestFly") as Button).disabled and editor.has_unsaved_changes())
+	editor.save_named_variant()
+	_check("programmatic Save also refuses invalid displayed input", Store.list_variants(store_root).size() == saved_count)
+	editor.request_navigation("Back to Home", proceed, cancel)
+	guard = editor.get("_guard_dialog")
+	_check("invalid draft offers discard/cancel but not false save", guard != null and guard.get_ok_button().disabled)
+	guard.canceled.emit()
+	_check("Cancel keeps invalid input visible for correction", entry.text == "not a number")
+	entry.text = "0.731"
+	entry.text_changed.emit(entry.text)
+	entry.text_submitted.emit(entry.text)
+	_check("numeric entry commits an exact intermediate value", is_equal_approx(editor.get_recipe().weight_multiplier, 0.731)
+		and not editor.save_button.disabled)
+
+	# Save and continue is explicit, single-shot and marks exactly the saved payload clean.
+	editor.request_navigation("Back to Home", proceed, cancel)
+	guard = editor.get("_guard_dialog")
+	editor.get("_guard_name").text = "Guarded build"
+	guard.confirmed.emit()
+	_check("successful Save completes the captured navigation once", result.continued == 1
+		and not editor.has_unsaved_changes() and editor.get("_guard_dialog") == null)
+	var saved_id: String = editor.get("_saved_variant_id")
+	var saved_revision: int = editor.get("_saved_variant_revision")
+	var locked_root := store_root.path_join("blocked-root")
+	var blocked := FileAccess.open(locked_root, FileAccess.WRITE)
+	blocked.store_string("not a directory")
+	blocked.close()
+	editor.variants_root = locked_root
+	editor.set_recipe({power_multiplier = 1.3})
+	editor.request_navigation("Back to Home", proceed, cancel)
+	guard = editor.get("_guard_dialog")
+	guard.confirmed.emit()
+	_check("failed save leaves pending decision and full draft", result.continued == 1 and guard.visible
+		and editor.get_recipe().power_multiplier == 1.3 and editor.has_unsaved_changes())
+	guard.canceled.emit()
+	editor.variants_root = store_root
+
+	# A confirmation freezes UUID/revision independently of later library highlights.
+	editor.call("_open_library")
+	editor.set("_selected_variant_id", saved_id)
+	editor.call("_confirm_delete_selected")
+	var source_bytes: PackedByteArray = editor.get("_base_bytes")
+	var other_saved: Dictionary = Store.save_variant("Another build", Catalog.DEFAULT_ID, source_bytes,
+		Compiler.defaults(), "", store_root)
+	editor.set("_selected_variant_id", other_saved.variant.id)
+	editor.get("_delete_dialog").confirmed.emit()
+	_check("changed library selection cannot redirect delete", not Store.load_variant(saved_id, store_root).ok
+		and Store.load_variant(other_saved.variant.id, store_root).ok)
+	editor.call("_restore_last_deleted")
+	_check("exact generation restore recovers captured build", Store.load_variant(saved_id, store_root).ok)
+	editor.set("_selected_variant_id", saved_id)
+	editor.call("_confirm_delete_selected")
+	var record: Dictionary = Store.load_variant(saved_id, store_root).variant
+	var concurrent := Store.save_variant("Advanced build", record.base_id, record.base_bytes, record.recipe,
+		saved_id, store_root, record.workshop_descriptor, record.dependencies, saved_revision)
+	editor.get("_delete_dialog").confirmed.emit()
+	_check("stale confirmation refuses a newer revision", concurrent.ok and Store.load_variant(saved_id, store_root).ok
+		and Store.load_variant(saved_id, store_root).variant.revision == saved_revision + 1)
+	editor.call("_close_library")
+	await _ui.settle()

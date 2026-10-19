@@ -1,6 +1,6 @@
 # Doce investigaciones para mejorar el humo RC
 
-Current implementation evidence (2026-10-12): [SM-00…09](SM-00-09/README.md). The dated investigations below retain their original research-only scope.
+Current behavior lives in [SMOKE](../../SMOKE.md), pending work in [SMOKE-PLAN](../../SMOKE-PLAN.md), and dated implementation/recheck evidence in [SM-00…09](SM-00-09/README.md). The 2026-10-05 investigations below retain their original research-only scope; their proposed first steps do not describe current implementation status.
 
 **Fecha:** 2026-10-05. **Entrega:** segunda revisión del [plan de humo](../../SMOKE-PLAN.md). Se conserva la [investigación inicial](../rc-exhaust-smoke.md) como antecedente.
 

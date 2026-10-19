@@ -37,6 +37,40 @@ const PRESET_LABELS := {"mini": "Mini", "giant": "Giant", "light": "Light", "hea
 ## Set before adding this screen to the ScreenStack. Defaults to the current catalog aircraft.
 var initial_aircraft_id := Catalog.DEFAULT_ID
 var variants_root := VARIANT_ROOT
+var return_destination := "Home"
+var _baseline: Dictionary = {}
+var _library_dialog: AcceptDialog
+var _name_dialog: ConfirmationDialog
+var _guard_dialog: ConfirmationDialog
+var _guard_name: LineEdit
+var _guard_error: Label
+var _navigation_proceed: Callable
+var _navigation_cancel: Callable
+var _navigation_focus: Control
+var _library_button: Button
+var _build_identity: Label
+var _page_buttons: Dictionary = {}
+var _page_nodes: Dictionary = {}
+var _active_page := "setup"
+var _compact := false
+var _compact_view := false
+var _view_button: Button
+var _inspector: ScrollContainer
+var _header: BoxContainer
+var _footer: BoxContainer
+var _identity_line: BoxContainer
+var _comparison_grid: GridContainer
+var _all_values: CheckButton
+var _factor_inputs: Dictionary = {}
+var _invalid_fields: Dictionary = {}
+var _pending_numbers: Dictionary = {}
+var _delete_target: Dictionary = {}
+var _last_deleted_generation := ""
+var _library_source_id := ""
+var _interaction_focus: NodePath
+var _interaction_scroll := 0
+var _name_before := ""
+var _name_as_copy := false
 
 ## Public handles for UI integration and focused Workshop checks.
 var variant_name_input: LineEdit:
@@ -112,6 +146,8 @@ func _init() -> void:
 	layer = LAYER
 	_screen = Screen.mount(self, "Screen")
 	_screen.kind = Screen.Kind.MODAL
+	_screen.dismiss_option_popup_first = true
+	_screen.escape_before_gui = true
 	_screen.close_requested.connect(_request_close)
 	_screen.dim(0.72, "WorkshopDim")
 	_build_ui()
@@ -124,6 +160,7 @@ func _ready() -> void:
 	_refresh_variants()
 	_sync_controls()
 	_compile_recipe()
+	_mark_baseline()
 	_focus_default.call_deferred()
 
 
@@ -131,7 +168,8 @@ func _enter_tree() -> void:
 	if _trial_pending:
 		_trial_pending = false
 		if is_instance_valid(_trial_button):
-			_trial_button.disabled = not bool(_compiled.get("ok", false))
+			_trial_button.disabled = not _edit_valid()
+		_restore_interaction.call_deferred()
 
 
 func _process(_delta: float) -> void:
@@ -143,15 +181,10 @@ func _process(_delta: float) -> void:
 
 
 func _focus_default() -> void:
-	if not is_inside_tree() or not is_instance_valid(_screen) or not _screen.is_inside_tree():
-		return
-	if not bool(_screen.get("_active")) or not is_instance_valid(_base_selector) \
-			or not _base_selector.is_visible_in_tree():
-		return
-	_base_selector.grab_focus()
+	if is_inside_tree() and bool(_screen.get("_active")) and is_instance_valid(_library_button):
+		_library_button.grab_focus()
 
 
-## A start failure returns to the same Workshop instance; show the reason below its actions.
 func reject_start(message: String = "The trial could not start.") -> void:
 	set_note(message)
 
@@ -168,11 +201,9 @@ func set_note(message: String) -> void:
 
 
 func _reveal_status() -> void:
-	if is_inside_tree() and not is_queued_for_deletion() and _status_label.is_visible_in_tree():
-		_body_scroll.ensure_control_visible(_status_label)
+	pass # Status is pinned; ordinary notices never scroll or steal editor focus.
 
 
-## Test and integration seam: update the recipe through the same constraints as the visible controls.
 func set_recipe(recipe: Dictionary, remember_current := true) -> void:
 	if _base.is_empty():
 		return
@@ -192,6 +223,7 @@ func get_compiled() -> Dictionary:
 func set_variant_name(value: String) -> void:
 	if is_instance_valid(_variant_name):
 		_variant_name.text = value
+		_refresh_identity()
 
 
 func save_named_variant() -> void:
@@ -206,18 +238,14 @@ func save_variant_copy() -> void:
 		_saved_variant_id = original_id
 
 
-func set_aircraft(id: String) -> void:
+func set_aircraft(id: String, discard_changes := false) -> void:
 	if not is_node_ready():
 		initial_aircraft_id = id
 		return
-	_selected_variant_id = ""
-	if is_instance_valid(_variant_selector):
-		_variant_selector.select(0)
-	if is_instance_valid(_variant_name):
-		_variant_name.clear()
-	_load_catalog_aircraft(id, false)
-	_sync_controls()
-	_sync_variant_actions()
+	if discard_changes:
+		_replace_aircraft(id)
+	else:
+		request_navigation("Open another aircraft", _replace_aircraft.bind(id))
 
 
 func _build_ui() -> void:
@@ -229,115 +257,136 @@ func _build_ui() -> void:
 	outer.offset_right = -24
 	outer.offset_bottom = -18
 	_screen.add_child(outer)
-
-	var shell := PanelContainer.new()
-	_layout_panel = shell
-	shell.name = "WorkshopPanel"
-	shell.theme_type_variation = "Sidebar"
-	shell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	shell.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	outer.add_child(shell)
-
+	_layout_panel = PanelContainer.new()
+	_layout_panel.name = "WorkshopPanel"
+	_layout_panel.theme_type_variation = "Sidebar"
+	outer.add_child(_layout_panel)
 	var page := VBoxContainer.new()
-	page.name = "WorkshopPage"
 	page.add_theme_constant_override("separation", 12)
-	shell.add_child(page)
+	_layout_panel.add_child(page)
 
-	var header := HBoxContainer.new()
-	header.add_theme_constant_override("separation", 12)
+	_header = BoxContainer.new()
+	_header.add_theme_constant_override("separation", 16)
+	page.add_child(_header)
 	var heading := VBoxContainer.new()
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var title := _label("Aircraft Workshop", "TitleLabel")
+	var title := _label("Aircraft Workshop", "CardTitle")
 	title.name = "WorkshopTitle"
 	heading.add_child(title)
-	var introduction := _label("Build a variant from any aircraft in the catalog. Changes are experimental.", "SecondaryLabel", true)
-	introduction.name = "WorkshopIntroduction"
-	heading.add_child(introduction)
-	header.add_child(heading)
-	var close_button := _button("Close", "", "CloseWorkshop")
-	close_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
-	close_button.pressed.connect(_request_close)
-	header.add_child(close_button)
-	page.add_child(header)
+	_build_identity = _label("", "SecondaryLabel", true, false)
+	_build_identity.name = "BuildIdentity"
+	heading.add_child(_build_identity)
+	_header.add_child(heading)
+	var back := _button("Back to Pause" if return_destination == "Pause" else "Back to Home", "", "CloseWorkshop")
+	back.pressed.connect(_request_close)
+	_header.add_child(back)
 
-	var body_scroll := ScrollContainer.new()
-	body_scroll.name = "WorkshopScroll"
-	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	body_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	body_scroll.follow_focus = false # enable after initial layout; opening must start at the top
-	_body_scroll = body_scroll
-	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	page.add_child(body_scroll)
-	var body := VBoxContainer.new()
-	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	body.add_theme_constant_override("separation", 12)
-	body_scroll.add_child(body)
-	introduction.reparent(body)
+	_identity_line = BoxContainer.new()
+	_identity_line.add_theme_constant_override("separation", 8)
+	page.add_child(_identity_line)
+	_library_button = _button("Library", "", "OpenLibrary")
+	_library_button.pressed.connect(_open_library)
+	_identity_line.add_child(_library_button)
+	var group := ButtonGroup.new()
+	for spec: Array in [["setup", "Flight setup"], ["compare", "Compare"]]:
+		var tab := _button(spec[1], "", "Page" + str(spec[0]).capitalize())
+		tab.toggle_mode = true
+		tab.button_group = group
+		tab.button_pressed = spec[0] == "setup"
+		tab.pressed.connect(_set_page.bind(spec[0]))
+		_identity_line.add_child(tab)
+		_page_buttons[spec[0]] = tab
+	var flexible := Control.new()
+	flexible.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_identity_line.add_child(flexible)
+	_view_button = _button("Preview", "", "CompactPreview")
+	_view_button.pressed.connect(_toggle_compact_view)
+	_identity_line.add_child(_view_button)
 
-	var columns := BoxContainer.new()
-	_columns = columns
-	columns.name = "WorkshopColumns"
-	columns.add_theme_constant_override("separation", 18)
-	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body.add_child(columns)
+	_columns = HBoxContainer.new()
+	_columns.name = "WorkshopColumns"
+	_columns.add_theme_constant_override("separation", 24)
+	_columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	page.add_child(_columns)
+	_aircraft_column = VBoxContainer.new()
+	_aircraft_column.name = "AircraftColumn"
+	_aircraft_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_aircraft_column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_columns.add_child(_aircraft_column)
+	_preview = WorkshopPreview.new()
+	_preview.name = "AircraftPreview"
+	_preview.custom_minimum_size = Vector2(0, 240)
+	_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_aircraft_column.add_child(_preview)
+	var caption := _label("Still preview · no flight simulation", "SecondaryLabel", true)
+	caption.name = "PreviewCaption"
+	_aircraft_column.add_child(caption)
 
-	var left := VBoxContainer.new()
-	_aircraft_column = left
-	left.name = "AircraftColumn"
-	left.custom_minimum_size.x = 390
-	left.size_flags_horizontal = Control.SIZE_FILL
-	left.add_theme_constant_override("separation", 10)
-	columns.add_child(left)
-	_build_aircraft_panel(left)
-	_build_variants_panel(left)
-	_build_presets_panel(left)
+	_inspector = ScrollContainer.new()
+	_inspector.name = "WorkshopScroll"
+	_body_scroll = _inspector
+	_inspector.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_inspector.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_inspector.follow_focus = true
+	_inspector.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_columns.add_child(_inspector)
+	var inspector_body := VBoxContainer.new()
+	inspector_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inspector_body.add_theme_constant_override("separation", 16)
+	_inspector.add_child(inspector_body)
+	var setup := VBoxContainer.new()
+	setup.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	setup.add_theme_constant_override("separation", 16)
+	inspector_body.add_child(setup)
+	_page_nodes.setup = setup
+	_build_presets_panel(setup)
+	_build_recipe_panel(setup)
+	var history := HBoxContainer.new()
+	history.add_theme_constant_override("separation", 8)
+	for action: Array in [["Reset this page", "ResetRecipe", _reset_recipe], ["Undo", "UndoRecipe", _undo], ["Redo", "RedoRecipe", _redo]]:
+		var button := _button(action[0], "", action[1])
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.pressed.connect(action[2])
+		history.add_child(button)
+		if action[1] == "UndoRecipe": _undo_button = button
+		if action[1] == "RedoRecipe": _redo_button = button
+	setup.add_child(history)
+	var compare := VBoxContainer.new()
+	compare.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	inspector_body.add_child(compare)
+	_page_nodes.compare = compare
+	_build_results_panel(compare)
+	compare.visible = false
 
-	var right := VBoxContainer.new()
-	right.name = "RecipeColumn"
-	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right.add_theme_constant_override("separation", 10)
-	columns.add_child(right)
-	_build_recipe_panel(right)
-	_build_results_panel(right)
-
-	var footer := HBoxContainer.new()
-	footer.name = "WorkshopActions"
-	footer.add_theme_constant_override("separation", 10)
-	var reset_button := _button("Reset", "", "ResetRecipe")
-	reset_button.pressed.connect(_reset_recipe)
-	footer.add_child(reset_button)
-	_undo_button = _button("Undo", "", "UndoRecipe")
-	_undo_button.disabled = true
-	_undo_button.pressed.connect(_undo)
-	footer.add_child(_undo_button)
-	_redo_button = _button("Redo", "", "RedoRecipe")
-	_redo_button.disabled = true
-	_redo_button.pressed.connect(_redo)
-	footer.add_child(_redo_button)
+	_errors_label = _label("", "ErrorLabel", true)
+	_errors_label.name = "BuildErrors"
+	inspector_body.add_child(_errors_label)
+	_footer = BoxContainer.new()
+	_footer.add_theme_constant_override("separation", 12)
+	page.add_child(_footer)
+	var notes := VBoxContainer.new()
+	notes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_footer.add_child(notes)
+	_validation_label = _label("", "SecondaryLabel", true)
+	_validation_label.name = "ValidationLimit"
+	notes.add_child(_validation_label)
 	_status_label = _label("", "SecondaryLabel", true)
 	_status_label.name = "WorkshopStatus"
-	_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_status_label.visible = false
-	footer.add_child(_status_label)
+	notes.add_child(_status_label)
+	var actions := HBoxContainer.new()
+	actions.add_theme_constant_override("separation", 8)
+	_footer.add_child(actions)
+	_save_button = _button("Save build", "", "SaveVariant")
+	_save_button.pressed.connect(_request_save)
+	actions.add_child(_save_button)
 	_trial_button = _button("Test fly", "PrimaryButton", "TestFly")
 	_trial_button.custom_minimum_size = Vector2(190, 54)
 	_trial_button.pressed.connect(_request_trial)
-	footer.add_child(_trial_button)
-	page.add_child(footer)
-	for action in [reset_button, _undo_button, _redo_button, _trial_button]:
-		action.custom_minimum_size.x = 0
-		action.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		action.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	# History belongs with the recipe. Only the trial action stays pinned at small heights.
-	var history := HBoxContainer.new()
-	history.add_theme_constant_override("separation", 8)
-	right.add_child(history)
-	right.move_child(history, 0)
-	for action in [reset_button, _undo_button, _redo_button]: action.reparent(history)
-	_status_label.reparent(body)
-	_trial_button.size_flags_horizontal = Control.SIZE_SHRINK_END
-	footer.alignment = BoxContainer.ALIGNMENT_END
+	actions.add_child(_trial_button)
+	_build_library()
+	_build_name_dialog()
 	_screen.resized.connect(_resize_layout)
 	_screen.theme_changed.connect(_resize_layout)
 
@@ -345,14 +394,27 @@ func _build_ui() -> void:
 func _resize_layout() -> void:
 	if not is_inside_tree(): return
 	var available := _screen.size - Vector2(48, 36)
-	_layout_panel.custom_minimum_size = Vector2(minf(1480, available.x), minf(980, available.y))
+	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
 	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
-	_columns.vertical = available.x < 1350 or enlarged
-	_aircraft_column.custom_minimum_size.x = 0 if _columns.vertical else 430
-	_aircraft_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL if _columns.vertical else Control.SIZE_FILL
+	_compact = available.x < 1050 or enlarged
+	_header.vertical = available.x < 700
+	_identity_line.vertical = available.x < 650
+	_footer.vertical = available.x < 1100 or enlarged
+	_inspector.custom_minimum_size.x = 0 if _compact else (520 if available.x >= 1550 else 400)
+	_inspector.size_flags_horizontal = Control.SIZE_EXPAND_FILL if _compact else Control.SIZE_FILL
+	_aircraft_column.visible = not _compact or _compact_view
+	_inspector.visible = not _compact or not _compact_view
+	_view_button.visible = _compact
+	_view_button.text = tr("Edit") if _compact_view else tr("Preview")
 	_recipe_selectors.columns = 1 if enlarged else 2
-	_preset_grid.columns = 2 if enlarged or not _columns.vertical else 3
-	_trial_button.custom_minimum_size.x = 440 if enlarged else 220
+	_preset_grid.columns = 2 if enlarged else 3
+	_trial_button.custom_minimum_size.x = 0 if enlarged else 190
+	if _active_page == "compare" and _compact:
+		_compact_view = false
+		_aircraft_column.visible = false
+		_inspector.visible = true
+	if is_instance_valid(_library_dialog) and _library_dialog.visible:
+		_library_dialog.popup_centered_clamped(Vector2i(680, 520), 0.9)
 
 
 func _build_aircraft_panel(parent: VBoxContainer) -> void:
@@ -427,14 +489,15 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_variant_name.max_length = 64
 	_variant_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_variant_name.text_changed.connect(_on_variant_name_changed)
+	_name_dialog = null
+	_variant_name.visible = false
 	content.add_child(_variant_name)
-	_save_button = _button("Save build", "", "SaveVariant")
-	_save_button.disabled = true
-	_save_button.pressed.connect(_save_variant)
-	content.add_child(_save_button)
 	_copy_button = _button("Save a copy", "", "CopyVariant")
-	_copy_button.pressed.connect(save_variant_copy)
+	_copy_button.pressed.connect(_request_copy)
 	content.add_child(_copy_button)
+	var rename := _button("Name or rename this build", "", "RenameBuild")
+	rename.pressed.connect(func() -> void: _show_name_dialog(false))
+	content.add_child(rename)
 
 
 func _build_presets_panel(parent: VBoxContainer) -> void:
@@ -517,18 +580,25 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 
 
 func _build_results_panel(parent: VBoxContainer) -> void:
-	var card := _card("BuildResultsCard")
-	parent.add_child(card)
-	var content := _card_content(card)
-	content.add_child(_section_label("BUILD CHECK"))
-	_errors_label = _label("", "SecondaryLabel", true)
-	_errors_label.name = "BuildErrors"
-	_errors_label.visible = false
-	content.add_child(_errors_label)
+	parent.add_child(_label("Original and draft", "CardTitle"))
+	parent.add_child(_label("Experimental values · static estimates, not measured flight performance.", "SecondaryLabel", true))
+	_all_values = CheckButton.new()
+	_all_values.text = "All values"
+	_all_values.name = "AllBuildValues"
+	_all_values.toggled.connect(func(_value: bool) -> void: _refresh_comparison())
+	parent.add_child(_all_values)
+	_comparison_grid = GridContainer.new()
+	_comparison_grid.columns = 4
+	_comparison_grid.add_theme_constant_override("h_separation", 12)
+	_comparison_grid.add_theme_constant_override("v_separation", 12)
+	parent.add_child(_comparison_grid)
 	_summary_label = _label("", "SecondaryLabel", true)
 	_summary_label.name = "BuildSummary"
-	_summary_label.custom_minimum_size.y = 78
-	content.add_child(_summary_label)
+	_summary_label.visible = false
+	var details := _button("Technical details", "", "BuildDetails")
+	details.pressed.connect(func() -> void: _summary_label.visible = not _summary_label.visible)
+	parent.add_child(details)
+	parent.add_child(_summary_label)
 
 
 func _add_factor_row(parent: VBoxContainer, key: String, caption: String) -> void:
@@ -543,6 +613,15 @@ func _add_factor_row(parent: VBoxContainer, key: String, caption: String) -> voi
 	value_label.name = key.capitalize() + "Value"
 	value_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	heading.add_child(value_label)
+	var entry := LineEdit.new()
+	entry.name = key.capitalize() + "Entry"
+	entry.custom_minimum_size.x = 100
+	entry.expand_to_text_length = false
+	entry.text_changed.connect(_number_changed.bind(key))
+	entry.text_submitted.connect(func(_value: String) -> void: _commit_number(key))
+	entry.focus_exited.connect(_commit_number.bind(key))
+	heading.add_child(entry)
+	_factor_inputs[key] = entry
 	row.add_child(heading)
 	var slider := HSlider.new()
 	slider.name = key.capitalize() + "Slider"
@@ -583,9 +662,13 @@ func _factor_bounds(key: String) -> Vector2:
 func _build_delete_dialog() -> void:
 	_delete_dialog = ConfirmationDialog.new()
 	_delete_dialog.title = tr("Delete saved build?")
+	_delete_dialog.exclusive = true
+	_delete_dialog.theme = _screen.theme
 	_delete_dialog.dialog_text = tr("Delete this saved build from this device?")
 	_delete_dialog.confirmed.connect(_delete_selected_variant)
-	add_child(_delete_dialog)
+	_delete_dialog.canceled.connect(func() -> void:
+		if _delete_button.is_visible_in_tree(): _delete_button.grab_focus())
+	_library_dialog.add_child(_delete_dialog)
 
 
 func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
@@ -689,7 +772,9 @@ func _refresh_variants() -> void:
 		var variant_id := str(variant.get("id", ""))
 		if variant_id == "":
 			continue
-		_variant_selector.add_item(str(variant.get("name", variant_id)))
+		var source_name := str(Catalog.entry(str(variant.get("base_id", ""))).get("name", tr("Unavailable aircraft")))
+		var current := tr("Current") + " · " if variant_id == _saved_variant_id else ""
+		_variant_selector.add_item(current + str(variant.get("name", variant_id)) + " · " + source_name + " · " + tr("revision %d") % int(variant.get("revision", 0)))
 		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, variant_id)
 	_variant_selector.select(0)
 	_selected_variant_id = ""
@@ -704,20 +789,15 @@ func _sync_variant_actions() -> void:
 
 
 func _sync_save_button() -> void:
-	_save_button.disabled = _variant_name.text.strip_edges().is_empty() or not bool(_compiled.get("ok", false))
+	if not is_instance_valid(_save_button): return
+	_save_button.disabled = not _edit_valid()
 	_copy_button.disabled = _save_button.disabled
+	_refresh_identity()
 
 
 func _on_base_selected(index: int) -> void:
-	var id := str(_base_selector.get_item_metadata(index))
-	if id == "" or (id == _base_id and _saved_variant_id.is_empty() and _workshop_descriptor.is_empty()):
-		return
-	_selected_variant_id = ""
-	_variant_selector.select(0)
-	_variant_name.clear()
-	_load_catalog_aircraft(id, false)
-	_sync_controls()
-	_sync_variant_actions()
+	_library_source_id = str(_base_selector.get_item_metadata(index))
+	_update_aircraft_description(Catalog.entry(_library_source_id))
 
 
 func _on_variant_selected(index: int) -> void:
@@ -725,10 +805,10 @@ func _on_variant_selected(index: int) -> void:
 	_sync_variant_actions()
 
 
-func _load_selected_variant() -> void:
-	if _selected_variant_id == "":
+func _load_variant_snapshot(selected_id: String) -> void:
+	if selected_id == "":
 		return
-	var result: Dictionary = Store.load_variant(_selected_variant_id, variants_root)
+	var result: Dictionary = Store.load_variant(selected_id, variants_root)
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The saved build could not be loaded."))
 		return
@@ -753,6 +833,8 @@ func _load_selected_variant() -> void:
 	if not checked.ok:
 		set_note(_messages(checked.errors, "The saved build could not be loaded."))
 		return
+	_invalid_fields.clear()
+	_pending_numbers.clear()
 	_base_id = next_base_id
 	_base = (variant.base as Dictionary).duplicate(true)
 	_base_bytes = snapshot_bytes.duplicate()
@@ -783,12 +865,16 @@ func _load_selected_variant() -> void:
 	else:
 		set_note("Saved build loaded. Review the experimental values before a trial.")
 	_sync_variant_actions()
+	_mark_baseline()
+	_close_library()
 
 
-func _save_variant() -> void:
+func _save_variant() -> bool:
+	for key: String in _pending_numbers.keys(): _commit_number(key)
+	if not _edit_valid(): return false
 	var display_name := _variant_name.text.strip_edges()
 	if display_name.is_empty() or not bool(_compiled.get("ok", false)):
-		return
+		return false
 	var result: Dictionary = Store.save_variant(
 		display_name,
 		_base_id,
@@ -802,7 +888,7 @@ func _save_variant() -> void:
 	)
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The build could not be saved."))
-		return
+		return false
 	var variant: Dictionary = result.get("variant", {})
 	var saved_descriptor: Variant = variant.get("workshop_descriptor", {})
 	_workshop_descriptor = saved_descriptor.duplicate(true) if saved_descriptor is Dictionary else {}
@@ -815,36 +901,49 @@ func _save_variant() -> void:
 	_refresh_variants()
 	_select_variant(str(variant.get("id", "")))
 	_sync_variant_actions()
+	_mark_baseline()
+	return true
 
 
 func _confirm_delete_selected() -> void:
-	if _selected_variant_id == "":
+	if _selected_variant_id.is_empty(): return
+	var loaded: Dictionary = Store.load_variant(_selected_variant_id, variants_root)
+	if not loaded.get("ok", false):
+		set_note(_messages(loaded.get("errors", []), "The saved build could not be loaded."))
 		return
-	_delete_dialog.popup_centered()
+	_delete_target = {id = str(loaded.variant.id), revision = int(loaded.variant.revision)}
+	_delete_dialog.dialog_text = tr("Delete %s · revision %d?") % [str(loaded.variant.name), _delete_target.revision]
+	_delete_dialog.popup_centered_clamped(Vector2i(560, 180), 0.9)
+	_delete_dialog.get_cancel_button().grab_focus()
 
 
 func _delete_selected_variant() -> void:
-	if _selected_variant_id == "":
-		return
-	var deleting_id := _selected_variant_id
-	var result: Dictionary = Store.delete_variant(deleting_id, variants_root)
+	if _delete_target.is_empty(): return
+	var deleting_id := str(_delete_target.id)
+	var revision := int(_delete_target.revision)
+	_delete_target.clear()
+	var result: Dictionary = Store.delete_variant(deleting_id, variants_root, revision)
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The saved build could not be deleted."))
 		return
 	_last_deleted_id = deleting_id
+	_last_deleted_generation = str(result.get("trash_generation", ""))
 	_restore_button.disabled = false
 	if _saved_variant_id == deleting_id:
 		_saved_variant_id = ""
 		_saved_variant_revision = 0
 		_saved_compiler_version = ""
+		_baseline.clear()
+		_baseline["deleted_saved_build"] = true
 	_refresh_variants()
-	set_note("Saved build deleted.")
+	_refresh_identity()
+	set_note("Saved build deleted. Its open draft is still available as a copy.")
 
 
 func _restore_last_deleted() -> void:
 	if _last_deleted_id.is_empty():
 		return
-	var result: Dictionary = Store.restore_variant(_last_deleted_id, variants_root)
+	var result: Dictionary = Store.restore_variant(_last_deleted_id, variants_root, _last_deleted_generation)
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The saved build could not be restored."))
 		return
@@ -852,6 +951,7 @@ func _restore_last_deleted() -> void:
 	_select_variant(_last_deleted_id)
 	_sync_variant_actions()
 	_last_deleted_id = ""
+	_last_deleted_generation = ""
 	_restore_button.disabled = true
 	set_note("Saved build restored. Load it to continue editing that revision.")
 
@@ -867,7 +967,7 @@ func _select_variant(id: String) -> void:
 
 
 func _on_variant_name_changed(_text: String) -> void:
-	_sync_save_button()
+	_refresh_identity()
 
 
 func _on_scale_selected(index: int) -> void:
@@ -902,6 +1002,9 @@ func _on_factor_value_changed(value: float, key: String) -> void:
 	var bounds := _factor_bounds(key)
 	_recipe[key] = clampf(value, bounds.x, bounds.y)
 	_factor_values[key].text = String.num(value, 4) + "×"
+	_invalid_fields.erase(key)
+	_pending_numbers.erase(key)
+	_factor_inputs[key].text = String.num(value, 4)
 	_compile_recipe()
 
 
@@ -976,6 +1079,8 @@ func _set_recipe(next_recipe: Dictionary, remember_current: bool) -> void:
 	if remember_current:
 		_capture_undo()
 	_recipe = next
+	_invalid_fields.clear()
+	_pending_numbers.clear()
 	_sync_controls()
 	if is_instance_valid(_preview):
 		_preview.set_aircraft(_base_id, _preview_scale())
@@ -1053,8 +1158,10 @@ func _sync_controls() -> void:
 		_factor_sliders[key].set_value_no_signal(value)
 		_factor_sliders[key].step = FACTOR_STEP
 		_factor_values[key].text = String.num(value, 4) + "×"
+		_factor_inputs[key].text = String.num(value, 4)
 		var supported := bool(_capabilities.get(str(FACTOR_CAPABILITIES[key]), false))
 		_factor_sliders[key].editable = supported
+		_factor_inputs[key].editable = supported
 		if supported and key == "tank_capacity_multiplier":
 			_factor_hints[key].text = tr("Estimated sizing proposal; tank dimensions scale uniformly. Fill fraction and blend density are preserved.")
 		elif not supported and key == "tank_capacity_multiplier":
@@ -1107,7 +1214,7 @@ func _compile_recipe() -> void:
 	else:
 		_compiled = Compiler.compile(_base.duplicate(true), _recipe.duplicate(true))
 	var valid := bool(_compiled.get("ok", false))
-	_trial_button.disabled = not valid
+	_trial_button.disabled = not valid or not _invalid_fields.is_empty()
 	_errors_label.text = _messages(_compiled.get("errors", []), "")
 	_errors_label.visible = not valid and _errors_label.text != ""
 	var compiled_data: Dictionary = _compiled.get("data", {})
@@ -1121,6 +1228,7 @@ func _compile_recipe() -> void:
 	else:
 		_validation_label.text = tr("Build blocked until the listed validation errors are resolved.")
 	_sync_save_button()
+	_refresh_comparison()
 
 
 func _format_summary(summary_value: Variant, model: Dictionary) -> String:
@@ -1220,7 +1328,10 @@ func _messages(value: Variant, fallback: String) -> String:
 
 
 func _request_trial() -> void:
-	if not bool(_compiled.get("ok", false)):
+	if _trial_pending: return
+	if _library_dialog.visible or _name_dialog.visible or (is_instance_valid(_guard_dialog) and _guard_dialog.visible): return
+	for key: String in _pending_numbers.keys(): _commit_number(key)
+	if not _edit_valid():
 		set_note("Resolve the build errors before starting a trial.")
 		return
 	if Catalog.is_rotorcraft(_base_id):
@@ -1229,6 +1340,7 @@ func _request_trial() -> void:
 	if not Catalog.can_fly(_base_id):
 		set_note("This catalog aircraft has no flight model and cannot start a trial.")
 		return
+	_capture_interaction()
 	_trial_button.disabled = true
 	_trial_pending = true
 	trial_requested.emit({
@@ -1246,10 +1358,22 @@ func _request_trial() -> void:
 
 
 func _request_close() -> void:
-	if _closing:
+	if is_instance_valid(_guard_dialog) and _guard_dialog.visible: return
+	var focused := get_viewport().gui_get_focus_owner()
+	for key: String in _factor_inputs:
+		if focused == _factor_inputs[key] and (_pending_numbers.has(key) or _invalid_fields.has(key)):
+			_pending_numbers.erase(key)
+			_invalid_fields.erase(key)
+			_factor_inputs[key].text = String.num(float(_recipe.get(key, 1.0)), 4)
+			_compile_recipe()
+			return
+	if _compact and _compact_view:
+		_compact_view = false
+		_resize_layout()
+		_view_button.grab_focus()
 		return
-	_closing = true
-	closed.emit()
+	if _closing: return
+	request_navigation("Back to Pause" if return_destination == "Pause" else "Back to Home", _finish_close)
 
 
 func _label(text: String, variation := "SecondaryLabel", wrap := false, translate := true) -> Label:
@@ -1269,7 +1393,7 @@ func _button(text: String, variation := "", node_name := "") -> Button:
 func _card(node_name: String) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.name = node_name
-	panel.theme_type_variation = "Card"
+	panel.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
 	return panel
 
 
@@ -1281,3 +1405,321 @@ func _card_content(panel: PanelContainer) -> VBoxContainer:
 	content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(content)
 	return content
+
+
+func _build_library() -> void:
+	_library_dialog = AcceptDialog.new()
+	_library_dialog.name = "WorkshopLibrary"
+	_library_dialog.title = tr("Aircraft library")
+	_library_dialog.theme = _screen.theme
+	_library_dialog.exclusive = true
+	_library_dialog.ok_button_text = tr("Back to editor")
+	_library_dialog.confirmed.connect(_close_library)
+	_library_dialog.canceled.connect(_close_library)
+	add_child(_library_dialog)
+	var body := VBoxContainer.new()
+	body.add_theme_constant_override("separation", 16)
+	_library_dialog.add_child(body)
+	body.add_child(_label("Stock aircraft", "CardTitle"))
+	_base_selector = OptionButton.new()
+	_base_selector.name = "BaseAircraft"
+	_base_selector.fit_to_longest_item = false
+	for entry: Dictionary in Catalog.airplane_flyable_entries():
+		_base_selector.add_item(str(entry.get("name", entry.get("id", "Aircraft"))))
+		_base_selector.set_item_metadata(_base_selector.item_count - 1, str(entry.id))
+	_base_selector.item_selected.connect(_on_base_selected)
+	body.add_child(_base_selector)
+	var open_stock := _button("New build from selected aircraft", "", "OpenStockAircraft")
+	open_stock.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	open_stock.pressed.connect(func() -> void:
+		var target := str(_base_selector.get_item_metadata(_base_selector.selected))
+		_close_library()
+		request_navigation("Open another aircraft", _replace_aircraft.bind(target)))
+	body.add_child(open_stock)
+	_aircraft_summary_label = _label("", "SecondaryLabel", true)
+	_aircraft_status_label = _label("", "SecondaryLabel", true)
+	body.add_child(_aircraft_summary_label)
+	body.add_child(_aircraft_status_label)
+	_build_variants_panel(body)
+
+
+func _build_name_dialog() -> void:
+	_name_dialog = ConfirmationDialog.new()
+	_name_dialog.name = "SaveBuildDialog"
+	_name_dialog.title = tr("Save build")
+	_name_dialog.theme = _screen.theme
+	_name_dialog.exclusive = true
+	_name_dialog.dialog_hide_on_ok = false
+	_name_dialog.ok_button_text = tr("Save build")
+	_name_dialog.confirmed.connect(func() -> void:
+		var succeeded := false
+		if _name_as_copy:
+			var previous := _saved_variant_id
+			_saved_variant_id = ""
+			succeeded = _save_variant()
+			if not succeeded: _saved_variant_id = previous
+		else:
+			succeeded = _save_variant()
+		if succeeded: _name_dialog.hide())
+	_name_dialog.canceled.connect(func() -> void:
+		_variant_name.text = _name_before
+		_refresh_identity())
+	add_child(_name_dialog)
+	# The name field is created with library controls; saving a new draft can show it here.
+
+
+func _open_library() -> void:
+	_refresh_variants()
+	_select_base(_base_id)
+	_trial_button.disabled = true
+	_library_dialog.popup_centered_clamped(Vector2i(680, 520), 0.9)
+	_base_selector.grab_focus()
+
+
+func _close_library() -> void:
+	_library_dialog.hide()
+	_trial_button.disabled = not _edit_valid() or _trial_pending
+	if _library_button.is_visible_in_tree(): _library_button.grab_focus()
+
+
+func _request_save() -> void:
+	for key: String in _pending_numbers.keys(): _commit_number(key)
+	if not _edit_valid():
+		_set_page("setup")
+		return
+	if _variant_name.text.strip_edges().is_empty():
+		_show_name_dialog(false)
+	else:
+		_save_variant()
+
+
+func _request_copy() -> void:
+	_show_name_dialog(true)
+
+
+func _show_name_dialog(as_copy: bool) -> void:
+	if not _edit_valid(): return
+	_close_library()
+	_name_as_copy = as_copy
+	_name_before = _variant_name.text
+	_variant_name.reparent(_name_dialog)
+	_variant_name.visible = true
+	_name_dialog.title = tr("Save a copy") if as_copy else tr("Save build")
+	_name_dialog.popup_centered_clamped(Vector2i(560, 180), 0.9)
+	_variant_name.grab_focus()
+
+
+
+func _replace_aircraft(id: String) -> void:
+	_selected_variant_id = ""
+	_variant_selector.select(0)
+	_variant_name.clear()
+	_invalid_fields.clear()
+	_pending_numbers.clear()
+	_load_catalog_aircraft(id, false)
+	_sync_controls()
+	_sync_variant_actions()
+	_mark_baseline()
+	_close_library()
+
+
+func _load_selected_variant() -> void:
+	if _selected_variant_id.is_empty(): return
+	var target := _selected_variant_id
+	_close_library()
+	request_navigation("Open saved build", _load_variant_snapshot.bind(target))
+
+
+func _set_page(page: String) -> void:
+	if not _page_nodes.has(page): return
+	_active_page = page
+	_compact_view = false
+	for id: String in _page_nodes:
+		_page_nodes[id].visible = id == page
+		_page_buttons[id].set_pressed_no_signal(id == page)
+	_body_scroll.scroll_vertical = 0
+	_resize_layout()
+
+
+func _toggle_compact_view() -> void:
+	_compact_view = not _compact_view
+	_resize_layout()
+
+
+func _draft_payload() -> Dictionary:
+	return {base_id = _base_id, base_bytes = _base_bytes.duplicate(), recipe = _recipe.duplicate(true),
+		name = _variant_name.text.strip_edges(), descriptor = _workshop_descriptor.duplicate(true),
+		dependencies = _variant_dependencies.duplicate(true), compiler = _saved_compiler_version}
+
+
+func has_unsaved_changes() -> bool:
+	return not _invalid_fields.is_empty() or not _pending_numbers.is_empty() \
+		or (not _baseline.is_empty() and _draft_payload() != _baseline)
+
+
+func _mark_baseline() -> void:
+	_baseline = _draft_payload()
+	_refresh_identity()
+
+
+func _refresh_identity() -> void:
+	if not is_instance_valid(_build_identity): return
+	var display_name := _variant_name.text.strip_edges()
+	if display_name.is_empty(): display_name = tr("Unsaved build")
+	var state := tr("Unsaved changes") if has_unsaved_changes() else (tr("Saved") if not _saved_variant_id.is_empty() else tr("New build"))
+	var revision := " · " + tr("revision %d") % _saved_variant_revision if _saved_variant_revision > 0 else ""
+	_build_identity.text = "%s · %s%s · %s" % [display_name, tr(str(Catalog.entry(_base_id).get("name", _base_id))), revision, state]
+
+
+func _edit_valid() -> bool:
+	return bool(_compiled.get("ok", false)) and _invalid_fields.is_empty()
+
+
+func _finish_close() -> void:
+	if _closing: return
+	_closing = true
+	closed.emit()
+
+
+func request_navigation(destination: String, proceed: Callable, cancel: Callable = Callable(), dialog_host: Node = null) -> void:
+	if is_instance_valid(_guard_dialog): return
+	if not has_unsaved_changes():
+		proceed.call()
+		return
+	_navigation_proceed = proceed
+	_navigation_cancel = cancel
+	_navigation_focus = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
+	_guard_dialog = ConfirmationDialog.new()
+	_guard_dialog.name = "UnsavedBuildDialog"
+	_guard_dialog.title = tr("Unsaved changes")
+	_guard_dialog.dialog_text = tr("Save this build before continuing?") + "\n" + tr(destination)
+	_guard_dialog.theme = _screen.theme
+	_guard_dialog.exclusive = true
+	_guard_dialog.dialog_hide_on_ok = false
+	_guard_dialog.ok_button_text = tr("Save and continue")
+	_guard_dialog.cancel_button_text = tr("Cancel")
+	_guard_dialog.add_button(tr("Discard changes"), false, "discard")
+	_guard_dialog.confirmed.connect(_navigation_save)
+	_guard_dialog.canceled.connect(_navigation_abort)
+	_guard_dialog.custom_action.connect(func(action: String) -> void:
+		if action == "discard": _navigation_finish())
+	var host: Node = dialog_host if dialog_host != null else self
+	host.add_child(_guard_dialog)
+	var body := VBoxContainer.new()
+	_guard_dialog.add_child(body)
+	_guard_name = LineEdit.new()
+	_guard_name.placeholder_text = tr("Name this build")
+	_guard_name.max_length = 64
+	_guard_name.text = _variant_name.text
+	body.add_child(_guard_name)
+	_guard_error = _label("", "ErrorLabel", true)
+	body.add_child(_guard_error)
+	_guard_dialog.get_ok_button().disabled = not _edit_valid()
+	if not _edit_valid(): _guard_error.text = tr("This build cannot be saved until its errors are resolved.")
+	_guard_dialog.popup_centered_clamped(Vector2i(600, 260), 0.9)
+	_guard_dialog.get_cancel_button().grab_focus()
+
+
+func _navigation_save() -> void:
+	for key: String in _pending_numbers.keys(): _commit_number(key)
+	var name_value := _guard_name.text.strip_edges()
+	if name_value.is_empty():
+		_guard_error.text = tr("Name this build before saving.")
+		_guard_name.grab_focus()
+		return
+	_variant_name.text = name_value
+	if _save_variant():
+		_navigation_finish()
+	else:
+		_guard_error.text = _status_label.text
+
+
+func _navigation_finish() -> void:
+	var next := _navigation_proceed
+	_clear_navigation()
+	if next.is_valid(): next.call()
+
+
+func _navigation_abort() -> void:
+	var cancel := _navigation_cancel
+	var focus := _navigation_focus
+	_clear_navigation()
+	if is_instance_valid(focus) and focus.is_inside_tree() and focus.is_visible_in_tree(): focus.grab_focus()
+	if cancel.is_valid(): cancel.call()
+
+
+func _clear_navigation() -> void:
+	if is_instance_valid(_guard_dialog):
+		_guard_dialog.hide()
+		_guard_dialog.queue_free()
+	_guard_dialog = null
+	_navigation_proceed = Callable()
+	_navigation_cancel = Callable()
+	_navigation_focus = null
+
+
+func _number_changed(value: String, key: String) -> void:
+	if _syncing_controls: return
+	var bounds := _factor_bounds(key)
+	var number := value.to_float()
+	if not value.is_valid_float() or not is_finite(number) or number < bounds.x or number > bounds.y:
+		_invalid_fields[key] = tr("Enter a value from %.2f to %.2f.") % [bounds.x, bounds.y]
+	else:
+		_invalid_fields.erase(key)
+	if value == String.num(float(_recipe.get(key, 1.0)), 4):
+		_pending_numbers.erase(key)
+	else:
+		_pending_numbers[key] = value
+	_trial_button.disabled = not _edit_valid()
+	_sync_save_button()
+	if _invalid_fields.has(key): set_note(_invalid_fields[key])
+
+
+func _commit_number(key: String) -> void:
+	if not _pending_numbers.has(key) or _invalid_fields.has(key): return
+	var value := str(_pending_numbers[key]).to_float()
+	_pending_numbers.erase(key)
+	var next := _recipe.duplicate(true)
+	next[key] = value
+	_set_recipe(next, true)
+
+
+func _refresh_comparison() -> void:
+	if not is_instance_valid(_comparison_grid): return
+	for child in _comparison_grid.get_children():
+		_comparison_grid.remove_child(child)
+		child.queue_free()
+	for title: String in ["Value", "Original", "Draft", "Difference"]:
+		_comparison_cell(tr(title))
+	var summary: Dictionary = _compiled.get("summary", {})
+	var rows := 0
+	for spec: Array in [["wing_span_m", "Wing span (m)"], ["wing_area_m2", "Wing area (m²)"], ["mass_kg", "Mass (kg)"], ["wing_loading_kg_m2", "Wing loading (kg/m²)"], ["fuel_capacity_l", "Tank capacity (l)"], ["max_rpm", "Maximum RPM"], ["static_thrust_n", "Static thrust (N)"], ["static_power_w", "Static power (W)"]]:
+		var key := str(spec[0])
+		if not summary.has(key) or not _base_summary.has(key): continue
+		var before := float(_base_summary[key])
+		var after := float(summary[key])
+		if not _all_values.button_pressed and is_equal_approx(before, after): continue
+		_comparison_cell(tr(spec[1]))
+		_comparison_cell(_format_metric_number(before, 2))
+		_comparison_cell(_format_metric_number(after, 2))
+		_comparison_cell(("+" if after >= before else "−") + _format_metric_number(absf(after - before), 2))
+		rows += 1
+	if rows == 0: _comparison_cell(tr("No changes from the original."))
+
+
+func _comparison_cell(value: String) -> void:
+	var cell := _label(value, "SecondaryLabel", true, false)
+	cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_comparison_grid.add_child(cell)
+
+
+func _capture_interaction() -> void:
+	var focus := get_viewport().gui_get_focus_owner()
+	_interaction_focus = get_path_to(focus) if focus != null and is_ancestor_of(focus) else NodePath()
+	_interaction_scroll = _body_scroll.scroll_vertical
+
+
+func _restore_interaction() -> void:
+	_body_scroll.scroll_vertical = _interaction_scroll
+	var focus := get_node_or_null(_interaction_focus) as Control if not _interaction_focus.is_empty() else null
+	if focus != null and focus.is_visible_in_tree(): focus.grab_focus()

@@ -50,14 +50,14 @@ Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.
 | Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Preserves exporter-managed native libraries beside Windows/Linux executables. Recreates `dist/`. |
 
-For experimental-aircraft evaluation, `app/test.sh` reports two known physical acceptance assertions as pending: Stik right-first rudder recovery and the R02 yaw-damping comparison. The P-51 ground and handling checks are strict again ([P51-22 resolution](research/p51-realism/P51-22/README.md#resolution--2026-10-16)). All remaining assertions, including finite-state, stability and refinement checks, stay mandatory. Standalone scripts default to strict acceptance:
+For experimental-aircraft evaluation, `app/test.sh` may report two named physical checks as pending: only the Stik's right-first 240 Hz reference-doublet `|β| ≤ 25°` screen, and the R02 yaw-damping comparison. The Stik screen is an estimated boundary check; D10-R2 recovery, yaw-rate, finite-state and timestep-convergence checks remain mandatory ([D10-R2 decision and evidence](research/flight-dynamics/stik-lateral-directional-2026-10-18/README.md#6-decisions-and-adoption-d10-r2-2026-10-18)). The P-51 ground and handling checks are strict again ([P51-22 resolution](research/p51-realism/P51-22/README.md#resolution--2026-10-16)). Standalone scripts default to strict acceptance:
 
 ```sh
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_rudder_authority.gd
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_yaw_damping.gd
 ```
 
-The [Stik recovery diagnostic](research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/README.md) and [yaw comparison diagnostic](research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/README.md) record these deferrals. The suite supplies only the corresponding `--allow-known-stik-rudder-recovery` or `--allow-known-r02-yaw-alpha11` argument to each script. A pending physical check is not a pass.
+The [D10-R2 Stik decision](research/flight-dynamics/stik-lateral-directional-2026-10-18/README.md#6-decisions-and-adoption-d10-r2-2026-10-18) and [R02 yaw comparison diagnostic](research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/README.md) explain these pending checks. `app/test.sh` supplies only the corresponding `--allow-known-stik-rudder-sideslip` or `--allow-known-r02-yaw-alpha11` argument to each script. A pending physical check is not a pass.
 
 Before exporting, install both qualified x86_64 native libraries and their matching aggregate receipt through the [native builder's installation workflow](../research/rc-monster-truck/native/README.md#installing-and-exporting). Export rejects a missing platform row, incompatible source/ABI/solver identity or binary hash mismatch. Its Linux host probe also checks the selected native backend and float64 ABI; Windows/macOS resource checks under the Linux editor do not replace target-host execution.
 

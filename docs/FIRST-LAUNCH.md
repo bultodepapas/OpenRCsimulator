@@ -51,7 +51,7 @@ Home also offers two separate experimental activities, each with its own control
 | K · Enter | Start calibration · advance its step |
 | F · Shift+F | Move equipped aircraft's flaps: next / previous |
 | G / B | Toggle retractable gear / hold its wheel brakes |
-| H | Toggle the Stik smoke pump with keyboard controls |
+| H | Toggle an installed smoke pump with keyboard controls |
 | J · Enter | Assign the active radio's smoke AUX · advance its step |
 | T | Start / save a flight trace |
 | F10 / F11 | Start/stop flight log / mark a maneuver while recording |
@@ -95,7 +95,7 @@ Recognized gamepads with standard mapped axes become ready on the first valid li
 
 Default buttons: **A/Cross** accept, **B/Circle** back, **Menu/Options** pause, **Y/Triangle** camera, right-stick click reset view, **X/Square** overlays, D-pad trims during flight, and held LB/L1 throttle cut for fixed-wing flight. D-pad/left stick navigate menus. Remaps are profile-specific. Ground driving keeps left-stick steering, RT drive, LT brake and B+RT reverse.
 
-**Automatic aircraft controls:** on gamepad profiles, **A/Cross** cycles available flaps, **B/Circle** toggles retractable gear and **RB/R1** toggles an installed smoke pump. The P-51D and Ventage Jet receive flap and gear bindings; the Stik receives the smoke binding. Automatic assignments use only free flight buttons, preserve explicit remaps and cleared actions, and yield to existing AUX assignments. A/Cross and B/Circle still mean Accept and Back in menus; release them before pressing again in flight. The Control guide shows this aircraft's equipment, actual binding, gear movement and smoke output. Unknown joysticks and RC radios keep their configured buttons; use **Remap** for their actual layout.
+**Automatic aircraft controls:** on gamepad profiles, **A/Cross** cycles available flaps, **B/Circle** toggles retractable gear and **RB/R1** toggles an installed smoke pump. The P-51D and Ventage Jet receive flap and gear bindings; supported Stik and P-51D configurations receive the smoke binding. Automatic assignments use only free flight buttons, preserve explicit remaps and cleared actions, and yield to existing AUX assignments. A/Cross and B/Circle still mean Accept and Back in menus; release them before pressing again in flight. The Control guide shows this aircraft's equipment, actual binding, gear movement and smoke output. Unknown joysticks and RC radios keep their configured buttons; use **Remap** for their actual layout.
 
 **Restart from the controller:** **View/Back** on Xbox or **Share/Create** on PlayStation restarts the selected flight, including from the accident report, then opens Pause for explicit **Continue**. The flight controller owns this command even when another pad navigates menus. In Controller settings → Buttons → Flight, remap **Restart flight** to a button or an unused radio/joystick axis, then **Save**. An axis fires once when it crosses its threshold; return it toward OFF before restarting again. Settings/calibration cannot queue a restart from a held control. While an ordinary menu is open, use Pause's **Restart flight** action.
 
@@ -115,7 +115,7 @@ Connect in USB joystick mode with RF modules off. EdgeTX/OpenTX's Advanced joyst
 
 Select the radio in Controller settings and Save, then move throttle to low to arm. If channels or directions are wrong, use **Calibrate selected radio** from Pause → Controller settings, or **K** outside menus. The calibration button saves and activates the chosen radio before opening its wizard. Follow the steps with **Enter**, then move throttle away from low and back to low to rearm. A separately selected menu gamepad can advance/cancel the wizard with A/B. Calibration is saved per radio; gamepads cannot enter this radio-only wizard. Unplugging pauses with idle throttle. Simulated-device tests do not certify your hardware.
 
-On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF, turn exactly one unused axis/button ON, then return it OFF, using Enter at each step. Buttons offer held-level or press-edge toggle. AETR axes cannot be assigned. The profile is saved per device; after assignment/reconnection, report OFF again before using smoke and rearm throttle before resuming. **H** controls the pump when no radio is connected. Ordinary glow exhaust is faint; the pump needs sufficient running RPM/throttle. Other aircraft currently have no configured smoke installation. [Feature and limits](SMOKE-PLAN.md).
+On supported Stik and P-51D configurations, **J** opens a separate smoke-pump assignment: keep the control OFF, turn exactly one unused axis/button ON, then return it OFF, using Enter at each step. Buttons offer held-level or press-edge toggle. AETR axes cannot be assigned. The profile is saved per device; after assignment/reconnection, report OFF again before using smoke and rearm throttle before resuming. **H** controls the pump when no radio is connected. Ordinary engine exhaust is faint; the pump needs sufficient running RPM/throttle. Extra, Ventage Jet and electric aircraft have no configured RC exhaust effect. [Feature and limits](SMOKE.md).
 
 ## 4. Settings and flight options
 
