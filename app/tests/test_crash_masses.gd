@@ -40,13 +40,18 @@ func _check(label: String, ok: bool, detail := "") -> void:
 func _production() -> void:
 	var main: Variant = MainScene.instantiate()
 	main.set("accident_reports_enabled", false) # Wreck mass fixture has no economic archive.
-	main.set("aircraft_id", "jensen-das-ugly-stik-60")
+	main.set("aircraft_id", "stik-glow-55ax-2t")
 	root.add_child(main)
 	await process_frame
 	var session: Variant = main.get("session")
 	var director: Variant = main.get("_crash_director")
 	session.input_enabled = false
 	session.set_physics_process(false)
+	# This production Stik has a finite Glow tank. Keep it quarter-full to distinguish the typed source
+	# report from the legacy kerosene-only scalar at the impact.
+	var continuous: PackedFloat64Array = session.sim.continuous.duplicate()
+	continuous[1] *= 0.25
+	session.sim.continuous = continuous
 	var s: PackedFloat64Array = session.sim.state.duplicate()
 	var hull: PackedFloat64Array = session.aircraft.model.crash_hull
 	var deepest := -INF
@@ -64,8 +69,20 @@ func _production() -> void:
 	session.sim.set_paused(false)
 	session._physics_process(session.sim.dt())
 	director.update(session.sim.dt())
-	_check("production crash hands the inventory to the wreck", director.active and (director.report.get("inventory_boxes", []) as Array).size() == 20)
+	_check("production crash hands the inventory to the wreck", director.active and not (director.report.get("inventory_boxes", []) as Array).is_empty())
 	_check("production wreck uses inventory section masses", not director.wreck._section_masses.is_empty())
+	var live: Dictionary = session.mass_properties()
+	var fuel_by_kind: Dictionary = director.report.get("fuel_by_kind_kg", {})
+	var energy_sources: Dictionary = director.report.get("energy_sources", {})
+	_check("production crash reports live Glow fuel by type",
+		live.get("ok", false) and float(fuel_by_kind.get("glow_fuel", 0.0)) > 0.0
+		and absf(float(fuel_by_kind.get("glow_fuel", -1.0)) - float(live.get("fuel_remaining_kg", -2.0))) < 1.0e-12
+		and absf(float(energy_sources.get("glow_fuel", -1.0)) - float(fuel_by_kind.get("glow_fuel", -2.0))) < 1.0e-12,
+		str({live = live, typed = fuel_by_kind, sources = energy_sources}))
+	_check("production crash labels the compatibility scalar as kerosene-only",
+		float(director.report.get("fuel_kg", -1.0)) == 0.0
+		and director.report.get("fuel_kind") == "kerosene"
+		and director.report.get("fuel_kg_basis") == "declared inventory; legacy kerosene-only scalar")
 	main.queue_free()
 	await process_frame
 	await process_frame

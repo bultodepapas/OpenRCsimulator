@@ -1,13 +1,13 @@
 # Tooling index
 
-Canonical setup and command index. Code, configuration and generated data define implemented behavior. Run commands from the repository root; detailed tool contracts live in the linked READMEs.
+Canonical setup and command index. Code, configuration and generated data define implemented behavior. Run commands from the repository root in Bash unless labeled PowerShell; native Windows Python examples use `python` instead of `python3`. Detailed tool contracts live in the linked READMEs.
 
 ## Developer setup
 
-The CI host is Ubuntu 24.04 x86_64. Install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3. `app/get-godot.sh` downloads the exact Godot version pinned in that script and verifies the archive's SHA-512.
+The CI host is Ubuntu 24.04 x86_64. Install Git, Bash, curl, unzip, GNU coreutils, util-linux and Python 3 (`python3`). `app/get-godot.sh` downloads the exact Godot version pinned in that script and verifies the archive's SHA-512.
 
 ```sh
-git -c core.autocrlf=false clone https://github.com/bultodepapas/OpenRCsimulator.git
+git clone -c core.autocrlf=false https://github.com/bultodepapas/OpenRCsimulator.git
 cd OpenRCsimulator
 "$(app/get-godot.sh)" --headless --path app --editor --import
 "$(app/get-godot.sh)" --path app
@@ -27,7 +27,7 @@ $GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe'
 
 Inspect exit status **and** engine errors in logs: Godot can report runtime script errors with exit code zero. WSL results establish Linux behavior, not native Windows GPU or device acceptance. On macOS, open `app/project.godot` with the matching Godot build.
 
-Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js prototype. To reproduce the Linux app CI job with Docker and `act`: `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
+Node 24 (`.nvmrc`) is used by tree-authoring tools and the frozen three.js prototype; the production app and static project site do not require Node. To reproduce the Linux app CI job with Docker and `act`: `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
 
 Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.playwright-mcp/` for browser sessions. Retain accepted evidence under `docs/research/` or `docs/media/`. Local cleanup must preserve source deliveries, `references/`, tool binaries/environments and registered worktrees (`git worktree list`), including those nested in scratch directories.
 
@@ -43,8 +43,8 @@ Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.
 | Quick flight | `"$(app/get-godot.sh)" --path app -- --quick-flight` | Direct runway start; no player preferences. Add `--start=airborne` for airborne practice, `--aircraft=<catalog-id>`, `--battery=ideal` (constant voltage instead of the default finite pack for aircraft whose catalog entry has `battery_data`, BAT-13), `--rates=full` or `--hud=overlays`. |
 | Full field | `app/run-landscape.sh` | Forces scenery on. Normal launches already default to on; opt out with `-- --scenery=off`. |
 | Flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=/tmp/openrc-trace.csv --t=3` | Initial state plus each 240 Hz tick; [trace contract](research/trace-integrity/C7-R2/README.md). |
-| Flight log and replay | `python tools/flight_log/flight_log.py record --out tmp/flight.orfl` | F10 record/stop, F11 marker; bounded exact-state logging, CSV export, exact/candidate replay and comparisons. [Manual](FLIGHT-LOGGING.md). |
-| Crash-cost data | `python research/crash-economics/build_runtime.py` | Regenerates the accident-cost sidecar after aircraft or price-source edits; `--check` only verifies. Opt-in pre-push check: `git config core.hooksPath tools/hooks`. |
+| Flight log and replay | `python3 tools/flight_log/flight_log.py record --godot "$(app/get-godot.sh)" --out tmp/flight.orfl` | F10 record/stop, F11 marker; bounded exact-state logging, CSV export, exact/candidate replay and comparisons. [Manual](FLIGHT-LOGGING.md). |
+| Crash-cost data | `python3 research/crash-economics/build_runtime.py` | Regenerates the accident-cost sidecar after aircraft or price-source edits; `--check` only verifies. Opt-in pre-push check: `git config core.hooksPath tools/hooks`. |
 | Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Preserves exporter-managed native libraries beside Windows/Linux executables. Recreates `dist/`. |
 
@@ -61,7 +61,7 @@ Before exporting, install both qualified x86_64 native libraries and their match
 
 [CI](../.github/workflows/ci.yml) also checks schemas, generated geometry/physics and the Windows/Linux native ground-vehicle evaluators. `app/test.sh` alone does not run every CI check. Software checks do not establish physical aircraft accuracy, radio latency or target-GPU performance.
 
-CI divides app verification into eight unit partitions and one integration job; all nine must pass before export. Each job imports its own checkout. The integration job retains every offline/reference check, complete GDScript parse pass, model contract and CLI/replay check. `app/test.sh` without these variables still runs the complete suite. Reproduce one partition with `OPENRC_TEST_PART=units OPENRC_UNIT_SHARDS=8 OPENRC_UNIT_SHARD=0 app/test.sh` (indices 0–7), or the remaining checks with `OPENRC_TEST_PART=integration app/test.sh`. A partition result alone is not a complete app result. `python3 app/tests/test_ci_partitions.py` verifies coverage, invalid selections and failure propagation with a disposable engine stub.
+CI divides app verification into eight unit partitions and one integration job; all nine, plus visual, native and prototype checks, are required for tagged publication. The export job can run once both Linux and Windows native builds pass, independently of the app partitions. Each app job imports its own checkout. The integration job retains every offline/reference check, complete GDScript parse pass, model contract and CLI/replay check. `app/test.sh` without these variables still runs the complete suite. Reproduce one partition with `OPENRC_TEST_PART=units OPENRC_UNIT_SHARDS=8 OPENRC_UNIT_SHARD=0 app/test.sh` (indices 0–7), or the remaining checks with `OPENRC_TEST_PART=integration app/test.sh`. A partition result alone is not a complete app result. `python3 app/tests/test_ci_partitions.py` verifies coverage, invalid selections and failure propagation with a disposable engine stub.
 
 The frozen prototype's separate CI job runs `npm ci`, `npm run typecheck`, `npm test`, `npx playwright install --with-deps chromium`, `npm run capture` and `npm run e2e` from `prototypes/stage0/three/`.
 
@@ -110,15 +110,15 @@ Use fresh output directories and the pinned Godot build. Run timing experiments 
 
 | Area | Entrypoint / authoritative contract |
 | --- | --- |
-| Aircraft authoring | `python research/aircraft-standardization/conformance.py --godot <godot> --out <fresh-dir> --parse-all`; [aircraft contract](AIRCRAFT_CONTRACT.md). Optional `--package` checks exports. |
-| Natural Random | `python research/natural-random/verify.py --godot <godot> --out <fresh-dir>`; [evidence](research/natural-random/README.md). |
-| Glow 2T/4T | `python research/glow-engines/verify_integration.py --godot <godot> --out <fresh-dir> --parse-all`; [current integration](GLOW-ENGINES.md), [isolated kernels](../research/glow-engines/README.md). |
+| Aircraft authoring | `python3 research/aircraft-standardization/conformance.py --godot <godot> --out <fresh-dir> --parse-all`; [aircraft contract](AIRCRAFT_CONTRACT.md). Optional `--package` checks exports. |
+| Natural Random | `python3 research/natural-random/verify.py --godot <godot> --out <fresh-dir>`; [evidence](research/natural-random/README.md). |
+| Glow 2T/4T | `python3 research/glow-engines/verify_integration.py --godot <godot> --out <fresh-dir> --parse-all`; [current integration](GLOW-ENGINES.md), [isolated kernels](../research/glow-engines/README.md). |
 | Helicopter | [current experimental flight session and checks](HELICOPTER.md); `research/helicopter/verify_kernels.py` owns independent kernel references and disposable defects. |
 | Bisonte ground vehicle | [runtime/experiments](../research/rc-monster-truck/README.md), [native builder/parity](../research/rc-monster-truck/native/README.md). |
 | Electric coupling | [EL2a-P1](../research/propulsion/el2a-p1/README.md), [EL2a-P2 event qualification](../research/propulsion/el2a-p2/README.md). Reference runs use their pinned NumPy/SciPy environment. |
 | Taildragger and nose-over | `python3 research/ground-contact/e5a/verify.py --out /tmp/e5a-proof --mutations`; analogous `e5b/verify.py`. [E5a](../research/ground-contact/e5a/README.md), [E5b](../research/ground-contact/e5b/README.md). |
 | Long-circuit sensitivity | `python3 research/landing/e4b/measure.py --out /tmp/e4b-proof`; [E4b limits](research/ground-contact/E4b/README.md). Experiment completion does not mean every perturbation passed. |
-| Standard flight-test battery | `python research/flight-test/run.py --out <fresh-dir> [--aircraft <ids>] [--app <candidate copy>] [--only <tests>]`, then `python research/flight-test/compare.py <baseline> <candidate>`; [card, pilots and workflow](../research/flight-test/README.md), [card v4 fleet baseline](research/flight-test/FT-04/README.md). Card v4 adds aerobatic figures, inverted flight, engine failure, stall variants and the go-around; `--only aero_sweep` shows, without flying, which aerodynamic model carries the loads at each sideslip and α and what each gives. Model predictions, not validation. |
+| Standard flight-test battery | `python3 research/flight-test/run.py --out <fresh-dir> [--aircraft <ids>] [--app <candidate copy>] [--only <tests>]`, then `python3 research/flight-test/compare.py <baseline> <candidate>`; [card, pilots and workflow](../research/flight-test/README.md), [card v4 fleet baseline](research/flight-test/FT-04/README.md). Card v4 adds aerobatic figures, inverted flight, engine failure, stall variants and the go-around; `--only aero_sweep` shows, without flying, which aerodynamic model carries the loads at each sideslip and α and what each gives. Model predictions, not validation. |
 | Parameter sensitivity | `"$(app/get-godot.sh)" --headless --path app --script "$PWD/research/sensitivity/sensitivity.gd"`. |
 | Modal dashboard | `python3 research/validation/dashboard.py --check`; [validation tools](../research/validation/README.md). Red reference comparisons are diagnostic results. |
 | Aircraft generators | Source pipelines in the aircraft guides; examples: [P51-05](../research/p51/p51-05/derivation.md), [EX-05](../research/extra-300/ex05/derivation.md), [AV-06](../research/avanti-s/av06/derivation.md). |

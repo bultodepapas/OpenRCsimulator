@@ -63,6 +63,10 @@ static func text_for(code: String) -> String:
 			return "LVC · land now"
 		"battery_hot":
 			return "BATTERY HOT"
+		"fuel_reserve":
+			return "FUEL RESERVE"
+		"fuel_reserve_estimated":
+			return "FUEL RESERVE · ESTIMATED"
 		"experimental":
 			return "EXPERIMENTAL MODEL"
 	return code.to_upper()

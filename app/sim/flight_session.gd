@@ -60,6 +60,8 @@ func _failure_airborne() -> bool:
 
 const EventStep: Script = preload("res://physics/event_step.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
+const FuelSample := preload("res://sim/fuel_sample.gd")
+const CheckpointJson := preload("res://sim/checkpoint_json.gd")
 ## Fixed original wet-CG datum; live contact mobility and linear fuel sampling at swept crossing fractions.
 const MASS_CONTACT_LAW := "fixed-datum-live-mass-contact-linear-fuel-v1"
 const BatteryStep: Script = preload("res://physics/electric_battery_step.gd")
@@ -146,18 +148,22 @@ func glow_state() -> Dictionary:
 ## FUEL-07: the start fill of a finite-fuel tank as a fraction (0, 1] of the authored full tank. Every reset
 ## refuels to it; a checkpoint stores the actual fuel, so exact replay needs no extra identity.
 var fuel_start_fill: float = 1.0
+const FUEL_SESSION_FORMAT := "openrc-fuel-session v1"
+var _fuel_start_fill_known := true
 
 
 func set_fuel_start_fill(fill: float) -> bool:
 	if not is_finite(fill) or fill <= 0.0 or fill > 1.0:
 		return false
 	fuel_start_fill = fill
+	_fuel_start_fill_known = true
 	return true
 
 
 ## Fuel mass a reset loads into a finite tank.
 func start_fuel_kg() -> float:
-	return float(aircraft.model.propulsion.glow.initial_fuel_kg) * fuel_start_fill
+	var install: Dictionary = aircraft.model.propulsion.glow
+	return float(install.get("capacity_fuel_kg", install.initial_fuel_kg)) * fuel_start_fill
 
 
 ## FUEL-06: one live mass-properties sample of the accepted state, the single source for presentation (HUD load
@@ -169,15 +175,17 @@ func mass_properties() -> Dictionary:
 		var live: Dictionary = GlowFlight.properties(self, sim.continuous[1])
 		if not live.get("ok", false):
 			return {ok = false}
-		var out: Dictionary = live.duplicate()
-		out.fuel_remaining_kg = maxf(0.0, sim.continuous[1])
-		out.finite_fuel = true
-		return out
+		var tanks: Array = aircraft.model.get("fuel_system", {}).get("tanks", [])
+		if tanks.size() != 1:
+			return {ok = false}
+		return FuelSample.build(live, tanks, {str(tanks[0].id): maxf(0.0, sim.continuous[1])},
+			sim.tick, sim.time(), true)
 	if sim == null or sim.inertia.size() != 6 or not is_finite(sim.mass) or sim.mass <= 0.0:
 		return {ok = false}
-	return {ok = true, mass_kg = sim.mass, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+	var properties := {ok = true, mass_kg = sim.mass, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
 		inertia = sim.inertia.duplicate(), inverse = RB.inertia_inverse(sim.inertia),
 		fuel_remaining_kg = NAN, finite_fuel = false}
+	return FuelSample.build(properties, [], {}, sim.tick, sim.time(), false)
 
 
 ## Separate cut and starter commands: moving the throttle never changes the ignition latch.
@@ -2025,6 +2033,7 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 
 
 func reset() -> void:
+	_fuel_start_fill_known = true
 	if start_choice == START_RUNWAY:
 		var result := _reset_selected_runway_start()
 		runway_start_outcome = result.duplicate(true)
@@ -3546,7 +3555,9 @@ func trace_meta() -> Dictionary:
 		if wheel_count() > 0: # GP-06a: rim speeds follow the glow slots (wheel_index() == GlowFlight.SIZE)
 			metadata.continuous_layout += "; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
-		if fuel_start_fill != 1.0:
+		if not _fuel_start_fill_known:
+			metadata.fuel_start_fill_known = false
+		elif fuel_start_fill != 1.0:
 			metadata.fuel_start_fill=fuel_start_fill # FUEL-07: start fill of the authored full tank
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
 	if not workshop_identity.is_empty():
@@ -3588,6 +3599,16 @@ func trace_meta() -> Dictionary:
 
 ## Physics replay boundary, deliberately downstream of live input conditioning and menus.
 ## Owner configuration is fingerprinted in exact Variant encoding; derived caches are excluded.
+## JSON is a bounded carrier of native Variant bytes, preserving float64 and int64/RNG bits.
+func checkpoint_json() -> String:
+	return CheckpointJson.encode(checkpoint())
+
+
+func restore_checkpoint_json(text: String) -> bool:
+	var decoded: Dictionary = CheckpointJson.decode(text)
+	return decoded.get("ok", false) and restore_checkpoint(decoded.snapshot)
+
+
 func checkpoint() -> Dictionary:
 	if not _flight_ready():
 		return {}
@@ -3604,6 +3625,9 @@ func checkpoint() -> Dictionary:
 			or (not engine_running and sim.continuous[0] != 0.0)):
 		return {}
 	var boundary: Dictionary = {format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot}
+	if glow_is_active():
+		boundary.fuel_session = {format = FUEL_SESSION_FORMAT, start_fill = fuel_start_fill,
+			selection_known = _fuel_start_fill_known}
 	if not aircraft.model.get("envelope", {}).is_empty():
 		boundary.aero_loads_law = Aero.LOADS_LAW
 		boundary.wake_state_unit = Aero.WAKE_STATE_UNIT
@@ -3754,6 +3778,21 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			or not candidate.get("simulation") is Dictionary:
 		return false
 	var snapshot: Dictionary = candidate.simulation
+	# The integrated fuel state proves exact continuation; launch selection separately owns reset/provenance.
+	# Legacy boundaries retain the destination reset setting and explicitly mark its source selection unknown.
+	var restored_fuel_fill: float = fuel_start_fill
+	var restored_fuel_fill_known: bool = false
+	if candidate.has("fuel_session"):
+		var fuel_session: Variant = candidate.fuel_session
+		if not glow_is_active() or not fuel_session is Dictionary or fuel_session.size() != 3 \
+				or fuel_session.get("format") != FUEL_SESSION_FORMAT \
+				or typeof(fuel_session.get("start_fill")) not in [TYPE_FLOAT, TYPE_INT] \
+				or typeof(fuel_session.get("selection_known")) != TYPE_BOOL:
+			return false
+		restored_fuel_fill = float(fuel_session.start_fill)
+		if not is_finite(restored_fuel_fill) or restored_fuel_fill <= 0.0 or restored_fuel_fill > 1.0:
+			return false
+		restored_fuel_fill_known = bool(fuel_session.selection_known)
 	if not aircraft.model.get("envelope", {}).is_empty():
 		if candidate.get("aero_loads_law") != Aero.LOADS_LAW or candidate.get("wake_state_unit") != Aero.WAKE_STATE_UNIT:
 			return false
@@ -3897,6 +3936,8 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 		_gear_cache_fraction = -1.0
 		_gear_request_inhibited = false
 	_flap_requested = snapshot.inputs[flap_input_index()] if flaps_available() else 0.0
+	fuel_start_fill = restored_fuel_fill
+	_fuel_start_fill_known = restored_fuel_fill_known
 	_failures = restored_failures
 	_scenery_damage = restored_damage
 	_restore_contact_history(restored_contacts)

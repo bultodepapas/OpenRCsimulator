@@ -48,6 +48,7 @@ func _run() -> void:
 	_contrast()
 	_preferences()
 	await _manager()
+	await _fuel()
 	await _dialog()
 	await _spanish_layout()
 	await _controls_guide()
@@ -131,6 +132,7 @@ func _manager() -> void:
 	_check("Pilot preset shows its five overlays", _shown(manager) == ["flight", "transmitter", "warnings", "wind", "controls"], str(_shown(manager)))
 	_check("imperial for English: 20 m/s = 45 mph", manager.frames.flight.values.airspeed.text == "45 mph", manager.frames.flight.values.airspeed.text)
 	_check("height above ground in ft", manager.frames.flight.values.height.text == "98 ft", manager.frames.flight.values.height.text)
+	_check("nonfinite aircraft hide the fuel reading row", not manager.frames.flight.values.fuel.visible)
 	_check("two warning chips", manager.frames.warnings.chips.get_child_count() == 2)
 	_check("pilot layout at 1920×1080: no overlap, all on screen", _layout_ok(manager, false, Vector2(1920, 1080)), _rects(manager))
 	root.size = Vector2i(1280, 720)
@@ -200,6 +202,90 @@ func _manager() -> void:
 	await process_frame
 
 
+func _fuel() -> void:
+	var manager: CanvasLayer = Manager.new({}, "en")
+	root.add_child(manager)
+	await process_frame
+	var requests: Array = []
+	manager.fuel_reserve_warning_requested.connect(func(sample: Dictionary) -> void: requests.append(sample))
+	var snap: Dictionary = _snapshot(PackedStringArray())
+	snap.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(snap)
+	_check("initial low-fuel state shows the meter without an audible crossing", manager.frames.flight.values.fuel.visible and requests.is_empty())
+	_check("fuel meter reports accepted millilitres and capacity percent",
+		manager.frames.flight.values.fuel.text == "1235 mL · 42 %", manager.frames.flight.values.fuel.text)
+	_check("reserve provenance is visible in the fuel row tooltip",
+		manager.frames.flight.values.fuel.get_parent().get_child(manager.frames.flight.values.fuel.get_index() - 1).tooltip_text
+			== "Reserve: 12% (estimated reserve)")
+	var above: Dictionary = _snapshot(PackedStringArray())
+	above.mass_sample = _fuel_sample(false, false)
+	manager.refresh_numbers(above)
+	var crossing: Dictionary = _snapshot(PackedStringArray(["fuel_reserve_estimated"]))
+	crossing.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(crossing)
+	_check("crossing estimated reserve requests one warning and shows the chip",
+		requests.size() == 1 and requests[0].low_fuel and manager.get("_fuel_warning_player").playing and manager.frames.warnings.visible
+		and WarningsBar.text_for(manager.frames.warnings.codes[0]) == "FUEL RESERVE · ESTIMATED")
+	manager.refresh_numbers(crossing)
+	_check("held-low samples do not repeat the audible warning", requests.size() == 1)
+	above.mass_sample = _fuel_sample(false, false) # refuel above the threshold; rearm the next crossing
+	manager.refresh_numbers(above)
+	manager.refresh_numbers(crossing)
+	_check("refuel above reserve rearms one later crossing", requests.size() == 2)
+	var paused_high: Dictionary = _snapshot(PackedStringArray())
+	paused_high.mass_sample = _fuel_sample(false, false)
+	paused_high.paused = true
+	manager.refresh_numbers(paused_high)
+	var paused_low: Dictionary = _snapshot(PackedStringArray(["fuel_reserve_estimated"]))
+	paused_low.mass_sample = _fuel_sample(true, true)
+	paused_low.paused = true
+	manager.refresh_numbers(paused_low)
+	_check("crossing while paused is silent", requests.size() == 2)
+	paused_low.paused = false
+	manager.refresh_numbers(paused_low)
+	_check("unpausing while still below reserve does not replay a missed crossing", requests.size() == 2)
+	var invalid: Dictionary = _snapshot(PackedStringArray())
+	invalid.mass_sample = { ok = false, finite_fuel = false }
+	manager.refresh_numbers(invalid)
+	_check("invalid sample hides the fuel row", not manager.frames.flight.values.fuel.visible)
+	invalid.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(invalid)
+	_check("a low sample after a nonfinite interval establishes state without a false crossing", requests.size() == 2)
+	invalid.mass_sample = _fuel_sample(false, false)
+	manager.refresh_numbers(invalid)
+	invalid.mass_sample = _fuel_sample(true, true)
+	manager.refresh_numbers(invalid)
+	_check("a later crossing after finite-state reinitialization still cues once", requests.size() == 3)
+	_check("alert uses existing reject cue on Master and follows global game volume",
+		manager.get("_fuel_warning_player").stream == Manager.FUEL_RESERVE_WARNING_STREAM
+		and manager.get("_fuel_warning_player").bus == &"Master")
+	manager.queue_free()
+	await process_frame
+	TranslationServer.set_locale("es")
+	var spanish: CanvasLayer = Manager.new({}, "es")
+	root.add_child(spanish)
+	await process_frame
+	var localized: Dictionary = _snapshot(PackedStringArray(["fuel_reserve_estimated"]))
+	localized.mass_sample = _fuel_sample(true, true)
+	spanish.refresh_numbers(localized)
+	_check("Spanish fuel label, reserve provenance and warning chip are translated",
+		spanish.frames.flight.get("_fuel_name").text == "Combustible"
+		and spanish.frames.flight.values.fuel.get_parent().get_child(spanish.frames.flight.values.fuel.get_index() - 1).tooltip_text
+			== "Reserva: 12% (reserva estimada)"
+		and spanish.frames.warnings.chips.get_child_count() == 1
+		and spanish.frames.warnings.chips.get_child(0).get_child(0).text == "RESERVA DE COMBUSTIBLE · ESTIMADA")
+	spanish.queue_free()
+	TranslationServer.set_locale("en")
+	await process_frame
+
+
+func _fuel_sample(low: bool, estimated: bool) -> Dictionary:
+	return { ok = true, finite_fuel = true, volume_ml = 1234.6 if low else 2345.6,
+		fill_fraction = 0.42 if low else 0.8, reserve_fraction = 0.12,
+		reserve_estimated = estimated, reserve_basis = "estimated reserve" if estimated else "authored reserve",
+		low_fuel = low, tick = 1, time_s = 0.01 }
+
+
 func _dialog() -> void:
 	var manager: CanvasLayer = Manager.new({}, "en")
 	root.add_child(manager)
@@ -233,14 +319,14 @@ func _spanish_layout() -> void:
 	await process_frame
 	_check("Spanish: metric by language", manager.frames.flight.values.airspeed.text == "72 km/h")
 	_check("Spanish pilot layout with three long warnings: no overlap at 1280×720", _layout_ok(manager, false), _rects(manager))
-	var every := PackedStringArray(["failsafe", "safe", "stall", "low", "far", "battery", "experimental"])
+	var every := PackedStringArray(["failsafe", "safe", "stall", "low", "far", "battery", "fuel_reserve_estimated", "experimental"])
 	var calm := _snapshot(every)
 	calm.telemetry.wind_up = 0.0
 	manager.refresh_numbers(calm)
 	await process_frame
 	await process_frame
 	var wind_calm_up: Vector2 = manager.frames.wind.size
-	_check("all seven Spanish warnings wrap inside the bar's width", manager.frames.warnings.chips.size.x <= WarningsBar.MAX_WIDTH + 0.5
+	_check("all eight Spanish warnings wrap inside the bar's width", manager.frames.warnings.chips.size.x <= WarningsBar.MAX_WIDTH + 0.5
 		and manager.frames.warnings.chips.size.y > 40.0, str(manager.frames.warnings.chips.size))
 	_check("seven warnings still overlap nothing at 1280×720", _layout_ok(manager, false), _rects(manager))
 	var gust := _snapshot(every)

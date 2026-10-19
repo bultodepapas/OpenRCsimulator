@@ -4,6 +4,7 @@ Defaults match the three-second, 240 Hz smoke flight. Capture/export callers pas
 --duration explicitly. The initial tick is a sample, not evidence of a flown tick.
 """
 from flap_trace_contract import project as project_flaps
+from mass_trace_contract import project as project_mass_trace
 import argparse
 import csv
 import hashlib
@@ -498,6 +499,9 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
           aircraft_input: Path | None = None) -> str:
     if not math.isfinite(duration) or duration <= 0 or hz <= 0:
         raise ValueError("duration and tick rate must be finite and positive")
+    handled, projected = project_mass_trace(path, check, duration, hz, allow_legacy=allow_legacy, aircraft_input=aircraft_input)
+    if handled:
+        return projected
     handled, projected = project_flaps(path, check, duration, hz, allow_legacy=allow_legacy, aircraft_input=aircraft_input)
     if handled:
         return projected

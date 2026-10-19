@@ -20,6 +20,7 @@ const WaterEffects = preload("res://render/lake/water_effects.gd")
 const WATER_CHECKPOINT_VERSION := 1
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["version", "age_s", "event_count", "impact_point_world", "report", "effects"]
 const WATER_REPORT_FIELDS: Array[String] = ["trigger", "surface", "component", "speed_mps", "impact_depth_m", "water_level_down_m", "tick", "contact_point_world", "lake_id", "water_effects_started", "water_audio_enabled"]
+const FUEL_SOURCE_KINDS: Array[String] = ["glow_fuel", "gasoline", "kerosene"]
 
 var flight: Node3D
 var wreck: Wreck
@@ -32,7 +33,8 @@ var report: Dictionary = {}
 var last_update_usec := 0
 var impact_usec := 0
 var shader_warmup: Dictionary = {}
-var _fuel_kg := 0.0
+## Legacy scalar kept for the kerosene fire path; report fuel quantities use `fuel_by_kind_kg`.
+var _kerosene_fuel_kg := 0.0
 ## CR-22b: tagged energy per kind (inventory energy_source), kg.
 var energy_sources: Dictionary = {}
 ## CR-09d1: inventory items as model-frame boxes {mass, center, size} for the wreck's section masses.
@@ -92,7 +94,7 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 			var kind := str(item.get("energy_source",""))
 			if not kind.is_empty():
 				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
-	_fuel_kg = float(energy_sources.get("kerosene", 0.0))
+	_kerosene_fuel_kg = float(energy_sources.get("kerosene", 0.0))
 	flight.session.resetting.connect(reset)
 	shader_warmup = ShaderWarmup.prepare(self, effects, wreck._shadows[0], flight.get("_sun") as DirectionalLight3D)
 
@@ -212,12 +214,20 @@ func _start() -> void:
 	report["mass_kg"] = mass
 	report["cg_model"] = flight._cg_model
 	report["cg_offset_body_m"] = live.cg_body_m.duplicate() if live_ok else PackedFloat64Array([0.0, 0.0, 0.0])
-	# FUEL-06: finite glow fuel reports what remains at impact; prescribed fuel stays the declared inventory.
+	# FUEL-06: keep the typed source map for fuel reporting and energy outcomes. Glow is updated from the live
+	# impact sample; the compatibility scalar remains kerosene-only for the turbine fire effect.
 	var sources: Dictionary = energy_sources.duplicate()
 	if live_ok and bool(live.finite_fuel) and sources.has("glow_fuel"):
 		sources["glow_fuel"] = float(live.fuel_remaining_kg)
-	report["fuel_kg"] = _fuel_kg
-	report["fuel_kind"] = "remaining at impact (finite glow fuel)" if live_ok and bool(live.finite_fuel) else "declared inventory; no flight consumption"
+	var fuel_by_kind_kg: Dictionary = {}
+	for kind: String in FUEL_SOURCE_KINDS:
+		if sources.has(kind):
+			fuel_by_kind_kg[kind] = maxf(0.0, float(sources[kind]))
+	report["fuel_by_kind_kg"] = fuel_by_kind_kg
+	# Backward-compatible scalar semantics: this is kerosene only, never total onboard fuel.
+	report["fuel_kg"] = _kerosene_fuel_kg
+	report["fuel_kind"] = "kerosene"
+	report["fuel_kg_basis"] = "declared inventory; legacy kerosene-only scalar"
 	# Presentation estimate, not a simulated tank/joint failure. A damaged wing
 	# alone does not imply a ruptured tank; whole-airframe destruction can.
 	# Central = the fuselage/engine/propeller groups, so labelled nose, belly and spinner hits count (CR-01d).
@@ -246,7 +256,7 @@ func _start() -> void:
 	flight._shadow.visible = false
 	var turbine: bool = flight.session.aircraft.model.propulsion.get("kind","") == "turbine"
 	var hot: bool = turbine and flight.session.engine_running and flight.session.sim.aux[0] > 0
-	effects.start(_impact_point,velocity,report,_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
+	effects.start(_impact_point,velocity,report,_kerosene_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
 	report["energy"] = Effects.energy_outcome(sources, report, bool(flight.session.engine_running), hot)
 	report["energy_sources"] = sources.duplicate()
 	effects.apply_energy(report.energy)

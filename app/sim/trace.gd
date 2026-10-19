@@ -11,6 +11,8 @@ const Flaps = preload("res://physics/flaps.gd")
 const GlowFlight = preload("res://physics/glow/flight.gd")
 
 const FORMAT := "openrc-trace v3" # v2: + engine_rpm; v3: + servo (actual surface) positions
+const MASS_TRACE_SCHEMA: String = "openrc-mass-sample v1"
+const MASS_SAMPLE_TIMING: String = "accepted mass_properties sample for this row tick/time"
 const COLUMNS := [
 	"tick", "t_s",
 	"north_m", "east_m", "down_m", "alt_m",
@@ -37,7 +39,9 @@ var _previous_recorded: PackedFloat64Array = PackedFloat64Array()
 var _last_recorded_tick: int = -1
 var _invalid_weather: bool = false
 var _weather_meta: Dictionary = {}
+var _mass_trace: bool = false
 const ELECTRIC_COLUMNS: Array = ["drive_enabled", "drive_duty", "bus_voltage_v", "motor_current_a", "drive_bus_current_a", "source_torque_nm", "shaft_power_w", "copper_loss_w", "rotational_loss_w"]
+const MASS_COLUMNS: Array[String] = ["mass_kg", "cg_body_x_m", "cg_body_y_m", "cg_body_z_m"]
 ## Optional recorder-owned endpoint sampler; required only for the versioned electric trace.
 var electrical_sample: Callable
 var _electric: bool = false
@@ -102,6 +106,7 @@ func clear() -> void:
 	_last_recorded_tick = -1
 	_invalid_weather = false
 	_weather_meta = {}
+	_mass_trace = false
 	_coupled_shaft = false
 	_continuous_turbine = false
 	_electric = false
@@ -154,6 +159,7 @@ func _prepare_weather() -> void:
 	if not meta.has("weather_config"):
 		_prepare_gear_metadata()
 		_prepare_flap_metadata()
+		_prepare_mass_metadata()
 		return
 	if typeof(meta.weather_config) != TYPE_STRING or typeof(meta.get("dt_s")) not in [TYPE_FLOAT, TYPE_INT] \
 			or not is_finite(float(meta.dt_s)) or float(meta.dt_s) <= 0.0:
@@ -217,6 +223,18 @@ func _prepare_weather() -> void:
 			_columns.append_array(COLUMN_ATMOSPHERE_COLUMNS)
 	_prepare_gear_metadata()
 	_prepare_flap_metadata()
+	_prepare_mass_metadata()
+
+
+## A mass-trace claim is opt-in and versioned. Each row must carry the session's accepted sample explicitly.
+func _prepare_mass_metadata() -> void:
+	if not meta.has("mass_trace_schema"):
+		return
+	if meta.get("mass_trace_schema") != MASS_TRACE_SCHEMA:
+		_invalid_weather = true
+		return
+	_mass_trace = true
+	_columns.append_array(MASS_COLUMNS)
 
 
 ## Retractable gear is an opt-in extension to the four legacy command columns.
@@ -828,7 +846,8 @@ static func _positive_float64_within_one_ulp(a: float, b: float) -> bool:
 
 
 ## Signature matches Simulation.stepped, so it can be connected directly.
-func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux := PackedFloat64Array([0.0]), continuous := PackedFloat64Array()) -> void:
+func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array,
+		aux := PackedFloat64Array([0.0]), continuous := PackedFloat64Array(), mass_sample: Dictionary = {}) -> void:
 	if _invalid_weather:
 		return
 	if _rows.is_empty():
@@ -836,6 +855,16 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _invalid_weather:
 		return
 	if inputs.size() != _expected_input_count():
+		_invalid_weather = true
+		return
+	var mass_row := PackedFloat64Array()
+	if _mass_trace:
+		if not _valid_mass_sample(mass_sample, tick, t):
+			_invalid_weather = true
+			return
+		var cg: PackedFloat64Array = mass_sample.cg_body_m
+		mass_row = PackedFloat64Array([float(mass_sample.mass_kg), cg[0], cg[1], cg[2]])
+	elif not mass_sample.is_empty():
 		_invalid_weather = true
 		return
 	var gear_row: PackedFloat64Array = _gear_sample(tick, t, s, loads, inputs, aux)
@@ -978,12 +1007,32 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_rows.append_array(gear_row)
 	if _flaps:
 		_rows.append_array(flap_row)
+	if _mass_trace:
+		_rows.append_array(mass_row)
 	_previous_recorded = s.duplicate()
 	_last_recorded_tick = tick
 	if _glow:
 		_glow_last_opportunities = int(continuous[9])
 		_glow_last_fires = int(continuous[10])
 		_glow_last_fuel_kg = continuous[1]
+
+
+func _valid_mass_sample(sample: Dictionary, tick: int, t: float) -> bool:
+	var sample_tick: Variant = sample.get("tick")
+	var sample_time: Variant = sample.get("time_s")
+	var mass: Variant = sample.get("mass_kg")
+	var cg: Variant = sample.get("cg_body_m")
+	if sample.get("ok") != true \
+			or typeof(sample_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(sample_tick)) or float(sample_tick) != float(tick) \
+			or typeof(sample_time) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(sample_time)) \
+			or absf(float(sample_time) - t) > maxf(1e-12, absf(t) * 1e-12) \
+			or typeof(mass) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(mass)) or float(mass) <= 0.0 \
+			or not cg is PackedFloat64Array or cg.size() != 3:
+		return false
+	for axis: int in 3:
+		if not is_finite(float(cg[axis])):
+			return false
+	return true
 
 
 func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFloat64Array) -> PackedFloat64Array:
@@ -1077,10 +1126,14 @@ func to_csv() -> String:
 		return ""
 	var lines := PackedStringArray()
 	var base_trace_format: String = _base_trace_format()
-	lines.append("# format: %s" % ("openrc-trace v13" if _pack else "openrc-trace v12" if _flaps else base_trace_format))
+	var complete_base_trace_format: String = "openrc-trace v13" if _pack else "openrc-trace v12" if _flaps else base_trace_format
+	lines.append("# format: %s" % ("openrc-trace v14" if _mass_trace else complete_base_trace_format))
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else (_flap_meta if _flaps else meta)).duplicate(true)
 	if _flaps:
 		written_meta.flap_base_trace_format = base_trace_format
+	if _mass_trace:
+		written_meta.mass_base_trace_format = complete_base_trace_format
+		written_meta.mass_sample_timing = MASS_SAMPLE_TIMING
 	if _glow:
 		written_meta.glow_trace_schema = GLOW_TRACE_SCHEMA
 		written_meta.glow_stop_reason_codes = JSON.stringify(GlowFlight.REASONS)

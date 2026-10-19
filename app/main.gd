@@ -619,7 +619,7 @@ func _ready() -> void:
 		latency_patch.threshold = latency_options.threshold
 		latency_patch.left_side = _overlays != null # HUD: the overlays hold the right-hand side
 		add_child(latency_patch)
-	recorder = Recorder.new(session.sim, session.electrical_state)
+	recorder = Recorder.new(session.sim, session.electrical_state, session.mass_properties)
 	session.resetting.connect(_on_resetting)
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)

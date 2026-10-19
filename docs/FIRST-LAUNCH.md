@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: current-source player guide, checked 2026-10-16. [v0.1.2](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.2) is the latest stable software package for this early-alpha simulator. Aircraft remain experimental; Stik rudder recovery and R02 yaw damping are still under evaluation, and P51-22 powered takeoff/loop acceptance remains pending. These are disclosed limitations, not passes or physical flight validation; see the [v0.1.2 release notes](releases/v0.1.2.md). Current-source features may differ from the v0.1.2 package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: current-source player guide, checked 2026-10-19. [v0.1.3](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.3) is the latest stable software release for this early-alpha simulator. Aircraft models and experimental activities still require independent physical and pilot validation; automated checks do not establish flight accuracy. See the [v0.1.3 release notes](releases/v0.1.3.md). Current-source features may differ from the v0.1.3 package. Start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download the latest stable release, [v0.1.2](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.2). Download a platform ZIP and `SHA256SUMS` from the same v0.1.2 release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download the latest stable release, [v0.1.3](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.3). Download a platform ZIP and `SHA256SUMS` from that release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
@@ -24,7 +24,7 @@ These test builds have no trusted developer signing/notarization. If macOS refus
 
 Home selects the aircraft, language, launch, weather and lighting. Menus support keyboard/mouse and an explicitly selected gamepad; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
 
-Fresh settings select the Ugly Stik on the runway. Every flight-capable catalog airplane supports this default: stopped near the threshold, landing gear down and throttle closed. Changing airplanes keeps the runway selection. **Start: in the air** is the next option for trimmed airborne practice; saved explicit choices take precedence, and Restart repeats the selected launch. The glow-engine Stik variants need **F7** to start their warm engine before takeoff. See [defaults and features](#current-source).
+Fresh settings select the Ugly Stik on the runway. Every flight-capable catalog airplane supports this default: stopped near the threshold, landing gear down and throttle closed. Changing airplanes keeps the runway selection. **Start: in the air** is the next option for trimmed airborne practice; saved explicit choices take precedence, and Restart repeats the selected launch. Glow-engine Stik variants need **F7** to start; see the [engine guide](GLOW-ENGINES.md) and [flight options](#4-settings-and-flight-options).
 
 Home also offers two separate experimental activities, each with its own controls: [RC Helicopter Research Trainer](HELICOPTER.md) and [RC cars · Bisonte MT8 and MONSTER CAR 2](../research/rc-monster-truck/README.md).
 
@@ -36,6 +36,7 @@ Home also offers two separate experimental activities, each with its own control
 | ↓ / ↑ | Elevator / pitch; ↓ pulls the stick back |
 | A / D | Rudder |
 | W / S | Increase / decrease throttle |
+| `[` / `]` | Aileron trim left / right |
 | Page Up / Page Down | Elevator trim nose down / nose up, 0.1° per press |
 | Esc | Pause; cancel radio calibration |
 | R | Restart flight |
@@ -44,17 +45,19 @@ Home also offers two separate experimental activities, each with its own control
 | 1 · 2 · 5 | Pilot · chase · orbit view (orbit: drag with the right mouse button) |
 | = · − · Backspace | Zoom in · out · reset (also the mouse wheel); in chase and orbit it moves the camera |
 | Z | Toggle auto-zoom |
-| V | Ground-shadow aid: sun / vertical / off |
+| V / L | Cycle ground-shadow aid / aircraft night lights |
 | K · Enter | Start calibration · advance its step |
-| F · Shift+F | Next · previous Ventage Jet flap position |
+| F · Shift+F | Move equipped aircraft's flaps: next / previous |
+| G / B | Toggle retractable gear / hold its wheel brakes |
 | H | Toggle the Stik smoke pump with keyboard controls |
 | J · Enter | Assign the active radio's smoke AUX · advance its step |
 | T | Start / save a flight trace |
+| F10 / F11 | Start/stop flight log / mark a maneuver while recording |
 | F3 | Toggle developer overlays |
 | F2 | Cycle flight overlays: off / pilot / full / developer |
 | F5 | Reload the aircraft data file |
 
-Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. At startup and on Home, a connected controller is selected automatically; with no devices, flight uses the keyboard. Controller settings can override that choice.
+Gear, brake, flap, smoke and glow shortcuts are limited to aircraft with those systems. Keys refer to physical QWERTY positions; in-game Help shows your keyboard's labels. At startup and on Home, a connected controller is selected automatically; with no devices, flight uses the keyboard. Controller settings can override that choice.
 
 Keyboard sticks use aircraft normal rates/expo where specified. Gamepads apply their own scalar deadzone/expo once, followed by aircraft travel rates and trims; radios keep their own rates and curves. The direct route's `--rates=full` flies maximum throws. **N** (or the optional gamepad action *Rates: normal / full*) switches between the two in flight.
 
@@ -106,29 +109,27 @@ Select the radio in Controller settings and Save, then move throttle to low to a
 
 On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF, turn exactly one unused axis/button ON, then return it OFF, using Enter at each step. Buttons offer held-level or press-edge toggle. AETR axes cannot be assigned. The profile is saved per device; after assignment/reconnection, report OFF again before using smoke and rearm throttle before resuming. **H** controls the pump when no radio is connected. Ordinary glow exhaust is faint; the pump needs sufficient running RPM/throttle. Other aircraft currently have no configured smoke installation. [Feature and limits](SMOKE-PLAN.md).
 
-## Current source
+## 4. Settings and flight options
 
-**Menu/display changes (2026-10-15 source):** Home pins Fly and the utility actions; scroll the setup area for Workshop, practice and RC cars. Settings is available from Home and Pause. It offers windowed/borderless display, 100–200% themed text, opaque panels, reduced motion, language, Controls and Help/About. **Sound** sets the **Game volume** (everything you hear, previewed live, also from Pause during a flight) and the menu cue volume; Keep saves them like the display options. Display previews revert after 15 seconds unless kept. Close/Back discards unkept display changes; language is saved immediately. These display preferences are separate from aircraft and controller profiles.
+**Settings.** Home pins Fly and utility actions; scroll for Workshop, practice and RC cars. Settings (Home or Pause) covers windowed/borderless display, themed text size, opaque panels, reduced motion, language, sound, Controls and Help/About. Game and menu-cue volume preview live. Display previews revert after 15 seconds unless kept; Back discards unkept display changes, while language saves immediately. Preferences are separate from aircraft and controller profiles.
 
 Pause groups secondary actions under **Session options** and **Exit options**. Esc closes the top page or open group first; returning from Settings keeps the flight paused. Large text uses scrolling with focus following the selected action. The interactive UI scales automatically through native 4K without lowering 3D resolution. [Verification and remaining qualification](research/menu-investigations/UI-22-26-R1/README.md).
 
-Fresh Home preferences also select gentle wind/gusts/turbulence, **Evening (time passing)**, scenery, birds, engine shadows and the live diagnostic marker. Saved choices take precedence. **Quick Flight** (`--quick-flight`) also defaults to the runway; add `--start=airborne` for airborne practice. Direct command-line flights ignore saved settings and use calm/reference weather and fixed daylight. Technical traces and captures retain their airborne reference start unless `--quick-flight` or an explicit `--start` is supplied.
+Fresh Home preferences select gentle wind/gusts/turbulence, **Evening (time passing)**, scenery, birds, engine shadows and the live diagnostic marker. Saved choices take precedence. **Quick Flight** (`--quick-flight`) defaults to the runway; add `--start=airborne` for airborne practice. Direct command-line flights ignore saved settings and use calm/reference weather and fixed daylight. Traces and captures retain their airborne reference start unless `--quick-flight` or `--start` is supplied.
 
-**Flight overlays.** Home flights show separate overlays instead of the diagnostic text: flight data (airspeed, ground speed, height above ground, vertical speed, throttle, distance from you, flight time), the transmitter's sticks and trims, short warnings (radio safe, failsafe, stall, sinking low, too far, battery), the wind seen from where you stand, and a **Control guide**. The guide opens by default and follows the selected keyboard/controller; its tabs show keyboard shortcuts or the active profile's axes, remapped buttons and AUX assignments. Scroll inside it for more commands. Close it with × and reopen it under Pause → **Flight overlays**, or select the Pilot preset with **F2**. Closing is remembered with the other overlay choices.
+**Flight overlays.** Home flights show data (speed, height, vertical speed, throttle, distance and time), transmitter sticks/trims, brief warnings, local wind and a **Control guide**. The guide opens by default with keyboard shortcuts or the selected controller's axes, remapped buttons and AUX assignments. Close overlays with ×; under Pause → **Flight overlays**, choose units and transmitter Mode 1/2, or select presets with **F2** (cycle) and **F3** (developer). Choices save under `[hud]` in `settings.cfg`. Direct command-line flights keep legacy text unless `--hud=overlays`. [Plan](plans/flight-overlays.md).
 
-Telemetry and the developer diagnostics are optional. Close any overlay with its ×, press **F2** to cycle presets, **F3** for the developer overlays, or choose overlays, units (km/h, mph or m/s; by language by default) and transmitter Mode 1/2 under Pause → **Flight overlays**. The choice is saved under `[hud]` in `settings.cfg`. Direct command-line flights keep the legacy text unless `--hud=overlays`. [Plan](plans/flight-overlays.md).
+**Battery (experimental).** Turbo Lumber Evolution uses a finite pack by default; **More flight details → Battery** selects ideal constant voltage. The pack sags under load, recovers at idle, warms and triggers 50% ESC power at low cells (**LVC · land now**). The overlay shows voltage, cell readings, current, power, temperature, mAh used and remaining percentage estimated from mAh, not true charge. Direct routes also use the pack; add `--battery=ideal` for constant voltage. [Plan](plans/battery-realism.md).
 
-**Battery (experimental).** The Turbo Lumber Evolution flies a *finite pack* by default; **More flight details → Battery** switches to *ideal* (constant voltage, never runs flat). With the finite pack, charge runs out, the voltage sags under load and recovers at idle, the pack warms, and the ESC cuts power to 50 % when the cells get low (**LVC · land now**). The **Battery** overlay shows what a transmitter's telemetry would show: pack voltage, volts per cell and the lowest cell, current, power, temperature, mAh used and a remaining % estimated from mAh. It does not show the simulator's true charge. Direct routes use the finite pack too; add `--battery=ideal` for the constant-voltage aircraft. [Plan](plans/battery-realism.md).
+**Weather** sets uniform wind, repeating gusts, seeded turbulence, field elevation, temperature, QNH and humidity. Apply validates and saves; Cancel/Esc keeps the prior settings. Wind direction is where it comes from; positive vertical gusts point up. Restart repeats the forcing. These are practice conditions, not measured club weather. [Wind](WIND-PLAN.md) · [Atmosphere](ATMOSPHERE-PLAN.md).
 
-**Weather** edits spatially uniform wind, repeating gusts, seeded temporal turbulence, field elevation, temperature, QNH and humidity. Apply validates and saves; Cancel/Esc keeps the previous settings. Wind direction is where it comes from; positive vertical gusts point upward. Restart repeats the configured forcing. These are authored practice conditions, not measured weather at a club. [Wind](WIND-PLAN.md) · [Atmosphere](ATMOSPHERE-PLAN.md).
+**Time of day** selects day/dawn/dusk/night or an evening that advances at 20× simulation time. Pause can set exact date, time and location with a UTC offset. Visual time does not affect weather or flight physics. Stars, moonlight, field lamps and experimental aircraft lights support night practice; readability needs pilot testing. [Lighting](TIME-OF-DAY-PLAN.md).
 
-**Time of day** selects fixed day/dawn/dusk/night or passing evening. Evening advances visual time at 20× simulation time. Pause also offers exact time/date/location editing with an explicit UTC offset. Visual time does not change weather or flight physics. Stars, moonlight, field lamps and an experimental aircraft light kit support night practice; readability still needs pilot testing. [Lighting](TIME-OF-DAY-PLAN.md).
+Flight includes per-wheel spin/contact and approximate tree/prop collision proxies. Home and direct flights retain crash aftermath until **R** or Pause → Restart; `--crash-effects=off` restores timed recovery. Light wingtip, tail or belly touches continue the flight; hard impacts end it (`--soft-contacts=off` makes any airframe touch a crash). Scripted/capture routes keep their technical policy. Flyable structural damage is unimplemented; collision accuracy and takeoff/landing calibration remain open. [Ground model](research/ground-physics/GP-05/README.md) · [Crash scope](CRASH-DAMAGE-PLAN.md).
 
-Flight includes per-wheel spin/contact and approximate static tree/prop collision proxies. Ordinary Home and direct flights enable crash effects and retain the aftermath until **R** or Pause → Restart. `--crash-effects=off` restores timed recovery; scripted/capture routes keep their technical policy. A light wingtip, tail or belly touch continues the flight; only a hard impact ends it (`--soft-contacts=off` restores "any airframe contact is a crash"). Deformation, damage severity and collision proxies are engineering approximations. Flyable structural damage, surveyed collision terrain and calibrated takeoff/landing behavior are not implemented or accepted. [Ground model](research/ground-physics/GP-05/README.md) · [Crash scope](CRASH-DAMAGE-PLAN.md).
+**Updates.** Exported builds check GitHub once a day while Home is open, sending the app version and OS name. A newer release shows a card; **Download** opens the release page and **Hide** silences that version. Updates are manual: replace the extracted app folder; user settings and calibration remain. Disable checks with `check=false` under `[updates]` in `settings.cfg` (`%APPDATA%\Godot\app_userdata\OpenRC Simulator\` on Windows, `~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/` on macOS, or `~/.local/share/godot/app_userdata/OpenRC Simulator/` on Linux). Source-tree builds do not check.
 
-**Updates.** While Home is open, an exported build asks GitHub once a day whether a newer release is published: one anonymous HTTPS request to `api.github.com` carrying only the app version and the OS name. A newer version shows a small card at the top right. **Download** opens the release page in your browser, where the three ZIPs, `SHA256SUMS` and the release notes are; **Hide** silences that version until a newer one exists. Updating is manual: download the ZIP for your platform and replace the extracted folder; settings and calibration live in your user data folder and are kept. To turn the check off, set `check=false` under `[updates]` in `settings.cfg` (Windows `%APPDATA%\Godot\app_userdata\OpenRC Simulator\`, macOS `~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/`, Linux `~/.local/share/godot/app_userdata/OpenRC Simulator/`). Builds run from the source tree do not check.
-
-The Extra, P-51, Ventage Jet and Turbo Lumber Evolution remain experimental. Ventage Jet starts with gear down on the runway; its optional airborne start uses gear and flaps up. Turbo Lumber Evolution flies with fixed wheels, flaps up, assists off and a prescribed 4S bus; battery depletion is not modeled. Its motor losses and borrowed propeller map need matched hardware measurements. Synthetic electric development fixtures remain separate from the catalog.
+The Extra, P-51, Ventage Jet and Turbo Lumber Evolution remain experimental. Ventage Jet starts with gear down on the runway; its optional airborne start uses gear and flaps up. Turbo Lumber Evolution uses fixed landing gear, flaps up and assists off. Its motor losses and borrowed propeller map still need matched hardware measurements. Synthetic electric development fixtures remain separate from the catalog.
 
 ## 5. Measure frame times (for the landscape work)
 

@@ -254,7 +254,9 @@ func _build_splinters() -> void:
 	_rotations.resize(MAX_SPLINTERS)
 	_spins.resize(MAX_SPLINTERS)
 
-func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: float, hot_turbine: bool, wind: Vector3) -> void:
+## `kerosene_fuel_kg` is deliberately the legacy kerosene-only scalar. Other tagged liquid sources
+## are handled by `energy_outcome()` and `apply_energy()` so Glow spill staining remains typed.
+func start(point: Vector3, velocity: Vector3, severity: Dictionary, kerosene_fuel_kg: float, hot_turbine: bool, wind: Vector3) -> void:
 	reset()
 	_active = true
 	_origin = point
@@ -264,7 +266,7 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	var radius := 0.15 + 0.35*power
 	var surface := str(severity.get("surface",""))
 	var slide := Vector3(velocity.x,0.0,velocity.z)
-	_fire_duration = minf(KEROSENE_FIRE_MAX_S, fuel_kg / KEROSENE_BURN_KG_S) if hot_turbine and level >= 3 and fuel_kg > 0.0 and severity.get("tank_ruptured",false) else 0.0
+	_fire_duration = minf(KEROSENE_FIRE_MAX_S, kerosene_fuel_kg / KEROSENE_BURN_KG_S) if hot_turbine and level >= 3 and kerosene_fuel_kg > 0.0 and severity.get("tank_ruptured",false) else 0.0
 	for p in emitters:
 		p.global_position = _origin
 	# CR-03b: material-driven ejecta thrown forward along the slide, never a spherical burst.

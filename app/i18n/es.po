@@ -769,6 +769,21 @@ msgstr "Distancia"
 msgid "Flight time"
 msgstr "Tiempo de vuelo"
 
+msgid "Fuel"
+msgstr "Combustible"
+
+msgid "%d mL · %d %%"
+msgstr "%d mL · %d %%"
+
+msgid "Reserve: %d%% (%s)"
+msgstr "Reserva: %d%% (%s)"
+
+msgid "estimated reserve"
+msgstr "reserva estimada"
+
+msgid "authored reserve"
+msgstr "reserva definida"
+
 msgid "Angle of attack"
 msgstr "Ángulo de ataque"
 
@@ -816,6 +831,12 @@ msgstr "BAJO · descendiendo"
 
 msgid "FAR · come closer"
 msgstr "LEJOS · acércate"
+
+msgid "FUEL RESERVE"
+msgstr "RESERVA DE COMBUSTIBLE"
+
+msgid "FUEL RESERVE · ESTIMATED"
+msgstr "RESERVA DE COMBUSTIBLE · ESTIMADA"
 
 msgid "BATTERY LOW"
 msgstr "BATERÍA BAJA"

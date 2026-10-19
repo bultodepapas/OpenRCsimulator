@@ -9,10 +9,12 @@ var recording := false
 ## Result of the last save, for the panel ("" before any).
 var note := ""
 var _sim: Node
+var _mass_sample: Callable
 
 
-func _init(sim: Node, electrical_sample: Callable = Callable()) -> void:
+func _init(sim: Node, electrical_sample: Callable = Callable(), mass_sample: Callable = Callable()) -> void:
 	_sim = sim
+	_mass_sample = mass_sample
 	trace.electrical_sample = electrical_sample
 	sim.stepped.connect(_on_stepped)
 
@@ -20,8 +22,11 @@ func _init(sim: Node, electrical_sample: Callable = Callable()) -> void:
 func start(meta: Dictionary) -> void:
 	trace.clear()
 	trace.meta = meta.duplicate(true)
+	if _mass_sample.is_valid():
+		trace.meta.mass_trace_schema = "openrc-mass-sample v1"
 	recording = true
-	trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs, _sim.aux, _sim.continuous.duplicate())
+	trace.record(_sim.tick, _sim.time(), _sim.state, _sim.last_loads, _sim.inputs, _sim.aux, _sim.continuous.duplicate(),
+		_mass_sample.call() if _mass_sample.is_valid() else {})
 
 
 ## Saves to `path`, by default user://traces/ (on Linux: ~/.local/share/godot/app_userdata/OpenRC Simulator/traces/).
@@ -49,4 +54,5 @@ func seconds() -> float:
 
 func _on_stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux: PackedFloat64Array) -> void:
 	if recording:
-		trace.record(tick, t, state, loads, inputs, aux, _sim.continuous.duplicate())
+		trace.record(tick, t, state, loads, inputs, aux, _sim.continuous.duplicate(),
+			_mass_sample.call() if _mass_sample.is_valid() else {})

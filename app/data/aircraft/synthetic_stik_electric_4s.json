@@ -94,7 +94,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "donor_engine_station"
     },
     {
       "name": "donor mass at the glow muffler station",
@@ -123,7 +124,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "donor_muffler_station"
     },
     {
       "name": "propeller APC 12x6 Sport",
@@ -152,7 +154,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "item_propeller_main"
     },
     {
       "name": "spinner and prop nut",
@@ -181,7 +184,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_spinner_main"
     },
     {
       "name": "engine mount and bolts",
@@ -210,7 +214,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_engine_mount"
     },
     {
       "name": "donor mass at the fuel-tank station (no tank)",
@@ -239,7 +244,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "donor_tank_station"
     },
     {
       "name": "donor mass at the fuel station (no fuel)",
@@ -268,7 +274,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "donor_fuel_station"
     },
     {
       "name": "receiver battery 4.8 V 600 mAh",
@@ -297,7 +304,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_receiver_battery"
     },
     {
       "name": "receiver",
@@ -326,7 +334,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_receiver_main"
     },
     {
       "name": "fuselage servos (3)",
@@ -355,7 +364,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_fuselage_servos"
     },
     {
       "name": "aileron servo",
@@ -384,7 +394,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_aileron_servo"
     },
     {
       "name": "nose gear and 2.75 in wheel",
@@ -413,7 +424,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_nose_gear_assembly"
     },
     {
       "name": "main gear and 3 in wheels",
@@ -442,7 +454,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "item_main_gear_assembly"
     },
     {
       "name": "wing incl. ailerons",
@@ -471,7 +484,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "item_wing_airframe"
     },
     {
       "name": "fuselage front (firewall to F4)",
@@ -500,7 +514,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "item_fuselage_front"
     },
     {
       "name": "fuselage rear (F4 to tail)",
@@ -529,7 +544,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "item_fuselage_rear"
     },
     {
       "name": "stabilizer and elevator",
@@ -558,7 +574,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "item_stabilizer_elevator"
     },
     {
       "name": "fin and rudder",
@@ -587,7 +604,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "rough envelope for intrinsic inertia"
-      }
+      },
+      "id": "item_fin_rudder"
     },
     {
       "name": "pushrods, horns, hardware",
@@ -616,7 +634,8 @@
         "unit": "m",
         "kind": "derived",
         "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+      },
+      "id": "item_control_hardware"
     },
     {
       "name": "virtual reference-build balancing mass",
@@ -645,7 +664,8 @@
         "unit": "m",
         "kind": "estimated",
         "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
-      }
+      },
+      "id": "item_balance_mass_virtual"
     }
   ],
   "crash_hull": {
@@ -743,7 +763,8 @@
           "unit": "deg",
           "kind": "derived",
           "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact"
-        }
+        },
+        "id": "contact_main_left"
       },
       {
         "name": "main_right",
@@ -780,7 +801,8 @@
           "unit": "deg",
           "kind": "derived",
           "source": "AS-02 compatibility default: explicit zero preserves the v1 omitted-steering behavior for this contact"
-        }
+        },
+        "id": "contact_main_right"
       },
       {
         "name": "nose",
@@ -817,7 +839,8 @@
           "unit": "deg",
           "kind": "estimated",
           "source": "Nose wheel steering at full rudder, linked to the rudder servo. RC tricycle setups use about 15-25° (less throw than the rudder's, to avoid swerving at speed); 20° gives a kinematic turn radius of wheelbase/tan 20° = 0.351/0.364 = 0.96 m at walking speed. Guess, not measured; JSBSim's full-size C172 uses 10°"
-        }
+        },
+        "id": "contact_nose"
       }
     ],
     "rolling_resistance": {
@@ -892,6 +915,12 @@
       "unit": "s",
       "kind": "estimated",
       "source": "Time for a surface to go from neutral to full throw: a standard analog servo at 0.19 s/60 deg (Hitec HS-311 / Futaba S3003 class at 6 V) times about 45 deg of servo-arm travel for full surface throw (typical linkage). Same for every surface"
+    },
+    "surface_ids": {
+      "aileron_left": "surface_aileron_left",
+      "aileron_right": "surface_aileron_right",
+      "elevator": "surface_elevator",
+      "rudder": "surface_rudder"
     }
   },
   "aero": {
@@ -1434,7 +1463,8 @@
         "kind": "derived",
         "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
       }
-    }
+    },
+    "id": "propulsion_main"
   },
   "convention_id": "openrc-le-frd-v1",
   "capabilities": {
@@ -1452,5 +1482,16 @@
       "kind": "derived",
       "source": "AS-02 compatibility default: preserves the v1 loader's 15 m/s default for this existing Stik-derived configuration"
     }
-  }
+  },
+  "crash_hull_ids": [
+    "probe_wing_left_tip",
+    "probe_wing_right_tip",
+    "probe_spinner_tip",
+    "probe_tail_end",
+    "probe_stabilizer_left_tip",
+    "probe_stabilizer_right_tip",
+    "probe_fin_top",
+    "probe_belly_main"
+  ],
+  "physical_identity_version": 1
 }

@@ -24,6 +24,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	_session()
+	_checkpoint_selection()
 	_home()
 	print("FUEL-07 start fill: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed > 0 else 0)
@@ -54,6 +55,53 @@ func _session() -> void:
 	flight.reset()
 	_check("a later reset refuels to the selected fill, not to full", flight.sim.continuous[1] == 0.5 * full)
 	flight.free()
+
+
+func _checkpoint_selection() -> void:
+	for fill: float in [0.1, 0.5, 1.0]:
+		var source: Node = Flight.new()
+		source.input_enabled = false
+		source.setup(GLOW)
+		source.set_fuel_start_fill(fill)
+		source.reset()
+		var saved: Dictionary = source.checkpoint()
+		# Selection metadata survives a JSON carrier; authoritative simulation arrays retain native bits.
+		saved.fuel_session = JSON.parse_string(JSON.stringify(saved.fuel_session, "", true, true))
+		var destination: Node = Flight.new()
+		destination.input_enabled = false
+		destination.setup(GLOW)
+		_check("cross-session checkpoint restores selected fill %s" % fill,
+			destination.restore_checkpoint(saved) and destination.fuel_start_fill == fill
+			and destination.sim.continuous == source.sim.continuous)
+		var transported: String = source.checkpoint_json()
+		_check("lossless complete JSON checkpoint restores selected fill %s" % fill,
+			destination.restore_checkpoint_json(transported) and destination.fuel_start_fill == fill
+			and var_to_bytes(source.sim.checkpoint()) == var_to_bytes(destination.sim.checkpoint()))
+		var before_transport: Dictionary = destination.checkpoint()
+		var damaged: Dictionary = JSON.parse_string(transported)
+		damaged.sha256 = "00"
+		_check("damaged JSON carrier is refused transactionally", not destination.restore_checkpoint_json(JSON.stringify(damaged))
+			and var_to_bytes(destination.checkpoint()) == var_to_bytes(before_transport))
+		source.sim.step()
+		destination.sim.step()
+		_check("selected-fill checkpoint continues exactly %s" % fill,
+			var_to_bytes(source.sim.checkpoint()) == var_to_bytes(destination.sim.checkpoint()))
+		destination.reset()
+		_check("restored reset refuels to source selection %s" % fill,
+			is_equal_approx(destination.sim.continuous[1], destination.start_fuel_kg()))
+		var before: Dictionary = destination.checkpoint()
+		for bad: Variant in [0.0, -0.1, 1.01, NAN, "0.5", true]:
+			var invalid: Dictionary = saved.duplicate(true)
+			invalid.fuel_session.start_fill = bad
+			_check("malformed fill restore is transactional %s" % str(bad),
+				not destination.restore_checkpoint(invalid)
+				and var_to_bytes(destination.checkpoint()) == var_to_bytes(before))
+		var legacy: Dictionary = saved.duplicate(true)
+		legacy.erase("fuel_session")
+		_check("legacy checkpoint explicitly marks source fill unknown", destination.restore_checkpoint(legacy)
+			and destination.trace_meta().get("fuel_start_fill_known", true) == false)
+		source.free()
+		destination.free()
 
 
 func _home() -> void:

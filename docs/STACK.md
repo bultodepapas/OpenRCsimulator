@@ -1,70 +1,65 @@
 # Architecture and stack
 
-Status: current implementation, checked 2026-10-14. Runtime settings live in [project.godot](../app/project.godot); the exact engine version and SHA-512 are pinned by [get-godot.sh](../app/get-godot.sh). Setup and commands: [TOOLS](TOOLS.md).
+Status: current implementation, checked 2026-10-19. Runtime settings live in [project.godot](../app/project.godot); Godot's exact version and SHA-512 are pinned by [get-godot.sh](../app/get-godot.sh). Setup and commands: [TOOLS](TOOLS.md).
 
 ## Runtime
 
 | Layer | Implementation |
 | --- | --- |
-| Engine/language | Official Godot 4.7.2-stable; GDScript, with an optional pinned C++ ground-vehicle evaluator |
-| Rendering | Compatibility, `opengl3`; 1280×720 default viewport, 4× MSAA |
-| Simulation | Custom float64 six-degree-of-freedom solver and RK4 at 240 Hz; Godot rigid-body nodes do not solve flight |
-| Aircraft | Catalog JSON `openrc-aircraft v2` with strict validation, per-quantity units/evidence/source and derived mass/CG/inertia; historical v1 is explicit compatibility; [contract](AIRCRAFT_CONTRACT.md) |
-| Input | Physical keyboard keys and raw joystick axes, device calibration and throttle arming |
-| Product shell | Home, Settings, Help, pause and conditions editors; shared screen stack and native canvas UI scaling; English source text and Spanish gettext catalog |
-| Audio | Positional engine sources plus wind/foliage/wildlife soundscape; original PCM assets and procedural mixing |
-| Delivery | Windows x86_64, Linux x86_64 and macOS universal ZIP exports; build identity embedded by an export plugin |
-| Checks | Headless GDScript tests, Python schema/trace/tool checks, golden flights, rendered captures and package smoke checks |
+| Engine/language | Official Godot 4.7.2-stable; GDScript |
+| Rendering | Compatibility renderer (`gl_compatibility`); 1280×720 default viewport; 4× 3D MSAA |
+| Simulation | Shared float64 rigid-body kernel, RK4 and fixed 240 Hz ticks; Godot rigid-body nodes do not solve flight |
+| Aircraft data | Strict `openrc-aircraft v2` validation, unit-tagged quantities and derived mass/CG/inertia; v1 is an explicit historical path; [contract](AIRCRAFT_CONTRACT.md) |
+| Input and shell | Physical-keyboard controls and radio profiles with device calibration and throttle arming; Home, Settings, Help, pause and flight/vehicle activities |
+| Audio | Positional engine sources and field soundscape; original PCM assets and procedural mixing |
+| Delivery | Windows x86_64, Linux x86_64 and macOS universal ZIP exports; build identity embedded at export |
+| Checks | Headless GDScript and Python checks, golden flights, rendered captures and package smoke checks |
 
-Flight physics has no third-party native solver dependency. The experimental Bisonte MT8 ground activity can use the repository's float64 C++ evaluator through GDExtension, with the GDScript implementation retained as its reference and fallback. Its [pinned builder and qualification](../research/rc-monster-truck/native/README.md) own Windows/Linux artifacts generated into ignored `app/native/ground_vehicle/`; macOS uses the reference path. Other C++ experiments remain separate from the application. Python, Node, SciPy and asset-generation packages are development tools with per-tool pins. The archived three.js build retains its lockfile and [platform comparison](../prototypes/stage0/COMPARISON.md).
+Aircraft flight has no third-party native solver. The experimental RC ground activity can use an optional C++ GDExtension for its evaluator; GDScript remains its reference and fallback, and macOS uses the reference path. The [native build guide](../research/rc-monster-truck/native/README.md) pins its toolchain and artifacts. Python, Node and asset-generation tools are development dependencies pinned in their own manifests. The three.js bake-off is frozen; its lockfile and [comparison](../prototypes/stage0/COMPARISON.md) remain historical.
+
+## Supported vehicle paths
+
+| Vehicle | Runtime status |
+| --- | --- |
+| Fixed-wing aircraft | Main flight route; aircraft catalog and v2 data contract |
+| Helicopter | Experimental route with its own quantity reader, session and recorder. HX-700 visuals and X-Cell reference physics are declared surrogates; physical and performance qualification remain open; [guide](HELICOPTER.md) |
+| RC ground vehicle | Experimental Bisonte MT8 and MONSTER CAR 2 activities with a separate data/session contract; qualification remains open; [research and controls](../research/rc-monster-truck/README.md) |
+| Multirotor | Physics groundwork and focused tests exist, but there is no runtime session, catalog route or racing activity; see the [active plan](plans/drone-racing.md) |
 
 ## Boundaries and data flow
 
-`app_root.tscn` loads `app_root.gd`. With no user arguments, the app opens Home and reads validated preferences. `--input-report` starts standalone diagnostics; `--vehicle=mt8-bisonte` or `--vehicle=monster-car-2` selects the separate truck activity; other user arguments select a technical flight. Technical routes ignore Home preferences. The selected catalog ID chooses the fixed-wing or helicopter route.
+[`app_root.tscn`](../app/app_root.tscn) loads `app_root.gd`. No user arguments opens Home; `--input-report` starts diagnostics; `--vehicle=mt8-bisonte` and `--vehicle=monster-car-2` start the corresponding ground activity; remaining arguments take the direct-flight route. Direct flights do not read Home preferences. The aircraft catalog routes fixed-wing IDs to `main.tscn` and rotorcraft IDs to the `helicopter_main.gd` activity.
 
-Home's RC car selector starts a separate paused ground-vehicle garage for Bisonte MT8 or MONSTER CAR 2. Its Session installs the car's `VehicleModel` into the shared `Simulation` kernel, which owns the 31-value float64 state (13-value body plus 18 coupled values) and the fixed 240 Hz ticks; the Session keeps experiments, recovery, recording and checkpoint identity. The [nitro adapter](../research/rc-monster-truck/monster-car-2/README.md) adds engine speed and fuel mass to form a 33-value state and couples its midpoint powertrain update to the existing RK4 body step. Rendering articulates the supplied Blender models from detached state. Native and reference body backends share equations and road samples; checkpoints pin the selected vehicle and implementation and cannot switch them during replay. [Controls and research tools](../research/rc-monster-truck/README.md#rcv-05-full-vehicle-runtime-experiments).
+The fixed-wing, helicopter and ground-vehicle sessions each install one `VehicleModel` into `Simulation`. The model declares the state layout and read-only stage evaluators; the [VehicleModel contract](../app/sim/vehicle_model.gd) defines callback purity, events and substeps. The kernel owns tick validation, integration, event handling, state publication, checkpoints and fault recovery; it does not branch on vehicle type. Sessions and adapters own vehicle data, controls, environment setup and replay identity. The ground activity drives the same kernel through explicit 240 Hz ticks.
 
-The aircraft catalog resolves one ID to matching physics data and its visual builder. The loader validates the configuration and derives the normalized model before `FlightSession` accepts it. A failed initial preparation refuses flight; a failed reload retains the accepted session.
+The rigid-body state has 13 float64 values; optional continuous state blocks are packed after it for integration. Simulation code uses scalars and packed float64 arrays: positions are NED (north/east/down), body vectors are FRD (forward/right/down), and attitudes map body to NED. Rendering converts detached state at [frames.gd](../app/render/frames.gd). Checkpoint envelopes identify the selected vehicle and law/backend so replay cannot silently switch implementations.
 
-The explicit experimental rotorcraft ID selects a dedicated quantity reader/schema, `HelicopterFlightSession` and `RotorcraftRecorder`, reusing `Simulation` for joint float64 body/shaft/wake/controller integration. The supplied HX-700 Blender visual and X-Cell reference physics are a declared surrogate; physical and performance qualification remain open. [Current helicopter controls and limits](HELICOPTER.md).
+Aircraft data is validated and normalized before `FlightSession` accepts it. Invalid initial data cannot fly, and a failed reload preserves the accepted session. Specialized vehicle paths keep their own schemas and acceptance gates. Physical weather and field queries use [the shared environment contract](../app/sim/environment.gd); visual lighting and time remain separate from flight weather.
 
-Input is sampled before each simulation tick. `FlightSession` owns trim/start, controls, environment, pause/reset/crash, accepted aircraft and state identity. `Simulation` commits fixed ticks for the one `VehicleModel` (`app/sim/vehicle_model.gd`) its session installs; the model declares the state layout, supplies read-only stage evaluators and may declare one tick event that the kernel locates (`app/physics/event_step.gd`); located events are recorded per tick. Physics modules evaluate rigid-body, actuator, propulsion and contact state. Finite resources such as fuel change mass, CG and inertia about a fixed body datum through one shared kernel: `MassInventory.prepare_reference/evaluate_reference` (`app/physics/mass_inventory.gd`) and `FixedDatumBody.derivative` (`app/physics/fixed_datum_body.gd`, co-moving efflux). Fuel densities come from `app/data/fuels/openrc-fuel-registry.json` ([FUEL-02/04](plans/fuel-mass-balance.md)). A finite electric pack keeps its mass: the `pack_ecm` law (`app/physics/battery/`) carries charge, RC polarization, temperature and the sampled ESC cutoff in the session's continuous block, with generated pack data in `app/data/batteries/` ([BAT-04](research/battery/BAT-04/specification.md)). RK stages use their stage time and state. Checkpoints retain complete replay state; CSV traces are versioned diagnostics with declared sampling times.
+Finite-fuel mass, CG and inertia updates use [MassInventory](../app/physics/mass_inventory.gd) and [FixedDatumBody](../app/physics/fixed_datum_body.gd). Fuel and electric-pack design details live in the [fuel plan](plans/fuel-mass-balance.md) and [battery specification](research/battery/BAT-04/specification.md).
 
-Two event locators serve the kernel, both fourth order ([SF-04b](research/simulation-foundation/SF-04b/README.md)). The declared-event locator evaluates RK stages beyond the boundary while it brackets a crossing, so its law must continue smoothly there (electric shafts; the battery and glow policies nest it). A law that refuses the far side keeps a domain-guarded step policy: the rotorcraft adapter (`app/physics/rotorcraft/simulation_step_adapter.gd`) never evaluates Ω < 0. A step policy owns its whole tick and is never split into contact substeps; the kernel refuses a policy tick that asks for more than one (SF-05 substeps apply to the kernel's own RK4 and the declared-event locator).
-
-A native backend may replace exactly one evaluation boundary (`VehicleModel.stage`, or the ground vehicle's evaluator), never the tick transaction; RK stages, substeps, events, checkpoints and faults stay in the kernel. It declares ABI and backend versions, its build receipt pins the toolchain and library hashes, and checkpoints pin the active backend so replay refuses a switch. Adoption needs a byte-identical oracle comparison on at least ten thousand states including malformed inputs, exact multi-tick kernel trajectories, the fleet fingerprints and p50/p95 tick cost on the owner's target host. The reference GDScript path is selected whenever the binary, receipt or identity is missing or mismatched; macOS is reference-only and nothing in the catalog may depend on a native backend. A fixed-wing port starts only when the optimized GDScript tick still exceeds the 500 µs budget on the target host, by owner decision ([SF-08](DECISIONS.md)).
-
-Simulation positions use NED (north/east/down), body vectors use FRD (forward/right/down), and attitudes map body to NED. Scalar doubles and packed float64 arrays remain inside physics. `render/frames.gd` converts detached state into Godot's render vectors and attitude. Aircraft geometry, forces and controls share the declared datum and hinge contract.
-
-The Workshop compiler builds a detached candidate from validated aircraft data, exposes only operations supported by that aircraft's modules, and freezes the accepted candidate for a test flight. Natural Random resolves an airplane, start, physical weather and visual conditions into a repeatable scenario. Optional failure practice is currently a fixed-wing session feature; its saved settings default to off.
-
-The renderer composes the field, sky, lighting and scenery. Physical weather controls air velocity/density; each session queries wind, air, terrain, water and course through one environment contract (`app/sim/environment.gd`). Visual lighting has its own configuration and history. Visual time changes do not change flight weather. Collision proxies are scalar geometry consumed by the simulation, with scenery rendering and response kept separate.
+A native backend may replace one evaluator boundary, never the kernel's tick transaction. Its receipt pins the toolchain, ABI, backend version and library hashes; missing or mismatched artifacts select the GDScript reference path. Adoption requires byte-identical reference agreement on at least 10,000 states including malformed inputs, exact kernel trajectories, fleet fingerprints and target-host p50/p95 tick cost. No catalog entry may require a native backend. A fixed-wing port requires an optimized GDScript workload still exceeding the 500 µs target-host budget and an owner decision; [SF-08](research/simulation-foundation/README.md#6-backend-policy-sf-08) records the policy and evidence.
 
 ## Repository layout
 
 | Path | Responsibility |
 | --- | --- |
-| `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/` | Product shell, catalog, preferences, localization and build information |
-| `app/sim/`, `app/physics/`, `app/input/` | Fixed-wing, rotorcraft and ground-vehicle sessions; float64 state/replay; flight equations and control devices |
-| `app/workshop/`, `app/scenarios/`, `app/failures/` | Validated aircraft variants, resolved random-flight scenarios and optional fixed-wing failure practice |
-| `app/data/` | Aircraft, contracts/schemas, ground profiles, field, scenery and sky configuration |
-| `app/aircraft/`, `app/render/`, `app/environment/`, `app/scenery/`, `app/audio/` | Aircraft models, presentation, lighting context, field life and sound |
-| `app/assets/` | Runtime assets and bundled third-party licenses |
-| `app/tests/` | Headless tests, trace/capture verification and benchmarks |
-| `assets/` | Authored source geometry, generators and provenance |
-| `assets/source-deliveries/` | Original user-supplied model packages, grouped by vehicle; [index and current asset references](../assets/source-deliveries/README.md) |
-| `tools/` | Reusable asset, visual, capture and qualification workflows |
-| `research/` | Reproducible experiments, derivations, data generators and measurement reducers |
-| `docs/` | Current guides, active plans, dated evidence and sources; [map](README.md) |
-| `site/` | Static project website, asset packaging and publication workflow; [guide](../site/README.md) |
-| `tmp/`, `output/`, `.playwright-cli/`, `.playwright-mcp/` | Ignored local scratch outputs and browser sessions; retain accepted evidence under `docs/research/` or `docs/media/` |
+| `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/` | Product shell, catalog, preferences, localization and build identity |
+| `app/sim/`, `app/physics/`, `app/input/` | Sessions, shared kernel, vehicle laws, float64 state/replay and control devices |
+| `app/workshop/`, `app/scenarios/`, `app/failures/` | Aircraft variants, resolved flight scenarios and fixed-wing failure practice |
+| `app/data/` | Aircraft, schemas, ground-vehicle, field, scenery and sky data |
+| `app/aircraft/`, `app/render/`, `app/environment/`, `app/scenery/`, `app/audio/` | Vehicle visuals, presentation, lighting, field life and sound |
+| `app/assets/`, `app/tests/` | Runtime assets/licenses; tests, trace/capture checks and benchmarks |
+| `assets/`, `assets/source-deliveries/` | Authored geometry, generators and provenance; [source-delivery index](../assets/source-deliveries/README.md) |
+| `tools/`, `research/` | Reusable workflows, experiments, data generators and measurement reducers |
+| `docs/`, `site/` | Current guides, plans, dated evidence and project website; [documentation map](README.md), [site guide](../site/README.md) |
+| `tmp/`, `output/`, browser scratch folders | Ignored local outputs; accepted evidence belongs under `docs/research/` or `docs/media/` |
 | `prototypes/stage0/` | Frozen bake-off specification, comparison and three.js prototype |
-| Turbo Lumber Evolution packages: `assets/source-deliveries/turbo-timber-evolution-original/` (historical source) and `assets/source-deliveries/turbo-timber-evolution-r2/turbo_timber_evolution_r2/r2/` (current delivery) | The immutable r2 package is hash-pinned in the [source manifest](../assets/aircraft/turbo-lumber-evolution/source-manifest.json); its runtime GLB copy is loaded through `app/aircraft/timber_model.gd`. Experimental electric flight data is generated by `research/timber/tt07/derive_physics.py` |
 
 ## Limits and upgrades
 
-The engine permits at most 12 catch-up ticks per rendered frame. Below about 20 fps, simulation slows instead of accumulating unlimited work. The 500 µs physics budget on the target machine remains an acceptance gate, not a guaranteed maximum. Aircraft-specific calibration, pilot handling/readability and platform/GPU qualification remain open in [ROADMAP](../ROADMAP.md).
+The engine permits at most 12 catch-up ticks per rendered frame; below about 20 fps, simulation slows instead of accumulating unlimited work. The 500 µs physics budget is an acceptance gate, not a guaranteed maximum. Aircraft calibration, handling/readability and platform/GPU qualification remain open in the [ROADMAP](../ROADMAP.md).
 
-Current exports are unsigned ZIPs; installers, fullscreen defaults and web/mobile delivery are not shipped. Current source includes reversible display/accessibility Settings and automatic menu scaling; [menu evidence](research/menu-investigations/UI-22-26-R1/README.md) records its qualification limits. Active proposals are indexed separately in the [documentation map](README.md).
+Current packages are unsigned desktop ZIPs. Installers and web/mobile delivery are not shipped. Active proposals and their owners are listed in the [documentation map](README.md).
 
-For an engine upgrade, change the pin and hash deliberately, then run app tests, inspect captures and verify exports/CI. Preserve numerical and render baselines unless the change intentionally explains their replacement. The original platform investigation is retained in the [research notebook](research/initial-notebook.md); it does not describe today's dependencies.
+For an engine upgrade, change the version pin and hash deliberately, then run the app checks, inspect captures and verify exports/CI. Preserve numerical and render baselines unless an intentional change explains replacing them. The original platform investigation is in the [research notebook](research/initial-notebook.md); it records historical evidence, not current dependencies.

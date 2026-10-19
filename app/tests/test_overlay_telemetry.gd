@@ -105,6 +105,14 @@ func _initialize() -> void:
 	_check("BATTERY below 20 %", Array(Telemetry.warnings(base, _with(ctx, { battery = { ok = true, soc = 0.15, exhausted = false } }))) == ["battery"])
 	_check("no BATTERY without a modelled battery", Telemetry.warnings(base, _with(ctx, { battery = {} })).is_empty())
 	_check("EXPERIMENTAL is listed", Array(Telemetry.warnings(base, _with(ctx, { experimental = true }))) == ["experimental"])
+	var estimated_fuel := { ok = true, finite_fuel = true, low_fuel = true, reserve_estimated = true }
+	_check("finite fuel below estimated reserve raises the labelled cue",
+		Array(Telemetry.warnings(base, _with(ctx, { mass_sample = estimated_fuel }))) == ["fuel_reserve_estimated"])
+	var authored_fuel := _with(estimated_fuel, { reserve_estimated = false })
+	_check("authored reserve keeps the same trigger with distinct provenance",
+		Array(Telemetry.warnings(base, _with(ctx, { mass_sample = authored_fuel }))) == ["fuel_reserve"])
+	_check("no reserve warning for nonfinite fuel", Telemetry.warnings(base,
+		_with(ctx, { mass_sample = { ok = true, finite_fuel = false, low_fuel = true } })).is_empty())
 	_check("order: failsafe before stall", Array(Telemetry.warnings(_with(base, { alpha_deg = 11.0 }), _with(ctx, { pause_reason = "radio disconnected" }))) == ["failsafe", "stall"])
 	print("overlay telemetry: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)

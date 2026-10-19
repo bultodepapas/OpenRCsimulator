@@ -79,9 +79,15 @@
 /research/rc-monster-truck/support_bench.json text eol=lf
 /research/rc-monster-truck/fixtures/*.json text eol=lf
 
-# Author deliveries retain their reviewed bytes after relocation, including text sources.
-/assets/source-deliveries/** -text
-/assets/source-deliveries/README.md text
+# Author deliveries retain reviewed bytes and original whitespace; do not reformat them.
+/assets/source-deliveries/** -text -whitespace
+/assets/source-deliveries/README.md text !whitespace
+# Historical Timber text uses CRLF checkouts and LF Git blobs; preserve both identities.
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.py text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.json text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.md text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.txt text eol=crlf
+/assets/source-deliveries/turbo-timber-evolution-original/**/*.step text eol=crlf
 # RCV-14a pins the author's delivery bytes, including the supplied visual rig.
 /docs/research/rc-monster-truck/RCV-14a/intake.json text eol=lf
 

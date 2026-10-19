@@ -27,6 +27,10 @@ IDENTIFIED_OUTPUTS = (
     "turbo_lumber_evolution.json",
     "stik_glow_55ax_2t_apc_13x6.json",
     "stik_glow_fs64v_4t_apc_13x6.json",
+    "synthetic_stik_electric_4s.json",
+    "synthetic_stik_electric_6s.json",
+    "synthetic_stik_electric_4s_battery.json",
+    "synthetic_stik_electric_6s_battery.json",
 )
 
 
@@ -92,7 +96,7 @@ def audit_baseline(baseline_dir: Path) -> int:
 
 
 class PhysicalIdentitySourceTests(unittest.TestCase):
-    def test_catalog_and_glow_outputs_have_valid_identity_modules(self) -> None:
+    def test_authored_and_synthetic_outputs_have_valid_identity_modules(self) -> None:
         aircraft_dir = ROOT / "app/data/aircraft"
         for filename in IDENTIFIED_OUTPUTS:
             with self.subTest(aircraft=filename):
@@ -112,13 +116,25 @@ class PhysicalIdentitySourceTests(unittest.TestCase):
         data = json.loads(template.read_text(encoding="utf-8"))
         validate_physical_identity(data)
 
-    def test_synthetic_electric_regression_fixtures_remain_idless(self) -> None:
+    def test_synthetic_electric_regression_fixtures_use_stable_donor_ids(self) -> None:
         fixtures = sorted((ROOT / "app/data/aircraft").glob("synthetic_stik_electric_*.json"))
         self.assertEqual(len(fixtures), 4)
+        expected = {
+            "donor_engine_station",
+            "donor_muffler_station",
+            "donor_tank_station",
+            "donor_fuel_station",
+        }
         for path in fixtures:
             with self.subTest(fixture=path.name):
                 data = json.loads(path.read_text(encoding="utf-8"))
-                self.assertNotIn("physical_identity_version", data)
+                donor_ids = {
+                    item["id"]
+                    for item in data["inventory"]
+                    if item["id"].startswith("donor_")
+                }
+                self.assertEqual(donor_ids, expected)
+                validate_physical_identity(data)
 
     def test_float_version_and_gearless_aircraft_are_supported(self) -> None:
         data = {

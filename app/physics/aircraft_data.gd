@@ -1406,6 +1406,15 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 				continue
 			var density: float = blend.density_kg_m3
 			var capacity_kg: float = capacity * 0.001 * density
+			var reserve: float = minf(float(capacity), float(unusable) + 0.1 * float(capacity))
+			if tank.has("reserve"):
+				var authored_reserve: Variant = _q(errors, path + ".reserve", tank.reserve, "l", 0.0, 50.0)
+				if authored_reserve == null:
+					continue
+				reserve = float(authored_reserve)
+				if reserve < float(unusable) or reserve > float(capacity):
+					errors.append("%s.reserve: must lie between unusable and capacity" % path)
+					continue
 			var liquid_kg: float = float(liquid.mass.value)
 			if liquid_kg > capacity_kg * (1.0 + 1.0e-9):
 				errors.append("%s: liquid '%s' %.6f kg exceeds capacity %.6f kg (%s l at %.3f kg/m3)" % [path, tank.liquid_inventory_id, liquid_kg, capacity_kg, capacity, density])
@@ -1415,6 +1424,8 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 			liquid_ids.append(tank.liquid_inventory_id)
 			tanks.append({id = id, fuel = tank.fuel, family = family, density_kg_m3 = density,
 				capacity_m3 = capacity * 0.001, capacity_kg = capacity_kg, unusable_kg = unusable * 0.001 * density,
+				reserve_kg = reserve * 0.001 * density, reserve_fraction = reserve / float(capacity),
+				reserve_estimated = not tank.has("reserve") or str(tank.reserve.kind) == "estimated",
 				liquid_inventory_id = tank.liquid_inventory_id, shell_inventory_id = tank.shell_inventory_id,
 				liquid_mass_kg = liquid_kg, start_fill = liquid_kg / capacity_kg, pickup = tank.pickup, feed = tank.feed})
 		for item: Dictionary in inventory:

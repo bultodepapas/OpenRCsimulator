@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Validate custom-atmosphere v6/v10 traces or calm standard-column v11 traces."""
 from flap_trace_contract import project as project_flaps
+from mass_trace_contract import project as project_mass_trace
 import argparse
 import csv
 import io
@@ -215,6 +216,9 @@ def _json_metadata_value(metadata, key):
 
 
 def check(path, duration=None):
+    handled, projected = project_mass_trace(path, check, duration)
+    if handled:
+        return projected
     handled, projected = project_flaps(path, check, duration)
     if handled:
         return projected
@@ -474,6 +478,9 @@ def check_column(path, duration=None):
     This specialized lane rejects nonzero wind, gust, or turbulence settings; it does
     not validate arbitrary weather-v4 traces.
     """
+    handled, projected = project_mass_trace(path, check_column, duration)
+    if handled:
+        return projected
     handled, projected = project_flaps(path, check_column, duration)
     if handled:
         return projected

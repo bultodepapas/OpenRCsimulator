@@ -1073,7 +1073,8 @@
         "capacity",
         "unusable",
         "pickup",
-        "feed"
+        "feed",
+        "reserve"
       ]
     }
   ],
@@ -1131,7 +1132,8 @@
     "/flaps/*",
     "/balance/cg_range/*",
     "/fuel_system/tanks/*/capacity",
-    "/fuel_system/tanks/*/unusable"
+    "/fuel_system/tanks/*/unusable",
+    "/fuel_system/tanks/*/reserve"
   ],
   "array_rules": [
     {
