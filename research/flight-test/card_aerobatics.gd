@@ -414,8 +414,9 @@ static func _roll(ft, name: String, points: bool) -> Dictionary:
 ## Snap roll both ways (FAI 5B.8.7: a rapid auto-rotative roll with the wing stalled). From 1.6 Vs at the level-trim
 ## throttle: full up elevator, full rudder and full aileron the same way, released early by 0.2 s of roll rate (at least
 ## 20°) before 360°, or as soon as the autorotation dies (roll rate below a third of its peak) or after 4 s. Then the
-## sticks centred with rudder against the roll until it stops, wings levelled and the dive pulled out with half the
-## stall-start α, then height held. Judge's questions: did the wing stall before the roll built up (a snap, not an
+## sticks centred with the rudder against the yaw rate (a damper; a full opposite rudder keyed to the roll rate's sign
+## sustained a Dutch-roll limit cycle on the Avanti) until roll and yaw stop, wings levelled and the dive pulled out
+## with half the stall-start α while the rudder keeps damping, then height held with the ball centred. Judge's questions: did the wing stall before the roll built up (a snap, not an
 ## aileron roll), is there yaw in the rotation (autorotation), did the autorotation last to the finish (FAI zeroes a snap
 ## whose autorotation ends more than 90° short), where did the rotation stop, and the height and heading it cost.
 static func snap_roll(ft) -> Dictionary:
@@ -450,15 +451,16 @@ static func snap_roll(ft) -> Dictionary:
 				ctx.release_t = t
 				ctx.release_rolled = float(ctx.rolled)
 				ctx.release_reason = reason
+			var yaw_damper := clampf(-2.0 * k * s[RB.RATE + 2], -1.0, 1.0)
 			if not ctx.has("stopped_t"):
-				if absf(s[RB.RATE]) > deg_to_rad(30.0) and t < float(ctx.release_t) + 3.0:
-					return { pitch = 0.0, roll = 0.0, yaw = -signf(s[RB.RATE]), throttle = ctx.start_throttle }
+				if (absf(s[RB.RATE]) > deg_to_rad(30.0) or absf(s[RB.RATE + 2]) > deg_to_rad(30.0)) and t < float(ctx.release_t) + 3.0:
+					return { pitch = 0.0, roll = 0.0, yaw = yaw_damper, throttle = ctx.start_throttle }
 				ctx.stopped_t = t
 				ctx.stop_rolled = float(ctx.rolled)
 			# Wings level and pull out of the dive at half the stall-start α (a full height-hold pull would stall again).
 			if not ctx.has("level_t"):
 				if (absf(P.euler(s)[2]) > deg_to_rad(10.0) or P.climb_rate(s) < 0.0) and t < float(ctx.stopped_t) + 6.0:
-					return { roll = P.bank(s, 0.0, k), pitch = P.alpha_hold(s, 0.5 * ft.a1, k, ctx, DT), yaw = P.ball(s, k, ctx, DT), throttle = ctx.start_throttle }
+					return { roll = P.bank(s, 0.0, k), pitch = P.alpha_hold(s, 0.5 * ft.a1, k, ctx, DT), yaw = yaw_damper, throttle = ctx.start_throttle }
 				ctx.level_t = t
 				ctx.level_alt = P.altitude(s)
 			return { roll = P.bank(s, 0.0, k), pitch = P.hold_altitude(s, float(ctx.level_alt), k, ctx, DT), yaw = P.ball(s, k, ctx, DT), throttle = ctx.start_throttle }, \

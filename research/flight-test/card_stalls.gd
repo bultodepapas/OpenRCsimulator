@@ -46,7 +46,8 @@ static func stall_turning(ft) -> Dictionary:
 		if row.is_empty():
 			continue
 		row.bank_deg = named[1]
-		row.ratio_to_vs_root_n = snappedf(float(row.stall_speed_mps) / (ft.vs * sqrt(n_turn)), 0.001)
+		if row.has("stall_speed_mps"):
+			row.ratio_to_vs_root_n = snappedf(float(row.stall_speed_mps) / (ft.vs * sqrt(n_turn)), 0.001)
 		rows.append(row)
 	return ft._result(rows.size() == 4 and rows.all(func(r): return r.recovered), {}, notes, { table = rows })
 
@@ -72,7 +73,8 @@ static func stall_cross_controlled(ft) -> Dictionary:
 ## the turn (the bank's side) or the outside.
 static func _stall_case(ft, name: String, case_id: String, entry: float, bank: float, rudder: float, notes: Array) -> Dictionary:
 	var alt0: float = ft.HIGH
-	var flight: Dictionary = ft._fly(name, { speed = entry, altitude = alt0 }, 45.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+	# 60 s: a glow engine at idle slows the airplane by only about 0.1 m/s per second (FT-03 finding 4).
+	var flight: Dictionary = ft._fly(name, { speed = entry, altitude = alt0 }, 60.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
 		ctx.suffix = case_id
 		var k := P.schedule(s, ft.v_start)
 		var e := P.euler(s)
@@ -105,7 +107,7 @@ static func _stall_case(ft, name: String, case_id: String, entry: float, bank: f
 	var ctx: Dictionary = flight.ctx
 	var trace: RefCounted = flight.trace
 	if not ctx.has("break_t"):
-		notes.append("%s: no stall break within 45 s" % case_id)
+		notes.append("%s: no stall break within 60 s" % case_id)
 		return { case = case_id, recovered = false }
 	var r0: int = ft._row_at(trace, float(ctx.break_t))
 	var inside_sign: float = signf(bank) if bank != 0.0 else signf(float(ctx.get("roll_off", 0.0)))
@@ -132,7 +134,7 @@ static func stall_held(ft) -> Dictionary:
 	var alt0 := 400.0
 	for named in [["controls_neutral", false], ["wings_level", true]]:
 		var use_controls: bool = named[1]
-		var flight: Dictionary = ft._fly("stall_held", { speed = 1.4 * ft.vs, altitude = alt0 }, 40.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		var flight: Dictionary = ft._fly("stall_held", { speed = 1.4 * ft.vs, altitude = alt0 }, 60.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
 			ctx.suffix = str(named[0])
 			var k := P.schedule(s, ft.v_start)
 			var e := P.euler(s)
@@ -170,7 +172,7 @@ static func stall_held(ft) -> Dictionary:
 		var ctx: Dictionary = flight.ctx
 		var trace: RefCounted = flight.trace
 		if not ctx.has("break_t"):
-			notes.append("%s: no stall break within 40 s" % named[0])
+			notes.append("%s: no stall break within 60 s" % named[0])
 			rows.append({ case = named[0], recovered = false })
 			continue
 		var max_bank: float = rad_to_deg(float(ctx.get("max_bank", 0.0)))
