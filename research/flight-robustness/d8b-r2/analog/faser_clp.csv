@@ -1,0 +1,22 @@
+# NASA FASER (Ultra Stick 120) roll damping, Hoe, Owens, Denham AIAA 2012-4645 Fig. 14 (left), forced oscillation, single-point method; pdf sha256 fc4f300af735e8e9f0a6ada1b7b10050134bae02ee54f55d2586616aef82bab1
+# digitized by faser_cl.py at 400 dpi; grid px {"columns_px": [[96, 0], [255, 1], [417, 2], [580, 3], [740, 4], [903, 5]], "rows_px": [[49, 0], [115, 1], [183, 2], [249, 3], [307, 4], [449, 6], [516, 7], [581, 8], [650, 9], [715, 10]]}; uncertainty about +/-0.3 deg, +/-0.01
+alpha_deg,clp
+-5,-0.408
+0,-0.386
+5,-0.402
+10,-0.435
+12,-0.447
+13.5,-0.444
+15,-0.413
+16,-0.386
+17.5,-0.311
+19,-0.114
+20,0.003
+22.5,0.045
+25,0.078
+27.5,0.080
+30,0.083
+32.5,0.135
+35,0.186
+37.5,0.092
+40,-0.002

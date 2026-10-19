@@ -291,6 +291,19 @@
    "parsed_ok": true
   },
   {
+   "path": "references/rc-aero-data/letko-williams-1955-naca-tn-3551-fuselage-cross-section.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19930084316/downloads/19930084316.pdf",
+   "bytes": 1884278,
+   "sha256": "da19d64b22d3c155462e2e7cb9689fde755080003800172e47f2a5d778c55ebb",
+   "file_type": "PDF, 46 pages",
+   "kind": "report",
+   "license": "NACA Technical Note (US Government work).",
+   "use": "Fuselages of circular (F1), square round-cornered (F2), deep (F3) and shallow (F4) section, 45 in long, 823 in3, side areas 206/186/250/136 in2, alone and with 0/45 deg wings (S 324 in2). Fig. 19: fuselage-alone CYbeta; F2 -0.0015/deg at alpha 0-8, growing with alpha. Fig. 8a (read from the figure): F2 CN per side area 0.047/0.089/0.127/0.164/0.199 at 16/20/24/28/32 deg, about 0.75 sin2(alpha), i.e. its side force against sideslip by symmetry. Fig. 18: mid-wing roughly doubles the body side-force derivative at alpha 0.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
    "path": "references/rc-aero-data/polhamus-1959-nasa-tr-r-46-noncircular-cylinders-pressure.pdf",
    "url": "https://ntrs.nasa.gov/api/citations/19980227840/downloads/19980227840.pdf",
    "bytes": 2240486,

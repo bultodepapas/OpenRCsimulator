@@ -60,6 +60,15 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-19 · D8b-R2d — a whole-aircraft polar is not a strip polar; judge post-stall laws on lift and roll damping together
+
+A uniform strip table solved to match the measured Ultra Stick 120 static lift retention (within 0.002) made the deep stall stable in roll. The Stik then stopped spinning, although that airframe spins with the same inputs.
+
+- A wing's flat post-stall plateau comes from spanwise stall progression plus tail and body lift. The sections themselves keep a negative slope, and strip roll damping follows that local slope. A static whole-aircraft curve therefore fixes neither the damping nor the spin.
+- Score any post-stall change on the static lift and on dMx/dp against measured roll damping at once, before flying it. Forced-oscillation data get more unstable at lower frequency, so a quasi-steady model must meet at least their low-frequency values.
+
+Evidence: [D8b-R2d analog](docs/research/flight-robustness/D8b-R2/analog/README.md), [D10-R4](docs/research/flight-dynamics/spin-post-stall-2026-10-19/README.md).
+
 ## 2026-10-18 · D10-R2 — re-trim before judging a coefficient, and never judge an oscillation by one sample
 
 Writing a new Cnβ into a session after its trim was solved left Cnβ·β_trim unbalanced: the airplane rolled to 32° in 40 s with no input and looked spirally unstable, while the re-trimmed airplane was stable. The flight-log candidate mode has the same property (it keeps the baseline trim), and `compare` refuses tapes whose trimmed commands differ, so for a change that moves the trim record the same stick tape on each data set and compare the exports. Separately, a recovery check that read r at one instant passed or failed with the Dutch roll's phase (the mirrored doublet passed with the same physics); judge oscillatory recovery by modes or by an envelope over at least one period. [Evidence](docs/research/flight-dynamics/stik-lateral-directional-2026-10-18/README.md#6-decisions-and-adoption-d10-r2-2026-10-18)

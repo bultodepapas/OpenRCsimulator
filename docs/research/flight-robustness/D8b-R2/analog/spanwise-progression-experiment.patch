@@ -1,0 +1,62 @@
+--- app/physics/aero.gd	2026-10-15 22:16:48.106977622 +0000
++++ app/physics/aero.gd	2026-10-19 00:38:44.919523380 +0000
+@@ -423,7 +423,7 @@
+ 		var f2: float = v2 + (p*arm_y - q*ax)
+ 		var effective: float = angles[i]
+ 		# Stall and the flat plate follow the geometric angle; attached lift uses the induced (effective) angles.
+-		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
++		var stall_angle: float = (effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]) * _loading_ratio(env, i)
+ 		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
+ 			else _smoothstep((-stall_angle - n1) / n_span)
+ 		var base: float
+@@ -443,7 +443,7 @@
+ 			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+ 			cd = cd0 + (1.0-weight)*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+ 			if not polar.is_empty():
+-				var sample := WingPolar.evaluate(effective, base, polar)
++				var sample := WingPolar.evaluate(effective * _loading_ratio(env, i), base, polar)
+ 				cl = sample[0]
+ 				weight = 1.0-sample[2]
+ 				cd = sample[1] + sample[2]*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2)
+@@ -451,7 +451,7 @@
+ 			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+ 			cd = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
+ 			if not polar.is_empty():
+-				var sample := WingPolar.evaluate(effective, base, polar)
++				var sample := WingPolar.evaluate(effective * _loading_ratio(env, i), base, polar)
+ 				cl = sample[0]
+ 				weight = 1.0-sample[2]
+ 				cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
+@@ -819,7 +819,7 @@
+ 	var polar: Dictionary = env.get("wing_polar", {})
+ 	for i in stations:
+ 		var effective: float = angles[i]
+-		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
++		var stall_angle: float = (effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]) * _loading_ratio(env, i)
+ 		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
+ 			else _smoothstep((-stall_angle - n1) / n_span)
+ 		var base: float
+@@ -834,7 +834,7 @@
+ 			base += (1.0 - ge[i]) * (strip_slope * (effective + float(env.strip_alpha_zero)) - base)
+ 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
+ 		if not polar.is_empty():
+-			var sample := WingPolar.evaluate(effective, base, polar)
++			var sample := WingPolar.evaluate(effective * _loading_ratio(env, i), base, polar)
+ 			cl = sample[0]
+ 			weight = 1.0 - sample[2]
+ 		if flap_active and i < flap_shifts.size():
+@@ -880,3 +880,14 @@
+ 	for k in 6:
+ 		global[k] = lerpf(global[k], local[k], blend)
+ 	return global
++
++
++## EXPERIMENT: strip i's attached loading relative to the wing mean (induced-map row sum / mean row sum).
++static func _loading_ratio(env: Dictionary, i: int) -> float:
++	var rs: PackedFloat64Array = env.get("strip_row_sum", PackedFloat64Array())
++	if rs.is_empty():
++		return 1.0
++	var mean := 0.0
++	for v in rs:
++		mean += v / rs.size()
++	return rs[i] / mean
