@@ -26,6 +26,6 @@ Sun cases ([SUN plan](../../docs/plans/sun.md)): `glare_offset_<deg>` with `_off
 
 `app/tests/test_landscape_runtime.gd` exercises actual flight/scenery contact, crash presentation, secondary Godot shapes, pause and reset. `-- --out=<absolute-directory> --soundscape=off` additionally saves five native screenshots and a structured result. A headless run covers state behavior but is not visual evidence.
 
-Production controls: `--sun-glare=0..2` (or `off`), `OPENRC_SUN_GLARE`; `--landscape-upgrade=off`, `OPENRC_LANDSCAPE_UPGRADE=off`; existing scenery switches remain in [scenery tools](../scenery/README.md). The upgrade switch disables the new runtime integration, not the authored people/parking refinements.
+Production controls: `--sun-glare=0..2` (or `off`), `OPENRC_SUN_GLARE`; `--pilot-eyewear=none|cap|sunglasses|cap+sunglasses`, `OPENRC_PILOT_EYEWEAR` (SUN-06); `--landscape-upgrade=off`, `OPENRC_LANDSCAPE_UPGRADE=off`; existing scenery switches remain in [scenery tools](../scenery/README.md). The upgrade switch disables the new runtime integration, not the authored people/parking refinements.
 
 Final proofs, screenshots and limits: [LU-06](../../docs/research/landscape-upgrade/LU-06/README.md).

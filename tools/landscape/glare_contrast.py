@@ -92,7 +92,10 @@ def main():
         c_on = contrast(luma(on), luma(hidden), mask)
         l_off = contrast(luma(linear(off)), luma(linear(hidden_off)), mask)
         l_on = contrast(luma(linear(on)), luma(linear(hidden)), mask)
+        # Straylight only adds light: with the aircraft hidden, glare on must never be darker than glare off.
+        darkening = (luma(hidden_off) - luma(hidden)) * 255.0
         row = {"case": tag, "aircraft_pixels": int(mask.sum()), "glare_strength": strength, "aureole_coeff": coeff,
+               "darkened_pixels": int((darkening > 2.0).sum()), "max_darkening_levels": float(darkening.max()),
                "afterimage_dose": float(case.get("glare_afterimage", 0.0)),
                "contrast_without_display": c_off, "contrast_with_display": c_on,
                "retained_display": c_on / c_off, "retained_linear": l_on / l_off,
@@ -110,6 +113,10 @@ def main():
         "retained_grows_with_angle": all(b >= a - 0.02 for a, b in zip(retained, retained[1:])),
         "veil_follows_the_model": all(abs(r["retained_display"] - r["predicted_retained"]) < 0.1 for r in rows),
     }
+    every = rows + list(crossings.values())
+    if every:
+        checks["veil_never_darkens"] = all(r["darkened_pixels"] == 0 for r in every
+                                           if not r["case"].startswith("glare_crossing"))
     if "glare_crossing" in crossings:
         checks["crossing_hides_the_aircraft"] = crossings["glare_crossing"]["retained_display"] < 0.25
     if "glare_crossing" in crossings and "glare_crossing_late" in crossings:
@@ -128,6 +135,9 @@ def main():
               f"{r['predicted_retained']:6.3f}")
     for tag, r in crossings.items():
         print(f"{tag}: kept {r['retained_display']:.3f} (linear {r['retained_linear']:.3f}), dose {r['afterimage_dose']:.3f}")
+    for r in every:
+        if r["darkened_pixels"]:
+            print(f"{r['case']}: {r['darkened_pixels']} px darker with glare (max {r['max_darkening_levels']:.1f} levels)")
     print(json.dumps(checks, indent=2))
     raise SystemExit(0 if out["ok"] else 1)
 

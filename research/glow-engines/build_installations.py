@@ -21,6 +21,11 @@ FUEL_DIR = ROOT / 'research/fuel-systems'
 if str(FUEL_DIR) not in sys.path:
     sys.path.insert(0, str(FUEL_DIR))
 import fuel_registry  # noqa: E402
+GLOW_DIR = Path(__file__).resolve().parent
+if str(GLOW_DIR) not in sys.path:
+    sys.path.insert(0, str(GLOW_DIR))
+import carburetor  # noqa: E402
+import cycle_oracle  # noqa: E402
 
 GLOW_BLEND = 'glow_10n_18castor'
 START_FILL = 1.0  # FUEL D4: finite-fuel aircraft start with a full tank
@@ -58,10 +63,96 @@ def left_to_right_sum(values):
         total += value
     return total
 
+THROTTLE_AREA = ('NITRO-06: effective open-throttle area Cd*A from the NITRO-05 wide-open venturi depression estimate '
+                 '({wot:.0f} Pa, i.e. manifold ratio {r:.4f}) through the isentropic nozzle law (Heywood 1988 sec. 7.6.2) at the '
+                 'rated {rated:.0f} rpm and the profile breathing {breath:.3f}: capacity {cap:.5f} m3/s; derived from estimates, '
+                 'no carburettor measurement')
+IDLE_OPENING = ('NITRO-06: barrel open-area fraction at the idle stop giving the former per-cycle idle charge {charge:.2f} at the '
+                'declared {idle:.0f} rpm static idle (breathing {breath:.3f}) through the choked nozzle law; derived from estimates')
+
+def throttle_settings(two, profile_file):
+    """NITRO-06: the carburettor law's two installation quantities, derived from the profile and the feed-pressure estimates."""
+    profile = json.loads((ROOT/'app/data/glow'/profile_file).read_text(encoding='utf-8'))
+    parameters = profile['parameters']
+    displacement = parameters['displacement_m3']['value']
+    breathing_table = parameters['delivery_ratio' if two else 'volumetric_efficiency']['value']
+    revolutions = 1.0 if two else 2.0
+    rated = profile['operation']['rated_rpm']['value']
+    wot_pa = 6000. if two else 4000.           # fuel_feed() wot_drive_pressure_pa (NITRO-05 estimate)
+    r_wot = 1.0 - wot_pa / 101325.0
+    x_rated = 1.0 / carburetor.demand_ratio_for_charge(r_wot)
+    breath_rated = carburetor.sample_table(breathing_table, rated)
+    capacity = carburetor.demand_m3_s(rated, breath_rated, displacement, revolutions) / x_rated
+    area = carburetor.effective_area_for_capacity(capacity)
+    idle_rpm = 2800.                           # the aircraft engine block's declared static idle
+    idle_charge = .28 if two else .35          # the former per-cycle idle admission (NITRO-02 estimate)
+    breath_idle = carburetor.sample_table(breathing_table, idle_rpm)
+    x_idle = carburetor.demand_m3_s(idle_rpm, breath_idle, displacement, revolutions) / capacity
+    idle_opening = carburetor.demand_ratio_for_charge(idle_charge) * x_idle
+    return {
+        'throttle_effective_area_m2': q(area, 'm2', 'derived', THROTTLE_AREA.format(wot=wot_pa, r=r_wot, rated=rated, breath=breath_rated, cap=capacity)),
+        'idle_opening': q(idle_opening, '1', 'derived', IDLE_OPENING.format(charge=idle_charge, idle=idle_rpm, breath=breath_idle)),
+    }
+
+HALF_STICK_RPM_RATIO = 0.81
+TRAVEL_EXPONENT = ('NITRO-06: barrel travel exponent calibrated so the static half-stick equilibrium on this propeller sits at '
+                   '{ratio:.2f} of the full-throttle static rpm ({half:.0f} of {full:.0f} rpm), the operating band Menon 2010 '
+                   '(O.S. 46 FX, barrel carburettor, Fig. 7-11, read from the figure) gives for a half-open barrel on a matched '
+                   'propeller (78-84 %); another engine, a derived ratio, no linkage drawing')
+
+def static_rpm(profile, prop, area, idle_opening, exponent, servo):
+    """Static torque-balance rpm of the candidate mean cycle on its propeller at a stick position (highest restoring root)."""
+    two = profile['family'] == 'glow_2t'
+    breathing_table = profile['parameters']['delivery_ratio' if two else 'volumetric_efficiency']['value']
+    displacement = profile['parameters']['displacement_m3']['value']
+    mixture = profile['operation']['nominal_mixture']['value']
+    capacity = carburetor.capacity_m3_s(area)
+    opening = carburetor.opening(servo, carburetor.idle_offset(idle_opening), exponent)
+    def residual(rpm):
+        admission = carburetor.admission(opening, rpm, carburetor.sample_table(breathing_table, rpm), displacement,
+                                         1.0 if two else 2.0, capacity)
+        engine = cycle_oracle.family_inputs(profile, rpm, admission=admission, mixture=mixture, rho=1.225)
+        load = cycle_oracle.propeller_load(rpm, 0.0, 1.225, prop)
+        return engine['candidate_mean_shaft_torque_nm'] - load['torque_nm']
+    lo, hi = 1200.0, profile['operation']['max_rpm']['value']
+    nodes = [lo + (hi - lo) * i / 256.0 for i in range(257)]
+    root = None
+    for a, b in zip(nodes, nodes[1:]):
+        fa, fb = residual(a), residual(b)
+        if fa > 0.0 >= fb:
+            for _ in range(64):
+                m = 0.5 * (a + b)
+                if residual(m) > 0.0:
+                    a = m
+                else:
+                    b = m
+            root = 0.5 * (a + b)
+    if root is None:
+        raise SystemExit('no static torque balance for the glow installation at servo %.2f' % servo)
+    return root
+
+def travel_exponent(profile, prop, area, idle_opening):
+    """NITRO-06: the exponent p of u = u_idle (1 - servo)^p that puts the half-stick static rpm at HALF_STICK_RPM_RATIO."""
+    full = static_rpm(profile, prop, area, idle_opening, 1.0, 1.0)
+    def ratio(p):
+        return static_rpm(profile, prop, area, idle_opening, p, 0.5) / full
+    lo, hi = 0.1, 10.0
+    if not (ratio(lo) <= HALF_STICK_RPM_RATIO <= ratio(hi)):
+        raise SystemExit('half-stick rpm ratio %.3f is not bracketed in [%.3f, %.3f]' % (HALF_STICK_RPM_RATIO, ratio(lo), ratio(hi)))
+    for _ in range(48):
+        mid = 0.5 * (lo + hi)
+        if ratio(mid) < HALF_STICK_RPM_RATIO:
+            lo = mid
+        else:
+            hi = mid
+    p = 0.5 * (lo + hi)
+    return p, static_rpm(profile, prop, area, idle_opening, p, 0.5), full
+
 def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True):
     family = 'glow_2t' if two else 'glow_4t'
+    profile_file = ('os_max_61fx_candidate' if fx61 else 'os_max_55ax_candidate' if two else 'os_fs_64v_candidate')+'.json'
     settings = {
-        'idle_admission': q(.28 if two else .35),
+        **throttle_settings(two, profile_file),
         'servo_time_constant_s': q(.06, 's'),
         'air_time_constant_s': q(.045 if two else .075, 's'),
         'fuel_transport_time_constant_s': q(.12 if two else .16, 's'),
@@ -83,7 +174,7 @@ def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True):
             'evaporation_head_fraction': q(.08),
         },
     }
-    out = dict(format='openrc-glow-installation v1', family=family,
+    out = dict(format='openrc-glow-installation v2', family=family,
                 profile='res://data/glow/'+('os_max_61fx_candidate' if fx61 else 'os_max_55ax_candidate' if two else 'os_fs_64v_candidate')+'.json',
                 fuel_inventory='usable glow premix', settings=settings,
                 initial_temperature_k=q(390., 'K'),
@@ -99,6 +190,14 @@ def installation(two, diameter=13, pitch=6, fx61=False, include_feed=True):
                     'induced_drag':q(.06 if two else .075, source=EST if two else
                         EST+'; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit'),
                 })
+    profile = json.loads((ROOT/'app/data/glow'/profile_file).read_text(encoding='utf-8'))
+    prop = {key: out['propeller'][key]['value'] for key in ['diameter_m', 'pitch_m', 'chord_m', 'blades', 'lift_slope', 'cd0', 'induced_drag']}
+    exponent, half_rpm, full_rpm = travel_exponent(profile, prop, settings['throttle_effective_area_m2']['value'], settings['idle_opening']['value'])
+    settings['throttle_travel_exponent'] = q(exponent, '1', 'derived', TRAVEL_EXPONENT.format(ratio=HALF_STICK_RPM_RATIO, half=half_rpm, full=full_rpm))
+    # Keep the authored settings order: the three carburettor quantities first.
+    ordered = {key: settings[key] for key in ['throttle_effective_area_m2', 'idle_opening', 'throttle_travel_exponent']}
+    ordered.update({key: value for key, value in settings.items() if key not in ordered})
+    out['settings'] = ordered
     if include_feed:
         out['fuel_feed'] = fuel_feed(two)
     return out

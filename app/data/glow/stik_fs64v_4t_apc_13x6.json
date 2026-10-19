@@ -1,14 +1,26 @@
 {
-  "format": "openrc-glow-installation v1",
+  "format": "openrc-glow-installation v2",
   "family": "glow_4t",
   "profile": "res://data/glow/os_fs_64v_candidate.json",
   "fuel_inventory": "usable glow premix",
   "settings": {
-    "idle_admission": {
-      "value": 0.35,
+    "throttle_effective_area_m2": {
+      "value": 9.898727650375073e-06,
+      "unit": "m2",
+      "kind": "derived",
+      "source": "NITRO-06: effective open-throttle area Cd*A from the NITRO-05 wide-open venturi depression estimate (4000 Pa, i.e. manifold ratio 0.9605) through the isentropic nozzle law (Heywood 1988 sec. 7.6.2) at the rated 11000 rpm and the profile breathing 0.850: capacity 0.00195 m3/s; derived from estimates, no carburettor measurement"
+    },
+    "idle_opening": {
+      "value": 0.02388280176031924,
       "unit": "1",
-      "kind": "estimated",
-      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      "kind": "derived",
+      "source": "NITRO-06: barrel open-area fraction at the idle stop giving the former per-cycle idle charge 0.35 at the declared 2800 rpm static idle (breathing 0.545) through the choked nozzle law; derived from estimates"
+    },
+    "throttle_travel_exponent": {
+      "value": 0.45340492777372365,
+      "unit": "1",
+      "kind": "derived",
+      "source": "NITRO-06: barrel travel exponent calibrated so the static half-stick equilibrium on this propeller sits at 0.81 of the full-throttle static rpm (7229 of 8924 rpm), the operating band Menon 2010 (O.S. 46 FX, barrel carburettor, Fig. 7-11, read from the figure) gives for a half-open barrel on a matched propeller (78-84 %); another engine, a derived ratio, no linkage drawing"
     },
     "servo_time_constant_s": {
       "value": 0.06,

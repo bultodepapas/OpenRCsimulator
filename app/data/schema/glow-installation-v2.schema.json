@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "urn:openrc:glow-installation:v1",
-  "title": "OpenRC glow installation v1",
+  "$id": "urn:openrc:glow-installation:v2",
+  "title": "OpenRC glow installation v2",
   "description": "Closed structural schema for the optional finite-tank glow installation. Cross-field temperature/mixture ordering, profile-family matching, tank membership, aircraft propeller agreement and dry-carrier inertia remain runtime semantic checks.",
   "type": "object",
   "required": [
@@ -16,7 +16,7 @@
   "additionalProperties": false,
   "properties": {
     "format": {
-      "const": "openrc-glow-installation v1"
+      "const": "openrc-glow-installation v2"
     },
     "family": {
       "enum": [
@@ -36,7 +36,9 @@
     "settings": {
       "type": "object",
       "required": [
-        "idle_admission",
+        "throttle_effective_area_m2",
+        "idle_opening",
+        "throttle_travel_exponent",
         "servo_time_constant_s",
         "air_time_constant_s",
         "fuel_transport_time_constant_s",
@@ -55,7 +57,41 @@
       ],
       "additionalProperties": false,
       "properties": {
-        "idle_admission": {
+        "throttle_effective_area_m2": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "exclusiveMinimum": 0.0,
+              "maximum": 0.01
+            },
+            "unit": {
+              "const": "m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "idle_opening": {
           "type": "object",
           "required": [
             "value",
@@ -69,6 +105,40 @@
               "type": "number",
               "exclusiveMinimum": 0.0,
               "exclusiveMaximum": 1.0
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "throttle_travel_exponent": {
+          "type": "object",
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 10.0
             },
             "unit": {
               "const": "1"

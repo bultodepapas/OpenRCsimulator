@@ -1,0 +1,2078 @@
+{
+  "format": "ft-card-v5",
+  "aircraft": "turbo-lumber-evolution",
+  "name": "Turbo Lumber Evolution",
+  "data_sha256": "76d10a8b12400dee5ae815cc92f5e747e8a91f2d1ebe3627a104199cc8f0fbc6",
+  "mass_kg": 2.19,
+  "wing_area_m2": 0.327007,
+  "span_m": 1.555,
+  "start_speed_mps": 13.0981758065403,
+  "stall_speed_estimate_mps": 8.18635987908768,
+  "stall_start_alpha_deg": 15.0956274492706,
+  "engine": "4.7.2-stable (official)",
+  "results": {
+    "trim_sweep": {
+      "valid": true,
+      "metrics": {
+        "points": 30,
+        "slowest_trim_mps": 9.82,
+        "first_untrimmable_mps": 29.4708955647157,
+        "cruise_throttle_at_start_speed": 0.41
+      },
+      "notes": [
+        "no level trim below 9.8 m/s (1 slower speeds failed)"
+      ],
+      "table": [
+        {
+          "case": "x0.75",
+          "speed_mps": 9.82,
+          "throttle": 0.342,
+          "stick_pitch": 0.632,
+          "alpha_deg": 10.84,
+          "rpm": 3663
+        },
+        {
+          "case": "x0.80",
+          "speed_mps": 10.48,
+          "throttle": 0.351,
+          "stick_pitch": 0.485,
+          "alpha_deg": 9.02,
+          "rpm": 3769
+        },
+        {
+          "case": "x0.85",
+          "speed_mps": 11.13,
+          "throttle": 0.363,
+          "stick_pitch": 0.372,
+          "alpha_deg": 7.53,
+          "rpm": 3899
+        },
+        {
+          "case": "x0.90",
+          "speed_mps": 11.79,
+          "throttle": 0.377,
+          "stick_pitch": 0.282,
+          "alpha_deg": 6.28,
+          "rpm": 4053
+        },
+        {
+          "case": "x0.95",
+          "speed_mps": 12.44,
+          "throttle": 0.393,
+          "stick_pitch": 0.209,
+          "alpha_deg": 5.22,
+          "rpm": 4220
+        },
+        {
+          "case": "x1.00",
+          "speed_mps": 13.1,
+          "throttle": 0.41,
+          "stick_pitch": 0.149,
+          "alpha_deg": 4.32,
+          "rpm": 4397
+        },
+        {
+          "case": "x1.05",
+          "speed_mps": 13.75,
+          "throttle": 0.428,
+          "stick_pitch": 0.098,
+          "alpha_deg": 3.55,
+          "rpm": 4580
+        },
+        {
+          "case": "x1.10",
+          "speed_mps": 14.41,
+          "throttle": 0.446,
+          "stick_pitch": 0.056,
+          "alpha_deg": 2.88,
+          "rpm": 4770
+        },
+        {
+          "case": "x1.15",
+          "speed_mps": 15.06,
+          "throttle": 0.465,
+          "stick_pitch": 0.02,
+          "alpha_deg": 2.3,
+          "rpm": 4965
+        },
+        {
+          "case": "x1.20",
+          "speed_mps": 15.72,
+          "throttle": 0.485,
+          "stick_pitch": -0.012,
+          "alpha_deg": 1.79,
+          "rpm": 5166
+        },
+        {
+          "case": "x1.25",
+          "speed_mps": 16.37,
+          "throttle": 0.506,
+          "stick_pitch": -0.039,
+          "alpha_deg": 1.34,
+          "rpm": 5374
+        },
+        {
+          "case": "x1.30",
+          "speed_mps": 17.03,
+          "throttle": 0.528,
+          "stick_pitch": -0.062,
+          "alpha_deg": 0.94,
+          "rpm": 5585
+        },
+        {
+          "case": "x1.35",
+          "speed_mps": 17.68,
+          "throttle": 0.55,
+          "stick_pitch": -0.083,
+          "alpha_deg": 0.59,
+          "rpm": 5797
+        },
+        {
+          "case": "x1.40",
+          "speed_mps": 18.34,
+          "throttle": 0.572,
+          "stick_pitch": -0.101,
+          "alpha_deg": 0.27,
+          "rpm": 6012
+        },
+        {
+          "case": "x1.45",
+          "speed_mps": 18.99,
+          "throttle": 0.594,
+          "stick_pitch": -0.117,
+          "alpha_deg": -0.01,
+          "rpm": 6227
+        },
+        {
+          "case": "x1.50",
+          "speed_mps": 19.65,
+          "throttle": 0.617,
+          "stick_pitch": -0.132,
+          "alpha_deg": -0.27,
+          "rpm": 6444
+        },
+        {
+          "case": "x1.55",
+          "speed_mps": 20.3,
+          "throttle": 0.64,
+          "stick_pitch": -0.145,
+          "alpha_deg": -0.5,
+          "rpm": 6661
+        },
+        {
+          "case": "x1.60",
+          "speed_mps": 20.96,
+          "throttle": 0.663,
+          "stick_pitch": -0.156,
+          "alpha_deg": -0.71,
+          "rpm": 6879
+        },
+        {
+          "case": "x1.65",
+          "speed_mps": 21.61,
+          "throttle": 0.686,
+          "stick_pitch": -0.167,
+          "alpha_deg": -0.9,
+          "rpm": 7098
+        },
+        {
+          "case": "x1.70",
+          "speed_mps": 22.27,
+          "throttle": 0.71,
+          "stick_pitch": -0.176,
+          "alpha_deg": -1.07,
+          "rpm": 7317
+        },
+        {
+          "case": "x1.75",
+          "speed_mps": 22.92,
+          "throttle": 0.734,
+          "stick_pitch": -0.185,
+          "alpha_deg": -1.23,
+          "rpm": 7536
+        },
+        {
+          "case": "x1.80",
+          "speed_mps": 23.58,
+          "throttle": 0.758,
+          "stick_pitch": -0.192,
+          "alpha_deg": -1.38,
+          "rpm": 7756
+        },
+        {
+          "case": "x1.85",
+          "speed_mps": 24.23,
+          "throttle": 0.782,
+          "stick_pitch": -0.2,
+          "alpha_deg": -1.51,
+          "rpm": 7976
+        },
+        {
+          "case": "x1.90",
+          "speed_mps": 24.89,
+          "throttle": 0.807,
+          "stick_pitch": -0.206,
+          "alpha_deg": -1.63,
+          "rpm": 8196
+        },
+        {
+          "case": "x1.95",
+          "speed_mps": 25.54,
+          "throttle": 0.831,
+          "stick_pitch": -0.212,
+          "alpha_deg": -1.75,
+          "rpm": 8416
+        },
+        {
+          "case": "x2.00",
+          "speed_mps": 26.2,
+          "throttle": 0.856,
+          "stick_pitch": -0.218,
+          "alpha_deg": -1.85,
+          "rpm": 8637
+        },
+        {
+          "case": "x2.05",
+          "speed_mps": 26.85,
+          "throttle": 0.881,
+          "stick_pitch": -0.223,
+          "alpha_deg": -1.95,
+          "rpm": 8857
+        },
+        {
+          "case": "x2.10",
+          "speed_mps": 27.51,
+          "throttle": 0.906,
+          "stick_pitch": -0.227,
+          "alpha_deg": -2.04,
+          "rpm": 9078
+        },
+        {
+          "case": "x2.15",
+          "speed_mps": 28.16,
+          "throttle": 0.932,
+          "stick_pitch": -0.232,
+          "alpha_deg": -2.13,
+          "rpm": 9299
+        },
+        {
+          "case": "x2.20",
+          "speed_mps": 28.82,
+          "throttle": 0.957,
+          "stick_pitch": -0.236,
+          "alpha_deg": -2.2,
+          "rpm": 9520
+        }
+      ],
+      "wall_s": 18.285
+    },
+    "stall_power_off": {
+      "valid": true,
+      "metrics": {
+        "stall_speed_mps": 8.58,
+        "stall_alpha_deg": 15.1,
+        "wing_drop": "left",
+        "bank_in_first_second_deg": -13.6,
+        "max_bank_in_recovery_deg": 13.6,
+        "altitude_lost_m": 1.6,
+        "recovery_time_s": 1.5,
+        "break_kind": "elevator limit (mush)",
+        "deceleration_before_break_mps2": 0.18,
+        "ratio_to_cl_max_estimate": 1.048
+      },
+      "notes": [],
+      "wall_s": 6.989
+    },
+    "vmax": {
+      "valid": true,
+      "metrics": {
+        "max_level_speed_mps": 30.13,
+        "max_level_speed_kmh": 108.5,
+        "rpm_at_max": 9902,
+        "time_plus_5_mps_s": 0.86,
+        "time_plus_10_mps_s": 2.15,
+        "time_to_90_percent_s": 5.36,
+        "initial_acceleration_mps2": 6.23,
+        "height_error_end_m": 1.91,
+        "height_error_run_m": 4.49
+      },
+      "notes": [],
+      "wall_s": 5.017
+    },
+    "modes": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "1.3Vs",
+          "speed_mps": 11.15,
+          "short_period_hz": 1.554,
+          "short_period_zeta": 0.603,
+          "phugoid_period_s": 5.72,
+          "phugoid_zeta": 0.096,
+          "dutch_roll_hz": 0.555,
+          "dutch_roll_zeta": 0.216,
+          "roll_time_constant_s": 0.049,
+          "spiral_time_to_double_s": 4.2,
+          "spiral_time_to_half_s": null
+        },
+        {
+          "case": "start",
+          "speed_mps": 13.1,
+          "short_period_hz": 1.754,
+          "short_period_zeta": 0.625,
+          "phugoid_period_s": 6.73,
+          "phugoid_zeta": 0.133,
+          "dutch_roll_hz": 0.639,
+          "dutch_roll_zeta": 0.197,
+          "roll_time_constant_s": 0.042,
+          "spiral_time_to_double_s": 6.2,
+          "spiral_time_to_half_s": null
+        },
+        {
+          "case": "0.8Vmax",
+          "speed_mps": 24.1,
+          "short_period_hz": 2.979,
+          "short_period_zeta": 0.676,
+          "phugoid_period_s": 11.8,
+          "phugoid_zeta": 0.491,
+          "dutch_roll_hz": 1.135,
+          "dutch_roll_zeta": 0.17,
+          "roll_time_constant_s": 0.022,
+          "spiral_time_to_double_s": 26.7,
+          "spiral_time_to_half_s": null
+        }
+      ],
+      "wall_s": 1.767
+    },
+    "aero_sweep": {
+      "valid": true,
+      "metrics": {
+        "trim_alpha_deg": 4.32,
+        "local_weight_full_at_beta_deg": 15.0,
+        "local_weight_full_at_alpha_deg": 20.0,
+        "cy_at_beta20": -0.0356,
+        "cy_oracle_at_beta20": -0.1045,
+        "cy_max_beta_le_30": 0.0485,
+        "knife_edge_cy_needed_at_0_8vmax": 0.1845,
+        "knife_edge_side_force_margin": 0.263
+      },
+      "notes": [
+        "with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)",
+        "no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.048 of 0.185)"
+      ],
+      "table": [
+        {
+          "case": "beta_00",
+          "beta_deg": 0.0,
+          "local_weight": 0.0,
+          "cy_oracle": 0.0,
+          "cy_local": 0.0,
+          "cy": 0.0,
+          "cn_oracle": 0.0,
+          "cn_local": 0.0,
+          "cn": 0.0,
+          "cl_oracle": 0.0,
+          "cl_local": 0.0,
+          "cl": 0.0
+        },
+        {
+          "case": "beta_05",
+          "beta_deg": 5.0,
+          "local_weight": 0.0,
+          "cy_oracle": -0.0278,
+          "cy_local": -0.0105,
+          "cy": -0.0278,
+          "cn_oracle": 0.0043,
+          "cn_local": 0.0044,
+          "cn": 0.0043,
+          "cl_oracle": -0.007,
+          "cl_local": -0.0007,
+          "cl": -0.007
+        },
+        {
+          "case": "beta_10",
+          "beta_deg": 10.0,
+          "local_weight": 0.51,
+          "cy_oracle": -0.055,
+          "cy_local": -0.0212,
+          "cy": -0.0377,
+          "cn_oracle": 0.0087,
+          "cn_local": 0.009,
+          "cn": 0.0088,
+          "cl_oracle": -0.0139,
+          "cl_local": -0.0013,
+          "cl": -0.0075
+        },
+        {
+          "case": "beta_15",
+          "beta_deg": 15.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.081,
+          "cy_local": -0.0311,
+          "cy": -0.0311,
+          "cn_oracle": 0.013,
+          "cn_local": 0.0132,
+          "cn": 0.0132,
+          "cl_oracle": -0.0208,
+          "cl_local": -0.002,
+          "cl": -0.002
+        },
+        {
+          "case": "beta_20",
+          "beta_deg": 20.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.1045,
+          "cy_local": -0.0356,
+          "cy": -0.0356,
+          "cn_oracle": 0.0172,
+          "cn_local": 0.0151,
+          "cn": 0.0151,
+          "cl_oracle": -0.0273,
+          "cl_local": -0.0023,
+          "cl": -0.0023
+        },
+        {
+          "case": "beta_25",
+          "beta_deg": 25.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.1243,
+          "cy_local": -0.0408,
+          "cy": -0.0408,
+          "cn_oracle": 0.0211,
+          "cn_local": 0.0173,
+          "cn": 0.0173,
+          "cl_oracle": -0.0331,
+          "cl_local": -0.0026,
+          "cl": -0.0026
+        },
+        {
+          "case": "beta_30",
+          "beta_deg": 30.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.1416,
+          "cy_local": -0.0485,
+          "cy": -0.0485,
+          "cn_oracle": 0.0249,
+          "cn_local": 0.0205,
+          "cn": 0.0205,
+          "cl_oracle": -0.0389,
+          "cl_local": -0.0031,
+          "cl": -0.0031
+        },
+        {
+          "case": "beta_45",
+          "beta_deg": 45.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.1699,
+          "cy_local": -0.069,
+          "cy": -0.069,
+          "cn_oracle": 0.0354,
+          "cn_local": 0.0292,
+          "cn": 0.0292,
+          "cl_oracle": -0.053,
+          "cl_local": -0.0044,
+          "cl": -0.0044
+        },
+        {
+          "case": "beta_60",
+          "beta_deg": 60.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.1598,
+          "cy_local": -0.0841,
+          "cy": -0.0841,
+          "cn_oracle": 0.0436,
+          "cn_local": 0.0356,
+          "cn": 0.0356,
+          "cl_oracle": -0.0619,
+          "cl_local": -0.0053,
+          "cl": -0.0053
+        },
+        {
+          "case": "beta_90",
+          "beta_deg": 90.0,
+          "local_weight": 1.0,
+          "cy_oracle": -0.0498,
+          "cy_local": -0.0954,
+          "cy": -0.0954,
+          "cn_oracle": 0.0509,
+          "cn_local": 0.0404,
+          "cn": 0.0404,
+          "cl_oracle": -0.0631,
+          "cl_local": -0.0061,
+          "cl": -0.0061
+        },
+        {
+          "case": "alpha_m10",
+          "alpha_deg": -10.0,
+          "local_weight": 0.194,
+          "cl_lift_oracle": -0.5584,
+          "cd_oracle": 0.083,
+          "cm_oracle": 0.2442,
+          "cl_lift_local": -0.5583,
+          "cd_local": 0.0867,
+          "cm_local": 0.2513,
+          "cl_lift": -0.5584,
+          "cd": 0.0837,
+          "cm": 0.2456
+        },
+        {
+          "case": "alpha_m05",
+          "alpha_deg": -5.0,
+          "local_weight": 0.0,
+          "cl_lift_oracle": -0.1381,
+          "cd_oracle": 0.0537,
+          "cm_oracle": 0.1611,
+          "cl_lift_local": -0.138,
+          "cd_local": 0.0578,
+          "cm_local": 0.1636,
+          "cl_lift": -0.1381,
+          "cd": 0.0537,
+          "cm": 0.1611
+        },
+        {
+          "case": "alpha_00",
+          "alpha_deg": 0.0,
+          "local_weight": 0.0,
+          "cl_lift_oracle": 0.2823,
+          "cd_oracle": 0.0434,
+          "cm_oracle": 0.0527,
+          "cl_lift_local": 0.2823,
+          "cd_local": 0.0474,
+          "cm_local": 0.0527,
+          "cl_lift": 0.2823,
+          "cd": 0.0434,
+          "cm": 0.0527
+        },
+        {
+          "case": "alpha_05",
+          "alpha_deg": 5.0,
+          "local_weight": 0.0,
+          "cl_lift_oracle": 0.7027,
+          "cd_oracle": 0.0521,
+          "cm_oracle": -0.0811,
+          "cl_lift_local": 0.7026,
+          "cd_local": 0.0554,
+          "cm_local": -0.081,
+          "cl_lift": 0.7027,
+          "cd": 0.0521,
+          "cm": -0.0811
+        },
+        {
+          "case": "alpha_10",
+          "alpha_deg": 10.0,
+          "local_weight": 0.194,
+          "cl_lift_oracle": 1.123,
+          "cd_oracle": 0.0798,
+          "cm_oracle": -0.2404,
+          "cl_lift_local": 1.1231,
+          "cd_local": 0.0819,
+          "cm_local": -0.2372,
+          "cl_lift": 1.123,
+          "cd": 0.0802,
+          "cm": -0.2398
+        },
+        {
+          "case": "alpha_15",
+          "alpha_deg": 15.0,
+          "local_weight": 0.999,
+          "cl_lift_oracle": 1.5434,
+          "cd_oracle": 0.1265,
+          "cm_oracle": -0.425,
+          "cl_lift_local": 1.5437,
+          "cd_local": 0.1267,
+          "cm_local": -0.4152,
+          "cl_lift": 1.5437,
+          "cd": 0.1267,
+          "cm": -0.4152
+        },
+        {
+          "case": "alpha_20",
+          "alpha_deg": 20.0,
+          "local_weight": 1.0,
+          "cl_lift_oracle": 1.2041,
+          "cd_oracle": 0.1906,
+          "cm_oracle": -0.533,
+          "cl_lift_local": 1.1906,
+          "cd_local": 0.1624,
+          "cm_local": -0.6266,
+          "cl_lift": 1.1906,
+          "cd": 0.1624,
+          "cm": -0.6266
+        },
+        {
+          "case": "alpha_30",
+          "alpha_deg": 30.0,
+          "local_weight": 1.0,
+          "cl_lift_oracle": 0.5383,
+          "cd_oracle": 0.3541,
+          "cm_oracle": -0.6428,
+          "cl_lift_local": 0.6554,
+          "cd_local": 0.423,
+          "cm_local": -0.3841,
+          "cl_lift": 0.6554,
+          "cd": 0.423,
+          "cm": -0.3841
+        }
+      ],
+      "wall_s": 0.133
+    },
+    "stall_power_on": {
+      "valid": true,
+      "metrics": {
+        "stall_speed_mps": 8.27,
+        "stall_alpha_deg": 14.7,
+        "wing_drop": "left",
+        "bank_in_first_second_deg": -7.3,
+        "max_bank_in_recovery_deg": 7.3,
+        "altitude_lost_m": 0.0,
+        "recovery_time_s": 1.5,
+        "break_kind": "elevator limit (mush)",
+        "deceleration_before_break_mps2": 0.38,
+        "ratio_to_cl_max_estimate": 1.01
+      },
+      "notes": [],
+      "wall_s": 7.586
+    },
+    "throttle_response": {
+      "valid": true,
+      "metrics": {
+        "rpm_trimmed": 4405,
+        "rpm_full": 9812,
+        "rpm_idle_end": 3643,
+        "spool_up_10_90_s": 0.504,
+        "spool_down_90_10_s": 3.867,
+        "speed_gain_in_6_s_mps": 15.52
+      },
+      "notes": [],
+      "wall_s": 5.121
+    },
+    "hands_off": {
+      "valid": true,
+      "metrics": {
+        "height_change_10_s_m": -4.35,
+        "speed_change_10_s_mps": 1.34,
+        "bank_10_s_deg": 35.0,
+        "heading_change_10_s_deg": 132.7,
+        "height_change_30_s_m": -52.47,
+        "speed_change_30_s_mps": 5.59,
+        "bank_30_s_deg": 54.4,
+        "heading_change_30_s_deg": 851.0,
+        "bank_after_aileron_pulse_deg": 14.3,
+        "phugoid_period_s": 6.57,
+        "reached_floor_s": null
+      },
+      "notes": [],
+      "wall_s": 12.298
+    },
+    "climb": {
+      "valid": true,
+      "metrics": {
+        "best": {
+          "case": "2.0Vs",
+          "speed_mps": 17.14,
+          "vs_factor": 2.0,
+          "vertical_speed_mps": 10.73,
+          "pitch_deg": 38.7,
+          "path_angle_deg": 38.7,
+          "rpm": 9294
+        }
+      },
+      "notes": [],
+      "table": [
+        {
+          "case": "1.3Vs",
+          "speed_mps": 11.06,
+          "vs_factor": 1.3,
+          "vertical_speed_mps": 8.74,
+          "pitch_deg": 55.5,
+          "path_angle_deg": 51.6,
+          "rpm": 9324
+        },
+        {
+          "case": "1.6Vs",
+          "speed_mps": 13.65,
+          "vs_factor": 1.6,
+          "vertical_speed_mps": 9.95,
+          "pitch_deg": 48.2,
+          "path_angle_deg": 46.5,
+          "rpm": 9306
+        },
+        {
+          "case": "2.0Vs",
+          "speed_mps": 17.14,
+          "vs_factor": 2.0,
+          "vertical_speed_mps": 10.73,
+          "pitch_deg": 38.7,
+          "path_angle_deg": 38.7,
+          "rpm": 9294
+        }
+      ],
+      "wall_s": 33.575
+    },
+    "glide": {
+      "valid": true,
+      "metrics": {
+        "best": {
+          "case": "1.3Vs",
+          "speed_mps": 11.14,
+          "vs_factor": 1.3,
+          "vertical_speed_mps": -0.8,
+          "pitch_deg": 3.4,
+          "path_angle_deg": -4.1,
+          "rpm": 0,
+          "glide_ratio": 13.9
+        }
+      },
+      "notes": [],
+      "table": [
+        {
+          "case": "1.3Vs",
+          "speed_mps": 11.14,
+          "vs_factor": 1.3,
+          "vertical_speed_mps": -0.8,
+          "pitch_deg": 3.4,
+          "path_angle_deg": -4.1,
+          "rpm": 0,
+          "glide_ratio": 13.9
+        },
+        {
+          "case": "1.6Vs",
+          "speed_mps": 13.72,
+          "vs_factor": 1.6,
+          "vertical_speed_mps": -1.15,
+          "pitch_deg": -1.2,
+          "path_angle_deg": -4.8,
+          "rpm": 0,
+          "glide_ratio": 11.94
+        },
+        {
+          "case": "2.0Vs",
+          "speed_mps": 17.15,
+          "vs_factor": 2.0,
+          "vertical_speed_mps": -2.06,
+          "pitch_deg": -6.1,
+          "path_angle_deg": -6.9,
+          "rpm": 0,
+          "glide_ratio": 8.27
+        }
+      ],
+      "wall_s": 34.533
+    },
+    "roll_rate": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "1.3Vs_right",
+          "speed_mps": 11.15,
+          "direction": "right",
+          "max_roll_rate_dps": 290.3,
+          "time_to_360_s": 2.06,
+          "height_change_m": -19.3,
+          "max_sideslip_deg": 36.5
+        },
+        {
+          "case": "1.3Vs_left",
+          "speed_mps": 11.15,
+          "direction": "left",
+          "max_roll_rate_dps": 272.3,
+          "time_to_360_s": 2.07,
+          "height_change_m": -18.6,
+          "max_sideslip_deg": 36.6
+        },
+        {
+          "case": "start_right",
+          "speed_mps": 13.1,
+          "direction": "right",
+          "max_roll_rate_dps": 299.9,
+          "time_to_360_s": 1.81,
+          "height_change_m": -16.0,
+          "max_sideslip_deg": 30.2
+        },
+        {
+          "case": "start_left",
+          "speed_mps": 13.1,
+          "direction": "left",
+          "max_roll_rate_dps": 291.3,
+          "time_to_360_s": 1.8,
+          "height_change_m": -15.9,
+          "max_sideslip_deg": 29.0
+        },
+        {
+          "case": "0.8Vmax_right",
+          "speed_mps": 24.1,
+          "direction": "right",
+          "max_roll_rate_dps": 380.8,
+          "time_to_360_s": 1.1,
+          "height_change_m": -6.8,
+          "max_sideslip_deg": 15.1
+        },
+        {
+          "case": "0.8Vmax_left",
+          "speed_mps": 24.1,
+          "direction": "left",
+          "max_roll_rate_dps": 385.4,
+          "time_to_360_s": 1.08,
+          "height_change_m": -6.9,
+          "max_sideslip_deg": 13.4
+        }
+      ],
+      "wall_s": 8.799
+    },
+    "pitch_pull": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "start",
+          "speed_mps": 13.1,
+          "peak_load_factor_g": 2.03,
+          "peak_alpha_deg": 14.1,
+          "peak_pitch_rate_dps": 73.3,
+          "stalls": false,
+          "load_factor_at_cl_max": 2.33
+        },
+        {
+          "case": "0.8Vmax",
+          "speed_mps": 24.1,
+          "peak_load_factor_g": 5.81,
+          "peak_alpha_deg": 10.8,
+          "peak_pitch_rate_dps": 157.5,
+          "stalls": false,
+          "load_factor_at_cl_max": 7.9
+        }
+      ],
+      "wall_s": 3.184
+    },
+    "loop": {
+      "valid": true,
+      "metrics": {
+        "entry_speed_mps": 24.1,
+        "alpha_target_deg": 13.1,
+        "loop_time_s": 4.57,
+        "loop_height_m": 38.1,
+        "min_speed_mps": 17.81,
+        "max_load_factor_g": 7.88,
+        "max_sideslip_deg": 5.9,
+        "heading_change_deg": -5.1,
+        "height_change_m": 13.9
+      },
+      "notes": [],
+      "wall_s": 2.539
+    },
+    "turn_60": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "sustained_speed_mps": 30.29,
+          "turn_rate_dps": 33.3,
+          "radius_m": 52.1,
+          "bank_deg": 60.7,
+          "vertical_speed_mps": -0.09,
+          "load_factor_g": 2.06,
+          "held": true
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "sustained_speed_mps": 30.24,
+          "turn_rate_dps": 33.2,
+          "radius_m": 52.2,
+          "bank_deg": -60.6,
+          "vertical_speed_mps": -0.2,
+          "load_factor_g": 2.05,
+          "held": true
+        }
+      ],
+      "wall_s": 17.9
+    },
+    "rudder_step": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "peak_yaw_rate_dps": 36.0,
+          "max_sideslip_deg": 13.9,
+          "bank_after_2_75_s_deg": 46.6,
+          "peak_roll_rate_dps": 29.0,
+          "pitch_change_deg": -23.0
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "peak_yaw_rate_dps": 35.4,
+          "max_sideslip_deg": 14.3,
+          "bank_after_2_75_s_deg": -44.9,
+          "peak_roll_rate_dps": -28.0,
+          "pitch_change_deg": -20.4
+        }
+      ],
+      "wall_s": 2.858
+    },
+    "knife_edge": {
+      "valid": true,
+      "metrics": {},
+      "notes": [
+        "knife_edge right_100pct: stopped at the 60 m floor after 10.0 s",
+        "knife_edge right_50pct: stopped at the 60 m floor after 9.2 s",
+        "knife_edge left_50pct: stopped at the 60 m floor after 9.2 s"
+      ],
+      "table": [
+        {
+          "case": "right_100pct",
+          "direction": "right",
+          "throttle": 1.0,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 36.24,
+          "speed_end_mps": 38.78,
+          "vertical_speed_mps": -25.01,
+          "height_change_10_s_m": -190.0,
+          "rudder_stick": -1.0,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": 0.132,
+          "elevator_stick": -0.318,
+          "sideslip_deg": 16.9,
+          "pitch_attitude_deg": -24.1,
+          "bank_deg": 90.0,
+          "sustained": false
+        },
+        {
+          "case": "left_100pct",
+          "direction": "left",
+          "throttle": 1.0,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 36.17,
+          "speed_end_mps": 38.59,
+          "vertical_speed_mps": -23.91,
+          "height_change_10_s_m": -183.4,
+          "rudder_stick": 0.972,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": -0.124,
+          "elevator_stick": -0.318,
+          "sideslip_deg": -16.7,
+          "pitch_attitude_deg": -22.4,
+          "bank_deg": -89.9,
+          "sustained": false
+        },
+        {
+          "case": "right_50pct",
+          "direction": "right",
+          "throttle": 0.5,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 30.68,
+          "speed_end_mps": 33.97,
+          "vertical_speed_mps": -28.33,
+          "height_change_10_s_m": -190.1,
+          "rudder_stick": -1.0,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": 0.128,
+          "elevator_stick": -0.324,
+          "sideslip_deg": 17.0,
+          "pitch_attitude_deg": -42.5,
+          "bank_deg": 89.9,
+          "sustained": false
+        },
+        {
+          "case": "left_50pct",
+          "direction": "left",
+          "throttle": 0.5,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 30.81,
+          "speed_end_mps": 34.11,
+          "vertical_speed_mps": -28.31,
+          "height_change_10_s_m": -190.1,
+          "rudder_stick": 0.972,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": -0.128,
+          "elevator_stick": -0.325,
+          "sideslip_deg": -16.6,
+          "pitch_attitude_deg": -42.5,
+          "bank_deg": -89.9,
+          "sustained": false
+        }
+      ],
+      "wall_s": 21.989
+    },
+    "knife_edge_full_rudder": {
+      "valid": true,
+      "metrics": {},
+      "notes": [
+        "knife_edge_full_rudder right_50pct: stopped at the 60 m floor after 9.1 s",
+        "knife_edge_full_rudder left_50pct: stopped at the 60 m floor after 9.1 s"
+      ],
+      "table": [
+        {
+          "case": "right_100pct",
+          "direction": "right",
+          "throttle": 1.0,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 36.06,
+          "speed_end_mps": 38.74,
+          "vertical_speed_mps": -24.82,
+          "height_change_10_s_m": -187.0,
+          "rudder_stick": -1.0,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": 0.132,
+          "elevator_stick": -0.318,
+          "sideslip_deg": 16.9,
+          "pitch_attitude_deg": -23.9,
+          "bank_deg": 90.0,
+          "sustained": false
+        },
+        {
+          "case": "left_100pct",
+          "direction": "left",
+          "throttle": 1.0,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 35.99,
+          "speed_end_mps": 38.55,
+          "vertical_speed_mps": -23.71,
+          "height_change_10_s_m": -180.2,
+          "rudder_stick": 0.972,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": -0.124,
+          "elevator_stick": -0.318,
+          "sideslip_deg": -16.7,
+          "pitch_attitude_deg": -22.2,
+          "bank_deg": -89.9,
+          "sustained": false
+        },
+        {
+          "case": "right_50pct",
+          "direction": "right",
+          "throttle": 0.5,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 30.83,
+          "speed_end_mps": 33.98,
+          "vertical_speed_mps": -28.4,
+          "height_change_10_s_m": -190.1,
+          "rudder_stick": -1.0,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": 0.128,
+          "elevator_stick": -0.324,
+          "sideslip_deg": 17.0,
+          "pitch_attitude_deg": -42.6,
+          "bank_deg": 89.9,
+          "sustained": false
+        },
+        {
+          "case": "left_50pct",
+          "direction": "left",
+          "throttle": 0.5,
+          "entry_speed_mps": 24.1,
+          "speed_after_5_s_mps": 30.99,
+          "speed_end_mps": 34.12,
+          "vertical_speed_mps": -28.38,
+          "height_change_10_s_m": -190.1,
+          "rudder_stick": 0.972,
+          "rudder_saturated_fraction": 1.0,
+          "aileron_stick": -0.128,
+          "elevator_stick": -0.325,
+          "sideslip_deg": -16.6,
+          "pitch_attitude_deg": -42.6,
+          "bank_deg": -89.9,
+          "sustained": false
+        }
+      ],
+      "wall_s": 22.288
+    },
+    "inverted": {
+      "valid": true,
+      "metrics": {
+        "elevator_stick": -0.494,
+        "elevator_servo": -0.494,
+        "alpha_deg": -8.0,
+        "throttle": 0.621,
+        "upright_throttle": 0.563,
+        "speed_mps": 18.15,
+        "vertical_speed_mps": -0.09
+      },
+      "notes": [],
+      "wall_s": 8.172
+    },
+    "spin": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "steady_turn_time_s": 5.74,
+          "turns_in_6_s": 0.77,
+          "height_lost_per_turn_m": 14.0,
+          "max_alpha_deg": 15.7,
+          "recovery_turns": 0.02,
+          "recovery_time_s": 0.29,
+          "total_height_lost_m": 26.9,
+          "recovered": true,
+          "entered": "spiral (no spin)"
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "steady_turn_time_s": 16.19,
+          "turns_in_6_s": 0.46,
+          "height_lost_per_turn_m": 11.0,
+          "max_alpha_deg": 19.3,
+          "recovery_turns": 0.08,
+          "recovery_time_s": 1.86,
+          "total_height_lost_m": 36.6,
+          "recovered": true,
+          "entered": "spiral (no spin)"
+        }
+      ],
+      "wall_s": 8.58
+    },
+    "takeoff": {
+      "valid": true,
+      "metrics": {
+        "liftoff_speed_mps": 12.3,
+        "liftoff_speed_vs": 1.43,
+        "ground_roll_m": 10.5,
+        "time_to_liftoff_s": 3.02,
+        "rotation_attitude_deg": 8.0,
+        "max_rudder_stick": 0.65,
+        "max_heading_error_deg": 10.0,
+        "rudder_free_heading_change_3_s_deg": 16.6
+      },
+      "notes": [],
+      "wall_s": 4.8
+    },
+    "landing": {
+      "valid": true,
+      "metrics": {
+        "approach_speed_mps": 11.15,
+        "touchdown_speed_mps": 10.93,
+        "touchdown_speed_vs": 1.27,
+        "touchdown_sink_mps": 0.55,
+        "touchdown_pitch_deg": 5.5,
+        "touchdown_past_threshold_m": 13.0,
+        "bounced": false,
+        "rollout_m": 63.0,
+        "rollout_time_s": 10.52,
+        "max_heading_error_deg": 1.4,
+        "flare_height_m": 0.779550552603631
+      },
+      "notes": [],
+      "wall_s": 23.248
+    },
+    "inverted_speeds": {
+      "valid": false,
+      "metrics": {},
+      "notes": [
+        "start: inverted hold not achieved: |bank| 176.4°, vertical speed -3.17 m/s "
+      ],
+      "table": [
+        {
+          "case": "start",
+          "speed_target_mps": 13.1,
+          "elevator_stick": -0.664,
+          "elevator_servo": -0.664,
+          "alpha_deg": -14.0,
+          "throttle": 0.121,
+          "upright_throttle": 0.41,
+          "speed_mps": 11.64,
+          "vertical_speed_mps": -3.17,
+          "held": false
+        },
+        {
+          "case": "0.6Vmax",
+          "speed_target_mps": 18.08,
+          "elevator_stick": -0.494,
+          "elevator_servo": -0.494,
+          "alpha_deg": -8.0,
+          "throttle": 0.621,
+          "upright_throttle": 0.563,
+          "speed_mps": 18.15,
+          "vertical_speed_mps": -0.09,
+          "held": true
+        },
+        {
+          "case": "0.8Vmax",
+          "speed_target_mps": 24.1,
+          "elevator_stick": -0.424,
+          "elevator_servo": -0.424,
+          "alpha_deg": -6.2,
+          "throttle": 0.83,
+          "upright_throttle": 0.778,
+          "speed_mps": 24.14,
+          "vertical_speed_mps": 0.01,
+          "held": true
+        }
+      ],
+      "wall_s": 22.993
+    },
+    "inverted_turn": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "sustained_speed_mps": 18.47,
+          "turn_rate_dps": 30.6,
+          "radius_m": 34.6,
+          "bank_deg": 134.9,
+          "vertical_speed_mps": 0.38,
+          "load_factor_g": -1.43,
+          "elevator_stick": -0.607,
+          "throttle": 0.638,
+          "alpha_deg": -9.6,
+          "held": true
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "sustained_speed_mps": 18.85,
+          "turn_rate_dps": 31.6,
+          "radius_m": 34.2,
+          "bank_deg": -134.8,
+          "vertical_speed_mps": 0.84,
+          "load_factor_g": -1.48,
+          "elevator_stick": -0.627,
+          "throttle": 0.637,
+          "alpha_deg": -9.5,
+          "held": true
+        }
+      ],
+      "wall_s": 20.961
+    },
+    "immelmann": {
+      "valid": true,
+      "metrics": {
+        "entry_speed_mps": 24.1,
+        "alpha_target_deg": 13.1,
+        "top_speed_mps": 18.48,
+        "top_speed_vs": 2.15,
+        "half_loop_time_s": 3.05,
+        "half_roll_time_s": 0.65,
+        "height_gain_m": 35.4,
+        "exit_speed_mps": 27.57,
+        "heading_error_deg": 2.6,
+        "exit_bank_deg": -0.4,
+        "max_load_factor_g": 2.8,
+        "max_sideslip_deg": 8.5
+      },
+      "notes": [],
+      "wall_s": 3.784
+    },
+    "split_s": {
+      "valid": true,
+      "metrics": {
+        "entry_speed_mps": 13.1,
+        "alpha_target_deg": 13.1,
+        "half_roll_time_s": 1.01,
+        "time_to_level_s": 3.41,
+        "height_lost_m": 29.9,
+        "height_lost_to_level_m": 29.7,
+        "exit_speed_mps": 22.9,
+        "max_speed_mps": 23.04,
+        "max_load_factor_g": 4.74,
+        "heading_error_deg": 5.0,
+        "exit_bank_deg": 0.6,
+        "max_sideslip_deg": 21.4
+      },
+      "notes": [],
+      "wall_s": 2.463
+    },
+    "outside_loop": {
+      "valid": true,
+      "metrics": {
+        "entry_speed_mps": 18.08,
+        "alpha_target_deg": -15.4,
+        "loop_time_s": 5.91,
+        "loop_depth_m": 49.5,
+        "min_speed_mps": 16.23,
+        "max_speed_mps": 26.51,
+        "min_load_factor_g": -3.77,
+        "max_sideslip_deg": 4.4,
+        "heading_change_deg": 3.1,
+        "height_change_m": -19.0
+      },
+      "notes": [],
+      "wall_s": 3.426
+    },
+    "slow_roll": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "entry_speed_mps": 24.1,
+          "roll_time_s": 4.29,
+          "height_change_m": -5.5,
+          "max_height_deviation_m": 5.5,
+          "heading_change_deg": -22.7,
+          "max_sideslip_deg": 18.9,
+          "peak_rudder_stick": 0.967,
+          "peak_push_stick": 0.36,
+          "aileron_saturated_fraction": 0.0,
+          "exit_bank_deg": 0.2,
+          "mean_roll_rate_dps": 84.6,
+          "roll_rate_rms_variation": 0.044
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "entry_speed_mps": 24.1,
+          "roll_time_s": 4.3,
+          "height_change_m": -5.8,
+          "max_height_deviation_m": 5.8,
+          "heading_change_deg": 22.2,
+          "max_sideslip_deg": 18.3,
+          "peak_rudder_stick": 0.978,
+          "peak_push_stick": 0.355,
+          "aileron_saturated_fraction": 0.0,
+          "exit_bank_deg": -0.2,
+          "mean_roll_rate_dps": 84.4,
+          "roll_rate_rms_variation": 0.044
+        }
+      ],
+      "wall_s": 7.821
+    },
+    "point_roll": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "entry_speed_mps": 24.1,
+          "roll_time_s": 6.49,
+          "height_change_m": -4.0,
+          "max_height_deviation_m": 11.3,
+          "heading_change_deg": -16.0,
+          "max_sideslip_deg": 20.4,
+          "peak_rudder_stick": 1.0,
+          "peak_push_stick": 0.502,
+          "aileron_saturated_fraction": 0.0,
+          "exit_bank_deg": -0.3,
+          "over_rotation_point_1_deg": 1.9,
+          "over_rotation_point_2_deg": -0.5,
+          "over_rotation_point_3_deg": -1.8,
+          "over_rotation_point_4_deg": 3.1,
+          "point_1_elevator_stick": -0.069,
+          "point_1_rudder_stick": -0.9,
+          "point_2_elevator_stick": -0.214,
+          "point_2_rudder_stick": -0.065,
+          "point_3_elevator_stick": -0.094,
+          "point_3_rudder_stick": 0.737
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "entry_speed_mps": 24.1,
+          "roll_time_s": 6.52,
+          "height_change_m": -4.4,
+          "max_height_deviation_m": 11.3,
+          "heading_change_deg": 15.0,
+          "max_sideslip_deg": 19.8,
+          "peak_rudder_stick": 1.0,
+          "peak_push_stick": 0.498,
+          "aileron_saturated_fraction": 0.0,
+          "exit_bank_deg": 0.1,
+          "over_rotation_point_1_deg": 1.5,
+          "over_rotation_point_2_deg": 0.2,
+          "over_rotation_point_3_deg": -1.9,
+          "over_rotation_point_4_deg": 2.9,
+          "point_1_elevator_stick": -0.067,
+          "point_1_rudder_stick": 0.899,
+          "point_2_elevator_stick": -0.211,
+          "point_2_rudder_stick": 0.059,
+          "point_3_elevator_stick": -0.089,
+          "point_3_rudder_stick": -0.746
+        }
+      ],
+      "wall_s": 9.59
+    },
+    "snap_roll": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "direction": "right",
+          "entry_speed_mps": 13.72,
+          "alpha_before_45_deg_of_roll_deg": 11.5,
+          "max_alpha_deg": 13.0,
+          "entered": "aileron roll (wing not stalled)",
+          "release_reason": "finish point",
+          "release_after_deg": 320.2,
+          "autorotation_short_of_finish_deg": 0.0,
+          "time_to_release_s": 1.88,
+          "peak_roll_rate_dps": 213.3,
+          "mean_roll_rate_dps": 170.4,
+          "mean_yaw_rate_dps": 10.4,
+          "yaw_to_roll_ratio": 0.061,
+          "stop_after_deg": 349.6,
+          "stop_error_deg": -10.4,
+          "peak_load_factor_g": 3.01,
+          "height_lost_m": 30.3,
+          "time_to_level_s": 1.3,
+          "heading_change_at_stop_deg": 19.9,
+          "exit_bank_deg": 0.5,
+          "recovered": true
+        },
+        {
+          "case": "left",
+          "direction": "left",
+          "entry_speed_mps": 13.72,
+          "alpha_before_45_deg_of_roll_deg": 11.0,
+          "max_alpha_deg": 11.0,
+          "entered": "aileron roll (wing not stalled)",
+          "release_reason": "finish point",
+          "release_after_deg": 320.7,
+          "autorotation_short_of_finish_deg": 0.0,
+          "time_to_release_s": 1.98,
+          "peak_roll_rate_dps": 197.8,
+          "mean_roll_rate_dps": 161.7,
+          "mean_yaw_rate_dps": 1.8,
+          "yaw_to_roll_ratio": 0.011,
+          "stop_after_deg": 347.5,
+          "stop_error_deg": -12.5,
+          "peak_load_factor_g": 3.27,
+          "height_lost_m": 35.8,
+          "time_to_level_s": 1.39,
+          "heading_change_at_stop_deg": -34.4,
+          "exit_bank_deg": 0.6,
+          "recovered": true
+        }
+      ],
+      "wall_s": 7.342
+    },
+    "stall_turn": {
+      "valid": true,
+      "metrics": {},
+      "notes": [
+        "right_0.35Vs: tail slide ",
+        "left_0.35Vs: tail slide ",
+        "right_0.6Vs: tail slide ",
+        "left_0.6Vs: tail slide "
+      ],
+      "table": [
+        {
+          "case": "right_0.35Vs",
+          "direction": "right",
+          "entry_speed_mps": 24.1,
+          "kick_speed_target_mps": 3.0,
+          "kick_speed_mps": 2.98,
+          "up_line_time_s": 2.23,
+          "height_gain_to_kick_m": 49.2,
+          "pivot_time_s": 1.8,
+          "pivot_radius_m": 2.73,
+          "pivot_radius_spans": 1.76,
+          "torque_off_deg": 105.0,
+          "pitch_during_pivot_deg": 141.4,
+          "min_forward_speed_mps": -3.94,
+          "outcome": "tail slide",
+          "height_lost_top_to_level_m": 54.7,
+          "exit_speed_mps": 26.02,
+          "recovered": true
+        },
+        {
+          "case": "left_0.35Vs",
+          "direction": "left",
+          "entry_speed_mps": 24.1,
+          "kick_speed_target_mps": 3.0,
+          "kick_speed_mps": 2.98,
+          "up_line_time_s": 2.23,
+          "height_gain_to_kick_m": 49.2,
+          "pivot_time_s": 1.8,
+          "pivot_radius_m": 2.76,
+          "pivot_radius_spans": 1.78,
+          "torque_off_deg": 103.5,
+          "pitch_during_pivot_deg": 144.2,
+          "min_forward_speed_mps": -3.87,
+          "outcome": "tail slide",
+          "height_lost_top_to_level_m": 54.8,
+          "exit_speed_mps": 26.1,
+          "recovered": true
+        },
+        {
+          "case": "right_0.6Vs",
+          "direction": "right",
+          "entry_speed_mps": 24.1,
+          "kick_speed_target_mps": 5.15,
+          "kick_speed_mps": 5.12,
+          "up_line_time_s": 1.98,
+          "height_gain_to_kick_m": 48.3,
+          "pivot_time_s": 2.1,
+          "pivot_radius_m": 3.6,
+          "pivot_radius_spans": 2.32,
+          "torque_off_deg": 80.1,
+          "pitch_during_pivot_deg": 148.8,
+          "min_forward_speed_mps": -3.45,
+          "outcome": "tail slide",
+          "height_lost_top_to_level_m": 54.1,
+          "exit_speed_mps": 25.95,
+          "recovered": true
+        },
+        {
+          "case": "left_0.6Vs",
+          "direction": "left",
+          "entry_speed_mps": 24.1,
+          "kick_speed_target_mps": 5.15,
+          "kick_speed_mps": 5.12,
+          "up_line_time_s": 1.98,
+          "height_gain_to_kick_m": 48.3,
+          "pivot_time_s": 2.12,
+          "pivot_radius_m": 3.36,
+          "pivot_radius_spans": 2.16,
+          "torque_off_deg": 84.1,
+          "pitch_during_pivot_deg": 148.7,
+          "min_forward_speed_mps": -3.87,
+          "outcome": "tail slide",
+          "height_lost_top_to_level_m": 54.8,
+          "exit_speed_mps": 26.09,
+          "recovered": true
+        }
+      ],
+      "wall_s": 18.774
+    },
+    "engine_cut_climb": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "delay_1s",
+          "reaction_s": 1.0,
+          "climb_speed_mps": 13.72,
+          "glide_speed_mps": 12.01,
+          "climb_pitch_at_cut_deg": 42.7,
+          "speed_at_cut_mps": 17.49,
+          "speed_after_reaction_mps": 11.59,
+          "min_speed_mps": 8.26,
+          "min_speed_vs": 0.96,
+          "max_alpha_deg": 7.2,
+          "alpha_margin_to_stall_deg": 7.8,
+          "stalled": false,
+          "time_below_1_2vs_s": 1.35,
+          "height_gained_after_cut_m": 13.3,
+          "height_change_10_s_m": 0.6,
+          "rpm_10_s_after_cut": 0,
+          "engine_out": "source off",
+          "completed": true
+        },
+        {
+          "case": "delay_2s",
+          "reaction_s": 2.0,
+          "climb_speed_mps": 13.72,
+          "glide_speed_mps": 12.01,
+          "climb_pitch_at_cut_deg": 42.7,
+          "speed_at_cut_mps": 17.49,
+          "speed_after_reaction_mps": 6.13,
+          "min_speed_mps": 5.3,
+          "min_speed_vs": 0.62,
+          "max_alpha_deg": 26.2,
+          "alpha_margin_to_stall_deg": -11.1,
+          "stalled": true,
+          "time_below_1_2vs_s": 2.87,
+          "height_gained_after_cut_m": 15.2,
+          "height_change_10_s_m": -5.4,
+          "rpm_10_s_after_cut": 0,
+          "engine_out": "source off",
+          "completed": true
+        }
+      ],
+      "wall_s": 18.114
+    },
+    "glide_turn": {
+      "valid": true,
+      "metrics": {
+        "least_height_per_180_bank_deg": 30.0,
+        "least_height_lost_180_m": 7.3
+      },
+      "notes": [],
+      "table": [
+        {
+          "case": "30deg",
+          "bank_deg": 30.0,
+          "speed_target_mps": 11.98,
+          "straight_sink_mps": 1.23,
+          "time_to_180_s": 6.79,
+          "height_lost_180_m": 7.3,
+          "time_to_360_s": 13.02,
+          "height_lost_360_m": 13.6,
+          "turn_sink_mps": 1.0,
+          "speed_in_turn_mps": 11.87,
+          "radius_m": 23.6,
+          "bank_held_deg": 31.2,
+          "engine_out": "source off"
+        },
+        {
+          "case": "45deg",
+          "bank_deg": 45.0,
+          "speed_target_mps": 13.26,
+          "straight_sink_mps": 1.46,
+          "time_to_180_s": 4.6,
+          "height_lost_180_m": 8.0,
+          "time_to_360_s": 8.58,
+          "height_lost_360_m": 12.8,
+          "turn_sink_mps": 1.26,
+          "speed_in_turn_mps": 12.99,
+          "radius_m": 16.5,
+          "bank_held_deg": 46.3,
+          "engine_out": "source off"
+        },
+        {
+          "case": "60deg",
+          "bank_deg": 60.0,
+          "speed_target_mps": 15.77,
+          "straight_sink_mps": 2.03,
+          "time_to_180_s": 3.58,
+          "height_lost_180_m": 14.4,
+          "time_to_360_s": 6.41,
+          "height_lost_360_m": 17.5,
+          "turn_sink_mps": 1.04,
+          "speed_in_turn_mps": 16.14,
+          "radius_m": 14.5,
+          "bank_held_deg": 61.4,
+          "engine_out": "source off"
+        }
+      ],
+      "wall_s": 18.433
+    },
+    "stall_turning": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "30_right",
+          "entry_speed_mps": 12.9,
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 9.47,
+          "stall_speed_vs": 1.104,
+          "stall_alpha_deg": 14.1,
+          "bank_at_break_deg": 30.0,
+          "roll_off_in_1_s_deg": -28.4,
+          "roll_off": "outside",
+          "max_bank_in_recovery_deg": 30.0,
+          "altitude_lost_m": 2.0,
+          "recovery_time_s": 1.5,
+          "recovered": true,
+          "bank_deg": 30.0,
+          "ratio_to_vs_root_n": 1.028
+        },
+        {
+          "case": "30_left",
+          "entry_speed_mps": 12.9,
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 9.47,
+          "stall_speed_vs": 1.104,
+          "stall_alpha_deg": 14.1,
+          "bank_at_break_deg": -30.0,
+          "roll_off_in_1_s_deg": 22.4,
+          "roll_off": "outside",
+          "max_bank_in_recovery_deg": 44.3,
+          "altitude_lost_m": 2.4,
+          "recovery_time_s": 1.5,
+          "recovered": true,
+          "bank_deg": 30.0,
+          "ratio_to_vs_root_n": 1.028
+        },
+        {
+          "case": "45_right",
+          "entry_speed_mps": 14.28,
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 10.81,
+          "stall_speed_vs": 1.261,
+          "stall_alpha_deg": 13.2,
+          "bank_at_break_deg": 44.8,
+          "roll_off_in_1_s_deg": -41.0,
+          "roll_off": "outside",
+          "max_bank_in_recovery_deg": 44.8,
+          "altitude_lost_m": 2.8,
+          "recovery_time_s": 1.5,
+          "recovered": true,
+          "bank_deg": 45.0,
+          "ratio_to_vs_root_n": 1.06
+        },
+        {
+          "case": "45_left",
+          "entry_speed_mps": 14.28,
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 10.78,
+          "stall_speed_vs": 1.257,
+          "stall_alpha_deg": 13.2,
+          "bank_at_break_deg": -44.9,
+          "roll_off_in_1_s_deg": 35.4,
+          "roll_off": "outside",
+          "max_bank_in_recovery_deg": 57.3,
+          "altitude_lost_m": 3.6,
+          "recovery_time_s": 1.5,
+          "recovered": true,
+          "bank_deg": 45.0,
+          "ratio_to_vs_root_n": 1.057
+        }
+      ],
+      "wall_s": 18.897
+    },
+    "stall_cross_controlled": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "entry_speed_mps": 12.38,
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 9.06,
+          "stall_speed_vs": 1.056,
+          "stall_alpha_deg": 14.6,
+          "bank_at_break_deg": 20.0,
+          "roll_off_in_1_s_deg": -20.1,
+          "roll_off": "outside",
+          "max_bank_in_recovery_deg": 20.0,
+          "altitude_lost_m": 1.8,
+          "recovery_time_s": 1.5,
+          "recovered": true,
+          "rudder_stick": 0.5
+        },
+        {
+          "case": "left",
+          "entry_speed_mps": 12.38,
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 9.07,
+          "stall_speed_vs": 1.057,
+          "stall_alpha_deg": 14.6,
+          "bank_at_break_deg": -20.0,
+          "roll_off_in_1_s_deg": -14.8,
+          "roll_off": "inside",
+          "max_bank_in_recovery_deg": 34.8,
+          "altitude_lost_m": 2.0,
+          "recovery_time_s": 1.5,
+          "recovered": true,
+          "rudder_stick": -0.5
+        }
+      ],
+      "wall_s": 12.836
+    },
+    "stall_held": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "controls_neutral",
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 8.56,
+          "max_bank_held_deg": 34.3,
+          "max_rotation_rate_dps": 35.7,
+          "rotation_rate_last_2_s_dps": 17.4,
+          "heading_change_held_deg": 40.6,
+          "height_lost_held_m": 4.7,
+          "outcome": "wing drop",
+          "height_lost_to_recovery_m": 8.4,
+          "recovery_time_s": 1.31,
+          "recovered": true
+        },
+        {
+          "case": "wings_level",
+          "break_kind": "elevator limit (mush)",
+          "stall_speed_mps": 8.56,
+          "max_bank_held_deg": 0.2,
+          "max_rotation_rate_dps": 0.2,
+          "rotation_rate_last_2_s_dps": 0.2,
+          "heading_change_held_deg": 1.0,
+          "height_lost_held_m": 3.8,
+          "outcome": "mush",
+          "height_lost_to_recovery_m": 7.5,
+          "recovery_time_s": 1.45,
+          "recovered": true
+        }
+      ],
+      "wall_s": 19.752
+    },
+    "stall_inverted": {
+      "valid": true,
+      "metrics": {
+        "break_kind": "wing drop or sink",
+        "stall_speed_mps": 8.74,
+        "ratio_to_upright_vs": 1.02,
+        "stall_alpha_deg": -21.1,
+        "roll_off_in_1_s_deg": -144.6,
+        "altitude_lost_m": 15.8,
+        "recovery_time_s": 2.01
+      },
+      "notes": [],
+      "wall_s": 4.362
+    },
+    "spin_inverted": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "right",
+          "rudder": "right",
+          "steady_turn_time_s": 13.0,
+          "turns_in_6_s": 0.34,
+          "height_lost_per_turn_m": 88.5,
+          "min_alpha_deg": -15.7,
+          "recovery_turns": 0.02,
+          "recovery_time_s": 0.25,
+          "total_height_lost_m": 45.7,
+          "entered": "spiral (no spin)",
+          "recovered": true
+        },
+        {
+          "case": "left",
+          "rudder": "left",
+          "steady_turn_time_s": 7.73,
+          "turns_in_6_s": 0.6,
+          "height_lost_per_turn_m": 57.1,
+          "min_alpha_deg": -15.3,
+          "recovery_turns": 0.01,
+          "recovery_time_s": 0.25,
+          "total_height_lost_m": 42.7,
+          "entered": "spiral (no spin)",
+          "recovered": true
+        }
+      ],
+      "wall_s": 10.782
+    },
+    "dead_stick_landing": {
+      "valid": true,
+      "metrics": {
+        "engine_out": "source off",
+        "glide_speed_mps": 12.02,
+        "glide_sink_mps": 0.88,
+        "glide_ratio": 13.69,
+        "glide_path_deg": 4.2,
+        "start_distance_to_threshold_m": 400.6,
+        "approach_min_speed_mps": 11.0,
+        "approach_max_speed_mps": 12.01,
+        "touchdown_speed_mps": 11.45,
+        "touchdown_speed_vs": 1.33,
+        "touchdown_sink_mps": 0.52,
+        "touchdown_pitch_deg": 4.7,
+        "touchdown_past_threshold_m": 10.4,
+        "touchdown_past_aim_m": 0.4,
+        "bounced": false,
+        "rollout_m": 75.1,
+        "flare_height_m": 0.88
+      },
+      "notes": [],
+      "wall_s": 30.72
+    },
+    "go_around": {
+      "valid": true,
+      "metrics": {},
+      "notes": [],
+      "table": [
+        {
+          "case": "fast",
+          "throttle_ramp_s": 0.3,
+          "go_around_height_m": 3.0,
+          "throttle_at_go_around": 0.26,
+          "min_wheel_height_m": 2.44,
+          "touched": false,
+          "max_bank_deg": 1.5,
+          "max_heading_error_deg": 1.8,
+          "peak_aileron_stick": 0.085,
+          "peak_rudder_stick": 0.132,
+          "time_to_15_m_s": 2.59,
+          "climb_rate_after_15_m_mps": 12.45,
+          "completed": true
+        },
+        {
+          "case": "slow",
+          "throttle_ramp_s": 2.0,
+          "go_around_height_m": 3.0,
+          "throttle_at_go_around": 0.26,
+          "min_wheel_height_m": 1.76,
+          "touched": false,
+          "max_bank_deg": 1.0,
+          "max_heading_error_deg": 1.9,
+          "peak_aileron_stick": 0.024,
+          "peak_rudder_stick": 0.103,
+          "time_to_15_m_s": 3.6,
+          "climb_rate_after_15_m_mps": 12.31,
+          "completed": true
+        }
+      ],
+      "wall_s": 34.185
+    },
+    "power_step": {
+      "valid": true,
+      "metrics": {
+        "height_change_10_s_50pct_m": 10.2,
+        "path_angle_end_50pct_deg": 4.7,
+        "inverted_at_50pct_s": null,
+        "height_change_10_s_100pct_m": 91.0,
+        "path_angle_end_100pct_deg": 52.0,
+        "inverted_at_100pct_s": 4.66
+      },
+      "notes": [
+        "100pct: past inverted at 4.66 s with the elevator at its trim"
+      ],
+      "table": [
+        {
+          "case": "idle",
+          "throttle": 0.0,
+          "trim_throttle": 0.41,
+          "trim_speed_mps": 13.1,
+          "height_change_5_s_m": -6.5,
+          "speed_5_s_mps": 13.78,
+          "height_change_10_s_m": -9.9,
+          "speed_10_s_mps": 12.47,
+          "height_change_20_s_m": -21.5,
+          "speed_20_s_mps": 13.35,
+          "height_change_30_s_m": -30.9,
+          "speed_30_s_mps": 12.78,
+          "vertical_speed_end_mps": -0.85,
+          "path_angle_end_deg": -3.7,
+          "pitch_end_deg": 0.4,
+          "rpm_end": 0,
+          "max_pitch_deg": 4.6,
+          "min_pitch_deg": -6.2,
+          "max_alpha_deg": 4.8,
+          "min_speed_mps": 12.06,
+          "max_speed_mps": 13.95,
+          "max_height_gain_m": 0.0,
+          "inverted_at_s": null,
+          "reached_floor_s": null,
+          "level_speed_at_throttle_mps": null,
+          "predicted_path_angle_deg": null,
+          "completed": true
+        },
+        {
+          "case": "25pct",
+          "throttle": 0.25,
+          "trim_throttle": 0.41,
+          "trim_speed_mps": 13.1,
+          "height_change_5_s_m": -5.8,
+          "speed_5_s_mps": 13.5,
+          "height_change_10_s_m": -11.1,
+          "speed_10_s_mps": 12.81,
+          "height_change_20_s_m": -23.8,
+          "speed_20_s_mps": 13.04,
+          "height_change_30_s_m": -35.9,
+          "speed_30_s_mps": 12.95,
+          "vertical_speed_end_mps": -1.2,
+          "path_angle_end_deg": -5.3,
+          "pitch_end_deg": -0.9,
+          "rpm_end": 2883,
+          "max_pitch_deg": 4.4,
+          "min_pitch_deg": -4.7,
+          "max_alpha_deg": 4.7,
+          "min_speed_mps": 12.17,
+          "max_speed_mps": 13.53,
+          "max_height_gain_m": 0.0,
+          "inverted_at_s": null,
+          "reached_floor_s": null,
+          "level_speed_at_throttle_mps": null,
+          "predicted_path_angle_deg": -5.6,
+          "completed": true
+        },
+        {
+          "case": "50pct",
+          "throttle": 0.5,
+          "trim_throttle": 0.41,
+          "trim_speed_mps": 13.1,
+          "height_change_5_s_m": 5.6,
+          "speed_5_s_mps": 12.65,
+          "height_change_10_s_m": 10.2,
+          "speed_10_s_mps": 13.3,
+          "height_change_20_s_m": 21.7,
+          "speed_20_s_mps": 13.08,
+          "height_change_30_s_m": 32.5,
+          "speed_30_s_mps": 13.19,
+          "vertical_speed_end_mps": 1.07,
+          "path_angle_end_deg": 4.7,
+          "pitch_end_deg": 8.9,
+          "rpm_end": 5180,
+          "max_pitch_deg": 12.4,
+          "min_pitch_deg": 4.2,
+          "max_alpha_deg": 4.3,
+          "min_speed_mps": 12.63,
+          "max_speed_mps": 13.9,
+          "max_height_gain_m": 32.5,
+          "inverted_at_s": null,
+          "reached_floor_s": null,
+          "level_speed_at_throttle_mps": 16.18,
+          "predicted_path_angle_deg": 4.9,
+          "completed": true
+        },
+        {
+          "case": "75pct",
+          "throttle": 0.75,
+          "trim_throttle": 0.41,
+          "trim_speed_mps": 13.1,
+          "height_change_5_s_m": 27.2,
+          "speed_5_s_mps": 10.04,
+          "height_change_10_s_m": 42.5,
+          "speed_10_s_mps": 15.98,
+          "height_change_20_s_m": 98.3,
+          "speed_20_s_mps": 9.86,
+          "height_change_30_s_m": 140.9,
+          "speed_30_s_mps": 13.75,
+          "vertical_speed_end_mps": 5.61,
+          "path_angle_end_deg": 28.9,
+          "pitch_end_deg": 32.1,
+          "rpm_end": 7295,
+          "max_pitch_deg": 48.1,
+          "min_pitch_deg": 3.9,
+          "max_alpha_deg": 5.1,
+          "min_speed_mps": 9.05,
+          "max_speed_mps": 16.74,
+          "max_height_gain_m": 140.9,
+          "inverted_at_s": null,
+          "reached_floor_s": null,
+          "level_speed_at_throttle_mps": 23.36,
+          "predicted_path_angle_deg": 22.9,
+          "completed": true
+        },
+        {
+          "case": "100pct",
+          "throttle": 1.0,
+          "trim_throttle": 0.41,
+          "trim_speed_mps": 13.1,
+          "height_change_5_s_m": 50.8,
+          "speed_5_s_mps": 12.24,
+          "height_change_10_s_m": 91.0,
+          "speed_10_s_mps": 7.22,
+          "height_change_20_s_m": 180.8,
+          "speed_20_s_mps": 8.63,
+          "height_change_30_s_m": 268.0,
+          "speed_30_s_mps": 13.09,
+          "vertical_speed_end_mps": 9.44,
+          "path_angle_end_deg": 52.0,
+          "pitch_end_deg": 57.7,
+          "rpm_end": 9317,
+          "max_pitch_deg": 88.9,
+          "min_pitch_deg": 3.5,
+          "max_alpha_deg": 4.4,
+          "min_speed_mps": 6.28,
+          "max_speed_mps": 20.19,
+          "max_height_gain_m": 268.0,
+          "inverted_at_s": 4.66,
+          "reached_floor_s": null,
+          "level_speed_at_throttle_mps": null,
+          "predicted_path_angle_deg": 48.0,
+          "completed": true
+        }
+      ],
+      "wall_s": 63.816
+    }
+  }
+}

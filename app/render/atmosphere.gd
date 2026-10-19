@@ -526,6 +526,7 @@ static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) 
 		mat.set_shader_parameter("light2_weight", 0.0)
 		mat.set_shader_parameter("moon_aureole_lin", Vector3.ZERO)
 		mat.set_shader_parameter("moon_eclipse", false)
+		mat.set_shader_parameter("moon_eclipse_dim", 1.0)
 	_profile_sky_tints(mat, lighting)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 
@@ -593,6 +594,9 @@ static func apply_state_to_sky(mat: ShaderMaterial) -> void:
 	mat.set_shader_parameter("moon_shadow_offset", state.get("moon_shadow_offset", Vector3.ZERO))
 	mat.set_shader_parameter("moon_umbra_radius", state.get("moon_umbra_radius", 0.0))
 	mat.set_shader_parameter("moon_penumbra_radius", state.get("moon_penumbra_radius", 0.0))
+	# The aureole's knee follows the eclipsed disc as shown (1 exactly without an eclipse).
+	var dim: Vector3 = state.get("moon_eclipse_factor", Vector3.ONE)
+	mat.set_shader_parameter("moon_eclipse_dim", 0.2126 * dim.x + 0.7152 * dim.y + 0.0722 * dim.z if state.get("moon_eclipse", false) else 1.0)
 	_profile_sky_tints(mat)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 

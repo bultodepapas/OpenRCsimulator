@@ -1,4 +1,4 @@
-"""Generate and check the versioned JSON Schema for glow installation v1."""
+"""Generate and check the versioned JSON Schema for glow installation v2 (NITRO-06: carburettor flow restriction)."""
 from __future__ import annotations
 
 import argparse
@@ -11,7 +11,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
-SCHEMA_PATH = ROOT / "app" / "data" / "schema" / "glow-installation-v1.schema.json"
+SCHEMA_PATH = ROOT / "app" / "data" / "schema" / "glow-installation-v2.schema.json"
 GLOW_DATA_DIRECTORY = ROOT / "app" / "data" / "glow"
 INSTALLATION_FILES = sorted([*GLOW_DATA_DIRECTORY.glob("stik_*.json"), *GLOW_DATA_DIRECTORY.glob("extra_*.json")])
 EXPECTED_INSTALLATIONS = {
@@ -66,7 +66,9 @@ def object_schema(properties: dict[str, Any]) -> dict[str, Any]:
 
 def schema_document() -> dict[str, Any]:
     settings = {
-        "idle_admission": quantity("1", exclusive_minimum=0.0, exclusive_maximum=1.0),
+        "throttle_effective_area_m2": quantity("m2", exclusive_minimum=0.0, maximum=0.01),
+        "idle_opening": quantity("1", exclusive_minimum=0.0, exclusive_maximum=1.0),
+        "throttle_travel_exponent": quantity("1", minimum=0.1, maximum=10.0),
         "servo_time_constant_s": quantity("s", minimum=0.02, maximum=5.0),
         "air_time_constant_s": quantity("s", minimum=0.02, maximum=5.0),
         "fuel_transport_time_constant_s": quantity("s", minimum=0.02, maximum=5.0),
@@ -108,8 +110,8 @@ def schema_document() -> dict[str, Any]:
     }
     return {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": "urn:openrc:glow-installation:v1",
-        "title": "OpenRC glow installation v1",
+        "$id": "urn:openrc:glow-installation:v2",
+        "title": "OpenRC glow installation v2",
         "description": (
             "Closed structural schema for the optional finite-tank glow installation. "
             "Cross-field temperature/mixture ordering, profile-family matching, tank membership, "
@@ -119,7 +121,7 @@ def schema_document() -> dict[str, Any]:
         "required": ["format", "family", "profile", "fuel_inventory", "settings", "initial_temperature_k", "propeller"],
         "additionalProperties": False,
         "properties": {
-            "format": {"const": "openrc-glow-installation v1"},
+            "format": {"const": "openrc-glow-installation v2"},
             "family": {"enum": ["glow_2t", "glow_4t"]},
             "profile": {
                 "type": "string",
@@ -200,7 +202,7 @@ def main() -> None:
     if args.write:
         SCHEMA_PATH.parent.mkdir(parents=True, exist_ok=True)
         SCHEMA_PATH.write_text(rendered, encoding="utf-8")
-        print("Wrote glow installation v1 JSON Schema")
+        print("Wrote glow installation v2 JSON Schema")
         return
     if not SCHEMA_PATH.exists() or SCHEMA_PATH.read_text(encoding="utf-8") != rendered:
         raise SystemExit(f"Stale schema: {SCHEMA_PATH.relative_to(ROOT)}")

@@ -230,6 +230,63 @@ static func aureole_path(elevation_deg: float) -> float:
 	return 1.0 - pow(10.0, -0.4 * AUREOLE_K * airmass)
 
 
+## sky.gdshader sun_aureole() at `rho_deg` from the sun for a sky point at `elevation_deg`: KS91's shape and path
+## term, compressed below AUREOLE_DISC_SHARE of the disc, faded over the last 2° above the horizon. `aureole_lin` and
+## `sun_lin` are the sky's uniforms.
+static func sky_aureole(aureole_lin: Vector3, sun_lin: Vector3, rho_deg: float, elevation_deg: float) -> Vector3:
+	var shape := aureole_shape(rho_deg)
+	if shape <= 0.0 or not aureole_lin.is_finite() or aureole_lin.x + aureole_lin.y + aureole_lin.z <= 0.0:
+		return Vector3.ZERO
+	var a := aureole_lin * shape * aureole_path(elevation_deg)
+	var disc := AUREOLE_DISC_SHARE * DISC_RADIANCE_FACTOR * luminance(sun_lin)
+	return a / (1.0 + luminance(a) / maxf(disc, 1e-12)) * smoothstep(0.0, 0.035, sin(deg_to_rad(elevation_deg)))
+
+
+## The legacy L1a halo the sky draws around the disc at `rho_deg` (sky.gdshader: (sun_lin/π)·0.35·e^(−18·ρ)).
+static func sky_halo(sun_lin: Vector3, rho_deg: float) -> Vector3:
+	return sun_lin / PI * 0.35 * exp(-18.0 * deg_to_rad(maxf(rho_deg, 0.0)))
+
+
+## The veil's target colour (pre-exposure): the disc's, raised per channel to VEIL_SKY_MARGIN times the sky around the
+## source. Straylight only adds light, so the overlay's mix toward this colour must never darken that sky (a mix toward
+## the disc alone darkened a bright golden-hour sky by up to 15 levels).
+const VEIL_SKY_MARGIN := 1.1
+
+
+static func veil_colour(disc_lin: Vector3, sky_around: Vector3) -> Vector3:
+	if not sky_around.is_finite():
+		return disc_lin
+	return disc_lin.max(sky_around * VEIL_SKY_MARGIN)
+
+
+## SUN-06 eyewear. A cap brim shades the eye from a source more than BRIM_CUT_DEG above the line of sight (a 7 cm brim
+## 3 cm above the eye: atan(3/7) ≈ 23°, estimate 25°), over BRIM_SOFT_DEG; it moves with the head, so looking up at a
+## model near the sun it does not help. Light-brown sunglasses (Model Aviation's advice for model flying) pass
+## SUNGLASSES_TRANSMISSION of the light: the veil's ratio is unchanged (sun and sky both dimmed) but the retina's
+## bleaching dose falls with it.
+const BRIM_CUT_DEG := 25.0
+const BRIM_SOFT_DEG := 3.0
+const SUNGLASSES_TRANSMISSION := 0.25
+
+
+## How much of a source at `source_view` (unit, view space: −z ahead, +y up) the brim lets reach the eye.
+static func brim_transmission(source_view: Vector3) -> float:
+	if not source_view.is_finite() or source_view.length_squared() == 0.0:
+		return 1.0
+	var v := source_view.normalized()
+	if v.z > 0.2:
+		return 1.0 # well behind the face: the brim is not between it and the eye (nor is the eye's field)
+	var above := rad_to_deg(asin(clampf(v.y, -1.0, 1.0)))
+	return 1.0 - smoothstep(BRIM_CUT_DEG - BRIM_SOFT_DEG, BRIM_CUT_DEG + BRIM_SOFT_DEG, above)
+
+
+## The eyewear's factors for one frame: {veil, dose}. `eyewear`: {cap, sunglasses} (Options.pilot_eyewear()).
+static func eyewear_factors(eyewear: Dictionary, source_view: Vector3) -> Dictionary:
+	var brim := brim_transmission(source_view) if eyewear.get("cap", false) else 1.0
+	var glasses := SUNGLASSES_TRANSMISSION if eyewear.get("sunglasses", false) else 1.0
+	return {veil = brim, dose = brim * glasses}
+
+
 ## Visibility of a disc at `elevation_rad` (apparent) when the depth buffer cannot tell: the skyline prior.
 static func horizon_prior(elevation_rad: float) -> float:
 	if not is_finite(elevation_rad):

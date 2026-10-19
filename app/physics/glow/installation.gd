@@ -5,11 +5,14 @@ const Profile := preload("res://physics/glow/profile.gd")
 const FuelMass := preload("res://physics/glow/fuel_mass.gd")
 const FuelFeed := preload("res://physics/glow/fuel_feed.gd")
 const FuelProperties := preload("res://physics/fuel_properties.gd")
+const Carb := preload("res://physics/glow/carburetor.gd")
 
 const INSTALLATION_DIRECTORY := "res://data/glow/"
-const FORMAT := "openrc-glow-installation v1"
+const FORMAT := "openrc-glow-installation v2"
 const SETTINGS := {
-	idle_admission = "1",
+	throttle_effective_area_m2 = "m2",
+	idle_opening = "1",
+	throttle_travel_exponent = "1",
 	servo_time_constant_s = "s",
 	air_time_constant_s = "s",
 	fuel_transport_time_constant_s = "s",
@@ -58,6 +61,8 @@ const NONNEGATIVE_THERMAL := [
 	"premix_evaporation_j_kg", "evaporation_head_fraction",
 ]
 const MAX_STARTER_PRIME_KG := 0.001
+## NITRO-06: no model-aircraft carburettor passes more than this open area (a 113 mm bore).
+const MAX_THROTTLE_AREA_M2 := 1.0e-2
 const MIN_TRANSPORT_TAU_S := 0.02
 const MAX_TRANSPORT_TAU_S := 5.0
 const MAX_TEMPERATURE_THRESHOLD_K := 1000.0
@@ -227,6 +232,12 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 	if not carrier_result.get("ok", false):
 		return _fail(str(carrier_result.get("message", "Invalid dry carrier inertia")))
 	install.rotor_carrier_factor = float(carrier_result.carrier_factor)
+	# NITRO-06: derived constants of the carburettor law (physics/glow/carburetor.gd), fixed for the installation.
+	install.throttle_idle_offset = Carb.idle_offset(float(settings.idle_opening))
+	install.throttle_travel_exponent = float(settings.throttle_travel_exponent)
+	install.throttle_capacity_m3_s = Carb.capacity_m3_s(float(settings.throttle_effective_area_m2))
+	if not is_finite(install.throttle_idle_offset) or not is_finite(install.throttle_capacity_m3_s):
+		return _fail("Glow carburettor idle offset or capacity is nonfinite")
 	var out: Dictionary = model.duplicate(true)
 	var out_propulsion: Dictionary = out.propulsion
 	# A missing thrust-angle quantity means the historical axial (+x) installation convention.
@@ -237,8 +248,12 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 
 
 static func _settings_error(settings: Dictionary, thermal: Dictionary, profile: Dictionary) -> String:
-	if settings.idle_admission <= 0.0 or settings.idle_admission >= 1.0:
-		return "idle_admission must be strictly between zero and one"
+	if settings.throttle_effective_area_m2 <= 0.0 or settings.throttle_effective_area_m2 > MAX_THROTTLE_AREA_M2:
+		return "throttle_effective_area_m2 must be positive and at most 0.01 m2"
+	if settings.idle_opening <= 0.0 or settings.idle_opening >= 1.0:
+		return "idle_opening must be strictly between zero and one"
+	if settings.throttle_travel_exponent < 0.1 or settings.throttle_travel_exponent > 10.0:
+		return "throttle_travel_exponent must be in [0.1, 10]"
 	for name: String in ["servo_time_constant_s", "air_time_constant_s", "fuel_transport_time_constant_s"]:
 		if settings[name] < MIN_TRANSPORT_TAU_S or settings[name] > MAX_TRANSPORT_TAU_S:
 			return "Glow transport time constants must be in [0.02, 5] s"

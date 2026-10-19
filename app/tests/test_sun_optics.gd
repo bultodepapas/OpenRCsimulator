@@ -16,6 +16,7 @@ const SunGlare := preload("res://render/landscape_upgrade/sun_glare.gd")
 const SKY_SHADER := preload("res://render/sky.gdshader")
 const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const Options := preload("res://render/landscape_upgrade/options.gd")
 
 var _failures := 0
 var _count := 0
@@ -37,6 +38,7 @@ func _initialize() -> void:
 	_afterimage()
 	_clouds()
 	_source()
+	_eyewear()
 	print("SUN optics: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -276,6 +278,31 @@ func _source() -> void:
 		previous = float(evening.e_over_b)
 	_check("E/B falls toward sunset", falls, str(previous))
 	_check("a setting sun can be looked at (E/B < 1)", previous < 1.0, str(previous))
+	# The veil's target colour: never below the sky around the source, per channel; the disc's own when the sky is dim.
+	var disc_lin := Vector3(3.4, 2.8, 2.3)
+	_check("a dim sky leaves the disc's colour", SunOptics.veil_colour(disc_lin, Vector3(0.2, 0.25, 0.35)) == disc_lin)
+	var bright_sky := Vector3(1.0, 0.95, 2.4)
+	var raised := SunOptics.veil_colour(disc_lin, bright_sky)
+	_check("a bright channel raises the veil colour, never lowers it", raised.z > disc_lin.z and raised.x == disc_lin.x
+		and raised.z >= bright_sky.z)
+	_check("bad sky leaves the disc's colour", SunOptics.veil_colour(disc_lin, Vector3(NAN, 0.0, 0.0)) == disc_lin)
+	# sky.gdshader's aureole and halo mirrors: zero without an aureole, below the disc's share, faded at the horizon.
+	var sun_lin := disc_lin / SunOptics.DISC_RADIANCE_FACTOR
+	var a_lin := SunOptics.aureole_lin(sun_lin, 1.9, 1.0)
+	var core := SunOptics.sky_aureole(a_lin, sun_lin, 1.0, 45.0)
+	_check("the aureole core stays under its share of the disc", SunOptics.luminance(core) > 0.0
+		and SunOptics.luminance(core) < SunOptics.AUREOLE_DISC_SHARE * SunOptics.luminance(disc_lin))
+	_check("no aureole without its uniform", SunOptics.sky_aureole(Vector3.ZERO, sun_lin, 1.0, 45.0) == Vector3.ZERO)
+	_check("the aureole fades out at the horizon", SunOptics.sky_aureole(a_lin, sun_lin, 1.0, 0.0) == Vector3.ZERO
+		and SunOptics.luminance(SunOptics.sky_aureole(a_lin, sun_lin, 1.0, 1.0)) < SunOptics.luminance(SunOptics.sky_aureole(a_lin, sun_lin, 1.0, 3.0)))
+	_check("the L1a halo falls with angle", SunOptics.luminance(SunOptics.sky_halo(sun_lin, 1.0)) > SunOptics.luminance(SunOptics.sky_halo(sun_lin, 5.0)))
+	Atmosphere.state = {} # the calibrated day
+	var mirror_sky := Atmosphere.sky_material()
+	var probe_dir := Vector3(0.3, 0.6, -0.5).normalized()
+	_check("background radiance and luminance agree", absf(SunOptics.luminance(SkyMirror.background_radiance(mirror_sky, probe_dir))
+		- SkyMirror.background_luminance(mirror_sky, probe_dir)) < 1e-6)
+	var day_src := SunGlare.source(mirror_sky, Atmosphere.shadow_compensation())
+	_check("the calibrated day's veil colour is the disc's", (day_src.veil_lin as Vector3).is_equal_approx(day_src.disc_lin))
 	# Atmosphere._set_sun_uniforms: golden hour flattens a little and has an aureole; a moonlit night has none.
 	when.hour = 20.9
 	Atmosphere.state = SkyState.state(preload("res://render/world/ephemeris.gd").sky(when))
@@ -304,3 +331,22 @@ func _source() -> void:
 	_check("veil reaches a view facing the sun", SunGlare.veil_reaches_view(camera, Vector3(0.0, 0.0, -1.0)))
 	_check("no veil for a sun behind the camera", not SunGlare.veil_reaches_view(camera, Vector3(0.0, 0.0, 1.0)))
 	camera.free()
+
+
+func _eyewear() -> void:
+	# SUN-06: the brim shades sources more than ~25° above the line of sight; it moves with the head.
+	var ahead := Vector3(0.0, 0.0, -1.0)
+	var above := func(deg: float) -> Vector3: return Vector3(0.0, sin(deg_to_rad(deg)), -cos(deg_to_rad(deg)))
+	_check("the brim leaves the line of sight open", SunOptics.brim_transmission(ahead) == 1.0)
+	_check("the brim shades a sun 40° above the gaze", SunOptics.brim_transmission(above.call(40.0)) == 0.0)
+	_check("half at the brim's edge", absf(SunOptics.brim_transmission(above.call(SunOptics.BRIM_CUT_DEG)) - 0.5) < 1e-4) # Vector3 is float32
+	_check("the brim does nothing behind the head", SunOptics.brim_transmission(Vector3(0.0, 0.7, 0.7).normalized()) == 1.0)
+	var none := SunOptics.eyewear_factors({cap = false, sunglasses = false}, above.call(40.0))
+	_check("no eyewear changes nothing", none.veil == 1.0 and none.dose == 1.0)
+	var cap := SunOptics.eyewear_factors({cap = true, sunglasses = false}, above.call(40.0))
+	_check("a cap under a high sun removes veil and dose", cap.veil == 0.0 and cap.dose == 0.0)
+	var glasses := SunOptics.eyewear_factors({cap = false, sunglasses = true}, ahead)
+	_check("sunglasses keep the veil ratio and cut the dose", glasses.veil == 1.0 and glasses.dose == SunOptics.SUNGLASSES_TRANSMISSION)
+	_check("eyewear names parse", Options.parse_eyewear("cap+sunglasses").cap and Options.parse_eyewear("Sunglasses").sunglasses
+		and Options.parse_eyewear("").ok and not Options.parse_eyewear("visor").ok)
+

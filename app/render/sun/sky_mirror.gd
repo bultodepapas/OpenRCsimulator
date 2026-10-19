@@ -19,8 +19,15 @@ const DISC_OPTICAL_SCALE := 8.0
 ## Luminance of the sky's gradient toward `dir` (render axes, unit), scene units (sky.gdshader haze() and the
 ## zenith mix; no disc, halo, aureole, moon or clouds).
 static func background_luminance(sky: ShaderMaterial, dir: Vector3) -> float:
+	var col := background_radiance(sky, dir)
+	return 0.2126 * col.x + 0.7152 * col.y + 0.0722 * col.z
+
+
+## The sky gradient's linear colour toward `dir`, pre-exposure (what background_luminance weighs): the colour a veil
+## must never mix below (SUN-02).
+static func background_radiance(sky: ShaderMaterial, dir: Vector3) -> Vector3:
 	if sky == null or not dir.is_finite():
-		return 0.0
+		return Vector3.ZERO
 	var haze: Vector3 = _param(sky, &"haze_lin", Vector3(0.584, 0.768, 0.846))
 	var zenith: Vector3 = _param(sky, &"zenith_lin", Vector3(0.076, 0.138, 0.287))
 	var sun_dir: Vector3 = _param(sky, &"sun_dir", Vector3(0.0, 0.707, 0.707))
@@ -29,8 +36,7 @@ static func background_luminance(sky: ShaderMaterial, dir: Vector3) -> float:
 	var col := haze + sun_lin * pow(maxf(dir.dot(sun_dir), 0.0), 8.0) * scatter + _lobe(sky, dir, &"lobe_lin", &"lobe_dir",
 		&"lobe_k", &"lobe_height") + _lobe(sky, dir, &"lobe2_lin", &"lobe2_dir", &"lobe2_k", &"lobe2_height")
 	var y := maxf(dir.y, 0.0)
-	col = col.lerp(zenith, 1.0 - pow(1.0 - y, float(_param(sky, &"gradient_curve", 2.6))))
-	return 0.2126 * col.x + 0.7152 * col.y + 0.0722 * col.z
+	return col.lerp(zenith, 1.0 - pow(1.0 - y, float(_param(sky, &"gradient_curve", 2.6))))
 
 
 ## sky.gdshader lobe_term() for one lobe.

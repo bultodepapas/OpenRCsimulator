@@ -1,0 +1,78 @@
+{
+  "format": "openrc-glare-contrast v1",
+  "rows": [
+    {
+      "case": "glare_offset_1",
+      "aircraft_pixels": 362,
+      "glare_strength": 1.34272390707732,
+      "aureole_coeff": 3.14637324655704e-07,
+      "darkened_pixels": 0,
+      "max_darkening_levels": 1.5026000000000135,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.7161758469990297,
+      "contrast_with_display": -0.40962601511855173,
+      "retained_display": 0.571962901059838,
+      "retained_linear": 0.7609246015056463,
+      "background_display": 0.9713318232044197,
+      "angle_deg": 1.0,
+      "predicted_retained": 0.5431276105876097
+    },
+    {
+      "case": "glare_offset_3",
+      "aircraft_pixels": 362,
+      "glare_strength": 1.34272390707732,
+      "aureole_coeff": 3.14637324655704e-07,
+      "darkened_pixels": 0,
+      "max_darkening_levels": 1.430399999999995,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.7135452067188134,
+      "contrast_with_display": -0.5412614428689103,
+      "retained_display": 0.7585524193454573,
+      "retained_linear": 0.8993285424197235,
+      "background_display": 0.9600723475246453,
+      "angle_deg": 3.0,
+      "predicted_retained": 0.734508889516544
+    },
+    {
+      "case": "glare_offset_10",
+      "aircraft_pixels": 362,
+      "glare_strength": 1.34272390707732,
+      "aureole_coeff": 3.14637324655704e-07,
+      "darkened_pixels": 0,
+      "max_darkening_levels": 0.8596000000000059,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.7027635646711522,
+      "contrast_with_display": -0.6620503485832812,
+      "retained_display": 0.9420669793731805,
+      "retained_linear": 0.9812149890334292,
+      "background_display": 0.8810437049073774,
+      "angle_deg": 10.0,
+      "predicted_retained": 0.9321850319320011
+    }
+  ],
+  "crossings": {
+    "glare_crossing": {
+      "case": "glare_crossing",
+      "aircraft_pixels": 362,
+      "glare_strength": 1.34272390707732,
+      "aureole_coeff": 3.14637324655704e-07,
+      "darkened_pixels": 17182,
+      "max_darkening_levels": 82.25080000000003,
+      "afterimage_dose": 0.981334265462408,
+      "contrast_without_display": -0.7125267848816177,
+      "contrast_with_display": -0.17451926317760724,
+      "retained_display": 0.24493010912790125,
+      "retained_linear": 0.3942601822381258,
+      "background_display": 0.6389970599068356
+    }
+  },
+  "checks": {
+    "at_least_six_angles": false,
+    "retained_grows_with_angle": true,
+    "veil_follows_the_model": true,
+    "veil_never_darkens": true,
+    "crossing_hides_the_aircraft": true
+  },
+  "ok": false,
+  "limits": "Display contrast of one model, attitude and distance against clear calibrated-day sky; not photometric calibration or a pilot detection threshold."
+}

@@ -91,6 +91,9 @@ const GLOW_TRACE_SCHEMA_V2: String = "openrc-glow-trace v2"
 const GLOW_TRACE_SCHEMA: String = GLOW_TRACE_SCHEMA_V2
 const GLOW_LAW_V2: String = "glow-mean-cycle-finite-tank-hub-inflow-v2"
 const GLOW_LAW_V3: String = "glow-mean-cycle-finite-tank-line-pickup-v3"
+## NITRO-06: the barrel opening replaces the per-cycle admission in the continuous slot; the layout size is unchanged.
+const GLOW_LAW_V4: String = "glow-mean-cycle-carburettor-v4"
+const GLOW_CONTINUOUS_LAYOUT_V4: String = "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
 const GLOW_REASONS_V2: Array[String] = ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat"]
 const GLOW_REASONS_V3: Array[String] = ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
 const GLOW_LAW: String = GlowFlight.LAW
@@ -257,7 +260,7 @@ func _prepare_weather() -> void:
 			or (meta.get("metadata_schema") == "openrc-flight-meta v6" \
 				and meta.get("wheel_state_model") == "relative-wheel-rim-speed-rk4-v1") \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v7" and meta.get("propulsion_model") == GLOW_LAW_V2) \
-			or (meta.get("metadata_schema") == "openrc-flight-meta v10" and meta.get("propulsion_model") == GLOW_LAW_V3) \
+			or (meta.get("metadata_schema") == "openrc-flight-meta v10" and meta.get("propulsion_model") in [GLOW_LAW_V3, GLOW_LAW_V4]) \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v8" and _has_gear_metadata_claim()) \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v9" and _has_flap_metadata_claim())
 		if meta.get("atmosphere_model") != _weather.atmosphere_law() \
@@ -658,10 +661,11 @@ func _prepare_turbine_metadata() -> void:
 func _prepare_glow_metadata() -> void:
 	var law: String = str(meta.get("propulsion_model", ""))
 	var legacy_layout: bool = law == GLOW_LAW_V2
-	var line_layout: bool = law == GLOW_LAW_V3
+	var line_layout: bool = law == GLOW_LAW_V3 or law == GLOW_LAW_V4
+	var expected_law: String = GLOW_LAW_V2 if legacy_layout else (GLOW_LAW_V3 if law == GLOW_LAW_V3 else GLOW_LAW_V4)
 	var state_size: int = 17 if legacy_layout else 19 if line_layout else 0
 	var expected_schema: String = "openrc-flight-meta v7" if legacy_layout else "openrc-flight-meta v10" if line_layout else ""
-	var expected_layout: String = GLOW_CONTINUOUS_LAYOUT_V2 if legacy_layout else GLOW_CONTINUOUS_LAYOUT_V3
+	var expected_layout: String = GLOW_CONTINUOUS_LAYOUT_V2 if legacy_layout else (GLOW_CONTINUOUS_LAYOUT_V3 if law == GLOW_LAW_V3 else GLOW_CONTINUOUS_LAYOUT_V4)
 	var expected_trace_schema: String = GLOW_TRACE_SCHEMA_V1 if legacy_layout else GLOW_TRACE_SCHEMA_V2
 	var family: String = str(meta.get("glow_family", ""))
 	var cycle: float = 1.0 if family == "glow_2t" else (2.0 if family == "glow_4t" else NAN)
@@ -721,7 +725,7 @@ func _prepare_glow_metadata() -> void:
 				_invalid_weather = true
 				return
 	if not (legacy_layout or line_layout) or meta.get("metadata_schema") != expected_schema \
-			or law != (GLOW_LAW_V2 if legacy_layout else GLOW_LAW_V3) \
+			or law != expected_law \
 			or meta.get("continuous_layout") != expected_layout \
 				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else "") \
 			or (legacy_layout and (meta.has("glow_fuel_tank_id") or meta.has("glow_feed_line_inventory_id") \
@@ -806,7 +810,7 @@ func _prepare_glow_metadata() -> void:
 
 func _prepare_shaft_metadata() -> void:
 	var liquid_claim: bool = _has_liquid_metadata_claim()
-	var glow_metadata: bool = meta.get("propulsion_model") in [GLOW_LAW_V2, GLOW_LAW_V3] or meta.has("glow_identity") \
+	var glow_metadata: bool = meta.get("propulsion_model") in [GLOW_LAW_V2, GLOW_LAW_V3, GLOW_LAW_V4] or meta.has("glow_identity") \
 		or meta.has("glow_family") or meta.has("glow_recording_start")
 	if glow_metadata:
 		if liquid_claim:
@@ -1407,7 +1411,7 @@ func _glow_fuel_sample_matches(sample: Dictionary, values: PackedFloat64Array, t
 	var stores: Variant = sample.get("stores")
 	var expected_line_count: int = 0 if _glow_feed_line_inventory_id.is_empty() else 1
 	if sample.get("format") != "openrc-mass-sample v1" or sample.get("finite_fuel") != true \
-			or sample.get("law") != GLOW_LAW_V3 \
+			or sample.get("law") not in [GLOW_LAW_V3, GLOW_LAW_V4] \
 			or typeof(sample.get("tick")) not in [TYPE_INT, TYPE_FLOAT] or float(sample.tick) != float(tick) \
 			or typeof(sample.get("time_s")) not in [TYPE_INT, TYPE_FLOAT] or absf(float(sample.time_s) - t) > maxf(1e-12, absf(t) * 1e-12) \
 			or sample.get("registry_sha256") != _glow_registry_sha256 \

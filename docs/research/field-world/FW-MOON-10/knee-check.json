@@ -1,0 +1,206 @@
+{
+ "date": "2026-10-19",
+ "format": "openrc-fw-moon-10 knee check v1",
+ "method": "research/field-world/fw-moon-08/aureole_profile.gd: rendered / predicted aureole brightening (luminance) along the row and column through the moon; prediction includes the knee with moon_eclipse_dim",
+ "night_linear_png_identical_to_head": true,
+ "runs": {
+  "F-night": {
+   "arguments": [
+    "--time_of_day=night"
+   ],
+   "bands": [
+    {
+     "median": 1.008,
+     "n": 19,
+     "p10": 0.973,
+     "p90": 1.034,
+     "rho_deg": [
+      5,
+      10
+     ]
+    },
+    {
+     "median": 1.013,
+     "n": 117,
+     "p10": 0.985,
+     "p90": 1.044,
+     "rho_deg": [
+      10,
+      30
+     ]
+    },
+    {
+     "median": 1.024,
+     "n": 94,
+     "p10": 0.845,
+     "p90": 1.202,
+     "rho_deg": [
+      30,
+      45
+     ]
+    }
+   ],
+   "eclipse_dim": 1.0,
+   "label": "Night preset, this change",
+   "moon_elevation_deg": 19.07
+  },
+  "F-partial": {
+   "arguments": [
+    "--date=2028-12-31",
+    "--time=15:30",
+    "--utc_offset=0",
+    "--lat=30",
+    "--lon=90"
+   ],
+   "bands": [
+    {
+     "median": 1.005,
+     "n": 2,
+     "p10": 0.974,
+     "p90": 1.037,
+     "rho_deg": [
+      0.8,
+      2
+     ]
+    },
+    {
+     "median": 1.002,
+     "n": 20,
+     "p10": 0.978,
+     "p90": 1.048,
+     "rho_deg": [
+      2,
+      5
+     ]
+    },
+    {
+     "median": 1.013,
+     "n": 34,
+     "p10": 0.97,
+     "p90": 1.041,
+     "rho_deg": [
+      5,
+      10
+     ]
+    },
+    {
+     "median": 1.001,
+     "n": 156,
+     "p10": 0.945,
+     "p90": 1.052,
+     "rho_deg": [
+      10,
+      30
+     ]
+    },
+    {
+     "median": 0.983,
+     "n": 103,
+     "p10": 0.348,
+     "p90": 1.283,
+     "rho_deg": [
+      30,
+      45
+     ]
+    }
+   ],
+   "eclipse_dim": 0.188876251187921,
+   "label": "2028-12-31 15:30 UT partial (30N 90E), this change",
+   "moon_elevation_deg": 55.4
+  },
+  "H-night": {
+   "arguments": [
+    "--time_of_day=night"
+   ],
+   "bands": [
+    {
+     "median": 1.008,
+     "n": 19,
+     "p10": 0.973,
+     "p90": 1.034,
+     "rho_deg": [
+      5,
+      10
+     ]
+    },
+    {
+     "median": 1.013,
+     "n": 117,
+     "p10": 0.985,
+     "p90": 1.044,
+     "rho_deg": [
+      10,
+      30
+     ]
+    },
+    {
+     "median": 1.024,
+     "n": 94,
+     "p10": 0.845,
+     "p90": 1.202,
+     "rho_deg": [
+      30,
+      45
+     ]
+    }
+   ],
+   "eclipse_dim": 1.0,
+   "label": "Night preset, HEAD before the change",
+   "moon_elevation_deg": 19.07
+  },
+  "M-partial": {
+   "arguments": [
+    "--date=2028-12-31",
+    "--time=15:30",
+    "--utc_offset=0",
+    "--lat=30",
+    "--lon=90"
+   ],
+   "bands": [
+    {
+     "median": 1.304,
+     "n": 14,
+     "p10": 1.234,
+     "p90": 1.407,
+     "rho_deg": [
+      2,
+      5
+     ]
+    },
+    {
+     "median": 1.101,
+     "n": 34,
+     "p10": 1.079,
+     "p90": 1.185,
+     "rho_deg": [
+      5,
+      10
+     ]
+    },
+    {
+     "median": 1.046,
+     "n": 156,
+     "p10": 0.973,
+     "p90": 1.104,
+     "rho_deg": [
+      10,
+      30
+     ]
+    },
+    {
+     "median": 0.995,
+     "n": 103,
+     "p10": 0.348,
+     "p90": 1.283,
+     "rho_deg": [
+      30,
+      45
+     ]
+    }
+   ],
+   "eclipse_dim": 0.188876251187921,
+   "label": "same partial phase, shader mutation: knee without moon_eclipse_dim",
+   "moon_elevation_deg": 55.4
+  }
+ }
+}

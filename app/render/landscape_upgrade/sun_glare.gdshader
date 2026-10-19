@@ -11,6 +11,7 @@
 // skyline prior off screen; clouds come from the CPU mirror of the sky's deck (render/sun/sky_mirror.gd).
 shader_type spatial;
 render_mode unshaded, fog_disabled, cull_disabled, depth_draw_never, depth_test_disabled, shadows_disabled;
+#include "res://render/world/engine_srgb.gdshaderinc"
 
 global uniform float sim_clock;
 uniform sampler2D depth_buffer : hint_depth_texture, repeat_disable, filter_nearest;
@@ -190,9 +191,14 @@ void fragment() {
 	float alpha;
 	if (pass_kind == 0) {
 		alpha = veil_alpha(ray, scale);
+		// The source's own disc outshines its straylight: no veil where the sky shows the disc (FW-MOON-08: the moon's
+		// veil colour is a fraction of its disc). A model in front of the disc is not sky and keeps its veil.
+		if (dot(ray, sun_view) > cos(source_radius) && sky_at(SCREEN_UV, INV_PROJECTION_MATRIX) > 0.5) {
+			alpha = 0.0;
+		}
 	} else {
 		secondary_pass(ray, SCREEN_UV, scale, abs(PROJECTION_MATRIX[1][1] / PROJECTION_MATRIX[0][0]), albedo, alpha);
 	}
-	ALBEDO = albedo;
+	ALBEDO = encode_for_engine(albedo); // the engine linearises ALBEDO (Compatibility): the moon's dim veil needs it
 	ALPHA = clamp(alpha, 0.0, 1.0);
 }

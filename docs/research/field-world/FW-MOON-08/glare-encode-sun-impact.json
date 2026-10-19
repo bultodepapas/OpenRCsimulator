@@ -1,0 +1,99 @@
+{
+ "change": "sun_glare.gdshader: ALBEDO = encode_for_engine(albedo) (Compatibility linearises ALBEDO)",
+ "date": "2026-10-19",
+ "format": "openrc-fw-moon-08 glare encode impact v1",
+ "method": "app/tests/capture_landscape_upgrade.gd (SUN cases) before (B, HEAD shader) and after (A); tools/landscape/glare_contrast.py; per-image pixel difference",
+ "scenes": {
+  "day": {
+   "changed": [
+    {
+     "image": "glare_lens",
+     "max_levels": 2,
+     "pixels_over_2": 0
+    }
+   ],
+   "checks_after": {
+    "at_least_six_angles": false,
+    "crossing_hides_the_aircraft": true,
+    "retained_grows_with_angle": true,
+    "veil_follows_the_model": true
+   },
+   "crossing_after": 0.099,
+   "crossing_before": 0.099,
+   "identical_images": 21,
+   "images": 22,
+   "retained_after": {
+    "glare_offset_1": 0.349,
+    "glare_offset_20": 0.889,
+    "glare_offset_3": 0.519,
+    "glare_offset_8": 0.632
+   },
+   "retained_before": {
+    "glare_offset_1": 0.349,
+    "glare_offset_20": 0.889,
+    "glare_offset_3": 0.519,
+    "glare_offset_8": 0.632
+   }
+  },
+  "golden": {
+   "changed": [
+    {
+     "image": "glare_lens",
+     "max_levels": 14,
+     "pixels_over_2": 600
+    },
+    {
+     "image": "glare_offset_3",
+     "max_levels": 16,
+     "pixels_over_2": 39454
+    },
+    {
+     "image": "glare_offset_3_hidden",
+     "max_levels": 16,
+     "pixels_over_2": 39454
+    }
+   ],
+   "checks_after": {
+    "at_least_six_angles": false,
+    "retained_grows_with_angle": true,
+    "veil_follows_the_model": true
+   },
+   "crossing_after": null,
+   "crossing_before": null,
+   "darkened_by_veil_after": {
+    "min_levels": -15.2,
+    "pixels": 28445
+   },
+   "darkened_by_veil_before": {
+    "min_levels": -9.1,
+    "pixels": 9187
+   },
+   "identical_images": 3,
+   "images": 6,
+   "retained_after": {
+    "glare_offset_3": 0.766
+   },
+   "retained_before": {
+    "glare_offset_3": 0.761
+   }
+  },
+  "sunset": {
+   "changed": [],
+   "checks_after": {
+    "at_least_six_angles": false,
+    "retained_grows_with_angle": true,
+    "veil_follows_the_model": true
+   },
+   "crossing_after": null,
+   "crossing_before": null,
+   "identical_images": 6,
+   "images": 6,
+   "retained_after": {
+    "glare_offset_3": 1.0
+   },
+   "retained_before": {
+    "glare_offset_3": 1.0
+   }
+  }
+ }
+}

@@ -567,9 +567,9 @@
    "note": "Espenak, Lunar Eclipses 2021-2030: greatest eclipse (TD), umbral magnitude, partial and total durations; FW-MOON-10 contact checks (test_world_moon_eclipse.gd), read 2026-10-19."
   },
   {
-   "url": "https://skyandtelescope.org/astronomy-news/observing-news/octobers-ideal-lunareclipse/",
+   "url": "https://www.geocities.ws/lunissolar2003/A202205F.htm",
    "status": "page",
-   "note": "Sky & Telescope: Helio Vital's network measured V = -0.8 ± 0.3 at mid-eclipse on 2022-05-16 (FW-MOON-10 totality brightness check)."
+   "note": "Helio C. Vital, 'Total Lunar Eclipse on May 15-16, 2022: Preliminary Findings from Observations': Brazilian observers' mid-totality means L = 2.0 ± 0.5 and m = -0.8 ± 0.3; author's star comparisons -0.8 ± 0.2; clean-stratosphere correlation predicts -1.23 for U = 1.415. Read 2026-10-19 (FW-MOON-10 totality brightness check). Reported by Sky & Telescope; that page returned HTTP 403 and was not read."
   }
  ]
 }

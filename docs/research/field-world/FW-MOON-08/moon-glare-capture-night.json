@@ -1,0 +1,88 @@
+{
+ "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+ "arguments": [
+  "--time_of_day=night"
+ ],
+ "cases": {
+  "glare_offset_1": {
+   "exposure": 49131.08984375,
+   "glare_afterimage": 0.0,
+   "glare_aureole_coeff": 0.00000010996823136861,
+   "glare_background_scale": 4.18621241451256,
+   "glare_strength": 4.18621241451256,
+   "glare_visible": true,
+   "kappa": 0.640656854807588,
+   "kappa_display_measured": 0.855968104373338
+  },
+  "glare_offset_12": {
+   "exposure": 49131.08984375,
+   "glare_afterimage": 0.0,
+   "glare_aureole_coeff": 0.00000010996823136861,
+   "glare_background_scale": 4.18621241451256,
+   "glare_strength": 4.18621241451256,
+   "glare_visible": true,
+   "kappa": 0.640656854807588,
+   "kappa_display_measured": 0.64159576640953
+  },
+  "glare_offset_2": {
+   "exposure": 49131.08984375,
+   "glare_afterimage": 0.0,
+   "glare_aureole_coeff": 0.00000010996823136861,
+   "glare_background_scale": 4.18621241451256,
+   "glare_strength": 4.18621241451256,
+   "glare_visible": true,
+   "kappa": 0.640656854807588,
+   "kappa_display_measured": 0.841779143080379
+  },
+  "glare_offset_20": {
+   "exposure": 49131.08984375,
+   "glare_afterimage": 0.0,
+   "glare_aureole_coeff": 0.00000010996823136861,
+   "glare_background_scale": 4.18621241451256,
+   "glare_strength": 4.18621241451256,
+   "glare_visible": true,
+   "kappa": 0.640656854807588,
+   "kappa_display_measured": 0.565330998362831
+  },
+  "glare_offset_3": {
+   "exposure": 49131.08984375,
+   "glare_afterimage": 0.0,
+   "glare_aureole_coeff": 0.00000010996823136861,
+   "glare_background_scale": 4.18621241451256,
+   "glare_strength": 4.18621241451256,
+   "glare_visible": true,
+   "kappa": 0.640656854807588,
+   "kappa_display_measured": 0.81910515000225
+  },
+  "glare_offset_5": {
+   "exposure": 49131.08984375,
+   "glare_afterimage": 0.0,
+   "glare_aureole_coeff": 0.00000010996823136861,
+   "glare_background_scale": 4.18621241451256,
+   "glare_strength": 4.18621241451256,
+   "glare_visible": true,
+   "kappa": 0.640656854807588,
+   "kappa_display_measured": 0.771553033276565
+  },
+  "glare_offset_8": {
+   "exposure": 49131.08984375,
+   "glare_afterimage": 0.0,
+   "glare_aureole_coeff": 0.00000010996823136861,
+   "glare_background_scale": 4.18621241451256,
+   "glare_strength": 4.18621241451256,
+   "glare_visible": true,
+   "kappa": 0.640656854807588,
+   "kappa_display_measured": 0.692102419504191
+  }
+ },
+ "engine": "4.7.2-stable (official)",
+ "format": "openrc-moon-glare-capture v1",
+ "moon": {
+  "azimuth_deg": 92.1111726395502,
+  "elevation_deg": 19.0663964971478
+ },
+ "size": [
+  1280,
+  720
+ ]
+}

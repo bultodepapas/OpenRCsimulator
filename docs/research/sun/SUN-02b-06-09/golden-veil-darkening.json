@@ -1,0 +1,18 @@
+{
+  "format": "openrc-sun-veil-darkening v1",
+  "case": "golden_hour glare_offset_3_hidden vs _hidden_off (no aircraft)",
+  "before": "SUN-01-05 final capture (veil mixed toward the disc colour)",
+  "after": "SUN-02b (veil colour >= 1.1 x sky around the sun)",
+  "results": {
+    "before": {
+      "darkened_px": 195,
+      "max_darkening_levels": 9.135400000000004,
+      "brightened_px": 352693
+    },
+    "after": {
+      "darkened_px": 0,
+      "max_darkening_levels": 1.4303999999999917,
+      "brightened_px": 382181
+    }
+  }
+}

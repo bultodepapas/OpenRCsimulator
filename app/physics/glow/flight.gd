@@ -16,6 +16,7 @@ const Propulsion := preload("res://physics/propulsion.gd")
 const Coupling := preload("res://physics/rotor_coupling.gd")
 const ResourceStep := preload("res://physics/resource_event_step.gd")
 const FuelFeed := preload("res://physics/glow/fuel_feed.gd")
+const Carb := preload("res://physics/glow/carburetor.gd")
 const LEGACY_SIZE := 17
 const LINE_FUEL_INDEX := 17
 const SOURCE_MODE_INDEX := 18
@@ -23,13 +24,22 @@ const SIZE := 19
 const MODE_STARVED := 0
 const MODE_MAIN_TANK := 1
 const MODE_FEED_LINE := 2
-const LAW := "glow-mean-cycle-finite-tank-line-pickup-v3"
-const CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
+## Fixed-point passes and tolerance for the initial needled fuel-transport seed (fuel_feed installations).
+const SEED_PASSES := 8
+const SEED_TOLERANCE := 1.0e-15
+const LAW := "glow-mean-cycle-carburettor-v4"
+const CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
 const EVALUATOR_META := &"_glow_prepared_evaluator"
 const PROPELLER_EVALUATOR_META := &"_glow_prepared_propeller"
 const VIBRATION_EVALUATOR_META := &"_glow_source_vibration"
 const EVALUATOR_IDENTITY_META := &"_glow_prepared_identity"
+
+## NITRO-06: the charge per cycle the carburettor admits at this barrel opening and speed, relative to wide open.
+static func admission_at(install: Dictionary, opening: float, rpm: float) -> float:
+	return Carb.admission(opening, rpm, Source.breathing(install.profile, rpm),
+		float(install.profile.parameters.displacement_m3), float(install.profile.identity.cycle_revolutions),
+		float(install.throttle_capacity_m3_s))
 
 ## Session demand may include an injected receiver/throttle fault. Standalone physical fixtures keep raw inputs.
 static func _throttle(owner: Node) -> float:
@@ -127,10 +137,10 @@ static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Arr
 	if not made.ok: return PackedFloat64Array([NAN])
 	var state: Dictionary=made.state
 	state.servo_fraction=_throttle(owner)
-	state.air_fraction=install.settings.idle_admission+(1.0-install.settings.idle_admission)*state.servo_fraction
+	state.air_fraction=Carb.opening(state.servo_fraction,float(install.throttle_idle_offset),float(install.throttle_travel_exponent))
 	var ambient: Dictionary = _environment(owner, body)
 	if not ambient.get("ok", false): return PackedFloat64Array([NAN])
-	var point: Dictionary=Source.evaluate(install.profile,aux[0],state.air_fraction,install.profile.operation.nominal_mixture,
+	var point: Dictionary=Source.evaluate(install.profile,aux[0],admission_at(install,state.air_fraction,aux[0]),install.profile.operation.nominal_mixture,
 		1.225*float(ambient.engine_charge_ratio),owner.engine_running)
 	if not point.ok: return PackedFloat64Array([NAN])
 	state.fuel_transport_kg_s=point.delivered_fuel_kg_s
@@ -168,6 +178,20 @@ static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Arr
 		var telemetry: Dictionary=initial_point.get("telemetry",{})
 		var target: float=float(telemetry.get("fuel_target_kg_s",NAN))
 		if not is_finite(target) or target<0.0: return PackedFloat64Array([NAN])
+		# The needled target itself depends on the transport through the actual mixture, the shaft torque and the
+		# apparent gravity at the tank; settle that fixed point (it converges in one or two passes) so the first
+		# stage starts with a zero transport rate.
+		for _pass in SEED_PASSES:
+			state.fuel_transport_kg_s=target
+			stage_values=put_state(out,state)
+			for _i in owner.wheel_count(): stage_values.append(0.0)
+			initial_point=point(owner,body,stage_values,0.0)
+			if not initial_point.get("ok",false): return PackedFloat64Array([NAN])
+			var settled: float=float(initial_point.get("telemetry",{}).get("fuel_target_kg_s",NAN))
+			if not is_finite(settled) or settled<0.0: return PackedFloat64Array([NAN])
+			var moved: bool=absf(settled-target)>SEED_TOLERANCE*maxf(1.0,absf(target))
+			target=settled
+			if not moved: break
 		state.fuel_transport_kg_s=target
 	return put_state(out,state)
 
@@ -452,7 +476,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 			var candidate_feed: Dictionary=FuelFeed.evaluate(install.fuel_feed,airframe.external.slice(0,3),
 				feed_mass.mass_kg,maxf(main_fuel,install.unusable_fuel_kg+1.0e-30),
 				install.capacity_fuel_kg,install.unusable_fuel_kg,
-				state.air_fraction,rpm,install.tank_position,install.tank_size,tank_arm,
+				admission_at(install,state.air_fraction,rpm),rpm,install.tank_position,install.tank_size,tank_arm,
 				candidate_coupling.alpha_body,omega,pickup)
 			if not candidate_feed.get("ok",false): return {ok=false}
 			return {ok=true,target_factor=float(candidate_feed.factor),evaluation=candidate_evaluation,
@@ -482,7 +506,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		pickup_for_sample=PackedFloat64Array()
 		feed=FuelFeed.evaluate(install.fuel_feed,airframe.external.slice(0,3),feed_mass.mass_kg,
 			maxf(main_fuel,0.0),install.capacity_fuel_kg,install.unusable_fuel_kg,
-			state.air_fraction,rpm,install.tank_position,install.tank_size,tank_arm_for_pickup,
+			admission_at(install,state.air_fraction,rpm),rpm,install.tank_position,install.tank_size,tank_arm_for_pickup,
 			coupling_for_pickup.alpha_body,body.slice(RB.RATE,RB.RATE+3),pickup_for_sample)
 		if not feed.get("ok",false): return {ok=false}
 		feed.main_tank_pressure_factor=float(feed.factor)
@@ -545,7 +569,7 @@ static func _stage_coupling(owner: Node, body: PackedFloat64Array, values: Packe
 	var locked: bool=false
 	if values[0]<=0.0:
 		# Static friction holds a stopped crank while the propeller can break it away in airflow.
-		var coast: Dictionary=Source.evaluate(install.profile,0.001,state.air_fraction,values[12],
+		var coast: Dictionary=Source.evaluate(install.profile,0.001,admission_at(install,state.air_fraction,0.001),values[12],
 			1.225*float(ambient.engine_charge_ratio),false)
 		if not coast.get("ok",false): return {ok=false}
 		var friction: float=-float(coast.shaft_torque_nm)

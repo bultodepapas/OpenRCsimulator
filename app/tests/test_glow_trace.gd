@@ -86,8 +86,8 @@ func _test_live_glow_traces() -> void:
 			str(trace.columns()))
 		_check("" + family + " metadata preserves cycle family", trace.meta.glow_family == family
 			and trace.meta.metadata_schema == "openrc-flight-meta v10"
-			and trace.meta.propulsion_model == Trace.GLOW_LAW_V3
-			and trace.meta.continuous_layout == Trace.GLOW_CONTINUOUS_LAYOUT_V3
+			and trace.meta.propulsion_model == Trace.GLOW_LAW_V4
+			and trace.meta.continuous_layout == Trace.GLOW_CONTINUOUS_LAYOUT_V4
 				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if session.wheel_count() > 0 else ""))
 		if not trace_ready:
 			printerr("Trace rejected current Glow metadata: invalid=%s metadata=%s" % [trace._invalid_weather, trace.meta])

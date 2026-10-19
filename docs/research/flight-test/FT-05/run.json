@@ -1,0 +1,103 @@
+{
+  "card": "ft-card-v5",
+  "commit": "890b94fcd748f5e722cc4b75b25a61deca079bdd",
+  "dirty_paths": [
+    "app/physics/glow/carburetor.gd",
+    "app/physics/glow/flight.gd",
+    "app/render/landscape_upgrade/options.gd",
+    "app/render/landscape_upgrade/sun_glare.gd",
+    "app/render/sun/skyline.gd",
+    "app/render/sun/sun_optics.gd",
+    "app/tests/capture_landscape_upgrade.gd",
+    "app/tests/test_sun_flight.gd",
+    "app/tests/test_sun_optics.gd",
+    "app/tests/test_sun_skyline.gd",
+    "research/flight-test/README.md",
+    "research/flight-test/summarize.py",
+    "app/physics/glow/carburetor.gd.uid",
+    "app/render/sun/skyline.gd.uid",
+    "app/render/world/moon_glare.gd.uid",
+    "app/tests/test_glow_carburetor.gd.uid",
+    "app/tests/test_sun_flight.gd.uid",
+    "app/tests/test_sun_skyline.gd.uid",
+    "app/tests/test_world_moon_eclipse.gd.uid",
+    "app/tests/test_world_moon_glare.gd.uid"
+  ],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "app",
+  "only": null,
+  "aircraft": {
+    "jensen-das-ugly-stik-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 485.3,
+      "valid_tests": 40,
+      "tests": 40,
+      "data_file": "data/aircraft/jensen_ugly_stik_60.json",
+      "data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+    },
+    "stik-glow-61fx-2t": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 2144.9,
+      "valid_tests": 39,
+      "tests": 40,
+      "data_file": "data/aircraft/stik_glow_61fx_2t.json",
+      "data_sha256": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a"
+    },
+    "stik-glow-55ax-2t": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 2163.9,
+      "valid_tests": 40,
+      "tests": 40,
+      "data_file": "data/aircraft/stik_glow_55ax_2t.json",
+      "data_sha256": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3"
+    },
+    "stik-glow-fs64v-4t": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 2320.9,
+      "valid_tests": 39,
+      "tests": 40,
+      "data_file": "data/aircraft/stik_glow_fs64v_4t.json",
+      "data_sha256": "2ffecf15df53f55876756fb47213714a536dfd28a0b432863bdb34fc4eeee796"
+    },
+    "gp-extra-300s-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 1075.8,
+      "valid_tests": 38,
+      "tests": 40,
+      "data_file": "data/aircraft/gp_extra_300s_60.json",
+      "data_sha256": "62c76bc514b923b1ada51a0770378f7d085038fd6ae1bf4a92160d55cc55f69d"
+    },
+    "p51d-mustang-120": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 1112.2,
+      "valid_tests": 40,
+      "tests": 40,
+      "data_file": "data/aircraft/p51d_mustang_120.json",
+      "data_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d"
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 770.9,
+      "valid_tests": 39,
+      "tests": 40,
+      "data_file": "data/aircraft/sebart_avanti_s_a200.json",
+      "data_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea"
+    },
+    "turbo-lumber-evolution": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 581.9,
+      "valid_tests": 39,
+      "tests": 40,
+      "data_file": "data/aircraft/turbo_lumber_evolution.json",
+      "data_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf"
+    }
+  }
+}
