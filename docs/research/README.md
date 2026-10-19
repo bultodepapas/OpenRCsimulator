@@ -97,7 +97,7 @@ Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [D
 
 ### Flight model and simulation
 
-Use the [flight-model audit](flight-model-robustness-audit.md), [repair implementation record](flight-repair-implementation.md) and [D8b-R2 pull-up investigation](flight-robustness/D8b-R2/README.md) for the main handling history. Current implementation boundaries are in [STACK](../../STACK.md); the [roadmap](../../ROADMAP.md) owns remaining gates.
+Use the [flight-model audit](flight-model-robustness-audit.md), [repair implementation record](flight-repair-implementation.md) and [D8b-R2 pull-up investigation](flight-robustness/D8b-R2/README.md) (with the [D8b-R2d analog evidence: measured Ultra Stick 120 lift retention and roll damping, scoring bench and candidate results, 2026-10-19](flight-robustness/D8b-R2/analog/README.md)) for the main handling history. Current implementation boundaries are in [STACK](../../STACK.md); the [roadmap](../../ROADMAP.md) owns remaining gates.
 
 | Topic | Evidence entry points |
 | --- | --- |
