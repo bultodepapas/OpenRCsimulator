@@ -28,7 +28,7 @@ func _test_tick_rate_determinism() -> void:
 	var logs: Array = []
 	for rate in [30, 60, 144]:
 		var run: Dictionary = _schedule_tape(int(rate))
-		check("tick tape runs at %d fps" % rate, bool(run.ok), str(run.error))
+		check("tick tape runs at %d fps" % rate, bool(run.ok), str(run.get("error", "")))
 		logs.append(run.log)
 	check("CPU smoke event logs match at 30, 60, and 144 fps", logs[0] == logs[1] and logs[1] == logs[2])
 	check("pulse and palette transitions were emitted", logs[0].size() > 20)

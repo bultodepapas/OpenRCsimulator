@@ -403,7 +403,7 @@ func _prime_transforms(pose: Dictionary) -> void:
 		var transform: Variant = _slot_transform(transforms, slot)
 		if transform != null:
 			_last_transforms[slot] = transform
-			_primed_slots[slot] = false
+			_primed_slots[slot] = true
 		else:
 			_last_transforms.erase(slot)
 			_primed_slots[slot] = false
