@@ -201,6 +201,8 @@ The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begi
 
 [Aircraft reference index](aircraft-reference-index.md) maps the owner-supplied local references by aircraft identity; the source files themselves are local only. [RC-class aerodynamic data sources](flight-dynamics/rc-aero-data-sources.md) registers flight-identified and wind-tunnel data of other RC airframes (Ultra Stick 25e/120 incl. NASA FASER, ShowTime 50, scale Cessna) with URLs and hashes.
 
+[RC aerodynamic validation library, 2026-10-18](flight-dynamics/rc-validation-library-2026-10-18/README.md) expands the scientific source collection with Stik-family studies, flying-wing research, real flight logs, low-Reynolds polars and propeller/slipstream experiments. Downloaded originals remain local-only under ignored `references/`; topic manifests and the searchable catalogue retain provenance and comparison limits.
+
 ## Naming
 
 | Pattern | Use | Example |

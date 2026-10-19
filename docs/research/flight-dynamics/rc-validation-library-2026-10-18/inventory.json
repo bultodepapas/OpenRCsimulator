@@ -1,0 +1,42 @@
+{
+  "format": "openrc-literature-inventory v1",
+  "generator": "research/reference-library/catalog.py --write",
+  "checked_utc": "2026-10-19T01:26:52.933019+00:00",
+  "records": 120,
+  "bibliography_entries": 110,
+  "records_without_local_file": 17,
+  "verified_local_paths": 98,
+  "distinct_local_contents": 93,
+  "local_pdf_paths": 79,
+  "local_zip_paths": 12,
+  "new_collection_paths": 90,
+  "reused_reference_paths": 8,
+  "total_local_bytes": 617240034,
+  "categories": {
+    "conventional": {
+      "records": 22,
+      "records_with_local_file": 19
+    },
+    "flight-data": {
+      "records": 23,
+      "records_with_local_file": 15
+    },
+    "flying-wings": {
+      "records": 24,
+      "records_with_local_file": 19
+    },
+    "low-reynolds": {
+      "records": 41,
+      "records_with_local_file": 40
+    },
+    "propulsion": {
+      "records": 10,
+      "records_with_local_file": 10
+    },
+    "unsteady-stall": {
+      "records": 0,
+      "records_with_local_file": 0
+    }
+  },
+  "failures": []
+}

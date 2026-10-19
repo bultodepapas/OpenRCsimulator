@@ -25,7 +25,12 @@ data = json.loads((ROOT / "app/data/aircraft/jensen_ugly_stik_60.json").read_tex
 S = data["reference"]["wing_area"]["value"]
 b = data["reference"]["wing_span"]["value"]
 AR = b * b / S
-fin_only = data["aero"]["coefficients"]["Cnb"]["value"]
+# The isolated fin term a_v·S_v/S·l_v/b about the aero reference point (efficiency 1), from the vertical-surface data.
+# Computed rather than read from Cnb: since D10-R2 the data Cnb already carries the predicted efficiency and body term.
+vertical = data["aero"]["surfaces"]["vertical"]
+arp_x = data["reference"]["aero_reference_point"]["value"][0]
+fin_only = (vertical["lift_slope"]["value"] * vertical["area"]["value"] / S
+            * (vertical["position"]["value"][0] - arp_x) / b)
 
 stations = geometry["fuselage_stations"]
 z = [s[0] for s in stations]
@@ -74,7 +79,7 @@ beta0 = 1.0 / e ** 2 - (1.0 - e * e) / (2.0 * e ** 3) * log_term
 k_lamb = beta0 / (2.0 - beta0) - alpha0 / (2.0 - alpha0)
 munk = -2.0 * volume * k_lamb / (S * b)
 
-print(f"wing S {S:.6f} m2, b {b:.3f} m, AR {AR:.3f}; data Cnβ (fin only, efficiency 1) {fin_only:.5f} /rad")
+print(f"wing S {S:.6f} m2, b {b:.3f} m, AR {AR:.3f}; isolated fin Cnβ (efficiency 1, about the ARP) {fin_only:.5f} /rad")
 print(f"fuselage stations {z[0]:+.3f}..{z[-1]:+.3f} m (firewall to tail; engine and spinner excluded): "
       f"length {length:.3f} m, volume {volume * 1e3:.2f} L, max section {area[i_max] * 1e4:.1f} cm2 "
       f"(h {height[i_max]:.4f}, w {w_at_max:.4f}), max height {h_max:.4f} m")

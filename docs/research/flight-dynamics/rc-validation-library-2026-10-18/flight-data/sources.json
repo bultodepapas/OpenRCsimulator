@@ -1,0 +1,664 @@
+[
+  {
+    "id": "uavdb-cub-measured-flight-csv",
+    "title": "Cub Crafters CC11-100 Sport Cub S2 UAVDB flight-test CSV archive",
+    "authors": [
+      "Or D. Dantsker",
+      "Moiz Vahora",
+      "Renato Mancuso"
+    ],
+    "year": 2019,
+    "source_url": "https://uavdb.org/cub.php",
+    "download_url": "https://uavdb.org/download/cub/data/Cub_flight_data_csv.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/uavdb-cub-flight-data-csv.zip",
+    "type": "flight-test-dataset",
+    "topics": [
+      "RC flight telemetry",
+      "control response",
+      "stall",
+      "spin",
+      "propulsion telemetry"
+    ],
+    "relevance": "A 26%-scale Cub Crafters CC11-100 Sport Cub S2 collection with recorded responses for control inputs, descents, phugoids, stalls and six named spin conditions. The metadata describes IMU, GPS, airspeed, position, motor, battery and control-surface channels, so the logs can support time-response, trim, stall-entry and spin-trend comparisons.",
+    "limitations": "Related RC airframe, not the Jensen Ugly Stik 60. The CSV archive combines measured, filtered and derived channels; it is not the original DAQ binary. The archive header defines units but not a single uniform rate. An inspected high-rate spin file has repeated Time values, so do not assume a fixed-step grid from its filename.",
+    "access": "Full 53-CSV ZIP downloaded; ZIP member CRCs pass. UAVDB FAQ says its data are free to download and use with citation; no standard data license was identified.",
+    "license": "UAVDB FAQ states data are free to download and use with citation; no separate standardized license stated.",
+    "read_depth": "Full archive integrity-checked without extraction. Inspected member list, header.txt units/processing notes, and initial rows of one left/no-flap high-rate spin file; did not parse all CSV rows. Sample shows nonuniform/repeated timestamps.",
+    "sha256": "5e5d2842f18fb9c967c864dbee6278924f5255b1bd4c4503508707f42c92b161",
+    "bytes": 14606059,
+    "retrieved_utc": "2026-10-19T01:15:48.741088+00:00"
+  },
+  {
+    "id": "dantsker-2019-cub-flight-ground-testing",
+    "title": "Flight & Ground Testing Data Set for Subscale GA Aircraft: 26%-scale Cub Crafters CC11-100 Sport Cub S2",
+    "authors": [
+      "Or D. Dantsker",
+      "Moiz Vahora",
+      "Renato Mancuso"
+    ],
+    "year": 2019,
+    "source_url": "https://uavdb.org/download/cub/AIAA_2019-1616_SciTech_Cub_highquality.pdf",
+    "download_url": "https://uavdb.org/download/cub/AIAA_2019-1616_SciTech_Cub_highquality.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/dantsker-2019-uavdb-cub-flight-data.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "RC flight testing",
+      "dataset provenance",
+      "stall",
+      "spin",
+      "instrumentation"
+    ],
+    "relevance": "Primary description of the flight and ground data package behind the local UAVDB Cub archive. It documents the RC test aircraft, instrumentation, flight-test plan and examples of measured aircraft responses.",
+    "limitations": "Paper plots and reported observations are not a substitute for the archived time series. It describes the Cub testbed, not an Ugly Stik, and the available CSV archive contains transformed/filtered fields alongside measured channels.",
+    "access": "Downloaded from the UAVDB author/institutional site; PDF signature and text verified.",
+    "license": "Not stated; publicly accessible author-hosted AIAA copy, redistribution not inferred.",
+    "read_depth": "PDF metadata and extracted text checked; read aircraft/instrumentation and dataset sections, not every figure/table.",
+    "sha256": "eae1da399d9073635100e798cab2fbdbedc82b0061e111893cbbbb72d21697ab",
+    "bytes": 5822307,
+    "retrieved_utc": "2026-10-19T01:15:37.843992+00:00"
+  },
+  {
+    "id": "uavdb-avistar-data-record",
+    "title": "UAVDB Great Planes Avistar Elite maneuver-data record",
+    "authors": [],
+    "year": 2019,
+    "source_url": "https://uavdb.org/avistar-data.php",
+    "download_url": null,
+    "local_path": null,
+    "type": "dataset-record",
+    "topics": [
+      "RC trainer",
+      "maneuver flight data",
+      "stall",
+      "system identification"
+    ],
+    "relevance": "An especially close RC trainer lead: the Avistar Elite page describes 400 Hz data acquisition, GPS/IMU, pitot-static airspeed, PWM control commands and propulsion signals. The site indicates that a planned maneuver-data release would be directly useful for trim, control response and stall comparisons.",
+    "limitations": "The current official data page says “Coming Soon!!”; no flight logs were downloadable when checked. The associated 2020 paper says its pitot-static probe was planned for installation, so measured airspeed must be verified against the exact data release/configuration.",
+    "access": "Metadata-only; official data page currently lists no files.",
+    "license": "Not stated; publicly accessible metadata, redistribution not inferred.",
+    "read_depth": "Read official UAVDB data and airframe pages; verified the current data-page status and instrument description. No measurements available to parse.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.603726+00:00"
+  },
+  {
+    "id": "dantsker-2020-avistar-flight-ground-data",
+    "title": "Flight & Ground Testing Data Set for an Unmanned Aircraft: Great Planes Avistar Elite",
+    "authors": [
+      "Or D. Dantsker",
+      "Marco Caccamo",
+      "Moiz Vahora",
+      "Renato Mancuso"
+    ],
+    "year": 2020,
+    "source_url": "https://uavdb.org/download/avistar/6.2020-0780.pdf",
+    "download_url": "https://uavdb.org/download/avistar/6.2020-0780.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/dantsker-2020-uavdb-avistar-flight-ground-data.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "RC trainer",
+      "flight maneuvers",
+      "stall",
+      "system identification",
+      "instrumentation"
+    ],
+    "relevance": "Primary flight and ground test study of a conventional high-wing RC trainer (3.70 kg gross, 1.59 m span). The paper describes 400 Hz acquisition, repeated trim/control-response maneuvers, nominal 20 m/s flight, and stall tests at standard and heavier mass; it reports that the standard-mass airplane mushed/slipped while a 250 g heavier configuration showed a clearer stall.",
+    "limitations": "The published paper contains plots and aggregate results rather than downloadable telemetry. Its 2019 instrumentation section says the pitot-static probe would be installed later; do not treat airspeed in this paper’s flight histories as a measured pitot channel without checking the relevant file. UAVDB now lists a pitot probe but still has no current maneuver-data download.",
+    "access": "Downloaded from the UAVDB site; PDF signature, metadata and searchable text verified.",
+    "license": "Not stated; publicly accessible author-hosted AIAA copy, redistribution not inferred.",
+    "read_depth": "PDF metadata and extracted text checked; read platform, instrumentation, maneuver and stall sections and searched figures/results; raw rows unavailable.",
+    "sha256": "e7fdc2e1932bc81a18169075b57ebb2fd06ef8f6a88df0bc32f90c50862ac310",
+    "bytes": 7920926,
+    "retrieved_utc": "2026-10-19T01:17:49.915057+00:00"
+  },
+  {
+    "id": "nasa-cr-2020-220564-umn-ultrastick-hq",
+    "title": "Defining Handling Qualities of Unmanned Aerial Systems: Phase II Final Report",
+    "authors": [
+      "David H. Klyde",
+      "Chase P. Schulze",
+      "Justin P. Miller",
+      "Jose A. Manriquez",
+      "Aditya Kotikalpudi",
+      "David G. Mitchell",
+      "Peter J. Seiler",
+      "Christopher Regan",
+      "Brian Taylor",
+      "Curt Olson",
+      "Natalia Alexandrov"
+    ],
+    "year": 2020,
+    "source_url": "https://ntrs.nasa.gov/citations/20200002019",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20200002019/downloads/20200002019.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/nasa-cr-2020-220564-uav-handling-qualities.pdf",
+    "type": "technical-report",
+    "topics": [
+      "Ultra Stick 120",
+      "flight-test system identification",
+      "handling qualities",
+      "maneuver response"
+    ],
+    "relevance": "A substantial measured-flight anchor for the 1.92 m UMN Ultra Stick 120 RC-derived UAS. The report documents actual flight-test response data at 23 m/s cruise and 17 m/s low-speed/50%-flap condition, nominal and aft-CG configurations, added feedback delays, and multi-sine, frequency-sweep, doublet and pulse excitations; Appendix C contains flight-test plots.",
+    "limitations": "The report’s plots and model comparisons are not an open raw telemetry log. The approach condition was flown level at lower speed with flaps, not as a real landing approach. Transfer to an Ugly Stik requires matching geometry, mass, CG, control and propulsion configuration.",
+    "access": "Full NASA NTRS report downloaded; NTRS marks distribution Public and Public Use Permitted.",
+    "license": "NASA Technical Report record: Public Use Permitted.",
+    "read_depth": "PDF signature/metadata and complete searchable text verified. Read Ultra Stick platform, run log, excitation and Appendix C sections; did not digitize all plotted traces.",
+    "sha256": "14c8404c175e3e6b88fd5900b091882da8748afc8015f1703cb228ce3fc9dba6",
+    "bytes": 20087471,
+    "retrieved_utc": "2026-10-19T01:15:55.877343+00:00"
+  },
+  {
+    "id": "dorobantu-2012-ultrastick25e-sysid",
+    "title": "System Identification for Small, Low-Cost, Fixed-Wing Unmanned Aircraft",
+    "authors": [
+      "Andrei Dorobantu",
+      "Austin Murch",
+      "Bérénice Mettler",
+      "Gary Balas"
+    ],
+    "year": 2012,
+    "source_url": "https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20(spring%202013)/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf",
+    "download_url": "https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20(spring%202013)/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf",
+    "local_path": "references/rc-aero-data/dorobantu-2012-sysid-ultra-stick-25e.pdf",
+    "type": "journal-paper",
+    "topics": [
+      "Ultra Stick 25e",
+      "frequency-domain system identification",
+      "control response",
+      "low-cost sensors"
+    ],
+    "relevance": "Flight-identifies an RC Ultra Stick 25e (1.959 kg, 1.27 m span) using frequency-response fits and validates linear/nonlinear models against time histories. It reports 50 Hz synchronized IMU and command data, angular-rate/acceleration noise, and a disciplined route from chirp excitation to identified model.",
+    "limitations": "Related RC airframe, not the project aircraft; article does not provide the raw time-series archive. Identified linear model/plots should be compared only at matched trim, control and normalization conventions.",
+    "access": "Reuses the exact existing local paper; no duplicate copy made.",
+    "license": "Copyright authors/AIAA; author-hosted institutional copy, reference only; redistribution not inferred.",
+    "read_depth": "Existing PDF signature/text and source-manifest SHA-256 reused; inspected platform, instrumentation, excitation and validation passages.",
+    "sha256": "e3513f34a9a893656de3c3dc6ced0d188acbd8927957df1785a7adf5aa654885",
+    "bytes": 2675601,
+    "retrieved_utc": "2026-10-18T22:37:40.718391+00:00"
+  },
+  {
+    "id": "dorobantu-2013-umn-test-platforms",
+    "title": "Test Platforms for Model-Based Flight Research",
+    "authors": [
+      "Andrei Dorobantu"
+    ],
+    "year": 2013,
+    "source_url": "https://dept.aem.umn.edu/~SeilerControl/Thesis/2013/Dorobantu_13PhD_TestPlatformsForModelBasedFlightResearch.pdf",
+    "download_url": "https://dept.aem.umn.edu/~SeilerControl/Thesis/2013/Dorobantu_13PhD_TestPlatformsForModelBasedFlightResearch.pdf",
+    "local_path": "references/rc-aero-data/dorobantu-2013-umn-phd-test-platforms.pdf",
+    "type": "doctoral-thesis",
+    "topics": [
+      "Ultra Stick 25e",
+      "flight-test platform",
+      "system identification",
+      "sensor architecture"
+    ],
+    "relevance": "Detailed UMN research-aircraft and avionics account with flight-test design and Ultra Stick 25e identification/validation results. It helps interpret the companion 2012 paper and distinguish flight-equipped 25e/120 vehicles from the wind-tunnel-only Ultra Stick Mini.",
+    "limitations": "Thesis is a measurement/method report, not a downloadable public flight-log set. Results are from UMN configurations and should not be copied as Ugly Stik-specific coefficients.",
+    "access": "Reuses the exact existing local thesis; no duplicate copy made.",
+    "license": "Copyright author/University of Minnesota; free institutional download, local reference only; redistribution not inferred.",
+    "read_depth": "Existing PDF signature/text and source-manifest SHA-256 reused; inspected vehicle, avionics, system-identification and flight-data sections.",
+    "sha256": "34ae653182350c4ccb4a2583c283fc429745c5bc3bdd61c9c9a1e7d63266188a",
+    "bytes": 5825064,
+    "retrieved_utc": "2026-10-18T22:37:39.402386+00:00"
+  },
+  {
+    "id": "lie-2014-umn-us120-synthetic-airdata",
+    "title": "Synthetic Air Data Estimation: A Case Study of Model-Aided Estimation",
+    "authors": [
+      "F. Adhika Pradipta Lie"
+    ],
+    "year": 2014,
+    "source_url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
+    "local_path": "references/rc-aero-data/lie-2014-umn-phd-synthetic-air-data-us120.pdf",
+    "type": "doctoral-thesis",
+    "topics": [
+      "Ultra Stick 120",
+      "flight sensors",
+      "airspeed estimation",
+      "flight-test observability"
+    ],
+    "relevance": "Documents actual Ultra Stick 120 sensor/flight-test evidence useful for comparing air-data estimators and deciding which simulator states are directly measured versus reconstructed. The instrumentation includes inertial/navigation data and air-data measurements such as pitot and vanes.",
+    "limitations": "Primary focus is air-data estimation rather than aircraft aerodynamic identification; no raw log archive is bundled. Estimated alpha/beta/airspeed states are not ground truth and should not be conflated with independent sensor measurements.",
+    "access": "Reuses the exact existing local thesis; no duplicate copy made.",
+    "license": "Copyright author/University of Minnesota; free institutional download, local reference only; redistribution not inferred.",
+    "read_depth": "Existing PDF signature/text and source-manifest SHA-256 reused; thesis full text searchable; inspected instrumentation/estimation scope and appendix model tables.",
+    "sha256": "efc00f21d2f8f88e0392ccb71fd11e053a38b7fa09b9e5f026171a92611fbf88",
+    "bytes": 17982418,
+    "retrieved_utc": "2026-10-18T22:37:43.625403+00:00"
+  },
+  {
+    "id": "owens-cox-morelli-2006-faser-platform",
+    "title": "Development of a Low-Cost Sub-Scale Aircraft for Flight Research: The FASER Project",
+    "authors": [
+      "D. Bruce Owens",
+      "David E. Cox",
+      "Eugene A. Morelli"
+    ],
+    "year": 2006,
+    "source_url": "https://ntrs.nasa.gov/citations/20060022541",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20060022541/downloads/20060022541.pdf",
+    "local_path": "references/rc-aero-data/faser-2006-aiaa-2006-3306-owens-cox-morelli.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "FASER Ultra Stick 120",
+      "flight instrumentation",
+      "flight data compatibility",
+      "RC flight testing"
+    ],
+    "relevance": "A first-party design and instrumentation account for the NASA FASER research aircraft based on an RC Ultra Stick 120. It describes 50 Hz IMU/INS and GPS, control-surface potentiometers, wingtip alpha/beta vanes, velocity probes, battery telemetry, 400 Hz oversampling for analog channels, flight operations and data compatibility.",
+    "limitations": "The paper reports instrumentation and selected plots, not a downloadable raw log set. Historical avionics and signal conditioning differ from the simulator’s sensor model; raw sensor values required systematic corrections.",
+    "access": "Reuses exact existing NASA-hosted PDF; no duplicate copy made.",
+    "license": "NASA-hosted AIAA paper; no separate reuse license stated, redistribution not inferred.",
+    "read_depth": "Existing PDF signature/text and source-manifest hash reused; inspected instrumentation/rates, telemetry and flight-data sections.",
+    "sha256": "2e38c7bbcc87c9194d901f0814ad5da6f134935b6ea9862322bd91acce971545",
+    "bytes": 902910,
+    "retrieved_utc": "2026-10-18T22:37:55.845451+00:00"
+  },
+  {
+    "id": "hoe-owens-denham-2012-faser-forced-oscillation",
+    "title": "Forced Oscillation Wind Tunnel Testing for FASER Flight Research Aircraft",
+    "authors": [
+      "Garrison Hoe",
+      "D. Bruce Owens",
+      "Casey Denham"
+    ],
+    "year": 2012,
+    "source_url": "https://ntrs.nasa.gov/citations/20120014506",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20120014506/downloads/20120014506.pdf",
+    "local_path": "references/rc-aero-data/faser-2012-aiaa-2012-4645-forced-oscillation.pdf",
+    "type": "wind-tunnel-study",
+    "topics": [
+      "FASER Ultra Stick 120",
+      "dynamic damping",
+      "high angle of attack",
+      "forced oscillation"
+    ],
+    "relevance": "Measured FASER roll/yaw damping across alpha, sideslip, oscillation amplitude, nondimensional rate and reduced frequency, with control-deflection cases. This gives physical dynamic-aerodynamic evidence for a related RC airframe and documents comparison with UMN Ultra Stick flight-rate data.",
+    "limitations": "Wind-tunnel forced oscillations are not free-flight telemetry. The report’s coefficients depend on motion/test setup and should not be treated as a direct measured simulator trajectory.",
+    "access": "Reuses exact existing NASA-hosted PDF; no duplicate copy made.",
+    "license": "NASA-hosted AIAA paper; no separate reuse license stated, redistribution not inferred.",
+    "read_depth": "Existing PDF signature/text and source-manifest hash reused; read abstract and experimental/flight-data comparison passages.",
+    "sha256": "fc4f300af735e8e9f0a6ada1b7b10050134bae02ee54f55d2586616aef82bab1",
+    "bytes": 1279192,
+    "retrieved_utc": "2026-10-18T22:37:57.678458+00:00"
+  },
+  {
+    "id": "denham-owens-2016-faser-spin",
+    "title": "Rotary Balance Wind Tunnel Testing for the FASER Flight Research Aircraft",
+    "authors": [
+      "Casey Denham",
+      "D. Bruce Owens"
+    ],
+    "year": 2016,
+    "source_url": "https://ntrs.nasa.gov/citations/20160010112",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20160010112/downloads/20160010112.pdf",
+    "local_path": "references/rc-aero-data/faser-2016-rotary-balance.pdf",
+    "type": "wind-tunnel-study-with-flight-spin-comparison",
+    "topics": [
+      "FASER Ultra Stick 120",
+      "spin",
+      "post-stall",
+      "rotary derivatives",
+      "flight comparison"
+    ],
+    "relevance": "Combines 20-ft vertical spin-tunnel rotary-balance data (alpha 0–50°, beta −5–10°, nondimensional spin rate −0.5 to 0.5) with an actual FASER flight-spin observation. Especially useful for testing whether a model can represent spin-entry tendencies and the mismatch between steady-spin prediction and a dynamic flight event.",
+    "limitations": "Rotary-balance results are tunnel measurements. The paper reports only one flight-spin example and the IMU roll-rate gyro saturated during it; spin rates are partly estimated from video/other channels and the predicted equilibrium spin was not found.",
+    "access": "Reuses exact existing NASA-hosted PDF; no duplicate copy made.",
+    "license": "NASA-hosted AIAA paper; no separate reuse license stated, redistribution not inferred.",
+    "read_depth": "Existing PDF signature/text and source-manifest hash reused; inspected abstract and flight-spin/tunnel result passages.",
+    "sha256": "4f0048ce9fc0d195d6db22c9d08505add41c58736008993fbf56b7e6ec8a457a",
+    "bytes": 2087800,
+    "retrieved_utc": "2026-10-18T22:37:59.440465+00:00"
+  },
+  {
+    "id": "venkataraman-2019-rudderless-flight-sysid",
+    "title": "System Identification for a Small, Rudderless, Fixed-Wing Unmanned Aircraft",
+    "authors": [
+      "Raghu Venkataraman",
+      "Peter Seiler"
+    ],
+    "year": 2019,
+    "source_url": "https://dept.aem.umn.edu/~./groups/SeilerControl/Papers/2019/VenkataramanEtAl_19JA_SystemIDForASmallRudderlessFixedWingUAV.pdf",
+    "download_url": "https://dept.aem.umn.edu/~./groups/SeilerControl/Papers/2019/VenkataramanEtAl_19JA_SystemIDForASmallRudderlessFixedWingUAV.pdf",
+    "local_path": "references/rc-aero-data/venkataraman-2019-sysid-rudderless-uav.pdf",
+    "type": "journal-paper",
+    "topics": [
+      "fixed-wing flight system identification",
+      "elevons",
+      "flight response",
+      "low-cost aircraft"
+    ],
+    "relevance": "Reports flight experiments and model validation for a 1.28 kg, 0.97 m-span rudderless fixed-wing aircraft, including elevator/aileron-equivalent chirp inputs and modal estimates. Useful as a cross-check on roll, Dutch-roll and control-response scales when a conventional four-control RC model is unavailable.",
+    "limitations": "Rudderless elevon aircraft is not a conventional trainer or Ugly Stik; few control effectors make its identifiable derivatives configuration-specific. Raw telemetry is not bundled.",
+    "access": "Reuses exact existing UMN-hosted PDF; no duplicate copy made.",
+    "license": "Copyright authors/AIAA; author-hosted free copy, redistribution not inferred.",
+    "read_depth": "Existing PDF signature/text and source-manifest hash reused; read aircraft/flight-test setup, chirp experiment and validation results.",
+    "sha256": "b4742d27c0c024a3c4175d1782c2fa6fce6c7adb60800e4c4491965e89b74e16",
+    "bytes": 988548,
+    "retrieved_utc": "2026-10-18T22:37:44.956408+00:00"
+  },
+  {
+    "id": "alfa-fixed-wing-flight-data",
+    "title": "AirLab Failure and Anomaly (ALFA) fixed-wing flight-data corpus",
+    "authors": [
+      "Azarakhsh Keipour",
+      "Mohammadreza Mousaei",
+      "Sebastian Scherer"
+    ],
+    "year": 2020,
+    "source_url": "https://www.cs.cmu.edu/~mmousaei/alfa-dataset/",
+    "download_url": "https://doi.org/10.1184/R1/12707963",
+    "local_path": null,
+    "type": "flight-test-dataset",
+    "topics": [
+      "fixed-wing aircraft",
+      "engine failure",
+      "control-surface faults",
+      "faulted flight response",
+      "flight telemetry"
+    ],
+    "relevance": "Real outdoor Carbon-Z T-28 flight records cover nominal and failed-engine/elevator/aileron/rudder conditions. Official documentation describes 47 processed flight sequences, raw ROS bags, Pixhawk DataFlash and companion-computer telemetry; synchronized commanded/measured attitude, velocity and airspeed are typically 20–25 Hz, with IMU about 10 Hz, GPS about 4–5 Hz and fault labels at 5 Hz.",
+    "limitations": "Fault/anomaly data focus, not systematic aerodynamic identification, stall or spin. It has a 2 m modified Carbon-Z airframe and autopilot loops; use measured-versus-commanded channels carefully. Full collection is 1.7 GB compressed, so not mirrored under the local-size cap.",
+    "access": "Official CMU dataset page links a public KiltHub deposit. Figshare API metadata lists separate processed/raw/DataFlash/telemetry ZIPs and CC BY 4.0; archives not locally downloaded.",
+    "license": "CC BY 4.0 (KiltHub/Figshare dataset metadata).",
+    "read_depth": "Read the official CMU dataset record and the paper abstract/platform/topic/rate tables; checked KiltHub metadata through its public Figshare API. Did not download or parse flight rows.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.785600+00:00"
+  },
+  {
+    "id": "keipour-2020-alfa-dataset-paper",
+    "title": "ALFA: A Dataset for UAV Fault and Anomaly Detection",
+    "authors": [
+      "Azarakhsh Keipour",
+      "Mohammadreza Mousaei",
+      "Sebastian Scherer"
+    ],
+    "year": 2020,
+    "source_url": "https://arxiv.org/abs/1907.06268",
+    "download_url": "https://arxiv.org/pdf/1907.06268",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/keipour-2020-alfa-fixed-wing-flight-dataset.pdf",
+    "type": "journal-paper-preprint",
+    "topics": [
+      "fixed-wing flight data",
+      "Carbon-Z T-28",
+      "faulted response",
+      "sensor rates"
+    ],
+    "relevance": "Primary paper identifies the testbed as a modified 2 m Carbon-Z T-28 with single electric engine, ailerons/flaperons/elevator/rudder, Pixhawk, pitot, GPS and Jetson TX2. It provides the channel/topic inventory, sample rates, fault types and dataset structure needed before using the ALFA corpus.",
+    "limitations": "Only a portion of the corpus is devoted to nominal aircraft behavior; faults are injected by modified autopilot logic and safety pilot retains recovery authority. It is not an open-loop aerodynamic coefficient database.",
+    "access": "Downloaded arXiv author preprint; PDF signature/text verified.",
+    "license": "Not stated; publicly accessible author preprint, redistribution not inferred.",
+    "read_depth": "PDF text parsed for hardware, records, topic names/rates and fault definitions; did not inspect actual logs.",
+    "sha256": "4b6b370357d98704369488af3ff799099b05029c5742f9e84e51edd20d459c54",
+    "bytes": 5317906,
+    "retrieved_utc": "2026-10-19T01:19:40.631109+00:00"
+  },
+  {
+    "id": "idf-ds-240-fixed-wing-flight-telemetry",
+    "title": "Fixed-Wing UAS Telemetry Benchmark (IDF_DS): 240 Flights for ML and Intelligent Trajectory Optimization",
+    "authors": [
+      "César García-Gascón",
+      "Javier Bas-Bolufer",
+      "Pablo Castelló-Pedrero",
+      "Juan Antonio García-Manrique"
+    ],
+    "year": 2025,
+    "source_url": "https://zenodo.org/records/16992976",
+    "download_url": "https://zenodo.org/records/16992976",
+    "local_path": null,
+    "type": "flight-test-dataset",
+    "topics": [
+      "fixed-wing flight telemetry",
+      "IMU/GNSS",
+      "pitot airspeed",
+      "actuator state",
+      "autonomous missions"
+    ],
+    "relevance": "Broad open corpus of 240 outdoor waypoint-guided fixed-wing missions across SpeedyBee/INAV and Pixhawk 6X/PX4+Jetson architectures. The repository and article describe synchronized IMU, GNSS, barometer, pitot where fitted, flight modes, actuator commands/states and electrical metrics; these logs can ground estimator, control-loop, sensor-noise and trajectory comparisons.",
+    "limitations": "Mission/autonomy data are not dedicated high-alpha, stall or spin tests and aircraft/firmware configuration matters. Two ZIPs total about 2.7 GB; no representative archive was mirrored under the 80 MB local cap. Dataset documentation must be followed for channel-specific rates, units, missing/uncalibrated pitot cases and timing.",
+    "access": "Public Zenodo v1.0 record, CC BY 4.0; two downloadable archives are listed (about 2.1 GB and 580.8 MB), not locally mirrored.",
+    "license": "CC BY 4.0 (Zenodo v1.0 metadata).",
+    "read_depth": "Inspected Zenodo record/file metadata and full-text Scientific Data article via PMC XML; did not download/parse telemetry. Article body contains a .975 DOI typo in one data-availability paragraph; its bibliography and Zenodo record identify the dataset DOI as 10.5281/zenodo.16992976.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.797208+00:00"
+  },
+  {
+    "id": "garcia-gascon-2026-idf-ds-data-paper",
+    "title": "An open benchmark dataset for machine learning and intelligent trajectory optimization in fixed-wing unmanned aerial systems",
+    "authors": [
+      "César García-Gascón",
+      "Javier Bas-Bolufer",
+      "Pablo Castelló-Pedrero",
+      "Juan Antonio García-Manrique"
+    ],
+    "year": 2026,
+    "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12982758/",
+    "download_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12982758/",
+    "local_path": null,
+    "type": "data-paper",
+    "topics": [
+      "fixed-wing telemetry",
+      "flight-log provenance",
+      "sensor/firmware comparison",
+      "trajectory data"
+    ],
+    "relevance": "Primary Scientific Data article documents the IDF-DS aircraft, acquisition platforms, 240 missions, over 32 flight-hours, 160 telemetry channels, directory layout and reuse conditions. It is the source for interpreting the large external corpus rather than a source of separately mirrored samples.",
+    "limitations": "Open-access paper is CC BY-NC-ND 4.0, distinct from the dataset’s CC BY 4.0. The article body has one DOI digit typo; use the bibliography/Zenodo canonical record 10.5281/zenodo.16992976. No raw rows were downloaded.",
+    "access": "Full text publicly readable in PMC; PDF download endpoint was not usable in this retrieval session, so no local PDF copy.",
+    "license": "CC BY-NC-ND 4.0 for the article; dataset has separate CC BY 4.0 license.",
+    "read_depth": "Read full article XML from Europe PMC, including methods, Data Records, data-availability statement and article license; no telemetry parsed.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.797210+00:00"
+  },
+  {
+    "id": "ntnu-skywalker-dataset-readme",
+    "title": "Flight-Test System Identification of Leading-Edge Rime-Ice Effects on a Small Fixed-Wing UAV: dataset ReadMe",
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Markus Jürgen Lindner"
+    ],
+    "year": 2026,
+    "source_url": "https://dataverse.no/dataset.xhtml?persistentId=doi:10.18710/NNHVBP",
+    "download_url": "https://dataverse.no/api/access/datafile/275243",
+    "type": "dataset-readme",
+    "topics": [
+      "Skywalker X8",
+      "flight-data provenance",
+      "sensor processing",
+      "time sampling",
+      "icing"
+    ],
+    "relevance": "First-party metadata retained with the paired CSV samples. It documents the full 106-maneuver deposit, file naming/training-validation split, CSV/MAT equivalence, flight campaign, preprocessing, 20 Hz mean EKF synchronization, derived quantities, and the stated CC BY 4.0 terms.",
+    "limitations": "The README describes processing but does not substitute for raw flight logs. Its CC BY 4.0 statement conflicts with the Dataverse record metadata showing CC0 1.0; license scope remains unresolved.",
+    "access": "Downloaded official bundled README and read it in full; see the separate clean and iced sample entries for inspected time-series rows.",
+    "license": "Conflicting statements: bundled README says CC BY 4.0; Dataverse metadata shows CC0 1.0. Do not assume which governs without clarification.",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/ntnu-skywalker-rime-ice-readme.txt",
+    "sha256": "79c4dc14f0b30996df21472a9e06e21f15cc2d0b947825118a698c8f83e42ecb",
+    "bytes": 12461,
+    "retrieved_utc": "2026-10-19T01:17:31.262493+00:00",
+    "read_depth": "Read full 12,461-byte README, including file inventory, methodology, rate/time-sampling warning, channel units and licensing statement."
+  },
+  {
+    "id": "ntnu-skywalker-clean-lat-121-01-15-id-1",
+    "title": "NTNU Skywalker X8 clean lateral 1-2-1 flight-data sample",
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Markus Jürgen Lindner"
+    ],
+    "year": 2026,
+    "source_url": "https://dataverse.no/dataset.xhtml?persistentId=doi:10.18710/NNHVBP",
+    "download_url": "https://dataverse.no/api/access/datafile/275243",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/ntnu-skywalker-clean-lat-121-01-15-id-1.csv",
+    "type": "processed-flight-test-sample",
+    "topics": [
+      "Skywalker X8",
+      "system identification",
+      "lateral response",
+      "icing",
+      "IMU/GPS/airspeed",
+      "control response"
+    ],
+    "relevance": "One locally retained clean-condition sample from the NTNU Skywalker X8 study: lateral 1-2-1 maneuver 01-15, ID 1. Its iced counterpart is retained in a separate manifest entry; both samples belong to the same dataset and are not independent studies.",
+    "limitations": "Local CSVs are post-processed, synchronized at a mean 20 Hz EKF rate with 0.04–0.06 s timestamp jitter, not raw flight-controller logs; resample before frequency analysis. Author-derived aero coefficients and battery drag power depend on the original specific propeller/powertrain model and must not be treated as model-independent measurements. Repository page shows CC0 1.0 while bundled README says CC BY 4.0; resolve license scope with depositor before reuse beyond research. This entry covers only the clean CSV; see the separately identified paired iced sample.",
+    "access": "Downloaded the official README and one clean plus one iced paired CSV (same maneuver family/ID); full 138.3 MB deposit not mirrored.",
+    "license": "Conflicting statements: Dataverse metadata shows CC0 1.0; bundled dataset README says CC BY 4.0. Do not assume which governs without clarification.",
+    "read_depth": "Read the bundled dataset README in full; parsed every row/header of the clean CSV sample (289 rows × 126 columns). The separately identified iced sample is the paired same-maneuver record.",
+    "sha256": "91e442bbbc2d4f3a51778ae06bf77c465338dfa54185b37353ec1ec2c52e6468",
+    "bytes": 628945,
+    "retrieved_utc": "2026-10-19T01:17:33.681567+00:00"
+  },
+  {
+    "id": "ntnu-skywalker-iced-lat-121-01-15-id-1",
+    "title": "NTNU Skywalker X8 iced lateral 1-2-1 flight-data sample",
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Markus Jürgen Lindner"
+    ],
+    "year": 2026,
+    "source_url": "https://dataverse.no/dataset.xhtml?persistentId=doi:10.18710/NNHVBP",
+    "download_url": "https://dataverse.no/api/access/datafile/275243",
+    "local_path": "references/rc-validation-library-2026-10-18/flight-data/ntnu-skywalker-iced-lat-121-01-15-id-1.csv",
+    "type": "processed-flight-test-sample",
+    "topics": [
+      "Skywalker X8",
+      "system identification",
+      "lateral response",
+      "icing",
+      "IMU/GPS/airspeed",
+      "control response"
+    ],
+    "relevance": "Paired iced-condition sample matching the locally retained clean NTNU Skywalker X8 lateral 1-2-1 maneuver 01-15, ID 1. Both CSVs come from the same dataset and are not independent studies.",
+    "limitations": "Local CSVs are post-processed, synchronized at a mean 20 Hz EKF rate with 0.04–0.06 s timestamp jitter, not raw flight-controller logs; resample before frequency analysis. Author-derived aero coefficients and battery drag power depend on the original specific propeller/powertrain model and must not be treated as model-independent measurements. Repository page shows CC0 1.0 while bundled README says CC BY 4.0; resolve license scope with depositor before reuse beyond research. This entry covers only the iced CSV; compare with the separately identified clean sample.",
+    "access": "Downloaded the official README and one clean plus one iced paired CSV (same maneuver family/ID); full 138.3 MB deposit not mirrored.",
+    "license": "Conflicting statements: Dataverse metadata shows CC0 1.0; bundled dataset README says CC BY 4.0. Do not assume which governs without clarification.",
+    "read_depth": "Parsed every row/header of the iced CSV sample (279 rows × 126 columns); the separately identified clean sample is the paired same-maneuver record. The bundled dataset README was read in full.",
+    "sha256": "a1e03a57fa4398ae23bd801781fa6d90ed12b6d04b57de219e7f32fae49dc018",
+    "bytes": 607303,
+    "retrieved_utc": "2026-10-19T01:17:36.352648+00:00"
+  },
+  {
+    "id": "fliTeplat-southampton-drag-flight-logs",
+    "title": "FliTePlat UAV flight-test dataset supporting Southampton theses and drag-curve study",
+    "authors": [
+      "Laminn McLay",
+      "Adrian Weishaeupl",
+      "Andras Sobester"
+    ],
+    "year": 2024,
+    "source_url": "https://eprints.soton.ac.uk/489303/",
+    "download_url": "https://eprints.soton.ac.uk/489303/",
+    "local_path": null,
+    "type": "flight-test-dataset",
+    "topics": [
+      "fixed-wing flight logs",
+      "drag curve",
+      "unpowered glide",
+      "airspeed",
+      "propulsion measurement"
+    ],
+    "relevance": "Official Southampton record lists three measured flight logs supporting the FliTePlat small fixed-wing study. The aircraft’s instrument suite includes dual Pixhawk recorders, conventional Pitot-static and Kiel/static air-data systems, GNSS, motor voltage/current and optical RPM; the paper analyzes 45 glides and 55 slow-down maneuvers.",
+    "limitations": "The EPrints record lists three pickle files (15 MB, 10 MB, 15 MB) but direct file retrieval returned HTTP 401/403 in this session, so no local sample or rows are available. These records emphasize performance/drag identification rather than general aerobatic dynamics. Do not unpickle files until a trusted, safe read path is established.",
+    "access": "Public catalog record; dataset page reports CC BY, but direct binary requests were blocked by the host in this environment.",
+    "license": "Creative Commons Attribution (Southampton dataset record).",
+    "read_depth": "Official dataset metadata and publisher article text read; three listed files and sizes recorded. No pickle was downloaded, executed or deserialized.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.798612+00:00"
+  },
+  {
+    "id": "weishaeupl-2024-fliteplat-drag-curves",
+    "title": "Experimental Evaluation of the Drag Curves of Small Fixed Wing UAVs",
+    "authors": [
+      "Adrian Weishaeupl",
+      "Laminn McLay",
+      "Andras Sóbester"
+    ],
+    "year": 2024,
+    "source_url": "https://www.cambridge.org/core/journals/aeronautical-journal/article/experimental-evaluation-of-the-drag-curves-of-small-fixed-wing-uavs/453B48240E5861B1360B9D33288C5C88",
+    "download_url": "https://doi.org/10.1017/aer.2023.61",
+    "local_path": null,
+    "type": "journal-paper",
+    "topics": [
+      "fixed-wing performance",
+      "drag curves",
+      "flight testing",
+      "airspeed",
+      "wind-tunnel comparison"
+    ],
+    "relevance": "A measurement-oriented small-aircraft paper compares wind-tunnel and flight-derived lift/drag curves with multiple methods. It documents FliTePlat’s pitot/Kiel air-data systems, redundant Pixhawk recorders, optical RPM and electrical logging, and repeated glide/slow-down tests; useful for identifying measurement bias and repeatability limits.",
+    "limitations": "Not RC sport/aerobatic validation and not a raw-log release itself. Flight methods show gust, altitude, propeller-position, battery/powertrain-model and maneuver-repeatability errors; the paper warns that some assumptions bias drag estimates.",
+    "access": "Publisher full text and DOI metadata are publicly readable; no PDF copied locally in this collection. The separate Southampton dataset record lists the associated raw logs.",
+    "license": "Publisher page marks Creative Commons Attribution; exact version not shown in extracted page text.",
+    "read_depth": "Read publisher full text sections on instrumentation, glide/slow-down methods, test campaign and comparison/error discussion; no raw data parsed.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.798623+00:00"
+  },
+  {
+    "id": "jurisson-2026-diana-scaled-glider-flight-data",
+    "title": "Flexible Diana 2 Scaled Glider UAV - Aeroelastic Flight Test Measurements",
+    "authors": [
+      "Andres Jurisson",
+      "Roeland de Breuker",
+      "Bart J. G. Eussen",
+      "Coen C. de Visser"
+    ],
+    "year": 2026,
+    "source_url": "https://research.tudelft.nl/en/datasets/flexible-diana-2-scaled-glider-uav-aeroelastic-flight-test-measur/",
+    "download_url": "https://data.4tu.nl/datasets/0c3fcef0-5b63-480c-ae40-3ff726c657e9",
+    "local_path": null,
+    "type": "flight-test-dataset",
+    "topics": [
+      "fixed-wing flight test",
+      "aeroelastic response",
+      "control-surface motion",
+      "IMU/GPS/airspeed",
+      "strain"
+    ],
+    "relevance": "Nine scaled Diana 2 UAV flights contain impulse, doublet, 3-2-1-1 and frequency-sweep responses. The repository describes 5-hole-probe airspeed/alpha/beta, GPS, Pixhawk attitude/commands, 12 distributed IMUs, 21 strain gauges, control-surface encoders and calibration artifacts; useful to stress sensor/structural coupling and command-versus-deflection comparisons.",
+    "limitations": "Flexible high-aspect-ratio glider and aeroelastic objective differ from a conventional RC sport model. This pass inspected the official portal/DOI metadata but did not download or parse data files or determine channel rates.",
+    "access": "Public 4TU.ResearchData deposit, DOI 10.4121/0c3fcef0-5b63-480c-ae40-3ff726c657e9; not mirrored in this batch.",
+    "license": "CC BY 4.0 (DataCite DOI metadata).",
+    "read_depth": "Read official TU Delft dataset page and DataCite DOI metadata; no local file or measured row inspected.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.798625+00:00"
+  },
+  {
+    "id": "gresham-2022-carbon-z-spin-modeling",
+    "title": "Spin Aerodynamic Modeling for a Fixed-Wing Aircraft Using Flight Data",
+    "authors": [
+      "James L. Gresham",
+      "Benjamin M. Simmons",
+      "Jeremy W. Hopwood",
+      "Craig A. Woolsey"
+    ],
+    "year": 2022,
+    "source_url": "https://doi.org/10.2514/6.2022-1160",
+    "download_url": null,
+    "local_path": null,
+    "type": "conference-paper",
+    "topics": [
+      "RC aircraft spin",
+      "high angle of attack",
+      "flight system identification",
+      "multisine excitation"
+    ],
+    "relevance": "Primary AIAA/author-page study develops a nonlinear coupled spin aerodynamic model from actual spinning fixed-wing flight data using orthogonal phase-optimized multisine excitation and independent validation flights. The author page emphasizes why a nominal level-flight model fails to represent stable oscillatory spin behavior.",
+    "limitations": "No raw flight logs or unrestricted official PDF were found in this pass. The accessible author publication entry supplies the abstract/citation but not a complete measurement-channel/time-rate inventory; treat reported model findings as paper evidence rather than a downloadable benchmark.",
+    "access": "Citation and abstract accessible through the author laboratory page and DOI; no paper or log copy mirrored.",
+    "license": "Not stated; bibliographic/abstract access only, redistribution not inferred.",
+    "read_depth": "Read the authors’ publication entry/abstract and DOI metadata; did not inspect a full primary PDF or raw time histories.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:24:06.798626+00:00"
+  }
+]

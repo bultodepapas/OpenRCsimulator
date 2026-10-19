@@ -1,0 +1,286 @@
+[
+  {
+    "id": "dantskercaccamodetersselig-2022-aiaa-paper-2022-4020-apceproptestsvol4",
+    "title": "Performance Testing of APC Electric Fixed-Blade UAV Propellers",
+    "authors": [
+      "Dantsker, O.D.",
+      "Caccamo, C.",
+      "Deters, R.W.",
+      "Selig, M.S."
+    ],
+    "year": 2022,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/DantskerCaccamoDetersSelig-2022-AIAA-Paper-2022-4020-APCEPropTestsVol4.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/DantskerCaccamoDetersSelig-2022-AIAA-Paper-2022-4020-APCEPropTestsVol4.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/DantskerCaccamoDetersSelig-2022-AIAA-Paper-2022-4020-APCEPropTestsVol4.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Measured APC electric propeller performance; database volume 4 companion.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "2f342778f2e24fc59b77528448134ee3cf23670bb49a0556857074dc2dba2210",
+    "bytes": 1646408,
+    "retrieved_utc": "2026-10-19T01:14:02.284400+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Dantsker, O.D., Caccamo, C., Deters, R.W., and Selig, M.S.,\n\"Performance Testing of APC Electric Fixed-Blade UAV Propellers,\" AIAA Aviation 2022, AIAA Aviation and Aeronautics  Forum and Exposition , AIAA Paper 2022-4020, Virtual and Chicago, IL, June 2022. | PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/DantskerCaccamoDetersSelig-2022-AIAA-Paper-2022-4020-APCEPropTestsVol4.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "dantskercaccamodetersselig-2020-aiaa-paper-2020-2762-campropstesting",
+    "title": "Performance Testing of Aero-Naut CAM Folding Propellers",
+    "authors": [
+      "Dantsker, O.D.",
+      "Caccamo, M.",
+      "Deters, R.W.",
+      "Selig, M.S."
+    ],
+    "year": 2020,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/DantskerCaccamoDetersSelig-2020-AIAA-Paper-2020-2762-CamPropsTesting.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/DantskerCaccamoDetersSelig-2020-AIAA-Paper-2020-2762-CamPropsTesting.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/DantskerCaccamoDetersSelig-2020-AIAA-Paper-2020-2762-CamPropsTesting.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Measured folding-propeller performance; database volume 3 companion.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "5b1a1edc3e66cdef6aaadd12cdded971ea57fb98fce5750f6f7941ffc778a20e",
+    "bytes": 7460696,
+    "retrieved_utc": "2026-10-19T01:14:03.616711+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Dantsker, O.D., Caccamo, M., Deters, R.W., and Selig, M.S.,\n\"Performance Testing of Aero-Naut CAM Folding Propellers,\" AIAA Aviation 2020, Applied Aerodynamics Conference , AIAA Paper 2020-2762, Virtual Event, June 2020. | PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/DantskerCaccamoDetersSelig-2020-AIAA-Paper-2020-2762-CamPropsTesting.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "detersanandaselig-2015-aiaa-2015-2265-lrn-propslipstream",
+    "title": "Slipstream Measurements of Small-Scale Propellers at Low Reynolds Numbers",
+    "authors": [
+      "Deters, R.W.",
+      "Ananda, G.K.",
+      "Selig, M.S."
+    ],
+    "year": 2015,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2015-AIAA-2015-2265-LRN-PropSlipstream.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2015-AIAA-2015-2265-LRN-PropSlipstream.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/DetersAnandaSelig-2015-AIAA-2015-2265-LRN-PropSlipstream.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Measured propeller wake/slipstream velocities.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "3fc95b1a3615eb914d26b062ebf6409dfc03fea6bcf480878323d49beaf164ff",
+    "bytes": 1356348,
+    "retrieved_utc": "2026-10-19T01:14:07.899866+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Deters, R.W., Ananda, G.K., and Selig, M.S., \"Slipstream Measurements of Small-Scale Propellers at Low Reynolds Numbers,\" AIAA Aviation 2015, 33rd AIAA Applied Aerodynamics Conference , AIAA Paper 2015-2265, Dallas, TX, June 2015.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2015-AIAA-2015-2265-LRN-PropSlipstream.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "anandadetersselig-2014-aiaa-2014-2152",
+    "title": "Propeller-Induced Flow Effects on Wings of Varying Planform at Low Reynolds Numbers",
+    "authors": [
+      "Ananda, G.K.",
+      "Deters, R.W.",
+      "Selig, M.S."
+    ],
+    "year": 2014,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/AnandaDetersSelig-2014-AIAA-2014-2152.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/AnandaDetersSelig-2014-AIAA-2014-2152.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/AnandaDetersSelig-2014-AIAA-2014-2152.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Wing planform and propeller-induced flow interactions.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "5d790e4fed1aa766162dbda3465e3520335505d851d27037ec9d531b75aa279f",
+    "bytes": 4479493,
+    "retrieved_utc": "2026-10-19T01:14:11.017221+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ananda, G.K., Deters, R.W., and Selig, M.S. \"Propeller-Induced Flow Effects on Wings of Varying Planform at Low Reynolds Numbers,\" AIAA Aviation 2014, 32nd AIAA Applied Aerodynamics Conference , AIAA Paper 2014-2152, Atlanta, GA, June 2014.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/AnandaDetersSelig-2014-AIAA-2014-2152.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "detersanandaselig-2014-aiaa-2014-2151",
+    "title": "Reynolds Number Effects on the Performance of Small-Scale Propellers",
+    "authors": [
+      "Deters, R.W.",
+      "Ananda, G.K.",
+      "Selig, M.S."
+    ],
+    "year": 2014,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2014-AIAA-2014-2151.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2014-AIAA-2014-2151.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/DetersAnandaSelig-2014-AIAA-2014-2151.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Small-propeller Reynolds-number dependence.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "40d54828999ab9c0bda7fe5ab637160a9836994f3bde3b55835d06b8f0492b2a",
+    "bytes": 1427070,
+    "retrieved_utc": "2026-10-19T01:14:09.172557+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Deters, R.W., Ananda, G.K., and Selig, M.S., \"Reynolds Number Effects on the Performance of Small-Scale Propellers,\" AIAA Aviation 2014, 32nd AIAA Applied Aerodynamics Conference , AIAA Paper 2014-2151, Atlanta, GA, June 2014.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/DetersAnandaSelig-2014-AIAA-2014-2151.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "anandadetersselig-2013-aiaa-2013-3193-propslipstream",
+    "title": "Propeller Induced Flow Effects on Wings at Low Reynolds Numbers",
+    "authors": [
+      "Ananda, G.K.",
+      "Deters, R.W.",
+      "Selig, M.S."
+    ],
+    "year": 2013,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/AnandaDetersSelig-2013-AIAA-2013-3193-PropSlipstream.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/AnandaDetersSelig-2013-AIAA-2013-3193-PropSlipstream.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/AnandaDetersSelig-2013-AIAA-2013-3193-PropSlipstream.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Low-Re wing forces in propeller-induced flow.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "23bbc121e9e5166cbdc5a7ddafe84918af6c692be0ef71b2d230b1f3c83fa8e1",
+    "bytes": 4523602,
+    "retrieved_utc": "2026-10-19T01:14:10.865072+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ananda, G.K., Deters, R.W., and Selig, M.S., \"Propeller Induced Flow Effects on Wings at Low Reynolds Numbers,\" AIAA 31st Applied Aerodynamics Conference , AIAA Paper 2013-3193, San Diego, CA, June 2013.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/AnandaDetersSelig-2013-AIAA-2013-3193-PropSlipstream.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "brandtselig-2011-aiaa-2011-1255-lrn-propellers",
+    "title": "Propeller Performance Data at Low Reynolds Numbers",
+    "authors": [
+      "Brandt, J.B.",
+      "Selig, M.S."
+    ],
+    "year": 2011,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/BrandtSelig-2011-AIAA-2011-1255-LRN-Propellers.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/BrandtSelig-2011-AIAA-2011-1255-LRN-Propellers.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/BrandtSelig-2011-AIAA-2011-1255-LRN-Propellers.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Experimental propeller thrust/power curves at low Re.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "5552e04e318602d4c71d94d12805d357280f0f49c0121b080bbd642c39f10667",
+    "bytes": 4242699,
+    "retrieved_utc": "2026-10-19T01:14:17.857800+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Brandt, J.B. and Selig, M.S., \"Propeller Performance Data at Low Reynolds Numbers,\" AIAA 49th Aerospace Sciences Meeting , AIAA Paper 2011-1255, Orlando, FL, January 2011.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/BrandtSelig-2011-AIAA-2011-1255-LRN-Propellers.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "uhligselig-2008-aiaa-2008-407-poststallprops",
+    "title": "Post Stall Propeller Behavior at Low Reynolds Numbers",
+    "authors": [
+      "Uhlig, D.V.",
+      "Selig, M.S."
+    ],
+    "year": 2008,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/UhligSelig-2008-AIAA-2008-407-PostStallProps.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/UhligSelig-2008-AIAA-2008-407-PostStallProps.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/UhligSelig-2008-AIAA-2008-407-PostStallProps.pdf",
+    "type": "paper",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Propeller behavior when blade sections stall; post-stall propulsion modeling.",
+    "limitations": "Match propeller diameter, pitch, RPM, advance ratio and blade Reynolds number. Isolated propeller/wing results are not whole-aircraft or installed glow-engine validation.",
+    "access": "downloaded",
+    "sha256": "4a281f115c5f98fa4f73b0f2dc72cd9c4c9630a70fdf1ee9d07d5ede35fad26d",
+    "bytes": 1237772,
+    "retrieved_utc": "2026-10-19T01:14:18.899942+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Uhlig, D.V. and Selig, M.S., \"Post Stall Propeller Behavior at Low Reynolds Numbers,\" AIAA 46th Aerospace Sciences Meeting , AIAA Paper 2008-407, Reno, NV, Jan 2008.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/UhligSelig-2008-AIAA-2008-407-PostStallProps.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "uiuc-propdb",
+    "title": "UIUC Propeller Database, Volumes 1-4",
+    "authors": [
+      "John B. Brandt",
+      "Robert W. Deters",
+      "Gavin K. Ananda",
+      "Or D. Dantsker",
+      "Michael S. Selig"
+    ],
+    "year": null,
+    "source_url": "https://m-selig.ae.illinois.edu/props/propDB.html",
+    "download_url": "https://m-selig.ae.illinois.edu/props/download/UIUC-propDB.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/UIUC-propDB.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Raw wind-tunnel static and advancing-flow propeller data, multiple manufacturers and geometries. Companion papers explain coefficient definitions.",
+    "limitations": "Tested props/RPM/Re only; electric fixed and folding designs do not by themselves validate a nitro installation.",
+    "access": "downloaded",
+    "sha256": "089b66db10391b9a3ad53aac1b95fa63d24bb7130f0dc1e6a4e7d971c5645995",
+    "bytes": 90906721,
+    "retrieved_utc": "2026-10-19T01:15:26.379673+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/props/download/UIUC-propDB.zip",
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "archive_members": 3673,
+    "archive_uncompressed_bytes": 111651956,
+    "read_depth": "Laboratory source record, archive README and representative raw table headers/rows inspected; all ZIP members CRC checked, no aerodynamic refit",
+    "raw_data_txt_members_by_volume": {
+      "1": 1116,
+      "2": 414,
+      "3": 319,
+      "4": 145
+    }
+  },
+  {
+    "id": "uiuc-propeller-index",
+    "title": "UIUC source and usage terms: uiuc-propeller-index.html",
+    "authors": [],
+    "year": null,
+    "source_url": "https://m-selig.ae.illinois.edu/props/propDB.html",
+    "download_url": "https://m-selig.ae.illinois.edu/props/propDB.html",
+    "local_path": "references/rc-validation-library-2026-10-18/propulsion/uiuc-propeller-index.html",
+    "type": "source-page",
+    "topics": [
+      "propulsion"
+    ],
+    "relevance": "Preserves source context and stated data-use conditions.",
+    "limitations": "Snapshot of source page, not a scientific measurement.",
+    "access": "downloaded",
+    "sha256": "a0df2cdd583bdc80d6ad0d54dee518e2981a463c10f5c653c25e557e4e16f565",
+    "bytes": 10956,
+    "retrieved_utc": "2026-10-19T01:14:26.629747+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/props/propDB.html",
+    "verified": "HTTP source page saved",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  }
+]

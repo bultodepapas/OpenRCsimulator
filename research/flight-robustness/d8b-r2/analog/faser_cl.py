@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """D8b-R2d analog evidence: digitize the NASA FASER (Hangar 9 Ultra Stick 120) wind-tunnel lift curve and roll damping,
-and compare the lift curve's post-stall retention with the Ugly Stik's legacy blend and the D8b-R2 synthetic candidates.
+and the static lateral derivatives Clbeta and Cnbeta (Fig. 2b, written for D10-R5), and compare the lift curve's
+post-stall retention with the Ugly Stik's legacy blend and the D8b-R2 synthetic candidates.
 
 Usage (repository root):
   python3 -I research/flight-robustness/d8b-r2/analog/faser_cl.py [--pdf references/rc-aero-data/faser-2006-aiaa-2006-3306-owens-cox-morelli.pdf]
@@ -67,33 +68,42 @@ def lines(px, x0, x1, y0, y1, vertical):
     return groups
 
 
-def digitize(pdf):
+def render(pdf, page):
     with tempfile.TemporaryDirectory() as tmp:
-        subprocess.run(["pdftoppm", "-f", "3", "-l", "3", "-r", str(DPI), "-png", str(pdf), f"{tmp}/p"], check=True,
-                       stderr=subprocess.DEVNULL)
-        image = Image.open(next(Path(tmp).glob("p*.png"))).convert("RGB")
+        subprocess.run(["pdftoppm", "-f", str(page), "-l", str(page), "-r", str(DPI), "-png", str(pdf), f"{tmp}/p"],
+                       check=True, stderr=subprocess.DEVNULL)
+        return Image.open(next(Path(tmp).glob("p*.png"))).convert("RGB")
+
+
+def digitize_panel(image, box, top_value, angles=ANGLES):
+    """One Fig. 2 panel: its frame and zero/axis lines set the calibration (alpha 0 axis to the right frame at 30 deg,
+    zero line to the top frame at top_value); the blue curve's centre is the median of its pixels within +/-0.3 deg."""
     px = image.load()
     w, h = image.size
-    # Search box around the CL panel of Fig. 2a (page fractions); the frame and axis lines inside it set the calibration.
-    x0, x1, y0, y1 = int(0.195 * w), int(0.48 * w), int(0.32 * h), int(0.545 * h)
+    x0, x1, y0, y1 = int(box[0] * w), int(box[1] * w), int(box[2] * h), int(box[3] * h)
     v = lines(px, x0, x1, y0, y1, True)   # left frame, alpha-0 axis, right frame
-    hz = lines(px, x0, x1, y0, y1, False)  # top frame, CL-0 line, bottom frame
+    hz = lines(px, x0, x1, y0, y1, False)  # top frame, zero line, bottom frame
     if len(v) != 3 or len(hz) != 3:
-        sys.exit(f"axis detection failed: vertical {v}, horizontal {hz}")
+        sys.exit(f"axis detection failed in {box}: vertical {v}, horizontal {hz}")
     x_axis, x_right = v[1], v[2]
     y_top, y_zero = hz[0], hz[1]
-    sx, sy = (x_right - x_axis) / 30.0, (y_zero - y_top) / 1.0
+    sx, sy = (x_right - x_axis) / 30.0, (y_zero - y_top) / top_value
     points = []
     for x in range(int(v[0]) + 4, int(x_right) - 3):
         ys = [y for y in range(int(y_top) + 4, int(hz[2]) - 3) if blue(px[x, y])]
         if ys:
             points.append(((x - x_axis) / sx, (y_zero - statistics.median(ys)) / sy))
     rows = []
-    for a in ANGLES:
-        near = [cl for alpha, cl in points if abs(alpha - a) <= 0.3]
+    for a in angles:
+        near = [value for alpha, value in points if abs(alpha - a) <= 0.3]
         if near:
             rows.append((a, statistics.median(near), len(near)))
     return rows, {"x_axis_px": x_axis, "x_right_px": x_right, "y_top_px": y_top, "y_zero_px": y_zero}
+
+
+def digitize(pdf):
+    # Search box around the CL panel of Fig. 2a (page fractions).
+    return digitize_panel(render(pdf, 3), (0.195, 0.48, 0.32, 0.545), 1.0)
 
 
 def grid(counts, spacing, minimum):
@@ -167,6 +177,18 @@ def main():
     pdf = ROOT / args.pdf
     digest = check_sha(pdf, PDF)
     rows, calibration = digitize(pdf)
+    # D10-R5: Fig. 2b static lateral derivatives (per degree), from beta sweeps: like-for-like with a model's dCl/dbeta.
+    page = render(pdf, 3)
+    for name, box, top in (("clb", (0.575, 0.86, 0.435, 0.565), 0.001), ("cnb", (0.575, 0.86, 0.565, 0.695), 0.004)):
+        lateral, lateral_calibration = digitize_panel(page, box, top, range(-4, 31))
+        with (HERE / f"faser_{name}.csv").open("w", newline="\n") as fh:
+            fh.write(f"# NASA FASER (Ultra Stick 120) static {'Cl' if name == 'clb' else 'Cn'}beta, Owens, Cox, Morelli AIAA 2006-3306 Fig. 2b; pdf sha256 {digest}\n")
+            fh.write(f"# digitized by faser_cl.py at {DPI} dpi; calibration px {json.dumps(lateral_calibration)}; per degree; uncertainty about +/-0.2 deg, +/-0.00006 per deg\n")
+            writer = csv.writer(fh, lineterminator="\n")
+            writer.writerow(["alpha_deg", f"{name}_per_deg", f"{name}_per_rad", "pixels"])
+            for a, value, n in lateral:
+                writer.writerow([a, f"{value:.6f}", f"{value * 57.29578:.4f}", n])
+        print(f"FASER {name} per rad: " + ", ".join(f"{a}: {v * 57.29578:+.3f}" for a, v, _ in lateral if a % 2 == 0))
     fo_digest = check_sha(ROOT / PDF_FO, PDF_FO)
     clp, clp_calibration = digitize_clp(ROOT / PDF_FO)
     with (HERE / "faser_clp.csv").open("w", newline="\n") as fh:

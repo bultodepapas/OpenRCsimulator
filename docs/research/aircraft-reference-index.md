@@ -20,6 +20,8 @@ The owner-supplied RHB/Horizon Ultra Stick 120 material differs from the Jensen 
 
 Published Ultra Stick 25e/120 measurements (UMN flight identification, NASA FASER wind tunnel and flight spin) and other RC airframes' data are registered in [RC-class aerodynamic data sources](flight-dynamics/rc-aero-data-sources.md). Originals: local only, `references/rc-aero-data/`.
 
+The expanded [RC aerodynamic validation library, 2026-10-18](flight-dynamics/rc-validation-library-2026-10-18/README.md) collects additional Stik-family studies, conventional RC aircraft, flying wings, flight logs, low-Reynolds tunnel data and propeller experiments. Its topic manifests distinguish measured evidence, numerical studies, metadata-only leads and verified local downloads.
+
 MoJo's drawing identity and geometry remain unknown; only signature, format, size and hash were examined. Use the same CAD audit/inventory; the filename does not establish span or engine class. Original: local only, `references/mojo-60/MoJo Parts 60.dwg`.
 
 ## SebArt Avanti S A200

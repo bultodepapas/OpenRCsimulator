@@ -116,3 +116,55 @@ static func ball(s: PackedFloat64Array, k: float, st: Dictionary, dt: float) -> 
 ## Rudder for a heading (rad) on the ground: PD on heading and yaw rate.
 static func ground_heading(s: PackedFloat64Array, heading: float) -> float:
 	return clampf(3.0 * wrapf(heading - euler(s)[0], -PI, PI) - 1.0 * s[RB.RATE + 2], -1.0, 1.0)
+
+
+# --- Attitude-free laws (card v4: aerobatics, vertical lines, rolls) ----------------------------------------------
+
+static func _q(s: PackedFloat64Array) -> PackedFloat64Array:
+	return M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
+
+
+## An earth (NED) vector in body axes [x fwd, y right, z down].
+static func to_body(s: PackedFloat64Array, v: PackedFloat64Array) -> PackedFloat64Array:
+	return M.q_rotate(M.q_conj(_q(s)), v)
+
+
+## A body vector in earth (NED) axes.
+static func to_earth(s: PackedFloat64Array, v: PackedFloat64Array) -> PackedFloat64Array:
+	return M.q_rotate(_q(s), v)
+
+
+## Elevation of the nose above the horizon (rad), in any attitude.
+static func nose_elevation(s: PackedFloat64Array) -> float:
+	return asin(clampf(-to_earth(s, M.v3(1.0, 0.0, 0.0))[2], -1.0, 1.0))
+
+
+## Ground track of the velocity (rad from north).
+static func track(s: PackedFloat64Array) -> float:
+	var v := to_earth(s, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))
+	return atan2(v[1], v[0])
+
+
+## Unit NED direction at a heading (rad from north) and an elevation above the horizon (rad).
+static func direction(heading: float, elevation: float) -> PackedFloat64Array:
+	return M.v3(cos(elevation) * cos(heading), cos(elevation) * sin(heading), -sin(elevation))
+
+
+## Elevator and rudder that turn the nose toward an earth direction (NED unit vector) in any attitude. The error is
+## split between pitch (nose toward body −z) and yaw (toward body +y) by where the direction lies in body axes:
+## upright it is all elevator, in knife-edge all rudder, inverted the elevator reversed, on a vertical line both.
+## PD with body-rate damping, scheduled like the other laws; `ff` adds feedforward sticks [pitch, yaw].
+static func point_nose(s: PackedFloat64Array, want: PackedFloat64Array, k: float, ff := PackedFloat64Array([0.0, 0.0])) -> PackedFloat64Array:
+	var w := to_body(s, want)
+	var e_pitch := atan2(-w[2], w[0])
+	var e_yaw := atan2(w[1], w[0])
+	return PackedFloat64Array([clampf(k * (3.0 * e_pitch - 0.6 * s[RB.RATE + 1]) + ff[0], -1.0, 1.0),
+		clampf(k * (3.0 * e_yaw - 0.6 * s[RB.RATE + 2]) + ff[1], -1.0, 1.0)])
+
+
+## Ailerons for a body roll rate (rad/s): proportional with an integrator in stick units, so a roll keeps its rate
+## through knife-edge and inverted, where the rudder and dihedral add rolling moments.
+static func roll_rate(s: PackedFloat64Array, target: float, k: float, st: Dictionary, dt: float) -> float:
+	var error: float = target - s[RB.RATE]
+	var i := _integrate(st, "roll_rate_i", 2.0 * k * error, dt, 1.0)
+	return clampf(k * 1.0 * error + i, -1.0, 1.0)
