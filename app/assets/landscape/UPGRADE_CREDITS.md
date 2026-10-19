@@ -102,3 +102,7 @@ The seven retained Quaternius Standard tree forms remain CC0-1.0. Their imported
 ## Woodland understory refinement (L6c, 2026-10-18)
 
 Fern, tall-grass and short-grass cards are four-view renders of the existing Quaternius CC0 source meshes, with original Base Color/Alpha. Their bake manifests ship under `vegetation/impostors/`. The localized leaf litter uses [Forest Leaves 02 by Rob Tuytel / Poly Haven](https://polyhaven.com/a/forest_leaves_02), released under CC0. Its downloaded diffuse JPG is unchanged; Godot imports a 512 px mipmapped copy. Exact download identity and terms ship in [vegetation/woodland/source.json](vegetation/woodland/source.json) and [vegetation/woodland/LICENSE.txt](vegetation/woodland/LICENSE.txt).
+
+## Club maple (L6c, 2026-10-18)
+
+3D tree model by [LOLIPOP](https://sketchfab.com/lolipop_1707), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source: [Maple Trees Pack](https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0). OpenRCsimulator selects the supplied `Acer_large_3_LOD1`, removes its gallery placement, converts its PBR materials and leaf alpha to glTF, and fits it uniformly beside the club. No tree geometry was modeled or decimated. Attribution and change details ship in [vegetation/LICENSE_MAPLE.txt](vegetation/LICENSE_MAPLE.txt); source and derivative identities are in [vegetation/catalog.json](vegetation/catalog.json).

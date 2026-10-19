@@ -108,23 +108,95 @@
           }
         ]
       }
+    },
+    {
+      "id": "lolipop_maple_2026",
+      "title": "Maple Trees Pack",
+      "author": "LOLIPOP",
+      "url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_evidence": "assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt",
+      "license_sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+      "conversion_proof": "assets/landscape/vegetation/derived/lolipop_maple_2026/conversion_manifest.json",
+      "conversion_proof_sha256": "0b2f792b7856e1670a91e86607c6257cb957cf69d00d5eb487e8b5e810de434a",
+      "source": {
+        "archive": {
+          "bytes": 150673952,
+          "name": "maple-trees-pack-lowpoly-game-ready-lods.zip",
+          "sha256": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a"
+        },
+        "creator": "LOLIPOP (@lolipop_1707)",
+        "license": "CC BY 4.0",
+        "mesh": {
+          "bounds_y_up_m": {
+            "center_offset_from_stem": [
+              0.17993402481079102,
+              9.160891233826987,
+              0.20144128799438477
+            ],
+            "max": [
+              6.485836982727051,
+              18.32444190979004,
+              8.867838859558105
+            ],
+            "min": [
+              -6.125968933105469,
+              -0.002659442136064172,
+              -8.464956283569336
+            ],
+            "size": [
+              12.61180591583252,
+              18.327101351926103,
+              17.33279514312744
+            ]
+          },
+          "gallery_origin_world": [
+            -20.0,
+            40.0,
+            0.0
+          ],
+          "material_triangles": {
+            "Bark_Mat": 2614,
+            "Cluster_Mat": 2927
+          },
+          "object": "Acer_large_3_LOD1",
+          "polygons": 5541,
+          "triangles": 5541,
+          "vertices": 4729
+        },
+        "name": "Maple trees pack (lowpoly, game ready, LODs)",
+        "original_entries": [
+          "source/Acer tree pack.fbx",
+          "textures/bark_ambientocclusion.png",
+          "textures/bark_basecolor.png",
+          "textures/bark_normal.png",
+          "textures/bark_roughness.png",
+          "textures/Cluster_albedo.png",
+          "textures/Cluster_AO.png",
+          "textures/Cluster_Normal.png",
+          "textures/Cluster_Opacity.png",
+          "textures/Cluster_Roughness.jpg"
+        ],
+        "url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0"
+      }
     }
   ],
   "import": {
     "format": "glTF 2.0 and Wavefront OBJ/MTL",
-    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof",
+    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof; maple preserves supplied large_3 LOD1 topology and bakes only its source transform",
     "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; the oak source contributes LOD0 only, with supplier LOD1/LOD2 excluded; Wavefront OBJ assets use supplied geometry",
-    "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once"
+    "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once; maple uses the source bark/leaf PBR maps with masked double-sided foliage; its conversion manifest records channel mapping"
   },
   "counts": {
-    "trees": 8,
+    "trees": 9,
     "shrubs": 2,
     "grass_and_herbs": 4,
     "flowers": 3,
     "crops": 2,
     "reeds": 1,
-    "total_assets": 20,
-    "source_triangles_one_of_each": 45269
+    "total_assets": 21,
+    "source_triangles_one_of_each": 50810
   },
   "files": [
     {
@@ -132,6 +204,12 @@
       "source_entry": "License_Standard.txt",
       "bytes": 852,
       "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "path": "LICENSE_MAPLE.txt",
+      "source_entry": "assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt",
+      "bytes": 727,
+      "sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574"
     },
     {
       "path": "LICENSE_OAK.txt",
@@ -378,6 +456,54 @@
       "source_entry": "glTF/Leaves_TwistedTree_C.png",
       "bytes": 70353,
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
+    },
+    {
+      "path": "models/maple_tree/maple_large_3_lod1.bin",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin",
+      "bytes": 321256,
+      "sha256": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f"
+    },
+    {
+      "path": "models/maple_tree/maple_large_3_lod1.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+      "bytes": 5315,
+      "sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_bark_ao-maple_bark_roughness.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png",
+      "bytes": 6115692,
+      "sha256": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_bark_basecolor.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg",
+      "bytes": 2981274,
+      "sha256": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_bark_normal.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png",
+      "bytes": 28222851,
+      "sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_leaves_ao-maple_leaves_roughness.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png",
+      "bytes": 3097706,
+      "sha256": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_leaves_basecolor.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png",
+      "bytes": 1757295,
+      "sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_leaves_normal.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png",
+      "bytes": 2586783,
+      "sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
     },
     {
       "path": "models/oak_tree/oak_lod0.bin",
@@ -1877,6 +2003,112 @@
         "source_lod": "LOD0",
         "imported_supplied_levels": [
           "LOD0"
+        ],
+        "alternate_source_lods_included": [],
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "maple_tree",
+      "source_id": "lolipop_maple_2026",
+      "source_name": "Acer_large_3_LOD1",
+      "description": "Mature broadleaf maple, supplier LOD1",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+      "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
+      },
+      "source_format": "glTF 2.0 converted from supplier FBX",
+      "source_conversion_proof_sha256": "0b2f792b7856e1670a91e86607c6257cb957cf69d00d5eb487e8b5e810de434a",
+      "source_triangles": 5541,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min": [
+          -6.125969,
+          -0.002659,
+          -8.464957
+        ],
+        "max": [
+          6.485837,
+          18.324442,
+          8.867838
+        ],
+        "size": [
+          12.611806,
+          18.327101,
+          17.332795
+        ],
+        "height": 18.327101,
+        "ground_offset": 0.002659
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -6.125969,
+          0.0,
+          -8.464957
+        ],
+        "max": [
+          6.485837,
+          18.327101,
+          8.867838
+        ],
+        "size": [
+          12.611806,
+          18.327101,
+          17.332795
+        ]
+      },
+      "textures": [
+        {
+          "uri": "textures/maple_bark_ao-maple_bark_roughness.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png"
+        },
+        {
+          "uri": "textures/maple_bark_basecolor.jpg",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg"
+        },
+        {
+          "uri": "textures/maple_bark_normal.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png"
+        },
+        {
+          "uri": "textures/maple_leaves_ao-maple_leaves_roughness.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png"
+        },
+        {
+          "uri": "textures/maple_leaves_basecolor.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png"
+        },
+        {
+          "uri": "textures/maple_leaves_normal.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png"
+      ],
+      "lod": {
+        "source_supplied": true,
+        "source_lod": "LOD1",
+        "imported_supplied_levels": [
+          "LOD1"
         ],
         "alternate_source_lods_included": [],
         "godot_import_generate": true

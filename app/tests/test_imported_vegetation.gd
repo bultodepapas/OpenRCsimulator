@@ -23,16 +23,16 @@ func _initialize() -> void:
 func _test_catalog_and_parts() -> void:
 	var data := ImportedVegetation.catalog()
 	var counts: Dictionary = data.get("counts", {})
-	_check("eight retained tree variants", counts.get("trees", 0) == 8)
+	_check("nine retained tree variants", counts.get("trees", 0) == 9)
 	_check("two downloaded shrubs", counts.get("shrubs", 0) == 2)
 	_check("four downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 4)
 	_check("three downloaded flowering assets", counts.get("flowers", 0) == 3)
 	_check("two downloaded crops", counts.get("crops", 0) == 2)
 	_check("one downloaded reed clump", counts.get("reeds", 0) == 1)
-	_check("all pinned sources are cataloged", data.get("sources", []).size() == 4)
+	_check("all pinned sources are cataloged", data.get("sources", []).size() == 5)
 
 	var assets: Array = data.get("assets", [])
-	_check("20 assets are cataloged", assets.size() == 20)
+	_check("21 assets are cataloged", assets.size() == 21)
 	for asset_value in assets:
 		var asset: Dictionary = asset_value
 		var asset_id := str(asset.get("id", ""))
@@ -74,19 +74,56 @@ func _test_catalog_and_parts() -> void:
 			and oak_mesh != null
 			and oak_mesh.surface_get_material(0) == oak_materials[0])
 
+	var maple := ImportedVegetation.get_asset("maple_tree")
+	var maple_parts := ImportedVegetation.get_parts("maple_tree")
+	var maple_lod: Dictionary = maple.get("lod", {})
+	_check("Maple pins the reviewed LOLIPOP LOD1 source and geometry",
+		maple.get("source_id", "") == "lolipop_maple_2026"
+		and maple.get("role", "") == "tree"
+		and int(maple.get("source_triangles", 0)) == 5541
+		and int(maple.get("source_surfaces", 0)) == 2
+		and maple_lod.get("imported_supplied_levels", []) == ["LOD1"])
+	_check("Maple source mesh parts load", not maple_parts.is_empty())
+	var maple_triangles := 0
+	var maple_surfaces := 0
+	var maple_material_mapping_valid := true
+	for part: Dictionary in maple_parts:
+		var maple_mesh: Mesh = part.get("mesh")
+		var maple_materials: Array = part.get("materials", [])
+		if maple_mesh == null:
+			maple_material_mapping_valid = false
+			continue
+		maple_triangles += maple_mesh.get_faces().size() / 3
+		maple_surfaces += maple_mesh.get_surface_count()
+		maple_material_mapping_valid = maple_material_mapping_valid \
+			and maple_materials.size() == maple_mesh.get_surface_count()
+		for surface_index in range(mini(maple_mesh.get_surface_count(), maple_materials.size())):
+			maple_material_mapping_valid = maple_material_mapping_valid \
+				and maple_mesh.surface_get_material(surface_index) == maple_materials[surface_index]
+	_check("Maple source meshes retain 5,541 triangles and two material surfaces",
+		maple_triangles == 5541 and maple_surfaces == 2)
+	_check("Maple source materials stay attached to their imported surfaces", maple_material_mapping_valid)
+
 
 func _test_fit_and_aliases() -> void:
-	_check("shade tree alias starts with the new mature oak source", ImportedVegetation.resolve_id("shade_tree", 7) == "oak_tree")
+	_check("shade tree alias starts with the mature Maple source", ImportedVegetation.resolve_id("shade_tree", 7) == "maple_tree")
 	var mature_forms: Dictionary = {}
 	for seed in range(-7, 7):
 		var id := ImportedVegetation.resolve_id("shade_tree", seed)
 		mature_forms[id] = true
 		_check("tree aliases share the same deterministic source", id == ImportedVegetation.resolve_id("tree", seed))
-	_check("mature aliases retain seven forms with oak replacing the first common-tree slot",
+	_check("mature aliases retain seven forms with Maple replacing the first common-tree slot",
 		mature_forms.size() == 7
-		and mature_forms.has("oak_tree")
+		and mature_forms.has("maple_tree")
 		and not mature_forms.has("common_tree_1")
 		and not mature_forms.has(""))
+	var maple := VegetationPlacement.spec("shade_tree", 793949324)
+	_check("production Maple placement uses its mature height and source geometry budget",
+		maple.get("asset_id", "") == "maple_tree"
+		and is_equal_approx(float(maple.get("height", 0.0)), 14.0)
+		and int(maple.get("triangles", 0)) == 5541
+		and absf(float(maple.get("width", 0.0)) - 9.63) < 0.05
+		and absf(float(maple.get("depth", 0.0)) - 13.24) < 0.05)
 	_check("sapling alias is restricted to downloaded broadleaf variants",
 		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
 		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"

@@ -1,0 +1,2142 @@
+{
+  "blend": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\house-tree-intake\\source\\jacaranda_tree_1k.blend",
+  "blender": "5.2.2 LTS",
+  "scenes": [
+    "Scene"
+  ],
+  "objects": [
+    {
+      "name": "jacaranda_tree_geometry_nodes",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_geometry_nodes"
+      ],
+      "location": [
+        -24.751943588256836,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        24.249378204345703,
+        18.988422393798828,
+        19.505617141723633
+      ],
+      "world_bounds_xyz": [
+        [
+          -37.67219543457031,
+          -13.422816276550293
+        ],
+        [
+          -9.200760841369629,
+          9.787660598754883
+        ],
+        [
+          -0.146615132689476,
+          19.35900115966797
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_branches",
+          "maps": [
+            {
+              "node": "Normal",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Rough",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Diffuse",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "tree.002",
+      "vertices": 151320,
+      "polygons": 141418,
+      "triangles": 282836
+    },
+    {
+      "name": "jacaranda_tree_leaves_a_LOD0",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD0"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        1.6642662286758423,
+        1.606834888458252,
+        0.6759767532348633
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.4966813325881958,
+          1.1675848960876465
+        ],
+        [
+          0.0,
+          1.606834888458252
+        ],
+        [
+          -0.5615059733390808,
+          0.11447077989578247
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_branches",
+          "maps": [
+            {
+              "node": "Normal",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Rough",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Diffuse",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.006",
+      "vertices": 294,
+      "polygons": 213,
+      "triangles": 365
+    },
+    {
+      "name": "jacaranda_tree_leaves_a_LOD1",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD1"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        1.6642662286758423,
+        1.6085714101791382,
+        0.6759767532348633
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.4966813325881958,
+          1.1675848960876465
+        ],
+        [
+          -0.000539733620826155,
+          1.6080316305160522
+        ],
+        [
+          -0.5615059733390808,
+          0.11447077989578247
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_branches",
+          "maps": [
+            {
+              "node": "Normal",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Rough",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Diffuse",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.007",
+      "vertices": 189,
+      "polygons": 144,
+      "triangles": 182
+    },
+    {
+      "name": "jacaranda_tree_leaves_b_LOD0",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD0"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        1.2437596321105957,
+        1.4234780073165894,
+        0.5894589424133301
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.6014942526817322,
+          0.6422653794288635
+        ],
+        [
+          0.0,
+          1.4234780073165894
+        ],
+        [
+          -0.4599666893482208,
+          0.12949228286743164
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_branches",
+          "maps": [
+            {
+              "node": "Normal",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Rough",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Diffuse",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.017",
+      "vertices": 239,
+      "polygons": 170,
+      "triangles": 288
+    },
+    {
+      "name": "jacaranda_tree_leaves_b_LOD1",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD1"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        1.2437596321105957,
+        1.4236900806427002,
+        0.5894589424133301
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.6014942526817322,
+          0.6422653794288635
+        ],
+        [
+          -0.00021202329662628472,
+          1.4234780073165894
+        ],
+        [
+          -0.4599666893482208,
+          0.12949228286743164
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_branches",
+          "maps": [
+            {
+              "node": "Normal",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Rough",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Diffuse",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.008",
+      "vertices": 158,
+      "polygons": 121,
+      "triangles": 144
+    },
+    {
+      "name": "jacaranda_tree_leaves_c_LOD0",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD0"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        0.3822973370552063,
+        0.48777586221694946,
+        0.20967671275138855
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.22174471616744995,
+          0.16055260598659515
+        ],
+        [
+          -0.001172759453766048,
+          0.48660311102867126
+        ],
+        [
+          -0.06994032114744186,
+          0.13973639905452728
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.002",
+      "vertices": 36,
+      "polygons": 22,
+      "triangles": 36
+    },
+    {
+      "name": "jacaranda_tree_leaves_c_LOD1",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD1"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        0.3826836049556732,
+        0.4832606911659241,
+        0.20840448141098022
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.22286877036094666,
+          0.15981483459472656
+        ],
+        [
+          -0.000991741311736405,
+          0.48226895928382874
+        ],
+        [
+          -0.06220686808228493,
+          0.1461976170539856
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.004",
+      "vertices": 23,
+      "polygons": 17,
+      "triangles": 18
+    },
+    {
+      "name": "jacaranda_tree_leaves_d_LOD0",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD0"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        0.4319230318069458,
+        0.869472861289978,
+        0.1685008555650711
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.17147886753082275,
+          0.26044416427612305
+        ],
+        [
+          -0.002195491688326001,
+          0.8672773838043213
+        ],
+        [
+          -0.059952810406684875,
+          0.10854804515838623
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.003",
+      "vertices": 37,
+      "polygons": 24,
+      "triangles": 41
+    },
+    {
+      "name": "jacaranda_tree_leaves_d_LOD1",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD1"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        0.4319230318069458,
+        0.8676049709320068,
+        0.1685008555650711
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.17147886753082275,
+          0.26044416427612305
+        ],
+        [
+          -0.0003275885246694088,
+          0.8672773838043213
+        ],
+        [
+          -0.059952810406684875,
+          0.10854804515838623
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.005",
+      "vertices": 22,
+      "polygons": 16,
+      "triangles": 20
+    },
+    {
+      "name": "jacaranda_tree_leaves_e_LOD0",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD0"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        0.38088008761405945,
+        0.8018404841423035,
+        0.3361065685749054
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.1696157604455948,
+          0.21126432716846466
+        ],
+        [
+          0.00022419786546379328,
+          0.8020646572113037
+        ],
+        [
+          -0.19612744450569153,
+          0.13997912406921387
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane",
+      "vertices": 40,
+      "polygons": 29,
+      "triangles": 46
+    },
+    {
+      "name": "jacaranda_tree_leaves_e_LOD1",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_leaves_LOD1"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        0.38088008761405945,
+        0.8020566701889038,
+        0.3361065685749054
+      ],
+      "world_bounds_xyz": [
+        [
+          -0.1696157604455948,
+          0.21126432716846466
+        ],
+        [
+          8.006082680367399e-06,
+          0.8020646572113037
+        ],
+        [
+          -0.19612744450569153,
+          0.13997912406921387
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "Plane.001",
+      "vertices": 26,
+      "polygons": 21,
+      "triangles": 23
+    },
+    {
+      "name": "jacaranda_tree_LOD0",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_LOD0"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        24.417049407958984,
+        19.15457534790039,
+        19.468875885009766
+      ],
+      "world_bounds_xyz": [
+        [
+          -12.92025089263916,
+          11.496798515319824
+        ],
+        [
+          -9.200760841369629,
+          9.953813552856445
+        ],
+        [
+          -0.146615132689476,
+          19.3222599029541
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_branches",
+          "maps": [
+            {
+              "node": "Normal",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Rough",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Diffuse",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_trunk",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_trunk_diff.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_trunk_rough.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_trunk_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.004",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.005",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "tree.016",
+      "vertices": 3055019,
+      "polygons": 2234022,
+      "triangles": 3863832
+    },
+    {
+      "name": "jacaranda_tree_LOD1",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_LOD1"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        24.417049407958984,
+        19.15457534790039,
+        19.47311019897461
+      ],
+      "world_bounds_xyz": [
+        [
+          -12.92025089263916,
+          11.496798515319824
+        ],
+        [
+          -9.200760841369629,
+          9.953813552856445
+        ],
+        [
+          -0.14925721287727356,
+          19.3238525390625
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_trunk",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_trunk_diff.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_trunk_rough.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_trunk_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.004",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.005",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_branches",
+          "maps": [
+            {
+              "node": "Normal",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Rough",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Diffuse",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        },
+        {
+          "name": "jacaranda_tree_leaves",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_leaves_diff.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_leaves_rough.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_leaves_alpha.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_leaves_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "jakaranda_01_remesh.003",
+      "vertices": 1813490,
+      "polygons": 1512380,
+      "triangles": 1845603
+    },
+    {
+      "name": "jacaranda_tree_trunk_LOD0",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_trunk_LOD0"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        8.85470199584961,
+        6.488614082336426,
+        10.347593307495117
+      ],
+      "world_bounds_xyz": [
+        [
+          -3.486842155456543,
+          5.367859363555908
+        ],
+        [
+          -2.6690657138824463,
+          3.8195481300354004
+        ],
+        [
+          -0.146615132689476,
+          10.20097827911377
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_trunk",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_trunk_diff.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_trunk_rough.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_trunk_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.004",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.005",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "jakaranda_01_remesh",
+      "vertices": 57661,
+      "polygons": 57528,
+      "triangles": 115056
+    },
+    {
+      "name": "jacaranda_tree_trunk_LOD1",
+      "type": "MESH",
+      "parent": null,
+      "collections": [
+        "jacaranda_tree_trunk_LOD1"
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dimensions": [
+        8.867790222167969,
+        6.51005744934082,
+        10.355578422546387
+      ],
+      "world_bounds_xyz": [
+        [
+          -3.494718551635742,
+          5.373071193695068
+        ],
+        [
+          -2.6716010570526123,
+          3.838456392288208
+        ],
+        [
+          -0.14925721287727356,
+          10.206320762634277
+        ]
+      ],
+      "hide_render": false,
+      "hide_viewport": false,
+      "materials": [
+        {
+          "name": "jacaranda_tree_trunk",
+          "maps": [
+            {
+              "node": "Image Texture",
+              "image": "jacaranda_tree_trunk_diff.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.001",
+              "image": "jacaranda_tree_trunk_rough.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.002",
+              "image": "jacaranda_tree_trunk_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_trunk_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.003",
+              "image": "jacaranda_tree_branches_diff.png",
+              "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.004",
+              "image": "jacaranda_tree_branches_rough.png",
+              "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            },
+            {
+              "node": "Image Texture.005",
+              "image": "jacaranda_tree_branches_nor_gl.png",
+              "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+              "packed": false,
+              "size": [
+                0,
+                0
+              ]
+            }
+          ]
+        }
+      ],
+      "mesh_name": "jakaranda_01_remesh.001",
+      "vertices": 14439,
+      "polygons": 14392,
+      "triangles": 28744
+    }
+  ],
+  "collections": [
+    {
+      "name": "jacaranda_tree",
+      "depth": 0,
+      "objects": [],
+      "children": [
+        "jacaranda_tree_geometry_nodes",
+        "jacaranda_tree_LOD1",
+        "jacaranda_tree_LOD0"
+      ]
+    },
+    {
+      "name": "jacaranda_tree_geometry_nodes",
+      "depth": 1,
+      "objects": [
+        "jacaranda_tree_geometry_nodes"
+      ],
+      "children": [
+        "jacaranda_tree_geometry"
+      ]
+    },
+    {
+      "name": "jacaranda_tree_geometry",
+      "depth": 2,
+      "objects": [],
+      "children": [
+        "jacaranda_tree_leaves_LOD0",
+        "jacaranda_tree_leaves_LOD1",
+        "jacaranda_tree_trunk_LOD0",
+        "jacaranda_tree_trunk_LOD1"
+      ]
+    },
+    {
+      "name": "jacaranda_tree_leaves_LOD0",
+      "depth": 3,
+      "objects": [
+        "jacaranda_tree_leaves_e_LOD0",
+        "jacaranda_tree_leaves_c_LOD0",
+        "jacaranda_tree_leaves_d_LOD0",
+        "jacaranda_tree_leaves_a_LOD0",
+        "jacaranda_tree_leaves_b_LOD0"
+      ],
+      "children": []
+    },
+    {
+      "name": "jacaranda_tree_leaves_LOD1",
+      "depth": 3,
+      "objects": [
+        "jacaranda_tree_leaves_a_LOD1",
+        "jacaranda_tree_leaves_b_LOD1",
+        "jacaranda_tree_leaves_c_LOD1",
+        "jacaranda_tree_leaves_d_LOD1",
+        "jacaranda_tree_leaves_e_LOD1"
+      ],
+      "children": []
+    },
+    {
+      "name": "jacaranda_tree_trunk_LOD0",
+      "depth": 3,
+      "objects": [
+        "jacaranda_tree_trunk_LOD0"
+      ],
+      "children": []
+    },
+    {
+      "name": "jacaranda_tree_trunk_LOD1",
+      "depth": 3,
+      "objects": [
+        "jacaranda_tree_trunk_LOD1"
+      ],
+      "children": []
+    },
+    {
+      "name": "jacaranda_tree_LOD1",
+      "depth": 1,
+      "objects": [
+        "jacaranda_tree_LOD1"
+      ],
+      "children": []
+    },
+    {
+      "name": "jacaranda_tree_LOD0",
+      "depth": 1,
+      "objects": [
+        "jacaranda_tree_LOD0"
+      ],
+      "children": []
+    }
+  ],
+  "nodegroups": [
+    {
+      "name": "Auto Smooth",
+      "type": "GeometryNodeTree",
+      "nodes": [
+        {
+          "name": "Group Output",
+          "type": "NodeGroupOutput",
+          "label": ""
+        },
+        {
+          "name": "Group Input",
+          "type": "NodeGroupInput",
+          "label": ""
+        },
+        {
+          "name": "Group Input.001",
+          "type": "NodeGroupInput",
+          "label": ""
+        },
+        {
+          "name": "Set Shade Smooth",
+          "type": "GeometryNodeSetShadeSmooth",
+          "label": ""
+        },
+        {
+          "name": "Set Shade Smooth.001",
+          "type": "GeometryNodeSetShadeSmooth",
+          "label": ""
+        },
+        {
+          "name": "Edge Angle",
+          "type": "GeometryNodeInputMeshEdgeAngle",
+          "label": ""
+        },
+        {
+          "name": "Is Edge Smooth",
+          "type": "GeometryNodeInputEdgeSmooth",
+          "label": ""
+        },
+        {
+          "name": "Is Face Smooth",
+          "type": "GeometryNodeInputShadeSmooth",
+          "label": ""
+        },
+        {
+          "name": "Boolean Math",
+          "type": "FunctionNodeBooleanMath",
+          "label": ""
+        },
+        {
+          "name": "Compare",
+          "type": "FunctionNodeCompare",
+          "label": ""
+        }
+      ]
+    },
+    {
+      "name": "jacaranda_tree_leaves",
+      "type": "GeometryNodeTree",
+      "nodes": [
+        {
+          "name": "Distribute Points on Faces",
+          "type": "GeometryNodeDistributePointsOnFaces",
+          "label": ""
+        },
+        {
+          "name": "Group Output",
+          "type": "NodeGroupOutput",
+          "label": ""
+        },
+        {
+          "name": "Join Geometry",
+          "type": "GeometryNodeJoinGeometry",
+          "label": ""
+        },
+        {
+          "name": "Math",
+          "type": "ShaderNodeMath",
+          "label": ""
+        },
+        {
+          "name": "Align Euler to Vector.001",
+          "type": "FunctionNodeAlignEulerToVector",
+          "label": ""
+        },
+        {
+          "name": "Align Euler to Vector",
+          "type": "FunctionNodeAlignEulerToVector",
+          "label": ""
+        },
+        {
+          "name": "Rotate Euler",
+          "type": "FunctionNodeRotateEuler",
+          "label": ""
+        },
+        {
+          "name": "Instance on Points",
+          "type": "GeometryNodeInstanceOnPoints",
+          "label": ""
+        },
+        {
+          "name": "Random Value",
+          "type": "FunctionNodeRandomValue",
+          "label": ""
+        },
+        {
+          "name": "Math.001",
+          "type": "ShaderNodeMath",
+          "label": ""
+        },
+        {
+          "name": "Switch",
+          "type": "GeometryNodeSwitch",
+          "label": ""
+        },
+        {
+          "name": "Math.002",
+          "type": "ShaderNodeMath",
+          "label": ""
+        },
+        {
+          "name": "ColorRamp.001",
+          "type": "ShaderNodeValToRGB",
+          "label": ""
+        },
+        {
+          "name": "Position",
+          "type": "GeometryNodeInputPosition",
+          "label": ""
+        },
+        {
+          "name": "Separate XYZ",
+          "type": "ShaderNodeSeparateXYZ",
+          "label": ""
+        },
+        {
+          "name": "Vector Math",
+          "type": "ShaderNodeVectorMath",
+          "label": ""
+        },
+        {
+          "name": "Align Euler to Vector.002",
+          "type": "FunctionNodeAlignEulerToVector",
+          "label": ""
+        },
+        {
+          "name": "Vector Math.001",
+          "type": "ShaderNodeVectorMath",
+          "label": ""
+        },
+        {
+          "name": "ColorRamp",
+          "type": "ShaderNodeValToRGB",
+          "label": ""
+        },
+        {
+          "name": "Collection Info",
+          "type": "GeometryNodeCollectionInfo",
+          "label": ""
+        },
+        {
+          "name": "Group Input",
+          "type": "NodeGroupInput",
+          "label": ""
+        },
+        {
+          "name": "Object Info",
+          "type": "GeometryNodeObjectInfo",
+          "label": ""
+        },
+        {
+          "name": "Join Geometry.001",
+          "type": "GeometryNodeJoinGeometry",
+          "label": ""
+        },
+        {
+          "name": "Realize Instances",
+          "type": "GeometryNodeRealizeInstances",
+          "label": ""
+        }
+      ]
+    },
+    {
+      "name": "jacaranda_tree_leaves.001",
+      "type": "ShaderNodeTree",
+      "nodes": [
+        {
+          "name": "Math",
+          "type": "ShaderNodeMath",
+          "label": ""
+        },
+        {
+          "name": "Normal Map",
+          "type": "ShaderNodeNormalMap",
+          "label": ""
+        },
+        {
+          "name": "rough amount",
+          "type": "ShaderNodeMix",
+          "label": ""
+        },
+        {
+          "name": "Hue Saturation Value",
+          "type": "ShaderNodeHueSaturation",
+          "label": ""
+        },
+        {
+          "name": "Object Info",
+          "type": "ShaderNodeObjectInfo",
+          "label": ""
+        },
+        {
+          "name": "ColorRamp",
+          "type": "ShaderNodeValToRGB",
+          "label": ""
+        },
+        {
+          "name": "Group Input",
+          "type": "NodeGroupInput",
+          "label": "inputs"
+        },
+        {
+          "name": "Math.001",
+          "type": "ShaderNodeMath",
+          "label": ""
+        },
+        {
+          "name": "Math.002",
+          "type": "ShaderNodeMath",
+          "label": ""
+        },
+        {
+          "name": "Mix",
+          "type": "ShaderNodeMix",
+          "label": ""
+        },
+        {
+          "name": "Group Output",
+          "type": "NodeGroupOutput",
+          "label": ""
+        },
+        {
+          "name": "Translucent BSDF",
+          "type": "ShaderNodeBsdfTranslucent",
+          "label": ""
+        },
+        {
+          "name": "Mix Shader",
+          "type": "ShaderNodeMixShader",
+          "label": ""
+        },
+        {
+          "name": "Principled BSDF",
+          "type": "ShaderNodeBsdfPrincipled",
+          "label": ""
+        },
+        {
+          "name": "Hue Saturation Value.001",
+          "type": "ShaderNodeHueSaturation",
+          "label": ""
+        },
+        {
+          "name": "Mapping",
+          "type": "ShaderNodeMapping",
+          "label": ""
+        },
+        {
+          "name": "Noise Texture",
+          "type": "ShaderNodeTexNoise",
+          "label": ""
+        },
+        {
+          "name": "ColorRamp.001",
+          "type": "ShaderNodeValToRGB",
+          "label": ""
+        },
+        {
+          "name": "Texture Coordinate",
+          "type": "ShaderNodeTexCoord",
+          "label": ""
+        },
+        {
+          "name": "Mix.001",
+          "type": "ShaderNodeMix",
+          "label": ""
+        },
+        {
+          "name": "Add Shader",
+          "type": "ShaderNodeAddShader",
+          "label": ""
+        }
+      ]
+    }
+  ],
+  "images": [
+    {
+      "name": "jacaranda_tree_branches_diff.png",
+      "filepath": "//textures\\jacaranda_tree_branches_diff_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_branches_nor_gl.png",
+      "filepath": "//textures\\jacaranda_tree_branches_nor_gl_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_branches_rough.png",
+      "filepath": "//textures\\jacaranda_tree_branches_rough_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_leaves_alpha.png",
+      "filepath": "//textures\\jacaranda_tree_leaves_alpha_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_leaves_diff.png",
+      "filepath": "//textures\\jacaranda_tree_leaves_diff_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_leaves_nor_gl.png",
+      "filepath": "//textures\\jacaranda_tree_leaves_nor_gl_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_leaves_rough.png",
+      "filepath": "//textures\\jacaranda_tree_leaves_rough_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_trunk_diff.png",
+      "filepath": "//textures\\jacaranda_tree_trunk_diff_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_trunk_nor_gl.png",
+      "filepath": "//textures\\jacaranda_tree_trunk_nor_gl_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    },
+    {
+      "name": "jacaranda_tree_trunk_rough.png",
+      "filepath": "//textures\\jacaranda_tree_trunk_rough_1k.png",
+      "packed": false,
+      "size": [
+        0,
+        0
+      ],
+      "source": "FILE"
+    }
+  ],
+  "depsgraph_instance_count": 0,
+  "instances": []
+}

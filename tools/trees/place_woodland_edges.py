@@ -117,7 +117,7 @@ def _source_hash(path: Path) -> str:
 
 def _source_number(source: str, name: str, *, integer: bool = False) -> float | int:
     kind = r"int" if integer else r"float"
-    pattern = rf"^const\s+{re.escape(name)}\s*:\s*{kind}\s*=\s*([-+0-9.eE]+)"
+    pattern = rf"^const\s+{re.escape(name)}\s*(?::\s*{kind})?\s*:?=\s*([-+0-9.eE]+)"
     match = re.search(pattern, source, re.MULTILINE)
     if match is None:
         raise ValueError(f"could not read {name} from current source")
@@ -223,10 +223,23 @@ def _max_prop_radii(prefab_source: str, model_source: str,
         ids = _vegetation_aliases(vegetation_source, prefab)
         if not ids:
             ids = [prefab] if prefab in assets else []
+        if "maple_tree" in ids and "maple_tree" not in assets:
+            raise ValueError("Maple placement alias has no matching vegetation catalog asset")
         candidates = [assets[item] for item in ids if item in assets]
         if not candidates:
             raise ValueError(f"no catalog assets resolve scenery vegetation alias {prefab}")
-        radii[prefab] = max(_vegetation_asset_radius(asset, max_height) for asset in candidates)
+        maple_height = (
+            float(_source_number(placement_source, "MATURE_MAPLE_HEIGHT_M"))
+            if "maple_tree" in ids
+            else max_height
+        )
+        radii[prefab] = max(
+            _vegetation_asset_radius(
+                asset,
+                maple_height if str(asset.get("id", "")) == "maple_tree" else max_height,
+            )
+            for asset in candidates
+        )
     if not radii:
         raise ValueError("scenery placement radius catalog is empty")
     return radii, max(radii.values())

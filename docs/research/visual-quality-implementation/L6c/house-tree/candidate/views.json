@@ -1,0 +1,84 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 2631.119,
+  "scenery": true,
+  "stats": {
+    "botanical_batches": 11,
+    "botanical_plants": 221,
+    "botanical_triangles": 83650,
+    "build_ms": 1539.65,
+    "cells": 55,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 136,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 86,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 64.985,
+      "fence": 31.429,
+      "fleet": 15.475,
+      "hedge": 19.152,
+      "instances": 241.731,
+      "meshes": 32.297,
+      "patch": 66.064,
+      "track": 0.821,
+      "woodland_edges": 82.066
+    },
+    "vegetation_instances": 30,
+    "vegetation_triangles": 93220,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "views": {
+    "maple_close": {
+      "draw_calls": 137.0,
+      "objects": 137.0,
+      "primitives": 318761.0,
+      "shadow_draw_calls": 0
+    },
+    "maple_front": {
+      "draw_calls": 143.0,
+      "objects": 143.0,
+      "primitives": 311757.0,
+      "shadow_draw_calls": 0
+    },
+    "maple_side": {
+      "draw_calls": 188.0,
+      "objects": 188.0,
+      "primitives": 363014.0,
+      "shadow_draw_calls": 0
+    },
+    "pilot_south": {
+      "draw_calls": 147.0,
+      "objects": 147.0,
+      "primitives": 304282.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_club": {
+      "draw_calls": 165.0,
+      "objects": 165.0,
+      "primitives": 308294.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_pavilion": {
+      "draw_calls": 146.0,
+      "objects": 146.0,
+      "primitives": 317886.0,
+      "shadow_draw_calls": 0
+    }
+  },
+  "warm_frame_pacing_ms": {
+    "median": 15.984,
+    "p95": 17.469,
+    "samples": 180,
+    "view": "maple_side",
+    "vsync": "disabled"
+  }
+}

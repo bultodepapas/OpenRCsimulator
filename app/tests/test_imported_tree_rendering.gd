@@ -22,6 +22,7 @@ func _initialize() -> void:
 	_test_tree_wind_with_tree_cells()
 	_test_wind_modes_and_material_preservation()
 	_test_all_tree_sources_accept_tree_wind()
+	_test_maple_source_materials()
 	_test_oak_blend_fails_closed_to_static_source_material()
 	_test_tree_wind_transform_guard()
 	_test_invalid_cell_option_falls_back()
@@ -304,8 +305,9 @@ func _test_all_tree_sources_accept_tree_wind() -> void:
 	expected_tree_ids.sort()
 	var expected_all_tree_ids := expected_tree_ids.duplicate()
 	expected_all_tree_ids.append("oak_tree")
+	expected_all_tree_ids.append("maple_tree")
 	expected_all_tree_ids.sort()
-	_check("catalog covers seven wind-qualified trees plus the static oak source",
+	_check("catalog covers seven wind-qualified trees plus the Maple and oak sources",
 		actual_tree_ids == expected_all_tree_ids)
 
 	var batches: Dictionary = {}
@@ -407,6 +409,93 @@ func _test_all_tree_sources_accept_tree_wind() -> void:
 		_check("%s converts every bark and foliage surface" % asset_id,
 			int(converted_surface_counts.get(asset_id, 0)) == source_surfaces)
 	wind_root.free()
+
+
+func _test_maple_source_materials() -> void:
+	var maple := ImportedVegetation.get_asset("maple_tree")
+	var parts := ImportedVegetation.get_parts("maple_tree")
+	_check("Maple metadata pins LOD1 with 5,541 triangles and two source surfaces",
+		str(maple.get("source_id", "")) == "lolipop_maple_2026"
+		and int(maple.get("source_triangles", 0)) == 5541
+		and int(maple.get("source_surfaces", 0)) == 2
+		and (maple.get("lod", {}) as Dictionary).get("imported_supplied_levels", []) == ["LOD1"])
+	_check("Maple imports source mesh parts", not parts.is_empty())
+	if parts.is_empty():
+		return
+	var pbr_and_alpha_valid := true
+	var source_mapping_valid := true
+	var maple_triangles := 0
+	var maple_surfaces := 0
+	var maple_mask_surfaces := 0
+	var maple_opaque_surfaces := 0
+	for part: Dictionary in parts:
+		var maple_mesh: Mesh = part.get("mesh")
+		var source_materials: Array = part.get("materials", [])
+		if maple_mesh == null:
+			pbr_and_alpha_valid = false
+			source_mapping_valid = false
+			continue
+		maple_triangles += maple_mesh.get_faces().size() / 3
+		maple_surfaces += maple_mesh.get_surface_count()
+		source_mapping_valid = source_mapping_valid \
+			and source_materials.size() == maple_mesh.get_surface_count()
+		for surface_index in range(mini(maple_mesh.get_surface_count(), source_materials.size())):
+			var source_value: Variant = source_materials[surface_index]
+			source_mapping_valid = source_mapping_valid \
+				and maple_mesh.surface_get_material(surface_index) == source_value
+			if not source_value is BaseMaterial3D:
+				pbr_and_alpha_valid = false
+				continue
+			var material := source_value as BaseMaterial3D
+			var alpha_mode_valid := false
+			if material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
+				maple_mask_surfaces += 1
+			alpha_mode_valid = material.cull_mode == BaseMaterial3D.CULL_DISABLED \
+				and is_equal_approx(material.alpha_scissor_threshold, 0.5)
+			elif material.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED:
+				maple_opaque_surfaces += 1
+			alpha_mode_valid = material.cull_mode == BaseMaterial3D.CULL_BACK
+			pbr_and_alpha_valid = pbr_and_alpha_valid and alpha_mode_valid \
+				and material.albedo_texture != null \
+				and material.normal_enabled and material.normal_texture != null \
+			and material.orm_texture != null and material.roughness_texture == null \
+			and material.roughness_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_GREEN \
+			and material.ao_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_RED \
+			and material.get_feature(BaseMaterial3D.FEATURE_AMBIENT_OCCLUSION) \
+			and is_finite(material.roughness) and is_equal_approx(material.roughness, 1.0) \
+				and is_finite(material.metallic) and material.metallic >= 0.0 and material.metallic <= 1.0 \
+			and is_zero_approx(material.metallic) \
+				and is_finite(material.metallic_specular) and material.metallic_specular >= 0.0 \
+				and material.metallic_specular <= 1.0
+	_check("Maple source meshes retain 5,541 triangles and two material surfaces",
+		maple_triangles == 5541 and maple_surfaces == 2)
+	_check("Maple foliage remains double-sided MASK and bark remains opaque",
+		maple_mask_surfaces == 1 and maple_opaque_surfaces == 1 and pbr_and_alpha_valid)
+	_check("Maple imported parts retain their original surface mappings", source_mapping_valid)
+	var batches: Dictionary = {}
+	_check("Maple queues as its canonical source ID",
+		ImportedVegetation.queue(batches, "maple_tree", Transform3D.IDENTITY, 91) == "maple_tree")
+	var static_root := ImportedVegetation.build(batches)
+	var matched_part_indices: Dictionary = {}
+	var retained_source_materials := true
+	for child in static_root.get_children():
+		if not child is MultiMeshInstance3D or not str(child.name).begins_with("maple_tree_Part_"):
+			continue
+		var part_index := int(str(child.name).get_slice("_Part_", 1).get_slice("_", 0))
+		if part_index < 0 or part_index >= parts.size():
+			retained_source_materials = false
+			continue
+		var draw_mesh: Mesh = (child as MultiMeshInstance3D).multimesh.mesh
+		var source_materials: Array = parts[part_index].get("materials", [])
+		var surfaces_match := draw_mesh.get_surface_count() == source_materials.size()
+		for surface_index in range(mini(draw_mesh.get_surface_count(), source_materials.size())):
+			surfaces_match = surfaces_match \
+				and draw_mesh.surface_get_material(surface_index) == source_materials[surface_index]
+		retained_source_materials = retained_source_materials and surfaces_match
+		matched_part_indices[part_index] = true
+	_check("Maple static batches retain the original materials for every source part",
+		retained_source_materials and matched_part_indices.size() == parts.size())
+	static_root.free()
 
 
 func _test_oak_blend_fails_closed_to_static_source_material() -> void:

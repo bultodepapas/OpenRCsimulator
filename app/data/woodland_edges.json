@@ -2274,7 +2274,7 @@
   },
   "source_sha256_normalized_text": {
     "app/assets/landscape/trees/catalog.json": "afab65435415f13816afe4c55856dd07cb74e00ac0d811ab174f7ff0d2b3a661",
-    "app/assets/landscape/vegetation/catalog.json": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
+    "app/assets/landscape/vegetation/catalog.json": "535f32bf6be9eaac38233afc234cd6b9242aa928d5266867e7799755c28d0860",
     "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "28e9a9a32da8dce203a9c3fb3f36648ad2b780e1a6189e375d0eb025b4ca18a2",
     "app/assets/landscape/vegetation/impostors/fern_1_4view.json": "55a875ac3c278dcf08f4c2d6f5df4f3ba1b399f0265f9f62d5f04cfd8ed729b5",
     "app/assets/landscape/vegetation/impostors/grass_common_short_4view.json": "a217d565f3f44f48eb06a67e5ed28f2ef3ad9cc99b64e8e0b6d64214d816e5a5",
@@ -2287,11 +2287,11 @@
     "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
     "app/render/treeline.gd": "4713a0674f8e3fb39305fa16fcfa6695a9f8736629b939c5f8686500d2c087f8",
     "app/scenery/imported_hedge.gd": "67bde34184e298295085757de642964fa4461fce29f84b0b3304165c6f96937c",
-    "app/scenery/imported_vegetation.gd": "23c5152a7db3f28433f9a14ca7a9de4a9371f1b260921497e2144db7af440bf2",
+    "app/scenery/imported_vegetation.gd": "e40cfe03b158560423d389681514f673abe8a5b525795e632c1f23eb7f94526e",
     "app/scenery/models.gd": "fb93bbb19b8155f3b9aa71be4cf17b1532b9b130d4b02c8cbfe8edcb2be619c9",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
-    "app/scenery/prefabs.gd": "83fa18a7cdfc4860bf538c3ee2be4337215fea319661385b16d83a45a5efa7d8",
-    "app/scenery/vegetation_placement.gd": "d9aeb35700c781ce94cd3c9aad6f81731d48e54caca8628ac2d22c45b18dba45",
+    "app/scenery/prefabs.gd": "0ef3fee50d39afa0e4c2d125fc4c0f52ef1df83e7910897bb31a4ea60d32539b",
+    "app/scenery/vegetation_placement.gd": "a88d485932484facb987c988fbeb1ea522222da1e745c222a56be58a16a33bae",
     "tools/trees/place.py": "c580ad4196e6b589bf0580073ecf9a855e74f658c0de70b2b9a3fbbb30743c8c"
   },
   "source_triangle_budget": 472,

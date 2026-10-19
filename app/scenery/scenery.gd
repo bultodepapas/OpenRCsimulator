@@ -273,6 +273,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						var plant_xf := ImportedVegetation.fit_to_height(plant.asset_id, plant.height, xf)
 						var tone := 0.90 + 0.10 * Palette.hash01(pl.seed, 834)
 						var tint := Color(tone, minf(1.0, tone + 0.035), tone, 1.0)
+						if plant.asset_id == "maple_tree":
+							tint = Color.WHITE # Preserve the supplier's leaf/bark PBR color.
 						ImportedVegetation.queue(vegetation_batches, plant.asset_id, plant_xf, pl.seed, damage_id, tint)
 						vegetation_triangles += int(plant.triangles)
 					elif Population.handles(prefab):
@@ -313,6 +315,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						if VegetationPlacement.handles(prefab):
 							var plant := VegetationPlacement.spec(prefab, pl.seed)
 							shadow_size = Vector3(plant.width, plant.height, plant.depth)
+							if plant.asset_id == "maple_tree":
+								shadow_mode = "crown"
 						var shadow_source := {transform = shadow_xf, size = shadow_size, mode = shadow_mode, damage_id = damage_id}
 						var population_shadow := shadow_mode == "person" or shadow_mode == "vehicle"
 						if population_shadow:

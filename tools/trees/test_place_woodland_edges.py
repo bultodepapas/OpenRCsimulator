@@ -213,12 +213,69 @@ class WoodlandEdgePlacementTests(unittest.TestCase):
         self.assertIn("app/data/scenery/default.json", hashes)
         self.assertIn("app/data/fields/lake.json", hashes)
         self.assertIn("app/scenery/imported_hedge.gd", hashes)
+        self.assertIn("app/scenery/imported_vegetation.gd", hashes)
+        self.assertIn("app/scenery/vegetation_placement.gd", hashes)
         self.assertIn("app/assets/landscape/vegetation/impostors/grass_common_short_4view.json", hashes)
         self.assertIn("app/render/landscape_upgrade/scenery_grass_mask.gd", hashes)
         self.assertIn("app/assets/landscape/vegetation/impostors/grass_common_tall_4view.json", hashes)
         self.assertIn("app/assets/landscape/vegetation/impostors/fern_1_4view.json", hashes)
         self.assertTrue(all(len(value) == 64 for value in hashes.values()))
         self.assertFalse(any(key in document for key in ("groups", "collision_proxies")))
+
+    def test_maple_clearance_uses_the_mature_placement_height(self) -> None:
+        prefab_source = woodland.PREFABS_SOURCE_PATH.read_text(encoding="utf-8")
+        model_source = woodland.MODELS_SOURCE_PATH.read_text(encoding="utf-8")
+        placement_source = woodland.VEGETATION_PLACEMENT_PATH.read_text(encoding="utf-8")
+        maple = {
+            "id": "maple_tree",
+            "source_bounds_m": {
+                "height": 7.0,
+                "min": [-2.0, 0.0, -3.0],
+                "max": [2.0, 7.0, 3.0],
+            },
+        }
+        broadleaf = {
+            "id": "common_tree_3",
+            "source_bounds_m": {
+                "height": 10.0,
+                "min": [-2.0, 0.0, -2.0],
+                "max": [2.0, 10.0, 2.0],
+            },
+        }
+        small_assets = {
+            asset_id: {
+                "id": asset_id,
+                "source_bounds_m": {
+                    "height": 1.0,
+                    "min": [-0.5, 0.0, -0.5],
+                    "max": [0.5, 1.0, 0.5],
+                },
+            }
+            for asset_id in ("common_tree_1", "bush_common_flowers", "flower_3_group")
+        }
+        catalog = {"assets": [maple, broadleaf, *small_assets.values()]}
+        aliases = (
+            '"shade_tree": ["maple_tree", "common_tree_3"]\n'
+            '"sapling": ["common_tree_1"]\n'
+            '"bush": ["bush_common_flowers"]\n'
+            '"flower_clump": ["flower_3_group"]\n'
+        )
+
+        radii, _max_radius = woodland._max_prop_radii(
+            prefab_source, model_source, catalog, aliases, placement_source
+        )
+
+        maple_radius_at_14m = woodland.math.hypot(4.0, 6.0)
+        broadleaf_radius_at_10_3m = woodland.math.hypot(2.06, 2.06)
+        self.assertAlmostEqual(radii["shade_tree"], maple_radius_at_14m)
+        self.assertGreater(radii["shade_tree"], broadleaf_radius_at_10_3m)
+        self.assertAlmostEqual(
+            float(woodland._source_number("const MATURE_MAPLE_HEIGHT_M := 14.0\n", "MATURE_MAPLE_HEIGHT_M")),
+            14.0,
+        )
+        stale_catalog = {"assets": [item for item in catalog["assets"] if item["id"] != "maple_tree"]}
+        with self.assertRaisesRegex(ValueError, "Maple placement alias"):
+            woodland._max_prop_radii(prefab_source, model_source, stale_catalog, aliases, placement_source)
 
     def test_short_grass_impostor_manifest_is_bound_to_catalog_source(self) -> None:
         original_read_json = woodland._read_json

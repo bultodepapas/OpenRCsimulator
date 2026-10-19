@@ -281,8 +281,10 @@ static func _add_imported_tree_proxies(proxies: Array[Dictionary], id: String, p
 	_add_capsule(proxies, "tree:%s:%s:trunk" % [id_prefab, id], "tree_trunk", "trunk", "hard_terminal",
 		north, east, -trunk_height * 0.5, trunk_radius, trunk_half)
 	var crown_height := maxf(0.001, height - trunk_height)
+	var crown_center := _placement_point(north, east, heading,
+		float(vegetation.get("crown_offset_x", 0.0)), float(vegetation.get("crown_offset_z", 0.0)))
 	_add_box_at_down(proxies, "tree:%s:%s:crown" % [id_prefab, id], "tree_foliage", "crown",
-		"soft_foliage_impulse", north, east, -(trunk_height + height) * 0.5,
+		"soft_foliage_impulse", crown_center[0], crown_center[1], -(trunk_height + height) * 0.5,
 		float(vegetation.width) + 2.0 * wind_margin, crown_height,
 		float(vegetation.depth) + 2.0 * wind_margin, heading)
 
