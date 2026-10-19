@@ -4,6 +4,7 @@ extends RefCounted
 const Profile := preload("res://physics/glow/profile.gd")
 const FuelMass := preload("res://physics/glow/fuel_mass.gd")
 const FuelFeed := preload("res://physics/glow/fuel_feed.gd")
+const FuelProperties := preload("res://physics/fuel_properties.gd")
 
 const INSTALLATION_DIRECTORY := "res://data/glow/"
 const FORMAT := "openrc-glow-installation v1"
@@ -44,6 +45,7 @@ const PROPELLER := {
 }
 ## NITRO-05: optional fuel-feed block (physics/glow/fuel_feed.gd). The carburetor spray bar is an inventory-frame
 ## position [aft, right, up] from the wing leading-edge datum, like the tank.
+## `fuel_inventory` remains a v1 provenance label; runtime binding is by normalized tank and liquid inventory IDs.
 const ROOT_KEYS := ["format", "family", "profile", "fuel_inventory", "settings", "initial_temperature_k", "propeller"]
 const FUEL_FEED := {
 	idle_drive_pressure_pa = "Pa",
@@ -139,7 +141,7 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		return _fail(propeller_error)
 	settings.thermal = thermal
 
-	var tank_result: Dictionary = _fuel_tank(raw, value.get("fuel_inventory"), model)
+	var tank_result: Dictionary = _fuel_tank(raw, model, profile)
 	if not tank_result.get("ok", false):
 		return _fail(str(tank_result.get("message", "Invalid glow fuel inventory")))
 	if settings.starter_prime_kg >= tank_result.mass_kg and settings.starter_prime_kg > 0.0:
@@ -169,7 +171,15 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		propeller = propeller,
 		rotor_axis = axis_result.axis,
 		initial_temperature_k = initial_temperature,
+		# `initial_fuel_kg` is retained as the authored-reference alias. Sessions start
+		# from capacity_fuel_kg times the selected fill fraction.
 		initial_fuel_kg = tank_result.mass_kg,
+		reference_fuel_kg = tank_result.mass_kg,
+		capacity_fuel_kg = tank_result.capacity_kg,
+		unusable_fuel_kg = tank_result.unusable_kg,
+		reserve_fuel_kg = tank_result.reserve_kg,
+		fuel_start_fill = tank_result.start_fill,
+		fuel_tank = tank_result.normalized,
 		tank_position = tank_result.position,
 		tank_size = tank_result.size,
 		identity = {
@@ -183,7 +193,7 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 		install.fuel_feed = feed
 	# FUEL-04: prepare the shared fixed-datum resource inventory once; flight stages only evaluate it.
 	install.mass_reference = FuelMass.prepare(float(model.mass_kg), model.inertia, tank_result.mass_kg,
-		tank_result.position, tank_result.size)
+		tank_result.position, tank_result.size, tank_result.capacity_kg, tank_result.id)
 	if not install.mass_reference.get("ok", false):
 		return _fail("Glow fuel mass reference is invalid: " + str(install.mass_reference.get("error", "")))
 	var out: Dictionary = model.duplicate(true)
@@ -244,19 +254,52 @@ static func _propeller_error(propeller: Dictionary, model_propulsion: Dictionary
 	return ""
 
 
-static func _fuel_tank(raw: Dictionary, fuel_name: Variant, model: Dictionary) -> Dictionary:
-	if not fuel_name is String or fuel_name.strip_edges().is_empty():
-		return {ok = false, message = "Glow fuel inventory name must be a nonempty string"}
+static func _fuel_tank(raw: Dictionary, model: Dictionary, profile: Dictionary) -> Dictionary:
+	var system: Variant = model.get("fuel_system", null)
+	if not system is Dictionary or system.get("format") != "openrc-fuel-system v1":
+		return {ok = false, message = "Glow installation requires a normalized fuel_system"}
+	var tanks: Variant = system.get("tanks", null)
+	if not tanks is Array or tanks.size() != 1 or not tanks[0] is Dictionary:
+		return {ok = false, message = "The single-tank Glow solver requires exactly one normalized tank"}
+	var normalized: Dictionary = tanks[0]
+	var normalized_id: Variant = normalized.get("id", null)
+	if not normalized_id is String or normalized_id.strip_edges().is_empty():
+		return {ok = false, message = "Normalized Glow tank requires a stable nonempty tank ID"}
+	if normalized.get("family") != "glow":
+		return {ok = false, message = "Glow installation tank must use the glow fuel family"}
+	var registry: Dictionary = FuelProperties.load_file()
+	if not registry.get("ok", false):
+		return {ok = false, message = "Glow fuel registry is unavailable: " + str(registry.get("message", ""))}
+	var identity: Variant = system.get("registry_sha256", "")
+	if identity != registry.get("identity", {}).get("sha256", ""):
+		return {ok = false, message = "Normalized tank and current fuel registry identities disagree"}
+	var blend_check: Dictionary = Profile.validate_registry_blend(profile, registry, str(normalized.get("fuel", "")))
+	if not blend_check.get("ok", false):
+		return {ok = false, message = str(blend_check.get("message", "Glow profile does not match its registry blend"))}
+	var density: float = float(normalized.get("density_kg_m3", NAN))
+	if not is_finite(density) or absf(density - float(blend_check.density_kg_m3)) > 1.0e-9:
+		return {ok = false, message = "Normalized Glow tank density disagrees with its registry blend"}
 	var inventory: Variant = raw.get("inventory", null)
 	if not inventory is Array:
 		return {ok = false, message = "Glow fuel requires a validated inventory array"}
-	var matches: Array[Dictionary] = []
+	var liquid_id: Variant = normalized.get("liquid_inventory_id", null)
+	var shell_id: Variant = normalized.get("shell_inventory_id", null)
+	if not liquid_id is String or liquid_id.is_empty() or not shell_id is String or shell_id.is_empty():
+		return {ok = false, message = "Normalized Glow tank needs stable liquid and shell inventory IDs"}
+	var liquid_matches: Array[Dictionary] = []
+	var shell_matches: Array[Dictionary] = []
 	for candidate: Variant in inventory:
-		if candidate is Dictionary and candidate.get("name") == fuel_name:
-			matches.append(candidate)
-	if matches.size() != 1 or matches[0].get("energy_source") != "glow_fuel":
-		return {ok = false, message = "Glow fuel tank must name one explicit glow_fuel inventory item"}
-	var tank: Dictionary = matches[0]
+		if not candidate is Dictionary:
+			continue
+		if candidate.get("id") == liquid_id:
+			liquid_matches.append(candidate)
+		if candidate.get("id") == shell_id:
+			shell_matches.append(candidate)
+	if liquid_matches.size() != 1 or shell_matches.size() != 1 or liquid_id == shell_id:
+		return {ok = false, message = "Normalized Glow tank IDs must resolve to one distinct liquid and shell item"}
+	var tank: Dictionary = liquid_matches[0]
+	if tank.get("energy_source") != "glow_fuel" or shell_matches[0].has("energy_source"):
+		return {ok = false, message = "Glow liquid and empty shell energy sources disagree with the normalized tank"}
 	var mass: float = _quantity(tank.get("mass"), "kg")
 	var position_values: PackedFloat64Array = _quantity_vector(tank.get("position"), "m")
 	var size: PackedFloat64Array = _quantity_vector(tank.get("size"), "m")
@@ -265,10 +308,28 @@ static func _fuel_tank(raw: Dictionary, fuel_name: Variant, model: Dictionary) -
 	for extent: float in size:
 		if extent < 0.0 or extent > 2.0:
 			return {ok = false, message = "Glow tank size must be finite and within [0, 2] m"}
+	var reference_mass: float = float(normalized.get("liquid_mass_kg", NAN))
+	var capacity: float = float(normalized.get("capacity_kg", NAN))
+	var capacity_m3: float = float(normalized.get("capacity_m3", NAN))
+	var unusable: float = float(normalized.get("unusable_kg", NAN))
+	var reserve: float = float(normalized.get("reserve_kg", unusable))
+	var start_fill: float = float(normalized.get("start_fill", NAN))
+	if not is_finite(reference_mass) or absf(reference_mass - mass) > maxf(1.0e-12, absf(mass) * 1.0e-9):
+		return {ok = false, message = "Normalized Glow liquid mass disagrees with its inventory item"}
+	if not is_finite(capacity) or not is_finite(capacity_m3) or not is_finite(unusable) \
+			or not is_finite(reserve) or not is_finite(start_fill) or capacity <= 0.0 \
+			or reference_mass > capacity * (1.0 + 1.0e-9) or unusable < 0.0 or unusable >= capacity \
+			or reserve < unusable or reserve >= capacity \
+			or absf(capacity - capacity_m3 * density) > maxf(1.0e-12, capacity * 1.0e-9) \
+			or absf(start_fill - reference_mass / capacity) > 1.0e-9:
+		return {ok = false, message = "Normalized Glow capacity, reserve, unusable mass or start fill is inconsistent"}
+	var box_volume: float = size[0] * size[1] * size[2]
+	if box_volume + 1.0e-12 < capacity_m3:
+		return {ok = false, message = "Glow tank box cannot hold its normalized capacity"}
 	var model_mass: Variant = model.get("mass_kg", null)
 	var model_inertia: Variant = model.get("inertia", null)
 	var cg: Variant = model.get("cg_inventory_le", null)
-	if typeof(model_mass) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(model_mass)) or float(model_mass) <= mass:
+	if typeof(model_mass) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(model_mass)) or float(model_mass) <= reference_mass:
 		return {ok = false, message = "Glow fuel mass must be below the validated aircraft mass"}
 	if not model_inertia is PackedFloat64Array or model_inertia.size() != 6 or not cg is PackedFloat64Array or cg.size() != 3:
 		return {ok = false, message = "Glow aircraft mass properties are malformed"}
@@ -281,10 +342,15 @@ static func _fuel_tank(raw: Dictionary, fuel_name: Variant, model: Dictionary) -
 		position_values[1] - cg[1],
 		cg[2] - position_values[2],
 	])
-	var dry: Dictionary = FuelMass.evaluate(float(model_mass), model_inertia, mass, 0.0, position, size)
+	var tank_id: String = str(normalized_id)
+	var dry: Dictionary = FuelMass.evaluate(float(model_mass), model_inertia, reference_mass, 0.0,
+		position, size, capacity, tank_id)
 	if not dry.get("ok", false):
 		return {ok = false, message = "Glow dry fuel carrier mass properties are invalid"}
-	return {ok = true, mass_kg = mass, position = position, size = size, dry_properties = dry}
+	return {ok = true, id = tank_id, liquid_id = str(liquid_id), shell_id = str(shell_id),
+		mass_kg = reference_mass, capacity_kg = capacity,
+		unusable_kg = unusable, reserve_kg = reserve, start_fill = start_fill, density_kg_m3 = density,
+		position = position, size = size, dry_properties = dry, normalized = normalized.duplicate(true)}
 
 
 ## NITRO-05: the fuel-feed block in body FRD about the wet-CG datum, with the premix density of the profile's fuel,
@@ -307,13 +373,12 @@ static func _fuel_feed(value: Variant, model: Dictionary, profile: Dictionary, t
 	for coordinate: float in carburetor:
 		if absf(coordinate) > 2.0:
 			return {ok = false, message = "Glow carburetor must lie within 2 m of the centre of gravity"}
-	var density: float = float(profile.fuel.density_kg_m3)
 	var feed := {
 		ok = true,
 		carburetor_body_m = carburetor,
 		idle_drive_pressure_pa = idle,
 		wot_drive_pressure_pa = wot,
-		density_kg_m3 = density,
+		density_kg_m3 = float(tank.density_kg_m3),
 		rated_rpm = float(profile.operation.rated_rpm),
 	}
 	var needled := FuelFeed.needled_head_pa(feed, tank.position, tank.size, STANDARD_GRAVITY)

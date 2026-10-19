@@ -19,6 +19,7 @@ const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Landscapes := preload("res://landscapes/catalog.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
@@ -40,6 +41,7 @@ signal controls_requested(from: Control)
 signal settings_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
+signal landscape_requested(id: String)
 signal start_requested(choice: String)
 ## The player asked to edit draft flight conditions; closing the dialog returns focus to `from`.
 signal weather_requested(from: Control)
@@ -56,6 +58,9 @@ const HOME_AUTOWRAP_META := "_home_authored_autowrap_mode"
 var aircraft_id := Catalog.DEFAULT_ID
 var start_choice: String = "runway"
 var runway_available: bool = true
+var rotorcraft_pad_available: bool = true
+var landscape_id: String = Landscapes.DEFAULT_ID
+var landscape_button: Button
 var weather_config: Dictionary = WeatherSettings.defaults()
 var failure_config: Dictionary = {"probability_percent": 0, "include_catastrophic": false, "notify": true}
 var lighting_config: Dictionary = TimeOfDay.defaults()
@@ -308,6 +313,18 @@ func _init() -> void:
 	_conditions_row.add_theme_constant_override("h_separation", 4)
 	_conditions_row.add_theme_constant_override("v_separation", 2)
 	flight_page.add_child(_conditions_row)
+	landscape_button = _button("", "HomeAction")
+	landscape_button.name = "Landscape"
+	landscape_button.custom_minimum_size.y = 38
+	landscape_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	landscape_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	landscape_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	landscape_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	landscape_button.pressed.connect(func() -> void:
+		var ids: Array[String] = Landscapes.ids()
+		landscape_requested.emit(ids[(ids.find(landscape_id) + 1) % ids.size()]))
+	_conditions_row.add_child(landscape_button)
+	set_landscape(landscape_id)
 	weather_button = _button("", "HomeAction")
 	weather_button.name = "Weather"
 	weather_button.custom_minimum_size.y = 38
@@ -675,6 +692,10 @@ func _ready() -> void:
 	for header_button in [language_button, settings_button]:
 		header_button.focus_neighbor_bottom = header_button.get_path_to(_page_buttons[0])
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
+	start_button.focus_neighbor_right = start_button.get_path_to(landscape_button)
+	landscape_button.focus_neighbor_left = landscape_button.get_path_to(start_button)
+	landscape_button.focus_neighbor_bottom = landscape_button.get_path_to(weather_button)
+	weather_button.focus_neighbor_top = weather_button.get_path_to(landscape_button)
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
@@ -933,10 +954,12 @@ func set_preview_state(state: String) -> void:
 
 func set_start_choice(choice: String) -> void:
 	if Catalog.is_rotorcraft(aircraft_id):
-		start_choice = "airborne" if choice == "airborne" else "runway"
-		start_button.disabled = false
+		start_choice = "airborne" if choice == "airborne" or not rotorcraft_pad_available else "runway"
+		start_button.disabled = not rotorcraft_pad_available
 		start_button.text = tr("Start: hover") if start_choice == "airborne" else tr("Start: helicopter pad")
 		start_button.tooltip_text = tr("Choose a stopped rotor on the pad or a trimmed practice hover.")
+		if not rotorcraft_pad_available:
+			start_button.tooltip_text = tr("This landscape supports airborne starts only.")
 		limits_label.text = tr("Experimental helicopter. On the pad: arm, release hold, wait for RPM, then raise collective.")
 		return
 	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
@@ -952,6 +975,12 @@ func set_start_choice(choice: String) -> void:
 		start_button.text = tr("Start: 50% throttle")
 		limits_label.text = "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
 		start_button.tooltip_text = tr(limits_label.text)
+
+
+func set_landscape(id: String) -> void:
+	landscape_id = id if Landscapes.has(id) else Landscapes.DEFAULT_ID
+	landscape_button.text = tr("Landscape: %s") % Landscapes.entry(landscape_id).name
+	landscape_button.tooltip_text = tr("Choose the landscape for your next flight.")
 
 
 ## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.
@@ -1037,6 +1066,7 @@ func reject_start(message: String) -> void:
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		set_landscape(landscape_id)
 		set_start_choice(start_choice) # Rotorcraft launch labels are translated when assigned.
 		_update_texts()
 	elif what == NOTIFICATION_THEME_CHANGED and is_node_ready():

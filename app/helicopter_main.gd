@@ -7,12 +7,12 @@ const Builder = preload("res://aircraft/hx700_model.gd")
 const RotorVisual = preload("res://render/rotor/heli_rotor_visual.gd")
 const NightLights = preload("res://render/rotor/heli_night_lights.gd")
 const CrashPresentation = preload("res://render/rotor/heli_crash_presentation.gd")
-const CollisionSetup = preload("res://scenery/collision_setup.gd")
 const Electronics = preload("res://physics/rotorcraft/electronics.gd")
 const MainRotor = preload("res://physics/rotorcraft/main_rotor.gd")
 const Math3D = preload("res://physics/math3d.gd")
 const World = preload("res://render/world/world.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const Landscapes = preload("res://landscapes/catalog.gd")
 const Frames = preload("res://render/frames.gd")
 const PilotCamera = preload("res://render/pilot_camera.gd")
 const CameraRig = preload("res://render/camera/camera_rig.gd")
@@ -27,6 +27,7 @@ signal pause_requested
 signal overlay_settings_changed(settings: Dictionary)
 var aircraft_id: String="xcell-60-research"
 var field_path: String=FieldLoader.DEFAULT_PATH
+var landscape_id: String=Landscapes.DEFAULT_ID
 var field: Dictionary={}
 var weather_config: Dictionary={}
 var lighting_config: Dictionary={}
@@ -69,6 +70,9 @@ var _injected_user_args: Variant=null
 
 func _ready() -> void:
  var args: Dictionary=_user_args()
+ landscape_id=str(args.get("landscape",landscape_id))
+ if not Landscapes.has(landscape_id): _refuse("Unknown landscape: "+landscape_id); return
+ if field_path==FieldLoader.DEFAULT_PATH: field_path=Landscapes.entry(landscape_id).field_path
  field_path=str(args.get("field",field_path))
  var loaded: Dictionary=FieldLoader.load_from(field_path)
  if not loaded.ok: _refuse("; ".join(loaded.errors)); return
@@ -83,7 +87,8 @@ func _ready() -> void:
  if str(args.get("heli-lights","auto")) not in NightLights.MODES: _refuse("--heli-lights must be auto, all, nav or off"); return
  var snapshot: Dictionary=Lighting.snapshot(lighting_config) if lighting_config.mode!="legacy" else {}
  _lighting_snapshot=snapshot
- var world: Dictionary=World.build(self,field,Callable(),{},snapshot,night_options)
+ var build_field := func() -> void: add_child(Landscapes.build(landscape_id,field,snapshot))
+ var world: Dictionary=World.build(self,field,build_field,{},snapshot,night_options)
  _environment=world.environment
  _airplane=Builder.build()
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
@@ -99,11 +104,11 @@ func _ready() -> void:
  var selected: Dictionary=Catalog.entry(aircraft_id)
  if not Catalog.is_rotorcraft(aircraft_id) or not Catalog.can_fly(aircraft_id): _refuse("This helicopter has no qualified playable configuration."); return
  if not session.setup(str(selected.data),aircraft_id) or not session.set_field(field): _refuse(session.start_error+session.surface_error); return
- var obstacles: Dictionary=CollisionSetup.build(field)
+ var obstacles: Dictionary=Landscapes.collision_world(landscape_id,field)
  if not obstacles.ok or not session.set_collision_world(obstacles.world):
   _refuse("Helicopter obstacle inventory refused: "+"; ".join(obstacles.errors)); return
  # Existing technical captures/traces keep their explicit hover fixture unless a start is supplied.
- var requested_start: String=str(args.get("start","airborne" if args.has("trace") or args.has("capture") or args.has("alt") else start_choice))
+ var requested_start: String=str(args.get("start","airborne" if args.has("trace") or args.has("capture") or args.has("alt") or not field.has("rotorcraft_pad") else start_choice))
  if not session.set_start_choice(requested_start): _refuse(session.start_error); return
  if args.has("alt") and session.start_choice=="ground": _refuse("Altitude applies only to the airborne helicopter start."); return
  if not weather_config.is_empty() and not session.setup_weather(weather_config): _refuse(session.weather_error); return

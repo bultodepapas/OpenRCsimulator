@@ -3,6 +3,7 @@ extends SceneTree
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Installation := preload("res://physics/glow/installation.gd")
 const FuelMass := preload("res://physics/glow/fuel_mass.gd")
+const Profile := preload("res://physics/glow/profile.gd")
 
 var _checks: int = 0
 var _failures: int = 0
@@ -35,7 +36,13 @@ func _test_installation(label: String, aircraft_path: String) -> void:
 	if not raw is Dictionary:
 		return
 	var legacy: Dictionary = AircraftData._validate_legacy(AircraftData.legacy_v1_input(raw))
-	_check(label + " aircraft mass and propulsion derive", legacy.get("ok", false), str(legacy.get("errors", [])))
+	if legacy.get("ok", false):
+		var fuel_errors := PackedStringArray()
+		legacy.model.fuel_system = AircraftData._fuel_system(fuel_errors, raw)
+		if not fuel_errors.is_empty():
+			legacy.ok = false
+			legacy.errors = fuel_errors
+	_check(label + " aircraft mass, propulsion and normalized fuel system derive", legacy.get("ok", false), str(legacy.get("errors", [])))
 	if not legacy.get("ok", false):
 		return
 	var source_path: String = str(raw.propulsion.engine.glow_installation)
@@ -53,6 +60,25 @@ func _test_installation(label: String, aircraft_path: String) -> void:
 		attached.model.propulsion.glow.identity.sha256 == FileAccess.get_sha256(source_path))
 	_check(label + " installed propeller has a unit runtime axis",
 		attached.model.propulsion.has("axis") and attached.model.propulsion.axis == PackedFloat64Array([1.0, 0.0, 0.0]))
+	var install: Dictionary = attached.model.propulsion.glow
+	_check(label + " keeps authored reference fuel separate from tank capacity",
+		install.initial_fuel_kg == install.reference_fuel_kg
+		and install.reference_fuel_kg == install.fuel_tank.liquid_mass_kg
+		and install.capacity_fuel_kg == install.fuel_tank.capacity_kg
+		and install.unusable_fuel_kg == install.fuel_tank.unusable_kg)
+	_check(label + " preserves an explicit or estimated reserve at/above unusable fuel",
+		install.reserve_fuel_kg >= install.unusable_fuel_kg
+		and install.reserve_fuel_kg == install.fuel_tank.reserve_kg)
+	var full_mass: Dictionary = FuelMass.evaluate(float(legacy.model.mass_kg), legacy.model.inertia,
+		install.reference_fuel_kg, install.capacity_fuel_kg, install.tank_position, install.tank_size,
+		install.capacity_fuel_kg, str(install.fuel_tank.id))
+	_check(label + " capacity fill adds only mass above the authored reference amount",
+		full_mass.get("ok", false)
+		and absf(float(full_mass.mass_kg) - (float(legacy.model.mass_kg) - install.reference_fuel_kg + install.capacity_fuel_kg)) < 1.0e-9)
+	var over_capacity: Dictionary = FuelMass.evaluate(float(legacy.model.mass_kg), legacy.model.inertia,
+		install.reference_fuel_kg, install.capacity_fuel_kg + 1.0e-6, install.tank_position, install.tank_size,
+		install.capacity_fuel_kg, str(install.fuel_tank.id))
+	_check(label + " live mass sample refuses fuel above the normalized tank capacity", not over_capacity.get("ok", false))
 	_check(label + " attachment does not mutate its input model", not legacy.model.propulsion.has("glow"))
 	var aircraft_load: Dictionary = AircraftData.load_file(aircraft_path)
 	_check(label + " full aircraft loader completes glow validation before flight",
@@ -182,15 +208,19 @@ func _test_bad_install_values(label: String, baseline: Dictionary, raw: Dictiona
 	value = baseline.duplicate(true)
 	value.initial_temperature_k.value = 601.0
 	cases.append({"label": "initial head temperature above installation bound", "value": value})
-	value = baseline.duplicate(true)
-	value.fuel_inventory = "missing tank"
-	cases.append({"label": "unmatched fuel inventory name", "value": value})
 	for item: Dictionary in cases:
 		var result: Dictionary = Installation.prepare_value(item.value, raw, model.duplicate(true), PackedByteArray())
 		_check(label + " rejects " + str(item.label), not result.get("ok", false), str(result.get("errors", [])))
 
 
 func _test_inventory_and_axis(label: String, baseline: Dictionary, raw: Dictionary, model: Dictionary) -> void:
+	var renamed_raw: Dictionary = raw.duplicate(true)
+	for item: Dictionary in renamed_raw.inventory:
+		if item.get("id") == model.fuel_system.tanks[0].liquid_inventory_id:
+			item.name = "renamed display text is not a runtime identity"
+	var renamed: Dictionary = Installation.prepare_value(baseline, renamed_raw, model.duplicate(true), PackedByteArray())
+	_check(label + " tank runtime binding survives display-name changes because it uses stable IDs", renamed.get("ok", false))
+
 	var invalid_raw := raw.duplicate(true)
 	for item: Dictionary in invalid_raw.inventory:
 		if item.get("name") == baseline.fuel_inventory:
@@ -217,7 +247,21 @@ func _test_inventory_and_axis(label: String, baseline: Dictionary, raw: Dictiona
 	var bad_axis: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
 	_check(label + " refuses a non-unit rotor axis", not bad_axis.get("ok", false))
 
-	var tank: Dictionary = Installation._fuel_tank(raw, baseline.fuel_inventory, model)
+	candidate_model = model.duplicate(true)
+	candidate_model.fuel_system.tanks[0].liquid_inventory_id = "missing-liquid"
+	var missing_id: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
+	_check(label + " refuses a normalized tank liquid ID that does not resolve", not missing_id.get("ok", false))
+
+	candidate_model = model.duplicate(true)
+	candidate_model.fuel_system.registry_sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+	var wrong_registry: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
+	_check(label + " refuses normalized fuel metadata from a different registry identity", not wrong_registry.get("ok", false))
+	candidate_model = model.duplicate(true)
+	candidate_model.fuel_system.tanks[0].fuel = "unknown-glow-blend"
+	var wrong_blend: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
+	_check(label + " refuses a fuel blend that the engine profile does not model", not wrong_blend.get("ok", false))
+
+	var tank: Dictionary = Installation._fuel_tank(raw, model, Profile.load_file(String(baseline.profile)).model)
 	var carrier_model: Dictionary = model.duplicate(true)
 	var carrier_raw: Dictionary = raw.duplicate(true)
 	var axis := PackedFloat64Array([cos(deg_to_rad(10.0)), sin(deg_to_rad(10.0)), 0.0])

@@ -6,6 +6,8 @@ const CONTRACT := "res://data/glow/profile_contract.json"
 const KINDS := ["manual", "measured", "borrowed", "estimated", "derived"]
 const ROOT_KEYS := ["format", "id", "manufacturer", "model", "family", "status", "feed", "oil_model", "parameters", "fuel", "operation"]
 const DISPLACEMENT_GEOMETRY_RELATIVE_TOLERANCE := 0.005
+const REGISTRY_FRACTION_TOLERANCE := 1.0e-12
+const REGISTRY_DENSITY_TOLERANCE_KG_M3 := 1.0e-9
 
 
 static func load_file(path: String) -> Dictionary:
@@ -84,6 +86,69 @@ static func prepare(raw: Variant) -> Dictionary:
 	return {ok = true, errors = PackedStringArray(), model = {family = raw.family, parameters = p,
 		fuel = f, operation = op, identity = {id = raw.id, manufacturer = raw.manufacturer, model = raw.model,
 		status = raw.status, cycle_revolutions = 1 if raw.family == "glow_2t" else 2}, provenance = provenance}}
+
+
+## Verify that the standalone engine model consumes the blend selected by the aircraft's
+## normalized tank. The profile carries combustion properties; the registry is authoritative
+## for liquid identity and density.
+static func validate_registry_blend(profile: Dictionary, registry: Dictionary, blend_id: String) -> Dictionary:
+	var blends: Variant = registry.get("blends", null)
+	if not registry.get("ok", false) or not blends is Dictionary or not blends.has(blend_id):
+		return {ok = false, message = "Glow tank names an unavailable registry blend: " + blend_id}
+	var blend_value: Variant = blends[blend_id]
+	if not blend_value is Dictionary:
+		return {ok = false, message = "Glow fuel registry blend is malformed: " + blend_id}
+	var blend: Dictionary = blend_value
+	if blend.get("family") != "glow" or profile.get("family") not in ["glow_2t", "glow_4t"]:
+		return {ok = false, message = "Glow installation and registry blend families disagree"}
+	var fuel: Variant = profile.get("fuel", null)
+	if not fuel is Dictionary:
+		return {ok = false, message = "Glow profile fuel properties are malformed"}
+	var expected_fractions := {
+		"methanol_aiaa_2016": fuel.get("methanol_volume_fraction", NAN),
+		"nitromethane_aiaa_2016": fuel.get("nitromethane_volume_fraction", NAN),
+		"castor_oil_aiaa_2016": fuel.get("lubricant_volume_fraction", NAN),
+	}
+	var fractions: Variant = blend.get("volume_fractions", null)
+	if not fractions is Dictionary or fractions.size() != expected_fractions.size():
+		return {ok = false, message = "Registry glow blend does not match the profile's modeled fuel components"}
+	for component_id: String in expected_fractions:
+		var expected: Variant = expected_fractions[component_id]
+		var actual: Variant = fractions.get(component_id, null)
+		if typeof(expected) not in [TYPE_FLOAT, TYPE_INT] or typeof(actual) not in [TYPE_FLOAT, TYPE_INT] \
+				or not is_finite(float(expected)) or not is_finite(float(actual)) \
+				or absf(float(expected) - float(actual)) > REGISTRY_FRACTION_TOLERANCE:
+			return {ok = false, message = "Registry glow blend composition disagrees with the engine profile at " + component_id}
+	var components: Variant = registry.get("components", null)
+	if not components is Dictionary:
+		return {ok = false, message = "Glow fuel registry components are malformed"}
+	var density_fields := {
+		"methanol_aiaa_2016": "methanol_density_kg_m3",
+		"nitromethane_aiaa_2016": "nitromethane_density_kg_m3",
+		"castor_oil_aiaa_2016": "lubricant_density_kg_m3",
+	}
+	for component_id: String in density_fields:
+		if not components.has(component_id) or not components[component_id] is Dictionary:
+			return {ok = false, message = "Registry glow component is missing: " + component_id}
+		var profile_density_value: Variant = fuel.get(density_fields[component_id], null)
+		var registry_density_value: Variant = components[component_id].get("density_kg_m3", null)
+		if typeof(profile_density_value) not in [TYPE_FLOAT, TYPE_INT] \
+				or typeof(registry_density_value) not in [TYPE_FLOAT, TYPE_INT]:
+			return {ok = false, message = "Glow component density is malformed at " + component_id}
+		var profile_density: float = float(profile_density_value)
+		var registry_density: float = float(registry_density_value)
+		if not is_finite(profile_density) or absf(profile_density - registry_density) > REGISTRY_DENSITY_TOLERANCE_KG_M3:
+			return {ok = false, message = "Glow profile component density disagrees with the registry at " + component_id}
+	var density_value: Variant = blend.get("density_kg_m3", null)
+	var profile_density_value: Variant = fuel.get("density_kg_m3", null)
+	if typeof(density_value) not in [TYPE_FLOAT, TYPE_INT] \
+			or typeof(profile_density_value) not in [TYPE_FLOAT, TYPE_INT]:
+		return {ok = false, message = "Glow blend density is malformed"}
+	var density: float = float(density_value)
+	if not is_finite(density) or not is_finite(float(profile_density_value)) \
+			or absf(float(profile_density_value) - density) > REGISTRY_DENSITY_TOLERANCE_KG_M3:
+		return {ok = false, message = "Glow profile blend density disagrees with the registry"}
+	return {ok = true, blend_id = blend_id, density_kg_m3 = density}
 
 
 static func _group(raw: Variant, rules: Dictionary) -> Dictionary:

@@ -14,6 +14,7 @@ const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const Landscapes = preload("res://landscapes/catalog.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const ControllerService := preload("res://input/controller_service.gd")
 const ControllerSetup := preload("res://ui/controller_setup.gd")
@@ -69,6 +70,7 @@ var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var preferences_path := Preferences.DEFAULT_PATH
 ## Test seam; both routes always use the same file, including after Home → Fly.
 var field_path: String = FieldLoader.DEFAULT_PATH
+var landscape_id: String = Landscapes.DEFAULT_ID
 var preferences := {}
 var screens: ScreenStack = ScreenStack.new(self)
 # Compatibility views for the UI driver/capture contracts. All membership lives in the stack.
@@ -198,6 +200,9 @@ func _ready() -> void:
 		open_pause.call_deferred())
 	add_child(controllers)
 	preferences = Preferences.load_from(preferences_path)
+	landscape_id = preferences.landscape
+	if field_path == FieldLoader.DEFAULT_PATH:
+		field_path = Landscapes.entry(landscape_id).field_path
 	if preferences.note != "":
 		print("settings: ", preferences.note)
 	TranslationServer.set_locale(preferences.language)
@@ -263,7 +268,7 @@ func show_home() -> void:
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
 	MoonConfig.session_config = _moon_config_from_preferences() # FW-MOON-12: before Home and Fly build their worlds
-	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults())) # still backdrop
+	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults()), landscape_id) # still backdrop
 	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
@@ -271,6 +276,8 @@ func show_home() -> void:
 	var home := Home.new()
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.runway_available = home_scene.field.get("id", "") == "default"
+	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
+	home.set_landscape(landscape_id)
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", Preferences.DEFAULTS.start_choice))
 	home.set_weather_config(home_weather)
@@ -283,6 +290,7 @@ func show_home() -> void:
 	home.workshop_requested.connect(open_workshop)
 	home.natural_random_requested.connect(open_natural_random)
 	home.aircraft_requested.connect(set_aircraft)
+	home.landscape_requested.connect(set_landscape)
 	home.start_requested.connect(set_start_choice)
 	home.quit_requested.connect(func() -> void: get_tree().quit())
 	home.language_requested.connect(set_language)
@@ -538,6 +546,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = _create_flight(route_aircraft_id)
 	flight.field_path = field_path
+	flight.landscape_id = landscape_id
 	if flight.has_method("set_user_args"):
 		flight.call("set_user_args", user_args)
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
@@ -1138,6 +1147,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		_workshop_home_detached = true
 	var candidate: Node = load(FLIGHT_SCENE).instantiate()
 	candidate.field_path = field_path
+	candidate.landscape_id = landscape_id
 	candidate.aircraft_id = base_id
 	candidate.workshop_trial = trial.duplicate(true)
 	candidate.start_choice = "airborne"
@@ -1501,26 +1511,53 @@ func _on_weather_applied(raw: Dictionary) -> void:
 
 
 ## Rebuild Home's single still world with its applied lighting after the old world leaves the tree.
-func _rebuild_home_scene() -> void:
+func _rebuild_home_scene() -> bool:
 	if home_scene == null:
-		return
+		return false
 	var previous: Node3D = home_scene
 	remove_child(previous)
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()))
+	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()), landscape_id)
 	if not replacement.field_errors.is_empty():
 		replacement.free()
 		add_child(previous)
 		previous.camera.make_current()
 		if home != null:
 			home.set_note(tr("Could not update Home lighting; the previous view remains active."))
-		return
+		return false
 	home_scene = replacement
 	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	move_child(home_scene, 0) # keep the backdrop beneath the Home controls
 	previous.queue_free()
 	home_scene.camera.make_current()
+	return true
+
+
+## Landscape changes create a fresh Home world; a running flight keeps its accepted field and contacts.
+func set_landscape(id: String) -> void:
+	if not screens.is_top("home") or flight != null or not Landscapes.has(id) or id == landscape_id:
+		return
+	var path: String = Landscapes.entry(id).field_path
+	var checked: Dictionary = FieldLoader.load_from(path)
+	if not checked.ok:
+		home.set_note("; ".join(checked.errors))
+		return
+	var old_id: String = landscape_id
+	var old_path: String = field_path
+	landscape_id = id
+	field_path = path
+	if not _rebuild_home_scene():
+		landscape_id = old_id
+		field_path = old_path
+		return
+	home.runway_available = home_scene.field.get("id", "") == "default"
+	home.rotorcraft_pad_available = not home_scene.field.get("rotorcraft_pad", {}).is_empty()
+	home.set_landscape(id)
+	home.set_start_choice(home.start_choice)
+	preferences.landscape = id
+	var err: Error = Preferences.save_to(preferences_path, preferences)
+	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 
 
 func close_weather() -> void:

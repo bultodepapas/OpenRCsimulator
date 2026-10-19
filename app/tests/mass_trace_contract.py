@@ -92,7 +92,8 @@ def project(path, validator, *args, **kwargs):
         compatible.write_text(output.getvalue(), encoding='utf-8')
         result = validator(compatible, *args, **kwargs)
     if isinstance(result, dict):
-        result.update(format=FORMAT, mass_trace_schema=SCHEMA, mass_samples=len(rows))
+        result.update(format=FORMAT, mass_trace_schema=SCHEMA,
+                      mass_base_trace_format=base_format, mass_samples=len(rows))
         if 'columns' in result:
             result['columns'] = columns
     return True, result

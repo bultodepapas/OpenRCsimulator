@@ -25,6 +25,8 @@ const GlowInstallation := preload("res://physics/glow/installation.gd")
 const BatteryData := preload("res://physics/battery/battery_data.gd")
 const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
 const FuelProperties := preload("res://physics/fuel_properties.gd")
+const MassInventory := preload("res://physics/mass_inventory.gd")
+const Turbine := preload("res://physics/turbine.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 ## CR-01d: names a crash-hull point may carry (crash_hull_components). Same list as the contract's enum path;
@@ -166,6 +168,15 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 			if not flap_errors.is_empty():
 				return {ok=false,errors=flap_errors,warnings=result.warnings,model={}}
 			result.model.flaps = flap_model
+		if raw.has("fuel_system") or raw.balance.has("fuel_state") or raw.balance.has("cg_range"):
+			var fuel_errors := PackedStringArray()
+			var fuel_system: Dictionary = _fuel_system(fuel_errors, raw)
+			if not fuel_errors.is_empty():
+				return {ok=false,errors=fuel_errors,warnings=result.warnings,model={}}
+			if not fuel_system.is_empty():
+				result.model.fuel_system = fuel_system
+		# FUEL-05-R1: installers consume the normalized tank registry. Keep it available before
+		# GlowInstallation.attach() binds its inventory IDs and validates capacity/fill.
 		if raw.propulsion.get("engine", {}).has("glow_installation"):
 			var installed: Dictionary = GlowInstallation.attach(raw, result.model)
 			if not installed.ok:
@@ -178,13 +189,12 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 			_validate_pack_mount(mount_errors, result.model.propulsion.battery, raw.get("inventory", []))
 			if not mount_errors.is_empty():
 				return {ok=false,errors=mount_errors,warnings=result.warnings,model={}}
-		if raw.has("fuel_system") or raw.balance.has("fuel_state") or raw.balance.has("cg_range"):
-			var fuel_errors := PackedStringArray()
-			var fuel_system: Dictionary = _fuel_system(fuel_errors, raw)
-			if not fuel_errors.is_empty():
-				return {ok=false,errors=fuel_errors,warnings=result.warnings,model={}}
-			if not fuel_system.is_empty():
-				result.model.fuel_system = fuel_system
+		if raw.propulsion.has("fuel_consumption"):
+			var liquid_errors := PackedStringArray()
+			var liquid_fuel: Dictionary = _liquid_fuel(liquid_errors, raw, result.model)
+			if not liquid_errors.is_empty():
+				return {ok=false,errors=liquid_errors,warnings=result.warnings,model={}}
+			result.model.propulsion.liquid_fuel = liquid_fuel
 		var identities := PhysicalIdentity.describe(raw)
 		if not identities.is_empty():
 			result.model.physical_identity = identities
@@ -1345,7 +1355,7 @@ static func _low_voltage_cutoff(errors: PackedStringArray, node: Variant) -> Dic
 const FUEL_FAMILY_SOURCE := {glow = "glow_fuel", gasoline = "gasoline", kerosene = "kerosene"}
 const FUEL_FAMILY_FEED := {glow = "suction_muffler", gasoline = "pumped_diaphragm", kerosene = "ecu_pump"}
 const LIQUID_FUEL_SOURCES := ["glow_fuel", "gasoline", "kerosene"]
-const FUEL_ENERGY := ["prescribed_fuel", "finite_glow_fuel"]
+const FUEL_ENERGY := ["prescribed_fuel", "finite_glow_fuel", "finite_liquid_fuel"]
 
 static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictionary:
 	var balance: Dictionary = raw.balance

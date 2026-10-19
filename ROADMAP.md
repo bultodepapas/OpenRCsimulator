@@ -1,6 +1,6 @@
 # Roadmap
 
-2026-10-16 · Revision 11 · **Status: working early alpha. Gate 2, PT2, readability, physical calibration and target-machine performance acceptance remain open.** This document owns main-line step/gate status. Track guides own their detailed work; [documentation and ownership map](docs/README.md), [current architecture](docs/STACK.md), [commands](docs/TOOLS.md).
+2026-10-19 · **Status: working early alpha. Gate 2, PT2, readability, physical calibration and target-machine performance acceptance remain open.** This document owns main-line step/gate status. Track guides own their detailed work; [documentation and ownership map](docs/README.md), [current architecture](docs/STACK.md), [commands](docs/TOOLS.md).
 
 ## Rules for every step
 
@@ -8,31 +8,12 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 
 ## Where we are
 
-- **Physics and simulation:** float64 240 Hz RK4, local aerodynamic loads, trim, controls, propulsion, wheel contact and complete-state replay are implemented; main-line delivery records are below.
-- **Simulation foundation:** the shared kernel (`VehicleModel` contract, event protocol, substepping, environment contract, generalized-coordinate kernel, law property harness, backend policy) is described in [STACK](docs/STACK.md#boundaries-and-data-flow); SF-00…09, the SF-03 alias cleanup and SF-04b are delivered with byte-identical fleet proofs, and the plan closed on 2026-10-18 ([record and evidence index](docs/research/simulation-foundation/README.md)); first new consumer [DR-04a](docs/research/drone-racing/DR-04a/README.md).
-- **Aircraft contract:** v2 standardization AS-00…05 is delivered; [AIRCRAFT_CONTRACT](docs/AIRCRAFT_CONTRACT.md) owns authoring, with [migration/verification evidence](docs/research/aircraft-standardization/AS-05/README.md).
-- **Ground physics:** GP-00…05 is delivered; [integrated ground model](docs/research/ground-physics/GP-05/README.md) records wheel/terrain/profile behavior and open calibration/performance limits.
-- **Stik circuit:** automated approach, landing, full circuit, rendered review, replay and sensitivity tools exist; manual owner circuit and E3c/E4/PT2 physical acceptance remain open.
-- **Ugly Stik:** [model/finish guide](docs/UGLY-STIK-PLAN.md); [pull-up investigation](docs/UGLY-STIK-PULLUP-PLAN.md) keeps candidate polars opt-in and production selection open.
-- **Extra:** [experimental model and realism guide](docs/EXTRA-300-PLAN.md); independent flight calibration remains open.
-- **Ventage Jet:** [experimental turbine guide/plan](docs/AVANTI-S-PLAN.md); current configuration is airborne, gear and flaps up.
-- **P-51:** [P51-PLAN](docs/P51-PLAN.md) owns the experimental model and generated physics; [realism implementation](docs/P51-REALISM-PLAN.md) owns P51-15…18, the full-envelope audit and paired-hardware inertia correction; [visual plan](docs/P51-PLAN.md) owns appearance acceptance.
-- **Timber:** [integration plan](docs/TIMBER-INTEGRATION-PLAN.md); playable experimental electric aircraft with its own generated v2 data, airborne/runway starts and electric audio. [TT-07–12 baseline evidence](docs/research/timber-integration/TT-10/README.md) records software checks; flaps-up, prescribed-bus and physical-validation limits remain explicit.
-- **Product shell:** [implemented menus](docs/MENU-PLAN.md); UI-20/21 refactor and the core UI-22…26 redesign are implemented. Settings and gamepad menu navigation are available; extended acceptance remains open ([redesign](docs/MENU-REDESIGN-PLAN.md)).
-- **Field/readability:** [landscape step registry](docs/LANDSCAPE-PLAN.md) and [visual guide](docs/VISUAL-QUALITY-PLAN.md); Gate L needs pilot/target-display evidence.
-- **Landscape integration:** LU-00…27 implementation is delivered. The [landscape guide](docs/LANDSCAPE-PLAN.md#landscape-integration) and [evidence index](docs/research/landscape-upgrade/README.md) retain scenery-query cost and independent pilot/hardware acceptance gates.
-- **World/time:** [world guide](docs/FIELD-WORLD-PLAN.md) and [lighting/history guide](docs/TIME-OF-DAY-PLAN.md); selectable night and passing evening exist, with further lifecycle and owner acceptance open.
-- **Scenery:** [default-on field life](docs/SCENERY-PLAN.md), with static collision proxies; Gate SC readability/performance acceptance remains open.
-- **Audio:** [AUD-01…05 soundscape guide](docs/AUDIO-PLAN.md); acoustic calibration and target-platform timing remain separate limits.
-- **Crash:** [experimental presentation and incident report](docs/CRASH-DAMAGE-PLAN.md) are implemented, including catalog-based repair/replacement estimates; prices and repair outcomes remain estimates. Physical thresholds, structural/flyable damage and Gate CR remain open.
-- **Weather:** [wind/gust/turbulence](docs/WIND-PLAN.md) and [field atmosphere](docs/ATMOSPHERE-PLAN.md) are implemented; practice presets are estimates, and physical/performance acceptance remains open.
-- **Propulsion:** [coupled shaft](docs/PROPULSION-CORE-PLAN.md) and [synthetic electric routes](docs/ELECTRIC-PROPULSION-PLAN.md) exist; default promotion, matched powerplant data and the 500 µs gate remain open.
-- **Helicopter and drone:** the experimental helicopter trainer is integrated and playable through Home and direct launch; physical and performance gates remain open ([controls and limits](docs/HELICOPTER.md)). Drone racing remains design/research; no flyable drone route is implemented ([plan](docs/plans/drone-racing.md)), though its plant now runs research-grade on the shared kernel ([DR-04a](docs/research/drone-racing/DR-04a/README.md)).
-- **Workshop and practice modes:** the aircraft variant editor, Natural Random scenario and optional fixed-wing failure practice have initial runtime implementations. Their track-specific acceptance remains in the [ownership map](docs/README.md#tracks-plans-and-step-ids).
-- **RC ground vehicle:** the experimental Bisonte MT8 and nitro MONSTER CAR 2 garage/course and separate recorded vehicle sessions are integrated; physical and performance qualification remain open ([evidence](research/rc-monster-truck/README.md)).
-- **Radio/validation tools:** controller reports, latency marker/reducer, field-measurement reducers and the [VAL-3 dashboard](research/validation/dashboard.md) exist; synthetic fixtures do not count as physical measurements.
-- **Desktop/release:** [v0.1.2 release notes](docs/releases/v0.1.2.md) describe the latest stable software release, available as ZIP packages for Windows, Linux and macOS. Stik rudder recovery and R02 yaw-damping evaluation, plus P51-22 powered takeoff/loop acceptance, remain disclosed limitations of experimental aircraft; they are not release blockers, passes or physical qualification. [Desktop qualification and installers](docs/DESKTOP-DELIVERY-PLAN.md) remain pending. Settings implements windowed and borderless fullscreen modes; target-platform qualification remains open.
-- **Smoke:** [integrated Stik glow exhaust and optional AUX pump](docs/SMOKE-PLAN.md), with shared M5 wind and native visual/software evidence; other-aircraft anchors, physical radios and all-platform acceptance remain open.
+- **Simulation:** float64 240 Hz RK4, local aerodynamics, trim, propulsion, ground contact and complete-state replay are implemented. The shared kernel serves fixed-wing, helicopter and ground-vehicle sessions; [STACK](docs/STACK.md#boundaries-and-data-flow) owns its boundaries and [SF evidence](docs/research/simulation-foundation/README.md) records the delivered foundation.
+- **Aircraft and vehicles:** five fixed-wing airframes, three additional Stik glow installations, the historical helicopter trainer and two RC trucks are playable. Runway/airborne airplane starts and Timber's finite-pack/ideal options are source features. Models remain experimental or under evaluation. The [aircraft overview](README.md#aircraft), [helicopter guide](docs/HELICOPTER.md) and [truck guide](research/rc-monster-truck/README.md) own configuration limits. Multirotor groundwork exists; a playable drone/race route does not.
+- **Controls and product shell:** Home, Settings, controller profiles/calibration/remapping, Workshop trials, Natural Random and optional fixed-wing failures have runtime implementations. Use the [player guide](docs/FIRST-LAUNCH.md) and [track registry](docs/README.md#tracks-plans-and-step-ids) for scope and remaining acceptance.
+- **Field and presentation:** wind/atmosphere, time of day, landscape/scenery, audio, smoke, overlays and crash presentation are integrated. Their owning guides and gates are in the [track registry](docs/README.md#tracks-plans-and-step-ids); rendering and incident-cost estimates do not establish physical accuracy.
+- **Validation tools:** scripted approaches/circuits, the [flight-test card](research/flight-test/README.md), [flight logging and exact/candidate replay](docs/FLIGHT-LOGGING.md), measurement reducers and the [validation dashboard](research/validation/dashboard.md) support investigations. Manual Stik circuit, independent physical measurements, radio compatibility and target-host performance remain open.
+- **Delivery:** unsigned Windows/Linux/macOS ZIPs are published; [downloads](README.md#download-and-fly) and [release notes](docs/releases/) describe package contents. Windowed/borderless Settings are implemented. [Desktop qualification and installers](docs/DESKTOP-DELIVERY-PLAN.md) remain separate work.
 
 ## Execution order and release gates
 
@@ -95,7 +76,7 @@ E3c/E4/PT2 external circuit acceptance remains open. E5a/b taildragger/nose-over
 
 ### M3 — Radio breadth and measured latency
 
-F1 controller reporting, F3b1 event-cost characterization, F6a marker and F6b video reduction are delivered. [Radio evidence](docs/research/radio-input/) and [diagnostic commands](docs/TOOLS.md#radio-diagnostics) own their contracts. F4 compatibility rows and F6 physical latency measurements remain open. F2 linkage-trim policy, F3 reconnection breadth, F5/UI radio setup and further servo/control features require their own measured need; they are not current functionality.
+F1 controller reporting, F3b1 event-cost characterization, F6a marker and F6b video reduction are delivered. [Radio evidence](docs/research/radio-input/) and [diagnostic commands](docs/TOOLS.md#radio-diagnostics) own their contracts. F4 compatibility rows and F6 physical latency measurements remain open. Controller selection, calibration, profiles, remapping and AUX setup are implemented; the [controller track](docs/plans/controller-support.md) owns their remaining qualification. F2 linkage-trim policy, F3 reconnection breadth and further servo/control work retain their own acceptance requirements.
 
 ### M4 — Propulsion response, operating range and sound
 
@@ -105,7 +86,7 @@ The [RC glow engine realism plan](docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md) ow
 
 #### M4b — Electric propulsion
 
-EL1b…e and EL2a provide synthetic fixed-bus and OCV/resistance/SOC flight, stop/depletion events, replay and telemetry. EL2a-P1/P2/P3 and E1 have dated optimization/maneuver proof. The [electric plan](docs/ELECTRIC-PROPULSION-PLAN.md) owns current equations, open EL2b…6 work, physical data and performance acceptance. Timber is not validated or enabled by these fixtures.
+EL1b…e and EL2a provide synthetic fixed-bus and OCV/resistance/SOC fixtures, stop/depletion events, replay and telemetry; their optimization/maneuver proof remains dated evidence. Timber also offers a finite `pack_ecm` battery by default and an ideal supply option. The [electric guide](docs/ELECTRIC-PROPULSION-PLAN.md) and [battery plan](docs/plans/battery-realism.md) own implemented laws, remaining steps and qualification. Synthetic fixtures do not validate the installed aircraft or battery.
 
 ### M5 — Atmosphere and advanced flight envelopes
 
@@ -118,7 +99,7 @@ M5-W uniform wind/repeating gusts/temporal turbulence and M5-ATM-1/2 with the fi
 | VAL-3/4 | Dashboard and metamorphic software checks delivered | [Validation evidence](docs/research/validation/) |
 | VAL-5a, VAL-6a, VAL-7a…c, VAL-8a/b | Measurement reducers delivered | [Field measurement workflows](docs/TOOLS.md#aircraft-measurement-reducers); synthetic examples remain labeled |
 | VAL-5…8 | Physical mass/CG, swing-test inertia, static/transient propulsion and video flight measurements | Open; retain raw inputs, calibration, uncertainty, configuration and independent references |
-| VAL-9…15 | Logger/identification and further validation breadth | Not delivered; select a bounded task only when data and acceptance are available |
+| VAL-9…15 | Physical logging/identification and further validation breadth | Remains open; simulator flight logs are delivered separately under [FL-01…04](docs/FLIGHT-LOGGING.md) and do not close physical-data gates |
 | DATA-1/2a/2b/3/4a/4b | Generator freshness, load-cost reductions, exact hashes and historical-v1 schema/loader coverage | [Aircraft-validation evidence](docs/research/aircraft-validation/); strict load-time bound remains open |
 | DATA-8 / AS-00…05 | V2 contract, explicit capabilities, migration and authoring template delivered | [Contract](docs/AIRCRAFT_CONTRACT.md), [AS-05](docs/research/aircraft-standardization/AS-05/README.md); supersedes the old conditional-v2 proposal |
 | Other DATA / PERC work | Broader authoring and pilot-perception research | Unimplemented options remain in the [phase knowledge base](docs/research/roadmap-investigations/README.md); new runtime capabilities need contract/ownership review |

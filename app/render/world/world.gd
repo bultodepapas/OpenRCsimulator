@@ -245,7 +245,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	# FW-31…34: at dusk the club lights come on (with time flowing they are built at once and switched by the sun).
 	var lights := {}
 	var upgraded_lights: bool = LandscapeOptions.enabled() and field.get("id", "") == "default"
-	if upgraded_lights or (not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG)):
+	if upgraded_lights or (field.get("id", "") == "default" and not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG)):
 		var loaded := FieldLights.load_from()
 		if loaded.ok:
 			lights = loaded.lights

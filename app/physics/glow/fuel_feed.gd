@@ -11,8 +11,9 @@
 # The driving pressure rises with the admitted flow squared from an idle floor to its full-throttle value:
 #   p_drive = p_idle + (p_wot − p_idle)·(admission·rpm/rated_rpm)²   (capped at p_wot).
 # The free surface of a box tank lies perpendicular to g_eff at a depth set by the fill fraction (exact for a
-# surface parallel to a tank face, an estimate otherwise). Rotational (centripetal) terms at the tank, slosh, clunk
-# blockage and fuel-line inertia beyond the existing transport lag are not modelled.
+# surface parallel to a tank face, an estimate otherwise). Apparent gravity includes point acceleration from
+# translational force, angular acceleration and centripetal acceleration. Slosh, clunk blockage, pickup geometry,
+# and fuel-line inventory beyond the separate transport lag are not modelled.
 # Pure functions of float64 body-frame (FRD) arrays; transcendental calls go through math3d.
 extends RefCounted
 
@@ -22,6 +23,8 @@ const M := preload("res://physics/math3d.gd")
 const MAX_FACTOR := 2.0
 ## Below this apparent gravity (m/s²) the fuel has no defined free surface; the head is taken as zero.
 const MIN_G := 1e-6
+const MAX_SOLVE_ITERATIONS := 32
+const SOLVE_RESIDUAL_TOLERANCE := 1e-8
 
 
 ## Hydrostatic pressure (Pa) at the carburetor relative to the tank's free surface, for apparent gravity `g_eff`
@@ -61,14 +64,132 @@ static func needled_head_pa(feed: Dictionary, tank_center: PackedFloat64Array, t
 		float(feed.density_kg_m3))
 
 
-## Everything at once for a stage: apparent gravity from the non-gravitational body force and the instantaneous
-## mass, the head at the current fill, the driving pressure and k against the needled head at the simulation's
-## `gravity`. Returns {factor, head_pa, needled_head_pa, drive_pa, g_eff}.
-static func evaluate(feed: Dictionary, force_body: PackedFloat64Array, mass_kg: float, fill: float,
+## Apparent gravity at a tank point relative to the live CG, in body FRD axes.
+## Gravity cancels against the CG's translational response: g_app = -F/m - α×r - ω×(ω×r).
+static func apparent_gravity(force_body: PackedFloat64Array, mass_kg: float,
+		tank_arm_from_cg_body_m: PackedFloat64Array, alpha_body: PackedFloat64Array,
+		omega_body: PackedFloat64Array) -> PackedFloat64Array:
+	if force_body.size() != 3 or tank_arm_from_cg_body_m.size() != 3 or alpha_body.size() != 3 or omega_body.size() != 3 \
+			or not is_finite(mass_kg) or mass_kg <= 0.0:
+		return PackedFloat64Array()
+	for values: PackedFloat64Array in [force_body, tank_arm_from_cg_body_m, alpha_body, omega_body]:
+		for value: float in values:
+			if not is_finite(value):
+				return PackedFloat64Array()
+	var translational: PackedFloat64Array = M.scale(force_body, -1.0 / mass_kg)
+	var rotational: PackedFloat64Array = M.add(M.cross(alpha_body, tank_arm_from_cg_body_m),
+		M.cross(omega_body, M.cross(omega_body, tank_arm_from_cg_body_m)))
+	return M.sub(translational, rotational)
+
+
+## Everything at once for a stage using absolute on-board mass (including unusable residue).
+## The tank surface uses total liquid fill; no flow is admitted once only unusable mass remains.
+static func evaluate(feed: Dictionary, force_body: PackedFloat64Array, mass_kg: float,
+		remaining_fuel_kg: float, capacity_fuel_kg: float, unusable_fuel_kg: float,
 		admission: float, rpm: float, tank_center: PackedFloat64Array, tank_size: PackedFloat64Array,
-		gravity: float) -> Dictionary:
-	var g_eff := M.scale(force_body, -1.0 / mass_kg)
-	var head := head_pa(g_eff, fill, feed.carburetor_body_m, tank_center, tank_size, float(feed.density_kg_m3))
-	var needled := needled_head_pa(feed, tank_center, tank_size, gravity)
-	var drive := drive_pa(admission, rpm, feed)
-	return {factor = factor(drive, head, needled), head_pa = head, needled_head_pa = needled, drive_pa = drive, g_eff = g_eff}
+		gravity: float, tank_arm_from_cg_body_m: PackedFloat64Array,
+		alpha_body: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]),
+		omega_body: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> Dictionary:
+	if not is_finite(remaining_fuel_kg) or not is_finite(capacity_fuel_kg) or capacity_fuel_kg <= 0.0 \
+			or not is_finite(unusable_fuel_kg) or unusable_fuel_kg < 0.0 or unusable_fuel_kg >= capacity_fuel_kg \
+			or not is_finite(gravity) or gravity <= 0.0:
+		return {ok = false, message = "Glow feed tank mass or gravity is outside its domain"}
+	var g_eff: PackedFloat64Array = apparent_gravity(force_body, mass_kg, tank_arm_from_cg_body_m, alpha_body, omega_body)
+	if g_eff.size() != 3:
+		return {ok = false, message = "Glow feed apparent gravity inputs are malformed"}
+	var fill: float = clampf(remaining_fuel_kg / capacity_fuel_kg, 0.0, 1.0)
+	var head: float = head_pa(g_eff, fill, feed.carburetor_body_m, tank_center, tank_size, float(feed.density_kg_m3))
+	var needled: float = needled_head_pa(feed, tank_center, tank_size, gravity)
+	var drive: float = drive_pa(admission, rpm, feed)
+	var flow_factor: float = 0.0 if remaining_fuel_kg <= unusable_fuel_kg \
+		else factor(drive, head, needled)
+	return {ok = true, factor = flow_factor, head_pa = head, needled_head_pa = needled,
+		drive_pa = drive, g_eff = g_eff, fill_fraction = fill,
+		usable_fuel_kg = maxf(0.0, remaining_fuel_kg - unusable_fuel_kg),
+		alpha_body_rad_s2 = alpha_body.duplicate(), omega_body_rad_s = omega_body.duplicate()}
+
+
+## Solve the same-stage fuel/torque/feed closure. The callback returns
+## {ok, target_factor, ...payload}; accepted roots satisfy f - target_factor = 0.
+## A narrow bracket without a small residual is rejected (discontinuous callbacks can have no root).
+static func solve_factor(evaluate_factor: Callable, seed: float = 1.0) -> Dictionary:
+	if not evaluate_factor.is_valid() or not is_finite(seed):
+		return {ok = false, message = "Glow feed factor solver needs a valid callback and finite seed"}
+	var low: float = 0.0
+	var high: float = MAX_FACTOR
+	var low_sample: Dictionary = _factor_sample(evaluate_factor, low)
+	var high_sample: Dictionary = _factor_sample(evaluate_factor, high)
+	if not low_sample.get("ok", false) or not high_sample.get("ok", false):
+		return {ok = false, message = "Glow feed factor endpoint evaluation failed"}
+	var low_residual: float = float(low_sample.residual)
+	var high_residual: float = float(high_sample.residual)
+	var evaluations: int = 2
+	if low_residual > 0.0 or high_residual < 0.0:
+		return {ok = false, message = "Glow feed factor endpoints do not bracket a finite root", evaluations = evaluations}
+	if absf(low_residual) <= SOLVE_RESIDUAL_TOLERANCE:
+		return _factor_solution(low_sample, evaluations, 0)
+	if absf(high_residual) <= SOLVE_RESIDUAL_TOLERANCE:
+		return _factor_solution(high_sample, evaluations, 0)
+	var candidate: float = clampf(seed, low, high)
+	if candidate <= low or candidate >= high:
+		candidate = 0.5 * (low + high)
+	var sample: Dictionary = _factor_sample(evaluate_factor, candidate)
+	evaluations += 1
+	if not sample.get("ok", false):
+		return {ok = false, message = "Glow feed factor seed evaluation failed", evaluations = evaluations}
+	if absf(float(sample.residual)) <= SOLVE_RESIDUAL_TOLERANCE:
+		return _factor_solution(sample, evaluations, 0)
+	if float(sample.residual) < 0.0:
+		low = candidate
+		low_residual = float(sample.residual)
+		low_sample = sample
+	else:
+		high = candidate
+		high_residual = float(sample.residual)
+		high_sample = sample
+	var iterations: int = 0
+	for iteration: int in MAX_SOLVE_ITERATIONS:
+		iterations = iteration + 1
+		var width: float = high - low
+		var denominator: float = high_residual - low_residual
+		var next: float = high - high_residual * width / denominator if denominator != 0.0 else NAN
+		# Permit a real root near an endpoint (common for the needled factor) while
+		# still forcing a midpoint when secant rounding collapses onto either end.
+		var guard: float = width * 1.0e-6
+		if not is_finite(next) or next <= low + guard or next >= high - guard:
+			next = low + 0.5 * width
+		sample = _factor_sample(evaluate_factor, next)
+		evaluations += 1
+		if not sample.get("ok", false):
+			return {ok = false, message = "Glow feed factor refinement evaluation failed", evaluations = evaluations}
+		var residual: float = float(sample.residual)
+		if absf(residual) <= SOLVE_RESIDUAL_TOLERANCE:
+			return _factor_solution(sample, evaluations, iterations)
+		if residual < 0.0:
+			low = next
+			low_residual = residual
+			low_sample = sample
+		else:
+			high = next
+			high_residual = residual
+			high_sample = sample
+	return {ok = false, message = "Glow feed factor solve did not meet residual tolerance",
+		evaluations = evaluations, iterations = iterations,
+		residual = minf(absf(low_residual), absf(high_residual))}
+
+
+static func _factor_sample(evaluate_factor: Callable, value: float) -> Dictionary:
+	var raw: Variant = evaluate_factor.call(value)
+	if not raw is Dictionary or not raw.get("ok", false):
+		return {ok = false}
+	var target: Variant = raw.get("target_factor", NAN)
+	if typeof(target) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(target)) \
+			or float(target) < 0.0 or float(target) > MAX_FACTOR:
+		return {ok = false}
+	return {ok = true, factor = value, target_factor = float(target), residual = value - float(target), payload = raw}
+
+
+static func _factor_solution(sample: Dictionary, evaluations: int, iterations: int) -> Dictionary:
+	return {ok = true, factor = sample.factor, target_factor = sample.target_factor,
+		residual = sample.residual, evaluations = evaluations, iterations = iterations,
+		payload = sample.payload}

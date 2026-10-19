@@ -26,6 +26,7 @@
       "fixed_voltage",
       "ocv_resistance",
       "finite_glow_fuel",
+      "finite_liquid_fuel",
       "pack_ecm"
     ],
     "damage": [
@@ -575,6 +576,7 @@
         "description",
         "engine",
         "propeller",
+        "fuel_consumption",
         "id"
       ]
     },
@@ -597,6 +599,7 @@
         "thrust_line_offset",
         "intake_offset",
         "thrust_angles",
+        "fuel_consumption",
         "id"
       ]
     },
@@ -1076,6 +1079,40 @@
         "feed",
         "reserve"
       ]
+    },
+    {
+      "path": "/propulsion/fuel_consumption",
+      "when": {
+        "path": "/propulsion/fuel_consumption/law",
+        "equals": "gasoline_bsfc_v1"
+      },
+      "required": [
+        "law",
+        "tank_id",
+        "bsfc",
+        "idle_flow"
+      ],
+      "allowed": [
+        "law",
+        "tank_id",
+        "bsfc",
+        "idle_flow"
+      ]
+    },
+    {
+      "path": "/propulsion/fuel_consumption",
+      "when": {
+        "path": "/propulsion/fuel_consumption/law",
+        "equals": "turbine_map_v1"
+      },
+      "required": [
+        "law",
+        "tank_id"
+      ],
+      "allowed": [
+        "law",
+        "tank_id"
+      ]
     }
   ],
   "quantity_paths": [
@@ -1133,7 +1170,9 @@
     "/balance/cg_range/*",
     "/fuel_system/tanks/*/capacity",
     "/fuel_system/tanks/*/unusable",
-    "/fuel_system/tanks/*/reserve"
+    "/fuel_system/tanks/*/reserve",
+    "/propulsion/fuel_consumption/bsfc",
+    "/propulsion/fuel_consumption/idle_flow"
   ],
   "array_rules": [
     {
@@ -1273,6 +1312,10 @@
     {
       "path": "/fuel_system/tanks/*/shell_inventory_id",
       "nonempty": true
+    },
+    {
+      "path": "/propulsion/fuel_consumption/tank_id",
+      "nonempty": true
     }
   ],
   "enum_paths": [
@@ -1308,6 +1351,13 @@
         "glow_prop",
         "turbine",
         "electric_prop"
+      ]
+    },
+    {
+      "path": "/propulsion/fuel_consumption/law",
+      "values": [
+        "gasoline_bsfc_v1",
+        "turbine_map_v1"
       ]
     },
     {

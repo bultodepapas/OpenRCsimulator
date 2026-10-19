@@ -15,6 +15,7 @@ const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
 const ProjectedShadow := preload("res://render/projected_shadow.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
+const Landscapes = preload("res://landscapes/catalog.gd")
 const World := preload("res://render/world/world.gd")
 const HeliNightLights = preload("res://render/rotor/heli_night_lights.gd")
 const FieldError = preload("res://ui/field_error.gd")
@@ -57,8 +58,11 @@ var _presentation: Dictionary = {}
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
-func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}) -> void:
+func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}, landscape_id: String = Landscapes.DEFAULT_ID) -> void:
 	name = "HomeScene"
+	if not Landscapes.has(landscape_id):
+		field_errors = PackedStringArray(["Unknown landscape: " + landscape_id])
+		return
 	var checked_light: Dictionary = LightingConfig.validate(LightingConfig.defaults() if selected_lighting.is_empty() else selected_lighting)
 	if not checked_light.ok:
 		field_errors = PackedStringArray(checked_light.errors)
@@ -84,7 +88,8 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	sky_config = checked_sky.config
 	Atmosphere.configure_appearance(sky_config)
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
-	_environment = World.build(self, field, Callable(), {}, snapshot, night_options).environment
+	var build_field := func() -> void: add_child(Landscapes.build(landscape_id, field, snapshot))
+	_environment = World.build(self, field, build_field, {}, snapshot, night_options).environment
 
 	_shadow = Shadow.create(self)
 	show_aircraft(aircraft)

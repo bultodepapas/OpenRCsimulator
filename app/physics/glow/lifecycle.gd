@@ -116,20 +116,22 @@ static func create(
 		fuel_kg: float,
 		temperature_k: float,
 		rpm: float,
-		running: bool
+		running: bool,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	var configuration_error: String = _configuration_error(profile, settings)
 	if not configuration_error.is_empty():
 		return _fail(configuration_error)
 	var model: Dictionary = _model(profile)
 	var operation: Dictionary = model.operation
-	if not is_finite(fuel_kg) or fuel_kg < 0.0 or not is_finite(temperature_k) or temperature_k <= 0.0:
+	if not is_finite(fuel_kg) or fuel_kg < 0.0 or not _finite_number(unusable_fuel_kg) or unusable_fuel_kg < 0.0 \
+			or not is_finite(temperature_k) or temperature_k <= 0.0:
 		return _fail("Initial fuel and temperature must be finite and physically bounded")
 	if not is_finite(rpm) or rpm < 0.0 or rpm > float(operation.max_rpm):
 		return _fail("Initial RPM is outside the profile envelope")
 	var family: String = str(model.family)
 	var cycle_revolutions: float = 1.0 if family == "glow_2t" else 2.0
-	var active: bool = running and fuel_kg > 0.0
+	var active: bool = running and fuel_kg > unusable_fuel_kg
 	var admission: float = float(settings.idle_admission)
 	var initial_flow: float = 0.0
 	if active:
@@ -150,7 +152,7 @@ static func create(
 		"fuel_transport_kg_s": initial_flow,
 		"phase_revolutions": 0.0,
 		"running": active,
-		"stop_reason": "" if active else ("fuel_exhausted" if fuel_kg <= 0.0 else "not_started"),
+		"stop_reason": "" if active else ("fuel_exhausted" if fuel_kg <= unusable_fuel_kg else "not_started"),
 		"opportunity_count": 0,
 		"fire_count": 0,
 		"firing_accumulator": 0.0,
@@ -173,7 +175,8 @@ static func evaluate(
 		dry_density_kg_m3: float,
 		ambient_k: float,
 		cooling_airspeed_mps: float,
-		feed_factor: float = 1.0
+		feed_factor: float = 1.0,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	var configuration_error: String = _configuration_error(profile, settings)
 	if not configuration_error.is_empty():
@@ -183,7 +186,7 @@ static func evaluate(
 		return _fail(state_error)
 	var model: Dictionary = _model(profile)
 	return _evaluate_validated(model, settings, state, rpm, throttle, mixture,
-		dry_density_kg_m3, ambient_k, cooling_airspeed_mps, null, feed_factor)
+		dry_density_kg_m3, ambient_k, cooling_airspeed_mps, null, feed_factor, unusable_fuel_kg)
 
 
 ## Performs one-time validation and detaches immutable profile/settings data for a
@@ -211,7 +214,8 @@ static func evaluate_prepared(
 		dry_density_kg_m3: float,
 		ambient_k: float,
 		cooling_airspeed_mps: float,
-		feed_factor: float = 1.0
+		feed_factor: float = 1.0,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	if not evaluator is PreparedEvaluator:
 		return _fail("A prepared lifecycle evaluator is required")
@@ -220,7 +224,7 @@ static func evaluate_prepared(
 		return _fail(state_error)
 	return _evaluate_validated(evaluator._model, evaluator._settings, state, rpm,
 		throttle, mixture, dry_density_kg_m3, ambient_k, cooling_airspeed_mps,
-		evaluator._source, feed_factor)
+		evaluator._source, feed_factor, unusable_fuel_kg)
 
 
 static func _evaluate_validated(
@@ -234,7 +238,8 @@ static func _evaluate_validated(
 		ambient_k: float,
 		cooling_airspeed_mps: float,
 		prepared_source: Variant = null,
-		feed_factor: float = 1.0
+		feed_factor: float = 1.0,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	if str(state.family) != str(model.family):
 		return _fail("Profile family does not match lifecycle state")
@@ -253,6 +258,8 @@ static func _evaluate_validated(
 		return _fail("Cooling airspeed must be finite and nonnegative")
 	if not _finite_number(feed_factor) or feed_factor < 0.0:
 		return _fail("Fuel feed factor must be finite and nonnegative")
+	if not _finite_number(unusable_fuel_kg) or unusable_fuel_kg < 0.0:
+		return _fail("Unusable fuel mass must be finite and nonnegative")
 
 	var raw_servo: float = float(state.servo_fraction)
 	var raw_air: float = float(state.air_fraction)
@@ -262,7 +269,7 @@ static func _evaluate_validated(
 	var servo_rate: float = (throttle - raw_servo) / float(settings.servo_time_constant_s)
 	var air_rate: float = (air_target - raw_air) / float(settings.air_time_constant_s)
 
-	var active: bool = bool(state.running) and float(state.fuel_kg) > 0.0
+	var active: bool = bool(state.running) and float(state.fuel_kg) > unusable_fuel_kg
 	var target_fuel_flow: float = 0.0
 	var actual_mixture: float = mixture
 	var current_transport: float = maxf(0.0, float(state.fuel_transport_kg_s))
@@ -380,13 +387,14 @@ static func accepted(
 		dt: float,
 		rpm_before: float,
 		rpm_after: float,
-		firing_fraction: float
+		firing_fraction: float,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	var configuration_error: String = _configuration_error(profile, settings)
 	if not configuration_error.is_empty():
 		return _fail(configuration_error)
 	return _accepted_validated(_model(profile), settings, before, candidate, dt,
-		rpm_before, rpm_after, firing_fraction)
+		rpm_before, rpm_after, firing_fraction, unusable_fuel_kg)
 
 
 ## Accepted-step API over a prepared evaluator. Its installation snapshot was
@@ -399,12 +407,13 @@ static func accepted_prepared(
 		dt: float,
 		rpm_before: float,
 		rpm_after: float,
-		firing_fraction: float
+		firing_fraction: float,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	if not evaluator is PreparedEvaluator:
 		return _fail("A prepared lifecycle evaluator is required")
 	return _accepted_validated(evaluator._model, evaluator._settings, before, candidate, dt,
-		rpm_before, rpm_after, firing_fraction)
+		rpm_before, rpm_after, firing_fraction, unusable_fuel_kg)
 
 
 static func _accepted_validated(
@@ -415,7 +424,8 @@ static func _accepted_validated(
 		dt: float,
 		rpm_before: float,
 		rpm_after: float,
-		firing_fraction: float
+		firing_fraction: float,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	var before_error: String = _state_error(before, false)
 	var candidate_error: String = _state_error(candidate, true)
@@ -430,8 +440,11 @@ static func _accepted_validated(
 		return _fail("Accepted RPM values must be finite and inside the profile envelope")
 	if not _finite_number(firing_fraction) or firing_fraction < 0.0 or firing_fraction > 1.0:
 		return _fail("Firing fraction must be finite and in [0, 1]")
-	if float(candidate.fuel_kg) < 0.0:
-		return _fail("Fuel crossed zero; split the step at exact exhaustion instead of clamping mass")
+	if not _finite_number(unusable_fuel_kg) or unusable_fuel_kg < 0.0:
+		return _fail("Unusable fuel mass must be finite and nonnegative")
+	var effective_floor: float=minf(unusable_fuel_kg,float(before.fuel_kg))
+	if float(candidate.fuel_kg) < effective_floor:
+		return _fail("Fuel crossed unusable mass; split the step at exact tank exhaustion instead of clamping mass")
 	if float(candidate.fuel_kg) > float(before.fuel_kg) + 1.0e-14:
 		return _fail("Fuel mass cannot increase during an accepted lifecycle step")
 	if float(candidate.temperature_k) <= 0.0:
@@ -468,7 +481,7 @@ static func _accepted_validated(
 		var fraction_of_step: float = 1.0
 		if phase_delta > 0.0:
 			fraction_of_step = clampf((boundary - phase_start) / phase_delta, 0.0, 1.0)
-		var active_probability: float = firing_fraction if bool(before.running) and float(before.fuel_kg) > 0.0 else 0.0
+		var active_probability: float = firing_fraction if bool(before.running) and float(before.fuel_kg) > unusable_fuel_kg else 0.0
 		acc += active_probability
 		var fired: bool = acc >= 1.0 - FIRE_TOLERANCE
 		if fired:
@@ -488,7 +501,13 @@ static func _accepted_validated(
 	next["firing_accumulator"] = acc
 	next["opportunity_count"] = int(before.opportunity_count) + opportunity_delta
 
-	if bool(before.running) and float(candidate.fuel_kg) == 0.0:
+	if bool(before.running) and float(before.fuel_kg) <= unusable_fuel_kg:
+		next["running"] = false
+		next["stop_reason"] = "fuel_exhausted"
+		next["fuel_transport_kg_s"] = 0.0
+		event_list.append({"kind": "fuel_exhausted", "time_s": 0.0})
+	elif bool(before.running) and float(before.fuel_kg) > unusable_fuel_kg \
+			and float(candidate.fuel_kg) == unusable_fuel_kg:
 		next["running"] = false
 		next["stop_reason"] = "fuel_exhausted"
 		next["fuel_transport_kg_s"] = 0.0
@@ -523,7 +542,8 @@ static func request_start(
 		settings: Dictionary,
 		state: Dictionary,
 		rpm: float,
-		starter_available: bool = true
+		starter_available: bool = true,
+		unusable_fuel_kg: float = 0.0
 ) -> Dictionary:
 	var configuration_error: String = _configuration_error(profile, settings)
 	if not configuration_error.is_empty():
@@ -545,7 +565,9 @@ static func request_start(
 		reason = "starter_speed_too_low"
 	elif rpm > float(_model(profile).operation.max_rpm):
 		reason = "starter_speed_outside_envelope"
-	elif float(state.fuel_kg) <= 0.0:
+	elif not _finite_number(unusable_fuel_kg) or unusable_fuel_kg < 0.0:
+		reason = "fuel_reserve_invalid"
+	elif float(state.fuel_kg) <= unusable_fuel_kg:
 		reason = "fuel_exhausted"
 	elif float(state.temperature_k) >= float(settings.temperature_firing_hot_zero_k):
 		reason = "overheated"

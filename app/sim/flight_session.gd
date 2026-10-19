@@ -112,8 +112,8 @@ func setup_shaft_integrator(mode: Variant) -> bool:
 	if mode == "coupled-rk4" and aircraft.get("ok", false) and not _supports_coupled_shaft(aircraft.model):
 		shaft_error = "coupled-rk4 requires a propeller shaft model with positive rotor inertia"
 		return false
-	if mode == "split" and aircraft.get("ok", false) and (Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active()):
-		shaft_error = "electric propulsion requires coupled-rk4"
+	if mode == "split" and aircraft.get("ok", false) and (Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() or (liquid_fuel_is_active() and not Turbine.is_turbine(aircraft.model.propulsion))):
+		shaft_error = "finite propeller propulsion requires coupled-rk4"
 		return false
 	_shaft_explicit = true
 	if mode == _shaft_integrator:
@@ -155,6 +155,8 @@ var _fuel_start_fill_known := true
 func set_fuel_start_fill(fill: float) -> bool:
 	if not is_finite(fill) or fill <= 0.0 or fill > 1.0:
 		return false
+	if liquid_fuel_is_active() and fill * float(aircraft.model.propulsion.liquid_fuel.capacity_kg) <= float(aircraft.model.propulsion.liquid_fuel.unusable_kg):
+		return false
 	fuel_start_fill = fill
 	_fuel_start_fill_known = true
 	return true
@@ -162,8 +164,26 @@ func set_fuel_start_fill(fill: float) -> bool:
 
 ## Fuel mass a reset loads into a finite tank.
 func start_fuel_kg() -> float:
+	if liquid_fuel_is_active():
+		return float(aircraft.model.propulsion.liquid_fuel.capacity_kg) * fuel_start_fill
 	var install: Dictionary = aircraft.model.propulsion.glow
 	return float(install.get("capacity_fuel_kg", install.initial_fuel_kg)) * fuel_start_fill
+
+
+func liquid_fuel_is_active() -> bool:
+	return aircraft.get("ok", false) and not aircraft.model.propulsion.get("liquid_fuel", {}).is_empty()
+
+
+func finite_fuel_is_active() -> bool:
+	return glow_is_active() or liquid_fuel_is_active()
+
+
+func _liquid_index() -> int:
+	return wheel_index() + wheel_count()
+
+
+func _liquid_properties(values: PackedFloat64Array) -> Dictionary:
+	return LiquidFlight.properties(self, values)
 
 
 ## FUEL-06: one live mass-properties sample of the accepted state, the single source for presentation (HUD load
@@ -171,6 +191,8 @@ func start_fuel_kg() -> float:
 ## fixed datum O), inertia and inverse (about the CG), fuel_remaining_kg, finite_fuel}. Finite fuel evaluates the
 ## shared fixed-datum kernel at the remaining tank mass; every other aircraft is its constant validated build.
 func mass_properties() -> Dictionary:
+	if liquid_fuel_is_active() and _flight_ready():
+		return LiquidFlight.sample(self, sim.continuous)
 	if glow_is_active() and _flight_ready():
 		var live: Dictionary = GlowFlight.properties(self, sim.continuous[1])
 		if not live.get("ok", false):
@@ -432,6 +454,7 @@ const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const PropulsionRuntime := preload("res://sim/aircraft_propulsion_runtime.gd")
+const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const RotorCoupling = preload("res://physics/rotor_coupling.gd")
 const GroundStart := preload("res://physics/ground_start.gd")
 const Turbine := preload("res://physics/turbine.gd")
@@ -920,13 +943,13 @@ func _inside_lake_bank_bounds(north: float, east: float) -> bool:
 func _sync_post_step() -> void:
 	if sim == null:
 		return
-	var dynamic_mass: bool = glow_is_active()
+	var dynamic_mass: bool = finite_fuel_is_active()
 	sim.model.post_tick = Callable(self, "_resolve_collision_step") if _has_collision_query() and not dynamic_mass else Callable()
 	sim.model.post_tick_joint = Callable(self, "_resolve_mass_contact_step") if dynamic_mass else Callable()
 
 
 func _prepare_hull_contact() -> Dictionary:
-	if glow_is_active():
+	if finite_fuel_is_active():
 		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake)
 	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake)
 
@@ -1146,7 +1169,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	_gear_cache_fraction = -1.0
 	_contact_bindings = ContactContract.describe(aircraft.model, soft_hull_contacts)
 	if not _shaft_explicit:
-		_shaft_integrator = "coupled-rk4" if Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() else "split"
+		_shaft_integrator = "coupled-rk4" if Propulsion.is_electric(aircraft.model.propulsion) or glow_is_active() or (liquid_fuel_is_active() and not Turbine.is_turbine(aircraft.model.propulsion)) else "split"
 	start = prepared.start
 	trims = prepared.trims.duplicate(true)
 	_has_committed_aircraft = true
@@ -1675,7 +1698,7 @@ func _physics_process(_delta: float) -> void:
 		if soft_hull_contacts:
 			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
 			# Glow terminal hull decisions already ran with the previous fuel snapshot inside the accepted tick.
-			var hit: Dictionary = {index = -1} if glow_is_active() else HullContact.terminal(sim.previous, sim.state, _hull_contact)
+			var hit: Dictionary = {index = -1} if finite_fuel_is_active() else HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
 				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
 					sim.previous, str(hit.rule)))
@@ -1785,10 +1808,12 @@ func _resolve_mass_contact_step(previous: PackedFloat64Array, candidate: PackedF
 
 
 func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> Callable:
+	if liquid_fuel_is_active():
+		return LiquidFlight.contact_sampler(self, previous_values, candidate_values)
 	if not glow_is_active() or previous_values.size() != GlowFlight.SIZE + wheel_count() \
 			or candidate_values.size() != previous_values.size():
 		return Callable()
-	var initial_fuel: float = aircraft.model.propulsion.glow.initial_fuel_kg
+	var initial_fuel: float = aircraft.model.propulsion.glow.get("capacity_fuel_kg", aircraft.model.propulsion.glow.initial_fuel_kg)
 	var before: float = previous_values[1]
 	var after: float = candidate_values[1]
 	if not is_finite(before) or not is_finite(after) or before < 0.0 or after < 0.0 \
@@ -1971,7 +1996,7 @@ func _scenery_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 
 
 func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) -> Dictionary:
-	if glow_is_active():
+	if finite_fuel_is_active():
 		var properties: Dictionary = hit.contact_mass_properties
 		if not properties.get("ok", false):
 			return {ok = false}
@@ -2569,6 +2594,8 @@ func _initial_gear_aux(down: bool) -> PackedFloat64Array:
 ## friction and the nose wheel steered by the rudder servo's actual position (E2), scaled by the surface under each
 ## wheel (E3a).
 func _loads(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	if liquid_fuel_is_active():
+		return LiquidFlight.evaluate(s, sim.continuous, t, self).get("loads", PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN]))
 	if turbine_is_continuous():
 		var result: Dictionary = _turbine_evaluate(s, sim.continuous, t)
 		return result.get("loads", PackedFloat64Array([NAN, NAN, NAN, NAN, NAN, NAN]))
@@ -2577,7 +2604,7 @@ func _loads(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
 
 ## Fixed layout: one turbine RPM, then optional wheel rim speeds. No independent aux rotor state.
 func _turbine_rpm(values: PackedFloat64Array) -> float:
-	if values.size() != 1 + wheel_count():
+	if values.size() != 1 + wheel_count() + (2 if liquid_fuel_is_active() else 0) and values.size() != 1 + wheel_count():
 		return NAN
 	var rpm: float = values[0]
 	return rpm if is_finite(rpm) and rpm >= 0.0 and rpm <= float(aircraft.model.propulsion.max_rpm) else NAN
@@ -2594,11 +2621,12 @@ func _turbine_aux(values: PackedFloat64Array, sampled: PackedFloat64Array) -> Pa
 
 ## Pure RK stage response, using this stage's RPM, air velocity, body state and time.
 ## Mounting reaction is unchanged: gyro only; gas angular-momentum flux is still unmeasured (AV-26).
-func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_time: float) -> Dictionary:
+func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_time: float,
+		properties: Dictionary = {}, source_enabled: bool = true) -> Dictionary:
 	var rpm: float = _turbine_rpm(values)
 	if sim.modes.size() != (2 if _weather.has_turbulence() else 1) or sim.modes[0] not in [0, 1]:
 		return {}
-	if not is_finite(rpm) or (not engine_running and rpm != 0.0):
+	if not is_finite(rpm) or (not liquid_fuel_is_active() and not engine_running and rpm != 0.0):
 		return {} # A hot cutoff needs AV-05b; do not invent a cold/hot rundown law here.
 	var prop: Dictionary = aircraft.model.propulsion
 	var a: PackedFloat64Array = sim.aux
@@ -2606,19 +2634,19 @@ func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_
 	var density: float = air_density(s)
 	var inlet_air: PackedFloat64Array = Turbine.local_intake_velocity(air.v_air,
 		s.slice(RB.RATE, RB.RATE + 3), prop)
-	var turbine_loads: PackedFloat64Array = Turbine.loads(inlet_air, rpm, prop, density)
+	var turbine_loads: PackedFloat64Array = Turbine.loads(inlet_air, rpm, prop, density) if source_enabled else PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var lag: int = downwash_index()
 	var out: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
 		density, air, a[lag] if lag >= 0 and lag < a.size() else NAN, PackedFloat64Array(), _ground_up(s), turbine_loads)
 	if out.size() != 6:
 		return {}
-	var ground: Dictionary = _ground_evaluation(s, a, values, air if gear_is_retractable() else {})
+	var ground: Dictionary = _ground_evaluation(s, a, values, air if gear_is_retractable() else {}, properties)
 	if not ground.get("ok", false):
 		return {}
 	var ground_loads: PackedFloat64Array = ground.loads
 	for at: int in ground_loads.size():
 		out[at] += ground_loads[at]
-	var rate: float = Turbine.spool_rate(rpm, Turbine.demand_rpm(propulsion_throttle(), prop), prop) if engine_running else 0.0
+	var rate: float = Turbine.spool_rate(rpm, Turbine.demand_rpm(propulsion_throttle(), prop) if source_enabled else 0.0, prop) if liquid_fuel_is_active() else (Turbine.spool_rate(rpm, Turbine.demand_rpm(propulsion_throttle(), prop), prop) if engine_running else 0.0)
 	var derivative := PackedFloat64Array([rate])
 	derivative.append_array(ground.derivative)
 	return {loads = out, derivative = derivative, rotor_momentum = Turbine.rotor_momentum(rpm, prop)}
@@ -2712,7 +2740,7 @@ func _wheel_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_ti
 
 
 ## Legacy gear keeps its original contact law; a file-backed wheel profile opts into terrain and wheel-spin state.
-func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: PackedFloat64Array, stage_air: Dictionary = {}) -> Dictionary:
+func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: PackedFloat64Array, stage_air: Dictionary = {}, properties: Dictionary = {}) -> Dictionary:
 	if gear_is_retractable() and (not _gear_aux_valid(aux) or sim.inputs.size() != _input_count() or stage_air.is_empty()):
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	var gear: Dictionary = current_landing_gear(aux)
@@ -2721,12 +2749,12 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
 	var hull: PackedFloat64Array = PackedFloat64Array()
 	if soft_hull_contacts:
-		if glow_is_active():
-			if _hull_contact.is_empty() or values.size() < GlowFlight.SIZE:
+		if glow_is_active() or not properties.is_empty():
+			if _hull_contact.is_empty() or (glow_is_active() and values.size() < GlowFlight.SIZE):
 				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 			# Geometry reach is independent of fuel; avoid any new mass/contact work in free flight.
 			if -s[RB.POS + 2] <= float(_hull_contact.reach):
-				var sampled: Dictionary = HullContact.loads_at_properties(s, _hull_contact, GlowFlight.properties(self, values[1]))
+				var sampled: Dictionary = HullContact.loads_at_properties(s, _hull_contact, properties if not properties.is_empty() else GlowFlight.properties(self, values[1]))
 				if not sampled.get("ok", false):
 					return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 				hull = sampled.loads
@@ -2800,6 +2828,8 @@ func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pack
 	# Wheels begin at zero relative rim speed on both airborne and runway starts.
 	for _i in wheel_count():
 		out.append(0.0)
+	if liquid_fuel_is_active():
+		out.append_array(LiquidFlight.initial(self))
 	return out
 
 
@@ -2899,7 +2929,7 @@ func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
 		return values[0] if values.size()==GlowFlight.SIZE+wheel_count() and is_finite(values[0]) and (trial or values[0]>=0.0) else NAN
 	var prop: Dictionary = aircraft.model.propulsion
 	var count: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
-	if values.size() != count + 1 + _battery_block_size() + wheel_count() \
+	if values.size() not in [count + 1 + _battery_block_size() + wheel_count(), count + 1 + _battery_block_size() + wheel_count() + (2 if liquid_fuel_is_active() else 0)] \
 			or not is_finite(values[count]) or (values[count] < 0.0 and not trial):
 		return NAN
 	return values[count]
@@ -2921,7 +2951,8 @@ func _coupled_rotor(_s: PackedFloat64Array, values: PackedFloat64Array, _t: floa
 
 
 ## External loads include -Q_prop exactly once. The rotor response adds only relative-spin reaction.
-func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s: float,
+		properties: Dictionary = {}, source_enabled: bool = true) -> Dictionary:
 	var prop: Dictionary = aircraft.model.propulsion
 	var electric: bool = Propulsion.is_electric(prop)
 	var trial_rpm: float = _coupled_rpm(values, electric)
@@ -2939,19 +2970,25 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		rate = (float(battery_point.shaft_torque_nm) - load_torque) / float(prop.rotor_inertia) * 60.0 / TAU
 	else:
 		rate = Propulsion.shaft_rate(rpm, propulsion_throttle(), M.dot(air.v_air, Propulsion.axis(prop)),
-			prop, air_density(s), engine_charge_ratio(s), propulsion_power_enabled())
+			prop, air_density(s), engine_charge_ratio(s), propulsion_power_enabled() and source_enabled)
 	if not is_finite(rate):
 		return {ok = false}
 	var a: PackedFloat64Array = sim.aux
 	var lag: int = downwash_index()
 	var external: PackedFloat64Array = Dynamics.loads_from_air(s, aircraft.model, _deflections(a), rpm,
 		air_density(s), air, a[lag] if lag >= 0 and lag < a.size() else NAN, values.slice(0, _rotor_index()), _ground_up(s))
-	var ground: Dictionary = _ground_evaluation(s, a, values, air if gear_is_retractable() else {})
+	var ground: Dictionary = _ground_evaluation(s, a, values, air if gear_is_retractable() else {}, properties)
 	if not ground.get("ok", false):
 		return {ok = false}
 	var ground_loads: PackedFloat64Array = ground.loads
 	for i: int in ground_loads.size():
 		external[i] += ground_loads[i]
+	var stage_inertia: PackedFloat64Array = sim.inertia if properties.is_empty() else properties.inertia
+	var stage_inverse: PackedFloat64Array = RB.inertia_inverse(sim.inertia) if properties.is_empty() else properties.inverse
+	if not properties.is_empty():
+		var shift: PackedFloat64Array = M.cross(properties.cg_body_m, external.slice(0, 3))
+		for axis: int in 3:
+			external[3 + axis] -= shift[axis]
 	var locked: bool = false
 	if electric and trial_rpm <= 0.0:
 		var point: Dictionary = battery_point if not battery_point.is_empty() else Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, propulsion_power_enabled())
@@ -2979,7 +3016,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 				# Use moving-side bearing loss; the isolated motor's rest clamp is not valid here.
 				rate = (drive - friction) / float(prop.rotor_inertia) * 60.0 / TAU
 	var response: Dictionary = RotorCoupling.response(M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2]),
-		M.v3(external[3], external[4], external[5]), sim.inertia, RB.inertia_inverse(sim.inertia),
+		M.v3(external[3], external[4], external[5]), stage_inertia, stage_inverse,
 		Propulsion.axis(prop), prop.rotor_inertia, rpm * TAU / 60.0, rate * prop.rotor_inertia * TAU / 60.0)
 	if not response.ok:
 		return response
@@ -3438,7 +3475,7 @@ func trace_meta() -> Dictionary:
 		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
 		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
-	if glow_is_active():
+	if finite_fuel_is_active():
 		metadata.mass_contact_law = MASS_CONTACT_LAW
 		metadata.mass_reference = "mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum"
 	if soft_hull_contacts:
@@ -3560,6 +3597,16 @@ func trace_meta() -> Dictionary:
 		elif fuel_start_fill != 1.0:
 			metadata.fuel_start_fill=fuel_start_fill # FUEL-07: start fill of the authored full tank
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
+	if liquid_fuel_is_active():
+		metadata.propulsion_model = LiquidFlight.LAW
+		metadata.continuous_layout += "; " + LiquidFlight.LAYOUT
+		metadata.fuel_mass_policy = "finite single store; co-moving efflux; fixed authored reference datum"
+		metadata.fuel_consumption_law = str(prop.liquid_fuel.law)
+		metadata.fuel_store_id = str(prop.liquid_fuel.tank_id)
+		metadata.fuel_start_fill_known = _fuel_start_fill_known
+		metadata.fuel_start_fill = fuel_start_fill
+		if turbine:
+			metadata.fuel_cutoff_law = LiquidFlight.CUTOFF_LAW
 	if not workshop_identity.is_empty():
 		metadata.workshop = workshop_identity.duplicate(true)
 		metadata.aircraft_input_hash_convention = "sha256 of exact frozen Workshop aircraft bytes"
@@ -3622,10 +3669,12 @@ func checkpoint() -> Dictionary:
 	if snapshot.is_empty() or snapshot.modes.size() != (2 if _weather.has_turbulence() else 1) or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return {}
 	if turbine_is_continuous() and (not is_finite(_turbine_rpm(sim.continuous)) \
-			or (not engine_running and sim.continuous[0] != 0.0)):
+			or (not liquid_fuel_is_active() and not engine_running and sim.continuous[0] != 0.0)):
+		return {}
+	if liquid_fuel_is_active() and not LiquidFlight.valid(self, sim.continuous):
 		return {}
 	var boundary: Dictionary = {format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot}
-	if glow_is_active():
+	if finite_fuel_is_active():
 		boundary.fuel_session = {format = FUEL_SESSION_FORMAT, start_fill = fuel_start_fill,
 			selection_known = _fuel_start_fill_known}
 	if not aircraft.model.get("envelope", {}).is_empty():
@@ -3663,6 +3712,11 @@ func checkpoint() -> Dictionary:
 	if glow_is_active():
 		boundary.format="openrc-flight-checkpoint v9"
 		boundary.glow_law=GlowFlight.LAW
+		boundary.mass_contact_law = MASS_CONTACT_LAW
+	if liquid_fuel_is_active():
+		boundary.liquid_physics_format = boundary.format
+		boundary.format = "openrc-flight-checkpoint v11"
+		boundary.liquid_law = LiquidFlight.LAW
 		boundary.mass_contact_law = MASS_CONTACT_LAW
 	if wheel_count() > 0:
 		boundary.wheel_state_layout = wheel_state_layout()
@@ -3734,6 +3788,11 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	if glow_is_active():
 		parts.append(GlowFlight.LAW)
 		parts.append(MASS_CONTACT_LAW)
+	if liquid_fuel_is_active():
+		parts.append(LiquidFlight.LAW + "; " + LiquidFlight.LAYOUT)
+		parts.append(MASS_CONTACT_LAW)
+		if Turbine.is_turbine(aircraft.model.propulsion):
+			parts.append(LiquidFlight.CUTOFF_LAW)
 	if soft_hull_contacts:
 		# E3d1: soft hull contacts change the dynamics near the ground; legacy hashes stay unchanged.
 		parts.append(HullContact.law())
@@ -3773,6 +3832,22 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 		candidate.erase("failure_state")
 	elif candidate.has("failure_state") or candidate.has("failure_physics_format"):
 		return false # older readers must never silently resume a damaged flight as a healthy one
+	# Liquid v11 wraps the existing propulsion checkpoint, including a scenery v7 wrapper.
+	var liquid_format: String = str(candidate.get("physics_format", candidate.get("format", "")))
+	if liquid_fuel_is_active() != (liquid_format == "openrc-flight-checkpoint v11"):
+		return false
+	if liquid_fuel_is_active():
+		if candidate.get("liquid_law") != LiquidFlight.LAW or candidate.get("liquid_physics_format") not in ["openrc-flight-checkpoint v4", "openrc-flight-checkpoint v8"]:
+			return false
+		candidate = candidate.duplicate(true)
+		if candidate.format == "openrc-flight-checkpoint v7":
+			candidate.physics_format = candidate.liquid_physics_format
+		else:
+			candidate.format = candidate.liquid_physics_format
+		candidate.erase("liquid_physics_format")
+		candidate.erase("liquid_law")
+	elif candidate.has("liquid_physics_format") or candidate.has("liquid_law"):
+		return false
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
 			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7", "openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
@@ -3784,7 +3859,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	var restored_fuel_fill_known: bool = false
 	if candidate.has("fuel_session"):
 		var fuel_session: Variant = candidate.fuel_session
-		if not glow_is_active() or not fuel_session is Dictionary or fuel_session.size() != 3 \
+		if not finite_fuel_is_active() or not fuel_session is Dictionary or fuel_session.size() != 3 \
 				or fuel_session.get("format") != FUEL_SESSION_FORMAT \
 				or typeof(fuel_session.get("start_fill")) not in [TYPE_FLOAT, TYPE_INT] \
 				or typeof(fuel_session.get("selection_known")) != TYPE_BOOL:
@@ -3820,7 +3895,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			return false
 	elif candidate.has("flap_law") or candidate.has("flap_aux_index") or candidate.has("flap_input_index"):
 		return false
-	if glow_is_active():
+	if finite_fuel_is_active():
 		if candidate.get("mass_contact_law") != MASS_CONTACT_LAW:
 			return false
 	elif candidate.has("mass_contact_law"):
@@ -3901,7 +3976,9 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	if not sim.can_restore_checkpoint(snapshot, expected_aux, expected_modes) \
 			or snapshot.modes[0] < 0 or snapshot.modes[0] > 1:
 		return false
-	if turbine_is_continuous() and snapshot.modes[0] == 0 and snapshot.continuous[0] != 0.0:
+	if turbine_is_continuous() and not liquid_fuel_is_active() and snapshot.modes[0] == 0 and snapshot.continuous[0] != 0.0:
+		return false
+	if liquid_fuel_is_active() and not LiquidFlight.valid(self, snapshot.continuous):
 		return false
 	if turbulent:
 		var expected_time: float = max(0, snapshot.tick - 1) * snapshot.dt

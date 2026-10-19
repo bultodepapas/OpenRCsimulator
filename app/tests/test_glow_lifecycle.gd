@@ -34,6 +34,7 @@ func _initialize() -> void:
 	_check("test settings label estimates", settings_two.evidence_kind == "estimated" and settings_four.evidence_source.contains("not measured"))
 	_test_state_and_lags(two, settings_two)
 	_test_lifecycle(two, settings_two)
+	_test_unusable_fuel(two, settings_two)
 	_test_family_cadence(two, settings_two, four, settings_four)
 	_test_overheat(two, settings_two)
 	_test_invalid_inputs(two, settings_two)
@@ -122,6 +123,34 @@ func _test_lifecycle(model: Dictionary, settings: Dictionary) -> void:
 	var rejected: Dictionary = Lifecycle.accepted(model, settings, running, negative_candidate,
 		1.0 / 240.0, 6000.0, 6000.0, 1.0)
 	_check("negative tank trial is rejected instead of silently clamped", not rejected.ok and str(rejected.message).contains("split the step"))
+
+
+func _test_unusable_fuel(model: Dictionary, settings: Dictionary) -> void:
+	var residue: float=0.005
+	var below: Dictionary=Lifecycle.create(model,settings,0.004,390.0,6000.0,true,residue)
+	_check("a start fill below residue remains physical and cannot start combustion",
+		below.ok and below.state.fuel_kg==0.004 and not below.state.running and below.state.stop_reason=="fuel_exhausted")
+	if not below.ok: return
+	var below_eval: Dictionary=Lifecycle.evaluate(model,settings,below.state,6000.0,1.0,
+		float(model.operation.nominal_mixture),1.225,295.0,10.0,1.0,residue)
+	_check("fuel below residue has no consumption or combustion transport",
+		below_eval.ok and below_eval.rates.fuel_kg==0.0 and below_eval.source.delivered_fuel_kg_s==0.0)
+	var denied: Dictionary=Lifecycle.request_start(model,settings,below.state,2500.0,true,residue)
+	_check("starter cannot relight from unusable residue",denied.ok and not denied.started and denied.reason=="fuel_exhausted")
+	var before: Dictionary=Lifecycle.create(model,settings,0.01,390.0,6000.0,true,residue).state
+	var candidate_values: PackedFloat64Array=Lifecycle.pack_state(before)
+	candidate_values[0]=residue
+	var candidate: Dictionary=Lifecycle.with_continuous_state(before,candidate_values)
+	var exhausted: Dictionary=Lifecycle.accepted(model,settings,before,candidate,0.1,6000.0,6000.0,1.0,residue)
+	_check("accepted boundary stops exactly at residue and exposes exhaustion",
+		exhausted.ok and exhausted.state.fuel_kg==residue and not exhausted.state.running
+		and exhausted.state.stop_reason=="fuel_exhausted"
+		and exhausted.events.size()==1 and exhausted.events[0].kind=="fuel_exhausted")
+	candidate_values[0]=residue-1.0e-8
+	var crossed: Dictionary=Lifecycle.with_continuous_state(before,candidate_values)
+	var rejected: Dictionary=Lifecycle.accepted(model,settings,before,crossed,0.1,6000.0,6000.0,1.0,residue)
+	_check("lifecycle rejects crossing below residue before boundary localization",
+		not rejected.ok and str(rejected.get("message","")).contains("split the step"))
 
 
 func _test_family_cadence(two: Dictionary, settings_two: Dictionary, four: Dictionary, settings_four: Dictionary) -> void:

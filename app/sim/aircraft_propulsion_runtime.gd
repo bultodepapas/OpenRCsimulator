@@ -3,6 +3,7 @@ extends RefCounted
 const Propulsion: Script = preload("res://physics/propulsion.gd")
 const Turbine: Script = preload("res://physics/turbine.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
+const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const RB: Script = preload("res://physics/rigid_body.gd")
 
 ## VehicleModel fields (sim/vehicle_model.gd) the fixed-wing propulsion route fills.
@@ -33,6 +34,12 @@ static func prepare_callbacks(session: Node) -> Dictionary:
 		result.step_policy = GlowFlight.step.bind(session)
 		result.stage = GlowFlight.evaluate.bind(session)
 		result.block_aux = Callable(session, "_coupled_aux")
+		return result
+	if session.liquid_fuel_is_active():
+		result.stage = LiquidFlight.evaluate.bind(session)
+		result.block_aux = LiquidFlight.aux.bind(session)
+		declared_events.append({type = "fuel_exhausted", index = RB.SIZE + session._liquid_index(),
+			transition = LiquidFlight.project_exhaustion})
 		return result
 	if context.turbine_continuous:
 		result.stage = Callable(session, "_turbine_evaluate")

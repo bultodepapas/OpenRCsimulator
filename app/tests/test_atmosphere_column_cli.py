@@ -141,7 +141,10 @@ class AtmosphereColumnCLI(unittest.TestCase):
             with self.subTest(family=family):
                 result = self.reader_results[family]
                 has_flaps = family in ('jet', 'p51-shaft')
-                self.assertEqual(result['format'], 'openrc-trace v12' if has_flaps else 'openrc-trace v11')
+                self.assertEqual(result['format'], 'openrc-trace v14')
+                self.assertEqual(result['mass_trace_schema'], 'openrc-mass-sample v1')
+                self.assertEqual(result['mass_base_trace_format'],
+                                 'openrc-trace v12' if has_flaps else 'openrc-trace v11')
                 self.assertEqual(result['metadata_schema'], schema)
                 self.assertEqual((result['rows'], result['first_tick'], result['last_tick']), (25, 0, 24))
                 self.assertAlmostEqual(result['elapsed_s'], 0.1, places=8)
@@ -175,7 +178,8 @@ class AtmosphereColumnCLI(unittest.TestCase):
         )
         self.assertEqual(process.returncode, 0, process.stderr)
         result = json.loads(process.stdout)
-        self.assertEqual(result['format'], 'openrc-trace v11')
+        self.assertEqual(result['format'], 'openrc-trace v14')
+        self.assertEqual(result['mass_base_trace_format'], 'openrc-trace v11')
         self.assertEqual(result['rows'], 25)
 
     def test_evidence_output_refuses_an_existing_directory(self):

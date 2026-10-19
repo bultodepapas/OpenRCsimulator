@@ -180,7 +180,9 @@ class TurbulenceCLI(unittest.TestCase):
         self.assertEqual((result['rows'], result['first_tick'], result['last_tick']), (25, 0, 24))
         self.assertNotIn('max_turbulence_error_mps', result)
         _, metadata, _ = _header_and_rows(self.zero_trace)
-        self.assertEqual(metadata['format'], 'openrc-trace v4')
+        self.assertEqual(metadata['format'], 'openrc-trace v14')
+        self.assertEqual(metadata['mass_trace_schema'], 'openrc-mass-sample v1')
+        self.assertEqual(metadata['mass_base_trace_format'], 'openrc-trace v4')
         self.assertEqual(json.loads(metadata['weather_config'])['turbulence_rms_mps'], [0.0, 0.0, 0.0])
 
     def test_reader_rejects_turbulence_state_config_and_cadence_mutations(self):

@@ -288,12 +288,14 @@ def add_v2_overlay(schema: dict, spec: dict):
                    for name in ["id", "fuel", "liquid_inventory_id", "shell_inventory_id"]}
     tank_fields["capacity"] = fuel_quantity("l", 0, 50, exclusive_low=True)
     tank_fields["unusable"] = fuel_quantity("l", 0, 50)
+    # FUEL-03: reserve is optional; the loader supplies a disclosed estimate when absent.
+    tank_fields["reserve"] = fuel_quantity("l", 0, 50)
     tank_fields["pickup"] = {"type": "string", "enum": enum_of("/fuel_system/tanks/*/pickup")}
     tank_fields["feed"] = {"type": "string", "enum": enum_of("/fuel_system/tanks/*/feed")}
     root_props["fuel_system"] = {
         "type": "object", "required": ["tanks"],
         "properties": {"tanks": {"type": "array", "minItems": 1, "items": {
-            "type": "object", "required": list(tank_fields), "properties": tank_fields,
+            "type": "object", "required": [name for name in tank_fields if name != "reserve"], "properties": tank_fields,
             "additionalProperties": False}}},
         "additionalProperties": False,
     }
@@ -311,6 +313,34 @@ def add_v2_overlay(schema: dict, spec: dict):
     glow["properties"]["kind"] = {"const": "glow_prop"}
     merge_required(glow, ["kind"])
     add_text_field(glow["properties"], "description", nonempty=True)
+    # FUEL-08: finite liquid consumption is optional on the existing combustion branches.
+    # Gasoline's estimate is explicit; a turbine reuses its authored fuel_flow map.
+    tank_id = {"type": "string", "minLength": 1}
+    schema["$defs"]["liquidFuelConsumption"] = {
+        "oneOf": [
+            {
+                "type": "object",
+                "required": ["law", "tank_id", "bsfc", "idle_flow"],
+                "properties": {
+                    "law": {"const": "gasoline_bsfc_v1"},
+                    "tank_id": copy.deepcopy(tank_id),
+                    "bsfc": fuel_quantity("kg/kWh", 0.05, 2.0, exclusive_low=True),
+                    "idle_flow": fuel_quantity("kg/s", 0.0, 0.01),
+                },
+                "additionalProperties": False,
+            },
+            {
+                "type": "object",
+                "required": ["law", "tank_id"],
+                "properties": {
+                    "law": {"const": "turbine_map_v1"},
+                    "tank_id": copy.deepcopy(tank_id),
+                },
+                "additionalProperties": False,
+            },
+        ]
+    }
+    glow["properties"]["fuel_consumption"] = {"$ref": "#/$defs/liquidFuelConsumption"}
     glow_engine = glow["properties"]["engine"]
     add_text_field(glow_engine["properties"], "name", nonempty=True)
     add_text_field(glow_engine["properties"], "glow_installation", nonempty=True)
@@ -324,6 +354,7 @@ def add_v2_overlay(schema: dict, spec: dict):
     turbine["properties"]["kind"] = {"const": "turbine"}
     merge_required(turbine, ["kind"])
     add_text_field(turbine["properties"], "description", nonempty=True)
+    turbine["properties"]["fuel_consumption"] = {"$ref": "#/$defs/liquidFuelConsumption"}
     add_text_field(turbine["properties"]["engine"]["properties"], "name", nonempty=True)
     turbine["properties"]["engine"]["properties"]["spool_integrator"] = {
         "type": "string", "enum": next(rule["values"] for rule in spec["enum_paths"]
@@ -455,14 +486,37 @@ def add_v2_overlay(schema: dict, spec: dict):
     # Wire root-level capability cross-checks into the offline schema. The runtime
     # contract repeats these and adds geometric steering checks.
     rules = []
-    for kind, layout, energy in [
-        ("turbine", "single_centerline_jet", "prescribed_fuel"),
-    ]:
-        rules.append({"if": branch_condition(["propulsion", "kind"], kind), "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": layout}, "energy": {"const": energy}}}}}})
-    glow_energy = {"if": {"properties": {"propulsion": {"properties": {"engine": {"required": ["glow_installation"]}}}}},
-                   "then": {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_glow_fuel"}}}}},
-                   "else": {"properties": {"capabilities": {"properties": {"energy": {"const": "prescribed_fuel"}}}}}}
+    turbine_energy = {
+        "if": {"properties": {"propulsion": {"required": ["fuel_consumption"]}}},
+        "then": {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_liquid_fuel"}}}}},
+        "else": {"properties": {"capabilities": {"properties": {"energy": {"const": "prescribed_fuel"}}}}},
+    }
+    rules.append({"if": branch_condition(["propulsion", "kind"], "turbine"), "then": {"allOf": [
+        {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_centerline_jet"}}}}},
+        turbine_energy,
+    ]}})
+    glow_energy = {
+        "if": {"properties": {"propulsion": {"properties": {"engine": {"required": ["glow_installation"]}}}}},
+        "then": {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_glow_fuel"}}}}},
+        "else": {
+            "if": {"properties": {"propulsion": {"required": ["fuel_consumption"]}}},
+            "then": {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_liquid_fuel"}}}}},
+            "else": {"properties": {"capabilities": {"properties": {"energy": {"const": "prescribed_fuel"}}}}},
+        },
+    }
     rules.append({"if": branch_condition(["propulsion", "kind"], "glow_prop"), "then": {"allOf": [glow_energy, {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}}}}}]}})
+    rules.append({"if": {"properties": {"propulsion": {"properties": {
+        "kind": {"const": "glow_prop"},
+        "fuel_consumption": {"properties": {"law": {"const": "gasoline_bsfc_v1"}}},
+    }}}}, "then": {"properties": {"propulsion": {"properties": {"engine": {
+        "required": ["shaft"], "not": {"required": ["glow_installation"]},
+    }}}}}})
+    rules.append({"if": {"properties": {"propulsion": {"properties": {
+        "kind": {"const": "turbine"},
+        "fuel_consumption": {"properties": {"law": {"const": "turbine_map_v1"}}},
+    }}}}, "then": {"properties": {"fuel_system": {"required": ["tanks"]}}}})
+    rules.append({"if": {"properties": {"propulsion": {"required": ["fuel_consumption"]}}},
+                  "then": {"required": ["fuel_system"]}})
     for battery_kind, energy in [("fixed_voltage", "fixed_voltage"), ("ocv_resistance", "ocv_resistance"), ("pack_ecm", "pack_ecm")]:
         condition = {"properties": {"propulsion": {"properties": {"kind": {"const": "electric_prop"}, "battery": {"properties": {"kind": {"const": battery_kind}}}}}}}
         rules.append({"if": condition, "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}, "energy": {"const": energy}}}}}})

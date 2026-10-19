@@ -93,6 +93,7 @@ Aircraft use the strict `openrc-aircraft v2` contract: quantities include units,
 - [Setup, commands, tests and exports](docs/TOOLS.md)
 - [Architecture and stack](docs/STACK.md)
 - [Aircraft data and authoring contract](docs/AIRCRAFT_CONTRACT.md)
+- [Add a custom landscape](docs/LANDSCAPES.md) · [Landscape selection plan](docs/plans/landscape-selection.md)
 - [Documentation and ownership map](docs/README.md)
 - [Original source deliveries and current asset references](assets/source-deliveries/README.md)
 - [Contributing](CONTRIBUTING.md) · [Repository guidance](AGENTS.md)

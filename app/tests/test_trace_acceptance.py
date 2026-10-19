@@ -109,10 +109,15 @@ class TraceAcceptance(unittest.TestCase):
                 source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
                 has_flaps = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
                 self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9' if has_flaps else 'openrc-flight-meta v6')
-                if has_flaps:
-                    self.assertEqual(metadata['format'], 'openrc-trace v12')
-                if propulsion == 'electric-pack-ecm-coupled-events-v1':
-                    self.assertEqual(metadata['format'], 'openrc-trace v13')
+                self.assertEqual(metadata['format'], 'openrc-trace v14')
+                self.assertEqual(metadata['mass_trace_schema'], 'openrc-mass-sample v1')
+                self.assertEqual(metadata['mass_sample_timing'],
+                                 'accepted mass_properties sample for this row tick/time')
+                expected_mass_base = ('openrc-trace v13' if propulsion == 'electric-pack-ecm-coupled-events-v1'
+                                      else 'openrc-trace v12' if has_flaps
+                                      else 'openrc-trace v7' if aircraft == 'turbo-lumber-evolution' and extra
+                                      else 'openrc-trace v3')
+                self.assertEqual(metadata['mass_base_trace_format'], expected_mass_base)
                 if aircraft == 'sebart-avanti-s-a200-p100rx':
                     self.assertEqual(json.loads(metadata['input_layout']),
                                      ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake', 'flaps'])

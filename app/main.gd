@@ -50,9 +50,9 @@ const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
 const FieldLoader = preload("res://data/field_loader.gd")
+const Landscapes = preload("res://landscapes/catalog.gd")
 const FieldBuilder = preload("res://render/field.gd")
 const LakeWorld = preload("res://render/lake/lake_world.gd")
-const SceneryCollisionSetup = preload("res://scenery/collision_setup.gd")
 const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Hud := preload("res://render/hud.gd")
@@ -75,6 +75,7 @@ signal scenario_changed(scenario: Dictionary)
 
 ## Data path is injectable before entering the tree; normal routes use the packaged default.
 var field_path: String = FieldLoader.DEFAULT_PATH
+var landscape_id: String = Landscapes.DEFAULT_ID
 var field: Dictionary = {}
 
 var session: Node
@@ -353,6 +354,17 @@ func _ready() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 		trace_ticks = int(rounded_ticks)
+	landscape_id = str(args.get("landscape", landscape_id))
+	if not Landscapes.has(landscape_id):
+		startup_error = "Unknown landscape: " + landscape_id
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
+	if field_path == FieldLoader.DEFAULT_PATH:
+		field_path = Landscapes.entry(landscape_id).field_path
 	var loaded_field: Dictionary = FieldLoader.load_from(field_path)
 	if not loaded_field.ok:
 		if interactive_start:
@@ -363,6 +375,8 @@ func _ready() -> void:
 		FieldError.report(self, loaded_field.errors)
 		return
 	field = loaded_field.field
+	if not interactive_start and not args.has("start") and field.id != "default":
+		start_choice = FlightSession.START_AIRBORNE
 	var frametime_options: Dictionary = FrameSamples.options(args)
 	if not frametime_options.ok:
 		push_error(str(frametime_options.error))
@@ -566,7 +580,7 @@ func _ready() -> void:
 		get_tree().quit(ERR_INVALID_DATA)
 		return
 	if not _scripted and _capture_scene_id() == "field":
-		var obstacles := SceneryCollisionSetup.build(field)
+		var obstacles: Dictionary = Landscapes.collision_world(landscape_id, field)
 		if not obstacles.ok or not session.set_collision_world(obstacles.world):
 			startup_error = "Scenery collision inventory refused: " + "; ".join(obstacles.errors)
 			printerr(startup_error)
@@ -2081,7 +2095,7 @@ func set_night_options(profile: String, campfire: bool) -> bool:
 
 ## Production field seam. The atmosphere fixture overrides only these ground meshes.
 func _build_field() -> void:
-	_field_node = FieldBuilder.build(field, _lighting if lighting_config.get("mode", "legacy") != "legacy" else {})
+	_field_node = Landscapes.build(landscape_id, field, _lighting if lighting_config.get("mode", "legacy") != "legacy" else {})
 	add_child(_field_node)
 
 

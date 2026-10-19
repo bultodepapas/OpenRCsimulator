@@ -53,6 +53,7 @@ class MassTraceContract(unittest.TestCase):
         self.assertTrue(handled)
         self.assertEqual(result['format'], FORMAT)
         self.assertEqual(result['mass_trace_schema'], SCHEMA)
+        self.assertEqual(result['mass_base_trace_format'], 'openrc-trace v3')
         self.assertEqual(result['mass_samples'], 2)
         self.assertEqual(result['columns'], self.header)
         self.assertEqual(self.path.read_bytes(), original, 'projection leaves evidence unchanged')

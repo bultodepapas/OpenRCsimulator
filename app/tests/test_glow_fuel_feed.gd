@@ -1,5 +1,5 @@
 # NITRO-05: fuel feed pressure at the carburetor (physics/glow/fuel_feed.gd). Analytic head and factor values, the
-# optional installation block and its rejections, and flights of the MAX-55AX Stik. The fuel feels only the
+# optional installation block and its rejections, a bounded same-stage feed/rotation solve, and flights of the MAX-55AX Stik. The fuel feels only the
 # non-gravitational acceleration: trimmed level flight runs needled with g_eff = 1 g down; a full-throttle
 # acceleration (fuel thrown aft, like a steady up-line) leans the engine, more so with a low tank; a dive that drag
 # is slowing richens it; the same head moves the mixture far more at idle than at full throttle (small suction).
@@ -33,6 +33,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_analytic()
+	_rotation_and_solver()
 	_installation()
 	_flights()
 	print("NITRO-05 fuel feed: %d checks, %d failed" % [_checks, _failed])
@@ -68,6 +69,63 @@ func _analytic() -> void:
 	var k_wot := Feed.factor(Feed.drive_pa(1.0, 16000.0, feed), up, level)
 	var k_idle := Feed.factor(Feed.drive_pa(0.28, 3000.0, feed), up, level)
 	_check("the same up-line head leans the idle far more than full throttle (k %.3f vs %.3f)" % [k_idle, k_wot], 1.0 - k_idle > 3.0 * (1.0 - k_wot))
+
+
+func _rotation_and_solver() -> void:
+	var zero_force := PackedFloat64Array([0.0,0.0,0.0])
+	var tank_arm := PackedFloat64Array([1.0,0.0,0.0])
+	var yaw_alpha := PackedFloat64Array([0.0,0.0,1.0])
+	var no_rotation := PackedFloat64Array([0.0,0.0,0.0])
+	var tangential: PackedFloat64Array=Feed.apparent_gravity(zero_force,1.0,tank_arm,yaw_alpha,no_rotation)
+	_check("a stationary point under positive yaw acceleration sees the opposite tangential apparent gravity",
+		tangential.size()==3 and tangential[0]==0.0 and tangential[1]==-1.0 and tangential[2]==0.0,str(tangential))
+	var spin := PackedFloat64Array([0.0,0.0,2.0])
+	var centripetal: PackedFloat64Array=Feed.apparent_gravity(zero_force,1.0,tank_arm,no_rotation,spin)
+	_check("a stationary point one metre from a 2 rad/s spin axis sees 4 m/s² outward apparent gravity",
+		centripetal.size()==3 and absf(centripetal[0]-4.0)<1.0e-12 and centripetal[1]==0.0 and centripetal[2]==0.0,str(centripetal))
+	var malformed: PackedFloat64Array=Feed.apparent_gravity(zero_force,0.0,tank_arm,yaw_alpha,no_rotation)
+	_check("apparent-gravity calculation refuses zero live mass",malformed.is_empty())
+
+	_solver_calls=0
+	var normal: Dictionary=Feed.solve_factor(Callable(self,"_smooth_feed_target"),1.0)
+	_check("smooth weak-coupling fixed point resolves to its analytic root",
+		normal.get("ok",false) and absf(float(normal.factor)-0.9375)<=Feed.SOLVE_RESIDUAL_TOLERANCE
+		and absf(float(normal.residual))<=Feed.SOLVE_RESIDUAL_TOLERANCE,
+		"factor=%s residual=%s" % [str(normal.get("factor",NAN)),str(normal.get("residual",NAN))])
+	_check("normal feed closure uses a bounded small number of source evaluations",
+		_solver_calls==int(normal.get("evaluations",-1)) and _solver_calls<=8,str(_solver_calls))
+	var normal_evaluations: int=int(normal.get("evaluations",0))
+	_solver_calls=0
+	var discontinuous: Dictionary=Feed.solve_factor(Callable(self,"_no_root_feed_target"),1.0)
+	_check("discontinuous no-root fixture fails rather than accepting a narrow bracket",
+		not discontinuous.get("ok",false) and _solver_calls==int(discontinuous.get("evaluations",-1))
+		and _solver_calls<=MAX_FACTOR_SOLVE_EVALUATIONS and float(discontinuous.get("residual",0.0))>Feed.SOLVE_RESIDUAL_TOLERANCE,
+		"evaluations=%s residual=%s" % [str(discontinuous.get("evaluations",0)),str(discontinuous.get("residual",NAN))])
+	var worst_evaluations: int=int(discontinuous.get("evaluations",0))
+	var invalid: Dictionary=Feed.solve_factor(Callable(self,"_invalid_feed_target"),1.0)
+	_check("nonfinite endpoint evaluation fails closed",not invalid.get("ok",false))
+	print("paired feed-stage work: no-feed path=1 lifecycle evaluation; weak closure=%d; bounded adversarial closure=%d" % [normal_evaluations,worst_evaluations])
+
+
+const MAX_FACTOR_SOLVE_EVALUATIONS := 2 + 1 + Feed.MAX_SOLVE_ITERATIONS
+
+
+var _solver_calls: int=0
+
+
+func _smooth_feed_target(factor: float) -> Dictionary:
+	_solver_calls+=1
+	return {ok=true,target_factor=0.75+0.2*factor}
+
+
+func _no_root_feed_target(factor: float) -> Dictionary:
+	_solver_calls+=1
+	return {ok=true,target_factor=2.0 if factor<1.0 else 0.0}
+
+
+func _invalid_feed_target(_factor: float) -> Dictionary:
+	_solver_calls+=1
+	return {ok=true,target_factor=NAN}
 
 
 func _installation() -> void:
@@ -123,7 +181,7 @@ func _fly(pitch_deg: float, speed: float, throttle: float, fill: float, seconds 
 	else:
 		throttle = f.sim.inputs[3]
 	var install: Dictionary = f.aircraft.model.propulsion.glow
-	f.sim.continuous[1] = install.initial_fuel_kg * fill
+	f.sim.continuous[1] = install.capacity_fuel_kg * fill
 	f.sim.inputs[3] = throttle
 	for tick in int(seconds * Engine.physics_ticks_per_second):
 		f.sim.step()
@@ -136,6 +194,7 @@ func _fly(pitch_deg: float, speed: float, throttle: float, fill: float, seconds 
 		out.mixture = float(state.actual_mixture)
 		out.g_aft = -float(state.fuel_feed.g_eff[0])
 		out.g_eff = state.fuel_feed.g_eff
+		out.solver = state.get("fuel_feed_solver", {})
 	f.queue_free()
 	return out
 
@@ -153,6 +212,12 @@ func _flights() -> void:
 	_check("trimmed level flight: the fuel feels 1 g straight down the body z axis %s" % str(g),
 		absf(g[2] - G) < 0.05 * G and absf(g[0]) < 0.05 * G and absf(g[1]) < 0.05 * G)
 	_check("trimmed level flight with a full tank runs needled (k %.4f)" % trimmed.factor, absf(trimmed.factor - 1.0) < 0.01)
+	_check("actual feed-enabled stage solves its factor residual within the declared bound",
+		trimmed.solver is Dictionary and absf(float(trimmed.solver.get("residual",INF)))<=Feed.SOLVE_RESIDUAL_TOLERANCE,
+		str(trimmed.get("solver",{})))
+	_check("actual weak-coupling stage uses fewer than eight source evaluations (no-feed baseline is one)",
+		trimmed.solver is Dictionary and int(trimmed.solver.get("evaluations",99))<8,
+		str(trimmed.get("solver",{})))
 	_check("full throttle from 12 m/s throws the fuel aft (%.1f m/s²)" % accelerating.g_aft, accelerating.g_aft > 2.0)
 	_check("and leans the engine (k %.3f, mixture %.3f vs %.3f trimmed)" % [accelerating.factor, accelerating.mixture, trimmed.mixture],
 		accelerating.factor < trimmed.factor - 0.02 and accelerating.mixture < trimmed.mixture)
