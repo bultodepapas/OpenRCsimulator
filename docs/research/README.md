@@ -208,6 +208,8 @@ The [2026-10-19 wind, thermals and vortices source collection](flight-dynamics/r
 
 [RC flight-dynamics validation library, 2026-10-18](flight-dynamics/rc-validation-library-2026-10-18/README.md) expands the scientific source collection with Stik-family studies, other RC airplanes, jets, helicopters, sailplanes, flying-wing research, real flight logs, low-Reynolds polars and propeller/slipstream experiments. Downloaded originals remain local-only under ignored `references/`; topic manifests and the searchable catalogue retain provenance and comparison limits.
 
+The [2026-10-19 further aircraft and flight recordings](flight-dynamics/rc-validation-library-2026-10-18/more-flight-models/README.md) add Mini Talon, Sky Surfer/Skysurfer, RC Cessna 182, Cyclone tailsitter, experimental-aircraft studies and selected multirotor numeric records, distinguishing processed measurements, published plots and inaccessible originals.
+
 ## Naming
 
 | Pattern | Use | Example |

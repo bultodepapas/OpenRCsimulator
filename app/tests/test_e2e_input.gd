@@ -216,9 +216,10 @@ func _run() -> void:
 	root.add_child(_main)
 	await process_frame
 	var timber_session: Node = _main.session
+	# BAT-13: the Timber flies its finite pack by default (owner decision 2026-10-19).
 	_check("Timber direct session loads and trims its own electric data", timber_session.aircraft.ok
 		and timber_session.aircraft.model.id == TIMBER and timber_session.start.ok
-		and timber_session.trace_meta().propulsion_model == "electric-fixed-bus-coupled-stop-v1")
+		and timber_session.trace_meta().propulsion_model == "electric-pack-ecm-coupled-events-v1")
 
 	_key(KEY_RIGHT, true)
 	await create_timer(0.5).timeout

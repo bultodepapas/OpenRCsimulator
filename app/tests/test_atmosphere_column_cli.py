@@ -20,7 +20,8 @@ FAMILIES = (
     ('stik', 'jensen-das-ugly-stik-60', (), 'openrc-flight-meta v6', 'rpm-lag'),
     ('jet', 'sebart-avanti-s-a200-p100rx', (), 'openrc-flight-meta v9', 'retractable-gear'),
     ('p51-shaft', 'p51d-mustang-120', ('--shaft-integrator=coupled-rk4',), 'openrc-flight-meta v9', 'shaft'),
-    ('timber-electric', 'turbo-lumber-evolution', (), 'openrc-flight-meta v6', 'electric'),
+    # BAT-13: the Timber defaults to its finite pack (trace v13); this family checks the fixed-bus column trace.
+    ('timber-electric', 'turbo-lumber-evolution', ('--battery=ideal',), 'openrc-flight-meta v6', 'electric'),
     ('glow', 'stik-glow-61fx-2t', (), 'openrc-flight-meta v7', 'glow'),
 )
 

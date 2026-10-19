@@ -46,7 +46,8 @@ const MOON_SHADOW_SHARE_HIGH := 0.5
 ## The sun's shadows are at full strength from this apparent elevation up (FW-MOON-06b, sun_shadow_strength).
 const SUN_SHADOW_FULL_DEG := 0.5
 ## FW-MOON-06c cloud_light_weights: the day's direct share of the cloud light (the 0.8 / 0.2 split of `cloud`) and the
-## smallest directional weight kept (so a 10⁻⁶ moon leaves the day sky's uniforms exactly at (1, 0)).
+## smallest directional weight kept, also the smallest second lobe relative to the first (so a 10⁻⁶ moon leaves the
+## day sky's uniforms exactly at (1, 0) and one lobe).
 const CLOUD_DIRECT_SHARE_DAY := 0.8
 const CLOUD_WEIGHT_FLOOR := 1e-4
 ## The eye's local adaptation to the disc (FW-MOON-03). At night the full moon is 10⁴–10⁵ times brighter than the scene
@@ -297,6 +298,8 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	# split above): full shading by day, none in deep twilight when only the sky lights them, then the moon's.
 	# Nothing in the sky flips when the light, the lobe or the cloud lighting passes between sun and moon.
 	var other_lobe: Vector3 = sun_lobe if lobe_from_moon else moon_lobe
+	if _lum(other_lobe) < CLOUD_WEIGHT_FLOOR * _lum(moon_lobe if lobe_from_moon else sun_lobe):
+		other_lobe = Vector3.ZERO # invisible beside the other (a 10⁻⁶ moon by day): the day sky stays byte-identical
 	var cloud_weights := cloud_light_weights(_lum(_ratio(s.cloud, anchor.cloud)) * 0.8,
 		_lum(_ratio(tint * m.cloud, anchor.cloud)) * 0.8, 0.2 * _lum(zenith) / _lum(_lin(a.zenith)), sun_shadow_strength(sun_el))
 

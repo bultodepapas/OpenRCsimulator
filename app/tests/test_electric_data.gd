@@ -109,15 +109,26 @@ func _check_fixture(path: String, expected_kv: float, expected_voltage: float) -
 		return
 	var prop: Dictionary = result.model.propulsion
 	_check("electric kind normalized", prop.get("kind") == "electric_prop")
-	var stik: Dictionary = AD.load_file(GLOW_FIXTURE)
-	_check("synthetic demo preserves Stik mass, CG, and complete inertia",
-		stik.ok and result.model.mass_kg == stik.model.mass_kg
-		and result.model.cg_le == stik.model.cg_le and result.model.inertia == stik.model.inertia,
-		"demo mass=%s CG=%s inertia=%s; Stik mass=%s CG=%s inertia=%s" % [
-			result.model.mass_kg, result.model.cg_le, result.model.inertia,
-			stik.model.mass_kg if stik.ok else "invalid", stik.model.cg_le if stik.ok else "invalid",
-			stik.model.inertia if stik.ok else "invalid",
-		])
+	# FUEL-05f: the Stik now flies its prescribed half tank ahead of the Jensen arrow, which it balances with the tank
+	# empty. An electric conversion carries no consumable, so it balances at that same arrow with its full inventory.
+	var stik_raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(GLOW_FIXTURE))
+	var demo_raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
+	var arrow: Array = stik_raw.balance.plan_cg.value
+	var airframe_same: bool = demo_raw.inventory.size() == stik_raw.inventory.size()
+	if airframe_same:
+		for i in demo_raw.inventory.size():
+			var demo_item: Dictionary = demo_raw.inventory[i]
+			var stik_item: Dictionary = stik_raw.inventory[i]
+			# Donor stations stand in for the glow hardware; the virtual ballast re-balances them.
+			if str(demo_item.name).begins_with("donor mass") or stik_item.get("id") == "item_balance_mass_virtual":
+				continue
+			airframe_same = (airframe_same and demo_item.name == stik_item.name and demo_item.mass.value == stik_item.mass.value
+				and demo_item.position.value == stik_item.position.value
+				and demo_item.get("size", {}).get("value") == stik_item.get("size", {}).get("value"))
+	_check("synthetic demo is the Stik airframe balanced at the Stik's plan CG (Jensen arrow)",
+		airframe_same and absf(result.model.cg_le[0] - float(arrow[0])) < 1e-9 and absf(result.model.cg_le[1] - float(arrow[1])) < 1e-9
+		and absf(result.model.cg_le[2] - float(arrow[2])) < 1e-9,
+		"demo CG=%s; Stik arrow=%s" % [result.model.cg_le, arrow])
 	_check("motor constants normalized", prop.motor.kv_rpm_per_volt == expected_kv
 		and prop.motor.resistance_ohm > 0.0 and prop.motor.no_load_current_a >= 0.0, str(prop.motor))
 	_check("fixed battery and identity ESC normalized",

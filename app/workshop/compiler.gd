@@ -7,6 +7,9 @@ const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Parameters := preload("res://workshop/parameters.gd")
 const COMPILER_VERSION := "openrc-aircraft-workshop-v1-generic-compiler-1"
 const REFERENCE_DENSITY_KG_M3 := 1.225
+## FUEL-11a: a declared tank scales with the airframe (volume × s³) and keeps its fill; the weight multiplier and
+## the mass policy act on the dry build only (docs/plans/fuel-mass-balance.md FUEL-11).
+const TANK_POLICY := "FUEL-11a dry-only mass policy"
 
 
 ## Compiles a detached v2 candidate from the pinned base on every call.
@@ -71,7 +74,7 @@ static func compile(base: Dictionary, recipe: Dictionary) -> Dictionary:
 	if not wheel_errors.is_empty():
 		return {"ok": false, "errors": wheel_errors, "raw": {}, "data": _invalid_data(wheel_errors), "summary": {}}
 	var actual_mass: float = float(candidate_data.model.mass_kg)
-	var expected_mass: float = float(base_data.model.mass_kg) * mass_ratio
+	var expected_mass: float = _expected_mass(base_raw, mass_ratio, scale)
 	if absf(actual_mass - expected_mass) > maxf(1.0, expected_mass) * 1.0e-10:
 		var mass_error := PackedStringArray([
 			"inventory: compiled mass " + str(actual_mass) + " kg does not match target " + str(expected_mass) + " kg"
@@ -149,21 +152,39 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	_transform_q(raw.balance, "plan_cg", scale, base_id, geometry_policy + ": CG position × s")
 	_transform_q(raw.balance, "firewall", scale, base_id, geometry_policy + ": firewall position × s")
 	_transform_q(raw.balance, "cg_tolerance", scale, base_id, geometry_policy + ": CG tolerance × s")
+	if raw.balance.get("cg_range") is Dictionary:
+		_transform_q(raw.balance.cg_range, "forward", scale, base_id, geometry_policy + ": CG range × s")
+		_transform_q(raw.balance.cg_range, "aft", scale, base_id, geometry_policy + ": CG range × s")
+	var liquid := _tank_liquid_ids(raw)
+	var tank_ratio: float = pow(scale, 3.0) # the same expression as the geometric mass ratio
+	var hub_le: Variant = _hub_le(raw)
+	# The gear and the flight speed carry the whole airplane, the dry build and its tank liquid.
+	var total_ratio: float = mass_ratio
+	if not liquid.is_empty() and tank_ratio != mass_ratio:
+		total_ratio = _expected_mass(raw, mass_ratio, scale) / _expected_mass(raw, 1.0, 1.0)
 	for component_variant: Variant in raw.inventory:
 		if not component_variant is Dictionary:
 			continue
 		var component: Dictionary = component_variant
-		_transform_q(component, "mass", mass_ratio, base_id, "uniform inventory mass × " + str(mass_ratio))
+		if liquid.has(str(component.get("id", ""))):
+			_transform_q(component, "mass", tank_ratio, base_id,
+				TANK_POLICY + ": tank liquid × s³, the same fill of the geometrically scaled tank")
+		else:
+			_transform_q(component, "mass", mass_ratio, base_id, "uniform inventory mass × " + str(mass_ratio))
 		_transform_q(component, "position", scale, base_id, geometry_policy + ": inventory position × s")
 		_transform_q(component, "size", scale, base_id, geometry_policy + ": inventory box dimensions × s")
+	for tank_variant: Variant in raw.get("fuel_system", {}).get("tanks", []):
+		if tank_variant is Dictionary:
+			_transform_q(tank_variant, "capacity", tank_ratio, base_id, TANK_POLICY + ": tank volume × s³")
+			_transform_q(tank_variant, "unusable", tank_ratio, base_id, TANK_POLICY + ": tank residue × s³")
 	_transform_q(raw.plausibility, "mass_range", mass_ratio, base_id,
 		"virtual consistency band × target mass ratio " + str(mass_ratio) + "; original range retained in base evidence")
 	# inertia_reference is donor evidence used by AircraftData's plausibility comparison.
 	# The loader derives its expected scale from the compiled model, so mutating this
 	# source quantity would scale the comparison twice and misrepresent the donor.
 	if raw.has("start") and raw.start is Dictionary:
-		_transform_q(raw.start, "level_speed", sqrt(mass_ratio) / scale, base_id,
-			"similarity reference speed × sqrt(mass_ratio)/s")
+		_transform_q(raw.start, "level_speed", sqrt(total_ratio) / scale, base_id,
+			"similarity reference speed × sqrt(mass_ratio)/s, with the total mass ratio including tank liquid")
 
 	var aero: Dictionary = raw.get("aero", {})
 	var surfaces: Dictionary = aero.get("surfaces", {})
@@ -180,8 +201,8 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	if raw.has("landing_gear"):
 		var gear: Dictionary = raw.landing_gear
 		var small_scale_anchor: float = maxf(scale, 1.0)
-		var spring_factor: float = mass_ratio / small_scale_anchor
-		var damping_factor: float = mass_ratio / sqrt(small_scale_anchor)
+		var spring_factor: float = total_ratio / small_scale_anchor
+		var damping_factor: float = total_ratio / sqrt(small_scale_anchor)
 		for contact_variant: Variant in gear.contacts:
 			if not contact_variant is Dictionary:
 				continue
@@ -199,7 +220,17 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	var propeller: Dictionary = propulsion.get("propeller", {})
 	var rotor_factor: float = mass_ratio * scale * scale
 	_transform_q(propeller, "diameter", scale, base_id, geometry_policy + ": virtual propeller diameter × s")
-	_transform_q(propeller, "thrust_line_offset", scale, base_id, geometry_policy + ": fixed structural hub transformed with CG")
+	if liquid.is_empty() or tank_ratio == mass_ratio or not hub_le is PackedFloat64Array:
+		_transform_q(propeller, "thrust_line_offset", scale, base_id, geometry_policy + ": fixed structural hub transformed with CG")
+	else:
+		# The liquid and the dry build scale differently, so the datum (inventory CG) no longer scales with s:
+		# keep the structural hub and re-reference it to the compiled datum.
+		var datum: Variant = _inventory_cg(raw.inventory)
+		var offset: Dictionary = propeller.thrust_line_offset
+		offset.value = [scale * hub_le[0] - datum[0], scale * hub_le[1] - datum[1], scale * hub_le[2] - datum[2]]
+		offset.kind = "derived"
+		offset.source = "%s; Workshop compiler v1: %s: structural hub × s about the compiled inventory CG from %s" % [
+			str(offset.get("source", "unspecified base evidence")), TANK_POLICY, base_id]
 	_transform_q(propeller, "rotating_inertia", rotor_factor, base_id,
 		"virtual rotor distribution: J × mass_ratio × s²; no manufacturer hardware claim")
 	_transform_slipstream(propeller.get("slipstream"), base_id, scale)
@@ -214,6 +245,57 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 	for throw_key: Variant in throws.keys():
 		_transform_q(throws, str(throw_key), control_multiplier, base_id,
 			"virtual surface travel × " + str(control_multiplier) + "; normalized servo timing retained")
+
+
+## FUEL-11a: liquid inventory ids of the declared tanks.
+static func _tank_liquid_ids(raw: Dictionary) -> Dictionary:
+	var ids := {}
+	var system: Variant = raw.get("fuel_system")
+	if system is Dictionary and system.get("tanks") is Array:
+		for tank: Variant in system.tanks:
+			if tank is Dictionary and tank.has("liquid_inventory_id"):
+				ids[str(tank.liquid_inventory_id)] = true
+	return ids
+
+
+## Inventory CG, the body datum, summed left to right as AircraftData does; null without mass.
+static func _inventory_cg(inventory: Array) -> Variant:
+	var mass := 0.0
+	var first := PackedFloat64Array([0.0, 0.0, 0.0])
+	for item: Variant in inventory:
+		if not item is Dictionary:
+			return null
+		var m: float = float(item.mass.value)
+		mass += m
+		for k in 3:
+			first[k] += m * float(item.position.value[k])
+	if mass <= 0.0:
+		return null
+	return PackedFloat64Array([first[0] / mass, first[1] / mass, first[2] / mass])
+
+
+## The propeller hub in LE coordinates (datum + datum-relative offset), or null when it is not declared.
+static func _hub_le(raw: Dictionary) -> Variant:
+	var offset: Variant = raw.get("propulsion", {}).get("propeller", {}).get("thrust_line_offset")
+	var datum: Variant = _inventory_cg(raw.get("inventory", []))
+	if not offset is Dictionary or not offset.get("value") is Array or offset.value.size() != 3 or datum == null:
+		return null
+	return PackedFloat64Array([datum[0] + float(offset.value[0]), datum[1] + float(offset.value[1]),
+		datum[2] + float(offset.value[2])])
+
+
+## Target mass: the dry build × mass_ratio plus the tank liquid × s³ (FUEL-11a).
+static func _expected_mass(base_raw: Dictionary, mass_ratio: float, scale: float) -> float:
+	var liquid := _tank_liquid_ids(base_raw)
+	var dry := 0.0
+	var fuel := 0.0
+	for item: Variant in base_raw.get("inventory", []):
+		if item is Dictionary:
+			if liquid.has(str(item.get("id", ""))):
+				fuel += float(item.mass.value)
+			else:
+				dry += float(item.mass.value)
+	return dry * mass_ratio + fuel * pow(scale, 3.0)
 
 
 static func _transform_slipstream(node: Variant, base_id: String, scale: float) -> void:

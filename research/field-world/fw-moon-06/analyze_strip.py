@@ -76,10 +76,11 @@ def sheet(dirs, minutes, path):
     for d in dirs:
         m = json.load(open(os.path.join(d, "manifest.json")))
         by_min = {round(fr["minutes"], 1): fr for fr in m["frames"]}
+        views = list(m["views"])  # Godot's JSON.stringify sorts keys: east before west
         col = []
         for mi in minutes:
             fr = by_min[round(mi, 1)]
-            col.append((fr, [Image.open(os.path.join(d, fr[v])).convert("RGB") for v in m["views"]]))
+            col.append((fr, [Image.open(os.path.join(d, fr[v])).convert("RGB") for v in views]))
         tiles.append((os.path.basename(os.path.normpath(d)), col))
     w, h = tiles[0][1][0][1][0].size
     nviews = len(tiles[0][1][0][1])
@@ -92,7 +93,7 @@ def sheet(dirs, minutes, path):
     draw = ImageDraw.Draw(img)
     for c, (name, col) in enumerate(tiles):
         x0 = label_w + c * (nviews * (sw + gap) + 12)
-        draw.text((x0, 3), name + "  (west | east)", fill=(0, 0, 0))
+        draw.text((x0, 3), name + "  (" + " | ".join(views) + ")", fill=(0, 0, 0))
         for r, (fr, ims) in enumerate(col):
             y = 18 + r * (sh + gap)
             if c == 0:

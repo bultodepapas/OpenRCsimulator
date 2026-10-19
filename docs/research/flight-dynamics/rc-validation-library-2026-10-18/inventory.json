@@ -1,17 +1,17 @@
 {
   "format": "openrc-literature-inventory v1",
   "generator": "research/reference-library/catalog.py --write",
-  "checked_utc": "2026-10-19T12:54:48.125131+00:00",
-  "records": 396,
-  "bibliography_entries": 379,
-  "records_without_local_file": 83,
-  "verified_local_paths": 299,
-  "distinct_local_contents": 299,
-  "local_pdf_paths": 236,
-  "local_zip_paths": 16,
-  "new_collection_paths": 287,
+  "checked_utc": "2026-10-19T13:30:59.939841+00:00",
+  "records": 416,
+  "bibliography_entries": 399,
+  "records_without_local_file": 84,
+  "verified_local_paths": 318,
+  "distinct_local_contents": 318,
+  "local_pdf_paths": 250,
+  "local_zip_paths": 17,
+  "new_collection_paths": 306,
   "reused_reference_paths": 12,
-  "total_local_bytes": 2386521478,
+  "total_local_bytes": 2582579314,
   "categories": {
     "additional-flight-evidence": {
       "records": 10,
@@ -44,6 +44,10 @@
     "low-reynolds": {
       "records": 41,
       "records_with_local_file": 40
+    },
+    "more-flight-models": {
+      "records": 20,
+      "records_with_local_file": 19
     },
     "other-airplanes": {
       "records": 19,

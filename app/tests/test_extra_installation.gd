@@ -4,6 +4,7 @@
 extends SceneTree
 
 const AD := preload("res://physics/aircraft_data.gd")
+const FuelProperties := preload("res://physics/fuel_properties.gd")
 const P := preload("res://physics/propulsion.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Model := preload("res://aircraft/extra_300s_model.gd")
@@ -61,7 +62,13 @@ func _balance(raw: Dictionary, model: Dictionary) -> void:
 	# Deliberately independent of the generator's ballast solution and declared loaded CG.
 	check("dry tank balance at manual/plan station within 1 micrometre",
 		absf(dry_moment[0] / dry - 0.1088) < 1e-6, "x=%.9f m" % (dry_moment[0] / dry))
-	check("prescribed half tank unchanged", absf(fuel - 0.146) < 1e-12)
+	# FUEL-05b: a fixed half of the declared 0.355 l tank at the fuel registry's glow density.
+	var registry: Dictionary = FuelProperties.load_file()
+	var tank: Dictionary = raw.fuel_system.tanks[0]
+	var density: Dictionary = FuelProperties.blend_density(registry, tank.fuel) if registry.get("ok", false) else {}
+	check("prescribed half tank of the declared tank at the registry density", tank.capacity.value == 0.355
+		and density.get("ok", false) and absf(fuel - 0.5 * 0.355e-3 * float(density.density_kg_m3)) <= 5e-7, # stored to 1 mg
+		"%s kg" % fuel)
 	check("loaded mass equals complete component inventory", absf(total - model.mass_kg) < 1e-6)
 	var cg_ok := true
 	for i in 3:

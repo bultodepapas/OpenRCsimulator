@@ -99,12 +99,15 @@ func _test_scale_policies(base: Dictionary) -> void:
 			mini.raw.reference.aero_reference_point.value == base.reference.aero_reference_point.value.map(func(v: float) -> float: return v * 0.5)
 			and mini.raw.balance.plan_cg.value == base.balance.plan_cg.value.map(func(v: float) -> float: return v * 0.5)
 			and mini.raw.balance.firewall.value == base.balance.firewall.value.map(func(v: float) -> float: return v * 0.5))
-		_check("50% scale keeps wing loading", is_equal_approx(mini.data.model.mass_kg / mini.data.model.reference.S,
-			base_data.model.mass_kg / base_data.model.reference.S))
+		_check("50% scale keeps the dry build's wing loading (FUEL-11a)",
+			is_equal_approx((mini.data.model.mass_kg - _liquid_kg(mini.data.model)) / mini.data.model.reference.S,
+				(base_data.model.mass_kg - _liquid_kg(base_data.model)) / base_data.model.reference.S))
+		_tank_follows_airframe(base_data.model, mini.data.model, 0.5, "50%")
 		_check("mass range scales as a consistency band", is_equal_approx(mini.raw.plausibility.mass_range.value[0], base.plausibility.mass_range.value[0] * 0.25))
 		_check("small model gear keeps base heave frequency policy",
 			is_equal_approx(mini.data.model.landing_gear.heave_omega, base_data.model.landing_gear.heave_omega))
-		var small_spring_factor := 0.25
+		# The gear carries the whole airplane: the total mass ratio (dry × 0.25, tank liquid × 0.125; FUEL-11a).
+		var small_spring_factor: float = mini.data.model.mass_kg / base_data.model.mass_kg
 		var small_contact: Dictionary = mini.raw.landing_gear.contacts[0]
 		var base_contact: Dictionary = base.landing_gear.contacts[0]
 		_check("small-model suspension applies the documented spring, damping and travel policy",
@@ -193,9 +196,14 @@ func _test_power_and_controls(base: Dictionary) -> void:
 	_check("uniform weight multiplier composes with constant-wing-loading scale", weighted.ok, str(weighted.errors))
 	if weighted.ok:
 		var ratio := pow(1.25, 2.0) * 1.5
-		_check("weight multiplier scales model mass and all inertia entries", is_equal_approx(
-			weighted.data.model.mass_kg / base_data.model.mass_kg, ratio)
-			and _array_ratio_is(weighted.data.model.inertia, base_data.model.inertia, ratio * 1.25 * 1.25))
+		var fuel: float = _liquid_kg(base_data.model)
+		_check("weight multiplier scales the dry build only; the tank liquid follows s³ (FUEL-11a)", fuel > 0.0
+			and is_equal_approx(weighted.data.model.mass_kg - _liquid_kg(weighted.data.model), (base_data.model.mass_kg - fuel) * ratio)
+			and is_equal_approx(_liquid_kg(weighted.data.model), fuel * pow(1.25, 3.0)))
+		var expected: PackedFloat64Array = _inertia_by_law(base, 1.25, ratio)
+		_check("inertia follows the per-item law (dry × ratio, liquid × s³, positions and boxes × s)",
+			_array_ratio_is(weighted.data.model.inertia, expected, 1.0), "%s vs %s" % [weighted.data.model.inertia, expected])
+		_tank_follows_airframe(base_data.model, weighted.data.model, 1.25, "weighted 125%")
 	var clipped: Dictionary = Compiler.compile(base, {"scale": 2.01})
 	_check("scale above the V1 bound is rejected", not clipped.ok and not clipped.errors.is_empty())
 
@@ -213,6 +221,9 @@ func _test_unfamiliar_identity(base: Dictionary) -> void:
 			position[0] += offset
 		synthetic.inventory.reverse()
 		synthetic.balance.plan_cg.value[0] += offset
+		if synthetic.balance.has("cg_range"):
+			synthetic.balance.cg_range.forward.value += offset
+			synthetic.balance.cg_range.aft.value += offset
 		synthetic.balance.firewall.value[0] += offset
 		synthetic.reference.aero_reference_point.value[0] += offset
 		for surface_key: String in ["horizontal", "vertical"]:
@@ -233,8 +244,10 @@ func _test_unfamiliar_identity(base: Dictionary) -> void:
 			successful += 1
 			_check("effective trial identity is independent of base ID %02d" % index,
 				compiled.raw.id == trial_id and compiled.data.model.id == trial_id)
-			_check("shifted CG scales from each unfamiliar base %02d" % index,
-				is_equal_approx(compiled.data.model.cg_le[0], candidate_check.model.cg_le[0] * scale))
+			# FUEL-11a: the dry (empty-tank) CG scales with the airframe; the tank keeps its fill, so the datum may not.
+			_check("shifted dry CG scales from each unfamiliar base %02d" % index,
+				is_equal_approx(_dry_cg_x(compiled.raw), _dry_cg_x(synthetic) * scale)
+				and is_equal_approx(compiled.raw.balance.plan_cg.value[0], synthetic.balance.plan_cg.value[0] * scale))
 	_check("twenty unfamiliar IDs compile through the generic path", successful == 20, str(successful))
 
 
@@ -382,6 +395,66 @@ func _static_power(model: Dictionary) -> float:
 	var rpm: float = float(prop.max_rpm) / 60.0
 	var cp: PackedFloat64Array = prop.cp
 	return float(cp[1]) * 1.225 * pow(rpm, 3.0) * pow(float(prop.diameter), 5.0)
+
+
+## x of the inventory CG without the declared tanks' liquid.
+func _dry_cg_x(raw: Dictionary) -> float:
+	var liquid := {}
+	for tank: Dictionary in raw.get("fuel_system", {}).get("tanks", []):
+		liquid[tank.liquid_inventory_id] = true
+	var mass := 0.0
+	var first := 0.0
+	for item: Dictionary in raw.inventory:
+		if not liquid.has(item.get("id", "")):
+			mass += float(item.mass.value)
+			first += float(item.mass.value) * float(item.position.value[0])
+	return first / mass
+
+
+## Total liquid of the declared tanks (0 without a fuel system).
+func _liquid_kg(model: Dictionary) -> float:
+	var total := 0.0
+	for tank: Dictionary in model.get("fuel_system", {}).get("tanks", []):
+		total += float(tank.liquid_mass_kg)
+	return total
+
+
+## FUEL-11a: the tank volume and residue scale by s³ and keep their fill; the propeller hub stays structural (× s)
+## about whatever datum the scaled inventory produces.
+func _tank_follows_airframe(base_model: Dictionary, model: Dictionary, s: float, label: String) -> void:
+	var base_tank: Dictionary = base_model.fuel_system.tanks[0]
+	var tank: Dictionary = model.fuel_system.tanks[0]
+	_check("%s: the tank scales by s³ and keeps its fill" % label,
+		is_equal_approx(tank.capacity_m3, base_tank.capacity_m3 * s * s * s)
+		and is_equal_approx(tank.unusable_kg, base_tank.unusable_kg * s * s * s)
+		and is_equal_approx(tank.start_fill, base_tank.start_fill), "%s vs %s" % [tank.start_fill, base_tank.start_fill])
+	var hub_ok := true
+	for k in 3:
+		var base_hub: float = base_model.cg_le[k] + base_model.propulsion.offset[k]
+		hub_ok = hub_ok and absf(model.cg_le[k] + model.propulsion.offset[k] - s * base_hub) < 1e-12
+	_check("%s: the propeller hub is structural geometry × s, re-referenced to the compiled datum" % label, hub_ok)
+
+
+## Independent inertia of the FUEL-11a law: every inventory box about the compiled CG.
+func _inertia_by_law(base: Dictionary, s: float, ratio: float) -> PackedFloat64Array:
+	var liquid := {}
+	for tank: Dictionary in base.fuel_system.tanks:
+		liquid[tank.liquid_inventory_id] = true
+	var parts: Array = []
+	var mass := 0.0
+	var first := PackedFloat64Array([0.0, 0.0, 0.0])
+	for item: Dictionary in base.inventory:
+		var m: float = float(item.mass.value) * (s * s * s if liquid.has(item.id) else ratio)
+		var position := PackedFloat64Array()
+		var size := PackedFloat64Array()
+		for k in 3:
+			position.append(float(item.position.value[k]) * s)
+			size.append(float(item.get("size", {}).get("value", [0.0, 0.0, 0.0])[k]) * s)
+		parts.append([m, position, size])
+		mass += m
+		for k in 3:
+			first[k] += m * position[k]
+	return AircraftData.inertia_about(parts, PackedFloat64Array([first[0] / mass, first[1] / mass, first[2] / mass]))
 
 
 func _array_ratio_is(actual: PackedFloat64Array, base: PackedFloat64Array, ratio: float) -> bool:

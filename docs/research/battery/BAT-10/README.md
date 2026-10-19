@@ -54,7 +54,7 @@ The interleaved law-only measurement (`research/battery/bat-10/law_cost.gd`) is 
 | EL2a `ElectricSupply.evaluate_dynamics` | 50.9 µs |
 | `PackEcm.evaluate` (compact) | 58.7 µs |
 
-That is ×1.15, about +31 µs per four-stage tick. The session adds one atmosphere lookup per stage for the ambient temperature. Gate P was already open on the battery route (EL2a-P1: 558–562 µs). BAT-29 must measure the whole session on an idle target host before `pack` can become the default.
+That is ×1.15, about +31 µs per four-stage tick. The session adds one atmosphere lookup per stage for the ambient temperature. Gate P was already open on the battery route (EL2a-P1: 558–562 µs). BAT-29 must still measure the whole session on an idle target host. The owner made `pack` the default before that measurement (see the last section).
 
 ## Defects found and fixed during integration
 
@@ -72,3 +72,18 @@ That is ×1.15, about +31 µs per four-stage tick. The session adds one atmosphe
 - **Constant auxiliary current.** It is 0.3 A, estimated: no BEC rail, servo load or brownout (BAT-12).
 - **Not yet implemented.** One-quadrant ESC only (no regeneration, BAT-08); no pack hangar, stress or damage (BAT-20/21); no pre-flight pack choice beyond ideal/pack (BAT-18/19).
 - **Not logged.** The HUD's radio-style sensor values are not in traces (BAT-15 limits).
+
+## 2026-10-19 — the finite pack becomes the default (owner decision)
+
+The owner asked for the finite pack as the default ("deja el default con batería finita"). `Catalog.default_battery_mode()` returns `pack` wherever an entry has `battery_data` and `ideal` otherwise; `main.gd` uses it when `--battery` is absent, Home starts from a `pack` preference that falls back to ideal on aircraft without pack data, and Natural Random/direct routes follow the same default. `--battery=ideal` and Home's choice keep the constant-voltage aircraft.
+
+| Check | Result |
+| --- | --- |
+| Default Timber trace through `main` (v13) | `check_trimmed_flight.py` passes. It now reads pack traces: connected ESC-normal samples, `min(command, limit)`, charge budget, V × I, and an RPM-drift allowance of Kv·duty·ΔV_bus (1.22 rpm observed over 3 s against 1.64 rpm explained by a 5.6 mV sag) |
+| `test_trace_acceptance.py` | Timber default asserts the pack law and v13; a `--battery=ideal` case keeps the fixed-bus checks; new pack-corruption test. 7 Timber and earlier-failing tests OK after a concurrent import-cache rebuild had broken a full run |
+| Frame-rate invariance (`run_fixed_step.gd`, TT-08) | identical checkpoint hash at 30 and 144 fps with the default pack |
+| `test_e2e_input`, `test_e2e_radio` | expectations updated to the pack law; pass |
+| `test_atmosphere_column_cli.py` | its fixed-bus electric family now passes `--battery=ideal`; 4 tests OK |
+| `test_ui_battery_mode` (12), `test_overlay_battery_flight` (12), `test_aircraft_catalog` (100), `test_ui_home`, `test_ui_runway`, `test_start_choice` (36), `test_pilot_trim` (110), `test_rates` (41), `test_engine_sound` (12), `test_natural_random_flight` (576), `test_crash_wreck` (277), `test_failure_shutdown` (206), and the render/shadow/smoke/economy tests that fly the Timber | pass |
+
+Limit: `check_atmosphere_trace.py` reads v11 standard-column traces only. A pack flight in a vertical atmosphere is a v13 trace, so that reader does not cover it yet.

@@ -80,8 +80,9 @@ func _run() -> void:
 		return { guid = "fake", name = "Fake EdgeTX", vendor_id = 0x1209, product_id = 0x4f54 }
 	_session.profiles_path = PROFILES # never the pilot's real calibration file
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PROFILES))
+	# BAT-13: the Timber flies its finite pack by default (owner decision 2026-10-19).
 	_check("direct radio test loads Timber electric physics", _session.aircraft.ok and _session.aircraft.model.id == AIRCRAFT
-		and _session.start.ok and _session.trace_meta().propulsion_model == "electric-fixed-bus-coupled-stop-v1")
+		and _session.start.ok and _session.trace_meta().propulsion_model == "electric-pack-ecm-coupled-events-v1")
 	_check("starts on the keyboard", not _session.radio.connected and _panel_has("input: keyboard"))
 
 	Input.joy_connection_changed.emit(ID, true)

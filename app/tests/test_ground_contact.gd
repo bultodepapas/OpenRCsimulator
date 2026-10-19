@@ -133,17 +133,23 @@ func _initialize() -> void:
 	_check("h vs h/2 after 1 s of bouncing: altitude within 1 mm, attitude within 1e-3, sink within 1 cm/s", dz < 1e-3 and dq < 1e-3 and dv < 1e-2, "Δz %s m, Δq %s, Δw %s m/s (h2 ticks %d)" % [dz, dq, dv, h2.ticks])
 	# Without tyre friction (E2) the contact force is vertical in NED, so the CG must not move horizontally. RK4 on
 	# body-axis velocities leaves a truncation drift during the bounce; it is integration error, not a force, if it
-	# shrinks ≥ 8× at h/2 (4th order: 16×), or when both drifts are already below DRIFT_FLOOR (0.1 µm, where the
-	# non-smooth touchdown, not the smooth truncation, sets the residual; E5a uses the same 1e-7 floor). With friction the
-	# rocking wheels scrub and really move the CG.
+	# shrinks ≥ 8× at h/2 (4th order: 16×), or ≥ 16× at h/4 when the touchdown event keeps h/2 pre-asymptotic, or when
+	# both drifts are already below DRIFT_FLOOR (0.1 µm, where the non-smooth touchdown, not the smooth truncation, sets
+	# the residual; E5a uses the same 1e-7 floor). A real force drifts the same at every step. FUEL-05f's forward CG
+	# measured 1.35e-7, 2.76e-8, 1.17e-9, 1.14e-10 m at 240/480/960/1920 Hz. With friction the rocking wheels scrub and
+	# really move the CG.
 	var n_h := _drop(model, 0.5, 1.0, true)
 	Engine.physics_ticks_per_second = 480
 	var n_h2 := _drop(model, 0.5, 1.0, true)
+	Engine.physics_ticks_per_second = 960
+	var n_h4 := _drop(model, 0.5, 1.0, true)
 	Engine.physics_ticks_per_second = saved
 	var drift_h: float = absf(n_h.state[RB.POS])
 	var drift_h2: float = absf(n_h2.state[RB.POS])
-	_check("normal force only: horizontal drift is integration error, ≤ 0.1 mm at h and ≥ 8× smaller at h/2 (or below the floor)",
-		drift_h < 1e-4 and (drift_h2 * 8.0 <= drift_h or maxf(drift_h, drift_h2) < DRIFT_FLOOR), "north %s m at h, %s m at h/2" % [drift_h, drift_h2])
+	var drift_h4: float = absf(n_h4.state[RB.POS])
+	_check("normal force only: horizontal drift is integration error, ≤ 0.1 mm at h and ≥ 8× smaller at h/2 or ≥ 16× at h/4 (or below the floor)",
+		drift_h < 1e-4 and (drift_h2 * 8.0 <= drift_h or drift_h4 * 16.0 <= drift_h or maxf(drift_h, drift_h2) < DRIFT_FLOOR),
+		"north %s m at h, %s m at h/2, %s m at h/4" % [drift_h, drift_h2, drift_h4])
 
 	# The real session: nothing changes in the air (loads bit-identical to the air-only evaluator at the trimmed
 	# start), a low drop is a landing, a high drop breaks the gear, and the hull still crashes the rest.

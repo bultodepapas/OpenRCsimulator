@@ -54,7 +54,10 @@ func _initialize() -> void:
 	_check("mass: 10.5 kg dry (manual) + half of the 3.2 l tank, 11–12.5 kg", model.mass_kg > 11.0 and model.mass_kg < 12.5, "%.2f kg" % model.mass_kg)
 	_check("span 2.00 m (manual)", absf(float(model.reference.b) - 2.0) < 1e-9)
 	var j: PackedFloat64Array = model.inertia
-	_check("inertia within the research window (Ixx 0.55–0.90, Iyy 1.9–2.6, Izz 2.9–3.6 kg·m²)", j[0] > 0.55 and j[0] < 0.90 and j[1] > 1.9 and j[1] < 2.6 and j[2] > 2.9 and j[2] < 3.6,
+	# The AV-06 window brackets GTM (underwing engines) and fighter radii; it does not replace the inventory. FUEL-05e put the
+	# fuel at its Krill arm and removed 0.28 kg of virtual tail ballast that had compensated a mislocated tank, so Izz sits
+	# at R_z ≈ 0.47, just below GTM's 0.49: the low end the AV-06 note expects for a single-turbine fuselage jet.
+	_check("inertia within the research window (Ixx 0.55–0.90, Iyy 1.9–2.6, Izz 2.7–3.6 kg·m²)", j[0] > 0.55 and j[0] < 0.90 and j[1] > 1.9 and j[1] < 2.6 and j[2] > 2.7 and j[2] < 3.6,
 		"%.3f %.3f %.3f" % [j[0], j[1], j[2]])
 
 	# Trim at the start: low throttle (thrust follows the stick), small up elevator, wings level with no aileron
