@@ -1,0 +1,23 @@
+{
+  "mode": "clone HEAD plus local docs",
+  "documents": [
+    "docs/AIRCRAFT-WORKSHOP.md",
+    "docs/plans/aircraft-editor.md",
+    "docs/TOOLS.md",
+    "docs/README.md",
+    "docs/FIRST-LAUNCH.md",
+    "docs/research/README.md",
+    "docs/research/aircraft-editor/AE-01-10/README.md",
+    "docs/DECISIONS.md",
+    "docs/SMOKE.md",
+    "docs/SMOKE-PLAN.md",
+    "docs/plans/aircraft-standardization.md",
+    "docs/research/aircraft-editor/AE-24/README.md"
+  ],
+  "links_checked": 1048,
+  "incoming_links": 71,
+  "command_paths_checked": 13,
+  "focused_suites": 18,
+  "external_urls_preserved_not_fetched": 16,
+  "issues": []
+}

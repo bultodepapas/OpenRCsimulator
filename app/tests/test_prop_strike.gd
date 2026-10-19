@@ -25,7 +25,7 @@ func _initialize() -> void:
 	_geometry()
 	var field: Dictionary = FieldLoader.load_from().field
 	# Every runway-qualified propeller aircraft (the session refuses a runway start for the others).
-	for id: String in Session.RUNWAY_AIRCRAFT_IDS:
+	for id: String in Session.runway_aircraft_ids():
 		_takeoff_clearance(id, field)
 	_nose_over(field)
 	print("%d checks, %d failed" % [_checks, _failures])

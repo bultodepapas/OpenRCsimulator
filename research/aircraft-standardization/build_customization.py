@@ -21,6 +21,16 @@ OUTPUT_PATH = Path("app/data/aircraft_customization.json")
 SOURCE_FORMAT = "openrc-aircraft-customization-source"
 COMPANION_FORMAT = "openrc-aircraft-customization-bindings"
 REGISTRY_FORMAT = "openrc-aircraft-customization-registry"
+PRESENTATION_ENGINE_VERSION = "4.7.2"
+PRESENTATION_SOURCE_PATHS = (
+    "res://render/aircraft_customization.gd",
+    "res://render/presentation_sources.gd",
+    "res://render/smoke/exhaust.gd",
+    "res://render/smoke/process.gdshader",
+    "res://render/smoke/profile_process.gdshader",
+    "res://render/smoke/profile_smoke.gd",
+    "res://render/smoke/profile_smoke_schedule.gd",
+)
 SLOT_ID_RE = re.compile(r"^[a-z][a-z0-9_]{0,79}$")
 FAMILY_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 LABEL_RE = re.compile(r"^[ -~]{1,32}$")
@@ -32,6 +42,9 @@ SOURCE_ANCHOR_REFS = {"exhausts[0]"}
 PHYSICAL_ID_REFS = {"propulsion.id"}
 PHYSICAL_KIND_REFS = {"propulsion.kind"}
 SOURCE_KINDS = {"glow_prop"}
+MARKING_TEXT_CHARS = set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -ÁÉÍÓÚÜÑáéíóúüñ")
+MARKING_WIDTH_BOUNDS_M = (0.01, 1.0)
+MARKING_HEIGHT_BOUNDS_M = (0.01, 0.3)
 
 
 class CustomizationError(ValueError):
@@ -142,8 +155,48 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
                 targets.append(dict(target))
             paint_slots.append({"id": slot_id, "label": slot["label"], "targets": targets})
 
-        if family["marking_slots"]:
-            raise CustomizationError(f"{label}.marking_slots must stay empty until bounded marking targets are implemented")
+        marking_slots: list[dict[str, Any]] = []
+        marking_ids: set[str] = set()
+        for slot_index, slot in enumerate(family["marking_slots"]):
+            slot_label = f"{label}.marking_slots[{slot_index}]"
+            _closed(slot, {"id", "label", "max_chars", "targets"}, slot_label)
+            slot_id = _text(slot["id"], SLOT_ID_RE, f"{slot_label}.id")
+            _text(slot["label"], LABEL_RE, f"{slot_label}.label")
+            if slot_id in marking_ids:
+                raise CustomizationError(f"{slot_label}.id is duplicated")
+            marking_ids.add(slot_id)
+            if type(slot["max_chars"]) is not int or not 1 <= slot["max_chars"] <= 12:
+                raise CustomizationError(f"{slot_label}.max_chars must be an integer in [1, 12]")
+            if not isinstance(slot["targets"], list) or not 1 <= len(slot["targets"]) <= 2:
+                raise CustomizationError(f"{slot_label}.targets must contain one or two authored mounts")
+            targets = []
+            seen_mounts: set[tuple[Any, ...]] = set()
+            for target_index, target in enumerate(slot["targets"]):
+                target_label = f"{slot_label}.targets[{target_index}]"
+                _closed(target, {"node_path", "position_m", "direction", "up", "width_m", "height_m"}, target_label)
+                node_path = _text(target["node_path"], NODE_PATH_RE, f"{target_label}.node_path")
+                position = _vector(target["position_m"], f"{target_label}.position_m")
+                direction = _vector(target["direction"], f"{target_label}.direction", unit=True)
+                up = _vector(target["up"], f"{target_label}.up", unit=True)
+                if abs(sum(float(a) * float(b) for a, b in zip(direction, up))) > 0.001:
+                    raise CustomizationError(f"{target_label}.up must be perpendicular to direction")
+                for dimension, bounds in (("width_m", MARKING_WIDTH_BOUNDS_M), ("height_m", MARKING_HEIGHT_BOUNDS_M)):
+                    value = target[dimension]
+                    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(float(value)) or not bounds[0] <= float(value) <= bounds[1]:
+                        raise CustomizationError(f"{target_label}.{dimension} must be in [{bounds[0]}, {bounds[1]}] m")
+                mount_key = (node_path, *(round(float(part), 9) for part in position))
+                if mount_key in seen_mounts:
+                    raise CustomizationError(f"{target_label} duplicates a marking mount")
+                seen_mounts.add(mount_key)
+                targets.append({
+                    "node_path": node_path,
+                    "position_m": position,
+                    "direction": direction,
+                    "up": up,
+                    "width_m": target["width_m"],
+                    "height_m": target["height_m"],
+                })
+            marking_slots.append({"id": slot_id, "label": slot["label"], "max_chars": slot["max_chars"], "targets": targets})
 
         smoke_slots: list[dict[str, Any]] = []
         smoke_ids: set[str] = set()
@@ -204,7 +257,7 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
             raise CustomizationError(f"{label} requires an explicit tail show endpoint")
         families[family_id] = {
             "paint_slots": sorted(paint_slots, key=lambda value: value["id"]),
-            "marking_slots": [],
+            "marking_slots": sorted(marking_slots, key=lambda value: value["id"]),
             "smoke_slots": sorted(smoke_slots, key=lambda value: value["id"]),
         }
     if set(families) != expected_families:
@@ -214,15 +267,35 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
     return families
 
 
-def build_companion(family_id: str, manifest_sha256: str, slots: dict[str, Any]) -> dict[str, Any]:
+def presentation_sources(root: Path) -> list[dict[str, str]]:
+    records: list[dict[str, str]] = []
+    for resource_path in PRESENTATION_SOURCE_PATHS:
+        if not resource_path.startswith("res://"):
+            raise CustomizationError(f"presentation source path must be a resource path: {resource_path}")
+        source_path = root / "app" / resource_path.removeprefix("res://")
+        try:
+            text = source_path.read_text(encoding="utf-8")
+        except (OSError, UnicodeError) as exc:
+            raise CustomizationError(f"presentation source is missing or unreadable: {resource_path}") from exc
+        normalized_text = text.replace("\r\n", "\n").replace("\r", "\n")
+        records.append({
+            "path": resource_path,
+            "sha256": hashlib.sha256(normalized_text.encode("utf-8")).hexdigest(),
+        })
+    return records
+
+
+def build_companion(family_id: str, manifest_sha256: str, slots: dict[str, Any], sources: list[dict[str, str]]) -> dict[str, Any]:
     companion: dict[str, Any] = {
         "format": COMPANION_FORMAT,
-        "version": 1,
+        "version": 2,
         "visual_family": family_id,
         "model_manifest_sha256": manifest_sha256,
         "paint_slots": slots["paint_slots"],
         "marking_slots": slots["marking_slots"],
         "smoke_slots": slots["smoke_slots"],
+        "presentation_engine_version": PRESENTATION_ENGINE_VERSION,
+        "presentation_sources": sources,
     }
     companion["slots_sha256"] = hashlib.sha256(canonical_bytes(companion)).hexdigest()
     return companion
@@ -239,6 +312,7 @@ def generate(root: Path, check: bool) -> int:
         if len(expected_ids) != len(model_families) or not all(FAMILY_RE.fullmatch(item) for item in expected_ids):
             raise CustomizationError("model source registry contains missing or duplicate family IDs")
         slots_by_family = validate_source(source, expected_ids)
+        source_records = presentation_sources(root)
         companions = []
         for family_id in sorted(expected_ids):
             manifest_path = root / MODEL_OUTPUT_DIR / f"{family_id}.json"
@@ -246,7 +320,7 @@ def generate(root: Path, check: bool) -> int:
             manifest = json.loads(manifest_bytes.decode("utf-8"))
             if manifest.get("family_id") != family_id:
                 raise CustomizationError(f"generated model manifest family mismatch for {family_id}")
-            companions.append(build_companion(family_id, hashlib.sha256(manifest_bytes).hexdigest(), slots_by_family[family_id]))
+            companions.append(build_companion(family_id, hashlib.sha256(manifest_bytes).hexdigest(), slots_by_family[family_id], source_records))
         output = {"format": REGISTRY_FORMAT, "version": 1, "families": companions}
         rendered = json.dumps(output, ensure_ascii=False, indent=2) + "\n"
     except (OSError, UnicodeError, json.JSONDecodeError, CustomizationError) as exc:

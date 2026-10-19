@@ -1,0 +1,104 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+PASS production Main starts a flyable Stik flight aircraft=jensen-das-ugly-stik-60 flyable=true error=
+PASS production Main automatic processing is disabled process=false physics=false
+PASS production smoke anchor is attached smoke node was not configured
+PASS gusty M5 fixture is applied at the launch boundary weather={"format":"openrc-weather v1","from_deg":270.0,"gust_delay_s":2.0,"gust_duration_s":4.0,"gust_mps":3.0,"gust_period_s":12.0,"gust_up_mps":1.5,"speed_mps":3.0} error=
+PASS simulation remains at tick zero before the first manual interval tick=0
+RENDER trim-exhaust/combined tick=160 t=0.667 sha256=bf5cd9911518fc7812affbcec3ea0c992071fc8ed38b47f88d115621888cc026 png_error=0
+RENDER trim-exhaust/smoke_over_background tick=160 t=0.667 sha256=499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9 png_error=0
+RENDER trim-exhaust/background tick=160 t=0.667 sha256=36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15 png_error=0
+RENDER trim-exhaust/airplane_without_smoke tick=160 t=0.667 sha256=90ba2051d029ab3462e3f35abb43f9e69280dd12f6721fd99310834e29f86014 png_error=0
+RENDER trim-exhaust/smoke_mask tick=160 t=0.667 sha256=ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235 png_error=0
+PASS trimmed combustion exhaust reaches the rendered view mask_pixels=11514 rpm=5159 throttle=0.283
+PASS live AUX request reaches a dense pump stream pump_level=1.0000 rpm=8802 throttle=0.720
+RENDER pump-on/combined tick=520 t=2.167 sha256=a31fd91dc6e750adeaf65c5d065d4dc854ae39fac6696445100d79f1a1b22a01 png_error=0
+RENDER pump-on/smoke_over_background tick=520 t=2.167 sha256=9981742d57c02310567b780e92e80930eacb67e5246ab8a0cfe17018e59c5c91 png_error=0
+RENDER pump-on/background tick=520 t=2.167 sha256=281086b01c0ffe2aae95038d17e276f11ec0470f89ec2894c25fc1cc6e34393b png_error=0
+RENDER pump-on/airplane_without_smoke tick=520 t=2.167 sha256=a5337575bf4862907473bab44dfba8b0220ed91da0190cb5f355db3eb621ccee png_error=0
+RENDER pump-on/smoke_mask tick=520 t=2.167 sha256=4d053570568a1f901a1927c02b9848c091786f154e5403eae6469b606e6b53c4 png_error=0
+PASS pump stream changes the rendered pixels mask_pixels=10611
+PASS pump off stops births while residual puffs remain inside their lifetime emitting=false age=1.000 s
+PASS pause freezes the production smoke controller at its presented time before=3.166667 after=3.166667 interval=0.033333
+PASS old pump puffs receive the changing shared M5 wind wind_off=[3.05111122131348, 0.02555563114583, 0.0] wind_old_puff=[4.88822841644287, 0.94411426782608, 0.0] shader=[4.88822841644287, 0.94411426782608, 0.0]
+RENDER old-puffs-after-wind-change/combined tick=760 t=3.167 sha256=2fa8b0f5078f54694b7a5eda8ab68f4208f48578a5889fa9330f0439f6e64855 png_error=0
+RENDER old-puffs-after-wind-change/smoke_over_background tick=760 t=3.167 sha256=c08e6c9ae26ebbdbed599e2b22d7dae5cb96a797162129f42753d35e8e633187 png_error=0
+RENDER old-puffs-after-wind-change/background tick=760 t=3.167 sha256=28a66cf51847590aba01238cc136e0100c663a04da567529270fbbf71eae1915 png_error=0
+RENDER old-puffs-after-wind-change/airplane_without_smoke tick=760 t=3.167 sha256=796e79f4367d15e8eb2b309879c8cd91379f8b81ddcd4aef27f00a4beda19631 png_error=0
+RENDER old-puffs-after-wind-change/smoke_mask tick=760 t=3.167 sha256=cd76070799a10f0f25ef9fe63b06f395f5e09666266cd3175a7c6bc77410d211 png_error=0
+PASS old puffs still render after the wind changes mask_pixels=13178 age=1.000 s
+RENDER pump-expired/combined tick=2024 t=8.433 sha256=15d648fd9ad505983966f286baba04c2d68592ab4525830a74f62c12a5c7d849 png_error=0
+RENDER pump-expired/smoke_over_background tick=2024 t=8.433 sha256=94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1 png_error=0
+RENDER pump-expired/background tick=2024 t=8.433 sha256=94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1 png_error=0
+RENDER pump-expired/airplane_without_smoke tick=2024 t=8.433 sha256=dbf63dadad9e30503ecf60e74ea0df0af176cae1925aea49660935b690a6afe2 png_error=0
+RENDER pump-expired/smoke_mask tick=2024 t=8.433 sha256=2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3 png_error=0
+PASS pump puffs expire after pump off age=6.267 s pump_mask_pixels=0 delta=0.00392
+PASS flight reset clears smoke births and timing clock=0.000 pump=0.000 exhaust_emitting=false pump_emitting=false tick=0
+RENDER trim-exhaust-repeat/combined tick=160 t=0.667 sha256=b6111943f5744a68275cb301079f13907ba1b57f4b00e75a2b3f8aebf6ba9766 png_error=0
+RENDER trim-exhaust-repeat/smoke_over_background tick=160 t=0.667 sha256=499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9 png_error=0
+RENDER trim-exhaust-repeat/background tick=160 t=0.667 sha256=36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15 png_error=0
+RENDER trim-exhaust-repeat/airplane_without_smoke tick=160 t=0.667 sha256=092eff5b659af90750a5baacc009a2ffd695b0b41d459207a2eaede8baa0c32a png_error=0
+RENDER trim-exhaust-repeat/smoke_mask tick=160 t=0.667 sha256=ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235 png_error=0
+PASS fixed seeds reproduce the same rendered exhaust mask after reset first=11514 px repeat=11514 px xor=0 px
+RENDER rpm-fixture-startup/combined tick=256 t=1.067 sha256=e1d15dbcde63fabf9b1a60816ebf49b2f36fdb19f0abdf856277232c70e8a2f0 png_error=0
+RENDER rpm-fixture-startup/smoke_over_background tick=256 t=1.067 sha256=d2fec7c28c5e181261ae3f8d1868e8ef31685b5aed504bc9bc052b0053ac240c png_error=0
+RENDER rpm-fixture-startup/background tick=256 t=1.067 sha256=895663b8d712da31e45f5efb8e9995e82d3674652eba55d98d1493443f4cc514 png_error=0
+RENDER rpm-fixture-startup/airplane_without_smoke tick=256 t=1.067 sha256=871e1874ad933244142c6e9034169dc8c309d69861d1af044388bec41ef69475 png_error=0
+RENDER rpm-fixture-startup/smoke_mask tick=256 t=1.067 sha256=2b6e408c7dc13a4bd45ff56ade3e5360b55de4329fcdb994b9819e6e260dbeb3 png_error=0
+PASS startup RPM fixture produces gradual exhaust fixture_rpm=2520 actual_rpm=5159 level=0.4969
+RENDER rpm-fixture-idle/combined tick=448 t=1.867 sha256=606958bed385c490d486ffa675117b25dddab15b1ae85e5984b912b94688ba16 png_error=0
+RENDER rpm-fixture-idle/smoke_over_background tick=448 t=1.867 sha256=9412e497d2b343581f9435544bf0b299dfaf57399beb0a88fa19deb9c0e8435f png_error=0
+RENDER rpm-fixture-idle/background tick=448 t=1.867 sha256=9b5a89d583830105d98f69f51b5564badfbfdf558856e0bb3df11031b5e63189 png_error=0
+RENDER rpm-fixture-idle/airplane_without_smoke tick=448 t=1.867 sha256=b99baac19537cc64fd393ebc2f7d8e2c82ec6575501f7ab5989246fc5f8badd6 png_error=0
+RENDER rpm-fixture-idle/smoke_mask tick=448 t=1.867 sha256=bf8af4a60ba4c05111a3dc93e3a13089792b0541f52afeccf021363b978c5715 png_error=0
+RENDER rpm-fixture-high-power/combined tick=592 t=2.467 sha256=c7f796d738ac2d36ce023c5d513c4b9fcff712b57a02a880f89f5164e013f429 png_error=0
+RENDER rpm-fixture-high-power/smoke_over_background tick=592 t=2.467 sha256=bfe3b54450a06b5e46e1bcafd5589c0b19337676e5acddb0ff2dbe99d76f812d png_error=0
+RENDER rpm-fixture-high-power/background tick=592 t=2.467 sha256=5c7bfb2216707060a5ed168c347b832cf3e2b198aff821980ae8ab3e48e88451 png_error=0
+RENDER rpm-fixture-high-power/airplane_without_smoke tick=592 t=2.467 sha256=29464d9f5c318d3711dad11ebadaec8c053d05e4bbed0d9d372e16dada30532e png_error=0
+RENDER rpm-fixture-high-power/smoke_mask tick=592 t=2.467 sha256=a8516d19c76a1b8784097f185a28204936efb3d3182ab77fa6a1b729920f35ea png_error=0
+RENDER rpm-fixture-shutdown/combined tick=752 t=3.133 sha256=3a2cbf9c07e5c86073f754871b3098577f7a5536c7942a03a2746e231223bc18 png_error=0
+RENDER rpm-fixture-shutdown/smoke_over_background tick=752 t=3.133 sha256=5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f png_error=0
+RENDER rpm-fixture-shutdown/background tick=752 t=3.133 sha256=5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f png_error=0
+RENDER rpm-fixture-shutdown/airplane_without_smoke tick=752 t=3.133 sha256=b4a36305e4bdb65106dc51f68a8df4459c81aa8e5e61f286ae85a9cb2c9cb11d png_error=0
+RENDER rpm-fixture-shutdown/smoke_mask tick=752 t=3.133 sha256=2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3 png_error=0
+PASS RPM fixture cases are identified as render-only idle=2800 max=11149 actual_sim_rpm=5159
+RENDER actual-flight-bank-pump-on/combined tick=288 t=1.200 sha256=3a21449ada6509d3440698a91a42577117c11412c8db55d9d21143817df43e0f png_error=0
+RENDER actual-flight-bank-pump-on/smoke_over_background tick=288 t=1.200 sha256=bcaf50959b9cecf81cd71eabd6e3a2c65ea8725638a33801f9ec6ac8b905819e png_error=0
+RENDER actual-flight-bank-pump-on/background tick=288 t=1.200 sha256=3920efe2af20a2af6c3a93d83378fe79192a7e47b6f6765260d1cde6b003f371 png_error=0
+RENDER actual-flight-bank-pump-on/airplane_without_smoke tick=288 t=1.200 sha256=b42e05abd1225b872b4584b0eaa728eb7e10a9331fe1a02d70eb0140b026d735 png_error=0
+RENDER actual-flight-bank-pump-on/smoke_mask tick=288 t=1.200 sha256=13591103a103895e40b6636838ec1145ee9c176f32e4996107fffc841fd559bf png_error=0
+PASS real roll input produces a moderate bank with pump smoke bank_deg=35.18 throttle=0.720 pump=1.000
+PASS banked flight renders its pump trail mask_pixels=5375 pump_level=1.0000
+RENDER synthetic-fast-pass-30fps/combined tick=384 t=1.600 sha256=ad51acb706d429f32b8f683130531d2930a798ee6ea423f7db0d6895ec7df2ee png_error=0
+RENDER synthetic-fast-pass-30fps/smoke_over_background tick=384 t=1.600 sha256=d78c57d9d03ff9886fa5f6e75bf52b99bea5a8c49c2de06924019448b090f6b9 png_error=0
+RENDER synthetic-fast-pass-30fps/background tick=384 t=1.600 sha256=bd8f440848c2b8e4ae809bf68a8461a109c9d6c521ea4336b13710e3c3f46462 png_error=0
+RENDER synthetic-fast-pass-30fps/airplane_without_smoke tick=384 t=1.600 sha256=937a6ba2e9f65a45c9a51af0136fbfc5dbf09597e7cb98c8501235ce4f85d542 png_error=0
+RENDER synthetic-fast-pass-30fps/smoke_mask tick=384 t=1.600 sha256=be73063cf7bf54f1b88c5295167d176b4573146a8d8960abb01557baac2a0068 png_error=0
+PASS 40 m/s fast-pass fixture presents 1.333 m smoke segments at 30 fps nominal_segment_m=1.333 mask_pixels=12019
+PASS fast-pass speed matches 40 m/s across presented intervals samples=47 min=40.000 max=40.000 m/s
+PASS smoke intervals use exact 30 Hz presentation timing samples=446 min=0.033333333 max=0.033333333 s
+PASS Stik runway start succeeds on the configured production field error= field=default launch=runway
+RENDER runway-idle/combined tick=240 t=1.000 sha256=7ad0457e1ca0ac9a54fc2f8464b809c47227302b66df9041a60bf8b9bae91f58 png_error=0
+RENDER runway-idle/smoke_over_background tick=240 t=1.000 sha256=e96f28490fcc45028fc56386c8fd515feb882e76946e4939b424676e5247fbb3 png_error=0
+RENDER runway-idle/background tick=240 t=1.000 sha256=2f2d7d1cd982aad1cb07a20bbb613e4686cc7198d4b901eb09294883677968aa png_error=0
+RENDER runway-idle/airplane_without_smoke tick=240 t=1.000 sha256=9086cee57d1ad86732c824fb9112226a878b840a31ac9bb637ade785e4ca6af8 png_error=0
+RENDER runway-idle/smoke_mask tick=240 t=1.000 sha256=8b3c0c4ba1591e19a9b3395cd3154cbd0ee3bab44d4e370f6bb156fd75ae5bb7 png_error=0
+PASS actual runway idle keeps closed throttle, running engine, and pump births off rpm=2800 throttle=0.000 pump=0.0000 emitting=false last_birth=-inf
+PASS actual runway idle renders combustion exhaust mask_pixels=8329 exhaust=0.5132
+RENDER runway-ground-acceleration/combined tick=480 t=2.000 sha256=333579afba7c2fc705d97fbed4afcacf54bbdba4a8d8528b43dbd181767d4dee png_error=0
+RENDER runway-ground-acceleration/smoke_over_background tick=480 t=2.000 sha256=e594159f986ef89d876d8272e03ffc0fb86792047dafe095a73db076c1115a36 png_error=0
+RENDER runway-ground-acceleration/background tick=480 t=2.000 sha256=71f3be152fc93849924e7f17b3257c633c1a6c3b8cb8c856c07fc420427f2ddc png_error=0
+RENDER runway-ground-acceleration/airplane_without_smoke tick=480 t=2.000 sha256=e3b2b0d1fadfd86db4cf2d7f1d9093891fe81b069c865487a6da500436da930d png_error=0
+RENDER runway-ground-acceleration/smoke_mask tick=480 t=2.000 sha256=4ba0fbe92d121331c8f7f30d2888c33b99b8255309af6c91fdcb102c0f436eb4 png_error=0
+PASS actual runway throttle command accelerates the Stik speed=0.000 -> 5.321 m/s travel=2.097 m throttle=0.720
+PASS actual runway acceleration produces a visible AUX pump trail mask_pixels=157230 pump_level=1.0000
+RENDER runway-ground-acceleration-pilot/combined tick=480 t=2.000 sha256=1b7ecb7305f57c7e23d3b392dacc605ad7e4e9620b6fd14166383335a0009c1e png_error=0
+RENDER runway-ground-acceleration-pilot/smoke_over_background tick=480 t=2.000 sha256=b2938470275694f6cd1722ccaa2c813763ef13cf2905961a9e47230e39aa973e png_error=0
+RENDER runway-ground-acceleration-pilot/background tick=480 t=2.000 sha256=99c95766a5b1591a6d5b454671e6c6e94ef4402d1c50f770b4b5ee251f1e4ad4 png_error=0
+RENDER runway-ground-acceleration-pilot/airplane_without_smoke tick=480 t=2.000 sha256=985604d3d5a14fe6a9a23703c0d2da10b63ba56479da847be629a787b92c83d9 png_error=0
+RENDER runway-ground-acceleration-pilot/smoke_mask tick=480 t=2.000 sha256=1ddabe3a5ca748759aafb62a6b9df29111bd3854edfa222d48874d060425ab67 png_error=0
+smoke flight review: 27 checks, 0 failed, 70 PNG captures, 511 rendered intervals
+report: C:/DEVELOPMENT/OpenRCsimulator/tmp/performance-audit-round2/gpu-after/smoke-flight-report.json

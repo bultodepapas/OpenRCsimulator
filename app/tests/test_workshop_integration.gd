@@ -8,6 +8,7 @@ const Builder := preload("res://render/airplane.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Wreck := preload("res://render/crash/wreck.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const Customization := preload("res://render/aircraft_customization.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 var failures := 0
@@ -37,6 +38,12 @@ func _run() -> void:
 	var editor: Node = host.screens.top()
 	editor.set_recipe({scale = 0.5})
 	editor.set_recipe({scale = 2.0, tank_capacity_multiplier = 1.25})
+	var custom: Dictionary = editor.get_presentation()
+	var slots: Dictionary = Customization.describe(Catalog.DEFAULT_ID).bindings
+	custom.paint = [{"slot": slots.paint_slots[0].id, "color": "#327DE8FF", "pattern": "solid", "accent": "none"}]
+	editor.set_presentation(custom)
+	editor.get("_page_nodes").smoke.call("apply_preset", 2)
+	var frozen_visual: Dictionary = editor.get_presentation()
 	var editor_history_size: int = editor.get("_undo_history").size()
 	var source: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
 	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = source,
@@ -58,6 +65,10 @@ func _run() -> void:
 		check("trial has distinct physical identity", session.aircraft.model.id != Catalog.DEFAULT_ID)
 		check("catalog visual identity is retained", flight.aircraft_id == Catalog.DEFAULT_ID)
 		check("trial is airborne", session.start_choice == "airborne")
+		check("trial consumes frozen cosmetics and a single smoke budget", flight.workshop_trial.presentation_profile == frozen_visual
+			and flight.get("_profile_smoke") != null and flight.get("_smoke") == null
+			and flight.get("_profile_smoke").budget_info().capacity == 768)
+		check("trace stores separate presentation identity", session.trace_meta().workshop_presentation.sha256 == flight.workshop_trial.presentation_identity.sha256)
 		var base_raw: Dictionary = JSON.parse_string(source.get_string_from_utf8())
 		var base_capacity_m3: float = float(base_raw.fuel_system.tanks[0].capacity.value) * 0.001
 		var trial_tank: Dictionary = session.aircraft.model.fuel_system.tanks[0]
@@ -96,6 +107,7 @@ func _run() -> void:
 		check("return restores same editor instance", host.screens.top() == editor and host.flight == null)
 		check("trial return preserves draft and edit history", editor.get_recipe().scale == 2.0
 			and editor.get_recipe().tank_capacity_multiplier == 1.25
+			and editor.get_presentation() == frozen_visual
 			and editor.get("_undo_history").size() == editor_history_size)
 		check("trial return restores page, camera and focused action",
 			editor.get("_active_page") == "compare" and preview.call("get_view_state") == preview_state

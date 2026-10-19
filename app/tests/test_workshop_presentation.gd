@@ -13,9 +13,13 @@ func _initialize() -> void:
 	var defaults: Dictionary = Profile.defaults(bindings)
 	var checked: Dictionary = Profile.validate(defaults, bindings)
 	_check("registered empty profile validates", checked.get("ok", false) and checked.get("available", false), str(checked.get("errors", [])))
+	var legacy_bindings: Dictionary = _legacy_bindings_fixture()
+	var legacy_companion: Dictionary = Profile.validate(Profile.defaults(legacy_bindings), legacy_bindings)
+	_check("legacy v1 companion remains readable", legacy_companion.get("ok", false)
+		and legacy_companion.get("available", false), str(legacy_companion.get("errors", [])))
 	_check("empty profile is bound to the exact model and slots", checked.get("profile", {}).get("binding", {}) == _pins(bindings))
 	_check("identity API returns validation identity", Profile.identity(defaults, bindings) == checked.get("identity_sha256", ""))
-	var identity_record: Dictionary = Profile.identity_record(defaults)
+	var identity_record: Dictionary = Profile.identity_record(defaults, bindings)
 	_check("presentation identity exposes stable sidecar metadata", identity_record.get("format", "") == Profile.IDENTITY_FORMAT
 		and identity_record.get("sha256", "") == checked.get("identity_sha256", "")
 		and identity_record.get("binding", {}) == _pins(bindings))
@@ -25,6 +29,13 @@ func _initialize() -> void:
 	var no_binding_legacy: Dictionary = Profile.validate({})
 	_check("historical empty profile validates without a binding", no_binding_legacy.get("ok", false)
 		and no_binding_legacy.get("available", false))
+	_check("a pinned profile without its companion is readable but unavailable",
+		Profile.validate(defaults).get("ok", false) and not Profile.validate(defaults).get("available", true))
+	var changed_source: Dictionary = bindings.duplicate(true)
+	changed_source.presentation_sources[0].sha256 = "b".repeat(64)
+	changed_source.slots_sha256 = Profile.bindings_sha256(changed_source)
+	_check("presentation source pins change the separate visual identity",
+		Profile.identity(defaults, bindings) != Profile.identity(Profile.defaults(changed_source), changed_source))
 	var no_binding_custom: Dictionary = Profile.validate(_paint_profile(bindings))
 	_check("custom profile remains readable but unavailable without current bindings",
 		no_binding_custom.get("ok", false) and not no_binding_custom.get("available", true))
@@ -35,8 +46,8 @@ func _initialize() -> void:
 	_check("canonical paint profile validates", first.get("ok", false), str(first.get("errors", [])))
 	if first.get("ok", false):
 		_check("six-digit sRGB swatch canonicalizes with opaque alpha", first.profile.paint[0].color == "#808080FF")
-		_check("Spanish text and transparent alpha stay canonical", first.profile.markings[0].text == "NIÑO 5"
-			and first.profile.markings[0].color == "#12345600")
+		_check("Spanish registration text and opaque alpha stay canonical", first.profile.markings[0].text == "NIÑO 5"
+			and first.profile.markings[0].color == "#123456FF")
 		_check("identity hashes the normalized profile", Profile.identity(base_profile, bindings) == first.identity_sha256)
 		var reordered: Dictionary = base_profile.duplicate(true)
 		reordered.paint.reverse()
@@ -96,14 +107,27 @@ func _test_bad_profiles(bindings: Dictionary) -> void:
 	bad.paint[0].color = NAN
 	_check("non-finite visual values reject", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
+	bad.paint[0].color = "#80808080"
+	var translucent_paint: Dictionary = Profile.validate(bad, bindings)
+	_check("paint alpha below opaque rejects with clear error", not translucent_paint.get("ok", false)
+		and str(translucent_paint.get("errors", [])).contains("opaque"))
+	bad = profile.duplicate(true)
+	bad.markings[0].color = "#12345600"
+	var translucent_marking: Dictionary = Profile.validate(bad, bindings)
+	_check("marking alpha below opaque rejects with clear error", not translucent_marking.get("ok", false)
+		and str(translucent_marking.get("errors", [])).contains("opaque"))
+	bad = profile.duplicate(true)
 	bad.paint.append(bad.paint[0].duplicate(true))
 	_check("duplicate paint selections reject", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
 	bad.paint[0].extra = "not allowed"
 	_check("unknown paint entry keys reject", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
-	bad.markings[0].text = "Pilot ✈"
-	_check("unsupported marking glyphs reject", not Profile.validate(bad, bindings).get("ok", false))
+	bad.markings[0].text = "Pilot!"
+	_check("unsupported marking punctuation rejects", not Profile.validate(bad, bindings).get("ok", false))
+	bad = profile.duplicate(true)
+	bad.markings[0].text = "REGISTRATION1"
+	_check("text above the authored panel character limit rejects", not Profile.validate(bad, bindings).get("ok", false))
 	bad = profile.duplicate(true)
 	bad.paint[0].pattern = "downloaded_texture"
 	_check("unregistered paint presets reject", not Profile.validate(bad, bindings).get("ok", false))
@@ -111,9 +135,18 @@ func _test_bad_profiles(bindings: Dictionary) -> void:
 	bad.paint[0].accent = "#FF0000"
 	_check("accent rejects when the registered slot has no authored accent target",
 		not Profile.validate(bad, bindings).get("ok", false))
+	bad = profile.duplicate(true)
+	bad.paint[0].slot = "wing"
+	bad.paint[0].accent = "#FF000080"
+	var translucent_accent: Dictionary = Profile.validate(bad, bindings)
+	_check("paint accent alpha below opaque rejects clearly", not translucent_accent.get("ok", false)
+		and str(translucent_accent.get("errors", [])).contains("non-opaque"))
 	bad = _smoke_profile(bindings)
 	bad.smoke[0].enabled = 1
 	_check("smoke enabled does not accept a numeric boolean", not Profile.validate(bad, bindings).get("ok", false))
+	bad = _smoke_profile(bindings)
+	bad.smoke[0].color = "#FFFFFF80"
+	_check("smoke retains supported translucent sRGB swatches", Profile.validate(bad, bindings).get("ok", false))
 	bad = _smoke_profile(bindings)
 	bad.smoke[0].mode = "script"
 	_check("unknown smoke schedule mode rejects", not Profile.validate(bad, bindings).get("ok", false))
@@ -160,6 +193,11 @@ func _test_stale_bindings(bindings: Dictionary, expected_identity: String) -> vo
 	var uncorrected: Dictionary = bindings.duplicate(true)
 	uncorrected.paint_slots[0].targets[0].surface = 9
 	_check("tampered sidecar fails its self hash", not Profile.validate(_paint_profile(bindings), uncorrected).get("ok", false))
+	var unknown_source: Dictionary = bindings.duplicate(true)
+	unknown_source.presentation_sources[0].path = "res://render/unknown.gd"
+	unknown_source.slots_sha256 = Profile.bindings_sha256(unknown_source)
+	_check("unknown presentation source pin rejects even with a recomputed sidecar hash",
+		not Profile.validate(_paint_profile(bindings), unknown_source).get("ok", false))
 	_check("stale binding checks do not change baseline identity", Profile.identity(_paint_profile(bindings), bindings) == expected_identity)
 
 
@@ -182,7 +220,7 @@ func _test_physical_allowlist() -> void:
 func _bindings_fixture() -> Dictionary:
 	var bindings: Dictionary = {
 		"format": Profile.BINDINGS_FORMAT,
-		"version": 1,
+		"version": Profile.BINDINGS_VERSION,
 		"visual_family": "fixture-aircraft",
 		"model_manifest_sha256": "a".repeat(64),
 		"paint_slots": [
@@ -193,8 +231,9 @@ func _bindings_fixture() -> Dictionary:
 				"accent_targets": [
 					{"node_path": "airplane/wing_accent", "surface": 0, "kind": "standard_albedo"}]},
 		],
-		"marking_slots": [{"id": "registration", "label": "Registration", "targets": [
-			{"node_path": "airplane/wing", "surface": 1, "uv_rect": [0.1, 0.1, 0.3, 0.2], "side": "front"}]}],
+		"marking_slots": [{"id": "registration", "label": "Registration", "max_chars": 12, "targets": [
+			{"node_path": "airplane/wing", "position_m": [0.0, 0.0, 0.0], "direction": [0.0, 0.0, -1.0],
+				"up": [0.0, 1.0, 0.0], "width_m": 1.0, "height_m": 0.2}]}],
 		"smoke_slots": [
 			{"id": "smoke_left", "label": "Left show", "kind": "show", "pair": "wing_tips", "role": "wing_tip_left",
 				"node_path": "airplane/smoke_left", "position_m": [-0.5, 0.0, 0.0], "direction": [0.0, 0.0, -1.0]},
@@ -206,8 +245,21 @@ func _bindings_fixture() -> Dictionary:
 				"source_kind": "propulsion", "source_anchor_ref": "engine_main", "physical_source_ref": "engine_main",
 				"physical_source_kind_ref": "propulsion"},
 		],
+		"presentation_sources": [],
+		"presentation_engine_version": "4.7.2",
 		"slots_sha256": "",
 	}
+	for path: String in Profile.PRESENTATION_SOURCE_PATHS:
+		bindings.presentation_sources.append({"path": path, "sha256": "a".repeat(64)})
+	bindings["slots_sha256"] = Profile.bindings_sha256(bindings)
+	return bindings
+
+
+func _legacy_bindings_fixture() -> Dictionary:
+	var bindings: Dictionary = _bindings_fixture()
+	bindings["version"] = Profile.LEGACY_BINDINGS_VERSION
+	bindings.erase("presentation_sources")
+	bindings.erase("presentation_engine_version")
 	bindings["slots_sha256"] = Profile.bindings_sha256(bindings)
 	return bindings
 
@@ -221,7 +273,7 @@ func _pins(bindings: Dictionary) -> Dictionary:
 func _paint_profile(bindings: Dictionary) -> Dictionary:
 	var profile: Dictionary = Profile.defaults(bindings)
 	profile.paint = [{"slot": "body", "color": "#808080", "pattern": "solid", "accent": "none"}]
-	profile.markings = [{"slot": "registration", "text": "NIÑO 5", "color": "#12345600"}]
+	profile.markings = [{"slot": "registration", "text": "NIÑO 5", "color": "#123456"}]
 	return profile
 
 

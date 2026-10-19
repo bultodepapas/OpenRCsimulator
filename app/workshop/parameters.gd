@@ -12,6 +12,8 @@ const MAX_CONTROL_MULTIPLIER := 1.5
 const MIN_TANK_CAPACITY_MULTIPLIER := 0.5
 const MAX_TANK_CAPACITY_MULTIPLIER := 2.0
 const MASS_POLICIES := ["constant_wing_loading", "geometric"]
+const DEFINITIONS_FORMAT := "openrc-aircraft-workshop-parameter-definitions"
+const DEFINITIONS_VERSION := 1
 const ALLOWED_KEYS := [
 	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
 	"tank_capacity_multiplier", "id", "name",
@@ -27,6 +29,63 @@ static func defaults() -> Dictionary:
 		"control_multiplier": 1.0,
 		"tank_capacity_multiplier": 1.0,
 	}
+
+
+## Shared physical parameter contract for Workshop controls and bounded tools.
+## With no compiler capabilities the definitions remain descriptive; `available` is null
+## because support cannot be inferred without a validated aircraft base.
+static func definitions(capabilities: Dictionary = {}) -> Dictionary:
+	var parameters: Array = [
+		{
+			"key": "scale", "label": "Virtual scale", "capability": "scale",
+			"minimum": MIN_SCALE, "maximum": MAX_SCALE, "default": 1.0,
+			"unit": "ratio", "kind": "number", "step": 0.05,
+			"operation": "Virtual geometry and mass similarity transform.",
+		},
+		{
+			"key": "mass_policy", "label": "Mass policy", "capability": "scale",
+			"minimum": null, "maximum": null, "default": "constant_wing_loading",
+			"unit": "", "kind": "enum", "options": MASS_POLICIES.duplicate(),
+			"operation": "Selects the mass ratio law used by virtual scale.",
+		},
+		{
+			"key": "weight_multiplier", "label": "Weight multiplier", "capability": "weight",
+			"minimum": MIN_WEIGHT_MULTIPLIER, "maximum": MAX_WEIGHT_MULTIPLIER, "default": 1.0,
+			"unit": "ratio", "kind": "number", "step": 0.05,
+			"operation": "Uniform inventory-mass multiplier.",
+		},
+		{
+			"key": "power_multiplier", "label": "Power multiplier", "capability": "power",
+			"minimum": MIN_POWER_MULTIPLIER, "maximum": MAX_POWER_MULTIPLIER, "default": 1.0,
+			"unit": "ratio", "kind": "number", "step": 0.05,
+			"operation": "Prescribed-RPM propulsion evaluator multiplier.",
+		},
+		{
+			"key": "control_multiplier", "label": "Control travel multiplier", "capability": "controls",
+			"minimum": MIN_CONTROL_MULTIPLIER, "maximum": MAX_CONTROL_MULTIPLIER, "default": 1.0,
+			"unit": "ratio", "kind": "number", "step": 0.05,
+			"operation": "Conventional physical surface travel multiplier.",
+		},
+		{
+			"key": "tank_capacity_multiplier", "label": "Tank capacity multiplier", "capability": "tank_capacity",
+			"minimum": MIN_TANK_CAPACITY_MULTIPLIER, "maximum": MAX_TANK_CAPACITY_MULTIPLIER, "default": 1.0,
+			"unit": "ratio", "kind": "number", "step": 0.05,
+			"operation": "Changes tank capacity and tank dimensions under the FUEL-11a policy.",
+		},
+	]
+	for item_variant: Variant in parameters:
+		var item: Dictionary = item_variant
+		var capability: String = str(item["capability"])
+		if capabilities.is_empty():
+			item["available"] = null
+			item["unavailable_reason"] = ""
+		elif capabilities.has(capability) and typeof(capabilities[capability]) == TYPE_BOOL:
+			item["available"] = bool(capabilities[capability])
+			item["unavailable_reason"] = "" if bool(capabilities[capability]) else str(capabilities.get("note", "Unsupported for this aircraft module combination."))
+		else:
+			item["available"] = false
+			item["unavailable_reason"] = "Compiler capability '%s' is unavailable." % capability
+	return {"format": DEFINITIONS_FORMAT, "version": DEFINITIONS_VERSION, "parameters": parameters}
 
 
 static func validate(recipe: Dictionary) -> Dictionary:

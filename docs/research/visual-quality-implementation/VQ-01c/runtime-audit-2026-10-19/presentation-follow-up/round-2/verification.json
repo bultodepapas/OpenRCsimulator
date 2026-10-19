@@ -1,0 +1,80 @@
+{
+  "positive_current_checks": [
+    {
+      "name": "current-parse",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-parse.log",
+      "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+    },
+    {
+      "name": "current-test_camera_route",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-test_camera_route.log",
+      "sha256": "edc696e6fdb203c63bb474008342d24a8bfa3ceb9b2c9699833ca91cadd66cae"
+    },
+    {
+      "name": "current-test_control_presentation",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-test_control_presentation.log",
+      "sha256": "6e68c956bc96e2f6414416799531d6e2bc64bbc24beaaf309716039a8d1fe34e"
+    },
+    {
+      "name": "current-test_e2e_input",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-test_e2e_input.log",
+      "sha256": "ced2dcc6463b73fb40dbbbc2b8e2de6399c9c4b8122804aab35db39eb653bff7"
+    },
+    {
+      "name": "current-test_engine_smoke",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-test_engine_smoke.log",
+      "sha256": "fc5aaf53d25606d59d00e7617b3f0fca2271e63a988a32ed51db0ac83a83e20c"
+    },
+    {
+      "name": "current-test_overlay_manager",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-test_overlay_manager.log",
+      "sha256": "129f1139d804b13f7e1bd691827a95c9c13206d56bf742d8c27ce2baff56cd53"
+    },
+    {
+      "name": "current-verify_controls",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-verify_controls.log",
+      "sha256": "7b78860f4e8d72279fb245e6a5e11ac0e1fd7ac90da2540a3c2ca5b73196096f"
+    },
+    {
+      "name": "current-verify_model",
+      "status": "pass",
+      "engine_error_lines": [],
+      "log": "current-verify_model.log",
+      "sha256": "45aa4090c81ee62f454721180727a2dd4f76dd69115b09a6bee3376e83a5810a"
+    }
+  ],
+  "reference_negative_smoke_test": {
+    "checks": 62,
+    "expected_failures": 5,
+    "exit": 1,
+    "log": "smoke-negative.log"
+  },
+  "gpu_native": {
+    "processes": 3,
+    "checks_per_process": 27,
+    "failures": 0,
+    "captures_per_process": 70,
+    "intervals_per_process": 511,
+    "pixel_comparison": "gpu-comparison.json",
+    "scope": "The captured smoke-only/background layers match exactly. Aircraft-inclusive images have small differences; a repeat of unchanged reference also varies. No blanket pixel identity or exact cause claim."
+  },
+  "not_run": [
+    "complete app/test.sh",
+    "exports/packages",
+    "target hardware FPS qualification"
+  ]
+}

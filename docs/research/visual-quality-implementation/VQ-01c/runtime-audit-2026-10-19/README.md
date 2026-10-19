@@ -401,3 +401,62 @@ Unrelated concurrent Workshop edits were preserved. The full app suite and expor
 were not run. A separate native comparison did not publish a report and was stopped
 after Computer Use was cancelled with physical Escape; no native FPS improvement
 or completed before/after visual qualification is claimed.
+
+### US-V09c / SM-01…09 — second presentation follow-up
+
+2026-10-19, independently frozen at `e6d946480`. Concurrent Workshop, customization
+and simulation edits were preserved in the primary checkout. The isolated candidate
+changes only visual control posing and legacy smoke uploads; imported/generated
+metadata from its native editor run was not transferred.
+
+`Airplane.apply_controls()` batches the Stik's surface and throttle pose before the
+existing linkage solver runs. Previously `apply_surfaces()` solved every linkage,
+then `apply_throttle()` solved them all again. Standalone calls retain immediate
+updates; finite-glow variants and other adapters retain their previous paths.
+The new regression compares all node transforms/visibility and linkage branch,
+endpoint and closure state across **512 poses in eight aircraft**. All agree exactly,
+including throttle reversals, moving roots, standalone calls and a missing-throttle
+fallback. The existing linkage verifier passes **376 checks**; the model verifier
+passes **919 checks**.
+
+Legacy smoke now submits birth-only uniforms only while spawning. Residual puffs
+still receive live wind and precisely the same aging requests. Fully dormant
+emitters skip material lookup/uploads while retaining interval/pose and bounds
+bookkeeping, so the next birth uses the current segment. The extended smoke suite
+passes **62 checks**; its five new optimization assertions fail on the unchanged
+reference emitter. No shader, emission rate, particle capacity/lifetime, physics,
+flight input or generated aircraft geometry was changed.
+
+The same callback probe ran three alternating process pairs, with 60 warmup and
+1,200 measured frames and real 240 Hz ticks outside each timed render callback.
+Soundscape was disabled. These are headless CPU timings on a shared development
+host; they are separate from the first presentation campaign and from native FPS.
+
+| Pair | Reference p50/p95, µs | Candidate p50/p95, µs |
+| --- | ---: | ---: |
+| 1 | 809 / 1177 | 494 / 869 |
+| 2, reversed order | 648 / 1006 | 632 / 953 |
+| 3 | 692 / 1045 | 579 / 862 |
+
+Median of process medians: **692 → 579 µs, 16.33% less callback CPU time**. Pair 2's
+improvement is only 2.47%; host variation is material. All six runs finish at tick
+2,520 without pause/fault, and their measured numeric fingerprints match the first
+campaign's `85b32f24…0750f0`. No golden flight was re-recorded.
+
+The existing native smoke review ran reference, candidate and unchanged-reference
+repeat on Godot 4.7.2 Compatibility / RTX 3090: **27 checks, zero failures, 70
+captures and 511 presented intervals per process**. All 42 smoke-over-background,
+background and smoke-mask pairs agree pixel for pixel. Of the aircraft-inclusive
+images, 12 have small differences (at most 17 pixels, maximum channel delta 15/255).
+Repeating the unchanged reference also varies in 11 images (at most 12 pixels,
+maximum channel delta 7/255). The exact source of that variation is unresolved;
+this establishes neither blanket pixel identity nor a new image tolerance.
+
+Eight current-tree focused invocations pass, including control-pose parity, linkage,
+smoke, overlays, keyboard input, camera routing, model verification and Main parsing,
+with no engine/script errors in their logs. [Verification](presentation-follow-up/round-2/verification.json),
+[source hashes, raw timing records and reproduction notes](presentation-follow-up/round-2/results.json)
+and [decoded-pixel comparisons](presentation-follow-up/round-2/gpu-comparison.json)
+retain the limits and proof. The exact candidate patch and executed probes are
+retained alongside them. Full app suite, package/export and native FPS acceptance
+remain open.

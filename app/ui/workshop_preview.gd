@@ -1,6 +1,8 @@
 extends Control
 
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const Customization := preload("res://render/aircraft_customization.gd")
+const ProfileSmoke := preload("res://render/smoke/profile_smoke.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 
 const BACKGROUND := Color("#263a40")
@@ -28,6 +30,17 @@ var _grid: MeshInstance3D
 var _grid_fit_scale := -1.0
 var _airplane_root: Node3D
 var _model_bounds := AABB()
+var _airplane: Dictionary = {}
+var _profile: Dictionary = {}
+var _smoke: Node3D
+var _playing := false
+var _playhead_tick := 0
+var _playhead_seconds := 0.0
+var _play_button: Button
+var _time_label: Label
+var _source_preview_label: Label
+var _playback_controls: Array[Control] = []
+var _preview_wind := Vector3(0.0, 0.0, 1.5)
 var _requested_id := ""
 var _requested_scale := 1.0
 
@@ -96,6 +109,7 @@ func _init() -> void:
 
 	_build_world()
 	_build_toolbar()
+	_build_playback()
 	_build_badge()
 	_apply_preview_layout()
 	resized.connect(_on_resized)
@@ -103,6 +117,9 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	set_process(false)
+	visibility_changed.connect(func() -> void:
+		if not is_visible_in_tree() and _playing: toggle_playback())
 	theme_changed.connect(_on_theme_changed)
 	_apply_preview_fonts()
 	if _requested_id != "":
@@ -111,7 +128,7 @@ func _ready() -> void:
 		_refresh_camera()
 
 
-## The preview is a still render in its own World3D. It has no flight state or simulation callbacks.
+## The preview owns an isolated World3D and an optional visual smoke clock; it has no flight state.
 ## `scale` is the draft display scale; the original comparison member is the same model at 1.0.
 func set_aircraft(id: String, scale: float = 1.0) -> void:
 	_requested_id = id
@@ -121,6 +138,7 @@ func set_aircraft(id: String, scale: float = 1.0) -> void:
 	if id == _base_aircraft_id() and is_instance_valid(_airplane_root):
 		_refresh_model_presentation()
 		return
+	reset_playback()
 	if is_instance_valid(_airplane_root):
 		_rig.remove_child(_airplane_root)
 		_airplane_root.queue_free()
@@ -131,6 +149,7 @@ func set_aircraft(id: String, scale: float = 1.0) -> void:
 		_rebuild_grid()
 		_refresh_model_presentation()
 		return
+	_airplane = built
 	_airplane_root = built.get("root") as Node3D
 	if not is_instance_valid(_airplane_root):
 		_airplane_root = null
@@ -145,6 +164,7 @@ func set_aircraft(id: String, scale: float = 1.0) -> void:
 		_model_bounds = AABB(Vector3(-0.5, -0.5, -0.5), Vector3.ONE)
 	_rebuild_grid()
 	_refresh_model_presentation()
+	_configure_smoke()
 
 
 ## Change only the presentation mode. This never writes to the Workshop recipe or its history.
@@ -265,10 +285,12 @@ func _refresh_model_presentation() -> void:
 		var model_scale := _visible_model_scale()
 		_airplane_root.scale = Vector3.ONE * model_scale
 		_airplane_root.position = -_model_bounds.get_center() * model_scale
+		Customization.apply(_airplane, {} if _view_mode == "compare" and _comparison_original else _profile)
 	if is_instance_valid(_grid):
 		_grid.position.y = -_model_bounds.get_center().y * _fit_model_scale() - _model_bounds.size.y * 0.5 * _fit_model_scale() - 0.06
 		_grid.position.x = 0.0
 		_grid.position.z = 0.0
+	if is_instance_valid(_smoke): _smoke.visible = not (_view_mode == "compare" and _comparison_original)
 	_update_scale_badge()
 	_sync_toolbar()
 	_refresh_camera()
@@ -593,6 +615,8 @@ func _make_button(label: String, hint: String, node_name: String) -> Button:
 
 func _apply_preview_fonts() -> void:
 	var button_font := UiTheme._font_size(14)
+	if is_instance_valid(_time_label): _time_label.add_theme_font_size_override("font_size", button_font)
+	if is_instance_valid(_source_preview_label): _source_preview_label.add_theme_font_size_override("font_size", button_font)
 	for node: Node in find_children("*", "Button", true, false):
 		var button := node as Button
 		if is_instance_valid(button) and button.get_theme_font_size("font_size") != button_font:
@@ -797,7 +821,7 @@ func _on_resized() -> void:
 
 func _request_redraw() -> void:
 	if is_instance_valid(_viewport):
-		_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS if _playing else SubViewport.UPDATE_ONCE
 
 
 func _is_in_aircraft_viewport(global_point: Vector2) -> bool:
@@ -908,3 +932,109 @@ func _on_camera_menu_action(action: int) -> void:
 			zoom_by(1.15)
 		CameraMenuAction.RESET:
 			reset_view()
+
+
+func set_presentation(profile: Dictionary) -> void:
+	if _profile == profile: return
+	_profile = profile.duplicate(true)
+	if not _airplane.is_empty():
+		Customization.apply(_airplane, {} if _view_mode == "compare" and _comparison_original else _profile)
+	_configure_smoke()
+	_request_redraw()
+
+
+func _build_playback() -> void:
+	_play_button = _make_button("Play smoke", "Play the visual smoke preview.", "PreviewPlay")
+	_play_button.pressed.connect(toggle_playback)
+	var reset := _make_button("Restart smoke", "Clear puffs and restart the preview clock.", "PreviewSmokeReset")
+	reset.pressed.connect(reset_playback)
+	_time_label = Label.new()
+	_time_label.add_theme_font_size_override("font_size", UiTheme._font_size(14))
+	_time_label.text = "0.0 s"
+	var wind := OptionButton.new()
+	wind.add_theme_font_size_override("font_size", UiTheme._font_size(14))
+	for title: String in ["Light wind", "Still air", "Crosswind"]: wind.add_item(title)
+	wind.item_selected.connect(func(index: int) -> void:
+		_preview_wind = [Vector3(0, 0, 1.5), Vector3.ZERO, Vector3(2.0, 0, 0)][index]
+		reset_playback())
+	for control: Control in [_play_button, reset, _time_label, wind]:
+		_playback_controls.append(control)
+		_mode_row.add_child(control)
+		control.visible = false
+	_source_preview_label = Label.new()
+	_source_preview_label.text = tr("Illustrative running engine")
+	_source_preview_label.add_theme_font_size_override("font_size", UiTheme._font_size(14))
+	_source_preview_label.visible = false
+	_mode_row.add_child(_source_preview_label)
+
+
+func _configure_smoke() -> void:
+	if not is_instance_valid(_stage) or _airplane.is_empty(): return
+	reset_playback()
+	for control in _playback_controls: control.visible = not _profile.get("smoke", []).is_empty()
+	_source_preview_label.visible = false
+	var source_slots: Array = _airplane.get("customization_bindings", {}).get("smoke_slots", []).filter(func(slot: Dictionary) -> bool: return slot.kind == "source")
+	for entry: Dictionary in _profile.get("smoke", []):
+		if entry.enabled and source_slots.any(func(slot: Dictionary) -> bool: return slot.id == entry.slot): _source_preview_label.visible = true
+	_layout_initialized = false
+	_apply_preview_layout()
+	if is_instance_valid(_smoke):
+		_stage.remove_child(_smoke)
+		_smoke.queue_free()
+		_smoke = null
+	if _profile.get("smoke", []).is_empty(): return
+	var described := Customization.describe(_requested_id)
+	if not described.get("ok", false): return
+	_smoke = ProfileSmoke.new()
+	_stage.add_child(_smoke)
+	if not _smoke.configure(_profile, described.bindings):
+		_smoke.queue_free()
+		_smoke = null
+	# Preview intentionally remains still until the user requests playback.
+
+
+func toggle_playback() -> void:
+	if not is_instance_valid(_smoke): return
+	_playing = not _playing
+	set_process(_playing)
+	_play_button.text = tr("Pause smoke" if _playing else "Play smoke")
+	if _playing:
+		_smoke.play()
+		if _playhead_tick == 0:
+			_smoke.advance(0.0, {tick = 0, slot_transforms = Customization.smoke_transforms(_airplane)}, _preview_wind,
+				1.0, _preview_source_sample())
+		_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	else:
+		_smoke.pause()
+		_request_redraw()
+
+
+func reset_playback() -> void:
+	_playing = false
+	set_process(false)
+	_playhead_tick = 0
+	_playhead_seconds = 0.0
+	if is_instance_valid(_play_button): _play_button.text = tr("Play smoke")
+	if is_instance_valid(_time_label): _time_label.text = "0.0 s"
+	if is_instance_valid(_smoke): _smoke.reset()
+	_request_redraw()
+
+
+func _exit_tree() -> void:
+	if _playing: toggle_playback()
+
+
+func _process(delta: float) -> void:
+	if not _playing or not is_instance_valid(_smoke) or not is_visible_in_tree(): return
+	if _view_mode == "compare" and _comparison_original: return
+	_playhead_seconds += minf(delta, 0.1)
+	var next := int(floor(_playhead_seconds * 240.0))
+	var dt := float(next - _playhead_tick) / 240.0
+	_playhead_tick = next
+	_smoke.advance(dt, {tick = _playhead_tick, slot_transforms = Customization.smoke_transforms(_airplane)},
+		_preview_wind, 1.0, _preview_source_sample())
+	_time_label.text = "%.1f s" % (float(_playhead_tick) / 240.0)
+
+
+func _preview_source_sample() -> Dictionary:
+	return {kind = str(_airplane.get("physical_propulsion_kind", "")), running = true, level = 1.0}

@@ -88,6 +88,10 @@ echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
 python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
 python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
 
+echo "== AE-24: generated presentation bindings and source pins stay current"
+python3 "$HERE/../research/aircraft-standardization/build_customization.py" --check
+python3 "$HERE/../research/aircraft-standardization/test_customization.py"
+
 echo "== AUD-12: generated Master safety-limiter bus layout stays current"
 run --script "$HERE/../tools/audio/make_bus_layout.gd" -- --check
 

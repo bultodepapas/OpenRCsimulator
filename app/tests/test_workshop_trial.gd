@@ -23,9 +23,12 @@ func _initialize() -> void:
 		return
 	check("trial identity hashes its resolved model manifest", first.identity.trial_id == _expected_trial_id(first.identity))
 	check("frozen trial exposes presentation identity separately from physical identity",
-		first.get("presentation_profile", {}) == PresentationProfile.defaults()
+		first.get("presentation_profile", {}) is Dictionary
+		and first.presentation_profile.paint.is_empty() and first.presentation_profile.markings.is_empty()
+		and first.presentation_profile.smoke.is_empty() and first.presentation_profile.visual_seed == 0
 		and first.get("presentation_identity", {}).get("format", "") == PresentationProfile.IDENTITY_FORMAT
 		and first.presentation_identity.get("sha256", "").length() == 64
+		and first.presentation_identity.get("binding", {}) == first.presentation_profile.get("binding", {})
 		and not first.identity.has("presentation_identity"))
 	var alternate_manifest_identity: Dictionary = first.identity.duplicate(true)
 	alternate_manifest_identity.presentation.model_manifest_sha256 = "f".repeat(64)

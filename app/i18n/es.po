@@ -3877,3 +3877,399 @@ msgstr "Abrir los controles de cámara."
 
 msgid "Expand the preview for comfortable inspection."
 msgstr "Ampliar la vista previa para inspeccionarla cómodamente."
+
+msgid "Appearance"
+msgstr "Apariencia"
+
+msgid "Paint changes only the selected registered region."
+msgstr "La pintura cambia solo la región seleccionada."
+
+msgid "Show smoke is a visual effect. Source exhaust follows the running engine."
+msgstr "El humo de exhibición es un efecto visual. El escape sigue al motor en marcha."
+
+msgid "Choose a smoke preset…"
+msgstr "Elegir un preset de humo…"
+
+msgid "Clear Trainer"
+msgstr "Entrenador limpio"
+
+msgid "Twin Ribbons"
+msgstr "Estelas gemelas"
+
+msgid "Tricolor"
+msgstr "Tricolor"
+
+msgid "Tail Comet"
+msgstr "Cometa de cola"
+
+msgid "Rainbow Burst"
+msgstr "Ráfaga arcoíris"
+
+msgid "Classic Exhaust"
+msgstr "Escape clásico"
+
+msgid "No registered regions"
+msgstr "Sin regiones registradas"
+
+msgid "No registered emitters"
+msgstr "Sin emisores registrados"
+
+msgid "This model has no registered customization for this page."
+msgstr "Este modelo no tiene personalización registrada para esta página."
+
+msgid "Enable this emitter"
+msgstr "Activar este emisor"
+
+msgid "White"
+msgstr "Blanco"
+
+msgid "Red"
+msgstr "Rojo"
+
+msgid "Blue"
+msgstr "Azul"
+
+msgid "Gold"
+msgstr "Dorado"
+
+msgid "Green"
+msgstr "Verde"
+
+msgid "Purple"
+msgstr "Morado"
+
+msgid "Black"
+msgstr "Negro"
+
+msgid "Custom color"
+msgstr "Color personalizado"
+
+msgid "Apply color"
+msgstr "Aplicar color"
+
+msgid "Amount"
+msgstr "Cantidad"
+
+msgid "Width"
+msgstr "Anchura"
+
+msgid "Puff lifetime"
+msgstr "Duración de cada nube"
+
+msgid "Shape"
+msgstr "Forma"
+
+msgid "Ribbon"
+msgstr "Estela"
+
+msgid "Cloud"
+msgstr "Nube"
+
+msgid "Fan"
+msgstr "Abanico"
+
+msgid "Emission"
+msgstr "Emisión"
+
+msgid "Hold"
+msgstr "Continua"
+
+msgid "Burst"
+msgstr "Ráfaga"
+
+msgid "Pulse"
+msgstr "Pulsos"
+
+msgid "Burst duration"
+msgstr "Duración de la ráfaga"
+
+msgid "Pulse period"
+msgstr "Período de pulso"
+
+msgid "Pulse on fraction"
+msgstr "Fracción activa del pulso"
+
+msgid "Duration controls new emission; existing puffs fade for their full lifetime."
+msgstr "La duración controla la emisión nueva; las nubes existentes se desvanecen durante su vida útil."
+
+msgid "Use #RRGGBBAA, for example #327DE8FF."
+msgstr "Usa #RRGGBBAA, por ejemplo #327DE8FF."
+
+msgid "This preset needs registered emitters that this model does not provide."
+msgstr "Este preset requiere emisores que el modelo no tiene registrados."
+
+msgid "Apply or cancel the edited color before saving or starting a trial."
+msgstr "Aplica o cancela el color editado antes de guardar o probar el avión."
+
+msgid "Visual preview · no flight simulation"
+msgstr "Vista previa visual · sin simulación de vuelo"
+
+msgid "Play smoke"
+msgstr "Reproducir humo"
+
+msgid "Pause smoke"
+msgstr "Pausar humo"
+
+msgid "Restart smoke"
+msgstr "Reiniciar humo"
+
+msgid "Light wind"
+msgstr "Viento suave"
+
+msgid "Still air"
+msgstr "Sin viento"
+
+msgid "Play the visual smoke preview."
+msgstr "Reproducir la vista previa del humo."
+
+msgid "Clear puffs and restart the preview clock."
+msgstr "Borrar las nubes y reiniciar el reloj de vista previa."
+
+msgid "Trial start"
+msgstr "Inicio de la prueba"
+
+msgid "In the air"
+msgstr "En el aire"
+
+msgid "On the runway"
+msgstr "En la pista"
+
+msgid "Trial field: %s"
+msgstr "Campo de prueba: %s"
+
+msgid "Wind: %s"
+msgstr "Viento: %s"
+
+msgid "Light: %s"
+msgstr "Luz: %s"
+
+msgid "Full fuel · normal control rates · current controller"
+msgstr "Depósito lleno · recorridos normales · control actual"
+
+msgid "Choose an airborne or runway trial start."
+msgstr "Elige el inicio de la prueba en el aire o en la pista."
+
+msgid "Import build…"
+msgstr "Importar avión…"
+
+msgid "Export selected…"
+msgstr "Exportar seleccionado…"
+
+msgid "Import aircraft build"
+msgstr "Importar configuración de avión"
+
+msgid "Export aircraft build"
+msgstr "Exportar configuración de avión"
+
+msgid "Aircraft build"
+msgstr "Configuración de avión"
+
+msgid "The build could not be exported."
+msgstr "No se pudo exportar la configuración."
+
+msgid "The build could not be imported."
+msgstr "No se pudo importar la configuración."
+
+msgid "The exported file failed its readback check."
+msgstr "El archivo exportado no superó la comprobación de lectura."
+
+msgid "Aircraft build exported."
+msgstr "Configuración de avión exportada."
+
+msgid "Aircraft build imported as a new local copy."
+msgstr "Configuración importada como una nueva copia local."
+
+msgid "Fuselage"
+msgstr "Fuselaje"
+
+msgid "Wing"
+msgstr "Ala"
+
+msgid "Wing tips"
+msgstr "Puntas de las alas"
+
+msgid "Tail"
+msgstr "Cola"
+
+msgid "Left wingtip"
+msgstr "Punta del ala izquierda"
+
+msgid "Right wingtip"
+msgstr "Punta del ala derecha"
+
+msgid "Engine exhaust"
+msgstr "Escape del motor"
+
+msgid "Visual only"
+msgstr "Solo visual"
+
+msgid "Stock"
+msgstr "Original"
+
+msgid "Paint"
+msgstr "Pintura"
+
+msgid "Markings"
+msgstr "Inscripciones"
+
+msgid "Color steps"
+msgstr "Pasos de color"
+
+msgid "Add color step"
+msgstr "Añadir color"
+
+msgid "Remove last step"
+msgstr "Quitar último color"
+
+msgid "Use single color"
+msgstr "Usar un solo color"
+
+msgid "Color step duration"
+msgstr "Duración de cada color"
+
+msgid "Single color"
+msgstr "Un solo color"
+
+msgid "Step %d"
+msgstr "Paso %d"
+
+msgid "Registration"
+msgstr "Matrícula"
+
+msgid "Registration panels"
+msgstr "Paneles de matrícula"
+
+msgid "Apply inscription"
+msgstr "Aplicar inscripción"
+
+msgid "Up to 12 English or Spanish letters, digits, spaces or hyphens. Empty text removes the inscription."
+msgstr "Hasta 12 letras en español o inglés, dígitos, espacios o guiones. El texto vacío elimina la inscripción."
+
+msgid "Apply or cancel the edited color or inscription before saving or starting a trial."
+msgstr "Aplica o cancela el color o la inscripción antes de guardar o iniciar una prueba."
+
+msgid "Ready for a trial · runway qualification required"
+msgstr "Listo para probar · se comprobará el inicio en pista"
+
+msgid "Control travel multiplier"
+msgstr "Multiplicador del recorrido de mandos"
+
+msgid "Tank capacity multiplier"
+msgstr "Multiplicador de capacidad del depósito"
+
+msgid "[H] show smoke %s  [J] assign radio AUX"
+msgstr "[H] humo de exhibición %s  [J] asignar AUX de la radio"
+
+msgid "Path:"
+msgstr "Ruta:"
+
+msgid "File:"
+msgstr "Archivo:"
+
+msgid "Open"
+msgstr "Abrir"
+
+msgid "Directories & Files:"
+msgstr "Carpetas y archivos:"
+
+msgid "Illustrative running engine"
+msgstr "Motor en marcha ilustrativo"
+
+msgid "Restore selected region"
+msgstr "Restaurar región seleccionada"
+
+msgid "Search saved builds"
+msgstr "Buscar configuraciones guardadas"
+
+msgid "Favorites only"
+msgstr "Solo favoritos"
+
+msgid "Add favorite"
+msgstr "Añadir favorito"
+
+msgid "Remove favorite"
+msgstr "Quitar favorito"
+
+msgid "Favorite"
+msgstr "Favorito"
+
+msgid "Copy appearance and smoke…"
+msgstr "Copiar apariencia y humo…"
+
+msgid "Favorites could not be read; existing metadata was preserved."
+msgstr "No se pudieron leer los favoritos; se conservaron los datos existentes."
+
+msgid "Favorites could not be saved."
+msgstr "No se pudieron guardar los favoritos."
+
+msgid "Review compatible settings"
+msgstr "Revisar ajustes compatibles"
+
+msgid "Apply settings"
+msgstr "Aplicar ajustes"
+
+msgid "From %s · revision %d"
+msgstr "De %s · revisión %d"
+
+msgid "Only listed compatible settings will change. Physical adjustments stay unchanged."
+msgstr "Solo cambiarán los ajustes compatibles indicados. Los ajustes físicos se conservan."
+
+msgid "Settings to apply"
+msgstr "Ajustes que se aplicarán"
+
+msgid "Settings skipped"
+msgstr "Ajustes que se omiten"
+
+msgid "The source build has no current presentation bindings."
+msgstr "La configuración de origen no tiene vínculos visuales vigentes."
+
+msgid "These presentation settings cannot be copied."
+msgstr "No se pueden copiar estos ajustes visuales."
+
+msgid "The draft changed. Review the settings again before applying them."
+msgstr "El borrador cambió. Revisa de nuevo los ajustes antes de aplicarlos."
+
+msgid "Compatible appearance and smoke settings copied. Undo restores the previous presentation."
+msgstr "Se copiaron la apariencia y el humo compatibles. Deshacer restaura el estado anterior."
+
+msgid "Compatible"
+msgstr "Compatible"
+
+msgid "Source setting is unavailable."
+msgstr "El ajuste de origen no está disponible."
+
+msgid "No matching region or emitter on this aircraft."
+msgstr "Este avión no tiene una región o un emisor equivalente."
+
+msgid "This pattern is unavailable."
+msgstr "Este patrón no está disponible."
+
+msgid "This region uses a different material."
+msgstr "Esta región utiliza un material diferente."
+
+msgid "This accent is unavailable."
+msgstr "Este detalle no está disponible."
+
+msgid "This accent uses a different material."
+msgstr "Este detalle utiliza un material diferente."
+
+msgid "These inscription characters cannot be verified."
+msgstr "No se pueden verificar estos caracteres."
+
+msgid "The inscription exceeds this panel's limit."
+msgstr "La inscripción supera el límite de este panel."
+
+msgid "The emitter has a different purpose or source."
+msgstr "El emisor tiene otra función o fuente."
+
+msgid "This setting is unavailable."
+msgstr "Este ajuste no está disponible."
+
+msgid "Unavailable favorites remain listed under Favorites only and can be removed."
+msgstr "Los favoritos no disponibles aparecen en Solo favoritos y se pueden quitar."
+
+msgid "Unavailable favorite %d"
+msgstr "Favorito no disponible %d"
+
+msgid "Restore this saved build or remove its favorite."
+msgstr "Restaura esta configuración o quita su favorito."

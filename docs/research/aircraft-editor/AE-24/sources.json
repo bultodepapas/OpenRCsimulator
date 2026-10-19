@@ -1,0 +1,281 @@
+{
+  "date": "2026-10-19",
+  "scope": "selected Workbench source snapshot; concurrent shared-tree changes are outside this proof",
+  "files": [
+    {
+      "path": "app/addons/aircraft_contract/export_plugin.gd",
+      "sha256": "70195eccafc3436fd0b86845d800c05241f18fa569018155f1732cc196b92b98",
+      "lf_sha256": "70195eccafc3436fd0b86845d800c05241f18fa569018155f1732cc196b92b98"
+    },
+    {
+      "path": "app/app_root.gd",
+      "sha256": "a1fc9b1aecfa6c3693bdb6ff4e10ed8ac41dcff407660bc236c2032e8b8010fb",
+      "lf_sha256": "3945f0673af2b3aa2ccc8b7dfb7485c5d99a5f61ab01fa8f9bb436c337d8a8dc"
+    },
+    {
+      "path": "app/data/aircraft_customization.json",
+      "sha256": "886bb995bd9e2899b16652ee93fadecfa206121b459625f6885805245d1a1138",
+      "lf_sha256": "886bb995bd9e2899b16652ee93fadecfa206121b459625f6885805245d1a1138"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "sha256": "368a9429f7f910f171fb0734d47f1930c200f7bb30355e0603cc4e04c6f873ea",
+      "lf_sha256": "e016f7107e8fdc174a9063de79842b4d6b6134e00daa708da8e85a3c66b78e84"
+    },
+    {
+      "path": "app/main.gd",
+      "sha256": "d1087668df52a62a087364aac0bb59a819a06d9c2126f35bc1513cd4e0b514ff",
+      "lf_sha256": "116483ced9920ef570852dbf3390ebc34b203a0ebdf8ed15df596df37f49a3ee"
+    },
+    {
+      "path": "app/render/aircraft_customization.gd",
+      "sha256": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e",
+      "lf_sha256": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e"
+    },
+    {
+      "path": "app/render/airplane.gd",
+      "sha256": "69e322943249368a180eca5c13109d97c5b98aa1d2ff716d5f99eac6c7bb46e3",
+      "lf_sha256": "15c4095181124c51acb3e2ca29bc869803cedf29772a6c57471186cb4c625b1f"
+    },
+    {
+      "path": "app/render/presentation_sources.gd",
+      "sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e",
+      "lf_sha256": "b26fac3b2e10a2786c5883da60291950acca904b9bcce1bccb4e541be2c90e8e"
+    },
+    {
+      "path": "app/render/smoke/exhaust.gd",
+      "sha256": "c0fa5949b8cd2739c4bee0cd7fb85579809fe2028ee7e15427fb9c8c1a31fd57",
+      "lf_sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34"
+    },
+    {
+      "path": "app/render/smoke/process.gdshader",
+      "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb",
+      "lf_sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb"
+    },
+    {
+      "path": "app/render/smoke/profile_process.gdshader",
+      "sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1",
+      "lf_sha256": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke.gd",
+      "sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547",
+      "lf_sha256": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547"
+    },
+    {
+      "path": "app/render/smoke/profile_smoke_schedule.gd",
+      "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a",
+      "lf_sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
+    },
+    {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "d9ab2a5b8e104a2802c773515bfc64776fb9ff44d32bfb1752f442073e1e4ef0",
+      "lf_sha256": "d03c675fed1a46fc05bf2fb9683c4cb5a50595c5cbdc0eb7693213188dbf024e"
+    },
+    {
+      "path": "app/test.sh",
+      "sha256": "c6255328639f4ea2f25928761be7f661cd1d82e6f15cce1715936f3dfecfe095",
+      "lf_sha256": "c6255328639f4ea2f25928761be7f661cd1d82e6f15cce1715936f3dfecfe095"
+    },
+    {
+      "path": "app/tests/test_workshop_bundle.gd",
+      "sha256": "348b0a9b8c0e3fd37665c906bb0cda9ab2e4cea91f5f9b7f532ccd03a1876222",
+      "lf_sha256": "348b0a9b8c0e3fd37665c906bb0cda9ab2e4cea91f5f9b7f532ccd03a1876222"
+    },
+    {
+      "path": "app/tests/test_workshop_compiler.gd",
+      "sha256": "43982c0522daae032d591432492e41f65e982e14abac30ce0bab2744b7ac9cf2",
+      "lf_sha256": "be73fc8c2309b8e74fb610ef01df056e47e5d220131b1de2375a8cc0b0163a1b"
+    },
+    {
+      "path": "app/tests/test_workshop_customization.gd",
+      "sha256": "d0cfd59ea18eaa5feaea00b9f3277d1c73845a0b8594cb7520221a93f826bb4b",
+      "lf_sha256": "d0cfd59ea18eaa5feaea00b9f3277d1c73845a0b8594cb7520221a93f826bb4b"
+    },
+    {
+      "path": "app/tests/test_workshop_descriptor.gd",
+      "sha256": "1ac9e8623f385171c27e785794bbff636641cc7cb498ac708f6f8b6b48e1afc7",
+      "lf_sha256": "1ac9e8623f385171c27e785794bbff636641cc7cb498ac708f6f8b6b48e1afc7"
+    },
+    {
+      "path": "app/tests/test_workshop_experiments.gd",
+      "sha256": "62cc6f031dd581fe7a4ed19914a3cfd118cbd581be1125c4f690fb709b4735dd",
+      "lf_sha256": "62cc6f031dd581fe7a4ed19914a3cfd118cbd581be1125c4f690fb709b4735dd"
+    },
+    {
+      "path": "app/tests/test_workshop_integration.gd",
+      "sha256": "4ff3fa119416bf37f03aa3d4c08e2e61a6b96b11a8ca36af877767eaae1ddebe",
+      "lf_sha256": "d45d9b3cf7a0b374e26f4a3f251bcff33f7c4da97d477eb200ceb75168e21ea5"
+    },
+    {
+      "path": "app/tests/test_workshop_json.gd",
+      "sha256": "04dfcc29e8cbf677f87602609e4cfd197b748eb079568ad3f36c16e84abc1ad4",
+      "lf_sha256": "04dfcc29e8cbf677f87602609e4cfd197b748eb079568ad3f36c16e84abc1ad4"
+    },
+    {
+      "path": "app/tests/test_workshop_library_preferences.gd",
+      "sha256": "cfc9a4df02b1c502101fb0c5ed0c39fdafb39d4a06858af8b804b033bff39c92",
+      "lf_sha256": "cfc9a4df02b1c502101fb0c5ed0c39fdafb39d4a06858af8b804b033bff39c92"
+    },
+    {
+      "path": "app/tests/test_workshop_parameters.gd",
+      "sha256": "885c8ebd83140b0c183105684337e949551b3770436cb4b65e01601da11ac2c9",
+      "lf_sha256": "885c8ebd83140b0c183105684337e949551b3770436cb4b65e01601da11ac2c9"
+    },
+    {
+      "path": "app/tests/test_workshop_presentation.gd",
+      "sha256": "3e870bf06b737f36e089432414f21f244f700313c4469a86600375daf894e256",
+      "lf_sha256": "3e870bf06b737f36e089432414f21f244f700313c4469a86600375daf894e256"
+    },
+    {
+      "path": "app/tests/test_workshop_preview.gd",
+      "sha256": "1d9c7cd63fc12f7e3fe4e00c87dba9914b05cdc969637ae64973677b3eee3637",
+      "lf_sha256": "1d9c7cd63fc12f7e3fe4e00c87dba9914b05cdc969637ae64973677b3eee3637"
+    },
+    {
+      "path": "app/tests/test_workshop_profile_transfer.gd",
+      "sha256": "e70312a026ba9d493b16e4d04db5c03cee34c9479e54f5d51e12722679f7fd95",
+      "lf_sha256": "e70312a026ba9d493b16e4d04db5c03cee34c9479e54f5d51e12722679f7fd95"
+    },
+    {
+      "path": "app/tests/test_workshop_reuse.gd",
+      "sha256": "cf0f8c775dce5182834262a4c83d02ea9819c4c69a5bf1961c02f232d4b7840a",
+      "lf_sha256": "cf0f8c775dce5182834262a4c83d02ea9819c4c69a5bf1961c02f232d4b7840a"
+    },
+    {
+      "path": "app/tests/test_workshop_smoke.gd",
+      "sha256": "472853c259aac0dbb3b63c84b47b338a0fdefe6c3ec69fa6ec927f2451371f47",
+      "lf_sha256": "472853c259aac0dbb3b63c84b47b338a0fdefe6c3ec69fa6ec927f2451371f47"
+    },
+    {
+      "path": "app/tests/test_workshop_starts.gd",
+      "sha256": "b89d83bb0242ba99aee891965f7684875fbe7d1a0c56e02bac4e8c27ba9a0b41",
+      "lf_sha256": "b89d83bb0242ba99aee891965f7684875fbe7d1a0c56e02bac4e8c27ba9a0b41"
+    },
+    {
+      "path": "app/tests/test_workshop_store.gd",
+      "sha256": "86da2e0d66fe9a02bea3667416204620152378462255d50974630412fdf717ce",
+      "lf_sha256": "86da2e0d66fe9a02bea3667416204620152378462255d50974630412fdf717ce"
+    },
+    {
+      "path": "app/tests/test_workshop_trial.gd",
+      "sha256": "57aff23b97b9c7e4814fbf6dcf94a6808a71a9f0179d2e54d30e93088586a71b",
+      "lf_sha256": "57aff23b97b9c7e4814fbf6dcf94a6808a71a9f0179d2e54d30e93088586a71b"
+    },
+    {
+      "path": "app/tests/test_workshop_ui.gd",
+      "sha256": "62a1cd5119194b0b45e5273e5d3e6229e5bf34ea07a4c988fcd4ede26dc8cb8b",
+      "lf_sha256": "2cc55f08060577b902c1822eaea1f3151993aef4c8854b4c2dbff469d0e58d3d"
+    },
+    {
+      "path": "app/ui/workshop.gd",
+      "sha256": "42272411a53cb8f8be150fe4bd7783b5f14357b50504a5b173f607847860aa49",
+      "lf_sha256": "ee281a8380adf2488d17bc988d6c589d6abb0b8bcbee1bc6111614a338f98fbe"
+    },
+    {
+      "path": "app/ui/workshop_customization.gd",
+      "sha256": "e7657be4019036ea397d31c6cade6da378f5505085a5530ab0adfc0a6fff9dd8",
+      "lf_sha256": "e7657be4019036ea397d31c6cade6da378f5505085a5530ab0adfc0a6fff9dd8"
+    },
+    {
+      "path": "app/ui/workshop_preview.gd",
+      "sha256": "0526011ea192be0b953d6508428697f3c9514e29f2746ce2b990bf253cb61d81",
+      "lf_sha256": "f52e722dcfe29cd841b749d471ba2338f7950726b9bc9c99764b56395c10e5dd"
+    },
+    {
+      "path": "app/workshop/bundle.gd",
+      "sha256": "35890e2eb5e4643d544565b8dcd240d78bb5102d165bbf429530a70e4a24bfd5",
+      "lf_sha256": "35890e2eb5e4643d544565b8dcd240d78bb5102d165bbf429530a70e4a24bfd5"
+    },
+    {
+      "path": "app/workshop/compiler.gd",
+      "sha256": "8ae18d14e3932deb542236886e88d7e8461ae1685a08df143d5028d67e2f24b3",
+      "lf_sha256": "1ef10cc448202f7cf3647a6bcb35b98b1ebb61e4bb4742b413324b482016231e"
+    },
+    {
+      "path": "app/workshop/dependencies.gd",
+      "sha256": "8c0997cae9cb88c59012676df1bf4cfc56f98dfd5655bc3f6337dac97fe258ab",
+      "lf_sha256": "8c0997cae9cb88c59012676df1bf4cfc56f98dfd5655bc3f6337dac97fe258ab"
+    },
+    {
+      "path": "app/workshop/descriptor.gd",
+      "sha256": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61",
+      "lf_sha256": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61"
+    },
+    {
+      "path": "app/workshop/experiments.gd",
+      "sha256": "b9c1caddc53d8ffccea295dc3b7d92d888a35c787f7ac15669b91bd9885b30f6",
+      "lf_sha256": "b9c1caddc53d8ffccea295dc3b7d92d888a35c787f7ac15669b91bd9885b30f6"
+    },
+    {
+      "path": "app/workshop/launch.gd",
+      "sha256": "79e7d265d6152c2c794ff15dd98575c9c6061632518a4564cde82099f91b094e",
+      "lf_sha256": "79e7d265d6152c2c794ff15dd98575c9c6061632518a4564cde82099f91b094e"
+    },
+    {
+      "path": "app/workshop/library_preferences.gd",
+      "sha256": "401245c1db60fe824a3182d0a54924cc2de7d85c609b1481ec173af9222bdac3",
+      "lf_sha256": "401245c1db60fe824a3182d0a54924cc2de7d85c609b1481ec173af9222bdac3"
+    },
+    {
+      "path": "app/workshop/parameters.gd",
+      "sha256": "a7fda6f5b0364eb874d45fd17524c27dcbd9ff6a190f9395cba81e0a24306d96",
+      "lf_sha256": "a7fda6f5b0364eb874d45fd17524c27dcbd9ff6a190f9395cba81e0a24306d96"
+    },
+    {
+      "path": "app/workshop/presentation.gd",
+      "sha256": "bfb1c11826b68f8f447e57709d025e433a3c8181322717ae6e8d98c29220c121",
+      "lf_sha256": "bfb1c11826b68f8f447e57709d025e433a3c8181322717ae6e8d98c29220c121"
+    },
+    {
+      "path": "app/workshop/profile_transfer.gd",
+      "sha256": "fff64b9a608eb3a5e6cd59c53ccb76e87102123eefba4b6181a013e4cf11c0ea",
+      "lf_sha256": "fff64b9a608eb3a5e6cd59c53ccb76e87102123eefba4b6181a013e4cf11c0ea"
+    },
+    {
+      "path": "app/workshop/start_qualification.gd",
+      "sha256": "bd7a7105b72f65b0e1019eb891dfdaa5db870f816e3f48ec2b9f159f5ef4604c",
+      "lf_sha256": "bd7a7105b72f65b0e1019eb891dfdaa5db870f816e3f48ec2b9f159f5ef4604c"
+    },
+    {
+      "path": "app/workshop/store.gd",
+      "sha256": "bfa357080f4c35a2d4c5b05bbace9d6b567dd8c7a891f1543c8da7bdb3b869de",
+      "lf_sha256": "bfa357080f4c35a2d4c5b05bbace9d6b567dd8c7a891f1543c8da7bdb3b869de"
+    },
+    {
+      "path": "app/workshop/strict_json.gd",
+      "sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5",
+      "lf_sha256": "e0ef60d0d2fe9d0a4ed98df25d1dd684462fbc0db813a2da8ab14e41eb0d25c5"
+    },
+    {
+      "path": "app/workshop/trial.gd",
+      "sha256": "4a0e8efd46d98c43b4458a4d76bb1146057c3a2879cc0b6379a8d509c9184c9d",
+      "lf_sha256": "4a0e8efd46d98c43b4458a4d76bb1146057c3a2879cc0b6379a8d509c9184c9d"
+    },
+    {
+      "path": "assets/aircraft/customization-bindings.json",
+      "sha256": "37b4c25f130d2f38e607b29e043ec46da4947dc0aa22faa07ad5b01c37e53d3e",
+      "lf_sha256": "554bfafbff45e1ddacecd3c80dc4790e75c9f54b261efef2667c64d1320f6134"
+    },
+    {
+      "path": "research/aircraft-editor/capture_smoke_profiles.gd",
+      "sha256": "788a41823b7b5012c1b00964f627f1cd05e2a3900c12a049d2c85e9d8de9d5e0",
+      "lf_sha256": "788a41823b7b5012c1b00964f627f1cd05e2a3900c12a049d2c85e9d8de9d5e0"
+    },
+    {
+      "path": "research/aircraft-editor/capture_workshop.gd",
+      "sha256": "87b376e347c6501aa2c0f8b0c8e496ef077d9b9b3bb0af7a37687089e1346bad",
+      "lf_sha256": "87b376e347c6501aa2c0f8b0c8e496ef077d9b9b3bb0af7a37687089e1346bad"
+    },
+    {
+      "path": "research/aircraft-editor/run_experiment.gd",
+      "sha256": "bce02b7271fc66f7c6e6490ad5ebdb3b3399439e156db256c7d9a7872ac745fb",
+      "lf_sha256": "bce02b7271fc66f7c6e6490ad5ebdb3b3399439e156db256c7d9a7872ac745fb"
+    },
+    {
+      "path": "research/aircraft-standardization/build_customization.py",
+      "sha256": "de6682cd2a4f6a41c0f357c2276f213b45f4699b23002cea80297d66392a4358",
+      "lf_sha256": "de6682cd2a4f6a41c0f357c2276f213b45f4699b23002cea80297d66392a4358"
+    }
+  ]
+}

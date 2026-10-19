@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371830813783933 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:288)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:295)
+       [12] _ready (res://app_root.gd:235)
+       [13] _check_home_route (res://tests/test_ui_quit.gd:100)
+       [14] _run (res://tests/test_ui_quit.gd:88)
+ok   AppRoot disables automatic close while Home is active
+ok   Home route is present
+ok   Home Quit is wired to the AppRoot quit policy
+ok   same-frame Window close requests coalesce on Home
+ok   AppRoot restores the host close policy after Home removal
+ok   a discarded Recorder is not retained after its owner releases it
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   direct route starts without Home
+ok   AppRoot keeps a host-disabled close policy
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/test_ui_quit/57336-11738845.csv (10 rows)
+ok   Window close saves a real manual Recorder trace
+ok   saved trace contains the versioned CSV header and samples
+ok   successful close reaches the final quit seam once
+ok   duplicate failed Window close saves only once
+ok   failed close opens explicit recovery with Stay as the default
+ok   close decision holds the flight and masks it until the decision
+ok   repeated Window close while recovery is open does not stop twice or stack dialogs
+ok   Retry saves the retained trace and completes quit exactly once
+ok   successful retry releases the exit hold
+ok   trace recovery uses the shared theme, wraps, and stays within the viewport at 200%
+ok   Stay keeps an always-failing trace pending and the app open
+ok   a later Quit reopens recovery without an implicit discard or repeated stop
+ok   only explicit Discard trace and continue resolves the failed trace
+ok   AppRoot restores a previously disabled host close policy
+ok   quit guards a live dirty Workshop before any flight or route change
+ok   Cancel from the live Workshop quit guard keeps the editor and draft
+ok   Home Workshop exposes Back to Home
+ok   menu-pad ui_cancel reaches the editor close guard
+ok   editor Close uses its own guard and returns to Home
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Workshop opened from Pause exposes its context-specific return label
+ok   Workshop test fixture has a dirty retained draft
+ok   Save build is open before the first Window close
+ok   first Window close dismisses the Save dialog without prompting or stopping the recorder
+ok   second Window close opens the dirty-draft guard after modal dismissal
+ok   Cancel from the second close keeps the paused flight and dirty draft
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   Workshop trial suspends the original flight
+ok   trial Pause uses Resume trial and one direct Return to Workshop
+ok   trial flight hint matches Escape-to-Pause and the visible return action
+ok   trial resumes before the quit decision
+ok   quit inspects the detached dirty Workshop before stopping either recorder
+ok   repeated Quit remains coalesced on the same detached-editor decision
+ok   cancel preserves draft, both recorder states, and the running trial
+ok   draft Discard proceeds to trial trace save, without touching the retained recorder yet
+ok   trial Discard resolves only its trace before the retained recorder's failure
+ok   trace Stay leaves the draft and retained trace pending independently
+ok   a later quit still prompts for the dirty draft after trace Stay
+ok   discarded trial trace stays resolved while retained failure is offered again
+ok   Retry saves only the retained trace and completes quit
+ok   Return to Workshop restores the original flight and same dirty editor
+UI quit: 0 failed

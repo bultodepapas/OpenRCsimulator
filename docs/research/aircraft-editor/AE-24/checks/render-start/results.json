@@ -1,0 +1,62 @@
+[
+  {
+    "suite": "test_aircraft_customization",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "Aircraft customization: 153 checks, 0 failed"
+  },
+  {
+    "suite": "test_smoke_profiles",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "Profile smoke: 36 checks, 0 failures"
+  },
+  {
+    "suite": "test_engine_smoke",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "SM engine smoke: 62 checks, 0 failures"
+  },
+  {
+    "suite": "test_presentation_sources",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "Presentation source proofs: 76 checks, 0 failures"
+  },
+  {
+    "suite": "test_aircraft_model_manifest",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "Aircraft model manifest: 75 checks, 0 failures"
+  },
+  {
+    "suite": "test_aircraft_package_proofs",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "Aircraft package proofs: 29 checks, 0 failures"
+  },
+  {
+    "suite": "test_start_choice",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "UI-06a: 36 checks, 0 failed"
+  },
+  {
+    "suite": "test_prop_strike",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "38 checks, 0 failed"
+  },
+  {
+    "suite": "test_runway_fleet",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "Runway fleet: 116 checks, 0 failed"
+  },
+  {
+    "suite": "test_runway_cli",
+    "exit_code": 0,
+    "errors": [],
+    "summary": "Runway CLI: 10 checks, 0 failed"
+  }
+]

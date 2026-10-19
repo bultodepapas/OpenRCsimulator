@@ -1,0 +1,10 @@
+{
+  "suites": 39,
+  "failed_suites": 0,
+  "scripts_parsed": 1089,
+  "parse_failures": 0,
+  "source_hashes": 55,
+  "stale_sources": [],
+  "native_captures": 9,
+  "native_overflows": 0
+}

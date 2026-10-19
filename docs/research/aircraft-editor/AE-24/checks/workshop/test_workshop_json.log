@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Exponent too high
+   at: built_in_strtod (core/string/ustring.cpp:2553)
+   GDScript backtrace (most recent call first):
+       [0] number (res://workshop/strict_json.gd:143)
+       [1] value (res://workshop/strict_json.gd:60)
+       [2] parse (res://workshop/strict_json.gd:12)
+       [3] _initialize (res://tests/test_workshop_json.gd:8)
+Unicode parsing error, some characters were replaced with � (U+FFFD): Invalid UTF-8 leading byte (ff)
+Workshop strict JSON: 0 failures

@@ -97,6 +97,8 @@ The [Workbench guide](AIRCRAFT-WORKSHOP.md) owns the workflow, supported adjustm
 ```sh
 python3 research/aircraft-standardization/build_models.py --check
 python3 research/aircraft-editor/build_descriptors.py --check
+python3 research/aircraft-standardization/build_customization.py --check
+python3 research/aircraft-standardization/test_customization.py
 python3 research/aircraft-editor/test_descriptor_checkout.py
 ```
 
@@ -104,13 +106,18 @@ The checkout test creates and removes disposable Git fixture repositories, inclu
 
 After intentionally changing aircraft/model sources through their owning generators, regenerate model manifests with `python3 research/aircraft-standardization/build_models.py`, then descriptors with `python3 research/aircraft-editor/build_descriptors.py`, and repeat the checks above. Exact aircraft bytes and model-manifest hashes are inputs; honor `.gitattributes` before regenerating. [Byte/EOL lesson](LEARNINGS.md#2026-10-13--cr-01d--run-a-generators---check-at-head-before-regenerating).
 
-`app/test.sh` runs the seven focused suites as part of the full suite. For native Windows, import first using [developer setup](#developer-setup), then run all seven:
+Presentation slot/source changes use `python3 research/aircraft-standardization/build_customization.py`, followed by its `--check` and tests. This generator does not rewrite physical model manifests. Exported builds carry a separate closed presentation proof package; `test_presentation_sources.gd` checks its missing/corrupt proof refusals.
+
+`app/test.sh` discovers the focused GDScript suites as part of the full suite. For native Windows, import first using [developer setup](#developer-setup), then run every Workshop suite:
 
 ```powershell
 # $GodotWindows is the matching native console executable from developer setup.
 Get-ChildItem app/tests/test_workshop_*.gd | Sort-Object Name | ForEach-Object {
     & $GodotWindows --headless --path app --audio-driver Dummy --script ("res://tests/" + $_.Name)
 }
+& $GodotWindows --headless --path app --script res://tests/test_aircraft_customization.gd
+& $GodotWindows --headless --path app --script res://tests/test_smoke_profiles.gd
+& $GodotWindows --headless --path app --script res://tests/test_presentation_sources.gd
 ```
 
 Inspect each suite's assertions and engine errors as well as exit status. Focused passes do not replace the descriptor check, full app suite or physical/pilot acceptance.
@@ -121,7 +128,30 @@ For a native rendered still:
 & $GodotWindows --path app --script (Resolve-Path research/aircraft-editor/capture_workshop.gd).Path -- --language=es --1080p
 ```
 
-Arguments after `--`: `--language=en|es`, `--scale=<factor>` (default `2.0`), `--width=<px>`/`--height=<px>` (default 1280×720), `--1080p`, `--text-scale=1|1.5|2`, and `--out=<PNG-path>` (default `user://workshop-review.png`). Optional review cases: `--page=compare`, `--preview`, `--dialog=library|save|guard`, `--invalid`, `--long-name`, `--opaque`, `--reduced-motion`, `--aircraft=<catalog-id>` and `--fullscreen`. The script applies the shared canvas policy, writes a JSON geometry sidecar, and returns nonzero for out-of-bounds key actions/popups. Inspect the PNG as well; rectangles do not prove legibility. Fullscreen evidence must report the actual monitor/window pixels. A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+Arguments after `--`: `--language=en|es`, `--scale=<factor>` (default `2.0`), `--width=<px>`/`--height=<px>` (default 1280×720), `--1080p`, `--text-scale=1|1.5|2`, and `--out=<PNG-path>` (default `user://workshop-review.png`). Review cases: `--page=appearance|smoke|setup|compare`, `--preview`, `--dialog=library|save|guard|bundle-import`, `--invalid`, `--long-name`, `--opaque`, `--reduced-motion`, `--aircraft=<catalog-id>` and `--fullscreen`. Customization cases accept `--paint-color=#RRGGBBAA`, `--marking=RC-27`, `--smoke-preset=1..6`, and `--smoke-seconds=0..16`; inscription requires a registered mount. The script applies the shared canvas policy, writes a JSON geometry sidecar, and returns nonzero for out-of-bounds key actions/popups. Inspect the PNG as well; rectangles do not prove legibility. Fullscreen evidence must report the actual monitor/window pixels. A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+
+The native GPU birth-color/lifecycle probe is `research/aircraft-editor/capture_smoke_profiles.gd`. Run it with the same display command in place of `capture_workshop.gd`; it writes rate captures and `metrics.json` under ignored `tmp/smoke-profile-native/`, returns nonzero when its checks fail, and allocates the production shared 768-particle profile budget. It is renderer evidence, not a portable performance benchmark.
+
+For Library/profile-copy review, supply `--library-build=<local-bundle-json>` with `--dialog=library|profile-copy`; optional `--favorite` marks that fixture. The helper imports into a unique capture-only library and removes the fixture afterward; it never writes player variants. Captures scroll the saved actions or copy decisions into view. Example: add `--aircraft=gp-extra-300s-60 --scale=1 --language=es --width=1280 --height=720 --text-scale=2 --library-build=C:/captures/build.json --dialog=profile-copy` to the native capture command.
+
+Export a saved build from **Library → Export selected**; import creates a new local UUID after validation. A direct technical launch reads the bundle without importing or writing player preferences:
+
+```powershell
+& $GodotWindows --headless --audio-driver Dummy --path app -- --aircraft-variant=C:/captures/build.json --trace=C:/captures/build.csv --t=0.25
+```
+
+Use an existing export and an existing output directory. `--aircraft-variant` is mutually exclusive with `--aircraft`, `--battery`, `--electric-demo`, `--experimental-aircraft-data`, and `--scripted`. The bundle embeds data and exact source bytes; it does not supply executable resource paths or replace installed dependencies. Trial metadata keeps physical `workshop` identity separate from visual `workshop_presentation` identity.
+
+Offline analysis uses the source-only runner and data-only examples. Each output must be a new local JSON file:
+
+```powershell
+$Analysis = (Resolve-Path research/aircraft-editor/run_experiment.gd).Path
+& $GodotWindows --headless --path app --script $Analysis -- --aircraft=jensen-das-ugly-stik-60 --out=C:/captures/stik-static.json
+& $GodotWindows --headless --path app --script $Analysis -- --aircraft=jensen-das-ugly-stik-60 --recipe=../research/aircraft-editor/examples/glide.json --out=C:/captures/stik-glide.json
+& $GodotWindows --headless --path app --script $Analysis -- --aircraft=jensen-das-ugly-stik-60 --sweep=../research/aircraft-editor/examples/sweep.json --out=C:/captures/stik-sweep.json
+```
+
+Replace `--aircraft` with `--bundle=C:/captures/build.json` to analyze a detached export. Relative input/output paths resolve from `app/`. Static reports and bounded grid/seeded sweeps expose existing compiler estimates; fixed-tape experiments run at 240 Hz for at most 120 seconds with at most 64 input spans. Reports include frozen build/presentation identities, solver/build pins, initial checkpoint, environment, tape and stop reason. Body speed is not airspeed. An unsupported flight experiment writes its reason and exits 3; malformed input exits 2. These results establish software behavior, not measured performance or physical validity. The runner refuses existing outputs and input/output collisions.
 
 The [trace-dialog capture](../research/aircraft-editor/capture_trace_recovery.gd) uses a deterministic failed recorder in a separate quick-flight process. Run `& $GodotWindows --path app --audio-driver Dummy --script (Resolve-Path research/aircraft-editor/capture_trace_recovery.gd).Path`; it captures Spanish at 1280×720/200% text to `user://trace-recovery-es-200.png`, or accepts `-- --out=<PNG-path>`. This checks native dialog fit; it does not simulate a disk failure or establish trace durability.
 

@@ -164,9 +164,12 @@ func _initialize() -> void:
 	var reload_recorder: RefCounted = Recorder.new(session.sim)
 	reload_recorder.start(session.trace_meta())
 	session.resetting.connect(func() -> void: reload_recorder.recording = false)
-	# Keep a genuinely unsupported synthetic ID now that the complete catalog supports runway starts.
+	# Capability refusal follows missing stiction data, rather than the spelling of an aircraft ID.
+	var no_stiction: Dictionary = JSON.parse_string(source)
+	no_stiction.id = "runway-test-no-stiction"
+	no_stiction.landing_gear.erase("breakaway_factor")
 	output = FileAccess.open(reload_path, FileAccess.WRITE)
-	output.store_string(source.replace('"jensen-das-ugly-stik-60"', '"runway-test-unsupported"'))
+	output.store_string(JSON.stringify(no_stiction))
 	output.close()
 	session.aircraft_path = reload_path
 	var unsupported_reload: String = session.reload()
@@ -217,7 +220,7 @@ func _initialize() -> void:
 	_check("unsupported aircraft field loads", unsupported.set_field(field))
 	unsupported.reset()
 	_check("unsupported aircraft is refused without an airborne fallback",
-		unsupported.start_error.contains("supported only") and unsupported.sim.paused
+		unsupported.start_error.contains("stiction") and unsupported.sim.paused
 		and not unsupported.is_flyable() and unsupported.start_choice == Session.START_RUNWAY
 		and unsupported.sim.state[RB.VEL] == 0.0 and not unsupported.engine_running)
 
@@ -226,8 +229,8 @@ func _initialize() -> void:
 	var unsupported_field: Node = _session(Session.START_RUNWAY)
 	_check("alternate field surface table loads", unsupported_field.set_field(alternate))
 	unsupported_field.reset()
-	_check("unsupported field is refused with an explicit reason", unsupported_field.start_error.contains("field 'default'")
-		and unsupported_field.sim.paused and not unsupported_field.is_flyable())
+	_check("a renamed validated runway field uses its own installed contact surfaces", unsupported_field.start_error.is_empty()
+		and unsupported_field.is_flyable() and unsupported_field.trace_meta().launch_field_id == "another-field")
 
 	# The old one-shot helper stays available to existing test/capture callers and does not persist a choice.
 	var legacy: Node = _session()
