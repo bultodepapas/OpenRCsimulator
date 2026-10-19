@@ -81,6 +81,9 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	check("keyboard switches Home to Green", app.landscape_id == GREEN and app.home_scene.field.id == GREEN and app.home.start_choice == "airborne")
 	check("selection is saved", Preferences.load_from(PREFS).landscape == GREEN)
+	check("Green explains the unavailable Natural Random activity", app.home.natural_random_button.disabled and app.home.natural_random_button.tooltip_text == "Natural Random requires Club field.")
+	app.open_natural_random()
+	check("Green cannot enter a default-field scenario", app.screens.is_top("home"))
 	await ui.settle()
 	check("previous Home world is released", old_home_world.get_ref() == null)
 	await _capture("green-home.png")
@@ -89,6 +92,7 @@ func _run() -> void:
 	app.home.landscape_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	check("keyboard switches back to Club", app.landscape_id == Landscapes.DEFAULT_ID and app.home_scene.field.id == "default")
+	check("Club restores Natural Random availability", not app.home.natural_random_button.disabled)
 	await _capture("club-home.png")
 	await _fly_and_return(app, Landscapes.DEFAULT_ID)
 
@@ -140,7 +144,16 @@ func _fly_and_return(app: Node, id: String, helicopter := false) -> void:
 	check(id + " simulation advances", flight.session.sim.tick > 0)
 	if green:
 		check("Green has no club lights or campfire", flight.get_node_or_null("FieldLights") == null and flight.get_node_or_null("AirfieldLighting") == null and flight.get_node_or_null("Campfire") == null)
-	await _capture(("green-helicopter" if helicopter else id + "-flight") + ".png")
+	if not captures.is_empty() and DisplayServer.get_name() != "headless":
+		flight.set_overlays_visible(false)
+		var overview := Camera3D.new()
+		flight.add_child(overview)
+		overview.position = Vector3(0.0, 85.0, 120.0)
+		overview.look_at(Vector3(0.0, 0.0, -90.0))
+		overview.far = 20000.0
+		overview.make_current()
+		await _capture(("green-helicopter" if helicopter else id + "-flight") + ".png")
+		overview.queue_free()
 	app.open_pause()
 	app.restart_flight()
 	check(id + " restart retains landscape", app.flight.landscape_id == id and app.flight.session.is_flyable())

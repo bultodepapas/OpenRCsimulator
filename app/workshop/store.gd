@@ -5,6 +5,7 @@ extends RefCounted
 const WorkshopDescriptor = preload("res://workshop/descriptor.gd")
 const WorkshopDependencies = preload("res://workshop/dependencies.gd")
 const WorkshopCompiler = preload("res://workshop/compiler.gd")
+const WorkshopParameters = preload("res://workshop/parameters.gd")
 const DEFAULT_ROOT: String = "user://aircraft_variants"
 const VARIANT_FORMAT: String = "openrc-aircraft-variant"
 const VARIANT_VERSION: int = 1
@@ -20,6 +21,7 @@ const RECIPE_KEYS: PackedStringArray = [
 	"weight_multiplier",
 	"power_multiplier",
 	"control_multiplier",
+	"tank_capacity_multiplier",
 	"id",
 	"name",
 ]
@@ -236,8 +238,9 @@ static func save_variant(
 	var stored_recipe: Dictionary = recipe.duplicate(true)
 	# JSON parses every number as float. Hash the representation that will be
 	# read back, while retaining optional metadata and historical recipe ranges.
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
-		stored_recipe[key] = float(stored_recipe[key])
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
+		if stored_recipe.has(key):
+			stored_recipe[key] = float(stored_recipe[key])
 	var recipe_json: String = JSON.stringify(stored_recipe, "", true, true)
 	var recipe_hash: String = _sha256(recipe_json.to_utf8_buffer())
 	var record: Dictionary = {
@@ -590,6 +593,14 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 	for key: String in ["weight_multiplier", "power_multiplier", "control_multiplier"]:
 		if recipe.has(key) and not _positive_number(recipe[key]):
 			errors.append("Recipe %s must be a finite positive number." % key)
+	if recipe.has("tank_capacity_multiplier"):
+		var tank_capacity_multiplier: Variant = recipe["tank_capacity_multiplier"]
+		if typeof(tank_capacity_multiplier) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(tank_capacity_multiplier)):
+			errors.append("Recipe tank_capacity_multiplier must be a finite number.")
+		elif float(tank_capacity_multiplier) < WorkshopParameters.MIN_TANK_CAPACITY_MULTIPLIER \
+				or float(tank_capacity_multiplier) > WorkshopParameters.MAX_TANK_CAPACITY_MULTIPLIER:
+			errors.append("Recipe tank_capacity_multiplier must be between %.2f and %.2f." % [
+				WorkshopParameters.MIN_TANK_CAPACITY_MULTIPLIER, WorkshopParameters.MAX_TANK_CAPACITY_MULTIPLIER])
 	if recipe.has("id") and (typeof(recipe["id"]) != TYPE_STRING or not _valid_uuid(str(recipe["id"]))):
 		errors.append("Optional recipe ID must be a lowercase UUID.")
 	if recipe.has("name") and not _valid_name(str(recipe["name"])):

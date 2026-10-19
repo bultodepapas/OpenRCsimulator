@@ -344,6 +344,10 @@ def add_v2_overlay(schema: dict, spec: dict):
     glow_engine = glow["properties"]["engine"]
     add_text_field(glow_engine["properties"], "name", nonempty=True)
     add_text_field(glow_engine["properties"], "glow_installation", nonempty=True)
+    # The base v1 schema required a shaft even for the separate finite glow
+    # installation branch. Keep legacy and installation engines shaft-optional;
+    # the gasoline BSFC rule below requires it when that law is selected.
+    glow_engine["required"] = [field for field in glow_engine.get("required", []) if field != "shaft"]
     glow_engine["allOf"] = [{"not": {"required": ["glow_installation", "shaft"]}}]
     glow_prop = glow["properties"]["propeller"]
     add_text_field(glow_prop["properties"], "name", nonempty=True)
@@ -488,7 +492,13 @@ def add_v2_overlay(schema: dict, spec: dict):
     rules = []
     turbine_energy = {
         "if": {"properties": {"propulsion": {"required": ["fuel_consumption"]}}},
-        "then": {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_liquid_fuel"}}}}},
+        "then": {"allOf": [
+            {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_liquid_fuel"}}}}},
+            {"properties": {"propulsion": {"properties": {"fuel_consumption": {"properties": {"law": {"const": "turbine_map_v1"}}}}}}},
+            {"properties": {"propulsion": {"properties": {"engine": {
+                "required": ["spool_integrator"], "properties": {"spool_integrator": {"const": "rk4"}},
+            }}}}},
+        ]},
         "else": {"properties": {"capabilities": {"properties": {"energy": {"const": "prescribed_fuel"}}}}},
     }
     rules.append({"if": branch_condition(["propulsion", "kind"], "turbine"), "then": {"allOf": [
@@ -505,11 +515,16 @@ def add_v2_overlay(schema: dict, spec: dict):
         },
     }
     rules.append({"if": branch_condition(["propulsion", "kind"], "glow_prop"), "then": {"allOf": [glow_energy, {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}}}}}]}})
-    rules.append({"if": {"properties": {"propulsion": {"properties": {
+    rules.append({"if": {"properties": {"propulsion": {"required": ["fuel_consumption"], "properties": {
         "kind": {"const": "glow_prop"},
         "fuel_consumption": {"properties": {"law": {"const": "gasoline_bsfc_v1"}}},
     }}}}, "then": {"properties": {"propulsion": {"properties": {"engine": {
         "required": ["shaft"], "not": {"required": ["glow_installation"]},
+    }}}}}})
+    rules.append({"if": {"properties": {"propulsion": {"required": ["fuel_consumption"], "properties": {
+        "kind": {"const": "glow_prop"},
+    }}}}, "then": {"properties": {"propulsion": {"properties": {"fuel_consumption": {
+        "properties": {"law": {"const": "gasoline_bsfc_v1"}},
     }}}}}})
     rules.append({"if": {"properties": {"propulsion": {"properties": {
         "kind": {"const": "turbine"},

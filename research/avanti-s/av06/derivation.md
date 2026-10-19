@@ -16,6 +16,10 @@ preserving the historical AS-02 migration policy. Migration numeric parity: 504 
 preserved, 1 relocated CLadot leaves, 41 explicit
 compatibility-default leaves added, 0 differences.
 
+Fuel uses the finite `turbine_map_v1` flow table bound to the documented 3.2 l main tank. This is a single-main-tank adapter;
+the hopper/UAT remains dry accessory hardware because its independent liquid capacity and transfer path are not quantified.
+No hopper volume or transfer behavior is invented, and this simplified installation does not establish hopper starvation fidelity.
+
 Flight mass 11.439 kg (fuel 1.30 kg), CG 230 mm aft of the root LE = 30.9 % MAC, static margin 11.2 % MAC; the manual's 240 mm point is taken with a full hopper and an empty main tank (FUEL-05e).
 Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = 0.686714, 2.21718, 2.81122, 0, -0.0263523, 0 kg·m²; principal moments = 0.686388, 2.21718, 2.81155 kg·m².
 1-g stall 17.5 m/s clean, start 29 m/s, maximum level speed 73.4 m/s (264 km/h).
@@ -265,8 +269,9 @@ The section basis is the Glauert extension of thin-airfoil theory summarized in 
   elevator mix; section lift/drag, hinge moments and transit timing are not measured for this aircraft. Gear paths and wheel radii follow
   imported visual geometry; spring/damper behavior, rolling friction, steering limit, brake torque, actuator time and
   incremental gear drag remain estimates pending aircraft-specific physical data.
-- Fuel mass fixed at the declared state (no burn, AV-10). The session has a discrete on/off state; it does not model ECU
-  ignition/autostart, a physical spool-down transient, restart behavior or flameout dynamics.
+- The finite turbine-flow adapter consumes the declared main-tank store only. Hopper/UAT liquid quantity and transfer remain
+  unresolved; the session does not model ECU ignition/autostart, a measured hot-cut spool-down transient, restart behavior
+  or flameout dynamics.
 - Fuselage directional destabilization omitted (v1 contract: Cnb equals the fin term), as for every aircraft.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;

@@ -183,8 +183,8 @@ static func _validate_relations(root: Dictionary, spec: Dictionary, issues: Pack
 			energy_expected = String(battery.get("kind", ""))
 	if capabilities.get("energy", "") != energy_expected:
 		_issue(issues, "/capabilities/energy", "does not match the propulsion energy model")
-	if propulsion_kind == "turbine" and energy_expected != "prescribed_fuel":
-		_issue(issues, "/capabilities/energy", "turbines require prescribed_fuel")
+	if propulsion_kind == "turbine" and energy_expected not in ["prescribed_fuel", "finite_liquid_fuel"]:
+		_issue(issues, "/capabilities/energy", "turbines require prescribed_fuel or a supported finite-liquid consumer")
 
 	_validate_gear_relations(root, gear_kind, issues)
 

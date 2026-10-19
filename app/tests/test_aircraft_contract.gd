@@ -54,6 +54,11 @@ func _initialize() -> void:
 		var old: Dictionary = AD.validate_and_derive(AD.legacy_v1_input(raw))
 		check("explicit legacy adapter loads", old.ok, old.errors)
 		if old.ok:
+			# The v1 historical comparator cannot derive v2 tank bindings. Supply the
+			# normalized view from this same validated v2 input as test adapter glue;
+			# this does not make raw v2 data a supported v1 runtime contract.
+			if loaded.model.has("fuel_system"):
+				old.model.fuel_system = loaded.model.fuel_system.duplicate(true)
 			# The historical adapter derives the common aircraft only. Attach the
 			# explicit v2 glow module from the same validated input before comparing;
 			# a v1 model alone cannot represent finite fuel or family identity.
@@ -77,6 +82,7 @@ func _initialize() -> void:
 			for contact: Dictionary in comparable.landing_gear.get("contacts", []):
 				contact.erase("id")
 			profiled_old.model.erase("data_sha256")
+			profiled_old.model.erase("fuel_system")
 			check(path + " same physical derivation", comparable == profiled_old.model)
 		# Every object, including quantity/table metadata and each inventory component,
 		# must reject a plausible-looking unconsumed tuning field.

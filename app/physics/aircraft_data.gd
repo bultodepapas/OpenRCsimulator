@@ -1485,6 +1485,9 @@ static func _liquid_fuel(errors: PackedStringArray, raw: Dictionary, model: Dict
 		family = "kerosene"
 		if propulsion_kind != "turbine":
 			errors.append("propulsion.fuel_consumption.law: turbine_map_v1 requires turbine propulsion")
+		var normalized_turbine: Dictionary = model.get("propulsion", {})
+		if not Turbine.is_continuous(normalized_turbine):
+			errors.append("propulsion.fuel_consumption.law: turbine_map_v1 requires the continuous RK4 RPM integrator")
 	else:
 		errors.append("propulsion.fuel_consumption.law: unsupported law '%s'" % law)
 		return {}

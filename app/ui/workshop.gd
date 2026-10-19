@@ -21,6 +21,7 @@ const FACTOR_CAPABILITIES := {
 	"weight_multiplier": "weight",
 	"power_multiplier": "power",
 	"control_multiplier": "controls",
+	"tank_capacity_multiplier": "tank_capacity",
 }
 const PRESETS := {
 	"mini": {"scale": 0.5, "mass_policy": "constant_wing_loading", "weight_multiplier": 1.0, "power_multiplier": 1.0, "control_multiplier": 0.9},
@@ -501,6 +502,7 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	_add_factor_row(content, "weight_multiplier", "Weight multiplier")
 	_add_factor_row(content, "power_multiplier", "Power multiplier")
 	_add_factor_row(content, "control_multiplier", "Control travel")
+	_add_factor_row(content, "tank_capacity_multiplier", "Tank capacity")
 
 	_scale_support_hint = _label("", "SecondaryLabel", true)
 	_scale_support_hint.name = "ScaleSupport"
@@ -573,6 +575,8 @@ func _factor_bounds(key: String) -> Vector2:
 			return Vector2(Parameters.MIN_POWER_MULTIPLIER, Parameters.MAX_POWER_MULTIPLIER)
 		"control_multiplier":
 			return Vector2(Parameters.MIN_CONTROL_MULTIPLIER, Parameters.MAX_CONTROL_MULTIPLIER)
+		"tank_capacity_multiplier":
+			return Vector2(Parameters.MIN_TANK_CAPACITY_MULTIPLIER, Parameters.MAX_TANK_CAPACITY_MULTIPLIER)
 	return Vector2.ONE
 
 
@@ -1051,10 +1055,15 @@ func _sync_controls() -> void:
 		_factor_values[key].text = String.num(value, 4) + "×"
 		var supported := bool(_capabilities.get(str(FACTOR_CAPABILITIES[key]), false))
 		_factor_sliders[key].editable = supported
-		_factor_hints[key].text = (
-			tr("Range %.2f×–%.2f× · experimental adjustment.") % [bounds.x, bounds.y]
-			if supported else tr("Not available for this engine type.")
-		)
+		if supported and key == "tank_capacity_multiplier":
+			_factor_hints[key].text = tr("Estimated sizing proposal; tank dimensions scale uniformly. Fill fraction and blend density are preserved.")
+		elif not supported and key == "tank_capacity_multiplier":
+			_factor_hints[key].text = tr("No declared finite tank.")
+		else:
+			_factor_hints[key].text = (
+				tr("Range %.2f×–%.2f× · experimental adjustment.") % [bounds.x, bounds.y]
+				if supported else tr("Not available for this engine type.")
+			)
 	_syncing_controls = false
 	_update_capabilities()
 	_update_undo_button()
@@ -1073,9 +1082,11 @@ func _update_capabilities() -> void:
 		unavailable.append(tr("power"))
 	if not bool(_capabilities.get("controls", false)):
 		unavailable.append(tr("control travel"))
+	if not bool(_capabilities.get("tank_capacity", false)):
+		unavailable.append(tr("tank capacity"))
 	var notes := PackedStringArray()
 	if unavailable.is_empty():
-		notes.append(tr("Try different sizes, weights and power levels. Values are estimates for experimentation."))
+		notes.append(tr("Try different sizes, weights, tank capacities and power levels. Values are estimates for experimentation."))
 	if not unavailable.is_empty():
 		notes.append(tr("Unsupported adjustments: %s. Those values stay unchanged.") % ", ".join(unavailable))
 	_capabilities_label.text = "\n".join(notes)
@@ -1123,12 +1134,16 @@ func _format_summary(summary_value: Variant, model: Dictionary) -> String:
 		float(summary.get("power_multiplier", 1.0)),
 		float(summary.get("control_multiplier", 1.0)),
 	])
+	if bool(summary.get("capabilities", {}).get("tank_capacity", false)):
+		lines.append(tr("Tank capacity ×%.2f · estimated sizing; fill and density are preserved.")
+			% float(summary.get("tank_capacity_multiplier", 1.0)))
 	lines.append(tr("Base → proposed"))
 	var metrics := [
 		{"key": "wing_span_m", "label": "Wing span", "unit": "m", "digits": 2},
 		{"key": "wing_area_m2", "label": "Wing area", "unit": "m²", "digits": 2},
 		{"key": "mass_kg", "label": "Mass", "unit": "kg", "digits": 2},
 		{"key": "wing_loading_kg_m2", "label": "Wing loading", "unit": "kg/m²", "digits": 2},
+		{"key": "fuel_capacity_l", "label": "Tank capacity", "unit": "l", "digits": 2},
 		{"key": "max_rpm", "label": "Maximum RPM", "unit": "rpm", "digits": 0},
 		{"key": "static_thrust_n", "label": "Static thrust", "unit": "N", "digits": 2},
 		{"key": "static_power_w", "label": "Static power", "unit": "W", "digits": 1},

@@ -9,9 +9,12 @@ const MIN_POWER_MULTIPLIER := 0.5
 const MAX_POWER_MULTIPLIER := 2.0
 const MIN_CONTROL_MULTIPLIER := 0.5
 const MAX_CONTROL_MULTIPLIER := 1.5
+const MIN_TANK_CAPACITY_MULTIPLIER := 0.5
+const MAX_TANK_CAPACITY_MULTIPLIER := 2.0
 const MASS_POLICIES := ["constant_wing_loading", "geometric"]
 const ALLOWED_KEYS := [
-	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier", "id", "name",
+	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
+	"tank_capacity_multiplier", "id", "name",
 ]
 
 
@@ -22,6 +25,7 @@ static func defaults() -> Dictionary:
 		"weight_multiplier": 1.0,
 		"power_multiplier": 1.0,
 		"control_multiplier": 1.0,
+		"tank_capacity_multiplier": 1.0,
 	}
 
 
@@ -31,7 +35,7 @@ static func validate(recipe: Dictionary) -> Dictionary:
 	for key: Variant in recipe.keys():
 		if key not in ALLOWED_KEYS:
 			errors.append("recipe.%s: unknown key" % str(key))
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
 		if not recipe.has(key):
 			continue
 		var candidate: Variant = recipe[key]
@@ -48,6 +52,7 @@ static func validate(recipe: Dictionary) -> Dictionary:
 		"weight_multiplier": [MIN_WEIGHT_MULTIPLIER, MAX_WEIGHT_MULTIPLIER],
 		"power_multiplier": [MIN_POWER_MULTIPLIER, MAX_POWER_MULTIPLIER],
 		"control_multiplier": [MIN_CONTROL_MULTIPLIER, MAX_CONTROL_MULTIPLIER],
+		"tank_capacity_multiplier": [MIN_TANK_CAPACITY_MULTIPLIER, MAX_TANK_CAPACITY_MULTIPLIER],
 	}
 	for key: String in bounds:
 		if not recipe.has(key) or typeof(recipe[key]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(recipe[key])):

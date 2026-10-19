@@ -2463,6 +2463,10 @@
       "unit": "m",
       "kind": "derived",
       "source": "research/avanti-s/av06/derive_physics.py: centroid of the two side intake mouths (geometry intake_stations[0]) relative to the CG"
+    },
+    "fuel_consumption": {
+      "law": "turbine_map_v1",
+      "tank_id": "main_tank"
     }
   },
   "convention_id": "openrc-le-frd-v1",
@@ -2470,7 +2474,7 @@
     "controls": "conventional",
     "gear": "retractable_tricycle",
     "propulsion_layout": "single_centerline_jet",
-    "energy": "prescribed_fuel",
+    "energy": "finite_liquid_fuel",
     "damage": "terminal_hull",
     "flaps": "simulated"
   },

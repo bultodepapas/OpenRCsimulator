@@ -4,6 +4,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Compiler := preload("res://workshop/compiler.gd")
 const Session := preload("res://sim/flight_session.gd")
+const Trial := preload("res://workshop/trial.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const STIK_PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const EXTRA_PATH := "res://data/aircraft/gp_extra_300s_60.json"
@@ -32,6 +33,7 @@ func _initialize() -> void:
 		"weight_multiplier": 1.0,
 		"power_multiplier": 1.0,
 		"control_multiplier": 1.0,
+		"tank_capacity_multiplier": 1.0,
 	}, str(defaults))
 	var stik := _read(STIK_PATH)
 	var extra := _read(EXTRA_PATH)
@@ -46,6 +48,7 @@ func _initialize() -> void:
 	_test_scale_policies(stik)
 	_test_scale_policies(extra)
 	_test_tank_and_fill_scaling(stik)
+	_test_tank_capacity_frozen_session(stik)
 	_test_power_and_controls(stik)
 	_test_unfamiliar_identity(stik)
 	_test_catalog_registry()
@@ -248,6 +251,77 @@ func _test_tank_and_fill_scaling(base: Dictionary) -> void:
 			(base_data.model.mass_kg - base_tank.liquid_mass_kg) * dry_ratio))
 	_check("authored reserve provenance becomes derived with scaled units",
 		raw_tank.reserve.kind == "derived" and str(raw_tank.reserve.source).contains("reserve volume × s³"))
+	var resized: Dictionary = Compiler.compile(authored, {
+		"scale": 0.5,
+		"weight_multiplier": 1.5,
+		"tank_capacity_multiplier": 1.5,
+	})
+	_check("independent tank-size recipe compiles", resized.ok, str(resized.errors))
+	if not resized.ok:
+		return
+	var tank_multiplier := 1.5
+	var combined_tank_ratio := tank_ratio * tank_multiplier
+	var tank_linear_ratio := s * pow(tank_multiplier, 1.0 / 3.0)
+	var resized_tank: Dictionary = resized.data.model.fuel_system.tanks[0]
+	var resized_raw_tank: Dictionary = resized.raw.fuel_system.tanks[0]
+	var liquid_id: String = str(base_tank.liquid_inventory_id)
+	var shell_id: String = str(base_tank.shell_inventory_id)
+	var resized_liquid: Dictionary = _inventory_by_id(resized.raw.inventory, liquid_id)
+	var authored_liquid: Dictionary = _inventory_by_id(authored.inventory, liquid_id)
+	var resized_shell: Dictionary = _inventory_by_id(resized.raw.inventory, shell_id)
+	var authored_shell: Dictionary = _inventory_by_id(authored.inventory, shell_id)
+	_check("tank capacity, unusable and reserve use airframe s³ × independent capacity ratio",
+		is_equal_approx(resized_raw_tank.capacity.value, authored.fuel_system.tanks[0].capacity.value * combined_tank_ratio)
+		and is_equal_approx(resized_raw_tank.unusable.value, authored.fuel_system.tanks[0].unusable.value * combined_tank_ratio)
+		and is_equal_approx(resized_raw_tank.reserve.value, authored.fuel_system.tanks[0].reserve.value * combined_tank_ratio))
+	_check("capacity change leaves authored fill fraction and density unchanged",
+		is_equal_approx(resized_tank.start_fill, base_tank.start_fill)
+		and is_equal_approx(resized_tank.density_kg_m3, base_tank.density_kg_m3)
+		and is_equal_approx(resized_tank.capacity_kg / resized_tank.capacity_m3, base_tank.density_kg_m3))
+	_check("liquid mass follows new capacity while dry inventory follows only mass policy",
+		is_equal_approx(resized_tank.liquid_mass_kg, base_tank.liquid_mass_kg * combined_tank_ratio)
+		and is_equal_approx(float(resized_shell.mass.value), float(authored_shell.mass.value) * dry_ratio)
+		and is_equal_approx(resized.data.model.mass_kg - resized_tank.liquid_mass_kg,
+			(base_data.model.mass_kg - base_tank.liquid_mass_kg) * dry_ratio))
+	_check("tank liquid and shell boxes scale by s × cube-root of capacity ratio",
+		resized_liquid.size.value == authored_liquid.size.value.map(func(value: float) -> float: return value * tank_linear_ratio)
+		and resized_shell.size.value == authored_shell.size.value.map(func(value: float) -> float: return value * tank_linear_ratio))
+	_check("compiled summary reports estimated tank sizing and physical capacity",
+		is_equal_approx(float(resized.summary.tank_capacity_multiplier), tank_multiplier)
+		and is_equal_approx(float(resized.summary.fuel_capacity_l), float(base_tank.capacity_m3) * combined_tank_ratio * 1000.0))
+
+
+func _test_tank_capacity_frozen_session(base: Dictionary) -> void:
+	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(STIK_PATH)
+	var payload := {
+		"base_id": str(base.get("id", "")),
+		"base_bytes": bytes,
+		"recipe": {"tank_capacity_multiplier": 1.25},
+	}
+	var frozen: Dictionary = Trial.freeze(payload)
+	_check("tank capacity edit compiles, validates and freezes a trial", frozen.get("ok", false), str(frozen.get("errors", [])))
+	if not frozen.get("ok", false):
+		return
+	var base_data: Dictionary = AircraftData.validate_and_derive(base)
+	var expected_tank: Dictionary = base_data.model.fuel_system.tanks[0]
+	var frozen_tank: Dictionary = frozen.data.model.fuel_system.tanks[0]
+	_check("frozen model carries the selected tank capacity independently of dry mass",
+		is_equal_approx(frozen_tank.capacity_m3, expected_tank.capacity_m3 * 1.25)
+		and is_equal_approx(frozen_tank.start_fill, expected_tank.start_fill)
+		and is_equal_approx(frozen_tank.density_kg_m3, expected_tank.density_kg_m3))
+	var session: Node = Session.new()
+	session.physics_enabled = false
+	session.setup("", str(frozen.data.model.id), frozen.data)
+	_check("frozen capacity recipe passes Session setup, trim and flyable gates",
+		session.aircraft.get("ok", false) and session.start.get("ok", false) and session.is_flyable(),
+		str(session.start.get("message", "")))
+	if session.aircraft.get("ok", false) and session.is_flyable():
+		var sample: Dictionary = session.mass_properties()
+		_check("accepted frozen session reports matching full tank capacity and authored fill",
+			sample.get("ok", false) and sample.get("finite_fuel", false) and sample.get("stores", []).size() == 1
+			and is_equal_approx(float(sample.stores[0].capacity_kg), frozen_tank.capacity_kg)
+			and is_equal_approx(float(sample.stores[0].fill_fraction), frozen_tank.start_fill))
+	session.free()
 
 
 func _test_unfamiliar_identity(base: Dictionary) -> void:
@@ -301,6 +375,7 @@ func _test_catalog_registry() -> void:
 		"weight": {"weight_multiplier": 1.1},
 		"power": {"power_multiplier": 1.1},
 		"controls": {"control_multiplier": 1.1},
+		"tank_capacity": {"tank_capacity_multiplier": 1.1},
 	}
 	for entry: Dictionary in entries:
 		var aircraft_id := str(entry.get("id", ""))
@@ -309,9 +384,9 @@ func _test_catalog_registry() -> void:
 			continue
 		count += 1
 		var support: Dictionary = Compiler.capabilities(raw)
-		_check("catalog capability record %s has four flags and a note" % aircraft_id,
-			support.has_all(["scale", "weight", "power", "controls", "note"]))
-		for flag: String in ["scale", "weight", "power", "controls"]:
+		_check("catalog capability record %s has adjustment flags and a note" % aircraft_id,
+			support.has_all(["scale", "weight", "power", "controls", "tank_capacity", "note"]))
+		for flag: String in ["scale", "weight", "power", "controls", "tank_capacity"]:
 			_check("catalog capability %s is boolean for %s" % [flag, aircraft_id], typeof(support.get(flag)) == TYPE_BOOL)
 		var custom_id := "workshop-catalog-probe-%02d" % count
 		var renamed: Dictionary = raw.duplicate(true)
@@ -344,6 +419,14 @@ func _test_recipe_validation(base: Dictionary) -> void:
 	_check("unknown recipe keys are rejected", not unknown.ok and str(unknown.errors).contains("unknown key"))
 	var nonfinite: Dictionary = Compiler.compile(base, {"scale": NAN})
 	_check("nonfinite recipe values are rejected", not nonfinite.ok and str(nonfinite.errors).contains("finite"))
+	var tank_capacity_bounds: Dictionary = Compiler.compile(base, {"tank_capacity_multiplier": 2.01})
+	_check("tank capacity multiplier above the explicit estimate range is rejected",
+		not tank_capacity_bounds.ok and str(tank_capacity_bounds.errors).contains("tank_capacity_multiplier"))
+	var omitted_capacity: Dictionary = Compiler.defaults()
+	omitted_capacity.erase("tank_capacity_multiplier")
+	var defaulted_capacity: Dictionary = Compiler.compile(base, omitted_capacity)
+	_check("legacy recipe without optional tank capacity keeps the exact no-op model",
+		defaulted_capacity.ok and defaulted_capacity.data.model.mass_kg == AircraftData.validate_and_derive(base).model.mass_kg)
 	var widened_base: Dictionary = base.duplicate(true)
 	widened_base.plausibility.mass_range.value = [2.0, 8.0]
 	var widened_check: Dictionary = AircraftData.validate_and_derive(widened_base)
@@ -508,8 +591,15 @@ func _array_ratio_is(actual: PackedFloat64Array, base: PackedFloat64Array, ratio
 	return true
 
 
+func _inventory_by_id(inventory: Array, item_id: String) -> Dictionary:
+	for item: Variant in inventory:
+		if item is Dictionary and str(item.get("id", "")) == item_id:
+			return item
+	return {}
+
+
 func _support_flags_equal(left: Dictionary, right: Dictionary) -> bool:
-	for flag: String in ["scale", "weight", "power", "controls"]:
+	for flag: String in ["scale", "weight", "power", "controls", "tank_capacity"]:
 		if left.get(flag) != right.get(flag):
 			return false
 	return true

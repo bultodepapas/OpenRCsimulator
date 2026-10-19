@@ -114,6 +114,7 @@ static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Arr
 		var stage_values: PackedFloat64Array=put_state(out,state)
 		for _i in owner.wheel_count(): stage_values.append(0.0)
 		var initial_point: Dictionary=point(owner,body,stage_values,0.0)
+		print("DEBUG GLOW initial point ", initial_point)
 		if not initial_point.get("ok",false): return PackedFloat64Array([NAN])
 		var telemetry: Dictionary=initial_point.get("telemetry",{})
 		var target: float=float(telemetry.get("fuel_target_kg_s",NAN))

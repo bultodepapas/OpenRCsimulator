@@ -127,7 +127,7 @@ class TraceAcceptance(unittest.TestCase):
                     self.assertEqual(len(json.loads(metadata['recording_start_continuous'])), 4)
                     header = next(csv.reader(line for line in path.read_text().splitlines()
                                              if line and not line.startswith('#')))
-                    self.assertEqual(header[-7:-3], ['gear_extension', 'gear_target_down',
+                    self.assertEqual(header[-11:-7], ['gear_extension', 'gear_target_down',
                                                    'cmd_gear_down', 'cmd_wheel_brake'])
                 self.assertEqual(metadata['aircraft_input_format'], json.loads(source.read_text())['format'])
                 self.assertEqual(metadata['aircraft_input_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())

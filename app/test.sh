@@ -353,10 +353,10 @@ TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=turbo-lumber-evolution --battery=ideal --trace="$TRACE" --t=3 > /dev/null 2>&1
 grep -q "turbo-lumber-evolution" "$TRACE" || { echo "the Timber trace does not name the Timber"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/turbo_lumber_evolution.json"; rm -f "$TRACE"
-# BAT-13: the default Timber flies its finite pack (trace v13); the checker allows only the sag-explained RPM drift.
+# BAT-13: v14 carries live mass; the base format still identifies the finite pack.
 TRACE="$(mktemp --suffix=.csv)"
 run -- --aircraft=turbo-lumber-evolution --trace="$TRACE" --t=3 > /dev/null 2>&1
-grep -q "openrc-trace v13" "$TRACE" || { echo "the default Timber trace is not a finite-pack trace"; exit 1; }
+grep -q "openrc-trace v14" "$TRACE" && grep -q "mass_base_trace_format.*openrc-trace v13" "$TRACE" || { echo "the default Timber trace is not a finite-pack mass trace"; exit 1; }
 python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-input="$HERE/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"; rm -f "$TRACE"
 echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
 python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1

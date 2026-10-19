@@ -116,6 +116,12 @@ func _impact_sample_helpers() -> void:
 		"cg_body_m": PackedFloat64Array([0.0, 0.0, 0.0]),
 		"inertia": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
 		"inverse": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+		"tick": 12,
+		"time_s": 0.05208333333333333,
+		"sample_boundary": "swept_contact_linear_inventory",
+		"impact_fraction": 0.5,
+		"finite_fuel": true,
+		"stores": [{"family": "glow", "remaining_kg": 0.25}],
 	}
 	var endpoint := {
 		"ok": true,
@@ -127,7 +133,13 @@ func _impact_sample_helpers() -> void:
 	}
 	var selected: Dictionary = Director._select_mass_sample(contact, endpoint)
 	_check("crash report selects the same valid contact-time mass sample as collision response",
-		selected.get("basis") == "impact-contact" and selected.get("sample", {}).get("mass_kg") == 2.0)
+		selected.get("basis") == "swept-contact-linear-inventory-approximation"
+		and selected.get("sample", {}).get("mass_kg") == 2.0
+		and selected.get("sample", {}).get("impact_fraction") == 0.5
+		and selected.get("sample", {}).get("sample_boundary") == "swept_contact_linear_inventory")
+	_check("contact-time fuel inventory uses the same explicitly approximate sample",
+		Director._sample_has_fuel_inventory(selected.sample)
+		and float(Director._energy_sources_at_sample(selected.sample, {"glow_fuel": 0.9}, []).glow_fuel) == 0.25)
 	var fallback: Dictionary = Director._select_mass_sample(RefCounted.new(), endpoint)
 	_check("finite fuel without a contact sample is explicitly an endpoint approximation",
 		fallback.get("basis") == "accepted-endpoint-approximation" and fallback.get("sample", {}).get("mass_kg") == 3.0)

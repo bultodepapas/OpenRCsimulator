@@ -159,6 +159,7 @@ func set_fuel_start_fill(fill: float) -> bool:
 		return false
 	fuel_start_fill = fill
 	_fuel_start_fill_known = true
+	_trim_density = NAN # the selected launch inventory needs its own equilibrium on reset
 	return true
 
 
@@ -455,6 +456,8 @@ const Aero := preload("res://physics/aero.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const PropulsionRuntime := preload("res://sim/aircraft_propulsion_runtime.gd")
 const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
+const LiquidFuel := preload("res://physics/liquid_fuel.gd")
+const MassInventory := preload("res://physics/mass_inventory.gd")
 const RotorCoupling = preload("res://physics/rotor_coupling.gd")
 const GroundStart := preload("res://physics/ground_start.gd")
 const Turbine := preload("res://physics/turbine.gd")
@@ -496,6 +499,7 @@ static func half_power_start_supported(aircraft_id: String) -> bool:
 
 
 func _selected_airborne_trim(model: Dictionary, down_m: float = -30.0) -> Dictionary:
+	model = _trim_model(model)
 	var speed: float = model.get("start_speed", 15.0)
 	var density: float = _weather.air_density(down_m)
 	var charge: float = _weather.engine_charge_ratio(down_m)
@@ -510,6 +514,25 @@ func _selected_airborne_trim(model: Dictionary, down_m: float = -30.0) -> Dictio
 	if t.ok:
 		t.state = Scenarios.Trim.state_for(t.V, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
 	return t
+
+
+## Detached static query only. The normalized aircraft and fixed datum never change.
+func _trim_model(model: Dictionary) -> Dictionary:
+	var prop: Dictionary = model.get("propulsion", {})
+	var properties: Dictionary = {}
+	if Propulsion.is_glow(prop):
+		properties = MassInventory.evaluate_reference(prop.glow.mass_reference,
+			PackedFloat64Array([float(prop.glow.capacity_fuel_kg) * fuel_start_fill]))
+	elif not prop.get("liquid_fuel", {}).is_empty():
+		properties = LiquidFuel.properties(prop.liquid_fuel,
+			{str(prop.liquid_fuel.tank_id): float(prop.liquid_fuel.capacity_kg) * fuel_start_fill})
+	if not properties.get("ok", false):
+		return model
+	var query: Dictionary = model.duplicate()
+	query.mass_kg = properties.mass_kg
+	query.inertia = properties.inertia
+	query.trim_mass_properties = properties
+	return query
 
 ## Emitted at the start of reset(), before the simulation restarts (recorders close their file here).
 signal resetting
@@ -1495,7 +1518,7 @@ func _clear_scenery_damage(emit_if_empty: bool = false) -> void:
 ## Re-trims at another condition ("level" at `speed`, or "glide" power-off) and makes it the start. For scripted
 ## maneuvers (tests, golden flights). Returns the Trim result.
 func trim_at(speed: float, mode := "level") -> Dictionary:
-	var m: Dictionary = aircraft.model
+	var m: Dictionary = _trim_model(aircraft.model)
 	var down_m: float = start.state[RB.POS + 2] if _has_valid_start() else -30.0
 	var density: float = _weather.air_density(down_m)
 	var charge: float = _weather.engine_charge_ratio(down_m)
@@ -1634,7 +1657,7 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	var density: float = _weather.air_density(0.0)
 	var charge: float = _weather.engine_charge_ratio(0.0)
 	var rpm: float = 0.0 if Propulsion.is_glow(model.propulsion) else Propulsion.steady_rpm(0.0, 0.0, model.propulsion, density, charge)
-	var solved: Dictionary = GroundStart.solve(model, ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
+	var solved: Dictionary = GroundStart.solve(_trim_model(model), ground_surfaces, float(spot.north), float(spot.east), float(spot.heading),
 		deflections, input_values[2], rpm, density, sim.gravity, _initial_wind(), _model_wheel_count(model) > 0,
 		environment_at if _weather.has_vertical_atmosphere() else Callable())
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
@@ -1819,10 +1842,19 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 	if not is_finite(before) or not is_finite(after) or before < 0.0 or after < 0.0 \
 			or before > initial_fuel or after > initial_fuel:
 		return Callable()
+	var contact_tick: int = sim.tick + 1
+	var start_time: float = sim.time()
+	var dt: float = sim.dt()
+	var tanks: Array = aircraft.model.fuel_system.tanks
 	return func(fraction: float) -> Dictionary:
 		if not is_finite(fraction) or fraction < 0.0 or fraction > 1.0:
 			return {ok = false, reason = "contact mass fraction is outside the tick"}
-		return GlowFlight.properties(self, lerpf(before, after, fraction))
+		var amount: float = lerpf(before, after, fraction)
+		var result: Dictionary = FuelSample.build(GlowFlight.properties(self, amount), tanks,
+			{str(tanks[0].id): amount}, contact_tick, start_time + fraction * dt, true)
+		result.sample_boundary = "swept_contact_linear_inventory"
+		result.impact_fraction = fraction
+		return result
 
 
 func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
@@ -2221,7 +2253,7 @@ func _apply_runway_start(north: float, east: float, heading: float) -> Dictionar
 	if flaps_available(): inputs.append(0.0)
 	var aux := PackedFloat64Array([rpm, inputs[0], inputs[1], inputs[2]])
 	# Solve first, without changing commands, modes, weather, crash state, or observers.
-	var solved: Dictionary = GroundStart.solve(aircraft.model, ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO+2],
+	var solved: Dictionary = GroundStart.solve(_trim_model(aircraft.model), ground_surfaces, north, east, heading, _deflections(aux), aux[AUX_SERVO+2],
 		rpm, density, sim.gravity, _initial_wind(), wheel_count() > 0,
 		environment_at if _weather.has_vertical_atmosphere() else Callable())
 	if not solved.ok:
@@ -2660,21 +2692,25 @@ func turbine_state() -> Dictionary:
 		return {ok = false}
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm: float = _turbine_rpm(sim.continuous) if turbine_is_continuous() else sim.aux[AUX_RPM]
-	if not is_finite(rpm) or (turbine_is_continuous() and not engine_running and rpm != 0.0):
+	if not is_finite(rpm) or (turbine_is_continuous() and not liquid_fuel_is_active() and not engine_running and rpm != 0.0):
 		return {ok = false}
 	var air: Dictionary = air_data(sim.state, sim.time())
 	var inlet_air: PackedFloat64Array = Turbine.local_intake_velocity(air.v_air,
 		sim.state.slice(RB.RATE, RB.RATE + 3), prop)
 	var density: float = air_density()
 	var axial_speed: float = M.dot(inlet_air, prop.axis)
+	var firing: bool = propulsion_power_enabled()
+	if liquid_fuel_is_active():
+		firing = firing and sim.continuous[_liquid_index() + 1] == 1.0
 	return {ok = true, tick = sim.tick, time_s = sim.time(), rpm = rpm,
-		demand_rpm = Turbine.demand_rpm(propulsion_throttle(), prop) if engine_running else 0.0,
-		engine_running = engine_running, axial_airspeed_m_s = axial_speed,
+		demand_rpm = Turbine.demand_rpm(propulsion_throttle(), prop) if firing else 0.0,
+		engine_running = firing, axial_airspeed_m_s = axial_speed,
 		intake_air_velocity_body_m_s = inlet_air,
-		mass_flow_kg_s = Turbine.mass_flow(rpm, prop, density, axial_speed),
-		gross_thrust_n = Turbine.gross_thrust(rpm, prop, density, axial_speed),
-		net_thrust_n = Turbine.thrust(rpm, axial_speed, prop, density),
-		fuel_flow_kg_s = Turbine.fuel_flow(rpm, prop), fuel_mass_policy = "prescribed_fuel"}
+		mass_flow_kg_s = Turbine.mass_flow(rpm, prop, density, axial_speed) if firing else 0.0,
+		gross_thrust_n = Turbine.gross_thrust(rpm, prop, density, axial_speed) if firing else 0.0,
+		net_thrust_n = Turbine.thrust(rpm, axial_speed, prop, density) if firing else 0.0,
+		fuel_flow_kg_s = Turbine.fuel_flow(rpm, prop) if firing else 0.0,
+		fuel_mass_policy = "finite_single_store" if liquid_fuel_is_active() else "prescribed_fuel"}
 
 
 func _wash_loads(s: PackedFloat64Array, transported_dv: PackedFloat64Array, stage_time: float) -> PackedFloat64Array:

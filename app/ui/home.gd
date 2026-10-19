@@ -312,7 +312,6 @@ func _init() -> void:
 	_conditions_row.columns = 1
 	_conditions_row.add_theme_constant_override("h_separation", 4)
 	_conditions_row.add_theme_constant_override("v_separation", 2)
-	flight_page.add_child(_conditions_row)
 	landscape_button = _button("", "HomeAction")
 	landscape_button.name = "Landscape"
 	landscape_button.custom_minimum_size.y = 38
@@ -323,8 +322,9 @@ func _init() -> void:
 	landscape_button.pressed.connect(func() -> void:
 		var ids: Array[String] = Landscapes.ids()
 		landscape_requested.emit(ids[(ids.find(landscape_id) + 1) % ids.size()]))
-	_conditions_row.add_child(landscape_button)
+	flight_page.add_child(landscape_button)
 	set_landscape(landscape_id)
+	flight_page.add_child(_conditions_row)
 	weather_button = _button("", "HomeAction")
 	weather_button.name = "Weather"
 	weather_button.custom_minimum_size.y = 38
@@ -933,8 +933,7 @@ func set_aircraft(id: String) -> void:
 		start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	workshop_button.disabled = rotorcraft
 	workshop_button.tooltip_text = tr("Aircraft Workshop is not available for this rotorcraft yet.") if rotorcraft else ""
-	natural_random_button.disabled = rotorcraft
-	natural_random_button.tooltip_text = tr("Natural Random currently supports airplanes only.") if rotorcraft else ""
+	_update_landscape_activities()
 	failures_button.disabled = rotorcraft
 	failures_button.tooltip_text = tr("Failure practice currently supports airplanes only.") if rotorcraft else ""
 	_update_failure_summary()
@@ -981,6 +980,15 @@ func set_landscape(id: String) -> void:
 	landscape_id = id if Landscapes.has(id) else Landscapes.DEFAULT_ID
 	landscape_button.text = tr("Landscape: %s") % Landscapes.entry(landscape_id).name
 	landscape_button.tooltip_text = tr("Choose the landscape for your next flight.")
+	if natural_random_button != null:
+		_update_landscape_activities()
+
+
+func _update_landscape_activities() -> void:
+	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
+	natural_random_button.disabled = rotorcraft or not runway_available
+	natural_random_button.tooltip_text = tr("Natural Random currently supports airplanes only.") if rotorcraft \
+		else tr("Natural Random requires Club field.") if not runway_available else ""
 
 
 ## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.

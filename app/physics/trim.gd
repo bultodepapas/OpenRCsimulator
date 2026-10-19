@@ -13,6 +13,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const Air := preload("res://physics/air_data.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
+const FixedDatum := preload("res://physics/fixed_datum_body.gd")
 
 const N := 6
 
@@ -35,7 +36,15 @@ static func _evaluate(x: PackedFloat64Array, mode: String, V: float, model: Dict
 	var s := state_for(V, x[0], gamma, 0.0, M.v3(0, 0, -100), x[3])
 	var throttle := x[2] if mode == "level" else 0.0
 	var rpm := _rpm(throttle, s, mode, model, rho, engine_charge_ratio)
-	return Dynamics.evaluate(s, model, _deflections(x), rpm, rho, M.v3(0, 0, 0), g)
+	var result: Dictionary = Dynamics.evaluate(s, model, _deflections(x), rpm, rho, M.v3(0, 0, 0), g)
+	# A session may freeze its launch inventory for a static trim query. The original
+	# geometry stays at O; only the force moment and derivative move to the live CM.
+	if model.has("trim_mass_properties"):
+		var properties: Dictionary = model.trim_mass_properties
+		var force: PackedFloat64Array = result.loads.slice(0, 3)
+		var moment: PackedFloat64Array = M.sub(result.loads.slice(3, 6), M.cross(properties.cg_body_m, force))
+		result.derivative = FixedDatum.derivative(s, properties, force, moment, g, result.rotor_momentum)
+	return result
 
 
 ## Steady engine rpm in the trimmed state: the lag model's target, or the shaft model's torque balance at the

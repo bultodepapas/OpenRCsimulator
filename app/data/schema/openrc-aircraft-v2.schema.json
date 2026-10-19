@@ -5727,15 +5727,52 @@
               }
             },
             "then": {
-              "properties": {
-                "capabilities": {
+              "allOf": [
+                {
                   "properties": {
-                    "energy": {
-                      "const": "finite_liquid_fuel"
+                    "capabilities": {
+                      "properties": {
+                        "energy": {
+                          "const": "finite_liquid_fuel"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "propulsion": {
+                      "properties": {
+                        "fuel_consumption": {
+                          "properties": {
+                            "law": {
+                              "const": "turbine_map_v1"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "properties": {
+                    "propulsion": {
+                      "properties": {
+                        "engine": {
+                          "required": [
+                            "spool_integrator"
+                          ],
+                          "properties": {
+                            "spool_integrator": {
+                              "const": "rk4"
+                            }
+                          }
+                        }
+                      }
                     }
                   }
                 }
-              }
+              ]
             },
             "else": {
               "properties": {
@@ -5843,6 +5880,9 @@
       "if": {
         "properties": {
           "propulsion": {
+            "required": [
+              "fuel_consumption"
+            ],
             "properties": {
               "kind": {
                 "const": "glow_prop"
@@ -5870,6 +5910,37 @@
                   "required": [
                     "glow_installation"
                   ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "propulsion": {
+            "required": [
+              "fuel_consumption"
+            ],
+            "properties": {
+              "kind": {
+                "const": "glow_prop"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "propulsion": {
+            "properties": {
+              "fuel_consumption": {
+                "properties": {
+                  "law": {
+                    "const": "gasoline_bsfc_v1"
+                  }
                 }
               }
             }

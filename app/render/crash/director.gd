@@ -174,8 +174,9 @@ func _start() -> void:
 		model.get("crash_hull_components", PackedStringArray()), float(model.reference.b), float(model.reference.c))
 	var component: String = named.component
 	var surface := surface_at(flight.field,point[0],point[1])
-	# Prefer the same exact contact-time sample used by a dynamic scenery/water response.
-	# Static hull/gear snapshots have no sample, so a finite-fuel report uses the accepted endpoint explicitly.
+	# Prefer the swept-contact sample used by a dynamic scenery/water response. Its
+	# within-step inventory is linearly interpolated and remains an approximation.
+	# Static hull/gear snapshots have no sample, so finite-fuel reports use the accepted endpoint.
 	var endpoint_live: Dictionary = flight.session.mass_properties() if flight.session.has_method("mass_properties") else {}
 	var selected_mass: Dictionary = _select_mass_sample(impact, endpoint_live)
 	var live: Dictionary = selected_mass.get("sample", {})
@@ -222,6 +223,11 @@ func _start() -> void:
 	report["cg_model"] = flight._cg_model
 	report["cg_offset_body_m"] = live.cg_body_m.duplicate() if live_ok else PackedFloat64Array([0.0, 0.0, 0.0])
 	report["mass_sample_basis"] = mass_sample_basis
+	if live.has("sample_boundary"):
+		report["mass_sample_boundary"] = str(live.sample_boundary)
+	if live.has("impact_fraction") and typeof(live.impact_fraction) in [TYPE_FLOAT, TYPE_INT] \
+			and is_finite(float(live.impact_fraction)):
+		report["mass_sample_impact_fraction"] = float(live.impact_fraction)
 	if live.has("tick"):
 		report["mass_sample_tick"] = int(live.tick)
 	else:
@@ -539,7 +545,10 @@ static func _select_mass_sample(impact: Variant, endpoint: Dictionary) -> Dictio
 		var contact: Dictionary = impact.contact_mass_properties
 		var valid: Dictionary = EffectiveMass.validate_properties(contact)
 		if valid.get("ok", false):
-			return {sample = contact, basis = "impact-contact", dynamic = true}
+			var basis := "impact-contact-approximation"
+			if str(contact.get("sample_boundary", "")) == "swept_contact_linear_inventory":
+				basis = "swept-contact-linear-inventory-approximation"
+			return {sample = contact, basis = basis, dynamic = true}
 	if endpoint.get("ok", false):
 		var finite: bool = bool(endpoint.get("finite_fuel", false))
 		return {sample = endpoint, basis = "accepted-endpoint-approximation" if finite else "constant-build",

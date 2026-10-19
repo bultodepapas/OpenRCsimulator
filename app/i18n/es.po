@@ -1102,14 +1102,23 @@ msgstr "Multiplicador de potencia"
 msgid "Control travel"
 msgstr "Recorrido de mandos"
 
+msgid "Tank capacity"
+msgstr "Capacidad del depósito"
+
 msgid "Range %.2f×–%.2f× · experimental adjustment."
 msgstr "Rango %.2f×–%.2f× · ajuste experimental."
 
 msgid "Not available for this engine type."
 msgstr "Aún no disponible para este tipo de motor."
 
-msgid "Try different sizes, weights and power levels. Values are estimates for experimentation."
-msgstr "Prueba tamaños, pesos y potencias diferentes. Los valores son estimaciones para experimentar."
+msgid "Estimated sizing proposal; tank dimensions scale uniformly. Fill fraction and blend density are preserved."
+msgstr "Propuesta estimada de tamaño; las dimensiones del depósito se escalan uniformemente. Se conservan la fracción de llenado y la densidad de la mezcla."
+
+msgid "No declared finite tank."
+msgstr "No hay un depósito finito declarado."
+
+msgid "Try different sizes, weights, tank capacities and power levels. Values are estimates for experimentation."
+msgstr "Prueba distintos tamaños, pesos, capacidades de depósito y niveles de potencia. Los valores son estimaciones para experimentar."
 
 msgid "scale"
 msgstr "escala"
@@ -1122,6 +1131,9 @@ msgstr "potencia"
 
 msgid "control travel"
 msgstr "recorrido de mandos"
+
+msgid "tank capacity"
+msgstr "capacidad del depósito"
 
 msgid "Unsupported adjustments: %s. Those values stay unchanged."
 msgstr "Ajustes aún no disponibles: %s. Se conservan sus valores originales."
@@ -1143,6 +1155,9 @@ msgstr "No hay valores disponibles para esta variante."
 
 msgid "Scale %s%% · %s mass · weight ×%.2f · power ×%.2f · control travel ×%.2f"
 msgstr "Escala %s%% · masa: %s · peso ×%.2f · potencia ×%.2f · mandos ×%.2f"
+
+msgid "Tank capacity ×%.2f · estimated sizing; fill and density are preserved."
+msgstr "Capacidad del depósito ×%.2f · tamaño estimado; se conservan el llenado y la densidad."
 
 msgid "Base → proposed"
 msgstr "Original → variante"
@@ -3498,3 +3513,6 @@ msgstr "Elige el paisaje para tu próximo vuelo."
 
 msgid "This landscape supports airborne starts only."
 msgstr "Este paisaje solo permite comenzar en el aire."
+
+msgid "Natural Random requires Club field."
+msgstr "Vuelo aleatorio natural requiere Club field."

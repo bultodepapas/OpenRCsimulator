@@ -901,7 +901,7 @@ func _route_controller_restart(event: InputEvent) -> bool:
 func open_natural_random(from: Control = null) -> void:
 	if not screens.is_top("home") or flight != null:
 		return
-	if Catalog.is_rotorcraft(home.aircraft_id):
+	if Catalog.is_rotorcraft(home.aircraft_id) or not home.runway_available:
 		return
 	var briefing := NaturalRandomScreen.new()
 	briefing.fly_requested.connect(start_flight)

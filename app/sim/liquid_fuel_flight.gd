@@ -129,7 +129,16 @@ static func contact_sampler(owner: Node, before: PackedFloat64Array, after: Pack
 	var index: int = owner._liquid_index()
 	var start: float = before[index] + float(config.unusable_kg)
 	var end: float = after[index] + float(config.unusable_kg)
+	var tanks: Array = owner.aircraft.model.fuel_system.tanks
+	var contact_tick: int = owner.sim.tick + 1
+	var start_time: float = owner.sim.time()
+	var dt: float = owner.sim.dt()
 	return func(fraction: float) -> Dictionary:
 		if not is_finite(fraction) or fraction < 0.0 or fraction > 1.0:
 			return {ok = false}
-		return Liquid.properties(config, {str(config.tank_id): lerpf(start, end, fraction)})
+		var amounts: Dictionary = {str(config.tank_id): lerpf(start, end, fraction)}
+		var result: Dictionary = Sample.build(Liquid.properties(config, amounts), tanks, amounts,
+			contact_tick, start_time + fraction * dt, true)
+		result.sample_boundary = "swept_contact_linear_inventory"
+		result.impact_fraction = fraction
+		return result
