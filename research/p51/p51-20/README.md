@@ -1,6 +1,6 @@
 # P51-20 ground-effect tools
 
-2026-10-14 · **Status: reusable tools.** [Plan](../../../docs/P51-REALISM-PLAN.md) · [Evidence](../../../docs/research/p51-realism/P51-20/README.md)
+2026-10-14 · **Status: reusable tools.** [Plan](../../../docs/P51-PLAN.md) · [Evidence](../../../docs/research/p51-realism/P51-20/README.md)
 
 | File | Purpose |
 | --- | --- |

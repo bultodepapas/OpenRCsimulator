@@ -17,7 +17,7 @@
     "p51d-mustang-120": {
       "np_x_m": 0.214398,
       "kind": "derived",
-      "source": "34.2 % MAC glide neutral point (docs/P51-REALISM-PLAN.md) with plan CG 27 % MAC: plan_cg x 0.177763 + 0.072 x MAC 0.508816 (taper formula)"
+      "source": "34.2 % MAC glide neutral point (research/p51/p51-05/derivation.md) with plan CG 27 % MAC: plan_cg x 0.177763 + 0.072 x MAC 0.508816 (taper formula)"
     },
     "sebart-avanti-s-a200-p100rx": {
       "np_x_m": 0.270866,

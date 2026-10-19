@@ -1,6 +1,6 @@
 # P51-18 integration and cost
 
-2026-10-12 · **Status: verification complete with baseline failures and target-performance gap recorded.** [Audit](../README.md) · [Plan](../../../P51-REALISM-PLAN.md)
+2026-10-12 · **Status: verification complete with baseline failures and target-performance gap recorded.** [Audit](../README.md) · [Plan](../../../P51-PLAN.md)
 
 ## Qualification
 

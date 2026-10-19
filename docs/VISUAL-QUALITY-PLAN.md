@@ -20,6 +20,8 @@ VQ-04a derives an opaque projected silhouette from each aircraft's visible mesh 
 
 VQ-05 blurs every propeller from the live rotor speed. `app/render/propeller_blur.gd` measures the aircraft's own propeller meshes: the share of a revolution the blades cover at each radius (blade triangles rasterized in polar space), the blade colour along the radius, the blade count and the opaque hub (the Timber's spinner, backplate and bell share one mesh with its blades). It cross-fades by blade-passing frequency, 12 Hz to 48 Hz (perceptual estimates around flicker fusion), between the model's blades and a vertex-alpha disc lit like any other surface, so an idling glow engine shows a translucent disc while an electric motor spinning down shows its blades reappear. The node sits beside the model in the flight scene, follows the propeller each frame and only shows or hides the model's blade nodes: a stopped rotor renders byte-identically to the previous build, and the Home preview, projected silhouette and crash wreck duplicate are unchanged. Opacity is the measured time-averaged occlusion (gain 1.0, an art control). Evidence, probes and limits: [VQ-05](research/visual-quality-implementation/VQ-05/README.md).
 
+VQ-04a-F2 adds a moving windsock silhouette in one 512² map, sharing the visible sleeve deformation and basket yaw. Pause and negligible calm settling retain the cached mask; light-strength changes update opacity. [Sources, captures and verification](research/visual-quality-implementation/VQ-04a/windsock/README.md) distinguish component evidence from full-session and hardware gates.
+
 ## Open work
 
 | ID | Work | Status and proof |

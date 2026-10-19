@@ -40,4 +40,4 @@ All four reports have `numerics_ok`, `cases_completed` and `completed` true. Eac
 
 The P-51 production runway-start path still does not support this aircraft: the shared route is restricted to the Ugly Stik and requires gear stiction. This probe instead constructs and settles a three-point pose using the P-51 gear geometry. Contact count represents the configured spring-gear model; it does not measure tire or oleo behavior. These outputs are model predictions only, not physical validation, and do not prove player-selectable runway launch, real directional control, braking, or landing safety.
 
-See the [ground probe method](ground-audit.md), [P-51 realism plan](../../../P51-REALISM-PLAN.md), and the four linked machine-readable reports above.
+See the [ground probe method](ground-audit.md), [P-51 guide](../../../P51-PLAN.md), and the four linked machine-readable reports above.

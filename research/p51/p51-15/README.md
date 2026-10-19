@@ -1,6 +1,6 @@
 # P51-15…18 audit tools
 
-2026-10-12 · **Status: reusable audit and verification tools.** [Plan](../../../docs/P51-REALISM-PLAN.md) · [Evidence](../../../docs/research/p51-realism/README.md)
+2026-10-12 · **Status: reusable audit and verification tools.** [Plan](../../../docs/P51-PLAN.md) · [Evidence](../../../docs/research/p51-realism/README.md)
 
 Run from the repository root using the pinned Godot 4.7.2 binary. The JSON is generated; edit P51-05 inputs/generator, never only the output.
 

@@ -3,6 +3,8 @@
 **Status: delivered and locally validated, 2026-10-11.** Prefix VQ; scoped delivery of
 the visual-quality plan's VQ-04a.
 
+2026-10-19 follow-up: [VQ-04a-F2 moving windsock shadows](windsock/README.md) adds the deformed sleeve and swivelling basket to the existing field caster. The original results below remain dated evidence.
+
 ## Ownership and coordination
 
 Initial status showed UI-21 menu files, propulsion/audio research, and L4c
@@ -177,9 +179,10 @@ diagnostics or establish a long-duration memory benchmark.
 
 - Flat ground only: no terrain receiving, aircraft self-shadowing, shadow on roofs,
   or physical penumbra simulation. Independent receiver batches can overlap.
-- Geometry is captured at binding: live control deflections, rotating propellers,
-  windsock flutter and tree motion are not reskinned into the mask. Models and
-  scenery keep their original animation behavior.
+- Most geometry is captured at binding: live control deflections, rotating propellers
+  and tree motion are not reskinned into the mask. The windsock follow-up shares
+  the visible fabric deformation and basket yaw with its mask. Models and scenery
+  keep their original animation behavior.
 - Low-angle directions share the existing 12-degree pilot-aid floor; softness and
   opacity are artistic estimates. Finite maps can lose small details at low sun.
 - Explicit time-of-day snapshot attenuation is preserved. The older flowing FW

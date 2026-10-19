@@ -4,7 +4,7 @@ Usage: python3 -I static_margin.py <repo root>
 Neutral points are the repository's own estimates, not measurements:
   Stik 43.5 % c (docs/research/flight-dynamics/climb-trim/README.md, derive_pitch_reference.py);
   Ventage Jet: manual aft CG 260 mm taken as 3 % MAC stable (research/avanti-s/av06/inputs.json);
-  P-51: 34.2 % MAC (docs/P51-REALISM-PLAN.md), plan CG 27 % MAC;
+  P-51: 34.2 % MAC (research/p51/p51-05/derivation.md), plan CG 27 % MAC;
   Extra 300S: 42.5 % MAC, loaded half-tank CG 27.98 % MAC (research/extra-300/ex05/derivation.md).
 Ventage Jet positions are from the root leading edge, so only mm and margin are meaningful there.
 """

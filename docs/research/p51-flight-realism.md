@@ -4,6 +4,8 @@
 
 ## What was done
 
+Scope note, 2026-10-19: this is the original 2026-10-06 implementation record. Its envelope metrics, fixed-gear limitations and proposed extensions retain that date. Use the [current aircraft guide](../P51-PLAN.md) and [later audit evidence](p51-realism/README.md) for implemented scope and remaining acceptance.
+
 1. Three research passes: full-size P-51 aerodynamics (NACA wartime reports), giant-scale RC P-51 data (kits, plans, manuals, propeller datasheets, forum numbers), and modelling methods (engine/propeller torque balance, P-factor, slipstream, low-Re sections, spanwise stall).
 2. Every important parameter compared with the evidence; mismatches corrected in `source.json` and `research/p51/p51-05/derive_physics.py` (regenerated data, no hand edits).
 3. Five effects added to the physics as **per-aircraft opt-in** data blocks (absent = previous behaviour bit for bit; Stik goldens unchanged): shaft-balance rpm, thrust-line angles, propeller normal force and P-factor, tail slipstream with swirl, per-strip wing incidence. Plus a taildragger gear for the P-51 and a propeller-strike crash hull.

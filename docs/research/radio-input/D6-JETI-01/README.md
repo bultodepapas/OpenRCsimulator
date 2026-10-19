@@ -43,7 +43,8 @@ foreach ($jetiCase in $jetiCases) {
         throw "Failed: $($jetiCase.script)"
     }
 }
-& $jetiGodot --headless --path app --audio-driver Dummy --script research/input/jeti/verify_supplied_profile.gd
+$jetiSupplier = (Resolve-Path research/input/jeti/verify_supplied_profile.gd).Path
+& $jetiGodot --headless --path app --audio-driver Dummy --script $jetiSupplier
 ```
 
 For the four desktop captures, run `test_jeti_setup.gd` without `--headless`, with user arguments `--capture-dir=<existing-or-new-output-directory> --lang=en|es --size=1280x720|1920x1080`. Use each language/size combination. Their configured `Sa` indices 81/82/83 deliberately exercise high API indices; they are fabricated test inputs, not a JETI hardware map. Captures show one assigned channel and scrollable remaining channels.

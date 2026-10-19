@@ -10,7 +10,7 @@ The field retains its authored 2.5 m sleeve, 0.45 m throat and 0.18 m open tail.
 
 `app/render/windsock_motion.gd` advances damped yaw, droop and crossflow modes at 120 Hz. Thirteen centreline knots preserve a straight first 3/8 and seven equal-length flexible links; their summed length is invariant. Inflation uses lagged positive axial inflow, with the 15 kt reference as its full-extension anchor. Gravity droop relaxes as inflation grows; bounded vertical air-flow response scales with squared speed. Response rates, intermediate extension and flutter remain estimates.
 
-The fixed-wing scene samples **the actual committed `FlightSession.wind_at()` vector at every 240 Hz tick**, including seeded OU turbulence. It aligns the basket on session reset. `World.update()` uploads the latest state once per frame; it never advances weather RNG or aircraft state. The existing wind NED/render conversion is explicit. Other world callers can use the same visual update with their supplied wind. A static sleeve mesh deforms in the vertex shader; it is not rebuilt each frame. Projected field shadows retain the fixed mast only, avoiding a frozen fabric silhouette.
+The fixed-wing scene samples **the actual committed `FlightSession.wind_at()` vector at every 240 Hz tick**, including seeded OU turbulence. It aligns the basket on session reset. `World.update()` uploads the latest state once per frame; it never advances weather RNG or aircraft state. The existing wind NED/render conversion is explicit. Other world callers can use the same visual update with their supplied wind. A static sleeve mesh deforms in the vertex shader; it is not rebuilt each frame. The original motion delivery retained a fixed-mast-only shadow; the subsequent [VQ-04a-F2 shadow follow-up](../../visual-quality-implementation/VQ-04a/windsock/README.md) shares the moving cloth/cage geometry with the field mask.
 
 ## Verification, 2026-10-19
 
@@ -36,7 +36,7 @@ Run focused scripts using the pinned engine with `--headless --path app --audio-
 
 ## Remaining limits
 
-The reduced modes do not solve fabric stress, self-contact, individual panel pressure or measured material mass/stiffness. Inflation saturates near 15 kt, so this is relative wind feedback rather than an anemometer above that reference. The actual field remains spatially uniform; no pole-height shear, obstacle wake or propeller wash is invented. Moving cloth/cage shadows remain absent. Steady wind has bounded artistic flutter; it is not a measured turbulence spectrum.
+The reduced modes do not solve fabric stress, self-contact, individual panel pressure or measured material mass/stiffness. Inflation saturates near 15 kt, so this is relative wind feedback rather than an anemometer above that reference. The actual field remains spatially uniform; no pole-height shear, obstacle wake or propeller wash is invented. Moving ground shadows are covered by the follow-up above; self-shadowing remains absent. Steady wind has bounded artistic flutter; it is not a measured turbulence spectrum.
 
 Same-time updates hold state. Rewind and gaps over 0.5 s reset the visual model rather than replaying an unavailable wind history; exact presentation replay requires the same tick sample tape from reset. Windsock lag is not serialized in flight checkpoints. Finite wind input is capped at 40 m/s for presentation stability. Native captures and headless CPU batches do not establish full-session frame-time or lower-end hardware acceptance.
 

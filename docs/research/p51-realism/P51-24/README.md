@@ -1,6 +1,6 @@
 # P51-24: lateral-directional audit against P-51 flight data; rudder area corrected
 
-2026-10-15 · Revision 1 · **Status: rudder area corrected in the physics and verified. Directional stability remains about 2–3.5× too high relative to rudder power, and the remaining fix is a shared fuselage term. The visual rudder followed in [P51-V14](../P51-V14/README.md).** The fuselage term followed in [P51-25](../P51-25/README.md). Prefix: P51-24. [Plan](../../../P51-REALISM-PLAN.md)
+2026-10-15 · Revision 1 · **Status: rudder area corrected in the physics and verified. Directional stability remains about 2–3.5× too high relative to rudder power, and the remaining fix is a shared fuselage term. The visual rudder followed in [P51-V14](../P51-V14/README.md).** The fuselage term followed in [P51-25](../P51-25/README.md). Prefix: P51-24. [Plan](../../../P51-PLAN.md)
 
 ## Method
 

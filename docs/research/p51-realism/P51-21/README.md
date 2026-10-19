@@ -1,6 +1,6 @@
 # P51-21: P-51 qualified for the product runway start
 
-2026-10-14 · Revision 1 · **Status: implemented and software-verified; pilot taxi/takeoff review and measured wheel breakaway remain open.** Prefix: P51-21. [Plan](../../../P51-REALISM-PLAN.md)
+2026-10-14 · Revision 1 · **Status: implemented and software-verified; pilot taxi/takeoff review and measured wheel breakaway remain open.** Prefix: P51-21. [Plan](../../../P51-PLAN.md)
 
 ## Finding
 

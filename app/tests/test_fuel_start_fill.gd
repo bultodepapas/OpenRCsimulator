@@ -7,6 +7,7 @@ extends SceneTree
 const Flight := preload("res://sim/flight_session.gd")
 const Home := preload("res://ui/home.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const CheckpointJson := preload("res://sim/checkpoint_json.gd")
 
 const GLOW := "res://data/aircraft/stik_glow_61fx_2t.json"
 const GLOW_ID := "stik-glow-61fx-2t"
@@ -100,6 +101,58 @@ func _checkpoint_selection() -> void:
 		legacy.erase("fuel_session")
 		_check("legacy checkpoint explicitly marks source fill unknown", destination.restore_checkpoint(legacy)
 			and destination.trace_meta().get("fuel_start_fill_known", true) == false)
+		if fill == 0.1:
+			var unknown_selection: Dictionary = destination.checkpoint()
+			var unknown_json: String = destination.checkpoint_json()
+			var bad_unknown: Dictionary = unknown_selection.duplicate(true)
+			bad_unknown.fuel_session.start_fill = "0.5"
+			var before_bad_unknown: PackedByteArray = var_to_bytes(destination.checkpoint())
+			_check("malformed unknown native selection is refused transactionally",
+				not destination.restore_checkpoint(bad_unknown)
+				and var_to_bytes(destination.checkpoint()) == before_bad_unknown)
+			var decoded_unknown: Dictionary = CheckpointJson.decode(unknown_json)
+			var bad_json_snapshot: Dictionary = decoded_unknown.snapshot.duplicate(true)
+			bad_json_snapshot.fuel_session.start_fill = true
+			var bad_unknown_json: String = CheckpointJson.encode(bad_json_snapshot)
+			var before_bad_json: PackedByteArray = var_to_bytes(destination.checkpoint())
+			_check("malformed unknown JSON selection is refused transactionally",
+				not destination.restore_checkpoint_json(bad_unknown_json)
+				and var_to_bytes(destination.checkpoint()) == before_bad_json)
+			var next_destination: Node = Flight.new()
+			next_destination.input_enabled = false
+			next_destination.setup(GLOW)
+			next_destination.set_fuel_start_fill(0.75)
+			_check("native re-checkpoint preserves the next destination preference and exact state",
+				next_destination.restore_checkpoint(unknown_selection)
+				and next_destination.fuel_start_fill == 0.75
+				and next_destination.trace_meta().get("fuel_start_fill_known", true) == false
+				and next_destination.sim.continuous == destination.sim.continuous
+				and var_to_bytes(next_destination.sim.checkpoint()) == var_to_bytes(destination.sim.checkpoint()))
+			next_destination.reset()
+			_check("native unknown selection resets to the receiving preference",
+				next_destination.fuel_start_fill == 0.75
+				and is_equal_approx(next_destination.sim.continuous[1], 0.75 * full))
+			next_destination.free()
+			var json_destination: Node = Flight.new()
+			json_destination.input_enabled = false
+			json_destination.setup(GLOW)
+			json_destination.set_fuel_start_fill(0.25)
+			_check("JSON re-checkpoint preserves the next destination preference and exact state",
+				json_destination.restore_checkpoint_json(unknown_json)
+				and json_destination.fuel_start_fill == 0.25
+				and json_destination.trace_meta().get("fuel_start_fill_known", true) == false
+				and json_destination.sim.continuous == destination.sim.continuous
+				and var_to_bytes(json_destination.sim.checkpoint()) == var_to_bytes(destination.sim.checkpoint()))
+			var before_bad_unknown_json: PackedByteArray = var_to_bytes(json_destination.checkpoint())
+			_check("malformed unknown JSON restore leaves state and selection untouched",
+				not json_destination.restore_checkpoint_json(bad_unknown_json)
+				and var_to_bytes(json_destination.checkpoint()) == before_bad_unknown_json
+				and json_destination.fuel_start_fill == 0.25)
+			json_destination.reset()
+			_check("JSON unknown selection resets to the receiving preference",
+				json_destination.fuel_start_fill == 0.25
+				and is_equal_approx(json_destination.sim.continuous[1], 0.25 * full))
+			json_destination.free()
 		source.free()
 		destination.free()
 

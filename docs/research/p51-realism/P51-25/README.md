@@ -1,6 +1,6 @@
 # P51-25: fuselage directional destabilization calibrated to P-51D steady sideslips
 
-2026-10-15 · Revision 1 · **Status: implemented and verified in software. Power-off rudder per sideslip matches the P-51D's 0.55 °/°. Powered values remain 0.68–1.0 °/° because the slipstream module has no propeller sidewash (next step). The P51-22 loop departure is now reported truthfully instead of passing by accident.** Prefix: P51-25. [Plan](../../../P51-REALISM-PLAN.md) · [Tools](../../../../research/p51/p51-25/README.md)
+2026-10-15 · Revision 1 · **Status: implemented and verified in software. Power-off rudder per sideslip matches the P-51D's 0.55 °/°. Powered values remain 0.68–1.0 °/° because the slipstream module has no propeller sidewash (next step). The P51-22 loop departure is now reported truthfully instead of passing by accident.** Prefix: P51-25. [Plan](../../../P51-PLAN.md) · [Tools](../../../../research/p51/p51-25/README.md)
 
 ## Question
 

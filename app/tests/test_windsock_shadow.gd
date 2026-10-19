@@ -1,4 +1,4 @@
-# VQ-04a-F1 regression: dynamic windsock projected-shadow coverage and cache behavior.
+# VQ-04a-F2 regression: dynamic windsock projected-shadow coverage and cache behavior.
 # Run with the pinned Godot console binary and --headless --path app --script res://tests/test_windsock_shadow.gd
 extends SceneTree
 
@@ -139,6 +139,15 @@ func _test_dynamic_shadow() -> void:
 	_check("settled calm cloth ignores shared-clock changes and avoids redraw churn",
 		is_zero_approx(float(model_material.get_shader_parameter("inflation")))
 		and viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	model_material.set_shader_parameter("inflation", 0.000001)
+	projector.call("_process", 0.0)
+	viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	ShaderClock.update(13.0, Vector3.ZERO)
+	projector.call("_process", 0.0)
+	_check("exponential deflation residual does not redraw invisible flutter",
+		viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
+	Windsock.reset(sock, 0.0)
+	projector.call("_process", 0.0)
 
 	var receiver_mat := receiver.material_override as ShaderMaterial
 	var dark := lighting.duplicate(true)

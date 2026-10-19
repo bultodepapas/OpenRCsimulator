@@ -135,7 +135,7 @@ The simulator name is Ventage Jet; the source aircraft is the SebArt Avanti S (A
 
 ### P-51D
 
-Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p51-flight-realism.md), and the [P51-15 airborne results](p51-realism/P51-15/airborne-results.md) with its [ground results](p51-realism/P51-15/ground-results.md) and [source/physics audits](p51-realism/P51-15/physics-audit.md). Silhouette and finish reviews are [P51-02](../../research/p51/p51-02/silhouette/README.md), [visual review v1](p51-visual-review-v1.md) and [visual review v2](p51-visual-review-v2.md). See the [P-51 plan](../P51-PLAN.md), [realism plan](../P51-REALISM-PLAN.md), and [physics derivation](../../research/p51/p51-05/derivation.md).
+Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p51-flight-realism.md), and the [P51-15 airborne results](p51-realism/P51-15/airborne-results.md) with its [ground results](p51-realism/P51-15/ground-results.md) and [source/physics audits](p51-realism/P51-15/physics-audit.md). Silhouette and finish reviews are [P51-02](../../research/p51/p51-02/silhouette/README.md), [visual review v1](p51-visual-review-v1.md) and [visual review v2](p51-visual-review-v2.md). The [P-51 guide and remaining plan](../P51-PLAN.md) owns current scope and pending acceptance; the reports retain dated results. The [physics derivation](../../research/p51/p51-05/derivation.md) owns generated calculations.
 
 ### Menus and product shell
 

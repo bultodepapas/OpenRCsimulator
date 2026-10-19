@@ -375,7 +375,8 @@ static func _resource_events(owner: Node) -> Array:
 		})
 	return events
 
-static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float,
+		include_stage_coupling: bool = false) -> Dictionary:
 	var prop: Dictionary=owner.aircraft.model.propulsion
 	var install: Dictionary=prop.glow
 	var state: Dictionary=unpack(values,install)
@@ -416,6 +417,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	var airframe: Dictionary={}
 	var feed: Dictionary={}
 	var feed_mass: Dictionary={}
+	var stage_coupling: Dictionary={}
 	var mass_context: Dictionary=_stage_mass_context(owner,values)
 	if not mass_context.get("ok",false): return {ok=false}
 	feed_mass=mass_context.properties
@@ -456,6 +458,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		feed_factor=float(solve.factor)
 		evaluation=solved.evaluation
 		feed=solved.feed
+		stage_coupling=solved.coupling
 		evaluation.fuel_feed_solver={factor=feed_factor,residual=float(solve.residual),
 			evaluations=int(solve.evaluations),iterations=int(solve.iterations)}
 	else:
@@ -468,6 +471,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		var coupling_for_pickup: Dictionary=_stage_coupling(owner,body,values,install,state,
 			evaluation.source,load,airframe,feed_mass,ambient)
 		if not coupling_for_pickup.get("ok",false): return {ok=false}
+		stage_coupling=coupling_for_pickup
 		var tank_arm_for_pickup: PackedFloat64Array=M.sub(install.tank_position,feed_mass.cg_body_m)
 		var pickup_for_sample: PackedFloat64Array=install.get("pickup_position",PackedFloat64Array())
 		pickup_for_sample=PackedFloat64Array()
@@ -501,6 +505,10 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 		if not feed.is_empty():
 			evaluation.fuel_feed=feed
 		evaluation.mass=feed_mass
+	# The derivative path needs the exact coupling that already closed feed pressure.
+	# Keep this internal payload out of the public point() result used by observers.
+	if include_stage_coupling and not stage_coupling.is_empty():
+		evaluation["_stage_coupling"]=stage_coupling
 	return evaluation
 
 
@@ -585,7 +593,7 @@ static func _airframe(owner: Node, body: PackedFloat64Array, values: PackedFloat
 
 static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float, owner: Node) -> Dictionary:
 	if values.size()!=SIZE+owner.wheel_count(): return {}
-	var result: Dictionary=point(owner,body,values,time_s)
+	var result: Dictionary=point(owner,body,values,time_s,true)
 	if not result.ok: return {}
 	var mass: Dictionary=result.get("mass",{})
 	if mass.is_empty(): mass=properties(owner,values[1],values[LINE_FUEL_INDEX])
@@ -596,9 +604,10 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 		airframe=_airframe(owner,body,values,result.air,result.hub_air_velocity_body_m_s,rpm,result.propeller,result.environment.rho_kgm3)
 	if airframe.is_empty(): return {}
 	var ground: Dictionary=airframe.ground
-	var coupling: Dictionary=_stage_coupling(owner,body,values,owner.aircraft.model.propulsion.glow,
-		result.state,result.source,
-		result.propeller,airframe,mass,result.environment)
+	var coupling: Dictionary=result.get("_stage_coupling",{})
+	if coupling.is_empty():
+		coupling=_stage_coupling(owner,body,values,owner.aircraft.model.propulsion.glow,
+			result.state,result.source,result.propeller,airframe,mass,result.environment)
 	if not coupling.get("ok",false): return {}
 	var external: PackedFloat64Array=airframe.external
 	var response: Dictionary=coupling.response

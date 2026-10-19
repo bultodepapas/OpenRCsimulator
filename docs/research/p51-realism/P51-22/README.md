@@ -1,6 +1,6 @@
 # P51-22: slipstream tail-downwash regression, diagnosis and candidate
 
-2026-10-16 · Revision 3 · **Status: closed in software. The R02 law stays; the three gates failed because two scripted test pilots could not fly the specified maneuvers. A wing-in-jet candidate is retained as research, not runtime.** Prefix: P51-22. [Plan](../../../P51-REALISM-PLAN.md) · [Owner review](../../physics-audit-2026-10-14/remediation/R11/washed-downwash-diagnostic/README.md)
+2026-10-16 · Revision 3 · **Status: closed in software. The R02 law stays; the three gates failed because two scripted test pilots could not fly the specified maneuvers. A wing-in-jet candidate is retained as research, not runtime.** Prefix: P51-22. [Plan](../../../P51-PLAN.md) · [Owner review](../../physics-audit-2026-10-14/remediation/R11/washed-downwash-diagnostic/README.md)
 
 ## Resolution — 2026-10-16
 
