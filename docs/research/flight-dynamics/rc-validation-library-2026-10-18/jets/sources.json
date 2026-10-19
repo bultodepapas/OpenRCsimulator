@@ -1,0 +1,691 @@
+[
+  {
+    "id": "jordan-2006-airstar-platform",
+    "title": "AirSTAR: A UAV Platform for Flight Dynamics and Control System Testing",
+    "authors": [
+      "Thomas L. Jordan",
+      "John V. Foster",
+      "Roger M. Bailey",
+      "Christine M. Belcastro"
+    ],
+    "year": 2006,
+    "source_url": "https://ntrs.nasa.gov/citations/20060022136",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20060022136/downloads/20060022136.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "NASA AirSTAR",
+      "5.5% dynamically scaled twin-turbine jet transport",
+      "flight-test instrumentation",
+      "upset flight research"
+    ],
+    "relevance": "Primary platform description for AirSTAR: a 5.5% dynamically scaled twin-turbine generic transport with about a 7 ft span, more than 70 downlink channels, and telemetry above 200 Hz. It establishes the scale and instrumentation context for the T-2/GTM flight-identification and high-angle-of-attack papers in this collection.",
+    "limitations": "This is a research-facility and vehicle overview, not a hobby sport-jet dataset or a complete aerodynamic coefficient publication. Its dynamic-similarity claims apply to the documented test configuration and should not be transferred to ordinary RC models.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS identifies public distribution and U.S. Government work; local reference copy only, no broader redistribution permission inferred.",
+    "read_depth": "Full searchable paper parsed; platform scale, telemetry and operating concept reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-jordan-2006-platform.pdf",
+    "sha256": "9753c571591450c4f3e250cbe02631dd481f3d4d19bb495243fc01cd895f975e",
+    "bytes": 752283,
+    "retrieved_utc": "2026-10-19T01:47:40Z"
+  },
+  {
+    "id": "cunningham-2008-airstar-s2-transport-and-p120se",
+    "title": "Practical Application of a Subscale Transport Aircraft for Flight Research in Control Upset and Failure Conditions",
+    "authors": [
+      "Kevin Cunningham",
+      "John V. Foster",
+      "Eugene A. Morelli",
+      "Austin M. Murch"
+    ],
+    "year": 2008,
+    "source_url": "https://ntrs.nasa.gov/citations/20080034480",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20080034480/downloads/20080034480.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR S-2",
+      "subscale jet transport",
+      "JetCat P120SE",
+      "measured thrust dynamics",
+      "flight system identification"
+    ],
+    "relevance": "The S-2 is a COTS subscale transport surrogate, about 7.083 ft span and 1.502 slugs full-fuel mass, with one aft-mounted JetCat P120SE. The authors report ground static-thrust and throttle-step measurements, identify an RPM/thrust first-order response whose time constant varies from 0.85 to 1.96 s (faster above half power), infer ram drag from flight acceleration, and compare an independently withheld yaw-roll doublet at about 80 kt against simulation.",
+    "limitations": "S-2 is a NASA-instrumented transport surrogate with similar size and wing loading to the dynamically scaled research aircraft, not a sport jet and not the same vehicle as T-2/GTM. The demonstrated simulation prediction is near the middle of the envelope; the paper says near-stall prediction remained future work. The measured P120SE behavior is installation- and test-specific.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS public record; AIAA paper rights remain with their holders. Local reference copy only; redistribution not inferred.",
+    "read_depth": "Full searchable paper parsed; S-2 geometry/mass, instrumentation, engine ground-test and step-response sections, aerodynamic identification and held-out flight prediction reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-s2-cunningham-2008-transport.pdf",
+    "sha256": "9eccd816724cdcea4843521df4b2a66558bf25f329b927b510610868806ba018",
+    "bytes": 5249731,
+    "retrieved_utc": "2026-10-19T01:50:02Z"
+  },
+  {
+    "id": "gregory-2009-airstar-l1-controller-design",
+    "title": "L1 Adaptive Control Design for NASA AirSTAR Flight Test Vehicle",
+    "authors": [
+      "Irene M. Gregory",
+      "Chengyu Cao",
+      "Enric Xargay",
+      "Naira Hovakimyan",
+      "Xiaotian Zou"
+    ],
+    "year": 2009,
+    "source_url": "https://ntrs.nasa.gov/citations/20090032601",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20090032601/downloads/20090032601.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR turbine GTM",
+      "adaptive flight control",
+      "simulation",
+      "piloted simulation"
+    ],
+    "relevance": "Documents control-law design on the turbine-powered AirSTAR Generic Transport Model and uses the nonlinear GTM simulation for variable-dynamics and simulated damage cases, with preliminary pilot evaluation.",
+    "limitations": "The paper predates the controller flight test: its results are simulation and piloted-simulation evidence, not a measured flight response, identified derivative set, or independent validation of the aircraft model.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS public record; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable paper parsed; controller design, GTM model use, evaluation mode and stated future flight-test plan checked.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-gregory-2009-l1-design.pdf",
+    "sha256": "929656dc5e8bfc84e4d8a7eca48a645517923624501513ee189a0649f1f51434",
+    "bytes": 2739487,
+    "retrieved_utc": "2026-10-19T01:47:41Z"
+  },
+  {
+    "id": "gregory-2010-airstar-l1-flight-test",
+    "title": "Flight Test of an L1 Adaptive Controller on the NASA AirSTAR Flight Test Vehicle",
+    "authors": [
+      "Irene M. Gregory",
+      "Enric Xargay",
+      "Chengyu Cao",
+      "Naira Hovakimyan"
+    ],
+    "year": 2010,
+    "source_url": "https://ntrs.nasa.gov/citations/20100033219",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20100033219/downloads/20100033219.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR turbine GTM",
+      "flight-tested adaptive control",
+      "piloted tasks",
+      "flight handling"
+    ],
+    "relevance": "Reports actual flight testing of an L1 controller on NASA AirSTAR’s subscale turbine-powered Generic Transport Model and documents piloted tasks. It is useful for the flight-test-system and control/handling context of a small turbine jet.",
+    "limitations": "The paper evaluates a controller rather than publishing a reusable open-loop RC-aircraft coefficient dataset. Controller, pilot, test configuration and safety-pilot operation affect the observed response.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS public record; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable paper parsed; vehicle/test description and flight-evaluation results reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-gregory-2010-l1-flight-test.pdf",
+    "sha256": "4e3f5183f5b3392f98299588f48183a966fbec04bfeb9f479aee41d588ff5362",
+    "bytes": 1113974,
+    "retrieved_utc": "2026-10-19T01:47:41Z"
+  },
+  {
+    "id": "gregory-2011-airstar-l1-large-envelope",
+    "title": "Flight Test of L1 Adaptive Control Law: Offset Landings and Large Flight Envelope Modeling Work",
+    "authors": [
+      "Irene M. Gregory",
+      "Enric Xargay",
+      "Chengyu Cao",
+      "Naira Hovakimyan"
+    ],
+    "year": 2011,
+    "source_url": "https://ntrs.nasa.gov/citations/20110014633",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20110014633/downloads/20110014633.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR T-2/GTM",
+      "turbine subscale transport",
+      "large-envelope flight test",
+      "stall and post-stall",
+      "online system identification"
+    ],
+    "relevance": "Reports T-2/GTM flight tests involving offset landing and departure-prone flight-envelope edges. The paper discusses nonlinear unsteady aerodynamics at post-stall angles of attack, real-time dynamic modeling and instrumentation calibration, making it a direct subscale-jet source for high-alpha test conditions.",
+    "limitations": "The aircraft is a dynamically scaled transport test article, not a hobby fighter/sport jet. The control-law tasks and aircraft-specific model are not a generic set of transferable coefficients; high-alpha behavior is configuration and maneuver dependent.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS public record; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable paper parsed; flight-test tasks, post-stall modeling work and calibration discussion reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-gregory-2011-l1-large-envelope.pdf",
+    "sha256": "0091722a8951cba74ec3fd555961250f4a7763f197598032ac552154968f5ea1",
+    "bytes": 852648,
+    "retrieved_utc": "2026-10-19T01:47:41Z"
+  },
+  {
+    "id": "morelli-2011-airstar-flight-test-maneuvers",
+    "title": "Flight Test Maneuvers for Efficient Aerodynamic Modeling",
+    "authors": [
+      "Eugene A. Morelli"
+    ],
+    "year": 2011,
+    "source_url": "https://ntrs.nasa.gov/citations/20110014634",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20110014634/downloads/20110014634.pdf",
+    "local_path": "references/rc-aero-data/morelli-2011-nasa-airstar-t2-flight-test-maneuvers.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR T-2",
+      "multisine flight-test design",
+      "six-degree-of-freedom excitation",
+      "flight system identification"
+    ],
+    "relevance": "Demonstrates optimized orthogonal multisine surface inputs on a subscale jet transport to excite all six rigid-body degrees of freedom near selected trim conditions, with real-time and post-flight frequency-domain equation-error modeling. This is the closest reusable excitation-method reference in this jet collection.",
+    "limitations": "This NASA AirSTAR experiment is a twin-turbine, dynamically scaled transport, not a sport jet. The method requires suitable instrumentation and a flight-control/augmentation setup; its maneuver results do not supply universal RC coefficients.",
+    "access": "Reuses the verified local original in references/rc-aero-data; no duplicate copy was created. Existing SHA-256 and byte count are recorded below.",
+    "license": "NASA NTRS public record; AIAA paper rights remain with their holders. Existing local reference only; redistribution not inferred.",
+    "read_depth": "Full paper text and maneuver descriptions checked; existing rc-aero-data source record and local hash reverified.",
+    "sha256": "528541160f82276659bdbd62770d4ec1f6b652994164fcfa44b1fcba925ce65b",
+    "bytes": 639260,
+    "retrieved_utc": "2026-10-19T01:55:57Z"
+  },
+  {
+    "id": "cunningham-2011-airstar-damage-accommodating-control",
+    "title": "A Piloted Evaluation of Damage Accommodating Flight Control Using a Remotely Piloted Vehicle",
+    "authors": [
+      "Kevin Cunningham",
+      "David E. Cox",
+      "Daniel G. Murri",
+      "Stephen E. Riddick"
+    ],
+    "year": 2011,
+    "source_url": "https://ntrs.nasa.gov/citations/20110014794",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20110014794/downloads/20110014794.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR 5.5% turbine test aircraft",
+      "degraded stability and control",
+      "piloted flight test",
+      "handling qualities"
+    ],
+    "relevance": "Reports eight AirSTAR research flights testing nine control-law modes during one offset-to-landing task, with two emulated failures and degraded stability/control. It includes direct in-flight pilot evaluation under failure conditions on a small dynamically scaled turbine airplane.",
+    "limitations": "One evaluation pilot and a sparse set of repeated measurements make this an initial comparative screening study, not a general handling-quality model or raw aerodynamic dataset. Damage was emulated through control/system changes rather than physical model damage.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS public record; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable paper parsed; flight count, tasks, emulated failures, pilot scope and reported results reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-cunningham-2011-damage-control.pdf",
+    "sha256": "81e37bb3a158c072d8520f3a4d747a5c5d30086978bf93dc0df7c5255d29a87f",
+    "bytes": 1963032,
+    "retrieved_utc": "2026-10-19T01:50:02Z"
+  },
+  {
+    "id": "morelli-2012-airstar-global-aerodynamic-model",
+    "title": "Efficient Global Aerodynamic Modeling from Flight Data",
+    "authors": [
+      "Eugene A. Morelli"
+    ],
+    "year": 2012,
+    "source_url": "https://ntrs.nasa.gov/citations/20120001458",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20120001458/downloads/20120001458.pdf",
+    "local_path": "references/rc-aero-data/morelli-2012-nasa-airstar-t2-global-aero-modeling.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR T-2",
+      "flight-derived global aerodynamic model",
+      "six force/moment coefficients",
+      "uncertainty"
+    ],
+    "relevance": "Provides global nonlinear aerodynamic force/moment models identified from flight data across multiple conditions in one maneuver, parameter estimates and uncertainties, and a propulsion model based on engine ground tests. The existing source review records the T-2 configuration and selected measured lateral coefficients.",
+    "limitations": "The 5.5% twin-turbine transport has different scale, geometry, inertias, engines, controls and operating Reynolds number from hobby RC jets. The model is aircraft-specific and should not be copied directly into another aircraft.",
+    "access": "Reuses the verified local original in references/rc-aero-data; no duplicate copy was created. Existing SHA-256 and byte count are recorded below.",
+    "license": "NASA NTRS public record; AIAA paper rights remain with their holders. Existing local reference only; redistribution not inferred.",
+    "read_depth": "Full paper text and flight-derived model tables were previously reviewed; existing rc-aero-data source record and local hash reverified.",
+    "sha256": "f307f4a80a45117a6b9782f671a65bbff211d174055e6952cd40e09172e63589",
+    "bytes": 1870927,
+    "retrieved_utc": "2026-10-19T01:55:57Z"
+  },
+  {
+    "id": "grauer-morelli-2015-airstar-filter-error-turbulence",
+    "title": "A New Formulation of the Filter-Error Method for Aerodynamic Parameter Estimation in Turbulence",
+    "authors": [
+      "Jared A. Grauer",
+      "Eugene A. Morelli"
+    ],
+    "year": 2015,
+    "source_url": "https://ntrs.nasa.gov/citations/20160006007",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20160006007/downloads/20160006007.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR T-2",
+      "flight system identification",
+      "turbulence",
+      "filter-error estimation",
+      "stability derivatives"
+    ],
+    "relevance": "Demonstrates a filter-error estimator first against Generic Transport Model simulation, then against real T-2 flight data in light-to-moderate and severe turbulence; compares time-domain output error and frequency-domain equation error, with uncertainty checked against repeated maneuvers.",
+    "limitations": "The article is a system-identification-method study, not an RC jet model dataset. The simulation case is separate from the T-2 flight case, and only selected maneuvers/results are reported rather than a public raw-flight archive.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS lists public availability and U.S. Government work; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable paper parsed; T-2 flight-data setup, turbulence cases, estimation comparisons and uncertainty discussion reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-grauer-2016-filter-error-turbulence.pdf",
+    "sha256": "ec4307b64093cf6950b5afde6e4a34b0428d624c715b556e6b5706609ca9176e",
+    "bytes": 678898,
+    "retrieved_utc": "2026-10-19T01:50:02Z"
+  },
+  {
+    "id": "grauer-morelli-murri-2017-airstar-rate-derivative-flight-test",
+    "title": "Flight Test Techniques for Quantifying Pitch Rate and Angle of Attack Rate Dependencies",
+    "authors": [
+      "Jared A. Grauer",
+      "Eugene A. Morelli",
+      "Daniel G. Murri"
+    ],
+    "year": 2017,
+    "source_url": "https://ntrs.nasa.gov/citations/20170001231",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20170001231/downloads/20170001231.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "AirSTAR T-2 and BAT-4",
+      "pitch damping",
+      "angle-of-attack-rate derivative",
+      "flight-test maneuvers",
+      "multisine"
+    ],
+    "relevance": "Designs and flies three maneuver types that separate pitch-rate and angle-of-attack-rate contributions to pitching moment; the NASA AirSTAR T-2 and BAT-4 tests yield estimates of Cmq and Cm-alpha-dot. It is useful for understanding when a pitch-rate derivative alone is insufficient.",
+    "limitations": "The flights combine pilot and automatic multisine excitation, and results depend on aircraft instrumentation and local model structure. BAT-4 is a separate test aircraft; only T-2 is the twin-turbine transport platform. The article does not release a general-purpose raw log dataset.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA NTRS public record; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable paper parsed; abstract, maneuver separation rationale and reported derivative targets reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-grauer-2017-rate-derivatives.pdf",
+    "sha256": "ee34ae04e241543204535aa1f9d6a261f7e8442feecaf9310797000c1ce7c237",
+    "bytes": 4634557,
+    "retrieved_utc": "2026-10-19T01:47:42Z"
+  },
+  {
+    "id": "grauer-2018-airstar-multisine-output-error",
+    "title": "Dynamic Modeling using Output-Error Parameter Estimation based on Frequency Responses Estimated with Multisine Inputs",
+    "authors": [
+      "Jared A. Grauer"
+    ],
+    "year": 2018,
+    "source_url": "https://ntrs.nasa.gov/citations/20180008442",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20180008442/downloads/20180008442.pdf",
+    "type": "technical-memorandum",
+    "topics": [
+      "NASA T-2 flight data",
+      "multisine",
+      "frequency response",
+      "output-error estimation",
+      "uncertainty"
+    ],
+    "relevance": "NASA technical memorandum applies frequency-domain output-error fitting to repeated T-2 subscale transport flight maneuvers, using multisine inputs and empirical frequency responses to estimate longitudinal dynamic model parameters and uncertainties.",
+    "limitations": "The F-16 example in this report is simulation data; the measured flight example is the NASA T-2. It is a method and test-aircraft source, not RC F-16 validation or an open raw flight-log release.",
+    "access": "Downloaded from NASA NTRS public record; PDF signature and searchable text verified.",
+    "license": "NASA technical memorandum in NTRS public distribution; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable memorandum parsed; methods and source-specific distinction between simulated F-16 and T-2 flight data checked.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-grauer-2018-multisine-output-error.pdf",
+    "sha256": "f0818b0836faae686588401e3988c33680177ec1d6005acfb0031a780807a133",
+    "bytes": 1772596,
+    "retrieved_utc": "2026-10-19T01:47:41Z"
+  },
+  {
+    "id": "grauer-2020-airstar-reconstructed-turbulence",
+    "title": "Aerodynamic Parameter Estimation Using Reconstructed Turbulence Measurements",
+    "authors": [
+      "Jared A. Grauer"
+    ],
+    "year": 2020,
+    "source_url": "https://ntrs.nasa.gov/citations/20200003206",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20200003206/downloads/20200003206.pdf",
+    "type": "preprint",
+    "topics": [
+      "AirSTAR subscale transport flight",
+      "turbulence reconstruction",
+      "flight system identification",
+      "pitch-rate and alpha-rate derivatives"
+    ],
+    "relevance": "Uses a subscale transport-type airplane’s flight data in moderate and severe turbulence to estimate longitudinal short-period stability/control derivatives. Reconstructed vertical gust measurements reduce regressor correlation and allow pitch-rate and angle-of-attack-rate terms to be identified in straight-and-level flight without special excitation maneuvers.",
+    "limitations": "NTRS identifies this item as a preprint, not a final journal version. It is an estimator result from a particular instrumented subscale transport, not a hobby model or a publicly downloadable telemetry dataset.",
+    "access": "Downloaded from NASA NTRS public record; the NTRS record classifies the document as a preprint. PDF signature and searchable text verified.",
+    "license": "NASA NTRS public preprint; local reference copy only, redistribution not inferred.",
+    "read_depth": "Full searchable preprint parsed; abstract, aircraft-data description and turbulence/derivative results reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/airstar-grauer-2020-reconstructed-turbulence.pdf",
+    "sha256": "1500008ee824a0f32faa6c45bb89aed29bd12c87c9973d07a7ebcd03748ac642",
+    "bytes": 934212,
+    "retrieved_utc": "2026-10-19T01:47:41Z"
+  },
+  {
+    "id": "lundstrom-amadori-2008-raven-rc-business-jet",
+    "title": "Raven – A Subscale Radio Controlled Business Jet Demonstrator",
+    "authors": [
+      "David Lundström",
+      "Kristian Amadori"
+    ],
+    "year": 2008,
+    "source_url": "https://icas.org/icas_archive/ICAS2008/data/papers/ICAS2008_0506_paper.pdf",
+    "download_url": "https://icas.org/icas_archive/ICAS2008/data/papers/ICAS2008_0506_paper.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "Raven business-jet demonstrator",
+      "radio-controlled jet model",
+      "dynamic scaling",
+      "flight data acquisition"
+    ],
+    "relevance": "A primary design and test-preparation report for Linköping University’s radio-controlled dynamically scaled business-jet model. It describes design/manufacture, ground/car-top testing, telemetry and preparation for free-flight dynamics testing, making it a direct RC business-jet platform reference.",
+    "limitations": "The paper is a demonstrator-development account and was written while testing was ongoing; it is not a validated flight coefficient set or a public flight telemetry release. The Raven geometry/configuration is not the Ventage/Avanti sport jet.",
+    "access": "Downloaded from the official ICAS archive; PDF signature and searchable text verified.",
+    "license": "ICAS conference paper; no redistribution license identified. Local reference copy only.",
+    "read_depth": "Full searchable paper parsed; aircraft identity, dynamic-scaling goals, instrumentation and stated flight-test status reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/raven-lundstrom-amadori-2008-rc-business-jet.pdf",
+    "sha256": "e074eeda7b84439934e00aa6f6f7daa19c86e43e16cf62d67b7c9db326a34cb3",
+    "bytes": 1725332,
+    "retrieved_utc": "2026-10-19T01:48:31Z"
+  },
+  {
+    "id": "lundstrom-et-al-2016-generic-future-fighter",
+    "title": "Subscale Flight Testing of a Generic Fighter Aircraft",
+    "authors": [
+      "David Lundström",
+      "Alejandro Sobron",
+      "Petter Krus",
+      "Christopher Jouannet",
+      "Roberto Gil Annes da Silva"
+    ],
+    "year": 2016,
+    "source_url": "https://icas.org/icas_archive/ICAS2016/data/papers/2016_0390_paper.pdf",
+    "download_url": "https://icas.org/icas_archive/ICAS2016/data/papers/2016_0390_paper.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "Generic Future Fighter (GFF)",
+      "13% RC turbine fighter",
+      "JetCat P160",
+      "free-flight instrumentation",
+      "inertia measurement"
+    ],
+    "relevance": "Documents actual free-flight work with a 13% remote-controlled Generic Future Fighter, 2.323 m long with a 1.440 m span and 15 kg empty mass, powered by a JetCat P160. It reports instrumentation and inertia-measurement methods and the early subscale flight-test setup.",
+    "limitations": "The model’s CG was moved forward to make the normally unstable fighter configuration stable for open-loop piloting. The paper is an early project report, not a complete identified global aerodynamic model or a strict dynamic-similarity validation of the full-scale fighter.",
+    "access": "Downloaded from the official ICAS 2016 proceedings archive; PDF signature and searchable text verified.",
+    "license": "ICAS conference paper; no redistribution license identified. Local reference copy only.",
+    "read_depth": "Full searchable paper parsed; vehicle table, CG/stability caveat, flight-test and measurement sections reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/gff-lundstrom-2016-subscale-fighter.pdf",
+    "sha256": "72bd70d631276971ee3505fe6fa5520698dcbcc5fc53a5a0fc8eb8b022e5d238",
+    "bytes": 1602115,
+    "retrieved_utc": "2026-10-19T01:48:31Z"
+  },
+  {
+    "id": "larsson-et-al-2020-gff-multisine-flight-identification",
+    "title": "A Method for Improved Flight Testing of Remotely Piloted Aircraft Using Multisine Inputs",
+    "authors": [
+      "Roger Larsson",
+      "Alejandro Sobron",
+      "David Lundström",
+      "Martin Enqvist"
+    ],
+    "year": 2020,
+    "doi": "10.3390/aerospace7090135",
+    "source_url": "https://www.mdpi.com/2226-4310/7/9/135",
+    "download_url": "https://www.diva-portal.org/smash/get/diva2:1485118/FULLTEXT01.pdf",
+    "type": "journal-article",
+    "topics": [
+      "Generic Future Fighter",
+      "remotely piloted turbine aircraft",
+      "multisine flight-test inputs",
+      "instrumental-variable frequency-domain identification"
+    ],
+    "relevance": "Reports simulation and actual subscale flight tests using ground-based flight-control augmentation to inject low-correlated multisines and an instrumental-variable frequency-domain method. The test aircraft is the same GFF platform described in the 2016 ICAS report, so this adds a distinct identification campaign/method rather than a second airframe.",
+    "limitations": "Focused on initial envelope expansion and linear-regression identification under near-ground, short-pass RPA constraints; this is not a high-alpha or post-stall dataset. The GFF’s stable forward-CG configuration and local atmospheric conditions bound transfer of its results.",
+    "access": "Open-access article downloaded from Linköping University’s DiVA full-text repository; PDF signature and searchable text verified.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), stated for the journal article.",
+    "read_depth": "Full searchable article parsed; aircraft/test sections, multisine design, IV estimator and flight results reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/gff-larsson-2020-multisine-flight-test.pdf",
+    "sha256": "49a3745c9b1c3dce6508b7ee7e264fcef0ae6ccc470a762c2032aaa5346fb327",
+    "bytes": 3952478,
+    "retrieved_utc": "2026-10-19T01:48:55Z"
+  },
+  {
+    "id": "soares-et-al-2019-hawk-wind-tunnel-static-derivatives",
+    "title": "Experimental and Theoretical Assessment of Aerodynamic and Stability Derivatives of a Subscale Aircraft",
+    "authors": [
+      "Igor Mayer Soares",
+      "Leonardo Murilo Nepomuceno",
+      "Roberto Gil Annes da Silva"
+    ],
+    "year": 2019,
+    "doi": "10.26678/ABCM.COBEM2019.COB2019-0137",
+    "source_url": "https://www.abcm.org.br/proceedings/view/COB2019/0137",
+    "download_url": "https://www.sistema.abcm.org.br/articleFiles/download/25107",
+    "type": "conference-paper",
+    "topics": [
+      "BAe Hawk D006 RC aeromodel",
+      "3D-printed half-aeromodel tunnel model",
+      "static aerodynamic derivatives",
+      "VLM comparison"
+    ],
+    "relevance": "Uses a 3D-printed 1/2-scale model of the BAe Hawk D006 aeromodel (half of the RC model, not half of a full-size Hawk) for wind-tunnel measurements of static lift/drag and lateral-directional derivatives and comparison with AVL/VLM estimates. The authors identify discrepancies among speed-dependent slopes and report that flight testing was still planned.",
+    "limitations": "This is a tunnel and computational study, not free-flight or turbine/EDF validation. It reports static derivatives only; the paper says dynamic flight data were future work. The lift/drag coefficients vary with tunnel speed, and lateral testing could not reach the scaled stall speed.",
+    "access": "Downloaded through the official ABCM proceedings PDF link exposed from its article record; no login was used. The current item page and direct-download behavior may differ by access route; local copy remains private.",
+    "license": "ABCM copyright notice; no article-level redistribution license identified. Local reference copy only.",
+    "read_depth": "Full seven-page paper parsed; scale identity, tunnel speed/Reynolds range, derivative tables and explicit future-flight-test statement reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/hawk-soares-2019-cobem-wind-tunnel.pdf",
+    "sha256": "24b98fb33df3581624a396b0c2e8871f013e2fed6e94c81c31cb174877438811",
+    "bytes": 984465,
+    "retrieved_utc": "2026-10-19T01:48:30Z"
+  },
+  {
+    "id": "soares-2020-bae-hawk-flight-identification-thesis",
+    "title": "Aircraft Flight Dynamics Identification Using Subscale Flight Test Methodology",
+    "authors": [
+      "Igor Mayer Soares"
+    ],
+    "year": 2020,
+    "source_url": "https://flavioluiz.github.io/pgeam/pt/teses/77691/",
+    "download_url": null,
+    "local_path": null,
+    "type": "master-thesis",
+    "topics": [
+      "BAe Hawk demonstrator",
+      "subscale flight identification",
+      "doublet maneuver",
+      "output-error method",
+      "high angle of attack"
+    ],
+    "relevance": "The ITA thesis abstract documents longitudinal identification of a subscale BAe Hawk demonstrator from flight data with a doublet and output-error method, alongside wind-tunnel/model development, and says the identified model reproduced the subscale demonstrator’s dynamics. It also explicitly reports that the demonstrator did not satisfy full-scale dynamic and gravitational similarity requirements.",
+    "limitations": "Only the official thesis page and abstract were available during this pass; there is no downloadable full thesis link on that page. No coefficients, masses, dimensions or detailed validation metrics are asserted from the abstract alone.",
+    "access": "Official ITA graduate-program thesis record and abstract accessed; no public full-text download was exposed. No alternate repository or access workaround used.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:55:57Z",
+    "license": "Institutional record is public; no redistribution license identified.",
+    "read_depth": "Official record and abstract only; full thesis not inspected."
+  },
+  {
+    "id": "osborn-2021-f16capstone-flighttest1-ulog",
+    "title": "F16Capstone FlightTest1 Pixhawk ULog (log_52_2021-5-22-12-42-56.ulg)",
+    "authors": [
+      "F16Capstone project team"
+    ],
+    "year": 2021,
+    "source_url": "https://github.com/camdeno/F16Capstone/tree/acedfe4b2401b600a89f14f771dbcdf88c803b14/FlightData/FlightTest1",
+    "download_url": "https://raw.githubusercontent.com/camdeno/F16Capstone/acedfe4b2401b600a89f14f771dbcdf88c803b14/FlightData/FlightTest1/log_52_2021-5-22-12-42-56.ulg",
+    "type": "flight-log",
+    "topics": [
+      "small-scale RC F-16",
+      "Pixhawk ULog",
+      "raw flight telemetry",
+      "flight system identification"
+    ],
+    "relevance": "A raw Pixhawk ULog from a public student project whose README identifies a scaled-down radio-controlled F-16 and says the project included real flights. A companion test plan describes planned elevator, aileron and rudder frequency sweeps, making this a directly relevant hobby-model data lead.",
+    "limitations": "The ULog was not decoded or interpreted here, and the companion plan does not prove which sweeps are in this particular log. The inspected material does not specify model scale, EDF versus other propulsion, air-data quality, or a validated aerodynamic fit; this is student-project evidence, not peer-reviewed validation.",
+    "access": "Downloaded from the public GitHub repository at the pinned commit shown in source_url; ULog magic header and exact hash verified. The repository README states MIT for the project, but no file-level data license was identified.",
+    "license": "Repository README licenses project contents under MIT; the individual flight-data file’s licensing/redistribution status is not independently stated, so no redistribution permission is inferred.",
+    "read_depth": "Verified ULog signature, pinned upstream revision and file hash; consulted project README and companion flight-test plan. Log channels and flight contents were not parsed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/f16capstone-2021-flighttest1-pixhawk.ulg",
+    "sha256": "6657a65cde3358a6c8350284a47d59e41210c57b61762faf717805166b28026b",
+    "bytes": 1417530,
+    "retrieved_utc": "2026-10-19T01:49:31Z"
+  },
+  {
+    "id": "osborn-2021-f16capstone-flight-test-plan",
+    "title": "Flight Test for System Identification (F16Capstone test plan, May 21 2021)",
+    "authors": [
+      "Cam Osborn"
+    ],
+    "year": 2021,
+    "source_url": "https://github.com/camdeno/F16Capstone/blob/acedfe4b2401b600a89f14f771dbcdf88c803b14/Testing%20Documentation/Flight%20Test%20Plan%205_22_2021.pdf",
+    "download_url": "https://raw.githubusercontent.com/camdeno/F16Capstone/acedfe4b2401b600a89f14f771dbcdf88c803b14/Testing%20Documentation/Flight%20Test%20Plan%205_22_2021.pdf",
+    "type": "flight-test-plan",
+    "topics": [
+      "RC F-16 flight test",
+      "frequency-sweep maneuvers",
+      "Pixhawk logging",
+      "planned system-identification inputs"
+    ],
+    "relevance": "Specifies racetrack flight segments and planned logarithmic frequency sweeps on elevator, aileron and rudder with QGroundControl/Pixhawk ULog collection. It is the companion test document for the retained FlightTest1 telemetry file.",
+    "limitations": "This is a plan, not evidence that every listed maneuver was flown successfully or that the logged channels support parameter estimation. The plan does not publish an analyzed or validated dynamic model.",
+    "access": "Downloaded from the public GitHub repository at the pinned commit; PDF signature and searchable text verified.",
+    "license": "Repository README licenses project contents under MIT; no separate statement for this planning document or flight-test data was identified, so no redistribution permission is inferred.",
+    "read_depth": "Full nine-page plan parsed; author/date, objective, maneuver sequence and logging plan reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/f16capstone-2021-flight-test-plan.pdf",
+    "sha256": "d646e06a5070e58d735eab6245f708e6a4fe3d6cbd28b2f9964f971c92951cc6",
+    "bytes": 134001,
+    "retrieved_utc": "2026-10-19T01:49:31Z"
+  },
+  {
+    "id": "carnduff-et-al-2009-hawk-dynamic-wind-tunnel",
+    "title": "Characterizing Stability and Control of Subscale Aircraft from Wind-Tunnel Dynamic Motion",
+    "authors": [
+      "S. D. Carnduff",
+      "S. D. Erbsloeh",
+      "A. K. Cooke",
+      "M. V. Cook"
+    ],
+    "year": 2009,
+    "doi": "10.2514/1.36730",
+    "source_url": "https://doi.org/10.2514/1.36730",
+    "download_url": null,
+    "local_path": null,
+    "type": "journal-article",
+    "topics": [
+      "1/12-scale BAe Hawk",
+      "dynamic wind tunnel",
+      "four-degree-of-freedom test rig",
+      "stability/control derivatives",
+      "frequency-domain estimation"
+    ],
+    "relevance": "Primary dynamic wind-tunnel study describing a semifree four-degree-of-freedom rig and a one-twelfth-scale BAe Hawk model; the abstract identifies MEMS-based motion measurement and equation-error/output-error parameter estimation. It is a useful method bridge between static tunnel derivatives and free-flight RC identification.",
+    "limitations": "The vehicle is a captive dynamic-wind-tunnel model, not an unrestrained RC flight test. Only publisher metadata and the indexed abstract were inspected; full text was not retained or used for coefficient values.",
+    "access": "DOI and bibliographic record verified. A public full-text original was not obtained during this pass; the publisher full text was not accessible through a direct public download, and no access-control workaround was attempted.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:55:57Z",
+    "license": "AIAA publisher copyright; no open redistribution license identified.",
+    "read_depth": "DOI, bibliographic metadata and abstract only; full article not inspected."
+  },
+  {
+    "id": "weinstein-spada-simmons-2026-adept-edf-wing-tests",
+    "title": "Experimental Study of Aeropropulsive Interactions for Electric Ducted Fans on a Wing",
+    "authors": [
+      "Rose Weinstein",
+      "Vincent A. Spada",
+      "Benjamin M. Simmons"
+    ],
+    "year": 2026,
+    "doi": "10.2514/1.C038401",
+    "source_url": "https://ntrs.nasa.gov/citations/20250007333",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20250007333/downloads/Weinstein_Spada_Simmons_ADEPT_2026_JoA_accepted.pdf?attachment=true",
+    "type": "journal-article",
+    "topics": [
+      "NASA ADEPT Wing",
+      "130 mm Jetfan EDF array",
+      "six fan placement configurations",
+      "one/three/five EDF arrays",
+      "wind-tunnel lift and pitching moment",
+      "aeropropulsive interaction"
+    ],
+    "relevance": "The NASA ADEPT Wing (6 ft span, 2 ft chord) was tested in the 12-Foot Low-Speed Tunnel with the same Jetfan 130 Pro COTS hardware characterized in the 2024 paper. Six positions and arrays of one, three, and five EDFs were measured against a bare-wing baseline over angle of attack and fan speed, producing longitudinal force and moment evidence for EDF installation effects, lift augmentation, and fan-placement sensitivity.",
+    "limitations": "Tunnel wing tests only: no free flight, fuselage/tail, or complete-aircraft stability derivatives. Conclusions apply to this wing, EDF, array spacing, and tested conditions; the same fan hardware is shared with the 2024 study and is not an independent fan design.",
+    "access": "Downloaded from the public NASA NTRS accepted-manuscript record. NTRS marks distribution public and notes that portions may contain copyright-protected material; the local copy is for reference.",
+    "license": "NASA NTRS accepted manuscript is publicly distributed; NTRS notes portions may include copyright-protected material. No broader redistribution permission inferred.",
+    "read_depth": "Full accepted manuscript parsed; ADEPT wing and EDF hardware, configurations, tunnel methods, measured force/moment trends, and stated limitations reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/weinstein-2026-adept-edf-wing-interactions.pdf",
+    "sha256": "b24d42b03b976bc15b47489b666256f71794b81a0bc91092d77adc2285240deb",
+    "bytes": 10333683,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
+  },
+  {
+    "id": "urban-2023-model-edf-static-performance",
+    "title": "Effect of Electric Ducted Fans Structural Arrangement on Their Performance Characteristics",
+    "authors": [
+      "Daniel Urban",
+      "Stanislav Kusmirek",
+      "Vladimir Socha",
+      "Lenka Hanakova",
+      "Karel Hylmar",
+      "Jakub Kraus"
+    ],
+    "year": 2023,
+    "doi": "10.3390/app13052787",
+    "source_url": "https://www.mdpi.com/2076-3417/13/5/2787",
+    "download_url": "https://www.mdpi.com/2076-3417/13/5/2787/pdf",
+    "type": "journal-article",
+    "topics": [
+      "50 mm and 64 mm model-size EDFs",
+      "static thrust and power tests",
+      "cowling/outlet geometry",
+      "single- and two-rotor arrangements"
+    ],
+    "relevance": "Experimental static tests compare QX-Motor 50 mm and 64 mm 12-blade EDFs driven by the same 5000 kV motor, with modified outlet geometries and two-rotor arrangements. The paper measures vertical thrust and electrical power; its configuration-specific results make it useful for small EDF component and thrust-curve plausibility checks.",
+    "limitations": "Static component testing only: no installed-airframe, wind-on, or free-flight dynamics. Results depend on the particular EDFs, motor, printed cowls, and arrangements; the authors identify dynamic testing on a specific aircraft as future work.",
+    "access": "Full publisher HTML inspected; no local PDF original (HTTP 403 from direct PDF endpoint).",
+    "license": "Publisher marks the article Open Access; exact license terms were not verified from the inspected page extract. No local copy or broader redistribution permission is recorded.",
+    "read_depth": "Official article text was reviewed for the hardware, static test method, comparative thrust/power results, and conclusion; no PDF was downloaded.",
+    "local_path": null,
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
+  },
+  {
+    "id": "bravo-mosquera-2022-inti-cots-edf-wind-tunnel",
+    "title": "Experimental Investigation of a Next-Generation Airliner with Boundary Layer Ingestion",
+    "authors": [
+      "Pedro D. Bravo-Mosquera",
+      "João Paulo Eguea",
+      "Hernan D. Cerón-Muñoz",
+      "Fernando M. Catalano"
+    ],
+    "year": 2022,
+    "source_url": "https://icas.org/icas_archive/ICAS2022/data/preview/ICAS2022_0431.htm",
+    "download_url": "https://www.icas.org/icas_archive/ICAS2022/data/papers/ICAS2022_0431_paper.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "1:28 INTI box-wing aircraft model",
+      "70 mm class commercial R/C EDFs",
+      "powered wind-tunnel testing",
+      "boundary-layer ingestion",
+      "force/power/flow measurements"
+    ],
+    "relevance": "The 3.5%-scale (1:28) INTI model is 1.12 m span and 1.38 m long. Its powered non-BLI and BLI configurations use two six-blade commercial EDFs described as typical R/C units (paper reports 70 mm central-duct outer diameter and 73 mm fan diameter). The tunnel campaign measures aerodynamic forces, electrical power, wake flow, and total pressure, providing an installed model-EDF/airframe interaction comparison.",
+    "limitations": "This is a captive wind-tunnel model of a conceptual transport, not an RC sport jet or free-flight identification campaign. The measured benefit is specific to the box-wing/BLI layout and low-speed test conditions; CFD is used for tunnel-wall corrections and is not the primary evidence. The stated 70 mm central-duct and 73 mm fan dimensions need geometric clarification before being used as nested housing/rotor dimensions; this collection does not resolve the definitions.",
+    "access": "Downloaded from the public ICAS conference archive. PDF signature, searchable title, and article text verified; retained locally as a reference copy only.",
+    "license": "Publicly accessible ICAS proceedings; no explicit redistribution license was identified. Local reference copy only.",
+    "read_depth": "Full searchable PDF parsed; model scale and geometry, EDF specification, tunnel instrumentation/conditions, force and power results, and limitations reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/bravo-mosquera-2022-inti-rc-edf-wind-tunnel.pdf",
+    "sha256": "a38e866765ae34879586c1b53e03aadbacb677d76fd29aa42806022e859fa0b8",
+    "bytes": 2036418,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
+  },
+  {
+    "id": "weinstein-simmons-2024-susan-cots-edf-dynamics",
+    "title": "Experimental Characterization of an Electric Ducted Fan for the SUSAN 25% Scale Research Vehicle",
+    "authors": [
+      "Rose Weinstein",
+      "Benjamin M. Simmons"
+    ],
+    "year": 2024,
+    "doi": "10.2514/6.2024-1524",
+    "source_url": "https://ntrs.nasa.gov/citations/20230017299",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20230017299/downloads/Weinstein_SciTech2024_Final.pdf?attachment=true",
+    "type": "conference-paper",
+    "topics": [
+      "NASA Langley 12-Foot Low-Speed Tunnel",
+      "130 mm Jetfan EDF",
+      "static and dynamic motor models",
+      "thrust and power modeling",
+      "design of experiments",
+      "validation data"
+    ],
+    "relevance": "A COTS Jetfan 130 Pro (5.11 in blade diameter, 7 kW maximum continuous rating) is characterized on a sting in wind-off and wind-on tunnel conditions for the SUSAN 25% research vehicle. OFAT and DOE runs vary PWM, voltage, tunnel dynamic pressure, and incidence angle; the authors identify static and critically damped second-order dynamic motor models plus thrust and power models, then assess predictions with held-out validation data.",
+    "limitations": "This characterizes an isolated propulsion unit, not a complete aircraft, hobby-jet flight, or airframe stability derivatives. The 130 mm, multi-kilowatt hardware is larger and more powerful than many sport EDF installations; model terms and response depend on its motor, ESC, cooling, and test setup.",
+    "access": "Downloaded from the public NASA NTRS record, which marks the work as a U.S. Government work with public use permitted. PDF signature and searchable text verified.",
+    "license": "NASA NTRS lists public distribution and public use permitted for U.S. Government work.",
+    "read_depth": "Full searchable paper parsed; fan hardware, test matrix, static/dynamic identification, thrust/power models, held-out validation, and system limits reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/weinstein-2024-susan-edf.pdf",
+    "sha256": "f489c575cfac7ac849b926a3af2a33c8960a700e958e3114b89e2a07b8496fdd",
+    "bytes": 18894455,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
+  }
+]

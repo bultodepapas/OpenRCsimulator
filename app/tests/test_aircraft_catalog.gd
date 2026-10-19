@@ -242,6 +242,13 @@ func _initialize() -> void:
 			and glow_flight._hud.text.contains("φ ") and glow_flight._hud.text.contains("[F6] cut")
 			and glow_flight._hud.text.contains("[F7] starter") and glow_flight._hud.text.contains("[F8] lean")
 			and glow_flight._hud.text.contains("[F9] rich"), glow_flight._hud.text)
+		# FUEL-01b: displayed volume uses the profile blend density (72/10/18 ≈ 857 kg/m³), not 0.8 g/mL.
+		var fuel_density: float = float(glow.get("fuel_density_kg_m3", NAN))
+		var expected_fuel := "fuel ~%.0f mL" % (float(glow.get("fuel_kg", NAN)) / fuel_density * 1.0e6)
+		_check("%s HUD fuel volume uses the installed blend density" % glow_id,
+			fuel_density > 840.0 and fuel_density < 880.0
+			and is_equal_approx(float(glow.get("fuel_volume_m3", NAN)), float(glow.get("fuel_kg", NAN)) / fuel_density)
+			and glow_flight._hud.text.contains(expected_fuel), "%s in %s" % [expected_fuel, glow_flight._hud.text])
 		_check("%s recommended RPM warning is hidden at the trimmed start point" % glow_id,
 			not glow_flight._hud.text.contains("ABOVE RECOMMENDED RPM"))
 		var original_continuous_rpm: float = float(glow_flight.session.sim.continuous[0])

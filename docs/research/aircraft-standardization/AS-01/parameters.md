@@ -74,10 +74,14 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.surfaces.vertical.lift_slope` | 1/rad | ≥0.1, ≤6.3 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.vertical.position` | m | length 3…3, each(≥-2, ≤2) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.wing_aileron_effectiveness` | 1 | ≥0.01, ≤1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.wing_body_cl_beta` | 1/rad | ≥-0.3, ≤0.1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.wing_section_cm_ac` | 1 | ≥-0.3, ≤0.1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.wing_station_incidence` | rad | length 3…3, each(≥-0.2, ≤0.2) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.wing_polar.negative` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
 | `aero.wing_polar.positive` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
+| `aero.wing_polar.spanwise_progression` | 1 | ≥0, ≤1 | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
+| `balance.cg_range.aft` | m | ≥-2, ≤2 | AircraftData._fuel_system: plan-CG acceptance at the declared balance fuel state; no force effect |
+| `balance.cg_range.forward` | m | ≥-2, ≤2 | AircraftData._fuel_system: plan-CG acceptance at the declared balance fuel state; no force effect |
 | `balance.cg_tolerance` | m | ≥1e-06, ≤0.005 | AircraftData.validate_and_derive: inventory/declared CG acceptance |
 | `balance.firewall` | m | length 3…3, each(≥-2, ≤2) | AircraftData._q: reference validation only; no force effect |
 | `balance.plan_cg` | m | length 3…3, each(≥-2, ≤2) | AircraftData.validate_and_derive: inventory CG agreement; not an override |
@@ -112,6 +116,8 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `flaps.retraction_time` | s | ≥0.25, ≤30 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.stall_shift_fraction` | 1 | ≥0, ≤1 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.takeoff_angle_deg` | deg | ≥0, ≤60 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
+| `fuel_system.tanks[].capacity` | l | >0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
+| `fuel_system.tanks[].unusable` | l | ≥0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
 | `inventory[].mass` | kg | ≥0.001, ≤5 | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].position` | m | length 3…3, each(≥-2, ≤2) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].size` | m | length 3…3, each(≥0, ≤4) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
@@ -131,13 +137,17 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `landing_gear.side_friction` | 1 | ≥0.1, ≤1.5 | AircraftData._landing_gear → ground_contact, ground_start, session anchors/travel crash |
 | `plausibility.inertia_reference` | kg·m2 | length 3…3, each(≥0, >0, ≤100) | AircraftData.validate_and_derive: scaled-inertia warning only |
 | `plausibility.mass_range` | kg | length 2…2, each(≥0.01, ≤100) | AircraftData.validate_and_derive: total-mass acceptance |
-| `propulsion.battery.auxiliary_current_a` | A | ≥0, ≤1.79769e+308 | AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim |
-| `propulsion.battery.capacity_ah` | Ah | >0, ≤1.79769e+308 | AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim |
-| `propulsion.battery.initial_soc` | 1 | >0, ≤1 | AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim |
-| `propulsion.battery.ocv_points[].soc` | 1 | ≥0, ≤1 | AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim |
-| `propulsion.battery.ocv_points[].voltage` | V | >0, ≤1.79769e+308 | AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim |
-| `propulsion.battery.resistance_ohm` | ohm | ≥0, ≤1.79769e+308 | AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim |
-| `propulsion.battery.voltage_v` | V | ≥0.1, >0, ≤1000 | AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim |
+| `propulsion.battery.auxiliary_current_a` | A | ≥0, ≤1.79769e+308 OR ≥0, ≤100 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.capacity_ah` | Ah | >0, ≤1.79769e+308 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.cooling_airflow_fraction` | 1 | ≥0, ≤1 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.initial_soc` | 1 | >0, ≤1 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.ocv_points[].soc` | 1 | ≥0, ≤1 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.ocv_points[].voltage` | V | >0, ≤1.79769e+308 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.resistance_ohm` | ohm | ≥0, ≤1.79769e+308 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.voltage_v` | V | ≥0.1, >0, ≤1000 | AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim |
+| `propulsion.battery.weak_cell.capacity_factor` | 1 | ≥0.01, ≤1 | AircraftData._pack_ecm_battery → PackEcm weakest-cell capacity/resistance/charge offset; exhaustion event state |
+| `propulsion.battery.weak_cell.resistance_factor` | 1 | ≥1, ≤10 | AircraftData._pack_ecm_battery → PackEcm weakest-cell capacity/resistance/charge offset; exhaustion event state |
+| `propulsion.battery.weak_cell.soc_offset` | 1 | ≥0, <0.5 | AircraftData._pack_ecm_battery → PackEcm weakest-cell capacity/resistance/charge offset; exhaustion event state |
 | `propulsion.engine.accel_limit` | rpm, rpm/s | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)) | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
 | `propulsion.engine.decel_limit` | rpm, rpm/s | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥1, ≤1e+06)) | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
 | `propulsion.engine.fuel_flow` | rpm, kg/s | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤1)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤1)) | Turbine.fuel_flow / session telemetry; no mass depletion |
@@ -160,6 +170,14 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `propulsion.engine.shaft.power_curve` | rpm, W | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, >0, ≤1.79769e+308; ≥-1.79769e+308, >0, ≤1.79769e+308)), columns(length 2…2, columns(≥-1.79769e+308, >0, ≤1.79769e+308; ≥-1.79769e+308, >0, ≤1.79769e+308)) | AircraftData._shaft → Propulsion shaft torque/RPM balance / session integrator |
 | `propulsion.engine.static_thrust` | rpm, N | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤5000)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤5000)) | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
 | `propulsion.engine.throttle_map` | 1, rpm | length 2…unbounded, each(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤300000)), columns(length 2…2, columns(≥-1.79769e+308, ≤1.79769e+308; ≥0, ≤300000)) | AircraftData._turbine → Turbine spool/thrust/ram/rotor load law |
+| `propulsion.esc.low_voltage_cutoff.cutoff_per_cell_v` | V | ≥0.5, ≤5 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.esc.low_voltage_cutoff.debounce_s` | s | ≥0, ≤60 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.esc.low_voltage_cutoff.detection_max_cell_v` | V | ≥0.5, ≤6 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.esc.low_voltage_cutoff.fixed_cells` | 1 | ≥1, ≤24 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.esc.low_voltage_cutoff.reset_throttle_max` | 1 | ≥0, ≤0.2 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.esc.low_voltage_cutoff.soft_limit` | 1 | ≥0, <1 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.esc.low_voltage_cutoff.soft_ramp_s` | s | >0, ≤60 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
+| `propulsion.esc.low_voltage_cutoff.voltage_filter_s` | s | ≥0.02, ≤10 | AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter |
 | `propulsion.intake_offset` | m | length 3…3, each(≥-1, ≤1) | AircraftData._turbine → Turbine force application and rotor axis |
 | `propulsion.motor.kv_rpm_per_volt` | rpm/V | ≥1, >0, ≤10000 | AircraftData._electric_propulsion → electric_motor/electric_supply shaft and bus law |
 | `propulsion.motor.no_load_context.rpm` | rpm | ≥1, >0, ≤1e+07 | AircraftData._electric_propulsion: Kv/test-voltage consistency |
@@ -199,4 +217,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 185 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 203 distinct quantity paths. Shared paths retain branch-dependent ranges.

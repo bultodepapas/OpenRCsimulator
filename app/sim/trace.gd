@@ -44,8 +44,14 @@ var _electric: bool = false
 var _battery: bool = false
 var _battery_capacity_c: float = NAN
 var _battery_initial_charge_c: float = NAN
+var _pack: bool = false
+var _pack_block: int = 0
 const BATTERY_COLUMNS: Array = ["battery_soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "pack_exhausted"]
 const BATTERY_KEYS: Array[String] = ["soc", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j"]
+## BAT-10: pack_ecm truth channels (true SOC included; radio-style sensors are presentation, not trace data).
+const PACK_COLUMNS: Array = ["battery_soc", "battery_soc_weak", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "polarization_v", "cell_voltage_avg_v", "cell_voltage_min_v", "pack_temperature_k", "ambient_temperature_k", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "esc_sensed_voltage_v", "esc_limit", "esc_effective_duty", "esc_detected_cells", "esc_phase", "pack_exhausted"]
+const PACK_KEYS: Array[String] = ["soc", "soc_weak", "remaining_charge_c", "consumed_charge_c", "pack_current_a", "auxiliary_current_a", "ocv_v", "polarization_v", "cell_voltage_avg_v", "cell_voltage_min_v", "temperature_k", "ambient_k", "pack_terminal_power_w", "pack_loss_w", "terminal_energy_j", "pack_heat_j", "esc_sensed_voltage_v", "esc_limit", "effective_duty", "esc_detected_cells"]
+const PACK_PHASES: Array[String] = ["normal", "debounce", "soft_cut", "hard_cut", "off"]
 const GLOW_COLUMNS: Array[String] = [
 	"glow_fuel_kg", "glow_temperature_k", "glow_running", "glow_stop_reason_code",
 	"glow_phase_revolutions", "glow_mixture_command_phi", "glow_fuel_transport_kg_s",
@@ -75,6 +81,7 @@ var _glow_start_fuel_kg: float = NAN
 var _glow_last_fuel_kg: float = NAN
 var _glow_last_opportunities: int = -1
 var _glow_last_fires: int = -1
+var _glow_wheel_count: int = 0 # GP-06a: rim speeds appended after the glow slots
 var _gear: bool = false
 var _gear_aux_index: int = -1
 var _gear_meta: Dictionary = {}
@@ -101,6 +108,8 @@ func clear() -> void:
 	_battery = false
 	_battery_capacity_c = NAN
 	_battery_initial_charge_c = NAN
+	_pack = false
+	_pack_block = 0
 	_coupled_start_rpm = NAN
 	_glow = false
 	_glow_family = ""
@@ -111,6 +120,7 @@ func clear() -> void:
 	_glow_last_fuel_kg = NAN
 	_glow_last_opportunities = -1
 	_glow_last_fires = -1
+	_glow_wheel_count = 0
 	_gear = false
 	_gear_aux_index = -1
 	_gear_meta = {}
@@ -499,16 +509,59 @@ func _prepare_glow_metadata() -> void:
 	var start_reason: int = GlowFlight.REASONS.find(str(start.get("stop_reason", ""))) if start is Dictionary else -1
 	var profile_identity: Variant = start.get("profile_identity", {}) if start is Dictionary else {}
 	var installation_profile: Variant = identity.get("profile", {}) if identity is Dictionary else {}
+	# GP-06a: a profiled wheel set appends its rim speeds after the glow slots, as on the shaft and turbine paths.
+	var wheel_count: int = 0
+	var has_wheel_metadata: bool = meta.has("wheel_state_model") or meta.has("wheel_state_layout") \
+		or meta.has("wheel_profile_status") or meta.has("wheel_profile_sha256") or meta.has("wheel_profile_input_sha256") \
+		or meta.has("wheel_profile_hash_convention") or meta.has("wheel_brakes") or meta.has("launch_continuous")
+	if has_wheel_metadata:
+		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
+		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
+		var brakes: Variant = JSON.parse_string(str(meta.get("wheel_brakes", "null")))
+		if meta.get("wheel_state_model") != "relative-wheel-rim-speed-rk4-v1" \
+				or meta.get("wheel_profile_status") != "applied" \
+				or not _is_sha256(str(meta.get("wheel_profile_sha256", ""))) \
+				or not _is_sha256(str(meta.get("wheel_profile_input_sha256", ""))) \
+				or meta.get("wheel_profile_hash_convention") != "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes" \
+				or not layout is Array or layout.is_empty() \
+				or not launch is Array or launch.size() != GlowFlight.SIZE + layout.size() \
+				or not brakes is Array or brakes.size() != layout.size():
+			_invalid_weather = true
+			return
+		wheel_count = layout.size()
+		var contacts := {}
+		for i: int in wheel_count:
+			var entry: Variant = layout[i]
+			if not entry is Dictionary or typeof(entry.get("index")) not in [TYPE_INT, TYPE_FLOAT] \
+					or not is_finite(float(entry.index)) or float(entry.index) != float(int(entry.index)) \
+					or int(entry.index) != GlowFlight.SIZE + i or typeof(entry.get("contact")) != TYPE_STRING \
+					or str(entry.contact).is_empty() or contacts.has(entry.contact) or entry.get("unit") != "m/s rim speed":
+				_invalid_weather = true
+				return
+			contacts[entry.contact] = true
+			var brake: Variant = brakes[i]
+			var torque: Variant = brake.get("max_torque_nm") if brake is Dictionary else null
+			if not brake is Dictionary or brake.get("contact") != entry.contact \
+					or brake.get("availability") not in ["available", "none", "unspecified"] \
+					or typeof(torque) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(torque)) or float(torque) < 0.0 \
+					or (float(torque) > 0.0 and brake.availability != "available"):
+				_invalid_weather = true
+				return
+		for component: Variant in launch:
+			if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
+				_invalid_weather = true
+				return
 	if meta.get("metadata_schema") != "openrc-flight-meta v7" or meta.get("propulsion_model") != GLOW_LAW \
 			or family not in ["glow_2t", "glow_4t"] or not is_finite(cycle) \
 			or meta.get("continuous_layout") != GLOW_CONTINUOUS_LAYOUT \
+				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else "") \
 			or not identity is Dictionary or not installation_profile is Dictionary \
 			or not _is_sha256(str(installation_profile.get("sha256", ""))) \
 			or not start is Dictionary or start.get("ok") != true or start.get("family") != family \
 			or not profile_identity is Dictionary \
 			or profile_identity.get("input_sha256") != installation_profile.get("sha256") \
 			or start.get("cycle_revolutions") != cycle or start_reason < 0 \
-			or not start_continuous is Array or start_continuous.size() != GlowFlight.SIZE \
+			or not start_continuous is Array or start_continuous.size() != GlowFlight.SIZE + wheel_count \
 			or not aux_start is Array or aux_start.size() != 4 \
 			or typeof(dt) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(dt)) or float(dt) <= 0.0 \
 			or typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start_tick)) \
@@ -547,6 +600,7 @@ func _prepare_glow_metadata() -> void:
 	_glow_cycle_revolutions = cycle
 	_glow_recording_start = start.duplicate(true)
 	_glow_recording_start_continuous = PackedFloat64Array(start_continuous)
+	_glow_wheel_count = wheel_count
 	_glow_start_fuel_kg = float(start.fuel_kg)
 	_weather_meta = meta.duplicate(true)
 	_columns.append_array(GLOW_COLUMNS)
@@ -562,13 +616,14 @@ func _prepare_shaft_metadata() -> void:
 		_prepare_turbine_metadata()
 		return
 	_battery = meta.get("propulsion_model") == Session.BATTERY_LAW
-	_electric = meta.get("propulsion_model") in [Session.ELECTRIC_LAW, Session.BATTERY_LAW]
+	_pack = meta.get("propulsion_model") == Session.PACK_LAW
+	_electric = meta.get("propulsion_model") in [Session.ELECTRIC_LAW, Session.BATTERY_LAW, Session.PACK_LAW]
 	if not _electric and (meta.has("electric_configuration") or meta.has("electric_sample_timing")):
 		_invalid_weather = true
 		return
-	if not meta.has("shaft_integrator") and meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW]:
+	if not meta.has("shaft_integrator") and meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW, Session.PACK_LAW]:
 		return
-	if meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW] or meta.get("shaft_integrator") != "coupled-rk4" \
+	if meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW, Session.PACK_LAW] or meta.get("shaft_integrator") != "coupled-rk4" \
 			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1":
 		_invalid_weather = true
 		return
@@ -586,7 +641,15 @@ func _prepare_shaft_metadata() -> void:
 		or meta.has("wheel_profile_hash_convention") or meta.has("wheel_brakes") or meta.has("launch_continuous")
 	var gear_claim: bool = _has_gear_metadata_claim()
 	var flap_claim: bool = _has_flap_metadata_claim()
-	var base_layout: String = Session.BATTERY_LAYOUT if _battery else "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled"
+	var base_layout: String = Session.PACK_LAYOUT if _pack else Session.BATTERY_LAYOUT if _battery else "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled"
+	if _pack:
+		var pack_meta: Variant = JSON.parse_string(str(meta.get("battery_pack", "null")))
+		var branches: Variant = pack_meta.get("branches") if pack_meta is Dictionary else null
+		if typeof(branches) not in [TYPE_INT, TYPE_FLOAT] or float(branches) not in [0.0, 1.0, 2.0] \
+				or meta.get("battery_model") != Session.PACK_MODEL:
+			_invalid_weather = true
+			return
+		_pack_block = 9 + 2 * int(branches)
 	if has_wheel_metadata:
 		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
 		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
@@ -636,11 +699,12 @@ func _prepare_shaft_metadata() -> void:
 	if str(meta.get("continuous_layout", "")) != base_layout + ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else ""):
 		_invalid_weather = true
 		return
-	var shaft_index: int = values.size() - (4 if _battery else 1) - wheel_count
+	var battery_slots: int = _pack_block if _pack else (3 if _battery else 0)
+	var shaft_index: int = values.size() - 1 - battery_slots - wheel_count
 	if shaft_index < 0 or (meta.get("propwash_model") == "tail-slipstream-axial-transport-v1") != (shaft_index > 0):
 		_invalid_weather = true
 		return
-	if has_wheel_metadata and wheel_first_index != shaft_index + 1 + (3 if _battery else 0):
+	if has_wheel_metadata and wheel_first_index != shaft_index + 1 + battery_slots:
 		_invalid_weather = true
 		return
 	for value: Variant in values:
@@ -655,7 +719,7 @@ func _prepare_shaft_metadata() -> void:
 		if not electrical_sample.is_valid() or not configuration is Dictionary \
 				or not configuration.get("motor") is Dictionary or not configuration.get("battery") is Dictionary \
 				or not configuration.get("esc") is Dictionary \
-				or configuration.battery.get("kind") != ("ocv_resistance" if _battery else "fixed_voltage") \
+				or configuration.battery.get("kind") != ("pack_ecm" if _pack else "ocv_resistance" if _battery else "fixed_voltage") \
 				or meta.get("electric_sample_timing") != "accepted endpoint; current tick input and source-enabled mode":
 			_invalid_weather = true
 			return
@@ -675,6 +739,11 @@ func _prepare_shaft_metadata() -> void:
 				_invalid_weather = true
 				return
 			_columns.append_array(BATTERY_COLUMNS)
+		if _pack:
+			if not _prepare_pack_budget(configuration.battery, values, shaft_index + 1):
+				_invalid_weather = true
+				return
+			_columns.append_array(PACK_COLUMNS)
 	_coupled_shaft = true
 	_coupled_start_rpm = values[shaft_index]
 	_weather_meta = meta.duplicate(true)
@@ -686,6 +755,43 @@ func _is_sha256(value: String) -> bool:
 	for character: String in value:
 		if not "0123456789abcdef".contains(character):
 			return false
+	return true
+
+
+## BAT-10: the weak-cell charge budget comes from the recorded configuration; the start block must be a
+## connected, in-domain pack (finite, charge within budget, positive temperature, sampled ESC slots in range).
+func _prepare_pack_budget(battery: Dictionary, values: Array, at: int) -> bool:
+	for key: String in ["initial_soc", "weak_soc_offset", "weak_capacity_factor", "group_capacity_c"]:
+		if typeof(battery.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(battery[key])):
+			return false
+	_battery_capacity_c = float(battery.weak_capacity_factor) * float(battery.group_capacity_c)
+	_battery_initial_charge_c = (float(battery.initial_soc) - float(battery.weak_soc_offset)) * _battery_capacity_c
+	if not is_finite(_battery_initial_charge_c) or _battery_initial_charge_c <= 0.0 or at + _pack_block > values.size():
+		return false
+	var t_index: int = at + _pack_block - 6
+	var phase: float = float(values[t_index + 3])
+	var cells: float = float(values[t_index + 5])
+	return float(values[at]) >= 0.0 and float(values[at]) <= _battery_initial_charge_c \
+		and float(values[at + 1]) >= 0.0 and float(values[at + 2]) >= 0.0 and float(values[t_index]) > 0.0 \
+		and float(values[t_index + 2]) >= 0.0 and float(values[t_index + 2]) <= 1.0 \
+		and phase == floorf(phase) and phase >= 0.0 and phase <= 3.0 and cells == floorf(cells) and cells >= 1.0
+
+
+func _valid_pack_sample(point: Dictionary) -> bool:
+	for key: String in PACK_KEYS:
+		if typeof(point.get(key)) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(point[key])):
+			return false
+	if typeof(point.get("exhausted")) != TYPE_BOOL or point.exhausted != (point.remaining_charge_c == 0.0) \
+			or PACK_PHASES.find(str(point.get("esc_state", ""))) < 0:
+		return false
+	var tolerance: float = maxf(1e-9, _battery_initial_charge_c * 1e-12)
+	if point.remaining_charge_c < 0.0 or point.remaining_charge_c > _battery_initial_charge_c \
+			or absf(point.remaining_charge_c + point.consumed_charge_c - _battery_initial_charge_c) > tolerance \
+			or point.soc < 0.0 or point.soc > 1.0 or point.soc_weak < 0.0 or point.soc_weak > 1.0 \
+			or point.temperature_k <= 0.0 or point.esc_limit < 0.0 or point.esc_limit > 1.0:
+		return false
+	if point.exhausted and (point.pack_current_a != 0.0 or point.auxiliary_current_a != 0.0):
+		return false
 	return true
 
 
@@ -772,6 +878,14 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 				return
 			for key: String in BATTERY_KEYS:
 				electric_row.append(float(point[key]))
+			electric_row.append(1.0 if point.exhausted else 0.0)
+		if _pack:
+			if not _valid_pack_sample(point):
+				_invalid_weather = true
+				return
+			for key: String in PACK_KEYS:
+				electric_row.append(float(point[key]))
+			electric_row.append(float(PACK_PHASES.find(str(point.esc_state))))
 			electric_row.append(1.0 if point.exhausted else 0.0)
 	if _weather != null:
 		if tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
@@ -875,7 +989,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFloat64Array) -> PackedFloat64Array:
 	var dt: float = float(meta.get("dt_s", NAN))
 	var expected_time: float = float(tick) * dt
-	if values.size() != GlowFlight.SIZE or not _finite(values) or tick < 0 or not is_finite(t) \
+	if values.size() != GlowFlight.SIZE + _glow_wheel_count or not _finite(values) or tick < 0 or not is_finite(t) \
 			or absf(t - expected_time) > maxf(1e-12, absf(expected_time) * 1e-12) \
 			or aux.size() < 4 or not _finite(aux) \
 			or absf(aux[0] - values[0]) > maxf(1e-9, absf(values[0]) * 1e-12) \
@@ -963,7 +1077,7 @@ func to_csv() -> String:
 		return ""
 	var lines := PackedStringArray()
 	var base_trace_format: String = _base_trace_format()
-	lines.append("# format: %s" % ("openrc-trace v12" if _flaps else base_trace_format))
+	lines.append("# format: %s" % ("openrc-trace v13" if _pack else "openrc-trace v12" if _flaps else base_trace_format))
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else (_flap_meta if _flaps else meta)).duplicate(true)
 	if _flaps:
 		written_meta.flap_base_trace_format = base_trace_format
@@ -991,6 +1105,8 @@ func to_csv() -> String:
 
 
 func _base_trace_format() -> String:
+	if _pack: # BAT-10: pack_ecm channels identify the layout whatever other features are present
+		return "openrc-trace v13"
 	if _weather != null and _weather.has_vertical_atmosphere():
 		return "openrc-trace v11"
 	if _gear:

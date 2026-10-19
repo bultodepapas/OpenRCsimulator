@@ -1,0 +1,74 @@
+{
+  "format": "openrc-literature-inventory v1",
+  "generator": "research/reference-library/catalog.py --write",
+  "checked_utc": "2026-10-19T12:03:58.902418+00:00",
+  "records": 348,
+  "bibliography_entries": 335,
+  "records_without_local_file": 75,
+  "verified_local_paths": 263,
+  "distinct_local_contents": 263,
+  "local_pdf_paths": 210,
+  "local_zip_paths": 15,
+  "new_collection_paths": 251,
+  "reused_reference_paths": 12,
+  "total_local_bytes": 2076518644,
+  "categories": {
+    "additional-flight-evidence": {
+      "records": 10,
+      "records_with_local_file": 7
+    },
+    "conventional": {
+      "records": 22,
+      "records_with_local_file": 19
+    },
+    "flight-data": {
+      "records": 23,
+      "records_with_local_file": 15
+    },
+    "flying-wings": {
+      "records": 24,
+      "records_with_local_file": 19
+    },
+    "helicopters": {
+      "records": 26,
+      "records_with_local_file": 15
+    },
+    "jets": {
+      "records": 24,
+      "records_with_local_file": 21
+    },
+    "latin-american": {
+      "records": 9,
+      "records_with_local_file": 4
+    },
+    "low-reynolds": {
+      "records": 41,
+      "records_with_local_file": 40
+    },
+    "other-airplanes": {
+      "records": 19,
+      "records_with_local_file": 9
+    },
+    "propulsion": {
+      "records": 10,
+      "records_with_local_file": 10
+    },
+    "sailplanes": {
+      "records": 27,
+      "records_with_local_file": 26
+    },
+    "stik-analogues": {
+      "records": 23,
+      "records_with_local_file": 17
+    },
+    "ugly-stik": {
+      "records": 78,
+      "records_with_local_file": 61
+    },
+    "unsteady-stall": {
+      "records": 12,
+      "records_with_local_file": 10
+    }
+  },
+  "failures": []
+}

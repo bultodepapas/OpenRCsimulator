@@ -62,6 +62,9 @@ var lighting_config: Dictionary = TimeOfDay.defaults()
 var sky_config: Dictionary = SkyConfig.defaults()
 var time_of_day: String = "day"
 var start_button: Button
+## BAT-13: "ideal" or "pack"; the battery choice is shown only for aircraft whose catalog entry has battery_data.
+var battery_mode: String = "ideal"
+var battery_button: Button
 
 var fly_button: Button
 var ground_vehicle_button: Button
@@ -364,6 +367,15 @@ func _init() -> void:
 	limits_label.name = "LaunchLimits"
 	limits_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_flight_details.add_child(limits_label)
+	# BAT-13: the battery mode is a launch detail; the collapsed flight card has no spare height (test_ui_home).
+	battery_button = _button("", "HomeAction")
+	battery_button.name = "BatteryChoice"
+	battery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	battery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	battery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	battery_button.visible = false
+	battery_button.pressed.connect(_cycle_battery_mode)
+	_flight_details.add_child(battery_button)
 	_flight_details.add_child(controller_prompt_label)
 	keys_legend = GridContainer.new()
 	keys_legend.name = "FlightControlsLegend"
@@ -856,6 +868,7 @@ func set_aircraft(id: String) -> void:
 	if entering_rotorcraft:
 		start_choice = "runway"
 	set_start_choice(start_choice)
+	set_battery_mode(battery_mode)
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
 	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
@@ -923,6 +936,18 @@ func set_start_choice(choice: String) -> void:
 		start_button.text = tr("Start: 50% throttle")
 		limits_label.text = "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
 		start_button.tooltip_text = tr(limits_label.text)
+
+
+## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.
+func set_battery_mode(mode: String) -> void:
+	battery_mode = mode if Catalog.has_battery_mode(aircraft_id, mode) else "ideal"
+	battery_button.visible = not Catalog.battery_data(aircraft_id).is_empty() and not Catalog.is_rotorcraft(aircraft_id)
+	battery_button.text = tr("Battery: finite pack (experimental)") if battery_mode == "pack" else tr("Battery: ideal (never runs flat)")
+	battery_button.tooltip_text = tr("Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage.")
+
+
+func _cycle_battery_mode() -> void:
+	set_battery_mode("ideal" if battery_mode == "pack" else "pack")
 
 
 func _cycle_start_choice() -> void:
@@ -1189,6 +1214,7 @@ func _update_weather_text() -> void:
 	weather_button.text = "%s\n%s" % [tr("Weather"), weather_brief]
 	var time_brief := tr("Evening") if time_of_day == "evening" else tr(Conditions.HOME_LABELS[time_of_day])
 	if compact and time_of_day == "night": time_brief = tr("Full moon")
+	if compact and time_of_day == "moonrise": time_brief = tr("Moonrise") # FW-MOON-11
 	if compact and time_of_day == "night_dark": time_brief = tr("New moon")
 	if lighting_config.mode == "astronomical": time_brief = TimeOfDay.format_time(int(lighting_config.local_seconds))
 	time_button.text = "%s\n%s" % [tr("Time of day"), time_brief]

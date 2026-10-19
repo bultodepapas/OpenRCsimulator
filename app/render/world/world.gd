@@ -12,6 +12,7 @@ const ShaderClock := preload("res://render/shader_clock.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const Ephemeris := preload("res://render/world/ephemeris.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
 const Stars := preload("res://render/world/stars.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
@@ -64,6 +65,11 @@ const FLOW_AGX_BELOW_SUN_DEG := 10.0
 ## Time-flow session: {} when frozen. Keys: when, time_scale, step, environment, sun, stars, lights_node, materials,
 ## tonemapper, start_lst, latitude.
 static var _flow := {}
+## FW-MOON-12: the moon choices of the current world, the time before a phase choice moved its date, and weak
+## references for applying a new choice in place (set_moon_config).
+static var _moon_config: Dictionary = MoonConfig.defaults()
+static var _base_when := {}
+static var _live := {}
 
 const PRESENTATION_CONTEXT_FORMAT := "openrc-world-presentation v1"
 
@@ -220,8 +226,17 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		conditions = {time_of_day = false}
 	elif conditions.is_empty():
 		conditions = Conditions.resolve()
+	# FW-MOON-12: the moon choices; a phase choice moves the date to the nearest night with that phase.
+	_moon_config = MoonConfig.resolve()
+	_base_when = {}
+	_live = {}
+	if conditions.time_of_day:
+		conditions = conditions.duplicate(true)
+		_base_when = conditions.when.duplicate()
+		conditions.when = MoonConfig.apply_phase(conditions.when, _moon_config)
+		conditions.moon = _moon_config.duplicate()
 	# FW-22/23: every material built below reads the chosen hour; no time = the calibrated fixed sun.
-	Atmosphere.state = SkyState.state(Ephemeris.sky(conditions.when)) if conditions.time_of_day else {}
+	Atmosphere.state = SkyState.state(Ephemeris.sky(conditions.when), _moon_config) if conditions.time_of_day else {}
 	var flowing: bool = conditions.time_of_day and float(conditions.get("time_scale", 0.0)) > 0.0
 	_flow = {}
 	if flowing:
@@ -317,6 +332,9 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		_night_fire = weakref(fire)
 		environment.set_meta("fw_night_fire", _night_fire)
 	parent.set_meta("night_options", _night_options.duplicate())
+	if conditions.time_of_day:
+		_live = {environment = weakref(environment), sun = weakref(sun), parent = weakref(parent),
+			when = conditions.when.duplicate()}
 	if flowing:
 		_flow = {when = conditions.when.duplicate(), time_scale = float(conditions.time_scale), step = 0,
 			environment = environment, sun = sun, stars = stars, lights_node = lights_node,
@@ -409,13 +427,15 @@ static func ground_share(camera: Camera3D) -> float:
 
 
 ## Advances the world's visual clock: the shader clock every call, the cloud drift at most once per
-## Spec.ATMOSPHERE.cloud_update_s, and, in time-of-day mode with a `view_target`, the eye's adaptation.
+## Spec.ATMOSPHERE.cloud_update_s, and, in time-of-day mode with a `view_target`, the eye's adaptation. With time
+## flowing, the sky steps (flow_to) and the moon and stars move every frame between steps (flow_frame).
 ## Returns true when the sky was re-rendered.
 static func update(environment: Environment, clock_s: float, wind := Vector3.ZERO, view_target: Variant = null,
 		camera: Camera3D = null) -> bool:
 	ShaderClock.update(clock_s, wind)
 	if not _flow.is_empty():
 		flow_to(clock_s)
+		flow_frame(clock_s)
 	if view_target is Vector3 and not Atmosphere.state.is_empty():
 		adapt(environment, view_target, clock_s, ground_share(camera))
 	var fire_ref: Variant = environment.get_meta("fw_night_fire") if environment.has_meta("fw_night_fire") else null
@@ -534,10 +554,11 @@ static func flow_to(clock_s: float) -> bool:
 	if step == int(_flow.step):
 		return false
 	_flow.step = step
-	var when: Dictionary = _flow.when.duplicate()
-	when.hour = float(when.hour) + step * FLOW_STEP_SKY_S / 3600.0
-	var state := SkyState.state(Ephemeris.sky(when))
-	state.tonemapper = _flow.tonemapper
+	_flow.erase("frame_position") # the stepped sky below rewrites the moon; flow_frame must move it again
+	var when := _flow_when(step)
+	var state := _flow_state(step)
+	if not _live.is_empty():
+		_live.when = when.duplicate()
 	Atmosphere.state = state
 	var env: Environment = _flow.environment
 	Atmosphere.apply_state_to_sky(env.sky.sky_material)
@@ -547,15 +568,144 @@ static func flow_to(clock_s: float) -> bool:
 		Atmosphere._set_haze_uniforms(m)
 	if _flow.lights_node != null and not _flow.get("upgraded_lights", false):
 		(_flow.lights_node as Node3D).visible = _night_profile != "off" and float(state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
-	if _flow.stars != null:
-		var lat: float = _flow.latitude
-		(_flow.stars as Node3D).basis = Stars.equatorial_basis(state.lst_deg, lat) * Stars.equatorial_basis(_flow.start_lst, lat).inverse()
+	_turn_stars(float(state.lst_deg))
 	if not is_equal_approx(env.tonemap_exposure, state.exposure) and _adapt_clock < 0.0:
 		env.tonemap_exposure = state.exposure # no view target adapts it (e.g. evidence views)
 		Exposure.set_value(state.exposure)
 	if _flow.get("airfield_lighting") != null:
 		_flow.airfield_lighting.apply_lighting({sun_elevation_deg = float(state.sun_elevation_deg)})
 	return true
+
+
+## FW-MOON-03b (FW-MOON-01 decision): between flow steps the moon's disc and the stars move every frame. The moon's
+## direction and orientation and the sidereal time are interpolated from this step's state toward the next step's, a
+## pure function of the simulation clock that meets the stepped state at every step; everything slow (light, sky
+## colours, exposure) keeps the step cadence. Sky uniforms are written only while the environment does not use the
+## sky's radiance (radiance_unused), because the engine re-renders the cubemap after any sky uniform change when it
+## does. Returns true when it moved the moon or the stars.
+static func flow_frame(clock_s: float) -> bool:
+	if _flow.is_empty() or Atmosphere.state.is_empty():
+		return false
+	var position := maxf(clock_s, 0.0) * float(_flow.time_scale) / FLOW_STEP_SKY_S
+	if position == float(_flow.get("frame_position", -1.0)):
+		return false # paused, or the same frame again
+	var env: Environment = _flow.environment
+	if not radiance_unused(env):
+		return false
+	_flow.frame_position = position
+	var step := int(_flow.step)
+	var f := clampf(position - float(step), 0.0, 1.0)
+	var now: Dictionary = Atmosphere.state
+	var next := _flow_state(step + 1, true)
+	var moved := false
+	var mat := env.sky.sky_material as ShaderMaterial
+	if mat != null and (now.moon_lin != Vector3.ZERO or next.moon_lin != Vector3.ZERO):
+		var a := _ned(float(now.moon_azimuth_deg), float(now.moon_elevation_deg))
+		var b := _ned(float(next.moon_azimuth_deg), float(next.moon_elevation_deg))
+		var v := [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f, a[2] + (b[2] - a[2]) * f]
+		mat.set_shader_parameter("moon_dir", Frames.ned_to_render(v).normalized())
+		if now.get("moon_textured", false) and next.get("moon_textured", false):
+			var from := now.moon_render_to_body as Basis
+			mat.set_shader_parameter("moon_render_to_body", from.slerp(next.moon_render_to_body as Basis, f))
+		moved = true
+	var lst_now := float(now.lst_deg)
+	moved = _turn_stars(lst_now + (fposmod(float(next.lst_deg) - lst_now + 180.0, 360.0) - 180.0) * f) or moved
+	return moved
+
+
+## FW-MOON-01: Godot 4.7.2 Compatibility re-renders the sky's radiance cubemap after a sky uniform change only when the
+## environment uses it for ambient light or reflections (directly or through a sky background).
+static func radiance_unused(env: Environment) -> bool:
+	var sky_bg := env.background_mode == Environment.BG_SKY
+	var ambient := env.ambient_light_source == Environment.AMBIENT_SOURCE_SKY \
+		or (env.ambient_light_source == Environment.AMBIENT_SOURCE_BG and sky_bg)
+	var reflections := env.reflected_light_source == Environment.REFLECTION_SOURCE_SKY \
+		or (env.reflected_light_source == Environment.REFLECTION_SOURCE_BG and sky_bg)
+	return not ambient and not reflections
+
+
+## The local date and time of flow step `step`.
+static func _flow_when(step: int) -> Dictionary:
+	var when: Dictionary = _flow.when.duplicate()
+	when.hour = float(when.hour) + step * FLOW_STEP_SKY_S / 3600.0
+	return when
+
+
+## FW-MOON-03b: the sky state of flow step `step`. flow_frame computes the next step's state ahead and keeps it
+## (`keep`); flow_to uses it once when the clock reaches that step. The cache is keyed by step, start time and moon
+## choices, so the result is always SkyState.state() of that step.
+static func _flow_state(step: int, keep := false) -> Dictionary:
+	var cached: Dictionary = _flow.get("next", {})
+	if not keep:
+		_flow.erase("next")
+	if not cached.is_empty() and int(cached.step) == step and cached.when == _flow.when and cached.moon == _moon_config:
+		return cached.state
+	var state := SkyState.state(Ephemeris.sky(_flow_when(step)), _moon_config)
+	state.tonemapper = _flow.tonemapper
+	if keep:
+		_flow.next = {step = step, when = _flow.when.duplicate(), moon = _moon_config.duplicate(), state = state}
+	return state
+
+
+## Turns the star field to local sidereal time `lst_deg` (relative to the session start). Returns false without stars.
+static func _turn_stars(lst_deg: float) -> bool:
+	if _flow.stars == null or not is_instance_valid(_flow.stars):
+		return false
+	var lat: float = _flow.latitude
+	(_flow.stars as Node3D).basis = Stars.equatorial_basis(lst_deg, lat) * Stars.equatorial_basis(_flow.start_lst, lat).inverse()
+	return true
+
+
+static func _ned(azimuth_deg: float, elevation_deg: float) -> PackedFloat64Array:
+	var az := deg_to_rad(azimuth_deg)
+	var el := deg_to_rad(elevation_deg)
+	return PackedFloat64Array([cos(az) * cos(el), sin(az) * cos(el), -sin(el)])
+
+
+## FW-MOON-12/13: apply new moon choices to the current field-world scene in place (pause menu, Home). Returns false
+## for an invalid configuration; true otherwise (also when no time-of-day scene is live: the next build uses them).
+static func set_moon_config(config: Dictionary) -> bool:
+	var checked := MoonConfig.validate(config)
+	if not checked.ok:
+		return false
+	_moon_config = checked.config
+	if Atmosphere.state.is_empty() or _base_when.is_empty() or _live.is_empty():
+		return true
+	var env: Environment = _live.environment.get_ref()
+	var sun: DirectionalLight3D = _live.sun.get_ref()
+	var parent: Node = _live.parent.get_ref()
+	if env == null or not is_instance_valid(sun) or not is_instance_valid(parent):
+		return true
+	var start := MoonConfig.apply_phase(_base_when, _moon_config)
+	var when := start.duplicate()
+	if not _flow.is_empty():
+		_flow.when = start
+		_flow.erase("frame_position") # the next frame re-applies the moon's per-frame motion, also while paused
+		when.hour = float(start.hour) + int(_flow.step) * FLOW_STEP_SKY_S / 3600.0
+	_live.when = when
+	var tonemapper: String = Atmosphere.state.get("tonemapper", "agx")
+	var state := SkyState.state(Ephemeris.sky(when), _moon_config)
+	state.tonemapper = tonemapper
+	Atmosphere.state = state
+	Atmosphere.apply_state_to_sky(env.sky.sky_material)
+	Atmosphere.apply_state_to_environment(env)
+	Atmosphere.update_sun(sun)
+	for m: ShaderMaterial in haze_materials(parent):
+		Atmosphere._set_haze_uniforms(m)
+	if _adapt_clock < 0.0:
+		env.tonemap_exposure = state.exposure # no view target adapts it (Home, evidence views)
+		Exposure.set_value(state.exposure)
+	return true
+
+
+## The moon choices of the current world (MoonConfig format).
+static func moon_config() -> Dictionary:
+	return _moon_config.duplicate()
+
+
+## The local date and time the current world shows (after a phase choice), or {} without time of day.
+static func shown_when() -> Dictionary:
+	return _live.get("when", {}).duplicate()
 
 
 ## The local sky time (hours) of the current time-flow step; -1 when time is frozen.

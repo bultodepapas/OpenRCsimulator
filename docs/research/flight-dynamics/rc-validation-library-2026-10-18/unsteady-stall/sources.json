@@ -1,0 +1,360 @@
+[
+  {
+    "id": "toppings-yarusevych-2025-transient-stall-reattachment",
+    "title": "Transient dynamics of stall and reattachment at low Reynolds number",
+    "authors": [
+      "Connor E. Toppings",
+      "Serhiy Yarusevych"
+    ],
+    "year": 2025,
+    "source_url": "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/transient-dynamics-of-stall-and-reattachment-at-low-reynolds-number/F97A76B0038B843B58BDC6625B67A8F2",
+    "download_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/F97A76B0038B843B58BDC6625B67A8F2/S0022112025003489a.pdf/div-class-title-transient-dynamics-of-stall-and-reattachment-at-low-reynolds-number-div.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/toppings-yarusevych-2025-jfm-low-re-stall-reattachment.pdf",
+    "type": "journal-article",
+    "topics": [
+      "low-Re dynamic stall",
+      "stall delay",
+      "reattachment",
+      "laminar separation bubble",
+      "finite-wing response"
+    ],
+    "relevance": "Direct force and PIV measurements on an aerofoil and wing at chord Reynolds numbers 8×10^4–1×10^5 during pitch and Reynolds-number transients. It resolves lift delay, bubble bursting and formation, and spanwise flow development at a useful small-aircraft Reynolds range.",
+    "limitations": "Idealized wind-tunnel models rather than a complete RC airplane. The numerical data are available from the corresponding author on request; the paper's supplementary movies are not raw force or PIV datasets.",
+    "access": "Open-access Cambridge PDF downloaded. PDF signature, title and searchable text verified. Article states data are available from the corresponding author on reasonable request; no public numeric dataset was found.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), stated on the article page.",
+    "read_depth": "Checked full PDF text, abstract, experimental methods, selected results, conclusion and data-availability statement. Did not digitize the plotted series.",
+    "sha256": "3e3b3b16b14c8ba76457386655af6c92bf037979df7a9aaf05c2b38f1662665e",
+    "bytes": 6433493,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "toppings-yarusevych-2024-lsb-bursting-finite-wing",
+    "title": "Laminar separation bubble formation and bursting on a finite wing",
+    "authors": [
+      "Connor E. Toppings",
+      "Serhiy Yarusevych"
+    ],
+    "year": 2024,
+    "source_url": "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/laminar-separation-bubble-formation-and-bursting-on-a-finite-wing/ABF5CC45C26C672EEC06F9A213550D20",
+    "download_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/ABF5CC45C26C672EEC06F9A213550D20/S0022112024003215a.pdf/div-class-title-laminar-separation-bubble-formation-and-bursting-on-a-finite-wing-div.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/toppings-yarusevych-2024-jfm-lsb-finite-wing.pdf",
+    "type": "journal-article",
+    "topics": [
+      "low-Re stall",
+      "laminar separation bubble",
+      "reattachment",
+      "finite-wing effects",
+      "unsteady lift"
+    ],
+    "relevance": "Measures lift and PIV on a rectangular NACA 0018 wing and a two-dimensional baseline while a free-stream ramp moves the flow between reattached-bubble and stalled states. It shows the finite wing's lift changes more gradually and with less hysteresis than the two-dimensional airfoil, a useful check against treating section stall as whole-wing stall.",
+    "limitations": "The transition cases are approximately Re_c 5.4×10^4–8.1×10^4 and use an idealized wind-tunnel wing. The supporting measurements are available from the authors on request, not as a public time-series archive.",
+    "access": "Open-access Cambridge PDF downloaded. PDF signature, title and searchable text verified. Article states data are available from the corresponding author on reasonable request.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), stated on the article page.",
+    "read_depth": "Checked full PDF text, abstract, experimental methods, selected Reynolds-number cases, results, conclusion and data-availability statement. Did not digitize the plotted series.",
+    "sha256": "f52254be2acd5bc5e612e93222d467f8dc9a32883107fa4eca3f4fee5f3346b4",
+    "bytes": 3830148,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "ayancik-mulleners-2022-goman-khrabrov-low-re-dynamic-stall",
+    "title": "All you need is time to generalise the Goman–Khrabrov dynamic stall model",
+    "authors": [
+      "Fatma Ayancik",
+      "Karen Mulleners"
+    ],
+    "year": 2022,
+    "source_url": "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/all-you-need-is-time-to-generalise-the-gomankhrabrov-dynamic-stall-model/5DAFFF508F0811B159C53499531D1BDB",
+    "download_url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/5DAFFF508F0811B159C53499531D1BDB/S0022112022003810a_hi.pdf/all-you-need-is-time-to-generalise-the-goman-khrabrov-dynamic-stall-model.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/ayancik-mulleners-2022-gk-dynamic-stall.pdf",
+    "type": "journal-article",
+    "topics": [
+      "Goman–Khrabrov model",
+      "dynamic-stall memory",
+      "stall delay",
+      "post-stall load decay",
+      "model validation"
+    ],
+    "relevance": "A primary model study that replaces fitted Goman–Khrabrov time constants with pitch-rate and vortex-shedding time scales, then compares predictions against three experimental datasets. Its NACA 0018 case at Re_c=75,000 is the closest reported condition to typical RC-wing Reynolds numbers; the NACA 0015 and OA209 cases extend the comparison to higher Reynolds numbers.",
+    "limitations": "This is model validation against previously published lift measurements, not a new experiment or a raw-data release. The Re_c=75,000 comparison uses the Le Fouest et al. 2021 ramp-up dataset already indexed in the adjacent low-Re collection; its printed dimensional setup/Re inconsistency remains unresolved, so this point should not be treated as independent physical calibration.",
+    "access": "Open-access Cambridge PDF downloaded. PDF signature, title and searchable text verified. No separate public time-series dataset was found.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), stated in the article.",
+    "read_depth": "Checked the full PDF text, model equations, the three experimental comparison cases, error metrics and conclusions. Did not re-fit the model or reconstruct the experimental histories.",
+    "sha256": "06934080c6329613ebcfc915fec2e738f12167d67f2beb4df2f41b82da26a2ac",
+    "bytes": 892889,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "tsang-2006-naca0012-dynamic-stall-direct-forces",
+    "title": "Direct force measurements of a two-dimensional airfoil undergoing dynamic stall",
+    "authors": [
+      "Kezia Kit-ying Tsang"
+    ],
+    "year": 2006,
+    "source_url": "https://ira.lib.polyu.edu.hk/handle/10397/83935",
+    "download_url": null,
+    "local_path": null,
+    "type": "masters-thesis",
+    "topics": [
+      "dynamic stall",
+      "direct force measurements",
+      "NACA 0012",
+      "low Reynolds number",
+      "pitch oscillation"
+    ],
+    "relevance": "The repository abstract describes sinusoidal NACA 0012 tests at Re_c=7.7×10^4, with direct lift/drag forces and water-tunnel flow visualization across pre-stall, light-stall and deep-stall cases. Four reduced frequencies from 0.005 to 0.04 make it a close Reynolds-number and transient-load comparator.",
+    "limitations": "A two-dimensional section experiment, not a finite wing or complete aircraft. The measured histories are summarized in the thesis record, but no separate data archive was identified.",
+    "access": "PolyU's official record exposes the thesis metadata and links to its full-text record. That linked host returned an interactive access challenge during retrieval; no file was saved and the challenge was not bypassed.",
+    "license": "The PolyU repository states that items are all rights reserved unless otherwise indicated; no separate thesis license was found.",
+    "read_depth": "Read the official repository abstract and case summary only. The thesis PDF was not retrieved, so its figures and detailed methods were not independently inspected.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "corkery-2019-low-re-transverse-gust-phd-thesis",
+    "title": "Unsteady Aerodynamics of Wing-Gust Encounters",
+    "authors": [
+      "Simon James Corkery"
+    ],
+    "year": 2019,
+    "source_url": "https://www.repository.cam.ac.uk/items/2823011c-6893-410f-b03a-9e916df3d631/full",
+    "download_url": "https://api.repository.cam.ac.uk/server/api/core/bitstreams/aa50e37f-fcb8-4ba5-81b8-cdf45c0ef261/content",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/corkery-2019-unsteady-wing-gust-thesis.pdf",
+    "type": "doctoral-thesis",
+    "topics": [
+      "transverse gust encounters",
+      "low Reynolds number",
+      "force response",
+      "PIV",
+      "added-mass and vortex forces"
+    ],
+    "relevance": "Primary water-towing-tank experiments on flat-plate wings combine force, PIV and dye visualization. The thesis covers top-hat gust ratios 0.2, 0.5 and 1.0 at Re_c=5,000–40,000 and distinguishes the measured gust-vortex force from classical added-mass terms; it provides a broad, low-Re benchmark for transient loads and gust-layer interactions.",
+    "limitations": "Flat-plate models and Reynolds numbers below many conventional RC-aircraft conditions; no free-flight aircraft or open raw-log archive was found. The thesis and the 2018 conference paper below share this research programme and should not be counted as independent experimental campaigns.",
+    "access": "Full Cambridge repository PDF downloaded; PDF signature and title verified. Repository metadata states all rights reserved; retained locally only.",
+    "license": "All rights reserved, as stated in Cambridge repository metadata; public access does not imply redistribution permission.",
+    "read_depth": "Checked the full searchable thesis, abstract, experimental summary and selected methods/results sections. Did not reprocess or digitize the time histories.",
+    "sha256": "c799eeb87978bf50aea24828278000719f1e2ff11f77de48de8a62179d53f3ce",
+    "bytes": 54650169,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "corkery-babinsky-harvey-2018-top-hat-gust-wing",
+    "title": "Response of a Flat Plate Wing to a Transverse Gust at Low Reynolds Numbers",
+    "authors": [
+      "Simon Corkery",
+      "Holger Babinsky",
+      "John Harvey"
+    ],
+    "year": 2018,
+    "source_url": "https://doi.org/10.2514/6.2018-1082",
+    "download_url": "https://api.repository.cam.ac.uk/server/api/core/bitstreams/d62ead36-a2b8-4215-bb10-3cd1249dec97/content",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/corkery-2018-aiaa-1082-transverse-gust.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "transverse top-hat gust",
+      "low-Re wing response",
+      "lift and drag transients",
+      "leading-edge vortex",
+      "PIV"
+    ],
+    "relevance": "A focused paper from the Cambridge water-tank programme above. It measures a flat-plate wing entering a top-hat gust with strength comparable to flight speed and documents the lift/drag transient, leading-edge vortex and gust-shear-layer deformation; linear gust theory fits entry better than exit.",
+    "limitations": "The plate and water-tank scaling are idealized, and the paper's principal GR=1 case is an extreme gust rather than ordinary atmospheric turbulence. It overlaps the 2019 thesis and is a companion publication, not another independent dataset.",
+    "access": "Public Cambridge-hosted copy downloaded. PDF signature, first-page title and authors verified; the local copy is not redistributed.",
+    "license": "No reuse license was stated on the accessible university copy; public access is not taken as redistribution permission.",
+    "read_depth": "Checked title page, abstract and selected experimental/results text. The broader case matrix was checked against the companion thesis; no data were digitized.",
+    "sha256": "c1a6bd2f4f2ee3b7e9b4322839b738ff762e2124534d339540e9b8521621d96d",
+    "bytes": 9279049,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "sedky-etal-2022-open-loop-gust-pitching",
+    "title": "Physics of gust response mitigation in open-loop pitching manoeuvres",
+    "authors": [
+      "Girguis Sedky",
+      "Antonios Gementzopoulos",
+      "Ignacio Andreu-Angulo",
+      "Francis D. Lagor",
+      "Anya R. Jones"
+    ],
+    "year": 2022,
+    "source_url": "https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/physics-of-gust-response-mitigation-in-open-loop-pitching-manoeuvres/7EEC7C8FD57C01653A1CF16EA2774862",
+    "download_url": "https://api.drum.lib.umd.edu/server/api/core/bitstreams/448661e5-8888-40e6-af70-d9becd19e9e5/content",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/sedky-2022-jfm-open-loop-gust-response.pdf",
+    "type": "journal-article",
+    "topics": [
+      "gust encounters",
+      "open-loop pitch response",
+      "force and moment transients",
+      "PIV",
+      "leading-edge vortex"
+    ],
+    "relevance": "Compares three prescribed pitch manoeuvres in transverse gusts using measured force, pitching moment and PIV. It links lift mitigation to leading-edge-vortex detachment, gust exit flow and added-mass contributions, providing transient wing-response evidence for low-order model structure.",
+    "limitations": "The experiment uses a flat-plate wing in a water tow tank at Re_c=10,000, far below typical fixed-wing RC conditions. It is a mechanism and model-structure comparator, not direct RC coefficient calibration; no separate raw-data archive was linked from the repository record.",
+    "access": "Open-access JFM article downloaded from the University of Maryland repository. PDF signature and searchable title verified.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), stated in the paper.",
+    "read_depth": "Read the abstract, experimental setup, force decomposition and selected results/conclusions; did not transcribe plotted histories.",
+    "sha256": "c57531598145d6809ad02a58ca6523e9528f5589f7f6d8a7f6e18e9de833d679",
+    "bytes": 8094691,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "andreu-angulo-babinsky-2023-updown-gust-pitching",
+    "title": "Controlling upwards and downwards gust loads on aerofoils by pitching",
+    "authors": [
+      "Ignacio Andreu-Angulo",
+      "Holger Babinsky"
+    ],
+    "year": 2023,
+    "source_url": "https://link.springer.com/article/10.1007/s00348-023-03670-3",
+    "download_url": "https://link.springer.com/content/pdf/10.1007/s00348-023-03670-3.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/andreu-angulo-babinsky-2023-gust-pitch-mitigation.pdf",
+    "type": "journal-article",
+    "topics": [
+      "upward and downward gusts",
+      "pitch response",
+      "stall and separation",
+      "force and flow measurements",
+      "gust-load mitigation"
+    ],
+    "relevance": "Tests model-derived pitch profiles against measured force and flow in upward and downward top-hat gusts at Re_c=25,000, gust ratios 0.5 and 1.0, and initial incidences up to 45°. The paper reports strong primary-load reduction over many cases and also exposes an unmitigated secondary lift peak after gust exit.",
+    "limitations": "A glass flat-plate model in water with an effective aspect-ratio arrangement, not a complete RC airplane. The primary result is a gust-control maneuver; secondary peaks and highly separated high-incidence cases are not reliably removed. No raw series were found outside the paper.",
+    "access": "Open-access Springer PDF downloaded. PDF signature, title and text verified.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), stated in the paper.",
+    "read_depth": "Checked the full searchable PDF, abstract, experimental conditions and selected mitigation/results sections. Did not digitize the plotted traces.",
+    "sha256": "e60b916d7cc8dd366f7cc41ea38dc43b7e638aac8b9f513655f2df0a21d6819c",
+    "bytes": 11763346,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "sedky-etal-2023-closed-loop-transverse-gust-control",
+    "title": "Experimental mitigation of large-amplitude transverse gusts via closed-loop pitch control",
+    "authors": [
+      "Girguis Sedky",
+      "Antonios Gementzopoulos",
+      "Francis D. Lagor",
+      "Anya R. Jones"
+    ],
+    "year": 2023,
+    "source_url": "https://journals.aps.org/prfluids/abstract/10.1103/PhysRevFluids.8.064701",
+    "download_url": "https://arxiv.org/pdf/2302.02902",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/sedky-2023-prf-gust-closed-loop-control.pdf",
+    "type": "journal-article",
+    "topics": [
+      "closed-loop gust response",
+      "transverse gusts",
+      "lift feedback",
+      "pre-stall and post-stall",
+      "force and flow measurements"
+    ],
+    "relevance": "Demonstrates real-time lift feedback in a water-tank gust encounter and reports force/flow measurements for gust ratios 0.25–0.71, up/down gusts and reference incidences from 0° to 15°. It is useful for checking control-loop timing and whether pitching changes the separated-flow response, not only the attitude response.",
+    "limitations": "The flat-plate wing and Re_c=10,000 experiment are much lower in Reynolds number than most RC aircraft. This overlaps the University of Maryland gust rig and model used in the 2022 paper, though the closed-loop experiment is a distinct control case. The paper provides plotted results but no separate raw-data archive.",
+    "access": "Public arXiv author manuscript downloaded; PDF signature and title verified. It is the manuscript for the cited APS journal article.",
+    "license": "No separate redistribution license was identified for the public arXiv copy; local retention does not imply redistribution permission.",
+    "read_depth": "Checked the arXiv abstract, full-text experimental setup, gust matrix and selected closed-loop results. Did not digitize the histories.",
+    "sha256": "c7e15b2ecf0b1a234e0ea9af6bee6985d516bb8940f788332109b0f293f5607c",
+    "bytes": 42636305,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "fernandez-cleaver-gursul-2021-small-amplitude-gust",
+    "title": "Unsteady aerodynamics of a wing in a novel small-amplitude transverse gust generator",
+    "authors": [
+      "Fidel Fernandez",
+      "David Cleaver",
+      "Ismet Gursul"
+    ],
+    "year": 2021,
+    "source_url": "https://link.springer.com/article/10.1007/s00348-020-03100-8",
+    "download_url": "https://link.springer.com/content/pdf/10.1007/s00348-020-03100-8.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/fernandez-2021-small-amplitude-gust-wing.pdf",
+    "type": "journal-article",
+    "topics": [
+      "small-amplitude gusts",
+      "phase-locked lift response",
+      "dynamic stall",
+      "separation bubble",
+      "PIV"
+    ],
+    "relevance": "Pairs phase-locked lift measurements with PIV for a NACA 0012 rectangular wing (0.23 m chord, aspect ratio 10) exposed to periodic small-amplitude transverse gusts. It shows how separated-flow hysteresis and lift loss depend on effective incidence and reduced frequency, complementing the library's large top-hat gust encounters.",
+    "limitations": "The gust generator produces a standing-wave-like disturbance rather than a gust convected over a flying aircraft. A chord-based Reynolds number was not explicit in the checked methods text, so this is a transient-response comparator rather than an exact RC-Re coefficient source. No public raw force/PIV archive was found.",
+    "access": "Open-access Springer PDF downloaded. PDF signature, title and searchable text verified.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), stated in the paper.",
+    "read_depth": "Checked full PDF text, abstract, model dimensions, measurement methods and selected separated-flow results; Reynolds-number value and raw-data availability were not established from the inspected text.",
+    "sha256": "49973dca99a423f9c640e3beec763c9b2257c7ebec254694f4755c7f280bf0aa",
+    "bytes": 5170712,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  },
+  {
+    "id": "gancarski-etal-2018-unsteady-aerodynamics-open-dataset",
+    "title": "Unsteady Aerodynamics Open Data Set",
+    "authors": [
+      "Pawel Gancarski",
+      "Alvaro Gonzalez Salcedo",
+      "Richard Green",
+      "Hendrik Heisselmann",
+      "Patrick Moriarty",
+      "Xabier Munduate",
+      "Oscar Pires"
+    ],
+    "year": 2018,
+    "source_url": "https://zenodo.org/records/1135424",
+    "download_url": "https://zenodo.org/records/1135424/files/data_ASCI.zip?download=1",
+    "local_path": "references/rc-validation-library-2026-10-18/unsteady-stall/unsteady-aerodynamics-open-data-ascii.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "unsteady airfoil loads",
+      "dynamic stall",
+      "pitch oscillation",
+      "flap oscillation",
+      "tailored inflow turbulence"
+    ],
+    "relevance": "An openly downloadable selected data collection from four wind-tunnel programmes: Glasgow NACA 0015/0030 dynamic stall, NREL/OSU sections, CENER NACA 64-418 pitch/flap tests and ForWind tailored inflow. It supplies time-dependent experimental data for force-response and unsteady-model comparisons; the repository also lists pressure and force NetCDF files.",
+    "limitations": "This is a selected multi-facility dataset for wind-energy sections, not a single controlled RC-wing campaign or original sensor-voltage archive. Reynolds number and processing context must be matched to each contributing study. The Zenodo record did not display a reuse license.",
+    "access": "Downloaded the official 3.2 MB ASCII archive from Zenodo. ZIP integrity test passed. No license was displayed on the record; the local copy is not redistributed.",
+    "license": "No license stated on the Zenodo record inspected; public download is not treated as a redistribution grant.",
+    "read_depth": "Read repository metadata and program descriptions; verified archive CRCs, member list and a representative CENER ASCII header/rows (Time, AoA, Flap, Cl, Cdp, Cm). Did not parse every history or execute notebooks.",
+    "sha256": "b1872ae3ac5f7b467332665c4f65a07758f05c3829fe5c5505cf30113f48cbfe",
+    "bytes": 3180001,
+    "retrieved_utc": "2026-10-19T01:31:05Z",
+    "archive_members": 1025,
+    "archive_members_by_program": {
+      "CENER": 42,
+      "GLASGOW": 705,
+      "NREL": 229,
+      "Oldenburg": 49
+    }
+  },
+  {
+    "id": "lim-etal-2026-ishii-airfoil-light-dynamic-stall",
+    "title": "Unsteady Aerodynamic Characteristics of a High-Performance Pitching Airfoil under Light Dynamic Stall at Low Reynolds Number",
+    "authors": [
+      "Gabriel Yiting Lim",
+      "Masaki Okawa",
+      "Hiroyuki Okuizumi",
+      "Yasufumi Konishi",
+      "Tsubasa Ikami",
+      "Hiroki Nagai"
+    ],
+    "year": 2026,
+    "source_url": "https://www.sciencedirect.com/science/article/pii/S1270963826017840",
+    "download_url": null,
+    "local_path": null,
+    "type": "journal-article",
+    "topics": [
+      "low-Re dynamic stall",
+      "Ishii airfoil",
+      "NACA 0012",
+      "pitching response",
+      "aerodynamic damping",
+      "PIV"
+    ],
+    "relevance": "A recent direct experiment comparing an Ishii profile with NACA 0012 at Re_c=50,000, with synchronized force coefficients and PIV over reduced frequencies 0.01–0.10. This is a close low-Re section test for load hysteresis, stall recovery and pitching-moment response.",
+    "limitations": "The publisher states the experimental data are available on request, not as a public dataset. It is a two-dimensional section experiment and cannot establish a complete RC wing or airplane response.",
+    "access": "The publisher page marks the article open access and lists a Creative Commons license. The official PDF endpoint returned HTTP 403 during retrieval; no copy was saved and no alternate endpoint was used.",
+    "license": "Creative Commons Attribution 4.0 International (CC BY 4.0), indicated by DOI metadata; exact terms were not inspected in the blocked PDF.",
+    "read_depth": "Checked publisher title, author list, abstract, Reynolds/reduced-frequency range and data-availability statement. Full PDF was not retrieved, so methods and plotted results were not independently audited.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:31:05Z"
+  }
+]

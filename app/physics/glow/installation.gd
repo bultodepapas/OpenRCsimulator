@@ -181,6 +181,11 @@ static func prepare_value(value: Variant, raw: Variant, model: Variant, source_b
 	}
 	if not feed.is_empty():
 		install.fuel_feed = feed
+	# FUEL-04: prepare the shared fixed-datum resource inventory once; flight stages only evaluate it.
+	install.mass_reference = FuelMass.prepare(float(model.mass_kg), model.inertia, tank_result.mass_kg,
+		tank_result.position, tank_result.size)
+	if not install.mass_reference.get("ok", false):
+		return _fail("Glow fuel mass reference is invalid: " + str(install.mass_reference.get("error", "")))
 	var out: Dictionary = model.duplicate(true)
 	var out_propulsion: Dictionary = out.propulsion
 	# A missing thrust-angle quantity means the historical axial (+x) installation convention.

@@ -1,0 +1,110 @@
+{
+ "format": "openrc-moon-overlay v1",
+ "lit_fraction": 0.15,
+ "cases": [
+  {
+   "case": "svs_waxing_crescent",
+   "svs_frame": 548,
+   "illuminated": 0.240985871387235,
+   "libration_lon_deg": -5.89876901251999,
+   "libration_lat_deg": -2.25448526073783,
+   "game_radius_px": 159.24770478821762,
+   "svs_radius_px": 330.5,
+   "lit_iou": 0.7902085757454715,
+   "detail_r": 0.7701799797818107,
+   "best_rotation_deg": 0.0,
+   "best_detail_r": 0.7701799797818107
+  },
+  {
+   "case": "svs_first_quarter",
+   "svs_frame": 596,
+   "illuminated": 0.451610726506627,
+   "libration_lon_deg": -4.61020338364994,
+   "libration_lat_deg": -4.87472288289677,
+   "game_radius_px": 162.7556771773818,
+   "svs_radius_px": 336.25,
+   "lit_iou": 0.7878037372428441,
+   "detail_r": 0.8092967155369853,
+   "best_rotation_deg": 0.0,
+   "best_detail_r": 0.8092967155369853
+  },
+  {
+   "case": "svs_waxing_gibbous",
+   "svs_frame": 668,
+   "illuminated": 0.784119158934166,
+   "libration_lon_deg": -0.639205148005565,
+   "libration_lat_deg": -6.4316480597438,
+   "game_radius_px": 165.76014571278122,
+   "svs_radius_px": 342.25,
+   "lit_iou": 0.8041521191150913,
+   "detail_r": 0.6677240667258288,
+   "best_rotation_deg": 0.0,
+   "best_detail_r": 0.6677240667258288
+  },
+  {
+   "case": "svs_full",
+   "svs_frame": 44,
+   "illuminated": 0.993848783691865,
+   "libration_lon_deg": 2.90515716316773,
+   "libration_lat_deg": -5.64132674251927,
+   "game_radius_px": 166.79306372921582,
+   "svs_radius_px": 346.25,
+   "lit_iou": 0.9650447058823529,
+   "detail_r": 0.5910681985953901,
+   "best_rotation_deg": -0.5,
+   "best_detail_r": 0.601197759724906
+  },
+  {
+   "case": "svs_waning_gibbous",
+   "svs_frame": 145,
+   "illuminated": 0.835348633687078,
+   "libration_lon_deg": 7.65874902424154,
+   "libration_lat_deg": -0.445859416938357,
+   "game_radius_px": 158.8604502681876,
+   "svs_radius_px": 330.75,
+   "lit_iou": 0.8751263127681075,
+   "detail_r": 0.5891575107006976,
+   "best_rotation_deg": 0.0,
+   "best_detail_r": 0.5891575107006976
+  },
+  {
+   "case": "svs_last_quarter",
+   "svs_frame": 220,
+   "illuminated": 0.547417330746226,
+   "libration_lon_deg": 6.28746773412533,
+   "libration_lat_deg": 4.14423557999828,
+   "game_radius_px": 151.60393669099682,
+   "svs_radius_px": 315.75,
+   "lit_iou": 0.8854968722011234,
+   "detail_r": 0.6540840743391239,
+   "best_rotation_deg": 0.5,
+   "best_detail_r": 0.661656286288323
+  },
+  {
+   "case": "svs_south_crescent",
+   "svs_frame": 4055,
+   "illuminated": 0.19259433230159,
+   "libration_lon_deg": 5.97202151828253,
+   "libration_lat_deg": -1.86983391170535,
+   "game_radius_px": 162.8077960898286,
+   "svs_radius_px": 338.5,
+   "lit_iou": 0.807087229152255,
+   "detail_r": 0.7215774080067455,
+   "best_rotation_deg": -0.5,
+   "best_detail_r": 0.7291262812231535
+  },
+  {
+   "case": "svs_south_full",
+   "svs_frame": 52,
+   "illuminated": 0.996605034593615,
+   "libration_lon_deg": 2.86046194253007,
+   "libration_lat_deg": -6.73666003167916,
+   "game_radius_px": 166.2780125307954,
+   "svs_radius_px": 346.5,
+   "lit_iou": 0.9729951515303374,
+   "detail_r": 0.5304463881436117,
+   "best_rotation_deg": -0.5,
+   "best_detail_r": 0.5340205390100854
+  }
+ ]
+}

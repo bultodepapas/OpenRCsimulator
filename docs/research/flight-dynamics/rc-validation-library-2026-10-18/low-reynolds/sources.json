@@ -1,0 +1,1143 @@
+[
+  {
+    "id": "low-speed-airfoil-data-v1",
+    "title": "Summary of Low-Speed Airfoil Data, Volume 1",
+    "authors": [
+      "M. S. Selig",
+      "J. J. Guglielmo",
+      "A. P. Broeren",
+      "P. Giguère"
+    ],
+    "year": 1995,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat.html",
+    "download_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V1.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/low-speed-airfoil-data-v1.pdf",
+    "type": "wind-tunnel-report",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured section polars for low Reynolds number flight; compare lift, drag, stall and moment across tested configurations.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "da6e1b71723a20c66ef6450011e42f3af26fc99147203daf2b2233ce14089de8",
+    "bytes": 6758420,
+    "retrieved_utc": "2026-10-19T01:13:54.607655+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V1.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "volume01",
+    "title": "UIUC LSAT Volume 1 tabulated experimental data",
+    "authors": [
+      "M. S. Selig",
+      "J. J. Guglielmo",
+      "A. P. Broeren",
+      "P. Giguère"
+    ],
+    "year": 1995,
+    "source_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume01.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/volume01.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Machine-readable measured polar tables accompanying the report; preserve headings, airfoil identity, Re and test condition.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "124b990a3d22163cadf6efb8e805860e89275f2f987d96e4fbe7a07bda8e03ab",
+    "bytes": 254863,
+    "retrieved_utc": "2026-10-19T01:13:53.109640+00:00",
+    "license": "UIUC LSAT data-use notice (GPL-style conditions, attribution and source-data access); see https://m-selig.ae.illinois.edu/pd.html and notices inside ZIP; book copyrights are separate.",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume01.zip",
+    "archive_members": 11,
+    "archive_uncompressed_bytes": 771002,
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "low-speed-airfoil-data-v2",
+    "title": "Summary of Low-Speed Airfoil Data, Volume 2",
+    "authors": [
+      "M. S. Selig",
+      "C. A. Lyon",
+      "P. Giguère",
+      "C. P. Ninham",
+      "J. J. Guglielmo"
+    ],
+    "year": 1996,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat.html",
+    "download_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V2.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/low-speed-airfoil-data-v2.pdf",
+    "type": "wind-tunnel-report",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured section polars for low Reynolds number flight; compare lift, drag, stall and moment across tested configurations.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "028723cb945b46c9a84c99c8a14ee20e1215605e7a072b2e2f16b43d21c83c64",
+    "bytes": 6072918,
+    "retrieved_utc": "2026-10-19T01:13:54.324151+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V2.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "volume02",
+    "title": "UIUC LSAT Volume 2 tabulated experimental data",
+    "authors": [
+      "M. S. Selig",
+      "C. A. Lyon",
+      "P. Giguère",
+      "C. P. Ninham",
+      "J. J. Guglielmo"
+    ],
+    "year": 1996,
+    "source_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume02.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/volume02.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Machine-readable measured polar tables accompanying the report; preserve headings, airfoil identity, Re and test condition.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "5a678fd02ed71ffd4a0a2c4a9f891f739001426ab0d258f7d7370389f0b121c3",
+    "bytes": 232146,
+    "retrieved_utc": "2026-10-19T01:13:54.163517+00:00",
+    "license": "UIUC LSAT data-use notice (GPL-style conditions, attribution and source-data access); see https://m-selig.ae.illinois.edu/pd.html and notices inside ZIP; book copyrights are separate.",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume02.zip",
+    "archive_members": 11,
+    "archive_uncompressed_bytes": 667642,
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "low-speed-airfoil-data-v3",
+    "title": "Summary of Low-Speed Airfoil Data, Volume 3",
+    "authors": [
+      "C. A. Lyon",
+      "A. P. Broeren",
+      "P. Giguère",
+      "A. Gopalarathnam",
+      "M. S. Selig"
+    ],
+    "year": 1998,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat.html",
+    "download_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V3.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/low-speed-airfoil-data-v3.pdf",
+    "type": "wind-tunnel-report",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured section polars for low Reynolds number flight; compare lift, drag, stall and moment across tested configurations.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "f0d0c9c342beddebca01e0545e3bf9dc596cab21b0b4a86e9ef940e66a007bd5",
+    "bytes": 13098045,
+    "retrieved_utc": "2026-10-19T01:13:57.512557+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V3.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "volume03",
+    "title": "UIUC LSAT Volume 3 tabulated experimental data",
+    "authors": [
+      "C. A. Lyon",
+      "A. P. Broeren",
+      "P. Giguère",
+      "A. Gopalarathnam",
+      "M. S. Selig"
+    ],
+    "year": 1998,
+    "source_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume03.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/volume03.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Machine-readable measured polar tables accompanying the report; preserve headings, airfoil identity, Re and test condition.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "199e7fd9441469c4c49ab21b4f3443cd0de26d950a7053cf6d0e53575b706421",
+    "bytes": 381532,
+    "retrieved_utc": "2026-10-19T01:13:55.363272+00:00",
+    "license": "UIUC LSAT data-use notice (GPL-style conditions, attribution and source-data access); see https://m-selig.ae.illinois.edu/pd.html and notices inside ZIP; book copyrights are separate.",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume03.zip",
+    "archive_members": 10,
+    "archive_uncompressed_bytes": 1087309,
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "low-speed-airfoil-data-v4",
+    "title": "Wind Tunnel Aerodynamic Tests of Six Airfoils for Use on Small Wind Turbines (Summary of Low-Speed Airfoil Data, Volume 4)",
+    "authors": [
+      "M. S. Selig",
+      "B. D. McGranahan"
+    ],
+    "year": 2004,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/SeligMcGranahan-2004-NREL-SR-500-34515-SixNRLAirfoils.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/low-speed-airfoil-data-v4.pdf",
+    "type": "wind-tunnel-report",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured section polars for low Reynolds number flight; compare lift, drag, stall and moment across tested configurations.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "ef71fe7cb30e94cf59cd8cd1a7ab37510c8156ef280995d022af07529a5bcd37",
+    "bytes": 3274755,
+    "retrieved_utc": "2026-10-19T01:13:58.187964+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/SeligMcGranahan-2004-NREL-SR-500-34515-SixNRLAirfoils.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "volume04",
+    "title": "UIUC LSAT Volume 4 tabulated experimental data",
+    "authors": [
+      "M. S. Selig",
+      "B. D. McGranahan"
+    ],
+    "year": 2004,
+    "source_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume04.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/volume04.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Machine-readable measured polar tables accompanying the report; preserve headings, airfoil identity, Re and test condition.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "4b9db14ba466ef96d80c90cfa77ab97f9d0ea48ecd7c449b2772e92076a54a94",
+    "bytes": 133131,
+    "retrieved_utc": "2026-10-19T01:13:56.340141+00:00",
+    "license": "UIUC LSAT data-use notice (GPL-style conditions, attribution and source-data access); see https://m-selig.ae.illinois.edu/pd.html and notices inside ZIP; book copyrights are separate.",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume04.zip",
+    "archive_members": 48,
+    "archive_uncompressed_bytes": 436801,
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "low-speed-airfoil-data-v5",
+    "title": "Summary of Low-Speed Airfoil Data, Volume 5",
+    "authors": [
+      "G. A. Williamson",
+      "B. D. McGranahan",
+      "B. A. Broughton",
+      "R. W. Deters",
+      "J. B. Brandt",
+      "M. S. Selig"
+    ],
+    "year": 2012,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat.html",
+    "download_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V5.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/low-speed-airfoil-data-v5.pdf",
+    "type": "wind-tunnel-report",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured section polars for low Reynolds number flight; compare lift, drag, stall and moment across tested configurations.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "0cea30d67ef2e735d15abc0e0b429a896aebc32bc4c68f24bdda600aebf1fa35",
+    "bytes": 8549181,
+    "retrieved_utc": "2026-10-19T01:14:01.025046+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Low-Speed-Airfoil-Data-V5.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "volume05",
+    "title": "UIUC LSAT Volume 5 tabulated experimental data",
+    "authors": [
+      "G. A. Williamson",
+      "B. D. McGranahan",
+      "B. A. Broughton",
+      "R. W. Deters",
+      "J. B. Brandt",
+      "M. S. Selig"
+    ],
+    "year": 2012,
+    "source_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume05.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/volume05.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Machine-readable measured polar tables accompanying the report; preserve headings, airfoil identity, Re and test condition.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "35e15b8e89c0b32cc148867df9926403fcf5a64ceadcfe114f072a05fc25c190",
+    "bytes": 197917,
+    "retrieved_utc": "2026-10-19T01:13:58.273830+00:00",
+    "license": "UIUC LSAT data-use notice (GPL-style conditions, attribution and source-data access); see https://m-selig.ae.illinois.edu/pd.html and notices inside ZIP; book copyrights are separate.",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume05.zip",
+    "archive_members": 100,
+    "archive_uncompressed_bytes": 655503,
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "williamson-2012-large-flap-deflections",
+    "title": "Experimental Wind Tunnel Study of Airfoils with Large Flap Deflections at Low Reynolds Numbers",
+    "authors": [
+      "G. A. Williamson"
+    ],
+    "year": 2012,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Williamson-2012-UIUC-MS-Thesis.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Williamson-2012-UIUC-MS-Thesis.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/williamson-2012-large-flap-deflections.pdf",
+    "type": "thesis",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured section forces and moments with large flap deflections for control-surface nonlinearities.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "32f4c880e7c72793ec982821abf87f833ab03bbeaa520d1cbd77f301035da1d4",
+    "bytes": 13673393,
+    "retrieved_utc": "2026-10-19T01:14:00.785216+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Williamson-2012-UIUC-MS-Thesis.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "williamson-volume06-data",
+    "title": "Williamson thesis tabulated large-flap experimental data",
+    "authors": [
+      "G. A. Williamson"
+    ],
+    "year": 2012,
+    "source_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume06.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/williamson-volume06-data.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Tabulated large-flap data; study saturation, lift and pitching-moment response.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "987d4b6a412e7c7fd0b186891e131c1b8aa5a0bb39a677ad76827c630d9b3186",
+    "bytes": 239479,
+    "retrieved_utc": "2026-10-19T01:13:59.038889+00:00",
+    "license": "UIUC LSAT data-use notice (GPL-style conditions, attribution and source-data access); see https://m-selig.ae.illinois.edu/pd.html and notices inside ZIP; book copyrights are separate.",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd/pub/lsat/volume06.zip",
+    "archive_members": 142,
+    "archive_uncompressed_bytes": 727456,
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "airfoils-at-low-speeds-1989",
+    "title": "Airfoils at Low Speeds (SoarTech 8)",
+    "authors": [
+      "Michael S. Selig",
+      "John F. Donovan",
+      "David B. Fraser"
+    ],
+    "year": 1989,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Airfoils-at-Low-Speeds.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Airfoils-at-Low-Speeds.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/airfoils-at-low-speeds-1989.pdf",
+    "type": "wind-tunnel-report",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Princeton low-Re airfoil tests and experimental methods.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "938007bbc6261aeb876dc21ab5ec7bd399de4a7f73d86bc6d77477de75554b0d",
+    "bytes": 11615652,
+    "retrieved_utc": "2026-10-19T01:14:05.432745+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Airfoils-at-Low-Speeds.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "soartech8-data",
+    "title": "SoarTech 8 tabulated experimental airfoil data",
+    "authors": [],
+    "year": 1989,
+    "source_url": "https://m-selig.ae.illinois.edu/uiuc_lsat.html",
+    "download_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Stec8.zip",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/soartech8-data.zip",
+    "type": "experimental-dataset",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Tabulated Princeton low-Re polars, complementary to UIUC series.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "11ae99c9c16fae4cc947875889491e3dfce9678114ef1fbbe5d822cfe1ffd47f",
+    "bytes": 194797,
+    "retrieved_utc": "2026-10-19T01:14:01.539613+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/uiuc_lsat/Stec8.zip",
+    "archive_members": 193,
+    "archive_uncompressed_bytes": 541777,
+    "verified": "ZIP CRC checked; originals retained without extraction",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "vahoraanandaselig-2018-aiaa-paper-2018-1277-desmethodforairfoilscaling",
+    "title": "Design Methodology for Aerodynamically Scaling of a General Aviation Aircraft Airfoil ",
+    "authors": [
+      "Vahora, M.",
+      "Ananda, G.K.",
+      "Selig, M.S."
+    ],
+    "year": 2018,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/VahoraAnandaSelig-2018-AIAA-Paper-2018-1277-DesMethodforAirfoilScaling.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/VahoraAnandaSelig-2018-AIAA-Paper-2018-1277-DesMethodforAirfoilScaling.pdf",
+    "local_path": "references/rc-aero-data/vahora-ananda-selig-2018-aiaa-2018-1277-airfoil-scaling-c182.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Aerodynamic scaling and section redesign when transferring full-scale geometry to RC Re.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "existing-local",
+    "sha256": "bc3f423cb1302ba34510a4ae99faa93543a90a97f02acb1a9a43a37c701782bc",
+    "bytes": 1890364,
+    "retrieved_utc": "2026-10-19T01:14:02.302069+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Vahora, M., Ananda, G.K. and Selig, M.S., \"Design Methodology for Aerodynamically Scaling of a General Aviation Aircraft Airfoil ,\" AIAA SciTech, 2018 AIAA Aerospace Sciences Meeting , AIAA Paper 2018-1277, Kissimmee, FL, January 2018.\n| PDF",
+    "reuse_existing": true,
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "anandavahoradantskerselig-2017-aiaa-paper-2017-4077-desmethodfordynscalingga",
+    "title": "Design Methodology for a Dynamically-Scaled General Aviation Aircraft",
+    "authors": [
+      "Ananda, G.K.",
+      "Vahora, M.",
+      "Dantsker, O.",
+      "Selig, M.S."
+    ],
+    "year": 2017,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/AnandaVahoraDantskerSelig-2017-AIAA-Paper-2017-4077-DesMethodforDynScalingGA.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/AnandaVahoraDantskerSelig-2017-AIAA-Paper-2017-4077-DesMethodforDynScalingGA.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/AnandaVahoraDantskerSelig-2017-AIAA-Paper-2017-4077-DesMethodforDynScalingGA.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Dynamic scaling methodology, similarity assumptions and subscale limitations.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "e3cee10ed1f520b6e90a620cc5226543ef2277f572bfea7ffd8eda7b4f3c9aaa",
+    "bytes": 2969477,
+    "retrieved_utc": "2026-10-19T01:14:07.085353+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ananda, G.K., Vahora, M., Dantsker, O., and Selig, M.S., \"Design Methodology for a Dynamically-Scaled General Aviation Aircraft,\" AIAA Aviation 2017, 35th AIAA Applied Aerodynamics Conference , AIAA Paper 2017-4077, Denver, CO, June 2017.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/AnandaVahoraDantskerSelig-2017-AIAA-Paper-2017-4077-DesMethodforDynScalingGA.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "dantskeranandaselig-2017-aiaa-paper-2017-4078-gaustarphase1",
+    "title": "GA-USTAR Phase 1: Development and Flight Testing of the Baseline Upset and Stall Research Aircraft",
+    "authors": [
+      "Dantsker, O.D.",
+      "Ananda, G.K.",
+      "Selig, M.S."
+    ],
+    "year": 2017,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/DantskerAnandaSelig-2017-AIAA-Paper-2017-4078-GAUSTARPhase1.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/DantskerAnandaSelig-2017-AIAA-Paper-2017-4078-GAUSTARPhase1.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/DantskerAnandaSelig-2017-AIAA-Paper-2017-4078-GAUSTARPhase1.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Instrumented GA-USTAR subscale airplane test platform.",
+    "limitations": "Measured research platform differs from Jensen Ugly Stik. Read sensor, coordinate, filtering and excitation limits before comparing trajectories.",
+    "access": "downloaded",
+    "sha256": "f549ae67eded32b5d9a5fbe6b085089cb8d67d7863bcd37aa59ac4e28b2fd245",
+    "bytes": 2057395,
+    "retrieved_utc": "2026-10-19T01:14:04.811857+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Dantsker, O.D., Ananda, G.K., and Selig, M.S., \"GA-USTAR Phase 1: Development and Flight Testing of the Baseline Upset and Stall Research Aircraft,\" AIAA Aviation 2017, 35th AIAA Applied Aerodynamics Conference , AIAA Paper 2017-4078, Denver, CO, June 2017.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/DantskerAnandaSelig-2017-AIAA-Paper-2017-4078-GAUSTARPhase1.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "anandaselig-2016-aiaa-paper-2016-3541-ga-poststallmodeling",
+    "title": "Stall/Post-Stall Modeling of the Longitudinal Characteristics of a General Aviation Aircraft",
+    "authors": [
+      "Ananda, G.K.",
+      "Selig, M.S."
+    ],
+    "year": 2016,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSelig-2016-AIAA-Paper-2016-3541-GA-PostStallModeling.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSelig-2016-AIAA-Paper-2016-3541-GA-PostStallModeling.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/AnandaSelig-2016-AIAA-Paper-2016-3541-GA-PostStallModeling.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Longitudinal post-stall model formulation; useful comparison for candidate stall laws.",
+    "limitations": "Read the paper to separate tunnel measurements from force/model predictions. Wing-only or modeled results cannot establish exact-airframe spin behavior.",
+    "access": "downloaded",
+    "sha256": "d7c7a2229444b36a2ce1fcc8aac1912f59327f51569dbb5edbdfa1bdcb5639fc",
+    "bytes": 2679269,
+    "retrieved_utc": "2026-10-19T01:14:06.236532+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ananda, G.K. and Selig, M.S., \"Stall/Post-Stall Modeling of the Longitudinal Characteristics of a General Aviation Aircraft,\" AIAA Aviation 2016, Atmospheric Flight Mechanics Conference , AIAA Paper 2016-3541, Washington, DC, June 2016.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSelig-2016-AIAA-Paper-2016-3541-GA-PostStallModeling.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "raghebselig-2016-aiaa-paper-2016-1073-stalledspinningwingtunneltests",
+    "title": "Wind Tunnel Testing of Wings in Spin",
+    "authors": [
+      "Ragheb, A.",
+      "Selig, M.S."
+    ],
+    "year": 2016,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/RaghebSelig-2016-AIAA-Paper-2016-1073-StalledSpinningWingTunnelTests.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/RaghebSelig-2016-AIAA-Paper-2016-1073-StalledSpinningWingTunnelTests.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/RaghebSelig-2016-AIAA-Paper-2016-1073-StalledSpinningWingTunnelTests.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Wind-tunnel spinning-wing forces for post-stall/autorotation comparison.",
+    "limitations": "Read the paper to separate tunnel measurements from force/model predictions. Wing-only or modeled results cannot establish exact-airframe spin behavior.",
+    "access": "downloaded",
+    "sha256": "2ffdb590660446c77efd1750d40800e5846978f51ce3636ca01e1ae82f8c41b9",
+    "bytes": 750742,
+    "retrieved_utc": "2026-10-19T01:14:06.509984+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ragheb, A. and Selig, M.S., \"Wind Tunnel Testing of Wings in Spin,\" AIAA SciTech, AIAA 54th Aerospace Sciences Meeting , AIAA Paper 2016-1073, San Diego, CA, January 2016.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/RaghebSelig-2016-AIAA-Paper-2016-1073-StalledSpinningWingTunnelTests.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "anandasukumarselig-2015-aeroscitech-lowrewings",
+    "title": "Measured Aerodynamic Characteristics of Wings at Low Reynolds Numbers",
+    "authors": [
+      "Ananda, G.K.",
+      "Sukumar, P.P.",
+      "Selig, M.S."
+    ],
+    "year": 2015,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2015-AeroSciTech-LowReWings.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2015-AeroSciTech-LowReWings.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/AnandaSukumarSelig-2015-AeroSciTech-LowReWings.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Finite-wing measured forces, planform and aspect-ratio effects at low Re.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "4c5083916394fe6b43ad07a3de52e4e4fd11849ba89ed0d7b64daeaefe502181",
+    "bytes": 2892064,
+    "retrieved_utc": "2026-10-19T01:14:07.936845+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ananda, G.K., Sukumar, P.P., and Selig, M.S., \"Measured Aerodynamic Characteristics of Wings at Low Reynolds Numbers,\" Aerospace Science and Technology , 2015, pp. 392-406.\n| doi:10.1016/j.ast.2014.11.016 | PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2015-AeroSciTech-LowReWings.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "raghebselig-2015-aiaa-2015-0548",
+    "title": "Improved Methodology for Predicting the Force on Stalled Spinning Wings",
+    "authors": [
+      "Ragheb, A.M.",
+      "Selig, M.S."
+    ],
+    "year": 2015,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/RaghebSelig-2015-AIAA-2015-0548.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/RaghebSelig-2015-AIAA-2015-0548.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/RaghebSelig-2015-AIAA-2015-0548.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Method for force prediction on spinning stalled wings.",
+    "limitations": "Read the paper to separate tunnel measurements from force/model predictions. Wing-only or modeled results cannot establish exact-airframe spin behavior.",
+    "access": "downloaded",
+    "sha256": "47e8507324a59d90bf44b77b1f7da5b26faa2517ce3a485d7f80574a788ee3d0",
+    "bytes": 1218963,
+    "retrieved_utc": "2026-10-19T01:14:08.395421+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ragheb, A.M. and Selig, M.S., \"Improved Methodology for Predicting the Force on Stalled Spinning Wings,\" AIAA SciTech, AIAA 53rd Aerospace Sciences Meeting , AIAA Paper 2015-0548, Kissimmee, FL, January 2015.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/RaghebSelig-2015-AIAA-2015-0548.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "raouhligselig-2012-aiaa-2012-2768",
+    "title": "Glide and Powered Flight Characteristics of Micro Air Vehicles from Experimental Measurements",
+    "authors": [
+      "Rao, A.H.",
+      "Uhlig, D.V.",
+      "Selig, M.S."
+    ],
+    "year": 2012,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/RaoUhligSelig-2012-AIAA-2012-2768.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/RaoUhligSelig-2012-AIAA-2012-2768.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/RaoUhligSelig-2012-AIAA-2012-2768.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Experimental glide and powered MAV flight characterization.",
+    "limitations": "Measured research platform differs from Jensen Ugly Stik. Read sensor, coordinate, filtering and excitation limits before comparing trajectories.",
+    "access": "downloaded",
+    "sha256": "42b18ba769466efbde1061f909cc70f655af703a6525138cfd7fd851a70402ca",
+    "bytes": 13833343,
+    "retrieved_utc": "2026-10-19T01:14:24.199208+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Rao, A.H., Uhlig, D.V., and Selig, M.S., \"Glide and Powered Flight Characteristics of Micro Air Vehicles from Experimental Measurements,\" AIAA 30th Applied Aerodynamics Conference , AIAA Paper 2012-2768, New Orleans, LA, June 2012.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/RaoUhligSelig-2012-AIAA-2012-2768.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "anandasukumarselig-2012-aiaa-2012-3026",
+    "title": "Low-to-Moderate Aspect Ratio Wings Tested at Low Reynolds Numbers",
+    "authors": [
+      "Ananda, G.K.",
+      "Sukumar, P.P.",
+      "Selig, M.S."
+    ],
+    "year": 2012,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2012-AIAA-2012-3026.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2012-AIAA-2012-3026.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/AnandaSukumarSelig-2012-AIAA-2012-3026.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Low/moderate-aspect-ratio tunnel wings, including Reynolds-dependent hysteresis.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "00acd2af88a427cdb45f0554963ef473c8a52635791a6b4f4c7b17c1a810b936",
+    "bytes": 25032829,
+    "retrieved_utc": "2026-10-19T01:14:17.640779+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Ananda, G.K., Sukumar, P.P., and Selig, M.S., \"Low-to-Moderate Aspect Ratio Wings Tested at Low Reynolds Numbers,\" AIAA 30th Applied Aerodynamics Conference , AIAA Paper 2012-3026, New Orleans, LA, June 2012.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/AnandaSukumarSelig-2012-AIAA-2012-3026.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "uhligselig-2011-aiaa-2011-3659-mavsmotiontracking",
+    "title": "Stability Characteristics of Micro Air Vehicles from Experimental Measurements",
+    "authors": [
+      "Uhlig, D.V.",
+      "Selig, M.S."
+    ],
+    "year": 2011,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/UhligSelig-2011-AIAA-2011-3659-MAVsMotionTracking.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/UhligSelig-2011-AIAA-2011-3659-MAVsMotionTracking.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/UhligSelig-2011-AIAA-2011-3659-MAVsMotionTracking.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Experimental MAV stability from motion tracking.",
+    "limitations": "Measured research platform differs from Jensen Ugly Stik. Read sensor, coordinate, filtering and excitation limits before comparing trajectories.",
+    "access": "downloaded",
+    "sha256": "3a60f294da7d1d7fce730abe88b548e7760a5c3e3c7db7e26e042fd879cba98c",
+    "bytes": 2991069,
+    "retrieved_utc": "2026-10-19T01:14:13.495949+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Uhlig, D.V. and Selig, M.S., \"Stability Characteristics of Micro Air Vehicles from Experimental Measurements,\" AIAA 29th Applied Aerodynamics Conference , AIAA Paper 2011-3659, Honolulu, HI, June 2011.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/UhligSelig-2011-AIAA-2011-3659-MAVsMotionTracking.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "seligdeterswilliamson-2011-aiaa-2011-875-lrn-airfoilwindtunneltesting",
+    "title": "Wind Tunnel Testing Airfoils at Low Reynolds Numbers",
+    "authors": [
+      "Selig, M.S.",
+      "Deters, R.W.",
+      "Williamson, G.A."
+    ],
+    "year": 2011,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/SeligDetersWilliamson-2011-AIAA-2011-875-LRN-AirfoilWindTunnelTesting.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/SeligDetersWilliamson-2011-AIAA-2011-875-LRN-AirfoilWindTunnelTesting.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/SeligDetersWilliamson-2011-AIAA-2011-875-LRN-AirfoilWindTunnelTesting.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Test methods and uncertainty useful for judging digitized polar evidence.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "db44af4d64cf80954e3e860485f809a43f5b8dec0835bfc9eb4a36c85a653601",
+    "bytes": 2588048,
+    "retrieved_utc": "2026-10-19T01:14:15.262498+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Selig, M.S., Deters, R.W., and Williamson, G.A., \"Wind Tunnel Testing Airfoils at Low Reynolds Numbers,\" AIAA 49th Aerospace Sciences Meeting , AIAA Paper 2011-875, Orlando, FL, January 2011.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/SeligDetersWilliamson-2011-AIAA-2011-875-LRN-AirfoilWindTunnelTesting.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "uhligsareensukumarraoselig-2010-aiaa-2010-8416-motiontrackingaero",
+    "title": "Determining Aerodynamic Characteristics of a Micro Air Vehicle Using Motion Tracking",
+    "authors": [
+      "Uhlig, D.V.",
+      "Sareen, A.",
+      "Sukumar, P.P.",
+      "Rao, A.H.",
+      "Selig, M.S."
+    ],
+    "year": 2010,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/UhligSareenSukumarRaoSelig-2010-AIAA-2010-8416-MotionTrackingAero.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/UhligSareenSukumarRaoSelig-2010-AIAA-2010-8416-MotionTrackingAero.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/UhligSareenSukumarRaoSelig-2010-AIAA-2010-8416-MotionTrackingAero.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Motion-tracking aerodynamic identification from free flight.",
+    "limitations": "Measured research platform differs from Jensen Ugly Stik. Read sensor, coordinate, filtering and excitation limits before comparing trajectories.",
+    "access": "downloaded",
+    "sha256": "2b20d8dda256df754816501cfd8d27743163b2e112bf3f3dcbd25cd4b5fff8f9",
+    "bytes": 836633,
+    "retrieved_utc": "2026-10-19T01:14:18.615268+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Uhlig, D.V., Sareen, A., Sukumar, P.P., and Rao, A.H., and Selig, M.S., \"Determining Aerodynamic Characteristics of a Micro Air Vehicle Using Motion Tracking,\" AIAA Atmospheric Flight Mechanics Conference , AIAA Paper 2010-8416, Toronto, Ontario, Canada, August 2010.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/UhligSareenSukumarRaoSelig-2010-AIAA-2010-8416-MotionTrackingAero.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "gopalarathnametal-2003-jofac-lrnairfoildesignwithtrips",
+    "title": "Design of Low Reynolds Number Airfoils with Trips",
+    "authors": [
+      "Gopalarathnam, A.",
+      "Broughton, B.A.",
+      "McGranahan, B.D.",
+      "Selig, M.S."
+    ],
+    "year": 2003,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/GopalarathnamEtal-2003-JofAC-LRNAirfoiLDesignWithTrips.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/GopalarathnamEtal-2003-JofAC-LRNAirfoiLDesignWithTrips.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/GopalarathnamEtal-2003-JofAC-LRNAirfoiLDesignWithTrips.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Airfoil performance with boundary-layer trips; surface-state sensitivity.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "20689e4a1878fd18175b65c7169d6fa582a9f3f243b0fdf0c09e2e7c06016cb3",
+    "bytes": 329895,
+    "retrieved_utc": "2026-10-19T01:14:19.445122+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Gopalarathnam, A., Broughton, B.A., McGranahan, B.D., and Selig, M.S., \"Design of Low Reynolds Number Airfoils with Trips,\" Journal of Aircraft , Vol. 40, No. 4, 2003, pp. 768-775.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/GopalarathnamEtal-2003-JofAC-LRNAirfoiLDesignWithTrips.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "selig-2003-vki-lrn-airfoil-design-lecture-series",
+    "title": "Low Reynolds Number Airfoil Design",
+    "authors": [
+      "Selig, M.S."
+    ],
+    "year": 2003,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/Selig-2003-VKI-LRN-Airfoil-Design-Lecture-Series.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/Selig-2003-VKI-LRN-Airfoil-Design-Lecture-Series.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/Selig-2003-VKI-LRN-Airfoil-Design-Lecture-Series.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Separation-bubble and low-Re airfoil design context; distinguish predictions from measured data.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "3889e11a9b1ab6f12314e5204ce6f3258a02ae8082f99a276d8ac49da3a81958",
+    "bytes": 5709798,
+    "retrieved_utc": "2026-10-19T01:14:20.436511+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Selig, M.S., \"Low Reynolds Number Airfoil Design,\" VKI Lecture Series - Low Reynolds Number Aerodynamics on Aircraft Including Applications in Emerging UAV Technology , von Karman Institute for Fluid Dynamics (VKI) Lecture Series, RTO/AVT-VKI-104, November 2003. \n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/Selig-2003-VKI-LRN-Airfoil-Design-Lecture-Series.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "mcgranahanselig-2003-aiaa-2003-4067-lrn-airfoils",
+    "title": "Surface Oil Flow Measurements on Several Airfoils at Low Reynolds Numbers",
+    "authors": [
+      "McGranahan, B.D.",
+      "Selig, M.S."
+    ],
+    "year": 2003,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/McGranahanSelig-2003-AIAA-2003-4067-LRN-Airfoils.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/McGranahanSelig-2003-AIAA-2003-4067-LRN-Airfoils.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/McGranahanSelig-2003-AIAA-2003-4067-LRN-Airfoils.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured surface flow patterns for interpreting separation and polar changes.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "40cce5d795ebd0667ce632d71c930fdfc654be7f412adaf74696d77aeece4fae",
+    "bytes": 2093018,
+    "retrieved_utc": "2026-10-19T01:14:21.686501+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "McGranahan, B.D. and Selig, M.S., \"Surface Oil Flow Measurements on Several Airfoils at Low Reynolds Numbers,\" AIAA 42nd Applied Aerodynamics Conference , AIAA Paper 2003-4067, Orlando, FL, June 2003.\n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/McGranahanSelig-2003-AIAA-2003-4067-LRN-Airfoils.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "guglielmoselig-1997-jofac-s1223",
+    "title": "High-Lift Low Reynolds Number Airfoil Design",
+    "authors": [
+      "Selig, M.S.",
+      "Guglielmo, J.J."
+    ],
+    "year": 1997,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/GuglielmoSelig-1997-JofAC-S1223.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/GuglielmoSelig-1997-JofAC-S1223.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/GuglielmoSelig-1997-JofAC-S1223.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "High-lift low-Re design and validation evidence.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "614d31d1f22c95464a38893b2ed84671cb2a853072438e9ed9263e2f614539b1",
+    "bytes": 347482,
+    "retrieved_utc": "2026-10-19T01:14:21.412693+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Selig, M.S. and Guglielmo, J.J., \"High-Lift Low Reynolds Number Airfoil Design,\" Journal of Aircraft , Vol. 34, No. 1, January-February 1997, pp. 72-79. \n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/GuglielmoSelig-1997-JofAC-S1223.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "gopalarathnamselighsu-1997-aiaa-1997-2232-lowaspectratio",
+    "title": "Design of High-Lift Airfoils for Low-Aspect Ratio Wings with Endplates",
+    "authors": [
+      "Gopalarathnam, A.",
+      "Selig, M.S.",
+      "Hsu, F."
+    ],
+    "year": 1997,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/GopalarathnamSeligHsu-1997-AIAA-1997-2232-LowAspectRatio.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/GopalarathnamSeligHsu-1997-AIAA-1997-2232-LowAspectRatio.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/GopalarathnamSeligHsu-1997-AIAA-1997-2232-LowAspectRatio.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Interaction between section design, endplates and low-aspect-ratio wings.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "4975372c2ea84668f0177c1e186f8a04afdf287d677329e5a0816c58fc4aefec",
+    "bytes": 553952,
+    "retrieved_utc": "2026-10-19T01:14:23.291434+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Gopalarathnam, A., Selig, M.S. and Hsu, F., \"Design of High-Lift Airfoils for Low-Aspect Ratio Wings with Endplates,\" AIAA 15th Applied Aerodynamics Conference , AIAA Paper 97-2232, Atlanta, GA, June 1997. \n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/GopalarathnamSeligHsu-1997-AIAA-1997-2232-LowAspectRatio.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "lyonseligbroeren-1997-aiaa-1997-0511-bltrips",
+    "title": "Boundary Layer Trips on Airfoils at Low Reynolds Numbers",
+    "authors": [
+      "Lyon, C.A.",
+      "Selig, M.S.",
+      "Broeren, A.P."
+    ],
+    "year": 1997,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/LyonSeligBroeren-1997-AIAA-1997-0511-BLTrips.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/LyonSeligBroeren-1997-AIAA-1997-0511-BLTrips.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/LyonSeligBroeren-1997-AIAA-1997-0511-BLTrips.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Measured boundary-layer-trip effects on low-Re polars.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "dbfd8465123a3bbd9822fea8ebd774205c727b3eefc49b48a596a245783bf132",
+    "bytes": 13774418,
+    "retrieved_utc": "2026-10-19T01:14:24.220287+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Lyon, C.A., Selig, M.S., and Broeren, A.P., \"Boundary Layer Trips on Airfoils at Low Reynolds Numbers,\" AIAA 35th Aerospace Sciences Meeting , AIAA Paper 97-0511, Reno, NV, January 1997. \n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/LyonSeligBroeren-1997-AIAA-1997-0511-BLTrips.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "guglielmoselig-1996-jofac-spanwisedraglrn",
+    "title": "Spanwise Variations in Profile Drag for Airfoils at Low Reynolds Numbers",
+    "authors": [
+      "Guglielmo, J.J.",
+      "Selig, M.S."
+    ],
+    "year": 1996,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/GuglielmoSelig-1996-JofAC-SpanwiseDragLRN.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/GuglielmoSelig-1996-JofAC-SpanwiseDragLRN.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/GuglielmoSelig-1996-JofAC-SpanwiseDragLRN.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Spanwise nonuniformity in measured profile drag and test reduction limits.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "9fa52cdee6aa66fc47dbb3ba85724104fc554852b16a6d88639b8dd7a05c14dc",
+    "bytes": 676016,
+    "retrieved_utc": "2026-10-19T01:14:25.547995+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Guglielmo, J.J. and Selig, M.S., \"Spanwise Variations in Profile Drag for Airfoils at Low Reynolds Numbers,\" Journal of Aircraft , Vol. 33, No. 4, July-August 1996, pp. 699-707. \n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/GuglielmoSelig-1996-JofAC-SpanwiseDragLRN.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "seligguglielmobroerengiguere-1996-aiaa-1996-0062",
+    "title": "Experiments on Airfoils at Low Reynolds Numbers",
+    "authors": [
+      "Selig, M.S.",
+      "Guglielmo, J.J.",
+      "Broeren, A.P.",
+      "Giguère, P."
+    ],
+    "year": 1996,
+    "source_url": "https://m-selig.ae.illinois.edu/pubs/SeligGuglielmoBroerenGiguere-1996-AIAA-1996-0062.pdf",
+    "download_url": "https://m-selig.ae.illinois.edu/pubs/SeligGuglielmoBroerenGiguere-1996-AIAA-1996-0062.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/SeligGuglielmoBroerenGiguere-1996-AIAA-1996-0062.pdf",
+    "type": "paper",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Low-Re experimental airfoil behavior.",
+    "limitations": "Two-dimensional tunnel sections; match Reynolds number, transition/trips and surface finish. These are not whole-aircraft coefficients or exact Jensen Ugly Stik validation.",
+    "access": "downloaded",
+    "sha256": "082e1a9d4476a104de1365d956f91a9226eec3fada7ed25557ec32d88c5f7711",
+    "bytes": 8310566,
+    "retrieved_utc": "2026-10-19T01:14:27.125068+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "citation": "Selig, M.S., Guglielmo, J.J., Broeren, A.P., and Giguère, P., \"Experiments on Airfoils at Low Reynolds Numbers,\" AIAA 34th Aerospace Sciences Meeting , AIAA Paper 96-0062, Reno, NV, January 1996. \n| PDF",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pubs/SeligGuglielmoBroerenGiguere-1996-AIAA-1996-0062.pdf",
+    "verified": "PDF magic and pdftotext first-page parse",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "uiuc-data-terms",
+    "title": "UIUC source and usage terms: uiuc-data-terms.html",
+    "authors": [],
+    "year": null,
+    "source_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/uiuc-data-terms.html",
+    "type": "source-page",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Preserves source context and stated data-use conditions.",
+    "limitations": "Snapshot of source page, not a scientific measurement.",
+    "access": "downloaded",
+    "sha256": "d6ae3ad601502bc97aba82c09247584a10b34b5b7027f78e8ed126a69533c3ee",
+    "bytes": 8171,
+    "retrieved_utc": "2026-10-19T01:14:25.901183+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd.html",
+    "verified": "HTTP source page saved",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "uiuc-lsat-manifest",
+    "title": "UIUC source and usage terms: uiuc-lsat-manifest.html",
+    "authors": [],
+    "year": null,
+    "source_url": "https://m-selig.ae.illinois.edu/pd/manifest.html",
+    "download_url": "https://m-selig.ae.illinois.edu/pd/manifest.html",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/uiuc-lsat-manifest.html",
+    "type": "source-page",
+    "topics": [
+      "low-reynolds"
+    ],
+    "relevance": "Preserves source context and stated data-use conditions.",
+    "limitations": "Snapshot of source page, not a scientific measurement.",
+    "access": "downloaded",
+    "sha256": "88102e571d43f00a4f3f65490ae4884e60f8e68afceb908e34cffe23c3eb3f68",
+    "bytes": 12073,
+    "retrieved_utc": "2026-10-19T01:14:26.265630+00:00",
+    "license": "Not stated; publicly accessible institutional/author copy, redistribution not inferred",
+    "resolved_url": "https://m-selig.ae.illinois.edu/pd/manifest.html",
+    "verified": "HTTP source page saved",
+    "read_depth": "Institutional source record, first-page abstract and file structure; not full coefficient audit"
+  },
+  {
+    "id": "mizoguchi-2016-aspect-ratio-stall-hysteresis",
+    "title": "Aerodynamic Characteristics of Low-Aspect-Ratio Wings with Various Aspect Ratios in Low Reynolds Number Flows",
+    "authors": [
+      "Makoto Mizoguchi",
+      "Yusuke Kajikawa",
+      "Hajime Itoh"
+    ],
+    "year": 2016,
+    "source_url": "https://www.jstage.jst.go.jp/article/tjsass/59/2/59_T-15-28/_article",
+    "download_url": "https://www.jstage.jst.go.jp/article/tjsass/59/2/59_T-15-28/_pdf/-char/en",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/mizoguchi-2016-aspect-ratio-stall-hysteresis.pdf",
+    "type": "wind-tunnel-paper",
+    "topics": [
+      "low-reynolds",
+      "stall",
+      "unsteady"
+    ],
+    "relevance": "Measured aspect-ratio dependence of stall hysteresis at Re 52,000.",
+    "limitations": "Thin rectangular wings with AR 0.5-1.5; no direct transfer to an AR~5 sport airplane.",
+    "access": "downloaded",
+    "sha256": "f90541a83d6fae1ddc62069ccd91855cfe048e303d228635a01248be97a6c78b",
+    "bytes": 2485315,
+    "retrieved_utc": "2026-10-19T01:16:32.819328+00:00",
+    "license": "Not stated; publicly accessible copy, redistribution not inferred",
+    "read_depth": "Source record and PDF first-page inspection; not a complete coefficient audit",
+    "verified": "PDF magic and pdftotext first-page parse"
+  },
+  {
+    "id": "lefouest-2021-static-stall-timescales",
+    "title": "The dynamics and timescales of static stall",
+    "authors": [
+      "Sébastien Le Fouest",
+      "Julien Deparday",
+      "Karen Mulleners"
+    ],
+    "year": 2021,
+    "source_url": "https://arxiv.org/abs/2102.04485",
+    "download_url": "https://infoscience.epfl.ch/server/api/core/bitstreams/9eebd582-1411-4aa0-9f9e-a70a0e7843d4/content",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/lefouest-2021-static-stall-timescales.pdf",
+    "type": "experimental-paper",
+    "topics": [
+      "low-reynolds",
+      "stall",
+      "unsteady"
+    ],
+    "relevance": "Measured lift transients and stall delay across ramp and step pitch histories; evidence for testing memory-dependent stall laws.",
+    "limitations": "Section 2 prints water-channel Re 750,000 with speed 0.50 m/s and chord 0.15 m. Check dimensional consistency and fluid properties before similarity use; do not silently correct the printed value. Not RC-airframe calibration.",
+    "access": "downloaded",
+    "sha256": "1560b49936debe4b9c987d09702aec1938306814923d680e1152dc562af06423",
+    "bytes": 1993147,
+    "retrieved_utc": "2026-10-19T01:16:32.820158+00:00",
+    "license": "Not stated; publicly accessible copy, redistribution not inferred",
+    "read_depth": "First page plus experimental setup and Reynolds-number passages inspected; not full coefficient audit",
+    "verified": "PDF magic and pdftotext first-page parse"
+  },
+  {
+    "id": "sarlak-2018-stall-hysteresis-s826",
+    "title": "Experimental Investigation of Static Stall Hysteresis and 3-Dimensional Flow Structures for an NREL S826 Wing Section of Finite Span",
+    "authors": [
+      "Hamid Sarlak",
+      "Ariane Frère",
+      "Robert Flemming Mikkelsen",
+      "Jens Nørkær Sørensen"
+    ],
+    "year": 2018,
+    "source_url": "https://www.mdpi.com/1996-1073/11/6/1418",
+    "download_url": "https://www.mdpi.com/1996-1073/11/6/1418/pdf",
+    "local_path": null,
+    "type": "wind-tunnel-paper",
+    "topics": [
+      "low-reynolds",
+      "stall",
+      "unsteady"
+    ],
+    "relevance": "Lift/drag and up/down sweeps at Re 40,000-400,000; effect of freestream turbulence on hysteresis.",
+    "limitations": "Wind-turbine section and tunnel boundary conditions; informs model form and sensitivity, not direct airplane coefficients.",
+    "access": "download-failed",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:16:32.820751+00:00",
+    "license": "Not stated; publicly accessible copy, redistribution not inferred",
+    "read_depth": "Source record and PDF first-page inspection; not a complete coefficient audit",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "mcalister-1978-nasa-tp1100-dynamic-stall",
+    "title": "Dynamic Stall Experiments on the NACA 0012 Airfoil",
+    "authors": [
+      "Kenneth W. McAlister",
+      "Lawrence W. Carr",
+      "William J. McCroskey"
+    ],
+    "year": 1978,
+    "source_url": "https://ntrs.nasa.gov/citations/19780009057",
+    "download_url": "https://ntrs.nasa.gov/api/citations/19780009057/downloads/19780009057.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/mcalister-1978-nasa-tp1100-dynamic-stall.pdf",
+    "type": "wind-tunnel-report",
+    "topics": [
+      "low-reynolds",
+      "stall",
+      "unsteady"
+    ],
+    "relevance": "Foundational pressure, force, pitching-moment and flow evidence for dynamic-stall mechanisms.",
+    "limitations": "Re 2.5 million, above most RC operation; methodological and qualitative comparator only.",
+    "access": "downloaded",
+    "sha256": "da7965d2f3ea4116189f3043217fac661b82f44f67786496b7968613a52fa86b",
+    "bytes": 4492620,
+    "retrieved_utc": "2026-10-19T01:16:32.905453+00:00",
+    "license": "Not stated; publicly accessible copy, redistribution not inferred",
+    "read_depth": "Source record and PDF first-page inspection; not a complete coefficient audit",
+    "verified": "PDF magic and pdftotext first-page parse"
+  },
+  {
+    "id": "boutet-2020-dynamic-stall-data-metadata",
+    "title": "Data for: A modified Leishman-Beddoes model for airfoil sections undergoing dynamic stall at low Reynolds numbers",
+    "authors": [
+      "Johan Boutet",
+      "Grigorios Dimitriadis",
+      "Xavier Amandolese"
+    ],
+    "year": 2020,
+    "source_url": "https://data.mendeley.com/datasets/y5wt7htxdp/1",
+    "download_url": "https://api.datacite.org/dois/10.17632/y5wt7htxdp.1",
+    "local_path": "references/rc-validation-library-2026-10-18/low-reynolds/boutet-2020-dynamic-stall-data-metadata.json",
+    "type": "dataset-metadata",
+    "topics": [
+      "low-reynolds",
+      "stall",
+      "unsteady"
+    ],
+    "relevance": "Primary data repository advertises force/moment series for oscillating flat plate, NACA0012 and NACA0018; DOI and license metadata preserved.",
+    "limitations": "Metadata only downloaded; raw data page and public API returned HTTP 403. This local JSON is NOT experimental data.",
+    "access": "downloaded",
+    "sha256": "8fe674d17187dfe8e40a8958b103acb291f3145c6e459266c019fd0dd3b17b9d",
+    "bytes": 6447,
+    "retrieved_utc": "2026-10-19T01:16:35.625463+00:00",
+    "license": "Dataset CC BY 4.0 per DataCite rights metadata; metadata snapshot only",
+    "read_depth": "Source record and PDF first-page inspection; not a complete coefficient audit",
+    "verified": "DataCite DOI metadata JSON parsed; raw measurement files not obtained"
+  }
+]

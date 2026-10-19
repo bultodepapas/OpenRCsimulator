@@ -823,6 +823,41 @@ msgstr "BATERÍA BAJA"
 msgid "EXPERIMENTAL MODEL"
 msgstr "MODELO EXPERIMENTAL"
 
+# BAT-15 battery overlay (O9) and radio-style battery alarms (docs/plans/battery-realism.md §6).
+
+msgid "Battery"
+msgstr "Batería"
+
+msgid "BATTERY EMPTY"
+msgstr "BATERÍA AGOTADA"
+
+msgid "BATTERY CRITICAL"
+msgstr "BATERÍA CRÍTICA"
+
+msgid "LVC · land now"
+msgstr "LVC · aterriza ya"
+
+msgid "BATTERY HOT"
+msgstr "BATERÍA CALIENTE"
+
+msgid "LVC"
+msgstr "LVC"
+
+msgid "%s V/cell"
+msgstr "%s V/celda"
+
+msgid "min %s"
+msgstr "mín. %s"
+
+msgid "last 60 s"
+msgstr "últimos 60 s"
+
+msgid "True SOC %s"
+msgstr "SOC real %s"
+
+msgid "weakest cell %s"
+msgstr "celda más débil %s"
+
 msgid "Keyboard"
 msgstr "Teclado"
 
@@ -3321,3 +3356,105 @@ msgstr "Los datos de costes no corresponden a esta versión del avión; no se ap
 
 msgid "Prices were authored for an earlier revision of this aircraft; its priced parts and contacts were verified unchanged."
 msgstr "Los precios se crearon para una revisión anterior de este avión; se verificó que sus piezas con precio y sus contactos no cambiaron."
+
+# FW-MOON-13 moon choices (time-of-day controls)
+msgid "Moon"
+msgstr "Luna"
+
+msgid "Moon phase"
+msgstr "Fase lunar"
+
+msgid "Moon size"
+msgstr "Tamaño de la luna"
+
+msgid "Moonlight"
+msgstr "Luz de luna"
+
+msgid "Real sky"
+msgstr "Cielo real"
+
+msgid "Choose a phase"
+msgstr "Elegir una fase"
+
+msgid "No moon"
+msgstr "Sin luna"
+
+msgid "Waxing crescent"
+msgstr "Creciente"
+
+msgid "First quarter"
+msgstr "Cuarto creciente"
+
+msgid "Waxing gibbous"
+msgstr "Gibosa creciente"
+
+msgid "Waning gibbous"
+msgstr "Gibosa menguante"
+
+msgid "Last quarter"
+msgstr "Cuarto menguante"
+
+msgid "Waning crescent"
+msgstr "Menguante"
+
+msgid "Real size"
+msgstr "Tamaño real"
+
+msgid "Large (cinematic, not real)"
+msgstr "Grande (cinematográfico, no real)"
+
+msgid "Real moonlight"
+msgstr "Luz de luna real"
+
+msgid "Brighter (assist, not real)"
+msgstr "Más brillante (ayuda, no real)"
+
+msgid "No moon: a dark night with stars only, whatever the date."
+msgstr "Sin luna: una noche oscura solo con estrellas, sea cual sea la fecha."
+
+msgid "%d%% lit"
+msgstr "%d%% iluminada"
+
+msgid "rises %s"
+msgstr "sale a las %s"
+
+msgid "no moonrise that day"
+msgstr "no sale ese día"
+
+msgid "sets %s"
+msgstr "se pone a las %s"
+
+msgid "no moonset that day"
+msgstr "no se pone ese día"
+
+msgid "Shown on %04d-%02d-%02d, the nearest night with this phase."
+msgstr "Se muestra el %04d-%02d-%02d, la noche más cercana con esta fase."
+
+msgid "Above the horizon at the chosen time."
+msgstr "Sobre el horizonte a la hora elegida."
+
+msgid "Below the horizon at the chosen time."
+msgstr "Bajo el horizonte a la hora elegida."
+
+msgid "Astronomical time does not draw the moon yet; Home's Evening and Night choices do."
+msgstr "La hora astronómica todavía no dibuja la luna; las opciones Atardecer y Noche de Inicio sí."
+
+msgid "For Home's time choices (Evening, Night); at the full-moon Night preset."
+msgstr "Para las opciones de hora de Inicio (Atardecer, Noche); en el ajuste Noche de luna llena."
+
+# FW-MOON-11 moon presets (Home time choice)
+msgid "Moonrise, time passing"
+msgstr "Salida de luna, el tiempo pasa"
+
+msgid "Moonrise"
+msgstr "Salida de luna"
+
+# BAT-13 Home battery mode (flight details)
+msgid "Battery: finite pack (experimental)"
+msgstr "Batería: pack finito (experimental)"
+
+msgid "Battery: ideal (never runs flat)"
+msgstr "Batería: ideal (nunca se agota)"
+
+msgid "Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage."
+msgstr "Pack finito: la carga se agota, el voltaje cae con la carga y con el frío, el pack se calienta y el ESC corta la potencia con voltaje bajo. Ideal: voltaje constante."

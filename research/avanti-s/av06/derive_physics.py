@@ -1271,8 +1271,8 @@ separate source sidecar measurement.
 Total stiffness {landing_gear_report['total_stiffness_N_m']:.1f} N/m gives heave frequency {landing_gear_report['heave_omega_rad_s']:.2f}
 rad/s ({landing_gear_report['heave_omega_rad_s'] / (2 * math.pi):.2f} Hz) and {landing_gear_report['static_sag_m'] * 1000:.1f} mm static sag.
 The generator distributes that stiffness by the derived static load shares; damping uses ζ={v('landing_gear.damping_ratio'):.2f}
-and the existing equal m/3 contact-mass convention. The 80 mm main and 60 mm nose terminal limits are equivalent-compliance
-thresholds selected for AV-09 sink testing, not measured strut travel. Smooth-runway rolling resistance, side friction and
+and the existing equal m/3 contact-mass convention. The {v('landing_gear.main_max_compression') * 1000:.0f} mm main and {v('landing_gear.nose_max_compression') * 1000:.0f} mm nose terminal limits are equivalent-compliance
+thresholds from the GP-06c reserve-energy drop (former 14 CFR 23.727), not measured strut travel. Smooth-runway rolling resistance, side friction and
 slip-angle regularization remain provisional. Extension and retraction are each {v('landing_gear.extension_time'):.1f} s estimates;
 the gear-down incremental drag area is {v('landing_gear.drag_area'):.3f} m² and its estimated moment center is
 `[{', '.join(f'{x:.4f}' for x in landing_gear_report['drag_center_le_m'])}]` m in the LE frame.

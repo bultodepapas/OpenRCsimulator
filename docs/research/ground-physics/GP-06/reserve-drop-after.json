@@ -1,0 +1,737 @@
+{
+  "format": "openrc-gp06-reserve-drop v1",
+  "limit_sink_mps": 2.1336,
+  "reserve_sink_mps": 2.56032,
+  "lift_fraction": 0.666666666666667,
+  "hz": 960,
+  "aircraft": [
+    {
+      "id": "jensen-das-ugly-stik-60",
+      "tricycle": true,
+      "support_pitch_deg": -0.517852476199506,
+      "cases": [
+        {
+          "peak": [
+            0.0602739135555758,
+            0.0603038314768597,
+            0.0593291356107396
+          ],
+          "peak_load_factor": 4.59635232568702,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0713607695561266,
+            0.071396515880044,
+            0.0702506663883556
+          ],
+          "peak_load_factor": 5.46836265412677,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.0747185944924883,
+            0.0745326162620829,
+            0.0277422649792571
+          ],
+          "peak_load_factor": 4.17234168144012,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0865963314697091,
+            0.0864402473704177,
+            0.0277048252669123
+          ],
+          "peak_load_factor": 5.27574569357844,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.56032
+        }
+      ]
+    },
+    {
+      "id": "stik-glow-61fx-2t",
+      "tricycle": true,
+      "support_pitch_deg": -0.517852476199506,
+      "cases": [
+        {
+          "peak": [
+            0.0709497599012696,
+            0.0709830904419097,
+            0.0699126111972368
+          ],
+          "peak_load_factor": 4.0185340123041,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0838969030207581,
+            0.0839367604626248,
+            0.0826791443560968
+          ],
+          "peak_load_factor": 4.77176251136484,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.0861251124684297,
+            0.0859642502287615,
+            0.027313009071253
+          ],
+          "peak_load_factor": 3.92251350143342,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0996952244509817,
+            0.0995677303493557,
+            0.0397695681380957
+          ],
+          "peak_load_factor": 4.73381172956368,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.56032
+        }
+      ]
+    },
+    {
+      "id": "stik-glow-55ax-2t",
+      "tricycle": true,
+      "support_pitch_deg": -0.517852476199506,
+      "cases": [
+        {
+          "peak": [
+            0.066215502142331,
+            0.0662447354937055,
+            0.0651575887178557
+          ],
+          "peak_load_factor": 4.24615632798756,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0783435762688441,
+            0.0783777191979006,
+            0.0770961596113222
+          ],
+          "peak_load_factor": 5.0461434503518,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.0809792528967836,
+            0.0808218595349091,
+            0.0230387918906422
+          ],
+          "peak_load_factor": 4.06252490171306,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0938029100162694,
+            0.0936749087900353,
+            0.0346730575937352
+          ],
+          "peak_load_factor": 4.98068035037094,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.56032
+        }
+      ]
+    },
+    {
+      "id": "stik-glow-fs64v-4t",
+      "tricycle": true,
+      "support_pitch_deg": -0.517852476199506,
+      "cases": [
+        {
+          "peak": [
+            0.06568040323296,
+            0.0656909169588226,
+            0.0646150312310444
+          ],
+          "peak_load_factor": 4.27477771519886,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0777143188597353,
+            0.0777268848597855,
+            0.0764615507331818
+          ],
+          "peak_load_factor": 5.08098420015726,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.080345280261816,
+            0.0802866438213601,
+            0.0225264186242132
+          ],
+          "peak_load_factor": 4.0765840419925,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0930901971854702,
+            0.0930424859889925,
+            0.0340717071976757
+          ],
+          "peak_load_factor": 5.00920333350004,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.12
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.56032
+        }
+      ]
+    },
+    {
+      "id": "gp-extra-300s-60",
+      "tricycle": false,
+      "support_pitch_deg": 10.8624313738168,
+      "cases": [
+        {
+          "peak": [
+            0.0787730254164939,
+            0.0787730254164939,
+            0.0440590134881888
+          ],
+          "peak_load_factor": 3.67221116772795,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.08
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "mains_level",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0931494725828027,
+            0.0931494725828027,
+            0.0508017665772781
+          ],
+          "peak_load_factor": 4.35307137560345,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.08
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "mains_level",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.0748192991485557,
+            0.0748192991485557,
+            0.0620282637345629
+          ],
+          "peak_load_factor": 4.06234276398327,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.08
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "three_point",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0885887686468938,
+            0.0885887686468938,
+            0.0732790744800157
+          ],
+          "peak_load_factor": 4.81994261118463,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.08
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "three_point",
+          "sink_mps": 2.56032
+        }
+      ]
+    },
+    {
+      "id": "p51d-mustang-120",
+      "tricycle": false,
+      "support_pitch_deg": 13.8924153222941,
+      "cases": [
+        {
+          "peak": [
+            0.0782091897357263,
+            0.0782091897357263,
+            0.0597335009143698
+          ],
+          "peak_load_factor": 3.6986983729267,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.105
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "mains_level",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0925467341648519,
+            0.0925467341648519,
+            0.0603371433648552
+          ],
+          "peak_load_factor": 4.3862519365751,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.105
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "mains_level",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.0713804721186731,
+            0.0713804721186731,
+            0.0813882040551453
+          ],
+          "peak_load_factor": 4.07978739680062,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.105
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "three_point",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0845400258228811,
+            0.0845400258228811,
+            0.0959875414425056
+          ],
+          "peak_load_factor": 4.84060999327315,
+          "finite": true,
+          "travel": [
+            0.12,
+            0.12,
+            0.105
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "three_point",
+          "sink_mps": 2.56032
+        }
+      ]
+    },
+    {
+      "id": "sebart-avanti-s-a200-p100rx",
+      "tricycle": true,
+      "support_pitch_deg": 0.0544409328640206,
+      "cases": [
+        {
+          "peak": [
+            0.0739817216292292,
+            0.0739817216292292,
+            0.066514137084532
+          ],
+          "peak_load_factor": 4.0680329125829,
+          "finite": true,
+          "travel": [
+            0.105,
+            0.105,
+            0.085
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0875747712315735,
+            0.0875747712315735,
+            0.0786999972048872
+          ],
+          "peak_load_factor": 4.82702615067183,
+          "finite": true,
+          "travel": [
+            0.105,
+            0.105,
+            0.085
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "all_wheels",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.0811471333520254,
+            0.0811471333520254,
+            0.0416948376320131
+          ],
+          "peak_load_factor": 3.8075557865259,
+          "finite": true,
+          "travel": [
+            0.105,
+            0.105,
+            0.085
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0960291448856386,
+            0.0960291448856386,
+            0.0395463959108931
+          ],
+          "peak_load_factor": 4.5143102922752,
+          "finite": true,
+          "travel": [
+            0.105,
+            0.105,
+            0.085
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "nose"
+          ],
+          "attitude": "mains_nose_high",
+          "sink_mps": 2.56032
+        }
+      ]
+    },
+    {
+      "id": "turbo-lumber-evolution",
+      "tricycle": false,
+      "support_pitch_deg": 9.82161400199283,
+      "cases": [
+        {
+          "peak": [
+            0.0800848102394582,
+            0.0800848102394582,
+            0.025961355482725
+          ],
+          "peak_load_factor": 3.76296145415957,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.1
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "mains_level",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0947103079821433,
+            0.0947103079821433,
+            0.0315520302129826
+          ],
+          "peak_load_factor": 4.4607446071241,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.1
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "mains_level",
+          "sink_mps": 2.56032
+        },
+        {
+          "peak": [
+            0.0746191952623815,
+            0.0746191952623815,
+            0.062871307243377
+          ],
+          "peak_load_factor": 4.06210388974595,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.1
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "three_point",
+          "sink_mps": 2.1336
+        },
+        {
+          "peak": [
+            0.0883519352607482,
+            0.0883519352607482,
+            0.0742561593498076
+          ],
+          "peak_load_factor": 4.81959302519713,
+          "finite": true,
+          "travel": [
+            0.1,
+            0.1,
+            0.1
+          ],
+          "names": [
+            "main_left",
+            "main_right",
+            "tail"
+          ],
+          "attitude": "three_point",
+          "sink_mps": 2.56032
+        }
+      ]
+    }
+  ]
+}

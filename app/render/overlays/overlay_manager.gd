@@ -15,6 +15,8 @@ const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Settings := preload("res://render/overlays/overlay_settings.gd")
 const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
+const BatteryPanel := preload("res://render/overlays/battery_panel.gd")
+const BatterySensors := preload("res://render/overlays/battery_sensors.gd")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
 signal settings_changed(settings: Dictionary)
@@ -35,9 +37,16 @@ var frames := {}
 var diagnostics_panel: Label
 var diagnostics_hud: Label
 var performance_label: Label
+## BAT-15: the model's true battery charge, in the developer Diagnostics overlay only.
+var diagnostics_battery: Label
+## BAT-14: what the radio shows of the flight pack; fed at the 10 Hz refresh even while O9 is closed (its alarms
+## drive the warnings).
+var battery_sensors: RefCounted = BatterySensors.new()
 var _since_text := INF
 var _last_telemetry := {}
 var _warning_codes := PackedStringArray()
+var _has_battery := false
+var _battery_dock := Vector3(-1.0, -1.0, -1.0)
 
 
 func _init(initial: Variant = Settings.DEFAULTS, interface_language := "en") -> void:
@@ -62,6 +71,10 @@ func _build() -> void:
 	diagnostics_hud = Frame.monospace(13)
 	diagnostics_hud.name = "Hud"
 	diagnostics.body.add_child(diagnostics_hud)
+	diagnostics_battery = Frame.monospace(13)
+	diagnostics_battery.name = "Battery"
+	diagnostics_battery.visible = false
+	diagnostics.body.add_child(diagnostics_battery)
 	_place(diagnostics, Control.PRESET_TOP_LEFT)
 	var performance := Frame.new("performance", tr("Performance"))
 	performance_label = Frame.monospace(13)
@@ -76,6 +89,7 @@ func _build() -> void:
 	_place(WarningsBar.new(), Control.PRESET_CENTER_TOP)
 	var controls := ControlsGuide.new()
 	_place(controls, Control.PRESET_TOP_LEFT)
+	_place(BatteryPanel.new(), Control.PRESET_CENTER_RIGHT) # docked by _dock_battery()
 
 
 func _place(overlay: Control, preset: Control.LayoutPreset) -> void:
@@ -107,8 +121,12 @@ func apply(value: Variant, announce := true) -> void:
 		var on: bool = settings.visible.has(id)
 		if id == "warnings":
 			frames[id].visible = on and not _warning_codes.is_empty()
+		elif id == "battery":
+			frames[id].visible = on and _has_battery
 		else:
 			frames[id].visible = on
+	frames.battery.set_detailed(Settings.battery_detailed(settings))
+	_dock_battery()
 	_since_text = INF # show the new choice at once
 	if announce:
 		settings_changed.emit(settings.duplicate(true))
@@ -199,7 +217,44 @@ func refresh_numbers(snap: Dictionary) -> void:
 	if frames.controls.visible:
 		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
+	_refresh_battery(snap.get("battery", {}), system)
 	frames.warnings.visible = frames.warnings.refresh(_warning_codes) and is_overlay_visible("warnings")
+
+
+## BAT-14/15: samples the pack (battery: electrical_state() or {}), shows O9 and the developer truth, and replaces a
+## pack_ecm pack's warning codes with the sensors' alarms. Hidden without a dynamic battery.
+func _refresh_battery(battery: Dictionary, system: String) -> void:
+	_has_battery = battery.get("ok", false)
+	var reading: Dictionary = BatterySensors.empty()
+	if _has_battery:
+		reading = battery_sensors.update(float(battery.get("time_s", _last_telemetry.get("time_s", 0.0))), battery)
+		if str(battery.get("battery_kind", "")) == "pack_ecm":
+			_warning_codes = Telemetry.with_battery_warnings(_warning_codes, Telemetry.battery_warnings(battery, reading.alarms))
+	frames.battery.visible = _has_battery and is_overlay_visible("battery")
+	if frames.battery.visible:
+		frames.battery.refresh(reading, system)
+		_dock_battery()
+	diagnostics_battery.text = BatteryPanel.truth_text(battery) if frames.diagnostics.visible else ""
+	diagnostics_battery.visible = not diagnostics_battery.text.is_empty()
+
+
+## O9 sits centre right: against the edge in the Pilot preset (that side is free there), and left of the Telemetry
+## overlay whenever that is shown (Full, Developer). On a screen too narrow for both (≈ 640 px) it stays fully on
+## screen over Telemetry. Re-docked only when the layout, the screen or a neighbour's width changes.
+func _dock_battery() -> void:
+	var panel: Control = frames.battery
+	var wanted: Vector2 = panel.get_combined_minimum_size()
+	var shift := 0.0
+	if frames.telemetry.visible:
+		shift = maxf(frames.telemetry.size.x, frames.telemetry.get_combined_minimum_size().x) + MARGIN
+		shift = clampf(shift, 0.0, maxf(0.0, root.size.x - wanted.x - 2.0 * MARGIN))
+	var key := Vector3(shift, wanted.x, wanted.y)
+	if key == _battery_dock:
+		return
+	_battery_dock = key
+	panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_MINSIZE, int(MARGIN))
+	panel.offset_left -= shift
+	panel.offset_right -= shift
 
 
 ## Every frame: sticks() output ({} = nothing to show).
@@ -244,7 +299,7 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 		span = span, battery = battery, experimental = experimental,
 	})
 	return {
-		telemetry = t, warnings = warnings, view_heading_deg = view_heading_deg, rpm = sim.aux[0],
+		telemetry = t, warnings = warnings, view_heading_deg = view_heading_deg, rpm = sim.aux[0], battery = battery,
 		radio_status = radio_status(session),
 		control_guide = {
 			connected = radio.connected, profile = radio.profile,

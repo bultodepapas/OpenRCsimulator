@@ -249,6 +249,7 @@
     },
     {
       "name": "fuel (half tank)",
+      "energy_source": "glow_fuel",
       "mass": {
         "value": 0.12,
         "unit": "kg",
@@ -267,13 +268,13 @@
       },
       "size": {
         "value": [
-          0,
-          0,
-          0
+          0.12,
+          0.05,
+          0.05
         ],
         "unit": "m",
         "kind": "borrowed",
-        "source": "Borrowed synthetic-template example only; not evidence for the new aircraft. Donor evidence kind: derived. Donor provenance: AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
+        "source": "Borrowed synthetic-template example only; not evidence for the new aircraft. FUEL-03 example: replace with the kit's tank and the engine manual's capacity. Liquid box sized to hold the 0.3 l capacity."
       },
       "id": "item_fuel_main"
     },
@@ -668,6 +669,30 @@
       "id": "item_balance_mass_virtual"
     }
   ],
+  "fuel_system": {
+    "tanks": [
+      {
+        "id": "main_tank",
+        "fuel": "glow_10n_18castor",
+        "liquid_inventory_id": "item_fuel_main",
+        "shell_inventory_id": "item_fuel_tank",
+        "capacity": {
+          "value": 0.3,
+          "unit": "l",
+          "kind": "borrowed",
+          "source": "Borrowed synthetic-template example only; not evidence for the new aircraft. FUEL-03 example: replace with the kit's tank and the engine manual's capacity."
+        },
+        "unusable": {
+          "value": 0.005,
+          "unit": "l",
+          "kind": "borrowed",
+          "source": "Borrowed synthetic-template example only; not evidence for the new aircraft. FUEL-03 example: replace with the kit's tank and the engine manual's capacity. No published clunk residue exists; FUEL-00 section 6.3."
+        },
+        "pickup": "clunk",
+        "feed": "suction_muffler"
+      }
+    ]
+  },
   "crash_hull": {
     "value": [
       [

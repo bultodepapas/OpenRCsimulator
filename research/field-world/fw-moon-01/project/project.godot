@@ -1,0 +1,22 @@
+; FW-MOON-01 render-path bench (research only). Mirrors app/project.godot's renderer and MSAA.
+; run.sh copies this folder plus app/render/{sky.gdshader,cloud_field.gdshaderinc,cloud_relief.gdshaderinc} and
+; app/render/world/engine_srgb.gdshaderinc into a scratch project; never run Godot inside the repository tree.
+config_version=5
+
+[application]
+
+config/name="FW-MOON-01 bench"
+run/main_scene="res://bench.tscn"
+config/features=PackedStringArray("4.7")
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=720
+window/vsync/vsync_mode=0
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+anti_aliasing/quality/msaa_3d=2

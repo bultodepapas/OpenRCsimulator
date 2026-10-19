@@ -1,0 +1,706 @@
+[
+  {
+    "id": "murrant-2012-gbs-ahrs",
+    "title": "Attitude and Heading Reference System for Small Unmanned Aircraft Collision Avoidance Maneuvers",
+    "authors": [
+      "Kevin Murrant"
+    ],
+    "year": 2012,
+    "type": "masters-thesis",
+    "source_url": "https://www.collectionscanada.gc.ca/obj/thesescanada/vol2/002/MR88040.PDF",
+    "download_url": "https://www.collectionscanada.gc.ca/obj/thesescanada/vol2/002/MR88040.PDF",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/direct/ahrs-giant-big-stik-mr88040.pdf",
+    "topics": [
+      "Giant Big Stik",
+      "model and instrumentation"
+    ],
+    "relevance": "Section 4.2 reports a real Giant Big Stik flight at Argentia under manual and MicroPilot control. Figures 4.21–4.22 and Table 4.10 compare reconstructed attitude against the autopilot; useful for separating sensor-estimation effects from airframe-model residuals.",
+    "limitations": "No independent true attitude, position trace or raw flight bundle was obtained. The unavailable magnetometer was synthesized with random noise. Ten processing runs in Table 4.10 are not ten physical flights; inter-estimator RMS differences are not airframe error or absolute attitude accuracy.",
+    "access": "downloaded",
+    "sha256": "5c133e8536be5d101dfebd86050420def89a5fae69e6116aaf7887a2e52044ed",
+    "bytes": 2938995,
+    "retrieved_utc": "2026-10-19T02:43:58.619504+00:00",
+    "license": "Public institutional original; author copyright retained; redistribution not inferred",
+    "read_depth": "Title/abstract, full Section 4.2, Table 4.10 and conclusion inspected in locally extracted PDF text",
+    "discovery_group": "direct"
+  },
+  {
+    "id": "fang-2018-gbs-daa-flight-tests",
+    "title": "Risk-based Supervisory Guidance for Detect and Avoid involving Small Unmanned Aircraft Systems",
+    "authors": [
+      "Scott Xiang Fang"
+    ],
+    "year": 2018,
+    "type": "doctoral-thesis",
+    "source_url": "https://hdl.handle.net/20.500.14783/9343",
+    "download_url": "https://memorial.scholaris.ca/bitstreams/7d7dab17-e131-48d3-8a72-05d34cff249f/download",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/direct/fang-2018-detect-avoid-thesis.pdf",
+    "topics": [
+      "Giant Big Stik",
+      "experimental context"
+    ],
+    "relevance": "Chapter 7 documents instrumented RAVEN Giant Big Stik configurations and actual synchronization/avoidance flight tests. Figure 7.11 includes trajectories from recorded autopilot logs; Table 7.1 identifies a DLE-30, APM 2.6, 2.045 m-span installation.",
+    "limitations": "Raw autopilot logs are not attached to the retained original. Separate physical tests, HIL results and millions of simulated encounters. Table 7.1 lists 7 kg empty and 10 kg MTOW, not a measured sortie mass; reported speed/endurance ranges are platform descriptions, not independently verified envelope tests. This configuration differs from the electric and Zenoah GBS studies.",
+    "access": "downloaded",
+    "sha256": "d9c1b28be8344b257623d6b69e81ae00bd7558e9365467e60ee459eff792b43c",
+    "bytes": 17385444,
+    "retrieved_utc": "2026-10-19T02:43:58.619504+00:00",
+    "license": "Public institutional original; author copyright retained; redistribution not inferred",
+    "read_depth": "Title, institutional metadata, Chapter 7 aircraft specifications and Sections 7.3–7.4 flight/HIL distinctions inspected",
+    "discovery_group": "direct"
+  },
+  {
+    "id": "cereceda-2017-gbs-jsbsim-necec",
+    "title": "JSBSim Open-Source Flight Dynamics Model for Fixed-Wing Unmanned Aerial Vehicle Applications",
+    "authors": [
+      "Oihane Cereceda",
+      "Luc Rolland",
+      "Siu O’Young"
+    ],
+    "year": 2017,
+    "type": "conference-paper",
+    "source_url": "https://hdl.handle.net/20.500.14783/9501",
+    "download_url": "https://memorial.scholaris.ca/bitstreams/98a89df0-a046-4d8d-9b0f-cb49d6854462/download",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/direct/cereceda-2017-necec-jsbsim.pdf",
+    "topics": [
+      "Giant Big Stik",
+      "model and instrumentation"
+    ],
+    "relevance": "Five-page primary implementation paper with Giant Big Stik parameter tables and XML fragments for initialization, forces, controls and output. A compact companion to the later held thesis/manual for checking parameter provenance and implementation conventions.",
+    "limitations": "The plotted maximum-aileron maneuver and CSV output are simulator results; no new measured time-history release. Shares the Cereceda/Rolland/O’Young GBS model lineage with the 2019 article/manual and 2020 thesis, so do not count it as an independent validation experiment.",
+    "access": "downloaded",
+    "sha256": "3f728150965b7e2577be31beb272dbfd87991fb76fbc6bac638b61cdf009ee51",
+    "bytes": 893237,
+    "retrieved_utc": "2026-10-19T02:43:58.619504+00:00",
+    "license": "Public institutional original; author copyright retained; redistribution not inferred",
+    "read_depth": "All five pages text inspected; parameter tables, simulation script and conclusion reviewed",
+    "discovery_group": "direct"
+  },
+  {
+    "id": "harvey-2018-gbs-acoustic-flight-tests",
+    "title": "Signal Processing Methods for the Detection & Localization of Acoustic Sources via Unmanned Aerial Vehicles",
+    "authors": [
+      "Brendan Harvey"
+    ],
+    "year": 2018,
+    "type": "doctoral-thesis",
+    "source_url": "https://hdl.handle.net/20.500.14783/9347",
+    "download_url": "https://memorial.scholaris.ca/bitstreams/155588dd-9ba7-4d3e-82a4-94cdeeba5b62/download",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/direct/harvey-2018-acoustic-thesis.pdf",
+    "topics": [
+      "Giant Big Stik",
+      "experimental context"
+    ],
+    "relevance": "Chapter 6 reports recorded airborne acoustics and GPS-referenced relative motion with a gasoline Giant Big Stik as intruder and Delta X-8 as sensing aircraft. Tables 6-5/6-6 describe acoustic/propulsion context; TS#2 provides experimental trajectories, spectra and detection-distance results.",
+    "limitations": "A sensing/acoustics experiment, not identification of Stik aerodynamic derivatives. No raw WAV/GPS bundle obtained. The author explicitly says actual engine speed was unknown; the 135 Hz source frequency was estimated from spectra. Separate measured detection results from extrapolated ranges, and do not treat listed shaft-RPM ranges as a calibrated engine log.",
+    "access": "downloaded",
+    "sha256": "bb16557b12626c8cb8864b7509239f26fa89e4b5382abc4391c3fcd85c86c03d",
+    "bytes": 9120813,
+    "retrieved_utc": "2026-10-19T02:43:58.619504+00:00",
+    "license": "Public institutional original; author copyright retained; redistribution not inferred",
+    "read_depth": "Cover and institutional metadata; Chapter 6 setup, aircraft tables, extrapolation method and TS#2 experimental discussion inspected",
+    "discovery_group": "direct"
+  },
+  {
+    "id": "urbano-molano-2011-ingenium-ugly-stik-flight-instrumentation",
+    "title": "Dinámica de vuelo y simulación de los parámetros de diseño de una aeronave radiocontrolada",
+    "authors": [
+      "Fernando Aparicio Urbano Molano"
+    ],
+    "year": 2011,
+    "type": "journal-article",
+    "source_url": "https://dialnet.unirioja.es/servlet/articulo?codigo=5038448",
+    "download_url": "https://dialnet.unirioja.es/descarga/articulo/5038448.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/direct/urbano-molano-2011-ingenium-ugly-stik-instrumentation.pdf",
+    "topics": [
+      "Ugly Stik",
+      "measured flight plots",
+      "instrumentation",
+      "control input recording"
+    ],
+    "relevance": "Twelve-page Ingenium article (vol.12 no.24, pp.82–93) extends the already-held four-page design article with four acquisition-board descriptions and actual flight plots: RC input/PWM, Ax/Ay, airspeed, altitude and angular rates. Describes a turn at 15–20 s and altitude/speed-change maneuvers at 20–45 s.",
+    "limitations": "Same reconstructed 1.56 m-span, 0.59 m² Ugly Stik lineage as the shorter 2011 design article, not an independent aircraft or Jensen60 configuration. Raw vector-time files, calibration/uncertainty budget and sample-rate verification were not obtained. No identified flight-dynamics model: regression remains future work. Printed airspeed is not a validated stall speed; numerical calibration and gyro zero-offset need checking before use. PDF contains duplicated hidden text, so plot page91 was rendered for visual inspection.",
+    "access": "downloaded",
+    "sha256": "50b9cdfd454eff56c6fabf8436e2f63cf5734328fe58f66c55951fd880e7e363",
+    "bytes": 1156585,
+    "retrieved_utc": "2026-10-19T02:45:47.169717+00:00",
+    "license": "Public journal-original copy hosted by Dialnet; redistribution license not verified",
+    "read_depth": "Full 12-page article text inspected; methods, flight-results/conclusion and local render of printed page91 plots checked",
+    "source_group": "Urbano Molano reconstructed Ugly Stik studies",
+    "discovery_group": "direct"
+  },
+  {
+    "id": "xie-et-al-2026-narwhal-slow-ultra-stick",
+    "title": "A Narwhal-Inspired Sensing-to-Control Framework for Small Fixed-Wing Aircraft",
+    "authors": [
+      "Fengze Xie",
+      "Xiaozhou Fan",
+      "Jacob Schuster",
+      "Yisong Yue",
+      "Morteza Gharib"
+    ],
+    "year": 2026,
+    "type": "conference-paper",
+    "source_url": "https://arxiv.org/abs/2510.07160",
+    "download_url": "https://arxiv.org/pdf/2510.07160v2",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/lineage/xie-et-al-2026-narwhal-icra-slow-ultra-stick.pdf",
+    "topics": [
+      "E-flite Slow Ultra Stick 1.2 m",
+      "wind-tunnel force and moment measurements",
+      "five-hole probes",
+      "wing pressure taps",
+      "gust generator",
+      "force estimation",
+      "control-affine model"
+    ],
+    "relevance": "ICRA 2026 research on an E-flite Slow Ultra Stick, an adjacent Ultra Stick airframe. A two-axis rig and six-axis load cell measure the instrumented model while two five-hole probes, seven right-wing pressure taps, four independently controlled surfaces, and an upstream gust generator are exercised. The paper reports force-estimation and closed-loop tracking results across 7, 9, 10, and 14 m/s conditions.",
+    "limitations": "This is a wind-tunnel-mounted model, not a free-flight campaign or a published full-airframe coefficient table. Its headline 6D wrench RMSE combines N and N·m, so it is comparative rather than a physically homogeneous metric. No raw synchronized sensor/force logs or dataset link was exposed on the paper or authors’ project page. Results should not be transferred as Jensen Ugly Stik coefficients.",
+    "access": "Open arXiv v2 PDF downloaded through the ordinary public arXiv endpoint; arXiv records v1 on 2025-10-08 and v2 revised 2026-03-27 03:58:02 UTC. The authors’ project page identifies the work as ICRA 2026, and Crossref DOI metadata identifies it as a proceedings article in the 2026 IEEE ICRA proceedings (DOI 10.1109/ICRA57385.2026.11697429; published 2026-06). No data/code link was exposed.",
+    "sha256": "a090248dd8ffc833f94b8ae4ec80a0a77852c018f04966cfe00c8c4d2791dadd",
+    "bytes": 10550905,
+    "retrieved_utc": "2026-10-19T02:45:43Z",
+    "license": "No reuse license stated in the downloaded PDF; retain as a local research reference and do not infer redistribution permission.",
+    "read_depth": "Full 8-page arXiv v2 parsed; hardware, probe calibration, experiment stages, tabulated errors, and limitations reviewed. No raw data extraction.",
+    "discovery_group": "lineage"
+  },
+  {
+    "id": "tjhai-2013-mini-ultrastick-stochastic-aero-thesis",
+    "title": "Developing Stochastic Model of Thrust and Flight Dynamics for Small UAVs",
+    "authors": [
+      "Chandra Tjhai"
+    ],
+    "year": 2013,
+    "type": "master-thesis",
+    "source_url": "https://hdl.handle.net/11299/162402",
+    "download_url": "https://conservancy.umn.edu/bitstreams/6df1eae4-7700-4087-8187-56ea4ec33dc5/download",
+    "local_path": null,
+    "topics": [
+      "Mini Ultra-Stick",
+      "stochastic propeller thrust",
+      "wind-tunnel validation",
+      "aerodynamic coefficient uncertainty",
+      "flight-test data"
+    ],
+    "relevance": "A University of Minnesota thesis that develops stochastic electric-propeller thrust and aerodynamic models. Its indexed outline says the aerodynamic-model method is validated using a Mini Ultra-Stick; the abstract reports wind-tunnel validation of the thrust uncertainty model and an aerodynamic-coefficient uncertainty model based on wind-tunnel experiments.",
+    "limitations": "The thesis is known from the University Digital Conservancy bitstream text indexed by search and from its citation in Lie’s 2014 UMN dissertation; the full thesis was not retrieved. Exact aircraft configuration, coefficient values, and raw measurements therefore remain unverified here. The thesis overlaps Tjhai and Gebre-Egziabher’s 2013 stochastic-thrust conference paper and is not an independent thrust campaign.",
+    "access": "Official DSpace API metadata identifies the bitstream as Tjhai_umn_0130M_14347.pdf in ORIGINAL bundle 0a499a90-7f6c-4cac-9dea-e560b63c9db5, whose item metadata identifies thesis handle 11299/162402 (item UUID fe2b1789-ef4d-4f66-896c-7bff26470549). The handle 11299/163580 belongs to the separate UMN flight-data collection. The official thesis download URL returned an Azure WAF JavaScript challenge (HTTP 403); no challenge was solved and no alternate download route was attempted.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:47:52Z",
+    "license": "University Digital Conservancy content may carry depositor-specific restrictions; no thesis reuse license was identified.",
+    "read_depth": "Official institutional bitstream title, indexed abstract and chapter-outline passages, plus a later UMN thesis citation reviewed. Full document not inspected.",
+    "discovery_group": "lineage"
+  },
+  {
+    "id": "tjhai-gebre-egziabher-2013-stochastic-thrust-model",
+    "title": "Stochastic Thrust Model for Small UAVs",
+    "authors": [
+      "Chandra Tjhai",
+      "Demoz Gebre-Egziabher"
+    ],
+    "year": 2013,
+    "type": "conference-paper",
+    "source_url": "https://experts.umn.edu/en/publications/stochastic-thrust-model-for-small-uavs",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "small electric UAV propeller",
+      "thrust uncertainty",
+      "propeller geometry uncertainty",
+      "wind-tunnel validation",
+      "Monte Carlo analysis"
+    ],
+    "relevance": "The official UMN research record describes a stochastic thrust model linking throttle and commanded RPM to propeller thrust, with Monte Carlo and perturbation analyses for command, geometry, and aerodynamic-model uncertainty and validation against wind-tunnel tests. It is a useful companion citation for installed electric propulsion uncertainty.",
+    "limitations": "The accessible record exposes only bibliographic metadata and an abstract, not test setup, numeric curves, or raw data. It is a shorter companion to Tjhai’s 2013 thesis and likely overlaps the same modeling and tunnel work; do not count it as an independent experiment.",
+    "access": "Official Experts@Minnesota record and abstract accessed. No downloadable manuscript was exposed on that record; no alternate copy was sought.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:45:43Z",
+    "license": "AIAA publication; no reuse license identified in the accessible UMN record.",
+    "read_depth": "Official UMN metadata and abstract only.",
+    "discovery_group": "lineage"
+  },
+  {
+    "id": "araujo-estrada-et-al-2017-bio-inspired-uav-flow-sensing",
+    "title": "Bio-inspired Distributed Strain and Airflow Sensing for Small Unmanned Air Vehicle Flight Control",
+    "authors": [
+      "Sergio A. Araujo-Estrada",
+      "Francis Salama",
+      "Colin Greatwood",
+      "Kieran Wood",
+      "Thomas Richardson",
+      "Shane P. Windsor"
+    ],
+    "year": 2017,
+    "type": "conference-paper",
+    "source_url": "https://doi.org/10.2514/6.2017-1487",
+    "download_url": "https://research-information.bris.ac.uk/files/105721170/Araujo_Estrada_2017_Bio_Inspired_Distributed_Strain_and_Airflow_Sensing_for_small_UAV_flight_control.pdf",
+    "local_path": null,
+    "topics": [
+      "small fixed-wing UAVs",
+      "distributed pressure sensing",
+      "strain gauges",
+      "wind-tunnel tests",
+      "indoor and outdoor flight",
+      "controlled gusts",
+      "natural turbulence",
+      "roll and pitch control"
+    ],
+    "relevance": "The primary abstract reports two modified UAV platforms: one with 12 wing strain gauges and one with four chordwise pressure sensors. It covers wind-tunnel, indoor free-flight, and outdoor free-flight observations, controlled gusts and natural turbulence, and sensor-based roll or pitch control. This adds real-flight flow-sensing evidence around the Stick-class research-platform literature.",
+    "limitations": "The accessible institutional abstract does not identify the aircraft models or publish geometry, inertias, aerodynamic derivatives, or raw telemetry. This is sensor/control evidence rather than a validated general flight-dynamics model. The full AAM could not be inspected, and its campaign relationship to the group’s 2019 pressure-sensing paper is not established.",
+    "access": "University of Bristol record and abstract accessed. Its linked accepted-manuscript PDF returned an Azure WAF JavaScript challenge (HTTP 403); no challenge or alternate-route retrieval was attempted.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:45:43Z",
+    "license": "No reuse license identified in the institutional record; the record identifies an accepted author manuscript and refers users to publisher terms.",
+    "read_depth": "Official Bristol publication record, abstract, bibliographic details, and AAM link reviewed. Full paper not inspected.",
+    "discovery_group": "lineage"
+  },
+  {
+    "id": "wood-et-al-2019-distributed-pressure-sensing-flight-control",
+    "title": "Distributed Pressure Sensing-Based Flight Control for Small Fixed-Wing Unmanned Aerial Systems",
+    "authors": [
+      "Kieran Wood",
+      "Sergio Araujo-Estrada",
+      "Tom Richardson",
+      "Shane Windsor"
+    ],
+    "year": 2019,
+    "type": "journal-article",
+    "source_url": "https://doi.org/10.2514/1.C035416",
+    "download_url": "https://research-information.bris.ac.uk/files/193735835/Distributed_pressure_sensing_based_flight_control_for_small_fixed_wing_unmanned_aerial_systems_AIAA.pdf",
+    "local_path": null,
+    "topics": [
+      "small fixed-wing UAS",
+      "chordwise pressure array",
+      "wind-tunnel calibration",
+      "angle of attack",
+      "airspeed estimation",
+      "stall",
+      "closed-loop pitch control",
+      "flight testing"
+    ],
+    "relevance": "The peer-reviewed Journal of Aircraft abstract reports wind-tunnel characterization of a chordwise wing-pressure array against conventional airspeed and angle-of-attack sensors, manual pitching flights, closed-loop pitch control from a pressure-based angle estimate, and a neural estimator validated on flight trials under stall and unsteady flow. This is a second primary field-and-tunnel source from the same distributed-sensing research lineage.",
+    "limitations": "The accessible record does not give the airframe identity, geometry, inertia, numerical aerodynamic derivatives, or raw flight logs. It is a sensing and longitudinal-control study, not a full-airframe aerodynamic database. It is related in topic and author group to the 2017 conference paper; the accessible records do not establish whether their flights or tunnel runs overlap.",
+    "access": "University of Bristol publication record and abstract accessed. The linked accepted-manuscript PDF returned an Azure WAF JavaScript challenge (HTTP 403); no challenge or alternate-route retrieval was attempted.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:45:43Z",
+    "license": "No reuse license identified in the institutional record; the record identifies an accepted author manuscript and refers users to publisher terms.",
+    "read_depth": "Official Bristol publication record, abstract, bibliographic details, and AAM link reviewed. Full paper not inspected.",
+    "discovery_group": "lineage"
+  },
+  {
+    "id": "kadet-senior-rizwan-2011-system-identification",
+    "title": "Towards High Speed Aerial Tracking of Agile Targets",
+    "authors": [
+      "Yassir Rizwan"
+    ],
+    "year": 2011,
+    "source_url": "https://dspacemainprd01.lib.uwaterloo.ca/server/api/core/bitstreams/a3238ce2-af59-4fa8-8ed9-40a9a96a82f4/content",
+    "download_url": "https://dspacemainprd01.lib.uwaterloo.ca/server/api/core/bitstreams/a3238ce2-af59-4fa8-8ed9-40a9a96a82f4/content",
+    "type": "master-thesis",
+    "topics": [
+      "SIG Kadet Senior",
+      "flight-derived system identification",
+      "Output Error Method",
+      "custom alpha and beta vanes",
+      "synchronized onboard measurements"
+    ],
+    "relevance": "Primary flight-test system-identification study on a custom Kadet Senior UAV. It records pitot airspeed, alpha/beta vanes, IMU attitude/rates and acceleration, and four RC PWM references; the thesis reports an initial Output Error fit and an improved 23-parameter model after smoothing noisy MEMS rates. The acquisition system is described at about 75 Hz with synchronized sampling.",
+    "limitations": "The thesis includes plots, not the underlying flight-log files. Control inputs are RC receiver references rather than measured servo/surface positions, and the author identifies wind, MEMS drift/noise, vane calibration and initial-parameter sensitivity as material errors. Aggressive nonlinear-controller trajectories are simulated; the airframe was flight-tested with linear control only and was judged structurally unsuitable for aggressive maneuvers. Exact loaded mass, motor and propeller configuration are not established in the identification section.",
+    "access": "Public direct PDF from the University of Waterloo repository; downloaded and parsed in full (94 pages).",
+    "license": "Copyright retained by author; no broader redistribution license inferred. Local research reference copy.",
+    "read_depth": "Full 94-page thesis parsed; acquisition hardware, channels, timing, model fitting, flight results and limitations reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/trainers/rizwan-2011-kadet-senior-flight-system-id-thesis.pdf",
+    "sha256": "9cfc3f4335a24e4d0acfb371a2be2b5d8a0d95e094bdaee9473de3787758f8c1",
+    "bytes": 3899936,
+    "retrieved_utc": "2026-10-19T02:46:43Z",
+    "category": "trainers",
+    "discovery_group": "trainers"
+  },
+  {
+    "id": "kadet-senior-jimenez-silva-hernandez-2017-tecs-flight-tests",
+    "title": "Experimental Validation of Total Energy Control System for UAVs",
+    "authors": [
+      "Pedro L. Jimenez",
+      "Jorge A. Silva",
+      "Juan S. Hernandez"
+    ],
+    "year": 2017,
+    "source_url": "https://doi.org/10.13009/EUCASS2017-411",
+    "download_url": "https://www.eucass.eu/doi/EUCASS2017-411.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "SIG Kadet Senior K1/K2",
+      "TECS and EKF flight validation",
+      "ArduPilot/Pixhawk telemetry",
+      "flight-derived stability rates",
+      "Aerosim hardware-in-the-loop comparison"
+    ],
+    "relevance": "Public primary paper using actual Kadet Senior flight telemetry to assess TECS/EKF and compare flight responses with theoretical and hardware-in-the-loop models. It describes a 4.95 kg, 2.045 m span aircraft, 0.76 m² wing, 1.3 kW electric motor and 14x7 propeller. Reported TECS errors against flight references are 12.3% pitch, 5.5% airspeed and 11.1% relative altitude.",
+    "limitations": "This validates control/estimation behavior, not a complete aerodynamic model. Pixhawk actuator commands are reported at 30 Hz and IMU at 25 Hz; the lower-rate telemetry link is 3.56 parameters/s. Inertias are calculated with XFLR5, while only angular-rate stability derivatives are described as flight-estimated. Raw logs are not released. The 2020 journal article with the same title appears to be a related/expanded publication on the Kadet platform and should not be counted as an independent airframe or flight-data campaign.",
+    "access": "Official EUCASS PDF publicly accessible; downloaded and parsed in full (15 pages).",
+    "license": "Conference PDF copyright terms not established; no broader redistribution rights inferred. Local research reference copy.",
+    "read_depth": "Full 15-page paper parsed; configuration, sensor channels/rates, flight plan, model inputs, reported errors and limitations reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/trainers/jimenez-silva-hernandez-2017-kadet-tecs-flight-tests.pdf",
+    "sha256": "f22f82b8b7b033825752b5c838b729e59c38f8553cd35abe6f22d954826fa771",
+    "bytes": 666719,
+    "retrieved_utc": "2026-10-19T02:43:49Z",
+    "category": "trainers",
+    "discovery_group": "trainers"
+  },
+  {
+    "id": "kadet-40-matamala-carvajal-2025-xplane-flight-comparison",
+    "title": "Implementación y validación de plataforma RPA en software de simulación X-Plane 11",
+    "authors": [
+      "Moisés Eduardo Matamala Carvajal"
+    ],
+    "year": 2025,
+    "source_url": "https://repositorio.udec.cl/items/fb892da0-4b9b-4f08-9c5b-2215133bef65",
+    "download_url": "https://repositorio.udec.cl/bitstreams/ef10f0a3-72a0-4169-bb81-2ae599143555/download",
+    "type": "undergraduate-thesis",
+    "topics": [
+      "SIG Kadet-40",
+      "2024 real-flight control excitation",
+      "X-Plane 11 response comparison",
+      "Pixhawk 6C and Mission Planner",
+      "wind-tunnel pitot check"
+    ],
+    "relevance": "Open institutional thesis comparing measured Kadet-40 flight responses with an X-Plane 11 model. The modified 5.09 kg electric aircraft used a Turnigy SK4250-650 motor, Hacker 70 A ESC, 13x8 propeller, 6S battery, Pixhawk 6C, BMI055 IMU, MS5611 barometer, MS4525DO pressure sensors, and potentiometer AOA/SSA vanes. Logged/analysed channels include airspeed, pitch/roll/yaw, barometric altitude, angular rate and RC output (RCOU). A wind-tunnel check of the pitot system reports 18 points and 1.4242 m/s RMSE; the vane AOA calibration reports 0.9881 degrees RMSE.",
+    "limitations": "This is response-level simulator comparison, not an identified aerodynamic-coefficient model. The first campaign had only 5.5 s between inputs and overlapping responses; the later campaign selected elevator 3-2-1-1 and aileron/rudder doublets. The simulated combustion engine differs from the real electric propulsion, and response magnitudes differ materially. The thesis does not state flight-log sample rates or bundle raw log files; the comparison uses selected plots and replayed control inputs.",
+    "access": "Public University of Concepción repository item and bitstream; downloaded and parsed in full (98 pages).",
+    "license": "Thesis author permits partial or total reproduction for academic purposes; no commercial redistribution rights inferred.",
+    "read_depth": "Full 98-page thesis parsed; airframe/hardware, sensor calibration, two flight campaigns, selected channels, simulation setup and comparison limitations reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/trainers/matamala-carvajal-2025-kadet-40-flight-validation-thesis.pdf",
+    "sha256": "d6e8b72c715f1464b29e635dc68f5f2928c7b77ab65ab0f610aa5fdfeeb53233",
+    "bytes": 3363458,
+    "retrieved_utc": "2026-10-19T02:43:53Z",
+    "category": "trainers",
+    "discovery_group": "trainers"
+  },
+  {
+    "id": "kadet-senior-jimenez-etal-2020-tecs-journal",
+    "title": "Experimental Validation of Total Energy Control System for UAVs",
+    "authors": [
+      "Pedro Jimenez",
+      "Piotr Lichota",
+      "Daniel Agudelo",
+      "Krzysztof Rogowski"
+    ],
+    "year": 2020,
+    "source_url": "https://www.mdpi.com/1996-1073/13/1/14",
+    "download_url": "https://www.mdpi.com/1996-1073/13/1/14/pdf",
+    "type": "journal-article",
+    "topics": [
+      "SIG Kadet Senior K1/K2",
+      "TECS/EKF experimental comparison",
+      "flight-derived dynamics",
+      "XFLR5 and Aerosim HIL"
+    ],
+    "relevance": "Journal follow-up/expanded publication on the Kadet Senior test platform. Publisher-indexed text describes flight-data comparisons, TECS performance and aerodynamic derivatives; it is a related source to the 2017 EUCASS paper, not an independent platform or known independent flight-log set.",
+    "limitations": "No local original was acquired: the MDPI article/PDF endpoints returned HTTP 429/403 in this environment and the Warsaw University repository file endpoint presented a Cloudflare verification page. No challenge was bypassed. Publisher/repository metadata identifies the article as open access under CC BY 4.0; raw logs are not known to be released.",
+    "access": "Open-access article metadata and indexed full-text passages reviewed, but the original PDF was not retrievable through the ordinary public endpoints during this collection; no local file retained.",
+    "license": "CC BY 4.0 according to institutional repository metadata; no local copy retained.",
+    "read_depth": "Article metadata and publisher-indexed full-text passages reviewed; original PDF not locally inspected.",
+    "local_path": null,
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:49:43Z",
+    "category": "trainers",
+    "discovery_group": "trainers"
+  },
+  {
+    "id": "telemaster-senior-sarmento-et-al-2019-synthetic-alpha-beta",
+    "title": "Synthetic Estimation of Angle of Attack and Sideslip for Flight Testing of an Unmanned Aerial Vehicle",
+    "authors": [
+      "Andrew Gomes Pereira Sarmento",
+      "Alain Souza",
+      "David Fernando Castillo Zúñiga",
+      "Luiz Carlos Góes"
+    ],
+    "year": 2019,
+    "source_url": "https://abcm.org.br/proceedings/view/COB2019/1578",
+    "download_url": null,
+    "type": "conference-paper",
+    "topics": [
+      "Senior Telemaster",
+      "MicroPilot LRC2 INS/GPS and pitot",
+      "synthetic angle-of-attack/sideslip estimation",
+      "wind sensitivity in flight tests"
+    ],
+    "relevance": "Primary Telemaster Senior flight study using MicroPilot LRC2 INS/GPS, magnetometer, pitot airspeed, ground-relative velocity and attitude to estimate alpha/beta with the wind-triangle method. It compares calm and turbulent-weather Telemaster flights and reports that turbulence makes the estimates less stable. The actual alpha/beta reference measurements came from a separate Vector-P aircraft carrying an ICASIM smart boom, because the Telemaster could not carry that payload.",
+    "limitations": "No raw logs are released; results are plotted. The Telemaster itself had no measured alpha/beta ground truth, so the reference comparison is across airframes and does not establish Telemaster aerodynamic coefficients. The official ABCM PDF button resolved to a malformed endpoint with a missing file ID; no PDF was acquired. The full-text index on the author page was not treated as a locally acquired original.",
+    "access": "Official ABCM record and abstract accessible. PDF download endpoint is broken (missing identifier); no local original retained.",
+    "license": "Not verified; no local reference copy acquired.",
+    "read_depth": "Official metadata/abstract and author-page indexed text reviewed; no PDF or raw flight logs obtained.",
+    "local_path": null,
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:49:43Z",
+    "category": "trainers",
+    "discovery_group": "trainers"
+  },
+  {
+    "id": "umn-thor-2012-03-30-flight-34-35-report",
+    "title": "Thor flight-test report — Flights 34–35 (2012-03-30)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight-test report",
+    "source_url": "https://hdl.handle.net/11299/174314",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/0f36ce35-2ce2-42ff-a029-6c75d28264af/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-34-2012-03-30-report.pdf",
+    "flight_date": "2012-03-30",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "manual upset recovery",
+      "post-stall",
+      "flight-test report"
+    ],
+    "relevance": "Primary report for two Thor sorties. Flight 34 includes manually piloted roll and yaw upsets, recovery attempts, and sustained post-stall points with timestamped maneuver windows.",
+    "limitations": "The report says the Euler-angle data need post-processing, its angle-of-attack polarity was wrong, and the angle-of-attack estimate fails when sensed pressure is too low. Reported maneuver windows are in the full-file timeline, not independently confirmed airborne time. It also documents Flight 35, whose raw files are not included in this acquisition. The retained Flight 34 LOC3 report entries use 20% and 16% throttle; the generic LOC3 procedure starts with a power-off stall, but these entries are not zero-throttle logs.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "424a44e4b9c94f8a1132f5a5c21f62de",
+    "source_md5": "424a44e4b9c94f8a1132f5a5c21f62de",
+    "sha256": "41e90514a030cc6af9b23913b4eb7c291da09a48100e4a3de76cef03ac058a65",
+    "bytes": 148900,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Full two-page report parsed. It gives date, site, weather, manual-control procedure, flights 34–35, and Flight 34 maneuver windows 219–710 s. No coefficient extraction or physical validation performed.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  },
+  {
+    "id": "umn-thor-2012-03-30-flight-34-hdf5",
+    "title": "Thor Flight 34 — HDF5 flight log (2012-03-30)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight log",
+    "source_url": "https://hdl.handle.net/11299/174314",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/c9c4785f-8edc-41f9-b1cb-3a4a5bfaf4d7/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-34-2012-03-30.h5",
+    "flight_date": "2012-03-30",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "manual upset recovery",
+      "post-stall",
+      "flight-data log"
+    ],
+    "relevance": "Full HDF5 log paired with the Flight 34 report. It contains inertial, attitude, air-data, GPS/navigation, status, control-input/output, and motor telemetry channels.",
+    "limitations": "HDF5 datasets have no unit attributes or sensor-range/saturation limits. The report flags attitude post-processing and angle-of-attack polarity/low-pressure failures. The file time field spans 0.021–895.581 s; this is not an established airborne duration. Motor telemetry has a separate 5 Hz time vector that extends to 1220.4 s, so it must not be aligned to the main stream without investigating the clocks. The retained Flight 34 LOC3 report entries use 20% and 16% throttle; the generic LOC3 procedure starts with a power-off stall, but these entries are not zero-throttle logs.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "42a5c040bc173a1eeb6ea1bcb22ef1d0",
+    "source_md5": "42a5c040bc173a1eeb6ea1bcb22ef1d0",
+    "sha256": "2b0de6b1b470915f440cbb0d0d70e68acb59303bf2e63283f1555f1aaea67288",
+    "bytes": 27191176,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Complete HDF5 inspected read-only with h5py: 81 root datasets; 44,777 main-stream samples, median time step 0.020004 s, one observed 0.040 s gap; separate motor_time has 6,103 samples at 0.2 s. Dataset names, shapes, dtypes, attributes, and time vectors inspected; no channel units or signal values were interpreted.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  },
+  {
+    "id": "umn-thor-2012-03-30-flight-34-mat-v5",
+    "title": "Thor Flight 34 — MATLAB v5 flight log (2012-03-30)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight log",
+    "source_url": "https://hdl.handle.net/11299/174314",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/89be86c9-4a02-45ba-9876-55d99801e9d6/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-34-2012-03-30.mat",
+    "flight_date": "2012-03-30",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "manual upset recovery",
+      "post-stall",
+      "flight-data log"
+    ],
+    "relevance": "Full MATLAB v5 export paired with the Flight 34 report; its flat variables expose the same main sensor, navigation, control, and motor streams as the HDF5 copy.",
+    "limitations": "The export has no per-variable units or sensor-range/saturation limits. The report flags attitude post-processing and angle-of-attack polarity/low-pressure failures. The main stream spans 0.021–895.581 s, while motor_time uses a separate longer clock; neither span is established airborne duration. The retained Flight 34 LOC3 report entries use 20% and 16% throttle; the generic LOC3 procedure starts with a power-off stall, but these entries are not zero-throttle logs.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "0c8311119a9837ace3ad2eea40737432",
+    "source_md5": "0c8311119a9837ace3ad2eea40737432",
+    "sha256": "645533a806f86979ef59ebbb81b9631b989341b39fdc26501f9663c0d62b059d",
+    "bytes": 5161645,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Complete MATLAB v5 file inspected read-only with scipy.io.loadmat: flat per-channel variables, 44,777 main-stream rows and 6,103 motor rows. Variable names, shapes, dtypes, and time vectors checked; no channel units or signals interpreted.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  },
+  {
+    "id": "umn-thor-2012-05-21-flights-44-46-report",
+    "title": "Thor flight-test report — Flights 44–46 (2012-05-21)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight-test report",
+    "source_url": "https://hdl.handle.net/11299/174325",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/7e7c3712-5bf7-49f0-bcfb-a14abc37b6eb/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-44-2012-05-21-report.pdf",
+    "flight_date": "2012-05-21",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "three-axis system identification",
+      "closed-loop doublet validation",
+      "flight-test report"
+    ],
+    "relevance": "Primary report for a three-sortie campaign: Flight 44 applied 1 s, 4° roll/yaw/pitch doublets after manual trim; Flight 45 repeated the system-identification sequence with improved pilot timing; Flight 46 tested a closed-loop baseline controller using roll and pitch tracking doublets.",
+    "limitations": "The report notes manual elevator contamination at the end of Flight 44; it says Flight 45 provided sufficient system-identification data. Flight 46 is closed-loop validation and must not be treated as an open-loop airframe test. The document specifies excitation magnitudes, but does not define the stored channel units or sensor ranges.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "92385663f42f05984198e0d23713695a",
+    "source_md5": "92385663f42f05984198e0d23713695a",
+    "sha256": "150ec6079b9a32cd3195d2bf3db5921b41da3700457dd81f312a72eb8122f142",
+    "bytes": 125770,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Full two-page report parsed. It gives date, site, weather, procedure, control-excitation sizes, controller comparison, and identifies Flights 44–46. Flight 45 raw log is not included in this acquisition.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  },
+  {
+    "id": "umn-thor-2012-05-21-flight-44-hdf5",
+    "title": "Thor Flight 44 — HDF5 flight log (2012-05-21)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight log",
+    "source_url": "https://hdl.handle.net/11299/174325",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/58749c12-70c0-486a-b870-0a3585db69c5/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-44-2012-05-21.h5",
+    "flight_date": "2012-05-21",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "three-axis system identification",
+      "flight-data log"
+    ],
+    "relevance": "Full HDF5 log paired with a report documenting 1 s, 4° three-axis doublets after manual trim.",
+    "limitations": "No HDF5 unit attributes, channel dictionary, sensor calibration, or sensor-range/saturation limits were found. The report says elevator pilot input contaminated the end of Flight 44. The full-file 0.021–681.041 s span is not established airborne duration; commanded/control channels are not verified measured surface positions.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "c5505f503b3873bd4daf6253ff4c7b80",
+    "source_md5": "c5505f503b3873bd4daf6253ff4c7b80",
+    "sha256": "61bab08a0434a9f536eb03c12fd960a4d09f030496a6c290af394b420ccf435c",
+    "bytes": 19642224,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Complete HDF5 inspected read-only with h5py: 72 root datasets, each with 34,052 samples. The time vector spans 0.021–681.041 s; median interval is 0.0200005 s (nominal 50 Hz). Dataset names, shapes, dtypes, and attributes inspected; no units or signal values interpreted.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  },
+  {
+    "id": "umn-thor-2012-05-21-flight-44-mat-v5",
+    "title": "Thor Flight 44 — MATLAB v5 flight log (2012-05-21)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight log",
+    "source_url": "https://hdl.handle.net/11299/174325",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/b409e3ab-9b9c-4bdf-b959-33de9502c2a8/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-44-2012-05-21.mat",
+    "flight_date": "2012-05-21",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "three-axis system identification",
+      "flight-data log"
+    ],
+    "relevance": "Full MATLAB v5 export paired with the Flight 44 report and HDF5 file.",
+    "limitations": "The export has no per-variable unit dictionary, calibration, or sensor-range/saturation limits. The report notes manual elevator contamination at the end of the excitation. Time spans the full log, not an established airborne duration; command/output fields are not verified physical surface positions.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "f65d78171056c161088357d35a3b3d53",
+    "source_md5": "f65d78171056c161088357d35a3b3d53",
+    "sha256": "353a95042045f21be3bf5ad9d16c0ac2990cf231cfee8ee0e6690abf4e490d19",
+    "bytes": 2190764,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Complete MATLAB v5 file inspected read-only with scipy.io.loadmat: 72 flat variables and 34,052 samples on the main time base. Names, shapes, dtypes, and time vector checked; no units or signals interpreted.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  },
+  {
+    "id": "umn-thor-2012-05-21-flight-46-hdf5",
+    "title": "Thor Flight 46 — HDF5 flight log (2012-05-21)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight log",
+    "source_url": "https://hdl.handle.net/11299/174327",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/9f46c8fd-b1cf-4275-b9d7-a7ce5597e34f/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-46-2012-05-21.h5",
+    "flight_date": "2012-05-21",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "closed-loop controller validation",
+      "roll and pitch tracking doublets",
+      "flight-data log"
+    ],
+    "relevance": "Full HDF5 log for the report's closed-loop baseline-controller validation using roll and pitch tracking doublets.",
+    "limitations": "This is closed-loop controller validation, not open-loop airframe identification. The HDF5 file has no unit attributes, channel dictionary, calibration, or sensor-range/saturation limits; commands are not verified physical surface positions. Full-file time 0.021–519.961 s is not confirmed airborne duration.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "f37d91a145bcd3106a69c947b0524daf",
+    "source_md5": "f37d91a145bcd3106a69c947b0524daf",
+    "sha256": "e890d02ae38f40e1dac34d4177eb4684bc58392aac7caa242c022699ffa4d678",
+    "bytes": 15002040,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Complete HDF5 inspected read-only with h5py: 72 root datasets, each with 25,998 samples. The time vector spans 0.021–519.961 s; median interval is 0.0200005 s (nominal 50 Hz). Dataset names, shapes, dtypes, and attributes inspected; no units or signal values interpreted.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  },
+  {
+    "id": "umn-thor-2012-05-21-flight-46-mat-v5",
+    "title": "Thor Flight 46 — MATLAB v5 flight log (2012-05-21)",
+    "authors": [
+      "Brian Taylor"
+    ],
+    "year": 2012,
+    "type": "flight log",
+    "source_url": "https://hdl.handle.net/11299/174327",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/ff5bf440-f3ee-491c-82e5-ea78c00e426a/content",
+    "local_path": "references/rc-validation-library-2026-10-18/stik-analogues/logs/thor-flight-46-2012-05-21.mat",
+    "flight_date": "2012-05-21",
+    "topics": [
+      "Thor",
+      "Ultra Stick 25e",
+      "closed-loop controller validation",
+      "roll and pitch tracking doublets",
+      "flight-data log"
+    ],
+    "relevance": "Full MATLAB v5 export paired with the Flight 46 closed-loop baseline-controller validation report and HDF5 file.",
+    "limitations": "No per-variable unit dictionary, calibration, or sensor-range/saturation limits. This is a closed-loop test, not open-loop identification; command channels are not verified physical surface positions. Full-file time is not established airborne duration.",
+    "access": "Public University of Minnesota Digital Conservancy bitstream; downloaded from its ordinary unauthenticated content endpoint.",
+    "license": "No item-specific reuse license found. Public access does not establish redistribution permission; local reference copy only.",
+    "md5": "99dd16874debb8f75f05afd3c25629f4",
+    "source_md5": "99dd16874debb8f75f05afd3c25629f4",
+    "sha256": "7ca6bf0dd5d3f7d00bdb73d80488c96f860f64531b103bdf6fa32ca26a373ce1",
+    "bytes": 1681854,
+    "retrieved_utc": "2026-10-19T02:51:55Z",
+    "read_depth": "Complete MATLAB v5 file inspected read-only with scipy.io.loadmat: 72 flat variables and 25,998 samples on the main time base. Names, shapes, dtypes, and time vector checked; no units or signals interpreted.",
+    "source_group": "stik-analogues",
+    "airframe_relation": "UMN Thor is an Ultra Stick 25e analogue, not the Jensen Ugly Stik 60.",
+    "discovery_group": "logs"
+  }
+]

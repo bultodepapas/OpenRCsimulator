@@ -22,6 +22,9 @@ const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const GlowInstallation := preload("res://physics/glow/installation.gd")
+const BatteryData := preload("res://physics/battery/battery_data.gd")
+const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
+const FuelProperties := preload("res://physics/fuel_properties.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 ## CR-01d: names a crash-hull point may carry (crash_hull_components). Same list as the contract's enum path;
@@ -142,7 +145,10 @@ static func _q(errors: PackedStringArray, path: String, node: Variant, unit: Str
 
 static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	if raw.get("format") == LEGACY_FORMAT:
-		return _validate_legacy(raw)
+		var legacy: Dictionary = _validate_legacy(raw)
+		if legacy.get("ok", false) and legacy.model.propulsion.get("battery", {}).get("kind") == "pack_ecm":
+			return _fail("propulsion.battery: pack_ecm requires openrc-aircraft v2 (inventory ids name the pack mount)")
+		return legacy
 	if raw.get("format") != FORMAT:
 		return _fail("format must be '%s' or explicit legacy '%s'" % [FORMAT, LEGACY_FORMAT])
 	var structural: PackedStringArray = Contract.validate(raw)
@@ -166,6 +172,19 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 				return {ok=false,errors=installed.errors,warnings=result.warnings,model={}}
 			result.model = installed.model
 			result.warnings.append("Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending")
+		if result.model.propulsion.get("battery", {}).get("kind") == "pack_ecm":
+			# BAT-09: authored v2 inventory ids name the mount; the internal v1 form drops them.
+			var mount_errors := PackedStringArray()
+			_validate_pack_mount(mount_errors, result.model.propulsion.battery, raw.get("inventory", []))
+			if not mount_errors.is_empty():
+				return {ok=false,errors=mount_errors,warnings=result.warnings,model={}}
+		if raw.has("fuel_system") or raw.balance.has("fuel_state") or raw.balance.has("cg_range"):
+			var fuel_errors := PackedStringArray()
+			var fuel_system: Dictionary = _fuel_system(fuel_errors, raw)
+			if not fuel_errors.is_empty():
+				return {ok=false,errors=fuel_errors,warnings=result.warnings,model={}}
+			if not fuel_system.is_empty():
+				result.model.fuel_system = fuel_system
 		var identities := PhysicalIdentity.describe(raw)
 		if not identities.is_empty():
 			result.model.physical_identity = identities
@@ -280,6 +299,18 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	# keeps its closed propulsion shape and receives only its original inputs.
 	out.erase("physical_identity_version")
 	out.erase("crash_hull_ids")
+	# FUEL-03: tanks, balance fuel state and CG range are v2-only and checked by _fuel_system after the
+	# shared parse. With an empty-tank balance the historical inventory/plan check would compare the wrong
+	# state, so it receives the authored inventory CG here and _fuel_system checks the dry CG instead.
+	out.erase("fuel_system")
+	if out.get("balance") is Dictionary:
+		var fuel_state: Variant = out.balance.get("fuel_state", "as_inventory")
+		out.balance.erase("fuel_state")
+		out.balance.erase("cg_range")
+		if fuel_state == "empty_tanks" and out.balance.get("plan_cg") is Dictionary:
+			var authored: Variant = _inventory_cg(out.get("inventory"), [])
+			if authored is PackedFloat64Array:
+				out.balance.plan_cg.value = Array(authored)
 	if out.get("inventory") is Array:
 		for item in out.inventory:
 			if item is Dictionary:
@@ -1053,11 +1084,19 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 	var battery: Dictionary = battery_result.get("battery", {})
 	var reference_voltage: float = float(battery_result.get("reference_voltage", 0.0))
 	var esc_raw := _dictionary(errors, "propulsion.esc", node.get("esc", {}))
-	_reject_unknown_keys(errors, "propulsion.esc", esc_raw, ["kind", "command_mapping"])
+	_reject_unknown_keys(errors, "propulsion.esc", esc_raw, ["kind", "command_mapping", "low_voltage_cutoff"])
 	if esc_raw.get("kind") != "ideal_motoring":
 		errors.append("propulsion.esc.kind: only 'ideal_motoring' is supported")
 	if esc_raw.get("command_mapping") != "identity":
 		errors.append("propulsion.esc.command_mapping: only 'identity' is supported")
+	# BAT-11: the sampled LVC supervisor needs a finite pack with cell voltages; it is required for pack_ecm only.
+	var lvc: Dictionary = {}
+	if battery.get("kind") == "pack_ecm":
+		lvc = _low_voltage_cutoff(errors, esc_raw.get("low_voltage_cutoff"))
+		if not lvc.is_empty():
+			battery["lvc_filter_s"] = float(lvc.voltage_filter_s)
+	elif esc_raw.has("low_voltage_cutoff"):
+		errors.append("propulsion.esc.low_voltage_cutoff: only valid with a pack_ecm battery")
 	var prop_raw := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
 	_reject_unknown_keys(errors, "propulsion.propeller", prop_raw, [
 		"name", "diameter", "thrust_line_offset", "rotating_inertia", "ct_table", "cp_table", "thrust_angles",
@@ -1108,7 +1147,8 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 		kind = "electric_prop",
 		motor = {kv_rpm_per_volt = kv, resistance_ohm = resistance, no_load_current_a = idle_current},
 		battery = battery,
-		esc = {kind = "ideal_motoring", command_mapping = "identity"},
+		esc = {kind = "ideal_motoring", command_mapping = "identity"} if lvc.is_empty() \
+			else {"kind": "ideal_motoring", "command_mapping": "identity", "low_voltage_cutoff": lvc},
 		max_rpm = max_rpm,
 		diameter = diameter,
 		offset = offset,
@@ -1135,8 +1175,10 @@ static func _electric_battery(errors: PackedStringArray, battery_raw: Dictionary
 			return {}
 		# Preserve StringName keys: native model bytes identify existing v5 checkpoints.
 		return {"battery": {kind = "fixed_voltage", voltage_v = bus_voltage}, "reference_voltage": float(bus_voltage)}
+	if battery_kind == "pack_ecm":
+		return _pack_ecm_battery(errors, battery_raw)
 	if battery_kind != "ocv_resistance":
-		errors.append("propulsion.battery.kind: must be 'fixed_voltage' or 'ocv_resistance'")
+		errors.append("propulsion.battery.kind: must be 'fixed_voltage', 'ocv_resistance' or 'pack_ecm'")
 		return {}
 
 	_reject_unknown_keys(errors, "propulsion.battery", battery_raw, [
@@ -1213,6 +1255,227 @@ static func _electric_battery(errors: PackedStringArray, battery_raw: Dictionary
 		},
 		"reference_voltage": maximum_ocv,
 	}
+
+
+## BAT-09: a generated pack (openrc-battery v1) referenced by id and pinned by SHA-256, plus the installation.
+## The normalized pack tables are embedded so the session never reads battery files during flight.
+static func _pack_ecm_battery(errors: PackedStringArray, battery_raw: Dictionary) -> Dictionary:
+	_reject_unknown_keys(errors, "propulsion.battery", battery_raw, [
+		"kind", "pack", "mount_inventory_id", "initial_soc", "auxiliary_current_a", "cooling_airflow_fraction", "weak_cell",
+	])
+	var pack_ref := _dictionary(errors, "propulsion.battery.pack", battery_raw.get("pack", {}))
+	_reject_unknown_keys(errors, "propulsion.battery.pack", pack_ref, ["id", "sha256"])
+	if typeof(battery_raw.get("mount_inventory_id")) != TYPE_STRING or str(battery_raw.get("mount_inventory_id")).is_empty():
+		errors.append("propulsion.battery.mount_inventory_id: must name the pack's inventory item")
+	var initial_soc: Variant = _electric_q(errors, "propulsion.battery.initial_soc", battery_raw.get("initial_soc"), "1", 0.0, 1.0)
+	var auxiliary: Variant = _electric_q(errors, "propulsion.battery.auxiliary_current_a", battery_raw.get("auxiliary_current_a"), "A", 0.0, 100.0)
+	var airflow: Variant = _electric_q(errors, "propulsion.battery.cooling_airflow_fraction", battery_raw.get("cooling_airflow_fraction"), "1", 0.0, 1.0)
+	var weak_raw := _dictionary(errors, "propulsion.battery.weak_cell", battery_raw.get("weak_cell", {}))
+	_reject_unknown_keys(errors, "propulsion.battery.weak_cell", weak_raw, ["capacity_factor", "resistance_factor", "soc_offset"])
+	var weak_capacity: Variant = _electric_q(errors, "propulsion.battery.weak_cell.capacity_factor", weak_raw.get("capacity_factor"), "1", 0.01, 1.0)
+	var weak_resistance: Variant = _electric_q(errors, "propulsion.battery.weak_cell.resistance_factor", weak_raw.get("resistance_factor"), "1", 1.0, 10.0)
+	var weak_offset: Variant = _electric_q(errors, "propulsion.battery.weak_cell.soc_offset", weak_raw.get("soc_offset"), "1", 0.0, 0.5)
+	if not errors.is_empty():
+		return {}
+	if float(initial_soc) - float(weak_offset) <= 0.0 or float(weak_offset) >= 0.5:
+		errors.append("propulsion.battery: initial_soc must exceed the weak-cell soc_offset, and the offset must be < 0.5")
+		return {}
+	var pack: Dictionary = BatteryData.load_pack(errors, "propulsion.battery.pack", pack_ref.get("id"), pack_ref.get("sha256"))
+	if pack.is_empty():
+		return {}
+	var battery: Dictionary = pack.duplicate()
+	battery.merge({
+		"kind": "pack_ecm",
+		"initial_soc": float(initial_soc),
+		"auxiliary_current_a": float(auxiliary),
+		"cooling_airflow_fraction": float(airflow),
+		"weak_capacity_factor": float(weak_capacity),
+		"weak_resistance_factor": float(weak_resistance),
+		"weak_soc_offset": float(weak_offset),
+		"mount_inventory_id": str(battery_raw.mount_inventory_id),
+	}, true)
+	var maximum_ocv: float = 0.0
+	for value: float in battery.ocv:
+		maximum_ocv = maxf(maximum_ocv, value)
+	return {"battery": battery, "reference_voltage": float(battery.series) * maximum_ocv}
+
+
+static func _low_voltage_cutoff(errors: PackedStringArray, node: Variant) -> Dictionary:
+	var path := "propulsion.esc.low_voltage_cutoff"
+	var raw := _dictionary(errors, path, node if node != null else {})
+	if node == null:
+		errors.append(path + ": required with a pack_ecm battery (use mode 'off' to disable)")
+		return {}
+	_reject_unknown_keys(errors, path, raw, ["mode", "cell_detection", "fixed_cells", "detection_max_cell_v",
+		"cutoff_per_cell_v", "soft_limit", "soft_ramp_s", "debounce_s", "recovery", "reset_throttle_max", "voltage_filter_s"])
+	var out: Dictionary = {"mode": raw.get("mode"), "cell_detection": raw.get("cell_detection"), "recovery": raw.get("recovery")}
+	if raw.get("cell_detection") == "fixed":
+		var cells: Variant = _electric_q(errors, path + ".fixed_cells", raw.get("fixed_cells"), "1", 1.0, 24.0)
+		if cells == null or float(cells) != floorf(float(cells)):
+			errors.append(path + ".fixed_cells: must be an integer cell count")
+			return {}
+		out.fixed_cells = int(cells)
+		if raw.has("detection_max_cell_v"):
+			errors.append(path + ".detection_max_cell_v: only valid with automatic detection")
+	else:
+		out.detection_max_cell_v = _electric_q(errors, path + ".detection_max_cell_v", raw.get("detection_max_cell_v"), "V", 0.5, 6.0)
+		if raw.has("fixed_cells"):
+			errors.append(path + ".fixed_cells: only valid with fixed detection")
+	out.cutoff_per_cell_v = _electric_q(errors, path + ".cutoff_per_cell_v", raw.get("cutoff_per_cell_v"), "V", 0.5, 5.0)
+	out.soft_limit = _electric_q(errors, path + ".soft_limit", raw.get("soft_limit"), "1", 0.0, 1.0)
+	out.soft_ramp_s = _electric_q(errors, path + ".soft_ramp_s", raw.get("soft_ramp_s"), "s", 0.0, 60.0)
+	out.debounce_s = _electric_q(errors, path + ".debounce_s", raw.get("debounce_s"), "s", 0.0, 60.0)
+	out.reset_throttle_max = _electric_q(errors, path + ".reset_throttle_max", raw.get("reset_throttle_max"), "1", 0.0, 1.0)
+	out.voltage_filter_s = _electric_q(errors, path + ".voltage_filter_s", raw.get("voltage_filter_s"), "s", 0.0, 10.0)
+	if not errors.is_empty():
+		return {}
+	var message: String = EscSupervisor.validate(out)
+	if not message.is_empty():
+		errors.append("propulsion.esc." + message)
+		return {}
+	return out
+
+
+## BAT-09: the mounted inventory item carries the pack's mass, so CG and inertia follow the selected pack.
+## FUEL-03: liquid-fuel tanks bound by inventory id, the balance fuel state and the CG range.
+## Each tank names a registry blend, its liquid item (energy_source of that family) and its empty shell item.
+## The liquid item's mass is the authored fill; it may not exceed capacity x blend density, and its box must hold
+## the capacity. With fuel_state "empty_tanks" the plan CG must equal the inventory CG without any tank liquid.
+## Returns the normalized model.fuel_system, or {} when only balance fields are present.
+const FUEL_FAMILY_SOURCE := {glow = "glow_fuel", gasoline = "gasoline", kerosene = "kerosene"}
+const FUEL_FAMILY_FEED := {glow = "suction_muffler", gasoline = "pumped_diaphragm", kerosene = "ecu_pump"}
+const LIQUID_FUEL_SOURCES := ["glow_fuel", "gasoline", "kerosene"]
+const FUEL_ENERGY := ["prescribed_fuel", "finite_glow_fuel"]
+
+static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictionary:
+	var balance: Dictionary = raw.balance
+	var plan: Array = balance.plan_cg.value
+	var tolerance: float = float(balance.cg_tolerance.value)
+	var fuel_state: String = str(balance.get("fuel_state", "as_inventory"))
+	var inventory: Array = raw.inventory
+	var by_id: Dictionary = {}
+	for item: Dictionary in inventory:
+		if item.has("id"):
+			by_id[item.id] = item
+	var tanks: Array = []
+	var liquid_ids: Array = []
+	var registry_identity := ""
+	if raw.has("fuel_system"):
+		if not str(raw.capabilities.get("energy", "")) in FUEL_ENERGY:
+			errors.append("fuel_system: liquid fuel tanks need a combustion energy capability %s" % str(FUEL_ENERGY))
+			return {}
+		var registry: Dictionary = FuelProperties.load_file()
+		if not registry.get("ok", false):
+			errors.append("fuel_system: fuel registry is unavailable: %s" % str(registry.get("message", "")))
+			return {}
+		registry_identity = registry.identity.sha256
+		var used: Dictionary = {}
+		for i: int in raw.fuel_system.tanks.size():
+			var tank: Dictionary = raw.fuel_system.tanks[i]
+			var path := "fuel_system.tanks[%d]" % i
+			var id: String = tank.id
+			if used.has("tank:" + id):
+				errors.append("%s.id: duplicate tank id '%s'" % [path, id])
+			used["tank:" + id] = true
+			if not registry.blends.has(tank.fuel):
+				errors.append("%s.fuel: '%s' is not a fuel registry blend" % [path, tank.fuel])
+				continue
+			var blend: Dictionary = registry.blends[tank.fuel]
+			var family: String = blend.family
+			if tank.feed != FUEL_FAMILY_FEED[family]:
+				errors.append("%s.feed: %s fuel uses '%s', not '%s'" % [path, family, FUEL_FAMILY_FEED[family], tank.feed])
+			var liquid: Variant = by_id.get(tank.liquid_inventory_id)
+			var shell: Variant = by_id.get(tank.shell_inventory_id)
+			if not liquid is Dictionary or not shell is Dictionary:
+				errors.append("%s: liquid and shell inventory ids must name inventory items" % path)
+				continue
+			if tank.liquid_inventory_id == tank.shell_inventory_id or used.has(tank.liquid_inventory_id) or used.has(tank.shell_inventory_id):
+				errors.append("%s: each inventory item belongs to one tank role only" % path)
+			used[tank.liquid_inventory_id] = true
+			used[tank.shell_inventory_id] = true
+			if liquid.get("energy_source") != FUEL_FAMILY_SOURCE[family]:
+				errors.append("%s.liquid_inventory_id: item '%s' must declare energy_source '%s'" % [path, tank.liquid_inventory_id, FUEL_FAMILY_SOURCE[family]])
+			if shell.has("energy_source"):
+				errors.append("%s.shell_inventory_id: the empty tank shell '%s' carries no energy" % [path, tank.shell_inventory_id])
+			var capacity = _q(errors, path + ".capacity", tank.capacity, "l", 0.0, 50.0)
+			var unusable = _q(errors, path + ".unusable", tank.unusable, "l", 0.0, 50.0)
+			if capacity == null or unusable == null:
+				continue
+			if capacity <= 0.0 or unusable >= capacity:
+				errors.append("%s: need capacity > 0 and unusable < capacity (%s, %s l)" % [path, capacity, unusable])
+				continue
+			var density: float = blend.density_kg_m3
+			var capacity_kg: float = capacity * 0.001 * density
+			var liquid_kg: float = float(liquid.mass.value)
+			if liquid_kg > capacity_kg * (1.0 + 1.0e-9):
+				errors.append("%s: liquid '%s' %.6f kg exceeds capacity %.6f kg (%s l at %.3f kg/m3)" % [path, tank.liquid_inventory_id, liquid_kg, capacity_kg, capacity, density])
+			var size: Array = liquid.size.value
+			if float(size[0]) * float(size[1]) * float(size[2]) < capacity * 0.001 * (1.0 - 1.0e-9):
+				errors.append("%s: liquid '%s' box %.3f l cannot hold the %s l capacity" % [path, tank.liquid_inventory_id, float(size[0]) * float(size[1]) * float(size[2]) * 1000.0, capacity])
+			liquid_ids.append(tank.liquid_inventory_id)
+			tanks.append({id = id, fuel = tank.fuel, family = family, density_kg_m3 = density,
+				capacity_m3 = capacity * 0.001, capacity_kg = capacity_kg, unusable_kg = unusable * 0.001 * density,
+				liquid_inventory_id = tank.liquid_inventory_id, shell_inventory_id = tank.shell_inventory_id,
+				liquid_mass_kg = liquid_kg, start_fill = liquid_kg / capacity_kg, pickup = tank.pickup, feed = tank.feed})
+		for item: Dictionary in inventory:
+			if item.get("energy_source", "") in LIQUID_FUEL_SOURCES and not str(item.get("id", "")) in liquid_ids:
+				errors.append("fuel_system: liquid fuel item '%s' belongs to no declared tank" % str(item.get("id", item.get("name", "?"))))
+	if fuel_state == "empty_tanks":
+		if tanks.is_empty():
+			errors.append("balance.fuel_state: 'empty_tanks' needs a fuel_system")
+		else:
+			var dry: Variant = _inventory_cg(inventory, liquid_ids)
+			if not dry is PackedFloat64Array:
+				errors.append("balance: the inventory without tank liquid has no mass")
+			else:
+				for axis in 3:
+					if absf(dry[axis] - float(plan[axis])) > tolerance:
+						errors.append("balance: CG with empty tanks disagrees with plan_cg on axis %d by %.4f m (tolerance %.4f m)" % [axis, absf(dry[axis] - float(plan[axis])), tolerance])
+	if balance.has("cg_range"):
+		var forward = _q(errors, "balance.cg_range.forward", balance.cg_range.forward, "m", -2.0, 2.0)
+		var aft = _q(errors, "balance.cg_range.aft", balance.cg_range.aft, "m", -2.0, 2.0)
+		if forward != null and aft != null:
+			if forward >= aft:
+				errors.append("balance.cg_range: forward %s m must lie ahead of aft %s m" % [forward, aft])
+			elif float(plan[0]) < forward or float(plan[0]) > aft:
+				errors.append("balance.cg_range: plan_cg x %s m lies outside [%s, %s] m at the declared fuel state" % [plan[0], forward, aft])
+	if tanks.is_empty():
+		return {}
+	return {format = "openrc-fuel-system v1", fuel_state = fuel_state, tanks = tanks, registry_sha256 = registry_identity}
+
+
+## Left-to-right inventory first moment over the items whose id is not excluded; null when massless.
+static func _inventory_cg(inventory: Variant, excluded_ids: Array) -> Variant:
+	if not inventory is Array:
+		return null
+	var mass: float = 0.0
+	var first := PackedFloat64Array([0.0, 0.0, 0.0])
+	for item: Variant in inventory:
+		if not item is Dictionary or str(item.get("id", "")) in excluded_ids and item.has("id"):
+			continue
+		var m: float = float(item.mass.value)
+		mass += m
+		for k in 3:
+			first[k] += m * float(item.position.value[k])
+	if mass <= 0.0:
+		return null
+	return PackedFloat64Array([first[0] / mass, first[1] / mass, first[2] / mass])
+
+
+static func _validate_pack_mount(errors: PackedStringArray, battery: Dictionary, inventory: Array) -> void:
+	var mount_id: String = str(battery.get("mount_inventory_id", ""))
+	for item: Variant in inventory:
+		if not item is Dictionary or item.get("id") != mount_id:
+			continue
+		var mass: Variant = item.get("mass", {}).get("value") if item.get("mass") is Dictionary else null
+		if typeof(mass) not in [TYPE_INT, TYPE_FLOAT] or float(mass) != float(battery.mass_kg):
+			errors.append("propulsion.battery: inventory item '%s' mass must equal the pack mass %s kg" % [mount_id, battery.mass_kg])
+		if battery.chemistry in ["lipo", "lihv"] and item.get("energy_source") != "lipo":
+			errors.append("propulsion.battery: inventory item '%s' must declare energy_source 'lipo' for a %s pack" % [mount_id, battery.chemistry])
+		elif battery.chemistry not in ["lipo", "lihv"]:
+			errors.append("propulsion.battery: %s packs need a crash energy-source vocabulary entry first" % battery.chemistry)
+		return
+	errors.append("propulsion.battery.mount_inventory_id: no inventory item with id '%s'" % mount_id)
 
 
 ## Removing the rotor's axial spin inertia must leave a positive definite locked carrier tensor.
@@ -1613,7 +1876,7 @@ static func _ground_effect(errors: PackedStringArray, node: Variant, envelope: D
 static func _wing_polar(errors: PackedStringArray, node: Variant, envelope: Dictionary, aero: Dictionary) -> Dictionary:
 	var path := "aero.wing_polar"
 	var raw := _dictionary(errors, path, node)
-	_reject_unknown_keys(errors, path, raw, ["method", "basis", "positive", "negative"])
+	_reject_unknown_keys(errors, path, raw, ["method", "basis", "positive", "negative", "spanwise_progression"])
 	if raw.get("method") != WingPolar.METHOD or raw.get("basis") != "finite-wing-strip-reference":
 		errors.append(path + ": expected tabulated-wing-v1 and finite-wing-strip-reference basis")
 	if not envelope.has("induced_map"):
@@ -1639,6 +1902,25 @@ static func _wing_polar(errors: PackedStringArray, node: Variant, envelope: Dict
 			continue
 		polar[name] = WingPolar.prepare(samples, 1.0 if name == "positive" else -1.0,
 			slope, offset, aero.CD0, envelope.CD90, errors, path + "." + name)
+	# Optional (D8b-R2d): spanwise stall progression. Strip i reads the table at its angle times
+	# f_i = 1 + g·(λ_i − 1), where λ_i is its attached loading relative to the wing mean: the induced-map row sum over the
+	# mean row sum. A rectangular wing's root (λ > 1) then separates first and a tapered wing's tip; g = 0 or absent
+	# leaves every strip on the shared table. Derived from the calibrated map, so it adds no aircraft coefficient.
+	if errors.is_empty() and raw.has("spanwise_progression"):
+		var gain: Variant = _q(errors, path + ".spanwise_progression", raw.get("spanwise_progression"), "1", 0.0, 1.0)
+		var rows: PackedFloat64Array = envelope.get("strip_row_sum", PackedFloat64Array())
+		var mean := 0.0
+		for value: float in rows:
+			mean += value / float(rows.size())
+		if gain != null and errors.is_empty():
+			if rows.size() != envelope.station_ys.size() or not (mean > 0.0):
+				errors.append(path + ".spanwise_progression: requires positive induced-map row sums for every station")
+			else:
+				var factors := PackedFloat64Array()
+				for value: float in rows:
+					factors.append(1.0 + float(gain) * (value / mean - 1.0))
+				polar.spanwise_progression = float(gain)
+				polar.strip_factor = factors
 	return polar if errors.is_empty() else {}
 
 
@@ -1849,6 +2131,13 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var body_cn = _q(errors, "aero.surfaces.body_cn_beta", node.get("body_cn_beta"), "1/rad", -0.5, 0.0)
 		if body_cn != null:
 			out.body_cn_beta = float(body_cn)
+	# Optional (D10-R5): the wing-body dihedral effect (geometric dihedral, wing-fuselage interference) that the flat
+	# strips do not resolve, a pure rolling couple in the local model (Aero._local_loads). The oracle's Clb then carries
+	# fin + wing-body; absent = no couple and no rule, byte-identical.
+	if node.has("wing_body_cl_beta"):
+		var wing_body_cl = _q(errors, "aero.surfaces.wing_body_cl_beta", node.get("wing_body_cl_beta"), "1/rad", -0.3, 0.1)
+		if wing_body_cl != null:
+			out.wing_body_cl_beta = float(wing_body_cl)
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name
@@ -1878,7 +2167,9 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 	var cy: float = fin.lift_slope*fin.area/area*fin.control_effectiveness
 	var expected := {CYdr = cy, Cndr = -cy*arm/span, Cldr = cy*(fin.position[2]-arp[2])/span,
 		Cnb = fin.lift_slope*fin.area/area*arm/span + float(out.get("body_cn_beta", 0.0))}
+	if out.has("wing_body_cl_beta"):
+		expected.Clb = -fin.lift_slope*fin.area/area*(fin.position[2]-arp[2])/span + float(out.wing_body_cl_beta)
 	for key in expected:
 		if absf(aero[key]-expected[key]) > 1e-8:
-			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm and body_cn_beta (expected %.8f)" % [key, expected[key]])
+			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm, body_cn_beta and wing_body_cl_beta (expected %.8f)" % [key, expected[key]])
 	return out

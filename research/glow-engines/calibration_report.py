@@ -159,14 +159,19 @@ def evaluate(
     if profile["family"] == "glow_2t":
         delivery = sample(p["delivery_ratio"], rpm)
         trap = sample(p["trapping_efficiency"], rpm)
-        air_per_cycle = density * displacement * admission * delivery * trap * charge_scale
+        # FUEL-01c: like two_stroke.gd, the carburetor meters premix on the delivered air;
+        # trapping limits only the charge that burns (short-circuited fuel still leaves the tank).
+        air_delivered_per_cycle = density * displacement * admission * delivery * charge_scale
+        air_per_cycle = air_delivered_per_cycle * trap
         pump_pressure = sample(p["scavenge_pressure_pa"], rpm)
         pumping_torque = pump_pressure * displacement * delivery * admission / angle
         valve_torque = 0.0
         opportunity_hz = rpm / 60.0
     elif profile["family"] == "glow_4t":
         ve = sample(p["volumetric_efficiency"], rpm)
+        trap = 1.0
         air_per_cycle = density * displacement * admission * ve * charge_scale
+        air_delivered_per_cycle = air_per_cycle
         intake_drop = p["intake_pressure_drop_pa"]
         pump_pressure = sample(p["pumping_pressure_pa"], rpm) + intake_drop * (1.0 - admission)
         pumping_torque = pump_pressure * displacement / angle
@@ -176,13 +181,14 @@ def evaluate(
         raise ValueError(f"unsupported family: {profile['family']}")
 
     mechanical_torque = sample(p["mechanical_torque_nm"], rpm)
-    gross_premix_cycle = air_per_cycle * mixture / stoich / (1.0 - oil_fraction)
+    gross_premix_cycle = air_delivered_per_cycle * mixture / stoich / (1.0 - oil_fraction)
     gross_combustible_cycle = gross_premix_cycle * (1.0 - oil_fraction)
+    trapped_combustible_cycle = gross_combustible_cycle * trap
     stoich_combustible_cycle = air_per_cycle / stoich
     combustion_efficiency = sample(p["combustion_efficiency"], mixture)
     indicated_efficiency = min(1.0, sample(p["indicated_efficiency"], rpm) * indicated_efficiency_scale)
     burned_combustible_cycle = (
-        min(gross_combustible_cycle, stoich_combustible_cycle)
+        min(trapped_combustible_cycle, stoich_combustible_cycle)
         * combustion_efficiency
         * firing_fraction
     )

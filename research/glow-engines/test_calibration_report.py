@@ -16,6 +16,46 @@ calibration_report = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(calibration_report)
 
 
+def _interp(table: list[list[float]], x: float) -> float:
+    if x <= table[0][0]:
+        return table[0][1]
+    for (x0, y0), (x1, y1) in zip(table, table[1:]):
+        if x <= x1:
+            return y0 + (y1 - y0) * (x - x0) / (x1 - x0)
+    return table[-1][1]
+
+
+class TwoStrokeFuelFlowTests(unittest.TestCase):
+    """FUEL-01c: the mirror's delivered premix follows two_stroke.gd (delivered air, no trapping)."""
+
+    def test_delivered_premix_uses_delivered_air_and_burn_uses_trapped_charge(self) -> None:
+        import json
+        for name in ("os_max_55ax_candidate.json", "os_max_61fx_candidate.json"):
+            profile = json.loads((ROOT / "app" / "data" / "glow" / name).read_text(encoding="utf-8"))
+            p = {k: v["value"] for k, v in profile["parameters"].items()}
+            f = {k: v["value"] for k, v in profile["fuel"].items()}
+            op = {k: v["value"] for k, v in profile["operation"].items()}
+            methanol = (1.0 - f["nitromethane_volume_fraction"] - f["lubricant_volume_fraction"]) * f["methanol_density_kg_m3"]
+            nitro = f["nitromethane_volume_fraction"] * f["nitromethane_density_kg_m3"]
+            oil = f["lubricant_volume_fraction"] * f["lubricant_density_kg_m3"]
+            oil_fraction = oil / (methanol + nitro + oil)
+            afr = (methanol * f["methanol_stoich_air_fuel_ratio"] + nitro * f["nitromethane_stoich_air_fuel_ratio"]) / (methanol + nitro)
+            mixture = op["nominal_mixture"]
+            for rpm in (9380.0, 12550.0, 16000.0):
+                with self.subTest(profile=name, rpm=rpm):
+                    air = op["reference_dry_density_kg_m3"] * p["displacement_m3"] * _interp(p["delivery_ratio"], rpm)
+                    trap = _interp(p["trapping_efficiency"], rpm)
+                    premix_cycle = air * mixture / afr / (1.0 - oil_fraction)
+                    burned_cycle = (min(premix_cycle * (1.0 - oil_fraction) * trap, air * trap / afr)
+                                    * _interp(p["combustion_efficiency"], mixture))
+                    out = calibration_report.evaluate(profile, rpm)
+                    self.assertAlmostEqual(out["delivered_premix_kg_s"], premix_cycle * rpm / 60.0,
+                                           delta=1e-12 * premix_cycle * rpm)
+                    self.assertAlmostEqual(out["burned_combustible_kg_s"], burned_cycle * rpm / 60.0,
+                                           delta=1e-12 * premix_cycle * rpm)
+                    self.assertLess(trap, 1.0)  # otherwise the test could not see the old error
+
+
 class ActuatorDiskBoundTests(unittest.TestCase):
     def test_static_ideal_disk_power_and_clear_acceptance_refusal(self) -> None:
         thrust_n = 10.0

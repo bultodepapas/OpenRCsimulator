@@ -1,0 +1,670 @@
+[
+  {
+    "id": "ugly-stik-urbano-molano-2011",
+    "title": "Simulación de los Parámetros de Diseño y Construcción de una Aeronave Radiocontrolada",
+    "authors": [
+      "Fernando Aparicio Urbano Molano"
+    ],
+    "year": 2011,
+    "source_url": "https://jci.uniautonoma.edu.co/jci-3.html",
+    "download_url": "https://jci.uniautonoma.edu.co/2011/2011-5.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/urbano-molano-2011-ugly-stik-design-and-flight-simulation.pdf",
+    "type": "journal-article",
+    "topics": [
+      "Ugly Stik",
+      "geometry",
+      "cruise design simulation"
+    ],
+    "relevance": "One of the few primary publications naming the UglyStik: reports a rebuilt geometry (1.56 m span, 0.59 m² wing area, 1.38 m length), control throws and a NACA 63(2)-015 wing section; uses Winfoil and AAA for design/cruise estimates.",
+    "limitations": "The paper explicitly states that it did not formulate a mathematical flight-dynamics model. The coefficients are design-software estimates, not measured aircraft derivatives; geometry and model identity are not the Jensen 60.",
+    "access": "downloaded",
+    "sha256": "492f9df5bf87873fa2cc59116a107c6f7e5c8b5c5c0ba96547b30bc0f56128a7",
+    "bytes": 1572494,
+    "retrieved_utc": "2026-10-19T01:17:48.906027Z",
+    "license": "Not stated; publicly accessible publisher copy, redistribution not inferred",
+    "resolved_url": "https://jci.uniautonoma.edu.co/2011/2011-5.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full four-page article text inspected; methods and parameter table checked"
+  },
+  {
+    "id": "big-stik-cereceda-2020-thesis",
+    "title": "Development, Analysis, and Implications of Open-Source Simulations of Remotely Piloted Aircraft",
+    "authors": [
+      "Oihane Cereceda Cantarelo"
+    ],
+    "year": 2020,
+    "source_url": "https://memorial.scholaris.ca/items/f97eed21-9c23-4839-ad10-59634eb03bac",
+    "download_url": "https://memorial.scholaris.ca/bitstreams/37805e42-008b-4449-a06d-545990e1cedd/download",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/cereceda-2019-mun-thesis-giant-big-stik.pdf",
+    "type": "doctoral-thesis",
+    "topics": [
+      "Giant Big Stik",
+      "JSBSim",
+      "6-DOF model",
+      "flight validation",
+      "sense and avoid"
+    ],
+    "relevance": "Chapter 5 documents a JSBSim Giant Big Stik model and checks it against flight-test sections; tables report geometry, mass properties, aerodynamic coefficients and control travel. The full thesis provides more implementation context than the shorter 2019 paper.",
+    "limitations": "The SAA validation is fit-for-purpose and narrow: short, low-risk pitch/roll sections; takeoff and landing excluded; rudder excluded from the comparison and throttle treated as constant near 50%. The thesis reports manual gain/offset/delay adjustments and correlations of roll 0.9304 and pitch 0.60664/0.74044 on two selected intervals. Winds and different initial states limit replay agreement. This is Giant Big Stik, not Jensen Ugly Stik.",
+    "access": "downloaded",
+    "sha256": "5baa2b1f4866b327293e3f35e2fcf4a8a26f38adfa36bf7c5224df31251296ab",
+    "bytes": 5760560,
+    "retrieved_utc": "2026-10-19T01:18:04.344484Z",
+    "license": "Not stated; publicly accessible institutional thesis, redistribution not inferred",
+    "resolved_url": "https://memorial.scholaris.ca/bitstreams/37805e42-008b-4449-a06d-545990e1cedd/download",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full-text searchable thesis inspected; Chapter 5 model/validation passages, parameter tables and flight-test limitations reviewed"
+  },
+  {
+    "id": "bixler-majid-2015",
+    "title": "Identifikasi Model dari Pesawat Udara Tanpa Awak Sayap Tetap Jenis Bixler",
+    "authors": [
+      "Abdul Majid",
+      "Raden Sumiharto",
+      "Setyawan Bekti Wibisono"
+    ],
+    "year": 2015,
+    "source_url": "https://journal.ugm.ac.id/ijeis/article/view/7152",
+    "download_url": "https://journal.ugm.ac.id/ijeis/article/download/7152/5600",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/majid-2015-bixler-system-identification.pdf",
+    "type": "journal-article",
+    "topics": [
+      "Bixler",
+      "flight system identification",
+      "longitudinal model"
+    ],
+    "relevance": "A Bixler aircraft is identified from experimental flight data using a fourth-order longitudinal state-space model; useful as an aircraft-specific structural and instrumentation comparator.",
+    "limitations": "The 12-page Indonesian-language paper reports a small experiment and uneven model prediction quality; it is not a complete six-degree-of-freedom model or a public raw-flight-log release. Interpret translated terms and reported accuracy in the context of the original text.",
+    "access": "downloaded",
+    "sha256": "888842b1bf8dddeb21aa88ab42322e4f0a847a9c1f1c94df3a6fcfc26cea7827",
+    "bytes": 899086,
+    "retrieved_utc": "2026-10-19T01:15:27.433956Z",
+    "license": "CC BY-SA 4.0 (publisher record)",
+    "resolved_url": "https://journal.ugm.ac.id/ijeis/article/download/7152/5600",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full paper text searchable; abstract, model structure and selected results inspected"
+  },
+  {
+    "id": "bix3-simmons-2018-thesis",
+    "title": "System Identification of a Nonlinear Flight Dynamics Model for a Small, Fixed-Wing UAV",
+    "authors": [
+      "Benjamin M. Simmons"
+    ],
+    "year": 2018,
+    "source_url": "https://vtechworks.lib.vt.edu/items/92d6ff12-706b-4879-bad4-9174b9a2dc90",
+    "download_url": "https://vtechworks.lib.vt.edu/bitstream/handle/10919/95324/Simmons_BM_T_2018.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/simmons-2018-bix3-nonlinear-flight-model-thesis.pdf",
+    "type": "master-thesis",
+    "topics": [
+      "HobbyKing Bix3",
+      "nonlinear model",
+      "output-error identification",
+      "flight test",
+      "uncertainty"
+    ],
+    "relevance": "Detailed flight-derived nonlinear model for a conventional tailed Bix3 trainer: 1.202 kg, 1.54 m projected span and 0.285 m² projected wing area. The thesis combines output-error fitting, flight-maneuver selection, data conditioning and VLM priors, and discusses parameter uncertainty.",
+    "limitations": "No direct angle-of-attack or sideslip measurement; the integrated airspeed sensor is reported unreliable, states are reconstructed from low-cost sensors, and the calm-day flight data have limited information/noise. Flaps are omitted and the model should not be treated as a Bixler 1/2 fit or as unbounded-envelope validation.",
+    "access": "downloaded",
+    "sha256": "f52b95f54bb5dba50ecfec83f741dd59f73280a6ed155998c47cacd0424010d2",
+    "bytes": 14661359,
+    "retrieved_utc": "2026-10-19T01:22:25.393864Z",
+    "license": "Not stated; publicly accessible Virginia Tech thesis, redistribution not inferred",
+    "resolved_url": "https://vtechworks.lib.vt.edu/bitstream/handle/10919/95324/Simmons_BM_T_2018.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full-text searchable thesis; aircraft properties, instrumentation, identification approach and limitations inspected"
+  },
+  {
+    "id": "bixler3-stanford-aa241x-2017",
+    "title": "Bixler 3 Flight Test Analysis",
+    "authors": [
+      "Apoorva Sharma",
+      "Justin Schneider",
+      "Miao Zhang",
+      "Victoria M. Dax",
+      "Zhe Zhang",
+      "Zhengyu Huang"
+    ],
+    "year": 2017,
+    "source_url": "https://241x-albatross.github.io/files/bixler-3-flight.pdf",
+    "download_url": "https://241x-albatross.github.io/files/bixler-3-flight.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/albatross-2017-bixler-3-flight-test-analysis.pdf",
+    "type": "student-flight-test-report",
+    "topics": [
+      "Bixler 3",
+      "glide flight",
+      "stall and performance estimates"
+    ],
+    "relevance": "A Stanford AA241X project report gives logged Bixler 3 flight observations, including throttle-off glide segments, trajectory/altitude and estimated glide angle; it can guide qualitative performance checks and points to the distinction between flight behavior and aerodynamic-model validation.",
+    "limitations": "Student project report, not peer reviewed; the observed glide path is wind-affected and the parameter estimates rely on a small set of filtered segments. No raw data archive was identified with the report. The filename in this folder says 2024 for retrieval bookkeeping, but the PDF itself is dated 2017-04-25.",
+    "access": "downloaded",
+    "sha256": "d870c0fe38eed58423aa95fe11e5087c4a869b6a710cc91d0d0fa79bf7bc13ed",
+    "bytes": 5672836,
+    "retrieved_utc": "2026-10-19T01:15:24.705946Z",
+    "license": "Not stated; publicly accessible project report, redistribution not inferred",
+    "resolved_url": "https://241x-albatross.github.io/files/bixler-3-flight.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full 26-page report text searchable; flight-data and aircraft-parameter sections sampled"
+  },
+  {
+    "id": "pa18-lu-2017",
+    "title": "Flight Test Instrumentation System for Small UAS System Identification",
+    "authors": [
+      "Han-Hsun Lu",
+      "Joshua Harris",
+      "Vinicius Guimaraes Goecks",
+      "Ezekiel Bowden",
+      "John Valasek"
+    ],
+    "year": 2017,
+    "source_url": "https://doi.org/10.1109/ICUAS.2017.7991399",
+    "download_url": "https://vscl.tamu.edu/wp-content/uploads/sites/134/2017/07/ICUAS-2017-0142.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/lu-2017-pa18-supercub-flight-instrumentation-sysid.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "quarter-scale PA-18 Super Cub",
+      "flight instrumentation",
+      "100 Hz logging",
+      "OKID identification"
+    ],
+    "relevance": "Tests an onboard system with air-data, inertial navigation, and direct control-deflection measurement on a quarter-scale PA-18 Super Cub; up to 100 Hz logging; OKID-derived linear models were checked against flight data with different input sets. Strong evidence for sensor/actuator logging needs on a conventional trainer.",
+    "limitations": "The reported models are local linear state-space models around tested trim conditions, not a full nonlinear aerodynamic database. Super Cub geometry, mass and powertrain differ from the Jensen Stik.",
+    "access": "downloaded",
+    "sha256": "81cc9bee1c00554581a7faf5956b1a1f31ddbd4bf5d2c71bb933673b3286e315",
+    "bytes": 3116057,
+    "retrieved_utc": "2026-10-19T01:17:49.203036Z",
+    "license": "Not stated; author/lab-hosted conference PDF, redistribution not inferred",
+    "resolved_url": "https://vscl.tamu.edu/wp-content/uploads/sites/134/2017/07/ICUAS-2017-0142.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full ten-page paper text inspected for testbed, logging rate and model-validation statements"
+  },
+  {
+    "id": "telemaster-arifianto-2014",
+    "title": "A Low-cost Unmanned Aerial Vehicle Research Platform: Development, Modeling, and Advanced Control Implementation",
+    "authors": [
+      "Ony Arifianto"
+    ],
+    "year": 2014,
+    "source_url": "https://vtechworks.lib.vt.edu/handle/10919/49301",
+    "download_url": "https://vtechworks.lib.vt.edu/bitstream/handle/10919/49301/Arifianto_O_D_2014.pdf?isAllowed=y&sequence=1",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/arifianto-2014-telemaster-low-cost-uav-platform.pdf",
+    "type": "doctoral-thesis",
+    "topics": [
+      "Hobby Express Telemaster",
+      "flight identification",
+      "inertia",
+      "servo and propulsion models",
+      "flight validation"
+    ],
+    "relevance": "A 6-foot conventional high-wing Telemaster study measures inertias and servo response, models the propulsion system, identifies longitudinal/lateral aerodynamic parameters from flight data using output error, and compares model responses with later validation runs.",
+    "limitations": "The platform is a modified research UAV rather than an unmodified sport model; the thesis reports that OEM documentation omitted turbulence and describes flights selected for minimal disturbance. Do not transfer coefficients directly to a Stik.",
+    "access": "downloaded",
+    "sha256": "11a8ed855446f62a7e2fc05d013fdc8ded54d6844e1d71461716821ac9b67bb8",
+    "bytes": 4923019,
+    "retrieved_utc": "2026-10-19T01:17:52.529135Z",
+    "license": "Not stated; publicly accessible institutional thesis, redistribution not inferred",
+    "resolved_url": "https://vtechworks.lib.vt.edu/bitstream/handle/10919/49301/Arifianto_O_D_2014.pdf?isAllowed=y&sequence=1",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full-text searchable 128-page thesis; vehicle, identification and validation chapters inspected"
+  },
+  {
+    "id": "uav-jayanti-2026-flight-validation",
+    "title": "Validation of a Small UAV Dynamic Model Using CFD and Flight Test Data",
+    "authors": [
+      "Eries Bagita Jayanti",
+      "Novita Atmasari",
+      "Angga Septiyana",
+      "Ardian Rizaldi",
+      "Try Kusuma Wardana",
+      "Aries Asrianto Ramadian",
+      "Hidayati Mardikasari",
+      "Hartono Hartono"
+    ],
+    "year": 2026,
+    "source_url": "https://pp.bme.hu/tr/article/view/41190",
+    "download_url": "https://pp.bme.hu/tr/article/download/41190/24214/239555",
+    "local_path": "references/rc-aero-data/jayanti-2026-pptr-small-uav-cfd-flight-validation.pdf",
+    "type": "journal-article",
+    "topics": [
+      "small UAV",
+      "6-DOF model",
+      "CFD coefficients",
+      "flight validation"
+    ],
+    "relevance": "Develops a six-degree-of-freedom model from CFD and compares it with three flight-test sets; reports modal and time-history agreement alongside pitch/airspeed residuals, a useful example of explicit model discrepancy reporting.",
+    "limitations": "The tested airframe is not identified as an RC hobby model in the available article information and is not geometrically comparable to the Stik. CFD-derived coefficients and mixed error levels make it method evidence rather than a source of transferable Stik derivatives.",
+    "access": "downloaded",
+    "sha256": "9d62ae4e84dc10e403f851a6f7c1b1c2c0b990f6b46304205b18e9032312fc7f",
+    "bytes": 3036305,
+    "retrieved_utc": "2026-10-19T01:15:29.312962Z",
+    "license": "CC BY (publisher-stated)",
+    "resolved_url": "https://pp.bme.hu/tr/article/download/41190/24214/239555",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "PDF and full text inspected for title, test approach and reported limits",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
+  },
+  {
+    "id": "x8-gryte-2018-static-model",
+    "title": "Aerodynamic Modeling of the Skywalker X8 Fixed-Wing Unmanned Aerial Vehicle",
+    "authors": [
+      "Kristofer Gryte",
+      "Richard Hann",
+      "Mushfiqul Alam",
+      "Jan Roháč",
+      "Tor Arne Johansen",
+      "Thor I. Fossen"
+    ],
+    "year": 2018,
+    "source_url": "https://doi.org/10.1109/ICUAS.2018.8453370",
+    "download_url": "https://fossen.biz/publications/2018%20Gryte%20et%20all%20ICUAS.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_wind_tunnel.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "Skywalker X8",
+      "wind tunnel",
+      "VLM",
+      "6-DOF model"
+    ],
+    "relevance": "Compares numerical aerodynamic tools and static wind-tunnel coefficients in a complete X8 model; useful for separating measured static terms from model-assumed damping derivatives.",
+    "limitations": "X8 is a tailless flying wing, not a conventional trainer. Static tunnel measurements do not identify dynamic damping; the paper reports that its initial tunnel-fit model predicted flight acceleration poorly. This file duplicates the flying-wings branch by content hash and should be deduplicated during integration.",
+    "access": "downloaded",
+    "sha256": "0e28b0fc4e2a671d89eda53611a9176cfb94e60765e91f9b0c84b36e97d99418",
+    "bytes": 1854529,
+    "retrieved_utc": "2026-10-19T01:15:26.299952Z",
+    "license": "Not stated; publicly accessible author copy, redistribution not inferred",
+    "resolved_url": "https://fossen.biz/publications/2018%20Gryte%20et%20all%20ICUAS.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full ten-page paper inspected for model structure, tunnel/flight comparison and limitation",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
+  },
+  {
+    "id": "x8-farhadi-2018-lateral-sysid",
+    "title": "Estimation of the Lateral Aerodynamic Coefficients for Skywalker X8 Flying Wing from Real Flight-Test Data",
+    "authors": [
+      "Rahman Mohammadi Farhadi",
+      "Vyacheslav Kortunov",
+      "Andrii Molchanov",
+      "Tatiana Solianyk"
+    ],
+    "year": 2018,
+    "source_url": "https://dspace.cvut.cz/entities/publication/2b72ef17-c781-4bb8-bffe-9efe0c5ca8fc",
+    "download_url": "https://ojs.cvut.cz/ojs/index.php/ap/article/download/4685/4676/12170",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2018_lateral_flight.pdf",
+    "type": "journal-article",
+    "topics": [
+      "Skywalker X8",
+      "lateral-directional system identification",
+      "flight validation"
+    ],
+    "relevance": "Estimates lateral aerodynamic coefficients from real closed-loop flight-test data, addressing parameter correlation with prior information and constrained optimization and testing the estimates against additional flight data.",
+    "limitations": "Flying-wing geometry and controller feedback make results specific to this airframe/model structure. Not direct evidence for a conventional tail or Jensen Stik. This file duplicates the flying-wings branch by content hash and should be deduplicated during integration.",
+    "access": "downloaded",
+    "sha256": "f9b730939c2a467915b43c06ef5433a0df7940cd7dc70479046c5928e94bff81",
+    "bytes": 6089297,
+    "retrieved_utc": "2026-10-19T01:16:17.881111Z",
+    "license": "CC BY 4.0 (publisher record)",
+    "resolved_url": "https://ojs.cvut.cz/ojs/index.php/ap/article/download/4685/4676/12170",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full 15-page paper inspected for identification setup and validation",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
+  },
+  {
+    "id": "x8-reinhardt-2022-flight-sysid",
+    "title": "Modeling of the Skywalker X8 Fixed-Wing UAV: Flight Tests and System Identification",
+    "authors": [
+      "Dirk Reinhardt",
+      "Kristoffer Gryte",
+      "Tor Arne Johansen"
+    ],
+    "year": 2022,
+    "source_url": "https://doi.org/10.1109/ICUAS54217.2022.9836104",
+    "download_url": "https://folk.ntnu.no/torarnj/sysid_paper_icuas.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2022_flight_sysid.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "Skywalker X8",
+      "flight testing",
+      "system identification",
+      "wind tunnel model validation"
+    ],
+    "relevance": "The paper shows that an earlier static tunnel model with near-unit fit could still have negative flight acceleration fitness; it adds flight-derived damping and compares an improved model against flight data.",
+    "limitations": "The X8 is a flying wing and the fitted damping/model assumptions are aircraft-specific. This file duplicates the flying-wings branch by content hash and should be deduplicated during integration.",
+    "access": "downloaded",
+    "sha256": "735f94341b8b002228b6ba0b6263a21aed35eec9ab1fc1370f2110472428f107",
+    "bytes": 1664936,
+    "retrieved_utc": "2026-10-19T01:15:27.910957Z",
+    "license": "Not stated; publicly accessible author copy, redistribution not inferred",
+    "resolved_url": "https://folk.ntnu.no/torarnj/sysid_paper_icuas.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full ten-page paper inspected; abstract, model-comparison claims and flight validation checked",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
+  },
+  {
+    "id": "x8-low-hansen-2024-time-domain-sysid",
+    "title": "Time-Domain System Identification and Validation of Small Fixed-Wing UAV Dynamics",
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Tor Arne Johansen",
+      "Christoph Deiler"
+    ],
+    "year": 2024,
+    "source_url": "https://doi.org/10.2514/6.2024-4653",
+    "download_url": "https://torarnj.folk.ntnu.no/l%C3%B8w-hansen-et-al-2024-time-domain-system-identification-and-validation-of-small-fixed-wing-uav-dynamics%20postprint.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/flying-wings/x8_2024_time_domain_sysid.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "Skywalker X8",
+      "6-DOF model",
+      "time-domain system identification",
+      "flight validation"
+    ],
+    "relevance": "Identifies a 44-coefficient aero-propulsive/actuator model and tests predictions against separate short flight maneuvers; reports that amplitude and wind conditions affect agreement.",
+    "limitations": "Results concern the tailless 3.36 kg X8 and approximately 18 m/s flight. Wind sensitivity and model choices limit transfer to a tailed RC sport aircraft. This file duplicates the flying-wings branch by content hash and should be deduplicated during integration.",
+    "access": "downloaded",
+    "sha256": "a81dc6a8e172400c5c90ff3bb13451cdb5164e1b1fef512c70429c3e4f39eb8d",
+    "bytes": 8084877,
+    "retrieved_utc": "2026-10-19T01:17:51.413102Z",
+    "license": "Not stated; publicly accessible author postprint, redistribution not inferred",
+    "resolved_url": "https://torarnj.folk.ntnu.no/l%C3%B8w-hansen-et-al-2024-time-domain-system-identification-and-validation-of-small-fixed-wing-uav-dynamics%20postprint.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full 20-page paper text inspected for model structure, flight envelope and validation caveats",
+    "local_copy_note": "Byte-identical original reused by SHA-256 from another collection location; source/download URL still identifies this record provenance."
+  },
+  {
+    "id": "x8-u4tlyv-flight-dataset",
+    "title": "Skywalker X8 System Identification Flight Data (DataverseNO DOI 10.18710/U4TLYV)",
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann"
+    ],
+    "year": 2024,
+    "source_url": "https://dataverse.no/dataset.xhtml?persistentId=doi:10.18710/U4TLYV",
+    "download_url": "https://dataverse.no/api/access/dataset/:persistentId/?persistentId=doi:10.18710/U4TLYV&format=original",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/low-hansen-2024-skywalker-x8-flight-data.zip",
+    "type": "experimental-flight-dataset",
+    "topics": [
+      "Skywalker X8",
+      "flight logs",
+      "system identification",
+      "validation data"
+    ],
+    "relevance": "Machine-readable X8 system-identification collection with training and validation maneuvers; archive inventory indicates 17 approximately ten-second maneuver records and MAT files suitable for independent model comparison.",
+    "limitations": "Campaign data collected in 2023 on a tailless flying wing; the paper describes strong NW wind including a vertical component, so wind and air-data reconstruction must be accounted for. The sibling flying-wings ZIP is not byte-identical; compare archive manifests before consolidating or removing either copy.",
+    "access": "downloaded",
+    "sha256": "565f9388c7f76168b6878c77ad02b014a5b75c947198a6aa99366e625bca797d",
+    "bytes": 3522758,
+    "retrieved_utc": "2026-10-19T01:17:19.250121Z",
+    "license": "CC0 1.0 (Dataverse record)",
+    "resolved_url": "https://dataverse.no/api/access/dataset/:persistentId/?persistentId=doi:10.18710/U4TLYV&format=original",
+    "verified": "Archive members and CRC verified with unzip -t",
+    "read_depth": "Dataset metadata and ZIP integrity verified; archive inventory inspected without extracting/reinterpreting measured series",
+    "doi": "10.18710/U4TLYV",
+    "version_note": "Same clean-X8 dataset DOI and 36 byte-identical non-directory members as sibling ZIP; archive SHA-256 differs because ZIP containers differ. Both original containers are retained; not independent datasets."
+  },
+  {
+    "id": "x8-low-hansen-2025-aero-angle-model",
+    "title": "Modeling and Identification of a Small Fixed-Wing UAV Using Estimated Aerodynamic Angles",
+    "authors": [
+      "Bogdan Løw-Hansen",
+      "Richard Hann",
+      "Kristoffer Gryte",
+      "Tor Arne Johansen",
+      "Christoph Deiler"
+    ],
+    "year": 2025,
+    "source_url": "https://doi.org/10.1007/s13272-025-00816-3",
+    "download_url": "https://elib.dlr.de/212985/1/s13272-025-00816-3.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/conventional/low-hansen-2025-skywalker-x8-aero-angle-identification.pdf",
+    "type": "journal-article",
+    "topics": [
+      "Skywalker X8",
+      "estimated aerodynamic angles",
+      "flight identification",
+      "model validation"
+    ],
+    "relevance": "Provides a complete nominal X8 model using estimated aerodynamic angles and published flight validation; reports aircraft dimensions/mass, a 44-coefficient structure and explicit limits away from trim.",
+    "limitations": "The authors identify wind and air-angle estimation error, decoupled longitudinal/lateral modeling, poor excitation of slow spiral behavior, and decreasing accuracy away from trim/at negative angle of attack. The aircraft is a tailless wing. The sibling flying-wings PDF has the same DOI/title but a different SHA-256; compare version metadata/text before consolidating.",
+    "access": "downloaded",
+    "sha256": "2b7ee37576a2831aec1a59638ee8883ae98141c8173a07bb10130b81bcb486c7",
+    "bytes": 4022294,
+    "retrieved_utc": "2026-10-19T01:15:26.614953Z",
+    "license": "CC BY 4.0 (publisher and repository copy)",
+    "resolved_url": "https://elib.dlr.de/212985/1/s13272-025-00816-3.pdf",
+    "verified": "PDF signature; pdfinfo and pdftotext first-page parsing passed",
+    "read_depth": "Full 23-page paper inspected for aircraft parameters, model structure, validation and stated limitations",
+    "doi": "10.1007/s13272-025-00816-3",
+    "version_note": "Same article DOI as the sibling collection copy. First page differs: conventional copy omits final volume/page line; flying-wings copy gives CEAS Aeronautical Journal (2025) 16:501-523 and online publication date. Different byte hashes retained as publication-file versions, not independent studies."
+  },
+  {
+    "id": "ultrastick-25e-dorobantu-2012",
+    "title": "System Identification for Small, Low-Cost, Fixed-Wing Unmanned Aircraft",
+    "authors": [
+      "Andrei Dorobantu",
+      "Austin Murch",
+      "Bérénice Mettler",
+      "Gary Balas"
+    ],
+    "year": 2012,
+    "source_url": "https://doi.org/10.2514/1.C032065",
+    "download_url": "https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20(spring%202013)/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf",
+    "local_path": "references/rc-aero-data/dorobantu-2012-sysid-ultra-stick-25e.pdf",
+    "type": "journal-article",
+    "topics": [
+      "Ultra Stick 25e",
+      "flight system identification",
+      "time-domain validation"
+    ],
+    "relevance": "Frequency-domain identification from designed flight experiments, with separate time-domain validation for the 25e; strong comparison source for methods and modes.",
+    "limitations": "The 25e is a different electric model and size from the Jensen Stik; its coefficients are not transferable without scaling and configuration evidence.",
+    "access": "existing-local-reference; not duplicated by this collection",
+    "sha256": "e3513f34a9a893656de3c3dc6ced0d188acbd8927957df1785a7adf5aa654885",
+    "bytes": 2675601,
+    "retrieved_utc": null,
+    "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+    "resolved_url": "https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20(spring%202013)/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf",
+    "verified": "Existing rc-aero-data manifest/hash reused; not re-downloaded in this work",
+    "read_depth": "Existing source notes and manifest reviewed; no new full-text audit"
+  },
+  {
+    "id": "ultrastick-25e-dorobantu-2013-thesis",
+    "title": "Test Platforms for Model-Based Flight Research",
+    "authors": [
+      "Andrei Dorobantu"
+    ],
+    "year": 2013,
+    "source_url": "https://dept.aem.umn.edu/~SeilerControl/Thesis/2013/Dorobantu_13PhD_TestPlatformsForModelBasedFlightResearch.pdf",
+    "download_url": "https://dept.aem.umn.edu/~SeilerControl/Thesis/2013/Dorobantu_13PhD_TestPlatformsForModelBasedFlightResearch.pdf",
+    "local_path": "references/rc-aero-data/dorobantu-2013-umn-phd-test-platforms.pdf",
+    "type": "doctoral-thesis",
+    "topics": [
+      "Ultra Stick 25e",
+      "flight identification",
+      "mass properties",
+      "lateral modes"
+    ],
+    "relevance": "Reports Ultra Stick platform properties, inertia measurement, flight-identified lateral matrices and modes; provides full dissertation context.",
+    "limitations": "Model-specific configuration and identification conditions must match; the thesis includes several platforms, so use the 25e sections/tables rather than treating all values as one aircraft.",
+    "access": "existing-local-reference; not duplicated by this collection",
+    "sha256": "34ae653182350c4ccb4a2583c283fc429745c5bc3bdd61c9c9a1e7d63266188a",
+    "bytes": 5825064,
+    "retrieved_utc": null,
+    "license": "Copyright the author / University of Minnesota; free institutional download. Reference only, do not redistribute.",
+    "resolved_url": "https://dept.aem.umn.edu/~SeilerControl/Thesis/2013/Dorobantu_13PhD_TestPlatformsForModelBasedFlightResearch.pdf",
+    "verified": "Existing rc-aero-data manifest/hash reused; not re-downloaded in this work",
+    "read_depth": "Existing source notes and manifest reviewed; no new full-text audit"
+  },
+  {
+    "id": "ultrastick-120-lie-2014-thesis",
+    "title": "Synthetic Air Data Estimation: A Case Study of Model-Aided Estimation",
+    "authors": [
+      "F. Adhika Pradipta Lie"
+    ],
+    "year": 2014,
+    "source_url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
+    "download_url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
+    "local_path": "references/rc-aero-data/lie-2014-umn-phd-synthetic-air-data-us120.pdf",
+    "type": "doctoral-thesis",
+    "topics": [
+      "Ultra Stick 120",
+      "flight dynamics",
+      "synthetic air data"
+    ],
+    "relevance": "Includes a model of the 8.338 kg Ultra Stick 120 and published linear model matrices useful for a trainer-class cross-check.",
+    "limitations": "The dissertation focuses on synthetic air data; model coefficients belong to this larger testbed and are not Stik planform validation.",
+    "access": "existing-local-reference; not duplicated by this collection",
+    "sha256": "efc00f21d2f8f88e0392ccb71fd11e053a38b7fa09b9e5f026171a92611fbf88",
+    "bytes": 17982418,
+    "retrieved_utc": null,
+    "license": "Copyright the author / University of Minnesota; free institutional download. Reference only, do not redistribute.",
+    "resolved_url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
+    "verified": "Existing rc-aero-data manifest/hash reused; not re-downloaded in this work",
+    "read_depth": "Existing source notes and manifest reviewed; no new full-text audit"
+  },
+  {
+    "id": "faser-ultrastick-120-2006",
+    "title": "Development of a Low-Cost Sub-Scale Aircraft for Flight Research: The FASER Project",
+    "authors": [
+      "D. Bruce Owens",
+      "David E. Cox",
+      "Eugene A. Morelli"
+    ],
+    "year": 2006,
+    "source_url": "https://doi.org/10.2514/6.2006-3306",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20060022541/downloads/20060022541.pdf",
+    "local_path": "references/rc-aero-data/faser-2006-aiaa-2006-3306-owens-cox-morelli.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "FASER",
+      "Ultra Stick 120",
+      "wind tunnel",
+      "flight test instrumentation"
+    ],
+    "relevance": "Describes the NASA FASER platform, high-quality flight instrumentation, operations and wind-tunnel model; establishes testbed provenance and measurement practice.",
+    "limitations": "FASER is a modified, research-instrumented Ultra Stick 120. It is a methods/platform paper, not an Ugly Stik dynamics measurement.",
+    "access": "existing-local-reference; not duplicated by this collection",
+    "sha256": "2e38c7bbcc87c9194d901f0814ad5da6f134935b6ea9862322bd91acce971545",
+    "bytes": 902910,
+    "retrieved_utc": null,
+    "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+    "resolved_url": "https://ntrs.nasa.gov/api/citations/20060022541/downloads/20060022541.pdf",
+    "verified": "Existing rc-aero-data manifest/hash reused; not re-downloaded in this work",
+    "read_depth": "Existing source notes and manifest reviewed; no new full-text audit"
+  },
+  {
+    "id": "faser-ultrastick-120-2012-forced-oscillation",
+    "title": "Forced Oscillation Wind Tunnel Testing for FASER Flight Research Aircraft",
+    "authors": [
+      "Garrison Hoe",
+      "D. Bruce Owens",
+      "Casey Denham"
+    ],
+    "year": 2012,
+    "source_url": "https://doi.org/10.2514/6.2012-4645",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20120014506/downloads/20120014506.pdf",
+    "local_path": "references/rc-aero-data/faser-2012-aiaa-2012-4645-forced-oscillation.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "FASER",
+      "Ultra Stick 120",
+      "forced oscillation",
+      "roll and yaw damping"
+    ],
+    "relevance": "Measures FASER roll/yaw damping as rate, angle of attack and reduced frequency vary; supports scrutiny of analytically supplied dynamic derivatives.",
+    "limitations": "Wind-tunnel model is a research-modified Ultra Stick 120; numerical values are mostly figure-derived, and rotating-flow results are not direct Stik flight data.",
+    "access": "existing-local-reference; not duplicated by this collection",
+    "sha256": "fc4f300af735e8e9f0a6ada1b7b10050134bae02ee54f55d2586616aef82bab1",
+    "bytes": 1279192,
+    "retrieved_utc": null,
+    "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+    "resolved_url": "https://ntrs.nasa.gov/api/citations/20120014506/downloads/20120014506.pdf",
+    "verified": "Existing rc-aero-data manifest/hash reused; not re-downloaded in this work",
+    "read_depth": "Existing source notes and manifest reviewed; no new full-text audit"
+  },
+  {
+    "id": "big-stik-cereceda-2019-journal-article",
+    "title": "Giant Big Stik R/C UAV Computer Model Development in JSBSim for Sense and Avoid Applications",
+    "authors": [
+      "Oihane Cereceda",
+      "Luc Rolland",
+      "Siu O’Young"
+    ],
+    "year": 2019,
+    "source_url": "https://www.mdpi.com/2504-446X/3/2/48",
+    "download_url": "https://www.mdpi.com/2504-446X/3/2/48/pdf",
+    "local_path": null,
+    "type": "journal-article",
+    "topics": [
+      "Giant Big Stik",
+      "JSBSim",
+      "flight-test model adjustment",
+      "validation"
+    ],
+    "relevance": "Peer-reviewed article version of the Giant Big Stik JSBSim case study; its online full text describes adjustments against flight data and a purpose-limited sense-and-avoid validation.",
+    "limitations": "Same project as the local 2020 thesis, not an independent aircraft experiment. The short validation remains limited to selected conventional maneuvers; use the thesis for detailed caveats.",
+    "access": "Official article HTML accessible; direct publisher PDF request returned HTTP 403; no third-party mirror retained.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:23:37Z",
+    "license": "CC BY (publisher record; UWS repository listing)",
+    "resolved_url": "https://www.mdpi.com/2504-446X/3/2/48",
+    "verified": "Bibliographic/abstract metadata only; no local source file retained",
+    "read_depth": "Official publisher article page and UWS metadata/abstract checked; local PDF endpoint failed with HTTP 403; no full PDF retained"
+  },
+  {
+    "id": "tiger-trainer-kamal-2016",
+    "title": "Modeling and Flight Simulation of Unmanned Aerial Vehicle Enhanced with Fine Tuning",
+    "authors": [],
+    "year": 2016,
+    "source_url": "https://www.sciencedirect.com/science/article/abs/pii/S1270963816300335",
+    "download_url": null,
+    "local_path": null,
+    "type": "journal-article",
+    "topics": [
+      "Tiger Trainer",
+      "COTS RC aircraft",
+      "6-DOF model",
+      "flight-data tuning"
+    ],
+    "relevance": "The publisher abstract identifies a COTS Tiger-Trainer platform, a six-degree-of-freedom simulation, and longitudinal tuning from flight-test data; useful conventional high-wing comparison if the full text is obtained legally.",
+    "limitations": "Only publisher abstract/metadata was accessible in this pass; full article access requires subscription or author copy. No coefficients or detailed validation results were relied upon here.",
+    "access": "Publisher landing page and abstract accessible; full text paywalled; no paywall bypass attempted.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:23:37Z",
+    "license": "Not stated; publisher metadata only, redistribution not inferred",
+    "resolved_url": "https://www.sciencedirect.com/science/article/abs/pii/S1270963816300335",
+    "verified": "Bibliographic/abstract metadata only; no local source file retained",
+    "read_depth": "Abstract and publisher metadata only; no full-text inspection or local original"
+  },
+  {
+    "id": "cessna-182-sanders-2018",
+    "title": "System Identification and Multi-Objective Longitudinal Control Law Design for a Small Fixed-Wing UAV",
+    "authors": [
+      "Frank C. Sanders",
+      "Mark B. Tischler",
+      "Tom Berger",
+      "Mark G. Berrios",
+      "Anthony Gong"
+    ],
+    "year": 2018,
+    "source_url": "https://doi.org/10.2514/6.2018-0296",
+    "download_url": null,
+    "local_path": null,
+    "type": "conference-paper",
+    "topics": [
+      "scaled Cessna 182",
+      "flight system identification",
+      "longitudinal control"
+    ],
+    "relevance": "Bibliographic lead for frequency-domain identification of a 12% Cessna 182 model and subsequent flight testing of longitudinal control laws; potentially useful if an official free paper copy is located.",
+    "limitations": "The original paper was not obtained from an official freely accessible repository in this pass; metadata only is recorded here. No results or parameters are used as evidence.",
+    "access": "DOI/metadata lead only; no verified primary full text downloaded. Third-party reposts were not retained.",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:23:37Z",
+    "license": "Not stated; access not verified",
+    "resolved_url": "https://doi.org/10.2514/6.2018-0296",
+    "verified": "Bibliographic/abstract metadata only; no local source file retained",
+    "read_depth": "Bibliographic metadata only; no full-text review"
+  }
+]

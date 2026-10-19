@@ -41,6 +41,15 @@ def skipped(results, test):
     return results.get(test, {}).get("skipped", False)
 
 
+def worst_point(results):
+    """Largest over-rotation of the right four-point roll's points, with that test's validity."""
+    value, valid = case(results, "point_roll", "right", "over_rotation_point_1_deg")
+    if value is None:
+        return None, valid
+    points = [case(results, "point_roll", "right", f"over_rotation_point_{i}_deg")[0] for i in range(1, 5)]
+    return max(p for p in points if p is not None), valid
+
+
 def column(d):
     res = d["results"]
     land = "skipped" if skipped(res, "landing") else (
@@ -75,6 +84,38 @@ def column(d):
         "Lift-off speed (m/s, Vs) / ground roll (m)": takeoff,
         "Landing: touchdown speed (m/s) / sink (m/s) / rollout (m)": land,
         "Spool-up 10-90 % (s)": fmt(pick(res, "throttle_response", ["metrics", "spool_up_10_90_s"]), 2),
+        # Card v4 (FT-04); a v3 profile shows – here.
+        "Inverted at 0.8 Vmax: elevator stick / α (°)":
+            f"{fmt(case(res, 'inverted_speeds', '0.8Vmax', 'elevator_stick'), 3)} / {fmt(case(res, 'inverted_speeds', '0.8Vmax', 'alpha_deg'))}",
+        "Immelmann: height gained (m) / speed over the top (Vs)":
+            f"{fmt(pick(res, 'immelmann', ['metrics', 'height_gain_m']), 0)} / {fmt(pick(res, 'immelmann', ['metrics', 'top_speed_vs']), 2)}",
+        "Split-S from start speed, idle: height lost (m)": fmt(pick(res, "split_s", ["metrics", "height_lost_m"]), 0),
+        "Outside loop: depth (m) / least load factor (g)":
+            f"{fmt(pick(res, 'outside_loop', ['metrics', 'loop_depth_m']), 0)} / {fmt(pick(res, 'outside_loop', ['metrics', 'min_load_factor_g']), 2)}",
+        "Slow roll (right): height change (m) / peak rudder stick":
+            f"{fmt(case(res, 'slow_roll', 'right', 'height_change_m'))} / {fmt(case(res, 'slow_roll', 'right', 'peak_rudder_stick'), 2)}",
+        "Four-point roll (right): worst over-rotation (°)": fmt(worst_point(res)),
+        "Snap roll (right): entry / autorotation short of 360° (°) / stop error (°)":
+            f"{fmt(case(res, 'snap_roll', 'right', 'entered'))} / {fmt(case(res, 'snap_roll', 'right', 'autorotation_short_of_finish_deg'), 0)}"
+            f" / {fmt(case(res, 'snap_roll', 'right', 'stop_error_deg'), 0)}",
+        "Stall turn (right, kick at 0.35 Vs): outcome / pivot radius (spans)":
+            f"{fmt(case(res, 'stall_turn', 'right_0.35Vs', 'outcome'))} / {fmt(case(res, 'stall_turn', 'right_0.35Vs', 'pivot_radius_spans'), 2)}",
+        "Engine cut in the climb, 1 s reaction: least speed (Vs) / stalled":
+            f"{fmt(case(res, 'engine_cut_climb', 'delay_1s', 'min_speed_vs'), 2)} / {fmt(case(res, 'engine_cut_climb', 'delay_1s', 'stalled'))}",
+        "Turn back, engine off: least height per 180° (m) at bank (°)":
+            f"{fmt(pick(res, 'glide_turn', ['metrics', 'least_height_lost_180_m']))} at {fmt(pick(res, 'glide_turn', ['metrics', 'least_height_per_180_bank_deg']), 0)}",
+        "Turning stall, 45° right: speed / Vs√n, roll-off":
+            f"{fmt(case(res, 'stall_turning', '45_right', 'ratio_to_vs_root_n'), 3)}, {fmt(case(res, 'stall_turning', '45_right', 'roll_off'))}",
+        "Skidded stall (right): roll-off in 1 s (°)": fmt(case(res, "stall_cross_controlled", "right", "roll_off_in_1_s_deg"), 0),
+        "Stall held 5 s, controls neutral: outcome / height lost (m)":
+            f"{fmt(case(res, 'stall_held', 'controls_neutral', 'outcome'))} / {fmt(case(res, 'stall_held', 'controls_neutral', 'height_lost_held_m'), 0)}",
+        "Inverted stall: speed (upright Vs)": fmt(pick(res, "stall_inverted", ["metrics", "ratio_to_upright_vs"]), 2),
+        "Inverted spin (right rudder): entry / time per turn (s)":
+            f"{fmt(case(res, 'spin_inverted', 'right', 'entered'))} / {fmt(case(res, 'spin_inverted', 'right', 'steady_turn_time_s'), 2)}",
+        "Dead-stick: glide ratio / touchdown past the aim (m)": "skipped" if skipped(res, "dead_stick_landing") else (
+            f"{fmt(pick(res, 'dead_stick_landing', ['metrics', 'glide_ratio']))} / {fmt(pick(res, 'dead_stick_landing', ['metrics', 'touchdown_past_aim_m']))}"),
+        "Go-around, throttle slammed: least wheel height (m) / most bank (°)": "skipped" if skipped(res, "go_around") else (
+            f"{fmt(case(res, 'go_around', 'fast', 'min_wheel_height_m'), 2)} / {fmt(case(res, 'go_around', 'fast', 'max_bank_deg'))}"),
         "Valid tests": f"{sum(1 for r in res.values() if r.get('valid'))} / {len(res)} ({sum(1 for r in res.values() if r.get('skipped'))} skipped)",
     }
 

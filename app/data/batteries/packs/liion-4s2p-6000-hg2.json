@@ -1,0 +1,66 @@
+{
+  "format": "openrc-battery v1",
+  "id": "liion-4s2p-6000-hg2",
+  "display_name": "4S2P LG HG2 Li-ion (6000 mAh nominal)",
+  "class_note": "Identified cell (LG INR18650HG2, Kollmeyer dataset fit); pack assembly (interconnects, wrap, leads) and box are estimates. Each parallel group is one equivalent cell.",
+  "chemistry": "liion",
+  "cell_template": {
+    "id": "liion-lg-hg2-kollmeyer-v1",
+    "sha256": "1a65da8c45affeefa4e075b9cae01a0f45875d269c280042aa12af9fa627129c"
+  },
+  "series": 4,
+  "parallel": 2,
+  "rated_capacity_ah": {
+    "value": 5.56148,
+    "unit": "Ah",
+    "kind": "measured",
+    "source": "2 x template reference capacity 2.78074 Ah (Kollmeyer et al. LG 18650HG2 dataset (Mendeley Data doi:10.17632/b5mj79w5w9.2, CC BY 4.0), C/20 to 2.8 V at 25 °C); LG nominal 3.0 Ah per cell to 2.0 V"
+  },
+  "resistance_scale": {
+    "value": 1.0,
+    "unit": "1",
+    "kind": "derived",
+    "source": "real cell: template resistances apply unscaled; the capacity normalisation reference/rated = 1/parallel gives the parallel-group resistance"
+  },
+  "interconnect_resistance_ohm": {
+    "value": 0.0038,
+    "unit": "ohm",
+    "kind": "estimated",
+    "source": "3 series nickel-strip joints (0.15 x 8 mm, 20 mm, about 1.2 mOhm each) / 2 parallel strip(s) plus 2 mOhm leads and XT60-class connector"
+  },
+  "mass_kg": {
+    "value": 0.447,
+    "unit": "kg",
+    "kind": "estimated",
+    "source": "8 x 48.0 g cell (LG Chem product specification INR18650HG2 (PS-HG2-Rev5, 2017-03-31): weight max 48.0 g; a retailer weighed 44.86 g) + 8 x 6 g strip/insulation/wrap + 15 g leads, connector and balance lead (allowances estimated)"
+  },
+  "dimensions_m": {
+    "value": [
+      0.077,
+      0.0682,
+      0.0395
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "4 cells side by side x 2 layer(s), cell 18.5 mm x 65.2 mm max (LG Chem product specification INR18650HG2 (PS-HG2-Rev5, 2017-03-31)) plus 2.5–3 mm wrap"
+  },
+  "heat_transfer": {
+    "still_air_w_per_k": {
+      "value": 0.109868,
+      "unit": "W/K",
+      "kind": "estimated",
+      "source": "h_nat·A with h_nat = 5 W/(m²·K) (Incropera & DeWitt, Fundamentals of Heat and Mass Transfer, Table 1.1: free convection of gases 2–25 W/(m²·K)) and A = 0.021974 m² from the estimated box"
+    },
+    "forced_w_per_k_per_sqrt_mps": {
+      "value": 0.309046765381,
+      "unit": "W/(K·(m/s)^0.5)",
+      "kind": "derived",
+      "source": "A·0.664·k·Pr^(1/3)/sqrt(ν·L): laminar flat-plate average Nusselt number Nu_L = 0.664·Re_L^0.5·Pr^(1/3) (Incropera & DeWitt eq. 7.30) with air at 300 K k = 0.0263 W/(m·K), ν = 15.89e-6 m²/s, Pr = 0.707 (Table A.4), L = pack length 0.0770 m; installation airflow not included"
+    }
+  },
+  "label": {
+    "c_rating_continuous": 6.66666666667,
+    "c_rating_burst": null,
+    "source": "LG Chem product specification INR18650HG2 (PS-HG2-Rev5, 2017-03-31): max. continuous discharge 20 A per cell / 3.0 Ah nominal; informative only"
+  }
+}

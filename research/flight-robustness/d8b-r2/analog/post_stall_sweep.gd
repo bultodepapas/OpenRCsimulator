@@ -2,9 +2,11 @@
 # (Hangar 9 Ultra Stick 120): its static whole-aircraft lift retention (faser_cl.csv, Owens et al. 2006 Fig. 2a) and its
 # roll damping (faser_clp.csv, Hoe et al. 2012 Fig. 14, forced oscillation). Read-only; any aircraft JSON or candidate.
 # Static whole-aircraft loads (Aero.loads at 25 m/s, controls neutral) at 0.5 deg steps; Clp = (dMx/dp)*2/(rho/2 V S b^2)
-# at p = 0 by central difference. Retention CL/CLmax is compared with FASER aligned at the two lift peaks; Clp at the
-# same angle of attack. The FASER Clp is a finite-frequency forced-oscillation value; a quasi-steady model is expected
-# to differ where it depends on reduced frequency (above stall). Analog evidence, not a Jensen acceptance band.
+# at p = 0 by central difference. Retention CL/CLmax is compared with FASER aligned at the two stall peaks (the maximum
+# between 8 and 18 deg; FASER's is 15 deg). The FASER roll damping is the forced-oscillation out-of-phase term
+# Clp + Clbetadot*sin(alpha) (Hoe et al. Table 2) at finite frequency; the quasi-steady model has no beta-dot term, so the
+# scored Clp error covers only 10-17.5 deg (sin(alpha) <= 0.3, below the frequency-dependent post-stall regime); deeper
+# values are printed for reference, not scored. Analog evidence, not a Jensen acceptance band.
 # Run from the repository root, with absolute or res:// paths:
 #   godot --headless --path app --script "$PWD/research/flight-robustness/d8b-r2/analog/post_stall_sweep.gd" \
 #     -- res://data/aircraft/jensen_ugly_stik_60.json "$PWD/research/flight-robustness/d8b-r2/candidates/retained.json"
@@ -18,10 +20,12 @@ const RB := preload("res://physics/rigid_body.gd")
 
 const ANALOG := "res://../research/flight-robustness/d8b-r2/analog/"
 const SPEED := 25.0
+## Peak alignment uses the lift maximum inside the stall region, not a later post-stall plateau value.
+const STALL_REGION_DEG := [8.0, 18.0]
 const RHO := 1.225
 const ZERO := {elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0}
 const RETENTION_DEG := [15.0, 16.0, 17.0, 18.0, 20.0, 22.0, 25.0, 28.0, 30.0] # FASER angles, compared peak-aligned
-const CLP_DEG := [10.0, 13.5, 15.0, 16.0, 17.5, 19.0, 20.0, 22.5, 25.0, 27.5, 30.0, 32.5, 35.0]
+const CLP_DEG := [10.0, 12.0, 13.5, 15.0, 16.0, 17.5] # like-for-like range (see the header)
 
 
 func _initialize() -> void:
@@ -38,7 +42,7 @@ func _initialize() -> void:
 		if float(faser_cl[a]) > faser_peak:
 			faser_peak = faser_cl[a]
 			faser_peak_alpha = a
-	var header := "| Data | CLmax at α | RMS retention error (15–30°) | RMS Clp error (10–35°) | Clp > 0 below 17.5° | Clp at 20 / 25 / 30 / 35° |"
+	var header := "| Data | CLmax at α | RMS retention error (15–30°) | RMS Clp error (10–17.5°) | Clp > 0 below 17.5° | Clp at 20 / 25 / 30 / 35° (reference only) |"
 	var rows := []
 	var detail := []
 	for path in paths:
@@ -59,18 +63,18 @@ func _initialize() -> void:
 		for a: float in CLP_DEG:
 			var value := _at(curve.alpha, curve.clp, a)
 			sq += pow(value - float(faser_clp[a]), 2.0)
-			if a < 17.5 and value > 0.0:
+			if value > 0.0:
 				early_unstable += 1
 		var rms_clp := sqrt(sq / CLP_DEG.size())
 		rows.append("| %s | %.3f at %.1f° | %.3f | %.3f | %d of %d | %+.2f / %+.2f / %+.2f / %+.2f |" % [path.get_file(),
-			curve.peak, curve.peak_alpha, rms_ret, rms_clp, early_unstable, 4,
+			curve.peak, curve.peak_alpha, rms_ret, rms_clp, early_unstable, CLP_DEG.size(),
 			_at(curve.alpha, curve.clp, 20.0), _at(curve.alpha, curve.clp, 25.0), _at(curve.alpha, curve.clp, 30.0),
 			_at(curve.alpha, curve.clp, 35.0)])
 		var line := "%s Clp:" % path.get_file()
 		for a in [12.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 22.0, 25.0, 30.0, 35.0, 40.0]:
 			line += " %.0f:%+.2f" % [a, _at(curve.alpha, curve.clp, a)]
 		detail.append(line)
-	print("FASER: CLmax %.3f at %.1f°; Clp 20 / 25 / 30 / 35°: %+.2f / %+.2f / %+.2f / %+.2f" % [faser_peak, faser_peak_alpha,
+	print("FASER: CLmax %.3f at %.1f°; measured Clp + Clβ̇ sin α at 20 / 25 / 30 / 35°: %+.2f / %+.2f / %+.2f / %+.2f" % [faser_peak, faser_peak_alpha,
 		faser_clp[20.0], faser_clp[25.0], faser_clp[30.0], faser_clp[35.0]])
 	print(header)
 	print("| --- | --- | --- | --- | --- | --- |")
@@ -115,7 +119,7 @@ static func _curves(model: Dictionary) -> Dictionary:
 		alpha.append(deg)
 		cl.append(value)
 		clp.append(d * 2.0 / (0.5 * RHO * SPEED * S * b * b))
-		if value > peak:
+		if value > peak and deg >= STALL_REGION_DEG[0] and deg <= STALL_REGION_DEG[1]:
 			peak = value
 			peak_alpha = deg
 	return {alpha = alpha, cl = cl, clp = clp, peak = peak, peak_alpha = peak_alpha}

@@ -1,0 +1,2 @@
+legacy  min 18.642 median 26.342 us/call
+shared  min 17.079 median 25.964 us/call (with cache guard)

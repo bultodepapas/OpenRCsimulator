@@ -1,0 +1,70 @@
+{
+  "format": "openrc-fuel-registry v1",
+  "note": "FUEL-02: the single home for liquid-fuel densities. Blend density is the volume-weighted sum of component densities at the blend's reference temperature (ideal mixing; measured glow blends sit within about 2 %). Sources and numbers: docs/research/fuel-systems/FUEL-00/README.md section 6.1.",
+  "components": {
+    "methanol_aiaa_2016": {
+      "name": "methanol",
+      "density": {"value": 792.0, "unit": "kg/m3", "kind": "borrowed", "source": "https://doi.org/10.2514/6.2016-5011, Table 1, 25 degC; the value the glow profiles use (ISED table: 786.7 at 25 degC, 791.4 at 20 degC)"},
+      "reference_temperature": {"value": 298.15, "unit": "K", "kind": "borrowed", "source": "https://doi.org/10.2514/6.2016-5011, Table 1"},
+      "density_slope": {"value": -0.94, "unit": "kg/m3/K", "kind": "borrowed", "source": "Measurement Canada methanol volume-correction table (CAS 67-56-1), 15-25 degC; FUEL-00 ISED-MEOH"}
+    },
+    "nitromethane_aiaa_2016": {
+      "name": "nitromethane",
+      "density": {"value": 1137.0, "unit": "kg/m3", "kind": "borrowed", "source": "https://doi.org/10.2514/6.2016-5011, Table 1, 25 degC (CRC 1137.1 at 20 degC)"},
+      "reference_temperature": {"value": 298.15, "unit": "K", "kind": "borrowed", "source": "https://doi.org/10.2514/6.2016-5011, Table 1"}
+    },
+    "castor_oil_aiaa_2016": {
+      "name": "castor oil",
+      "density": {"value": 961.0, "unit": "kg/m3", "kind": "borrowed", "source": "https://doi.org/10.2514/6.2016-5011, Table 1, 25 degC (USP SG 0.957-0.961 at 25 degC)"},
+      "reference_temperature": {"value": 298.15, "unit": "K", "kind": "borrowed", "source": "https://doi.org/10.2514/6.2016-5011, Table 1"}
+    },
+    "gasoline_e0": {
+      "name": "gasoline",
+      "density": {"value": 745.0, "unit": "kg/m3", "kind": "estimated", "source": "midpoint of the 715-775 kg/m3 range at 15 degC, Worldwide Fuel Charter 2019; batches differ by +-4 %"},
+      "reference_temperature": {"value": 288.15, "unit": "K", "kind": "borrowed", "source": "Worldwide Fuel Charter 2019 reference temperature"},
+      "density_slope": {"value": -0.92, "unit": "kg/m3/K", "kind": "borrowed", "source": "Measurement Canada gasoline/ethanol-blend volume-correction table (to E15); FUEL-00 ISED-GAS"}
+    },
+    "two_stroke_oil": {
+      "name": "two-stroke oil",
+      "density": {"value": 862.0, "unit": "kg/m3", "kind": "manual", "source": "Valvoline 2-Stroke Racing Oil product sheet, 0.862 kg/L at 15 degC (Motul 800: 0.911-0.926 at 20 degC)"},
+      "reference_temperature": {"value": 288.15, "unit": "K", "kind": "manual", "source": "Valvoline 2-Stroke Racing Oil product sheet"}
+    },
+    "jet_a": {
+      "name": "Jet A / kerosene",
+      "density": {"value": 800.0, "unit": "kg/m3", "kind": "estimated", "source": "reference value inside the 775-840 kg/m3 specification range at 15 degC; JetCat's kg/min and ml/min columns imply 0.800 kg/L"},
+      "reference_temperature": {"value": 288.15, "unit": "K", "kind": "borrowed", "source": "Jet A specification reference temperature"},
+      "density_slope": {"value": -0.74, "unit": "kg/m3/K", "kind": "borrowed", "source": "Measurement Canada Jet A volume-correction table; FUEL-00 ISED-JETA"}
+    },
+    "turbine_oil": {
+      "name": "turbine oil",
+      "density": {"value": 1003.5, "unit": "kg/m3", "kind": "manual", "source": "Mobil Jet Oil II, 1.0035 kg/L at 15 degC"},
+      "reference_temperature": {"value": 288.15, "unit": "K", "kind": "manual", "source": "Mobil Jet Oil II product data"}
+    }
+  },
+  "blends": {
+    "glow_10n_18castor": {
+      "name": "glow fuel, 10 % nitromethane, 18 % castor oil by volume",
+      "family": "glow",
+      "volume_fractions": {"methanol_aiaa_2016": 0.72, "nitromethane_aiaa_2016": 0.10, "castor_oil_aiaa_2016": 0.18},
+      "reference_temperature": {"value": 298.15, "unit": "K", "kind": "borrowed", "source": "component reference temperature"},
+      "relative_uncertainty": {"value": 0.02, "unit": "1", "kind": "estimated", "source": "Menon 2010 (UMD PhD) Table 2-2: a measured 70/10/20 blend is 1.6 % above ideal mixing"},
+      "use": "the O.S. MAX-55AX, MAX-61FX and FS-64V candidate profiles (app/data/glow)"
+    },
+    "gasoline_premix_40_1": {
+      "name": "gasoline with two-stroke oil, 40:1 by volume",
+      "family": "gasoline",
+      "volume_fractions": {"gasoline_e0": 0.975609756097561, "two_stroke_oil": 0.024390243902439025},
+      "reference_temperature": {"value": 288.15, "unit": "K", "kind": "borrowed", "source": "component reference temperature"},
+      "relative_uncertainty": {"value": 0.04, "unit": "1", "kind": "estimated", "source": "gasoline batch spread 715-775 kg/m3 dominates; oil moves the blend by under 0.5 %"},
+      "use": "gasoline engines such as the Desert Aircraft DA-120 (ratio is a common premix choice, not a manufacturer requirement)"
+    },
+    "kerosene_5pct_turbine_oil": {
+      "name": "Jet A with 5 % turbine oil by volume of the final mixture",
+      "family": "kerosene",
+      "volume_fractions": {"jet_a": 0.95, "turbine_oil": 0.05},
+      "reference_temperature": {"value": 288.15, "unit": "K", "kind": "borrowed", "source": "component reference temperature"},
+      "relative_uncertainty": {"value": 0.04, "unit": "1", "kind": "estimated", "source": "Jet A specification range 775-840 kg/m3; whether 5 % is of the final mixture or added remains open in AV-10a"},
+      "use": "the JetCat P100-RX installation in the Ventage Jet"
+    }
+  }
+}

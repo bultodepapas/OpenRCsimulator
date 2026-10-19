@@ -91,6 +91,14 @@ python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"
 echo "== AUD-12: generated Master safety-limiter bus layout stays current"
 run --script "$HERE/../tools/audio/make_bus_layout.gd" -- --check
 
+echo "== BAT-05/06: generated battery data and the independent pack_ecm reference stay current"
+python3 "$HERE/../research/battery/bat-05/build_batteries.py" --check
+python3 "$HERE/../research/battery/test_ecm_reference.py"
+BAT06_PROBE="$(mktemp)"
+run --script "$HERE/../research/battery/bat-06/law_probe.gd" -- --out="$BAT06_PROBE" > /dev/null
+python3 "$HERE/../research/battery/bat-06/compare_law.py" "$BAT06_PROBE" > /dev/null || { rm -f "$BAT06_PROBE"; echo "BAT-06 runtime law disagrees with the reference"; exit 1; }
+rm -f "$BAT06_PROBE"
+
 echo "== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current"
 python3 "$HERE/../research/glow-engines/build_profiles.py" --check
 python3 "$HERE/../research/glow-engines/build_installations.py" --check
@@ -100,8 +108,12 @@ python3 "$HERE/../research/glow-engines/test_calibration_report.py"
 python3 "$HERE/../research/glow-engines/test_cycle_oracle.py"
 python3 "$HERE/../research/glow-engines/test_installation_schema.py"
 python3 "$HERE/../research/glow-engines/test_installation_line_endings.py"
+python3 "$HERE/../research/glow-engines/test_build_installations.py"
 python3 "$HERE/../research/glow-engines/test_refinement_report.py"
 python3 "$HERE/../research/glow-engines/test_pilot_review.py"
+python3 "$HERE/../research/fuel-systems/test_fuel_registry.py"
+python3 "$HERE/../research/fuel-systems/test_mass_balance_report.py"
+python3 "$HERE/../research/fuel-systems/mass_balance_report.py" --check "$HERE/../research/fuel-systems/mass_balance_current.json"
 python3 "$HERE/../research/glow-engines/reference/test_reference.py"
 
 echo "== P51-16: separated hardware inventory and physical inertia stay consistent"
@@ -294,9 +306,10 @@ if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Timber model contract fa
 echo "== C7-R1: trace completion, finite samples and failure exits"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_trace_acceptance.py"
 
-echo "== D8b-R2: synthetic polar fixtures, FASER-analog candidate (D8b-R2d) and explicit experimental flight route"
+echo "== D8b-R2: synthetic polar fixtures, FASER-analog and post-stall-v2 candidates (D8b-R2d) and explicit experimental flight route"
 run --script "$HERE/../research/flight-robustness/d8b-r2/make_candidates.gd" -- --check
 run --script "$HERE/../research/flight-robustness/d8b-r2/analog/make_analog.gd" -- --check
+run --script "$HERE/../research/flight-robustness/d8b-r2/analog/make_v2.gd" -- --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_pullup_cli.py"
 
 echo "== M5-W01d: weather CLI, explicit v4 clocks/velocity fields and reader negative controls"

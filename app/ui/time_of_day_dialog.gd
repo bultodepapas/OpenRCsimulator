@@ -6,6 +6,7 @@ const Widgets := preload("res://ui/widgets.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
 const SkyControls := preload("res://ui/sky_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 
@@ -30,6 +31,8 @@ var _focus_order: Array[Control] = []
 var night_only: bool = false
 var _size_sync_queued: bool = false
 var applied_night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
+## FW-MOON-13: the moon choices applied with the dialog (MoonConfig format).
+var applied_moon_config: Dictionary = MoonConfig.defaults()
 var applied_sky_config: Dictionary = SkyConfig.defaults()
 var sky_controls: VBoxContainer
 var visual_tabs: TabBar
@@ -83,7 +86,7 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 	body_stack.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	body_scroll.add_child(body_stack)
 	body_stack.add_child(description_label)
-	controls = TimeOfDayControls.new(initial, initial_night_options) as VBoxContainer
+	controls = TimeOfDayControls.new(initial, initial_night_options, _session_moon_config()) as VBoxContainer
 	if night_only:
 		controls.call("set_time_editing_visible", false)
 	controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -255,8 +258,14 @@ func _on_apply() -> void:
 		error_label.text = tr(INPUT_ERROR)
 		error_label.visible = true
 		return
+	var moon_result: Dictionary = controls.call("read_moon_config")
+	if not moon_result.get("ok", false):
+		error_label.text = tr(INPUT_ERROR)
+		error_label.visible = true
+		return
 	error_label.visible = false
 	applied_night_options = night_result.options.duplicate(true)
+	applied_moon_config = moon_result.config.duplicate()
 	applied.emit(result.config.duplicate(true))
 
 
@@ -272,3 +281,9 @@ func _on_cancel() -> void:
 
 static func _label(text: String, variation: String, wrap_text: bool = false) -> Label:
 	return Widgets.label(text, variation, wrap_text, false)
+
+
+## The session's moon choices (app_root sets them from preferences), or the defaults.
+static func _session_moon_config() -> Dictionary:
+	var checked: Dictionary = MoonConfig.validate(MoonConfig.session_config)
+	return checked.config if checked.ok else MoonConfig.defaults()

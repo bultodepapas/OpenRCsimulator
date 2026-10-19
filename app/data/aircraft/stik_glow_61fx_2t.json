@@ -47,7 +47,7 @@
       ],
       "unit": "m",
       "kind": "manual",
-      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line"
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line; FUEL-05a: plan CG taken with an empty tank, as RC manuals balance"
     },
     "firewall": {
       "value": [
@@ -59,13 +59,14 @@
       "kind": "manual",
       "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: F1 front face 6.94 in ahead of LE"
     },
-    "configuration": "virtual-glow-installation-v1",
+    "configuration": "virtual-glow-installation-v2-empty-tank",
     "cg_tolerance": {
       "value": 0.001,
       "unit": "m",
       "kind": "estimated",
       "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
-    }
+    },
+    "fuel_state": "empty_tanks"
   },
   "inventory": [
     {
@@ -251,30 +252,30 @@
     {
       "name": "usable glow premix",
       "mass": {
-        "value": 0.12,
+        "value": 0.299922,
         "unit": "kg",
-        "kind": "estimated",
-        "source": "150 ml at ~0.8 g/ml methanol/oil/nitro blend; flight state: half tank"
+        "kind": "derived",
+        "source": "FUEL-05a: full tank (D4): 0.35 l O.S. 40-91FX manual (os-engines.co.jp 50sx_40-91fx.pdf): 61FX \"approx 350cc\", \"12-13 minute flights\" x app/data/fuels/openrc-fuel-registry.json blend glow_10n_18castor (856.92 kg/m3 at 298.15 K)"
       },
       "position": {
         "value": [
           -0.1,
           0.0,
-          0.0
+          0.004
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "same as tank"
+        "source": "FUEL-05a: plan fuel-tank compartment F1-F2 (x); height O.S. FX manual: top of the tank 5-10 mm above the needle valve (7.5 mm used; 47 mm box)"
       },
       "size": {
         "value": [
-          0.09,
-          0.05,
-          0.05
+          0.115,
+          0.065,
+          0.047
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+        "source": "FUEL-05a: uniform liquid box holding the 0.35 l capacity; no measured tank interior"
       },
       "energy_source": "glow_fuel",
       "id": "item_fuel_main"
@@ -642,20 +643,20 @@
     {
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 0.2840582910437527,
+        "value": 0.24770113838979568,
         "unit": "kg",
         "kind": "derived",
-        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; virtual first-moment balance"
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; virtual first-moment balance of the empty-tank build"
       },
       "position": {
         "value": [
           0.85,
-          -0.03168363777353626,
-          -0.07058410415104469
+          -0.03633410834728228,
+          -0.08094431915144557
         ],
         "unit": "m",
         "kind": "derived",
-        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; virtual balance"
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; virtual empty-tank balance"
       },
       "size": {
         "value": [
@@ -670,6 +671,30 @@
       "id": "item_balance_mass_virtual"
     }
   ],
+  "fuel_system": {
+    "tanks": [
+      {
+        "id": "main_tank",
+        "fuel": "glow_10n_18castor",
+        "liquid_inventory_id": "item_fuel_main",
+        "shell_inventory_id": "item_fuel_tank",
+        "capacity": {
+          "value": 0.35,
+          "unit": "l",
+          "kind": "manual",
+          "source": "O.S. 40-91FX manual (os-engines.co.jp 50sx_40-91fx.pdf): 61FX \"approx 350cc\", \"12-13 minute flights\""
+        },
+        "unusable": {
+          "value": 0.005,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "FUEL-05a: clunk residue estimate; no published value (FUEL-00 section 6.3)"
+        },
+        "pickup": "clunk",
+        "feed": "suction_muffler"
+      }
+    ]
+  },
   "crash_hull": {
     "value": [
       [
@@ -736,11 +761,11 @@
           "value": [
             0.215,
             -0.18,
-            -0.2581
+            -0.2531
           ],
           "unit": "m",
-          "kind": "estimated",
-          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0381 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+          "kind": "derived",
+          "source": "GP-06b: wheel bottoms from research/ugly-stik/model-v3/equipment-handoff.json nominal_ground_contact_le_m (model-v3 axle at model y -0.22 m is 0.215 m below the thrust line, shaft_y -0.005 m; minus the wheel radius 0.0381 m), so physics and the rendered wheels touch the same ground. E1 read the axle as 0.22 m below the thrust line: every Stik contact sat 5 mm below its drawn wheel and the rendered wheels floated 5 mm. x: mains 0.094 m aft of the plan CG (D9d hull, model-v3 axle x_aft 0.215 m), nose 0.257 m ahead; track 0.36 m. Tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel"
         },
         "stiffness": {
           "value": 448.0,
@@ -758,7 +783,7 @@
           "value": 0.12,
           "unit": "m",
           "kind": "estimated",
-          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.253 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
         },
         "max_steering": {
           "value": 0,
@@ -774,11 +799,11 @@
           "value": [
             0.215,
             0.18,
-            -0.2581
+            -0.2531
           ],
           "unit": "m",
-          "kind": "estimated",
-          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0381 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+          "kind": "derived",
+          "source": "GP-06b: wheel bottoms from research/ugly-stik/model-v3/equipment-handoff.json nominal_ground_contact_le_m (model-v3 axle at model y -0.22 m is 0.215 m below the thrust line, shaft_y -0.005 m; minus the wheel radius 0.0381 m), so physics and the rendered wheels touch the same ground. E1 read the axle as 0.22 m below the thrust line: every Stik contact sat 5 mm below its drawn wheel and the rendered wheels floated 5 mm. x: mains 0.094 m aft of the plan CG (D9d hull, model-v3 axle x_aft 0.215 m), nose 0.257 m ahead; track 0.36 m. Tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel"
         },
         "stiffness": {
           "value": 448.0,
@@ -796,7 +821,7 @@
           "value": 0.12,
           "unit": "m",
           "kind": "estimated",
-          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.253 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
         },
         "max_steering": {
           "value": 0,
@@ -810,13 +835,13 @@
         "name": "nose",
         "position": {
           "value": [
-            -0.136,
+            -0.136276,
             0.0,
-            -0.2549
+            -0.249925
           ],
           "unit": "m",
-          "kind": "estimated",
-          "source": "Wheel bottoms. x from the D9d hull: mains 0.094 m aft of the plan CG, nose 0.257 m ahead (tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel). Track 0.36 m and heights from the model team's ugly_stik_geometry.gd equipment table (axle 0.22 m below the thrust line, wheel radius 0.0349 m). NOTE for the model team: that table places the main axle at x_aft 0.10 m, AHEAD of the CG (0.1209 m); built so, the airplane would sit on its tail. Physics keeps the hull's 0.215 m until the plan is re-read"
+          "kind": "derived",
+          "source": "GP-06b: wheel bottoms from research/ugly-stik/model-v3/equipment-handoff.json nominal_ground_contact_le_m (model-v3 axle at model y -0.22 m is 0.215 m below the thrust line, shaft_y -0.005 m; minus the wheel radius 0.034925 m), so physics and the rendered wheels touch the same ground. E1 read the axle as 0.22 m below the thrust line: every Stik contact sat 5 mm below its drawn wheel and the rendered wheels floated 5 mm. x: mains 0.094 m aft of the plan CG (D9d hull, model-v3 axle x_aft 0.215 m), nose 0.257 m ahead; track 0.36 m. Tricycle: the CG sits 27 % of the wheelbase from the mains, so the airplane stands on its nose wheel"
         },
         "stiffness": {
           "value": 352.0,
@@ -834,7 +859,7 @@
           "value": 0.12,
           "unit": "m",
           "kind": "estimated",
-          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
+          "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.253 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice"
         },
         "max_steering": {
           "value": 20.0,
@@ -1211,6 +1236,12 @@
         "unit": "1/rad",
         "kind": "estimated",
         "source": "D10-R2 (docs/research/flight-dynamics/stik-lateral-directional-2026-10-18, research/flight-dynamics/stik-lateral-directional/directional_prediction.py): (0.684 - 1) x fin term 0.12741 for the DATCOM high-wing fin efficiency eta_v(1 + dsigma/dbeta), plus Raymer eq. 16.50 fuselage term -0.0130 from the plan stations; placed in the body couple as the P-51 does; not measured"
+      },
+      "wing_body_cl_beta": {
+        "value": -0.05367956930948468,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "D10-R5 (docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19, research/flight-dynamics/stik-lateral-directional/directional_prediction.py, roll_regimes.gd): borrowed Clb -0.0545 less the vertical-fin term about the ARP -0.00082, so the local law matches the oracle; independently predicted -0.0537 (lifting-line dihedral -0.0134 per deg of the estimated 2.86 deg plus DATCOM high-wing interference -0.0155); not measured"
       },
       "wing_aileron_effectiveness": {
         "value": 0.144,

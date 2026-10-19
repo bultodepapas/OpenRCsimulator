@@ -65,6 +65,12 @@ const MASS_CONTACT_LAW := "fixed-datum-live-mass-contact-linear-fuel-v1"
 const BatteryStep: Script = preload("res://physics/electric_battery_step.gd")
 const BATTERY_LAW: String = "electric-ocv-resistance-coupled-events-v1"
 const BATTERY_LAYOUT: String = "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, remaining charge C, terminal energy J, pack heat J; RK4 coupled"
+## BAT-10: Thevenin pack (docs/research/battery/BAT-04/specification.md §5). Sampled ESC slots have zero rate.
+const PackEcm: Script = preload("res://physics/battery/pack_ecm.gd")
+const EscSupervisor: Script = preload("res://physics/battery/esc_supervisor.gd")
+const PACK_LAW: String = "electric-pack-ecm-coupled-events-v1"
+const PACK_LAYOUT: String = "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, weak-cell remaining charge C, terminal energy J, pack loss J, average-cell RC V, weak-cell RC V, pack temperature K, ESC sensed V, ESC limit, ESC phase, ESC timer s, ESC detected cells; RK4 coupled; ESC slots sampled at accepted endpoints"
+const PACK_MODEL: String = "average-plus-weakest-cell-thevenin-lumped-thermal-no-regeneration-v1"
 const ELECTRIC_LAW: String = "electric-fixed-bus-coupled-stop-v1"
 ## Conservative source-only explicit-step envelope, qualified by EL1d scalar refinement.
 ## Propeller/aerodynamic stiffness still needs per-configuration flight evidence.
@@ -208,7 +214,9 @@ func _electric_step_supported(model: Dictionary) -> bool:
 	if not is_finite(denominator) or denominator <= 0.0:
 		return false
 	var ratio: float = sim.dt() * kt * kt / denominator
-	if Propulsion.has_dynamic_battery(prop):
+	if Propulsion.has_pack_ecm(prop):
+		ratio += _pack_step_ratio(prop)
+	elif Propulsion.has_dynamic_battery(prop):
 		var capacity_c: float = 3600.0 * float(prop.battery.capacity_ah)
 		var points: PackedFloat64Array = prop.battery.ocv_points
 		var slope: float = 0.0
@@ -220,6 +228,28 @@ func _electric_step_supported(model: Dictionary) -> bool:
 		# Bound the active branch's mechanical + charge feedback eigenvalue using Rm.
 		ratio += sim.dt() * slope / battery_denominator
 	return is_finite(ratio) and ratio >= 0.0 and ratio <= ELECTRIC_MAX_STEP_RATIO
+
+
+## BAT-10: conservative sum of the pack's fastest eigenvalues times dt: charge/OCV feedback through Rm on the
+## weakest cell, the shortest RC time constant and the ESC voltage filter. Thermal time constants are minutes.
+func _pack_step_ratio(prop: Dictionary) -> float:
+	var battery: Dictionary = prop.battery
+	var knots: PackedFloat64Array = battery.soc_knots
+	var nz: int = knots.size()
+	var ocv: PackedFloat64Array = battery.ocv
+	var slope: float = 0.0
+	for row: int in ocv.size() / nz:
+		for i: int in range(1, nz):
+			slope = maxf(slope, (ocv[row * nz + i] - ocv[row * nz + i - 1]) / (knots[i] - knots[i - 1]))
+	var weak_capacity: float = float(battery.weak_capacity_factor) * float(battery.group_capacity_c)
+	var ratio: float = sim.dt() * float(battery.series) * slope / (float(prop.motor.resistance_ohm) * weak_capacity)
+	var tau_min: float = INF
+	for table: PackedFloat64Array in battery.rc_tau:
+		for tau: float in table:
+			tau_min = minf(tau_min, tau)
+	if is_finite(tau_min):
+		ratio += sim.dt() / tau_min
+	return ratio + sim.dt() / float(battery.lvc_filter_s)
 
 
 ## Configure only at a launch boundary, then reset() to build the selected start in this air mass.
@@ -2717,7 +2747,9 @@ func _settled_continuous(s: PackedFloat64Array, aux: PackedFloat64Array) -> Pack
 		out.append(aux[AUX_RPM])
 	if shaft_is_coupled():
 		out.append(aux[AUX_RPM])
-		if battery_is_dynamic():
+		if battery_is_pack():
+			out.append_array(_pack_initial_block(s))
+		elif battery_is_dynamic():
 			out.append_array(PackedFloat64Array([_battery_initial_charge(), 0.0, 0.0]))
 	# Wheels begin at zero relative rim speed on both airborne and runway starts.
 	for _i in wheel_count():
@@ -2729,7 +2761,37 @@ func battery_is_dynamic() -> bool:
 	return aircraft.get("ok", false) and Propulsion.has_dynamic_battery(aircraft.model.propulsion)
 
 
+func battery_is_pack() -> bool:
+	return aircraft.get("ok", false) and Propulsion.has_pack_ecm(aircraft.model.propulsion)
+
+
+## Battery slots after the shaft rpm: three for the OCV/resistance pack, 9 + 2K for pack_ecm.
+func _battery_block_size() -> int:
+	if battery_is_pack():
+		return PackEcm.block_size(aircraft.model.propulsion.battery)
+	return 3 if battery_is_dynamic() else 0
+
+
+## Connection at reset: rested pack at the start position's air temperature, ESC cell detection, open limit.
+func _pack_initial_block(s: PackedFloat64Array) -> PackedFloat64Array:
+	var prop: Dictionary = aircraft.model.propulsion
+	var made: Dictionary = PackEcm.initial_block(prop.battery, prop.motor, prop.esc.low_voltage_cutoff, _pack_ambient_k(s))
+	if made.get("ok", false):
+		return made.block
+	var invalid := PackedFloat64Array()
+	invalid.resize(PackEcm.block_size(prop.battery))
+	invalid.fill(NAN)
+	return invalid
+
+
+func _pack_ambient_k(s: PackedFloat64Array) -> float:
+	var air: Dictionary = environment_at(s.slice(0, RB.SIZE) if s.size() >= RB.SIZE else s)
+	return float(air.get("temperature_k", NAN))
+
+
 func electric_law() -> String:
+	if battery_is_pack():
+		return PACK_LAW
 	return BATTERY_LAW if battery_is_dynamic() else ELECTRIC_LAW
 
 
@@ -2740,26 +2802,48 @@ func _rotor_index() -> int:
 
 func _battery_initial_charge() -> float:
 	var battery: Dictionary = aircraft.model.propulsion.battery
+	if battery.get("kind") == "pack_ecm":
+		return PackEcm.weak_initial_charge_c(battery)
 	return 3600.0 * float(battery.capacity_ah) * float(battery.initial_soc)
 
 
 ## Charge is the sole depletion state; SOC and consumed coulombs are derived.
 func _battery_values_valid(values: PackedFloat64Array, trial: bool = false) -> bool:
 	var at: int = _rotor_index() + 1
-	if values.size() != at + 3 + wheel_count():
+	var size: int = _battery_block_size()
+	if values.size() != at + size + wheel_count():
 		return false
-	for i: int in range(at, at + 3):
+	for i: int in range(at, at + size):
 		if not is_finite(values[i]):
+			return false
+	if battery_is_pack():
+		var battery: Dictionary = aircraft.model.propulsion.battery
+		var phase: float = values[at + PackEcm.phase_index(battery)]
+		var cells: float = values[at + PackEcm.cells_index(battery)]
+		var limit: float = values[at + PackEcm.limit_index(battery)]
+		if values[at + PackEcm.temperature_index(battery)] <= 0.0 or limit < 0.0 or limit > 1.0 \
+				or phase != floorf(phase) or phase < 0.0 or phase > 3.0 or cells != floorf(cells) or cells < 1.0 \
+				or values[at + PackEcm.timer_index(battery)] < 0.0:
 			return false
 	return (trial or values[at] >= 0.0) and values[at] <= _battery_initial_charge() \
 		and values[at + 1] >= 0.0 and values[at + 2] >= 0.0
 
 
-func _battery_point(rpm: float, values: PackedFloat64Array, dynamics_only: bool = false) -> Dictionary:
+func _battery_point(rpm: float, values: PackedFloat64Array, dynamics_only: bool = false,
+		s: PackedFloat64Array = PackedFloat64Array(), air: Dictionary = {}) -> Dictionary:
 	if not _battery_values_valid(values, true):
 		return {ok = false}
 	var charge: float = values[_rotor_index() + 1]
 	var prop: Dictionary = aircraft.model.propulsion
+	if battery_is_pack():
+		# Stage-local ambient temperature and bay airflow; the ESC limit is the sampled slot inside the block.
+		var at: int = _rotor_index() + 1
+		var block: PackedFloat64Array = values.slice(at, at + _battery_block_size())
+		var body: PackedFloat64Array = s if s.size() == RB.SIZE else sim.state
+		var v_air: PackedFloat64Array = air.v_air if air.has("v_air") else air_data(body, sim.time()).v_air
+		var cooling: float = float(prop.battery.cooling_airflow_fraction) * M.norm(v_air)
+		return Propulsion.electric_pack_state(rpm, propulsion_throttle(), prop, propulsion_power_enabled(), block,
+			_pack_ambient_k(body), cooling, charge < 0.0, dynamics_only)
 	var soc: float = maxf(0.0, charge / (3600.0 * float(prop.battery.capacity_ah)))
 	return Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, propulsion_power_enabled(), soc, charge < 0.0, dynamics_only)
 
@@ -2769,7 +2853,7 @@ func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
 		return values[0] if values.size()==GlowFlight.SIZE+wheel_count() and is_finite(values[0]) and (trial or values[0]>=0.0) else NAN
 	var prop: Dictionary = aircraft.model.propulsion
 	var count: int = prop.slipstream.pieces.size() if WashTransport.enabled(prop) else 0
-	if values.size() != count + (4 if battery_is_dynamic() else 1) + wheel_count() \
+	if values.size() != count + 1 + _battery_block_size() + wheel_count() \
 			or not is_finite(values[count]) or (values[count] < 0.0 and not trial):
 		return NAN
 	return values[count]
@@ -2802,7 +2886,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 	var battery_point: Dictionary = {}
 	var rate: float
 	if battery_is_dynamic():
-		battery_point = _battery_point(rpm, values, true)
+		battery_point = _battery_point(rpm, values, true, s, air)
 		if not battery_point.get("ok", false):
 			return {ok = false}
 		var load_torque: float = Propulsion.prop_torque(rpm, M.dot(air.v_air, Propulsion.axis(prop)), prop, air_density(s))
@@ -2902,7 +2986,9 @@ func _coupled_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 
 
 func _append_battery_rates(values: PackedFloat64Array, response: Dictionary) -> void:
-	if response.has("battery"):
+	if response.has("battery") and response.battery.has("rates"):
+		values.append_array(response.battery.rates)
+	elif response.has("battery"):
 		values.append_array(PackedFloat64Array([-response.battery.pack_current_a,
 			response.battery.pack_terminal_power_w, response.battery.pack_loss_w]))
 
@@ -2925,12 +3011,30 @@ func _electric_step(combined: PackedFloat64Array, at: float, dt: float, derivati
 	if battery_is_dynamic():
 		result = BatteryStep.advance(combined, at, dt, derivative, first,
 			RB.SIZE + _rotor_index(), RB.SIZE + _rotor_index() + 1, _project_electric_stop)
+		if result.get("ok", false) and battery_is_pack():
+			result.state = _supervise_pack(result.state, dt)
 	else:
 		result = EventStep.advance(combined, at, dt, derivative, first,
 			RB.SIZE + _rotor_index(), _project_electric_stop, "rotor_stop")
 	if not result.get("ok", false):
 		return PackedFloat64Array([NAN])
 	return {state = result.state, events = result.events}
+
+
+## BAT-11: the ESC samples its filtered pack voltage at the accepted endpoint and holds the new output limit
+## for the next tick. Only the zero-rate supervisor slots change; the integrated state is untouched.
+func _supervise_pack(state: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	var battery: Dictionary = aircraft.model.propulsion.battery
+	var profile: Dictionary = aircraft.model.propulsion.esc.low_voltage_cutoff
+	var at: int = RB.SIZE + _rotor_index() + 1
+	var decided: PackedFloat64Array = EscSupervisor.step(profile, state[at + PackEcm.limit_index(battery)],
+		int(state[at + PackEcm.phase_index(battery)]), state[at + PackEcm.timer_index(battery)],
+		int(state[at + PackEcm.cells_index(battery)]), state[at + PackEcm.sense_index(battery)], propulsion_throttle(), dt)
+	var out: PackedFloat64Array = state.duplicate()
+	out[at + PackEcm.limit_index(battery)] = decided[0]
+	out[at + PackEcm.phase_index(battery)] = decided[1]
+	out[at + PackEcm.timer_index(battery)] = decided[2]
+	return out
 
 
 func _project_electric_stop(values: PackedFloat64Array, index: int) -> PackedFloat64Array:
@@ -2965,7 +3069,29 @@ func electrical_state() -> Dictionary:
 			point.terminal_energy_j = sim.continuous[index + 1]
 			point.pack_heat_j = sim.continuous[index + 2]
 			point.exhausted = sim.continuous[index] == 0.0
+		if battery_is_pack():
+			_add_pack_telemetry(point, _rotor_index() + 1)
 	return point
+
+
+## BAT-14: pack identity and sampled ESC state for presentation; pure reads of the accepted endpoint.
+func _add_pack_telemetry(point: Dictionary, at: int) -> void:
+	var prop: Dictionary = aircraft.model.propulsion
+	var battery: Dictionary = prop.battery
+	var profile: Dictionary = prop.esc.low_voltage_cutoff
+	var cells: int = int(sim.continuous[at + PackEcm.cells_index(battery)])
+	point.pack_id = battery.pack_id
+	point.display_name = battery.display_name
+	point.chemistry = battery.chemistry
+	point.series = battery.series
+	point.parallel = battery.parallel
+	point.rated_capacity_ah = battery.rated_capacity_ah
+	point.pack_loss_j = sim.continuous[at + PackEcm.LOSS]
+	point.esc_sensed_voltage_v = sim.continuous[at + PackEcm.sense_index(battery)]
+	point.esc_limit = sim.continuous[at + PackEcm.limit_index(battery)]
+	point.esc_detected_cells = cells
+	point.esc_cutoff_voltage_v = EscSupervisor.cutoff_voltage(profile, cells)
+	point.esc_state = EscSupervisor.state_name(profile, int(sim.continuous[at + PackEcm.phase_index(battery)]))
 
 
 ## Aerodynamic-convention deflections from the servos' actual positions. The servos change once per tick (in
@@ -3162,7 +3288,7 @@ func wheel_index() -> int:
 	if glow_is_active(): return GlowFlight.SIZE
 	var index: int = _rotor_index()
 	if shaft_is_coupled():
-		index += 1 + (3 if battery_is_dynamic() else 0)
+		index += 1 + _battery_block_size()
 	elif turbine_is_continuous():
 		index += 1
 	return index
@@ -3235,7 +3361,7 @@ func trace_meta() -> Dictionary:
 		aircraft_semantic_hash_convention = "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
 		configuration = aircraft.model.get("configuration", "unspecified"),
 		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else Aero.LOADS_LAW + " with bounded attached oracle",
-		wing_polar_model = "tabulated-wing-v1 (experimental finite-wing strip reference)" if model.get("envelope", {}).has("wing_polar") else "legacy attached-to-flat-plate blend",
+		wing_polar_model = ("tabulated-wing-v1 (experimental finite-wing strip reference)" + ("; spanwise stall progression g = %s" % model.envelope.wing_polar.spanwise_progression if model.envelope.wing_polar.has("spanwise_progression") else "")) if model.get("envelope", {}).has("wing_polar") else "legacy attached-to-flat-plate blend",
 		ground_effect_model = ("image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above %.1f spans)" % GroundEffect.FADE_SPAN_RATIO) if GroundEffect.enabled(model) else "none",
 		propulsion_model = propulsion_model,
 		propwash_model = "tail-slipstream-axial-transport-v1" if WashTransport.enabled(prop) else (
@@ -3351,7 +3477,17 @@ func trace_meta() -> Dictionary:
 		metadata.electric_sample_timing = "accepted endpoint; current tick input and source-enabled mode"
 		metadata.electric_stop = "first downward zero crossing; bounded RK4 localization; static bearing friction; no reverse"
 		metadata.engine_atmosphere = "electric motor constants independent of density; propeller loads use stage density" if _weather.has_vertical_atmosphere() else "electric motor constants independent of density; propeller loads use field density"
-		if battery_is_dynamic():
+		if battery_is_pack():
+			metadata.continuous_layout = PACK_LAYOUT
+			metadata.battery_model = PACK_MODEL
+			metadata.battery_pack = JSON.stringify({id = prop.battery.pack_id, sha256 = prop.battery.pack_sha256,
+				template = prop.battery.template_id, template_sha256 = prop.battery.template_sha256,
+				series = prop.battery.series, parallel = prop.battery.parallel, branches = prop.battery.branches}, "", true, true)
+			metadata.battery_exhaustion = "weak-cell remaining charge zero at the template data floor; all pack loads disconnected; ESC LVC acts earlier"
+			metadata.battery_charge = "weak-cell coulombs integrated; average-cell SOC derived from consumed charge; terminal energy and pack loss integrated"
+			metadata.battery_auxiliary = "prescribed pack-side current; no receiver/servo brownout model"
+			metadata.battery_esc = "sampled at accepted endpoints from the filtered pack voltage; output limit held for the next tick"
+		elif battery_is_dynamic():
 			metadata.continuous_layout = BATTERY_LAYOUT
 			metadata.battery_model = "balanced-pack-ocv-resistance-no-regeneration-v1"
 			metadata.battery_exhaustion = "remaining charge zero; all pack loads disconnected; bearing loss retained; not ESC LVC"
@@ -3370,6 +3506,8 @@ func trace_meta() -> Dictionary:
 		metadata.glow_identity=JSON.stringify(prop.glow.identity,"",true,true)
 		metadata.glow_family=prop.glow.profile.family
 		metadata.continuous_layout="rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+		if wheel_count() > 0: # GP-06a: rim speeds follow the glow slots (wheel_index() == GlowFlight.SIZE)
+			metadata.continuous_layout += "; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
 	if not workshop_identity.is_empty():
@@ -3525,7 +3663,7 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	if field.has_vertical_atmosphere():
 		parts.append(field.atmosphere_law() + "; datum=field_elevation-minus-NED-down; sample=stage-body-datum")
 	if shaft_is_coupled():
-		parts.append(BATTERY_LAYOUT if battery_is_dynamic() else "shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
+		parts.append(PACK_LAYOUT if battery_is_pack() else BATTERY_LAYOUT if battery_is_dynamic() else "shaft-relative-rk4-locked-inertia-reaction-v1; wash-first,rpm-last")
 	if Propulsion.is_electric(aircraft.model.propulsion):
 		parts.append(electric_law())
 	if turbine_is_continuous():

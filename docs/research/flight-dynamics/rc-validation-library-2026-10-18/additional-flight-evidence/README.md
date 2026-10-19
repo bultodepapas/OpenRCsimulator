@@ -1,0 +1,32 @@
+# Additional fixed-wing flight evidence
+
+Research snapshot: 2026-10-18 (Bogotá), retrieved 2026-10-19 UTC. Ten manifest records cover nine sources; the embedded dataset README is a companion artifact, not an independent study.
+
+This supplement adds one inspectable flight-telemetry sample and a small set of primary experimental sources for fixed-wing dynamics, parameter identification, inertia measurement, and UAS handling qualities. The machine-readable source records are in [sources.json](sources.json). Locally retained originals are under `references/rc-validation-library-2026-10-18/additional-flight-evidence/`; the full IDF-DS archive is not mirrored.
+
+## Actual telemetry sample
+
+The retained CSV is the single grouped mission `Speedybee DataSet/processed/telemetry/Lap001.csv` from the public [IDF-DS Zenodo record](https://zenodo.org/records/16992976), in the 580,834,225-byte Speedybee DataSet.zip. It was retrieved by ordinary HTTP Range requests from the public archive URL; the whole ZIP and the separate 2.1 GB Holybro archive were not downloaded. The selected ZIP member uses DEFLATE (method 8), has 2,617,244 compressed bytes, 21,709,805 expanded bytes, and CRC-32 2a10b186. The extraction was verified by reading the member through Python's standard zipfile implementation and checking its CRC. A later independent range read produced byte-for-byte identical CSV data. The CSV SHA-256 is `5593ba124fdf6369d8f1d7da5cc64082a2469f90ce8007a904afe4e8862f6e9b`; this is the extracted member's hash, not a hash of the complete ZIP. Zenodo lists the complete ZIP's MD5, but that archive hash was not independently checked.
+
+The sample has 126 columns and 27,339 rows. Its `time (us)` field runs from 176404364 to 620114460, a span of about 443.71 seconds. The header includes firmware loop/time, rate-control and RC command/data, inertial, attitude, servo, navigation/GNSS, wind, battery, and ESC telemetry fields. The included dataset README is retained beside the CSV. Neither that README nor this extraction supplies a trustworthy per-channel unit and scaling dictionary; preserve the recorded values and consult the dataset paper/maintainers before converting channels. These are flight-controller telemetry values, not an independent sensor calibration or a dedicated stall/spin/system-identification experiment. The dataset README notes that flights 117–120 lacked a calibrated pitot tube; that caveat does not apply by flight number to Lap001.
+
+Zenodo's record metadata declares CC BY 4.0. The embedded README describes free use for education and research but gives no separate standardized license. Retain attribution to the dataset authors and Zenodo record.
+
+## Experimental model evidence
+
+- Lehmkuehler, Wong, and Verstraete compare one-axis and three-axis pendulum methods for small fixed-wing UAV inertia. Their added-mass corrections reach 25% and depend on the model-scale test article, so full-scale correction methods should not be transferred without checking.
+- Dantsker et al. validate a torque-based inertia rig and apply it to a 62.5-inch, 3.945 kg Great Planes Avistar-derived RC trainer and a roughly one-fifth-scale Cirrus. The Avistar was measured in pitch only; the paper is ground-measurement evidence, not a flight log.
+- Shen et al. describe semi-empirical derivatives followed by EKF compensation from onboard integrated-navigation measurements and real flight tests on a small propeller aircraft. The paper models control actuators, but publishes no raw time histories; its estimates remain specific to its vehicle, sensors, and assumptions.
+- Park compares VLM predictions with frequency-sweep responses for small-aircraft servos and the aircraft. The publisher abstract describes corrections to overall elevator/aileron control power and a propeller-normal-force correction for rudder response. The full article is not openly downloadable from the publisher, so details beyond its public record have not been independently audited here.
+- Franke et al. (2026) report flight-tested longitudinal identification using maneuvers exciting short-period and phugoid response plus glides for drag estimation. The official TU Dresden record and indexed paper text were available, but direct PDF retrieval returned HTTP 403; no local copy or raw data is included.
+- Watkiss's 1994 Naval Postgraduate School thesis describes a fixed-wing RC Bluebird, experimental inertia measurement, estimated stability/control derivatives, and a flight-test neutral-point estimate. The repository metadata and searchable text were reviewed, but direct Calhoun PDF requests returned HTTP 403. Its age, limited instrumentation, and estimated derivatives make it historical context rather than a current coefficient reference.
+
+## UAS handling-qualities report trail
+
+The NASA Phase II report already catalogued in the sibling flight-data collection cites Klyde et al., *Defining Handling Qualities of Unmanned Aerial Systems: Phase I Final Report*, STI TR-1488-1 (November 2016). A freely retrievable official copy of that Phase I report was not located in this pass. The locally retained NASA/TM-2017-219458 is a NASA SBIR program/topic document: it lists topic A1.05-8105, “Defining Handling Qualities of Unmanned Aerial Systems,” but is not the Phase I technical report and contains no project flight results.
+
+The Navy STP quad chart for NASA16-A105 / contract N68335-19-C-0614 is a public transition-program artifact, not a Phase III final technical report. It lists a rotary-wing flight-test milestone for December 2021 and final prototype software/specification milestones for August 2022. It therefore helps trace the project and its transition status, but does not add fixed-wing validation data. No separate public Phase III technical report was located.
+
+## Access and use limits
+
+Only the Lap001 CSV is a newly retained flight time series in this supplement; it is a processed/grouped dataset member rather than original raw sensor packets. The papers and reports add experimental methods and selected measurements, not downloadable flight logs. The Park article remains publisher-paywalled; the TU Dresden and Calhoun PDF endpoints returned HTTP 403. No login, alternate credentials, or access-control workaround was used. The NASA Phase I report and a separate Phase III final report remain unlocated. See each entry in `sources.json` for source URL, direct-download outcome, local hash, license status, and read depth.

@@ -173,7 +173,7 @@ func show_aircraft(id: String) -> bool:
 			World.dress_aircraft(airplane.root)
 	_update_helicopter_lights()
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
-	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else 1.0
+	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength() # FW-MOON-03
 	_shadow.visible = strength > 0.0
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, basis, pos, extent.x, extent.y, direction, strength * 0.65)

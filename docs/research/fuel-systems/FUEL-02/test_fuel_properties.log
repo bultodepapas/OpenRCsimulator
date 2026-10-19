@@ -1,0 +1,33 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   registry loads with an identity 
+ok   glow_10n_18castor density is the volume-weighted component sum 856.920000000 vs 856.920000000
+ok   gasoline_premix_40_1 density is the volume-weighted component sum 747.853658537 vs 747.853658537
+ok   kerosene_5pct_turbine_oil density is the volume-weighted component sum 810.175000000 vs 810.175000000
+ok   unknown blend is refused 
+ok   glow blend has no slope because nitromethane and castor oil have none 
+ok   glow blend refuses another temperature instead of guessing 
+ok   glow blend accepts its own reference temperature 
+ok   os_max_55ax_candidate.json derives the registry glow blend density 856.920000000 vs 856.920000000
+ok   os_max_61fx_candidate.json derives the registry glow blend density 856.920000000 vs 856.920000000
+ok   os_fs_64v_candidate.json derives the registry glow blend density 856.920000000 vs 856.920000000
+ok   a one-component change moves the blend away from the profile 
+ok   synthetic registry with slopes prepares 
+ok   component referenced at another temperature is shifted by its slope 902.5
+ok   blend density follows the volume-weighted slope { &"ok": true, &"density_kg_m3": 887.5 }
+ok   nonphysical temperature is refused 
+ok   refuses fractions summing to 0.99 Fuel blend mix volume fractions sum to 0.990000000000000, not 1
+ok   refuses unknown component in a blend Fuel blend mix names an unknown component zz
+ok   refuses negative density Fuel component a density/reference temperature: quantity -1.0 kg/m3 is outside [100.0, 2000.0]
+ok   refuses empty source Fuel component a density/reference temperature: quantity needs unit kg/m3, a known kind and a source
+ok   refuses unknown kind Fuel component a density/reference temperature: quantity needs unit kg/m3, a known kind and a source
+ok   refuses wrong unit Fuel component a density/reference temperature: quantity needs unit kg/m3, a known kind and a source
+ok   refuses extra component key Fuel component a must hold name, density, reference_temperature and optional density_slope
+ok   refuses extra blend key Fuel blend mix must hold exactly name, family, volume_fractions, reference_temperature, relative_uncertainty, use
+ok   refuses unknown family Fuel blend mix needs a name, a use and a family in ["glow", "gasoline", "kerosene"]
+ok   refuses positive slope Fuel component a density slope: quantity 0.5 kg/m3/K is outside [-5.0, 0.0]
+ok   refuses other temperature without a slope Fuel blend mix: component b is referenced at another temperature and has no density slope
+ok   refuses wrong format Fuel registry root must hold exactly format, note, components and blends with format openrc-fuel-registry v1
+ok   refuses zero fraction Fuel blend mix fraction of a must be in (0, 1]
+ok   refuses uncertainty above 20 % Fuel blend mix reference temperature/uncertainty is invalid
+FUEL-02 fuel registry: 30 checks, 0 failed

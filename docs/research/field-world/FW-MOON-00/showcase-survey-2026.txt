@@ -1,0 +1,49 @@
+Current presets:
+  night (2026-06-30 01:15 CEST, solar midnight): moon az  165.0 el  20.3 illum 0.999 dist 63.53 ER | sun az  343.9 el  -25.1
+  evening flow (2026-06-21 22:30 CEST): moon az  226.0 el  36.4 illum 0.494 dist 60.83 ER | sun az  309.4 el   -7.5
+Eclipse dates (Espenak greatest eclipse, UT):
+  2026-08-28 04:14 partial: moon az  242.4 el  15.3 illum 1.000 dist 61.26 ER | sun az   62.0 el  -16.0
+  2028-12-31 16:53 total: moon az   58.7 el  -1.1 illum 1.000 dist 59.27 ER | sun az  239.0 el    0.7
+  2028-12-31 17:30: moon az   64.4 el   5.1 illum 1.000 dist 59.26 ER | sun az  244.8 el   -6.0
+Dusk moonrise in front of the pilot, 2026 (sun -9..-3, moon el 3..20, illum > 0.9):
+  2026-01-02 18:15 UTC+1: moon az   64.7 el  12.9 illum 0.991 dist 56.65 ER | sun az  242.5 el   -3.2
+  2026-01-03 18:30 UTC+1: moon az   59.0 el   3.7 illum 0.997 dist 57.01 ER | sun az  244.8 el   -5.6
+  2026-01-31 18:45 UTC+1: moon az   73.5 el  17.9 illum 0.980 dist 57.74 ER | sun az  250.0 el   -3.0
+  2026-02-01 18:50 UTC+1: moon az   69.7 el   6.1 illum 0.999 dist 58.21 ER | sun az  250.9 el   -3.7
+  2026-03-02 19:20 UTC+1: moon az   85.8 el  11.0 illum 0.994 dist 59.63 ER | sun az  263.5 el   -3.2
+  2026-03-03 19:45 UTC+1: moon az   87.5 el   3.4 illum 0.999 dist 60.24 ER | sun az  267.9 el   -7.7
+  2026-09-26 20:20 UTC+2: moon az   89.1 el   5.1 illum 0.999 dist 59.52 ER | sun az  271.1 el   -3.6
+  2026-09-27 20:35 UTC+2: moon az   79.3 el   3.3 illum 0.985 dist 58.95 ER | sun az  273.3 el   -6.8
+  2026-10-24 19:35 UTC+2: moon az   92.2 el  14.4 illum 0.972 dist 58.87 ER | sun az  257.0 el   -3.1
+  2026-10-25 19:35 UTC+2: moon az   79.9 el   9.2 illum 0.996 dist 58.17 ER | sun az  256.8 el   -3.4
+  2026-10-26 19:35 UTC+2: moon az   67.7 el   3.3 illum 0.994 dist 57.62 ER | sun az  256.5 el   -3.6
+  2026-11-23 18:10 UTC+1: moon az   73.6 el  14.4 illum 0.986 dist 57.06 ER | sun az  246.3 el   -3.7
+  2026-11-24 18:10 UTC+1: moon az   62.1 el   6.2 illum 0.998 dist 56.58 ER | sun az  246.1 el   -3.8
+  2026-12-23 18:10 UTC+1: moon az   62.3 el   9.2 illum 0.997 dist 56.02 ER | sun az  242.1 el   -3.5
+Full-moon night in front of the pilot, 2026 (sun < -18, moon el 15..35, illum > 0.95):
+  2026-01-02 04:30 UTC+1: moon az  280.1 el  33.5 illum 0.974 dist 56.55 ER | sun az   81.7 el  -46.4
+  2026-01-02 19:40 UTC+1: moon az   75.8 el  27.5 illum 0.992 dist 56.66 ER | sun az  255.1 el  -18.3
+  2026-01-03 19:50 UTC+1: moon az   70.3 el  16.7 illum 0.997 dist 57.04 ER | sun az  256.6 el  -20.0
+  2026-01-04 21:00 UTC+1: moon az   74.9 el  16.1 illum 0.971 dist 57.67 ER | sun az  267.0 el  -33.1
+  2026-01-31 04:10 UTC+1: moon az  276.6 el  34.5 illum 0.956 dist 57.55 ER | sun az   69.0 el  -48.5
+  2026-01-31 20:10 UTC+1: moon az   85.5 el  33.2 illum 0.982 dist 57.76 ER | sun az  263.0 el  -18.8
+  2026-02-01 20:10 UTC+1: moon az   81.4 el  20.1 illum 0.999 dist 58.24 ER | sun az  263.2 el  -18.6
+  2026-02-02 21:00 UTC+1: moon az   85.9 el  16.4 illum 0.989 dist 58.89 ER | sun az  271.3 el  -28.0
+  2026-02-03 22:10 UTC+1: moon az   94.6 el  16.6 illum 0.953 dist 59.68 ER | sun az  284.1 el  -41.0
+  2026-03-02 04:20 UTC+1: moon az  261.0 el  32.3 illum 0.979 dist 59.29 ER | sun az   61.6 el  -39.4
+  2026-03-02 20:40 UTC+1: moon az   98.8 el  25.6 illum 0.995 dist 59.66 ER | sun az  276.5 el  -18.5
+  2026-03-03 20:50 UTC+1: moon az   98.0 el  15.1 illum 0.999 dist 60.27 ER | sun az  278.5 el  -20.1
+  2026-03-31 04:40 UTC+1: moon az  261.3 el  15.9 illum 0.960 dist 60.71 ER | sun az   58.7 el  -26.3
+  2026-09-27 21:40 UTC+2: moon az   89.1 el  15.3 illum 0.984 dist 58.93 ER | sun az  284.2 el  -19.1
+  2026-10-25 05:10 UTC+2: moon az  260.0 el  27.1 illum 0.984 dist 58.57 ER | sun az   70.1 el  -39.6
+  2026-10-25 21:00 UTC+2: moon az   92.5 el  25.0 illum 0.997 dist 58.13 ER | sun az  270.1 el  -19.5
+  2026-10-26 21:00 UTC+2: moon az   79.8 el  18.4 illum 0.993 dist 57.60 ER | sun az  269.9 el  -19.8
+  2026-10-27 21:30 UTC+2: moon az   72.1 el  15.9 illum 0.961 dist 57.25 ER | sun az  274.5 el  -25.7
+  2026-11-23 03:30 UTC+1: moon az  266.6 el  34.2 illum 0.965 dist 57.46 ER | sun az   69.3 el  -52.7
+  2026-11-23 19:30 UTC+1: moon az   84.7 el  29.0 illum 0.987 dist 57.02 ER | sun az  258.3 el  -18.3
+  2026-11-24 19:30 UTC+1: moon az   73.0 el  19.8 illum 0.998 dist 56.56 ER | sun az  258.1 el  -18.4
+  2026-11-25 20:10 UTC+1: moon az   68.1 el  16.3 illum 0.978 dist 56.35 ER | sun az  263.8 el  -26.0
+  2026-12-23 04:40 UTC+1: moon az  278.6 el  34.0 illum 0.986 dist 56.18 ER | sun az   85.1 el  -43.8
+  2026-12-23 19:40 UTC+1: moon az   74.2 el  24.4 illum 0.997 dist 56.00 ER | sun az  255.4 el  -19.6
+  2026-12-24 20:00 UTC+1: moon az   69.4 el  15.3 illum 0.991 dist 55.97 ER | sun az  258.2 el  -23.2
+  2026-12-25 21:20 UTC+1: moon az   74.8 el  15.9 illum 0.952 dist 56.24 ER | sun az  270.2 el  -38.3

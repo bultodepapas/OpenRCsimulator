@@ -3320,10 +3320,10 @@
           "source": "damping ratio 0.3 of the loader's m/3 share: sprung oleo legs and tyres, little hydraulic damping in RC retract struts"
         },
         "max_compression": {
-          "value": 0.08,
+          "value": 0.105,
           "unit": "m",
           "kind": "estimated",
-          "source": "tail-wheel leg travel before the fuselage hits: estimated"
+          "source": "GP-06c reserve-energy travel: the peak tail compression of a three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: 96 mm). Replaces the estimated 0.08 m, which collapsed in the 7 ft/s limit drop. A full-size certification convention borrowed for RC; not measured strut travel or strength"
         },
         "max_steering": {
           "value": -25.0,

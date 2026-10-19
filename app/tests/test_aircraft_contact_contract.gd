@@ -160,10 +160,12 @@ func _fleet() -> void:
 		+ int(profile_status_counts.get("legacy_fallback", 0))
 		+ int(profile_status_counts.get("no_gear", 0))
 	)
-	_check("current fleet is fully classified and includes both geared profile routes",
+	# GP-06a: every shipped geared aircraft has its wheel profile (the glow Stiks once fell back silently: no wheel
+	# spin, steering or compression shown). The legacy route stays covered by _profile_route_fixtures().
+	_check("current fleet is fully classified and every geared aircraft applies its wheel profile",
 		classified_count == names.size()
 			and int(profile_status_counts.get("applied", 0)) > 0
-			and int(profile_status_counts.get("legacy_fallback", 0)) > 0,
+			and int(profile_status_counts.get("legacy_fallback", 0)) == 0,
 		"%s classified=%d fleet=%d" % [str(profile_status_counts), classified_count, names.size()])
 
 

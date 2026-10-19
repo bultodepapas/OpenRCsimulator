@@ -1,0 +1,4 @@
+samples 1252
+illuminated percentage points (game - SVS): mean -0.067  p95|x| 0.149  max|x| 0.170
+distance km (game - SVS):                   mean -4.427  p95|x| 650.607  max|x| 978.672
+position residual arcmin: median 1.63  p95 3.74  max 6.72

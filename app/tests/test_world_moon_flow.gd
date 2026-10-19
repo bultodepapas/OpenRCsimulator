@@ -1,0 +1,176 @@
+# FW-MOON-03b (FW-MOON-01 decision): with time flowing, the moon's disc and the stars move every frame between the
+# 30 s sky steps instead of jumping 0.12° per step. The per-frame values are a pure function of the simulation clock,
+# meet the stepped state at every step, reuse the next step's state exactly, and are written only while the
+# environment does not use the sky's radiance; frozen sessions, pauses and "no moon" leave the uniforms alone; the
+# disc stays out of the radiance cubemap pass.
+# Run: godot --headless --path . --script res://tests/test_world_moon_flow.gd
+extends SceneTree
+
+const World := preload("res://render/world/world.gd")
+const Conditions := preload("res://render/world/conditions.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
+const Ephemeris := preload("res://render/world/ephemeris.gd")
+const SkyState := preload("res://render/world/sky_state.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
+
+const FPS := 60.0
+## Full moon 25° high in the east-north-east at the reference field (FW-MOON-00 survey), time flowing ×20.
+const ARGS := ["--date=2026-10-25", "--time=21:00", "--time_scale=20"]
+
+var _failures := 0
+var _count := 0
+
+
+func _check(label: String, ok: bool, detail := "") -> void:
+	_count += 1
+	if not ok:
+		_failures += 1
+		printerr("FAIL %s %s" % [label, detail])
+
+
+static func _angle_deg(a: Vector3, b: Vector3) -> float:
+	return rad_to_deg(a.normalized().angle_to(b.normalized()))
+
+
+## The rotation angle between two bases from the quaternion's vector part: 2·acos(w) loses angles below ~0.04° in
+## float32, while |xyz| = sin(θ/2) keeps them.
+static func _basis_angle_deg(a: Basis, b: Basis) -> float:
+	var q := (a.inverse() * b).get_rotation_quaternion()
+	return rad_to_deg(2.0 * asin(minf(Vector3(q.x, q.y, q.z).length(), 1.0)))
+
+
+## Plays `seconds` of flight at FPS from `start_s` the way World.update does; returns per-frame uniforms and stars.
+func _play(mat: ShaderMaterial, stars: Node3D, start_s: float, seconds: float) -> Array:
+	var frames := []
+	for i in int(seconds * FPS) + 1:
+		var t := start_s + float(i) / FPS
+		World.flow_to(t)
+		World.flow_frame(t)
+		frames.append({t = t, moon = mat.get_shader_parameter("moon_dir"), body = mat.get_shader_parameter("moon_render_to_body"),
+			stars = stars.basis, step = int(t * 20.0 / World.FLOW_STEP_SKY_S)})
+	return frames
+
+
+func _initialize() -> void:
+	MoonConfig.session_config = {}
+	var field: Dictionary = FieldLoader.load_from().field
+
+	# The engine's radiance gate (Godot 4.7.2 render_scene): ambient or reflections from the sky use the cubemap.
+	var probe := Environment.new()
+	probe.background_mode = Environment.BG_SKY
+	probe.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	probe.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
+	_check("field-world mode leaves the radiance unused", World.radiance_unused(probe))
+	probe.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	_check("sky ambient uses the radiance", not World.radiance_unused(probe))
+	probe.ambient_light_source = Environment.AMBIENT_SOURCE_BG
+	_check("background ambient with a sky background uses it", not World.radiance_unused(probe))
+	probe.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	probe.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	_check("sky reflections use it", not World.radiance_unused(probe))
+	probe.reflected_light_source = Environment.REFLECTION_SOURCE_BG
+	_check("background reflections with a sky background use it", not World.radiance_unused(probe))
+	probe.background_mode = Environment.BG_COLOR
+	_check("background reflections without a sky background do not", World.radiance_unused(probe))
+
+	# The disc is drawn in the main pass only.
+	var sky_src := FileAccess.get_file_as_string("res://render/sky.gdshader")
+	var guard := sky_src.find("if (!AT_CUBEMAP_PASS) {")
+	_check("sky shader skips the disc in the cubemap pass", guard >= 0 and sky_src.find("moon_disc(EYEDIR)") > guard
+		and sky_src.count("moon_disc(EYEDIR)") == 1)
+
+	var c := Conditions.resolve(PackedStringArray(ARGS))
+	var holder := Node3D.new()
+	var built := World.build(holder, field, Callable(), c)
+	var env: Environment = built.environment
+	var mat := env.sky.sky_material as ShaderMaterial
+	var stars: Node3D = holder.get_node_or_null("Stars")
+	_check("flowing night with stars and a moon above the horizon", stars != null and float(Atmosphere.state.moon_elevation_deg) > 15.0
+		and Atmosphere.state.moon_lin != Vector3.ZERO, str(Atmosphere.state.get("moon_elevation_deg")))
+	_check("the flowing environment leaves the radiance unused", World.radiance_unused(env))
+
+	# 4.5 s of flight at ×20 = three 30 s sky steps.
+	var frames := _play(mat, stars, 0.0, 4.5)
+	var step_moon := 0.0
+	var step_stars := 0.0
+	var max_moon := 0.0
+	var max_stars := 0.0
+	var max_body := 0.0
+	for i in range(1, frames.size()):
+		var d := _angle_deg(frames[i - 1].moon, frames[i].moon)
+		var s := _basis_angle_deg(frames[i - 1].stars, frames[i].stars)
+		max_moon = maxf(max_moon, d)
+		max_stars = maxf(max_stars, s)
+		max_body = maxf(max_body, _basis_angle_deg(frames[i - 1].body, frames[i].body))
+		if frames[i].step == 1 and frames[i - 1].step == 1:
+			step_moon += d
+			step_stars += s
+	# Over one step the summed motion equals one step's jump (0.12°): it is spread evenly over the 90 frames.
+	var per_frame := step_moon / 89.0
+	_check("the moon moves one step's arc per step", step_moon > 0.09 and step_moon < 0.13, "%.4f°" % step_moon)
+	_check("no frame jumps: the largest per-frame motion stays within 1.5× the mean", max_moon <= 1.5 * per_frame,
+		"max %.5f°, mean %.5f°" % [max_moon, per_frame])
+	_check("the stars turn every frame without jumps", step_stars > 0.09 and max_stars <= 1.5 * step_stars / 89.0,
+		"max %.5f°, step %.4f°" % [max_stars, step_stars])
+	_check("the face turns with the disc, no jump", max_body < 0.01, "%.5f°" % max_body)
+
+	# At a step instant the per-frame values equal the stepped state (fraction 0).
+	World.flow_to(3.0)
+	World.flow_frame(3.0)
+	_check("at a step the disc is where the stepped state puts it", _angle_deg(mat.get_shader_parameter("moon_dir"), Atmosphere.state.moon_dir) < 1e-5)
+	_check("at a step the face is the stepped orientation",
+		_basis_angle_deg(mat.get_shader_parameter("moon_render_to_body"), Atmosphere.state.moon_render_to_body) < 1e-4)
+	# The state reused from the look-ahead is exactly the state of that step.
+	World.flow_frame(4.49)
+	World.flow_to(4.5)
+	var fresh := SkyState.state(Ephemeris.sky(World.shown_when()), World.moon_config())
+	fresh.tonemapper = Atmosphere.state.tonemapper
+	_check("the look-ahead state is the step's own state", str(fresh) == str(Atmosphere.state))
+	# Mid-step: on the arc between the two step states, at the clock's fraction of it.
+	var now: Vector3 = Atmosphere.state.moon_dir
+	World.flow_to(6.0)
+	var next: Vector3 = Atmosphere.state.moon_dir
+	World.flow_to(4.5)
+	World.flow_frame(5.25)
+	var mid: Vector3 = mat.get_shader_parameter("moon_dir")
+	_check("mid-step the disc is halfway along the arc", absf(_angle_deg(now, mid) - _angle_deg(mid, next)) < 1e-4
+		and absf(_angle_deg(now, mid) + _angle_deg(mid, next) - _angle_deg(now, next)) < 1e-4)
+
+	# Deterministic: replaying the same clock gives the same per-frame values.
+	World.flow_to(0.0)
+	var replay := _play(mat, stars, 0.0, 4.5)
+	_check("replaying the clock gives the same per-frame sky", var_to_bytes(replay) == var_to_bytes(frames))
+
+	# Paused (the clock stays inside step 3 from here on): the same clock writes nothing.
+	World.flow_frame(5.0)
+	_check("a paused clock moves nothing", not World.flow_frame(5.0))
+
+	# A route that uses the radiance must not write per-frame sky uniforms.
+	var before: Vector3 = mat.get_shader_parameter("moon_dir")
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	_check("no per-frame writes while the sky's radiance is used", not World.flow_frame(5.1)
+		and mat.get_shader_parameter("moon_dir") == before)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+
+	# No moon: the disc uniform is left alone; the stars still turn.
+	var off := MoonConfig.defaults()
+	off.moon = "off"
+	World.set_moon_config(off)
+	before = mat.get_shader_parameter("moon_dir")
+	var turned := World.flow_frame(5.2)
+	_check("no moon: the disc uniform is untouched, the stars still turn", turned and mat.get_shader_parameter("moon_dir") == before
+		and Atmosphere.state.moon_lin == Vector3.ZERO)
+	World.set_moon_config(MoonConfig.defaults())
+	_check("the moon returns and moves on the next frame", World.flow_frame(5.3) and Atmosphere.state.moon_lin != Vector3.ZERO
+		and mat.get_shader_parameter("moon_dir") != before)
+	holder.free()
+
+	# Frozen sessions never move.
+	var frozen := Node3D.new()
+	World.build(frozen, field, Callable(), Conditions.resolve(PackedStringArray(["--date=2026-10-25", "--time=21:00"])))
+	_check("frozen time: no per-frame motion", not World.flow_frame(1.0) and not World.flow_frame(2.0))
+	frozen.free()
+	Atmosphere.state = {}
+	print("%d checks, %d failed" % [_count, _failures])
+	quit(1 if _failures > 0 else 0)

@@ -304,16 +304,16 @@
       "source": "AV09 provisional damping target for a small pneumatic retract; no spring/damper test data"
     },
     "main_max_compression": {
-      "value": 0.08,
+      "value": 0.105,
       "unit": "m",
       "kind": "estimated",
-      "source": "AV09 initial terminal-contact limit for a 1.5 m/s sink qualification case; equivalent compliance threshold, not measured strut travel"
+      "source": "GP-06c reserve-energy terminal limit: the peak compression of a level/three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: 96 mm). Replaces the AV09 0.08 m limit chosen for the 1.5 m/s sink case, which collapsed in the 7 ft/s limit drop. Equivalent compliance threshold borrowed from full-size certification, not measured strut travel"
     },
     "nose_max_compression": {
-      "value": 0.06,
+      "value": 0.085,
       "unit": "m",
       "kind": "estimated",
-      "source": "AV09 initial terminal-contact limit for a 1.5 m/s sink qualification case; equivalent compliance threshold, not measured strut travel"
+      "source": "GP-06c reserve-energy terminal limit: the peak compression of a level/three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: 79 mm). Replaces the AV09 0.06 m limit chosen for the 1.5 m/s sink case, which collapsed in the 7 ft/s limit drop. Equivalent compliance threshold borrowed from full-size certification, not measured strut travel"
     },
     "extension_time": {
       "value": 2.5,

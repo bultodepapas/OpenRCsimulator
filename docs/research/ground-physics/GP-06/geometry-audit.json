@@ -1,0 +1,468 @@
+{
+  "format": "openrc-gp06-geometry-audit v1",
+  "aircraft": {
+    "jensen-das-ugly-stik-60": {
+      "tricycle": true,
+      "mass_kg": 2.88505829104375,
+      "rest_cg_height_m": 0.23409560121797557,
+      "rest_pitch_deg": -0.38050957565334065,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.3636753586552073,
+          "static_sag_m": 0.01837389019511776,
+          "sag_over_travel": 0.15311575162598134,
+          "zeta_on_static_share": 0.38366722508397266,
+          "frequency_hz": 3.676883850505423,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.3636753586552073,
+          "static_sag_m": 0.01837389019511776,
+          "sag_over_travel": 0.15311575162598134,
+          "zeta_on_static_share": 0.38366722508397266,
+          "frequency_hz": 3.676883850505423,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "nose",
+          "load_share": 0.27264928268958427,
+          "static_sag_m": 0.01753181788939151,
+          "sag_over_travel": 0.14609848241159593,
+          "zeta_on_static_share": 0.4434535484952353,
+          "frequency_hz": 3.7641506279817714,
+          "wheel_radius_m": 0.034925
+        }
+      ],
+      "mains_angle_level_deg": -20.39462110209888,
+      "mains_angle_rest_deg": -20.775130677752223,
+      "overturn_angle_deg": 63.538845300804475,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "belly",
+          "clearance_m": 0.18109079300453693
+        },
+        {
+          "component": "spinner",
+          "clearance_m": 0.23110113098067342
+        },
+        {
+          "component": "left_stab_tip",
+          "clearance_m": 0.2594684710364761
+        }
+      ],
+      "prop_clearance_rest_m": 0.07894837936818724,
+      "tail_strike_pitch_deg": 18.150000000000002,
+      "tail_strike_part": "tail_end",
+      "wingtip_strike_bank_on_mains_deg": 25.950000000000003,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 12.128395990332473
+    },
+    "stik-glow-61fx-2t": {
+      "tricycle": true,
+      "mass_kg": 2.88505829104375,
+      "rest_cg_height_m": 0.22955886277259155,
+      "rest_pitch_deg": -0.33598490009041676,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.3639543545732773,
+          "static_sag_m": 0.0229849823056901,
+          "sag_over_travel": 0.19154151921408416,
+          "zeta_on_static_share": 0.34303084446403925,
+          "frequency_hz": 3.287444143708153,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.3639543545732773,
+          "static_sag_m": 0.0229849823056901,
+          "sag_over_travel": 0.19154151921408416,
+          "zeta_on_static_share": 0.34303084446403925,
+          "frequency_hz": 3.287444143708153,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "nose",
+          "load_share": 0.272091290853446,
+          "static_sag_m": 0.02186992256808487,
+          "sag_over_travel": 0.1822493547340406,
+          "zeta_on_static_share": 0.39704340544807737,
+          "frequency_hz": 3.3702090986187243,
+          "wheel_radius_m": 0.034925
+        }
+      ],
+      "mains_angle_level_deg": -20.39462110209888,
+      "mains_angle_rest_deg": -20.7306060021893,
+      "overturn_angle_deg": 63.071197019122366,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "belly",
+          "clearance_m": 0.17655449641718646
+        },
+        {
+          "component": "spinner",
+          "clearance_m": 0.22691478105325208
+        },
+        {
+          "component": "left_stab_tip",
+          "clearance_m": 0.25430308869539275
+        }
+      ],
+      "prop_clearance_rest_m": 0.07473275120644127,
+      "tail_strike_pitch_deg": 17.85,
+      "tail_strike_part": "tail_end",
+      "wingtip_strike_bank_on_mains_deg": 25.55,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 12.128395990332473
+    },
+    "stik-glow-55ax-2t": {
+      "tricycle": true,
+      "mass_kg": 2.62289907666987,
+      "rest_cg_height_m": 0.23162013928426503,
+      "rest_pitch_deg": -0.356852147580163,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.3638235982339394,
+          "static_sag_m": 0.020888877668449962,
+          "sag_over_travel": 0.17407398057041637,
+          "zeta_on_static_share": 0.3598302794169768,
+          "frequency_hz": 3.448441922610307,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.3638235982339394,
+          "static_sag_m": 0.020888877668449962,
+          "sag_over_travel": 0.17407398057041637,
+          "zeta_on_static_share": 0.3598302794169768,
+          "frequency_hz": 3.448441922610307,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "nose",
+          "load_share": 0.2723528035321198,
+          "static_sag_m": 0.019901758066174363,
+          "sag_over_travel": 0.16584798388478636,
+          "zeta_on_static_share": 0.41621323745429006,
+          "frequency_hz": 3.5329276864603236,
+          "wheel_radius_m": 0.034925
+        }
+      ],
+      "mains_angle_level_deg": -20.39462110209888,
+      "mains_angle_rest_deg": -20.751473249679044,
+      "overturn_angle_deg": 63.28572024958971,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "belly",
+          "clearance_m": 0.17861556185917685
+        },
+        {
+          "component": "spinner",
+          "clearance_m": 0.22881184180690947
+        },
+        {
+          "component": "left_stab_tip",
+          "clearance_m": 0.2566589917586896
+        }
+      ],
+      "prop_clearance_rest_m": 0.07664352226182425,
+      "tail_strike_pitch_deg": 18.0,
+      "tail_strike_part": "tail_end",
+      "wingtip_strike_bank_on_mains_deg": 25.700000000000003,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 12.128395990332473
+    },
+    "stik-glow-fs64v-4t": {
+      "tricycle": true,
+      "mass_kg": 2.59337813742971,
+      "rest_cg_height_m": 0.23185224711075544,
+      "rest_pitch_deg": -0.3591334993219386,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.3638093030639149,
+          "static_sag_m": 0.020652960159397132,
+          "sag_over_travel": 0.17210800132830945,
+          "zeta_on_static_share": 0.36187960341847264,
+          "frequency_hz": 3.4680816672455284,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.3638093030639149,
+          "static_sag_m": 0.020652960159397132,
+          "sag_over_travel": 0.17210800132830945,
+          "zeta_on_static_share": 0.36187960341847264,
+          "frequency_hz": 3.4680816672455284,
+          "wheel_radius_m": 0.0381
+        },
+        {
+          "name": "nose",
+          "load_share": 0.27238139387216825,
+          "static_sag_m": 0.01967982786535563,
+          "sag_over_travel": 0.16399856554463027,
+          "zeta_on_static_share": 0.41855348479393456,
+          "frequency_hz": 3.552792322842301,
+          "wheel_radius_m": 0.034925
+        }
+      ],
+      "mains_angle_level_deg": -20.39462110209888,
+      "mains_angle_rest_deg": -20.75375460142082,
+      "overturn_angle_deg": 63.309660745464434,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "belly",
+          "clearance_m": 0.17884764703640899
+        },
+        {
+          "component": "spinner",
+          "clearance_m": 0.22902599645377775
+        },
+        {
+          "component": "left_stab_tip",
+          "clearance_m": 0.2569233099957337
+        }
+      ],
+      "prop_clearance_rest_m": 0.051459676001244486,
+      "tail_strike_pitch_deg": 18.0,
+      "tail_strike_part": "tail_end",
+      "wingtip_strike_bank_on_mains_deg": 25.75,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 12.128395990332473
+    },
+    "gp-extra-300s-60": {
+      "tricycle": false,
+      "mass_kg": 3.419469,
+      "rest_cg_height_m": 0.20362479201158376,
+      "rest_pitch_deg": 10.862432476835565,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.43233683508949855,
+          "static_sag_m": 0.021019049593625744,
+          "sag_over_travel": 0.21019049593625744,
+          "zeta_on_static_share": 0.26342047576132216,
+          "frequency_hz": 3.4377471601784912,
+          "wheel_radius_m": 0.034925
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.43233683508949855,
+          "static_sag_m": 0.021019049593625744,
+          "sag_over_travel": 0.21019049593625744,
+          "zeta_on_static_share": 0.26342047576132216,
+          "frequency_hz": 3.4377471601784912,
+          "wheel_radius_m": 0.034925
+        },
+        {
+          "name": "tail",
+          "load_share": 0.135326329821003,
+          "static_sag_m": 0.02101906790239569,
+          "sag_over_travel": 0.2627383487799461,
+          "zeta_on_static_share": 0.4708358452474476,
+          "frequency_hz": 3.437745662944269,
+          "wheel_radius_m": 0.0127
+        }
+      ],
+      "mains_angle_level_deg": 18.946410730670344,
+      "mains_angle_rest_deg": 29.80884320750591,
+      "nose_over_decel_g_level": 0.3432817489487879,
+      "overturn_angle_deg": 56.17754408945775,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "tail_end",
+          "clearance_m": 0.04783467553006865
+        },
+        {
+          "component": "left_stab_tip",
+          "clearance_m": 0.09259301317524163
+        },
+        {
+          "component": "right_stab_tip",
+          "clearance_m": 0.09259301317524163
+        }
+      ],
+      "prop_clearance_rest_m": 0.1466510906238368,
+      "prop_clearance_tail_up_m": 0.09537639991043953,
+      "wingtip_strike_bank_on_mains_deg": 16.650000000000002,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 13.277160123036309
+    },
+    "p51d-mustang-120": {
+      "tricycle": false,
+      "mass_kg": 21.499999,
+      "rest_cg_height_m": 0.3676331816511973,
+      "rest_pitch_deg": 14.572345088766392,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.4002028156632396,
+          "static_sag_m": 0.01915163196622799,
+          "sag_over_travel": 0.15959693305189993,
+          "zeta_on_static_share": 0.2737918807766257,
+          "frequency_hz": 3.6014515426554534,
+          "wheel_radius_m": 0.0857
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.4002028156632396,
+          "static_sag_m": 0.01915163196622799,
+          "sag_over_travel": 0.15959693305189993,
+          "zeta_on_static_share": 0.2737918807766257,
+          "frequency_hz": 3.6014515426554534,
+          "wheel_radius_m": 0.0857
+        },
+        {
+          "name": "tail",
+          "load_share": 0.1995943686735177,
+          "static_sag_m": 0.034515153508894336,
+          "sag_over_travel": 0.3287157477037556,
+          "zeta_on_static_share": 0.3876916869439403,
+          "frequency_hz": 2.682721345362084,
+          "wheel_radius_m": 0.03975
+        }
+      ],
+      "mains_angle_level_deg": 19.17249003466623,
+      "mains_angle_rest_deg": 33.74483512343262,
+      "nose_over_decel_g_level": 0.34769856852193626,
+      "overturn_angle_deg": 47.161678196978855,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "tail_end",
+          "clearance_m": 0.03828284138563748
+        },
+        {
+          "component": "belly",
+          "clearance_m": 0.07048585831142662
+        },
+        {
+          "component": "left_stab_tip",
+          "clearance_m": 0.1734520146234638
+        }
+      ],
+      "prop_clearance_rest_m": 0.2973015479314271,
+      "prop_clearance_tail_up_m": 0.1613023381781854,
+      "wingtip_strike_bank_on_mains_deg": 24.900000000000002,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 11.897771320960056
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "tricycle": true,
+      "mass_kg": 11.705089,
+      "rest_cg_height_m": 0.2197332807542447,
+      "rest_pitch_deg": 0.058137293894473877,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.4393072343026331,
+          "static_sag_m": 0.021025828092888943,
+          "sag_over_travel": 0.20024598183703757,
+          "zeta_on_static_share": 0.26132228888538456,
+          "frequency_hz": 3.437192969282131,
+          "wheel_radius_m": 0.04338
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.4393072343026331,
+          "static_sag_m": 0.021025828092888943,
+          "sag_over_travel": 0.20024598183703757,
+          "zeta_on_static_share": 0.26132228888538456,
+          "frequency_hz": 3.437192969282131,
+          "wheel_radius_m": 0.04338
+        },
+        {
+          "name": "nose",
+          "load_share": 0.12138553139473332,
+          "static_sag_m": 0.02097015277030545,
+          "sag_over_travel": 0.24670767965065235,
+          "zeta_on_static_share": 0.4971382309855391,
+          "frequency_hz": 3.4417527829142553,
+          "wheel_radius_m": 0.03532
+        }
+      ],
+      "mains_angle_level_deg": -23.57228987642095,
+      "mains_angle_rest_deg": -23.514152582526474,
+      "overturn_angle_deg": 39.81225192565309,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "belly",
+          "clearance_m": 0.14557322267382167
+        },
+        {
+          "component": "belly",
+          "clearance_m": 0.14620304353367686
+        },
+        {
+          "component": "belly",
+          "clearance_m": 0.1523027828265236
+        }
+      ],
+      "tail_strike_pitch_deg": 19.400000000000002,
+      "tail_strike_part": "left_stab_tip",
+      "wingtip_strike_bank_on_mains_deg": 21.900000000000002,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 10.343877251931232
+    },
+    "turbo-lumber-evolution": {
+      "tricycle": false,
+      "mass_kg": 2.19,
+      "rest_cg_height_m": 0.2202305446074566,
+      "rest_pitch_deg": 9.821614001992824,
+      "contacts": [
+        {
+          "name": "main_left",
+          "load_share": 0.4379809251625985,
+          "static_sag_m": 0.021019054355281286,
+          "sag_over_travel": 0.21019054355281286,
+          "zeta_on_static_share": 0.26171766024050397,
+          "frequency_hz": 3.4377467707849334,
+          "wheel_radius_m": 0.058002
+        },
+        {
+          "name": "main_right",
+          "load_share": 0.4379809251625985,
+          "static_sag_m": 0.021019054355281286,
+          "sag_over_travel": 0.21019054355281286,
+          "zeta_on_static_share": 0.26171766024050397,
+          "frequency_hz": 3.4377467707849334,
+          "wheel_radius_m": 0.058002
+        },
+        {
+          "name": "tail",
+          "load_share": 0.12403814967480514,
+          "static_sag_m": 0.021019054355281175,
+          "sag_over_travel": 0.21019054355281175,
+          "zeta_on_static_share": 0.4917937303538884,
+          "frequency_hz": 3.437746770784942,
+          "wheel_radius_m": 0.014
+        }
+      ],
+      "mains_angle_level_deg": 11.577059074697933,
+      "mains_angle_rest_deg": 21.398673076690756,
+      "nose_over_decel_g_level": 0.20485328885227544,
+      "overturn_angle_deg": 62.64992260720807,
+      "lowest_hull_clearance_at_rest": [
+        {
+          "component": "belly",
+          "clearance_m": 0.029522423885665783
+        },
+        {
+          "component": "belly",
+          "clearance_m": 0.04991531322978232
+        },
+        {
+          "component": "belly",
+          "clearance_m": 0.06267671624238497
+        }
+      ],
+      "prop_clearance_rest_m": 0.13710820031187687,
+      "prop_clearance_tail_up_m": 0.09538204711015105,
+      "wingtip_strike_bank_on_mains_deg": 26.6,
+      "wingtip_strike_part": "right_wing_tip",
+      "stall_onset_alpha_deg": 15.095627449270586
+    }
+  }
+}

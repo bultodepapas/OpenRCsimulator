@@ -1,0 +1,26 @@
+test_fuel_system_contract                FUEL-03 fuel system contract: 27 checks, 0 failed
+test_aircraft_catalog                    100 checks, 0 failed
+test_aircraft_contract                   AS aircraft contract: 2950 checks, 0 failures
+test_aircraft_data                       88 checks, 0 failed
+test_aircraft_modules                    Aircraft modules: 71 checks, 1 failures
+test_aircraft_physical_identity_contacts 15 checks, 0 failures
+test_aircraft_propulsion_runtime         aircraft propulsion runtime: 214 checks, 0 failed
+test_aircraft_package_proofs             Aircraft package proofs: 29 checks, 0 failures
+test_battery_data                        BAT-04/09 battery data: 52 checks, 0 failed
+test_battery_session                     BAT-10/11/13 battery session: 43 checks, 0 failed
+test_workshop_compiler                   Workshop compiler: 314 checks, 0 failures
+test_workshop_descriptor                 102 checks, 0 failed
+test_workshop_integration                Workshop integration: 0 failed
+test_workshop_trial                      Workshop trial: 36 checks, 0 failed
+test_glow_installation                   glow installation contract: 226 checks, 0 failed
+test_glow_session                        Glow session: 140 checks, 0 failed
+test_fuel_mass_reference                 FUEL-04 fixed-datum resources: 26 checks, 0 failed
+test_fuel_properties                     FUEL-02 fuel registry: 30 checks, 0 failed
+test_crash_energy                        213 checks, 1 failed
+test_mass_inventory                      R05-A mass inventory geometry: 65 checks, 0 failed
+
+Same failures without FUEL-03 (battery track BAT-13 file turbo_lumber_evolution_4s_pack.json):
+test_aircraft_modules: FAIL legacy descriptor modules remain stable: turbo-lumber-evolution ["aircraft.inventory.v1", "controls.conventional.v1", "energy.pack_ecm.v1", "gear.fixed_tai
+test_crash_energy: FAIL aircraft data file has an explicit energy-test classification: turbo_lumber_evolution_4s_pack.json
+
+Python: check.py 15 aircraft 0 failed; test_contract.py OK; check_mutations.py exit 0; test_schema_v2.py fails only on the extra battery file 'turbo_lumber_evolution_4s_pack'

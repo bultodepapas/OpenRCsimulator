@@ -1,0 +1,3063 @@
+{
+ "format": "openrc-gp06-landing-envelope v1",
+ "aircraft": {
+  "jensen_ugly_stik_60": [
+   {
+    "mode": "flare",
+    "sink": 0.25,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.155074597232577,
+     0.151060531529104,
+     0.160088797319411
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.2732229641068,
+    "first_contact": "main_left",
+    "w_in": 0.15669333666459,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.06084983624951
+   },
+   {
+    "mode": "flare",
+    "sink": 0.5,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.155274737145199,
+     0.15162977554032,
+     0.16172455954085
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.89331501002666,
+    "first_contact": "main_left",
+    "w_in": 0.428162358614929,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.99120897311299
+   },
+   {
+    "mode": "flare",
+    "sink": 1.0,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.243494367625699,
+     0.237809968991456,
+     0.175269036719017
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 2.92006779411433,
+    "first_contact": "main_left",
+    "w_in": 0.978462765912507,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.91150565990597
+   },
+   {
+    "mode": "flare",
+    "sink": 1.5,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.416371373163207,
+     0.402557955406341,
+     0.196250352321346
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 3.89808237587621,
+    "first_contact": "main_left",
+    "w_in": 1.510716587136,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.83483115972018
+   },
+   {
+    "mode": "flare",
+    "sink": 2.0,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.547217574688196,
+     0.539251493934577,
+     0.221482233021215
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 5.39246117276383,
+    "first_contact": "main_left",
+    "w_in": 2.01206767367313,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.79192094628483
+   },
+   {
+    "mode": "flare",
+    "sink": 2.5,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.663583711978966,
+     0.658381828641624,
+     0.327839760299588
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 6.4266142025104,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.75766659869582
+   },
+   {
+    "mode": "flare",
+    "sink": 3.0,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.775488714899928,
+     0.769164031470855,
+     0.42984649747422
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 7.2415957260798,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.72799779975293
+   },
+   {
+    "mode": "flare",
+    "sink": 3.5,
+    "vs": 9.50798249497109,
+    "V": 10.9341798692168,
+    "pitch_deg": 9.05874207295672,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.887731259317032,
+     0.881442299475386,
+     0.533372090988623
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 8.09974804353255,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.70090086520411
+   },
+   {
+    "mode": "flat",
+    "sink": 0.25,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.151047689713488,
+     0.148446610089226,
+     0.165039859010717
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.22370741398097,
+    "first_contact": "main_right",
+    "w_in": 0.143442062261035,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.18779697546899
+   },
+   {
+    "mode": "flat",
+    "sink": 0.5,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.151172706047151,
+     0.148460548674685,
+     0.166308545698274
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.88748189306813,
+    "first_contact": "main_left",
+    "w_in": 0.413341506286047,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.11787843115581
+   },
+   {
+    "mode": "flat",
+    "sink": 1.0,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.209647161750165,
+     0.206742589502025,
+     0.167185849127838
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 2.92538468584879,
+    "first_contact": "main_left",
+    "w_in": 0.93669552170979,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.06003042465576
+   },
+   {
+    "mode": "flat",
+    "sink": 1.5,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.321492010971643,
+     0.319261425810008,
+     0.167398159119691
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 3.92928545273191,
+    "first_contact": "main_left",
+    "w_in": 1.45405428786013,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.03391259794525
+   },
+   {
+    "mode": "flat",
+    "sink": 2.0,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.428836133038388,
+     0.425945745504179,
+     0.23597918050825
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 5.11178447585782,
+    "first_contact": "main_left",
+    "w_in": 1.96140105588973,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.0063405203468
+   },
+   {
+    "mode": "flat",
+    "sink": 2.5,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.555957270348015,
+     0.548754525926682,
+     0.370502681886577
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 6.87658826922988,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.96019737805943
+   },
+   {
+    "mode": "flat",
+    "sink": 3.0,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.682189340248206,
+     0.672628155880514,
+     0.498770833960913
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 8.20109763815198,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.91486526595011
+   },
+   {
+    "mode": "flat",
+    "sink": 3.5,
+    "vs": 9.50798249497109,
+    "V": 13.3111754929595,
+    "pitch_deg": 5.66661409943636,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.799438777551055,
+     0.790422053040256,
+     0.6142460094763
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 9.16459438734836,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.88113647060231
+   }
+  ],
+  "gp_extra_300s_60": [
+   {
+    "mode": "flare",
+    "sink": 0.25,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.10805050148204,
+     0.124339428507652,
+     0.120258454691444
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.279166666666667,
+    "max_bounce_m": 0.00254814435705116,
+    "peak_load_factor": 1.38644622271566,
+    "first_contact": "main_right",
+    "w_in": 0.210822013077837,
+    "w_out": 0.0703649334304299,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.42530130800055
+   },
+   {
+    "mode": "flare",
+    "sink": 0.5,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.149591958934057,
+     0.156277972442491,
+     0.120279848561278
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.591666666666666,
+    "max_bounce_m": 0.0159871950134233,
+    "peak_load_factor": 1.87858486228281,
+    "first_contact": "main_left",
+    "w_in": 0.462479728050388,
+    "w_out": 0.148590295824844,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.40672029540532
+   },
+   {
+    "mode": "flare",
+    "sink": 1.0,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.331965038040019,
+     0.32574219644594,
+     0.226959734217882
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.866666666666665,
+    "max_bounce_m": 0.0569823657592531,
+    "peak_load_factor": 2.97508629762074,
+    "first_contact": "main_left",
+    "w_in": 0.991994633239291,
+    "w_out": 0.308996490959,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.377289147241
+   },
+   {
+    "mode": "flare",
+    "sink": 1.5,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.54301378330674,
+     0.529736562079629,
+     0.36076452052072
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.04166666666666,
+    "max_bounce_m": 0.110934351333326,
+    "peak_load_factor": 3.99959076375097,
+    "first_contact": "main_left",
+    "w_in": 1.51068192306425,
+    "w_out": 0.511812583317562,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.33414408642298
+   },
+   {
+    "mode": "flare",
+    "sink": 2.0,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.721625457780007,
+     0.713028398565197,
+     0.49481923597394
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.16666666666666,
+    "max_bounce_m": 0.164195449326661,
+    "peak_load_factor": 4.89645102778553,
+    "first_contact": "main_left",
+    "w_in": 2.0099491005969,
+    "w_out": 0.699419920084311,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.29294302809537
+   },
+   {
+    "mode": "flare",
+    "sink": 2.5,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.889559098591321,
+     0.885178412709666,
+     0.624376437450037
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.2875,
+    "max_bounce_m": 0.227139326368457,
+    "peak_load_factor": 5.75058620496008,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": 0.869149839466642,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.26188696630656
+   },
+   {
+    "mode": "flare",
+    "sink": 3.0,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.01039880207915,
+     1.0082016970519,
+     0.757552452314529
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 6.54218692221353,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 11.6085500703968
+   },
+   {
+    "mode": "flare",
+    "sink": 3.5,
+    "vs": 10.4224977701353,
+    "V": 11.9858724356556,
+    "pitch_deg": 10.7012942627846,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.02726362046461,
+     1.03030019660448,
+     0.863947859979573
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 7.11249243796042,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 11.7152771560442
+   },
+   {
+    "mode": "flat",
+    "sink": 0.25,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.0759474320561913,
+     0.0742508474070499,
+     0.0231485358778994
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 0.45,
+    "max_bounce_m": 0.00652831738584981,
+    "peak_load_factor": 1.35672564691985,
+    "first_contact": "main_left",
+    "w_in": 0.19968637608388,
+    "w_out": 0.0727158457799084,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 10.3318650866711
+   },
+   {
+    "mode": "flat",
+    "sink": 0.5,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.150365753300914,
+     0.149358434766386,
+     0.0253558177192296
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.1875,
+    "max_bounce_m": 0.0566385549520508,
+    "peak_load_factor": 1.76459292424327,
+    "first_contact": "main_left",
+    "w_in": 0.455435311447886,
+    "w_out": 0.186893159560992,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 10.3166017786965
+   },
+   {
+    "mode": "flat",
+    "sink": 1.0,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.284740201873659,
+     0.294871136394858,
+     0.0293463962910762
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 1.89166666666666,
+    "max_bounce_m": 0.203902928095939,
+    "peak_load_factor": 2.70951531729297,
+    "first_contact": "main_left",
+    "w_in": 0.953705502177053,
+    "w_out": 0.41411538644339,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 10.2964261070776
+   },
+   {
+    "mode": "flat",
+    "sink": 1.5,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.424791965404013,
+     0.434909966805767,
+     0.0825705386098809
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 2.23750000000001,
+    "max_bounce_m": 0.327880871899691,
+    "peak_load_factor": 3.58679029210309,
+    "first_contact": "main_left",
+    "w_in": 1.46449660861522,
+    "w_out": 0.628436407436026,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 10.2816104315937
+   },
+   {
+    "mode": "flat",
+    "sink": 2.0,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.581641349599814,
+     0.58889467946219,
+     0.217776898134805
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 2.29583333333334,
+    "max_bounce_m": 0.358011569761538,
+    "peak_load_factor": 4.54504527188573,
+    "first_contact": "main_left",
+    "w_in": 1.96815593396063,
+    "w_out": 0.784922029095107,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 10.2632564286915
+   },
+   {
+    "mode": "flat",
+    "sink": 2.5,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.777772129719955,
+     0.780973193454318,
+     0.336934313830933
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 2.37083333333335,
+    "max_bounce_m": 0.39665138242091,
+    "peak_load_factor": 5.81962399509144,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": 0.964604483108006,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 10.2309644780203
+   },
+   {
+    "mode": "flat",
+    "sink": 3.0,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.976190395706232,
+     0.979867683191444,
+     0.4712066256701
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 2.40833333333335,
+    "max_bounce_m": 0.44072598512902,
+    "peak_load_factor": 7.17531364093033,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": 1.15243017620971,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 10.1865330021953
+   },
+   {
+    "mode": "flat",
+    "sink": 3.5,
+    "vs": 10.4224977701353,
+    "V": 14.5914968781894,
+    "pitch_deg": 7.27157329730213,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.00892616037652,
+     1.00921048439437,
+     0.477745246143929
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 8.06588959849496,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.3311069866041
+   },
+   {
+    "mode": "three_point",
+    "sink": 0.25,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.108083646002367,
+     0.126453412723082,
+     0.11951216828056
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.0625,
+    "max_bounce_m": 0.000859151584764678,
+    "peak_load_factor": 1.37579328788267,
+    "first_contact": "main_right",
+    "w_in": 0.21093850879605,
+    "w_out": 0.059418131441805,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.35172766351868
+   },
+   {
+    "mode": "three_point",
+    "sink": 0.5,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.151275367712348,
+     0.15733290480786,
+     0.118015432484652
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.512499999999999,
+    "max_bounce_m": 0.00939911078093757,
+    "peak_load_factor": 1.88964362755305,
+    "first_contact": "main_left",
+    "w_in": 0.462667800980225,
+    "w_out": 0.139988705869621,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.33351711801861
+   },
+   {
+    "mode": "three_point",
+    "sink": 1.0,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.3399758950458,
+     0.331099461632382,
+     0.238265261775211
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.841666666666665,
+    "max_bounce_m": 0.0491831714460189,
+    "peak_load_factor": 2.96735100701911,
+    "first_contact": "main_left",
+    "w_in": 0.996523531469912,
+    "w_out": 0.308229333287457,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.30260973561741
+   },
+   {
+    "mode": "three_point",
+    "sink": 1.5,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.548774796814077,
+     0.533980308077996,
+     0.369642617406904
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.02083333333333,
+    "max_bounce_m": 0.103382714991272,
+    "peak_load_factor": 3.98799438431831,
+    "first_contact": "main_left",
+    "w_in": 1.5117030072102,
+    "w_out": 0.50993742952718,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.25643392504325
+   },
+   {
+    "mode": "three_point",
+    "sink": 2.0,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.724223288292662,
+     0.715473898577077,
+     0.50009006465061
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.15,
+    "max_bounce_m": 0.156728568679353,
+    "peak_load_factor": 4.87301214195826,
+    "first_contact": "main_left",
+    "w_in": 2.010090978911,
+    "w_out": 0.695782581412525,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.21874185209872
+   },
+   {
+    "mode": "three_point",
+    "sink": 2.5,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.891323955454663,
+     0.887335609935293,
+     0.633462287278237
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.275,
+    "max_bounce_m": 0.220198007292036,
+    "peak_load_factor": 5.73050751302627,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": 0.865378665985388,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.18746014959616
+   },
+   {
+    "mode": "three_point",
+    "sink": 3.0,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.01135965346724,
+     1.00962591453504,
+     0.764362330172646
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 6.51386209907696,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 11.5190122726344
+   },
+   {
+    "mode": "three_point",
+    "sink": 3.5,
+    "vs": 10.4224977701353,
+    "V": 11.8970169016816,
+    "pitch_deg": 10.8624313738168,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.02787043363886,
+     1.03063535522318,
+     0.879242083685562
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 7.08198883209226,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 11.6260406934822
+   }
+  ],
+  "p51d_mustang_120": [
+   {
+    "mode": "flare",
+    "sink": 0.25,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.0707328839257275,
+     0.0705932827708404,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 1.08333333333333,
+    "max_bounce_m": 0.0179430602857436,
+    "peak_load_factor": 1.34639400763944,
+    "first_contact": "main_right",
+    "w_in": 0.172573525757402,
+    "w_out": 0.111944420125408,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 15.5081681634
+   },
+   {
+    "mode": "flare",
+    "sink": 0.5,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.167341519433238,
+     0.177476353294807,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 3.4833333333334,
+    "max_bounce_m": 0.160427336516918,
+    "peak_load_factor": 1.87596525613077,
+    "first_contact": "main_left",
+    "w_in": 0.441637231607497,
+    "w_out": 0.225642821060887,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 15.3545121367179
+   },
+   {
+    "mode": "flare",
+    "sink": 1.0,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.245223516467458,
+     0.239487178889764,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.67916666666674,
+    "max_bounce_m": 0.687619700025985,
+    "peak_load_factor": 2.74395785541277,
+    "first_contact": "main_left",
+    "w_in": 0.962477166215124,
+    "w_out": 0.440293508224926,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 15.1347981851209
+   },
+   {
+    "mode": "flare",
+    "sink": 1.5,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.381243239242357,
+     0.374686252672261,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.68333333333341,
+    "max_bounce_m": 1.28521376411372,
+    "peak_load_factor": 3.66886298724387,
+    "first_contact": "main_left",
+    "w_in": 1.48505930615245,
+    "w_out": 0.662524385755061,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 15.0605342509486
+   },
+   {
+    "mode": "flare",
+    "sink": 2.0,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.538383292988929,
+     0.52607131052054,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.68750000000008,
+    "max_bounce_m": 1.8197920440511,
+    "peak_load_factor": 4.66198435729562,
+    "first_contact": "main_left",
+    "w_in": 1.99856970130427,
+    "w_out": 0.904440013179636,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 15.0629544215611
+   },
+   {
+    "mode": "flare",
+    "sink": 2.5,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.701557660975632,
+     0.686884921864731,
+     0.216271793580589
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.66250000000008,
+    "max_bounce_m": 1.96650320763272,
+    "peak_load_factor": 5.60691085186417,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": 1.28639239546486,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 15.0178142542978
+   },
+   {
+    "mode": "flare",
+    "sink": 3.0,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.851934382530359,
+     0.840265589741321,
+     0.405587178558602
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.66250000000008,
+    "max_bounce_m": 2.07414406712309,
+    "peak_load_factor": 6.65595078319343,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": 1.51679550895891,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.977415358832
+   },
+   {
+    "mode": "flare",
+    "sink": 3.5,
+    "vs": 15.6709475031036,
+    "V": 18.0215896285691,
+    "pitch_deg": 8.95394690672286,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.996035533656457,
+     0.986243634135068,
+     0.587676084133278
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.65416666666674,
+    "max_bounce_m": 2.19375032950498,
+    "peak_load_factor": 7.81688317472903,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": 1.74592892217597,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.9385043590756
+   },
+   {
+    "mode": "flat",
+    "sink": 0.25,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.0855638326903752,
+     0.0808459712659177,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 4,
+    "airborne_after_touch_s": 0.195833333333334,
+    "max_bounce_m": 0.00417105961077778,
+    "peak_load_factor": 1.3406713142141,
+    "first_contact": "main_right",
+    "w_in": 0.167681368857106,
+    "w_out": 0.0835759078679503,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.3756914540412
+   },
+   {
+    "mode": "flat",
+    "sink": 0.5,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.135449894991495,
+     0.139565185010666,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 4,
+    "airborne_after_touch_s": 2.20416666666667,
+    "max_bounce_m": 0.0660371546087291,
+    "peak_load_factor": 1.87587998915409,
+    "first_contact": "main_left",
+    "w_in": 0.435004477612061,
+    "w_out": 0.217465122656894,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.3476917744485
+   },
+   {
+    "mode": "flat",
+    "sink": 1.0,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.243458889428416,
+     0.248907816962214,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 3.4833333333334,
+    "max_bounce_m": 0.396811780851136,
+    "peak_load_factor": 2.76443764153412,
+    "first_contact": "main_left",
+    "w_in": 0.955663002116705,
+    "w_out": 0.450200904915152,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.310547131438
+   },
+   {
+    "mode": "flat",
+    "sink": 1.5,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.366154693840983,
+     0.353964726697144,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.67500000000008,
+    "max_bounce_m": 0.871740878880545,
+    "peak_load_factor": 3.63022743240398,
+    "first_contact": "main_left",
+    "w_in": 1.46873554937895,
+    "w_out": 0.680284119639135,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.3395566007103
+   },
+   {
+    "mode": "flat",
+    "sink": 2.0,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.488509074914816,
+     0.475821320205376,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.68333333333341,
+    "max_bounce_m": 1.40708392859363,
+    "peak_load_factor": 4.4844164670683,
+    "first_contact": "main_left",
+    "w_in": 1.95976218228833,
+    "w_out": 0.898513052304949,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.1720090147942
+   },
+   {
+    "mode": "flat",
+    "sink": 2.5,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.611072115118968,
+     0.59844629766706,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 3.66666666666674,
+    "max_bounce_m": 1.95394707050309,
+    "peak_load_factor": 5.34276977950313,
+    "first_contact": "main_right",
+    "w_in": 2.5,
+    "w_out": 1.12321968887634,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.0376712346535
+   },
+   {
+    "mode": "flat",
+    "sink": 3.0,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.739411778298567,
+     0.725356219184203,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 3.85416666666675,
+    "max_bounce_m": 2.47025971701067,
+    "peak_load_factor": 6.23247889241795,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": 1.33673579365561,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.475094561834
+   },
+   {
+    "mode": "flat",
+    "sink": 3.5,
+    "vs": 15.6709475031036,
+    "V": 21.939326504345,
+    "pitch_deg": 5.66971402790266,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.885476040784019,
+     0.868343336771539,
+     0.0
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 3.85833333333342,
+    "max_bounce_m": 3.0785982047799,
+    "peak_load_factor": 7.23715908921854,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": 1.5741437914897,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 18.2654772925665
+   },
+   {
+    "mode": "three_point",
+    "sink": 0.25,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.551028900931275,
+     0.380299089641126,
+     0.1243548072514
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 7,
+    "airborne_after_touch_s": 2.12083333333333,
+    "max_bounce_m": 0.24492348171522,
+    "peak_load_factor": 2.42240697029245,
+    "first_contact": "main_left",
+    "w_in": 0.289285628675313,
+    "w_out": 0.29365465643318,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 12.5440973843089
+   },
+   {
+    "mode": "three_point",
+    "sink": 0.5,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.687750737398664,
+     0.399827991513279,
+     0.164414599727201
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 5,
+    "airborne_after_touch_s": 2.14166666666667,
+    "max_bounce_m": 0.355114693789471,
+    "peak_load_factor": 2.71798145108935,
+    "first_contact": "main_left",
+    "w_in": 0.546603092775475,
+    "w_out": 0.411791406230105,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 12.5832867765337
+   },
+   {
+    "mode": "three_point",
+    "sink": 1.0,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.609096244730909,
+     0.537210599742415,
+     0.280495947712173
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.73333333333333,
+    "max_bounce_m": 0.528174940311881,
+    "peak_load_factor": 3.2271739852061,
+    "first_contact": "main_left",
+    "w_in": 1.03621233049264,
+    "w_out": 0.626788089173354,
+    "scraped": [
+     "left_wing_tip"
+    ],
+    "prop_strike": false,
+    "final_speed": 10.2190079850869
+   },
+   {
+    "mode": "three_point",
+    "sink": 1.5,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.7198953077933,
+     0.656761858551684,
+     0.434536598050296
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.80416666666666,
+    "max_bounce_m": 0.682342203478626,
+    "peak_load_factor": 3.82623803546465,
+    "first_contact": "main_left",
+    "w_in": 1.51725560700505,
+    "w_out": 0.825955410407921,
+    "scraped": [
+     "left_wing_tip",
+     "tail_end"
+    ],
+    "prop_strike": false,
+    "final_speed": 9.06877359042686
+   },
+   {
+    "mode": "three_point",
+    "sink": 2.0,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.860526665380017,
+     0.776572522709436,
+     0.586423317709154
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.84166666666666,
+    "max_bounce_m": 0.826328463248492,
+    "peak_load_factor": 4.59189443443311,
+    "first_contact": "main_left",
+    "w_in": 2.0158608026694,
+    "w_out": 1.01829876571486,
+    "scraped": [
+     "left_wing_tip",
+     "tail_end"
+    ],
+    "prop_strike": false,
+    "final_speed": 8.46958148888157
+   },
+   {
+    "mode": "three_point",
+    "sink": 2.5,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.970883909365559,
+     0.918382243178228,
+     0.740528049968649
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.89999999999999,
+    "max_bounce_m": 0.964474278383112,
+    "peak_load_factor": 5.39304008205936,
+    "first_contact": "main_right",
+    "w_in": 2.5,
+    "w_out": 1.20969103396214,
+    "scraped": [
+     "left_wing_tip",
+     "tail_end"
+    ],
+    "prop_strike": false,
+    "final_speed": 7.70814448113309
+   },
+   {
+    "mode": "three_point",
+    "sink": 3.0,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.987465553783103,
+     0.922517606690902,
+     0.852901260403425
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.85416666666666,
+    "max_bounce_m": 0.965562863007698,
+    "peak_load_factor": 6.76080411209502,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": 1.38623404495708,
+    "scraped": [
+     "tail_end",
+     "belly",
+     "left_wing_tip"
+    ],
+    "prop_strike": false,
+    "final_speed": 7.44124062323649
+   },
+   {
+    "mode": "three_point",
+    "sink": 3.5,
+    "vs": 15.6709475031036,
+    "V": 15.8696100033303,
+    "pitch_deg": 13.8924153222941,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.948626179290935,
+     0.946997143729636,
+     0.890571855472013
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.5125,
+    "max_bounce_m": 0.605397153143537,
+    "peak_load_factor": 11.7106452245395,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": 1.45483738980541,
+    "scraped": [
+     "tail_end",
+     "belly",
+     "left_wing_tip"
+    ],
+    "prop_strike": false,
+    "final_speed": 8.26032083413691
+   }
+  ],
+  "sebart_avanti_s_a200": [
+   {
+    "mode": "flare",
+    "sink": 0.25,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.257368895846175,
+     0.269010423344119,
+     0.254321013592246
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.47888144796011,
+    "first_contact": "main_left",
+    "w_in": 0.223308525471212,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.95409675326
+   },
+   {
+    "mode": "flare",
+    "sink": 0.5,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.256919918303503,
+     0.263812131564126,
+     0.256338540538273
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.81134132969756,
+    "first_contact": "main_right",
+    "w_in": 0.477708897184478,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.93361206388
+   },
+   {
+    "mode": "flare",
+    "sink": 1.0,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.326882642077205,
+     0.317911940113745,
+     0.256870340759659
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 2.62144002455996,
+    "first_contact": "main_left",
+    "w_in": 0.983094153325102,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.9116090537643
+   },
+   {
+    "mode": "flare",
+    "sink": 1.5,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.493244065269955,
+     0.485842281242738,
+     0.298893411305906
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 3.46021624536394,
+    "first_contact": "main_left",
+    "w_in": 1.49296402461775,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.87811665544
+   },
+   {
+    "mode": "flare",
+    "sink": 2.0,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.66153290767999,
+     0.656837325624727,
+     0.356707995474417
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 4.30497057491788,
+    "first_contact": "main_left",
+    "w_in": 1.99529371757538,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.8263454233468
+   },
+   {
+    "mode": "flare",
+    "sink": 2.5,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.82852766871944,
+     0.826623496453497,
+     0.343502759565772
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 5.13844002912492,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.7984191366661
+   },
+   {
+    "mode": "flare",
+    "sink": 3.0,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.988512346733592,
+     0.987675992451442,
+     0.407746421262124
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 5.94868151970775,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 14.775829460297
+   },
+   {
+    "mode": "flare",
+    "sink": 3.5,
+    "vs": 17.7186889542327,
+    "V": 20.3764922973676,
+    "pitch_deg": 8.18471484750569,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.01243172036141,
+     1.01275569586418,
+     0.0589391579410398
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 6.86153189581568,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 20.2181631819751
+   },
+   {
+    "mode": "flat",
+    "sink": 0.25,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.275794677542755,
+     0.278314365184407,
+     0.402872719266718
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.66684438043431,
+    "first_contact": "main_right",
+    "w_in": 0.212441119044087,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 16.716047227959
+   },
+   {
+    "mode": "flat",
+    "sink": 0.5,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.276345140990023,
+     0.277912524664741,
+     0.403878161744281
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.76798496018397,
+    "first_contact": "main_left",
+    "w_in": 0.465920501816936,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 16.6900565735272
+   },
+   {
+    "mode": "flat",
+    "sink": 1.0,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.305727231491147,
+     0.302614734787447,
+     0.405589996649915
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 2.62906375849199,
+    "first_contact": "main_left",
+    "w_in": 0.96497733942994,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 16.6540306644406
+   },
+   {
+    "mode": "flat",
+    "sink": 1.5,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.456865789672352,
+     0.45031701352397,
+     0.40750414406027
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 3.47981846375173,
+    "first_contact": "main_left",
+    "w_in": 1.4746130706486,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 16.639230109609
+   },
+   {
+    "mode": "flat",
+    "sink": 2.0,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.610293020805085,
+     0.601238417423406,
+     0.405913053280929
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 4.29072667822587,
+    "first_contact": "main_left",
+    "w_in": 1.968706280651,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 16.6130029280784
+   },
+   {
+    "mode": "flat",
+    "sink": 2.5,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.763071333814797,
+     0.754873575692586,
+     0.406785427247502
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 5.12754355573082,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 16.5901702132232
+   },
+   {
+    "mode": "flat",
+    "sink": 3.0,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.915752188151758,
+     0.906619971029696,
+     0.565237782626617
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 6.28656353014042,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 16.5789048400823
+   },
+   {
+    "mode": "flat",
+    "sink": 3.5,
+    "vs": 17.7186889542327,
+    "V": 24.8061645359258,
+    "pitch_deg": 5.51739868024871,
+    "crash": "landing gear travel limit (main_right)",
+    "fault": "",
+    "max_compression_fraction": [
+     0.994998357191907,
+     1.00448461425262,
+     0.516655534487587
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "nose"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 7.43765509601563,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 24.5470695692399
+   }
+  ],
+  "turbo_lumber_evolution": [
+   {
+    "mode": "flare",
+    "sink": 0.25,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.173798067415993,
+     0.181104216179636,
+     0.13778622181416
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.27754776173706,
+    "first_contact": "tail",
+    "w_in": 0.20661269343528,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 5.56681793850769
+   },
+   {
+    "mode": "flare",
+    "sink": 0.5,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.187658143983936,
+     0.213397558378028,
+     0.13940085134414
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 1.56359161439392,
+    "first_contact": "tail",
+    "w_in": 0.457457251430557,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 5.46493046632176
+   },
+   {
+    "mode": "flare",
+    "sink": 1.0,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.346267957428118,
+     0.325070622188583,
+     0.217703049329612
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 2.56866216494179,
+    "first_contact": "tail",
+    "w_in": 0.988562641112493,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 5.38607915464948
+   },
+   {
+    "mode": "flare",
+    "sink": 1.5,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.574519688258489,
+     0.523651133078415,
+     0.331285650751986
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 0.408333333333333,
+    "max_bounce_m": 0.0148552504221385,
+    "peak_load_factor": 3.75340158967989,
+    "first_contact": "tail",
+    "w_in": 1.50803452308205,
+    "w_out": 0.378222630357105,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 5.34378869635788
+   },
+   {
+    "mode": "flare",
+    "sink": 2.0,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.749810675280646,
+     0.722047236933735,
+     0.440347372271534
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 0.758333333333332,
+    "max_bounce_m": 0.062913701045115,
+    "peak_load_factor": 4.80597534927781,
+    "first_contact": "tail",
+    "w_in": 2.01519998361717,
+    "w_out": 0.538863986462327,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 5.28650744997195
+   },
+   {
+    "mode": "flare",
+    "sink": 2.5,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.908383270841916,
+     0.903774561827988,
+     0.536831912361185
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.774999999999998,
+    "max_bounce_m": 0.060816446456517,
+    "peak_load_factor": 5.82442392122581,
+    "first_contact": "tail",
+    "w_in": 2.51319700130533,
+    "w_out": 0.640412244452467,
+    "scraped": [
+     "belly"
+    ],
+    "prop_strike": false,
+    "final_speed": 5.19166989889886
+   },
+   {
+    "mode": "flare",
+    "sink": 3.0,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.00677685511448,
+     1.00791242220976,
+     0.578711097697457
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 6.60391760454116,
+    "first_contact": "tail",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [
+     "belly"
+    ],
+    "prop_strike": false,
+    "final_speed": 9.00236568785128
+   },
+   {
+    "mode": "flare",
+    "sink": 3.5,
+    "vs": 8.18635987908768,
+    "V": 9.41431386095083,
+    "pitch_deg": 12.2202276878456,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.0269129384795,
+     1.02527876069451,
+     0.611573542702695
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 7.63888178195832,
+    "first_contact": "tail",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [
+     "belly"
+    ],
+    "prop_strike": false,
+    "final_speed": 9.0793784176735
+   },
+   {
+    "mode": "flat",
+    "sink": 0.25,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.0787605356467804,
+     0.110055477344622,
+     0.0334342191611483
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 0.1375,
+    "max_bounce_m": 0.00114535074549829,
+    "peak_load_factor": 1.3461254585562,
+    "first_contact": "main_right",
+    "w_in": 0.207995329134239,
+    "w_out": 0.0218144482243757,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.06641768944459
+   },
+   {
+    "mode": "flat",
+    "sink": 0.5,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.148992672832046,
+     0.161732083316183,
+     0.0350746075430765
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 0.816666666666665,
+    "max_bounce_m": 0.0247278720001192,
+    "peak_load_factor": 1.82636807705603,
+    "first_contact": "main_left",
+    "w_in": 0.459456067146122,
+    "w_out": 0.143522981226834,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.03909443160053
+   },
+   {
+    "mode": "flat",
+    "sink": 1.0,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.306731690711231,
+     0.308181559085778,
+     0.035259034510843
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.45833333333333,
+    "max_bounce_m": 0.130133337757948,
+    "peak_load_factor": 2.69872776137028,
+    "first_contact": "main_left",
+    "w_in": 0.9578681728267,
+    "w_out": 0.344823248876416,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 8.00190615396289
+   },
+   {
+    "mode": "flat",
+    "sink": 1.5,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.457978911309673,
+     0.458844064550937,
+     0.0661296708979785
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.72083333333333,
+    "max_bounce_m": 0.228373373596975,
+    "peak_load_factor": 3.55948162433676,
+    "first_contact": "main_left",
+    "w_in": 1.46762742215208,
+    "w_out": 0.535344510312506,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.97385559074308
+   },
+   {
+    "mode": "flat",
+    "sink": 2.0,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.610827030026442,
+     0.610708249749078,
+     0.159689447878147
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 3,
+    "airborne_after_touch_s": 1.88333333333333,
+    "max_bounce_m": 0.286826921433976,
+    "peak_load_factor": 4.54481726044123,
+    "first_contact": "main_left",
+    "w_in": 1.96140551634872,
+    "w_out": 0.676617549380352,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.94243501052463
+   },
+   {
+    "mode": "flat",
+    "sink": 2.5,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.785127818027789,
+     0.78319522256501,
+     0.248591017251234
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.92499999999999,
+    "max_bounce_m": 0.344165304326833,
+    "peak_load_factor": 5.77851966481789,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": 0.829409551244872,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.90058828776108
+   },
+   {
+    "mode": "flat",
+    "sink": 3.0,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.976102603463237,
+     0.972747895501226,
+     0.348939745221314
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 2,
+    "airborne_after_touch_s": 1.98333333333333,
+    "max_bounce_m": 0.40722121338239,
+    "peak_load_factor": 6.98314671632249,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": 0.991151236623334,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 7.8415067722062
+   },
+   {
+    "mode": "flat",
+    "sink": 3.5,
+    "vs": 8.18635987908768,
+    "V": 11.4609038307228,
+    "pitch_deg": 6.8736832452558,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.00647216469136,
+     1.00883600545629,
+     0.44563480522636
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 8.00909052663863,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 11.2261918530676
+   },
+   {
+    "mode": "three_point",
+    "sink": 0.25,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.120961389699956,
+     0.139793632509195,
+     0.0987815316864591
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.0833333333333333,
+    "max_bounce_m": 0.0019633023371983,
+    "peak_load_factor": 1.33155524260265,
+    "first_contact": "main_right",
+    "w_in": 0.211997534992126,
+    "w_out": 0.0202833142022615,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.70695749881698
+   },
+   {
+    "mode": "three_point",
+    "sink": 0.5,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.15607893121595,
+     0.161406944263555,
+     0.0996065454126376
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.529166666666666,
+    "max_bounce_m": 0.0115490353449416,
+    "peak_load_factor": 1.88806660432552,
+    "first_contact": "main_left",
+    "w_in": 0.463488546815665,
+    "w_out": 0.11879285464482,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.68069191019364
+   },
+   {
+    "mode": "three_point",
+    "sink": 1.0,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.316090771981193,
+     0.316035467405731,
+     0.155684533542658
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 0.833333333333332,
+    "max_bounce_m": 0.0588603262059014,
+    "peak_load_factor": 2.84197459853041,
+    "first_contact": "main_left",
+    "w_in": 0.962288820713536,
+    "w_out": 0.263890445068387,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.63468104728082
+   },
+   {
+    "mode": "three_point",
+    "sink": 1.5,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.486212914135655,
+     0.483658829195118,
+     0.24653283260731
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.02916666666666,
+    "max_bounce_m": 0.121924193562042,
+    "peak_load_factor": 3.84121022552797,
+    "first_contact": "main_left",
+    "w_in": 1.4845546429621,
+    "w_out": 0.431561575288672,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.59311438746559
+   },
+   {
+    "mode": "three_point",
+    "sink": 2.0,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.674729459861223,
+     0.669917200190116,
+     0.345921039550462
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.14166666666666,
+    "max_bounce_m": 0.186673894718142,
+    "peak_load_factor": 4.86974602184622,
+    "first_contact": "main_left",
+    "w_in": 1.99911932451201,
+    "w_out": 0.599846375415383,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.53451393421885
+   },
+   {
+    "mode": "three_point",
+    "sink": 2.5,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "",
+    "fault": "",
+    "max_compression_fraction": [
+     0.86479650807664,
+     0.860876378233204,
+     0.454825108479315
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 1,
+    "airborne_after_touch_s": 1.20833333333333,
+    "max_bounce_m": 0.241012270298473,
+    "peak_load_factor": 5.87527148054304,
+    "first_contact": "main_left",
+    "w_in": 2.5,
+    "w_out": 0.763192010294109,
+    "scraped": [],
+    "prop_strike": false,
+    "final_speed": 6.45314973530381
+   },
+   {
+    "mode": "three_point",
+    "sink": 3.0,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "landing gear travel limit (main_right)",
+    "fault": "",
+    "max_compression_fraction": [
+     0.998425988802976,
+     1.00087407653932,
+     0.543962152163772
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 7.21825681800234,
+    "first_contact": "main_left",
+    "w_in": 3.0,
+    "w_out": null,
+    "scraped": [
+     "belly"
+    ],
+    "prop_strike": false,
+    "final_speed": 9.78566660376037
+   },
+   {
+    "mode": "three_point",
+    "sink": 3.5,
+    "vs": 8.18635987908768,
+    "V": 10.1745479226958,
+    "pitch_deg": 9.82161400199283,
+    "crash": "landing gear travel limit (main_left)",
+    "fault": "",
+    "max_compression_fraction": [
+     1.02612699069212,
+     1.02707840620636,
+     0.588123017176311
+    ],
+    "contact_names": [
+     "main_left",
+     "main_right",
+     "tail"
+    ],
+    "bounces": 0,
+    "airborne_after_touch_s": 0.0,
+    "max_bounce_m": 0.0,
+    "peak_load_factor": 8.24997726710472,
+    "first_contact": "main_left",
+    "w_in": 3.5,
+    "w_out": null,
+    "scraped": [
+     "belly"
+    ],
+    "prop_strike": false,
+    "final_speed": 9.86083522829962
+   }
+  ]
+ },
+ "soft_hull_contacts": true,
+ "pilot": true,
+ "run_s": 4.0
+}

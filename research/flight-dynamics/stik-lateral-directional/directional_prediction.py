@@ -10,6 +10,14 @@ two terms it omits from the airframe geometry alone, before any comparison with 
 * fuselage Cnβ,B = −1.3·Vol/(S·b)·√(h/w) (Raymer, Aircraft Design: A Conceptual Approach, 6th ed., eq. 16.50, as
   implemented by FAST-GA), and the inviscid Munk slender-body value −2·Vol·(k2 − k1)/(S·b) as a second estimate.
 
+D10-R5 (2026-10-19) adds the roll due to sideslip that the local strip law lacks (the wing-body dihedral effect):
+
+* geometric dihedral by strip theory, −CLα·Γ·(1 + 2λ)/(6(1 + λ)) with Helmbold's CLα (the P-51 and Avanti generators'
+  method), an upper bound for a low aspect ratio; roll_regimes.gd prints the same term through this wing's calibrated
+  induced map (lifting line);
+* high-wing interference, DATCOM 1.2·√AR·(z_w/b)·(2D/b) (Nelson; the P-51 and Avanti generators' method), D the
+  equivalent diameter of the maximum section.
+
 Inputs: assets/aircraft/ugly-stik-60/geometry.json (plan metrology; stations are [z (nose −Z), half width, top y,
 bottom y] in metres) and the reference area/span of app/data/aircraft/jensen_ugly_stik_60.json.
 Run from the repository root: python3 -I research/flight-dynamics/stik-lateral-directional/directional_prediction.py
@@ -25,7 +33,12 @@ data = json.loads((ROOT / "app/data/aircraft/jensen_ugly_stik_60.json").read_tex
 S = data["reference"]["wing_area"]["value"]
 b = data["reference"]["wing_span"]["value"]
 AR = b * b / S
-fin_only = data["aero"]["coefficients"]["Cnb"]["value"]
+# The isolated fin term a_v·S_v/S·l_v/b about the aero reference point (efficiency 1), from the vertical-surface data.
+# Computed rather than read from Cnb: since D10-R2 the data Cnb already carries the predicted efficiency and body term.
+vertical = data["aero"]["surfaces"]["vertical"]
+arp_x = data["reference"]["aero_reference_point"]["value"][0]
+fin_only = (vertical["lift_slope"]["value"] * vertical["area"]["value"] / S
+            * (vertical["position"]["value"][0] - arp_x) / b)
 
 stations = geometry["fuselage_stations"]
 z = [s[0] for s in stations]
@@ -74,7 +87,7 @@ beta0 = 1.0 / e ** 2 - (1.0 - e * e) / (2.0 * e ** 3) * log_term
 k_lamb = beta0 / (2.0 - beta0) - alpha0 / (2.0 - alpha0)
 munk = -2.0 * volume * k_lamb / (S * b)
 
-print(f"wing S {S:.6f} m2, b {b:.3f} m, AR {AR:.3f}; data Cnβ (fin only, efficiency 1) {fin_only:.5f} /rad")
+print(f"wing S {S:.6f} m2, b {b:.3f} m, AR {AR:.3f}; isolated fin Cnβ (efficiency 1, about the ARP) {fin_only:.5f} /rad")
 print(f"fuselage stations {z[0]:+.3f}..{z[-1]:+.3f} m (firewall to tail; engine and spinner excluded): "
       f"length {length:.3f} m, volume {volume * 1e3:.2f} L, max section {area[i_max] * 1e4:.1f} cm2 "
       f"(h {height[i_max]:.4f}, w {w_at_max:.4f}), max height {h_max:.4f} m")
@@ -87,3 +100,16 @@ print(f"fuselage Cnβ: Raymer {raymer:+.5f} /rad; Munk (fineness {fineness:.2f},
 for name, body in (("Raymer", raymer), ("Munk", munk)):
     print(f"predicted Cnβ ({name} body) = {efficiency:.3f} × {fin_only:.5f} {body:+.5f} = {efficiency * fin_only + body:.4f} /rad")
 print("for comparison (not an input): Ultra Stick 25e OpenFlightSim Cnβ 0.0723 /rad")
+
+# D10-R5: wing-body roll due to sideslip (zero-lift part; the CL-dependent part is not in the oracle either).
+dihedral = math.radians(wing["dihedral_deg"])
+helmbold = 2.0 * math.pi * AR / (2.0 + math.sqrt(AR * AR + 4.0))  # thin-section slope 2π, unswept
+strip_dihedral = -helmbold * dihedral / 4.0  # (1 + 2λ)/(6(1 + λ)) = 1/4 for a rectangular wing
+high_wing = 1.2 * math.sqrt(AR) * (z_w / b) * (2.0 * d_eq / b)
+fin_arp = -vertical["lift_slope"]["value"] * vertical["area"]["value"] / S * (
+    vertical["position"]["value"][2] - data["reference"]["aero_reference_point"]["value"][2]) / b
+print(f"dihedral {wing['dihedral_deg']:.2f} deg (estimated): strip theory, Helmbold CLα {helmbold:.3f} -> Clβ {strip_dihedral:+.5f} /rad"
+      " (roll_regimes.gd prints the lifting-line value)")
+print(f"high-wing interference 1.2·√AR·(z_w/b)·(2D/b), D {d_eq:.4f} m -> Clβ {high_wing:+.5f} /rad")
+print(f"closure: data Clb {data['aero']['coefficients']['Clb']['value']:+.5f} (borrowed) − fin about the ARP {fin_arp:+.5f}"
+      f" = wing-body {data['aero']['coefficients']['Clb']['value'] - fin_arp:+.5f} /rad")

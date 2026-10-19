@@ -1,0 +1,45 @@
+{
+  "format": "openrc-reference-manifest v1",
+  "topic": "FT-04 card v4: aerobatic manoeuvre definitions and judging criteria behind the new tests",
+  "files": [
+    {
+      "path": "references/aerobatic-manoeuvres/SC4_volume_CIAM_F3A_2026.pdf",
+      "url": "https://cia.fai.org/sites/default/files/document/file/SC4_volume_CIAM_F3A_2026.pdf",
+      "source_page": "https://cia.fai.org/sites/default/files/document/file/SC4_volume_CIAM_F3A_2026.pdf",
+      "final_url": "https://cia.fai.org/sites/default/files/document/file/SC4_volume_CIAM_F3A_2026.pdf",
+      "bytes": 3213734,
+      "sha256": "388c825a54d03f66bb99e7c1398ac55de66d4dadba17cea12e75779d0c85f080",
+      "content_type": "application/pdf",
+      "kind": "rulebook",
+      "attribution": "FAI CIAM, Sporting Code Section 4, Volume F3 Radio Control Aerobatics, 2026 edition (effective 1 January 2026)",
+      "use": "Annex 5B execution guide: lines, loops 5B.8.4, rolls 5B.8.5, snap rolls 5B.8.7, Immelmann/Split-S 5B.8.10, stall turns 5B.8.11, spins 5B.8.12 (printed pp. 40-43); F3M snap-roll autorotation and point-roll criteria 5C.8.9.2-5C.8.9.3 (printed pp. 105-106)",
+      "redistribution": "local-reference-only; cite, do not commit or redistribute",
+      "retrieved_at": "2026-10-19T01:17:52+00:00",
+      "pdf_pages": 150
+    },
+    {
+      "path": "references/turnback/williams-turnback-seminar-2008-10.pdf",
+      "url": "https://www.EdWilliams.org/turnback_seminar_Oct_2008.pdf",
+      "source_page": "https://www.EdWilliams.org/turnback_seminar_Oct_2008.pdf",
+      "final_url": "https://www.EdWilliams.org/turnback_seminar_Oct_2008.pdf",
+      "bytes": 6816789,
+      "sha256": "3c3df59270ba5441b8d4223be0ffb84c095655b0dfd197a2e3dc25f2f51b5050",
+      "content_type": "application/pdf",
+      "kind": "seminar-slides",
+      "attribution": "Evan Reed and Ed Williams, \"Dealing with engine failure on departure and the 'impossible turn' decision\", Flying Particles Club, Livermore CA, 14 October 2008; reproduces D. F. Rogers, \"The Possible 'Impossible' Turn\", Journal of Aircraft 32, 392-397 (1995)",
+      "use": "glide_turn check: altitude loss per heading change is least at 45 degrees of bank with the speed near the accelerated stall (constant CL gives loss per radian proportional to 1/sin 2*bank)",
+      "redistribution": "local-reference-only; cite, do not commit or redistribute",
+      "retrieved_at": "2026-10-19T11:40:00+00:00"
+    }
+  ],
+  "dead_ends": [
+    {
+      "url": "https://secure.maac.ca/wcm-docs/committee-docs/IMAC%20Flying%20Guide%20-%20Basic%20Class.pdf",
+      "result": "2026-10-19: returned a 5.6 kB HTML page instead of the PDF; IMAC Basic-class wording (stall turn: no visible slide before the pivot) was taken only from the search snippet and is not relied on"
+    },
+    {
+      "url": "Rogers 1995, Journal of Aircraft 32(2) 392-397",
+      "result": "2026-10-19: paywalled; its 45-degree result is taken from the Reed/Williams slides that reproduce it"
+    }
+  ]
+}

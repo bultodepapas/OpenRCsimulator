@@ -1,0 +1,23 @@
+test_fuel_mass_reference           FUEL-04 fixed-datum resources: 26 checks, 0 failed
+test_fuel_properties               FUEL-02 fuel registry: 30 checks, 0 failed
+test_mass_inventory                R05-A mass inventory geometry: 65 checks, 0 failed
+test_glow_flight_physics           glow flight physics: 82 checks, 0 failed
+test_glow_installation             glow installation contract: 226 checks, 0 failed
+test_glow_session                  Glow session: 140 checks, 0 failed
+test_glow_fuel_feed                NITRO-05 fuel feed: 28 checks, 0 failed
+test_dynamic_mass_contact_session  R05-B FlightSession integration review: 15 checks, 0 failures
+test_glow_trace                    NITRO-TRACE: 282 checks, 0 failed
+test_glow_lifecycle                NITRO lifecycle: 47 checks, 0 failed
+test_glow_stage_reuse              Glow stage reuse: 2005 comparisons, 0 failed (2000 byte-exact load checks)
+test_glow_prepared                 NITRO prepared evaluator: 580 checks, 0 failed
+test_glow_coupling                 glow shaft/prop coupling: 65 checks, 0 failed
+test_glow_hub_inflow               Glow hub inflow: 168 checks, 0 failed
+test_sf_law_properties             SF-06 law properties: 203 checks, 0 failed, 0 exempt
+test_sf_event_refinement           51 checks, 0 failed
+test_aircraft_catalog              100 checks, 0 failed
+test_crash_energy                  213 checks, 1 failed
+test_failure_shutdown              Failure power shutdown integration: 206 checks, 0 failed
+test_failure_power                 Failure power adapter: 88 checks, 0 failed
+test_pilot_trim                    110 checks, 0 failed
+
+test_crash_energy FAIL line: FAIL aircraft data file has an explicit energy-test classification: turbo_lumber_evolution_4s_pack.json

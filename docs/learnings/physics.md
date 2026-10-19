@@ -166,6 +166,18 @@ Total pack current also includes any BEC/receiver/servo draw referred to the pac
 
 ## Data and performance
 
+### Check id-based aircraft relations on the authored v2 data
+
+`AircraftData.validate_and_derive()` converts v2 to the internal v1 form with `legacy_v1_input()`, and that form drops inventory and contact `id` fields. A relation keyed by id (the BAT-09 pack mount, `mount_inventory_id`) found no item when checked in the legacy loader and refused every valid file. Check such relations in `validate_and_derive()` against the raw v2 dictionary, after the shared validation succeeds ([BAT-10](../research/battery/BAT-10/README.md#defects-found-and-fixed-during-integration)).
+
+### Accumulated tick timers fall short of exact multiples
+
+A sampled controller that adds `dt = 1/240 s` per tick reaches 0.49999999999999 s after 120 samples, so `timer >= 0.5` fires one tick late and every later ramp value shifts. Compare such timers with an explicit tolerance far below one tick (BAT-11 uses 1 ns), state the tolerance in the specification, and give the independent reference the same rule.
+
+### Located events last one tick in `sim.last_events`
+
+The kernel overwrites `last_events` every tick. A consumer or test that steps several ticks and then reads it misses an event located in an earlier tick. Connect `events_located(tick, events)` instead ([BAT-10](../research/battery/BAT-10/README.md#defects-found-and-fixed-during-integration)).
+
 ### Validate data before conversion and at the session boundary
 
 Casting first can turn numeric strings into accepted numbers and bypass unit or provenance checks; non-finite values also need explicit rejection. Validate types, finite values, units, kind and source before conversion, then test whole-session behavior: invalid initial data must not fly, while a rejected reload must preserve the existing model, trim, auxiliary state and clock. ([D1-R2](../research/aircraft-validation/D1-R2/README.md))

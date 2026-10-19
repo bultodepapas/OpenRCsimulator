@@ -97,6 +97,7 @@ func _initialize() -> void:
 		wing_only.surfaces.horizontal.area = 0.0
 		wing_only.surfaces.vertical.area = 0.0
 		wing_only.surfaces.erase("body_cn_beta") # D10-R2: the fuselage couple is not a wing load
+		wing_only.surfaces.erase("wing_body_cl_beta") # D10-R5: nor is the wing-body roll couple a strip load
 		telemetry_ok = telemetry_ok and loads == Aero._local_loads(state,air,ZERO,wing_only,1.225)
 		var power := M.dot(loads.slice(0,3),air.v_air)+M.dot(loads.slice(3,6),state.slice(RB.RATE,RB.RATE+3))
 		power_ok = power_ok and power <= 1e-10
@@ -112,6 +113,7 @@ func _initialize() -> void:
 	var zero_state := RB.make_state(M.v3(0,0,-300),M.v3(0,0,0),M.q_identity(),M.v3(0,0,0))
 	var zero_rows := Aero.wing_strip_loads(zero_state,Air.compute(zero_state,M.v3(0,0,0)),ZERO,model,1.225)
 	check("zero-flow diagnostics retain every station", zero_rows.size() == model.envelope.station_ys.size() and zero_rows[0].lift_n == 0.0)
+	_spanwise_progression(model, reference)
 	reject("null branch",func(p): p.positive = null)
 	reject("unknown method",func(p): p.method = "viterna")
 	reject("wrong section basis",func(p): p.basis = "2d-section")
@@ -130,5 +132,83 @@ func _initialize() -> void:
 	reject("invalid terminal lift",func(p): p.positive.value[25] = 0.1)
 	reject("invalid terminal drag",func(p): p.positive.value[26] = 0.5)
 	reject("unsupported end slope",func(p): p.positive.value[21] = 0.00001)
+	reject("progression above 1",func(p): p.spanwise_progression = {value = 1.5, unit = "1", kind = "derived", source = "test"})
+	reject("negative progression",func(p): p.spanwise_progression = {value = -0.1, unit = "1", kind = "derived", source = "test"})
+	reject("progression unit",func(p): p.spanwise_progression = {value = 1.0, unit = "deg", kind = "derived", source = "test"})
+	reject("progression without source",func(p): p.spanwise_progression = {value = 1.0, unit = "1", kind = "derived", source = ""})
+	reject("progression as bare number",func(p): p.spanwise_progression = 1.0)
 	print("D8b-R2 polar: %d checks, %d failed" % [count,failures])
 	quit(1 if failures else 0)
+
+
+## D8b-R2d: optional spanwise stall progression on the same table. g = 0 must be the shared table bit for bit; g = 1
+## must separate the more heavily loaded strips first, stay symmetric, passive and consistent with the wake input.
+func _spanwise_progression(model: Dictionary, reference: Dictionary) -> void:
+	var models := {}
+	for gain in [0.0, 1.0]:
+		var raw := Fixture.raw()
+		raw.aero.wing_polar.spanwise_progression = {value = gain, unit = "1", kind = "derived",
+			source = "test: spanwise progression %s" % gain}
+		var data := AD.validate_and_derive(raw)
+		check("spanwise progression %s accepted" % gain, data.ok)
+		if not data.ok:
+			printerr(data.errors)
+			return
+		models[gain] = data.model
+	var full: Dictionary = models[1.0]
+	var factors: PackedFloat64Array = full.envelope.wing_polar.strip_factor
+	var rows: PackedFloat64Array = full.envelope.strip_row_sum
+	var n := factors.size()
+	var mean := 0.0
+	var row_mean := 0.0
+	for i in n:
+		mean += factors[i] / n
+		row_mean += rows[i] / n
+	var follows := n == rows.size()
+	for i in n:
+		follows = follows and absf(factors[i] - rows[i] / row_mean) < 1e-12
+	check("progression factors average 1 and equal the relative loading", absf(mean - 1.0) < 1e-12 and follows)
+	check("rectangular Stik wing: root strips loaded above the tips", factors[n / 2] > 1.0 and factors[0] < 1.0
+		and absf(factors[0] - factors[n - 1]) < 1e-12 and absf(factors[n / 2] - factors[n / 2 - 1]) < 1e-12)
+	var identical := true
+	var symmetric := true
+	var passive := true
+	var wake := true
+	var attached := true
+	for k in range(-170, 171, 5):
+		var alpha := deg_to_rad(float(k))
+		for rates in [M.v3(0, 0, 0), M.v3(0.13, -0.2, 0.1)]:
+			var state := RB.make_state(M.v3(0, 0, -300), M.v3(25 * cos(alpha), 1.1 if rates[0] != 0.0 else 0.0, 25 * sin(alpha)),
+				M.q_identity(), rates)
+			var air := Air.compute(state, M.v3(0, 0, 0))
+			identical = identical and Aero.loads(state, air, ZERO, models[0.0], 1.225) == Aero.loads(state, air, ZERO, model, 1.225)
+			var loads := Aero.loads(state, air, ZERO, full, 1.225)
+			if rates[0] == 0.0:
+				symmetric = symmetric and absf(loads[3]) < 1e-9 and absf(loads[5]) < 1e-9 and absf(loads[1]) < 1e-9
+			var strips := Aero.wing_strip_loads(state, air, ZERO, full, 1.225)
+			var cl_mean := 0.0
+			var wing := PackedFloat64Array([0., 0., 0., 0., 0., 0.])
+			for row in strips:
+				cl_mean += float(row.cl) / strips.size()
+				for c in 3:
+					wing[c] += row.force_body_n[c]
+					wing[c + 3] += row.moment_body_nm[c]
+			wake = wake and absf(cl_mean - Aero.wing_lift_coefficient(state, air, ZERO, full)) < 1e-12
+			passive = passive and M.dot(wing.slice(0, 3), air.v_air) + M.dot(wing.slice(3, 6), state.slice(RB.RATE, RB.RATE + 3)) <= 1e-10
+	for k in range(-30, 31):
+		var alpha := deg_to_rad(k / 10.0)
+		var state := RB.make_state(M.v3(0, 0, -300), M.v3(25 * cos(alpha), 0, 25 * sin(alpha)), M.q_identity(), M.v3(0, 0, 0))
+		var air := Air.compute(state, M.v3(0, 0, 0))
+		attached = attached and Aero.loads(state, air, ZERO, full, 1.225) == Aero.loads(state, air, ZERO, reference, 1.225)
+	check("progression g = 0 is the shared table bit for bit", identical)
+	check("progression symmetric without sideslip or rates", symmetric)
+	check("progression wing loads passive with fixed surfaces", passive)
+	check("progression wake input equals the same strip law", wake)
+	check("progression leaves small-angle loads byte identical", attached)
+	var onset := RB.make_state(M.v3(0, 0, -300), M.v3(25 * cos(deg_to_rad(14.0)), 0, 25 * sin(deg_to_rad(14.0))), M.q_identity(),
+		M.v3(0, 0, 0))
+	var onset_rows := Aero.wing_strip_loads(onset, Air.compute(onset, M.v3(0, 0, 0)), ZERO, full, 1.225)
+	var shared_rows := Aero.wing_strip_loads(onset, Air.compute(onset, M.v3(0, 0, 0)), ZERO, model, 1.225)
+	check("progression: at 14 deg the root strips are more separated than the tips, unlike the shared table",
+		float(onset_rows[n / 2].stall_weight) > float(onset_rows[0].stall_weight) + 0.05
+		and absf(float(shared_rows[n / 2].stall_weight) - float(shared_rows[0].stall_weight)) < 1e-12)

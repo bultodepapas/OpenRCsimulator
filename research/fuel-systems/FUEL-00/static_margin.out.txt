@@ -1,0 +1,10 @@
+jensen_ugly_stik_60            CG mm full  112.1 decl  120.9 empty  130.5 | CG %MAC  36.8  39.7  42.8 | SM %MAC  6.7  3.8  0.7
+gp_extra_300s_60               CG mm full   97.1 decl  102.7 empty  108.8 | CG %MAC  26.1  28.0  30.0 | SM %MAC 16.4 14.5 12.5
+p51d_mustang_120               CG mm full  172.2 decl  177.8 empty  183.5 | CG %MAC  25.9  27.0  28.1 | SM %MAC  8.3  7.2  6.1
+sebart_avanti_s_a200           CG mm full  221.3 decl  240.0 empty  263.3 | CG %MAC  61.1  66.3  72.7 | SM %MAC 13.7  8.5  2.1
+stik_glow_61fx_2t              CG mm full  112.1 decl  120.9 empty  130.5 | CG %MAC  36.8  39.7  42.8 | SM %MAC  6.7  3.8  0.7
+stik_glow_55ax_2t              CG mm full  111.2 decl  120.9 empty  131.5 | CG %MAC  36.5  39.7  43.1 | SM %MAC  7.0  3.8  0.4
+stik_glow_fs64v_4t             CG mm full  111.1 decl  120.9 empty  131.6 | CG %MAC  36.5  39.7  43.2 | SM %MAC  7.0  3.8  0.3
+stik_glow_55ax_2t_apc_13x6     CG mm full  111.3 decl  120.9 empty  131.4 | CG %MAC  36.5  39.7  43.1 | SM %MAC  7.0  3.8  0.4
+stik_glow_fs64v_4t_apc_13x6    CG mm full  111.1 decl  120.9 empty  131.7 | CG %MAC  36.4  39.7  43.2 | SM %MAC  7.1  3.8  0.3
+synthetic_stik_electric_4s     CG mm full  112.1 decl  120.9 empty  130.5 | CG %MAC  36.8  39.7  42.8 | SM %MAC  6.7  3.8  0.7

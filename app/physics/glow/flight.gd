@@ -6,6 +6,8 @@ const Life := preload("res://physics/glow/lifecycle.gd")
 const Vibration := preload("res://physics/glow/vibration.gd")
 const Source := preload("res://physics/glow/source.gd")
 const FuelMass := preload("res://physics/glow/fuel_mass.gd")
+const MassInventory := preload("res://physics/mass_inventory.gd")
+const FixedDatumBody := preload("res://physics/fixed_datum_body.gd")
 const Blade := preload("res://physics/glow/propeller.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -120,7 +122,12 @@ static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Arr
 static func properties(owner: Node, fuel: float) -> Dictionary:
 	var model: Dictionary=owner.aircraft.model
 	var install: Dictionary=model.propulsion.glow
-	return FuelMass.evaluate(model.mass_kg,model.inertia,install.initial_fuel_kg,maxf(0.0,fuel),install.tank_position,install.tank_size)
+	# FUEL-04: the installation's prepared reference; re-prepared only if the model's wet values were replaced.
+	var reference: Dictionary=install.get("mass_reference",{})
+	if reference.get("reference_mass_kg",NAN)!=float(model.mass_kg) or reference.get("reference_inertia_kgm2",PackedFloat64Array())!=model.inertia:
+		reference=FuelMass.prepare(model.mass_kg,model.inertia,install.initial_fuel_kg,install.tank_position,install.tank_size)
+		if not reference.get("ok",false): return {ok=false}
+	return MassInventory.evaluate_reference(reference,PackedFloat64Array([maxf(0.0,fuel)]))
 
 static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
 	var prop: Dictionary=owner.aircraft.model.propulsion
@@ -251,7 +258,7 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 		response.reaction=PackedFloat64Array([0.,0.,0.])
 	var moment: PackedFloat64Array=M.add(torque,response.reaction)
 	var rotor: PackedFloat64Array=M.scale(prop.axis,prop.rotor_inertia*rpm*TAU/60.0)
-	var body_rate: PackedFloat64Array=FuelMass.datum_derivative(body,mass,force,moment,owner.sim.gravity,rotor)
+	var body_rate: PackedFloat64Array=FixedDatumBody.derivative(body,mass,force,moment,owner.sim.gravity,rotor)
 	var derivative:=PackedFloat64Array()
 	derivative.resize(SIZE)
 	derivative[0]=response.spin_acceleration*60.0/TAU
@@ -333,6 +340,9 @@ static func telemetry(owner: Node) -> Dictionary:
 	out.propeller=result.propeller
 	out.hub_air_velocity_body_m_s=result.hub_air_velocity_body_m_s
 	out.mass_properties=properties(owner,values[1])
+	# FUEL-01b: the installed blend's own density (profile.gd), so displays never assume a fixed g/mL.
+	out.fuel_density_kg_m3=float(owner.aircraft.model.propulsion.glow.profile.fuel.density_kg_m3)
+	out.fuel_volume_m3=maxf(0.0,values[1])/out.fuel_density_kg_m3
 	out.shaft_work_j=values[13]
 	out.propeller_work_j=values[14]
 	out.thrust_work_j=values[15]

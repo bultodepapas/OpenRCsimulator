@@ -60,12 +60,36 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
-## 2026-10-19 · D8b-R2d — a whole-aircraft polar is not a strip polar; judge post-stall laws on lift and roll damping together
+## 2026-10-19 · D10-R5 — differentiate every static derivative in both load regimes, not only in the production blend
 
-A uniform strip table solved to match the measured Ultra Stick 120 static lift retention (within 0.002) made the deep stall stable in roll. The Stik then stopped spinning, although that airframe spins with the same inputs.
+The Stik's oracle carried the dihedral effect in `Clb`, but the local strips have no spanwise flow, so its roll due to sideslip dropped 85 % between α 8° and 12°. No flight test flagged it, because the blend weight changes with α and the jump looked like stall behaviour. The fuselage yaw (P51-25) and the section pitching moment (D11j) were the same kind of gap.
 
-- A wing's flat post-stall plateau comes from spanwise stall progression plus tail and body lift. The sections themselves keep a negative slope, and strip roll damping follows that local slope. A static whole-aircraft curve therefore fixes neither the damping nor the spin.
-- Score any post-stall change on the static lift and on dMx/dp against measured roll damping at once, before flying it. Forced-oscillation data get more unstable at lower frequency, so a quasi-steady model must meet at least their low-frequency values.
+- When a term enters one regime, give the other regime its counterpart, with a loader rule that ties the two together.
+- Before tuning a maneuver, differentiate the oracle, the local law and the blend at fixed states across α. [`roll_regimes.gd`](research/flight-dynamics/stik-lateral-directional/roll_regimes.gd) does this for Clβ and Cnβ. [Evidence](docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19/README.md)
+
+## 2026-10-19 · GP-06 — check contacts against the built model, and never require a fallback in shipped data
+
+The Stik's physics wheels sat 5 mm below its drawn wheels: the source read a model-origin height as thrust-line-relative, and the unit test re-derived the contact with the same misreading, so both agreed. The glow Stiks had no wheel profile for days, because a fleet test required at least one shipped aircraft on the legacy route and they satisfied it; their wheels were drawn sunk, without spin or steering.
+
+- Compare physics geometry with the built visual model through its manifest datum (`test_gear_visual_contacts.gd`), not with another derivation from the same table.
+- Cover fallback and legacy routes with isolated fixtures; require shipped data to take the full route. Enabling a full route on new data can expose latent gaps (here, glow traces without a wheel tail). [GP-06](docs/research/ground-physics/GP-06/README.md)
+
+## 2026-10-19 · FT-04 — on a shared tree, fly the baseline and the candidate against one frozen snapshot
+
+While the card v4 tests were written, other tracks committed three times. A v3 baseline flown an hour earlier already differed from the current tree in three Stik takeoff and landing values, from ground-contact data, not from the card. Comparing against it would have charged FT-04 with changes it did not make.
+
+- Copy `app/` once, then fly both versions against that copy (`run.py --app`), each from its own frozen copy of the runner. Record the commit, the dirty paths and the file hashes.
+- Append new tests after the old ones, so the old cases stay comparable and "nothing else moved" can be proved at zero tolerance.
+
+[FT-04](docs/research/flight-test/FT-04/README.md)
+
+## 2026-10-19 · D8b-R2d — a quasi-steady strip law trades post-stall lift against autorotation; compare damping like for like
+
+Strip tables solved to the measured Ultra Stick 120 static lift and stall-onset roll damping (with or without spanwise progression) stopped the Stik spinning, although that airframe spins with the same inputs. In strip theory autorotation needs a negative local lift slope, and holding the measured post-stall lift removes it.
+
+- Judge a post-stall law on static lift, damping and a held-out spin together. Matching one curve can break the maneuver.
+- Forced-oscillation "Clp" is Clp + Clβ̇ sin α (NASA convention), so compare it with a model's dMx/dp only where sin α is small.
+- Rate- and history-dependent separation is the missing physics.
 
 Evidence: [D8b-R2d analog](docs/research/flight-robustness/D8b-R2/analog/README.md), [D10-R4](docs/research/flight-dynamics/spin-post-stall-2026-10-19/README.md).
 

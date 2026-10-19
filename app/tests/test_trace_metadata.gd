@@ -92,7 +92,7 @@ func _initialize() -> void:
 			_check("glow trace keeps the explicit cycle family", meta.glow_family == expected_family and start.get("family", "") == expected_family)
 			_check("glow profile identity carries the installation hash", str(identity.get("profile", {}).get("sha256", "")).length() == 64)
 			_check("glow recording start matches all continuous state slots",
-				JSON.parse_string(meta.recording_start_continuous).size() == GlowFlight.SIZE
+				JSON.parse_string(meta.recording_start_continuous).size() == GlowFlight.SIZE + session.wheel_count()
 				and _aux_matches(meta.recording_start_continuous, session.sim.continuous))
 			_check("glow continuous layout names crank phase and successful-fire counters",
 				str(meta.continuous_layout).contains("crank revolutions")

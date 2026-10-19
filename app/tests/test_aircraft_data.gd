@@ -132,12 +132,17 @@ func _initialize() -> void:
 	var gear: Dictionary = m.landing_gear
 	_check("landing gear: 3 contacts; the hull keeps 8 points without the wheels", gear.get("contacts", []).size() == 3 and m.crash_hull.size() == 8 * 3, str(gear))
 	var eq: Dictionary = Geometry.DATA.equipment
+	# GP-06b: model y is measured from the model origin; the LE/body datum is the thrust line (shaft_y). The CG lies on
+	# it (z 0), so a wheel bottom sits (shaft_y − wheel_y) + r below the CG in body axes.
 	var mains_ok := true
 	for i in 2:
 		var p: PackedFloat64Array = gear.contacts[i].position
-		mains_ok = mains_ok and absf(absf(p[1]) - eq.main_track / 2.0) < 1e-9 and absf(p[2] - (-eq.wheel_y + eq.main_wheel_diameter / 2.0)) < 1e-9
+		mains_ok = mains_ok and absf(absf(p[1]) - eq.main_track / 2.0) < 1e-9 \
+			and absf(p[2] - (eq.shaft_y - eq.wheel_y + eq.main_wheel_diameter / 2.0)) < 1e-9
 	var nose: PackedFloat64Array = gear.contacts[2].position
-	_check("gear track and wheel bottoms match the visual model's equipment table", mains_ok and absf(nose[2] - (-eq.wheel_y + eq.nose_wheel_diameter / 2.0)) < 1e-4, str(gear.contacts))
+	_check("gear track and wheel bottoms match the visual model's equipment table (thrust-line datum)",
+		absf(m.cg_le[2]) < 1e-12 and mains_ok
+			and absf(nose[2] - (eq.shaft_y - eq.wheel_y + eq.nose_wheel_diameter / 2.0)) < 1e-9, str(gear.contacts))
 	_check("mains aft of the CG, nose ahead (a tricycle stands on its wheels)", gear.contacts[0].position[0] < 0.0 and gear.contacts[2].position[0] > 0.0)
 	_check("heave rule ω·dt < 0.1 at 240 Hz, not absurdly soft", gear.heave_omega / 240.0 < 0.1 and gear.heave_omega > 15.0, "ω %.1f rad/s" % gear.heave_omega)
 	_check("static sag 1–3 cm", gear.static_sag > 0.01 and gear.static_sag < 0.03, "%.4f m" % gear.static_sag)

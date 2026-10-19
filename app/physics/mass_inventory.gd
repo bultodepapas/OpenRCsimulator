@@ -3,8 +3,10 @@
 extends RefCounted
 
 const RB := preload("res://physics/rigid_body.gd")
+const M := preload("res://physics/math3d.gd")
 
 const LAW := "fixed-datum-fixed-shape-mass-inventory-geometry-v1"
+const REFERENCE_LAW := "fixed-datum-reference-state-resources-v1"
 const RESOURCE_DISTRIBUTION := "fixed_geometry_uniform_density_v1"
 const PSD_ROUNDING_TOLERANCE := 1.0e-12
 
@@ -167,6 +169,105 @@ static func evaluate(prepared: Dictionary, remaining_mass_kg_by_id: Dictionary) 
 		inertia_cg_kgm2 = inertia_cg,
 		inverse_inertia_cg_kgm2 = inverse,
 	}
+
+
+## FUEL-04: finite resources about the fixed datum O = CG of the authored (reference) state, the per-stage form
+## every finite-fuel vehicle uses. The reference state is the validated aircraft: its mass and CG-centred inertia
+## with each resource at its reference amount. Each resource is a uniform box of fixed centre and size whose
+## remaining mass scales its density (RESOURCE_DISTRIBUTION); amounts may run from 0 to capacity, so a start fill
+## above the authored one is representable. Entries: {id, reference_mass_kg, capacity_mass_kg, center_body_m,
+## size_body_m}, body FRD metres about O. Prepare once per installation; evaluate per stage.
+static func prepare_reference(reference_mass_kg: float, reference_inertia_kgm2: PackedFloat64Array,
+		resources: Array) -> Dictionary:
+	if not is_finite(reference_mass_kg) or reference_mass_kg <= 0.0 or not _valid_tensor(reference_inertia_kgm2):
+		return _failure("reference mass must be finite and positive, inertia six finite entries")
+	if resources.is_empty():
+		return _failure("reference inventory needs at least one resource")
+	var ids: Dictionary = {}
+	var reference_total: float = 0.0
+	var prepared_resources: Array[Dictionary] = []
+	for raw: Variant in resources:
+		if not raw is Dictionary:
+			return _failure("resource must be a dictionary")
+		var id_result: Dictionary = _stable_id(raw, ids)
+		if not id_result.ok:
+			return id_result
+		var reference: Variant = raw.get("reference_mass_kg")
+		var capacity: Variant = raw.get("capacity_mass_kg")
+		var center: Variant = raw.get("center_body_m")
+		var size: Variant = raw.get("size_body_m")
+		if not _is_finite_number(reference) or not _is_finite_number(capacity) or float(reference) < 0.0 \
+				or float(capacity) < float(reference):
+			return _failure("resource %s needs 0 <= reference_mass_kg <= capacity_mass_kg" % id_result.id)
+		if not _valid_vec3(center) or not _valid_vec3(size) or size[0] < 0.0 or size[1] < 0.0 or size[2] < 0.0:
+			return _failure("resource %s needs a finite center and a nonnegative size" % id_result.id)
+		reference_total += float(reference)
+		prepared_resources.append({id = id_result.id, reference_mass_kg = float(reference),
+			capacity_mass_kg = float(capacity), center_body_m = center.duplicate(), size_body_m = size.duplicate(),
+			tensor_per_kg = rectangular_box_per_kg(center, size)})
+	if reference_mass_kg <= reference_total:
+		return _failure("reference mass must exceed the resources it contains")
+	# Parallel typed arrays for the per-stage evaluation; `resources` keeps the readable records.
+	var references := PackedFloat64Array()
+	var capacities := PackedFloat64Array()
+	var centers: Array[PackedFloat64Array] = []
+	var tensors: Array[PackedFloat64Array] = []
+	for resource: Dictionary in prepared_resources:
+		references.append(resource.reference_mass_kg)
+		capacities.append(resource.capacity_mass_kg)
+		centers.append(resource.center_body_m)
+		tensors.append(resource.tensor_per_kg)
+	return {ok = true, law = REFERENCE_LAW, resource_distribution_model = RESOURCE_DISTRIBUTION,
+		reference_mass_kg = reference_mass_kg, reference_inertia_kgm2 = reference_inertia_kgm2.duplicate(),
+		resources = prepared_resources, references = references, capacities = capacities, centers = centers,
+		tensors = tensors}
+
+
+## Mass, CG and inertia about O for the given remaining amounts (same order as the prepared resources).
+## Each resource removes (reference − amount) from the reference state. With one resource this is exactly the
+## historical glow FuelMass arithmetic, operation for operation, so existing trajectories stay bit-identical.
+## Returns {ok, mass_kg, cg_body_m, inertia (about the CG), inverse, inertia_origin (about O)}.
+static func evaluate_reference(prepared: Dictionary, amounts: PackedFloat64Array) -> Dictionary:
+	var references: PackedFloat64Array = prepared.get("references", PackedFloat64Array())
+	var count: int = references.size()
+	if prepared.get("law", "") != REFERENCE_LAW or amounts.size() != count or count == 0:
+		return {ok = false, error = "prepared reference inventory or amount count is invalid"}
+	var capacities: PackedFloat64Array = prepared.capacities
+	var centers: Array = prepared.centers
+	var tensors: Array = prepared.tensors
+	var mass: float = prepared.reference_mass_kg
+	var removed: PackedFloat64Array = amounts.duplicate()
+	for i: int in count:
+		var amount: float = amounts[i]
+		if not is_finite(amount) or amount < 0.0 or amount > capacities[i]:
+			return {ok = false, error = "amount of %s is outside [0, capacity]" % prepared.resources[i].id}
+		removed[i] = references[i] - amount
+		mass -= removed[i]
+	var cg: PackedFloat64Array = M.scale(centers[0], -removed[0] / mass)
+	var inertia_origin: PackedFloat64Array = prepared.reference_inertia_kgm2.duplicate()
+	for i: int in count:
+		if i > 0:
+			cg = M.add(cg, M.scale(centers[i], -removed[i] / mass))
+		var tensor: PackedFloat64Array = tensors[i]
+		var r: float = removed[i]
+		for k: int in 6:
+			inertia_origin[k] -= r * tensor[k]
+	var parallel: PackedFloat64Array = rectangular_box_per_kg(cg, PackedFloat64Array([0.0, 0.0, 0.0]))
+	var inertia: PackedFloat64Array = prepared.reference_inertia_kgm2.duplicate()
+	for k: int in 6:
+		inertia[k] = inertia_origin[k] - mass * parallel[k]
+	var inverse: PackedFloat64Array = RB.inertia_inverse(inertia)
+	if inertia[0] <= 0.0 or inertia[0] * inertia[1] - inertia[3] * inertia[3] <= 0.0:
+		return {ok = false, error = "inertia is not positive definite"}
+	var determinant: float = inertia[0] * (inertia[1] * inertia[2] - inertia[5] * inertia[5]) \
+		- inertia[3] * (inertia[3] * inertia[2] - inertia[4] * inertia[5]) \
+		+ inertia[4] * (inertia[3] * inertia[5] - inertia[4] * inertia[1])
+	if determinant <= 0.0:
+		return {ok = false, error = "inertia is not positive definite"}
+	for value: float in inverse:
+		if not is_finite(value):
+			return {ok = false, error = "inertia inverse is not finite"}
+	return {ok = true, mass_kg = mass, cg_body_m = cg, inertia = inertia, inverse = inverse, inertia_origin = inertia_origin}
 
 
 static func _normalize_component(raw: Dictionary, ids: Dictionary) -> Dictionary:

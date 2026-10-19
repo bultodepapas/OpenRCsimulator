@@ -1,0 +1,7 @@
+test_aircraft_catalog: 100 checks, 0 failed
+test_glow_session: Glow session: 140 checks, 0 failed
+test_glow_trace: NITRO-TRACE: 282 checks, 0 failed
+test_glow_fuel_feed: NITRO-05 fuel feed: 28 checks, 0 failed
+test_glow_flight_physics: glow flight physics: 82 checks, 0 failed
+test_glow_installation: glow installation contract: 226 checks, 0 failed
+mutation (HUD back to 0.8 g/mL): 100 checks, 2 failed

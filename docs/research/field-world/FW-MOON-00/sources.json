@@ -1,0 +1,526 @@
+{
+ "format": "openrc-reference-manifest v1",
+ "topic": "Realistic moon rendering: lunar textures and elevation, photometry and phase laws, earthshine, orientation and libration, atmospheric extinction, halos/coronas, moonlight perception, eclipses and validation fixtures",
+ "retrieved": "2026-10-19",
+ "note": "Local copies live in the gitignored references/moon/. Guide: docs/research/field-world/FW-MOON-00/README.md. Plan: docs/plans/moon.md. GPL sources are reference only and must not be copied into the MIT app.",
+ "files": [
+  {
+   "path": "references/moon/code/astronomy-engine-README.md",
+   "url": "https://github.com/cosinekitty/astronomy",
+   "bytes": 11324,
+   "sha256": "0e8ecf6c23177ea687d7b92b36e0b8819ca5625f26f6d3f09bcf158ba96a75fa",
+   "file_type": "Markdown",
+   "kind": "documentation",
+   "license": "MIT.",
+   "use": "API overview and accuracy claims.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/astronomy-engine-astronomy.ts",
+   "url": "https://github.com/cosinekitty/astronomy",
+   "bytes": 422881,
+   "sha256": "a53aac4a43b5db0c2134fb3bb4cc62543e87fab7c8bc8f589608c512e9f48009",
+   "file_type": "TypeScript",
+   "kind": "source code",
+   "license": "MIT (Don Cross).",
+   "use": "Cross-check implementation: Libration, RotationAxis(Moon) with IAU WGCCRE 2009 terms, CalcShadow eclipse geometry.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/godot-gles3-material_storage.cpp",
+   "url": "https://github.com/godotengine/godot/blob/master/drivers/gles3/storage/material_storage.cpp",
+   "bytes": 133702,
+   "sha256": "0fb3893fcdf59598947d4ece90e842e9a597411c8e5829d03dc5405b01e8dcda",
+   "file_type": "C++",
+   "kind": "source code",
+   "license": "MIT (Godot). Master branch at retrieval.",
+   "use": "Sky material parameter invalidation.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/godot-gles3-rasterizer_scene_gles3.cpp",
+   "url": "https://github.com/godotengine/godot/blob/master/drivers/gles3/rasterizer_scene_gles3.cpp",
+   "bytes": 220416,
+   "sha256": "d06cbf866dff53d7beceb6b73db50cfed88090b173118d78ed5f9cc33e46f382",
+   "file_type": "C++",
+   "kind": "source code",
+   "license": "MIT (Godot). Master branch at retrieval.",
+   "use": "Sky radiance update conditions; half/quarter-res sky passes not rendered in GLES3. Input to the FW-MOON-01 spike.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/godot-gles3-sky.glsl",
+   "url": "https://github.com/godotengine/godot/blob/master/drivers/gles3/shaders/sky.glsl",
+   "bytes": 7815,
+   "sha256": "4383b190e474cbf8bf52d3beec40b0820c3967caf8f459bb05f87338a116e66f",
+   "file_type": "GLSL",
+   "kind": "source code",
+   "license": "MIT (Godot). Master branch at retrieval, not the pinned 4.7.2 tag.",
+   "use": "Compatibility sky pass: exposure, tonemap and sRGB applied in the sky shader output.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/isis-LunarLambertMcEwen.cpp",
+   "url": "https://raw.githubusercontent.com/DOI-USGS/ISIS3/dev/isis/src/base/objs/LunarLambertMcEwen/LunarLambertMcEwen.cpp",
+   "bytes": 1899,
+   "sha256": "8e7171d0d86145008a14617d6cab843fb13bc218a5811d0c99e823787668f4f8",
+   "file_type": "C++",
+   "kind": "source code",
+   "license": "Public domain (USGS ISIS header: authors do not claim copyright).",
+   "use": "McEwen 1991 lunar-Lambert L(alpha) polynomial.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/pvlib-atmosphere.py",
+   "url": "https://github.com/pvlib/pvlib-python/blob/main/pvlib/atmosphere.py",
+   "bytes": 27819,
+   "sha256": "c275478b8f09bcc055d6c86f0db775f9161933a89e526cffeb162f2af6033287",
+   "file_type": "Python",
+   "kind": "source code",
+   "license": "BSD-3-Clause (pvlib).",
+   "use": "Kasten-Young 1989 airmass implementation.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/sky3d-LICENSE.md",
+   "url": "https://github.com/TokisanGames/Sky3D",
+   "bytes": 1161,
+   "sha256": "b4766b01e92ab5d23082aea6c0221897b0157112df5db096e422c98ce939451c",
+   "file_type": "text",
+   "kind": "license",
+   "license": "MIT (2019 GPoSM).",
+   "use": "Licence attached to Sky3D's moon texture; weak provenance chain, not a candidate asset.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/sky3d-LICENSE.txt",
+   "url": "https://github.com/TokisanGames/Sky3D",
+   "bytes": 1205,
+   "sha256": "7c281db7f6aa4d2fcf4f67dceb2ef7f30a6292b2f327ffb0fb7bc4f9391c959d",
+   "file_type": "text",
+   "kind": "license",
+   "license": "MIT.",
+   "use": "Sky3D licence.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/sky3d-SkyDome.gd",
+   "url": "https://github.com/TokisanGames/Sky3D",
+   "bytes": 44109,
+   "sha256": "07ca59041e6ddf3a613fbe636bddf0f1a8cbb04a3a36f6bfcd12c23712e14531",
+   "file_type": "GDScript",
+   "kind": "source code",
+   "license": "MIT.",
+   "use": "Moon light energy/colour handling (artistic).",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/sky3d-SkyMaterial.gdshader",
+   "url": "https://github.com/TokisanGames/Sky3D",
+   "bytes": 19863,
+   "sha256": "3c50b68b3b21ff4942b907e387482db67b392e3e9ba647acbcc742911818e18c",
+   "file_type": "Godot shader",
+   "kind": "source code",
+   "license": "MIT (Petkovsek and contributors; Cuellar).",
+   "use": "Godot sky with moon: Lambert-shaded moon (limb-darkened, physically wrong), celestial-pole-aligned texture. Comparison only.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/sky3d-ThirdParty.md",
+   "url": "https://github.com/TokisanGames/Sky3D",
+   "bytes": 419,
+   "sha256": "4011d016e162db9327966306dd1267311509b072faabb854ada1c9a25fb537b8",
+   "file_type": "Markdown",
+   "kind": "attribution",
+   "license": "Mixed (ESO CC BY 4.0 Milky Way, others).",
+   "use": "Third-party asset attributions in Sky3D.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/specsim-atmosphere.py",
+   "url": "https://github.com/desihub/specsim/blob/main/specsim/atmosphere.py",
+   "bytes": 27496,
+   "sha256": "aa6bf808ba1a663927274b4d978225150f10036142322ba78e160c24e38776a5",
+   "file_type": "Python",
+   "kind": "source code",
+   "license": "BSD-3-Clause (DESI). Reference only.",
+   "use": "Krisciunas & Schaefer 1991 moonlit sky brightness and lunar magnitude implementation.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/stellarium-Planet.cpp",
+   "url": "https://github.com/Stellarium/stellarium/blob/master/src/core/modules/Planet.cpp",
+   "bytes": 277129,
+   "sha256": "2f9c889daa56f69ee16f8894c47fbace9812cf2b47919aba3227700553aa083b",
+   "file_type": "C++",
+   "kind": "source code",
+   "license": "GPL-2.0-or-later. Reference only; never copy.",
+   "use": "Moon magnitude (Russell + KS surge + Agrawal earthshine), eclipse push, earthshine ambient.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/stellarium-planet.frag",
+   "url": "https://github.com/Stellarium/stellarium/blob/master/data/shaders/planet.frag",
+   "bytes": 20195,
+   "sha256": "f8810b7aa59ae28e1028ce1e87a25636ead417aceeba7a0a346c4bbb0f46e1cb",
+   "file_type": "GLSL",
+   "kind": "source code",
+   "license": "GPL-2.0-or-later. Reference only; never copy.",
+   "use": "Oren-Nayar moon shading, earthShadow texture lookup.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/suncalc-LICENSE",
+   "url": "https://github.com/mourner/suncalc/blob/master/LICENSE",
+   "bytes": 1322,
+   "sha256": "e8881f5d09f1f3c5e0e6ad4c2120521bad1079246a2af84d756af8ab1a53da3c",
+   "file_type": "text",
+   "kind": "license",
+   "license": "BSD-2-Clause.",
+   "use": "Licence of suncalc-v2-index.js.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/suncalc-v2-index.js",
+   "url": "https://github.com/mourner/suncalc/blob/master/index.js",
+   "bytes": 22904,
+   "sha256": "f5e86948d59268d23496fa919a4a32ed99e1e25c465c7b978a1bd5945e4a197f",
+   "file_type": "JavaScript",
+   "kind": "source code",
+   "license": "BSD-2-Clause (see suncalc-LICENSE).",
+   "use": "Moon illumination: bright-limb angle, parallactic angle (v2 returns degrees, v1 radians).",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/thorsky-thorskyclasses3.py",
+   "url": "https://github.com/jrthorstensen/thorsky",
+   "bytes": 57914,
+   "sha256": "ae0b55b16214a1637085b73158bf813bca82d3ff3b404c261b4649895d58f786",
+   "file_type": "Python",
+   "kind": "source code",
+   "license": "GPL-3.0. Reference only.",
+   "use": "Companion classes for thorskyutil.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/code/thorsky-thorskyutil.py",
+   "url": "https://github.com/jrthorstensen/thorsky",
+   "bytes": 58605,
+   "sha256": "0a18bbfd3fb01c0690b14957002a341916a4568ea0e13cb951c25e954bd2b39b",
+   "file_type": "Python",
+   "kind": "source code",
+   "license": "GPL-3.0 (header: 'offered under the GNU Public License 3.0'). Reference only; do not copy into the MIT app.",
+   "use": "KS91 lunskybright with opposition term (uses abs(istar) where |alpha| is meant).",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/horizons/horizons-moon-rts-greenwich-2026-03-02.txt",
+   "url": "https://ssd.jpl.nasa.gov/api/horizons.api",
+   "bytes": 7145,
+   "sha256": "1a18c20de40ba31e846cdba24bf54bd7e916ad5b55021912956984258aee2eb3",
+   "file_type": "text",
+   "kind": "ephemeris output",
+   "license": "JPL Horizons output (NASA/JPL); free to use with credit.",
+   "use": "Same query at Greenwich 51.4778N.",
+   "redistribution": "permitted-with-credit",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/horizons/horizons-moon-rts-madrid-2026-03-02.txt",
+   "url": "https://ssd.jpl.nasa.gov/api/horizons.api",
+   "bytes": 7145,
+   "sha256": "109d45e65b4d9b480986bc3cd61e1639e51cd5f4bcd42a1699f6e3dff9e288e2",
+   "file_type": "text",
+   "kind": "ephemeris output",
+   "license": "JPL Horizons output (NASA/JPL); free to use with credit.",
+   "use": "DE441 refracted rise/transit/set, Madrid 40.4168N 3.7038W, 2026-03-02..05, 1-min step. Fixture source for FW-MOON-02.",
+   "redistribution": "permitted-with-credit",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/guo-2014-weihai-sky-brightness-arxiv-1405.6783.pdf",
+   "url": "https://arxiv.org/abs/1405.6783",
+   "bytes": 3828208,
+   "sha256": "af415967918d364a36465de433e200d958529a3cce1356885cc0a8eb23bc7806",
+   "file_type": "PDF",
+   "kind": "preprint",
+   "license": "arXiv preprint; copyright the authors. Reference only.",
+   "use": "Measured V/R sky brightness including moonlit nights at a coastal low-altitude site; extinction context.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/jensen-2000-night-rendering-uucs-00-016.pdf",
+   "url": "https://users.cs.utah.edu/docs/techreports/2000/pdf/UUCS-00-016.pdf",
+   "bytes": 1565829,
+   "sha256": "1674d955720e07b48a6bbcd89d822ae60ef0e824fff017735fe59424bec8789f",
+   "file_type": "PDF",
+   "kind": "technical report",
+   "license": "Copyright the authors / University of Utah. Reference only.",
+   "use": "Night rendering: mesopic blue shift s(log Y), scotopic luminance, moonlight redder than sunlight, acuity loss.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/jensen-2001-physically-based-night-sky-model.pdf",
+   "url": "https://graphics.cs.yale.edu/sites/default/files/nightsky.pdf",
+   "bytes": 3732514,
+   "sha256": "1a1952dd14e4485c98eea1c30811e8b68e7aed73ae22a7c133b95c361759067d",
+   "file_type": "PDF",
+   "kind": "conference paper (SIGGRAPH 2001)",
+   "license": "Copyright ACM / the authors. Reference only.",
+   "use": "Hapke-Lommel-Seeliger lunar BRDF (B, S terms), earthshine irradiance, lunar albedo spectrum, Moon orientation appendix.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/king-1985-ing-tn031-la-palma-extinction.pdf",
+   "url": "https://www.ing.iac.es/astronomy/observing/manuals/ps/tech_notes/tn031.pdf",
+   "bytes": 22954,
+   "sha256": "a8f4e1ce360ab23c6635463b977bfed584a1e0bde12020b80ba038a242bc6260",
+   "file_type": "PDF",
+   "kind": "technical note",
+   "license": "ING/RGO technical note. Reference only.",
+   "use": "Rayleigh, aerosol and ozone extinction components by wavelength at a 2400 m site.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/krawczyk-2007-phd-hdr-tone-mapping-perception.pdf",
+   "url": "https://people.mpi-inf.mpg.de/alumni/d4/2014/krawczyk/phd/krawczyk07phd_final.pdf",
+   "bytes": 7793901,
+   "sha256": "d00196fd5d87ca91eedb16211c7e4386e02992cd26ec776d20a176e34f20cc4a",
+   "file_type": "PDF",
+   "kind": "PhD thesis",
+   "license": "Copyright the author. Reference only.",
+   "use": "GPU mesopic/scotopic colour shift sigma(Y) = 0.04/(0.04+Y), blue tint (1.05, 0.97, 1.27). Basis for the Eye night look (FW-MOON-07).",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/palle-2016-earthshine-albedo-arxiv-1604.05880.pdf",
+   "url": "https://arxiv.org/abs/1604.05880",
+   "bytes": 302119,
+   "sha256": "7182237d7c0da7a1ceae0f1930728b2bbb202547629062eb0a7da1ff5e4150f6",
+   "file_type": "PDF",
+   "kind": "journal article preprint (GRL 2016)",
+   "license": "arXiv preprint; copyright the authors / AGU. Reference only.",
+   "use": "Earthshine ratio p*(beta) eq. 1 with the Lambert phase f_L; p* about 0.3. Earthshine vs Earth phase.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/svs/ldem_3_8bit.jpg",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/ldem_3_8bit.jpg",
+   "bytes": 111552,
+   "sha256": "6d93f887e7d8bedfe35ab89ba785e5e3ca12381bd092a5e6abe2c707dda8bb98",
+   "file_type": "JPEG 1024x512 grey",
+   "kind": "elevation",
+   "license": "NASA SVS 4720; as above.",
+   "use": "LOLA elevation preview. FW-MOON-04 builds the normal map from ldem_4.tif or ldem_16 (float km, 1737.4 km sphere), not from this 8-bit JPEG.",
+   "redistribution": "permitted-with-credit",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/svs/lroc_color_2k.jpg",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg",
+   "bytes": 457942,
+   "sha256": "f7130a1822681fa7512d7dcfd40db8c10b9ba4f06777910348698260ed7a2170",
+   "file_type": "JPEG 2048x1024 RGB",
+   "kind": "texture",
+   "license": "NASA SVS 4720 CGI Moon Kit (Ernie Wright, USRA; Noah Petro). NASA media: generally not copyrighted in the US; credit \"NASA's Scientific Visualization Studio\"; no endorsement.",
+   "use": "2025 LROC WAC Hapke-normalized colour (643/566/415 nm), i.e. albedo without lighting. Candidate default disc texture (FW-MOON-04).",
+   "redistribution": "permitted-with-credit",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/svs/lroc_color_poles_1k.jpg",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_poles_1k.jpg",
+   "bytes": 139068,
+   "sha256": "b246064f217f8d479df78c49c7c8595a8f5fbda008a72fd539978d2e121e0109",
+   "file_type": "JPEG 1024x512 RGB",
+   "kind": "texture",
+   "license": "NASA SVS 4720; as above.",
+   "use": "2019 colour map, lower dynamic range; comparison only.",
+   "redistribution": "permitted-with-credit",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/svs/mooninfo_2026.json",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005587/mooninfo_2026.json",
+   "bytes": 2094339,
+   "sha256": "098ec6434ba4fecb84e66485385816d465b7969f142864bcfc9ffc68311b4a86",
+   "file_type": "JSON, 8760 hourly rows",
+   "kind": "dataset",
+   "license": "NASA SVS 5587 Moon Phase and Libration, 2026 (Ernie Wright; Noah Petro). Credit NASA SVS.",
+   "use": "Geocentric hourly phase %, age, apparent diameter (arcsec), distance (km), J2000 RA/Dec, subsolar and sub-Earth lon/lat (libration), axis position angle. Validation fixture source for FW-MOON-02/05.",
+   "redistribution": "permitted-with-credit",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/svs/preview_plain.jpg",
+   "url": "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005587/preview_plain.jpg",
+   "bytes": 179001,
+   "sha256": "b18c4dabf8506bd51db8055ce1dcbde96000916eab0b91944e42ad9a81fcc03e",
+   "file_type": "JPEG 1920x1080",
+   "kind": "image",
+   "license": "NASA SVS 5587.",
+   "use": "Example of the celestial-north-up frames used for the FW-MOON-05 overlay check.",
+   "redistribution": "permitted-with-credit",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  }
+ ],
+ "links": [
+  {
+   "url": "https://svs.gsfc.nasa.gov/4720",
+   "status": "page",
+   "note": "CGI Moon Kit: 2k-16k colour (JPG/TIFF/EXR), LDEM 4-64 px/deg; Godot imports no TIFF, so FW-MOON-04 converts with a recorded script."
+  },
+  {
+   "url": "https://svs.gsfc.nasa.gov/5587",
+   "status": "page",
+   "note": "Moon Phase and Libration, 2026: hourly frames (730x730 plain, 1920x1080, EXR), celestial north up. Overlay reference for FW-MOON-05."
+  },
+  {
+   "url": "https://www.nasa.gov/nasa-brand-center/images-and-media/",
+   "status": "page",
+   "note": "NASA media usage guidelines (credit, no endorsement, insignia excluded)."
+  },
+  {
+   "url": "https://www.solarsystemscope.com/textures/",
+   "status": "not downloaded",
+   "note": "CC BY 4.0 moon maps; more saturated than true colour, partly fictional fill. Rejected in favour of SVS."
+  },
+  {
+   "url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+   "status": "page",
+   "note": "Geometric albedo 0.12, Bond 0.11, V0 -12.74, radius 1737.4 km, perigee 363,300 km, apogee 405,500 km."
+  },
+  {
+   "url": "https://doi.org/10.1086/132921",
+   "status": "not downloaded",
+   "note": "Krisciunas & Schaefer 1991, PASP 103:1033. PDF mirror overloaded (saved page was an error); formulas taken from specsim/thorsky."
+  },
+  {
+   "url": "https://doi.org/10.1016/0019-1035(91)90053-V",
+   "status": "not downloaded",
+   "note": "McEwen 1991 lunar-Lambert, Icarus 92:298. Polynomial via ISIS source."
+  },
+  {
+   "url": "https://doi.org/10.1093/astrogeo/atx025",
+   "status": "blocked (403)",
+   "note": "Kyba, Mohar & Posch 2017: typical full moon 0.05-0.1 lux; 2016-11-14 supermoon at 55.5 deg: 0.26 lux horizontal. Numbers from the abstract."
+  },
+  {
+   "url": "https://doi.org/10.1086/519736",
+   "status": "404",
+   "note": "Montanes-Rodriguez et al. 2007: earthshine +12..+17 mag/arcsec^2. Numbers from the abstract."
+  },
+  {
+   "url": "https://arxiv.org/abs/1401.1994",
+   "status": "page",
+   "note": "Thejll et al. 2014: earthlit side 0.150 mag bluer in B-V than the sunlit side."
+  },
+  {
+   "url": "https://arxiv.org/abs/1904.00236",
+   "status": "page",
+   "note": "Glenar et al. 2019: earthshine about 0.15 W/m^2 broadband."
+  },
+  {
+   "url": "https://aty.sdsu.edu/explain/atmos_refr/flattening.html",
+   "status": "page",
+   "note": "A. T. Young: refraction flattening of the low moon, vertical/horizontal about 5/6 at the horizon."
+  },
+  {
+   "url": "https://www.atoptics.co.uk/droplets/cordrsz.htm",
+   "status": "page",
+   "note": "Corona ring size vs droplet diameter rule of thumb."
+  },
+  {
+   "url": "https://eclipse.gsfc.nasa.gov/LEdecade/LEdecade2021.html",
+   "status": "page",
+   "note": "Espenak lunar eclipses 2021-2030 (TD): 2026-03-03 total, 2026-08-28 partial 0.930, 2028-12-31 total 1.246."
+  },
+  {
+   "url": "https://eclipse.gsfc.nasa.gov/OH/OHres/Danjon.html",
+   "status": "page",
+   "note": "Danjon scale L0-L4 for total-eclipse colour and brightness."
+  },
+  {
+   "url": "https://www.astropixels.com/ephemeris/phasescat/phases2001.html",
+   "status": "page",
+   "note": "Espenak phase catalogue; 2026 full moons Jan 3 10:03, Feb 1 22:09, Mar 3 11:38, May 31 08:45, Aug 28 04:18, Nov 24 14:53, Dec 24 01:28 UT."
+  },
+  {
+   "url": "https://docs.godotengine.org/en/latest/tutorials/shaders/shader_reference/sky_shader.html",
+   "status": "page",
+   "note": "Sky shader: AT_CUBEMAP_PASS, LIGHTn, any uniform change triggers a radiance update."
+  },
+  {
+   "url": "https://docs.godotengine.org/en/latest/classes/class_directionallight3d.html",
+   "status": "page",
+   "note": "DirectionalLight3D sky_mode: LIGHT_AND_SKY, LIGHT_ONLY, SKY_ONLY."
+  },
+  {
+   "url": "https://www.cl.cam.ac.uk/~rkm38/pdfs/wanat14lum_retargeting.pdf",
+   "status": "not downloaded",
+   "note": "Wanat & Mantiuk 2014 luminance retargeting (state of the art; heavier than needed)."
+  },
+  {
+   "url": "https://unihedron.com/projects/darksky/NELM2BCalc.html",
+   "status": "page",
+   "note": "NELM vs sky brightness; attributed to Schaefer, primary source UNVERIFIED."
+  }
+ ]
+}

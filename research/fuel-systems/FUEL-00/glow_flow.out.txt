@@ -1,0 +1,22 @@
+os_max_55ax_candidate density=856.92 kg/m3 AFR=5.641 oil_mass_frac=0.2019
+  WOT  9380 rpm: 0.401 g/s = 28.1 ml/min -> 140 ml (0.12 kg) lasts 5.0 min; 350 ml lasts 12.5 min
+  WOT 10330 rpm: 0.461 g/s = 32.3 ml/min -> 140 ml (0.12 kg) lasts 4.3 min; 350 ml lasts 10.8 min
+  WOT 16000 rpm: 0.745 g/s = 52.2 ml/min -> 140 ml (0.12 kg) lasts 2.7 min; 350 ml lasts 6.7 min
+  idle adm 0.28 2000 rpm: 0.014 g/s = 1.0 ml/min
+  idle adm 0.28 2800 rpm: 0.022 g/s = 1.5 ml/min
+os_max_61fx_candidate density=856.92 kg/m3 AFR=5.641 oil_mass_frac=0.2019
+  WOT 10976 rpm: 0.554 g/s = 38.8 ml/min -> 140 ml (0.12 kg) lasts 3.6 min; 350 ml lasts 9.0 min
+  WOT 12550 rpm: 0.657 g/s = 46.0 ml/min -> 140 ml (0.12 kg) lasts 3.0 min; 350 ml lasts 7.6 min
+  WOT 16000 rpm: 0.830 g/s = 58.1 ml/min -> 140 ml (0.12 kg) lasts 2.4 min; 350 ml lasts 6.0 min
+  idle adm 0.28 2000 rpm: 0.016 g/s = 1.1 ml/min
+  idle adm 0.28 2800 rpm: 0.024 g/s = 1.7 ml/min
+os_fs_64v_candidate density=856.92 kg/m3 AFR=5.641 oil_mass_frac=0.2019
+  WOT  7823 rpm: 0.186 g/s = 13.0 ml/min -> 140 ml (0.12 kg) lasts 10.7 min; 350 ml lasts 26.9 min
+  WOT 10000 rpm: 0.243 g/s = 17.0 ml/min -> 140 ml (0.12 kg) lasts 8.2 min; 350 ml lasts 20.6 min
+  WOT 11000 rpm: 0.255 g/s = 17.9 ml/min -> 140 ml (0.12 kg) lasts 7.8 min; 350 ml lasts 19.6 min
+  idle adm 0.35 2000 rpm: 0.009 g/s = 0.6 ml/min
+  idle adm 0.35 2800 rpm: 0.015 g/s = 1.0 ml/min
+AIAA 2T fit 0.46x+28.6 mg/s at x=600/900 W: [18.3, 26.6] g/min
+AIAA 4T fit 0.34x+27.11 mg/s at x=400/600 W: [9.8, 13.9] g/min
+Saito FA-82B 35 cc/min @10000 rpm scaled by displacement to FS-64V 10.46/13.47: 27.2 cc/min
+Endurance stand: 55AX 0.12kg/292.408s=0.410 g/s; FS64V 0.12/645.15=0.186 g/s

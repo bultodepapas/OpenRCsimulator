@@ -92,6 +92,8 @@ const ENTRIES := [
 		status = EXPERIMENTAL,
 		status_note = "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off.",
 		data = "res://data/aircraft/turbo_lumber_evolution.json",
+		# BAT-13: the same airframe with a finite 4S LiPo class pack, ESC low-voltage cutoff and battery telemetry.
+		battery_data = "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
 	},
 	{
 		id = "xcell-60-research",
@@ -167,6 +169,26 @@ static func entry(id: String) -> Dictionary:
 		if e.id == id:
 			return e
 	return {}
+
+
+## BAT-13 battery modes: "ideal" flies the aircraft's main data; "pack" flies its optional finite-pack data
+## (same airframe and aircraft id, pack_ecm energy). Aircraft without battery data only offer "ideal".
+const BATTERY_MODES := ["ideal", "pack"]
+
+
+static func battery_data(id: String) -> String:
+	return str(entry(id).get("battery_data", ""))
+
+
+static func has_battery_mode(id: String, mode: String) -> bool:
+	return mode == "ideal" and has(id) or mode == "pack" and can_fly(id) and not battery_data(id).is_empty()
+
+
+## Physics data path for a flight. Callers must check has_battery_mode() first; unknown modes return "".
+static func data_for(id: String, mode: String = "ideal") -> String:
+	if not has_battery_mode(id, mode):
+		return ""
+	return battery_data(id) if mode == "pack" else str(entry(id).get("data", ""))
 
 
 static func can_fly(id: String) -> bool:
