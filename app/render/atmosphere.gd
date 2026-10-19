@@ -506,8 +506,24 @@ static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) 
 		mat.set_shader_parameter("lobe2_lin", Vector3.ZERO)
 		mat.set_shader_parameter("light1_weight", 1.0)
 		mat.set_shader_parameter("light2_weight", 0.0)
+		mat.set_shader_parameter("moon_aureole_lin", Vector3.ZERO)
 	_profile_sky_tints(mat, lighting)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
+
+
+## FW-MOON-08a: the aerosol optical depth over Krisciunas & Schaefer's sites, which scales the aureole (their aerosol
+## term was fitted to clean observatory air). τ_a = (β·haze − β_Rayleigh)·H_aerosol, with β from the visibility and
+## the weather profile's haze scale (1 without a profile); clamped to [0.25, 4]. At the default 23 km visibility
+## without a profile: 1.9; the classic profile 1.3, clear 1.0, electrical storm 3.6.
+const AUREOLE_RAYLEIGH_BETA := 1.16e-5 # sea-level Rayleigh extinction at 550 nm, 1/m (borrowed)
+const AUREOLE_AEROSOL_HEIGHT_M := 1200.0 # aerosol scale height (estimate)
+const AUREOLE_KS91_TAU := 0.10 # KS91's V extinction 0.172 mag at Mauna Kea, less ~0.06 Rayleigh (estimate)
+
+
+static func aureole_aerosol_factor() -> float:
+	var haze := float(_appearance.haze_scale) if _appearance_enabled else 1.0
+	var tau := maxf(beta() * haze - AUREOLE_RAYLEIGH_BETA, 0.0) * AUREOLE_AEROSOL_HEIGHT_M
+	return clampf(tau / AUREOLE_KS91_TAU, 0.25, 4.0)
 
 
 ## FW-22/61: the time-of-day state's sky uniforms (also called when time flows).
@@ -549,6 +565,8 @@ static func apply_state_to_sky(mat: ShaderMaterial) -> void:
 	mat.set_shader_parameter("light2_dir", state.get("cloud_light2_dir", Vector3.UP))
 	mat.set_shader_parameter("light1_weight", state.get("cloud_light1_weight", 1.0))
 	mat.set_shader_parameter("light2_weight", state.get("cloud_light2_weight", 0.0))
+	# FW-MOON-08a: the moon's aureole, scaled by the air's aerosols (visibility and the weather profile's haze).
+	mat.set_shader_parameter("moon_aureole_lin", (state.get("moon_aureole_lin", Vector3.ZERO) as Vector3) * aureole_aerosol_factor())
 	_profile_sky_tints(mat)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 

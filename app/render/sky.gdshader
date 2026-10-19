@@ -39,6 +39,10 @@ uniform float lobe2_height = 1.5708;
 uniform vec3 light2_dir = vec3(0.0, 1.0, 0.0);
 uniform float light1_weight = 1.0;
 uniform float light2_weight = 0.0;
+// FW-MOON-08a: the moon's aureole (SkyState.moon_aureole × Atmosphere.aureole_aerosol_factor; zero = none) and the
+// V extinction per airmass of its path term (the stars' value).
+uniform vec3 moon_aureole_lin = vec3(0.0);
+uniform float moon_aureole_k = 0.2;
 uniform float sun_disc = 1.0;                      // 0 when the light is the moon (FW-23)
 // FW-24 moon, photometric since FW-MOON-03: uniforms and disc in moon_disc.gdshaderinc; zero moon_lin = no moon.
 #include "res://render/world/moon_disc.gdshaderinc"
@@ -85,6 +89,32 @@ float relief_directionality() {
 	return abs(light1_weight - light2_weight);
 }
 
+// FW-MOON-08a: Krisciunas & Schaefer's (1991) aerosol scattering around the moon: 6.2·10⁷·ρ⁻² near the moon (eq. 19),
+// 10^(6.15 − ρ/40) farther out (eq. 21). The larger of the two within 30° joins them continuously at 8.4° (KS91 switch at
+// 10° with a 28 % step); beyond 30° only eq. 21. The table's moonlit sky and horizon lobe already carry the moon's
+// diffuse scattering, so only the forward peak is added: the term above its value at 45° (zero from 45° on, and at the
+// zenith anchor whenever the moon is lower than 45°). Times the path term (1 − 10^(−0.4·k·X)) / (1 − 10^(−0.4·k))
+// with X = (1 − 0.96·sin²Z)^−½ (eq. 3). Shown as the eye adapted to the moon sees it: the same local adaptation as the
+// disc (moon_display_gamma; 1 = physical, by day), applied to the brightening over the sky behind it.
+vec3 moon_aureole(vec3 d, vec3 background) {
+	if (dot(moon_aureole_lin, vec3(1.0)) <= 0.0) {
+		return vec3(0.0);
+	}
+	float rho = max(degrees(acos(clamp(dot(d, moon_dir), -1.0, 1.0))), degrees(moon_radius));
+	if (rho >= 45.0) {
+		return vec3(0.0);
+	}
+	float far_shape = pow(10.0, -rho / 40.0);
+	float shape = (rho < 30.0 ? max(43.80 / (rho * rho), far_shape) : far_shape) - 0.07499; // 6.2e7 / 10^6.15 = 43.80; 10^(−45/40)
+	float sin_z = min(length(d.xz), 1.0);
+	float airmass = inversesqrt(1.0 - 0.96 * sin_z * sin_z);
+	float path = (1.0 - pow(10.0, -0.4 * moon_aureole_k * airmass)) / (1.0 - pow(10.0, -0.4 * moon_aureole_k));
+	vec3 a = moon_aureole_lin * shape * path;
+	float la = dot(a, vec3(0.2126, 0.7152, 0.0722));
+	float lb = max(dot(background, vec3(0.2126, 0.7152, 0.0722)), 1e-12);
+	return la > 0.0 ? a * (lb * (pow(1.0 + la / lb, moon_display_gamma) - 1.0) / la) : vec3(0.0);
+}
+
 vec3 haze(vec3 d) {
 	return haze_lin + sun_lin * pow(max(dot(d, sun_dir), 0.0), 8.0) * sun_scatter + lobe_term(d);
 }
@@ -107,6 +137,7 @@ void sky() {
 	// FW-MOON-01/03b: the disc stays out of the radiance cubemap (a sub-texel highlight in ambient and reflections);
 	// reflection probes draw the background pass, so the lake still sees it.
 	if (!AT_CUBEMAP_PASS) {
+		col += moon_aureole(EYEDIR, col); // FW-MOON-08a: over the sky behind it, before the disc
 		col += moon_disc(EYEDIR); // before the clouds, which hide it
 	}
 	float density = 0.0;
