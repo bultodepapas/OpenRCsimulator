@@ -1696,6 +1696,11 @@ func _close_pause() -> void:
 func _begin_exit_request(kind: String, recorders: Array, commit: Callable, guard_workshop := false) -> void:
 	if _exit_request_active:
 		return
+	if kind == "quit":
+		for editor: Node in _workshop_editors():
+			if is_instance_valid(editor) and editor.has_method("dismiss_modal_for_exit") \
+				and bool(editor.call("dismiss_modal_for_exit")):
+				return
 	_exit_request_active = true
 	_exit_request_kind = kind
 	_exit_request_commit = commit
@@ -1830,7 +1835,10 @@ func _advance_trace_exit() -> void:
 func _show_trace_recovery_dialog(error_code: int) -> void:
 	var dialog := ConfirmationDialog.new()
 	dialog.title = tr("Trace not saved")
-	dialog.dialog_text = tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
+	var recovery_message := tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
+	# Keep the native AcceptDialog label empty: its full translated minimum height can
+	# outgrow the clamped Window at enlarged text. Put the message in a bounded scroller.
+	dialog.dialog_text = ""
 	dialog.theme = UiTheme.build()
 	dialog.exclusive = true
 	dialog.get_ok_button().text = tr("Stay") # default action is the safe choice
@@ -1838,17 +1846,28 @@ func _show_trace_recovery_dialog(error_code: int) -> void:
 	_trace_retry_button = dialog.add_button(tr("Retry save"), false, "retry")
 	_trace_discard_button = dialog.add_button(tr("Discard trace and continue"), true, "discard")
 	var text_scale := clampf(UiTheme.text_scale, 1.0, 2.0)
-	var message := dialog.get_label()
+	var scroll := ScrollContainer.new()
+	scroll.name = "TraceRecoveryMessageScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.custom_minimum_size = Vector2(300.0, 100.0)
+	dialog.add_child(scroll)
+	var message := Label.new()
+	message.name = "TraceRecoveryMessage"
+	message.theme_type_variation = "SecondaryLabel"
+	message.text = recovery_message
 	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(message)
 	for button: Button in [dialog.get_ok_button(), _trace_retry_button, _trace_discard_button]:
 		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button.custom_minimum_size.y = roundi(44.0 * text_scale)
 	var visible_size: Vector2i = get_tree().root.size
 	var desired_size := Vector2i(roundi(560.0 * text_scale), roundi(220.0 * text_scale))
 	var viewport_limit := Vector2i(maxi(1, roundi(visible_size.x * 0.9)), maxi(1, roundi(visible_size.y * 0.9)))
 	var dialog_minimum := Vector2i(mini(desired_size.x, viewport_limit.x), mini(desired_size.y, viewport_limit.y))
+	dialog.add_theme_constant_override("buttons_min_width", maxi(1, roundi((dialog_minimum.x - 64.0) / 3.0)))
+	dialog.add_theme_constant_override("buttons_min_height", roundi(44.0 * text_scale))
 	dialog.min_size = dialog_minimum
 	dialog.size = dialog_minimum
 	dialog.custom_action.connect(_on_trace_recovery_action)
@@ -1890,6 +1909,11 @@ func _on_trace_recovery_action(action: StringName) -> void:
 
 func _finish_exit_request() -> void:
 	var commit := _exit_request_commit
+	# Quit tears down the recovery owner with the tree; its discard markers are weak
+	# and can still protect a later route if a host overrides the quit seam.
+	if _exit_request_kind != "quit":
+		for recorder: RefCounted in _exit_request_recorders:
+			_trace_recovery.forget_completed(recorder)
 	_clear_exit_request()
 	if commit.is_valid():
 		commit.call()

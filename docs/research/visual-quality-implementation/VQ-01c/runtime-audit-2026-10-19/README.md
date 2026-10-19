@@ -304,3 +304,40 @@ The official [Godot 4.7 profiler guide](https://docs.godotengine.org/en/4.7/tuto
 describes manual inclusive microsecond timing; [Performance monitor documentation](https://docs.godotengine.org/en/4.7/classes/class_performance.html)
 notes that some monitor values can lag by up to one second. Sampled engine counters
 are not independent per-frame or per-method measurements.
+
+## Round 3: frozen-source review and blocked qualification
+
+The next snapshot was clean commit `122889b8e846b501dc17ffd610e60bf340bd4786`;
+SHA-256 identities cover its 2,955 tracked app files. A 45-second live-input native
+run is excluded from steady-flight acceptance: a connected XInput controller changed
+the controls, followed by a crash at tick 2,412 (10.05 simulation seconds) and pause.
+Its copied import cache also referenced an absent ignored native installation.
+The installation was restored only after its binary hashes and source digest matched
+the receipt; no corrected performance run was completed.
+
+A bounded fixed-trim diagnostic probe and three injected timing scripts passed
+Godot 4.7.2 check-only. They were not run natively. The Linux full-suite attempt
+failed before `app/test.sh`: WSL returned I/O errors reading the engine and system
+tools, including `timeout` (wrapper exit 126), then failed to start. No round-3
+unit, full parse or integration coverage is claimed. A separate review found path
+mapping and aggregate-status defects in the unused scratch shell orchestrator;
+that orchestrator was never a suite result.
+
+The construction review rejected duplicate vegetation-spec reuse as too small to
+justify a performance change. Prior WIP construction timings are distinguished
+from current static input counts. The tooling guide now names the actual D10-R2
+sideslip-only pending check and flag; recovery assertions remain mandatory. No
+threshold, golden flight or physics law was changed in this round.
+
+At the user's cleanup request, the disposable round-3 checkout was removed after
+verifying its clean pinned source. Its commit and file identities remain available;
+the prepared probe needs that snapshot recreated before running. The older WIP
+snapshots and unique evidence were preserved with NTFS storage compression. All
+24 remaining registered worktrees exist and resolve a Git HEAD; three sampled
+older source files still match their recorded hashes. The shared tree advanced
+independently during the audit; results are qualified only for their identified sources.
+
+[Round-3 results and artifact identities](round-3/verification-summary.json) retain
+the failed native sample, wrapper logs, prepared probe and rejected experiments.
+The complete app suite, unexplained frame-stall root cause, long soak and target
+platform/device qualification remain open.

@@ -1,6 +1,7 @@
 extends Control
 
 const AirplaneBuilder := preload("res://render/airplane.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 
 const BACKGROUND := Color("#263a40")
 const AMBIENT := Color("#c5d3cb")
@@ -10,11 +11,13 @@ const MIN_MODEL_SCALE := 0.5
 const MAX_MODEL_SCALE := 2.0
 const MIN_ZOOM := 0.5
 const MAX_ZOOM := 4.0
-const DEFAULT_YAW_DEG := 0.0
+const DEFAULT_YAW_DEG := 180.0
 const DEFAULT_PITCH_DEG := 10.0
 const PITCH_LIMIT_DEG := 88.0
-const FIT_FILL := 0.80
+const FIT_FILL := 0.89
 const SAFE_FILL := 0.93
+
+enum CameraMenuAction { FRONT, SIDE, TOP, ORBIT_LEFT, ORBIT_RIGHT, ORBIT_UP, ORBIT_DOWN, ZOOM_OUT, ZOOM_IN, RESET }
 
 var _viewport_container: SubViewportContainer
 var _viewport: SubViewport
@@ -38,13 +41,28 @@ var _dragging := false
 var _last_pointer_position := Vector2.ZERO
 
 var _scale_badge: Label
+var _badge_panel: PanelContainer
 var _inspect_button: Button
 var _compare_button: Button
 var _original_button: Button
 var _draft_button: Button
+var _comparison_side_button: Button
+var _reset_button: Button
+var _toolbar_panel: PanelContainer
+var _mode_row: HFlowContainer
 var _camera_panel: PanelContainer
+var _camera_row: HBoxContainer
+var _inline_camera_buttons: Array[Button] = []
+var _camera_menu_button: Button
+var _camera_menu: PopupMenu
+var _compact_notice: PanelContainer
+var _compact_notice_label: Label
 var _compact_layout := true
+var _short_layout := false
+var _popup_camera := false
+var _compact_controls := false
 var _layout_initialized := false
+var _layout_width := -1.0
 
 
 func _init() -> void:
@@ -85,6 +103,8 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	theme_changed.connect(_on_theme_changed)
+	_apply_preview_fonts()
 	if _requested_id != "":
 		set_aircraft(_requested_id, _requested_scale)
 	else:
@@ -158,7 +178,7 @@ func reset_view() -> void:
 func set_standard_view(view: String) -> void:
 	match view.to_lower():
 		"front":
-			_yaw_deg = 0.0
+			_yaw_deg = 180.0
 			_pitch_deg = 0.0
 		"side":
 			_yaw_deg = 90.0
@@ -411,38 +431,44 @@ func _build_world() -> void:
 
 
 func _build_toolbar() -> void:
-	var panel := PanelContainer.new()
-	panel.name = "PreviewControls"
-	panel.anchor_right = 1.0
-	panel.offset_left = 8.0
-	panel.offset_top = 8.0
-	panel.offset_right = -8.0
-	panel.custom_minimum_size.y = 34.0
-	panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	panel.add_theme_stylebox_override("panel", _overlay_style())
-	add_child(panel)
-	var mode_row := HBoxContainer.new()
-	mode_row.add_theme_constant_override("separation", 4)
-	panel.add_child(mode_row)
+	_toolbar_panel = PanelContainer.new()
+	_toolbar_panel.name = "PreviewControls"
+	_toolbar_panel.anchor_right = 1.0
+	_toolbar_panel.offset_left = 8.0
+	_toolbar_panel.offset_top = 8.0
+	_toolbar_panel.offset_right = -8.0
+	_toolbar_panel.custom_minimum_size.y = 34.0
+	_toolbar_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_toolbar_panel.add_theme_stylebox_override("panel", _overlay_style())
+	add_child(_toolbar_panel)
+	_mode_row = HFlowContainer.new()
+	_mode_row.add_theme_constant_override("h_separation", 4)
+	_mode_row.add_theme_constant_override("v_separation", 2)
+	_toolbar_panel.add_child(_mode_row)
 	_inspect_button = _make_button("Inspect", "View the draft at its fitted size.", "InspectMode")
 	_inspect_button.toggle_mode = true
 	_inspect_button.pressed.connect(set_view_mode.bind("inspect"))
-	mode_row.add_child(_inspect_button)
+	_mode_row.add_child(_inspect_button)
 	_compare_button = _make_button("Compare", "Compare original and draft at the same world scale.", "CompareMode")
 	_compare_button.toggle_mode = true
 	_compare_button.pressed.connect(set_view_mode.bind("compare"))
-	mode_row.add_child(_compare_button)
+	_mode_row.add_child(_compare_button)
 	_original_button = _make_button("Original", "Show the unmodified 100% aircraft in Compare mode.", "CompareOriginal")
 	_original_button.toggle_mode = true
 	_original_button.pressed.connect(set_comparison_original.bind(true))
-	mode_row.add_child(_original_button)
+	_mode_row.add_child(_original_button)
 	_draft_button = _make_button("Draft", "Show the current draft in Compare mode.", "CompareDraft")
 	_draft_button.toggle_mode = true
 	_draft_button.pressed.connect(set_comparison_original.bind(false))
-	mode_row.add_child(_draft_button)
-	var reset_button := _make_button("Reset", "Reset the camera to its default fit.", "ResetView")
-	reset_button.pressed.connect(reset_view)
-	mode_row.add_child(reset_button)
+	_mode_row.add_child(_draft_button)
+	_comparison_side_button = _make_button("Draft", "Compare original and draft at the same world scale.", "CompareSide")
+	_comparison_side_button.toggle_mode = true
+	_comparison_side_button.pressed.connect(_toggle_comparison_side)
+	_comparison_side_button.visible = false
+	_mode_row.add_child(_comparison_side_button)
+	_reset_button = _make_button("Reset", "Reset the camera to its default fit.", "ResetView")
+	_reset_button.pressed.connect(reset_view)
+	_mode_row.add_child(_reset_button)
 
 	_camera_panel = PanelContainer.new()
 	_camera_panel.name = "CameraControls"
@@ -457,56 +483,102 @@ func _build_toolbar() -> void:
 	_camera_panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	_camera_panel.add_theme_stylebox_override("panel", _overlay_style())
 	add_child(_camera_panel)
-	var camera_row := HBoxContainer.new()
-	camera_row.add_theme_constant_override("separation", 2)
-	_camera_panel.add_child(camera_row)
+	_camera_row = HBoxContainer.new()
+	_camera_row.add_theme_constant_override("separation", 2)
+	_camera_panel.add_child(_camera_row)
 	for view_name: String in ["Front", "Side", "Top"]:
 		var view_button := _make_button(view_name, tr("Show the %s standard view.") % tr(view_name), "View" + view_name)
 		view_button.pressed.connect(set_standard_view.bind(view_name.to_lower()))
-		camera_row.add_child(view_button)
+		_camera_row.add_child(view_button)
+		_inline_camera_buttons.append(view_button)
 	var orbit_left := _make_button("←", "Orbit left.", "OrbitLeft")
 	orbit_left.pressed.connect(orbit_by.bind(-10.0, 0.0))
-	camera_row.add_child(orbit_left)
+	_camera_row.add_child(orbit_left)
+	_inline_camera_buttons.append(orbit_left)
 	var orbit_up := _make_button("↑", "Raise the camera.", "OrbitUp")
 	orbit_up.pressed.connect(orbit_by.bind(0.0, 10.0))
-	camera_row.add_child(orbit_up)
+	_camera_row.add_child(orbit_up)
+	_inline_camera_buttons.append(orbit_up)
 	var orbit_down := _make_button("↓", "Lower the camera.", "OrbitDown")
 	orbit_down.pressed.connect(orbit_by.bind(0.0, -10.0))
-	camera_row.add_child(orbit_down)
+	_camera_row.add_child(orbit_down)
+	_inline_camera_buttons.append(orbit_down)
 	var orbit_right := _make_button("→", "Orbit right.", "OrbitRight")
 	orbit_right.pressed.connect(orbit_by.bind(10.0, 0.0))
-	camera_row.add_child(orbit_right)
+	_camera_row.add_child(orbit_right)
+	_inline_camera_buttons.append(orbit_right)
 	var zoom_out := _make_button("−", "Zoom out.", "ZoomOut")
 	zoom_out.pressed.connect(zoom_by.bind(1.0 / 1.15))
-	camera_row.add_child(zoom_out)
+	_camera_row.add_child(zoom_out)
+	_inline_camera_buttons.append(zoom_out)
 	var zoom_in := _make_button("+", "Zoom in.", "ZoomIn")
 	zoom_in.pressed.connect(zoom_by.bind(1.15))
-	camera_row.add_child(zoom_in)
+	_camera_row.add_child(zoom_in)
+	_inline_camera_buttons.append(zoom_in)
+	_camera_menu_button = _make_button("Camera", "Open camera controls.", "CameraMenuButton")
+	_camera_menu_button.pressed.connect(_show_camera_menu)
+	_camera_menu_button.visible = false
+	_mode_row.add_child(_camera_menu_button)
+	_camera_menu = PopupMenu.new()
+	_camera_menu.name = "CameraControlsMenu"
+	_camera_menu.add_item(tr("Front"), CameraMenuAction.FRONT)
+	_camera_menu.add_item(tr("Side"), CameraMenuAction.SIDE)
+	_camera_menu.add_item(tr("Top"), CameraMenuAction.TOP)
+	_camera_menu.add_separator()
+	_camera_menu.add_item(tr("Orbit left."), CameraMenuAction.ORBIT_LEFT)
+	_camera_menu.add_item(tr("Orbit right."), CameraMenuAction.ORBIT_RIGHT)
+	_camera_menu.add_item(tr("Raise the camera."), CameraMenuAction.ORBIT_UP)
+	_camera_menu.add_item(tr("Lower the camera."), CameraMenuAction.ORBIT_DOWN)
+	_camera_menu.add_separator()
+	_camera_menu.add_item(tr("Zoom out."), CameraMenuAction.ZOOM_OUT)
+	_camera_menu.add_item(tr("Zoom in."), CameraMenuAction.ZOOM_IN)
+	_camera_menu.add_item(tr("Reset"), CameraMenuAction.RESET)
+	_camera_menu.add_theme_font_size_override("font_size", UiTheme._font_size(14))
+	_camera_menu.id_pressed.connect(_on_camera_menu_action)
+	add_child(_camera_menu)
 	_sync_toolbar()
 
 
 func _build_badge() -> void:
-	var badge_panel := PanelContainer.new()
-	badge_panel.name = "PreviewSizeBadge"
-	badge_panel.anchor_left = 1.0
-	badge_panel.anchor_top = 1.0
-	badge_panel.anchor_right = 1.0
-	badge_panel.anchor_bottom = 1.0
-	badge_panel.offset_left = -260.0
-	badge_panel.offset_top = -36.0
-	badge_panel.offset_right = -8.0
-	badge_panel.offset_bottom = -6.0
-	badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	badge_panel.add_theme_stylebox_override("panel", _overlay_style())
-	add_child(badge_panel)
+	_badge_panel = PanelContainer.new()
+	_badge_panel.name = "PreviewSizeBadge"
+	_badge_panel.anchor_top = 1.0
+	_badge_panel.anchor_bottom = 1.0
+	_badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_badge_panel.add_theme_stylebox_override("panel", _overlay_style())
+	add_child(_badge_panel)
 	_scale_badge = Label.new()
 	_scale_badge.name = "PreviewSizeLabel"
-	_scale_badge.add_theme_font_size_override("font_size", 15)
+	_scale_badge.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_scale_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_scale_badge.add_theme_font_size_override("font_size", UiTheme._font_size(15))
 	_scale_badge.add_theme_color_override("font_color", Color("#F3F1EB"))
 	_scale_badge.text = tr("%s  ·  %s%%  ·  span %.2f m") % [tr("Draft"), "100", 0.0]
 	_scale_badge.tooltip_text = tr("Grid spacing: %.2f m between adjacent lines.") % GRID_SPACING
-	badge_panel.add_child(_scale_badge)
+	_badge_panel.add_child(_scale_badge)
 	_update_scale_badge()
+	_build_compact_notice()
+
+
+func _build_compact_notice() -> void:
+	_compact_notice = PanelContainer.new()
+	_compact_notice.name = "CompactPreviewNotice"
+	_compact_notice.anchor_left = 0.5
+	_compact_notice.anchor_top = 0.5
+	_compact_notice.anchor_right = 0.5
+	_compact_notice.anchor_bottom = 0.5
+	_compact_notice.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_compact_notice.add_theme_stylebox_override("panel", _overlay_style())
+	add_child(_compact_notice)
+	_compact_notice_label = Label.new()
+	_compact_notice_label.name = "CompactPreviewNoticeLabel"
+	_compact_notice_label.text = tr("Expand the preview for comfortable inspection.")
+	_compact_notice_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_compact_notice_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_compact_notice_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_compact_notice_label.add_theme_font_size_override("font_size", UiTheme._font_size(14))
+	_compact_notice_label.add_theme_color_override("font_color", Color("#F3F1EB"))
+	_compact_notice.add_child(_compact_notice_label)
 
 
 func _make_button(label: String, hint: String, node_name: String) -> Button:
@@ -515,8 +587,36 @@ func _make_button(label: String, hint: String, node_name: String) -> Button:
 	button.text = tr(label)
 	button.tooltip_text = tr(hint)
 	button.focus_mode = Control.FOCUS_ALL
-	button.add_theme_font_size_override("font_size", 14)
+	button.add_theme_font_size_override("font_size", UiTheme._font_size(14))
 	return button
+
+
+func _apply_preview_fonts() -> void:
+	var button_font := UiTheme._font_size(14)
+	for node: Node in find_children("*", "Button", true, false):
+		var button := node as Button
+		if is_instance_valid(button) and button.get_theme_font_size("font_size") != button_font:
+			button.add_theme_font_size_override("font_size", button_font)
+	if is_instance_valid(_scale_badge):
+		var badge_font := UiTheme._font_size(15)
+		if _scale_badge.get_theme_font_size("font_size") != badge_font:
+			_scale_badge.add_theme_font_size_override("font_size", badge_font)
+	if is_instance_valid(_camera_menu):
+		if _camera_menu.get_theme_font_size("font_size") != button_font:
+			_camera_menu.add_theme_font_size_override("font_size", button_font)
+	if is_instance_valid(_compact_notice_label):
+		var notice_font := UiTheme._font_size(14)
+		if _compact_notice_label.get_theme_font_size("font_size") != notice_font:
+			_compact_notice_label.add_theme_font_size_override("font_size", notice_font)
+	_layout_scale_badge()
+	_layout_compact_notice()
+
+
+func _on_theme_changed() -> void:
+	_apply_preview_fonts()
+	_layout_initialized = false
+	_apply_preview_layout()
+	_refresh_camera()
 
 
 func _overlay_style() -> StyleBoxFlat:
@@ -539,48 +639,92 @@ func _sync_toolbar() -> void:
 		_draft_button.button_pressed = not _comparison_original
 		_original_button.disabled = _view_mode != "compare"
 		_draft_button.disabled = _view_mode != "compare"
+		_comparison_side_button.text = tr("Original") if _comparison_original else tr("Draft")
+		_comparison_side_button.button_pressed = _comparison_original
+		_comparison_side_button.disabled = _view_mode != "compare"
 
 
 func _apply_preview_layout() -> void:
 	var compact := size.x < 600.0
-	if _layout_initialized and compact == _compact_layout:
+	var short := size.y < 180.0 * minf(UiTheme.text_scale, 1.5)
+	var popup_camera := short or UiTheme.text_scale >= 1.5
+	var compact_controls := UiTheme.text_scale >= 1.5
+	if _layout_initialized and compact == _compact_layout and short == _short_layout and popup_camera == _popup_camera and compact_controls == _compact_controls and is_equal_approx(size.x, _layout_width):
 		return
 	_layout_initialized = true
 	_compact_layout = compact
-	if compact:
-		_viewport_container.offset_top = 82.0
-		_viewport_container.offset_bottom = -42.0
-		for panel: PanelContainer in [get_node("PreviewControls"), _camera_panel]:
-			panel.offset_left = 0.0
-			panel.offset_right = 0.0
-		var main_panel := get_node("PreviewControls") as PanelContainer
-		main_panel.offset_top = 8.0
+	_short_layout = short
+	_popup_camera = popup_camera
+	_compact_controls = compact_controls
+	_layout_width = size.x
+	for camera_button: Button in _inline_camera_buttons:
+		camera_button.visible = not popup_camera
+	_camera_menu_button.visible = popup_camera
+	_camera_panel.visible = not popup_camera
+	_original_button.visible = not compact_controls
+	_draft_button.visible = not compact_controls
+	_comparison_side_button.visible = compact_controls
+	_reset_button.visible = not compact_controls
+	_compact_notice.visible = short
+	var toolbar_top := _toolbar_top_offset(compact)
+	if short:
+		_viewport_container.offset_top = toolbar_top
+		_viewport_container.offset_bottom = 0.0
+		_toolbar_panel.offset_left = 0.0 if compact else 8.0
+		_toolbar_panel.offset_right = 0.0 if compact else -8.0
+	elif compact:
+		_toolbar_panel.offset_left = 0.0
+		_toolbar_panel.offset_right = 0.0
+		_camera_panel.offset_left = 0.0
+		_camera_panel.offset_right = 0.0
+		_toolbar_panel.offset_top = 8.0
+		if popup_camera:
+			_viewport_container.offset_top = toolbar_top
+			_viewport_container.offset_bottom = -42.0
+		else:
+			_viewport_container.offset_top = 82.0
+			_viewport_container.offset_bottom = -42.0
 		_camera_panel.anchor_top = 0.0
 		_camera_panel.anchor_bottom = 0.0
-		_camera_panel.offset_top = 44.0
-		_camera_panel.offset_bottom = 80.0
-		var badge := get_node("PreviewSizeBadge") as PanelContainer
-		badge.anchor_left = 0.0
-		badge.anchor_right = 0.0
-		badge.offset_left = 8.0
-		badge.offset_right = 260.0
+		_camera_panel.offset_top = toolbar_top
+		_camera_panel.offset_bottom = toolbar_top + 36.0
 	else:
-		_viewport_container.offset_top = 44.0
+		_toolbar_panel.offset_left = 8.0
+		_toolbar_panel.offset_right = -8.0
+		_viewport_container.offset_top = toolbar_top
 		_viewport_container.offset_bottom = 0.0
-		var main_panel := get_node("PreviewControls") as PanelContainer
-		main_panel.offset_left = 8.0
-		main_panel.offset_right = -8.0
 		_camera_panel.anchor_top = 1.0
 		_camera_panel.anchor_bottom = 1.0
 		_camera_panel.offset_left = 8.0
 		_camera_panel.offset_top = -44.0
 		_camera_panel.offset_right = -8.0
 		_camera_panel.offset_bottom = -8.0
-		var badge := get_node("PreviewSizeBadge") as PanelContainer
-		badge.anchor_left = 1.0
-		badge.anchor_right = 1.0
-		badge.offset_left = -260.0
-		badge.offset_right = -8.0
+	_layout_scale_badge()
+	_layout_compact_notice()
+	if is_instance_valid(_camera_menu):
+		_camera_menu.hide()
+
+
+func _toolbar_top_offset(compact: bool) -> float:
+	var available_width := maxf(1.0, size.x - (10.0 if compact else 26.0))
+	var row_width := 0.0
+	var row_height := 0.0
+	var row_count := 1
+	for child: Node in _mode_row.get_children():
+		var control := child as Control
+		if not is_instance_valid(control) or not control.visible:
+			continue
+		var minimum := control.get_combined_minimum_size()
+		if row_width > 0.0 and row_width + 4.0 + minimum.x > available_width:
+			row_count += 1
+			row_width = minimum.x
+		else:
+			row_width += (4.0 if row_width > 0.0 else 0.0) + minimum.x
+		row_height = maxf(row_height, minimum.y)
+	var scaled_height := 44.0 + maxf(0.0, UiTheme._font_size(14) - 14.0) * 1.25
+	if row_count > 1:
+		scaled_height += float(row_count - 1) * (row_height + 2.0)
+	return maxf(44.0, scaled_height)
 
 
 func _update_scale_badge() -> void:
@@ -593,6 +737,57 @@ func _update_scale_badge() -> void:
 	var percent_text := str(int(roundf(percent))) if is_equal_approx(percent, roundf(percent)) else String.num(percent, 2)
 	_scale_badge.text = tr("%s  ·  %s%%  ·  span %.2f m") % [shown_name, percent_text, displayed_span]
 	_scale_badge.tooltip_text = tr("Grid spacing: %.2f m between adjacent lines. Span is the model's X-axis tip-to-tip extent.") % GRID_SPACING
+	_layout_scale_badge()
+
+
+func _layout_scale_badge() -> void:
+	if not is_instance_valid(_badge_panel) or not is_instance_valid(_scale_badge):
+		return
+	var available_width := maxf(96.0, size.x - 16.0)
+	var font: Font = _scale_badge.get_theme_font("font")
+	var font_size := _scale_badge.get_theme_font_size("font_size")
+	var natural_width := font.get_string_size(_scale_badge.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x
+	var badge_width := minf(available_width, maxf(96.0, natural_width + 18.0))
+	var content_width := maxf(1.0, badge_width - 18.0)
+	var line_count := maxi(1, ceili(natural_width / content_width))
+	var font_height := font.get_height(font_size)
+	var badge_height := maxf(26.0, float(line_count) * font_height + 10.0)
+	_badge_panel.custom_minimum_size = Vector2(badge_width, badge_height)
+	_badge_panel.anchor_top = 1.0
+	_badge_panel.anchor_bottom = 1.0
+	_badge_panel.offset_top = -badge_height - 6.0
+	_badge_panel.offset_bottom = -6.0
+	if _compact_layout:
+		_badge_panel.anchor_left = 0.0
+		_badge_panel.anchor_right = 0.0
+		_badge_panel.offset_left = 8.0
+		_badge_panel.offset_right = 8.0 + badge_width
+	else:
+		_badge_panel.anchor_left = 1.0
+		_badge_panel.anchor_right = 1.0
+		_badge_panel.offset_left = -8.0 - badge_width
+		_badge_panel.offset_right = -8.0
+
+
+func _layout_compact_notice() -> void:
+	if not is_instance_valid(_compact_notice) or not is_instance_valid(_compact_notice_label):
+		return
+	var font: Font = _compact_notice_label.get_theme_font("font")
+	var font_size := _compact_notice_label.get_theme_font_size("font_size")
+	var natural_width := font.get_string_size(_compact_notice_label.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, font_size).x
+	var notice_width := minf(maxf(96.0, size.x - 24.0), natural_width + 18.0)
+	var content_width := maxf(1.0, notice_width - 18.0)
+	var line_count := maxi(1, ceili(natural_width / content_width))
+	var notice_height := maxf(26.0, float(line_count) * font.get_height(font_size) + 10.0)
+	_compact_notice.custom_minimum_size = Vector2(notice_width, notice_height)
+	_compact_notice.anchor_left = 0.5
+	_compact_notice.anchor_top = 0.5
+	_compact_notice.anchor_right = 0.5
+	_compact_notice.anchor_bottom = 0.5
+	_compact_notice.offset_left = -notice_width * 0.5
+	_compact_notice.offset_top = -notice_height * 0.5
+	_compact_notice.offset_right = notice_width * 0.5
+	_compact_notice.offset_bottom = notice_height * 0.5
 
 
 func _on_resized() -> void:
@@ -616,6 +811,8 @@ func _is_in_aircraft_viewport(global_point: Vector2) -> bool:
 
 
 func _input(event: InputEvent) -> void:
+	if is_instance_valid(_camera_menu) and _camera_menu.visible:
+		return
 	if event is InputEventMouseButton:
 		var mouse_button := event as InputEventMouseButton
 		if mouse_button.button_index == MOUSE_BUTTON_LEFT:
@@ -673,3 +870,41 @@ func _unhandled_key_input(event: InputEvent) -> void:
 		_:
 			return
 	get_viewport().set_input_as_handled()
+
+
+func _show_camera_menu() -> void:
+	if not is_instance_valid(_camera_menu) or not is_instance_valid(_camera_menu_button):
+		return
+	var button_rect := _camera_menu_button.get_global_rect()
+	var local_position: Vector2 = get_global_transform_with_canvas().affine_inverse() * button_rect.position
+	var window_size: Vector2i = get_window().size
+	_camera_menu.max_size = Vector2i(maxi(160, window_size.x - 16), maxi(120, window_size.y - 24))
+	_camera_menu.popup_on_parent(Rect2(local_position, button_rect.size))
+
+
+func _toggle_comparison_side() -> void:
+	set_comparison_original(not _comparison_original)
+
+
+func _on_camera_menu_action(action: int) -> void:
+	match action:
+		CameraMenuAction.FRONT:
+			set_standard_view("front")
+		CameraMenuAction.SIDE:
+			set_standard_view("side")
+		CameraMenuAction.TOP:
+			set_standard_view("top")
+		CameraMenuAction.ORBIT_LEFT:
+			orbit_by(-10.0, 0.0)
+		CameraMenuAction.ORBIT_RIGHT:
+			orbit_by(10.0, 0.0)
+		CameraMenuAction.ORBIT_UP:
+			orbit_by(0.0, 10.0)
+		CameraMenuAction.ORBIT_DOWN:
+			orbit_by(0.0, -10.0)
+		CameraMenuAction.ZOOM_OUT:
+			zoom_by(1.0 / 1.15)
+		CameraMenuAction.ZOOM_IN:
+			zoom_by(1.15)
+		CameraMenuAction.RESET:
+			reset_view()

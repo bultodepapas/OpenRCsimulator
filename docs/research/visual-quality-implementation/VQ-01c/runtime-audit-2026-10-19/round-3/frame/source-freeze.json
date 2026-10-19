@@ -1,0 +1,94 @@
+{
+  "format": "frame-stall-source-freeze v1",
+  "baseline_commit": "122889b8e846b501dc17ffd610e60bf340bd4786",
+  "scope": "FRAME-R3 timing spans/focus-event recording plus the established diagnostic input_enabled=false fixed-trim route; no application source files are changed.",
+  "baseline_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app",
+  "sources": {
+    "main.gd": {
+      "baseline_sha256": "0f486c4a7c276a603e052b8c495bbf58839bdbb451fd552beb55f948a3be6778",
+      "executed_sha256": "ed2d7945e784858471ccf27292d7701b164958d73fe929d03bb2c772eeff623f",
+      "executed_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\executed_sources\\app\\main.gd"
+    },
+    "sim/simulation.gd": {
+      "baseline_sha256": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+      "executed_sha256": "880f2064a90ce7d045f954fc0653ef2856e5973674902a3054da2d15c065ac16",
+      "executed_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\executed_sources\\app\\sim\\simulation.gd"
+    },
+    "app_root.gd": {
+      "baseline_sha256": "37a24b3080e7df56b28c1879f4ef3a603d5736e4de6af23dfe1d715043ead462",
+      "executed_sha256": "ef74b4760b6fe27e90e1ee3fa01b94b17582a1fbc98e66a1e0eb83edf4692b0b",
+      "executed_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\executed_sources\\app\\app_root.gd"
+    }
+  },
+  "context_sources": {
+    "project.godot": {
+      "baseline_sha256": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+      "executed_sha256": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\project.godot"
+    },
+    "app_root.tscn": {
+      "baseline_sha256": "ef443bf4c8c613367223ad45fdc698e1def02d4216fefdb61b0ff4aa3c6be319",
+      "executed_sha256": "ef443bf4c8c613367223ad45fdc698e1def02d4216fefdb61b0ff4aa3c6be319",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\app_root.tscn"
+    },
+    "main.tscn": {
+      "baseline_sha256": "5d33c24ef6adf91918f099f5a933f0c626d30e843ae070c5dfb6451fa6e34fc4",
+      "executed_sha256": "5d33c24ef6adf91918f099f5a933f0c626d30e843ae070c5dfb6451fa6e34fc4",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\main.tscn"
+    },
+    "sim/flight_session.gd": {
+      "baseline_sha256": "44286703fdf94b78061669038d5982a853c5f3cfda398c2d9e971a146dea3a69",
+      "executed_sha256": "44286703fdf94b78061669038d5982a853c5f3cfda398c2d9e971a146dea3a69",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\sim\\flight_session.gd"
+    },
+    "input/commands.gd": {
+      "baseline_sha256": "4e8de330e95d0c4f4b5f9202ffc186db2cc9f20ef6c3a75ae1b6a70bce258315",
+      "executed_sha256": "4e8de330e95d0c4f4b5f9202ffc186db2cc9f20ef6c3a75ae1b6a70bce258315",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\input\\commands.gd"
+    }
+  },
+  "probe": {
+    "sha256": "f8b631284e8fcfa1be886dec4596ba56dc8f0e7bac25f9693164b97dbb5c58d6",
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\native_frame_probe.gd"
+  },
+  "invocation": {
+    "sha256": "9a143d415f6d6292584595e3a4dbdf3c58c5b9f29cbbc137c4ca2c82ad9137d6",
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\run_native_probe.ps1"
+  },
+  "reducer": {
+    "sha256": "0f68f79a0651c9abadcae90338b4e350cce0800ef0e193426d38e1138275b27f",
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\reduce_frame_trace.py"
+  },
+  "protocol": {
+    "sha256": "88e4e8651e50b63b62b24234d741ec4931c965f8d35918e1fe9b8309a67fa86c",
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\README.md"
+  },
+  "freeze_script": {
+    "sha256": "36b0908450836883140b7539a50d283d430bd159cb303139f7c0c30166adca61",
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\frame\\freeze_sources.py"
+  },
+  "native_environment": {
+    "godot_console_binary": {
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\.tools\\Godot_v4.7.2-stable_win64_console.exe"
+    },
+    "correction_receipt": {
+      "sha256": "69acd55c39b84bc197ba16a16751f35b269edd135fe4f2b27c845c40df70c3c1",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\native-environment-correction.json"
+    },
+    "files": {
+      "openrc_ground_vehicle.dll": {
+        "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\native\\ground_vehicle\\openrc_ground_vehicle.dll"
+      },
+      "openrc_ground_vehicle.gdextension": {
+        "sha256": "1d4b4cbd1070c411922be4ce3c067cf8db610eec6c394dc4811fcfd02236e916",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\native\\ground_vehicle\\openrc_ground_vehicle.gdextension"
+      },
+      "build-receipt.json": {
+        "sha256": "87e642a636c6152b56a9f9efda38cb399fe9ae4800ef38661ac46bd8cb6ab0fb",
+        "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-audit-r3-20261019\\baseline\\app\\native\\ground_vehicle\\build-receipt.json"
+      }
+    }
+  }
+}

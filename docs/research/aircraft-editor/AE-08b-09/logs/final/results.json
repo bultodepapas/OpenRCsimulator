@@ -1,0 +1,128 @@
+[
+  {
+    "suite": "test_workshop_compiler",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "Workshop compiler: 314 checks, 0 failures"
+  },
+  {
+    "suite": "test_workshop_descriptor",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "102 checks, 0 failed"
+  },
+  {
+    "suite": "test_workshop_integration",
+    "exit_code": 0,
+    "assertions": 34,
+    "errors": [],
+    "summary": "Workshop integration: 0 failed"
+  },
+  {
+    "suite": "test_workshop_preview",
+    "exit_code": 0,
+    "assertions": 42,
+    "errors": [],
+    "summary": "workshop preview checks: 0 failures"
+  },
+  {
+    "suite": "test_workshop_store",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "137 checks, 0 failed"
+  },
+  {
+    "suite": "test_workshop_trial",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "Workshop trial: 38 checks, 0 failed"
+  },
+  {
+    "suite": "test_workshop_ui",
+    "exit_code": 0,
+    "assertions": 113,
+    "errors": [],
+    "summary": "Workshop UI: 0 failed"
+  },
+  {
+    "suite": "test_ui_quit",
+    "exit_code": 0,
+    "assertions": 47,
+    "errors": [],
+    "summary": "UI quit: 0 failed"
+  },
+  {
+    "suite": "test_ui_pause",
+    "exit_code": 0,
+    "assertions": 73,
+    "errors": [],
+    "summary": "all UI pause checks passed"
+  },
+  {
+    "suite": "test_ui_pause_responsive",
+    "exit_code": 0,
+    "assertions": 422,
+    "errors": [],
+    "summary": "all responsive Pause checks passed (422)"
+  },
+  {
+    "suite": "test_ui_screen_stack",
+    "exit_code": 0,
+    "assertions": 38,
+    "errors": [],
+    "summary": "all UI screen stack checks passed"
+  },
+  {
+    "suite": "test_ui_input",
+    "exit_code": 0,
+    "assertions": 17,
+    "errors": [],
+    "summary": "all UI input checks passed"
+  },
+  {
+    "suite": "test_controller_menu",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "Controller menu: 48/48 checks passed"
+  },
+  {
+    "suite": "test_ui_language",
+    "exit_code": 0,
+    "assertions": 26,
+    "errors": [],
+    "summary": "all UI language checks passed"
+  },
+  {
+    "suite": "test_ui_scale",
+    "exit_code": 0,
+    "assertions": 72,
+    "errors": [],
+    "summary": "ok   danger announcement chip uses readable text on red"
+  },
+  {
+    "suite": "test_ui_modal_responsive",
+    "exit_code": 0,
+    "assertions": 0,
+    "errors": [],
+    "summary": "Responsive modals: 560 cases, 0 failures"
+  },
+  {
+    "suite": "test_menu_audio",
+    "exit_code": 0,
+    "assertions": 26,
+    "errors": [],
+    "summary": "ok   muting stops an already playing cue"
+  },
+  {
+    "suite": "test_ui_settings_integration",
+    "exit_code": 0,
+    "assertions": 27,
+    "errors": [],
+    "summary": "all Settings integration checks passed"
+  }
+]

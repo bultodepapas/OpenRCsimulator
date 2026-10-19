@@ -104,7 +104,7 @@ The checkout test creates and removes disposable Git fixture repositories, inclu
 
 After intentionally changing aircraft/model sources through their owning generators, regenerate model manifests with `python3 research/aircraft-standardization/build_models.py`, then descriptors with `python3 research/aircraft-editor/build_descriptors.py`, and repeat the checks above. Exact aircraft bytes and model-manifest hashes are inputs; honor `.gitattributes` before regenerating. [Byte/EOL lesson](LEARNINGS.md#2026-10-13--cr-01d--run-a-generators---check-at-head-before-regenerating).
 
-`app/test.sh` runs the six focused suites as part of the full suite. For native Windows, import first using [developer setup](#developer-setup), then run all six:
+`app/test.sh` runs the seven focused suites as part of the full suite. For native Windows, import first using [developer setup](#developer-setup), then run all seven:
 
 ```powershell
 # $GodotWindows is the matching native console executable from developer setup.
@@ -121,7 +121,9 @@ For a native rendered still:
 & $GodotWindows --path app --script (Resolve-Path research/aircraft-editor/capture_workshop.gd).Path -- --language=es --1080p
 ```
 
-Arguments after `--` are `--language=en` or `es`, `--scale=<factor>` (default `2.0`), optional `--1080p`, and `--out=<PNG-path>` (default `user://workshop-review.png`). A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+Arguments after `--`: `--language=en|es`, `--scale=<factor>` (default `2.0`), `--width=<px>`/`--height=<px>` (default 1280×720), `--1080p`, `--text-scale=1|1.5|2`, and `--out=<PNG-path>` (default `user://workshop-review.png`). Optional review cases: `--page=compare`, `--preview`, `--dialog=library|save|guard`, `--invalid`, `--long-name`, `--opaque`, `--reduced-motion`, `--aircraft=<catalog-id>` and `--fullscreen`. The script applies the shared canvas policy, writes a JSON geometry sidecar, and returns nonzero for out-of-bounds key actions/popups. Inspect the PNG as well; rectangles do not prove legibility. Fullscreen evidence must report the actual monitor/window pixels. A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+
+The [trace-dialog capture](../research/aircraft-editor/capture_trace_recovery.gd) uses a deterministic failed recorder in a separate quick-flight process. Run `& $GodotWindows --path app --audio-driver Dummy --script (Resolve-Path research/aircraft-editor/capture_trace_recovery.gd).Path`; it captures Spanish at 1280×720/200% text to `user://trace-recovery-es-200.png`, or accepts `-- --out=<PNG-path>`. This checks native dialog fit; it does not simulate a disk failure or establish trace durability.
 
 ## Aircraft measurement reducers
 

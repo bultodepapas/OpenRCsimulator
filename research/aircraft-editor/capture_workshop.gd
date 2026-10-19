@@ -15,6 +15,9 @@ func _run() -> void:
 	var dialog := ""
 	var preview_only := false
 	var fullscreen := false
+	var invalid := false
+	var long_name := false
+	var aircraft_id := ""
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--language="): language = argument.trim_prefix("--language=")
 		if argument.begins_with("--out="): output = argument.trim_prefix("--out=")
@@ -26,17 +29,29 @@ func _run() -> void:
 		if argument.begins_with("--dialog="): dialog = argument.trim_prefix("--dialog=")
 		if argument == "--preview": preview_only = true
 		if argument == "--fullscreen": fullscreen = true
+		if argument == "--invalid": invalid = true
+		if argument == "--long-name": long_name = true
+		if argument == "--opaque": UiTheme.opaque_panels = true
+		if argument == "--reduced-motion": UiTheme.reduced_motion = true
+		if argument.begins_with("--aircraft="): aircraft_id = argument.trim_prefix("--aircraft=")
 		if argument == "--1080p": pixels = Vector2i(1920, 1080)
 	root.size = pixels
 	if fullscreen: root.mode = Window.MODE_FULLSCREEN
 	await process_frame
-	UiScale.apply(root)
+	var canvas_policy := UiScale.apply(root)
+	UiTheme.compact_layout = bool(canvas_policy.compact)
 	UiTheme.text_scale = text_scale
 	TranslationServer.set_locale(language)
 	var workshop: CanvasLayer = load("res://ui/workshop.gd").new()
+	if not aircraft_id.is_empty(): workshop.initial_aircraft_id = aircraft_id
 	workshop.variants_root = "user://workshop_capture_empty_library"
 	root.add_child(workshop)
 	workshop.set_recipe({scale = requested_scale})
+	if long_name: workshop.set_variant_name("Experimental aircraft with a deliberately long descriptive name")
+	if invalid:
+		var entry: LineEdit = workshop.get("_factor_inputs").weight_multiplier
+		entry.text = "invalid"
+		entry.text_changed.emit(entry.text)
 	workshop.call("_set_page", page)
 	if preview_only and workshop.get("_compact"): workshop.call("_toggle_compact_view")
 	for frame in 12: await process_frame
@@ -64,10 +79,16 @@ func _run() -> void:
 			if not Rect2(Vector2.ZERO, logical).encloses(rect): evidence.overflow.append(control_name)
 	var preview: Control = workshop.get("_preview")
 	evidence.preview = preview.call("get_view_state")
+	evidence.preview.geometry = _projected_geometry(preview)
 	for key: String in ["_library_dialog", "_name_dialog", "_guard_dialog"]:
 		var popup: Window = workshop.get(key)
 		if is_instance_valid(popup) and popup.visible:
 			evidence.popup = {size = str(popup.size), position = str(popup.position), minimum = str(popup.get_contents_minimum_size())}
+			evidence.popup.buttons = []
+			for button: Node in popup.find_children("*", "Button", true, false):
+				evidence.popup.buttons.append({text = button.text, size = str(button.size), min = str(button.custom_minimum_size), combined = str(button.get_combined_minimum_size())})
+			if not Rect2(Vector2.ZERO, logical).encloses(Rect2(Vector2(popup.position), Vector2(popup.size))):
+				evidence.overflow.append(popup.name)
 	var metrics := FileAccess.open(output.get_basename() + ".json", FileAccess.WRITE)
 	if metrics != null: metrics.store_string(JSON.stringify(evidence, "\t"))
 	else: error = ERR_CANT_CREATE
@@ -75,3 +96,32 @@ func _run() -> void:
 	workshop.free()
 	await process_frame
 	quit(error if error != OK else (1 if not evidence.overflow.is_empty() else 0))
+
+
+func _projected_geometry(preview: Control) -> Dictionary:
+	var camera: Camera3D = preview.get("_camera")
+	var model: Node3D = preview.get("_airplane_root")
+	if not is_instance_valid(camera) or not is_instance_valid(model): return {}
+	var minimum := Vector2(INF, INF)
+	var maximum := Vector2(-INF, -INF)
+	var count := 0
+	for node: Node in model.find_children("*", "MeshInstance3D", true, false):
+		var part := node as MeshInstance3D
+		if not part.is_visible_in_tree() or part.mesh == null: continue
+		for index in part.mesh.get_surface_count():
+			var arrays := part.mesh.surface_get_arrays(index)
+			var vertices: Variant = arrays[Mesh.ARRAY_VERTEX]
+			if not vertices is PackedVector3Array: continue
+			for vertex: Vector3 in vertices:
+				var point := part.global_transform * vertex
+				if camera.is_position_behind(point): continue
+				var projected := camera.unproject_position(point)
+				minimum = minimum.min(projected)
+				maximum = maximum.max(projected)
+				count += 1
+	if count == 0: return {}
+	var canvas := camera.get_viewport().get_visible_rect().size
+	return {viewport = [canvas.x, canvas.y], vertex_count = count,
+		rect = [minimum.x, minimum.y, maximum.x - minimum.x, maximum.y - minimum.y],
+		width_fraction = (maximum.x - minimum.x) / maxf(canvas.x, 1),
+		height_fraction = (maximum.y - minimum.y) / maxf(canvas.y, 1)}

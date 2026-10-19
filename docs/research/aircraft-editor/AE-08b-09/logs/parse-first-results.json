@@ -1,0 +1,5307 @@
+[
+  {
+    "path": "addons/aircraft_contract/export_plugin.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "addons/aircraft_contract/plugin.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "addons/build_info/export_plugin.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "addons/build_info/plugin.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/avanti_s_blender_geometry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/avanti_s_geometry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/avanti_s_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/extra_300s_appearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/extra_300s_finish.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/extra_300s_geometry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/extra_300s_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/extra_clearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/hx700_articulated_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/hx700_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/imported_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/imported_model_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/inspect_extra.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/inspect_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/inspect_p51.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/inspect_timber.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/model_clearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/model_manifest.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/model_registry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/p51d_appearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/p51d_finish.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/p51d_geometry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/p51d_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/retractable_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/timber_crash_sections.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/timber_geometry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/timber_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_appearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_controls.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_equipment.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_finish.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_fracture.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_gear_flex.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_geometry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/ugly_stik_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_avanti.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_controls.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_extra.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_p51.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_p51_clearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_timber.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/verify_timber_clearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "aircraft/visual_checks.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_root.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/aircraft_catalog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/build_info.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/display_preferences.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/preferences.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/sky_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/update_check.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/update_checker.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "app_state/visual_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/flight_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/glow_voice.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/nitro_engine_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/nitro_voice.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/soundscape.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/soundscape_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/storm_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/wildlife.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "audio/windsock_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "data/field_loader.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "data/lake_loader.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/calculator.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/catalog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/component_resolver.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/impact_budget.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/incident.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/inspection.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/package_optimizer.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/repair_details.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/repair_planner.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/replacement_quote.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/settlement.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "economy/thermal_budget.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "environment/moon_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "environment/sky_appearance_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "environment/solar_clock.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "environment/solar_position.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "environment/storm_events.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "environment/time_of_day_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "environment/visual_timeline.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "failures/catalog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "failures/config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "failures/runtime.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "helicopter_main.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/commands.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/controller_actions.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/controller_profile.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/controller_profile_store.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/controller_registry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/controller_service.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/ground_vehicle_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/input_report.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/input_report_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/jeti_radio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/keyboard.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/latency_patch.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/rc_calibration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/rc_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "input/smoke_aux.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "landscapes/catalog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "landscapes/club_field/landscape.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "landscapes/green_paradise/landscape.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "main.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/aero.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/air_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/aircraft_contact_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/aircraft_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/aircraft_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/aircraft_modules.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/atmosphere.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/battery/battery_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/battery/esc_supervisor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/battery/pack_ecm.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/control_actuators.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/control_surfaces.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/cruise_trim.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/effective_mass.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/electric_battery_step.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/electric_motor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/electric_stop.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/electric_supply.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/event_bracket.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/event_step.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/fixed_datum_body.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/flaps.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/flight_modes.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/fuel_properties.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/generalized_coordinates.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/four_stroke.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/fuel_feed.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/fuel_mass.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/installation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/lifecycle.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/operating_point.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/profile.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/propeller.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/source.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/thermal.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/two_stroke.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/glow/vibration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_contact.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_effect.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_start.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_surfaces.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_terrain.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/airfield_course.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/airfield_track.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/course.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/four_corner.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/nitro_dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/quarter_car.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/support_bench_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/suspension_bench_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/vehicle_damage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/vehicle_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/vehicle_dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_vehicle/vehicle_environment.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/ground_wheels.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/hull_contact.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/hull_crossing.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/impact_snapshot.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/integrator.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/lake_surface.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/linearize.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/liquid_fuel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/mass_inventory.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/math3d.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/multirotor/airframe.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/multirotor/plant.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/multirotor/powertrain.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/multirotor/rotor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/physical_identity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/propulsion.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/resource_event_step.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/retractable_gear.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rigid_body.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotor_coupling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/aerodynamic_stage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/airframe.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/drive.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/dynamic_inflow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/electronics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/flight_dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/geared_coupling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/ground_start.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/hx700_flex_bench.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/impact_detector.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/inflow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/lifecycle.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/main_rotor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/main_rotor_stage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/performance_context.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/simulation_step_adapter.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/skid_contact.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/swash.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/tail_rotor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft/trim.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/rotorcraft_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/slipstream.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/swirl_loads.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/trim.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/turbine.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/wash_transport.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/wheel_profiles.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/wind_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/wind_field.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/wind_turbulence.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "physics/wing_polar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/airplane.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/atmosphere.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/camera/camera_math.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/camera/camera_rig.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/camera/chase_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/camera/orbit_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/airframe_scuffs.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/cause.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/crash_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/director.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/prop_break.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/scenery_damage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/section_splitter.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/severity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/shader_warmup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/crash/wreck.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/engine_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/engine_sound.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/engine_voice.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/field.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/field_projected_shadows.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/flight_cue_shadows.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/flightline_barrier.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/flightline_barrier_detail.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/flightline_barrier_planting.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/frame_samples.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/frames.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/grass_ground_material.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/grass_quality.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/grass_scene_snapshot.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/ground.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/ground_gear.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/horizon.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/hud.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/lake/generated_geometry_stamp.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/lake/lake_reflection.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/lake/lake_terrain.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/lake/lake_world.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/lake/water_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/lake/water_material.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/landscape_upgrade/airfield_lighting.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/landscape_upgrade/options.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/landscape_upgrade/ridges.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/landscape_upgrade/scenery_bodies.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/landscape_upgrade/scenery_grass_mask.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/landscape_upgrade/sun_glare.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/landscape_upgrade/twilight_palette.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/near_grass.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/battery_panel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/battery_sensors.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/controls_guide.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/flight_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/overlay_frame.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/overlay_manager.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/overlay_settings.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/telemetry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/telemetry_panel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/transmitter.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/units.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/warnings_bar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/overlays/wind.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/panel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/pilot_camera.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/pilot_station.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/pilot_station_detail.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/projected_shadow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/propeller_blur.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rc_ground_material.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/heli_crash_presentation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/heli_night_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/heli_night_rotor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/heli_rotor_blur.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/heli_rotor_visual.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/heli_wreck.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/hx700_controller_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/hx700_elastic_skin.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/hx700_inspection_motion.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/hx700_mechanics_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/hx700_mechanism.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/rotor/hx700_motion_equations.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/shader_clock.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/shadow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/smoke/exhaust.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/sun/sky_mirror.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/sun/sun_optics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/time_of_day_lighting.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/tree_assets.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/treeline.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/visual_evidence.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/weather/cloud_transport.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/weather/lightning.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/weather/sky_appearance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/weather/storm_bank.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/weather/storm_cell.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/windsock.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/windsock_motion.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/windsock_projected_shadow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/aircraft_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/campfire.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/conditions.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/ephemeris.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/exposure.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/field_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/lunar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/sky_state.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/stars.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "render/world/world.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenarios/natural_random.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenarios/scenario_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/ambience.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/ambience_player.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/birds.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/botanical_habitats.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/capture_views.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/club_furniture.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/club_shed.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/club_sign.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/collision_setup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/collision_world.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/damage_batches.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/fence_parts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/fleet.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/flowers.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/ground_features.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/imported_grass_material.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/imported_hedge.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/imported_near_grass.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/imported_vegetation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/mesh_kit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/models.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/palette.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/people.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/pit_chair.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/population.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/postcards.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/prefabs.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/runway_scenario.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/scenery.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/scenery_loader.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/support_surfaces.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/takeoff_pilot.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/vegetation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/vegetation_placement.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "scenery/woodland_edge_habitat.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/aircraft_contact_events.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/aircraft_propulsion_runtime.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/checkpoint_json.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/environment.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/flight_log.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/flight_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/fuel_sample.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/ground_vehicle/session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/helicopter_flight_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/lake_collision.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/landing_maneuver.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/liquid_fuel_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/maneuvers.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/recorder.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/rotorcraft_recorder.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/scenarios.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/scenery_collision.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/scenery_damage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/scripted.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/simulation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/trace.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "sim/vehicle_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "spec.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/aero_flow_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/attached_flow_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/avanti_gamepad_base.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/avanti_pullup_base.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/avanti_rudder_base.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/bench_heli_performance.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/bench_lake_session_airborne.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/bench_physics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/bench_radio_events.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/bench_regimes.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/bench_wind.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/benchmark_landscape_collision.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_aircraft_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_controller_settings.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_engine_smoke.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_ground_terrain.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_lake_entry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_landscape_upgrade.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_population_assets.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_propeller_blur.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_time_of_day_dialog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_trace_dialog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/capture_ui.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/check_field_pack.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/check_native_pack.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/fake_releases.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/fingerprint_vehicles.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/fixtures/atmosphere_field.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/fixtures/scenery_collision_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/golden_flights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/landing_test_driver.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/law_properties.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/p51_envelope_base.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/probe_field_failure.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/probe_trace_failure.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/propulsion_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/record_golden.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/replay_policy.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/run_fixed_step.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/slipstream_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/swirl_dense_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/swirl_e0b6_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_accident_integration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_accident_report.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_accident_settlement.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aero.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aero_continuity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aero_flow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_air_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_air_density.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_catalog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_contact_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_contact_events.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_contact_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_model_manifest.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_modules.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_package_proofs.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_physical_identity_contacts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_propulsion_runtime.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_aircraft_render_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_airframe_scuff_cache.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_airframe_scuffs.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_atmosphere.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_atmosphere_column.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_atmosphere_column_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_atmosphere_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_attached_flow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_audio_bus_freshness.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_avanti_gamepad.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_avanti_gamepad_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_avanti_handling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_avanti_keyboard.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_avanti_rudder.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_avanti_yaw_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_battery_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_battery_esc_supervisor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_battery_pack_ecm.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_battery_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_body_directional.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_botanical_habitats.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_build_info.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_camera_math.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_camera_route.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_camera_views.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_campfire.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_checkpoint_integrity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_cloud_transport.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_conditions_responsive.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_contact_policy.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_continuous_state.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_control_actuators.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_control_surface_observation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_control_surfaces.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_actions.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_auto_defaults.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_aux_runtime.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_aux_setup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_binding_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_car.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_conditioning.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_extended_actions.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_flight_actions.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_ground.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_integration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_menu.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_pause_recovery.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_persistence.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_profile.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_profile_hardening.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_prompts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_registry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_responsive.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_routing_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_sections.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_settings_save.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_setup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_setup_safety.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controller_store.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controls.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_controls_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_breakup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_cause.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_energy.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_fracture.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_hull_labels.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_integration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_masses.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_pose.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_presentation_ladder.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_proportional.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_sections.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_severity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_snapshot.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_warmup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_wreck.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_crash_wreck_surface.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_cruise_trim.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_damping_regimes.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_downloaded_habitats.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_downwash_lag.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_dr_multirotor_kernel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_dynamic_mass_contact.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_dynamic_mass_contact_boundary.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_dynamic_mass_contact_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_e2e_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_e2e_radio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_calculator.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_catalog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_component_resolver.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_cr39.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_impact_budget.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_inspection.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_package_optimizer.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_repair_details.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_repair_planner.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_replacement_quote.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_economy_thermal_budget.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_battery_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_battery_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_battery_step.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_event_localization.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_motor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_motor_compact.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_propulsion.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_runway.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_stop.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electric_supply.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_electrical_bank.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_engine_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_engine_smoke.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_engine_sound.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_engine_voice.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_envelope.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_envelope_integrity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_extra_handling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_extra_installation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_extra_runway.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_availability_ui.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_launch.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_power.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_profiles.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_routes.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_shutdown.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failure_ui.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_failures.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_far_forest.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_field_integration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_field_light_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_field_loader.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_field_projected_shadows.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_field_surfaces.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flap_aero.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flaps_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flaps_ui.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flight_cue_shadows.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flight_log.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flight_log_ui.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flightline_barrier.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_flightline_barrier_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_frame_samples.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_frames.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_fuel_event_boundaries.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_fuel_live_mass.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_fuel_mass_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_fuel_properties.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_fuel_sample.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_fuel_start_fill.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_fuel_system_contract.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_gear_flex.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_gear_reserve_energy.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_gear_visual_contacts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_coupling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_equilibrium.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_flight_physics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_four_stroke.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_fuel_feed.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_hub_inflow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_installation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_lifecycle.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_oracle.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_prepared.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_profiles.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_propeller_momentum.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_propeller_prepared.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_stage_reuse.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_thermal.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_trace.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_two_stroke.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_glow_vibration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_golden.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_grass_ground_material.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_grass_mask_bounds.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_contact.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_effect.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_friction.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_image_cache.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_physics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_start_environment.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_start_integrity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_stiction.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_surfaces.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ground_terrain.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_gyro.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_half_power_start.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_handling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_3d_controller.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_aerodynamic_stage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_airframe.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_construction.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_contact_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_control_actions.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_coupling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_crash_presentation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_crash_relaunch.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_crash_visual.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_disc_normal_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_drive.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_dynamic_inflow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_elasticity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_electronics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_electronics_prepared.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_ground_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_ground_start.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_impact_detector.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_inflow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_inspection_controller.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_inspection_motion.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_lifecycle.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_main_rotor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_main_rotor_stage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_mechanics_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_mechanism.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_night_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_night_rotor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_performance_context.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_prepared_context_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_render_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_skid_bristles.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_startup_kernel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_state_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_swash.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_tail_rotor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_trim.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_heli_visual.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_home_presentation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_horizon.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_hull_crossing.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_imported_aircraft_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_imported_grass_wind.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_imported_hedge.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_imported_near_grass.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_imported_tree_rendering.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_imported_vegetation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_induced_integrity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_input_report.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_input_report_buttons.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_input_report_cli.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_input_report_e2e.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_integrator.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_jeti_identity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_jeti_runtime.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_jeti_setup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_lake_collision.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_lake_geometry_bake.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_lake_ground_contact.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_lake_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_lake_surface.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_lake_world.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landing_maneuver.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landing_variations.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_architecture.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_collision.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_collision_coverage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_collision_oracle.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_collision_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_collision_setup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_collision_support.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_collision_world.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_gravel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_ground_lu18.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_horizon.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_lighting.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_marker_optics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_population.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_population_assets.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_runtime.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_scenery_eligibility.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_scenery_grass_mask.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_tree_bounds.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_twilight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscape_vegetation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_landscapes.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_latency_patch.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_latency_patch_cli.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_latency_patch_route.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_liquid_fuel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_liquid_fuel_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_mass_inventory.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_mass_trace.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_math3d.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_menu_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_modes.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_natural_random_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_natural_random_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_natural_random_generator.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_natural_random_screen.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_near_grass.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_night_kit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_nitro_dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_overlay_battery.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_overlay_battery_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_overlay_fuel_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_overlay_manager.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_overlay_telemetry.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_overlay_units.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_p51_envelope.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_p51_flaps.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_p51_ground.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_p51_handling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_p51_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_p51_retracts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_physical_envelope.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_physical_identity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_pilot_aids.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_pilot_station.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_pilot_station_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_pilot_trim.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_projected_shadow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_prop_strike.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_prop_strike_feedback.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_propeller_blur.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_propeller_wake.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_propulsion.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_propulsion_scalar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_pullup_invariants.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rates.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rc_axis_history.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rc_calibration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rc_fault_boundaries.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rc_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rc_profile_validation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rc_rearm.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv36_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv38_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_activity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_activity_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_airfield_course.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_airfield_track.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_attitude_integration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_course.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_damage.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_damage_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_effects_activity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_ground_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_ground_material.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_handling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_menu.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_nitro_activity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_nitro_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_nitro_service.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_nitro_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_nitro_visual.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_obstacle_contacts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_powertrain.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_presentation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_render_audit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_road_batch.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_support.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_suspension.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_track_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_vehicle_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_vehicle_dynamics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rcv_wet_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_recorded_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_regime_consistency.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_replay_integrity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_replay_policy.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_resource_event_step.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_retractable_gear.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_retractable_gear_ground.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_retractable_gear_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_retractable_gear_trace.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rigid_body.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rk_stage_time.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rotor_coupling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_rudder_authority.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_runway_checkpoint_metadata.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_runway_cli.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_runway_fleet.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_runway_start.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_runway_transaction.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_ambience.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_build.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_damage_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_destruction.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_destruction_runtime.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_ground_lu08.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_loader.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_scenario.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_scenery_trace.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_servo.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_session_guards.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_settings_ui.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_contact_substeps.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_environment.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_event_protocol.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_event_refinement.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_generalized_coordinates.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_ground_vehicle_kernel.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_law_properties.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sf_vehicle_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_shader_clock.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_shadow_blur.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_shadow_collection.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_shaft_coupled.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_shaft_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_shaft_equilibrium.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_shaft_refinement.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_simulation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sky_appearance_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sky_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sky_preferences.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sky_render.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sky_routes.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_slipstream_downwash.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_slipstream_scalar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_slipstream_sidewash.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_smoke_aux.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_soft_contact_feedback.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_soft_contacts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_soundscape.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_spin.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_stall_solver.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_start_choice.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_stik_grain.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_storm_bank.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_storm_cell.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_storm_events.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_strip_induced.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_sun_optics.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_swirl_accuracy.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_swirl_optimization.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_swirl_torque.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_switch_aux.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_tail_downwash.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_takeoff_roll.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_timber_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_timber_ground.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_timber_handling.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_checkpoint_v2.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_clock.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_edit.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_render.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_render_update.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_scenery_update.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_solar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_time_of_day_timeline.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_touchdown.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_trace.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_trace_metadata.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_tree_assets.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_tree_wind.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_treeline.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_treeline_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_trim.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_trim_density.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_trim_integrity.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_turbine.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_turbine_continuous.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_turbulence_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_aircraft.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_atmosphere.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_battery_mode.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_field_world_time_of_day.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_flight_capture.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_help.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_home.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_home_layout.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_home_legend.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_home_preview_cache.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_home_start_layout.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_language.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_modal_responsive.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_moon_controls.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_natural_random.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_pause.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_pause_responsive.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_preview_requests.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_preview_resources.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_quit.gd",
+    "exit_code": 1,
+    "error": true
+  },
+  {
+    "path": "tests/test_ui_runway.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_scale.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_screen_stack.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_settings_integration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_sky.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_standard_column.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_time_of_day.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_time_of_day_pause.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_turbulence.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_update_notice.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_weather.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_ui_weather_sliders.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_update_check.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_vegetation_collision_proxies.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_visual_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_visual_evidence.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_visual_timeline.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wash_profile.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wash_transport.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_water_checkpoint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_water_director.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_water_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wheel_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wildlife.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wind_field.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wind_flight.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wind_hud.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wind_trace.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wind_turbulence.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_windsock.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_windsock_data.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_windsock_motion.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_windsock_shadow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wing_body_roll.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wing_polar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wing_polar_session.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_woodland_edge_habitat.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_workshop_compiler.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_workshop_descriptor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_workshop_integration.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_workshop_preview.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_workshop_store.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_workshop_trial.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_workshop_ui.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_ephemeris.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_field_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_flow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_assets.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_aureole.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_config.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_flow.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_light.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_lunar.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_presets.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_moon_sky.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_presentation_context.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_sky.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_world_stars.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_wreck_shadow_cache.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/test_yaw_damping.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/ui_driver.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tests/wing_polar_fixture.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tools/flight_log_cli.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "tools/inspect_hx700.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/accident_report.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/controller_prompts.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/controller_setup.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/controls_reference.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/failures_menu.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/field_error.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/first_flight_hint.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/held_keys.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/help_screen.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/home.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/home_presentation.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/home_preview_resources.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/home_scene.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/key_cap.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/key_labels.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/menu_audio.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/natural_random_screen.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/overlays_dialog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/pause_menu.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/screen.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/screen_stack.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/settings_screen.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/sky_controls.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/smoke_aux_assignment.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/time_of_day_controls.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/time_of_day_dialog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/trace_recovery.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/ui_input.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/ui_scale.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/ui_theme.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/update_notice.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/weather_dialog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/widgets.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/workshop.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "ui/workshop_preview.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/airfield_track_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/contact_debug.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/course_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/ground_camera.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/ground_damage_view.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/ground_dashboard.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/ground_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/ground_scene.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/ground_wet_effects.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/monster_car_2_lights.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/monster_car_2_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/mt8_model.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/mt8_rig.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/nitro_exhaust.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/telemetry_plot.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "vehicles/ground/vehicle_catalog.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "workshop/compiler.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "workshop/dependencies.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "workshop/descriptor.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "workshop/parameters.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "workshop/store.gd",
+    "exit_code": 0,
+    "error": false
+  },
+  {
+    "path": "workshop/trial.gd",
+    "exit_code": 0,
+    "error": false
+  }
+]
