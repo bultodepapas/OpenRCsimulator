@@ -282,10 +282,12 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 	var wind: PackedFloat64Array = session.wind_at(time_s)
 	var air: Dictionary = session.air_data(s, time_s)
 	var ground: PackedFloat64Array = GroundTerrain.sample(s[0], s[1], session.ground_surfaces)
+	# FUEL-06: the load factor divides by the live mass (fuel burned), not the initial wet build.
+	var live: Dictionary = session.mass_properties() if session.has_method("mass_properties") else {}
 	var t := Telemetry.compute(s, wind, air, {
 		pilot_ned = [float(pilot.get("north", 0.0)), float(pilot.get("east", 0.0)), float(pilot.get("down", 0.0)) - float(pilot.get("eye_height", 0.0))],
 		terrain_up = ground[0],
-		last_loads = sim.last_loads, mass = sim.mass, gravity = sim.gravity,
+		last_loads = sim.last_loads, mass = float(live.mass_kg) if live.get("ok", false) else sim.mass, gravity = sim.gravity,
 		throttle = sim.inputs[3], time_s = time_s,
 	})
 	var envelope: Dictionary = session.aircraft.model.get("envelope", {})

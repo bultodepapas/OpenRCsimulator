@@ -502,6 +502,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	var aircraft: String = departing_home.aircraft_id if departing_home != null else ""
 	var chosen_start: String = departing_home.start_choice if departing_home != null else "airborne"
 	var chosen_battery: String = departing_home.battery_mode if departing_home != null else ""
+	var chosen_fuel: float = departing_home.fuel_start_fill if departing_home != null else 1.0
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
 	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
@@ -544,6 +545,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	flight.start_choice = chosen_start
 	if "battery_mode" in flight: # BAT-13: Home's battery choice; random and direct routes use the aircraft default or --battery=
 		flight.battery_mode = chosen_battery if has_home and not is_random else ""
+	if "fuel_start_fill" in flight: # FUEL-07: Home's fuel choice; random and direct routes start full or use --fuel=
+		flight.fuel_start_fill = chosen_fuel if has_home and not is_random else 1.0
 	flight.weather_config = chosen_weather.duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	if not helicopter_route:

@@ -24,7 +24,8 @@ const REFERENCE := {year = 2026, month = 6, day = 21, utc_offset_h = 2.0, latitu
 ## FW-MOON-11 moon events: "moon_view" searches forward from the preset's month/day for the first moment the moon meets
 ## the preset's constraints in front of the pilot (MOON_VIEW_* below); "moon_view_golden" returns golden hour (sun 6°,
 ## setting) of that day, the start of a flowing evening. At the reference place: Moonrise = the Harvest Moon,
-## 2026-09-26 (rises due east at dusk); Night = 2026-10-25, a full moon 25° up in the east (FW-MOON-11 evidence).
+## 2026-09-26 (rises due east at dusk); Night = 2026-09-27 22:00, the next night's 98 % moon 19° up in the east
+## (docs/research/field-world/FW-MOON-11).
 const PRESETS := {
 	dawn = {month = 6, day = 21, event = "rising", sun_elevation_deg = -4.0},
 	sunrise = {month = 6, day = 21, event = "rising", sun_elevation_deg = 1.0},

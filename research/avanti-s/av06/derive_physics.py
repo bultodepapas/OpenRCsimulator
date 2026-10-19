@@ -28,6 +28,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "research" / "fuel-systems"))
+import fuel_registry  # noqa: E402
+KEROSENE_BLEND = "kerosene_5pct_turbine_oil"
 CLI_ARGS = None
 if __name__ == "__main__":
     cli = argparse.ArgumentParser(description=__doc__)
@@ -348,7 +351,7 @@ note("aero", "wing-body ac = ARP (model z)", x_arp, f"shifted {1000 * (x_arp - x
 Cma = note("aero", "Cma about ARP (1/rad, c_ref)", -slope_h * Sh / S * (xh_ac - x_arp) / c_ref, "tail only: the ARP is the wing-body ac")
 x_np = x_arp - Cma / CLa * c_ref
 cg_z = v("airframe.cg_aft_of_root_le")
-sm = note("aero", "static margin at the flight CG (% MAC)", 100 * (x_np - cg_z) / mac,
+sm = note("aero", "static margin at the manual CG, main tank empty (% MAC)", 100 * (x_np - cg_z) / mac,
           f"neutral point at model z {x_np:.4f} ({100 * (x_np - mac_le) / mac:.1f} % MAC); CG {cg_z * 1000:.0f} mm = {100 * (cg_z - mac_le) / mac:.1f} % MAC")
 for name, z in (("beginner 240 mm", 0.240), ("normal 250 mm", 0.250), ("3D 260 mm", 0.260)):
     note("aero", f"static margin, manual CG {name} (% MAC)", 100 * (x_np - z) / mac, "same neutral point")
@@ -426,6 +429,9 @@ for it in IN["inventory"]:
     items.append((it["name"], float(it["mass"]["value"]), it["mass"]["kind"], it["mass"]["source"],
                   le(pos[0], pos[1], pos[2]), it.get("size"), it["position_kind"], it["position_source"], it["id"]))
 fuel_l = v("fuel.tank_l") * v("fuel.fraction")
+# FUEL-05e: the density lives in the fuel registry; the input mirrors it for the AV-14 sensitivity tools.
+if abs(v("fuel.density") * 1000.0 - fuel_registry.blend_density(KEROSENE_BLEND)) > 1e-9:
+    raise ValueError("inputs fuel.density must equal the registry blend " + KEROSENE_BLEND)
 fuel_kg = fuel_l * v("fuel.density")
 fpos = list(v("fuel.position_model"))
 fpos[0] += DZ
@@ -438,8 +444,9 @@ movable = [k for k, it in enumerate(IN["inventory"]) if it.get("balance_item")]
 offset = len(items) - len(IN["inventory"]) - 1  # index of the first inventory item in `items`
 z_lo, z_hi = IN["balance"]["balance_item_range_z"]
 m_mov = sum(items[offset + k][1] for k in movable)
-mom = sum(i[1] * i[4][0] for i in items)
-m_all = sum(i[1] for i in items)
+# FUEL-05e: the manual point is met with the main tank empty (full hopper, empty main); the fuel item is last.
+mom = sum(i[1] * i[4][0] for i in items[:-1])
+m_all = sum(i[1] for i in items[:-1])
 mom_fixed = mom - sum(items[offset + k][1] * items[offset + k][4][0] for k in movable)
 z_bal = min(max((cg_z * m_all - mom_fixed) / m_mov, z_lo), z_hi)
 for k in movable:
@@ -449,8 +456,9 @@ for k in movable:
 note("balance", "batteries/electronics station (model z)", z_bal, f"{m_mov:.2f} kg moved within {z_lo}..{z_hi} m to approach the manual CG" + (" (at the bay limit)" if z_bal in (z_lo, z_hi) else ""))
 dry = sum(i[1] for i in items[:-1])
 note("balance", "pre-balance dry components (kg)", dry, f"inventory before virtual balance mass; SebArt manual reference is {v('airframe.dry_mass')} kg complete RTF dry with P100")
-mass0 = sum(i[1] for i in items)
-x_cg0 = sum(i[1] * i[4][0] for i in items) / mass0
+fuel_item = items[-1]
+mass0 = sum(i[1] for i in items if i is not fuel_item)
+x_cg0 = sum(i[1] * i[4][0] for i in items if i is not fuel_item) / mass0
 note("balance", "inventory CG without balancing mass (model z)", x_cg0, f"target {cg_z:.3f}")
 nose = x_cg0 > cg_z
 xb = IN["balance"]["nose_ballast_z"] if nose else IN["balance"]["tail_ballast_z"]
@@ -460,6 +468,10 @@ if mb > 1e-6:
     items.append(("virtual reference-build balancing mass", mb, "derived",
                   f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) for the manual balance point; a virtual reference build, NOT measured hardware",
                   [xb, 0.0, 0.0], [0.04, 0.04, 0.04], "estimated", "nose cone" if nose else "tail cone", "ballast_reference"))
+dry_mass = sum(i[1] for i in items if i is not fuel_item)
+dry_cg = [sum(i[1] * i[4][k] for i in items if i is not fuel_item) / dry_mass for k in range(3)]
+dry_cg[1] = 0.0
+note("balance", "empty-main-tank CG (le frame)", dry_cg, "manual 240 mm point with a full hopper and an empty main tank (FUEL-05e)")
 mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
 cg[1] = 0.0
@@ -467,6 +479,9 @@ note("balance", "dry flight mass including virtual balance (kg)", mass - fuel_kg
      f"component inventory plus virtual reference-build mass; manual complete RTF dry reference {v('airframe.dry_mass')} kg")
 note("balance", "flight mass (kg)", mass, f"dry {mass - fuel_kg:.3f} kg + fuel {fuel_kg:.3f} kg")
 note("balance", "flight CG (le frame)", cg, "z from the inventory")
+# FUEL-05e: the flown (declared) fuel sits ahead of the empty-main-tank balance point; report its margin.
+sm = note("aero", "static margin at the flight CG, declared fuel (% MAC)", 100 * (x_np - cg[0]) / mac,
+          f"flight CG {cg[0] * 1000:.1f} mm aft of the root LE with {fuel_kg:.3f} kg of fuel; same neutral point")
 
 
 def inertia(pt):
@@ -988,11 +1003,17 @@ data = {
     },
     "start": {"level_speed": qi("start.level_speed", "m/s")},
     "balance": {
-        "plan_cg": q(cg, "m", src("airframe.cg_aft_of_root_le")[0], f"{cg_z * 1000:.0f} mm aft of the root LE ({src('airframe.cg_aft_of_root_le')[1]}); z from the inventory (derived)"),
+        "plan_cg": q(dry_cg, "m", src("airframe.cg_aft_of_root_le")[0], f"{cg_z * 1000:.0f} mm aft of the root LE ({src('airframe.cg_aft_of_root_le')[1]}); z from the empty-main-tank inventory (derived)"),
         "firewall": q(le(engine_c[2] - 0.12, engine_c[1]), "m", "estimated", "turbine mount ring: front of the P100-RX (241 mm long) centred at the geometry's engine_center"),
-        "configuration": "virtual-balanced-reference-v1",
-        "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the manual's point, NOT a measured airplane")),
+        "configuration": "virtual-balanced-reference-v2-empty-main-tank",
+        "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the manual's point with the main tank empty, NOT a measured airplane")),
+        "fuel_state": "empty_tanks",
     },
+    "fuel_system": {"tanks": [{
+        "id": "main_tank", "fuel": KEROSENE_BLEND, "liquid_inventory_id": "fuel_flight", "shell_inventory_id": "fuel_tank",
+        "capacity": qi("fuel.tank_l", "l"),
+        "unusable": q(0.02, "l", "estimated", "FUEL-05e: felt-clunk main-tank residue estimate; the hopper/UAT stays inside the turbine accessories item; no published value"),
+        "pickup": "felt_clunk", "feed": "ecu_pump"}]},
     "inventory": [
         dict({"id": it[8], "name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3]), "position": q([float(x) for x in it[4]], "m", it[6], it[7])},
              **({"size": q([float(x) for x in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),
@@ -1198,7 +1219,7 @@ preserving the historical AS-02 migration policy. Migration numeric parity: {par
 preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit
 compatibility-default leaves added, {parity['numeric_differences']} differences.
 
-Flight mass {mass:.3f} kg (fuel {fuel_kg:.2f} kg), CG {cg_z * 1000:.0f} mm aft of the root LE = {100 * (cg_z - mac_le) / mac:.1f} % MAC, static margin {sm:.1f} % MAC.
+Flight mass {mass:.3f} kg (fuel {fuel_kg:.2f} kg), CG {cg[0] * 1000:.0f} mm aft of the root LE = {100 * (cg[0] - mac_le) / mac:.1f} % MAC, static margin {sm:.1f} % MAC; the manual's {cg_z * 1000:.0f} mm point is taken with a full hopper and an empty main tank (FUEL-05e).
 Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = {", ".join(f"{x:.6g}" for x in J)} kg·m²; principal moments = {", ".join(f"{x:.6g}" for x in I_principal)} kg·m².
 1-g stall {Vs:.1f} m/s clean, start {V_start:.0f} m/s, maximum level speed {V_max:.1f} m/s ({V_max * 3.6:.0f} km/h).
 Throws (manual high rate): aileron {v('controls.aileron_up')}° up / {v('controls.aileron_down')}° down, elevator ±{v('controls.elevator')}°, rudder ±{v('controls.rudder')}°.

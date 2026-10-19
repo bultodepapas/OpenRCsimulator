@@ -77,7 +77,8 @@ func start(destination := "") -> Error:
 		input_boundary = "post conditioning/rates/trim, before failure and servo; drives interval ending at tick",
 		loads_boundary = "RK4 k1, interval start; initial row uses initial loads",
 		layout = {state = 13, loads = 6, inputs = _session.sim.inputs.size(), aux = _session.sim.aux.size(),
-			continuous = _session.sim.continuous.size(), modes = _session.sim.modes.size()},
+			continuous = _session.sim.continuous.size(), modes = _session.sim.modes.size(), mass = 4},
+		mass_boundary = "FUEL-06: live mass kg and CG offset [x, y, z] m body FRD from the fixed datum O, accepted tick end",
 	}
 	_file.store_buffer(MAGIC.to_ascii_buffer())
 	if not _write_packet(header):
@@ -172,6 +173,10 @@ func _sample(intervention: Dictionary) -> Dictionary:
 	var wind: PackedFloat64Array = _session.wind_at(_session.sim.time())
 	var air: Dictionary = _session.air_data(_session.sim.state, _session.sim.time())
 	sample.air = PackedFloat64Array([air.V, air.alpha, air.beta, wind[0], wind[1], wind[2]])
+	# FUEL-06: the live mass sample (read-only kernel evaluation; finite fuel changes it every tick).
+	var live: Dictionary = _session.mass_properties() if _session.has_method("mass_properties") else {}
+	sample.mass = PackedFloat64Array([live.mass_kg, live.cg_body_m[0], live.cg_body_m[1], live.cg_body_m[2]]) \
+		if live.get("ok", false) else PackedFloat64Array([_session.sim.mass, 0.0, 0.0, 0.0])
 	return sample
 
 

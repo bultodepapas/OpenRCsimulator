@@ -345,7 +345,7 @@ CSV export and plots use the existing flight-log tools and free plotters; no new
 
 - **Catalog (BAT-18).** `app/data/batteries/` is generated from templates. It covers 3S/4S/6S LiPo in several capacities and C classes, LiHV, Li-ion 4S1P/4S2P 21700, and LiFe/NiMH receiver packs. Names are brand-neutral class packs (D10). A real SKU enters only with sourced data and an economy price row; the existing `spektrum_spmx324s50` product row is the first candidate.
 - **Compatibility.** The aircraft declares the series range (from the ESC: Avian 3S–6S; Timber manual 3S/4S, 2200–5000 mAh), the bay box and the maximum mass. Incompatible packs are refused with a reason.
-- **Battery mode (BAT-13, delivered).** Home shows "Battery: ideal / finite pack" inside the flight details for catalog aircraft with `battery_data`; direct routes use `--battery=ideal|pack`. The collapsed flight card has no spare height (`test_ui_home`).
+- **Battery mode (BAT-13, delivered).** The finite pack is the default (owner decision 2026-10-19). Home shows "Battery: finite pack / ideal" inside the flight details for catalog aircraft with `battery_data`; direct routes accept `--battery=ideal|pack`. The collapsed flight card has no spare height (`test_ui_home`).
 - **Pre-flight selection (BAT-19, UI-owned screen).** The pilot picks a pack, a charge state (full, storage, a custom %, or "as left"), a temperature and, with wear enabled, a pack from the hangar. The screen shows:
   - AUW, wing loading and CG shift
   - static thrust at full and at storage charge
@@ -464,7 +464,7 @@ Each row is one small, reviewable change with its proof. Steps marked **Delivere
 | D1 | Make BAT a subplan of EL that takes over EL2b, the battery side of EL3, the pack side of EL4, and EL6? | Yes; EL keeps motor, power stage and EL5 |
 | D2 | Default model order | 1 RC. Allow 2 per template only if the held-out residual justifies it; 0 for parity. |
 | D3 | Cell representation | Average + weakest cell. Per-cell only if a measured imbalance case needs it. |
-| D4 | Realism exposure | Setting "Battery: Ideal / Realistic / Realistic + wear". Realistic becomes the default for electric catalog aircraft after BAT-29. |
+| D4 | Realism exposure | Decided by the owner 2026-10-19: the finite pack is the default wherever an aircraft has `battery_data`; ideal stays selectable (Home flight details, `--battery=ideal`). Wear remains opt-in when BAT-20/21 land. |
 | D5 | Persistent pack health | Yes, opt-in with wear; immutable session snapshot |
 | D6 | Accept labeled `estimated` damage magnitudes? | Yes, opt-in. Only the severe band claims a mechanism source. |
 | D7 | LVC defaults | Aircraft ESC-profile defaults, editable within the profile's documented options |

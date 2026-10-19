@@ -90,7 +90,9 @@ static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Arr
 	owner.set_meta(PROPELLER_EVALUATOR_META,prepared_propeller.evaluator)
 	owner.set_meta(EVALUATOR_META,prepared.evaluator)
 	owner.set_meta(EVALUATOR_IDENTITY_META,install.identity.duplicate(true))
-	var made: Dictionary=Life.create(install.profile,install.settings,install.initial_fuel_kg,
+	# FUEL-07: the session's start fill of the authored full tank (1 = full).
+	var start_fuel: float=owner.start_fuel_kg() if owner.has_method("start_fuel_kg") else install.initial_fuel_kg
+	var made: Dictionary=Life.create(install.profile,install.settings,start_fuel,
 		install.initial_temperature_k,aux[0],owner.engine_running)
 	if not made.ok: return PackedFloat64Array([NAN])
 	var state: Dictionary=made.state

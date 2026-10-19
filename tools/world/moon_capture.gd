@@ -25,6 +25,7 @@ const CASES := {
 	quarter = ["--date=2026-06-23", "--time=00:30"],
 	crescent = ["--date=2026-06-18", "--time=23:15"],
 	night_preset = ["--time_of_day=night"],
+	moonrise_preset = ["--time_of_day=moonrise"], # FW-MOON-11: the solved Moonrise moment
 	southern_full = ["--date=2026-08-27", "--time=23:50", "--lat=-34.6037", "--lon=-58.3816", "--utc_offset=-3"],
 }
 ## FW-MOON-05 overlay cases (--cases=svs): whole UT hours with the moon above 25° at night, rendered with celestial

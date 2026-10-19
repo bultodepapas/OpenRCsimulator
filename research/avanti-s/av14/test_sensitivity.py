@@ -102,16 +102,17 @@ class FuelSensitivityTests(unittest.TestCase):
         self.assertGreater(empty["vmax"], full["vmax"])
         self.assertLess(full["roc"], empty["roc"])
 
-    def test_rebalanced_fuel_cases_expose_the_old_mixed_build_defect(self):
+    def test_rebalancing_no_longer_depends_on_the_fuel_fraction(self):
+        # AV-14 found the old generator rebalanced the hardware for every fuel fraction (a mixed build). Since
+        # FUEL-05e it balances the empty-main-tank inventory, so a fresh balancing run at another fraction keeps
+        # the same hardware and ballast: it must reproduce the fixed-build fuel case exactly.
         for fraction in (1.0, 0.0):
             with self.subTest(fraction=fraction):
                 inputs = sensitivity.with_("fuel.fraction", fraction)
                 fixed_build = sensitivity.fuel_case(self.base, inputs)
                 rebalanced_build = sensitivity.run(inputs)
-                # The old table took these performance values from a fresh balancing run. The two scenarios have
-                # different hardware/ballast mass, so all three must now follow the fixed baseline build instead.
                 for name in ("stall", "vmax", "roc"):
-                    self.assertNotAlmostEqual(fixed_build[name], rebalanced_build[name], places=7, msg=name)
+                    self.assertAlmostEqual(fixed_build[name], rebalanced_build[name], places=7, msg=name)
 
     def test_wing_area_sweeps_run_and_render(self):
         expected = {

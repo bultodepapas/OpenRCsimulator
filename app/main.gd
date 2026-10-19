@@ -94,6 +94,8 @@ var _electric_demo: String = ""
 ## BAT-13: "ideal" (the aircraft's main data) or "pack" (its finite-pack data). Home sets it; else --battery=<mode>;
 ## empty means the aircraft's default (the finite pack where the catalog provides one).
 var battery_mode: String = ""
+## FUEL-07: start fill of a finite-fuel tank (0, 1]. Home sets it; else --fuel=<fraction>; 1 = full tank.
+var fuel_start_fill: float = 1.0
 ## Home supplies its selection. Quick Flight defaults to runway; technical routes keep their reference start.
 var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
@@ -407,6 +409,15 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		get_tree().quit(ERR_INVALID_PARAMETER)
 		return
+	if args.has("fuel"):
+		var fuel_arg := str(args.get("fuel", ""))
+		fuel_start_fill = float(fuel_arg) if fuel_arg.is_valid_float() else NAN
+	if not is_finite(fuel_start_fill) or fuel_start_fill <= 0.0 or fuel_start_fill > 1.0:
+		printerr("fuel fill refused: use --fuel=<fraction> with 0 < fraction <= 1 (1 = full tank)")
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
 	if args.has("battery"):
 		battery_mode = str(args.get("battery", ""))
 	if battery_mode.is_empty():
@@ -612,6 +623,7 @@ func _ready() -> void:
 	session.resetting.connect(_on_resetting)
 	if str(args.get("soundscape", "on")) == "legacy" and session.aircraft.ok and not _scripted and session.aircraft.model.propulsion.get("kind", "glow_prop") != "electric_prop":
 		_engine_audio = EngineSound.create(_airplane.root, session.sim, session.aircraft.model.propulsion.max_rpm)
+	session.set_fuel_start_fill(fuel_start_fill) # FUEL-07: validated above; only finite-fuel tanks use it
 	session.reset()
 	GroundGear.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.

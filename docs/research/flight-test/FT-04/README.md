@@ -32,7 +32,7 @@ Changes to the runner and its tools:
 | Tree | A frozen copy of `app/` at `97136354`; the card files are identical to `76d1c15e` ([provenance](verification/provenance.md)) |
 | Engine and conditions | Godot 4.7.2 official, Linux headless, 240 Hz; calm standard air |
 | Aircraft | Every fixed-wing catalog aircraft (eight) |
-| Runtime | 51 min with 4 jobs on the shared dev VM; 9–18 min per aircraft, 33–38 min per glow Stik (about 3–4× card v3) |
+| Runtime | 51 min with 4 jobs on the shared dev VM; 9–18 min per aircraft, 33–38 min per glow Stik (about 3–5× the card v3 times on the same VM) |
 | Valid tests | Stik, Extra, P-51 and Ventage Jet 39/39; Timber 38/39; glow Stiks 35–36/39 |
 
 Each aircraft folder holds `profile.md`, `profile.json` and `run.log`. [summary.md](summary.md) is the fleet table. These are model predictions, not physical validation.
@@ -70,22 +70,22 @@ The invalid tests are the airplanes' own answers:
 
    A real Ugly Stik stall-turns easily with propwash. The next 3D figures (hover, torque roll) need the same physics.
 2. **Snap rolls and held stalls (post-stall, D10-R4/D8b-R2d).** Every aircraft except the Timber stalls before 45° of roll and autorotates with a yaw-to-roll ratio of 0.21–0.51.
-   - **Stik family, right snaps:** the autorotation dies 97–124° short of 360° (FAI zero), while left snaps reach the finish. The Stik reverses into a left roll.
+   - **Stik family, right snaps:** the autorotation dies 97–124° short of 360° (FAI zero), while left snaps reach the finish. With the pro-snap inputs held on (a development run), the Stik reverses into a left roll.
    - **Extra:** short both ways (86° and 111°).
    - **Ventage Jet:** stops after about 75° of roll.
    - **P-51:** runs on to 429–433°.
    - **Timber:** never stalls and rolls on its ailerons.
 
-   With the stick held back 5 s after a stall, the Stik, Extra and P-51 enter a spin at 184–398°/s. The Ventage Jet and Timber drop a wing or mush. Inverted stalls roll off 107–145° in the first second.
+   With the stick held back 5 s after a stall, the Stik, Extra and P-51 enter a spin at 184–398°/s. The Ventage Jet and Timber drop a wing or mush. Inverted stalls roll off 107–145° in the first second, except the P-51, which only mushes at its elevator limit, at 1.72 Vs.
 3. **Dead-stick glide (propulsion G1d, glow engines).**
-   - **Glow Stiks:** with the engine cut, the propeller windmills at about 4,000–4,500 rpm, and the glide ratio is 4.3–7.4 (FS-64V 4.3).
-   - **Electric aircraft:** the propeller stops and adds no drag (FT-03 finding 2), giving 9.9–13.7.
+   - **Glow Stiks:** with the engine cut, the propeller windmills at about 3,900–4,500 rpm, and the glide ratio is 4.3–7.4 (FS-64V 4.3).
+   - **Electric aircraft and the P-51's gasoline engine:** with the source disabled, the propeller stops (0 rpm) and adds no drag (FT-03 finding 2), giving 9.9–13.7.
 
    The truth probably lies between, with a locked or free-wheeling propeller adding a measurable ΔCD (FT-03 finding 2).
 4. **A running turbine cannot be cut (AV-05b).** `engine_cut_climb`, `glide_turn` and `dead_stick_landing` fly the Ventage Jet at idle (44,000 rpm), as each row's `engine_out` says.
-5. **Engine failure in the climb.** At 1.6 Vs and full throttle the climb is steep (43–68°). With a 2 s reaction, seven of eight aircraft stall, the Stik at 0.30 Vs. With 1 s, only the Stik stalls (0.52 Vs). This is the model's answer for these overpowered climbs; it is a pilot-technique number, not an airplane limit.
+5. **Engine failure in the climb.** At 1.6 Vs and full throttle the climb is steep (43–77°). With a 2 s reaction, seven of eight aircraft stall, the Stik at 0.30 Vs. With 1 s, only the Stik stalls (0.52 Vs). The numbers depend on the 1.6 Vs climb and the reaction time: they describe this scenario, not a limit of the airplane.
 6. **Go-around.** The Ventage Jet's turbine spool-up lets it sink to the runway: 0.05 m with the throttle slammed, and a touch with it eased in over 2 s. The P-51 sinks to 0.03 m with a slow throttle. Propeller aircraft yaw and roll less than 3° in the go-around, which suggests weak torque and P-factor effects; this needs pilot reports.
-7. **Skidded stall.** The P-51 overbanks with half bottom rudder before its wing stalls. It breaks at 1.36 Vs at 155° of bank. Other aircraft roll 35–56° into the turn within a second.
+7. **Skidded stall.** With half bottom rudder the P-51 overbanks before its wing stalls (right): it breaks at 1.36 Vs at 155° of bank, and to the left it rolls 76° into the turn. The Stik, 55AX, Extra and Ventage Jet roll 35–56° into the turn within a second. The Timber mushes and rolls 15–20°, to the outside in the right case.
 
 ## Limits
 

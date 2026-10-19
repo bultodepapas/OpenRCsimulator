@@ -170,12 +170,19 @@ func _start() -> void:
 		model.get("crash_hull_components", PackedStringArray()), float(model.reference.b), float(model.reference.c))
 	var component: String = named.component
 	var surface := surface_at(flight.field,point[0],point[1])
-	var mass := float(flight.session.sim.mass)
+	# FUEL-06: one live mass sample at the impact (fuel burned), not the initial wet build.
+	var live: Dictionary = flight.session.mass_properties() if flight.session.has_method("mass_properties") else {}
+	var live_ok: bool = live.get("ok", false)
+	var mass := float(live.mass_kg) if live_ok else float(flight.session.sim.mass)
 	# CR-08b: the struck point engages only its effective mass; a gear-limit snapshot has no
 	# contact point, so it keeps the whole mass (reported by the estimator's mass_basis).
 	var effective_mass := -1.0
 	if not impact.body_point.is_empty():
-		effective_mass = EffectiveMass.at_point(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), mass, flight.session.sim.inertia)
+		if live_ok and bool(live.finite_fuel):
+			# The contact arm is measured from the live CG, not the fixed datum (R05-B).
+			effective_mass = float(EffectiveMass.at_point_properties(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), live).effective_mass_kg)
+		else:
+			effective_mass = EffectiveMass.at_point(q, impact.body_point, PackedFloat64Array([0.0,0.0,-1.0]), mass, flight.session.sim.inertia)
 	# The CG's own normal velocity bounds the slapdown that follows a first contact off the CG.
 	report = Severity.estimate(mass, normal_speed,tangent_speed,rad_to_deg(atan2(normal_speed,tangent_speed)),surface,component,effective_mass,1.0,v_ned[2])
 	if impact.trigger == "scenery":
@@ -204,8 +211,13 @@ func _start() -> void:
 		report["sample_time"] = "tick_fraction_%.9f" % float(impact.time_fraction)
 	report["mass_kg"] = mass
 	report["cg_model"] = flight._cg_model
+	report["cg_offset_body_m"] = live.cg_body_m.duplicate() if live_ok else PackedFloat64Array([0.0, 0.0, 0.0])
+	# FUEL-06: finite glow fuel reports what remains at impact; prescribed fuel stays the declared inventory.
+	var sources: Dictionary = energy_sources.duplicate()
+	if live_ok and bool(live.finite_fuel) and sources.has("glow_fuel"):
+		sources["glow_fuel"] = float(live.fuel_remaining_kg)
 	report["fuel_kg"] = _fuel_kg
-	report["fuel_kind"] = "declared inventory; no flight consumption"
+	report["fuel_kind"] = "remaining at impact (finite glow fuel)" if live_ok and bool(live.finite_fuel) else "declared inventory; no flight consumption"
 	# Presentation estimate, not a simulated tank/joint failure. A damaged wing
 	# alone does not imply a ruptured tank; whole-airframe destruction can.
 	# Central = the fuselage/engine/propeller groups, so labelled nose, belly and spinner hits count (CR-01d).
@@ -235,8 +247,8 @@ func _start() -> void:
 	var turbine: bool = flight.session.aircraft.model.propulsion.get("kind","") == "turbine"
 	var hot: bool = turbine and flight.session.engine_running and flight.session.sim.aux[0] > 0
 	effects.start(_impact_point,velocity,report,_fuel_kg,hot,flight._render_wind(flight.session.sim.time()))
-	report["energy"] = Effects.energy_outcome(energy_sources, report, bool(flight.session.engine_running), hot)
-	report["energy_sources"] = energy_sources.duplicate()
+	report["energy"] = Effects.energy_outcome(sources, report, bool(flight.session.engine_running), hot)
+	report["energy_sources"] = sources.duplicate()
 	effects.apply_energy(report.energy)
 	if _audio_enabled:
 		audio.impact(_impact_point,report,turbine)
@@ -479,8 +491,10 @@ func _record_sample() -> void:
 	var s: PackedFloat64Array = session.sim.state
 	var air: Dictionary = session.air_data(s, t)
 	var ground: PackedFloat64Array = GroundTerrain.sample(s[0], s[1], session.ground_surfaces)
+	var live: Dictionary = session.mass_properties() if session.has_method("mass_properties") else {}
 	var telemetry := Telemetry.compute(s, session.wind_at(t), air, {terrain_up = ground[0], last_loads = session.sim.last_loads,
-		mass = session.sim.mass, gravity = session.sim.gravity, throttle = session.sim.inputs[3], time_s = t})
+		mass = float(live.mass_kg) if live.get("ok", false) else session.sim.mass, gravity = session.sim.gravity,
+		throttle = session.sim.inputs[3], time_s = t})
 	history.append(CrashCause.sample(t, telemetry, s[RB.RATE], s[RB.RATE + 2], session.engine_running))
 	while not history.is_empty() and float(history[0].t) < t - CrashCause.HISTORY_S:
 		history.pop_front()

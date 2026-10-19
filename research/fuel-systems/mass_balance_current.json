@@ -1,26 +1,24 @@
 {
  "aircraft": [
   {
-   "balance_fuel_state": "as_inventory",
+   "balance_fuel_state": "empty_tanks",
    "energy": "prescribed_fuel",
    "file": "gp_extra_300s_60.json",
-   "flags": [
-    "point_mass_fuel:fuel_flight"
-   ],
+   "flags": [],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
      "id": "fuel_flight",
-     "mass_kg": 0.146,
+     "mass_kg": 0.152103,
      "position_m": [
       -0.035,
       0.0,
       0.0
      ],
      "size_m": [
-      0,
-      0,
-      0
+      0.12,
+      0.065,
+      0.046
      ]
     }
    ],
@@ -31,21 +29,21 @@
     "register_key": "gp-extra-300s-60"
    },
    "plan_cg_m": [
-    0.10266,
+    0.1088,
     0.0,
-    -0.023952
+    -0.025021
    ],
-   "plan_cg_matches_inventory": true,
+   "plan_cg_matches_inventory": false,
    "states": {
     "declared": {
      "cg_m": [
-      0.10266,
+      0.102415,
       0.0,
-      -0.023952
+      -0.02391
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 3.419469,
-     "static_margin_pct_mac": 14.52
+     "mass_kg": 3.425572,
+     "static_margin_pct_mac": 14.6
     },
     "empty": {
      "cg_m": [
@@ -53,33 +51,41 @@
       0.0,
       -0.025021
      ],
-     "cg_shift_from_declared_mm": 6.14,
+     "cg_shift_from_declared_mm": 6.385,
      "mass_kg": 3.273469,
      "static_margin_pct_mac": 12.511
+    },
+    "full": {
+     "cg_m": [
+      0.096573,
+      0.0,
+      -0.022893
+     ],
+     "cg_shift_from_declared_mm": -5.842,
+     "mass_kg": 3.577676,
+     "static_margin_pct_mac": 16.512
     }
    }
   },
   {
-   "balance_fuel_state": "as_inventory",
+   "balance_fuel_state": "empty_tanks",
    "energy": "prescribed_fuel",
    "file": "jensen_ugly_stik_60.json",
-   "flags": [
-    "point_mass_fuel:item_fuel_main"
-   ],
+   "flags": [],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
      "id": "item_fuel_main",
-     "mass_kg": 0.12,
+     "mass_kg": 0.149961,
      "position_m": [
       -0.1,
       0.0,
-      0.0
+      0.004
      ],
      "size_m": [
-      0,
-      0,
-      0
+      0.115,
+      0.065,
+      0.047
      ]
     }
    ],
@@ -94,51 +100,59 @@
     0.0,
     0.0
    ],
-   "plan_cg_matches_inventory": true,
+   "plan_cg_matches_inventory": false,
    "states": {
     "declared": {
+     "cg_m": [
+      0.109392,
+      0.0,
+      0.000208
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.878662,
+     "static_margin_pct_mac": 7.61
+    },
+    "empty": {
      "cg_m": [
       0.1209,
       0.0,
       0.0
      ],
-     "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 2.885058,
+     "cg_shift_from_declared_mm": 11.508,
+     "mass_kg": 2.728701,
      "static_margin_pct_mac": 3.835
     },
-    "empty": {
+    "full": {
      "cg_m": [
-      0.130487,
+      0.099024,
       0.0,
-      0.0
+      0.000396
      ],
-     "cg_shift_from_declared_mm": 9.587,
-     "mass_kg": 2.765058,
-     "static_margin_pct_mac": 0.689
+     "cg_shift_from_declared_mm": -10.368,
+     "mass_kg": 3.028623,
+     "static_margin_pct_mac": 11.012
     }
    }
   },
   {
-   "balance_fuel_state": "as_inventory",
+   "balance_fuel_state": "empty_tanks",
    "energy": "prescribed_fuel",
    "file": "p51d_mustang_120.json",
-   "flags": [
-    "point_mass_fuel:fuel_flight"
-   ],
+   "flags": [],
    "fuel_items": [
     {
      "energy_source": "gasoline",
      "id": "fuel_flight",
-     "mass_kg": 0.37,
+     "mass_kg": 0.373927,
      "position_m": [
       -0.1487,
       0.0,
       -0.02
      ],
      "size_m": [
-      0,
-      0,
-      0
+      0.16,
+      0.1,
+      0.0625
      ]
     }
    ],
@@ -151,34 +165,44 @@
    "plan_cg_m": [
     0.177763,
     0.0,
-    -0.071146
+    -0.071675
    ],
-   "plan_cg_matches_inventory": true,
+   "plan_cg_matches_inventory": false,
    "states": {
     "declared": {
      "cg_m": [
-      0.177763,
+      0.172085,
       0.0,
-      -0.071146
+      -0.070776
      ],
      "cg_shift_from_declared_mm": 0.0,
      "mass_kg": 21.499999,
-     "static_margin_pct_mac": 7.2
+     "static_margin_pct_mac": 8.316
     },
     "empty": {
      "cg_m": [
-      0.183479,
+      0.177763,
       0.0,
-      -0.072042
+      -0.071675
      ],
-     "cg_shift_from_declared_mm": 5.717,
-     "mass_kg": 21.129999,
-     "static_margin_pct_mac": 6.077
+     "cg_shift_from_declared_mm": 5.678,
+     "mass_kg": 21.126072,
+     "static_margin_pct_mac": 7.2
+    },
+    "full": {
+     "cg_m": [
+      0.166601,
+      0.0,
+      -0.069908
+     ],
+     "cg_shift_from_declared_mm": -5.484,
+     "mass_kg": 21.873926,
+     "static_margin_pct_mac": 9.394
     }
    }
   },
   {
-   "balance_fuel_state": "as_inventory",
+   "balance_fuel_state": "empty_tanks",
    "energy": "prescribed_fuel",
    "file": "sebart_avanti_s_a200.json",
    "flags": [],
@@ -186,9 +210,9 @@
     {
      "energy_source": "kerosene",
      "id": "fuel_flight",
-     "mass_kg": 1.28,
+     "mass_kg": 1.29628,
      "position_m": [
-      0.05,
+      0.155,
       0.0,
       -0.03
      ],
@@ -208,29 +232,39 @@
    "plan_cg_m": [
     0.24,
     0.0,
-    0.005153
+    0.009733
    ],
-   "plan_cg_matches_inventory": true,
+   "plan_cg_matches_inventory": false,
    "states": {
     "declared": {
      "cg_m": [
-      0.24,
+      0.230367,
       0.0,
-      0.005153
+      0.00523
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 11.705089,
-     "static_margin_pct_mac": 8.522
+     "mass_kg": 11.438578,
+     "static_margin_pct_mac": 11.182
     },
     "empty": {
      "cg_m": [
-      0.263328,
+      0.24,
       0.0,
-      0.009469
+      0.009733
      ],
-     "cg_shift_from_declared_mm": 23.328,
-     "mass_kg": 10.425089,
-     "static_margin_pct_mac": 2.081
+     "cg_shift_from_declared_mm": 9.633,
+     "mass_kg": 10.142298,
+     "static_margin_pct_mac": 8.522
+    },
+    "full": {
+     "cg_m": [
+      0.222696,
+      0.0,
+      0.001644
+     ],
+     "cg_shift_from_declared_mm": -7.672,
+     "mass_kg": 12.734858,
+     "static_margin_pct_mac": 13.3
     }
    }
   },
@@ -574,8 +608,7 @@
    "energy": "fixed_voltage",
    "file": "synthetic_stik_electric_4s.json",
    "flags": [
-    "missing_id:20_items",
-    "fuel_named_items_on_electric_aircraft"
+    "missing_id:20_items"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_4s",
@@ -603,8 +636,7 @@
    "energy": "ocv_resistance",
    "file": "synthetic_stik_electric_4s_battery.json",
    "flags": [
-    "missing_id:20_items",
-    "fuel_named_items_on_electric_aircraft"
+    "missing_id:20_items"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_4s_battery",
@@ -632,8 +664,7 @@
    "energy": "fixed_voltage",
    "file": "synthetic_stik_electric_6s.json",
    "flags": [
-    "missing_id:20_items",
-    "fuel_named_items_on_electric_aircraft"
+    "missing_id:20_items"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_6s",
@@ -661,8 +692,7 @@
    "energy": "ocv_resistance",
    "file": "synthetic_stik_electric_6s_battery.json",
    "flags": [
-    "missing_id:20_items",
-    "fuel_named_items_on_electric_aircraft"
+    "missing_id:20_items"
    ],
    "fuel_items": [],
    "id": "synthetic_stik_electric_6s_battery",

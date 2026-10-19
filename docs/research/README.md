@@ -184,6 +184,8 @@ The [smoke guide](../SMOKE-PLAN.md) records the unintegrated feature and its pro
 
 The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begin with [primary sources](wind-physics-primary-sources.md), [implementation evidence](wind-implementation/README.md), [M5-W04a turbulence](wind-implementation/M5-W04a/README.md), and the [investigation index](wind-investigations/README.md). Atmospheric density research is in [M5-ATM-1](atmosphere/M5-ATM-1/kernel/README.md) and [M5-ATM-2/3](atmosphere/M5-ATM-2/README.md).
 
+The [2026-10-19 wind, thermals and vortices source collection](flight-dynamics/rc-validation-library-2026-10-18/wind-weather/README.md) adds acquired atmospheric studies, terrain benchmarks, selected UAV/lidar numeric files and Earth dust-devil observations, with measured, inferred and modeled evidence kept explicit.
+
 ### Helicopter and shared rotor foundations
 
 [HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the steady inflow reference and published crossflow seams; [HELI-04-R1](helicopter/HELI-04-R1/README.md) qualifies dimensional transient flow with prescribed events. [HELI-05/05a](helicopter/HELI-05/README.md) verifies main-rotor loads/flapping and the fixed-body joint stage; [HELI-06a](helicopter/HELI-06/README.md) verifies the standalone linearized tail. [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. [HELI-25a](helicopter/HELI-25/README.md) audits and exports the supplied HX-700 Blender visual. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.

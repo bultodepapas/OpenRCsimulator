@@ -124,10 +124,22 @@ static func horizontal(ra_deg: float, dec_deg: float, latitude_deg: float, longi
 
 
 ## Atmospheric refraction in degrees for a true elevation (Bennett, inverted form by Saemundsson, Meeus eq. 16.4).
-## Zero below −1°, where the sky is dark anyway and the formula diverges.
+## Below the horizon the value only has to keep the apparent elevation continuous (the formula diverges at −5.11°):
+## FW-MOON-06a tapers it linearly from its −1° value (0.65°) to zero at REFRACTION_ZERO_DEG. A hard cut at −1° made
+## the sun and the moon drop 0.65° in one sky step, and the twilight sky, ambient light and exposure jump ~26 %.
+const REFRACTION_TAPER_DEG := -1.0
+const REFRACTION_ZERO_DEG := -3.0
+
+
 static func refraction_deg(elevation_deg: float) -> float:
-	if elevation_deg < -1.0:
+	if elevation_deg <= REFRACTION_ZERO_DEG:
 		return 0.0
+	if elevation_deg < REFRACTION_TAPER_DEG:
+		return _saemundsson(REFRACTION_TAPER_DEG) * (elevation_deg - REFRACTION_ZERO_DEG) / (REFRACTION_TAPER_DEG - REFRACTION_ZERO_DEG)
+	return _saemundsson(elevation_deg)
+
+
+static func _saemundsson(elevation_deg: float) -> float:
 	return 1.02 / tan(deg_to_rad(elevation_deg + 10.3 / (elevation_deg + 5.11))) / 60.0
 
 

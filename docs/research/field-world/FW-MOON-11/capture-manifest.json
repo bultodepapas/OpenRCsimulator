@@ -1,0 +1,155 @@
+{
+ "adapter": "llvmpipe (LLVM 20.1.2, 256 bits)",
+ "cases": [
+  {
+   "arguments": [
+    "--time_of_day=moonrise"
+   ],
+   "case_id": "moonrise_preset",
+   "exposure": 29.7578868865967,
+   "file": "moonrise_preset-close.png",
+   "fov_deg": 1.2,
+   "light_source": "moon",
+   "moon": {
+    "azimuth_deg": 89.1090855688133,
+    "bright_limb_deg": 6.44975378055424,
+    "distance_km": 379023.601644157,
+    "earthshine": 0.00000000194252326788322,
+    "elevation_deg": 5.10475300183534,
+    "illuminated": 0.99956123582354,
+    "libration_lat_deg": -2.98610316371186,
+    "libration_lon_deg": -4.46726921737612,
+    "parallactic_deg": -50.146846951056,
+    "phase_angle_deg": 2.40049039657675,
+    "radius_deg": 0.262638093000781,
+    "umbral_magnitude": -3.9423317790337
+   },
+   "north_up": false,
+   "shadow_strength": 0.0,
+   "svs_frame": 0,
+   "view": "close",
+   "when": {
+    "day": 26,
+    "hour": 20.3333333333333,
+    "latitude_deg": 40.0,
+    "longitude_deg": -3.7,
+    "month": 9,
+    "utc_offset_h": 2.0,
+    "year": 2026
+   }
+  },
+  {
+   "arguments": [
+    "--time_of_day=moonrise"
+   ],
+   "case_id": "moonrise_preset",
+   "exposure": 29.7578868865967,
+   "file": "moonrise_preset-wide.png",
+   "fov_deg": 60.0,
+   "light_source": "moon",
+   "moon": {
+    "azimuth_deg": 89.1090855688133,
+    "bright_limb_deg": 6.44975378055424,
+    "distance_km": 379023.601644157,
+    "earthshine": 0.00000000194252326788322,
+    "elevation_deg": 5.10475300183534,
+    "illuminated": 0.99956123582354,
+    "libration_lat_deg": -2.98610316371186,
+    "libration_lon_deg": -4.46726921737612,
+    "parallactic_deg": -50.146846951056,
+    "phase_angle_deg": 2.40049039657675,
+    "radius_deg": 0.262638093000781,
+    "umbral_magnitude": -3.9423317790337
+   },
+   "north_up": false,
+   "shadow_strength": 0.0,
+   "svs_frame": 0,
+   "view": "wide",
+   "when": {
+    "day": 26,
+    "hour": 20.3333333333333,
+    "latitude_deg": 40.0,
+    "longitude_deg": -3.7,
+    "month": 9,
+    "utc_offset_h": 2.0,
+    "year": 2026
+   }
+  },
+  {
+   "arguments": [
+    "--time_of_day=night"
+   ],
+   "case_id": "night_preset",
+   "exposure": 49131.08984375,
+   "file": "night_preset-close.png",
+   "fov_deg": 1.2,
+   "light_source": "moon",
+   "moon": {
+    "azimuth_deg": 92.1111726395502,
+    "bright_limb_deg": 56.004724103802,
+    "distance_km": 373660.636989271,
+    "earthshine": 0.000000231300428590851,
+    "elevation_deg": 19.0663964971478,
+    "illuminated": 0.982711498641028,
+    "libration_lat_deg": -4.29445830086109,
+    "libration_lon_deg": -3.88345526074807,
+    "parallactic_deg": -51.1364373539937,
+    "phase_angle_deg": 15.1109126415285,
+    "radius_deg": 0.266407633458559,
+    "umbral_magnitude": -25.9333182069158
+   },
+   "north_up": false,
+   "shadow_strength": 1.0,
+   "svs_frame": 0,
+   "view": "close",
+   "when": {
+    "day": 27,
+    "hour": 22.0,
+    "latitude_deg": 40.0,
+    "longitude_deg": -3.7,
+    "month": 9,
+    "utc_offset_h": 2.0,
+    "year": 2026
+   }
+  },
+  {
+   "arguments": [
+    "--time_of_day=night"
+   ],
+   "case_id": "night_preset",
+   "exposure": 49131.08984375,
+   "file": "night_preset-wide.png",
+   "fov_deg": 60.0,
+   "light_source": "moon",
+   "moon": {
+    "azimuth_deg": 92.1111726395502,
+    "bright_limb_deg": 56.004724103802,
+    "distance_km": 373660.636989271,
+    "earthshine": 0.000000231300428590851,
+    "elevation_deg": 19.0663964971478,
+    "illuminated": 0.982711498641028,
+    "libration_lat_deg": -4.29445830086109,
+    "libration_lon_deg": -3.88345526074807,
+    "parallactic_deg": -51.1364373539937,
+    "phase_angle_deg": 15.1109126415285,
+    "radius_deg": 0.266407633458559,
+    "umbral_magnitude": -25.9333182069158
+   },
+   "north_up": false,
+   "shadow_strength": 1.0,
+   "svs_frame": 0,
+   "view": "wide",
+   "when": {
+    "day": 27,
+    "hour": 22.0,
+    "latitude_deg": 40.0,
+    "longitude_deg": -3.7,
+    "month": 9,
+    "utc_offset_h": 2.0,
+    "year": 2026
+   }
+  }
+ ],
+ "engine": "4.7.2-stable (official)",
+ "format": "openrc-moon-capture v1"
+}

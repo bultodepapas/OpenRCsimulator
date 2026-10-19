@@ -10,8 +10,11 @@ ROOT = Path(__file__).resolve().parents[3]
 PHYSICS = ROOT / "app/data/aircraft/p51d_mustang_120.json"
 GEOMETRY = ROOT / "assets/aircraft/p51d-mustang-120/geometry.json"
 
-# Full tensor calculated independently from the committed pre-P51-15 inventory at df36b44.
-BASELINE_J = (3.412230, 6.817989, 9.496622, 0.0, -0.269807, 0.0)
+# Merged-pair (pre-P51-15 representation) tensor of the current build. First computed from the committed
+# inventory at df36b44 as (3.412230, 6.817989, 9.496622, 0.0, -0.269807, 0.0); re-based at FUEL-05c (1 l tank as
+# a sized liquid box, registry gasoline density, empty-tank rebalance of the virtual mass and airframe scale) as
+# the runtime tensor minus the analytic pair delta below. Any later unexplained inventory change still fails.
+BASELINE_J = (3.382046, 6.836389, 9.487422, 0.0, -0.259573, 0.0)
 PAIR_MASS = {
     "aileron servo": 0.16,
     "flap servo": 0.16,
@@ -73,8 +76,15 @@ def main() -> None:
     ]
 
     close(mass, 21.5, 1e-5, "inventory mass (kg)")
+    # FUEL-05c: the plan CG is declared with the tank empty, so it is the CG of the inventory without tank liquid.
+    liquid = set()
+    if model["balance"].get("fuel_state") == "empty_tanks":
+        liquid = {tank["liquid_inventory_id"] for tank in model["fuel_system"]["tanks"]}
+    dry = [part for part in parts if part.get("id") not in liquid]
+    dry_mass = sum(part["mass"]["value"] for part in dry)
+    dry_cg = [sum(part["mass"]["value"] * part["position"]["value"][axis] for part in dry) / dry_mass for axis in range(3)]
     for axis, label in ((0, "x aft"), (2, "z up")):
-        close(cg[axis], model["balance"]["plan_cg"]["value"][axis], 1e-6, f"inventory CG {label} (m)")
+        close(dry_cg[axis], model["balance"]["plan_cg"]["value"][axis], 1e-6, f"declared-state inventory CG {label} (m)")
     close(cg[1], 0.0, 1e-8, "symmetric inventory CG y (m)")
 
     wing = geometry["wing"]

@@ -29,6 +29,16 @@ uniform vec3 lobe_lin = vec3(0.0);
 uniform vec3 lobe_dir = vec3(1.0, 0.0, 0.0);
 uniform float lobe_k = 8.0;
 uniform float lobe_height = 1.5708;          // rad; the vertical e-folding of the lobe
+// FW-MOON-06c: at twilight the sky shows both sources. A second lobe (the other source's arch or glow; zero = none)
+// and a second light on the clouds: each light's weight in the clouds' directional shading (1, 0 = sun_dir alone,
+// the calibrated day; both fade when only the sky lights the clouds, SkyState.cloud_light_weights).
+uniform vec3 lobe2_lin = vec3(0.0);
+uniform vec3 lobe2_dir = vec3(1.0, 0.0, 0.0);
+uniform float lobe2_k = 8.0;
+uniform float lobe2_height = 1.5708;
+uniform vec3 light2_dir = vec3(0.0, 1.0, 0.0);
+uniform float light1_weight = 1.0;
+uniform float light2_weight = 0.0;
 uniform float sun_disc = 1.0;                      // 0 when the light is the moon (FW-23)
 // FW-24 moon, photometric since FW-MOON-03: uniforms and disc in moon_disc.gdshaderinc; zero moon_lin = no moon.
 #include "res://render/world/moon_disc.gdshaderinc"
@@ -56,7 +66,23 @@ uniform float appearance_cloud_density = 1.0;
 vec3 lobe_term(vec3 d) {
 	float h = max(length(d.xz), 1e-4);
 	float az = max(dot(d.xz / h, normalize(lobe_dir.xz + vec2(1e-6, 0.0))), 0.0);
-	return lobe_lin * pow(az, lobe_k) * exp(-max(asin(clamp(d.y, -1.0, 1.0)), 0.0) / lobe_height);
+	vec3 term = lobe_lin * pow(az, lobe_k) * exp(-max(asin(clamp(d.y, -1.0, 1.0)), 0.0) / lobe_height);
+	if (dot(lobe2_lin, vec3(1.0)) > 0.0) {
+		float az2 = max(dot(d.xz / h, normalize(lobe2_dir.xz + vec2(1e-6, 0.0))), 0.0);
+		term += lobe2_lin * pow(az2, lobe2_k) * exp(-max(asin(clamp(d.y, -1.0, 1.0)), 0.0) / lobe2_height);
+	}
+	return term;
+}
+
+// FW-MOON-06c: the relief needs one light direction: the light with the larger weight. Its strength is the weights'
+// difference, so it fades out where they are equal or where only the sky lights the clouds and never flips.
+// Exactly sun_dir and 1 for the calibrated day.
+vec3 relief_light() {
+	return light2_weight > light1_weight ? light2_dir : sun_dir;
+}
+
+float relief_directionality() {
+	return abs(light1_weight - light2_weight);
 }
 
 vec3 haze(vec3 d) {
@@ -115,7 +141,7 @@ void sky() {
 				float layer_horizon_fade = shape == 3 ? smoothstep(0.005, 0.11, EYEDIR.y) : horizon_fade;
 				float tower_height = shape == 4 ? mix(0.68, 1.0, smoothstep(0.025, 0.52, EYEDIR.y)) : 1.0;
 				float alpha = clamp(body * optical * layer_horizon_fade * tower_height, 0.0, 0.98);
-				float lighting = 0.68 + 0.32 * max(dot(EYEDIR, sun_dir), 0.0);
+				float lighting = 0.68 + 0.32 * (light1_weight * max(dot(EYEDIR, sun_dir), 0.0) + light2_weight * max(dot(EYEDIR, light2_dir), 0.0));
 				float tower_shade = shape == 4 ? mix(0.60, 1.0, smoothstep(0.04, 0.48, EYEDIR.y)) : 1.0;
 				// A broad, periodic low-frequency tone gives clouds real mass at field-view
 				// elevations; the shared high-frequency field still controls their silhouette.
@@ -139,9 +165,9 @@ void sky() {
 				vec3 layer_color = cloud_lin * mix(1.0, 0.82, body) * lighting * tower_shade * macro_tone;
 				// Preserve the calibrated 2.5D relief on ordinary cloud decks. It stays
 				// bounded, background-only, and out of the radiance cubemap pass.
-				float relief_weight = clamp(cloud_relief_strength, 0.0, 1.0) * smoothstep(0.12, 0.40, EYEDIR.y);
+				float relief_weight = clamp(cloud_relief_strength, 0.0, 1.0) * smoothstep(0.12, 0.40, EYEDIR.y) * relief_directionality();
 				if (!AT_CUBEMAP_PASS && shape != 1 && shape != 2 && relief_weight > 0.0 && body > 0.0) {
-					vec3 relief = cloud_relief(cells, body, EYEDIR, sun_dir, cloud_lin, layer_seed, layer.z, layer_motion.z);
+					vec3 relief = cloud_relief(cells, body, EYEDIR, relief_light(), cloud_lin, layer_seed, layer.z, layer_motion.z);
 					layer_color = mix(layer_color, relief * lighting * tower_shade * macro_tone, relief_weight);
 				}
 				col = mix(col, layer_color, alpha);
@@ -156,9 +182,9 @@ void sky() {
 		vec3 cloud_color = cloud_lin * mix(1.0, 0.82, density);
 		// Background-only detail preserves the calibrated IBL. Fade relief before
 		// the deck becomes subpixel at the horizon; coverage itself is unchanged.
-		float relief_weight = clamp(cloud_relief_strength, 0.0, 1.0) * smoothstep(0.12, 0.40, EYEDIR.y);
+		float relief_weight = clamp(cloud_relief_strength, 0.0, 1.0) * smoothstep(0.12, 0.40, EYEDIR.y) * relief_directionality();
 		if (!AT_CUBEMAP_PASS && relief_weight > 0.0 && density > 0.0) {
-			vec3 relief = cloud_relief(cells, body, EYEDIR, sun_dir, cloud_lin, cloud_seed, cloud_coverage, cluster_strength);
+			vec3 relief = cloud_relief(cells, body, EYEDIR, relief_light(), cloud_lin, cloud_seed, cloud_coverage, cluster_strength);
 			cloud_color = mix(cloud_color, relief, relief_weight);
 		}
 		col = mix(col, cloud_color, density);
@@ -174,7 +200,8 @@ void sky() {
 		// A bounded forward-scatter edge on clouds close to the sun direction; never raises the deck by > 0.08.
 		if (silver_strength > 0.0) {
 			float cloud_edge = 4.0 * density * (1.0 - density);
-			float forward_scatter = pow(max(dot(EYEDIR, sun_dir), 0.0), 24.0);
+			float forward_scatter = light1_weight * pow(max(dot(EYEDIR, sun_dir), 0.0), 24.0)
+				+ light2_weight * pow(max(dot(EYEDIR, light2_dir), 0.0), 24.0);
 			float silver = 0.08 * clamp(silver_strength, 0.0, 1.0) * cloud_edge * forward_scatter;
 			col += cloud_lin * silver;
 		}

@@ -12,7 +12,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import fuel_registry  # noqa: E402
 import mass_balance_report as report  # noqa: E402
 
-STIK = report.AIRCRAFT_DIR / "jensen_ugly_stik_60.json"  # prescribed fuel, no tanks
+STIK = report.AIRCRAFT_DIR / "jensen_ugly_stik_60.json"
+NO_TANKS = "turbo_lumber_evolution.json"  # electric: no fuel system
 GLOW = "stik_glow_61fx_2t.json"  # FUEL-05a: declares a 350 cc tank
 
 
@@ -22,8 +23,8 @@ def _q(value, unit):
 
 class MassBalanceReportTests(unittest.TestCase):
     def test_full_state_uses_capacity_times_registry_density(self) -> None:
-        raw = json.loads(STIK.read_text(encoding="utf-8-sig"))
-        raw = copy.deepcopy(raw)
+        raw = copy.deepcopy(json.loads(STIK.read_text(encoding="utf-8-sig")))
+        raw.pop("fuel_system", None)  # FUEL-05f: replace the base Stik's own tank with the 0.225 l fixture
         raw["fuel_system"] = {"tanks": [{"id": "main_tank", "fuel": "glow_10n_18castor",
             "liquid_inventory_id": "item_fuel_main", "shell_inventory_id": "item_fuel_tank",
             "capacity": _q(0.225, "l"), "unusable": _q(0.005, "l"), "pickup": "clunk", "feed": "suction_muffler"}]}
@@ -46,8 +47,8 @@ class MassBalanceReportTests(unittest.TestCase):
 
     def test_full_state_only_where_tanks_are_declared(self) -> None:
         rows = {row["file"]: row for row in report.aircraft_rows()}
-        self.assertNotIn("full", rows[STIK.name]["states"])
-        self.assertEqual(rows[STIK.name]["balance_fuel_state"], "as_inventory")
+        self.assertNotIn("full", rows[NO_TANKS]["states"])
+        self.assertEqual(rows[NO_TANKS]["balance_fuel_state"], "as_inventory")
         glow = rows[GLOW]
         self.assertEqual(glow["balance_fuel_state"], "empty_tanks")
         # FUEL-05a starts full, so the declared state is the full state.

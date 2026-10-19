@@ -143,6 +143,43 @@ func glow_state() -> Dictionary:
 	return GlowFlight.telemetry(self) if glow_is_active() and _flight_ready() else {ok=false}
 
 
+## FUEL-07: the start fill of a finite-fuel tank as a fraction (0, 1] of the authored full tank. Every reset
+## refuels to it; a checkpoint stores the actual fuel, so exact replay needs no extra identity.
+var fuel_start_fill: float = 1.0
+
+
+func set_fuel_start_fill(fill: float) -> bool:
+	if not is_finite(fill) or fill <= 0.0 or fill > 1.0:
+		return false
+	fuel_start_fill = fill
+	return true
+
+
+## Fuel mass a reset loads into a finite tank.
+func start_fuel_kg() -> float:
+	return float(aircraft.model.propulsion.glow.initial_fuel_kg) * fuel_start_fill
+
+
+## FUEL-06: one live mass-properties sample of the accepted state, the single source for presentation (HUD load
+## factor, crash severity/effective mass/CG marker, fuel remaining). {ok, mass_kg, cg_body_m (body FRD from the
+## fixed datum O), inertia and inverse (about the CG), fuel_remaining_kg, finite_fuel}. Finite fuel evaluates the
+## shared fixed-datum kernel at the remaining tank mass; every other aircraft is its constant validated build.
+func mass_properties() -> Dictionary:
+	if glow_is_active() and _flight_ready():
+		var live: Dictionary = GlowFlight.properties(self, sim.continuous[1])
+		if not live.get("ok", false):
+			return {ok = false}
+		var out: Dictionary = live.duplicate()
+		out.fuel_remaining_kg = maxf(0.0, sim.continuous[1])
+		out.finite_fuel = true
+		return out
+	if sim == null or sim.inertia.size() != 6 or not is_finite(sim.mass) or sim.mass <= 0.0:
+		return {ok = false}
+	return {ok = true, mass_kg = sim.mass, cg_body_m = PackedFloat64Array([0.0, 0.0, 0.0]),
+		inertia = sim.inertia.duplicate(), inverse = RB.inertia_inverse(sim.inertia),
+		fuel_remaining_kg = NAN, finite_fuel = false}
+
+
 ## Separate cut and starter commands: moving the throttle never changes the ignition latch.
 func glow_cut() -> bool:
 	if not glow_is_active() or not _flight_ready(): return false
@@ -3509,6 +3546,8 @@ func trace_meta() -> Dictionary:
 		if wheel_count() > 0: # GP-06a: rim speeds follow the glow slots (wheel_index() == GlowFlight.SIZE)
 			metadata.continuous_layout += "; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 		metadata.fuel_mass_policy="finite tank; uniform co-moving efflux; variable mass/CG/inertia; body datum remains initial wet CG"
+		if fuel_start_fill != 1.0:
+			metadata.fuel_start_fill=fuel_start_fill # FUEL-07: start fill of the authored full tank
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
 	if not workshop_identity.is_empty():
 		metadata.workshop = workshop_identity.duplicate(true)

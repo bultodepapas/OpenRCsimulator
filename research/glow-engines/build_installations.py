@@ -41,6 +41,8 @@ def insert_after(raw, key, new_key, value):
     """Rebuild the record with new_key placed right after key (stable, reviewable output order)."""
     out = {}
     for k, v in raw.items():
+        if k == new_key:
+            continue  # replace a donor's own block instead of duplicating it
         out[k] = v
         if k == key:
             out[new_key] = value
@@ -185,7 +187,8 @@ def aircraft(two, install, suffix='', fx61=False):
     ballast_item['mass']=q(ballast,'kg','derived',EST+'; virtual first-moment balance of the empty-tank build')
     ballast_item['position']=q([x,((mass+ballast)*cg[1]-first[1])/ballast,((mass+ballast)*cg[2]-first[2])/ballast],'m','derived',EST+'; virtual empty-tank balance')
     raw['balance']['fuel_state']='empty_tanks'
-    raw['balance']['plan_cg']['source']=raw['balance']['plan_cg']['source']+'; FUEL-05a: plan CG taken with an empty tank, as RC manuals balance'
+    if 'tank empty' not in raw['balance']['plan_cg']['source']:
+        raw['balance']['plan_cg']['source']=raw['balance']['plan_cg']['source']+'; FUEL-05a: plan CG taken with an empty tank, as RC manuals balance'
     system={'tanks':[{'id':'main_tank','fuel':GLOW_BLEND,'liquid_inventory_id':'item_fuel_main',
         'shell_inventory_id':'item_fuel_tank',
         'capacity':q(tank['capacity_l'],'l','manual',tank['capacity_source']),

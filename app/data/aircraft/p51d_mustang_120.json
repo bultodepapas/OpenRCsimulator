@@ -63,11 +63,11 @@
       "value": [
         0.177763,
         0.0,
-        -0.071146
+        -0.071675
       ],
       "unit": "m",
       "kind": "estimated",
-      "source": "27 % MAC (kit placeholder, source.json) = model z 0.1778; z from the inventory (derived)"
+      "source": "27 % MAC (kit placeholder, source.json) = model z 0.1778 with the tank empty (FUEL-05c, as the Top Flite Giant P-51D manual balances); z from the dry inventory (derived)"
     },
     "firewall": {
       "value": [
@@ -79,13 +79,38 @@
       "kind": "estimated",
       "source": "the model's engine-box firewall: spinner back + 0.25 m (a 120 cc twin on standoffs); the scaled full-size firewall is only the cowl split"
     },
-    "configuration": "virtual-balanced-reference-v1",
+    "configuration": "virtual-balanced-reference-v2-empty-tank",
     "cg_tolerance": {
       "value": 0.001,
       "unit": "m",
       "kind": "estimated",
-      "source": "research/p51/p51-05/derive_physics.py: virtual reference build balanced to the kit's point, NOT a measured airplane"
-    }
+      "source": "research/p51/p51-05/derive_physics.py: virtual reference build balanced to the kit's point with the tank empty, NOT a measured airplane"
+    },
+    "fuel_state": "empty_tanks"
+  },
+  "fuel_system": {
+    "tanks": [
+      {
+        "id": "main_tank",
+        "fuel": "gasoline_premix_40_1",
+        "liquid_inventory_id": "fuel_flight",
+        "shell_inventory_id": "fuel_tank",
+        "capacity": {
+          "value": 1.0,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "1 l tank; the DA-120 manual asks for 32 oz (0.946 l) or larger"
+        },
+        "unusable": {
+          "value": 0.01,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "FUEL-05c: felt-clunk residue estimate; no published value (docs/research/fuel-systems/FUEL-00 section 6.3)"
+        },
+        "pickup": "felt_clunk",
+        "feed": "pumped_diaphragm"
+      }
+    ]
   },
   "inventory": [
     {
@@ -242,10 +267,10 @@
       "id": "cowl_main",
       "name": "cowl (fiberglass) with dummy exhausts",
       "mass": {
-        "value": 0.742858,
+        "value": 0.735148,
         "unit": "kg",
         "kind": "estimated",
-        "source": "fiberglass cowl of a 2.5 m warbird; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "fiberglass cowl of a 2.5 m warbird; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -302,10 +327,10 @@
       "id": "fuel_flight",
       "name": "fuel (half tank)",
       "mass": {
-        "value": 0.37,
+        "value": 0.373927,
         "unit": "kg",
-        "kind": "estimated",
-        "source": "0.5 l at 0.74 g/ml gasoline; flight state: half tank (no consumption model, G4)"
+        "kind": "derived",
+        "source": "FUEL-05c: half of the 1 l tank x app/data/fuels/openrc-fuel-registry.json blend gasoline_premix_40_1 (747.85 kg/m3 at 288.15 K); prescribed flight state (no consumption)"
       },
       "position": {
         "value": [
@@ -315,19 +340,19 @@
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "same as the tank"
+        "source": "same as the tank; uniform liquid box holding the 1 l capacity"
       },
-      "energy_source": "gasoline",
       "size": {
         "value": [
-          0,
-          0,
-          0
+          0.16,
+          0.1,
+          0.0625
         ],
         "unit": "m",
-        "kind": "derived",
-        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      },
+      "energy_source": "gasoline"
     },
     {
       "id": "ignition_battery",
@@ -753,10 +778,10 @@
       "id": "wing_left",
       "name": "wing panel, left, sheeted, with flap and aileron",
       "mass": {
-        "value": 2.476195,
+        "value": 2.450493,
         "unit": "kg",
         "kind": "estimated",
-        "source": "built-up sheeted/glassed 1.25 m panel of a 2.5 m warbird ARF (wings 4-5 kg a pair); x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "built-up sheeted/glassed 1.25 m panel of a 2.5 m warbird ARF (wings 4-5 kg a pair); x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -783,10 +808,10 @@
       "id": "wing_right",
       "name": "wing panel, right, sheeted, with flap and aileron",
       "mass": {
-        "value": 2.476195,
+        "value": 2.450493,
         "unit": "kg",
         "kind": "estimated",
-        "source": "same as the left panel; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "same as the left panel; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -813,10 +838,10 @@
       "id": "wing_joiner",
       "name": "wing tube and bolts",
       "mass": {
-        "value": 0.433334,
+        "value": 0.428836,
         "unit": "kg",
         "kind": "estimated",
-        "source": "aluminium or carbon wing joiner; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "aluminium or carbon wing joiner; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -843,10 +868,10 @@
       "id": "fuselage_front",
       "name": "fuselage front (engine box to cockpit rear), covered",
       "mass": {
-        "value": 2.228575,
+        "value": 2.205443,
         "unit": "kg",
         "kind": "estimated",
-        "source": "lite-ply/balsa box with doublers, glassed; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "lite-ply/balsa box with doublers, glassed; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -873,10 +898,10 @@
       "id": "belly_scoop",
       "name": "belly scoop (fiberglass)",
       "mass": {
-        "value": 0.433334,
+        "value": 0.428836,
         "unit": "kg",
         "kind": "estimated",
-        "source": "moulded scoop; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "moulded scoop; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -903,10 +928,10 @@
       "id": "fuselage_rear",
       "name": "fuselage rear and turtle deck, covered",
       "mass": {
-        "value": 1.238097,
+        "value": 1.225246,
         "unit": "kg",
         "kind": "estimated",
-        "source": "balsa sides and stringered deck; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "balsa sides and stringered deck; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -933,10 +958,10 @@
       "id": "canopy_pilot",
       "name": "canopy, frame and pilot",
       "mass": {
-        "value": 0.433334,
+        "value": 0.428836,
         "unit": "kg",
         "kind": "estimated",
-        "source": "blown canopy with frame; 1/4.5 WWII pilot bust; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "blown canopy with frame; 1/4.5 WWII pilot bust; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -963,10 +988,10 @@
       "id": "horizontal_tail",
       "name": "stabilizer and elevators, covered",
       "mass": {
-        "value": 0.804763,
+        "value": 0.79641,
         "unit": "kg",
         "kind": "estimated",
-        "source": "sheeted built-up stab; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "sheeted built-up stab; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -993,10 +1018,10 @@
       "id": "vertical_tail",
       "name": "fin and rudder, covered",
       "mass": {
-        "value": 0.433334,
+        "value": 0.428836,
         "unit": "kg",
         "kind": "estimated",
-        "source": "sheeted built-up fin; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "sheeted built-up fin; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -1023,10 +1048,10 @@
       "id": "control_hardware",
       "name": "pushrods, horns, cowl fasteners, hardware",
       "mass": {
-        "value": 0.433334,
+        "value": 0.428836,
         "unit": "kg",
         "kind": "estimated",
-        "source": "clevises, horns, ball links, screws, bolts: rough sum; x1.238: airframe scaled to the built weight (P51-09)"
+        "source": "clevises, horns, ball links, screws, bolts: rough sum; x1.225: airframe scaled to the built weight (P51-09)"
       },
       "position": {
         "value": [
@@ -1053,7 +1078,7 @@
       "id": "ballast_reference",
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 1.286646,
+        "value": 1.408659,
         "unit": "kg",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: m = M (x_CG - x0) / (x_ballast - x_CG) for the kit balance point; a virtual reference build, NOT measured hardware or a ballast recommendation"
@@ -1332,7 +1357,7 @@
     },
     "coefficients": {
       "CL0": {
-        "value": 0.097099,
+        "value": 0.097097,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: cambered wing at +1 deg incidence + tail at zero body alpha, tail flow angle calibrated to the XP-51 trim curves (P51-19)"
@@ -1344,7 +1369,7 @@
         "source": "research/p51/p51-05/derive_physics.py: Helmbold wing x cos2(dihedral) + downwashed tail"
       },
       "CLq": {
-        "value": 5.450601,
+        "value": 5.357358,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail volume + DATCOM wing term"
@@ -1404,13 +1429,13 @@
         "source": "research/p51/p51-05/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.054202,
+        "value": -0.054128,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin above the CG"
       },
       "CYr": {
-        "value": 0.266082,
+        "value": 0.267228,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin behind the CG"
@@ -1422,19 +1447,19 @@
         "source": "research/p51/p51-05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.079829,
+        "value": -0.079791,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: 5 deg dihedral (strip theory) + wing at CL_ref + low-wing interference + fin"
       },
       "Clp": {
-        "value": -0.559347,
+        "value": -0.559333,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.125669,
+        "value": 0.125743,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: CL_ref/4 + fin"
@@ -1458,7 +1483,7 @@
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin height above the ARP"
       },
       "Cm0": {
-        "value": -0.002601,
+        "value": -0.002596,
         "unit": "1",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: wing Cm_ac from the UIUC NAA 45-100 camber lines using thin-airfoil theory x0.8 correction, plus tail at zero body alpha with its flow angle CALIBRATED to the XP-51 glide trim curves (NACA MR L-566 Fig. 10; P51-19), about the ARP"
@@ -1470,7 +1495,7 @@
         "source": "research/p51/p51-05/derive_physics.py: tail about the wing-body ac; the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -8.323441,
+        "value": -8.40151,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"
@@ -1488,19 +1513,19 @@
         "source": "research/p51/p51-05/derive_physics.py: aileron lift increment at its thin-airfoil centre, arm from the ARP"
       },
       "Cnb": {
-        "value": 0.0561827577485912,
+        "value": 0.0554177577485912,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: vertical-fin contribution plus the flight-calibrated body term aero.surfaces.body_cn_beta (P51-25); the shared rule requires Cnb = fin + body"
       },
       "Cnp": {
-        "value": -0.024817,
+        "value": -0.024743,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: -CL_ref/8 + fin"
       },
       "Cnr": {
-        "value": -0.15192,
+        "value": -0.152994,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
@@ -1613,7 +1638,7 @@
           "source": "research/p51/p51-05/derive_physics.py: thin-airfoil tau x 0.8 / (1 - deps/dalpha)"
         },
         "incidence": {
-          "value": -0.030504,
+          "value": -0.03051,
           "unit": "rad",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: (stab incidence - eps0) / (1 - deps/dalpha) with the +2 deg leading-edge-up setting, plus a -2.30 deg local-flow correction CALIBRATED to the XP-51 glide trim curves (NACA MR L-566 Fig. 10, elevator rms 4.10 -> 0.27 deg; P51-19)"
@@ -1662,7 +1687,7 @@
         }
       },
       "body_cn_beta": {
-        "value": -0.083304,
+        "value": -0.084069,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: CALIBRATED (P51-25): destabilizing body yaw about the ARP so the oracle steady sideslip, balanced about the CG, needs 0.55 deg rudder per deg sideslip, the production P-51D value at 200 mph (NACA RM L6J25 Table I, ntrs.nasa.gov/citations/20050019329; approximate slopes over +-1 deg, climb power); DATCOM fuselage alone -0.0232. Lumps fuselage, spinner, canopy and propeller in yaw; geometric scaling does not establish it for the RC model"
@@ -2044,9 +2069,9 @@
       },
       "thrust_line_offset": {
         "value": [
-          -0.726463,
+          -0.720785,
           0.0,
-          0.071146
+          0.070776
         ],
         "unit": "m",
         "kind": "derived",
@@ -2444,13 +2469,13 @@
           "source": "wheel bottom from geometry.json (axle station and height measured on the AN 01-60-3 three-view, track 142 in full size per NACA, wheel 6.75 in)"
         },
         "stiffness": {
-          "value": 4405.88815,
+          "value": 4428.546684,
           "unit": "N/m",
           "kind": "estimated",
-          "source": "E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = 10031 N/m for 21.50 kg), split by the static load (12.2 % on the tail wheel) so all three wheels sag alike (21 mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"
+          "source": "E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = 10031 N/m for 21.50 kg), split by the static load (11.7 % on the tail wheel) so all three wheels sag alike (21 mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"
         },
         "damping": {
-          "value": 106.617031,
+          "value": 106.890833,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "damping ratio 0.3 of the loader's m/3 share: sprung oleo legs and tyres, little hydraulic damping in RC retract struts"
@@ -2876,13 +2901,13 @@
           "source": "wheel bottom from geometry.json (axle station and height measured on the AN 01-60-3 three-view, track 142 in full size per NACA, wheel 6.75 in)"
         },
         "stiffness": {
-          "value": 4405.88815,
+          "value": 4428.546684,
           "unit": "N/m",
           "kind": "estimated",
-          "source": "E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = 10031 N/m for 21.50 kg), split by the static load (12.2 % on the tail wheel) so all three wheels sag alike (21 mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"
+          "source": "E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = 10031 N/m for 21.50 kg), split by the static load (11.7 % on the tail wheel) so all three wheels sag alike (21 mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"
         },
         "damping": {
-          "value": 106.617031,
+          "value": 106.890833,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "damping ratio 0.3 of the loader's m/3 share: sprung oleo legs and tyres, little hydraulic damping in RC retract struts"
@@ -3308,13 +3333,13 @@
           "source": "wheel bottom from geometry.json (axle station and height measured on the AN 01-60-3 three-view, track 142 in full size per NACA, wheel 6.75 in)"
         },
         "stiffness": {
-          "value": 1219.263548,
+          "value": 1173.946487,
           "unit": "N/m",
           "kind": "estimated",
-          "source": "E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = 10031 N/m for 21.50 kg), split by the static load (12.2 % on the tail wheel) so all three wheels sag alike (21 mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"
+          "source": "E1 rule: heave ω·dt 0.09 at 240 Hz (Σk = 10031 N/m for 21.50 kg), split by the static load (11.7 % on the tail wheel) so all three wheels sag alike (21 mm); softer than a real oleo, which a 240 Hz explicit tick cannot resolve"
         },
         "damping": {
-          "value": 56.086539,
+          "value": 55.03437,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "damping ratio 0.3 of the loader's m/3 share: sprung oleo legs and tyres, little hydraulic damping in RC retract struts"

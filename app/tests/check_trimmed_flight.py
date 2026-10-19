@@ -22,6 +22,16 @@ COLUMNS = (
 ELECTRIC_COLUMNS = ('drive_enabled drive_duty bus_voltage_v motor_current_a drive_bus_current_a '
                     'source_torque_nm shaft_power_w copper_loss_w rotational_loss_w').split()
 GEAR_COLUMNS = 'gear_extension gear_target_down cmd_gear_down cmd_wheel_brake'.split()
+# BAT-10: finite pack_ecm battery (trace v13), docs/research/battery/BAT-04/specification.md.
+PACK_LAW = 'electric-pack-ecm-coupled-events-v1'
+PACK_MODEL = 'average-plus-weakest-cell-thevenin-lumped-thermal-no-regeneration-v1'
+PACK_LAYOUT = ('axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, weak-cell remaining charge C, '
+               'terminal energy J, pack loss J, average-cell RC V, weak-cell RC V, pack temperature K, ESC sensed V, '
+               'ESC limit, ESC phase, ESC timer s, ESC detected cells; RK4 coupled; ESC slots sampled at accepted endpoints')
+PACK_COLUMNS = ('battery_soc battery_soc_weak remaining_charge_c consumed_charge_c pack_current_a auxiliary_current_a '
+                'ocv_v polarization_v cell_voltage_avg_v cell_voltage_min_v pack_temperature_k ambient_temperature_k '
+                'pack_terminal_power_w pack_loss_w terminal_energy_j pack_heat_j esc_sensed_voltage_v esc_limit '
+                'esc_effective_duty esc_detected_cells esc_phase pack_exhausted').split()
 # Trace v3 prints time to nine decimal places. Allow rounding, not a missing tick.
 TIME_TOLERANCE = 1e-9
 STATE_LAYOUT = 'north_m east_m down_m u_mps v_mps w_mps qw qx qy qz p_radps q_radps r_radps'.split()
@@ -91,6 +101,37 @@ def check_fixed_bus_sample(metadata: dict, sample: dict) -> None:
         # Printed commands/RPM have nine decimal places; propagate their rounding to power.
         if not math.isclose(sample[key], value, rel_tol=2e-7, abs_tol=2e-6):
             raise ValueError('electric endpoint equation disagrees: ' + key)
+def pack_slots(metadata: dict) -> int:
+    """Battery slots after the shaft RPM for a pack_ecm trace: 9 + 2 x RC branches."""
+    try:
+        branches = json.loads(metadata['battery_pack'])['branches']
+    except (KeyError, TypeError, ValueError) as error:
+        raise ValueError('missing or invalid pack metadata') from error
+    if metadata.get('battery_model') != PACK_MODEL or type(branches) is not int or branches not in (0, 1, 2):
+        raise ValueError('missing or unsupported pack model')
+    return 9 + 2 * branches
+
+
+def check_pack_sample(sample: dict, budget_c: float) -> None:
+    """BAT-10: a trimmed pack flight stays connected, ESC-normal and inside its charge budget."""
+    if sample['drive_enabled'] != 1 or abs(sample['drive_duty'] - sample['cmd_throttle']) > 2e-9:
+        raise ValueError('trimmed pack drive disagrees with the sampled command')
+    if abs(sample['esc_effective_duty'] - min(sample['drive_duty'], sample['esc_limit'])) > 2e-9:
+        raise ValueError('ESC effective duty is not min(command, limit)')
+    if sample['esc_phase'] != 0 or sample['esc_limit'] != 1 or sample['pack_exhausted'] != 0:
+        raise ValueError('trimmed pack flight left the normal ESC state')
+    if (not 0 < sample['battery_soc'] <= 1 or not 0 < sample['battery_soc_weak'] <= 1
+            or sample['pack_temperature_k'] <= 0 or sample['esc_detected_cells'] < 1
+            or sample['cell_voltage_min_v'] > sample['cell_voltage_avg_v'] + 2e-9
+            or not sample['bus_voltage_v'] < sample['ocv_v']):
+        raise ValueError('pack state out of its connected motoring domain')
+    if abs(sample['remaining_charge_c'] + sample['consumed_charge_c'] - budget_c) > 2e-6:
+        raise ValueError('pack charge budget does not close')
+    if not math.isclose(sample['pack_terminal_power_w'], sample['bus_voltage_v'] * sample['pack_current_a'],
+                        rel_tol=2e-7, abs_tol=2e-6):
+        raise ValueError('pack terminal power is not V x I')
+
+
 def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Path | None) -> str:
     """Never reinterpret the old rounded semantic digest as an exact file hash."""
     schema = metadata.get('metadata_schema')
@@ -140,7 +181,7 @@ def check_metadata(metadata: dict, first: dict) -> None:
         'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1',
                              'turbine-rpm-governor-rk4-v1',
                              'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',
-                             'electric-ocv-resistance-coupled-events-v1'),
+                             'electric-ocv-resistance-coupled-events-v1', PACK_LAW),
         'propwash_model': ('none', 'tail-slipstream-increment-v1', 'tail-slipstream-axial-transport-v1'),
     }.items():
         if metadata.get(key) not in allowed:
@@ -293,7 +334,7 @@ def check_coupled_metadata(metadata: dict) -> None:
     propulsion_model = metadata.get('propulsion_model')
     shaft_models = {
         'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',
-        'electric-ocv-resistance-coupled-events-v1',
+        'electric-ocv-resistance-coupled-events-v1', PACK_LAW,
     }
     has_shaft_fields = any(key in metadata for key in ('shaft_integrator', 'rotor_coupling'))
     shaft = propulsion_model in shaft_models
@@ -315,7 +356,9 @@ def check_coupled_metadata(metadata: dict) -> None:
     layout = metadata.get('continuous_layout')
     battery = layout == BATTERY_LAYOUT or (
         isinstance(layout, str) and layout.startswith(BATTERY_LAYOUT + '; ' + WHEEL_LAYOUT_SUFFIX))
-    expected_base = BATTERY_LAYOUT if battery else SHAFT_LAYOUT
+    pack = propulsion_model == PACK_LAW
+    slots = pack_slots(metadata) if pack else (3 if battery else 0)
+    expected_base = PACK_LAYOUT if pack else BATTERY_LAYOUT if battery else SHAFT_LAYOUT
     if wheel is not None:
         expected_layout = expected_base + '; ' + WHEEL_LAYOUT_SUFFIX
     else:
@@ -329,17 +372,18 @@ def check_coupled_metadata(metadata: dict) -> None:
 
     if wheel is None:
         # Legacy shaft traces placed RPM at the end, immediately after any wash states.
-        shaft_index = len(continuous) - (4 if battery else 1)
+        shaft_index = len(continuous) - 1 - slots
     else:
         # The wheel tail is last; shaft RPM precedes optional battery states.
-        shaft_index = wheel['first_index'] - (3 if battery else 0) - 1
+        shaft_index = wheel['first_index'] - slots - 1
     if shaft_index < 0 or continuous[shaft_index] < 0 or abs(continuous[shaft_index] - aux[0]) > 1e-9:
         raise ValueError('continuous shaft RPM disagrees with boundary mirror')
     wash_count = shaft_index
     if (metadata.get('propwash_model') == 'tail-slipstream-axial-transport-v1') != (wash_count > 0):
         raise ValueError('continuous layout disagrees with transported-wash model')
     if wheel is not None:
-        _check_wheel_continuous(metadata, wheel, shaft=True, battery=battery, wash_count=wash_count)
+        _check_wheel_continuous(metadata, wheel, shaft=True, battery=battery, wash_count=wash_count,
+                                pack_slots=slots if pack else 0)
 
 
 def _check_wheel_metadata(metadata: dict, *, gear: bool = False) -> dict:
@@ -399,7 +443,7 @@ def _check_wheel_metadata(metadata: dict, *, gear: bool = False) -> dict:
 
 def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
                             battery: bool = False, wash_count: int | None = None,
-                            turbine: bool = False) -> None:
+                            turbine: bool = False, pack_slots: int = 0) -> None:
     """Check wheel state arrays and ensure all declared wheel slots are the final slots."""
     try:
         continuous = json.loads(metadata['recording_start_continuous'])
@@ -430,10 +474,10 @@ def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
                 or abs(continuous[0] - aux[0]) > 1e-9):
             raise ValueError('turbine RPM/wheel state tail disagrees with its declared layout')
     elif shaft:
-        prefix = BATTERY_LAYOUT if battery else SHAFT_LAYOUT
+        prefix = PACK_LAYOUT if pack_slots else BATTERY_LAYOUT if battery else SHAFT_LAYOUT
         if metadata.get('continuous_layout') != prefix + '; ' + WHEEL_LAYOUT_SUFFIX:
             raise ValueError('unsupported wheel continuous-state prefix')
-        if wash_count is None or first_index != wash_count + 1 + (3 if battery else 0):
+        if wash_count is None or first_index != wash_count + 1 + (pack_slots or (3 if battery else 0)):
             raise ValueError('wheel state tail disagrees with shaft prefix')
     else:
         layout = metadata.get('continuous_layout')
@@ -476,8 +520,11 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
     trace_format = metadata.get('format')
     gear = trace_format == 'openrc-trace v10'
     claims_gear = _has_gear_metadata(metadata)
-    if trace_format not in ('openrc-trace v3', 'openrc-trace v7', 'openrc-trace v10'):
-        raise ValueError("expected openrc-trace v3, calm fixed-bus v7 or retractable-gear v10")
+    pack = trace_format == 'openrc-trace v13'
+    if trace_format not in ('openrc-trace v3', 'openrc-trace v7', 'openrc-trace v10', 'openrc-trace v13'):
+        raise ValueError("expected openrc-trace v3, calm fixed-bus v7, retractable-gear v10 or pack v13")
+    if pack != (metadata.get('propulsion_model') == PACK_LAW):
+        raise ValueError('trace format disagrees with the pack_ecm electric law')
     if gear != claims_gear:
         raise ValueError('trace format disagrees with retractable gear metadata')
     if gear:
@@ -489,7 +536,8 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
             or (trace_format == 'openrc-trace v3'
                 and metadata.get('propulsion_model') == 'electric-fixed-bus-coupled-stop-v1')):
         raise ValueError('trace format disagrees with the fixed-bus electric law')
-    columns = COLUMNS + (ELECTRIC_COLUMNS if electric else []) + (GEAR_COLUMNS if gear else [])
+    columns = COLUMNS + (ELECTRIC_COLUMNS if electric or pack else []) + (PACK_COLUMNS if pack else []) \
+        + (GEAR_COLUMNS if gear else [])
     try:
         dt = float(metadata["dt_s"])
     except (KeyError, ValueError) as error:
@@ -518,6 +566,10 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
             raise ValueError(f"sample {index}: wrong elapsed time")
         if electric:
             check_fixed_bus_sample(metadata, sample)
+        if pack:
+            budget = data[0]['remaining_charge_c'] + data[0]['consumed_charge_c'] if data else \
+                sample['remaining_charge_c'] + sample['consumed_charge_c']
+            check_pack_sample(sample, budget)
         if gear:
             check_gear_sample(sample)
         data.append(sample)
@@ -526,7 +578,13 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
     check_metadata(metadata, first)
     if gear:
         check_gear_metadata(metadata, first)
-    for key, tolerance in (("speed_mps", .01), ("pitch_deg", .05), ("alt_m", .05), ("engine_rpm", 1.0)):
+    rpm_tolerance = 1.0
+    if pack:
+        # A finite pack sags while its polarization builds from rest: the shaft follows d·V, so allow the RPM
+        # change the recorded bus-voltage change explains (Kv · duty · ΔV) on top of the trimmed-flight 1 rpm.
+        kv = json.loads(metadata['electric_configuration'])['motor']['kv_rpm_per_volt']
+        rpm_tolerance += kv * first['esc_effective_duty'] * abs(last['bus_voltage_v'] - first['bus_voltage_v'])
+    for key, tolerance in (("speed_mps", .01), ("pitch_deg", .05), ("alt_m", .05), ("engine_rpm", rpm_tolerance)):
         if abs(last[key] - first[key]) > tolerance:
             raise ValueError(f"{key} drifts {first[key]:.6f} -> {last[key]:.6f}")
     if not .05 < first["cmd_throttle"] < .95 or first["engine_rpm"] < 3000:

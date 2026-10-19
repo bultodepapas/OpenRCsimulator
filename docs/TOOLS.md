@@ -38,7 +38,7 @@ Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js pro
 | Offline regressions | `research/test-tools.sh` | Measurement reducers, importers and validation tools. |
 | Visual checks | `app/capture.sh` | Rendered cases, image guards, traces and complete manifest in ignored `app/captures/`. |
 | Run | `"$(app/get-godot.sh)" --path app` | Home; [controls](FIRST-LAUNCH.md). |
-| Quick flight | `"$(app/get-godot.sh)" --path app -- --quick-flight` | Direct runway start; no player preferences. Add `--start=airborne` for airborne practice, `--aircraft=<catalog-id>`, `--battery=pack` (finite pack for aircraft whose catalog entry has `battery_data`, BAT-13), `--rates=full` or `--hud=overlays`. |
+| Quick flight | `"$(app/get-godot.sh)" --path app -- --quick-flight` | Direct runway start; no player preferences. Add `--start=airborne` for airborne practice, `--aircraft=<catalog-id>`, `--battery=ideal` (constant voltage instead of the default finite pack for aircraft whose catalog entry has `battery_data`, BAT-13), `--rates=full` or `--hud=overlays`. |
 | Full field | `app/run-landscape.sh` | Forces scenery on. Normal launches already default to on; opt out with `-- --scenery=off`. |
 | Flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=/tmp/openrc-trace.csv --t=3` | Initial state plus each 240 Hz tick; [trace contract](research/trace-integrity/C7-R2/README.md). |
 | Flight log and replay | `python tools/flight_log/flight_log.py record --out tmp/flight.orfl` | F10 record/stop, F11 marker; bounded exact-state logging, CSV export, exact/candidate replay and comparisons. [Manual](FLIGHT-LOGGING.md). |

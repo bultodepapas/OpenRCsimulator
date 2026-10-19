@@ -503,6 +503,9 @@ static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) 
 		mat.set_shader_parameter("moon_dir", a.get("moon_dir", Vector3.DOWN))
 		mat.set_shader_parameter("moon_lin", a.get("moon_lin", Vector3.ZERO))
 		mat.set_shader_parameter("moon_sun_dir", a.get("moon_sun_dir", Vector3.UP))
+		mat.set_shader_parameter("lobe2_lin", Vector3.ZERO)
+		mat.set_shader_parameter("light1_weight", 1.0)
+		mat.set_shader_parameter("light2_weight", 0.0)
 	_profile_sky_tints(mat, lighting)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 
@@ -537,6 +540,15 @@ static func apply_state_to_sky(mat: ShaderMaterial) -> void:
 	mat.set_shader_parameter("disc_cloud_occlusion", false)
 	mat.set_shader_parameter("disc_dir", state.sun_dir)
 	_set_haze_uniforms(mat)
+	# FW-MOON-06c: the other source's horizon lobe and both sources' weights in the clouds' directional shading, so the
+	# sky keeps both at twilight.
+	mat.set_shader_parameter("lobe2_lin", state.get("sky_lobe2_lin", Vector3.ZERO))
+	mat.set_shader_parameter("lobe2_dir", state.get("sky_lobe2_dir", Vector3(1.0, 0.0, 0.0)))
+	mat.set_shader_parameter("lobe2_k", state.get("sky_lobe2_k", 8.0))
+	mat.set_shader_parameter("lobe2_height", state.get("sky_lobe2_height", 1.5708))
+	mat.set_shader_parameter("light2_dir", state.get("cloud_light2_dir", Vector3.UP))
+	mat.set_shader_parameter("light1_weight", state.get("cloud_light1_weight", 1.0))
+	mat.set_shader_parameter("light2_weight", state.get("cloud_light2_weight", 0.0))
 	_profile_sky_tints(mat)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 
@@ -561,6 +573,7 @@ static func apply_state_to_environment(env: Environment) -> void:
 static func apply_light(light: DirectionalLight3D) -> void:
 	light.light_color = light_color()
 	light.light_energy = light_energy()
+	_apply_shadow(light)
 	# The light shines along its −Z: toward the origin from the sun's side. Built directly (no scene tree needed).
 	var d := sun_direction()
 	light.transform = Transform3D(Basis.looking_at(-d, Vector3.UP if absf(d.y) < 0.999 else Vector3.FORWARD), d * 100.0)
@@ -696,10 +709,19 @@ static func _update_environment_parameters(env: Environment, lighting: Dictionar
 	env.fog_sun_scatter = sun_scatter(lighting)
 
 
+## Engine shadows follow the shadow strength. FW-MOON-06b: with time flowing (every step, not only at build) the
+## PSSM opacity is the strength itself, so moon and setting-sun shadows fade like the projected and planar shadows;
+## the calibrated day and explicit snapshots keep on/off at full opacity.
+static func _apply_shadow(light: DirectionalLight3D, lighting: Dictionary = {}) -> void:
+	var strength := shadow_strength(lighting)
+	light.shadow_enabled = engine_shadows and strength > 0.0
+	light.shadow_opacity = clampf(strength, 0.0, 1.0) if _uses_flow_state(lighting) else 1.0
+
+
 static func update_sun(sun: DirectionalLight3D, lighting: Dictionary = {}) -> void:
 	sun.light_color = light_color(lighting)
 	sun.light_energy = light_energy(lighting)
-	sun.shadow_enabled = engine_shadows and shadow_strength(lighting) > 0.0
+	_apply_shadow(sun, lighting)
 	# The light shines along its -Z. Choose a stable up axis for the zenith case.
 	var direction: Vector3 = sun_direction(lighting)
 	var up: Vector3 = Vector3.FORWARD if absf(direction.dot(Vector3.UP)) > 0.9999 else Vector3.UP

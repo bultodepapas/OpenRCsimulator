@@ -47,7 +47,7 @@
       ],
       "unit": "m",
       "kind": "manual",
-      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line"
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line; FUEL-05f: taken with the tank empty, as RC manuals balance"
     },
     "firewall": {
       "value": [
@@ -59,13 +59,14 @@
       "kind": "manual",
       "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: F1 front face 6.94 in ahead of LE"
     },
-    "configuration": "virtual-balanced-reference-v1",
+    "configuration": "virtual-balanced-reference-v2-empty-tank",
     "cg_tolerance": {
       "value": 0.001,
       "unit": "m",
       "kind": "estimated",
       "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
-    }
+    },
+    "fuel_state": "empty_tanks"
   },
   "inventory": [
     {
@@ -251,30 +252,30 @@
     {
       "name": "fuel (half tank)",
       "mass": {
-        "value": 0.12,
+        "value": 0.149961,
         "unit": "kg",
-        "kind": "estimated",
-        "source": "150 ml at ~0.8 g/ml methanol/oil/nitro blend; flight state: half tank"
+        "kind": "derived",
+        "source": "FUEL-05f: fixed half of the 0.35 l tank (prescribed fuel, no burn) x app/data/fuels/openrc-fuel-registry.json blend glow_10n_18castor (856.92 kg/m3 at 298.15 K)"
       },
       "position": {
         "value": [
           -0.1,
           0.0,
-          0.0
+          0.004
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "same as tank"
+        "source": "FUEL-05f: plan fuel-tank compartment F1-F2 (x); FX manual height: tank top 5-10 mm above the needle (7.5 mm used) with the NITRO-05 2T carburetor estimate"
       },
       "size": {
         "value": [
-          0,
-          0,
-          0
+          0.115,
+          0.065,
+          0.047
         ],
         "unit": "m",
-        "kind": "derived",
-        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
+        "kind": "estimated",
+        "source": "FUEL-05f: uniform liquid box holding the 0.35 l capacity; no measured tank interior"
       },
       "energy_source": "glow_fuel",
       "id": "item_fuel_main"
@@ -642,20 +643,20 @@
     {
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 0.2840582910437526,
+        "value": 0.24770113838979568,
         "unit": "kg",
         "kind": "derived",
-        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments.; FUEL-05f: recomputed for the empty-tank (dry) inventory"
       },
       "position": {
         "value": [
           0.85,
-          -0.03168363777353627,
-          -0.07058410415104471
+          -0.03633410834728228,
+          -0.08094431915144557
         ],
         "unit": "m",
         "kind": "derived",
-        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments."
+        "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments.; FUEL-05f: recomputed for the empty-tank (dry) inventory"
       },
       "size": {
         "value": [
@@ -670,6 +671,30 @@
       "id": "item_balance_mass_virtual"
     }
   ],
+  "fuel_system": {
+    "tanks": [
+      {
+        "id": "main_tank",
+        "fuel": "glow_10n_18castor",
+        "liquid_inventory_id": "item_fuel_main",
+        "shell_inventory_id": "item_fuel_tank",
+        "capacity": {
+          "value": 0.35,
+          "unit": "l",
+          "kind": "manual",
+          "source": "O.S. 40-91FX manual (os-engines.co.jp 50sx_40-91fx.pdf): 61FX \"approx 350cc\", \"12-13 minute flights\""
+        },
+        "unusable": {
+          "value": 0.005,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "FUEL-05f: clunk residue estimate; no published value (docs/research/fuel-systems/FUEL-00 section 6.3)"
+        },
+        "pickup": "clunk",
+        "feed": "suction_muffler"
+      }
+    ]
+  },
   "crash_hull": {
     "value": [
       [

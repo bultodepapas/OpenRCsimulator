@@ -92,12 +92,14 @@ class TraceAcceptance(unittest.TestCase):
             ('gp-extra-300s-60', 'propeller-rpm-lag-v1', 'none', False),
             ('p51d-mustang-120', 'propeller-shaft-balance-v1', 'tail-slipstream-increment-v1', True),
             ('sebart-avanti-s-a200-p100rx', 'turbine-rpm-governor-rk4-v1', 'none', False),
-            ('turbo-lumber-evolution', 'electric-fixed-bus-coupled-stop-v1', 'none', False),
+            # BAT-13: the Timber flies its finite pack by default; --battery=ideal keeps the fixed bus.
+            ('turbo-lumber-evolution', 'electric-pack-ecm-coupled-events-v1', 'none', False),
+            ('turbo-lumber-evolution', 'electric-fixed-bus-coupled-stop-v1', 'none', False, '--battery=ideal'),
         ]
-        for aircraft, propulsion, propwash, crossflow in cases:
-            with self.subTest(aircraft=aircraft):
-                path = self.directory / (aircraft + '.csv')
-                result = self.run_app('--aircraft=' + aircraft, '--trace=' + str(path), '--t=.05')
+        for aircraft, propulsion, propwash, crossflow, *extra in cases:
+            with self.subTest(aircraft=aircraft, extra=extra):
+                path = self.directory / (aircraft + ''.join(extra) + '.csv')
+                result = self.run_app('--aircraft=' + aircraft, *extra, '--trace=' + str(path), '--t=.05')
                 self.assertEqual(result.returncode, 0, result.stdout)
                 self.assertNotIn('ERROR:', result.stdout)
                 metadata = dict(line[2:].split(': ', 1) for line in path.read_text().splitlines()
@@ -109,6 +111,8 @@ class TraceAcceptance(unittest.TestCase):
                 self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9' if has_flaps else 'openrc-flight-meta v6')
                 if has_flaps:
                     self.assertEqual(metadata['format'], 'openrc-trace v12')
+                if propulsion == 'electric-pack-ecm-coupled-events-v1':
+                    self.assertEqual(metadata['format'], 'openrc-trace v13')
                 if aircraft == 'sebart-avanti-s-a200-p100rx':
                     self.assertEqual(json.loads(metadata['input_layout']),
                                      ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake', 'flaps'])
@@ -208,9 +212,30 @@ class TraceAcceptance(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     check_coupled_metadata({k: v for k, v in metadata.items() if k != key})
 
+    def test_timber_pack_trace_rejects_corruption(self):
+        """BAT-10: the default Timber pack trace passes, and each pack invariant rejects a corrupted sample."""
+        from check_trimmed_flight import check_pack_sample
+        path = self.directory / 'timber-pack.csv'
+        result = self.run_app('--aircraft=turbo-lumber-evolution', '--trace=' + str(path), '--t=.05')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('ERROR:', result.stdout)
+        self.assertIn('12 ticks', check(path, .05, 240))
+        lines = path.read_text().splitlines()
+        row = next(csv.DictReader(line for line in lines if not line.startswith('#')))
+        sample = {key: float(value) for key, value in row.items()}
+        budget = sample['remaining_charge_c'] + sample['consumed_charge_c']
+        check_pack_sample(sample, budget)
+        for column, delta, diagnostic in [('esc_effective_duty', .1, 'effective duty'), ('esc_phase', 1, 'normal ESC'),
+                                          ('remaining_charge_c', 1, 'budget'), ('pack_terminal_power_w', 1, 'V x I'),
+                                          ('drive_duty', .1, 'sampled command'), ('pack_exhausted', 1, 'normal ESC')]:
+            with self.subTest(column=column):
+                changed = dict(sample); changed[column] += delta
+                with self.assertRaisesRegex(ValueError, diagnostic):
+                    check_pack_sample(changed, budget)
+
     def test_timber_electric_endpoint_equations_reject_corruption(self):
         path = self.directory / 'timber-electric.csv'
-        result = self.run_app('--aircraft=turbo-lumber-evolution', '--trace=' + str(path), '--t=.05')
+        result = self.run_app('--aircraft=turbo-lumber-evolution', '--battery=ideal', '--trace=' + str(path), '--t=.05')
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertNotIn('ERROR:', result.stdout)
         self.assertIn('12 ticks', check(path, .05, 240))

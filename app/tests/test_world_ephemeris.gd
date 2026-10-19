@@ -93,7 +93,29 @@ func _initialize() -> void:
 	# Refraction (Meeus 16): ~0.57° at the horizon, ~0 overhead, none far below.
 	_near("refraction at the horizon", Ephemeris.refraction_deg(0.0), 0.48, 0.1)
 	_check("refraction overhead is negligible", Ephemeris.refraction_deg(89.0) < 0.001)
-	_check("no refraction below −1°", Ephemeris.refraction_deg(-5.0) == 0.0)
+	_check("no refraction far below the horizon", Ephemeris.refraction_deg(-5.0) == 0.0 and Ephemeris.refraction_deg(-3.0) == 0.0)
+	# FW-MOON-06a: the apparent elevation is continuous and monotonic through the horizon (no 0.65° drop at −1°).
+	_near("Saemundsson unchanged at −1°", Ephemeris.refraction_deg(-1.0), 0.6466, 0.001)
+	_check("continuous at the taper start", absf(Ephemeris.refraction_deg(-1.0 - 1e-6) - Ephemeris.refraction_deg(-1.0)) < 1e-5)
+	_check("continuous at the taper end", Ephemeris.refraction_deg(-3.0 + 1e-6) < 1e-5)
+	var monotonic := true
+	var largest := 0.0
+	for i in 800:
+		var h := -6.0 + 0.01 * i
+		var step := (h + 0.01 + Ephemeris.refraction_deg(h + 0.01)) - (h + Ephemeris.refraction_deg(h))
+		monotonic = monotonic and step > 0.0
+		largest = maxf(largest, step)
+	_check("apparent elevation rises monotonically from −6° to +2°, never faster than 1.4× the true", monotonic and largest < 0.014,
+		"largest step %.5f°" % largest)
+	var dusk_largest := 0.0
+	var previous := 0.0
+	for k in 240: # 2 h of sky time in 30 s steps around sunset (Madrid, 2026-09-26)
+		var e := float(Ephemeris.sky({year = 2026, month = 9, day = 26, hour = 19.5 + k / 120.0, utc_offset_h = 2.0,
+			latitude_deg = 40.0, longitude_deg = -3.7}).sun.elevation_deg)
+		if k > 0:
+			dusk_largest = maxf(dusk_largest, previous - e)
+		previous = e
+	_check("the setting sun never drops more than 0.15° per 30 s sky step", dusk_largest < 0.15, "%.3f°" % dusk_largest)
 
 	# Same input, same bytes.
 	var again := Ephemeris.sky({year = 2024, month = 4, day = 8, hour = 13.70, utc_offset_h = -5.0, latitude_deg = 32.78, longitude_deg = -96.80})

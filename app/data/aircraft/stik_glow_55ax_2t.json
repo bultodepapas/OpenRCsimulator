@@ -47,7 +47,7 @@
       ],
       "unit": "m",
       "kind": "manual",
-      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line; FUEL-05a: plan CG taken with an empty tank, as RC manuals balance"
+      "source": "Jensen Das Ugly Stik plan, Outerzone oz1253, full-size side view; research/d1/jensen_plan_cg.py: CG arrow 4.76 in aft of LE (39.4 % chord, ±0.03 in reading); z estimated on the thrust line; FUEL-05f: taken with the tank empty, as RC manuals balance"
     },
     "firewall": {
       "value": [

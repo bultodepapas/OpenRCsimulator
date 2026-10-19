@@ -12,13 +12,13 @@ not calibrated, and the visual mesh does not calibrate physical spring/damper be
 wheel-profile hashes and rejects stale generated output/report, stale registry values or a missing/invalid geometry source.
 
 The v1 baseline is upgraded to `openrc-aircraft v2` by the ID-gated standardizer, then the AV-09 gear module is added while
-preserving the historical AS-02 migration policy. Migration numeric parity: 502 original leaves
+preserving the historical AS-02 migration policy. Migration numeric parity: 504 original leaves
 preserved, 1 relocated CLadot leaves, 41 explicit
 compatibility-default leaves added, 0 differences.
 
-Flight mass 11.705 kg (fuel 1.28 kg), CG 240 mm aft of the root LE = 33.6 % MAC, static margin 8.5 % MAC.
-Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = 0.686737, 2.4642, 3.05824, 0, -0.0297665, 0 kg·m²; principal moments = 0.686364, 2.4642, 3.05862 kg·m².
-1-g stall 17.7 m/s clean, start 29 m/s, maximum level speed 73.4 m/s (264 km/h).
+Flight mass 11.439 kg (fuel 1.30 kg), CG 230 mm aft of the root LE = 30.9 % MAC, static margin 11.2 % MAC; the manual's 240 mm point is taken with a full hopper and an empty main tank (FUEL-05e).
+Inventory inertia `[Jxx, Jyy, Jzz, Jxy, Jxz, Jyz]` = 0.686714, 2.21718, 2.81122, 0, -0.0263523, 0 kg·m²; principal moments = 0.686388, 2.21718, 2.81155 kg·m².
+1-g stall 17.5 m/s clean, start 29 m/s, maximum level speed 73.4 m/s (264 km/h).
 Throws (manual high rate): aileron 30.0° up / 25.0° down, elevator ±30.0°, rudder ±30.0°.
 
 ## Intermediate quantities
@@ -62,7 +62,7 @@ Throws (manual high rate): aileron 30.0° up / 25.0° down, elevator ±30.0°, r
 | aero | neutral point anchor (model z) | 0.2709 | 260 mm CG at 3 % MAC margin: the manual's aft-most CG (260 mm, 3D unlimited) taken as near-neutral, 3 % MAC (estimated, 0-6 %); owners fly 240-260 mm (docs/research/avanti-s-av06-airframe-data.md), so the airplane is stable there |
 | aero | wing-body ac = ARP (model z) | 0.2063 | shifted +33.2 mm from the textbook value to meet the anchor (+9.2 % MAC) |
 | aero | Cma about ARP (1/rad, c_ref) | -0.8508 | tail only: the ARP is the wing-body ac |
-| aero | static margin at the flight CG (% MAC) | 8.517 | neutral point at model z 0.2709 (42.1 % MAC); CG 240 mm = 33.6 % MAC |
+| aero | static margin at the manual CG, main tank empty (% MAC) | 8.517 | neutral point at model z 0.2709 (42.1 % MAC); CG 240 mm = 33.6 % MAC |
 | aero | static margin, manual CG beginner 240 mm (% MAC) | 8.517 | same neutral point |
 | aero | static margin, manual CG normal 250 mm (% MAC) | 5.759 | same neutral point |
 | aero | static margin, manual CG 3D 260 mm (% MAC) | 3 | same neutral point |
@@ -78,33 +78,35 @@ Throws (manual high rate): aileron 30.0° up / 25.0° down, elevator ±30.0°, r
 | aero | Clda_right (1/rad) | -0.1433 | strip theory over the aileron span |
 | balance | batteries/electronics station (model z) | 0.3 | 0.90 kg moved within -0.8..0.3 m to approach the manual CG (at the bay limit) |
 | balance | pre-balance dry components (kg) | 10.08 | inventory before virtual balance mass; SebArt manual reference is 10.5 kg complete RTF dry with P100 |
-| balance | inventory CG without balancing mass (model z) | 0.2139 | target 0.240 |
-| balance | balancing mass (kg) | 0.3451 | tail weight that puts the CG on the manual's point |
-| balance | dry flight mass including virtual balance (kg) | 10.43 | component inventory plus virtual reference-build mass; manual complete RTF dry reference 10.5 kg |
-| balance | flight mass (kg) | 11.71 | dry 10.425 kg + fuel 1.280 kg |
-| balance | flight CG (le frame) | 0.24, 0, 0.005153 | z from the inventory |
-| balance | Jxx Jyy Jzz Jxy Jxz Jyz (kg m2) | 0.6867, 2.464, 3.058, 0, -0.02977, 0 | component boxes + parallel axis; products use the runtime body-FRD convention |
-| balance | principal moments (kg m2) | 0.6864, 2.464, 3.059 | eigenvalues of the full symmetric inventory tensor; positive values check arithmetic, not physical validation |
+| balance | inventory CG without balancing mass (model z) | 0.2347 | target 0.240 |
+| balance | balancing mass (kg) | 0.0623 | tail weight that puts the CG on the manual's point |
+| balance | empty-main-tank CG (le frame) | 0.24, 0, 0.009733 | manual 240 mm point with a full hopper and an empty main tank (FUEL-05e) |
+| balance | dry flight mass including virtual balance (kg) | 10.14 | component inventory plus virtual reference-build mass; manual complete RTF dry reference 10.5 kg |
+| balance | flight mass (kg) | 11.44 | dry 10.142 kg + fuel 1.296 kg |
+| balance | flight CG (le frame) | 0.2304, 0, 0.00523 | z from the inventory |
+| aero | static margin at the flight CG, declared fuel (% MAC) | 11.17 | flight CG 230.4 mm aft of the root LE with 1.296 kg of fuel; same neutral point |
+| balance | Jxx Jyy Jzz Jxy Jxz Jyz (kg m2) | 0.6867, 2.217, 2.811, 0, -0.02635, 0 | component boxes + parallel axis; products use the runtime body-FRD convention |
+| balance | principal moments (kg m2) | 0.6864, 2.217, 2.812 | eigenvalues of the full symmetric inventory tensor; positive values check arithmetic, not physical validation |
 | aero | CL_max (clean) | 0.85 | DATCOM wing CLmax for a thick symmetric section, swept and tapered, flaps up: 0.85 +- 0.10 (docs/research/avanti-s-av06-aero-references.md) |
-| aero | 1-g stall (m/s) | 17.72 | flight mass, CL_max, flaps up |
+| aero | 1-g stall (m/s) | 17.52 | flight mass, CL_max, flaps up |
 | aero | start speed (m/s) | 29 | 1.6 x the clean 1-g stall at the flight mass and CL_max (as for the other aircraft), rounded |
-| aero | CL_ref | 0.3173 | level flight at the start speed; CL-dependent cross terms are frozen there |
+| aero | CL_ref | 0.3101 | level flight at the start speed; CL-dependent cross terms are frozen there |
 | lateral | fin effective AR | 1.844 | geometric h2/Sv x 1.55 end-plate factor (fuselage + stab, DATCOM 1.4-1.7) |
 | lateral | (1 + dsigma/dbeta) eta_v | 1.155 | Nelson/DATCOM: 0.724 + 3.06 (Sv/S)/(1 + cos sweep) + 0.4 z_w/d + 0.009 AR |
 | lateral | effective fin slope (1/rad) | 2.752 |  |
 | lateral | rudder effectiveness (local) | 0.4849 | tau 0.560 / sidewash factor |
 | lateral | CYb body (1/rad) | -0.1949 | -2 K_i S0/S, K_i 1.0 mid wing (DATCOM), S0 0.8 w d |
 | lateral | Cnb body, omitted (1/rad) | -0.04485 | DATCOM -K_N K_Rl (S_side/S)(L/b): destabilizing; not in v1 (Cnb must equal the fin term), as for every aircraft |
-| lateral | Clb sweep at CL_ref (1/rad) | -0.03801 | strip theory: each strip's lift goes with cos2 of its normal velocity, d ln cos2(sweep - beta)/d beta = 2 tan(sweep), so Clb = -2 CL tan(sweep_c/4) ybar/b (ybar: semi-span area centroid) |
+| lateral | Clb sweep at CL_ref (1/rad) | -0.03714 | strip theory: each strip's lift goes with cos2 of its normal velocity, d ln cos2(sweep - beta)/d beta = 2 tan(sweep), so Clb = -2 CL tan(sweep_c/4) ybar/b (ybar: semi-span area centroid) |
 | lateral | Clb dihedral (1/rad) | -0.0216 | strip theory: -CLa_w Gamma (1 + 2 lambda) / (6 (1 + lambda)) |
 | lateral | Clb wing-body (1/rad) | -0.001641 | DATCOM: 1.2 sqrt(AR) (z_w/b)(2d/b): mid/low wing, sign with the wing above (+) or below (-) the body centre |
 | drag | CD0 | 0.03515 | estimated Raymer build-up at V_start=29 m/s (about Mach 0.09), cf_mix laminar fractions 0.15 wing/tails and 0.05 fuselage, fixed wing Raymer Mach multiplier evaluated at M=0.34, tail form factor 1.12, listed item drag areas, then x excrescence factor 1.15; not matched to measured local Re/Mach or Avanti flight data. Components: wing 0.0073 m2, tails 0.0037 m2, fuselage 0.0068 m2, side intakes, spillage and tube gap 0.0025 m2, canopy and cockpit 0.0012 m2 |
 | drag | Oswald e | 0.75 | Nita-Scholz for AR 5.7, taper 0.46, 17 deg sweep: 0.71-0.77 (docs/research/avanti-s-av06-aero-references.md) |
-| performance | maximum level speed (m/s) | 73.4 | full thrust minus ram drag meets the drag polar (264 km/h; manual: tested to 250 km/h) |
-| performance | static thrust / weight (installed) | 0.8015 | installed factor 0.92 |
-| performance | full-throttle climb rate at 29 m/s (m/s) | 17.94 | excess power / weight |
+| performance | maximum level speed (m/s) | 73.41 | full thrust minus ram drag meets the drag polar (264 km/h; manual: tested to 250 km/h) |
+| performance | static thrust / weight (installed) | 0.8202 | installed factor 0.92 |
+| performance | full-throttle climb rate at 29 m/s (m/s) | 18.39 | excess power / weight |
 | performance | idle net thrust at the start speed (N) | 0.7511 | idle gross minus ram drag |
-| performance | best glide L/D | 9.77 | at 19.7 m/s |
+| performance | best glide L/D | 9.77 | at 19.5 m/s |
 
 ## CD0 model basis
 
@@ -116,7 +118,7 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 | --- | --- | --- |
 | CL0 | 0 | derived |
 | CLa | 4.6286 | derived |
-| CLq | 6.2482 | derived |
+| CLq | 6.0596 | derived |
 | CLde | 0.44013 | derived |
 | CLda_each | 0.38867 | derived |
 | CD0 | 0.035151 | derived |
@@ -126,25 +128,25 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 | CDdr | 0.0303 | borrowed |
 | CDde | 0.0135 | borrowed |
 | CYb | -0.85543 | derived |
-| CYp | -0.15763 | derived |
-| CYr | 0.38245 | derived |
+| CYp | -0.15758 | derived |
+| CYr | 0.38881 | derived |
 | CYdr | 0.32028 | derived |
-| Clb | -0.14006 | derived |
-| Clp | -0.60689 | derived |
-| Clr | 0.12496 | derived |
+| Clb | -0.13917 | derived |
+| Clp | -0.60688 | derived |
+| Clr | 0.1239 | derived |
 | Clda_right | -0.14334 | derived |
 | Clda_left | 0.14334 | derived |
 | Cldr | 0.03904 | derived |
 | Cm0 | -0 | derived |
 | Cma | -0.85079 | derived |
-| Cmq | -7.55 | derived |
+| Cmq | -7.7511 | derived |
 | Cmde | -0.9546 | derived |
 | Cmda_each | -0.14906 | derived |
 | Cnb | 0.20234 | derived |
-| Cnp | 0.008622 | derived |
-| Cnr | -0.14215 | derived |
-| Cnda_right | 0.013645 | derived |
-| Cnda_left | -0.013645 | derived |
+| Cnp | 0.009509 | derived |
+| Cnr | -0.1441 | derived |
+| Cnda_right | 0.013334 | derived |
+| Cnda_left | -0.013334 | derived |
 | Cndr | -0.098109 | derived |
 
 ## Keyboard pitch response
@@ -177,8 +179,8 @@ AV-17-R3 keeps the accepted pitch policy and adds fixed gamepad yaw travel 0.50
 command state and bypassed by full/radio/keyboard modes; it is not a physical servo time or feedback damper.
 The same normal yaw command feeds nosewheel steering. See `docs/research/avanti-realism/AV-17-R3/README.md`.
 
-The lateral build-up obtains Cnp/Cnr about CG (0.005968, -0.135714). AV-17-R3 writes their ARP values
-(0.008622, -0.142153) by subtracting CYp/CYr times the ARP's forward CG arm / span, so the runtime's
+The lateral build-up obtains Cnp/Cnr about CG (0.007615, -0.139429). AV-17-R3 writes their ARP values
+(0.009509, -0.144102) by subtracting CYp/CYr times the ARP's forward CG arm / span, so the runtime's
 ARP-to-CG force-moment transfer applies exactly once. Static yaw stability, the fin, and its local flow law are unchanged.
 Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
 
@@ -205,16 +207,16 @@ samples from 0 (stowed/up) to 1 (deployed/down), plus mesh-derived tyre radii (m
 measurements, not a physical strut survey. Contact paths are converted from model `[right, up, aft]` to the physics LE frame
 `[aft, right, up]`; the existing `wing_forward_shift` is applied to the fuselage-mounted gear. Full-down wheelbase is
 0.863 m and the static wheel reactions derived from the AV-06 inventory CG are
-nose 12.2%, main_left 43.9%, main_right 43.9%. The displayed contact endpoints use wheel-bottom positions; the wheel-center trajectories remain a
+nose 13.3%, main_left 43.4%, main_right 43.4%. The displayed contact endpoints use wheel-bottom positions; the wheel-center trajectories remain a
 separate source sidecar measurement.
 
 | Contact | Full-down LE position [aft, right, up] (m) | Stiffness (N/m) | Damping (N·s/m) | Terminal compression (m) | Mesh radius (m) |
 | --- | --- | ---: | ---: | ---: | ---: |
-| main_left | 0.345000, -0.320000, -0.235500 | 2398.34 | 58.04 | 0.105 | 0.043380 |
-| main_right | 0.345000, 0.320000, -0.235500 | 2398.34 | 58.04 | 0.105 | 0.043380 |
-| nose | -0.518000, 0.000000, -0.236320 | 664.45 | 30.55 | 0.085 | 0.035320 |
+| main_left | 0.345000, -0.320000, -0.235500 | 2313.95 | 56.36 | 0.105 | 0.043380 |
+| main_right | 0.345000, 0.320000, -0.235500 | 2313.95 | 56.36 | 0.105 | 0.043380 |
+| nose | -0.518000, 0.000000, -0.236320 | 708.89 | 31.19 | 0.085 | 0.035320 |
 
-Total stiffness 5461.1 N/m gives heave frequency 21.60
+Total stiffness 5336.8 N/m gives heave frequency 21.60
 rad/s (3.44 Hz) and 21.0 mm static sag.
 The generator distributes that stiffness by the derived static load shares; damping uses ζ=0.30
 and the existing equal m/3 contact-mass convention. The 105 mm main and 85 mm nose terminal limits are equivalent-compliance
@@ -269,4 +271,4 @@ The section basis is the Glauert extension of thin-airfoil theory summarized in 
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
-- CL-dependent cross terms (Clb sweep part, Clr, Cnp, adverse yaw) are frozen at CL_ref = 0.32.
+- CL-dependent cross terms (Clb sweep part, Clr, Cnp, adverse yaw) are frozen at CL_ref = 0.31.

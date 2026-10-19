@@ -66,6 +66,11 @@ var start_button: Button
 ## 2026-10-19) and applies wherever the aircraft has battery_data; other aircraft fly ideal without losing it.
 var battery_mode: String = "ideal"
 var _battery_preference: String = "pack"
+## FUEL-07: start fill of a finite-fuel tank; full by default (D4). The preference survives aircraft changes.
+const FUEL_FILLS := [1.0, 0.75, 0.5, 0.25]
+var fuel_start_fill: float = 1.0
+var _fuel_preference: float = 1.0
+var fuel_button: Button
 var battery_button: Button
 
 var fly_button: Button
@@ -378,6 +383,14 @@ func _init() -> void:
 	battery_button.visible = false
 	battery_button.pressed.connect(_cycle_battery_mode)
 	_flight_details.add_child(battery_button)
+	fuel_button = _button("", "HomeAction")
+	fuel_button.name = "FuelChoice"
+	fuel_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fuel_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	fuel_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	fuel_button.visible = false
+	fuel_button.pressed.connect(_cycle_fuel_fill)
+	_flight_details.add_child(fuel_button)
 	_flight_details.add_child(controller_prompt_label)
 	keys_legend = GridContainer.new()
 	keys_legend.name = "FlightControlsLegend"
@@ -871,6 +884,7 @@ func set_aircraft(id: String) -> void:
 		start_choice = "runway"
 	set_start_choice(start_choice)
 	set_battery_mode(_battery_preference)
+	set_fuel_fill(_fuel_preference)
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
 	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
@@ -952,6 +966,22 @@ func set_battery_mode(mode: String) -> void:
 
 func _cycle_battery_mode() -> void:
 	set_battery_mode("ideal" if battery_mode == "pack" else "pack")
+
+
+## FUEL-07: only finite-fuel aircraft burn their tank; every other aircraft flies its fixed build (fill 1).
+func set_fuel_fill(fill: float) -> void:
+	if fill in FUEL_FILLS:
+		_fuel_preference = fill
+	var finite: bool = Catalog.has_finite_fuel(aircraft_id)
+	fuel_start_fill = _fuel_preference if finite else 1.0
+	fuel_button.visible = finite
+	fuel_button.text = tr("Fuel: full tank") if fuel_start_fill == 1.0 \
+		else tr("Fuel: %d %% of the tank") % roundi(fuel_start_fill * 100.0)
+	fuel_button.tooltip_text = tr("Start fill of the engine's tank. Fuel burns in flight: the airplane gets lighter and its balance moves aft as the tank empties.")
+
+
+func _cycle_fuel_fill() -> void:
+	set_fuel_fill(FUEL_FILLS[(FUEL_FILLS.find(fuel_start_fill) + 1) % FUEL_FILLS.size()])
 
 
 func _cycle_start_choice() -> void:

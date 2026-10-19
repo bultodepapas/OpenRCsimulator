@@ -204,7 +204,8 @@ static func _incomplete(header: Dictionary, rows: int, next_tick: int, events: A
 static func validate_row(row: Variant, layout: Dictionary, tick: int) -> String:
 	if not row is Dictionary or row.get("kind") != "sample" or typeof(row.get("tick")) != TYPE_INT or row.tick != tick:
 		return "Nonconsecutive or malformed tick %d." % tick
-	for key in ["state", "loads", "inputs", "aux", "continuous", "raw", "sticks", "air"]:
+	# FUEL-06 logs add a "mass" block (layout.mass = 4); older logs have none.
+	for key in ["state", "loads", "inputs", "aux", "continuous", "raw", "sticks", "air"] + (["mass"] if layout.has("mass") else []):
 		var size: int = layout.get(key, 6 if key == "air" else 4)
 		if not row.get(key) is PackedFloat64Array or row[key].size() != size:
 			return "Invalid %s layout at tick %d." % [key, tick]
@@ -263,8 +264,8 @@ static func prepare_replay(header: Dictionary, candidate := "") -> Dictionary:
 
 
 static func disagreement(expected: Dictionary, actual: Dictionary) -> String:
-	for key in ["state", "loads", "inputs", "aux", "continuous", "modes", "air"]:
-		if expected[key].to_byte_array() != actual[key].to_byte_array():
+	for key in ["state", "loads", "inputs", "aux", "continuous", "modes", "air"] + (["mass"] if expected.has("mass") else []):
+		if not actual.has(key) or expected[key].to_byte_array() != actual[key].to_byte_array():
 			return "First exact replay divergence at tick %d in %s; no equivalence claimed." % [expected.tick, key]
 	return ""
 
@@ -281,6 +282,8 @@ static func columns(layout: Dictionary) -> PackedStringArray:
 	for prefix in ["raw", "stick"]:
 		for axis in ["roll", "pitch", "yaw", "throttle"]: result.append(prefix + "_" + axis)
 	result.append_array(PackedStringArray(["tas_mps", "alpha_rad", "beta_rad", "wind_north_mps", "wind_east_mps", "wind_down_mps"]))
+	if layout.has("mass"):
+		result.append_array(PackedStringArray(["mass_kg", "cg_offset_x_m", "cg_offset_y_m", "cg_offset_z_m"]))
 	for i in layout.modes: result.append("mode_%d" % i)
 	return result
 
@@ -288,7 +291,7 @@ static func columns(layout: Dictionary) -> PackedStringArray:
 static func write_row(file: FileAccess, row: Dictionary, dt: float, _first_tick: int) -> void:
 	var values := PackedStringArray([str(row.tick), JSON.stringify(row.tick * dt, "", false, true),
 		JSON.stringify(maxi(0, row.tick - 1) * dt, "", false, true)])
-	for key in ["state", "loads", "inputs", "aux", "continuous", "raw", "sticks", "air"]:
+	for key in ["state", "loads", "inputs", "aux", "continuous", "raw", "sticks", "air"] + (["mass"] if row.has("mass") else []):
 		for value: float in row[key]: values.append(JSON.stringify(value, "", false, true))
 	for mode: int in row.modes: values.append(str(mode))
 	file.store_csv_line(values)

@@ -63,11 +63,11 @@
       "value": [
         0.24,
         0.0,
-        0.005153
+        0.009733
       ],
       "unit": "m",
       "kind": "manual",
-      "source": "240 mm aft of the root LE (SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); the manual gives no fuel-state qualifier, and this model's half-tank state is separately declared under fuel.fraction; photo-manual p.91 step 181); z from the inventory (derived)"
+      "source": "240 mm aft of the root LE (SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); the manual gives no fuel-state qualifier, and this model's half-tank state is separately declared under fuel.fraction; photo-manual p.91 step 181; FUEL-05e: taken with a full hopper and an empty main tank, the A200 owners' balance practice (kasi122, RCN #237)); z from the empty-main-tank inventory (derived)"
     },
     "firewall": {
       "value": [
@@ -79,13 +79,38 @@
       "kind": "estimated",
       "source": "turbine mount ring: front of the P100-RX (241 mm long) centred at the geometry's engine_center"
     },
-    "configuration": "virtual-balanced-reference-v1",
+    "configuration": "virtual-balanced-reference-v2-empty-main-tank",
     "cg_tolerance": {
       "value": 0.001,
       "unit": "m",
       "kind": "estimated",
-      "source": "research/avanti-s/av06/derive_physics.py: virtual reference build balanced to the manual's point, NOT a measured airplane"
-    }
+      "source": "research/avanti-s/av06/derive_physics.py: virtual reference build balanced to the manual's point with the main tank empty, NOT a measured airplane"
+    },
+    "fuel_state": "empty_tanks"
+  },
+  "fuel_system": {
+    "tanks": [
+      {
+        "id": "main_tank",
+        "fuel": "kerosene_5pct_turbine_oil",
+        "liquid_inventory_id": "fuel_flight",
+        "shell_inventory_id": "fuel_tank",
+        "capacity": {
+          "value": 3.2,
+          "unit": "l",
+          "kind": "borrowed",
+          "source": "stock A200-16 integrated tank 3.2 l kero + 1.3 l smoke (Ultimate Jets dealer listing; owners report ~3 l), docs/research/avanti-s-av06-airframe-data.md"
+        },
+        "unusable": {
+          "value": 0.02,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "FUEL-05e: felt-clunk main-tank residue estimate; the hopper/UAT stays inside the turbine accessories item; no published value"
+        },
+        "pickup": "felt_clunk",
+        "feed": "ecu_pump"
+      }
+    ]
   },
   "inventory": [
     {
@@ -1202,20 +1227,20 @@
       "id": "fuel_flight",
       "name": "kerosene + 5 % oil (declared fuel state)",
       "mass": {
-        "value": 1.28,
+        "value": 1.29628,
         "unit": "kg",
         "kind": "derived",
-        "source": "3.2 l x 0.5 x 0.8 kg/l (stock A200-16 integrated tank 3.2 l kero + 1.3 l smoke (Ultimate Jets dealer listing; owners report ~3 l), docs/research/avanti-s-av06-airframe-data.md; declared flight state: half the main tank (no burn modelled, AV-10); smoke tank empty)"
+        "source": "3.2 l x 0.5 x 0.810175 kg/l (stock A200-16 integrated tank 3.2 l kero + 1.3 l smoke (Ultimate Jets dealer listing; owners report ~3 l), docs/research/avanti-s-av06-airframe-data.md; declared flight state: half the main tank (no burn modelled, AV-10); smoke tank empty)"
       },
       "position": {
         "value": [
-          0.05,
+          0.155,
           0.0,
           -0.03
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "mid-fuselage under the turbine rails, ahead of the CG: filling it makes the model nose-heavy (owners, docs/research/avanti-s-av06-airframe-data.md)"
+        "source": "FUEL-05e: tank centroid about 85 mm ahead of the 240 mm CG, from the Krill Avanti S 2.1 m manual's shift (240 mm full, 260 mm with landing fuel: about 20 mm for about 2.6 kg on an 11 kg airplane, arm 70-90 mm; same tank bay design, different airframe; docs/research/avanti-s-av06-airframe-data.md). Replaces the unsourced 0.05 m. Not measured"
       },
       "size": {
         "value": [
@@ -1233,7 +1258,7 @@
       "id": "ballast_reference",
       "name": "virtual reference-build balancing mass",
       "mass": {
-        "value": 0.345089,
+        "value": 0.062298,
         "unit": "kg",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: m = M (x_CG - x0) / (x_ballast - x_CG) for the manual balance point; a virtual reference build, NOT measured hardware"
@@ -1557,7 +1582,7 @@
         "source": "research/avanti-s/av06/derive_physics.py: Helmbold wing with half-chord sweep + downwashed tail"
       },
       "CLq": {
-        "value": 6.248243,
+        "value": 6.059633,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: tail volume + DATCOM wing term"
@@ -1617,13 +1642,13 @@
         "source": "research/avanti-s/av06/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.157629,
+        "value": -0.157578,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: fin above the CG"
       },
       "CYr": {
-        "value": 0.382447,
+        "value": 0.38881,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: fin behind the CG"
@@ -1635,19 +1660,19 @@
         "source": "research/avanti-s/av06/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.140061,
+        "value": -0.13917,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: wing sweep at CL_ref + dihedral + wing-body + fin"
       },
       "Clp": {
-        "value": -0.606891,
+        "value": -0.606879,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.12496,
+        "value": 0.123898,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: CL_ref/4 + fin"
@@ -1683,7 +1708,7 @@
         "source": "research/avanti-s/av06/derive_physics.py: tail about the wing-body ac (Munk-Multhopp fuselage); the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -7.549994,
+        "value": -7.751139,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: tail damping about the CG x1.1 for wing/fuselage"
@@ -1707,25 +1732,25 @@
         "source": "research/avanti-s/av06/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": 0.008622,
+        "value": 0.009509,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: -CL_ref/8 + fin about CG, minus CYp*(x_CG-x_ARP)/b for the ARP moment contract; AV-17-R3"
       },
       "Cnr": {
-        "value": -0.142153,
+        "value": -0.144102,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated) about CG, minus CYr*(x_CG-x_ARP)/b for the ARP moment contract; AV-17-R3"
       },
       "Cnda_right": {
-        "value": 0.013645,
+        "value": 0.013334,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson)"
       },
       "Cnda_left": {
-        "value": -0.013645,
+        "value": -0.013334,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: adverse yaw"
@@ -1871,7 +1896,7 @@
     },
     "reference_coefficients": {
       "CLadot": {
-        "value": 1.684616,
+        "value": 1.706909,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/avanti-s/av06/derive_physics.py: 2 eta CLa_h Sh/S l_h/c deps/dalpha"
@@ -2421,9 +2446,9 @@
     },
     "thrust_line_offset": {
       "value": [
-        0.9285,
+        0.938133,
         0.0,
-        -0.010153
+        -0.01023
       ],
       "unit": "m",
       "kind": "derived",
@@ -2431,9 +2456,9 @@
     },
     "intake_offset": {
       "value": [
-        -0.33,
+        -0.320367,
         0.0,
-        -0.033153
+        -0.03323
       ],
       "unit": "m",
       "kind": "derived",
@@ -2466,16 +2491,16 @@
           "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
         },
         "stiffness": {
-          "value": 2398.339397,
+          "value": 2313.948017,
           "unit": "N/m",
           "kind": "derived",
-          "source": "AV09: Σk = inventory mass 11.705089 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
+          "source": "AV09: Σk = inventory mass 11.438578 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
         },
         "damping": {
-          "value": 58.040789,
+          "value": 56.357724,
           "unit": "N·s/m",
           "kind": "derived",
-          "source": "AV09: Σk = inventory mass 11.705089 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
+          "source": "AV09: Σk = inventory mass 11.438578 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
         },
         "max_compression": {
           "value": 0.105,
@@ -2760,16 +2785,16 @@
           "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
         },
         "stiffness": {
-          "value": 2398.339397,
+          "value": 2313.948017,
           "unit": "N/m",
           "kind": "derived",
-          "source": "AV09: Σk = inventory mass 11.705089 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
+          "source": "AV09: Σk = inventory mass 11.438578 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
         },
         "damping": {
-          "value": 58.040789,
+          "value": 56.357724,
           "unit": "N·s/m",
           "kind": "derived",
-          "source": "AV09: Σk = inventory mass 11.705089 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
+          "source": "AV09: Σk = inventory mass 11.438578 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
         },
         "max_compression": {
           "value": 0.105,
@@ -3054,16 +3079,16 @@
           "source": "assets/aircraft/avanti-s-a200/blender-geometry.json (SHA-256 7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d); source gear.wheels contact_model trajectory [x_right,y_up,z_aft] mapped to the AV-02 LE frame [x_aft,y_right,z_up], including wing_forward_shift; visual mesh contact envelope, not a calibrated strut path; down endpoint"
         },
         "stiffness": {
-          "value": 664.447582,
+          "value": 708.887111,
           "unit": "N/m",
           "kind": "derived",
-          "source": "AV09: Σk = inventory mass 11.705089 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
+          "source": "AV09: Σk = inventory mass 11.438578 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
         },
         "damping": {
-          "value": 30.549798,
+          "value": 31.193578,
           "unit": "N·s/m",
           "kind": "derived",
-          "source": "AV09: Σk = inventory mass 11.705089 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
+          "source": "AV09: Σk = inventory mass 11.438578 kg × (0.090 × 240 Hz)²; split by static reaction shares from source-mesh wheelbase and inventory CG; damping ratio 0.30 uses the existing m/3 per-contact loader convention. Estimated numerical contact parameters, not measured struts."
         },
         "max_compression": {
           "value": 0.085,

@@ -43,6 +43,12 @@ const MOON_BRIGHT_FACTOR := 3.0
 ## (estimate; a full moon well up casts full shadows, a thin crescent none).
 const MOON_SHADOW_SHARE_LOW := 0.15
 const MOON_SHADOW_SHARE_HIGH := 0.5
+## The sun's shadows are at full strength from this apparent elevation up (FW-MOON-06b, sun_shadow_strength).
+const SUN_SHADOW_FULL_DEG := 0.5
+## FW-MOON-06c cloud_light_weights: the day's direct share of the cloud light (the 0.8 / 0.2 split of `cloud`) and the
+## smallest directional weight kept (so a 10⁻⁶ moon leaves the day sky's uniforms exactly at (1, 0)).
+const CLOUD_DIRECT_SHARE_DAY := 0.8
+const CLOUD_WEIGHT_FLOOR := 1e-4
 ## The eye's local adaptation to the disc (FW-MOON-03). At night the full moon is 10⁴–10⁵ times brighter than the scene
 ## the exposure serves, so a physical disc is a white blob and a crescent's earthshine a grey disc. When the lit full
 ## moon outside the atmosphere would exceed MOON_DISPLAY_PEAK on the display (radiance × exposure), the shader scales
@@ -187,6 +193,28 @@ static func moon_squash(true_elevation_deg: float) -> float:
 	return 1.0 + (Ephemeris.refraction_deg(true_elevation_deg + h) - Ephemeris.refraction_deg(true_elevation_deg - h)) / (2.0 * h)
 
 
+## FW-MOON-06b: the sun's shadow strength across the horizon: its disc's direct beam (the sky table's `sun` row)
+## relative to the beam at SUN_SHADOW_FULL_DEG, clamped to [0, 1]. Full strength from that elevation up (every
+## daytime, golden-hour and sunset scene is unchanged), zero from −0.5°, where the table's beam ends.
+static func sun_shadow_strength(sun_elevation_deg: float) -> float:
+	if sun_elevation_deg >= SUN_SHADOW_FULL_DEG:
+		return 1.0
+	return clampf(_lum(row(sun_elevation_deg).sun) / _lum(row(SUN_SHADOW_FULL_DEG).sun), 0.0, 1.0)
+
+
+## FW-MOON-06c: how strongly the sun (x) and the moon (y) shade the clouds directionally, from the direct sunlit,
+## direct moonlit and sky-lit parts of their light. A source's weight is its share of that light divided by the
+## calibrated day's direct share (0.8). While the sun's disc is up (`sun_up` = sun_shadow_strength: 1 from 0.5°)
+## the sun keeps weight 1, so every daytime, golden-hour and sunset sky is unchanged; as the disc sets, its weight
+## blends into its measured share. Weights below CLOUD_WEIGHT_FLOOR are dropped; the sum never exceeds 1.
+static func cloud_light_weights(sun_direct: float, moon_direct: float, sky_light: float, sun_up := 0.0) -> Vector2:
+	var total := sun_direct + moon_direct + sky_light
+	var w := Vector2(sun_direct, moon_direct) / total / CLOUD_DIRECT_SHARE_DAY if total > 0.0 else Vector2.ZERO
+	w.x = 1.0 if sun_up >= 1.0 else lerpf(w.x, 1.0, clampf(sun_up, 0.0, 1.0))
+	w = Vector2(w.x if w.x >= CLOUD_WEIGHT_FLOOR else 0.0, w.y if w.y >= CLOUD_WEIGHT_FLOOR else 0.0)
+	return w / maxf(w.x + w.y, 1.0)
+
+
 ## FW-MOON-03: the moon's photometric inputs. Real skies carry their place (Ephemeris.sky()), so Lunar supplies the
 ## exact phase, distance, sun direction and earthshine; hand-built test skies keep the original elongation phase.
 static func _moon(sky: Dictionary) -> Dictionary:
@@ -264,6 +292,13 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	# Lit cloud: mostly the light reaching the deck (clouds stay lit after sunset), a little skylight.
 	var cloud_rel: Vector3 = _ratio(s.cloud + tint * m.cloud, anchor.cloud)
 	var cloud: Vector3 = _lin(a.cloud_color) * (cloud_rel * 0.8 + Vector3.ONE * 0.2 * _lum(zenith) / _lum(_lin(a.zenith)))
+	# FW-MOON-06c: the sky shows both sources. The other source's lobe is drawn beside the brighter one, and each source
+	# shades the clouds directionally in proportion to its directional share of their light (the 0.8 direct / 0.2 sky
+	# split above): full shading by day, none in deep twilight when only the sky lights them, then the moon's.
+	# Nothing in the sky flips when the light, the lobe or the cloud lighting passes between sun and moon.
+	var other_lobe: Vector3 = sun_lobe if lobe_from_moon else moon_lobe
+	var cloud_weights := cloud_light_weights(_lum(_ratio(s.cloud, anchor.cloud)) * 0.8,
+		_lum(_ratio(tint * m.cloud, anchor.cloud)) * 0.8, 0.2 * _lum(zenith) / _lum(_lin(a.zenith)), sun_shadow_strength(sun_el))
 
 	cloud = TwilightPalette.diffuse(cloud, sun_el, TwilightPalette.CLOUD_TINT, 0.30)
 
@@ -286,12 +321,15 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	var moon_lin: Vector3 = base * MOON_DISC * _lum(_lin(a.zenith)) * _ratio(m.sun, anchor.sun) if moon_el > -1.0 and moon_on else Vector3.ZERO
 	var sun_dir := direction(sky.sun.azimuth_deg, sun_el)
 	# Shadows under the moon fade with the direct share of the light (a thin crescent's light is lost in the sky glow);
-	# relative to that share for the anchored 45° sun. The sun keeps full-strength shadows (unchanged).
+	# relative to that share for the anchored 45° sun. The sun keeps full-strength shadows while its disc is up, and
+	# FW-MOON-06b fades them with its direct beam as the disc crosses the horizon (sun_shadow_strength), so the light
+	# passes to the moon with no shadow on either side.
 	var direct := _lum(light_rgb) * maxf(sin(deg_to_rad(light_el)), 0.0)
 	var direct_anchor := _lum(_lin(a.sun_color)) * sin(deg_to_rad(ANCHOR_ELEVATION_DEG))
 	var share := direct / maxf(direct + _lum(zenith) + _lum(haze), 1e-30)
 	var share_anchor := direct_anchor / (direct_anchor + _lum(_lin(a.zenith)) + _lum(_lin(a.haze)))
-	var shadow := smoothstep(MOON_SHADOW_SHARE_LOW, MOON_SHADOW_SHARE_HIGH, share / share_anchor) if moon_lights else 1.0
+	var shadow := smoothstep(MOON_SHADOW_SHARE_LOW, MOON_SHADOW_SHARE_HIGH, share / share_anchor) if moon_lights \
+		else sun_shadow_strength(sun_el)
 	# Reference: the unattenuated full moon (base × S0), so a low moon stays dimmer and redder than a high one.
 	var excess := _lum(base) * MOON_DISC * _lum(_lin(a.zenith)) * float(a.exposure) * gain / MOON_DISPLAY_PEAK
 	var display_scale := 1.0 / excess if excess > 1.0 else 1.0
@@ -312,6 +350,13 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 		lobe_dir = direction(lobe_az, 0.0),
 		lobe_k = m.lobe_k if lobe_from_moon else s.lobe_k,
 		lobe_height = deg_to_rad(m.lobe_height_deg if lobe_from_moon else s.lobe_height_deg),
+		sky_lobe2_lin = other_lobe,
+		sky_lobe2_dir = direction(sky.sun.azimuth_deg if lobe_from_moon else moon.azimuth_deg, 0.0),
+		sky_lobe2_k = s.lobe_k if lobe_from_moon else m.lobe_k,
+		sky_lobe2_height = deg_to_rad(s.lobe_height_deg if lobe_from_moon else m.lobe_height_deg),
+		cloud_light2_dir = direction(sky.sun.azimuth_deg, sun_el) if moon_lights else direction(moon.azimuth_deg, moon_el),
+		cloud_light1_weight = cloud_weights.y if moon_lights else cloud_weights.x,
+		cloud_light2_weight = cloud_weights.x if moon_lights else cloud_weights.y,
 		cloud_lin = cloud,
 		ambient_lin = ambient,
 		exposure = float(a.exposure) * gain,

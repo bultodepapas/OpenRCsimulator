@@ -23,7 +23,7 @@
       "value": 0.24,
       "unit": "m",
       "kind": "manual",
-      "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); the manual gives no fuel-state qualifier, and this model's half-tank state is separately declared under fuel.fraction; photo-manual p.91 step 181"
+      "source": "SebArt Avanti S Jet 2.2m manual (intro PDF) p.5: 240 mm from the wing LE at the fuselage for jet beginners (the P100 set-up); the manual gives no fuel-state qualifier, and this model's half-tank state is separately declared under fuel.fraction; photo-manual p.91 step 181; FUEL-05e: taken with a full hopper and an empty main tank, the A200 owners' balance practice (kasi122, RCN #237)"
     },
     "mass_range": {
       "value": [
@@ -266,20 +266,20 @@
       "source": "declared flight state: half the main tank (no burn modelled, AV-10); smoke tank empty"
     },
     "density": {
-      "value": 0.8,
+      "value": 0.810175,
       "unit": "kg/l",
-      "kind": "manual",
-      "source": "JetCat catalog 2017: 390 ml/min = 0.312 kg/min, i.e. 0.80 kg/l for Jet-A1 with 5 % oil"
+      "kind": "derived",
+      "source": "FUEL-05e: app/data/fuels/openrc-fuel-registry.json blend kerosene_5pct_turbine_oil (810.175 kg/m3 at 15 degC); JetCat's 2017 catalog columns imply 0.80 kg/l. derive_physics.py refuses a value that differs from the registry"
     },
     "position_model": {
       "value": [
-        0.05,
+        0.155,
         -0.03,
         0.0
       ],
       "unit": "m",
-      "kind": "estimated",
-      "source": "mid-fuselage under the turbine rails, ahead of the CG: filling it makes the model nose-heavy (owners, docs/research/avanti-s-av06-airframe-data.md)"
+      "kind": "derived",
+      "source": "FUEL-05e: tank centroid about 85 mm ahead of the 240 mm CG, from the Krill Avanti S 2.1 m manual's shift (240 mm full, 260 mm with landing fuel: about 20 mm for about 2.6 kg on an 11 kg airplane, arm 70-90 mm; same tank bay design, different airframe; docs/research/avanti-s-av06-airframe-data.md). Replaces the unsourced 0.05 m. Not measured"
     }
   },
   "balance": {

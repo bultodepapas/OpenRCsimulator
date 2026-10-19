@@ -181,6 +181,17 @@ static func battery_data(id: String) -> String:
 	return str(entry(id).get("battery_data", ""))
 
 
+## FUEL-07: whether the aircraft burns a finite fuel tank (its data declares finite_glow_fuel), so a start fill applies.
+static func has_finite_fuel(id: String) -> bool:
+	if not can_fly(id) or is_rotorcraft(id):
+		return false
+	var path: String = str(entry(id).get("data", ""))
+	if path.is_empty() or not FileAccess.file_exists(path):
+		return false
+	var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+	return raw is Dictionary and raw.get("capabilities") is Dictionary and raw.capabilities.get("energy") == "finite_glow_fuel"
+
+
 static func default_battery_mode(id: String) -> String:
 	return "pack" if has_battery_mode(id, "pack") else "ideal"
 

@@ -3458,3 +3458,12 @@ msgstr "Batería: ideal (nunca se agota)"
 
 msgid "Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage."
 msgstr "Pack finito: la carga se agota, el voltaje cae con la carga y con el frío, el pack se calienta y el ESC corta la potencia con voltaje bajo. Ideal: voltaje constante."
+
+msgid "Fuel: full tank"
+msgstr "Combustible: depósito lleno"
+
+msgid "Fuel: %d %% of the tank"
+msgstr "Combustible: %d %% del depósito"
+
+msgid "Start fill of the engine's tank. Fuel burns in flight: the airplane gets lighter and its balance moves aft as the tank empties."
+msgstr "Llenado inicial del depósito del motor. El combustible se consume en vuelo: el avión se aligera y su centro de gravedad se desplaza hacia atrás a medida que el depósito se vacía."

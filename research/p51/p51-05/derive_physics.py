@@ -26,6 +26,17 @@ if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
 from migrate import legacy_input, numeric_parity, upgrade  # noqa: E402
 from physical_identity import validate_physical_identity  # noqa: E402
+FUEL_DIR = ROOT / "research" / "fuel-systems"
+if str(FUEL_DIR) not in sys.path:
+    sys.path.insert(0, str(FUEL_DIR))
+import fuel_registry  # noqa: E402
+
+# FUEL-05c: a 1 l gasoline tank (DA-120 manual: 32 oz or larger), registry 40:1 premix, fixed half tank
+# (prescribed fuel: no burn), balanced with the tank empty as the Top Flite Giant P-51D manual does.
+TANK_L = 1.0
+GAS_BLEND = "gasoline_premix_40_1"
+FIXED_FILL = 0.5
+FUEL_KG = TANK_L * 1e-3 * fuel_registry.blend_density(GAS_BLEND) * FIXED_FILL
 
 GEOMETRY = ROOT / "assets/aircraft/p51d-mustang-120/geometry.json"
 SOURCE = ROOT / "assets/aircraft/p51d-mustang-120/source.json"
@@ -306,7 +317,7 @@ items = [
     ("engine standoffs / mount and bolts", 0.25, "estimated", "aluminium standoffs on a plywood firewall", le(rc_fw - 0.03), None, "estimated", "on the model's firewall", "engine_mount"),
     ("cowl (fiberglass) with dummy exhausts", 0.60, "estimated", "fiberglass cowl of a 2.5 m warbird", le((g["spinner"]["back_z"] + g["cowl_rear_z"]) / 2, 0.0), [g["cowl_rear_z"] - g["spinner"]["back_z"], fus_w, fus_d], "measured", "between the spinner back and the cowl rear (geometry.json)", "cowl_main"),
     ("fuel tank 1 l (empty) with lines", 0.20, "estimated", "gasoline tank with clunk and lines", le(rc_fw + 0.10, -0.02), None, "estimated", "behind the model's firewall", "fuel_tank"),
-    ("fuel (half tank)", 0.37, "estimated", "0.5 l at 0.74 g/ml gasoline; flight state: half tank (no consumption model, G4)", le(rc_fw + 0.10, -0.02), None, "estimated", "same as the tank", "fuel_flight"),
+    ("fuel (half tank)", FUEL_KG, "derived", f"FUEL-05c: half of the 1 l tank x {fuel_registry.blend_source(GAS_BLEND)}; prescribed flight state (no consumption)", le(rc_fw + 0.10, -0.02), [0.16, 0.10, 0.0625], "estimated", "same as the tank; uniform liquid box holding the 1 l capacity", "fuel_flight"),
     ("ignition battery 2S LiFe", 0.15, "estimated", "1500-2100 mAh LiFe pack", le(rc_fw + 0.03, -0.08), None, "estimated", "below the tank, as far forward as the cowl allows", "ignition_battery"),
     ("receiver batteries 2S LiFe (2)", 0.30, "estimated", "two 2100 mAh LiFe packs (redundant)", le(rc_fw + 0.06, -0.09), None, "estimated", "forward fuselage floor, next to the ignition pack (warbird practice: everything heavy forward)", "receiver_batteries"),
     ("receiver, switches, power distribution", 0.12, "estimated", "receiver, two switches, harnesses", le(0.25, -0.05), None, "estimated", "under the cockpit floor", "receiver_radio"),
@@ -341,20 +352,22 @@ FLIGHT_MASS = 21.5
 STRUCTURE = ("wing panel", "wing tube", "fuselage", "belly scoop", "canopy", "stabilizer", "fin and rudder", "cowl", "pushrods")
 is_structure = lambda it: any(it[0].startswith(s) for s in STRUCTURE)
 k_total_struct = 1.0
+is_fuel = lambda it: it[0] == "fuel (half tank)"
 for _ in range(30):
-    base = sum(i[1] for i in items)
-    m_cg = sum(i[1] * i[4][0] for i in items) / base
+    # FUEL-05c: the kit balance point is met with the tank empty; the fuel still counts toward the flight mass.
+    base = sum(i[1] for i in items if not is_fuel(i))
+    m_cg = sum(i[1] * i[4][0] for i in items if not is_fuel(i)) / base
     nose_ = m_cg > cg_z_model - LE0
     xb_ = le(g["spinner"]["back_z"] - 0.02)[0] if nose_ else le(T["stab_root_le_z"])[0]
-    total = base + base * (cg_z_model - LE0 - m_cg) / (xb_ - (cg_z_model - LE0))
+    total = base + base * (cg_z_model - LE0 - m_cg) / (xb_ - (cg_z_model - LE0)) + FUEL_KG
     k_struct = 1 + (FLIGHT_MASS - total) / sum(i[1] for i in items if is_structure(i))
     items = [(i[0], i[1] * k_struct) + i[2:] if is_structure(i) else i for i in items]
     k_total_struct *= k_struct
     if abs(FLIGHT_MASS - total) < 1e-6:
         break
 note("balance", "airframe mass (kg)", sum(i[1] for i in items if is_structure(i)), f"airframe items scaled so the flight mass is {FLIGHT_MASS} kg (built 1/4-scale P-51s: 50-55 lb with retracts and 120 cc)")
-mass0 = sum(i[1] for i in items)
-mom0 = [sum(i[1] * i[4][k] for i in items) for k in range(3)]
+mass0 = sum(i[1] for i in items if not is_fuel(i))
+mom0 = [sum(i[1] * i[4][k] for i in items if not is_fuel(i)) for k in range(3)]
 x_target = cg_z_model - LE0
 x_cg0 = mom0[0] / mass0
 nose = x_cg0 > x_target
@@ -366,11 +379,15 @@ note("balance", "balancing mass (kg)", mb, ("nose weight" if nose else "tail wei
 items.append(("virtual reference-build balancing mass", mb, "derived",
               f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) for the kit balance point; a virtual reference build, NOT measured hardware or a ballast recommendation",
               ballast_pos, [0.04, 0.04, 0.04], "estimated", "behind the spinner backplate" if nose else "tail post", "ballast_reference"))
-mass = mass0 + mb
+dry_mass = mass0 + mb
+dry_cg = [sum(i[1] * i[4][k] for i in items if not is_fuel(i)) / dry_mass for k in range(3)]
+dry_cg[1] = 0.0  # symmetric build
+note("balance", "empty-tank CG (le frame)", dry_cg, "kit balance point with the tank empty (FUEL-05c)")
+mass = sum(i[1] for i in items)
 cg = [sum(i[1] * i[4][k] for i in items) / mass for k in range(3)]
 cg[1] = 0.0  # symmetric build
 lo_m, hi_m = KIT["flying_mass_kg"]
-note("balance", "flight mass (kg)", mass, f"dry {mass - 0.37:.3f} kg = {(mass - 0.37) / LB:.1f} lb vs kit range {lo_m}-{hi_m} kg")
+note("balance", "flight mass (kg)", mass, f"dry {mass - FUEL_KG:.3f} kg = {(mass - FUEL_KG) / LB:.1f} lb vs kit range {lo_m}-{hi_m} kg")
 note("balance", "flight CG (le frame)", cg, "z: below the thrust line by the inventory")
 
 
@@ -896,11 +913,17 @@ data = {
     },
     "start": {"level_speed": q(float(V_start), "m/s", "derived", D("1.6 x the 1-g stall at the flight mass and CL_max, rounded"))},
     "balance": {
-        "plan_cg": q(cg, "m", "estimated", f"{100 * cg_mac:.0f} % MAC (kit placeholder, source.json) = model z {cg_z_model:.4f}; z from the inventory (derived)"),
+        "plan_cg": q(dry_cg, "m", "estimated", f"{100 * cg_mac:.0f} % MAC (kit placeholder, source.json) = model z {cg_z_model:.4f} with the tank empty (FUEL-05c, as the Top Flite Giant P-51D manual balances); z from the dry inventory (derived)"),
         "firewall": q(le(rc_fw), "m", "estimated", "the model's engine-box firewall: spinner back + 0.25 m (a 120 cc twin on standoffs); the scaled full-size firewall is only the cowl split"),
-        "configuration": "virtual-balanced-reference-v1",
-        "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the kit's point, NOT a measured airplane")),
+        "configuration": "virtual-balanced-reference-v2-empty-tank",
+        "cg_tolerance": q(0.001, "m", "estimated", D("virtual reference build balanced to the kit's point with the tank empty, NOT a measured airplane")),
+        "fuel_state": "empty_tanks",
     },
+    "fuel_system": {"tanks": [{
+        "id": "main_tank", "fuel": GAS_BLEND, "liquid_inventory_id": "fuel_flight", "shell_inventory_id": "fuel_tank",
+        "capacity": q(TANK_L, "l", "estimated", "1 l tank; the DA-120 manual asks for 32 oz (0.946 l) or larger"),
+        "unusable": q(0.01, "l", "estimated", "FUEL-05c: felt-clunk residue estimate; no published value (docs/research/fuel-systems/FUEL-00 section 6.3)"),
+        "pickup": "felt_clunk", "feed": "pumped_diaphragm"}]},
     "inventory": [
         dict({"id": it[8], "name": it[0], "mass": q(float(it[1]), "kg", it[2], it[3] + (f"; x{k_total_struct:.3f}: airframe scaled to the built weight (P51-09)" if is_structure(it) else "")), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
              **({"size": q([float(v) for v in it[5]], "m", "estimated", "rough envelope for intrinsic inertia")} if it[5] else {}),

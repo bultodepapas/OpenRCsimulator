@@ -8,6 +8,7 @@ const MoonConfig := preload("res://environment/moon_config.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const Ephemeris := preload("res://render/world/ephemeris.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
+const Preferences := preload("res://app_state/preferences.gd")
 
 var _failures := 0
 var _count := 0
@@ -108,6 +109,34 @@ func _initialize() -> void:
 	implicit.erase("moon_config")
 	explicit.erase("moon_config")
 	_check("empty config renders like the defaults", str(implicit) == str(explicit))
+
+	# [moon] preferences: an additive section. A saved choice loads back; an older file without it is the real moon; a
+	# broken section recovers to the real moon with a note; an invalid choice is never written.
+	var path := "user://test_world_moon_config_prefs.cfg"
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	var prefs := Preferences.load_from(path)
+	_check("no file: the real moon", prefs.moon_config == MoonConfig.defaults())
+	var chosen := MoonConfig.defaults()
+	chosen.moon = "phase"
+	chosen.phase = "waning_crescent"
+	chosen.size = "large"
+	prefs.moon_config = chosen
+	_check("a valid choice saves", Preferences.save_to(path, prefs) == OK)
+	_check("and loads back exactly", Preferences.load_from(path).moon_config == chosen)
+	var cfg := ConfigFile.new()
+	cfg.load(path)
+	cfg.erase_section("moon")
+	cfg.save(path)
+	_check("a file without [moon] gives the real moon", Preferences.load_from(path).moon_config == MoonConfig.defaults())
+	cfg.set_value("moon", "config", {format = MoonConfig.FORMAT, moon = "purple"})
+	cfg.save(path)
+	var recovered := Preferences.load_from(path)
+	_check("a broken [moon] recovers to the real moon with a note", recovered.moon_config == MoonConfig.defaults()
+		and str(recovered.note).contains("moon"), str(recovered.note))
+	var invalid := Preferences.load_from(path)
+	invalid.moon_config = {moon = "purple"}
+	_check("an invalid choice is never written", Preferences.save_to(path, invalid) == ERR_INVALID_DATA)
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

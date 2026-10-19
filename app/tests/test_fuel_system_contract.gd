@@ -7,9 +7,11 @@ extends SceneTree
 const AD := preload("res://physics/aircraft_data.gd")
 const Fuels := preload("res://physics/fuel_properties.gd")
 
-## The prescribed-fuel base Stik declares no tanks; its point-mass liquid gets a 0.225 l box in _raw().
+## Fixture: the base Stik with its FUEL-05f tank and empty-tank balance removed again (plan CG = authored inventory
+## CG, as before FUEL-05), and its liquid given a 0.225 l box in _raw().
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
-const GLOW_WITH_TANKS := ["stik_glow_55ax_2t.json", "stik_glow_55ax_2t_apc_13x6.json", "stik_glow_61fx_2t.json",
+const FLEET_WITH_TANKS := ["gp_extra_300s_60.json", "jensen_ugly_stik_60.json", "p51d_mustang_120.json",
+	"sebart_avanti_s_a200.json", "stik_glow_55ax_2t.json", "stik_glow_55ax_2t_apc_13x6.json", "stik_glow_61fx_2t.json",
 	"stik_glow_fs64v_4t.json", "stik_glow_fs64v_4t_apc_13x6.json"]
 const TIMBER := "res://data/aircraft/turbo_lumber_evolution.json"
 
@@ -36,6 +38,9 @@ func _initialize() -> void:
 func _raw(path: String) -> Dictionary:
 	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if path == STIK:
+		raw.erase("fuel_system")
+		raw.balance.erase("fuel_state")
+		raw.balance.plan_cg.value = _dry_cg(raw, "")  # the authored inventory CG
 		for item: Dictionary in raw.inventory:
 			if item.get("id") == "item_fuel_main":
 				item.size.value = [0.09, 0.05, 0.05]  # size changes inertia only, never the CG check
@@ -75,7 +80,7 @@ func _fleet_unchanged() -> void:
 	for name: String in dir.get_files():
 		if not name.ends_with(".json"):
 			continue
-		var raw: Variant = _raw("res://data/aircraft/" + name)
+		var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/" + name))
 		if not raw is Dictionary or raw.get("format") != AD.FORMAT or not raw.has("balance"):
 			continue
 		var result: Dictionary = _load(raw)
@@ -84,8 +89,8 @@ func _fleet_unchanged() -> void:
 			if result.model.has("fuel_system"):
 				with_block.append(name)
 	with_block.sort()
-	_check("current fixed-wing data loads; only the FUEL-05a glow Stiks declare tanks (%d files)" % loaded,
-		loaded >= 10 and with_block == GLOW_WITH_TANKS, str(with_block))
+	_check("current fixed-wing data loads; every fuelled FUEL-05 aircraft declares its tank (%d files)" % loaded,
+		loaded >= 10 and with_block == FLEET_WITH_TANKS, str(with_block))
 
 
 func _accepted() -> void:
@@ -104,9 +109,13 @@ func _accepted() -> void:
 	_check("model.fuel_system carries the registry density and identity",
 		system.get("format") == "openrc-fuel-system v1" and system.registry_sha256 == registry.identity.sha256
 		and tank.get("density_kg_m3") == density and tank.get("family") == "glow")
+	var liquid_kg := 0.0
+	for item: Dictionary in raw.inventory:
+		if item.get("id") == "item_fuel_main":
+			liquid_kg = float(item.mass.value)
 	_check("capacity, unusable and start fill derive from litres x density",
 		absf(tank.capacity_kg - 0.225e-3 * density) < 1e-12 and absf(tank.unusable_kg - 0.005e-3 * density) < 1e-12
-		and absf(tank.start_fill - 0.12 / (0.225e-3 * density)) < 1e-12 and tank.liquid_mass_kg == 0.12,
+		and absf(tank.start_fill - liquid_kg / (0.225e-3 * density)) < 1e-12 and tank.liquid_mass_kg == liquid_kg and liquid_kg > 0.0,
 		"capacity %.6f kg, start fill %.4f" % [tank.capacity_kg, tank.start_fill])
 	var plain: Dictionary = _load(_raw(STIK))  # same fixture without fuel_system
 	_check("the block changes no derived mass property", plain.ok and plain.model.mass_kg == result.model.mass_kg

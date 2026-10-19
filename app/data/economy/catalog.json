@@ -4,8 +4,8 @@
   "price_date": "2026-10-16",
   "generated_from": {
     "price_catalog_sha256": "64b009a22268f84d81a1b5cf53f87f653d47bb4f483444c072d3e17d455c297e",
-    "aircraft_costing_sha256": "9288b3a28c7387c484e7bf985310ca285ec8be229f6f85c9e6d3e6ccc4a21c96",
-    "aircraft_catalog_sha256": "4622d8bc86d86a226fa8c3c221853b7eaa889028f3e9c004da847d111b93bf8d",
+    "aircraft_costing_sha256": "93a4c1fdbdc796e1c5edbe8170e2281e28a770f2a03bd5a3f9e8a6c8a71614da",
+    "aircraft_catalog_sha256": "2c02f799d0482d3ab8e41aab501fa580e5cbdf9c0e5e89044fba721f9606083c",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
   },
@@ -2033,7 +2033,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "jensen-das-ugly-stik-60",
-      "source_sha256": "68845fc8c37e3cce98154319dcee9120ee04acfe439c4b2d79c9fb866f3bc507",
+      "source_sha256": "c582c23ab2d6d986be045a7c4f9e8eb31b8093bc90bc7d0aae5c8b58551b963d",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
@@ -2291,7 +2291,7 @@
           },
           "item_fuel_main": {
             "name": "fuel (half tank)",
-            "mass": 0.12,
+            "mass": 0.149961,
             "mass_unit": "kg",
             "energy_source": "glow_fuel"
           },
@@ -2369,7 +2369,7 @@
           },
           "item_balance_mass_virtual": {
             "name": "virtual reference-build balancing mass",
-            "mass": 0.2840582910437526,
+            "mass": 0.24770113838979568,
             "mass_unit": "kg",
             "energy_source": ""
           }
@@ -2398,7 +2398,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-61fx-2t",
-      "source_sha256": "6229fa9f04ce870cc846039cf5b13da7253d2639b4014d942b175124ab41fe73",
+      "source_sha256": "6ff6e578ec663b6a00a75c2dbb12aa587539a15e1acf785633e1753a907973d7",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
@@ -2763,7 +2763,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-55ax-2t",
-      "source_sha256": "2956262c6d7ea77134114617604bc29603acf52567f73bfb7abeeab15a350c46",
+      "source_sha256": "6c1e6be52e8e02d8f63be6caec5d2120cd92e47d2f1d7464cf2bed232c746416",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3128,7 +3128,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-fs64v-4t",
-      "source_sha256": "8d7f1a0c9822379efee3a9145352390fb7d576dc9bd2565611aae8c51cd3181e",
+      "source_sha256": "875e86e88e1a7e23f36ddeb428cdb36d41858e7415b30447331e6112e954addf",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3493,7 +3493,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "gp-extra-300s-60",
-      "source_sha256": "2af361eb1617119383484349bf55262801410525f5ef45a9fb485701d380a338",
+      "source_sha256": "51ed5b438c4c8ddbda154306a2dda6e51e0c58115c4edf7ee1c9b87d4017d034",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -4003,7 +4003,7 @@
           },
           "fuel_flight": {
             "name": "fuel (half tank)",
-            "mass": 0.146,
+            "mass": 0.152103,
             "mass_unit": "kg",
             "energy_source": "glow_fuel"
           }
@@ -4034,7 +4034,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "p51d-mustang-120",
-      "source_sha256": "eddd977927848db90d4cbbb34a47df7160c1071c2d7b7d7e08627385c0b75798",
+      "source_sha256": "111558f3916d59a22d6c4fe1f8e5d9872e63422b7ce374e3eab4103485aa5fd9",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -4540,7 +4540,7 @@
           },
           "cowl_main": {
             "name": "cowl (fiberglass) with dummy exhausts",
-            "mass": 0.742858,
+            "mass": 0.735148,
             "mass_unit": "kg",
             "energy_source": ""
           },
@@ -4552,7 +4552,7 @@
           },
           "fuel_flight": {
             "name": "fuel (half tank)",
-            "mass": 0.37,
+            "mass": 0.373927,
             "mass_unit": "kg",
             "energy_source": "gasoline"
           },
@@ -4642,67 +4642,67 @@
           },
           "wing_left": {
             "name": "wing panel, left, sheeted, with flap and aileron",
-            "mass": 2.476195,
+            "mass": 2.450493,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "wing_right": {
             "name": "wing panel, right, sheeted, with flap and aileron",
-            "mass": 2.476195,
+            "mass": 2.450493,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "wing_joiner": {
             "name": "wing tube and bolts",
-            "mass": 0.433334,
+            "mass": 0.428836,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "fuselage_front": {
             "name": "fuselage front (engine box to cockpit rear), covered",
-            "mass": 2.228575,
+            "mass": 2.205443,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "belly_scoop": {
             "name": "belly scoop (fiberglass)",
-            "mass": 0.433334,
+            "mass": 0.428836,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "fuselage_rear": {
             "name": "fuselage rear and turtle deck, covered",
-            "mass": 1.238097,
+            "mass": 1.225246,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "canopy_pilot": {
             "name": "canopy, frame and pilot",
-            "mass": 0.433334,
+            "mass": 0.428836,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "horizontal_tail": {
             "name": "stabilizer and elevators, covered",
-            "mass": 0.804763,
+            "mass": 0.79641,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "vertical_tail": {
             "name": "fin and rudder, covered",
-            "mass": 0.433334,
+            "mass": 0.428836,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "control_hardware": {
             "name": "pushrods, horns, cowl fasteners, hardware",
-            "mass": 0.433334,
+            "mass": 0.428836,
             "mass_unit": "kg",
             "energy_source": ""
           },
           "ballast_reference": {
             "name": "virtual reference-build balancing mass",
-            "mass": 1.286646,
+            "mass": 1.408659,
             "mass_unit": "kg",
             "energy_source": ""
           }
@@ -4737,7 +4737,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
-      "source_sha256": "0f349482a9845bdbd7d8d95d9ebb8240184799e947fa1309af1e4102b75370ce",
+      "source_sha256": "f5b3fdcb9dce9d1cea7a52c34d70a32eecfaf4c7c52d73a4acfe04d59b0e8158",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -5266,13 +5266,13 @@
           },
           "fuel_flight": {
             "name": "kerosene + 5 % oil (declared fuel state)",
-            "mass": 1.28,
+            "mass": 1.29628,
             "mass_unit": "kg",
             "energy_source": "kerosene"
           },
           "ballast_reference": {
             "name": "virtual reference-build balancing mass",
-            "mass": 0.345089,
+            "mass": 0.062298,
             "mass_unit": "kg",
             "energy_source": ""
           }

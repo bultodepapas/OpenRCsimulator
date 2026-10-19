@@ -1,17 +1,17 @@
 {
   "format": "openrc-literature-inventory v1",
   "generator": "research/reference-library/catalog.py --write",
-  "checked_utc": "2026-10-19T12:03:58.902418+00:00",
-  "records": 348,
-  "bibliography_entries": 335,
-  "records_without_local_file": 75,
-  "verified_local_paths": 263,
-  "distinct_local_contents": 263,
-  "local_pdf_paths": 210,
-  "local_zip_paths": 15,
-  "new_collection_paths": 251,
+  "checked_utc": "2026-10-19T12:54:48.125131+00:00",
+  "records": 396,
+  "bibliography_entries": 379,
+  "records_without_local_file": 83,
+  "verified_local_paths": 299,
+  "distinct_local_contents": 299,
+  "local_pdf_paths": 236,
+  "local_zip_paths": 16,
+  "new_collection_paths": 287,
   "reused_reference_paths": 12,
-  "total_local_bytes": 2076518644,
+  "total_local_bytes": 2386521478,
   "categories": {
     "additional-flight-evidence": {
       "records": 10,
@@ -68,6 +68,10 @@
     "unsteady-stall": {
       "records": 12,
       "records_with_local_file": 10
+    },
+    "wind-weather": {
+      "records": 48,
+      "records_with_local_file": 40
     }
   },
   "failures": []
