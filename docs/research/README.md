@@ -157,6 +157,7 @@ Current implementation guidance is in the [visual quality guide](../VISUAL-QUALI
 - Readability and rendering: [VQ-01a/b capture protocol](visual-quality-implementation/VQ-01a/README.md), [L6c blinded owner kit](visual-quality-implementation/L6c/README.md), [VQ-04a projected silhouette](visual-quality-implementation/VQ-04a/README.md), [VQ-05 propeller blur](visual-quality-implementation/VQ-05/README.md), [L9e filtered turf](visual-quality-implementation/L9e/README.md), and [L15b tree motion](visual-quality-implementation/L15b/README.md), [L15d cloud shadows](visual-quality-implementation/L15d/README.md).
 - Field details and upgrade evidence: [L10c barrier](visual-quality-implementation/L10c/README.md), [L10d contact cue](visual-quality-implementation/L10d/README.md), [landscape improvements](landscape-improvement-2026-10-07/README.md), [LU-00–07 upgrade evidence](landscape-upgrade/README.md), and [LU-05 collision report](landscape-upgrade/LU-05/collision-report.md).
 - Scenery source rationale: [field imagery](scenery-investigations/05-landscape-image-review.md), [tree review](tree-resource-review-2026-10-06/README.md), and the [landscape research index](landscape-investigations/README.md).
+- Sun ([plan](../plans/sun.md)): [SUN-00 audit, glare physiology and prior art](sun/SUN-00/README.md) with its [tagged source snapshot](sun/SUN-00/research-2026-10-19.md), and [SUN-01…05 disc, veil, bleaching and lens results](sun/SUN-01-05/README.md).
 
 ### Time of day
 
