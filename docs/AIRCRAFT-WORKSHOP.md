@@ -4,8 +4,8 @@ The Workshop creates experimental local variants without changing shipped aircra
 
 ## Using the Workshop
 
-1. Choose a catalog aircraft. Its supported adjustments are enabled automatically.
-2. Select a preset or edit size, weight, power and control travel. Inspect the original/proposed mass, span, area, wing loading, RPM, static thrust/power and reference-chord CG.
+1. Choose a catalog airplane. Its supported adjustments are enabled automatically.
+2. Select a preset or edit size, weight, tank capacity, power and control travel. Inspect the original/proposed mass, span, area, wing loading, tank capacity, RPM, static thrust/power and reference-chord CG where available.
 3. Optionally name and **Save build**. Saving again creates an immutable revision of that variant; **Save a copy** creates a separate variant. Load restores the original source snapshot and saved recipe. Delete moves a variant to local trash; **Undo delete** restores the most recent deletion during this editor visit.
 4. Choose **Test fly**. Trials start in the air. Pause and return to Workshop to continue the same draft. If opened over an existing flight, that flight remains paused at its previous state. An invalid candidate leaves it untouched. Restoring a detached flight rebuilds its audio buses and restarts its continuous sound with a fade; the simulation state is preserved.
 
@@ -16,8 +16,9 @@ The preview is a separate still scene with a scale grid. Keyboard focus stays in
 | Parameter | Current range or choices | Meaning |
 | --- | --- | --- |
 | Size | 50%, 75%, 100%, 125%, 150%, 200% | Uniform physical and visual scale |
-| Mass scaling | Constant wing loading; geometric | Scale mass with area or volume, before applying the weight multiplier |
-| Weight | 0.50–2.00× | Uniform inventory mass change; derived inertia follows the changed mass |
+| Mass scaling | Constant wing loading; geometric | Scale dry inventory mass with area or volume, before applying the weight multiplier |
+| Weight | 0.50–2.00× | Multiplies dry inventory mass; declared tank liquid follows tank scaling |
+| Tank capacity | 0.50–2.00× | Estimated tank sizing for aircraft with validated `fuel_system`; preserves fill and fuel density |
 | Power | 0.50–2.00× | Virtual prescribed-RPM propeller static-power multiplier after size/mass scaling |
 | Control travel | 0.50–1.50× | Surface throw limits; does not change transmitter expo or servo speed |
 
@@ -25,7 +26,7 @@ The six size choices are shortcuts. Loaded recipes may contain intermediate size
 
 Presets are Mini, Giant, Light, Heavy, More power, More travel and Light / low power. They apply only supported adjustments. Their names describe changes rather than measured flight performance. Valid slider values can still form an invalid combination: normal aircraft, trim and timestep checks remain authoritative.
 
-All seven current catalog configurations have generated descriptors and use the same screen, library, compiler and launch path. Conventional control travel is supported across this catalog. Uniform size/weight and virtual power changes currently require the simple prescribed-RPM propeller capability without shaft, finite-glow installation or propeller normal-force coupling. The Stik and Extra satisfy that capability gate. The P-51, electric Timber, two finite-glow Stiks and turbine jet keep these adjustments disabled until their reusable family transforms are implemented. There are no aircraft-ID switches in the Workshop transformation rules.
+The catalog has eight airplane configurations; the Workshop filters out the separate rotorcraft entry. Size, dry-weight and virtual-power transforms are registered only for the simple prescribed-RPM Stik and Extra configurations. Tank capacity is a separate transform for classified aircraft with validated fuel tanks; the three finite-glow Stiks can use it without enabling size/weight/power changes. Conventional control travel follows the registered surface capability. P-51 and Ventage sources now declare finite-liquid fuel, but `aircraft-modules-v1.json` has not registered `finite_liquid_fuel`/`fuel_consumption`; `python research/aircraft-editor/build_descriptors.py --check` currently fails on those selections, so their current descriptors are not verified for Workshop use. Their fuel software and physical acceptance gates are tracked separately in the [fuel-mass plan](plans/fuel-mass-balance.md). The compiler contains no aircraft-ID transformation branches.
 
 These changes retain estimated aerodynamic coefficients and do not model Reynolds-number changes or certify a real miniature/giant aircraft. Runway trials, component/CG editing, editable hardware packages, measured performance experiments, portable import/export and wider ranges remain planned.
 
@@ -59,11 +60,11 @@ Adding an aircraft with existing supported capabilities requires catalog/data/as
 
 ### Scale policy
 
-For size `s` and weight multiplier `w`, mass ratio `r` is `s²w` under constant wing loading or `s³w` under geometric scaling. Lengths/positions scale by `s`, areas by `s²`, and the inventory-derived inertia by `r s²`. CG/reference-chord ratio is unchanged by uniform scaling. Declared start speed scales by `sqrt(r)/s`; the session still requires an accepted trim.
+For size `s`, weight multiplier `w`, and tank-capacity multiplier `c`, the dry-mass ratio `r_dry` is `s²w` under constant wing loading or `s³w` under geometric scaling. Declared liquid mass, capacity, unusable volume and reserve scale by `s³c`; tank box dimensions scale by `s·c^(1/3)`, preserving density and fill. Other positions scale by `s`. Total mass ratio is `r_total = (M_dry·r_dry + M_liquid·s³c)/(M_dry + M_liquid)`. The compiler re-derives inertia from transformed inventory and the loader rechecks CG at the declared fuel state; mixed dry/tank scaling can shift the live CG or invalidate the candidate. Start speed uses `sqrt(r_total)/s`; runway suspension uses `r_total` and still passes normal validation.
 
-The virtual legacy propeller diameter scales by `s`, rotating inertia by `r s²`, maximum RPM by `sqrt(r)/s² × power^(1/3)`, and idle RPM by `sqrt(r)/s²`. The static coefficient-law result therefore scales thrust by `r × power^(2/3)` and power by `r^(3/2)/s × power`. It is a virtual propeller policy, not a substituted physical engine specification.
+The virtual legacy propeller uses the dry ratio: diameter scales by `s`, rotating inertia by `r_dry s²`, maximum RPM by `sqrt(r_dry)/s² × power^(1/3)`, and idle RPM by `sqrt(r_dry)/s²`. The static coefficient-law result therefore scales thrust by `r_dry × power^(2/3)` and power by `r_dry^(3/2)/s × power`. This is a virtual propeller policy, not a substituted physical engine specification.
 
-Virtual suspension uses `a=max(s,1)`: spring stiffness scales by `r/a`, damping by `r/sqrt(a)`, and travel by `a`. This deliberately preserves the small-model suspension timescale instead of shrinking travel with geometry. Contact positions, hull, wheel radius and wheel mass/inertia parameters are transformed separately. Inherited wheel profiles retain their applied status so variant IDs do not disable wheel dynamics. Runway qualification remains AE-11.
+Virtual suspension uses `a=max(s,1)`: spring stiffness scales by `r_total/a`, damping by `r_total/sqrt(a)`, and travel by `a`. This preserves the small-model suspension timescale instead of shrinking travel with geometry. Contact positions, hull, wheel radius and wheel mass/inertia parameters follow their own transforms. Inherited wheel profiles retain their applied status so variant IDs do not disable wheel dynamics. Runway qualification remains AE-11.
 
 ### Persistence and identity
 

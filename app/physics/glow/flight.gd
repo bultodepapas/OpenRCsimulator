@@ -114,7 +114,6 @@ static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Arr
 		var stage_values: PackedFloat64Array=put_state(out,state)
 		for _i in owner.wheel_count(): stage_values.append(0.0)
 		var initial_point: Dictionary=point(owner,body,stage_values,0.0)
-		print("DEBUG GLOW initial point ", initial_point)
 		if not initial_point.get("ok",false): return PackedFloat64Array([NAN])
 		var telemetry: Dictionary=initial_point.get("telemetry",{})
 		var target: float=float(telemetry.get("fuel_target_kg_s",NAN))
@@ -188,8 +187,8 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 			if not candidate_coupling.get("ok",false): return {ok=false}
 			var candidate_feed: Dictionary=FuelFeed.evaluate(install.fuel_feed,airframe.external.slice(0,3),
 				feed_mass.mass_kg,state.fuel_kg,install.capacity_fuel_kg,install.unusable_fuel_kg,
-				state.air_fraction,rpm,install.tank_position,install.tank_size,owner.sim.gravity,
-				tank_arm,candidate_coupling.alpha_body,omega)
+				state.air_fraction,rpm,install.tank_position,install.tank_size,tank_arm,
+				candidate_coupling.alpha_body,omega)
 			if not candidate_feed.get("ok",false): return {ok=false}
 			return {ok=true,target_factor=float(candidate_feed.factor),evaluation=candidate_evaluation,
 				coupling=candidate_coupling,feed=candidate_feed}

@@ -92,12 +92,18 @@ func _run() -> void:
 		var weight_slider := workshop.get("_factor_sliders")["weight_multiplier"] as HSlider
 		var power_slider := workshop.get("_factor_sliders")["power_multiplier"] as HSlider
 		var control_slider := workshop.get("_factor_sliders")["control_multiplier"] as HSlider
+		var tank_capacity_slider := workshop.get("_factor_sliders")["tank_capacity_multiplier"] as HSlider
 		_check("unsupported controls stay visible and inactive: %s" % aircraft_id,
 			scale_selector.disabled == not bool(caps.get("scale", false))
 			and mass_selector.disabled == not bool(caps.get("weight", false))
 			and weight_slider.editable == bool(caps.get("weight", false))
 			and power_slider.editable == bool(caps.get("power", false))
-			and control_slider.editable == bool(caps.get("controls", false)))
+			and control_slider.editable == bool(caps.get("controls", false))
+			and tank_capacity_slider.editable == bool(caps.get("tank_capacity", false)))
+		if not bool(caps.get("tank_capacity", false)):
+			var tank_hint: Label = workshop.get("_factor_hints")["tank_capacity_multiplier"]
+			_check("tank-size control explains the absence of a declared finite tank: %s" % aircraft_id,
+				tank_hint.text.contains("No declared finite tank"), tank_hint.text)
 		if not bool(caps.get("scale", false)):
 			unsupported_found = true
 	_check("catalog includes aircraft with restricted Workshop adjustments", unsupported_found)
@@ -110,6 +116,20 @@ func _run() -> void:
 		rotorcraft_note != null and "fixed-wing" in rotorcraft_note.text.to_lower())
 
 	workshop.set_aircraft(Catalog.DEFAULT_ID)
+	await _ui.settle()
+	var tank_capacity_slider := workshop.get("_factor_sliders")["tank_capacity_multiplier"] as HSlider
+	var tank_capacity_hint: Label = workshop.get("_factor_hints")["tank_capacity_multiplier"]
+	_check("declared tank exposes a separate estimated-capacity control",
+		bool(workshop.get("_capabilities").get("tank_capacity", false))
+		and tank_capacity_slider.editable and tank_capacity_hint.text.contains("Estimated sizing proposal"))
+	workshop.set_recipe({"tank_capacity_multiplier": 1.25}, false)
+	_check("tank-size edit compiles and is called out as an estimate",
+		bool(workshop.get_compiled().get("ok", false))
+		and is_equal_approx(float(workshop.get_recipe().tank_capacity_multiplier), 1.25)
+		and is_equal_approx(tank_capacity_slider.value, 1.25)
+		and str(workshop.get("_summary_label").text).contains("estimated sizing"),
+		str(workshop.get("_summary_label").text))
+	workshop.set_recipe({"tank_capacity_multiplier": 1.0}, false)
 	await _ui.settle()
 	workshop.set_recipe({"scale": 1.33, "weight_multiplier": 0.731}, false)
 	_check("intermediate recipe values are never silently rounded", is_equal_approx(workshop.get_recipe().scale, 1.33)

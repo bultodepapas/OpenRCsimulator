@@ -136,7 +136,9 @@ def build_cases(app: Path) -> list[Case]:
     # AS-08: complete optional identities preserve old v2, and fail closed when partial.
     if stik.get("physical_identity_version") != 1:
         raise AssertionError("catalog Stik must carry authored physical identities")
-    idless = add("identity:legacy-v2", stik, schema_ok=True, loader_ok=True)
+    # Use the identity-free compatible electric branch here: the Stik fixture now
+    # has v2 tank references that correctly require the referenced inventory IDs.
+    idless = add("identity:legacy-v2", electric, schema_ok=True, loader_ok=True)
     idless.pop("physical_identity_version")
     idless.pop("crash_hull_ids")
     for item in idless["inventory"] + idless["landing_gear"]["contacts"]:

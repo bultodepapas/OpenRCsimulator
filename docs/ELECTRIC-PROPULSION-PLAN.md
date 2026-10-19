@@ -18,7 +18,7 @@ The motor is a stateless, positive-rotation DC-equivalent source: `E = rpm/Kv`, 
 
 The catalog currently offers the finite pack only for Turbo Lumber Evolution through its optional `battery_data`; it is the default there. Home's **More flight details** choice and `--battery=ideal|pack` select the available mode. `pack` is refused for aircraft without pack data. The fixed-voltage Timber data remains selectable as `ideal`.
 
-Motor/ESC winding thermal state, manufacturer current limiting, switching losses, controller dynamics, active braking, reverse rotation and regeneration are not implemented by the power-stage contract. Pack temperature and low-voltage cutoff apply only to `pack_ecm`; they do not model motor or ESC winding temperatures. An ESC rating or nameplate Kv is not a measured motor/pack law. Propeller loads continue to use the shared signed `Ct/Cp` data and stage-local inflow/density.
+Motor winding and ESC thermal states, manufacturer current limiting, switching losses, controller dynamics, active braking, reverse rotation and regeneration are not implemented by the power-stage contract. Pack temperature and low-voltage cutoff apply only to `pack_ecm`; they do not model motor or ESC temperatures. An ESC rating or nameplate Kv is not a measured motor/pack law. Propeller loads continue to use the shared signed `Ct/Cp` data and stage-local inflow/density.
 
 Electric flight requires `coupled-rk4` with valid rotor and carrier inertia; an explicit split integrator is refused. The session integrates body and rotor state together and localizes stopped-rotor and energy-exhaustion events. Developer routes `-- --electric-demo=4s|6s` use fixed voltage; `4s-battery` and `6s-battery` use synthetic OCV/resistance packs. These labeled Stik fixtures are not catalog aircraft and make no validated conversion claim. The shared shaft behavior is summarized in [PROPULSION-CORE-PLAN](PROPULSION-CORE-PLAN.md).
 
@@ -47,7 +47,7 @@ EL5/EL6 require calibrated, matched, held-out physical measurements with hardwar
 | EL2a-P3 | Smaller motor-stage result with exact session/event preservation. [Native comparison](research/propulsion/EL2a-P3/README.md) | Software complete; whole-session speedup not established under concurrent workloads |
 | EL2b | One battery polarization RC pair, only if measured residuals justify it. | Continues as BAT-05/06 in the [battery plan](plans/battery-realism.md) (`pack_ecm`, K chosen by held-out residual) |
 | EL3 | Per-ESC ramp, signal-loss and brake/freewheel modes. | Planned — exact controller behavior/data required; cell detection and low-voltage cutoff continue as BAT-11 |
-| EL4 | Motor/ESC winding thermal state and derating. | Deferred — thermal data and energy accounting required; pack temperature continues as BAT-07 |
+| EL4 | Motor winding and ESC thermal states and derating. | Deferred — thermal data and energy accounting required; pack temperature continues as BAT-07 |
 | EL5 | Independent static/transient powertrain validation. | Planned — matched motor/ESC/pack/prop measurements required |
 | EL6 | Endurance validation against recorded pack/flight data and cutoff. | Continues as BAT-28 — physical data required |
 

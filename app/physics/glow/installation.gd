@@ -52,7 +52,6 @@ const FUEL_FEED := {
 	wot_drive_pressure_pa = "Pa",
 }
 const MAX_DRIVE_PRESSURE_PA := 100000.0
-const STANDARD_GRAVITY := 9.80665
 const NONNEGATIVE_SETTINGS := ["lean_misfire_zero_ratio", "starter_prime_kg"]
 const NONNEGATIVE_THERMAL := [
 	"head_heat_fraction", "cooling_base_w_k", "cooling_airflow_w_s_m_k",
@@ -319,7 +318,7 @@ static func _fuel_tank(raw: Dictionary, model: Dictionary, profile: Dictionary) 
 	if not is_finite(capacity) or not is_finite(capacity_m3) or not is_finite(unusable) \
 			or not is_finite(reserve) or not is_finite(start_fill) or capacity <= 0.0 \
 			or reference_mass > capacity * (1.0 + 1.0e-9) or unusable < 0.0 or unusable >= capacity \
-			or reserve < unusable or reserve >= capacity \
+			or reserve < unusable or reserve > capacity \
 			or absf(capacity - capacity_m3 * density) > maxf(1.0e-12, capacity * 1.0e-9) \
 			or absf(start_fill - reference_mass / capacity) > 1.0e-9:
 		return {ok = false, message = "Normalized Glow capacity, reserve, unusable mass or start fill is inconsistent"}
@@ -381,7 +380,7 @@ static func _fuel_feed(value: Variant, model: Dictionary, profile: Dictionary, t
 		density_kg_m3 = float(tank.density_kg_m3),
 		rated_rpm = float(profile.operation.rated_rpm),
 	}
-	var needled := FuelFeed.needled_head_pa(feed, tank.position, tank.size, STANDARD_GRAVITY)
+	var needled := FuelFeed.needled_head_pa(feed, tank.position, tank.size, FuelFeed.STANDARD_GRAVITY)
 	if idle + needled <= 0.0:
 		return {ok = false, message = "Glow fuel_feed idle pressure cannot lift fuel to the carburetor in level flight"}
 	return feed

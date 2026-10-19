@@ -260,6 +260,19 @@ func _test_inventory_and_axis(label: String, baseline: Dictionary, raw: Dictiona
 	candidate_model.fuel_system.tanks[0].fuel = "unknown-glow-blend"
 	var wrong_blend: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
 	_check(label + " refuses a fuel blend that the engine profile does not model", not wrong_blend.get("ok", false))
+	candidate_model = model.duplicate(true)
+	candidate_model.fuel_system.tanks[0].reserve_kg = candidate_model.fuel_system.tanks[0].capacity_kg
+	var full_capacity_reserve: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
+	_check(label + " accepts reserve equal to full tank capacity", full_capacity_reserve.get("ok", false),
+		str(full_capacity_reserve.get("errors", [])))
+	candidate_model = model.duplicate(true)
+	candidate_model.fuel_system.tanks[0].reserve_kg = candidate_model.fuel_system.tanks[0].capacity_kg + 1.0e-6
+	var over_capacity_reserve: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
+	_check(label + " refuses reserve above tank capacity", not over_capacity_reserve.get("ok", false))
+	candidate_model = model.duplicate(true)
+	candidate_model.fuel_system.tanks[0].reserve_kg = candidate_model.fuel_system.tanks[0].unusable_kg - 1.0e-6
+	var below_unusable_reserve: Dictionary = Installation.prepare_value(baseline, raw, candidate_model, PackedByteArray())
+	_check(label + " refuses reserve below unusable fuel", not below_unusable_reserve.get("ok", false))
 
 	var tank: Dictionary = Installation._fuel_tank(raw, model, Profile.load_file(String(baseline.profile)).model)
 	var carrier_model: Dictionary = model.duplicate(true)

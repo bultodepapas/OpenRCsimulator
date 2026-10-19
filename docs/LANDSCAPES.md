@@ -72,6 +72,7 @@ choices, remembers the selected ID, and updates both the still backdrop and the 
 selection on Home after ending a flight; do not switch the field of a live session. Green paradise starts fixed
 wing aircraft airborne and the helicopter at a hover. Do not offer a helicopter pad start without a pad. Ground
 vehicle courses remain independent of aircraft landscape selection.
+Natural Random currently requires Club field; Green disables it with an explanation.
 
 Do not recreate an asset that is already freely available. Reuse suitable assets only when redistribution is
 allowed; retain their license, source and processing provenance with the asset. Never download assets at runtime.
@@ -79,8 +80,14 @@ allowed; retain their license, source and processing provenance with the asset. 
 ## Verification
 
 Run the pinned Godot import and verification commands in [TOOLS](TOOLS.md#developer-setup). Check
-`test_landscapes.gd`, `test_field_integration.gd`, `test_ui_runway.gd` and `test_world_flow.gd`, then inspect native
-captures from the landscape test with `--capture-landscapes=<absolute-dir>`. Existing regression and capture
-commands are documented in [TOOLS](TOOLS.md).
+`test_landscapes.gd`, `test_field_integration.gd`, `test_ui_runway.gd` and `test_world_flow.gd`. For example:
 
-**Current verification:** pending; record the test and capture results here after implementation.
+```sh
+<godot> --headless --path app --audio-driver Dummy --script res://tests/test_landscapes.gd
+<godot> --path app --audio-driver Dummy --script res://tests/test_landscapes.gd -- --capture-landscapes=<absolute-dir>
+```
+
+Inspect both Home and flight captures. Verify Club → Green → Club, restart, saved selection, no leftover objects,
+and nighttime lighting. Run the normal export smoke: `check_field_pack.gd` validates every registered field from
+an empty project root, so missing exported JSON cannot fall back to source files.
+[L21–L24 verification and captures](research/landscape-upgrade/L21-24/README.md) record the current results and limits.

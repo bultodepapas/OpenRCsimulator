@@ -69,6 +69,22 @@ func _analytic() -> void:
 	var k_wot := Feed.factor(Feed.drive_pa(1.0, 16000.0, feed), up, level)
 	var k_idle := Feed.factor(Feed.drive_pa(0.28, 3000.0, feed), up, level)
 	_check("the same up-line head leans the idle far more than full throttle (k %.3f vs %.3f)" % [k_idle, k_wot], 1.0 - k_idle > 3.0 * (1.0 - k_wot))
+	var zero_g_feed := {
+		carburetor_body_m = carb,
+		idle_drive_pressure_pa = 1500.0,
+		wot_drive_pressure_pa = 6000.0,
+		density_kg_m3 = rho,
+		rated_rpm = 16000.0,
+	}
+	var zero_g := Feed.evaluate(zero_g_feed, PackedFloat64Array([0.0, 0.0, 0.0]), 1.0,
+		1.0, 1.0, 0.0, 1.0, 16000.0, tank, size,
+		PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]))
+	var zero_g_expected := Feed.factor(6000.0, 0.0, level)
+	_check("zero-g live stage remains referenced to standard 1 g needle calibration",
+		zero_g.get("ok", false) and M.norm(zero_g.g_eff) < 1.0e-12
+		and absf(zero_g.needled_head_pa - level) < 1.0e-12
+		and absf(zero_g.factor - zero_g_expected) < 1.0e-12 and zero_g.factor > 1.0,
+		"%s expected factor=%s" % [str(zero_g), str(zero_g_expected)])
 
 
 func _rotation_and_solver() -> void:

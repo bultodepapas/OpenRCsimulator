@@ -75,9 +75,11 @@ func _initialize() -> void:
 			var comparable: Dictionary = loaded.model.duplicate(true)
 			# The legacy adapter has no flap module (v2-only, attached after it); flaps have their own law tests.
 			# FUEL-03: fuel_system is likewise a v2-only module attached after the adapter (test_fuel_system_contract).
+			# FUEL-08: normalized finite-consumption adapters are v2-only too; their behavior has dedicated mass/flow tests.
 			for key: String in ["capabilities", "convention_id", "data_sha256", "physical_identity", "flaps", "fuel_system"]:
 				comparable.erase(key)
 			comparable.propulsion.erase("id")
+			comparable.propulsion.erase("liquid_fuel")
 			comparable.controls.erase("surface_ids")
 			for contact: Dictionary in comparable.landing_gear.get("contacts", []):
 				contact.erase("id")

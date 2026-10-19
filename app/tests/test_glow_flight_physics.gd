@@ -177,13 +177,12 @@ func _test_flight_stage_balance(family: String, model: Dictionary) -> void:
 	var owner: FlightOwner = _owner(model, 6000.0, true, 0.75)
 	var body: PackedFloat64Array = _body(PackedFloat64Array([0.0, 0.0, 0.0]), PackedFloat64Array([0.0, 0.0, 0.0]))
 	var values: PackedFloat64Array = Flight.initial(owner, PackedFloat64Array([6000.0]), body)
-	print("DEBUG INITIAL ", family, " values=", values, " feed=", model.propulsion.glow.has("fuel_feed"),
-		" capacity=", model.propulsion.glow.get("capacity_fuel_kg"), " reference=", model.propulsion.glow.get("reference_fuel_kg"),
-		" life=", owner.has_meta(&"_glow_prepared_evaluator"), " prop=", owner.has_meta(&"_glow_prepared_propeller"),
-		" vibration=", owner.has_meta(&"_glow_source_vibration"))
+	_check(family + " initial lifecycle state is valid", Flight.valid(values, model.propulsion.glow), str(values))
 	var driven: Dictionary = Flight.evaluate(body, values, 0.0, owner)
-	_check(family + " running flight stage evaluates", not driven.is_empty(),
-		"state=%s point=%s" % [values, Flight.point(owner, body, values, 0.0)])
+	var driven_detail: String = ""
+	if driven.is_empty():
+		driven_detail = "point=%s" % str(Flight.point(owner, body, values, 0.0))
+	_check(family + " running flight stage evaluates", not driven.is_empty(), driven_detail)
 	if not driven.is_empty():
 		_check_angular_balance(family + " running", owner, model, body, values, driven)
 	owner.free()
@@ -194,8 +193,10 @@ func _test_flight_stage_balance(family: String, model: Dictionary) -> void:
 		PackedFloat64Array([12.0, -3.0, 1.0]), PackedFloat64Array([0.2, -0.15, 0.1]))
 	var coast_values: PackedFloat64Array = Flight.initial(coast_owner, PackedFloat64Array([5000.0]), moving_body)
 	var coasting: Dictionary = Flight.evaluate(moving_body, coast_values, 0.1, coast_owner)
-	_check(family + " rotating coast stage evaluates", not coasting.is_empty(),
-		"state=%s point=%s" % [coast_values, Flight.point(coast_owner, moving_body, coast_values, 0.1)])
+	var coast_detail: String = ""
+	if coasting.is_empty():
+		coast_detail = "point=%s" % str(Flight.point(coast_owner, moving_body, coast_values, 0.1))
+	_check(family + " rotating coast stage evaluates", not coasting.is_empty(), coast_detail)
 	if not coasting.is_empty():
 		_check_angular_balance(family + " rotating coast", coast_owner, model, moving_body, coast_values, coasting)
 		_near(family + " stopped coast consumes no tank fuel", coasting.derivative[1], 0.0)

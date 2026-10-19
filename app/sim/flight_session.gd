@@ -3634,11 +3634,15 @@ func trace_meta() -> Dictionary:
 			metadata.fuel_start_fill=fuel_start_fill # FUEL-07: start fill of the authored full tank
 		metadata.glow_recording_start=JSON.stringify(glow_state(),"",true,true)
 	if liquid_fuel_is_active():
-		metadata.propulsion_model = LiquidFlight.LAW
+		metadata.liquid_fuel_model = LiquidFlight.LAW
+		metadata.liquid_fuel_schema = LiquidFuel.FORMAT
 		metadata.continuous_layout += "; " + LiquidFlight.LAYOUT
 		metadata.fuel_mass_policy = "finite single store; co-moving efflux; fixed authored reference datum"
 		metadata.fuel_consumption_law = str(prop.liquid_fuel.law)
 		metadata.fuel_store_id = str(prop.liquid_fuel.tank_id)
+		metadata.fuel_capacity_kg = float(prop.liquid_fuel.capacity_kg)
+		metadata.fuel_unusable_kg = float(prop.liquid_fuel.unusable_kg)
+		metadata.fuel_state_index = _liquid_index()
 		metadata.fuel_start_fill_known = _fuel_start_fill_known
 		metadata.fuel_start_fill = fuel_start_fill
 		if turbine:

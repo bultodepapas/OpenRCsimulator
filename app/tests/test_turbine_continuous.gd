@@ -29,6 +29,10 @@ func _flight() -> Node:
 	raw.propulsion.erase("fuel_consumption")
 	raw.capabilities.energy = "prescribed_fuel"
 	var fixture: Dictionary = AD.validate_and_derive(raw)
+	# File loading resolves the independent wheel-profile asset. Keep that resolved
+	# binding in this prescribed governor fixture, rather than downgrading contact.
+	var file_data: Dictionary = AD.load_file(DATA)
+	fixture.model.wheel_profile = file_data.model.wheel_profile.duplicate(true)
 	var bytes: PackedByteArray = JSON.stringify(raw, "", true, true).to_utf8_buffer()
 	var hash := HashingContext.new()
 	hash.start(HashingContext.HASH_SHA256)
@@ -219,8 +223,6 @@ func _lifecycle() -> void:
 	recorder.start(f.trace_meta())
 	_advance(f, 12)
 	recorder.detach()
-	if recorder.trace.to_csv().is_empty():
-		print("invalid turbine trace metadata: ", JSON.stringify(recorder.trace.meta))
 	_check("trace retains 13 fresh complete finite rows", _trace_ok(recorder.trace, 13))
 	var malformed: Dictionary = f.trace_meta()
 	malformed.recording_start_continuous = "[true]"

@@ -38,7 +38,7 @@ func _initialize() -> void:
 	var explicit := Trial.freeze(payload)
 	check("omitted and explicit defaults have the same identity", explicit.identity == first.identity)
 	var integer_payload: Dictionary = payload.duplicate(true)
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
 		integer_payload.recipe[key] = 1
 	var integer_trial := Trial.freeze(integer_payload)
 	check("integer and float recipes have identical resolved identity", integer_trial.get("ok", false)
@@ -52,6 +52,16 @@ func _initialize() -> void:
 	var nearby_numeric := Trial.freeze(numeric_roundtrip)
 	check("canonicalization preserves tiny physical edits", nearby_numeric.get("ok", false)
 		and nearby_numeric.identity.trial_id != first.identity.trial_id)
+	var tank_size_recipe: Dictionary = Compiler.defaults()
+	tank_size_recipe.tank_capacity_multiplier = 1.5
+	var tank_size_payload: Dictionary = payload.duplicate(true)
+	tank_size_payload.recipe = tank_size_recipe
+	var tank_size_trial: Dictionary = Trial.freeze(tank_size_payload)
+	check("tank capacity is a physical trial input", tank_size_trial.get("ok", false)
+		and tank_size_trial.identity.trial_id != explicit.identity.trial_id
+		and tank_size_trial.data.model.fuel_system.tanks.size() == 1
+		and is_equal_approx(tank_size_trial.data.model.fuel_system.tanks[0].capacity_m3,
+			explicit.data.model.fuel_system.tanks[0].capacity_m3 * 1.5))
 	var invalid_cosmetic: Dictionary = payload.duplicate(true)
 	invalid_cosmetic.recipe.name = {"invalid": true}
 	check("invalid recipe metadata is refused before hashing", not Trial.freeze(invalid_cosmetic).get("ok", false))

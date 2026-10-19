@@ -21,6 +21,9 @@ const M := preload("res://physics/math3d.gd")
 
 ## Flooding bound: a carburetor cannot pass more than twice its needled flow through the same needle setting.
 const MAX_FACTOR := 2.0
+## The carburetor's needled flow is a fixed installation reference at standard 1 g,
+## independent of the current simulator gravity (which may be zero or another value).
+const STANDARD_GRAVITY := 9.80665
 ## Below this apparent gravity (m/s²) the fuel has no defined free surface; the head is taken as zero.
 const MIN_G := 1e-6
 const MAX_SOLVE_ITERATIONS := 32
@@ -87,19 +90,19 @@ static func apparent_gravity(force_body: PackedFloat64Array, mass_kg: float,
 static func evaluate(feed: Dictionary, force_body: PackedFloat64Array, mass_kg: float,
 		remaining_fuel_kg: float, capacity_fuel_kg: float, unusable_fuel_kg: float,
 		admission: float, rpm: float, tank_center: PackedFloat64Array, tank_size: PackedFloat64Array,
-		gravity: float, tank_arm_from_cg_body_m: PackedFloat64Array,
+		tank_arm_from_cg_body_m: PackedFloat64Array,
 		alpha_body: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]),
 		omega_body: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> Dictionary:
 	if not is_finite(remaining_fuel_kg) or not is_finite(capacity_fuel_kg) or capacity_fuel_kg <= 0.0 \
 			or not is_finite(unusable_fuel_kg) or unusable_fuel_kg < 0.0 or unusable_fuel_kg >= capacity_fuel_kg \
-			or not is_finite(gravity) or gravity <= 0.0:
-		return {ok = false, message = "Glow feed tank mass or gravity is outside its domain"}
+			or not is_finite(admission) or not is_finite(rpm) or rpm < 0.0:
+		return {ok = false, message = "Glow feed tank mass, admission or RPM is outside its domain"}
 	var g_eff: PackedFloat64Array = apparent_gravity(force_body, mass_kg, tank_arm_from_cg_body_m, alpha_body, omega_body)
 	if g_eff.size() != 3:
 		return {ok = false, message = "Glow feed apparent gravity inputs are malformed"}
 	var fill: float = clampf(remaining_fuel_kg / capacity_fuel_kg, 0.0, 1.0)
 	var head: float = head_pa(g_eff, fill, feed.carburetor_body_m, tank_center, tank_size, float(feed.density_kg_m3))
-	var needled: float = needled_head_pa(feed, tank_center, tank_size, gravity)
+	var needled: float = needled_head_pa(feed, tank_center, tank_size, STANDARD_GRAVITY)
 	var drive: float = drive_pa(admission, rpm, feed)
 	var flow_factor: float = 0.0 if remaining_fuel_kg <= unusable_fuel_kg \
 		else factor(drive, head, needled)

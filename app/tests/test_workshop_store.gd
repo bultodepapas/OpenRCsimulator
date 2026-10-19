@@ -18,7 +18,7 @@ func _initialize() -> void:
 	_check("base fixture read", not base_bytes.is_empty())
 	_test_dependency_manifests()
 	var integer_recipe: Dictionary = _recipe()
-	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier"]:
+	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
 		integer_recipe[key] = 1
 	var integer_saved: Dictionary = Store.save_variant("Integer recipe", "jensen-das-ugly-stik-60", base_bytes, integer_recipe, "", _root)
 	_check("integer-valued recipes survive their own disk round-trip", bool(integer_saved["ok"]), str(integer_saved["errors"]))
@@ -39,6 +39,16 @@ func _initialize() -> void:
 		return
 	var first: Dictionary = saved["variant"]
 	var id: String = str(first["id"])
+	var legacy_recipe: Dictionary = _recipe()
+	legacy_recipe.erase("tank_capacity_multiplier")
+	var legacy_saved: Dictionary = Store.save_variant("Optional tank capacity compatibility", "jensen-das-ugly-stik-60",
+		base_bytes, legacy_recipe, "", _root)
+	_check("historical recipe may omit the new optional tank-size field", legacy_saved.get("ok", false), str(legacy_saved.get("errors", [])))
+	if legacy_saved.get("ok", false):
+		var legacy_loaded: Dictionary = Store.load_variant(legacy_saved.variant.id, _root)
+		_check("omitted tank-size field survives variant load without rewriting history",
+			legacy_loaded.get("ok", false) and not legacy_loaded.variant.recipe.has("tank_capacity_multiplier"))
+		Store.delete_variant(legacy_saved.variant.id, _root)
 	_check("generated ID is a lowercase UUID", id.length() == 36 and id[14] == "4")
 	_check("revision starts at one", int(first["revision"]) == 1)
 	_check("new variants pin the current compiler version", str(first.get("compiler_version", "")) == WorkshopCompiler.COMPILER_VERSION)
@@ -90,6 +100,13 @@ func _initialize() -> void:
 	bad_recipe["power_multiplier"] = INF
 	var bad_recipe_save: Dictionary = Store.save_variant("Bad recipe", "jensen-das-ugly-stik-60", base_bytes, bad_recipe, "", _root)
 	_check("non-finite recipe numbers are rejected", not bool(bad_recipe_save["ok"]) and _has_error(bad_recipe_save["errors"], "finite"), str(bad_recipe_save["errors"]))
+	var oversized_tank_recipe: Dictionary = _recipe()
+	oversized_tank_recipe["tank_capacity_multiplier"] = 2.01
+	var oversized_tank: Dictionary = Store.save_variant("Bad tank capacity", "jensen-das-ugly-stik-60",
+		base_bytes, oversized_tank_recipe, "", _root)
+	_check("variant store enforces the bounded independent tank-size ratio",
+		not oversized_tank.get("ok", false) and _has_error(oversized_tank.get("errors", []), "tank_capacity_multiplier"),
+		str(oversized_tank.get("errors", [])))
 	var malformed_base: Dictionary = Store.save_variant("Bad base", "jensen-das-ugly-stik-60", "{".to_utf8_buffer(), _recipe(), "", _root)
 	_check("malformed base JSON is rejected", not bool(malformed_base["ok"]), str(malformed_base["errors"]))
 	var wrong_schema_bytes: PackedByteArray = "{\"format\":\"other\",\"version\":1,\"id\":\"jensen-das-ugly-stik-60\"}".to_utf8_buffer()
@@ -323,6 +340,7 @@ func _recipe() -> Dictionary:
 		"weight_multiplier": 1.0,
 		"power_multiplier": 1.0,
 		"control_multiplier": 1.0,
+		"tank_capacity_multiplier": 1.0,
 	}
 
 

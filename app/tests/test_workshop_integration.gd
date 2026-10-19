@@ -36,10 +36,11 @@ func _run() -> void:
 	check("Home keyboard opens Workshop", host.screens.is_top("workshop"))
 	var editor: Node = host.screens.top()
 	editor.set_recipe({scale = 0.5})
-	editor.set_recipe({scale = 2.0})
+	editor.set_recipe({scale = 2.0, tank_capacity_multiplier = 1.25})
 	var editor_history_size: int = editor.get("_undo_history").size()
 	var source: PackedByteArray = FileAccess.get_file_as_bytes(Catalog.entry(Catalog.DEFAULT_ID).data)
-	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = source, recipe = {scale = 2.0}}
+	var payload := {base_id = Catalog.DEFAULT_ID, base_bytes = source,
+		recipe = {scale = 2.0, tank_capacity_multiplier = 1.25}}
 	host._start_workshop_trial(payload)
 	check("200% trial starts", host.flight != null and host.flight.startup_error.is_empty())
 	if host.flight != null:
@@ -50,6 +51,16 @@ func _run() -> void:
 		check("trial has distinct physical identity", session.aircraft.model.id != Catalog.DEFAULT_ID)
 		check("catalog visual identity is retained", flight.aircraft_id == Catalog.DEFAULT_ID)
 		check("trial is airborne", session.start_choice == "airborne")
+		var base_raw: Dictionary = JSON.parse_string(source.get_string_from_utf8())
+		var base_capacity_m3: float = float(base_raw.fuel_system.tanks[0].capacity.value) * 0.001
+		var trial_tank: Dictionary = session.aircraft.model.fuel_system.tanks[0]
+		var fuel_sample: Dictionary = session.mass_properties()
+		check("trial session applies tank-size ratio to capacity and accepted fuel mass",
+			is_equal_approx(trial_tank.capacity_m3, base_capacity_m3 * 8.0 * 1.25)
+			and fuel_sample.get("ok", false) and fuel_sample.get("finite_fuel", false)
+			and fuel_sample.get("stores", []).size() == 1
+			and is_equal_approx(float(fuel_sample.stores[0].capacity_kg), trial_tank.capacity_kg)
+			and is_equal_approx(float(fuel_sample.stores[0].fill_fraction), session.fuel_start_fill))
 		var hashing := HashingContext.new()
 		hashing.start(HashingContext.HASH_SHA256)
 		hashing.update(source)
@@ -76,6 +87,7 @@ func _run() -> void:
 		await ui.settle()
 		check("return restores same editor instance", host.screens.top() == editor and host.flight == null)
 		check("trial return preserves draft and edit history", editor.get_recipe().scale == 2.0
+			and editor.get_recipe().tank_capacity_multiplier == 1.25
 			and editor.get("_undo_history").size() == editor_history_size)
 		check("Home is still behind editor", host.home != null and host.home_scene.is_inside_tree())
 	for scale_value: float in [0.5, 2.0]:

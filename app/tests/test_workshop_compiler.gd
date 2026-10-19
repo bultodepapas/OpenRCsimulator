@@ -8,6 +8,7 @@ const Trial := preload("res://workshop/trial.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const STIK_PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const EXTRA_PATH := "res://data/aircraft/gp_extra_300s_60.json"
+const P51_PATH := "res://data/aircraft/p51d_mustang_120.json"
 
 var _checks := 0
 var _failures := 0
@@ -37,9 +38,11 @@ func _initialize() -> void:
 	}, str(defaults))
 	var stik := _read(STIK_PATH)
 	var extra := _read(EXTRA_PATH)
+	var p51 := _read(P51_PATH)
 	_check("Stik fixture loaded", not stik.is_empty())
 	_check("Extra fixture loaded", not extra.is_empty())
-	if stik.is_empty() or extra.is_empty():
+	_check("finite-liquid P-51 fixture loaded", not p51.is_empty())
+	if stik.is_empty() or extra.is_empty() or p51.is_empty():
 		quit(1)
 		return
 
@@ -48,7 +51,7 @@ func _initialize() -> void:
 	_test_scale_policies(stik)
 	_test_scale_policies(extra)
 	_test_tank_and_fill_scaling(stik)
-	_test_tank_capacity_frozen_session(stik)
+	_test_tank_capacity_frozen_session(p51)
 	_test_power_and_controls(stik)
 	_test_unfamiliar_identity(stik)
 	_test_catalog_registry()
@@ -81,7 +84,7 @@ func _test_no_op(base: Dictionary, label: String) -> void:
 		and result.data.model.get("wheel_profile", {}).get("inheritance", "") == "base_profile")
 	_check("%s summary exposes stable UI metrics" % label,
 		result.summary.has_all(["base_aircraft_id", "effective_model_id", "name", "scale", "mass_policy",
-			"weight_multiplier", "mass_ratio", "mass_kg", "wing_area_m2", "wing_span_m",
+			"weight_multiplier", "tank_capacity_multiplier", "mass_ratio", "mass_kg", "wing_area_m2", "wing_span_m",
 			"wing_loading_kg_m2", "power_multiplier", "control_multiplier", "capabilities", "compiler_version"]))
 
 
@@ -292,7 +295,7 @@ func _test_tank_and_fill_scaling(base: Dictionary) -> void:
 
 
 func _test_tank_capacity_frozen_session(base: Dictionary) -> void:
-	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(STIK_PATH)
+	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(P51_PATH)
 	var payload := {
 		"base_id": str(base.get("id", "")),
 		"base_bytes": bytes,
@@ -317,10 +320,13 @@ func _test_tank_capacity_frozen_session(base: Dictionary) -> void:
 		str(session.start.get("message", "")))
 	if session.aircraft.get("ok", false) and session.is_flyable():
 		var sample: Dictionary = session.mass_properties()
-		_check("accepted frozen session reports matching full tank capacity and authored fill",
+		_check("accepted frozen finite-fuel session reports edited capacity and selected launch fill",
 			sample.get("ok", false) and sample.get("finite_fuel", false) and sample.get("stores", []).size() == 1
 			and is_equal_approx(float(sample.stores[0].capacity_kg), frozen_tank.capacity_kg)
-			and is_equal_approx(float(sample.stores[0].fill_fraction), frozen_tank.start_fill))
+			and is_equal_approx(float(sample.stores[0].fill_fraction), session.fuel_start_fill)
+			and is_equal_approx(float(sample.fuel_remaining_kg), frozen_tank.capacity_kg * session.fuel_start_fill),
+			str({sample = sample, session_fill = session.fuel_start_fill,
+				tank_capacity = frozen_tank.capacity_kg, start = session.start}))
 	session.free()
 
 

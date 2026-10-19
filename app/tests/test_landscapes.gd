@@ -10,9 +10,10 @@ const World = preload("res://render/world/world.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
 const UiDriver = preload("res://tests/ui_driver.gd")
-const PREFS := "user://test_landscapes.cfg"
+var prefs_path := "user://test_landscapes-%d.cfg" % OS.get_process_id()
 const GREEN := "green_paradise"
 var failures := 0
+var checks := 0
 var ui: RefCounted
 var captures := ""
 
@@ -26,6 +27,7 @@ func _initialize() -> void:
 
 
 func check(label: String, passed: bool) -> void:
+	checks += 1
 	print(("ok   " if passed else "FAIL ") + label)
 	if not passed:
 		failures += 1
@@ -33,16 +35,16 @@ func check(label: String, passed: bool) -> void:
 
 func _run() -> void:
 	TranslationServer.set_locale("en")
-	DirAccess.remove_absolute(PREFS)
+	DirAccess.remove_absolute(prefs_path)
 	check("Club field remains first and default", Landscapes.DEFAULT_ID == "club_field" and Landscapes.ids() == ["club_field", GREEN])
 	check("unknown IDs do not resolve", not Landscapes.has("missing") and Landscapes.entry("missing").is_empty())
-	check("missing preferences retain Club field", Preferences.load_from(PREFS).landscape == Landscapes.DEFAULT_ID)
+	check("missing preferences retain Club field", Preferences.load_from(prefs_path).landscape == Landscapes.DEFAULT_ID)
 	for invalid: Variant in ["missing", 7, true]:
 		var cfg := ConfigFile.new()
 		cfg.set_value("meta", "schema", 1)
 		cfg.set_value("flight", "landscape", invalid)
-		cfg.save(PREFS)
-		check("invalid preference falls back: " + str(invalid), Preferences.load_from(PREFS).landscape == Landscapes.DEFAULT_ID)
+		cfg.save(prefs_path)
+		check("invalid preference falls back: " + str(invalid), Preferences.load_from(prefs_path).landscape == Landscapes.DEFAULT_ID)
 
 	var loaded: Dictionary = FieldLoader.load_from(Landscapes.entry(GREEN).field_path)
 	check("Green field validates", loaded.ok and loaded.field.id == GREEN)
@@ -67,10 +69,10 @@ func _run() -> void:
 	prefs.check_updates = false
 	prefs.time_of_day = "day"
 	prefs.weather_config = load("res://physics/wind_config.gd").defaults()
-	Preferences.save_to(PREFS, prefs)
+	Preferences.save_to(prefs_path, prefs)
 	var app: Node = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
-	app.preferences_path = PREFS
+	app.preferences_path = prefs_path
 	root.add_child(app)
 	await ui.settle()
 	check("fresh Home preserves Club runway launch", app.landscape_id == Landscapes.DEFAULT_ID and app.home.start_choice == "runway" and app.home_scene.field.id == "default")
@@ -80,7 +82,7 @@ func _run() -> void:
 	check("landscape selector is reachable by keyboard", ui.focus_name() == "Landscape")
 	await ui.tap(KEY_ENTER)
 	check("keyboard switches Home to Green", app.landscape_id == GREEN and app.home_scene.field.id == GREEN and app.home.start_choice == "airborne")
-	check("selection is saved", Preferences.load_from(PREFS).landscape == GREEN)
+	check("selection is saved", Preferences.load_from(prefs_path).landscape == GREEN)
 	check("Green explains the unavailable Natural Random activity", app.home.natural_random_button.disabled and app.home.natural_random_button.tooltip_text == "Natural Random requires Club field.")
 	app.open_natural_random()
 	check("Green cannot enter a default-field scenario", app.screens.is_top("home"))
@@ -111,7 +113,7 @@ func _run() -> void:
 	# Reopen the real shell from saved settings, without the previous in-memory world.
 	app = load("res://app_root.tscn").instantiate()
 	app.user_args = PackedStringArray()
-	app.preferences_path = PREFS
+	app.preferences_path = prefs_path
 	root.add_child(app)
 	await ui.settle()
 	check("relaunch restores Green field and selection", app.landscape_id == GREEN and app.home_scene.field.id == GREEN and app.home.landscape_id == GREEN)
@@ -119,9 +121,9 @@ func _run() -> void:
 	app.set_landscape("missing")
 	check("unknown selection preserves Home", app.landscape_id == before_id and app.home_scene.field.id == GREEN)
 	await ui.close_app(app)
-	DirAccess.remove_absolute(PREFS)
+	DirAccess.remove_absolute(prefs_path)
 	Conditions.session_preset = ""
-	print("%d landscape checks failed" % failures)
+	print("%d landscape checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)
 
 
@@ -146,6 +148,9 @@ func _fly_and_return(app: Node, id: String, helicopter := false) -> void:
 		check("Green has no club lights or campfire", flight.get_node_or_null("FieldLights") == null and flight.get_node_or_null("AirfieldLighting") == null and flight.get_node_or_null("Campfire") == null)
 	if not captures.is_empty() and DisplayServer.get_name() != "headless":
 		flight.set_overlays_visible(false)
+		var report: Variant = flight.get("_accident_report") if not helicopter else null
+		if is_instance_valid(report):
+			report.visible = false
 		var overview := Camera3D.new()
 		flight.add_child(overview)
 		overview.position = Vector3(0.0, 85.0, 120.0)

@@ -4,7 +4,7 @@ The aircraft catalog has three experimental finite-fuel Stik variants: `stik-glo
 
 ## Fly and configure
 
-Select a glow Stik in the catalog, or append these app arguments after Godot's `--` separator (see [TOOLS](TOOLS.md)):
+Select a glow Stik in the catalog. For direct launch, append this suffix to the engine command in [TOOLS](TOOLS.md):
 
 ```text
 -- --quick-flight --aircraft=stik-glow-61fx-2t
@@ -12,7 +12,7 @@ Select a glow Stik in the catalog, or append these app arguments after Godot's `
 
 Use `stik-glow-55ax-2t` or `stik-glow-fs64v-4t` for the other engine families. Airborne starts use a warm trimmed engine. Runway starts leave the warm engine stopped; press **F7** to start it. **F6** cuts combustion, **F8/F9** lean or richen the mixture, and zero throttle requests idle. Opening the throttle does not restart a cut or stalled engine. The HUD shows RPM, remaining fuel, head-temperature proxy and engine status.
 
-Open **More flight details** on Home to choose a starting tank fill: full, 75%, 50% or 25%. Full is the default. The direct-flight option is `--fuel=<fraction>` where `0 < fraction <= 1`, for example `--fuel=0.5`. The selector is available for finite-fuel catalog entries; beyond the three glow variants above, the P-51 uses an estimated gasoline consumption law and the Ventage Jet uses its turbine fuel-flow map. Those are software integrations with estimated inputs; the [fuel plan](plans/fuel-mass-balance.md) records the remaining validation and fleet gates. Selecting a fill does not enable consumption for another aircraft. Home keeps the choice while switching aircraft in that menu.
+Open **More flight details** on Home to choose a starting tank fill: full, 75%, 50% or 25%. Full is the default. The direct-flight option is `--fuel=<fraction>` where `0 < fraction <= 1`, for example `--fuel=0.5`. The selector is available for finite-fuel catalog entries. In the current tree, the P-51 data declares an estimated gasoline consumption law and the Ventage Jet data a turbine fuel-flow map; the [fuel plan](plans/fuel-mass-balance.md) records their remaining integration and validation gates. Selecting a fill does not enable consumption for another aircraft. Home keeps the choice while switching aircraft in that menu.
 
 Fuel burn changes live mass, center of gravity and inertia, so neutral controls do not guarantee a steady flight as a tank empties. `FlightSession.mass_properties()` supplies the accepted-state sample used by presentation and crash consumers. For glow, `GlowFlight.properties()` evaluates the shared `MassInventory.evaluate_reference()` model; `FixedDatumBody.derivative()` applies the fixed-datum dynamics. The tank moves no geometry, and the model does not include slosh or exhaust thrust.
 
