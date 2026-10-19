@@ -87,11 +87,27 @@ Rows are sky steps; columns are before (east, west) and after (east, west).
 
 The day check in `test_world_moon_light.gd` also requires the exact default uniforms with the sun up: weights (1, 0) and no second lobe. A second lobe below 10⁻⁴ of the first is dropped. The first after-render showed 1-of-255 differences from a 10⁻⁶ moon lobe by day, which this removes.
 
+## 4. FW-MOON-06d: the slow sky between the steps
+
+The plan's proof asks for "no frame-to-frame jump above a bound". Per step that held after 06a–c, but per frame it did not.
+- In nautical twilight one 30 s step darkens the sky about 14 %. At ×20 that is a visible jump every 1.5 s, and the eye's adaptation (0.35/s toward dark) catches up late.
+- The same steps move the ground's cloud shadows: `ground.gdshader` projects them along `sun_dir`, so at a 10–11° sun one step shifts them about 90 m. The lit ground jumped ±8–10 % (the 11–12× ground pops in §3, identical before and after 06a–c).
+
+**What changed** ([world.gd](../../../../app/render/world/world.gd) `frame_state`, `_apply_frame_sky`, `frame_sky_needed`, `visual_state`):
+1. Between steps, `flow_frame` builds the frame's sky from this step's state and the next step's.
+   - Colours and exposure terms are interpolated geometrically per channel (twilight falls exponentially); directions by slerp; the moon as in 03b.
+   - Terms whose source changes inside the step keep the step's value for that one step, so nothing sweeps across the sky: the light passing between sun and moon, and the brighter lobe swapping sides.
+   - Discrete terms keep the step's value: shadow strength, light source, tonemapper.
+2. The frame sky is written through the step's own functions (sky, environment, light, haze materials, weather profiles included), and then the stepped `Atmosphere.state` is restored. Everything that reads the state or watches a signature keeps the step cadence: projected and planar shadows, scenery, airfield lights, the lake.
+3. The lake's water material is left at the step. Its reflection probe re-renders whenever that material changes (LU's `lake_reflection.gd`).
+4. The eye's adaptation goal (`view_exposure`) follows the frame sky (`visual_state`). Without a view target, the exposure is interpolated too.
+5. **Gate** (`frame_sky_needed`): the frame sky runs only for steps that change the sky or light luminance by more than 0.4 %, or while the light is up but below 20°. Day, a high moonlit night and a moonless night stay stepped: no cost, and identical to before between steps.
+
+FRAME_RESULTS
+
 ## Findings for other steps
 
-- **Twilight brightness steps (FW-61).** Between sun −4° and −10° the sky falls about 10 % per 30 s step. At ×20 that is a visible step every 1.5 s. The exposure goal follows the brighter lobe and adapts toward dark at 0.35/s, so it compensates late.
-  - The same steps move the ground's cloud shadows: `ground.gdshader` projects them along `sun_dir`, so at a sun of 10–11° one step shifts them about 90 m. The lit ground jumps ±8–10 % (pop 11–12× in both renders, identical before and after this step).
-  - Interpolating the slow sky terms and the light direction per frame would remove both (as FW-MOON-03b does for the moon's position; FW-MOON-01 showed sky uniforms are free in field-world mode). The ground's haze materials and ambient colour would have to follow too.
+- **Twilight brightness and cloud-shadow steps (FW-61).** Resolved by FW-MOON-06d (§4).
 - **Scenery shadows frozen during flow (FW-61 with SC).** `Scenery.update_lighting` runs only for explicit snapshots. In a flowing session the trees' directional shadows keep their build-time direction and full opacity all night: Moonrise preset, sun −7.4°, state strength 0, decal alpha 1.0. A full update costs 9–23 ms headless per call, so it needs a thresholded or incremental refresh in the scenery code, not one per sky step.
 - **Ground haze lobe.** The ground and grass shaders still take only the brighter lobe, so their faint aerial-perspective tint changes sides at the lobe crossover (sun ≈ −14°). The sky itself no longer does.
 - **Owner question.** Physically, a sun below about 10° casts faint ground shadows: its direct share on horizontal ground is a few percent at 1°. Today's full-strength sunset shadows are kept by design (accepted looks). Fading them with the share, as the moon's do, would be a separate look decision.
