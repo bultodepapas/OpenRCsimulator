@@ -33,6 +33,7 @@ uniform vec3 moon_shadow_axis = vec3(0.0, -1.0, 0.0);
 uniform vec3 moon_shadow_offset = vec3(0.0);
 uniform float moon_umbra_radius = 0.0;
 uniform float moon_penumbra_radius = 0.0;
+uniform float moon_eclipse_dim = 1.0;            // the disc's mean luminance transmission (SkyState moon_eclipse_factor)
 
 const float MOON_UMBRA_U[9] = float[9](0.0, 0.18, 0.25, 0.41, 0.52, 0.62, 0.79, 0.9, 1.0);
 const float MOON_UMBRA_677[9] = float[9](-3.74, -3.74, -3.80, -3.52, -3.40, -3.26, -2.82, -2.6, -2.0);

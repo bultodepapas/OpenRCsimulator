@@ -1,8 +1,8 @@
 # FW-MOON-10: lunar eclipses. The shadow's transmission is 1 outside the penumbra, continuous at both edges, rising
 # outward, red in the umbra (Ugolnikov et al. 2011's measured curves); the umbral contacts land on Espenak's partial
 # and total durations; mid-totality brightness and colour are those of a real dark eclipse (Vital's 2022 measurement);
-# SkyState dims the moonlight and its sky by the disc's transmission and the eye adapts to the eclipsed disc; a night
-# without an eclipse is untouched.
+# SkyState dims the moonlight and its sky by the disc's transmission and the eye adapts to the eclipsed disc; the
+# aureole's knee follows the eclipsed disc; a night without an eclipse is untouched.
 # Run: godot --headless --path . --script res://tests/test_world_moon_eclipse.gd
 extends SceneTree
 
@@ -10,6 +10,7 @@ const Lunar := preload("res://render/world/lunar.gd")
 const Ephemeris := preload("res://render/world/ephemeris.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
 const Conditions := preload("res://render/world/conditions.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
 
 ## Espenak, NASA GSFC "Lunar Eclipses: 2021-2030" (LEdecade2021): TD of greatest eclipse, umbral magnitude, partial and
 ## total durations (min), all from that page (checked 2026-10-19). ΔT = 69 s as the fixture.
@@ -90,14 +91,18 @@ func _initialize() -> void:
 		var partial := (u4 - u1) * 1440.0
 		var tolerance := SHALLOW_DURATION_TOLERANCE_MIN if float(row[2]) < 0.1 else DURATION_TOLERANCE_MIN
 		_check("%s: partial phase %.0f min vs Espenak %d" % [row[0], partial, row[3]], absf(partial - float(row[3])) <= tolerance)
+		var line := "  %s: umbral magnitude %.3f (Espenak %.3f), partial %.1f min (%d)" % [row[0], _magnitude(jd), row[2], partial, row[3]]
 		if int(row[4]) > 0:
 			var u2 := _crossing(jd - 2.0 / 24.0, jd, 1.0)
 			var u3 := _crossing(jd, jd + 2.0 / 24.0, 1.0)
 			var total := (u3 - u2) * 1440.0
 			_check("%s: totality %.0f min vs Espenak %d" % [row[0], total, row[4]], absf(total - float(row[4])) <= DURATION_TOLERANCE_MIN)
+			line += ", total %.1f min (%d)" % [total, row[4]]
+		print(line)
 
-	# Mid-totality: Vital et al. measured V = −0.8 ± 0.3 at the 2022-05-16 eclipse (Sky & Telescope); the umbra here is
-	# the 2011 eclipse's air, so the tolerance is a Danjon step (±1 mag).
+	# Mid-totality: Vital's observers measured m = −0.8 ± 0.3 at the 2022-05-16 eclipse ("Preliminary Findings", FW-MOON-00
+	# manifest; Tonga aerosols darkened it, his clean-stratosphere fit gives −1.23); the umbra here is the 2011 eclipse's
+	# air, so the tolerance is a Danjon step (±1 mag).
 	var f2022 := Lunar.eclipse_disc_factor(Lunar.at_jd(_greatest_jd(ESPENAK[5]), 0.0, 0.0, true).eclipse)
 	var v2022 := -12.73 - 2.5 * log(f2022.y) / log(10.0)
 	print("  2022-05-16 mid-totality V %.2f (measured −0.8 ± 0.3); colour G/R %.2f B/R %.2f" % [v2022, f2022.y / f2022.x, f2022.z / f2022.x])
@@ -118,6 +123,19 @@ func _initialize() -> void:
 	var night := SkyState.state(Ephemeris.sky(Conditions.resolve(PackedStringArray(["--time_of_day=night"])).when))
 	_check("an ordinary night: no eclipse uniforms", not night.moon_eclipse and night.moon_eclipse_factor == Vector3.ONE
 		and float(night.moon_penumbra_radius) > 0.0)
+	# The aureole's knee (sky.gdshader) limits the glow to 0.005^γ of the disc as shown: the eclipsed disc, so the flow
+	# sky writes its dimming (otherwise a partial phase shows the glow ~2× over its limit at 1°).
+	var partial := SkyState.state(Ephemeris.sky(Conditions.resolve(PackedStringArray(east + ["--time=15:30"])).when))
+	for pair: Array in [[totality, "totality"], [partial, "partial phase"]]:
+		Atmosphere.state = pair[0]
+		var dim := float(Atmosphere.sky_material().get_shader_parameter("moon_eclipse_dim"))
+		_check("%s: the aureole's knee follows the eclipsed disc" % pair[1], absf(dim - _lum(pair[0].moon_eclipse_factor)) < 1e-6
+			and dim < 0.5, str(dim))
+	Atmosphere.state = night
+	_check("an ordinary night: the knee is the whole disc (1 exactly)", float(Atmosphere.sky_material().get_shader_parameter("moon_eclipse_dim")) == 1.0)
+	Atmosphere.state = {}
+	Atmosphere.update_sky_material(Atmosphere.sky_material(), Atmosphere.Spec.ATMOSPHERE.duplicate(true))
+	_check("snapshot sky: the knee is the whole disc", float(Atmosphere.sky_material().get_shader_parameter("moon_eclipse_dim")) == 1.0)
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 

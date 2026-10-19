@@ -8,6 +8,7 @@
 ## Run from the repository root (Compatibility needs a renderer; under xvfb-run on a machine without a display):
 ##   xvfb-run -a -s "-screen 0 1280x720x24" "$(app/get-godot.sh)" --path app --audio-driver Dummy \
 ##     --script "$PWD/research/field-world/fw-moon-08/aureole_profile.gd" -- --out=/abs/dir [--gallery]
+##     [--sky_args=--date=2028-12-31,--time=15:30,--utc_offset=0,--lat=30,--lon=90] (another sky; FW-MOON-10 partial phase)
 extends SceneTree
 
 const WorldBuilder := preload("res://render/world/world.gd")
@@ -39,6 +40,7 @@ func _run() -> void:
 		quit(1)
 		return
 	DirAccess.make_dir_recursive_absolute(out)
+	var sky_args: Array = Array(str(_args.sky_args).split(",")) if _args.has("sky_args") else ARGS
 	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH).field
 	var viewport := SubViewport.new()
 	viewport.size = VIEW_SIZE
@@ -47,13 +49,13 @@ func _run() -> void:
 	viewport.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
 	root.add_child(viewport)
 	var result := {format = "openrc-aureole-profile v1", engine = Engine.get_version_info().string,
-		adapter = RenderingServer.get_video_adapter_name(), arguments = ARGS, size = [VIEW_SIZE.x, VIEW_SIZE.y], fov_deg = FOV_DEG}
+		adapter = RenderingServer.get_video_adapter_name(), arguments = sky_args, size = [VIEW_SIZE.x, VIEW_SIZE.y], fov_deg = FOV_DEG}
 	var presets: Array = ["clear"] + (GALLERY if _args.has("gallery") else [])
 	for preset: String in presets:
 		Atmosphere.configure_appearance(Atmosphere.SkyConfig.for_preset(preset))
 		var scene_root := Node3D.new()
 		viewport.add_child(scene_root)
-		var built: Dictionary = WorldBuilder.build(scene_root, field, Callable(), Conditions.resolve(PackedStringArray(ARGS)), {},
+		var built: Dictionary = WorldBuilder.build(scene_root, field, Callable(), Conditions.resolve(PackedStringArray(sky_args)), {},
 			{field_lighting = "off", campfire = false})
 		var env: Environment = built.environment
 		var mat := env.sky.sky_material as ShaderMaterial
@@ -95,12 +97,12 @@ func _run() -> void:
 				flat_level = _decode(flat.get_pixel(VIEW_SIZE.x / 2, VIEW_SIZE.y / 4))}
 			var moon_lin: Vector3 = mat.get_shader_parameter("moon_lin")
 			var knee := pow(0.005, float(mat.get_shader_parameter("moon_display_gamma"))) * (0.2126 * moon_lin.x + 0.7152 * moon_lin.y + 0.0722 * moon_lin.z) \
-				* float(mat.get_shader_parameter("moon_display_scale")) * scale
+				* float(mat.get_shader_parameter("moon_display_scale")) * _eclipse_dim(mat) * scale
 			result.profile = _profile(on, off, camera, moon, aureole, float(mat.get_shader_parameter("moon_display_gamma")),
 				float(mat.get_shader_parameter("moon_radius")), scale, knee)
 			result.moon = {azimuth_deg = Atmosphere.state.moon_azimuth_deg, elevation_deg = Atmosphere.state.moon_elevation_deg,
 				aureole_lin = [aureole.x, aureole.y, aureole.z], gamma = mat.get_shader_parameter("moon_display_gamma"),
-				aerosol_factor = Atmosphere.aureole_aerosol_factor()}
+				aerosol_factor = Atmosphere.aureole_aerosol_factor(), eclipse_dim = _eclipse_dim(mat)}
 			env.tonemap_mode = tonemap
 			env.tonemap_exposure = exposure
 		if _args.has("gallery"):
@@ -158,6 +160,12 @@ func _profile(on: Image, off: Image, camera: Camera3D, moon: Vector3, aureole: V
 			predicted = predicted * knee / (knee + predicted) if knee > 0.0 else predicted # the knee below the disc
 			rows.append({axis = axis, px = i, rho_deg = rho, background = b, rendered = a - b, predicted = predicted})
 	return rows
+
+
+## The knee's eclipse dimming (FW-MOON-10); 1 on shaders from before it.
+static func _eclipse_dim(mat: ShaderMaterial) -> float:
+	var dim: Variant = mat.get_shader_parameter("moon_eclipse_dim")
+	return 1.0 if dim == null else float(dim)
 
 
 static func _clipped(c: Color) -> bool:

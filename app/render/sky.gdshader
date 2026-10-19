@@ -124,7 +124,8 @@ vec3 moon_aureole(vec3 d, vec3 background) {
 	// A soft knee keeps the glow below the disc as shown. At the limb KS91 puts it at ~0.5 % of the disc's radiance;
 	// shown with the disc's own γ that is 0.005^γ of the displayed disc (5 % at night), so the limb never washes out.
 	// The bright core people see around the moon is mostly the eye's own straylight (the glare veil), not this.
-	float knee = pow(0.005, moon_display_gamma) * dot(moon_lin, vec3(0.2126, 0.7152, 0.0722)) * moon_display_scale;
+	// FW-MOON-10: in an eclipse the disc as shown is the eclipsed one (moon_eclipse_dim; 1 otherwise, exact).
+	float knee = pow(0.005, moon_display_gamma) * dot(moon_lin, vec3(0.2126, 0.7152, 0.0722)) * moon_display_scale * moon_eclipse_dim;
 	shown = knee > 0.0 ? shown * knee / (knee + shown) : shown;
 	return la > 0.0 ? a * (shown / la) : vec3(0.0);
 }
