@@ -1,0 +1,47 @@
+{
+  "started_utc": "2026-10-19T23:47:15.933738+00:00",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--log-file",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-recordings\\20261019-184715-v2\\engine.log",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-profiler\\entry.gd"
+  ],
+  "git_head": "79254d44070500bee668a976740f7cfd81e14a79",
+  "git_status": "",
+  "os": "Windows-10-10.0.26100-SP0",
+  "cpu_logical": 24,
+  "cpu_physical": 12,
+  "limits": [
+    "GPU is whole-adapter utilization",
+    "Engine process/physics monitors are smoothed engine metrics",
+    "No GPU timestamp queries, screen recording or physics observer",
+    "Caches retained from previous run; cache temperature uncontrolled",
+    "Automatic stack snapshots can perturb timing; their intervals are tagged in stalls.jsonl",
+    "Normal focus safety and user preferences remain active"
+  ],
+  "recorder_version": 2,
+  "kernel_trace": {
+    "available": false,
+    "wpr_error": "0xc5585011 policy to profile system performance not enabled"
+  },
+  "stack_snapshots": {
+    "trigger": "2.5 s without frame-file growth after ready",
+    "maximum": 3,
+    "minimum_gap_s": 15,
+    "overhead_file": "stalls.jsonl"
+  },
+  "source_sha256": {
+    "app\\main.gd": "9b70889d76625d4f390e4aa0c973527c9e8503d40dd931e9c63806073ad48e11",
+    "app\\app_root.gd": "2bab21f8786700dfaa6108158d39941f09a096bb722793f19855bce2df7e2c27",
+    "app\\project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+    "app\\sim\\simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+    "tmp\\manual-flight-profiler\\entry.gd": "da70e73095d7628b58906af47fa6b2c4c13497759886914159b6a73045de105a",
+    "tmp\\manual-flight-profiler\\observer.gd": "608ee7d243ceb61ec4ee6d4722078795589c0db09c343e5de31136a8b9c9b615",
+    "tmp\\manual-flight-profiler\\hang_dump.py": "05e5a6e1a5dfc4789160946422c5fbce51a92c7376a2f0763539ddf8156c5e39",
+    "tmp\\manual-flight-profiler\\record_v2.py": "a451e0241b23937a21800de7e87a80fdf401cb329528a7d30b637050be3764dd"
+  },
+  "pid": 72104
+}

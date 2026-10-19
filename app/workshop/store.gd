@@ -67,6 +67,7 @@ const VARIANT_REQUIRED_KEYS: PackedStringArray = [
 	"presentation_profile",
 ]
 const INDEX_KEYS: PackedStringArray = ["format", "version", "id", "revision"]
+const MAX_FIRST_SAVE_STAGE_ENTRIES: int = 8
 
 
 class VariantWriteGuard extends RefCounted:
@@ -84,6 +85,23 @@ class VariantWriteGuard extends RefCounted:
 	func _notification(what: int) -> void:
 		if what == NOTIFICATION_PREDELETE and acquired:
 			DirAccess.remove_absolute(directory)
+
+
+class FirstSaveStagingGuard extends RefCounted:
+	var cleanup: Callable
+
+	func _init(operation: Callable) -> void:
+		# The bound operation retains the write reservation until cleanup completes.
+		cleanup = operation
+
+	func release() -> void:
+		cleanup = Callable()
+
+	func _notification(what: int) -> void:
+		if what == NOTIFICATION_PREDELETE and cleanup.is_valid():
+			var result: Dictionary = cleanup.call()
+			if not result.ok:
+				push_warning("First-save temporary data was retained: " + "; ".join(result.errors))
 
 
 static func list_variants(root: String = DEFAULT_ROOT) -> Array:
@@ -121,7 +139,8 @@ static func save_variant(
 
 
 ## Private transaction seam for interruption tests. Production saves have no observer,
-## global failpoint or persisted setting; false leaves the on-disk prefix for rereading.
+## global failpoint or persisted setting. Ordinary failure cleans its owned first-save
+## staging; abrupt process termination preserves the prefix and reservation.
 static func _save_variant(
 		name: String,
 		base_id: String,
@@ -301,6 +320,7 @@ static func _save_variant(
 				return _result(false, errors)
 			profile_for_save = profile_result["profile"]
 	var write_dir: String = variant_dir
+	var staging_scope: FirstSaveStagingGuard = null
 	if not is_existing_variant:
 		var staging_root: String = root_path.path_join("_staging")
 		root_error = _make_directory(staging_root)
@@ -320,6 +340,8 @@ static func _save_variant(
 			errors.append("Could not reserve a unique first-save staging directory.")
 			return _result(false, errors)
 		write_dir = staging_dir
+		staging_scope = FirstSaveStagingGuard.new(
+			_discard_first_save_stage.bind(root_path, staging_dir, safe_id, write_guard))
 		if not _continue_save(checkpoint, "after_staging_create"):
 			return _interrupted_save("after_staging_create")
 	var revisions_dir: String = write_dir.path_join("revisions")
@@ -399,9 +421,109 @@ static func _save_variant(
 			errors.append_array(publication["errors"])
 			return _result(false, errors)
 		loaded = publication
+		staging_scope.release()
 		if not _continue_save(checkpoint, "after_first_publish"):
 			return _interrupted_save("after_first_publish")
 	return _result(true, PackedStringArray(), loaded["variant"])
+
+
+## Delete only the known, bounded layout of this transaction's first-save directory.
+## Preflight every entry before any removal; never recurse or scan other stages.
+static func _discard_first_save_stage(
+		root_path: String, staging_dir: String, id: String, reservation: VariantWriteGuard
+) -> Dictionary:
+	if not _first_save_stage_paths_safe(root_path, staging_dir, id, reservation):
+		return _result(false, PackedStringArray(["Staging path or write reservation is unavailable or unsafe."]))
+	if not DirAccess.dir_exists_absolute(staging_dir):
+		if FileAccess.file_exists(staging_dir):
+			return _result(false, PackedStringArray(["Staging path became a file."]))
+		return _result(true, PackedStringArray())
+	var revisions_dir: String = staging_dir.path_join("revisions")
+	var containers: Array[String] = [staging_dir]
+	if DirAccess.dir_exists_absolute(revisions_dir): containers.append(revisions_dir)
+	var files: Array[String] = []
+	var entries: int = 0
+	for container: String in containers:
+		var directory: DirAccess = DirAccess.open(container)
+		if directory == null:
+			return _result(false, PackedStringArray(["Could not inspect the first-save staging directory."]))
+		directory.include_hidden = true
+		if directory.list_dir_begin() != OK:
+			return _result(false, PackedStringArray(["Could not inspect the first-save staging directory."]))
+		var errors := PackedStringArray()
+		while true:
+			var entry: String = directory.get_next()
+			if entry.is_empty(): break
+			if entry == "." or entry == "..": continue
+			entries += 1
+			var child: String = container.path_join(entry)
+			if entries > MAX_FIRST_SAVE_STAGE_ENTRIES or directory.is_link(child):
+				errors.append("Staging contains a link or exceeds the bounded first-save layout.")
+				break
+			if directory.current_is_dir():
+				if container != staging_dir or entry != "revisions":
+					errors.append("Staging contains an unexpected directory.")
+					break
+			elif not _first_save_stage_filename(entry, "manifest.json" if container == staging_dir else "00000001.json"):
+				errors.append("Staging contains an unexpected file.")
+				break
+			else:
+				files.append(child)
+		directory.list_dir_end()
+		if not errors.is_empty(): return _result(false, errors)
+	# The reservation excludes cooperating writers. Recheck links before each removal.
+	for file_path: String in files:
+		if not _first_save_stage_paths_safe(root_path, staging_dir, id, reservation):
+			return _result(false, PackedStringArray(["Staging changed during cleanup."]))
+		var parent: DirAccess = DirAccess.open(file_path.get_base_dir())
+		if parent == null or parent.is_link(file_path):
+			return _result(false, PackedStringArray(["Staging changed during cleanup."]))
+		var remove_error: Error = DirAccess.remove_absolute(file_path)
+		if remove_error != OK:
+			return _result(false, PackedStringArray(["Could not remove a first-save temporary file (%s)." % error_string(remove_error)]))
+	for directory_path: String in [revisions_dir, staging_dir]:
+		if not _first_save_stage_paths_safe(root_path, staging_dir, id, reservation):
+			return _result(false, PackedStringArray(["Staging changed during cleanup."]))
+		if DirAccess.dir_exists_absolute(directory_path):
+			var remove_error: Error = DirAccess.remove_absolute(directory_path)
+			if remove_error != OK:
+				return _result(false, PackedStringArray(["Could not remove the first-save temporary directory (%s)." % error_string(remove_error)]))
+	return _result(true, PackedStringArray())
+
+
+static func _first_save_stage_paths_safe(
+		root_path: String, staging_dir: String, id: String, reservation: VariantWriteGuard
+) -> bool:
+	var user_path: String = ProjectSettings.globalize_path("user://").replace("\\", "/").trim_suffix("/")
+	if not root_path.is_absolute_path() or root_path != root_path.simplify_path() \
+			or not root_path.begins_with(user_path + "/") or not _valid_uuid(id): return false
+	var checked_root: Dictionary = _resolve_root("user://" + root_path.trim_prefix(user_path + "/"))
+	if not checked_root.ok or checked_root.path != root_path: return false
+	if staging_dir.get_base_dir() != root_path.path_join("_staging") \
+			or not staging_dir.get_file().begins_with(id + "-") \
+			or not _valid_uuid(staging_dir.get_file().trim_prefix(id + "-")): return false
+	if reservation == null or not reservation.acquired \
+			or reservation.directory != root_path.path_join("_locks").path_join(id) \
+			or not DirAccess.dir_exists_absolute(reservation.directory): return false
+	var paths: Array[String] = [root_path.path_join("_staging"), staging_dir,
+		staging_dir.path_join("revisions"), root_path.path_join("_locks"), reservation.directory]
+	var ancestor: String = root_path
+	while ancestor != user_path:
+		paths.append(ancestor)
+		ancestor = ancestor.get_base_dir()
+	for path: String in paths:
+		var parent: DirAccess = DirAccess.open(path.get_base_dir())
+		# Missing revisions/staging after a successful removal are expected.
+		if parent == null:
+			if not DirAccess.dir_exists_absolute(staging_dir) and path == staging_dir.path_join("revisions"): continue
+			return false
+		if parent.is_link(path): return false
+	return true
+
+
+static func _first_save_stage_filename(filename: String, committed_name: String) -> bool:
+	return filename == committed_name or (filename.begins_with(committed_name + ".tmp-")
+		and _valid_uuid(filename.trim_prefix(committed_name + ".tmp-")))
 
 
 static func _publish_staged_variant(

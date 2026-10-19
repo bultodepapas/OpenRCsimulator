@@ -107,6 +107,10 @@ func _run_case(scenario: String, stage: String, process_cuts: bool) -> void:
 	_check(label + " exact cut reached", _cut_reached)
 	if not _cut_reached: return
 	var absolute_root: String = ProjectSettings.globalize_path(fixture_root)
+	if scenario == "first":
+		var staging: DirAccess = DirAccess.open(absolute_root.path_join("_staging"))
+		_check(label + " only abrupt pre-publication exits retain staging", staging != null
+			and staging.get_directories().size() == (1 if process_cuts and stage != "after_first_publish" else 0))
 	var lock_path: String = absolute_root.path_join("_locks").path_join(id)
 	_check(label + " lock lifecycle", DirAccess.dir_exists_absolute(lock_path) == process_cuts)
 	var disk_prefix: Dictionary = _tree_bytes(absolute_root)

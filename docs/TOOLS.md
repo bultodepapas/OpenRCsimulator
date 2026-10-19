@@ -125,6 +125,8 @@ Inspect each suite's assertions and engine errors as well as exit status. Focuse
 
 `test_workshop_store_interruptions.gd` runs 35 injected save-boundary cases by default. Add `-- --process-cuts` to terminate disposable writer processes at the same boundaries and inspect their filesystem prefixes from the reader process. This optional run exceeds the ordinary unit timeout; run it separately. It creates and removes only unique `user://workshop_store_cuts_*` fixtures and never uses the player library. [AE-03a](research/aircraft-editor/AE-03a/README.md) records the native Windows proof and remaining filesystem/platform limits.
 
+`test_workshop_staging.gd` checks bounded cleanup of handled first-save failures, readback corruption, retained unknown data, reservation/path guards and directory links. It uses isolated `user://workshop_staging_test_*` fixtures; on Windows its link fixtures fall back to directory junctions through the built-in PowerShell when unprivileged symbolic links are unavailable. The retained-data warning in its negative case is intentional. It never reclaims a player lock or scans older staging directories.
+
 For a native rendered still:
 
 ```powershell

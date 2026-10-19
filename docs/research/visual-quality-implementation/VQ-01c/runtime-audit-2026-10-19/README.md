@@ -482,3 +482,11 @@ averages 40.61 FPS, p95 37.07 ms, with a 4.987 s callback gap while simulator CP
 and whole-adapter GPU usage fall near zero. The waiting call remains unidentified;
 no speculative runtime fix or physics change was made. Raw data, source identities,
 the timeline and shared-host/sampling limitations are retained with the report.
+
+The [18:47 second flight](manual-flight-1847/README.md) repeats the 4K settings with
+a normal-user stack-snapshot fallback. The five-second in-flight stall does not
+recur. Excluding one snapshot-overlap Home→Fly interval, mean FPS is 58.50, p95
+48.02 ms and maximum 76.03 ms; this uncontrolled repeat proves no game speedup.
+The loading snapshot shows allocation-related frames but lacks usable Godot
+function symbols. High system CPU correlates with worse pacing. Raw data, capture
+overhead, decoded stacks and unresolved attribution are retained.
