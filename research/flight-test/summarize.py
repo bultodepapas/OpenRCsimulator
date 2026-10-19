@@ -114,6 +114,10 @@ def column(d):
             f"{fmt(case(res, 'spin_inverted', 'right', 'entered'))} / {fmt(case(res, 'spin_inverted', 'right', 'steady_turn_time_s'), 2)}",
         "Dead-stick: glide ratio / touchdown past the aim (m)": "skipped" if skipped(res, "dead_stick_landing") else (
             f"{fmt(pick(res, 'dead_stick_landing', ['metrics', 'glide_ratio']))} / {fmt(pick(res, 'dead_stick_landing', ['metrics', 'touchdown_past_aim_m']))}"),
+        # Card v5 (D6e-R3)
+        "Hands-off throttle step from the trim: path angle after 30 s at 25 % / 50 % (°), inverted at 100 % (s)":
+            f"{fmt(case(res, 'power_step', '25pct', 'path_angle_end_deg'))} / {fmt(case(res, 'power_step', '50pct', 'path_angle_end_deg'))}"
+            f" / {fmt(case(res, 'power_step', '100pct', 'inverted_at_s'), 2)}",
         "Go-around, throttle slammed: least wheel height (m) / most bank (°)": "skipped" if skipped(res, "go_around") else (
             f"{fmt(case(res, 'go_around', 'fast', 'min_wheel_height_m'), 2)} / {fmt(case(res, 'go_around', 'fast', 'max_bank_deg'))}"),
         "Valid tests": f"{sum(1 for r in res.values() if r.get('valid'))} / {len(res)} ({sum(1 for r in res.values() if r.get('skipped'))} skipped)",

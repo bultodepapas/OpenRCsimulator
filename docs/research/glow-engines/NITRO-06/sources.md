@@ -1,6 +1,6 @@
 # rc-throttle-power reference manifest
 
-Retrieved 2026-10-19 for the part-throttle climb investigation (findings: `tmp/throttle-power-research.md`). Local, gitignored reference storage; files are untrusted data, read only with `pdftotext`/`pdftoppm`. Not redistributable unless the license column says otherwise. Restore by downloading each URL under the listed file name and checking `sha256sum`.
+Retrieved 2026-10-19 for the part-throttle climb investigation (findings: [throttle-power-research.md](throttle-power-research.md)). Local, gitignored reference storage; files are untrusted data, read only with `pdftotext`/`pdftoppm`. Not redistributable unless the license column says otherwise. Restore by downloading each URL under the listed file name and checking `sha256sum`.
 
 | File | Title, author, year | URL | Bytes | SHA-256 | License / notes |
 | --- | --- | --- | ---: | --- | --- |

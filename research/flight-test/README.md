@@ -1,6 +1,6 @@
 # Standard flight-test battery (FT)
 
-2026-10-16 · **Status: research tool, card `ft-card-v4`** (v3, 2026-10-18: adds `aero_sweep`; v4, 2026-10-19: FT-04 adds aerobatic, inverted, power-off, stall and runway tests). Flies one standard test card through the real session loop for every fixed-wing catalog aircraft. It writes a profile per aircraft and compares two runs case by case. Baseline profiles and findings: [FT-01](../../docs/research/flight-test/FT-01/README.md) (card v2), [FT-03](../../docs/research/flight-test/FT-03/README.md) (card v3 on the D10-R2 tree, with measured-RC comparisons) and [FT-04](../../docs/research/flight-test/FT-04/README.md) (card v4).
+2026-10-16 · **Status: research tool, card `ft-card-v5`** (v3, 2026-10-18: adds `aero_sweep`; v4, 2026-10-19: FT-04 adds aerobatic, inverted, power-off, stall and runway tests; v5, 2026-10-19: D6e-R3 adds the hands-off `power_step`). Flies one standard test card through the real session loop for every fixed-wing catalog aircraft. It writes a profile per aircraft and compares two runs case by case. Baseline profiles and findings: [FT-01](../../docs/research/flight-test/FT-01/README.md) (card v2), [FT-03](../../docs/research/flight-test/FT-03/README.md) (card v3 on the D10-R2 tree, with measured-RC comparisons), [FT-04](../../docs/research/flight-test/FT-04/README.md) (card v4) and [FT-05](../../docs/research/flight-test/FT-05/README.md) (card v5, after the NITRO-06 glow throttle law).
 
 The card measures what a test pilot would measure on a real model:
 
@@ -13,7 +13,8 @@ The card measures what a test pilot would measure on a real model:
 - stalls: wings level with and without power, in a turn, skidded, held with the stick back, and inverted;
 - stability: the linear modes and a hands-off flight;
 - the aerodynamic model itself: which model (coefficient oracle or local surfaces) carries the loads, and what each gives, without flying;
-- the takeoff, the landing and the go-around.
+- the takeoff, the landing and the go-around;
+- hands-off throttle steps from the trimmed start: what a fixed trim does with the power at idle, 25, 50, 75 and 100 %.
 
 Each test starts from the session's own trimmed airborne start or its qualified runway start. A closed-loop pilot (`pilot.gd`) flies it through the same loop as the game: servos, aerodynamics, propulsion, slipstream, gear, field surfaces and crash checks.
 
@@ -117,6 +118,14 @@ These tests run after the v3 tests, which run exactly as before. They live in fo
 | `spin_inverted` | 1.6 Vs at 400 m, inverted, idle; full down elevator and full rudder for 6 s; then opposite rudder, neutral elevator, roll upright, pull out (`right`, `left` rudder) | spin or spiral, time and height per turn, least α, recovery turns and time |
 | `dead_stick_landing` | Qualified runway aircraft. An engine-off glide at 1.4 Vs measures the glide path; then a final from 30 m on that path, aimed 10 m past the threshold, with the engine cut, the elevator flying the path and the landing flare | glide ratio and path, touchdown against the aim, speed, sink, bounce, rollout |
 | `go_around` | The `landing` approach; at 3 m the throttle goes to full in 0.3 s or 2 s; wings level, runway heading with the rudder, 1.3 Vs with the elevator (`fast`, `slow`) | least wheel height and whether it touched, bank and heading excursions, peak aileron and rudder, time to 15 m |
+
+### Card v5 addition (D6e-R3)
+
+| Test | Start and pilot | Reports (cases) |
+| --- | --- | --- |
+| `power_step` | Trimmed start at 400 m; at 1 s the throttle goes to idle, 25, 50, 75 or 100 % and stays there 30 s; no pilot pitch input (the elevator stays at its trim); wings held level and the ball centred so a spiral does not mask the longitudinal answer (`idle`, `25pct`, `50pct`, `75pct`, `100pct`) | height change at 5/10/20/30 s; speed; path angle, pitch and rpm over the last 5 s; extreme pitch, α and speed; whether and when it went past inverted; the level speed that throttle trims at (from `trim_sweep`); the constant-speed climb angle the thrust excess at the trim speed predicts (`predicted_path_angle_deg`) |
+
+It lives in `card_power.gd`. A departure is the airplane's answer, not a pilot failure; the test is valid when every flight completed without a crash. Baseline: [FT-05](../../docs/research/flight-test/FT-05/README.md).
 
 ## Pilot rules
 

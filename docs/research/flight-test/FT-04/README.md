@@ -1,6 +1,6 @@
 # FT-04: card v4, aerobatic, inverted, engine-failure, stall and runway tests
 
-2026-10-19 · **Status: card `ft-card-v4` implemented and flown on all eight fixed-wing catalog aircraft. The 21 v3 tests are unchanged at zero tolerance, and the card is deterministic. FT-04 replaces FT-03 as the current baseline. Two independent checks hold: the turn back, and the stall in a turn. No aircraft can fly a stall turn; snap rolls, held stalls and dead-stick glides expose open physics work.** [Tool, card and workflow](../../../../research/flight-test/README.md#card-v4-additions-ft-04); previous baseline [FT-03](../FT-03/README.md) (card v3).
+2026-10-19 · **Status: card `ft-card-v4` implemented and flown on all eight fixed-wing catalog aircraft. The 21 v3 tests are unchanged at zero tolerance, and the card is deterministic. FT-04 replaced FT-03 as the baseline; [FT-05](../FT-05/README.md) (card v5, 2026-10-19) replaces FT-04 after the NITRO-06 glow throttle law. Two independent checks hold: the turn back, and the stall in a turn. No aircraft can fly a stall turn; snap rolls, held stalls and dead-stick glides expose open physics work.** [Tool, card and workflow](../../../../research/flight-test/README.md#card-v4-additions-ft-04); previous baseline [FT-03](../FT-03/README.md) (card v3).
 
 ## What changed
 

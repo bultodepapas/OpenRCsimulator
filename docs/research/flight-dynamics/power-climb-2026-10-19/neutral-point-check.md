@@ -2,7 +2,7 @@
 
 This applies the D6e-R1 geometric neutral-point (NP) estimate to the five catalog airframes and compares it with the NP that each data file's pitch coefficients imply. It is research only: no file under `app/` or `research/` was changed.
 
-- **Script:** `tmp/fleet_neutral_point.py` (read-only). Run it with `python3 tmp/fleet_neutral_point.py`.
+- **Script:** [research/flight-dynamics/power-climb/fleet_neutral_point.py](../../../../research/flight-dynamics/power-climb/fleet_neutral_point.py) (read-only). Run it with `python3 research/flight-dynamics/power-climb/fleet_neutral_point.py` from the repository root.
 - **Data:** the `app/data/aircraft/*.json` files at HEAD `12c2ac31`. They have no uncommitted changes, and the last commit to touch them was `be97a75a`.
 - **Units:** positions are in metres, in each file's le frame (`x` aft of the wing root leading edge). Slopes are per radian. Margins are in % of `reference.mean_chord` (c_ref = S/b), not % MAC; the generators' own reports use % MAC, so a % MAC column is given for cross-checking.
 

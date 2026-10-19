@@ -16,6 +16,7 @@ const SunGlare := preload("res://render/landscape_upgrade/sun_glare.gd")
 const SKY_SHADER := preload("res://render/sky.gdshader")
 const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const Options := preload("res://render/landscape_upgrade/options.gd")
 
 var _failures := 0
 var _count := 0
@@ -37,6 +38,7 @@ func _initialize() -> void:
 	_afterimage()
 	_clouds()
 	_source()
+	_eyewear()
 	print("SUN optics: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -329,3 +331,22 @@ func _source() -> void:
 	_check("veil reaches a view facing the sun", SunGlare.veil_reaches_view(camera, Vector3(0.0, 0.0, -1.0)))
 	_check("no veil for a sun behind the camera", not SunGlare.veil_reaches_view(camera, Vector3(0.0, 0.0, 1.0)))
 	camera.free()
+
+
+func _eyewear() -> void:
+	# SUN-06: the brim shades sources more than ~25° above the line of sight; it moves with the head.
+	var ahead := Vector3(0.0, 0.0, -1.0)
+	var above := func(deg: float) -> Vector3: return Vector3(0.0, sin(deg_to_rad(deg)), -cos(deg_to_rad(deg)))
+	_check("the brim leaves the line of sight open", SunOptics.brim_transmission(ahead) == 1.0)
+	_check("the brim shades a sun 40° above the gaze", SunOptics.brim_transmission(above.call(40.0)) == 0.0)
+	_check("half at the brim's edge", absf(SunOptics.brim_transmission(above.call(SunOptics.BRIM_CUT_DEG)) - 0.5) < 1e-4) # Vector3 is float32
+	_check("the brim does nothing behind the head", SunOptics.brim_transmission(Vector3(0.0, 0.7, 0.7).normalized()) == 1.0)
+	var none := SunOptics.eyewear_factors({cap = false, sunglasses = false}, above.call(40.0))
+	_check("no eyewear changes nothing", none.veil == 1.0 and none.dose == 1.0)
+	var cap := SunOptics.eyewear_factors({cap = true, sunglasses = false}, above.call(40.0))
+	_check("a cap under a high sun removes veil and dose", cap.veil == 0.0 and cap.dose == 0.0)
+	var glasses := SunOptics.eyewear_factors({cap = false, sunglasses = true}, ahead)
+	_check("sunglasses keep the veil ratio and cut the dose", glasses.veil == 1.0 and glasses.dose == SunOptics.SUNGLASSES_TRANSMISSION)
+	_check("eyewear names parse", Options.parse_eyewear("cap+sunglasses").cap and Options.parse_eyewear("Sunglasses").sunglasses
+		and Options.parse_eyewear("").ok and not Options.parse_eyewear("visor").ok)
+

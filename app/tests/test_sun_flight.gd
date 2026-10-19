@@ -42,6 +42,13 @@ func _frame(flight: Node, glare: Node, advance := true) -> void:
 	glare._process(0.0)
 
 
+## Render-axis direction at a compass azimuth and elevation (degrees; north = −z, east = +x).
+static func _toward(azimuth_deg: float, elevation_deg: float) -> Vector3:
+	var az := deg_to_rad(azimuth_deg)
+	var el := deg_to_rad(elevation_deg)
+	return Vector3(sin(az) * cos(el), sin(el), -cos(az) * cos(el))
+
+
 func _frames(flight: Node, glare: Node, count: int, advance := true) -> void:
 	for i in count:
 		_frame(flight, glare, advance)
@@ -79,6 +86,19 @@ func _run() -> void:
 	check("a second on the sun bleaches the eye", looked > 0.9, str(looked))
 	check("the veil is drawn", glare.visible and float(glare.get_meta("strength", 0.0)) > 1.0)
 
+	# SUN-09: the eye view started the field's skyline (built over ~500 frames in flight; finished here). The clubhouse
+	# behind the pilot (150° azimuth) rises to ~19°: a sun 10° up behind it is hidden, one at 30° is clear.
+	var skyline: RefCounted = glare.skyline()
+	check("an eye view starts the skyline", skyline != null)
+	if skyline != null:
+		skyline.finish()
+		var radius := deg_to_rad(0.265)
+		check("a sun behind the clubhouse is hidden", glare._skyline_prior(flight._camera, _toward(150.0, 10.0), radius, true) == 0.0,
+			str(rad_to_deg(skyline.elevation(_toward(150.0, 0.0)))))
+		check("a sun above it is clear", glare._skyline_prior(flight._camera, _toward(150.0, 30.0), radius, true) == 1.0)
+		check("lens views keep the constant prior", glare._skyline_prior(flight._camera, _toward(150.0, 10.0), radius, false)
+			== SunOptics.horizon_prior(deg_to_rad(10.0)))
+
 	# Look 40° away: the sun leaves the frame, the patch stays where it was on screen.
 	rig.look = Vector2(sun_az + 40.0, sun_el)
 	_frames(flight, glare, 10)
@@ -106,7 +126,30 @@ func _run() -> void:
 	check("a restart rests the eye", float(glare.get_meta("afterimage", 0.0)) == 0.0 and not layer.visible,
 		str(glare.get_meta("afterimage", 0.0)))
 
+	# SUN-06 eyewear: a cap shades a high sun while the pilot looks low; looking at the sun it does not help;
+	# sunglasses slow the bleaching.
+	glare.eyewear = {cap = true, sunglasses = false}
+	glare.rest()
+	rig.look = Vector2(sun_az, sun_el - 35.0)
+	_frames(flight, glare, 30)
+	check("a cap shades a high sun from a low gaze", float(glare.get_meta("afterimage", 0.0)) == 0.0
+		and float(glare.get_meta("strength", 1.0)) == 0.0)
+	rig.look = Vector2(sun_az, sun_el)
+	_frames(flight, glare, 30)
+	check("a cap does not help looking at the sun", float(glare.get_meta("afterimage", 0.0)) > 0.9)
+	glare.eyewear = {cap = false, sunglasses = false}
+	glare.rest()
+	_frames(flight, glare, 2)
+	var bare := float(glare.get_meta("afterimage", 0.0))
+	glare.eyewear = {cap = false, sunglasses = true}
+	glare.rest()
+	_frames(flight, glare, 2)
+	var shaded := float(glare.get_meta("afterimage", 0.0))
+	check("sunglasses slow the bleaching", shaded < 0.5 * bare, "%f vs %f" % [shaded, bare])
+	glare.eyewear = {cap = false, sunglasses = false}
+
 	# --sun-glare=off: the node stays (one code path), draws and bleaches nothing.
+	glare.rest()
 	glare.intensity = 0.0
 	rig.look = Vector2(sun_az, sun_el)
 	_frames(flight, glare, 60)

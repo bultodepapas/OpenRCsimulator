@@ -28,11 +28,13 @@ const OPTICS_META := &"openrc_optics"
 const AFTERIMAGE_LAYER := -10
 ## SUN-09: the skyline is built from this many samples per frame (a fixed amount of work, so captures and replays
 ## finish it on the same frame), and rebuilt when the eye moves farther than this.
-const SKYLINE_SAMPLES_PER_FRAME := 2000
+const SKYLINE_SAMPLES_PER_FRAME := 600
 const SKYLINE_REBUILD_M := 2.0
 
 var environment: Environment
 var intensity := 1.0
+## SUN-06: the pilot's eyewear {cap, sunglasses} (Options.pilot_eyewear); applies in eye views only.
+var eyewear := {cap = false, sunglasses = false}
 var _material: ShaderMaterial
 ## Pass 1, drawn over the veil: the lens's ghosts (sun_glare.gdshader pass_kind 1).
 var _secondary: MeshInstance3D
@@ -56,6 +58,7 @@ static func attach(parent: Node, env: Environment) -> MeshInstance3D:
 	node.name = "SunGlare"
 	node.environment = env
 	node.intensity = Options.glare_strength()
+	node.eyewear = Options.pilot_eyewear()
 	parent.add_child(node)
 	return node
 
@@ -168,9 +171,10 @@ func _process(_delta: float) -> void:
 	var perspective := camera.projection == Camera3D.PROJECTION_PERSPECTIVE
 	var eye := perspective and not lens
 	var prior := _skyline_prior(camera, dir, float(src.radius), eye)
-	var strength := intensity * float(src.e_over_b) * clouds
-	var dose := intensity * float(src.illuminance) * clouds * prior
 	var sun_view := camera.global_transform.basis.orthonormalized().inverse() * dir
+	var worn: Dictionary = SunOptics.eyewear_factors(eyewear, sun_view) if eye else {veil = 1.0, dose = 1.0}
+	var strength := intensity * float(src.e_over_b) * clouds * float(worn.veil)
+	var dose := intensity * float(src.illuminance) * clouds * prior * float(worn.dose)
 	_advance_afterimage(sun_view, dose if eye else 0.0)
 	var veil := perspective and strength > 0.0 and dir.y > -0.02 and veil_reaches_view(camera, dir)
 	visible = veil

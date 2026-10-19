@@ -1,6 +1,6 @@
 # Part-throttle power, idle and cruise: external evidence for RC aircraft
 
-2026-10-19 · research note for the part-throttle climb investigation. Nothing under `app/` was changed or read for tuning. Downloaded files and hashes: [references/rc-throttle-power/MANIFEST.md](../references/rc-throttle-power/MANIFEST.md). Scripts used for the derived numbers are in the session scratchpad and are reproduced as formulas below.
+2026-10-19 · research note for the part-throttle climb investigation (NITRO-06 / D6e-R3), written by a delegated literature search and kept as dated evidence. Nothing under `app/` was changed or read for tuning. Downloaded files and hashes: [sources.md](sources.md) (local copies under ignored `references/rc-throttle-power/`). Scripts used for the derived numbers are in the session scratchpad and are reproduced as formulas below.
 
 Evidence labels used throughout:
 

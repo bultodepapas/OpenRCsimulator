@@ -102,21 +102,24 @@ func _run() -> void:
 	if trees_kept:
 		_check("a tree raises the skyline to its top", absf(sky.elevation(_toward(tree_az, 0.0)) - tree_top) < 0.01,
 			str(rad_to_deg(sky.elevation(_toward(tree_az, 0.0)))))
-		_check("the gap between crowns stays open", sky.elevation(_toward(0.0, 0.0)) == Skyline.EMPTY)
+		_check("the gap between crowns stays open", Skyline.is_empty_elevation(sky.elevation(_toward(0.0, 0.0))))
 	else:
 		print("skipped: this renderer keeps no MultiMesh instance data (headless); tree checks need opengl3")
-	_check("the sky beside the row stays open", sky.elevation(_toward(40.0, 0.0)) == Skyline.EMPTY)
+	_check("the sky beside the row stays open", Skyline.is_empty_elevation(sky.elevation(_toward(40.0, 0.0))))
 	# Due east lies between the building's corners (84.8° and 95.2°): its edges cover the face at the roof's height.
 	var roof_top := atan2(20.0 - EYE.y, 55.0)
 	_check("a building's whole face gives its roof's elevation", absf(sky.elevation(_toward(90.0, 0.0)) - roof_top) < 0.01,
 		str(rad_to_deg(sky.elevation(_toward(90.0, 0.0)))))
 	_check("flat ground, the near shelter and a hidden mast add nothing",
-		sky.elevation(_toward(180.0, 0.0)) == Skyline.EMPTY and sky.elevation(_toward(270.0, 0.0)) == Skyline.EMPTY)
+		Skyline.is_empty_elevation(sky.elevation(_toward(180.0, 0.0)))
+		and Skyline.is_empty_elevation(sky.elevation(_toward(270.0, 0.0))))
 	# Visibility against the building's roof (vertex data is kept by every renderer).
 	var r := deg_to_rad(0.27)
 	_check("a sun below the roof is hidden", sky.visibility(_toward(90.0, rad_to_deg(roof_top) - 1.0), r) == 0.0)
 	_check("a sun above it is clear", sky.visibility(_toward(90.0, rad_to_deg(roof_top) + 1.0), r) == 1.0)
-	var edge := sky.visibility(_toward(90.0, rad_to_deg(roof_top)), r)
+	# An edge takes the lower of its ends (conservative: 0.07° under the nearest roof point here); at the bin's own
+	# elevation half the disc clears.
+	var edge := sky.visibility(_toward(90.0, rad_to_deg(sky.elevation(_toward(90.0, 0.0)))), r)
 	_check("half the disc at the roof line", absf(edge - 0.5) < 0.01, str(edge))
 	if trees_kept:
 		_check("a sun below the treetops is hidden", sky.visibility(_toward(tree_az, rad_to_deg(tree_top) - 1.0), r) == 0.0)

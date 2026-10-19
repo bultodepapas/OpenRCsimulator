@@ -259,6 +259,34 @@ static func veil_colour(disc_lin: Vector3, sky_around: Vector3) -> Vector3:
 	return disc_lin.max(sky_around * VEIL_SKY_MARGIN)
 
 
+## SUN-06 eyewear. A cap brim shades the eye from a source more than BRIM_CUT_DEG above the line of sight (a 7 cm brim
+## 3 cm above the eye: atan(3/7) ≈ 23°, estimate 25°), over BRIM_SOFT_DEG; it moves with the head, so looking up at a
+## model near the sun it does not help. Light-brown sunglasses (Model Aviation's advice for model flying) pass
+## SUNGLASSES_TRANSMISSION of the light: the veil's ratio is unchanged (sun and sky both dimmed) but the retina's
+## bleaching dose falls with it.
+const BRIM_CUT_DEG := 25.0
+const BRIM_SOFT_DEG := 3.0
+const SUNGLASSES_TRANSMISSION := 0.25
+
+
+## How much of a source at `source_view` (unit, view space: −z ahead, +y up) the brim lets reach the eye.
+static func brim_transmission(source_view: Vector3) -> float:
+	if not source_view.is_finite() or source_view.length_squared() == 0.0:
+		return 1.0
+	var v := source_view.normalized()
+	if v.z > 0.2:
+		return 1.0 # well behind the face: the brim is not between it and the eye (nor is the eye's field)
+	var above := rad_to_deg(asin(clampf(v.y, -1.0, 1.0)))
+	return 1.0 - smoothstep(BRIM_CUT_DEG - BRIM_SOFT_DEG, BRIM_CUT_DEG + BRIM_SOFT_DEG, above)
+
+
+## The eyewear's factors for one frame: {veil, dose}. `eyewear`: {cap, sunglasses} (Options.pilot_eyewear()).
+static func eyewear_factors(eyewear: Dictionary, source_view: Vector3) -> Dictionary:
+	var brim := brim_transmission(source_view) if eyewear.get("cap", false) else 1.0
+	var glasses := SUNGLASSES_TRANSMISSION if eyewear.get("sunglasses", false) else 1.0
+	return {veil = brim, dose = brim * glasses}
+
+
 ## Visibility of a disc at `elevation_rad` (apparent) when the depth buffer cannot tell: the skyline prior.
 static func horizon_prior(elevation_rad: float) -> float:
 	if not is_finite(elevation_rad):

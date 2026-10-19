@@ -11,13 +11,13 @@ Data margin:       SM_data = -Cma/CLa + (x_arp - x_cg)/c_ref,   x_np_data = x_ar
 Geometric NP:      x_ac_wb = x_ac_w - dx_f,   dx_f = Cma_f / CLa_w * mac,   Cma_f = K_f W^2 L / (mac S) * 180/pi
                    CLa_geo = CLa_w + a_t Sh/S,   a_t = horizontal.lift_slope = a_h eta_h (1 - deps/dalpha)
                    x_np_geo = x_ac_wb + a_t (Sh/S) (x_h - x_ac_wb) / CLa_geo
-Reads only; writes nothing. Usage: python3 tmp/fleet_neutral_point.py
+Reads only; writes nothing. Usage: python3 research/flight-dynamics/power-climb/fleet_neutral_point.py
 """
 import json
 import math
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[3]
 K_F = 0.008      # Raymer Fig. 16.14 value the fleet generators use near 31-36 % body length (per deg)
 ETA_H = 0.9      # tail dynamic-pressure ratio (fleet generators)
 KAPPA = 0.9      # section slope / 2 pi (D6e-R1 and EX/TT generators)
@@ -173,7 +173,7 @@ def main():
 
 
 def tables(rows):
-    """Markdown tables for tmp/fleet-neutral-point.md (positions in m, le frame; margins in % of c_ref)."""
+    """Markdown tables for docs/research/flight-dynamics/power-climb-2026-10-19/neutral-point-check.md (positions in m, le frame; margins in % of c_ref)."""
     pct = lambda x: f"{100 * x:+.1f}"
     out = ["| Aircraft | c_ref (m) | CLa (1/rad) | Cma (1/rad) | Cmq (1/rad) | x_arp (m) | x_cg loader, wet (m) | x_plan_cg, dry (m) "
            "| NP data (m) | SM data wet / dry (% c_ref) | NP geo (m) | SM geo wet / dry (% c_ref) | NP data - geo |",

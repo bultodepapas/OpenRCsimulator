@@ -273,6 +273,8 @@ func _run() -> void:
 					if case.begins_with("glare_afterimage_rested") and flare.has_method("rest"):
 						flare.rest() # same view and veil, an eye that never saw the sun: the patch's control
 			World.update(built.environment, warm_clock, Vector3(float(args.get("botanical_wind", 0.0)), 0, 1.0 if args.has("botanical_wind") else 0.0), camera.position + -camera.basis.z * 30.0, camera)
+			if i == 1 and flare.has_method("skyline") and flare.skyline() != null:
+				flare.skyline().finish() # SUN-09: in flight it builds over ~500 frames; captures use the finished one
 			if horizon_diagnostic == "no-rim":
 				for mat: ShaderMaterial in World.haze_materials(built.field):
 					if mat.shader.resource_path == "res://render/ground.gdshader":

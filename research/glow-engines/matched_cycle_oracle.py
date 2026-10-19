@@ -20,6 +20,7 @@ from typing import Any, Callable
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import cycle_oracle as source  # Reuse only its detached profile/prop input helpers.
+import carburetor  # NITRO-06: command → barrel opening → charge per cycle at the stage rpm.
 
 TAU = math.tau
 RHO = 1.225

@@ -32,6 +32,7 @@ const T_REFERENCE_K := 288.15
 const CRITICAL_RATIO := 0.5282817877171742
 const PSI_CHOKED := 0.6847314563772704
 const ROOT_ITERATIONS := 64
+const ROOT_TOLERANCE := 1.0e-15
 const LENS_ITERATIONS := 64
 
 
@@ -53,16 +54,35 @@ static func charge_ratio(y: float) -> float:
 		return NAN
 	if y <= CRITICAL_RATIO:
 		return y
-	# h(r) = r − y·g(r) rises from r_c − y < 0 to 1 at r = 1; bisection is exact enough and branch-free.
+	# h(r) = r − y·g(r) rises from r_c − y < 0 to 1 at r = 1 (g falls monotonically). Newton on the bracket,
+	# with a bisection step whenever the Newton step leaves it; a few iterations per RK stage.
 	var lo: float = CRITICAL_RATIO
 	var hi: float = 1.0
+	var r: float = 0.5 * (lo + hi)
 	for _i in ROOT_ITERATIONS:
-		var mid: float = 0.5 * (lo + hi)
-		if mid - y * flow_function(mid) > 0.0:
-			hi = mid
+		var h: float = r - y * flow_function(r)
+		if h > 0.0:
+			hi = r
 		else:
-			lo = mid
-	return 0.5 * (lo + hi)
+			lo = r
+		if absf(h) <= ROOT_TOLERANCE or hi - lo <= ROOT_TOLERANCE:
+			break
+		var slope: float = 1.0 - y * _flow_function_slope(r)
+		var next: float = r - h / slope if slope > 0.0 and is_finite(slope) else NAN
+		if not is_finite(next) or next <= lo or next >= hi:
+			next = 0.5 * (lo + hi)
+		r = next
+	return r
+
+
+## dg/dr of the normalised nozzle flow for r_c < r < 1 (negative; unbounded as r → 1).
+static func _flow_function_slope(r: float) -> float:
+	var k: float = (GAMMA - 1.0) / GAMMA
+	var c: float = 2.0 * GAMMA / (GAMMA - 1.0)
+	var s: float = sqrt(maxf(c * (1.0 - pow(r, k)), 0.0))
+	if s <= 0.0:
+		return -INF
+	return (pow(r, 1.0 / GAMMA - 1.0) * s / GAMMA - pow(r, 1.0 / GAMMA) * c * k * pow(r, k - 1.0) / (2.0 * s)) / PSI_CHOKED
 
 
 ## Open-area fraction of the barrel: the lens common to two equal circles offset by u = d/(2R), u in [0, 1].

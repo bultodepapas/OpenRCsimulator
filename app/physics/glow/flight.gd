@@ -24,6 +24,9 @@ const SIZE := 19
 const MODE_STARVED := 0
 const MODE_MAIN_TANK := 1
 const MODE_FEED_LINE := 2
+## Fixed-point passes and tolerance for the initial needled fuel-transport seed (fuel_feed installations).
+const SEED_PASSES := 8
+const SEED_TOLERANCE := 1.0e-15
 const LAW := "glow-mean-cycle-carburettor-v4"
 const CONTINUOUS_LAYOUT: String = "rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)"
 const REASONS := ["", "not_started", "cut", "stall", "fuel_exhausted", "overheat", "fuel_starved"]
@@ -175,6 +178,20 @@ static func initial(owner: Node, aux: PackedFloat64Array, body: PackedFloat64Arr
 		var telemetry: Dictionary=initial_point.get("telemetry",{})
 		var target: float=float(telemetry.get("fuel_target_kg_s",NAN))
 		if not is_finite(target) or target<0.0: return PackedFloat64Array([NAN])
+		# The needled target itself depends on the transport through the actual mixture, the shaft torque and the
+		# apparent gravity at the tank; settle that fixed point (it converges in one or two passes) so the first
+		# stage starts with a zero transport rate.
+		for _pass in SEED_PASSES:
+			state.fuel_transport_kg_s=target
+			stage_values=put_state(out,state)
+			for _i in owner.wheel_count(): stage_values.append(0.0)
+			initial_point=point(owner,body,stage_values,0.0)
+			if not initial_point.get("ok",false): return PackedFloat64Array([NAN])
+			var settled: float=float(initial_point.get("telemetry",{}).get("fuel_target_kg_s",NAN))
+			if not is_finite(settled) or settled<0.0: return PackedFloat64Array([NAN])
+			var moved: bool=absf(settled-target)>SEED_TOLERANCE*maxf(1.0,absf(target))
+			target=settled
+			if not moved: break
 		state.fuel_transport_kg_s=target
 	return put_state(out,state)
 
