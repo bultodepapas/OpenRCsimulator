@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   current fixed-wing data loads; every fuelled FUEL-05 aircraft declares its tank (14 files) ["gp_extra_300s_60.json", "jensen_ugly_stik_60.json", "p51d_mustang_120.json", "sebart_avanti_s_a200.json", "stik_glow_55ax_2t.json", "stik_glow_55ax_2t_apc_13x6.json", "stik_glow_61fx_2t.json", "stik_glow_fs64v_4t.json", "stik_glow_fs64v_4t_apc_13x6.json"]
+ok   a tank bound to inventory ids loads with a CG range 
+ok   model.fuel_system carries the registry density and identity 
+ok   capacity, unusable and start fill derive from litres x density capacity 0.192807 kg, start fill 0.7778
+ok   the block changes no derived mass property 
+ok   an empty-tank balance refuses the authored (wet) plan CG balance: CG with empty tanks disagrees with plan_cg on axis 0 by 0.0115 m (tolerance 0.0010 m)
+ok   an empty-tank balance accepts the dry CG; the body datum stays the authored inventory CG 
+ok   the CG range applies at the declared fuel state 
+ok   refuses an unknown blend for that reason fuel_system.tanks[0].fuel: 'nitro_99' is not a fuel registry blend; fuel_system: liquid fuel item 'item_fuel_main' belongs to no declared tank
+ok   refuses a feed that does not match the fuel family for that reason fuel_system.tanks[0].feed: glow fuel uses 'suction_muffler', not 'pumped_diaphragm'
+ok   refuses a missing liquid item for that reason fuel_system.tanks[0]: liquid and shell inventory ids must name inventory items; fuel_system: liquid fuel item 'item_fuel_main' belongs to no declared tank
+ok   refuses the same item as liquid and shell for that reason fuel_system.tanks[0]: each inventory item belongs to one tank role only; fuel_system.tanks[0].shell_inventory_id: the empty tank shell 'item_fuel_main' carries no energy
+ok   refuses a liquid of another family for that reason fuel_system.tanks[0].liquid_inventory_id: item 'item_fuel_main' must declare energy_source 'gasoline'
+ok   refuses liquid mass above capacity for that reason fuel_system.tanks[0]: liquid 'item_fuel_main' 0.149961 kg exceeds capacity 0.085692 kg (0.1 l at 856.920 kg/m3)
+ok   refuses a liquid box smaller than the capacity for that reason fuel_system.tanks[0]: liquid 'item_fuel_main' box 0.225 l cannot hold the 0.3 l capacity
+ok   refuses unusable volume at capacity for that reason fuel_system.tanks[0]: need capacity > 0 and unusable < capacity (0.225, 0.225 l); fuel_system: liquid fuel item 'item_fuel_main' belongs to no declared tank
+ok   refuses a capacity in millilitres for that reason fuel_system.tanks[0].capacity: unit 'ml', expected 'l'; fuel_system.tanks[0].capacity: 225.0 outside [0.0, 50.0] l; fuel_system.tanks[0]: liquid 'item_fuel_main' box 0.225 l cannot hold the 225.0 l capacity
+ok   refuses an unknown pickup for that reason /fuel_system/tanks/0/pickup: must be one of ["clunk", "felt_clunk", "fixed", "hopper"]
+ok   refuses an unknown tank field for that reason /fuel_system/tanks/0/colour: unknown field
+ok   refuses two tanks with one id and the same items for that reason fuel_system.tanks[1].id: duplicate tank id 'main_tank'; fuel_system.tanks[1]: each inventory item belongs to one tank role only
+ok   refuses an empty tank list for that reason /fuel_system/tanks: must contain at least 1 item(s)
+ok   refuses a shell that carries energy for that reason fuel_system.tanks[0].shell_inventory_id: the empty tank shell 'item_fuel_tank' carries no energy
+ok   refuses a liquid fuel item outside every tank for that reason fuel_system: liquid fuel item 'item_spare_fuel' belongs to no declared tank
+ok   refuses an empty-tank balance without tanks for that reason balance.fuel_state: 'empty_tanks' needs a fuel_system
+ok   refuses a CG range with forward behind aft for that reason balance.cg_range: forward 0.11939243735198 m must lie ahead of aft 0.09939243735198 m
+ok   refuses tanks on an electric aircraft for that reason fuel_system: liquid fuel tanks need a combustion energy capability ["prescribed_fuel", "finite_glow_fuel"]
+ok   refuses an unknown balance fuel state for that reason /balance/fuel_state: must be one of ["as_inventory", "empty_tanks"]
+FUEL-03 fuel system contract: 27 checks, 0 failed

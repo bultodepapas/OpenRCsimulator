@@ -1,0 +1,24 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   a full tank is the default 
+ok   fractions outside (0, 1] are refused 
+ok   trace metadata of a full start carries no fill key 
+ok   half fill accepted 
+ok   the reset loads half the tank and the session stays flyable fuel 0.149961 kg
+ok   the half-tank start sits behind the datum (the full-tank CG) and is lighter 
+ok   trace metadata records the start fill 
+ok   two seconds of flight from the half-tank trim stay healthy and keep burning 
+ok   a later reset refuels to the selected fill, not to full 
+ok   fuel choice sits in the flight details 
+ok   the catalog knows which aircraft burn a finite tank 
+ok   a glow Stik shows the choice, full by default 
+ok   pressing selects three quarters 
+ok   then a half and a quarter 
+ok   and back to full 
+ok   a fixed-fuel aircraft hides the choice and flies its build 
+ok   returning to a glow Stik keeps the half-tank preference 
+ok   fills outside the offered steps are ignored 
+ok   Spanish label 
+ok   Spanish fraction label 
+FUEL-07 start fill: 20 checks, 0 failed
