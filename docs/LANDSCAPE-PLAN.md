@@ -8,6 +8,8 @@
 
 ## Current implementation
 
+Home selects Club field or Green paradise through the explicit landscape catalog. The scenery, lake and vegetation work below describes Club field; Green uses one flat grass mesh without those layers. [Contributor guide](LANDSCAPES.md), [selection plan and remaining gates](plans/landscape-selection.md), [L21–L24 verification](research/landscape-upgrade/L21-24/README.md).
+
 - L0–L7 provide the capture baseline, fixed-sun sky/haze/clouds, shared field builder, treeline cards and far landscape. L6 uses validated CC0 source packages and a small runtime atlas; detailed source meshes remain authoring inputs.
 - L9 has filtered turf and field surfaces. L9e is engineering-verified; L9b's visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
 - L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10a-R1](research/visual-quality-implementation/L10a/README.md) adds textured fabric, seams, folds and mast fittings. [L10b-R1](research/visual-quality-implementation/L10b/README.md) renews the station with textured timber, powder-coated framing and fitted hardware. [L10c-R1/R2](research/visual-quality-implementation/L10c/README.md) add bevelled rails, two-sided hardware, downloaded wood/metal textures, weathering and bounded grass/clover at post feet. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.

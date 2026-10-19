@@ -18,6 +18,8 @@ Available named presets include dawn, sunrise, morning, noon, afternoon, golden_
 
 ## Night field and campfire
 
+Sky, time and aircraft lighting apply to both selectable landscapes. Field-light fixtures and the campfire belong to Club field; Green paradise has neither. [Landscape selection and authoring](LANDSCAPES.md).
+
 The Conditions time controls select **Soft club**, **Airfield** or **Off** and toggle **Campfire** independently. Home remembers these choices; the default is Club with the fire off. The field mode changes lamp/marker appearance without removing the installed mast or hearth. Four heads share one 12 m mast; a separate low light continues to illuminate the windsock. Airfield uses cooler floods and white edge cues; the red/green threshold direction cues remain visual aids for this RC field, not airport certification.
 
 Technical launch options use explicit defaults independently of saved Home preferences:

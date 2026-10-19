@@ -4,6 +4,8 @@
 
 **Outcome:** choose **Natural Random / Aleatorio natural** from Home, see a short briefing, and fly a stock airplane in a believable, varied day. Some flights are calm; others have substantial wind. The aircraft remains readable in the qualified flying area. Restart repeats the same conditions; another draw creates another flight.
 
+The current scenario contract requires the default field. Select **Club field** on Home; Green paradise disables Natural Random with an explanation. Landscape registration and selection are owned by [L21–L24](landscape-selection.md); this mode does not switch landscapes automatically.
+
 This is recreational free flight. It adds no score, mandatory maneuver, aircraft modification, hidden failure or artificial control assistance. The randomizer composes existing simulator inputs; the flight solver remains authoritative.
 
 ## 1. Scope and evidence

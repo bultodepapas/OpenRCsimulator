@@ -13,6 +13,8 @@ const GlowFlight = preload("res://physics/glow/flight.gd")
 const FORMAT := "openrc-trace v3" # v2: + engine_rpm; v3: + servo (actual surface) positions
 const MASS_TRACE_SCHEMA: String = "openrc-mass-sample v1"
 const MASS_SAMPLE_TIMING: String = "accepted mass_properties sample for this row tick/time"
+const LIQUID_TRACE_SCHEMA: String = "openrc-liquid-fuel-trace v1"
+const LIQUID_FUEL_LAYOUT: String = "base propulsion/wheels; usable fuel kg; source latch 0/1"
 const COLUMNS := [
 	"tick", "t_s",
 	"north_m", "east_m", "down_m", "alt_m",
@@ -40,8 +42,21 @@ var _last_recorded_tick: int = -1
 var _invalid_weather: bool = false
 var _weather_meta: Dictionary = {}
 var _mass_trace: bool = false
+var _liquid_trace: bool = false
+var _liquid_state_index: int = -1
+var _liquid_store_id: String = ""
+var _liquid_consumption_law: String = ""
+var _liquid_capacity_kg: float = NAN
+var _liquid_unusable_kg: float = NAN
+var _liquid_start_usable_kg: float = NAN
+var _liquid_start_source_latch: float = NAN
+var _liquid_start_fill_known: bool = false
+var _liquid_start_fill: float = NAN
+var _liquid_last_remaining_kg: float = NAN
+var _liquid_identity: Dictionary = {}
 const ELECTRIC_COLUMNS: Array = ["drive_enabled", "drive_duty", "bus_voltage_v", "motor_current_a", "drive_bus_current_a", "source_torque_nm", "shaft_power_w", "copper_loss_w", "rotational_loss_w"]
 const MASS_COLUMNS: Array[String] = ["mass_kg", "cg_body_x_m", "cg_body_y_m", "cg_body_z_m"]
+const LIQUID_COLUMNS: Array[String] = ["fuel_remaining_kg", "fuel_usable_kg", "fuel_fill_fraction", "fuel_reserve_fraction", "fuel_source_latch"]
 ## Optional recorder-owned endpoint sampler; required only for the versioned electric trace.
 var electrical_sample: Callable
 var _electric: bool = false
@@ -107,6 +122,18 @@ func clear() -> void:
 	_invalid_weather = false
 	_weather_meta = {}
 	_mass_trace = false
+	_liquid_trace = false
+	_liquid_state_index = -1
+	_liquid_store_id = ""
+	_liquid_consumption_law = ""
+	_liquid_capacity_kg = NAN
+	_liquid_unusable_kg = NAN
+	_liquid_start_usable_kg = NAN
+	_liquid_start_source_latch = NAN
+	_liquid_start_fill_known = false
+	_liquid_start_fill = NAN
+	_liquid_last_remaining_kg = NAN
+	_liquid_identity = {}
 	_coupled_shaft = false
 	_continuous_turbine = false
 	_electric = false
@@ -228,13 +255,81 @@ func _prepare_weather() -> void:
 
 ## A mass-trace claim is opt-in and versioned. Each row must carry the session's accepted sample explicitly.
 func _prepare_mass_metadata() -> void:
+	if _has_liquid_metadata_claim() and not meta.has("mass_trace_schema"):
+		_invalid_weather = true
+		return
 	if not meta.has("mass_trace_schema"):
 		return
 	if meta.get("mass_trace_schema") != MASS_TRACE_SCHEMA:
 		_invalid_weather = true
 		return
 	_mass_trace = true
+	if _liquid_trace:
+		_columns.append_array(LIQUID_COLUMNS)
 	_columns.append_array(MASS_COLUMNS)
+
+
+func _has_liquid_metadata_claim() -> bool:
+	for key: String in ["liquid_fuel_model", "liquid_fuel_schema", "fuel_consumption_law", "fuel_store_id",
+			"fuel_capacity_kg", "fuel_unusable_kg", "fuel_state_index"]:
+		if meta.has(key):
+			return true
+	return false
+
+
+## Finite-liquid state is the final two accepted continuous slots and must be tied to the same declared store.
+func _prepare_liquid_metadata(values: Array, base_count: int, base_layout: String) -> bool:
+	if not _has_liquid_metadata_claim():
+		return true
+	var state_index: Variant = meta.get("fuel_state_index")
+	var capacity: Variant = meta.get("fuel_capacity_kg")
+	var unusable: Variant = meta.get("fuel_unusable_kg")
+	var store_id: Variant = meta.get("fuel_store_id")
+	var consumption_law: Variant = meta.get("fuel_consumption_law")
+	if meta.get("liquid_fuel_model") != "single-store-finite-liquid-fixed-datum-v1" \
+			or meta.get("liquid_fuel_schema") != "openrc-liquid-fuel v1" \
+			or typeof(state_index) != TYPE_INT or int(state_index) != base_count \
+			or typeof(capacity) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(capacity)) or float(capacity) <= 0.0 \
+			or typeof(unusable) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(unusable)) \
+			or float(unusable) < 0.0 or float(unusable) >= float(capacity) \
+			or typeof(store_id) != TYPE_STRING or str(store_id).is_empty() \
+			or typeof(consumption_law) != TYPE_STRING or str(consumption_law) not in ["gasoline_bsfc_v1", "turbine_map_v1"] \
+			or typeof(meta.get("continuous_layout")) != TYPE_STRING \
+			or str(meta.continuous_layout) != base_layout + "; " + LIQUID_FUEL_LAYOUT \
+			or values.size() != base_count + 2:
+		_invalid_weather = true
+		return false
+	for index: int in values.size():
+		if typeof(values[index]) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(values[index])):
+			_invalid_weather = true
+			return false
+	var start_usable: float = float(values[base_count])
+	var start_latch: float = float(values[base_count + 1])
+	if start_usable < 0.0 or start_usable > float(capacity) - float(unusable) \
+			or start_latch not in [0.0, 1.0] or (start_usable == 0.0 and start_latch != 0.0):
+		_invalid_weather = true
+		return false
+	var known: Variant = meta.get("fuel_start_fill_known", false)
+	var fill: Variant = meta.get("fuel_start_fill", 1.0)
+	if typeof(known) != TYPE_BOOL or typeof(fill) not in [TYPE_INT, TYPE_FLOAT] \
+			or not is_finite(float(fill)) or float(fill) < 0.0 or float(fill) > 1.0:
+		_invalid_weather = true
+		return false
+	if known and absf(start_usable + float(unusable) - float(fill) * float(capacity)) \
+			> maxf(1e-10, float(capacity) * 1e-10):
+		_invalid_weather = true
+		return false
+	_liquid_trace = true
+	_liquid_state_index = int(state_index)
+	_liquid_store_id = str(store_id)
+	_liquid_consumption_law = str(consumption_law)
+	_liquid_capacity_kg = float(capacity)
+	_liquid_unusable_kg = float(unusable)
+	_liquid_start_usable_kg = start_usable
+	_liquid_start_source_latch = start_latch
+	_liquid_start_fill_known = known
+	_liquid_start_fill = float(fill)
+	return true
 
 
 ## Retractable gear is an opt-in extension to the four legacy command columns.
@@ -438,8 +533,10 @@ func _prepare_turbine_metadata() -> void:
 	var gear_claim: bool = _has_gear_metadata_claim()
 	var flap_claim: bool = _has_flap_metadata_claim()
 	var wheel_count: int = 0
-	var expected_layout: String = Session.Turbine.CONTINUOUS_LAYOUT \
+	var liquid_claim: bool = _has_liquid_metadata_claim()
+	var expected_base_layout: String = Session.Turbine.CONTINUOUS_LAYOUT \
 		+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else "")
+	var expected_layout: String = expected_base_layout + ("; " + LIQUID_FUEL_LAYOUT if liquid_claim else "")
 	if meta.get("propulsion_model") != Session.Turbine.CONTINUOUS_LAW or meta.get("turbine_integrator") != "rk4" \
 			or meta.get("continuous_layout") != expected_layout \
 			or meta.has("shaft_integrator") or meta.has("rotor_coupling") or meta.has("electric_configuration"):
@@ -464,7 +561,7 @@ func _prepare_turbine_metadata() -> void:
 				or not _is_sha256(str(meta.get("wheel_profile_input_sha256", ""))) \
 				or meta.get("wheel_profile_hash_convention") != "profile_sha256 is canonical JSON for the selected aircraft profile; input_sha256 is SHA-256 of exact wheel_profiles.json bytes" \
 				or not layout is Array or layout.is_empty() \
-				or values.size() != layout.size() + 1 \
+				or values.size() != layout.size() + 1 + (2 if liquid_claim else 0) \
 				or not launch is Array or launch.size() != values.size() \
 				or not brakes is Array or brakes.size() != layout.size():
 			_invalid_weather = true
@@ -503,8 +600,11 @@ func _prepare_turbine_metadata() -> void:
 		if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
 			_invalid_weather = true
 			return
-	if values.size() != 1 + wheel_count:
+	var expected_base_count: int = 1 + wheel_count
+	if values.size() != expected_base_count + (2 if liquid_claim else 0):
 		_invalid_weather = true
+		return
+	if liquid_claim and not _prepare_liquid_metadata(values, expected_base_count, expected_base_layout):
 		return
 	if typeof(meta.get("dt_s")) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(meta.dt_s)) or float(meta.dt_s) <= 0.0:
 		_invalid_weather = true
@@ -625,9 +725,13 @@ func _prepare_glow_metadata() -> void:
 
 
 func _prepare_shaft_metadata() -> void:
+	var liquid_claim: bool = _has_liquid_metadata_claim()
 	var glow_metadata: bool = meta.get("propulsion_model") == GLOW_LAW or meta.has("glow_identity") \
 		or meta.has("glow_family") or meta.has("glow_recording_start")
 	if glow_metadata:
+		if liquid_claim:
+			_invalid_weather = true
+			return
 		_prepare_glow_metadata()
 		return
 	if meta.get("propulsion_model") == Session.Turbine.CONTINUOUS_LAW or meta.has("turbine_integrator"):
@@ -636,10 +740,15 @@ func _prepare_shaft_metadata() -> void:
 	_battery = meta.get("propulsion_model") == Session.BATTERY_LAW
 	_pack = meta.get("propulsion_model") == Session.PACK_LAW
 	_electric = meta.get("propulsion_model") in [Session.ELECTRIC_LAW, Session.BATTERY_LAW, Session.PACK_LAW]
+	if liquid_claim and _electric:
+		_invalid_weather = true
+		return
 	if not _electric and (meta.has("electric_configuration") or meta.has("electric_sample_timing")):
 		_invalid_weather = true
 		return
 	if not meta.has("shaft_integrator") and meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW, Session.PACK_LAW]:
+		if liquid_claim:
+			_invalid_weather = true
 		return
 	if meta.get("propulsion_model") not in ["propeller-shaft-coupled-rk4-v1", Session.ELECTRIC_LAW, Session.BATTERY_LAW, Session.PACK_LAW] or meta.get("shaft_integrator") != "coupled-rk4" \
 			or meta.get("rotor_coupling") != "relative-spin-locked-inertia-reaction-v1":
@@ -683,7 +792,7 @@ func _prepare_shaft_metadata() -> void:
 			_invalid_weather = true
 			return
 		wheel_count = layout.size()
-		wheel_first_index = values.size() - wheel_count
+		wheel_first_index = values.size() - (2 if liquid_claim else 0) - wheel_count
 		var contacts := {}
 		for i: int in wheel_count:
 			var entry: Variant = layout[i]
@@ -714,11 +823,15 @@ func _prepare_shaft_metadata() -> void:
 	elif gear_claim or flap_claim:
 		_invalid_weather = true
 		return
-	if str(meta.get("continuous_layout", "")) != base_layout + ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else ""):
+	var expected_base_layout: String = base_layout \
+		+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else "")
+	var expected_layout: String = expected_base_layout + ("; " + LIQUID_FUEL_LAYOUT if liquid_claim else "")
+	if str(meta.get("continuous_layout", "")) != expected_layout:
 		_invalid_weather = true
 		return
 	var battery_slots: int = _pack_block if _pack else (3 if _battery else 0)
-	var shaft_index: int = values.size() - 1 - battery_slots - wheel_count
+	var liquid_slots: int = 2 if liquid_claim else 0
+	var shaft_index: int = values.size() - 1 - battery_slots - wheel_count - liquid_slots
 	if shaft_index < 0 or (meta.get("propwash_model") == "tail-slipstream-axial-transport-v1") != (shaft_index > 0):
 		_invalid_weather = true
 		return
@@ -762,6 +875,8 @@ func _prepare_shaft_metadata() -> void:
 				_invalid_weather = true
 				return
 			_columns.append_array(PACK_COLUMNS)
+	if liquid_claim and not _prepare_liquid_metadata(values, values.size() - 2, expected_base_layout):
+		return
 	_coupled_shaft = true
 	_coupled_start_rpm = values[shaft_index]
 	_weather_meta = meta.duplicate(true)
@@ -867,6 +982,11 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	elif not mass_sample.is_empty():
 		_invalid_weather = true
 		return
+	var liquid_row := PackedFloat64Array()
+	if _liquid_trace:
+		liquid_row = _liquid_sample(mass_sample, tick, t, continuous)
+		if _invalid_weather:
+			return
 	var gear_row: PackedFloat64Array = _gear_sample(tick, t, s, loads, inputs, aux)
 	if _invalid_weather:
 		return
@@ -1007,6 +1127,8 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_rows.append_array(gear_row)
 	if _flaps:
 		_rows.append_array(flap_row)
+	if _liquid_trace:
+		_rows.append_array(liquid_row)
 	if _mass_trace:
 		_rows.append_array(mass_row)
 	_previous_recorded = s.duplicate()
@@ -1033,6 +1155,101 @@ func _valid_mass_sample(sample: Dictionary, tick: int, t: float) -> bool:
 		if not is_finite(float(cg[axis])):
 			return false
 	return true
+
+
+## FUEL-08 trace suffix records the accepted finite store and combustion source latch for the same state.
+func _liquid_sample(sample: Dictionary, tick: int, t: float, continuous: PackedFloat64Array) -> PackedFloat64Array:
+	var dt: Variant = meta.get("dt_s")
+	var stores: Variant = sample.get("stores")
+	if sample.get("format") != "openrc-mass-sample v1" or sample.get("finite_fuel") != true \
+			or sample.get("law") != "single-store-finite-liquid-fixed-datum-v1" \
+			or sample.get("consumption_law") != _liquid_consumption_law \
+			or typeof(dt) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(dt)) or float(dt) <= 0.0 \
+			or absf(t - float(tick) * float(dt)) > maxf(1e-12, absf(t) * 1e-12) \
+			or continuous.size() != _liquid_state_index + 2 or not _finite(continuous) \
+			or not stores is Array or stores.size() != 1:
+		_invalid_weather = true
+		return PackedFloat64Array()
+	if _rows.is_empty():
+		var start_tick: Variant = meta.get("recording_start_tick")
+		if typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or float(start_tick) != float(tick) \
+				or continuous[_liquid_state_index] != _liquid_start_usable_kg \
+				or continuous[_liquid_state_index + 1] != _liquid_start_source_latch:
+			_invalid_weather = true
+			return PackedFloat64Array()
+	var store: Variant = stores[0]
+	if not store is Dictionary or str(store.get("id", "")) != _liquid_store_id:
+		_invalid_weather = true
+		return PackedFloat64Array()
+	for key: String in ["fuel_remaining_kg", "fuel_capacity_kg", "fuel_usable_kg", "volume_ml", "fill_fraction", "reserve_fraction"]:
+		var value: Variant = sample.get(key)
+		if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
+			_invalid_weather = true
+			return PackedFloat64Array()
+	for key: String in ["capacity_kg", "unusable_kg", "density_kg_m3", "remaining_kg", "usable_kg", "fill_fraction", "volume_ml", "reserve_fraction"]:
+		var value: Variant = store.get(key)
+		if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
+			_invalid_weather = true
+			return PackedFloat64Array()
+	var capacity: float = float(store.capacity_kg)
+	var unusable: float = float(store.unusable_kg)
+	var amount: float = float(store.remaining_kg)
+	var usable: float = float(store.usable_kg)
+	var density: float = float(store.density_kg_m3)
+	var fill: float = float(store.fill_fraction)
+	var reserve: float = float(store.reserve_fraction)
+	var volume_ml: float = float(store.volume_ml)
+	var tolerance: float = maxf(1e-10, capacity * 1e-9)
+	var estimated: Variant = store.get("reserve_estimated")
+	var basis: Variant = sample.get("reserve_basis")
+	if capacity <= 0.0 or absf(capacity - _liquid_capacity_kg) > tolerance \
+			or absf(unusable - _liquid_unusable_kg) > tolerance or unusable < 0.0 or unusable >= capacity \
+			or density <= 0.0 or amount < unusable - tolerance or amount > capacity + tolerance \
+			or usable < 0.0 or usable > capacity - unusable + tolerance \
+			or absf(amount - usable - unusable) > tolerance \
+			or absf(continuous[_liquid_state_index] - usable) > tolerance \
+			or continuous[_liquid_state_index + 1] not in [0.0, 1.0] \
+			or (usable <= tolerance and continuous[_liquid_state_index + 1] != 0.0) \
+			or absf(fill - amount / capacity) > 1e-9 \
+			or absf(volume_ml - amount / density * 1.0e6) > maxf(1e-6, volume_ml * 1e-9) \
+			or absf(reserve - float(sample.reserve_fraction)) > 1e-12 \
+			or typeof(estimated) != TYPE_BOOL or typeof(basis) != TYPE_STRING \
+			or basis != ("estimated reserve" if bool(estimated) else "authored reserve") \
+			or typeof(store.get("low_fuel")) != TYPE_BOOL \
+			or bool(store.low_fuel) != (amount <= reserve * capacity) \
+			or typeof(sample.get("low_fuel")) != TYPE_BOOL or sample.low_fuel != store.low_fuel \
+			or typeof(sample.get("reserve_estimated")) != TYPE_BOOL or sample.reserve_estimated != estimated \
+			or absf(float(sample.fuel_remaining_kg) - amount) > tolerance \
+			or absf(float(sample.fuel_capacity_kg) - capacity) > tolerance \
+			or absf(float(sample.fuel_usable_kg) - usable) > tolerance \
+			or absf(float(sample.fill_fraction) - fill) > 1e-9 \
+			or absf(float(sample.volume_ml) - volume_ml) > maxf(1e-6, volume_ml * 1e-9) \
+			or not _is_sha256(str(sample.get("registry_sha256", ""))):
+		_invalid_weather = true
+		return PackedFloat64Array()
+	var blend: Variant = store.get("blend")
+	var family: Variant = store.get("family")
+	if typeof(blend) != TYPE_STRING or str(blend).is_empty() \
+			or typeof(family) != TYPE_STRING or str(family).is_empty():
+		_invalid_weather = true
+		return PackedFloat64Array()
+	var identity: Dictionary = {registry_sha256 = str(sample.registry_sha256), blend = str(blend), family = str(family),
+		density_kg_m3 = density, reserve_fraction = reserve, reserve_basis = str(basis), reserve_estimated = bool(estimated)}
+	if _rows.is_empty():
+		if _liquid_start_fill_known and absf(fill - _liquid_start_fill) > 1e-9:
+			_invalid_weather = true
+			return PackedFloat64Array()
+		_liquid_identity = identity
+	else:
+		for key: String in identity:
+			if identity[key] != _liquid_identity.get(key):
+				_invalid_weather = true
+				return PackedFloat64Array()
+		if amount > _liquid_last_remaining_kg + tolerance:
+			_invalid_weather = true
+			return PackedFloat64Array()
+	_liquid_last_remaining_kg = amount
+	return PackedFloat64Array([amount, usable, fill, reserve, continuous[_liquid_state_index + 1]])
 
 
 func _glow_sample(values: PackedFloat64Array, tick: int, t: float, aux: PackedFloat64Array) -> PackedFloat64Array:
@@ -1122,18 +1339,28 @@ func is_continuous() -> bool:
 
 
 func to_csv() -> String:
-	if _invalid_weather:
+	if _invalid_weather or (_liquid_trace and (_liquid_identity.is_empty() or row_count() == 0)):
 		return ""
 	var lines := PackedStringArray()
 	var base_trace_format: String = _base_trace_format()
 	var complete_base_trace_format: String = "openrc-trace v13" if _pack else "openrc-trace v12" if _flaps else base_trace_format
-	lines.append("# format: %s" % ("openrc-trace v14" if _mass_trace else complete_base_trace_format))
+	var trace_format: String = "openrc-trace v15" if _liquid_trace else ("openrc-trace v14" if _mass_trace else complete_base_trace_format)
+	lines.append("# format: %s" % trace_format)
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else (_flap_meta if _flaps else meta)).duplicate(true)
 	if _flaps:
 		written_meta.flap_base_trace_format = base_trace_format
 	if _mass_trace:
 		written_meta.mass_base_trace_format = complete_base_trace_format
 		written_meta.mass_sample_timing = MASS_SAMPLE_TIMING
+	if _liquid_trace:
+		written_meta.liquid_fuel_trace_schema = LIQUID_TRACE_SCHEMA
+		written_meta.fuel_registry_sha256 = _liquid_identity.registry_sha256
+		written_meta.fuel_blend = _liquid_identity.blend
+		written_meta.fuel_family = _liquid_identity.family
+		written_meta.fuel_density_kg_m3 = _liquid_identity.density_kg_m3
+		written_meta.fuel_reserve_fraction = _liquid_identity.reserve_fraction
+		written_meta.fuel_reserve_basis = _liquid_identity.reserve_basis
+		written_meta.fuel_reserve_estimated = _liquid_identity.reserve_estimated
 	if _glow:
 		written_meta.glow_trace_schema = GLOW_TRACE_SCHEMA
 		written_meta.glow_stop_reason_codes = JSON.stringify(GlowFlight.REASONS)

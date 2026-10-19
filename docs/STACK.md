@@ -49,7 +49,7 @@ A native backend may replace one evaluator boundary, never the kernel's tick tra
 | `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/` | Product shell, catalog, preferences, localization and build identity |
 | `app/sim/`, `app/physics/`, `app/input/` | Sessions, shared kernel, vehicle laws, float64 state/replay and control devices |
 | `app/workshop/`, `app/scenarios/`, `app/failures/` | Aircraft variants, resolved flight scenarios and fixed-wing failure practice |
-| `app/landscapes/` | Ordered landscape registry, per-landscape rendering/contact adapters and custom field definitions |
+| `app/landscapes/` | Ordered landscape registry, renderers, obstacle inventories and custom field definitions |
 | `app/data/` | Aircraft, schemas, ground-vehicle, field, scenery and sky data |
 | `app/aircraft/`, `app/render/`, `app/environment/`, `app/scenery/`, `app/audio/` | Vehicle visuals, presentation, lighting, field life and sound |
 | `app/assets/`, `app/tests/` | Runtime assets/licenses; tests, trace/capture checks and benchmarks |

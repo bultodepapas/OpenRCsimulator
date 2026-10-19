@@ -278,6 +278,10 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	var field_build_ms := (Time.get_ticks_usec() - t0) / 1000.0
 	if field_node != null:
 		parent.add_child(field_node)
+	# A custom field builder attaches its own Field node (the production flight seam).
+	var wind_field: Node3D = field_node if field_node != null else parent.get_node_or_null("Field") as Node3D
+	if wind_field != null:
+		environment.set_meta("fw_wind_field", weakref(wind_field))
 
 	var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws the sun disc from this light
 	var storm_bank := StormBank.new()
@@ -433,6 +437,11 @@ static func ground_share(camera: Camera3D) -> float:
 static func update(environment: Environment, clock_s: float, wind := Vector3.ZERO, view_target: Variant = null,
 		camera: Camera3D = null) -> bool:
 	ShaderClock.update(clock_s, wind)
+	var field_ref: Variant = environment.get_meta("fw_wind_field", null)
+	if field_ref is WeakRef:
+		var wind_field: Node3D = field_ref.get_ref() as Node3D
+		if is_instance_valid(wind_field):
+			FieldBuilder.update_wind(wind_field, clock_s, wind)
 	if not _flow.is_empty():
 		flow_to(clock_s)
 		flow_frame(clock_s)

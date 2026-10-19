@@ -40,8 +40,10 @@ Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.
 | Offline regressions | `research/test-tools.sh` | Measurement reducers, importers and validation tools. |
 | Visual checks | `app/capture.sh` | Rendered cases, image guards, traces and complete manifest in ignored `app/captures/`. |
 | Run | `"$(app/get-godot.sh)" --path app` | Home; [controls](FIRST-LAUNCH.md). |
-| Quick flight | `"$(app/get-godot.sh)" --path app -- --quick-flight` | Direct runway start; no player preferences. Add `--start=airborne` for airborne practice, `--aircraft=<catalog-id>`, `--battery=ideal` (constant voltage instead of the default finite pack for aircraft whose catalog entry has `battery_data`, BAT-13), `--rates=full` or `--hud=overlays`. |
-| Full field | `app/run-landscape.sh` | Forces scenery on. Normal launches already default to on; opt out with `-- --scenery=off`. |
+| Quick flight | `"$(app/get-godot.sh)" --path app -- --quick-flight` | Direct Club field runway start; no player preferences. Add `--start=airborne` for airborne practice, `--aircraft=<catalog-id>`, `--battery=ideal` (constant voltage instead of the default finite pack for aircraft whose catalog entry has `battery_data`, BAT-13), `--rates=full` or `--hud=overlays`. |
+| Select landscape | `"$(app/get-godot.sh)" --path app -- --quick-flight --landscape=green_paradise` | Flat grass with an airborne start. `--landscape=club_field` selects the default club; unknown IDs are refused. Home remembers its selection; direct launches ignore it. [Authoring and limits](LANDSCAPES.md). |
+| Club scenery | `app/run-landscape.sh` | Forces scenery on for Club field. Normal launches already default to on; opt out with `-- --scenery=off`. This flag does not select a landscape or add club scenery to Green paradise. |
+| Landscape checks | `"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_landscapes.gd` | Loading, keyboard switching, saved selection, restart and lighting isolation. For rendered captures, omit `--headless` and add `-- --capture-landscapes=<absolute-dir>`; inspect both Home and flight images. |
 | Flight trace | `"$(app/get-godot.sh)" --headless --path app -- --trace=/tmp/openrc-trace.csv --t=3` | Initial state plus each 240 Hz tick; [trace contract](research/trace-integrity/C7-R2/README.md). |
 | Flight log and replay | `python3 tools/flight_log/flight_log.py record --godot "$(app/get-godot.sh)" --out tmp/flight.orfl` | F10 record/stop, F11 marker; bounded exact-state logging, CSV export, exact/candidate replay and comparisons. [Manual](FLIGHT-LOGGING.md). |
 | Crash-cost data | `python3 research/crash-economics/build_runtime.py` | Regenerates the accident-cost sidecar after aircraft or price-source edits; `--check` only verifies. Opt-in pre-push check: `git config core.hooksPath tools/hooks`. |
@@ -113,7 +115,13 @@ Get-ChildItem app/tests/test_workshop_*.gd | Sort-Object Name | ForEach-Object {
 
 Inspect each suite's assertions and engine errors as well as exit status. Focused passes do not replace the descriptor check, full app suite or physical/pilot acceptance.
 
-For a native rendered still, run `research/aircraft-editor/capture_workshop.gd` as Godot's `--script` with `--path app` and an absolute script path. User arguments after `--` are `--language=en` or `es`, `--scale=<factor>`, optional `--1080p`, and `--out=<PNG-path>` (default `user://workshop-review.png`). It uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+For a native rendered still:
+
+```powershell
+& $GodotWindows --path app --script (Resolve-Path research/aircraft-editor/capture_workshop.gd).Path -- --language=es --1080p
+```
+
+Arguments after `--` are `--language=en` or `es`, `--scale=<factor>` (default `2.0`), optional `--1080p`, and `--out=<PNG-path>` (default `user://workshop-review.png`). A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
 
 ## Aircraft measurement reducers
 

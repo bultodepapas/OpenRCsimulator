@@ -26,7 +26,14 @@ static func attach(field_node: Node3D, field: Dictionary, lighting: Dictionary) 
 	var cues_complete := true
 	for cue: Dictionary in field.get("flight_cues", []):
 		var model := field_node.get_node_or_null(NodePath(str(cue.id))) as Node3D
-		if model == null or not manager.add_caster(model):
+		# The cached silhouette cannot follow vertex-deformed cloth or swiveling hardware.
+		# Keep the fixed pole's shadow; never project a frozen horizontal sock across the grass.
+		var shape: Dictionary = {}
+		if model != null and cue.type == "windsock":
+			var support := model.get_node_or_null("Support") as Node3D
+			if support != null:
+				shape = Projected.collect(support, 0.04)
+		if model == null or not manager.add_caster(model, shape):
 			cues_complete = false
 	# Legacy cues share one mesh. Keep the complete old set if any new cue fails,
 	# avoiding both missing contacts and overlapping old/new receivers.

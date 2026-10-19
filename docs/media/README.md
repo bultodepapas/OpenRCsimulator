@@ -21,6 +21,8 @@ Status: refreshed 2026-10-16 from source commit `404bb1bfd225f25159a03d60dfebdf8
 
 Website review captures live in [site/](site/): eight WEB-06 partner views (1280×900 and 390×900, English/Spanish, day/night) and two support-strip views. [The website guide](../../site/README.md#web-06--manufacturer-acknowledgments-2026-10-17) owns their verification record. They are separate from the simulator media manifest above.
 
+The root README's Club field / Green paradise comparison uses unedited native flight overviews from [L21–L24](../research/landscape-upgrade/L21-24/README.md), captured on 2026-10-19. Their [capture/source hashes](../research/landscape-upgrade/L21-24/captures.json) and reproduction commands stay with that landscape evidence, separately from the studio manifest.
+
 ## Reproduce
 
 From the repository root on Linux with Xvfb and Mesa:

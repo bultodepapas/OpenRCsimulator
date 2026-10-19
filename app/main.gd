@@ -625,6 +625,10 @@ func _ready() -> void:
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
 	add_child(session)
+	# Sample the committed wind at every tick, including OU gusts between render frames.
+	# The windsock is a read-only presentation consumer; uploads happen in World.update.
+	if not _scripted:
+		session.sim.stepped.connect(_advance_windsock)
 	Input.joy_connection_changed.connect(_on_smoke_connection_changed)
 	if latency_options.enabled:
 		var latency_patch: LatencyPatch = LatencyPatch.new()
@@ -764,6 +768,11 @@ func _ready() -> void:
 		}
 		var t := float(args.get("t", Spec.CAPTURE.time))
 		await _capture(t, c, args.get("out", "user://capture.png"))
+
+
+func _advance_windsock(_tick: int, time_s: float, _state: PackedFloat64Array,
+		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	FieldBuilder.advance_wind(_field_node, time_s, Array(session.wind_at(time_s)))
 
 
 func _process(delta: float) -> void:

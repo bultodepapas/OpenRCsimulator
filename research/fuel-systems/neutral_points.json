@@ -23,6 +23,12 @@
       "np_x_m": 0.270866,
       "kind": "derived",
       "source": "manual aft CG 260 mm taken as 3 % MAC stable (research/avanti-s/av06/inputs.json): 0.260 + 0.03 x MAC 0.362193 (taper formula)"
+    },
+    "turbo-lumber-evolution": {
+      "np_x_m": 0.11474047993431823,
+      "kind": "derived",
+      "source": "TT-07 derive_physics.py: generated static_margin=(xnp-cg_x)/c; current estimate 0.260304661 MAC at CG x=0.060 m and c=0.210293891 m gives xnp=0.114740480 m. Estimated aerodynamic neutral point, not flight identified.",
+      "applies_to": ["turbo-lumber-evolution"]
     }
   }
 }

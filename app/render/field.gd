@@ -65,6 +65,12 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 			result.add_child(FlightlineBarrier.build(cue))
 		else:
 			result.add_child(Windsock.build(cue))
+	# Cache only this field's wind cues; frame updates never scan the scenery tree.
+	var wind_cues: Array[Node3D] = []
+	for cue: Dictionary in field.get("flight_cues", []):
+		if cue.type == "windsock":
+			wind_cues.append(result.get_node(str(cue.id)) as Node3D)
+	result.set_meta("wind_cues", wind_cues)
 	if not field.get("flight_cues", []).is_empty():
 		result.add_child(FlightCueShadows.build(field.flight_cues, lighting.has("solar")))
 	var scenery_options := Scenery.options()
@@ -105,6 +111,23 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 	result.set_meta("lighting_materials", materials)
 	result.set_meta("lighting_snapshot", lighting.duplicate(true))
 	return result
+
+
+## Read-only consumer of committed wind samples. No flight solver, RNG or input changes.
+static func advance_wind(field_node: Node3D, time_s: float, wind_ned: Array) -> void:
+	if field_node == null:
+		return
+	for cue: Node3D in field_node.get_meta("wind_cues", []):
+		Windsock.advance(cue, time_s, wind_ned)
+
+
+## Render boundary: world wind is east/up/south; the motion model consumes north/east/down.
+static func update_wind(field_node: Node3D, time_s: float, wind: Vector3) -> void:
+	if field_node == null:
+		return
+	var wind_ned: Array = [-wind.z, wind.x, -wind.y]
+	for cue: Node3D in field_node.get_meta("wind_cues", []):
+		Windsock.update(cue, time_s, wind_ned)
 
 
 ## Prepare shadow geometry before a checkpoint can commit physical state. Materials are retained by this field.

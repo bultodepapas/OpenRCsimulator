@@ -59,14 +59,14 @@
     "status": "within"
    },
    "cg_tolerance_m": 0.001,
-   "energy": "prescribed_fuel",
+   "energy": "finite_glow_fuel",
    "file": "gp_extra_300s_60.json",
    "flags": [],
    "fuel_items": [
     {
      "energy_source": "glow_fuel",
      "id": "fuel_flight",
-     "mass_kg": 0.152103,
+     "mass_kg": 0.30420660000000005,
      "position_m": [
       -0.035,
       0.0,
@@ -101,13 +101,13 @@
    "states": {
     "declared": {
      "cg_m": [
-      0.102415,
+      0.096573,
       0.0,
-      -0.02391
+      -0.022893
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 3.425572,
-     "static_margin_pct_mac": 14.6
+     "mass_kg": 3.577676,
+     "static_margin_pct_mac": 16.512
     },
     "empty": {
      "cg_m": [
@@ -115,7 +115,7 @@
       0.0,
       -0.025021
      ],
-     "cg_shift_from_declared_mm": 6.385,
+     "cg_shift_from_declared_mm": 12.227,
      "mass_kg": 3.273469,
      "static_margin_pct_mac": 12.511
     },
@@ -125,7 +125,7 @@
       0.0,
       -0.022893
      ],
-     "cg_shift_from_declared_mm": -5.842,
+     "cg_shift_from_declared_mm": 0.0,
      "mass_kg": 3.577676,
      "static_margin_pct_mac": 16.512
     }
@@ -229,7 +229,7 @@
     "status": "not_declared"
    },
    "cg_tolerance_m": 0.001,
-   "energy": "prescribed_fuel",
+   "energy": "finite_liquid_fuel",
    "file": "p51d_mustang_120.json",
    "flags": [
     "cg_range_not_declared"
@@ -315,7 +315,7 @@
     "status": "not_declared"
    },
    "cg_tolerance_m": 0.001,
-   "energy": "prescribed_fuel",
+   "energy": "finite_liquid_fuel",
    "file": "sebart_avanti_s_a200.json",
    "flags": [
     "cg_range_not_declared"
