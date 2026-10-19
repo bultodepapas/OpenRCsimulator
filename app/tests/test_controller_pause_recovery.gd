@@ -92,12 +92,15 @@ func _run() -> void:
 	session.read_button = func(_id: int, _button: int) -> bool: return false
 	session.radio.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
 	await create_timer(0.35).timeout
-	check("automatic controller launch is ready at rest but never auto-resumes", session.radio.armed and session.sim.paused and app.pause_menu != null)
+	check("Fly starts a ready controller flight without Pause or Continue", session.radio.armed
+		and not session.sim.paused and app.pause_menu == null and session.holds.is_empty())
 	check("controller recovery test starts on the selected runway", session.start_choice == "runway" and session.trace_meta().launch_choice == "runway")
-	check("pause reports ready instead of asking for more motion", app.pause_menu.status_text(session) == tr("Controls ready. Select Continue to fly."))
-	app.pause_menu.continue_button.grab_focus()
-	await ui.tap(KEY_ENTER)
-	check("Continue works without any synthetic axis events", app.pause_menu == null and not session.sim.paused)
+	check("Fly stages runway idle without retaining airborne throttle", session.commands.throttle == 0.0
+		and session.sim.inputs[3] == 0.0 and session._pending_controller_start < 0.0)
+	var launch_tick: int = session.sim.tick
+	await create_timer(0.1).timeout
+	check("Fly advances without another input action", app.pause_menu == null and not session.sim.paused
+		and session.sim.tick > launch_tick)
 	for cycle in 3:
 		if session.glow_is_active() and not session.glow_state().get("running", false):
 			await ui.tap(KEY_F7)
@@ -198,7 +201,7 @@ func _run() -> void:
 	check("verified neutral focus recovery can Continue without moving sticks", app.pause_menu == null and not session.sim.paused)
 
 	# A restart retains an already armed radio under unchanged ownership; absolute throttle stays live.
-	devices.append({"id": 14, "name": "Synthetic EdgeTX Radio", "known": false, "guid": "pause-test-radio"})
+	devices.append({"id": 14, "name": "Synthetic EdgeTX Radio", "kind": "radio", "known": false, "guid": "pause-test-radio"})
 	app.controllers.refresh()
 	app.open_pause()
 	check("radio can be explicitly selected", app.controllers.select_devices(14, 15))
@@ -215,6 +218,7 @@ func _run() -> void:
 		and is_equal_approx(session.commands.throttle, 0.7))
 	app.open_pause()
 	check("return to gamepad is explicit", app.controllers.select_devices(15, 15))
+	session.radio.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
 	fake_axes[2] = 0.0
 	await create_timer(0.1).timeout
 	app.continue_flight()

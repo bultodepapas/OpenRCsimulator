@@ -1,0 +1,19 @@
+CHECK research/aircraft-standardization/build_models.py --check
+model manifests current (5 visual families)
+CHECK research/aircraft-editor/build_descriptors.py --check
+8 Workshop descriptors are current.
+CHECK research/aircraft-standardization/build_customization.py --check
+customization bindings current (5 visual families)
+CHECK research/aircraft-standardization/test_customization.py
+........
+customization bindings current (5 visual families)
+----------------------------------------------------------------------
+Ran 8 tests in 0.026s
+
+OK
+CHECK research/aircraft-editor/test_descriptor_checkout.py
+........
+----------------------------------------------------------------------
+Ran 8 tests in 2.063s
+
+OK

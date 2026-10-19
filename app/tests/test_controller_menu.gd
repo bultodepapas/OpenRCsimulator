@@ -39,7 +39,7 @@ func _run() -> void:
 	app.home.fly_button.grab_focus()
 	await button(JOY_BUTTON_A)
 	await create_timer(0.25).timeout
-	check("first A on Fly launches using the automatic pad and neutral gate", app.flight != null and app.pause_menu != null and app.flight.session.radio.device_id == 15 and not app.flight.session.radio.armed and app.flight.session.sim.paused)
+	check("first A on Fly keeps recovery visible for an unverified synthetic pad", app.flight != null and app.pause_menu != null and app.flight.session.radio.device_id == 15 and not app.flight.session.radio.armed and app.flight.session.sim.paused)
 	check("automatic launch creates no saved controller profile", app.controllers.store.load_all().profiles.is_empty())
 	app.pause_menu.exit_options_button.grab_focus()
 	await button(JOY_BUTTON_A) # reveal End inside Exit options
@@ -69,7 +69,7 @@ func _run() -> void:
 	app.home.fly_button.grab_focus()
 	await button(JOY_BUTTON_A)
 	await create_timer(0.25).timeout
-	check("A launches into paused controller arming", app.flight != null and app.pause_menu != null and app.flight.session.sim.paused)
+	check("unverified controller launch retains its recovery menu", app.flight != null and app.pause_menu != null and app.flight.session.sim.paused)
 	check("Pause continue displays selected controller glyph", app.pause_menu.continue_button.icon != null)
 	var session: Node = app.flight.session
 	var hint: Node = app.flight.get_node_or_null("FirstFlightHint")

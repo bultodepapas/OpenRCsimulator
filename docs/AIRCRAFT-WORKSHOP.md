@@ -140,6 +140,8 @@ If the current manifest or its referenced revision is corrupt/incomplete, loadin
 
 An abrupt process termination can leave an empty `user://aircraft_variants/_locks/<uuid>/` reservation. Loading and **Save a copy** remain available; automatic lock stealing is disabled. Only remove an orphan reservation after verifying that no simulator instance is writing that variant. The store provides local filesystem protection, not distributed synchronization.
 
+The named-library save matrix exercises 35 boundaries across first publication, updates, backup rotation and updates after backup recovery. Injected prefixes and abrupt native Windows writer termination preserve complete physical/presentation records, immutable revisions and explicit retry behavior. Temporary files, staged directories and orphan revision files are never silently promoted. This establishes the recorded process-boundary behavior; partial filesystem writes, staging cleanup and power-loss durability remain unqualified. See [AE-03a evidence](research/aircraft-editor/AE-03a/README.md).
+
 Bundles use strict JSON with byte, depth and node limits. The read-only `--aircraft-variant=<local-json-path>` path validates the exact base snapshot, recipe, descriptor, dependency pins and presentation profile, freezes a trial, and does not import into the library or change preferences. A separate import operation can create a local copy only after current compiler, profile and dependency compatibility checks. Changed wheel/glow/model dependencies or an incompatible compiler prevent a saved variant from starting; the library record remains intact. Removing the catalog visual family prevents a saved variant from flying; its record remains readable. Full fleet migration, broad cross-platform fresh-package qualification and physical module support remain open in AE-19 and later steps.
 
 ## Verification
@@ -148,6 +150,7 @@ Use the [focused commands](TOOLS.md#aircraft-workshop) before the full `app/test
 
 | Dated evidence | Scope |
 | --- | --- |
+| [AE-03a library save boundaries, 2026-10-19](research/aircraft-editor/AE-03a/README.md) | 35 injected and native Windows abrupt-writer cases; complete records, immutable retries, backup recovery and orphan-lock/Save a copy behavior |
 | [AE-03c recovery, 2026-10-19](research/aircraft-editor/AE-03c/README.md) | Bounded snapshots, interruption/lock/collision matrix, invalid-field restore and native recovery dialog |
 | [AE-12/13 measured mass, 2026-10-19](research/aircraft-editor/AE-12-13/README.md) | Independent first-moment/full-tensor checks, fixed hubs/intakes, compiler identity, immutable records and constrained measurement UI |
 | [AE-24d.1 thumbnails, 2026-10-19](research/aircraft-editor/AE-24d-1/README.md) | Copied-pixel LRU, two native families, twenty active-render cancellation cycles and active-preview isolation |

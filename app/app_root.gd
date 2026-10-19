@@ -652,13 +652,26 @@ func start_flight(request: Dictionary = {}) -> void:
 		if controllers != null:
 			controllers.attach_session(flight.session)
 			if controllers.registry.selected_device_id("flight") >= 0:
-				open_pause.call_deferred()
+				_finish_controller_launch.call_deferred(flight.session)
 		if is_random:
 			HeldKeys.mask(flight.session, _keyboard_reader)
 		if has_home and not preferences.get("first_flight_hint_seen", false):
 			var hint := FirstFlightHint.new(flight.session, "rotorcraft" if helicopter_route else "airplane")
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
+
+
+## Fly is the explicit launch action; a ready airplane needs no second Continue action.
+func _finish_controller_launch(target: Node) -> void:
+	if flight == null or flight.session != target or screens.top() != null:
+		return # a newer route or an explicit pause takes precedence over this deferred launch
+	if not Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
+		target._poll_controller(false) # readiness only: leave staged launch throttle untouched
+		if target.can_resume():
+			HeldKeys.mask(target, _keyboard_reader)
+			target.resume()
+			return
+	open_pause()
 
 
 func _create_flight(aircraft_id: String = "") -> Node:

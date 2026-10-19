@@ -70,6 +70,8 @@ Use the existing library generator for its CSV/BibTeX outputs rather than editin
 
 ### Aircraft Workshop
 
+[AE-03a library save boundaries](aircraft-editor/AE-03a/README.md), 2026-10-19, records 35 injected and native Windows abrupt-writer cases across first publication, updates, backup rotation and backup-recovered updates. It verifies complete records, immutable retries and explicit orphan-lock behavior; partial writes, staging cleanup and wider filesystem/platform qualification remain open.
+
 [AE-03c recovery](aircraft-editor/AE-03c/README.md), [AE-12/13 measured mass and CG](aircraft-editor/AE-12-13/README.md), and [AE-24d.1 thumbnails](aircraft-editor/AE-24d-1/README.md), 2026-10-19, record detached invalid-draft recovery, fixed-station measured masses and copied-pixel library rendering. Their software/native scopes and remaining physical/platform gates are explicit.
 
 [AE-08b/09 interface delivery, 2026-10-19](aircraft-editor/AE-08b-09/README.md) records the current inspection, compact menus, full-payload draft guards, explicit trace recovery and storage-target safeguards, with software/native evidence and remaining acceptance.

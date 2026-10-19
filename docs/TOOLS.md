@@ -123,6 +123,8 @@ Get-ChildItem app/tests/test_workshop_*.gd | Sort-Object Name | ForEach-Object {
 
 Inspect each suite's assertions and engine errors as well as exit status. Focused passes do not replace the descriptor check, full app suite or physical/pilot acceptance.
 
+`test_workshop_store_interruptions.gd` runs 35 injected save-boundary cases by default. Add `-- --process-cuts` to terminate disposable writer processes at the same boundaries and inspect their filesystem prefixes from the reader process. This optional run exceeds the ordinary unit timeout; run it separately. It creates and removes only unique `user://workshop_store_cuts_*` fixtures and never uses the player library. [AE-03a](research/aircraft-editor/AE-03a/README.md) records the native Windows proof and remaining filesystem/platform limits.
+
 For a native rendered still:
 
 ```powershell

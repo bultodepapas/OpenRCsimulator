@@ -187,8 +187,10 @@ func _run() -> void:
 	var home := Home.new(Catalog.DEFAULT_ID, "res://data/fields/default.json", _config(63000))
 	root.add_child(home)
 	check("Home uses fixed civil-time default", home.airplane.root.get_node_or_null("NightKit") != null)
+	if not captures.is_empty(): await RenderingServer.frame_post_draw
 	home.show_aircraft("gp-extra-300s-60")
 	check("aircraft change inherits automatic evening", home.airplane.root.get_node_or_null("NightKit") != null)
+	if not captures.is_empty(): await RenderingServer.frame_post_draw
 	home.free()
 	await process_frame
 	await process_frame
