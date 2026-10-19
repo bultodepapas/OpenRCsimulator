@@ -7,9 +7,24 @@
 | Location | Purpose | Example |
 | --- | --- | --- |
 | `docs/research/` | Reports, sources, measurements, probes and step evidence | [VQ-04a](visual-quality-implementation/VQ-04a/README.md) |
-| root `research/` | Reproducible scripts, input data and aircraft measurement pipelines | [Extra 300S derivation](../../research/extra-300/ex05/derivation.md) |
+| root [`research/`](../../research/README.md) | Reproducible scripts, input data and aircraft measurement pipelines; indexed by topic and evidence home | [Extra 300S derivation](../../research/extra-300/ex05/derivation.md) |
 
 Some tools use local-only material from `references/`; their reports say when a fresh clone cannot reproduce the original measurement. Commit the resulting evidence and source identity, not private reference files.
+
+## Sources, data and conversions
+
+| Need | Authoritative collection |
+| --- | --- |
+| Identify the exact aircraft and distinguish geometry from flight evidence | [Aircraft reference index](aircraft-reference-index.md) |
+| Search published studies, datasets and acquisition limits | [RC validation source library](flight-dynamics/rc-validation-library-2026-10-18/README.md#topics) |
+| Filter literature as a table or import bibliography records | Library [CSV](flight-dynamics/rc-validation-library-2026-10-18/catalog.csv) and [BibTeX](flight-dynamics/rc-validation-library-2026-10-18/catalog.bib); both derive from topic `sources.json` manifests |
+| Verify originals and regenerate those conversions | [Library verification workflow](flight-dynamics/rc-validation-library-2026-10-18/README.md#recheck-the-collection) and [inventory](flight-dynamics/rc-validation-library-2026-10-18/inventory.json) |
+| Find free asset/code candidates and retained source limitations | [Asset-source review](asset-sources-catalog-2026-10-06.md), [audio/animation review](asset-audio-animation-sources-2026-10-06.md), [scenery sources](scenery-investigations/01-prop-asset-sources.md) |
+| Reproduce a measurement or experiment | [Tools/input map](../../research/README.md) and the selected step's report |
+
+Keep four identities distinct: publication/dataset, exact downloaded file, derived measurement, and simulator run. A repeated source under several topics is not another experiment. A PDF text extraction is a reading aid; retain page/table references and the original hash. A published plot is not raw telemetry. Preserve units, axes, uncertainty and configuration when reducing data; numerical predictions and software checks do not become physical measurements through conversion.
+
+Use the existing library generator for its CSV/BibTeX outputs rather than editing them directly. Other source manifests retain their owning formats and generators. Historical hashes identify their recorded snapshots, even when a linked guide has since changed.
 
 ## Whole-project audit
 
@@ -17,6 +32,8 @@ Some tools use local-only material from `references/`; their reports say when a 
 - [Branch integration, 2026-10-10](branch-integration-2026-10-10.md) records merge decisions and clean-checkout checks.
 - [PT1h release-readiness audit](release-readiness/PT1h/README.md) reconciles code, documents and rc6 evidence; [tool workflows](../TOOLS.md) lists current commands and measurement limits.
 - [Project technical audit](project-audit-2026-10-06/README.md) reviews physics, runtime, tests, export and roadmap at its recorded commit. Its recommendations are planning input, not proof that issues are fixed.
+- [Physics audit, 2026-10-14](physics-audit-2026-10-14/README.md) retains the original findings, source/run identities and remediation evidence. Read its dated results alongside the current physics guides; collection does not imply finding closure.
+- [Documentation audit, 2026-10-06](documentation-audit-2026-10-06.md) preserves the earlier navigation and consistency findings; the [documentation map](../README.md) owns current roles and track boundaries.
 - [Graveacre asset workflow review](graveacre-ai-workflow-2026-10-09.md) records primary links, access limits and practical asset-pipeline findings.
 
 ## Entry points per track
@@ -29,11 +46,19 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 - [FL-01…04: flight logging design, sources and verification](flight-logging/FL-01/README.md); [current manual](../FLIGHT-LOGGING.md). Bounded fixed-wing recorder, exact replay, explicit candidate experiments and CSV analysis.
 
+### Flight-test battery
+
+[FT-05 card v5 baseline](flight-test/FT-05/README.md) records the eight-aircraft campaign and its validity/physical-evidence limits. Earlier [FT-01](flight-test/FT-01/README.md), [FT-03](flight-test/FT-03/README.md) and [FT-04](flight-test/FT-04/README.md) retain their original cards, source identities and results; compare only compatible tests and configurations. The [tool/card guide](../../research/flight-test/README.md) owns running and comparing campaigns.
+
 ### Controller support
 
 [Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the original gamepad/radio audit, Godot 4.7.2 and SDL sources, and subsequent implementation evidence: explicit device ownership, V2 profiles, safe transitions, menu navigation, free glyphs and native Windows checks. The [implementation plan](../plans/controller-support.md) retains Xbox/DualSense physical and package qualification and optional feedback as open gates. API/synthetic checks do not establish hardware support.
 
 [D6-JETI-00, 2026-10-19](radio-input/D6-JETI-00/README.md) preserves JETI's email, four-page PDF, USB descriptors and simulator profile, with a dated source audit. [D6-JETI-01 implementation](radio-input/D6-JETI-01/README.md) records conservative family recognition, clean defaults, maintained-switch input/setup, native regressions and EN/ES captures. The [JETI support plan](../plans/jeti-support.md) owns remaining physical mapping and qualification; the reported DC-16II basic flight does not close full model/platform qualification.
+
+### Servos
+
+[D6-SAV-00](servos/D6-SAV-00/README.md) retains manufacturer correspondence, catalog sources, conflicting specifications and price-observation limits. The [Savox plan](../plans/savox-servos.md) owns proposed catalog and actuator work. Catalog acquisition does not establish installed hardware identity or measured servo response.
 
 ### Random failures and emergency practice
 
@@ -53,7 +78,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### RC monster truck
 
-[RCV-00](rc-monster-truck/README.md) records the repository/session/menu audit, primary vehicle-physics references, T-Maxx scale and mechanism evidence, free asset candidates and measurement gaps. The [active plan](../plans/rc-monster-truck.md) owns the proposed ground-vehicle integration, physics laboratory, playable course, acceptance gates and Blender developer letter. This is planning evidence; no truck runtime or physical validation is claimed.
+[RCV-00](rc-monster-truck/README.md) records the original repository/session/menu audit, primary vehicle-physics references, T-Maxx scale and mechanism evidence, free asset candidates and measurement gaps. Later [runtime evidence](rc-monster-truck/RCV-runtime/README.md) and the [operating/research guide](../../research/rc-monster-truck/README.md) describe the experimental ground activity. The [active plan](../plans/rc-monster-truck.md) owns remaining integration and qualification gates; the original source review does not establish physical validation.
 
 ### Ground physics
 
@@ -147,6 +172,10 @@ Use [family research](p51-family-research.md), the [P-51 flight-realism brief](p
 
 [HUD-01…10 evidence](flight-overlays/HUD-01-10/README.md) records the overlay tests, trace identity with overlays on and the per-frame cost. The [flight overlays plan](../plans/flight-overlays.md) owns open work.
 
+### Camera views
+
+[CAM-00…10 first delivery](camera-views/CAM-01-10/README.md) records camera math, routing, native comparisons, trace identity and measured cost in its stated environment. The [camera plan](../plans/camera-views.md) owns remaining view, audio-listener and pilot-acceptance work.
+
 ### Visual quality and landscape
 
 Tree/forest follow-up: [source and current-code audit, 2026-10-17](tree-forest-quality-2026-10-17.md), with [25 additional investigations](tree-forest-quality-2026-10-17.md#second-round-25-additional-investigations). The [first implementation evidence](visual-quality-implementation/L6a-R1/README.md) records seven retained CC0 forms, a downloaded realistic sapling comparison, same-count irregular forest placement, imported-tree wind, source validation and native checks. The [tree/forest quality plan](../plans/tree-forest-quality.md) retains remaining qualification gates; no tree geometry was modeled.
@@ -159,6 +188,8 @@ Current implementation guidance is in the [visual quality guide](../VISUAL-QUALI
 - Readability and rendering: [VQ-01a/b capture protocol](visual-quality-implementation/VQ-01a/README.md), [L6c blinded owner kit](visual-quality-implementation/L6c/README.md), [VQ-04a projected silhouette](visual-quality-implementation/VQ-04a/README.md), [VQ-05 propeller blur](visual-quality-implementation/VQ-05/README.md), [L9e filtered turf](visual-quality-implementation/L9e/README.md), and [L15b tree motion](visual-quality-implementation/L15b/README.md), [L15d cloud shadows](visual-quality-implementation/L15d/README.md).
 - Field details and upgrade evidence: [L10c barrier](visual-quality-implementation/L10c/README.md), [L10d contact cue](visual-quality-implementation/L10d/README.md), [landscape improvements](landscape-improvement-2026-10-07/README.md), [LU-00–07 upgrade evidence](landscape-upgrade/README.md), and [LU-05 collision report](landscape-upgrade/LU-05/collision-report.md).
 - Scenery source rationale: [field imagery](scenery-investigations/05-landscape-image-review.md), [tree review](tree-resource-review-2026-10-06/README.md), and the [landscape research index](landscape-investigations/README.md).
+- Earlier controls and trials: [initial visual baseline](visual-quality-baseline-2026-10-05/README.md), [second-round techniques and probes](visual-quality-round2/README.md), [material trial](visual-quality-material-trial-2026-10-06.md), [nature trial](visual-quality-nature-trial-2026-10-06.md), [asset supplement](visual-quality-supplement-2026-10-06.md) and [plugin supplement](visual-quality-supplement-plugins-2026-10-06.md). These snapshots retain their original workload and date.
+- Ground-vehicle materials: [close-view audit](rc-ground-closeup-2026-10-15/README.md) and [L9d implementation evidence](rc-ground-implementation-2026-10-15/README.md) distinguish source candidates, adopted textures, paired views and unresolved cost/qualification limits.
 - Sun ([plan](../plans/sun.md)): [SUN-00 audit, glare physiology and prior art](sun/SUN-00/README.md) with its [tagged source snapshot](sun/SUN-00/research-2026-10-19.md), [SUN-01…05 disc, veil, bleaching and lens results](sun/SUN-01-05/README.md), and [SUN-02b/05b/06/09 veil colour, real-flight checks, eyewear and skyline](sun/SUN-02b-06-09/README.md).
 
 ### Time of day
@@ -193,6 +224,8 @@ The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begi
 
 The [2026-10-19 wind, thermals and vortices source collection](flight-dynamics/rc-validation-library-2026-10-18/wind-weather/README.md) adds acquired atmospheric studies, terrain benchmarks, selected UAV/lidar numeric files and Earth dust-devil observations, with measured, inferred and modeled evidence kept explicit.
 
+The earlier [Godot integration review](wind-godot-integration.md) records its own source/API snapshot; the wind guide owns current integration.
+
 ### Helicopter and shared rotor foundations
 
 [HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the steady inflow reference and published crossflow seams; [HELI-04-R1](helicopter/HELI-04-R1/README.md) qualifies dimensional transient flow with prescribed events. [HELI-05/05a](helicopter/HELI-05/README.md) verifies main-rotor loads/flapping and the fixed-body joint stage; [HELI-06a](helicopter/HELI-06/README.md) verifies the standalone linearized tail. [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. [HELI-25a](helicopter/HELI-25/README.md) audits and exports the supplied HX-700 Blender visual. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
@@ -216,6 +249,22 @@ The [2026-10-19 wind, thermals and vortices source collection](flight-dynamics/r
 [RC flight-dynamics validation library, 2026-10-18](flight-dynamics/rc-validation-library-2026-10-18/README.md) expands the scientific source collection with Stik-family studies, other RC airplanes, jets, helicopters, sailplanes, flying-wing research, real flight logs, low-Reynolds polars and propeller/slipstream experiments. Downloaded originals remain local-only under ignored `references/`; topic manifests and the searchable catalogue retain provenance and comparison limits.
 
 The [2026-10-19 further aircraft and flight recordings](flight-dynamics/rc-validation-library-2026-10-18/more-flight-models/README.md) add Mini Talon, Sky Surfer/Skysurfer, RC Cessna 182, Cyclone tailsitter, experimental-aircraft studies and selected multirotor numeric records, distinguishing processed measurements, published plots and inaccessible originals.
+
+## Earlier source and model snapshots
+
+These reports preserve the source interpretation, geometry revisions and experimental baselines behind the topic entry points above. Their dates and model revisions define their scope; current guides own operating instructions and acceptance. Companion folders retain the corresponding evidence.
+
+| Collection | Reports and evidence |
+| --- | --- |
+| Stik identity and supplied references | [Variant/source distinctions](ugly-stik-sources.md), [local audit](ugly-stik-local-audit.md), [supplied package](ugly-stik-new-files.md), [CAD inspection](ugly-stik-new-files-cad.md), [visual inspection](ugly-stik-new-files-visual.md), [owner photo brief](ugly-stik-visual-photo-brief.md) |
+| Stik model v1/v2 | [v1](ugly-stik-model-v1.md), [calibration](ugly-stik-model-v1-calibration.md), [rig](ugly-stik-model-v1-rig.md), [visuals](ugly-stik-model-v1-visual.md), [v2](ugly-stik-model-v2.md), [v2 review](ugly-stik-model-review-v2.md) |
+| Stik model v3/v4 and finish | [v3](ugly-stik-model-v3.md), [installation](ugly-stik-model-v3-installation.md), [metrology](ugly-stik-model-v3-metrology.md), [readability](ugly-stik-model-v3-readability.md), [v4 controls](ugly-stik-model-v4-controls.md), [v4 equipment](ugly-stik-model-v4-equipment.md); [engine-v5 evidence](ugly-stik-engine-v5-evidence/), [finish-v6 evidence](ugly-stik-finish-v6-evidence/) |
+| Stik handling history | [2026-10-05 rudder diagnosis](ugly-stik-rudder-audit.md), [probe/sweep/results](rudder-audit/), [revalidation evidence](ugly-stik-revalidation-2026-10-05/); later handling work is indexed under [flight model and simulation](#flight-model-and-simulation) |
+| Extra source and visual studies | [Source inspection](extra-300-resources.md), [photo investigation](extra-300-photo-investigation.md), [round 2](extra-300-round2.md), [model v1](extra-300-model-v1.md), [visual review](extra-300-visual-review-v1.md) |
+| Avanti source interpretation | [Resources](avanti-s-resources.md), [user profile](avanti-s-user-profile.md), [turbine research](avanti-s-turbine-research.md), [control installation](avanti-s-controls-and-installation.md), [additional angles](avanti-s-additional-angle-sources.md), [new angles](avanti-s-new-angles.md) |
+| Avanti geometry and physics groundwork | [AV-01 metrology](avanti-s-av01-metrology.md), [AV-02 preview](avanti-s-av02-preview.md), [geometry follow-up](avanti-s-geometry-followup.md), [contour refinement](avanti-s-contour-refinement.md), [v3 contours](avanti-s-contour-refinement-v3.md), [transparency comparison](avanti-s-transparency-comparison.md), [AV-05 requirements](avanti-s-av05-physics-requirements.md), [turbine dynamics](avanti-s-av05-turbine-dynamics.md), [AV-06 aerodynamic sources](avanti-s-av06-aero-references.md), [airframe data](avanti-s-av06-airframe-data.md) |
+| P-51 silhouette | [First silhouette review](p51-silhouette-review-v1.md); subsequent visual/physics work is indexed under [P-51D](#p-51d) |
+| Early ground-contact laws | [E1 landing-gear contact](landing-gear-contact-e1.md), [E2 friction](ground-friction-e2.md), [E3a surfaces](ground-surfaces-e3a.md); current integration is indexed under [ground physics](#ground-physics) |
 
 ## Naming
 

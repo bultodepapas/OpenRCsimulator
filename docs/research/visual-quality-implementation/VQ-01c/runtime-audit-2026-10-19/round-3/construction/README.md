@@ -1,6 +1,6 @@
 # Cold scenery construction audit
 
-Static source review against the detached baseline at HEAD 122889b8e846b501dc17ffd610e60bf340bd4786; the frozen source tree is in ../baseline/. The timing table uses the retained native attribution JSON from a prior WIP campaign ([raw result](../../godot-audit-r2-20261019/loading/attribution-native-v4.json)), not a measurement on this frozen baseline. The JSON does not pin source hashes and reports 30 vegetation instances, while this baseline's current default placement data has 27. Treat that as a workload-comparability limit; it is not evidence of a game defect. No new engine checks or timings were run here.
+Static source review against the detached baseline at HEAD 122889b8e846b501dc17ffd610e60bf340bd4786; the frozen source tree is in ../baseline/. The timing table cites native attribution JSON from a prior WIP campaign (`../../godot-audit-r2-20261019/loading/attribution-native-v4.json`), not a measurement on this frozen baseline. That raw file is not retained in this checkout. The report describes a JSON without source hashes and with 30 vegetation instances, while this baseline's default placement data has 27. Treat the unavailable raw result and workload mismatch as evidence limits; this is not evidence of a game defect. No new engine checks or timings were run here.
 
 ## Measured phase ranking
 
