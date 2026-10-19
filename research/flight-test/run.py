@@ -69,6 +69,7 @@ def main():
     parser.add_argument("--jobs", type=int, default=min(4, os.cpu_count() or 1))
     parser.add_argument("--only")
     parser.add_argument("--full-traces", action="store_true")
+    parser.add_argument("--diagnostics", action="store_true", help="also write <test>.aero.csv: regime weights and oracle/local/blended coefficients")
     parser.add_argument("--timeout", type=float, default=1800.0, help="seconds per aircraft")
     parser.add_argument("--app", help="a disposable copy of app/ holding one explicit candidate change")
     args = parser.parse_args()
@@ -87,7 +88,7 @@ def main():
     else:
         ids = [a for a in args.aircraft.split(",") if a]
 
-    extra = (["--only=" + args.only] if args.only else []) + (["--full-traces"] if args.full_traces else [])
+    extra = (["--only=" + args.only] if args.only else []) + (["--full-traces"] if args.full_traces else []) + (["--diagnostics"] if args.diagnostics else [])
     paths = data_paths()
 
     def fly(aircraft):

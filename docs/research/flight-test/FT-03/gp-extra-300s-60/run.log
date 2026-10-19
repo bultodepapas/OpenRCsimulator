@@ -1,0 +1,41 @@
+
+FT gp-extra-300s-60: 3.42 kg, S 0.480 m2, start 17.0 m/s, CL_max 1.05 -> Vs estimate 10.4 m/s
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.357,"first_untrimmable_mps":34.85,"points":27,"slowest_trim_mps":11.9}
+   note: no level trim below 11.9 m/s (1 slower speeds failed)
+FT stall_power_off          valid {"altitude_lost_m":40.7,"bank_in_first_second_deg":-72.2,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.49,"max_bank_in_recovery_deg":72.2,"ratio_to_cl_max_estimate":1.008,"recovery_time_s":3.72,"stall_alpha_deg":21.0,"stall_speed_mps":10.51,"wing_drop":"left"}
+FT vmax                     valid {"height_error_end_m":0.59,"height_error_run_m":0.92,"initial_acceleration_mps2":6.09,"max_level_speed_kmh":124.5,"max_level_speed_mps":34.58,"rpm_at_max":11149,"time_plus_10_mps_s":1.84,"time_plus_5_mps_s":0.91,"time_to_90_percent_s":4.61}
+FT modes                    valid {}
+FT aero_sweep               valid {"cy_at_beta20":-0.0646,"cy_max_beta_le_30":0.0838,"cy_oracle_at_beta20":-0.1707,"knife_edge_cy_needed_at_0_8vmax":0.149,"knife_edge_side_force_margin":0.563,"local_weight_full_at_alpha_deg":15.0,"local_weight_full_at_beta_deg":15.0,"trim_alpha_deg":5.38}
+   note: with controls neutral the local model carries all loads from β 15° at the trim α, before the sideslip blend ends (25°); a deflected rudder keeps the fin's own angle lower in flight (see --diagnostics)
+   note: no sideslip up to 30° gives the side force a knife-edge needs at 0.8 Vmax (|CY| 0.084 of 0.149)
+FT stall_power_on           valid {"altitude_lost_m":23.2,"bank_in_first_second_deg":-79.0,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.83,"max_bank_in_recovery_deg":79.0,"ratio_to_cl_max_estimate":0.941,"recovery_time_s":3.64,"stall_alpha_deg":20.0,"stall_speed_mps":9.8,"wing_drop":"left"}
+FT throttle_response        valid {"rpm_full":11149,"rpm_idle_end":2800,"rpm_trimmed":5782,"speed_gain_in_6_s_mps":16.29,"spool_down_90_10_s":0.55,"spool_up_10_90_s":0.55}
+FT hands_off                valid {"bank_10_s_deg":34.5,"bank_30_s_deg":52.6,"bank_after_aileron_pulse_deg":20.3,"heading_change_10_s_deg":105.7,"heading_change_30_s_deg":627.3,"height_change_10_s_m":-12.83,"height_change_30_s_m":-121.13,"phugoid_period_s":8.83,"reached_floor_s":null,"speed_change_10_s_mps":3.34,"speed_change_30_s_mps":7.88}
+FT climb                    valid {"best":{"case":"2.0Vs","path_angle_deg":46.5,"pitch_deg":48.9,"rpm":11149,"speed_mps":21.04,"vertical_speed_mps":15.24,"vs_factor":2.0}}
+   note: 1.3 Vs: thrust exceeds the climb need; at 70° pitch it holds 14.07 m/s, not 13.66
+FT glide                    valid {"best":{"case":"1.3Vs","glide_ratio":8.01,"path_angle_deg":-7.1,"pitch_deg":1.2,"rpm":2800,"speed_mps":13.66,"vertical_speed_mps":-1.69,"vs_factor":1.3}}
+FT roll_rate                valid {}
+FT pitch_pull               valid {}
+FT loop                     valid {"alpha_target_deg":11.3,"entry_speed_mps":27.67,"heading_change_deg":0.0,"height_change_m":16.9,"loop_height_m":46.7,"loop_time_s":4.8,"max_load_factor_g":8.13,"max_sideslip_deg":0.7,"min_speed_mps":21.32}
+FT turn_60                  valid {}
+FT rudder_step              valid {}
+FT knife_edge               valid {}
+   note: knife_edge right_100pct: stopped at the 60 m floor after 8.0 s
+   note: knife_edge left_100pct: stopped at the 60 m floor after 8.3 s
+   note: knife_edge right_50pct: stopped at the 60 m floor after 7.9 s
+   note: knife_edge left_50pct: stopped at the 60 m floor after 8.0 s
+FT knife_edge_full_rudder   valid {}
+   note: knife_edge_full_rudder right_100pct: stopped at the 60 m floor after 7.9 s
+   note: knife_edge_full_rudder left_100pct: stopped at the 60 m floor after 8.3 s
+   note: knife_edge_full_rudder right_50pct: stopped at the 60 m floor after 7.8 s
+   note: knife_edge_full_rudder left_50pct: stopped at the 60 m floor after 7.9 s
+FT inverted                 valid {"alpha_deg":-3.5,"elevator_servo":-0.116,"elevator_stick":-0.116,"speed_mps":20.78,"throttle":0.487,"upright_throttle":0.485,"vertical_speed_mps":0.02}
+FT spin                     valid {}
+FT takeoff                  valid {"ground_roll_m":14.5,"liftoff_speed_mps":15.27,"liftoff_speed_vs":1.45,"max_heading_error_deg":2.0,"max_rudder_stick":0.17,"rotation_attitude_deg":8.0,"rudder_free_heading_change_3_s_deg":6.5,"time_to_liftoff_s":3.11}
+FT landing                  valid {"approach_speed_mps":13.66,"bounced":false,"flare_height_m":0.955210391453086,"max_heading_error_deg":0.9,"rollout_m":88.3,"rollout_time_s":11.4,"touchdown_past_threshold_m":13.1,"touchdown_pitch_deg":7.2,"touchdown_sink_mps":0.53,"touchdown_speed_mps":12.92,"touchdown_speed_vs":1.23}
+FT report: tmp/ft-v3-main-d10r2/gp-extra-300s-60/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+     at: _stringify (core/io/json.cpp:86)
+     GDScript backtrace (most recent call first):
+         [0] _run (research/flight-test/flight_test.gd:153)
+         [1] _initialize (research/flight-test/flight_test.gd:109)

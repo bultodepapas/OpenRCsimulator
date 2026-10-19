@@ -1,6 +1,6 @@
 # Standard flight-test battery (FT)
 
-2026-10-16 · **Status: research tool, card `ft-card-v2`.** Flies one standard test card through the real session loop for every fixed-wing catalog aircraft. It writes a profile per aircraft and compares two runs case by case. [Baseline profiles and findings](../../docs/research/flight-test/FT-01/README.md)
+2026-10-16 · **Status: research tool, card `ft-card-v3`** (v3, 2026-10-18: adds `aero_sweep`). Flies one standard test card through the real session loop for every fixed-wing catalog aircraft. It writes a profile per aircraft and compares two runs case by case. Baseline profiles and findings: [FT-01](../../docs/research/flight-test/FT-01/README.md) (card v2) and [FT-03](../../docs/research/flight-test/FT-03/README.md) (card v3 on the D10-R2 tree, with measured-RC comparisons)
 
 The card measures what a test pilot would measure on a real model:
 
@@ -9,6 +9,7 @@ The card measures what a test pilot would measure on a real model:
 - control responses: roll, pitch and yaw;
 - maneuvers: loop, turns, knife-edge, inverted flight, spins;
 - stability: the linear modes and a hands-off flight;
+- the aerodynamic model itself: which model (coefficient oracle or local surfaces) carries the loads, and what each gives, without flying;
 - the takeoff and the landing.
 
 Each test starts from the session's own trimmed airborne start or its qualified runway start. A closed-loop pilot (`pilot.gd`) flies it through the same loop as the game: servos, aerodynamics, propulsion, slipstream, gear, field surfaces and crash checks.
@@ -39,8 +40,13 @@ python research/flight-test/compare.py tmp/ft-baseline tmp/ft-candidate --out tm
 - `<out>/<aircraft>/profile.json`: every metric, table and note.
 - `profile.md`: the readable report.
 - `run.log` and one CSV trace per flight, in the `openrc-trace` columns with session metadata, at 20 Hz (`--full-traces` writes every tick).
+- with `--diagnostics`, one `<test>.aero.csv` per flight at the same 20 Hz: α, β, airspeed, the production local-flow and sideslip weights, and body-axis CX…Cn from the coefficient oracle, the local model and the blended production loads. They are recomputed read-only from the session's own state, servo deflections, density, wind, downwash lag and ground height; `lerp_residual` checks that the blend equals oracle + w·(local − oracle) (exact without flaps). Profiles are identical with and without it.
 - `<out>/run.json`: card version, git commit and dirty paths, Godot version, `--app`, and each aircraft's data-file SHA-256, exit status and valid count.
 - `<out>/summary.md`: the comparison table across aircraft.
+
+`python research/flight-test/spin_state.py <out> [aircraft ...]` reads the spin traces offline. It prints each aircraft's state averaged over the card's steady window (4.0–6.25 s): α, |β|, airspeed, body rates, Ωb/2V, pitch angle, pitch-rate swing and sink. Beside each aircraft it prints two spins measured in flight with the same entry: NASA FASER (Ultra Stick 120) and the UIUC Aero Testbed (35 % Extra 260). Their speeds are scaled to that aircraft's wing loading. These rows compare other airframes; they are not acceptance bands ([sources](../../docs/research/flight-dynamics/rc-aero-data-sources.md), [current findings](../../docs/research/flight-test/FT-03/README.md#against-measured-rc-class-data)).
+
+`python research/flight-test/polar_fit.py <out> [aircraft ...]` works the same way for lift and drag (card v3 or later). It fits each airframe polar from `aero_sweep`: CL at α 0, CLα, and CD = CDmin + K(CL − CL_md)² with e. It then compares the idle glides with that polar, so the excess shows the idle propeller and trim drag. It also prints the NASA FASER and Southampton FliTePlat wind-tunnel references.
 
 It exits 1 when a run fails or Godot reports a script error. A test that is not valid is a result, not a run failure. Runs are deterministic: two runs of the full battery compare with no change.
 
@@ -67,6 +73,7 @@ The card runs in the order below, so later tests use the measured values. Table 
 | `stall_power_off` | 1.4 Vs, idle; height held with the elevator, wings level, ball centred | stall speed and α; break kind (drop/sink, or elevator limit for a wing that only mushes); wing drop; height and time to recover (unload, level, full power) |
 | `vmax` | Start speed, full throttle; height, wings and ball held until the speed changes < 0.15 m/s over 3 s | maximum level speed, rpm, times to +5/+10 m/s and to 90 %, initial acceleration, end and run height error |
 | `modes` | Linearized modes of the real equations; no flight (`1.3Vs`, `start`, `0.8Vmax`) | short period and phugoid frequency/period and damping, dutch roll, roll time constant, spiral time to double or half |
+| `aero_sweep` | No flight; start speed, every control neutral (in flight a deflected rudder lowers the fin's angle and the weight; use `--diagnostics` for the flown regime). Sideslip sweep at the level-trim α and α sweep at zero sideslip through the pure loads functions | per case CY/Cn/Cl (sideslip) or CL/CD/Cm (α) from the oracle, the local model and the blended production loads, and the production local-flow weight; the sideslip and α where the local model takes all loads; CY at 20° against the oracle; the knife-edge side-force margin (best \|CY\| up to 30° over W/qS at 0.8 Vmax) |
 | `stall_power_on` | 1.4 Vs, 50 % throttle; nose raised 2°/s from trim | as the power-off stall |
 | `throttle_response` | Start speed, height held; trim → full at 1 s, full → idle at 7 s | rpm 10–90 % spool-up and spool-down, speed gained |
 | `hands_off` | Start speed at 400 m; 0.2 up elevator for 0.5 s at 1 s and 0.2 right aileron for 0.5 s at 2 s, then no input for 30 s | height, speed, bank and heading change at 10 and 30 s; flown phugoid period; time to reach the 60 m floor |

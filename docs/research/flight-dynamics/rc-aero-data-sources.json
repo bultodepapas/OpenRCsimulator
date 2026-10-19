@@ -1,0 +1,588 @@
+{
+ "format": "openrc-reference-manifest v1",
+ "topic": "Flight-identified and wind-tunnel aerodynamic data of RC-class airframes, and method references used for the Stik lateral-directional work",
+ "retrieved": "2026-10-18",
+ "note": "Local copies live in the gitignored references/rc-aero-data/. Guide: docs/research/flight-dynamics/rc-aero-data-sources.md. Other airframes are comparisons, not Stik acceptance data.",
+ "files": [
+  {
+   "path": "references/rc-aero-data/dorobantu-2013-umn-phd-test-platforms.pdf",
+   "url": "https://dept.aem.umn.edu/~SeilerControl/Thesis/2013/Dorobantu_13PhD_TestPlatformsForModelBasedFlightResearch.pdf",
+   "bytes": 5825064,
+   "sha256": "34ae653182350c4ccb4a2583c283fc429745c5bc3bdd61c9c9a1e7d63266188a",
+   "file_type": "PDF, 96 pages",
+   "kind": "thesis",
+   "license": "Copyright the author / University of Minnesota; free institutional download. Reference only, do not redistribute.",
+   "use": "Ultra Stick 25e (1.959 kg, b 1.27 m): flight-identified lateral matrices (sec. 3.5.2, eq. 3.26), bifilar inertias (table 3.1), modes (table 3.5), US Mini tunnel baseline. Used by D10-R2 (Cnb 0.046/rad, CYb -0.35/rad, Clb -0.039/rad, Cnr -0.17/rad).",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/dorobantu-2012-sysid-ultra-stick-25e.pdf",
+   "url": "https://dept.aem.umn.edu/~mettler/Courses/AEM%205333%20(spring%202013)/AEM5333%20CourseDropbox/Week%207%20Identification/Ultrastick%20Identification/2012_AIAA_JA_SYSID.pdf",
+   "bytes": 2675601,
+   "sha256": "e3513f34a9a893656de3c3dc6ced0d188acbd8927957df1785a7adf5aa654885",
+   "file_type": "PDF, 32 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "Dorobantu, Murch, Mettler, Balas: System Identification for Small, Low-Cost, Fixed-Wing Unmanned Aircraft. Ultra Stick 25e modes; source of research/validation/references/us25e.json.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/lie-2014-umn-phd-synthetic-air-data-us120.pdf",
+   "url": "https://conservancy.umn.edu/server/api/core/bitstreams/3eaa84c3-81fc-41ed-ae56-65f3ea700347/content",
+   "bytes": 17982418,
+   "sha256": "efc00f21d2f8f88e0392ccb71fd11e053a38b7fa09b9e5f026171a92611fbf88",
+   "file_type": "PDF, 110 pages",
+   "kind": "thesis",
+   "license": "Copyright the author / University of Minnesota; free institutional download. Reference only, do not redistribute.",
+   "use": "Ultra Stick 120 (8.338 kg) linear model, Appendix D tables D.1-D.2; source of research/validation/references/us120.json.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/ritchie-2013-umn-msc-us120-tunnel-vlm-datcom.pdf",
+   "url": "https://conservancy.umn.edu/server/api/core/bitstreams/30629b5d-5a3e-47b9-9a9f-15cb43eb5c03/content",
+   "bytes": 2667262,
+   "sha256": "63d26c0c8f22f0f285b139c3dc4f56b4d34af6ecf5fc86f30162c622c358b960",
+   "file_type": "PDF, 69 pages",
+   "kind": "thesis",
+   "license": "Copyright the author / University of Minnesota; free institutional download. Reference only, do not redistribute.",
+   "use": "FASER (Ultra Stick 120) NASA LaRC 12-ft tunnel lift and drag (q 2 psf, alpha -5..40 deg) against VLM and Digital DATCOM. Longitudinal only; linear-region fit CL0 0.1134, CLalpha 0.0762/deg (table 4.3).",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/faser-2006-aiaa-2006-3306-owens-cox-morelli.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20060022541/downloads/20060022541.pdf",
+   "bytes": 902910,
+   "sha256": "2e38c7bbcc87c9194d901f0814ad5da6f134935b6ea9862322bd91acce971545",
+   "file_type": "PDF, 11 pages",
+   "kind": "paper",
+   "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+   "use": "FASER = Hangar 9 Ultra Stick 120: geometry (table 1), trifilar mass properties (table 2), tunnel summary (stalls at 12 and 15 deg, laterally stable to 30 deg, slightly directionally unstable 17-20 deg).",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/faser-2012-aiaa-2012-4645-forced-oscillation.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20120014506/downloads/20120014506.pdf",
+   "bytes": 1279192,
+   "sha256": "fc4f300af735e8e9f0a6ada1b7b10050134bae02ee54f55d2586616aef82bab1",
+   "file_type": "PDF, 12 pages",
+   "kind": "paper",
+   "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+   "use": "FASER forced-oscillation roll and yaw damping vs alpha, rate and reduced frequency; DATCOM agrees pre-stall. Dutch roll 0.53 Hz (k 0.255) from the linearized FASER model; UMN Ultra Stick 25 flight p-hat mostly <= 0.1, up to 0.22. Values in figures only.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/faser-2016-rotary-balance.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20160010112/downloads/20160010112.pdf",
+   "bytes": 2087800,
+   "sha256": "4f0048ce9fc0d195d6db22c9d08505add41c58736008993fbf56b7e6ec8a457a",
+   "file_type": "PDF, 17 pages",
+   "kind": "paper",
+   "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+   "use": "FASER rotary balance (20-ft spin tunnel). Flight spin (table 2): full up elevator + full rudder -> steep spin, p > 200 deg/s (gyro saturated), r ~160 deg/s, alpha 30 deg, beta 5 deg, V 100 ft/s, Omega 250 deg/s (video estimate). Steady-spin prediction did not find it.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/baldr-2015-03-11-flight-report-us120.pdf",
+   "url": "https://conservancy.umn.edu/server/api/core/bitstreams/57d67685-6ad7-4609-90c0-cf2a7cff7a13/content",
+   "bytes": 301182,
+   "sha256": "743fcfec57c688372cfcc232a8c59128bc87f982d748a04abbcfd17b957a068e",
+   "file_type": "PDF, 2 pages",
+   "kind": "flight report",
+   "license": "Copyright the author / University of Minnesota; free institutional download. Reference only, do not redistribute.",
+   "use": "UMN Baldr (modified Ultra Stick 120, split elevators/rudders) flight report: trim 23 m/s, pitch 5 deg, throttle 65 %. Fault-tolerant control experiment; no identified data.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/venkataraman-2019-sysid-rudderless-uav.pdf",
+   "url": "https://dept.aem.umn.edu/~./groups/SeilerControl/Papers/2019/VenkataramanEtAl_19JA_SystemIDForASmallRudderlessFixedWingUAV.pdf",
+   "bytes": 988548,
+   "sha256": "b4742d27c0c024a3c4175d1782c2fa6fce6c7adb60800e4c4491965e89b74e16",
+   "file_type": "PDF, 20 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "1.28 kg, b 0.97 m rudderless UAV, frequency-domain identification: Dutch roll zeta 0.12, wn 4.8 rad/s (model 0.06, 7 rad/s); roll tau 0.078 s; spiral not excited.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/selig-2010-aiaa-2010-7635-full-envelope.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/Selig-2010-AIAA-2010-7635-FullEnvelopeAeroSim.pdf",
+   "bytes": 3303865,
+   "sha256": "75f577ce1598a08aff9c0aa6c6ba97ece32c14f5538df1acadd86410e522a653",
+   "file_type": "PDF, 35 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "Full-envelope component model behind FS One: segmented fuselage side lift over +/-180 deg (sec. III.C, fig. 14), ShowTime 50 knife-edge (sec. IV.C). Used by D10-R2 sec. 7.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/selig-2014-jaircraft-flight-simulation.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/Selig-2014-JofAC-FlightSim-FINAL.pdf",
+   "bytes": 5463230,
+   "sha256": "bc07a5fba447ccab8b28962983046210fa211c29611a9f8c81ece954c5c7ecf7",
+   "file_type": "PDF, 21 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "J. Aircraft 51(6), doi 10.2514/1.C032370. Table 1: Edge 540, Extra 260 EFL, ShowTime 50 (b 1.45 m, S 46.58 dm2, 2.90 kg, about the Stik's wing area), Ultimate TOC. ShowTime 50 knife-edge on held right rudder until the fuselage stalls near beta -65 deg; side-force generators climb.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/dantsker-selig-2015-aiaa-2015-2568-high-angle.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/DantskerSelig-2015-AIAA-2015-2568-HighAngleFlight.pdf",
+   "bytes": 2262351,
+   "sha256": "0dc7f3e95d65b60c60d594922ec1c92b60cf9618fdf983f22f05e3b5c7c4c77d",
+   "file_type": "PDF, 17 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "35 % Sukhoi 29S (16.37 kg, 2.6 m, 130 dm2) high-alpha flight data; coefficients in figures only.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/dantsker-2013-aiaa-2013-2807-aero-testbed.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/DantskerJohnsonSeligBretl-2013-AIAA-2013-2807-AeroTestbed.pdf",
+   "bytes": 8961151,
+   "sha256": "b999b30944618effb061f32677249055daf81e9048751974733a4444ce481d7d",
+   "file_type": "PDF, 18 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "UIUC Aero Testbed (Sukhoi 29S class, 2.7 m, 17 kg, T/W > 2): airframe, instrumentation and survey of research aerobatic airframes.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/fischer-2022-icas-0873-subscale-c182.pdf",
+   "url": "https://www.icas.org/icas_archive/ICAS2022/data/papers/ICAS2022_0873_paper.pdf",
+   "bytes": 2728070,
+   "sha256": "aba266d5c3b4381d5582948fbefce2193b8a207b727e55004b785754fd296282",
+   "file_type": "PDF, 10 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / ICAS; free congress archive download. Reference only, do not redistribute.",
+   "use": "Commercial glow-powered scale Cessna 182 (b 2.05 m, l 1.62 m, 4 kg), output-error identification, table 1: CYb -2.97, Clb -0.050, Cnb 0.161, Clp -0.068, Cmq -5.41 (normalization not stated). Clr, Cnp, Cnr, Cnda Cramer-Rao bounds 81-214 %: unidentified.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/fischer-2018-icas-0764-vector-p-lateral.pdf",
+   "url": "https://www.icas.org/icas_archive/ICAS2018/data/papers/ICAS2018_0764_paper.pdf",
+   "bytes": 2500315,
+   "sha256": "95b61ae4f6cfa68a819ddfda56501f51c92a1c05ed2cb81e4a2da3bf3aa34e9b",
+   "file_type": "PDF, 10 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / ICAS; free congress archive download. Reference only, do not redistribute.",
+   "use": "Vector-P pusher UAV (31.5 kg, Ixx 3.14, Iyy 8.25, Izz 10.40 kg m2) lateral identification: Clb -0.0285, Cnb 0.090; CYb printed +0.029 (sign unexplained). Not an RC sport class.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/ragheb-selig-2013-aiaa-2013-2806-extra260-stall-spin.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/RaghebSelig-2013-AIAA-2013-2806-StallSpin.pdf",
+   "bytes": 11731465,
+   "sha256": "f3c482ab78eacc37ac01cd9cbf17181bb6254dff01a7bd9e73277b060ed02047",
+   "file_type": "PDF, 31 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "UIUC Aero Testbed = Hangar 9 35 % Extra 260 (17.01 kg, b 2.667 m, S 1.312 m2, Ixx 1.53, Iyy 4.86, Izz 6.06 kg m2; table 1). Over 20 IMU-recorded flight spins. Baseline T0R1E1A0 (power off, full rudder, full up, neutral ailerons, low rates): pitch -55..-57 deg, sink 15.5-16.8 m/s, p 235-238 deg/s, r 150-155 deg/s, Omega b/2V 0.20. Pro-spin ailerons: nose 5 deg lower, sink +66 %, p +50 %, spin parameter halved.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/burk-wilson-1975-nasa-tm-80510-rc-model-stall-spin.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19790022002/downloads/19790022002.pdf",
+   "bytes": 2471562,
+   "sha256": "5eb7e3f0e4f72f1c7b4ca1555d887af7f58eb8bd86f1b121f1ace30533e3df27",
+   "file_type": "PDF, 63 pages",
+   "kind": "paper",
+   "license": "NASA Technical Memorandum (SAE 1975 paper, NASA and Piper authors). Reference only.",
+   "use": "NASA/Piper radio-controlled model stall/spin technique: model construction, inertia measurement, thrust scaling; RC scale-model spins and recoveries correlated with the full-scale airplane. Notes that a dynamically scaled model has much less tail volume than a conventional RC model and reacts very differently to controls.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/bihrle-1976-nasa-cr-144995-rc-model-spin-correlation.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19760020126/downloads/19760020126.pdf",
+   "bytes": 11382141,
+   "sha256": "313c2c802cf42991d7bb557b04fbf23908c407d4393136ea88864cc71abefc6f",
+   "file_type": "PDF, 154 pages",
+   "kind": "report",
+   "license": "NASA Contractor Report (Grumman). Reference only.",
+   "use": "Correlation of analytical spin prediction (static, forced-oscillation and rotary-balance data of an exact replica) with flight spins of an unpowered 1/10-scale RC fighter model. Method reference for spin simulation against RC flight; not our fleet.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/burk-1977-nasa-tp-1009-spin-tunnel-low-wing-a.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19770026167/downloads/19770026167.pdf",
+   "bytes": 50083766,
+   "sha256": "df0bb4e21895f842b2f4c7022cb8f4d8ab815a8d59dcf7b2d71c222464300315",
+   "file_type": "PDF, 94 pages",
+   "kind": "report",
+   "license": "NASA Technical Paper (US Government work).",
+   "use": "Spin tunnel, low-wing GA model A, nine tails. Spin-mode classes by angle of attack: steep 20-30, moderately steep 30-45, moderately flat 45-65, flat 65-90 deg. Tail configuration decides flat versus steeper modes and recovery.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/langley-1979-nasa-tp-1589-leading-edge-stall-spin.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19800004771/downloads/19800004771.pdf",
+   "bytes": 3920608,
+   "sha256": "d96e58a0a4b961ae1235f9eb10f4dc0174e05a325abb925230fcc63ba964bf13",
+   "file_type": "PDF, 100 pages",
+   "kind": "report",
+   "license": "NASA Technical Paper (US Government work).",
+   "use": "Langley staff: wing leading-edge droop modifications on a light GA airplane, combining wind-tunnel, radio-controlled model and full-scale flight tests of stall/spin behaviour. Not yet read in detail.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/blanchard-1981-nasa-cr-156871-pa38-rc-deep-stall.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19810012555/downloads/19810012555.pdf",
+   "bytes": 392953,
+   "sha256": "695c5211e8162aecf9d8a425d406e6c3af05879b7553ea14a4e01cb266a0c2b1",
+   "file_type": "PDF, 9 pages",
+   "kind": "report",
+   "license": "NASA Contractor Report. Reference only.",
+   "use": "1/6-scale RC Piper PA-38 Tomahawk (3.5 kg, all-moving tail): more than 50 ultra-deep-stall descents and spin recoveries; full-scale-equivalent power-off deep-stall sink about 13.4 m/s at 685.8 kg.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/polhamus-1959-nasa-tr-r-29-noncircular-cylinders.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20090017489/downloads/20090017489.pdf",
+   "bytes": 1338076,
+   "sha256": "0b050e46f6e7af04860d00ea5c4d372375866c532ff4150663dc8c488e782c09",
+   "file_type": "PDF, 27 pages",
+   "kind": "report",
+   "license": "NASA Technical Report (US Government work); supersedes NACA TN 4176.",
+   "use": "Crossflow forces of noncircular 2-D cylinders vs flow incidence and Reynolds number, applied to directional stability and spinning. Fig. 11, subcritical square cylinders face-on: Cd about 2.0 (sharp, r/b 0-0.021), 1.6 (r/b 0.08), 1.2 (r/b 0.245); about 1.5 for all radii beyond 30 deg incidence (read from the figure). Side force can be large and change sign with Reynolds number.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/polhamus-1959-nasa-tr-r-46-noncircular-cylinders-pressure.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19980227840/downloads/19980227840.pdf",
+   "bytes": 2240486,
+   "sha256": "c11d3e8009477d6daf4582ed2c8ccd1672c06151b411cd56a8baca4daefbad21",
+   "file_type": "PDF, 44 pages",
+   "kind": "report",
+   "license": "NASA Technical Report (US Government work).",
+   "use": "Polhamus, Geller, Grunwald: pressure and force characteristics of noncircular cylinders vs Reynolds number, with a potential-flow method for arbitrary shapes. Companion of TR R-29.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/polhamus-1984-nasa-cr-3809-reynolds-bodies-high-alpha.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19840023027/downloads/19840023027.pdf",
+   "bytes": 7086760,
+   "sha256": "aac5ac04dcc09d270c590009f9a39e1ddebcf6d3a8017f72213e910e3589a06f",
+   "file_type": "PDF, 126 pages",
+   "kind": "report",
+   "license": "NASA Contractor Report. Reference only.",
+   "use": "Polhamus review of Reynolds-number effects on bodies at high angles of attack, including noncircular cylinders and flow incidence.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/weishaupl-mclay-sobester-2024-aerj-drag-curves-small-uav.pdf",
+   "url": "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/453B48240E5861B1360B9D33288C5C88/S0001924023000611a.pdf/experimental-evaluation-of-the-drag-curves-of-small-fixed-wing-uavs.pdf",
+   "bytes": 2671471,
+   "sha256": "60695c9b9fc49741d4a978925c7773448a00064edcbc228d143b4a1650191f04",
+   "file_type": "PDF, 30 pages",
+   "kind": "paper",
+   "license": "Aeronautical Journal 128 (2024) 655-684, doi 10.1017/aer.2023.61, open access (Cambridge). Reference only.",
+   "use": "Southampton FliTePlat (5.5 kg twin, b 1.96 m, S 0.488 m2, stall 11 m/s, cruise 20 m/s). Table 2: wind tunnel CD0 0.0503, K 0.0764, CL0 0.257, CLalpha 0.1122/deg; automated glides CD0 0.0552, slow-down 0.0526; manual glides off by about 70 %. Stationary propellers add 0.01-0.03 to CD depending on blade orientation.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/vahora-ananda-selig-2018-aiaa-2018-1277-airfoil-scaling-c182.pdf",
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/VahoraAnandaSelig-2018-AIAA-Paper-2018-1277-DesMethodforAirfoilScaling.pdf",
+   "bytes": 1890364,
+   "sha256": "bc3f423cb1302ba34510a4ae99faa93543a90a97f02acb1a9a43a37c701782bc",
+   "file_type": "PDF, 14 pages",
+   "kind": "paper",
+   "license": "Copyright the authors / AIAA; author-hosted free download. Reference only, do not redistribute.",
+   "use": "UIUC GA-USTAR 1/5-scale RC Cessna 182: the NACA 2412 loses Clmax at the model's stall Re 230,000 against 2.7e6 full scale (Clmax 1.75 XFOIL, 1.62 measured at 3.1e6); the VAS1715 airfoil was designed and tunnel-verified to match full-scale Clalpha and Clmax.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/jayanti-2026-pptr-small-uav-cfd-flight-validation.pdf",
+   "url": "https://pp.bme.hu/tr/article/download/41190/24214/239555",
+   "bytes": 3036305,
+   "sha256": "9d62ae4e84dc10e403f851a6f7c1b1c2c0b990f6b46304205b18e9032312fc7f",
+   "file_type": "PDF, 17 pages",
+   "kind": "paper",
+   "license": "Periodica Polytechnica Transportation Engineering 54(1) 88-104, CC BY.",
+   "use": "2.43 m, 7.5 kg twin-engine EPO mapping UAV: CFD-derived 6-DOF model against three flight tests (phugoid, short period, lateral modes). Low relevance.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/morelli-2012-nasa-airstar-t2-global-aero-modeling.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20120001458/downloads/20120001458.pdf",
+   "bytes": 1870927,
+   "sha256": "f307f4a80a45117a6b9782f671a65bbff211d174055e6952cd40e09172e63589",
+   "file_type": "PDF, 26 pages",
+   "kind": "paper",
+   "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+   "use": "Morelli, Efficient Global Aerodynamic Modeling from Flight Data. NASA AirSTAR T-2: 5.5 % dynamically scaled twin-turbine jet transport, b 2.088 m, S 0.548 m2, c 0.279 m, 23.1 kg, Ix 1.60, Iy 6.13, Iz 7.49, Ixz 0.29 kg m2 (table 3). Global lateral model from flight (table 6, /rad): CYbeta -0.548 (CYbeta-alpha -4.04), Clbeta -0.130 (Clbeta-alpha -0.271), Cnbeta 0.167 (Cnbeta-alpha +0.342), Clp -0.317, Clr 0.285, Cnr -0.889, Cnp -0.447 plus alpha and control cross terms. Closest jet reference for the Avanti, not a sport jet.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/morelli-2011-nasa-airstar-t2-flight-test-maneuvers.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/20110014634/downloads/20110014634.pdf",
+   "bytes": 639260,
+   "sha256": "528541160f82276659bdbd62770d4ec1f6b652994164fcfa44b1fcba925ce65b",
+   "file_type": "PDF, 18 pages",
+   "kind": "paper",
+   "license": "NASA Technical Reports Server, public distribution; AIAA conference paper. Reference only, do not redistribute.",
+   "use": "Morelli, Flight Test Maneuvers for Efficient Aerodynamic Modeling: orthogonal optimized multi-sine inputs on the T-2, real-time frequency-domain equation error. Method reference for flight-test excitation.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/hartman-biermann-1938-naca-report-641-negative-thrust.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19930091716/downloads/19930091716.pdf",
+   "bytes": 18241499,
+   "sha256": "281d1e2845088e51a12253e678a89bc1b4abd1742d36e155761e02dcea8d9c77",
+   "file_type": "PDF, 24 pages",
+   "kind": "report",
+   "license": "NACA Report (US Government work).",
+   "use": "Negative thrust and torque of 2-, 3- and 4-blade 10-ft propellers (Clark Y, RAF 6), blade angles 15-90 deg. Fig. 13, 3-blade locked (nD/V 0), Tc = T/(rho V2 D2) read from the figure: about -0.040 at 0 deg, -0.038 at 10, -0.035 at 20, -0.025 at 40, -0.011 at 60, -0.002 at 80 deg (0.75R). Fig. 12: per-blade coefficients differ little between 2, 3 and 4 blades. Basis for stopped-propeller drag D = |Tc| rho V2 D2.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/hartman-1933-naca-report-464-negative-thrust-locked.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19930091538/downloads/19930091538.pdf",
+   "bytes": 12304031,
+   "sha256": "6b5d9edac2e3bb5b07e84db27a26edc3942f8551dad54c1dcffbb04d2f549e96",
+   "file_type": "PDF, 16 pages",
+   "kind": "report",
+   "license": "NACA Report (US Government work).",
+   "use": "Adjustable-pitch 4-ft metal propeller before a cowled nacelle: negative thrust and torque from V 0 to n 0, and locked-propeller drag 0-90 deg (fig. 12): Tc drops from 0.0227 at 22 deg to 0.0014 at 80 deg (feathered). Discusses locked, idling and free-wheeling propeller drag; body behind the propeller changes negative thrust.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/hedrick-douglass-1944-naca-arr-4h26-propeller-brakes.pdf",
+   "url": "https://ntrs.nasa.gov/api/citations/19930093338/downloads/19930093338.pdf",
+   "bytes": 13740556,
+   "sha256": "a15414f890c9a1a822b44acbd84241fa8b86db622538a45fd8c4576c798216f0",
+   "file_type": "PDF, 30 pages",
+   "kind": "report",
+   "license": "NACA Advance Restricted Report (US Government work).",
+   "use": "Thrust and torque of propellers used as aerodynamic brakes (Ames). Not yet read in detail.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/lutze-vt-aoe3134-yaw-moment.pdf",
+   "url": "https://archive.aoe.vt.edu/lutze/AOE3134/YawMoment.pdf",
+   "bytes": 224881,
+   "sha256": "9b3049a3879f65dade8ee10a13533ed5ec3bf35d29168fa743c86ec583eda38d",
+   "file_type": "PDF, 9 pages",
+   "kind": "course notes",
+   "license": "Copyright Virginia Tech (F. Lutze course notes). Reference only, do not redistribute.",
+   "use": "Vertical-tail yaw moment and DATCOM sidewash factor; confirms z_w positive down. Used by D10-R2.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/nicolosi-2016-vertical-tail-review.pdf",
+   "url": "https://www.fzt.haw-hamburg.de/pers/Scholz/ewade/2016/Paper_F_Nicolosi.pdf",
+   "bytes": 5164858,
+   "sha256": "eee026f0d020137a5d08bbe3764b965c4510123aab6975ba7a05d15d7809b0e1",
+   "file_type": "PDF, 15 pages",
+   "kind": "paper",
+   "license": "Copyright the authors; EWADE 2016 workshop download. Reference only, do not redistribute.",
+   "use": "Nicolosi, Ciliberti, Della Vecchia: vertical-tail design review; high-wing sidewash and DATCOM accuracy. Used by D10-R2.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/vanwonderen-2017-tudelft-msc-slipstream-directional.pdf",
+   "url": "https://repository.tudelft.nl/file/File_816fa12f-41dd-4c4f-a618-ebda43c94786",
+   "bytes": 15511187,
+   "sha256": "a810fbece2dad91d759b7835b6f3a3b1bb4d936ea839bb03d994fbf004741ff9",
+   "file_type": "PDF, 121 pages",
+   "kind": "thesis",
+   "license": "Copyright the author / TU Delft repository. Reference only, do not redistribute.",
+   "use": "N. J. van Wonderen: propeller slipstream effects on directional stability with a potential-flow model; DATCOM vertical-tail accuracy context. Used by D10-R2.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/rc-aero-data/nasa-tn-d-5361-lateral-directional-high-alpha.pdf",
+   "url": "https://jsbsim.sourceforge.net/NASA_TN_D-5361.pdf",
+   "bytes": 5083745,
+   "sha256": "51a7b16f4862425a5f2bcfd11bcc6a37e816e67596d4615f03d337a9130d4e9a",
+   "file_type": "PDF, 49 pages",
+   "kind": "report",
+   "license": "NASA Technical Note (US Government work), JSBSim mirror.",
+   "use": "Chambers et al.: lateral-directional stability of a twin-jet fighter at high alpha (Cnb,dyn, LCDP departure parameters). Method reference for spin/departure criteria; not RC data.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-18",
+   "parsed_ok": true
+  }
+ ],
+ "links": [
+  {
+   "url": "https://www.icas.org/icas_archive/ICAS2022/data/papers/ICAS2022_0873_paper.pdf",
+   "status": "downloaded",
+   "note": "See files; WebFetch returned 429, curl worked."
+  },
+  {
+   "url": "https://www.mdpi.com/2226-4310/10/4/350/html",
+   "status": "link only",
+   "note": "Open access (MDPI Aerospace 10(4):350, lateral-directional identification from wind-tunnel free flight); the PDF endpoint returned 403 to curl."
+  },
+  {
+   "url": "https://uhra.herts.ac.uk/id/eprint/15046/",
+   "status": "no public file",
+   "note": "Thomas, Richardson, Cooke 2012: Piper Cub J-3 RPV stability and control derivatives; repository record only."
+  },
+  {
+   "url": "https://upcommons.upc.edu/entities/publication/8012fb36-8984-4893-a342-eee56e0d9938",
+   "status": "link only",
+   "note": "UPC thesis: longitudinal control for the Ultra Stick 25e; reuses UMN models."
+  },
+  {
+   "url": "https://gallinazo.flightgear.org/uas/spin-testing/",
+   "status": "no data",
+   "note": "C. Olson: Ultra Stick 120 spin flights 14/15 (aft CG); qualitative, no numbers."
+  },
+  {
+   "url": "https://conservancy.umn.edu/items/98677e4c-9ea3-43ea-885c-1103afc4c9b4",
+   "status": "not checked",
+   "note": "UMN Baldr Flight 17 record (Ultra Stick 120 spin-susceptibility program); flights 12 and 13: items fd5d804c-7b02-4848-ba10-bf60da0b429b, 02931c48-beec-482b-9fd9-7e93ba07bb29."
+  },
+  {
+   "url": "https://ideals.illinois.edu/items/91241",
+   "status": "not checked",
+   "note": "UIUC thesis: unsteady aerodynamics of a subscale aerobatic aircraft at high angle of attack."
+  },
+  {
+   "url": "https://de3mirror.flightgear.org/fgdata/fgdata_2024_1/Aircraft-uiuc/models/",
+   "status": "link only",
+   "note": "UIUC aircraft model specifications used by FlightGear (LaRCsim UIUC models)."
+  },
+  {
+   "url": "https://ntrs.nasa.gov/citations/19800023828",
+   "status": "not downloaded",
+   "note": "Bihrle CR: rotary-balance data of a high-wing single-engine GA model (model B), alpha 8-90 deg, Omega b/2V 0-0.9; data without analysis. Low-wing companions: 19790021974, 19790022978."
+  },
+  {
+   "url": "https://ntrs.nasa.gov/citations/19780004097",
+   "status": "not downloaded",
+   "note": "NASA TP spin-tunnel part 2: low-wing model A, further tail/fuselage parametric studies."
+  },
+  {
+   "url": "https://uwe-repository.worktribe.com/file/1490886/1/Analysis%20of%20the%20spin%20dynamics%20of%20a%20single-engine%20low-wing%20aeroplane",
+   "status": "not checked",
+   "note": "UWE: spin dynamics of a single-engine low-wing aeroplane (full scale)."
+  },
+  {
+   "url": "https://purl.stanford.edu/wt901gg8724",
+   "status": "not checked",
+   "note": "Stanford thesis: automatic spin detection and recovery for small aircraft."
+  },
+  {
+   "url": "https://aerofly.com/dokuwiki/doku.php/aircraft:tmd:aerofuselage",
+   "status": "link only",
+   "note": "Aerofly FS 2 (commercial simulator) fuselage element: 2-16 stations, round or rectangular sections, starting values Cdy 1.0-1.5 (sideways drag), Cly 0.6 (side lift; higher needs less knife-edge sideslip), Cdz 1.2, Clz 0.5, Cm 0 or slightly positive. Tuning guidance, not measured data."
+  },
+  {
+   "url": "https://www.pressreader.com/usa/model-airplane-news/20180801/282106342345481",
+   "status": "link only",
+   "note": "Model Airplane News 2018-08: side-force generators on a large Ultra Stick give much slower knife-edge flight. Qualitative."
+  },
+  {
+   "url": "https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/2592296",
+   "status": "not downloaded",
+   "note": "Gryte et al. 2018 (ICUAS): Skywalker X8 flying-wing 6-DOF model, design tools versus wind tunnel; accepted version open. A 2025 CEAS Aeronautical Journal flight identification (Low-Hansen et al.) is cited elsewhere as open access; not checked."
+  },
+  {
+   "url": "https://scholarsarchive.byu.edu/etd/387",
+   "status": "blocked (403)",
+   "note": "Ostler 2006 BYU thesis: drag polars of small electric UAVs from flight data with tunnel-measured propeller efficiency; search summary quotes CD0 0.021 for one aircraft (not verified, PDF blocked)."
+  },
+  {
+   "url": "https://scholars.csus.edu/esploro/outputs/graduate/Basic-interchangeability-of-flight-test-methodology/99257830905501671",
+   "status": "not checked",
+   "note": "Cal State Sacramento thesis: flight-test methodology on a model aircraft; reports a measured stall speed."
+  },
+  {
+   "url": "https://wiredspace.wits.ac.za/items/3fad4647-a736-4ce9-be81-32a6100ef34c",
+   "status": "not checked",
+   "note": "Padayachee 2016 Wits thesis: aerodynamic identification of a low-cost UAV; pitch damping derivatives not identifiable."
+  },
+  {
+   "url": "https://yadda.icm.edu.pl/baztech/element/bwmeta1.element.baztech-article-BAT6-0015-0034/c/httpwww_ein_org_plsitesdefaultfiles2013-03-12.pdf",
+   "status": "not checked",
+   "note": "Grass-runway rolling friction (cites Stinton): about 0.05 short grass, 0.08 long grass, 0.13 long wet grass; full-scale wheels, a rough bound for RC grass takeoffs."
+  },
+  {
+   "url": "https://www.um.edu.mt/library/oar/handle/123456789/93085",
+   "status": "not checked",
+   "note": "University of Malta: windmilling versus locked propeller drag (CD against J and against V)."
+  },
+  {
+   "url": "https://m-selig.web.engr.illinois.edu/pubs/AnandaDetersSelig-2014-AIAA-2014-2152.pdf",
+   "status": "not downloaded",
+   "note": "Ananda, Deters, Selig 2014: flat-plate wings behind propellers at Re 60,000-90,000; lift-curve slope falls when the tractor propeller is near the windmill-brake state."
+  },
+  {
+   "url": "https://fast-ga.readthedocs.io/en/stable/_modules/fastga/models/aerodynamics/components/fuselage/compute_cn_beta_fuselage.html",
+   "status": "link only",
+   "note": "Raymer eq. 16.50 fuselage Cnb as implemented in FAST-GA. Used by D10-R2."
+  }
+ ]
+}

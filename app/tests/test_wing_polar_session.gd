@@ -79,9 +79,17 @@ func _initialize() -> void:
 		for name in ["p_radps","q_radps","r_radps","alt_m"]:
 			finite = finite and is_finite(float(trace.value(row,name)))
 	check("complete finite cross-controlled stall/recovery sequence",finite)
-	var recovered := true
+	# D10-R2: judged phase-independently. After the recovery input a decaying yaw oscillation remains; a 1 rad/s bound on
+	# every sample from 6 s read one swing of it (base 5.92 s, D10-R2 6.01 s). Autorotation is sustained same-sign rotation:
+	# the mean yaw rate over 6–8 s stays below 0.3 rad/s (≈ 0.06–0.08 recovered, ≈ 2.3 with pro-spin held) and the
+	# envelope has decayed below 1 rad/s by 7 s (≈ 0.3 recovered, ≈ 5.5–6.9 with pro-spin held).
+	var yaw_sum := 0.0
+	var late_peak := 0.0
 	for row in range(1440,1921):
-		recovered = recovered and absf(float(trace.value(row,"p_radps"))) < 1.0 and absf(float(trace.value(row,"r_radps"))) < 1.0
+		yaw_sum += float(trace.value(row,"r_radps"))
+		if row >= 1680:
+			late_peak = maxf(late_peak, maxf(absf(float(trace.value(row,"p_radps"))), absf(float(trace.value(row,"r_radps")))))
+	var recovered := absf(yaw_sum / 481.0) < 0.3 and late_peak < 1.0
 	check("synthetic fixture retains autorotation, then stops with the existing recovery input",float(trace.value(960,"r_radps")) > 1.0 and recovered)
 	print("Synthetic spin: p/r at 4 s = %s/%s, at 8 s = %s/%s (not physical acceptance)" % [trace.value(960,"p_radps"),trace.value(960,"r_radps"),trace.value(1920,"p_radps"),trace.value(1920,"r_radps")])
 	session.free()

@@ -35,10 +35,14 @@ const RB := preload("res://physics/rigid_body.gd")
 ## R11/D11g (2026-10-14): re-derived Cmq/CLq/Cnr move the 25 m/s spiral root to 0.02881546 1/s.
 ## Only that center changes; the independent manual Jacobian / SciPy calculation at three steps and the failed
 ## old-band control are retained in remediation/R11/d11g-root-integration. The 3% tolerance is unchanged.
+## D10-R2 (2026-10-18): Cnβ gains the fin's high-wing sidewash efficiency and the fuselage term (body_cn_beta −0.0532,
+## Cnb 0.1274 → 0.0742). Only the nine lateral centers move: dutch roll 0.569/0.745/1.193 → 0.447/0.530/0.822 Hz,
+## ζ 0.303/0.249/0.234 → 0.366/0.326/0.328, spiral 0.487/0.077/0.029 → 0.423/−0.050/−0.054 1/s (stable at 15/25 m/s);
+## every other center stays within 3%. Report: docs/research/flight-dynamics/stik-lateral-directional-2026-10-18.
 const BANDS := {
-	10.0: [0.90876188, 0.81032621, 0.16589314, 0.06879382, 0.07248863, 0.56864761, 0.30261772, 0.48693354, -11.08888985],
-	15.0: [1.17609159, 1.04149128, 0.09011891, 0.28653927, 0.05132270, 0.74453681, 0.24857131, 0.07693605, -15.42505926],
-	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 1.19343671, 0.23424972, 0.02881546, -25.19697216],
+	10.0: [0.90876188, 0.81032621, 0.16589314, 0.06879382, 0.07248863, 0.44657692, 0.36555910, 0.42302095, -11.08888985],
+	15.0: [1.17609159, 1.04149128, 0.09011891, 0.28653927, 0.05132270, 0.53036051, 0.32569783, -0.04975775, -15.42505926],
+	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 0.82247187, 0.32793166, -0.05423003, -25.19697216],
 }
 const TOL := 0.03
 ## Short-period damping floor per speed (default 0.5). D11d had to pin 10 m/s at 0.45 (ζ 0.47 with the tail's Cmq at

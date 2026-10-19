@@ -18,6 +18,8 @@ The .40 kit, full-size Extra 300L/330 and electric Extra 300 EXP are comparisons
 
 The owner-supplied RHB/Horizon Ultra Stick 120 material differs from the Jensen in dimensions and equipment. [Package findings](ugly-stik-new-files.md), [CAD audit](ugly-stik-new-files-cad.md), [inventory hashes](../../research/ugly-stik/new-files/inventory.json) and [CAD metadata](../../research/ugly-stik/new-files/metadata.json) preserve it separately. Original package: local only, `references/ultra-stick-120/Ultrastick V3/`; the redraw/manual relationship remains unconfirmed.
 
+Published Ultra Stick 25e/120 measurements (UMN flight identification, NASA FASER wind tunnel and flight spin) and other RC airframes' data are registered in [RC-class aerodynamic data sources](flight-dynamics/rc-aero-data-sources.md). Originals: local only, `references/rc-aero-data/`.
+
 MoJo's drawing identity and geometry remain unknown; only signature, format, size and hash were examined. Use the same CAD audit/inventory; the filename does not establish span or engine class. Original: local only, `references/mojo-60/MoJo Parts 60.dwg`.
 
 ## SebArt Avanti S A200

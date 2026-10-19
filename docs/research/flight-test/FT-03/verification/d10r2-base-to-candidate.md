@@ -1,0 +1,639 @@
+# Flight-test comparison
+
+Baseline before D10-R2 (data Cnβ 0.1274), candidate D10-R2 (Cnβ 0.0742); tolerance max(0.01, 0.01 × |baseline|).
+
+Card ft-card-v3 → ft-card-v3; commit 74945825ea → 74945825ea (candidate dirty).
+
+## Great Planes Extra 300S .60 — 0 change(s)
+
+## Jensen Das Ugly Stik 60 — 157 change(s)
+
+Aircraft data changed between the runs.
+
+| Test | Value | Baseline | Candidate | Change |
+| --- | --- | --- | --- | --- |
+| aero_sweep | aero_sweep[beta_15].cn | 0.0296 | 0.0164 | -0.0132 (-44.6 %) |
+| aero_sweep | aero_sweep[beta_15].cn_local | 0.0296 | 0.0164 | -0.0132 (-44.6 %) |
+| aero_sweep | aero_sweep[beta_15].cn_oracle | 0.0301 | 0.0162 | -0.0139 (-46.2 %) |
+| aero_sweep | aero_sweep[beta_20].cn_oracle | 0.0398 | 0.0215 | -0.0183 (-46.0 %) |
+| aero_sweep | aero_sweep[beta_25].cn_oracle | 0.0489 | 0.0264 | -0.0225 (-46.0 %) |
+| aero_sweep | aero_sweep[beta_30].cn_oracle | 0.0581 | 0.0315 | -0.0266 (-45.8 %) |
+| aero_sweep | aero_sweep[beta_45].cn_oracle | 0.0834 | 0.0458 | -0.0376 (-45.1 %) |
+| aero_sweep | aero_sweep[beta_60].cn_oracle | 0.1043 | 0.0582 | -0.0461 (-44.2 %) |
+| aero_sweep | aero_sweep[beta_90].cn_oracle | 0.1263 | 0.0731 | -0.0532 (-42.1 %) |
+| hands_off | hands_off.bank_10_s_deg | 12.1 | 1.4 | -10.7 (-88.4 %) |
+| hands_off | hands_off.bank_30_s_deg | 43.7 | 1.6 | -42.1 (-96.3 %) |
+| hands_off | hands_off.bank_after_aileron_pulse_deg | 9.5 | 6.9 | -2.6 (-27.4 %) |
+| hands_off | hands_off.heading_change_10_s_deg | 43.3 | 8.0 | -35.3 (-81.5 %) |
+| hands_off | hands_off.heading_change_30_s_deg | 374.4 | 31.6 | -342.8 (-91.6 %) |
+| hands_off | hands_off.height_change_10_s_m | -2.14 | 0.62 | +2.76 (+129.0 %) |
+| hands_off | hands_off.height_change_30_s_m | -88.75 | 1.17 | +89.92 (+101.3 %) |
+| hands_off | hands_off.phugoid_period_s | None | 11.6 |  |
+| hands_off | hands_off.speed_change_10_s_mps | 1.69 | 0.97 | -0.72 (-42.6 %) |
+| hands_off | hands_off.speed_change_30_s_mps | 8.97 | 0.05 | -8.92 (-99.4 %) |
+| knife_edge | knife_edge[left_100pct].aileron_stick | -0.313 | -0.224 | +0.089 (+28.4 %) |
+| knife_edge | knife_edge[left_100pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge | knife_edge[left_100pct].height_change_10_s_m | -67.1 | -71.8 | -4.7 (-7.0 %) |
+| knife_edge | knife_edge[left_100pct].pitch_attitude_deg | 5.8 | 4.4 | -1.4 (-24.1 %) |
+| knife_edge | knife_edge[left_100pct].sideslip_deg | -17.2 | -20.7 | -3.5 (-20.3 %) |
+| knife_edge | knife_edge[left_100pct].speed_after_5_s_mps | 33.85 | 34.23 | +0.38 (+1.1 %) |
+| knife_edge | knife_edge[left_100pct].speed_end_mps | 33.35 | 36.65 | +3.3 (+9.9 %) |
+| knife_edge | knife_edge[left_100pct].vertical_speed_mps | -6.65 | -10.13 | -3.48 (-52.3 %) |
+| knife_edge | knife_edge[left_50pct].aileron_stick | -0.333 | -0.251 | +0.082 (+24.6 %) |
+| knife_edge | knife_edge[left_50pct].elevator_stick | 0.004 | -0.011 | -0.015 (-375.0 %) |
+| knife_edge | knife_edge[left_50pct].height_change_10_s_m | -157.4 | -181.1 | -23.7 (-15.1 %) |
+| knife_edge | knife_edge[left_50pct].pitch_attitude_deg | -25.4 | -29.0 | -3.6 (-14.2 %) |
+| knife_edge | knife_edge[left_50pct].sideslip_deg | -17.3 | -20.8 | -3.5 (-20.2 %) |
+| knife_edge | knife_edge[left_50pct].speed_after_5_s_mps | 29.0 | 30.64 | +1.64 (+5.7 %) |
+| knife_edge | knife_edge[left_50pct].speed_end_mps | 31.29 | 34.57 | +3.28 (+10.5 %) |
+| knife_edge | knife_edge[left_50pct].vertical_speed_mps | -20.87 | -25.56 | -4.69 (-22.5 %) |
+| knife_edge | knife_edge[right_100pct].aileron_stick | 0.36 | 0.276 | -0.084 (-23.3 %) |
+| knife_edge | knife_edge[right_100pct].elevator_stick | 0.004 | -0.009 | -0.013 (-325.0 %) |
+| knife_edge | knife_edge[right_100pct].height_change_10_s_m | -62.7 | -72.5 | -9.8 (-15.6 %) |
+| knife_edge | knife_edge[right_100pct].pitch_attitude_deg | 6.8 | 4.4 | -2.4 (-35.3 %) |
+| knife_edge | knife_edge[right_100pct].sideslip_deg | 17.2 | 20.7 | +3.5 (+20.3 %) |
+| knife_edge | knife_edge[right_100pct].speed_after_5_s_mps | 33.73 | 34.36 | +0.63 (+1.9 %) |
+| knife_edge | knife_edge[right_100pct].speed_end_mps | 33.11 | 36.52 | +3.41 (+10.3 %) |
+| knife_edge | knife_edge[right_100pct].vertical_speed_mps | -6.02 | -10.08 | -4.06 (-67.4 %) |
+| knife_edge | knife_edge[right_50pct].aileron_stick | 0.338 | 0.256 | -0.082 (-24.3 %) |
+| knife_edge | knife_edge[right_50pct].elevator_stick | 0.005 | -0.009 | -0.014 (-280.0 %) |
+| knife_edge | knife_edge[right_50pct].height_change_10_s_m | -155.1 | -179.4 | -24.3 (-15.7 %) |
+| knife_edge | knife_edge[right_50pct].pitch_attitude_deg | -25.0 | -28.4 | -3.4 (-13.6 %) |
+| knife_edge | knife_edge[right_50pct].sideslip_deg | 17.1 | 20.7 | +3.6 (+21.1 %) |
+| knife_edge | knife_edge[right_50pct].speed_after_5_s_mps | 28.9 | 30.59 | +1.69 (+5.8 %) |
+| knife_edge | knife_edge[right_50pct].speed_end_mps | 31.12 | 34.38 | +3.26 (+10.5 %) |
+| knife_edge | knife_edge[right_50pct].vertical_speed_mps | -20.53 | -25.19 | -4.66 (-22.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].aileron_stick | -0.312 | -0.231 | +0.081 (+26.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].height_change_10_s_m | -51.4 | -93.4 | -42 (-81.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].pitch_attitude_deg | 7.5 | 0.6 | -6.9 (-92.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].sideslip_deg | -17.2 | -20.7 | -3.5 (-20.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_after_5_s_mps | 33.13 | 35.6 | +2.47 (+7.5 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_end_mps | 33.09 | 37.28 | +4.19 (+12.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].vertical_speed_mps | -5.58 | -12.7 | -7.12 (-127.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].aileron_stick | -0.334 | -0.251 | +0.083 (+24.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].elevator_stick | 0.004 | -0.011 | -0.015 (-375.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].height_change_10_s_m | -157.5 | -186.3 | -28.8 (-18.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].pitch_attitude_deg | -25.5 | -29.3 | -3.8 (-14.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].sideslip_deg | -17.3 | -20.8 | -3.5 (-20.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_after_5_s_mps | 29.03 | 31.0 | +1.97 (+6.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_end_mps | 31.3 | 34.61 | +3.31 (+10.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].vertical_speed_mps | -20.9 | -25.76 | -4.86 (-23.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].aileron_stick | 0.361 | 0.277 | -0.084 (-23.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].height_change_10_s_m | -44.6 | -84.4 | -39.8 (-89.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].pitch_attitude_deg | 8.9 | 2.0 | -6.9 (-77.5 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].sideslip_deg | 17.3 | 20.7 | +3.4 (+19.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_after_5_s_mps | 32.89 | 35.22 | +2.33 (+7.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_end_mps | 32.8 | 36.93 | +4.13 (+12.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].vertical_speed_mps | -4.79 | -11.72 | -6.93 (-144.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].aileron_stick | 0.338 | 0.256 | -0.082 (-24.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].elevator_stick | 0.005 | -0.009 | -0.014 (-280.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].height_change_10_s_m | -154.6 | -182.5 | -27.9 (-18.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].pitch_attitude_deg | -25.1 | -28.6 | -3.5 (-13.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].sideslip_deg | 17.1 | 20.7 | +3.6 (+21.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_after_5_s_mps | 28.89 | 30.8 | +1.91 (+6.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_end_mps | 31.12 | 34.4 | +3.28 (+10.5 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].vertical_speed_mps | -20.56 | -25.31 | -4.75 (-23.1 %) |
+| landing | landing.max_heading_error_deg | 2.0 | 0.5 | -1.5 (-75.0 %) |
+| landing | landing.rollout_m | 40.1 | 83.7 | +43.6 (+108.7 %) |
+| landing | landing.rollout_time_s | 6.21 | 13.84 | +7.63 (+122.9 %) |
+| landing | landing.touchdown_sink_mps | 0.48 | 0.49 | +0.01 (+2.1 %) |
+| loop | loop.heading_change_deg | 3.8 | 2.9 | -0.9 (-23.7 %) |
+| loop | loop.max_sideslip_deg | 1.4 | 2.7 | +1.3 (+92.9 %) |
+| modes | modes[0.8Vmax].dutch_roll_hz | 1.247 | 0.858 | -0.389 (-31.2 %) |
+| modes | modes[0.8Vmax].dutch_roll_zeta | 0.232 | 0.328 | +0.096 (+41.4 %) |
+| modes | modes[0.8Vmax].spiral_time_to_double_s | 26.1 | None |  |
+| modes | modes[0.8Vmax].spiral_time_to_half_s | None | 13.0 |  |
+| modes | modes[1.3Vs].dutch_roll_hz | 0.635 | 0.461 | -0.174 (-27.4 %) |
+| modes | modes[1.3Vs].dutch_roll_zeta | 0.26 | 0.33 | +0.07 (+26.9 %) |
+| modes | modes[1.3Vs].spiral_time_to_double_s | 6.0 | None |  |
+| modes | modes[1.3Vs].spiral_time_to_half_s | None | 19.8 |  |
+| modes | modes[start].dutch_roll_hz | 0.744 | 0.53 | -0.214 (-28.8 %) |
+| modes | modes[start].dutch_roll_zeta | 0.247 | 0.326 | +0.079 (+32.0 %) |
+| modes | modes[start].spiral_time_to_double_s | 8.8 | None |  |
+| modes | modes[start].spiral_time_to_half_s | None | 13.9 |  |
+| roll_rate | roll_rate[0.8Vmax_left].height_change_m | -10.8 | -9.8 | +1 (+9.3 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_roll_rate_dps | 234.7 | 222.0 | -12.7 (-5.4 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_sideslip_deg | 6.6 | 9.9 | +3.3 (+50.0 %) |
+| roll_rate | roll_rate[0.8Vmax_left].time_to_360_s | 1.68 | 1.83 | +0.15 (+8.9 %) |
+| roll_rate | roll_rate[0.8Vmax_right].height_change_m | -10.7 | -9.5 | +1.2 (+11.2 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_roll_rate_dps | 237.8 | 224.5 | -13.3 (-5.6 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_sideslip_deg | 6.0 | 9.3 | +3.3 (+55.0 %) |
+| roll_rate | roll_rate[0.8Vmax_right].time_to_360_s | 1.68 | 1.82 | +0.14 (+8.3 %) |
+| roll_rate | roll_rate[1.3Vs_left].height_change_m | -31.5 | -37.1 | -5.6 (-17.8 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_roll_rate_dps | 190.8 | 165.3 | -25.5 (-13.4 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_sideslip_deg | 13.5 | 19.3 | +5.8 (+43.0 %) |
+| roll_rate | roll_rate[1.3Vs_left].time_to_360_s | 2.93 | 3.22 | +0.29 (+9.9 %) |
+| roll_rate | roll_rate[1.3Vs_right].height_change_m | -29.2 | -33.2 | -4 (-13.7 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_roll_rate_dps | 201.4 | 181.3 | -20.1 (-10.0 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_sideslip_deg | 12.4 | 17.6 | +5.2 (+41.9 %) |
+| roll_rate | roll_rate[1.3Vs_right].time_to_360_s | 2.85 | 3.07 | +0.22 (+7.7 %) |
+| roll_rate | roll_rate[start_left].height_change_m | -25.7 | -28.8 | -3.1 (-12.1 %) |
+| roll_rate | roll_rate[start_left].max_roll_rate_dps | 190.7 | 166.5 | -24.2 (-12.7 %) |
+| roll_rate | roll_rate[start_left].max_sideslip_deg | 11.1 | 14.6 | +3.5 (+31.5 %) |
+| roll_rate | roll_rate[start_left].time_to_360_s | 2.61 | 2.88 | +0.27 (+10.3 %) |
+| roll_rate | roll_rate[start_right].height_change_m | -24.3 | -26.1 | -1.8 (-7.4 %) |
+| roll_rate | roll_rate[start_right].max_roll_rate_dps | 201.3 | 177.9 | -23.4 (-11.6 %) |
+| roll_rate | roll_rate[start_right].max_sideslip_deg | 10.3 | 13.6 | +3.3 (+32.0 %) |
+| roll_rate | roll_rate[start_right].time_to_360_s | 2.55 | 2.74 | +0.19 (+7.5 %) |
+| rudder_step | rudder_step[left].bank_after_2_75_s_deg | -104.1 | -84.6 | +19.5 (+18.7 %) |
+| rudder_step | rudder_step[left].max_sideslip_deg | 19.8 | 25.3 | +5.5 (+27.8 %) |
+| rudder_step | rudder_step[left].peak_roll_rate_dps | -61.9 | -60.7 | +1.2 (+1.9 %) |
+| rudder_step | rudder_step[left].peak_yaw_rate_dps | 58.3 | 78.7 | +20.4 (+35.0 %) |
+| rudder_step | rudder_step[left].pitch_change_deg | -64.2 | -63.1 | +1.1 (+1.7 %) |
+| rudder_step | rudder_step[right].bank_after_2_75_s_deg | 107.5 | 78.1 | -29.4 (-27.3 %) |
+| rudder_step | rudder_step[right].max_sideslip_deg | 20.3 | 26.1 | +5.8 (+28.6 %) |
+| rudder_step | rudder_step[right].peak_roll_rate_dps | 67.6 | 63.3 | -4.3 (-6.4 %) |
+| rudder_step | rudder_step[right].peak_yaw_rate_dps | 57.3 | 79.2 | +21.9 (+38.2 %) |
+| rudder_step | rudder_step[right].pitch_change_deg | -65.2 | -61.6 | +3.6 (+5.5 %) |
+| spin | spin[left].height_lost_per_turn_m | 26.0 | 28.3 | +2.3 (+8.8 %) |
+| spin | spin[left].max_alpha_deg | 28.4 | 28.7 | +0.3 (+1.1 %) |
+| spin | spin[left].recovery_time_s | 0.27 | 0.31 | +0.04 (+14.8 %) |
+| spin | spin[left].recovery_turns | 0.2 | 0.23 | +0.03 (+15.0 %) |
+| spin | spin[left].steady_turn_time_s | 1.29 | 1.32 | +0.03 (+2.3 %) |
+| spin | spin[left].total_height_lost_m | 119.0 | 126.8 | +7.8 (+6.6 %) |
+| spin | spin[left].turns_in_6_s | 3.09 | 2.98 | -0.11 (-3.6 %) |
+| spin | spin[right].height_lost_per_turn_m | 27.4 | 30.4 | +3 (+10.9 %) |
+| spin | spin[right].recovery_time_s | 0.58 | 0.68 | +0.1 (+17.2 %) |
+| spin | spin[right].recovery_turns | 0.16 | 0.18 | +0.02 (+12.5 %) |
+| spin | spin[right].steady_turn_time_s | 1.32 | 1.43 | +0.11 (+8.3 %) |
+| spin | spin[right].total_height_lost_m | 136.6 | 146.0 | +9.4 (+6.9 %) |
+| spin | spin[right].turns_in_6_s | 3.03 | 2.85 | -0.18 (-5.9 %) |
+| stall_power_off | stall_power_off.altitude_lost_m | 34.6 | 32.5 | -2.1 (-6.1 %) |
+| stall_power_off | stall_power_off.bank_in_first_second_deg | -80.7 | -77.8 | +2.9 (+3.6 %) |
+| stall_power_off | stall_power_off.max_bank_in_recovery_deg | 80.7 | 77.8 | -2.9 (-3.6 %) |
+| stall_power_off | stall_power_off.recovery_time_s | 3.32 | 3.19 | -0.13 (-3.9 %) |
+| stall_power_on | stall_power_on.altitude_lost_m | 5.7 | 5.9 | +0.2 (+3.5 %) |
+| stall_power_on | stall_power_on.bank_in_first_second_deg | -79.8 | -78.9 | +0.9 (+1.1 %) |
+| stall_power_on | stall_power_on.max_bank_in_recovery_deg | 79.8 | 78.9 | -0.9 (-1.1 %) |
+| takeoff | takeoff.max_heading_error_deg | 0.3 | 0.2 | -0.1 (-33.3 %) |
+| takeoff | takeoff.rudder_free_heading_change_3_s_deg | 3.8 | 2.0 | -1.8 (-47.4 %) |
+
+## P-51D Mustang 1/4 — 0 change(s)
+
+## Ventage Jet — 0 change(s)
+
+## Jensen Das Ugly Stik 60 · MAX-55AX — 146 change(s)
+
+Aircraft data changed between the runs.
+
+| Test | Value | Baseline | Candidate | Change |
+| --- | --- | --- | --- | --- |
+| knife_edge | validity | valid | not valid | |
+| aero_sweep | aero_sweep[beta_15].cn | 0.0297 | 0.0164 | -0.0133 (-44.8 %) |
+| aero_sweep | aero_sweep[beta_15].cn_local | 0.0297 | 0.0164 | -0.0133 (-44.8 %) |
+| aero_sweep | aero_sweep[beta_15].cn_oracle | 0.0301 | 0.0162 | -0.0139 (-46.2 %) |
+| aero_sweep | aero_sweep[beta_20].cn_oracle | 0.0399 | 0.0215 | -0.0184 (-46.1 %) |
+| aero_sweep | aero_sweep[beta_25].cn_oracle | 0.0489 | 0.0264 | -0.0225 (-46.0 %) |
+| aero_sweep | aero_sweep[beta_30].cn_oracle | 0.0581 | 0.0315 | -0.0266 (-45.8 %) |
+| aero_sweep | aero_sweep[beta_45].cn_oracle | 0.0835 | 0.0459 | -0.0376 (-45.0 %) |
+| aero_sweep | aero_sweep[beta_60].cn_oracle | 0.1044 | 0.0583 | -0.0461 (-44.2 %) |
+| aero_sweep | aero_sweep[beta_90].cn_oracle | 0.1264 | 0.0732 | -0.0532 (-42.1 %) |
+| glide | glide[2.0Vs].vertical_speed_mps | -0.65 | -0.64 | +0.01 (+1.5 %) |
+| hands_off | hands_off.bank_10_s_deg | 13.7 | 1.7 | -12 (-87.6 %) |
+| hands_off | hands_off.bank_30_s_deg | 33.6 | 4.3 | -29.3 (-87.2 %) |
+| hands_off | hands_off.bank_after_aileron_pulse_deg | 16.9 | 12.9 | -4 (-23.7 %) |
+| hands_off | hands_off.heading_change_10_s_deg | 56.9 | 24.9 | -32 (-56.2 %) |
+| hands_off | hands_off.heading_change_30_s_deg | 255.8 | 72.5 | -183.3 (-71.7 %) |
+| hands_off | hands_off.height_change_10_s_m | -7.37 | 2.8 | +10.17 (+138.0 %) |
+| hands_off | hands_off.height_change_30_s_m | -101.83 | -4.56 | +97.27 (+95.5 %) |
+| hands_off | hands_off.speed_change_10_s_mps | 3.81 | 1.14 | -2.67 (-70.1 %) |
+| hands_off | hands_off.speed_change_30_s_mps | 8.92 | 0.41 | -8.51 (-95.4 %) |
+| knife_edge | knife_edge[left_100pct].aileron_stick | -0.205 | -0.163 | +0.042 (+20.5 %) |
+| knife_edge | knife_edge[left_100pct].height_change_10_s_m | -9.9 | -6.9 | +3 (+30.3 %) |
+| knife_edge | knife_edge[left_100pct].pitch_attitude_deg | 10.9 | 7.9 | -3 (-27.5 %) |
+| knife_edge | knife_edge[left_100pct].rudder_stick | 0.605 | 0.185 | -0.42 (-69.4 %) |
+| knife_edge | knife_edge[left_100pct].sideslip_deg | -10.9 | -8.1 | +2.8 (+25.7 %) |
+| knife_edge | knife_edge[left_100pct].speed_after_5_s_mps | 35.09 | 37.03 | +1.94 (+5.5 %) |
+| knife_edge | knife_edge[left_100pct].speed_end_mps | 35.79 | 37.38 | +1.59 (+4.4 %) |
+| knife_edge | knife_edge[left_100pct].vertical_speed_mps | -0.34 | -0.1 | +0.24 (+70.6 %) |
+| knife_edge | knife_edge[left_50pct].aileron_stick | -0.315 | -0.3 | +0.015 (+4.8 %) |
+| knife_edge | knife_edge[left_50pct].height_change_10_s_m | -57.8 | -16.3 | +41.5 (+71.8 %) |
+| knife_edge | knife_edge[left_50pct].pitch_attitude_deg | 5.9 | 17.8 | +11.9 (+201.7 %) |
+| knife_edge | knife_edge[left_50pct].rudder_saturated_fraction | 1.0 | 0.0 | -1 (-100.0 %) |
+| knife_edge | knife_edge[left_50pct].rudder_stick | 1.0 | 0.693 | -0.307 (-30.7 %) |
+| knife_edge | knife_edge[left_50pct].sideslip_deg | -17.2 | -19.1 | -1.9 (-11.0 %) |
+| knife_edge | knife_edge[left_50pct].speed_after_5_s_mps | 31.51 | 30.7 | -0.81 (-2.6 %) |
+| knife_edge | knife_edge[left_50pct].speed_end_mps | 31.46 | 29.19 | -2.27 (-7.2 %) |
+| knife_edge | knife_edge[left_50pct].vertical_speed_mps | -6.21 | -0.57 | +5.64 (+90.8 %) |
+| knife_edge | knife_edge[right_100pct].aileron_stick | 0.248 | 0.203 | -0.045 (-18.1 %) |
+| knife_edge | knife_edge[right_100pct].height_change_10_s_m | -9.5 | -6.7 | +2.8 (+29.5 %) |
+| knife_edge | knife_edge[right_100pct].pitch_attitude_deg | 10.5 | 7.7 | -2.8 (-26.7 %) |
+| knife_edge | knife_edge[right_100pct].rudder_stick | -0.556 | -0.149 | +0.407 (+73.2 %) |
+| knife_edge | knife_edge[right_100pct].sideslip_deg | 10.6 | 7.9 | -2.7 (-25.5 %) |
+| knife_edge | knife_edge[right_100pct].speed_after_5_s_mps | 35.19 | 37.03 | +1.84 (+5.2 %) |
+| knife_edge | knife_edge[right_100pct].speed_end_mps | 35.84 | 37.39 | +1.55 (+4.3 %) |
+| knife_edge | knife_edge[right_100pct].vertical_speed_mps | -0.35 | -0.1 | +0.25 (+71.4 %) |
+| knife_edge | knife_edge[right_50pct].aileron_stick | 0.357 | 0.275 | -0.082 (-23.0 %) |
+| knife_edge | knife_edge[right_50pct].elevator_stick | 0.004 | -0.009 | -0.013 (-325.0 %) |
+| knife_edge | knife_edge[right_50pct].height_change_10_s_m | -54.7 | -52.6 | +2.1 (+3.8 %) |
+| knife_edge | knife_edge[right_50pct].pitch_attitude_deg | 6.6 | 7.3 | +0.7 (+10.6 %) |
+| knife_edge | knife_edge[right_50pct].sideslip_deg | 17.3 | 20.7 | +3.4 (+19.7 %) |
+| knife_edge | knife_edge[right_50pct].speed_after_5_s_mps | 31.38 | 31.04 | -0.34 (-1.1 %) |
+| knife_edge | knife_edge[right_50pct].speed_end_mps | 31.21 | 34.68 | +3.47 (+11.1 %) |
+| knife_edge | knife_edge[right_50pct].vertical_speed_mps | -5.78 | -7.83 | -2.05 (-35.5 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].aileron_stick | -0.304 | -0.223 | +0.081 (+26.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].elevator_stick | 0.005 | -0.01 | -0.015 (-300.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].height_change_10_s_m | 54.9 | 13.9 | -41 (-74.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].pitch_attitude_deg | 35.6 | 26.3 | -9.3 (-26.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].sideslip_deg | -17.1 | -20.7 | -3.6 (-21.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_after_5_s_mps | 33.25 | 36.6 | +3.35 (+10.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_end_mps | 29.23 | 35.1 | +5.87 (+20.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].vertical_speed_mps | 9.92 | 3.51 | -6.41 (-64.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].aileron_stick | -0.314 | -0.232 | +0.082 (+26.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].height_change_10_s_m | -51.2 | -86.7 | -35.5 (-69.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].pitch_attitude_deg | 5.6 | 1.3 | -4.3 (-76.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].sideslip_deg | -17.2 | -20.7 | -3.5 (-20.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_after_5_s_mps | 30.75 | 33.86 | +3.11 (+10.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_end_mps | 31.5 | 36.26 | +4.76 (+15.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].vertical_speed_mps | -6.32 | -11.87 | -5.55 (-87.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].aileron_stick | 0.373 | 0.288 | -0.085 (-22.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].elevator_stick | 0.003 | -0.01 | -0.013 (-433.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].height_change_10_s_m | 61.5 | 21.5 | -40 (-65.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].pitch_attitude_deg | 37.5 | 27.6 | -9.9 (-26.4 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].sideslip_deg | 17.3 | 20.7 | +3.4 (+19.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_after_5_s_mps | 32.92 | 36.15 | +3.23 (+9.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_end_mps | 28.72 | 34.63 | +5.91 (+20.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].vertical_speed_mps | 10.64 | 4.27 | -6.37 (-59.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].aileron_stick | 0.357 | 0.275 | -0.082 (-23.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].height_change_10_s_m | -47.1 | -81.5 | -34.4 (-73.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].pitch_attitude_deg | 6.3 | 2.0 | -4.3 (-68.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].sideslip_deg | 17.3 | 20.7 | +3.4 (+19.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_after_5_s_mps | 30.49 | 33.48 | +2.99 (+9.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_end_mps | 31.26 | 35.98 | +4.72 (+15.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].vertical_speed_mps | -5.93 | -11.37 | -5.44 (-91.7 %) |
+| landing | landing.max_heading_error_deg | 0.4 | 0.3 | -0.1 (-25.0 %) |
+| loop | loop.heading_change_deg | 0.9 | 0.5 | -0.4 (-44.4 %) |
+| loop | loop.max_sideslip_deg | 1.6 | 3.2 | +1.6 (+100.0 %) |
+| modes | modes[0.8Vmax].dutch_roll_hz | 1.583 | 1.083 | -0.5 (-31.6 %) |
+| modes | modes[0.8Vmax].dutch_roll_zeta | 0.244 | 0.35 | +0.106 (+43.4 %) |
+| modes | modes[0.8Vmax].spiral_time_to_double_s | 36.3 | None |  |
+| modes | modes[0.8Vmax].spiral_time_to_half_s | None | 14.1 |  |
+| modes | modes[start].dutch_roll_hz | 1.036 | 0.72 | -0.316 (-30.5 %) |
+| modes | modes[start].dutch_roll_zeta | 0.248 | 0.344 | +0.096 (+38.7 %) |
+| modes | modes[start].spiral_time_to_double_s | 16.6 | None |  |
+| modes | modes[start].spiral_time_to_half_s | None | 11.6 |  |
+| roll_rate | roll_rate[0.8Vmax_left].height_change_m | -7.8 | -5.7 | +2.1 (+26.9 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_roll_rate_dps | 273.0 | 260.7 | -12.3 (-4.5 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_sideslip_deg | 5.7 | 9.1 | +3.4 (+59.6 %) |
+| roll_rate | roll_rate[0.8Vmax_left].time_to_360_s | 1.44 | 1.58 | +0.14 (+9.7 %) |
+| roll_rate | roll_rate[0.8Vmax_right].height_change_m | -7.5 | -5.6 | +1.9 (+25.3 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_roll_rate_dps | 276.4 | 256.5 | -19.9 (-7.2 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_sideslip_deg | 5.2 | 8.6 | +3.4 (+65.4 %) |
+| roll_rate | roll_rate[0.8Vmax_right].time_to_360_s | 1.45 | 1.57 | +0.12 (+8.3 %) |
+| roll_rate | roll_rate[1.3Vs_left].height_change_m | -24.5 | -26.5 | -2 (-8.2 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_roll_rate_dps | 195.1 | 171.0 | -24.1 (-12.4 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_sideslip_deg | 10.5 | 13.7 | +3.2 (+30.5 %) |
+| roll_rate | roll_rate[1.3Vs_left].time_to_360_s | 2.58 | 2.84 | +0.26 (+10.1 %) |
+| roll_rate | roll_rate[1.3Vs_right].height_change_m | -23.5 | -24.9 | -1.4 (-6.0 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_roll_rate_dps | 200.4 | 178.9 | -21.5 (-10.7 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_sideslip_deg | 9.8 | 12.9 | +3.1 (+31.6 %) |
+| roll_rate | roll_rate[1.3Vs_right].time_to_360_s | 2.55 | 2.75 | +0.2 (+7.8 %) |
+| roll_rate | roll_rate[start_left].max_roll_rate_dps | 203.5 | 180.3 | -23.2 (-11.4 %) |
+| roll_rate | roll_rate[start_left].max_sideslip_deg | 7.9 | 11.1 | +3.2 (+40.5 %) |
+| roll_rate | roll_rate[start_left].time_to_360_s | 2.11 | 2.32 | +0.21 (+10.0 %) |
+| roll_rate | roll_rate[start_right].height_change_m | -16.1 | -15.9 | +0.2 (+1.2 %) |
+| roll_rate | roll_rate[start_right].max_roll_rate_dps | 207.3 | 188.0 | -19.3 (-9.3 %) |
+| roll_rate | roll_rate[start_right].max_sideslip_deg | 7.4 | 10.5 | +3.1 (+41.9 %) |
+| roll_rate | roll_rate[start_right].time_to_360_s | 2.1 | 2.27 | +0.17 (+8.1 %) |
+| rudder_step | rudder_step[left].bank_after_2_75_s_deg | -168.1 | -118.2 | +49.9 (+29.7 %) |
+| rudder_step | rudder_step[left].max_sideslip_deg | 21.3 | 26.6 | +5.3 (+24.9 %) |
+| rudder_step | rudder_step[left].peak_roll_rate_dps | -76.6 | -79.3 | -2.7 (-3.5 %) |
+| rudder_step | rudder_step[left].peak_yaw_rate_dps | 80.2 | 109.6 | +29.4 (+36.7 %) |
+| rudder_step | rudder_step[right].bank_after_2_75_s_deg | 171.1 | 115.3 | -55.8 (-32.6 %) |
+| rudder_step | rudder_step[right].max_sideslip_deg | 21.7 | 27.1 | +5.4 (+24.9 %) |
+| rudder_step | rudder_step[right].peak_roll_rate_dps | 79.9 | 78.1 | -1.8 (-2.3 %) |
+| rudder_step | rudder_step[right].peak_yaw_rate_dps | 79.4 | 109.6 | +30.2 (+38.0 %) |
+| rudder_step | rudder_step[right].pitch_change_deg | -60.9 | -64.0 | -3.1 (-5.1 %) |
+| spin | spin[left].height_lost_per_turn_m | 25.0 | 27.2 | +2.2 (+8.8 %) |
+| spin | spin[left].max_alpha_deg | 26.6 | 27.4 | +0.8 (+3.0 %) |
+| spin | spin[left].recovery_time_s | 0.25 | 0.36 | +0.11 (+44.0 %) |
+| spin | spin[left].recovery_turns | 0.22 | 0.28 | +0.06 (+27.3 %) |
+| spin | spin[left].steady_turn_time_s | 1.22 | 1.27 | +0.05 (+4.1 %) |
+| spin | spin[left].total_height_lost_m | 118.6 | 128.2 | +9.6 (+8.1 %) |
+| spin | spin[left].turns_in_6_s | 3.01 | 2.94 | -0.07 (-2.3 %) |
+| spin | spin[right].height_lost_per_turn_m | 24.6 | 28.7 | +4.1 (+16.7 %) |
+| spin | spin[right].max_alpha_deg | 26.6 | 27.5 | +0.9 (+3.4 %) |
+| spin | spin[right].recovery_time_s | 0.3 | 0.28 | -0.02 (-6.7 %) |
+| spin | spin[right].recovery_turns | 0.28 | 0.25 | -0.03 (-10.7 %) |
+| spin | spin[right].steady_turn_time_s | 1.13 | 1.26 | +0.13 (+11.5 %) |
+| spin | spin[right].total_height_lost_m | 124.1 | 127.0 | +2.9 (+2.3 %) |
+| spin | spin[right].turns_in_6_s | 3.18 | 2.84 | -0.34 (-10.7 %) |
+| stall_power_on | stall_power_on.altitude_lost_m | 12.6 | 12.4 | -0.2 (-1.6 %) |
+| stall_power_on | stall_power_on.bank_in_first_second_deg | -94.0 | -90.7 | +3.3 (+3.5 %) |
+| stall_power_on | stall_power_on.max_bank_in_recovery_deg | 94.0 | 90.7 | -3.3 (-3.5 %) |
+| takeoff | takeoff.rudder_free_heading_change_3_s_deg | 1.2 | 0.2 | -1 (-83.3 %) |
+
+## Jensen Das Ugly Stik 60 · MAX-61FX — 144 change(s)
+
+Aircraft data changed between the runs.
+
+| Test | Value | Baseline | Candidate | Change |
+| --- | --- | --- | --- | --- |
+| knife_edge | validity | not valid | valid | |
+| aero_sweep | aero_sweep[beta_15].cn | 0.0297 | 0.0164 | -0.0133 (-44.8 %) |
+| aero_sweep | aero_sweep[beta_15].cn_local | 0.0297 | 0.0164 | -0.0133 (-44.8 %) |
+| aero_sweep | aero_sweep[beta_15].cn_oracle | 0.0301 | 0.0162 | -0.0139 (-46.2 %) |
+| aero_sweep | aero_sweep[beta_20].cn_oracle | 0.0399 | 0.0215 | -0.0184 (-46.1 %) |
+| aero_sweep | aero_sweep[beta_25].cn_oracle | 0.0489 | 0.0264 | -0.0225 (-46.0 %) |
+| aero_sweep | aero_sweep[beta_30].cn_oracle | 0.0581 | 0.0315 | -0.0266 (-45.8 %) |
+| aero_sweep | aero_sweep[beta_45].cn_oracle | 0.0835 | 0.0459 | -0.0376 (-45.0 %) |
+| aero_sweep | aero_sweep[beta_60].cn_oracle | 0.1044 | 0.0583 | -0.0461 (-44.2 %) |
+| aero_sweep | aero_sweep[beta_90].cn_oracle | 0.1264 | 0.0732 | -0.0532 (-42.1 %) |
+| hands_off | hands_off.bank_10_s_deg | 14.4 | 2.4 | -12 (-83.3 %) |
+| hands_off | hands_off.bank_30_s_deg | 35.2 | 5.0 | -30.2 (-85.8 %) |
+| hands_off | hands_off.bank_after_aileron_pulse_deg | 17.0 | 13.0 | -4 (-23.5 %) |
+| hands_off | hands_off.heading_change_10_s_deg | 57.6 | 26.4 | -31.2 (-54.2 %) |
+| hands_off | hands_off.heading_change_30_s_deg | 270.4 | 80.8 | -189.6 (-70.1 %) |
+| hands_off | hands_off.height_change_10_s_m | -9.42 | 1.13 | +10.55 (+112.0 %) |
+| hands_off | hands_off.height_change_30_s_m | -115.92 | -5.95 | +110 (+94.9 %) |
+| hands_off | hands_off.speed_change_10_s_mps | 4.05 | 1.41 | -2.64 (-65.2 %) |
+| hands_off | hands_off.speed_change_30_s_mps | 9.21 | 0.63 | -8.58 (-93.2 %) |
+| knife_edge | knife_edge[left_100pct].aileron_stick | -0.224 | -0.183 | +0.041 (+18.3 %) |
+| knife_edge | knife_edge[left_100pct].bank_deg | -91.3 | -90.0 | +1.3 (+1.4 %) |
+| knife_edge | knife_edge[left_100pct].height_change_10_s_m | -11.2 | -7.6 | +3.6 (+32.1 %) |
+| knife_edge | knife_edge[left_100pct].pitch_attitude_deg | 12.9 | 8.7 | -4.2 (-32.6 %) |
+| knife_edge | knife_edge[left_100pct].rudder_stick | 0.648 | 0.203 | -0.445 (-68.7 %) |
+| knife_edge | knife_edge[left_100pct].sideslip_deg | -11.7 | -9.0 | +2.7 (+23.1 %) |
+| knife_edge | knife_edge[left_100pct].speed_after_5_s_mps | 36.08 | 37.04 | +0.96 (+2.7 %) |
+| knife_edge | knife_edge[left_100pct].speed_end_mps | 36.27 | 37.16 | +0.89 (+2.5 %) |
+| knife_edge | knife_edge[left_100pct].sustained | False | True |  |
+| knife_edge | knife_edge[left_100pct].vertical_speed_mps | 0.61 | -0.14 | -0.75 (-123.0 %) |
+| knife_edge | knife_edge[left_50pct].aileron_stick | -0.315 | -0.226 | +0.089 (+28.3 %) |
+| knife_edge | knife_edge[left_50pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge | knife_edge[left_50pct].height_change_10_s_m | -62.8 | -68.2 | -5.4 (-8.6 %) |
+| knife_edge | knife_edge[left_50pct].pitch_attitude_deg | 5.8 | 4.5 | -1.3 (-22.4 %) |
+| knife_edge | knife_edge[left_50pct].sideslip_deg | -17.2 | -20.7 | -3.5 (-20.3 %) |
+| knife_edge | knife_edge[left_50pct].speed_end_mps | 33.17 | 36.96 | +3.79 (+11.4 %) |
+| knife_edge | knife_edge[left_50pct].vertical_speed_mps | -6.61 | -10.05 | -3.44 (-52.0 %) |
+| knife_edge | knife_edge[right_100pct].aileron_stick | 0.263 | 0.221 | -0.042 (-16.0 %) |
+| knife_edge | knife_edge[right_100pct].bank_deg | 91.4 | 90.0 | -1.4 (-1.5 %) |
+| knife_edge | knife_edge[right_100pct].height_change_10_s_m | -10.8 | -7.4 | +3.4 (+31.5 %) |
+| knife_edge | knife_edge[right_100pct].pitch_attitude_deg | 12.1 | 8.5 | -3.6 (-29.8 %) |
+| knife_edge | knife_edge[right_100pct].rudder_stick | -0.589 | -0.168 | +0.421 (+71.5 %) |
+| knife_edge | knife_edge[right_100pct].sideslip_deg | 11.3 | 8.7 | -2.6 (-23.0 %) |
+| knife_edge | knife_edge[right_100pct].speed_after_5_s_mps | 35.91 | 37.01 | +1.1 (+3.1 %) |
+| knife_edge | knife_edge[right_100pct].speed_end_mps | 36.27 | 37.16 | +0.89 (+2.5 %) |
+| knife_edge | knife_edge[right_100pct].vertical_speed_mps | 0.24 | -0.14 | -0.38 (-158.3 %) |
+| knife_edge | knife_edge[right_50pct].aileron_stick | 0.357 | 0.274 | -0.083 (-23.2 %) |
+| knife_edge | knife_edge[right_50pct].elevator_stick | 0.004 | -0.009 | -0.013 (-325.0 %) |
+| knife_edge | knife_edge[right_50pct].height_change_10_s_m | -59.3 | -71.1 | -11.8 (-19.9 %) |
+| knife_edge | knife_edge[right_50pct].pitch_attitude_deg | 6.6 | 4.2 | -2.4 (-36.4 %) |
+| knife_edge | knife_edge[right_50pct].sideslip_deg | 17.3 | 20.7 | +3.4 (+19.7 %) |
+| knife_edge | knife_edge[right_50pct].speed_after_5_s_mps | 33.15 | 33.81 | +0.66 (+2.0 %) |
+| knife_edge | knife_edge[right_50pct].speed_end_mps | 32.93 | 36.92 | +3.99 (+12.1 %) |
+| knife_edge | knife_edge[right_50pct].vertical_speed_mps | -6.12 | -10.26 | -4.14 (-67.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].aileron_stick | -0.307 | -0.225 | +0.082 (+26.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].elevator_stick | 0.005 | -0.01 | -0.015 (-300.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].height_change_10_s_m | 39.8 | -9.2 | -49 (-123.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].pitch_attitude_deg | 31.4 | 21.0 | -10.4 (-33.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].sideslip_deg | -17.1 | -20.7 | -3.6 (-21.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_after_5_s_mps | 35.08 | 38.01 | +2.93 (+8.4 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_end_mps | 31.93 | 37.38 | +5.45 (+17.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].vertical_speed_mps | 8.22 | 0.17 | -8.05 (-97.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].aileron_stick | -0.315 | -0.232 | +0.083 (+26.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].height_change_10_s_m | -55.5 | -95.4 | -39.9 (-71.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].pitch_attitude_deg | 6.1 | 0.6 | -5.5 (-90.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].sideslip_deg | -17.2 | -20.7 | -3.5 (-20.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_after_5_s_mps | 32.71 | 35.58 | +2.87 (+8.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_end_mps | 33.1 | 37.88 | +4.78 (+14.4 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].vertical_speed_mps | -6.4 | -12.87 | -6.47 (-101.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].aileron_stick | 0.37 | 0.284 | -0.086 (-23.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].elevator_stick | 0.003 | -0.01 | -0.013 (-433.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].height_change_10_s_m | 47.8 | 0.9 | -46.9 (-98.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].pitch_attitude_deg | 33.3 | 22.7 | -10.6 (-31.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].sideslip_deg | 17.3 | 20.7 | +3.4 (+19.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_after_5_s_mps | 34.78 | 37.61 | +2.83 (+8.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_end_mps | 31.46 | 36.92 | +5.46 (+17.4 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].vertical_speed_mps | 9.14 | 1.31 | -7.83 (-85.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].aileron_stick | 0.357 | 0.275 | -0.082 (-23.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].elevator_stick | 0.004 | -0.01 | -0.014 (-350.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].height_change_10_s_m | -50.5 | -88.9 | -38.4 (-76.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].pitch_attitude_deg | 7.0 | 1.4 | -5.6 (-80.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].sideslip_deg | 17.3 | 20.7 | +3.4 (+19.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_after_5_s_mps | 32.47 | 35.2 | +2.73 (+8.4 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_end_mps | 32.85 | 37.56 | +4.71 (+14.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].vertical_speed_mps | -5.88 | -12.22 | -6.34 (-107.8 %) |
+| landing | landing.max_heading_error_deg | 0.3 | 0.2 | -0.1 (-33.3 %) |
+| loop | loop.heading_change_deg | 1.3 | 0.9 | -0.4 (-30.8 %) |
+| loop | loop.max_sideslip_deg | 1.8 | 3.8 | +2 (+111.1 %) |
+| modes | modes[start].dutch_roll_hz | 0.967 | 0.674 | -0.293 (-30.3 %) |
+| modes | modes[start].dutch_roll_zeta | 0.236 | 0.326 | +0.09 (+38.1 %) |
+| modes | modes[start].spiral_time_to_double_s | 16.0 | None |  |
+| modes | modes[start].spiral_time_to_half_s | None | 12.1 |  |
+| roll_rate | roll_rate[0.8Vmax_left].height_change_m | -8.1 | -6.2 | +1.9 (+23.5 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_roll_rate_dps | 267.5 | 258.3 | -9.2 (-3.4 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_sideslip_deg | 5.8 | 9.2 | +3.4 (+58.6 %) |
+| roll_rate | roll_rate[0.8Vmax_left].time_to_360_s | 1.47 | 1.6 | +0.13 (+8.8 %) |
+| roll_rate | roll_rate[0.8Vmax_right].height_change_m | -8.0 | -6.1 | +1.9 (+23.8 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_roll_rate_dps | 273.2 | 254.2 | -19 (-7.0 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_sideslip_deg | 5.4 | 8.8 | +3.4 (+63.0 %) |
+| roll_rate | roll_rate[0.8Vmax_right].time_to_360_s | 1.47 | 1.59 | +0.12 (+8.2 %) |
+| roll_rate | roll_rate[1.3Vs_left].height_change_m | -16.7 | -17.1 | -0.4 (-2.4 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_roll_rate_dps | 203.2 | 182.6 | -20.6 (-10.1 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_sideslip_deg | 8.2 | 11.3 | +3.1 (+37.8 %) |
+| roll_rate | roll_rate[1.3Vs_left].time_to_360_s | 2.1 | 2.3 | +0.2 (+9.5 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_roll_rate_dps | 208.2 | 192.4 | -15.8 (-7.6 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_sideslip_deg | 7.6 | 10.8 | +3.2 (+42.1 %) |
+| roll_rate | roll_rate[1.3Vs_right].time_to_360_s | 2.08 | 2.24 | +0.16 (+7.7 %) |
+| roll_rate | roll_rate[start_left].height_change_m | -16.9 | -17.3 | -0.4 (-2.4 %) |
+| roll_rate | roll_rate[start_left].max_roll_rate_dps | 202.8 | 182.0 | -20.8 (-10.3 %) |
+| roll_rate | roll_rate[start_left].max_sideslip_deg | 8.2 | 11.4 | +3.2 (+39.0 %) |
+| roll_rate | roll_rate[start_left].time_to_360_s | 2.11 | 2.31 | +0.2 (+9.5 %) |
+| roll_rate | roll_rate[start_right].height_change_m | -16.4 | -16.6 | -0.2 (-1.2 %) |
+| roll_rate | roll_rate[start_right].max_roll_rate_dps | 207.6 | 191.8 | -15.8 (-7.6 %) |
+| roll_rate | roll_rate[start_right].max_sideslip_deg | 7.7 | 10.8 | +3.1 (+40.3 %) |
+| roll_rate | roll_rate[start_right].time_to_360_s | 2.09 | 2.25 | +0.16 (+7.7 %) |
+| rudder_step | rudder_step[left].bank_after_2_75_s_deg | -163.1 | -116.3 | +46.8 (+28.7 %) |
+| rudder_step | rudder_step[left].max_sideslip_deg | 21.2 | 26.6 | +5.4 (+25.5 %) |
+| rudder_step | rudder_step[left].peak_roll_rate_dps | -76.2 | -78.9 | -2.7 (-3.5 %) |
+| rudder_step | rudder_step[left].peak_yaw_rate_dps | 75.9 | 103.5 | +27.6 (+36.4 %) |
+| rudder_step | rudder_step[right].bank_after_2_75_s_deg | 165.5 | 111.7 | -53.8 (-32.5 %) |
+| rudder_step | rudder_step[right].max_sideslip_deg | 21.8 | 27.3 | +5.5 (+25.2 %) |
+| rudder_step | rudder_step[right].peak_roll_rate_dps | 78.4 | 77.6 | -0.8 (-1.0 %) |
+| rudder_step | rudder_step[right].peak_yaw_rate_dps | 75.3 | 103.9 | +28.6 (+38.0 %) |
+| rudder_step | rudder_step[right].pitch_change_deg | -60.6 | -62.9 | -2.3 (-3.8 %) |
+| spin | spin[left].height_lost_per_turn_m | 27.2 | 29.5 | +2.3 (+8.5 %) |
+| spin | spin[left].max_alpha_deg | 26.6 | 27.7 | +1.1 (+4.1 %) |
+| spin | spin[left].recovery_time_s | 0.27 | 0.36 | +0.09 (+33.3 %) |
+| spin | spin[left].recovery_turns | 0.24 | 0.29 | +0.05 (+20.8 %) |
+| spin | spin[left].steady_turn_time_s | 1.32 | 1.3 | -0.02 (-1.5 %) |
+| spin | spin[left].total_height_lost_m | 121.6 | 136.0 | +14.4 (+11.8 %) |
+| spin | spin[left].turns_in_6_s | 2.63 | 2.77 | +0.14 (+5.3 %) |
+| spin | spin[right].height_lost_per_turn_m | 29.3 | 25.7 | -3.6 (-12.3 %) |
+| spin | spin[right].max_alpha_deg | 27.0 | 28.3 | +1.3 (+4.8 %) |
+| spin | spin[right].recovery_time_s | 0.3 | 0.5 | +0.2 (+66.7 %) |
+| spin | spin[right].recovery_turns | 0.29 | 0.26 | -0.03 (-10.3 %) |
+| spin | spin[right].steady_turn_time_s | 1.24 | 0.94 | -0.3 (-24.2 %) |
+| spin | spin[right].total_height_lost_m | 129.7 | 148.6 | +18.9 (+14.6 %) |
+| spin | spin[right].turns_in_6_s | 2.64 | 3.38 | +0.74 (+28.0 %) |
+| stall_power_on | stall_power_on.altitude_lost_m | 3.6 | 2.8 | -0.8 (-22.2 %) |
+| stall_power_on | stall_power_on.bank_in_first_second_deg | -98.6 | -96.1 | +2.5 (+2.5 %) |
+| stall_power_on | stall_power_on.max_bank_in_recovery_deg | 98.6 | 96.1 | -2.5 (-2.5 %) |
+| stall_power_on | stall_power_on.recovery_time_s | 2.62 | 2.66 | +0.04 (+1.5 %) |
+| takeoff | takeoff.max_heading_error_deg | 0.1 | 0.2 | +0.1 (+100.0 %) |
+| takeoff | takeoff.rudder_free_heading_change_3_s_deg | 0.7 | -0.4 | -1.1 (-157.1 %) |
+
+## Jensen Das Ugly Stik 60 · FS-64V — 149 change(s)
+
+Aircraft data changed between the runs.
+
+| Test | Value | Baseline | Candidate | Change |
+| --- | --- | --- | --- | --- |
+| aero_sweep | aero_sweep[beta_15].cn | 0.0297 | 0.0164 | -0.0133 (-44.8 %) |
+| aero_sweep | aero_sweep[beta_15].cn_local | 0.0297 | 0.0164 | -0.0133 (-44.8 %) |
+| aero_sweep | aero_sweep[beta_15].cn_oracle | 0.0301 | 0.0162 | -0.0139 (-46.2 %) |
+| aero_sweep | aero_sweep[beta_20].cn_oracle | 0.0399 | 0.0215 | -0.0184 (-46.1 %) |
+| aero_sweep | aero_sweep[beta_25].cn_oracle | 0.0489 | 0.0264 | -0.0225 (-46.0 %) |
+| aero_sweep | aero_sweep[beta_30].cn_oracle | 0.0581 | 0.0315 | -0.0266 (-45.8 %) |
+| aero_sweep | aero_sweep[beta_45].cn_oracle | 0.0835 | 0.0459 | -0.0376 (-45.0 %) |
+| aero_sweep | aero_sweep[beta_60].cn_oracle | 0.1044 | 0.0583 | -0.0461 (-44.2 %) |
+| aero_sweep | aero_sweep[beta_90].cn_oracle | 0.1264 | 0.0732 | -0.0532 (-42.1 %) |
+| glide | glide.best.path_angle_deg | 4.9 | 5.0 | +0.1 (+2.0 %) |
+| glide | glide[1.3Vs].path_angle_deg | 4.9 | 5.0 | +0.1 (+2.0 %) |
+| glide | glide[2.0Vs].glide_ratio | 73.33 | 75.13 | +1.8 (+2.5 %) |
+| glide | glide[2.0Vs].vertical_speed_mps | -0.25 | -0.24 | +0.01 (+4.0 %) |
+| hands_off | hands_off.bank_10_s_deg | 13.3 | -0.7 | -14 (-105.3 %) |
+| hands_off | hands_off.bank_30_s_deg | 35.7 | 4.7 | -31 (-86.8 %) |
+| hands_off | hands_off.bank_after_aileron_pulse_deg | 18.3 | 15.4 | -2.9 (-15.8 %) |
+| hands_off | hands_off.heading_change_10_s_deg | 51.6 | 22.0 | -29.6 (-57.4 %) |
+| hands_off | hands_off.heading_change_30_s_deg | 263.3 | 50.6 | -212.7 (-80.8 %) |
+| hands_off | hands_off.height_change_10_s_m | -1.56 | 10.09 | +11.65 (+746.8 %) |
+| hands_off | hands_off.height_change_30_s_m | -197.03 | -0.11 | +196.9 (+99.9 %) |
+| hands_off | hands_off.speed_change_10_s_mps | 2.41 | 0.26 | -2.15 (-89.2 %) |
+| hands_off | hands_off.speed_change_30_s_mps | 8.98 | 0.51 | -8.47 (-94.3 %) |
+| knife_edge | knife_edge[left_100pct].aileron_stick | -0.312 | -0.229 | +0.083 (+26.6 %) |
+| knife_edge | knife_edge[left_100pct].elevator_stick | 0.004 | -0.011 | -0.015 (-375.0 %) |
+| knife_edge | knife_edge[left_100pct].height_change_10_s_m | -104.0 | -131.6 | -27.6 (-26.5 %) |
+| knife_edge | knife_edge[left_100pct].pitch_attitude_deg | -7.9 | -13.5 | -5.6 (-70.9 %) |
+| knife_edge | knife_edge[left_100pct].sideslip_deg | -17.2 | -20.7 | -3.5 (-20.3 %) |
+| knife_edge | knife_edge[left_100pct].speed_after_5_s_mps | 30.17 | 31.74 | +1.57 (+5.2 %) |
+| knife_edge | knife_edge[left_100pct].speed_end_mps | 30.9 | 33.89 | +2.99 (+9.7 %) |
+| knife_edge | knife_edge[left_100pct].vertical_speed_mps | -13.03 | -18.72 | -5.69 (-43.7 %) |
+| knife_edge | knife_edge[left_50pct].aileron_stick | -0.317 | -0.234 | +0.083 (+26.2 %) |
+| knife_edge | knife_edge[left_50pct].elevator_stick | 0.004 | -0.011 | -0.015 (-375.0 %) |
+| knife_edge | knife_edge[left_50pct].height_change_10_s_m | -130.5 | -159.6 | -29.1 (-22.3 %) |
+| knife_edge | knife_edge[left_50pct].pitch_attitude_deg | -16.7 | -22.2 | -5.5 (-32.9 %) |
+| knife_edge | knife_edge[left_50pct].sideslip_deg | -17.3 | -20.7 | -3.4 (-19.7 %) |
+| knife_edge | knife_edge[left_50pct].speed_after_5_s_mps | 29.21 | 30.92 | +1.71 (+5.9 %) |
+| knife_edge | knife_edge[left_50pct].speed_end_mps | 30.37 | 33.29 | +2.92 (+9.6 %) |
+| knife_edge | knife_edge[left_50pct].vertical_speed_mps | -16.84 | -22.25 | -5.41 (-32.1 %) |
+| knife_edge | knife_edge[right_100pct].aileron_stick | 0.359 | 0.278 | -0.081 (-22.6 %) |
+| knife_edge | knife_edge[right_100pct].elevator_stick | 0.005 | -0.008 | -0.013 (-260.0 %) |
+| knife_edge | knife_edge[right_100pct].height_change_10_s_m | -98.1 | -127.2 | -29.1 (-29.7 %) |
+| knife_edge | knife_edge[right_100pct].pitch_attitude_deg | -6.5 | -12.4 | -5.9 (-90.8 %) |
+| knife_edge | knife_edge[right_100pct].sideslip_deg | 17.2 | 20.7 | +3.5 (+20.3 %) |
+| knife_edge | knife_edge[right_100pct].speed_after_5_s_mps | 30.0 | 31.6 | +1.6 (+5.3 %) |
+| knife_edge | knife_edge[right_100pct].speed_end_mps | 30.67 | 33.65 | +2.98 (+9.7 %) |
+| knife_edge | knife_edge[right_100pct].vertical_speed_mps | -12.27 | -18.04 | -5.77 (-47.0 %) |
+| knife_edge | knife_edge[right_50pct].aileron_stick | 0.354 | 0.273 | -0.081 (-22.9 %) |
+| knife_edge | knife_edge[right_50pct].elevator_stick | 0.005 | -0.008 | -0.013 (-260.0 %) |
+| knife_edge | knife_edge[right_50pct].height_change_10_s_m | -126.0 | -155.6 | -29.6 (-23.5 %) |
+| knife_edge | knife_edge[right_50pct].pitch_attitude_deg | -15.7 | -21.2 | -5.5 (-35.0 %) |
+| knife_edge | knife_edge[right_50pct].sideslip_deg | 17.2 | 20.7 | +3.5 (+20.3 %) |
+| knife_edge | knife_edge[right_50pct].speed_after_5_s_mps | 29.05 | 30.77 | +1.72 (+5.9 %) |
+| knife_edge | knife_edge[right_50pct].speed_end_mps | 30.17 | 33.07 | +2.9 (+9.6 %) |
+| knife_edge | knife_edge[right_50pct].vertical_speed_mps | -16.25 | -21.66 | -5.41 (-33.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].aileron_stick | -0.312 | -0.23 | +0.082 (+26.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].elevator_stick | 0.004 | -0.011 | -0.015 (-375.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].height_change_10_s_m | -100.5 | -140.7 | -40.2 (-40.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].pitch_attitude_deg | -7.5 | -14.8 | -7.3 (-97.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].sideslip_deg | -17.2 | -20.7 | -3.5 (-20.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_after_5_s_mps | 30.06 | 32.15 | +2.09 (+7.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].speed_end_mps | 30.87 | 34.01 | +3.14 (+10.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_100pct].vertical_speed_mps | -12.84 | -19.45 | -6.61 (-51.5 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].aileron_stick | -0.317 | -0.235 | +0.082 (+25.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].elevator_stick | 0.004 | -0.011 | -0.015 (-375.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].height_change_10_s_m | -130.7 | -166.1 | -35.4 (-27.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].pitch_attitude_deg | -16.8 | -22.9 | -6.1 (-36.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].sideslip_deg | -17.3 | -20.7 | -3.4 (-19.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_after_5_s_mps | 29.23 | 31.22 | +1.99 (+6.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].speed_end_mps | 30.37 | 33.36 | +2.99 (+9.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[left_50pct].vertical_speed_mps | -16.88 | -22.65 | -5.77 (-34.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].aileron_stick | 0.36 | 0.278 | -0.082 (-22.8 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].elevator_stick | 0.005 | -0.008 | -0.013 (-260.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].height_change_10_s_m | -92.9 | -131.3 | -38.4 (-41.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].pitch_attitude_deg | -6.0 | -13.0 | -7 (-116.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].sideslip_deg | 17.2 | 20.7 | +3.5 (+20.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_after_5_s_mps | 29.82 | 31.82 | +2 (+6.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].speed_end_mps | 30.62 | 33.72 | +3.1 (+10.1 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_100pct].vertical_speed_mps | -11.97 | -18.42 | -6.45 (-53.9 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].aileron_stick | 0.354 | 0.272 | -0.082 (-23.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].elevator_stick | 0.005 | -0.009 | -0.014 (-280.0 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].height_change_10_s_m | -124.9 | -158.9 | -34 (-27.2 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].pitch_attitude_deg | -15.7 | -21.6 | -5.9 (-37.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].sideslip_deg | 17.2 | 20.7 | +3.5 (+20.3 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_after_5_s_mps | 29.02 | 30.93 | +1.91 (+6.6 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].speed_end_mps | 30.17 | 33.11 | +2.94 (+9.7 %) |
+| knife_edge_full_rudder | knife_edge_full_rudder[right_50pct].vertical_speed_mps | -16.25 | -21.88 | -5.63 (-34.6 %) |
+| landing | landing.max_heading_error_deg | 0.5 | 0.3 | -0.2 (-40.0 %) |
+| loop | loop.heading_change_deg | -3.0 | -9.3 | -6.3 (-210.0 %) |
+| loop | loop.height_change_m | 9.7 | 9.9 | +0.2 (+2.1 %) |
+| loop | loop.max_load_factor_g | 8.04 | 7.94 | -0.1 (-1.2 %) |
+| loop | loop.max_sideslip_deg | 4.3 | 8.2 | +3.9 (+90.7 %) |
+| modes | modes[0.8Vmax].dutch_roll_hz | 1.144 | 0.792 | -0.352 (-30.8 %) |
+| modes | modes[0.8Vmax].dutch_roll_zeta | 0.249 | 0.35 | +0.101 (+40.6 %) |
+| modes | modes[0.8Vmax].spiral_time_to_double_s | 20.0 | None |  |
+| modes | modes[0.8Vmax].spiral_time_to_half_s | None | 11.9 |  |
+| modes | modes[start].dutch_roll_hz | 1.042 | 0.724 | -0.318 (-30.5 %) |
+| modes | modes[start].dutch_roll_zeta | 0.251 | 0.348 | +0.097 (+38.6 %) |
+| modes | modes[start].spiral_time_to_double_s | 16.6 | None |  |
+| modes | modes[start].spiral_time_to_half_s | None | 11.6 |  |
+| roll_rate | roll_rate[0.8Vmax_left].height_change_m | -14.1 | -13.0 | +1.1 (+7.8 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_roll_rate_dps | 205.5 | 190.1 | -15.4 (-7.5 %) |
+| roll_rate | roll_rate[0.8Vmax_left].max_sideslip_deg | 7.1 | 10.4 | +3.3 (+46.5 %) |
+| roll_rate | roll_rate[0.8Vmax_left].time_to_360_s | 1.96 | 2.15 | +0.19 (+9.7 %) |
+| roll_rate | roll_rate[0.8Vmax_right].height_change_m | -13.6 | -13.0 | +0.6 (+4.4 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_roll_rate_dps | 208.6 | 196.6 | -12 (-5.8 %) |
+| roll_rate | roll_rate[0.8Vmax_right].max_sideslip_deg | 6.7 | 9.9 | +3.2 (+47.8 %) |
+| roll_rate | roll_rate[0.8Vmax_right].time_to_360_s | 1.96 | 2.12 | +0.16 (+8.2 %) |
+| roll_rate | roll_rate[1.3Vs_left].height_change_m | -19.0 | -19.6 | -0.6 (-3.2 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_roll_rate_dps | 188.0 | 168.9 | -19.1 (-10.2 %) |
+| roll_rate | roll_rate[1.3Vs_left].max_sideslip_deg | 8.5 | 11.7 | +3.2 (+37.6 %) |
+| roll_rate | roll_rate[1.3Vs_left].time_to_360_s | 2.3 | 2.53 | +0.23 (+10.0 %) |
+| roll_rate | roll_rate[1.3Vs_right].height_change_m | -18.2 | -18.4 | -0.2 (-1.1 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_roll_rate_dps | 193.9 | 178.3 | -15.6 (-8.0 %) |
+| roll_rate | roll_rate[1.3Vs_right].max_sideslip_deg | 8.0 | 11.1 | +3.1 (+38.7 %) |
+| roll_rate | roll_rate[1.3Vs_right].time_to_360_s | 2.28 | 2.45 | +0.17 (+7.5 %) |
+| roll_rate | roll_rate[start_left].height_change_m | -16.5 | -16.2 | +0.3 (+1.8 %) |
+| roll_rate | roll_rate[start_left].max_roll_rate_dps | 195.0 | 178.0 | -17 (-8.7 %) |
+| roll_rate | roll_rate[start_left].max_sideslip_deg | 7.7 | 11.0 | +3.3 (+42.9 %) |
+| roll_rate | roll_rate[start_left].time_to_360_s | 2.13 | 2.34 | +0.21 (+9.9 %) |
+| roll_rate | roll_rate[start_right].max_roll_rate_dps | 199.6 | 186.3 | -13.3 (-6.7 %) |
+| roll_rate | roll_rate[start_right].max_sideslip_deg | 7.3 | 10.5 | +3.2 (+43.8 %) |
+| roll_rate | roll_rate[start_right].time_to_360_s | 2.13 | 2.29 | +0.16 (+7.5 %) |
+| rudder_step | rudder_step[left].bank_after_2_75_s_deg | -169.4 | -125.7 | +43.7 (+25.8 %) |
+| rudder_step | rudder_step[left].max_sideslip_deg | 20.5 | 25.9 | +5.4 (+26.3 %) |
+| rudder_step | rudder_step[left].peak_roll_rate_dps | -76.7 | -79.2 | -2.5 (-3.3 %) |
+| rudder_step | rudder_step[left].peak_yaw_rate_dps | 79.0 | 107.8 | +28.8 (+36.5 %) |
+| rudder_step | rudder_step[left].pitch_change_deg | -61.9 | -62.7 | -0.8 (-1.3 %) |
+| rudder_step | rudder_step[right].bank_after_2_75_s_deg | 179.6 | 124.9 | -54.7 (-30.5 %) |
+| rudder_step | rudder_step[right].max_sideslip_deg | 21.3 | 26.8 | +5.5 (+25.8 %) |
+| rudder_step | rudder_step[right].peak_roll_rate_dps | 81.3 | 78.3 | -3 (-3.7 %) |
+| rudder_step | rudder_step[right].peak_yaw_rate_dps | 77.9 | 108.1 | +30.2 (+38.8 %) |
+| rudder_step | rudder_step[right].pitch_change_deg | -60.2 | -67.4 | -7.2 (-12.0 %) |
+| spin | spin[left].height_lost_per_turn_m | 25.5 | 27.2 | +1.7 (+6.7 %) |
+| spin | spin[left].max_alpha_deg | 25.6 | 26.4 | +0.8 (+3.1 %) |
+| spin | spin[left].recovery_time_s | 0.33 | 0.27 | -0.06 (-18.2 %) |
+| spin | spin[left].recovery_turns | 0.27 | 0.21 | -0.06 (-22.2 %) |
+| spin | spin[left].steady_turn_time_s | 1.28 | 1.39 | +0.11 (+8.6 %) |
+| spin | spin[left].total_height_lost_m | 115.1 | 116.8 | +1.7 (+1.5 %) |
+| spin | spin[left].turns_in_6_s | 2.77 | 2.73 | -0.04 (-1.4 %) |
+| spin | spin[right].height_lost_per_turn_m | 23.7 | 28.3 | +4.6 (+19.4 %) |
+| spin | spin[right].max_alpha_deg | 26.2 | 27.4 | +1.2 (+4.6 %) |
+| spin | spin[right].recovery_turns | 0.29 | 0.25 | -0.04 (-13.8 %) |
+| spin | spin[right].steady_turn_time_s | 1.15 | 1.31 | +0.16 (+13.9 %) |
+| spin | spin[right].total_height_lost_m | 117.6 | 122.1 | +4.5 (+3.8 %) |
+| spin | spin[right].turns_in_6_s | 3.08 | 2.68 | -0.4 (-13.0 %) |
+| stall_power_on | stall_power_on.altitude_lost_m | 4.9 | 4.3 | -0.6 (-12.2 %) |
+| stall_power_on | stall_power_on.bank_in_first_second_deg | -97.0 | -94.5 | +2.5 (+2.6 %) |
+| stall_power_on | stall_power_on.max_bank_in_recovery_deg | 97.0 | 94.5 | -2.5 (-2.6 %) |
+| takeoff | takeoff.rudder_free_heading_change_3_s_deg | 4.2 | 2.1 | -2.1 (-50.0 %) |
+
+## Turbo Lumber Evolution — 0 change(s)
+
+**596 change(s) beyond tolerance.**

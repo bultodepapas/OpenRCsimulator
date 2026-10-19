@@ -230,7 +230,7 @@ for t in "$HERE"/tests/test_*.gd; do
   # Stable software releases may include these disclosed experimental limits (release policy, 2026-10-16).
   # Direct script invocation without its matching flag remains strict; all other checks stay mandatory.
   case "$(basename "$t")" in
-    test_rudder_authority.gd) test_args=(-- --allow-known-stik-rudder-recovery) ;;
+    test_rudder_authority.gd) test_args=(-- --allow-known-stik-rudder-sideslip) ;;
     test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
