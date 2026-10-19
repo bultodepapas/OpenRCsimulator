@@ -1182,6 +1182,16 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if not Catalog.can_fly(base_id):
 		editor.set_note(tr("The source aircraft is not available in this catalog."))
 		return
+	var selected_field: Dictionary = FieldLoader.load_from(field_path)
+	if not selected_field.get("ok", false):
+		editor.set_note("; ".join(PackedStringArray(selected_field.get("errors", []))))
+		return
+	var selected_weather: Dictionary = flight.weather_config.duplicate(true) if flight != null \
+		else preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
+	var qualified: Dictionary = preload("res://workshop/start_qualification.gd").qualify(trial, selected_field.field, selected_weather, chosen_start)
+	if not qualified.get("ok", false) or not qualified.get("available", false):
+		editor.set_note(str(qualified.get("reason", "The selected trial start is unavailable.")))
+		return
 	# Suspend, but retain the old world and recorder until the complete new flight passes startup.
 	var previous: Node = flight
 	var previous_sky_transport: Dictionary = Atmosphere.cloud_transport_checkpoint()
@@ -1199,7 +1209,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.start_choice = chosen_start
 	candidate.interactive_start = true
 	candidate.external_controller_selection = controllers != null
-	candidate.weather_config = preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
+	candidate.weather_config = selected_weather.duplicate(true)
 	candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
 	candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
 	if previous != null:

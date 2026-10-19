@@ -1,0 +1,122 @@
+{
+	"actual_pixels": [
+		1280,
+		720
+	],
+	"compact": true,
+	"controls": {
+		"AircraftPreview": {
+			"rect": [
+				50.0,
+				136.0,
+				1180.0,
+				450.0
+			],
+			"visible": true
+		},
+		"CloseWorkshop": {
+			"rect": [
+				67.0,
+				48.0,
+				380.0,
+				75.4000015258789
+			],
+			"visible": false
+		},
+		"OpenLibrary": {
+			"rect": [
+				50.0,
+				48.0,
+				234.0,
+				76.0
+			],
+			"visible": false
+		},
+		"SaveVariant": {
+			"rect": [
+				50.0,
+				598.0,
+				388.0,
+				80.0
+			],
+			"visible": true
+		},
+		"TestFly": {
+			"rect": [
+				446.0,
+				598.0,
+				384.0,
+				80.0
+			],
+			"visible": true
+		},
+		"WorkshopColumns": {
+			"rect": [
+				50.0,
+				136.0,
+				1180.0,
+				450.0
+			],
+			"visible": true
+		},
+		"WorkshopPanel": {
+			"rect": [
+				24.0,
+				18.0,
+				1232.0,
+				684.0
+			],
+			"visible": true
+		},
+		"WorkshopScroll": {
+			"rect": [
+				50.0,
+				136.0,
+				632.0,
+				0.0
+			],
+			"visible": false
+		}
+	},
+	"dialog": "",
+	"dpi": 144,
+	"language": "es",
+	"logical_canvas": [
+		1280.0,
+		720.0
+	],
+	"overflow": [],
+	"page": "smoke",
+	"preview": {
+		"comparison_original": false,
+		"geometry": {
+			"height_fraction": 0.534073191986987,
+			"rect": [
+				343.238616943359,
+				71.4806671142578,
+				468.540863037109,
+				180.516738891602
+			],
+			"vertex_count": 143770,
+			"viewport": [
+				1180.0,
+				338.0
+			],
+			"width_fraction": 0.39706852799755
+		},
+		"mode": "inspect",
+		"pitch_deg": 0.0,
+		"standard_view": "side",
+		"yaw_deg": 90.0,
+		"zoom": 1.0
+	},
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"requested_pixels": [
+		1280,
+		720
+	],
+	"scale": 1.0,
+	"screen_pixels": "(3840, 2160)",
+	"text_scale": 2.0,
+	"window_mode": 0
+}

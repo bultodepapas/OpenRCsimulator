@@ -93,7 +93,7 @@ func _initialize() -> void:
 	var small_high: float = Carb.admission(0.01, 9000.0, 0.6, displacement, 1.0, capacity)
 	var x_low: float = Carb.demand_m3_s(3000.0, 0.6, displacement, 1.0) / capacity
 	var x_high: float = Carb.demand_m3_s(9000.0, 0.6, displacement, 1.0) / capacity
-	_check("small opening is choked at both speeds", 0.01 / x_low < Carb.CRITICAL_RATIO and 0.01 / x_high < Carb.CRITICAL_RATIO, "%g %g" % [0.01 / x_low, 0.01 / x_high])
+	_check("small opening is choked at both speeds", 0.01 / x_low < Carb.CRITICAL_RATIO and 0.01 / x_high < Carb.CRITICAL_RATIO, "%s %s" % [0.01 / x_low, 0.01 / x_high])
 	_near("choked charge falls as 1/rpm (ratio of speeds × wide-open ratios)", small_low / small_high,
 		3.0 * Carb.charge_ratio(1.0 / x_high) / Carb.charge_ratio(1.0 / x_low), 1e-12)
 	var open_fraction := 0.3

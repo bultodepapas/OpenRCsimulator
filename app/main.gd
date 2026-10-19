@@ -273,6 +273,16 @@ var _frametimes_sim_start_tick: int = 0
 var _note := ""
 var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
+const ProfileSmoke := preload("res://render/smoke/profile_smoke.gd")
+const AircraftCustomization := preload("res://render/aircraft_customization.gd")
+var _profile_smoke: Node3D
+var _profile_smoke_tick := 0
+var _profile_request_tape: Array = []
+var _profile_source_tape: Array = []
+var _profile_last_request := -1.0
+var _profile_last_running := false
+var _profile_presented_request := 0.0
+var _profile_presented_running := false
 var _smoke: EngineSmoke
 var _smoke_key_on := false
 var _smoke_assignment: SmokeAssignment
@@ -283,6 +293,17 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	var variant_launch: Dictionary = preload("res://workshop/launch.gd").from_args(args)
+	if not variant_launch.ok:
+		startup_error = "; ".join(PackedStringArray(variant_launch.errors))
+		printerr(startup_error)
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start: get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	if variant_launch.requested:
+		workshop_trial = variant_launch.trial.duplicate(true)
+		aircraft_id = variant_launch.base_id
 	if not interactive_start:
 		if args.has("start"):
 			start_choice = str(args.start)
@@ -435,7 +456,7 @@ func _ready() -> void:
 	if args.has("battery"):
 		battery_mode = str(args.get("battery", ""))
 	if battery_mode.is_empty():
-		battery_mode = "ideal" if not _electric_demo.is_empty() else Catalog.default_battery_mode(aircraft_id)
+		battery_mode = "ideal" if not _electric_demo.is_empty() or not workshop_trial.is_empty() else Catalog.default_battery_mode(aircraft_id)
 	if not Catalog.has_battery_mode(aircraft_id, battery_mode) or (battery_mode != "ideal" and not _electric_demo.is_empty()):
 		printerr("battery mode '%s' refused for '%s': use ideal, or pack where the catalog declares battery_data" % [battery_mode, aircraft_id])
 		set_process(false)
@@ -513,6 +534,7 @@ func _ready() -> void:
 		session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
 	else:
 		session.workshop_identity = workshop_trial.identity.duplicate(true)
+		session.workshop_presentation_identity = workshop_trial.get("presentation_identity", {}).duplicate(true)
 		session.setup("workshop://" + str(workshop_trial.identity.trial_id), str(workshop_trial.data.model.id), workshop_trial.data)
 	# Glow visuals use the exact propeller selected by the validated runtime model. Applying from the base geometry
 	# each time also handles installation-profile reloads that retain the same aircraft ID.
@@ -646,8 +668,21 @@ func _ready() -> void:
 	GroundGear.attach(_airplane, session)
 	# VQ-05: speed-driven propeller blur beside the model (never inside it); it only reads sim.aux[0] each frame.
 	PropellerBlur.attach(_airplane, session, self)
-	# SM: authored combustion outlet + accepted propulsion kind; previews/conversions stay clear.
-	if str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
+	# A frozen profile replaces the legacy exhaust rig. Global smoke-off suppresses
+	# either runtime, while technical trace/capture routes may still render a profile.
+	var profile_smoke_entries: Array = workshop_trial.get("presentation_profile", {}).get("smoke", [])
+	if not profile_smoke_entries.is_empty():
+		if str(args.get("smoke", "on")) != "off":
+			_smoke_key_on = str(args.get("smoke-pump", "off")) == "on"
+			var described := AircraftCustomization.describe(aircraft_id)
+			_profile_smoke = ProfileSmoke.new()
+			add_child(_profile_smoke)
+			if not described.get("ok", false) or not _profile_smoke.configure(workshop_trial.presentation_profile, described.get("bindings", {})):
+				startup_error = "The frozen smoke profile is no longer available."
+				return
+			_profile_smoke.play()
+			session.sim.stepped.connect(_sample_profile_smoke)
+	elif str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
 		var mouths: Array = _airplane.get("exhausts", [])
 		if mouths.size() == 1 and EngineSmoke.valid_anchor(mouths[0]) \
 				and Propulsion.source_kind(session.aircraft.model.propulsion) == mouths[0].kind:
@@ -860,6 +895,7 @@ func _update_cg_model() -> void:
 
 
 func _update_smoke() -> void:
+	_update_profile_smoke()
 	if _smoke == null or session == null:
 		return
 	var sim: Node = session.sim
@@ -884,7 +920,7 @@ func _update_smoke() -> void:
 
 
 func _begin_smoke_assignment() -> void:
-	if _smoke == null or not session.radio.connected or session.calibration != null or _smoke_assignment != null:
+	if not _supports_show_smoke() or not session.radio.connected or session.calibration != null or _smoke_assignment != null:
 		_note = tr("Connect a radio before assigning smoke AUX.")
 		return
 	_smoke_key_on = false
@@ -1070,6 +1106,8 @@ func _status() -> String:
 	line += "\n" + session.radio.describe()
 	if _smoke != null:
 		line += "\n" + tr("[H] smoke pump %s  [J] assign radio AUX") % ("on" if _smoke.levels.pump > 0.0 else "off")
+	elif _supports_show_smoke():
+		line += "\n" + tr("[H] show smoke %s  [J] assign radio AUX") % ("on" if _profile_last_request > 0.0 else "off")
 	if session.calibration != null:
 		line += "\nCALIBRATION %s  [Esc] cancel" % session.calibration.prompt()
 		if session.calibration.error != "":
@@ -1120,7 +1158,7 @@ func _pose_of(s: PackedFloat64Array) -> Dictionary:
 func controller_capabilities() -> Dictionary:
 	return {
 		"gear": session != null and session.gear_is_retractable(),
-		"smoke": _smoke != null and _smoke.supports_pump(),
+		"smoke": _supports_show_smoke(),
 		"flaps": session != null and session.flaps_available(),
 	}
 
@@ -1146,7 +1184,7 @@ func controller_action(action: String) -> bool:
 		"lights_cycle": _cycle_night_lights()
 		"smoke_toggle":
 			if session.sim.paused: return true
-			if _smoke == null or not _smoke.supports_pump():
+			if not _supports_show_smoke():
 				_note = tr("Smoke is not available on this aircraft.")
 			elif session.radio.auxiliary_action(action):
 				_note = tr("Smoke pump: on") if session.radio.smoke_amount() > 0.0 else tr("Smoke pump: off")
@@ -1313,7 +1351,7 @@ func _request_restart() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if _smoke_assignment != null:
 		return
-	if event.is_action_pressed("smoke_pump") and not event.is_echo() and _smoke != null and not session.sim.paused and not session.radio.connected:
+	if event.is_action_pressed("smoke_pump") and not event.is_echo() and _supports_show_smoke() and not session.sim.paused and not session.radio.connected:
 		_smoke_key_on = not _smoke_key_on
 		get_viewport().set_input_as_handled()
 		return
@@ -1474,10 +1512,16 @@ func _overlay_snapshot() -> Dictionary:
 		snap.control_guide.capabilities = controller_capabilities()
 		snap.control_guide.equipment_state = {
 			gear = session.gear_state().get("status", "unavailable"),
-			smoke = "on" if _smoke != null and float(_smoke.levels.pump) > 0.0 else "off",
+			smoke = "on" if _smoke_requested_for_presentation() else "off",
 			flaps = session.flap_state(),
 		}
 	return snap
+
+
+func _smoke_requested_for_presentation() -> bool:
+	if _profile_smoke != null:
+		return session.radio.smoke_amount() > 0.0 if session.radio.connected else _smoke_key_on
+	return _smoke != null and float(_smoke.levels.pump) > 0.0
 
 
 ## Shows or hides the flight's text overlays (input panel and HUD). A menu hides them: the paused picture then
@@ -1657,6 +1701,7 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 		return {ok = false, physics_restored = true, economics_restored = not prepared_economics.is_empty(), errors = ["physics restored, but visual scene changed during restoration"]}
 	_visual_timeline = decoded.timeline.duplicate(true)
 	_smoke_key_on = false
+	_reset_profile_smoke()
 	if _smoke != null:
 		_smoke.reset() # a physical checkpoint carries no particle history
 	if _scenery_damage_director != null:
@@ -1988,6 +2033,7 @@ func _on_resetting() -> void:
 			or session.weather_configuration() != flight_scenario.weather_config):
 		_forget_scenario() # developer reload/environment replacement is no longer the accepted random draw
 	_smoke_key_on = false
+	_reset_profile_smoke()
 	if _smoke != null:
 		_smoke.reset()
 	_visual_timeline = VisualTimeline.create(lighting_config).timeline
@@ -2070,6 +2116,13 @@ func _build_world() -> bool:
 	if _airplane.is_empty():
 		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
 		return false
+	if not workshop_trial.is_empty():
+		var applied := AircraftCustomization.apply(_airplane, workshop_trial.get("presentation_profile", {}))
+		if not applied.get("ok", false):
+			startup_error = "; ".join(PackedStringArray(applied.get("errors", [])))
+			_airplane.root.free()
+			_airplane = {}
+			return false
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	Atmosphere.configure_appearance(sky_config)
 	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot, night_options)
@@ -2148,11 +2201,10 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	# root_transform replaces the basis each frame; restore the presentation-only uniform scale.
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
-	AirplaneBuilder.apply_surfaces(_airplane, _surface_rotations_for_render(c))
+	AirplaneBuilder.apply_controls(_airplane, _surface_rotations_for_render(c), float(c.get("throttle", 0.0)))
 	if session != null and session.flaps_available():
 		var flap_state: Dictionary = session.flap_state()
 		AirplaneBuilder.apply_flaps(_airplane, float(flap_state.get("angle_deg", 0.0)))
-	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
 	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
@@ -2406,4 +2458,76 @@ func capture_evidence() -> Dictionary:
 			engine_shadows = Atmosphere.engine_shadows, physics_state = Array(session.sim.state),
 			controls = session.commands, surfaces = session.surfaces(), propeller_angle_rad = _airplane.propeller.rotation.z},
 		seed = {kind = "not-used", note = "procedural shaders use fixed analytic noise; no RNG"},
+		presentation_identity = session.workshop_presentation_identity.duplicate(true),
+		smoke_effects = _smoke_evidence(),
 	}
+
+
+func _smoke_evidence() -> Dictionary:
+	if _profile_smoke != null:
+		return {mode = "profile", profile_identity = session.workshop_presentation_identity.duplicate(true),
+			requested = _smoke_requested_for_presentation(), source_running = _profile_presented_running,
+			allocation = _profile_smoke.budget_info()}
+	var frozen_smoke: Array = workshop_trial.get("presentation_profile", {}).get("smoke", [])
+	if not frozen_smoke.is_empty():
+		return {mode = "profile", profile_identity = session.workshop_presentation_identity.duplicate(true),
+			requested = false, disabled = true}
+	if _smoke != null:
+		return {mode = "legacy", active = float(_smoke.levels.pump) > 0.0}
+	return {mode = "none"}
+
+
+func _sample_profile_smoke(tick: int, _time: float, _state: PackedFloat64Array,
+		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	if _profile_smoke == null: return
+	var request: float = session.radio.smoke_amount() if session.radio.connected else (1.0 if _smoke_key_on else 0.0)
+	var running: bool = session.propulsion_source_running() and session.crash.is_empty() and session.sim.fault_reason.is_empty()
+	if request != _profile_last_request:
+		_profile_request_tape.append({tick = tick, level = request})
+		_profile_last_request = request
+	if running != _profile_last_running:
+		_profile_source_tape.append({tick = tick, kind = Propulsion.source_kind(session.aircraft.model.propulsion), running = running, level = 1.0})
+		_profile_last_running = running
+	# Event tapes are bounded even while the renderer is not presenting this world.
+	if _profile_request_tape.size() > 256 or _profile_source_tape.size() > 256:
+		_reset_profile_smoke()
+
+
+func _update_profile_smoke() -> void:
+	if _profile_smoke == null or session == null or session.sim.paused: return
+	var tick: int = session.sim.tick
+	if tick < _profile_smoke_tick: _reset_profile_smoke()
+	var prop: Dictionary = session.aircraft.model.propulsion
+	var request: float = session.radio.smoke_amount() if session.radio.connected else (1.0 if _smoke_key_on else 0.0)
+	var elapsed := float(tick - _profile_smoke_tick) / 240.0
+	var transforms := AircraftCustomization.smoke_transforms(_airplane)
+	if _profile_smoke_tick == 0:
+		_profile_smoke.advance(0.0, {tick = 0, slot_transforms = transforms}, _render_wind(0.0), 0.0,
+			{kind = Propulsion.source_kind(prop), running = false, level = 1.0})
+	_profile_smoke.advance(elapsed, {tick = tick, slot_transforms = transforms,
+		camera_distance_m = _camera.global_position.distance_to(_airplane.root.global_position)}, _render_wind(session.sim.time()),
+		{level = _profile_presented_request, changes = _profile_request_tape.duplicate(true)},
+		{kind = Propulsion.source_kind(prop), running = _profile_presented_running, level = 1.0, changes = _profile_source_tape.duplicate(true)})
+	_profile_request_tape.clear()
+	_profile_source_tape.clear()
+	_profile_smoke_tick = tick
+	_profile_presented_request = request
+	_profile_presented_running = session.propulsion_source_running() and session.crash.is_empty() and session.sim.fault_reason.is_empty()
+
+
+func _supports_show_smoke() -> bool:
+	return (_profile_smoke != null and int(_profile_smoke.budget_info().get("show_emitters", 0)) > 0) \
+		or (_smoke != null and _smoke.supports_pump())
+
+
+func _reset_profile_smoke() -> void:
+	_profile_smoke_tick = session.sim.tick if session != null else 0
+	_profile_request_tape.clear()
+	_profile_source_tape.clear()
+	_profile_last_request = -1.0
+	_profile_last_running = false
+	_profile_presented_request = 0.0
+	_profile_presented_running = false
+	if _profile_smoke != null:
+		_profile_smoke.reset()
+		_profile_smoke.play()

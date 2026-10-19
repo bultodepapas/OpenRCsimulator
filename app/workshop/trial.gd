@@ -47,11 +47,13 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	var customization_script: Script = load("res://render/aircraft_customization.gd") \
 		if ResourceLoader.exists("res://render/aircraft_customization.gd") else null
 	var customization: Dictionary = {}
+	var presentation_bindings: Dictionary = {}
 	if customization_script != null:
 		customization = customization_script.describe(base_id)
 	var checked_profile: Dictionary
 	if bool(customization.get("ok", false)) and typeof(customization.get("bindings", null)) == TYPE_DICTIONARY:
 		var bindings: Dictionary = customization["bindings"]
+		presentation_bindings = bindings
 		if str(bindings.get("visual_family", "")) != visual_family \
 				or str(bindings.get("model_manifest_sha256", "")) != model_manifest_sha:
 			return {ok = false, errors = PackedStringArray(["Customization companion is stale relative to the frozen physical model manifest."])}
@@ -75,7 +77,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	if not bool(checked_profile.get("ok", false)):
 		return checked_profile
 	var normalized_profile: Dictionary = checked_profile["profile"]
-	var presentation_identity: Dictionary = profile_script.identity_record(normalized_profile)
+	var presentation_identity: Dictionary = profile_script.identity_record(normalized_profile, presentation_bindings)
 	if presentation_identity.is_empty():
 		return {ok = false, errors = PackedStringArray(["Presentation identity could not be constructed from the frozen profile."])}
 	presentation_identity["sha256"] = str(checked_profile.get("identity_sha256", ""))

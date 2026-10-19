@@ -77,11 +77,13 @@ An ID migration must preserve numeric values, array order and reduction order in
 
 A visual section can contain several components and moving nodes. A physical component can have no visible mesh. A contact references its physical role and optional visual section separately. Do not derive mass from mesh volume/material names or fracture strength from `openrc_section`.
 
-### Workbench customization bindings (proposed)
+<a id="workbench-customization-bindings-proposed"></a>
 
-Future [AE-24 customization](aircraft-editor.md#5-planned-player-facing-work) and [SM-10…15 emitters](../SMOKE-PLAN.md#future-user-customization--proposed-sm-10-onward) need generated authoring bindings under AS-08/10. Current manifests do not yet expose a generic editable paint/effects contract. Extend the owned schema and consumers together; do not add unrecognized keys to current manifests or Workshop v3 descriptors.
+### Workbench customization bindings
 
-| Proposed binding | Author supplies | Conformance gate |
+[AE-24 customization](../AIRCRAFT-WORKSHOP.md#supported-adjustments) now uses the separate generated `aircraft_customization.json` companion v2, sourced from `assets/aircraft/customization-bindings.json`. It registers solid paint targets, bounded EN/ES marking mounts and typed source/show emitters for five visual families. Seven presentation-source pins and engine 4.7.2 have a separate exported proof package. Physical manifests and Workshop v3 descriptors retain their existing contracts. [AE-24 evidence](../research/aircraft-editor/AE-24/README.md) records generation, runtime and package fixtures; broader material/decal and platform conformance remain open.
+
+| Binding or planned extension | Author supplies | Conformance gate |
 | --- | --- | --- |
 | Paint/decal region | Stable slot ID, target material/node or bounded panel, supported colors/patterns/text and optional authored left/right pair | Instance-owned edits; no material bleed; decals remain inside the approved panel; hinges/rotors animate correctly |
 | Source exhaust outlet | Stable binding to the authored outlet, propulsion instance/source kind, owning node and local position/direction; optional explicit show-pump capability at the same outlet | Preserve engine-running/source-kind gates and declared placement evidence; an estimated outlet stays labeled; UI cannot invent an exhaust nozzle |
@@ -90,9 +92,9 @@ Future [AE-24 customization](aircraft-editor.md#5-planned-player-facing-work) an
 
 A colored wingtip panel is cosmetic. A new winglet or tail shape is an AE-21b physical/model package: geometry, inventory, aero, hinges and contact/hull changes must agree. Keep physics quantities in their owning data; model slots reference them rather than duplicating values. Reuse existing free authoring/import tools and suitably licensed assets.
 
-Per-build colors, decals and show profiles get a separate presentation identity and preserve physical results. Changing the authored slot contract or model bytes still changes the model-manifest pin: old saved builds require an explicit compatible reader/migration or a clear refusal. Test two independent instances, renamed/reordered bindings, missing slots, legacy models with no optional slots, fresh generation and package closure. Existing AS-08/10 delivery does not close this proposed extension.
+Per-build colors, markings and show profiles have a separate presentation identity and preserve physical results. Authored slot/presentation-source changes alter the companion slot hash; they do not rewrite physical model-manifest identity. Physical model changes retain their own manifest/dependency gates. Old builds need an explicit compatible reader/migration or clear refusal. Instance isolation, missing slots, generation and separate proof packages have focused coverage; broader reordered bindings, platform and onboarding gates remain open. Decals, patterns, lights and camera slots are still extensions.
 
-Implement the extension in three reviews: schema/versioned readers and generator output; one procedural plus one imported fixture with authored slots; then runtime consumers and package conformance. AE-08a coordinates these in the [ordered Workbench packages](aircraft-editor.md#56-implementation-packages-and-order). Keep editable material selectors distinct from physical component IDs and source-outlet versus show-mount roles typed. A moving-surface slot follows its declared owning hinge; a propeller accent needs its blur representation checked too. Instance overrides or explicit material clones must preserve shared source resources. The [AE profile contract](aircraft-editor.md#55-presentation-contract-to-implement) owns saved values and identity; this section owns generated binding requirements. New source values must pass generation and old-version reader tests before UI exposure.
+Future binding extensions require schema/versioned readers and generator output, procedural/imported fixtures, then runtime and package conformance. AE coordinates these in the [ordered Workbench packages](aircraft-editor.md#56-implementation-packages-and-order). Keep material selectors distinct from physical component IDs. A moving-surface slot follows its authored hinge; propeller accents also need blur-representation checks. Instance edits must preserve shared source resources. The [AE presentation contract](aircraft-editor.md#55-accepted-presentation-contract-and-remaining-work) owns saved values/identity; this section owns authoring requirements. New fields need generation and historical-reader tests before exposure.
 
 ### Share semantics without replacing the numerical validators
 

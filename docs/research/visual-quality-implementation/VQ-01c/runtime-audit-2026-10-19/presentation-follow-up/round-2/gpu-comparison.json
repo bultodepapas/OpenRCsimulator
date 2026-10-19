@@ -1,0 +1,1427 @@
+{
+  "complete": true,
+  "engine": "Godot 4.7.2-stable",
+  "adapter": "RTX 3090",
+  "native_checks_per_process": 27,
+  "rendered_intervals_per_process": 511,
+  "comparisons": {
+    "gpu-after": {
+      "captures": 70,
+      "exactly_identical": 58,
+      "all_smoke_layers_identical": true,
+      "maximum_changed_pixels": 17,
+      "maximum_channel_delta": 15,
+      "rows": [
+        {
+          "file": "trim-exhaust__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "1e092d9cf0bd4e04acd6e2770d7cb49c314cc790956c2463e79076deeca62e5d",
+          "after_pixel_sha256": "bf5cd9911518fc7812affbcec3ea0c992071fc8ed38b47f88d115621888cc026",
+          "changed_pixels": 6,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 2.170138888888889e-06,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "after_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "after_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "90ba2051d029ab3462e3f35abb43f9e69280dd12f6721fd99310834e29f86014",
+          "after_pixel_sha256": "90ba2051d029ab3462e3f35abb43f9e69280dd12f6721fd99310834e29f86014",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "after_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "a31fd91dc6e750adeaf65c5d065d4dc854ae39fac6696445100d79f1a1b22a01",
+          "after_pixel_sha256": "a31fd91dc6e750adeaf65c5d065d4dc854ae39fac6696445100d79f1a1b22a01",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "9981742d57c02310567b780e92e80930eacb67e5246ab8a0cfe17018e59c5c91",
+          "after_pixel_sha256": "9981742d57c02310567b780e92e80930eacb67e5246ab8a0cfe17018e59c5c91",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "281086b01c0ffe2aae95038d17e276f11ec0470f89ec2894c25fc1cc6e34393b",
+          "after_pixel_sha256": "281086b01c0ffe2aae95038d17e276f11ec0470f89ec2894c25fc1cc6e34393b",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "a5337575bf4862907473bab44dfba8b0220ed91da0190cb5f355db3eb621ccee",
+          "after_pixel_sha256": "a5337575bf4862907473bab44dfba8b0220ed91da0190cb5f355db3eb621ccee",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "4d053570568a1f901a1927c02b9848c091786f154e5403eae6469b606e6b53c4",
+          "after_pixel_sha256": "4d053570568a1f901a1927c02b9848c091786f154e5403eae6469b606e6b53c4",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "2fa8b0f5078f54694b7a5eda8ab68f4208f48578a5889fa9330f0439f6e64855",
+          "after_pixel_sha256": "2fa8b0f5078f54694b7a5eda8ab68f4208f48578a5889fa9330f0439f6e64855",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "c08e6c9ae26ebbdbed599e2b22d7dae5cb96a797162129f42753d35e8e633187",
+          "after_pixel_sha256": "c08e6c9ae26ebbdbed599e2b22d7dae5cb96a797162129f42753d35e8e633187",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "28a66cf51847590aba01238cc136e0100c663a04da567529270fbbf71eae1915",
+          "after_pixel_sha256": "28a66cf51847590aba01238cc136e0100c663a04da567529270fbbf71eae1915",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "796e79f4367d15e8eb2b309879c8cd91379f8b81ddcd4aef27f00a4beda19631",
+          "after_pixel_sha256": "796e79f4367d15e8eb2b309879c8cd91379f8b81ddcd4aef27f00a4beda19631",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "cd76070799a10f0f25ef9fe63b06f395f5e09666266cd3175a7c6bc77410d211",
+          "after_pixel_sha256": "cd76070799a10f0f25ef9fe63b06f395f5e09666266cd3175a7c6bc77410d211",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "15d648fd9ad505983966f286baba04c2d68592ab4525830a74f62c12a5c7d849",
+          "after_pixel_sha256": "15d648fd9ad505983966f286baba04c2d68592ab4525830a74f62c12a5c7d849",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "after_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "after_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "dbf63dadad9e30503ecf60e74ea0df0af176cae1925aea49660935b690a6afe2",
+          "after_pixel_sha256": "dbf63dadad9e30503ecf60e74ea0df0af176cae1925aea49660935b690a6afe2",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "after_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "c043be33de1c6c03657a1ff1e433429f25fe655399480852c4a5ae6d143018b9",
+          "after_pixel_sha256": "b6111943f5744a68275cb301079f13907ba1b57f4b00e75a2b3f8aebf6ba9766",
+          "changed_pixels": 2,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 7.233796296296296e-07,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "after_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "after_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "aa01f3fdc11cf6903406b432530fae9640b4b2f85f6374420938d00b6496142c",
+          "after_pixel_sha256": "092eff5b659af90750a5baacc009a2ffd695b0b41d459207a2eaede8baa0c32a",
+          "changed_pixels": 5,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 1.8084490740740741e-06,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "after_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "c8e259b884b6455350909bf86e8c9ef65422dbefe9b19a4fc9fe4e76b31ed7f0",
+          "after_pixel_sha256": "e1d15dbcde63fabf9b1a60816ebf49b2f36fdb19f0abdf856277232c70e8a2f0",
+          "changed_pixels": 4,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 1.4467592592592592e-06,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "d2fec7c28c5e181261ae3f8d1868e8ef31685b5aed504bc9bc052b0053ac240c",
+          "after_pixel_sha256": "d2fec7c28c5e181261ae3f8d1868e8ef31685b5aed504bc9bc052b0053ac240c",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "895663b8d712da31e45f5efb8e9995e82d3674652eba55d98d1493443f4cc514",
+          "after_pixel_sha256": "895663b8d712da31e45f5efb8e9995e82d3674652eba55d98d1493443f4cc514",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "883055167b90a2e67361a8957002bc913cfcd9fae320457a7087f608b284d617",
+          "after_pixel_sha256": "871e1874ad933244142c6e9034169dc8c309d69861d1af044388bec41ef69475",
+          "changed_pixels": 1,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 3.616898148148148e-07,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "2b6e408c7dc13a4bd45ff56ade3e5360b55de4329fcdb994b9819e6e260dbeb3",
+          "after_pixel_sha256": "2b6e408c7dc13a4bd45ff56ade3e5360b55de4329fcdb994b9819e6e260dbeb3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "427cbb9266ce58ca19bd3cb01ed33842956070b0982d73213a15b2abc4b00d7d",
+          "after_pixel_sha256": "606958bed385c490d486ffa675117b25dddab15b1ae85e5984b912b94688ba16",
+          "changed_pixels": 8,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 2.8935185185185184e-06,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "9412e497d2b343581f9435544bf0b299dfaf57399beb0a88fa19deb9c0e8435f",
+          "after_pixel_sha256": "9412e497d2b343581f9435544bf0b299dfaf57399beb0a88fa19deb9c0e8435f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "9b5a89d583830105d98f69f51b5564badfbfdf558856e0bb3df11031b5e63189",
+          "after_pixel_sha256": "9b5a89d583830105d98f69f51b5564badfbfdf558856e0bb3df11031b5e63189",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "b99baac19537cc64fd393ebc2f7d8e2c82ec6575501f7ab5989246fc5f8badd6",
+          "after_pixel_sha256": "b99baac19537cc64fd393ebc2f7d8e2c82ec6575501f7ab5989246fc5f8badd6",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "bf8af4a60ba4c05111a3dc93e3a13089792b0541f52afeccf021363b978c5715",
+          "after_pixel_sha256": "bf8af4a60ba4c05111a3dc93e3a13089792b0541f52afeccf021363b978c5715",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "07994c824e322f7257fb091ad1aa969da8183da59443ba3078f7e9e1ff2e0fcd",
+          "after_pixel_sha256": "c7f796d738ac2d36ce023c5d513c4b9fcff712b57a02a880f89f5164e013f429",
+          "changed_pixels": 7,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 2.8935185185185184e-06,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "bfe3b54450a06b5e46e1bcafd5589c0b19337676e5acddb0ff2dbe99d76f812d",
+          "after_pixel_sha256": "bfe3b54450a06b5e46e1bcafd5589c0b19337676e5acddb0ff2dbe99d76f812d",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "5c7bfb2216707060a5ed168c347b832cf3e2b198aff821980ae8ab3e48e88451",
+          "after_pixel_sha256": "5c7bfb2216707060a5ed168c347b832cf3e2b198aff821980ae8ab3e48e88451",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "29464d9f5c318d3711dad11ebadaec8c053d05e4bbed0d9d372e16dada30532e",
+          "after_pixel_sha256": "29464d9f5c318d3711dad11ebadaec8c053d05e4bbed0d9d372e16dada30532e",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "a8516d19c76a1b8784097f185a28204936efb3d3182ab77fa6a1b729920f35ea",
+          "after_pixel_sha256": "a8516d19c76a1b8784097f185a28204936efb3d3182ab77fa6a1b729920f35ea",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "3a2cbf9c07e5c86073f754871b3098577f7a5536c7942a03a2746e231223bc18",
+          "after_pixel_sha256": "3a2cbf9c07e5c86073f754871b3098577f7a5536c7942a03a2746e231223bc18",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "after_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "after_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "f12994b5e6df12b16b817d59fe72d7672c1b6ebc6c42671a98631fe4595f24ed",
+          "after_pixel_sha256": "b4a36305e4bdb65106dc51f68a8df4459c81aa8e5e61f286ae85a9cb2c9cb11d",
+          "changed_pixels": 1,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 7.233796296296296e-07,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "after_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "3a21449ada6509d3440698a91a42577117c11412c8db55d9d21143817df43e0f",
+          "after_pixel_sha256": "3a21449ada6509d3440698a91a42577117c11412c8db55d9d21143817df43e0f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "bcaf50959b9cecf81cd71eabd6e3a2c65ea8725638a33801f9ec6ac8b905819e",
+          "after_pixel_sha256": "bcaf50959b9cecf81cd71eabd6e3a2c65ea8725638a33801f9ec6ac8b905819e",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "3920efe2af20a2af6c3a93d83378fe79192a7e47b6f6765260d1cde6b003f371",
+          "after_pixel_sha256": "3920efe2af20a2af6c3a93d83378fe79192a7e47b6f6765260d1cde6b003f371",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "b42e05abd1225b872b4584b0eaa728eb7e10a9331fe1a02d70eb0140b026d735",
+          "after_pixel_sha256": "b42e05abd1225b872b4584b0eaa728eb7e10a9331fe1a02d70eb0140b026d735",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "13591103a103895e40b6636838ec1145ee9c176f32e4996107fffc841fd559bf",
+          "after_pixel_sha256": "13591103a103895e40b6636838ec1145ee9c176f32e4996107fffc841fd559bf",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "ad51acb706d429f32b8f683130531d2930a798ee6ea423f7db0d6895ec7df2ee",
+          "after_pixel_sha256": "ad51acb706d429f32b8f683130531d2930a798ee6ea423f7db0d6895ec7df2ee",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "d78c57d9d03ff9886fa5f6e75bf52b99bea5a8c49c2de06924019448b090f6b9",
+          "after_pixel_sha256": "d78c57d9d03ff9886fa5f6e75bf52b99bea5a8c49c2de06924019448b090f6b9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "bd8f440848c2b8e4ae809bf68a8461a109c9d6c521ea4336b13710e3c3f46462",
+          "after_pixel_sha256": "bd8f440848c2b8e4ae809bf68a8461a109c9d6c521ea4336b13710e3c3f46462",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "937a6ba2e9f65a45c9a51af0136fbfc5dbf09597e7cb98c8501235ce4f85d542",
+          "after_pixel_sha256": "937a6ba2e9f65a45c9a51af0136fbfc5dbf09597e7cb98c8501235ce4f85d542",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "be73063cf7bf54f1b88c5295167d176b4573146a8d8960abb01557baac2a0068",
+          "after_pixel_sha256": "be73063cf7bf54f1b88c5295167d176b4573146a8d8960abb01557baac2a0068",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "a421d818fd90c61e02d22ebe0c6ef529aff4ca99f14b87d617f72a77f03216f7",
+          "after_pixel_sha256": "7ad0457e1ca0ac9a54fc2f8464b809c47227302b66df9041a60bf8b9bae91f58",
+          "changed_pixels": 2,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 7.233796296296296e-07,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "e96f28490fcc45028fc56386c8fd515feb882e76946e4939b424676e5247fbb3",
+          "after_pixel_sha256": "e96f28490fcc45028fc56386c8fd515feb882e76946e4939b424676e5247fbb3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "2f2d7d1cd982aad1cb07a20bbb613e4686cc7198d4b901eb09294883677968aa",
+          "after_pixel_sha256": "2f2d7d1cd982aad1cb07a20bbb613e4686cc7198d4b901eb09294883677968aa",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "916cd72f7ab5c1711d025af3baad16cdb7a73329b4ffeddc36d40939a33ffd0a",
+          "after_pixel_sha256": "9086cee57d1ad86732c824fb9112226a878b840a31ac9bb637ade785e4ca6af8",
+          "changed_pixels": 7,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 2.5318287037037036e-06,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "8b3c0c4ba1591e19a9b3395cd3154cbd0ee3bab44d4e370f6bb156fd75ae5bb7",
+          "after_pixel_sha256": "8b3c0c4ba1591e19a9b3395cd3154cbd0ee3bab44d4e370f6bb156fd75ae5bb7",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "a4c9a07f126b3eacba96ad4b735925123b1fc1cef3ac405b5438351ee4f719df",
+          "after_pixel_sha256": "333579afba7c2fc705d97fbed4afcacf54bbdba4a8d8528b43dbd181767d4dee",
+          "changed_pixels": 13,
+          "maximum_channel_delta": 7,
+          "mean_channel_delta": 1.0127314814814815e-05,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "e594159f986ef89d876d8272e03ffc0fb86792047dafe095a73db076c1115a36",
+          "after_pixel_sha256": "e594159f986ef89d876d8272e03ffc0fb86792047dafe095a73db076c1115a36",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "71f3be152fc93849924e7f17b3257c633c1a6c3b8cb8c856c07fc420427f2ddc",
+          "after_pixel_sha256": "71f3be152fc93849924e7f17b3257c633c1a6c3b8cb8c856c07fc420427f2ddc",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "42d2230c725b00081b960054709d0352638161cabd398bf4068009231e8f3f71",
+          "after_pixel_sha256": "e3b2b0d1fadfd86db4cf2d7f1d9093891fe81b069c865487a6da500436da930d",
+          "changed_pixels": 17,
+          "maximum_channel_delta": 15,
+          "mean_channel_delta": 1.9892939814814816e-05,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "4ba0fbe92d121331c8f7f30d2888c33b99b8255309af6c91fdcb102c0f436eb4",
+          "after_pixel_sha256": "4ba0fbe92d121331c8f7f30d2888c33b99b8255309af6c91fdcb102c0f436eb4",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "1b7ecb7305f57c7e23d3b392dacc605ad7e4e9620b6fd14166383335a0009c1e",
+          "after_pixel_sha256": "1b7ecb7305f57c7e23d3b392dacc605ad7e4e9620b6fd14166383335a0009c1e",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "b2938470275694f6cd1722ccaa2c813763ef13cf2905961a9e47230e39aa973e",
+          "after_pixel_sha256": "b2938470275694f6cd1722ccaa2c813763ef13cf2905961a9e47230e39aa973e",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "99c95766a5b1591a6d5b454671e6c6e94ef4402d1c50f770b4b5ee251f1e4ad4",
+          "after_pixel_sha256": "99c95766a5b1591a6d5b454671e6c6e94ef4402d1c50f770b4b5ee251f1e4ad4",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "985604d3d5a14fe6a9a23703c0d2da10b63ba56479da847be629a787b92c83d9",
+          "after_pixel_sha256": "985604d3d5a14fe6a9a23703c0d2da10b63ba56479da847be629a787b92c83d9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "1ddabe3a5ca748759aafb62a6b9df29111bd3854edfa222d48874d060425ab67",
+          "after_pixel_sha256": "1ddabe3a5ca748759aafb62a6b9df29111bd3854edfa222d48874d060425ab67",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        }
+      ]
+    },
+    "gpu-before-repeat": {
+      "captures": 70,
+      "exactly_identical": 59,
+      "all_smoke_layers_identical": true,
+      "maximum_changed_pixels": 12,
+      "maximum_channel_delta": 7,
+      "rows": [
+        {
+          "file": "trim-exhaust__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "1e092d9cf0bd4e04acd6e2770d7cb49c314cc790956c2463e79076deeca62e5d",
+          "after_pixel_sha256": "7616c4e99d3e5fbf538b1103d8fcbce1a7330d8e18ec5ed3d5f9c9633160ef4c",
+          "changed_pixels": 3,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 1.0850694444444444e-06,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "after_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "after_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "90ba2051d029ab3462e3f35abb43f9e69280dd12f6721fd99310834e29f86014",
+          "after_pixel_sha256": "90ba2051d029ab3462e3f35abb43f9e69280dd12f6721fd99310834e29f86014",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "after_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "a31fd91dc6e750adeaf65c5d065d4dc854ae39fac6696445100d79f1a1b22a01",
+          "after_pixel_sha256": "a31fd91dc6e750adeaf65c5d065d4dc854ae39fac6696445100d79f1a1b22a01",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "9981742d57c02310567b780e92e80930eacb67e5246ab8a0cfe17018e59c5c91",
+          "after_pixel_sha256": "9981742d57c02310567b780e92e80930eacb67e5246ab8a0cfe17018e59c5c91",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "281086b01c0ffe2aae95038d17e276f11ec0470f89ec2894c25fc1cc6e34393b",
+          "after_pixel_sha256": "281086b01c0ffe2aae95038d17e276f11ec0470f89ec2894c25fc1cc6e34393b",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "a5337575bf4862907473bab44dfba8b0220ed91da0190cb5f355db3eb621ccee",
+          "after_pixel_sha256": "a5337575bf4862907473bab44dfba8b0220ed91da0190cb5f355db3eb621ccee",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-on__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "4d053570568a1f901a1927c02b9848c091786f154e5403eae6469b606e6b53c4",
+          "after_pixel_sha256": "4d053570568a1f901a1927c02b9848c091786f154e5403eae6469b606e6b53c4",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "2fa8b0f5078f54694b7a5eda8ab68f4208f48578a5889fa9330f0439f6e64855",
+          "after_pixel_sha256": "2fa8b0f5078f54694b7a5eda8ab68f4208f48578a5889fa9330f0439f6e64855",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "c08e6c9ae26ebbdbed599e2b22d7dae5cb96a797162129f42753d35e8e633187",
+          "after_pixel_sha256": "c08e6c9ae26ebbdbed599e2b22d7dae5cb96a797162129f42753d35e8e633187",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "28a66cf51847590aba01238cc136e0100c663a04da567529270fbbf71eae1915",
+          "after_pixel_sha256": "28a66cf51847590aba01238cc136e0100c663a04da567529270fbbf71eae1915",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "796e79f4367d15e8eb2b309879c8cd91379f8b81ddcd4aef27f00a4beda19631",
+          "after_pixel_sha256": "796e79f4367d15e8eb2b309879c8cd91379f8b81ddcd4aef27f00a4beda19631",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "old-puffs-after-wind-change__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "cd76070799a10f0f25ef9fe63b06f395f5e09666266cd3175a7c6bc77410d211",
+          "after_pixel_sha256": "cd76070799a10f0f25ef9fe63b06f395f5e09666266cd3175a7c6bc77410d211",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "15d648fd9ad505983966f286baba04c2d68592ab4525830a74f62c12a5c7d849",
+          "after_pixel_sha256": "15d648fd9ad505983966f286baba04c2d68592ab4525830a74f62c12a5c7d849",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "after_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "after_pixel_sha256": "94cc4e0fb94a8ce5a11feac2f2eefad1f31469d3f3d87750162f7262ed3203c1",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "dbf63dadad9e30503ecf60e74ea0df0af176cae1925aea49660935b690a6afe2",
+          "after_pixel_sha256": "dbf63dadad9e30503ecf60e74ea0df0af176cae1925aea49660935b690a6afe2",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "pump-expired__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "after_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "c043be33de1c6c03657a1ff1e433429f25fe655399480852c4a5ae6d143018b9",
+          "after_pixel_sha256": "1795786635bb70d202a034f05a469073bde59e69620aa624666d97388e767fde",
+          "changed_pixels": 7,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 2.5318287037037036e-06,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "after_pixel_sha256": "499cb1e5464c75085fd4901bf80183d28975f85e9a083841930005ab5c59d7c9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "after_pixel_sha256": "36b70872ba24246b34afbedf1c5cba48019faff2d335ee0736e2fba3461f9e15",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "aa01f3fdc11cf6903406b432530fae9640b4b2f85f6374420938d00b6496142c",
+          "after_pixel_sha256": "aa01f3fdc11cf6903406b432530fae9640b4b2f85f6374420938d00b6496142c",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "trim-exhaust-repeat__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "after_pixel_sha256": "ecd0aa1702b58ce68705f3c81889e09fe7567047c6c5da63abad775868450235",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "c8e259b884b6455350909bf86e8c9ef65422dbefe9b19a4fc9fe4e76b31ed7f0",
+          "after_pixel_sha256": "a28053082e758afb5bda7526c4e99078a541a0ee79abf3ebd9602252c216a590",
+          "changed_pixels": 11,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 3.978587962962963e-06,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "d2fec7c28c5e181261ae3f8d1868e8ef31685b5aed504bc9bc052b0053ac240c",
+          "after_pixel_sha256": "d2fec7c28c5e181261ae3f8d1868e8ef31685b5aed504bc9bc052b0053ac240c",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "895663b8d712da31e45f5efb8e9995e82d3674652eba55d98d1493443f4cc514",
+          "after_pixel_sha256": "895663b8d712da31e45f5efb8e9995e82d3674652eba55d98d1493443f4cc514",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "883055167b90a2e67361a8957002bc913cfcd9fae320457a7087f608b284d617",
+          "after_pixel_sha256": "a80bba1e2898e15c4ca4fe388441c436a0751dcb99b88feb4b33e04fef068fb7",
+          "changed_pixels": 4,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 1.4467592592592592e-06,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-startup__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "2b6e408c7dc13a4bd45ff56ade3e5360b55de4329fcdb994b9819e6e260dbeb3",
+          "after_pixel_sha256": "2b6e408c7dc13a4bd45ff56ade3e5360b55de4329fcdb994b9819e6e260dbeb3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "427cbb9266ce58ca19bd3cb01ed33842956070b0982d73213a15b2abc4b00d7d",
+          "after_pixel_sha256": "45ba5456aae4eccae0d312db89a4ecaee15338e8d5a4eb15cb7b135c3b790edf",
+          "changed_pixels": 2,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 7.233796296296296e-07,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "9412e497d2b343581f9435544bf0b299dfaf57399beb0a88fa19deb9c0e8435f",
+          "after_pixel_sha256": "9412e497d2b343581f9435544bf0b299dfaf57399beb0a88fa19deb9c0e8435f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "9b5a89d583830105d98f69f51b5564badfbfdf558856e0bb3df11031b5e63189",
+          "after_pixel_sha256": "9b5a89d583830105d98f69f51b5564badfbfdf558856e0bb3df11031b5e63189",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "b99baac19537cc64fd393ebc2f7d8e2c82ec6575501f7ab5989246fc5f8badd6",
+          "after_pixel_sha256": "b99baac19537cc64fd393ebc2f7d8e2c82ec6575501f7ab5989246fc5f8badd6",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-idle__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "bf8af4a60ba4c05111a3dc93e3a13089792b0541f52afeccf021363b978c5715",
+          "after_pixel_sha256": "bf8af4a60ba4c05111a3dc93e3a13089792b0541f52afeccf021363b978c5715",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "07994c824e322f7257fb091ad1aa969da8183da59443ba3078f7e9e1ff2e0fcd",
+          "after_pixel_sha256": "62290eec56c97c38bf4020ec5e788382829360948815391555ef1082e7b49295",
+          "changed_pixels": 5,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 1.8084490740740741e-06,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "bfe3b54450a06b5e46e1bcafd5589c0b19337676e5acddb0ff2dbe99d76f812d",
+          "after_pixel_sha256": "bfe3b54450a06b5e46e1bcafd5589c0b19337676e5acddb0ff2dbe99d76f812d",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "5c7bfb2216707060a5ed168c347b832cf3e2b198aff821980ae8ab3e48e88451",
+          "after_pixel_sha256": "5c7bfb2216707060a5ed168c347b832cf3e2b198aff821980ae8ab3e48e88451",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "29464d9f5c318d3711dad11ebadaec8c053d05e4bbed0d9d372e16dada30532e",
+          "after_pixel_sha256": "e1caa0dd718447c7fe2ce361377c9f2bc2346cd7eb7976db1d9ef1125d4b4928",
+          "changed_pixels": 9,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 3.6168981481481483e-06,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-high-power__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "a8516d19c76a1b8784097f185a28204936efb3d3182ab77fa6a1b729920f35ea",
+          "after_pixel_sha256": "a8516d19c76a1b8784097f185a28204936efb3d3182ab77fa6a1b729920f35ea",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "3a2cbf9c07e5c86073f754871b3098577f7a5536c7942a03a2746e231223bc18",
+          "after_pixel_sha256": "3a2cbf9c07e5c86073f754871b3098577f7a5536c7942a03a2746e231223bc18",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "after_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "after_pixel_sha256": "5f468d8b8b064be799abcbf832349c6c313795f11e355c6b11a64927a0a90a5f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "f12994b5e6df12b16b817d59fe72d7672c1b6ebc6c42671a98631fe4595f24ed",
+          "after_pixel_sha256": "f12994b5e6df12b16b817d59fe72d7672c1b6ebc6c42671a98631fe4595f24ed",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "rpm-fixture-shutdown__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "after_pixel_sha256": "2538976d9f4540eb768613e68e9f682d764bd78e794a5f928f266c2cd13d5fe3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "3a21449ada6509d3440698a91a42577117c11412c8db55d9d21143817df43e0f",
+          "after_pixel_sha256": "3a21449ada6509d3440698a91a42577117c11412c8db55d9d21143817df43e0f",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "bcaf50959b9cecf81cd71eabd6e3a2c65ea8725638a33801f9ec6ac8b905819e",
+          "after_pixel_sha256": "bcaf50959b9cecf81cd71eabd6e3a2c65ea8725638a33801f9ec6ac8b905819e",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "3920efe2af20a2af6c3a93d83378fe79192a7e47b6f6765260d1cde6b003f371",
+          "after_pixel_sha256": "3920efe2af20a2af6c3a93d83378fe79192a7e47b6f6765260d1cde6b003f371",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "b42e05abd1225b872b4584b0eaa728eb7e10a9331fe1a02d70eb0140b026d735",
+          "after_pixel_sha256": "b42e05abd1225b872b4584b0eaa728eb7e10a9331fe1a02d70eb0140b026d735",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "actual-flight-bank-pump-on__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "13591103a103895e40b6636838ec1145ee9c176f32e4996107fffc841fd559bf",
+          "after_pixel_sha256": "13591103a103895e40b6636838ec1145ee9c176f32e4996107fffc841fd559bf",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "ad51acb706d429f32b8f683130531d2930a798ee6ea423f7db0d6895ec7df2ee",
+          "after_pixel_sha256": "ad51acb706d429f32b8f683130531d2930a798ee6ea423f7db0d6895ec7df2ee",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "d78c57d9d03ff9886fa5f6e75bf52b99bea5a8c49c2de06924019448b090f6b9",
+          "after_pixel_sha256": "d78c57d9d03ff9886fa5f6e75bf52b99bea5a8c49c2de06924019448b090f6b9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "bd8f440848c2b8e4ae809bf68a8461a109c9d6c521ea4336b13710e3c3f46462",
+          "after_pixel_sha256": "bd8f440848c2b8e4ae809bf68a8461a109c9d6c521ea4336b13710e3c3f46462",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "937a6ba2e9f65a45c9a51af0136fbfc5dbf09597e7cb98c8501235ce4f85d542",
+          "after_pixel_sha256": "937a6ba2e9f65a45c9a51af0136fbfc5dbf09597e7cb98c8501235ce4f85d542",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "synthetic-fast-pass-30fps__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "be73063cf7bf54f1b88c5295167d176b4573146a8d8960abb01557baac2a0068",
+          "after_pixel_sha256": "be73063cf7bf54f1b88c5295167d176b4573146a8d8960abb01557baac2a0068",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "a421d818fd90c61e02d22ebe0c6ef529aff4ca99f14b87d617f72a77f03216f7",
+          "after_pixel_sha256": "9d325707fe5bdd0e8aa4c83534e57f7a693aa7daf4037cc49b99ba8bc514cb8f",
+          "changed_pixels": 6,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 2.170138888888889e-06,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "e96f28490fcc45028fc56386c8fd515feb882e76946e4939b424676e5247fbb3",
+          "after_pixel_sha256": "e96f28490fcc45028fc56386c8fd515feb882e76946e4939b424676e5247fbb3",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "2f2d7d1cd982aad1cb07a20bbb613e4686cc7198d4b901eb09294883677968aa",
+          "after_pixel_sha256": "2f2d7d1cd982aad1cb07a20bbb613e4686cc7198d4b901eb09294883677968aa",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "916cd72f7ab5c1711d025af3baad16cdb7a73329b4ffeddc36d40939a33ffd0a",
+          "after_pixel_sha256": "4b8d25f6f2741e3ce080dcc33211548af057ace135754ace385f5922f0d688bd",
+          "changed_pixels": 3,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 1.0850694444444444e-06,
+          "same_tick": true
+        },
+        {
+          "file": "runway-idle__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "8b3c0c4ba1591e19a9b3395cd3154cbd0ee3bab44d4e370f6bb156fd75ae5bb7",
+          "after_pixel_sha256": "8b3c0c4ba1591e19a9b3395cd3154cbd0ee3bab44d4e370f6bb156fd75ae5bb7",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "a4c9a07f126b3eacba96ad4b735925123b1fc1cef3ac405b5438351ee4f719df",
+          "after_pixel_sha256": "6f12cd3f264c07ef7afb78504feab42fc49b11df92cc65cc08b21ce0908271a7",
+          "changed_pixels": 7,
+          "maximum_channel_delta": 7,
+          "mean_channel_delta": 7.957175925925925e-06,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "e594159f986ef89d876d8272e03ffc0fb86792047dafe095a73db076c1115a36",
+          "after_pixel_sha256": "e594159f986ef89d876d8272e03ffc0fb86792047dafe095a73db076c1115a36",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "71f3be152fc93849924e7f17b3257c633c1a6c3b8cb8c856c07fc420427f2ddc",
+          "after_pixel_sha256": "71f3be152fc93849924e7f17b3257c633c1a6c3b8cb8c856c07fc420427f2ddc",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "42d2230c725b00081b960054709d0352638161cabd398bf4068009231e8f3f71",
+          "after_pixel_sha256": "89cb7f52787f25b67e4a49a723b05615c9e38ff309fbae70378a8d17a2e700d2",
+          "changed_pixels": 12,
+          "maximum_channel_delta": 1,
+          "mean_channel_delta": 4.340277777777778e-06,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "4ba0fbe92d121331c8f7f30d2888c33b99b8255309af6c91fdcb102c0f436eb4",
+          "after_pixel_sha256": "4ba0fbe92d121331c8f7f30d2888c33b99b8255309af6c91fdcb102c0f436eb4",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__combined.png",
+          "layer": "combined",
+          "before_pixel_sha256": "1b7ecb7305f57c7e23d3b392dacc605ad7e4e9620b6fd14166383335a0009c1e",
+          "after_pixel_sha256": "1b7ecb7305f57c7e23d3b392dacc605ad7e4e9620b6fd14166383335a0009c1e",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__smoke_over_background.png",
+          "layer": "smoke_over_background",
+          "before_pixel_sha256": "b2938470275694f6cd1722ccaa2c813763ef13cf2905961a9e47230e39aa973e",
+          "after_pixel_sha256": "b2938470275694f6cd1722ccaa2c813763ef13cf2905961a9e47230e39aa973e",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__background.png",
+          "layer": "background",
+          "before_pixel_sha256": "99c95766a5b1591a6d5b454671e6c6e94ef4402d1c50f770b4b5ee251f1e4ad4",
+          "after_pixel_sha256": "99c95766a5b1591a6d5b454671e6c6e94ef4402d1c50f770b4b5ee251f1e4ad4",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__airplane_without_smoke.png",
+          "layer": "airplane_without_smoke",
+          "before_pixel_sha256": "985604d3d5a14fe6a9a23703c0d2da10b63ba56479da847be629a787b92c83d9",
+          "after_pixel_sha256": "985604d3d5a14fe6a9a23703c0d2da10b63ba56479da847be629a787b92c83d9",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        },
+        {
+          "file": "runway-ground-acceleration-pilot__smoke-mask.png",
+          "layer": "smoke_mask",
+          "before_pixel_sha256": "1ddabe3a5ca748759aafb62a6b9df29111bd3854edfa222d48874d060425ab67",
+          "after_pixel_sha256": "1ddabe3a5ca748759aafb62a6b9df29111bd3854edfa222d48874d060425ab67",
+          "changed_pixels": 0,
+          "maximum_channel_delta": 0,
+          "mean_channel_delta": 0.0,
+          "same_tick": true
+        }
+      ]
+    }
+  }
+}

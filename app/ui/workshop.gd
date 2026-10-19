@@ -2,11 +2,19 @@ extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Compiler := preload("res://workshop/compiler.gd")
 const Parameters := preload("res://workshop/parameters.gd")
 const Store := preload("res://workshop/store.gd")
+const Bundle := preload("res://workshop/bundle.gd")
+const LibraryPreferences := preload("res://workshop/library_preferences.gd")
+const ProfileTransfer := preload("res://workshop/profile_transfer.gd")
+const Presentation := preload("res://workshop/presentation.gd")
+const Customization := preload("res://render/aircraft_customization.gd")
+const CustomizationPanel := preload("res://ui/workshop_customization.gd")
+const PAGE_IDS := ["appearance", "smoke", "setup", "compare"]
 const WorkshopPreview := preload("res://ui/workshop_preview.gd")
 
 signal closed
@@ -17,12 +25,8 @@ const VARIANT_ROOT := "user://aircraft_variants"
 const FACTOR_STEP := 0.05
 const HISTORY_LIMIT := 32
 const SCALE_OPTIONS := [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
-const FACTOR_CAPABILITIES := {
-	"weight_multiplier": "weight",
-	"power_multiplier": "power",
-	"control_multiplier": "controls",
-	"tank_capacity_multiplier": "tank_capacity",
-}
+var _factor_capabilities: Dictionary = {}
+
 const PRESETS := {
 	"mini": {"scale": 0.5, "mass_policy": "constant_wing_loading", "weight_multiplier": 1.0, "power_multiplier": 1.0, "control_multiplier": 0.9},
 	"giant": {"scale": 2.0, "mass_policy": "constant_wing_loading", "weight_multiplier": 1.0, "power_multiplier": 1.0, "control_multiplier": 1.0},
@@ -43,8 +47,40 @@ var return_destination := "Home":
 		if is_instance_valid(_screen):
 			var back := _screen.find_child("CloseWorkshop", true, false) as Button
 			if back != null: back.text = "Back to Pause" if return_destination == "Pause" else "Back to Home"
+var _presentation: Dictionary = {}
+var _presentation_bindings: Dictionary = {}
+var _presentation_errors := PackedStringArray()
+var _presentation_buffers: Dictionary = {}
+var _customization_panels: Array = []
+var _trial_conditions_label: Label
+var trial_conditions := "":
+	set(value):
+		trial_conditions = value
+		if is_instance_valid(_trial_conditions_label):
+			_trial_conditions_label.text = value
+			_trial_conditions_label.visible = not value.is_empty()
+var trial_start_choice := "airborne"
 var _baseline: Dictionary = {}
 var _library_dialog: AcceptDialog
+var _library_note: Label
+var _bundle_dialog: FileDialog
+var _export_button: Button
+var _favorite_button: Button
+var _favorites_only: CheckButton
+var _build_search: LineEdit
+var _favorites: Array = []
+var _unavailable_favorite_ids: Array[String] = []
+var _favorites_hint: Label
+var _favorites_ok := true
+var _library_summaries: Array[Dictionary] = []
+var _copy_profile_button: Button
+var _transfer_dialog: ConfirmationDialog
+var _transfer_text: Label
+var _transfer_proposal: Dictionary = {}
+var _transfer_snapshot: Dictionary = {}
+var _transfer_base_id := ""
+var _bundle_export_bytes := PackedByteArray()
+var _bundle_import := true
 var _name_dialog: ConfirmationDialog
 var _guard_dialog: ConfirmationDialog
 var _guard_name: LineEdit
@@ -151,6 +187,8 @@ var _trial_pending := false
 
 
 func _init() -> void:
+	for definition: Dictionary in Parameters.definitions().parameters:
+		if definition.kind == "number" and definition.key != "scale": _factor_capabilities[definition.key] = definition.capability
 	name = "Workshop"
 	layer = LAYER
 	_screen = Screen.mount(self, "Screen")
@@ -199,6 +237,9 @@ func reject_start(message: String = "The trial could not start.") -> void:
 
 
 func set_note(message: String) -> void:
+	if is_instance_valid(_library_note):
+		_library_note.text = tr(message)
+		_library_note.visible = not message.is_empty()
 	if is_instance_valid(_status_label):
 		_status_label.text = tr(message) if message != "" else ""
 		_status_label.visible = message != ""
@@ -299,7 +340,7 @@ func _build_ui() -> void:
 	_library_button.pressed.connect(_open_library)
 	_identity_line.add_child(_library_button)
 	var group := ButtonGroup.new()
-	for spec: Array in [["setup", "Flight setup"], ["compare", "Compare"]]:
+	for spec: Array in [["appearance", "Appearance"], ["smoke", "Smoke"], ["setup", "Flight setup"], ["compare", "Compare"]]:
 		var tab := _button(spec[1], "", "Page" + str(spec[0]).capitalize())
 		tab.toggle_mode = true
 		tab.button_group = group
@@ -312,9 +353,9 @@ func _build_ui() -> void:
 	_page_selector.fit_to_longest_item = false
 	_page_selector.clip_text = true
 	_page_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_page_selector.add_item("Flight setup")
-	_page_selector.add_item("Compare")
-	_page_selector.item_selected.connect(func(index: int) -> void: _set_page("setup" if index == 0 else "compare"))
+	for page_title: String in ["Appearance", "Smoke", "Flight setup", "Compare"]: _page_selector.add_item(page_title)
+	_page_selector.select(PAGE_IDS.find(_active_page))
+	_page_selector.item_selected.connect(func(index: int) -> void: _set_page(PAGE_IDS[index]))
 	_identity_line.add_child(_page_selector)
 	var flexible := Control.new()
 	flexible.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -339,7 +380,7 @@ func _build_ui() -> void:
 	_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_preview.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_aircraft_column.add_child(_preview)
-	var caption := _label("Still preview · no flight simulation", "SecondaryLabel", true)
+	var caption := _label("Visual preview · no flight simulation", "SecondaryLabel", true)
 	caption.name = "PreviewCaption"
 	_aircraft_column.add_child(caption)
 
@@ -355,11 +396,33 @@ func _build_ui() -> void:
 	inspector_body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector_body.add_theme_constant_override("separation", 16)
 	_inspector.add_child(inspector_body)
+	for kind: String in ["appearance", "smoke"]:
+		var panel := CustomizationPanel.new()
+		panel.page_kind = kind
+		panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		panel.profile_changed.connect(set_presentation)
+		panel.validity_changed.connect(_presentation_validity_changed)
+		panel.visible = false
+		inspector_body.add_child(panel)
+		_page_nodes[kind] = panel
+		_customization_panels.append(panel)
 	var setup := VBoxContainer.new()
 	setup.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	setup.add_theme_constant_override("separation", 16)
 	inspector_body.add_child(setup)
 	_page_nodes.setup = setup
+	_trial_conditions_label = _label(trial_conditions, "SecondaryLabel", true)
+	_trial_conditions_label.visible = not trial_conditions.is_empty()
+	setup.add_child(_trial_conditions_label)
+	setup.add_child(_label("Trial start", "SectionLabel"))
+	var start := OptionButton.new()
+	start.name = "WorkshopTrialStart"
+	start.add_item("In the air")
+	start.add_item("On the runway")
+	start.item_selected.connect(func(index: int) -> void:
+		trial_start_choice = "airborne" if index == 0 else "runway"
+		_refresh_issues())
+	setup.add_child(start)
 	_build_presets_panel(setup)
 	_build_recipe_panel(setup)
 	var history := HBoxContainer.new()
@@ -372,7 +435,7 @@ func _build_ui() -> void:
 		history.add_child(button)
 		if action[1] == "UndoRecipe": _undo_button = button
 		if action[1] == "RedoRecipe": _redo_button = button
-	setup.add_child(history)
+	inspector_body.add_child(history)
 	var compare := VBoxContainer.new()
 	compare.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	inspector_body.add_child(compare)
@@ -463,8 +526,22 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	parent.add_child(card)
 	var content := _card_content(card)
 	content.add_child(_section_label("SAVED BUILDS"))
+	_build_search = LineEdit.new()
+	_build_search.name = "BuildSearch"
+	_build_search.placeholder_text = tr("Search saved builds")
+	_build_search.max_length = 128
+	_build_search.text_changed.connect(func(_value: String) -> void: _refresh_variants(false))
+	content.add_child(_build_search)
+	_favorites_only = CheckButton.new()
+	_favorites_only.text = "Favorites only"
+	_favorites_only.toggled.connect(func(_value: bool) -> void: _refresh_variants(false))
+	content.add_child(_favorites_only)
+	_favorites_hint = _label("Unavailable favorites remain listed under Favorites only and can be removed.", "SecondaryLabel", true)
+	_favorites_hint.visible = false
+	content.add_child(_favorites_hint)
 	_variant_selector = OptionButton.new()
 	_variant_selector.fit_to_longest_item = false
+	_variant_selector.clip_text = true
 	_variant_selector.name = "SavedVariant"
 	_variant_selector.focus_mode = Control.FOCUS_ALL
 	_variant_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -485,6 +562,19 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_restore_button.disabled = true
 	_restore_button.pressed.connect(_restore_last_deleted)
 	variant_actions.add_child(_restore_button)
+	var import_button := _button("Import build…", "", "ImportBuild")
+	import_button.pressed.connect(_choose_bundle_import)
+	variant_actions.add_child(import_button)
+	_export_button = _button("Export selected…", "", "ExportBuild")
+	_export_button.disabled = true
+	_export_button.pressed.connect(_choose_bundle_export)
+	variant_actions.add_child(_export_button)
+	_favorite_button = _button("Add favorite", "", "FavoriteBuild")
+	_favorite_button.pressed.connect(_toggle_favorite)
+	variant_actions.add_child(_favorite_button)
+	_copy_profile_button = _button("Copy appearance and smoke…", "", "CopyBuildProfile")
+	_copy_profile_button.pressed.connect(_review_profile_transfer)
+	variant_actions.add_child(_copy_profile_button)
 	content.add_child(variant_actions)
 
 	_variant_name = LineEdit.new()
@@ -562,10 +652,8 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 
 	var factor_hint := _label("1× keeps the original value. Changes apply to a new trial flight.", "SecondaryLabel", true)
 	content.add_child(factor_hint)
-	_add_factor_row(content, "weight_multiplier", "Weight multiplier")
-	_add_factor_row(content, "power_multiplier", "Power multiplier")
-	_add_factor_row(content, "control_multiplier", "Control travel")
-	_add_factor_row(content, "tank_capacity_multiplier", "Tank capacity")
+	for definition: Dictionary in Parameters.definitions().parameters:
+		if _factor_capabilities.has(definition.key): _add_factor_row(content, definition.key, definition.label)
 
 	_scale_support_hint = _label("", "SecondaryLabel", true)
 	_scale_support_hint.name = "ScaleSupport"
@@ -646,15 +734,8 @@ func _add_factor_row(parent: VBoxContainer, key: String, caption: String) -> voi
 
 
 func _factor_bounds(key: String) -> Vector2:
-	match key:
-		"weight_multiplier":
-			return Vector2(Parameters.MIN_WEIGHT_MULTIPLIER, Parameters.MAX_WEIGHT_MULTIPLIER)
-		"power_multiplier":
-			return Vector2(Parameters.MIN_POWER_MULTIPLIER, Parameters.MAX_POWER_MULTIPLIER)
-		"control_multiplier":
-			return Vector2(Parameters.MIN_CONTROL_MULTIPLIER, Parameters.MAX_CONTROL_MULTIPLIER)
-		"tank_capacity_multiplier":
-			return Vector2(Parameters.MIN_TANK_CAPACITY_MULTIPLIER, Parameters.MAX_TANK_CAPACITY_MULTIPLIER)
+	for definition: Dictionary in Parameters.definitions().parameters:
+		if definition.key == key and definition.kind == "number": return Vector2(definition.minimum, definition.maximum)
 	return Vector2.ONE
 
 
@@ -731,6 +812,8 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_refresh_base_summary()
 	if not preserve_recipe:
 		_recipe = Compiler.defaults()
+		_presentation = {}
+		_resolve_presentation()
 		_clear_history()
 	_capabilities = Compiler.capabilities(_base)
 	_selected_variant_id = ""
@@ -763,28 +846,65 @@ func _select_base(id: String) -> void:
 			return
 
 
-func _refresh_variants() -> void:
+func _refresh_variants(reload := true) -> void:
+	var selected := _selected_variant_id
+	var preferences := LibraryPreferences.load_state(variants_root)
+	_favorites_ok = preferences.ok
+	_favorites = preferences.favorites if preferences.ok else []
+	_unavailable_favorite_ids.clear()
 	_variant_selector.clear()
 	_variant_selector.add_item(tr("Choose a saved build…"))
 	_variant_selector.set_item_metadata(0, "")
-	var variants: Array = Store.list_variants(variants_root)
-	for variant: Dictionary in variants:
+	if reload:
+		_library_summaries.clear()
+		for variant: Dictionary in Store.list_variants(variants_root):
+			_library_summaries.append({id = variant.get("id", ""), name = variant.get("name", ""), base_id = variant.get("base_id", ""), revision = variant.get("revision", 0)})
+	var known_ids: Array[String] = []
+	for variant: Dictionary in _library_summaries: known_ids.append(str(variant.id))
+	var query := _build_search.text.strip_edges().to_lower()
+	for variant: Dictionary in _library_summaries:
 		var variant_id := str(variant.get("id", ""))
 		if variant_id == "":
 			continue
 		var source_name := str(Catalog.entry(str(variant.get("base_id", ""))).get("name", tr("Unavailable aircraft")))
+		if _favorites_only.button_pressed and variant_id not in _favorites: continue
+		if not query.is_empty() and not (str(variant.get("name", "")) + " " + source_name).to_lower().contains(query): continue
 		var current := tr("Current") + " · " if variant_id == _saved_variant_id else ""
+		if variant_id in _favorites: current = tr("Favorite") + " · " + current
 		_variant_selector.add_item(current + str(variant.get("name", variant_id)) + " · " + source_name + " · " + tr("revision %d") % int(variant.get("revision", 0)))
 		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, variant_id)
+	var missing_count := 0
+	for favorite_id: String in _favorites:
+		if favorite_id in known_ids: continue
+		missing_count += 1
+		if not _favorites_only.button_pressed: continue
+		var missing_title := tr("Unavailable favorite %d") % missing_count
+		if not query.is_empty() and not missing_title.to_lower().contains(query): continue
+		_variant_selector.add_item(missing_title)
+		_variant_selector.set_item_metadata(_variant_selector.item_count - 1, favorite_id)
+		_variant_selector.set_item_tooltip(_variant_selector.item_count - 1, tr("Restore this saved build or remove its favorite."))
+		_unavailable_favorite_ids.append(favorite_id)
+	_favorites_hint.visible = missing_count > 0
 	_variant_selector.select(0)
 	_selected_variant_id = ""
+	for index in range(1, _variant_selector.item_count):
+		if str(_variant_selector.get_item_metadata(index)) == selected:
+			_variant_selector.select(index)
+			_selected_variant_id = selected
+			break
 	_sync_variant_actions()
+	if not preferences.ok: set_note("Favorites could not be read; existing metadata was preserved.")
 
 
 func _sync_variant_actions() -> void:
 	var available := _selected_variant_id != ""
-	_load_button.disabled = not available
-	_delete_button.disabled = not available
+	var source_available := available and _selected_variant_id not in _unavailable_favorite_ids
+	_load_button.disabled = not source_available
+	_delete_button.disabled = not source_available
+	_export_button.disabled = not source_available
+	_favorite_button.disabled = not available or not _favorites_ok
+	_favorite_button.text = tr("Remove favorite" if _selected_variant_id in _favorites else "Add favorite")
+	_copy_profile_button.disabled = not source_available or not _presentation_buffers.is_empty() or not _presentation_errors.is_empty()
 	_sync_save_button()
 
 
@@ -849,6 +969,8 @@ func _load_variant_snapshot(selected_id: String) -> void:
 	# Record identity/name have dedicated fields; legacy recipe copies must not
 	# override rename, Save a copy, or the ancestry of a retained deleted draft.
 	_recipe = checked.values.duplicate(true)
+	_presentation = variant.get("presentation_profile", {}).duplicate(true)
+	_resolve_presentation()
 	_recipe.erase("id")
 	_recipe.erase("name")
 	_clear_history()
@@ -885,7 +1007,8 @@ func _save_variant() -> bool:
 		variants_root,
 		_workshop_descriptor.duplicate(true),
 		_variant_dependencies.duplicate(true),
-		_saved_variant_revision if not _saved_variant_id.is_empty() else -1
+		_saved_variant_revision if not _saved_variant_id.is_empty() else -1,
+		_presentation.duplicate(true)
 	)
 	if not bool(result.get("ok", false)):
 		set_note(_messages(result.get("errors", []), "The build could not be saved."))
@@ -1033,8 +1156,8 @@ func _apply_preset(preset_id: String) -> void:
 			next[key] = _recipe.get(key, next[key])
 		else:
 			next[key] = preset.get(key, next[key])
-	for key: String in FACTOR_CAPABILITIES:
-		var capability := str(FACTOR_CAPABILITIES[key])
+	for key: String in _factor_capabilities:
+		var capability := str(_factor_capabilities[key])
 		next[key] = preset.get(key, next.get(key, 1.0)) if bool(caps.get(capability, false)) else _recipe.get(key, next.get(key, 1.0))
 	_set_recipe(next, true)
 	for index in _preset_selector.item_count:
@@ -1045,6 +1168,14 @@ func _apply_preset(preset_id: String) -> void:
 func _reset_recipe() -> void:
 	if _base.is_empty():
 		return
+	if _active_page in ["appearance", "smoke"]:
+		var next := _presentation.duplicate(true)
+		if _active_page == "appearance":
+			next.paint = []
+			next.markings = []
+		else: next.smoke = []
+		set_presentation(next)
+		return
 	_set_recipe(Compiler.defaults(), true)
 	set_note("Recipe reset to defaults. Use Undo to restore the previous values.")
 
@@ -1052,9 +1183,9 @@ func _reset_recipe() -> void:
 func _undo() -> void:
 	if _undo_history.is_empty():
 		return
-	_redo_history.append(_recipe.duplicate(true))
+	_redo_history.append(_history_snapshot())
 	var previous: Dictionary = _undo_history.pop_back()
-	_set_recipe(previous, false)
+	_restore_history(previous)
 	_update_undo_button()
 	set_note("Previous recipe restored.")
 
@@ -1062,9 +1193,9 @@ func _undo() -> void:
 func _redo() -> void:
 	if _redo_history.is_empty():
 		return
-	_undo_history.append(_recipe.duplicate(true))
+	_undo_history.append(_history_snapshot())
 	var next: Dictionary = _redo_history.pop_back()
-	_set_recipe(next, false)
+	_restore_history(next)
 	_update_undo_button()
 	set_note("Recipe change reapplied.")
 
@@ -1110,7 +1241,7 @@ func _refresh_base_summary() -> void:
 
 
 func _capture_undo() -> void:
-	_undo_history.append(_recipe.duplicate(true))
+	_undo_history.append(_history_snapshot())
 	if _undo_history.size() > HISTORY_LIMIT:
 		_undo_history.pop_front()
 	_redo_history.clear()
@@ -1154,7 +1285,7 @@ func _sync_controls() -> void:
 			_mass_policy_selector.select(index)
 			break
 	_mass_policy_selector.disabled = not bool(_capabilities.get("weight", false))
-	for key: String in FACTOR_CAPABILITIES:
+	for key: String in _factor_capabilities:
 		var bounds := _factor_bounds(key)
 		var value := float(_recipe.get(key, 1.0))
 		# Range preserves its exact value when step is restored; avoid quantizing a loaded recipe.
@@ -1163,7 +1294,7 @@ func _sync_controls() -> void:
 		_factor_sliders[key].step = FACTOR_STEP
 		_factor_values[key].text = String.num(value, 4) + "×"
 		_factor_inputs[key].text = String.num(value, 4)
-		var supported := bool(_capabilities.get(str(FACTOR_CAPABILITIES[key]), false))
+		var supported := bool(_capabilities.get(str(_factor_capabilities[key]), false))
 		_factor_sliders[key].editable = supported
 		_factor_inputs[key].editable = supported
 		if supported and key == "tank_capacity_multiplier":
@@ -1176,6 +1307,7 @@ func _sync_controls() -> void:
 				if supported else tr("Not available for this engine type.")
 			)
 	_syncing_controls = false
+	_sync_presentation()
 	_update_capabilities()
 	_update_undo_button()
 	_sync_save_button()
@@ -1218,7 +1350,7 @@ func _compile_recipe() -> void:
 	else:
 		_compiled = Compiler.compile(_base.duplicate(true), _recipe.duplicate(true))
 	var valid := bool(_compiled.get("ok", false))
-	_trial_button.disabled = not valid or not _invalid_fields.is_empty()
+	_trial_button.disabled = not valid or not _edit_valid()
 	var compiled_data: Dictionary = _compiled.get("data", {})
 	var compiled_model: Variant = compiled_data.get("model", {})
 	_summary_label.text = _format_summary(
@@ -1353,11 +1485,14 @@ func _request_trial() -> void:
 		"compiler_version": _saved_compiler_version,
 		"dependencies": _variant_dependencies.duplicate(true),
 		"compiled": _compiled.duplicate(true),
+		"presentation_profile": _presentation.duplicate(true),
+		"start_choice": trial_start_choice,
 	})
 
 
 func _request_close() -> void:
 	if dismiss_modal_for_exit(): return
+	if _active_page in ["appearance", "smoke"] and _page_nodes[_active_page].cancel_pending_edit(): return
 	var focused := get_viewport().gui_get_focus_owner()
 	for key: String in _factor_inputs:
 		if focused == _factor_inputs[key] and (_pending_numbers.has(key) or _invalid_fields.has(key)):
@@ -1377,6 +1512,14 @@ func _request_close() -> void:
 
 ## Main-window close consumes one active editor modal before beginning an exit decision.
 func dismiss_modal_for_exit() -> bool:
+	if is_instance_valid(_transfer_dialog) and _transfer_dialog.visible:
+		_transfer_dialog.hide()
+		_transfer_proposal.clear()
+		_transfer_snapshot.clear()
+		return true
+	if is_instance_valid(_bundle_dialog) and _bundle_dialog.visible:
+		_bundle_dialog.hide()
+		return true
 	if is_instance_valid(_guard_dialog) and _guard_dialog.visible:
 		_navigation_abort()
 		return true
@@ -1457,6 +1600,7 @@ func _build_library() -> void:
 	_base_selector = OptionButton.new()
 	_base_selector.name = "BaseAircraft"
 	_base_selector.fit_to_longest_item = false
+	_base_selector.clip_text = true
 	for entry: Dictionary in Catalog.airplane_flyable_entries():
 		_base_selector.add_item(str(entry.get("name", entry.get("id", "Aircraft"))))
 		_base_selector.set_item_metadata(_base_selector.item_count - 1, str(entry.id))
@@ -1474,6 +1618,47 @@ func _build_library() -> void:
 	body.add_child(_aircraft_summary_label)
 	body.add_child(_aircraft_status_label)
 	_build_variants_panel(body)
+	_library_note = _label("", "SecondaryLabel", true)
+	_library_note.visible = false
+	body.add_child(_library_note)
+	_bundle_dialog = FileDialog.new()
+	_bundle_dialog.name = "WorkshopBundleFile"
+	_bundle_dialog.access = FileDialog.ACCESS_FILESYSTEM
+	_bundle_dialog.filters = PackedStringArray(["*.json ; " + tr("Aircraft build")])
+	_bundle_dialog.display_mode = FileDialog.DISPLAY_LIST
+	_bundle_dialog.favorites_enabled = false
+	_bundle_dialog.recent_list_enabled = false
+	_bundle_dialog.layout_toggle_enabled = false
+	_bundle_dialog.file_sort_options_enabled = false
+	_bundle_dialog.file_filter_toggle_enabled = false
+	_bundle_dialog.deleting_enabled = false
+	_bundle_dialog.theme = _screen.theme.duplicate()
+	# File navigation needs denser rows than the editor's large primary actions.
+	for type_name: String in ["Label", "Button", "LineEdit", "ItemList", "OptionButton", "PopupMenu"]:
+		_bundle_dialog.theme.set_font_size("font_size", type_name, UiTheme._font_size(18))
+	_bundle_dialog.add_theme_font_size_override("title_font_size", UiTheme._font_size(18))
+	_bundle_dialog.exclusive = true
+	_library_dialog.add_child(_bundle_dialog)
+	_bundle_dialog.file_selected.connect(_bundle_file_selected)
+	_transfer_dialog = ConfirmationDialog.new()
+	_transfer_dialog.name = "ReviewProfileCopy"
+	_transfer_dialog.title = tr("Review compatible settings")
+	_transfer_dialog.ok_button_text = tr("Apply settings")
+	_transfer_dialog.theme = _screen.theme
+	_transfer_dialog.exclusive = true
+	_library_dialog.add_child(_transfer_dialog)
+	var transfer_scroll := ScrollContainer.new()
+	transfer_scroll.custom_minimum_size = Vector2(260, 100)
+	transfer_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	_transfer_dialog.add_child(transfer_scroll)
+	_transfer_text = _label("", "SecondaryLabel", true)
+	_transfer_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	transfer_scroll.add_child(_transfer_text)
+	_transfer_dialog.confirmed.connect(_apply_profile_transfer)
+	_transfer_dialog.canceled.connect(func() -> void:
+		_transfer_proposal.clear()
+		_transfer_snapshot.clear()
+		_copy_profile_button.grab_focus())
 
 
 func _build_name_dialog() -> void:
@@ -1513,6 +1698,7 @@ func _build_name_dialog() -> void:
 
 
 func _open_library() -> void:
+	_library_note.text = ""
 	_refresh_variants()
 	_select_base(_base_id)
 	_trial_button.disabled = true
@@ -1579,7 +1765,7 @@ func _load_selected_variant() -> void:
 func _set_page(page: String) -> void:
 	if not _page_nodes.has(page): return
 	_active_page = page
-	_page_selector.select(0 if page == "setup" else 1)
+	_page_selector.select(PAGE_IDS.find(page))
 	_compact_view = false
 	for id: String in _page_nodes:
 		_page_nodes[id].visible = id == page
@@ -1596,11 +1782,12 @@ func _toggle_compact_view() -> void:
 func _draft_payload() -> Dictionary:
 	return {base_id = _base_id, base_bytes = _base_bytes.duplicate(), recipe = _recipe.duplicate(true),
 		name = _variant_name.text.strip_edges(), descriptor = _workshop_descriptor.duplicate(true),
-		dependencies = _variant_dependencies.duplicate(true), compiler = _saved_compiler_version}
+		dependencies = _variant_dependencies.duplicate(true), compiler = _saved_compiler_version,
+		presentation_profile = _presentation.duplicate(true)}
 
 
 func has_unsaved_changes() -> bool:
-	return not _invalid_fields.is_empty() or not _pending_numbers.is_empty() \
+	return not _invalid_fields.is_empty() or not _pending_numbers.is_empty() or not _presentation_buffers.is_empty() \
 		or (not _baseline.is_empty() and _draft_payload() != _baseline)
 
 
@@ -1620,7 +1807,7 @@ func _refresh_identity() -> void:
 
 
 func _edit_valid() -> bool:
-	return bool(_compiled.get("ok", false)) and _invalid_fields.is_empty()
+	return bool(_compiled.get("ok", false)) and _invalid_fields.is_empty() and _presentation_errors.is_empty() and _presentation_buffers.is_empty()
 
 
 func _finish_close() -> void:
@@ -1753,6 +1940,8 @@ func _commit_number(key: String) -> void:
 
 func _refresh_issues() -> void:
 	var messages := _messages(_compiled.get("errors", []), "")
+	if not _presentation_buffers.is_empty(): messages += ("\n" if not messages.is_empty() else "") + tr("Apply or cancel the edited color or inscription before saving or starting a trial.")
+	if not _presentation_errors.is_empty(): messages += ("\n" if not messages.is_empty() else "") + "\n".join(_presentation_errors)
 	for key: String in _factor_inputs:
 		var entry: LineEdit = _factor_inputs[key]
 		entry.tooltip_text = str(_invalid_fields.get(key, ""))
@@ -1764,10 +1953,16 @@ func _refresh_issues() -> void:
 	_errors_label.text = messages
 	_errors_label.visible = not messages.is_empty()
 	_review_button.visible = not _edit_valid()
-	_validation_label.text = tr("Ready for a trial · start in the air") if _edit_valid() else tr("Build blocked until the listed validation errors are resolved.")
+	_validation_label.text = tr("Ready for a trial · runway qualification required" if trial_start_choice == "runway" else "Ready for a trial · start in the air") if _edit_valid() else tr("Build blocked until the listed validation errors are resolved.")
 
 
 func _review_issues() -> void:
+	if not _presentation_buffers.is_empty():
+		_set_page(str(_presentation_buffers.keys()[0]))
+		var pending: Control = _page_nodes[_active_page].pending_control()
+		pending.grab_focus()
+		_body_scroll.ensure_control_visible(pending)
+		return
 	_set_page("setup")
 	for key: String in _invalid_fields:
 		var entry: LineEdit = _factor_inputs[key]
@@ -1799,6 +1994,11 @@ func _refresh_comparison() -> void:
 		_comparison_cell(_format_metric_number(after, 2))
 		_comparison_cell(("+" if after >= before else "−") + _format_metric_number(absf(after - before), 2))
 		rows += 1
+	for key: String in ["paint", "markings", "smoke"]:
+		var count: int = _presentation.get(key, []).size()
+		if count > 0 or _all_values.button_pressed:
+			for value: String in [tr(key.capitalize()), tr("Stock"), str(count), tr("Visual only")]: _comparison_cell(value)
+			rows += 1
 	if rows == 0: _comparison_cell(tr("No changes from the original."))
 
 
@@ -1818,3 +2018,197 @@ func _restore_interaction() -> void:
 	_body_scroll.scroll_vertical = _interaction_scroll
 	var focus := get_node_or_null(_interaction_focus) as Control if not _interaction_focus.is_empty() else null
 	if focus != null and focus.is_visible_in_tree(): focus.grab_focus()
+
+
+func get_presentation() -> Dictionary:
+	return _presentation.duplicate(true)
+
+
+func _presentation_validity_changed(page: String, pending: bool) -> void:
+	if pending: _presentation_buffers[page] = true
+	else: _presentation_buffers.erase(page)
+	if is_instance_valid(_review_button):
+		_refresh_issues()
+		_sync_save_button()
+		_trial_button.disabled = not _edit_valid()
+		if is_instance_valid(_copy_profile_button): _sync_variant_actions()
+
+
+func _toggle_favorite() -> void:
+	if _selected_variant_id.is_empty(): return
+	var result := LibraryPreferences.set_favorite(_selected_variant_id, _selected_variant_id not in _favorites, variants_root)
+	if not result.ok:
+		set_note(_messages(result.errors, "Favorites could not be saved."))
+		return
+	_refresh_variants(false)
+
+
+func _review_profile_transfer() -> void:
+	if _selected_variant_id.is_empty() or not _presentation_buffers.is_empty(): return
+	var loaded := Store.load_variant(_selected_variant_id, variants_root)
+	if not loaded.ok:
+		set_note(_messages(loaded.errors, "The saved build could not be loaded."))
+		return
+	var described := Customization.describe(str(loaded.variant.base_id))
+	if not described.get("ok", false):
+		set_note("The source build has no current presentation bindings.")
+		return
+	var result := ProfileTransfer.propose(loaded.variant.presentation_profile, described.bindings, _presentation, _presentation_bindings)
+	if not result.ok:
+		set_note(_messages(result.errors, "These presentation settings cannot be copied."))
+		return
+	_transfer_snapshot = _presentation.duplicate(true)
+	_transfer_base_id = _base_id
+	_transfer_proposal = result.profile.duplicate(true)
+	var lines := PackedStringArray([tr("From %s · revision %d") % [str(loaded.variant.name), int(loaded.variant.revision)], tr("Only listed compatible settings will change. Physical adjustments stay unchanged.")])
+	for group: String in ["applied", "skipped"]:
+		lines.append("")
+		lines.append(tr("Settings to apply" if group == "applied" else "Settings skipped"))
+		if result[group].is_empty(): lines.append(tr("None"))
+		for row: Dictionary in result[group]:
+			lines.append(_transfer_setting_label(row, described.bindings))
+	_transfer_text.text = "\n".join(lines)
+	_transfer_dialog.get_ok_button().disabled = result.applied.is_empty()
+	_transfer_dialog.popup_centered_clamped(Vector2i(900, 520), 0.9)
+	_transfer_dialog.get_cancel_button().grab_focus()
+
+
+func _apply_profile_transfer() -> void:
+	_transfer_dialog.hide()
+	if _transfer_proposal.is_empty(): return
+	if _base_id != _transfer_base_id or _presentation != _transfer_snapshot or not _presentation_buffers.is_empty():
+		_transfer_proposal.clear()
+		set_note("The draft changed. Review the settings again before applying them.")
+		return
+	var accepted := _transfer_proposal.duplicate(true)
+	_transfer_proposal.clear()
+	_transfer_snapshot.clear()
+	_close_library()
+	set_presentation(accepted)
+	set_note("Compatible appearance and smoke settings copied. Undo restores the previous presentation.")
+
+
+func _transfer_setting_label(row: Dictionary, source_bindings: Dictionary) -> String:
+	var fields := {paint = "paint_slots", markings = "marking_slots", smoke = "smoke_slots"}
+	var title := ""
+	for slot: Dictionary in source_bindings.get(fields.get(row.domain, ""), []):
+		if slot.id == row.slot: title = tr(str(slot.label))
+	var reasons := {
+		compatible = "Compatible", source_slot_missing = "Source setting is unavailable.",
+		target_slot_missing = "No matching region or emitter on this aircraft.",
+		paint_pattern_unsupported = "This pattern is unavailable.",
+		paint_kind_mismatch = "This region uses a different material.",
+		paint_accent_unsupported = "This accent is unavailable.",
+		paint_accent_kind_mismatch = "This accent uses a different material.",
+		marking_glyph_support_unpinned = "These inscription characters cannot be verified.",
+		marking_text_too_long = "The inscription exceeds this panel's limit.",
+		smoke_endpoint_mismatch = "The emitter has a different purpose or source.",
+	}
+	return "• %s / %s · %s" % [tr(str(row.domain).capitalize()), title, tr(str(reasons.get(row.reason, "This setting is unavailable.")))]
+
+
+func _choose_bundle_import() -> void:
+	_bundle_import = true
+	_bundle_dialog.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	_bundle_dialog.title = tr("Import aircraft build")
+	_prepare_bundle_dialog()
+	_bundle_dialog.popup_centered_clamped(Vector2i(800, 520), 0.9)
+
+
+func _choose_bundle_export() -> void:
+	var loaded := Store.load_variant(_selected_variant_id, variants_root)
+	if not loaded.ok:
+		set_note(_messages(loaded.errors, "The saved build could not be loaded."))
+		return
+	var exported := Bundle.export_variant(loaded.variant)
+	if not exported.ok:
+		set_note(_messages(exported.errors, "The build could not be exported."))
+		return
+	_bundle_export_bytes = exported.bytes.duplicate()
+	_bundle_import = false
+	_bundle_dialog.file_mode = FileDialog.FILE_MODE_SAVE_FILE
+	_bundle_dialog.current_file = "aircraft-build.json"
+	_bundle_dialog.title = tr("Export aircraft build")
+	_prepare_bundle_dialog()
+	_bundle_dialog.popup_centered_clamped(Vector2i(800, 520), 0.9)
+
+
+func _prepare_bundle_dialog() -> void:
+	# Godot's built-in dialog strings do not use the project's translation catalog automatically.
+	for node: Node in _bundle_dialog.find_children("*", "Control", true, false):
+		if node is Label or node is Button: node.text = tr(node.text)
+
+
+func _bundle_file_selected(path: String) -> void:
+	if _bundle_import:
+		_close_library()
+		request_navigation("Import aircraft build", _import_bundle_file.bind(path))
+		return
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		set_note("The build could not be exported.")
+		return
+	file.store_buffer(_bundle_export_bytes)
+	file.flush()
+	var error := file.get_error()
+	file.close()
+	if error != OK or FileAccess.get_file_as_bytes(path) != _bundle_export_bytes:
+		set_note("The exported file failed its readback check.")
+		return
+	_bundle_export_bytes.clear()
+	set_note("Aircraft build exported.")
+	_close_library()
+
+
+func _import_bundle_file(path: String) -> void:
+	var imported := Bundle.import_file(path, variants_root)
+	if not imported.ok:
+		set_note(_messages(imported.errors, "The build could not be imported."))
+		return
+	_refresh_variants()
+	_load_variant_snapshot(str(imported.variant.id))
+	set_note("Aircraft build imported as a new local copy.")
+
+
+func set_presentation(profile: Dictionary) -> void:
+	var checked := Presentation.validate(profile, _presentation_bindings)
+	if not checked.ok:
+		set_note("; ".join(PackedStringArray(checked.errors)))
+		return
+	if checked.profile == _presentation: return
+	_capture_undo()
+	_presentation = checked.profile.duplicate(true)
+	_presentation_errors.clear()
+	_sync_presentation()
+	_refresh_issues()
+	_sync_save_button()
+	_refresh_comparison()
+
+
+func _resolve_presentation() -> void:
+	var described := Customization.describe(_base_id)
+	_presentation_bindings = described.get("bindings", {}) if described.get("ok", false) else {}
+	var checked := Presentation.validate(_presentation, _presentation_bindings)
+	_presentation_errors = PackedStringArray(checked.get("errors", []))
+	if checked.ok: _presentation = checked.profile.duplicate(true)
+	_sync_presentation()
+
+
+func _sync_presentation() -> void:
+	for panel in _customization_panels: panel.configure(_presentation_bindings, _presentation)
+	if is_instance_valid(_preview): _preview.set_presentation(_presentation)
+
+
+func _history_snapshot() -> Dictionary:
+	return {recipe = _recipe.duplicate(true), presentation_profile = _presentation.duplicate(true)}
+
+
+func _restore_history(snapshot: Dictionary) -> void:
+	_recipe = snapshot.recipe.duplicate(true)
+	_presentation = snapshot.presentation_profile.duplicate(true)
+	_invalid_fields.clear()
+	_pending_numbers.clear()
+	_resolve_presentation()
+	_sync_controls()
+	_preview.set_aircraft(_base_id, _preview_scale())
+	_compile_recipe()

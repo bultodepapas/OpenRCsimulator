@@ -1,0 +1,129 @@
+{
+	"lifecycle": {
+		"capture_after_offscreen_aging": "lifecycle-after-offscreen-aging.png",
+		"capture_after_pause": "lifecycle-after-pause.png",
+		"capture_after_pause_settled": "lifecycle-after-pause-settled.png",
+		"capture_after_reset": "lifecycle-after-reset.png",
+		"capture_after_stop": "lifecycle-after-stop.png",
+		"capture_before_pause": "lifecycle-before-pause.png",
+		"history_sample_limit": 44,
+		"history_sample_max": 42,
+		"nonblack_after_8s_offscreen": 0,
+		"nonblack_after_pause": 154,
+		"nonblack_after_pause_settled": 154,
+		"nonblack_after_reset": 0,
+		"nonblack_after_stop": 119,
+		"nonblack_before_pause": 107,
+		"offscreen_frames": 89,
+		"offscreen_ticks": 2136,
+		"ok": true,
+		"pause_advance_ok": true,
+		"paused_image_equal": true,
+		"qualification_scope": "native renderer behavior only; no physical validation",
+		"reset_history_empty": true,
+		"second_pause_advance_ok": true,
+		"shared_pool_stays_768": true,
+		"stop_advance_ok": true
+	},
+	"ok": true,
+	"probe": "profile-smoke-gpu-renderer",
+	"renderer": "gl_compatibility",
+	"runs": [
+		{
+			"blue_dominant_pixels": 13,
+			"capture": "mixed-30fps.png",
+			"event_ticks": [
+				96
+			],
+			"max_birth_events": 2,
+			"max_presented_interval_ticks": 8,
+			"nonblack_pixels": 305,
+			"ok": true,
+			"rate_fps": 30,
+			"red_dominant_pixels": 253,
+			"rgb_histogram": [
+				261889,
+				37,
+				38,
+				31,
+				26,
+				27,
+				20,
+				17,
+				17,
+				23,
+				14,
+				4,
+				1,
+				0,
+				0,
+				0
+			],
+			"total_ticks": 144
+		},
+		{
+			"blue_dominant_pixels": 31,
+			"capture": "mixed-60fps.png",
+			"event_ticks": [
+				96
+			],
+			"max_birth_events": 2,
+			"max_presented_interval_ticks": 4,
+			"nonblack_pixels": 342,
+			"ok": true,
+			"rate_fps": 60,
+			"red_dominant_pixels": 263,
+			"rgb_histogram": [
+				261850,
+				51,
+				38,
+				32,
+				30,
+				30,
+				28,
+				20,
+				25,
+				19,
+				15,
+				3,
+				3,
+				0,
+				0,
+				0
+			],
+			"total_ticks": 144
+		},
+		{
+			"blue_dominant_pixels": 40,
+			"capture": "mixed-144fps.png",
+			"event_ticks": [
+				96
+			],
+			"max_birth_events": 2,
+			"max_presented_interval_ticks": 2,
+			"nonblack_pixels": 378,
+			"ok": true,
+			"rate_fps": 144,
+			"red_dominant_pixels": 278,
+			"rgb_histogram": [
+				261825,
+				51,
+				36,
+				38,
+				41,
+				26,
+				32,
+				27,
+				27,
+				19,
+				13,
+				6,
+				3,
+				0,
+				0,
+				0
+			],
+			"total_ticks": 144
+		}
+	]
+}

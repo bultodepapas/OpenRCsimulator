@@ -5,168 +5,1013 @@
     {
       "visual_family": "jensen-das-ugly-stik-60",
       "paint_slots": [
-        {"id":"body","label":"Fuselage","targets":[{"node_path":"fuselage","surface":0,"kind":"standard_albedo"}]},
-        {"id":"wing","label":"Wing","targets":[
-          {"node_path":"wing_frame_left/wing_left_0","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_left/wing_left_1","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_left/wing_left_2","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_right/wing_right_0","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_right/wing_right_1","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_right/wing_right_2","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_left/aileron_left_hinge/aileron_left","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_right/aileron_right_hinge/aileron_right","surface":0,"kind":"standard_albedo"}
-        ]},
-        {"id":"wing_tip","label":"Wing tips","targets":[
-          {"node_path":"wing_frame_left/wing_left_3","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing_frame_right/wing_right_3","surface":0,"kind":"standard_albedo"}
-        ]},
-        {"id":"tail","label":"Tail","targets":[
-          {"node_path":"stab","surface":0,"kind":"standard_albedo"},
-          {"node_path":"elevator_hinge/elevator","surface":0,"kind":"standard_albedo"},
-          {"node_path":"fin","surface":0,"kind":"standard_albedo"},
-          {"node_path":"rudder_hinge/rudder","surface":0,"kind":"standard_albedo"}
-        ]}
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "wing_frame_left/wing_left_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/wing_left_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_0",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_1",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_2",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "wing_frame_left/wing_left_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing_frame_right/wing_right_3",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "stab",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "elevator_hinge/elevator",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "fin",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
       ],
-      "marking_slots": [],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                -0.053389,
+                -0.005,
+                0.1
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.18,
+              "height_m": 0.04
+            },
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                0.053389,
+                -0.005,
+                0.1
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.18,
+              "height_m": 0.04
+            }
+          ]
+        }
+      ],
       "smoke_slots": [
-        {"id":"show_wing_tip_left","label":"Left wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_left","node_path":".","position_m":[-0.771051,0.089021,0.1898],"direction":[0,0,1]},
-        {"id":"show_wing_tip_right","label":"Right wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_right","node_path":".","position_m":[0.771051,0.089021,0.1898],"direction":[0,0,1]},
-        {"id":"show_tail","label":"Tail","kind":"show","pair":"","role":"tail","node_path":".","position_m":[0,0.05215,0.907698],"direction":[0,0,1]},
-        {"id":"source_exhaust","label":"Engine exhaust","kind":"source","pair":"","role":"exhaust","source_kind":"glow_prop","source_anchor_ref":"exhausts[0]","physical_source_ref":"propulsion.id","physical_source_kind_ref":"propulsion.kind"}
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -0.771051,
+            0.089021,
+            0.1898
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            0.771051,
+            0.089021,
+            0.1898
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.05215,
+            0.907698
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "source_exhaust",
+          "label": "Engine exhaust",
+          "kind": "source",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "source_anchor_ref": "exhausts[0]",
+          "physical_source_ref": "propulsion.id",
+          "physical_source_kind_ref": "propulsion.kind"
+        }
       ]
     },
     {
       "visual_family": "gp-extra-300s-60",
       "paint_slots": [
-        {"id":"body","label":"Fuselage","targets":[{"node_path":"fuselage","surface":0,"kind":"shader_color","parameter":"red"}]},
-        {"id":"wing","label":"Wing","targets":[
-          {"node_path":"wing_left/wing_left_root","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"wing_left/wing_left_ahead_of_aileron","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"wing_right/wing_right_root","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"wing_right/wing_right_ahead_of_aileron","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"wing_left/aileron_frame_left/aileron_left_hinge/aileron_left","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"wing_right/aileron_frame_right/aileron_right_hinge/aileron_right","surface":0,"kind":"shader_color","parameter":"red"}
-        ]},
-        {"id":"wing_tip","label":"Wing tips","targets":[
-          {"node_path":"wing_left/wing_left_tip","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"wing_right/wing_right_tip","surface":0,"kind":"shader_color","parameter":"red"}
-        ]},
-        {"id":"tail","label":"Tail","targets":[
-          {"node_path":"tail_frame/stab","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"tail_frame/elevator_hinge/elevator_left","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"tail_frame/elevator_hinge/elevator_right","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"fin_frame/fin","surface":0,"kind":"shader_color","parameter":"red"},
-          {"node_path":"fin_frame/rudder_hinge/rudder","surface":0,"kind":"shader_color","parameter":"red"}
-        ]}
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "wing_left/wing_left_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_left/wing_left_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/wing_right_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/wing_right_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_left/aileron_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/aileron_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "wing_left/wing_left_tip",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "wing_right/wing_right_tip",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "tail_frame/stab",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "fin_frame/fin",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            },
+            {
+              "node_path": "fin_frame/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "red"
+            }
+          ]
+        }
       ],
-      "marking_slots": [],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                -0.0776,
+                0,
+                -0.18
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.2,
+              "height_m": 0.04
+            },
+            {
+              "node_path": "fuselage",
+              "position_m": [
+                0.0776,
+                0,
+                -0.18
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.2,
+              "height_m": 0.04
+            }
+          ]
+        }
+      ],
       "smoke_slots": [
-        {"id":"show_wing_tip_left","label":"Left wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_left","node_path":".","position_m":[-0.8218,-0.050766,-0.069465],"direction":[0,0,1]},
-        {"id":"show_wing_tip_right","label":"Right wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_right","node_path":".","position_m":[0.8218,-0.050766,-0.069465],"direction":[0,0,1]},
-        {"id":"show_tail","label":"Tail","kind":"show","pair":"","role":"tail","node_path":".","position_m":[0,-0.000801,0.9512],"direction":[0,0,1]}
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -0.8218,
+            -0.050766,
+            -0.069465
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            0.8218,
+            -0.050766,
+            -0.069465
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            -0.000801,
+            0.9512
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        }
       ]
     },
     {
       "visual_family": "p51d-mustang-120",
       "paint_slots": [
-        {"id":"body","label":"Fuselage","targets":[
-          {"node_path":"fuselage","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"fuselage","surface":1,"kind":"shader_color","parameter":"aluminium"}
-        ]},
-        {"id":"wing","label":"Wing","targets":[
-          {"node_path":"wing/wing_frame_left/wing_left_root","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_left/wing_left_ahead_of_flap","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_left/wing_left_between","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_left/wing_left_ahead_of_aileron","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_right/wing_right_root","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_right/wing_right_ahead_of_flap","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_right/wing_right_between","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_right/wing_right_ahead_of_aileron","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_left/flap_frame_left/flap_left_hinge/flap_left","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_right/flap_frame_right/flap_right_hinge/flap_right","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_left/aileron_frame_left/aileron_left_hinge/aileron_left","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"wing/wing_frame_right/aileron_frame_right/aileron_right_hinge/aileron_right","surface":0,"kind":"shader_color","parameter":"aluminium"}
-        ]},
-        {"id":"wing_tip","label":"Wing tips","targets":[
-          {"node_path":"wing/wing_frame_left/wing_left_tip","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing/wing_frame_left/wing_left_ahead_of_aileron","surface":1,"kind":"standard_albedo"},
-          {"node_path":"wing/wing_frame_left/aileron_frame_left/aileron_left_hinge/aileron_left","surface":1,"kind":"standard_albedo"},
-          {"node_path":"wing/wing_frame_right/wing_right_tip","surface":0,"kind":"standard_albedo"},
-          {"node_path":"wing/wing_frame_right/wing_right_ahead_of_aileron","surface":1,"kind":"standard_albedo"},
-          {"node_path":"wing/wing_frame_right/aileron_frame_right/aileron_right_hinge/aileron_right","surface":1,"kind":"standard_albedo"}
-        ]},
-        {"id":"tail","label":"Tail","targets":[
-          {"node_path":"tail_frame/stab","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"tail_frame/elevator_hinge/elevator_left","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"tail_frame/elevator_hinge/elevator_right","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"fin_frame/fin","surface":0,"kind":"shader_color","parameter":"aluminium"},
-          {"node_path":"fin_frame/rudder_hinge/rudder","surface":0,"kind":"shader_color","parameter":"aluminium"}
-        ]}
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "fuselage",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "fuselage",
+              "surface": 1,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "wing/wing_frame_left/wing_left_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_ahead_of_flap",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_between",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_root",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_ahead_of_flap",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_between",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_ahead_of_aileron",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/flap_frame_left/flap_left_hinge/flap_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/flap_frame_right/flap_right_hinge/flap_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_left/aileron_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "wing/wing_frame_right/aileron_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "wing/wing_frame_left/wing_left_tip",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_left/wing_left_ahead_of_aileron",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_left/aileron_frame_left/aileron_left_hinge/aileron_left",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_tip",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_right/wing_right_ahead_of_aileron",
+              "surface": 1,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "wing/wing_frame_right/aileron_frame_right/aileron_right_hinge/aileron_right",
+              "surface": 1,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "tail_frame/stab",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_left",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "tail_frame/elevator_hinge/elevator_right",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "fin_frame/fin",
+              "surface": 0,
+              "kind": "shader_color",
+              "parameter": "aluminium"
+            },
+            {
+              "node_path": "fin_frame/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
       ],
       "marking_slots": [],
       "smoke_slots": [
-        {"id":"show_wing_tip_left","label":"Left wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_left","node_path":".","position_m":[-1.42,-0.049042,0.241639],"direction":[0,0,1]},
-        {"id":"show_wing_tip_right","label":"Right wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_right","node_path":".","position_m":[1.42,-0.049042,0.241639],"direction":[0,0,1]},
-        {"id":"show_tail","label":"Tail","kind":"show","pair":"","role":"tail","node_path":".","position_m":[0,0.0075,1.7993],"direction":[0,0,1]},
-        {"id":"source_exhaust","label":"Engine exhaust","kind":"source","pair":"","role":"exhaust","source_kind":"glow_prop","source_anchor_ref":"exhausts[0]","physical_source_ref":"propulsion.id","physical_source_kind_ref":"propulsion.kind"}
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -1.42,
+            -0.049042,
+            0.241639
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            1.42,
+            -0.049042,
+            0.241639
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.0075,
+            1.7993
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "source_exhaust",
+          "label": "Engine exhaust",
+          "kind": "source",
+          "pair": "",
+          "role": "exhaust",
+          "source_kind": "glow_prop",
+          "source_anchor_ref": "exhausts[0]",
+          "physical_source_ref": "propulsion.id",
+          "physical_source_kind_ref": "propulsion.kind"
+        }
       ]
     },
     {
       "visual_family": "sebart-avanti-s-a200-p100rx",
       "paint_slots": [
-        {"id":"body","label":"Fuselage","targets":[{"node_path":"VentageJet/fuselage_core","surface":0,"kind":"standard_albedo"}]},
-        {"id":"wing","label":"Wing","targets":[
-          {"node_path":"VentageJet/wing_left_fixed","surface":3,"kind":"standard_albedo"},
-          {"node_path":"VentageJet/wing_right_fixed","surface":4,"kind":"standard_albedo"},
-          {"node_path":"VentageJet/aileron_left_hinge/aileron_left","surface":0,"kind":"standard_albedo"},
-          {"node_path":"VentageJet/aileron_right_hinge/aileron_right","surface":0,"kind":"standard_albedo"}
-        ]},
-        {"id":"tail","label":"Tail","targets":[
-          {"node_path":"VentageJet/horizontal_tail_fixed","surface":3,"kind":"standard_albedo"},
-          {"node_path":"VentageJet/elevator_left_hinge/elevator_left","surface":0,"kind":"standard_albedo"},
-          {"node_path":"VentageJet/elevator_right_hinge/elevator_right","surface":0,"kind":"standard_albedo"},
-          {"node_path":"VentageJet/vertical_tail_fixed","surface":0,"kind":"standard_albedo"},
-          {"node_path":"VentageJet/rudder_hinge/rudder","surface":2,"kind":"standard_albedo"}
-        ]}
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "VentageJet/fuselage_core",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "VentageJet/wing_left_fixed",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/wing_right_fixed",
+              "surface": 4,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "VentageJet/horizontal_tail_fixed",
+              "surface": 3,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/elevator_left_hinge/elevator_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/elevator_right_hinge/elevator_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/vertical_tail_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "VentageJet/rudder_hinge/rudder",
+              "surface": 2,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
       ],
       "marking_slots": [],
       "smoke_slots": [
-        {"id":"show_wing_tip_left","label":"Left wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_left","node_path":".","position_m":[-1.0082,0.057876,0.562732],"direction":[0,0,1]},
-        {"id":"show_wing_tip_right","label":"Right wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_right","node_path":".","position_m":[1.0082,0.059237,0.614195],"direction":[0,0,1]},
-        {"id":"show_tail","label":"Tail","kind":"show","pair":"","role":"tail","node_path":".","position_m":[0,0.576286,1.288538],"direction":[0,0,1]}
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -1.0082,
+            0.057876,
+            0.562732
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            1.0082,
+            0.059237,
+            0.614195
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.576286,
+            1.288538
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        }
       ]
     },
     {
       "visual_family": "turbo-lumber-evolution",
       "paint_slots": [
-        {"id":"body","label":"Fuselage","targets":[
-          {"node_path":"TurboTimberEvolution/fuselage_core","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/cowl","surface":0,"kind":"standard_albedo"}
-        ]},
-        {"id":"wing","label":"Wing","targets":[
-          {"node_path":"TurboTimberEvolution/wing_left_fixed","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/wing_right_fixed","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/aileron_left_hinge/aileron_left","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/aileron_right_hinge/aileron_right","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/flap_left_hinge/flap_left","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/flap_right_hinge/flap_right","surface":0,"kind":"standard_albedo"}
-        ]},
-        {"id":"wing_tip","label":"Wing tips","targets":[
-          {"node_path":"TurboTimberEvolution/wing_left_fixed","surface":4,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/wing_right_fixed","surface":4,"kind":"standard_albedo"}
-        ]},
-        {"id":"tail","label":"Tail","targets":[
-          {"node_path":"TurboTimberEvolution/stabilizer_fixed","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/elevator_hinge/elevator","surface":0,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/fin_fixed","surface":2,"kind":"standard_albedo"},
-          {"node_path":"TurboTimberEvolution/rudder_hinge/rudder","surface":0,"kind":"standard_albedo"}
-        ]}
+        {
+          "id": "body",
+          "label": "Fuselage",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/fuselage_core",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/cowl",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing",
+          "label": "Wing",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/wing_left_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/wing_right_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/aileron_left_hinge/aileron_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/aileron_right_hinge/aileron_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/flap_left_hinge/flap_left",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/flap_right_hinge/flap_right",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "wing_tip",
+          "label": "Wing tips",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/wing_left_fixed",
+              "surface": 4,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/wing_right_fixed",
+              "surface": 4,
+              "kind": "standard_albedo"
+            }
+          ]
+        },
+        {
+          "id": "tail",
+          "label": "Tail",
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/stabilizer_fixed",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/elevator_hinge/elevator",
+              "surface": 0,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/fin_fixed",
+              "surface": 2,
+              "kind": "standard_albedo"
+            },
+            {
+              "node_path": "TurboTimberEvolution/rudder_hinge/rudder",
+              "surface": 0,
+              "kind": "standard_albedo"
+            }
+          ]
+        }
       ],
-      "marking_slots": [],
+      "marking_slots": [
+        {
+          "id": "registration",
+          "label": "Registration",
+          "max_chars": 12,
+          "targets": [
+            {
+              "node_path": "TurboTimberEvolution/fuselage_core",
+              "position_m": [
+                -0.06077,
+                0,
+                0.17
+              ],
+              "direction": [
+                -1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.12,
+              "height_m": 0.03
+            },
+            {
+              "node_path": "TurboTimberEvolution/fuselage_core",
+              "position_m": [
+                0.06119,
+                0,
+                0.17
+              ],
+              "direction": [
+                1,
+                0,
+                0
+              ],
+              "up": [
+                0,
+                1,
+                0
+              ],
+              "width_m": 0.12,
+              "height_m": 0.03
+            }
+          ]
+        }
+      ],
       "smoke_slots": [
-        {"id":"show_wing_tip_left","label":"Left wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_left","node_path":".","position_m":[-0.782752,0.077909,0.186293],"direction":[0,0,1]},
-        {"id":"show_wing_tip_right","label":"Right wingtip","kind":"show","pair":"wing_tips","role":"wing_tip_right","node_path":".","position_m":[0.782752,0.077909,0.186293],"direction":[0,0,1]},
-        {"id":"show_tail","label":"Tail","kind":"show","pair":"","role":"tail","node_path":".","position_m":[0,0.002,0.842],"direction":[0,0,1]}
+        {
+          "id": "show_wing_tip_left",
+          "label": "Left wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_left",
+          "node_path": ".",
+          "position_m": [
+            -0.782752,
+            0.077909,
+            0.186293
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_wing_tip_right",
+          "label": "Right wingtip",
+          "kind": "show",
+          "pair": "wing_tips",
+          "role": "wing_tip_right",
+          "node_path": ".",
+          "position_m": [
+            0.782752,
+            0.077909,
+            0.186293
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "show_tail",
+          "label": "Tail",
+          "kind": "show",
+          "pair": "",
+          "role": "tail",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.002,
+            0.842
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        }
       ]
     }
   ]

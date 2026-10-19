@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-19",
+  "baseline_commit": "e6d94648008071b4fa8ad614f612f9a3ab56a174",
+  "isolated_worktree": "tmp/performance-audit-round2/worktree",
+  "process_order": [
+    "before-1",
+    "after-1",
+    "after-2",
+    "before-2",
+    "before-3",
+    "after-3"
+  ],
+  "cpu_scope": "Production Main._process only, headless; real 240 Hz session/kernel steps outside timed callback, two ticks per declared 120 Hz presentation. No GPU/FPS or physical validation claim. 60 warmup and 1200 measured callbacks. Soundscape disabled. Shared, unreserved development host; timings vary materially.",
+  "cpu_pairs": [
+    {
+      "pair": 1,
+      "reference_p50_usec": 809.0,
+      "candidate_p50_usec": 494.0,
+      "reference_p95_usec": 1177.0,
+      "candidate_p95_usec": 869.0,
+      "numeric_sha256": "85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0"
+    },
+    {
+      "pair": 2,
+      "reference_p50_usec": 648.0,
+      "candidate_p50_usec": 632.0,
+      "reference_p95_usec": 1006.0,
+      "candidate_p95_usec": 953.0,
+      "numeric_sha256": "85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0"
+    },
+    {
+      "pair": 3,
+      "reference_p50_usec": 692.0,
+      "candidate_p50_usec": 579.0,
+      "reference_p95_usec": 1045.0,
+      "candidate_p95_usec": 862.0,
+      "numeric_sha256": "85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0"
+    }
+  ],
+  "median_of_p50_reference_usec": 692.0,
+  "median_of_p50_candidate_usec": 579.0,
+  "p50_reduction_percent": 16.329479768786126,
+  "reference_construction": "git show e6d946480:app/main.gd with only preload res://render/smoke/exhaust.gd replaced by absolute path of exhaust-before.gd from the same commit. All other reference resources use the frozen project; candidate adapter defaults preserve the original immediate two-call API.",
+  "reference_main_sha256": "7192d6ef495e3e7b44d778a79d2841637583e4c241944fffec1d1a56f22efb7c",
+  "reference_emitter_sha256": "4016a3f3babc04f4b4495763016456cde491149a39a1c2bcde780967641d76bc",
+  "executed_probe_sha256": "9d843c82eb9321b39f2bf177cd07243c471fc0f6415100ff2e994bc3e1200b75",
+  "candidate_isolated_files_sha256": {
+    "app/main.gd": "64797c7274753c9e766b4c68e223e9d139ad4fd006ee86a0f8603f64a094d777",
+    "app/render/airplane.gd": "99ba67154831395161ded6f4b2b32feae99c31dcb1e24e19afe04b5a4a20fdc3",
+    "app/render/smoke/exhaust.gd": "c0fa5949b8cd2739c4bee0cd7fb85579809fe2028ee7e15427fb9c8c1a31fd57",
+    "app/tests/test_engine_smoke.gd": "ec0acc3d4e41705160a74a8e1a390ee7bbfd6f4d46712eb5778c3bd89cc221de",
+    "app/tests/test_control_presentation.gd": "48a36fd85bb47abf1944fea73139853f6cbeccdab9e5fb657669a7d89193bca3"
+  },
+  "verified_current_files_sha256": {
+    "app/main.gd": "eec2135858f34b9e6e8f541010ae42a4e2ab8b8b6086374b9ba1041681b7cc8c",
+    "app/render/airplane.gd": "69e322943249368a180eca5c13109d97c5b98aa1d2ff716d5f99eac6c7bb46e3",
+    "app/render/smoke/exhaust.gd": "c0fa5949b8cd2739c4bee0cd7fb85579809fe2028ee7e15427fb9c8c1a31fd57",
+    "app/tests/test_engine_smoke.gd": "ec0acc3d4e41705160a74a8e1a390ee7bbfd6f4d46712eb5778c3bd89cc221de",
+    "app/tests/test_control_presentation.gd": "48a36fd85bb47abf1944fea73139853f6cbeccdab9e5fb657669a7d89193bca3"
+  },
+  "current_worktree_status_at_verification": [
+    " M app/app_root.gd",
+    " M app/data/aircraft_customization.json",
+    " M app/i18n/es.po",
+    " M app/main.gd",
+    " M app/render/aircraft_customization.gd",
+    " M app/render/airplane.gd",
+    " M app/render/smoke/exhaust.gd",
+    " M app/render/smoke/profile_process.gdshader",
+    " M app/render/smoke/profile_smoke.gd",
+    " M app/sim/flight_session.gd",
+    " M app/tests/test_engine_smoke.gd",
+    " M app/tests/test_prop_strike.gd",
+    " M app/tests/test_smoke_profiles.gd",
+    " M app/tests/test_start_choice.gd",
+    " M app/tests/test_workshop_integration.gd",
+    " M app/tests/test_workshop_presentation.gd",
+    " M app/tests/test_workshop_trial.gd",
+    " M app/ui/workshop.gd",
+    " M app/ui/workshop_customization.gd",
+    " M app/ui/workshop_preview.gd",
+    " M app/workshop/parameters.gd",
+    " M app/workshop/presentation.gd",
+    " M assets/aircraft/customization-bindings.json",
+    " M research/aircraft-editor/capture_workshop.gd",
+    "?? app/tests/test_aircraft_customization.gd",
+    "?? app/tests/test_control_presentation.gd",
+    "?? app/tests/test_workshop_bundle.gd",
+    "?? app/tests/test_workshop_customization.gd",
+    "?? app/tests/test_workshop_parameters.gd",
+    "?? app/tests/test_workshop_starts.gd",
+    "?? app/workshop/bundle.gd",
+    "?? app/workshop/launch.gd",
+    "?? app/workshop/start_qualification.gd",
+    "?? docs/research/visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/presentation-follow-up/round-2/",
+    "?? research/aircraft-editor/capture_smoke_profiles.gd",
+    "?? research/aircraft-editor/tmp_inspect_marking_mounts.gd",
+    "?? research/aircraft-standardization/test_customization.py"
+  ],
+  "source_scope": "Only the adapter batching, its two Main call-site edits, legacy exhaust upload gating, engine-smoke tests and new control-presentation test belong to this task. Other current-tree edits, including simulation/Workshop/customization, are concurrent work and were preserved.",
+  "isolated_patch_sha256": "a551c94c027342d379e79835f296f5f84e95a16bb87e5bb0154b449e87031879",
+  "reproduction_notes": [
+    "Create an isolated checkout at baseline_commit; import with the pinned native Windows engine. Apply candidate.patch to reproduce tracked candidate scripts, then copy the committed app/tests/test_control_presentation.gd.",
+    "For reference_main.gd take git show baseline_commit:app/main.gd and replace only the legacy EngineSmoke preload with the absolute path of the exact baseline emitter. Use the pinned engine and cpu_probe.gd --subject=<reference or res://main.gd> --output=<fresh JSON>.",
+    "Native baseline uses capture_reference.gd with its Main preload adjusted to reference_main.gd. Candidate uses res://tests/capture_engine_smoke.gd. Both take --soundscape=off --scenery=off --birds=off --crash-effects=off and a fresh --out directory.",
+    "The native harness source_sha256 reads res://main.gd even for the reference override; reference_main_sha256 and baseline_commit in this record identify the code actually instantiated.",
+    "The worktree importer regenerated platform-specific .import metadata and default_bus_layout.tres. These are local import outputs; they were not transferred to the primary checkout. The isolated candidate patch excludes them."
+  ]
+}

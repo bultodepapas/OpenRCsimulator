@@ -1,8 +1,10 @@
 # RC smoke: current behavior and renderer contract
 
-Checked 2026-10-19. SM-00…09 are integrated. This guide owns implemented behavior; the [remaining plan](SMOKE-PLAN.md) owns qualification and proposed customization. [Player controls](FIRST-LAUNCH.md#3-fly) owns bindings, [tools/smoke](../tools/smoke/README.md) owns commands, and [dated evidence](research/smoke-investigations/SM-00-09/README.md) owns observed results.
+Checked 2026-10-19. This guide owns the legacy SM-00…09 renderer; [Aircraft Workshop](AIRCRAFT-WORKSHOP.md) owns editable profiles and their exact endpoint coverage. The [remaining plan](SMOKE-PLAN.md) owns qualification. [Player controls](FIRST-LAUNCH.md#3-fly), [legacy tools](../tools/smoke/README.md) and [dated evidence](research/smoke-investigations/SM-00-09/README.md) retain their scope.
 
-## Supported sources
+A selected custom smoke profile uses the separate bounded multi-emitter renderer and suppresses the legacy pool. Profile smoke is intentionally available on a detached variant's technical trace/capture route; `--smoke=off` suppresses both paths and `--smoke-pump=on` supplies a show request. Source and show effects remain distinct. [AE-24 evidence](research/aircraft-editor/AE-24/README.md) records the profile renderer and isolated preview checks.
+
+## Legacy supported sources
 
 | Configuration | Current smoke source |
 | --- | --- |

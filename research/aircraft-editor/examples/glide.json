@@ -1,0 +1,33 @@
+{
+  "format": "openrc-aircraft-workshop-flight-experiment",
+  "version": 1,
+  "start": {
+    "mode": "glide",
+    "speed_mps": 15.0,
+    "altitude_m": 30.0
+  },
+  "environment": {
+    "weather": {
+      "format": "openrc-weather v1",
+      "speed_mps": 0.0,
+      "from_deg": 0.0,
+      "gust_mps": 0.0,
+      "gust_up_mps": 0.0,
+      "gust_duration_s": 4.0,
+      "gust_period_s": 12.0,
+      "gust_delay_s": 2.0
+    },
+    "gravity_mps2": 9.80665
+  },
+  "fuel_start_fill": 1.0,
+  "segments": [
+    {
+      "ticks": 60,
+      "inputs": [0.0, 0.0, 0.0, 0.0]
+    }
+  ],
+  "termination": {
+    "kind": "tick_limit",
+    "ticks": 60
+  }
+}

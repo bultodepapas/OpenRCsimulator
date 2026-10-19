@@ -12,6 +12,7 @@ func _initialize() -> void:
 	_test_tick_rate_determinism()
 	_test_tick_tape_bounds()
 	_test_source_isolation()
+	_test_profile_color_validation()
 	await _test_runtime_budget_lifecycle()
 	print("Profile smoke: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)
@@ -103,6 +104,23 @@ func _test_tick_tape_bounds() -> void:
 	var dense: Dictionary = schedule.advance(0, 24, {"wing": {"level": 0.0, "changes": changes}}, 0.0)
 	check("24 intra-interval input transitions are preserved without dropping", bool(dense.ok), str(dense.get("error", "")))
 	check("event buffer represents every transition tick", dense.events.wing.size() == 25)
+	var maximum_changes: Array[Dictionary] = []
+	for tick in range(25):
+		maximum_changes.append({"tick": tick, "level": 1.0 if tick % 2 == 0 else 0.0})
+	var maximum := Schedule.new()
+	maximum.configure([entry], {"wing": {"kind": "show"}})
+	var maximum_result: Dictionary = maximum.advance(0, 24,
+		{"wing": {"level": 0.0, "changes": maximum_changes}}, 0.0)
+	check("maximum 25 input samples fit a 24-tick interval", maximum_result.ok
+		and maximum_result.events.wing.size() == 25)
+	var overflow := Schedule.new()
+	overflow.configure([entry], {"wing": {"kind": "show"}})
+	var too_many := maximum_changes.duplicate(true)
+	too_many.append({"tick": 24, "level": 1.0})
+	var overflow_result: Dictionary = overflow.advance(0, 24,
+		{"wing": {"level": 0.0, "changes": too_many}}, 0.0)
+	check("26 input samples fault closed instead of being truncated", not overflow_result.ok
+		and not overflow.fault_reason().is_empty())
 	var invalid := Schedule.new()
 	invalid.configure([entry], {"wing": {"kind": "show"}})
 	var malformed: Dictionary = invalid.advance(0, 4,
@@ -135,6 +153,20 @@ func _test_source_isolation() -> void:
 		and float(accepted.events.engine.back().level) == 0.5 and float(accepted.events.wing.back().level) == 1.0)
 
 
+func _test_profile_color_validation() -> void:
+	var invalid_base := _entry("wing_left", "show", "hold")
+	invalid_base.color = "#GG0000FF"
+	var base_smoke = ProfileSmoke.new()
+	check("profile rejects non-hex base colors", not base_smoke.configure(_profile([invalid_base]), _bindings()))
+	base_smoke.free()
+	var invalid_palette := _entry("wing_left", "show", "hold")
+	invalid_palette.palette = ["#FF0000FF", "#0000ZZFF"]
+	invalid_palette.step_s = 0.1
+	var palette_smoke = ProfileSmoke.new()
+	check("profile rejects non-hex palette swatches", not palette_smoke.configure(_profile([invalid_palette]), _bindings()))
+	palette_smoke.free()
+
+
 func _test_runtime_budget_lifecycle() -> void:
 	var bindings := _bindings()
 	var entries: Array[Dictionary] = [
@@ -147,9 +179,11 @@ func _test_runtime_budget_lifecycle() -> void:
 	entries[0].step_s = 0.05
 	for entry: Dictionary in entries:
 		entry.lifetime_s = 8.0
+	entries[0].width_m = 2.0
+	entries[0].shape = "cloud"
 	var smoke = ProfileSmoke.new()
 	root.add_child(smoke)
-	check("profile smoke configures registered endpoints", smoke.configure(_profile(entries), bindings), str(smoke.budget_info().fault))
+	check("profile smoke configures show poses and selector-only source endpoints", smoke.configure(_profile(entries), bindings), str(smoke.budget_info().fault))
 	var budget: Dictionary = smoke.budget_info()
 	check("three show emitters and one source share a 768 budget", budget.capacity == 768
 		and budget.budget_limit == 768 and budget.show_emitters == 3 and budget.source_emitters == 1)
@@ -169,16 +203,20 @@ func _test_runtime_budget_lifecycle() -> void:
 	check("tick clock primes then advances a bounded interval", first.get("primed", false) and active.ok and active.interval_ticks == 8)
 	var left := smoke._emitters["wing_left"] as GPUParticles3D
 	check("eight-second profile lifetime reaches the particle node", left.lifetime == 8.0)
+	check("wide eight-second cloud expands its wind and puff visibility bound",
+		left.visibility_aabb.size.x >= 30.0 and left.visibility_aabb.size.y >= 30.0
+		and left.visibility_aabb.size.z >= 30.0, str(left.visibility_aabb))
 	var process := left.process_material as ShaderMaterial
 	var events: PackedVector4Array = process.get_shader_parameter("birth_event_states")
 	var times: PackedFloat32Array = process.get_shader_parameter("birth_event_times")
-	check("render boundary passes one ordered per-birth color buffer", process.get_shader_parameter("birth_event_count") == 1
-		and events.size() == 1 and events[0].x > 0.9 and events[0].z < 0.1 and times[0] == 0.0)
+	check("render boundary passes one ordered per-birth color in a fixed-size buffer", process.get_shader_parameter("birth_event_count") == 1
+		and events.size() == 32 and times.size() == 32 and events[0].x > 0.9 and events[0].z < 0.1 and times[0] == 0.0
+		and events[1] == Vector4.ZERO and times[1] == 0.0)
 	var palette: Dictionary = smoke.advance(12.0 / 240.0, {"tick": 20, "slot_transforms": transforms}, Vector3(1.0, 0.0, 0.0), 1.0, source_sample)
 	events = process.get_shader_parameter("birth_event_states")
 	times = process.get_shader_parameter("birth_event_times")
 	check("palette changes crossed within one request keep both birth colors", palette.ok
-		and process.get_shader_parameter("birth_event_count") == 2 and events.size() == 2
+		and process.get_shader_parameter("birth_event_count") == 2 and events.size() == 32 and times.size() == 32
 		and events[0].x > 0.9 and events[1].z > 0.9 and times[0] == 0.0 and times[1] > 0.0)
 	var node_count := smoke.get_child_count()
 	smoke.stop()
@@ -235,7 +273,8 @@ func _bindings() -> Dictionary:
 		{"id": "wing_right", "label": "Right wingtip", "kind": "show", "position_m": [0.0, 0.0, 0.0], "direction": [0.0, 0.0, -1.0]},
 		{"id": "tail", "label": "Tail", "kind": "show", "position_m": [0.0, 0.0, 0.0], "direction": [0.0, 0.0, -1.0]},
 		{"id": "engine_outlet", "label": "Engine outlet", "kind": "source", "source_kind": "glow_prop",
-			"position_m": [0.0, 0.0, 0.0], "direction": [0.0, 0.0, -1.0]},
+			"source_anchor_ref": "exhausts[0]", "physical_source_ref": "propulsion.id",
+			"physical_source_kind_ref": "propulsion.kind"},
 	]}
 
 

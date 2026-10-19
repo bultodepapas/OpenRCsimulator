@@ -109,13 +109,28 @@ func reset() -> void:
 	_last_transforms.clear()
 	_primed_slots.clear()
 	_schedule.reset()
-	for emitter: GPUParticles3D in _emitters.values():
-		if not is_instance_valid(emitter):
+	# Recreate the bounded GPU pools. GPUParticles3D restart can retain an
+	# already-rendered frame on the compatibility renderer; replacing each pool
+	# guarantees that reset clears all pre-reset puff state.
+	var counts: Dictionary = {}
+	for slot: String in _emitters.keys():
+		var emitter: GPUParticles3D = _emitters[slot]
+		counts[slot] = emitter.amount if is_instance_valid(emitter) else 0
+		if is_instance_valid(emitter):
+			emitter.free()
+	_emitters.clear()
+	var mask := _mask_texture()
+	for entry: Dictionary in _profile.get("smoke", []):
+		if not bool(entry.get("enabled", false)):
 			continue
-		emitter.emitting = false
-		emitter.restart(true)
-		emitter.emitting = false
-		RenderingServer.particles_request_process(emitter.get_base())
+		var slot := str(entry.get("slot", ""))
+		var count := int(counts.get(slot, 0))
+		if slot.is_empty() or count <= 0:
+			continue
+		var emitter := _make_emitter(slot, count, entry, mask, int(_profile.visual_seed))
+		_emitters[slot] = emitter
+		add_child(emitter)
+		_primed_slots[slot] = false
 	_configuration_reset = true
 
 
@@ -227,10 +242,13 @@ func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
 		var kind := str(endpoint.get("kind", ""))
 		if id.is_empty() or (kind != "show" and kind != "source") or endpoints.has(id):
 			return _invalid("smoke slot IDs and kinds must be unique and registered")
-		if not endpoint.has("position_m") or not endpoint.has("direction"):
-			return _invalid("smoke slot requires its authored local pose")
-		if kind == "source" and str(endpoint.get("source_kind", "")).is_empty():
-			return _invalid("source endpoint requires a registered physical source kind")
+		if kind == "show" and (not endpoint.has("position_m") or not endpoint.has("direction")):
+			return _invalid("show endpoint requires its authored local pose")
+		if kind == "source" and (str(endpoint.get("source_kind", "")) != "glow_prop"
+			or str(endpoint.get("source_anchor_ref", "")) != "exhausts[0]"
+			or str(endpoint.get("physical_source_ref", "")) != "propulsion.id"
+			or str(endpoint.get("physical_source_kind_ref", "")) != "propulsion.kind"):
+			return _invalid("source endpoint selectors are unsupported")
 		endpoints[id] = endpoint
 	var seen: Dictionary = {}
 	var show_count := 0
@@ -263,14 +281,14 @@ func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
 		var step := _bounded(entry.step_s, 0.0, 8.0)
 		if amount < 0.0 or width < 0.0 or lifetime < 0.0 or burst < 0.0 or period < 0.0 or duty < 0.0 or step < 0.0:
 			return _invalid("smoke profile number is nonfinite or outside its range")
-		if str(entry.color).length() != 9 or not str(entry.color).begins_with("#"):
+		if typeof(entry.color) != TYPE_STRING or not _is_rgba(str(entry.color)):
 			return _invalid("smoke color must be canonical #RRGGBBAA")
 		if str(entry.shape) not in ["ribbon", "cloud", "fan"] or str(entry.mode) not in ["hold", "burst", "pulse"]:
 			return _invalid("smoke shape or mode is unsupported")
 		if not entry.palette is Array or entry.palette.size() > 8:
 			return _invalid("palette must contain at most eight swatches")
 		for swatch: Variant in entry.palette:
-			if typeof(swatch) != TYPE_STRING or str(swatch).length() != 9 or not str(swatch).begins_with("#"):
+			if typeof(swatch) != TYPE_STRING or not _is_rgba(str(swatch)):
 				return _invalid("palette swatches must be canonical #RRGGBBAA")
 		if str(entry.mode) == "hold" and (burst != 0.0 or period != 0.0 or duty != 0.0):
 			return _invalid("hold mode requires canonical zero timing fields")
@@ -366,23 +384,31 @@ func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
 	var time_values := PackedFloat32Array()
 	var state_values := PackedVector4Array()
 	var level_values := PackedFloat32Array()
+	time_values.resize(MAX_BIRTH_EVENTS)
+	time_values.fill(0.0)
+	state_values.resize(MAX_BIRTH_EVENTS)
+	state_values.fill(Vector4.ZERO)
+	level_values.resize(MAX_BIRTH_EVENTS)
+	level_values.fill(0.0)
+	var event_count := 0
 	var has_active_event := false
 	if can_birth:
 		for item: Dictionary in raw_events:
-			if time_values.size() >= MAX_BIRTH_EVENTS:
+			if event_count >= MAX_BIRTH_EVENTS:
 				_fault = "GPU birth-event buffer overflow"
 				can_birth = false
 				break
 			var color: Color = item.color
 			var level := clampf(float(item.level), 0.0, 1.0)
-			time_values.append(float(item.offset_s))
-			state_values.append(Vector4(color.r, color.g, color.b, color.a))
-			level_values.append(level)
+			time_values[event_count] = float(item.offset_s)
+			state_values[event_count] = Vector4(color.r, color.g, color.b, color.a)
+			level_values[event_count] = level
+			event_count += 1
 			has_active_event = has_active_event or level > 0.0
 	material.set_shader_parameter("birth_event_times", time_values)
 	material.set_shader_parameter("birth_event_states", state_values)
 	material.set_shader_parameter("birth_event_levels", level_values)
-	material.set_shader_parameter("birth_event_count", time_values.size())
+	material.set_shader_parameter("birth_event_count", event_count)
 	if not can_birth:
 		material.set_shader_parameter("birth_event_count", 0)
 		has_active_event = false
@@ -436,9 +462,23 @@ func _record_history(tick: int, segments: Dictionary, wind: Vector3, interval_s:
 
 func _update_bounds(tick: int, segments: Dictionary, wind_speed: float) -> void:
 	var active_lifetime := 0.0
+	var maximum_particle_extent := 0.0
+	var maximum_spawn_extent := 0.0
+	var maximum_intrinsic_flow_speed := 0.0
 	for entry: Dictionary in _profile.smoke:
 		if bool(entry.enabled):
-			active_lifetime = maxf(active_lifetime, float(entry.lifetime_s))
+			var lifetime := float(entry.lifetime_s)
+			var width := float(entry.width_m)
+			var shape := str(entry.shape)
+			var growth := 0.42 if shape == "ribbon" else 0.7
+			var buoyancy := 0.18 if shape == "ribbon" else 0.27
+			active_lifetime = maxf(active_lifetime, lifetime)
+			maximum_particle_extent = maxf(maximum_particle_extent,
+				width * (0.025 + growth * sqrt(lifetime)))
+			if shape == "cloud":
+				maximum_spawn_extent = maxf(maximum_spawn_extent, width * 0.71)
+			maximum_intrinsic_flow_speed = maxf(maximum_intrinsic_flow_speed,
+				buoyancy + sqrt(3.0) * 0.22)
 	while not _history.is_empty() and float(tick - int(_history.front().tick)) / TICKS_PER_SECOND > active_lifetime + 0.3:
 		_history.pop_front()
 	var box := AABB()
@@ -463,7 +503,11 @@ func _update_bounds(tick: int, segments: Dictionary, wind_speed: float) -> void:
 				box = box.expand(segment.current.origin)
 	if first:
 		box = AABB(Vector3.ZERO, Vector3.ONE)
-	box = box.grow(3.0 + maximum_wind * active_lifetime + maximum_carrier * 0.65)
+	var puff_extent := maximum_particle_extent + maximum_spawn_extent
+	var drift_extent := maximum_wind * active_lifetime \
+		+ maximum_intrinsic_flow_speed * active_lifetime + 0.65 * 0.65 \
+		+ maximum_carrier * 0.65
+	box = box.grow(1.0 + puff_extent + drift_extent)
 	for emitter: GPUParticles3D in _emitters.values():
 		emitter.visibility_aabb = box
 
@@ -533,6 +577,16 @@ func _has_exact_keys(value: Dictionary, keys: PackedStringArray) -> bool:
 		return false
 	for key: Variant in value.keys():
 		if typeof(key) != TYPE_STRING or not keys.has(str(key)):
+			return false
+	return true
+
+
+func _is_rgba(text: String) -> bool:
+	if text.length() != 9 or not text.begins_with("#"):
+		return false
+	const HEX_DIGITS := "0123456789abcdefABCDEF"
+	for index in range(1, text.length()):
+		if HEX_DIGITS.find(text.substr(index, 1)) < 0:
 			return false
 	return true
 

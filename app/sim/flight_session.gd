@@ -508,13 +508,26 @@ const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
 const PowerTrim := preload("res://physics/cruise_trim.gd")
-## Catalog aircraft with supported static runway starts; physical ground handling remains aircraft-specific.
-const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "sebart-avanti-s-a200-p100rx", "p51d-mustang-120", "gp-extra-300s-60"]
-const RUNWAY_FIELD_ID := "default"
-
-
+## Menu hint from accepted data. The selected field, equilibrium and clearance are checked on each launch.
 static func runway_aircraft_supported(aircraft_id: String) -> bool:
-	return RUNWAY_AIRCRAFT_IDS.has(aircraft_id)
+	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
+	var entry: Dictionary = catalog.entry(aircraft_id)
+	if entry.is_empty() or catalog.is_rotorcraft(aircraft_id) or str(entry.get("data", "")).is_empty(): return false
+	var data := AircraftData.load_file(str(entry.data))
+	return data.get("ok", false) and _runway_model_supported(data.get("model", {}))
+
+
+static func runway_aircraft_ids() -> PackedStringArray:
+	var result := PackedStringArray()
+	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
+	for id: String in catalog.ids():
+		if runway_aircraft_supported(id): result.append(id)
+	return result
+
+
+static func _runway_model_supported(model: Dictionary) -> bool:
+	var gear: Dictionary = model.get("landing_gear", {})
+	return not gear.is_empty() and gear.has("breakaway_factor") and not gear.get("contacts", []).is_empty()
 
 
 ## D6e-R1: explicitly selected operating point, not an aircraft cruise-speed claim.
@@ -721,6 +734,7 @@ func _init() -> void:
 ## Loads the aircraft, solves the trimmed start and creates the simulation. Call once, before adding to the tree.
 ## Workshop trials resolve once. Reload/reset must retain that exact immutable candidate.
 var _frozen_aircraft: Dictionary = {}
+var workshop_presentation_identity: Dictionary = {}
 var workshop_identity: Dictionary = {}
 
 
@@ -1656,15 +1670,12 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	if _runway_field.is_empty():
 		return { ok = false, message = "runway start needs a loaded field" }
 	var field_id: String = str(_runway_field.get("id", ""))
-	if field_id != RUNWAY_FIELD_ID or ground_field_id != field_id:
-		return { ok = false, message = "runway start is supported only on field '%s' (got '%s')" % [RUNWAY_FIELD_ID, field_id] }
+	if field_id.is_empty() or ground_field_id != field_id:
+		return { ok = false, message = "runway field does not match the installed contact surfaces" }
 	var data: Dictionary = prepared.get("data", {})
 	if not data.get("ok", false):
 		return { ok = false, message = "aircraft data is invalid" }
 	var model: Dictionary = data.get("model", {})
-	var model_id: String = str(model.get("id", ""))
-	if not runway_aircraft_supported(model_id):
-		return { ok = false, message = "runway start is supported only for qualified aircraft %s (got '%s')" % [str(RUNWAY_AIRCRAFT_IDS), model_id] }
 	var gear: Dictionary = model.get("landing_gear", {})
 	if gear.is_empty() or not gear.has("breakaway_factor") or gear.get("contacts", []).is_empty():
 		return { ok = false, message = "runway start needs landing gear with stiction data" }
@@ -2255,14 +2266,13 @@ func _reset_selected_runway_start() -> Dictionary:
 		return { ok = false, message = surface_error }
 	if not aircraft.get("ok", false) or not start.get("ok", false):
 		return { ok = false, message = _start_failure_reason() }
-	var model_id: String = str(aircraft.model.get("id", ""))
-	if not runway_aircraft_supported(model_id):
-		return { ok = false, message = "runway start is supported only for qualified aircraft %s (got '%s')" % [str(RUNWAY_AIRCRAFT_IDS), model_id] }
+	if not _runway_model_supported(aircraft.model):
+		return { ok = false, message = "runway start needs landing gear with stiction data" }
 	if _runway_field.is_empty():
 		return { ok = false, message = "runway start needs a loaded field" }
 	var field_id: String = str(_runway_field.get("id", ""))
-	if field_id != RUNWAY_FIELD_ID or ground_field_id != field_id:
-		return { ok = false, message = "runway start is supported only on field '%s' (got '%s')" % [RUNWAY_FIELD_ID, field_id] }
+	if field_id.is_empty() or ground_field_id != field_id:
+		return { ok = false, message = "runway field does not match the installed contact surfaces" }
 	if anchor_count() == 0:
 		return { ok = false, message = "runway start needs landing gear with stiction data" }
 	var spot: Dictionary = GroundStart.threshold(_runway_field)
@@ -3688,6 +3698,8 @@ func trace_meta() -> Dictionary:
 			metadata.fuel_cutoff_law = LiquidFlight.CUTOFF_LAW
 	if not workshop_identity.is_empty():
 		metadata.workshop = workshop_identity.duplicate(true)
+	if not workshop_presentation_identity.is_empty():
+		metadata.workshop_presentation = workshop_presentation_identity.duplicate(true)
 		metadata.aircraft_input_hash_convention = "sha256 of exact frozen Workshop aircraft bytes"
 	if _failures != null:
 		metadata.failure_plan = JSON.stringify(_failures.plan(), "", true, true)
