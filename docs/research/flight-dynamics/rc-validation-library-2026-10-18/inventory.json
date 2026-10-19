@@ -1,7 +1,7 @@
 {
   "format": "openrc-literature-inventory v1",
   "generator": "research/reference-library/catalog.py --write",
-  "checked_utc": "2026-10-19T13:30:59.939841+00:00",
+  "checked_utc": "2026-10-19T22:56:31.643843+00:00",
   "records": 416,
   "bibliography_entries": 399,
   "records_without_local_file": 84,

@@ -6,7 +6,7 @@
 
 The existing `propulsion.propeller.thrust_line_offset` is now **[-0.414176, 0, 0] m**, in the file's aft/right/up axes about the plan CG. The disc centre is **[-0.293276, 0, 0] m** in LE coordinates; the corresponding body FRD arm is **[+0.414176, 0, 0] m**. Before E0b2 the point was at the CG. This makes the hub explicit for subsequent wash/crossflow work without adding fields to the runtime schema.
 
-Update 2026-10-19 (FUEL-05f): the base Stik is balanced with the tank empty, so its plan CG is the dry CG and no longer the body datum. The generator now subtracts the authored inventory CG (the fixed datum the runtime uses); the hub itself is unchanged and the offset is [-0.402668, 0, -0.000208] m. See [FUEL-05](../../fuel-systems/FUEL-05/README.md).
+Update 2026-10-19 (FUEL-05f): the base Stik is balanced with the tank empty, so its plan CG is the dry CG and no longer the body datum. The generator now subtracts the authored inventory CG (the fixed datum the runtime uses); the hub itself is unchanged and the offset is [-0.402668, 0, -0.000208] m. See [FUEL-05](../../../../research/fuel-systems/FUEL-05/README.md).
 
 The [generator](../../../../research/propwash/e0b2/derive_geometry.py) owns only that provenanced quantity in the aircraft JSON and the [neutral geometry handoff](geometry.json). It reads the editable visual geometry and requires exact agreement with the model team's compiled `ugly_stik_geometry.gd`. `--check` refuses stale outputs without rewriting them; `app/test.sh` runs it and four geometry tests.
 

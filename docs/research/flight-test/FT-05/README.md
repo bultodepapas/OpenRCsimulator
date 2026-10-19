@@ -1,6 +1,6 @@
 # FT-05: card v5 fleet baseline with the hands-off throttle step and the NITRO-06 glow throttle law
 
-2026-10-19 · **Status: card `ft-card-v5` flown on all eight fixed-wing catalog aircraft after the NITRO-06 glow throttle law. 314 of 320 tests valid; `power_step` valid on every aircraft. The glow Stiks now stall power-off (9.3–10.0 m/s) where FT-04 could not slow them down at idle. FT-05 replaces FT-04 as the current baseline.**** [Tool, card and workflow](../../../../research/flight-test/README.md#card-v5-addition-d6e-r3); previous baseline [FT-04](../FT-04/README.md) (card v4); the investigation that added the test and changed the law: [D6e-R3](../../flight-dynamics/power-climb-2026-10-19/README.md), [NITRO-06](../../glow-engines/NITRO-06/README.md).
+2026-10-19 · **Status: card `ft-card-v5` flown on all eight fixed-wing catalog aircraft after the NITRO-06 glow throttle law. 314 of 320 tests valid; `power_step` valid on every aircraft. The glow Stiks now stall power-off (9.3–10.0 m/s) where FT-04 could not slow them down at idle. FT-05 replaces FT-04 as the current baseline.** [Tool, card and workflow](../../../../research/flight-test/README.md#card-v5-addition-d6e-r3); previous baseline [FT-04](../FT-04/README.md) (card v4); the investigation that added the test and changed the law: [D6e-R3](../../flight-dynamics/power-climb-2026-10-19/README.md), [NITRO-06](../../glow-engines/NITRO-06/README.md).
 
 ## What changed
 
@@ -22,8 +22,8 @@ Each aircraft folder holds `profile.md`, `profile.json` and `run.log`. [summary.
 ## Verification
 
 - **Every aircraft completed the card with exit 0 and no script errors**; the invalid tests are the airplanes' answers: the 61FX finds no power-on stall break within 40 s at 50 % throttle; the FS-64V flies no up-line for the stall turn; the Extra's full-throttle knife-edges end in a rejected nonfinite stage at 90° of bank with the rudder saturated (a crash-detection limit of the Extra, reported as such); the Ventage Jet does not recover its right inverted spin; the Timber cannot hold the inverted pass at its start speed (as in FT-04).
-- **Same tree, with and without NITRO-06.** SAME_TREE_PLACEHOLDER
-- **Against FT-04** (`compare.py --allow-card-change --shared-tests --rel 0 --abs 0`): the Timber shows 0 changes over the 39 shared tests; the other seven moved, the glow aircraft by the law and the Stik, P-51 and Ventage Jet by data that other tracks changed since FT-04 (the comparator reports "aircraft data changed" for them). The same-tree run above is the comparison that isolates this step.
+- **Same tree, with and without NITRO-06:** the original report left a placeholder without a linked result. An isolated comparison remains unsubstantiated here; do not use the cross-baseline differences below to attribute changes solely to NITRO-06.
+- **Against FT-04** (`compare.py --allow-card-change --shared-tests --rel 0 --abs 0`): the Timber shows 0 changes over the 39 shared tests; the other seven moved. The glow law and other tracks' aircraft-data changes both differ between these baselines (the comparator reports "aircraft data changed" for the Stik, P-51 and Ventage Jet). This comparison does not isolate those contributions.
 
 ## Findings
 

@@ -204,7 +204,7 @@ Use fresh output directories and the pinned Godot build. Run timing experiments 
 | Modal dashboard | `python3 research/validation/dashboard.py --check`; [validation tools](../research/validation/README.md). Red reference comparisons are diagnostic results. |
 | Aircraft generators | Source pipelines in the aircraft guides; examples: [P51-05](../research/p51/p51-05/derivation.md), [EX-05](../research/extra-300/ex05/derivation.md), [AV-06](../research/avanti-s/av06/derivation.md). |
 
-[Research index](research/README.md) maps remaining experiments and dated evidence. Some source studies require ignored `references/` files and cannot run from a fresh clone.
+[Research index](research/README.md) maps dated evidence; the [tools/input map](../research/README.md) pairs experiment folders with their reports. The [literature-library workflow](research/flight-dynamics/rc-validation-library-2026-10-18/README.md#recheck-the-collection) verifies local originals and regenerates CSV/BibTeX from source manifests. Some source studies require ignored `references/` files and cannot run from a fresh clone.
 
 ## Rendering, field, audio and asset tools
 

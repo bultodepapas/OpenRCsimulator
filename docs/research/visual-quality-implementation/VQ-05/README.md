@@ -20,7 +20,7 @@ A solid propeller drawn once per frame strobes: at flying speed the blades pass 
 
 ## Renderer probes (Godot 4.7.2, Compatibility, llvmpipe)
 
-A scratch scene rendered three questions before the design was fixed; the script is retained as [research/visual-quality/vq-05/compat_probe.gd](../../../../research/propeller-blur/compat_probe.gd) and its frame as [evidence/compat-probe.png](evidence/compat-probe.png):
+A scratch scene rendered three questions before the design was fixed; the script is retained as [research/visual-quality/vq-05/compat_probe.gd](../../../../research/visual-quality/vq-05/compat_probe.gd) and its frame as [evidence/compat-probe.png](evidence/compat-probe.png):
 
 | Question | Result | Consequence |
 | --- | --- | --- |
