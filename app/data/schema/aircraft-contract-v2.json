@@ -75,7 +75,8 @@
         "aero",
         "propulsion",
         "physical_identity_version",
-        "crash_hull_ids"
+        "crash_hull_ids",
+        "fuel_system"
       ]
     },
     {
@@ -174,7 +175,9 @@
         "plan_cg",
         "firewall",
         "configuration",
-        "cg_tolerance"
+        "cg_tolerance",
+        "fuel_state",
+        "cg_range"
       ]
     },
     {
@@ -1029,6 +1032,49 @@
         "stall_shift_fraction",
         "lift_reference_offset_m"
       ]
+    },
+    {
+      "path": "/balance/cg_range",
+      "required": [
+        "forward",
+        "aft"
+      ],
+      "allowed": [
+        "forward",
+        "aft"
+      ]
+    },
+    {
+      "path": "/fuel_system",
+      "required": [
+        "tanks"
+      ],
+      "allowed": [
+        "tanks"
+      ]
+    },
+    {
+      "path": "/fuel_system/tanks/*",
+      "required": [
+        "id",
+        "fuel",
+        "liquid_inventory_id",
+        "shell_inventory_id",
+        "capacity",
+        "unusable",
+        "pickup",
+        "feed"
+      ],
+      "allowed": [
+        "id",
+        "fuel",
+        "liquid_inventory_id",
+        "shell_inventory_id",
+        "capacity",
+        "unusable",
+        "pickup",
+        "feed"
+      ]
     }
   ],
   "quantity_paths": [
@@ -1082,7 +1128,10 @@
     "/landing_gear/retraction/drag_area",
     "/landing_gear/retraction/drag_center",
     "/landing_gear/contacts/*/retraction_path",
-    "/flaps/*"
+    "/flaps/*",
+    "/balance/cg_range/*",
+    "/fuel_system/tanks/*/capacity",
+    "/fuel_system/tanks/*/unusable"
   ],
   "array_rules": [
     {
@@ -1108,6 +1157,10 @@
     {
       "path": "/crash_hull_ids",
       "min_items": 4
+    },
+    {
+      "path": "/fuel_system/tanks",
+      "min_items": 1
     }
   ],
   "string_rules": [
@@ -1201,6 +1254,22 @@
     },
     {
       "path": "/propulsion/battery/pack/sha256",
+      "nonempty": true
+    },
+    {
+      "path": "/fuel_system/tanks/*/id",
+      "nonempty": true
+    },
+    {
+      "path": "/fuel_system/tanks/*/fuel",
+      "nonempty": true
+    },
+    {
+      "path": "/fuel_system/tanks/*/liquid_inventory_id",
+      "nonempty": true
+    },
+    {
+      "path": "/fuel_system/tanks/*/shell_inventory_id",
       "nonempty": true
     }
   ],
@@ -1352,6 +1421,30 @@
         "glow_fuel",
         "gasoline",
         "lipo"
+      ]
+    },
+    {
+      "path": "/balance/fuel_state",
+      "values": [
+        "as_inventory",
+        "empty_tanks"
+      ]
+    },
+    {
+      "path": "/fuel_system/tanks/*/pickup",
+      "values": [
+        "clunk",
+        "felt_clunk",
+        "fixed",
+        "hopper"
+      ]
+    },
+    {
+      "path": "/fuel_system/tanks/*/feed",
+      "values": [
+        "suction_muffler",
+        "pumped_diaphragm",
+        "ecu_pump"
       ]
     }
   ],

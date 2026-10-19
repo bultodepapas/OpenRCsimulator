@@ -294,15 +294,6 @@ func _init() -> void:
 	start_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	start_button.pressed.connect(_cycle_start_choice)
 	flight_card_lines.add_child(start_button)
-	battery_button = _button("", "HomeAction")
-	battery_button.name = "BatteryChoice"
-	battery_button.custom_minimum_size.y = 36
-	battery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	battery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	battery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	battery_button.visible = false
-	battery_button.pressed.connect(_cycle_battery_mode)
-	flight_card_lines.add_child(battery_button)
 
 	_conditions_row = GridContainer.new()
 	_conditions_row.name = "FlightConditions"
@@ -376,6 +367,15 @@ func _init() -> void:
 	limits_label.name = "LaunchLimits"
 	limits_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_flight_details.add_child(limits_label)
+	# BAT-13: the battery mode is a launch detail; the collapsed flight card has no spare height (test_ui_home).
+	battery_button = _button("", "HomeAction")
+	battery_button.name = "BatteryChoice"
+	battery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	battery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	battery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	battery_button.visible = false
+	battery_button.pressed.connect(_cycle_battery_mode)
+	_flight_details.add_child(battery_button)
 	_flight_details.add_child(controller_prompt_label)
 	keys_legend = GridContainer.new()
 	keys_legend.name = "FlightControlsLegend"
@@ -659,8 +659,8 @@ func _ready() -> void:
 		utility.focus_neighbor_right = utility.get_path_to(utilities[(index + 1) % utilities.size()])
 	for header_button in [language_button, settings_button]:
 		header_button.focus_neighbor_bottom = header_button.get_path_to(_page_buttons[0])
-	_link_flight_options()
-	fly_button.focus_neighbor_top = fly_button.get_path_to(_last_flight_option() if not fly_button.disabled else _page_buttons[0])
+	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
+	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
 	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
@@ -699,10 +699,10 @@ func _select_page(index: int) -> void:
 	# Focus stays on the selected destination's content; it never skips into another section.
 	if is_inside_tree():
 		var primary_action: Control = ground_vehicle_button if selected == 3 else fly_button
-		var action_previous: Control = ground_vehicle_choice if selected == 3 else _last_flight_option() if selected == 0 and not fly_button.disabled else _page_buttons[selected]
+		var action_previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
 		primary_action.focus_neighbor_top = primary_action.get_path_to(action_previous)
 		if selected == 0 and not fly_button.disabled:
-			_link_flight_options()
+			start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 		var catalog_selection := maxi(0, _catalog_ids.find(aircraft_id))
 		var first_controls: Array[Control] = [previous_button, _catalog_buttons[catalog_selection], natural_random_button, ground_vehicle_choice]
 		_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(first_controls[selected])
@@ -891,9 +891,9 @@ func set_aircraft(id: String) -> void:
 			if _pages[page_index].visible:
 				selected_page = page_index
 				break
-		var fly_previous: Control = _last_flight_option() if selected_page == 0 and not fly_button.disabled else _page_buttons[selected_page]
+		var fly_previous: Control = start_button if selected_page == 0 and not fly_button.disabled else _page_buttons[selected_page]
 		fly_button.focus_neighbor_top = fly_button.get_path_to(fly_previous)
-		_link_flight_options()
+		start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 	workshop_button.disabled = rotorcraft
 	workshop_button.tooltip_text = tr("Aircraft Workshop is not available for this rotorcraft yet.") if rotorcraft else ""
 	natural_random_button.disabled = rotorcraft
@@ -944,26 +944,10 @@ func set_battery_mode(mode: String) -> void:
 	battery_button.visible = not Catalog.battery_data(aircraft_id).is_empty() and not Catalog.is_rotorcraft(aircraft_id)
 	battery_button.text = tr("Battery: finite pack (experimental)") if battery_mode == "pack" else tr("Battery: ideal (never runs flat)")
 	battery_button.tooltip_text = tr("Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage.")
-	if is_node_ready():
-		_link_flight_options()
 
 
 func _cycle_battery_mode() -> void:
 	set_battery_mode("ideal" if battery_mode == "pack" else "pack")
-
-
-## The flight option directly above Fly: the battery choice when shown, otherwise the start choice.
-func _last_flight_option() -> Control:
-	return battery_button if battery_button != null and battery_button.visible else start_button
-
-
-func _link_flight_options() -> void:
-	if battery_button != null and battery_button.visible:
-		start_button.focus_neighbor_bottom = start_button.get_path_to(battery_button)
-		battery_button.focus_neighbor_top = battery_button.get_path_to(start_button)
-		battery_button.focus_neighbor_bottom = battery_button.get_path_to(fly_button)
-	else:
-		start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 
 
 func _cycle_start_choice() -> void:
