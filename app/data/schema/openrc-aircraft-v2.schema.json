@@ -2670,6 +2670,56 @@
                   "pumped_diaphragm",
                   "ecu_pump"
                 ]
+              },
+              "pickup_position": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "array",
+                    "minItems": 3,
+                    "maxItems": 3,
+                    "items": {
+                      "type": "number",
+                      "minimum": -3,
+                      "maximum": 3
+                    }
+                  },
+                  "unit": {
+                    "const": "m"
+                  }
+                }
+              },
+              "feed_line": {
+                "type": "object",
+                "required": [
+                  "id",
+                  "liquid_inventory_id",
+                  "capacity"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "liquid_inventory_id": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "capacity": {
+                    "$ref": "#/$defs/evidence",
+                    "properties": {
+                      "value": {
+                        "type": "number",
+                        "maximum": 50,
+                        "exclusiveMinimum": 0
+                      },
+                      "unit": {
+                        "const": "l"
+                      }
+                    }
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "additionalProperties": false

@@ -107,6 +107,17 @@ func _run() -> void:
 		if not bool(caps.get("scale", false)):
 			unsupported_found = true
 	_check("catalog includes aircraft with restricted Workshop adjustments", unsupported_found)
+	workshop.set_aircraft("gp-extra-300s-60")
+	await _ui.settle()
+	var glow_scale_hint := _find(workshop, "ScaleSupport") as Label
+	var glow_capacity_slider := workshop.get("_factor_sliders")["tank_capacity_multiplier"] as HSlider
+	_check("finite-glow engine scaling stays disabled with its qualified limitation",
+		scale_selector.disabled and glow_scale_hint != null
+		and glow_scale_hint.text.contains("finite-glow installation data must remain fixed"),
+		glow_scale_hint.text if glow_scale_hint != null else "missing scale limitation")
+	_check("finite-glow aircraft still exposes independent finite-tank sizing",
+		glow_capacity_slider.editable
+		and str(workshop.get("_factor_hints")["tank_capacity_multiplier"].text).contains("Estimated sizing proposal"))
 	workshop.set_aircraft("xcell-60-research")
 	await _ui.settle()
 	var rotorcraft_note := _find(workshop, "WorkshopStatus") as Label

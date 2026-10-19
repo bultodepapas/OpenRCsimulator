@@ -1092,9 +1092,12 @@ func _update_capabilities() -> void:
 	_capabilities_label.text = "\n".join(notes)
 	_capabilities_label.visible = not notes.is_empty()
 	var limitation := tr("Not available for this engine type.")
-	_scale_support_hint.text = tr("Scaling unavailable: %s") % limitation if not bool(_capabilities.get("scale", false)) else ""
+	var classification: Dictionary = _capabilities.get("classification", {})
+	var transform_reasons: Array = classification.get("compiler_transform_reasons", [])
+	var transform_reason := "; ".join(PackedStringArray(transform_reasons)) if not transform_reasons.is_empty() else limitation
+	_scale_support_hint.text = tr("Scaling unavailable: %s") % transform_reason if not bool(_capabilities.get("scale", false)) else ""
 	_scale_support_hint.visible = _scale_support_hint.text != ""
-	_mass_support_hint.text = tr("Mass and weight unavailable: %s") % limitation if not bool(_capabilities.get("weight", false)) else ""
+	_mass_support_hint.text = tr("Mass and weight unavailable: %s") % transform_reason if not bool(_capabilities.get("weight", false)) else ""
 	_mass_support_hint.visible = _mass_support_hint.text != ""
 
 

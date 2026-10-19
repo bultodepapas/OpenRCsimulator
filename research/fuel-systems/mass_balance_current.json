@@ -14,7 +14,6 @@
    "energy": "pack_ecm",
    "file": "battery/turbo_lumber_evolution_4s_pack.json",
    "flags": [
-    "missing_neutral_point",
     "cg_range_not_declared"
    ],
    "fuel_items": [],
@@ -25,7 +24,11 @@
    },
    "mac_m": 0.210294,
    "neutral_donor_items": [],
-   "neutral_point": null,
+   "neutral_point": {
+    "kind": "derived",
+    "np_x_m": 0.11474047993431823,
+    "register_key": "turbo-lumber-evolution"
+   },
    "plan_cg_m": [
     0.06,
     0.0,
@@ -41,7 +44,8 @@
       -0.002176
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 2.19
+     "mass_kg": 2.19,
+     "static_margin_pct_mac": 26.03
     }
    },
    "variant_kind": "catalog"
@@ -1154,7 +1158,6 @@
    "energy": "fixed_voltage",
    "file": "turbo_lumber_evolution.json",
    "flags": [
-    "missing_neutral_point",
     "cg_range_not_declared"
    ],
    "fuel_items": [],
@@ -1165,7 +1168,11 @@
    },
    "mac_m": 0.210294,
    "neutral_donor_items": [],
-   "neutral_point": null,
+   "neutral_point": {
+    "kind": "derived",
+    "np_x_m": 0.11474047993431823,
+    "register_key": "turbo-lumber-evolution"
+   },
    "plan_cg_m": [
     0.06,
     0.0,
@@ -1181,7 +1188,8 @@
       -0.002176
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 2.19
+     "mass_kg": 2.19,
+     "static_margin_pct_mac": 26.03
     }
    },
    "variant_kind": "catalog"

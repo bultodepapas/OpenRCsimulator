@@ -17,11 +17,11 @@ var _failures: int = 0
 var _checks: int = 0
 
 
-func _check(label: String, ok: bool) -> void:
+func _check(label: String, ok: bool, detail := "") -> void:
 	_checks += 1
 	if not ok:
 		_failures += 1
-		printerr("FAIL ", label)
+		printerr("FAIL ", label, " ", detail)
 
 
 func _aux_matches(encoded: String, aux: PackedFloat64Array) -> bool:
@@ -70,11 +70,12 @@ func _initialize() -> void:
 		var glow_profiled: bool = session.glow_is_active()
 		var wheel_profiled: bool = session.wheel_count() > 0
 		var expected_schema: String = "openrc-flight-meta v10" if glow_profiled else ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2")
-		if session.flaps_available():
+		if not glow_profiled and session.flaps_available():
 			expected_schema = "openrc-flight-meta v9" # optional flap layout follows the gear channels
-		elif session.gear_is_retractable():
+		elif not glow_profiled and session.gear_is_retractable():
 			expected_schema = "openrc-flight-meta v8" # published gear/input/extension metadata contract
-		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema)
+		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema,
+			"expected=%s actual=%s" % [expected_schema, meta.metadata_schema])
 		if wheel_profiled:
 			_check("wheel trace layout names appended rim-speed tail", str(meta.continuous_layout).ends_with(WHEEL_LAYOUT_SUFFIX))
 			_check("wheel trace records selected-profile and source-file identity", str(meta.wheel_profile_sha256).length() == 64
@@ -117,7 +118,8 @@ func _initialize() -> void:
 		_check("initial auxiliary snapshot", _aux_matches(meta.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
 		_check("powered start", meta.recording_start_engine_running == "true")
 		if entry.id == "p51d-mustang-120":
-			_check("P-51 shaft balance", meta.propulsion_model == "propeller-shaft-balance-v1")
+			_check("P-51 records the configured coupled shaft law",
+				meta.propulsion_model == "propeller-shaft-coupled-rk4-v1" and meta.shaft_integrator == "coupled-rk4")
 			_check("P-51 slipstream", meta.propwash_model == "tail-slipstream-increment-v1")
 		elif entry.id == "sebart-avanti-s-a200-p100rx":
 			_check("Avanti continuous turbine governor", meta.propulsion_model == Turbine.CONTINUOUS_LAW
@@ -148,6 +150,11 @@ func _initialize() -> void:
 		for _tick in 12:
 			session.sim.step()
 		recorder.start(session.trace_meta())
+		var trace_row_ok: bool = recorder.trace.row_count() == 1
+		_check("recording-start row accepted " + entry.id, trace_row_ok,
+			str({invalid = recorder.trace._invalid_weather, metadata_schema = recorder.trace.meta.get("metadata_schema"),
+				propulsion_model = recorder.trace.meta.get("propulsion_model"), columns = recorder.trace.columns(),
+				mass_schema = recorder.trace.meta.get("mass_trace_schema"), continuous_size = session.sim.continuous.size()}))
 		if entry.id == TIMBER:
 			_check("Timber trace carries endpoint-sampled motor current", recorder.trace.columns().has("motor_current_a")
 				and recorder.trace.columns().has("drive_bus_current_a"))
@@ -161,11 +168,15 @@ func _initialize() -> void:
 		var snapshot: Dictionary = recorder.trace.meta.duplicate(true)
 		_check("mid-flight recording tick", snapshot.recording_start_tick == 12)
 		_check("mid-flight aux snapshot", _aux_matches(snapshot.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
-		_check("CSV keeps new metadata", recorder.trace.to_csv().contains("# propulsion_model: " + snapshot.propulsion_model))
-		for index in RB.SIZE:
-			_check("state layout maps sample %d" % index, absf(recorder.trace.value(0, RB.STATE_LAYOUT[index]) - session.sim.state[index]) < 1e-12)
-		for index in Session.AUX_LAYOUT.size():
-			_check("aux layout maps sample %d" % index, recorder.trace.value(0, Session.AUX_LAYOUT[index]) == session.sim.aux[index])
+		_check("CSV keeps new metadata", recorder.trace.to_csv().contains("# propulsion_model: " + snapshot.propulsion_model),
+			"rows=%d invalid=%s" % [recorder.trace.row_count(), recorder.trace._invalid_weather])
+		if trace_row_ok:
+			for index in RB.SIZE:
+				_check("state layout maps sample %d" % index,
+					absf(recorder.trace.value(0, RB.STATE_LAYOUT[index]) - session.sim.state[index]) < 1e-12)
+			for index in Session.AUX_LAYOUT.size():
+				_check("aux layout maps sample %d" % index,
+					recorder.trace.value(0, Session.AUX_LAYOUT[index]) == session.sim.aux[index])
 		session.sim.step()
 		_check("metadata snapshot remains at recording start", recorder.trace.meta == snapshot)
 		recorder.recording = false

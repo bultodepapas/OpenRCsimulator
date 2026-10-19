@@ -15,10 +15,10 @@ var failures := 0
 func _initialize() -> void:
 	_run.call_deferred()
 
-func check(label: String, condition: bool) -> void:
+func check(label: String, condition: bool, detail := "") -> void:
 	if not condition:
 		failures += 1
-		printerr("FAIL ", label)
+		printerr("FAIL ", label, " ", detail)
 	else:
 		print("ok   ", label)
 
@@ -55,12 +55,13 @@ func _run() -> void:
 		var base_capacity_m3: float = float(base_raw.fuel_system.tanks[0].capacity.value) * 0.001
 		var trial_tank: Dictionary = session.aircraft.model.fuel_system.tanks[0]
 		var fuel_sample: Dictionary = session.mass_properties()
-		check("trial session applies tank-size ratio to capacity and accepted fuel mass",
+		check("trial session applies tank-size ratio and reports accepted total mass",
 			is_equal_approx(trial_tank.capacity_m3, base_capacity_m3 * 8.0 * 1.25)
-			and fuel_sample.get("ok", false) and fuel_sample.get("finite_fuel", false)
-			and fuel_sample.get("stores", []).size() == 1
-			and is_equal_approx(float(fuel_sample.stores[0].capacity_kg), trial_tank.capacity_kg)
-			and is_equal_approx(float(fuel_sample.stores[0].fill_fraction), session.fuel_start_fill))
+			and fuel_sample.get("ok", false) and not fuel_sample.get("finite_fuel", false)
+			and fuel_sample.get("stores", []).is_empty()
+			and is_equal_approx(float(fuel_sample.mass_kg), session.sim.mass)
+			and is_equal_approx(float(fuel_sample.mass_kg), float(session.aircraft.model.mass_kg)),
+			str({tank = trial_tank, fuel_sample = fuel_sample, start_fill = session.fuel_start_fill}))
 		var hashing := HashingContext.new()
 		hashing.start(HashingContext.HASH_SHA256)
 		hashing.update(source)
@@ -93,19 +94,14 @@ func _run() -> void:
 	for scale_value: float in [0.5, 2.0]:
 		editor.set_aircraft("gp-extra-300s-60")
 		editor.set_recipe({scale = scale_value})
-		(editor.find_child("TestFly", true, false) as Button).pressed.emit()
-		check("Extra %.0f%% starts through the same Workshop action" % (scale_value * 100.0),
-			host.flight != null and host.flight.startup_error.is_empty())
-		if host.flight != null:
-			host.flight.session.physics_enabled = false
-			host.flight.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
-			host.flight._render_pose(host.flight._current_pose(), host.flight.session.surfaces(), 0.3)
-			_check_wreck_scale(host.flight._airplane.root, "gp-extra-300s-60", scale_value)
-			host.open_pause()
-			host.end_flight()
-			await ui.settle()
-			check("Extra returns to the same draft", host.screens.top() == editor
-				and is_equal_approx(editor.get_recipe().scale, scale_value))
+		var scale_control := editor.find_child("Scale", true, false) as OptionButton
+		var trial_control := editor.find_child("TestFly", true, false) as Button
+		var scale_reason := editor.find_child("ScaleSupport", true, false) as Label
+		check("Extra %.0f%% is blocked while finite-glow transforms remain fixed" % (scale_value * 100.0),
+			scale_control != null and scale_control.disabled
+			and trial_control != null and trial_control.disabled
+			and scale_reason != null and scale_reason.text.contains("finite-glow installation data must remain fixed")
+			and host.flight == null)
 	host.close_workshop()
 	host.home.set_start_choice("airborne")
 	host.start_flight()

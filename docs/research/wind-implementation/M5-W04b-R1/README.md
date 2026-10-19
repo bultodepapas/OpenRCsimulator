@@ -14,13 +14,14 @@ The fixed-wing scene samples **the actual committed `FlightSession.wind_at()` ve
 
 ## Verification, 2026-10-19
 
-Native Windows Godot 4.7.2-stable, Compatibility/OpenGL 3.3, NVIDIA RTX 3090. [Capture measurements and source hashes](verification.json), [CPU batches](cost.json), [response sheet](response-sheet.png), and [gust/turn sequence](gust-and-turn.gif) retain this run's evidence.
+Native Windows Godot 4.7.2-stable, Compatibility/OpenGL 3.3, NVIDIA RTX 3090 and AMD Ryzen 9 5900X. [Capture measurements and source hashes](verification.json), [CPU batches](cost.json), [response sheet](response-sheet.png), and [gust/turn sequence](gust-and-turn.gif) retain this run's evidence.
 
 | Check | Result |
 | --- | --- |
 | Dedicated windsock motion | 35 checks passed: calm sag, invariant length, four wind-to headings, gentle/full flow, low-speed swivel, vertical/tiny upgusts, reversal/deflation, finite extremes, pause/reset, 30/60/144 FPS grouping, real Main/OU wiring and read-only physical state |
 | Existing windsock geometry / field-data validation | 17 / 121 checks passed |
 | Wind field / turbulence / trace / HUD | 59 / 29 / 29 / 9 checks passed |
+| Wind flight integration | Latest rerun: 51 checks passed, including fleet wind loads and checkpoint replay. Earlier transient Extra trim failures occurred during unrelated concurrent aircraft/trim edits; those files were not changed by this work |
 | Shader clock / world presentation context | 7 / 17 checks passed |
 | Projected field shadows | 58 checks passed, including fixed-mast-only windsock silhouette |
 | Existing end-to-end controls | Passed keyboard axes, throttle, trim, pause/restart, recording and Timber input checks |

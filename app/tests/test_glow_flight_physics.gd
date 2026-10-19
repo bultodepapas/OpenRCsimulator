@@ -15,11 +15,14 @@ const TOL := 2.0e-9
 
 class FlightOwner extends Node:
 	const Air := preload("res://physics/air_data.gd")
+	const FlightAdapter := preload("res://physics/glow/flight.gd")
+	const Math := preload("res://physics/math3d.gd")
 	var aircraft: Dictionary = {}
 	var sim: Dictionary = {}
 	var engine_running: bool = true
 	var density: float = 1.225
 	var start_fuel_override_kg: float = NAN
+	var support_gravity: bool = false
 	var wind_ned := PackedFloat64Array([0.0, 0.0, 0.0])
 
 	func start_fuel_kg() -> float:
@@ -53,7 +56,18 @@ class FlightOwner extends Node:
 
 	func _ground_evaluation(_body: PackedFloat64Array, _aux: PackedFloat64Array,
 			_values: PackedFloat64Array, _stage_air: Dictionary = {}) -> Dictionary:
-		return {ok = true, loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), derivative = PackedFloat64Array()}
+		if not support_gravity:
+			return {ok = true, loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), derivative = PackedFloat64Array()}
+		var context: Dictionary = FlightAdapter._stage_mass_context(self, _values)
+		if not context.get("ok", false):
+			return {ok = false}
+		var properties: Dictionary = context.properties
+		var force := PackedFloat64Array([0.0, 0.0, -float(properties.mass_kg) * 9.80665])
+		var moment: PackedFloat64Array = Math.cross(properties.cg_body_m, force)
+		var loads := PackedFloat64Array()
+		loads.append_array(force)
+		loads.append_array(moment)
+		return {ok = true, loads = loads, derivative = PackedFloat64Array()}
 
 
 var _checks: int = 0
@@ -155,12 +169,13 @@ func _test_finite_feed_line(source_model: Dictionary) -> void:
 	_near("line inventory is independently initialized", values[Flight.LINE_FUEL_INDEX], line_reference)
 	_near("line fixture combined inventory includes both stores", values[1], main_start + line_reference)
 	var initial_context: Dictionary = Flight.mass_context(owner, values)
+	var main_tank_id: String = str(install.fuel_tank.id)
 	_check("line fixture exposes two stable liquid stores", initial_context.get("ok", false)
 		and initial_context.tanks.size() == 2
-		and initial_context.remaining.has(str(install.fuel_tank.liquid_inventory_id))
+		and initial_context.remaining.has(main_tank_id)
 		and initial_context.remaining.has(liquid_id), str(initial_context))
 	if initial_context.get("ok", false):
-		_near("main and line masses remain separately sampled", initial_context.remaining[str(install.fuel_tank.liquid_inventory_id)], main_start)
+		_near("main and line masses remain separately sampled", initial_context.remaining[main_tank_id], main_start)
 		_near("pre-primed line sample matches its state slot", initial_context.remaining[liquid_id], line_reference)
 		_near("reference mass includes line inventory", initial_context.properties.mass_kg, model.mass_kg - float(install.reference_fuel_kg) + main_start)
 
@@ -176,19 +191,23 @@ func _test_finite_feed_line(source_model: Dictionary) -> void:
 				result[RB.SIZE + 1] = -0.5
 				result[RB.SIZE + Flight.LINE_FUEL_INDEX] = -0.5
 		return result
-	var resource_result: Dictionary = ResourceStep.advance(combined, 0.0, 1.0, rate, rate.call(combined, 0.0),
-		Flight._resource_events(owner))
-	_check("main residue then line exhaustion integrate deterministically", resource_result.get("ok", false),
-		str(resource_result.get("message", "")))
-	if resource_result.get("ok", false):
-		var events: Array = resource_result.events
-		_check("main-to-line-to-starved event order is explicit", events.size() == 2
-			and events[0].type == "fuel_tank_unusable" and events[1].type == "fuel_exhausted", str(events))
-		if events.size() == 2:
+	var step_result: Variant = Flight.step(combined, 0.0, 1.0, rate, rate.call(combined, 0.0), owner)
+	_check("main residue then line exhaustion integrate deterministically", step_result is Dictionary,
+		str(step_result))
+	if step_result is Dictionary:
+		var events: Array = step_result.events
+		_check("main-to-line-to-starved event order is explicit", events.size() == 3
+			and events[0].type == "fuel_tank_unusable" and events[1].type == "fuel_exhausted"
+			and events[2].type == "glow_stopped", str(events))
+		if events.size() == 3:
+			_check("depletion surfaces distinguish numeric residual from actual onboard residue",
+				events[0].surface_unit == "kg" and events[1].surface_unit == "kg"
+				and absf(float(events[0].surface_residual)) <= 1.0e-10
+				and absf(float(events[0].fuel_residual_kg) - unusable) <= 2.0e-9)
 			_near("main unusable boundary time", float(events[0].time_s), 0.4, 2.0e-9)
 			_near("line depletion boundary time", float(events[1].time_s), 0.5, 2.0e-9)
 			_near("main event reports physical unusable residue", float(events[0].fuel_residual_kg), unusable, 2.0e-9)
-		var final_values: PackedFloat64Array = resource_result.state.slice(RB.SIZE)
+		var final_values: PackedFloat64Array = step_result.state.slice(RB.SIZE)
 		_near("finite line is empty after its depletion event", final_values[Flight.LINE_FUEL_INDEX], 0.0, 2.0e-9)
 		_near("main unusable residue is retained", final_values[1], unusable, 2.0e-9)
 		_check("engine stops only after both usable stores are exhausted",
@@ -197,13 +216,57 @@ func _test_finite_feed_line(source_model: Dictionary) -> void:
 			and Flight.unpack(final_values, install).stop_reason == "fuel_exhausted")
 		var final_context: Dictionary = Flight.mass_context(owner, final_values)
 		_check("final mass context retains separate empty-line and residue entries", final_context.get("ok", false)
-			and final_context.remaining.has(liquid_id), str(final_context))
+			and final_context.remaining.has(main_tank_id) and final_context.remaining.has(liquid_id), str(final_context))
 		if final_context.get("ok", false):
-			_near("final main residue remains in the tank sample", final_context.remaining[str(install.fuel_tank.liquid_inventory_id)], unusable, 2.0e-9)
+			_near("final main residue remains in the tank sample", final_context.remaining[main_tank_id], unusable, 2.0e-9)
 			_near("final line sample is empty", final_context.remaining[liquid_id], 0.0, 2.0e-9)
 			_near("total mass loss equals main usable fuel and line contents",
 				initial_context.properties.mass_kg - final_context.properties.mass_kg,
 				main_start - unusable + line_reference, 2.0e-9)
+
+	# A synthetic supported fixture makes apparent gravity well-defined, then lowers
+	# main-tank fill through the authored pickup plane. It checks loss-to-line and
+	# starvation without assigning a pickup position to any bundled aircraft.
+	install.pickup_position = M.add(install.tank_position,
+		PackedFloat64Array([0.0, 0.0, float(install.tank_size[2]) * 0.25]))
+	install.has_pickup_position = true
+	owner.engine_running = false
+	owner.support_gravity = true
+	owner.sim.gravity = 9.80665
+	owner.start_fuel_override_kg = float(install.capacity_fuel_kg) * 0.6
+	var pickup_values: PackedFloat64Array = Flight.initial(owner, PackedFloat64Array([0.0]), body)
+	_check("synthetic pickup starts submerged with supported apparent gravity",
+		Flight.valid(pickup_values, install)
+		and bool(Flight.point(owner, body, pickup_values, 0.0).fuel_feed.pickup_wet), str(pickup_values))
+	if Flight.valid(pickup_values, install):
+		var pickup_combined: PackedFloat64Array = body.duplicate()
+		pickup_combined.append_array(pickup_values)
+		var pickup_rate: Callable = func(state: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
+			var result := PackedFloat64Array()
+			result.resize(state.size())
+			match int(state[RB.SIZE + Flight.SOURCE_MODE_INDEX]):
+				Flight.MODE_MAIN_TANK:
+					result[RB.SIZE + 1] = -0.5
+				Flight.MODE_FEED_LINE:
+					result[RB.SIZE + 1] = -0.5
+					result[RB.SIZE + Flight.LINE_FUEL_INDEX] = -0.5
+			return result
+		var pickup_step: Variant = Flight.step(pickup_combined, 0.0, 0.6, pickup_rate,
+			pickup_rate.call(pickup_combined, 0.0), owner)
+		_check("pickup loss switches to finite line then starves when line empties", pickup_step is Dictionary,
+			str(pickup_step))
+		if pickup_step is Dictionary:
+			var pickup_events: Array = pickup_step.events
+			_check("pickup loss and later starvation are separate metre/kg boundaries",
+				pickup_events.size() == 2
+				and pickup_events[0].type == "fuel_pickup_lost" and pickup_events[0].surface_unit == "m"
+				and pickup_events[1].type == "fuel_starved" and pickup_events[1].surface_unit == "kg", str(pickup_events))
+			if pickup_events.size() == 2:
+				var pickup_final: PackedFloat64Array = pickup_step.state.slice(RB.SIZE)
+				_near("pickup starvation leaves line empty and main tank inventory untouched after loss",
+					pickup_final[Flight.LINE_FUEL_INDEX], 0.0, 2.0e-9)
+				_near("pickup starvation retains usable but unreachable main fuel",
+					pickup_final[1], float(pickup_events[0].fuel_residual_kg), 2.0e-8)
 	owner.free()
 
 

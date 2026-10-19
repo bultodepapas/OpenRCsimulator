@@ -29,6 +29,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 func _initialize() -> void:
 	_fleet_unchanged()
 	_accepted()
+	_feed_line_and_pickup()
 	_empty_tank_balance()
 	_refusals()
 	print("FUEL-03 fuel system contract: %d checks, %d failed" % [_checks, _failed])
@@ -109,6 +110,8 @@ func _accepted() -> void:
 	_check("model.fuel_system carries the registry density and identity",
 		system.get("format") == "openrc-fuel-system v1" and system.registry_sha256 == registry.identity.sha256
 		and tank.get("density_kg_m3") == density and tank.get("family") == "glow")
+	_check("line-free tanks keep optional pickup and feed-line fields absent",
+		not tank.has("pickup_position_inventory_le_m") and not tank.has("feed_line"))
 	var liquid_kg := 0.0
 	for item: Dictionary in raw.inventory:
 		if item.get("id") == "item_fuel_main":
@@ -122,11 +125,61 @@ func _accepted() -> void:
 		and plain.model.cg_le == result.model.cg_le and plain.model.inertia == result.model.inertia)
 
 
+func _line_fixture() -> Dictionary:
+	var raw: Dictionary = _with_tank()
+	var tank: Dictionary = raw.fuel_system.tanks[0]
+	tank["pickup_position"] = _q([-0.015, 0.004, 0.008], "m")
+	tank["feed_line"] = {"id": "line_main", "liquid_inventory_id": "item_fuel_line", "capacity": _q(0.005, "l")}
+	raw.inventory.append({"id": "item_fuel_line", "name": "preprimed glow line", "energy_source": "glow_fuel",
+		"mass": _q(0.002, "kg"), "position": _q([0.07, 0.01, -0.02], "m"),
+		"size": _q([0.04, 0.02, 0.02], "m")})
+	raw.balance.plan_cg.value = _dry_cg(raw, "")
+	return raw
+
+
+func _feed_line_and_pickup() -> void:
+	var raw: Dictionary = _line_fixture()
+	var result: Dictionary = _load(raw)
+	_check("optional authored pickup and a separately bound preprimed line load", result.get("ok", false), _errors(result))
+	if not result.get("ok", false):
+		return
+	var tank: Dictionary = result.model.fuel_system.tanks[0]
+	var line: Dictionary = tank.get("feed_line", {})
+	var expected_pickup := PackedFloat64Array([-0.015, 0.004, 0.008])
+	_check("pickup position stays in the inventory LE frame with source provenance",
+		tank.get("pickup_position_inventory_le_m") == expected_pickup
+		and tank.get("pickup_position_source", {}).get("unit") == "m")
+	var registry: Dictionary = Fuels.load_file()
+	var density: float = registry.blends.glow_10n_18castor.density_kg_m3
+	_check("feed line has its own stable resource and inventory identity, density and capacity",
+		line.get("id") == "line_main" and line.get("liquid_inventory_id") == "item_fuel_line"
+		and line.get("family") == "glow" and absf(line.get("density_kg_m3", 0.0) - density) < 1e-12
+		and absf(line.get("capacity_m3", 0.0) - 5.0e-6) < 1e-12
+		and absf(line.get("capacity_kg", 0.0) - 0.005e-3 * density) < 1e-12
+		and absf(line.get("reference_mass_kg", 0.0) - 0.002) < 1e-12)
+	_check("feed-line mass, location, size and source quantities remain distinct",
+		line.get("position_inventory_le_m") == PackedFloat64Array([0.07, 0.01, -0.02])
+		and line.get("size_m") == PackedFloat64Array([0.04, 0.02, 0.02])
+		and line.get("source", {}).get("mass", {}).get("source") == "FUEL-03 test fixture"
+		and line.get("source", {}).get("capacity", {}).get("source") == "FUEL-03 test fixture")
+	var empty: Dictionary = raw.duplicate(true)
+	empty.balance.fuel_state = "empty_tanks"
+	empty.balance.plan_cg.value = _cg_excluding(empty, ["item_fuel_main", "item_fuel_line"])
+	var empty_result: Dictionary = _load(empty)
+	_check("empty-tank balance excludes both tank and feed-line liquid while retaining shell hardware",
+		empty_result.get("ok", false) and empty_result.model.fuel_system.tanks[0].feed_line.id == "line_main",
+		_errors(empty_result))
+
+
 func _dry_cg(raw: Dictionary, liquid_id: String) -> Array:
+	return _cg_excluding(raw, [liquid_id])
+
+
+func _cg_excluding(raw: Dictionary, liquid_ids: Array) -> Array:
 	var mass := 0.0
 	var first := [0.0, 0.0, 0.0]
 	for item: Dictionary in raw.inventory:
-		if item.get("id", "") == liquid_id:
+		if str(item.get("id", "")) in liquid_ids:
 			continue
 		mass += float(item.mass.value)
 		for k in 3:
@@ -164,8 +217,47 @@ func _refusals() -> void:
 		"unusable volume at capacity": [_with_tank({"unusable": _q(0.225, "l")}), "unusable < capacity"],
 		"a capacity in millilitres": [_with_tank({"capacity": _q(225.0, "ml")}), "expected 'l'"],
 		"an unknown pickup": [_with_tank({"pickup": "sponge"}), "pickup: must be one of"],
+		"pickup position with wrong arity": [_with_tank({"pickup_position": _q([0.0, 0.0], "m")}), "expected 3 numbers"],
 		"an unknown tank field": [_with_tank({"colour": "red"}), "colour: unknown field"],
 	}
+	var line_over_capacity: Dictionary = _line_fixture()
+	line_over_capacity.fuel_system.tanks[0].feed_line.capacity = _q(0.3, "l")
+	cases["a feed line larger than its main tank"] = [line_over_capacity, "no greater than its tank capacity"]
+	var line_blend_mismatch: Dictionary = _line_fixture()
+	for item: Dictionary in line_blend_mismatch.inventory:
+		if item.get("id") == "item_fuel_line":
+			item.energy_source = "gasoline"
+	cases["a feed line bound to another fuel family"] = [line_blend_mismatch, "must declare energy_source 'glow_fuel'"]
+	var line_duplicate_role: Dictionary = _line_fixture()
+	line_duplicate_role.fuel_system.tanks[0].feed_line.liquid_inventory_id = "item_fuel_main"
+	cases["a feed line reuses a main-tank liquid item"] = [line_duplicate_role, "one tank or line role only"]
+	var line_mass_over_capacity: Dictionary = _line_fixture()
+	for item: Dictionary in line_mass_over_capacity.inventory:
+		if item.get("id") == "item_fuel_line":
+			item.mass.value = 0.005
+	cases["preprimed line liquid above its volume capacity"] = [line_mass_over_capacity, "no greater than capacity at the bound blend density"]
+	var line_box_too_small: Dictionary = _line_fixture()
+	for item: Dictionary in line_box_too_small.inventory:
+		if item.get("id") == "item_fuel_line":
+			item.size.value = [0.001, 0.001, 0.001]
+	cases["feed-line liquid box below capacity"] = [line_box_too_small, "liquid item box cannot hold"]
+	var line_id_duplicate: Dictionary = _line_fixture()
+	line_id_duplicate.fuel_system.tanks[0].feed_line.id = "main_tank"
+	cases["a feed line reuses the main tank id"] = [line_id_duplicate, "duplicate fuel resource id"]
+	var line_id_empty: Dictionary = _line_fixture()
+	line_id_empty.fuel_system.tanks[0].feed_line.id = ""
+	cases["a feed line has an empty stable id"] = [line_id_empty, "must not be empty"]
+	var pickup_source_empty: Dictionary = _line_fixture()
+	pickup_source_empty.fuel_system.tanks[0].pickup_position.source = " "
+	cases["pickup position has no provenance"] = [pickup_source_empty, "must be a nonempty string"]
+	var line_capacity_source_missing: Dictionary = _line_fixture()
+	line_capacity_source_missing.fuel_system.tanks[0].feed_line.capacity.erase("source")
+	cases["feed-line capacity has no provenance"] = [line_capacity_source_missing, "missing 'source'"]
+	var line_geometry_source_empty: Dictionary = _line_fixture()
+	for item: Dictionary in line_geometry_source_empty.inventory:
+		if item.get("id") == "item_fuel_line":
+			item.position.source = ""
+	cases["feed-line liquid geometry has no provenance"] = [line_geometry_source_empty, "must be a nonempty string"]
 	var duplicate := _with_tank()
 	duplicate.fuel_system.tanks.append(_tank())
 	cases["two tanks with one id and the same items"] = [duplicate, "duplicate tank id"]

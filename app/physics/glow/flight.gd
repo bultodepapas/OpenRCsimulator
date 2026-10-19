@@ -290,13 +290,13 @@ static func _resource_events(owner: Node) -> Array:
 	var line: Dictionary=install.get("feed_line",{})
 	var events: Array=[]
 	events.append({
-		id="rotor_stop",type="rotor_stop",sense="falling",priority=0,
+		id="rotor_stop",type="rotor_stop",sense="falling",surface_unit="rpm",priority=0,
 		surface=func(state: PackedFloat64Array,_at: float) -> float: return state[RB.SIZE],
 		transition=func(state: PackedFloat64Array,_at: float) -> Dictionary:
 			return {ok=true,state=project_stop(state,RB.SIZE,owner),event={rpm_residual=0.0}},
 	})
 	events.append({
-		id="main_tank_unusable",type="fuel_tank_unusable",sense="falling",priority=10,
+		id="main_tank_unusable",type="fuel_tank_unusable",sense="falling",surface_unit="kg",priority=10,
 		enabled=func(state: PackedFloat64Array,_at: float) -> bool:
 			return int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_MAIN_TANK,
 		surface=func(state: PackedFloat64Array,_at: float) -> float:
@@ -316,7 +316,7 @@ static func _resource_events(owner: Node) -> Array:
 	})
 	if not line.is_empty():
 		events.append({
-			id="feed_line_empty",type="fuel_line_empty",sense="falling",priority=11,
+			id="feed_line_empty",type="fuel_line_empty",sense="falling",surface_unit="kg",priority=11,
 			enabled=func(state: PackedFloat64Array,_at: float) -> bool:
 				return int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_FEED_LINE,
 			surface=func(state: PackedFloat64Array,_at: float) -> float:
@@ -339,7 +339,7 @@ static func _resource_events(owner: Node) -> Array:
 		})
 	if bool(install.get("has_pickup_position",false)) and install.has("fuel_feed"):
 		events.append({
-			id="pickup_lost",type="fuel_pickup_lost",sense="falling",priority=20,
+			id="pickup_lost",type="fuel_pickup_lost",sense="falling",surface_unit="m",priority=20,
 			enabled=func(state: PackedFloat64Array,at: float) -> bool:
 			return int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_MAIN_TANK,
 			surface=func(state: PackedFloat64Array,at: float) -> float:
@@ -358,7 +358,7 @@ static func _resource_events(owner: Node) -> Array:
 						fuel_residual_kg=main_mass}}
 		})
 		events.append({
-			id="pickup_recovered",type="fuel_pickup_recovered",sense="rising",priority=15,
+			id="pickup_recovered",type="fuel_pickup_recovered",sense="rising",surface_unit="m",priority=15,
 			enabled=func(state: PackedFloat64Array,at: float) -> bool:
 				if int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_MAIN_TANK \
 						or state[RB.SIZE+1]-state[RB.SIZE+LINE_FUEL_INDEX]<=install.unusable_fuel_kg: return false
@@ -716,6 +716,7 @@ static func telemetry(owner: Node) -> Dictionary:
 	out.fuel_volume_m3=maxf(0.0,values[1])/out.fuel_density_kg_m3
 	out.main_fuel_kg=context.main_fuel_kg
 	out.line_fuel_kg=context.line_fuel_kg
+	out.feed_line_fuel_kg=context.line_fuel_kg
 	out.total_fuel_kg=context.total_fuel_kg
 	out.fuel_source_mode=context.source_mode
 	out.shaft_work_j=values[13]

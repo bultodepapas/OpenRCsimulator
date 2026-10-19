@@ -2,12 +2,14 @@
 extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const UiDriver := preload("res://tests/ui_driver.gd")
 const HOME_PREFS := "user://test_ui_quit_home.cfg"
 const DIRECT_PREFS := "user://test_ui_quit_direct.cfg"
 const WORKSHOP_PREFS := "user://test_ui_quit_workshop.cfg"
 const SCRATCH_TRACE_DIR := "user://test_ui_quit"
 
 var failures := 0
+var ui: RefCounted
 
 
 class QuitProbeAppRoot extends "res://app_root.gd":
@@ -27,6 +29,7 @@ class ScratchRecorder extends "res://sim/recorder.gd":
 class FailOnceRecorder extends RefCounted:
 	var recording := true
 	var stop_calls := 0
+	var note := ""
 
 	func stop(_path := "") -> Error:
 		stop_calls += 1
@@ -53,6 +56,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _run() -> void:
+	ui = UiDriver.new(self)
 	TranslationServer.set_locale("en")
 	var initial_auto_accept := auto_accept_quit
 	await _check_home_route(initial_auto_accept)
@@ -82,9 +86,7 @@ func _check_home_route(initial_auto_accept: bool) -> void:
 	app.notification(Node.NOTIFICATION_WM_CLOSE_REQUEST)
 	await process_frame
 	_check("same-frame Window close requests coalesce on Home", app.quit_requests == 1, str(app.quit_requests))
-	root.remove_child(app)
-	app.free()
-	await process_frame
+	await ui.close_app(app)
 	_check("AppRoot restores the host close policy after Home removal", auto_accept_quit == initial_auto_accept)
 	_remove_prefs(HOME_PREFS)
 
@@ -101,9 +103,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	_check("direct route starts without Home", app.flight != null and not app.has_home)
 	_check("AppRoot keeps a host-disabled close policy", not auto_accept_quit)
 	if app.flight == null:
-		root.remove_child(app)
-		app.free()
-		await process_frame
+		await ui.close_app(app)
 		set_auto_accept_quit(initial_auto_accept)
 		return
 
@@ -153,9 +153,7 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	_check("second explicit Quit discards the failed recording without stopping again",
 		failed_recorder.stop_calls == 1 and app.quit_requests == 1,
 		"stops=%d quits=%d" % [failed_recorder.stop_calls, app.quit_requests])
-	root.remove_child(app)
-	app.free()
-	await process_frame
+	await ui.close_app(app)
 	_check("AppRoot restores a previously disabled host close policy", not auto_accept_quit)
 	set_auto_accept_quit(initial_auto_accept)
 	_remove_prefs(DIRECT_PREFS)
@@ -172,9 +170,7 @@ func _check_workshop_suspended_recording() -> void:
 	await process_frame
 	if app.flight == null:
 		_check("Workshop fixture starts its original flight", false)
-		root.remove_child(app)
-		app.free()
-		await process_frame
+		await ui.close_app(app)
 		_remove_prefs(WORKSHOP_PREFS)
 		return
 	var original: Node = app.flight
@@ -212,9 +208,7 @@ func _check_workshop_suspended_recording() -> void:
 		app.pause_menu.quit_requested.emit()
 	_check("second explicit Quit discards the suspended failed trace",
 		failed_recorder.stop_calls == 1 and app.quit_requests == 1)
-	root.remove_child(app)
-	app.free()
-	await process_frame
+	await ui.close_app(app)
 	_remove_prefs(WORKSHOP_PREFS)
 
 

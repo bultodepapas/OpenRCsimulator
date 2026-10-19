@@ -28,6 +28,8 @@ Four primary flight axes and smoke/flaps/gear AUX requests are available within 
 
 The input path is registry -> selected profile -> scalar conditioning/device readiness -> activity commands; the shell separately routes flight/menu/calibration/capture actions. Simulation state stays float64. No solver, actuator law, aircraft dataset, trace ordering or golden flight changes belong to this plan.
 
+The [JETI radio subtrack](jeti-support.md) owns manufacturer-supplied DC-16II evidence, family identification, physical switch labels, clean action defaults and maintained two-/three-position input work under D6/F1/F4/F6-JETI-* and UI-15-JETI-*. Its [2026-10-19 intake](../research/radio-input/D6-JETI-00/README.md) records an external basic-flight success; exact Godot switch mapping and native package qualification remain open. It reuses these controller contracts and has its own pending-step status.
+
 ## Remaining work, in order
 
 | Priority / step | Concrete work | Completion evidence |
