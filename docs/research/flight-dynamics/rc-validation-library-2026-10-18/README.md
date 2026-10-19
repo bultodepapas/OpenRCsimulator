@@ -6,13 +6,13 @@ Start with the topic guides below. The searchable [CSV catalogue](catalog.csv) a
 
 The CSV preserves records under each topic. BibTeX collapses matching explicit DOIs, byte-identical local originals and repeated link-only URLs; separately identified dataset files and metadata records can remain separate entries. Neither a file count nor a topic-record count is a count of independent physical experiments.
 
-Verified holdings at completion: **304 topic records, 292 BibTeX entries and 229 distinct local files** (217 originals under this collection and twelve reused from existing references). The files comprise **181 PDFs, 14 ZIP archives and 34 data/telemetry/text artifacts**, totaling 1,961,637,816 bytes (about 1.96 GB). 65 records have no local original and describe metadata-only inspection, online full-text access or retrieval limits. All catalogued local hashes/sizes, PDF parsing and ZIP CRC checks passed; no byte-identical local copies remain. See the inventory for the UTC check timestamp.
+Verified holdings at completion: **348 topic records, 335 BibTeX entries and 263 distinct local files** (251 originals under this collection and 12 reused from existing references). The files comprise **210 PDFs, 15 ZIP archives and 38 data/telemetry/text artifacts**, totaling 2,076,518,644 bytes (about 2.08 GB). 75 records have no local original and describe metadata-only inspection, online full-text access or retrieval limits. All catalogued local hashes/sizes, PDF parsing and ZIP CRC checks passed; no byte-identical local copies remain. See the inventory for the UTC check timestamp.
 
 ## Topics
 
 | Collection | What to look for |
 | --- | --- |
-| [Focused Ugly Stik studies, tests and data](ugly-stik/README.md) | Further direct-family research, original pilot observations, Big Stik studies and explicitly related Ultra Stick flight logs |
+| [Focused Ugly Stik studies, tests and data](ugly-stik/README.md) | Direct-family plans, setup manuals, flight thrust/drag sample data, actuator/controller tests and pilot observations |
 | [Further Stik studies and comparable RC aircraft](stik-analogues/README.md) | Extended Ugly Stik flight instrumentation, further Giant Big Stik studies, gust sensing and additional trainer/Ultra Stick campaigns |
 | [Stik family and conventional RC aircraft](conventional/README.md) | Ugly Stik/Big Stik studies, Ultra Stick analogues, trainers and complete-airframe identification |
 | [Flying wings and tailless aircraft](flying-wings/README.md) | X8/Zagi and other wing studies, elevon effectiveness, stability, flight/tunnel/CFD distinctions |

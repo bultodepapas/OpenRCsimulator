@@ -7,8 +7,8 @@ Usage:
 
 Reads app/data/aircraft/*.json (openrc-aircraft v2 with an inventory) and the neutral-point register
 research/fuel-systems/neutral_points.json. Liquid fuel is any inventory item whose energy_source is a
-liquid fuel; "empty" removes those items and nothing else. A full state needs a declared capacity, which
-the contract does not have yet (FUEL-03), so it is not reported.
+liquid fuel; "empty" removes those items and nothing else. "full" sets each declared fuel_system tank's
+liquid to its capacity x registry density (FUEL-03); aircraft without fuel_system report no full state.
 
 --check fails only when an aircraft with a registered neutral point has a static margin <= 0 at any
 reported state, or when the data cannot be read. Differences from the stored report are printed as
@@ -21,6 +21,9 @@ import argparse
 import json
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import fuel_registry  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 AIRCRAFT_DIR = ROOT / "app" / "data" / "aircraft"
@@ -81,6 +84,14 @@ def aircraft_rows() -> list[dict]:
         states = {"declared": mass_and_cg(inventory)}
         if fuel:
             states["empty"] = mass_and_cg(dry)
+        # FUEL-03: a declared fuel_system gives each tank's capacity, so the full state is known.
+        tanks = raw.get("fuel_system", {}).get("tanks", [])
+        if tanks:
+            capacity_kg = {t["liquid_inventory_id"]: value(t["capacity"]) * 1e-3 * fuel_registry.blend_density(t["fuel"])
+                           for t in tanks}
+            full = [dict(i, mass={"value": capacity_kg[i.get("id")]}) if i.get("id") in capacity_kg else i
+                    for i in inventory]
+            states["full"] = mass_and_cg(full)
         np_entry = nps.get(raw["id"])
         row = {
             "id": raw["id"],
@@ -93,6 +104,7 @@ def aircraft_rows() -> list[dict]:
                             "position_m": value(i["position"]), "size_m": value(i.get("size", {"value": [0, 0, 0]}))}
                            for i in fuel],
             "flags": [],
+            "balance_fuel_state": raw["balance"].get("fuel_state", "as_inventory"),
             "states": {},
         }
         for i in fuel:
@@ -152,8 +164,10 @@ def drift(stored: dict, current: dict) -> list[str]:
     out = ["%s: %s" % (name, "added" if name not in before else "removed")
            for name in sorted(set(before) ^ set(after))]
     for name in sorted(set(before) & set(after)):
-        if before[name] != after[name]:
-            out.append("%s: mass/balance changed" % name)
+        # Compare the physical content only, so report metadata can grow without a false drift.
+        for key in ("states", "fuel_items"):
+            if before[name].get(key) != after[name].get(key):
+                out.append("%s: %s changed" % (name, key))
     return out
 
 

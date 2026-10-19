@@ -19,6 +19,7 @@ Home flights show eight independent overlays on one `CanvasLayer` (`render/overl
 | O6 | Diagnostics (developer) | top left | today's input panel and HUD text, unchanged |
 | O7 | Performance (developer) | bottom centre | fps, frame p95, physics µs/tick |
 | O8 | Control guide | top left | keyboard reference and active controller axes/buttons/AUX; aircraft equipment availability, accepted gear status and smoke output; scrollable, with device tabs and existing Kenney prompts |
+| O9 | Battery (BAT-15) | right | finite packs only: pack V, V/cell and lowest cell, A, W, temperature, used/rated mAh, radio-side %, ESC LVC chip, 60 s V/A sparklines; compact line in Pilot. Owned by the [battery plan](battery-realism.md); [evidence](../research/battery/BAT-15/README.md) |
 
 Presets: Off, Pilot (O1–O4 + O8, default), Full (O1–O5 + O8), Developer (all), Custom (any other set). **F2** cycles Off → Pilot → Full → Developer; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode and previews them live above the paused flight. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it). Named presets include the guide; saved custom sets retain their explicit visibility choices.
 
@@ -40,7 +41,7 @@ Rules the implementation keeps:
 | stall | airborne (> 1 m), airspeed ≥ 3 m/s, α within 2° of the solved stall-blend start `envelope.a1`/`n1` (D5) | aircraft v2 envelope; none if absent |
 | low | airborne, sinking > 2 m/s, ground reached within 2 s | telemetry |
 | far | slant distance beyond where the 6° minimum auto-zoom FOV shows the span below 30 px at 720 px (Stik ≈ 349 m) | `Spec.AUTO_ZOOM`, model span |
-| battery | modelled battery exhausted or SOC < 20 % | `electrical_state()` |
+| battery | `ocv_resistance` packs: modelled battery exhausted or SOC < 20 %. `pack_ecm` packs: observable alarms only (`battery`, `battery_critical`, `battery_lvc`, `battery_hot`, `battery_empty`), see [BAT-15](../research/battery/BAT-15/README.md) | `electrical_state()` |
 | experimental | experimental aircraft-data route | main |
 
 The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, and await pilot review.

@@ -1,6 +1,6 @@
 # BAT-14/15 — Radio-style battery telemetry and the O9 Battery overlay
 
-2026-10-19 · **Status:** software verified on fixture `electrical_state()` dictionaries and on a live synthetic `ocv_resistance` flight; not physically validated. Every threshold and resolution below is a declared presentation default, not a measurement. Plan: [battery realism §6](../../../plans/battery-realism.md#6-telemetry-hud-and-pilot-information). Overlay architecture: [flight overlays](../../../plans/flight-overlays.md).
+2026-10-19 · **Status:** software verified on fixture `electrical_state()` dictionaries and on live synthetic `ocv_resistance` and Timber `pack_ecm` flights; not physically validated. Every threshold and resolution below is a declared presentation default, not a measurement. Plan: [battery realism §6](../../../plans/battery-realism.md#6-telemetry-hud-and-pilot-information). Overlay architecture: [flight overlays](../../../plans/flight-overlays.md).
 
 ## What was built
 
@@ -78,12 +78,13 @@ Commands (Godot 4.7.2, headless, `--audio-driver Dummy`, 60 s limit each):
 
 | Test | Result |
 | --- | --- |
-| `test_overlay_battery.gd` (new) | RESULT_BATTERY |
-| `test_overlay_manager.gd` (2 expectations updated for the new id) | RESULT_MANAGER |
-| `test_overlay_telemetry.gd` | RESULT_TELEMETRY |
-| `test_overlay_units.gd` | RESULT_UNITS |
-| UI tests touching the dialog, pause and catalogue | RESULT_UI |
-| Parse check of every `app/**/*.gd` (`test.sh` loop) | RESULT_PARSE |
+| `test_overlay_battery.gd` (new) | 123 checks, 0 failed |
+| `test_overlay_manager.gd` (2 expectations updated for the new id) | 97 checks, 0 failed |
+| `test_overlay_telemetry.gd` | 38 checks, 0 failed |
+| `test_overlay_units.gd` | 29 checks, 0 failed |
+| `test_overlay_battery_flight.gd` (synthetic `ocv_resistance` and Timber `pack_ecm` flights) | 10 checks, 0 failed |
+| UI tests touching the dialog, pause and catalogue | `test_ui_modal_responsive` 560 cases 0 failures; `test_ui_pause`, `test_ui_help`, `test_ui_settings_integration` pass; `test_aircraft_catalog` 100 checks 0 failed |
+| Parse check (`--check-only`) of every script touched by BAT-04…15 | 0 failures; `check_transcendentals.py` passes |
 
 `test_overlay_battery.gd` covers:
 - quantization, held readings between samples, the refresh slack and no `-0.0`
@@ -98,7 +99,7 @@ Commands (Godot 4.7.2, headless, `--audio-driver Dummy`, 60 s limit each):
 - no overlap with any shown overlay or the Home latency marker at 1280×720 and 1920×1080 (Pilot, Full, en and es); O9 inside a 640×480 screen; all eleven chips wrap inside the warnings bar
 - warnings over time: BATTERY LOW at 3.0 s for a sag from 1.0 s, a stale snapshot code replaced, alarms still reach the bar with O9 closed
 
-`test_overlay_battery_flight.gd` flies the synthetic 4S `ocv_resistance` pack: O9 is shown and detailed in Full, reads the session's pack voltage and used/rated mAh, shows no cell or temperature values, and no "SOC" text appears outside Diagnostics. No `pack_ecm` flight was possible: the Timber pack data (BAT-13) did not exist yet.
+`test_overlay_battery_flight.gd` flies the synthetic 4S `ocv_resistance` pack: O9 is shown and detailed in Full, reads the session's pack voltage and used/rated mAh, shows no cell or temperature values, and no "SOC" text appears outside Diagnostics. A second case flies the Timber in battery mode `pack` through the product route (`--aircraft=turbo-lumber-evolution --battery=pack`): the session is `pack_ecm`, O9 is detailed in Full with the V/cell, lowest-cell and temperature rows from the sensors, and no "SOC" text appears outside Diagnostics.
 
 Deliberate mutations on a disposable copy of `app/` (each restored after the run), all caught: fuel from the true charge, % from true SOC, no hold, no hysteresis, SOC rule for `pack_ecm`, unbounded history, voltage alarms on flat chemistries, manager ignoring alarms, integrating the new sample (right Riemann), no Telemetry shift, no narrow-screen clamp, lowest cell ignored. One further mutant (removing only the left-offset shift) was equivalent: the minimum size keeps the box shifted.
 

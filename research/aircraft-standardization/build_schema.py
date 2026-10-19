@@ -269,6 +269,34 @@ def add_v2_overlay(schema: dict, spec: dict):
 
     balance_props = root_props["balance"]["properties"]
     add_text_field(balance_props, "configuration", nonempty=True)
+    # FUEL-03: optional balance fuel state and CG range, and liquid-fuel tanks bound to inventory ids.
+    # Vocabularies live in the contract; the loader checks registry blends, ids, masses and the dry CG.
+    def enum_of(path):
+        return next(rule["values"] for rule in spec["enum_paths"] if rule["path"] == path)
+
+    def fuel_quantity(unit, low, high, exclusive_low=False):
+        value = {"type": "number", "maximum": high}
+        value["exclusiveMinimum" if exclusive_low else "minimum"] = low
+        return {"$ref": "#/$defs/evidence", "properties": {"value": value, "unit": {"const": unit}}}
+    balance_props["fuel_state"] = {"type": "string", "enum": enum_of("/balance/fuel_state")}
+    balance_props["cg_range"] = {
+        "type": "object", "required": ["forward", "aft"],
+        "properties": {"forward": fuel_quantity("m", -2, 2), "aft": fuel_quantity("m", -2, 2)},
+        "additionalProperties": False,
+    }
+    tank_fields = {name: {"type": "string", "minLength": 1}
+                   for name in ["id", "fuel", "liquid_inventory_id", "shell_inventory_id"]}
+    tank_fields["capacity"] = fuel_quantity("l", 0, 50, exclusive_low=True)
+    tank_fields["unusable"] = fuel_quantity("l", 0, 50)
+    tank_fields["pickup"] = {"type": "string", "enum": enum_of("/fuel_system/tanks/*/pickup")}
+    tank_fields["feed"] = {"type": "string", "enum": enum_of("/fuel_system/tanks/*/feed")}
+    root_props["fuel_system"] = {
+        "type": "object", "required": ["tanks"],
+        "properties": {"tanks": {"type": "array", "minItems": 1, "items": {
+            "type": "object", "required": list(tank_fields), "properties": tank_fields,
+            "additionalProperties": False}}},
+        "additionalProperties": False,
+    }
     inventory_items = root_props["inventory"]["items"]
     add_text_field(inventory_items["properties"], "name", nonempty=True)
     # CR-22b: optional energy carried by this item (fuel or pack); the vocabulary lives in the contract.

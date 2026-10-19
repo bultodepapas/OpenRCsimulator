@@ -1,6 +1,6 @@
 # Fuel, mass and balance plan
 
-**Date:** 2026-10-19. **Status:** active. FUEL-00, FUEL-01, FUEL-02 and FUEL-04 delivered; D1–D8 adopted as recommended on 2026-10-19 (owner: "procede con la implementación"; [DECISIONS](../../DECISIONS.md)). **Owner:** physics track, subtrack with prefix `FUEL-` (D1), registered in the [documentation map](../README.md#tracks-plans-and-step-ids). **Steps:** FUEL-00…FUEL-14. **Evidence:** [FUEL-00 audit and sources](../research/fuel-systems/FUEL-00/README.md); reproducible scripts in [`research/fuel-systems/FUEL-00/`](../../research/fuel-systems/FUEL-00/).
+**Date:** 2026-10-19. **Status:** active. FUEL-00…04 delivered; D1–D8 adopted as recommended on 2026-10-19 (owner: "procede con la implementación"; [DECISIONS](../../DECISIONS.md)). **Owner:** physics track, subtrack with prefix `FUEL-` (D1), registered in the [documentation map](../README.md#tracks-plans-and-step-ids). **Steps:** FUEL-00…FUEL-14. **Evidence:** [FUEL-00 audit and sources](../research/fuel-systems/FUEL-00/README.md); reproducible scripts in [`research/fuel-systems/FUEL-00/`](../../research/fuel-systems/FUEL-00/).
 
 **Owns (proposed):** this plan, `docs/research/fuel-systems/`, `research/fuel-systems/`, the shared fuel-property registry and energy-store loader with their tests, and the mass/balance report tool.
 
@@ -158,33 +158,30 @@ Dynamic slosh is left out. A half-full 16 oz tank sloshes at about 1.7–3.2 Hz 
 
 ## 5. Data standard (contract extension, opt-in)
 
-A sketch for AS review; the final names follow the AS-16 energy-store decision. Missing blocks mean today's behavior, so existing aircraft load unchanged until migrated.
+Implemented in FUEL-03; the authoritative text is [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md#presence-evidence-and-defaults).
 
-```json
-"fuels": [{"id": "glow_10n_18o", "ref": "registry:glow_10n_18o"}],
-"energy_stores": [{
-  "id": "main_tank", "kind": "liquid_fuel", "fuel": "glow_10n_18o",
-  "shell_inventory_id": "item_fuel_tank",
-  "capacity": {"value": 0.355, "unit": "l", "kind": "manual", "source": "..."},
-  "unusable": {"value": 0.010, "unit": "l", "kind": "estimated", "source": "..."},
-  "liquid_box": {"center": {"value": [-0.1, 0, 0], "unit": "m"}, "size": {"value": [0.12, 0.07, 0.05], "unit": "m"}},
-  "pickup": "clunk", "feed": "suction_muffler",
-  "start_fill": {"value": 1.0, "unit": "1", "kind": "authored", "source": "..."}
-}],
-"balance": {"plan_cg": {...}, "plan_cg_fuel_state": "empty",
-            "cg_range": {"forward": {...}, "aft": {...}}}
-```
+- `fuel_system.tanks[]` binds each tank to its liquid and shell inventory items by id, the same pattern as BAT-09's `mount_inventory_id`. A tank also names:
+  - a registry `fuel` blend;
+  - `capacity` and `unusable` in litres;
+  - `pickup` and `feed`.
+- `balance.fuel_state` is `as_inventory` (the default) or `empty_tanks`. `balance.cg_range` is checked at that state.
+- `model.fuel_system` exposes per tank:
+  - registry density;
+  - capacity and unusable mass;
+  - start fill (liquid mass / capacity mass).
 
-Rules:
+**Rules enforced by the loader:**
+1. Density comes from the registry only.
+2. Every reference uses an id.
+3. Liquid mass ≤ capacity × density.
+4. The liquid box holds the capacity, so a declared tank cannot be a point mass.
+5. No liquid-fuel item exists outside a tank.
+6. The plan CG lies in `cg_range` at the declared state. Full and empty fills are reported by the mass/balance report, not range-checked.
+7. Electric aircraft declare no tanks.
 
-1. A liquid inventory item is derived from its store, never authored twice.
-2. Every reference uses an ID: store → shell item, installation → store.
-3. Density comes from the registry only.
-4. The liquid box volume is at least the capacity.
-5. A shell has a size: zero-size tanks are refused once migrated.
-6. The CG at the declared balance state must lie in `cg_range` when one is declared; full and empty fills are reported against static margin, not the range.
-7. Electric aircraft declare no fuel store.
-8. The template carries one complete example.
+The template carries one complete example.
+
+**Rule left to the generators (FUEL-05):** the liquid item's mass is derived from start fill × capacity × registry density, never authored twice.
 
 ## 6. Steps
 
@@ -193,7 +190,7 @@ Rules:
 | FUEL-00 | Audit of code, data, contract and plans; external sources; reproducible scripts | — | **Delivered 2026-10-19**: [FUEL-00](../research/fuel-systems/FUEL-00/README.md) |
 | FUEL-01 | Byte-identical repairs and baseline. (a) Generator selects inventory records by id, not position. (b) HUD reads the profile density. (c) Calibration mirror's 2T flow drops trapping; NITRO-61FX README corrected. (d) Template fuel item gets `energy_source`. (e) Mass/balance report, neutral-point register and stored baseline, checked in `app/test.sh` | NITRO, AS, HUD | **Delivered 2026-10-19**: [FUEL-01](../research/fuel-systems/FUEL-01/README.md). 20 fingerprints identical; generated JSON byte-identical; HUD shows 140 mL for 0.12 kg; 61FX flows 38.8/46.0/58.1 ml/min; four mutations detected |
 | FUEL-02 | Fuel-property registry and loader; glow profiles validated against it; no prose densities | NITRO | **Delivered 2026-10-19**: [FUEL-02](../research/fuel-systems/FUEL-02/README.md). `openrc-fuel-registry v1` (7 components, 3 blends), GDScript and Python readers; 30 + 3 checks; glow profiles equal the registry blend (856.92 kg/m³); two loader mutations detected. Prose densities leave the aircraft data in FUEL-05 |
-| FUEL-03 | Contract: `energy_stores`, `plan_cg_fuel_state`, `cg_range`, ID binding; schema, loader, template and [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) text | AS | Invalid-data refusal tests (rules 1–8); fleet fingerprints identical with blocks absent |
+| FUEL-03 | Contract: `fuel_system.tanks[]` bound by inventory id (BAT-09 pattern), `balance.fuel_state`, `balance.cg_range`; schema, loader, template and [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) text | AS | **Delivered 2026-10-19**: [FUEL-03](../research/fuel-systems/FUEL-03/README.md). 27 checks (19 refusals by reason), two mutations detected, 20 fingerprints identical, offline schema agrees, template carries a tank |
 | FUEL-04 | One mass kernel: prepared fast path in `MassInventory`, shared open-system helper, glow migrated, datum per D2 | Physics/SF, NITRO | **Delivered 2026-10-19**: [FUEL-04](../research/fuel-systems/FUEL-04/README.md). `MassInventory.prepare_reference/evaluate_reference` + `FixedDatumBody`; bit-identical to `FuelMass` (0 mismatches, 20 fingerprints identical); momentum fixture 4th-order (ratio 16.0001), law error 0.0626 without the correction; cost no worse (min 17.1 vs 18.6 µs) |
 | FUEL-05 | Fleet data through generators: capacities from engine/kit manuals (F22) and start fill, registry densities, tank boxes and heights, IDs, balance state per D3, Ventage tank position re-estimated (F02), electric donor items per D7, Ventage smoke store | Stik, EX, P51, AV, SM owners | Mass/balance report before/after; every aircraft inside its range at the balance state with positive margin at full and empty; golden and FT baselines re-recorded with a written reason |
 | FUEL-06 | Publish the live mass-properties sample; HUD load factor, crash director/effective mass/wreck/fuel stain, economy and `.orfl`/trace columns read it (closes the R05-B handoff) | HUD, CR, FL | Empty-tank tests: HUD n uses live mass; crash `fuel_kg` equals the remaining fuel; log shows mass and CG every tick; replay exact |

@@ -93,7 +93,7 @@ const ENTRIES := [
 		status_note = "Experimental: estimated electric motor and borrowed propeller data. Fixed wheels, flaps up, assists off.",
 		data = "res://data/aircraft/turbo_lumber_evolution.json",
 		# BAT-13: the same airframe with a finite 4S LiPo class pack, ESC low-voltage cutoff and battery telemetry.
-		battery_data = "res://data/aircraft/turbo_lumber_evolution_4s_pack.json",
+		battery_data = "res://data/aircraft/battery/turbo_lumber_evolution_4s_pack.json",
 	},
 	{
 		id = "xcell-60-research",

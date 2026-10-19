@@ -78,7 +78,11 @@ vec3 encode_for_engine(vec3 x) {
 void sky() {
 	float y = max(EYEDIR.y, 0.0);
 	vec3 col = mix(haze(EYEDIR), zenith_lin, 1.0 - pow(1.0 - y, gradient_curve));
-	col += moon_disc(EYEDIR); // before the clouds, which hide it
+	// FW-MOON-01/03b: the disc stays out of the radiance cubemap (a sub-texel highlight in ambient and reflections);
+	// reflection probes draw the background pass, so the lake still sees it.
+	if (!AT_CUBEMAP_PASS) {
+		col += moon_disc(EYEDIR); // before the clouds, which hide it
+	}
 	float density = 0.0;
 	float cirrus_amount = 0.0;
 	if (layered_appearance) {

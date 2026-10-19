@@ -1,9 +1,9 @@
 # Battery and energy-storage realism plan
 
-**Date:** 2026-10-19. **Revision:** 1. **Status:** proposal. Nothing is implemented; owner decisions D1–D14 are pending. **Owner:** coupled shaft / electric propulsion track (EL), physics main line. **Parent:** [electric propulsion plan](../ELECTRIC-PROPULSION-PLAN.md). **Steps:** BAT-00…29. **Dated evidence:** [BAT-00 source review](../research/battery/BAT-00/README.md).
+**Date:** 2026-10-19. **Revision:** 2. **Status:** the minimum playable slice is software verified ([BAT-10 record](../research/battery/BAT-10/README.md)): `pack_ecm`, ESC low-voltage cutoff, Timber battery mode `pack`, O9 Battery overlay. D1–D14 were adopted as recommended (owner: "procede", [DECISIONS](../../DECISIONS.md)). Physical validation, Gate P and BAT-08, 12, 16–29 remain open. **Owner:** coupled shaft / electric propulsion track (EL), physics main line. **Parent:** [electric propulsion plan](../ELECTRIC-PROPULSION-PLAN.md). **Steps:** BAT-00…29. **Dated evidence:** [BAT-00 source review](../research/battery/BAT-00/README.md).
 
 **Owns (after BAT-00):**
-- the shared battery law and the ESC battery supervisor (proposed `app/physics/energy/`)
+- the shared battery law and the ESC battery supervisor (`app/physics/battery/`)
 - `openrc-battery v1` data and generators (`app/data/batteries/`, `research/battery/`)
 - battery tests (`app/tests/test_battery_*.gd`)
 - evidence under `docs/research/battery/`
@@ -345,6 +345,7 @@ CSV export and plots use the existing flight-log tools and free plotters; no new
 
 - **Catalog (BAT-18).** `app/data/batteries/` is generated from templates. It covers 3S/4S/6S LiPo in several capacities and C classes, LiHV, Li-ion 4S1P/4S2P 21700, and LiFe/NiMH receiver packs. Names are brand-neutral class packs (D10). A real SKU enters only with sourced data and an economy price row; the existing `spektrum_spmx324s50` product row is the first candidate.
 - **Compatibility.** The aircraft declares the series range (from the ESC: Avian 3S–6S; Timber manual 3S/4S, 2200–5000 mAh), the bay box and the maximum mass. Incompatible packs are refused with a reason.
+- **Battery mode (BAT-13, delivered).** Home shows "Battery: ideal / finite pack" inside the flight details for catalog aircraft with `battery_data`; direct routes use `--battery=ideal|pack`. The collapsed flight card has no spare height (`test_ui_home`).
 - **Pre-flight selection (BAT-19, UI-owned screen).** The pilot picks a pack, a charge state (full, storage, a custom %, or "as left"), a temperature and, with wear enabled, a pack from the hangar. The screen shows:
   - AUW, wing loading and CG shift
   - static thrust at full and at storage charge
@@ -369,7 +370,7 @@ CSV export and plots use the existing flight-log tools and free plotters; no new
 - **Discrete block** (modes, tick-boundary): detected cells, LVC phase, timer and limit, filtered voltage, and the stress accumulators. Extend the modes size check at `flight_session.gd:3424`.
 - **Stiffness:** τ_RC ≥ ~1 s and τ_thermal ~ minutes, so `|λ·dt| ≤ 0.005` at 240 Hz. Extend the launch guard `_electric_step_supported` with the RC term and reject templates whose smallest τ breaks it.
 - **Events:** keep one located charge boundary, now on the weak cell. Add the full-charge boundary only for bidirectional ESCs (BAT-08). LVC is sampled, never located. Simultaneous-root priority follows the physics audit (rotor stop first).
-- **Formats:** checkpoint v7 and trace v9 for `pack_ecm`; v5/v6/v7/v8 readers unchanged. The `electric_law` string identifies the template hash.
+- **Formats:** checkpoint `openrc-flight-checkpoint v6` with `electric_law` `electric-pack-ecm-coupled-events-v1` (v7 already names the collision-world boundary) and `openrc-trace v13`; existing readers unchanged. The model hash covers the pack and template tables and their SHA-256 pins.
 - **Cost:**
   - Use the compact stage path with no Dictionary allocation per stage.
   - Cache the table segment per tick; SOC moves by less than 1e-4 per tick.
@@ -412,30 +413,30 @@ Synthetic or template packs never count as measurements.
 
 ## 11. Step register
 
-Each row is one small, reviewable change with its proof. Status for every step: planned.
+Each row is one small, reviewable change with its proof. Steps marked **Delivered** are software verified on 2026-10-19 ([BAT-10 record](../research/battery/BAT-10/README.md)); all others are planned.
 
 | ID | Work | Proof | Coordination |
 | --- | --- | --- | --- |
 | **Phase A: foundation (no runtime change)** | | | |
-| BAT-00 | Owner decisions D1–D14. Registry row and prefix in `docs/README.md`. EL plan rows EL2b/3/4/6 point to BAT. DECISIONS entry. Source review ([BAT-00](../research/battery/BAT-00/README.md), done 2026-10-19). | Links resolve; `grep` shows no duplicate step status | EL, docs owners |
-| BAT-01 | Source/dataset record: download the Galeotti and Kollmeyer data and the official Molicel/LiFe/NiMH datasheets; record licences; cite every chemistry-table value; list dead ends | Manifest with sha256; every §5.1 value cited or removed | research-sources rule |
+| BAT-00 | Owner decisions D1–D14. Registry row and prefix in `docs/README.md`. EL plan rows EL2b/3/4/6 point to BAT. DECISIONS entry. Source review ([BAT-00](../research/battery/BAT-00/README.md), done 2026-10-19). | **Delivered**: decisions in DECISIONS, registry row, EL rows point here | EL, docs owners |
+| BAT-01 | Source/dataset record: download the Galeotti and Kollmeyer data and the official Molicel/LiFe/NiMH datasheets; record licences; cite every chemistry-table value; list dead ends | Partly delivered: Galeotti (109 files) and HG2 (44 files) downloaded and hash-checked ([BAT-05](../research/battery/BAT-05/README.md)); official datasheets and the §5.1 citations open | research-sources rule |
 | BAT-02 | Freeze the baseline: copy the EL2a supply/step for parity, baseline `.orfl` of the 4S/6S battery routes and Timber, paired cost baseline | Exact replay, hashes, p50/p95 µs | FL, Gate P |
-| BAT-03 | Offline reference: Python ECM/thermal oracle and PyBaMM cross-check, pinned | Oracle agreement report; mutation of the oracle detected | — |
+| BAT-03 | Offline reference: Python ECM/thermal oracle and PyBaMM cross-check, pinned | **Delivered**: `research/battery/ecm_reference.py`, 19 tests, 5 mutations caught; runtime agreement 2.7e-15 (BAT-06 probe) | — |
 | **Phase B: pure laws** | | | |
-| BAT-04 | `openrc-battery v1` and `openrc-cell-template v1` schemas plus a strict loader | Loader tests, refusal fixtures, mutations | AS review |
-| BAT-05 | Generators `research/battery/bat-05/`: dataset/datasheet → templates (LiPo tier A, Li-ion tier A, Tremblay tier B; LiFe/NiMH optional), 0/1/2-RC comparison | Fit report: held-out RMSE, parameter intervals; `--check` regeneration | — |
-| BAT-06 | ECM cell/pack law, weakest cell, closed-form single-motor solve | Known answers, energy closure, parity with EL2a at `n_RC = 0` | EL |
-| BAT-07 | Lumped thermal, R0(T), ambient input, cooling term | Steady state, cold-start, Arrhenius fallback tests | ATM |
+| BAT-04 | `openrc-battery v1` and `openrc-cell-template v1` schemas plus a strict loader | **Delivered**: [spec](../research/battery/BAT-04/specification.md), `battery_data.gd`, `test_battery_data.gd` 52/0 | AS review |
+| BAT-05 | Generators `research/battery/bat-05/`: dataset/datasheet → templates (LiPo tier A, Li-ion tier A, Tremblay tier B; LiFe/NiMH optional), 0/1/2-RC comparison | **Delivered**: LiPo K1 and HG2 K2 by held-out residual, 2 templates, 8 packs ([BAT-05](../research/battery/BAT-05/README.md)) | — |
+| BAT-06 | ECM cell/pack law, weakest cell, closed-form single-motor solve | **Delivered**: `test_battery_pack_ecm.gd` 84/0, EL2a parity 1e-12, oracle 1 200 cases | EL |
+| BAT-07 | Lumped thermal, R0(T), ambient input, cooling term | **Delivered**: lumped T, (SOC, T) tables, √v forced convection; steady-state test | ATM |
 | BAT-08 | N-load active-set solve, bidirectional branch, full-charge event in the step policy | Brute-force root to 1e-12; N = 1 byte-identical; event tests | DR-05, SF |
 | **Phase C: aircraft integration** | | | |
-| BAT-09 | Contract kind `pack_ecm`: modules, schema regeneration, pack mass/inertia → inventory and CG | Contract/module tests; Python schema checks; CG delta test | AS, AE-12 |
-| BAT-10 | Session integration: continuous block, step policy, checkpoint v7, trace v9, flight log, consumed events, launch guard | Replay/rollback/refinement; fleet byte-identical; paired cost within budget | Physics main line, FL |
-| BAT-11 | ESC supervisor: detection, LVC off/soft/hard, recovery, profiles (Avian-class, Hobbywing-class) | State-machine tests; analytic trip time; misdetection scenario | EL3 |
+| BAT-09 | Contract kind `pack_ecm`: modules, schema regeneration, pack mass/inertia → inventory and CG | **Delivered**: contract, modules, schema, register, mount check; pack mass equals the mounted item | AS, AE-12 |
+| BAT-10 | Session integration: continuous block, step policy, checkpoint v6 with the `pack_ecm` law, trace v13, flight log, consumed events, launch guard | **Delivered** (cost under shared load only): `test_battery_session.gd` 43/0, existing electric suites unchanged; Gate P open | Physics main line, FL |
+| BAT-11 | ESC supervisor: detection, LVC off/soft/hard, recovery, profiles (Avian-class, Hobbywing-class) | **Delivered**: `test_battery_esc_supervisor.gd` 36/0; soft cut in flight | EL3 |
 | BAT-12 | Auxiliary/BEC rail and `rail_low` signal. BAT-12b: receiver packs for glow aircraft (opt-in) | Current-plane tests (pack-side reference); EM hook test | EM-18, SAV |
-| BAT-13 | Timber `pack_ecm` variant via the TT pipeline (fixed-voltage variant kept). FT card battery/endurance scenario. | Generator check; FT evidence; `.orfl` baseline vs candidate | TT, FT |
+| BAT-13 | Timber `pack_ecm` variant via the TT pipeline (fixed-voltage variant kept). FT card battery/endurance scenario. | **Delivered** without FT/`.orfl` evidence: TT-07 variant, catalog `battery_data`, Home/CLI mode; FT battery card open | TT, FT |
 | **Phase D: pilot information** | | | |
-| BAT-14 | Telemetry snapshot, sensor emulation, radio-side estimator, alarm logic (pure) | Unit tests; emulated vs true columns logged | HUD |
-| BAT-15 | O9 Battery overlay (compact/detailed), alarm chips, Developer true-SOC, i18n | Overlay tests; captures 640/1080; trace identity unchanged | HUD, UI |
+| BAT-14 | Telemetry snapshot, sensor emulation, radio-side estimator, alarm logic (pure) | **Delivered** without logging ([BAT-15](../research/battery/BAT-15/README.md)): sensors, radio-side %, alarms | HUD |
+| BAT-15 | O9 Battery overlay (compact/detailed), alarm chips, Developer true-SOC, i18n | **Delivered** without captures: O9 overlay, 133 checks, live `pack_ecm` flight | HUD, UI |
 | BAT-16 | Audio cues: cell-count beeps, low/critical callouts | Bench scenario; mute/limiter rules respected | AUD |
 | BAT-17 | Post-flight battery report, accident-report label, CSV columns | UI tests; capture | UI, CR |
 | **Phase E: choice, persistence, health** | | | |

@@ -3448,3 +3448,13 @@ msgstr "Salida de luna, el tiempo pasa"
 
 msgid "Moonrise"
 msgstr "Salida de luna"
+
+# BAT-13 Home battery mode (flight details)
+msgid "Battery: finite pack (experimental)"
+msgstr "Batería: pack finito (experimental)"
+
+msgid "Battery: ideal (never runs flat)"
+msgstr "Batería: ideal (nunca se agota)"
+
+msgid "Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage."
+msgstr "Pack finito: la carga se agota, el voltaje cae con la carga y con el frío, el pack se calienta y el ESC corta la potencia con voltaje bajo. Ideal: voltaje constante."

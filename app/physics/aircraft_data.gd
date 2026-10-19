@@ -24,6 +24,7 @@ const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const GlowInstallation := preload("res://physics/glow/installation.gd")
 const BatteryData := preload("res://physics/battery/battery_data.gd")
 const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
+const FuelProperties := preload("res://physics/fuel_properties.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 ## CR-01d: names a crash-hull point may carry (crash_hull_components). Same list as the contract's enum path;
@@ -177,6 +178,13 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 			_validate_pack_mount(mount_errors, result.model.propulsion.battery, raw.get("inventory", []))
 			if not mount_errors.is_empty():
 				return {ok=false,errors=mount_errors,warnings=result.warnings,model={}}
+		if raw.has("fuel_system") or raw.balance.has("fuel_state") or raw.balance.has("cg_range"):
+			var fuel_errors := PackedStringArray()
+			var fuel_system: Dictionary = _fuel_system(fuel_errors, raw)
+			if not fuel_errors.is_empty():
+				return {ok=false,errors=fuel_errors,warnings=result.warnings,model={}}
+			if not fuel_system.is_empty():
+				result.model.fuel_system = fuel_system
 		var identities := PhysicalIdentity.describe(raw)
 		if not identities.is_empty():
 			result.model.physical_identity = identities
@@ -291,6 +299,18 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	# keeps its closed propulsion shape and receives only its original inputs.
 	out.erase("physical_identity_version")
 	out.erase("crash_hull_ids")
+	# FUEL-03: tanks, balance fuel state and CG range are v2-only and checked by _fuel_system after the
+	# shared parse. With an empty-tank balance the historical inventory/plan check would compare the wrong
+	# state, so it receives the authored inventory CG here and _fuel_system checks the dry CG instead.
+	out.erase("fuel_system")
+	if out.get("balance") is Dictionary:
+		var fuel_state: Variant = out.balance.get("fuel_state", "as_inventory")
+		out.balance.erase("fuel_state")
+		out.balance.erase("cg_range")
+		if fuel_state == "empty_tanks" and out.balance.get("plan_cg") is Dictionary:
+			var authored: Variant = _inventory_cg(out.get("inventory"), [])
+			if authored is PackedFloat64Array:
+				out.balance.plan_cg.value = Array(authored)
 	if out.get("inventory") is Array:
 		for item in out.inventory:
 			if item is Dictionary:
@@ -1317,6 +1337,131 @@ static func _low_voltage_cutoff(errors: PackedStringArray, node: Variant) -> Dic
 
 
 ## BAT-09: the mounted inventory item carries the pack's mass, so CG and inertia follow the selected pack.
+## FUEL-03: liquid-fuel tanks bound by inventory id, the balance fuel state and the CG range.
+## Each tank names a registry blend, its liquid item (energy_source of that family) and its empty shell item.
+## The liquid item's mass is the authored fill; it may not exceed capacity x blend density, and its box must hold
+## the capacity. With fuel_state "empty_tanks" the plan CG must equal the inventory CG without any tank liquid.
+## Returns the normalized model.fuel_system, or {} when only balance fields are present.
+const FUEL_FAMILY_SOURCE := {glow = "glow_fuel", gasoline = "gasoline", kerosene = "kerosene"}
+const FUEL_FAMILY_FEED := {glow = "suction_muffler", gasoline = "pumped_diaphragm", kerosene = "ecu_pump"}
+const LIQUID_FUEL_SOURCES := ["glow_fuel", "gasoline", "kerosene"]
+const FUEL_ENERGY := ["prescribed_fuel", "finite_glow_fuel"]
+
+static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictionary:
+	var balance: Dictionary = raw.balance
+	var plan: Array = balance.plan_cg.value
+	var tolerance: float = float(balance.cg_tolerance.value)
+	var fuel_state: String = str(balance.get("fuel_state", "as_inventory"))
+	var inventory: Array = raw.inventory
+	var by_id: Dictionary = {}
+	for item: Dictionary in inventory:
+		if item.has("id"):
+			by_id[item.id] = item
+	var tanks: Array = []
+	var liquid_ids: Array = []
+	var registry_identity := ""
+	if raw.has("fuel_system"):
+		if not str(raw.capabilities.get("energy", "")) in FUEL_ENERGY:
+			errors.append("fuel_system: liquid fuel tanks need a combustion energy capability %s" % str(FUEL_ENERGY))
+			return {}
+		var registry: Dictionary = FuelProperties.load_file()
+		if not registry.get("ok", false):
+			errors.append("fuel_system: fuel registry is unavailable: %s" % str(registry.get("message", "")))
+			return {}
+		registry_identity = registry.identity.sha256
+		var used: Dictionary = {}
+		for i: int in raw.fuel_system.tanks.size():
+			var tank: Dictionary = raw.fuel_system.tanks[i]
+			var path := "fuel_system.tanks[%d]" % i
+			var id: String = tank.id
+			if used.has("tank:" + id):
+				errors.append("%s.id: duplicate tank id '%s'" % [path, id])
+			used["tank:" + id] = true
+			if not registry.blends.has(tank.fuel):
+				errors.append("%s.fuel: '%s' is not a fuel registry blend" % [path, tank.fuel])
+				continue
+			var blend: Dictionary = registry.blends[tank.fuel]
+			var family: String = blend.family
+			if tank.feed != FUEL_FAMILY_FEED[family]:
+				errors.append("%s.feed: %s fuel uses '%s', not '%s'" % [path, family, FUEL_FAMILY_FEED[family], tank.feed])
+			var liquid: Variant = by_id.get(tank.liquid_inventory_id)
+			var shell: Variant = by_id.get(tank.shell_inventory_id)
+			if not liquid is Dictionary or not shell is Dictionary:
+				errors.append("%s: liquid and shell inventory ids must name inventory items" % path)
+				continue
+			if tank.liquid_inventory_id == tank.shell_inventory_id or used.has(tank.liquid_inventory_id) or used.has(tank.shell_inventory_id):
+				errors.append("%s: each inventory item belongs to one tank role only" % path)
+			used[tank.liquid_inventory_id] = true
+			used[tank.shell_inventory_id] = true
+			if liquid.get("energy_source") != FUEL_FAMILY_SOURCE[family]:
+				errors.append("%s.liquid_inventory_id: item '%s' must declare energy_source '%s'" % [path, tank.liquid_inventory_id, FUEL_FAMILY_SOURCE[family]])
+			if shell.has("energy_source"):
+				errors.append("%s.shell_inventory_id: the empty tank shell '%s' carries no energy" % [path, tank.shell_inventory_id])
+			var capacity = _q(errors, path + ".capacity", tank.capacity, "l", 0.0, 50.0)
+			var unusable = _q(errors, path + ".unusable", tank.unusable, "l", 0.0, 50.0)
+			if capacity == null or unusable == null:
+				continue
+			if capacity <= 0.0 or unusable >= capacity:
+				errors.append("%s: need capacity > 0 and unusable < capacity (%s, %s l)" % [path, capacity, unusable])
+				continue
+			var density: float = blend.density_kg_m3
+			var capacity_kg: float = capacity * 0.001 * density
+			var liquid_kg: float = float(liquid.mass.value)
+			if liquid_kg > capacity_kg * (1.0 + 1.0e-9):
+				errors.append("%s: liquid '%s' %.6f kg exceeds capacity %.6f kg (%s l at %.3f kg/m3)" % [path, tank.liquid_inventory_id, liquid_kg, capacity_kg, capacity, density])
+			var size: Array = liquid.size.value
+			if float(size[0]) * float(size[1]) * float(size[2]) < capacity * 0.001 * (1.0 - 1.0e-9):
+				errors.append("%s: liquid '%s' box %.3f l cannot hold the %s l capacity" % [path, tank.liquid_inventory_id, float(size[0]) * float(size[1]) * float(size[2]) * 1000.0, capacity])
+			liquid_ids.append(tank.liquid_inventory_id)
+			tanks.append({id = id, fuel = tank.fuel, family = family, density_kg_m3 = density,
+				capacity_m3 = capacity * 0.001, capacity_kg = capacity_kg, unusable_kg = unusable * 0.001 * density,
+				liquid_inventory_id = tank.liquid_inventory_id, shell_inventory_id = tank.shell_inventory_id,
+				liquid_mass_kg = liquid_kg, start_fill = liquid_kg / capacity_kg, pickup = tank.pickup, feed = tank.feed})
+		for item: Dictionary in inventory:
+			if item.get("energy_source", "") in LIQUID_FUEL_SOURCES and not str(item.get("id", "")) in liquid_ids:
+				errors.append("fuel_system: liquid fuel item '%s' belongs to no declared tank" % str(item.get("id", item.get("name", "?"))))
+	if fuel_state == "empty_tanks":
+		if tanks.is_empty():
+			errors.append("balance.fuel_state: 'empty_tanks' needs a fuel_system")
+		else:
+			var dry: Variant = _inventory_cg(inventory, liquid_ids)
+			if not dry is PackedFloat64Array:
+				errors.append("balance: the inventory without tank liquid has no mass")
+			else:
+				for axis in 3:
+					if absf(dry[axis] - float(plan[axis])) > tolerance:
+						errors.append("balance: CG with empty tanks disagrees with plan_cg on axis %d by %.4f m (tolerance %.4f m)" % [axis, absf(dry[axis] - float(plan[axis])), tolerance])
+	if balance.has("cg_range"):
+		var forward = _q(errors, "balance.cg_range.forward", balance.cg_range.forward, "m", -2.0, 2.0)
+		var aft = _q(errors, "balance.cg_range.aft", balance.cg_range.aft, "m", -2.0, 2.0)
+		if forward != null and aft != null:
+			if forward >= aft:
+				errors.append("balance.cg_range: forward %s m must lie ahead of aft %s m" % [forward, aft])
+			elif float(plan[0]) < forward or float(plan[0]) > aft:
+				errors.append("balance.cg_range: plan_cg x %s m lies outside [%s, %s] m at the declared fuel state" % [plan[0], forward, aft])
+	if tanks.is_empty():
+		return {}
+	return {format = "openrc-fuel-system v1", fuel_state = fuel_state, tanks = tanks, registry_sha256 = registry_identity}
+
+
+## Left-to-right inventory first moment over the items whose id is not excluded; null when massless.
+static func _inventory_cg(inventory: Variant, excluded_ids: Array) -> Variant:
+	if not inventory is Array:
+		return null
+	var mass: float = 0.0
+	var first := PackedFloat64Array([0.0, 0.0, 0.0])
+	for item: Variant in inventory:
+		if not item is Dictionary or str(item.get("id", "")) in excluded_ids and item.has("id"):
+			continue
+		var m: float = float(item.mass.value)
+		mass += m
+		for k in 3:
+			first[k] += m * float(item.position.value[k])
+	if mass <= 0.0:
+		return null
+	return PackedFloat64Array([first[0] / mass, first[1] / mass, first[2] / mass])
+
+
 static func _validate_pack_mount(errors: PackedStringArray, battery: Dictionary, inventory: Array) -> void:
 	var mount_id: String = str(battery.get("mount_inventory_id", ""))
 	for item: Variant in inventory:

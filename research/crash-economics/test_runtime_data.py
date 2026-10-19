@@ -100,6 +100,23 @@ class RuntimeEconomicsTests(unittest.TestCase):
         self.assertNotIn("item_balance_mass_virtual", covered)
         self.assertIn("item_balance_mass_virtual", excluded)
 
+    def test_liquid_fuel_fill_state_is_not_a_saleable_identity(self) -> None:
+        # FUEL-05a: a different start fill or tank height keeps the same BOM; any other change still differs.
+        source = {"inventory": [
+            {"id": "item_fuel_main", "name": "fuel", "energy_source": "glow_fuel",
+             "mass": {"value": 0.12}, "position": {"value": [-0.1, 0.0, 0.0]}},
+            {"id": "item_fuel_tank", "name": "fuel tank", "mass": {"value": 0.055}, "position": {"value": [-0.1, 0.0, 0.0]}},
+        ]}
+        refilled = copy.deepcopy(source)
+        refilled["inventory"][0]["mass"]["value"] = 0.3
+        refilled["inventory"][0]["position"]["value"] = [-0.1, 0.0, 0.02]
+        self.assertEqual(build_runtime._inventory_signature(source, "fixture"),
+                         build_runtime._inventory_signature(refilled, "fixture"))
+        moved_shell = copy.deepcopy(source)
+        moved_shell["inventory"][1]["position"]["value"] = [-0.1, 0.0, 0.02]
+        self.assertNotEqual(build_runtime._inventory_signature(source, "fixture"),
+                            build_runtime._inventory_signature(moved_shell, "fixture"))
+
     def test_inherited_61fx_has_distinct_source_hash_and_only_reconciled_bom(self) -> None:
         baseline = self.dossiers["jensen-das-ugly-stik-60"]
         variant = self.dossiers["stik-glow-61fx-2t"]

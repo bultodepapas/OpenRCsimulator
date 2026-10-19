@@ -285,6 +285,49 @@
           "type": "string",
           "minLength": 1,
           "pattern": "[^\\u0001-\\u0020]"
+        },
+        "fuel_state": {
+          "type": "string",
+          "enum": [
+            "as_inventory",
+            "empty_tanks"
+          ]
+        },
+        "cg_range": {
+          "type": "object",
+          "required": [
+            "forward",
+            "aft"
+          ],
+          "properties": {
+            "forward": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 2,
+                  "minimum": -2
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            },
+            "aft": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 2,
+                  "minimum": -2
+                },
+                "unit": {
+                  "const": "m"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -2532,6 +2575,94 @@
           "belly"
         ]
       }
+    },
+    "fuel_system": {
+      "type": "object",
+      "required": [
+        "tanks"
+      ],
+      "properties": {
+        "tanks": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "fuel",
+              "liquid_inventory_id",
+              "shell_inventory_id",
+              "capacity",
+              "unusable",
+              "pickup",
+              "feed"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "fuel": {
+                "type": "string",
+                "minLength": 1
+              },
+              "liquid_inventory_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "shell_inventory_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "capacity": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 50,
+                    "exclusiveMinimum": 0
+                  },
+                  "unit": {
+                    "const": "l"
+                  }
+                }
+              },
+              "unusable": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 50,
+                    "minimum": 0
+                  },
+                  "unit": {
+                    "const": "l"
+                  }
+                }
+              },
+              "pickup": {
+                "type": "string",
+                "enum": [
+                  "clunk",
+                  "felt_clunk",
+                  "fixed",
+                  "hopper"
+                ]
+              },
+              "feed": {
+                "type": "string",
+                "enum": [
+                  "suction_muffler",
+                  "pumped_diaphragm",
+                  "ecu_pump"
+                ]
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
     },
     "physical_identity_version": {
       "type": "integer",

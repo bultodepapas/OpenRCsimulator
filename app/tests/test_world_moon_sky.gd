@@ -66,7 +66,8 @@ func _initialize() -> void:
 	var harvest_high := _state(["--time=23:30", "--date=2026-09-26"])
 	var crescent := _state(["--time=23:15", "--date=2026-06-18"])
 	var quarter := _state(["--time=00:30", "--date=2026-06-23"])
-	var apogee_night := _state(["--time_of_day=night"])
+	# The full moon near apogee that the night preset showed before FW-MOON-11 retargeted it (FW-MOON-00 audit).
+	var apogee_night := _state(["--time=01:15", "--date=2026-06-30"])
 	for pair: Array in [["full", full], ["harvest low", harvest_low], ["crescent", crescent], ["quarter", quarter]]:
 		var st: Dictionary = pair[1]
 		_check("%s: the moon lights the night" % pair[0], st.light_source == "moon", str(st.light_source))
@@ -74,7 +75,7 @@ func _initialize() -> void:
 		var l: Dictionary = st.lunar
 		_check("%s: disc radius from the topocentric distance" % pair[0],
 			absf(float(st.moon_radius) - asin(Lunar.MOON_RADIUS_KM / float(l.distance_km))) < 1e-9)
-	_check("perigee full moon looks larger than the apogee preset",
+	_check("perigee full moon looks larger than the apogee full moon",
 		float(full.moon_radius) / float(apogee_night.moon_radius) > 1.10, "%f / %f" % [full.moon_radius, apogee_night.moon_radius])
 	_check("near full: phase normalisation about 1", absf(float(full.moon_phase_k) - 1.0) < 0.1, str(full.moon_phase_k))
 
@@ -153,7 +154,8 @@ func _initialize() -> void:
 	_check("hand-built sky: mean radius", float(hand.moon_radius) == SkyState.MOON_MEAN_RADIUS_RAD)
 	_check("hand-built sky: no earthshine", (hand.moon_earthshine as Vector3) == Vector3.ZERO)
 	_check("hand-built sky: original phase flux", is_equal_approx(float(hand.moon_flux), SkyState.moon_phase_flux(0.0)))
-	_check("deterministic", str(_state(["--time_of_day=night"])) == str(apogee_night))
+	_check("deterministic", str(_state(["--time=01:15", "--date=2026-06-30"])) == str(apogee_night)
+		and str(_state(["--time_of_day=night"])) == str(_state(["--time_of_day=night"])))
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

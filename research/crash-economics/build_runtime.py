@@ -310,6 +310,9 @@ def _validate_source_hashes(root: Path, price_catalog: dict[str, Any]) -> dict[s
     return verified
 
 
+LIQUID_FUEL_SOURCES = ("glow_fuel", "gasoline", "kerosene")
+
+
 def _inventory_signature(source: dict[str, Any], aircraft_id: str) -> dict[str, tuple[Any, ...]]:
     """Compare saleable physical identities, not balance ballast or inertia envelopes."""
     result: dict[str, tuple[Any, ...]] = {}
@@ -325,6 +328,9 @@ def _inventory_signature(source: dict[str, Any], aircraft_id: str) -> dict[str, 
         position = row.get("position", {})
         mass_value = mass.get("value") if isinstance(mass, dict) else None
         position_value = position.get("value") if isinstance(position, dict) else None
+        if energy_source in LIQUID_FUEL_SOURCES:
+            # FUEL-05a: liquid fuel is consumable fill state (start fill, tank height), not a saleable part.
+            mass_value = position_value = None
         result[item_id] = (name, json.dumps(mass_value, sort_keys=True), json.dumps(position_value, sort_keys=True), energy_source)
     return result
 

@@ -24,6 +24,7 @@ func _run() -> void:
 	# The headless display server sets its window to 64×64 on the first frame, over any earlier size: resize after it.
 	await process_frame
 	await _live_flight()
+	await _live_pack_flight()
 	print("overlay battery flight: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)
 
@@ -61,5 +62,33 @@ func _live_flight() -> void:
 		and panel.values.used.text.ends_with(" mAh"), "%s | %s" % [panel.values.pack_v.text, panel.values.used.text])
 	_check("live: no cell or temperature sensors for the older kind", not panel.values.cell_avg.visible and not panel.values.temperature.visible)
 	_check("live: no true SOC in the Full preset", not _texts(overlays).contains("SOC"))
+	flight.queue_free()
+	await process_frame
+
+
+## BAT-13/15: the Timber in battery mode "pack" through the product route (--aircraft, --battery): O9 shows the
+## pack_ecm cell rows and temperature from radio-style sensors, and still no true SOC outside Diagnostics.
+func _live_pack_flight() -> void:
+	var flight: Node = load("res://main.tscn").instantiate()
+	flight.user_args = PackedStringArray(["--aircraft=turbo-lumber-evolution", "--battery=pack"])
+	flight.overlays_enabled = true
+	flight.overlay_settings = { preset = "full", units = "metric" }
+	root.add_child(flight)
+	for i in 30:
+		await process_frame
+	var overlays: CanvasLayer = flight.get("_overlays")
+	var session: Node = flight.get("session")
+	_check("pack flight builds the overlays and the pack session", overlays != null and session != null and session.battery_is_pack())
+	if overlays == null or session == null:
+		flight.queue_free()
+		return
+	var panel: Control = overlays.frames.battery
+	var state: Dictionary = session.electrical_state()
+	_check("pack telemetry reaches the overlay", state.get("battery_kind") == "pack_ecm" and panel.visible and panel.detailed,
+		"%s %s %s" % [state.get("battery_kind"), panel.visible, panel.detailed])
+	_check("pack: cell rows and temperature come from the sensors", panel.values.cell_avg.visible and panel.values.cell_avg.text.ends_with(" V/cell")
+		and panel.values.cell_min.visible and panel.values.temperature.visible,
+		"%s | %s | %s" % [panel.values.cell_avg.text, panel.values.cell_min.text, panel.values.temperature.text])
+	_check("pack: no true SOC in the Full preset", not _texts(overlays).contains("SOC"))
 	flight.queue_free()
 	await process_frame

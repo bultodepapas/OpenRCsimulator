@@ -80,6 +80,8 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.wing_polar.negative` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
 | `aero.wing_polar.positive` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
 | `aero.wing_polar.spanwise_progression` | 1 | ≥0, ≤1 | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
+| `balance.cg_range.aft` | m | ≥-2, ≤2 | AircraftData._fuel_system: plan-CG acceptance at the declared balance fuel state; no force effect |
+| `balance.cg_range.forward` | m | ≥-2, ≤2 | AircraftData._fuel_system: plan-CG acceptance at the declared balance fuel state; no force effect |
 | `balance.cg_tolerance` | m | ≥1e-06, ≤0.005 | AircraftData.validate_and_derive: inventory/declared CG acceptance |
 | `balance.firewall` | m | length 3…3, each(≥-2, ≤2) | AircraftData._q: reference validation only; no force effect |
 | `balance.plan_cg` | m | length 3…3, each(≥-2, ≤2) | AircraftData.validate_and_derive: inventory CG agreement; not an override |
@@ -114,6 +116,8 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `flaps.retraction_time` | s | ≥0.25, ≤30 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.stall_shift_fraction` | 1 | ≥0, ≤1 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.takeoff_angle_deg` | deg | ≥0, ≤60 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
+| `fuel_system.tanks[].capacity` | l | >0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
+| `fuel_system.tanks[].unusable` | l | ≥0, ≤50 | AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05 |
 | `inventory[].mass` | kg | ≥0.001, ≤5 | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].position` | m | length 3…3, each(≥-2, ≤2) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].size` | m | length 3…3, each(≥0, ≤4) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
@@ -213,4 +217,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 199 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 203 distinct quantity paths. Shared paths retain branch-dependent ranges.

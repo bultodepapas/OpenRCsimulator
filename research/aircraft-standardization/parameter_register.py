@@ -40,6 +40,10 @@ def consumer(path: str) -> str:
         return "AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state"
     if path.startswith("flaps."):
         return "AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers"
+    if path.startswith("balance.cg_range."):
+        return "AircraftData._fuel_system: plan-CG acceptance at the declared balance fuel state; no force effect"
+    if path.startswith("fuel_system.tanks[]."):
+        return "AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05"
     families = [
         ("inventory[].", "AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier"),
         ("reference.", "AircraftData reference/strip derivation → Aero.loads, trim, render datum checks"),

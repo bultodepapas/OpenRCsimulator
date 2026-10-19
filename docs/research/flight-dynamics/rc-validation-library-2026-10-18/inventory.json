@@ -1,17 +1,17 @@
 {
   "format": "openrc-literature-inventory v1",
   "generator": "research/reference-library/catalog.py --write",
-  "checked_utc": "2026-10-19T02:55:27.567836+00:00",
-  "records": 304,
-  "bibliography_entries": 292,
-  "records_without_local_file": 65,
-  "verified_local_paths": 229,
-  "distinct_local_contents": 229,
-  "local_pdf_paths": 181,
-  "local_zip_paths": 14,
-  "new_collection_paths": 217,
+  "checked_utc": "2026-10-19T12:03:58.902418+00:00",
+  "records": 348,
+  "bibliography_entries": 335,
+  "records_without_local_file": 75,
+  "verified_local_paths": 263,
+  "distinct_local_contents": 263,
+  "local_pdf_paths": 210,
+  "local_zip_paths": 15,
+  "new_collection_paths": 251,
   "reused_reference_paths": 12,
-  "total_local_bytes": 1961637816,
+  "total_local_bytes": 2076518644,
   "categories": {
     "additional-flight-evidence": {
       "records": 10,
@@ -62,8 +62,8 @@
       "records_with_local_file": 17
     },
     "ugly-stik": {
-      "records": 34,
-      "records_with_local_file": 27
+      "records": 78,
+      "records_with_local_file": 61
     },
     "unsteady-stall": {
       "records": 12,

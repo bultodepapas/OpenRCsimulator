@@ -17,7 +17,8 @@ HERE = Path(__file__).resolve().parent
 GEOMETRY = ROOT / "assets/aircraft/turbo-lumber-evolution/geometry.json"
 OUTPUT = ROOT / "app/data/aircraft/turbo_lumber_evolution.json"
 # BAT-13: the same airframe and inventory with the finite pack_ecm battery (catalog battery mode "pack").
-PACK_OUTPUT = ROOT / "app/data/aircraft/turbo_lumber_evolution_4s_pack.json"
+# Battery-mode data lives in a subfolder: fleet sweeps of app/data/aircraft/ expect one file per aircraft id.
+PACK_OUTPUT = ROOT / "app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json"
 PACK_ID = "lipo-4s1p-3200-30c-class"
 PACK_FILE = ROOT / "app/data/batteries/packs" / (PACK_ID + ".json")
 PACK_SOURCE = "research/timber/tt07/derive_physics.py BAT-13 pack variant"
@@ -306,7 +307,8 @@ def main():
             if not path.exists() or path.read_bytes()!=data:raise SystemExit("Timber physics data stale: regenerate with "+SOURCE)
         print("TT-07 Timber physics current")
     else:
-        for path,data in outputs:path.write_bytes(data)
+        for path,data in outputs:
+            path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
         print(json.dumps(summary,indent=2))
 
 

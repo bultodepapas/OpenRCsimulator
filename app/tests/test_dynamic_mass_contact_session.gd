@@ -32,9 +32,17 @@ func _glow_session() -> Node:
 	return session
 
 
+## Place the 0.07 m flood pole so the forward-most centreline hull probe crosses it mid-way through the first
+## 0.5 m tick. A fixed north = 1.0 sat at the very end of the sweep and broke when the datum moved (FUEL-05a).
 func _install_obstacle(session: Node) -> bool:
+	var hull: PackedFloat64Array = session.aircraft.model.crash_hull
+	var forward := -INF
+	for index: int in range(0, hull.size(), 3):
+		if absf(hull[index + 1]) < 0.07:
+			forward = maxf(forward, hull[index])
+	var pole_north: float = forward + 0.07 + 0.25
 	var built: Dictionary = World.build({pilot = {north = 0.0, east = 0.0, down = 0.0}, objects = []},
-		{groups = []}, {fixtures = [{id = "r05b-contact", type = "flood", north = 1.0, east = 0.0, height = 8.0}]})
+		{groups = []}, {fixtures = [{id = "r05b-contact", type = "flood", north = pole_north, east = 0.0, height = 8.0}]})
 	return bool(built.get("ok", false)) and bool(session.set_collision_world(built.world))
 
 
