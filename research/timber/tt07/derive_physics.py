@@ -16,6 +16,11 @@ from physical_identity import validate_physical_identity  # noqa: E402
 HERE = Path(__file__).resolve().parent
 GEOMETRY = ROOT / "assets/aircraft/turbo-lumber-evolution/geometry.json"
 OUTPUT = ROOT / "app/data/aircraft/turbo_lumber_evolution.json"
+# BAT-13: the same airframe and inventory with the finite pack_ecm battery (catalog battery mode "pack").
+PACK_OUTPUT = ROOT / "app/data/aircraft/turbo_lumber_evolution_4s_pack.json"
+PACK_ID = "lipo-4s1p-3200-30c-class"
+PACK_FILE = ROOT / "app/data/batteries/packs" / (PACK_ID + ".json")
+PACK_SOURCE = "research/timber/tt07/derive_physics.py BAT-13 pack variant"
 SOURCE = "research/timber/tt07/derive_physics.py"
 BELLY_PROBE_IDS_BY_STATION = {
     -0.22: "probe_belly_nose",
@@ -248,15 +253,61 @@ def derive(inputs=None):
     return model,dict(mass=mass,cg=cg,inertia=j,stall_speed=vs,start_speed=speed,static_margin=(xarp-values["Cma"]/cla*c-cg_x)/c,CD0=cd0,tail_load_share=tail_share,virtual_mass=residue,virtual_station=xb)
 
 
+def derive_pack_variant(model):
+    """BAT-13: replace only the energy model; airframe, inventory and identity stay those of TT-07."""
+    import hashlib
+    pack_bytes = PACK_FILE.read_bytes()
+    pack = json.loads(pack_bytes.decode("utf-8"))
+    battery_item = next(item for item in model["inventory"] if item["id"] == "battery_main")
+    if pack["mass_kg"]["value"] != battery_item["mass"]["value"]:
+        raise ValueError("BAT-13: pack mass must equal the TT-07 battery_main inventory mass")
+    variant = copy.deepcopy(model)
+    variant["description"] = ("EXPERIMENTAL TT-07 + BAT-13: the TT-07 airframe and inventory with a finite 4S 3200 mAh LiPo "
+        "class pack (pack_ecm: dataset-derived cell curve, estimated class resistance, lumped temperature) and an "
+        "estimated soft low-voltage cutoff. Not physical validation.")
+    variant["capabilities"]["energy"] = "pack_ecm"
+    est = lambda value, unit, source: q(value, unit, "estimated", source)
+    variant["propulsion"]["battery"] = dict(
+        kind="pack_ecm",
+        pack=dict(id=PACK_ID, sha256=hashlib.sha256(pack_bytes).hexdigest()),
+        mount_inventory_id="battery_main",
+        initial_soc=est(1.0, "1", PACK_SOURCE + ": freshly charged pack at rest (CC-CV to 4.2 V/cell); the session may override it"),
+        auxiliary_current_a=est(0.3, "A", PACK_SOURCE + ": receiver, six micro servos and navigation LEDs, about 3.3 W at the BEC rail through an assumed 80 % BEC, referred to a 15 V pack; not measured"),
+        cooling_airflow_fraction=est(0.1, "1", PACK_SOURCE + ": enclosed foam battery bay behind the hatch; ram airflow past the pack assumed 10 % of airspeed"),
+        weak_cell=dict(
+            capacity_factor=q(1.0, "1", "derived", PACK_SOURCE + ": new balanced pack; a pack record may lower it"),
+            resistance_factor=q(1.0, "1", "derived", PACK_SOURCE + ": new balanced pack; a pack record may raise it"),
+            soc_offset=q(0.0, "1", "derived", PACK_SOURCE + ": balanced charge")))
+    avian = "Spektrum Avian ESC family manual pp. 9-13 (EL1a-R1/02-battery.md)"
+    variant["propulsion"]["esc"] = dict(kind="ideal_motoring", command_mapping="identity", low_voltage_cutoff=dict(
+        mode="soft", cell_detection="auto",
+        detection_max_cell_v=est(4.3, "V", "Avian auto cell count rule undocumented; Betaflight-style 4.30 V/cell maximum assumed (BAT-00 F7)"),
+        cutoff_per_cell_v=est(3.2, "V", avian + ": selectable 2.8-3.8 V/cell; installed default not identified; 3.2 V/cell assumed"),
+        soft_limit=q(0.5, "1", "manual", avian + ": soft cutoff reduces output to 50 %; the troubleshooting section says 60 %"),
+        soft_ramp_s=q(3.0, "s", "manual", avian + ": soft cutoff applied over 3 s"),
+        debounce_s=est(0.5, "s", "ESC low-voltage debounce undocumented; 0.5 s assumed so brief punch-out sag does not trip"),
+        recovery="throttle_reset",
+        reset_throttle_max=q(0.05, "1", "derived", "app/input/rc_input.gd ARM_THROTTLE 0.05: the same idle-stick threshold"),
+        voltage_filter_s=est(0.1, "s", "ESC voltage measurement filtering undocumented; 0.1 s low-pass assumed")))
+    validate_physical_identity(variant)
+    return variant
+
+
+def _encode(model):
+    return (json.dumps(model,indent=2,ensure_ascii=False,allow_nan=False)+"\n").replace("\n","\r\n").encode("utf-8")
+
+
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--check",action="store_true");args=parser.parse_args()
     model,summary=derive()
-    text=(json.dumps(model,indent=2,ensure_ascii=False,allow_nan=False)+"\n").replace("\n","\r\n")
+    outputs=[(OUTPUT,_encode(model)),(PACK_OUTPUT,_encode(derive_pack_variant(model)))]
     if args.check:
-        if not OUTPUT.exists() or OUTPUT.read_bytes()!=text.encode("utf-8"):raise SystemExit("Timber physics data stale: regenerate with "+SOURCE)
+        for path,data in outputs:
+            if not path.exists() or path.read_bytes()!=data:raise SystemExit("Timber physics data stale: regenerate with "+SOURCE)
         print("TT-07 Timber physics current")
     else:
-        OUTPUT.write_bytes(text.encode("utf-8"));print(json.dumps(summary,indent=2))
+        for path,data in outputs:path.write_bytes(data)
+        print(json.dumps(summary,indent=2))
 
 
 if __name__=="__main__":main()

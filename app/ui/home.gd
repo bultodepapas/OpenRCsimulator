@@ -62,6 +62,9 @@ var lighting_config: Dictionary = TimeOfDay.defaults()
 var sky_config: Dictionary = SkyConfig.defaults()
 var time_of_day: String = "day"
 var start_button: Button
+## BAT-13: "ideal" or "pack"; the battery choice is shown only for aircraft whose catalog entry has battery_data.
+var battery_mode: String = "ideal"
+var battery_button: Button
 
 var fly_button: Button
 var ground_vehicle_button: Button
@@ -291,6 +294,15 @@ func _init() -> void:
 	start_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	start_button.pressed.connect(_cycle_start_choice)
 	flight_card_lines.add_child(start_button)
+	battery_button = _button("", "HomeAction")
+	battery_button.name = "BatteryChoice"
+	battery_button.custom_minimum_size.y = 36
+	battery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	battery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	battery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	battery_button.visible = false
+	battery_button.pressed.connect(_cycle_battery_mode)
+	flight_card_lines.add_child(battery_button)
 
 	_conditions_row = GridContainer.new()
 	_conditions_row.name = "FlightConditions"
@@ -647,8 +659,8 @@ func _ready() -> void:
 		utility.focus_neighbor_right = utility.get_path_to(utilities[(index + 1) % utilities.size()])
 	for header_button in [language_button, settings_button]:
 		header_button.focus_neighbor_bottom = header_button.get_path_to(_page_buttons[0])
-	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
-	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
+	_link_flight_options()
+	fly_button.focus_neighbor_top = fly_button.get_path_to(_last_flight_option() if not fly_button.disabled else _page_buttons[0])
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
 	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
@@ -687,10 +699,10 @@ func _select_page(index: int) -> void:
 	# Focus stays on the selected destination's content; it never skips into another section.
 	if is_inside_tree():
 		var primary_action: Control = ground_vehicle_button if selected == 3 else fly_button
-		var action_previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
+		var action_previous: Control = ground_vehicle_choice if selected == 3 else _last_flight_option() if selected == 0 and not fly_button.disabled else _page_buttons[selected]
 		primary_action.focus_neighbor_top = primary_action.get_path_to(action_previous)
 		if selected == 0 and not fly_button.disabled:
-			start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
+			_link_flight_options()
 		var catalog_selection := maxi(0, _catalog_ids.find(aircraft_id))
 		var first_controls: Array[Control] = [previous_button, _catalog_buttons[catalog_selection], natural_random_button, ground_vehicle_choice]
 		_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(first_controls[selected])
@@ -856,6 +868,7 @@ func set_aircraft(id: String) -> void:
 	if entering_rotorcraft:
 		start_choice = "runway"
 	set_start_choice(start_choice)
+	set_battery_mode(battery_mode)
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
 	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
@@ -878,9 +891,9 @@ func set_aircraft(id: String) -> void:
 			if _pages[page_index].visible:
 				selected_page = page_index
 				break
-		var fly_previous: Control = start_button if selected_page == 0 and not fly_button.disabled else _page_buttons[selected_page]
+		var fly_previous: Control = _last_flight_option() if selected_page == 0 and not fly_button.disabled else _page_buttons[selected_page]
 		fly_button.focus_neighbor_top = fly_button.get_path_to(fly_previous)
-		start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
+		_link_flight_options()
 	workshop_button.disabled = rotorcraft
 	workshop_button.tooltip_text = tr("Aircraft Workshop is not available for this rotorcraft yet.") if rotorcraft else ""
 	natural_random_button.disabled = rotorcraft
@@ -923,6 +936,34 @@ func set_start_choice(choice: String) -> void:
 		start_button.text = tr("Start: 50% throttle")
 		limits_label.text = "Starts in level flight at 50% throttle. Trim stays fixed while you fly."
 		start_button.tooltip_text = tr(limits_label.text)
+
+
+## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.
+func set_battery_mode(mode: String) -> void:
+	battery_mode = mode if Catalog.has_battery_mode(aircraft_id, mode) else "ideal"
+	battery_button.visible = not Catalog.battery_data(aircraft_id).is_empty() and not Catalog.is_rotorcraft(aircraft_id)
+	battery_button.text = tr("Battery: finite pack (experimental)") if battery_mode == "pack" else tr("Battery: ideal (never runs flat)")
+	battery_button.tooltip_text = tr("Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage.")
+	if is_node_ready():
+		_link_flight_options()
+
+
+func _cycle_battery_mode() -> void:
+	set_battery_mode("ideal" if battery_mode == "pack" else "pack")
+
+
+## The flight option directly above Fly: the battery choice when shown, otherwise the start choice.
+func _last_flight_option() -> Control:
+	return battery_button if battery_button != null and battery_button.visible else start_button
+
+
+func _link_flight_options() -> void:
+	if battery_button != null and battery_button.visible:
+		start_button.focus_neighbor_bottom = start_button.get_path_to(battery_button)
+		battery_button.focus_neighbor_top = battery_button.get_path_to(start_button)
+		battery_button.focus_neighbor_bottom = battery_button.get_path_to(fly_button)
+	else:
+		start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 
 
 func _cycle_start_choice() -> void:
@@ -1189,6 +1230,7 @@ func _update_weather_text() -> void:
 	weather_button.text = "%s\n%s" % [tr("Weather"), weather_brief]
 	var time_brief := tr("Evening") if time_of_day == "evening" else tr(Conditions.HOME_LABELS[time_of_day])
 	if compact and time_of_day == "night": time_brief = tr("Full moon")
+	if compact and time_of_day == "moonrise": time_brief = tr("Moonrise") # FW-MOON-11
 	if compact and time_of_day == "night_dark": time_brief = tr("New moon")
 	if lighting_config.mode == "astronomical": time_brief = TimeOfDay.format_time(int(lighting_config.local_seconds))
 	time_button.text = "%s\n%s" % [tr("Time of day"), time_brief]

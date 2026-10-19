@@ -582,6 +582,12 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var body_cn: float = surfaces.get("body_cn_beta", 0.0)
 	if body_cn != 0.0:
 		mz_sum += 0.5 * rho * float(ref.S) * float(ref.b) * body_cn * v0 * v1 * (1.0 - sideslip_weight(air.beta, env))
+	# D10-R5 (optional): the wing-body dihedral effect the flat strips lack (they see no spanwise flow), as the same
+	# u·v couple: a panel's normal velocity changes by v·sinΓ, its lift by u·v·sinΓ. The oracle's Clb carries it at small
+	# angles; it fades out over the declared linear-sideslip range like the body yaw term.
+	var wing_body_cl: float = surfaces.get("wing_body_cl_beta", 0.0)
+	if wing_body_cl != 0.0:
+		mx_sum += 0.5 * rho * float(ref.S) * float(ref.b) * wing_body_cl * v0 * v1 * (1.0 - sideslip_weight(air.beta, env))
 	return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
 
 

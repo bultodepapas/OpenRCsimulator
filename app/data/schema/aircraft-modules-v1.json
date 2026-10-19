@@ -123,6 +123,10 @@
       "ocv_resistance": {
         "module": "energy.ocv_resistance.v1",
         "law": "energy.battery.ocv_resistance.v1"
+      },
+      "pack_ecm": {
+        "module": "energy.pack_ecm.v1",
+        "law": "energy.battery.pack_ecm.v1"
       }
     },
     "damage": {
@@ -277,7 +281,8 @@
         ],
         "energy": [
           "fixed_voltage",
-          "ocv_resistance"
+          "ocv_resistance",
+          "pack_ecm"
         ]
       },
       "fields": [
@@ -299,15 +304,20 @@
         "battery": [
           "auxiliary_current_a",
           "capacity_ah",
+          "cooling_airflow_fraction",
           "initial_soc",
           "kind",
+          "mount_inventory_id",
           "ocv_points",
+          "pack",
           "resistance_ohm",
-          "voltage_v"
+          "voltage_v",
+          "weak_cell"
         ],
         "esc": [
           "command_mapping",
-          "kind"
+          "kind",
+          "low_voltage_cutoff"
         ],
         "motor": [
           "kv_rpm_per_volt",
@@ -341,6 +351,15 @@
               "kind",
               "ocv_points",
               "resistance_ohm"
+            ],
+            "pack_ecm": [
+              "auxiliary_current_a",
+              "cooling_airflow_fraction",
+              "initial_soc",
+              "kind",
+              "mount_inventory_id",
+              "pack",
+              "weak_cell"
             ]
           }
         }
@@ -349,7 +368,8 @@
       "battery_kind_path": "battery.kind",
       "battery_laws": {
         "fixed_voltage": "energy.battery.fixed_voltage.v1",
-        "ocv_resistance": "energy.battery.ocv_resistance.v1"
+        "ocv_resistance": "energy.battery.ocv_resistance.v1",
+        "pack_ecm": "energy.battery.pack_ecm.v1"
       },
       "compiler_transforms": {
         "scale": false,

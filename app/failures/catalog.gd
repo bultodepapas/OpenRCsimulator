@@ -196,7 +196,7 @@ static func _electric_drive_is_supported(propulsion: Dictionary) -> bool:
 	var esc: Dictionary = esc_value
 	var inertia: Variant = propulsion.get("rotor_inertia", null)
 	return motor.has("kv_rpm_per_volt") and motor.has("resistance_ohm") \
-		and motor.has("no_load_current_a") and battery.get("kind", "") in ["fixed_voltage", "ocv_resistance"] \
+		and motor.has("no_load_current_a") and battery.get("kind", "") in ["fixed_voltage", "ocv_resistance", "pack_ecm"] \
 		and esc.get("kind", "") == "ideal_motoring" and esc.get("command_mapping", "") == "identity" \
 		and typeof(inertia) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(inertia)) and float(inertia) > 0.0
 

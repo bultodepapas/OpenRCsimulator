@@ -11,6 +11,7 @@ const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const OverlaySettings := preload("res://render/overlays/overlay_settings.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
 
 const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
 const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false}
@@ -47,6 +48,8 @@ const DEFAULTS := {
 	sky_config = SkyConfig.DEFAULTS,
 	# EM-09: optional injected failures are off until the player opts in.
 	failure_config = {"probability_percent": 0, "include_catastrophic": false, "notify": true},
+	# FW-MOON-12: visual-only moon choices ([moon] config). An additive section like [hud]: no schema change.
+	moon_config = MoonConfig.DEFAULTS,
 }
 
 
@@ -133,6 +136,12 @@ static func load_from(path: String) -> Dictionary:
 	var night_campfire: Variant = cfg.get_value("night", "campfire", DEFAULTS.night_campfire)
 	if typeof(night_campfire) == TYPE_BOOL:
 		prefs.night_campfire = night_campfire
+	if cfg.has_section_key("moon", "config"):
+		var checked_moon: Dictionary = MoonConfig.validate(cfg.get_value("moon", "config"))
+		if checked_moon.ok:
+			prefs.moon_config = checked_moon.config
+		else:
+			prefs.note = _append_note(prefs.note, "invalid moon settings; using the real moon")
 	return prefs
 
 
@@ -164,6 +173,9 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 		return ERR_INVALID_DATA
 	if typeof(time_of_day) != TYPE_STRING or not Conditions.HOME_CHOICES.has(time_of_day):
 		return ERR_INVALID_DATA
+	var checked_moon: Dictionary = MoonConfig.validate(prefs.get("moon_config", MoonConfig.DEFAULTS))
+	if not checked_moon.ok:
+		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
 	var weather_schema: int = 5 if checked_weather.config.format == WeatherSettings.COLUMN_FORMAT else (3 if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
 		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA))
@@ -183,6 +195,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("night", "campfire", checked_night.options.campfire)
 	cfg.set_value("sky", "config", checked_sky.config)
 	cfg.set_value("failures", "config", checked_failures.config.duplicate(true))
+	cfg.set_value("moon", "config", checked_moon.config)
 	var hud: Dictionary = OverlaySettings.validate(prefs.get("hud", DEFAULTS.hud))
 	cfg.set_value("hud", "preset", hud.preset)
 	cfg.set_value("hud", "visible", hud.visible)

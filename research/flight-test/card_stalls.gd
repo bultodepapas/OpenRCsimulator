@@ -67,8 +67,9 @@ static func stall_cross_controlled(ft) -> Dictionary:
 	return ft._result(rows.size() == 2 and rows.all(func(r): return r.recovered), {}, notes, { table = rows })
 
 
-## One idle stall at a bank (rad) with an optional fixed rudder (stick, else the ball is centred). Roll-off is signed
-## toward the inside of the turn (the bank's side); for a wings-level case it is the drop's own side.
+## One idle stall at a bank (rad) with an optional fixed rudder (stick, else the ball is centred). The roll-off is the
+## largest bank change in the first second after the break (+ right); `roll_off` says whether it went to the inside of
+## the turn (the bank's side) or the outside.
 static func _stall_case(ft, name: String, case_id: String, entry: float, bank: float, rudder: float, notes: Array) -> Dictionary:
 	var alt0: float = ft.HIGH
 	var flight: Dictionary = ft._fly(name, { speed = entry, altitude = alt0 }, 45.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:

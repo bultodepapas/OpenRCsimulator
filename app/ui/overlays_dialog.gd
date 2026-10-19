@@ -13,7 +13,7 @@ const LAYER: int = 12
 const NAMES := {
 	flight = "Flight data", transmitter = "Transmitter", warnings = "Warnings", wind = "Wind",
 	telemetry = "Telemetry", diagnostics = "Diagnostics (developer)", performance = "Performance (developer)",
-	controls = "Control guide",
+	controls = "Control guide", battery = "Battery",
 }
 const PRESET_NAMES := { off = "Off", pilot = "Pilot", full = "Full", developer = "Developer", custom = "Custom" }
 const UNIT_NAMES := { auto = "By language", metric = "Metric (km/h, m)", imperial = "Imperial (mph, ft)", si = "SI (m/s, m)" }

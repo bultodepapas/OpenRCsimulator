@@ -1,0 +1,1964 @@
+{
+ "format": "openrc-moon-reference v1",
+ "generator": "tools/world/moon_fixtures.py",
+ "retrieved": "2026-10-19",
+ "svs": {
+  "source": "https://svs.gsfc.nasa.gov/vis/a000000/a005500/a005587/mooninfo_2026.json",
+  "sha256": "098ec6434ba4fecb84e66485385816d465b7969f142864bcfc9ffc68311b4a86",
+  "credit": "NASA's Scientific Visualization Studio (SVS 5587)",
+  "frame": "geocentric; sub-Earth/sub-solar east longitude; axis angle from J2000 celestial north",
+  "step_hours": 73,
+  "rows": [
+   {
+    "utc": "2026-01-01T00:00",
+    "illuminated": 0.914,
+    "diameter_arcsec": 1985.1,
+    "distance_km": 361045,
+    "sub_earth_lon_deg": -1.279,
+    "sub_earth_lat_deg": -6.556,
+    "sub_solar_lon_deg": 32.52,
+    "sub_solar_lat_deg": -1.346,
+    "axis_angle_j2000_deg": 349.893
+   },
+   {
+    "utc": "2026-01-04T01:00",
+    "illuminated": 0.9933,
+    "diameter_arcsec": 1967.8,
+    "distance_km": 364225,
+    "sub_earth_lon_deg": 4.272,
+    "sub_earth_lat_deg": -4.941,
+    "sub_solar_lon_deg": -4.358,
+    "sub_solar_lat_deg": -1.295,
+    "axis_angle_j2000_deg": 8.449
+   },
+   {
+    "utc": "2026-01-07T02:00",
+    "illuminated": 0.8331999999999999,
+    "diameter_arcsec": 1886.1,
+    "distance_km": 380009,
+    "sub_earth_lon_deg": 6.965,
+    "sub_earth_lat_deg": -0.617,
+    "sub_solar_lon_deg": -41.247,
+    "sub_solar_lat_deg": -1.242,
+    "axis_angle_j2000_deg": 19.904
+   },
+   {
+    "utc": "2026-01-10T03:00",
+    "illuminated": 0.5531,
+    "diameter_arcsec": 1805.5,
+    "distance_km": 396973,
+    "sub_earth_lon_deg": 5.623,
+    "sub_earth_lat_deg": 3.699,
+    "sub_solar_lon_deg": -78.184,
+    "sub_solar_lat_deg": -1.198,
+    "axis_angle_j2000_deg": 21.674
+   },
+   {
+    "utc": "2026-01-13T04:00",
+    "illuminated": 0.27190000000000003,
+    "diameter_arcsec": 1769.2,
+    "distance_km": 405121,
+    "sub_earth_lon_deg": 1.997,
+    "sub_earth_lat_deg": 6.298,
+    "sub_solar_lon_deg": -115.18,
+    "sub_solar_lat_deg": -1.16,
+    "axis_angle_j2000_deg": 15.492
+   },
+   {
+    "utc": "2026-01-16T05:00",
+    "illuminated": 0.0667,
+    "diameter_arcsec": 1779.8,
+    "distance_km": 402707,
+    "sub_earth_lon_deg": -1.755,
+    "sub_earth_lat_deg": 6.438,
+    "sub_solar_lon_deg": -152.226,
+    "sub_solar_lat_deg": -1.118,
+    "axis_angle_j2000_deg": 2.108
+   },
+   {
+    "utc": "2026-01-19T06:00",
+    "illuminated": 0.0025,
+    "diameter_arcsec": 1818.9,
+    "distance_km": 394047,
+    "sub_earth_lon_deg": -4.359,
+    "sub_earth_lat_deg": 3.963,
+    "sub_solar_lon_deg": 170.7,
+    "sub_solar_lat_deg": -1.062,
+    "axis_angle_j2000_deg": 347.446
+   },
+   {
+    "utc": "2026-01-22T07:00",
+    "illuminated": 0.1226,
+    "diameter_arcsec": 1866.7,
+    "distance_km": 383947,
+    "sub_earth_lon_deg": -5.398,
+    "sub_earth_lat_deg": -0.366,
+    "sub_solar_lon_deg": 133.631,
+    "sub_solar_lat_deg": -0.992,
+    "axis_angle_j2000_deg": 339.058
+   },
+   {
+    "utc": "2026-01-25T08:00",
+    "illuminated": 0.4044,
+    "diameter_arcsec": 1914.5,
+    "distance_km": 374373,
+    "sub_earth_lon_deg": -4.535,
+    "sub_earth_lat_deg": -4.694,
+    "sub_solar_lon_deg": 96.601,
+    "sub_solar_lat_deg": -0.912,
+    "axis_angle_j2000_deg": 339.227
+   },
+   {
+    "utc": "2026-01-28T09:00",
+    "illuminated": 0.741,
+    "diameter_arcsec": 1952.3,
+    "distance_km": 367120,
+    "sub_earth_lon_deg": -1.444,
+    "sub_earth_lat_deg": -6.711,
+    "sub_solar_lon_deg": 59.633,
+    "sub_solar_lat_deg": -0.826,
+    "axis_angle_j2000_deg": 350.044
+   },
+   {
+    "utc": "2026-01-31T10:00",
+    "illuminated": 0.9688,
+    "diameter_arcsec": 1951.6,
+    "distance_km": 367248,
+    "sub_earth_lon_deg": 2.806,
+    "sub_earth_lat_deg": -4.993,
+    "sub_solar_lon_deg": 22.72,
+    "sub_solar_lat_deg": -0.734,
+    "axis_angle_j2000_deg": 8.137
+   },
+   {
+    "utc": "2026-02-03T11:00",
+    "illuminated": 0.9708,
+    "diameter_arcsec": 1896.0,
+    "distance_km": 378016,
+    "sub_earth_lon_deg": 5.513,
+    "sub_earth_lat_deg": -0.562,
+    "sub_solar_lon_deg": -14.174,
+    "sub_solar_lat_deg": -0.642,
+    "axis_angle_j2000_deg": 19.782
+   },
+   {
+    "utc": "2026-02-06T12:00",
+    "illuminated": 0.7781,
+    "diameter_arcsec": 1820.8,
+    "distance_km": 393629,
+    "sub_earth_lon_deg": 4.969,
+    "sub_earth_lat_deg": 3.898,
+    "sub_solar_lon_deg": -51.094,
+    "sub_solar_lat_deg": -0.56,
+    "axis_angle_j2000_deg": 21.702
+   },
+   {
+    "utc": "2026-02-09T13:00",
+    "illuminated": 0.5003,
+    "diameter_arcsec": 1775.6,
+    "distance_km": 403651,
+    "sub_earth_lon_deg": 1.848,
+    "sub_earth_lat_deg": 6.486,
+    "sub_solar_lon_deg": -88.066,
+    "sub_solar_lat_deg": -0.494,
+    "axis_angle_j2000_deg": 15.389
+   },
+   {
+    "utc": "2026-02-12T14:00",
+    "illuminated": 0.2278,
+    "diameter_arcsec": 1781.3,
+    "distance_km": 402363,
+    "sub_earth_lon_deg": -1.926,
+    "sub_earth_lat_deg": 6.51,
+    "sub_solar_lon_deg": -125.097,
+    "sub_solar_lat_deg": -0.435,
+    "axis_angle_j2000_deg": 1.921
+   },
+   {
+    "utc": "2026-02-15T15:00",
+    "illuminated": 0.0384,
+    "diameter_arcsec": 1827.9,
+    "distance_km": 392099,
+    "sub_earth_lon_deg": -4.508,
+    "sub_earth_lat_deg": 3.903,
+    "sub_solar_lon_deg": -162.176,
+    "sub_solar_lat_deg": -0.37,
+    "axis_angle_j2000_deg": 347.287
+   },
+   {
+    "utc": "2026-02-18T16:00",
+    "illuminated": 0.015700000000000002,
+    "diameter_arcsec": 1884.9,
+    "distance_km": 380245,
+    "sub_earth_lon_deg": -4.915,
+    "sub_earth_lat_deg": -0.591,
+    "sub_solar_lon_deg": 160.72,
+    "sub_solar_lat_deg": -0.292,
+    "axis_angle_j2000_deg": 338.933
+   },
+   {
+    "utc": "2026-02-21T17:00",
+    "illuminated": 0.2014,
+    "diameter_arcsec": 1923.1,
+    "distance_km": 372682,
+    "sub_earth_lon_deg": -3.218,
+    "sub_earth_lat_deg": -4.973,
+    "sub_solar_lon_deg": 123.63,
+    "sub_solar_lat_deg": -0.202,
+    "axis_angle_j2000_deg": 339.448
+   },
+   {
+    "utc": "2026-02-24T18:00",
+    "illuminated": 0.5277000000000001,
+    "diameter_arcsec": 1936.1,
+    "distance_km": 370183,
+    "sub_earth_lon_deg": -0.226,
+    "sub_earth_lat_deg": -6.795,
+    "sub_solar_lon_deg": 86.587,
+    "sub_solar_lat_deg": -0.102,
+    "axis_angle_j2000_deg": 350.723
+   },
+   {
+    "utc": "2026-02-27T19:00",
+    "illuminated": 0.8412999999999999,
+    "diameter_arcsec": 1925.3,
+    "distance_km": 372259,
+    "sub_earth_lon_deg": 2.847,
+    "sub_earth_lat_deg": -4.948,
+    "sub_solar_lon_deg": 49.604,
+    "sub_solar_lat_deg": 0.005,
+    "axis_angle_j2000_deg": 8.396
+   },
+   {
+    "utc": "2026-03-02T20:00",
+    "illuminated": 0.9951000000000001,
+    "diameter_arcsec": 1885.3,
+    "distance_km": 380173,
+    "sub_earth_lon_deg": 4.636,
+    "sub_earth_lat_deg": -0.541,
+    "sub_solar_lon_deg": 12.662,
+    "sub_solar_lat_deg": 0.116,
+    "axis_angle_j2000_deg": 19.754
+   },
+   {
+    "utc": "2026-03-05T21:00",
+    "illuminated": 0.9387000000000001,
+    "diameter_arcsec": 1825.7,
+    "distance_km": 392567,
+    "sub_earth_lon_deg": 4.167,
+    "sub_earth_lat_deg": 3.944,
+    "sub_solar_lon_deg": -24.279,
+    "sub_solar_lat_deg": 0.215,
+    "axis_angle_j2000_deg": 21.732
+   },
+   {
+    "utc": "2026-03-08T22:00",
+    "illuminated": 0.728,
+    "diameter_arcsec": 1780.1,
+    "distance_km": 402629,
+    "sub_earth_lon_deg": 1.462,
+    "sub_earth_lat_deg": 6.531,
+    "sub_solar_lon_deg": -61.252,
+    "sub_solar_lat_deg": 0.294,
+    "axis_angle_j2000_deg": 15.339
+   },
+   {
+    "utc": "2026-03-11T23:00",
+    "illuminated": 0.4486,
+    "diameter_arcsec": 1778.1,
+    "distance_km": 403088,
+    "sub_earth_lon_deg": -2.301,
+    "sub_earth_lat_deg": 6.494,
+    "sub_solar_lon_deg": -98.278,
+    "sub_solar_lat_deg": 0.354,
+    "axis_angle_j2000_deg": 1.82
+   },
+   {
+    "utc": "2026-03-15T00:00",
+    "illuminated": 0.1787,
+    "diameter_arcsec": 1825.7,
+    "distance_km": 392567,
+    "sub_earth_lon_deg": -5.227,
+    "sub_earth_lat_deg": 3.871,
+    "sub_solar_lon_deg": -135.363,
+    "sub_solar_lat_deg": 0.41,
+    "axis_angle_j2000_deg": 347.314
+   },
+   {
+    "utc": "2026-03-18T01:00",
+    "illuminated": 0.0129,
+    "diameter_arcsec": 1898.4,
+    "distance_km": 377546,
+    "sub_earth_lon_deg": -5.555,
+    "sub_earth_lat_deg": -0.633,
+    "sub_solar_lon_deg": -172.494,
+    "sub_solar_lat_deg": 0.475,
+    "axis_angle_j2000_deg": 338.923
+   },
+   {
+    "utc": "2026-03-21T02:00",
+    "illuminated": 0.054900000000000004,
+    "diameter_arcsec": 1948.0,
+    "distance_km": 367927,
+    "sub_earth_lon_deg": -2.872,
+    "sub_earth_lat_deg": -5.054,
+    "sub_solar_lon_deg": 150.357,
+    "sub_solar_lat_deg": 0.551,
+    "axis_angle_j2000_deg": 339.564
+   },
+   {
+    "utc": "2026-03-24T03:00",
+    "illuminated": 0.3125,
+    "diameter_arcsec": 1947.0,
+    "distance_km": 368112,
+    "sub_earth_lon_deg": 1.127,
+    "sub_earth_lat_deg": -6.736,
+    "sub_solar_lon_deg": 113.234,
+    "sub_solar_lat_deg": 0.638,
+    "axis_angle_j2000_deg": 351.478
+   },
+   {
+    "utc": "2026-03-27T04:00",
+    "illuminated": 0.6526000000000001,
+    "diameter_arcsec": 1912.7,
+    "distance_km": 374726,
+    "sub_earth_lon_deg": 4.058,
+    "sub_earth_lat_deg": -4.707,
+    "sub_solar_lon_deg": 76.164,
+    "sub_solar_lat_deg": 0.734,
+    "axis_angle_j2000_deg": 9.079
+   },
+   {
+    "utc": "2026-03-30T05:00",
+    "illuminated": 0.9134,
+    "diameter_arcsec": 1867.1,
+    "distance_km": 383868,
+    "sub_earth_lon_deg": 4.943,
+    "sub_earth_lat_deg": -0.359,
+    "sub_solar_lon_deg": 39.148,
+    "sub_solar_lat_deg": 0.836,
+    "axis_angle_j2000_deg": 19.908
+   },
+   {
+    "utc": "2026-04-02T06:00",
+    "illuminated": 0.9991,
+    "diameter_arcsec": 1818.5,
+    "distance_km": 394127,
+    "sub_earth_lon_deg": 3.924,
+    "sub_earth_lat_deg": 3.989,
+    "sub_solar_lon_deg": 2.157,
+    "sub_solar_lat_deg": 0.93,
+    "axis_angle_j2000_deg": 21.727
+   },
+   {
+    "utc": "2026-04-05T07:00",
+    "illuminated": 0.9023,
+    "diameter_arcsec": 1779.6,
+    "distance_km": 402748,
+    "sub_earth_lon_deg": 1.267,
+    "sub_earth_lat_deg": 6.472,
+    "sub_solar_lon_deg": -34.841,
+    "sub_solar_lat_deg": 1.002,
+    "axis_angle_j2000_deg": 15.223
+   },
+   {
+    "utc": "2026-04-08T08:00",
+    "illuminated": 0.6758,
+    "diameter_arcsec": 1772.4,
+    "distance_km": 404370,
+    "sub_earth_lon_deg": -2.469,
+    "sub_earth_lat_deg": 6.336,
+    "sub_solar_lon_deg": -71.876,
+    "sub_solar_lat_deg": 1.049,
+    "axis_angle_j2000_deg": 1.63
+   },
+   {
+    "utc": "2026-04-11T09:00",
+    "illuminated": 0.3875,
+    "diameter_arcsec": 1813.3,
+    "distance_km": 395266,
+    "sub_earth_lon_deg": -5.859,
+    "sub_earth_lat_deg": 3.709,
+    "sub_solar_lon_deg": -108.966,
+    "sub_solar_lat_deg": 1.081,
+    "axis_angle_j2000_deg": 347.325
+   },
+   {
+    "utc": "2026-04-14T10:00",
+    "illuminated": 0.1208,
+    "diameter_arcsec": 1894.0,
+    "distance_km": 378420,
+    "sub_earth_lon_deg": -6.796,
+    "sub_earth_lat_deg": -0.676,
+    "sub_solar_lon_deg": -146.113,
+    "sub_solar_lat_deg": 1.114,
+    "axis_angle_j2000_deg": 338.978
+   },
+   {
+    "utc": "2026-04-17T11:00",
+    "illuminated": 0.0012,
+    "diameter_arcsec": 1967.4,
+    "distance_km": 364292,
+    "sub_earth_lon_deg": -3.865,
+    "sub_earth_lat_deg": -5.021,
+    "sub_solar_lon_deg": 176.697,
+    "sub_solar_lat_deg": 1.157,
+    "axis_angle_j2000_deg": 339.498
+   },
+   {
+    "utc": "2026-04-20T12:00",
+    "illuminated": 0.1293,
+    "diameter_arcsec": 1975.8,
+    "distance_km": 362752,
+    "sub_earth_lon_deg": 1.428,
+    "sub_earth_lat_deg": -6.589,
+    "sub_solar_lon_deg": 139.504,
+    "sub_solar_lat_deg": 1.21,
+    "axis_angle_j2000_deg": 351.841
+   },
+   {
+    "utc": "2026-04-23T13:00",
+    "illuminated": 0.4382,
+    "diameter_arcsec": 1923.5,
+    "distance_km": 372622,
+    "sub_earth_lon_deg": 5.321,
+    "sub_earth_lat_deg": -4.334,
+    "sub_solar_lon_deg": 102.349,
+    "sub_solar_lat_deg": 1.274,
+    "axis_angle_j2000_deg": 9.758
+   },
+   {
+    "utc": "2026-04-26T14:00",
+    "illuminated": 0.7561,
+    "diameter_arcsec": 1858.7,
+    "distance_km": 385596,
+    "sub_earth_lon_deg": 6.074,
+    "sub_earth_lat_deg": 0.029,
+    "sub_solar_lon_deg": 65.249,
+    "sub_solar_lat_deg": 1.347,
+    "axis_angle_j2000_deg": 20.172
+   },
+   {
+    "utc": "2026-04-29T15:00",
+    "illuminated": 0.9573999999999999,
+    "diameter_arcsec": 1807.7,
+    "distance_km": 396479,
+    "sub_earth_lon_deg": 4.487,
+    "sub_earth_lat_deg": 4.168,
+    "sub_solar_lon_deg": 28.193,
+    "sub_solar_lat_deg": 1.416,
+    "axis_angle_j2000_deg": 21.673
+   },
+   {
+    "utc": "2026-05-02T16:00",
+    "illuminated": 0.99,
+    "diameter_arcsec": 1774.9,
+    "distance_km": 403809,
+    "sub_earth_lon_deg": 1.562,
+    "sub_earth_lat_deg": 6.425,
+    "sub_solar_lon_deg": -8.846,
+    "sub_solar_lat_deg": 1.465,
+    "axis_angle_j2000_deg": 14.964
+   },
+   {
+    "utc": "2026-05-05T17:00",
+    "illuminated": 0.8606,
+    "diameter_arcsec": 1767.3,
+    "distance_km": 405539,
+    "sub_earth_lon_deg": -2.189,
+    "sub_earth_lat_deg": 6.097,
+    "sub_solar_lon_deg": -45.901,
+    "sub_solar_lat_deg": 1.487,
+    "axis_angle_j2000_deg": 1.25
+   },
+   {
+    "utc": "2026-05-08T18:00",
+    "illuminated": 0.6122,
+    "diameter_arcsec": 1798.7,
+    "distance_km": 398468,
+    "sub_earth_lon_deg": -5.897,
+    "sub_earth_lat_deg": 3.383,
+    "sub_solar_lon_deg": -82.994,
+    "sub_solar_lat_deg": 1.487,
+    "axis_angle_j2000_deg": 347.157
+   },
+   {
+    "utc": "2026-05-11T19:00",
+    "illuminated": 0.309,
+    "diameter_arcsec": 1874.1,
+    "distance_km": 382434,
+    "sub_earth_lon_deg": -7.7,
+    "sub_earth_lat_deg": -0.881,
+    "sub_solar_lon_deg": -120.144,
+    "sub_solar_lat_deg": 1.481,
+    "axis_angle_j2000_deg": 339.004
+   },
+   {
+    "utc": "2026-05-14T20:00",
+    "illuminated": 0.0599,
+    "diameter_arcsec": 1964.6,
+    "distance_km": 364821,
+    "sub_earth_lon_deg": -5.507,
+    "sub_earth_lat_deg": -5.036,
+    "sub_solar_lon_deg": -157.35,
+    "sub_solar_lat_deg": 1.479,
+    "axis_angle_j2000_deg": 339.34
+   },
+   {
+    "utc": "2026-05-17T21:00",
+    "illuminated": 0.018600000000000002,
+    "diameter_arcsec": 2001.1,
+    "distance_km": 358171,
+    "sub_earth_lon_deg": 0.331,
+    "sub_earth_lat_deg": -6.477,
+    "sub_solar_lon_deg": 165.412,
+    "sub_solar_lat_deg": 1.487,
+    "axis_angle_j2000_deg": 351.655
+   },
+   {
+    "utc": "2026-05-20T22:00",
+    "illuminated": 0.23070000000000002,
+    "diameter_arcsec": 1951.3,
+    "distance_km": 367307,
+    "sub_earth_lon_deg": 5.624,
+    "sub_earth_lat_deg": -3.985,
+    "sub_solar_lon_deg": 128.187,
+    "sub_solar_lat_deg": 1.506,
+    "axis_angle_j2000_deg": 10.077
+   },
+   {
+    "utc": "2026-05-23T23:00",
+    "illuminated": 0.5537,
+    "diameter_arcsec": 1867.9,
+    "distance_km": 383703,
+    "sub_earth_lon_deg": 7.164,
+    "sub_earth_lat_deg": 0.509,
+    "sub_solar_lon_deg": 91.011,
+    "sub_solar_lat_deg": 1.536,
+    "axis_angle_j2000_deg": 20.413
+   },
+   {
+    "utc": "2026-05-27T00:00",
+    "illuminated": 0.8320000000000001,
+    "diameter_arcsec": 1803.6,
+    "distance_km": 397387,
+    "sub_earth_lon_deg": 5.509,
+    "sub_earth_lat_deg": 4.493,
+    "sub_solar_lon_deg": 53.887,
+    "sub_solar_lat_deg": 1.567,
+    "axis_angle_j2000_deg": 21.585
+   },
+   {
+    "utc": "2026-05-30T01:00",
+    "illuminated": 0.9823999999999999,
+    "diameter_arcsec": 1770.4,
+    "distance_km": 404833,
+    "sub_earth_lon_deg": 2.302,
+    "sub_earth_lat_deg": 6.473,
+    "sub_solar_lon_deg": 16.8,
+    "sub_solar_lat_deg": 1.586,
+    "axis_angle_j2000_deg": 14.577
+   },
+   {
+    "utc": "2026-06-02T02:00",
+    "illuminated": 0.9722,
+    "diameter_arcsec": 1765.0,
+    "distance_km": 406072,
+    "sub_earth_lon_deg": -1.508,
+    "sub_earth_lat_deg": 5.882,
+    "sub_solar_lon_deg": -20.277,
+    "sub_solar_lat_deg": 1.578,
+    "axis_angle_j2000_deg": 0.703
+   },
+   {
+    "utc": "2026-06-05T03:00",
+    "illuminated": 0.8073999999999999,
+    "diameter_arcsec": 1789.8,
+    "distance_km": 400445,
+    "sub_earth_lon_deg": -5.281,
+    "sub_earth_lat_deg": 2.983,
+    "sub_solar_lon_deg": -57.374,
+    "sub_solar_lat_deg": 1.545,
+    "axis_angle_j2000_deg": 346.788
+   },
+   {
+    "utc": "2026-06-08T04:00",
+    "illuminated": 0.5274,
+    "diameter_arcsec": 1851.9,
+    "distance_km": 387018,
+    "sub_earth_lon_deg": -7.688,
+    "sub_earth_lat_deg": -1.256,
+    "sub_solar_lon_deg": -94.514,
+    "sub_solar_lat_deg": 1.499,
+    "axis_angle_j2000_deg": 338.933
+   },
+   {
+    "utc": "2026-06-11T05:00",
+    "illuminated": 0.21309999999999998,
+    "diameter_arcsec": 1941.2,
+    "distance_km": 369226,
+    "sub_earth_lon_deg": -6.672,
+    "sub_earth_lat_deg": -5.199,
+    "sub_solar_lon_deg": -131.712,
+    "sub_solar_lat_deg": 1.453,
+    "axis_angle_j2000_deg": 339.236
+   },
+   {
+    "utc": "2026-06-14T06:00",
+    "illuminated": 0.0138,
+    "diameter_arcsec": 2003.7,
+    "distance_km": 357698,
+    "sub_earth_lon_deg": -1.477,
+    "sub_earth_lat_deg": -6.485,
+    "sub_solar_lon_deg": -168.961,
+    "sub_solar_lat_deg": 1.415,
+    "axis_angle_j2000_deg": 351.185
+   },
+   {
+    "utc": "2026-06-17T07:00",
+    "illuminated": 0.0712,
+    "diameter_arcsec": 1978.5,
+    "distance_km": 362251,
+    "sub_earth_lon_deg": 4.657,
+    "sub_earth_lat_deg": -3.804,
+    "sub_solar_lon_deg": 153.775,
+    "sub_solar_lat_deg": 1.387,
+    "axis_angle_j2000_deg": 9.945
+   },
+   {
+    "utc": "2026-06-20T08:00",
+    "illuminated": 0.3368,
+    "diameter_arcsec": 1890.7,
+    "distance_km": 379074,
+    "sub_earth_lon_deg": 7.46,
+    "sub_earth_lat_deg": 0.912,
+    "sub_solar_lon_deg": 116.541,
+    "sub_solar_lat_deg": 1.37,
+    "axis_angle_j2000_deg": 20.539
+   },
+   {
+    "utc": "2026-06-23T09:00",
+    "illuminated": 0.6468,
+    "diameter_arcsec": 1810.8,
+    "distance_km": 395809,
+    "sub_earth_lon_deg": 6.382,
+    "sub_earth_lat_deg": 4.864,
+    "sub_solar_lon_deg": 79.36,
+    "sub_solar_lat_deg": 1.361,
+    "axis_angle_j2000_deg": 21.501
+   },
+   {
+    "utc": "2026-06-26T10:00",
+    "illuminated": 0.8868,
+    "diameter_arcsec": 1770.2,
+    "distance_km": 404879,
+    "sub_earth_lon_deg": 3.154,
+    "sub_earth_lat_deg": 6.614,
+    "sub_solar_lon_deg": 42.228,
+    "sub_solar_lat_deg": 1.346,
+    "axis_angle_j2000_deg": 14.155
+   },
+   {
+    "utc": "2026-06-29T11:00",
+    "illuminated": 0.9959,
+    "diameter_arcsec": 1766.2,
+    "distance_km": 405790,
+    "sub_earth_lon_deg": -0.704,
+    "sub_earth_lat_deg": 5.758,
+    "sub_solar_lon_deg": 5.128,
+    "sub_solar_lat_deg": 1.311,
+    "axis_angle_j2000_deg": 0.104
+   },
+   {
+    "utc": "2026-07-02T12:00",
+    "illuminated": 0.9429000000000001,
+    "diameter_arcsec": 1789.9,
+    "distance_km": 400438,
+    "sub_earth_lon_deg": -4.338,
+    "sub_earth_lat_deg": 2.63,
+    "sub_solar_lon_deg": -31.967,
+    "sub_solar_lat_deg": 1.251,
+    "axis_angle_j2000_deg": 346.318
+   },
+   {
+    "utc": "2026-07-05T13:00",
+    "illuminated": 0.7323000000000001,
+    "diameter_arcsec": 1839.5,
+    "distance_km": 389621,
+    "sub_earth_lon_deg": -6.83,
+    "sub_earth_lat_deg": -1.687,
+    "sub_solar_lon_deg": -69.087,
+    "sub_solar_lat_deg": 1.174,
+    "axis_angle_j2000_deg": 338.774
+   },
+   {
+    "utc": "2026-07-08T14:00",
+    "illuminated": 0.4163,
+    "diameter_arcsec": 1913.4,
+    "distance_km": 374579,
+    "sub_earth_lon_deg": -6.677,
+    "sub_earth_lat_deg": -5.471,
+    "sub_solar_lon_deg": -106.254,
+    "sub_solar_lat_deg": 1.094,
+    "axis_angle_j2000_deg": 339.277
+   },
+   {
+    "utc": "2026-07-11T15:00",
+    "illuminated": 0.1148,
+    "diameter_arcsec": 1982.3,
+    "distance_km": 361564,
+    "sub_earth_lon_deg": -2.809,
+    "sub_earth_lat_deg": -6.585,
+    "sub_solar_lon_deg": -143.48,
+    "sub_solar_lat_deg": 1.018,
+    "axis_angle_j2000_deg": 350.893
+   },
+   {
+    "utc": "2026-07-14T16:00",
+    "illuminated": 0.0017000000000000001,
+    "diameter_arcsec": 1986.9,
+    "distance_km": 360716,
+    "sub_earth_lon_deg": 2.994,
+    "sub_earth_lat_deg": -3.805,
+    "sub_solar_lon_deg": 179.254,
+    "sub_solar_lat_deg": 0.951,
+    "axis_angle_j2000_deg": 9.569
+   },
+   {
+    "utc": "2026-07-17T17:00",
+    "illuminated": 0.1452,
+    "diameter_arcsec": 1914.5,
+    "distance_km": 374363,
+    "sub_earth_lon_deg": 6.74,
+    "sub_earth_lat_deg": 1.115,
+    "sub_solar_lon_deg": 141.992,
+    "sub_solar_lat_deg": 0.894,
+    "axis_angle_j2000_deg": 20.535
+   },
+   {
+    "utc": "2026-07-20T18:00",
+    "illuminated": 0.4301,
+    "diameter_arcsec": 1826.8,
+    "distance_km": 392345,
+    "sub_earth_lon_deg": 6.627,
+    "sub_earth_lat_deg": 5.151,
+    "sub_solar_lon_deg": 104.772,
+    "sub_solar_lat_deg": 0.848,
+    "axis_angle_j2000_deg": 21.464
+   },
+   {
+    "utc": "2026-07-23T19:00",
+    "illuminated": 0.7195,
+    "diameter_arcsec": 1775.5,
+    "distance_km": 403683,
+    "sub_earth_lon_deg": 3.735,
+    "sub_earth_lat_deg": 6.772,
+    "sub_solar_lon_deg": 67.607,
+    "sub_solar_lat_deg": 0.805,
+    "axis_angle_j2000_deg": 13.81
+   },
+   {
+    "utc": "2026-07-26T20:00",
+    "illuminated": 0.9288,
+    "diameter_arcsec": 1769.8,
+    "distance_km": 404977,
+    "sub_earth_lon_deg": -0.116,
+    "sub_earth_lat_deg": 5.717,
+    "sub_solar_lon_deg": 30.49,
+    "sub_solar_lat_deg": 0.75,
+    "axis_angle_j2000_deg": 359.597
+   },
+   {
+    "utc": "2026-07-29T21:00",
+    "illuminated": 0.9991,
+    "diameter_arcsec": 1796.8,
+    "distance_km": 398895,
+    "sub_earth_lon_deg": -3.556,
+    "sub_earth_lat_deg": 2.396,
+    "sub_solar_lon_deg": -6.6,
+    "sub_solar_lat_deg": 0.674,
+    "axis_angle_j2000_deg": 345.898
+   },
+   {
+    "utc": "2026-08-01T22:00",
+    "illuminated": 0.8935,
+    "diameter_arcsec": 1841.8,
+    "distance_km": 389145,
+    "sub_earth_lon_deg": -5.678,
+    "sub_earth_lat_deg": -2.042,
+    "sub_solar_lon_deg": -43.689,
+    "sub_solar_lat_deg": 0.581,
+    "axis_angle_j2000_deg": 338.594
+   },
+   {
+    "utc": "2026-08-04T23:00",
+    "illuminated": 0.627,
+    "diameter_arcsec": 1897.8,
+    "distance_km": 377664,
+    "sub_earth_lon_deg": -5.644,
+    "sub_earth_lat_deg": -5.737,
+    "sub_solar_lon_deg": -80.809,
+    "sub_solar_lat_deg": 0.482,
+    "axis_angle_j2000_deg": 339.467
+   },
+   {
+    "utc": "2026-08-08T00:00",
+    "illuminated": 0.2889,
+    "diameter_arcsec": 1953.0,
+    "distance_km": 366990,
+    "sub_earth_lon_deg": -2.878,
+    "sub_earth_lat_deg": -6.663,
+    "sub_solar_lon_deg": -117.983,
+    "sub_solar_lat_deg": 0.386,
+    "axis_angle_j2000_deg": 351.087
+   },
+   {
+    "utc": "2026-08-11T01:00",
+    "illuminated": 0.0409,
+    "diameter_arcsec": 1971.7,
+    "distance_km": 363501,
+    "sub_earth_lon_deg": 1.716,
+    "sub_earth_lat_deg": -3.85,
+    "sub_solar_lon_deg": -155.211,
+    "sub_solar_lat_deg": 0.295,
+    "axis_angle_j2000_deg": 9.336
+   },
+   {
+    "utc": "2026-08-14T02:00",
+    "illuminated": 0.024399999999999998,
+    "diameter_arcsec": 1924.7,
+    "distance_km": 372375,
+    "sub_earth_lon_deg": 5.455,
+    "sub_earth_lat_deg": 1.135,
+    "sub_solar_lon_deg": 167.537,
+    "sub_solar_lat_deg": 0.213,
+    "axis_angle_j2000_deg": 20.461
+   },
+   {
+    "utc": "2026-08-17T03:00",
+    "illuminated": 0.2206,
+    "diameter_arcsec": 1843.4,
+    "distance_km": 388816,
+    "sub_earth_lon_deg": 6.153,
+    "sub_earth_lat_deg": 5.274,
+    "sub_solar_lon_deg": 130.304,
+    "sub_solar_lat_deg": 0.143,
+    "axis_angle_j2000_deg": 21.481
+   },
+   {
+    "utc": "2026-08-20T04:00",
+    "illuminated": 0.5062,
+    "diameter_arcsec": 1784.0,
+    "distance_km": 401748,
+    "sub_earth_lon_deg": 3.833,
+    "sub_earth_lat_deg": 6.851,
+    "sub_solar_lon_deg": 93.121,
+    "sub_solar_lat_deg": 0.082,
+    "axis_angle_j2000_deg": 13.605
+   },
+   {
+    "utc": "2026-08-23T05:00",
+    "illuminated": 0.7787000000000001,
+    "diameter_arcsec": 1773.0,
+    "distance_km": 404246,
+    "sub_earth_lon_deg": 0.059,
+    "sub_earth_lat_deg": 5.684,
+    "sub_solar_lon_deg": 55.994,
+    "sub_solar_lat_deg": 0.019,
+    "axis_angle_j2000_deg": 359.263
+   },
+   {
+    "utc": "2026-08-26T06:00",
+    "illuminated": 0.9623999999999999,
+    "diameter_arcsec": 1804.4,
+    "distance_km": 397215,
+    "sub_earth_lon_deg": -3.318,
+    "sub_earth_lat_deg": 2.268,
+    "sub_solar_lon_deg": 18.915,
+    "sub_solar_lat_deg": -0.058,
+    "axis_angle_j2000_deg": 345.639
+   },
+   {
+    "utc": "2026-08-29T07:00",
+    "illuminated": 0.9865,
+    "diameter_arcsec": 1854.9,
+    "distance_km": 386394,
+    "sub_earth_lon_deg": -4.943,
+    "sub_earth_lat_deg": -2.25,
+    "sub_solar_lon_deg": -18.139,
+    "sub_solar_lat_deg": -0.149,
+    "axis_angle_j2000_deg": 338.46
+   },
+   {
+    "utc": "2026-09-01T08:00",
+    "illuminated": 0.8139,
+    "diameter_arcsec": 1901.9,
+    "distance_km": 376851,
+    "sub_earth_lon_deg": -4.305,
+    "sub_earth_lat_deg": -5.895,
+    "sub_solar_lon_deg": -55.2,
+    "sub_solar_lat_deg": -0.247,
+    "axis_angle_j2000_deg": 339.729
+   },
+   {
+    "utc": "2026-09-04T09:00",
+    "illuminated": 0.49570000000000003,
+    "diameter_arcsec": 1935.4,
+    "distance_km": 370328,
+    "sub_earth_lon_deg": -1.771,
+    "sub_earth_lat_deg": -6.618,
+    "sub_solar_lon_deg": -92.302,
+    "sub_solar_lat_deg": -0.343,
+    "axis_angle_j2000_deg": 351.752
+   },
+   {
+    "utc": "2026-09-07T10:00",
+    "illuminated": 0.1723,
+    "diameter_arcsec": 1945.7,
+    "distance_km": 368358,
+    "sub_earth_lon_deg": 1.636,
+    "sub_earth_lat_deg": -3.757,
+    "sub_solar_lon_deg": -129.463,
+    "sub_solar_lat_deg": -0.435,
+    "axis_angle_j2000_deg": 9.538
+   },
+   {
+    "utc": "2026-09-10T11:00",
+    "illuminated": 0.006,
+    "diameter_arcsec": 1915.5,
+    "distance_km": 374162,
+    "sub_earth_lon_deg": 4.493,
+    "sub_earth_lat_deg": 1.135,
+    "sub_solar_lon_deg": -166.668,
+    "sub_solar_lat_deg": -0.522,
+    "axis_angle_j2000_deg": 20.431
+   },
+   {
+    "utc": "2026-09-13T12:00",
+    "illuminated": 0.065,
+    "diameter_arcsec": 1850.9,
+    "distance_km": 387239,
+    "sub_earth_lon_deg": 5.342,
+    "sub_earth_lat_deg": 5.262,
+    "sub_solar_lon_deg": 156.12,
+    "sub_solar_lat_deg": -0.599,
+    "axis_angle_j2000_deg": 21.521
+   },
+   {
+    "utc": "2026-09-16T13:00",
+    "illuminated": 0.2863,
+    "diameter_arcsec": 1791.6,
+    "distance_km": 400058,
+    "sub_earth_lon_deg": 3.53,
+    "sub_earth_lat_deg": 6.803,
+    "sub_solar_lon_deg": 118.939,
+    "sub_solar_lat_deg": -0.663,
+    "axis_angle_j2000_deg": 13.514
+   },
+   {
+    "utc": "2026-09-19T14:00",
+    "illuminated": 0.5693,
+    "diameter_arcsec": 1773.5,
+    "distance_km": 404124,
+    "sub_earth_lon_deg": -0.115,
+    "sub_earth_lat_deg": 5.568,
+    "sub_solar_lon_deg": 81.812,
+    "sub_solar_lat_deg": -0.721,
+    "axis_angle_j2000_deg": 359.077
+   },
+   {
+    "utc": "2026-09-22T15:00",
+    "illuminated": 0.8314,
+    "diameter_arcsec": 1805.4,
+    "distance_km": 396984,
+    "sub_earth_lon_deg": -3.666,
+    "sub_earth_lat_deg": 2.149,
+    "sub_solar_lon_deg": 44.742,
+    "sub_solar_lat_deg": -0.783,
+    "axis_angle_j2000_deg": 345.555
+   },
+   {
+    "utc": "2026-09-25T16:00",
+    "illuminated": 0.9873000000000001,
+    "diameter_arcsec": 1867.7,
+    "distance_km": 383756,
+    "sub_earth_lon_deg": -5.117,
+    "sub_earth_lat_deg": -2.341,
+    "sub_solar_lon_deg": 7.721,
+    "sub_solar_lat_deg": -0.854,
+    "axis_angle_j2000_deg": 338.405
+   },
+   {
+    "utc": "2026-09-28T17:00",
+    "illuminated": 0.9490999999999999,
+    "diameter_arcsec": 1921.7,
+    "distance_km": 372965,
+    "sub_earth_lon_deg": -3.62,
+    "sub_earth_lat_deg": -5.924,
+    "sub_solar_lon_deg": -29.28,
+    "sub_solar_lat_deg": -0.929,
+    "axis_angle_j2000_deg": 339.918
+   },
+   {
+    "utc": "2026-10-01T18:00",
+    "illuminated": 0.7033,
+    "diameter_arcsec": 1940.7,
+    "distance_km": 369306,
+    "sub_earth_lon_deg": -0.334,
+    "sub_earth_lat_deg": -6.433,
+    "sub_solar_lon_deg": -66.302,
+    "sub_solar_lat_deg": -1.002,
+    "axis_angle_j2000_deg": 352.571
+   },
+   {
+    "utc": "2026-10-04T19:00",
+    "illuminated": 0.36219999999999997,
+    "diameter_arcsec": 1928.9,
+    "distance_km": 371580,
+    "sub_earth_lon_deg": 2.721,
+    "sub_earth_lat_deg": -3.437,
+    "sub_solar_lon_deg": -103.376,
+    "sub_solar_lat_deg": -1.072,
+    "axis_angle_j2000_deg": 10.151
+   },
+   {
+    "utc": "2026-10-07T20:00",
+    "illuminated": 0.0901,
+    "diameter_arcsec": 1895.7,
+    "distance_km": 378077,
+    "sub_earth_lon_deg": 4.554,
+    "sub_earth_lat_deg": 1.307,
+    "sub_solar_lon_deg": -140.507,
+    "sub_solar_lat_deg": -1.142,
+    "axis_angle_j2000_deg": 20.541
+   },
+   {
+    "utc": "2026-10-10T21:00",
+    "illuminated": 0.0017000000000000001,
+    "diameter_arcsec": 1845.0,
+    "distance_km": 388463,
+    "sub_earth_lon_deg": 4.856,
+    "sub_earth_lat_deg": 5.251,
+    "sub_solar_lon_deg": -177.669,
+    "sub_solar_lat_deg": -1.206,
+    "axis_angle_j2000_deg": 21.529
+   },
+   {
+    "utc": "2026-10-13T22:00",
+    "illuminated": 0.1075,
+    "diameter_arcsec": 1793.8,
+    "distance_km": 399567,
+    "sub_earth_lon_deg": 3.175,
+    "sub_earth_lat_deg": 6.669,
+    "sub_solar_lon_deg": 145.173,
+    "sub_solar_lat_deg": -1.257,
+    "axis_angle_j2000_deg": 13.428
+   },
+   {
+    "utc": "2026-10-16T23:00",
+    "illuminated": 0.3418,
+    "diameter_arcsec": 1771.1,
+    "distance_km": 404680,
+    "sub_earth_lon_deg": -0.348,
+    "sub_earth_lat_deg": 5.331,
+    "sub_solar_lon_deg": 108.055,
+    "sub_solar_lat_deg": -1.296,
+    "axis_angle_j2000_deg": 358.914
+   },
+   {
+    "utc": "2026-10-20T00:00",
+    "illuminated": 0.6271,
+    "diameter_arcsec": 1797.1,
+    "distance_km": 398814,
+    "sub_earth_lon_deg": -4.226,
+    "sub_earth_lat_deg": 1.926,
+    "sub_solar_lon_deg": 70.993,
+    "sub_solar_lat_deg": -1.329,
+    "axis_angle_j2000_deg": 345.541
+   },
+   {
+    "utc": "2026-10-23T01:00",
+    "illuminated": 0.8826,
+    "diameter_arcsec": 1867.0,
+    "distance_km": 383881,
+    "sub_earth_lon_deg": -6.093,
+    "sub_earth_lat_deg": -2.438,
+    "sub_solar_lon_deg": 33.991,
+    "sub_solar_lat_deg": -1.364,
+    "axis_angle_j2000_deg": 338.416
+   },
+   {
+    "utc": "2026-10-26T02:00",
+    "illuminated": 0.9983,
+    "diameter_arcsec": 1941.3,
+    "distance_km": 369192,
+    "sub_earth_lon_deg": -4.238,
+    "sub_earth_lat_deg": -5.902,
+    "sub_solar_lon_deg": -2.965,
+    "sub_solar_lat_deg": -1.4,
+    "axis_angle_j2000_deg": 339.902
+   },
+   {
+    "utc": "2026-10-29T03:00",
+    "illuminated": 0.8809999999999999,
+    "diameter_arcsec": 1966.5,
+    "distance_km": 364471,
+    "sub_earth_lon_deg": 0.266,
+    "sub_earth_lat_deg": -6.205,
+    "sub_solar_lon_deg": -39.913,
+    "sub_solar_lat_deg": -1.431,
+    "axis_angle_j2000_deg": 353.071
+   },
+   {
+    "utc": "2026-11-01T04:00",
+    "illuminated": 0.5787,
+    "diameter_arcsec": 1935.0,
+    "distance_km": 370404,
+    "sub_earth_lon_deg": 4.109,
+    "sub_earth_lat_deg": -2.969,
+    "sub_solar_lon_deg": -76.897,
+    "sub_solar_lat_deg": -1.459,
+    "axis_angle_j2000_deg": 10.851
+   },
+   {
+    "utc": "2026-11-04T05:00",
+    "illuminated": 0.2532,
+    "diameter_arcsec": 1882.4,
+    "distance_km": 380751,
+    "sub_earth_lon_deg": 5.607,
+    "sub_earth_lat_deg": 1.71,
+    "sub_solar_lon_deg": -113.941,
+    "sub_solar_lat_deg": -1.49,
+    "axis_angle_j2000_deg": 20.775
+   },
+   {
+    "utc": "2026-11-07T06:00",
+    "illuminated": 0.0434,
+    "diameter_arcsec": 1831.7,
+    "distance_km": 391285,
+    "sub_earth_lon_deg": 5.174,
+    "sub_earth_lat_deg": 5.382,
+    "sub_solar_lon_deg": -151.037,
+    "sub_solar_lat_deg": -1.523,
+    "axis_angle_j2000_deg": 21.469
+   },
+   {
+    "utc": "2026-11-10T07:00",
+    "illuminated": 0.0116,
+    "diameter_arcsec": 1789.4,
+    "distance_km": 400548,
+    "sub_earth_lon_deg": 3.185,
+    "sub_earth_lat_deg": 6.555,
+    "sub_solar_lon_deg": 171.847,
+    "sub_solar_lat_deg": -1.547,
+    "axis_angle_j2000_deg": 13.221
+   },
+   {
+    "utc": "2026-11-13T08:00",
+    "illuminated": 0.1464,
+    "diameter_arcsec": 1767.2,
+    "distance_km": 405561,
+    "sub_earth_lon_deg": -0.317,
+    "sub_earth_lat_deg": 5.033,
+    "sub_solar_lon_deg": 134.745,
+    "sub_solar_lat_deg": -1.557,
+    "axis_angle_j2000_deg": 358.636
+   },
+   {
+    "utc": "2026-11-16T09:00",
+    "illuminated": 0.3945,
+    "diameter_arcsec": 1784.2,
+    "distance_km": 401709,
+    "sub_earth_lon_deg": -4.461,
+    "sub_earth_lat_deg": 1.569,
+    "sub_solar_lon_deg": 97.685,
+    "sub_solar_lat_deg": -1.555,
+    "axis_angle_j2000_deg": 345.439
+   },
+   {
+    "utc": "2026-11-19T10:00",
+    "illuminated": 0.6893,
+    "diameter_arcsec": 1849.6,
+    "distance_km": 387501,
+    "sub_earth_lon_deg": -7.117,
+    "sub_earth_lat_deg": -2.661,
+    "sub_solar_lon_deg": 60.686,
+    "sub_solar_lat_deg": -1.547,
+    "axis_angle_j2000_deg": 338.432
+   },
+   {
+    "utc": "2026-11-22T11:00",
+    "illuminated": 0.9335,
+    "diameter_arcsec": 1941.0,
+    "distance_km": 369253,
+    "sub_earth_lon_deg": -5.896,
+    "sub_earth_lat_deg": -5.949,
+    "sub_solar_lon_deg": 23.747,
+    "sub_solar_lat_deg": -1.535,
+    "axis_angle_j2000_deg": 339.71
+   },
+   {
+    "utc": "2026-11-25T12:00",
+    "illuminated": 0.9868000000000001,
+    "diameter_arcsec": 1993.9,
+    "distance_km": 359466,
+    "sub_earth_lon_deg": -0.752,
+    "sub_earth_lat_deg": -6.089,
+    "sub_solar_lon_deg": -13.155,
+    "sub_solar_lat_deg": -1.514,
+    "axis_angle_j2000_deg": 352.918
+   },
+   {
+    "utc": "2026-11-28T13:00",
+    "illuminated": 0.7896,
+    "diameter_arcsec": 1963.7,
+    "distance_km": 364987,
+    "sub_earth_lon_deg": 4.57,
+    "sub_earth_lat_deg": -2.562,
+    "sub_solar_lon_deg": -50.066,
+    "sub_solar_lat_deg": -1.488,
+    "axis_angle_j2000_deg": 11.22
+   },
+   {
+    "utc": "2026-12-01T14:00",
+    "illuminated": 0.4658,
+    "diameter_arcsec": 1889.2,
+    "distance_km": 379375,
+    "sub_earth_lon_deg": 6.842,
+    "sub_earth_lat_deg": 2.221,
+    "sub_solar_lon_deg": -87.03,
+    "sub_solar_lat_deg": -1.468,
+    "axis_angle_j2000_deg": 21.017
+   },
+   {
+    "utc": "2026-12-04T15:00",
+    "illuminated": 0.17739999999999997,
+    "diameter_arcsec": 1823.6,
+    "distance_km": 393033,
+    "sub_earth_lon_deg": 6.185,
+    "sub_earth_lat_deg": 5.67,
+    "sub_solar_lon_deg": -124.055,
+    "sub_solar_lat_deg": -1.456,
+    "axis_angle_j2000_deg": 21.34
+   },
+   {
+    "utc": "2026-12-07T16:00",
+    "illuminated": 0.0192,
+    "diameter_arcsec": 1782.2,
+    "distance_km": 402158,
+    "sub_earth_lon_deg": 3.742,
+    "sub_earth_lat_deg": 6.547,
+    "sub_solar_lon_deg": -161.123,
+    "sub_solar_lat_deg": -1.445,
+    "axis_angle_j2000_deg": 12.836
+   },
+   {
+    "utc": "2026-12-10T17:00",
+    "illuminated": 0.026099999999999998,
+    "diameter_arcsec": 1764.0,
+    "distance_km": 406310,
+    "sub_earth_lon_deg": 0.112,
+    "sub_earth_lat_deg": 4.777,
+    "sub_solar_lon_deg": 161.795,
+    "sub_solar_lat_deg": -1.424,
+    "axis_angle_j2000_deg": 358.188
+   },
+   {
+    "utc": "2026-12-13T18:00",
+    "illuminated": 0.1864,
+    "diameter_arcsec": 1774.7,
+    "distance_km": 403850,
+    "sub_earth_lon_deg": -4.104,
+    "sub_earth_lat_deg": 1.164,
+    "sub_solar_lon_deg": 124.733,
+    "sub_solar_lat_deg": -1.389,
+    "axis_angle_j2000_deg": 345.163
+   },
+   {
+    "utc": "2026-12-16T19:00",
+    "illuminated": 0.45630000000000004,
+    "diameter_arcsec": 1826.4,
+    "distance_km": 392423,
+    "sub_earth_lon_deg": -7.379,
+    "sub_earth_lat_deg": -3.011,
+    "sub_solar_lon_deg": 87.716,
+    "sub_solar_lat_deg": -1.344,
+    "axis_angle_j2000_deg": 338.383
+   },
+   {
+    "utc": "2026-12-19T20:00",
+    "illuminated": 0.7634000000000001,
+    "diameter_arcsec": 1916.3,
+    "distance_km": 374020,
+    "sub_earth_lon_deg": -7.401,
+    "sub_earth_lat_deg": -6.116,
+    "sub_solar_lon_deg": 50.761,
+    "sub_solar_lat_deg": -1.288,
+    "axis_angle_j2000_deg": 339.537
+   },
+   {
+    "utc": "2026-12-22T21:00",
+    "illuminated": 0.9769,
+    "diameter_arcsec": 1997.3,
+    "distance_km": 358853,
+    "sub_earth_lon_deg": -2.957,
+    "sub_earth_lat_deg": -6.153,
+    "sub_solar_lon_deg": 13.864,
+    "sub_solar_lat_deg": -1.22,
+    "axis_angle_j2000_deg": 352.281
+   },
+   {
+    "utc": "2026-12-25T22:00",
+    "illuminated": 0.948,
+    "diameter_arcsec": 1996.2,
+    "distance_km": 359040,
+    "sub_earth_lon_deg": 3.345,
+    "sub_earth_lat_deg": -2.42,
+    "sub_solar_lon_deg": -23.012,
+    "sub_solar_lat_deg": -1.144,
+    "axis_angle_j2000_deg": 11.02
+   },
+   {
+    "utc": "2026-12-28T23:00",
+    "illuminated": 0.6940999999999999,
+    "diameter_arcsec": 1916.7,
+    "distance_km": 373933,
+    "sub_earth_lon_deg": 7.157,
+    "sub_earth_lat_deg": 2.61,
+    "sub_solar_lon_deg": -59.918,
+    "sub_solar_lat_deg": -1.072,
+    "axis_angle_j2000_deg": 21.144
+   }
+  ]
+ },
+ "horizons": {
+  "credit": "JPL Horizons On-Line Ephemeris System (DE441)",
+  "sites": {
+   "madrid": {
+    "latitude_deg": 40.4168,
+    "longitude_deg": -3.7038,
+    "query": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27301%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40399%27&COORD_TYPE=%27GEODETIC%27&TIME_TYPE=%27UT%27&ANG_FORMAT=%27DEG%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27REFRACTED%27&RANGE_UNITS=%27KM%27&SITE_COORD=%27-3.7038%2C40.4168%2C0%27&TLIST=%272461045.6875%27+%272461150.8542%27+%272461246.2396%27+%272461310.77083%27+%272461322.7604%27+%272461420.0%27+%272461486.73264%27+%272461527.6771%27+%272461647.7188%27+%272461809.5208%27+%272461937.5521%27+%272462096.0208%27&TLIST_TYPE=%27JD%27&QUANTITIES=%274%2C10%2C13%2C14%2C17%2C20%2C24%27",
+    "observer": [
+     {
+      "jd_ut": 2461045.6875,
+      "azimuth_deg": 248.511806525,
+      "elevation_deg": 52.613878524,
+      "illuminated": 0.9577581000000001,
+      "diameter_arcsec": 1968.523,
+      "sub_observer_lon_deg": 5.425816,
+      "sub_observer_lat_deg": -2.990109,
+      "north_pole_angle_deg": 14.0231,
+      "distance_km": 364096.1896,
+      "phase_angle_deg": 23.7262
+     },
+     {
+      "jd_ut": 2461150.8542,
+      "azimuth_deg": 65.762618941,
+      "elevation_deg": 12.456021146,
+      "illuminated": 0.1211668,
+      "diameter_arcsec": 1984.869,
+      "sub_observer_lon_deg": 1.85061,
+      "sub_observer_lat_deg": -5.879824,
+      "north_pole_angle_deg": 351.4631,
+      "distance_km": 361097.71962,
+      "phase_angle_deg": 139.2631
+     },
+     {
+      "jd_ut": 2461246.2396,
+      "azimuth_deg": 143.431584928,
+      "elevation_deg": 12.162077218,
+      "illuminated": 0.7999375000000001,
+      "diameter_arcsec": 1775.335,
+      "sub_observer_lon_deg": 3.132435,
+      "sub_observer_lat_deg": 7.393367,
+      "north_pole_angle_deg": 9.5384,
+      "distance_km": 403716.10255,
+      "phase_angle_deg": 53.1357
+     },
+     {
+      "jd_ut": 2461310.77083,
+      "azimuth_deg": 276.361943743,
+      "elevation_deg": 3.649628577,
+      "illuminated": 0.9962512,
+      "diameter_arcsec": 1901.816,
+      "sub_observer_lon_deg": 354.406403,
+      "sub_observer_lat_deg": -4.200211,
+      "north_pole_angle_deg": 337.9362,
+      "distance_km": 376866.92993,
+      "phase_angle_deg": 7.0256
+     },
+     {
+      "jd_ut": 2461322.7604,
+      "azimuth_deg": 104.691919473,
+      "elevation_deg": 12.882827915,
+      "illuminated": 0.0204619,
+      "diameter_arcsec": 1880.798,
+      "sub_observer_lon_deg": 5.792907,
+      "sub_observer_lat_deg": 3.717586,
+      "north_pole_angle_deg": 22.1759,
+      "distance_km": 381078.46123,
+      "phase_angle_deg": 163.5465
+     },
+     {
+      "jd_ut": 2461420.0,
+      "azimuth_deg": 94.28859177,
+      "elevation_deg": 14.390872248,
+      "illuminated": 0.36466360000000003,
+      "diameter_arcsec": 1848.191,
+      "sub_observer_lon_deg": 352.878828,
+      "sub_observer_lat_deg": -4.121476,
+      "north_pole_angle_deg": 337.7683,
+      "distance_km": 387801.57451,
+      "phase_angle_deg": 105.7059
+     },
+     {
+      "jd_ut": 2461486.73264,
+      "azimuth_deg": 263.080818294,
+      "elevation_deg": 3.63639997,
+      "illuminated": 0.9979256,
+      "diameter_arcsec": 1930.215,
+      "sub_observer_lon_deg": 3.463627,
+      "sub_observer_lat_deg": 5.102283,
+      "north_pole_angle_deg": 22.2864,
+      "distance_km": 371322.21749,
+      "phase_angle_deg": 5.2174
+     },
+     {
+      "jd_ut": 2461527.6771,
+      "azimuth_deg": 105.799474857,
+      "elevation_deg": 13.913807618,
+      "illuminated": 0.1968338,
+      "diameter_arcsec": 1830.268,
+      "sub_observer_lon_deg": 354.900846,
+      "sub_observer_lat_deg": -2.666901,
+      "north_pole_angle_deg": 338.3105,
+      "distance_km": 391599.16781,
+      "phase_angle_deg": 127.3213
+     },
+     {
+      "jd_ut": 2461647.7188,
+      "azimuth_deg": 81.218043799,
+      "elevation_deg": 13.511122286,
+      "illuminated": 0.031611,
+      "diameter_arcsec": 2002.991,
+      "sub_observer_lon_deg": 0.450774,
+      "sub_observer_lat_deg": 0.876886,
+      "north_pole_angle_deg": 15.8089,
+      "distance_km": 357830.74486,
+      "phase_angle_deg": 159.5121
+     },
+     {
+      "jd_ut": 2461809.5208,
+      "azimuth_deg": 255.287603686,
+      "elevation_deg": 54.14554657,
+      "illuminated": 0.8999303999999999,
+      "diameter_arcsec": 1996.539,
+      "sub_observer_lon_deg": 354.114442,
+      "sub_observer_lat_deg": -1.968068,
+      "north_pole_angle_deg": 3.7033,
+      "distance_km": 358987.11103,
+      "phase_angle_deg": 36.8785
+     },
+     {
+      "jd_ut": 2461937.5521,
+      "azimuth_deg": 100.225369922,
+      "elevation_deg": 13.033154135,
+      "illuminated": 0.5107502,
+      "diameter_arcsec": 1781.86,
+      "sub_observer_lon_deg": 358.610677,
+      "sub_observer_lat_deg": -5.051469,
+      "north_pole_angle_deg": 337.5482,
+      "distance_km": 402237.60016,
+      "phase_angle_deg": 88.7681
+     },
+     {
+      "jd_ut": 2462096.0208,
+      "azimuth_deg": 135.657559441,
+      "elevation_deg": 13.299799688,
+      "illuminated": 0.1850731,
+      "diameter_arcsec": 1858.85,
+      "sub_observer_lon_deg": 6.833585,
+      "sub_observer_lat_deg": 0.313169,
+      "north_pole_angle_deg": 353.2562,
+      "distance_km": 385577.81801,
+      "phase_angle_deg": 129.043
+     }
+    ],
+    "rts_query": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27301%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40399%27&COORD_TYPE=%27GEODETIC%27&TIME_TYPE=%27UT%27&ANG_FORMAT=%27DEG%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27REFRACTED%27&RANGE_UNITS=%27KM%27&SITE_COORD=%27-3.7038%2C40.4168%2C0%27&START_TIME=%272026-03-02%27&STOP_TIME=%272026-03-05%27&STEP_SIZE=%271+m%27&R_T_S_ONLY=%27TVH%27&QUANTITIES=%274%27",
+    "rts": [
+     {
+      "utc": "2026-03-02T06:19",
+      "event": "set",
+      "azimuth_deg": 288.195649558,
+      "elevation_deg": -0.298819017
+     },
+     {
+      "utc": "2026-03-02T17:15",
+      "event": "rise",
+      "azimuth_deg": 75.596345864,
+      "elevation_deg": -0.114550524
+     },
+     {
+      "utc": "2026-03-03T00:05",
+      "event": "transit",
+      "azimuth_deg": 180.049711601,
+      "elevation_deg": 58.44710892
+     },
+     {
+      "utc": "2026-03-03T06:43",
+      "event": "set",
+      "azimuth_deg": 280.004379972,
+      "elevation_deg": -0.246616521
+     },
+     {
+      "utc": "2026-03-03T18:24",
+      "event": "rise",
+      "azimuth_deg": 84.150664269,
+      "elevation_deg": -0.086155618
+     },
+     {
+      "utc": "2026-03-04T00:50",
+      "event": "transit",
+      "azimuth_deg": 180.067268929,
+      "elevation_deg": 51.964201469
+     },
+     {
+      "utc": "2026-03-04T07:05",
+      "event": "set",
+      "azimuth_deg": 271.678085242,
+      "elevation_deg": -0.247079704
+     },
+     {
+      "utc": "2026-03-04T19:30",
+      "event": "rise",
+      "azimuth_deg": 92.635756334,
+      "elevation_deg": -0.148846593
+     }
+    ]
+   },
+   "buenos_aires": {
+    "latitude_deg": -34.6037,
+    "longitude_deg": -58.3816,
+    "query": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27301%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40399%27&COORD_TYPE=%27GEODETIC%27&TIME_TYPE=%27UT%27&ANG_FORMAT=%27DEG%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27REFRACTED%27&RANGE_UNITS=%27KM%27&SITE_COORD=%27-58.3816%2C-34.6037%2C0%27&TLIST=%272461045.5833%27+%272461151.1562%27+%272461245.5938%27+%272461310.89236%27+%272461322.9062%27+%272461419.5%27+%272461486.90278%27+%272461527.8229%27+%272461647.9479%27+%272461809.5%27+%272461937.7188%27+%272462095.5%27&TLIST_TYPE=%27JD%27&QUANTITIES=%274%2C10%2C13%2C14%2C17%2C20%2C24%27",
+    "observer": [
+     {
+      "jd_ut": 2461045.5833,
+      "azimuth_deg": 51.322197247,
+      "elevation_deg": 13.238429583,
+      "illuminated": 0.9591746999999999,
+      "diameter_arcsec": 1952.161,
+      "sub_observer_lon_deg": 6.141099,
+      "sub_observer_lat_deg": -4.459605,
+      "north_pole_angle_deg": 13.9584,
+      "distance_km": 367147.72678,
+      "phase_angle_deg": 23.3193
+     },
+     {
+      "jd_ut": 2461151.1562,
+      "azimuth_deg": 41.099342126,
+      "elevation_deg": 13.225096786,
+      "illuminated": 0.14677590000000001,
+      "diameter_arcsec": 1982.519,
+      "sub_observer_lon_deg": 2.391081,
+      "sub_observer_lat_deg": -7.253645,
+      "north_pole_angle_deg": 353.1524,
+      "distance_km": 361525.74092,
+      "phase_angle_deg": 134.9505
+     },
+     {
+      "jd_ut": 2461245.5938,
+      "azimuth_deg": 273.989037381,
+      "elevation_deg": 53.863016502,
+      "illuminated": 0.740963,
+      "diameter_arcsec": 1795.932,
+      "sub_observer_lon_deg": 2.840732,
+      "sub_observer_lat_deg": 6.674313,
+      "north_pole_angle_deg": 12.6467,
+      "distance_km": 399085.85483,
+      "phase_angle_deg": 61.186
+     },
+     {
+      "jd_ut": 2461310.89236,
+      "azimuth_deg": 283.540751638,
+      "elevation_deg": 3.802593321,
+      "illuminated": 0.9933902,
+      "diameter_arcsec": 1904.102,
+      "sub_observer_lon_deg": 354.876728,
+      "sub_observer_lat_deg": -5.459905,
+      "north_pole_angle_deg": 337.9646,
+      "distance_km": 376414.39942,
+      "phase_angle_deg": 9.3316
+     },
+     {
+      "jd_ut": 2461322.9062,
+      "azimuth_deg": 83.039158378,
+      "elevation_deg": 14.026031078,
+      "illuminated": 0.01686,
+      "diameter_arcsec": 1878.918,
+      "sub_observer_lon_deg": 5.437048,
+      "sub_observer_lat_deg": 2.813422,
+      "north_pole_angle_deg": 22.1884,
+      "distance_km": 381459.63969,
+      "phase_angle_deg": 165.0732
+     },
+     {
+      "jd_ut": 2461419.5,
+      "azimuth_deg": 294.926584644,
+      "elevation_deg": 25.01364676,
+      "illuminated": 0.3105189,
+      "diameter_arcsec": 1842.113,
+      "sub_observer_lon_deg": 352.325274,
+      "sub_observer_lat_deg": -5.136127,
+      "north_pole_angle_deg": 337.7174,
+      "distance_km": 389081.08604,
+      "phase_angle_deg": 112.2716
+     },
+     {
+      "jd_ut": 2461486.90278,
+      "azimuth_deg": 268.954441355,
+      "elevation_deg": 3.870424734,
+      "illuminated": 0.9990389000000001,
+      "diameter_arcsec": 1927.198,
+      "sub_observer_lon_deg": 3.106437,
+      "sub_observer_lat_deg": 4.241732,
+      "north_pole_angle_deg": 22.3317,
+      "distance_km": 371903.48706,
+      "phase_angle_deg": 3.5506
+     },
+     {
+      "jd_ut": 2461527.8229,
+      "azimuth_deg": 80.719408734,
+      "elevation_deg": 14.366367817,
+      "illuminated": 0.18206299999999997,
+      "diameter_arcsec": 1833.663,
+      "sub_observer_lon_deg": 355.295531,
+      "sub_observer_lat_deg": -3.868332,
+      "north_pole_angle_deg": 338.129,
+      "distance_km": 390873.96715,
+      "phase_angle_deg": 129.4812
+     },
+     {
+      "jd_ut": 2461647.9479,
+      "azimuth_deg": 59.887695234,
+      "elevation_deg": 14.110730956,
+      "illuminated": 0.0236117,
+      "diameter_arcsec": 2004.15,
+      "sub_observer_lon_deg": 0.462681,
+      "sub_observer_lat_deg": 0.057194,
+      "north_pole_angle_deg": 16.6905,
+      "distance_km": 357623.7546,
+      "phase_angle_deg": 162.3164
+     },
+     {
+      "jd_ut": 2461809.5,
+      "azimuth_deg": 24.294502737,
+      "elevation_deg": 25.604783582,
+      "illuminated": 0.9018062,
+      "diameter_arcsec": 1982.869,
+      "sub_observer_lon_deg": 354.820793,
+      "sub_observer_lat_deg": -3.232426,
+      "north_pole_angle_deg": 3.9233,
+      "distance_km": 361461.90034,
+      "phase_angle_deg": 36.5188
+     },
+     {
+      "jd_ut": 2461937.7188,
+      "azimuth_deg": 75.954668646,
+      "elevation_deg": 14.862795078,
+      "illuminated": 0.49075409999999997,
+      "diameter_arcsec": 1783.628,
+      "sub_observer_lon_deg": 358.860977,
+      "sub_observer_lat_deg": -6.171563,
+      "north_pole_angle_deg": 337.3661,
+      "distance_km": 401838.97928,
+      "phase_angle_deg": 91.0594
+     },
+     {
+      "jd_ut": 2462095.5,
+      "azimuth_deg": 256.764447274,
+      "elevation_deg": 21.745058211,
+      "illuminated": 0.13764279999999998,
+      "diameter_arcsec": 1877.358,
+      "sub_observer_lon_deg": 5.760718,
+      "sub_observer_lat_deg": -0.180588,
+      "north_pole_angle_deg": 356.5482,
+      "distance_km": 381776.73332,
+      "phase_angle_deg": 136.4493
+     }
+    ],
+    "rts_query": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27301%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40399%27&COORD_TYPE=%27GEODETIC%27&TIME_TYPE=%27UT%27&ANG_FORMAT=%27DEG%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27REFRACTED%27&RANGE_UNITS=%27KM%27&SITE_COORD=%27-58.3816%2C-34.6037%2C0%27&START_TIME=%272026-08-27%27&STOP_TIME=%272026-08-30%27&STEP_SIZE=%271+m%27&R_T_S_ONLY=%27TVH%27&QUANTITIES=%274%27",
+    "rts": [
+     {
+      "utc": "2026-08-27T03:10",
+      "event": "transit",
+      "azimuth_deg": 359.381613457,
+      "elevation_deg": 70.088486864
+     },
+     {
+      "utc": "2026-08-27T10:00",
+      "event": "set",
+      "azimuth_deg": 253.460034322,
+      "elevation_deg": -0.347510371
+     },
+     {
+      "utc": "2026-08-27T21:12",
+      "event": "rise",
+      "azimuth_deg": 103.19378484,
+      "elevation_deg": -0.103870585
+     },
+     {
+      "utc": "2026-08-28T03:54",
+      "event": "transit",
+      "azimuth_deg": 359.681318677,
+      "elevation_deg": 64.378895239
+     },
+     {
+      "utc": "2026-08-28T10:27",
+      "event": "set",
+      "azimuth_deg": 260.474615414,
+      "elevation_deg": -0.352268388
+     },
+     {
+      "utc": "2026-08-28T22:13",
+      "event": "rise",
+      "azimuth_deg": 95.818623525,
+      "elevation_deg": -0.184401487
+     },
+     {
+      "utc": "2026-08-29T04:38",
+      "event": "transit",
+      "azimuth_deg": 359.550109438,
+      "elevation_deg": 58.150131747
+     },
+     {
+      "utc": "2026-08-29T10:52",
+      "event": "set",
+      "azimuth_deg": 268.084874427,
+      "elevation_deg": -0.207918329
+     },
+     {
+      "utc": "2026-08-29T23:15",
+      "event": "rise",
+      "azimuth_deg": 88.011050989,
+      "elevation_deg": -0.196272097
+     }
+    ]
+   },
+   "tromso": {
+    "latitude_deg": 69.6492,
+    "longitude_deg": 18.9553,
+    "query": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27301%27&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27OBSERVER%27&CENTER=%27coord%40399%27&COORD_TYPE=%27GEODETIC%27&TIME_TYPE=%27UT%27&ANG_FORMAT=%27DEG%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27&APPARENT=%27REFRACTED%27&RANGE_UNITS=%27KM%27&SITE_COORD=%2718.9553%2C69.6492%2C0%27&TLIST=%272461045.5%27+%272461150.6979%27+%272461310.72222%27+%272461322.7812%27+%272461419.9583%27+%272461486.63889%27+%272461527.6875%27+%272461647.625%27+%272461809.5%27+%272461937.5417%27&TLIST_TYPE=%27JD%27&QUANTITIES=%274%2C10%2C13%2C14%2C17%2C20%2C24%27",
+    "observer": [
+     {
+      "jd_ut": 2461045.5,
+      "azimuth_deg": 172.810515145,
+      "elevation_deg": 41.000789712,
+      "illuminated": 0.9642399,
+      "diameter_arcsec": 1968.789,
+      "sub_observer_lon_deg": 5.77041,
+      "sub_observer_lat_deg": -3.022926,
+      "north_pole_angle_deg": 13.368,
+      "distance_km": 364046.9714,
+      "phase_angle_deg": 21.8063
+     },
+     {
+      "jd_ut": 2461150.6979,
+      "azimuth_deg": 47.638841386,
+      "elevation_deg": 12.69033448,
+      "illuminated": 0.1060782,
+      "diameter_arcsec": 1986.255,
+      "sub_observer_lon_deg": 1.032287,
+      "sub_observer_lat_deg": -5.638394,
+      "north_pole_angle_deg": 350.3904,
+      "distance_km": 360845.82523,
+      "phase_angle_deg": 141.9889
+     },
+     {
+      "jd_ut": 2461310.72222,
+      "azimuth_deg": 278.627959094,
+      "elevation_deg": 3.924556899,
+      "illuminated": 0.9967870000000001,
+      "diameter_arcsec": 1901.096,
+      "sub_observer_lon_deg": 354.649659,
+      "sub_observer_lat_deg": -3.730072,
+      "north_pole_angle_deg": 337.9413,
+      "distance_km": 377009.53431,
+      "phase_angle_deg": 6.5041
+     },
+     {
+      "jd_ut": 2461322.7812,
+      "azimuth_deg": 138.5094596,
+      "elevation_deg": 12.559577259,
+      "illuminated": 0.0208316,
+      "diameter_arcsec": 1880.287,
+      "sub_observer_lon_deg": 5.462872,
+      "sub_observer_lat_deg": 4.180605,
+      "north_pole_angle_deg": 22.1828,
+      "distance_km": 381181.9596,
+      "phase_angle_deg": 163.3975
+     },
+     {
+      "jd_ut": 2461419.9583,
+      "azimuth_deg": 109.070997783,
+      "elevation_deg": 12.832937606,
+      "illuminated": 0.3566046,
+      "diameter_arcsec": 1846.411,
+      "sub_observer_lon_deg": 352.426642,
+      "sub_observer_lat_deg": -3.970675,
+      "north_pole_angle_deg": 337.7513,
+      "distance_km": 388175.40219,
+      "phase_angle_deg": 106.6676
+     },
+     {
+      "jd_ut": 2461486.63889,
+      "azimuth_deg": 252.605195554,
+      "elevation_deg": 3.674231116,
+      "illuminated": 0.9975242,
+      "diameter_arcsec": 1931.913,
+      "sub_observer_lon_deg": 3.869527,
+      "sub_observer_lat_deg": 5.085986,
+      "north_pole_angle_deg": 22.2509,
+      "distance_km": 370995.84058,
+      "phase_angle_deg": 5.7002
+     },
+     {
+      "jd_ut": 2461527.6875,
+      "azimuth_deg": 136.338173314,
+      "elevation_deg": 12.159342597,
+      "illuminated": 0.1995549,
+      "diameter_arcsec": 1829.613,
+      "sub_observer_lon_deg": 354.382106,
+      "sub_observer_lat_deg": -2.593708,
+      "north_pole_angle_deg": 338.3437,
+      "distance_km": 391739.22252,
+      "phase_angle_deg": 126.9302
+     },
+     {
+      "jd_ut": 2461647.625,
+      "azimuth_deg": 80.221223465,
+      "elevation_deg": 13.013194749,
+      "illuminated": 0.0368302,
+      "diameter_arcsec": 2002.239,
+      "sub_observer_lon_deg": 359.955417,
+      "sub_observer_lat_deg": 1.12483,
+      "north_pole_angle_deg": 15.3008,
+      "distance_km": 357965.1843,
+      "phase_angle_deg": 157.866
+     },
+     {
+      "jd_ut": 2461809.5,
+      "azimuth_deg": 243.60407502,
+      "elevation_deg": 34.690562881,
+      "illuminated": 0.8997196,
+      "diameter_arcsec": 1987.532,
+      "sub_observer_lon_deg": 354.306003,
+      "sub_observer_lat_deg": -1.586172,
+      "north_pole_angle_deg": 3.6579,
+      "distance_km": 360613.89342,
+      "phase_angle_deg": 36.9188
+     },
+     {
+      "jd_ut": 2461937.5417,
+      "azimuth_deg": 123.986846004,
+      "elevation_deg": 12.278999116,
+      "illuminated": 0.5159014,
+      "diameter_arcsec": 1781.455,
+      "sub_observer_lon_deg": 358.146457,
+      "sub_observer_lat_deg": -4.955884,
+      "north_pole_angle_deg": 337.5949,
+      "distance_km": 402329.11801,
+      "phase_angle_deg": 88.1777
+     }
+    ]
+   }
+  }
+ },
+ "eclipses": {
+  "source": "https://eclipse.gsfc.nasa.gov/LEdecade/LEdecade2021.html",
+  "delta_t_s": 69.0,
+  "time_scale": "TD",
+  "rows": [
+   [
+    "2026-03-03",
+    [
+     11,
+     34,
+     52
+    ],
+    "total",
+    1.151
+   ],
+   [
+    "2026-08-28",
+    [
+     4,
+     14,
+     4
+    ],
+    "partial",
+    0.93
+   ],
+   [
+    "2027-02-20",
+    [
+     23,
+     14,
+     6
+    ],
+    "penumbral",
+    null
+   ],
+   [
+    "2028-01-12",
+    [
+     4,
+     14,
+     13
+    ],
+    "partial",
+    0.066
+   ],
+   [
+    "2028-07-06",
+    [
+     18,
+     20,
+     57
+    ],
+    "partial",
+    0.389
+   ],
+   [
+    "2028-12-31",
+    [
+     16,
+     53,
+     15
+    ],
+    "total",
+    1.246
+   ]
+  ]
+ },
+ "phases": {
+  "source": "https://www.astropixels.com/ephemeris/phasescat/phases2001.html",
+  "time_scale": "UT",
+  "rows": {
+   "full": [
+    "2026-01-03T10:03",
+    "2026-02-01T22:09",
+    "2026-03-03T11:38",
+    "2026-05-31T08:45",
+    "2026-08-28T04:18",
+    "2026-11-24T14:53",
+    "2026-12-24T01:28"
+   ],
+   "new": [
+    "2026-01-18T19:52",
+    "2026-02-17T12:01",
+    "2026-08-12T17:37",
+    "2026-10-10T15:50"
+   ]
+  }
+ }
+}

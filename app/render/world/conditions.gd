@@ -12,6 +12,7 @@
 extends RefCounted
 
 const Ephemeris := preload("res://render/world/ephemeris.gd")
+const Lunar := preload("res://render/world/lunar.gd")
 
 ## Reference place and date (decision D-5, estimate): central Spain (40° N, 3.7° W) in summer time (UTC+2),
 ## midsummer 2026. Replace with the owner's club coordinates when known.
@@ -19,7 +20,11 @@ const REFERENCE := {year = 2026, month = 6, day = 21, utc_offset_h = 2.0, latitu
 
 ## Presets as sun events, solved on their date at the reference place, so they stay right if the place changes.
 ## `event`: rising / setting (the sun crossing `sun_elevation_deg`), highest / lowest (solar noon / midnight).
-## Moon dates (computed with Ephemeris; checked in test_world_conditions.gd): 2026-06-29 full moon, 2026-06-15 new.
+## Moon dates (computed with Ephemeris; checked in test_world_sky.gd): 2026-06-15 new moon.
+## FW-MOON-11 moon events: "moon_view" searches forward from the preset's month/day for the first moment the moon meets
+## the preset's constraints in front of the pilot (MOON_VIEW_* below); "moon_view_golden" returns golden hour (sun 6°,
+## setting) of that day, the start of a flowing evening. At the reference place: Moonrise = the Harvest Moon,
+## 2026-09-26 (rises due east at dusk); Night = 2026-10-25, a full moon 25° up in the east (FW-MOON-11 evidence).
 const PRESETS := {
 	dawn = {month = 6, day = 21, event = "rising", sun_elevation_deg = -4.0},
 	sunrise = {month = 6, day = 21, event = "rising", sun_elevation_deg = 1.0},
@@ -29,19 +34,41 @@ const PRESETS := {
 	golden_hour = {month = 6, day = 21, event = "setting", sun_elevation_deg = 6.0},
 	sunset = {month = 6, day = 21, event = "setting", sun_elevation_deg = 0.5},
 	blue_hour = {month = 6, day = 21, event = "setting", sun_elevation_deg = -4.0},
-	night = {month = 6, day = 29, event = "lowest"},
+	night = {month = 6, day = 21, event = "moon_view", view = "night"},
 	night_dark = {month = 6, day = 15, event = "lowest"},
+	moonrise = {month = 6, day = 21, event = "moon_view", view = "moonrise"},
+	moonrise_golden = {month = 6, day = 21, event = "moon_view_golden", view = "moonrise"},
 }
+## Where the pilot looks: the default field's runway lies 15 m north of the pilot station, east-west, so the pilot
+## faces north and follows the airplane east and west (estimate tied to the default field).
+const PILOT_FORWARD_AZIMUTH_DEG := 0.0
+const PILOT_VIEW_HALF_WIDTH_DEG := 100.0
+## Moon-view constraints: sun elevation range, moon elevation range, minimum illuminated fraction, the local hours
+## scanned each day and the scan step (minutes). Moonrise: the full moon just risen at dusk. Night: a full moon at a
+## comfortable height in full darkness.
+const MOON_VIEWS := {
+	moonrise = {sun_min_deg = -4.0, sun_max_deg = -2.0, moon_min_deg = 0.5, moon_max_deg = 12.0, illuminated_min = 0.97,
+		from_hour = 16.0, to_hour = 23.0, step_min = 10.0},
+	night = {sun_min_deg = -90.0, sun_max_deg = -18.0, moon_min_deg = 18.0, moon_max_deg = 30.0, illuminated_min = 0.97,
+		from_hour = 19.0, to_hour = 29.0, step_min = 20.0},
+}
+## Days searched forward (a little more than a year: every season's moon is reachable).
+const MOON_VIEW_SEARCH_DAYS := 400
+static var _moon_view_cache := {}
 
 
 ## The Home choices (FW-27), in the order the Home button cycles; "day" is the calibrated fixed sun.
-const HOME_CHOICES: Array[String] = ["day", "dawn", "golden_hour", "sunset", "blue_hour", "evening", "night", "night_dark"]
+const HOME_CHOICES: Array[String] = ["day", "dawn", "golden_hour", "sunset", "blue_hour", "evening", "moonrise", "night",
+	"night_dark"]
 ## English labels of the Home choices (translated by the interface).
 const HOME_LABELS := {day = "Day", dawn = "Dawn", golden_hour = "Golden hour", sunset = "Sunset",
-	blue_hour = "Blue hour", evening = "Evening, time passing", night = "Night, full moon", night_dark = "Night, no moon"}
+	blue_hour = "Blue hour", evening = "Evening, time passing", moonrise = "Moonrise, time passing", night = "Night, full moon",
+	night_dark = "Night, no moon"}
 ## Flowing choices (FW-61): a start preset and a time scale. "evening": golden hour at ×20, so about four minutes of
 ## flight bring sunset, dusk with the club lights coming on, and the first stars (estimate of a fun pace).
-const FLOWING := {evening = {preset = "golden_hour", time_scale = 20.0}}
+## FW-MOON-11 "moonrise": golden hour on the Moonrise date at ×20, so sunset, the orange full moon rising in front of the
+## pilot and the moonlit night arrive within a few minutes of flight.
+const FLOWING := {evening = {preset = "golden_hour", time_scale = 20.0}, moonrise = {preset = "moonrise_golden", time_scale = 20.0}}
 
 ## The interactive route's choice (app_root sets it from the saved preference before Home and Fly build their
 ## worlds). The direct route never reads preferences, so automation keeps its own arguments only.
@@ -111,8 +138,57 @@ static func resolve(args: PackedStringArray = OS.get_cmdline_user_args()) -> Dic
 	if date.is_empty():
 		when.month = p.month
 		when.day = p.day
+	if str(p.event).begins_with("moon_view"):
+		var found := solve_moon_view(when, str(p.view))
+		if found.is_empty():
+			push_warning("No %s moon within %d days of %04d-%02d-%02d here; using the fixed sun" % [p.view,
+				MOON_VIEW_SEARCH_DAYS, when.year, when.month, when.day])
+			return {time_of_day = false}
+		when = found
+		if p.event == "moon_view_golden":
+			when.hour = solve_hour(when, "setting", 6.0)
+		return {time_of_day = true, preset = preset, when = when, time_scale = time_scale}
 	when.hour = solve_hour(when, p.event, float(p.get("sun_elevation_deg", 0.0)))
 	return {time_of_day = true, preset = preset, when = when, time_scale = time_scale}
+
+
+## FW-MOON-11: the first moment from `when`'s date (searching MOON_VIEW_SEARCH_DAYS forward) when the moon meets the
+## MOON_VIEWS[view] constraints inside the pilot's view: a copy of `when` with that date and local hour, or {}.
+## Deterministic (fixed scan grid); results are cached per place, date and view.
+static func solve_moon_view(when: Dictionary, view: String) -> Dictionary:
+	var key := str([view, when.year, when.month, when.day, when.utc_offset_h, when.latitude_deg, when.longitude_deg])
+	if _moon_view_cache.has(key):
+		return (_moon_view_cache[key] as Dictionary).duplicate()
+	var c: Dictionary = MOON_VIEWS[view]
+	var jd_day := Ephemeris.julian_day(int(when.year), int(when.month), int(when.day), 12.0)
+	var steps := int(roundf((float(c.to_hour) - float(c.from_hour)) * 60.0 / float(c.step_min)))
+	for d in MOON_VIEW_SEARCH_DAYS:
+		var date := Lunar.calendar(jd_day + d)
+		var probe := when.duplicate()
+		probe.year = date.year
+		probe.month = date.month
+		probe.day = date.day
+		for k in steps + 1:
+			probe.hour = float(c.from_hour) + k * float(c.step_min) / 60.0
+			var sky := Ephemeris.sky(probe)
+			var sun_el: float = sky.sun.elevation_deg
+			var moon: Dictionary = sky.moon
+			var off_axis := absf(fposmod(float(moon.azimuth_deg) - PILOT_FORWARD_AZIMUTH_DEG + 180.0, 360.0) - 180.0)
+			if sun_el >= float(c.sun_min_deg) and sun_el <= float(c.sun_max_deg) \
+					and float(moon.elevation_deg) >= float(c.moon_min_deg) and float(moon.elevation_deg) <= float(c.moon_max_deg) \
+					and float(moon.illuminated) >= float(c.illuminated_min) and off_axis <= PILOT_VIEW_HALF_WIDTH_DEG:
+				# Hours past midnight belong to the next calendar day.
+				var out := probe.duplicate()
+				if out.hour >= 24.0:
+					var next := Lunar.calendar(jd_day + d + 1)
+					out.year = next.year
+					out.month = next.month
+					out.day = next.day
+					out.hour -= 24.0
+				_moon_view_cache[key] = out.duplicate()
+				return out
+	_moon_view_cache[key] = {}
+	return {}
 
 
 ## Sun elevation (apparent, degrees) at a local hour on `when`'s date and place.

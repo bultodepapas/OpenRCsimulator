@@ -23,9 +23,9 @@ Generated into `app/data/batteries/cells/<id>.json` by `research/battery/bat-05/
 | `r0_ohm` | Q `ohm`, matrix | positive |
 | `rc_branches` | array of 0…2 `{r_ohm, tau_s}` | each a positive matrix `[nT][nSOC]`; branches ordered by increasing median τ |
 | `specific_heat_j_per_kg_k` | Q `J/(kg·K)` | positive |
-| `limits` | object of Q | `v_max`, `v_cutoff`, `v_damage_floor` (`V`, per cell, `v_damage_floor < v_cutoff < v_max`), `t_min_k`, `t_max_k` (`K`) |
+| `limits` | object of Q | `v_max`, `v_cutoff`, `v_damage_floor` (`V`, per cell, `v_damage_floor < v_cutoff < v_max`), `t_min_k`, `t_max_k` (`K`). `v_cutoff` is the template's data floor (the loaded voltage that defines SOC 0), which can sit above a datasheet's minimum; `v_damage_floor` carries the chemistry limit |
 
-SOC 0 is the template data floor: discharge to `v_cutoff` at the reference rate. SOC 1 is full charge. Values outside the knots are clamped, never extrapolated.
+SOC 0 is the template data floor: discharge to `v_cutoff` at the reference rate. SOC 1 is full charge. Values outside the knots are clamped, never extrapolated. A template has one reference capacity; multi-temperature data are normalized to each test's own capacity before fitting, and coulombic capacity does not vary with temperature at runtime.
 
 ## 2. Pack — `openrc-battery v1`
 
@@ -44,7 +44,7 @@ Generated into `app/data/batteries/packs/<id>.json` by the same generator.
 | `mass_kg` | Q `kg` | whole pack |
 | `dimensions_m` | Q `m`, vector 3 | length, width, height |
 | `heat_transfer` | object of Q | `still_air_w_per_k` (`W/K`), `forced_w_per_k_per_sqrt_mps` (`W/(K·(m/s)^0.5)`) |
-| `label` | object | `{c_rating_continuous, c_rating_burst, source}`, informative only; physics never reads it |
+| `label` | object | `{c_rating_continuous, c_rating_burst, source}`, informative only (`null` when not rated); physics never reads it |
 
 Normalization (runtime and reference):
 
@@ -80,7 +80,7 @@ hA(v) = still_air_w_per_k + forced_w_per_k_per_sqrt_mps · sqrt(max(v_cool, 0))
 "low_voltage_cutoff": {
   "mode": "soft" | "hard" | "off",
   "cell_detection": "auto" | "fixed",
-  "fixed_cells": integer (only with "fixed"),
+  "fixed_cells": Q "1", integer value (only with "fixed"),
   "detection_max_cell_v": Q "V" (only with "auto"),
   "cutoff_per_cell_v": Q "V",
   "soft_limit": Q "1" in [0, 1),
@@ -109,7 +109,7 @@ R_p  = (n−1)·R0_a + R0_w + R_w
 d    = min(u, limit) if enabled else 0
 ```
 
-- **Exhausted** (`q_w == 0` and not the connected left limit): `I = 0`; the motor sees bus 0 and is disabled; `V = E_oc`.
+- **Exhausted** (`q_w == 0` at or after the located exhaustion event; trial stages before the event use the connected left limit): `I = 0`; the motor sees bus 0 and is disabled; `V = E_oc`.
 - **Connected**: `V0 = E_oc − R_p·I_aux > 0`; `E_m = rpm/Kv`; `Im = max((d·V0 − E_m)/(Rm + d²·R_p), 0)` when `d > 0`, else 0; `I = d·Im + I_aux`; `V = E_oc − R_p·I > 0`. The motor law is EL1a evaluated at bus `V` and duty `d`.
 
 Bilinear interpolation: find the T segment (clamped) and the z segment, interpolate linearly in z on both bounding T rows, then linearly in T. With one T knot, T is ignored.
@@ -164,4 +164,4 @@ recovery      → throttle_reset: in phase 2 or 3, if u ≤ reset_throttle_max a
 phase 0 or 1  → limit 1
 ```
 
-The new limit applies to the next tick (zero-order hold). Cell detection happens once, at reset ("connection"): `fixed` → `fixed_cells`; `auto` → `max(1, ceil(V_rest/detection_max_cell_v − 1e-9))` with `V_rest = E_oc − R_p·I_aux`. A deeply discharged pack can therefore be misdetected; that is modeled behaviour, not an error.
+Order within one sample: recovery is tested first in phases 2 and 3 (before the phase-2 timer advances); the debounce test runs in the same sample as the 0 → 1 transition. Timer comparisons use a 1 ns tolerance (`timer ≥ debounce_s − 1e-9`, and the ramp fraction is exactly 1 once `timer ≥ soft_ramp_s − 1e-9`) so accumulated `dt` rounding does not delay a decision by one sample. The phase-3 timer is not advanced. The new limit applies to the next tick (zero-order hold). Cell detection happens once, at reset ("connection"): `fixed` → `fixed_cells`; `auto` → `max(1, ceil(V_rest/detection_max_cell_v − 1e-9))` with `V_rest = E_oc − R_p·I_aux`. A deeply discharged pack can therefore be misdetected; that is modeled behaviour, not an error.

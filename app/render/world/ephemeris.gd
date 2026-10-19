@@ -35,7 +35,7 @@ static func _obliquity_deg(t: float, omega_deg: float) -> float:
 	return 23.0 + (26.0 + seconds / 60.0) / 60.0 + 0.00256 * cos(deg_to_rad(omega_deg))
 
 
-## The sun's apparent geocentric position: {ra_deg, dec_deg, longitude_deg} (ecliptic longitude).
+## The sun's apparent geocentric position: {ra_deg, dec_deg, longitude_deg (ecliptic), distance_au (Meeus eq. 25.5)}.
 static func sun(jd: float) -> Dictionary:
 	var t := (jd - J2000) / 36525.0
 	var l0 := fposmod(280.46646 + t * (36000.76983 + t * 0.0003032), 360.0)
@@ -45,10 +45,12 @@ static func sun(jd: float) -> Dictionary:
 	var omega := 125.04 - 1934.136 * t
 	var lambda := deg_to_rad(l0 + c - 0.00569 - 0.00478 * sin(deg_to_rad(omega)))
 	var eps := deg_to_rad(_obliquity_deg(t, omega))
+	var e := 0.016708634 - t * (0.000042037 + 0.0000001267 * t)
 	return {
 		ra_deg = fposmod(rad_to_deg(atan2(cos(eps) * sin(lambda), cos(lambda))), 360.0),
 		dec_deg = rad_to_deg(asin(sin(eps) * sin(lambda))),
 		longitude_deg = fposmod(rad_to_deg(lambda), 360.0),
+		distance_au = 1.000001018 * (1.0 - e * e) / (1.0 + e * cos(m + deg_to_rad(c))),
 	}
 
 
@@ -131,7 +133,8 @@ static func refraction_deg(elevation_deg: float) -> float:
 
 ## The sky for a place and a moment. `when`: {year, month, day, hour (local, decimal), utc_offset_h, latitude_deg,
 ## longitude_deg (east positive)}. Returns {jd, lst_deg, sun: {azimuth_deg, elevation_deg},
-## moon: {azimuth_deg, elevation_deg, illuminated (0–1), waxing, phase_angle_deg}}. Elevations are apparent (refracted).
+## moon: {azimuth_deg, elevation_deg, illuminated (0–1), waxing, phase_angle_deg}, latitude_deg, longitude_deg}.
+## Elevations are apparent (refracted).
 static func sky(when: Dictionary) -> Dictionary:
 	var jd := julian_day(int(when.year), int(when.month), int(when.day), float(when.hour) - float(when.utc_offset_h))
 	var lat := float(when.latitude_deg)
@@ -150,4 +153,6 @@ static func sky(when: Dictionary) -> Dictionary:
 	moon_h.illuminated = (1.0 + cos(phase_angle)) / 2.0
 	moon_h.phase_angle_deg = rad_to_deg(phase_angle)
 	moon_h.waxing = fposmod(m.longitude_deg - s.longitude_deg, 360.0) < 180.0
-	return {jd = jd, lst_deg = fposmod(gmst_deg(jd) + lon, 360.0), sun = sun_h, moon = moon_h}
+	# FW-MOON-03: the place travels with the sky, so SkyState can ask Lunar for the full moon state.
+	return {jd = jd, lst_deg = fposmod(gmst_deg(jd) + lon, 360.0), sun = sun_h, moon = moon_h, latitude_deg = lat,
+		longitude_deg = lon}

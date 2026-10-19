@@ -54,7 +54,9 @@ def main():
                 if digest != entry.get("sha256") or len(data) != entry.get("bytes"):
                     raise ValueError("manifest hash/size mismatch")
                 if path.suffix.lower() == ".pdf":
-                    if not data.startswith(b"%PDF-"):
+                    # Some legacy NTRS originals retain an ingestion prefix;
+                    # readers locate the PDF header within the first 1024 bytes.
+                    if b"%PDF-" not in data[:1024]:
                         raise ValueError("missing PDF signature")
                     subprocess.run(
                         ["pdftotext", "-f", "1", "-l", "1", str(path), "-"],

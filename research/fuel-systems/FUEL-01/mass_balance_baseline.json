@@ -1,0 +1,657 @@
+{
+ "aircraft": [
+  {
+   "energy": "prescribed_fuel",
+   "file": "gp_extra_300s_60.json",
+   "flags": [
+    "point_mass_fuel:fuel_flight"
+   ],
+   "fuel_items": [
+    {
+     "energy_source": "glow_fuel",
+     "id": "fuel_flight",
+     "mass_kg": 0.146,
+     "position_m": [
+      -0.035,
+      0.0,
+      0.0
+     ],
+     "size_m": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "id": "gp-extra-300s-60",
+   "mac_m": 0.305597,
+   "neutral_point": {
+    "np_x_m": 0.147033,
+    "register_key": "gp-extra-300s-60"
+   },
+   "plan_cg_m": [
+    0.10266,
+    0.0,
+    -0.023952
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.10266,
+      0.0,
+      -0.023952
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 3.419469,
+     "static_margin_pct_mac": 14.52
+    },
+    "empty": {
+     "cg_m": [
+      0.1088,
+      0.0,
+      -0.025021
+     ],
+     "cg_shift_from_declared_mm": 6.14,
+     "mass_kg": 3.273469,
+     "static_margin_pct_mac": 12.511
+    }
+   }
+  },
+  {
+   "energy": "prescribed_fuel",
+   "file": "jensen_ugly_stik_60.json",
+   "flags": [
+    "point_mass_fuel:item_fuel_main"
+   ],
+   "fuel_items": [
+    {
+     "energy_source": "glow_fuel",
+     "id": "item_fuel_main",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ],
+     "size_m": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "id": "jensen-das-ugly-stik-60",
+   "mac_m": 0.3048,
+   "neutral_point": {
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.885058,
+     "static_margin_pct_mac": 3.835
+    },
+    "empty": {
+     "cg_m": [
+      0.130487,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 9.587,
+     "mass_kg": 2.765058,
+     "static_margin_pct_mac": 0.689
+    }
+   }
+  },
+  {
+   "energy": "prescribed_fuel",
+   "file": "p51d_mustang_120.json",
+   "flags": [
+    "point_mass_fuel:fuel_flight"
+   ],
+   "fuel_items": [
+    {
+     "energy_source": "gasoline",
+     "id": "fuel_flight",
+     "mass_kg": 0.37,
+     "position_m": [
+      -0.1487,
+      0.0,
+      -0.02
+     ],
+     "size_m": [
+      0,
+      0,
+      0
+     ]
+    }
+   ],
+   "id": "p51d-mustang-120",
+   "mac_m": 0.508816,
+   "neutral_point": {
+    "np_x_m": 0.214398,
+    "register_key": "p51d-mustang-120"
+   },
+   "plan_cg_m": [
+    0.177763,
+    0.0,
+    -0.071146
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.177763,
+      0.0,
+      -0.071146
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 21.499999,
+     "static_margin_pct_mac": 7.2
+    },
+    "empty": {
+     "cg_m": [
+      0.183479,
+      0.0,
+      -0.072042
+     ],
+     "cg_shift_from_declared_mm": 5.717,
+     "mass_kg": 21.129999,
+     "static_margin_pct_mac": 6.077
+    }
+   }
+  },
+  {
+   "energy": "prescribed_fuel",
+   "file": "sebart_avanti_s_a200.json",
+   "flags": [],
+   "fuel_items": [
+    {
+     "energy_source": "kerosene",
+     "id": "fuel_flight",
+     "mass_kg": 1.28,
+     "position_m": [
+      0.05,
+      0.0,
+      -0.03
+     ],
+     "size_m": [
+      0.25,
+      0.14,
+      0.1
+     ]
+    }
+   ],
+   "id": "sebart-avanti-s-a200-p100rx",
+   "mac_m": 0.362193,
+   "neutral_point": {
+    "np_x_m": 0.270866,
+    "register_key": "sebart-avanti-s-a200-p100rx"
+   },
+   "plan_cg_m": [
+    0.24,
+    0.0,
+    0.005153
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.24,
+      0.0,
+      0.005153
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 11.705089,
+     "static_margin_pct_mac": 8.522
+    },
+    "empty": {
+     "cg_m": [
+      0.263328,
+      0.0,
+      0.009469
+     ],
+     "cg_shift_from_declared_mm": 23.328,
+     "mass_kg": 10.425089,
+     "static_margin_pct_mac": 2.081
+    }
+   }
+  },
+  {
+   "energy": "finite_glow_fuel",
+   "file": "stik_glow_55ax_2t.json",
+   "flags": [],
+   "fuel_items": [
+    {
+     "energy_source": "glow_fuel",
+     "id": "item_fuel_main",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ],
+     "size_m": [
+      0.09,
+      0.05,
+      0.05
+     ]
+    }
+   ],
+   "id": "stik-glow-55ax-2t",
+   "mac_m": 0.3048,
+   "neutral_point": {
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.622899,
+     "static_margin_pct_mac": 3.835
+    },
+    "empty": {
+     "cg_m": [
+      0.131491,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 10.591,
+     "mass_kg": 2.502899,
+     "static_margin_pct_mac": 0.36
+    }
+   }
+  },
+  {
+   "energy": "finite_glow_fuel",
+   "file": "stik_glow_55ax_2t_apc_13x6.json",
+   "flags": [],
+   "fuel_items": [
+    {
+     "energy_source": "glow_fuel",
+     "id": "item_fuel_main",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ],
+     "size_m": [
+      0.09,
+      0.05,
+      0.05
+     ]
+    }
+   ],
+   "id": "stik-glow-55ax-2t",
+   "mac_m": 0.3048,
+   "neutral_point": {
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      -0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.633663,
+     "static_margin_pct_mac": 3.835
+    },
+    "empty": {
+     "cg_m": [
+      0.131446,
+      -0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 10.546,
+     "mass_kg": 2.513663,
+     "static_margin_pct_mac": 0.375
+    }
+   }
+  },
+  {
+   "energy": "finite_glow_fuel",
+   "file": "stik_glow_61fx_2t.json",
+   "flags": [],
+   "fuel_items": [
+    {
+     "energy_source": "glow_fuel",
+     "id": "item_fuel_main",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ],
+     "size_m": [
+      0.09,
+      0.05,
+      0.05
+     ]
+    }
+   ],
+   "id": "stik-glow-61fx-2t",
+   "mac_m": 0.3048,
+   "neutral_point": {
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      -0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.885058,
+     "static_margin_pct_mac": 3.835
+    },
+    "empty": {
+     "cg_m": [
+      0.130487,
+      -0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 9.587,
+     "mass_kg": 2.765058,
+     "static_margin_pct_mac": 0.689
+    }
+   }
+  },
+  {
+   "energy": "finite_glow_fuel",
+   "file": "stik_glow_fs64v_4t.json",
+   "flags": [],
+   "fuel_items": [
+    {
+     "energy_source": "glow_fuel",
+     "id": "item_fuel_main",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ],
+     "size_m": [
+      0.09,
+      0.05,
+      0.05
+     ]
+    }
+   ],
+   "id": "stik-glow-fs64v-4t",
+   "mac_m": 0.3048,
+   "neutral_point": {
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.593378,
+     "static_margin_pct_mac": 3.835
+    },
+    "empty": {
+     "cg_m": [
+      0.131617,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 10.717,
+     "mass_kg": 2.473378,
+     "static_margin_pct_mac": 0.318
+    }
+   }
+  },
+  {
+   "energy": "finite_glow_fuel",
+   "file": "stik_glow_fs64v_4t_apc_13x6.json",
+   "flags": [],
+   "fuel_items": [
+    {
+     "energy_source": "glow_fuel",
+     "id": "item_fuel_main",
+     "mass_kg": 0.12,
+     "position_m": [
+      -0.1,
+      0.0,
+      0.0
+     ],
+     "size_m": [
+      0.09,
+      0.05,
+      0.05
+     ]
+    }
+   ],
+   "id": "stik-glow-fs64v-4t",
+   "mac_m": 0.3048,
+   "neutral_point": {
+    "np_x_m": 0.132588,
+    "register_key": "jensen-das-ugly-stik-60"
+   },
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.577797,
+     "static_margin_pct_mac": 3.835
+    },
+    "empty": {
+     "cg_m": [
+      0.131685,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 10.785,
+     "mass_kg": 2.457797,
+     "static_margin_pct_mac": 0.296
+    }
+   }
+  },
+  {
+   "energy": "fixed_voltage",
+   "file": "synthetic_stik_electric_4s.json",
+   "flags": [
+    "missing_id:20_items",
+    "fuel_named_items_on_electric_aircraft"
+   ],
+   "fuel_items": [],
+   "id": "synthetic_stik_electric_4s",
+   "mac_m": 0.3048,
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.885058
+    }
+   }
+  },
+  {
+   "energy": "ocv_resistance",
+   "file": "synthetic_stik_electric_4s_battery.json",
+   "flags": [
+    "missing_id:20_items",
+    "fuel_named_items_on_electric_aircraft"
+   ],
+   "fuel_items": [],
+   "id": "synthetic_stik_electric_4s_battery",
+   "mac_m": 0.3048,
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.885058
+    }
+   }
+  },
+  {
+   "energy": "fixed_voltage",
+   "file": "synthetic_stik_electric_6s.json",
+   "flags": [
+    "missing_id:20_items",
+    "fuel_named_items_on_electric_aircraft"
+   ],
+   "fuel_items": [],
+   "id": "synthetic_stik_electric_6s",
+   "mac_m": 0.3048,
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.885058
+    }
+   }
+  },
+  {
+   "energy": "ocv_resistance",
+   "file": "synthetic_stik_electric_6s_battery.json",
+   "flags": [
+    "missing_id:20_items",
+    "fuel_named_items_on_electric_aircraft"
+   ],
+   "fuel_items": [],
+   "id": "synthetic_stik_electric_6s_battery",
+   "mac_m": 0.3048,
+   "plan_cg_m": [
+    0.1209,
+    0.0,
+    0.0
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.1209,
+      0.0,
+      0.0
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.885058
+    }
+   }
+  },
+  {
+   "energy": "fixed_voltage",
+   "file": "turbo_lumber_evolution.json",
+   "flags": [],
+   "fuel_items": [],
+   "id": "turbo-lumber-evolution",
+   "mac_m": 0.210294,
+   "plan_cg_m": [
+    0.06,
+    0.0,
+    -0.002176
+   ],
+   "plan_cg_matches_inventory": true,
+   "states": {
+    "declared": {
+     "cg_m": [
+      0.06,
+      0.0,
+      -0.002176
+     ],
+     "cg_shift_from_declared_mm": 0.0,
+     "mass_kg": 2.19
+    }
+   }
+  }
+ ],
+ "format": "openrc-mass-balance-report v1",
+ "liquid_fuels": [
+  "glow_fuel",
+  "gasoline",
+  "kerosene"
+ ]
+}

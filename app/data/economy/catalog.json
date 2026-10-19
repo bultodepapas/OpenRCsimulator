@@ -5,7 +5,7 @@
   "generated_from": {
     "price_catalog_sha256": "64b009a22268f84d81a1b5cf53f87f653d47bb4f483444c072d3e17d455c297e",
     "aircraft_costing_sha256": "9288b3a28c7387c484e7bf985310ca285ec8be229f6f85c9e6d3e6ccc4a21c96",
-    "aircraft_catalog_sha256": "9345386d7f17adcfde8fa8bc1eb9b70916c50dbc8f2c308a58b0b0ce6cdbc548",
+    "aircraft_catalog_sha256": "2dd2d6f8fe8d94e9b6c348ef8bfc034541b50d433860301f2d2cdc27ae3c948e",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
   },
@@ -2033,7 +2033,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "jensen-das-ugly-stik-60",
-      "source_sha256": "43e2d00d0034f26225f7bed4bb0fea9a7996e73bae41f3aca0602e2c605704cf",
+      "source_sha256": "68845fc8c37e3cce98154319dcee9120ee04acfe439c4b2d79c9fb866f3bc507",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
@@ -2398,7 +2398,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-61fx-2t",
-      "source_sha256": "8d370ba37800af1c5326f12c3ca8cfe7a601256f264689dbb8a6fc66ff777881",
+      "source_sha256": "eec99293e1de58b6c8cbe7d74f672870c6a45e9a0be68c114d568712c9626e1a",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
@@ -2763,7 +2763,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-55ax-2t",
-      "source_sha256": "8dcfb98e3a2e8a5a9808df0729bc5fe5a4de483afcb94e0bb6e9018fd35df62e",
+      "source_sha256": "d0f9dd3cff6c1b303fa77a751abb3a2c5b44c89e9c4cd00eb4c899b6bafb4733",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3128,7 +3128,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-fs64v-4t",
-      "source_sha256": "c42640d6f6e4d25bb8db0266ed3310e22432366098d9e84bcccf8dc3097643c6",
+      "source_sha256": "77ef5836eece089c397a5b8d24fd660a345c6c4a546b39c9aa1de975733427cd",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",

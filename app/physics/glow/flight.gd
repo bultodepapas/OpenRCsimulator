@@ -333,6 +333,9 @@ static func telemetry(owner: Node) -> Dictionary:
 	out.propeller=result.propeller
 	out.hub_air_velocity_body_m_s=result.hub_air_velocity_body_m_s
 	out.mass_properties=properties(owner,values[1])
+	# FUEL-01b: the installed blend's own density (profile.gd), so displays never assume a fixed g/mL.
+	out.fuel_density_kg_m3=float(owner.aircraft.model.propulsion.glow.profile.fuel.density_kg_m3)
+	out.fuel_volume_m3=maxf(0.0,values[1])/out.fuel_density_kg_m3
 	out.shaft_work_j=values[13]
 	out.propeller_work_j=values[14]
 	out.thrust_work_j=values[15]

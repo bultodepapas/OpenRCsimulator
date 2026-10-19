@@ -6,12 +6,14 @@ Start with the topic guides below. The searchable [CSV catalogue](catalog.csv) a
 
 The CSV preserves records under each topic. BibTeX collapses matching explicit DOIs, byte-identical local originals and repeated link-only URLs; separately identified dataset files and metadata records can remain separate entries. Neither a file count nor a topic-record count is a count of independent physical experiments.
 
-Verified holdings at completion: **151 topic records, 139 BibTeX entries and 114 distinct local files** (105 newly retained artifacts and nine reused originals). The files comprise **92 PDFs, 13 ZIP archives and nine CSV/text/HTML/JSON files**, totaling 802,628,453 bytes (about 803 MB). Twenty-seven records have no local original and explicitly describe metadata-only access or retrieval limits. All catalogued local hashes/sizes, PDF parsing and ZIP CRC checks passed; no byte-identical local copies remain. See the inventory for the UTC check timestamp.
+Verified holdings at completion: **304 topic records, 292 BibTeX entries and 229 distinct local files** (217 originals under this collection and twelve reused from existing references). The files comprise **181 PDFs, 14 ZIP archives and 34 data/telemetry/text artifacts**, totaling 1,961,637,816 bytes (about 1.96 GB). 65 records have no local original and describe metadata-only inspection, online full-text access or retrieval limits. All catalogued local hashes/sizes, PDF parsing and ZIP CRC checks passed; no byte-identical local copies remain. See the inventory for the UTC check timestamp.
 
 ## Topics
 
 | Collection | What to look for |
 | --- | --- |
+| [Focused Ugly Stik studies, tests and data](ugly-stik/README.md) | Further direct-family research, original pilot observations, Big Stik studies and explicitly related Ultra Stick flight logs |
+| [Further Stik studies and comparable RC aircraft](stik-analogues/README.md) | Extended Ugly Stik flight instrumentation, further Giant Big Stik studies, gust sensing and additional trainer/Ultra Stick campaigns |
 | [Stik family and conventional RC aircraft](conventional/README.md) | Ugly Stik/Big Stik studies, Ultra Stick analogues, trainers and complete-airframe identification |
 | [Flying wings and tailless aircraft](flying-wings/README.md) | X8/Zagi and other wing studies, elevon effectiveness, stability, flight/tunnel/CFD distinctions |
 | [Measured flight data and logs](flight-data/README.md) | Actual maneuver time histories, dataset descriptions, sensor channels and access limits |
@@ -21,7 +23,7 @@ Verified holdings at completion: **151 topic records, 139 BibTeX entries and 114
 | [Portuguese- and Spanish-language RC research](latin-american/README.md) | Regional university theses and studies found through aeromodelo/VANT/asa-voadora terminology |
 | [Additional flight evidence](additional-flight-evidence/README.md) | Further flight datasets and handling-quality/system-identification sources |
 | [Other RC airplanes and research conversions](other-airplanes/README.md) | Kadet, Rascal, TwinStar, FunCub, Skywalker and other named platforms, with measured/model-derived distinctions |
-| [RC jets and subscale jet research aircraft](jets/README.md) | AirSTAR, turbine thrust transients, jet flight identification and fighter/trainer tunnel studies |
+| [RC jets and subscale jet research aircraft](jets/README.md) | AirSTAR, turbine/EDF thrust response, jet flight identification and fighter/trainer tunnel studies |
 | [RC helicopters and rotor experiments](helicopters/README.md) | X-Cell, T-Rex, Raptor and related platforms; flight identification, rotor/servo tests and larger helicopter analogues |
 | [Sailplanes, motorgliders and soaring logs](sailplanes/README.md) | Radian Pro, Solius, Cularis, SB-XC/Cloud Swift, dynamic-soaring logger streams and Diana calibration files |
 
@@ -41,6 +43,8 @@ No authentication bypass or paywall circumvention was used. A public download is
 | Related RC airframe, instrumented flight | Plausibility ranges and sensitivity trends | Ultra Stick and Big Stik are not interchangeable with Jensen Ugly Stik 60 |
 | Whole-aircraft tunnel tests | Static coefficients, control/rate derivatives, stall trends | Respect reference axes/areas, Reynolds number, support corrections and test motion |
 | Section or finite-wing experiment | Polar shape, transition, flap response, stall mechanisms | Section, isolated wing and whole-aircraft coefficients are different quantities |
+| Rotor stand, PIV or ground-effect rig | Thrust/torque, wake structure and inflow/clearance trends | Match rotor, hub, RPM, pitch and installation; isolated-rotor measurements do not establish full helicopter response |
+| Turbine or EDF bench/tunnel test | Thrust/power curves, installation effects and spool response | Match inlet/outlet, airspeed, voltage or fuel system and control state; static thrust alone does not identify flight thrust |
 | CFD, analytical or simulator study | Model-form hypotheses and independent implementations | A numerical prediction is not a flight measurement |
 | Paper plots without raw logs | Digitizable curves and reported aggregate values | Retain plot-reading uncertainty; do not describe the paper as a raw dataset |
 | Repository metadata or blocked lead | A route to future acquisition | It does not establish that the underlying document or measurement was downloaded |
@@ -60,6 +64,6 @@ python3 research/reference-library/catalog.py
 python3 research/reference-library/catalog.py --write
 ```
 
-The first command checks the manifests, local file sizes and SHA-256 hashes, PDF signatures/text parsing, ZIP CRCs and reused-file metadata. It does not execute downloaded code, extract archives or deserialize flight-data pickles. The second additionally regenerates the catalogue and inventory after a deliberate manifest update. It does not download missing originals. For direct files, restore from the record's `download_url` into its `local_path`, then verify the pinned hash. For a retained member of a larger dataset archive, follow the record's archive/member retrieval notes; the local member's hash is not the full archive's hash. An upstream file revision needs a new dated source record rather than silently replacing a historical hash.
+The first command checks the manifests, local file sizes and SHA-256 hashes, PDF signatures within the first 1024 bytes (including legacy NTRS ingestion prefixes), text parsing, ZIP CRCs and reused-file metadata. It does not execute downloaded code, extract archives or deserialize flight-data pickles. The second additionally regenerates the catalogue and inventory after a deliberate manifest update. It does not download missing originals. For direct files, restore from the record's `download_url` into its `local_path`, then verify the pinned hash. For a retained member of a larger dataset archive, follow the record's archive/member retrieval notes; the local member's hash is not the full archive's hash. An upstream file revision needs a new dated source record rather than silently replacing a historical hash.
 
 The topic notes retain representative query strings and inspection limits. This is broad source triage with verified downloads, not an exhaustive systematic review or a full reproduction of every experiment.

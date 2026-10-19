@@ -61,7 +61,7 @@ func _run() -> void:
 
 func _settings() -> void:
 	_check("defaults: Pilot preset, units by language, Mode 2", Settings.validate(null) == Settings.DEFAULTS)
-	_check("pilot preset is flight, transmitter, warnings, wind", Settings.DEFAULTS.visible == ["flight", "transmitter", "warnings", "wind", "controls"])
+	_check("pilot preset is flight, transmitter, warnings, wind, guide, battery", Settings.DEFAULTS.visible == ["flight", "transmitter", "warnings", "wind", "controls", "battery"])
 	var bad := Settings.validate({ preset = 3, visible = "all", units = "furlongs", stick_mode = 3 })
 	_check("wrong types and ranges fall back to defaults", bad == Settings.DEFAULTS, str(bad))
 	_check("a named preset defines the visible set", Settings.validate({ preset = "full", visible = ["performance"] }).visible == Settings.PRESETS.full)
@@ -166,7 +166,7 @@ func _manager() -> void:
 		root.get_viewport().push_input(click)
 	await process_frame
 	_check("× hides only that overlay", _shown(manager) == ["flight", "transmitter", "warnings", "controls"], str(_shown(manager)))
-	_check("× makes the set custom and announces it", manager.settings.preset == "custom" and changes.size() == 1 and changes[0].visible == ["flight", "transmitter", "warnings", "controls"])
+	_check("× makes the set custom and announces it", manager.settings.preset == "custom" and changes.size() == 1 and changes[0].visible == ["flight", "transmitter", "warnings", "controls", "battery"])
 	_check("× took no keyboard focus", root.get_viewport().gui_get_focus_owner() == null)
 	var ui := UiDriver.new(self)
 	await ui.tap(KEY_UP)

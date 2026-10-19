@@ -36,6 +36,7 @@ const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const World := preload("res://render/world/world.gd")
 const FailureConfig := preload("res://failures/config.gd")
@@ -158,6 +159,7 @@ func _ready() -> void:
 		# The engine starts in the OS locale (es_ES on a Spanish system): automation is always English.
 		TranslationServer.set_locale("en")
 		Conditions.session_preset = "" # no interactive sky choice may leak into a later technical route
+		MoonConfig.session_config = {} # nor a saved moon choice (FW-MOON-12)
 		var direct_aircraft := aircraft_argument(user_args)
 		if failure_cli_options_unsupported_for_aircraft(direct_aircraft, user_args):
 			printerr("Failure options currently support fixed-wing aircraft only.")
@@ -260,6 +262,7 @@ func show_home() -> void:
 		world_preset = "day" # one active lighting selection; an explicit lighting config supersedes the FW selector
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
+	MoonConfig.session_config = _moon_config_from_preferences() # FW-MOON-12: before Home and Fly build their worlds
 	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults())) # still backdrop
 	_connect_home_preview(home_scene)
 	add_child(home_scene)
@@ -441,6 +444,29 @@ func set_time_of_day(preset: String) -> void:
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
 
 
+## FW-MOON-12: the saved moon choices, validated (an invalid value recovers to the real moon).
+func _moon_config_from_preferences() -> Dictionary:
+	var checked: Dictionary = MoonConfig.validate(preferences.get("moon_config", MoonConfig.DEFAULTS))
+	return checked.config if checked.ok else MoonConfig.defaults()
+
+
+## FW-MOON-13: apply and save moon choices from the Conditions or pause dialogs. The live scene (flight or Home)
+## changes in place; the session and preferences keep them for the next world. Returns false when refused.
+func _apply_moon_config(raw: Variant) -> bool:
+	var checked: Dictionary = MoonConfig.validate(raw)
+	if not checked.ok:
+		push_warning("Moon choices refused: %s" % "; ".join(checked.errors))
+		return false
+	MoonConfig.session_config = checked.config.duplicate()
+	World.set_moon_config(checked.config)
+	if checked.config != _moon_config_from_preferences():
+		preferences.moon_config = checked.config.duplicate()
+		var err: Error = Preferences.save_to(preferences_path, preferences)
+		if err != OK:
+			push_warning("Could not save moon choices (error %d)" % err)
+	return true
+
+
 func _night_options_from_preferences() -> Dictionary:
 	var checked: Dictionary = Preferences.validate_night_options({
 		"field_lighting": preferences.get("night_field_lighting", Preferences.DEFAULTS.night_field_lighting),
@@ -475,6 +501,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	var departing_home: Control = home
 	var aircraft: String = departing_home.aircraft_id if departing_home != null else ""
 	var chosen_start: String = departing_home.start_choice if departing_home != null else "airborne"
+	var chosen_battery: String = departing_home.battery_mode if departing_home != null else "ideal"
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
 	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
@@ -515,6 +542,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
 	flight.aircraft_id = route_aircraft_id if has_home or is_random or helicopter_route else ""
 	flight.start_choice = chosen_start
+	if "battery_mode" in flight: # BAT-13: Home's battery choice; direct routes read --battery=
+		flight.battery_mode = chosen_battery if has_home and not is_random else "ideal"
 	flight.weather_config = chosen_weather.duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	if not helicopter_route:
@@ -1258,6 +1287,7 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 	if not flight.session.sim.paused:
 		time_of_day_dialog.show_apply_error(["pause the flight before editing lighting"])
 		return
+	_apply_moon_config(time_of_day_dialog.applied_moon_config) # FW-MOON-13: visual only, applied in place
 	var sky_result: Dictionary = flight.prepare_sky_edit(time_of_day_dialog.applied_sky_config)
 	if not sky_result.ok:
 		time_of_day_dialog.show_apply_error(sky_result.errors)
@@ -1422,6 +1452,7 @@ func _on_weather_applied(raw: Dictionary) -> void:
 		return
 	if weather_dialog == null:
 		return
+	_apply_moon_config(weather_dialog.get("applied_moon_config")) # FW-MOON-13: before any Home rebuild below
 	var lighting_raw: Variant = weather_dialog.get("applied_lighting_config")
 	var checked_lighting: Dictionary = TimeOfDay.validate(lighting_raw)
 	if not checked_lighting.get("ok", false):

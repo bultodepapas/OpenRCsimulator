@@ -249,6 +249,7 @@
     },
     {
       "name": "fuel (half tank)",
+      "energy_source": "glow_fuel",
       "mass": {
         "value": 0.12,
         "unit": "kg",

@@ -4,12 +4,25 @@ extends VBoxContainer
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const Solar := preload("res://environment/solar_position.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const MoonConfig := preload("res://environment/moon_config.gd")
+const Lunar := preload("res://render/world/lunar.gd")
+const Ephemeris := preload("res://render/world/ephemeris.gd")
+const Conditions := preload("res://render/world/conditions.gd")
 
 const PRESET_IDS: Array[String] = ["", "legacy", "dawn", "noon", "sunset", "night"]
 const PRESET_LABELS: Array[String] = ["Custom", "Legacy daylight", "Dawn", "Noon", "Sunset", "Night"]
 const NIGHT_PROFILE_LABELS: Array[String] = ["Soft club", "Airfield", "Field lights off"]
 const CAMPFIRE_LABELS: Array[String] = ["Campfire off", "Campfire on"]
 const NIGHT_PROFILE_IDS: Array[String] = ["club", "airfield", "off"]
+## FW-MOON-13: moon choices (MoonConfig); the non-physical ones say so in their label.
+const MOON_MODE_IDS: Array[String] = ["real", "phase", "off"]
+const MOON_MODE_LABELS: Array[String] = ["Real sky", "Choose a phase", "No moon"]
+const MOON_PHASE_LABELS: Array[String] = ["New moon", "Waxing crescent", "First quarter", "Waxing gibbous", "Full moon",
+	"Waning gibbous", "Last quarter", "Waning crescent"]
+const MOON_SIZE_IDS: Array[String] = ["real", "large"]
+const MOON_SIZE_LABELS: Array[String] = ["Real size", "Large (cinematic, not real)"]
+const MOONLIGHT_IDS: Array[String] = ["real", "bright"]
+const MOONLIGHT_LABELS: Array[String] = ["Real moonlight", "Brighter (assist, not real)"]
 
 signal focus_order_changed
 
@@ -31,9 +44,15 @@ var phase_summary: Label
 var validation_note: Label
 var field_lighting_picker: OptionButton
 var campfire_picker: OptionButton
+var moon_picker: OptionButton
+var moon_phase_picker: OptionButton
+var moon_size_picker: OptionButton
+var moonlight_picker: OptionButton
+var moon_summary: Label
 
 var _draft: Dictionary = {}
 var _night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
+var _moon_config: Dictionary = MoonConfig.defaults()
 var _time_controls_visible: bool = true
 var _time_control_nodes: Array[Control] = []
 var _responsive_grids: Array[GridContainer] = []
@@ -44,7 +63,7 @@ var _latitude_form_value: float = 0.0
 var _longitude_form_value: float = 0.0
 
 
-func _init(initial_config: Variant = null, initial_night_options: Variant = null) -> void:
+func _init(initial_config: Variant = null, initial_night_options: Variant = null, initial_moon_config: Variant = null) -> void:
 	name = "TimeOfDayControls"
 	add_theme_constant_override("separation", 8)
 	var checked: Dictionary = TimeOfDay.validate(
@@ -55,9 +74,12 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 		Preferences.NIGHT_DEFAULTS if initial_night_options == null else initial_night_options
 	)
 	_night_options = checked_night.options.duplicate(true) if checked_night.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
+	var checked_moon: Dictionary = MoonConfig.validate(MoonConfig.defaults() if initial_moon_config == null else initial_moon_config)
+	_moon_config = checked_moon.config if checked_moon.ok else MoonConfig.defaults()
 	_build_controls()
 	_set_controls(_draft)
 	_set_night_options(_night_options)
+	_set_moon_config(_moon_config)
 
 
 func _ready() -> void:
@@ -182,6 +204,20 @@ func _build_controls() -> void:
 	_responsive_grids.append(campfire_row)
 	add_child(campfire_row)
 
+	moon_picker = _moon_choice("Moon", "MoonRow", "Moon")
+	moon_phase_picker = _moon_choice("Moon phase", "MoonPhaseRow", "MoonPhase")
+	moon_size_picker = _moon_choice("Moon size", "MoonSizeRow", "MoonSize")
+	moonlight_picker = _moon_choice("Moonlight", "MoonlightRow", "Moonlight")
+	moon_summary = _label("", "SecondaryLabel", true)
+	moon_summary.name = "MoonSummary"
+	moon_summary.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	moon_summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	add_child(moon_summary)
+	moon_picker.item_selected.connect(_on_moon_choice_changed)
+	moon_phase_picker.item_selected.connect(_on_moon_choice_changed)
+	moon_size_picker.item_selected.connect(_on_moon_choice_changed)
+	moonlight_picker.item_selected.connect(_on_moon_choice_changed)
+
 	mode_picker.item_selected.connect(_on_mode_selected)
 	preset_picker.item_selected.connect(_on_preset_selected)
 	time_slider.value_changed.connect(_on_time_slider_changed)
@@ -195,6 +231,20 @@ func _build_controls() -> void:
 	advanced_toggle.toggled.connect(_on_advanced_toggled)
 	_set_titles()
 	_update_responsive_layout()
+
+
+func _moon_choice(label_text: String, row_name: String, picker_name: String) -> OptionButton:
+	var row := _choice_row(label_text)
+	row.name = row_name
+	var picker := OptionButton.new()
+	picker.name = picker_name
+	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	picker.fit_to_longest_item = false
+	picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	row.add_child(picker)
+	_responsive_grids.append(row)
+	add_child(row)
+	return picker
 
 
 func _choice_row(label_text: String) -> GridContainer:
@@ -263,6 +313,14 @@ func _set_titles() -> void:
 		campfire_picker.add_item(tr(title))
 	field_lighting_picker.select(clampi(selected_field, 0, NIGHT_PROFILE_LABELS.size() - 1))
 	campfire_picker.select(clampi(selected_campfire, 0, CAMPFIRE_LABELS.size() - 1))
+	for pair: Array in [[moon_picker, MOON_MODE_LABELS], [moon_phase_picker, MOON_PHASE_LABELS],
+			[moon_size_picker, MOON_SIZE_LABELS], [moonlight_picker, MOONLIGHT_LABELS]]:
+		var picker: OptionButton = pair[0]
+		var selected: int = maxi(picker.selected, 0)
+		picker.clear()
+		for title: String in pair[1]:
+			picker.add_item(tr(title))
+		picker.select(clampi(selected, 0, (pair[1] as Array).size() - 1))
 	mode_picker.select(0 if _draft.get("mode", "legacy") == "legacy" else 1)
 	advanced_toggle.text = tr("Date and location (advanced)")
 	time_note.text = tr("Date, time and UTC offset are explicit. The selected time stays fixed during flight; OS time is not used.")
@@ -439,6 +497,79 @@ func read_night_options() -> Dictionary:
 	})
 
 
+## FW-MOON-13: the moon choices as a validated MoonConfig (night look and halo keep their current values: they have no
+## control yet).
+func read_moon_config() -> Dictionary:
+	var config := _moon_config.duplicate()
+	config.moon = MOON_MODE_IDS[clampi(moon_picker.selected, 0, MOON_MODE_IDS.size() - 1)]
+	config.phase = MoonConfig.PHASES[clampi(moon_phase_picker.selected, 0, MoonConfig.PHASES.size() - 1)]
+	config.size = MOON_SIZE_IDS[clampi(moon_size_picker.selected, 0, MOON_SIZE_IDS.size() - 1)]
+	config.moonlight = MOONLIGHT_IDS[clampi(moonlight_picker.selected, 0, MOONLIGHT_IDS.size() - 1)]
+	return MoonConfig.validate(config)
+
+
+func _set_moon_config(config: Dictionary) -> void:
+	_moon_config = config.duplicate()
+	moon_picker.select(MOON_MODE_IDS.find(str(config.moon)))
+	moon_phase_picker.select(MoonConfig.PHASES.find(str(config.phase)))
+	moon_size_picker.select(MOON_SIZE_IDS.find(str(config.size)))
+	moonlight_picker.select(MOONLIGHT_IDS.find(str(config.moonlight)))
+	_update_moon_summary()
+
+
+func _on_moon_choice_changed(_index: int) -> void:
+	_update_moon_summary()
+	focus_order_changed.emit()
+
+
+## The moon for the drafted astronomical time and place, or for the Home reference night; says when the drawing
+## differs from the sky (no moon, a moved date) and that astronomical time does not draw the moon yet.
+func _update_moon_summary() -> void:
+	if moon_summary == null or moon_picker == null:
+		return
+	moon_phase_picker.disabled = moon_picker.selected != MOON_MODE_IDS.find("phase")
+	var mode: String = MOON_MODE_IDS[clampi(moon_picker.selected, 0, MOON_MODE_IDS.size() - 1)]
+	if mode == "off":
+		moon_summary.text = tr("No moon: a dark night with stars only, whatever the date.")
+		return
+	var checked: Dictionary = read_draft()
+	var astronomical: bool = checked.get("ok", false) and checked.config.mode == "astronomical"
+	var when := {}
+	if astronomical:
+		var c: Dictionary = checked.config
+		var ymd: PackedStringArray = str(c.date).split("-")
+		when = {year = int(ymd[0]), month = int(ymd[1]), day = int(ymd[2]), hour = float(c.local_seconds) / 3600.0,
+			utc_offset_h = float(c.utc_offset_minutes) / 60.0, latitude_deg = float(c.latitude_deg), longitude_deg = float(c.longitude_deg)}
+	else:
+		var night := Conditions.resolve(PackedStringArray(["--time_of_day=night"]))
+		when = night.when
+	var picked: Dictionary = read_moon_config()
+	if picked.ok:
+		when = MoonConfig.apply_phase(when, picked.config)
+	var st := Lunar.state(when)
+	var jd := Ephemeris.julian_day(int(when.year), int(when.month), int(when.day), float(when.hour) - float(when.utc_offset_h))
+	var age := MoonConfig.age_deg(jd)
+	var phase_text: String = tr(MOON_PHASE_LABELS[MoonConfig.PHASES.find(MoonConfig.phase_name(age))])
+	var ev := Lunar.events(when)
+	var parts: Array[String] = [phase_text, tr("%d%% lit") % roundi(float(st.illuminated) * 100.0)]
+	parts.append(tr("rises %s") % _clock(ev.rise_h) if ev.has("rise_h") else tr("no moonrise that day"))
+	parts.append(tr("sets %s") % _clock(ev.set_h) if ev.has("set_h") else tr("no moonset that day"))
+	var lines: Array[String] = [" · ".join(parts)]
+	if mode == "phase":
+		lines.append(tr("Shown on %04d-%02d-%02d, the nearest night with this phase.") % [when.year, when.month, when.day])
+	if astronomical:
+		lines.append(tr("Above the horizon at the chosen time.") if bool(st.present) else tr("Below the horizon at the chosen time."))
+		lines.append(tr("Astronomical time does not draw the moon yet; Home's Evening and Night choices do."))
+	else:
+		lines.append(tr("For Home's time choices (Evening, Night); at the full-moon Night preset."))
+	moon_summary.text = "\n".join(lines)
+
+
+static func _clock(hours: float) -> String:
+	var minutes := roundi(hours * 60.0)
+	return "%02d:%02d" % [posmod(floori(minutes / 60.0), 24), posmod(minutes, 60)]
+
+
 func _set_night_options(raw: Variant) -> void:
 	var checked: Dictionary = Preferences.validate_night_options(raw)
 	_night_options = checked.options.duplicate(true) if checked.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
@@ -467,7 +598,10 @@ func focus_controls() -> Array[Control]:
 			if advanced_grid.visible:
 				for edit: LineEdit in [date_input, offset_input, latitude_input, longitude_input, location_input]:
 					controls.append(edit)
-	controls.append_array([field_lighting_picker, campfire_picker])
+	controls.append_array([field_lighting_picker, campfire_picker, moon_picker])
+	if not moon_phase_picker.disabled:
+		controls.append(moon_phase_picker)
+	controls.append_array([moon_size_picker, moonlight_picker])
 	return controls
 
 
@@ -491,6 +625,7 @@ static func _choice_label(text: String) -> Label:
 func _update_summary() -> void:
 	if phase_summary == null:
 		return
+	_update_moon_summary() # FW-MOON-13: the moon follows the drafted time and place
 	var result: Dictionary = read_draft()
 	if not result.get("ok", false):
 		phase_summary.text = tr("Check the time, date and location to preview the lighting phase.")

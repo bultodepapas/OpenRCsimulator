@@ -110,35 +110,42 @@ def aircraft(two, install, suffix='', fx61=False):
         if len(matches) != 1:
             raise ValueError('Stik source identity is missing or duplicated: '+source_id)
         matches[0]['id'] = identity
+    # FUEL-01a: select every edited record by its stable id, never by array position.
+    by_id = {item.get('id'): item for item in inv}
+    engine_item = by_id['item_engine_main']
+    muffler_item = by_id['item_muffler_main']
+    prop_item = by_id['item_propeller_main']
+    fuel_item = by_id['item_fuel_main']
+    ballast_item = by_id['item_balance_mass_virtual']
     diameter=install['propeller']['diameter_m']['value']
     diameter_in=round(diameter/.0254)
     pitch_in=round(install['propeller']['pitch_m']['value']/.0254)
     if not fx61:
         # The MAX-61FX variant keeps the base Stik's own sourced engine, E-4010 silencer and APC 12x6 entries.
-        inv[0]['name'] = 'O.S. MAX-55AX' if two else 'O.S. FS-64V'
+        engine_item['name'] = 'O.S. MAX-55AX' if two else 'O.S. FS-64V'
         url = 'https://www.os-engines.co.jp/english/line_up/engine/air/'+('aircraft/catalog/15612.htm' if two else 'single/catalog/3AY00.html')
-        inv[0]['mass'] = q(.404 if two else .442,'kg','manual',url)
-        inv[1]['name'] = 'stock silencer'
-        inv[1]['mass'] = q(.121 if two else .044,'kg','borrowed' if two else 'manual',
+        engine_item['mass'] = q(.404 if two else .442,'kg','manual',url)
+        muffler_item['name'] = 'stock silencer'
+        muffler_item['mass'] = q(.121 if two else .044,'kg','borrowed' if two else 'manual',
                              'AIAA 2016-5011 Table 2: tested assembly 525 g minus engine 404 g; E-3071 revision pairing unverified' if two else url)
-        inv[2]['name']=('APC Sport LP%02d%03d' % (diameter_in,pitch_in*10) if two or diameter_in==13 else 'Master Airscrew K Series')+' %dx%d' % (diameter_in,pitch_in)
-        inv[2]['mass']=q(.0430913,'kg','manual','https://www.apcprop.com/product/12x7/; 1.52oz × 0.028349523125kg/oz') if two and diameter_in==12 else q(.050 if diameter_in==13 else .060,'kg')
-    inv[2]['size']=q([.01,diameter,.025],'m')
-    inv[6]['name']='usable glow premix'
-    inv[6]['size']=q([.09,.05,.05],'m')
-    inv[6]['energy_source']='glow_fuel'
+        prop_item['name']=('APC Sport LP%02d%03d' % (diameter_in,pitch_in*10) if two or diameter_in==13 else 'Master Airscrew K Series')+' %dx%d' % (diameter_in,pitch_in)
+        prop_item['mass']=q(.0430913,'kg','manual','https://www.apcprop.com/product/12x7/; 1.52oz × 0.028349523125kg/oz') if two and diameter_in==12 else q(.050 if diameter_in==13 else .060,'kg')
+    prop_item['size']=q([.01,diameter,.025],'m')
+    fuel_item['name']='usable glow premix'
+    fuel_item['size']=q([.09,.05,.05],'m')
+    fuel_item['energy_source']='glow_fuel'
     # Recompute the existing virtual balance fixture; never pretend ballast was measured.
     cg=raw['balance']['plan_cg']['value']
-    parts=inv[:-1]
+    parts=[item for item in inv if item is not ballast_item]
     mass=left_to_right_sum(i['mass']['value'] for i in parts)
     first=[left_to_right_sum(i['mass']['value']*i['position']['value'][k] for i in parts) for k in range(3)]
     x=.85
     ballast=(mass*cg[0]-first[0])/(x-cg[0])
-    inv[-1]['mass']=q(ballast,'kg','derived',EST+'; virtual first-moment balance')
-    inv[-1]['position']=q([x,((mass+ballast)*cg[1]-first[1])/ballast,((mass+ballast)*cg[2]-first[2])/ballast],'m','derived',EST+'; virtual balance')
+    ballast_item['mass']=q(ballast,'kg','derived',EST+'; virtual first-moment balance')
+    ballast_item['position']=q([x,((mass+ballast)*cg[1]-first[1])/ballast,((mass+ballast)*cg[2]-first[2])/ballast],'m','derived',EST+'; virtual balance')
     profile=json.loads((ROOT/'app/data/glow'/('os_max_61fx_candidate.json' if fx61 else 'os_max_55ax_candidate.json' if two else 'os_fs_64v_candidate.json')).read_text(encoding='utf-8'))
     engine=raw['propulsion']['engine']
-    engine['name']='O.S. MAX-61FX (two-stroke glow)' if fx61 else inv[0]['name']
+    engine['name']='O.S. MAX-61FX (two-stroke glow)' if fx61 else engine_item['name']
     engine['peak_power']=copy.deepcopy(profile['operation']['rated_power_w'])
     engine['peak_power_rpm']=copy.deepcopy(profile['operation']['rated_rpm'])
     if not fx61:  # the 61FX keeps the base Stik's derived legacy static rpm (unused by the glow law)
@@ -146,14 +153,14 @@ def aircraft(two, install, suffix='', fx61=False):
     engine['idle_rpm']=q(2800.,'rpm')
     engine['glow_installation']='res://data/glow/stik_'+tag+suffix+'.json'
     prop=raw['propulsion']['propeller']
-    prop['name']=('APC Sport LP12060 12x6' if fx61 else inv[2]['name'])+' (annular surrogate)'
+    prop['name']=('APC Sport LP12060 12x6' if fx61 else prop_item['name'])+' (annular surrogate)'
     prop['diameter']=copy.deepcopy(install['propeller']['diameter_m'])
     # The locked-body inventory already uses this uniform rectangular propeller.
     # Its entire axial inertia rotates; add only the estimated crank polar inertia
     # contained in the engine inventory. Changing prop mass/diameter changes both
     # locked-body and relative shaft inertia, rather than only aerodynamic load.
-    prop_size=inv[2]['size']['value']
-    prop_polar=inv[2]['mass']['value']*(prop_size[1]**2+prop_size[2]**2)/12.
+    prop_size=prop_item['size']['value']
+    prop_polar=prop_item['mass']['value']*(prop_size[1]**2+prop_size[2]**2)/12.
     crank_polar=2e-5 if two else 3e-5
     prop['rotating_inertia']=q(prop_polar+crank_polar,'kg·m2','derived',
                               EST+'; uniform-box prop polar m*(diameter^2+thickness^2)/12 plus estimated crank polar '+str(crank_polar)+' kg m^2; no measured blade mass distribution')

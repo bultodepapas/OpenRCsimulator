@@ -39,11 +39,11 @@ EL5/EL6 require calibrated, matched, held-out physical measurements with hardwar
 | EL2a-P2 | Bound stop/exhaustion localization and event ordering. [Defects and paired measurements](research/propulsion/EL2a-P2/README.md) | Complete — event medians down 67–90%; event spike and Gate P remain |
 | EL2a-E1 | Synthetic runway startup, takeoff, stall/recovery and landing. [Windows/Linux evidence](research/propulsion/EL2a-E1/README.md) | Complete — software scope only |
 | EL2a-P3 | Smaller motor-stage result with exact session/event preservation. [Native comparison](research/propulsion/EL2a-P3/README.md) | Software complete; whole-session speedup not established under concurrent workloads |
-| EL2b | One battery polarization RC pair, only if measured residuals justify it. | Planned |
-| EL3 | Per-ESC ramp, cutoff, signal-loss and brake/freewheel modes. | Planned — exact controller behavior/data required |
-| EL4 | Winding/ESC thermal state and derating. | Deferred — thermal data and energy accounting required |
+| EL2b | One battery polarization RC pair, only if measured residuals justify it. | Continues as BAT-05/06 in the [battery plan](plans/battery-realism.md) (`pack_ecm`, K chosen by held-out residual) |
+| EL3 | Per-ESC ramp, signal-loss and brake/freewheel modes. | Planned — exact controller behavior/data required; cell detection and low-voltage cutoff continue as BAT-11 |
+| EL4 | Winding/ESC thermal state and derating. | Deferred — thermal data and energy accounting required; pack temperature continues as BAT-07 |
 | EL5 | Independent static/transient powertrain validation. | Planned — matched motor/ESC/pack/prop measurements required |
-| EL6 | Endurance validation against recorded pack/flight data and cutoff. | Planned — physical data required |
+| EL6 | Endurance validation against recorded pack/flight data and cutoff. | Continues as BAT-28 — physical data required |
 
 EL2a-P1's 558–562 µs and P2's event-tick reductions were measured on a Ryzen 9 5900X under WSL, not the original target profile. They do not close the whole-session 500 µs/tick gate. [EL2a-E1](research/propulsion/EL2a-E1/README.md) adds synthetic 240/480 Hz maneuver checks; it does not close physical promotion. See [Gate P and original results](research/propulsion/EL2a/README.md#performance).
 

@@ -1192,6 +1192,19 @@
                 }
               }
             },
+            "wing_body_cl_beta": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -0.3,
+                  "maximum": 0.1
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
             "horizontal": {
               "type": "object",
               "required": [
@@ -2278,7 +2291,8 @@
             "prescribed_fuel",
             "fixed_voltage",
             "ocv_resistance",
-            "finite_glow_fuel"
+            "finite_glow_fuel",
+            "pack_ecm"
           ]
         },
         "damage": {
@@ -4945,6 +4959,9 @@
         },
         "command_mapping": {
           "const": "identity"
+        },
+        "low_voltage_cutoff": {
+          "$ref": "#/$defs/electricLowVoltageCutoff"
         }
       },
       "additionalProperties": false
@@ -4972,6 +4989,9 @@
             },
             {
               "$ref": "#/$defs/electricOcvResistanceBattery"
+            },
+            {
+              "$ref": "#/$defs/electricPackEcmBattery"
             }
           ]
         },
@@ -4991,7 +5011,42 @@
           }
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "battery": {
+                "properties": {
+                  "kind": {
+                    "const": "pack_ecm"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "esc": {
+                "required": [
+                  "low_voltage_cutoff"
+                ]
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "esc": {
+                "not": {
+                  "required": [
+                    "low_voltage_cutoff"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "wingPolarSamples": {
       "type": "object",
@@ -5031,6 +5086,390 @@
         }
       },
       "$comment": "Flat four-column rows: angle magnitude, lift magnitude, profile drag, attached fraction. Runtime enforces groups of four, column ranges, ordering, C1 boundaries and induced reference consistency."
+    },
+    "electricPackEcmBattery": {
+      "type": "object",
+      "required": [
+        "kind",
+        "pack",
+        "mount_inventory_id",
+        "initial_soc",
+        "auxiliary_current_a",
+        "cooling_airflow_fraction",
+        "weak_cell"
+      ],
+      "properties": {
+        "kind": {
+          "const": "pack_ecm"
+        },
+        "pack": {
+          "type": "object",
+          "required": [
+            "id",
+            "sha256"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          },
+          "additionalProperties": false
+        },
+        "mount_inventory_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "initial_soc": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 1.0,
+                  "exclusiveMinimum": 0.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "auxiliary_current_a": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 100.0,
+                  "minimum": 0.0
+                },
+                "unit": {
+                  "const": "A"
+                }
+              }
+            }
+          ]
+        },
+        "cooling_airflow_fraction": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 1.0,
+                  "minimum": 0.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "weak_cell": {
+          "type": "object",
+          "required": [
+            "capacity_factor",
+            "resistance_factor",
+            "soc_offset"
+          ],
+          "properties": {
+            "capacity_factor": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/electricEvidence"
+                },
+                {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "maximum": 1.0,
+                      "minimum": 0.01
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                }
+              ]
+            },
+            "resistance_factor": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/electricEvidence"
+                },
+                {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "maximum": 10.0,
+                      "minimum": 1.0
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                }
+              ]
+            },
+            "soc_offset": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/electricEvidence"
+                },
+                {
+                  "properties": {
+                    "value": {
+                      "type": "number",
+                      "minimum": 0.0,
+                      "exclusiveMaximum": 0.5
+                    },
+                    "unit": {
+                      "const": "1"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "electricLowVoltageCutoff": {
+      "type": "object",
+      "required": [
+        "mode",
+        "cell_detection",
+        "cutoff_per_cell_v",
+        "soft_limit",
+        "soft_ramp_s",
+        "debounce_s",
+        "recovery",
+        "reset_throttle_max",
+        "voltage_filter_s"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "soft",
+            "hard",
+            "off"
+          ]
+        },
+        "cell_detection": {
+          "enum": [
+            "auto",
+            "fixed"
+          ]
+        },
+        "fixed_cells": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 24
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "detection_max_cell_v": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 6.0,
+                  "minimum": 0.5
+                },
+                "unit": {
+                  "const": "V"
+                }
+              }
+            }
+          ]
+        },
+        "cutoff_per_cell_v": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 5.0,
+                  "minimum": 0.5
+                },
+                "unit": {
+                  "const": "V"
+                }
+              }
+            }
+          ]
+        },
+        "soft_limit": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "exclusiveMaximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "soft_ramp_s": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 60.0,
+                  "exclusiveMinimum": 0.0
+                },
+                "unit": {
+                  "const": "s"
+                }
+              }
+            }
+          ]
+        },
+        "debounce_s": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 60.0,
+                  "minimum": 0.0
+                },
+                "unit": {
+                  "const": "s"
+                }
+              }
+            }
+          ]
+        },
+        "recovery": {
+          "enum": [
+            "throttle_reset",
+            "latched"
+          ]
+        },
+        "reset_throttle_max": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 0.2,
+                  "minimum": 0.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
+            }
+          ]
+        },
+        "voltage_filter_s": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/electricEvidence"
+            },
+            {
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 10.0,
+                  "minimum": 0.02
+                },
+                "unit": {
+                  "const": "s"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "cell_detection": {
+                "const": "fixed"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "fixed_cells"
+            ],
+            "not": {
+              "required": [
+                "detection_max_cell_v"
+              ]
+            }
+          },
+          "else": {
+            "required": [
+              "detection_max_cell_v"
+            ],
+            "not": {
+              "required": [
+                "fixed_cells"
+              ]
+            }
+          }
+        }
+      ],
+      "additionalProperties": false
     }
   },
   "additionalProperties": false,
@@ -5189,6 +5628,40 @@
               },
               "energy": {
                 "const": "ocv_resistance"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "propulsion": {
+            "properties": {
+              "kind": {
+                "const": "electric_prop"
+              },
+              "battery": {
+                "properties": {
+                  "kind": {
+                    "const": "pack_ecm"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "capabilities": {
+            "properties": {
+              "propulsion_layout": {
+                "const": "single_tractor"
+              },
+              "energy": {
+                "const": "pack_ecm"
               }
             }
           }

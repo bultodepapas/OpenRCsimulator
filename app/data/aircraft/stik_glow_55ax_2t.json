@@ -1212,6 +1212,12 @@
         "kind": "estimated",
         "source": "D10-R2 (docs/research/flight-dynamics/stik-lateral-directional-2026-10-18, research/flight-dynamics/stik-lateral-directional/directional_prediction.py): (0.684 - 1) x fin term 0.12741 for the DATCOM high-wing fin efficiency eta_v(1 + dsigma/dbeta), plus Raymer eq. 16.50 fuselage term -0.0130 from the plan stations; placed in the body couple as the P-51 does; not measured"
       },
+      "wing_body_cl_beta": {
+        "value": -0.05367956930948468,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "D10-R5 (docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19, research/flight-dynamics/stik-lateral-directional/directional_prediction.py, roll_regimes.gd): borrowed Clb -0.0545 less the vertical-fin term about the ARP -0.00082, so the local law matches the oracle; independently predicted -0.0537 (lifting-line dihedral -0.0134 per deg of the estimated 2.86 deg plus DATCOM high-wing interference -0.0155); not measured"
+      },
       "wing_aileron_effectiveness": {
         "value": 0.144,
         "unit": "1",

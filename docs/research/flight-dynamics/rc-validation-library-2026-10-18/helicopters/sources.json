@@ -1,1 +1,789 @@
-[]
+[
+  {
+    "id": "gavrilets-2000-dasc-avionics",
+    "title": "Avionics System for a Small Unmanned Helicopter Performing Agressive Maneuvers",
+    "authors": [
+      "V. Gavrilets",
+      "A. Shterenberg",
+      "M. A. Dahleh",
+      "E. Feron"
+    ],
+    "year": 2000,
+    "type": "conference-paper",
+    "source_url": "https://web.mit.edu/~feron/Public/www/DASC.pdf",
+    "download_url": "https://web.mit.edu/~feron/Public/www/DASC.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/mit_dasc_2000.pdf",
+    "topics": [
+      "X-Cell 60",
+      "avionics",
+      "flight measurements",
+      "aggressive maneuvers"
+    ],
+    "relevance": "Documents instrumentation and flight-data analysis for an alcohol-powered X-Cell 60 hobby helicopter with a 5 ft (1.52 m) main rotor, including actual piloted aggressive-flight tests.",
+    "limitations": "Related MIT X-Cell project evidence, not a standalone airframe identification dataset; no raw telemetry archive. The title spelling is preserved.",
+    "access": "Public MIT-hosted paper downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for platform, instrumentation, and flight-data evidence; numerical data not transcribed.",
+    "resolved_url": "https://web.mit.edu/~feron/Public/www/DASC.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "ddf6716c4be4901f0497f55ae2018460fb590013d063de64bf825f820d7a08c9",
+    "bytes": 64163
+  },
+  {
+    "id": "gavrilets-2002-miniature-aerobatics-control",
+    "title": "Control Logic for Automated Aerobatic Flight of a Miniature Helicopter",
+    "authors": [
+      "V. Gavrilets",
+      "I. Martinos",
+      "B. Mettler",
+      "E. Feron"
+    ],
+    "year": 2002,
+    "type": "conference-paper",
+    "source_url": "https://doi.org/10.2514/6.2002-4834",
+    "download_url": "https://web.mit.edu/dahleh/www/pubs/5.Gavrilets-%20Control%20Logic%20for%20Automated.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/mit_control_logic_2002.pdf",
+    "topics": [
+      "X-Cell 60",
+      "aerobatics",
+      "flight tests",
+      "control"
+    ],
+    "relevance": "Reports actual automated aerobatic tests on MIT's 5 ft-diameter X-Cell 60, including axial rolls and recovery to trim.",
+    "limitations": "Controller demonstration within the MIT X-Cell campaign; not independent aerodynamic validation or a raw-data release.",
+    "access": "Public MIT-hosted author paper downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for platform, maneuvers, trim, and flight-test descriptions.",
+    "doi": "10.2514/6.2002-4834",
+    "resolved_url": "https://web.mit.edu/dahleh/www/pubs/5.Gavrilets-%20Control%20Logic%20for%20Automated.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "f43570b27f6d8068df28fe8b8ba205cccb1f221f6c768ba4cf63620b3d961a9c",
+    "bytes": 229610
+  },
+  {
+    "id": "gavrilets-2003-miniature-aerobatic-model",
+    "title": "Dynamic Model for a Miniature Aerobatic Helicopter",
+    "authors": [
+      "V. Gavrilets",
+      "B. Mettler",
+      "E. Feron"
+    ],
+    "year": 2003,
+    "type": "technical-report",
+    "source_url": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+    "download_url": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/gavrilets_model_2003.pdf",
+    "topics": [
+      "X-Cell 60",
+      "nonlinear model",
+      "rotor flapping",
+      "aerobatics",
+      "parameter estimation"
+    ],
+    "relevance": "Low-order analytic model spans aerobatic conditions and reports flight-test estimates for parameters including hub stiffness and fuselage drag area.",
+    "limitations": "Analytic component model with selected flight-estimated parameters, not a measured aerodynamic database; related to the MIT X-Cell campaign.",
+    "access": "Public author-hosted report copy downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for model states, force/moment structure, and flight-estimated parameters.",
+    "resolved_url": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "231b673d1e0f8c9b664e745c16b054c801cedcedc3bacc122790bb3226c56243",
+    "bytes": 7949007
+  },
+  {
+    "id": "mettler-1999-r50-hover-identification",
+    "title": "System Identification of Small-Size Unmanned Helicopter Dynamics",
+    "authors": [
+      "Bernard Mettler",
+      "Mark B. Tischler",
+      "Takeo Kanade"
+    ],
+    "year": 1999,
+    "type": "conference-paper",
+    "source_url": "https://publications.ri.cmu.edu/system-identification-of-small-size-unmanned-helicopter-dynamics",
+    "download_url": "https://publications.ri.cmu.edu/storage/publications/pub_files/pub3/mettler_bernard_1999_1/mettler_bernard_1999_1.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/cmu_r50_sysid_1999.pdf",
+    "topics": [
+      "Yamaha R-50",
+      "hover",
+      "CIFER",
+      "flight identification",
+      "stabilizer bar"
+    ],
+    "relevance": "Identifies a hover model from flights of a fully instrumented Yamaha R-50 with a 10 ft (3.05 m) rotor, including regressive flap, fuselage, and yaw-damper dynamics.",
+    "limitations": "Same R-50 campaign as the 2000 CMU report and 2002 journal article; companion publication, not an independent flight dataset. R-50 is a larger UAV analogue, not hobby scale.",
+    "access": "Public Carnegie Mellon institutional paper downloaded.",
+    "license": "Copyright notice retained; public institutional access does not imply redistribution permission.",
+    "read_depth": "Full text checked for platform, instrumentation, identification, and validation; raw logs are not included.",
+    "doi": "10.4050/VFS-F55-00161",
+    "resolved_url": "https://publications.ri.cmu.edu/storage/publications/pub_files/pub3/mettler_bernard_1999_1/mettler_bernard_1999_1.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "d595dda7151317a34f870b3e313866e5a5c352701ff682cac9ae6e5551f32cd5",
+    "bytes": 854597
+  },
+  {
+    "id": "mettler-2000-r50-model-report",
+    "title": "System Identification Modeling of a Model-Scale Helicopter",
+    "authors": [
+      "Bernard Mettler",
+      "Takeo Kanade",
+      "Mark B. Tischler"
+    ],
+    "year": 2000,
+    "type": "technical-report",
+    "source_url": "https://publications.ri.cmu.edu/system-identification-of-a-model-scale-helicopter",
+    "download_url": "https://publications.ri.cmu.edu/storage/publications/pub_files/pub2/mettler_bernard_2000_1/mettler_bernard_2000_1.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/cmu_r50_model_2000.pdf",
+    "topics": [
+      "Yamaha R-50",
+      "hover",
+      "cruise",
+      "flight identification",
+      "stabilizer bar"
+    ],
+    "relevance": "CMU-RI-TR-00-03 develops and validates hover and cruise models for the Yamaha R-50 (10 ft rotor), comparing predicted and measured response.",
+    "limitations": "Companion to the 1999 AHS paper and 2002 journal article using the same R-50 flight campaign; the aircraft is much larger than hobby scale.",
+    "access": "Public Carnegie Mellon institutional report downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for platform, hover/cruise scope, model structure, and flight-response comparisons.",
+    "resolved_url": "https://publications.ri.cmu.edu/storage/publications/pub_files/pub2/mettler_bernard_2000_1/mettler_bernard_2000_1.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "89230ccf181677c249011ae2de6ff9324d532d0b9cf7034331d5799941cbfd43",
+    "bytes": 517441
+  },
+  {
+    "id": "mettler-2002-r50-jahs-flight-identification",
+    "title": "System Identification Modeling of a Small-Scale Unmanned Rotorcraft for Flight Control Design",
+    "authors": [
+      "Bernard Mettler",
+      "Mark B. Tischler",
+      "Takeo Kanade"
+    ],
+    "year": 2002,
+    "type": "journal-article",
+    "source_url": "https://doi.org/10.4050/JAHS.47.50",
+    "download_url": "https://publications.ri.cmu.edu/storage/publications/pub_files/pub4/mettler_bernard_2001_1/mettler_bernard_2001_1.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/cmu_r50_jahs_2002.pdf",
+    "topics": [
+      "Yamaha R-50",
+      "hover",
+      "cruise",
+      "CIFER",
+      "flight validation"
+    ],
+    "relevance": "Journal account of R-50 parameter identification; compares predicted with measured hover and cruise responses and evaluates physical parameter meaning.",
+    "limitations": "Companion to the 1999 AHS paper and 2000 CMU report from the same campaign; do not count as a new independent dataset. R-50 has a 3.05 m rotor.",
+    "access": "Public CMU-hosted author paper downloaded; journal DOI metadata recorded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for platform, identified effects, operating conditions, and measured-response validation.",
+    "doi": "10.4050/jahs.47.50",
+    "resolved_url": "https://publications.ri.cmu.edu/storage/publications/pub_files/pub4/mettler_bernard_2001_1/mettler_bernard_2001_1.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "6dfd49f82cb272fc342916731a80cf3185d40b175ca1cfebfc528ea45f23c018",
+    "bytes": 2655395
+  },
+  {
+    "id": "mettler-2004-miniature-rotorcraft-scaling",
+    "title": "Scaling Effects and Dynamic Characteristics of Miniature Rotorcraft",
+    "authors": [
+      "Bernard Mettler",
+      "Michael B. Tischler",
+      "Eric Feron"
+    ],
+    "year": 2004,
+    "type": "journal-article",
+    "source_url": "https://doi.org/10.2514/1.10336",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Yamaha R-50",
+      "X-Cell 60",
+      "scale effects",
+      "flight dynamics"
+    ],
+    "relevance": "Compares identified characteristics of the 3.04 m-rotor Yamaha R-50 and 1.52 m-rotor X-Cell 60 to examine scale effects on response and model structure.",
+    "limitations": "Synthesis of prior campaigns, not a new independent flight dataset; one platform is much larger than hobby scale. Full text not retained.",
+    "access": "DOI/publisher metadata and abstract inspected; full text not retained.",
+    "license": "Publisher copyright; no public redistribution license established.",
+    "read_depth": "Citation and abstract-level review; no full-text coefficient audit.",
+    "doi": "10.2514/1.10336",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "bogdanov-2004-xcell90-rmax-sdre",
+    "title": "Nonlinear Control of a UAV With a Small-Scale Helicopter Benchmark",
+    "authors": [
+      "Alexander Bogdanov",
+      "Eric Wan",
+      "Geoff Harvey"
+    ],
+    "year": 2004,
+    "type": "conference-paper",
+    "source_url": "https://web.cecs.pdx.edu/~ericwan/autonomous-uav-control.html",
+    "download_url": "https://speech.bme.ogi.edu/publications/ps/bogdanov04.pdf",
+    "local_path": null,
+    "topics": [
+      "X-Cell 90",
+      "Yamaha R-MAX",
+      "nonlinear control",
+      "flight tests",
+      "scale boundary"
+    ],
+    "relevance": "CDC paper reports controller flight tests on an instrumented X-Cell 90 and Yamaha R-MAX, distinguishing a hobby RC helicopter from a larger agricultural-UAV analogue.",
+    "limitations": "Controller/flight demonstration, not independent open-loop aerodynamic identification. The author-listed PDF endpoint returned a retrieval error; no local copy or workaround.",
+    "access": "Author publication page/citation inspected; normal retrieval of listed author PDF failed.",
+    "license": "Not stated; no local copy retained.",
+    "read_depth": "Author page and bibliographic/abstract information inspected; full text not obtained.",
+    "doi": "10.1109/CDC.2004.1430204",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "walker-2021-blade360cf-flybarless-id",
+    "title": "Identification and Control Design of a Sub-Scale Flybarless Helicopter",
+    "authors": [
+      "Jeffry Walker",
+      "Mark B. Tischler"
+    ],
+    "year": 2021,
+    "type": "conference-paper",
+    "source_url": "https://www.sjsu.edu/researchfoundation/docs/VFS_2021_Walker.pdf",
+    "download_url": "https://www.sjsu.edu/researchfoundation/docs/VFS_2021_Walker.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/walker_blade360cfx_flybarless_2021.pdf",
+    "topics": [
+      "Blade 360CFX",
+      "flybarless",
+      "CIFER",
+      "flight identification",
+      "model validation"
+    ],
+    "relevance": "Uses CIFER flight data to identify and flight-test a higher-order hybrid model for a commercial Blade 360CFX 3S single-main-rotor helicopter.",
+    "limitations": "SIL/controller success is not physical validation by itself. Reported commercial and instrumented masses refer to different configurations and must not be conflated.",
+    "access": "Public university-hosted conference paper downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for platform, instrumentation, CIFER identification, flight tests, and mass/configuration notes.",
+    "resolved_url": "https://www.sjsu.edu/researchfoundation/docs/VFS_2021_Walker.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "d6d783285336d4069bb8e00aa1d7cc704f35a6366e542ba321c7e3ab75619e56",
+    "bytes": 811175
+  },
+  {
+    "id": "bhandari-2005-raptor50-sixdof",
+    "title": "Six-DoF Dynamic Modeling and Flight Testing of a UAV Helicopter",
+    "authors": [
+      "Subodh Bhandari",
+      "Richard Colgren",
+      "Philipp Lederbogen",
+      "Scott Kowalchuk"
+    ],
+    "year": 2005,
+    "type": "conference-paper",
+    "source_url": "https://doi.org/10.2514/6.2005-6422",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Thunder Tiger Raptor 50",
+      "six-degree-of-freedom model",
+      "CIFER",
+      "flight tests"
+    ],
+    "relevance": "Uses measured flight data from a Raptor 50 V2 to identify and flight-test a six-degree-of-freedom UAV-helicopter model.",
+    "limitations": "Official citation/abstract only; no public author/institutional full text or raw telemetry obtained. Companion to Bhandari and Colgren 2006 from the same platform/campaign.",
+    "access": "DOI citation and abstract inspected; full text not retained.",
+    "license": "Publisher copyright; no public redistribution license established.",
+    "read_depth": "Abstract and official bibliographic record inspected; no coefficient-level review.",
+    "doi": "10.2514/6.2005-6422",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "bhandari-2006-raptor50-stabilizer-bar",
+    "title": "6-DOF Dynamic Model for a Raptor 50 UAV Helicopter Including Stabilizer Bar Dynamics",
+    "authors": [
+      "Subodh Bhandari",
+      "Richard Colgren"
+    ],
+    "year": 2006,
+    "type": "conference-paper",
+    "source_url": "https://doi.org/10.2514/6.2006-6738",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Thunder Tiger Raptor 50",
+      "six-degree-of-freedom model",
+      "stabilizer bar",
+      "flight identification"
+    ],
+    "relevance": "Extends the Raptor 50 model with explicit stabilizer-bar dynamics, a relevant hardware feature for flybarred small helicopters.",
+    "limitations": "Same Raptor campaign/model family as Bhandari et al. 2005, not an independent dataset. Official citation/abstract only; full text not retained.",
+    "access": "DOI/faculty bibliography and abstract-level material inspected; full text not retained.",
+    "license": "Publisher copyright; no public redistribution license established.",
+    "read_depth": "Abstract and official bibliographic record inspected; no coefficient-level review.",
+    "doi": "10.2514/6.2006-6738",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "liu-2011-raptor50-forward-flight-id",
+    "title": "Identification of Lateral/Directional Model for a UAV Helicopter in Forward Flight",
+    "authors": [
+      "Peng Liu",
+      "Zhijun Meng",
+      "Zhe Wu"
+    ],
+    "year": 2011,
+    "type": "journal-article",
+    "source_url": "https://doi.org/10.1016/j.proeng.2011.08.1063",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Raptor 50",
+      "forward flight",
+      "frequency sweep",
+      "lateral-directional identification"
+    ],
+    "relevance": "Reports forward-flight frequency-sweep/time-history evidence for a Raptor 50 and checks an identified lateral-directional model against flight response.",
+    "limitations": "Publisher metadata/abstract available, but normal PDF retrieval returned an access error; no full text or telemetry retained.",
+    "access": "Public article metadata/abstract inspected; publisher PDF not retrieved under ordinary access.",
+    "license": "Publisher copyright; no public redistribution license established.",
+    "read_depth": "Abstract-level review; full-text figure, parameter, and data audit not possible.",
+    "doi": "10.1016/j.proeng.2011.08.1063",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "tang-2014-raptor90-nonlinear-id",
+    "title": "Nonlinear System Identification of a Small-Scale Unmanned Helicopter",
+    "authors": [
+      "M. Tang",
+      "Y. Zheng",
+      "P. Qian",
+      "Y. Zhao"
+    ],
+    "year": 2014,
+    "type": "journal-article",
+    "source_url": "https://doi.org/10.1016/j.conengprac.2013.12.004",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Thunder Tiger Raptor 90",
+      "nonlinear identification",
+      "flight data",
+      "Bell-Hiller flybar"
+    ],
+    "relevance": "Reports flight-data-based nonlinear identification and separate flight validation on a Raptor 90 RC helicopter, with dimensions and Bell-Hiller configuration described.",
+    "limitations": "Publisher abstract/platform description only; full text and raw flight records not retained. Results are specific to the stated configuration and excitation envelope.",
+    "access": "Publisher DOI metadata and abstract inspected; full text not retained.",
+    "license": "Publisher copyright; no public redistribution license established.",
+    "read_depth": "Abstract and accessible platform description reviewed; no full coefficient audit.",
+    "doi": "10.1016/j.conengprac.2013.12.004",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "mohajerani-2014-trex700-frequency-id-thesis",
+    "title": "Frequency-Domain System Identification for Unmanned Helicopters from Flight Data",
+    "authors": [
+      "M. Mohajerani"
+    ],
+    "year": 2014,
+    "type": "masters-thesis",
+    "source_url": "https://spectrum.library.concordia.ca/id/eprint/978986/",
+    "download_url": "https://spectrum.library.concordia.ca/978986/1/Mohajerani_MASc_F2014.pdf",
+    "local_path": null,
+    "topics": [
+      "Align T-Rex 700",
+      "MicroPilot MP2128G2",
+      "hover",
+      "frequency-domain identification",
+      "flight data"
+    ],
+    "relevance": "Repository abstract describes hover frequency-sweep identification from actual T-Rex 700 flights using MicroPilot avionics, compared with CIFER.",
+    "limitations": "Public repository metadata/abstract only; ordinary verified TLS/access failed for the PDF, so no copy retained or workaround used. Related AIAA paper reports the same campaign.",
+    "access": "Public institutional metadata/abstract; author PDF endpoint failed ordinary retrieval.",
+    "license": "Not stated; no local copy retained.",
+    "read_depth": "Repository metadata/abstract inspected; full text not obtained.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "mohajerani-2014-trex700-loes-paper",
+    "title": "Identification of Low Order Equivalent Transfer Function Model of Trex-700E Helicopter from Flight Test Data",
+    "authors": [
+      "M. Mohajerani",
+      "Hamidreza Bolandhemmat",
+      "Youmin Zhang",
+      "Howard W. Loewen"
+    ],
+    "year": 2014,
+    "type": "conference-paper",
+    "source_url": "https://doi.org/10.2514/6.2014-1344",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Align T-Rex 700E",
+      "MicroPilot",
+      "hover",
+      "equivalent transfer functions",
+      "flight tests"
+    ],
+    "relevance": "Reports longitudinal/lateral low-order transfer-function identification from piloted frequency sweeps on a T-Rex 700E using flight data.",
+    "limitations": "Same platform/campaign as Mohajerani's 2014 thesis, a companion publication rather than independent evidence. Full paper not retained.",
+    "access": "DOI and abstract-level metadata inspected; full text not retained.",
+    "license": "Publisher copyright; no public redistribution license established.",
+    "read_depth": "Abstract and citation reviewed; no full-text coefficient audit.",
+    "doi": "10.2514/6.2014-1344",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "liang-2011-trex500-model-identification-thesis",
+    "title": "Aerodynamic Modeling and System Identification of a Miniature Helicopter",
+    "authors": [
+      "Zhe Liang"
+    ],
+    "year": 2011,
+    "type": "masters-thesis",
+    "source_url": "https://researchportal.hkust.edu.hk/en/studentTheses/aerodynamic-modeling-and-system-identification-of-a-miniature-hel/",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Align T-Rex 500",
+      "six-degree-of-freedom model",
+      "flybar",
+      "rotor thrust bench test",
+      "hover validation"
+    ],
+    "relevance": "HKUST thesis record describes a T-Rex 500 model, rotor-thrust bench experiment, and structural-model validation in hover.",
+    "limitations": "Institutional metadata/abstract only in this collection; bench and hover findings are condition-specific, and no raw telemetry is linked here.",
+    "access": "Public HKUST research record/abstract inspected; no local full text retained.",
+    "license": "Not stated; no local copy retained.",
+    "read_depth": "Institutional record and abstract inspected; full text not retained.",
+    "doi": "10.14711/thesis-b1136757",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "liu-chen-2016-trex250-dynamics-chapter",
+    "title": "Dynamics Modelling and System Identification of Small Unmanned Helicopters",
+    "authors": [
+      "Cunjia Liu",
+      "Wen-Hua Chen"
+    ],
+    "year": 2016,
+    "type": "book-chapter",
+    "source_url": "https://research.polyu.edu.hk/en/publications/dynamics-modelling-and-system-identification-of-small-unmanned-he/",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "Align T-Rex 250",
+      "flight tests",
+      "rotor model",
+      "system identification"
+    ],
+    "relevance": "Chapter includes a T-Rex 250 dynamics and identification case with flight-test evidence and a simplified rotor representation.",
+    "limitations": "Synthesis/case study, not raw-data release; publisher book text is not public in the linked institutional record. Platform results are configuration-specific.",
+    "access": "Public PolyU bibliographic record inspected; publisher chapter not retained.",
+    "license": "Publisher copyright; no public redistribution license established.",
+    "read_depth": "Institutional chapter metadata/abstract inspected; full text not retained.",
+    "doi": "10.1002/9781118928691.ch7",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  },
+  {
+    "id": "reddi-boje-2014-trex250se-lowcost-id",
+    "title": "System Identification for Low-Cost Small-Scale Helicopters",
+    "authors": [
+      "Y. Reddi",
+      "E. Boje"
+    ],
+    "year": 2014,
+    "type": "conference-paper",
+    "source_url": "https://doi.org/10.3182/20140824-6-ZA-1003.00453",
+    "download_url": "https://skoge.folk.ntnu.no/prost/proceedings/ifac2014/media/files/0453.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/ifac_low_cost_helicopter_sysid_2014.pdf",
+    "topics": [
+      "Align T-Rex 250SE",
+      "hover",
+      "flight data",
+      "visual tracking",
+      "plant identification"
+    ],
+    "relevance": "T-Rex 250SE twin-helicopter testbed (460 mm rotor; 340 g base flying mass plus avionics) with hover plant parameters estimated from onboard and optical flight data.",
+    "limitations": "Preliminary platform/hover identification, not full nonlinear-envelope validation or slung-load performance; both aircraft share one testbed design.",
+    "access": "Public IFAC proceedings paper downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for dimensions, mass, sensors, flight data, and estimated hover parameters.",
+    "doi": "10.3182/20140824-6-ZA-1003.00453",
+    "resolved_url": "https://skoge.folk.ntnu.no/prost/proceedings/ifac2014/media/files/0453.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "e3a1831523f2a4bdf3ec4e88845382ebdc865f6ff3ec4453994d05a72ac815a6",
+    "bytes": 1067997
+  },
+  {
+    "id": "abbeel-2008-xcell-tempest-autorotation",
+    "title": "Autonomous Autorotation of an RC Helicopter",
+    "authors": [
+      "Pieter Abbeel",
+      "Adam Coates",
+      "Timothy Hunter",
+      "Andrew Y. Ng"
+    ],
+    "year": 2008,
+    "type": "conference-paper",
+    "source_url": "https://cs.stanford.edu/groups/helicopter/papers/AbbeelCoatesHunterNg_aaoarch_iser2008.pdf",
+    "download_url": "https://cs.stanford.edu/groups/helicopter/papers/AbbeelCoatesHunterNg_aaoarch_iser2008.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/stanford_rc_autorotation_2008.pdf",
+    "topics": [
+      "X-Cell Tempest",
+      "autorotation",
+      "rotor speed",
+      "flight tests",
+      "landing"
+    ],
+    "relevance": "Documents expert data and autonomous autorotation descent/landing on a 90-size X-Cell Tempest, using inertial sensing and ground-based optical position tracking.",
+    "limitations": "Closed-loop demonstration, not a general descent-rate dataset or open-loop rotor model; related to the Stanford aerobatics program and no raw telemetry archive is supplied.",
+    "access": "Public Stanford author paper downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for helicopter dimensions, sensing, demonstrations, autorotation, and landing results.",
+    "resolved_url": "https://cs.stanford.edu/groups/helicopter/papers/AbbeelCoatesHunterNg_aaoarch_iser2008.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "e382a6e2ac4dbda1426a5d7965a2da0b4ed968813f28b3c0a1b7df0e0bfcfc12",
+    "bytes": 1727726
+  },
+  {
+    "id": "abbeel-2010-stanford-heli-aerobatics",
+    "title": "Autonomous Helicopter Aerobatics through Apprenticeship Learning",
+    "authors": [
+      "Pieter Abbeel",
+      "Adam Coates",
+      "Andrew Y. Ng"
+    ],
+    "year": 2010,
+    "type": "journal-article",
+    "source_url": "https://doi.org/10.1177/0278364910371999",
+    "download_url": "https://cs.stanford.edu/~acoates/papers/AbbeelCoatesNg_IJRR2010.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/stanford_helicopter_aerobatics_2010.pdf",
+    "topics": [
+      "X-Cell Tempest",
+      "Synergy N9",
+      "aerobatics",
+      "autorotation",
+      "expert demonstrations"
+    ],
+    "relevance": "Reports actual expert/autonomous maneuvers on 90-size X-Cell Tempest and Synergy N9 helicopters, with aircraft dimensions and tasks described.",
+    "limitations": "Controller/apprenticeship study, not open-loop aerodynamic validation or raw-data release. Related to Stanford 2008 autorotation work; overlap at platform/program level.",
+    "access": "Public Stanford author manuscript downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for model identities, dimensions, flight maneuvers, and experimental results.",
+    "doi": "10.1177/0278364910371999",
+    "resolved_url": "https://cs.stanford.edu/~acoates/papers/AbbeelCoatesNg_IJRR2010.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "b013d22acadbfb2c8791acea7a9e60b48b2b7ed4200bf50597d36c5722d4e2c3",
+    "bytes": 3460164
+  },
+  {
+    "id": "gladysz-wang-2014-ds610-servo",
+    "title": "Investigation of Small Scale Helicopter Servo-Actuator Performance Using Frequency Sampling Filters",
+    "authors": [
+      "Bart Gladysz",
+      "Liuping Wang"
+    ],
+    "year": 2014,
+    "type": "conference-paper",
+    "source_url": "https://doi.org/10.3182/20140824-6-ZA-1003.01137",
+    "download_url": "https://skoge.folk.ntnu.no/prost/proceedings/ifac2014/media/files/01137.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/ifac_align_ds610_servo_2014.pdf",
+    "topics": [
+      "Align DS610",
+      "servo dynamics",
+      "bench test",
+      "aircraft load",
+      "T-Rex 700E"
+    ],
+    "relevance": "Measures cyclic-servo response on an Align DS610 under unloaded bench and aircraft loading; mounted to a modified T-Rex 700E with four-blade main and tail rotors.",
+    "limitations": "Servo/linkage dynamics only, not whole-airframe flight identification; modified four-blade test article differs from stock T-Rex 700E.",
+    "access": "Public IFAC proceedings paper downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for test article, load cases, identification method, and measured response comparisons.",
+    "doi": "10.3182/20140824-6-ZA-1003.01137",
+    "resolved_url": "https://skoge.folk.ntnu.no/prost/proceedings/ifac2014/media/files/01137.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "990053ab16eec9de4f3aac31bb6aeec19e75339f2ff67020842b9a8e37095bde",
+    "bytes": 660419
+  },
+  {
+    "id": "du-2020-trex450l-hover-piv",
+    "title": "Research on Rotorcraft Blade Tip Vortex Identification and Motion Characteristics in Hovering State",
+    "authors": [
+      "Hai Du",
+      "Wenjie Kong",
+      "Yan Wang",
+      "Wenjing Liu",
+      "Mingqi Huang",
+      "Weiguo Zhang",
+      "Min Tang"
+    ],
+    "year": 2020,
+    "type": "journal-article",
+    "source_url": "https://www.mdpi.com/2073-8994/12/2/196",
+    "download_url": "https://mdpi-res.com/d_attachment/symmetry/symmetry-12-00196/article_deploy/symmetry-12-00196-v2.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/trex450_piv_hover_2020.pdf",
+    "topics": [
+      "T-Rex 450L",
+      "hover rotor",
+      "time-resolved PIV",
+      "blade-tip vortices"
+    ],
+    "relevance": "Time-resolved PIV measures hover flow around a T-Rex 450L-derived rotor at 2100 rpm and 6°/9° collective; vortex metrics are computed from measured velocity fields.",
+    "limitations": "Static bracket 1.5 m above ground deliberately reduces ground effect; rotor-rig experiment, not free flight or ground-effect validation. Vortex identifiers are post-processed quantities.",
+    "access": "Open-access MDPI article downloaded.",
+    "license": "CC BY 4.0.",
+    "read_depth": "Full text checked for geometry, stand arrangement, PIV measurements, and measured-versus-derived quantities.",
+    "doi": "10.3390/sym12020196",
+    "resolved_url": "https://mdpi-res.com/d_attachment/symmetry/symmetry-12-00196/article_deploy/symmetry-12-00196-v2.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "86228953858347826e2dad56d371e8a870ea0a83ce4e902f93a0cb655c5cf3f0",
+    "bytes": 6424082
+  },
+  {
+    "id": "kocak-2016-model-rotor-ground-flow",
+    "title": "Flow Characterization of Full, Partial, and Inclined Ground Effect",
+    "authors": [
+      "Göktuğ Koçak"
+    ],
+    "year": 2016,
+    "type": "masters-thesis",
+    "source_url": "https://open.metu.edu.tr/handle/11511/25890",
+    "download_url": "https://etd.lib.metu.edu.tr/upload/12620347/index.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/metu_kocak_ground_flow_2016.pdf",
+    "topics": [
+      "model-scale rotor",
+      "hover",
+      "ground effect",
+      "laser Doppler anemometry",
+      "flow visualization"
+    ],
+    "relevance": "Measures hover wake from an approximately 0.70 m-diameter model rotor using smoke visualization and LDA in full, partial, and inclined ground-effect arrangements; also compares generic numerical models.",
+    "limitations": "Custom rotor stand, no airframe flight; findings apply to tested rotor, rpm, clearance, and enclosure. Numerical flow is computed, not measured.",
+    "access": "Public METU institutional thesis downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for rotor scale, hover rig, LDA/smoke methods, conditions, and flow observations.",
+    "resolved_url": "https://etd.lib.metu.edu.tr/upload/12620347/index.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "4e8ca153b670f9c8d431a6eab1bc42d3900fd887600ed7738d3fd17e9b1b3e22",
+    "bytes": 3333706
+  },
+  {
+    "id": "sahbaz-2017-model-rotor-ground-effect",
+    "title": "Aerodynamic Investigation of a Model Scale Helicopter Rotor in Ground Effect",
+    "authors": [
+      "Mehmet Şahbaz"
+    ],
+    "year": 2017,
+    "type": "masters-thesis",
+    "source_url": "https://open.metu.edu.tr/handle/11511/26881",
+    "download_url": "https://etd.lib.metu.edu.tr/upload/12621680/index.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/metu_sahbaz_ground_effect_2017.pdf",
+    "topics": [
+      "model-scale rotor",
+      "ground effect",
+      "thrust",
+      "torque",
+      "CFD comparison"
+    ],
+    "relevance": "Directly measures thrust and torque for a two-blade, approximately 0.73 m-diameter model rotor at varied speed, collective, ground clearance, and inclined-ground conditions.",
+    "limitations": "Rotor-stand test, not whole-helicopter flight. Related METU lab work uses a similar scale but separate measurements; CFD flow explanations are computed rather than measured.",
+    "access": "Public METU institutional thesis downloaded.",
+    "license": "Not stated; public access does not imply redistribution permission.",
+    "read_depth": "Full text checked for rotor dimensions, load measurements, ground configurations, and experiment/CFD distinction.",
+    "resolved_url": "https://etd.lib.metu.edu.tr/upload/12621680/index.pdf",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "48e0fbe1ceee545a3d906b9335fa64230b9c634eb573e80f7594b1e06c9888e0",
+    "bytes": 7991591
+  },
+  {
+    "id": "kumar-2018-trex600-ship-airwake",
+    "title": "Estimation and Mapping of Ship Airwake Using RC Helicopters as a Sensing Platform",
+    "authors": [
+      "Anil Kumar"
+    ],
+    "year": 2018,
+    "type": "doctoral-thesis",
+    "source_url": "https://vtechworks.lib.vt.edu/items/8784e3b3-00e1-4db7-a903-45b53baba649",
+    "download_url": "https://vtechworks.lib.vt.edu/server/api/core/bitstreams/a6b059f9-f933-4740-9017-f37623d2b43d/content",
+    "local_path": "references/rc-validation-library-2026-10-18/helicopters/kumar_rc_helicopter_ship_airwake_phd_2018.pdf",
+    "topics": [
+      "Align T-Rex 600E",
+      "ship airwake",
+      "flight measurements",
+      "anemometer calibration",
+      "inferred flow"
+    ],
+    "relevance": "Uses three flying T-Rex 600E variants, indoor calibrated wind, and ship-side flights near YP676 to estimate spatial airwake from vehicle response and pilot/sensor data.",
+    "limitations": "Airwake map is inferred through a response model and compared qualitatively with CFD; not direct standalone rotor/wind-vector data or generic open-loop identification.",
+    "access": "Public Virginia Tech institutional dissertation downloaded.",
+    "license": "Author copyright; public repository access does not imply redistribution permission.",
+    "read_depth": "Full text checked for aircraft variants, wind calibration, indoor/field tests, and measured-versus-inferred quantities.",
+    "resolved_url": "https://vtechworks.lib.vt.edu/server/api/core/bitstreams/a6b059f9-f933-4740-9017-f37623d2b43d/content",
+    "verified": "PDF signature and first-page text verified; full-text extraction succeeded.",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": "c24bca21a58370f16d788edc39d97764a88e452fbdf317401df0e13b3634272d",
+    "bytes": 10270753
+  },
+  {
+    "id": "chen-2014-zju-small-heli-ground-effect",
+    "title": "Ground Effect Modeling for Small-Scale Unmanned Helicopter",
+    "authors": [
+      "Di-shi Chen",
+      "Yu Zhang",
+      "Ping Li"
+    ],
+    "year": 2014,
+    "type": "journal-article",
+    "source_url": "https://www.zjujournals.com/eng/CN/10.3785/j.issn.1008-973X.2014.01.024",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "small-scale unmanned helicopter",
+      "IGE/OGE",
+      "hover",
+      "lift calibration",
+      "ground-effect model"
+    ],
+    "relevance": "Official abstract reports real hover tests at different loads/heights, rotor-lift versus collective calibration, and measured-flight comparison with IGE/OGE model replays using actual control input.",
+    "limitations": "Accessible abstract does not identify the helicopter model or provide raw data. Ground-effect lift is inferred from hover calibration; model replay is simulated, not rotor-flow measurement.",
+    "access": "Official journal abstract inspected; PDF action returned a waiting/challenge page under ordinary access, so no copy retained or workaround attempted.",
+    "license": "Journal copyright; no public redistribution license established.",
+    "read_depth": "Official bilingual abstract and citation inspected; full text not obtained.",
+    "doi": "10.3785/j.issn.1008-973X.2014.01.024",
+    "retrieved_utc": "2026-10-19T02:06:16+00:00",
+    "sha256": null,
+    "bytes": null
+  }
+]

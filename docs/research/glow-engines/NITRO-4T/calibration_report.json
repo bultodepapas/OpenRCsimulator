@@ -526,7 +526,7 @@
         "installation_source": {
           "configuration_id": "fs64v_apc_sport_13x6",
           "path": "app/data/glow/stik_fs64v_4t_apc_13x6.json",
-          "sha256": "e4c1f402fe236d40b3ec89262f5999ac0702d7ef52c514eb99cb551c2a41357e",
+          "sha256": "679d73b3674ec4842b62fbb5cb9e40d80104467bbf8bfd57b8e4c874f50988ff",
           "family": "glow_4t",
           "geometry": {
             "diameter_m": 0.3302,
@@ -542,7 +542,7 @@
           },
           "legacy_static_rpm_reference": 10000.0,
           "aircraft_path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
-          "aircraft_sha256": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf"
+          "aircraft_sha256": "27e6b8bfd774bf8d591caf051006084c04f84586abcea89bff9a2905d96aed22"
         },
         "chord_basis": "scaled from 30 mm Master Airscrew 14x6 screening geometry; no APC blade chord data",
         "anchor_rpm": null,
@@ -1041,11 +1041,11 @@
                   "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                   "disk_area_m2": 0.08563356396747712,
                   "axial_speed_m_s": 30.0,
-                  "thrust_n": 7.279726192614928,
+                  "thrust_n": 7.2797261926149295,
                   "ideal_disk_speed_m_s": 31.115149389000752,
-                  "ideal_shaft_power_lower_bound_w": 226.50976799423515,
+                  "ideal_shaft_power_lower_bound_w": 226.5097679942352,
                   "surrogate_shaft_power_w": 580.0956601428585,
-                  "shaft_to_ideal_power_ratio": 2.561018296383679,
+                  "shaft_to_ideal_power_ratio": 2.5610182963836783,
                   "relative_tolerance": 1e-10
                 },
                 "thrust_n": 7.27972619,
@@ -1075,11 +1075,11 @@
                 "source": "https://www1.grc.nasa.gov/beginners-guide-to-aeronautics/propeller-thrust/",
                 "disk_area_m2": 0.08563356396747712,
                 "axial_speed_m_s": 30.0,
-                "thrust_n": 7.279726192614928,
+                "thrust_n": 7.2797261926149295,
                 "ideal_disk_speed_m_s": 31.115149389000752,
-                "ideal_shaft_power_lower_bound_w": 226.50976799423515,
+                "ideal_shaft_power_lower_bound_w": 226.5097679942352,
                 "surrogate_shaft_power_w": 580.0956601428585,
-                "shaft_to_ideal_power_ratio": 2.561018296383679,
+                "shaft_to_ideal_power_ratio": 2.5610182963836783,
                 "relative_tolerance": 1e-10
               },
               "thrust_n": 7.27972619,
@@ -1153,7 +1153,7 @@
         "installation_source": {
           "configuration_id": "fs64v_master_airscrew_k_14x6",
           "path": "app/data/glow/stik_fs64v_4t.json",
-          "sha256": "216e0d58f0aa4885160c39e556663a4170ac36e2b2a6831d66531003ed8fb3b4",
+          "sha256": "47c92d49aed4da6b9ea30d50bb7a4a705aab9e0155c8bb95da860671feac1039",
           "family": "glow_4t",
           "geometry": {
             "diameter_m": 0.35559999999999997,
@@ -1169,7 +1169,7 @@
           },
           "legacy_static_rpm_reference": 10000.0,
           "aircraft_path": "app/data/aircraft/stik_glow_fs64v_4t.json",
-          "aircraft_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5"
+          "aircraft_sha256": "c42640d6f6e4d25bb8db0266ed3310e22432366098d9e84bcccf8dc3097643c6"
         },
         "chord_basis": "explicit unmeasured 30 mm wide-chord screening assumption, not fitted to an FS-64V RPM datum",
         "anchor_rpm": null,

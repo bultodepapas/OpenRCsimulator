@@ -12,6 +12,8 @@ The closest measured-model evidence is the [Giant Big Stik thesis](https://memor
 
 No public, verified raw flight log was found for either Stik source. The exact Jensen 60 still lacks a freely accessible complete-airframe wind-tunnel campaign or independent flight-identified six-degree-of-freedom model in this collection.
 
+The later [focused Ugly Stik collection](../ugly-stik/README.md) extends this search with further family-specific research, original handling reports and related-airframe flight data. It keeps the Jensen, Big Stik and Ultra Stick evidence separate.
+
 ## Conventional trainer analogues
 
 | Source | Evidence useful to model validation | Boundary |

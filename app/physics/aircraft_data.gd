@@ -22,6 +22,8 @@ const WingPolar := preload("res://physics/wing_polar.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const GlowInstallation := preload("res://physics/glow/installation.gd")
+const BatteryData := preload("res://physics/battery/battery_data.gd")
+const EscSupervisor := preload("res://physics/battery/esc_supervisor.gd")
 ## The full-envelope blend may not start below this |α|: the linear model is the test oracle up to here (D9a).
 const ORACLE_ALPHA_DEG := 8.0
 ## CR-01d: names a crash-hull point may carry (crash_hull_components). Same list as the contract's enum path;
@@ -142,7 +144,10 @@ static func _q(errors: PackedStringArray, path: String, node: Variant, unit: Str
 
 static func validate_and_derive(raw: Dictionary) -> Dictionary:
 	if raw.get("format") == LEGACY_FORMAT:
-		return _validate_legacy(raw)
+		var legacy: Dictionary = _validate_legacy(raw)
+		if legacy.get("ok", false) and legacy.model.propulsion.get("battery", {}).get("kind") == "pack_ecm":
+			return _fail("propulsion.battery: pack_ecm requires openrc-aircraft v2 (inventory ids name the pack mount)")
+		return legacy
 	if raw.get("format") != FORMAT:
 		return _fail("format must be '%s' or explicit legacy '%s'" % [FORMAT, LEGACY_FORMAT])
 	var structural: PackedStringArray = Contract.validate(raw)
@@ -166,6 +171,12 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 				return {ok=false,errors=installed.errors,warnings=result.warnings,model={}}
 			result.model = installed.model
 			result.warnings.append("Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending")
+		if result.model.propulsion.get("battery", {}).get("kind") == "pack_ecm":
+			# BAT-09: authored v2 inventory ids name the mount; the internal v1 form drops them.
+			var mount_errors := PackedStringArray()
+			_validate_pack_mount(mount_errors, result.model.propulsion.battery, raw.get("inventory", []))
+			if not mount_errors.is_empty():
+				return {ok=false,errors=mount_errors,warnings=result.warnings,model={}}
 		var identities := PhysicalIdentity.describe(raw)
 		if not identities.is_empty():
 			result.model.physical_identity = identities
@@ -1053,11 +1064,19 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 	var battery: Dictionary = battery_result.get("battery", {})
 	var reference_voltage: float = float(battery_result.get("reference_voltage", 0.0))
 	var esc_raw := _dictionary(errors, "propulsion.esc", node.get("esc", {}))
-	_reject_unknown_keys(errors, "propulsion.esc", esc_raw, ["kind", "command_mapping"])
+	_reject_unknown_keys(errors, "propulsion.esc", esc_raw, ["kind", "command_mapping", "low_voltage_cutoff"])
 	if esc_raw.get("kind") != "ideal_motoring":
 		errors.append("propulsion.esc.kind: only 'ideal_motoring' is supported")
 	if esc_raw.get("command_mapping") != "identity":
 		errors.append("propulsion.esc.command_mapping: only 'identity' is supported")
+	# BAT-11: the sampled LVC supervisor needs a finite pack with cell voltages; it is required for pack_ecm only.
+	var lvc: Dictionary = {}
+	if battery.get("kind") == "pack_ecm":
+		lvc = _low_voltage_cutoff(errors, esc_raw.get("low_voltage_cutoff"))
+		if not lvc.is_empty():
+			battery["lvc_filter_s"] = float(lvc.voltage_filter_s)
+	elif esc_raw.has("low_voltage_cutoff"):
+		errors.append("propulsion.esc.low_voltage_cutoff: only valid with a pack_ecm battery")
 	var prop_raw := _dictionary(errors, "propulsion.propeller", node.get("propeller", {}))
 	_reject_unknown_keys(errors, "propulsion.propeller", prop_raw, [
 		"name", "diameter", "thrust_line_offset", "rotating_inertia", "ct_table", "cp_table", "thrust_angles",
@@ -1108,7 +1127,8 @@ static func _electric_propulsion(errors: PackedStringArray, node: Dictionary) ->
 		kind = "electric_prop",
 		motor = {kv_rpm_per_volt = kv, resistance_ohm = resistance, no_load_current_a = idle_current},
 		battery = battery,
-		esc = {kind = "ideal_motoring", command_mapping = "identity"},
+		esc = {kind = "ideal_motoring", command_mapping = "identity"} if lvc.is_empty() \
+			else {"kind": "ideal_motoring", "command_mapping": "identity", "low_voltage_cutoff": lvc},
 		max_rpm = max_rpm,
 		diameter = diameter,
 		offset = offset,
@@ -1135,8 +1155,10 @@ static func _electric_battery(errors: PackedStringArray, battery_raw: Dictionary
 			return {}
 		# Preserve StringName keys: native model bytes identify existing v5 checkpoints.
 		return {"battery": {kind = "fixed_voltage", voltage_v = bus_voltage}, "reference_voltage": float(bus_voltage)}
+	if battery_kind == "pack_ecm":
+		return _pack_ecm_battery(errors, battery_raw)
 	if battery_kind != "ocv_resistance":
-		errors.append("propulsion.battery.kind: must be 'fixed_voltage' or 'ocv_resistance'")
+		errors.append("propulsion.battery.kind: must be 'fixed_voltage', 'ocv_resistance' or 'pack_ecm'")
 		return {}
 
 	_reject_unknown_keys(errors, "propulsion.battery", battery_raw, [
@@ -1213,6 +1235,102 @@ static func _electric_battery(errors: PackedStringArray, battery_raw: Dictionary
 		},
 		"reference_voltage": maximum_ocv,
 	}
+
+
+## BAT-09: a generated pack (openrc-battery v1) referenced by id and pinned by SHA-256, plus the installation.
+## The normalized pack tables are embedded so the session never reads battery files during flight.
+static func _pack_ecm_battery(errors: PackedStringArray, battery_raw: Dictionary) -> Dictionary:
+	_reject_unknown_keys(errors, "propulsion.battery", battery_raw, [
+		"kind", "pack", "mount_inventory_id", "initial_soc", "auxiliary_current_a", "cooling_airflow_fraction", "weak_cell",
+	])
+	var pack_ref := _dictionary(errors, "propulsion.battery.pack", battery_raw.get("pack", {}))
+	_reject_unknown_keys(errors, "propulsion.battery.pack", pack_ref, ["id", "sha256"])
+	if typeof(battery_raw.get("mount_inventory_id")) != TYPE_STRING or str(battery_raw.get("mount_inventory_id")).is_empty():
+		errors.append("propulsion.battery.mount_inventory_id: must name the pack's inventory item")
+	var initial_soc: Variant = _electric_q(errors, "propulsion.battery.initial_soc", battery_raw.get("initial_soc"), "1", 0.0, 1.0)
+	var auxiliary: Variant = _electric_q(errors, "propulsion.battery.auxiliary_current_a", battery_raw.get("auxiliary_current_a"), "A", 0.0, 100.0)
+	var airflow: Variant = _electric_q(errors, "propulsion.battery.cooling_airflow_fraction", battery_raw.get("cooling_airflow_fraction"), "1", 0.0, 1.0)
+	var weak_raw := _dictionary(errors, "propulsion.battery.weak_cell", battery_raw.get("weak_cell", {}))
+	_reject_unknown_keys(errors, "propulsion.battery.weak_cell", weak_raw, ["capacity_factor", "resistance_factor", "soc_offset"])
+	var weak_capacity: Variant = _electric_q(errors, "propulsion.battery.weak_cell.capacity_factor", weak_raw.get("capacity_factor"), "1", 0.01, 1.0)
+	var weak_resistance: Variant = _electric_q(errors, "propulsion.battery.weak_cell.resistance_factor", weak_raw.get("resistance_factor"), "1", 1.0, 10.0)
+	var weak_offset: Variant = _electric_q(errors, "propulsion.battery.weak_cell.soc_offset", weak_raw.get("soc_offset"), "1", 0.0, 0.5)
+	if not errors.is_empty():
+		return {}
+	if float(initial_soc) - float(weak_offset) <= 0.0 or float(weak_offset) >= 0.5:
+		errors.append("propulsion.battery: initial_soc must exceed the weak-cell soc_offset, and the offset must be < 0.5")
+		return {}
+	var pack: Dictionary = BatteryData.load_pack(errors, "propulsion.battery.pack", pack_ref.get("id"), pack_ref.get("sha256"))
+	if pack.is_empty():
+		return {}
+	var battery: Dictionary = pack.duplicate()
+	battery.merge({
+		"kind": "pack_ecm",
+		"initial_soc": float(initial_soc),
+		"auxiliary_current_a": float(auxiliary),
+		"cooling_airflow_fraction": float(airflow),
+		"weak_capacity_factor": float(weak_capacity),
+		"weak_resistance_factor": float(weak_resistance),
+		"weak_soc_offset": float(weak_offset),
+		"mount_inventory_id": str(battery_raw.mount_inventory_id),
+	}, true)
+	var maximum_ocv: float = 0.0
+	for value: float in battery.ocv:
+		maximum_ocv = maxf(maximum_ocv, value)
+	return {"battery": battery, "reference_voltage": float(battery.series) * maximum_ocv}
+
+
+static func _low_voltage_cutoff(errors: PackedStringArray, node: Variant) -> Dictionary:
+	var path := "propulsion.esc.low_voltage_cutoff"
+	var raw := _dictionary(errors, path, node if node != null else {})
+	if node == null:
+		errors.append(path + ": required with a pack_ecm battery (use mode 'off' to disable)")
+		return {}
+	_reject_unknown_keys(errors, path, raw, ["mode", "cell_detection", "fixed_cells", "detection_max_cell_v",
+		"cutoff_per_cell_v", "soft_limit", "soft_ramp_s", "debounce_s", "recovery", "reset_throttle_max", "voltage_filter_s"])
+	var out: Dictionary = {"mode": raw.get("mode"), "cell_detection": raw.get("cell_detection"), "recovery": raw.get("recovery")}
+	if raw.get("cell_detection") == "fixed":
+		var cells: Variant = _electric_q(errors, path + ".fixed_cells", raw.get("fixed_cells"), "1", 1.0, 24.0)
+		if cells == null or float(cells) != floorf(float(cells)):
+			errors.append(path + ".fixed_cells: must be an integer cell count")
+			return {}
+		out.fixed_cells = int(cells)
+		if raw.has("detection_max_cell_v"):
+			errors.append(path + ".detection_max_cell_v: only valid with automatic detection")
+	else:
+		out.detection_max_cell_v = _electric_q(errors, path + ".detection_max_cell_v", raw.get("detection_max_cell_v"), "V", 0.5, 6.0)
+		if raw.has("fixed_cells"):
+			errors.append(path + ".fixed_cells: only valid with fixed detection")
+	out.cutoff_per_cell_v = _electric_q(errors, path + ".cutoff_per_cell_v", raw.get("cutoff_per_cell_v"), "V", 0.5, 5.0)
+	out.soft_limit = _electric_q(errors, path + ".soft_limit", raw.get("soft_limit"), "1", 0.0, 1.0)
+	out.soft_ramp_s = _electric_q(errors, path + ".soft_ramp_s", raw.get("soft_ramp_s"), "s", 0.0, 60.0)
+	out.debounce_s = _electric_q(errors, path + ".debounce_s", raw.get("debounce_s"), "s", 0.0, 60.0)
+	out.reset_throttle_max = _electric_q(errors, path + ".reset_throttle_max", raw.get("reset_throttle_max"), "1", 0.0, 1.0)
+	out.voltage_filter_s = _electric_q(errors, path + ".voltage_filter_s", raw.get("voltage_filter_s"), "s", 0.0, 10.0)
+	if not errors.is_empty():
+		return {}
+	var message: String = EscSupervisor.validate(out)
+	if not message.is_empty():
+		errors.append("propulsion.esc." + message)
+		return {}
+	return out
+
+
+## BAT-09: the mounted inventory item carries the pack's mass, so CG and inertia follow the selected pack.
+static func _validate_pack_mount(errors: PackedStringArray, battery: Dictionary, inventory: Array) -> void:
+	var mount_id: String = str(battery.get("mount_inventory_id", ""))
+	for item: Variant in inventory:
+		if not item is Dictionary or item.get("id") != mount_id:
+			continue
+		var mass: Variant = item.get("mass", {}).get("value") if item.get("mass") is Dictionary else null
+		if typeof(mass) not in [TYPE_INT, TYPE_FLOAT] or float(mass) != float(battery.mass_kg):
+			errors.append("propulsion.battery: inventory item '%s' mass must equal the pack mass %s kg" % [mount_id, battery.mass_kg])
+		if battery.chemistry in ["lipo", "lihv"] and item.get("energy_source") != "lipo":
+			errors.append("propulsion.battery: inventory item '%s' must declare energy_source 'lipo' for a %s pack" % [mount_id, battery.chemistry])
+		elif battery.chemistry not in ["lipo", "lihv"]:
+			errors.append("propulsion.battery: %s packs need a crash energy-source vocabulary entry first" % battery.chemistry)
+		return
+	errors.append("propulsion.battery.mount_inventory_id: no inventory item with id '%s'" % mount_id)
 
 
 ## Removing the rotor's axial spin inertia must leave a positive definite locked carrier tensor.
@@ -1868,6 +1986,13 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var body_cn = _q(errors, "aero.surfaces.body_cn_beta", node.get("body_cn_beta"), "1/rad", -0.5, 0.0)
 		if body_cn != null:
 			out.body_cn_beta = float(body_cn)
+	# Optional (D10-R5): the wing-body dihedral effect (geometric dihedral, wing-fuselage interference) that the flat
+	# strips do not resolve, a pure rolling couple in the local model (Aero._local_loads). The oracle's Clb then carries
+	# fin + wing-body; absent = no couple and no rule, byte-identical.
+	if node.has("wing_body_cl_beta"):
+		var wing_body_cl = _q(errors, "aero.surfaces.wing_body_cl_beta", node.get("wing_body_cl_beta"), "1/rad", -0.3, 0.1)
+		if wing_body_cl != null:
+			out.wing_body_cl_beta = float(wing_body_cl)
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name
@@ -1897,7 +2022,9 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 	var cy: float = fin.lift_slope*fin.area/area*fin.control_effectiveness
 	var expected := {CYdr = cy, Cndr = -cy*arm/span, Cldr = cy*(fin.position[2]-arp[2])/span,
 		Cnb = fin.lift_slope*fin.area/area*arm/span + float(out.get("body_cn_beta", 0.0))}
+	if out.has("wing_body_cl_beta"):
+		expected.Clb = -fin.lift_slope*fin.area/area*(fin.position[2]-arp[2])/span + float(out.wing_body_cl_beta)
 	for key in expected:
 		if absf(aero[key]-expected[key]) > 1e-8:
-			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm and body_cn_beta (expected %.8f)" % [key, expected[key]])
+			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm, body_cn_beta and wing_body_cl_beta (expected %.8f)" % [key, expected[key]])
 	return out

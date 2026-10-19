@@ -17,7 +17,10 @@ const LOW_TIME_S := 2.0
 const LOW_MIN_SINK := 2.0 # m/s
 ## FAR: even the narrowest auto-zoom shows the span smaller than the readable target (Spec.AUTO_ZOOM, 720 px tall).
 const FAR_VIEW_H := 720.0
+## HUD-09 rule for the older battery kinds only (synthetic ocv_resistance packs): BATTERY LOW below this model SOC.
 const BATTERY_LOW_SOC := 0.2
+## BAT-15: every battery warning code, most urgent first. pack_ecm packs raise them only from BatterySensors alarms.
+const BATTERY_CODES := ["battery_empty", "battery_critical", "battery_lvc", "battery", "battery_hot"]
 
 
 ## state: rigid-body state (RB layout); wind_ned: m/s; air: Air.compute() of that state.
@@ -76,7 +79,7 @@ static func far_distance(span: float) -> float:
 
 ## Active warning codes, most urgent first (plan §5). t: compute() output. ctx: { radio_connected, armed,
 ## pause_reason, stall_pos_deg, stall_neg_deg (NAN = unknown: no STALL), span (m), battery: {} or
-## electrical_state(), experimental }.
+## electrical_state(), battery_alarms: BatterySensors alarm names (pack_ecm; none = no battery chip), experimental }.
 static func warnings(t: Dictionary, ctx: Dictionary) -> PackedStringArray:
 	var out := PackedStringArray()
 	if ctx.get("controller_lost", false):
@@ -98,9 +101,49 @@ static func warnings(t: Dictionary, ctx: Dictionary) -> PackedStringArray:
 	var span: float = float(ctx.get("span", 0.0))
 	if span > 0.0 and float(t.distance_pilot) > far_distance(span):
 		out.append("far")
-	var battery: Dictionary = ctx.get("battery", {})
-	if battery.get("ok", false) and (battery.get("exhausted", false) or float(battery.get("soc", 1.0)) < BATTERY_LOW_SOC):
-		out.append("battery")
+	out.append_array(battery_warnings(ctx.get("battery", {}), ctx.get("battery_alarms", [])))
 	if ctx.get("experimental", false):
 		out.append("experimental")
+	return out
+
+
+## BAT-15: battery warning codes, most urgent first. battery: {} or electrical_state(); alarms: BatterySensors alarm
+## names. A pack_ecm pack warns only from what a radio observes (its sampled, debounced alarms), never from the
+## model's true SOC. The older kinds keep the HUD-09 rule: BATTERY LOW when exhausted or below 20 % SOC.
+static func battery_warnings(battery: Dictionary, alarms: Array) -> PackedStringArray:
+	var out := PackedStringArray()
+	if not battery.get("ok", false):
+		return out
+	if str(battery.get("battery_kind", "")) != "pack_ecm":
+		if battery.get("exhausted", false) or float(battery.get("soc", 1.0)) < BATTERY_LOW_SOC:
+			out.append("battery")
+		return out
+	var empty: bool = alarms.has("exhausted")
+	var critical: bool = alarms.has("cell_critical")
+	if empty:
+		out.append("battery_empty")
+	if critical:
+		out.append("battery_critical")
+	if alarms.has("lvc"):
+		out.append("battery_lvc")
+	# BATTERY LOW (voltage warning or 80 % used) adds nothing once the pack is critical or empty.
+	if (alarms.has("cell_warning") or alarms.has("used_capacity")) and not (critical or empty):
+		out.append("battery")
+	if alarms.has("hot"):
+		out.append("battery_hot")
+	return out
+
+
+## `codes` with its battery codes replaced by `battery_codes`, in the warnings' order (before EXPERIMENTAL). The
+## overlay manager uses it to add the alarms of its BatterySensors to snapshot() codes.
+static func with_battery_warnings(codes: PackedStringArray, battery_codes: PackedStringArray) -> PackedStringArray:
+	var out := PackedStringArray()
+	for code in codes:
+		if not BATTERY_CODES.has(code):
+			out.append(code)
+	var at := out.find("experimental")
+	if at < 0:
+		at = out.size()
+	for i in battery_codes.size():
+		out.insert(at + i, battery_codes[i])
 	return out

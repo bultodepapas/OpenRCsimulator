@@ -88,7 +88,9 @@ The O.S. range is 12×6–8 and 13×6–7, and 12×6 is the single "suggested si
 
 ### 5. Fuel consumption
 
-There are no MAX-61FX flow data. The manual gives the fuel bounds above and a 350 cm³ tank. The proposed candidate (below) has delivered premix of **29.5 ml/min at its 10,976 rpm static UIUC-law root**, 35.0 ml/min at 12,550 rpm and 43.0 ml/min at 16,000 rpm. That is 11.9, 10.0 and 8.1 min per 350 cm³ at full throttle. These are model outputs. The 65AX manual's "10–12 minutes" ([initial notebook](../../initial-notebook.md)) is another engine at mixed throttle, so it is context only.
+There are no MAX-61FX flow measurements. The current O.S. 40–91FX manual says a 350 cc tank "will allow 12–13 minute flights" on the 61FX, which implies about 27–29 ml/min at mixed throttle ([FUEL-00 §6.2](../../fuel-systems/FUEL-00/README.md#62-consumption); manufacturer statement, not a full-throttle flow). The candidate (below) delivers **38.8 ml/min at its 10,976 rpm static UIUC-law root**, 46.0 ml/min at 12,550 rpm and 58.1 ml/min at 16,000 rpm, equal to the runtime law in `two_stroke.gd`. That is 9.0, 7.6 and 6.0 min per 350 cm³ at full throttle. These are model outputs. The 65AX manual's "10–12 minutes" ([initial notebook](../../initial-notebook.md)) is another engine at mixed throttle, so it is context only.
+
+**Correction, 2026-10-19 (FUEL-01c).** This section previously gave 29.5 / 35.0 / 43.0 ml/min and 11.9 / 10.0 / 8.1 min. `calibration_report.evaluate` metered premix on the *trapped* air, while the runtime meters it on the *delivered* air; trapping limits only the burned charge. The mirror now matches the runtime, and its new regression test detects the old formula. Burned fuel, torque and power were unaffected.
 
 ### 6. Idle and stalling
 

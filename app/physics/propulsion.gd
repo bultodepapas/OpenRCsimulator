@@ -15,6 +15,9 @@ const GlowOperating := preload("res://physics/glow/operating_point.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const ElectricMotor := preload("res://physics/electric_motor.gd")
 const ElectricSupply: Script = preload("res://physics/electric_supply.gd")
+const PackEcm: Script = preload("res://physics/battery/pack_ecm.gd")
+## BAT-06: trim and equilibrium evaluate the rested pack at the ISA sea-level temperature.
+const PACK_TRIM_AMBIENT_K: float = 288.15
 
 ## Below this, the engine produces nothing (stopped).
 const STOPPED_RPM := 1.0
@@ -91,7 +94,33 @@ static func has_rotor_dynamics(prop: Dictionary) -> bool:
 ## command_voltage_v, motor_voltage_v, bus_power_w and loss powers for session telemetry.
 static func has_dynamic_battery(prop: Dictionary) -> bool:
 	var battery: Variant = prop.get("battery")
-	return is_electric(prop) and battery is Dictionary and battery.get("kind") == "ocv_resistance"
+	return is_electric(prop) and battery is Dictionary and battery.get("kind") in ["ocv_resistance", "pack_ecm"]
+
+
+## BAT-06: the Thevenin pack with RC, temperature and ESC-supervisor states in the session's battery block.
+static func has_pack_ecm(prop: Dictionary) -> bool:
+	var battery: Variant = prop.get("battery")
+	return is_electric(prop) and battery is Dictionary and battery.get("kind") == "pack_ecm"
+
+
+## Stage or endpoint source state for a pack_ecm battery block (spec §4). `ambient_k` and `cooling_speed_mps`
+## come from the stage's atmosphere and air data; trim callers use the rested initial block instead.
+static func electric_pack_state(rpm: float, duty: float, prop: Dictionary, enabled: bool, block: PackedFloat64Array,
+		ambient_k: float, cooling_speed_mps: float, available_at_zero: bool = false, dynamics_only: bool = false) -> Dictionary:
+	if not has_pack_ecm(prop):
+		return {ok = false, message = "source is not a pack_ecm electric_prop"}
+	var point: Dictionary = PackEcm.evaluate(rpm, duty, enabled, block, prop.battery, prop.motor, ambient_k,
+		cooling_speed_mps, available_at_zero, dynamics_only)
+	if point.get("ok", false) and not dynamics_only:
+		point.source_kind = "electric_prop"
+		point.enabled = enabled
+	return point
+
+
+## Rested initial pack at the ISA reference temperature: the trim and equilibrium operating point.
+static func pack_trim_block(prop: Dictionary) -> PackedFloat64Array:
+	var made: Dictionary = PackEcm.initial_block(prop.battery, prop.motor, prop.esc.low_voltage_cutoff, PACK_TRIM_AMBIENT_K)
+	return made.block if made.get("ok", false) else PackedFloat64Array()
 
 
 ## SOC omitted: initial-charge operating point for trim only. Flight passes its stage SOC.
@@ -109,9 +138,15 @@ static func electric_source_state(rpm: float, duty: float, prop: Dictionary, ena
 	var motor: Dictionary = motor_value
 	var battery: Dictionary = battery_value
 	var esc: Dictionary = esc_value
-	if battery.get("kind") not in ["fixed_voltage", "ocv_resistance"] or esc.get("kind") != "ideal_motoring" \
+	if battery.get("kind") not in ["fixed_voltage", "ocv_resistance", "pack_ecm"] or esc.get("kind") != "ideal_motoring" \
 			or esc.get("command_mapping") != "identity":
 		return {ok = false, message = "unsupported electric battery or ESC mode"}
+	if battery.get("kind") == "pack_ecm":
+		# Without a session block (trim, equilibrium, reference voltage) use the rested initial pack.
+		var block: PackedFloat64Array = pack_trim_block(prop)
+		if block.is_empty():
+			return {ok = false, message = "pack_ecm initial block could not be built"}
+		return electric_pack_state(rpm, duty, prop, enabled, block, PACK_TRIM_AMBIENT_K, 0.0, available_at_zero, dynamics_only)
 	if battery.get("kind") == "ocv_resistance":
 		var pack: Dictionary = {}
 		for key: String in ["ocv_points", "capacity_ah", "resistance_ohm", "auxiliary_current_a"]:

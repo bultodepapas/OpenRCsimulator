@@ -1,6 +1,6 @@
 # Fuel, mass and balance plan
 
-**Date:** 2026-10-19. **Status:** proposed. FUEL-00 audit delivered; owner decisions D1–D8 pending; no runtime change yet. **Owner:** physics track, proposed subtrack with prefix `FUEL-`, registered as proposed in the [documentation map](../README.md#tracks-plans-and-step-ids) until D1. **Steps:** FUEL-00…FUEL-14. **Evidence:** [FUEL-00 audit and sources](../research/fuel-systems/FUEL-00/README.md); reproducible scripts in [`research/fuel-systems/FUEL-00/`](../../research/fuel-systems/FUEL-00/).
+**Date:** 2026-10-19. **Status:** active. FUEL-00, FUEL-01 and FUEL-02 delivered; D1–D8 adopted as recommended on 2026-10-19 (owner: "procede con la implementación"; [DECISIONS](../../DECISIONS.md)). **Owner:** physics track, subtrack with prefix `FUEL-` (D1), registered in the [documentation map](../README.md#tracks-plans-and-step-ids). **Steps:** FUEL-00…FUEL-14. **Evidence:** [FUEL-00 audit and sources](../research/fuel-systems/FUEL-00/README.md); reproducible scripts in [`research/fuel-systems/FUEL-00/`](../../research/fuel-systems/FUEL-00/).
 
 **Owns (proposed):** this plan, `docs/research/fuel-systems/`, `research/fuel-systems/`, the shared fuel-property registry and energy-store loader with their tests, and the mass/balance report tool.
 
@@ -191,8 +191,8 @@ Rules:
 | ID | Work | Co-owner | Proof / status |
 | --- | --- | --- | --- |
 | FUEL-00 | Audit of code, data, contract and plans; external sources; reproducible scripts | — | **Delivered 2026-10-19**: [FUEL-00](../research/fuel-systems/FUEL-00/README.md) |
-| FUEL-01 | Byte-identical repairs and baseline. (a) Generator selects the fuel item by ID, not `inv[6]`. (b) HUD reads the profile density. (c) Calibration mirror's 2T flow drops trapping; NITRO-61FX README corrected. (d) Template fuel item gets `energy_source`. (e) Fleet fingerprints and a mass/balance report frozen at the pre-change commit | NITRO, AS, HUD | (a)(d) generated JSON byte-identical; (b) HUD test shows 140 ml for 0.12 kg; (c) regenerated report matches runtime flows 38.8/46.0/58.1 ml/min; (e) report committed |
-| FUEL-02 | Fuel-property registry and loader; glow profiles validated against it; no prose densities | NITRO | Unit tests per blend; mutation of one component detected; profile density unchanged |
+| FUEL-01 | Byte-identical repairs and baseline. (a) Generator selects inventory records by id, not position. (b) HUD reads the profile density. (c) Calibration mirror's 2T flow drops trapping; NITRO-61FX README corrected. (d) Template fuel item gets `energy_source`. (e) Mass/balance report, neutral-point register and stored baseline, checked in `app/test.sh` | NITRO, AS, HUD | **Delivered 2026-10-19**: [FUEL-01](../research/fuel-systems/FUEL-01/README.md). 20 fingerprints identical; generated JSON byte-identical; HUD shows 140 mL for 0.12 kg; 61FX flows 38.8/46.0/58.1 ml/min; four mutations detected |
+| FUEL-02 | Fuel-property registry and loader; glow profiles validated against it; no prose densities | NITRO | **Delivered 2026-10-19**: [FUEL-02](../research/fuel-systems/FUEL-02/README.md). `openrc-fuel-registry v1` (7 components, 3 blends), GDScript and Python readers; 30 + 3 checks; glow profiles equal the registry blend (856.92 kg/m³); two loader mutations detected. Prose densities leave the aircraft data in FUEL-05 |
 | FUEL-03 | Contract: `energy_stores`, `plan_cg_fuel_state`, `cg_range`, ID binding; schema, loader, template and [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) text | AS | Invalid-data refusal tests (rules 1–8); fleet fingerprints identical with blocks absent |
 | FUEL-04 | One mass kernel: prepared fast path in `MassInventory`, shared open-system helper, glow migrated, datum per D2 | Physics/SF, NITRO | Agreement ≤ 1e-12 with `FuelMass` on the three glow Stiks; momentum fixture from FUEL-00; per-stage cost bench no worse than today; fingerprint drift explained or zero |
 | FUEL-05 | Fleet data through generators: capacities from engine/kit manuals (F22) and start fill, registry densities, tank boxes and heights, IDs, balance state per D3, Ventage tank position re-estimated (F02), electric donor items per D7, Ventage smoke store | Stik, EX, P51, AV, SM owners | Mass/balance report before/after; every aircraft inside its range at the balance state with positive margin at full and empty; golden and FT baselines re-recorded with a written reason |
@@ -209,15 +209,17 @@ Rules:
 ## 7. Order and first slice
 
 ```text
-FUEL-00 → FUEL-01 → FUEL-02 → FUEL-03 → FUEL-04 → FUEL-05 → FUEL-06 → FUEL-07
+FUEL-00 → FUEL-01 → FUEL-02 → FUEL-04 → FUEL-03 → FUEL-05 → FUEL-06 → FUEL-07
                                               ↘ FUEL-08 ∥ FUEL-09 → FUEL-10/11 → FUEL-12 → FUEL-13
 ```
 
-FUEL-01 needs no decision: it changes no physics and fixes three P0/P1 findings. FUEL-02…04 need D1/D2. FUEL-05 is the step that changes flight behavior and needs D3/D4/D7. AV-10a/b/c keeps its own IDs and status; FUEL-03/04 supply the shared contract and kernel it consumes.
+FUEL-04 runs before FUEL-03. The kernel works with today's glow tank data, while the battery track (BAT-09) is changing the same schema, loader and contract files on 2026-10-19. FUEL-03 starts once that work lands and reuses its inventory-binding pattern for packs. FUEL-05 is the step that changes flight behavior (D3/D4/D7). AV-10a/b/c keeps its own IDs and status; FUEL-03/04 supply the shared contract and kernel it consumes.
 
 ## 8. Owner decisions
 
-| ID | Question | Recommendation |
+All eight recommendations were adopted on 2026-10-19 ([DECISIONS](../../DECISIONS.md)). Each stays revisable; D3 and D4 change flight behavior only in FUEL-05.
+
+| ID | Question | Recommendation (adopted) |
 | --- | --- | --- |
 | D1 | New `FUEL-` subtrack, or fold into NITRO | New subtrack under physics; it spans glow, gasoline, turbine, Workshop and presentation |
 | D2 | Fixed datum | `plan_cg` point. Unchanged for glow today; equals AV-10b's dry datum when the plan CG is at an empty tank |

@@ -70,7 +70,7 @@ def main():
     parser.add_argument("--only")
     parser.add_argument("--full-traces", action="store_true")
     parser.add_argument("--diagnostics", action="store_true", help="also write <test>.aero.csv: regime weights and oracle/local/blended coefficients")
-    parser.add_argument("--timeout", type=float, default=1800.0, help="seconds per aircraft")
+    parser.add_argument("--timeout", type=float, default=3600.0, help="seconds per aircraft")
     parser.add_argument("--app", help="a disposable copy of app/ holding one explicit candidate change")
     args = parser.parse_args()
     global APP

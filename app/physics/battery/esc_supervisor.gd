@@ -12,6 +12,8 @@ const MODES: Array[String] = ["soft", "hard", "off"]
 const DETECTIONS: Array[String] = ["auto", "fixed"]
 const RECOVERIES: Array[String] = ["throttle_reset", "latched"]
 const MIN_FILTER_S: float = 0.02
+## Sample timers accumulate dt; a 1 ns tolerance keeps "after 0.5 s" at sample 120 of 1/240 s despite rounding.
+const TIME_TOL_S: float = 1e-9
 const MAX_CELLS: int = 24
 
 
@@ -76,14 +78,14 @@ static func step(profile: Dictionary, limit: float, phase: int, timer_s: float, 
 			return PackedFloat64Array([0.0, float(PHASE_HARD_CUT), timer])
 		timer += dt
 		var soft_limit: float = float(profile.soft_limit)
-		var ramp: float = minf(timer / float(profile.soft_ramp_s), 1.0)
+		var ramp: float = 1.0 if timer >= float(profile.soft_ramp_s) - TIME_TOL_S else timer / float(profile.soft_ramp_s)
 		out_limit = maxf(soft_limit, 1.0 - (1.0 - soft_limit) * ramp)
 		return PackedFloat64Array([out_limit, float(PHASE_SOFT_CUT), timer])
 	if not below:
 		return PackedFloat64Array([1.0, float(PHASE_NORMAL), 0.0])
 	timer = dt if phase == PHASE_NORMAL else timer + dt
 	next_phase = PHASE_DEBOUNCE
-	if timer >= float(profile.debounce_s):
+	if timer >= float(profile.debounce_s) - TIME_TOL_S:
 		if profile.mode == "hard":
 			return PackedFloat64Array([0.0, float(PHASE_HARD_CUT), 0.0])
 		return PackedFloat64Array([1.0, float(PHASE_SOFT_CUT), 0.0])

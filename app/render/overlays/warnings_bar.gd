@@ -7,7 +7,7 @@ const Frame := preload("res://render/overlays/overlay_frame.gd")
 
 signal close_requested(id: String)
 
-const DANGER := ["failsafe", "controller_lost", "stall", "low"]
+const DANGER := ["failsafe", "controller_lost", "stall", "low", "battery_empty", "battery_critical", "battery_lvc"]
 const INFO := ["experimental"]
 ## The chips wrap inside this width (px), so many warnings never reach the corner overlays (Wind is ≈ 232 px wide).
 const MAX_WIDTH := 640.0
@@ -54,6 +54,15 @@ static func text_for(code: String) -> String:
 			return "FAR · come closer"
 		"battery":
 			return "BATTERY LOW"
+		# BAT-15: pack_ecm alarms as a radio raises them (render/overlays/battery_sensors.gd).
+		"battery_empty":
+			return "BATTERY EMPTY"
+		"battery_critical":
+			return "BATTERY CRITICAL"
+		"battery_lvc":
+			return "LVC · land now"
+		"battery_hot":
+			return "BATTERY HOT"
 		"experimental":
 			return "EXPERIMENTAL MODEL"
 	return code.to_upper()

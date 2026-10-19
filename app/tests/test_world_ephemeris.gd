@@ -45,6 +45,7 @@ func _initialize() -> void:
 	var s := Ephemeris.sun(2448908.5)
 	_near("sun RA 1992-10-13 (Meeus 25.a)", s.ra_deg, 198.38083, 0.001)
 	_near("sun dec 1992-10-13 (Meeus 25.a)", s.dec_deg, -7.78507, 0.001)
+	_near("sun distance 1992-10-13 (Meeus 25.a)", s.distance_au, 0.99766, 0.00001)
 	# Equinox 2024-03-20 03:06 UT and June solstice 2024-06-20 20:51 UT.
 	_near("sun dec at the March 2024 equinox", Ephemeris.sun(Ephemeris.julian_day(2024, 3, 20, 3.1)).dec_deg, 0.0, 0.02)
 	_near("sun dec at the June 2024 solstice", Ephemeris.sun(Ephemeris.julian_day(2024, 6, 20, 20.85)).dec_deg, 23.436, 0.01)

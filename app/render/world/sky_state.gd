@@ -11,6 +11,8 @@ extends RefCounted
 const TwilightPalette := preload("res://render/landscape_upgrade/twilight_palette.gd")
 const Spec := preload("res://spec.gd")
 const Frames := preload("res://render/frames.gd")
+const Lunar := preload("res://render/world/lunar.gd")
+const Ephemeris := preload("res://render/world/ephemeris.gd")
 
 const TABLE_PATH := "res://data/sky/sky_table.json"
 const ANCHOR_ELEVATION_DEG := 45.0
@@ -26,6 +28,36 @@ const MOON_LIGHT_COLOR := Color("#b4c8ff")
 const NIGHT_FLOOR := 5.0e-8
 ## Full-moon disc luminance relative to the anchored day zenith radiance (estimate: ~2,500 vs ~4,000 cd/m²).
 const MOON_DISC := 0.6
+## FW-MOON-03: the disc's base colour (linear-light reflectance tint; the lunar surface is slightly red).
+const MOON_DISC_COLOR := Color(0.98, 0.96, 0.92)
+## The earthlit side is 0.15 mag bluer in B−V than the sunlit side (Thejll et al. 2014): a luminance-neutral tint
+## (estimate from that colour difference).
+const EARTHSHINE_TINT := Vector3(0.926, 1.006, 1.157)
+## The mean angular semidiameter, for hand-built skies without a place (tests).
+const MOON_MEAN_RADIUS_RAD := 0.0045379
+## FW-MOON-12 non-physical choices (the interface labels them): a larger disc (cinematic) and brighter moonlight
+## (assist); the same factors as MoonConfig.LARGE_SIZE_FACTOR / BRIGHT_MOONLIGHT_FACTOR.
+const MOON_LARGE_FACTOR := 2.0
+const MOON_BRIGHT_FACTOR := 3.0
+## Moon shadows: strength 0 → 1 as the direct share of the light rises from LOW to HIGH times the 45° sun's share
+## (estimate; a full moon well up casts full shadows, a thin crescent none).
+const MOON_SHADOW_SHARE_LOW := 0.15
+const MOON_SHADOW_SHARE_HIGH := 0.5
+## The eye's local adaptation to the disc (FW-MOON-03). At night the full moon is 10⁴–10⁵ times brighter than the scene
+## the exposure serves, so a physical disc is a white blob and a crescent's earthshine a grey disc. When the lit full
+## moon outside the atmosphere would exceed MOON_DISPLAY_PEAK on the display (radiance × exposure), the shader scales
+## the disc so that moon lands there (the atmosphere then dims and reddens it as usual) and compresses its illumination (sunlit part vs earthshine) with exponent MOON_DISPLAY_GAMMA, reached
+## once the excess is 100×: what a dark-adapted eye sees when it looks at the moon (estimate, labeled; the physical
+## disc returns by day, where the excess is below 1).
+## Tuned against Godot 4.7.2's AgX (allenwp curve; white 1.0 → AgX clip at 2.0): the mean full moon at 0.76 sRGB
+## (maria 0.6, highlands 0.87, nothing clipped); a crescent's earthshine at ~0.035, fading to ~0.017 at quarter
+## (docs/research/field-world/FW-MOON-05).
+const MOON_DISPLAY_PEAK := 0.7
+const MOON_DISPLAY_GAMMA := 0.55
+## FW-MOON-05: the albedo map's projected-area mean linear luminance over the near side (NASA SVS lroc_color_2k,
+## measured in docs/research/field-world/FW-MOON-05): texels divided by it average 1, so the textured disc keeps
+## the phase law's brightness.
+const MOON_ALBEDO_NEAR_SIDE_MEAN := 0.3967
 ## Scripted adaptation (auto-exposure is Forward+ only in 4.7): gain = (Y_anchor / Y)^p, limited. p < 1 compresses
 ## the 10^8 range from noon to moonless night into what a display shows. p = 0.84 maps the scene key to roughly
 ## sunset 0.6, blue hour 0.45, full-moon night 0.12 of noon; the cap leaves a moonless night near black, where stars
@@ -110,10 +142,64 @@ static func direction(azimuth_deg: float, elevation_deg: float) -> Vector3:
 
 
 ## Moon brightness relative to the full moon for a phase angle (degrees): Allen's magnitude law
-## Δm = 0.026·|ψ| + 4·10⁻⁹·ψ⁴ (borrowed, Astrophysical Quantities).
+## Δm = 0.026·|ψ| + 4·10⁻⁹·ψ⁴ (borrowed, Astrophysical Quantities; the same law as Krisciunas & Schaefer 1991).
 static func moon_phase_flux(phase_angle_deg: float) -> float:
 	var psi := absf(phase_angle_deg)
 	return pow(10.0, -0.4 * (0.026 * psi + 4.0e-9 * pow(psi, 4.0)))
+
+
+## FW-MOON-03: McEwen's lunar-Lambert weight L(α) (Icarus 92:298, 1991; α in degrees), clamped to [0, 1].
+static func lunar_lambert_l(phase_angle_deg: float) -> float:
+	var a := absf(phase_angle_deg)
+	return clampf(1.0 - 0.019 * a + 2.42e-4 * a * a - 1.46e-6 * a * a * a, 0.0, 1.0)
+
+
+## FW-MOON-03: the disc integral of the lunar-Lambert pattern relative to full moon (closed forms: Lommel-Seeliger
+## 1 − sin(α/2)·tan(α/2)·ln cot(α/4), as in Jensen et al. 2001; Lambert sphere (sin α + (π − α)·cos α)/π at 2/3 of the
+## full-disc value). Verified against numerical integration in test_world_moon_sky.gd.
+static func lunar_lambert_integral(phase_angle_deg: float) -> float:
+	var a := deg_to_rad(clampf(absf(phase_angle_deg), 0.0, 178.0))
+	var l := lunar_lambert_l(phase_angle_deg)
+	var lommel_seeliger := 1.0 if a < 1e-6 else 1.0 - sin(a / 2.0) * tan(a / 2.0) * log(1.0 / tan(a / 4.0))
+	var lambert := (sin(a) + (PI - a) * cos(a)) / PI
+	return l * lommel_seeliger + (1.0 - l) * (2.0 / 3.0) * lambert
+
+
+## FW-MOON-05: rotation from render-frame directions to Moon-fixed coordinates (x toward 0° E on the equator, z north),
+## for texturing the disc; identity without a Lunar state.
+static func moon_render_to_body(lunar: Dictionary) -> Basis:
+	if lunar.is_empty():
+		return Basis.IDENTITY
+	var m: PackedFloat64Array = lunar.body_to_ned # v_ned = M · v_body
+	# Render (x east, y up, z south) → NED is N = −z, E = x, D = −y; so v_body = Mᵀ · (−z, x, −y).
+	var column := func(ned: Array) -> Vector3:
+		return Vector3(m[0] * ned[0] + m[3] * ned[1] + m[6] * ned[2], m[1] * ned[0] + m[4] * ned[1] + m[7] * ned[2],
+			m[2] * ned[0] + m[5] * ned[1] + m[8] * ned[2])
+	return Basis(column.call([0.0, 1.0, 0.0]), column.call([0.0, 0.0, -1.0]), column.call([-1.0, 0.0, 0.0]))
+
+
+## FW-MOON-05: refraction squashes a low disc vertically: apparent/true vertical size = 1 + dR/dh at the centre's
+## true elevation (Saemundsson's formula, as Ephemeris.refraction_deg; 0.86 on the horizon, 0.975 at 5°).
+static func moon_squash(true_elevation_deg: float) -> float:
+	if true_elevation_deg < -1.0:
+		return 1.0
+	var h := 0.01
+	return 1.0 + (Ephemeris.refraction_deg(true_elevation_deg + h) - Ephemeris.refraction_deg(true_elevation_deg - h)) / (2.0 * h)
+
+
+## FW-MOON-03: the moon's photometric inputs. Real skies carry their place (Ephemeris.sky()), so Lunar supplies the
+## exact phase, distance, sun direction and earthshine; hand-built test skies keep the original elongation phase.
+static func _moon(sky: Dictionary) -> Dictionary:
+	if sky.has("latitude_deg") and sky.has("jd"):
+		var l := Lunar.at_jd(float(sky.jd), float(sky.latitude_deg), float(sky.longitude_deg))
+		var sun_ned: PackedFloat64Array = l.sun_ned
+		return {azimuth_deg = l.azimuth_deg, elevation_deg = l.elevation_deg, phase_angle_deg = l.phase_angle_deg,
+			illuminated = l.illuminated, flux = l.flux, radius = deg_to_rad(l.radius_deg), earthshine = l.earthshine,
+			sun_dir = Frames.ned_to_render([sun_ned[0], sun_ned[1], sun_ned[2]]).normalized(), lunar = l}
+	var phase: float = sky.moon.phase_angle_deg
+	return {azimuth_deg = sky.moon.azimuth_deg, elevation_deg = sky.moon.elevation_deg, phase_angle_deg = phase,
+		illuminated = sky.moon.illuminated, flux = moon_phase_flux(phase), radius = MOON_MEAN_RADIUS_RAD,
+		earthshine = 0.0, sun_dir = Vector3.ZERO, lunar = {}}
 
 
 ## Re-adapts to extra artificial irradiance (scene units, e.g. floodlights on the runway): the eye adapts to what it
@@ -127,8 +213,9 @@ static func adapt(state: Dictionary, extra_irradiance: float) -> Dictionary:
 	return out
 
 
-## The world's light and colour for a sky from Ephemeris.sky().
-static func state(sky: Dictionary) -> Dictionary:
+## The world's light and colour for a sky from Ephemeris.sky(). `moon_config`: MoonConfig choices (empty = defaults):
+## "off" removes the moon's disc, light and sky glow; "large" doubles the disc; "bright" triples the moonlight.
+static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	var a: Dictionary = Spec.ATMOSPHERE
 	var anchor := row(ANCHOR_ELEVATION_DEG)
 	var k_zenith := _ratio(_lin(a.zenith), anchor.zenith)
@@ -136,10 +223,14 @@ static func state(sky: Dictionary) -> Dictionary:
 	var k_sun := _ratio(_lin(a.sun_color) * a.sun_energy, anchor.sun)
 
 	var sun_el: float = sky.sun.elevation_deg
-	var moon_el: float = sky.moon.elevation_deg
+	var moon := _moon(sky)
+	var moon_el: float = moon.elevation_deg
 	var s := row(sun_el)
 	var m := row(moon_el)
-	var moon_k := MOON_FULL_RATIO * moon_phase_flux(sky.moon.phase_angle_deg)
+	# Moonlight: the phase law with the inverse-square distance (FW-MOON-03; Lunar.flux); FW-MOON-12 choices.
+	var moon_on: bool = moon_config.get("moon", "real") != "off"
+	var moon_k := MOON_FULL_RATIO * float(moon.flux) * (MOON_BRIGHT_FACTOR if moon_config.get("moonlight", "real") == "bright" else 1.0) \
+		* (1.0 if moon_on else 0.0)
 	var tint := MOON_TINT * moon_k
 
 	var floor_zenith := _lin(a.zenith) * NIGHT_FLOOR
@@ -156,7 +247,7 @@ static func state(sky: Dictionary) -> Dictionary:
 	var moon_rgb: Vector3 = Vector3(moon_l.r, moon_l.g, moon_l.b) * _lum(k_sun * m.sun) * moon_k / _lum(Vector3(moon_l.r, moon_l.g, moon_l.b))
 	var moon_lights := _lum(moon_rgb) > _lum(sun_rgb)
 	var light_rgb: Vector3 = moon_rgb if moon_lights else sun_rgb
-	var light_az: float = sky.moon.azimuth_deg if moon_lights else sky.sun.azimuth_deg
+	var light_az: float = moon.azimuth_deg if moon_lights else sky.sun.azimuth_deg
 	var light_el: float = moon_el if moon_lights else sun_el
 	var energy := maxf(maxf(light_rgb.x, light_rgb.y), light_rgb.z)
 	var light_color := Color(1, 1, 1)
@@ -168,7 +259,7 @@ static func state(sky: Dictionary) -> Dictionary:
 	var sun_lobe: Vector3 = k_haze * s.lobe
 	var moon_lobe: Vector3 = k_haze * m.lobe * tint
 	var lobe_from_moon := _lum(moon_lobe) > _lum(sun_lobe)
-	var lobe_az: float = sky.moon.azimuth_deg if lobe_from_moon else sky.sun.azimuth_deg
+	var lobe_az: float = moon.azimuth_deg if lobe_from_moon else sky.sun.azimuth_deg
 
 	# Lit cloud: mostly the light reaching the deck (clouds stay lit after sunset), a little skylight.
 	var cloud_rel: Vector3 = _ratio(s.cloud + tint * m.cloud, anchor.cloud)
@@ -187,10 +278,29 @@ static func state(sky: Dictionary) -> Dictionary:
 	var y := _lum(zenith) + _lum(haze) + 0.5 * _lum(lobe) + _lum(light_rgb) * maxf(sin(deg_to_rad(light_el)), 0.0)
 	var gain := clampf(pow(y_anchor / maxf(y, 1e-30), ADAPT_POWER), 1.0, ADAPT_MAX_GAIN)
 
+	# FW-MOON-03: the disc. Surface radiance, not the disc-integrated flux: K(α) restores the phase law; the colour is
+	# the sky table's direct beam at the moon's elevation relative to the 45° anchor (the moon reddens like the sun).
+	var phase: float = moon.phase_angle_deg
+	# With the texture (real skies), the albedo map supplies the colour: the base keeps only MOON_DISC_COLOR's luminance.
+	var base: Vector3 = Vector3.ONE * _lum(_lin(MOON_DISC_COLOR)) if not moon.lunar.is_empty() else _lin(MOON_DISC_COLOR)
+	var moon_lin: Vector3 = base * MOON_DISC * _lum(_lin(a.zenith)) * _ratio(m.sun, anchor.sun) if moon_el > -1.0 and moon_on else Vector3.ZERO
+	var sun_dir := direction(sky.sun.azimuth_deg, sun_el)
+	# Shadows under the moon fade with the direct share of the light (a thin crescent's light is lost in the sky glow);
+	# relative to that share for the anchored 45° sun. The sun keeps full-strength shadows (unchanged).
+	var direct := _lum(light_rgb) * maxf(sin(deg_to_rad(light_el)), 0.0)
+	var direct_anchor := _lum(_lin(a.sun_color)) * sin(deg_to_rad(ANCHOR_ELEVATION_DEG))
+	var share := direct / maxf(direct + _lum(zenith) + _lum(haze), 1e-30)
+	var share_anchor := direct_anchor / (direct_anchor + _lum(_lin(a.zenith)) + _lum(_lin(a.haze)))
+	var shadow := smoothstep(MOON_SHADOW_SHARE_LOW, MOON_SHADOW_SHARE_HIGH, share / share_anchor) if moon_lights else 1.0
+	# Reference: the unattenuated full moon (base × S0), so a low moon stays dimmer and redder than a high one.
+	var excess := _lum(base) * MOON_DISC * _lum(_lin(a.zenith)) * float(a.exposure) * gain / MOON_DISPLAY_PEAK
+	var display_scale := 1.0 / excess if excess > 1.0 else 1.0
+	var display_gamma := lerpf(1.0, MOON_DISPLAY_GAMMA, smoothstep(0.0, log(100.0), log(maxf(excess, 1.0))))
+
 	return {
 		sun_azimuth_deg = sky.sun.azimuth_deg, sun_elevation_deg = sun_el,
-		moon_azimuth_deg = sky.moon.azimuth_deg, moon_elevation_deg = moon_el,
-		moon_illuminated = sky.moon.illuminated,
+		moon_azimuth_deg = moon.azimuth_deg, moon_elevation_deg = moon_el,
+		moon_illuminated = moon.illuminated,
 		light_source = "moon" if moon_lights else "sun",
 		light_dir = direction(light_az, light_el),
 		light_elevation_deg = light_el,
@@ -208,11 +318,25 @@ static func state(sky: Dictionary) -> Dictionary:
 		gain = gain,
 		adapt_y = y,
 		adapt_y_anchor = y_anchor,
-		sun_dir = direction(sky.sun.azimuth_deg, sun_el),
+		sun_dir = sun_dir,
 		sun_disc = 1.0 if not moon_lights else 0.0,
-		moon_dir = direction(sky.moon.azimuth_deg, moon_el),
-		moon_lin = _lin(Color(0.98, 0.96, 0.92)) * (MOON_DISC * _lum(_lin(a.zenith)) * moon_phase_flux(sky.moon.phase_angle_deg)) \
-			if moon_el > -1.0 else Vector3.ZERO,
+		moon_dir = direction(moon.azimuth_deg, moon_el),
+		moon_lin = moon_lin,
+		moon_radius = float(moon.radius) * (MOON_LARGE_FACTOR if moon_config.get("size", "real") == "large" else 1.0),
+		moon_sun_dir = moon.sun_dir if moon.sun_dir != Vector3.ZERO else sun_dir,
+		moon_phase_angle_deg = phase,
+		moon_phase_l = lunar_lambert_l(phase),
+		moon_phase_k = moon_phase_flux(phase) / maxf(lunar_lambert_integral(phase), 1e-6),
+		moon_earthshine = EARTHSHINE_TINT * float(moon.earthshine),
+		moon_display_scale = display_scale,
+		moon_display_gamma = display_gamma,
+		moon_render_to_body = moon_render_to_body(moon.lunar),
+		moon_squash = moon_squash(float(moon.lunar.true_elevation_deg)) if not moon.lunar.is_empty() else 1.0,
+		moon_textured = not moon.lunar.is_empty(),
+		moon_flux = moon.flux,
+		lunar = moon.lunar,
+		moon_config = moon_config.duplicate(),
+		shadow_strength = shadow,
 		lst_deg = sky.lst_deg,
 		tonemapper = "agx" if sun_el < AGX_BELOW_SUN_DEG else "aces",
 	}

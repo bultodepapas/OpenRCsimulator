@@ -60,10 +60,10 @@
       "cycle_work_j": 1.2201238,
       "opportunity_frequency_hz": 33.3333333,
       "nominal_firing_frequency_hz": 33.3333333,
-      "delivered_premix_kg_s": 3.33e-05,
+      "delivered_premix_kg_s": 5.12e-05,
       "burned_combustible_kg_s": 2.31e-05,
-      "unburned_premix_kg_s": 1.02e-05,
-      "delivered_premix_ml_min": 2.3315362,
+      "unburned_premix_kg_s": 2.81e-05,
+      "delivered_premix_ml_min": 3.5869788,
       "within_o_s_practical_rpm_range": true
     },
     {
@@ -79,10 +79,10 @@
       "cycle_work_j": 2.0067042,
       "opportunity_frequency_hz": 66.6666667,
       "nominal_firing_frequency_hz": 66.6666667,
-      "delivered_premix_kg_s": 8.61e-05,
+      "delivered_premix_kg_s": 0.000123,
       "burned_combustible_kg_s": 5.97e-05,
-      "unburned_premix_kg_s": 2.63e-05,
-      "delivered_premix_ml_min": 6.0261244,
+      "unburned_premix_kg_s": 6.32e-05,
+      "delivered_premix_ml_min": 8.6087491,
       "within_o_s_practical_rpm_range": true
     },
     {
@@ -98,10 +98,10 @@
       "cycle_work_j": 3.4397776,
       "opportunity_frequency_hz": 116.6666667,
       "nominal_firing_frequency_hz": 116.6666667,
-      "delivered_premix_kg_s": 0.000193,
+      "delivered_premix_kg_s": 0.0002608,
       "burned_combustible_kg_s": 0.0001339,
-      "unburned_premix_kg_s": 5.91e-05,
-      "delivered_premix_ml_min": 13.5131274,
+      "unburned_premix_kg_s": 0.0001269,
+      "delivered_premix_ml_min": 18.260983,
       "within_o_s_practical_rpm_range": true
     },
     {
@@ -117,10 +117,10 @@
       "cycle_work_j": 4.6250599,
       "opportunity_frequency_hz": 166.6666667,
       "nominal_firing_frequency_hz": 166.6666667,
-      "delivered_premix_kg_s": 0.0003363,
+      "delivered_premix_kg_s": 0.0004424,
       "burned_combustible_kg_s": 0.0002334,
-      "unburned_premix_kg_s": 0.0001029,
-      "delivered_premix_ml_min": 23.5436246,
+      "unburned_premix_kg_s": 0.0002091,
+      "delivered_premix_ml_min": 30.9784534,
       "within_o_s_practical_rpm_range": true
     },
     {
@@ -136,10 +136,10 @@
       "cycle_work_j": 5.1800948,
       "opportunity_frequency_hz": 216.6666667,
       "nominal_firing_frequency_hz": 216.6666667,
-      "delivered_premix_kg_s": 0.0004693,
+      "delivered_premix_kg_s": 0.0006175,
       "burned_combustible_kg_s": 0.0003257,
-      "unburned_premix_kg_s": 0.0001436,
-      "delivered_premix_ml_min": 32.8619433,
+      "unburned_premix_kg_s": 0.0002918,
+      "delivered_premix_ml_min": 43.2393991,
       "within_o_s_practical_rpm_range": true
     },
     {
@@ -155,10 +155,10 @@
       "cycle_work_j": 5.0151439,
       "opportunity_frequency_hz": 266.6666667,
       "nominal_firing_frequency_hz": 266.6666667,
-      "delivered_premix_kg_s": 0.0005514,
+      "delivered_premix_kg_s": 0.0007452,
       "burned_combustible_kg_s": 0.0003827,
-      "unburned_premix_kg_s": 0.0001687,
-      "delivered_premix_ml_min": 38.6089356,
+      "unburned_premix_kg_s": 0.0003625,
+      "delivered_premix_ml_min": 52.1742373,
       "within_o_s_practical_rpm_range": true
     },
     {
@@ -174,10 +174,10 @@
       "cycle_work_j": 4.7375641,
       "opportunity_frequency_hz": 283.3333333,
       "nominal_firing_frequency_hz": 283.3333333,
-      "delivered_premix_kg_s": 0.0005472,
+      "delivered_premix_kg_s": 0.0007601,
       "burned_combustible_kg_s": 0.0003798,
-      "unburned_premix_kg_s": 0.0001674,
-      "delivered_premix_ml_min": 38.3167598,
+      "unburned_premix_kg_s": 0.0003803,
+      "delivered_premix_ml_min": 53.217722,
       "within_o_s_practical_rpm_range": true
     }
   ],
@@ -197,10 +197,10 @@
       "cycle_work_j": 5.1800948,
       "opportunity_frequency_hz": 216.6666667,
       "nominal_firing_frequency_hz": 216.6666667,
-      "delivered_premix_kg_s": 0.0004693,
+      "delivered_premix_kg_s": 0.0006175,
       "burned_combustible_kg_s": 0.0003257,
-      "unburned_premix_kg_s": 0.0001436,
-      "delivered_premix_ml_min": 32.8619433
+      "unburned_premix_kg_s": 0.0002918,
+      "delivered_premix_ml_min": 43.2393991
     },
     "power_peak": {
       "rpm": 16025.0,
@@ -215,10 +215,10 @@
       "cycle_work_j": 5.0081637,
       "opportunity_frequency_hz": 267.0833333,
       "nominal_firing_frequency_hz": 267.0833333,
-      "delivered_premix_kg_s": 0.0005513,
+      "delivered_premix_kg_s": 0.0007456,
       "burned_combustible_kg_s": 0.0003827,
-      "unburned_premix_kg_s": 0.0001687,
-      "delivered_premix_ml_min": 38.604491
+      "unburned_premix_kg_s": 0.0003629,
+      "delivered_premix_ml_min": 52.2035037
     }
   },
   "rated_rpm_effective_admission_scenarios": {
@@ -237,10 +237,10 @@
         "cycle_work_j": 1.253786,
         "opportunity_frequency_hz": 266.6666667,
         "nominal_firing_frequency_hz": 266.6666667,
-        "delivered_premix_kg_s": 0.0001379,
+        "delivered_premix_kg_s": 0.0001863,
         "burned_combustible_kg_s": 9.57e-05,
-        "unburned_premix_kg_s": 4.22e-05,
-        "delivered_premix_ml_min": 9.6522339
+        "unburned_premix_kg_s": 9.06e-05,
+        "delivered_premix_ml_min": 13.0435593
       },
       {
         "rpm": 16000.0,
@@ -255,10 +255,10 @@
         "cycle_work_j": 2.507572,
         "opportunity_frequency_hz": 266.6666667,
         "nominal_firing_frequency_hz": 266.6666667,
-        "delivered_premix_kg_s": 0.0002757,
+        "delivered_premix_kg_s": 0.0003726,
         "burned_combustible_kg_s": 0.0001913,
-        "unburned_premix_kg_s": 8.44e-05,
-        "delivered_premix_ml_min": 19.3044678
+        "unburned_premix_kg_s": 0.0001812,
+        "delivered_premix_ml_min": 26.0871186
       },
       {
         "rpm": 16000.0,
@@ -273,10 +273,10 @@
         "cycle_work_j": 3.761358,
         "opportunity_frequency_hz": 266.6666667,
         "nominal_firing_frequency_hz": 266.6666667,
-        "delivered_premix_kg_s": 0.0004136,
+        "delivered_premix_kg_s": 0.0005589,
         "burned_combustible_kg_s": 0.000287,
-        "unburned_premix_kg_s": 0.0001265,
-        "delivered_premix_ml_min": 28.9567017
+        "unburned_premix_kg_s": 0.0002718,
+        "delivered_premix_ml_min": 39.1306779
       },
       {
         "rpm": 16000.0,
@@ -291,10 +291,10 @@
         "cycle_work_j": 5.0151439,
         "opportunity_frequency_hz": 266.6666667,
         "nominal_firing_frequency_hz": 266.6666667,
-        "delivered_premix_kg_s": 0.0005514,
+        "delivered_premix_kg_s": 0.0007452,
         "burned_combustible_kg_s": 0.0003827,
-        "unburned_premix_kg_s": 0.0001687,
-        "delivered_premix_ml_min": 38.6089356
+        "unburned_premix_kg_s": 0.0003625,
+        "delivered_premix_ml_min": 52.1742373
       }
     ]
   },
@@ -421,7 +421,7 @@
       "static_prop_air_density_kg_m3": 1.225,
       "density_note": "profile reference density is used because the O.S. article reports temperature but not barometric pressure; actual test density is unknown",
       "generated_installation_path": "app/data/glow/stik_55ax_2t.json",
-      "generated_installation_sha256": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45"
+      "generated_installation_sha256": "d801948451616f8d34cf66097d10f55346eeb8c3cee9f7378d46b24ec63ceec4"
     },
     "conditional_fit": {
       "candidate_engine_torque_at_anchor_nm": 0.7085825993601651,
@@ -613,7 +613,7 @@
         "installation_source": {
           "configuration_id": "max55ax_apc_sport_12x7",
           "path": "app/data/glow/stik_55ax_2t.json",
-          "sha256": "b227c394b3b5ac54dc10c0d40cf02dc886553237106b19cec512baac656fcc45",
+          "sha256": "d801948451616f8d34cf66097d10f55346eeb8c3cee9f7378d46b24ec63ceec4",
           "family": "glow_2t",
           "geometry": {
             "diameter_m": 0.30479999999999996,
@@ -629,7 +629,7 @@
           },
           "legacy_static_rpm_reference": 13000.0,
           "aircraft_path": "app/data/aircraft/stik_glow_55ax_2t.json",
-          "aircraft_sha256": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9"
+          "aircraft_sha256": "8dcfb98e3a2e8a5a9808df0729bc5fe5a4de483afcb94e0bb6e9018fd35df62e"
         },
         "chord_basis": "conditional one-point fit to O.S. field RPM observation",
         "anchor_rpm": 10330.0,
@@ -1215,7 +1215,7 @@
         "installation_source": {
           "configuration_id": "max55ax_apc_sport_13x6",
           "path": "app/data/glow/stik_55ax_2t_apc_13x6.json",
-          "sha256": "e2e00bd5e0940198676ab463c6891e2b0a05762e83b8c6c9042ea887076a23d0",
+          "sha256": "7a1b9ec00421bafbd894db5b24e9fb781005db43988898ffe83dbad94e576ed0",
           "family": "glow_2t",
           "geometry": {
             "diameter_m": 0.3302,
@@ -1231,7 +1231,7 @@
           },
           "legacy_static_rpm_reference": 13000.0,
           "aircraft_path": "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
-          "aircraft_sha256": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d"
+          "aircraft_sha256": "77de4af57e7ab9f2cf5eeb42057d9d4ecb902682fa5300d7b1e4e64c0afb5b20"
         },
         "chord_basis": "unobserved configuration: 12x7 fitted chord/diameter ratio transferred",
         "anchor_rpm": null,

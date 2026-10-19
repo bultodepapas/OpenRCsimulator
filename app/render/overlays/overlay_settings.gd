@@ -4,17 +4,21 @@ extends RefCounted
 
 const Units := preload("res://render/overlays/units.gd")
 
-const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls"]
+## BAT-15: "battery" is O9; it shows only when the aircraft has a dynamic battery.
+const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery"]
 const PRESET_ORDER := ["off", "pilot", "full", "developer"]
 const PRESETS := {
 	off = [],
-	pilot = ["flight", "transmitter", "warnings", "wind", "controls"],
-	full = ["flight", "transmitter", "warnings", "wind", "telemetry", "controls"],
-	developer = ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls"],
+	pilot = ["flight", "transmitter", "warnings", "wind", "controls", "battery"],
+	full = ["flight", "transmitter", "warnings", "wind", "telemetry", "controls", "battery"],
+	developer = ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls", "battery"],
 }
 const DEVELOPER := ["diagnostics", "performance"]
+## BAT-15: the Battery overlay is detailed while this overlay is shown (Full, Developer), compact otherwise (Pilot).
+## Derived from the visible set, so the saved [hud] keys carry it without a new preference.
+const BATTERY_DETAIL_WITH := "telemetry"
 ## D2/D3/D4: Pilot preset, units by language, Mode 2.
-const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls"], units = "auto", stick_mode = 2 }
+const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls", "battery"], units = "auto", stick_mode = 2 }
 
 
 ## Settings from anything (a preferences file, a dialog): always a complete valid dictionary, defaults where invalid.
@@ -51,6 +55,11 @@ static func preset_for(ids: Array) -> String:
 		if wanted.size() == ids.size() and wanted.all(func(id: String) -> bool: return ids.has(id)):
 			return preset
 	return "custom"
+
+
+## BAT-15: whether the Battery overlay uses its detailed layout under `settings`.
+static func battery_detailed(settings: Dictionary) -> bool:
+	return Array(settings.get("visible", [])).has(BATTERY_DETAIL_WITH)
 
 
 ## `settings` with `ids` shown and the matching preset name.

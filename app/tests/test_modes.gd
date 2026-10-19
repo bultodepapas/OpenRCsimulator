@@ -39,8 +39,11 @@ const RB := preload("res://physics/rigid_body.gd")
 ## Cnb 0.1274 → 0.0742). Only the nine lateral centers move: dutch roll 0.569/0.745/1.193 → 0.447/0.530/0.822 Hz,
 ## ζ 0.303/0.249/0.234 → 0.366/0.326/0.328, spiral 0.487/0.077/0.029 → 0.423/−0.050/−0.054 1/s (stable at 15/25 m/s);
 ## every other center stays within 3%. Report: docs/research/flight-dynamics/stik-lateral-directional-2026-10-18.
+## D10-R5 (2026-10-19): the local law gains the wing-body dihedral couple (wing_body_cl_beta −0.0537). The 10 m/s trim
+## is partly in the local regime, so only its three lateral centers move: dutch roll 0.447 → 0.515 Hz, ζ 0.366 → 0.302,
+## spiral 0.423 → 0.244 1/s; 15 and 25 m/s are bit-identical. Report: docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19.
 const BANDS := {
-	10.0: [0.90876188, 0.81032621, 0.16589314, 0.06879382, 0.07248863, 0.44657692, 0.36555910, 0.42302095, -11.08888985],
+	10.0: [0.90876188, 0.81032621, 0.16589314, 0.06879382, 0.07248863, 0.51484786, 0.30189753, 0.24415263, -11.08888985],
 	15.0: [1.17609159, 1.04149128, 0.09011891, 0.28653927, 0.05132270, 0.53036051, 0.32569783, -0.04975775, -15.42505926],
 	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 0.82247187, 0.32793166, -0.05423003, -25.19697216],
 }

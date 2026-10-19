@@ -1,7 +1,8 @@
 # FT-04 (card v4): power-off tests of the standard flight-test card. The engine fails the way the session's own source
 # cut does it (flight_test.gd _cut_engine: glow_cut() or the source disabled), so a glow engine stops instead of idling
-# and a propeller windmills or stops as the propulsion model decides; a continuous turbine idles (no hot cutoff yet). Each function takes the runner and returns its
-# { valid, metrics, notes, table } result. Model predictions, not physical validation.
+# and a propeller windmills or stops as the propulsion model decides; a continuous turbine idles (no hot cutoff yet).
+# Each function takes the runner and returns its { valid, metrics, notes, table } result. Model predictions, not
+# physical validation.
 extends RefCounted
 
 const P := preload("pilot.gd")

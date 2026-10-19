@@ -2,7 +2,7 @@
 
 2026-10-19 · Revision 1 · **Implementation plan** · Step prefix: **FW-MOON** (Field world)
 
-**Status:** FW-MOON-00 (audit, accuracy measurement, source research, this plan) delivered 2026-10-19. Nothing is implemented. The owner decisions in §9 are pending; the stated defaults apply until they are answered.
+**Status:** 2026-10-19: FW-MOON-00, -02, -03, -04, -05 and -12 delivered, FW-MOON-13 partly; FW-MOON-01 (render-path spike) in progress. The textured, oriented, photometric moon renders on the field-world path (Home time choices); astronomical time in the Conditions dialog still has no moon (decision M-D7). The owner decisions in §9 are pending; the stated defaults apply until they are answered.
 
 **Owner:** Field world. Coordinated with TOD (time paths and visual context), UI (dialogs, preferences, i18n), VQ/Landscape (shared `sky.gdshader`, `atmosphere.gd`, `sun_glare.gd`), LU (lake), CAM (close-up), HUD and NR/HELI (routes).
 
@@ -46,9 +46,8 @@ The [FW-MOON-00 audit](../research/field-world/FW-MOON-00/README.md) has the det
   - Earthshine is a constant 2 %, wrong in both level and phase dependence.
   - There is no horizon reddening or flattening.
 - **Moonlight and clouds:**
-  - Moonlight pops on at −1° and can flip direction at twilight.
+  - Moonlight can flip direction at twilight (one light carries the brighter of sun and moon).
   - Shadows have full strength at any phase.
-  - Night clouds are lit from the below-horizon sun.
 - **Missing entirely:** halo, corona, glare, star washout, eclipses and moon options.
 
 ## 3. Principles
@@ -153,7 +152,7 @@ Any sky-material uniform change invalidates the radiance cubemap. Today the sky 
 - **Thin cloud.** The disc shows through with exp(−τ). Thick cloud gives a diffuse bright patch.
 - **Corona.** Rings from (J₁(x)/x)², with droplet radius set by the sky profile.
 - **22° halo.** A ring at 21.84°, only with cirrostratus (High Cirrus and similar profiles), red inner edge, sky slightly darker inside.
-- **Moonlit clouds.** Cloud lighting, relief, silver edge and the storm bank use the **light** direction instead of `sun_dir`.
+- **Moonlit clouds.** Decks, relief and the silver edge already use the active light (the moon at night). The storm bank has no light direction at all; giving it one is a separate FW-84 item.
 - **Stars.** A per-star threshold rises with the KS91 sky brightness near the moon.
 - **Glare.** `sun_glare.gd` is generalised to the moon with its occlusion logic (LU owner).
 - **Lake.** Check the moon road at low elevations; tune only the existing water parameters.
@@ -251,18 +250,18 @@ Presets therefore stay valid when the place changes, like today's sun-event pres
 | --- | --- | --- |
 | FW-MOON-00 | Audit, accuracy vs NASA SVS, pilot-view survey, sources and plan. | Delivered 2026-10-19: [evidence](../research/field-world/FW-MOON-00/README.md), [sources](../research/field-world/FW-MOON-00/sources.json). |
 | FW-MOON-01 | Render-path spike on pinned 4.7.2: radiance re-render on per-frame sky uniform changes with ambient COLOR; stepping at ×1/×20 in the pilot and close-up cameras; cloud-occlusion parity across the nine sky profiles; directional-light/shadow limits for a second moon light; cost. | Spike evidence and DECISIONS row; no shipped change. |
-| FW-MOON-02 | `Lunar` float64 state: size, orientation (IAU pole/W, χ, q, libration), airmass, extinction, KS91, earthshine, eclipse geometry, rise/transit/set. `tools/world/moon_fixtures.py` writes Horizons (Madrid, Buenos Aires, Tromsø) and SVS-2026 subset fixtures with queries and credit. | Tests: position ≤ 3′ p95 (Schlyter) or ≤ 0.5′ (Meeus 47); fraction ±0.005; diameter ±0.5 %; libration ±0.3°; axis angle ±0.5°; rise/set ±2 min. Captures byte-identical. |
-| FW-MOON-03 | Correctness fixes, no new assets: per-pixel lit brightness from surface brightness, physical earthshine, disc out of the cubemap pass, distance-based size, clouds lit from the light direction (decks, relief, silver, storm bank), shadow opacity by phase, planar shadow fade. | Before/after captures at four phases and moonless; updated sky tests; Day byte-identical; golden flights unchanged. |
-| FW-MOON-04 | Texture intake: SVS 2k colour plus LOLA-derived normal map, provenance, credit, reproducible `--check`. | Hashes, licence/credit file, size report, build check passes. |
-| FW-MOON-05 | Textured, oriented, photometric disc with flattening and extinction colour; daytime moon at physical contrast. | Overlay against SVS 5587 frames (north up) at ≥ 6 epochs including a southern-hemisphere view: terminator ≤ 1 % of diameter, features ≤ 2 %; integrated flux vs KS91 ±5 % at α = 0…150°. |
+| FW-MOON-02 | `Lunar` float64 state: size, orientation (IAU pole/W, χ, q, libration), airmass, extinction, KS91, earthshine, eclipse geometry, rise/transit/set. `tools/world/moon_fixtures.py` writes Horizons (Madrid, Buenos Aires, Tromsø) and SVS-2026 subset fixtures with queries and credit. | Delivered 2026-10-19: 1102/1102 checks ([evidence](../research/field-world/FW-MOON-02/README.md)); worst position 4.0′, rise/set 1.2 min, libration 0.09°, eclipse magnitude 0.031. Not yet wired to rendering. |
+| FW-MOON-03 | Correctness fixes, no new assets: per-pixel lit brightness from surface brightness, physical earthshine, disc out of the cubemap pass, distance-based size, horizon colour from the sky table's direct beam, shadow opacity by phase, planar shadow fade. (Night clouds already follow the moon: the sky shader's `sun_dir` is the active light.) | Delivered 2026-10-19 ([evidence](../research/field-world/FW-MOON-03/README.md)): lunar-Lambert disc normalised to KS91 (±1 %), physical earthshine, sky-table horizon colour, eye adaptation of the disc, moon shadows by phase (full 1.0, crescent 0.11); `test_world_moon_sky` 62/62. Cubemap-pass removal waits for FW-MOON-01 |
+| FW-MOON-04 | Texture intake: SVS 2k colour plus LOLA-derived normal map, provenance, credit, reproducible `--check`. | Delivered 2026-10-19 ([evidence](../research/field-world/FW-MOON-04/README.md)): SVS 2k colour + LOLA 1k normal map, provenance, reproducible `--check`, `test_world_moon_assets` 21/21 |
+| FW-MOON-05 | Textured, oriented, photometric disc with flattening and extinction colour; daytime moon at physical contrast. | Delivered 2026-10-19 ([evidence](../research/field-world/FW-MOON-05/README.md)): eight SVS overlays, orientation ±0.5°, albedo detail r 0.53–0.81, lit IoU 0.79–0.97; refraction squash 0.86 on the horizon; AgX-tuned display levels |
 | FW-MOON-06 | Moonlight: physical colour and extinction, continuous rise/set, sun↔moon hand-off without flip, cloud and eclipse dimming. | Light-energy curve test across moonrise; no frame-to-frame jump above a bound; twilight capture strip. |
 | FW-MOON-07 | Night look Eye / Cinematic / Camera. | Captures of all three; test that lamp colours are unchanged; blinded comparison feeds M-D4. |
 | FW-MOON-08 | Aureole, thin-cloud transmission, corona, 22° halo by profile, star washout, moon glare, lake moon road check. | Gallery of nine profiles × moon; halo radius 21.8 ± 0.3° measured on capture; star count vs angle test; cost table. |
 | FW-MOON-09 | One moon on every route: TOD astronomical time, pause editor, "View at night", Natural Random, helicopter; `moon` block in the visual context (replaces `"not-modelled"` with TOD). | Route-matrix test; TOD tests updated with the owner. |
 | FW-MOON-10 | Eclipses: umbra/penumbra shading, Danjon colour, light/sky/star response. | Espenak contact times within the tolerance M-D9 sets; 2028-12-31 moonrise capture. |
 | FW-MOON-11 | `moon_view` solver, Moonrise flowing preset, retargeted full-moon night, eclipse event. | Solver tests at the reference place; pilot-view captures show the moon; owner choice. |
-| FW-MOON-12 | `openrc-moon-config v1`, CLI/env, `[moon]` preferences, visual checkpoints. | Valid/invalid/round-trip and precedence tests; old settings files load unchanged. |
-| FW-MOON-13 | Moon group in Conditions and pause dialogs, live preview, rise/set readout and jumps, Home label and brief, "Tonight", es.po. | UI tests; captures at 720p/1080p in EN/ES; language test passes. |
+| FW-MOON-12 | `openrc-moon-config v1`, CLI/env, `[moon]` preferences, visual checkpoints. | Delivered 2026-10-19 ([evidence](../research/field-world/FW-MOON-12-13/README.md)): `moon_config.gd`, CLI/env, `[moon]` preferences, phase choice moves the date (±15 days), off/large/bright in SkyState; `test_world_moon_config` 47/47 |
+| FW-MOON-13 | Moon group in Conditions and pause dialogs, live preview, rise/set readout and jumps, Home label and brief, "Tonight", es.po. | Partly delivered 2026-10-19 ([evidence](../research/field-world/FW-MOON-12-13/README.md)): Moon, phase, size and moonlight choices with a live summary in Conditions → Time of day and pause → Sky and lighting, applied in place, saved, es.po; `test_ui_moon_controls` 13/13. Open: preview disc, rise/set jump buttons, Home label, "Tonight" |
 | FW-MOON-14 | Acceptance: target-GPU cost, FW-36 blinded readability across phases and looks, owner night review. | Cost table; review record; Gate FW-N input. |
 
 **Order, in reviewable milestones:**
@@ -295,7 +294,7 @@ Software checks prove consistency with these sources. They do not close pilot re
 | M-D6 | Texture resolution. | SVS 2k colour and 1k normal map; 4k only when a telescope-class camera needs it. |
 | M-D7 | Astronomical TOD time renders night through the FW world renderer (one calibrated night), keeping TOD clock and checkpoint contracts, instead of adding a moon to the TOD curves. | Route through FW. |
 | M-D8 | "Tonight" live sky from the system clock, resolved once and recorded. | Yes. |
-| M-D9 | Upgrade to the Meeus ch. 47 moon for eclipses (Schlyter: 6.7′ max, about 13 min of contact time). | Only if FW-MOON-10 needs better than ±15 min. |
+| M-D9 | Upgrade to the Meeus ch. 47 moon for eclipses. | **Resolved by FW-MOON-02:** not needed (Schlyter: eclipse magnitude ±0.031, greatest eclipse ±3.75 min against Espenak). |
 
 ## 10. Risks and non-goals
 

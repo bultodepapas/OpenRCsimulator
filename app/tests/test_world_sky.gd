@@ -87,7 +87,7 @@ func _initialize() -> void:
 	_check("blue hour solved to −4°", absf(blue.sky.sun.elevation_deg + 4.0) < 0.02, str(blue.sky.sun.elevation_deg))
 	_check("dawn is in the morning, blue hour in the evening", dawn.conditions.when.hour < 7.0 and blue.conditions.when.hour > 21.0)
 	_check("morning sun in the east", morning.sky.sun.azimuth_deg > 45.0 and morning.sky.sun.azimuth_deg < 120.0, str(morning.sky.sun.azimuth_deg))
-	_check("night preset: full moon (2026-06-29)", night.sky.moon.illuminated > 0.95, str(night.sky.moon.illuminated))
+	_check("night preset: full moon in front of the pilot (FW-MOON-11)", night.sky.moon.illuminated > 0.95, str(night.sky.moon.illuminated))
 	_check("night_dark preset: new moon (2026-06-15)", dark.sky.moon.illuminated < 0.05, str(dark.sky.moon.illuminated))
 	_check("night is astronomically dark", night.sky.sun.elevation_deg < -18.0 and dark.sky.sun.elevation_deg < -18.0)
 

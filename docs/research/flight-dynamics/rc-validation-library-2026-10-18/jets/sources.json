@@ -564,5 +564,128 @@
     "retrieved_utc": "2026-10-19T01:55:57Z",
     "license": "AIAA publisher copyright; no open redistribution license identified.",
     "read_depth": "DOI, bibliographic metadata and abstract only; full article not inspected."
+  },
+  {
+    "id": "weinstein-spada-simmons-2026-adept-edf-wing-tests",
+    "title": "Experimental Study of Aeropropulsive Interactions for Electric Ducted Fans on a Wing",
+    "authors": [
+      "Rose Weinstein",
+      "Vincent A. Spada",
+      "Benjamin M. Simmons"
+    ],
+    "year": 2026,
+    "doi": "10.2514/1.C038401",
+    "source_url": "https://ntrs.nasa.gov/citations/20250007333",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20250007333/downloads/Weinstein_Spada_Simmons_ADEPT_2026_JoA_accepted.pdf?attachment=true",
+    "type": "journal-article",
+    "topics": [
+      "NASA ADEPT Wing",
+      "130 mm Jetfan EDF array",
+      "six fan placement configurations",
+      "one/three/five EDF arrays",
+      "wind-tunnel lift and pitching moment",
+      "aeropropulsive interaction"
+    ],
+    "relevance": "The NASA ADEPT Wing (6 ft span, 2 ft chord) was tested in the 12-Foot Low-Speed Tunnel with the same Jetfan 130 Pro COTS hardware characterized in the 2024 paper. Six positions and arrays of one, three, and five EDFs were measured against a bare-wing baseline over angle of attack and fan speed, producing longitudinal force and moment evidence for EDF installation effects, lift augmentation, and fan-placement sensitivity.",
+    "limitations": "Tunnel wing tests only: no free flight, fuselage/tail, or complete-aircraft stability derivatives. Conclusions apply to this wing, EDF, array spacing, and tested conditions; the same fan hardware is shared with the 2024 study and is not an independent fan design.",
+    "access": "Downloaded from the public NASA NTRS accepted-manuscript record. NTRS marks distribution public and notes that portions may contain copyright-protected material; the local copy is for reference.",
+    "license": "NASA NTRS accepted manuscript is publicly distributed; NTRS notes portions may include copyright-protected material. No broader redistribution permission inferred.",
+    "read_depth": "Full accepted manuscript parsed; ADEPT wing and EDF hardware, configurations, tunnel methods, measured force/moment trends, and stated limitations reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/weinstein-2026-adept-edf-wing-interactions.pdf",
+    "sha256": "b24d42b03b976bc15b47489b666256f71794b81a0bc91092d77adc2285240deb",
+    "bytes": 10333683,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
+  },
+  {
+    "id": "urban-2023-model-edf-static-performance",
+    "title": "Effect of Electric Ducted Fans Structural Arrangement on Their Performance Characteristics",
+    "authors": [
+      "Daniel Urban",
+      "Stanislav Kusmirek",
+      "Vladimir Socha",
+      "Lenka Hanakova",
+      "Karel Hylmar",
+      "Jakub Kraus"
+    ],
+    "year": 2023,
+    "doi": "10.3390/app13052787",
+    "source_url": "https://www.mdpi.com/2076-3417/13/5/2787",
+    "download_url": "https://www.mdpi.com/2076-3417/13/5/2787/pdf",
+    "type": "journal-article",
+    "topics": [
+      "50 mm and 64 mm model-size EDFs",
+      "static thrust and power tests",
+      "cowling/outlet geometry",
+      "single- and two-rotor arrangements"
+    ],
+    "relevance": "Experimental static tests compare QX-Motor 50 mm and 64 mm 12-blade EDFs driven by the same 5000 kV motor, with modified outlet geometries and two-rotor arrangements. The paper measures vertical thrust and electrical power; its configuration-specific results make it useful for small EDF component and thrust-curve plausibility checks.",
+    "limitations": "Static component testing only: no installed-airframe, wind-on, or free-flight dynamics. Results depend on the particular EDFs, motor, printed cowls, and arrangements; the authors identify dynamic testing on a specific aircraft as future work.",
+    "access": "Full publisher HTML inspected; no local PDF original (HTTP 403 from direct PDF endpoint).",
+    "license": "Publisher marks the article Open Access; exact license terms were not verified from the inspected page extract. No local copy or broader redistribution permission is recorded.",
+    "read_depth": "Official article text was reviewed for the hardware, static test method, comparative thrust/power results, and conclusion; no PDF was downloaded.",
+    "local_path": null,
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
+  },
+  {
+    "id": "bravo-mosquera-2022-inti-cots-edf-wind-tunnel",
+    "title": "Experimental Investigation of a Next-Generation Airliner with Boundary Layer Ingestion",
+    "authors": [
+      "Pedro D. Bravo-Mosquera",
+      "João Paulo Eguea",
+      "Hernan D. Cerón-Muñoz",
+      "Fernando M. Catalano"
+    ],
+    "year": 2022,
+    "source_url": "https://icas.org/icas_archive/ICAS2022/data/preview/ICAS2022_0431.htm",
+    "download_url": "https://www.icas.org/icas_archive/ICAS2022/data/papers/ICAS2022_0431_paper.pdf",
+    "type": "conference-paper",
+    "topics": [
+      "1:28 INTI box-wing aircraft model",
+      "70 mm class commercial R/C EDFs",
+      "powered wind-tunnel testing",
+      "boundary-layer ingestion",
+      "force/power/flow measurements"
+    ],
+    "relevance": "The 3.5%-scale (1:28) INTI model is 1.12 m span and 1.38 m long. Its powered non-BLI and BLI configurations use two six-blade commercial EDFs described as typical R/C units (paper reports 70 mm central-duct outer diameter and 73 mm fan diameter). The tunnel campaign measures aerodynamic forces, electrical power, wake flow, and total pressure, providing an installed model-EDF/airframe interaction comparison.",
+    "limitations": "This is a captive wind-tunnel model of a conceptual transport, not an RC sport jet or free-flight identification campaign. The measured benefit is specific to the box-wing/BLI layout and low-speed test conditions; CFD is used for tunnel-wall corrections and is not the primary evidence. The stated 70 mm central-duct and 73 mm fan dimensions need geometric clarification before being used as nested housing/rotor dimensions; this collection does not resolve the definitions.",
+    "access": "Downloaded from the public ICAS conference archive. PDF signature, searchable title, and article text verified; retained locally as a reference copy only.",
+    "license": "Publicly accessible ICAS proceedings; no explicit redistribution license was identified. Local reference copy only.",
+    "read_depth": "Full searchable PDF parsed; model scale and geometry, EDF specification, tunnel instrumentation/conditions, force and power results, and limitations reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/bravo-mosquera-2022-inti-rc-edf-wind-tunnel.pdf",
+    "sha256": "a38e866765ae34879586c1b53e03aadbacb677d76fd29aa42806022e859fa0b8",
+    "bytes": 2036418,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
+  },
+  {
+    "id": "weinstein-simmons-2024-susan-cots-edf-dynamics",
+    "title": "Experimental Characterization of an Electric Ducted Fan for the SUSAN 25% Scale Research Vehicle",
+    "authors": [
+      "Rose Weinstein",
+      "Benjamin M. Simmons"
+    ],
+    "year": 2024,
+    "doi": "10.2514/6.2024-1524",
+    "source_url": "https://ntrs.nasa.gov/citations/20230017299",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20230017299/downloads/Weinstein_SciTech2024_Final.pdf?attachment=true",
+    "type": "conference-paper",
+    "topics": [
+      "NASA Langley 12-Foot Low-Speed Tunnel",
+      "130 mm Jetfan EDF",
+      "static and dynamic motor models",
+      "thrust and power modeling",
+      "design of experiments",
+      "validation data"
+    ],
+    "relevance": "A COTS Jetfan 130 Pro (5.11 in blade diameter, 7 kW maximum continuous rating) is characterized on a sting in wind-off and wind-on tunnel conditions for the SUSAN 25% research vehicle. OFAT and DOE runs vary PWM, voltage, tunnel dynamic pressure, and incidence angle; the authors identify static and critically damped second-order dynamic motor models plus thrust and power models, then assess predictions with held-out validation data.",
+    "limitations": "This characterizes an isolated propulsion unit, not a complete aircraft, hobby-jet flight, or airframe stability derivatives. The 130 mm, multi-kilowatt hardware is larger and more powerful than many sport EDF installations; model terms and response depend on its motor, ESC, cooling, and test setup.",
+    "access": "Downloaded from the public NASA NTRS record, which marks the work as a U.S. Government work with public use permitted. PDF signature and searchable text verified.",
+    "license": "NASA NTRS lists public distribution and public use permitted for U.S. Government work.",
+    "read_depth": "Full searchable paper parsed; fan hardware, test matrix, static/dynamic identification, thrust/power models, held-out validation, and system limits reviewed.",
+    "local_path": "references/rc-validation-library-2026-10-18/jets/weinstein-2024-susan-edf.pdf",
+    "sha256": "f489c575cfac7ac849b926a3af2a33c8960a700e958e3114b89e2a07b8496fdd",
+    "bytes": 18894455,
+    "retrieved_utc": "2026-10-19T02:02:29Z"
   }
 ]

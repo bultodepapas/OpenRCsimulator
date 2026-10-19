@@ -320,6 +320,62 @@ def add_v2_overlay(schema: dict, spec: dict):
         },
     })
 
+    # BAT-09: generated packs are referenced by id and SHA-256; the installation and the ESC
+    # low-voltage cutoff are aircraft data (docs/research/battery/BAT-04/specification.md §3).
+    def evidence(unit, value):
+        return {"allOf": [{"$ref": "#/$defs/electricEvidence"}, {"properties": {"value": value, "unit": {"const": unit}}}]}
+    def bounded(lo, hi, exclusive_lo=False):
+        out = {"type": "number", "maximum": hi}
+        out["exclusiveMinimum" if exclusive_lo else "minimum"] = lo
+        return out
+    schema["$defs"]["electricPackEcmBattery"] = {
+        "type": "object",
+        "required": ["kind", "pack", "mount_inventory_id", "initial_soc", "auxiliary_current_a",
+                     "cooling_airflow_fraction", "weak_cell"],
+        "properties": {
+            "kind": {"const": "pack_ecm"},
+            "pack": {"type": "object", "required": ["id", "sha256"], "properties": {
+                "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,95}$"},
+                "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}},
+            "mount_inventory_id": {"type": "string", "minLength": 1},
+            "initial_soc": evidence("1", bounded(0.0, 1.0, True)),
+            "auxiliary_current_a": evidence("A", bounded(0.0, 100.0)),
+            "cooling_airflow_fraction": evidence("1", bounded(0.0, 1.0)),
+            "weak_cell": {"type": "object", "required": ["capacity_factor", "resistance_factor", "soc_offset"], "properties": {
+                "capacity_factor": evidence("1", bounded(0.01, 1.0)),
+                "resistance_factor": evidence("1", bounded(1.0, 10.0)),
+                "soc_offset": evidence("1", {"type": "number", "minimum": 0.0, "exclusiveMaximum": 0.5})}},
+        },
+    }
+    schema["$defs"]["electricLowVoltageCutoff"] = {
+        "type": "object",
+        "required": ["mode", "cell_detection", "cutoff_per_cell_v", "soft_limit", "soft_ramp_s", "debounce_s",
+                     "recovery", "reset_throttle_max", "voltage_filter_s"],
+        "properties": {
+            "mode": {"enum": ["soft", "hard", "off"]},
+            "cell_detection": {"enum": ["auto", "fixed"]},
+            "fixed_cells": evidence("1", {"type": "integer", "minimum": 1, "maximum": 24}),
+            "detection_max_cell_v": evidence("V", bounded(0.5, 6.0)),
+            "cutoff_per_cell_v": evidence("V", bounded(0.5, 5.0)),
+            "soft_limit": evidence("1", {"type": "number", "minimum": 0.0, "exclusiveMaximum": 1.0}),
+            "soft_ramp_s": evidence("s", bounded(0.0, 60.0, True)),
+            "debounce_s": evidence("s", bounded(0.0, 60.0)),
+            "recovery": {"enum": ["throttle_reset", "latched"]},
+            "reset_throttle_max": evidence("1", bounded(0.0, 0.2)),
+            "voltage_filter_s": evidence("s", bounded(0.02, 10.0)),
+        },
+        "allOf": [{"if": {"properties": {"cell_detection": {"const": "fixed"}}},
+                   "then": {"required": ["fixed_cells"], "not": {"required": ["detection_max_cell_v"]}},
+                   "else": {"required": ["detection_max_cell_v"], "not": {"required": ["fixed_cells"]}}}],
+    }
+    schema["$defs"]["electricEsc"]["properties"]["low_voltage_cutoff"] = {"$ref": "#/$defs/electricLowVoltageCutoff"}
+    electric["properties"]["battery"]["oneOf"].append({"$ref": "#/$defs/electricPackEcmBattery"})
+    electric["allOf"] = list(electric.get("allOf", [])) + [{
+        "if": {"properties": {"battery": {"properties": {"kind": {"const": "pack_ecm"}}}}},
+        "then": {"properties": {"esc": {"required": ["low_voltage_cutoff"]}}},
+        "else": {"properties": {"esc": {"not": {"required": ["low_voltage_cutoff"]}}}},
+    }]
+
     gear_schema = root_props["landing_gear"]
     # The v1 nullable branch is removed by prune_null_anyof; this explicit
     # description is part of the retained named metadata surface.
@@ -379,7 +435,7 @@ def add_v2_overlay(schema: dict, spec: dict):
                    "then": {"properties": {"capabilities": {"properties": {"energy": {"const": "finite_glow_fuel"}}}}},
                    "else": {"properties": {"capabilities": {"properties": {"energy": {"const": "prescribed_fuel"}}}}}}
     rules.append({"if": branch_condition(["propulsion", "kind"], "glow_prop"), "then": {"allOf": [glow_energy, {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}}}}}]}})
-    for battery_kind, energy in [("fixed_voltage", "fixed_voltage"), ("ocv_resistance", "ocv_resistance")]:
+    for battery_kind, energy in [("fixed_voltage", "fixed_voltage"), ("ocv_resistance", "ocv_resistance"), ("pack_ecm", "pack_ecm")]:
         condition = {"properties": {"propulsion": {"properties": {"kind": {"const": "electric_prop"}, "battery": {"properties": {"kind": {"const": battery_kind}}}}}}}
         rules.append({"if": condition, "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}, "energy": {"const": energy}}}}}})
     for gear_kind in ["fixed_tricycle", "fixed_taildragger", "locked_down_taildragger", "retractable_tricycle", "retractable_taildragger"]:

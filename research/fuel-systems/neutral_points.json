@@ -1,0 +1,28 @@
+{
+  "format": "openrc-neutral-point-register v1",
+  "note": "Repository neutral-point estimates in the aircraft-data frame (x aft of the wing leading-edge datum, m). Estimates, not measurements; each entry names its derivation. Used only by mass_balance_report.py to express static margin per fuel state.",
+  "aircraft": {
+    "jensen-das-ugly-stik-60": {
+      "np_x_m": 0.132588,
+      "kind": "estimated",
+      "source": "43.5 % of the 0.3048 m chord: research/flight-dynamics/climb-trim derive_pitch_reference.py (Helmbold slopes, tail q-ratio 0.9, Raymer fuselage term; band 42.5-44.5 %, VLM 44.4 %); docs/research/flight-dynamics/climb-trim/README.md",
+      "applies_to": ["jensen-das-ugly-stik-60", "stik-glow-55ax-2t", "stik-glow-61fx-2t", "stik-glow-fs64v-4t"],
+      "applies_note": "The generated APC 13x6 variants share their base aircraft id, so they inherit this entry; the synthetic electric fixtures keep an earlier aero reference and are not covered."
+    },
+    "gp-extra-300s-60": {
+      "np_x_m": 0.147033,
+      "kind": "derived",
+      "source": "42.5 % MAC with the loaded half-tank CG at 27.98 % MAC (research/extra-300/ex05/derivation.md): plan_cg x 0.10266 + 0.1452 x MAC 0.305597 (taper formula)"
+    },
+    "p51d-mustang-120": {
+      "np_x_m": 0.214398,
+      "kind": "derived",
+      "source": "34.2 % MAC glide neutral point (docs/P51-REALISM-PLAN.md) with plan CG 27 % MAC: plan_cg x 0.177763 + 0.072 x MAC 0.508816 (taper formula)"
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "np_x_m": 0.270866,
+      "kind": "derived",
+      "source": "manual aft CG 260 mm taken as 3 % MAC stable (research/avanti-s/av06/inputs.json): 0.260 + 0.03 x MAC 0.362193 (taper formula)"
+    }
+  }
+}

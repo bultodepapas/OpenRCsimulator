@@ -91,6 +91,8 @@ var flight_scenario: Dictionary = {}
 var remember_lighting_selection: bool = true
 var _experimental_aircraft_path := ""
 var _electric_demo: String = ""
+## BAT-13: "ideal" (the aircraft's main data) or "pack" (its finite-pack data). Home sets it; else --battery=<mode>.
+var battery_mode: String = "ideal"
 ## Home supplies its selection. Quick Flight defaults to runway; technical routes keep their reference start.
 var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
@@ -404,6 +406,14 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		get_tree().quit(ERR_INVALID_PARAMETER)
 		return
+	if args.has("battery"):
+		battery_mode = str(args.get("battery", ""))
+	if not Catalog.has_battery_mode(aircraft_id, battery_mode) or (battery_mode != "ideal" and not _electric_demo.is_empty()):
+		printerr("battery mode '%s' refused for '%s': use ideal, or pack where the catalog declares battery_data" % [battery_mode, aircraft_id])
+		set_process(false)
+		set_process_unhandled_input(false)
+		get_tree().quit(ERR_INVALID_PARAMETER)
+		return
 	var experimental_input_sha256 := ""
 	if args.has("experimental-aircraft-data"):
 		var experimental: Dictionary = _validate_experimental_aircraft_data(
@@ -470,7 +480,7 @@ func _ready() -> void:
 		set_process(false)
 		set_process_unhandled_input(false)
 		return
-	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (str(Catalog.entry(aircraft_id).data) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
+	var physics_path: String = _experimental_aircraft_path if not _experimental_aircraft_path.is_empty() else (Catalog.data_for(aircraft_id, battery_mode) if _electric_demo.is_empty() else "res://data/aircraft/synthetic_stik_electric_%s.json" % _electric_demo.replace("-", "_"))
 	if workshop_trial.is_empty():
 		session.setup(physics_path, aircraft_id if _electric_demo.is_empty() and _experimental_aircraft_path.is_empty() else "")
 	else:
@@ -931,8 +941,8 @@ func _update_hud() -> void:
 			var family: String = str(glow.get("family", ""))
 			var family_label := "2-stroke" if family == "glow_2t" else "4-stroke" if family == "glow_4t" else family
 			var temperature_c: float = float(glow.get("temperature_k", 273.15)) - 273.15
-			# The generated Stik data estimates premix at about 0.8 g/mL; display the corresponding approximate volume.
-			var fuel_ml: float = float(glow.get("fuel_kg", 0.0)) / 0.0008
+			# FUEL-01b: volume at the installed blend's density; "~" because that density is itself an estimate.
+			var fuel_ml: float = float(glow.get("fuel_volume_m3", 0.0)) * 1.0e6
 			var engine_mode: String = "running" if glow.get("running", false) else str(glow.get("stop_reason", "stopped")).replace("_", " ")
 			lines.append("Glow %s  %.0f rpm  head %.0f °C  fuel ~%.0f mL  %s  φ %.2f" % [
 				family_label, float(glow.get("rpm", 0.0)), temperature_c, fuel_ml, engine_mode,
@@ -2094,7 +2104,9 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 		AirplaneBuilder.apply_flaps(_airplane, float(flap_state.get("angle_deg", 0.0)))
 	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
-	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting and _shadow_mode == "sun" else 1.0
+	# FW-MOON-03: field-world time passes no lighting dictionary; its strength fades the moon's shadow with the phase.
+	var strength: float = (Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength()) \
+		if _shadow_mode == "sun" else 1.0
 	_shadow.visible = _shadow_mode != "off" and _airplane.root.visible and strength > 0.0
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, pose.basis, pose.pos, _extent.x, _extent.y, direction if _shadow_mode == "sun" else Vector3.UP, strength)

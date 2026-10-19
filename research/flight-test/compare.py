@@ -2,13 +2,14 @@
 """FT-02: compare two flight-test battery outputs (baseline, candidate) case by case.
 
 Usage: python research/flight-test/compare.py <baseline dir> <candidate dir> [--rel 0.01] [--abs 0.01]
-                                              [--out report.md] [--fail-on-change]
+                                              [--out report.md] [--fail-on-change] [--allow-card-change] [--shared-tests]
 
 Flattens every profile into keys `test.metric` and `test[case].field`, then lists each test whose validity changed and
 each value that moved by more than max(--abs, --rel × |baseline|), plus strings and flags that differ. Speeds, rates
 and angles share one tolerance pair: tighten or loosen it for the question being asked. Profiles from different card
-versions are refused (their cases differ) unless --allow-card-change. A listed change is a difference to explain, not a
-verdict: the battery measures the model, it does not validate it.
+versions are refused (their cases differ) unless --allow-card-change. --shared-tests compares only the tests both
+profiles contain and names the others, so a card that appends tests can show that every earlier test is unchanged.
+A listed change is a difference to explain, not a verdict: the battery measures the model, it does not validate it.
 """
 import argparse
 import json
@@ -55,6 +56,7 @@ def main():
     parser.add_argument("--out")
     parser.add_argument("--fail-on-change", action="store_true")
     parser.add_argument("--allow-card-change", action="store_true")
+    parser.add_argument("--shared-tests", action="store_true", help="compare only the tests both profiles contain")
     args = parser.parse_args()
     base_dir, cand_dir = Path(args.baseline), Path(args.candidate)
     lines = [f"# Flight-test comparison", "", f"Baseline `{base_dir}`, candidate `{cand_dir}`; tolerance max({args.abs}, {args.rel} × |baseline|).", ""]
@@ -79,6 +81,15 @@ def main():
             sys.exit(f"{name}: card {a.get('format')} vs {b.get('format')}: cases differ (use --allow-card-change to compare anyway)")
         fa, va = flatten(a)
         fb, vb = flatten(b)
+        only = []
+        if args.shared_tests:
+            shared = set(va) & set(vb)
+            only = [f"{t} (baseline only)" for t in sorted(set(va) - shared)] + [f"{t} (candidate only)" for t in sorted(set(vb) - shared)]
+            test_of = lambda key: key.split(".")[0].split("[")[0]
+            va = {t: v for t, v in va.items() if t in shared}
+            vb = {t: v for t, v in vb.items() if t in shared}
+            fa = {k: v for k, v in fa.items() if test_of(k) in shared}
+            fb = {k: v for k, v in fb.items() if test_of(k) in shared}
         rows = []
         for test in sorted(set(va) | set(vb)):
             if va.get(test) != vb.get(test):
@@ -94,6 +105,9 @@ def main():
         total += len(rows)
         lines.append(f"## {b.get('name', name)} — {len(rows)} change(s)")
         lines.append("")
+        if args.shared_tests:
+            lines.append(f"Compared {len(va)} shared tests, {len(fa)} values. Not compared: {', '.join(only) if only else 'none'}.")
+            lines.append("")
         if a.get("data_sha256") != b.get("data_sha256"):
             lines.append("Aircraft data changed between the runs.")
             lines.append("")

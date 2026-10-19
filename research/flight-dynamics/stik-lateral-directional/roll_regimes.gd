@@ -51,8 +51,12 @@ func _initialize() -> void:
 		print("\n## %s" % path.get_file())
 		print("Oracle: Clb %+.4f about the ARP; side-force transfer CYb·h/b = %+.4f·%.4f/%.4f = %+.4f; Clβ at the CG %+.4f" % [
 			a.Clb, a.CYb, h, b, a.CYb * h / b, a.Clb + a.CYb * h / b])
-		print("Local: fin CYβ %+.4f at %.4f m above the CG -> Clβ %+.4f; no wing-body term" % [
-			fin_cy, float(fin.position[2]) - float(model.cg_le[2]), fin_cy * (float(fin.position[2]) - float(model.cg_le[2])) / b])
+		print("Local: fin CYβ %+.4f at %.4f m above the CG -> Clβ %+.4f; wing-body couple %s" % [
+			fin_cy, float(fin.position[2]) - float(model.cg_le[2]), fin_cy * (float(fin.position[2]) - float(model.cg_le[2])) / b,
+			"%+.5f" % model.surfaces.wing_body_cl_beta if model.surfaces.has("wing_body_cl_beta") else "none"])
+		var response := _dihedral_response(model)
+		print("Lifting line through this wing's calibrated induced map: antisymmetric incidence dCl/dδ %+.4f per rad -> geometric dihedral Clβ/Γ %+.5f per rad per deg of Γ" % [
+			response, response * deg_to_rad(1.0)])
 		print("| α° | blend | Clβ oracle | Clβ local | Clβ production | FASER Clβ | Cnβ oracle | Cnβ local | Cnβ production | FASER Cnβ |")
 		print("| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |")
 		var lines := PackedStringArray(["alpha_deg,blend,clb_oracle,clb_local,clb_production,cnb_oracle,cnb_local,cnb_production"])
@@ -106,6 +110,23 @@ static func _derivatives(model: Dictionary, alpha: float) -> Dictionary:
 		cnb.append((plus[i][5] - minus[i][5]) / (2.0 * db * qsb))
 	var s0 := _state(alpha, 0.0)
 	return {clb = clb, cnb = cnb, blend = Aero.local_flow_weight(s0, Air.compute(s0, M.v3(0, 0, 0)), ZERO, model)}
+
+
+## Rolling moment per rad of antisymmetric strip incidence (right wing up), the local law's own lifting-line response.
+## A dihedral Γ gives each panel Δα = ±β·sinΓ, so Clβ from geometric dihedral is this value times Γ (rad).
+static func _dihedral_response(model: Dictionary) -> float:
+	var twisted: Dictionary = model.duplicate(true)
+	var ys: PackedFloat64Array = model.envelope.station_ys
+	var delta := deg_to_rad(0.5)
+	var base_incidence: PackedFloat64Array = model.surfaces.get("station_incidence", PackedFloat64Array())
+	var incidence := PackedFloat64Array()
+	for i in ys.size():
+		incidence.append((0.0 if base_incidence.is_empty() else base_incidence[i]) + (delta if ys[i] > 0.0 else -delta))
+	twisted.surfaces.station_incidence = incidence
+	var s := _state(deg_to_rad(2.0), 0.0)
+	var air := Air.compute(s, M.v3(0, 0, 0))
+	var qsb: float = 0.5 * RHO * SPEED * SPEED * float(model.reference.S) * float(model.reference.b)
+	return (Aero._local_loads(s, air, ZERO, twisted, RHO)[3] - Aero._local_loads(s, air, ZERO, model, RHO)[3]) / (qsb * delta)
 
 
 static func _three(model: Dictionary, s: PackedFloat64Array) -> Array:

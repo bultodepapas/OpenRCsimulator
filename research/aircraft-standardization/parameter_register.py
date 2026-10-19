@@ -56,7 +56,9 @@ def consumer(path: str) -> str:
         ("propulsion.engine.shaft.", "AircraftData._shaft → Propulsion shaft torque/RPM balance / session integrator"),
         ("propulsion.propeller.", "AircraftData._propulsion/_electric_propulsion → Propulsion thrust/torque/axis/rotor loads"),
         ("propulsion.motor.", "AircraftData._electric_propulsion → electric_motor/electric_supply shaft and bus law"),
-        ("propulsion.battery.", "AircraftData._electric_battery → electric_supply/electric_battery_step, reset/trim"),
+        ("propulsion.battery.weak_cell.", "AircraftData._pack_ecm_battery → PackEcm weakest-cell capacity/resistance/charge offset; exhaustion event state"),
+        ("propulsion.battery.", "AircraftData._electric_battery/_pack_ecm_battery → electric_supply or PackEcm, electric_battery_step, reset/trim"),
+        ("propulsion.esc.low_voltage_cutoff.", "AircraftData._low_voltage_cutoff → EscSupervisor cell detection and sampled cutoff; PackEcm voltage filter"),
     ]
     for prefix, result in families:
         if path.startswith(prefix):
