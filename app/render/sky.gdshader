@@ -120,13 +120,19 @@ vec3 moon_aureole(vec3 d, vec3 background) {
 	vec3 a = moon_aureole_lin * shape * path;
 	float la = dot(a, vec3(0.2126, 0.7152, 0.0722));
 	float lb = max(dot(background, vec3(0.2126, 0.7152, 0.0722)), 1e-12);
-	return la > 0.0 ? a * (lb * (pow(1.0 + la / lb, moon_display_gamma) - 1.0) / la) : vec3(0.0);
+	float shown = lb * (pow(1.0 + la / lb, moon_display_gamma) - 1.0);
+	// A soft knee keeps the glow below the disc as shown. At the limb KS91 puts it at ~0.5 % of the disc's radiance;
+	// shown with the disc's own γ that is 0.005^γ of the displayed disc (5 % at night), so the limb never washes out.
+	// The bright core people see around the moon is mostly the eye's own straylight (the glare veil), not this.
+	float knee = pow(0.005, moon_display_gamma) * dot(moon_lin, vec3(0.2126, 0.7152, 0.0722)) * moon_display_scale;
+	shown = knee > 0.0 ? shown * knee / (knee + shown) : shown;
+	return la > 0.0 ? a * (shown / la) : vec3(0.0);
 }
 
 // SUN-01: KS91's aerosol aureole around the sun (the moon_aureole law above), anchored to the sun's own illuminance
 // rather than the zenith, flat inside 1° (the LDR disc cannot carry the ρ⁻² peak) and only above its 45° value (the
-// sky table's lobe already holds the diffuse part). Compressed against the disc's radiance so a low, reddened disc
-// stays visible inside its glow; at noon both saturate, as the eye and a camera see them.
+// sky table's lobe already holds the diffuse part). Compressed below 0.4 of the disc's mean radiance, under its
+// limb-darkened edge, so a low, reddened disc stays distinct inside its glow; the eye's veil adds the rest.
 vec3 sun_aureole(vec3 d, vec3 dir) {
 	if (dot(sun_aureole_lin, vec3(1.0)) <= 0.0) {
 		return vec3(0.0);
@@ -141,7 +147,7 @@ vec3 sun_aureole(vec3 d, vec3 dir) {
 	float airmass = inversesqrt(1.0 - 0.96 * sin_z * sin_z);
 	vec3 a = sun_aureole_lin * shape * (1.0 - pow(10.0, -0.4 * sun_aureole_k * airmass));
 	float la = dot(a, vec3(0.2126, 0.7152, 0.0722));
-	float disc = 0.8 * (4.0 / PI) * dot(sun_lin, vec3(0.2126, 0.7152, 0.0722));
+	float disc = 0.4 * (4.0 / PI) * dot(sun_lin, vec3(0.2126, 0.7152, 0.0722)); // SunOptics.AUREOLE_DISC_SHARE
 	return a / (1.0 + la / max(disc, 1e-12));
 }
 
@@ -192,7 +198,9 @@ void sky() {
 		col += moon_disc(EYEDIR); // before the clouds, which hide it
 	}
 	if (!AT_CUBEMAP_PASS && sun_disc > 0.0) {
-		col += sun_aureole(EYEDIR, disc_cloud_occlusion ? disc_dir : sun_dir) * min(sun_disc, 1.0); // SUN-01, under the clouds
+		// SUN-01, under the clouds. Faded out over the last 2° above the horizon, which must stay the engine's fog colour
+		// (the ground and ridges fog toward haze() without it).
+		col += sun_aureole(EYEDIR, disc_cloud_occlusion ? disc_dir : sun_dir) * smoothstep(0.0, 0.035, EYEDIR.y);
 	}
 	float density = 0.0;
 	float cirrus_amount = 0.0;

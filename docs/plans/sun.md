@@ -27,12 +27,12 @@ The physics, sources and rejected alternatives are in [SUN-00](../research/sun/S
 | Part | Physics | Where |
 | --- | --- | --- |
 | Disc | Quadratic limb darkening near 550 nm, mean-preserving; refraction flattening (Sæmundsson, as the moon's; 0.84 on the horizon) | `sky.gdshader` `sun_disc_profile`; `SunOptics.limb`, `.squash` |
-| Aureole | Krisciunas & Schaefer (1991) aerosol term anchored to the sun's illuminance (B/E in sr⁻¹), flat inside 1°, only above its 45° value, compressed against the LDR disc | `sky.gdshader` `sun_aureole`; `SunOptics.aureole_*` |
-| Eye veil | CIE 146:2002 general disability-glare equation (age 40, pigment 0.5) above its 45° value, over the luminance behind the model (sky plus aureole): r = Ψ·S/(1 + S·g). S = E/B, the sun's illuminance over the sky's luminance around it, read from the live sky (≈ 9 on the calibrated day, 1–3 for a low sun, < 0.5 at the horizon). Overlay alpha q/(1+q), q = κ·r, so displayed contrast falls by 1/(1 + r) | `sun_glare.gdshader` pass 0; `SunOptics.veil_*`; `SkyMirror.background_luminance` |
-| Visibility | Clouds from the CPU mirror of the sky's own decks (classic and layered); the disc's visible fraction from 9 depth samples on screen (the flown aircraft included), a 3° skyline prior off screen | `SkyMirror.transmission`; pass 0 |
+| Aureole | Krisciunas & Schaefer (1991) aerosol term anchored to the sun's illuminance (B/E in sr⁻¹), flat inside 1°, only above its 45° value, kept below 0.4 of the disc's mean radiance (under its limb) and faded out over the last 2° above the horizon (the sky must meet the ground's fog colour there) | `sky.gdshader` `sun_aureole`; `SunOptics.aureole_*` |
+| Eye veil | CIE 146:2002 general disability-glare equation (age 40, pigment 0.5) above its 45° value, over the luminance behind the model (sky plus aureole): r = Ψ·S/(1 + S_b·g). S = E/B, the sun's illuminance over the sky's luminance around it, read from the live sky (≈ 9 on the calibrated day, 1–3 for a low sun, < 0.5 at the horizon), times the disc's visible fraction, clouds and strength; S_b = E/B times clouds only (the aureole is sky light). Overlay alpha q/(1+q), q = κ·r, so displayed contrast falls by 1/(1 + r) | `sun_glare.gdshader` pass 0; `SunOptics.veil_*`; `SkyMirror.background_luminance` |
+| Visibility | Clouds from the CPU mirror of the sky's own decks (classic and layered), cached until they change; the disc's visible fraction from 9 depth samples on screen (the flown aircraft included), a 3° skyline prior off screen | `SkyMirror.transmission`; pass 0 |
 | Ciliary corona | Fine radial needles near the source, drifting slowly on the shader clock | pass 0, eye |
-| Bleaching | Up to three retinal patches fixed to the view; dD/dt = e(1−D)/0.25 s − D/8 s on simulation time, exact per step, with e the sun's absolute illuminance relative to the day sun. A patch shows no detail (masking up to 0.85): the veil's colour while the sun is on it, dark violet-grey after | `SunOptics.afterimage_*`; pass 1, eye |
-| Lens | 0.2 × the eye's veil, six-blade starburst, five ghosts through the frame centre; no bleaching | passes 0 and 1, `openrc_optics = "lens"` |
+| Bleaching | Up to eight fixed retinal cells of 1.15° (disc plus its bleaching halo), fixed to the view; the sun's image feeds each by a Gaussian of its distance, dD/dt = e(1−D)/0.05 s − D/8 s on simulation time, exact per step, with e the sun's absolute illuminance relative to the day sun. A sweep leaves a streak, a stare one saturated cell. Drawn on a canvas layer under the interface: the image blurred over twice the cell's size (lost acuity) with masking up to 0.95, violet-dark once the sun has left the cell | `SunOptics.afterimage_*`, `bleach`; `sun_afterimage.gdshader` |
+| Lens | 0.2 × the eye's veil, six-blade starburst, five ghosts through the frame centre (pass 1); no bleaching | passes 0 and 1, `openrc_optics = "lens"` |
 
 ## 3. Steps
 
@@ -46,16 +46,17 @@ The physics, sources and rejected alternatives are in [SUN-00](../research/sun/S
 | SUN-05 | Regression: LU glare checks updated for the new physics, full suite, cost. | Delivered with the limits in the evidence. |
 | SUN-06 | Pilot eyewear: cap brim (blocks a sun high above the gaze) and sunglasses (lower bleaching, same veil ratio). Needs UI owner for a preference. | Open. |
 | SUN-07 | Moon glare as a second source of the same overlay (FW-MOON-08 owns it). | Open; API in `SunGlare.source()`. |
-| SUN-08 | Owner flight acceptance: fly across the sun on Day, golden hour and sunset; judge how long the model is lost, the afterimage, the veil and the lens flare. Tune `AFTER_BLEACH_S`, `AFTER_RECOVER_S`, `AFTER_MAX_ALPHA` and the `--sun-glare` default from it. | Open (Gate). |
+| SUN-08 | Owner flight acceptance: fly across the sun on Day, golden hour and sunset; judge how long the model is lost, the afterimage streak, the veil and the lens flare. Tune `AFTER_RECOVER_S`, `AFTER_MAX_ALPHA`, the patch blur and the `--sun-glare` default from it. | Open (Gate). |
 
 ## 4. Controls
 
-`--sun-glare=0..2` (or `off`) and `OPENRC_SUN_GLARE` scale the whole effect (veil and bleaching dose); `--landscape-upgrade=off` removes it. The camera rig marks its view (`openrc_optics` metadata). Commands: [tools/landscape](../../tools/landscape/README.md).
+`--sun-glare=0..2` (or `off`) and `OPENRC_SUN_GLARE` scale the veil's straylight and the bleached patches' masking; `--landscape-upgrade=off` removes it. The camera rig marks its view (`openrc_optics` metadata). Commands: [tools/landscape](../../tools/landscape/README.md).
 
 ## 5. Limits
 
 - The bleaching dose sees clouds and the skyline prior, not trees, buildings or the aircraft: a low sun hidden behind a near tree can still mark the eye. The on-screen veil uses the real depth buffer.
-- Patches are blobs: a fast sweep of the sun across the view leaves up to three merged patches, not an exact streak; the minutes-long faint tail of a real afterimage is not drawn.
+- Bleaching is eight 1.15° cells, not a per-pixel retina: a sweep longer than eight cells stops leaving new ones until a cell fades; the minutes-long faint tail of a real afterimage is not drawn.
+- The veil's display mapping assumes a background near 0.75 of the veil's displayed colour (a day sky near the sun, measured within 0.05); a forced dark exposure over-veils.
 - E/B comes from the sky table's gradient; near the horizon that sky is bright, so a low sun veils little (as observed), but the absolute numbers carry the table's and KS91's 2–4× uncertainty.
 - Transparent canopies do not write depth; nine depth samples can step during a small-object transit (LU-04 limits).
 - One source at a time; the moon is FW-MOON-08's.

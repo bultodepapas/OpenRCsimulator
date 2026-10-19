@@ -1,7 +1,9 @@
 """SUN-05: labelled comparison sheets from native glare captures (app/tests/capture_landscape_upgrade.gd).
 
 Each sheet places matching PNGs from an "old" (HEAD before SUN) and a "new" capture set side by side, half size,
-with a caption per tile. Missing images are skipped. Pixels are not retouched beyond the resize and the caption.
+with a caption per tile, saved as JPEG (quality 88) to keep the repository light. Missing images are skipped. Pixels
+are not retouched beyond the resize, the caption and the JPEG encoding; measurements use the PNG captures, whose
+SHA-256 sheets.json records.
 
 Run from the repository root with the pinned visual environment:
     "$(app/tests/visual-env.sh)" research/sun/sun-05/sheets.py --captures <folder> --out <folder>
@@ -15,25 +17,25 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 
 SHEETS = {
-    "sun-day.png": [("old_day", "glare_off", "Before: sky only"), ("new_day", "glare_off", "After: sky only (aureole)"),
+    "sun-day.jpg": [("old_day", "glare_off", "Before: sky only"), ("new_day", "glare_off", "After: sky only (aureole)"),
                     ("old_day", "glare_clear", "Before: sky + LU-04 glare"), ("new_day", "glare_clear", "After: sky + eye veil")],
-    "sun-disc.png": [("old_day", "glare_disc_zoom", "Before: day disc (2.5° view)"),
+    "sun-disc.jpg": [("old_day", "glare_disc_zoom", "Before: day disc (2.5° view)"),
                      ("new_day", "glare_disc_zoom", "After: day disc"),
                      ("old_golden", "glare_disc_zoom", "Before: golden hour disc"),
                      ("new_golden", "glare_disc_zoom", "After: golden hour disc"),
                      ("old_sunset", "glare_disc_zoom", "Before: sunset disc"),
                      ("new_sunset", "glare_disc_zoom", "After: sunset disc")],
-    "sun-crossing.png": [("old_day", "glare_offset_3", "Before: Stik 3° from the sun"),
+    "sun-crossing.jpg": [("old_day", "glare_offset_3", "Before: Stik 3° from the sun"),
                          ("new_day", "glare_offset_3", "After: Stik 3° from the sun (veil)"),
                          ("old_day", "glare_crossing", "Before: 0.67 s after crossing the sun"),
                          ("new_day", "glare_crossing", "After: 0.67 s after crossing (bleached)"),
                          ("new_day", "glare_crossing_off", "Glare off: same frame, Stik visible"),
                          ("new_day", "glare_crossing_late", "After: 5 s later, recovering")],
-    "sun-low.png": [("old_golden", "glare_clear", "Before: golden hour"), ("new_golden", "glare_clear", "After: golden hour"),
+    "sun-low.jpg": [("old_golden", "glare_clear", "Before: golden hour"), ("new_golden", "glare_clear", "After: golden hour"),
                     ("old_sunset", "glare_clear", "Before: sunset"), ("new_sunset", "glare_clear", "After: sunset"),
                     ("new_golden", "glare_crossing", "After: golden hour, 0.67 s after crossing"),
                     ("new_sunset", "glare_crossing", "After: sunset, 0.67 s after crossing")],
-    "sun-optics.png": [("new_day", "glare_afterimage", "Eye: afterimage 0.67 s after looking away"),
+    "sun-optics.jpg": [("new_day", "glare_afterimage", "Eye: afterimage 0.67 s after looking away"),
                        ("new_day", "glare_afterimage_off", "Glare off: same frame"),
                        ("new_day", "glare_lens", "Lens (chase, orbit, close-up)"),
                        ("new_golden", "glare_lens", "Lens at golden hour")],
@@ -73,7 +75,7 @@ def main():
         sheet = Image.new("RGB", (width * columns, height * rows), (32, 32, 32))
         for index, image in enumerate(tiles):
             sheet.paste(image, ((index % columns) * width, (index // columns) * height))
-        sheet.save(args.out / name, optimize=True)
+        sheet.save(args.out / name, quality=88, optimize=True)
         manifest["sheets"][name] = sources
     (args.out / "sheets.json").write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({name: len(sources) for name, sources in manifest["sheets"].items()}))

@@ -1,0 +1,145 @@
+{
+  "format": "openrc-sun-sheets v1",
+  "sheets": {
+    "sun-day.jpg": [
+      {
+        "set": "old_day",
+        "case": "glare_off",
+        "sha256": "f070dbda6804694417f5fca8555a689ea716c2ef72f67ab23c2d1e23b3420ed3"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_off",
+        "sha256": "14570dadc6dde5a3999196594e2a514912e017a4ef22d7f2698ad6e571459c76"
+      },
+      {
+        "set": "old_day",
+        "case": "glare_clear",
+        "sha256": "782d318d9b6015a7cd44186da925b0c4c6977c4b63aab320021f4f56762a6144"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_clear",
+        "sha256": "58910ffc5e295316bd9be9825e7f158abe2350a08d188c087a2ece171a53f96c"
+      }
+    ],
+    "sun-disc.jpg": [
+      {
+        "set": "old_day",
+        "case": "glare_disc_zoom",
+        "sha256": "e15bd30f3d62f6b90c4e0bc81dc729ad7a6fe7bad2dc372025292138bfc62a01"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_disc_zoom",
+        "sha256": "30703a842ca36984788d229d8003c21ccfa3a9e7157b92a218537b49d2db7493"
+      },
+      {
+        "set": "old_golden",
+        "case": "glare_disc_zoom",
+        "sha256": "06649e6a234ac8d0b9da23a4501ca389e68663da799715e6125c5d2236e33cbe"
+      },
+      {
+        "set": "new_golden",
+        "case": "glare_disc_zoom",
+        "sha256": "ff2738159eaba90da4565ad539bbe5c476ab0a5a1d2b635fcaf1458401fd9c94"
+      },
+      {
+        "set": "old_sunset",
+        "case": "glare_disc_zoom",
+        "sha256": "19e606ed5148a22772c203d76a098c391509d1d1598b9a9df3f364f67e5c5983"
+      },
+      {
+        "set": "new_sunset",
+        "case": "glare_disc_zoom",
+        "sha256": "7c177a969bd9cae2c64a006adacf9fd7718346a74065330b57e4242de694a9d1"
+      }
+    ],
+    "sun-crossing.jpg": [
+      {
+        "set": "old_day",
+        "case": "glare_offset_3",
+        "sha256": "2f6f80ef36dbf665cb70bc41ff51db3f631204c3edf5901d1bde2cb805068a51"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_offset_3",
+        "sha256": "eaf25c6d52587235336b92386b826d3c69096ecc16db2d5c96ebe72c468e7e83"
+      },
+      {
+        "set": "old_day",
+        "case": "glare_crossing",
+        "sha256": "0be3f95eceb431f058b02c93d76c32522569be17cc0f5a74a40343058035885c"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_crossing",
+        "sha256": "ee70afc71cc4a22fd2146e390679574294e19a8552c03f7d2283b1c0d94545a8"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_crossing_off",
+        "sha256": "ca2bf44783549b8b5333809f979f01d77a0351c0159036269d8581ec4ea02efa"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_crossing_late",
+        "sha256": "bf15e8e2aa21b3cbe289956ed8dfec2cf9870a7f92e1c28fe51fe45eb75d6bf6"
+      }
+    ],
+    "sun-low.jpg": [
+      {
+        "set": "old_golden",
+        "case": "glare_clear",
+        "sha256": "7dcad863744e9b70ca134b1b4ed8b57778ffeff663193a066e0d9c62efce776b"
+      },
+      {
+        "set": "new_golden",
+        "case": "glare_clear",
+        "sha256": "a20124e9ceae5d85b75fd7c18908252301ceabd23b6f34912ff31a5f29d287dd"
+      },
+      {
+        "set": "old_sunset",
+        "case": "glare_clear",
+        "sha256": "737c333318a663a0096bbc5e1fbd4ebd1b652db84826b49e072809587f979379"
+      },
+      {
+        "set": "new_sunset",
+        "case": "glare_clear",
+        "sha256": "f7d5d0c54002e72d0005294cd3692edd7ee3d42673d7172fb66c857de7bb5404"
+      },
+      {
+        "set": "new_golden",
+        "case": "glare_crossing",
+        "sha256": "81ebbbaf58a959960eb502aa673355f383af37402cf5a4ce6e40143abd7e47f5"
+      },
+      {
+        "set": "new_sunset",
+        "case": "glare_crossing",
+        "sha256": "5695e59fec8e70fce5d29c2b9fa291e1b415aec2bff2e422dbce1ecdc91c3863"
+      }
+    ],
+    "sun-optics.jpg": [
+      {
+        "set": "new_day",
+        "case": "glare_afterimage",
+        "sha256": "a702439ba5815f4141aa92501c21a3949afea967a8ef03adda22aaaf840e8cf1"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_afterimage_off",
+        "sha256": "235f3d64aded9ac33ade7515097d3eb1185cc5225b084339f4ca86a2f502dc13"
+      },
+      {
+        "set": "new_day",
+        "case": "glare_lens",
+        "sha256": "1bf31f2616d341c67ec5d73d596531873e23082cfe2d093e06f64e3a3462c32b"
+      },
+      {
+        "set": "new_golden",
+        "case": "glare_lens",
+        "sha256": "6843dbc62c2b2a8a1681f8c450215093315ee8951aca9007a30d71fe6c5265d8"
+      }
+    ]
+  }
+}

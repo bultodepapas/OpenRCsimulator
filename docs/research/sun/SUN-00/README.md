@@ -7,7 +7,7 @@
 | Part | Behaviour | Finding |
 | --- | --- | --- |
 | Disc | Flat disc 4·sun_lin/π, 0.53°, edge ramp 0.9–1.1 r; halo (sun_lin/π)·0.35·e^(−18θ) in every pass | No limb darkening; no refraction flattening (the moon has it since FW-MOON-05); the halo is ~0.6× the haze 1° from the sun, so the sky around the sun is far darker than a real aureole. |
-| Glare (LU-04) | Full-screen alpha quad: 0.015 + two exponential halos + an 8-ray starburst + one ghost, × exposure/(exposure + 0.5), alpha capped at **0.30** "bounded for aircraft visibility" | By design it cannot blind: the [baseline capture](before-grid.png) shows the Stik 1.6° from the sun as a crisp red silhouette. LU-06 measured mean RGB difference glare-on vs off of 1.19/255. |
+| Glare (LU-04) | Full-screen alpha quad: 0.015 + two exponential halos + an 8-ray starburst + one ghost, × exposure/(exposure + 0.5), alpha capped at **0.30** "bounded for aircraft visibility" | By design it cannot blind: the [baseline capture](before-grid.jpg) shows the Stik 1.6° from the sun as a crisp red silhouette. LU-06 measured mean RGB difference glare-on vs off of 1.19/255. |
 | Glare optics | Starburst and ghost in the pilot view | Camera artefacts in a view that stands for the eye (the [L-investigation 09](../../landscape-investigations/09-lighting-color-lookdev.md#e-sun-glare-and-lens-flare-in-compatibility) already noted the eye has no ghosts). |
 | Glare clouds | Vertex shader repeats the **classic** deck only | Bug: with a layered weather profile (overcast, storm) the sky hides the disc but the glare still shines. |
 | Glare geometry | Sun position from `unproject_position` on the CPU; hidden when forward·sun < 0.15; fades 2 % outside the frame | A sun just outside the frame gives nothing (the eye still gets straylight); ortho and keep-width need special cases. |
@@ -39,11 +39,13 @@ Full tagged notes with every URL: [research snapshot](research-2026-10-19.md); t
 | --- | --- | --- |
 | CIE Ψ per pixel from the angle to the sun | Adopted (age 40, p 0.5), above its 45° value | Analytic; no convolution or glow needed. |
 | Local background = sky + aureole | Adopted | Textbook adaptation luminance; gives the measured ×0.3–0.7 band instead of a white-out. |
-| Hiding by photobleaching, screen-fixed in the pilot view | Adopted as up to three CPU-tracked patches (not a ping-pong SubViewport buffer) | Cheaper; needs no render target; deterministic on simulation time. Limit: patches are blobs, not exact streaks. |
-| Bleach 0.25 s, recover 8 s, masking α ≤ 0.85 | Adopted, labelled estimates | 0.15 s glance must mark the eye; acuity back well before 30 s. The minutes-long faint tail is not drawn. |
+| Hiding by photobleaching, screen-fixed in the pilot view | Adopted as up to eight fixed 1.15° retinal cells on the CPU, drawn on a canvas layer (not a ping-pong SubViewport buffer) | Cheaper, no render target, deterministic on simulation time; a sweep leaves a streak of cells. Limit: eight cells. |
+| Bleaching τ from photochemistry | Adopted: 0.05 s for a cell of disc plus halo (the disc alone ≈ 0.2 ms: 8·10⁹ td against ~2·10⁶ td·s from the 2·10⁴ td half-bleach and τ_regen ≈ 90 s); recovery 8 s; masking ≤ 0.95 | A first 0.25 s left a 6°/s sweep half-bleached (dose 0.5). |
+| Draw lost acuity as blur, not only darkening | Adopted (screen-texture mipmaps in the canvas layer) | Measured: a dark patch alone left a dark model 32 % of its contrast, because darkening keeps Weber contrast. |
 | Positive afterimage (~1 s) and flight of colours | Rejected for now | Brief, and mostly seen with eyes closed. |
 | Disc limb darkening, quadratic law; refraction flattening | Adopted | Matches the research gates (I(0.5) ≈ 0.70; 0.84 on the horizon). |
-| KS91 aureole in the sky, core regularised | Adopted, anchored to the sun's illuminance and compressed against the LDR disc | Anchoring to the zenith (the moon's way) made the aureole 13× brighter than this sky's dim disc. |
+| KS91 aureole in the sky, core regularised | Adopted, anchored to the sun's illuminance, kept below 0.4 of the LDR disc's mean and faded over the last 2° above the horizon | Anchoring to the zenith (the moon's way) made the aureole 13× brighter than this sky's dim disc; a 0.8 cap dissolved the golden-hour disc; the horizon must stay the fog colour. |
+| Veil source and background scales separate | Adopted | The aureole behind a model is sky light: covering the disc or lowering the strength reduces the straylight only (review finding). |
 | Lens flare for chase, orbit and close-up | Adopted, own shader (starburst + ghosts) | Same pass and occlusion as the eye; the CC0 shader would need its own occlusion. |
 | Pupil hippus, eye-adaptation lag toward the sun | Not adopted | Adaptation would darken the scene and *raise* a dark silhouette's contrast; hippus is subtle. |
 

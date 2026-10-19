@@ -410,7 +410,8 @@ static func _set_sun_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) ->
 	var elevation := float(state.sun_elevation_deg) if flow else float(a.get("disc_elevation_deg", a.sun_elevation_deg))
 	mat.set_shader_parameter("sun_limb", 1.0)
 	mat.set_shader_parameter("sun_squash", SunOptics.squash(elevation))
-	mat.set_shader_parameter("sun_aureole_lin", SunOptics.aureole_lin(sun_linear(lighting), aureole_aerosol_factor(), disc))
+	# The aureole is sky light: the Compatibility shadow compensation in sun_linear() is divided out (like haze()).
+	mat.set_shader_parameter("sun_aureole_lin", SunOptics.aureole_lin(sun_linear(lighting) / shadow_compensation(), aureole_aerosol_factor(), disc))
 	mat.set_shader_parameter("sun_aureole_k", SunOptics.AUREOLE_K)
 
 
@@ -524,6 +525,7 @@ static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) 
 		mat.set_shader_parameter("light1_weight", 1.0)
 		mat.set_shader_parameter("light2_weight", 0.0)
 		mat.set_shader_parameter("moon_aureole_lin", Vector3.ZERO)
+		mat.set_shader_parameter("moon_eclipse", false)
 	_profile_sky_tints(mat, lighting)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 
@@ -585,6 +587,12 @@ static func apply_state_to_sky(mat: ShaderMaterial) -> void:
 	mat.set_shader_parameter("light2_weight", state.get("cloud_light2_weight", 0.0))
 	# FW-MOON-08a: the moon's aureole, scaled by the air's aerosols (visibility and the weather profile's haze).
 	mat.set_shader_parameter("moon_aureole_lin", (state.get("moon_aureole_lin", Vector3.ZERO) as Vector3) * aureole_aerosol_factor())
+	# FW-MOON-10: Earth's shadow on the disc.
+	mat.set_shader_parameter("moon_eclipse", state.get("moon_eclipse", false))
+	mat.set_shader_parameter("moon_shadow_axis", state.get("moon_shadow_axis", Vector3.DOWN))
+	mat.set_shader_parameter("moon_shadow_offset", state.get("moon_shadow_offset", Vector3.ZERO))
+	mat.set_shader_parameter("moon_umbra_radius", state.get("moon_umbra_radius", 0.0))
+	mat.set_shader_parameter("moon_penumbra_radius", state.get("moon_penumbra_radius", 0.0))
 	_profile_sky_tints(mat)
 	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 

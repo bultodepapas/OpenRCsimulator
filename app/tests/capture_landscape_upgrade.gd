@@ -270,6 +270,8 @@ func _run() -> void:
 				warm_clock = float(args.get("botanical_clock", 1.5)) + float(i) / 30.0
 				if i == 40:
 					camera.look_at(camera.position + (sun + sun.cross(Vector3.UP).normalized() * 0.84).normalized())
+					if case.begins_with("glare_afterimage_rested") and flare.has_method("rest"):
+						flare.rest() # same view and veil, an eye that never saw the sun: the patch's control
 			World.update(built.environment, warm_clock, Vector3(float(args.get("botanical_wind", 0.0)), 0, 1.0 if args.has("botanical_wind") else 0.0), camera.position + -camera.basis.z * 30.0, camera)
 			if horizon_diagnostic == "no-rim":
 				for mat: ShaderMaterial in World.haze_materials(built.field):
@@ -324,7 +326,7 @@ func _run() -> void:
 			p99_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.99)-1)],
 			glare_visible = flare.visible, glare_strength = flare.get_meta("strength", 0.0), exposure = built.environment.tonemap_exposure,
 			glare_afterimage = flare.get_meta("afterimage", 0.0), glare_optics = flare.get_meta("optics", ""),
-			glare_aureole_coeff = flare.get_meta("aureole_coeff", 0.0),
+			glare_aureole_coeff = flare.get_meta("aureole_coeff", 0.0), glare_background_scale = flare.get_meta("background_scale", 0.0),
 			glare_solar_uv = flare.get_meta("solar_uv", Vector2(-1.0, -1.0)),
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
 			marker_center_px = camera.unproject_position(Frames.ned_to_render([15.0, 51.0, -0.35]))}

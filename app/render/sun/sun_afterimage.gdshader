@@ -7,8 +7,8 @@ shader_type canvas_item;
 render_mode unshaded;
 
 uniform sampler2D screen_texture : hint_screen_texture, filter_linear_mipmap;
-uniform vec4 patches[3];                          // centre (screen uv), radius (share of the screen height), masking
-uniform float lit[3];                             // 1 while the sun's image is still on the patch: blur, no darkening
+uniform vec4 patches[8];                          // centre (screen uv), radius (share of the screen height), masking
+uniform float lit[8];                             // 1 while the sun's image is still on the patch: blur, no darkening
 uniform vec3 tint = vec3(0.62, 0.58, 0.80);       // SunOptics.AFTER_TINT: the negative afterimage of a white sun
 
 void fragment() {
@@ -17,7 +17,7 @@ void fragment() {
 	float lod = 0.0;
 	vec3 shade = vec3(0.0);
 	float weight = 0.0;
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 8; i++) {
 		vec4 p = patches[i];
 		if (p.w <= 0.0) {
 			continue;
@@ -25,8 +25,9 @@ void fragment() {
 		float x = length((SCREEN_UV - p.xy) * vec2(aspect, 1.0)) / max(p.z, 1e-4);
 		float m = p.w * exp(-0.5 * x * x * x * x);
 		clear *= 1.0 - m;
-		// Blur over the patch's radius in pixels (screen mipmaps), fading out beyond it.
-		lod = max(lod, log2(max(p.z / SCREEN_PIXEL_SIZE.y, 1.0)) * smoothstep(2.0, 1.0, x));
+		// Blur over twice the patch's radius in pixels (screen mipmaps), fading out beyond it: a model as large as the
+		// patch is washed out, not just softened.
+		lod = max(lod, (log2(max(p.z / SCREEN_PIXEL_SIZE.y, 1.0)) + 1.0) * (1.0 - smoothstep(1.0, 2.0, x)));
 		shade += mix(tint, vec3(1.0), clamp(lit[i], 0.0, 1.0)) * m;
 		weight += m;
 	}

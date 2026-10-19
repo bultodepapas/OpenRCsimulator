@@ -100,7 +100,11 @@ func _veil_mapping() -> void:
 	_check("sky-only background veils more than sky plus aureole", SunOptics.veil_ratio(2.0, e_over_b) > SunOptics.veil_ratio(2.0, e_over_b, coeff))
 	_check("a low sun against a bright horizon veils less", SunOptics.veil_ratio(5.0, 1.5, coeff) < SunOptics.veil_ratio(5.0, e_over_b, coeff))
 	_check("the aureole background ends at 45°", SunOptics.aureole_background(45.0, coeff) == 0.0
-		and absf(SunOptics.aureole_background(44.999, coeff)) < 1e-6)
+		and SunOptics.aureole_background(44.999, coeff) < 1e-4 * SunOptics.aureole_background(10.0, coeff))
+	# The aureole behind the model is sky light: halving the straylight (strength, or a model covering half the disc)
+	# with the background unchanged halves the veil ratio exactly.
+	_check("strength and occlusion scale the straylight, not the background",
+		absf(SunOptics.veil_ratio(1.0, 0.5 * e_over_b, coeff, e_over_b) - 0.5 * SunOptics.veil_ratio(1.0, e_over_b, coeff, e_over_b)) < 1e-12)
 	_check("bad E/B veils nothing", SunOptics.veil_ratio(2.0, NAN, coeff) == 0.0 and SunOptics.veil_ratio(2.0, -3.0, coeff) == 0.0)
 
 
@@ -129,7 +133,11 @@ func _disc() -> void:
 	var horizon := SunOptics.squash(0.5)
 	_check("a setting disc is flattened like the moon's (~0.85)", horizon > 0.80 and horizon < 0.90, str(horizon))
 	_check("flattening grows toward the horizon", SunOptics.squash(0.5) < SunOptics.squash(3.0) and SunOptics.squash(3.0) < SunOptics.squash(10.0))
-	_check("the same law as the moon's", absf(SunOptics.squash(20.0) - SkyState.moon_squash(20.0 - 0.0446)) < 2e-3)
+	# The moon's law takes the true elevation: at 2° apparent (flattening ≈ 7 %) they agree to 0.2 %.
+	var apparent := 2.0
+	var true_el := apparent - preload("res://render/world/ephemeris.gd").refraction_deg(apparent - 0.25)
+	_check("the same law as the moon's", absf(SunOptics.squash(apparent) - SkyState.moon_squash(true_el)) < 2e-3
+		and SunOptics.squash(apparent) < 0.95)
 	_check("non-finite elevation leaves the disc round", SunOptics.squash(NAN) == 1.0)
 
 
@@ -163,18 +171,26 @@ func _afterimage() -> void:
 	_check("a pause holds it", SunOptics.afterimage_step(one, 0.0, 1.0, ahead) == one)
 	_check("a backward step holds it", SunOptics.afterimage_step(one, -1.0, 1.0, ahead) == one)
 	_check("NaN light adds nothing", SunOptics.afterimage_dose(SunOptics.afterimage_step(one, 1.0, NAN, ahead)) < SunOptics.afterimage_dose(one))
-	# Patches: a glance 1° away joins the patch; 30° away starts another; the weakest yields its slot.
+	# Cells: a glance 1° away feeds the same cell; 30° away starts another; a sweep leaves a streak; at most 8 cells.
 	var near := SunOptics.afterimage_step(one, 0.5, 1.0, Vector3(sin(deg_to_rad(1.0)), 0.0, -cos(deg_to_rad(1.0))))
-	_check("a nearby exposure joins the patch", (near.patches as Array).size() == 1)
-	_check("the patch moves toward it and widens", (near.patches[0].dir as Vector3).angle_to(ahead) > 0.0
-		and float(near.patches[0].radius) > SunOptics.AFTER_BASE_RADIUS)
+	_check("a nearby exposure feeds the same cell", (near.patches as Array).size() == 1
+		and float(near.patches[0].dose) > 0.9)
 	var far := SunOptics.afterimage_step(one, 0.5, 1.0, Vector3(sin(deg_to_rad(30.0)), 0.0, -cos(deg_to_rad(30.0))))
-	_check("a distant exposure starts its own patch", (far.patches as Array).size() == 2
+	_check("a distant exposure starts its own cell", (far.patches as Array).size() == 2
 		and (far.patches[0].dir as Vector3).is_equal_approx(ahead))
+	var sweep := rest
+	for i in 41: # 8° in 1.33 s, the crossing capture's sweep
+		var angle := deg_to_rad(-4.0 + 8.0 * i / 40.0)
+		sweep = SunOptics.afterimage_step(sweep, 1.0 / 30.0, 1.0, Vector3(sin(angle), 0.0, -cos(angle)))
+	var centre := 0.0
+	for patch: Dictionary in sweep.patches:
+		if (patch.dir as Vector3).angle_to(ahead) < SunOptics.AFTER_BASE_RADIUS:
+			centre = maxf(centre, float(patch.dose))
+	_check("a sweep bleaches a streak through the centre", (sweep.patches as Array).size() >= 5 and centre > 0.8, str(centre))
 	var many := rest
-	for i in 5:
-		many = SunOptics.afterimage_step(many, 0.3 * (i + 1), 1.0, Vector3(sin(i * 0.4), 0.0, -cos(i * 0.4)))
-	_check("at most AFTER_PATCHES patches", (many.patches as Array).size() == SunOptics.AFTER_PATCHES)
+	for i in 12:
+		many = SunOptics.afterimage_step(many, 0.3, 1.0, Vector3(sin(i * 0.4), 0.0, -cos(i * 0.4)))
+	_check("at most AFTER_PATCHES cells", (many.patches as Array).size() == SunOptics.AFTER_PATCHES)
 	var alphas := SunOptics.afterimage_alphas(one)
 	_check("alphas padded and bounded", alphas.size() == SunOptics.AFTER_PATCHES and alphas[0] > 0.0
 		and alphas[0] <= SunOptics.AFTER_MAX_ALPHA and alphas[1] == 0.0)
@@ -260,7 +276,29 @@ func _source() -> void:
 		previous = float(evening.e_over_b)
 	_check("E/B falls toward sunset", falls, str(previous))
 	_check("a setting sun can be looked at (E/B < 1)", previous < 1.0, str(previous))
+	# Atmosphere._set_sun_uniforms: golden hour flattens a little and has an aureole; a moonlit night has none.
+	when.hour = 20.9
+	Atmosphere.state = SkyState.state(preload("res://render/world/ephemeris.gd").sky(when))
+	var golden := Atmosphere.sky_material()
+	_check("golden hour: limb on, slight flattening, an aureole", float(golden.get_shader_parameter("sun_limb")) == 1.0
+		and float(golden.get_shader_parameter("sun_squash")) < 1.0 and (golden.get_shader_parameter("sun_aureole_lin") as Vector3).x > 0.0)
+	when.hour = 23.5
+	when.day = 29
+	Atmosphere.state = SkyState.state(preload("res://render/world/ephemeris.gd").sky(when))
+	var night := Atmosphere.sky_material()
+	_check("no sun aureole when the moon lights", Atmosphere.state.light_source == "moon"
+		and (night.get_shader_parameter("sun_aureole_lin") as Vector3) == Vector3.ZERO, str(Atmosphere.state.light_source))
 	Atmosphere.state = {}
+	var calibrated := Atmosphere.sky_material()
+	_check("the calibrated day: round disc, limb on, an aureole", float(calibrated.get_shader_parameter("sun_squash")) > 0.999
+		and (calibrated.get_shader_parameter("sun_aureole_lin") as Vector3).x > 0.0)
+	# The shaders' copies of SunOptics constants.
+	var sky_code := FileAccess.get_file_as_string("res://render/sky.gdshader")
+	_check("sky.gdshader limb law is SunOptics'", sky_code.contains("SUN_LIMB_U = %s;" % SunOptics.LIMB_U)
+		and sky_code.contains("SUN_LIMB_V = %s;" % SunOptics.LIMB_V))
+	_check("sky.gdshader aureole share is SunOptics'", sky_code.contains("%s * (4.0 / PI) * dot(sun_lin" % SunOptics.AUREOLE_DISC_SHARE))
+	var glare_code := FileAccess.get_file_as_string("res://render/landscape_upgrade/sun_glare.gdshader")
+	_check("sun_glare.gdshader 45° aureole value", glare_code.contains("%.1f" % pow(10.0, 6.15 - 45.0 / 40.0)))
 	var camera := Camera3D.new()
 	camera.fov = 40.0
 	_check("veil reaches a view facing the sun", SunGlare.veil_reaches_view(camera, Vector3(0.0, 0.0, -1.0)))

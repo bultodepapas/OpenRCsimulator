@@ -1,0 +1,41 @@
+{
+  "format": "openrc-glare-contrast v1",
+  "rows": [
+    {
+      "case": "glare_offset_3",
+      "aircraft_pixels": 362,
+      "glare_strength": 1.0,
+      "aureole_coeff": 0.0,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.7056997939039936,
+      "contrast_with_display": -0.6141405327259433,
+      "retained_display": 0.8702574919690192,
+      "retained_linear": 0.9537433694572746,
+      "background_display": 0.8934047687141154,
+      "angle_deg": 3.0,
+      "predicted_retained": 0.4915683979341342
+    }
+  ],
+  "crossings": {
+    "glare_crossing": {
+      "case": "glare_crossing",
+      "aircraft_pixels": 362,
+      "glare_strength": 1.0,
+      "aureole_coeff": 0.0,
+      "afterimage_dose": 0.0,
+      "contrast_without_display": -0.7047020016762845,
+      "contrast_with_display": -0.6295243673462634,
+      "retained_display": 0.8933199648203141,
+      "retained_linear": 0.9630332883427217,
+      "background_display": 0.8869995493445996
+    }
+  },
+  "checks": {
+    "at_least_six_angles": false,
+    "retained_grows_with_angle": true,
+    "veil_follows_the_model": false,
+    "crossing_hides_the_aircraft": false
+  },
+  "ok": false,
+  "limits": "Display contrast of one model, attitude and distance against clear calibrated-day sky; not photometric calibration or a pilot detection threshold."
+}
