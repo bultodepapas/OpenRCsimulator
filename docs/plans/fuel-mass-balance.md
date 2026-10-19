@@ -53,6 +53,12 @@ Unusable liquid remains onboard after usable-fuel exhaustion. Glow feed uses tot
 
 RK-stage queries remain pure. The model supplies state layout, event projections and lifecycle through the shared kernel. Exhaustion commits nonnegative usable fuel and source cutoff; glow event residuals use `fuel_residual_kg`. Cutoff/coast-down does not establish a qualified turbine ECU, freewheel or restart envelope.
 
+### Future smoke-fluid resource
+
+The [Workbench smoke ideas](aircraft-editor.md#53-smoke-presets-and-understandable-controls) and [SM visual profiles](../SMOKE-PLAN.md#future-user-customization--proposed-sm-10-onward) can control display color, amount and timing independently of a physical supply. The current combustion-tank declaration does not implement a smoke-fluid store. Do not interpret plume width/opacity or puff lifetime as ml, flow or remaining supply time.
+
+A later physical smoke-system extension belongs to FUEL-08/09/11 with AS, AE-12/24, SM and the aircraft owners. It needs a separately typed fluid/store, sourced or explicitly estimated density, capacity, starting fill, unusable residue/reserve and consumption law, plus installed tank/pump mass and mounting. Qualify live mass/CG/inertia, exhaustion, source identity, reset/refill policy, checkpoint and exact replay before offering **smoke-fluid volume** or **supply endurance**. Empty smoke supply stops its show pump without consuming engine fuel or stopping the engine. Presentation-only profiles remain separate from that installed configuration.
+
 ### 3.4 Samples checkpoints and consumers
 
 Use `FlightSession.mass_properties()` for accepted endpoint state. Contact samplers can interpolate inventory at a swept contact; consumers must retain the declared sample time/basis. Do not substitute starting wet mass for live mass, infer a reset fill from remaining fuel, or sum the legacy kerosene scalar as total fuel.

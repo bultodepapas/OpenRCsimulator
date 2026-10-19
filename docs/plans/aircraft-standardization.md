@@ -77,6 +77,20 @@ An ID migration must preserve numeric values, array order and reduction order in
 
 A visual section can contain several components and moving nodes. A physical component can have no visible mesh. A contact references its physical role and optional visual section separately. Do not derive mass from mesh volume/material names or fracture strength from `openrc_section`.
 
+### Workbench customization bindings (proposed)
+
+Future [AE-24 customization](aircraft-editor.md#5-planned-player-facing-work) and [SM-10…15 emitters](../SMOKE-PLAN.md#future-user-customization--proposed-sm-10-onward) need generated authoring bindings under AS-08/10. Current manifests do not yet expose a generic editable paint/effects contract. Extend the owned schema and consumers together; do not add unrecognized keys to current manifests or Workshop v3 descriptors.
+
+| Proposed binding | Author supplies | Conformance gate |
+| --- | --- | --- |
+| Paint/decal region | Stable slot ID, target material/node or bounded panel, supported colors/patterns/text and optional authored left/right pair | Instance-owned edits; no material bleed; decals remain inside the approved panel; hinges/rotors animate correctly |
+| Show-effect mount | Stable slot ID, role (wingtip/exhaust/rear-fuselage/tail surface), owning node, local position/direction, optional paired slot and supported profile limits | Datum/CG/scale and moving-surface transforms agree; reject duplicate/dangling or unsupported slots; mounts never fall back to the origin |
+| Optional light/camera/thumbnail slot | Declared presentation role, supported controls and owner interface | Coordinate FW/CAM; bounded cost and lifecycle; UI exposes only bindings with real consumers |
+
+A colored wingtip panel is cosmetic. A new winglet or tail shape is an AE-21b physical/model package: geometry, inventory, aero, hinges and contact/hull changes must agree. Keep physics quantities in their owning data; model slots reference them rather than duplicating values. Reuse existing free authoring/import tools and suitably licensed assets.
+
+Per-build colors, decals and show profiles get a separate presentation identity and preserve physical results. Changing the authored slot contract or model bytes still changes the model-manifest pin: old saved builds require an explicit compatible reader/migration or a clear refusal. Test two independent instances, renamed/reordered bindings, missing slots, legacy models with no optional slots, fresh generation and package closure. Existing AS-08/10 delivery does not close this proposed extension.
+
 ### Share semantics without replacing the numerical validators
 
 Extend the existing structural spec/parameter register into a versioned shared description of supported module IDs, law versions, fields, units, defaults, requirements, exclusions and consumers. AS and AE must choose one classification implementation/source, with generated or checked projections for Python tooling and GDScript. Descriptor module lists remain assertions checked against the validated physical model.

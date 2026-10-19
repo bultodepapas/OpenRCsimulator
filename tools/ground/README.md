@@ -128,7 +128,21 @@ L10a flight-cue captures use the same pinned rendering environment:
 "$(app/tests/visual-env.sh)" tools/ground/check_windsock.py --app app --godot "$(app/get-godot.sh)" --out /tmp/l10a-windsock
 ```
 
-The L10a–d harness uses `--field-shadows=off` to isolate each cue mesh ablation; production projected shadows are checked by `app/tests/test_field_projected_shadows.gd`. Three production-field views isolate the calm windsock with visibility on/off at shader time zero. Default captures repeat exactly; a third run exercises the scenery-enabled field. Pixel changes must stay within projected cue bounds, whites must not clip, and the cue must add two draws and fewer than 2,000 triangles. The checker rejects an invisible-feature control. [L10a evidence and scope](../../docs/research/visual-quality-implementation/L10a/README.md).
+The L10a–d harness uses `--field-shadows=off` to isolate each cue mesh ablation; production projected shadows are checked by `app/tests/test_field_projected_shadows.gd`. Three production-field views isolate the calm windsock with visibility on/off at shader time zero. Default captures repeat exactly; a third run exercises the scenery-enabled field. Pixel changes must stay within current deformed cue bounds, whites must not clip, and the cue must add three draws and fewer than 6,000 triangles. The checker rejects an invisible-feature control. [Original L10a evidence](../../docs/research/visual-quality-implementation/L10a/README.md), [current motion evidence](../../docs/research/wind-implementation/M5-W04b-R1/README.md).
+
+## Windsock motion (M5-W04b-R1)
+
+Run `res://tests/test_windsock.gd` and `res://tests/test_windsock_motion.gd` with the pinned headless engine. Both are discovered by `app/test.sh`. Native captures need a display and a new output directory:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --resolution 960x540 `
+  --rendering-driver opengl3 --audio-driver Dummy `
+  --script "$PWD/tools/ground/capture_windsock_motion.gd" -- --out=C:/absolute/new-folder --sequence
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/tools/ground/bench_windsock.gd" -- --out=C:/absolute/cost.json
+```
+
+The capture uses the production sleeve/material and a fixed 240 Hz wind tape. It records two views of calm, light/full/strong flow, reversal, vertical gust and recovery; `--sequence` adds a 61-frame gust/turn/calm tape at 12 FPS. `capture.json` includes source/image hashes, wind vectors, state, renderer and mesh cost. Check engine errors as well as exit status. The CPU probe reports 30 batch means for tick advances and 60 Hz uploads after warmup; run it alone. These component checks do not qualify full-flight frame time or physical fabric dynamics.
 
 L10b reuses the flight-cue harness for the pilot station:
 

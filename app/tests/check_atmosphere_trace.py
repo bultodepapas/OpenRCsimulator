@@ -522,12 +522,14 @@ def _glow_start_contract(metadata, wheel_claim):
         stop_reasons = _json_metadata_value(metadata, 'glow_stop_reason_codes')
     except (KeyError, ValueError) as error:
         raise ValueError('missing or invalid Glow identity/start metadata') from error
+    profile_identity = start.get('profile_identity') if type(start) is dict else None
     if (type(identity) is not dict or type(identity.get('profile')) is not dict
             or not re.fullmatch(r'[0-9a-f]{64}', identity['profile'].get('sha256', ''))
             or not re.fullmatch(r'[0-9a-f]{64}', identity.get('sha256', ''))
             or type(start) is not dict or start.get('ok') is not True
             or start.get('family') not in ('glow_2t', 'glow_4t')
-            or start.get('profile_identity', {}).get('input_sha256') != identity['profile']['sha256']
+            or type(profile_identity) is not dict
+            or profile_identity.get('input_sha256') != identity['profile']['sha256']
             or stop_reasons != reason_codes):
         raise ValueError('invalid Glow installation identity, start summary, or reason-code table')
     cycle = 1.0 if start['family'] == 'glow_2t' else 2.0

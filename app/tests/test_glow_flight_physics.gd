@@ -3,6 +3,8 @@ extends SceneTree
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Flight := preload("res://physics/glow/flight.gd")
 const FuelMass := preload("res://physics/glow/fuel_mass.gd")
+const ResourceStep := preload("res://physics/resource_event_step.gd")
+const MassInventory := preload("res://physics/mass_inventory.gd")
 const Blade := preload("res://physics/glow/propeller.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
@@ -17,7 +19,13 @@ class FlightOwner extends Node:
 	var sim: Dictionary = {}
 	var engine_running: bool = true
 	var density: float = 1.225
+	var start_fuel_override_kg: float = NAN
 	var wind_ned := PackedFloat64Array([0.0, 0.0, 0.0])
+
+	func start_fuel_kg() -> float:
+		if is_finite(start_fuel_override_kg):
+			return start_fuel_override_kg
+		return float(aircraft.model.propulsion.glow.reference_fuel_kg)
 
 	func air_data(body: PackedFloat64Array, _time_s: float) -> Dictionary:
 		return Air.compute(body, wind_ned, density)
@@ -76,11 +84,127 @@ func _initialize() -> void:
 		if not loaded.get("ok", false):
 			continue
 		var model: Dictionary = loaded.model
+		if entry.family == "2T":
+			_test_finite_feed_line(model)
 		_test_propeller_passivity(str(entry.family), model.propulsion.glow.propeller)
 		_test_flight_stage_balance(str(entry.family), model)
 		_test_one_way_rotor_stop(str(entry.family), model)
 	print("glow flight physics: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_finite_feed_line(source_model: Dictionary) -> void:
+	# A synthetic, pre-primed line exercises the generic two-store runtime without
+	# claiming that any bundled aircraft has sourced line geometry or volume.
+	var model: Dictionary = source_model.duplicate(true)
+	var install: Dictionary = model.propulsion.glow.duplicate(true)
+	var line_reference: float = 0.05
+	var line_capacity: float = 0.08
+	var line_center := PackedFloat64Array([0.0, 0.0, 0.0])
+	var line_size := PackedFloat64Array([0.08, 0.02, 0.02])
+	var line_id: String = "test_feed_line"
+	var liquid_id: String = "test_feed_line_liquid"
+	var line_store: Dictionary = {
+		"id": liquid_id,
+		"fuel": str(install.fuel_tank.fuel),
+		"family": "glow",
+		"density_kg_m3": float(install.profile.fuel.density_kg_m3),
+		"capacity_kg": line_capacity,
+		"unusable_kg": 0.0,
+		"reserve_kg": 0.0,
+		"reserve_estimated": false,
+		"kind": "feed_line",
+	}
+	install.feed_line = {
+		"id": line_id,
+		"liquid_inventory_id": liquid_id,
+		"reference_mass_kg": line_reference,
+		"capacity_kg": line_capacity,
+		"capacity_m3": line_capacity / float(install.profile.fuel.density_kg_m3),
+		"family": "glow",
+		"fuel": str(install.fuel_tank.fuel),
+		"density_kg_m3": float(install.profile.fuel.density_kg_m3),
+		"position": line_center,
+		"size": line_size,
+		"sample_store": line_store,
+	}
+	install.total_capacity_kg = float(install.capacity_fuel_kg) + line_capacity
+	install.total_reference_fuel_kg = float(install.reference_fuel_kg) + line_reference
+	model.mass_kg += line_reference
+	var line_tensor: PackedFloat64Array = MassInventory.rectangular_box_per_kg(line_center, line_size)
+	for index: int in 6:
+		model.inertia[index] += line_reference * line_tensor[index]
+	install.mass_reference = Flight._prepare_resources(install, model)
+	_check("synthetic line has a valid fixed-datum resource reference", install.mass_reference.get("ok", false),
+		str(install.mass_reference.get("error", "")))
+	if not install.mass_reference.get("ok", false):
+		return
+	install.dry_properties = FuelMass.evaluate_resources(install.mass_reference, PackedFloat64Array([0.0, 0.0]))
+	model.propulsion.glow = install
+	var owner: FlightOwner = _owner(model, 6000.0, true, 0.75)
+	var unusable: float = float(install.unusable_fuel_kg)
+	var main_start: float = unusable + 0.2
+	owner.start_fuel_override_kg = main_start
+	var body: PackedFloat64Array = _body(PackedFloat64Array([0.0, 0.0, 0.0]),
+		PackedFloat64Array([0.0, 0.0, 0.0]))
+	var values: PackedFloat64Array = Flight.initial(owner, PackedFloat64Array([6000.0]), body)
+	_check("line fixture starts from selected main fuel plus authored line reference", Flight.valid(values, install), str(values))
+	if not Flight.valid(values, install):
+		owner.free()
+		return
+	_near("line inventory is independently initialized", values[Flight.LINE_FUEL_INDEX], line_reference)
+	_near("line fixture combined inventory includes both stores", values[1], main_start + line_reference)
+	var initial_context: Dictionary = Flight.mass_context(owner, values)
+	_check("line fixture exposes two stable liquid stores", initial_context.get("ok", false)
+		and initial_context.tanks.size() == 2
+		and initial_context.remaining.has(str(install.fuel_tank.liquid_inventory_id))
+		and initial_context.remaining.has(liquid_id), str(initial_context))
+	if initial_context.get("ok", false):
+		_near("main and line masses remain separately sampled", initial_context.remaining[str(install.fuel_tank.liquid_inventory_id)], main_start)
+		_near("pre-primed line sample matches its state slot", initial_context.remaining[liquid_id], line_reference)
+		_near("reference mass includes line inventory", initial_context.properties.mass_kg, model.mass_kg - float(install.reference_fuel_kg) + main_start)
+
+	var combined: PackedFloat64Array = body.duplicate()
+	combined.append_array(values)
+	var rate: Callable = func(state: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
+		var result := PackedFloat64Array()
+		result.resize(state.size())
+		match int(state[RB.SIZE + Flight.SOURCE_MODE_INDEX]):
+			Flight.MODE_MAIN_TANK:
+				result[RB.SIZE + 1] = -0.5
+			Flight.MODE_FEED_LINE:
+				result[RB.SIZE + 1] = -0.5
+				result[RB.SIZE + Flight.LINE_FUEL_INDEX] = -0.5
+		return result
+	var resource_result: Dictionary = ResourceStep.advance(combined, 0.0, 1.0, rate, rate.call(combined, 0.0),
+		Flight._resource_events(owner))
+	_check("main residue then line exhaustion integrate deterministically", resource_result.get("ok", false),
+		str(resource_result.get("message", "")))
+	if resource_result.get("ok", false):
+		var events: Array = resource_result.events
+		_check("main-to-line-to-starved event order is explicit", events.size() == 2
+			and events[0].type == "fuel_tank_unusable" and events[1].type == "fuel_exhausted", str(events))
+		if events.size() == 2:
+			_near("main unusable boundary time", float(events[0].time_s), 0.4, 2.0e-9)
+			_near("line depletion boundary time", float(events[1].time_s), 0.5, 2.0e-9)
+			_near("main event reports physical unusable residue", float(events[0].fuel_residual_kg), unusable, 2.0e-9)
+		var final_values: PackedFloat64Array = resource_result.state.slice(RB.SIZE)
+		_near("finite line is empty after its depletion event", final_values[Flight.LINE_FUEL_INDEX], 0.0, 2.0e-9)
+		_near("main unusable residue is retained", final_values[1], unusable, 2.0e-9)
+		_check("engine stops only after both usable stores are exhausted",
+			int(final_values[Flight.SOURCE_MODE_INDEX]) == Flight.MODE_STARVED
+			and not Flight.unpack(final_values, install).running
+			and Flight.unpack(final_values, install).stop_reason == "fuel_exhausted")
+		var final_context: Dictionary = Flight.mass_context(owner, final_values)
+		_check("final mass context retains separate empty-line and residue entries", final_context.get("ok", false)
+			and final_context.remaining.has(liquid_id), str(final_context))
+		if final_context.get("ok", false):
+			_near("final main residue remains in the tank sample", final_context.remaining[str(install.fuel_tank.liquid_inventory_id)], unusable, 2.0e-9)
+			_near("final line sample is empty", final_context.remaining[liquid_id], 0.0, 2.0e-9)
+			_near("total mass loss equals main usable fuel and line contents",
+				initial_context.properties.mass_kg - final_context.properties.mass_kg,
+				main_start - unusable + line_reference, 2.0e-9)
+	owner.free()
 
 
 func _test_propeller_passivity(family: String, propeller: Dictionary) -> void:

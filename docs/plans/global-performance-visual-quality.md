@@ -171,6 +171,8 @@ Keep a valid baseline edge mode with MSAA off; profiles cannot select incompatib
 
 **Files:** only the selected model's shader/material/source generator and verification, following the [aircraft registry](../README.md#tracks-plans-and-step-ids). No skin-selection product, mesh scaling, generic clearcoat or fleet rewrite. Preserve articulation, Home preview, crash copy and stopped propeller.
 
+Future per-build color/decal and show-effect controls belong to [AE-24](aircraft-editor.md#5-planned-player-facing-work), with AS model bindings and SM rendering. They are separate product work; this conditional VQ repair keeps its current scope and acceptance gates.
+
 **Exit:** targeted visual/flight benefit with no worse silhouette/orientation or plastic-looking metal. Keep the original default scheme unless evidence supports replacement. No qualifying symptom means explicitly skipped.
 
 ### L15a/c / FW-81-R1 — separate motion repairs

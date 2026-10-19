@@ -152,7 +152,11 @@ func _test_legacy_glow_trace(session: Node) -> void:
 	var metadata: Dictionary = session.trace_meta().duplicate(true)
 	metadata.metadata_schema = "openrc-flight-meta v7"
 	metadata.propulsion_model = Trace.GLOW_LAW_V2
+	metadata.glow_trace_schema = Trace.GLOW_TRACE_SCHEMA_V1
 	metadata.continuous_layout = Trace.GLOW_CONTINUOUS_LAYOUT_V2
+	metadata.erase("mass_trace_schema")
+	metadata.erase("mass_base_trace_format")
+	metadata.erase("mass_sample_timing")
 	if session.wheel_count() > 0:
 		metadata.continuous_layout += "; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
 	metadata.erase("glow_fuel_tank_id")
