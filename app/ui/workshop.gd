@@ -16,6 +16,7 @@ const Customization := preload("res://render/aircraft_customization.gd")
 const CustomizationPanel := preload("res://ui/workshop_customization.gd")
 const PAGE_IDS := ["appearance", "smoke", "setup", "compare"]
 const WorkshopPreview := preload("res://ui/workshop_preview.gd")
+const Thumbnail := preload("res://ui/workshop_thumbnail.gd")
 
 signal closed
 signal trial_requested(payload: Dictionary)
@@ -53,6 +54,7 @@ var _recovery_pending := false
 var _recovery_restoring := false
 var _recovery_requires_copy := false
 var _recovery_last: Dictionary = {}
+var _recovery_digest := "missing"
 var return_destination := "Home":
 	set(value):
 		return_destination = "Pause" if value == "Pause" else "Home"
@@ -85,6 +87,14 @@ var _unavailable_favorite_ids: Array[String] = []
 var _favorites_hint: Label
 var _favorites_ok := true
 var _library_summaries: Array[Dictionary] = []
+var _thumbnail: Node
+var _thumbnail_image: TextureRect
+var _thumbnail_note: Label
+var _thumbnail_selection := ""
+var _thumbnail_identity: Dictionary = {}
+var _mass_dialog: ConfirmationDialog
+var _mass_button: Button
+var _mass_snapshot: Dictionary = {}
 var _copy_profile_button: Button
 var _transfer_dialog: ConfirmationDialog
 var _transfer_text: Label
@@ -437,6 +447,10 @@ func _build_ui() -> void:
 		_refresh_issues())
 	setup.add_child(start)
 	_build_presets_panel(setup)
+	_mass_button = _button("Measured components…", "", "MeasuredComponents")
+	_mass_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_mass_button.pressed.connect(_show_mass_editor)
+	setup.add_child(_mass_button)
 	_build_recipe_panel(setup)
 	var history := HBoxContainer.new()
 	history.add_theme_constant_override("separation", 8)
@@ -560,6 +574,26 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_variant_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_variant_selector.item_selected.connect(_on_variant_selected)
 	content.add_child(_variant_selector)
+	_thumbnail_image = TextureRect.new()
+	_thumbnail_image.name = "SavedBuildThumbnail"
+	_thumbnail_image.custom_minimum_size.y = 144
+	_thumbnail_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_thumbnail_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_thumbnail_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_thumbnail_image.visible = false
+	content.add_child(_thumbnail_image)
+	_thumbnail_note = _label("", "SecondaryLabel", true)
+	_thumbnail_note.name = "SavedBuildThumbnailStatus"
+	_thumbnail_note.visible = false
+	content.add_child(_thumbnail_note)
+	_thumbnail = Thumbnail.new()
+	_thumbnail.name = "SavedBuildThumbnailProducer"
+	_thumbnail.thumbnail_ready.connect(_receive_thumbnail)
+	_thumbnail.unavailable.connect(func(_reason: String) -> void:
+		if not _thumbnail_selection.is_empty() and _library_dialog.visible:
+			_thumbnail_note.text = tr("Thumbnail unavailable. Build details and actions are still available.")
+			_thumbnail_note.visible = true)
+	add_child(_thumbnail)
 
 	var variant_actions := HFlowContainer.new()
 	variant_actions.add_theme_constant_override("separation", 8)
@@ -919,6 +953,7 @@ func _sync_variant_actions() -> void:
 	_favorite_button.text = tr("Remove favorite" if _selected_variant_id in _favorites else "Add favorite")
 	_copy_profile_button.disabled = not source_available or not _presentation_buffers.is_empty() or not _presentation_errors.is_empty()
 	_sync_save_button()
+	_refresh_thumbnail()
 
 
 func _sync_save_button() -> void:
@@ -936,6 +971,88 @@ func _on_base_selected(index: int) -> void:
 func _on_variant_selected(index: int) -> void:
 	_selected_variant_id = str(_variant_selector.get_item_metadata(index))
 	_sync_variant_actions()
+
+
+func _cancel_thumbnail() -> void:
+	if is_instance_valid(_thumbnail): _thumbnail.cancel()
+	_thumbnail_selection = ""
+	_thumbnail_identity.clear()
+	if is_instance_valid(_thumbnail_image):
+		_thumbnail_image.texture = null
+		_thumbnail_image.hide()
+	if is_instance_valid(_thumbnail_note): _thumbnail_note.hide()
+
+
+func _show_mass_editor() -> void:
+	if not _pending_numbers.is_empty() or not _presentation_buffers.is_empty():
+		set_note("Apply or cancel pending fields before editing measured components.")
+		_review_issues()
+		return
+	if _base.is_empty(): return
+	if not is_instance_valid(_mass_dialog):
+		_mass_dialog = load("res://ui/workshop_mass.gd").new()
+		_mass_dialog.name = "MeasuredComponentsDialog"
+		_mass_dialog.theme = _screen.theme
+		_mass_dialog.exclusive = true
+		_mass_dialog.recipe_proposed.connect(_apply_measured_recipe)
+		_mass_dialog.canceled.connect(func() -> void:
+			_mass_snapshot.clear()
+			_mass_button.grab_focus())
+		add_child(_mass_dialog)
+	_mass_snapshot = _draft_payload()
+	_mass_dialog.configure(_base.duplicate(true), _recipe.duplicate(true))
+	_mass_dialog.popup_centered_clamped(Vector2i(820, 560), 0.9)
+	_mass_dialog.get_cancel_button().grab_focus()
+
+
+func _apply_measured_recipe(recipe: Dictionary) -> void:
+	if _mass_snapshot.is_empty() or _draft_payload() != _mass_snapshot:
+		set_note("The draft changed while measurements were open. Review the measurements again.")
+		return
+	var checked := Compiler.compile(_base.duplicate(true), recipe)
+	if not checked.ok:
+		set_note(_messages(checked.errors, "Measured components could not be applied."))
+		return
+	_mass_dialog.hide()
+	_mass_snapshot.clear()
+	# The explicit action creates a new draft, preserving every saved original.
+	if not _saved_variant_id.is_empty():
+		_saved_variant_id = ""
+		_saved_variant_revision = 0
+		_saved_compiler_version = ""
+	_set_recipe(recipe, true)
+	_sync_variant_actions()
+	set_note("Measured components applied to the draft. The saved build is unchanged.")
+	_mass_button.grab_focus()
+
+
+func _refresh_thumbnail() -> void:
+	if not is_instance_valid(_thumbnail) or not _library_dialog.visible or _selected_variant_id.is_empty() or _selected_variant_id in _unavailable_favorite_ids:
+		_cancel_thumbnail()
+		return
+	var revision := 0
+	for summary: Dictionary in _library_summaries:
+		if str(summary.id) == _selected_variant_id: revision = int(summary.get("revision", 0))
+	var selection := "%s:%d" % [_selected_variant_id, revision]
+	if selection == _thumbnail_selection: return
+	_cancel_thumbnail()
+	_thumbnail_selection = selection
+	_thumbnail_note.text = tr("Preparing thumbnail…")
+	_thumbnail_note.show()
+	var loaded := Store.load_variant(_selected_variant_id, variants_root)
+	if not loaded.ok:
+		_thumbnail_note.text = tr("Thumbnail unavailable. Build details and actions are still available.")
+		return
+	var requested: Dictionary = _thumbnail.request(loaded.variant)
+	_thumbnail_identity = requested.get("identity", {}).duplicate(true)
+
+
+func _receive_thumbnail(identity: Dictionary, texture: ImageTexture) -> void:
+	if not _library_dialog.visible or _thumbnail_selection.is_empty() or identity != _thumbnail_identity: return
+	if not _thumbnail_selection.begins_with(_selected_variant_id + ":"): return
+	_thumbnail_image.texture = texture
+	_thumbnail_image.show()
+	_thumbnail_note.hide()
 
 
 func _load_variant_snapshot(selected_id: String) -> void:
@@ -1473,6 +1590,7 @@ func _messages(value: Variant, fallback: String) -> String:
 
 func _request_trial() -> void:
 	if _trial_pending: return
+	if is_instance_valid(_mass_dialog) and _mass_dialog.visible: return
 	if is_instance_valid(_recovery_dialog) and _recovery_dialog.visible: return
 	if _library_dialog.visible or _name_dialog.visible or (is_instance_valid(_guard_dialog) and _guard_dialog.visible): return
 	for key: String in _pending_numbers.keys(): _commit_number(key)
@@ -1527,9 +1645,15 @@ func _request_close() -> void:
 
 ## Main-window close consumes one active editor modal before beginning an exit decision.
 func dismiss_modal_for_exit() -> bool:
+	if is_instance_valid(_mass_dialog) and _mass_dialog.visible:
+		_mass_dialog.hide()
+		_mass_snapshot.clear()
+		_mass_button.grab_focus()
+		return true
 	if is_instance_valid(_recovery_dialog) and _recovery_dialog.visible:
 		_recovery_dialog.hide()
 		_trial_button.disabled = not _edit_valid()
+		set_note("Automatic draft recovery is paused until you restore or discard the recovered draft.")
 		_library_button.grab_focus()
 		return true
 	if is_instance_valid(_transfer_dialog) and _transfer_dialog.visible:
@@ -1723,16 +1847,19 @@ func _open_library() -> void:
 	_select_base(_base_id)
 	_trial_button.disabled = true
 	_library_dialog.popup_centered_clamped(Vector2i(680, 520), 0.9)
+	_refresh_thumbnail()
 	_base_selector.grab_focus()
 
 
 func _close_library() -> void:
 	_library_dialog.hide()
+	_cancel_thumbnail()
 	_trial_button.disabled = not _edit_valid() or _trial_pending
 	if _library_button.is_visible_in_tree(): _library_button.grab_focus()
 
 
 func _request_save() -> void:
+	if is_instance_valid(_mass_dialog) and _mass_dialog.visible: return
 	if is_instance_valid(_recovery_dialog) and _recovery_dialog.visible: return
 	for key: String in _pending_numbers.keys(): _commit_number(key)
 	if not _edit_valid():
@@ -2256,6 +2383,7 @@ func _start_recovery() -> void:
 	_library_note.get_parent().add_child(_recovery_button)
 	var service: Script = load("res://workshop/draft_store.gd")
 	_recovery_loaded = service.load_snapshot(recovery_root)
+	_recovery_digest = str(_recovery_loaded.get("digest", ""))
 	_recovery_pending = bool(_recovery_loaded.get("exists", false))
 	_recovery_button.visible = _recovery_pending
 	if _recovery_pending: _show_recovery()
@@ -2277,6 +2405,9 @@ func _schedule_recovery() -> void:
 ## Explicitly callable for teardown/tests. Does not create a named library revision.
 func _autosave_draft() -> bool:
 	if not recovery_enabled or _recovery_pending or _recovery_restoring or _base_bytes.is_empty(): return false
+	if _recovery_digest.is_empty():
+		set_note("Recovery data cannot be safely replaced. Review the recovery files before retrying.")
+		return false
 	if not has_unsaved_changes(): return true
 	var build := _draft_payload()
 	var state := _recovery_editor_state()
@@ -2295,10 +2426,14 @@ func _autosave_draft() -> bool:
 			return false
 		build.dependencies = dependencies.manifest
 	if str(build.compiler).is_empty(): build.compiler = Compiler.version_for_recipe(_recipe)
-	var result: Dictionary = load("res://workshop/draft_store.gd").save_snapshot(recovery_root, build, state)
+	var result: Dictionary = load("res://workshop/draft_store.gd").save_snapshot(recovery_root, build, state, "", _recovery_digest)
 	if not result.ok:
+		if result.get("conflict", false):
+			_refresh_recovery_after_conflict()
+			return false
 		set_note("Automatic draft recovery failed: " + _messages(result.errors, "Retry by editing the build."))
 		return false
+	_recovery_digest = str(result.digest)
 	_recovery_last = snapshot.duplicate(true)
 	return true
 
@@ -2318,6 +2453,7 @@ func _show_recovery() -> void:
 		_recovery_dialog.confirmed.connect(_request_recovery_restore)
 		_recovery_dialog.canceled.connect(func() -> void:
 			_trial_button.disabled = not _edit_valid()
+			set_note("Automatic draft recovery is paused until you restore or discard the recovered draft.")
 			_library_button.grab_focus())
 		_recovery_dialog.add_button(tr("Discard recovered draft"), false, "discard")
 		_recovery_dialog.custom_action.connect(func(action: StringName) -> void:
@@ -2336,12 +2472,26 @@ func _show_recovery() -> void:
 		var state: Dictionary = _recovery_loaded.editor
 		lines.append(str(state.get("name", "")))
 		lines.append(str(Catalog.entry(str(payload.base_id)).get("name", payload.base_id)))
+		lines.append(tr("Accepted settings"))
 		for key: String in payload.recipe:
-			lines.append("%s: %s" % [key, str(payload.recipe[key])])
-		for key: String in state.get("numeric_buffers", {}): lines.append("%s: %s" % [key, state.numeric_buffers[key]])
+			if key == "mass_edits":
+				for edit: Dictionary in payload.recipe[key]:
+					var component_name := str(edit.id)
+					for item: Dictionary in payload.base.inventory:
+						if item.get("id", "") == edit.id: component_name = str(item.name)
+					lines.append("%s: %.4f kg" % [component_name, float(edit.mass_kg)])
+				continue
+			var value := str(payload.recipe[key])
+			if key == "scale": value = String.num(float(payload.recipe[key]) * 100.0, 2) + "%"
+			elif key == "mass_policy": value = tr("Constant wing loading" if payload.recipe[key] == "constant_wing_loading" else "Geometric")
+			else: value += "×"
+			lines.append("%s: %s" % [_parameter_label(key), value])
+		if not state.get("numeric_buffers", {}).is_empty(): lines.append(tr("Pending input"))
+		for key: String in state.get("numeric_buffers", {}): lines.append("%s: %s" % [_parameter_label(key), state.numeric_buffers[key]])
 		for page: String in state.get("presentation_buffers", {}):
 			var raw: Dictionary = state.presentation_buffers[page]
-			lines.append("%s · %s · %s" % [tr(page.capitalize()), raw.get("color_text", ""), raw.get("marking_text", "")])
+			if not str(raw.get("color_text", "")).is_empty(): lines.append("%s: %s" % [tr(page.capitalize()), raw.color_text])
+			if not str(raw.get("marking_text", "")).is_empty(): lines.append("%s: %s" % [tr("Registration"), raw.marking_text])
 	if not _recovery_loaded.get("compatible", false):
 		lines.append(tr("This draft is unavailable with the current dependencies. Its stored data remains unchanged."))
 		lines.append(_messages(_recovery_loaded.get("compatibility_errors", []), ""))
@@ -2353,12 +2503,20 @@ func _show_recovery() -> void:
 	_trial_button.disabled = true
 
 
+func _parameter_label(key: String) -> String:
+	return tr(str({"scale": "Size", "mass_policy": "Mass policy", "weight_multiplier": "Weight", "power_multiplier": "Power", "control_multiplier": "Control travel", "tank_capacity_multiplier": "Tank capacity"}.get(key, "Setting")))
+
+
 func _request_recovery_restore() -> void:
+	if not _recovery_pending: return
 	_recovery_dialog.hide()
-	request_navigation("Restore recovered draft", _apply_recovered_draft)
+	request_navigation("Restore recovered draft", _apply_recovered_draft, func() -> void:
+		_trial_button.disabled = not _edit_valid()
+		_library_button.grab_focus())
 
 
 func _apply_recovered_draft() -> void:
+	if not _recovery_pending: return
 	var fresh: Dictionary = load("res://workshop/draft_store.gd").load_snapshot(recovery_root)
 	if not fresh.get("ok", false) or not fresh.get("compatible", false) or fresh.get("payload", {}) != _recovery_loaded.get("payload", {}) or fresh.get("editor", {}) != _recovery_loaded.get("editor", {}):
 		_recovery_loaded = fresh
@@ -2370,6 +2528,22 @@ func _apply_recovered_draft() -> void:
 	for key: String in state.numeric_buffers:
 		if not _factor_inputs.has(key):
 			set_note("A recovered numeric field is unavailable. The stored draft remains unchanged.")
+			_trial_button.disabled = not _edit_valid()
+			return
+	# Prove every stored selection can be restored before changing the active draft.
+	var described := Customization.describe(str(payload.base_id))
+	if not described.get("ok", false): return
+	for page: String in state.presentation_buffers:
+		var probe := CustomizationPanel.new()
+		probe.page_kind = page
+		probe.visible = false
+		add_child(probe)
+		probe.configure(described.bindings, payload.presentation_profile)
+		var restorable := probe.restore_editor_state(state.presentation_buffers[page])
+		probe.free()
+		if not restorable:
+			set_note("A recovered text field is unavailable. The stored draft remains unchanged.")
+			_trial_button.disabled = not _edit_valid()
 			return
 	_recovery_restoring = true
 	_base_id = payload.base_id
@@ -2401,11 +2575,11 @@ func _apply_recovered_draft() -> void:
 		_factor_inputs[key].text = state.numeric_buffers[key]
 		_number_changed(state.numeric_buffers[key], key)
 	for page: String in state.presentation_buffers:
-		if not _page_nodes[page].restore_editor_state(state.presentation_buffers[page]):
-			_presentation_errors.append(tr("A recovered text field is unavailable; review the stored draft before discarding it."))
+		_page_nodes[page].restore_editor_state(state.presentation_buffers[page])
 	_recovery_requires_copy = true
 	_compile_recipe()
 	_recovery_restoring = false
+	_recovery_digest = str(fresh.digest)
 	_recovery_pending = false
 	_recovery_loaded.clear()
 	_recovery_button.hide()
@@ -2427,10 +2601,29 @@ func _discard_pending_recovery() -> void:
 
 func _discard_current_recovery() -> bool:
 	if not recovery_enabled: return true
-	var result: Dictionary = load("res://workshop/draft_store.gd").discard_snapshot(recovery_root)
+	if _recovery_digest.is_empty():
+		set_note("Recovery data cannot be safely replaced. Review the recovery files before retrying.")
+		return false
+	var result: Dictionary = load("res://workshop/draft_store.gd").discard_snapshot(recovery_root, _recovery_digest)
 	if not result.ok:
+		if result.get("conflict", false):
+			_refresh_recovery_after_conflict()
+			return false
 		set_note("Recovered draft could not be discarded: " + _messages(result.errors, "Retry later."))
 		return false
+	_recovery_digest = "missing"
 	if is_instance_valid(_recovery_timer): _recovery_timer.stop()
 	_recovery_last.clear()
 	return true
+
+
+func _refresh_recovery_after_conflict() -> void:
+	_recovery_loaded = load("res://workshop/draft_store.gd").load_snapshot(recovery_root)
+	_recovery_digest = str(_recovery_loaded.get("digest", ""))
+	_recovery_pending = bool(_recovery_loaded.get("exists", false))
+	_recovery_button.visible = _recovery_pending
+	_recovery_timer.stop()
+	_recovery_last.clear()
+	if is_instance_valid(_recovery_dialog): _recovery_dialog.hide()
+	_trial_button.disabled = not _edit_valid()
+	set_note("Another session changed the recovered draft. Review it in Library before automatic recovery resumes.")

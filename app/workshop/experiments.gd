@@ -160,7 +160,7 @@ static func sweep(base: Dictionary, raw_spec: Variant) -> Dictionary:
 		var recipe: Dictionary = recipes[index]
 		var compiled: Dictionary = Compiler.compile(base, recipe)
 		var candidate_id: String = "candidate-" + _sha((base_sha256 + ":" + JSON.stringify(recipe, "", true, true)
-			+ ":" + Compiler.COMPILER_VERSION).to_utf8_buffer()).substr(0, 24)
+			+ ":" + Compiler.version_for_recipe(recipe)).to_utf8_buffer()).substr(0, 24)
 		if bool(compiled.get("ok", false)):
 			candidates.append({"index": index, "candidate_id": candidate_id, "recipe": recipe,
 				"ok": true, "static_report": _static_report_from_compiled(compiled, recipe)})
@@ -509,7 +509,7 @@ static func _static_report_from_compiled(compiled: Dictionary, recipe: Dictionar
 		"recipe": recipe.duplicate(true), "metrics": static_metrics, "compiled_build_summary": build_summary,
 		"method": str(summary.get("power_reference_note", "Current Workshop compiler build summary; no flight-performance evaluator was run.")),
 		"unavailable_reason": unavailable_reason,
-		"compiler_version": Compiler.COMPILER_VERSION,
+		"compiler_version": Compiler.version_for_recipe(recipe),
 		"limits": ["Static estimates use the existing Workshop compiler/evaluator outputs only.",
 			"They do not predict scripted speed, climb, roll response, endurance, or measured engine output.",
 			"Numerical validity is not physical aircraft validation."]}
@@ -554,7 +554,7 @@ static func _physical_recipe(value: Variant) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY:
 		return {"ok": false, "errors": PackedStringArray(["Physical experiment recipe must be an object."])}
 	for key: Variant in value.keys():
-		if typeof(key) != TYPE_STRING or not PHYSICAL_KEYS.has(str(key)):
+		if typeof(key) != TYPE_STRING or (not PHYSICAL_KEYS.has(str(key)) and key != "mass_edits"):
 			errors.append("Physical experiment recipe contains unsupported key '%s'." % str(key))
 	if not errors.is_empty():
 		return {"ok": false, "errors": errors}
@@ -564,6 +564,7 @@ static func _physical_recipe(value: Variant) -> Dictionary:
 	var physical: Dictionary = {}
 	for key: String in PHYSICAL_KEYS:
 		physical[key] = checked.values[key]
+	if checked.values.has("mass_edits"): physical["mass_edits"] = checked.values.mass_edits.duplicate(true)
 	return {"ok": true, "errors": PackedStringArray(), "recipe": physical}
 
 

@@ -18,8 +18,8 @@ const HEIGHT := 192
 const BACKGROUND := Color("#263a40")
 const AMBIENT := Color("#c5d3cb")
 const FOV_DEG := 38.0
-const YAW_DEG := 180.0
-const PITCH_DEG := 10.0
+const YAW_DEG := 225.0
+const PITCH_DEG := 16.0
 const FIT_FILL := 0.89
 const SAFE_FILL := 0.93
 

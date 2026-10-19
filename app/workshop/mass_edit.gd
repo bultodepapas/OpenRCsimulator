@@ -107,6 +107,9 @@ static func apply_to_validated_base(base: Dictionary, edits: Array) -> Dictionar
 			"kind": "measured",
 			"source": str(edit.source),
 		}
+	var old_cg_le: PackedFloat64Array = _inventory_cg_le(base)
+	var new_cg_le: PackedFloat64Array = _inventory_cg_le(output)
+	_rebase_datum_relative_propulsion_points(base, output, old_cg_le, new_cg_le)
 	var data: Dictionary = AircraftData.validate_and_derive(output)
 	if not bool(data.get("ok", false)):
 		return _failure(_as_errors(data.get("errors", [])))
@@ -366,6 +369,63 @@ static func _metrics_for_state(base: Dictionary, state: String) -> Dictionary:
 	for axis: int in range(3):
 		cg.append(first_moment[axis] / total_mass)
 	return {"ok": true, "errors": PackedStringArray(), "mass_kg": total_mass, "cg_le_m": cg}
+
+
+static func _inventory_cg_le(base: Dictionary) -> PackedFloat64Array:
+	var total_mass := 0.0
+	var first_moment := PackedFloat64Array([0.0, 0.0, 0.0])
+	for item: Dictionary in base.inventory:
+		var mass: float = float(item.mass.value)
+		total_mass += mass
+		for axis: int in range(3):
+			first_moment[axis] += mass * float(item.position.value[axis])
+	if total_mass <= 0.0:
+		return PackedFloat64Array()
+	return PackedFloat64Array([first_moment[0] / total_mass, first_moment[1] / total_mass, first_moment[2] / total_mass])
+
+
+## These thrust/intake offsets are explicitly authored from datum O (inventory CG), so keep their
+## structural LE positions fixed as a measured mass changes O. Slipstream hub/root records are
+## source-authored in LE coordinates and are consumed only as common-frame geometry; preserve them.
+static func _rebase_datum_relative_propulsion_points(original: Dictionary, candidate: Dictionary,
+		old_cg_le: PackedFloat64Array, new_cg_le: PackedFloat64Array) -> void:
+	if old_cg_le.size() != 3 or new_cg_le.size() != 3 or old_cg_le == new_cg_le:
+		return
+	var old_propulsion: Variant = original.get("propulsion", {})
+	var new_propulsion: Variant = candidate.get("propulsion", {})
+	if not old_propulsion is Dictionary or not new_propulsion is Dictionary:
+		return
+	var old_propeller: Variant = old_propulsion.get("propeller", {})
+	var new_propeller: Variant = new_propulsion.get("propeller", {})
+	if old_propeller is Dictionary and new_propeller is Dictionary:
+		_rebase_offset_quantity(old_propeller, new_propeller, "thrust_line_offset", old_cg_le, new_cg_le)
+	for key: String in ["thrust_line_offset", "intake_offset"]:
+		_rebase_offset_quantity(old_propulsion, new_propulsion, key, old_cg_le, new_cg_le)
+
+
+static func _rebase_offset_quantity(original_parent: Dictionary, candidate_parent: Dictionary, key: String,
+		old_cg_le: PackedFloat64Array, new_cg_le: PackedFloat64Array) -> void:
+	var original_quantity: Variant = original_parent.get(key, null)
+	var candidate_quantity: Variant = candidate_parent.get(key, null)
+	if not original_quantity is Dictionary or not candidate_quantity is Dictionary:
+		return
+	var old_value: Variant = original_quantity.get("value", null)
+	if not old_value is Array or old_value.size() != 3:
+		return
+	var fixed_point_le := PackedFloat64Array()
+	for axis: int in range(3):
+		fixed_point_le.append(old_cg_le[axis] + float(old_value[axis]))
+	var re_referenced := PackedFloat64Array()
+	for axis: int in range(3):
+		re_referenced.append(fixed_point_le[axis] - new_cg_le[axis])
+	candidate_quantity.value = Array(re_referenced)
+	candidate_quantity.kind = "derived"
+	var evidence: String = str(original_quantity.get("source", "unspecified source evidence"))
+	var suffix: String = "; Workshop mass edit: fixed structural location re-referenced to updated inventory CG"
+	var suffix_at: int = evidence.find(suffix)
+	if suffix_at >= 0:
+		evidence = evidence.substr(0, suffix_at)
+	candidate_quantity.source = evidence + suffix
 
 
 static func _check_weighing_state(base: Dictionary, state: String) -> Dictionary:

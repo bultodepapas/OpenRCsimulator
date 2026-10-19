@@ -152,5 +152,10 @@ static func validate(recipe: Dictionary) -> Dictionary:
 					errors.append("recipe.mass_edits: measured mass must be within [0.001, 5] kg")
 				if typeof(edit.source) != TYPE_STRING or edit.source.strip_edges().is_empty() or edit.source.length() > 256:
 					errors.append("recipe.mass_edits: provide a measurement source of at most 256 characters")
-			if errors.is_empty() and not edits.is_empty(): values.mass_edits = edits.duplicate(true)
+			if errors.is_empty() and not edits.is_empty():
+				var normalized: Array = []
+				for edit: Dictionary in edits:
+					normalized.append({"id": str(edit.id), "mass_kg": float(edit.mass_kg), "source": str(edit.source).strip_edges()})
+				normalized.sort_custom(func(a: Dictionary, b: Dictionary) -> bool: return a.id < b.id)
+				values["mass_edits"] = normalized
 	return {"ok": errors.is_empty(), "errors": errors, "values": values}

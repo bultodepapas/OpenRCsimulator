@@ -69,13 +69,30 @@ func _run() -> void:
 			_check("bounded 320x192 PNG is written for " + label,
 				save_error == OK and image.get_width() == 320 and image.get_height() == 192,
 				"error=%s size=%s" % [error_string(save_error), image.get_size()])
-			captured["file"] = png_path.get_file()
-			captured["pixel_sha256"] = _sha256(image.get_data())
-			captured["sampled_colors"] = _sampled_color_count(image)
+			var bounds := _foreground_bounds(image)
+			var capture_record := {
+				"aircraft_id": str(record.base_id),
+				"saved_variant_id": str(record.id),
+				"saved_revision": int(record.revision),
+				"file": png_path.get_file(),
+				"thumbnail_identity": captured.identity,
+				"pixel_sha256": _sha256(image.get_data()),
+				"sampled_colors": _sampled_color_count(image),
+				"foreground_bounds": bounds,
+				"render_started": bool(captured.get("render_started", false)),
+				"viewport_seen": bool(captured.get("viewport_seen", false)),
+				"model_seen": bool(captured.get("model_seen", false)),
+				"smoke_nodes": int(captured.get("smoke_nodes", -1)),
+			}
 			_check("thumbnail contains rendered model pixels and no smoke node was present",
-				int(captured.get("sampled_colors", 0)) >= 4 and int(captured.get("smoke_nodes", -1)) == 0,
-				str(captured))
-			captures.append(captured)
+				int(capture_record.sampled_colors) >= 4 and int(capture_record.smoke_nodes) == 0
+				and bool(capture_record.render_started) and bool(capture_record.viewport_seen)
+				and bool(capture_record.model_seen) and int(bounds.get("x", 0)) >= 2
+				and int(bounds.get("y", 0)) >= 2
+				and int(bounds.get("x", 0)) + int(bounds.get("width", 0)) <= 318
+				and int(bounds.get("y", 0)) + int(bounds.get("height", 0)) <= 190,
+				str(capture_record))
+			captures.append(capture_record)
 	if captures.size() == 2:
 		_check("two family captures have distinct pixel identities", captures[0].pixel_sha256 != captures[1].pixel_sha256)
 	var cancellation_results: Array[Dictionary] = []
@@ -101,7 +118,7 @@ func _run() -> void:
 		"renderer": availability,
 		"dimensions": {"width": 320, "height": 192, "format": "rgba8"},
 		"captures": captures,
-		"cancellation_cycles": cancellation_results.size(),
+		"cancellation": {"cycles": cancellation_results.size(), "results": cancellation_results},
 		"preview_isolation_verified": _preview_snapshots_match(preview_before, preview_after),
 		"cache": service.cache_stats(),
 	}
@@ -145,7 +162,8 @@ func _save_variant(aircraft_id: String, name: String, paint_color: String, regis
 
 
 func _capture_one(service: Variant, variant: Dictionary) -> Dictionary:
-	var completion := {done = false, ok = false, texture = null, identity = {}, reason = "", smoke_nodes = -1}
+	var completion := {done = false, ok = false, texture = null, identity = {}, reason = "",
+		render_started = false, viewport_seen = false, model_seen = false, smoke_nodes = -1}
 	var on_ready: Callable = func(identity: Dictionary, texture: ImageTexture) -> void:
 		completion.done = true
 		completion.ok = texture != null
@@ -156,6 +174,9 @@ func _capture_one(service: Variant, variant: Dictionary) -> Dictionary:
 		completion.reason = reason
 	var on_started: Callable = func(_identity: Dictionary) -> void:
 		var resources: Dictionary = service.active_resources()
+		completion.render_started = true
+		completion.viewport_seen = bool(resources.get("viewport", false))
+		completion.model_seen = bool(resources.get("airplane_root", false))
 		completion.smoke_nodes = int(resources.get("smoke_nodes", -1))
 	service.thumbnail_ready.connect(on_ready)
 	service.unavailable.connect(on_unavailable)
@@ -254,8 +275,27 @@ func _sampled_color_count(image: Image) -> int:
 	return colors.size()
 
 
+func _foreground_bounds(image: Image) -> Dictionary:
+	var background := Color("#263a40")
+	var min_x := image.get_width()
+	var min_y := image.get_height()
+	var max_x := -1
+	var max_y := -1
+	for y: int in image.get_height():
+		for x: int in image.get_width():
+			var color := image.get_pixel(x, y)
+			if absf(color.r - background.r) <= 0.035 and absf(color.g - background.g) <= 0.035 \
+					and absf(color.b - background.b) <= 0.035:
+				continue
+			min_x = mini(min_x, x)
+			min_y = mini(min_y, y)
+			max_x = maxi(max_x, x)
+			max_y = maxi(max_y, y)
+	return {"x": min_x, "y": min_y, "width": maxi(0, max_x - min_x + 1), "height": maxi(0, max_y - min_y + 1)}
+
+
 func _output_directory() -> String:
-	var selected := "../research/aircraft-editor/captures"
+	var selected := "../tmp/workshop-thumbnails"
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out-dir="):
 			selected = argument.trim_prefix("--out-dir=")

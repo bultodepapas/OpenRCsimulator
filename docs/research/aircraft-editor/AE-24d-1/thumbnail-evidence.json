@@ -1,0 +1,377 @@
+{
+	"cache": {
+		"byte_limit": 4194304,
+		"bytes": 491520,
+		"dimension_limit": 512,
+		"entries": 2,
+		"entry_limit": 16
+	},
+	"cancellation": {
+		"cycles": 20,
+		"results": [
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			},
+			{
+				"model_seen": true,
+				"published": false,
+				"smoke_nodes": 0,
+				"stage_after": false,
+				"started": true,
+				"viewport_after": false,
+				"viewport_seen": true
+			}
+		]
+	},
+	"captures": [
+		{
+			"aircraft_id": "jensen-das-ugly-stik-60",
+			"file": "stik_thumbnail.png",
+			"foreground_bounds": {
+				"height": 69,
+				"width": 149,
+				"x": 83,
+				"y": 65
+			},
+			"model_seen": true,
+			"pixel_sha256": "6f7792c89f80c6b7c3d2f191869c85aaa2036617e0462db920c4d068fe417093",
+			"render_started": true,
+			"sampled_colors": 142,
+			"saved_revision": 1,
+			"saved_variant_id": "a42b1242-717a-4e29-b36b-a9ea2fdf8760",
+			"smoke_nodes": 0,
+			"thumbnail_identity": {
+				"camera": {
+					"fit_fill": 0.89,
+					"format": "rgba8",
+					"fov_deg": 38.0,
+					"height": 192,
+					"pitch_deg": 16.0,
+					"safe_fill": 0.93,
+					"spec": "workshop-thumbnail-camera-v1",
+					"width": 320,
+					"yaw_deg": 225.0
+				},
+				"format": "openrc-aircraft-thumbnail-identity",
+				"physical": {
+					"ancestor_revision": 1,
+					"ancestor_variant_id": "a42b1242-717a-4e29-b36b-a9ea2fdf8760",
+					"base_id": "jensen-das-ugly-stik-60",
+					"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+					"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+					"dependencies": {
+						"files": {
+							"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+						},
+						"format": "openrc-aircraft-workshop-dependencies v1"
+					},
+					"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+					"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+					"experimental": true,
+					"format": "openrc-aircraft-trial v1",
+					"presentation": {
+						"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+						"visual_family": "jensen-das-ugly-stik-60"
+					},
+					"recipe_sha256": "a6b6dc2b27d87a9f846c48aec6ea4b296344809c30265ea99ef9c91d2bf4682f",
+					"resolved_model_sha256": "2c1a424b22419bfdb25d0373423b23111cebe380f480ae8bdbcd7b5e2f0fa758",
+					"resolved_sha256": "084851b8f4e3876c200536893d1fbf3c964c54a0b58b0d5258d7e83a03e2dab1",
+					"trial_id": "workshop-b5e52806e2658b2f39b0a28a6c1f48ce"
+				},
+				"presentation": {
+					"binding": {
+						"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+						"slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b",
+						"visual_family": "jensen-das-ugly-stik-60"
+					},
+					"format": "openrc-aircraft-presentation-identity",
+					"schedule_policy": "ticks-240-v1",
+					"sha256": "c732fffa8707e1c76a18b0d679ad0b8a9a0c2c0a47b4ce423dcff41d3b084b6c",
+					"version": 1,
+					"visual_seed": 11
+				},
+				"renderer": {
+					"display_server": "Windows",
+					"engine_version": "4.7.2-stable (official)",
+					"method": "gl_compatibility"
+				},
+				"scale": 1.0,
+				"sha256": "78d07054144035950be9f31dbef956e4f9fb4e092159c6fc17c706a829614748",
+				"version": 1
+			},
+			"viewport_seen": true
+		},
+		{
+			"aircraft_id": "gp-extra-300s-60",
+			"file": "extra300s_thumbnail.png",
+			"foreground_bounds": {
+				"height": 76,
+				"width": 134,
+				"x": 89,
+				"y": 61
+			},
+			"model_seen": true,
+			"pixel_sha256": "6a8f12c7c35f941ca92740c9dffed5c609e3db9d4e9bfa9ed455a5faf2527b9c",
+			"render_started": true,
+			"sampled_colors": 170,
+			"saved_revision": 1,
+			"saved_variant_id": "a12ac887-c1f0-42cc-8dc1-0d9630fae48e",
+			"smoke_nodes": 0,
+			"thumbnail_identity": {
+				"camera": {
+					"fit_fill": 0.89,
+					"format": "rgba8",
+					"fov_deg": 38.0,
+					"height": 192,
+					"pitch_deg": 16.0,
+					"safe_fill": 0.93,
+					"spec": "workshop-thumbnail-camera-v1",
+					"width": 320,
+					"yaw_deg": 225.0
+				},
+				"format": "openrc-aircraft-thumbnail-identity",
+				"physical": {
+					"ancestor_revision": 1,
+					"ancestor_variant_id": "a12ac887-c1f0-42cc-8dc1-0d9630fae48e",
+					"base_id": "gp-extra-300s-60",
+					"base_sha256": "62c76bc514b923b1ada51a0770378f7d085038fd6ae1bf4a92160d55cc55f69d",
+					"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+					"dependencies": {
+						"files": {
+							"res://data/glow/extra_61fx_2t.json": "409ed210a6a06f05ed5f66096ad12ffc199c122bc99ff802c9be58818463202c",
+							"res://data/glow/os_max_61fx_candidate.json": "f3a8fcd246e45bd37d586f5ef90fc978a2ead9fda1a2936d4177344e9987ca54",
+							"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+						},
+						"format": "openrc-aircraft-workshop-dependencies v1"
+					},
+					"dependencies_sha256": "ddc7779069be90e014f26be60d84177d48e8e05cd96d74d8e9669c41832ffc01",
+					"descriptor_sha256": "1b4944967fc8d6be33b3a33802070f62c66e549bb292b10e93f0445fc15d13c6",
+					"experimental": true,
+					"format": "openrc-aircraft-trial v1",
+					"presentation": {
+						"model_manifest_sha256": "c29c9b34dd36545a2f07be0b57a0d3f65e5f5778980cfc3a0d252b8048cded2a",
+						"visual_family": "gp-extra-300s-60"
+					},
+					"recipe_sha256": "a6b6dc2b27d87a9f846c48aec6ea4b296344809c30265ea99ef9c91d2bf4682f",
+					"resolved_model_sha256": "fb7ce9208144aa2f209a9407ad6d20d4fa26c8a83af412fdcb02a10de2eed903",
+					"resolved_sha256": "17c851b7e857bce129bb42f69d0d8b620ec5ab7269ff22a417f38f6403f4c191",
+					"trial_id": "workshop-36391a1f41dd2e059557851ec911b25c"
+				},
+				"presentation": {
+					"binding": {
+						"model_manifest_sha256": "c29c9b34dd36545a2f07be0b57a0d3f65e5f5778980cfc3a0d252b8048cded2a",
+						"slots_sha256": "12b76fde8b78bff4c3299944257ccdc7498d2e3e8eec44e4d8d944092608aa27",
+						"visual_family": "gp-extra-300s-60"
+					},
+					"format": "openrc-aircraft-presentation-identity",
+					"schedule_policy": "ticks-240-v1",
+					"sha256": "adcad623f54fc0e16294680d0c28eab60044fcc2b16c98f1e40706c53474b52e",
+					"version": 1,
+					"visual_seed": 22
+				},
+				"renderer": {
+					"display_server": "Windows",
+					"engine_version": "4.7.2-stable (official)",
+					"method": "gl_compatibility"
+				},
+				"scale": 1.0,
+				"sha256": "02fe10d4e2dd5a3de60243740e231ba961881ce695a1d87ca6b1682477d1659b",
+				"version": 1
+			},
+			"viewport_seen": true
+		}
+	],
+	"dimensions": {
+		"format": "rgba8",
+		"height": 192,
+		"width": 320
+	},
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-aircraft-thumbnail-capture-evidence",
+	"preview_isolation_verified": true,
+	"renderer": {
+		"headless": false,
+		"ok": true,
+		"reason": "",
+		"renderer": "gl_compatibility"
+	},
+	"version": 1
+}

@@ -36,6 +36,13 @@ static var _appearance: Dictionary = {}
 static var _appearance_enabled := false
 static var _cloud_transport: Dictionary = {}
 static var _last_cloud_sim_time := 0.0
+## One active presentation cache. Offsets and the packed sky arrays are bounded by MAX_LAYERS.
+## Material uniforms are still checked on every call so a newly built sky receives them.
+static var _last_cloud_offsets: Array = []
+static var _last_cloud_offsets_valid := false
+static var _cloud_arrays_cache: Dictionary = {}
+static var _cloud_arrays_cache_offsets: Array = []
+static var _cloud_arrays_cache_valid := false
 
 
 ## Koschmieder: visual range = 3.912 / β (2 % contrast threshold).
@@ -111,6 +118,7 @@ static func configure_appearance(selection: Dictionary, mean_wind_ned: Array = [
 	_appearance_enabled = not bool(resolved.legacy)
 	_cloud_transport = transport
 	_last_cloud_sim_time = anchor_time_s
+	_invalidate_cloud_derived_cache()
 	if anchor_time_s == 0.0:
 		_set_cloud_offset(Vector2.ZERO)
 	return true
@@ -188,6 +196,7 @@ static func restore_cloud_transport(raw: Variant) -> bool:
 	var restored: Dictionary = raw.duplicate(true)
 	_cloud_transport = restored
 	_last_cloud_sim_time = float(restored.anchor_time_s)
+	_invalidate_cloud_derived_cache()
 	return true
 
 
@@ -195,14 +204,13 @@ static func restore_cloud_transport(raw: Variant) -> bool:
 static func cloud_state_snapshot() -> Dictionary:
 	var layers: Array = []
 	var profile_layers: Array = _appearance.get("cloud_layers", [])
+	var current_offsets: Array = _cloud_offsets_for_last_time()
 	for index in mini(profile_layers.size(), CloudTransport.MAX_LAYERS):
 		var layer: Dictionary = profile_layers[index].duplicate(true)
-		layer.offset = CloudTransport.layer_offset(_cloud_transport, index, _last_cloud_sim_time) \
-			if _appearance_enabled else CloudTransport.legacy_offset(_cloud_transport, _last_cloud_sim_time)
+		layer.offset = _cloud_offset_from_array(current_offsets, index if _appearance_enabled else 0)
 		layers.append(layer)
 	var shadow_index := _shadow_layer_index()
 	var shadow_layer: Dictionary = layers[shadow_index] if shadow_index >= 0 else {}
-	var current_offsets := _cloud_offsets_at(_last_cloud_sim_time)
 	return {
 		"profile_id": str(_appearance.get("id", "classic")),
 		"seed": int(_appearance_selection.get("seed", Spec.ATMOSPHERE.cloud_seed)),
@@ -215,6 +223,32 @@ static func cloud_state_snapshot() -> Dictionary:
 		"cloud_layers": layers,
 		"offset": _selected_cloud_offset(_last_cloud_sim_time, current_offsets),
 	}
+
+
+static func _invalidate_cloud_derived_cache() -> void:
+	_last_cloud_offsets.clear()
+	_last_cloud_offsets_valid = false
+	_cloud_arrays_cache.clear()
+	_cloud_arrays_cache_offsets.clear()
+	_cloud_arrays_cache_valid = false
+
+
+static func _cloud_offsets_for_last_time() -> Array:
+	if not _last_cloud_offsets_valid:
+		_last_cloud_offsets = _cloud_offsets_at(_last_cloud_sim_time)
+		_last_cloud_offsets_valid = true
+	return _last_cloud_offsets
+
+
+static func _cloud_offset_from_array(offsets: Array, index: int) -> Vector2:
+	if index < 0 or index >= offsets.size():
+		return Vector2.ZERO
+	var raw: Variant = offsets[index]
+	if raw is Vector2:
+		return raw
+	if typeof(raw) == TYPE_ARRAY and raw.size() == 2:
+		return Vector2(float(raw[0]), float(raw[1]))
+	return Vector2.ZERO
 
 
 static func _shadow_layer_index() -> int:
@@ -422,12 +456,12 @@ static func _set_sky_uniform_if_changed(mat: ShaderMaterial, uniform_name: Strin
 	return true
 
 
-static func _apply_cloud_uniforms(mat: ShaderMaterial, sim_time_s: float) -> bool:
-	var offsets := _cloud_offsets_at(sim_time_s)
+static func _apply_cloud_uniforms(mat: ShaderMaterial, sim_time_s: float, precomputed_offsets: Array = [],
+		offsets_precomputed: bool = false) -> bool:
+	var offsets: Array = precomputed_offsets if offsets_precomputed else _cloud_offsets_at(sim_time_s)
 	var changed := false
 	if _appearance_enabled:
-		var arrays := SkyAppearance.shader_arrays(_appearance.cloud_layers, offsets,
-			float(_appearance.cloud_cover), float(_appearance.cloud_density))
+		var arrays := _cloud_shader_arrays(offsets)
 		changed = _set_sky_uniform_if_changed(mat, &"layered_appearance", true) or changed
 		changed = _set_sky_uniform_if_changed(mat, &"disc_cloud_occlusion", true) or changed
 		changed = _set_sky_uniform_if_changed(mat, &"appearance_layer_count", arrays.layer_count) or changed
@@ -439,6 +473,16 @@ static func _apply_cloud_uniforms(mat: ShaderMaterial, sim_time_s: float) -> boo
 		changed = _set_sky_uniform_if_changed(mat, &"layered_appearance", false) or changed
 		changed = _set_sky_uniform_if_changed(mat, &"cloud_offset", _cloud_offset_for_legacy_branch(sim_time_s, offsets)) or changed
 	return changed
+
+
+static func _cloud_shader_arrays(offsets: Array) -> Dictionary:
+	if _cloud_arrays_cache_valid and offsets == _cloud_arrays_cache_offsets:
+		return _cloud_arrays_cache
+	_cloud_arrays_cache = SkyAppearance.shader_arrays(_appearance.cloud_layers, offsets,
+		float(_appearance.cloud_cover), float(_appearance.cloud_density))
+	_cloud_arrays_cache_offsets = offsets.duplicate(true)
+	_cloud_arrays_cache_valid = true
+	return _cloud_arrays_cache
 
 
 static func _cloud_offset_for_legacy_branch(sim_time_s: float, offsets: Array = []) -> Vector2:
@@ -455,11 +499,7 @@ static func _selected_cloud_offset(sim_time_s: float, offsets: Array = []) -> Ve
 	var index := _shadow_layer_index()
 	if index < 0 and not offsets.is_empty():
 		index = 0
-	if index >= 0 and index < offsets.size():
-		var raw: Variant = offsets[index]
-		if typeof(raw) == TYPE_ARRAY and raw.size() == 2:
-			return Vector2(float(raw[0]), float(raw[1]))
-	return Vector2.ZERO
+	return _cloud_offset_from_array(offsets, index)
 
 
 static func _set_profile_shadow_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
@@ -653,8 +693,10 @@ static func update_clouds(env: Environment, sim_time: float) -> bool:
 	var off := _selected_cloud_offset(sim_time, offsets)
 	var global_offset_changed: bool = last_cloud_offset != off
 	_set_cloud_offset(off) # also updates all ground surfaces, even when the sky is already at this time
-	var sky_changed := _apply_cloud_uniforms(mat, sim_time)
+	var sky_changed := _apply_cloud_uniforms(mat, sim_time, offsets, true)
 	_last_cloud_sim_time = sim_time
+	_last_cloud_offsets = offsets
+	_last_cloud_offsets_valid = true
 	return global_offset_changed or sky_changed
 
 

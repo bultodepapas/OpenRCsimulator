@@ -5,6 +5,13 @@ extends SceneTree
 const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const Ground := preload("res://render/ground.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const SkyAppearance := preload("res://render/weather/sky_appearance.gd")
+const CloudTransport := preload("res://render/weather/cloud_transport.gd")
+const LAYERED_CLOUD_UNIFORMS: Array[StringName] = [
+	&"appearance_layer_count", &"appearance_layer_parameters", &"appearance_layer_motion",
+	&"appearance_layer_seeds", &"appearance_cloud_density",
+]
 
 var _failures := 0
 var _count := 0
@@ -113,5 +120,145 @@ func _initialize() -> void:
 		_check("transmittance at %.0f m ≈ %.2f" % case, absf(Atmosphere.transmittance(case[0]) - case[1]) < 0.005, "%.4f" % Atmosphere.transmittance(case[0]))
 	_check("transmittance at the rim ≤ 4 %", Atmosphere.transmittance(Spec.ATMOSPHERE.rim_end_m) <= 0.04, "%.4f" % Atmosphere.transmittance(Spec.ATMOSPHERE.rim_end_m))
 
+	_test_layered_cloud_cache()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_layered_cloud_cache() -> void:
+	var selection: Dictionary = SkyConfig.for_preset("broken")
+	selection["seed"] = 4703
+	selection["motion"] = "follow_wind"
+	var mean_wind := [7.0, -3.0, 0.4]
+	_check("layered cloud profile is accepted", Atmosphere.configure_appearance(selection, mean_wind, 0.0))
+	var checked: Dictionary = SkyConfig.validate(selection)
+	var resolved: Dictionary = SkyAppearance.resolve(checked.profile, checked.config)
+	var transport: Dictionary = Atmosphere.cloud_transport_checkpoint()
+	var environment: Environment = Atmosphere.environment()
+	var step := float(Spec.ATMOSPHERE.cloud_update_s)
+
+	var later_time := step * 5.2
+	_check("new cloud interval changes layered sky", Atmosphere.update_clouds(environment, later_time))
+	_check_layered_uniforms("later interval", environment, resolved, transport, later_time)
+	_check_cloud_snapshot_offsets("later interval", resolved, transport, later_time)
+	var same_interval_time := step * 5.8
+	_check("same cloud interval leaves layered sky unchanged", not Atmosphere.update_clouds(environment, same_interval_time))
+	_check_layered_uniforms("same interval", environment, resolved, transport, same_interval_time)
+
+	var rewind_time := step * 1.3
+	_check("clock rewind changes layered sky", Atmosphere.update_clouds(environment, rewind_time))
+	_check_layered_uniforms("clock rewind", environment, resolved, transport, rewind_time)
+	_check_cloud_snapshot_offsets("clock rewind", resolved, transport, rewind_time)
+	var before_rejection: Dictionary = Atmosphere.cloud_state_snapshot()
+	var invalid_selection: Dictionary = selection.duplicate(true)
+	invalid_selection["preset"] = "missing-profile"
+	_check("invalid cloud profile is rejected", not Atmosphere.configure_appearance(invalid_selection, mean_wind, 0.0))
+	_check("rejected profile preserves selection", Atmosphere.appearance_config() == selection)
+	_check("rejected profile preserves detached snapshot", Atmosphere.cloud_state_snapshot() == before_rejection)
+	_check_layered_uniforms("after rejected profile", environment, resolved, transport, rewind_time)
+
+	# Switching to an empty profile and back at the same time detects stale packed-array and offset caches.
+	var clear_selection: Dictionary = SkyConfig.for_preset("clear")
+	_check("clear profile is accepted", Atmosphere.configure_appearance(clear_selection, mean_wind, 0.0))
+	var clear_checked: Dictionary = SkyConfig.validate(clear_selection)
+	var clear_resolved: Dictionary = SkyAppearance.resolve(clear_checked.profile, clear_checked.config)
+	var clear_transport: Dictionary = Atmosphere.cloud_transport_checkpoint()
+	_check_cloud_snapshot_offsets("clear-profile invalidation", clear_resolved, clear_transport, 0.0)
+	Atmosphere.update_clouds(environment, 0.0)
+	_check_layered_uniforms("clear profile", environment, clear_resolved, clear_transport, 0.0)
+	_check("layered profile is accepted again", Atmosphere.configure_appearance(selection, mean_wind, 0.0))
+	checked = SkyConfig.validate(selection)
+	resolved = SkyAppearance.resolve(checked.profile, checked.config)
+	transport = Atmosphere.cloud_transport_checkpoint()
+	_check_cloud_snapshot_offsets("layered-profile invalidation", resolved, transport, 0.0)
+	Atmosphere.update_clouds(environment, 0.0)
+	_check_layered_uniforms("layered profile after clear", environment, resolved, transport, 0.0)
+
+	var restore_transport: Dictionary = CloudTransport.build(checked.config, resolved.cloud_layers,
+		[8.0, 2.0, 0.0], step * 3.0, step, Spec.ATMOSPHERE.cloud_drift_cells_per_s,
+		[Vector2(7.0, 11.0), Vector2(17.0, 23.0), Vector2(29.0, 31.0)],
+		float(Spec.ATMOSPHERE.cloud_deck_m) / maxf(float(Spec.ATMOSPHERE.cloud_scale), 1.0e-6))
+	_check("restore fixture is valid", CloudTransport.validate(restore_transport))
+	_check("layered cloud transport restores", Atmosphere.restore_cloud_transport(restore_transport.duplicate(true)))
+	_check_cloud_snapshot_offsets("restore before next update", resolved, restore_transport, step * 3.0)
+	var restored_rewind := step * 2.2
+	_check("restored clock can rewind before its anchor", Atmosphere.update_clouds(environment, restored_rewind))
+	_check_layered_uniforms("restored rewind", environment, resolved, restore_transport, restored_rewind)
+	_check_cloud_snapshot_offsets("restored rewind", resolved, restore_transport, restored_rewind)
+
+	var fresh_environment := _bare_cloud_environment()
+	_check("cached cloud arrays reach a fresh material", Atmosphere.update_clouds(fresh_environment, restored_rewind))
+	_check_layered_uniforms("fresh material", fresh_environment, resolved, restore_transport, restored_rewind)
+
+	# The public snapshot is detached, including nested layer dictionaries and offset arrays.
+	var mutated_snapshot: Dictionary = Atmosphere.cloud_state_snapshot()
+	mutated_snapshot["offset"] = Vector2(63.0, 62.0)
+	mutated_snapshot["seed"] = -1
+	var returned_layers: Array = mutated_snapshot["cloud_layers"]
+	var returned_layer: Dictionary = returned_layers[0]
+	returned_layer["type"] = "cirrus"
+	returned_layer["offset"] = Vector2(61.0, 60.0)
+	returned_layer["seed"] = -1
+	returned_layers.clear()
+	var detached_again: Dictionary = Atmosphere.cloud_state_snapshot()
+	_check("snapshot mutation does not alter its selected offset", detached_again.offset == _selected_test_offset(resolved, restore_transport, restored_rewind))
+	_check("snapshot mutation does not alter its seed", int(detached_again.seed) == int(selection.seed))
+	_check("snapshot mutation does not alter layer count", detached_again.cloud_layers.size() == resolved.cloud_layers.size())
+	_check("snapshot mutation does not alter layer data",
+		str(detached_again.cloud_layers[0].type) == str(resolved.cloud_layers[0].type)
+		and int(detached_again.cloud_layers[0].seed) == int(resolved.cloud_layers[0].seed))
+	_check_layered_uniforms("after snapshot mutation", fresh_environment, resolved, restore_transport, restored_rewind)
+
+
+func _check_layered_uniforms(label: String, environment: Environment, resolved: Dictionary,
+		transport: Dictionary, time_s: float) -> void:
+	var offsets := _expected_cloud_offsets(resolved, transport, time_s)
+	var arrays: Dictionary = SkyAppearance.shader_arrays(resolved.cloud_layers, offsets,
+		float(resolved.cloud_cover), float(resolved.cloud_density))
+	var material := environment.sky.sky_material as ShaderMaterial
+	_check("%s layered appearance" % label, material.get_shader_parameter(&"layered_appearance") == true)
+	_check("%s disc occlusion" % label, material.get_shader_parameter(&"disc_cloud_occlusion") == true)
+	for uniform_name: StringName in LAYERED_CLOUD_UNIFORMS:
+		var array_name := String(uniform_name).trim_prefix("appearance_")
+		_check("%s %s" % [label, String(uniform_name)],
+			material.get_shader_parameter(uniform_name) == arrays[array_name])
+
+
+func _check_cloud_snapshot_offsets(label: String, resolved: Dictionary, transport: Dictionary, time_s: float) -> void:
+	var snapshot: Dictionary = Atmosphere.cloud_state_snapshot()
+	var offsets := _expected_cloud_offsets(resolved, transport, time_s)
+	_check("%s snapshot layer count" % label, snapshot.cloud_layers.size() == resolved.cloud_layers.size())
+	for index in resolved.cloud_layers.size():
+		_check("%s snapshot layer %d offset" % [label, index],
+			snapshot.cloud_layers[index].offset == _cloud_offset_vector(offsets[index]))
+	_check("%s snapshot selected offset" % label,
+		snapshot.offset == _selected_test_offset(resolved, transport, time_s))
+
+
+func _expected_cloud_offsets(resolved: Dictionary, transport: Dictionary, time_s: float) -> Array:
+	if not resolved.cloud_layers.is_empty() and not transport.layers.is_empty():
+		return CloudTransport.offsets(transport, time_s)
+	return [CloudTransport.legacy_offset_pair(transport, time_s)]
+
+
+func _selected_test_offset(resolved: Dictionary, transport: Dictionary, time_s: float) -> Vector2:
+	# The broken-profile fixture's first layer is its low shadow deck; clear has no layers.
+	# Use that declared fixture order rather than repeating Atmosphere's layer-selection algorithm.
+	return _cloud_offset_vector(_expected_cloud_offsets(resolved, transport, time_s)[0])
+
+
+func _cloud_offset_vector(raw: Variant) -> Vector2:
+	if raw is Vector2:
+		return raw
+	return Vector2(float(raw[0]), float(raw[1]))
+
+
+func _bare_cloud_environment() -> Environment:
+	var material := ShaderMaterial.new()
+	material.shader = Atmosphere.SKY_SHADER
+	var sky := Sky.new()
+	sky.sky_material = material
+	var environment := Environment.new()
+	environment.background_mode = Environment.BG_SKY
+	environment.sky = sky
+	return environment

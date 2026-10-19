@@ -56,6 +56,16 @@ func _test_cache() -> void:
 	var oversized := Image.create(5, 1, false, Image.FORMAT_RGBA8)
 	_check("cache rejects dimensions above its per-instance bound", not cache.put_image(a, oversized).get("ok", false))
 	_check("cache rejects malformed keys", not cache.put_image("../../texture", image).get("ok", false))
+	var mipmap_cache = ThumbnailCache.new(4, 1024, 8)
+	var mipmapped := Image.create(4, 4, true, Image.FORMAT_RGBA8)
+	mipmapped.fill(Color("#abcdefFF"))
+	var mipmap_error := mipmapped.generate_mipmaps()
+	var mipmap_put: Dictionary = mipmap_cache.put_image("d".repeat(64), mipmapped)
+	var copied_mipmap_image: Image = (mipmap_cache.get_texture("d".repeat(64)) as ImageTexture).get_image() if mipmap_put.get("ok", false) else null
+	_check("cache strips mipmaps before ImageTexture creation and accounts exact base-level bytes",
+		mipmap_error == OK and mipmap_put.get("ok", false) and mipmap_put.get("bytes", 0) == 64
+		and copied_mipmap_image != null and copied_mipmap_image.get_data().size() == 64
+		and copied_mipmap_image.get_mipmap_count() == 0)
 	cache.clear()
 	_check("clearing cache releases all retained entries and byte accounting",
 		cache.stats().entries == 0 and cache.stats().bytes == 0)

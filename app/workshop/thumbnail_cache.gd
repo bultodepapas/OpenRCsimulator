@@ -5,7 +5,6 @@ class_name WorkshopThumbnailCache
 const MAX_ENTRIES := 16
 const MAX_BYTES := 4 * 1024 * 1024
 const MAX_DIMENSION := 512
-const KEY_RE := "^[0-9a-f]{64}$"
 
 var _entry_limit: int
 var _byte_limit: int
@@ -49,8 +48,11 @@ func put_image(key: String, source: Image) -> Dictionary:
 	if copy.is_compressed() and copy.decompress() != OK:
 		return _failure("Compressed thumbnail pixels could not be decoded.")
 	copy.convert(Image.FORMAT_RGBA8)
+	copy.clear_mipmaps()
 	if copy.get_format() != Image.FORMAT_RGBA8:
 		return _failure("Thumbnail pixels could not be normalized to RGBA8.")
+	if copy.get_data().size() != byte_count or copy.get_mipmap_count() != 0:
+		return _failure("Thumbnail pixel storage does not match its RGBA8 byte accounting.")
 	var texture := ImageTexture.create_from_image(copy)
 	if texture == null:
 		return _failure("Thumbnail ImageTexture could not be created.")

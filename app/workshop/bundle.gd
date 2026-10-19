@@ -143,6 +143,12 @@ static func import_variant(bytes: PackedByteArray, store_root: String = Store.DE
 	var current_profile: Dictionary = _resolve_current_profile(payload)
 	if not bool(current_profile.get("ok", false)):
 		return current_profile
+	# Complete candidate validation precedes publication, including stable component IDs.
+	var candidate := payload.duplicate(true)
+	candidate["presentation_profile"] = current_profile["profile"].duplicate(true)
+	var frozen: Dictionary = load("res://workshop/trial.gd").freeze(candidate)
+	if not bool(frozen.get("ok", false)):
+		return _result(false, frozen.get("errors", PackedStringArray()))
 	var recipe: Dictionary = payload["recipe"].duplicate(true)
 	recipe.erase("id")
 	if recipe.has("name"):

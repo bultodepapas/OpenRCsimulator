@@ -142,6 +142,9 @@ static func save_variant(
 	var recipe_result: Dictionary = _validate_recipe(recipe)
 	if not bool(recipe_result["ok"]):
 		errors.append_array(recipe_result["errors"])
+	if errors.is_empty() and recipe.has("mass_edits") and not recipe.mass_edits.is_empty():
+		var measured_candidate: Dictionary = WorkshopCompiler.compile(base_parsed, recipe)
+		if not measured_candidate.ok: errors.append_array(measured_candidate.errors)
 	var safe_id: String = id
 	if safe_id.is_empty() and recipe.has("id") and typeof(recipe["id"]) == TYPE_STRING:
 		safe_id = str(recipe["id"])
@@ -193,7 +196,7 @@ static func save_variant(
 			return _result(false, errors)
 		var pinned_compiler_version: String = str(existing_variant.get("compiler_version", ""))
 		if pinned_compiler_version != WorkshopCompiler.version_for_recipe(recipe):
-			errors.append("This variant is pinned to compiler %s; save a copy to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.version_for_recipe(recipe)])
+			errors.append("This variant is pinned to compiler %s; create a new variant with Save a copy to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.version_for_recipe(recipe)])
 			return _result(false, errors)
 		stored_compiler_version = pinned_compiler_version
 		if str(existing_variant["base_id"]) != base_id or str(existing_variant["base_sha256"]) != base_hash:
@@ -310,6 +313,10 @@ static func save_variant(
 	for key: String in ["scale", "weight_multiplier", "power_multiplier", "control_multiplier", "tank_capacity_multiplier"]:
 		if stored_recipe.has(key):
 			stored_recipe[key] = float(stored_recipe[key])
+	if stored_recipe.has("mass_edits"):
+		var normalized: Dictionary = WorkshopParameters.validate(stored_recipe)
+		if normalized.values.has("mass_edits"): stored_recipe["mass_edits"] = normalized.values.mass_edits.duplicate(true)
+		else: stored_recipe.erase("mass_edits")
 	var recipe_json: String = JSON.stringify(stored_recipe, "", true, true)
 	var recipe_hash: String = _sha256(recipe_json.to_utf8_buffer())
 	var record: Dictionary = {
@@ -358,6 +365,9 @@ static func save_variant(
 	if not bool(loaded["ok"]):
 		errors.append_array(loaded["errors"])
 		return _result(false, errors)
+	if int(loaded.variant.get("revision", 0)) != revision or str(loaded.variant.get("recipe_sha256", "")) != recipe_hash \
+			or bool(loaded.variant.get("recovered_from_manifest_backup", false)):
+		return _result(false, PackedStringArray(["New variant revision failed exact readback; the previous record remains recoverable."]))
 	if not is_existing_variant:
 		var publication: Dictionary = _publish_staged_variant(write_dir, variant_dir, safe_id)
 		if not bool(publication["ok"]):
