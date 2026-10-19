@@ -8,7 +8,7 @@ The second selectable car, **MONSTER CAR 2**, uses the supplied nitro Blender de
 
 ## RCV-14a MT8 visual inspection
 
-The supplied Bisonte MT8 draft can be inspected locally in Godot 4.7.2. The preview still loads the canonical `RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb` and the author's generated rig directly. The user authorized inclusion and modification of this delivery; the reviewed [bundled GLB](../../app/assets/vehicles/mt8-bisonte/MT8_Bisonte.glb) and spec are pinned in the app, with the runtime [rig adapter](../../app/vehicles/ground/mt8_rig.gd) and [model adapter](../../app/vehicles/ground/mt8_model.gd). The runtime model is experimental and is not a calibration of a production RC truck.
+The supplied Bisonte MT8 draft can be inspected locally in Godot 4.7.2. The preview still loads the canonical `assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb` and the author's generated rig directly. The user authorized inclusion and modification of this delivery; the reviewed [bundled GLB](../../app/assets/vehicles/mt8-bisonte/MT8_Bisonte.glb) and spec are pinned in the app, with the runtime [rig adapter](../../app/vehicles/ground/mt8_rig.gd) and [model adapter](../../app/vehicles/ground/mt8_model.gd). The runtime model is experimental and is not a calibration of a production RC truck.
 
 From the repository root on Windows:
 

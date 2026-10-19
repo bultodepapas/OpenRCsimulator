@@ -50,7 +50,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| HUD-00 | Decisions D1–D6 (owner accepted the defaults, 2026-10-13); registry row; F2 for presets (H remains the smoke pump) | [DECISIONS](../../DECISIONS.md) row / done |
+| HUD-00 | Decisions D1–D6 (owner accepted the defaults, 2026-10-13); registry row; F2 for presets (H remains the smoke pump) | [DECISIONS](../DECISIONS.md) row / done |
 | HUD-01 | `units.gd`, `telemetry.gd` | `test_overlay_units` 23, `test_overlay_telemetry` 36 checks / done |
 | HUD-02 | `overlay_frame.gd`, `overlay_manager.gd`, legacy route for automation | trace identity; `test_overlay_manager` / done |
 | HUD-03 | ×, presets, F2/F3 | real mouse click hides only its overlay, takes no focus, a flight key still arrives / done |

@@ -2,7 +2,7 @@
   "format": "openrc-timber-source-manifest v1",
   "step": "TT-01",
   "generator": "research/timber/tt01/manifest.py",
-  "delivery_root": "Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2",
+  "delivery_root": "assets/source-deliveries/turbo-timber-evolution-r2/turbo_timber_evolution_r2/r2",
   "source_alias": "eflite_turbo_timber_evolution",
   "catalog_id": "turbo-lumber-evolution",
   "delivery_revision": "r2",

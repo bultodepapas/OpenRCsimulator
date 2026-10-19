@@ -233,7 +233,7 @@ A pump extension may use delivered-flow/pressure lag and saturation, with supply
 
 ## 7. Aircraft-data and state contracts
 
-Extend [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) before enabling any new configuration. Current `prescribed_fuel` means fixed wet mass; silently consuming it would break that capability. Propose a conditional `finite_fuel` capability plus explicit turbine-control/model-law selections; exact names require contract-owner review. Optional modules must be rejected until all consumers and lifecycle state exist. Keep v2 quantity objects exactly `{value, unit, kind, source}`; unit/kind/source rules remain unchanged.
+Extend [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md) before enabling any new configuration. Current `prescribed_fuel` means fixed wet mass; silently consuming it would break that capability. Propose a conditional `finite_fuel` capability plus explicit turbine-control/model-law selections; exact names require contract-owner review. Optional modules must be rejected until all consumers and lifecycle state exist. Keep v2 quantity objects exactly `{value, unit, kind, source}`; unit/kind/source rules remain unchanged.
 
 | Authored definition | Required content / validation |
 | --- | --- |

@@ -4,7 +4,7 @@
 
 ## Finding
 
-Reuse the existing `Helicopter 3d acrobatic/HX-700_Helicoptero_RC.blend` and its embedded `generar_hx700.py` and `LEEME`; do not recreate the helicopter or resize the airframe to match another aircraft. The source is a procedural flybarless 700-class visual design by its own embedded description. That design claim does not establish external authorship, provenance, or license. Its source SHA-256 is `cc2301bbc4fd6aa84474fb0a33de37fe721fd2ecab6e806ceafbcc6953a795cb` (1,587,270 bytes); the authoring file remains unchanged.
+Reuse the existing `assets/source-deliveries/hx-700-original/HX-700_Helicoptero_RC.blend` and its embedded `generar_hx700.py` and `LEEME`; do not recreate the helicopter or resize the airframe to match another aircraft. The source is a procedural flybarless 700-class visual design by its own embedded description. That design claim does not establish external authorship, provenance, or license. Its source SHA-256 is `cc2301bbc4fd6aa84474fb0a33de37fe721fd2ecab6e806ceafbcc6953a795cb` (1,587,270 bytes); the authoring file remains unchanged.
 
 The identified physics reference remains the MIT X-Cell .60 SE research configuration, which has a flybar whose effects are lumped into its published model. HX-700 is flybarless. The adjacent PDF is an IlGoblin Piuma Competizione [SG779] assembly manual, not an HX-700 manual: PDF page 3 (printed page 2) identifies that model and gives nominal main/tail rotor diameters of 1,580/292 mm. HX-700's measured mesh diameters are close to those nominal figures, but this is dimension evidence only, not identity or physical-pairing evidence. The PDF has 48 pages, 47,104 extracted text characters, two pages with no native text (cover and final page), no extraction errors, and no detected license language. PDF SHA-256: `cf503309897149ca72012654cd95fea65bf407f5d8285e92d032db6619d41d9e`.
 
@@ -44,7 +44,7 @@ The authored main radius is 0.791367 m versus the X-Cell reference radius 0.775 
 From a fresh checkout, regenerate the static GLB and cached rotor coverage from the tracked source, then install the verified pair:
 
 ```powershell
-& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' --background --factory-startup 'Helicopter 3d acrobatic\HX-700_Helicoptero_RC.blend' --python research/helicopter/assets/export_hx700_static.py -- --out .tools/heli25
+& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' --background --factory-startup 'assets/source-deliveries/hx-700-original\HX-700_Helicoptero_RC.blend' --python research/helicopter/assets/export_hx700_static.py -- --out .tools/heli25
 $Hx700Profile = Join-Path (Resolve-Path .tools/heli25).Path 'hx700-rotor-profiles.json'
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --headless --path app --audio-driver Dummy --script ../research/helicopter/assets/export_heli_rotor_profiles.gd -- "--out=$Hx700Profile"
 python research/helicopter/assets/copy_hx700_runtime_asset.py --preview .tools/heli25/hx700-preview.glb --profiles .tools/heli25/hx700-rotor-profiles.json

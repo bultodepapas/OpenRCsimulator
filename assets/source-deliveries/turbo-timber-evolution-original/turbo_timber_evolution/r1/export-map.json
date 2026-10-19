@@ -1,0 +1,515 @@
+{
+ "description": "CAD part -> exported node; what was merged, excluded or regenerated",
+ "nodes": {
+  "airframe": {
+   "cad_parts": [
+    "fuselaje_blanco",
+    "fuselaje_panza_roja",
+    "franjas_negras",
+    "franja_blanca_cola",
+    "franja_negra_cola",
+    "panel_nariz",
+    "filete_nariz",
+    "parabrisas",
+    "ventanas",
+    "capota",
+    "placas_escape",
+    "escapes",
+    "baliza",
+    "ala_der",
+    "ala_izq",
+    "puntera_der",
+    "puntera_izq",
+    "barras_ala_der",
+    "barras_ala_izq",
+    "soportes_slat_der",
+    "soportes_slat_izq",
+    "extrados_rojo_der",
+    "extrados_rojo_izq",
+    "extrados_negro_der",
+    "extrados_negro_izq",
+    "intrados_gris_der",
+    "intrados_gris_izq",
+    "tapa_servo_aleron_der",
+    "tapa_servo_aleron_izq",
+    "tapa_servo_flap_der",
+    "tapa_servo_flap_izq",
+    "luz_nav_der",
+    "luz_nav_izq",
+    "estabilizador",
+    "estab_superior_rojo",
+    "estab_superior_negro",
+    "deriva",
+    "deriva_franja_roja",
+    "deriva_franjas_negras",
+    "aleta_dorsal",
+    "soporte_tren_der",
+    "soporte_tren_izq",
+    "soporte_rueda_cola"
+   ],
+   "description": "fixed structure, markings, glazing, cowl, exhaust, gear brackets",
+   "parent_pivot": "TurboTimberEvolution",
+   "moves": false,
+   "markings_included": [
+    "franjas_negras",
+    "franja_blanca_cola",
+    "franja_negra_cola",
+    "panel_nariz",
+    "filete_nariz",
+    "barras_ala_der",
+    "barras_ala_izq",
+    "extrados_rojo_der",
+    "extrados_rojo_izq",
+    "extrados_negro_der",
+    "extrados_negro_izq",
+    "intrados_gris_der",
+    "intrados_gris_izq",
+    "estab_superior_rojo",
+    "estab_superior_negro",
+    "deriva_franja_roja",
+    "deriva_franjas_negras"
+   ],
+   "horns_included": [],
+   "materials": [
+    "white",
+    "red",
+    "black",
+    "glass",
+    "metal",
+    "light_red",
+    "light_grey",
+    "dark_grey",
+    "light_green"
+   ],
+   "triangles": 36691
+  },
+  "aileron_left": {
+   "cad_parts": [
+    "aleron_izq",
+    "cuerno_aleron_izq"
+   ],
+   "description": "left aileron + horn",
+   "parent_pivot": "aileron_left_hinge",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [
+    "cuerno_aleron_izq"
+   ],
+   "materials": [
+    "white"
+   ],
+   "triangles": 1062
+  },
+  "aileron_right": {
+   "cad_parts": [
+    "aleron_der",
+    "cuerno_aleron_der"
+   ],
+   "description": "right aileron + horn",
+   "parent_pivot": "aileron_right_hinge",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [
+    "cuerno_aleron_der"
+   ],
+   "materials": [
+    "white"
+   ],
+   "triangles": 1062
+  },
+  "flap_left": {
+   "cad_parts": [
+    "flap_izq",
+    "cuerno_flap_izq"
+   ],
+   "description": "left flap + horn",
+   "parent_pivot": "flap_left_hinge",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [
+    "cuerno_flap_izq"
+   ],
+   "materials": [
+    "white"
+   ],
+   "triangles": 1050
+  },
+  "flap_right": {
+   "cad_parts": [
+    "flap_der",
+    "cuerno_flap_der"
+   ],
+   "description": "right flap + horn",
+   "parent_pivot": "flap_right_hinge",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [
+    "cuerno_flap_der"
+   ],
+   "materials": [
+    "white"
+   ],
+   "triangles": 1050
+  },
+  "elevator": {
+   "cad_parts": [
+    "timon_profundidad",
+    "union_elevador",
+    "elevador_superior_rojo",
+    "elevador_superior_negro",
+    "cuerno_elevador"
+   ],
+   "description": "one-piece elevator (both halves + torsion rod), markings, horn",
+   "parent_pivot": "elevator_hinge",
+   "moves": true,
+   "markings_included": [
+    "elevador_superior_rojo",
+    "elevador_superior_negro"
+   ],
+   "horns_included": [
+    "cuerno_elevador"
+   ],
+   "materials": [
+    "white",
+    "metal",
+    "red",
+    "black"
+   ],
+   "triangles": 2042
+  },
+  "rudder": {
+   "cad_parts": [
+    "timon_direccion",
+    "timon_franja_roja",
+    "timon_franjas_negras",
+    "cuerno_timon"
+   ],
+   "description": "rudder + markings + horn",
+   "parent_pivot": "rudder_hinge",
+   "moves": true,
+   "markings_included": [
+    "timon_franja_roja",
+    "timon_franjas_negras"
+   ],
+   "horns_included": [
+    "cuerno_timon"
+   ],
+   "materials": [
+    "white",
+    "red",
+    "black"
+   ],
+   "triangles": 2546
+  },
+  "propeller_rotor": {
+   "cad_parts": [
+    "helice",
+    "spinner",
+    "contraplaca",
+    "campana_motor"
+   ],
+   "description": "rotating: 3 blades, spinner, backplate, outrunner bell",
+   "parent_pivot": "propeller_spin",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "black",
+    "metal"
+   ],
+   "triangles": 6034
+  },
+  "gear_left_leg": {
+   "cad_parts": [
+    "pata_izq",
+    "collarin_izq",
+    "perno_eje_izq",
+    "eslabon_izq"
+   ],
+   "description": "left leg + axle bolt + spacer + wire link",
+   "parent_pivot": "gear_left_suspension",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "white",
+    "metal"
+   ],
+   "triangles": 1868
+  },
+  "gear_right_leg": {
+   "cad_parts": [
+    "pata_der",
+    "collarin_der",
+    "perno_eje_der",
+    "eslabon_der"
+   ],
+   "description": "right leg + axle bolt + spacer + wire link",
+   "parent_pivot": "gear_right_suspension",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "white",
+    "metal"
+   ],
+   "triangles": 1866
+  },
+  "wheel_left": {
+   "cad_parts": [
+    "neumatico_izq",
+    "buje_izq",
+    "arandela_izq",
+    "tuerca_izq"
+   ],
+   "description": "left tire, hub, washer, nut",
+   "parent_pivot": "wheel_left_axle",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "foam",
+    "white",
+    "metal"
+   ],
+   "triangles": 3436
+  },
+  "wheel_right": {
+   "cad_parts": [
+    "neumatico_der",
+    "buje_der",
+    "arandela_der",
+    "tuerca_der"
+   ],
+   "description": "right tire, hub, washer, nut",
+   "parent_pivot": "wheel_right_axle",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "foam",
+    "white",
+    "metal"
+   ],
+   "triangles": 3436
+  },
+  "tailwheel_fork": {
+   "cad_parts": [
+    "alambre_rueda_cola"
+   ],
+   "description": "steerable tailwheel wire (coaxial with rudder hinge)",
+   "parent_pivot": "tailwheel_steer",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "metal"
+   ],
+   "triangles": 532
+  },
+  "tailwheel": {
+   "cad_parts": [
+    "rueda_cola",
+    "buje_cola"
+   ],
+   "description": "tailwheel tire + hub",
+   "parent_pivot": "tailwheel_axle",
+   "moves": true,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "foam",
+    "light_grey"
+   ],
+   "triangles": 1504
+  },
+  "gear_cables": {
+   "cad_parts": [],
+   "description": "cosmetic low-poly cables/springs regenerated in Blender (rest pose only)",
+   "parent_pivot": "TurboTimberEvolution",
+   "moves": false,
+   "markings_included": [],
+   "horns_included": [],
+   "materials": [
+    "metal"
+   ],
+   "triangles": 112,
+   "regenerated": "2 cables (r 0.6 mm, 6 sides) + 2 springs (r 4 mm, 10 sides) from the CAD endpoints; replaces 765,356 CAD spring triangles"
+  }
+ },
+ "excluded_cad_parts": {
+  "interno_bateria": "hidden internal component (CG data kept in metadata)",
+  "interno_variador": "hidden internal component",
+  "interno_receptor": "hidden internal component",
+  "interno_servos_cola": "hidden internal component",
+  "bancada_motor": "hidden inside cowl",
+  "soporte_motor": "hidden inside cowl",
+  "eje_motor": "hidden (shaft inside spinner/bell)",
+  "tuerca": "hidden prop nut inside spinner",
+  "tornillos_spinner": "tiny hardware",
+  "tornillos_capota": "tiny hardware",
+  "tornillos_placa_escape": "tiny hardware",
+  "tornillos_rueda_cola": "tiny hardware",
+  "tornillos_ala": "tiny hardware",
+  "brazo_servo_aleron_der": "servo arm (moves with servo; tiny)",
+  "brazo_servo_aleron_izq": "servo arm",
+  "brazo_servo_flap_der": "servo arm",
+  "brazo_servo_flap_izq": "servo arm",
+  "brazo_servo_elevador": "hidden servo arm",
+  "brazo_servo_timon": "hidden servo arm",
+  "guias_varillas": "tiny pushrod exits",
+  "buje_torsion_elevador": "hidden bushing",
+  "pasador_tren_der": "hidden hinge pin",
+  "pasador_tren_izq": "hidden hinge pin",
+  "ojal_der": "tiny brass eyelet",
+  "ojal_izq": "tiny brass eyelet",
+  "cable_der": "replaced by low-poly gear_cables",
+  "cable_izq": "replaced by low-poly gear_cables",
+  "resorte_der": "replaced by low-poly gear_cables (765k-triangle CAD spring)",
+  "resorte_izq": "replaced by low-poly gear_cables"
+ },
+ "material_palette_cad_to_export": {
+  "blanco": "white",
+  "plastico": "white",
+  "rojo": "red",
+  "negro": "black",
+  "nylon_negro": "black",
+  "spinner_negro": "black",
+  "gris_claro": "light_grey",
+  "gris_oscuro": "dark_grey",
+  "gris": "dark_grey",
+  "cromo": "metal",
+  "metal": "metal",
+  "aluminio": "metal",
+  "laton": "metal",
+  "dorado": "metal",
+  "vidrio": "glass",
+  "espuma": "foam",
+  "led_rojo": "light_red",
+  "led_verde": "light_green"
+ },
+ "material_overrides": {
+  "cuerno_aleron_der": "white",
+  "cuerno_aleron_izq": "white",
+  "cuerno_flap_der": "white",
+  "cuerno_flap_izq": "white",
+  "cuerno_elevador": "white",
+  "cuerno_timon": "white"
+ },
+ "material_override_reason": "control horns merged into white to keep the surface count under 40",
+ "decal_overlap_resolution": [
+  {
+   "bajo": "deriva_franja_roja",
+   "alto": "franjas_negras",
+   "solape_mm3": 12.4,
+   "vol_antes": 33413.9,
+   "vol_despues": 33401.6
+  },
+  {
+   "bajo": "franja_blanca_cola",
+   "alto": "franja_negra_cola",
+   "solape_mm3": 27260.0,
+   "vol_antes": 128034.4,
+   "vol_despues": 100774.5
+  },
+  {
+   "bajo": "extrados_rojo_der",
+   "alto": "barras_ala_der",
+   "solape_mm3": 22198.6,
+   "vol_antes": 1028473.1,
+   "vol_despues": 1006274.5
+  },
+  {
+   "bajo": "intrados_gris_der",
+   "alto": "barras_ala_der",
+   "solape_mm3": 1398.8,
+   "vol_antes": 164503.7,
+   "vol_despues": 163104.9
+  },
+  {
+   "bajo": "extrados_rojo_izq",
+   "alto": "barras_ala_izq",
+   "solape_mm3": 22198.6,
+   "vol_antes": 1028473.1,
+   "vol_despues": 1006274.5
+  },
+  {
+   "bajo": "intrados_gris_izq",
+   "alto": "barras_ala_izq",
+   "solape_mm3": 1398.8,
+   "vol_antes": 164503.7,
+   "vol_despues": 163104.9
+  },
+  {
+   "bajo": "extrados_rojo_izq",
+   "alto": "extrados_rojo_der",
+   "solape_mm3": 2765.7,
+   "vol_antes": 1006274.5,
+   "vol_despues": 1003508.7
+  },
+  {
+   "bajo": "extrados_rojo_der",
+   "alto": "extrados_negro_der",
+   "solape_mm3": 166424.4,
+   "vol_antes": 1006274.5,
+   "vol_despues": 839850.1
+  },
+  {
+   "bajo": "extrados_rojo_izq",
+   "alto": "extrados_negro_izq",
+   "solape_mm3": 166424.4,
+   "vol_antes": 1003508.7,
+   "vol_despues": 837084.3
+  },
+  {
+   "bajo": "estab_superior_rojo",
+   "alto": "estab_superior_negro",
+   "solape_mm3": 12194.9,
+   "vol_antes": 117603.1,
+   "vol_despues": 105408.2
+  },
+  {
+   "bajo": "elevador_superior_rojo",
+   "alto": "elevador_superior_negro",
+   "solape_mm3": 5952.6,
+   "vol_antes": 55305.8,
+   "vol_despues": 49353.3
+  },
+  {
+   "bajo": "deriva_franja_roja",
+   "alto": "deriva_franjas_negras",
+   "solape_mm3": 1906.2,
+   "vol_antes": 33401.6,
+   "vol_despues": 31495.4
+  },
+  {
+   "bajo": "timon_franja_roja",
+   "alto": "timon_franjas_negras",
+   "solape_mm3": 9524.7,
+   "vol_antes": 50004.1,
+   "vol_despues": 40479.5
+  },
+  {
+   "bajo": "fuselaje_panza_roja",
+   "alto": "franjas_negras",
+   "solape_mm3": 207.0,
+   "vol_antes": 1911516.2,
+   "vol_despues": 1908240.9
+  },
+  {
+   "bajo": "fuselaje_panza_roja",
+   "alto": "franja_blanca_cola",
+   "solape_mm3": 97086.8,
+   "vol_antes": 1908240.9,
+   "vol_despues": 1812443.5
+  },
+  {
+   "bajo": "fuselaje_panza_roja",
+   "alto": "franja_negra_cola",
+   "solape_mm3": 68269.8,
+   "vol_antes": 1812443.5,
+   "vol_despues": 1741178.6
+  }
+ ],
+ "decal_offset_rule": "decal shells pushed out 0.12 mm x priority level along vertex normals (glazing/gear brackets 0.12 mm, red belly 0.05 mm) to avoid coplanar z-fighting"
+}

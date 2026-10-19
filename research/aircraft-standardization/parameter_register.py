@@ -141,8 +141,8 @@ def render() -> str:
             "alternatives belong to different conditional branches. The versioned schema selects the branch.",
             "CG/area/tensor/table/support/timestep/trim constraints remain additional runtime checks.",
             "Meanings, sign conventions, dependencies, default policy and physical justification are in",
-            "[AIRCRAFT_CONTRACT](../../../../AIRCRAFT_CONTRACT.md). The [audit](../AS-00/config-audit.md)",
-            "explains the original consumers. Metadata/capability enums are specified in the root contract and schema.",
+            "[AIRCRAFT_CONTRACT](../../../AIRCRAFT_CONTRACT.md). The [audit](../AS-00/config-audit.md)",
+            "explains the original consumers. Metadata/capability enums are specified in the contract and schema.",
             "", "| Quantity | Unit | Structural domain | Consumer / defined effect |",
             "| --- | --- | --- | --- |"]
     for path, field in sorted(fields.items()):

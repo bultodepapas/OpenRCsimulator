@@ -12,7 +12,7 @@ The editor compiles explicit user choices into validated aircraft data. It does 
 
 **Coordinated boundaries:** aircraft contract/loader, `app/sim/flight_session.gd`, `app/main.gd`, catalog/preferences/app root, screen stack/localization, each visual builder, ground profiles, glow/electric/turbine systems, camera/HUD/audio/crash presentation. Those files retain their existing owners. AE owns the Workshop screen/preview; the menu track owns the surrounding shell, shared widgets and route integration. Register interfaces before editing them; do not allocate concurrent work on the same integration file.
 
-Authoritative prerequisites: [aircraft contract](../../AIRCRAFT_CONTRACT.md), [architecture](../../STACK.md), [tools and verification commands](../TOOLS.md), [track registry](../README.md#tracks-plans-and-step-ids), [current menus](../MENU-PLAN.md), [menu redesign](../MENU-REDESIGN-PLAN.md), and [glow installations](../GLOW-ENGINES.md).
+Authoritative prerequisites: [aircraft contract](../AIRCRAFT_CONTRACT.md), [architecture](../STACK.md), [tools and verification commands](../TOOLS.md), [track registry](../README.md#tracks-plans-and-step-ids), [current menus](../MENU-PLAN.md), [menu redesign](../MENU-REDESIGN-PLAN.md), and [glow installations](../GLOW-ENGINES.md).
 
 Related continuation: [AS-06–18 aircraft standardization](aircraft-standardization.md) owns the proposed physical/model contract evolution and coordinates its Blender import/binding work with AE-08/19. Future presentation bindings should reference the model track's generated manifest instead of duplicating hinge transforms or physical values.
 

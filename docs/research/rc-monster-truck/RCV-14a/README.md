@@ -4,7 +4,7 @@
 
 ## Received and checked
 
-The canonical source is `RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/`: editable Blender source, generated GLB, geometry specification, generator sources, visual rig, renders and prior developer reports. `RC CARS/MT8_Bisonte_1.glb` is an identical copy, not a second revision. Both are 1,929,840 bytes with SHA-256 `7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6`.
+The canonical source is `assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/`: editable Blender source, generated GLB, geometry specification, generator sources, visual rig, renders and prior developer reports. `assets/source-deliveries/mt8-bisonte/MT8_Bisonte_1.glb` is an identical copy, not a second revision. Both are 1,929,840 bytes with SHA-256 `7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6`.
 
 The [generated intake](intake.json) records all supplied artifact hashes and checks the binary glTF directly. It distinguishes newly observed data from the author's earlier reports. No Blender regeneration or live Blender change was performed. Three Luna Max agents audited the handoff, implemented the static intake, and tested articulation; the lead implemented the adapter/inspector and verified the integrated result.
 

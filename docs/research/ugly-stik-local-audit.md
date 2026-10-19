@@ -88,7 +88,7 @@ Conservar las categorías del roadmap: `manual`, `borrowed`, `estimated`, `measu
 
 ## Lecciones obtenidas en esta inspección
 
-Para incorporar posteriormente a `LEARNINGS.md`, sin editar el archivo mientras lo usa el otro desarrollador:
+Para incorporar posteriormente a `docs/LEARNINGS.md`, sin editar el archivo mientras lo usa el otro desarrollador:
 
 - **Abrir la imagen cambia la interpretación.** La colección contiene distintos planos y variantes, además de fotos; no es un único expediente homogéneo del Jensen. Usar IDs de fuente por dato.
 - **Dos archivos no siempre son dos pruebas.** El PDF está repetido byte por byte y dos fotos también. Deduplicar lógicamente por hash antes de citar corroboración.

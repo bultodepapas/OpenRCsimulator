@@ -23,7 +23,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_SPEC = ROOT / "assets/vehicles/monster-car-2/datos_simulacion_1.json"
 DEFAULT_GLB = ROOT / "assets/vehicles/monster-car-2/monster_truck_nitro_1.glb"
-DEFAULT_COLLISION_GLB = ROOT / "monster car 2/monster_truck_colisiones_1.glb"
+DEFAULT_COLLISION_GLB = ROOT / "assets/source-deliveries/monster-car-2/monster_truck_colisiones_1.glb"
 DEFAULT_OUTPUT = ROOT / "app/data/vehicles/ground/monster_car_2.json"
 RUNTIME_SPEC_PATH = "assets/vehicles/monster-car-2/datos_simulacion_1.json"
 RUNTIME_GLB_PATH = "assets/vehicles/monster-car-2/monster_truck_nitro_1.glb"
@@ -277,7 +277,7 @@ def build(spec_path: Path, glb_path: Path, collision_path: Path) -> dict[str, An
     model_estimate = source_statement(spec_hash, "mass inventory and inertia are estimated from the supplied Blender geometry/material assumptions")
     suspension_source = source_statement(spec_hash, "wheel spring rates and shock damping values are model-derived recommendations")
     collision_source = (
-        f"Derived nine hull probe centers from supplied collision GLB `monster car 2/monster_truck_colisiones_1.glb` "
+        f"Derived nine hull probe centers from supplied collision GLB `assets/source-deliveries/monster-car-2/monster_truck_colisiones_1.glb` "
         f"SHA-256 {collision_hash}; chassis probes follow the lowest vertex of named source meshes, plus one roof and two lateral shell points; each uses an estimated 20 mm contact sphere."
     )
     geometry_source = {

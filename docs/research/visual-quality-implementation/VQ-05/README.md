@@ -4,7 +4,7 @@
 
 ## Ownership and coordination
 
-At the start the shared tree carried another track's uncommitted ground-effect work (`ROADMAP.md`, `app/physics/aero.gd`, a new `ground_effect.gd`); during this delivery that track grew to physics, data, schema, session and research files. This delivery touches none of them. It owns the new `app/render/propeller_blur.gd`, `app/tests/test_propeller_blur.gd`, `app/tests/capture_propeller_blur.gd` and this folder, and integrates through two lines in `app/main.gd` (a preload and one attach call beside the existing gear observer). Shared documents (`DECISIONS.md`, `docs/research/README.md`) received one row and one link each; the other track's hunks in those files were left unstaged.
+At the start the shared tree carried another track's uncommitted ground-effect work (`ROADMAP.md`, `app/physics/aero.gd`, a new `ground_effect.gd`); during this delivery that track grew to physics, data, schema, session and research files. This delivery touches none of them. It owns the new `app/render/propeller_blur.gd`, `app/tests/test_propeller_blur.gd`, `app/tests/capture_propeller_blur.gd` and this folder, and integrates through two lines in `app/main.gd` (a preload and one attach call beside the existing gear observer). Shared documents (`docs/DECISIONS.md`, `docs/research/README.md`) received one row and one link each; the other track's hunks in those files were left unstaged.
 
 ## Why this improvement
 

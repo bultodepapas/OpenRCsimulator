@@ -3,25 +3,25 @@
   "hash": "SHA-256",
   "files": [
     {
-      "path": "monster car 2/monster_truck_nitro_1.blend",
+      "path": "assets/source-deliveries/monster-car-2/monster_truck_nitro_1.blend",
       "role": "user-supplied Blender source",
       "bytes": 7096678,
       "sha256": "acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf"
     },
     {
-      "path": "monster car 2/monster_truck_nitro_1.glb",
+      "path": "assets/source-deliveries/monster-car-2/monster_truck_nitro_1.glb",
       "role": "user-supplied main visual GLB",
       "bytes": 15237120,
       "sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759"
     },
     {
-      "path": "monster car 2/monster_truck_colisiones_1.glb",
+      "path": "assets/source-deliveries/monster-car-2/monster_truck_colisiones_1.glb",
       "role": "user-supplied collision GLB",
       "bytes": 129748,
       "sha256": "daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5"
     },
     {
-      "path": "monster car 2/datos_simulacion_1.json",
+      "path": "assets/source-deliveries/monster-car-2/datos_simulacion_1.json",
       "role": "user-supplied simulation spec",
       "bytes": 38099,
       "sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0"

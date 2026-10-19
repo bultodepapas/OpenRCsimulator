@@ -2,7 +2,7 @@
 
 **Status: Delivered and reviewed, 2026-10-11.** Software verification passed through the documented continuation/reruns; physical calibration and tight performance qualification remain open below. Owner: aircraft standardization lead. Prefix: AS-.
 
-The four catalog aircraft and four existing electric specimens now use `openrc-aircraft v2`. The pre-implementation plan has been consolidated into the contract and this delivery record. The [contract](../../../../AIRCRAFT_CONTRACT.md), [versioned schema](../../../../app/data/schema/openrc-aircraft-v2.schema.json), [runtime preflight](../../../../app/physics/aircraft_contract.gd), [148-path consumer register](../AS-01/parameters.md) and [module semantics](../AS-01/module-semantics.md) form the authoring boundary. The normal catalog route checks version and selected aircraft identity before flight; historical v1 experiments remain explicitly supported.
+The four catalog aircraft and four existing electric specimens now use `openrc-aircraft v2`. The pre-implementation plan has been consolidated into the contract and this delivery record. The [contract](../../../AIRCRAFT_CONTRACT.md), [versioned schema](../../../../app/data/schema/openrc-aircraft-v2.schema.json), [runtime preflight](../../../../app/physics/aircraft_contract.gd), [148-path consumer register](../AS-01/parameters.md) and [module semantics](../AS-01/module-semantics.md) form the authoring boundary. The normal catalog route checks version and selected aircraft identity before flight; historical v1 experiments remain explicitly supported.
 
 ## Delivered behavior
 
@@ -34,7 +34,7 @@ The [migration comparison](../AS-02/numeric-parity.json) preserves all **2,815 o
 
 Final freshness checks passed for the schema, parameter register, all eight migrations and all three generated aircraft/reports; migration unit tests passed 5/5. Three generated research polar candidates also migrated through their existing pipeline, preserving [all 1,023 original numeric leaves](../AS-02/polar-candidate-parity.json); freshness, schema and experimental-flight CLI checks passed. The combustion propeller [range auditor](../AS-04/focused-final/range-audit-v2-compatibility.md) now accepts v2 with exact source-format/hash checks (23 tests).
 
-2026-10-15 maintenance: the P-51 flap probe gave the P-51 a complete `flaps` module with `capabilities.flaps = simulated`, and `migrate.py --check-known` refused it because its simulated-flaps exemption named only the Avanti (AV-09); the stock suite stopped at AS-01/02 from merge `f78901b9` on. The exemption is now what the [contract](../../../../AIRCRAFT_CONTRACT.md) states for every v2 source: `simulated` exactly when the closed `flaps` object is present, with the module required to carry at least the twelve AV-09 fields (`FLAPS_REQUIRED`); further reviewed fields are the schema's business. Proof: all five AS-01/02 commands pass on the fixed tree, migration unit tests 8/8 including the new P-51 idempotence case; the same `--check-known` fails at `1da9e092` and passes at `d16ed71a`, the commit before that merge.
+2026-10-15 maintenance: the P-51 flap probe gave the P-51 a complete `flaps` module with `capabilities.flaps = simulated`, and `migrate.py --check-known` refused it because its simulated-flaps exemption named only the Avanti (AV-09); the stock suite stopped at AS-01/02 from merge `f78901b9` on. The exemption is now what the [contract](../../../AIRCRAFT_CONTRACT.md) states for every v2 source: `simulated` exactly when the closed `flaps` object is present, with the module required to carry at least the twelve AV-09 fields (`FLAPS_REQUIRED`); further reviewed fields are the schema's business. Proof: all five AS-01/02 commands pass on the fixed tree, migration unit tests 8/8 including the new P-51 idempotence case; the same `--check-known` fails at `1da9e092` and passes at `d16ed71a`, the commit before that merge.
 
 ## Remaining gates and ownership
 
@@ -55,7 +55,7 @@ Three bounded Luna/max contributions were reviewed and integrated by the lead. E
 
 ## Reproduce or add an aircraft
 
-Start with the contract's [five-step add/tune guide](../../../../AIRCRAFT_CONTRACT.md#adding-and-tuning-an-aircraft) and [synthetic template](../../../../research/aircraft-standardization/template/openrc-aircraft-v2.template.json). Keep generated aircraft changes in their source pipelines. Use the repository's pinned schema-test environment described in [schema tooling](../../../../research/aircraft-data/schema/README.md).
+Start with the contract's [five-step add/tune guide](../../../AIRCRAFT_CONTRACT.md#adding-and-tuning-an-aircraft) and [synthetic template](../../../../research/aircraft-standardization/template/openrc-aircraft-v2.template.json). Keep generated aircraft changes in their source pipelines. Use the repository's pinned schema-test environment described in [schema tooling](../../../../research/aircraft-data/schema/README.md).
 
 ```text
 python research/aircraft-data/schema/check.py <aircraft.json>
@@ -68,4 +68,4 @@ bash app/test.sh
 
 For an unregistered file, `research/aircraft-data/schema/loader_probe.gd` accepts one user argument: a JSON array of absolute aircraft-file paths. Run it with pinned Godot, `--headless --path app --script <absolute-probe-path> -- <manifest-path>`. Require every emitted `DATA4A` result to have `ok: true`; its process exit alone is not an acceptance result. Then exercise trim, controls, propulsion, ground and lifecycle in an aircraft-specific test before adding a catalog entry. Offline validation cannot replace Godot's coupled checks or physical measurement.
 
-Primary references and their applicability are retained in the [contract](../../../../AIRCRAFT_CONTRACT.md), [physics audit](../AS-00/physics-audit.md) and quantity-level provenance. They define methods and conventions; they do not supply measured validation for these complete virtual builds.
+Primary references and their applicability are retained in the [contract](../../../AIRCRAFT_CONTRACT.md), [physics audit](../AS-00/physics-audit.md) and quantity-level provenance. They define methods and conventions; they do not supply measured validation for these complete virtual builds.

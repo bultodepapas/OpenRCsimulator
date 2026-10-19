@@ -93,7 +93,7 @@ What works and stays: the read-only adapter (no simulation writes, private RNG, 
 
 ## 5. Decisions (taken 2026-10-13, delegated by the owner)
 
-Recorded in [DECISIONS](../../DECISIONS.md). Each one can be revisited when its trigger appears.
+Recorded in [DECISIONS](../DECISIONS.md). Each one can be revisited when its trigger appears.
 
 | ID | Decision | Revisit when |
 | --- | --- | --- |

@@ -31,7 +31,7 @@ A second finding: the kernel computed SF-05 contact substeps for every model but
 | Add a guarded mode to `event_step.gd` and move the adapter's algorithm into it | Rejected: no accuracy gain (both are fourth order and agree to 1.7e-11 s), a second algorithm inside the shared locator, and changed helicopter trajectories for the historical trainer route. |
 | Split step policies into substeps like the kernel's own RK4 | Rejected: the glow policy accounts lifecycle work per tick, so splitting it changes behaviour. |
 | Close by documentation only | Rejected: leaves HELI-17b's refinement qualification and the silent substep gap open. |
-| **Keep both numerics byte-identical, state the contract, qualify both locators and refuse unsplit stiff policy ticks** | **Adopted** ([DECISIONS](../../../../DECISIONS.md)). |
+| **Keep both numerics byte-identical, state the contract, qualify both locators and refuse unsplit stiff policy ticks** | **Adopted** ([DECISIONS](../../../DECISIONS.md)). |
 
 ## Change
 
@@ -40,7 +40,7 @@ A second finding: the kernel computed SF-05 contact substeps for every model but
 | [`app/sim/simulation.gd`](../../../../app/sim/simulation.gd) | A tick whose model has a step policy and asks for more than one contact substep is refused with "the step policy owns the tick and cannot honour N contact substeps" and rolls back like any rejection. |
 | [`app/sim/vehicle_model.gd`](../../../../app/sim/vehicle_model.gd), [`app/physics/event_step.gd`](../../../../app/physics/event_step.gd), [`app/physics/rotorcraft/simulation_step_adapter.gd`](../../../../app/physics/rotorcraft/simulation_step_adapter.gd) | Contract comments: declared events need a continuation beyond the boundary; a law that refuses it uses a domain-guarded policy; policies are never split. No code change. |
 | [`app/tests/test_sf_event_refinement.gd`](../../../../app/tests/test_sf_event_refinement.gd) (new) | 51 checks through the real `Simulation` transaction (below). |
-| [STACK](../../../../STACK.md#boundaries-and-data-flow) | The two locator classes, the policy rule and the native-backend policy as current guidance. |
+| [STACK](../../../STACK.md#boundaries-and-data-flow) | The two locator classes, the policy rule and the native-backend policy as current guidance. |
 
 ## Proof
 

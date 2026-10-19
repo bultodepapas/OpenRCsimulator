@@ -2,7 +2,7 @@
 
 **Status:** curated reference.
 
-Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), propwash (E0b), electric propulsion (EL), and glow propulsion (NITRO), recorded from 2026-10-06 to 2026-10-13. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1, D11, E0a), simulation state and performance (H1–H15), propwash (E0b), electric propulsion (EL), and glow propulsion (NITRO), recorded from 2026-10-06 to 2026-10-13. Reports hold the detailed evidence; owning plans hold current status. Measurements are historical unless explicitly identified as a current contract. See [LEARNINGS](../LEARNINGS.md) for shared engineering lessons.
 
 ## Numerical correctness and state
 
@@ -196,7 +196,7 @@ Replay acceptance needs the same care: `maxf` can replace a NaN error with a lat
 
 A schema can reject every malformed fixture and still reject valid runtime inputs. Compare both directions through the production file loader: optional absence, null, empty objects and string trimming have different contracts. Godot's ASCII source trimming and Python's Unicode whitespace rules differ, so a generic `\S` can change accepted data. Keep physically inconsistent but structurally valid cases to show which checks remain runtime-only. ([DATA-4a](../research/aircraft-validation/DATA-4a/README.md))
 
-Close configuration objects under an explicit new version, while preserving deliberately named historical experiments. An accepted coefficient is not proof of a force consumer: classify reference-only values, forbid fields from inactive branches, and compare normalized models plus every recorded state byte during migration. Keep serialization precision separate from derivation arithmetic; pinning a rounded output inside intermediate equations can change otherwise untouched coefficients. ([AS-01 contract](../../AIRCRAFT_CONTRACT.md), [AS-02 migration](../research/aircraft-standardization/AS-02/README.md))
+Close configuration objects under an explicit new version, while preserving deliberately named historical experiments. An accepted coefficient is not proof of a force consumer: classify reference-only values, forbid fields from inactive branches, and compare normalized models plus every recorded state byte during migration. Keep serialization precision separate from derivation arithmetic; pinning a rounded output inside intermediate equations can change otherwise untouched coefficients. ([AS-01 contract](../AIRCRAFT_CONTRACT.md), [AS-02 migration](../research/aircraft-standardization/AS-02/README.md))
 
 ### Include wheel state in contact oracles
 

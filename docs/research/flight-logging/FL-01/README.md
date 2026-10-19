@@ -11,7 +11,7 @@ Use the free external [PlotJuggler](https://github.com/PlotJuggler/PlotJuggler) 
 
 ## Existing runtime behavior
 
-The main implementation is in [`recorder.gd`](../../../../app/sim/recorder.gd), [`trace.gd`](../../../../app/sim/trace.gd), [`flight_session.gd`](../../../../app/sim/flight_session.gd), and [`simulation.gd`](../../../../app/sim/simulation.gd). The current [stack guide](../../../../STACK.md) also states that fixed-wing input is sampled before each simulation tick and that CSV traces are diagnostics while checkpoints carry replay state.
+The main implementation is in [`recorder.gd`](../../../../app/sim/recorder.gd), [`trace.gd`](../../../../app/sim/trace.gd), [`flight_session.gd`](../../../../app/sim/flight_session.gd), and [`simulation.gd`](../../../../app/sim/simulation.gd). The current [stack guide](../../../STACK.md) also states that fixed-wing input is sampled before each simulation tick and that CSV traces are diagnostics while checkpoints carry replay state.
 
 `Simulation` emits a sample at tick zero after reset and again after each accepted 240 Hz step. `FlightSession` updates `sim.inputs` before the step. For a sample at tick `k > 0`, `state`, `aux`, `tick`, and `t_s` are the accepted post-step boundary, while the recorded command vector drove the just-completed interval from `k-1` to `k`. The force/moment row is the RK4 first-stage load: it uses the previous body state and auxiliary values after the tick-boundary actuator update, before RK integration. Weather traces carry `loads_t_s` to show that earlier load time explicitly. The row therefore combines channels with different sampling times; analysis and replay must use each channel's documented timing rather than treating every cell as a simultaneous observation.
 

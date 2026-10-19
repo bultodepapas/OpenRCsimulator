@@ -18,7 +18,7 @@ BUILD = BUILDER["build"]
 SHA256 = BUILDER["sha256"]
 SPEC = ROOT / "assets/vehicles/monster-car-2/datos_simulacion_1.json"
 GLB = ROOT / "assets/vehicles/monster-car-2/monster_truck_nitro_1.glb"
-COLLISION_GLB = ROOT / "monster car 2/monster_truck_colisiones_1.glb"
+COLLISION_GLB = ROOT / "assets/source-deliveries/monster-car-2/monster_truck_colisiones_1.glb"
 OUTPUT = ROOT / "app/data/vehicles/ground/monster_car_2.json"
 
 

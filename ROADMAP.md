@@ -1,6 +1,6 @@
 # Roadmap
 
-2026-10-16 · Revision 11 · **Status: working early alpha. Gate 2, PT2, readability, physical calibration and target-machine performance acceptance remain open.** This document owns main-line step/gate status. Track guides own their detailed work; [documentation and ownership map](docs/README.md), [current architecture](STACK.md), [commands](docs/TOOLS.md).
+2026-10-16 · Revision 11 · **Status: working early alpha. Gate 2, PT2, readability, physical calibration and target-machine performance acceptance remain open.** This document owns main-line step/gate status. Track guides own their detailed work; [documentation and ownership map](docs/README.md), [current architecture](docs/STACK.md), [commands](docs/TOOLS.md).
 
 ## Rules for every step
 
@@ -9,8 +9,8 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 ## Where we are
 
 - **Physics and simulation:** float64 240 Hz RK4, local aerodynamic loads, trim, controls, propulsion, wheel contact and complete-state replay are implemented; main-line delivery records are below.
-- **Simulation foundation:** the shared kernel (`VehicleModel` contract, event protocol, substepping, environment contract, generalized-coordinate kernel, law property harness, backend policy) is described in [STACK](STACK.md#boundaries-and-data-flow); SF-00…09, the SF-03 alias cleanup and SF-04b are delivered with byte-identical fleet proofs, and the plan closed on 2026-10-18 ([record and evidence index](docs/research/simulation-foundation/README.md)); first new consumer [DR-04a](docs/research/drone-racing/DR-04a/README.md).
-- **Aircraft contract:** v2 standardization AS-00…05 is delivered; [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) owns authoring, with [migration/verification evidence](docs/research/aircraft-standardization/AS-05/README.md).
+- **Simulation foundation:** the shared kernel (`VehicleModel` contract, event protocol, substepping, environment contract, generalized-coordinate kernel, law property harness, backend policy) is described in [STACK](docs/STACK.md#boundaries-and-data-flow); SF-00…09, the SF-03 alias cleanup and SF-04b are delivered with byte-identical fleet proofs, and the plan closed on 2026-10-18 ([record and evidence index](docs/research/simulation-foundation/README.md)); first new consumer [DR-04a](docs/research/drone-racing/DR-04a/README.md).
+- **Aircraft contract:** v2 standardization AS-00…05 is delivered; [AIRCRAFT_CONTRACT](docs/AIRCRAFT_CONTRACT.md) owns authoring, with [migration/verification evidence](docs/research/aircraft-standardization/AS-05/README.md).
 - **Ground physics:** GP-00…05 is delivered; [integrated ground model](docs/research/ground-physics/GP-05/README.md) records wheel/terrain/profile behavior and open calibration/performance limits.
 - **Stik circuit:** automated approach, landing, full circuit, rendered review, replay and sensitivity tools exist; manual owner circuit and E3c/E4/PT2 physical acceptance remain open.
 - **Ugly Stik:** [model/finish guide](docs/UGLY-STIK-PLAN.md); [pull-up investigation](docs/UGLY-STIK-PULLUP-PLAN.md) keeps candidate polars opt-in and production selection open.
@@ -38,7 +38,7 @@ Follow [AGENTS](AGENTS.md) and [CONTRIBUTING](CONTRIBUTING.md): one small workin
 
 | Gate / outcome | Current state | Required evidence |
 | --- | --- | --- |
-| Gate 1: platform | Decided: Godot, 2026-10-05 | [Bake-off comparison](prototypes/stage0/COMPARISON.md), [decision](DECISIONS.md) |
+| Gate 1: platform | Decided: Godot, 2026-10-05 | [Bake-off comparison](prototypes/stage0/COMPARISON.md), [decision](docs/DECISIONS.md) |
 | Gate F: aero architecture | Decided: component buildup grown from the corrected linear oracle | [Flight repair](docs/research/flight-repair-implementation.md); aircraft calibration is separate |
 | Gate 2: first owner flight | Open | Named build/radio/OS; circuits, roll/loop/stall/spin recovery; per-axis −2…+2 handling ratings against a real RC model, 100 m readability and setup time |
 | PT2 / M2 circuit | Software tools delivered; physical acceptance open | Manual runway–circuit–landing trace and [flight card](docs/research/menu-investigations/UI-06c/FLIGHT-CARD.md), independent ground/flight comparison |
@@ -64,7 +64,7 @@ Completed IDs below retain navigation to their tests/evidence. Reports record th
 
 | IDs | Implemented result | Evidence / remaining work |
 | --- | --- | --- |
-| D1…D5, D5.9 | Validated aircraft, air/load model, trim/propulsion and session separation | [Aircraft contract](AIRCRAFT_CONTRACT.md), [physics research](docs/research/README.md#flight-model-and-simulation) |
+| D1…D5, D5.9 | Validated aircraft, air/load model, trim/propulsion and session separation | [Aircraft contract](docs/AIRCRAFT_CONTRACT.md), [physics research](docs/research/README.md#flight-model-and-simulation) |
 | D6a/b/c | Raw radio reader, saved calibration/arming and physical servos | [Radio research](docs/research/radio-input/), [controls](docs/FIRST-LAUNCH.md#3-fly) |
 | D6d / Gate 2 | Owner radio/handling session | Open; real hardware/pilot evidence required |
 | D7, D8a | Camera/zoom/shadow aids, regression flights and modal verification | [Tests](app/tests/), [validation boundary](docs/research/validation/VAL-3/README.md) |
@@ -120,7 +120,7 @@ M5-W uniform wind/repeating gusts/temporal turbulence and M5-ATM-1/2 with the fi
 | VAL-5…8 | Physical mass/CG, swing-test inertia, static/transient propulsion and video flight measurements | Open; retain raw inputs, calibration, uncertainty, configuration and independent references |
 | VAL-9…15 | Logger/identification and further validation breadth | Not delivered; select a bounded task only when data and acceptance are available |
 | DATA-1/2a/2b/3/4a/4b | Generator freshness, load-cost reductions, exact hashes and historical-v1 schema/loader coverage | [Aircraft-validation evidence](docs/research/aircraft-validation/); strict load-time bound remains open |
-| DATA-8 / AS-00…05 | V2 contract, explicit capabilities, migration and authoring template delivered | [Contract](AIRCRAFT_CONTRACT.md), [AS-05](docs/research/aircraft-standardization/AS-05/README.md); supersedes the old conditional-v2 proposal |
+| DATA-8 / AS-00…05 | V2 contract, explicit capabilities, migration and authoring template delivered | [Contract](docs/AIRCRAFT_CONTRACT.md), [AS-05](docs/research/aircraft-standardization/AS-05/README.md); supersedes the old conditional-v2 proposal |
 | Other DATA / PERC work | Broader authoring and pilot-perception research | Unimplemented options remain in the [phase knowledge base](docs/research/roadmap-investigations/README.md); new runtime capabilities need contract/ownership review |
 
 ### Owner's field kit
@@ -135,4 +135,4 @@ Use the [existing reducers](docs/TOOLS.md) and record what remains unknown. Esti
 
 ## Research tracks
 
-Start at [docs/research/README](docs/research/README.md). The [initial notebook](docs/research/initial-notebook.md), [phase investigations](docs/research/roadmap-investigations/README.md), [DECISIONS](DECISIONS.md) and dated reports preserve the evidence/rationale behind prior reviews. Completed review checklists and superseded implementation proposals are removed from the active queue.
+Start at [docs/research/README](docs/research/README.md). The [initial notebook](docs/research/initial-notebook.md), [phase investigations](docs/research/roadmap-investigations/README.md), [DECISIONS](docs/DECISIONS.md) and dated reports preserve the evidence/rationale behind prior reviews. Completed review checklists and superseded implementation proposals are removed from the active queue.

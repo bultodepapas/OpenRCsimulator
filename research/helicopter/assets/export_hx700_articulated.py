@@ -2,7 +2,7 @@
 """HELI-25c: freeze a neutral, controller-free inspection asset; never save Blender input.
 
 Run in factory-startup Blender 5.2.2 with --disable-autoexec and the audited
-NEW HELI source open. Output stays under .tools; installation is a separate step.
+HX-700 articulated delivery source open. Output stays under .tools; installation is a separate step.
 This profile admits neutral inspection only, not flight or actuator dynamics.
 """
 from __future__ import annotations
@@ -20,7 +20,7 @@ import bpy
 from mathutils import Matrix, Quaternion, Vector
 
 REPO = Path(__file__).resolve().parents[3]
-SOURCE = REPO / "NEW HELI/HX-700_Helicoptero_RC_1.blend"
+SOURCE = REPO / "assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend"
 SOURCE_SHA = "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f"
 ASSET_PATH = "res://assets/aircraft/hx-700/articulated/hx-700.glb"
 CORE = {

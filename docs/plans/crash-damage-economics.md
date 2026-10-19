@@ -16,11 +16,11 @@ The [dated research](../research/crash-damage-investigations/CR-28/README.md) ow
 
 | Foundation | Reuse | Gap this plan must close |
 | --- | --- | --- |
-| [Contact observations](../../AIRCRAFT_CONTRACT.md#contact-observations-and-checkpoints) | Accepted tick, stable probe/support IDs, lifecycle, strike latch, swept scenery fraction | Gear impulses/kinematics can be unknown; buffer is bounded, not an accident history. Rejected steps must never create damage or a bill. |
+| [Contact observations](../AIRCRAFT_CONTRACT.md#contact-observations-and-checkpoints) | Accepted tick, stable probe/support IDs, lifecycle, strike latch, swept scenery fraction | Gear impulses/kinematics can be unknown; buffer is bounded, not an accident history. Rejected steps must never create damage or a bill. |
 | `app/render/crash/severity.gd`, CR-08b | Effective mass, normal/slapdown/abrasion channels, estimated surface response | C0–C4 is presentation, not strength or monetary loss. Slapdown is a bound, not an additional measured impact. |
 | CR-01d/e and E3d2 | Named contacts, causal telemetry, a prop strike can stop the engine while flight continues | Accumulate nonterminal damage until landing/reset; do not require a terminal crash to report a propeller. |
 | CR-09 wreck and CR-22 fire | Sections, mass-aware presentation, bounded aftermath | Visual debris/particle contacts and rendering frame rate cannot decide recoverability or change a bill. |
-| [Physical identities](../../AIRCRAFT_CONTRACT.md#stable-physical-identities) | Inventory, contact, propulsion and control IDs | A probe, mesh section, economic part and physical mass item are different entities; declare their mappings. |
+| [Physical identities](../AIRCRAFT_CONTRACT.md#stable-physical-identities) | Inventory, contact, propulsion and control IDs | A probe, mesh section, economic part and physical mass item are different entities; declare their mappings. |
 | [Savox plan](savox-servos.md) | Product identity, voltage/fit checks, physical versus price identity | Three logical servo states are not a count of physical servos. The Stik inventory has four physical units. |
 
 The source reviewed on 2026-10-15 has eight airplane catalog configurations in five visual families, plus the experimental X-Cell/HX-700 helicopter route. Generated synthetic electric Stiks are test specimens, not another retail airplane. The catalog count and every route must be discovered at validation time rather than hardcoded.
@@ -39,7 +39,7 @@ SAVOX is the established product-representation partner under [D6-SAV-00](../res
 
 ### 3.2 Aircraft economics manifest
 
-New aircraft submissions must include the cost dossier specified in the [aircraft contract](../../AIRCRAFT_CONTRACT.md#damage-and-cost-authoring-dossier). Proposed runtime format: a separately versioned `openrc-aircraft-economics v1` sidecar, not unrecognized fields inserted into the closed physical v2 JSON. Introduce loader/schema/module support before runtime integration.
+New aircraft submissions must include the cost dossier specified in the [aircraft contract](../AIRCRAFT_CONTRACT.md#damage-and-cost-authoring-dossier). Proposed runtime format: a separately versioned `openrc-aircraft-economics v1` sidecar, not unrecognized fields inserted into the closed physical v2 JSON. Introduce loader/schema/module support before runtime integration.
 
 Required content:
 

@@ -135,7 +135,7 @@ The shared checkout advanced to `6841da28` during final review. Current-source r
 | `FlightSession.flown_commands()`, trim/reset | Trim is added to shaped commands; healthy reset initializes servo state at trim. | Off-trim lessons must be applied after start preparation; jam cannot be canceled by a trim command. |
 | `app/sim/simulation.gd` | Tick evaluation is validated before acceptance; RK stages share prepared state and failed steps restore last-valid simulation state. | New scheduler/ledger/buffers must join rollback and commit, not mutate irreversibly in `_pre_step()`. |
 | Session/native checkpoints and trace | Versioned fingerprints/layouts and fixed trace conventions already exist. | Explicit schema/identity migration and sparse event logging; no unrecognized fields or loss of fault state on restore. |
-| `AIRCRAFT_CONTRACT.md` | Conventional controls; capability-specific energy; structural part loss is not an active v2 feature. | Keep the training request outside aircraft source; coordinate actual new physical modules with AS and propulsion owners. |
+| `docs/AIRCRAFT_CONTRACT.md` | Conventional controls; capability-specific energy; structural part loss is not an active v2 feature. | Keep the training request outside aircraft source; coordinate actual new physical modules with AS and propulsion owners. |
 | `app/render/overlays/warnings_bar.gd` | Telemetry warning list is not a failure event ledger and is subject to HUD visibility. | The notice preference needs its own clear presentation contract, independent of physical state. |
 | CR/NR/UI plans | Damaged flight and broader menu/scenario work coexist with implemented foundations. | Reuse their seams, keep owner gates separate and preserve Natural Random's ordinary fault-free policy. |
 

@@ -4,9 +4,9 @@ extends RefCounted
 
 const PROFILE_PATH := "res://assets/aircraft/hx-700/articulated/construction.json"
 const ASSET_PATH := "res://assets/aircraft/hx-700/articulated/hx-700.glb"
-const PROFILE_SHA256 := "e3a045e3da856cac11c53bb4a417b020d6737769d9c67a0f7370035bd01539d2"
+const PROFILE_SHA256 := "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
 const ASSET_SHA256 := "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47"
-const SOURCE_PATH := "NEW HELI/HX-700_Helicoptero_RC_1.blend"
+const SOURCE_PATH := "assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend"
 const SOURCE_SHA256 := "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f"
 const SOURCE_BLENDER_VERSION := "5.2.2 LTS"
 const SCHEMA := "openrc-rotorcraft-construction"

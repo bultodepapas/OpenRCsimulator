@@ -2,7 +2,7 @@
 
 2026-10-08 · **Status: independent delivery review; no application integration.**
 
-Owning [plan](../../../TIMBER-INTEGRATION-PLAN.md), original [v12 audit](../TT-00/README.md), requested [handoff convention](../../../TIMBER-INTEGRATION-PLAN.md). Incoming package: `Timber turbo evolution/turbo_timber_evolution/r1/`. The author's revision `r1` is distinct from this research step's `TT-00-R1` identifier.
+Owning [plan](../../../TIMBER-INTEGRATION-PLAN.md), original [v12 audit](../TT-00/README.md), requested [handoff convention](../../../TIMBER-INTEGRATION-PLAN.md). Incoming package: `assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution/r1/`. The author's revision `r1` is distinct from this research step's `TT-00-R1` identifier.
 
 ## Assessment
 
@@ -92,10 +92,10 @@ From repository root, with the external r1 package present and Python with **Num
 
 ```bash
 python3 research/timber/tt00-r1/audit_glb.py \
-  'Timber turbo evolution/turbo_timber_evolution/r1' /tmp/timber-r1-audit.json
+  'assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution/r1' /tmp/timber-r1-audit.json
 cmp /tmp/timber-r1-audit.json docs/research/timber-integration/TT-00-R1/glb-audit.json
 python3 research/timber/tt00-r1/check_audit_mutations.py \
-  'Timber turbo evolution/turbo_timber_evolution/r1' /tmp/timber-r1-mutations.json
+  'assets/source-deliveries/turbo-timber-evolution-original/turbo_timber_evolution/r1' /tmp/timber-r1-mutations.json
 cmp /tmp/timber-r1-mutations.json docs/research/timber-integration/TT-00-R1/audit-mutations.json
 ```
 

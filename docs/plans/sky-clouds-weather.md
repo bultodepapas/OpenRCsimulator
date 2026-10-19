@@ -17,7 +17,7 @@ The [world guide](../FIELD-WORLD-PLAN.md#sky-and-cloud-controls) owns current co
 5. **Finish with a bounded experimental tornado challenge.** The airplane responds through its existing aerodynamic equations. The funnel is a visual representation of a scenario, not the collision shape or force generator.
 6. **Evaluate volumetric rendering as a conditional quality route.** Neither a renderer migration nor a new plugin is a prerequisite for useful sky choices. Select a volumetric dependency only after an isolated comparison on the pinned engine.
 
-The first slice adopts the Compatibility renderer, independent appearance/physics state and scene-local electrical effects; the rationale is recorded in [DECISIONS](../../DECISIONS.md). Volumetric and spatial-weather decisions remain open.
+The first slice adopts the Compatibility renderer, independent appearance/physics state and scene-local electrical effects; the rationale is recorded in [DECISIONS](../DECISIONS.md). Volumetric and spatial-weather decisions remain open.
 
 ## 2. Inspected baseline and concrete integration points
 
@@ -150,7 +150,7 @@ The first delivery needs no new hotkey or HUD panel. The final challenge may use
 
 Do not add arbitrary dictionaries to the weather-v3 validator or silently reinterpret its existing wind limits. Treat the fields above as a proposed schema, finalized in FW-77; unsupported future modes must be rejected. Resolve missing sky input to an exact classic configuration for old saves/traces and technical launches. An unknown/corrupt user preference falls back to classic with a concise notice; an invalid explicit scenario or CLI sky input refuses that request.
 
-Store selected IDs **and resolved versioned values** where reproducibility requires them. A later catalog retune must not change an old recorded flight. Include the resource/source fingerprint in visual evidence; do not insert visual quality settings into the physics fingerprint. The [aircraft contract](../../AIRCRAFT_CONTRACT.md) stays unchanged unless distributed load integration exposes an actual missing aircraft capability.
+Store selected IDs **and resolved versioned values** where reproducibility requires them. A later catalog retune must not change an old recorded flight. Include the resource/source fingerprint in visual evidence; do not insert visual quality settings into the physics fingerprint. The [aircraft contract](../AIRCRAFT_CONTRACT.md) stays unchanged unless distributed load integration exposes an actual missing aircraft capability.
 
 ### One resolved scene snapshot
 

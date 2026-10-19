@@ -110,7 +110,7 @@ Use fresh output directories and the pinned Godot build. Run timing experiments 
 
 | Area | Entrypoint / authoritative contract |
 | --- | --- |
-| Aircraft authoring | `python research/aircraft-standardization/conformance.py --godot <godot> --out <fresh-dir> --parse-all`; [aircraft contract](../AIRCRAFT_CONTRACT.md). Optional `--package` checks exports. |
+| Aircraft authoring | `python research/aircraft-standardization/conformance.py --godot <godot> --out <fresh-dir> --parse-all`; [aircraft contract](AIRCRAFT_CONTRACT.md). Optional `--package` checks exports. |
 | Natural Random | `python research/natural-random/verify.py --godot <godot> --out <fresh-dir>`; [evidence](research/natural-random/README.md). |
 | Glow 2T/4T | `python research/glow-engines/verify_integration.py --godot <godot> --out <fresh-dir> --parse-all`; [current integration](GLOW-ENGINES.md), [isolated kernels](../research/glow-engines/README.md). |
 | Helicopter | [current experimental flight session and checks](HELICOPTER.md); `research/helicopter/verify_kernels.py` owns independent kernel references and disposable defects. |

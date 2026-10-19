@@ -99,7 +99,7 @@ def main() -> None:
     if source_path.replace("\\", "/") != expected_path:
         fail(f"manifest source_spec must be {expected_path}")
 
-    original_dir = ROOT / "monster car 2"
+    original_dir = ROOT / "assets/source-deliveries/monster-car-2"
     for name, expected in (
         ("monster_truck_nitro_1.glb", glb_hash),
         ("datos_simulacion_1.json", spec_hash),

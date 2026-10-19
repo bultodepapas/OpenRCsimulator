@@ -8,7 +8,7 @@ The first delivery standardizes the existing fleet without changing its flight e
 
 ## Ownership and authoritative sources
 
-The [aircraft contract](../../AIRCRAFT_CONTRACT.md) remains the current physical authority. This plan owns pending cross-system standardization, not the detailed implementation status of other tracks. [AS-00–05 evidence](../research/aircraft-standardization/README.md) remains a historical record.
+The [aircraft contract](../AIRCRAFT_CONTRACT.md) remains the current physical authority. This plan owns pending cross-system standardization, not the detailed implementation status of other tracks. [AS-00–05 evidence](../research/aircraft-standardization/README.md) remains a historical record.
 
 | Owner | Responsibility in this plan |
 | --- | --- |
@@ -23,7 +23,7 @@ Integrate shared loader/session/render files serially. Use the [ownership regist
 
 ## Findings in the current source
 
-These findings describe the preimplementation audit. Current implemented behavior is documented in the [aircraft contract](../../AIRCRAFT_CONTRACT.md); delivery status below distinguishes implemented interfaces from remaining acceptance.
+These findings describe the preimplementation audit. Current implemented behavior is documented in the [aircraft contract](../AIRCRAFT_CONTRACT.md); delivery status below distinguishes implemented interfaces from remaining acceptance.
 
 | Boundary | What exists | Standardization gap |
 | --- | --- | --- |
@@ -94,7 +94,7 @@ Return structured diagnostics containing a stable code, aircraft/module/componen
 5. A migration generates a reviewed candidate; it never silently overwrites source data. Keep v2 input support after adopting v3. Unknown versions/laws fail with a clear upgrade requirement. Export to v2 is allowed only when lossless; otherwise refuse it.
 6. Model format, module law, descriptor and checkpoint/trace layout versions are separate. Changed byte/configuration identities may intentionally invalidate old checkpoints even when trajectories match. Preserve existing historical checkpoint rejection rules; never reinterpret an old state array by guessing its layout.
 
-The AS-08 identity slice fits v2 as optional complete metadata (`physical_identity_version: 1`), with explicit legacy behavior and unchanged physical fields. Workshop independently advances to v3 for ID bindings. AS-07 records this direction in [DECISIONS](../../DECISIONS.md) after the current interfaces are reconciled. The exact successor schema is an AS-15 deliverable, not a format accepted by today's runtime.
+The AS-08 identity slice fits v2 as optional complete metadata (`physical_identity_version: 1`), with explicit legacy behavior and unchanged physical fields. Workshop independently advances to v3 for ID bindings. AS-07 records this direction in [DECISIONS](../DECISIONS.md) after the current interfaces are reconciled. The exact successor schema is an AS-15 deliverable, not a format accepted by today's runtime.
 
 ## Blender authoring and import
 

@@ -28,7 +28,7 @@
 | Visual-quality track | `app/render/propeller_blur.gd` (N-rotor extension) |
 | Audio track | `app/audio/` |
 | Crash track | `app/render/crash/`, CR-01d hull labels |
-| Aircraft standardization | [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) |
+| Aircraft standardization | [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md) |
 
 **Evidence:** [DR-01 research record](../research/drone-racing/DR-01/README.md) holds the sources, parameter tables, derived numbers and the seam map with line references.
 
@@ -45,7 +45,7 @@ The airplanes must not change: every existing golden flight, trace and capture s
 
 ## 1. Why this is a scope decision
 
-[DECISIONS](../../DECISIONS.md) opens with "Build an RC airplane simulator". The [data-pipeline investigation](../research/roadmap-investigations/09-aircraft-data-pipeline.md) placed helicopters and multirotors out of scope and reserved a `vehicle` key. The [helicopter plan](helicopter.md) proposes the second vehicle class and lists multirotors as a non-goal.
+[DECISIONS](../DECISIONS.md) opens with "Build an RC airplane simulator". The [data-pipeline investigation](../research/roadmap-investigations/09-aircraft-data-pipeline.md) placed helicopters and multirotors out of scope and reserved a `vehicle` key. The [helicopter plan](helicopter.md) proposes the second vehicle class and lists multirotors as a non-goal.
 
 A racing quad is a third vehicle class **and** the project's first game mode:
 
@@ -140,7 +140,7 @@ Accepted and rejected:
 
 ### 4.2 Frames, signs and units
 
-Body FRD at the inventory CG and NED world, per [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units). Structural positions are in the datum frame `[x_aft, y_right, z_up]`; the multirotor datum is the frame's geometric centre on the bottom-plate plane.
+Body FRD at the inventory CG and NED world, per [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units). Structural positions are in the datum frame `[x_aft, y_right, z_up]`; the multirotor datum is the frame's geometric centre on the bottom-plate plane.
 
 Rotor quantities:
 

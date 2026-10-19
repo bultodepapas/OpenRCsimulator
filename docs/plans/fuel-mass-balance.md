@@ -1,6 +1,6 @@
 # Fuel system audit standard and completion plan
 
-**Updated 2026-10-19. Owner:** physics, subtrack `FUEL-00` through `FUEL-14`. **Status:** active; FUEL-00 through 04 delivered, 05 through 07 partially integrated, 08 through 14 open. This is the single completion plan for fuel, mass and balance. The [aircraft contract](../../AIRCRAFT_CONTRACT.md) remains authoritative for accepted fields and frames. The [review evidence](../research/fuel-systems/FUEL-00-R1/README.md) identifies the audited commit, commands and reproduced defects. The Word document beside that evidence is a dated export of this Markdown, not another editable standard.
+**Updated 2026-10-19. Owner:** physics, subtrack `FUEL-00` through `FUEL-14`. **Status:** active; FUEL-00 through 04 delivered, 05 through 07 partially integrated, 08 through 14 open. This is the single completion plan for fuel, mass and balance. The [aircraft contract](../AIRCRAFT_CONTRACT.md) remains authoritative for accepted fields and frames. The [review evidence](../research/fuel-systems/FUEL-00-R1/README.md) identifies the audited commit, commands and reproduced defects. The Word document beside that evidence is a dated export of this Markdown, not another editable standard.
 
 ## 1 Conclusion and scope
 
@@ -42,7 +42,7 @@ P1 blocks consistent software behaviour or the common standard; P2 blocks qualif
 
 **A3 P1 Tank validation and the glow installation use different identities.** The contract binds liquid and shell by ID, but the glow installation still finds `fuel_inventory` by exact display name and prepares capacity from the authored liquid mass. It does not apply normalized capacity, pickup or unusable mass. A renamed item can satisfy the tank contract while breaking the installation. Close ID/capacity binding in FUEL-05-R1; close delivered feed and residue in FUEL-09.
 
-**A4 P1 The old plan confuses balance CG and solver datum.** D2 and older FUEL-04 prose promise a datum at `plan_cg`; the current contract, loader and installation retain the authored inventory CG. Empty-tank balancing does not move that reference. Section 3.2 and the [decision record](../../DECISIONS.md) supersede that wording without rebasing runtime state.
+**A4 P1 The old plan confuses balance CG and solver datum.** D2 and older FUEL-04 prose promise a datum at `plan_cg`; the current contract, loader and installation retain the authored inventory CG. Empty-tank balancing does not move that reference. Section 3.2 and the [decision record](../DECISIONS.md) supersede that wording without rebasing runtime state.
 
 **A5 P1 The proposed rotational feed formula had mixed signs.** Existing feed implements apparent gravity as minus non-gravitational force divided by mass and omits rotation. The old proposal added point-acceleration terms to that apparent gravity. Instead derive it from gravity minus the complete inertial acceleration at the liquid point. A rotating-point fixture must establish the signs before FUEL-09; this concerns the proposal, not an existing rotational implementation.
 
@@ -54,7 +54,7 @@ P1 blocks consistent software behaviour or the common standard; P2 blocks qualif
 
 **A9 P2 Registry/profile equality is tested but not enforced at loading.** Glow profiles still derive density from embedded component data. Current tests establish agreement with the registry; the runtime installation does not reject a divergent blend. Close this seam with AS/NITRO in FUEL-05-R1, including a mismatch refusal and source-identity test.
 
-**A10 P2 Qualification evidence is not reproducible end to end.** Read-only generator checks flag stale Ventage derivation text and Timber physics output. FUEL-05 FT comparisons contain blank commit identities and an invalid 55AX trim result. Preserve these as findings, not accepted flight-feel proof. Resolve or classify each under its owner before FUEL-05/12 closure.
+**A10 P2 Qualification evidence is not reproducible end to end.** Read-only generator checks flag stale Timber physics output; Ventage passes the UTF-8 check. FUEL-05 FT comparisons contain blank commit identities and an invalid 55AX trim result. Preserve these as findings, not accepted flight-feel proof. Resolve or classify each under its owner before FUEL-05/12 closure.
 
 Fourteen focused native Windows tests passed with 4,626 checks and zero failures. Both A1 and A2 still reproduce. Ordinary CSV traces still lack live mass/CG although `.orfl` has them. No full-suite, target-GPU, pilot or physical-validation result is claimed by this audit.
 
@@ -70,9 +70,9 @@ The registry owns blend composition, reference density, temperature and provenan
 
 ### 3.2 Frames mass and balance
 
-**The solver datum O is the CG of the authored reference inventory, fixed for that loaded model.** It does not change with burn, session fill or reset. The balance target `plan_cg` is a structural point checked at `balance.fuel_state`; it can differ from O. A full-tank reference inventory makes O a full-tank CG; a half-tank reference makes it that configuration's half-tank CG. Neither is automatically the dry CG. This clarifies D2 while preserving its requirement for a fixed reference.
+**The solver datum O is the CG of the authored reference inventory, fixed for that loaded model.** It does not change with burn, session fill or reset. The balance target `plan_cg` is a structural point checked at `balance.fuel_state`; it can differ from O. A full-tank reference inventory makes O a full-tank CG; a half-tank reference makes it that configuration's half-tank CG. Neither is automatically the dry CG. This supersedes D2's choice of `plan_cg` as the anchor while retaining its fixed-reference requirement.
 
-Use the [contract's coordinate conversion](../../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units). Geometry, gear, hull, thrust and intake arms remain relative to O. Stages obtain total mass, live CG offset and the full tensor about the live CG from one prepared inventory and the stage's resource masses. Contacts use arms from that live CG. Rendering converts at the boundary; simulation retains float64 arrays.
+Use the [contract's coordinate conversion](../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units). Geometry, gear, hull, thrust and intake arms remain relative to O. Stages obtain total mass, live CG offset and the full tensor about the live CG from one prepared inventory and the stage's resource masses. Contacts use arms from that live CG. Rendering converts at the boundary; simulation retains float64 arrays.
 
 Use the existing co-moving-efflux law and momentum/refinement fixtures. Do not add mass-derivative spin-up terms to it. Internal transfer conserves total mass while changing first moment and inertia. A future non-co-moving discharge must declare its momentum flux and validation; it cannot silently reuse the present assumption.
 
@@ -80,7 +80,7 @@ Check a manual CG range only at the declared balance state. The adopted propelle
 
 ### 3.3 Flow feed and exhaustion
 
-Integrate delivered outflow in kg/s. Glow retains its per-cycle laws. The first gasoline adapter uses sourced BSFC times nonnegative delivered shaft power plus a disclosed idle rule; define stopped, windmilling and negative-power behaviour. AV binds its existing turbine flow data to finite stores and ECU lifecycle. Smoke liquid is a separate resource if consumption is activated; an authored empty smoke tank requires no invented liquid mass.
+Integrate delivered outflow in kg/s. Glow retains its per-cycle laws. The first gasoline adapter uses sourced BSFC times nonnegative delivered shaft power plus a disclosed idle rule; define stopped, windmilling and negative-power behaviour. AV binds its existing turbine flow data to finite stores and ECU lifecycle. Smoke consumption needs a separate resource and an explicit registry/store extension; today's combustion tank contract has no smoke blend. An authored empty smoke tank requires no invented liquid mass.
 
 Evidence distinguishes full-throttle flow, idle flow, BSFC and mixed-flight endurance. A manufacturer's mixed-flight duration cannot directly calibrate full-throttle flow. Review FS-64V consumption under NITRO before qualification. Do not tune source data merely to make endurance pass.
 
@@ -126,7 +126,7 @@ Keep the original IDs and owners. Repair suffixes refine existing steps. Each pa
 
 AV-10a/b/c and AV-05b/23/25/27/28 retain turbine ownership; NITRO retains laws/calibration. R05-B and VAL-AUD-R05/R07 handoffs require their own complete evidence, including remaining contact-event/remainder and free-rotor work. FUEL-06 alone cannot close them. AS-12/16 owns schema; AE-12/13/16/17 consumes FUEL-11; EM-15/16/21 consumes feed/mass; CR-35/37 consumes remaining stores. G4a/G4b and X-DATA-11 proposals are superseded here; per-tick rebasing is not the standard. BAT shares inventory semantics but owns battery energy. Drone fuel work is outside the present aircraft scope.
 
-Adopted D1 and D3 through D8 remain: one FUEL subtrack, empty-tank prop balance/explicit jet hopper balance, full default for finite configurations, minimal gasoline BSFC scope, fixed liquid shape, neutral electric donor items or real hardware, and ml/percent display. D2 is clarified in section 3.2. FUEL-09 considers a quasi-static centroid only for a documented effect above 1 mm and with a consistent momentum law. Dynamic slosh stays deferred.
+Adopted D1 and D3 through D8 remain: one FUEL subtrack, empty-tank prop balance/explicit jet hopper balance, full default for finite configurations, minimal gasoline BSFC scope, fixed liquid shape, neutral electric donor items or real hardware, and ml/percent display. Section 3.2 supersedes D2's anchor choice while retaining its fixed-reference requirement. FUEL-09 considers a quasi-static centroid only for a documented effect above 1 mm and with a consistent momentum law. Dynamic slosh stays deferred.
 
 ## 5 Acceptance gates and evidence
 
@@ -153,4 +153,4 @@ Close physical validation only after actual empty/full weighing, CG and burn obs
 
 [JSBSim's tank reference](https://jsbsim-team.github.io/jsbsim/classJSBSim_1_1FGTank.html), rechecked 2026-10-19, distinguishes capacity, contents, unusable volume, location/drain location and priority. These support the conceptual distinctions; OpenRC retains its own schema, units and validation. No solver code is copied.
 
-Update status in section 4 when evidence lands; the documentation registry links here. Contract fields live in AIRCRAFT_CONTRACT, commands in TOOLS and GLOW-ENGINES, decisions in DECISIONS, and dated results in the owning FUEL evidence directory. Preserve historical measurements and scope. When complete, move enduring operating rules into the canonical guide and retire this plan under the documentation conventions.
+Keep status in section 4, contract fields in AIRCRAFT_CONTRACT, commands in TOOLS and GLOW-ENGINES, decisions in DECISIONS, and dated evidence with its owner. Preserve historical measurements. On completion consolidate enduring rules into the canonical guide and retire this plan.

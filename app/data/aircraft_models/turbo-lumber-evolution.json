@@ -147,7 +147,7 @@
     },
     {
       "path": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
-      "sha256": "ff2d525adf48b59ca429d33dd4b6c9d72071b3538c7dbaf58e476618b575548a",
+      "sha256": "f9d8510474a39ede0df7e77a61c91e9283bc255b09afb7543af536851bbd1a74",
       "hash_mode": "lf_text",
       "role": "asset_identity"
     },

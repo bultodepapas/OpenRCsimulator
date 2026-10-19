@@ -1,6 +1,6 @@
 # Models and rendering
 
-**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-13; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Lessons from 2026-10-05 to 2026-10-13; reports hold detailed measurements, assumptions and reproduction steps, while plans hold step status. See [LEARNINGS](../LEARNINGS.md) for shared engineering lessons.
 
 ## Normalize texture data in the renderer's actual color space
 

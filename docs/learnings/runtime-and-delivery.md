@@ -1,6 +1,6 @@
 # Runtime, input and delivery lessons
 
-**Status:** curated reference. Evidence comes from the 2026-10-05–13 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../../LEARNINGS.md) for shared engineering lessons.
+**Status:** curated reference. Evidence comes from the 2026-10-05–13 work on Godot 4.7.2; platform observations are scoped to those experiments. Start with [LEARNINGS](../LEARNINGS.md) for shared engineering lessons.
 
 ## Godot execution and test isolation
 

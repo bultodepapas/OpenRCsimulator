@@ -1,18 +1,18 @@
 # Repository guidance
 
-Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Luna Max sub-agents when useful and assign clear file boundaries.
+Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([kernel contract](docs/STACK.md#boundaries-and-data-flow)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Luna Max sub-agents when useful and assign clear file boundaries.
 
 
 do not creat thing that you can free download
 
 ## Start here
 
-- [STACK.md](STACK.md): current architecture and dependencies.
+- [STACK.md](docs/STACK.md): current architecture and dependencies.
 - [docs/TOOLS.md](docs/TOOLS.md): setup, commands, tests, captures and exports.
 - [docs/README.md](docs/README.md#tracks-plans-and-step-ids): track ownership and documentation homes.
 - [ROADMAP.md](ROADMAP.md): main-line steps and acceptance gates.
-- [AIRCRAFT_CONTRACT.md](AIRCRAFT_CONTRACT.md): aircraft authoring and extension rules.
-- [LEARNINGS.md](LEARNINGS.md): reusable technical lessons.
+- [AIRCRAFT_CONTRACT.md](docs/AIRCRAFT_CONTRACT.md): aircraft authoring and extension rules.
+- [LEARNINGS.md](docs/LEARNINGS.md): reusable technical lessons.
 
 The production application is `app/`. The three.js bake-off in `prototypes/stage0/three/` is frozen. Runtime code, configuration and accepted data define implemented behavior; plans describe remaining work, and research records dated evidence.
 
@@ -44,6 +44,6 @@ Keep aircraft node/hinge names (`airplane`, `propeller`, `*_hinge`) stable. Gene
 
 Write documentation in English, short and precise. Give each topic one authoritative home and link to it. Preserve valuable research, primary references and technical findings under `docs/research/`; keep dated evidence distinct from current operating instructions.
 
-Use the owning track's step IDs. Include proof in commit messages: test, capture, trace or measurement. Record reusable lessons using [LEARNINGS.md's criteria](LEARNINGS.md#keeping-this-useful); routine results belong in the existing evidence report. Record design decisions in [DECISIONS.md](DECISIONS.md).
+Use the owning track's step IDs. Include proof in commit messages: test, capture, trace or measurement. Record reusable lessons using [LEARNINGS.md's criteria](docs/LEARNINGS.md#keeping-this-useful); routine results belong in the existing evidence report. Record design decisions in [DECISIONS.md](docs/DECISIONS.md).
 
 Keep active plans and required evidence. Once a plan is complete or superseded, consolidate needed rationale and links into its canonical guide or existing evidence, then delete it. Do not create new archives or cleanup reports. Follow the [documentation conventions](docs/README.md#conventions-for-documents).

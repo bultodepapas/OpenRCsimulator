@@ -1,0 +1,578 @@
+{
+ "materiales": {
+  "fuselaje_blanco": "blanco",
+  "fuselaje_panza_roja": "rojo",
+  "franjas_negras": "negro",
+  "franja_blanca_cola": "blanco",
+  "franja_negra_cola": "negro",
+  "panel_nariz": "negro",
+  "filete_nariz": "rojo",
+  "parabrisas": "vidrio",
+  "ventanas": "vidrio",
+  "baliza": "led_rojo",
+  "ala_der": "blanco",
+  "ala_izq": "blanco",
+  "puntera_der": "rojo",
+  "puntera_izq": "rojo",
+  "flap_der": "blanco",
+  "flap_izq": "blanco",
+  "aleron_der": "blanco",
+  "aleron_izq": "blanco",
+  "cuerno_aleron_der": "gris_claro",
+  "cuerno_aleron_izq": "gris_claro",
+  "cuerno_flap_der": "gris_claro",
+  "cuerno_flap_izq": "gris_claro",
+  "tapa_servo_aleron_der": "gris_claro",
+  "tapa_servo_aleron_izq": "gris_claro",
+  "tapa_servo_flap_der": "gris_claro",
+  "tapa_servo_flap_izq": "gris_claro",
+  "brazo_servo_aleron_der": "blanco",
+  "brazo_servo_aleron_izq": "blanco",
+  "brazo_servo_flap_der": "blanco",
+  "brazo_servo_flap_izq": "blanco",
+  "barras_ala_der": "blanco",
+  "barras_ala_izq": "blanco",
+  "soportes_slat_der": "gris_claro",
+  "soportes_slat_izq": "gris_claro",
+  "extrados_rojo_der": "rojo",
+  "extrados_rojo_izq": "rojo",
+  "extrados_negro_der": "negro",
+  "extrados_negro_izq": "negro",
+  "intrados_gris_der": "gris_oscuro",
+  "intrados_gris_izq": "gris_oscuro",
+  "tornillos_ala": "blanco",
+  "luz_nav_der": "led_verde",
+  "luz_nav_izq": "led_rojo",
+  "estabilizador": "blanco",
+  "timon_profundidad": "blanco",
+  "union_elevador": "metal",
+  "cuerno_elevador": "gris_claro",
+  "estab_superior_rojo": "rojo",
+  "estab_superior_negro": "negro",
+  "elevador_superior_rojo": "rojo",
+  "elevador_superior_negro": "negro",
+  "deriva": "blanco",
+  "timon_direccion": "blanco",
+  "cuerno_timon": "gris_claro",
+  "aleta_dorsal": "blanco",
+  "deriva_franja_roja": "rojo",
+  "deriva_franjas_negras": "negro",
+  "timon_franja_roja": "rojo",
+  "timon_franjas_negras": "negro",
+  "brazo_servo_elevador": "blanco",
+  "brazo_servo_timon": "blanco",
+  "guias_varillas": "negro",
+  "pata_der": "blanco",
+  "soporte_tren_der": "gris_claro",
+  "pasador_tren_der": "cromo",
+  "ojal_der": "laton",
+  "neumatico_der": "espuma",
+  "buje_der": "blanco",
+  "arandela_der": "cromo",
+  "tuerca_der": "cromo",
+  "perno_eje_der": "cromo",
+  "collarin_der": "laton",
+  "pata_izq": "blanco",
+  "soporte_tren_izq": "gris_claro",
+  "pasador_tren_izq": "cromo",
+  "ojal_izq": "laton",
+  "neumatico_izq": "espuma",
+  "buje_izq": "blanco",
+  "arandela_izq": "cromo",
+  "tuerca_izq": "cromo",
+  "perno_eje_izq": "cromo",
+  "collarin_izq": "laton",
+  "eslabon_izq": "cromo",
+  "cable_der": "cromo",
+  "resorte_der": "cromo",
+  "eslabon_der": "cromo",
+  "cable_izq": "cromo",
+  "resorte_izq": "cromo",
+  "rueda_cola": "espuma",
+  "buje_cola": "gris_claro",
+  "soporte_rueda_cola": "gris_claro",
+  "tornillos_rueda_cola": "laton",
+  "alambre_rueda_cola": "metal",
+  "helice": "nylon_negro",
+  "spinner": "spinner_negro",
+  "contraplaca": "aluminio",
+  "tornillos_spinner": "cromo",
+  "tuerca": "cromo",
+  "interno_variador": "negro",
+  "interno_bateria": "bateria",
+  "interno_receptor": "negro",
+  "interno_servos_cola": "negro",
+  "eje_motor": "metal",
+  "capota": "plastico",
+  "campana_motor": "cromo",
+  "soporte_motor": "metal",
+  "bancada_motor": "madera",
+  "tornillos_capota": "cromo",
+  "placas_escape": "plastico",
+  "escapes": "cromo",
+  "tornillos_placa_escape": "cromo",
+  "buje_torsion_elevador": "gris_claro"
+ },
+ "contactos_mm": {
+  "principal": [
+   8.0,
+   -256.0
+  ],
+  "cola": [
+   759.0,
+   -126.0
+  ]
+ },
+ "bisagras": {
+  "aleron_der": {
+   "p": [
+    157.7258454969434,
+    430.3406045726686,
+    112.36687249825128
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    0.03489949670250097
+   ],
+   "miembros": [
+    "aleron_der"
+   ]
+  },
+  "aleron_izq": {
+   "p": [
+    157.7258454969434,
+    -430.3406045726686,
+    112.36687249825128
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    -0.03489949670250097
+   ],
+   "miembros": [
+    "aleron_izq"
+   ]
+  },
+  "flap_der": {
+   "p": [
+    157.7258454969434,
+    54.56965361348862,
+    99.24466173811092
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    0.03489949670250097
+   ],
+   "miembros": [
+    "flap_der"
+   ]
+  },
+  "flap_izq": {
+   "p": [
+    157.7258454969434,
+    -54.56965361348862,
+    99.24466173811092
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    -0.03489949670250097
+   ],
+   "miembros": [
+    "flap_izq"
+   ]
+  },
+  "elevador": {
+   "p": [
+    704.0,
+    0,
+    -32.0
+   ],
+   "d": [
+    0,
+    1,
+    0
+   ],
+   "miembros": [
+    "timon_profundidad",
+    "union_elevador",
+    "elevador_superior_rojo",
+    "elevador_superior_negro"
+   ]
+  },
+  "timon": {
+   "p": [
+    738.0,
+    0,
+    0
+   ],
+   "d": [
+    0,
+    0,
+    1
+   ],
+   "miembros": [
+    "timon_direccion",
+    "timon_franja_roja",
+    "timon_franjas_negras"
+   ]
+  },
+  "rueda_cola": {
+   "p": [
+    738.0,
+    0,
+    -64
+   ],
+   "d": [
+    0,
+    0,
+    1
+   ],
+   "miembros": [
+    "rueda_cola",
+    "buje_cola",
+    "alambre_rueda_cola"
+   ]
+  }
+ },
+ "varillas": {
+  "aleron_der": {
+   "servo": [
+    104.11000000000001,
+    466.96474588429487,
+    95.12218615160762
+   ],
+   "cuerno": [
+    158.7258454969434,
+    466.995537458004,
+    94.24043084789342
+   ],
+   "r": 0.8,
+   "pivote": [
+    104.11000000000001,
+    466.5285021755136,
+    107.61457148934632
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    0.03489949670250097
+   ],
+   "relacion": 1.5515710576981347,
+   "brazo": "brazo_servo_aleron_der"
+  },
+  "aleron_izq": {
+   "servo": [
+    104.11000000000001,
+    -466.96474588429487,
+    95.12218615160762
+   ],
+   "cuerno": [
+    158.7258454969434,
+    -466.995537458004,
+    94.24043084789342
+   ],
+   "r": 0.8,
+   "pivote": [
+    104.11000000000001,
+    -466.5285021755136,
+    107.61457148934632
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    -0.03489949670250097
+   ],
+   "relacion": 1.5515710576981347,
+   "brazo": "brazo_servo_aleron_izq"
+  },
+  "flap_der": {
+   "servo": [
+    104.11000000000001,
+    147.31672897334545,
+    79.45708848522138
+   ],
+   "cuerno": [
+    158.7258454969434,
+    147.01597532838082,
+    88.06954603818859
+   ],
+   "r": 0.8,
+   "pivote": [
+    104.11000000000001,
+    146.72343752940293,
+    96.44673254454601
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    0.03489949670250097
+   ],
+   "relacion": 0.8467434247780403,
+   "brazo": "brazo_servo_flap_der"
+  },
+  "flap_izq": {
+   "servo": [
+    104.11000000000001,
+    -147.31672897334545,
+    79.45708848522138
+   ],
+   "cuerno": [
+    158.7258454969434,
+    -147.01597532838082,
+    88.06954603818859
+   ],
+   "r": 0.8,
+   "pivote": [
+    104.11000000000001,
+    -146.72343752940293,
+    96.44673254454601
+   ],
+   "d": [
+    0.0,
+    0.9993908270190958,
+    -0.03489949670250097
+   ],
+   "relacion": 0.8467434247780403,
+   "brazo": "brazo_servo_flap_izq"
+  },
+  "elevador": {
+   "servo": [
+    228.0,
+    14.0,
+    -52.5
+   ],
+   "cuerno": [
+    705.0,
+    24.0,
+    -50.5
+   ],
+   "r": 0.9,
+   "pivote": [
+    228.0,
+    14.0,
+    -40.0
+   ],
+   "d": [
+    0,
+    1,
+    0
+   ],
+   "relacion": 1.48,
+   "brazo": "brazo_servo_elevador"
+  },
+  "timon": {
+   "servo": [
+    228.0,
+    -26.5,
+    -54.0
+   ],
+   "cuerno": [
+    739.0,
+    -16.0,
+    -60.0
+   ],
+   "r": 0.9,
+   "pivote": [
+    228.0,
+    -14.0,
+    -54.0
+   ],
+   "d": [
+    0,
+    0,
+    1
+   ],
+   "relacion": 1.28,
+   "brazo": "brazo_servo_timon"
+  }
+ },
+ "mandos": {
+  "alerones": 0.0,
+  "elevador": 0.0,
+  "timon": 0.0,
+  "flaps": 0.0,
+  "diferencial": 0.7,
+  "max_alerones": 22.0,
+  "max_elevador": 22.0,
+  "max_timon": 30.0,
+  "max_flaps": 40.0
+ },
+ "tren": {
+  "radio_rueda": 58.0,
+  "pivotes": {
+   "der": [
+    37.0,
+    46.0,
+    -90.34660538109893
+   ],
+   "izq": [
+    37.0,
+    -46.0,
+    -90.34660538109893
+   ]
+  },
+  "ruedas": {
+   "der": [
+    8.0,
+    132.0,
+    -198.0
+   ],
+   "izq": [
+    8.0,
+    -132.0,
+    -198.0
+   ]
+  },
+  "anclajes": {
+   "der": [
+    15.498389660527607,
+    74.97091321809529,
+    -167.17295505466805
+   ],
+   "izq": [
+    17.682823669936,
+    -75.25187078537176,
+    -167.3959182728818
+   ]
+  },
+  "cables": {
+   "der": {
+    "ojal": [
+     44.0,
+     22.0,
+     -90.21846298022137
+    ],
+    "anclaje": [
+     17.682823669936,
+     -75.25187078537176,
+     -167.3959182728818
+    ],
+    "pata": "izq",
+    "largo_cable": 70.91288250880177,
+    "largo_resorte": 56.0
+   },
+   "izq": {
+    "ojal": [
+     30.0,
+     -22.0,
+     -90.21846298022137
+    ],
+    "anclaje": [
+     15.498389660527607,
+     74.97091321809529,
+     -167.17295505466805
+    ],
+    "pata": "der",
+    "largo_cable": 68.64208183123924,
+    "largo_resorte": 56.0
+   }
+  },
+  "rueda_cola": {
+   "centro": [
+    759.0,
+    0.0,
+    -112.0
+   ],
+   "radio": 14.0
+  }
+ },
+ "componentes": {
+  "motor": {
+   "masa": 160.0,
+   "x": -212.5,
+   "caja": [
+    37,
+    42,
+    42
+   ],
+   "z": 0.0,
+   "mat": null
+  },
+  "variador": {
+   "masa": 60.0,
+   "x": -142.0,
+   "caja": [
+    70,
+    32,
+    14
+   ],
+   "z": -4.0,
+   "mat": "negro"
+  },
+  "bateria": {
+   "masa": 340.0,
+   "x": -52.0,
+   "caja": [
+    140,
+    44,
+    36
+   ],
+   "z": -29.0,
+   "mat": "bateria",
+   "recorrido": 150.0
+  },
+  "receptor": {
+   "masa": 12.0,
+   "x": 118.0,
+   "caja": [
+    40,
+    24,
+    12
+   ],
+   "z": -62.0,
+   "mat": "negro"
+  },
+  "servos_cola": {
+   "masa": 26.0,
+   "x": 228.0,
+   "caja": [
+    32,
+    40,
+    30
+   ],
+   "z": -55.0,
+   "mat": "negro"
+  },
+  "servos_ala": {
+   "masa": 36.0,
+   "x": 100.11000000000001,
+   "caja": [
+    0,
+    0,
+    0
+   ],
+   "z": 0.0,
+   "mat": null
+  },
+  "cableado_luces": {
+   "masa": 40.0,
+   "x": 58.0,
+   "caja": [
+    0,
+    0,
+    0
+   ],
+   "z": 0.0,
+   "mat": null
+  }
+ },
+ "refrigeracion": {
+  "entrada_tomas_mm2": 276,
+  "entrada_anillo_mm2": 427,
+  "salida_mm2": 952,
+  "relacion_salida_entrada": 1.35
+ },
+ "motor": {
+  "buje": [
+   -251.5,
+   0,
+   0
+  ],
+  "caida": 2.0,
+  "derecha": 2.0,
+  "mac": 213.0
+ }
+}

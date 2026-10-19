@@ -1,6 +1,6 @@
 # Battery and energy-storage realism plan
 
-**Date:** 2026-10-19. **Revision:** 2. **Status:** the minimum playable slice is software verified ([BAT-10 record](../research/battery/BAT-10/README.md)): `pack_ecm`, ESC low-voltage cutoff, Timber battery mode `pack`, O9 Battery overlay. D1–D14 were adopted as recommended (owner: "procede", [DECISIONS](../../DECISIONS.md)). Physical validation, Gate P and BAT-08, 12, 16–29 remain open. **Owner:** coupled shaft / electric propulsion track (EL), physics main line. **Parent:** [electric propulsion plan](../ELECTRIC-PROPULSION-PLAN.md). **Steps:** BAT-00…29. **Dated evidence:** [BAT-00 source review](../research/battery/BAT-00/README.md).
+**Date:** 2026-10-19. **Revision:** 2. **Status:** the minimum playable slice is software verified ([BAT-10 record](../research/battery/BAT-10/README.md)): `pack_ecm`, ESC low-voltage cutoff, Timber battery mode `pack`, O9 Battery overlay. D1–D14 were adopted as recommended (owner: "procede", [DECISIONS](../DECISIONS.md)). Physical validation, Gate P and BAT-08, 12, 16–29 remain open. **Owner:** coupled shaft / electric propulsion track (EL), physics main line. **Parent:** [electric propulsion plan](../ELECTRIC-PROPULSION-PLAN.md). **Steps:** BAT-00…29. **Dated evidence:** [BAT-00 source review](../research/battery/BAT-00/README.md).
 
 **Owns (after BAT-00):**
 - the shared battery law and the ESC battery supervisor (`app/physics/battery/`)
@@ -48,7 +48,7 @@ The rest of this plan builds on these pieces:
 | State | Remaining charge (C), terminal energy (J) and pack heat (J) are RK4-coupled with shaft rpm (`BATTERY_LAYOUT`) | `app/sim/flight_session.gd:67`, `:2741-2907` |
 | Events | `battery_exhausted` is localised to 1e-12 s. At Q = 0 every load disconnects. **No app code consumes `events_located`.** | `app/physics/electric_battery_step.gd`, `app/sim/simulation.gd:344-349` |
 | Data | `fixed_voltage` (Timber, 14.8 V) and `ocv_resistance` (synthetic 4S/6S Stik, linear OCV). Neither has a cell count or chemistry. `capabilities.energy` must equal `battery.kind`. | `app/physics/aircraft_data.gd:1129-1215`, `aircraft-contract-v2.json`, `aircraft-modules-v1.json` |
-| Mass | The pack is an ordinary inventory item, unlinked to `propulsion.battery`. Timber `battery_main` is 0.33 kg, `energy_source: "lipo"`. | Timber JSON, `AIRCRAFT_CONTRACT.md:96,145` |
+| Mass | The pack is an ordinary inventory item, unlinked to `propulsion.battery`. Timber `battery_main` is 0.33 kg, `energy_source: "lipo"`. | Timber JSON, `docs/AIRCRAFT_CONTRACT.md:96,145` |
 | Trace/log | Trace v8 `BATTERY_COLUMNS`; `.orfl` stores the raw continuous block; checkpoint v6 | `app/sim/trace.gd:40-48`, `app/sim/flight_log.gd` |
 | HUD | Only a "BATTERY LOW" chip, from **true SOC** < 0.2 or exhaustion. Volts and amps appear only in the legacy `--electric-demo` text line. | `app/render/overlays/telemetry.gd:20,101`, `app/main.gd:1005-1008` |
 | Audio | Electric pitch follows rpm and gain follows rpm/load/throttle, so sag is audible only through rpm. | `app/audio/soundscape_model.gd:122-140` |
@@ -101,7 +101,7 @@ The rest of this plan builds on these pieces:
    - `fixed_voltage` and `ocv_resistance` keep their laws, formats and replay identity.
    - The new behaviour is a new battery kind, `pack_ecm`.
 6. **The kernel stays generic.** Battery state lives in the session's continuous block, and discrete supervisor state lives in session-owned modes. No vehicle branches are added to `simulation.gd` (AGENTS).
-7. **Every new state follows the full lifecycle:** layout, reset, checkpoint, restore, replay, rollback, trace and flight log, in one change (`AIRCRAFT_CONTRACT.md:151`).
+7. **Every new state follows the full lifecycle:** layout, reset, checkpoint, restore, replay, rollback, trace and flight log, in one change (`docs/AIRCRAFT_CONTRACT.md:151`).
 8. **Measured cost.** Each runtime step reports paired per-tick cost against the frozen BAT-02 baseline (Gate P).
 
 ## 4. Physical model
@@ -270,7 +270,7 @@ The new battery kind `pack_ecm`, with `capabilities.energy: "pack_ecm"`:
 
 - Pack mass and box inertia **replace** the mounted inventory item's mass when a pack is selected, which changes CG and AUW. Pack mass is constant during discharge, which is physically correct for lithium; no mass state is needed.
 - Initial SOC, temperature and health are **session inputs** (pack definitions stay immutable, EL1a-R2 #05). The aircraft file has none.
-- Admission follows `AIRCRAFT_CONTRACT.md:109`: a conditional module, a consumer, provenance, complete lifecycle state, a versioned schema and an analytic test. Battery temperature and BEC move from "rejected" to "admitted under `pack_ecm`".
+- Admission follows `docs/AIRCRAFT_CONTRACT.md:109`: a conditional module, a consumer, provenance, complete lifecycle state, a versioned schema and an analytic test. Battery temperature and BEC move from "rejected" to "admitted under `pack_ecm`".
 - Files to change (from the integration map):
   - `aircraft_data.gd` `_electric_battery`
   - `aircraft-contract-v2.json` and `aircraft-modules-v1.json`

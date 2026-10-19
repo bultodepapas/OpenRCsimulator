@@ -8,7 +8,7 @@ This physics subplan owns electric motor/supply/stop modules, electric tests and
 
 ## Current software contract
 
-`openrc-aircraft v2` is the current aircraft-data boundary and carries the explicit `electric_prop` branch; v1 is a historical compatibility path. The loader normalizes provenance-complete motor, ESC and battery blocks alongside the existing propeller/rotor data. It rejects mixed combustion/turbine fields and unsupported configurations. See [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md) and the [schema/loader evidence](research/propulsion/EL1b/README.md).
+`openrc-aircraft v2` is the current aircraft-data boundary and carries the explicit `electric_prop` branch; v1 is a historical compatibility path. The loader normalizes provenance-complete motor, ESC and battery blocks alongside the existing propeller/rotor data. It rejects mixed combustion/turbine fields and unsupported configurations. See [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) and the [schema/loader evidence](research/propulsion/EL1b/README.md).
 
 The implemented motor is a stateless, positive-rotation DC-equivalent source: `E = rpm/Kv`, `kt = 60/(2πKv)`, `Im = max((d·Vbus − E)/Rm, 0)`, and `Qsource = kt(Im − I0)` while rotating. The ESC law is ideal averaged motoring with identity command-to-duty mapping. EL1 uses prescribed fixed voltage and has no battery state. EL2a supports a synthetic OCV/resistance pack with SOC, sag, charge/energy accounting, pack-side auxiliary current and exhaustion events. Pack heat is loss energy, not a thermal model.
 

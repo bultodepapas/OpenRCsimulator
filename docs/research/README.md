@@ -55,7 +55,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Aircraft standardization
 
-[AS-00–05 evidence index](aircraft-standardization/README.md) covers the fleet audit, v2 contract/schema, source migration, authoring template and verification. The [aircraft data contract](../../AIRCRAFT_CONTRACT.md) defines current authoring; measured aircraft mass properties and physical validation remain separate work.
+[AS-00–05 evidence index](aircraft-standardization/README.md) covers the fleet audit, v2 contract/schema, source migration, authoring template and verification. The [aircraft data contract](../AIRCRAFT_CONTRACT.md) defines current authoring; measured aircraft mass properties and physical validation remain separate work.
 
 ### Extra 300S flight realism
 
@@ -97,7 +97,7 @@ Start with [DT-00](desktop-delivery-investigations/DT-00/README.md), then see [D
 
 ### Flight model and simulation
 
-Use the [flight-model audit](flight-model-robustness-audit.md), [repair implementation record](flight-repair-implementation.md) and [D8b-R2 pull-up investigation](flight-robustness/D8b-R2/README.md) (with the [D8b-R2d analog evidence: measured Ultra Stick 120 lift retention and roll damping, scoring bench and candidate results, 2026-10-19](flight-robustness/D8b-R2/analog/README.md)) for the main handling history. Current implementation boundaries are in [STACK](../../STACK.md); the [roadmap](../../ROADMAP.md) owns remaining gates.
+Use the [flight-model audit](flight-model-robustness-audit.md), [repair implementation record](flight-repair-implementation.md) and [D8b-R2 pull-up investigation](flight-robustness/D8b-R2/README.md) (with the [D8b-R2d analog evidence: measured Ultra Stick 120 lift retention and roll damping, scoring bench and candidate results, 2026-10-19](flight-robustness/D8b-R2/analog/README.md)) for the main handling history. Current implementation boundaries are in [STACK](../STACK.md); the [roadmap](../../ROADMAP.md) owns remaining gates.
 
 | Topic | Evidence entry points |
 | --- | --- |
@@ -224,5 +224,5 @@ The [2026-10-19 further aircraft and flight recordings](flight-dynamics/rc-valid
 ## Adding research
 
 1. Put reports in `docs/research/` and scripts/raw data in root `research/<track>/<step>/`. Record date, sources and licenses, method, result, limits and reproduction command when available.
-2. Keep evidence beside the report or in its step folder. Link the report from the owning guide and this index; merge reusable lessons into [LEARNINGS.md](../../LEARNINGS.md#keeping-this-useful).
+2. Keep evidence beside the report or in its step folder. Link the report from the owning guide and this index; merge reusable lessons into [LEARNINGS.md](../LEARNINGS.md#keeping-this-useful).
 3. Do not link local-only `references/` or ignored `app/captures/` as repository artifacts. Third-party assets need redistribution-compatible licenses and a `sources.json` with author, URL, license and hash.

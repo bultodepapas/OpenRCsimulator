@@ -6,7 +6,7 @@ The **visual model** of the fifth catalog aircraft, shown as "Turbo Lumber Evolu
 
 | Item | Value |
 | --- | --- |
-| Source delivery | `Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/`: 144 files, 19,438,463 bytes; exact delivery hashes in [source-manifest.json](source-manifest.json) (TT-19). The outer ZIP and duplicate GLB are not pipeline inputs. |
+| Source delivery | `assets/source-deliveries/turbo-timber-evolution-r2/turbo_timber_evolution_r2/r2/`: 144 files, 19,438,463 bytes; exact delivery hashes in [source-manifest.json](source-manifest.json) (TT-19). The outer ZIP and duplicate GLB are not pipeline inputs. |
 | Author | Estudiante 4 (Innovaitors SAS) with Claude as a modelling assistant, from the owner's photographs and general knowledge of the type; parametric CAD (build123d) exported with Blender 5.2.2, see the delivery `README.md` and `LICENSE.txt` |
 | Visual revision | `r2-d75ae605aa3a` (delivery revision plus the first 12 hex digits of the GLB SHA-256); `VISUAL_REVISION` in `timber_model.gd` and `geometry.json → revision` must match it |
 | Catalog ID / source alias | `turbo-lumber-evolution` / `eflite_turbo_timber_evolution` (the author's id) |

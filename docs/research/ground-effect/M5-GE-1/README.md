@@ -8,7 +8,7 @@ Every flare and liftoff happens inside one span of the ground, where the ground'
 
 ## Design
 
-Ground effect is a conditional v2 aircraft module, `aero.ground_effect`, with four fitted law constants carrying their own evidence kind and source ([contract](../../../../AIRCRAFT_CONTRACT.md#physical-modules-and-parameter-effects), [module semantics](../../aircraft-standardization/AS-01/module-semantics.md#wing-and-tail-ground-effect)). Only the Stik declares it. Any aircraft without it, every static solve (trim, linearisation, flight modes) and every evaluation above the fade height take the byte-identical legacy load path; the oracle parity suites pass unchanged.
+Ground effect is a conditional v2 aircraft module, `aero.ground_effect`, with four fitted law constants carrying their own evidence kind and source ([contract](../../../AIRCRAFT_CONTRACT.md#physical-modules-and-parameter-effects), [module semantics](../../aircraft-standardization/AS-01/module-semantics.md#wing-and-tail-ground-effect)). Only the Stik declares it. Any aircraft without it, every static solve (trim, linearisation, flight modes) and every evaluation above the fade height take the byte-identical legacy load path; the oracle parity suites pass unchanged.
 
 The law is σ(x) = c·x^e / (1 + c·x^e), x = height / span, faded with a C¹ smoothstep to exactly 1 at `FADE_SPAN_RATIO` = 2 spans ([`ground_effect.gd`](../../../../app/physics/ground_effect.gd)):
 

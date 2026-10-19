@@ -2,7 +2,7 @@
 
 The runtime model uses the supplied `monster_truck_nitro_1.glb` geometry and the supplied `monster_truck_nitro_1.blend` rig. No replacement vehicle geometry was created. `visual_bake.py` samples the original Blender drivers into a compact transform table; the source `.blend` and GLB are not modified.
 
-The source files were supplied with this task. The committed GLB and `datos_simulacion_1.json` copies are byte-identical to those supplied under `monster car 2/`; see [SOURCE.txt](../../../assets/vehicles/monster-car-2/SOURCE.txt) for the asset provenance record:
+The source files were supplied with this task. The committed GLB and `datos_simulacion_1.json` copies are byte-identical to those supplied under `assets/source-deliveries/monster-car-2/`; see [SOURCE.txt](../../../assets/vehicles/monster-car-2/SOURCE.txt) for the asset provenance record:
 
 | Asset | SHA-256 |
 | --- | --- |
@@ -46,7 +46,7 @@ Bindings exposed to shared effects and damage code:
 From the repository root, use Blender 5.2.2 and the supplied source rig:
 
 ```powershell
-& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b 'monster car 2\monster_truck_nitro_1.blend' --python research/rc-monster-truck/monster-car-2/visual_bake.py -- --glb assets/vehicles/monster-car-2/monster_truck_nitro_1.glb --spec assets/vehicles/monster-car-2/datos_simulacion_1.json --out assets/vehicles/monster-car-2/visual_rig
+& 'C:\Program Files\Blender Foundation\Blender 5.2\blender.exe' -b 'assets/source-deliveries/monster-car-2\monster_truck_nitro_1.blend' --python research/rc-monster-truck/monster-car-2/visual_bake.py -- --glb assets/vehicles/monster-car-2/monster_truck_nitro_1.glb --spec assets/vehicles/monster-car-2/datos_simulacion_1.json --out assets/vehicles/monster-car-2/visual_rig
 ```
 
 The generated `visual_rig.bin` is SHA-256 `4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d`. Its JSON manifest records the GLB/spec hashes, track layout, rest wheel centers, and authored effect bindings. The runtime copy under `app/assets/vehicles/monster-car-2/` must match the generated files. At runtime the adapter checks the bake binary hash and validates every track's bounds and samples. In a source checkout it also hashes the raw GLB; an exported PCK contains Godot's imported scene instead of those raw GLB bytes, so the GLB source hash is checked during baking/build validation and is not compared against the remapped scene.

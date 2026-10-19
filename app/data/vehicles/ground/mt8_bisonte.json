@@ -6,9 +6,9 @@
   "description": "Simulation-only estimated electric 4WD baseline scaled from the delivered MT8 blockout geometry. Mass, inertia, suspension, tire, drivetrain, and servo values are estimates, not measured vehicle data.",
   "drive_configuration": "electric_4wd",
   "geometry_source": {
-    "spec_path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json",
+    "spec_path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json",
     "spec_sha256": "8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef",
-    "glb_path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb",
+    "glb_path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb",
     "glb_sha256": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6",
     "asset_frame": {
       "right": "+X",
@@ -69,7 +69,7 @@
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR from each wheel_center_rest.z."
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR from each wheel_center_rest.z."
     },
     "corner_y_datum_frd_m": {
       "value": [
@@ -80,7 +80,7 @@
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR from each wheel_center_rest.x."
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR from each wheel_center_rest.x."
     },
     "corner_z_datum_frd_m": {
       "value": [
@@ -91,7 +91,7 @@
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR; down-positive wheel centers at rest."
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Ordered FL, FR, RL, RR; down-positive wheel centers at rest."
     },
     "cg_forward_from_datum_m": {
       "value": 0.0,
@@ -115,25 +115,25 @@
       "value": 0.06,
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: corners.FL.arm_lower_pivot.x magnitude; suspension inner pivot offset"
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: corners.FL.arm_lower_pivot.x magnitude; suspension inner pivot offset"
     },
     "arm_length_m": {
       "value": 0.155,
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: arm_length"
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: arm_length"
     },
     "wheel_center_rest_below_chassis_datum_m": {
       "value": 0.025,
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Mean of the four supplied wheel_center_rest heights."
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Mean of the four supplied wheel_center_rest heights."
     },
     "tire_radius_m": {
       "value": 0.1,
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: tire_radius"
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: tire_radius"
     },
     "suspension_stiffness_n_per_m": {
       "value": 900.0,
@@ -169,13 +169,13 @@
       "value": 0.07,
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: travel_droop"
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: travel_droop"
     },
     "travel_bump_m": {
       "value": 0.05,
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: travel_bump"
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: travel_bump"
     },
     "bump_stop_stiffness_n_per_m": {
       "value": 8000.0,
@@ -247,7 +247,7 @@
       "value": 0.5235987755982988,
       "unit": "rad",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: steer_max_deg converted to radians"
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: steer_max_deg converted to radians"
     },
     "steer_servo_natural_frequency_rad_s": {
       "value": 18.0,
@@ -284,7 +284,7 @@
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Centers from the six supplied COL_* proxy boxes, flattened as FRD triplets."
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: the delivered blockout coordinate frame and named geometry values; converted from asset +X-right/+Y-up/-Z-forward to body FRD +X-forward/+Y-right/+Z-down. Centers from the six supplied COL_* proxy boxes, flattened as FRD triplets."
     },
     "hull_probe_radii_m": {
       "value": [
@@ -297,7 +297,7 @@
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "Derived from RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: half of each COL_* proxy box vertical (+Y) dimension, used as simple hull contact probes"
+      "source": "Derived from assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json SHA-256 8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef: half of each COL_* proxy box vertical (+Y) dimension, used as simple hull contact probes"
     },
     "hull_contact_stiffness_n_per_m": {
       "value": 15000.0,

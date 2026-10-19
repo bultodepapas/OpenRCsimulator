@@ -1,8 +1,8 @@
 # FUEL 00 R1 fuel system audit evidence
 
-**Date:** 2026-10-19. **Source baseline:** `903d0b444`. The tree was clean at the start; unrelated documentation, website and cleanup edits appeared during review and were preserved. This review changes documentation only. Aircraft data, physics, accepted goldens and existing flight evidence were not regenerated.
+**Date:** 2026-10-19. **Source baseline:** `903d0b444`. The tree was clean at the start; unrelated documentation, website and cleanup edits appeared during review and were preserved. This review adds documentation, audit probes and a Word export helper. It does not alter simulation behaviour or regenerate aircraft data, physics, goldens or existing flight evidence.
 
-The [unified audit standard and completion plan](../../../plans/fuel-mass-balance.md) owns findings A1 through A10, current status, future-aircraft admission and completion gates. This page retains reproducible evidence. The adjacent Word document is an export of that plan; edit the Markdown first. Historical FUEL-00 through 04 evidence keeps its original snapshot scope.
+The [unified audit standard and completion plan](../../../plans/fuel-mass-balance.md) owns findings A1 through A10, current status, future-aircraft admission and completion gates. This page retains reproducible evidence. The adjacent Word document is an export of that plan; edit the Markdown first and use the [export helper](../../../../research/fuel-systems/FUEL-00-R1/build_document.py) with the managed document runtime and `python-docx==1.2.0`. The DOCX metadata records its source SHA-256. Historical FUEL-00 through 04 evidence keeps its original snapshot scope.
 
 ## Source anchors
 
@@ -13,13 +13,13 @@ Locations below refer to the reviewed source baseline, not graph-index line rang
 | A1 | `app/render/crash/director.gd:95,215-220,249`: kerosene-only scalar versus live glow source map. `app/render/crash/effects.gd:483-504`: the stain uses the source map and already sees glow |
 | A2 | `app/sim/flight_session.gd:146-160,3549-3550,3591,3729`: fill setter/reset and metadata exist; checkpoint does not serialize the selected fill |
 | A3 | `app/physics/glow/installation.gd:142,247-283`: liquid found by display name, authored amount used as reference/capacity. `app/physics/aircraft_data.gd:1350-1444`: normalized tank IDs, capacity, residue and fill |
-| A4 | `AIRCRAFT_CONTRACT.md`, coordinates section; `app/physics/aircraft_data.gd:431-465`; `app/physics/glow/installation.gd:278-283`; `app/tests/test_fuel_start_fill.gd:47-48`: fixed datum is reference inventory CG |
+| A4 | `docs/AIRCRAFT_CONTRACT.md`, coordinates section; `app/physics/aircraft_data.gd:431-465`; `app/physics/glow/installation.gd:278-283`; `app/tests/test_fuel_start_fill.gd:47-48`: fixed datum is reference inventory CG |
 | A5 | `app/physics/glow/fuel_feed.gd:64-74`; `app/physics/rigid_body.gd:71-113`; `app/physics/fixed_datum_body.gd:15-24`: current force convention and omitted rotational feed terms |
 | A6 | `research/fuel-systems/FUEL-05/relabel_synthetic.py:23-34`; `research/avanti-s/av06/inputs.json:256-282`; `app/data/aircraft/sebart_avanti_s_a200.json:91,777`: donor IDs incomplete, main tank only, empty smoke tank and lumped accessories |
 | A7 | `research/fuel-systems/mass_balance_report.py:71,102,155-204`: non-recursive scan, wet inventory comparison, positive-margin failure check and non-failing drift messages |
 | A8 | `app/physics/glow/flight.gd:319-325`; `app/physics/electric_battery_step.gd:262-275`; `app/tests/test_sf_event_protocol.gd:264-268`: type renamed, charge field retained, type-only assertion |
 | A9 | `app/physics/glow/profile.gd:48-54`; `app/physics/glow/installation.gd:310`; `app/tests/test_fuel_properties.gd:57-70`: embedded profile density, current equality and deliberate divergence fixture |
-| A10 | Generator check logs below; `research/fuel-systems/FUEL-05/ft-glow-compare.md`: missing commit identities and invalid trim in the current comparison |
+| A10 | Generator check logs below; `docs/research/fuel-systems/FUEL-05/ft-glow-compare.md`: missing commit identities and invalid trim in the current comparison |
 
 `.orfl` mass/CG is at `app/sim/flight_log.gd:176-179`. Ordinary trace column definitions at `app/sim/trace.gd:16-26,55-61` still have no live mass/CG. The [R05-B integration boundary](../../physics-audit-2026-10-14/remediation/R05/R05-B-dynamic-mass-integration-boundary.md) retains contact-event/remainder and free-rotor scope; a live mass accessor alone does not close that handoff.
 
@@ -76,8 +76,14 @@ python -I research/fuel-systems/mass_balance_report.py --check research/fuel-sys
 
 The two report tests pass. The report check prints no drift on this tree. Its current implementation exits nonzero for nonpositive registered margin, but does not fail on drift messages; missing neutral points also need an explicit qualification policy. Only Extra declares `cg_range`, checked by the loader at empty tanks. Its full-tank CG being ahead of that interval is permitted by this declared-state rule.
 
-Read-only generator `--check` results: glow installations, base Stik tank migration, synthetic donor relabeling, Extra and P-51 pass. Ventage reports stale `research/avanti-s/av06/derivation.md`; Timber reports stale aircraft physics data. The [generator log](generator-checks.log) retains exact commands and results. These are discrepancies to resolve with their owners, not authorization to regenerate unrelated accepted output.
+Read-only generator `--check` results: glow installations, base Stik tank migration, synthetic donor relabeling, Extra, P-51 and Ventage pass. Timber reports stale aircraft physics data. Checks used Python UTF-8 mode; the [generator log](generator-checks.log) retains exact commands and results. Resolve the Timber discrepancy with its owner before qualification; accepted output was not regenerated.
 
 ## Review limits
 
 This audit does not close FUEL-05 through 14, replay the FUEL-05 candidate FT recordings, re-record goldens, benchmark performance or validate hardware. The [original reference manifest](../FUEL-00/sources.json) retains sourced capacities, density and flow evidence. No new physical measurement was made. Software tests and a positive estimated static margin do not establish realistic handling or endurance.
+
+## Word export verification
+
+The Word export contains the unified Markdown, with its source SHA-256 in document metadata. The packaged `render_docx.py` pipeline rendered seven Letter pages; every final page PNG was visually inspected. Tables repeat their headers and no clipping or orphan final page remains. The packaged accessibility audit reports zero high, medium or low findings. Local Markdown targets and the DOCX source identity were checked.
+
+Authoring used the managed Python runtime with `python-docx==1.2.0`. This Windows runtime bundles no LibreOffice and exposes no dependency-loader tool, so conversion used a task-local official LibreOffice 24.2.7.2 download under WSL, a fresh isolated profile, and the managed Poppler rasterizer. The user's desktop office installation was not used. Rendered PNG/PDF files remain internal QA intermediates under ignored `tmp/`; the delivered artifact is the DOCX.

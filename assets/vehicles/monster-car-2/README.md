@@ -8,5 +8,5 @@ deterministic authored-rig bake used by the runtime adapter.
 - [SHA-256 source and derived-file manifest](source-manifest.json)
 
 The original supplied Blender project and collision GLB remain under
-`monster car 2/`. No replacement vehicle geometry or external download was
+`assets/source-deliveries/monster-car-2/`. No replacement vehicle geometry or external download was
 used.

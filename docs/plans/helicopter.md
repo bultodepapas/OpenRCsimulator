@@ -27,7 +27,7 @@
 | Audio track | `app/audio/` |
 | Flight-overlays track | `app/render/overlays/` |
 | Crash track | `app/render/crash/`, CR-01d hull labels |
-| Aircraft standardization | [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) |
+| Aircraft standardization | [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md) |
 
 **Evidence:** [HELI-01 research record](../research/helicopter/HELI-01/README.md) holds the sources, parameter tables, derived numbers and the seam map with line references.
 
@@ -41,7 +41,7 @@ The airplanes must not change: every existing golden flight, trace and capture s
 
 ## 1. Why this is a scope decision
 
-[DECISIONS](../../DECISIONS.md) opens with "Build an RC airplane simulator". The [data-pipeline investigation](../research/roadmap-investigations/09-aircraft-data-pipeline.md) placed helicopters out of scope and reserved `"vehicle": "rotorcraft"`.
+[DECISIONS](../DECISIONS.md) opens with "Build an RC airplane simulator". The [data-pipeline investigation](../research/roadmap-investigations/09-aircraft-data-pipeline.md) placed helicopters out of scope and reserved `"vehicle": "rotorcraft"`.
 
 A helicopter is a second vehicle class. It is not a fifth airplane:
 
@@ -52,7 +52,7 @@ A helicopter is a second vehicle class. It is not a fifth airplane:
 - a different contact (skids)
 - a different crash cause (blade strike)
 
-The owner authorized implementation on 2026-10-13; the scope extension and shared-kernel order are recorded in [DECISIONS](../../DECISIONS.md). The first playable route pairs X-Cell reference physics with the supplied HX-700 visual and explicitly estimated trainer/drive settings. It starts in a solved airborne hover. A ground spool-up lifecycle remains a separate step.
+The owner authorized implementation on 2026-10-13; the scope extension and shared-kernel order are recorded in [DECISIONS](../DECISIONS.md). The first playable route pairs X-Cell reference physics with the supplied HX-700 visual and explicitly estimated trainer/drive settings. It starts in a solved airborne hover. A ground spool-up lifecycle remains a separate step.
 
 What makes it tractable now:
 
@@ -143,7 +143,7 @@ This is the Gavrilets/Heffley–Mnich model family, the one validated for this a
 
 ### 4.2 Frames, signs and units
 
-Body FRD at the inventory CG and NED world, per [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units). Structural positions are in the datum frame `[x_aft, y_right, z_up]`; the rotorcraft datum is the main-rotor shaft axis at the skid plane.
+Body FRD at the inventory CG and NED world, per [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units). Structural positions are in the datum frame `[x_aft, y_right, z_up]`; the rotorcraft datum is the main-rotor shaft axis at the skid plane.
 
 Rotor quantities:
 
@@ -352,7 +352,7 @@ A real flybarless self-level or rescue mode is **not** an autopilot. It is in sc
 
 ## 5. Data contract
 
-**Implemented:** `openrc-aircraft v2`, `vehicle: "rotorcraft"`, with the dedicated closed [rotorcraft schema](../../app/data/schema/openrc-rotorcraft-v2.schema.json) and reader. The earlier sibling-v1 proposal is superseded by the [current contract boundary](../../AIRCRAFT_CONTRACT.md#experimental-rotorcraft-boundary). Do not route it through the conventional-airplane loader.
+**Implemented:** `openrc-aircraft v2`, `vehicle: "rotorcraft"`, with the dedicated closed [rotorcraft schema](../../app/data/schema/openrc-rotorcraft-v2.schema.json) and reader. The earlier sibling-v1 proposal is superseded by the [current contract boundary](../AIRCRAFT_CONTRACT.md#experimental-rotorcraft-boundary). Do not route it through the conventional-airplane loader.
 
 Every physical quantity retains `{value, unit, kind, source}` and strict unit/domain/unknown-key checks. The current X-Cell reader admits one explicit capability set and aggregate source mass/inertia. Complete component inventory, installed servo topology, identified electric powertrain and new hardware capabilities require explicit schema/reader extensions before use. Preserve existing airplane and X-Cell behavior when adding those branches.
 
@@ -412,7 +412,7 @@ The following is a future module sketch, not the current JSON schema; its richer
 
 ### 8.1 Visual model
 
-- **Source (D9), selected by the owner.** The installed visual comes from [`HX-700_Helicoptero_RC.blend`](../../Helicopter%203d%20acrobatic/HX-700_Helicoptero_RC.blend) and its embedded `generar_hx700.py`/`LEEME`. The adjacent supplied PDF is an IlGoblin Piuma Competizione SG779 assembly manual used as a class-700 dimension/spec reference. The [HELI-25 audit](../research/helicopter/HELI-25/README.md) owns that source's hashes, measurements and export bindings. The articulated replacement delivered on 2026-10-14 is reviewed in [HELI-25b](../research/helicopter/HELI-25b/README.md); §8.1.1 owns its integration. Reuse the supplied models and preserve their source files.
+- **Source (D9), selected by the owner.** The installed visual comes from [`HX-700_Helicoptero_RC.blend`](../../assets/source-deliveries/hx-700-original/HX-700_Helicoptero_RC.blend) and its embedded `generar_hx700.py`/`LEEME`. The adjacent supplied PDF is an IlGoblin Piuma Competizione SG779 assembly manual used as a class-700 dimension/spec reference. The [HELI-25 audit](../research/helicopter/HELI-25/README.md) owns that source's hashes, measurements and export bindings. The articulated replacement delivered on 2026-10-14 is reviewed in [HELI-25b](../research/helicopter/HELI-25b/README.md); §8.1.1 owns its integration. Reuse the supplied models and preserve their source files.
 - **Identity and scale.** HX-700 is a procedural flybarless 700-class visual design; the identified flight reference is the instrumented flybar X-Cell .60 SE. These are different configurations. Preserve the authored HX-700 scale and identity. A research preview may show the supplied model, but attaching X-Cell flight behavior requires an explicit research-surrogate label and measured alignment; a qualified HX-700 needs its own physical inventory and electronics. Do not derive inertia, CG, aerodynamic coefficients or gearing from appearance or render drivers.
 - **Coordinates and regeneration.** Source metres use +X nose, +Y left and +Z up. Its structural adapter is `[-x,-y,z]`; body FRD is `[x,-y,-z]` after subtracting an established CG. Both are proper rotations. Preserve the source file, root and authored pivots; export through the source pipeline with an aircraft-only selection. Native Godot binding, package provenance, draw/triangle budgets and source/export freshness must pass before runtime integration.
 - **Node contract** (registered with the model owners):
@@ -425,7 +425,7 @@ The following is a future module sketch, not the current JSON schema; its richer
 
 ### 8.1.1 Articulated HX-700 delivery integration
 
-**2026-10-14:** the owner supplied `NEW HELI/HX-700_Helicoptero_RC_1.blend`. [HELI-25b](../research/helicopter/HELI-25b/README.md) owns its immutable source identity, 26 pose probes, static-export limitations and inspection images. This section owns the remaining implementation plan. The existing flyable trainer stays available throughout.
+**2026-10-14:** the owner supplied `assets/source-deliveries/hx-700-articulated/HX-700_Helicoptero_RC_1.blend`. [HELI-25b](../research/helicopter/HELI-25b/README.md) owns its immutable source identity, 26 pose probes, static-export limitations and inspection images. This section owns the remaining implementation plan. The existing flyable trainer stays available throughout.
 
 **HELI-25c foundation:** the [inspection asset/profile pipeline](../../assets/aircraft/hx-700/articulated/README.md) generates 108 neutral bindings and nine linkage pairs, with a strict native loader and isolated fresh-import/package checks. This v1 profile is a neutral-rest contract; the separate HELI-26a adapter below adds bounded source-motion inspection. Native captures expose incomplete procedural material conversion: carbon/blade colours and livery-mask mixing need source baking before visual promotion. Achieved actuator dynamics, production export activation and articulated flight remain open. [Foundation evidence](../research/helicopter/HELI-25c/README.md).
 

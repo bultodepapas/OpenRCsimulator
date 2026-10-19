@@ -36,7 +36,7 @@ FIELD_IMAGES = (
         "field-club.webp",
     ),
     (
-        Path("RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/01_tres_cuartos_delantero.png"),
+        Path("assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/01_tres_cuartos_delantero.png"),
         "bisonte.webp",
     ),
     (

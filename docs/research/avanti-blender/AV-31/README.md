@@ -8,7 +8,7 @@ The [asset guide](../../../../assets/aircraft/avanti-s-a200/README.md) owns curr
 
 ## Delivery audit and source choice
 
-The user delivery was inspected without modifying its master files or the unrelated live Blender scene. Canonical source copies are byte-identical to `JET VENTAGE BLENDER/avanti_s.blend` and its geometry sidecar. The detailed source was necessary: the lighter supplied GLB omitted turbine parts. Existing geometry and textures were reused.
+The user delivery was inspected without modifying its master files or the unrelated live Blender scene. Canonical source copies are byte-identical to `assets/source-deliveries/ventage-jet/avanti_s.blend` and its geometry sidecar. The detailed source was necessary: the lighter supplied GLB omitted turbine parts. Existing geometry and textures were reused.
 
 | Input or observation | Finding and consequence |
 | --- | --- |

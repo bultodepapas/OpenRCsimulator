@@ -12,8 +12,8 @@ Savox is credited as a **partner** for permission to represent its products. The
 
 | Current source | Reuse / limitation |
 | --- | --- |
-| [Aircraft contract](../../AIRCRAFT_CONTRACT.md#physical-modules-and-parameter-effects) and [actuator kernel](../../app/physics/control_actuators.gd) | Rate-limited normalized motion already exists. `servo_full_throw_time` means neutral-to-full travel, not the manufacturer's seconds per 60° of output-shaft rotation. |
-| [Controls boundary](../../AIRCRAFT_CONTRACT.md#shared-module-and-runtime-interfaces) and [EM-03a evidence](../research/failure-mode/EM-03a/README.md) | Current aircraft retain three logical servo states. Separate visual hinges do not establish independent installed servos. |
+| [Aircraft contract](../AIRCRAFT_CONTRACT.md#physical-modules-and-parameter-effects) and [actuator kernel](../../app/physics/control_actuators.gd) | Rate-limited normalized motion already exists. `servo_full_throw_time` means neutral-to-full travel, not the manufacturer's seconds per 60° of output-shaft rotation. |
+| [Controls boundary](../AIRCRAFT_CONTRACT.md#shared-module-and-runtime-interfaces) and [EM-03a evidence](../research/failure-mode/EM-03a/README.md) | Current aircraft retain three logical servo states. Separate visual hinges do not establish independent installed servos. |
 | [Workshop](../AIRCRAFT-WORKSHOP.md), [parameters](../../app/workshop/parameters.gd) and [compiler](../../app/workshop/compiler.gd) | Detached variants, validation, immutable saves and trials exist. The closed recipe currently has no hardware selection; changing control travel retains normalized servo timing. |
 | [Stik inventory](../../app/data/aircraft/jensen_ugly_stik_60.json) | Estimated 135 g for three fuselage servos plus a 45 g aileron servo; the common 0.14 s timing is estimated. The grouped mass is not an actuator-to-surface map. |
 

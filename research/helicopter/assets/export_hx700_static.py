@@ -4,7 +4,7 @@
 From the repository root with Blender 5.2.2:
 
     blender --background --factory-startup \
-      "Helicopter 3d acrobatic/HX-700_Helicoptero_RC.blend" \
+      "assets/source-deliveries/hx-700-original/HX-700_Helicoptero_RC.blend" \
       --python research/helicopter/assets/export_hx700_static.py -- \
       --out .tools/heli25
 
@@ -24,7 +24,7 @@ import bpy
 
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-SOURCE_BLEND = REPO_ROOT / "Helicopter 3d acrobatic" / "HX-700_Helicoptero_RC.blend"
+SOURCE_BLEND = REPO_ROOT / "assets" / "source-deliveries" / "hx-700-original" / "HX-700_Helicoptero_RC.blend"
 EXPECTED_SOURCE_SHA256 = "cc2301bbc4fd6aa84474fb0a33de37fe721fd2ecab6e806ceafbcc6953a795cb"
 EXPECTED_GLB_SHA256 = "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764"
 

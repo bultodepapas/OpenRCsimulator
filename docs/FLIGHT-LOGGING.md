@@ -162,7 +162,7 @@ their own `loads_t_s`, not the endpoint timestamp.
 
 Body velocity is not air-relative velocity. Positive `down_m` points down; altitude
 above the NED datum is `-down_m`, which is not terrain clearance. Servo values are
-fractions of maximum throw, not degrees. [Aircraft units/signs](../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units)
+fractions of maximum throw, not degrees. [Aircraft units/signs](AIRCRAFT_CONTRACT.md#coordinates-signs-and-units)
 remain authoritative.
 
 The optional flap channel is normalized 0–1. Its accepted actuator position is retained

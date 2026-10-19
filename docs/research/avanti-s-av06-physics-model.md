@@ -2,7 +2,7 @@
 
 2026-10-06 · AV-05/AV-06/AV-07 · **The Avanti S flies: experimental physics estimate, validated against its own data and the research envelopes; not flight-identified.**
 
-2026-10-12 update: this is the historical AV-05…07 report. The aircraft now uses the [v2 contract](../../AIRCRAFT_CONTRACT.md). [AV-14…17](avanti-realism/README.md) supersedes its mass/inertia, geometry-reference and fuel-sensitivity numbers and its loop interpretation. The original body-pitch integral did not prove a flown loop. Use the newer evidence for current status; neither report is matched-aircraft flight validation.
+2026-10-12 update: this is the historical AV-05…07 report. The aircraft now uses the [v2 contract](../AIRCRAFT_CONTRACT.md). [AV-14…17](avanti-realism/README.md) supersedes its mass/inertia, geometry-reference and fuel-sensitivity numbers and its loop interpretation. The original body-pitch integral did not prove a flown loop. Use the newer evidence for current status; neither report is matched-aircraft flight validation.
 
 Scope: SebArt Avanti S Jet 2.2m (A200, 2.00 m span) with a JetCat P100-RX, catalog ID `sebart-avanti-s-a200-p100rx`, in-air start, flaps up, gear up. Inputs: [requirements audit](avanti-s-av05-physics-requirements.md), [turbine research](avanti-s-av05-turbine-dynamics.md), [airframe research](avanti-s-av06-airframe-data.md), [aero references](avanti-s-av06-aero-references.md). Generated data: [derivation](../../research/avanti-s/av06/derivation.md).
 

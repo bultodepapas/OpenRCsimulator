@@ -1,6 +1,6 @@
 # P-51D RC flight realism
 
-2026-10-16 · Revision 4 · **Status: P51-15…18 complete; P51-19…21 implemented; P51-22 closed in software (test-pilot corrections, R02 law kept); P51-23 CI check and Linux verification run; P51-24 rudder corrected; P51-25 fuselage directional term implemented; P51-26 piecewise swirl and Ribner sidewash implemented in the runtime; physical acceptance remains experimental.** Prefix: P51-. This plan owns P51-15…26, following [P51-PLAN](P51-PLAN.md) and the completed [aircraft contract](../AIRCRAFT_CONTRACT.md). Revision 1 completed the audit and implementation plan before code changes; this revision records execution.
+2026-10-16 · Revision 4 · **Status: P51-15…18 complete; P51-19…21 implemented; P51-22 closed in software (test-pilot corrections, R02 law kept); P51-23 CI check and Linux verification run; P51-24 rudder corrected; P51-25 fuselage directional term implemented; P51-26 piecewise swirl and Ribner sidewash implemented in the runtime; physical acceptance remains experimental.** Prefix: P51-. This plan owns P51-15…26, following [P51-PLAN](P51-PLAN.md) and the completed [aircraft contract](AIRCRAFT_CONTRACT.md). Revision 1 completed the audit and implementation plan before code changes; this revision records execution.
 
 ## Objective and ownership
 
@@ -24,7 +24,7 @@ Baseline: clean commit `df36b44`; Godot 4.7.2 official, native Windows. Existing
 
 ## Architecture and physical decisions
 
-1. Keep authored data, derived tensor/coefficients and runtime state separate under [AIRCRAFT_CONTRACT](../AIRCRAFT_CONTRACT.md). No new capability, magic aircraft-ID physics branch or unsupported coefficient is needed for the bounded corrections.
+1. Keep authored data, derived tensor/coefficients and runtime state separate under [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md). No new capability, magic aircraft-ID physics branch or unsupported coefficient is needed for the bounded corrections.
 2. Represent paired hardware as two inventory components at opposite lateral positions. The existing loader computes the complete symmetric inertia tensor with the parallel-axis theorem. Preserve the estimated flight mass and CG target; verify inertia positivity and triangle inequalities. Local component envelopes must describe each item, not the empty space between items.
 3. Use current session initialization for probes, and retain all continuous state slots (wash, shaft and wheels when enabled). Test reset success, fault state, trace timing and finite results. No silent fallback to a different aircraft/start.
 4. Audit upright/inverted trim, speed/climb/glide, left/right rolls, turns/slips, pitch/yaw response, loop trajectory, stall/spin entry and recovery, throttle steps, wind/density sensitivity, takeoff/landing/rollout, crash/restart and exact replay. Guided maneuvers are labelled as such. Integrated body pitch rate alone does not establish a closed planar loop.

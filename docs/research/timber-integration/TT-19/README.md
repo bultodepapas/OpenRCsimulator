@@ -4,7 +4,7 @@
 
 ## Accepted source and runtime
 
-The runtime GLB is byte-identical to `Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/export/aircraft.glb`, SHA-256 `d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722`. The source package and its editable `source/aircraft_game.blend` remain untouched. The source manifest identifies all 144 nested delivery files, 19,438,463 bytes. Outer duplicate files and the ZIP are not pipeline inputs. The supplied LICENSE is copied verbatim.
+The runtime GLB is byte-identical to `assets/source-deliveries/turbo-timber-evolution-r2/turbo_timber_evolution_r2/r2/export/aircraft.glb`, SHA-256 `d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722`. The source package and its editable `source/aircraft_game.blend` remain untouched. The source manifest identifies all 144 nested delivery files, 19,438,463 bytes. Outer duplicate files and the ZIP are not pipeline inputs. The supplied LICENSE is copied verbatim.
 
 | Godot-imported quantity | r1 | r2 |
 | --- | ---: | ---: |

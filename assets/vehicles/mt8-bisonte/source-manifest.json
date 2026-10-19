@@ -2,7 +2,7 @@
   "format": "openrc-visual-source",
   "version": 1,
   "id": "mt8-bisonte",
-  "delivery": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte",
+  "delivery": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte",
   "files": [
     {
       "source": "out/MT8_Bisonte.glb",
