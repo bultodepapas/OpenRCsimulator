@@ -39,6 +39,8 @@ For different equipment, the model root can declare `light_groups`, an Array con
 
 Authored luminous effects can use `AircraftLights.bind_groups(kit, bindings, supported_groups)`. `bindings` maps group names to Arrays of `Node3D` references or kit-relative NodePaths. Bind the emitted glow and corresponding light together; bind only luminous presentation nodes, leaving reflective lens geometry intact. Invalid or duplicate references are rejected before replacing accepted bindings. Successful binding starts OFF; apply the flight state's resolved mode afterward. Instances retain their own nodes/materials; binding never edits shared source materials.
 
+Imported emissive lenses use `prepare_emission(root)` and `set_emission_mode(bindings, mode, gain)`. Preparation caches per-instance surface overrides; it never changes the GLB, mesh or shared source material. The existing `light_red` and `light_green` materials map to navigation; root metadata `light_material_groups` can replace that material-name → group map. Timber's two imported navigation materials follow AUTO/ALL/NAV/OFF while its reflective lens geometry remains present. Preparation also runs in daylight before a kit exists. Material properties are updated only when mode/gain changes.
+
 A different aircraft adapter should own one shared light-state instance, sample its authoritative clock and existing solar gain, apply `active_mode`/`gain` to its supported effects, and reset at its session boundary. The helicopter adapter demonstrates this while retaining rotor phase, exposure caps, its armed beacon gate and body-optic fade. Keep animation updates separate from selection changes.
 
 ## Checks

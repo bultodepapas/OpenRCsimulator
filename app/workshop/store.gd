@@ -116,6 +116,25 @@ static func save_variant(
 		expected_revision: int = -1,
 		presentation_profile: Dictionary = {}
 ) -> Dictionary:
+	return _save_variant(name, base_id, base_bytes, recipe, id, root,
+		workshop_descriptor, dependencies, expected_revision, presentation_profile)
+
+
+## Private transaction seam for interruption tests. Production saves have no observer,
+## global failpoint or persisted setting; false leaves the on-disk prefix for rereading.
+static func _save_variant(
+		name: String,
+		base_id: String,
+		base_bytes: PackedByteArray,
+		recipe: Dictionary,
+		id: String,
+		root: String,
+		workshop_descriptor: Dictionary,
+		dependencies: Dictionary,
+		expected_revision: int,
+		presentation_profile: Dictionary,
+		checkpoint: Callable = Callable()
+) -> Dictionary:
 	var errors := PackedStringArray()
 	if expected_revision < -1:
 		errors.append("Expected revision must be -1 or a non-negative integer.")
@@ -301,11 +320,15 @@ static func save_variant(
 			errors.append("Could not reserve a unique first-save staging directory.")
 			return _result(false, errors)
 		write_dir = staging_dir
+		if not _continue_save(checkpoint, "after_staging_create"):
+			return _interrupted_save("after_staging_create")
 	var revisions_dir: String = write_dir.path_join("revisions")
 	root_error = _make_directory(revisions_dir)
 	if root_error != OK:
 		errors.append("Could not create the variant revisions directory (%s)." % error_string(root_error))
 		return _result(false, errors)
+	if not _continue_save(checkpoint, "after_revisions_create"):
+		return _interrupted_save("after_revisions_create")
 	var now: int = maxi(created_at, int(Time.get_unix_time_from_system()))
 	var stored_recipe: Dictionary = recipe.duplicate(true)
 	# JSON parses every number as float. Hash the representation that will be
@@ -346,7 +369,7 @@ static func save_variant(
 	var revision_name: String = "%08d.json" % revision
 	var revision_path: String = revisions_dir.path_join(revision_name)
 	var record_bytes: PackedByteArray = (JSON.stringify(record, "\t", true, true) + "\n").to_utf8_buffer()
-	var write_result: Dictionary = _write_new_file_atomic(revision_path, record_bytes)
+	var write_result: Dictionary = _write_new_file_atomic(revision_path, record_bytes, checkpoint)
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
 		return _result(false, errors)
@@ -357,7 +380,7 @@ static func save_variant(
 		"revision": revision,
 	}
 	var index_bytes: PackedByteArray = (JSON.stringify(index, "\t", true, true) + "\n").to_utf8_buffer()
-	var index_result: Dictionary = _write_index_atomic(write_dir, index_bytes, safe_id, previous_revision)
+	var index_result: Dictionary = _write_index_atomic(write_dir, index_bytes, safe_id, previous_revision, checkpoint)
 	if not bool(index_result["ok"]):
 		errors.append_array(index_result["errors"])
 		return _result(false, errors)
@@ -369,11 +392,15 @@ static func save_variant(
 			or bool(loaded.variant.get("recovered_from_manifest_backup", false)):
 		return _result(false, PackedStringArray(["New variant revision failed exact readback; the previous record remains recoverable."]))
 	if not is_existing_variant:
+		if not _continue_save(checkpoint, "before_first_publish"):
+			return _interrupted_save("before_first_publish")
 		var publication: Dictionary = _publish_staged_variant(write_dir, variant_dir, safe_id)
 		if not bool(publication["ok"]):
 			errors.append_array(publication["errors"])
 			return _result(false, errors)
 		loaded = publication
+		if not _continue_save(checkpoint, "after_first_publish"):
+			return _interrupted_save("after_first_publish")
 	return _result(true, PackedStringArray(), loaded["variant"])
 
 
@@ -981,7 +1008,7 @@ static func _read_bytes(path: String, max_bytes: int) -> Dictionary:
 	return {"ok": true, "errors": errors, "bytes": bytes}
 
 
-static func _write_new_file_atomic(path: String, bytes: PackedByteArray) -> Dictionary:
+static func _write_new_file_atomic(path: String, bytes: PackedByteArray, checkpoint: Callable = Callable()) -> Dictionary:
 	var errors := PackedStringArray()
 	if FileAccess.file_exists(path) or DirAccess.dir_exists_absolute(path):
 		errors.append("Refusing to overwrite an existing immutable revision file.")
@@ -995,16 +1022,22 @@ static func _write_new_file_atomic(path: String, bytes: PackedByteArray) -> Dict
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_revision_temp_write"):
+		return _interrupted_save("after_revision_temp_write")
 	var readback: Dictionary = _read_bytes(temporary, MAX_VARIANT_BYTES)
 	if not bool(readback["ok"]) or (readback.get("bytes", PackedByteArray()) as PackedByteArray) != bytes:
 		DirAccess.remove_absolute(temporary)
 		errors.append("Temporary revision failed its exact-byte readback check.")
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_revision_temp_readback"):
+		return _interrupted_save("after_revision_temp_readback")
 	var rename_error: Error = DirAccess.rename_absolute(temporary, path)
 	if rename_error != OK:
 		DirAccess.remove_absolute(temporary)
 		errors.append("Could not commit immutable revision file (%s)." % error_string(rename_error))
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_revision_commit"):
+		return _interrupted_save("after_revision_commit")
 	return {"ok": true, "errors": errors}
 
 
@@ -1012,7 +1045,8 @@ static func _write_index_atomic(
 		variant_dir: String,
 		bytes: PackedByteArray,
 		expected_id: String,
-		expected_previous_revision: int
+		expected_previous_revision: int,
+		checkpoint: Callable = Callable()
 ) -> Dictionary:
 	var errors := PackedStringArray()
 	var index_path: String = variant_dir.path_join("manifest.json")
@@ -1026,11 +1060,15 @@ static func _write_index_atomic(
 	if not bool(write_result["ok"]):
 		errors.append_array(write_result["errors"])
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_manifest_temp_write"):
+		return _interrupted_save("after_manifest_temp_write")
 	var readback: Dictionary = _read_bytes(temporary, MAX_VARIANT_BYTES)
 	if not bool(readback["ok"]) or (readback.get("bytes", PackedByteArray()) as PackedByteArray) != bytes:
 		DirAccess.remove_absolute(temporary)
 		errors.append("Temporary manifest failed its exact-byte readback check.")
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_manifest_temp_readback"):
+		return _interrupted_save("after_manifest_temp_readback")
 	var moved_current: bool = false
 	var current_result: Dictionary = _load_from_manifest_source(variant_dir, expected_id, index_path, false)
 	var backup_result: Dictionary = {}
@@ -1051,12 +1089,16 @@ static func _write_index_atomic(
 				DirAccess.remove_absolute(temporary)
 				errors.append("Could not rotate the prior manifest backup.")
 				return {"ok": false, "errors": errors}
+			if not _continue_save(checkpoint, "after_backup_remove"):
+				return _interrupted_save("after_backup_remove")
 		var backup_error: Error = DirAccess.rename_absolute(index_path, backup_path)
 		if backup_error != OK:
 			DirAccess.remove_absolute(temporary)
 			errors.append("Could not preserve the previous manifest (%s)." % error_string(backup_error))
 			return {"ok": false, "errors": errors}
 		moved_current = true
+		if not _continue_save(checkpoint, "after_backup_rotate"):
+			return _interrupted_save("after_backup_rotate")
 	elif not bool(current_result["ok"]) and backup_matches:
 		if DirAccess.dir_exists_absolute(index_path):
 			DirAccess.remove_absolute(temporary)
@@ -1068,6 +1110,8 @@ static func _write_index_atomic(
 				DirAccess.remove_absolute(temporary)
 				errors.append("Could not replace the invalid current manifest (%s)." % error_string(remove_current_error))
 				return {"ok": false, "errors": errors}
+			if not _continue_save(checkpoint, "after_invalid_manifest_remove"):
+				return _interrupted_save("after_invalid_manifest_remove")
 		preserve_backup = true
 	else:
 		DirAccess.remove_absolute(temporary)
@@ -1080,7 +1124,17 @@ static func _write_index_atomic(
 		DirAccess.remove_absolute(temporary)
 		errors.append("Could not atomically commit the manifest (%s)." % error_string(commit_error))
 		return {"ok": false, "errors": errors}
+	if not _continue_save(checkpoint, "after_manifest_commit"):
+		return _interrupted_save("after_manifest_commit")
 	return {"ok": true, "errors": errors}
+
+
+static func _continue_save(checkpoint: Callable, stage: String) -> bool:
+	return not checkpoint.is_valid() or bool(checkpoint.call(stage))
+
+
+static func _interrupted_save(stage: String) -> Dictionary:
+	return _result(false, PackedStringArray(["Variant save interrupted at %s; reload before retrying." % stage]))
 
 
 static func _write_bytes(path: String, bytes: PackedByteArray) -> Dictionary:

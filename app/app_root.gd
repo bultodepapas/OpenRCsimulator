@@ -1653,13 +1653,20 @@ func restart_flight() -> void:
 	if not screens.is_top("pause"):
 		return
 	# Keep the menu hold until reset succeeds; rejected starts remain reviewable and frozen.
-	flight.session.reset() # the selected launch; the recorder closes its file on reset
+	var helicopter_route := Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
+	if helicopter_route:
+		flight.session.reset()
+	else:
+		flight.session.reset(true) # same radio ownership; the recorder closes its file on reset
 	var session: Node = flight.session
 	if not session.start_error.is_empty() or not session.is_flyable():
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Could not restart flight: %s") % (session.start_error if not session.start_error.is_empty() else session.pause_reason))
 		return
-	if controllers != null and (session.radio.connected or session._controller_lost):
+	if controllers != null and session.radio.connected and not helicopter_route:
+		# Refresh readiness after reset without advancing the flight or incremental throttle.
+		session._poll_controller(false)
+	if controllers != null and (session._controller_lost or (session.radio.connected and (helicopter_route or not session.radio.armed))):
 		pause_menu.refresh()
 		pause_menu.set_note(tr("Flight restarted. Select Continue when the controls are ready."))
 		pause_menu.continue_button.grab_focus()

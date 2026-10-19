@@ -87,6 +87,24 @@ func _policy() -> void:
 	World.AircraftLights.set_mode(kit, "all")
 	check("unsupported equipment stays off", not lamp.visible and not glow.visible)
 	host.free()
+	var model := Node3D.new()
+	var lens := MeshInstance3D.new()
+	var source := StandardMaterial3D.new()
+	source.resource_name = "light_red"
+	source.emission_enabled = true
+	source.emission_energy_multiplier = 2.7
+	var mesh := BoxMesh.new()
+	mesh.material = source
+	lens.mesh = mesh
+	model.add_child(lens)
+	var emission := World.AircraftLights.prepare_emission(model)
+	World.AircraftLights.set_emission_mode(emission, "off")
+	var private_material := lens.get_active_material(0) as BaseMaterial3D
+	check("native emission OFF preserves reflective lens and source", lens.visible and private_material != source and not private_material.emission_enabled and source.emission_enabled)
+	World.AircraftLights.set_emission_mode(emission, "nav")
+	check("NAV restores the native lens emission energy", private_material.emission_enabled and is_equal_approx(private_material.emission_energy_multiplier, 2.7))
+	check("native emission preparation is stable", World.AircraftLights.prepare_emission(model).materials[0].material == private_material)
+	model.free()
 
 func _flight(id: String, config: Dictionary) -> TestFlight:
 	var flight := TestFlight.new()
@@ -113,9 +131,13 @@ func _run() -> void:
 	for id: String in Catalog.airplane_visual_families():
 		var flight := _flight(id, _config(62999))
 		check(id + " daytime has no light kit", flight._night_kit == null)
+		var emission: Dictionary = World.AircraftLights.prepare_emission(flight._airplane.root)
+		check(id + " native daytime emission is OFF", emission.materials.all(func(binding: Dictionary) -> bool: return not binding.material.emission_enabled))
 		_edit(flight, 63000)
 		var kit: Node3D = flight._night_kit
 		check(id + " starts lights at 17:30 despite a high sun", kit != null and kit.visible and World.aircraft_sun_elevation(flight._lighting) > 6.0)
+		check(id + " native evening emission is ON", emission.materials.all(func(binding: Dictionary) -> bool: return binding.material.emission_enabled))
+		if id == "turbo-lumber-evolution": check("Timber binds both imported navigation materials", emission.materials.size() == 2)
 		check(id + " kit is attached only once", World.AircraftLights.attach(flight._airplane.root) == kit)
 		flight.controller_action("lights_cycle")
 		check(id + " controller selects NAV", flight._aircraft_lights.selection == "nav" and not kit.get_node("landing_light").visible)
@@ -124,6 +146,7 @@ func _run() -> void:
 		event.pressed = true
 		flight._unhandled_input(event)
 		check(id + " keyboard selects OFF", flight._aircraft_lights.selection == "off" and not kit.visible)
+		check(id + " native emission follows manual OFF", emission.materials.all(func(binding: Dictionary) -> bool: return not binding.material.emission_enabled))
 		event.echo = true
 		flight._unhandled_input(event)
 		check(id + " keyboard repeat does not cycle", flight._aircraft_lights.selection == "off")
@@ -156,7 +179,7 @@ func _run() -> void:
 	var fresh := _flight(Catalog.DEFAULT_ID, _config(63000))
 	check("fresh flight after 17:30 initializes ON", fresh._night_kit != null and fresh._night_kit.visible and fresh._aircraft_lights.selection == "auto")
 	fresh.set_aircraft_lights("off")
-	check("successful aircraft data reload", not fresh.session.reload().contains("INVALID"))
+	check("successful aircraft data reload", fresh.session.reload().begins_with("aircraft reloaded:"))
 	check("data reload resets manual selection with the session", fresh._aircraft_lights.selection == "auto" and fresh._night_kit.visible)
 	fresh.free()
 	await _helicopter()
@@ -214,23 +237,28 @@ func _flow() -> void:
 	for i in 719: flight.session.sim.step()
 	flight._process(0.0)
 	check("flow before 17:30 stays OFF", flight._night_kit == null and World.aircraft_local_seconds({}, flight.session.sim.time()) < 63000.0)
+	if not captures.is_empty(): await RenderingServer.frame_post_draw
 	flight.session.sim.step()
 	flight._process(0.0)
 	check("flow crossing 17:30 turns ON", flight._night_kit != null and flight._night_kit.visible)
+	if not captures.is_empty(): await RenderingServer.frame_post_draw
 	flight.set_aircraft_lights("off")
 	for i in 240: flight.session.sim.step()
 	flight._process(0.0)
 	check("flow preserves manual OFF", not flight._night_kit.visible)
+	if not captures.is_empty(): await RenderingServer.frame_post_draw
 	flight.session.reset()
 	flight.set_aircraft_lights("off")
 	for i in 720: flight.session.sim.step()
 	flight._process(0.0)
 	check("manual OFF before crossing remains OFF after it", not flight._night_kit.visible)
+	if not captures.is_empty(): await RenderingServer.frame_post_draw
 	flight.session.reset()
 	flight.set_aircraft_lights("all")
 	for i in 720: flight.session.sim.step()
 	flight._process(0.0)
 	check("manual ON before crossing remains ON after it", flight._night_kit.visible and flight._aircraft_lights.selection == "all")
+	if not captures.is_empty(): await RenderingServer.frame_post_draw
 	flight.free()
 	for key: String in saved:
 		if saved[key][0]: OS.set_environment(key, saved[key][1])

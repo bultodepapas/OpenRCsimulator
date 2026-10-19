@@ -2136,7 +2136,8 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 	_append_contact_event(ContactEvents.impact_event(impact, _contact_bindings, _impact_policy(impact)))
 
 
-func reset() -> void:
+## The shell may retain an armed radio when restarting under the same device/profile ownership.
+func reset(preserve_radio_readiness := false) -> void:
 	_fuel_start_fill_known = true
 	if start_choice == START_RUNWAY:
 		var result := _reset_selected_runway_start()
@@ -2147,7 +2148,7 @@ func reset() -> void:
 				_fail_selected_start(start_error)
 		elif external_controller_selection and radio.connected:
 			_pending_controller_start = float(commands.throttle) if radio.is_rate_throttle() else -1.0
-			radio.require_neutral(false)
+			radio.require_neutral(preserve_radio_readiness and not radio.is_gamepad())
 			sim.set_paused(true)
 			pause_reason = "Restart ready. Release controls and continue explicitly."
 		return
@@ -2198,7 +2199,7 @@ func reset() -> void:
 		_fail_selected_start("unsupported start choice '%s'" % start_choice)
 	if external_controller_selection and radio.connected:
 		_pending_controller_start = float(commands.throttle) if radio.is_rate_throttle() else -1.0
-		radio.require_neutral(false)
+		radio.require_neutral(preserve_radio_readiness and not radio.is_gamepad())
 		sim.set_paused(true)
 		pause_reason = "Restart ready. Release controls and continue explicitly."
 

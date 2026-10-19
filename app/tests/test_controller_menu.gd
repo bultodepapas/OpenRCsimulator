@@ -100,8 +100,9 @@ func _run() -> void:
 	observed.append({"id": 16, "name": "Separate menu gamepad", "guid": "menu-pad", "known": true})
 	app.controllers.refresh()
 	app.controllers.registry.select_device("ui", 16)
+	session.radio.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
 	await button(JOY_BUTTON_BACK)
-	check("flight View restarts from accident with a separate menu pad", app.pause_menu != null and session.sim.paused and session.crash.is_empty() and not accident.wants_controller_menu())
+	check("flight View resumes from accident with a separate menu pad", app.pause_menu == null and not session.sim.paused and session.crash.is_empty() and not accident.wants_controller_menu())
 	app.controllers.registry.select_device("ui", 15)
 	for axis: JoyAxis in [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y]:
 		await ui.joy_axis(axis, 0.0)
@@ -111,11 +112,11 @@ func _run() -> void:
 	held_restart.button_index = JOY_BUTTON_BACK
 	held_restart.pressed = true
 	app._input(held_restart)
-	app.pause_menu.continue_button.grab_focus()
-	await button(JOY_BUTTON_A)
+	check("controller button restart resumes without Continue", app.pause_menu == null and not session.sim.paused)
+	await create_timer(0.1).timeout
+	var restart_tick: int = session.sim.tick
 	app._input(held_restart)
-	check("controller can continue after button restart", app.pause_menu == null and not session.sim.paused)
-	check("holding restart in Pause cannot reset after Continue", app.pause_menu == null)
+	check("holding restart cannot reset the resumed flight again", app.pause_menu == null and session.sim.tick == restart_tick and restart_tick > 0)
 	held_restart.pressed = false
 	app._input(held_restart)
 	await button(JOY_BUTTON_START)

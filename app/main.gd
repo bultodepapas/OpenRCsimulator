@@ -1346,7 +1346,7 @@ func _notification(what: int) -> void:
 		_clear_wheel_brake()
 
 
-## The shell owns controller readiness and the visible Continue action after a restart.
+## The shell resumes successful restarts when controls are ready and keeps recovery failures visible.
 func _request_restart() -> void:
 	if restart_requested.has_connections():
 		restart_requested.emit()
