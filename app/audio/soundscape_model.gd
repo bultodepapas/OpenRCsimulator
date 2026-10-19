@@ -134,7 +134,7 @@ static func targets(snapshot: Dictionary) -> Dictionary:
 		motor_pitch = clampf(rpm / 6000.0, 0.12, 3.5),
 		prop_pitch = clampf(rpm / 6000.0 * float(snapshot.get("blades", 2)) / 2.0, 0.12, 3.5),
 		air_gain = 0.18 * pow(clampf(speed / 55.0, 0.0, 1.5), 2.0),
-		wind_low = 0.012 + 0.20 * pow(wind / 18.0, 1.1),
+		wind_low = 0.20 * pow(wind / 18.0, 1.1),
 		wind_high = 0.10 * pow(wind / 20.0, 1.7),
 		foliage = 0.008 + 0.23 * smoothstep(0.0, 14.0, wind),
 		bird_activity = smoothstep(-6.0, 3.0, float(snapshot.get("sun_elevation", 45.0))) * (1.0 - smoothstep(6.0, 18.0, wind)),

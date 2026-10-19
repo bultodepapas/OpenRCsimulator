@@ -92,6 +92,17 @@ static func default_bindings(_device_id: int = -1) -> Dictionary:
 	return bindings
 
 
+## Explicit overrides are essential: an empty map inherits gamepad buttons.
+## Radios keep independent keyboard recovery without assigning maintained switches.
+static func clean_radio_bindings() -> Dictionary:
+	var bindings: Dictionary = {}
+	for definition in ACTIONS:
+		bindings[str(definition.id)] = {"type": "unbound"}
+	bindings.back = {"type": "key", "physical_keycode": KEY_BACKSPACE}
+	bindings.pause = {"type": "key", "physical_keycode": KEY_ESCAPE}
+	return bindings
+
+
 ## Validate shape, require a back and pause recovery path, and reject collisions whose contexts overlap.
 static func validate(bindings: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
@@ -437,7 +448,16 @@ static func _configured_aux_bindings(profile: Dictionary) -> Array[Dictionary]:
 
 static func _same_aux_control(action_binding: Dictionary, aux_binding: Dictionary) -> bool:
 	var action_type := str(action_binding.get("type", ""))
-	if action_type != str(aux_binding.get("type", "")):
+	var aux_type := str(aux_binding.get("type", ""))
+	# A detent group reserves every member button, including inactive positions.
+	if action_type in ["button", "switch"] and aux_type in ["button", "switch"]:
+		var left_buttons: Array = SmokeAux.bound_buttons(action_binding) if action_type == "switch" else [action_binding.get("button", -1)]
+		var right_buttons: Array = SmokeAux.bound_buttons(aux_binding) if aux_type == "switch" else [aux_binding.get("button", -2)]
+		for button in left_buttons:
+			if right_buttons.has(button):
+				return true
+		return false
+	if action_type != aux_type:
 		return false
 	match action_type:
 		"button":

@@ -4,7 +4,7 @@
 
 2026-10-14 follow-up: [AV-17-R1 keyboard pitch and dive recovery](AV-17-R1/README.md) records the accelerated-stall reproduction, manufacturer/parameter audit, implemented input response and 240/480 Hz verification. The snapshot below predates [continuous turbine integration](../turbine-realism/AV-20/README.md) and [working landing gear](../avanti-gear/AV-09/README.md); its historical system limits are not current feature status.
 
-The [pre-implementation plan](../../AVANTI-S-PLAN.md#6-av-1417-realism-investigation-and-correction) owns scope and acceptance. Three Luna/max audits were reviewed before source changes: [airframe and geometry](AV-14/airframe-audit.md), [turbine and force consumers](AV-14/propulsion-audit.md), [controls, animation and lifecycle](AV-14/coverage-audit.md). Reproduction tools: [AV-14 scripts](../../../research/avanti-s/av14/README.md).
+This dated record and its audits retain the original AV-14…17 scope, sources and acceptance evidence. The [current aircraft guide](../../AVANTI-S-PLAN.md#3-steps) owns remaining work. Three Luna/max audits were reviewed before source changes: [airframe and geometry](AV-14/airframe-audit.md), [turbine and force consumers](AV-14/propulsion-audit.md), [controls, animation and lifecycle](AV-14/coverage-audit.md). Reproduction tools: [AV-14 scripts](../../../research/avanti-s/av14/README.md).
 
 ## Corrections and their effects
 
@@ -52,3 +52,17 @@ Concurrent landscape/document work is preserved. A concurrent commit (`9d9ba1d`)
 - [Lifecycle verification](AV-17/README.md): all five cases pass on both versions at both rates. Nonzero-input native checkpoint replay and the 1.5-second crash/restart boundary are exact. Actual servo-to-hinge movement, differential travel and neutral return agree; absent gear/flap functions remain inactive. JSON is explicitly diagnostic, with measured precision/type loss, and is not used for exact replay.
 - The corrected geometry exposed a pre-existing exact render-basis comparison assumption in `test_crash_pose.gd`: quaternion normalization leaves a 2.22 × 10⁻¹⁶ difference near zero. Only ordinary-pose basis comparisons now allow 10⁻¹² roundoff; position, restored current/previous simulation state and held crash pose remain exact. A 10⁻⁶ rad change must fail. [Baseline](AV-17/crash-pose-baseline-final.log) and [candidate](AV-17/crash-pose-candidate-final.log) each pass all 86 checks; no render or simulation behavior was changed.
 - [Whole-app comparison and timing](AV-17/README.md): all four model contracts, actual trimmed traces, schema/float64 checks and frame-rate checks pass. Both uninterrupted suites fail the same pre-existing extreme-density reset test. All continuation checks pass after the narrow crash-pose test correction; this is not an uninterrupted green suite. Alternating timing shows no repeatable >5% increase, with host/background-load and benchmark-scope limits recorded.
+
+## 2026-10-19 working-tree recheck
+
+Documentation reconciliation checked a concurrently edited tree, not a frozen qualification revision. The native model, turbine/continuous RPM, finite-liquid law/session, retract actuator/input and flap law/session checks pass; Blender compilation and aircraft generation checks pass. The independent geometry, sensitivity and AV-10 mechanics fixtures pass (17 Python tests).
+
+Current verification gaps remain distinct from implemented features:
+
+- `test_avanti_handling.gd`: 19 of 47 checks fail. Maneuver recordings have zero rows; subsequent reads raise packed-array bounds errors in `Trace.value`. Historical envelope results do not establish a passing current recording path.
+- `test_retractable_gear_trace.gd`: 6 of 21 checks fail, including metadata/layout checks and recorder rows, with a bounds error in `Trace.value`.
+- `test_retractable_gear_ground.gd`: 1 of 26 checks fails. The crosswind-rest fixture reports 4.70 mm drift and 0.00237 m/s speed; the landing-refinement check passes.
+
+A full 3-second CLI flight was not qualified: the first attempt reported in-progress input/radio compile errors, and the bounded retry timed out after 60 seconds. That app-level check and a fresh uninterrupted full suite remain pending.
+
+Reproduce with the pinned native engine and `--headless --path app --audio-driver Dummy --script res://tests/<name>.gd`. Resolve and rerun these checks before promoting current handling/ground/trace verification; no runtime or generated aircraft data was changed by this documentation pass. Physical validation remains open independently.

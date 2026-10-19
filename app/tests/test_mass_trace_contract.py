@@ -103,6 +103,46 @@ class MassTraceContract(unittest.TestCase):
         self.assertEqual(result['columns'], self.header)
         self.assertEqual(self.path.read_bytes(), original, 'projection leaves evidence unchanged')
 
+    def test_v15_midflight_recording_keeps_reset_fill_separate_from_live_inventory(self):
+        self.metadata.update({
+            'format': LIQUID_FORMAT,
+            'liquid_fuel_trace_schema': LIQUID_SCHEMA,
+            'liquid_fuel_model': LIQUID_MODEL,
+            'liquid_fuel_schema': LIQUID_FUEL_SCHEMA,
+            'fuel_consumption_law': 'gasoline_bsfc_v1',
+            'fuel_store_id': 'main_tank',
+            'fuel_capacity_kg': '1.0',
+            'fuel_unusable_kg': '0.03',
+            'fuel_state_index': '0',
+            'fuel_start_fill_known': 'true',
+            'fuel_start_fill': '0.6',
+            'fuel_registry_sha256': 'a' * 64,
+            'fuel_blend': 'gasoline_regular',
+            'fuel_family': 'gasoline',
+            'fuel_density_kg_m3': '800.0',
+            'fuel_reserve_fraction': '0.12',
+            'fuel_reserve_basis': 'estimated reserve',
+            'fuel_reserve_estimated': 'true',
+            'propulsion_model': 'propeller-shaft-coupled-rk4-v1',
+            'continuous_layout': 'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled; '
+                                 + LIQUID_LAYOUT,
+            'recording_start_tick': '12',
+            'recording_start_continuous': '[0.55, 1.0]',
+        })
+        self.header = ['tick', 't_s', 'alt_m', *LIQUID_COLUMNS, *COLUMNS]
+        self.rows = [['12', '0.050000000', '10', '0.58', '0.55', '0.58', '0.12', '1',
+                      '1.19', '0.01', '-0.02', '0.03']]
+        self.write()
+        handled, result = project(self.path, self.validate_base)
+        self.assertTrue(handled)
+        self.assertEqual(result['fuel_samples'], 1)
+
+        # At tick zero the same live inventory would contradict its declared launch fill.
+        changed = dict(self.metadata, recording_start_tick='0')
+        self.write(metadata=changed)
+        with self.assertRaisesRegex(ValueError, 'start fill disagrees'):
+            project(self.path, self.validate_base)
+
     def test_v15_refuses_inconsistent_liquid_identity_or_samples(self):
         self.metadata.update({
             'format': LIQUID_FORMAT,

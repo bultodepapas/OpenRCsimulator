@@ -220,9 +220,10 @@ func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop
 		aux[session.gear_aux_index() + 1] = 1.0
 		session.sim.aux = aux
 	var sim: Node = session.sim
-	var rec := Recorder.new(sim, session.electrical_state)
+	var rec := Recorder.new(sim, session.electrical_state, Callable(session, "mass_properties"))
 	var metadata: Dictionary = { flight_test = VERSION, test = name, aircraft = aircraft_id }
-	if session.electrical_state().get("ok", false) or session.flaps_available() or session.gear_is_retractable():
+	if session.electrical_state().get("ok", false) or session.flaps_available() or session.gear_is_retractable() \
+			or session.finite_fuel_is_active():
 		metadata = session.trace_meta()
 		metadata.flight_test = VERSION
 		metadata.test = name

@@ -286,7 +286,7 @@ func _fly(session: Node, maneuver: Dictionary) -> RefCounted:
 		return Trace.new()
 	session.set_start_altitude(float(maneuver.get("altitude", 150.0)))
 	session.reset()
-	var rec := Recorder.new(session.sim, session.electrical_state)
+	var rec := Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 	rec.start(session.trace_meta())
 	var steps := roundi(float(maneuver.duration) / session.sim.dt())
 	for _i in steps:

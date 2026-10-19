@@ -1,8 +1,8 @@
 # EX-06/EX-08 Extra installation and flight probes
 
-Status: installation corrections and 31 behavior probes implemented and verified; physical qualification remains open. Owner: [realism plan](../../../docs/EXTRA-300-PLAN.md).
+2026-10-11 research tools; the original installation/envelope results are dated evidence. Current scope and verification gaps live in the aircraft guide; physical qualification remains open. Owner: [realism plan](../../../docs/EXTRA-300-PLAN.md).
 
-This work retains the GPMA0236 .60/O.S. .61FX reference build. The simulator's default control travel is the manual's **high rate**, with trim added by the session. For a transmitter's low-rate setup, use approximately 39.5% aileron, 58.9% elevator and 58.2% rudder of these angular maxima. Verify actual endpoints in input diagnostics; do not apply the reduction twice. The keyboard has no aircraft-specific dual-rate switch in this step.
+The current aircraft data encodes manual high rates as mechanical maxima and the low/high ratios below as `controls.rates.normal`. Normal keyboard/gamepad travel uses that profile; a radio supplies its own rates. Full-profile/scripted inputs use the maxima. Use the [current control guide](../../../docs/FIRST-LAUNCH.md), verify endpoints and avoid applying a reduction twice. These derived angles do not identify installed servo behavior.
 
 | Surface | Manual high/low linear travel, each direction | Derived high/low angle | Low/high angular ratio |
 | --- | --- | --- | --- |
@@ -12,16 +12,9 @@ This work retains the GPMA0236 .60/O.S. .61FX reference build. The simulator's d
 
 Angles use `asin(linear_travel / local_control_chord)` from the measured hinge geometry. Thus reducing angular travel by exactly 40%/60%/60% does not reproduce the manual's linear low-rate travel. No expo is prescribed by this audit. The source manual recommends low rates for takeoff and normal flight; high elevator can intentionally stall/snap the model. These are simulator setup instructions, not a real-aircraft setup recommendation.
 
-Regenerate from the repository root:
+Geometry/physics generation and routine checks have one home in the [asset guide](../../../assets/aircraft/extra-300s-60/README.md#pipeline-and-routine-verification).
 
-```sh
-python assets/aircraft/extra-300s-60/compile_geometry.py
-python research/extra-300/ex05/derive_physics.py
-python assets/aircraft/extra-300s-60/compile_geometry.py --check
-python research/extra-300/ex05/derive_physics.py --check
-```
-
-The new installation test joins `app/test.sh`; `test_extra_handling.gd` retains its existing tolerances. The research probes exercise the actual flight session with explicit scripted controls and write metrics rather than asserting unmeasured aircraft performance. Run each probe against a separately imported app snapshot to compare physical changes. All reported rates are body angular rates unless explicitly stated otherwise; integrating body pitch rate is not, by itself, proof of a planar loop.
+The current test runner discovers the Extra installation/handling scripts; historical results below do not establish a passing current suite. The research probes exercise the actual flight session with explicit scripted controls and write metrics rather than asserting unmeasured aircraft performance. Run each probe against a separately imported app snapshot to compare physical changes. All reported rates are body angular rates unless explicitly stated otherwise; integrating body pitch rate is not, by itself, proof of a planar loop.
 
 Sources, before/after results and limits: [EX realism evidence](../../../docs/research/extra-300-realism/README.md).
 

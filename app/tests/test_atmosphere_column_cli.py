@@ -141,7 +141,8 @@ class AtmosphereColumnCLI(unittest.TestCase):
             with self.subTest(family=family):
                 result = self.reader_results[family]
                 has_flaps = family in ('jet', 'p51-shaft')
-                self.assertEqual(result['format'], 'openrc-trace v14')
+                finite_liquid = family in ('jet', 'p51-shaft')
+                self.assertEqual(result['format'], 'openrc-trace v15' if finite_liquid else 'openrc-trace v14')
                 self.assertEqual(result['mass_trace_schema'], 'openrc-mass-sample v1')
                 self.assertEqual(result['mass_base_trace_format'],
                                  'openrc-trace v12' if has_flaps else 'openrc-trace v11')

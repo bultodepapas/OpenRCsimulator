@@ -1,0 +1,41 @@
+**********************
+PowerShell transcript start
+Start time: 20261019120205
+Username: DEVIL\bulto
+RunAs User: DEVIL\bulto
+Configuration Name: 
+Machine: DEVIL (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$log = 'tmp/fuel-completion/2026-10-19-fuel05-closure-checks.txt'
+Start-Transcript -Path $log -Force | Out-Null
+Write-Output 'FUEL-05 closure documentation and report checks'
+Write-Output (Get-Date -Format 'yyyy-MM-dd HH:mm:ss K')
+python research/fuel-systems/test_mass_balance_report.py
+if ($LASTEXITCODE -ne 0) { throw 'mass balance tests failed' }
+python research/fuel-systems/mass_balance_report.py --check research/fuel-systems/mass_balance_current.json --fail-on-drift
+if ($LASTEXITCODE -ne 0) { throw 'mass balance drift check failed' }
+git diff --check
+if ($LASTEXITCODE -ne 0) { throw 'git diff whitespace check failed' }
+Write-Output 'FUEL-05 checks passed.'
+Stop-Transcript | Out-Null
+Process ID: 28120
+PSVersion: 7.6.7
+PSEdition: Core
+GitCommitId: 7.6.7
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+FUEL-05 closure documentation and report checks
+2026-10-19 12:02:05 -05:00
+
+
+
+FUEL-05 checks passed.
+**********************
+PowerShell transcript end
+End time: 20261019120206
+**********************

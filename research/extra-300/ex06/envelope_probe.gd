@@ -572,7 +572,7 @@ func _run_inverted_hands_off(session: Node, trim: Dictionary, duration: float, a
 	session.start = start
 	session.trims = { "roll": trim.roll_command, "pitch": trim.pitch_command, "yaw": trim.yaw_command }
 	session.reset()
-	var recorder := Recorder.new(session.sim, session.electrical_state)
+	var recorder := Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 	recorder.start(session.trace_meta())
 	var steps := roundi(duration / session.sim.dt())
 	for _i in steps:

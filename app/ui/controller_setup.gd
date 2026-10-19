@@ -8,6 +8,7 @@ const ControllerProfile := preload("res://input/controller_profile.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
 const SmokeAux := preload("res://input/smoke_aux.gd")
+const JetiRadio := preload("res://input/jeti_radio.gd")
 
 signal close_requested
 signal profile_saved(profile: Dictionary)
@@ -61,6 +62,9 @@ var restore_gamepad_button: Button
 var joystick_enabled: CheckBox
 var save_and_apply: Callable
 var glyph_family_help_label: Label
+## Optional test seam. When set, previews use these typed inputs instead of native Input polling.
+var axis_preview_provider: Callable
+var button_preview_provider: Callable
 
 var action_filter: OptionButton
 var _settings_panel: PanelContainer
@@ -72,6 +76,7 @@ var _section_navigation: HFlowContainer
 var _section_body: VBoxContainer
 var _selected_section := "devices"
 var _device_summary: Label
+var _device_details_label: Label
 var _empty_device_label: Label
 var _settings_title: Label
 var _preview_axis_labels: Dictionary = {}
@@ -108,6 +113,8 @@ var _draft_ui_device_id := -1
 var _capturing_action := ""
 var _capturing_device_id := -1
 var _capture_button: Button
+var _capturing_aux_name := ""
+var _capturing_aux_position := -1
 var _capture_release_tokens: Dictionary = {}
 var _preview_clock := 0.0
 var _initial_focus_wait_frames := 0
@@ -116,6 +123,9 @@ var _profile_kind_help_label: Label
 var _joystick_label: Label
 var _preset_label: Label
 var _preset_reset_button: Button
+var _preset_ids: Array[String] = []
+var _clean_radio_actions_button: Button
+var _clean_radio_actions_help_label: Label
 var _prompt_texture_cache: Dictionary = {}
 
 
@@ -142,14 +152,14 @@ func configure(controller_registry: Object, store: Object, flight_device_id := -
 
 ## Parent-facing surface API used by the screen stack and the active flight owner.
 func request_close() -> void:
-	if not _capturing_action.is_empty():
+	if _is_capture_active():
 		_cancel_capture()
 		return
 	close_requested.emit()
 
 
 func _cancel_edits() -> void:
-	if not _capturing_action.is_empty():
+	if _is_capture_active():
 		_capture_done()
 	close_requested.emit()
 
@@ -218,6 +228,12 @@ func _build() -> void:
 	_device_summary.max_lines_visible = 1
 	_device_summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	shell.add_child(_device_summary)
+	_device_details_label = _label("", "SecondaryLabel", true)
+	_device_details_label.name = "ControllerDeviceDetails"
+	_device_details_label.visible = false
+	_device_details_label.max_lines_visible = 2
+	_device_details_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	shell.add_child(_device_details_label)
 	_section_navigation = HFlowContainer.new()
 	_section_navigation.name = "ControllerSections"
 	_section_navigation.add_theme_constant_override("separation", 6)
@@ -337,7 +353,14 @@ func _build() -> void:
 	var duplicate_button := _button("Duplicate profile")
 	duplicate_button.pressed.connect(_duplicate_profile)
 	profile_actions.add_child(duplicate_button)
+	_clean_radio_actions_button = _button("Use safe radio actions in draft")
+	_clean_radio_actions_button.name = "CleanRadioActionsDraft"
+	_clean_radio_actions_button.pressed.connect(_apply_clean_radio_actions_to_draft)
+	profile_actions.add_child(_clean_radio_actions_button)
 	page.add_child(profile_actions)
+	_clean_radio_actions_help_label = _label("Backspace returns to the menu and Escape pauses. This action map changes only this draft until Save.", "SecondaryLabel", true)
+	_clean_radio_actions_help_label.visible = false
+	page.add_child(_clean_radio_actions_help_label)
 
 	page = _make_section("axes", "Flight axes")
 	page.add_child(_section_label("AXIS MAPPING AND RESPONSE"))
@@ -424,11 +447,13 @@ func _build() -> void:
 		var aux_label := _label(tr(str(AUX_CHANNEL_LABELS[aux_name])), "SecondaryLabel")
 		aux_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		aux_label.custom_minimum_size.x = 160.0
+		aux_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		channel_row.add_child(aux_label)
 		var type_picker := OptionButton.new()
 		type_picker.name = "AuxType_%s" % aux_name
 		type_picker.custom_minimum_size.x = 224.0
-		for mode_data in [["Disabled", 0], ["Axis", 1], ["Button", 2]]:
+		type_picker.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		for mode_data in [["Disabled", 0], ["Axis", 1], ["Button", 2], ["Switch positions", 3]]:
 			var type_index := type_picker.item_count
 			type_picker.add_item(tr(str(mode_data[0])), int(mode_data[1]))
 			type_picker.set_item_id(type_index, int(mode_data[1]))
@@ -475,11 +500,70 @@ func _build() -> void:
 		_aux_inline_fields.append(_add_inline_control_field(button_editor, "Button", button_spin))
 		_aux_inline_fields.append(_add_inline_control_field(button_editor, "Mode", button_mode))
 		mapping.add_child(button_editor)
+		var switch_editor := VBoxContainer.new()
+		switch_editor.name = "AuxSwitchEditor_%s" % aux_name
+		switch_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		switch_editor.add_theme_constant_override("separation", 4)
+		var switch_settings := BoxContainer.new()
+		switch_settings.name = "AuxSwitchSettings_%s" % aux_name
+		switch_settings.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		switch_settings.add_theme_constant_override("separation", 8)
+		var position_count := OptionButton.new()
+		position_count.name = "AuxSwitchPositions_%s" % aux_name
+		position_count.custom_minimum_size.x = 118.0
+		position_count.add_item(tr("2 positions"), 2)
+		position_count.set_item_id(0, 2)
+		position_count.add_item(tr("3 positions"), 3)
+		position_count.set_item_id(1, 3)
+		var switch_label := LineEdit.new()
+		switch_label.name = "AuxSwitchLabel_%s" % aux_name
+		switch_label.max_length = 24
+		switch_label.placeholder_text = tr("Switch name (optional)")
+		switch_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var switch_invert := CheckBox.new()
+		switch_invert.name = "AuxSwitchInvert_%s" % aux_name
+		switch_invert.text = tr("Reverse request")
+		switch_settings.add_child(position_count)
+		switch_settings.add_child(switch_label)
+		switch_settings.add_child(switch_invert)
+		switch_editor.add_child(switch_settings)
+		var switch_positions := VBoxContainer.new()
+		switch_positions.name = "AuxSwitchButtons_%s" % aux_name
+		switch_positions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		switch_positions.add_theme_constant_override("separation", 2)
+		var switch_button_spins: Array[SpinBox] = []
+		var switch_capture_buttons: Array[Button] = []
+		var switch_position_rows: Array[HBoxContainer] = []
+		var position_names: Array[String] = ["Up", "Middle", "Down"]
+		for position_index in 3:
+			var position_row := HBoxContainer.new()
+			position_row.name = "AuxSwitchButtonRow_%s_%d" % [aux_name, position_index]
+			position_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			var position_label := _label(tr(position_names[position_index]), "SecondaryLabel")
+			position_label.name = "AuxSwitchPositionLabel_%s_%d" % [aux_name, position_index]
+			position_label.custom_minimum_size.x = 72.0
+			var position_spin := _spin_box(0.0, float(SmokeAux.MAX_BUTTONS - 1), 1.0)
+			position_spin.name = "AuxSwitchButton_%s_%d" % [aux_name, position_index]
+			position_spin.custom_minimum_size.x = 76.0
+			var capture_switch_button := _button("Capture", "", "AuxSwitchCapture_%s_%d" % [aux_name, position_index])
+			capture_switch_button.pressed.connect(_start_aux_capture.bind(aux_name, position_index, capture_switch_button))
+			position_row.add_child(position_label)
+			position_row.add_child(position_spin)
+			position_row.add_child(capture_switch_button)
+			switch_positions.add_child(position_row)
+			switch_position_rows.append(position_row)
+			switch_button_spins.append(position_spin)
+			switch_capture_buttons.append(capture_switch_button)
+			position_spin.value_changed.connect(_on_aux_switch_button_changed.bind(aux_name, position_index))
+		switch_editor.add_child(switch_positions)
+		mapping.add_child(switch_editor)
 		_aux_field_grids.append(axis_editor)
 		_aux_field_grids.append(button_editor)
+		_aux_field_grids.append(switch_settings)
 		var aux_preview := _label(tr("Unbound"), "SecondaryLabel", true)
 		aux_preview.name = "AuxPreview_%s" % aux_name
 		aux_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		aux_preview.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		aux_preview.max_lines_visible = 1
 		aux_preview.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		channel_row.add_child(aux_preview)
@@ -487,6 +571,7 @@ func _build() -> void:
 		channel_block.add_child(HSeparator.new())
 		_aux_controls[aux_name] = {
 			"type": type_picker,
+			"row": channel_row,
 			"mapping": mapping,
 			"axis_editor": axis_editor,
 			"axis": axis_spin,
@@ -496,6 +581,15 @@ func _build() -> void:
 			"button_editor": button_editor,
 			"button": button_spin,
 			"button_mode": button_mode,
+			"switch_editor": switch_editor,
+			"switch_settings": switch_settings,
+			"switch_positions": switch_positions,
+			"switch_count": position_count,
+			"switch_label": switch_label,
+			"switch_invert": switch_invert,
+			"switch_button_spins": switch_button_spins,
+			"switch_capture_buttons": switch_capture_buttons,
+			"switch_position_rows": switch_position_rows,
 			"preview": aux_preview,
 		}
 		type_picker.item_selected.connect(_on_aux_type_selected.bind(aux_name))
@@ -505,6 +599,9 @@ func _build() -> void:
 		aux_invert.toggled.connect(_on_aux_invert_toggled.bind(aux_name))
 		button_spin.value_changed.connect(_on_aux_button_changed.bind(aux_name))
 		button_mode.item_selected.connect(_on_aux_button_mode_selected.bind(aux_name))
+		position_count.item_selected.connect(_on_aux_switch_count_selected.bind(aux_name))
+		switch_label.text_changed.connect(_on_aux_switch_label_changed.bind(aux_name))
+		switch_invert.toggled.connect(_on_aux_switch_invert_toggled.bind(aux_name))
 
 	page = _section_pages["axes"]
 	var preview_column := VBoxContainer.new()
@@ -745,7 +842,7 @@ func _make_section(section_id: String, caption: String) -> VBoxContainer:
 func select_section(section_id: String, focus_content := false) -> void:
 	if not _section_pages.has(section_id):
 		return
-	if section_id != _selected_section and not _capturing_action.is_empty():
+	if section_id != _selected_section and _is_capture_active():
 		_cancel_capture()
 	_selected_section = section_id
 	for key in _section_pages:
@@ -790,8 +887,39 @@ func _update_device_summary() -> void:
 	var flight := flight_device_picker.get_item_text(flight_device_picker.selected) if flight_device_picker.selected >= 0 else tr("Keyboard")
 	var menu := ui_device_picker.get_item_text(ui_device_picker.selected) if ui_device_picker.selected >= 0 else tr("Keyboard + mouse")
 	_device_summary.text = tr("Flight: %s   ·   Menus: %s") % [flight, menu]
-	_device_summary.tooltip_text = _device_summary.text
+	var selected_device := _device_for_id(_draft_flight_device_id)
+	var details := _device_details_text(selected_device) if _is_jeti_device(selected_device) else ""
+	_device_details_label.visible = not details.is_empty()
+	_device_details_label.text = details
+	var metadata := _device_metadata_tooltip(selected_device) if not details.is_empty() else ""
+	_device_details_label.tooltip_text = metadata
+	_device_summary.tooltip_text = _device_summary.text if metadata.is_empty() else "%s\n%s" % [_device_summary.text, metadata]
 	_empty_device_label.visible = not _devices.any(func(device: Dictionary) -> bool: return bool(device.get("connected", true)))
+
+
+static func _is_jeti_device(device: Dictionary) -> bool:
+	return not device.is_empty() and JetiRadio.matches(device)
+
+
+func _device_details_text(device: Dictionary) -> String:
+	if not _is_jeti_device(device):
+		return ""
+	var raw_name := str(device.get("raw_name", device.get("name", JetiRadio.display_name(device))))
+	return "%s · %s" % [tr("JETI radio family"), tr("Device name: %s") % raw_name]
+
+
+func _device_metadata_tooltip(device: Dictionary) -> String:
+	if not _is_jeti_device(device):
+		return ""
+	var raw_name := str(device.get("raw_name", device.get("name", JetiRadio.display_name(device))))
+	var parts: Array[String] = [tr("JETI radio family"), tr("Device name: %s") % raw_name]
+	var manufacturer := str(device.get("manufacturer", ""))
+	var product := str(device.get("product", ""))
+	if not manufacturer.is_empty():
+		parts.append(tr("Manufacturer: %s") % manufacturer)
+	if not product.is_empty():
+		parts.append(tr("Product: %s") % product)
+	return " · ".join(parts)
 
 
 func _ready() -> void:
@@ -819,6 +947,7 @@ func _notification(what: int) -> void:
 	_update_glyph_family_picker()
 	_update_profile_kind_picker()
 	_update_preset_options()
+	_update_aux_controls()
 	_update_action_controls()
 	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
 
@@ -851,8 +980,26 @@ func _input(event: InputEvent) -> void:
 	if _consume_capture_release(event):
 		get_viewport().set_input_as_handled()
 		return
-	if _capturing_action.is_empty():
+	if not _is_capture_active():
 		return
+	if not _capturing_aux_name.is_empty():
+		if event is InputEventKey:
+			var aux_key := event as InputEventKey
+			if aux_key.pressed and not aux_key.echo and (aux_key.physical_keycode == KEY_ESCAPE or aux_key.keycode == KEY_ESCAPE):
+				get_viewport().set_input_as_handled()
+				_track_capture_release(aux_key)
+				_cancel_capture()
+			return
+		if event is InputEventJoypadButton:
+			var aux_button_event := event as InputEventJoypadButton
+			if aux_button_event.device != _capturing_device_id:
+				return
+			get_viewport().set_input_as_handled()
+			if aux_button_event.pressed:
+				_track_capture_release(aux_button_event)
+				_capture_aux_button(int(aux_button_event.button_index))
+		return
+		# Maintained switch capture is button-only; ignore its analog axes.
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
 		get_viewport().set_input_as_handled()
@@ -925,7 +1072,8 @@ func _connect_registry() -> void:
 func _on_registry_devices_changed() -> void:
 	_refresh_devices()
 	draft_changed.emit()
-	if not _capturing_action.is_empty():
+	_update_preset_options()
+	if _is_capture_active():
 		var captured_device := _device_for_id(_capturing_device_id)
 		if captured_device.is_empty() or not bool(captured_device.get("connected", true)):
 			_capture_done()
@@ -977,12 +1125,15 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 		if id < 0 or (menu_only and kind == "radio"):
 			continue
 		var name := str(device.get("name", device.get("raw_name", tr("Controller %d") % id)))
+		if _is_jeti_device(device):
+			name = JetiRadio.display_name(device)
 		if not bool(device.get("connected", true)):
 			name += " · " + tr("disconnected")
 		var label := "%s · %s" % [name, tr(kind.capitalize())]
 		picker.add_item(label, id)
 		var item_index := picker.item_count - 1
-		picker.get_popup().set_item_tooltip(item_index, label)
+		var detail_text := _device_details_text(device)
+		picker.get_popup().set_item_tooltip(item_index, label if detail_text.is_empty() else "%s\n%s" % [label, detail_text])
 		if menu_only and not _is_menu_device_eligible(device):
 			picker.set_item_disabled(item_index, true)
 		if id == target_id:
@@ -994,11 +1145,15 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 		picker.select(picker.item_count - 1)
 	if picker.selected >= 0:
 		picker.tooltip_text = picker.get_item_text(picker.selected)
+		var selected_device := _device_for_id(picker.get_item_id(picker.selected))
+		var selected_details := _device_metadata_tooltip(selected_device)
+		if not selected_details.is_empty():
+			picker.tooltip_text = "%s\n%s" % [picker.tooltip_text, selected_details]
 
 
 func _on_flight_device_selected(index: int) -> void:
 	var selected_id := flight_device_picker.get_item_id(index)
-	var capture_cancelled := selected_id != _draft_flight_device_id and not _capturing_action.is_empty()
+	var capture_cancelled := selected_id != _draft_flight_device_id and _is_capture_active()
 	if capture_cancelled:
 		_capture_done()
 	_draft_flight_device_id = selected_id
@@ -1051,7 +1206,7 @@ func _load_profile_for_device(device_id: int) -> void:
 				_switch_draft_profile(candidate, _profile_context_key(candidate))
 				return
 	var expected_kind := str(device.get("kind", "gamepad"))
-	var preset := "mode2" if expected_kind == "gamepad" else "radio_custom"
+	var preset := "mode2" if expected_kind == "gamepad" else ("jeti_mode2" if _is_jeti_device(device) else "radio_custom")
 	var candidate_profile := ControllerProfile.defaults(expected_kind, preset)
 	if candidate_profile.is_empty():
 		candidate_profile = ControllerProfile.defaults("gamepad", "mode2")
@@ -1095,6 +1250,11 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	var existing_actions: Dictionary = _draft_profile.get("actions", {}).duplicate(true)
 	_base_actions = existing_actions
 	_action_bindings = ControllerActions.effective_bindings(_draft_profile, action_capabilities)
+	if _clean_radio_actions_button != null:
+		var can_clean_radio_actions := _supports_clean_radio_actions(_draft_profile)
+		_clean_radio_actions_button.visible = can_clean_radio_actions
+		_clean_radio_actions_help_label.visible = can_clean_radio_actions
+		_clean_radio_actions_button.tooltip_text = tr("Use Backspace for Back and Escape for Pause; all button and switch actions will be cleared in this draft.")
 	_update_profile_kind_picker()
 	_update_glyph_family_picker()
 	_update_preset_options()
@@ -1126,7 +1286,7 @@ func _update_profile_options() -> void:
 func _on_profile_selected(index: int) -> void:
 	var profile_index := profile_picker.get_item_id(index)
 	if profile_index >= 0 and profile_index < _profiles.size():
-		if not _capturing_action.is_empty():
+		if _is_capture_active():
 			_cancel_capture()
 		var profile: Dictionary = _profiles[profile_index]
 		_switch_draft_profile(profile, _profile_context_key(profile))
@@ -1188,52 +1348,115 @@ func _on_profile_kind_selected(index: int) -> void:
 	_set_status(tr("Profile type changed. Save the profile to keep this draft."), false)
 
 
+func _apply_clean_radio_actions_to_draft() -> void:
+	if not _supports_clean_radio_actions(_draft_profile):
+		return
+	var candidate := ControllerProfile.clean_radio_actions(_draft_profile)
+	if candidate.is_empty():
+		_set_status(tr("Could not prepare the safe radio action map. The current draft is unchanged."), true)
+		return
+	var validation: Dictionary = ControllerProfile.validate(candidate)
+	if not bool(validation.get("ok", false)):
+		_set_status(tr("Could not prepare the safe radio action map: %s") % "; ".join(validation.get("errors", [])), true)
+		return
+	_set_draft_profile(candidate, _draft_context_key)
+	_set_status(tr("Safe radio actions are in the draft. Save keeps them; Cancel discards them."), false)
+
+
+func _supports_clean_radio_actions(profile: Dictionary) -> bool:
+	var kind := str(profile.get("kind", ""))
+	if kind == "radio":
+		return true
+	return kind == "joystick" and _is_jeti_device(_device_for_id(_draft_flight_device_id))
+
+
 func _update_preset_options() -> void:
 	if preset_picker == null or _draft_profile.is_empty():
 		return
 	preset_picker.clear()
 	var preset_popup := preset_picker.get_popup()
-	for index in PRESETS.size():
-		var preset := PRESETS[index]
-		var label := "Mode 1 · rate throttle" if preset == "mode1" else ("Mode 2 · rate throttle" if preset == "mode2" else "Trigger throttle")
-		var translated_label := tr(label)
-		preset_picker.add_item(translated_label, index)
-		preset_popup.set_item_tooltip(index, translated_label)
-	var current := PRESETS.find(str(_draft_profile.get("preset", "mode2")))
-	if current >= 0:
-		preset_picker.select(current)
-	else:
-		preset_picker.select(1)
-	preset_picker.disabled = str(_draft_profile.get("kind", "")) != "gamepad"
+	_preset_ids.clear()
+	var kind := str(_draft_profile.get("kind", ""))
+	var choices: Array[Dictionary] = []
+	if kind == "gamepad":
+		for preset in PRESETS:
+			var label := "Mode 1 · rate throttle" if preset == "mode1" else ("Mode 2 · rate throttle" if preset == "mode2" else "Trigger throttle")
+			choices.append({"id": preset, "label": label})
+	elif kind == "radio" and _is_jeti_device(_device_for_id(_draft_flight_device_id)):
+		choices.append({"id": "radio_custom", "label": "Radio custom"})
+		choices.append({"id": "jeti_mode2", "label": "JETI Mode 2"})
+	for option in choices:
+		var option_index := preset_picker.item_count
+		var translated_label := tr(str(option.label))
+		preset_picker.add_item(translated_label, option_index)
+		preset_picker.set_item_id(option_index, option_index)
+		preset_popup.set_item_tooltip(option_index, translated_label)
+		_preset_ids.append(str(option.id))
+	var current := _preset_ids.find(str(_draft_profile.get("preset", "mode2")))
+	if not _preset_ids.is_empty():
+		preset_picker.select(current if current >= 0 else 0)
+	preset_picker.disabled = _preset_ids.is_empty()
 	preset_picker.visible = not preset_picker.disabled
 	_preset_label.visible = preset_picker.visible
 	_preset_reset_button.visible = preset_picker.visible
-	preset_picker.tooltip_text = preset_picker.get_item_text(preset_picker.selected)
+	preset_picker.tooltip_text = preset_picker.get_item_text(preset_picker.selected) if preset_picker.selected >= 0 else ""
 	if preset_help_label != null:
 		match str(_draft_profile.get("preset", "mode2")):
 			"mode1":
 				preset_help_label.text = tr("Mode 1: left X yaw, left Y pitch; right X roll, right Y throttle.")
+				preset_help_label.visible = kind == "gamepad"
 			"trigger_absolute":
 				preset_help_label.text = tr("Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5).")
+				preset_help_label.visible = kind == "gamepad"
+			"jeti_mode2":
+				preset_help_label.text = tr("JETI Mode 2: roll axis 0, inverted pitch axis 1, absolute throttle axis 2, yaw axis 3. Confirm your own stick and switch installation before flight.")
+				preset_help_label.visible = true
+			"radio_custom":
+				preset_help_label.text = tr("Custom radio mapping. Axis assignments and calibration stay in this profile.")
+				preset_help_label.visible = kind == "radio" and _is_jeti_device(_device_for_id(_draft_flight_device_id))
 			_:
 				preset_help_label.text = tr("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.")
-		preset_help_label.visible = str(_draft_profile.get("kind", "")) == "gamepad"
+				preset_help_label.visible = kind == "gamepad"
 
 
 func _on_preset_selected(index: int) -> void:
-	if str(_draft_profile.get("kind", "")) != "gamepad" or index < 0 or index >= PRESETS.size():
+	if index < 0 or index >= _preset_ids.size():
 		return
-	_apply_preset(PRESETS[index])
+	_apply_preset(_preset_ids[index])
 
 
 func _restore_selected_preset() -> void:
-	if str(_draft_profile.get("kind", "")) == "gamepad":
-		_apply_preset(PRESETS[preset_picker.selected])
+	if preset_picker.selected >= 0 and preset_picker.selected < _preset_ids.size():
+		_apply_preset(_preset_ids[preset_picker.selected])
 	else:
-		_set_status(tr("This profile is not a gamepad preset. Use legacy recovery to change its controller semantics."), true)
+		_set_status(tr("There is no preset available for this controller."), true)
 
 
 func _apply_preset(preset: String) -> void:
+	if preset == "jeti_mode2":
+		_apply_jeti_mode2_preset()
+		return
+	if preset == "radio_custom":
+		var custom := ControllerProfile.defaults("radio", "radio_custom")
+		if custom.is_empty():
+			_set_status(tr("Could not restore the selected radio profile."), true)
+			return
+		for key in ["profile_id", "name", "association", "actions", "presentation", "aux"]:
+			if _draft_profile.has(key):
+				custom[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
+		custom["preset"] = "radio_custom"
+		for channel_name in CHANNELS:
+			var current_channel: Variant = _draft_profile.get(channel_name, {})
+			var next_channel: Dictionary = custom.get(channel_name, {}).duplicate(true)
+			if current_channel is Dictionary:
+				for calibration_key in ["min", "center", "max", "invert"]:
+					if current_channel.has(calibration_key):
+						next_channel[calibration_key] = current_channel[calibration_key]
+			custom[channel_name] = next_channel
+		custom["name"] = profile_name_edit.text.strip_edges() if not profile_name_edit.text.strip_edges().is_empty() else str(custom.get("name", "Radio Custom"))
+		_set_draft_profile(custom)
+		_set_status(tr("Custom radio mapping restored. Save keeps this draft."), false)
+		return
 	var replacement := ControllerProfile.defaults("gamepad", preset)
 	if replacement.is_empty():
 		_set_status(tr("Could not restore the selected gamepad preset."), true)
@@ -1248,6 +1471,41 @@ func _apply_preset(preset: String) -> void:
 		replacement["name"] = profile_name_edit.text.strip_edges()
 	_set_draft_profile(replacement)
 	_set_status(tr("Preset restored. Save the profile to keep this mapping."), false)
+
+
+func _apply_jeti_mode2_preset() -> void:
+	if not _is_jeti_device(_device_for_id(_draft_flight_device_id)):
+		_set_status(tr("JETI Mode 2 is available only for a recognized JETI radio."), true)
+		return
+	var replacement := ControllerProfile.defaults("radio", "jeti_mode2")
+	if replacement.is_empty():
+		_set_status(tr("Could not restore the JETI Mode 2 preset."), true)
+		return
+	for key in ["profile_id", "name", "association", "presentation", "aux"]:
+		if _draft_profile.has(key):
+			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
+	var actions_value: Variant = _draft_profile.get("actions", {})
+	if actions_value is Dictionary:
+		var actions: Dictionary = replacement.actions.duplicate(true)
+		for action_id: Variant in actions_value:
+			actions[str(action_id)] = actions_value[action_id].duplicate(true) if actions_value[action_id] is Dictionary else actions_value[action_id]
+		replacement["actions"] = actions
+	for channel_name in CHANNELS:
+		var current_channel: Variant = _draft_profile.get(channel_name, {})
+		var next_channel: Dictionary = replacement.get(channel_name, {}).duplicate(true)
+		if current_channel is Dictionary:
+			for calibration_key in ["min", "center", "max", "invert"]:
+				if current_channel.has(calibration_key):
+					next_channel[calibration_key] = current_channel[calibration_key]
+		replacement[channel_name] = next_channel
+	replacement["preset"] = "jeti_mode2"
+	replacement["name"] = profile_name_edit.text.strip_edges() if not profile_name_edit.text.strip_edges().is_empty() else str(replacement.get("name", "JETI USB Mode 2"))
+	var validation: Dictionary = ControllerProfile.validate(replacement)
+	if not bool(validation.get("ok", false)):
+		_set_status(tr("Could not restore the JETI Mode 2 preset: %s") % "; ".join(validation.get("errors", [])), true)
+		return
+	_set_draft_profile(replacement)
+	_set_status(tr("JETI Mode 2 mapping is in the draft. Confirm your own switch installation, then Save to keep it."), false)
 
 
 func _duplicate_profile() -> void:
@@ -1293,13 +1551,24 @@ func _update_aux_controls() -> void:
 		var binding_value: Variant = aux.get(aux_name, {})
 		var binding: Dictionary = binding_value if binding_value is Dictionary else {}
 		var binding_type := str(binding.get("type", ""))
-		var mode_id := 1 if binding_type == "axis" else (2 if binding_type == "button" else 0)
+		var mode_id := 1 if binding_type == "axis" else (2 if binding_type == "button" else (3 if binding_type == "switch" else 0))
 		var type_picker: OptionButton = controls.type
 		type_picker.select(mode_id)
+		var channel_row: BoxContainer = controls.row
+		var mapping: VBoxContainer = controls.mapping
+		var preview: Label = controls.preview
+		var desired_preview_parent: Node = mapping if mode_id == 3 else channel_row
+		if preview.get_parent() != desired_preview_parent:
+			preview.get_parent().remove_child(preview)
+			desired_preview_parent.add_child(preview)
+			if mode_id != 3:
+				channel_row.move_child(preview, channel_row.get_children().find(mapping))
 		var axis_editor: BoxContainer = controls.axis_editor
 		var button_editor: BoxContainer = controls.button_editor
+		var switch_editor: VBoxContainer = controls.switch_editor
 		axis_editor.visible = mode_id == 1
 		button_editor.visible = mode_id == 2
+		switch_editor.visible = mode_id == 3
 		var axis_spin: SpinBox = controls.axis
 		axis_spin.set_value_no_signal(float(binding.get("axis", _default_aux_axis(aux_name))))
 		var off_spin: SpinBox = controls.off
@@ -1312,10 +1581,63 @@ func _update_aux_controls() -> void:
 		button_spin.set_value_no_signal(float(binding.get("button", 0)))
 		var button_mode: OptionButton = controls.button_mode
 		button_mode.select(1 if str(binding.get("mode", "level")) == "toggle_edge" else 0)
-		var preview: Label = controls.preview
+		var switch_buttons: Array = binding.get("buttons", []) if binding_type == "switch" else []
+		var switch_count := switch_buttons.size() if switch_buttons.size() in [2, 3] else 2
+		var count_picker: OptionButton = controls.switch_count
+		count_picker.select(0 if switch_count == 2 else 1)
+		var name_edit: LineEdit = controls.switch_label
+		name_edit.text = str(binding.get("label", "")) if binding_type == "switch" else ""
+		var switch_invert: CheckBox = controls.switch_invert
+		switch_invert.set_pressed_no_signal(bool(binding.get("invert", false)))
+		var button_spins: Array = controls.switch_button_spins
+		var capture_buttons: Array = controls.switch_capture_buttons
+		var row_indices := _switch_row_indices(switch_count)
+		var row_buttons: Dictionary = {}
+		for array_index in row_indices.size():
+			row_buttons[int(row_indices[array_index])] = switch_buttons[array_index] if array_index < switch_buttons.size() else 0
+		for row_index in 3:
+			var row: HBoxContainer = controls.switch_position_rows[row_index]
+			var visible_position := row_indices.has(row_index)
+			row.visible = visible_position
+			var switch_button_spin: SpinBox = button_spins[row_index]
+			switch_button_spin.set_value_no_signal(float(row_buttons.get(row_index, 0)))
+			var position_name := _switch_position_name(row_index)
+			var group_name := str(binding.get("label", "")) if binding_type == "switch" else ""
+			var label_control := row.get_node("AuxSwitchPositionLabel_%s_%d" % [aux_name, row_index]) as Label
+			label_control.text = "%s — %s" % [group_name, tr(position_name)] if not group_name.is_empty() else tr(position_name)
+			switch_button_spin.editable = visible_position
+			var capture_button: Button = capture_buttons[row_index]
+			capture_button.visible = visible_position
+			capture_button.disabled = _draft_flight_device_id < 0 or not bool(_device_for_id(_draft_flight_device_id).get("connected", false))
+			capture_button.text = tr("Listening…") if _capturing_aux_name == aux_name and _capturing_aux_position == row_index else tr("Capture")
 		if mode_id == 0:
 			preview.text = tr("Unbound")
 	_update_aux_preview()
+
+
+static func _switch_row_indices(position_count: int) -> Array:
+	return [0, 2] if position_count == 2 else [0, 1, 2]
+
+
+static func _switch_with_member_swap(binding: Dictionary, row_index: int, button_index: int) -> Dictionary:
+	if button_index < 0 or button_index >= SmokeAux.MAX_BUTTONS:
+		return {}
+	var buttons: Array = SmokeAux.bound_buttons(binding)
+	var row_indices := _switch_row_indices(buttons.size())
+	var target_index := row_indices.find(row_index)
+	if target_index < 0 or buttons.size() not in [2, 3]:
+		return {}
+	var existing_index := buttons.find(button_index)
+	if existing_index >= 0 and existing_index != target_index:
+		buttons[existing_index] = buttons[target_index]
+	buttons[target_index] = button_index
+	var candidate := binding.duplicate(true)
+	candidate["buttons"] = buttons
+	return candidate
+
+
+static func _switch_position_name(row_index: int) -> String:
+	return ["Up", "Middle", "Down"][clampi(row_index, 0, 2)]
 
 
 func _default_aux_axis(aux_name: String) -> int:
@@ -1348,7 +1670,64 @@ func _aux_binding_for_type(aux_name: String, binding_type: String) -> Dictionary
 		return {"type": "axis", "axis": axis, "off": -1.0, "on": 1.0, "invert": false}
 	if binding_type == "button":
 		return {"type": "button", "button": 0, "mode": "level"}
+	if binding_type == "switch":
+		return _new_switch_binding(aux_name, 2)
 	return {}
+
+
+func _new_switch_binding(aux_name: String, position_count: int, previous: Dictionary = {}) -> Dictionary:
+	var buttons: Array = []
+	var base_buttons: Array = previous.get("buttons", []) if previous.get("type", "") == "switch" else []
+	if position_count == 2 and base_buttons.size() == 3:
+		buttons = [base_buttons[0], base_buttons[2]]
+	elif position_count == 3 and base_buttons.size() == 2:
+		for middle in SmokeAux.MAX_BUTTONS:
+			if middle in base_buttons:
+				continue
+			var proposed := [base_buttons[0], middle, base_buttons[1]]
+			if _switch_group_is_available(aux_name, _candidate_switch(previous, proposed)):
+				buttons = proposed
+				break
+	elif base_buttons.size() == position_count:
+		buttons = base_buttons.duplicate()
+	else:
+		for start in SmokeAux.MAX_BUTTONS:
+			var proposed := _contiguous_buttons(start, position_count)
+			if _switch_group_is_available(aux_name, _candidate_switch(previous, proposed)):
+				buttons = proposed
+				break
+	if buttons.is_empty():
+		return {}
+	var result: Dictionary = {"type": "switch", "buttons": buttons, "invert": bool(previous.get("invert", false))}
+	var label := str(previous.get("label", "")).strip_edges()
+	if not label.is_empty():
+		result["label"] = label
+	return result if _switch_group_is_available(aux_name, result) else {}
+
+
+static func _contiguous_buttons(start: int, count: int) -> Array:
+	var result: Array = []
+	for offset in count:
+		result.append(start + offset)
+	return result
+
+
+func _candidate_switch(previous: Dictionary, buttons: Array) -> Dictionary:
+	var result := {"type": "switch", "buttons": buttons.duplicate(), "invert": bool(previous.get("invert", false))}
+	var label := str(previous.get("label", "")).strip_edges()
+	if not label.is_empty():
+		result["label"] = label
+	return result
+
+
+func _switch_group_is_available(aux_name: String, binding: Dictionary) -> bool:
+	var candidate_profile := _draft_profile.duplicate(true)
+	var aux_value: Variant = candidate_profile.get("aux", {})
+	var aux: Dictionary = aux_value.duplicate(true) if aux_value is Dictionary else {}
+	aux[aux_name] = binding.duplicate(true)
+	candidate_profile["aux"] = aux
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
+	return bool(validation.get("ok", false))
 
 
 func _on_aux_type_selected(index: int, aux_name: String) -> void:
@@ -1361,6 +1740,13 @@ func _on_aux_type_selected(index: int, aux_name: String) -> void:
 		_commit_aux_binding(aux_name, _aux_binding_for_type(aux_name, "axis"))
 	elif mode_id == 2:
 		_commit_aux_binding(aux_name, _aux_binding_for_type(aux_name, "button"))
+	elif mode_id == 3:
+		var switch_binding := _aux_binding_for_type(aux_name, "switch")
+		if switch_binding.is_empty():
+			_update_aux_controls()
+			_set_status(tr("No conflict-free switch buttons are available for this channel."), true)
+		else:
+			_commit_aux_binding(aux_name, switch_binding)
 
 
 func _on_aux_axis_changed(value: float, aux_name: String) -> void:
@@ -1405,23 +1791,78 @@ func _on_aux_button_mode_selected(index: int, aux_name: String) -> void:
 	_commit_aux_binding(aux_name, binding, false)
 
 
-func _commit_aux_binding(aux_name: String, binding: Dictionary, report_status := true) -> void:
-	var aux_value: Variant = _draft_profile.get("aux", {})
+func _on_aux_switch_count_selected(index: int, aux_name: String) -> void:
+	if not _aux_controls.has(aux_name):
+		return
+	var position_count: OptionButton = _aux_controls[aux_name].switch_count
+	if index < 0 or index >= position_count.item_count:
+		return
+	var requested_count := int(position_count.get_item_id(index))
+	var previous := _aux_binding_for_type(aux_name, "switch")
+	var binding := _new_switch_binding(aux_name, requested_count, previous)
+	if binding.is_empty():
+		_update_aux_controls()
+		_set_status(tr("Switch positions could not be changed without a conflict."), true)
+		return
+	_commit_aux_binding(aux_name, binding)
+
+
+func _on_aux_switch_button_changed(value: float, aux_name: String, row_index: int) -> void:
+	var binding := _aux_binding_for_type(aux_name, "switch")
+	var candidate := _switch_with_member_swap(binding, row_index, int(value))
+	if candidate.is_empty():
+		_update_aux_controls()
+		return
+	_commit_aux_binding(aux_name, candidate, false)
+
+
+func _on_aux_switch_label_changed(value: String, aux_name: String) -> void:
+	var binding := _aux_binding_for_type(aux_name, "switch")
+	var switch_label := value.strip_edges()
+	if switch_label.is_empty():
+		binding.erase("label")
+	else:
+		binding["label"] = switch_label
+	_commit_aux_binding(aux_name, binding, false)
+
+
+func _on_aux_switch_invert_toggled(pressed: bool, aux_name: String) -> void:
+	var binding := _aux_binding_for_type(aux_name, "switch")
+	binding["invert"] = pressed
+	_commit_aux_binding(aux_name, binding, false)
+
+
+func _commit_aux_binding(aux_name: String, binding: Dictionary, report_status := true) -> bool:
+	var candidate_profile := _draft_profile.duplicate(true)
+	var aux_value: Variant = candidate_profile.get("aux", {})
 	var aux: Dictionary = aux_value.duplicate(true) if aux_value is Dictionary else {}
 	if binding.is_empty():
 		aux.erase(aux_name)
 	else:
 		aux[aux_name] = binding.duplicate(true)
 	if aux.is_empty():
-		_draft_profile.erase("aux")
+		candidate_profile.erase("aux")
 	else:
-		_draft_profile["aux"] = aux
+		candidate_profile["aux"] = aux
+	var has_switch := false
+	for candidate_binding: Variant in aux.values():
+		if candidate_binding is Dictionary and str(candidate_binding.get("type", "")) == "switch":
+			has_switch = true
+			break
+	if has_switch:
+		var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
+		if not bool(validation.get("ok", false)):
+			_update_aux_controls()
+			_set_status(tr("Switch mapping was not changed: %s") % "; ".join(validation.get("errors", [])), true)
+			return false
+	_draft_profile = candidate_profile
 	_action_bindings = ControllerActions.effective_bindings(_draft_profile, action_capabilities)
 	_update_aux_controls()
 	_update_action_controls()
 	_update_aux_preview()
 	if report_status:
 		_set_status(tr("Auxiliary input updated. Save the profile to keep it."), false)
+	return true
 
 
 func _update_aux_preview() -> void:
@@ -1446,7 +1887,7 @@ func _update_aux_preview() -> void:
 				preview.text = tr("Invalid auxiliary axis mapping.")
 				continue
 			var axis := int(binding.axis)
-			var raw := Input.get_joy_axis(_draft_flight_device_id, axis)
+			var raw := _read_axis_preview(_draft_flight_device_id, axis)
 			var amount := SmokeAux.axis_amount(raw, binding) * 100.0
 			preview.text = tr("Axis %d · raw %+.2f · request %.0f%%") % [axis, raw, amount]
 		elif str(binding.get("type", "")) == "button":
@@ -1454,11 +1895,54 @@ func _update_aux_preview() -> void:
 				preview.text = tr("Invalid auxiliary button mapping.")
 				continue
 			var button := int(binding.button)
-			var pressed := Input.is_joy_button_pressed(_draft_flight_device_id, button)
+			var pressed := _read_button_preview(_draft_flight_device_id, button)
 			var state := tr("Pressed") if pressed else tr("Released")
 			preview.text = tr("Button %d · %s · %s") % [button, tr("Toggle per press") if binding.mode == "toggle_edge" else tr("Maintained"), state]
+		elif str(binding.get("type", "")) == "switch":
+			if not SmokeAux.valid_binding(binding):
+				preview.text = tr("Invalid switch group.")
+				continue
+			var buttons: Array = SmokeAux.bound_buttons(binding)
+			var active_positions: Array[int] = []
+			for button_index in buttons.size():
+				if _read_button_preview(_draft_flight_device_id, int(buttons[button_index])):
+					active_positions.append(button_index)
+			if active_positions.size() > 1:
+				preview.text = tr("%s · multiple positions active") % _switch_display_name(binding)
+			elif active_positions.is_empty():
+				preview.text = tr("%s · no position active") % _switch_display_name(binding)
+			else:
+				var position_index := active_positions[0]
+				var row_index := position_index if buttons.size() == 3 else (0 if position_index == 0 else 2)
+				var amount := float(position_index) / float(buttons.size() - 1)
+				if bool(binding.get("invert", false)):
+					amount = 1.0 - amount
+				preview.text = tr("%s · %s · Button %d · request %.0f%%") % [
+					_switch_display_name(binding), tr(_switch_position_name(row_index)), int(buttons[position_index]), amount * 100.0,
+				]
 		else:
 			preview.text = tr("Unbound")
+
+
+func _read_axis_preview(device_id: int, axis: int) -> float:
+	if axis_preview_provider.is_valid():
+		var sample: Variant = axis_preview_provider.call(device_id, axis)
+		if typeof(sample) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(sample)):
+			return float(sample)
+		return 0.0
+	return Input.get_joy_axis(device_id, axis) if device_id >= 0 else 0.0
+
+
+func _read_button_preview(device_id: int, button: int) -> bool:
+	if button_preview_provider.is_valid():
+		var sample: Variant = button_preview_provider.call(device_id, button)
+		return sample if typeof(sample) == TYPE_BOOL else false
+	return Input.is_joy_button_pressed(device_id, button) if device_id >= 0 else false
+
+
+static func _switch_display_name(binding: Dictionary) -> String:
+	var label := str(binding.get("label", "")).strip_edges()
+	return label if not label.is_empty() else TranslationServer.translate("Switch")
 
 
 func _on_axis_changed(value: float, channel_name: String, property: String) -> void:
@@ -1493,7 +1977,7 @@ func _update_preview() -> void:
 	for channel_name in CHANNELS:
 		var channel: Dictionary = _draft_profile.get(channel_name, {})
 		var axis := int(channel.get("axis", 0))
-		var raw := Input.get_joy_axis(_draft_flight_device_id, axis) if connected else 0.0
+		var raw := _read_axis_preview(_draft_flight_device_id, axis) if connected else 0.0
 		var conditioned := ControllerProfile.conditioned_axis(raw, channel, kind) if connected else 0.0
 		var current: Label = _preview_labels[channel_name]
 		current.text = tr("%s · raw %+.2f · conditioned %+.2f") % [tr(str(CHANNEL_LABELS[channel_name])), raw, conditioned] if connected else "%s · —" % tr(str(CHANNEL_LABELS[channel_name]))
@@ -1530,7 +2014,7 @@ func _update_action_controls() -> void:
 		var clear_button: Button = _clear_action_buttons[action_id]
 		label_control.text = tr(str(definition.label))
 		var binding: Dictionary = _action_bindings.get(action_id, {})
-		var prompt: Dictionary = ControllerPrompts.prompt(binding, family, device)
+		var prompt: Dictionary = ControllerPrompts.prompt(binding, family, device, _draft_profile)
 		var fallback_text := ControllerActions.binding_text(binding)
 		var prompt_text := str(prompt.get("text", fallback_text))
 		binding_control.text = prompt_text if not prompt_text.is_empty() else fallback_text
@@ -1608,6 +2092,8 @@ func _start_capture(action_id: String, button: Button) -> void:
 	if not button.visible:
 		action_filter.select(0)
 		_update_action_controls()
+	_capturing_aux_name = ""
+	_capturing_aux_position = -1
 	_capturing_action = action_id
 	_capturing_device_id = _draft_flight_device_id
 	_capture_button = button
@@ -1616,7 +2102,27 @@ func _start_capture(action_id: String, button: Button) -> void:
 	_update_action_controls()
 
 
+func _start_aux_capture(aux_name: String, row_index: int, button: Button) -> void:
+	if button.disabled or not _aux_controls.has(aux_name):
+		return
+	select_section("aux")
+	_capturing_action = ""
+	_capturing_aux_name = aux_name
+	_capturing_aux_position = row_index
+	_capturing_device_id = _draft_flight_device_id
+	_capture_button = button
+	_capture_button.grab_focus()
+	_set_status(tr("Move the selected radio switch to this position. The next button press is captured; no other switch needs to be released."), false)
+	_update_aux_controls()
+
+
+func _is_capture_active() -> bool:
+	return not _capturing_action.is_empty() or not _capturing_aux_name.is_empty()
+
+
 func _capture_binding(event: InputEvent) -> void:
+	if not _capturing_aux_name.is_empty():
+		return
 	var binding := ControllerActions.binding_from_event(event)
 	if binding.is_empty():
 		return
@@ -1634,6 +2140,23 @@ func _capture_binding(event: InputEvent) -> void:
 		_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile, action_capabilities))
 		_set_status(tr("Binding updated. Save the profile to keep it."), false)
 	_capture_done()
+	get_viewport().set_input_as_handled()
+
+
+func _capture_aux_button(button_index: int) -> void:
+	if _capturing_aux_name.is_empty() or button_index < 0 or button_index >= SmokeAux.MAX_BUTTONS:
+		return
+	var binding := _aux_binding_for_type(_capturing_aux_name, "switch")
+	var candidate := _switch_with_member_swap(binding, _capturing_aux_position, button_index)
+	if candidate.is_empty():
+		_capture_done()
+		_set_status(tr("That switch position is no longer available. Capture was cancelled."), true)
+		return
+	var captured_aux := _capturing_aux_name
+	var committed := _commit_aux_binding(captured_aux, candidate, false)
+	_capture_done()
+	if committed:
+		_set_status(tr("Button %d captured for this switch position. Save the profile to keep it.") % button_index, false)
 	get_viewport().set_input_as_handled()
 
 
@@ -1663,13 +2186,16 @@ func _cancel_capture() -> void:
 
 func _capture_done() -> void:
 	_capturing_action = ""
+	_capturing_aux_name = ""
+	_capturing_aux_position = -1
 	_capturing_device_id = -1
 	_capture_button = null
 	_update_action_controls()
+	_update_aux_controls()
 
 
 func _save_profile(close_on_success := true) -> bool:
-	if not _capturing_action.is_empty():
+	if _is_capture_active():
 		_set_status(tr("Finish or cancel remapping before saving."), true)
 		return false
 	if _draft_profile.is_empty() or profile_store == null:

@@ -22,4 +22,4 @@ Run `run_benchmarks.py --godot "$GODOT" --baseline "$BASELINE_APP" --candidate a
 
 Full checks: `app/test.sh` in an isolated LF checkout. The existing `research/p51/p51-15/run_suite.py` can preserve a failing full-suite log and continue the remaining checks for diagnosis; its continued result is still a failing suite. Use independent user-data directories and record unrelated baseline failures explicitly.
 
-Evidence and limitations: [AV-14…17 report](../../../docs/research/avanti-realism/README.md). Work ordering and acceptance: [Avanti plan](../../../docs/AVANTI-S-PLAN.md#6-av-1417-realism-investigation-and-correction).
+Evidence and limitations: [AV-14…17 report](../../../docs/research/avanti-realism/README.md). Work ordering and acceptance: [Avanti plan](../../../docs/AVANTI-S-PLAN.md#3-steps).

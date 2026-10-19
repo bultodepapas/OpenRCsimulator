@@ -155,12 +155,15 @@ class AtmosphereCLI(unittest.TestCase):
                     result = check(self.aircraft_traces[(aircraft, duration)], float(duration))
                     has_flaps = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
                     is_retractable = aircraft == 'sebart-avanti-s-a200-p100rx'
-                    self.assertEqual(result['format'], 'openrc-trace v14')
+                    finite_liquid = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
+                    is_glow = aircraft == 'gp-extra-300s-60'
+                    self.assertEqual(result['format'], 'openrc-trace v15' if finite_liquid else 'openrc-trace v14')
                     self.assertEqual(result['mass_trace_schema'], 'openrc-mass-sample v1')
                     self.assertEqual(result['mass_base_trace_format'],
-                                     'openrc-trace v12' if has_flaps else 'openrc-trace v6')
-                    expected_schema = ('openrc-flight-meta v9' if has_flaps
-                                       else 'openrc-flight-meta v6')
+                                     'openrc-trace v12' if has_flaps else
+                                     'openrc-trace v9' if is_glow else 'openrc-trace v6')
+                    expected_schema = ('openrc-flight-meta v10' if is_glow else
+                                       'openrc-flight-meta v9' if has_flaps else 'openrc-flight-meta v6')
                     self.assertEqual(result['metadata_schema'], expected_schema)
                     self.assertEqual((result['rows'], result['first_tick'], result['last_tick']),
                                      (rows, 0, rows - 1))

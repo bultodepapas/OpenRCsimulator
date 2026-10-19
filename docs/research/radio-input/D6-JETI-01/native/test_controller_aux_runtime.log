@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Existing flaps control overlaps a newly calibrated AETR axis; reassign that auxiliary channel.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:214)
+       [1] _next (res://input/rc_calibration.gd:122)
+       [2] advance (res://input/rc_calibration.gd:114)
+       [3] _calibrate (res://tests/test_controller_aux_runtime.gd:222)
+       [4] _run (res://tests/test_controller_aux_runtime.gd:163)
+       [5] _initialize (res://tests/test_controller_aux_runtime.gd:20)
+Controller auxiliary runtime: 38/38 checks passed

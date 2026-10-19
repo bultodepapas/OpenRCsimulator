@@ -9,6 +9,7 @@ const Trace := preload("res://sim/trace.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Flaps := preload("res://physics/flaps.gd")
 const GlowFlight := preload("res://physics/glow/flight.gd")
+const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const TIMBER := "turbo-lumber-evolution"
 const WHEEL_LAYOUT_SUFFIX := "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
@@ -77,7 +78,12 @@ func _initialize() -> void:
 		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema,
 			"expected=%s actual=%s" % [expected_schema, meta.metadata_schema])
 		if wheel_profiled:
-			_check("wheel trace layout names appended rim-speed tail", str(meta.continuous_layout).ends_with(WHEEL_LAYOUT_SUFFIX))
+			var layout_text: String = str(meta.continuous_layout)
+			var wheel_suffix_index: int = layout_text.find(WHEEL_LAYOUT_SUFFIX)
+			var liquid_suffix_index: int = layout_text.find(LiquidFlight.LAYOUT)
+			var layout_order_ok: bool = layout_text.ends_with(WHEEL_LAYOUT_SUFFIX) if not session.liquid_fuel_is_active() \
+				else wheel_suffix_index >= 0 and liquid_suffix_index > wheel_suffix_index
+			_check("wheel trace layout keeps wheel tail before any fuel tail", layout_order_ok)
 			_check("wheel trace records selected-profile and source-file identity", str(meta.wheel_profile_sha256).length() == 64
 				and str(meta.wheel_profile_input_sha256).length() == 64)
 			_check("wheel trace has one state entry per gear contact", JSON.parse_string(meta.wheel_state_layout).size()
@@ -155,6 +161,13 @@ func _initialize() -> void:
 			str({invalid = recorder.trace._invalid_weather, metadata_schema = recorder.trace.meta.get("metadata_schema"),
 				propulsion_model = recorder.trace.meta.get("propulsion_model"), columns = recorder.trace.columns(),
 				mass_schema = recorder.trace.meta.get("mass_trace_schema"), continuous_size = session.sim.continuous.size()}))
+		if session.liquid_fuel_is_active():
+			var current_fill: float = recorder.trace.value(0, "fuel_fill_fraction") if trace_row_ok else NAN
+			var recorded_meta: Dictionary = recorder.trace.meta
+			_check("mid-flight trace separates reset preference from accepted fuel inventory",
+				trace_row_ok and recorded_meta.recording_start_tick == 12 and recorded_meta.fuel_start_fill_known == true
+				and recorded_meta.fuel_start_fill == 1.0 and is_finite(current_fill) and current_fill < 1.0,
+				"recorded fill=%s selected reset fill=%s" % [str(current_fill), str(recorded_meta.get("fuel_start_fill"))])
 		if entry.id == TIMBER:
 			_check("Timber trace carries endpoint-sampled motor current", recorder.trace.columns().has("motor_current_a")
 				and recorder.trace.columns().has("drive_bus_current_a"))
@@ -185,10 +198,14 @@ func _initialize() -> void:
 	session.aircraft_path = Catalog.entry("p51d-mustang-120").data
 	session.reload()
 	var prop: Dictionary = session.aircraft.model.propulsion
+	var original_propulsion: Dictionary = prop.duplicate(true)
+	var original_integrator: String = session.shaft_integrator()
 	prop.erase("shaft")
 	prop.erase("slipstream")
+	prop.erase("liquid_fuel")
 	prop.erase("normal_force")
 	prop.erase("pfactor_moment")
+	session._shaft_integrator = "split"
 	session.aircraft.model.envelope = {}
 	var changed: Dictionary = session.trace_meta()
 	_check("same ID, lag path", changed.propulsion_model == "propeller-rpm-lag-v1")
@@ -196,6 +213,8 @@ func _initialize() -> void:
 	_check("same ID, global aero", changed.aero_model == "global-derivatives-v1")
 	var features: Dictionary = JSON.parse_string(changed.propulsion_features)
 	_check("same ID, no propeller normal force/P-factor", not features.propeller_normal_force and not features.propeller_pfactor)
+	session.aircraft.model.propulsion = original_propulsion
+	session._shaft_integrator = original_integrator
 
 	session.aircraft_path = Catalog.entry(Catalog.DEFAULT_ID).data
 	session.reload()

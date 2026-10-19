@@ -144,6 +144,3 @@ func _installation(model: Dictionary) -> void:
 	check("stopped propeller retains finite flow loads and zero rotor momentum",
 		stopped_finite and stopped_loads != PackedFloat64Array([0, 0, 0, 0, 0, 0])
 		and Dynamics.rotor_momentum(model, 0.0) == PackedFloat64Array([0, 0, 0]))
-
-
-\n

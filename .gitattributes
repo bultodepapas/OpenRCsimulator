@@ -58,7 +58,7 @@
 /research/glow-engines/flight-480.json text eol=lf
 /research/glow-engines/flight-960.json text eol=lf
 
-# These generated Stik installation and aircraft records intentionally retain CRLF.
+# These generated glow installation and aircraft records intentionally retain CRLF.
 /app/data/glow/stik_55ax_2t.json text eol=crlf
 /app/data/glow/stik_55ax_2t_apc_13x6.json text eol=crlf
 /app/data/glow/stik_fs64v_4t.json text eol=crlf
@@ -68,7 +68,12 @@
 /app/data/aircraft/stik_glow_fs64v_4t.json text eol=crlf
 /app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json text eol=crlf
 /app/data/glow/stik_61fx_2t.json text eol=crlf
+/app/data/glow/extra_61fx_2t.json text eol=crlf
 /app/data/aircraft/stik_glow_61fx_2t.json text eol=crlf
+
+# Fuel replay and export receipts preserve the bytes used by their recorded hashes.
+/research/fuel-systems/FUEL-12/** -text whitespace=cr-at-eol
+/docs/research/fuel-systems/FUEL-12/evidence/** -text whitespace=cr-at-eol
 
 # Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
 /app/data/aircraft_models/*.json text eol=lf

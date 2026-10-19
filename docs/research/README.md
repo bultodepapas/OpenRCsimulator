@@ -33,7 +33,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 [Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the original gamepad/radio audit, Godot 4.7.2 and SDL sources, and subsequent implementation evidence: explicit device ownership, V2 profiles, safe transitions, menu navigation, free glyphs and native Windows checks. The [implementation plan](../plans/controller-support.md) retains Xbox/DualSense physical and package qualification and optional feedback as open gates. API/synthetic checks do not establish hardware support.
 
-[D6-JETI-00, 2026-10-19](radio-input/D6-JETI-00/README.md) preserves JETI's email, four-page PDF, USB descriptors and simulator profile, with a current-source audit. The [JETI support plan](../plans/jeti-support.md) sequences family recognition, switch-position labels, clean defaults and maintained-switch support. The reported DC-16II basic flight does not close full model/platform qualification.
+[D6-JETI-00, 2026-10-19](radio-input/D6-JETI-00/README.md) preserves JETI's email, four-page PDF, USB descriptors and simulator profile, with a dated source audit. [D6-JETI-01 implementation](radio-input/D6-JETI-01/README.md) records conservative family recognition, clean defaults, maintained-switch input/setup, native regressions and EN/ES captures. The [JETI support plan](../plans/jeti-support.md) owns remaining physical mapping and qualification; the reported DC-16II basic flight does not close full model/platform qualification.
 
 ### Random failures and emergency practice
 
@@ -46,6 +46,8 @@ Some tools use local-only material from `references/`; their reports say when a 
 ### Aircraft Workshop
 
 [AE-01–10 initial implementation](aircraft-editor/AE-01-10/README.md) records the initial compiler/store/descriptor/trial/UI checks and native captures. The [Workbench entry point and evidence map](../AIRCRAFT-WORKSHOP.md#verification) also links later identity, imported-model, menu and fuel integration evidence. The [consolidated AE plan](../plans/aircraft-editor.md) owns remaining acceptance.
+
+[AE-00 customization investigation, 2026-10-19](aircraft-editor/AE-00/README.md) records the current code seams, official Godot research, moving-tree diagnostics and an isolated retained-color probe. Compiler/legacy-trial failures and the probe's pause/reset assertions remain open. The resulting requirements and subphases live in the [AE implementation packages](../plans/aircraft-editor.md#56-implementation-packages-and-order).
 
 ### RC monster truck
 
@@ -61,7 +63,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Extra 300S flight realism
 
-[EX-06/08/09 realism audit](extra-300-realism/README.md) links the manual/source audit, corrections, behavior matrix, regression results and remaining physical gaps. The [Extra 300S plan](../EXTRA-300-PLAN.md) owns aircraft implementation; the research records realism findings and remaining physical gaps.
+[EX-06/08/09 realism audit](extra-300-realism/README.md) links the manual/source audit, corrections, behavior matrix, regression results and remaining physical gaps. The [Extra guide/plan](../EXTRA-300-PLAN.md) owns current scope and pending work; the research retains dated results and physical gaps.
 
 <a id="avanti-s-flight-realism"></a>
 
@@ -108,7 +110,7 @@ Use the [flight-model audit](flight-model-robustness-audit.md), [repair implemen
 | Ground handling and circuits | [E5a taildragger breadth](ground-contact/E5a/README.md), [E3b2 runway equilibrium](ground-contact/E3b2/README.md), [E3c1a landing baseline](ground-contact/E3c1a/README.md), [E3c2a circuit](ground-contact/E3c2a/README.md), [E4a replay regression](ground-contact/E4a/README.md), [PT2 pilot preparation](ground-contact/PT2/README.md) |
 | Propulsion | [G1a1 propeller sources](propulsion/G1a1/README.md), [G1b1 operating range](propulsion/G1b1/README.md), [G2a coupled shaft](propulsion/G2a-RK4/README.md), [EL1a-R1 sources](propulsion/EL1a-R1/README.md), [EL1a-R2 implementation research](propulsion/EL1a-R2/README.md), [EL2a-P3 optimization](propulsion/EL2a-P3/README.md), [EL2a-E1 ground scenarios](propulsion/EL2a-E1/README.md); see the [electric propulsion plan](../ELECTRIC-PROPULSION-PLAN.md). Battery: [BAT-00 sources](battery/BAT-00/README.md), [BAT-04 specification](battery/BAT-04/specification.md), [BAT-05 cell fits and packs](battery/BAT-05/README.md), [BAT-06…13 integration](battery/BAT-10/README.md), [BAT-14/15 telemetry overlay](battery/BAT-15/README.md); see the [battery plan](../plans/battery-realism.md) |
 | Two-stroke and four-stroke glow engines | [NITRO-00 manufacturer sources and limits](glow-engines/NITRO-00/README.md), [NITRO-01 standalone mean-cycle/profile proof](glow-engines/NITRO-01/README.md); separate family milestones and acceptance belong to the [RC glow engine realism plan](../plans/RC_NITRO_ENGINE_REALISM_PLAN.md) |
-| Fuel, mass and balance | [FUEL-00 audit and sources](fuel-systems/FUEL-00/README.md): fleet CG shift and static margin from full to empty, glow variable-mass law check, consumption and feed numbers, fuel densities, tank placement and balance practice, JSBSim tank model; work belongs to the [fuel, mass and balance plan](../plans/fuel-mass-balance.md) |
+| Fuel, mass and balance | [FUEL-00 audit and sources](fuel-systems/FUEL-00/README.md): fleet CG shift and static margin from full to empty, glow variable-mass law check, consumption and feed numbers, fuel densities, tank placement and balance practice, JSBSim tank model; [FUEL-12 completion evidence](fuel-systems/FUEL-12/README.md); behavior belongs to the [fuel standard](../FUEL-SYSTEM.md), remaining qualification to its [plan](../plans/fuel-mass-balance.md) |
 | Validation and data | [VAL-3 reference dashboard](validation/VAL-3/README.md), [VAL-5a weighing](validation/VAL-5a/README.md), [VAL-6a inertia](validation/VAL-6a/README.md), [VAL-7a propeller](validation/VAL-7a/README.md), [VAL-7b throttle](validation/VAL-7b/README.md), [VAL-7c uncertainty](validation/VAL-7c/README.md), [VAL-8a ground-run video](validation/VAL-8a/README.md), [VAL-8b roll video](validation/VAL-8b/README.md), [DATA-1 freshness](aircraft-validation/DATA-1/README.md), [DATA-4a schema checks](aircraft-validation/DATA-4a/README.md) |
 | Weather and input | [wind implementation](wind-implementation/README.md), [M5-W04a turbulence](wind-implementation/M5-W04a/README.md), [M5-ATM-1 density kernel](atmosphere/M5-ATM-1/kernel/README.md), [D6b-R2 calibration rearming](radio-input/D6b-R2/README.md), [D6e dual rates and expo](radio-input/D6e/README.md), [F1 diagnostics](radio-input/F1/README.md), [F3b1 event cost](radio-input/F3b1/README.md), [F6a latency capture](radio-input/F6a/README.md), [F6b latency reduction](radio-input/F6b/README.md) |
 | Integrity checks | [C7-R2 trace metadata](trace-integrity/C7-R2/README.md), [D4-R2 trim integrity](trim-integrity/D4-R2/README.md), [DATA-3 input identity](aircraft-validation/DATA-3/README.md) |
@@ -119,7 +121,7 @@ Start with the [source and local-reference map](ugly-stik-resources.md), [model 
 
 ### Extra 300S
 
-Read the [family research](extra-300-family-research.md), [integration audit](extra-300-integration-audit.md), [realism audit](extra-300-realism/README.md), and [generated physics derivation](../../research/extra-300/ex05/derivation.md). Shared authoring tools are in [extra-aircraft-tooling](extra-aircraft-tooling/README.md). The [EXTRA-300-PLAN](../EXTRA-300-PLAN.md) owns aircraft implementation.
+Read the [family research](extra-300-family-research.md), [integration audit](extra-300-integration-audit.md), [realism audit](extra-300-realism/README.md), and [generated physics derivation](../../research/extra-300/ex05/derivation.md). Shared authoring tools are in [extra-aircraft-tooling](extra-aircraft-tooling/README.md). The [Extra guide/plan](../EXTRA-300-PLAN.md) owns current implemented scope, verification gaps and remaining work.
 
 <a id="avanti-s"></a>
 
@@ -129,7 +131,7 @@ The [AV-09 landing-gear evidence](avanti-gear/AV-09/README.md) covers the Blende
 
 The [AV-09-F flap evidence](avanti-flaps/AV-09/README.md) covers the manufacturer's detents and elevator mix, estimated aerodynamic model, sampled travel, keyboard/controller/AUX integration, paired input-tape comparisons and exact replay.
 
-The simulator name is Ventage Jet; the source aircraft is the SebArt Avanti S (A200). Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). The current imported model, turbine installation, control rig, collision witnesses and Windows package proof are in [AV-31 Blender integration](avanti-blender/AV-31/README.md), with regeneration in the [asset guide](../../assets/aircraft/avanti-s-a200/README.md). The [v4 contour study](avanti-s-refinement-v4.md) describes the superseded visual blockout. Generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Ventage Jet plan](../AVANTI-S-PLAN.md) owns implementation.
+The simulator name is Ventage Jet; the source aircraft is the SebArt Avanti S (A200). Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). The current imported model, turbine installation, control rig, collision witnesses and Windows package proof are in [AV-31 Blender integration](avanti-blender/AV-31/README.md), with regeneration in the [asset guide](../../assets/aircraft/avanti-s-a200/README.md). The [v4 contour study](avanti-s-refinement-v4.md) describes the superseded visual blockout. Generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Ventage Jet guide/plan](../AVANTI-S-PLAN.md) owns current implemented scope, verification gaps and remaining aircraft work.
 
 ### P-51D
 
@@ -176,7 +178,7 @@ The [field-world guide](../FIELD-WORLD-PLAN.md) owns composition and night accep
 
 ### Immersive audio
 
-The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 sources and licenses](audio/AUD-01/sources.md), [AUD-02 asset record](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), [AUD-04 acceptance](audio/AUD-04/README.md), [AUD-05 export qualification](audio/AUD-05/README.md), and the [AUD-06/07 bench and first fixes](audio/AUD-06/README.md) for the [audio realism plan](../plans/audio-realism.md). The earlier [G3b engine-audio research](audio/G3b/README.md) is a separate responsive-engine path.
+The [audio guide](../AUDIO-PLAN.md) owns the current soundscape. Read [AUD-01 sources and licenses](audio/AUD-01/sources.md), [AUD-02 asset record](audio/AUD-02/assets.md), [AUD-03 integration](audio/AUD-03/README.md), [AUD-04 acceptance](audio/AUD-04/README.md), [AUD-05 export qualification](audio/AUD-05/README.md), and the [AUD-06/07 bench and first fixes](audio/AUD-06/README.md) for the [audio realism plan](../plans/audio-realism.md). The earlier [G3b engine-audio research](audio/G3b/README.md) is a separate responsive-engine path. [AUD-14](audio/AUD-14/README.md) records the downloaded CC0 wind/fabric sources, editing pipeline and windsock-audio verification.
 
 ### Smoke
 

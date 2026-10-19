@@ -5,6 +5,7 @@ const Store := preload("res://input/controller_profile_store.gd")
 const Profile := preload("res://input/controller_profile.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const Calibration := preload("res://input/rc_calibration.gd")
+const JetiRadio := preload("res://input/jeti_radio.gd")
 
 signal flight_selection_changed
 signal ui_selection_changed(id: int)
@@ -70,7 +71,8 @@ func _apply_automatic_defaults() -> void:
 		var best_id := -1
 		var best_priority := 100
 		for info: Dictionary in devices:
-			if not bool(info.get("connected", false)):
+			if not bool(info.get("connected", false)) or (bool(info.get("ambiguous", false)) \
+					and JetiRadio.has_jeti_identity_claim(info)):
 				continue
 			var priority := 3
 			if not store.match_profile(info, devices).is_empty():
@@ -108,9 +110,11 @@ static func observed_devices() -> Array:
 		var info := Input.get_joy_info(id)
 		info.merge({"id": id, "name": Input.get_joy_name(id), "guid": Input.get_joy_guid(id),
 			"known": Input.is_joy_known(id), "platform": OS.get_name(), "backend": "SDL3"}, true)
-		for field in ["vendor_id", "product_id"]:
-			info[field] = int(info.get(field, 0))
-		if RcInput.looks_like_radio(str(info.name)):
+		if JetiRadio.matches(info):
+			info["kind"] = "radio"
+		elif JetiRadio.has_jeti_identity_claim(info):
+			info["kind"] = "joystick"
+		elif RcInput.looks_like_radio(str(info.name)):
 			info["kind"] = "radio"
 		devices.append(info)
 	return devices
@@ -174,7 +178,8 @@ func select_devices(flight_id: int, ui_id: int) -> bool:
 
 func is_ui_gamepad(id: int) -> bool:
 	var info: Dictionary = registry.device_for_id(id)
-	if not bool(info.get("connected", false)) or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
+	if not bool(info.get("connected", false)) or JetiRadio.has_jeti_identity_claim(info) \
+			or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
 		return false
 	if bool(info.get("known", false)) and info.get("kind", "") == "gamepad": return true
 	# Unknown hardware needs a saved, unambiguous user declaration before it may drive menus.
@@ -185,6 +190,8 @@ func is_ui_gamepad(id: int) -> bool:
 func profile_for_device(id: int) -> Dictionary:
 	var info: Dictionary = registry.device_for_id(id)
 	if not info.get("connected", false): return {}
+	# Duplicate or changing identities cannot reuse a cached default for this connection.
+	if bool(info.get("ambiguous", false)) and JetiRadio.has_jeti_identity_claim(info): return {}
 	var key := "%d:%d" % [id, registry.connection_generation(id)]
 	if _profiles.has(key): return _profiles[key].duplicate(true)
 	# A corrupt or unsupported V2 store must not look like an empty store and
@@ -199,10 +206,14 @@ func profile_for_device(id: int) -> Dictionary:
 		if not legacy.is_empty():
 			if info.get("known", false) and info.get("kind", "") == "gamepad": return {}
 			profile = Profile.upgrade_legacy(legacy, {"legacy_device_key": RcInput.key_for(id, info)})
-	if profile.is_empty() and info.get("known", false) and info.get("kind", "") == "gamepad":
+	if profile.is_empty() and JetiRadio.has_jeti_identity_claim(info):
+		if not JetiRadio.matches(info):
+			return {}
+		profile = Profile.defaults("radio", "jeti_mode2")
+	elif profile.is_empty() and info.get("known", false) and info.get("kind", "") == "gamepad":
 		profile = Profile.defaults()
 	# Known RC names retain their historical mapping and low-throttle gate. Unknown sticks stay unconfigured.
-	if profile.is_empty() and info.get("kind", "") == "radio":
+	elif profile.is_empty() and info.get("kind", "") == "radio":
 		profile = Profile.defaults("radio", "radio_custom")
 	if not profile.is_empty(): _profiles[key] = profile.duplicate(true)
 	return profile
@@ -443,7 +454,8 @@ func _ui_selection_eligible_for_setup(ui_id: int, flight_id: int, candidate: Dic
 	if ui_id < 0:
 		return true
 	var info: Dictionary = registry.device_for_id(ui_id)
-	if not bool(info.get("connected", false)) or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
+	if not bool(info.get("connected", false)) or JetiRadio.has_jeti_identity_claim(info) \
+			or info.get("kind", "") == "radio" or RcInput.looks_like_radio(str(info.get("name", ""))):
 		return false
 	if bool(info.get("known", false)) and info.get("kind", "") == "gamepad":
 		return true

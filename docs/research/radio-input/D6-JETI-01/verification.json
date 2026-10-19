@@ -1,0 +1,181 @@
+{
+  "date": "2026-10-19",
+  "scope": "Software fixtures and source checks; no physical JETI qualification",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "native_platform": "Windows x86_64",
+  "linux_platform": "Ubuntu under WSL2, separate Linux-filesystem checkout",
+  "linux_snapshot_base_commit": "a04ba1ec484a448065c8a8cdfa58a3fe18763a3f",
+  "linux_snapshot_tracked_patch_bytes": 396917,
+  "snapshot_notes": "Includes concurrent unrelated working changes; final owned sources copied and SHA-256 compared to native sources before parse and Linux tests. Parse inventory records each checked GDScript hash.",
+  "native_regression": {
+    "passed": 38,
+    "total": 38,
+    "results": "native-results.json",
+    "notes": "Latest affected UI suites replace earlier pre-fix results; unchanged input suites retain their passing final-native run."
+  },
+  "linux_focused": {
+    "passed": 5,
+    "total": 5,
+    "results": "linux-results.json"
+  },
+  "complete_app_parse": {
+    "passed": 1052,
+    "total": 1052,
+    "results": "parse-all-linux.json",
+    "excludes": [
+      "app/.godot/",
+      "app/captures/"
+    ]
+  },
+  "supplier_cfg": {
+    "passed": 9,
+    "total": 9,
+    "log": "supplied-profile.log",
+    "source_sha256": "09c79c8998d7055493eed1c1d83b862573041918a42754d03eb219ea0324ea5d",
+    "script": "research/input/jeti/verify_supplied_profile.gd",
+    "targeted_parse_passed": true
+  },
+  "full_app_test": {
+    "passed": false,
+    "exit_code": 1,
+    "log": "full-app-preflight.log",
+    "stopped_at": "CR-29 stale generated worked-examples.json; before unit/complete-parse phase",
+    "notes": "No economics generator or generated file was changed by this input/UI task."
+  },
+  "golden_replay": {
+    "passed": false,
+    "comparison": "golden-isolation/comparison.json",
+    "same_four_failures_with_original_and_candidate_input": true,
+    "notes": "Earlier input integration candidate and original intake input run against identical frozen physics/data. This is pre-existing-failure isolation, not final-source golden acceptance. No golden was re-recorded."
+  },
+  "owned_sources": [
+    {
+      "path": "app/input/controller_actions.gd",
+      "sha256": "06e2265968415bc16c7a43b0488f2c656959165af0d846e817c0501815c48fee"
+    },
+    {
+      "path": "app/input/controller_profile.gd",
+      "sha256": "90ea1249497a12b9756509071bf602e288b4dffcee40e0ec8fd8dabc59900ed7"
+    },
+    {
+      "path": "app/input/controller_registry.gd",
+      "sha256": "dd23383bd040a87c2c269ab3696de0fab947df93f11f912039678297e5284511"
+    },
+    {
+      "path": "app/input/controller_service.gd",
+      "sha256": "36a932a145795112909e1e0bf04fe0eb75f6cad9b1e34b3ad52303f780700087"
+    },
+    {
+      "path": "app/input/jeti_radio.gd",
+      "sha256": "4af27e19a3dc32792f4f85087aff84b508b3b1d00861ffc7882d438af6fa80ef"
+    },
+    {
+      "path": "app/input/rc_input.gd",
+      "sha256": "0b03f1e38520d954d49d5da0410711555fb1c2f41c89481804b04a8c8e873678"
+    },
+    {
+      "path": "app/input/smoke_aux.gd",
+      "sha256": "a871defb386b5d6ef2983157c21838a0adbb14b0f3b95035c725e5173f9fc5dd"
+    },
+    {
+      "path": "app/ui/controller_setup.gd",
+      "sha256": "46a3fe9746736b2c8644afd2a8a5f99d978926f57e159bc2468e54cab8d174d3"
+    },
+    {
+      "path": "app/ui/controller_prompts.gd",
+      "sha256": "fe6c556c1ca38ddd025838eb2c35eee8bd5dfd1aa8368b974fc01dbd8b329abd"
+    },
+    {
+      "path": "app/i18n/es.po",
+      "sha256": "74fea657c9339506ad31b9efc22de94bd14dd9f8874d51935bd6cfc2656d5275"
+    },
+    {
+      "path": "app/tests/test_jeti_identity.gd",
+      "sha256": "2cf4d3971df1ac481d4fbb20b3e99d07cc28b106a92a14261e2e0aa3bcf6f1e2"
+    },
+    {
+      "path": "app/tests/test_jeti_runtime.gd",
+      "sha256": "4aae522180ec3a3450ee8c9d5f527e388af2b79abf23767f41d3ad4416619152"
+    },
+    {
+      "path": "app/tests/test_jeti_setup.gd",
+      "sha256": "acb9f5fd311cf44ad944ad278b3050f4eeb0a439429a4bda7c7f36736c8ad502"
+    },
+    {
+      "path": "app/tests/test_switch_aux.gd",
+      "sha256": "b6287a76e9d3307b8fbb40541233580ebe48cf1c2767407ec2d3a2d2a89b977c"
+    },
+    {
+      "path": "app/render/overlays/controls_guide.gd",
+      "sha256": "dd5eb968d26a36b0edccee03b66253c5c67bb999b0becab735c007a437c744ca"
+    },
+    {
+      "path": "app/tests/test_overlay_manager.gd",
+      "sha256": "0b9d4a3493f8d6071a9e94cf83767788d9333fb44618c69bb1997f0bad292c63"
+    },
+    {
+      "path": "app/input/controller_actions.gd.uid",
+      "sha256": "8d8afcd671dfd20b46574efa3df751d804dd8c4517f9b33b6b5873bd761b0a83"
+    },
+    {
+      "path": "app/input/controller_profile.gd.uid",
+      "sha256": "7dfcc0e7a3bbe4bd2c73c4c28ff9dfd8d90d0fa030d1f24349d5ea14bd5c2fba"
+    },
+    {
+      "path": "app/input/controller_registry.gd.uid",
+      "sha256": "f754518a29d6531d5da44d0e935a19c74c397524e128b9b6a8e90a07d07cd72a"
+    },
+    {
+      "path": "app/input/controller_service.gd.uid",
+      "sha256": "14a9e93eefbc1fa769721bc2821c1bc8e55d37be77af24b7ac88f483a3c9e7ba"
+    },
+    {
+      "path": "app/input/jeti_radio.gd.uid",
+      "sha256": "3fcf3403b1ccffd106efdcc802481bf3e308a17ffa87bad456ded1769af8f886"
+    },
+    {
+      "path": "app/input/rc_input.gd.uid",
+      "sha256": "dbc5a753fb967762c901617c783bc88ceb056282b75b8a5e7cf6e4ee57a7cd5e"
+    },
+    {
+      "path": "app/input/smoke_aux.gd.uid",
+      "sha256": "617f8303f3c1f10df725c7585ef27127162a522a06bfd21c752c9acb7fe1dbb0"
+    },
+    {
+      "path": "app/ui/controller_setup.gd.uid",
+      "sha256": "bb9158192770ae108678f50b83f68de91a9c1e89999cf9533d230f91b9636947"
+    },
+    {
+      "path": "app/ui/controller_prompts.gd.uid",
+      "sha256": "81492d071581314da08dc9e13653a3c2764f4f10f709a66f376eeba9e3672da6"
+    },
+    {
+      "path": "app/tests/test_jeti_identity.gd.uid",
+      "sha256": "835f96ec6c697d343323ad17e62b0a7af257e07f70f21dcf6a11d1d11dcc3019"
+    },
+    {
+      "path": "app/tests/test_jeti_runtime.gd.uid",
+      "sha256": "e3f81bf0c89d2a202ded7dca7f651e0b0db5edbe2a79562e05cf721b677acdb3"
+    },
+    {
+      "path": "app/tests/test_jeti_setup.gd.uid",
+      "sha256": "0510acc154c670bf9a581ae1c94346b1a74bdcbbe2bafaf0df2c78aca71feef4"
+    },
+    {
+      "path": "app/tests/test_switch_aux.gd.uid",
+      "sha256": "95168225dd7d7f9f40162cdf51d1640b1fc657226f124d6626be52d91c46538c"
+    },
+    {
+      "path": "app/render/overlays/controls_guide.gd.uid",
+      "sha256": "f1056817a324cf0c6059c98c3ffb76b5704b6a0800934e5dd069c9ca2c077ee5"
+    },
+    {
+      "path": "app/tests/test_overlay_manager.gd.uid",
+      "sha256": "cb05df608fd26ce700f2f856009dd0e8781c7e6a7370e7e38e359d0f9cb736e0"
+    },
+    {
+      "path": "research/input/jeti/verify_supplied_profile.gd",
+      "sha256": "cfadf72ebd9d863643e260d656faa1f5b035a1c409d5948b56e7c700a22e4235"
+    }
+  ]
+}

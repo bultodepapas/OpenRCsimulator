@@ -27,8 +27,42 @@ func _initialize() -> void:
 	]:
 		_test_installation(str(entry.label), str(entry.aircraft))
 	_test_path_gate()
+	_test_capacity_roundoff()
 	print("glow installation contract: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_capacity_roundoff() -> void:
+	var reference: float = 0.5
+	var one_ulp_below: float = reference - 1.1102230246251565e-16
+	var wet_inertia := PackedFloat64Array([1.0, 1.2, 1.5, 0.0, 0.0, 0.0])
+	var center := PackedFloat64Array([0.1, 0.0, 0.0])
+	var size := PackedFloat64Array([0.1, 0.2, 0.3])
+	var prepared: Dictionary = FuelMass.prepare(2.0, wet_inertia, reference,
+		center, size, one_ulp_below, "roundoff_tank")
+	var capacities: PackedFloat64Array = prepared.get("capacities", PackedFloat64Array())
+	_check("Glow mass reference canonicalizes a one-ULP full-tank capacity roundoff",
+		prepared.get("ok", false) and capacities.size() == 1 and capacities[0] == reference,
+		str(prepared.get("error", "")))
+	var real_overage: Dictionary = FuelMass.prepare(2.0, wet_inertia, reference,
+		center, size, reference - 1.0e-12, "overfull_tank")
+	_check("Glow mass reference still refuses a material full-tank capacity overage",
+		not real_overage.get("ok", false), str(real_overage.get("error", "")))
+	var resources: Array = [
+		{id = "roundoff_tank", reference_mass_kg = reference, capacity_mass_kg = one_ulp_below,
+			center_body_m = center, size_body_m = size},
+		{id = "line_store", reference_mass_kg = 0.1, capacity_mass_kg = 0.2,
+			center_body_m = PackedFloat64Array([-0.1, 0.0, 0.0]), size_body_m = size},
+	]
+	var multi_prepared: Dictionary = FuelMass.prepare_resources(2.0, wet_inertia, resources)
+	_check("Glow multi-store reference canonicalizes the same one-ULP capacity roundoff",
+		multi_prepared.get("ok", false) and resources[0].capacity_mass_kg == one_ulp_below,
+		str(multi_prepared.get("error", "")))
+	var bad_resources: Array = resources.duplicate(true)
+	bad_resources[0].capacity_mass_kg = reference - 1.0e-12
+	var bad_multi: Dictionary = FuelMass.prepare_resources(2.0, wet_inertia, bad_resources)
+	_check("Glow multi-store reference refuses a material full-tank capacity overage",
+		not bad_multi.get("ok", false), str(bad_multi.get("error", "")))
 
 
 func _test_installation(label: String, aircraft_path: String) -> void:

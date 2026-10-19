@@ -1,0 +1,11 @@
+CC0 1.0 Universal recordings, edited for OpenRC Simulator (AUD-14).
+These recordings are separate from the neighboring MIT synthetic sources.
+
+WIND - 1 by SamuelGremaud
+https://freesound.org/people/SamuelGremaud/sounds/547472/
+
+Tent Fabric Flapping in Wind Ambient.wav by bmacphail
+https://freesound.org/people/bmacphail/sounds/569537/
+
+License: https://creativecommons.org/publicdomain/zero/1.0/
+Public HQ MP3 previews were used; original WAVs are not bundled.

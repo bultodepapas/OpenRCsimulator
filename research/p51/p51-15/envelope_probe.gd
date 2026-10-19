@@ -145,7 +145,7 @@ func _run_flight_case(session: Node, case_id: String, mode: String, speed: float
 	session.reset()
 	if not session.is_flyable() or not session.sim.fault_reason.is_empty():
 		return {summary = {id = case_id, available = false, reason = session.pause_reason + session.sim.fault_reason}}
-	var rec := Recorder.new(session.sim, session.electrical_state)
+	var rec := Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 	rec.start(session.trace_meta())
 	for _i in roundi(duration / session.sim.dt()):
 		var c: Dictionary = sticks.call(session.sim.time(), session.sim.state)

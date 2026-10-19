@@ -1,0 +1,10 @@
+Final read-only recheck: 2026-10-19T11:56:29-05:00
+HEAD a04ba1ec484a448065c8a8cdfa58a3fe18763a3f; actively changing working tree
+
+python research/aircraft-standardization/build_models.py --check
+model manifests current (5 visual families)
+exit 0
+
+python research/aircraft-editor/build_descriptors.py --check
+8 Workshop descriptors are current.
+exit 0

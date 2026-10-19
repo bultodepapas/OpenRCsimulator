@@ -36,7 +36,8 @@ func _stepped(tick: int, _time: float, _state: PackedFloat64Array, _loads: Packe
 		_inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	if not is_instance_valid(_session) or _session.sim == null or not _session.aircraft.get("ok", false) or _session.wheel_count() == 0:
 		return
-	var speeds: PackedFloat64Array = _session.sim.continuous.slice(_session.wheel_index())
+	var start: int = _session.wheel_index()
+	var speeds: PackedFloat64Array = _session.sim.continuous.slice(start, start + _session.wheel_count())
 	if tick <= _last_tick or _previous_speeds.size() != speeds.size():
 		for key in _angles:
 			_angles[key] = 0.0

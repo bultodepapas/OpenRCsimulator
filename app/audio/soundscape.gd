@@ -4,7 +4,9 @@ extends Node3D
 const Model = preload("res://audio/soundscape_model.gd")
 const Wildlife = preload("res://audio/wildlife.gd")
 const GlowVoice = preload("res://audio/glow_voice.gd")
+const WindsockAudioController = preload("res://audio/windsock_audio.gd")
 const PATH: String = "res://assets/audio/soundscape/"
+const RECORDED_PATH: String = PATH + "recorded/"
 const BUS: StringName = &"OpenRC Soundscape"
 const AMBIENCE_BUS: StringName = &"OpenRC Environment"
 const AIRCRAFT_BUS: StringName = &"OpenRC Aircraft"
@@ -59,6 +61,8 @@ var kind: String = "glow_prop"
 var glow_family: String = ""
 var glow_voice = GlowVoice.new()
 var glow_player: AudioStreamPlayer3D
+## At most one validated field windsock; separate from the fourteen existing scene voices.
+var fabric_audio: RefCounted
 var _glow_pending_start: bool = false
 var _glow_capacity: int = 0
 var _last_glow_refill_usec: int = 0
@@ -113,6 +117,8 @@ func _enter_tree() -> void:
 		_glow_capacity = 0
 		_last_glow_refill_usec = 0
 		glow_voice.reset()
+	if fabric_audio != null:
+		fabric_audio.rebind(_bus_names[2])
 
 
 func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 4102026, explicit_glow_family: String = "") -> void:
@@ -156,6 +162,14 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 		voices[CRICKET_FIRST + i].global_position = cricket_anchors[i]
 	assert(voices.size() == MAX_VOICES)
 	_levels.resize(voices.size())
+	for cue: Dictionary in field.get("flight_cues", []):
+		if cue.get("type", "") == "windsock":
+			var anchor := Vector3(float(cue.east), float(cue.pole_height), -float(cue.north))
+			var source := load(RECORDED_PATH + "windsock_fabric.wav") as AudioStreamWAV
+			if source != null:
+				fabric_audio = WindsockAudioController.new()
+				fabric_audio.configure(self, _bus_names[2], seamless_loop(source), anchor)
+			break
 
 
 func _create_glow_player() -> void:
@@ -221,7 +235,8 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 	add_child(player)
 	voices.append(player)
 	if not asset.is_empty():
-		var source: AudioStreamWAV = load(PATH + asset + ".wav") as AudioStreamWAV
+		var source_path: String = RECORDED_PATH if asset in ["wind_low", "wind_high"] else PATH
+		var source: AudioStreamWAV = load(source_path + asset + ".wav") as AudioStreamWAV
 		if source == null:
 			push_error("Missing soundscape source: " + asset)
 			return
@@ -300,6 +315,8 @@ func reset_observer() -> void:
 		_last_glow_refill_usec = 0
 		glow_voice.reset()
 	wildlife.reset()
+	if fabric_audio != null:
+		fabric_audio.reset()
 
 
 func update_sound(snapshot: Dictionary, delta: float) -> void:
@@ -379,6 +396,8 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	voices[4].global_position = listener + direction.cross(Vector3.UP).normalized() * 5.0
 	_level(3, float(t.wind_low) * duck, dt)
 	_level(4, float(t.wind_high) * duck, dt)
+	if fabric_audio != null:
+		fabric_audio.update(snapshot, dt, gain * duck)
 	for i: int in 4:
 		if trees.is_empty():
 			_level(5 + i, 0.0, dt)
@@ -586,6 +605,8 @@ func _exit_tree() -> void:
 		voice.stop()
 	if glow_player != null:
 		glow_player.stop()
+	if fabric_audio != null:
+		fabric_audio.stop()
 	for i: int in range(_bus_names.size() - 1, -1, -1):
 		var index: int = AudioServer.get_bus_index(_bus_names[i])
 		if index > 0:

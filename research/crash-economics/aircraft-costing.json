@@ -369,7 +369,7 @@
       ],
       "notes": "Own physical inventory coverage, with explicit null prices and five servo units. Full replacement total remains unknown. No baseline BOM inheritance.",
       "dossier": {
-        "expected_source_sha256": "51ed5b438c4c8ddbda154306a2dda6e51e0c58115c4edf7ee1c9b87d4017d034",
+        "expected_source_sha256": "62c76bc514b923b1ada51a0770378f7d085038fd6ae1bf4a92160d55cc55f69d",
         "lines": [
           {
             "id": "engine_main",
@@ -655,7 +655,7 @@
       ],
       "notes": "Independent coverage of the physical P-51 inventory with exact DA-120 and explicit large-aircraft/ordinary-servo and canister value proxies. The DA-120 amount is a current manufacturer listing but is Sold out. Known priced-part subtotal is $2,456.71: $1,249.00 DA-120 package, seven $103.39 SA-1230SG+ control-servo proxies, two $16.99 HS-311 throttle/choke-servo proxies, and two $225.00 KS3086 canister-body proxies. Linkage, exhaust headers/hardware, the rest of the aircraft and installed proxy identities remain unpriced or unknown; this is not a complete-build purchase amount.",
       "dossier": {
-        "expected_source_sha256": "111558f3916d59a22d6c4fe1f8e5d9872e63422b7ce374e3eab4103485aa5fd9",
+        "expected_source_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
         "lines": [
           {
             "id": "engine_main",
@@ -1000,7 +1000,7 @@
       ],
       "notes": "Independent coverage of the physical 2m Avanti inventory. Known priced-part subtotal is $6,559.12: $2,749.00 exact 2m ARF without retracts, $2,780.00 legacy P100-RX (#850100), $225.00 A200-16 tank, five $98.99 SA-1258TG+ value proxies for the manual's DS8411 group, and three $103.39 SA-1230SG+ value proxies for its DS8911 group. The subtotal is not a complete aircraft or a purchasable matched assembly: pneumatic retracts and turbine installation accessories remain unknown, and current proxy stock does not establish eight-unit availability. No propeller is present in the jet inventory.",
       "dossier": {
-        "expected_source_sha256": "f5b3fdcb9dce9d1cea7a52c34d70a32eecfaf4c7c52d73a4acfe04d59b0e8158",
+        "expected_source_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
         "lines": [
           {
             "id": "airframe_arf_package",

@@ -1,0 +1,59 @@
+**********************
+PowerShell transcript start
+Start time: 20261019115304
+Username: DEVIL\bulto
+RunAs User: DEVIL\bulto
+Configuration Name: 
+Machine: DEVIL (Microsoft Windows NT 10.0.26100.0)
+Host Application: C:\Program Files\PowerShell\7\pwsh.dll -Command try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}
+$log = 'tmp/fuel-completion/2026-10-19-fuel-fleet-final-validation.txt'
+Start-Transcript -Path $log -Force | Out-Null
+Write-Output 'Fuel fleet and column-session final validation'
+Write-Output (Get-Date -Format 'yyyy-MM-dd HH:mm:ss K')
+python research/aircraft-standardization/parameter_register.py --check
+if ($LASTEXITCODE -ne 0) { throw 'parameter register check failed' }
+python research/glow-engines/installation_schema.py --check
+if ($LASTEXITCODE -ne 0) { throw 'installation schema check failed' }
+python research/glow-engines/test_installation_line_endings.py
+if ($LASTEXITCODE -ne 0) { throw 'installation line-ending tests failed' }
+python research/glow-engines/build_profiles.py --check
+if ($LASTEXITCODE -ne 0) { throw 'glow profile generation check failed' }
+python research/glow-engines/build_installations.py --check
+if ($LASTEXITCODE -ne 0) { throw 'glow installation generation check failed' }
+python research/fuel-systems/mass_balance_report.py --check research/fuel-systems/mass_balance_current.json --fail-on-drift
+if ($LASTEXITCODE -ne 0) { throw 'fuel mass balance report drift check failed' }
+.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_atmosphere_column.gd
+if ($LASTEXITCODE -ne 0) { throw 'atmosphere column test failed' }
+.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_atmosphere_column_session.gd
+if ($LASTEXITCODE -ne 0) { throw 'atmosphere column session test failed' }
+git diff --check
+if ($LASTEXITCODE -ne 0) { throw 'git diff whitespace check failed' }
+Write-Output 'All checks passed.'
+Stop-Transcript | Out-Null
+Process ID: 44088
+PSVersion: 7.6.7
+PSEdition: Core
+GitCommitId: 7.6.7
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+Fuel fleet and column-session final validation
+2026-10-19 11:53:04 -05:00
+
+
+
+
+
+
+
+
+
+All checks passed.
+**********************
+PowerShell transcript end
+End time: 20261019115334
+**********************

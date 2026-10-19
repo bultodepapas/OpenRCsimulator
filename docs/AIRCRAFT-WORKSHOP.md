@@ -7,6 +7,7 @@ The Workbench feature is named **Aircraft Workshop** in the application (**Talle
 | Use the editor; understand supported adjustments, scaling and saved variants | This guide, checked against source on 2026-10-19 |
 | Develop the feature; find pending steps and acceptance gates | [Consolidated AE plan](plans/aircraft-editor.md) |
 | Explore proposed customization, smoke presets and easy experiment ideas | [Future Workbench backlog](plans/aircraft-editor.md#5-planned-player-facing-work) |
+| Implement the next slice; find dependencies, contracts and tests | [Ordered work packages](plans/aircraft-editor.md#56-implementation-packages-and-order) and [required test matrix](plans/aircraft-editor.md#57-required-test-matrix) |
 | Author physical data, stable IDs and model manifests | [Aircraft contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard) |
 | Generate descriptors, run checks or capture the editor | [Workshop commands](TOOLS.md#aircraft-workshop) |
 | Inspect dated results and limitations | [Verification and evidence](#verification) |
@@ -37,7 +38,7 @@ Presets are Mini, Giant, Light, Heavy, More power, More travel and Light / low p
 
 The catalog has eight airplane configurations; the Workshop filters out the separate rotorcraft entry. Size, dry-weight and virtual-power transforms require the simple prescribed-RPM capability, currently provided by the baseline Stik. Extra now uses a finite-glow installation, so it keeps those transforms disabled like the three finite-glow Stiks. Tank capacity is a separate operation for classified aircraft with validated tanks; conventional control travel follows the registered surface capability. The compiler contains no aircraft-ID transformation branches.
 
-Descriptor freshness is a separate launch gate. The current generator check passes all eight airplane descriptors; compiler, legacy-trial and integration failures remain in the [dated verification](research/aircraft-editor/AE-01-10/README.md#source-checks--2026-10-19). Fuel software and physical acceptance stay with the [fuel-mass plan](plans/fuel-mass-balance.md).
+Descriptor freshness is a separate launch gate. The [latest diagnostic checks](research/aircraft-editor/AE-00/README.md#diagnostic-checks) pass all eight descriptors and the store/UI/integration suites; compiler and legacy-trial failures remain. These moving-tree results do not establish fleet acceptance. Fuel software and physical acceptance stay with the [fuel-mass plan](plans/fuel-mass-balance.md).
 
 These changes retain estimated aerodynamic coefficients and do not model Reynolds-number changes or certify a real miniature/giant aircraft. Runway trials, component/CG editing, editable hardware packages, measured performance experiments, portable import/export and wider ranges remain planned.
 
@@ -66,7 +67,7 @@ Adding an aircraft with existing supported capabilities requires catalog/data/as
 
 ### Scale policy
 
-For size `s`, weight multiplier `w`, and tank-capacity multiplier `c`, the compiler uses dry-mass ratio `r_dry = s²w` under constant wing loading or `s³w` under geometric scaling. Its tank transform multiplies declared liquid mass, capacity, unusable volume and reserve by `s³c` and box dimensions by `s·c^(1/3)`, intending to preserve density and fill. The trial capacity/accepted-fuel-mass integration check currently fails; these equations describe the compiler policy, not a qualified flight result.
+For size `s`, weight multiplier `w`, and tank-capacity multiplier `c`, the compiler uses dry-mass ratio `r_dry = s²w` under constant wing loading or `s³w` under geometric scaling. Its tank transform multiplies declared liquid mass, capacity, unusable volume and reserve by `s³c` and box dimensions by `s·c^(1/3)`, intending to preserve density and fill. The latest compiler suite still rejects a finite-glow capacity-only estimate on dry-carrier mass properties; these equations describe the compiler policy, not a qualified transform envelope.
 
 Other positions scale by `s`. Proposed total mass ratio is `r_total = (M_dry·r_dry + M_liquid·s³c)/(M_dry + M_liquid)`. The compiler re-derives inertia from inventory and the loader rechecks CG at the declared fuel state; mixed dry/tank scaling can shift CG or invalidate a candidate. Declared start speed uses `sqrt(r_total)/s`; suspension uses `r_total`. The real session must still accept trim, timestep and start checks.
 
@@ -96,6 +97,7 @@ Use the [focused commands](TOOLS.md#aircraft-workshop) before the full `app/test
 
 | Dated evidence | Scope |
 | --- | --- |
+| [AE-00 investigation, 2026-10-19](research/aircraft-editor/AE-00/README.md) | Current source seams, official Godot references, diagnostic suites and isolated birth-color probe with unresolved pause/reset assertions |
 | [AE-01–10, 2026-10-13](research/aircraft-editor/AE-01-10/README.md) | Initial compiler/store/trial/UI/integration checks, scaling fixtures, captures and persistence audit findings |
 | [AS-08 identity migration](research/aircraft-standardization/AS-08-identity/README.md) | Authored physical IDs and Workshop v3 bindings; historical readers remain explicit |
 | [AS-09/10 imported models](research/aircraft-standardization/AS-09-10-import/README.md) | Generated model-manifest and shared imported-presentation bindings |

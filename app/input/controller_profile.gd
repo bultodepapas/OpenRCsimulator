@@ -15,7 +15,7 @@ const DEFAULT_THROTTLE_RATE := 0.5
 
 
 ## Returns a complete, validated starter profile. `preset` is one of mode1,
-## mode2, trigger_absolute, or radio_custom. Unknown combinations return {}.
+## mode2, trigger_absolute, radio_custom, or jeti_mode2. Unknown combinations return {}.
 static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dictionary:
 	if preset == "custom" and kind in ["radio", "joystick"]:
 		preset = "radio_custom"
@@ -23,7 +23,7 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		return {}
 	if kind == "gamepad" and not ["mode1", "mode2", "trigger_absolute"].has(preset):
 		return {}
-	if kind == "radio" and preset != "radio_custom":
+	if kind == "radio" and preset not in ["radio_custom", "jeti_mode2"]:
 		return {}
 	if kind == "joystick" and preset != "radio_custom":
 		return {}
@@ -48,6 +48,8 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		}
 
 	var name := "Gamepad Mode 2" if preset == "mode2" else ("Gamepad Mode 1" if preset == "mode1" else ("Gamepad Trigger Throttle" if preset == "trigger_absolute" else ("Radio Custom" if kind == "radio" else "Joystick Custom")))
+	if preset == "jeti_mode2":
+		name = "JETI USB Mode 2"
 	var result: Dictionary = {
 		"schema_version": SCHEMA_VERSION,
 		"profile_id": _new_uuid(),
@@ -70,6 +72,17 @@ static func defaults(kind: String = "gamepad", preset: String = "mode2") -> Dict
 		"aux": {},
 	}
 	result["configured"] = true
+	if preset == "jeti_mode2":
+		result.actions = ControllerActions.clean_radio_bindings()
+	return result if validate(result).ok else {}
+
+
+## Explicit draft operation. Preserve calibration, kind, identity and AUX; never save here.
+static func clean_radio_actions(value: Dictionary) -> Dictionary:
+	if value.get("kind", "") not in ["radio", "joystick"]:
+		return {}
+	var result := value.duplicate(true)
+	result["actions"] = ControllerActions.clean_radio_bindings()
 	return result if validate(result).ok else {}
 
 
@@ -99,6 +112,15 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 		var normalized := _normalize_schema_keys(value, 0)
 		if not normalized.ok or typeof(normalized.value) != TYPE_DICTIONARY:
 			return {}
+		# Historical optional smoke corruption may be sanitized, but malformed new
+		# switch groups must not silently turn into a different saved configuration.
+		var aux_value: Variant = normalized.value.get("aux", {})
+		if aux_value is Dictionary:
+			for aux_id in ["smoke", "flaps", "gear"]:
+				var aux_binding: Variant = aux_value.get(aux_id, {})
+				if aux_binding is Dictionary and aux_binding.get("type", "") == "switch" \
+						and not SmokeAux.valid_binding(aux_binding):
+					return {}
 		var current: Dictionary = SmokeAux.sanitize_profile(normalized.value, false)
 		return current if validate(current).ok else {}
 	if value.has("schema_version"):

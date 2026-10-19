@@ -3516,3 +3516,117 @@ msgstr "Este paisaje solo permite comenzar en el aire."
 
 msgid "Natural Random requires Club field."
 msgstr "Vuelo aleatorio natural requiere Club field."
+
+msgid "JETI radio family"
+msgstr "Familia de radios JETI"
+
+msgid "Device name: %s"
+msgstr "Nombre del dispositivo: %s"
+
+msgid "Manufacturer: %s"
+msgstr "Fabricante: %s"
+
+msgid "Product: %s"
+msgstr "Producto: %s"
+
+msgid "Backspace returns to the menu and Escape pauses. This action map changes only this draft until Save."
+msgstr "Retroceso vuelve al menú y Escape pausa. Este mapa solo cambia el borrador hasta que lo guardes."
+
+msgid "Use safe radio actions in draft"
+msgstr "Usar acciones seguras de radio en el borrador"
+
+msgid "Use Backspace for Back and Escape for Pause; all button and switch actions will be cleared in this draft."
+msgstr "Usa Retroceso para volver y Escape para pausar; este borrador quitará las acciones de botones e interruptores."
+
+msgid "Could not prepare the safe radio action map. The current draft is unchanged."
+msgstr "No se pudo preparar el mapa seguro de radio. El borrador actual no cambió."
+
+msgid "Could not prepare the safe radio action map: %s"
+msgstr "No se pudo preparar el mapa seguro de radio: %s"
+
+msgid "Safe radio actions are in the draft. Save keeps them; Cancel discards them."
+msgstr "Las acciones seguras de radio están en el borrador. Guardar las conserva; Cancelar las descarta."
+
+msgid "Radio custom"
+msgstr "Radio personalizada"
+
+msgid "JETI Mode 2"
+msgstr "JETI Modo 2"
+
+msgid "JETI Mode 2: roll axis 0, inverted pitch axis 1, absolute throttle axis 2, yaw axis 3. Confirm your own stick and switch installation before flight."
+msgstr "JETI Modo 2: alabeo en el eje 0, profundidad invertida en el eje 1, acelerador absoluto en el eje 2 y timón en el eje 3. Confirma la instalación de tus mandos e interruptores antes de volar."
+
+msgid "Custom radio mapping. Axis assignments and calibration stay in this profile."
+msgstr "Asignación de radio personalizada. Los ejes y su calibración se conservan en este perfil."
+
+msgid "Could not restore the selected radio profile."
+msgstr "No se pudo restaurar el perfil de radio seleccionado."
+
+msgid "Custom radio mapping restored. Save keeps this draft."
+msgstr "Se restauró la asignación personalizada de radio. Guarda para conservar este borrador."
+
+msgid "Could not restore the JETI Mode 2 preset."
+msgstr "No se pudo restaurar el ajuste JETI Modo 2."
+
+msgid "JETI Mode 2 is available only for a recognized JETI radio."
+msgstr "JETI Modo 2 solo está disponible para una radio JETI reconocida."
+
+msgid "JETI Mode 2 mapping is in the draft. Confirm your own switch installation, then Save to keep it."
+msgstr "La asignación JETI Modo 2 está en el borrador. Confirma la instalación de tus interruptores y guarda para conservarla."
+
+msgid "Switch positions"
+msgstr "Posiciones del interruptor"
+
+msgid "2 positions"
+msgstr "2 posiciones"
+
+msgid "3 positions"
+msgstr "3 posiciones"
+
+msgid "Switch name (optional)"
+msgstr "Nombre del interruptor (opcional)"
+
+msgid "Reverse request"
+msgstr "Invertir solicitud"
+
+msgid "Middle"
+msgstr "Centro"
+
+msgid "Capture"
+msgstr "Capturar"
+
+msgid "No conflict-free switch buttons are available for this channel."
+msgstr "No hay botones de interruptor libres de conflictos para este canal."
+
+msgid "Switch positions could not be changed without a conflict."
+msgstr "No se pudieron cambiar las posiciones del interruptor sin crear un conflicto."
+
+msgid "Switch mapping was not changed: %s"
+msgstr "No se cambió la asignación del interruptor: %s"
+
+msgid "Move the selected radio switch to this position. The next button press is captured; no other switch needs to be released."
+msgstr "Mueve el interruptor de radio seleccionado a esta posición. Se capturará la siguiente pulsación; no hace falta soltar los demás interruptores."
+
+msgid "That switch position is no longer available. Capture was cancelled."
+msgstr "Esa posición del interruptor ya no está disponible. Se canceló la captura."
+
+msgid "Button %d captured for this switch position. Save the profile to keep it."
+msgstr "Se capturó el botón %d para esta posición del interruptor. Guarda el perfil para conservarlo."
+
+msgid "Invalid switch group."
+msgstr "El grupo de interruptor no es válido."
+
+msgid "%s · multiple positions active"
+msgstr "%s · hay varias posiciones activas"
+
+msgid "%s · no position active"
+msgstr "%s · ninguna posición activa"
+
+msgid "%s · %s · Button %d · request %.0f%%"
+msgstr "%s · %s · Botón %d · solicitud %.0f%%"
+
+msgid "%s %s · Button %d"
+msgstr "%s %s · Botón %d"
+
+msgid "Switch"
+msgstr "Interruptor"

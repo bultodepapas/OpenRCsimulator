@@ -1,0 +1,60 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   a box half inside a section puts half its mass there
+ok   a box fully inside puts all of it there
+ok   a point item counts when inside, not when outside
+ok   a thin skin's region is thickened, a bulky part's barely
+ok   crash report selects the same valid contact-time mass sample as collision response
+ok   contact-time fuel inventory uses the same explicitly approximate sample
+ok   finite fuel without a contact sample is explicitly an endpoint approximation
+ok   typed crash sources report remaining gasoline, kerosene and Glow by family  { "gasoline": 0.12, "kerosene": 0.27, "glow_fuel": 0.5 }
+ok   a section without items gets the floor mass from the core  { "core": 0.98500001430511, "horizontal_tail": 0.01499999966472 }
+ok   jensen-das-ugly-stik-60 intact wreck weighs the aircraft  2.8787 vs 2.8787
+ok   jensen-das-ugly-stik-60 intact wreck's centre of mass is the aircraft CG  (-0.0, -0.004792, -0.005608) vs (0.0, -0.004792, -0.005608) (0.0 mm)
+ok   jensen-das-ugly-stik-60 uses a custom centre of mass
+     jensen-das-ugly-stik-60 section masses: { "core": 0.47416409850121, "wing_left": 0.28221958875656, "wing_right": 0.28185230493546, "engine": 0.72046768665314, "propeller": 0.08184760808945, "horizontal_tail": 0.07737623900175, "vertical_tail": 0.11882746219635, "gear": 0.17229489982128, "tail_boom": 0.14755314588547, "aileron_left": 0.01499999966472, "aileron_right": 0.01499999966472, "elevator": 0.01499999966472, "rudder": 0.01499999966472, "wheel": 0.01499999966472 }
+ok   jensen-das-ugly-stik-60 destroyed wreck conserves mass  2.878662 vs 2.878662
+ok   jensen-das-ugly-stik-60 wing halves weigh the same  0.28221958875656 / 0.28185230493546
+ok   jensen-das-ugly-stik-60 wing halves carry real wing mass
+ok   jensen-das-ugly-stik-60 gear section does not swallow tank and battery  0.172 vs gear items 0.195
+ok   jensen-das-ugly-stik-60 engine section carries the engine  0.720 vs engine 0.550
+ok   jensen-das-ugly-stik-60 reset restores automatic centre of mass
+ok   jensen-das-ugly-stik-60 without inventory keeps the fixed shares and conserves mass
+ok   turbo-lumber-evolution intact wreck weighs the aircraft  2.1900 vs 2.1900
+ok   turbo-lumber-evolution intact wreck's centre of mass is the aircraft CG  (0.0, -0.002176, 0.06) vs (0.0, -0.002176, 0.06) (0.0 mm)
+ok   turbo-lumber-evolution uses a custom centre of mass
+     turbo-lumber-evolution section masses: { "core": 0.79103463888168, "wing_left": 0.22021548449993, "wing_right": 0.22021548449993, "engine": 0.29986083507538, "propeller": 0.24850127100945, "horizontal_tail": 0.08173898607492, "vertical_tail": 0.04859003424644, "gear": 0.01499999966472, "canopy": 0.13443243503571 }
+ok   turbo-lumber-evolution destroyed wreck conserves mass  2.190000 vs 2.190000
+ok   turbo-lumber-evolution wing halves weigh the same  0.22021548449993 / 0.22021548449993
+ok   turbo-lumber-evolution wing halves carry real wing mass
+ok   turbo-lumber-evolution gear section does not swallow tank and battery  0.015 vs gear items 0.147
+ok   turbo-lumber-evolution engine section carries the engine  0.300 vs engine 0.160
+ok   turbo-lumber-evolution reset restores automatic centre of mass
+ok   turbo-lumber-evolution without inventory keeps the fixed shares and conserves mass
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+CRASH at 20.0 m/s (sink 12.0 m/s, landing gear travel limit (main_left)) - [R] restart
+CRASH CAUSE: Hard landing: landing gear collapsed sink 0.0 m/s, 20.0 m/s
+ok   production crash hands the inventory to the wreck
+ok   production wreck uses inventory section masses
+ok   production crash reports live Glow fuel by type  { &"live": { &"ok": true, &"mass_kg": 2.5415209992259, &"cg_body_m": [-0.01743162367802, 0.0, 0.00157823663902], &"inertia": [0.11639823312575, 0.30048731781446, 0.39631710007317, -0.0076956, 0.00817578490826, 0.00077112443071], &"inverse": [8.61833688313977, 3.33362024263699, 2.52693012881606, 0.22117640353169, -0.17822148763876, -0.01104904813101], &"inertia_origin": [0.11640456362476, 0.30126591870687, 0.39708937046658, -0.0076956, 0.00824570526982, 0.00077112443071], &"format": "openrc-mass-sample v1", &"tick": 12, &"time_s": 0.05, &"finite_fuel": true, &"stores": [{ &"id": "main_tank", &"kind": "tank", &"blend": "glow_10n_18castor", &"family": "glow", &"density_kg_m3": 856.92, &"capacity_kg": 0.299922, &"unusable_kg": 0.0042846, &"remaining_kg": 0.07497907520999, &"usable_kg": 0.07069447520999, &"fill_fraction": 0.24999524946481, &"volume_ml": 87.4983373126849, &"reserve_fraction": 0.11428571428571, &"reserve_estimated": true, &"low_fuel": false }], &"fuel_remaining_kg": 0.07497907520999, &"fuel_capacity_kg": 0.299922, &"fuel_usable_kg": 0.07069447520999, &"volume_ml": 87.4983373126849, &"fill_fraction": 0.24999524946481, &"reserve_fraction": 0.11428571428571, &"low_fuel": false, &"reserve_estimated": true, &"reserve_basis": "estimated reserve", &"law": "glow-mean-cycle-finite-tank-line-pickup-v3", &"registry_sha256": "cae59374afdc9345a05774342c9c9be1fdec8573f6f75c97eed8aae6257d5df1" }, &"typed": { "glow_fuel": 0.07497907520999 }, &"sources": { "glow_fuel": 0.07497907520999 } }
+ok   production crash labels accepted-endpoint mass and fuel samples  { &"mass_basis": "accepted-endpoint-approximation", &"fuel_basis": "accepted-endpoint-approximation", &"tick": 12, &"sample_time": 0.05 }
+ok   production crash labels the compatibility scalar as kerosene-only
+34 checks, 0 failed
+WARNING: Tree wind is disabled for maple_tree because source material -9223371771070117424 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:384)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2111)
+       [9] build (res://render/world/world.gd:275)
+       [10] _build_world (res://main.gd:2067)
+       [11] _ready (res://main.gd:472)
+       [12] _production (res://tests/test_crash_masses.gd:45)
+       [13] _run (res://tests/test_crash_masses.gd:28)
+       [14] _aircraft (res://tests/test_crash_masses.gd:263)

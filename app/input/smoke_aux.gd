@@ -18,6 +18,10 @@ var _axis_observed: bool = false
 var _button_observed: bool = false
 var _last_button_pressed: bool = false
 var _toggle_on: bool = false
+var _switch_baseline_seen: bool = false
+var _switch_left_off_seen: bool = false
+var _switch_off_event_seen: bool = false
+var _switch_event_states: Dictionary = {}
 
 
 ## Accepts a saved aux.smoke binding and the current AETR axes. Invalid AUX disables only smoke.
@@ -58,7 +62,18 @@ func on_motion(id: int, axis: int, value: float) -> void:
 
 
 func on_button(id: int, button: int, pressed: bool) -> void:
-	if not connected or id != device_id or binding.get("type", "") != "button":
+	if not connected or id != device_id:
+		return
+	if binding.get("type", "") == "switch":
+		if not valid_binding(binding):
+			_reset_switch_state()
+			return
+		var buttons: Array = _switch_buttons(binding)
+		if not buttons.has(button):
+			return
+		_observe_switch_button(button, pressed)
+		return
+	if binding.get("type", "") != "button":
 		return
 	if button != int(binding.button):
 		return
@@ -99,6 +114,61 @@ func sample_button(pressed: bool) -> float:
 		return _amount
 	_observe_button(pressed, false)
 	return _amount
+
+
+## Track one complete, simultaneous snapshot of a maintained switch's buttons.
+## Invalid or transitional groups fail closed and require a fresh OFF arming sequence.
+func sample_switch(pressed_states: Array) -> float:
+	if not connected or binding.get("type", "") != "switch":
+		_reset_switch_state()
+		return _amount
+	if not valid_binding(binding):
+		_reset_switch_state()
+		return _amount
+	var buttons: Array = _switch_buttons(binding)
+	if pressed_states.size() != buttons.size():
+		_reset_switch_state()
+		return _amount
+	var active_index: int = -1
+	for i in pressed_states.size():
+		if typeof(pressed_states[i]) != TYPE_BOOL:
+			_reset_switch_state()
+			return _amount
+		if pressed_states[i]:
+			if active_index >= 0:
+				_reset_switch_state()
+				return _amount
+			active_index = i
+	if active_index < 0:
+		_reset_switch_state()
+		return _amount
+	var off_index: int = _switch_off_index(binding)
+	if not _switch_baseline_seen:
+		_switch_baseline_seen = true
+		_switch_left_off_seen = active_index != off_index
+		_switch_event_states.clear()
+		for i in buttons.size():
+			_switch_event_states[buttons[i]] = i == active_index
+		_amount = 0.0
+		return _amount
+	if not _armed:
+		if active_index == off_index and _switch_left_off_seen and _switch_off_event_seen:
+			_armed = true
+			_switch_off_event_seen = false
+			_amount = 0.0
+			return _amount
+		if active_index != off_index:
+			_switch_left_off_seen = true
+			_switch_off_event_seen = false
+		_amount = 0.0
+		return _amount
+	_amount = _switch_position_amount(binding, active_index)
+	return _amount
+
+
+## Reset every AUX arming edge at an input enable/focus boundary.
+func reset() -> void:
+	_reset_state()
 
 
 static func axis_amount(value: float, axis_binding: Dictionary) -> float:
@@ -144,7 +214,33 @@ static func valid_binding(value: Variant, reserved_axes: Array = []) -> bool:
 			if value.button < 0 or value.button >= MAX_BUTTONS:
 				return false
 			return value.mode in ["level", "toggle_edge"]
+		"switch":
+			if typeof(value.get("invert")) != TYPE_BOOL:
+				return false
+			if value.has("label"):
+				if typeof(value.label) != TYPE_STRING or value.label.strip_edges().is_empty() or value.label.length() > 24:
+					return false
+			var buttons: Variant = value.get("buttons")
+			if typeof(buttons) != TYPE_ARRAY:
+				return false
+			var button_ids: Array = _switch_buttons(value)
+			if button_ids.size() not in [2, 3]:
+				return false
+			for i in button_ids.size():
+				if typeof(button_ids[i]) != TYPE_INT or int(button_ids[i]) < 0 or int(button_ids[i]) >= MAX_BUTTONS:
+					return false
+				for j in range(i + 1, button_ids.size()):
+					if button_ids[i] == button_ids[j]:
+						return false
+			return true
 	return false
+
+
+## Return validated button indices for a switch, or an empty array for other bindings.
+static func bound_buttons(value: Variant) -> Array:
+	if typeof(value) != TYPE_DICTIONARY or value.get("type", "") != "switch" or not valid_binding(value):
+		return []
+	return _switch_buttons(value)
 
 
 ## Keep a valid AETR profile when aux.smoke is corrupt or overlaps an AETR axis.
@@ -197,3 +293,58 @@ func _reset_state() -> void:
 	_button_observed = false
 	_last_button_pressed = false
 	_toggle_on = false
+	_switch_baseline_seen = false
+	_switch_left_off_seen = false
+	_switch_off_event_seen = false
+	_switch_event_states.clear()
+
+
+func _reset_switch_state() -> void:
+	_armed = false
+	_amount = 0.0
+	_switch_baseline_seen = false
+	_switch_left_off_seen = false
+	_switch_off_event_seen = false
+	_switch_event_states.clear()
+
+
+func _observe_switch_button(button: int, pressed: bool) -> void:
+	var off_button: int = int(_switch_buttons(binding)[_switch_off_index(binding)])
+	var was_observed: bool = _switch_event_states.has(button)
+	var was_pressed: bool = bool(_switch_event_states.get(button, false))
+	if was_observed and was_pressed == pressed:
+		return
+	_switch_event_states[button] = pressed
+	# Enumeration and held-at-start events establish no arming evidence. The first
+	# coherent poll must anchor the selected switch position before events count.
+	if not _switch_baseline_seen:
+		return
+	if button == off_button:
+		if pressed and _switch_left_off_seen:
+			_switch_off_event_seen = true
+		elif not pressed:
+			_switch_left_off_seen = true
+	elif pressed:
+		_switch_left_off_seen = true
+
+
+static func _switch_buttons(value: Variant) -> Array:
+	var result: Array = []
+	if typeof(value) != TYPE_DICTIONARY:
+		return result
+	var buttons: Variant = value.get("buttons")
+	if typeof(buttons) != TYPE_ARRAY:
+		return result
+	for button in buttons:
+		result.append(button)
+	return result
+
+
+static func _switch_off_index(value: Dictionary) -> int:
+	return value.buttons.size() - 1 if bool(value.invert) else 0
+
+
+static func _switch_position_amount(value: Dictionary, position_index: int) -> float:
+	var buttons: Array = _switch_buttons(value)
+	var amount: float = float(position_index) / float(buttons.size() - 1)
+	return 1.0 - amount if bool(value.invert) else amount

@@ -1,0 +1,137 @@
+== import resource dependencies
+== HELI-03a/04: independent mean-inflow reference stays current
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.045s
+
+OK
+oracle check: OK (oracle.json)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-04 inflow: 4153 checks, 0 failed
+== HELI-04-R1/05: transient flow and main-rotor references stay current
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 30.336s
+
+OK
+................
+----------------------------------------------------------------------
+Ran 16 tests in 0.044s
+
+OK
+dynamic oracle check: OK (dynamic_oracle.json)
+oracle check: OK (main_rotor_oracle.json)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-04-R1 dynamic inflow: 240 checks, 0 failed
+DYNAMIC_QUALIFICATION=[{"fixture":"hover_target_step","known_seam_refined_peak_error_mps":0.00000199654892085732,"raw_peak_error_mps":0.00552203634030835},{"fixture":"C_increasing","known_seam_refined_peak_error_mps":0.000000136527718908042,"raw_peak_error_mps":0.000194617379269957},{"fixture":"C_decreasing","known_seam_refined_peak_error_mps":0.00000015784688667253,"raw_peak_error_mps":0.000200262391818917},{"fixture":"M_increasing","known_seam_refined_peak_error_mps":0.000108233512221112,"raw_peak_error_mps":0.00979315979599704},{"fixture":"M_decreasing","known_seam_refined_peak_error_mps":0.000376269988705324,"raw_peak_error_mps":0.0115563480526637},{"fixture":"feedback_flow_ramp","known_seam_refined_peak_error_mps":0.000000217608251418255,"raw_peak_error_mps":0.000000217608251418255}]
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-05 main rotor: 768 checks, 0 failed
+== HELI-06a: linearized tail-rotor reference stays current
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.041s
+
+OK
+tail rotor oracle is current
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-06a tail rotor: 917 checks, 0 failed
+== HELI-06b/c: passive airframe and joint aerodynamic stage
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.041s
+
+OK
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-06b airframe: 1799 checks, 0 failed
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-06c aerodynamic stage: 49 checks, 0 failed
+== HELI-16: generated experimental rotorcraft quantities stay current
+checked /var/tmp/openrc-jeti-check-20261019-170610/app/data/aircraft/xcell_60_research.json
+checked /var/tmp/openrc-jeti-check-20261019-170610/app/data/aircraft/hx700_electric_3d_experimental.json
+checked /var/tmp/openrc-jeti-check-20261019-170610/app/data/schema/openrc-rotorcraft-v2.schema.json
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.004s
+
+OK
+== HELI-36a: advanced laboratory candidate identity and admission
+checked /var/tmp/openrc-jeti-check-20261019-170610/app/data/aircraft/hx700_electric_3d_experimental.json
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+== HELI-25c: articulated inspection source, bindings and copy identity
+{
+  "source_unchanged": true,
+  "bindings": 108,
+  "linkages": 9,
+  "max_source_basis_error": 3.324650580942279e-06,
+  "max_source_position_error_m": 2.741410369822006e-07,
+  "max_rod_error_m": 3.26312243892346e-08,
+  "glb_sha256": "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47",
+  "profile_sha256": "0fc621542b5ed523f903518fdbb3508c4c98672de59f0cdeea089eeb6c469d23"
+}
+HX-700 mechanical equations match source
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.684s
+
+OK
+== AS-01/02: versioned aircraft contract and migration stay current
+Schema is current: /var/tmp/openrc-jeti-check-20261019-170610/app/data/schema/openrc-aircraft-v2.schema.json
+parameter register is current
+app/data/aircraft/jensen_ugly_stik_60.json: jensen-das-ugly-stik-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/gp_extra_300s_60.json: gp-extra-300s-60 v2, glow_prop, finite_glow_fuel
+app/data/aircraft/p51d_mustang_120.json: p51d-mustang-120 v2, glow_prop, finite_liquid_fuel
+app/data/aircraft/sebart_avanti_s_a200.json: sebart-avanti-s-a200-p100rx v2, turbine, finite_liquid_fuel
+app/data/aircraft/synthetic_stik_electric_4s.json: synthetic_stik_electric_4s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_6s.json: synthetic_stik_electric_6s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_4s_battery.json: synthetic_stik_electric_4s_battery v2, electric_prop, ocv_resistance
+app/data/aircraft/synthetic_stik_electric_6s_battery.json: synthetic_stik_electric_6s_battery v2, electric_prop, ocv_resistance
+test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity (__main__.AircraftMigration.test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity) ... ok
+test_check_requires_v2_source_instead_of_upgrading_v1_in_memory (__main__.AircraftMigration.test_check_requires_v2_source_instead_of_upgrading_v1_in_memory) ... ok
+test_current_extra_finite_glow_v2_is_idempotent (__main__.AircraftMigration.test_current_extra_finite_glow_v2_is_idempotent) ... ok
+test_current_finite_gasoline_v2_is_idempotent_with_historical_v1_gear_policy (__main__.AircraftMigration.test_current_finite_gasoline_v2_is_idempotent_with_historical_v1_gear_policy) ... ok
+test_current_finite_turbine_v2_is_idempotent_with_historical_v1_gear_policy (__main__.AircraftMigration.test_current_finite_turbine_v2_is_idempotent_with_historical_v1_gear_policy) ... ok
+test_finite_current_routes_keep_explicit_historical_v1_projection (__main__.AircraftMigration.test_finite_current_routes_keep_explicit_historical_v1_projection) ... ok
+test_legacy_omissions_become_only_the_reviewed_explicit_defaults (__main__.AircraftMigration.test_legacy_omissions_become_only_the_reviewed_explicit_defaults) ... ok
+test_legacy_projection_removes_v2_physical_identity_metadata (__main__.AircraftMigration.test_legacy_projection_removes_v2_physical_identity_metadata) ... ok
+test_unknown_id_format_and_legacy_conflicts_fail_closed (__main__.AircraftMigration.test_unknown_id_format_and_legacy_conflicts_fail_closed) ... ok
+test_v2_conflicts_are_rejected_without_mutation (__main__.AircraftMigration.test_v2_conflicts_are_rejected_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.146s
+
+OK
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.012s
+
+OK
+== AS-07/09: shared aircraft modules and generated model bindings
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.315s
+
+OK
+model manifests current (5 visual families)
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 1.743s
+
+OK
+== CR-29: sourced economics catalog and aircraft coverage stay current
+Traceback (most recent call last):
+  File "/var/tmp/openrc-jeti-check-20261019-170610/app/../research/crash-economics/build_catalog.py", line 212, in <module>
+    main()
+  File "/var/tmp/openrc-jeti-check-20261019-170610/app/../research/crash-economics/build_catalog.py", line 205, in main
+    assert path.read_text(encoding="utf-8") == content, f"Stale generated file: {name}"
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Stale generated file: worked-examples.json

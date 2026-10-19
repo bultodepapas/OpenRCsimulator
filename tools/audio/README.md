@@ -34,6 +34,17 @@ The Movie Maker bench (`bench.sh`, usage in its header) adds a `crash` scenario 
 
 For longer wildlife listening, add `--wildlife-review --duration=130`; this holds neutral controls in the real trimmed flight and keeps the pilot camera. Add `--time-of-day=23:00` for owls/crickets. The optional harness-only `--resume-focus` explicitly resumes focus-loss pauses only when no fault, crash or session hold exists; it never changes production focus behavior. Reports record these resumes and final physics tick/paused state. The checker rejects a wildlife review that did not sustain the flight. No species is forced for a listening review.
 
-Export verification uses `godot --headless --editor --path app --export-pack Windows /absolute/output/audio.pck`, then runs `check_pack.gd` with that PCK as the sole user argument from an empty project. It checks all 29 imported WAVs, PCM format and sample count, both manifests and MIT notices. This is resource-pack qualification, not a full installer/release smoke test.
+Export verification uses `godot --headless --editor --path app --export-pack Windows /absolute/output/audio.pck`, then runs `check_pack.gd` with that PCK as the sole user argument from an empty project. It checks all 33 imported WAVs, PCM format and sample count, three manifests and MIT/CC0 notices. This is resource-pack qualification, not a full installer/release smoke test.
+
+AUD-14 adds real wind/fabric recordings. Source downloads and hashes are in `research/audio/AUD-14/recordings/environment/`; exact pinned editing dependencies are separate from the synthetic generators. The importer decodes the retained MP3 previews, trims, crossfades, filters and normalizes them into long mono PCM loops. Versioned `.wav.import` files keep `compress/mode=0`; Godot's QOA default cannot use the PCM wrap guard. Reproduction and focused checks:
+
+```sh
+python -m pip install -r tools/audio/requirements-recordings.txt
+python tools/audio/import_wind_recordings.py --check
+godot --headless --path app --script res://tests/test_recorded_audio.gd
+godot --display-driver headless --audio-driver WASAPI --path app --script /absolute/repo/tools/audio/wind_probe.gd -- --fps=60 --out=/absolute/output/wind
+```
+
+`wind_probe.gd` is a staged presentation bench for calm, light/strong wind, gusts and reversal, pause/resume, and listener distance. It captures Master plus an isolated fabric bus, reports the actual audio driver, source identities, peaks, capture-buffer discards, measured wall update rate and update times, and checks native pause/bus cleanup. Settled measurements exclude the first 0.5 s per stage; digital silence reports a finite -240 dBFS floor. Compare captured duration with wall time as well as the discard counter. It does not qualify acoustic realism or replace a flight test. See [AUD-14](../../docs/research/audio/AUD-14/README.md) for results and limitations.
 
 Live gameplay defaults to audio on. Use `--soundscape=off` for silence, `--soundscape=legacy` for the retained G3b engine, `--audio-seed=<integer>` for a reproducible ambience sequence, `--audio-delay=off` to hear the aircraft without propagation delay, and `--audio-absorption=off` to remove air absorption for source-level calibration ([AUD-11](../../docs/research/audio/AUD-11/README.md)). The new runtime requires no external audio middleware. Source WAVs, import settings, provenance and license are under `app/assets/audio/soundscape/`.

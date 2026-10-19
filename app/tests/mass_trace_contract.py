@@ -90,7 +90,10 @@ def _validate_liquid_metadata(metadata):
     if (usable < 0.0 or usable > capacity - unusable or source_latch not in (0.0, 1.0)
             or (usable == 0.0 and source_latch != 0.0)):
         raise ValueError('finite-liquid start tail is outside its declared domain')
-    if start_known and abs(usable + unusable - fill * capacity) > max(1e-10, capacity * 1e-10):
+    # The selected fill controls a future reset. A mid-flight recording carries
+    # its current inventory in the first row, so only tick-zero traces can compare
+    # that inventory directly with the selected launch fill.
+    if start_known and start_tick == 0 and abs(usable + unusable - fill * capacity) > max(1e-10, capacity * 1e-10):
         raise ValueError('finite-liquid start fill disagrees with its continuous state')
     return {
         'capacity': capacity, 'unusable': unusable, 'reserve': reserve, 'state_index': state_index,
@@ -129,7 +132,7 @@ def _validate_liquid_rows(metadata, rows, dt):
             if tick != identity['start_tick'] or abs(usable - identity['usable_start']) > tolerance \
                     or source_latch != identity['source_start']:
                 raise ValueError('finite-liquid first sample disagrees with recording start state')
-            if identity['start_known'] and abs(fill - identity['fill']) > 2e-8:
+            if identity['start_known'] and identity['start_tick'] == 0 and abs(fill - identity['fill']) > 2e-8:
                 raise ValueError('finite-liquid first fill disagrees with selected launch fill')
         else:
             if tick != float(rows[index - 1]['tick']) + 1.0:

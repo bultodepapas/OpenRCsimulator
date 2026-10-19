@@ -7,6 +7,8 @@ const FAMILIES: PackedStringArray = ["auto", "xbox", "playstation", "nintendo", 
 
 const _ASSET_ROOT := "res://assets/input_prompts"
 const _ControllerActions = preload("res://input/controller_actions.gd")
+const _SmokeAux = preload("res://input/smoke_aux.gd")
+const _JetiRadio = preload("res://input/jeti_radio.gd")
 const _VENDOR_FAMILY := {
 	0x045E: "xbox", # Microsoft
 	0x054C: "playstation", # Sony
@@ -45,7 +47,12 @@ static func resolve_family(requested_family: String, device_info: Dictionary) ->
 
 ## Return a readable label and optional Kenney vector path for the supplied current binding.
 ## A texture is selected from the physical button index, so remapped controls display correctly.
-static func prompt(binding: Dictionary, requested_family: String, device_info: Dictionary) -> Dictionary:
+static func prompt(binding: Dictionary, requested_family: String, device_info: Dictionary,
+		profile: Dictionary = {}) -> Dictionary:
+	if str(binding.get("type", "")) == "switch":
+		return {"text": _switch_binding_text(binding), "texture_path": ""}
+	if _is_radio(binding, device_info, profile) and str(binding.get("type", "")) == "button":
+		return {"text": _radio_button_text(binding, profile), "texture_path": ""}
 	var family := resolve_family(requested_family, device_info)
 	var text := _binding_text(binding, family)
 	var texture_path := ""
@@ -54,6 +61,50 @@ static func prompt(binding: Dictionary, requested_family: String, device_info: D
 		if not semantic.is_empty():
 			texture_path = _button_texture(family, semantic)
 	return {"text": text, "texture_path": texture_path}
+
+
+static func _switch_binding_text(binding: Dictionary) -> String:
+	if not _SmokeAux.valid_binding(binding):
+		return TranslationServer.translate("Invalid switch group.")
+	var group_name := str(binding.get("label", "")).strip_edges()
+	if group_name.is_empty():
+		group_name = TranslationServer.translate("Switch")
+	var buttons: Array = _SmokeAux.bound_buttons(binding)
+	var positions := ["Up", "Down"] if buttons.size() == 2 else ["Up", "Middle", "Down"]
+	var entries := PackedStringArray()
+	for index in buttons.size():
+		entries.append(TranslationServer.translate("%s %s · Button %d") % [
+			group_name, TranslationServer.translate(positions[index]), int(buttons[index]),
+		])
+	return " / ".join(entries)
+
+
+static func _is_radio(_binding: Dictionary, device_info: Dictionary, profile: Dictionary) -> bool:
+	return str(profile.get("kind", "")) == "radio" \
+		or str(device_info.get("kind", "")) == "radio" \
+		or _JetiRadio.matches(device_info) \
+		or _JetiRadio.has_jeti_identity_claim(device_info)
+
+
+static func _radio_button_text(binding: Dictionary, profile: Dictionary) -> String:
+	var button := int(binding.get("button", -1))
+	var aux_value: Variant = profile.get("aux", {})
+	if aux_value is Dictionary:
+		for aux_name in ["smoke", "flaps", "gear"]:
+			var aux_binding: Variant = aux_value.get(aux_name, {})
+			if not aux_binding is Dictionary or str(aux_binding.get("type", "")) != "switch" \
+					or not _SmokeAux.valid_binding(aux_binding):
+				continue
+			var buttons: Array = _SmokeAux.bound_buttons(aux_binding)
+			var position_index := buttons.find(button)
+			if position_index < 0:
+				continue
+			var positions := ["Up", "Down"] if buttons.size() == 2 else ["Up", "Middle", "Down"]
+			var group_name := str(aux_binding.get("label", "")).strip_edges()
+			if group_name.is_empty():
+				break
+			return TranslationServer.translate("%s %s · Button %d") % [group_name, TranslationServer.translate(positions[position_index]), button]
+	return TranslationServer.translate("Button %d") % button
 
 
 static func _binding_text(binding: Dictionary, family: String) -> String:

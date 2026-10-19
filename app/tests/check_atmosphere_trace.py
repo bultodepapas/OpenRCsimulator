@@ -8,6 +8,7 @@ import io
 import json
 import math
 from pathlib import Path
+import re
 import tempfile
 
 from check_trimmed_flight import (
@@ -585,7 +586,8 @@ def _glow_start_contract(metadata, wheel_claim):
             or any(not _finite_number(value) for value in continuous)
             or type(aux) is not list or len(aux) != 4 or any(not _finite_number(value) for value in aux)
             or abs(float(aux[0]) - float(continuous[0])) > 1e-9
-            or metadata.get('recording_start_engine_running') != str(bool(start.get('running')))):
+            or type(start.get('running')) is not bool
+            or metadata.get('recording_start_engine_running') != ('true' if start['running'] else 'false')):
         raise ValueError('Glow recording-start state does not match its declared slots')
     if any(not _finite_number(start.get(key)) for key in (
             'rpm', 'fuel_kg', 'temperature_k', 'phase_revolutions', 'mixture_command',
@@ -604,7 +606,7 @@ def _glow_start_contract(metadata, wheel_claim):
     start_slots = ((0, 'rpm'), (1, 'fuel_kg'), (2, 'temperature_k'), (5, 'fuel_transport_kg_s'),
                    (6, 'phase_revolutions'), (9, 'opportunity_count'), (10, 'fire_count'),
                    (11, 'firing_accumulator'), (12, 'mixture_command'), (13, 'shaft_work_j'),
-                   (14, 'propeller_work_j'), (15, 'thrust_work_j'), (16, 'chemical_work_j'))
+                   (14, 'propeller_work_j'), (15, 'thrust_work_j'))
     for index, key in start_slots:
         if not _finite_number(start.get(key)) or abs(float(start[key]) - float(continuous[index])) > max(
                 1e-10, abs(float(continuous[index])) * 2e-12):
