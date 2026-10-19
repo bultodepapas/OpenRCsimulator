@@ -240,10 +240,19 @@ func _check_workshop_suspended_recording() -> void:
 	_check("Cancel from the live Workshop quit guard keeps the editor and draft",
 		live_editor.has_unsaved_changes() and app.flight == null and app.screens.top() == live_editor)
 	var live_close_button := live_editor.find_child("CloseWorkshop", true, false) as Button
-	if live_close_button != null:
-		live_close_button.pressed.emit()
+	_check("Home Workshop exposes Back to Home", live_close_button != null and live_close_button.text == "Back to Home")
+	var menu_back := InputEventJoypadButton.new()
+	menu_back.device = -1 # Bind every joystick, including UiDriver's isolated fake device.
+	menu_back.button_index = JOY_BUTTON_B
+	var added_menu_back := not InputMap.action_has_event("ui_cancel", menu_back)
+	if added_menu_back:
+		InputMap.action_add_event("ui_cancel", menu_back)
+	await ui.joy_button(JOY_BUTTON_B)
+	if added_menu_back:
+		InputMap.action_erase_event("ui_cancel", menu_back)
 	await ui.settle()
 	var close_guard := live_editor.get("_guard_dialog") as ConfirmationDialog
+	_check("menu-pad ui_cancel reaches the editor close guard", close_guard != null)
 	if close_guard != null:
 		close_guard.custom_action.emit("discard")
 	await ui.settle()
@@ -274,8 +283,8 @@ func _check_workshop_suspended_recording() -> void:
 	_check("Workshop trial suspends the original flight", app.flight != null
 		and app.flight != original and app._workshop_previous_flight == original and not original.is_inside_tree())
 	var trial := app.flight
-	var trial_recorder := FailOnceRecorder.new()
-	var retained_recorder := AlwaysFailRecorder.new()
+	var trial_recorder := AlwaysFailRecorder.new()
+	var retained_recorder := FailOnceRecorder.new()
 	trial.recorder = trial_recorder
 	original.recorder = retained_recorder
 	app.open_pause()
@@ -334,11 +343,20 @@ func _check_workshop_suspended_recording() -> void:
 		and trial_failure_dialog != null and app.quit_requests == 0,
 		"trial=%d retained=%d" % [trial_recorder.stop_calls, retained_recorder.stop_calls])
 	if trial_failure_dialog != null:
-		trial_failure_dialog.confirmed.emit() # Stay
+		trial_failure_dialog.custom_action.emit("discard")
 	await ui.settle()
-	_check("trace Stay leaves the draft and independent retained recorder intact",
-		editor.has_unsaved_changes() and trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 0
-		and retained_recorder.recording and app.quit_requests == 0 and not trial.session.sim.paused)
+	var retained_failure_dialog := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	_check("trial Discard resolves only its trace before the retained recorder's failure",
+		editor.has_unsaved_changes() and trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 1
+		and not retained_recorder.recording and retained_failure_dialog != null
+		and app._trace_recovery.pending_count() == 1 and app.quit_requests == 0)
+	if retained_failure_dialog != null:
+		retained_failure_dialog.confirmed.emit() # Stay
+	await ui.settle()
+	_check("trace Stay leaves the draft and retained trace pending independently",
+		editor.has_unsaved_changes() and trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 1
+		and not retained_recorder.recording and app._trace_recovery.pending_count() == 1
+		and app.quit_requests == 0 and not trial.session.sim.paused)
 
 	app.quit_app()
 	await ui.settle()
@@ -347,25 +365,19 @@ func _check_workshop_suspended_recording() -> void:
 	if second_guard != null:
 		second_guard.custom_action.emit("discard")
 	await ui.settle()
-	var retained_failure_dialog := app.get("_trace_recovery_dialog") as ConfirmationDialog
-	_check("pending trial trace is offered first without stopping it twice",
-		trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 0
-		and retained_failure_dialog != null and app.quit_requests == 0)
-	if retained_failure_dialog != null:
-		retained_failure_dialog.custom_action.emit("retry")
+	var retry_retained_dialog := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	_check("discarded trial trace stays resolved while retained failure is offered again",
+		trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 1
+		and retry_retained_dialog != null and app._trace_recovery.pending_count() == 1
+		and app.quit_requests == 0)
+	if retry_retained_dialog != null:
+		retry_retained_dialog.custom_action.emit("retry")
 	await ui.settle()
-	var original_failure_dialog := app.get("_trace_recovery_dialog") as ConfirmationDialog
-	_check("trial Retry saves independently before the retained flight is processed",
-		trial_recorder.stop_calls == 2 and trial_recorder.note.begins_with("trace saved:")
-		and retained_recorder.stop_calls == 1 and original_failure_dialog != null
-		and app._trace_recovery.pending_count() == 1,
+	_check("Retry saves only the retained trace and completes quit",
+		trial_recorder.stop_calls == 1 and retained_recorder.stop_calls == 2
+		and retained_recorder.note.begins_with("trace saved:")
+		and app._trace_recovery.pending_count() == 0 and app.quit_requests == 1,
 		"trial=%d retained=%d" % [trial_recorder.stop_calls, retained_recorder.stop_calls])
-	if original_failure_dialog != null:
-		original_failure_dialog.custom_action.emit("discard")
-	await ui.settle()
-	_check("explicit retained-flight Discard completes quit without retrying the trial",
-		trial_recorder.stop_calls == 2 and retained_recorder.stop_calls == 1
-		and app._trace_recovery.pending_count() == 0 and app.quit_requests == 1)
 
 	# A real Return action remains the final route owner after both recorder outcomes are resolved.
 	app._return_to_workshop()

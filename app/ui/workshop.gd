@@ -1362,7 +1362,20 @@ func _request_trial() -> void:
 
 
 func _request_close() -> void:
-	if is_instance_valid(_guard_dialog) and _guard_dialog.visible: return
+	if is_instance_valid(_guard_dialog) and _guard_dialog.visible:
+		_navigation_abort()
+		return
+	if _delete_dialog.visible:
+		_delete_dialog.hide()
+		_delete_dialog.canceled.emit()
+		return
+	if _name_dialog.visible:
+		_name_dialog.hide()
+		_name_dialog.canceled.emit()
+		return
+	if _library_dialog.visible:
+		_close_library()
+		return
 	var focused := get_viewport().gui_get_focus_owner()
 	for key: String in _factor_inputs:
 		if focused == _factor_inputs[key] and (_pending_numbers.has(key) or _invalid_fields.has(key)):
@@ -1378,6 +1391,14 @@ func _request_close() -> void:
 		return
 	if _closing: return
 	request_navigation("Back to Pause" if return_destination == "Pause" else "Back to Home", _finish_close)
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	# Keyboard Escape is consumed by Screen; selected-menu-pad Back uses ui_cancel.
+	if event is InputEventKey or not _screen._active or not event.is_action_pressed("ui_cancel"):
+		return
+	get_viewport().set_input_as_handled()
+	_request_close()
 
 
 func _label(text: String, variation := "SecondaryLabel", wrap := false, translate := true) -> Label:

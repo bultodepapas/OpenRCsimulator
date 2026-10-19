@@ -1246,6 +1246,244 @@ msgstr "No se pudo recuperar la variante."
 msgid "Saved build restored. Load it to continue editing that revision."
 msgstr "Variante recuperada. Cárgala para seguir editando esa revisión."
 
+# Workshop editor navigation, saved variants, and comparison controls.
+msgid "Aircraft library"
+msgstr "Biblioteca de aviones"
+
+msgid "All values"
+msgstr "Todos los valores"
+
+msgid "Back to editor"
+msgstr "Volver al editor"
+
+msgid "Back to Home"
+msgstr "Volver al inicio"
+
+msgid "Back to Pause"
+msgstr "Volver a Pausa"
+
+msgid "Build name"
+msgstr "Nombre de la variante"
+
+msgid "Compare"
+msgstr "Comparar"
+
+msgid "Current"
+msgstr "Actual"
+
+msgid "Custom settings"
+msgstr "Ajustes personalizados"
+
+msgid "Delete %s · revision %d?"
+msgstr "¿Mover %s · revisión %d a la papelera local?"
+
+msgid "Difference"
+msgstr "Diferencia"
+
+msgid "Discard changes"
+msgstr "Descartar cambios"
+
+msgid "Draft"
+msgstr "Borrador"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Enter a value from %.2f to %.2f."
+msgstr "Introduce un valor entre %.2f y %.2f."
+
+msgid "Experimental values · static estimates, not measured flight performance."
+msgstr "Valores experimentales · estimaciones estáticas, no mediciones del rendimiento en vuelo."
+
+msgid "Flight setup"
+msgstr "Ajustes de vuelo"
+
+msgid "Front"
+msgstr "Frontal"
+
+msgid "Grid spacing: %.2f m between adjacent lines."
+msgstr "Separación de la cuadrícula: %.2f m entre líneas consecutivas."
+
+msgid "Grid spacing: %.2f m between adjacent lines. Span is the model's X-axis tip-to-tip extent."
+msgstr "Separación de la cuadrícula: %.2f m entre líneas consecutivas. La envergadura es la distancia de punta a punta en el eje X del modelo."
+
+msgid "Library"
+msgstr "Biblioteca"
+
+msgid "Lower the camera."
+msgstr "Bajar la cámara."
+
+msgid "Mass (kg)"
+msgstr "Masa (kg)"
+
+msgid "Name or rename this build"
+msgstr "Nombrar o renombrar variante"
+
+msgid "Name this build before saving."
+msgstr "Asigna un nombre a la variante antes de guardarla."
+
+msgid "New build"
+msgstr "Nueva variante"
+
+msgid "New build from selected aircraft"
+msgstr "Crear variante a partir del avión seleccionado"
+
+msgid "No changes from the original."
+msgstr "Sin cambios respecto al original."
+
+msgid "Open another aircraft"
+msgstr "Abrir otro avión"
+
+msgid "Open saved build"
+msgstr "Abrir variante guardada"
+
+msgid "Original"
+msgstr "Original"
+
+msgid "Original and draft"
+msgstr "Original y borrador"
+
+msgid "Orbit left."
+msgstr "Girar a la izquierda."
+
+msgid "Orbit right."
+msgstr "Girar a la derecha."
+
+msgid "Preview"
+msgstr "Vista previa"
+
+msgid "Raise the camera."
+msgstr "Subir la cámara."
+
+msgid "Range %.2f×–%.2f×"
+msgstr "Rango %.2f×–%.2f×"
+
+msgid "Reset this page"
+msgstr "Restablecer esta página"
+
+msgid "Reset the camera to its default fit."
+msgstr "Restablecer el encuadre inicial de la cámara."
+
+msgid "Resume trial"
+msgstr "Reanudar prueba"
+
+msgid "Restart trial"
+msgstr "Reiniciar prueba"
+
+msgid "Retry save"
+msgstr "Reintentar guardado"
+
+msgid "revision %d"
+msgstr "revisión %d"
+
+msgid "Save and continue"
+msgstr "Guardar y continuar"
+
+msgid "Save this build before continuing?"
+msgstr "¿Guardar esta variante antes de continuar?"
+
+msgid "Saved"
+msgstr "Guardada"
+
+msgid "Saved build deleted. Its open draft is still available as a copy."
+msgstr "Variante movida a la papelera local. El borrador abierto sigue disponible como copia."
+
+msgid "Show the %s standard view."
+msgstr "Mostrar la vista estándar: %s."
+
+msgid "Show the current draft in Compare mode."
+msgstr "Mostrar el borrador actual en modo Comparar."
+
+msgid "Show the unmodified 100% aircraft in Compare mode."
+msgstr "Mostrar el avión original al 100 % en modo Comparar."
+
+msgid "Side"
+msgstr "Lateral"
+
+msgid "Starting preset"
+msgstr "Preajuste inicial"
+
+msgid "Static power (W)"
+msgstr "Potencia estática (W)"
+
+msgid "Static thrust (N)"
+msgstr "Empuje estático (N)"
+
+msgid "Stock aircraft"
+msgstr "Aviones del catálogo"
+
+msgid "Tank capacity (l)"
+msgstr "Capacidad del depósito (l)"
+
+msgid "Technical details"
+msgstr "Datos técnicos"
+
+msgid "The saved build could not be loaded."
+msgstr "No se pudo cargar la variante guardada."
+
+msgid "This build cannot be saved until its errors are resolved."
+msgstr "Corrige los errores antes de guardar esta variante."
+
+msgid "Top"
+msgstr "Superior"
+
+msgid "Trace not saved"
+msgstr "No se guardó la traza"
+
+msgid "The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay."
+msgstr "La grabación se detuvo, pero no se pudo guardar la traza manual de vuelo (error %d). Elige «Reintentar guardado», «Descartar traza y continuar» o «Quedarse»."
+
+msgid "Stay"
+msgstr "Quedarse"
+
+msgid "Discard trace and continue"
+msgstr "Descartar traza y continuar"
+
+msgid "Experimental Workshop trial · Esc opens Pause · Return to Workshop is on Pause"
+msgstr "Prueba experimental del Taller · Esc abre Pausa · Desde Pausa puedes volver al taller"
+
+msgid "Unavailable aircraft"
+msgstr "Avión no disponible"
+
+msgid "Unsaved build"
+msgstr "Variante sin guardar"
+
+msgid "Unsaved changes"
+msgstr "Cambios sin guardar"
+
+msgid "Value"
+msgstr "Valor"
+
+msgid "View the draft at its fitted size."
+msgstr "Ver el borrador ajustado al tamaño de la vista."
+
+msgid "Wing area (m²)"
+msgstr "Superficie alar (m²)"
+
+msgid "Wing loading (kg/m²)"
+msgstr "Carga alar (kg/m²)"
+
+msgid "Wing span (m)"
+msgstr "Envergadura (m)"
+
+msgid "Zoom in."
+msgstr "Acercar."
+
+msgid "Zoom out."
+msgstr "Alejar."
+
+msgid "Compare original and draft at the same world scale."
+msgstr "Comparar el original y el borrador en la misma escala."
+
+msgid "%s  ·  %s%%  ·  span %.2f m"
+msgstr "%s  ·  %s%%  ·  envergadura %.2f m"
+
+msgid "100% · span 0.00 m"
+msgstr "100 % · envergadura 0.00 m"
+
+msgid "%s · %s%s · %s"
+msgstr "%s · %s%s · %s"
+
 msgid "More power"
 msgstr "Más potencia"
 
@@ -3525,9 +3763,6 @@ msgstr "Nombre del dispositivo: %s"
 
 msgid "Manufacturer: %s"
 msgstr "Fabricante: %s"
-
-msgid "Product: %s"
-msgstr "Producto: %s"
 
 msgid "Backspace returns to the menu and Escape pauses. This action map changes only this draft until Save."
 msgstr "Retroceso vuelve al menú y Escape pausa. Este mapa solo cambia el borrador hasta que lo guardes."

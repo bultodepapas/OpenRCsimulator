@@ -3,15 +3,20 @@
 extends RefCounted
 
 var _pending: Array[Dictionary] = []
+var _discarded: Array[RefCounted] = []
 
 
 ## Stop an active recorder once. A stopped recorder whose last save failed is still pending.
 func save_if_recording(recorder: RefCounted) -> Dictionary:
 	if recorder == null:
 		return {ok = true, pending = false, error = OK}
+	if bool(recorder.get("recording")):
+		_discarded.erase(recorder) # a new recording on this Recorder is a new recovery decision
 	var existing := _find(recorder)
 	if existing >= 0:
 		return {ok = false, pending = true, error = int(_pending[existing].error)}
+	if _discarded.has(recorder):
+		return {ok = true, pending = false, error = OK}
 	if not bool(recorder.get("recording")):
 		var note := _property_text(recorder, "note")
 		if note.begins_with("trace save failed:"):
@@ -34,6 +39,7 @@ func retry(recorder: RefCounted) -> Dictionary:
 	var error_code: Error = recorder.call("stop")
 	if error_code == OK:
 		_pending.remove_at(index)
+		_discarded.erase(recorder)
 		return {ok = true, pending = false, error = OK}
 	_pending[index].error = error_code
 	return {ok = false, pending = true, error = error_code}
@@ -45,6 +51,8 @@ func discard(recorder: RefCounted) -> bool:
 	if index < 0:
 		return false
 	_pending.remove_at(index)
+	if not _discarded.has(recorder):
+		_discarded.append(recorder)
 	return true
 
 
