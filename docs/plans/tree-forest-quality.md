@@ -12,6 +12,8 @@ The subsequent [club maple intake](../research/visual-quality-implementation/L6c
 
 ## 1. Starting point and file ownership
 
+The [downloaded map expansion](../research/visual-quality-implementation/L6c/map-expansion/README.md) adds three more maples at the farm/southwest forest, 60 LOLIPOP grass tufts and four dasy444 shrubs. Three former club saplings are replaced, retaining 17 trees and the 650,000-triangle cap. Native distant views qualify an unmipped maple leaf-alpha atlas while retaining bark/normal/ORM mips. This later evidence records the new world layout and supersedes the club-only filtering policy.
+
 The table below records the pre-implementation baseline. Current implemented behavior and measurements are recorded in the linked evidence and pipeline guides.
 
 The current implementation already contains two distinct tree systems. Details and current-source qualifications are in the [audit](../research/tree-forest-quality-2026-10-17.md#current-project-findings).

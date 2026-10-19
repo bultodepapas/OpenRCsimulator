@@ -10,7 +10,7 @@ const TREE_CELL_SIZES_M := [64, 128, 256]
 const ALIASES := {
 	"shade_tree": ["maple_tree", "common_tree_3", "pine_1", "common_tree_2", "pine_2", "common_tree_4", "pine_3"],
 	"tree": ["maple_tree", "common_tree_3", "pine_1", "common_tree_2", "pine_2", "common_tree_4", "pine_3"],
-	"sapling": ["common_tree_1", "common_tree_3"],
+	"sapling": ["common_tree_1", "common_tree_3", "common_tree_3", "common_tree_3"],
 	"bush": [
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common_flowers",
 		"bush_common_flowers", "bush_common_flowers", "bush_common_flowers", "bush_common",

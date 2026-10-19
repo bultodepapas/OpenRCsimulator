@@ -556,13 +556,16 @@ func _test_maple_texture_imports(parts: Array) -> void:
 		if not loaded:
 			continue
 		var expected_normal_mode := 1 if filename.ends_with("_normal.png") else 0
+		# Keep leaf alpha coverage at farm/forest viewing distances; ordinary
+		# color mip averaging erodes this atlas at the authored 0.5 cutoff.
+		var expected_mips := filename != "maple_leaves_basecolor.png"
 		var metadata: Variant = config.get_value("remap", "metadata", {})
 		var metadata_has_vram := metadata is Dictionary \
 			and bool((metadata as Dictionary).get("vram_texture", false))
-		_check(filename + " imports as VRAM-compressed with a complete mip chain",
+		_check(filename + " imports as VRAM-compressed with the reviewed mip policy",
 			config.get_value("remap", "type", "") == "CompressedTexture2D"
 			and config.get_value("params", "compress/mode", -1) == 2
-			and config.get_value("params", "mipmaps/generate", false)
+			and config.get_value("params", "mipmaps/generate", null) == expected_mips
 			and config.get_value("params", "mipmaps/limit", 0) == -1
 			and config.get_value("params", "detect_3d/compress_to", -1) == 1
 			and metadata_has_vram
@@ -585,7 +588,7 @@ func _test_maple_texture_imports(parts: Array) -> void:
 		_check(filename + " has native imported image data", picture != null and not picture.is_empty())
 		if picture == null or picture.is_empty():
 			continue
-		var expected_mip_levels := _complete_mipmap_count(picture.get_width(), picture.get_height())
+		var expected_mip_levels := _complete_mipmap_count(picture.get_width(), picture.get_height()) if expected_mips else 0
 		_check(filename + " retains all native texture mip levels",
 			picture.get_mipmap_count() == expected_mip_levels
 			and picture.has_mipmaps() == (expected_mip_levels > 0))

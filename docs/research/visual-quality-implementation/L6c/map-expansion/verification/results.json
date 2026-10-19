@@ -1,0 +1,103 @@
+{
+  "checks": [
+    {
+      "name": "python_scenery_place",
+      "exit_code": 0,
+      "duration_s": 5.04,
+      "log": "python_scenery_place.log"
+    },
+    {
+      "name": "python_vegetation_library",
+      "exit_code": 0,
+      "duration_s": 6.11,
+      "log": "python_vegetation_library.log"
+    },
+    {
+      "name": "python_woodland_edge_place",
+      "exit_code": 0,
+      "duration_s": 1.71,
+      "log": "python_woodland_edge_place.log"
+    },
+    {
+      "name": "python_treeline_place",
+      "exit_code": 0,
+      "duration_s": 1.22,
+      "log": "python_treeline_place.log"
+    },
+    {
+      "name": "python_grass_place",
+      "exit_code": 0,
+      "duration_s": 0.61,
+      "log": "python_grass_place.log"
+    },
+    {
+      "name": "godot_test_imported_vegetation",
+      "exit_code": 0,
+      "duration_s": 6.95,
+      "log": "godot_test_imported_vegetation.log"
+    },
+    {
+      "name": "godot_test_botanical_habitats",
+      "exit_code": 0,
+      "duration_s": 8.92,
+      "log": "godot_test_botanical_habitats.log"
+    },
+    {
+      "name": "godot_test_landscape_vegetation",
+      "exit_code": 0,
+      "duration_s": 10.09,
+      "log": "godot_test_landscape_vegetation.log"
+    },
+    {
+      "name": "godot_test_scenery_loader",
+      "exit_code": 0,
+      "duration_s": 7.44,
+      "log": "godot_test_scenery_loader.log"
+    },
+    {
+      "name": "godot_test_vegetation_collision_proxies",
+      "exit_code": 0,
+      "duration_s": 4.26,
+      "log": "godot_test_vegetation_collision_proxies.log"
+    },
+    {
+      "name": "godot_test_landscape_collision_world",
+      "exit_code": 0,
+      "duration_s": 7.37,
+      "log": "godot_test_landscape_collision_world.log"
+    },
+    {
+      "name": "godot_test_scenery_destruction",
+      "exit_code": 0,
+      "duration_s": 7.81,
+      "log": "godot_test_scenery_destruction.log"
+    },
+    {
+      "name": "godot_test_scenery_destruction_runtime",
+      "exit_code": 0,
+      "duration_s": 32.14,
+      "log": "godot_test_scenery_destruction_runtime.log"
+    },
+    {
+      "name": "godot_test_woodland_edge_habitat",
+      "exit_code": 0,
+      "duration_s": 4.19,
+      "log": "godot_test_woodland_edge_habitat.log"
+    }
+  ],
+  "additional_checks": [
+    {
+      "name": "native-materials",
+      "exit_code": 0,
+      "log": "native-materials.log"
+    },
+    {
+      "name": "scenery-build",
+      "exit_code": 0,
+      "log": "scenery-build.log"
+    }
+  ],
+  "scene_triangles": 648448,
+  "triangle_limit": 650000,
+  "note": "Botanical layout check rerun after replacing NaN serialization with explicit finite placement-field comparisons."
+}

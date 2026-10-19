@@ -1,0 +1,12 @@
+Attribution
+
+This work is based on “a forest (3) with a road at night for game” by dasy444:
+https://sketchfab.com/3d-models/a-forest-3-with-a-road-at-night-for-game-61f8c7817fe6457fb26e4814cfc48a3f
+
+The source model is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/
+
+Required attribution:
+This work is based on “a forest (3) with a road at night for game” (https://sketchfab.com/3d-models/a-forest-3-with-a-road-at-night-for-game-61f8c7817fe6457fb26e4814cfc48a3f) by dasy444 (https://sketchfab.com/dasy444), licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/).
+
+Changes made for OpenRCsimulator: selected the supplied forest leafy shrub mesh, removed gallery placement, baked the source node’s linear transform into its supplied positions and normals, retained the mesh-local origin, UVs, indices, source material and texture map, and repacked the selected accessors into a standalone glTF buffer. No geometry was created or decimated.

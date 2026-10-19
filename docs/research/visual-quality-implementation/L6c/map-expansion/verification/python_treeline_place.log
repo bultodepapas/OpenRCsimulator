@@ -1,0 +1,15 @@
+test_habitat_cli_is_default_and_existing_remains_explicit_control (__main__.HabitatRecipeTests.test_habitat_cli_is_default_and_existing_remains_explicit_control) ... ok
+test_habitat_generation_is_deterministic (__main__.HabitatRecipeTests.test_habitat_generation_is_deterministic) ... ok
+test_habitat_keeps_frozen_near_prefix_and_total_count (__main__.HabitatRecipeTests.test_habitat_keeps_frozen_near_prefix_and_total_count) ... ok
+test_habitat_keeps_ring_gaps_corridor_grid_and_spacing (__main__.HabitatRecipeTests.test_habitat_keeps_ring_gaps_corridor_grid_and_spacing) ... ok
+test_habitat_patches_have_varied_counts_shapes_and_bounds (__main__.HabitatRecipeTests.test_habitat_patches_have_varied_counts_shapes_and_bounds) ... ok
+test_existing_recipe_remains_a_reproducible_historical_control (__main__.HistoricalPlacementRecipeTests.test_existing_recipe_remains_a_reproducible_historical_control) ... ok
+test_far_spacing_and_repeated_generation_are_stable (__main__.HistoricalPlacementRecipeTests.test_far_spacing_and_repeated_generation_are_stable) ... ok
+test_l6b_positions_keep_the_frozen_count_and_digest (__main__.HistoricalPlacementRecipeTests.test_l6b_positions_keep_the_frozen_count_and_digest) ... ok
+test_l7_is_twelve_bounded_clusters_and_uses_all_sectors (__main__.HistoricalPlacementRecipeTests.test_l7_is_twelve_bounded_clusters_and_uses_all_sectors) ... ok
+test_radii_grid_gap_and_flight_corridor_contracts (__main__.HistoricalPlacementRecipeTests.test_radii_grid_gap_and_flight_corridor_contracts) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 1.007s
+
+OK

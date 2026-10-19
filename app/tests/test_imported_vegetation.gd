@@ -24,15 +24,15 @@ func _test_catalog_and_parts() -> void:
 	var data := ImportedVegetation.catalog()
 	var counts: Dictionary = data.get("counts", {})
 	_check("nine retained tree variants", counts.get("trees", 0) == 9)
-	_check("two downloaded shrubs", counts.get("shrubs", 0) == 2)
-	_check("four downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 4)
+	_check("three downloaded shrubs", counts.get("shrubs", 0) == 3)
+	_check("six downloaded grass and herb assets", counts.get("grass_and_herbs", 0) == 6)
 	_check("three downloaded flowering assets", counts.get("flowers", 0) == 3)
 	_check("two downloaded crops", counts.get("crops", 0) == 2)
 	_check("one downloaded reed clump", counts.get("reeds", 0) == 1)
-	_check("all pinned sources are cataloged", data.get("sources", []).size() == 5)
+	_check("all pinned sources are cataloged", data.get("sources", []).size() == 7)
 
 	var assets: Array = data.get("assets", [])
-	_check("21 assets are cataloged", assets.size() == 21)
+	_check("24 assets are cataloged", assets.size() == 24)
 	for asset_value in assets:
 		var asset: Dictionary = asset_value
 		var asset_id := str(asset.get("id", ""))
@@ -127,7 +127,7 @@ func _test_fit_and_aliases() -> void:
 	_check("sapling alias is restricted to downloaded broadleaf variants",
 		ImportedVegetation.resolve_id("sapling", 0) == "common_tree_1"
 		and ImportedVegetation.resolve_id("sapling", 1) == "common_tree_3"
-		and ImportedVegetation.resolve_id("sapling", 2) == "common_tree_1")
+		and ImportedVegetation.resolve_id("sapling", 2) == "common_tree_3")
 	var sapling_assets: Dictionary = {}
 	var sapling_heights_valid := true
 	for seed in 32:
@@ -225,12 +225,19 @@ func _test_default_sapling_group() -> void:
 	if not bool(scenery_result.get("ok", false)):
 		return
 	var found := false
+	var landscape_maples := 0
 	for group: Dictionary in scenery_result.scenery.groups:
+		if str(group.get("id", "")).begins_with("maple-"):
+			for placement: Dictionary in group.get("placements", []):
+				var maple := VegetationPlacement.spec("shade_tree", int(placement.seed))
+				_check("landscape maple uses a smaller proportional crown",
+					maple.get("asset_id") == "maple_tree" and float(maple.height) >= 9.5 and float(maple.height) <= 12.0)
+				landscape_maples += 1
 		if str(group.get("id", "")) != "saplings":
 			continue
 		found = true
 		var placements: Array = group.get("placements", [])
-		_check("default sapling group preserves seven stable source rows", placements.size() == 7)
+		_check("four club saplings remain after three trees move into the landscape", placements.size() == 4)
 		var valid := true
 		var assets: Dictionary = {}
 		for placement: Dictionary in placements:
@@ -242,6 +249,7 @@ func _test_default_sapling_group() -> void:
 		_check("sapling rows stay behind the club and fit downloaded sources proportionally", valid)
 		_check("sapling rows exercise both downloaded source variants", assets.has("common_tree_1") and assets.has("common_tree_3"))
 	_check("default layout contains its downloaded saplings group", found)
+	_check("three additional maples reach the farm and forest", landscape_maples == 3)
 
 
 func _check(label: String, condition: bool, detail: String = "") -> void:

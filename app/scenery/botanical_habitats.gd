@@ -22,6 +22,23 @@ const CORN_OMITTED_CELLS := [
 	Vector2i(2, 6), Vector2i(3, 0), Vector2i(3, 6),
 ]
 const WHEAT_EXTENSION_SEED_START := 100000
+const DOWNLOADED_GRASS_SEED_START := 200000
+const DOWNLOADED_GRASS_PATCHES := [
+	{zone = "club", north = -49.0, east = 16.0, radius_n = 1.4, radius_e = 2.2},
+	{zone = "meadow", north = 57.0, east = 100.0, radius_n = 1.8, radius_e = 2.6},
+	{zone = "meadow", north = 66.0, east = 154.0, radius_n = 2.1, radius_e = 1.5},
+	{zone = "farm", north = 555.0, east = 319.0, radius_n = 1.5, radius_e = 2.4},
+	{zone = "farm", north = 570.0, east = 352.0, radius_n = 2.0, radius_e = 1.6},
+]
+const DOWNLOADED_GRASS_MIX := [
+	"grass_lolipop_small", "grass_lolipop_small", "grass_lolipop_tall", "grass_lolipop_small",
+	"grass_lolipop_tall", "grass_lolipop_small", "grass_lolipop_small", "grass_lolipop_tall",
+	"grass_lolipop_small", "grass_lolipop_tall", "grass_lolipop_small", "grass_lolipop_tall",
+]
+const DOWNLOADED_SHRUB_PATCHES := [
+	{north = -50.5, east = 19.5}, {north = 60.0, east = 104.0},
+	{north = 554.0, east = 315.0}, {north = 573.0, east = 354.0},
+]
 const SHORE_CANDIDATE_LIMIT := 64
 const SHORE_REED_MIN_SPACING_M := 0.85
 const SHORE_BANK_MIN_SPACING_M := 0.65
@@ -34,6 +51,9 @@ const SHORE_BANK_ASSETS := [
 ]
 
 const HEIGHT_RANGES := {
+	"grass_lolipop_small": Vector2(0.22, 0.38),
+	"grass_lolipop_tall": Vector2(0.40, 0.65),
+	"forest_leafy_shrub": Vector2(0.65, 0.95),
 	"clover_1": Vector2(0.30, 0.52),
 	"flower_3_group": Vector2(0.38, 0.60),
 	"flower_4_group": Vector2(0.48, 0.65),
@@ -122,6 +142,17 @@ static func layout(field: Dictionary, scenery: Dictionary, quality: String, lake
 	var wheat_extension_sequence := {"next": WHEAT_EXTENSION_SEED_START}
 	_append_grid(plants, field, land_exclusions, surface_rects, lake, wheat_extension_sequence, "farm", "wheat_4",
 		pilot_north + 561.0 + 3.12, pilot_east + 346.0, 1, 6, 0.78, 0.43, quality)
+	# Separate seed range preserves all existing habitat IDs. Unequal elliptical
+	# clusters add source-textured tufts at the club, meadow and farm margins.
+	var downloaded_grass_sequence := {"next": DOWNLOADED_GRASS_SEED_START}
+	for patch: Dictionary in DOWNLOADED_GRASS_PATCHES:
+		_append_cluster(plants, field, land_exclusions, surface_rects, lake, downloaded_grass_sequence,
+			str(patch.zone), pilot_north + float(patch.north), pilot_east + float(patch.east),
+			float(patch.radius_n), float(patch.radius_e), DOWNLOADED_GRASS_MIX, quality)
+	for patch: Dictionary in DOWNLOADED_SHRUB_PATCHES:
+		_append_cluster(plants, field, land_exclusions, surface_rects, lake, downloaded_grass_sequence,
+			"understory", pilot_north + float(patch.north), pilot_east + float(patch.east),
+			0.35, 0.5, ["forest_leafy_shrub"], quality)
 	return plants
 
 

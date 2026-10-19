@@ -1,0 +1,12 @@
+test_all_quaternius_tree_buffers_clamp_only_reviewed_color_components (__main__.BuildLibraryTests.test_all_quaternius_tree_buffers_clamp_only_reviewed_color_components) ... ok
+test_archive_and_output_paths_reject_traversal (__main__.BuildLibraryTests.test_archive_and_output_paths_reject_traversal) ... ok
+test_default_generation_check_and_repeat_are_deterministic (__main__.BuildLibraryTests.test_default_generation_check_and_repeat_are_deterministic) ... ok
+test_default_selection_and_reviewed_tree_sources_are_exact (__main__.BuildLibraryTests.test_default_selection_and_reviewed_tree_sources_are_exact) ... ok
+test_maple_lod1_catalog_contract_and_conversion_provenance (__main__.BuildLibraryTests.test_maple_lod1_catalog_contract_and_conversion_provenance) ... ok
+test_oak_lod0_catalog_contract_and_source_provenance (__main__.BuildLibraryTests.test_oak_lod0_catalog_contract_and_source_provenance) ... ok
+test_tree_color_derivation_refuses_overshoot_beyond_reviewed_limit (__main__.BuildLibraryTests.test_tree_color_derivation_refuses_overshoot_beyond_reviewed_limit) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 5.867s
+
+OK

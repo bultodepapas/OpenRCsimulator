@@ -132,9 +132,9 @@ class BuildLibraryTests(unittest.TestCase):
             self.assertIn(library.OAK_ASSET_ID, candidate_ids)
             self.assertIn("maple_tree", candidate_ids)
             self.assertIn("maple_tree", installed_ids)
-            self.assertEqual(catalog["counts"]["total_assets"], 21)
+            self.assertEqual(catalog["counts"]["total_assets"], 24)
             self.assertEqual(catalog["counts"]["trees"], 9)
-            self.assertEqual(len(catalog["sources"]), 5)
+            self.assertEqual(len(catalog["sources"]), 7)
 
             candidates = {
                 asset["id"]: asset
@@ -273,9 +273,9 @@ class BuildLibraryTests(unittest.TestCase):
                 oak_archive,
             )
 
-        self.assertEqual(catalog["counts"]["total_assets"], 21)
+        self.assertEqual(catalog["counts"]["total_assets"], 24)
         self.assertEqual(catalog["counts"]["trees"], 9)
-        self.assertEqual(len(catalog["sources"]), 5)
+        self.assertEqual(len(catalog["sources"]), 7)
         oak = next(asset for asset in catalog["assets"] if asset["id"] == library.OAK_ASSET_ID)
         self.assertEqual(oak["source_id"], library.OAK_SOURCE_ID)
         self.assertEqual(oak["source_triangles"], 5_303)
@@ -560,7 +560,7 @@ class BuildLibraryTests(unittest.TestCase):
             )
             self.assertEqual(generated.returncode, 0, generated.stderr)
             catalog = json.loads((candidate_root / "catalog.json").read_text(encoding="utf-8"))
-            self.assertEqual(catalog["counts"]["total_assets"], 21)
+            self.assertEqual(catalog["counts"]["total_assets"], 24)
             self.assertEqual(catalog["counts"]["trees"], 9)
             first_snapshot = file_snapshot(candidate_root)
 

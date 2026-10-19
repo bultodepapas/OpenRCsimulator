@@ -7,6 +7,8 @@ const LakeLoader := preload("res://data/lake_loader.gd")
 const Scenery := preload("res://scenery/scenery.gd")
 const ImportedVegetation := preload("res://scenery/imported_vegetation.gd")
 const Clock := preload("res://render/shader_clock.gd")
+const Habitats := preload("res://scenery/botanical_habitats.gd")
+const Grass := preload("res://render/near_grass.gd")
 
 var failures := 0
 var checks := 0
@@ -34,6 +36,30 @@ func _initialize() -> void:
 	_check("generated default has no retired procedural cushion group",
 		not source_scenery.groups.any(func(group: Dictionary) -> bool: return str(group.get("id", "")) == "wildflowers"))
 	var built := Scenery.build(field, source_scenery, {audio = false, birds = false, theme = "", quality = "high"}, {}, lake_result.lake)
+	var expanded := Habitats.layout(field, source_scenery, "high", lake_result.lake)
+	var repeated := Habitats.layout(field, source_scenery, "high", lake_result.lake)
+	var identical := expanded.size() == repeated.size()
+	for index in mini(expanded.size(), repeated.size()):
+		for key in ["asset_id", "seed", "zone", "north", "east", "height_m", "yaw_rad", "ground_up_m"]:
+			identical = identical and expanded[index][key] == repeated[index][key]
+	_check("downloaded accents rebuild deterministically", identical)
+	var exclusions := Habitats.exclusions_for(source_scenery, lake_result.lake)
+	var added_species := {}
+	var added_zones := {}
+	var added_triangles := 0
+	var added_clear := true
+	for plant: Dictionary in expanded:
+		if int(plant.seed) < Habitats.DOWNLOADED_GRASS_SEED_START:
+			continue
+		added_species[plant.asset_id] = true
+		added_zones[plant.zone] = true
+		added_triangles += int(ImportedVegetation.get_asset(plant.asset_id).get("source_triangles", 0))
+		added_clear = added_clear and Grass.accepts(float(plant.north), float(plant.east), field, exclusions)
+	_check("both grass forms and the forest shrub are placed", added_species.size() == 3)
+	_check("downloaded accents reach club, meadow and farm", added_zones.has("club")
+		and added_zones.has("meadow") and added_zones.has("farm"))
+	_check("new small plants remain outside runway, paths and foundations", added_clear)
+	_check("new accents use at most 1,986 source triangles", added_triangles > 0 and added_triangles <= 1986)
 	_test_imported_habitats(built.get_node_or_null("BotanicalHabitats") as Node3D)
 	_test_downloaded_damage(built.get_node_or_null("ImportedVegetationBatches") as Node3D)
 	built.free()

@@ -1,0 +1,319 @@
+{
+  "asset_id": "grass_lolipop_pack",
+  "conversion": {
+    "decimation": false,
+    "geometry_created": false,
+    "method": "selected the supplied fresh small and low tall mesh variants; removed source gallery translations; baked the source Z-up to glTF Y-up basis into positions, normals and tangents; repacked the original accessor values without changing indices or UVs; copied the relevant source texture files unchanged; changed the grass material from BLEND to double-sided MASK with alphaCutoff 0.5",
+    "origin": "source mesh-local stem-ground origin retained at (0, 0, 0); source gallery translations removed",
+    "source_maps": "RGBA base color including alpha, metallic-roughness-occlusion, and tangent-space normal maps copied byte-for-byte",
+    "source_node_policy": "one glTF mesh node with identity transform per variant",
+    "source_to_gltf_axis_mapping": "(x, y, z) -> (x, z, -y)",
+    "triangles_preserved": true,
+    "uv_sets_preserved": [
+      "TEXCOORD_0",
+      "TEXCOORD_1"
+    ],
+    "vertex_colors": "source glTF meshes do not contain COLOR_0"
+  },
+  "format": "openrc-grass-pack-conversion-manifest v1",
+  "inputs": [
+    {
+      "bytes": 838,
+      "path": "LICENSE_GRASS.txt",
+      "sha256": "397715d253b1dd51299bb6cc785e634e4a106b89e6541d6cefcf905ffa5ee4a7"
+    },
+    {
+      "bytes": 4571974,
+      "path": "archive/grass_pack_lowpoly_game-ready.zip",
+      "sha256": "304b2ea5c62f6dc635dc5d895534d5bd3812d58e25815d43fcd5ff7783a65fe4"
+    },
+    {
+      "bytes": 748,
+      "path": "license.txt",
+      "sha256": "6bfbc67cf495ad6d324df9256675343561092b87520b8c37b5620521441b3fc9"
+    },
+    {
+      "bytes": 44772,
+      "path": "scene.bin",
+      "sha256": "13684814e25dc9cf086c371f7cd8912b14e904089ea3195972ba993bbeadede4"
+    },
+    {
+      "bytes": 48821,
+      "path": "scene.gltf",
+      "sha256": "d862ac8e5cead51dc5155375903482a231c2afd1c6df65f28433bb014e04eac6"
+    },
+    {
+      "bytes": 18412,
+      "path": "textures/Checker_mat_baseColor.png",
+      "sha256": "129cd15feabe9ba45abb6a490d2e3f12692a351e72b195812d492d3c17f9c924"
+    },
+    {
+      "bytes": 371665,
+      "path": "textures/Grass_Mat_baseColor.png",
+      "sha256": "d91b2ab204902e84c76400201849254da0ab41dd6b109fa2ad7bc4017ebe3927"
+    },
+    {
+      "bytes": 320295,
+      "path": "textures/Grass_Mat_metallicRoughness.png",
+      "sha256": "85ed0c78f7303c5015431c8818a88018e1be3ee14d201b9b3c6f1c7c755ccb93"
+    },
+    {
+      "bytes": 410511,
+      "path": "textures/Grass_Mat_normal.png",
+      "sha256": "2f83a76ee2defa4e214f139cdca684eba5b346a6d93ff6a65decbf929567856b"
+    },
+    {
+      "bytes": 181624,
+      "path": "textures/Man_ref_baseColor.png",
+      "sha256": "924e3651cb55114c611a4202173af071e0ed7866af0818ff6288dd2cc4ad084f"
+    },
+    {
+      "bytes": 1222592,
+      "path": "textures/Tall_grass_Mat_baseColor.png",
+      "sha256": "518b9973a47534a896d1a5d41f8cb2363dd5a80a013946d5cf3703134d684405"
+    },
+    {
+      "bytes": 655282,
+      "path": "textures/Tall_grass_Mat_metallicRoughness.png",
+      "sha256": "7bb6c00839b46f1189de0a6c3ef887f7954dd4e2e8b0872e6ebe91468302754e"
+    },
+    {
+      "bytes": 1390883,
+      "path": "textures/Tall_grass_Mat_normal.png",
+      "sha256": "853befe53647d63a04d7e799716f50d8476ed8d634eaed9b573f4a2670815911"
+    }
+  ],
+  "outputs": [
+    {
+      "bytes": 2384,
+      "path": "grass_lolipop_small.bin",
+      "sha256": "c585021c51427d41a75ce9253d8de62eb29121d9a8de956e63c645d901e128c9"
+    },
+    {
+      "bytes": 4796,
+      "path": "grass_lolipop_small.gltf",
+      "sha256": "fea7c09d7e8f6b01013c15f39d1cb9e51e41a04aef6e64f05686e360290afb87"
+    },
+    {
+      "bytes": 1920,
+      "path": "grass_lolipop_tall.bin",
+      "sha256": "464e5174dfa9683fc1ff5782a817e2504d08d971946b52e48f4dff6c0d2b678e"
+    },
+    {
+      "bytes": 4788,
+      "path": "grass_lolipop_tall.gltf",
+      "sha256": "ba7f3ba7193326ad977aafbfdc75d90d643694ab4dd68d730d6d7a8ef36aea95"
+    },
+    {
+      "bytes": 371665,
+      "path": "textures/grass_lolipop_small_basecolor.png",
+      "sha256": "d91b2ab204902e84c76400201849254da0ab41dd6b109fa2ad7bc4017ebe3927"
+    },
+    {
+      "bytes": 320295,
+      "path": "textures/grass_lolipop_small_mrao.png",
+      "sha256": "85ed0c78f7303c5015431c8818a88018e1be3ee14d201b9b3c6f1c7c755ccb93"
+    },
+    {
+      "bytes": 410511,
+      "path": "textures/grass_lolipop_small_normal.png",
+      "sha256": "2f83a76ee2defa4e214f139cdca684eba5b346a6d93ff6a65decbf929567856b"
+    },
+    {
+      "bytes": 1222592,
+      "path": "textures/grass_lolipop_tall_basecolor.png",
+      "sha256": "518b9973a47534a896d1a5d41f8cb2363dd5a80a013946d5cf3703134d684405"
+    },
+    {
+      "bytes": 655282,
+      "path": "textures/grass_lolipop_tall_mrao.png",
+      "sha256": "7bb6c00839b46f1189de0a6c3ef887f7954dd4e2e8b0872e6ebe91468302754e"
+    },
+    {
+      "bytes": 1390883,
+      "path": "textures/grass_lolipop_tall_normal.png",
+      "sha256": "853befe53647d63a04d7e799716f50d8476ed8d634eaed9b573f4a2670815911"
+    }
+  ],
+  "source": {
+    "archive": {
+      "bytes": 4571974,
+      "name": "grass_pack_lowpoly_game-ready.zip",
+      "sha256": "304b2ea5c62f6dc635dc5d895534d5bd3812d58e25815d43fcd5ff7783a65fe4"
+    },
+    "creator": "LOLIPOP (@lolipop_1707)",
+    "license": "CC BY 4.0",
+    "license_notice": "assets/landscape/vegetation/source/lolipop_grass_2026/LICENSE_GRASS.txt",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "name": "Grass pack (lowpoly, game-ready)",
+    "original_entries": [
+      "license.txt",
+      "scene.bin",
+      "scene.gltf",
+      "textures/Checker_mat_baseColor.png",
+      "textures/Grass_Mat_baseColor.png",
+      "textures/Grass_Mat_metallicRoughness.png",
+      "textures/Grass_Mat_normal.png",
+      "textures/Man_ref_baseColor.png",
+      "textures/Tall_grass_Mat_baseColor.png",
+      "textures/Tall_grass_Mat_metallicRoughness.png",
+      "textures/Tall_grass_Mat_normal.png"
+    ],
+    "source_axis": "Z-up",
+    "url": "https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403"
+  },
+  "toolchain": {
+    "blender_inspection": "5.2.2 LTS",
+    "converter": "tools/landscape/vegetation/convert_grass_pack.py",
+    "converter_sha256": "d207c92e75aa1e21dfe9b7b0895fe95f2cce3dee13134bcf2f54fa662b5130f9",
+    "python": "3.11.9"
+  },
+  "variants": [
+    {
+      "bounds_y_up_m": {
+        "max": [
+          0.15327070653438568,
+          0.2144358605146408,
+          0.10296116024255753
+        ],
+        "min": [
+          -0.11162220686674118,
+          -0.03532220050692558,
+          -0.14527840912342072
+        ],
+        "size": [
+          0.26489291340112686,
+          0.2497580610215664,
+          0.24823956936597824
+        ]
+      },
+      "gltf": "grass_lolipop_small.gltf",
+      "id": "grass_lolipop_small",
+      "material": {
+        "alpha_cutoff": 0.5,
+        "alpha_mode": "MASK",
+        "base_color": "textures/grass_lolipop_small_basecolor.png",
+        "double_sided": true,
+        "metallic_roughness_occlusion": "textures/grass_lolipop_small_mrao.png",
+        "name": "grass_lolipop_small_PBR",
+        "normal": "textures/grass_lolipop_small_normal.png"
+      },
+      "source_bounds_z_up_m": {
+        "max": [
+          0.15327070653438568,
+          0.14527840912342072,
+          0.2144358605146408
+        ],
+        "min": [
+          -0.11162220686674118,
+          -0.10296116024255753,
+          -0.03532220050692558
+        ],
+        "size": [
+          0.26489291340112686,
+          0.24823956936597824,
+          0.2497580610215664
+        ]
+      },
+      "source_gallery_translation_y_up_m": [
+        0.9911024348936426,
+        0.0,
+        0.0
+      ],
+      "source_linear_basis_max_abs_residual": 1.6292067552822589e-07,
+      "source_material": "Grass_Mat",
+      "source_mesh_index": 8,
+      "source_name": "Grass main fresh.002_Grass_Mat_0",
+      "source_node_chain": [
+        "Sketchfab_model",
+        "d406b24ec3d24b33b6be96eff616068e.fbx",
+        "RootNode",
+        "Grass",
+        "Grass main fresh.002",
+        "Grass main fresh.002_Grass_Mat_0"
+      ],
+      "source_node_index": 21,
+      "source_to_baked_max_abs_error": {
+        "normal": 0.0,
+        "position": 0.0,
+        "tangent": 0.0
+      },
+      "surfaces": 1,
+      "triangles": 26,
+      "vertices": 37
+    },
+    {
+      "bounds_y_up_m": {
+        "max": [
+          0.2535180449485779,
+          0.47276821732521057,
+          0.2775113582611084
+        ],
+        "min": [
+          -0.2663629949092865,
+          -0.050886254757642746,
+          -0.22454428672790527
+        ],
+        "size": [
+          0.5198810398578644,
+          0.5236544720828533,
+          0.5020556449890137
+        ]
+      },
+      "gltf": "grass_lolipop_tall.gltf",
+      "id": "grass_lolipop_tall",
+      "material": {
+        "alpha_cutoff": 0.5,
+        "alpha_mode": "MASK",
+        "base_color": "textures/grass_lolipop_tall_basecolor.png",
+        "double_sided": true,
+        "metallic_roughness_occlusion": "textures/grass_lolipop_tall_mrao.png",
+        "name": "grass_lolipop_tall_PBR",
+        "normal": "textures/grass_lolipop_tall_normal.png"
+      },
+      "source_bounds_z_up_m": {
+        "max": [
+          0.2535180449485779,
+          0.22454428672790527,
+          0.47276821732521057
+        ],
+        "min": [
+          -0.2663629949092865,
+          -0.2775113582611084,
+          -0.050886254757642746
+        ],
+        "size": [
+          0.5198810398578644,
+          0.5020556449890137,
+          0.5236544720828533
+        ]
+      },
+      "source_gallery_translation_y_up_m": [
+        2.6999995104968644,
+        0.0,
+        0.0
+      ],
+      "source_linear_basis_max_abs_residual": 1.6292067552822589e-07,
+      "source_material": "Tall_grass_Mat",
+      "source_mesh_index": 13,
+      "source_name": "Grass tall low.001_Tall_grass_Mat_0",
+      "source_node_chain": [
+        "Sketchfab_model",
+        "d406b24ec3d24b33b6be96eff616068e.fbx",
+        "RootNode",
+        "Grass_tall",
+        "Grass tall low.001",
+        "Grass tall low.001_Tall_grass_Mat_0"
+      ],
+      "source_node_index": 32,
+      "source_to_baked_max_abs_error": {
+        "normal": 0.0,
+        "position": 0.0,
+        "tangent": 0.0
+      },
+      "surfaces": 1,
+      "triangles": 20,
+      "vertices": 30
+    }
+  ]
+}

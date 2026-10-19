@@ -3,6 +3,7 @@ extends RefCounted
 const Library := preload("res://scenery/imported_vegetation.gd")
 const Palette := preload("res://scenery/palette.gd")
 const MATURE_MAPLE_HEIGHT_M := 14.0
+const CLUB_MAPLE_SEED := 793949324 # Existing shade-trees placement 6; keep the clubhouse Maple mature.
 
 static func handles(prefab: String) -> bool:
 	return prefab in ["shade_tree", "sapling", "bush", "flower_clump"]
@@ -14,7 +15,7 @@ static func spec(prefab: String, seed: int) -> Dictionary:
 		return {}
 	var height := 9.35 + 0.95 * Palette.hash01(seed, 1)
 	if asset_id == "maple_tree":
-		height = MATURE_MAPLE_HEIGHT_M
+		height = MATURE_MAPLE_HEIGHT_M if seed == CLUB_MAPLE_SEED else 9.5 + 2.5 * Palette.hash01(seed, 1)
 	if prefab == "bush":
 		height = 0.68 + 0.16 * Palette.hash01(seed, 1)
 	elif prefab == "flower_clump":

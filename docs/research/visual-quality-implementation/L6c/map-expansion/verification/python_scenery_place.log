@@ -1,0 +1,12 @@
+test_bales_have_two_metre_footprint_clearance_from_lake_bank (tools.scenery.test_place.SceneryPlaceTests.test_bales_have_two_metre_footprint_clearance_from_lake_bank) ... ok
+test_bales_keep_group_count_and_source_order (tools.scenery.test_place.SceneryPlaceTests.test_bales_keep_group_count_and_source_order) ... ok
+test_downloaded_saplings_stay_clear_of_the_bank_and_north_approach (tools.scenery.test_place.SceneryPlaceTests.test_downloaded_saplings_stay_clear_of_the_bank_and_north_approach) ... ok
+test_generated_default_matches_its_source (tools.scenery.test_place.SceneryPlaceTests.test_generated_default_matches_its_source) ... ok
+test_legacy_procedural_flower_cushions_are_not_generated (tools.scenery.test_place.SceneryPlaceTests.test_legacy_procedural_flower_cushions_are_not_generated) ... ok
+test_maples_are_distributed_to_farm_edge_and_southwest_forest (tools.scenery.test_place.SceneryPlaceTests.test_maples_are_distributed_to_farm_edge_and_southwest_forest) ... ok
+test_tree_placement_count_stays_flat_and_sapling_mix_keeps_one_common_tree_1 (tools.scenery.test_place.SceneryPlaceTests.test_tree_placement_count_stays_flat_and_sapling_mix_keeps_one_common_tree_1) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.791s
+
+OK

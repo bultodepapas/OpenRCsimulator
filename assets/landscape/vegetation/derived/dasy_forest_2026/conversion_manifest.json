@@ -1,0 +1,229 @@
+{
+  "asset_id": "dasy_forest_selected_shrub",
+  "conversion": {
+    "decimation": false,
+    "geometry_created": false,
+    "node_transform": "accumulated source glTF node transforms; removed cumulative gallery translation; baked the complete remaining linear basis into positions and normals",
+    "origin": "source mesh-local origin (0, 0, 0) retained; no vertex recentering or grounding offset",
+    "source_map": "the supplied 2048x2048 RGBA base-color map is copied byte-for-byte; its alpha channel contains both transparent and opaque values",
+    "source_material": "preserved base-color factor/texture, alphaMode BLEND, doubleSided true, metallicFactor 0 and roughnessFactor 0.8211145618000169",
+    "source_node_chain": "Sketchfab_model > 8487a72de1e44d0180e1c3e69ca9c229.fbx > RootNode > selected gallery object > selected mesh",
+    "topology": "source vertex positions, primitive mode, and index values retained; accessor data repacked into a compact standalone buffer; UV values retained byte-for-byte"
+  },
+  "format": "openrc-forest-shrub-conversion-manifest v1",
+  "inputs": [
+    {
+      "bytes": 1039,
+      "path": "LICENSE_FOREST.txt",
+      "sha256": "d41803d1376ea56604881809a78a13d51d1ea54f8361460cbad413ab9c35161a"
+    },
+    {
+      "bytes": 20951847,
+      "path": "archive/a_forest_3_with_a_road_at_night_for_game.zip",
+      "sha256": "7a6716d6e691838324e8270ec9c22b5f7793609342db579861626c3c8975bea3"
+    },
+    {
+      "bytes": 780,
+      "path": "license.txt",
+      "sha256": "baf54b656b4fe6a746703cdf8565cf8dcbd6feba6cac2657f31f62d0be04fa93"
+    },
+    {
+      "bytes": 6609576,
+      "path": "scene.bin",
+      "sha256": "d325db2e035c2ca1e6b931e4563e7532c532d96fa2552ae8bed9298d26885bc7"
+    },
+    {
+      "bytes": 3101730,
+      "path": "scene.gltf",
+      "sha256": "ea53ed0559e798ca6016a38e80eb7953e8bd125167cbc04ce9fd7bca90a3da6f"
+    },
+    {
+      "bytes": 8826992,
+      "path": "textures/Material.003_baseColor.png",
+      "sha256": "13bbe9b6c0e1f5f32f28a401c34364f37df43b99540354961b9a37cc2f895838"
+    },
+    {
+      "bytes": 7961146,
+      "path": "textures/Material.003_normal.png",
+      "sha256": "c8b99b013c2b9cb6d9c85bb39572516f5da15d5f2a0b4c8bdce8f606ea66c4af"
+    },
+    {
+      "bytes": 259030,
+      "path": "textures/Material.004_baseColor.jpeg",
+      "sha256": "a870158464a27da3263132678e27eb60fcca06e8992e0cf929328a1fa6af01ba"
+    },
+    {
+      "bytes": 256969,
+      "path": "textures/Material.004_normal.png",
+      "sha256": "2aab315e02ad0fcb0b336a118bbd2f208bb711d56bbb96262e0ac6b320162c89"
+    },
+    {
+      "bytes": 3296891,
+      "path": "textures/Material_baseColor.png",
+      "sha256": "b9358314f5f6e6ced74736f93de4a6baf69f65732d7eb27128dd5b951bb1823d"
+    }
+  ],
+  "outputs": [
+    {
+      "bytes": 4800,
+      "path": "forest_leafy_shrub.bin",
+      "sha256": "a3aaa2eafd8166c1484ced803bcd3c4a532a8db765ede2ed5e0a3ebde81b5f3e"
+    },
+    {
+      "bytes": 3197,
+      "path": "forest_leafy_shrub.gltf",
+      "sha256": "da595e680120341c16b042ae4d18a54a7db34f02c0500e89075debab797954e5"
+    },
+    {
+      "bytes": 3296891,
+      "path": "textures/forest_leafy_shrub_basecolor.png",
+      "sha256": "b9358314f5f6e6ced74736f93de4a6baf69f65732d7eb27128dd5b951bb1823d"
+    }
+  ],
+  "source": {
+    "archive": {
+      "bytes": 20951847,
+      "name": "a_forest_3_with_a_road_at_night_for_game.zip",
+      "sha256": "7a6716d6e691838324e8270ec9c22b5f7793609342db579861626c3c8975bea3"
+    },
+    "creator": "dasy444",
+    "license": "CC BY 4.0",
+    "license_notice": "assets/landscape/vegetation/source/dasy_forest_2026/LICENSE_FOREST.txt",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "name": "a forest (3) with a road at night for game",
+    "original_entries": [
+      "license.txt",
+      "scene.bin",
+      "scene.gltf",
+      "textures/Material.003_baseColor.png",
+      "textures/Material.003_normal.png",
+      "textures/Material.004_baseColor.jpeg",
+      "textures/Material.004_normal.png",
+      "textures/Material_baseColor.png"
+    ],
+    "selected_mesh_index": 210,
+    "selected_mesh_name": "3f84aea6648aa6cc5af5f07ee43c6056-no-bg-preview (carve.photos).003_Material_0",
+    "url": "https://sketchfab.com/3d-models/a-forest-3-with-a-road-at-night-for-game-61f8c7817fe6457fb26e4814cfc48a3f"
+  },
+  "toolchain": {
+    "converter": "tools/landscape/vegetation/convert_forest_shrub.py",
+    "converter_sha256": "5e4b60d8aadcaa78896d1335f07b972e27ed36af1acf04f1c0628931020f6cf6",
+    "python": "3.11.9"
+  },
+  "variants": [
+    {
+      "bounds_y_up_m": {
+        "max": [
+          0.5019426345825195,
+          0.6871605515480042,
+          0.5194972157478333
+        ],
+        "min": [
+          -0.5329163074493408,
+          -0.12815220654010773,
+          -0.4331909418106079
+        ],
+        "size": [
+          1.0348589420318604,
+          0.8153127580881119,
+          0.9526881575584412
+        ]
+      },
+      "gltf": "forest_leafy_shrub.gltf",
+      "id": "forest_leafy_shrub",
+      "material": {
+        "alpha_mode": "BLEND",
+        "base_color": "textures/forest_leafy_shrub_basecolor.png",
+        "double_sided": true,
+        "metallic_factor": 0.0,
+        "name": "Material",
+        "roughness_factor": 0.8211145618000169,
+        "source_base_color_sha256": "b9358314f5f6e6ced74736f93de4a6baf69f65732d7eb27128dd5b951bb1823d",
+        "source_texture_format": {
+          "bit_depth": 8,
+          "color_type": 6,
+          "height": 2048,
+          "width": 2048
+        }
+      },
+      "origin": {
+        "mesh_local": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "output": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "policy": "source mesh-local origin retained; gallery translation removed"
+      },
+      "source_basis_orthogonality_error": 1.1100873288622011e-16,
+      "source_bounds_mesh_local_m": {
+        "max": [
+          1.3115533590316772,
+          1.2785277366638184,
+          1.6911619901657104
+        ],
+        "min": [
+          -1.2353242635726929,
+          -1.0661201477050781,
+          -0.3153938055038452
+        ],
+        "size": [
+          2.54687762260437,
+          2.3446478843688965,
+          2.0065557956695557
+        ]
+      },
+      "source_gallery_translation_y_up_m": [
+        -6.527896582605763,
+        0.0,
+        0.0
+      ],
+      "source_linear_basis": [
+        [
+          -0.40632453010247827,
+          -1.5822861405658266e-07,
+          2.0115683706873043e-14
+        ],
+        [
+          8.169755719042086e-15,
+          3.067664857817176e-08,
+          0.4063245301025079
+        ],
+        [
+          -1.5822861405658374e-07,
+          0.40632453010247715,
+          -3.0676648533060675e-08
+        ]
+      ],
+      "source_material": "Material",
+      "source_mesh_index": 210,
+      "source_name": "3f84aea6648aa6cc5af5f07ee43c6056-no-bg-preview (carve.photos).003_Material_0",
+      "source_node_chain": [
+        "Sketchfab_model",
+        "8487a72de1e44d0180e1c3e69ca9c229.fbx",
+        "RootNode",
+        "3f84aea6648aa6cc5af5f07ee43c6056-no-bg-preview (carve.photos).003",
+        "3f84aea6648aa6cc5af5f07ee43c6056-no-bg-preview (carve.photos).003_Material_0"
+      ],
+      "source_node_index": 424,
+      "source_to_output_checks": {
+        "index_accessor_bytes_preserved": true,
+        "index_values_preserved": true,
+        "normals_transformed_and_renormalized": true,
+        "positions_transformed_only_by_source_linear_basis": true,
+        "source_map_bytes_preserved": true,
+        "triangle_count_preserved": true,
+        "uv_accessor_bytes_preserved": true,
+        "vertex_count_preserved": true
+      },
+      "source_uniform_scale": 0.40632453010250913,
+      "surfaces": 1,
+      "triangles": 144,
+      "vertices": 96
+    }
+  ]
+}
