@@ -11,6 +11,14 @@ const EXPECTED_TREE_LEAF_TEXTURES := {
 	"pine_2": "Leaf_Pine_C.png",
 	"pine_3": "Leaf_Pine_C.png",
 }
+const EXPECTED_MAPLE_TEXTURES := [
+	"maple_bark_basecolor.jpg",
+	"maple_bark_normal.png",
+	"maple_bark_ao-maple_bark_roughness.png",
+	"maple_leaves_basecolor.png",
+	"maple_leaves_normal.png",
+	"maple_leaves_ao-maple_leaves_roughness.png",
+]
 
 var _failures := 0
 
@@ -450,28 +458,48 @@ func _test_maple_source_materials() -> void:
 			var alpha_mode_valid := false
 			if material.transparency == BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR:
 				maple_mask_surfaces += 1
-			alpha_mode_valid = material.cull_mode == BaseMaterial3D.CULL_DISABLED \
-				and is_equal_approx(material.alpha_scissor_threshold, 0.5)
+				alpha_mode_valid = material.cull_mode == BaseMaterial3D.CULL_DISABLED \
+					and is_equal_approx(material.alpha_scissor_threshold, 0.5)
 			elif material.transparency == BaseMaterial3D.TRANSPARENCY_DISABLED:
 				maple_opaque_surfaces += 1
-			alpha_mode_valid = material.cull_mode == BaseMaterial3D.CULL_BACK
-			pbr_and_alpha_valid = pbr_and_alpha_valid and alpha_mode_valid \
-				and material.albedo_texture != null \
-				and material.normal_enabled and material.normal_texture != null \
-			and material.orm_texture != null and material.roughness_texture == null \
-			and material.roughness_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_GREEN \
-			and material.ao_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_RED \
-			and material.get_feature(BaseMaterial3D.FEATURE_AMBIENT_OCCLUSION) \
-			and is_finite(material.roughness) and is_equal_approx(material.roughness, 1.0) \
-				and is_finite(material.metallic) and material.metallic >= 0.0 and material.metallic <= 1.0 \
-			and is_zero_approx(material.metallic) \
-				and is_finite(material.metallic_specular) and material.metallic_specular >= 0.0 \
-				and material.metallic_specular <= 1.0
+				alpha_mode_valid = material.cull_mode == BaseMaterial3D.CULL_BACK
+			var surface_pbr_valid := alpha_mode_valid
+			surface_pbr_valid = surface_pbr_valid and material.albedo_texture != null
+			surface_pbr_valid = surface_pbr_valid and material.normal_enabled and material.normal_texture != null
+			var orm_source_texture: Texture2D = material.orm_texture
+			var orm_channels_valid := false
+			if orm_source_texture != null:
+				orm_channels_valid = (material.ao_texture == null or material.ao_texture == orm_source_texture) \
+					and (material.roughness_texture == null or material.roughness_texture == orm_source_texture) \
+					and (material.metallic_texture == null or material.metallic_texture == orm_source_texture)
+			else:
+				orm_source_texture = material.roughness_texture
+				orm_channels_valid = orm_source_texture != null \
+					and material.ao_texture == orm_source_texture \
+					and material.metallic_texture == orm_source_texture
+			surface_pbr_valid = surface_pbr_valid and orm_channels_valid
+			surface_pbr_valid = surface_pbr_valid \
+				and material.roughness_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_GREEN
+			surface_pbr_valid = surface_pbr_valid \
+				and material.ao_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_RED
+			surface_pbr_valid = surface_pbr_valid \
+				and material.metallic_texture_channel == BaseMaterial3D.TEXTURE_CHANNEL_BLUE
+			surface_pbr_valid = surface_pbr_valid \
+				and material.get_feature(BaseMaterial3D.FEATURE_AMBIENT_OCCLUSION)
+			surface_pbr_valid = surface_pbr_valid \
+				and is_finite(material.roughness) and is_equal_approx(material.roughness, 1.0)
+			surface_pbr_valid = surface_pbr_valid \
+				and is_finite(material.metallic) and is_zero_approx(material.metallic)
+			surface_pbr_valid = surface_pbr_valid \
+				and is_finite(material.metallic_specular) \
+				and material.metallic_specular >= 0.0 and material.metallic_specular <= 1.0
+			pbr_and_alpha_valid = pbr_and_alpha_valid and surface_pbr_valid
 	_check("Maple source meshes retain 5,541 triangles and two material surfaces",
 		maple_triangles == 5541 and maple_surfaces == 2)
 	_check("Maple foliage remains double-sided MASK and bark remains opaque",
 		maple_mask_surfaces == 1 and maple_opaque_surfaces == 1 and pbr_and_alpha_valid)
 	_check("Maple imported parts retain their original surface mappings", source_mapping_valid)
+	_test_maple_texture_imports(parts)
 	var batches: Dictionary = {}
 	_check("Maple queues as its canonical source ID",
 		ImportedVegetation.queue(batches, "maple_tree", Transform3D.IDENTITY, 91) == "maple_tree")
@@ -496,6 +524,80 @@ func _test_maple_source_materials() -> void:
 	_check("Maple static batches retain the original materials for every source part",
 		retained_source_materials and matched_part_indices.size() == parts.size())
 	static_root.free()
+
+
+func _test_maple_texture_imports(parts: Array) -> void:
+	var textures_by_name: Dictionary = {}
+	for part: Dictionary in parts:
+		for source_value: Variant in part.get("materials", []):
+			if not source_value is BaseMaterial3D:
+				continue
+			var material := source_value as BaseMaterial3D
+			for source_texture: Variant in [
+				material.albedo_texture,
+				material.normal_texture,
+				material.orm_texture,
+				material.ao_texture,
+				material.roughness_texture,
+				material.metallic_texture,
+			]:
+				if source_texture is Texture2D:
+					textures_by_name[_texture_filename(source_texture)] = source_texture
+	var expected_names: Array = EXPECTED_MAPLE_TEXTURES.duplicate()
+	expected_names.sort()
+	var actual_names: Array = textures_by_name.keys()
+	actual_names.sort()
+	_check("Maple materials reference exactly the six source PBR textures", actual_names == expected_names)
+	for filename: String in EXPECTED_MAPLE_TEXTURES:
+		var texture_path := "res://assets/landscape/vegetation/models/maple_tree/textures/" + filename
+		var config := ConfigFile.new()
+		var loaded := config.load(texture_path + ".import") == OK
+		_check(filename + " pins its VRAM and mipmap import recipe", loaded)
+		if not loaded:
+			continue
+		var expected_normal_mode := 1 if filename.ends_with("_normal.png") else 0
+		var metadata: Variant = config.get_value("remap", "metadata", {})
+		var metadata_has_vram := metadata is Dictionary \
+			and bool((metadata as Dictionary).get("vram_texture", false))
+		_check(filename + " imports as VRAM-compressed with a complete mip chain",
+			config.get_value("remap", "type", "") == "CompressedTexture2D"
+			and config.get_value("params", "compress/mode", -1) == 2
+			and config.get_value("params", "mipmaps/generate", false)
+			and config.get_value("params", "mipmaps/limit", 0) == -1
+			and config.get_value("params", "detect_3d/compress_to", -1) == 1
+			and metadata_has_vram
+			and str(config.get_value("remap", "path.s3tc", "")).ends_with(".s3tc.ctex")
+			and str(config.get_value("remap", "path.etc2", "")).ends_with(".etc2.ctex"))
+		_check(filename + " uses the expected normal-map compression semantics",
+			config.get_value("params", "compress/normal_map", -1) == expected_normal_mode)
+		var material_texture: Texture2D = textures_by_name.get(filename)
+		_check(filename + " remains assigned to a Maple material", material_texture != null)
+		var imported_texture := load(texture_path) as Texture2D
+		_check(filename + " loads as the imported compressed texture",
+			imported_texture is CompressedTexture2D
+			and imported_texture.resource_path == texture_path
+			and imported_texture.get_width() > 0 and imported_texture.get_height() > 0)
+		if imported_texture == null:
+			continue
+		if DisplayServer.get_name() == "headless":
+			continue # Dummy can verify imported resource metadata but not native image readback.
+		var picture := imported_texture.get_image()
+		_check(filename + " has native imported image data", picture != null and not picture.is_empty())
+		if picture == null or picture.is_empty():
+			continue
+		var expected_mip_levels := _complete_mipmap_count(picture.get_width(), picture.get_height())
+		_check(filename + " retains all native texture mip levels",
+			picture.get_mipmap_count() == expected_mip_levels
+			and picture.has_mipmaps() == (expected_mip_levels > 0))
+
+
+func _complete_mipmap_count(width: int, height: int) -> int:
+	var largest_dimension := maxi(width, height)
+	var mip_levels := 0
+	while largest_dimension > 1:
+		largest_dimension >>= 1
+		mip_levels += 1
+	return mip_levels
 
 
 func _test_oak_blend_fails_closed_to_static_source_material() -> void:

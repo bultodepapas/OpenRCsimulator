@@ -1,12 +1,12 @@
 {
   "adapter": "NVIDIA GeForce RTX 3090",
-  "field_build_ms": 2631.119,
+  "field_build_ms": 2289.027,
   "scenery": true,
   "stats": {
     "botanical_batches": 11,
     "botanical_plants": 221,
     "botanical_triangles": 83650,
-    "build_ms": 1539.65,
+    "build_ms": 1157.479,
     "cells": 55,
     "fleet": 4,
     "flowers": 0,
@@ -20,15 +20,15 @@
     "skipped": 0,
     "theme": "temperate",
     "timing_ms": {
-      "botanicals": 64.985,
-      "fence": 31.429,
-      "fleet": 15.475,
-      "hedge": 19.152,
-      "instances": 241.731,
-      "meshes": 32.297,
-      "patch": 66.064,
-      "track": 0.821,
-      "woodland_edges": 82.066
+      "botanicals": 88.278,
+      "fence": 34.886,
+      "fleet": 14.821,
+      "hedge": 17.244,
+      "instances": 223.792,
+      "meshes": 38.135,
+      "patch": 69.91,
+      "track": 1.029,
+      "woodland_edges": 98.164
     },
     "vegetation_instances": 30,
     "vegetation_triangles": 93220,
@@ -75,8 +75,8 @@
     }
   },
   "warm_frame_pacing_ms": {
-    "median": 15.984,
-    "p95": 17.469,
+    "median": 9.072,
+    "p95": 19.421,
     "samples": 180,
     "view": "maple_side",
     "vsync": "disabled"

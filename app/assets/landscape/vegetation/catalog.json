@@ -119,7 +119,7 @@
       "license_evidence": "assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt",
       "license_sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
       "conversion_proof": "assets/landscape/vegetation/derived/lolipop_maple_2026/conversion_manifest.json",
-      "conversion_proof_sha256": "0b2f792b7856e1670a91e86607c6257cb957cf69d00d5eb487e8b5e810de434a",
+      "conversion_proof_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
       "source": {
         "archive": {
           "bytes": 150673952,
@@ -2028,7 +2028,7 @@
         "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
       },
       "source_format": "glTF 2.0 converted from supplier FBX",
-      "source_conversion_proof_sha256": "0b2f792b7856e1670a91e86607c6257cb957cf69d00d5eb487e8b5e810de434a",
+      "source_conversion_proof_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
       "source_triangles": 5541,
       "source_surfaces": 2,
       "source_materials": 2,

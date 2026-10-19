@@ -2274,7 +2274,7 @@
   },
   "source_sha256_normalized_text": {
     "app/assets/landscape/trees/catalog.json": "afab65435415f13816afe4c55856dd07cb74e00ac0d811ab174f7ff0d2b3a661",
-    "app/assets/landscape/vegetation/catalog.json": "535f32bf6be9eaac38233afc234cd6b9242aa928d5266867e7799755c28d0860",
+    "app/assets/landscape/vegetation/catalog.json": "0e190411de1b744a24f227233f1ced2f5c30b00bf61a9229007dc946a470cb2a",
     "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "28e9a9a32da8dce203a9c3fb3f36648ad2b780e1a6189e375d0eb025b4ca18a2",
     "app/assets/landscape/vegetation/impostors/fern_1_4view.json": "55a875ac3c278dcf08f4c2d6f5df4f3ba1b399f0265f9f62d5f04cfd8ed729b5",
     "app/assets/landscape/vegetation/impostors/grass_common_short_4view.json": "a217d565f3f44f48eb06a67e5ed28f2ef3ad9cc99b64e8e0b6d64214d816e5a5",
@@ -2290,7 +2290,7 @@
     "app/scenery/imported_vegetation.gd": "e40cfe03b158560423d389681514f673abe8a5b525795e632c1f23eb7f94526e",
     "app/scenery/models.gd": "fb93bbb19b8155f3b9aa71be4cf17b1532b9b130d4b02c8cbfe8edcb2be619c9",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
-    "app/scenery/prefabs.gd": "0ef3fee50d39afa0e4c2d125fc4c0f52ef1df83e7910897bb31a4ea60d32539b",
+    "app/scenery/prefabs.gd": "d4de56f83eb38bcbf368d819cc9fadbe301a1e644557f23886b26b7511b93d32",
     "app/scenery/vegetation_placement.gd": "a88d485932484facb987c988fbeb1ea522222da1e745c222a56be58a16a33bae",
     "tools/trees/place.py": "c580ad4196e6b589bf0580073ecf9a855e74f658c0de70b2b9a3fbbb30743c8c"
   },

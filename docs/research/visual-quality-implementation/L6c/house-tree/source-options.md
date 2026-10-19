@@ -1,12 +1,12 @@
 # Broadleaf source for the white club building
 
-Checked 2026-10-18. Target: one large, lush, realistic broadleaf beside/behind the white club building; approximately 12–18 m high and 10–18 m wide. Exclude pines. No source is accepted and no runtime change has been made. The original LOLIPOP archive is still pending for local inspection.
+Checked 2026-10-18. Target: one large, realistic broadleaf beside/behind the white club building; approximately 12–18 m high and 10–18 m wide. Exclude pines. The user supplied the original LOLIPOP ZIP; `Acer_large_3_LOD1` is now integrated. See [measured intake and native evidence](README.md).
 
-## Best remaining candidate: LOLIPOP Maple Trees Pack
+## Selected source: LOLIPOP Maple Trees Pack
 
 [Original Sketchfab listing](https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0) · [Fab listing/specification](https://www.fab.com/listings/20abd5c9-8e44-430e-91da-a2872bd5d5ad)
 
-The author lists 12 maple variants, large specimens at 17–20 m, supplied LODs and 2K bark/branch PBR maps. The third large variant is listed at 12,987 / 5,541 / 2,825 triangles for LOD0/1/2, plus a 36-triangle billboard; the pack is marked CC BY 4.0. These are published figures, not measurements of the pending archive, and the listing describes the style as low-poly. Inspect the actual crown shape, texture quality, LODs and license files before selection. The original Sketchfab download route is account-gated; no public author-hosted mirror was found. Sketchfab's [Download API guidance](https://sketchfab.com/developers/download-api/guidelines) confirms authenticated access for API downloads.
+The author lists 12 maple variants, large specimens at 17–20 m, supplied LODs and 2K bark/branch PBR maps. The third large variant is listed at 12,987 / 5,541 / 2,825 triangles for LOD0/1/2, plus a 36-triangle billboard; the pack is marked CC BY 4.0. Local inspection confirms 5,541 triangles in the selected LOD1, 18.327 m source height and two material surfaces. Its irregular crown, textured bark and individual leaf clusters fit the club better than the previous stylized oak. The original Sketchfab download route is account-gated; the user supplied the original archive. Sketchfab's [Download API guidance](https://sketchfab.com/developers/download-api/guidelines) describes authenticated access for API downloads.
 
 ## Compared sources
 
@@ -22,6 +22,6 @@ The author lists 12 maple variants, large specimens at 17–20 m, supplied LODs 
 
 Previously considered alternatives are also unsuitable: the existing Lauris71 oak is only 5,303 triangles and does not meet the desired realism; the LOLIPOP-era beech sample, where inspected, has an open crown; and low-poly generator packs do not meet the request to use an existing realistic downloadable asset.
 
-## Next gate
+## Acceptance
 
-Inspect the user-provided LOLIPOP archive when it arrives. Record its hash, exact per-LOD triangle counts, source dimensions, materials/maps and applicable attribution, then check the selected crown in the club-building views. Do not implement a replacement or change the scenery budget until that candidate passes those checks. If it fails, continue looking for an existing downloadable asset rather than generating a new tree.
+The source hash, conversion, material mapping, native club views and remaining performance limitation are recorded in the [intake evidence](README.md). No tree was modeled or decimated, and the 650,000-triangle scenery cap is unchanged.

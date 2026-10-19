@@ -8,6 +8,8 @@ The implemented first delivery integrates four more retained CC0 forms (seven to
 
 The [global visual/performance plan](global-performance-visual-quality.md) owns shared budgets and sequencing. This plan refines existing L6c/L15b and optional L8, and registers follow-ups in the [landscape registry](../LANDSCAPE-PLAN.md). The [grass plan](grass-quality.md) owns turf and grass; coordinate shared vegetation materials, habitat masks and ground transitions there.
 
+The subsequent [club maple intake](../research/visual-quality-implementation/L6c/house-tree/README.md) integrates the user-supplied LOLIPOP archive at the white club: 14 m height, supplied LOD1, PBR maps and compressed mipmapped textures. It replaces the oak's mature alias slot while retaining the oak in the library. Native material and geometry checks pass; the pre-existing cold scene-build time gate still fails. The earlier flight evidence above predates this replacement.
+
 ## 1. Starting point and file ownership
 
 The table below records the pre-implementation baseline. Current implemented behavior and measurements are recorded in the linked evidence and pipeline guides.

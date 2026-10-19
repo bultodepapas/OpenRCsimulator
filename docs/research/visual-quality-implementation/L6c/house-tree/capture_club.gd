@@ -1,8 +1,8 @@
 ## L6c club maple evidence, adapted from scenery/capture_views.gd: renders the named views of postcards.gd with the production field, sky, haze and sun, and writes
 ## <out>/<view>.png plus <out>/views.json (draw calls, primitives, objects, build stats). Needs a real renderer:
-##   xvfb-run -a -s '-screen 0 1920x1080x24' godot --path app --rendering-driver opengl3 --resolution 1280x720 \
-##     --script res://scenery/capture_views.gd -- --out=/tmp/scn [--scenery=on] [--views=a,b] [--t=1.5]
-## With --scenery=off the same views give the empty-field baseline the budget check subtracts.
+## Run with Godot --path app --rendering-driver opengl3 --resolution 1280x720
+## and --script <absolute-path-to-this-file> -- --out=<directory> [--views=a,b] [--t=1.5].
+## See README.md for the native Windows command and measurement limits.
 extends SceneTree
 
 const Atmosphere = preload("res://render/atmosphere.gd")
