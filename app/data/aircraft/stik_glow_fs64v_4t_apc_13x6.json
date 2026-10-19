@@ -1050,10 +1050,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "CLq": {
-        "value": 2.003,
+        "value": 2.357,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.3574. Model-derived, not measured or physically validated."
       },
       "CLde": {
         "value": 0.0983,
@@ -1176,10 +1176,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cmq": {
-        "value": -8.009,
+        "value": -8.082,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.9288 and CLq=2.3574; ARP Cmq=-8.082 includes the CLq lift arm. Model-derived, not measured or physically validated."
       },
       "Cmde": {
         "value": -0.8488,
@@ -1206,10 +1206,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnr": {
-        "value": -0.1335,
+        "value": -0.136,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.13358; ARP Cnr=-0.136 includes the CYr side-force arm. Model-derived, not measured or physically validated."
       },
       "Cnda_right": {
         "value": 0.0287,
@@ -1542,13 +1542,13 @@
       },
       "thrust_line_offset": {
         "value": [
-          -0.414176,
+          -0.398219986205,
           0.0,
-          0.0
+          -0.002528114454
         ],
         "unit": "m",
         "kind": "derived",
-        "source": "research/propwash/e0b2/derive_geometry.py: assets/aircraft/ugly-stik-60/geometry.json (estimated visual installation/outline); derived, not a measured airframe; hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE"
+        "source": "FUEL-05a: base Stik hub (research/propwash/e0b2/derive_geometry.py) minus this build's authored inventory CG, the fixed body datum, in [aft,right,up]"
       },
       "thrust_angles": {
         "value": [

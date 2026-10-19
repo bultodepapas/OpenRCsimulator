@@ -57,7 +57,12 @@ class GeometryTests(unittest.TestCase):
                     else:
                         self.assertEqual(p[1], 0)
         self.assertEqual(report['hub_le']['value'], [-0.293276, 0.0, 0.0])
-        self.assertEqual(offset['value'], [-0.414176, 0.0, 0.0])
+        # FUEL-05f: about the authored inventory CG (the body datum), computed here independently.
+        mass = sum(i['mass']['value'] for i in aircraft['inventory'])
+        cg = [sum(i['mass']['value'] * i['position']['value'][k] for i in aircraft['inventory']) / mass for k in range(3)]
+        for k in range(3):
+            self.assertAlmostEqual(offset['value'][k], report['hub_le']['value'][k] - cg[k], places=11)
+        self.assertEqual(offset['value'], [-0.402668437352, 0.0, -0.000208375965])
         self.assertEqual(report['existing_aero_surfaces']['horizontal']['area'], aircraft['aero']['surfaces']['horizontal']['area'])
 
     def test_changed_geometry_and_cg_flow_into_handoff(self):
@@ -67,7 +72,8 @@ class GeometryTests(unittest.TestCase):
         changed = copy.deepcopy(geometry)
         changed['equipment']['prop_z'] += 0.01
         changed['equipment']['shaft_y'] += 0.02
-        aircraft['balance']['plan_cg']['value'][0] += 0.03
+        for item in aircraft['inventory']:
+            item['position']['value'][0] += 0.03
         offset, report = D.derive(changed, aircraft)
         self.assertAlmostEqual(offset['value'][0] - original_offset['value'][0], -0.02)
         self.assertEqual(report['hub_le']['value'][2], 0.0)
@@ -78,6 +84,16 @@ class GeometryTests(unittest.TestCase):
         _, notched = D.derive(changed, aircraft)
         lost = report['pieces'][0]['area']['value'] - notched['pieces'][0]['area']['value']
         self.assertAlmostEqual(lost, 0.005 * changed['tail']['elevator_cutout_half_width'], places=12)
+
+
+    def test_plan_cg_is_not_the_datum(self):
+        # With balance.fuel_state = empty_tanks the plan CG is the dry CG; only the inventory moves the hub arm.
+        geometry = json.loads(D.GEOMETRY.read_text())
+        aircraft = json.loads(D.AIRCRAFT.read_text())
+        original_offset, _ = D.derive(geometry, aircraft)
+        aircraft['balance']['plan_cg']['value'][0] += 0.03
+        offset, _ = D.derive(geometry, aircraft)
+        self.assertEqual(offset, original_offset)
 
 
 if __name__ == '__main__':

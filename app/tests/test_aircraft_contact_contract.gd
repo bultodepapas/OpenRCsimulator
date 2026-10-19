@@ -213,6 +213,18 @@ func _erase_raw_v2_identity(raw: Dictionary) -> void:
 	raw.erase("physical_identity_version")
 	raw.erase("physical_identity")
 	raw.erase("crash_hull_ids")
+	# FUEL-03: tanks bind inventory ids. Without ids the build balances as authored (the datum), as v1 does.
+	if raw.erase("fuel_system"):
+		var balance: Dictionary = raw.balance
+		balance.erase("fuel_state")
+		balance.erase("cg_range")
+		var mass := 0.0
+		var first := [0.0, 0.0, 0.0]
+		for item: Dictionary in raw.inventory:
+			mass += float(item.mass.value)
+			for k in 3:
+				first[k] += float(item.mass.value) * float(item.position.value[k])
+		balance.plan_cg.value = [first[0] / mass, first[1] / mass, first[2] / mass]
 	var inventory: Array = raw.get("inventory", [])
 	for item_value in inventory:
 		if typeof(item_value) == TYPE_DICTIONARY:

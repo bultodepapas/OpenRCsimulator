@@ -2033,7 +2033,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "jensen-das-ugly-stik-60",
-      "source_sha256": "c582c23ab2d6d986be045a7c4f9e8eb31b8093bc90bc7d0aae5c8b58551b963d",
+      "source_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
@@ -2398,7 +2398,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-61fx-2t",
-      "source_sha256": "6ff6e578ec663b6a00a75c2dbb12aa587539a15e1acf785633e1753a907973d7",
+      "source_sha256": "c29f86fa72b89cd7f46206da875f28632229e5892c2db60a692959f472a73f6a",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
@@ -2763,7 +2763,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-55ax-2t",
-      "source_sha256": "6c1e6be52e8e02d8f63be6caec5d2120cd92e47d2f1d7464cf2bed232c746416",
+      "source_sha256": "d89b83c76da8356b39893ca3073656a3d3c8af1d761bce587e54ce707ec3fbc3",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3128,7 +3128,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-fs64v-4t",
-      "source_sha256": "875e86e88e1a7e23f36ddeb428cdb36d41858e7415b30447331e6112e954addf",
+      "source_sha256": "2ffecf15df53f55876756fb47213714a536dfd28a0b432863bdb34fc4eeee796",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",

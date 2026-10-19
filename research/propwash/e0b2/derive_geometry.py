@@ -58,12 +58,24 @@ def visual_to_le(point, geometry):
             round(point[1] - geometry['equipment']['shaft_y'], 12)]
 
 
+def datum(aircraft):
+    # Runtime body datum: the authored inventory CG, summed left to right as aircraft_data.gd does. With
+    # balance.fuel_state = empty_tanks the plan CG is the dry CG and no longer the datum (FUEL-05f).
+    mass, first = 0.0, [0.0, 0.0, 0.0]
+    for item in aircraft['inventory']:
+        m = item['mass']['value']
+        mass += m
+        for k in range(3):
+            first[k] += m * item['position']['value'][k]
+    return [first[k] / mass for k in range(3)]
+
+
 def derive(geometry, aircraft):
     tail, equipment = geometry['tail'], geometry['equipment']
     hub = visual_to_le([0.0, equipment['shaft_y'], equipment['prop_z']], geometry)
-    cg = aircraft['balance']['plan_cg']['value']
+    cg = datum(aircraft)
     offset = quantity([round(hub[k] - cg[k], 12) for k in range(3)], 'm',
-                      'hub minus plan CG in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE')
+                      'hub minus the authored inventory CG (the fixed body datum, FUEL-05f) in [aft,right,up]; visual datum subtracts wing.leading_z and equipment.shaft_y; shaft height remains zero in LE')
     pieces = []
 
     def piece(name, surface, contours):
@@ -131,7 +143,9 @@ def main():
         print('E0b2: hub and three neutral tail footprints match source/runtime geometry')
     else:
         aircraft['propulsion']['propeller']['thrust_line_offset'] = offset
-        AIRCRAFT.write_text(json.dumps(aircraft, indent=2, ensure_ascii=False) + '\n')
+        # Keep the file's checked-in line endings (the Stik is eol=crlf in .gitattributes).
+        newline = '\r\n' if b'\r\n' in AIRCRAFT.read_bytes() else '\n'
+        AIRCRAFT.write_bytes((json.dumps(aircraft, indent=2, ensure_ascii=False) + '\n').replace('\n', newline).encode('utf-8'))
         REPORT.parent.mkdir(parents=True, exist_ok=True)
         REPORT.write_text(output)
         print('E0b2: updated Stik thrust_line_offset and geometry handoff only')
