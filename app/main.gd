@@ -828,7 +828,12 @@ func _process(delta: float) -> void:
 	if is_instance_valid(_lake_ambience):
 		_lake_ambience.stream_paused = not session.holds.is_empty()
 	var surfaces: Dictionary = session.surfaces()
-	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
+	# Keep an initial diagnostic snapshot for evidence readers; hidden panels need no
+	# per-frame formatting, air-data queries or label layout. Revealing them refreshes
+	# on the next frame, at the same cadence as visible diagnostics.
+	var diagnostics_visible: bool = _failure_overlays_visible and (_overlays == null or (_overlays.visible and _overlays.frames.diagnostics.visible))
+	if diagnostics_visible or _panel.text.is_empty():
+		InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_camera_dt = dt
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_storm(visual_clock_s, frozen)
@@ -837,9 +842,10 @@ func _process(delta: float) -> void:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
 			_crash_director.aim(_camera, _rig.view != "pilot") # chase and orbit keep the director's wreck view
-		if _crash_director.active:
+		if _crash_director.active and diagnostics_visible:
 			_panel.text = _crash_director.description()
-	_update_hud()
+	var performance_visible: bool = _overlays == null or (_overlays.visible and _overlays.frames.performance.visible)
+	_update_hud(diagnostics_visible or _hud.text.is_empty(), performance_visible)
 	if _overlays != null:
 		if _overlays.tick(dt):
 			_overlays.refresh_numbers(_overlay_snapshot())
@@ -936,10 +942,14 @@ func _end_smoke_assignment(cancelled: bool) -> void:
 		session.resume()
 
 
-func _update_hud() -> void:
+func _update_hud(telemetry_visible: bool = true, performance_visible: bool = true) -> void:
 	_update_failure_notice()
 	if _crash_director != null and _crash_director.active:
 		_hud.text = ""
+		return
+	if _overlays != null and performance_visible:
+		_overlays.performance_label.text = Hud.perf_line(_frame_times, session.sim.step_usec).trim_suffix("  [F3]")
+	if not telemetry_visible:
 		return
 	var lines := PackedStringArray()
 	if _scripted or not session.aircraft.ok:
@@ -971,9 +981,7 @@ func _update_hud() -> void:
 		if not session.atmosphere_is_reference():
 			var field_air: Dictionary = session.atmosphere_configuration()
 			lines.append(tr("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m") % [air.V * M.sqrt_(field_air.sigma), field_air.rho_kgm3, field_air.density_altitude_m])
-	if _overlays != null:
-		_overlays.performance_label.text = Hud.perf_line(_frame_times, session.sim.step_usec).trim_suffix("  [F3]")
-	elif _show_perf:
+	if _overlays == null and _show_perf:
 		lines.append(Hud.perf_line(_frame_times, session.sim.step_usec))
 	if not _experimental_aircraft_path.is_empty():
 		lines.append("EXPERIMENTAL: wing polar; aircraft-specific flight validation pending.")

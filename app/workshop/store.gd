@@ -6,9 +6,11 @@ const WorkshopDescriptor = preload("res://workshop/descriptor.gd")
 const WorkshopDependencies = preload("res://workshop/dependencies.gd")
 const WorkshopCompiler = preload("res://workshop/compiler.gd")
 const WorkshopParameters = preload("res://workshop/parameters.gd")
+const PresentationProfile = preload("res://workshop/presentation.gd")
 const DEFAULT_ROOT: String = "user://aircraft_variants"
 const VARIANT_FORMAT: String = "openrc-aircraft-variant"
-const VARIANT_VERSION: int = 1
+const LEGACY_VARIANT_VERSION: int = 1
+const VARIANT_VERSION: int = 2
 const INDEX_FORMAT: String = "openrc-aircraft-variant-index"
 const INDEX_VERSION: int = 1
 const MAX_BASE_BYTES: int = 16 * 1024 * 1024
@@ -41,10 +43,15 @@ const VARIANT_KEYS: PackedStringArray = [
 	"updated_at_unix",
 	"workshop_descriptor",
 	"dependencies",
+	"presentation_profile",
+]
+const LEGACY_VARIANT_REQUIRED_KEYS: PackedStringArray = [
+	"format",
+	"version", "id", "revision", "name", "compiler_version", "base_id", "recipe",
+	"base_sha256", "recipe_sha256", "base_bytes_base64", "created_at_unix", "updated_at_unix",
 ]
 const VARIANT_REQUIRED_KEYS: PackedStringArray = [
-	"format",
-	"version",
+	"format", "version",
 	"id",
 	"revision",
 	"name",
@@ -56,6 +63,7 @@ const VARIANT_REQUIRED_KEYS: PackedStringArray = [
 	"base_bytes_base64",
 	"created_at_unix",
 	"updated_at_unix",
+	"presentation_profile",
 ]
 const INDEX_KEYS: PackedStringArray = ["format", "version", "id", "revision"]
 
@@ -104,7 +112,8 @@ static func save_variant(
 		root: String = DEFAULT_ROOT,
 		workshop_descriptor: Dictionary = {},
 		dependencies: Dictionary = {},
-		expected_revision: int = -1
+		expected_revision: int = -1,
+		presentation_profile: Dictionary = {}
 ) -> Dictionary:
 	var errors := PackedStringArray()
 	if expected_revision < -1:
@@ -230,6 +239,44 @@ static func save_variant(
 			errors.append_array(dependencies_result["errors"])
 			return _result(false, errors)
 		stored_dependencies = dependencies_result["manifest"]
+	var profile_for_save: Dictionary = {}
+	if is_existing_variant and presentation_profile.is_empty():
+		profile_for_save = (existing_variant.get("presentation_profile", PresentationProfile.defaults()) as Dictionary).duplicate(true)
+	else:
+		var companion_result: Dictionary = _resolve_customization_bindings(base_id, stored_descriptor)
+		if bool(companion_result.get("ok", false)):
+			var profile_result: Dictionary = PresentationProfile.validate(presentation_profile, companion_result["bindings"])
+			if not bool(profile_result.get("ok", false)):
+				errors.append_array(profile_result.get("errors", PackedStringArray()))
+				return _result(false, errors)
+			profile_for_save = profile_result["profile"]
+			if is_existing_variant:
+				var existing_profile: Dictionary = existing_variant.get("presentation_profile", PresentationProfile.defaults())
+				var existing_checked: Dictionary = PresentationProfile.validate_stored(existing_profile)
+				if not bool(existing_checked.get("ok", false)):
+					errors.append_array(existing_checked.get("errors", PackedStringArray()))
+					return _result(false, errors)
+				if bool(existing_checked.get("newer_version", false)):
+					errors.append("This variant uses a newer presentation profile version; this app cannot edit or replace it.")
+					return _result(false, errors)
+				var old_profile: Dictionary = existing_checked.get("profile", PresentationProfile.defaults())
+				var old_pins: Dictionary = old_profile.get("binding", {})
+				var new_pins: Dictionary = profile_for_save.get("binding", {})
+				if (not _presentation_is_empty(old_profile) or not _presentation_pins_are_empty(old_pins)) \
+						and old_pins != new_pins:
+					errors.append("A customized presentation cannot be rebound to a different model or slot contract; save a copy instead.")
+					return _result(false, errors)
+		else:
+			if not bool(companion_result.get("missing", false)):
+				errors.append_array(companion_result.get("errors", PackedStringArray()))
+				return _result(false, errors)
+			var profile_result: Dictionary = PresentationProfile.validate(presentation_profile)
+			if not bool(profile_result.get("ok", false)) or not bool(profile_result.get("available", false)):
+				errors.append_array(profile_result.get("errors", PackedStringArray()))
+				if errors.is_empty():
+					errors.append("The registered customization companion is unavailable; only the legacy empty appearance can be saved.")
+				return _result(false, errors)
+			profile_for_save = profile_result["profile"]
 	var write_dir: String = variant_dir
 	if not is_existing_variant:
 		var staging_root: String = root_path.path_join("_staging")
@@ -278,6 +325,7 @@ static func save_variant(
 		"base_bytes_base64": Marshalls.raw_to_base64(base_bytes),
 		"created_at_unix": created_at,
 		"updated_at_unix": now,
+		"presentation_profile": profile_for_save.duplicate(true),
 	}
 	if not stored_descriptor.is_empty():
 		record["workshop_descriptor"] = stored_descriptor.duplicate(true)
@@ -581,6 +629,17 @@ static func _load_from_manifest_source(
 		"updated_at_unix": int(record["updated_at_unix"]),
 		"recovered_from_manifest_backup": recovered,
 	}
+	var stored_profile: Dictionary = PresentationProfile.defaults()
+	var stored_profile_available: bool = true
+	if record.has("presentation_profile"):
+		var profile_result: Dictionary = PresentationProfile.validate_stored(record["presentation_profile"])
+		if not bool(profile_result.get("ok", false)):
+			errors.append_array(profile_result.get("errors", PackedStringArray()))
+			return _result(false, errors)
+		stored_profile = profile_result.get("profile", {}).duplicate(true)
+		stored_profile_available = bool(profile_result.get("available", false))
+	variant["presentation_profile"] = stored_profile
+	variant["presentation_profile_available"] = stored_profile_available
 	if record.has("workshop_descriptor"):
 		variant["workshop_descriptor"] = (record["workshop_descriptor"] as Dictionary).duplicate(true)
 	if record.has("dependencies"):
@@ -614,18 +673,27 @@ static func _validate_variant_record(value: Variant, expected_id: String) -> Dic
 		errors.append("Variant revision must be a JSON object.")
 		return _result(false, errors)
 	var record: Dictionary = value
+	var version_value: Variant = record.get("version", null)
+	var version: int = int(version_value) if _integer_number(version_value) else -1
+	var is_legacy: bool = version == LEGACY_VARIANT_VERSION
+	var required_keys: PackedStringArray = LEGACY_VARIANT_REQUIRED_KEYS if is_legacy else VARIANT_REQUIRED_KEYS
 	var has_descriptor: bool = record.has("workshop_descriptor")
 	var has_dependencies: bool = record.has("dependencies")
-	var allowed_record_size: int = VARIANT_REQUIRED_KEYS.size() + (1 if has_descriptor else 0) + (1 if has_dependencies else 0)
-	if record.size() != allowed_record_size or not record.has_all(VARIANT_REQUIRED_KEYS):
+	var allowed_record_size: int = required_keys.size() + (1 if has_descriptor else 0) + (1 if has_dependencies else 0)
+	if record.size() != allowed_record_size or not record.has_all(required_keys):
 		errors.append("Variant revision has missing or unknown fields.")
 		return _result(false, errors)
 	for key: Variant in record.keys():
 		if typeof(key) != TYPE_STRING or not VARIANT_KEYS.has(str(key)):
 			errors.append("Variant revision has missing or unknown fields.")
 			return _result(false, errors)
-	if record["format"] != VARIANT_FORMAT or not _integer_number(record["version"]) or int(record["version"]) != VARIANT_VERSION:
+	if record["format"] != VARIANT_FORMAT or not _integer_number(record["version"]) \
+			or version not in [LEGACY_VARIANT_VERSION, VARIANT_VERSION]:
 		errors.append("Variant format or version is unsupported.")
+	if not is_legacy and record.has("presentation_profile"):
+		var profile_result: Dictionary = PresentationProfile.validate_stored(record["presentation_profile"])
+		if not bool(profile_result.get("ok", false)):
+			errors.append_array(profile_result.get("errors", PackedStringArray()))
 	if record["id"] != expected_id or not _valid_uuid(str(record["id"])):
 		errors.append("Variant revision ID does not match its directory.")
 	if not _integer_number(record["revision"]) or int(record["revision"]) < 1:
@@ -747,6 +815,43 @@ static func _resolve_workshop_descriptor(
 	if not bool(loaded["ok"]):
 		return loaded
 	return {"ok": true, "errors": PackedStringArray(), "descriptor": loaded["descriptor"]}
+
+
+static func _resolve_customization_bindings(base_id: String, descriptor: Dictionary) -> Dictionary:
+	if not ResourceLoader.exists("res://render/aircraft_customization.gd"):
+		return {"ok": false, "missing": true, "errors": PackedStringArray(["Customization companion is unavailable."])}
+	var customization_script: Script = load("res://render/aircraft_customization.gd")
+	if customization_script == null:
+		return {"ok": false, "missing": true, "errors": PackedStringArray(["Customization companion is unavailable."])}
+	var described: Dictionary = customization_script.describe(base_id)
+	if not bool(described.get("ok", false)) or typeof(described.get("bindings", null)) != TYPE_DICTIONARY:
+		return {"ok": false, "missing": true,
+			"errors": described.get("errors", PackedStringArray(["Customization companion could not describe this aircraft."]))}
+	var bindings: Dictionary = described["bindings"]
+	if not descriptor.is_empty() and typeof(descriptor.get("presentation", null)) == TYPE_DICTIONARY:
+		var physical_presentation: Dictionary = descriptor["presentation"]
+		if physical_presentation.has("visual_family") \
+				and physical_presentation["visual_family"] != bindings.get("visual_family", ""):
+			return {"ok": false, "missing": false,
+				"errors": PackedStringArray(["Customization bindings do not match the pinned Workshop visual family."])}
+		if physical_presentation.has("model_manifest_sha256") \
+				and physical_presentation["model_manifest_sha256"] != bindings.get("model_manifest_sha256", ""):
+			return {"ok": false, "missing": false,
+				"errors": PackedStringArray(["Customization bindings do not match the pinned Workshop model manifest."])}
+	return {"ok": true, "errors": PackedStringArray(), "bindings": bindings}
+
+
+static func _presentation_is_empty(profile: Dictionary) -> bool:
+	return profile.get("paint", []) is Array and (profile.get("paint", []) as Array).is_empty() \
+		and profile.get("markings", []) is Array and (profile.get("markings", []) as Array).is_empty() \
+		and profile.get("smoke", []) is Array and (profile.get("smoke", []) as Array).is_empty() \
+		and profile.get("visual_seed", 0) == 0
+
+
+static func _presentation_pins_are_empty(pins: Dictionary) -> bool:
+	return str(pins.get("visual_family", "")).is_empty() \
+		and str(pins.get("model_manifest_sha256", "")).is_empty() \
+		and str(pins.get("slots_sha256", "")).is_empty()
 
 
 static func _resolve_workshop_dependencies(base: Dictionary, provided: Dictionary) -> Dictionary:

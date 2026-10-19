@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-19",
+  "baseline_commit": "d42ce9048",
+  "baseline_main_git_blob": "146c5b8ffa50bde42c032612fc8a232f2d51c24d",
+  "baseline_main_sha256": "85c438a13c326f3faf51ab6ab9c4d36477ced689bbed00807233c98bda3d3eb4",
+  "candidate_files": {
+    "app/main.gd": "ddcbefe49085ff22b8009ca52b7cf06581d0bca165174b08d861ec47d9fe39b0",
+    "app/render/overlays/overlay_manager.gd": "29348bb7d39a9c8ac049d81935493f189c72b1d92533fe4f35e30624851b79f3",
+    "app/audio/soundscape.gd": "55caf68d6188102775b52846d36ab9af972bf9f7396ae72689d27a15095e9061",
+    "app/tests/test_overlay_manager.gd": "a06f220d6bee97a4ba19ebdcf36fb91c7370bd85fc26bd8a17a439ca2e744d16",
+    "app/tests/test_soundscape.gd": "74a19c087d4fddbbf39a3779c97739a1e837cf0a00a9a3db3604c96c21f1280e"
+  },
+  "executed_probe_sha256": "fd286b2fd0f8401ffe11373a00b5086555bf58034bc651aef51d0060fa1e9d1f",
+  "process_order": [
+    "before-1",
+    "after-1",
+    "after-2",
+    "before-2",
+    "before-3",
+    "after-3"
+  ],
+  "samples": [
+    {
+      "pair": 1,
+      "before_p50_usec": 1072.0,
+      "after_p50_usec": 808.0,
+      "before_p95_usec": 1470.0,
+      "after_p95_usec": 1178.0,
+      "numeric_sha256": "85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0"
+    },
+    {
+      "pair": 2,
+      "before_p50_usec": 549.0,
+      "after_p50_usec": 475.0,
+      "before_p95_usec": 841.0,
+      "after_p95_usec": 780.0,
+      "numeric_sha256": "85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0"
+    },
+    {
+      "pair": 3,
+      "before_p50_usec": 558.0,
+      "after_p50_usec": 448.0,
+      "before_p95_usec": 863.0,
+      "after_p95_usec": 670.0,
+      "numeric_sha256": "85b32f24fac7c878d4eff7c60e863650bbf84a2b5614c7606bde87035e0750f0"
+    }
+  ],
+  "median_of_p50_before_usec": 558.0,
+  "median_of_p50_after_usec": 475.0,
+  "scope": "Manual production Main._process callback, real 240 Hz input/session/kernel outside each timed callback; 60 warmup and 1200 measured callbacks at declared 120 Hz. Headless CPU-only; no render/GPU or FPS acceptance. Soundscape disabled in this probe.",
+  "host_limits": "Windows Ryzen 9 5900X / RTX 3090 development host shared with other work; first pair slower. Source tree not frozen; unrelated Workshop edits appeared during verification. No statistical FPS or package claim.",
+  "audio_derived_loop_bytes": 1014428,
+  "audio_unique_loops_before": 4,
+  "audio_unique_loops_after": 1,
+  "audio_pcm_bytes_avoided": 3043284,
+  "interrupted_native_comparison": {
+    "complete": false,
+    "reason": "Separate native fixture did not publish a frame report; Computer Use then stopped via physical Escape. Owned fixture processes terminated; no native before/after comparison claimed."
+  },
+  "unrelated_paths_preserved": [
+    " M app/audio/soundscape.gd",
+    " M app/main.gd",
+    " M app/render/overlays/overlay_manager.gd",
+    " M app/tests/test_overlay_manager.gd",
+    " M app/tests/test_soundscape.gd",
+    " M app/workshop/store.gd",
+    " M app/workshop/trial.gd",
+    "?? app/tests/test_workshop_json.gd",
+    "?? app/tests/test_workshop_presentation.gd",
+    "?? app/ui/workshop_customization.gd",
+    "?? app/workshop/presentation.gd",
+    "?? app/workshop/strict_json.gd",
+    "?? docs/research/visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/presentation-follow-up/"
+  ]
+}

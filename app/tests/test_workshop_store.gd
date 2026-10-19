@@ -3,6 +3,7 @@ extends SceneTree
 const Store = preload("res://workshop/store.gd")
 const Dependencies = preload("res://workshop/dependencies.gd")
 const WorkshopCompiler = preload("res://workshop/compiler.gd")
+const PresentationProfile = preload("res://workshop/presentation.gd")
 const BASE_PATH: String = "res://data/aircraft/jensen_ugly_stik_60.json"
 
 var _checks: int = 0
@@ -41,6 +42,23 @@ func _initialize() -> void:
 		return
 	var first: Dictionary = saved["variant"]
 	var id: String = str(first["id"])
+	var revision_one_path: String = ProjectSettings.globalize_path(_root + "/" + id + "/revisions/00000001.json")
+	var revision_one_record: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(revision_one_path))
+	var revision_profile: Dictionary = PresentationProfile.validate(revision_one_record.get("presentation_profile", {}))
+	_check("new variant uses version 2 with an explicit presentation profile", int(revision_one_record.get("version", 0)) == 2
+		and typeof(revision_one_record.get("presentation_profile", null)) == TYPE_DICTIONARY
+		and revision_profile.get("ok", false)
+		and first.get("presentation_profile", {}) == revision_profile.get("profile", {}))
+	var legacy_record: Dictionary = revision_one_record.duplicate(true)
+	legacy_record["version"] = 1
+	legacy_record.erase("presentation_profile")
+	_check("legacy v1 record fixture writes", _write_file(revision_one_path,
+		(JSON.stringify(legacy_record, "\t", true, true) + "\n").to_utf8_buffer()))
+	var legacy_profile_load: Dictionary = Store.load_variant(id, _root)
+	_check("legacy v1 variant remains readable as explicit stock appearance",
+		legacy_profile_load.get("ok", false)
+		and legacy_profile_load.variant.base_bytes == base_bytes
+		and legacy_profile_load.variant.presentation_profile == PresentationProfile.defaults())
 	var legacy_recipe: Dictionary = _recipe()
 	legacy_recipe.erase("tank_capacity_multiplier")
 	var legacy_saved: Dictionary = Store.save_variant("Optional tank capacity compatibility", "jensen-das-ugly-stik-60",
@@ -74,6 +92,9 @@ func _initialize() -> void:
 		_check("revision still pins original base bytes", renamed["variant"]["base_bytes"] == base_bytes)
 		_check("later revisions retain the original Workshop descriptor", renamed["variant"].get("workshop_descriptor", {}) == first.get("workshop_descriptor", {}))
 		_check("later revisions retain the original dependency manifest", renamed["variant"].get("dependencies", {}) == first.get("dependencies", {}))
+		_check("updating a v1 record writes v2 and carries its legacy empty appearance forward",
+			int(renamed["variant"].get("revision", 0)) == 2
+			and renamed["variant"].get("presentation_profile", {}) == PresentationProfile.defaults())
 		_check("load returns latest saved revision", int(Store.load_variant(id, _root)["variant"]["revision"]) == 2)
 		var unversioned_save: Dictionary = Store.save_variant("Renamed Stik", "jensen-das-ugly-stik-60", base_bytes, renamed_recipe, id, _root, first["workshop_descriptor"], first["dependencies"])
 		_check("same-ID save requires an expected revision", not bool(unversioned_save["ok"]) and _has_error(unversioned_save["errors"], "Expected revision is required"), str(unversioned_save["errors"]))

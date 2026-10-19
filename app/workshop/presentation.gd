@@ -1,0 +1,876 @@
+extends RefCounted
+## Closed, data-only aircraft appearance profile and canonical presentation identity.
+## Bindings are supplied by the registered customization companion; profiles never
+## carry resource paths, executable scripts, or mount coordinates.
+
+const FORMAT: String = "openrc-aircraft-presentation"
+const VERSION: int = 1
+const IDENTITY_FORMAT: String = "openrc-aircraft-presentation-identity"
+const IDENTITY_VERSION: int = 1
+const BINDINGS_FORMAT: String = "openrc-aircraft-customization-bindings"
+const BINDINGS_VERSION: int = 1
+const SCHEDULE_POLICY: String = "ticks-240-v1"
+const MAX_PROFILE_BYTES: int = 65536
+const MAX_PROFILE_DEPTH: int = 12
+const MAX_PROFILE_NODES: int = 4096
+const MAX_PAINT_SLOTS: int = 32
+const MAX_MARKING_SLOTS: int = 16
+const MAX_SMOKE_SLOTS: int = 4
+const MAX_SHOW_SMOKE_SLOTS: int = 3
+const MAX_SOURCE_SMOKE_SLOTS: int = 1
+const MAX_PALETTE_COLORS: int = 8
+const MAX_TEXT_LENGTH: int = 16
+const MAX_LABEL_LENGTH: int = 32
+const MAX_SAFE_INTEGER: float = 9007199254740991.0
+const PROFILE_KEYS: PackedStringArray = [
+	"format", "version", "binding", "paint", "markings", "smoke", "visual_seed", "schedule_policy",
+]
+const PROFILE_BINDING_KEYS: PackedStringArray = ["visual_family", "model_manifest_sha256", "slots_sha256"]
+const BINDINGS_KEYS: PackedStringArray = [
+	"format", "version", "visual_family", "model_manifest_sha256", "paint_slots", "marking_slots", "smoke_slots", "slots_sha256",
+]
+const PAINT_ENTRY_KEYS: PackedStringArray = ["slot", "color", "pattern", "accent"]
+const MARKING_ENTRY_KEYS: PackedStringArray = ["slot", "text", "color"]
+const SMOKE_ENTRY_KEYS: PackedStringArray = [
+	"slot", "enabled", "color", "amount", "width_m", "lifetime_s", "shape", "mode",
+	"burst_s", "pulse_period_s", "pulse_duty", "palette", "step_s",
+]
+const PAINT_SLOT_KEYS: PackedStringArray = ["id", "label", "targets"]
+const PAINT_SLOT_OPTIONAL_KEYS: PackedStringArray = ["accent_targets"]
+const MARKING_SLOT_KEYS: PackedStringArray = ["id", "label", "targets"]
+const SMOKE_SLOT_KEYS: PackedStringArray = ["id", "label", "kind", "pair", "role"]
+const SMOKE_SHOW_SLOT_KEYS: PackedStringArray = ["node_path", "position_m", "direction"]
+const SMOKE_SOURCE_SLOT_KEYS: PackedStringArray = [
+	"source_kind", "source_anchor_ref", "physical_source_ref", "physical_source_kind_ref",
+]
+const PAINT_TARGET_KEYS: PackedStringArray = ["node_path", "surface", "kind"]
+const PAINT_TARGET_OPTIONAL_KEYS: PackedStringArray = ["parameter"]
+const MARKING_TARGET_KEYS: PackedStringArray = ["node_path", "surface", "uv_rect", "side"]
+const PAINT_PATTERNS: PackedStringArray = ["solid"]
+const SMOKE_SHAPES: PackedStringArray = ["ribbon", "cloud", "fan"]
+const SMOKE_MODES: PackedStringArray = ["hold", "burst", "pulse"]
+const HEX_DIGITS: String = "0123456789ABCDEF"
+
+
+## Explicit legacy/stock appearance. Passing a verified companion binds even the empty
+## profile to that exact model and slot contract.
+static func defaults(bindings: Dictionary = {}) -> Dictionary:
+	var pins: Dictionary = {"visual_family": "", "model_manifest_sha256": "", "slots_sha256": ""}
+	if not bindings.is_empty():
+		var checked_bindings: Dictionary = _validate_bindings(bindings)
+		if bool(checked_bindings.get("ok", false)):
+			pins = checked_bindings["pins"].duplicate(true)
+	return {
+		"format": FORMAT,
+		"version": VERSION,
+		"binding": pins,
+		"paint": [],
+		"markings": [],
+		"smoke": [],
+		"visual_seed": 0,
+		"schedule_policy": SCHEDULE_POLICY,
+	}
+
+
+## Validate and canonicalize a profile. With no companion, registered selections remain
+## structurally readable but report available=false; trial preparation always supplies one.
+static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
+	var errors := PackedStringArray()
+	var context: Dictionary = {"ok": true, "available": false, "legacy": true, "pins": {
+		"visual_family": "", "model_manifest_sha256": "", "slots_sha256": ""},
+		"paint_slots": {}, "marking_slots": {}, "smoke_slots": {}}
+	if not bindings.is_empty():
+		context = _validate_bindings(bindings)
+		if not bool(context.get("ok", false)):
+			return _result(false, context.get("errors", PackedStringArray()), {}, false)
+
+	if typeof(value) != TYPE_DICTIONARY:
+		errors.append("Presentation profile must be an object.")
+		return _result(false, errors, {}, false)
+	var tree_result: Dictionary = _validate_json_tree(value)
+	if not bool(tree_result.get("ok", false)):
+		errors.append_array(tree_result.get("errors", PackedStringArray()))
+		return _result(false, errors, {}, false)
+	if JSON.stringify(value, "", true, true).to_utf8_buffer().size() > MAX_PROFILE_BYTES:
+		errors.append("Presentation profile exceeds the %d-byte limit." % MAX_PROFILE_BYTES)
+		return _result(false, errors, {}, false)
+
+	# Empty dictionaries are the only implicit legacy input. Saving still emits the full v1 object.
+	var source: Dictionary = value
+	if source.is_empty():
+		source = defaults(bindings)
+	if not _has_exact_keys(source, PROFILE_KEYS):
+		errors.append("Presentation profile has missing or unsupported fields.")
+		return _result(false, errors, {}, false)
+	if source["format"] != FORMAT or not _integer_number(source["version"]) \
+			or int(source["version"]) != VERSION:
+		errors.append("Presentation profile format or version is unsupported.")
+		return _result(false, errors, {}, false)
+	if source["schedule_policy"] != SCHEDULE_POLICY:
+		errors.append("Presentation schedule policy is unsupported.")
+	if not _integer_number(source["visual_seed"]) or int(source["visual_seed"]) < 0 \
+			or float(source["visual_seed"]) > 2147483647.0:
+		errors.append("Presentation visual_seed must be an integer from 0 through 2147483647.")
+	if not errors.is_empty():
+		return _result(false, errors, {}, false)
+
+	var binding_result: Dictionary = _validate_profile_binding(source["binding"])
+	if not bool(binding_result.get("ok", false)):
+		errors.append_array(binding_result.get("errors", PackedStringArray()))
+		return _result(false, errors, {}, false)
+	var requested_pins: Dictionary = binding_result["pins"]
+	var has_entries: bool = _has_entries(source)
+	var profile_is_unbound_default: bool = _pins_are_empty(requested_pins) and not has_entries
+	var available: bool = bool(context.get("available", false))
+	var resolved_pins: Dictionary = requested_pins.duplicate(true)
+	if available:
+		var registered_pins: Dictionary = context["pins"]
+		if profile_is_unbound_default:
+			resolved_pins = registered_pins.duplicate(true)
+		elif requested_pins != registered_pins:
+			errors.append("Presentation profile model or slot binding pins are stale.")
+			return _result(false, errors, {}, false)
+	else:
+		if has_entries and _pins_are_empty(requested_pins):
+			errors.append("A customized profile must pin its model and slot contract.")
+			return _result(false, errors, {}, false)
+		if has_entries:
+			available = false
+		else:
+			available = true
+
+	var canonical_paint: Array = []
+	var paint_seen: Dictionary = {}
+	if typeof(source["paint"]) != TYPE_ARRAY or source["paint"].size() > MAX_PAINT_SLOTS:
+		errors.append("Presentation paint selections must be an array of at most %d entries." % MAX_PAINT_SLOTS)
+	else:
+		for entry: Variant in source["paint"]:
+			var checked: Dictionary = _validate_paint_entry(entry, context, available)
+			if not bool(checked.get("ok", false)):
+				errors.append_array(checked.get("errors", PackedStringArray()))
+				break
+			var normalized: Dictionary = checked["value"]
+			if paint_seen.has(normalized["slot"]):
+				errors.append("Presentation profile contains a duplicate paint slot.")
+				break
+			paint_seen[normalized["slot"]] = true
+			canonical_paint.append(normalized)
+	canonical_paint.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return str(left["slot"]) < str(right["slot"]))
+
+	var canonical_markings: Array = []
+	var marking_seen: Dictionary = {}
+	if typeof(source["markings"]) != TYPE_ARRAY or source["markings"].size() > MAX_MARKING_SLOTS:
+		errors.append("Presentation markings must be an array of at most %d entries." % MAX_MARKING_SLOTS)
+	else:
+		for entry: Variant in source["markings"]:
+			var checked: Dictionary = _validate_marking_entry(entry, context, available)
+			if not bool(checked.get("ok", false)):
+				errors.append_array(checked.get("errors", PackedStringArray()))
+				break
+			var normalized: Dictionary = checked["value"]
+			if marking_seen.has(normalized["slot"]):
+				errors.append("Presentation profile contains a duplicate marking slot.")
+				break
+			marking_seen[normalized["slot"]] = true
+			canonical_markings.append(normalized)
+	canonical_markings.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return str(left["slot"]) < str(right["slot"]))
+
+	var canonical_smoke: Array = []
+	var smoke_seen: Dictionary = {}
+	var show_smoke_count: int = 0
+	var source_smoke_count: int = 0
+	if typeof(source["smoke"]) != TYPE_ARRAY or source["smoke"].size() > MAX_SMOKE_SLOTS:
+		errors.append("Presentation smoke profiles must be an array of at most %d entries." % MAX_SMOKE_SLOTS)
+	else:
+		for entry: Variant in source["smoke"]:
+			var checked: Dictionary = _validate_smoke_entry(entry, context, available)
+			if not bool(checked.get("ok", false)):
+				errors.append_array(checked.get("errors", PackedStringArray()))
+				break
+			var normalized: Dictionary = checked["value"]
+			if smoke_seen.has(normalized["slot"]):
+				errors.append("Presentation profile contains a duplicate smoke slot.")
+				break
+			smoke_seen[normalized["slot"]] = true
+			if available:
+				var smoke_kind: String = str(context["smoke_slots"][normalized["slot"]].get("kind", ""))
+				if smoke_kind == "show":
+					show_smoke_count += 1
+				elif smoke_kind == "source":
+					source_smoke_count += 1
+			canonical_smoke.append(normalized)
+	if show_smoke_count > MAX_SHOW_SMOKE_SLOTS or source_smoke_count > MAX_SOURCE_SMOKE_SLOTS:
+		errors.append("Presentation smoke profiles support at most three show slots and one source outlet.")
+	canonical_smoke.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return str(left["slot"]) < str(right["slot"]))
+
+	if not errors.is_empty():
+		return _result(false, errors, {}, false)
+	var canonical: Dictionary = {
+		"format": FORMAT,
+		"version": VERSION,
+		"binding": resolved_pins,
+		"paint": canonical_paint,
+		"markings": canonical_markings,
+		"smoke": canonical_smoke,
+		"visual_seed": int(source["visual_seed"]),
+		"schedule_policy": SCHEDULE_POLICY,
+	}
+	var canonical_bytes: PackedByteArray = _canonical_json(canonical).to_utf8_buffer()
+	if canonical_bytes.size() > MAX_PROFILE_BYTES:
+		errors.append("Canonical presentation profile exceeds the %d-byte limit." % MAX_PROFILE_BYTES)
+		return _result(false, errors, {}, false)
+	return _result(true, errors, canonical, available, _identity_sha256(canonical))
+
+
+## Return the stable identity for a profile already bound to the supplied companion.
+## A missing companion is accepted only for the explicit empty legacy appearance.
+static func identity(profile: Variant, bindingpins: Dictionary = {}) -> String:
+	var checked: Dictionary = validate(profile, bindingpins)
+	if not bool(checked.get("ok", false)) or not bool(checked.get("available", false)):
+		return ""
+	return str(checked.get("identity_sha256", ""))
+
+
+## Structured sidecar identity for trace metadata. This remains separate from the
+## physical Workshop trial identity and contains only the three presentation pins.
+static func identity_record(profile: Variant) -> Dictionary:
+	var checked: Dictionary = validate(profile)
+	if not bool(checked.get("ok", false)):
+		return {}
+	var canonical: Dictionary = checked["profile"]
+	return {
+		"format": IDENTITY_FORMAT,
+		"version": IDENTITY_VERSION,
+		"sha256": str(checked.get("identity_sha256", "")),
+		"schedule_policy": str(canonical.get("schedule_policy", SCHEDULE_POLICY)),
+		"visual_seed": int(canonical.get("visual_seed", 0)),
+		"binding": canonical.get("binding", {}).duplicate(true),
+	}
+
+
+## Storage accepts a bounded, structurally valid future profile as unavailable data. The
+## supported-runtime validator continues to reject its newer schema version.
+static func validate_stored(value: Variant) -> Dictionary:
+	if typeof(value) == TYPE_DICTIONARY:
+		var version_value: Variant = value.get("version", null)
+		if _integer_number(version_value) and int(version_value) > VERSION:
+			if value.get("format", null) != FORMAT:
+				return _result(false, PackedStringArray(["Future presentation profile format is unsupported."]), {}, false)
+			var tree_result: Dictionary = _validate_json_tree(value)
+			if not bool(tree_result.get("ok", false)):
+				return _result(false, tree_result.get("errors", PackedStringArray()), {}, false)
+			if JSON.stringify(value, "", true, true).to_utf8_buffer().size() > MAX_PROFILE_BYTES:
+				return _result(false, PackedStringArray(["Future presentation profile exceeds the %d-byte limit." % MAX_PROFILE_BYTES]), {}, false)
+			return {"ok": true, "errors": PackedStringArray(), "profile": value.duplicate(true),
+				"available": false, "newer_version": true, "identity_sha256": ""}
+	return validate(value)
+
+
+## Public hash helper shared with the generated companion pipeline. Slot lists are sorted by
+## ID; target order is meaningful and remains intact. Object keys are recursively sorted.
+static func bindings_sha256(value: Variant) -> String:
+	if typeof(value) != TYPE_DICTIONARY:
+		return ""
+	var material: Dictionary = value.duplicate(true)
+	material.erase("slots_sha256")
+	for slot_key: String in ["paint_slots", "marking_slots", "smoke_slots"]:
+		if typeof(material.get(slot_key, null)) == TYPE_ARRAY:
+			var slots: Array = material[slot_key].duplicate(true)
+			slots.sort_custom(func(left: Variant, right: Variant) -> bool:
+				if typeof(left) != TYPE_DICTIONARY or typeof(right) != TYPE_DICTIONARY:
+					return str(left) < str(right)
+				return str(left.get("id", "")) < str(right.get("id", "")))
+			material[slot_key] = slots
+	return _sha256(_canonical_json(material).to_utf8_buffer())
+
+
+static func _validate_paint_entry(value: Variant, context: Dictionary, available: bool) -> Dictionary:
+	var errors := PackedStringArray()
+	if typeof(value) != TYPE_DICTIONARY or not _has_exact_keys(value, PAINT_ENTRY_KEYS):
+		errors.append("Paint selection has missing or unsupported fields.")
+		return {"ok": false, "errors": errors}
+	var slot: Variant = value["slot"]
+	if typeof(slot) != TYPE_STRING or not _valid_slot_id(str(slot)):
+		errors.append("Paint selection has an invalid registered slot ID.")
+		return {"ok": false, "errors": errors}
+	var slot_id: String = slot
+	var slot_descriptor: Dictionary = {}
+	if available:
+		var slots: Dictionary = context.get("paint_slots", {})
+		if not slots.has(slot_id):
+			errors.append("Paint slot '%s' is unavailable in the pinned model." % slot_id)
+			return {"ok": false, "errors": errors}
+		slot_descriptor = slots[slot_id]
+	elif typeof(value["pattern"]) != TYPE_STRING or not PAINT_PATTERNS.has(value["pattern"]):
+		errors.append("Paint pattern is unsupported.")
+		return {"ok": false, "errors": errors}
+	if typeof(value["pattern"]) != TYPE_STRING or not PAINT_PATTERNS.has(value["pattern"]):
+		errors.append("Paint pattern is unsupported.")
+	var color_result: Dictionary = _canonical_color(value["color"])
+	if not bool(color_result.get("ok", false)):
+		errors.append("Paint color must be an sRGB #RRGGBB or #RRGGBBAA swatch.")
+	var accent_value: Variant = value["accent"]
+	var accent: String = ""
+	if typeof(accent_value) != TYPE_STRING:
+		errors.append("Paint accent must be 'none' or a canonical color swatch.")
+	elif accent_value == "none":
+		accent = "none"
+	else:
+		var accent_result: Dictionary = _canonical_color(accent_value)
+		var supports_accent: bool = not slot_descriptor.get("accent_targets", []).is_empty() if available else false
+		if not bool(accent_result.get("ok", false)) or (available and not supports_accent):
+			errors.append("Paint accent is invalid or the registered slot has no accent target.")
+		else:
+			accent = str(accent_result["value"])
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors}
+	return {"ok": true, "errors": errors, "value": {
+		"slot": slot_id,
+		"color": color_result["value"],
+		"pattern": str(value["pattern"]),
+		"accent": accent,
+	}}
+
+
+static func _validate_marking_entry(value: Variant, context: Dictionary, available: bool) -> Dictionary:
+	var errors := PackedStringArray()
+	if typeof(value) != TYPE_DICTIONARY or not _has_exact_keys(value, MARKING_ENTRY_KEYS):
+		errors.append("Marking selection has missing or unsupported fields.")
+		return {"ok": false, "errors": errors}
+	var slot: Variant = value["slot"]
+	var label: Variant = value["text"]
+	if typeof(slot) != TYPE_STRING or not _valid_slot_id(str(slot)):
+		errors.append("Marking selection has an invalid registered panel ID.")
+		return {"ok": false, "errors": errors}
+	if typeof(label) != TYPE_STRING or not _valid_marking_text(str(label)):
+		errors.append("Marking text must contain 1–%d supported English/Spanish characters." % MAX_TEXT_LENGTH)
+		return {"ok": false, "errors": errors}
+	if available and not context.get("marking_slots", {}).has(str(slot)):
+		errors.append("Marking panel '%s' is unavailable in the pinned model." % str(slot))
+	var color_result: Dictionary = _canonical_color(value["color"])
+	if not bool(color_result.get("ok", false)):
+		errors.append("Marking color must be an sRGB #RRGGBB or #RRGGBBAA swatch.")
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors}
+	return {"ok": true, "errors": errors, "value": {
+		"slot": str(slot), "text": str(label), "color": color_result["value"],
+	}}
+
+
+static func _validate_smoke_entry(value: Variant, context: Dictionary, available: bool) -> Dictionary:
+	var errors := PackedStringArray()
+	if typeof(value) != TYPE_DICTIONARY or not _has_exact_keys(value, SMOKE_ENTRY_KEYS):
+		errors.append("Smoke profile has missing or unsupported fields.")
+		return {"ok": false, "errors": errors}
+	var slot: Variant = value["slot"]
+	if typeof(slot) != TYPE_STRING or not _valid_slot_id(str(slot)):
+		errors.append("Smoke profile has an invalid registered show-slot ID.")
+		return {"ok": false, "errors": errors}
+	if available:
+		var registered_smoke: Dictionary = context.get("smoke_slots", {})
+		if not registered_smoke.has(str(slot)) or str(registered_smoke.get(str(slot), {}).get("kind", "")) not in ["show", "source"]:
+			errors.append("Smoke profile slot '%s' is not an authored show or source endpoint." % str(slot))
+	if typeof(value["enabled"]) != TYPE_BOOL:
+		errors.append("Smoke enabled must be a boolean.")
+	var color_result: Dictionary = _canonical_color(value["color"])
+	if not bool(color_result.get("ok", false)):
+		errors.append("Smoke color must be an sRGB #RRGGBB or #RRGGBBAA swatch.")
+	var amount: float = _bounded_number(value["amount"], 0.0, 1.0, "amount", errors)
+	var width_m: float = _bounded_number(value["width_m"], 0.01, 2.0, "width_m", errors)
+	var lifetime_s: float = _bounded_number(value["lifetime_s"], 0.1, 8.0, "lifetime_s", errors)
+	var burst_s: float = _bounded_number(value["burst_s"], 0.0, 8.0, "burst_s", errors)
+	var pulse_period_s: float = _bounded_number(value["pulse_period_s"], 0.0, 8.0, "pulse_period_s", errors)
+	var pulse_duty: float = _bounded_number(value["pulse_duty"], 0.0, 1.0, "pulse_duty", errors)
+	var step_s: float = _bounded_number(value["step_s"], 0.0, 8.0, "step_s", errors)
+	var shape: Variant = value["shape"]
+	var mode: Variant = value["mode"]
+	if typeof(shape) != TYPE_STRING or not SMOKE_SHAPES.has(shape):
+		errors.append("Smoke shape is unsupported.")
+	if typeof(mode) != TYPE_STRING or not SMOKE_MODES.has(mode):
+		errors.append("Smoke mode is unsupported.")
+	if typeof(value["palette"]) != TYPE_ARRAY or value["palette"].size() > MAX_PALETTE_COLORS:
+		errors.append("Smoke palette must be an array of at most %d colors." % MAX_PALETTE_COLORS)
+		return {"ok": false, "errors": errors}
+	var palette: Array = []
+	for palette_color: Variant in value["palette"]:
+		var palette_result: Dictionary = _canonical_color(palette_color)
+		if not bool(palette_result.get("ok", false)):
+			errors.append("Smoke palette entries must be canonical sRGB swatches.")
+			break
+		palette.append(palette_result["value"])
+	if typeof(mode) == TYPE_STRING:
+		match str(mode):
+			"hold":
+				if burst_s != 0.0 or pulse_period_s != 0.0 or pulse_duty != 0.0:
+					errors.append("Hold smoke mode requires zero burst and pulse timing fields.")
+			"burst":
+				if burst_s < 0.05 or pulse_period_s != 0.0 or pulse_duty != 0.0:
+					errors.append("Burst smoke mode requires 0.05–8 seconds and zero pulse fields.")
+			"pulse":
+				if burst_s != 0.0 or pulse_period_s < 0.05 or pulse_duty < 0.01:
+					errors.append("Pulse smoke mode requires a 0.05–8 second period and 0.01–1 duty.")
+	if palette.size() <= 1 and step_s != 0.0:
+		errors.append("A smoke palette with zero or one color requires step_s=0.")
+	if palette.size() > 1 and step_s < 0.05:
+		errors.append("A multi-color smoke palette requires step_s from 0.05 through 8 seconds.")
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors}
+	return {"ok": true, "errors": errors, "value": {
+		"slot": str(slot),
+		"enabled": bool(value["enabled"]),
+		"color": color_result["value"],
+		"amount": amount,
+		"width_m": width_m,
+		"lifetime_s": lifetime_s,
+		"shape": str(shape),
+		"mode": str(mode),
+		"burst_s": burst_s,
+		"pulse_period_s": pulse_period_s,
+		"pulse_duty": pulse_duty,
+		"palette": palette,
+		"step_s": step_s,
+	}}
+
+
+static func _validate_profile_binding(value: Variant) -> Dictionary:
+	var errors := PackedStringArray()
+	if typeof(value) != TYPE_DICTIONARY or not _has_exact_keys(value, PROFILE_BINDING_KEYS):
+		errors.append("Presentation profile binding has missing or unsupported fields.")
+		return {"ok": false, "errors": errors}
+	var family: Variant = value["visual_family"]
+	var manifest_hash: Variant = value["model_manifest_sha256"]
+	var slots_hash: Variant = value["slots_sha256"]
+	if typeof(family) != TYPE_STRING or (not str(family).is_empty() and not _valid_base_id(str(family))):
+		errors.append("Presentation visual_family is invalid.")
+	if typeof(manifest_hash) != TYPE_STRING or (not str(manifest_hash).is_empty() and not _valid_sha256(str(manifest_hash))):
+		errors.append("Presentation model_manifest_sha256 is invalid.")
+	if typeof(slots_hash) != TYPE_STRING or (not str(slots_hash).is_empty() and not _valid_sha256(str(slots_hash))):
+		errors.append("Presentation slots_sha256 is invalid.")
+	var all_empty: bool = str(family).is_empty() and str(manifest_hash).is_empty() and str(slots_hash).is_empty()
+	var all_pinned: bool = typeof(family) == TYPE_STRING and _valid_base_id(str(family)) \
+		and typeof(manifest_hash) == TYPE_STRING and _valid_sha256(str(manifest_hash)) \
+		and typeof(slots_hash) == TYPE_STRING and _valid_sha256(str(slots_hash))
+	if not all_empty and not all_pinned:
+		errors.append("Presentation binding must contain either all legacy-empty pins or all three valid pins.")
+	return {"ok": errors.is_empty(), "errors": errors, "pins": {
+		"visual_family": str(family),
+		"model_manifest_sha256": str(manifest_hash),
+		"slots_sha256": str(slots_hash),
+	}}
+
+
+static func _validate_bindings(value: Variant) -> Dictionary:
+	var errors := PackedStringArray()
+	if typeof(value) != TYPE_DICTIONARY or not _has_exact_keys(value, BINDINGS_KEYS):
+		errors.append("Customization bindings have missing or unsupported fields.")
+		return {"ok": false, "errors": errors}
+	var checked: Dictionary = value
+	if checked["format"] != BINDINGS_FORMAT or not _integer_number(checked["version"]) \
+			or int(checked["version"]) != BINDINGS_VERSION:
+		errors.append("Customization binding format or version is unsupported.")
+	if typeof(checked["visual_family"]) != TYPE_STRING or not _valid_base_id(str(checked["visual_family"])):
+		errors.append("Customization binding visual family is invalid.")
+	if typeof(checked["model_manifest_sha256"]) != TYPE_STRING or not _valid_sha256(str(checked["model_manifest_sha256"])):
+		errors.append("Customization binding model manifest hash is invalid.")
+	if typeof(checked["slots_sha256"]) != TYPE_STRING or not _valid_sha256(str(checked["slots_sha256"])):
+		errors.append("Customization slot contract hash is invalid.")
+	var tree_result: Dictionary = _validate_json_tree(checked, 0, {}, 16, 8192)
+	if not bool(tree_result.get("ok", false)):
+		errors.append_array(tree_result.get("errors", PackedStringArray()))
+	for slot_key: String in ["paint_slots", "marking_slots", "smoke_slots"]:
+		if typeof(checked[slot_key]) != TYPE_ARRAY:
+			errors.append("Customization %s must be an array." % slot_key)
+		elif checked[slot_key].size() > 64:
+			errors.append("Customization %s exceeds its 64-slot limit." % slot_key)
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors}
+	var paint_slots: Dictionary = _slot_map(checked["paint_slots"], PAINT_SLOT_KEYS, PAINT_SLOT_OPTIONAL_KEYS, "paint_slots", errors)
+	var marking_slots: Dictionary = _slot_map(checked["marking_slots"], MARKING_SLOT_KEYS, [], "marking_slots", errors)
+	var smoke_slots: Dictionary = _slot_map(checked["smoke_slots"], SMOKE_SLOT_KEYS, [], "smoke_slots", errors)
+	if not errors.is_empty():
+		return {"ok": false, "errors": errors}
+	if bindings_sha256(checked) != checked["slots_sha256"]:
+		errors.append("Customization slot contract hash does not match its authored bindings.")
+		return {"ok": false, "errors": errors}
+	var pins: Dictionary = {
+		"visual_family": checked["visual_family"],
+		"model_manifest_sha256": checked["model_manifest_sha256"],
+		"slots_sha256": checked["slots_sha256"],
+	}
+	return {"ok": true, "errors": errors, "available": true, "legacy": false,
+		"pins": pins, "paint_slots": paint_slots, "marking_slots": marking_slots, "smoke_slots": smoke_slots}
+
+
+static func _slot_map(value: Array, required_keys: PackedStringArray, optional_keys: PackedStringArray,
+		field: String, errors: PackedStringArray) -> Dictionary:
+	var result: Dictionary = {}
+	for slot_value: Variant in value:
+		if typeof(slot_value) != TYPE_DICTIONARY:
+			errors.append("Customization %s contains a non-object slot." % field)
+			return result
+		var slot: Dictionary = slot_value
+		var expected_keys: PackedStringArray = required_keys.duplicate()
+		var allowed_keys: PackedStringArray = required_keys.duplicate()
+		if field == "smoke_slots":
+			if slot.get("kind", null) == "show":
+				expected_keys.append_array(SMOKE_SHOW_SLOT_KEYS)
+				allowed_keys.append_array(SMOKE_SHOW_SLOT_KEYS)
+			elif slot.get("kind", null) == "source":
+				expected_keys.append_array(SMOKE_SOURCE_SLOT_KEYS)
+				allowed_keys.append_array(SMOKE_SOURCE_SLOT_KEYS)
+			else:
+				errors.append("Customization smoke endpoint kind is unsupported.")
+				return result
+		else:
+			for optional_key: String in optional_keys:
+				if slot.has(optional_key):
+					expected_keys.append(optional_key)
+					allowed_keys.append(optional_key)
+		if slot.size() != expected_keys.size() or not slot.has_all(expected_keys):
+			errors.append("Customization %s slot has missing or unsupported fields." % field)
+			return result
+		for key: Variant in slot.keys():
+			if typeof(key) != TYPE_STRING or not allowed_keys.has(str(key)):
+				errors.append("Customization %s slot has missing or unsupported fields." % field)
+				return result
+		var id_value: Variant = slot.get("id", null)
+		var label_value: Variant = slot.get("label", null)
+		if typeof(id_value) != TYPE_STRING or not _valid_slot_id(str(id_value)):
+			errors.append("Customization %s contains an invalid slot ID." % field)
+			return result
+		if typeof(label_value) != TYPE_STRING or not _valid_label(str(label_value)):
+			errors.append("Customization %s contains an invalid label." % field)
+			return result
+		if result.has(str(id_value)):
+			errors.append("Customization %s contains a duplicate slot ID." % field)
+			return result
+		if field == "paint_slots":
+			if not _validate_paint_targets(slot.get("targets", null), errors):
+				return result
+			if slot.has("accent_targets") and not _validate_paint_targets(slot["accent_targets"], errors):
+				return result
+		elif field == "marking_slots":
+			if not _validate_marking_targets(slot.get("targets", null), errors):
+				return result
+		else:
+			if slot["kind"] not in ["show", "source"] or typeof(slot["pair"]) != TYPE_STRING \
+					or (not str(slot["pair"]).is_empty() and not _valid_slot_id(str(slot["pair"]))) \
+					or typeof(slot["role"]) != TYPE_STRING \
+					or not ["wing_tip_left", "wing_tip_right", "tail", "exhaust"].has(str(slot["role"])):
+				errors.append("Customization smoke endpoint kind, pair, or role is invalid.")
+				return result
+			if slot["kind"] == "show":
+				if not _safe_node_path(slot["node_path"]) or typeof(slot["position_m"]) != TYPE_ARRAY \
+						or slot["position_m"].size() != 3 or typeof(slot["direction"]) != TYPE_ARRAY \
+						or slot["direction"].size() != 3:
+					errors.append("Customization show endpoint pose must use an authored node path and bounded triples.")
+					return result
+				var pose_errors := PackedStringArray()
+				for coordinate: Variant in slot["position_m"]:
+					_bounded_number(coordinate, -100.0, 100.0, "smoke position_m", pose_errors)
+				for coordinate: Variant in slot["direction"]:
+					_bounded_number(coordinate, -1.0, 1.0, "smoke direction", pose_errors)
+				if not pose_errors.is_empty():
+					errors.append_array(pose_errors)
+					return result
+			else:
+				for selector_key: String in SMOKE_SOURCE_SLOT_KEYS:
+					if typeof(slot[selector_key]) != TYPE_STRING or str(slot[selector_key]).is_empty() \
+							or str(slot[selector_key]).length() > 128:
+						errors.append("Customization smoke source selector is invalid.")
+						return result
+		result[str(id_value)] = slot
+	return result
+
+
+static func _validate_paint_targets(value: Variant, errors: PackedStringArray) -> bool:
+	if typeof(value) != TYPE_ARRAY or value.is_empty() or value.size() > 8:
+		errors.append("Paint binding targets must contain 1–8 authored material regions.")
+		return false
+	for target_value: Variant in value:
+		if typeof(target_value) != TYPE_DICTIONARY:
+			errors.append("Paint target has missing or unsupported fields.")
+			return false
+		var target: Dictionary = target_value
+		var expected_count: int = PAINT_TARGET_KEYS.size() + (1 if target.has("parameter") else 0)
+		if target.size() != expected_count or not target.has_all(PAINT_TARGET_KEYS):
+			errors.append("Paint target has missing or unsupported fields.")
+			return false
+		for key: Variant in target.keys():
+			if typeof(key) != TYPE_STRING or (not PAINT_TARGET_KEYS.has(str(key)) \
+					and not PAINT_TARGET_OPTIONAL_KEYS.has(str(key))):
+				errors.append("Paint target has missing or unsupported fields.")
+				return false
+		if not _safe_node_path(target["node_path"]) or not _integer_number(target["surface"]) \
+				or int(target["surface"]) < 0 or target["kind"] not in ["standard_albedo", "shader_color"]:
+			errors.append("Paint target path, surface, or material kind is invalid.")
+			return false
+		if (target["kind"] == "shader_color") != target.has("parameter"):
+			errors.append("Shader paint targets require a parameter; standard albedo targets forbid one.")
+			return false
+		if target.has("parameter") and (typeof(target["parameter"]) != TYPE_STRING \
+				or str(target["parameter"]).is_empty() or str(target["parameter"]).length() > 64):
+			errors.append("Paint shader parameter binding is invalid.")
+			return false
+	return true
+
+
+static func _validate_marking_targets(value: Variant, errors: PackedStringArray) -> bool:
+	if typeof(value) != TYPE_ARRAY or value.is_empty() or value.size() > 4:
+		errors.append("Marking binding targets must contain 1–4 bounded authored panels.")
+		return false
+	for target_value: Variant in value:
+		if typeof(target_value) != TYPE_DICTIONARY or not _has_exact_keys(target_value, MARKING_TARGET_KEYS):
+			errors.append("Marking target has missing or unsupported fields.")
+			return false
+		var target: Dictionary = target_value
+		var uv: Variant = target["uv_rect"]
+		if not _safe_node_path(target["node_path"]) or not _integer_number(target["surface"]) \
+				or int(target["surface"]) < 0 or target["side"] not in ["front", "back"] \
+				or typeof(uv) != TYPE_ARRAY or uv.size() != 4:
+			errors.append("Marking target path, surface, side, or UV panel is invalid.")
+			return false
+		var rect: Array = []
+		for coordinate: Variant in uv:
+			var number: float = _bounded_number(coordinate, 0.0, 1.0, "uv_rect", errors)
+			rect.append(number)
+		if not errors.is_empty() or float(rect[0]) + float(rect[2]) > 1.0 \
+				or float(rect[1]) + float(rect[3]) > 1.0 or float(rect[2]) <= 0.0 or float(rect[3]) <= 0.0:
+			errors.append("Marking UV panel must be nonempty and remain within 0–1 bounds.")
+			return false
+	return true
+
+
+static func _canonical_color(value: Variant) -> Dictionary:
+	if typeof(value) != TYPE_STRING:
+		return {"ok": false, "value": ""}
+	var swatch: String = str(value)
+	if not swatch.begins_with("#") or (swatch.length() != 7 and swatch.length() != 9):
+		return {"ok": false, "value": ""}
+	var canonical: String = "#"
+	for index: int in range(1, swatch.length()):
+		var code: int = swatch.unicode_at(index)
+		var upper: int = code
+		if code >= 97 and code <= 102:
+			upper = code - 32
+		var character: String = String.chr(upper)
+		if not HEX_DIGITS.contains(character):
+			return {"ok": false, "value": ""}
+		canonical += character
+	if canonical.length() == 7:
+		canonical += "FF"
+	return {"ok": true, "value": canonical}
+
+
+static func _valid_marking_text(value: String) -> bool:
+	if value.is_empty() or value.length() > MAX_TEXT_LENGTH or value != value.strip_edges():
+		return false
+	for index: int in range(value.length()):
+		var code: int = value.unicode_at(index)
+		var allowed: bool = (code >= 48 and code <= 57) or (code >= 65 and code <= 90) \
+			or (code >= 97 and code <= 122) or code == 32 or code == 45 or code == 46 \
+			or code == 209 or code == 241 or code in [193, 201, 205, 211, 218, 220, 225, 233, 237, 243, 250, 252]
+		if not allowed:
+			return false
+	return true
+
+
+static func _valid_label(value: String) -> bool:
+	if value.is_empty() or value.length() > MAX_LABEL_LENGTH:
+		return false
+	for index: int in range(value.length()):
+		var code: int = value.unicode_at(index)
+		if code < 32 or code > 126:
+			return false
+	return true
+
+
+static func _valid_slot_id(value: String) -> bool:
+	if value.is_empty() or value.length() > 80:
+		return false
+	for index: int in range(value.length()):
+		var code: int = value.unicode_at(index)
+		var letter: bool = code >= 97 and code <= 122
+		var digit: bool = code >= 48 and code <= 57
+		if index == 0 and not letter:
+			return false
+		if not letter and not digit and code != 95:
+			return false
+	return true
+
+
+static func _safe_node_path(value: Variant) -> bool:
+	if typeof(value) != TYPE_STRING:
+		return false
+	var path: String = str(value)
+	if path.is_empty() or path.length() > 256 or path.begins_with("/") or path.contains("..") \
+			or path.contains(":") or path.contains("\\"):
+		return false
+	for segment: String in path.split("/", false):
+		if segment.is_empty() or segment == ".":
+			return false
+	return true
+
+
+static func _bounded_number(value: Variant, minimum: float, maximum: float, name: String,
+		errors: PackedStringArray) -> float:
+	if typeof(value) != TYPE_INT and typeof(value) != TYPE_FLOAT:
+		errors.append("Presentation %s must be a finite number." % name)
+		return 0.0
+	var number: float = float(value)
+	if not is_finite(number) or number < minimum or number > maximum:
+		errors.append("Presentation %s must be between %s and %s." % [name, minimum, maximum])
+		return 0.0
+	return number
+
+
+static func _integer_number(value: Variant) -> bool:
+	if typeof(value) == TYPE_INT:
+		return true
+	if typeof(value) != TYPE_FLOAT or not is_finite(float(value)):
+		return false
+	var number: float = float(value)
+	return floor(number) == number and abs(number) <= MAX_SAFE_INTEGER
+
+
+static func _pins_are_empty(value: Dictionary) -> bool:
+	return str(value.get("visual_family", "")).is_empty() \
+		and str(value.get("model_manifest_sha256", "")).is_empty() \
+		and str(value.get("slots_sha256", "")).is_empty()
+
+
+static func _has_entries(profile: Dictionary) -> bool:
+	for key: String in ["paint", "markings", "smoke"]:
+		if typeof(profile.get(key, null)) == TYPE_ARRAY and not (profile[key] as Array).is_empty():
+			return true
+	return int(profile.get("visual_seed", 0)) != 0
+
+
+static func _valid_base_id(value: String) -> bool:
+	if value.is_empty() or value.length() > 128:
+		return false
+	for index: int in range(value.length()):
+		var code: int = value.unicode_at(index)
+		var valid: bool = (code >= 48 and code <= 57) or (code >= 97 and code <= 122) \
+			or code == 45 or code == 95 or code == 46
+		if index == 0 and not ((code >= 48 and code <= 57) or (code >= 97 and code <= 122)):
+			return false
+		if not valid:
+			return false
+	return true
+
+
+static func _valid_sha256(value: String) -> bool:
+	if value.length() != 64:
+		return false
+	for index: int in range(value.length()):
+		var code: int = value.unicode_at(index)
+		if not ((code >= 48 and code <= 57) or (code >= 97 and code <= 102)):
+			return false
+	return true
+
+
+static func _has_exact_keys(value: Dictionary, expected: PackedStringArray) -> bool:
+	if value.size() != expected.size() or not value.has_all(expected):
+		return false
+	for key: Variant in value.keys():
+		if typeof(key) != TYPE_STRING or not expected.has(str(key)):
+			return false
+	return true
+
+
+static func _validate_json_tree(value: Variant, depth: int = 0, budget: Dictionary = {},
+		max_depth: int = MAX_PROFILE_DEPTH, max_nodes: int = MAX_PROFILE_NODES) -> Dictionary:
+	var errors := PackedStringArray()
+	if budget.is_empty():
+		budget["remaining"] = max_nodes
+	if depth > max_depth:
+		errors.append("Presentation JSON exceeds the maximum nesting depth.")
+		return {"ok": false, "errors": errors}
+	budget["remaining"] = int(budget["remaining"]) - 1
+	if int(budget["remaining"]) < 0:
+		errors.append("Presentation JSON exceeds the maximum node count.")
+		return {"ok": false, "errors": errors}
+	match typeof(value):
+		TYPE_NIL, TYPE_BOOL, TYPE_INT, TYPE_STRING:
+			return {"ok": true, "errors": errors}
+		TYPE_FLOAT:
+			if not is_finite(float(value)):
+				errors.append("Presentation JSON contains a non-finite number.")
+		TYPE_ARRAY:
+			for item: Variant in value:
+				var nested: Dictionary = _validate_json_tree(item, depth + 1, budget, max_depth, max_nodes)
+				if not bool(nested.get("ok", false)):
+					errors.append_array(nested.get("errors", PackedStringArray()))
+					break
+		TYPE_DICTIONARY:
+			for key: Variant in value.keys():
+				if typeof(key) != TYPE_STRING:
+					errors.append("Presentation JSON object keys must be strings.")
+					break
+				var nested: Dictionary = _validate_json_tree(value[key], depth + 1, budget, max_depth, max_nodes)
+				if not bool(nested.get("ok", false)):
+					errors.append_array(nested.get("errors", PackedStringArray()))
+					break
+		_:
+			errors.append("Presentation JSON contains a non-JSON value.")
+	return {"ok": errors.is_empty(), "errors": errors}
+
+
+static func _canonical_json(value: Variant) -> String:
+	return JSON.stringify(_canonical_value(value), "", true, true)
+
+
+static func _canonical_value(value: Variant) -> Variant:
+	match typeof(value):
+		TYPE_FLOAT:
+			var number: float = float(value)
+			if floor(number) == number and abs(number) <= MAX_SAFE_INTEGER:
+				return int(number)
+			return number
+		TYPE_ARRAY:
+			var result: Array = []
+			for item: Variant in value:
+				result.append(_canonical_value(item))
+			return result
+		TYPE_DICTIONARY:
+			var result: Dictionary = {}
+			var keys: Array = value.keys()
+			keys.sort()
+			for key: Variant in keys:
+				result[key] = _canonical_value(value[key])
+			return result
+	return value
+
+
+static func _identity_sha256(profile: Dictionary) -> String:
+	var material: Dictionary = {
+		"format": IDENTITY_FORMAT,
+		"version": IDENTITY_VERSION,
+		"profile_format": FORMAT,
+		"profile_version": VERSION,
+		"binding_format": BINDINGS_FORMAT,
+		"binding_version": BINDINGS_VERSION,
+		"binding": profile["binding"],
+		"profile": profile,
+		"visual_seed": profile["visual_seed"],
+		"schedule_policy": profile["schedule_policy"],
+	}
+	return _sha256(_canonical_json(material).to_utf8_buffer())
+
+
+static func _sha256(bytes: PackedByteArray) -> String:
+	var context := HashingContext.new()
+	if context.start(HashingContext.HASH_SHA256) != OK:
+		return ""
+	context.update(bytes)
+	return context.finish().hex_encode()
+
+
+static func _result(ok: bool, errors: PackedStringArray, profile: Dictionary = {},
+		available: bool = false, identity_sha256: String = "") -> Dictionary:
+	return {"ok": ok, "errors": errors, "profile": profile, "available": available,
+		"identity_sha256": identity_sha256}

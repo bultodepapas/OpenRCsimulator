@@ -197,6 +197,22 @@ func _manager() -> void:
 	_check("metric: 72 km/h, 30 m", manager.frames.flight.values.airspeed.text == "72 km/h" and manager.frames.flight.values.height.text == "30 m")
 	manager.update({}, 1.0)
 	_check("no flight: placeholders, not stale numbers", manager.frames.flight.values.airspeed.text == "–")
+	var first_controls := { sticks = {roll = 0.1, pitch = 0.2, yaw = 0.3, throttle = 0.4} }
+	var next_controls := { sticks = {roll = -0.4, pitch = -0.3, yaw = -0.2, throttle = 0.1} }
+	manager.refresh_sticks(first_controls)
+	var first_layout: Array = manager.frames.transmitter.get("_layout").duplicate()
+	manager.set_overlay_visible("transmitter", false)
+	manager.refresh_sticks(next_controls)
+	_check("hidden transmitter retains its last drawing", manager.frames.transmitter.get("_layout") == first_layout)
+	manager.set_overlay_visible("transmitter", true)
+	manager.refresh_sticks(next_controls)
+	_check("revealed transmitter immediately takes current controls", manager.frames.transmitter.get("_layout") == Transmitter.stick_layout(2, next_controls.sticks))
+	manager.visible = false
+	manager.refresh_sticks(first_controls)
+	_check("menu-hidden transmitter skips drawing updates", manager.frames.transmitter.get("_layout") == Transmitter.stick_layout(2, next_controls.sticks))
+	manager.visible = true
+	manager.refresh_sticks(first_controls)
+	_check("closing the menu restores current sticks", manager.frames.transmitter.get("_layout") == first_layout)
 	manager.queue_free()
 	probe.queue_free()
 	await process_frame
@@ -464,6 +480,8 @@ func _flight_scene() -> void:
 	_check("live telemetry from the session", overlays.frames.telemetry.values.load.text.ends_with(" g"), overlays.frames.telemetry.values.load.text)
 	_check("legacy diagnostics still written (capture evidence reads _hud)", (flight.get("_hud") as Label).text.begins_with("airspeed"), (flight.get("_hud") as Label).text)
 	_check("transmitter footer names the keyboard", overlays.frames.transmitter.footer.text.begins_with("Keyboard"), overlays.frames.transmitter.footer.text)
+	await _diagnostics_visibility(flight, overlays)
+	saved.clear()
 	var ui := UiDriver.new(self)
 	_check("Stik flight has the smoke installation", flight.get("_smoke") != null)
 	var pump_before: bool = flight.get("_smoke_key_on")
@@ -481,6 +499,41 @@ func _flight_scene() -> void:
 	_check("closing it shows them again", overlays.visible)
 	flight.queue_free()
 	await process_frame
+
+
+func _diagnostics_visibility(flight: Node, overlays: CanvasLayer) -> void:
+	var panel: Label = flight.get("_panel")
+	var hud: Label = flight.get("_hud")
+	overlays.set_preset("pilot")
+	panel.text = "hidden input sentinel"
+	hud.text = "hidden telemetry sentinel"
+	overlays.performance_label.text = "hidden performance sentinel"
+	for i in 3:
+		await process_frame
+	_check("hidden diagnostic labels skip formatting", panel.text == "hidden input sentinel" and hud.text == "hidden telemetry sentinel")
+	_check("hidden performance skips percentile formatting", overlays.performance_label.text == "hidden performance sentinel")
+	overlays.set_overlay_visible("performance", true)
+	await process_frame
+	await process_frame
+	_check("performance can refresh independently of diagnostics", overlays.performance_label.text.contains("fps") and hud.text == "hidden telemetry sentinel")
+	overlays.set_preset("developer")
+	await process_frame
+	await process_frame
+	_check("revealed diagnostics immediately show current data", panel.text.begins_with("channel") and hud.text.begins_with("airspeed"))
+	flight.set_overlays_visible(false)
+	panel.text = "menu input sentinel"
+	hud.text = "menu telemetry sentinel"
+	await process_frame
+	await process_frame
+	_check("menu-hidden diagnostics skip formatting", panel.text == "menu input sentinel" and hud.text == "menu telemetry sentinel")
+	flight.set_overlays_visible(true)
+	await process_frame
+	await process_frame
+	_check("closing menu refreshes diagnostics", panel.text.begins_with("channel") and hud.text.begins_with("airspeed"))
+	overlays.set_preset("pilot")
+	flight._update_hud()
+	_check("explicit evidence refresh still writes a hidden HUD", hud.text.begins_with("airspeed"))
+	overlays.set_preset("full")
 
 
 func _snapshot(codes: PackedStringArray) -> Dictionary:

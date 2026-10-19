@@ -1150,6 +1150,12 @@ func open_workshop(from: Control = null) -> void:
 	var editor: CanvasLayer = load("res://ui/workshop.gd").new()
 	editor.initial_aircraft_id = flight.aircraft_id if flight != null else home.aircraft_id
 	editor.set("return_destination", "Pause" if screens.is_top("pause") else "Home")
+	var weather: Dictionary = flight.weather_config if flight != null else preferences.get("weather_config", WeatherSettings.defaults())
+	var lighting: Dictionary = flight.lighting_config if flight != null else preferences.get("lighting_config", TimeOfDay.defaults())
+	var field_name := str(Landscapes.entry(landscape_id).get("name", landscape_id))
+	editor.set("trial_conditions", tr("Trial field: %s") % field_name + "\n" + tr("Wind: %s") % WeatherSettings.summary(weather)
+		+ "\n" + tr("Light: %s") % TimeOfDay.format_time(int(lighting.get("local_seconds", 43200)))
+		+ "\n" + tr("Full fuel · normal control rates · current controller"))
 	editor.closed.connect(close_workshop)
 	editor.trial_requested.connect(_start_workshop_trial)
 	screens.push("workshop", editor, from)
@@ -1164,6 +1170,10 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	if not screens.is_top("workshop") or not _workshop_screens.is_empty():
 		return
 	var editor: Node = screens.top()
+	var chosen_start: Variant = payload.get("start_choice", "airborne")
+	if typeof(chosen_start) != TYPE_STRING or chosen_start not in ["airborne", "runway"]:
+		editor.set_note(tr("Choose an airborne or runway trial start."))
+		return
 	var trial: Dictionary = load("res://workshop/trial.gd").freeze(payload)
 	if not trial.get("ok", false):
 		editor.set_note("; ".join(trial.get("errors", [])))
@@ -1186,7 +1196,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.landscape_id = landscape_id
 	candidate.aircraft_id = base_id
 	candidate.workshop_trial = trial.duplicate(true)
-	candidate.start_choice = "airborne"
+	candidate.start_choice = chosen_start
 	candidate.interactive_start = true
 	candidate.external_controller_selection = controllers != null
 	candidate.weather_config = preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
