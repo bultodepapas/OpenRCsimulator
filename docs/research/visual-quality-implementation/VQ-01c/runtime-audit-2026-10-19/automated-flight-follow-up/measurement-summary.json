@@ -1,0 +1,306 @@
+{
+  "scope": "Exploratory native samples after tick 2400 (10 simulation seconds), not the 10+60 wall-second three-run acceptance protocol. Shared host; no overall FPS improvement established.",
+  "native": [
+    {
+      "run": "native-reference-3",
+      "complete": true,
+      "gpu_timings_enabled": true,
+      "cases": [
+        {
+          "scenario": "takeoff_maneuver",
+          "samples": 832,
+          "sample_wall_s": 14.455499,
+          "observed_fps": 57.55595154480658,
+          "frame_ms": {
+            "p50": 16.718,
+            "p95": 20.382549999999995,
+            "p99": 22.405729999999988
+          },
+          "main_callback_median_usec": 914.5,
+          "gpu_median_ms": 2.52649998664856,
+          "focus_uninterrupted": true,
+          "focus_events": [],
+          "rendered_frame_events": null,
+          "numeric_sha256": "c1e66cc035c1f898b2ef3d592c3bc885e58dd8a8ebc860a68a6ef892cb839cf2",
+          "accepted_ticks": 5760
+        },
+        {
+          "scenario": "landing",
+          "samples": 896,
+          "sample_wall_s": 38.373942,
+          "observed_fps": 23.34917793955075,
+          "frame_ms": {
+            "p50": 45.3485,
+            "p95": 56.69425,
+            "p99": 65.30019999999995
+          },
+          "main_callback_median_usec": 914.0,
+          "gpu_median_ms": 4.898499965667725,
+          "focus_uninterrupted": true,
+          "focus_events": [],
+          "rendered_frame_events": null,
+          "numeric_sha256": "77813c6e0d7311183808456f5600a19a25ba7bcd08dafd86cb35b945c7adc99a",
+          "accepted_ticks": 11040
+        }
+      ]
+    },
+    {
+      "run": "native-candidate-2",
+      "complete": true,
+      "gpu_timings_enabled": true,
+      "cases": [
+        {
+          "scenario": "takeoff_maneuver",
+          "samples": 638,
+          "sample_wall_s": 14.046319,
+          "observed_fps": 45.421152687761115,
+          "frame_ms": {
+            "p50": 21.174,
+            "p95": 29.08024999999999,
+            "p99": 41.215849999999996
+          },
+          "main_callback_median_usec": 1204.0,
+          "gpu_median_ms": 2.86800003051758,
+          "focus_uninterrupted": true,
+          "focus_events": [],
+          "rendered_frame_events": null,
+          "numeric_sha256": "c1e66cc035c1f898b2ef3d592c3bc885e58dd8a8ebc860a68a6ef892cb839cf2",
+          "accepted_ticks": 5760
+        },
+        {
+          "scenario": "landing",
+          "samples": 721,
+          "sample_wall_s": 54.31099,
+          "observed_fps": 13.275397852257894,
+          "frame_ms": {
+            "p50": 75.29,
+            "p95": 85.791,
+            "p99": 93.7378
+          },
+          "main_callback_median_usec": 1261,
+          "gpu_median_ms": 4.58400011062622,
+          "focus_uninterrupted": true,
+          "focus_events": [],
+          "rendered_frame_events": null,
+          "numeric_sha256": "77813c6e0d7311183808456f5600a19a25ba7bcd08dafd86cb35b945c7adc99a",
+          "accepted_ticks": 11040
+        }
+      ]
+    },
+    {
+      "run": "native-candidate-unprofiled-2",
+      "complete": true,
+      "gpu_timings_enabled": false,
+      "cases": [
+        {
+          "scenario": "takeoff_maneuver",
+          "samples": 818,
+          "sample_wall_s": 14.010325,
+          "observed_fps": 58.385512113387804,
+          "frame_ms": {
+            "p50": 16.3185,
+            "p95": 27.74789999999999,
+            "p99": 35.29261
+          },
+          "main_callback_median_usec": 915.0,
+          "gpu_median_ms": null,
+          "focus_uninterrupted": true,
+          "focus_events": [],
+          "rendered_frame_events": 1279,
+          "numeric_sha256": "c1e66cc035c1f898b2ef3d592c3bc885e58dd8a8ebc860a68a6ef892cb839cf2",
+          "accepted_ticks": 5760
+        },
+        {
+          "scenario": "landing",
+          "samples": 744,
+          "sample_wall_s": 46.696811,
+          "observed_fps": 15.932565502171016,
+          "frame_ms": {
+            "p50": 63.251,
+            "p95": 79.82585,
+            "p99": 88.84643000000011
+          },
+          "main_callback_median_usec": 998.5,
+          "gpu_median_ms": null,
+          "focus_uninterrupted": true,
+          "focus_events": [],
+          "rendered_frame_events": 1047,
+          "numeric_sha256": "77813c6e0d7311183808456f5600a19a25ba7bcd08dafd86cb35b945c7adc99a",
+          "accepted_ticks": 11040
+        }
+      ]
+    },
+    {
+      "run": "native-reference-unprofiled-2",
+      "complete": true,
+      "gpu_timings_enabled": false,
+      "cases": [
+        {
+          "scenario": "takeoff_maneuver",
+          "samples": 785,
+          "sample_wall_s": 14.375989,
+          "observed_fps": 54.604938832382246,
+          "frame_ms": {
+            "p50": 16.744,
+            "p95": 24.746799999999997,
+            "p99": 35.834239999999966
+          },
+          "main_callback_median_usec": 1145,
+          "gpu_median_ms": null,
+          "focus_uninterrupted": false,
+          "focus_events": [
+            {
+              "event": "focus_safety_pause",
+              "monotonic_usec": 16051095,
+              "tick": 1595
+            },
+            {
+              "event": "scripted_resume_after_focus_pause",
+              "focused": true,
+              "monotonic_usec": 16056696,
+              "tick": 1595
+            }
+          ],
+          "rendered_frame_events": 1304,
+          "numeric_sha256": "c1e66cc035c1f898b2ef3d592c3bc885e58dd8a8ebc860a68a6ef892cb839cf2",
+          "accepted_ticks": 5760
+        },
+        {
+          "scenario": "landing",
+          "samples": 726,
+          "sample_wall_s": 48.134979,
+          "observed_fps": 15.082586823191509,
+          "frame_ms": {
+            "p50": 65.9395,
+            "p95": 81.80275,
+            "p99": 99.31275
+          },
+          "main_callback_median_usec": 1210.5,
+          "gpu_median_ms": null,
+          "focus_uninterrupted": false,
+          "focus_events": [
+            {
+              "event": "focus_safety_pause",
+              "monotonic_usec": 57876887,
+              "tick": 3794
+            },
+            {
+              "event": "scripted_resume_after_focus_pause",
+              "focused": true,
+              "monotonic_usec": 57881100,
+              "tick": 3794
+            },
+            {
+              "event": "focus_safety_pause",
+              "monotonic_usec": 60520722,
+              "tick": 4258
+            },
+            {
+              "event": "scripted_resume_after_focus_pause",
+              "focused": false,
+              "monotonic_usec": 60632741,
+              "tick": 4258
+            }
+          ],
+          "rendered_frame_events": 960,
+          "numeric_sha256": "77813c6e0d7311183808456f5600a19a25ba7bcd08dafd86cb35b945c7adc99a",
+          "accepted_ticks": 11040
+        }
+      ]
+    }
+  ],
+  "cloud": [
+    {
+      "candidate_samples_usec": [
+        390146,
+        434238,
+        413751,
+        399949,
+        381425
+      ],
+      "iterations": 12000,
+      "preset": "classic",
+      "reference_samples_usec": [
+        768819,
+        892175,
+        765553,
+        741232,
+        739016
+      ],
+      "snapshot": false,
+      "warmup": 500,
+      "reference_median_usec_per_call": 63.796083333333335,
+      "candidate_median_usec_per_call": 33.32908333333334,
+      "median_reduction_percent": 47.756850276858685
+    },
+    {
+      "candidate_samples_usec": [
+        572053,
+        644967,
+        606787,
+        608220,
+        593945
+      ],
+      "iterations": 12000,
+      "preset": "classic",
+      "reference_samples_usec": [
+        1278953,
+        1308257,
+        1332880,
+        1314686,
+        1309204
+      ],
+      "snapshot": true,
+      "warmup": 500,
+      "reference_median_usec_per_call": 109.10033333333334,
+      "candidate_median_usec_per_call": 50.565583333333336,
+      "median_reduction_percent": 53.6522192110626
+    },
+    {
+      "candidate_samples_usec": [
+        789568,
+        800711,
+        897045,
+        884736,
+        877606
+      ],
+      "iterations": 12000,
+      "preset": "prestorm",
+      "reference_samples_usec": [
+        1691922,
+        1665881,
+        1789119,
+        1805788,
+        1835075
+      ],
+      "snapshot": false,
+      "warmup": 500,
+      "reference_median_usec_per_call": 149.09325,
+      "candidate_median_usec_per_call": 73.13383333333333,
+      "median_reduction_percent": 50.94758928835924
+    },
+    {
+      "candidate_samples_usec": [
+        2955020,
+        2893596,
+        4011862,
+        1828548,
+        1225242
+      ],
+      "iterations": 12000,
+      "preset": "prestorm",
+      "reference_samples_usec": [
+        3384947,
+        4075553,
+        10555148,
+        3018287,
+        3036754
+      ],
+      "snapshot": true,
+      "warmup": 500,
+      "reference_median_usec_per_call": 282.07891666666666,
+      "candidate_median_usec_per_call": 241.133,
+      "median_reduction_percent": 14.515766421158144
+    }
+  ]
+}

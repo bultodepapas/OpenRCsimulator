@@ -15,6 +15,7 @@ const SkyState := preload("res://render/world/sky_state.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
 const Stars := preload("res://render/world/stars.gd")
 const AircraftLights := preload("res://render/world/aircraft_lights.gd")
+const AircraftLightState := preload("res://render/world/aircraft_light_state.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const LandscapeOptions := preload("res://render/landscape_upgrade/options.gd")
@@ -406,10 +407,34 @@ static func set_night_options(profile: String, campfire: bool) -> bool:
 
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
 ## the model (Shadow.model_extent) so the kit never changes the pilot-aid shadow. Returns the kit or null.
-static func dress_aircraft(root: Node3D) -> Node3D:
-	if Atmosphere.state.is_empty() or (_flow.is_empty() and float(Atmosphere.state.sun_elevation_deg) >= NIGHT_KIT_BELOW_SUN_DEG):
-		return null
-	return AircraftLights.attach(root)
+static func dress_aircraft(root: Node3D, config: Dictionary = {}, snapshot: Dictionary = {}, clock_s: float = 0.0) -> Node3D:
+	var state := AircraftLightState.new()
+	state.update(aircraft_local_seconds(config, clock_s),
+		1.0 if aircraft_sun_elevation(snapshot) < NIGHT_KIT_BELOW_SUN_DEG else 0.0)
+	var kit := root.get_node_or_null("NightKit") as Node3D
+	if kit == null and state.active_mode != "off":
+		kit = AircraftLights.attach(root)
+	if kit != null and str(kit.get_meta("mode", "")) != state.active_mode:
+		AircraftLights.set_mode(kit, state.active_mode)
+	return kit
+
+
+## FW-35c: use the accepted fixed TOD selection, or the field world's civil clock.
+## Flow is sampled at the exact simulation time, independently of the 30-second sky cadence.
+## NAN means the legacy fixed sun has no civil clock; never substitute the OS clock.
+static func aircraft_local_seconds(config: Dictionary = {}, clock_s: float = 0.0) -> float:
+	if config.get("mode", "legacy") != "legacy":
+		return float(config.local_seconds)
+	if not _flow.is_empty():
+		return fposmod(float(_flow.when.hour) * 3600.0 + maxf(clock_s, 0.0) * float(_flow.time_scale), 86400.0)
+	var when: Dictionary = _live.get("when", {})
+	return fposmod(float(when.hour) * 3600.0, 86400.0) if not when.is_empty() else NAN
+
+
+static func aircraft_sun_elevation(snapshot: Dictionary = {}) -> float:
+	if snapshot.get("solar") is Dictionary:
+		return float(snapshot.solar.elevation_deg)
+	return float(Atmosphere.state.get("sun_elevation_deg", 45.0))
 
 
 ## The exposure an eye adapted to `target` (render space) would use: the hour's sky and light, the floods' light on

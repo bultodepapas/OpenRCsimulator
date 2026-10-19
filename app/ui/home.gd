@@ -642,9 +642,9 @@ func _aircraft_display_name() -> String:
 	if not compact:
 		return full_name
 	match aircraft_id:
-		"stik-glow-61fx-2t": return "Ugly Stik 60 · 61FX"
-		"stik-glow-55ax-2t": return "Ugly Stik 60 · 55AX"
-		"stik-glow-fs64v-4t": return "Ugly Stik 60 · FS-64V"
+		"stik-glow-61fx-2t": return "Ugly Stick · 61FX"
+		"stik-glow-55ax-2t": return "Ugly Stick · 55AX"
+		"stik-glow-fs64v-4t": return "Ugly Stick · FS-64V"
 		"xcell-60-research": return "X-Cell .60 Trainer"
 	return full_name
 

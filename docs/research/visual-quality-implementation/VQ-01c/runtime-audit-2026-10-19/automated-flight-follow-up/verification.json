@@ -1,0 +1,204 @@
+[
+  {
+    "name": "test_atmosphere",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_atmosphere.gd"
+    ],
+    "exit": 0,
+    "wall_s": 1.2878730297088623,
+    "engine_errors": false
+  },
+  {
+    "name": "test_cloud_transport",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_cloud_transport.gd"
+    ],
+    "exit": 0,
+    "wall_s": 0.3320045471191406,
+    "engine_errors": false
+  },
+  {
+    "name": "test_sky_appearance_config",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_sky_appearance_config.gd"
+    ],
+    "exit": 0,
+    "wall_s": 0.323291540145874,
+    "engine_errors": false
+  },
+  {
+    "name": "test_sky_checkpoint",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_sky_checkpoint.gd"
+    ],
+    "exit": 0,
+    "wall_s": 11.040093660354614,
+    "engine_errors": false
+  },
+  {
+    "name": "test_storm_bank",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_storm_bank.gd"
+    ],
+    "exit": 0,
+    "wall_s": 3.32342791557312,
+    "engine_errors": false
+  },
+  {
+    "name": "test_storm_cell",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_storm_cell.gd"
+    ],
+    "exit": 0,
+    "wall_s": 0.2830810546875,
+    "engine_errors": false
+  },
+  {
+    "name": "test_storm_events",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_storm_events.gd"
+    ],
+    "exit": 0,
+    "wall_s": 0.6554069519042969,
+    "engine_errors": false
+  },
+  {
+    "name": "test_sky_render",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_sky_render.gd"
+    ],
+    "exit": 0,
+    "wall_s": 0.5737848281860352,
+    "engine_errors": false
+  },
+  {
+    "name": "test_world_sky",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_world_sky.gd"
+    ],
+    "exit": 0,
+    "wall_s": 0.5763483047485352,
+    "engine_errors": false
+  },
+  {
+    "name": "test_sky_routes",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_sky_routes.gd"
+    ],
+    "exit": 0,
+    "wall_s": 14.391289472579956,
+    "engine_errors": false
+  },
+  {
+    "name": "cloud-raw-timing",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\cloud-candidate\\project",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/benchmark_atmosphere_cloud_candidate.gd",
+      "--",
+      "--cloud-candidate-iterations=12000",
+      "--cloud-candidate-warmup=500"
+    ],
+    "exit": 0,
+    "wall_s": 66.6567656993866,
+    "engine_errors": false
+  },
+  {
+    "name": "native-candidate-2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--windowed",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\native_flight.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\native-candidate-2.json",
+      "--resume-focus-loss"
+    ],
+    "exit": 0,
+    "wall_s": 109.54088306427002,
+    "engine_errors": false
+  }
+]

@@ -1,0 +1,84 @@
+[
+  {
+    "name": "cloud-invalidation-mutation-2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\cloud-candidate\\project",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_atmosphere_cloud_expected.gd"
+    ],
+    "exit": 1,
+    "engine_errors": false,
+    "wall_s": 1.0159999999996217,
+    "expected_failure": true
+  },
+  {
+    "name": "cloud-independent-final",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\cloud-candidate\\project",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_atmosphere_cloud_expected.gd"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "wall_s": 1.0,
+    "expected_failure": false
+  },
+  {
+    "name": "native-candidate-unprofiled-2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--windowed",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\native_flight_unprofiled.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\native-candidate-unprofiled-2.json",
+      "--resume-focus-loss"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "wall_s": 100.0,
+    "expected_failure": false
+  },
+  {
+    "name": "native-reference-unprofiled-2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--windowed",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\native_flight_unprofiled.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\runtime-audit-3\\native-reference-unprofiled-2.json",
+      "--resume-focus-loss"
+    ],
+    "exit": 0,
+    "engine_errors": false,
+    "wall_s": 102.3119999999999,
+    "expected_failure": false
+  }
+]

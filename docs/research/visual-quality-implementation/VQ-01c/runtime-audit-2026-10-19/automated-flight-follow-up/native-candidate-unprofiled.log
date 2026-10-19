@@ -1,0 +1,40 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371798735746615 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2172)
+       [9] build (res://render/world/world.gd:288)
+       [10] _build_world (res://main.gd:2128)
+       [11] _ready (res://main.gd:493)
+       [12] _fly (C:/DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight_unprofiled.gd:76)
+       [13] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight_unprofiled.gd:54)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+audit takeoff_maneuver 0.0s main=1130us audio=291us focus=true
+audit takeoff_maneuver 5.0s main=943us audio=200us focus=true
+audit takeoff_maneuver 10.0s main=1352us audio=265us focus=true
+audit takeoff_maneuver 15.0s main=795us audio=263us focus=true
+audit takeoff_maneuver 20.0s main=907us audio=289us focus=true
+native flight: takeoff_maneuver tick=5760 max_height=52.76 bank=16.13 events=[{ &"event": "airborne", &"tick": 685, &"time_s": 2.85416666666667, &"height_m": 0.25807537407979 }]
+audit pause=true tick=5760 focus_pause=false
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+audit landing 0.1s main=1064us audio=272us focus=true
+audit landing 5.0s main=604us audio=167us focus=true
+audit landing 10.0s main=768us audio=322us focus=true
+audit landing 15.0s main=619us audio=183us focus=true
+audit landing 20.0s main=1044us audio=271us focus=true
+audit landing 25.0s main=1125us audio=269us focus=true
+audit landing 30.0s main=805us audio=193us focus=true
+audit pause=true tick=7250 focus_pause=true
+audit scripted resume after focus pause at tick 7250; FPS qualification invalidated
+audit pause=false tick=7250 focus_pause=false
+AUDIT FAILED: Flight stopped:  /  / {  }

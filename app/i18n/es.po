@@ -420,8 +420,8 @@ msgstr "OpenRC Simulator %s, versión de desarrollo (ejecutada desde el código 
 msgid "MIT licence"
 msgstr "licencia MIT"
 
-msgid "Jensen Das Ugly Stik designed by Phil Kraft · font Open Sans (SIL OFL)"
-msgstr "Jensen Das Ugly Stik diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"
+msgid "Ugly Stick designed by Phil Kraft · font Open Sans (SIL OFL)"
+msgstr "Ugly Stick diseñado por Phil Kraft · fuente Open Sans (SIL OFL)"
 
 msgid "Aircraft %d of %d"
 msgstr "Avión %d de %d"
@@ -4498,3 +4498,6 @@ msgstr "Registra la masa medida del componente. Se conserva la geometría."
 
 msgid "Source mass: %.4f kg"
 msgstr "Masa de origen: %.4f kg"
+
+msgid "Another session cleared the recovered draft. Automatic recovery will resume on your next edit."
+msgstr "Otra sesión eliminó el borrador recuperado. La recuperación automática continuará con tu próxima edición."

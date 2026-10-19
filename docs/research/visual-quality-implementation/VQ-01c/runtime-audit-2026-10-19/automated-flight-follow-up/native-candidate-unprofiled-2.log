@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371798735746615 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2172)
+       [9] build (res://render/world/world.gd:288)
+       [10] _build_world (res://main.gd:2128)
+       [11] _ready (res://main.gd:493)
+       [12] _fly (C:/DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight_unprofiled.gd:79)
+       [13] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/runtime-audit-3/native_flight_unprofiled.gd:57)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+audit takeoff_maneuver 0.0s main=0us audio=0us focus=true
+audit takeoff_maneuver 5.0s main=873us audio=222us focus=true
+audit takeoff_maneuver 10.0s main=1366us audio=358us focus=true
+audit takeoff_maneuver 15.0s main=1094us audio=285us focus=true
+audit takeoff_maneuver 20.0s main=1217us audio=354us focus=true
+native flight: takeoff_maneuver tick=5760 max_height=52.76 bank=16.13 events=[{ &"event": "airborne", &"tick": 685, &"time_s": 2.85416666666667, &"height_m": 0.25807537407979 }]
+audit pause=true tick=5760 focus_pause=false
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+audit landing 0.1s main=1098us audio=292us focus=true
+audit landing 5.0s main=767us audio=193us focus=true
+audit landing 10.0s main=1108us audio=314us focus=true
+audit landing 15.0s main=1144us audio=234us focus=true
+audit landing 20.0s main=1145us audio=288us focus=true
+audit landing 25.0s main=1137us audio=276us focus=true
+audit landing 30.0s main=950us audio=251us focus=true
+audit landing 35.0s main=918us audio=240us focus=true
+audit landing 40.0s main=753us audio=215us focus=true
+audit landing 45.0s main=895us audio=240us focus=true
+native flight: landing tick=11040 max_height=6.00 bank=0.62 events=[{ &"event": "airborne", &"tick": 1, &"time_s": 0.00416666666667, &"height_m": 6.00000010644408 }, { &"event": "touchdown", &"tick": 2045, &"time_s": 8.52083333333333, &"speed_mps": 10.4070089133586, &"north_m": 14.5655307078164, &"east_m": -45.0827183850507 }]
+audit pause=true tick=11040 focus_pause=false

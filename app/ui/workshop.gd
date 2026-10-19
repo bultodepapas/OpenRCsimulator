@@ -2518,10 +2518,9 @@ func _request_recovery_restore() -> void:
 func _apply_recovered_draft() -> void:
 	if not _recovery_pending: return
 	var fresh: Dictionary = load("res://workshop/draft_store.gd").load_snapshot(recovery_root)
-	if not fresh.get("ok", false) or not fresh.get("compatible", false) or fresh.get("payload", {}) != _recovery_loaded.get("payload", {}) or fresh.get("editor", {}) != _recovery_loaded.get("editor", {}):
-		_recovery_loaded = fresh
-		set_note("The recovered draft changed or is unavailable. Review it again.")
-		_show_recovery()
+	if not fresh.get("ok", false) or not fresh.get("compatible", false) or str(fresh.get("digest", "")) != _recovery_digest:
+		_refresh_recovery_after_conflict()
+		if _recovery_pending: _show_recovery()
 		return
 	var payload: Dictionary = fresh.payload
 	var state: Dictionary = fresh.editor
@@ -2626,4 +2625,7 @@ func _refresh_recovery_after_conflict() -> void:
 	_recovery_last.clear()
 	if is_instance_valid(_recovery_dialog): _recovery_dialog.hide()
 	_trial_button.disabled = not _edit_valid()
-	set_note("Another session changed the recovered draft. Review it in Library before automatic recovery resumes.")
+	if _recovery_pending:
+		set_note("Another session changed the recovered draft. Review it in Library before automatic recovery resumes.")
+	else:
+		set_note("Another session cleared the recovered draft. Automatic recovery will resume on your next edit.")

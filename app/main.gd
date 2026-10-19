@@ -250,7 +250,8 @@ var _shadow: MeshInstance3D
 ## [V] cycles; Gate L decides the default.
 const SHADOW_MODES := ["sun", "vertical", "off"]
 var _shadow_mode := "sun"
-var _night_kit: Node3D # FW-35b: the aircraft's night lights (fitted at dusk, or by [L] at any hour)
+var _night_kit: Node3D # FW-35c: lazy presentation kit; state belongs to this flight.
+var _aircraft_lights := World.AircraftLightState.new()
 var _extent := Vector2(1.5, 1.3) # airplane span and length (m), measured from the built model
 var _hud: Label
 var _overlays: CanvasLayer = null # OverlayManager when overlays_enabled
@@ -836,6 +837,7 @@ func _process(delta: float) -> void:
 	if _frametimes_scripted_fixed:
 		visual_clock_s = _frametimes_elapsed
 	World.update(_env, visual_clock_s, _render_wind(visual_clock_s), _last_render_pose.get("pos"), _camera) # deterministic wind and field-world adaptation
+	_update_aircraft_lights(visual_clock_s)
 	_frame_times.append(delta)
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
@@ -1036,6 +1038,7 @@ func _update_hud(telemetry_visible: bool = true, performance_visible: bool = tru
 			if glow.get("above_recommended_rpm", false):
 				lines.append("ABOVE RECOMMENDED RPM")
 			lines.append("[F6] cut  [F7] starter  [F8] lean  [F9] rich")
+	lines.append("[L] " + _aircraft_lights_text())
 	_hud.text = "\n".join(lines)
 
 
@@ -1466,16 +1469,38 @@ func _unhandled_input(event: InputEvent) -> void:
 				print(_note)
 
 
-## FW-35b: [L] cycles the night lights ALL → NAV (navigation and strobes) → OFF. In daylight the first press fits the
-## kit; its physical brightness then shows as faint dots, as real LEDs do in the sun.
+## FW-35c: existing keyboard/controller cycle establishes a flight-local manual override.
 func _cycle_night_lights() -> void:
-	var modes: Array = World.AircraftLights.MODES
-	if _night_kit == null or not is_instance_valid(_night_kit):
+	_aircraft_lights.cycle_mode()
+	_update_aircraft_lights()
+	_note = _aircraft_lights_text()
+
+
+## Shared selection API for UI/adapters: AUTO clears the override; invalid modes are refused.
+func set_aircraft_lights(mode: String) -> bool:
+	if not _aircraft_lights.set_mode(mode):
+		return false
+	_update_aircraft_lights()
+	return true
+
+
+func _aircraft_lights_text() -> String:
+	var text := tr("Night lights: " + _aircraft_lights.active_mode)
+	return text + " · " + tr("Night lights: auto") if _aircraft_lights.selection == "auto" else text
+
+
+func _update_aircraft_lights(clock_s: float = -1.0) -> void:
+	if _airplane.is_empty():
+		return
+	if clock_s < 0.0:
+		clock_s = session.sim.time() if session != null else 0.0
+	var elevation := World.aircraft_sun_elevation(_lighting)
+	_aircraft_lights.update(World.aircraft_local_seconds(lighting_config, clock_s),
+		1.0 if elevation < World.NIGHT_KIT_BELOW_SUN_DEG else 0.0)
+	if not is_instance_valid(_night_kit) and _aircraft_lights.active_mode != "off":
 		_night_kit = World.AircraftLights.attach(_airplane.root)
-	else:
-		var mode := String(_night_kit.get_meta("mode", "all"))
-		World.AircraftLights.set_mode(_night_kit, modes[(modes.find(mode) + 1) % modes.size()])
-	_note = tr("Night lights: " + String(_night_kit.get_meta("mode", "all")))
+	if is_instance_valid(_night_kit) and str(_night_kit.get_meta("mode", "")) != _aircraft_lights.active_mode:
+		World.AircraftLights.set_mode(_night_kit, _aircraft_lights.active_mode)
 
 
 ## CAM-04: mouse wheel zooms the current view; a right-button drag turns the orbit view. True when used.
@@ -1864,6 +1889,7 @@ func _commit_lighting(staged: Dictionary, config: Dictionary) -> bool:
 	Atmosphere.update_sun(_sun, staged.lighting)
 	lighting_config = config.duplicate(true)
 	_lighting = staged.lighting
+	_update_aircraft_lights()
 	var current_time: float = session.sim.time()
 	ShaderClock.update(current_time, _render_wind(current_time))
 	Atmosphere.update_clouds(_env, current_time)
@@ -2019,6 +2045,9 @@ func _exit_tree() -> void:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	_aircraft_lights.reset()
+	World.flow_to(0.0)
+	_update_aircraft_lights(0.0)
 	if _accident_incident != null and not _accident_checkpoint_restoring:
 		var archived: Dictionary = _accident_incident.archive()
 		_begin_accident_ledger()
@@ -2136,7 +2165,7 @@ func _build_world() -> bool:
 	_extent = Shadow.model_extent(_airplane.root) * float(workshop_trial.get("scale", 1.0))
 	_shadow = Shadow.create(self)
 	Shadow.bind_model(_shadow, _airplane.root)
-	_night_kit = World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
+	_update_aircraft_lights(0.0) # after the extent is measured; fixed TOD and field-world clocks share the policy
 	_camera = PilotCamera.create(self, field.pilot)
 	_storm_fx = Lightning.new()
 	_storm_fx.name = "ElectricalStorm"
@@ -2256,6 +2285,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
 	var clock_s: float = t if _scripted else sim.time()
 	World.update(_env, clock_s, _render_wind(clock_s), pose.pos, _camera)
+	_update_aircraft_lights(clock_s)
 	_update_storm(clock_s, false) # deterministic capture includes the selected event phase
 	_update_hud()
 	await RenderingServer.frame_post_draw

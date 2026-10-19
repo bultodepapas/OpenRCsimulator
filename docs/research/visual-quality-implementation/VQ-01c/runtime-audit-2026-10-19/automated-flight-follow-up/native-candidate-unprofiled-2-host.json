@@ -1,0 +1,259 @@
+[
+  {
+    "elapsed_s": 3.311999999999898,
+    "cpu_s": 0.0,
+    "rss_bytes": 2023424,
+    "private_bytes": 3850240,
+    "gpu_adapter_csv": "4, 1, 6516, 111.27, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 7.515999999999622,
+    "cpu_s": 4.203125,
+    "rss_bytes": 363282432,
+    "private_bytes": 404938752,
+    "gpu_adapter_csv": "54, 41, 6605, 37.34, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 11.265999999999622,
+    "cpu_s": 8.375,
+    "rss_bytes": 461393920,
+    "private_bytes": 684232704,
+    "gpu_adapter_csv": "14, 15, 6789, 46.32, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 15.968999999999141,
+    "cpu_s": 12.28125,
+    "rss_bytes": 997142528,
+    "private_bytes": 1455505408,
+    "gpu_adapter_csv": "41, 27, 6964, 108.20, 38",
+    "other_godot": [
+      {
+        "pid": 50576,
+        "cpu_s": 0.015625,
+        "headless": false
+      },
+      {
+        "pid": 77332,
+        "cpu_s": 3.984375,
+        "headless": false
+      }
+    ]
+  },
+  {
+    "elapsed_s": 19.60900000000038,
+    "cpu_s": 16.75,
+    "rss_bytes": 988270592,
+    "private_bytes": 1440292864,
+    "gpu_adapter_csv": "16, 3, 6827, 65.83, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 23.57799999999952,
+    "cpu_s": 19.40625,
+    "rss_bytes": 988168192,
+    "private_bytes": 1439883264,
+    "gpu_adapter_csv": "20, 21, 6970, 35.43, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 28.76599999999962,
+    "cpu_s": 22.546875,
+    "rss_bytes": 992481280,
+    "private_bytes": 1444278272,
+    "gpu_adapter_csv": "32, 19, 6837, 36.56, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 32.125,
+    "cpu_s": 26.328125,
+    "rss_bytes": 992559104,
+    "private_bytes": 1444278272,
+    "gpu_adapter_csv": "28, 19, 6852, 39.05, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 35.82799999999952,
+    "cpu_s": 28.734375,
+    "rss_bytes": 992567296,
+    "private_bytes": 1444200448,
+    "gpu_adapter_csv": "36, 21, 6776, 36.76, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 39.64099999999962,
+    "cpu_s": 31.484375,
+    "rss_bytes": 949788672,
+    "private_bytes": 1397542912,
+    "gpu_adapter_csv": "44, 24, 6775, 33.97, 36",
+    "other_godot": [
+      {
+        "pid": 2116,
+        "cpu_s": 0.53125,
+        "headless": true
+      },
+      {
+        "pid": 8112,
+        "cpu_s": 1.828125,
+        "headless": true
+      },
+      {
+        "pid": 41348,
+        "cpu_s": 2.765625,
+        "headless": true
+      },
+      {
+        "pid": 60720,
+        "cpu_s": 0.015625,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 43.1869999999999,
+    "cpu_s": 34.984375,
+    "rss_bytes": 1030426624,
+    "private_bytes": 1508630528,
+    "gpu_adapter_csv": "42, 26, 6783, 38.32, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 46.75,
+    "cpu_s": 37.8125,
+    "rss_bytes": 1029562368,
+    "private_bytes": 1477423104,
+    "gpu_adapter_csv": "23, 24, 6769, 35.26, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 50.40599999999904,
+    "cpu_s": 40.78125,
+    "rss_bytes": 1031262208,
+    "private_bytes": 1496662016,
+    "gpu_adapter_csv": "35, 43, 6765, 30.62, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 53.73400000000038,
+    "cpu_s": 43.796875,
+    "rss_bytes": 1031274496,
+    "private_bytes": 1496662016,
+    "gpu_adapter_csv": "31, 34, 6750, 31.14, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 57.10900000000038,
+    "cpu_s": 46.625,
+    "rss_bytes": 1032175616,
+    "private_bytes": 1497583616,
+    "gpu_adapter_csv": "33, 42, 6750, 30.98, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 60.32799999999952,
+    "cpu_s": 49.203125,
+    "rss_bytes": 1032183808,
+    "private_bytes": 1497583616,
+    "gpu_adapter_csv": "26, 32, 6750, 31.45, 35",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 64.40599999999904,
+    "cpu_s": 51.875,
+    "rss_bytes": 1032130560,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "32, 41, 6751, 31.12, 35",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 68.1869999999999,
+    "cpu_s": 55.203125,
+    "rss_bytes": 1032134656,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "26, 43, 6751, 31.51, 35",
+    "other_godot": [
+      {
+        "pid": 4392,
+        "cpu_s": 0.0,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 72.03099999999904,
+    "cpu_s": 58.375,
+    "rss_bytes": 1032134656,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "34, 36, 6761, 31.44, 35",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 75.79700000000048,
+    "cpu_s": 61.84375,
+    "rss_bytes": 1032138752,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "13, 3, 6906, 75.25, 37",
+    "other_godot": [
+      {
+        "pid": 70448,
+        "cpu_s": 0.0,
+        "headless": false
+      },
+      {
+        "pid": 77560,
+        "cpu_s": 4.015625,
+        "headless": false
+      }
+    ]
+  },
+  {
+    "elapsed_s": 79.95299999999952,
+    "cpu_s": 65.5625,
+    "rss_bytes": 1032146944,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "35, 20, 6789, 35.93, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 83.98400000000038,
+    "cpu_s": 69.296875,
+    "rss_bytes": 1032151040,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "13, 2, 7012, 111.27, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 88.20299999999952,
+    "cpu_s": 72.984375,
+    "rss_bytes": 1032171520,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "39, 26, 6944, 36.57, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 91.4369999999999,
+    "cpu_s": 76.984375,
+    "rss_bytes": 1032179712,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "29, 38, 6857, 33.24, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 95.0619999999999,
+    "cpu_s": 79.75,
+    "rss_bytes": 1032183808,
+    "private_bytes": 1497432064,
+    "gpu_adapter_csv": "31, 45, 6860, 32.97, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 98.98400000000038,
+    "cpu_s": 82.71875,
+    "rss_bytes": 1037012992,
+    "private_bytes": 1509044224,
+    "gpu_adapter_csv": "47, 44, 6426, 29.82, 36",
+    "other_godot": []
+  }
+]

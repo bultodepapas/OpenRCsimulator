@@ -1,0 +1,86 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"app_load_and_instantiate_usec": 2186636,
+	"cache_state": "fresh process; OS/import/shader cache state uncontrolled",
+	"complete": true,
+	"cycles": [
+		{
+			"audio_drain_usec": 6223,
+			"cycle": 1,
+			"fly_forced_draw_usec": 5253070,
+			"fly_sync_usec": 5089026,
+			"nodes_at_home": 655,
+			"nodes_in_flight": 1164,
+			"orphan_nodes": 0,
+			"paused_at_forced_draw": true,
+			"remaining_playbacks": 0,
+			"retired_playbacks": 12,
+			"return_forced_draw_usec": 1621417,
+			"return_sync_usec": 1533639,
+			"tick_at_forced_draw": 0
+		},
+		{
+			"audio_drain_usec": 12225,
+			"cycle": 2,
+			"fly_forced_draw_usec": 2221135,
+			"fly_sync_usec": 2108736,
+			"nodes_at_home": 655,
+			"nodes_in_flight": 1164,
+			"orphan_nodes": 0,
+			"paused_at_forced_draw": true,
+			"remaining_playbacks": 0,
+			"retired_playbacks": 12,
+			"return_forced_draw_usec": 1458263,
+			"return_sync_usec": 1347397,
+			"tick_at_forced_draw": 0
+		},
+		{
+			"audio_drain_usec": 6000,
+			"cycle": 3,
+			"fly_forced_draw_usec": 1804348,
+			"fly_sync_usec": 1689674,
+			"nodes_at_home": 655,
+			"nodes_in_flight": 1164,
+			"orphan_nodes": 0,
+			"paused_at_forced_draw": true,
+			"remaining_playbacks": 0,
+			"retired_playbacks": 12,
+			"return_forced_draw_usec": 1186233,
+			"return_sync_usec": 1124422,
+			"tick_at_forced_draw": 0
+		}
+	],
+	"display_server": "Windows",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-forced-draw-lifecycle-probe v1",
+	"home_forced_draw_engine_elapsed_usec": 13348541,
+	"home_forced_draw_from_load_usec": 7200651,
+	"home_sync_usec": 3856989,
+	"max_fps": 60,
+	"renderer": "gl_compatibility",
+	"scope": "real Home Fly / End flight routes with forced draws after process frames; native lifecycle correctness only; no natural first-frame latency, FPS, pilot input or package qualification",
+	"shutdown": {
+		"audio_released": true,
+		"elapsed_usec": 281773,
+		"remaining_playbacks": 0,
+		"settings_removed": true,
+		"timeout_usec": 1000000,
+		"tracked_playbacks": 1
+	},
+	"viewport_size": [
+		1280,
+		720
+	],
+	"vsync_mode": 1
+}

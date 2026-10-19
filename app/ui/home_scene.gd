@@ -115,7 +115,7 @@ func _frame_aircraft() -> void:
 	if not is_inside_tree() or camera == null or _presentation.is_empty(): return
 	Presentation.fit(camera, airplane.root, _presentation.bounds, get_viewport().get_visible_rect().size)
 	World.update(_environment, CLOCK, Vector3.ZERO, airplane.root.position, camera)
-	_update_helicopter_lights()
+	_update_aircraft_lights()
 
 
 func _ready() -> void:
@@ -174,9 +174,7 @@ func show_aircraft(id: String) -> bool:
 	if not retained:
 		if rotorcraft:
 			HeliNightLights.attach(airplane)
-		else:
-			World.dress_aircraft(airplane.root)
-	_update_helicopter_lights()
+	_update_aircraft_lights()
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else Atmosphere.shadow_strength() # FW-MOON-03
 	_shadow.visible = strength > 0.0
@@ -187,11 +185,14 @@ func show_aircraft(id: String) -> bool:
 	return true
 
 
-func _update_helicopter_lights() -> void:
+func _update_aircraft_lights() -> void:
 	if airplane.is_empty(): return
 	var kit: Node3D = airplane.root.get_node_or_null("HelicopterNightKit")
 	if kit != null:
-		kit.update_visual(HeliNightLights.sun_elevation(_lighting, Atmosphere.state), World.Exposure.last)
+		kit.update_visual(HeliNightLights.sun_elevation(_lighting, Atmosphere.state), World.Exposure.last, {}, 0.0, 0.0, false,
+			World.aircraft_local_seconds(lighting_config, CLOCK))
+	else:
+		World.dress_aircraft(airplane.root, lighting_config, _lighting, CLOCK)
 
 
 ## The card updates immediately. Cache misses allow a frame to present before

@@ -6,9 +6,11 @@ The interactive Home/Pause Workshop opts into the default `user://` recovery pat
 
 ## Verification
 
-The focused backend test completed with **80 checks, 0 failures**. It covers first publication and update interruptions at each of the four injected write boundaries, reread/restart behavior, temporary-file non-promotion, current/backup retention, lock refusal, path collisions, and separation from named library data. The focused Workshop recovery UI test completed with **22 checks, 0 failures**, including launch blocking during review, Later, dirty-build guard cancellation, restore preserving invalid buffers, detached ancestry, unavailable-field refusal before mutation, and preservation of the original stored text after refusal.
+The focused backend test completed with **98 checks, 0 failures**. It covers first publication and update interruptions at each of the four injected write boundaries, reread/restart behavior, temporary-file non-promotion, current/backup retention, lock refusal, path collisions, and separation from named library data. Compare-and-swap coverage verifies exact-record digests, competing first writers, stale and matching updates, stale and matching discard, backup-selected updates, and digest-guarded discard of a bounded corrupt record. The earlier 80-check run is retained as history. The focused Workshop recovery UI test completed with **31 checks, 0 failures and no engine errors**, including launch blocking during review, Later, dirty-build guard cancellation, restore preserving invalid buffers, detached ancestry, unavailable-field refusal before mutation, two-editor stale-save handling, stale restore/discard refresh, and preservation of the original stored text after refusal.
 
-The review pass found two restore-path hazards before the final run: canceling the dirty-build guard could leave Test fly disabled, and an unavailable saved selection could be discovered after restore began. Cancellation now restores the editor action/focus state, and restore preflights all saved editor fields before mutating the active draft. The final UI checks cover both behaviors and verify that the refused snapshot remains unchanged.
+The review pass found two restore-path hazards before the final run: canceling the dirty-build guard could leave Test fly disabled, and an unavailable saved selection could be discovered after restore began. Cancellation now restores the editor action/focus state, and restore preflights all saved editor fields before mutating the active draft. A stale restore now refreshes the captured digest before reopening review; a stale discard also refreshes and requires the user to review the replacement before discarding. The final UI checks cover these behaviors and verify that the refused snapshot remains unchanged.
+
+The first two-editor UI attempt opened both recovery dialogs at once in one SceneTree. The fixture now models separate sessions with sequential dialogs; the final run passes 31 checks without engine errors. This was a test-harness sequencing issue, not a persistence failure.
 
 The native capture helper opens the actual Workshop `ConfirmationDialog` in an isolated user-data root, saves the initial frame, then exercises Later, Restore, and Discard through their UI signals. It checks the raw `invalid` numeric buffer and `#BAD` color in the visible scroll area, verifies Later has initial focus, and measures the dialog and each enabled action against the viewport.
 
@@ -36,7 +38,7 @@ Both captures used Godot 4.7.2, the GL Compatibility renderer, and an NVIDIA GeF
 
 The first Spanish capture exposed that the new recovery actions had not yet been translated. Those strings were added to [`app/i18n/es.po`](../../../../app/i18n/es.po); the final capture checks the exact translated title and action labels. The native helper restricts its disposable scratch root to one direct child of `user://` with the capture-specific prefix, and removes only that scratch tree after each run. The dialog summary now uses human-readable setting labels and omits empty appearance-buffer rows.
 
-Logs: [80-check backend](evidence/backend-test.log), [initial 18-check UI run](evidence/recovery-ui-initial-18.log), [final 22-check UI run](evidence/recovery-ui-test.log), [English capture run](evidence/recovery-en-1920x1080.log), and [Spanish capture run](evidence/recovery-es-1280x720.log). The initial UI log is retained as the earlier passing run; the final run includes four additional recovery regressions. In the first test attempt, the test treated `Workshop.save_named_variant()` as returning a boolean even though it is `void`; the test was corrected to call it and inspect the resulting saved identity. This was a test-harness error, not a product failure.
+Logs: [98-check backend](evidence/backend-test.log), [historical 80-check backend](evidence/backend-test-80.log), [initial 18-check UI run](evidence/recovery-ui-initial-18.log), [historical 22-check UI run](evidence/recovery-ui-22.log), [final 31-check UI run](evidence/recovery-ui-test.log), [English capture run](evidence/recovery-en-1920x1080.log), and [Spanish capture run](evidence/recovery-es-1280x720.log). The initial UI log is retained as an earlier passing run. In the first test attempt, the test treated `Workshop.save_named_variant()` as returning a boolean even though it was `void`; the test was corrected to call it and inspect the resulting saved identity. This was a test-harness error, not a product failure.
 
 ## Persistence boundary
 
@@ -48,10 +50,10 @@ SHA-256 values below identify the exact source files used for the final checks a
 
 | File | SHA-256 |
 | --- | --- |
-| [`app/workshop/draft_store.gd`](../../../../app/workshop/draft_store.gd) | `70D9769F8508C2AF7F2B162CBE2D588722AB22B8705174E690E8A218939896A1` |
-| [`app/tests/test_workshop_drafts.gd`](../../../../app/tests/test_workshop_drafts.gd) | `92A9E5425CE90A4CF404447D7752D93428A8E8D745356ADB4B2E9066B3EE93E1` |
-| [`app/ui/workshop.gd`](../../../../app/ui/workshop.gd) | `0A6F1A8E742F1D8FC2ED2EF417AD75DB8D15A54BB0FB33AB2B5BC9217DC164F4` |
+| [`app/workshop/draft_store.gd`](../../../../app/workshop/draft_store.gd) | `F4603FA608FE4916B089FEEB8395A4C15F8C96415302A7DE434D4115C1862CA2` |
+| [`app/tests/test_workshop_drafts.gd`](../../../../app/tests/test_workshop_drafts.gd) | `5693F65642F707957447259C75825A1B2A494C5AF030F54AF38A1E47DB73051A` |
+| [`app/ui/workshop.gd`](../../../../app/ui/workshop.gd) | `95DFAFE0DE0DC7C6F91490550BF6B743E1CE20D4B47CF440456E380A76C9F5B4` |
 | [`app/app_root.gd`](../../../../app/app_root.gd) | `D7A01B46D48F96561EA31C1D540A833AE2DCDCB55D6988947C9A4FAB28B964BC` |
-| [`app/i18n/es.po`](../../../../app/i18n/es.po) | `911EBCD839FA46151EF7AF98EB65B22930AD7B56CD950B705FB14B4F24D74FFC` |
-| [`app/tests/test_workshop_recovery_ui.gd`](../../../../app/tests/test_workshop_recovery_ui.gd) | `7695909907FBB5C0806C7529B04201BD9D6B0D9791BDB992B6AF3D757F4488EB` |
+| [`app/i18n/es.po`](../../../../app/i18n/es.po) | `EE6C6B9FC3C30A1749AF82F423014A166423A93F0251428C136465CADDA6B92B` |
+| [`app/tests/test_workshop_recovery_ui.gd`](../../../../app/tests/test_workshop_recovery_ui.gd) | `F9B932DE447725DAFEDC5CB8762EB56E81D015CEE15B13DC12909EDEC73BE078` |
 | [`research/aircraft-editor/capture_recovery.gd`](../../../../research/aircraft-editor/capture_recovery.gd) | `C71A9348E143D36D4D8F8EBFF8CF65008F00368D62FFCCFE01F72E30C523C6D8` |

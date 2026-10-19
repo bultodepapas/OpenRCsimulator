@@ -1,0 +1,8 @@
+{
+  "run": "loading-storm-candidate",
+  "complete": false,
+  "termination": "Owned process killed by runner after the 180-second wall budget; no result JSON published",
+  "scope": "Natural post-draw waiting probe failed; forced-draw lifecycle result is separate",
+  "command_source": "finish_audit.py",
+  "private_settings_sidecar": "Retained in ignored tmp/runtime-audit-3; timeout bypassed normal cleanup"
+}

@@ -2,6 +2,7 @@
 # Model frame +X right, +Y up, -Z nose. Sources/estimates: HELI-30-NIGHT evidence.
 extends Node3D
 const AircraftLights=preload("res://render/world/aircraft_lights.gd")
+const LightState=preload("res://render/world/aircraft_light_state.gd")
 const Exposure=preload("res://render/world/exposure.gd")
 const Clock=preload("res://render/shader_clock.gd")
 const Relative=preload("res://render/propeller_blur.gd")
@@ -16,6 +17,7 @@ const STRIP_WIDTH_M=.012
 const STRIP_RADIANCE=.35
 var mode: String="auto"
 var active_mode: String="off"
+var light_state=LightState.new()
 var model: Dictionary={}
 var _optics: Array[Dictionary]=[]
 var _rotors: Array[Dictionary]=[]
@@ -46,7 +48,7 @@ static func sun_elevation(snapshot: Dictionary, atmosphere: Dictionary={}) -> fl
  return float(atmosphere.get("sun_elevation_deg",45.0))
 
 func set_mode(next: String) -> bool:
- if next not in MODES: return false
+ if not light_state.set_mode(next): return false
  mode=next
  set_meta("mode",mode)
  return true
@@ -55,9 +57,10 @@ func cycle_mode() -> String:
  set_mode(MODES[(MODES.find(mode)+1)%MODES.size()])
  return mode
 
-func update_visual(sun_deg: float, exposure: float, telemetry: Dictionary={}, main_phase: float=0.0, tail_phase: float=0.0, armed: bool=false) -> void:
- var factor: float=night_factor(sun_deg) if mode=="auto" else 1.0
- active_mode="off" if mode=="off" or factor<=0.0 else ("nav" if mode=="nav" else "all")
+func update_visual(sun_deg: float, exposure: float, telemetry: Dictionary={}, main_phase: float=0.0, tail_phase: float=0.0, armed: bool=false, local_seconds: float=NAN) -> void:
+ light_state.update(local_seconds,night_factor(sun_deg))
+ var factor: float=light_state.gain
+ active_mode=light_state.active_mode
  visible=active_mode!="off"
  var safe_exposure: float=maxf(exposure,.001) if is_finite(exposure) else .6
  if factor!=_last_optic_factor:

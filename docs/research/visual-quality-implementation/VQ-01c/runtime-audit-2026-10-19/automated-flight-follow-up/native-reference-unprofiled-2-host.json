@@ -1,0 +1,421 @@
+[
+  {
+    "elapsed_s": 3.32799999999952,
+    "cpu_s": 0.0,
+    "rss_bytes": 1990656,
+    "private_bytes": 3846144,
+    "gpu_adapter_csv": "4, 1, 6481, 108.30, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 6.593999999999141,
+    "cpu_s": 4.265625,
+    "rss_bytes": 389685248,
+    "private_bytes": 436109312,
+    "gpu_adapter_csv": "3, 13, 6577, 31.24, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 10.061999999999898,
+    "cpu_s": 7.5625,
+    "rss_bytes": 565448704,
+    "private_bytes": 907485184,
+    "gpu_adapter_csv": "61, 49, 6863, 28.82, 36",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 14.42200000000048,
+    "cpu_s": 10.46875,
+    "rss_bytes": 1010270208,
+    "private_bytes": 1451888640,
+    "gpu_adapter_csv": "35, 26, 6855, 55.01, 37",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 18.59399999999914,
+    "cpu_s": 14.046875,
+    "rss_bytes": 1001709568,
+    "private_bytes": 1437933568,
+    "gpu_adapter_csv": "10, 2, 6989, 111.98, 39",
+    "other_godot": [
+      {
+        "pid": 52644,
+        "cpu_s": 0.015625,
+        "headless": false
+      }
+    ]
+  },
+  {
+    "elapsed_s": 22.936999999999898,
+    "cpu_s": 17.21875,
+    "rss_bytes": 997793792,
+    "private_bytes": 1433665536,
+    "gpu_adapter_csv": "40, 43, 6960, 31.89, 36",
+    "other_godot": [
+      {
+        "pid": 33376,
+        "cpu_s": 5.875,
+        "headless": false
+      },
+      {
+        "pid": 52644,
+        "cpu_s": 0.015625,
+        "headless": false
+      }
+    ]
+  },
+  {
+    "elapsed_s": 27.67200000000048,
+    "cpu_s": 20.6875,
+    "rss_bytes": 1000833024,
+    "private_bytes": 1434636288,
+    "gpu_adapter_csv": "21, 6, 6870, 79.89, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 32.35900000000038,
+    "cpu_s": 24.90625,
+    "rss_bytes": 1001742336,
+    "private_bytes": 1434636288,
+    "gpu_adapter_csv": "20, 6, 6846, 79.82, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 37.0,
+    "cpu_s": 28.484375,
+    "rss_bytes": 1001955328,
+    "private_bytes": 1434558464,
+    "gpu_adapter_csv": "24, 7, 6846, 54.86, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 42.625,
+    "cpu_s": 33.171875,
+    "rss_bytes": 1056616448,
+    "private_bytes": 1514967040,
+    "gpu_adapter_csv": "10, 5, 6846, 66.76, 38",
+    "other_godot": []
+  },
+  {
+    "elapsed_s": 48.59399999999914,
+    "cpu_s": 38.109375,
+    "rss_bytes": 1046196224,
+    "private_bytes": 1480593408,
+    "gpu_adapter_csv": "26, 32, 6856, 40.57, 37",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 6.4375,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 53.67200000000048,
+    "cpu_s": 43.21875,
+    "rss_bytes": 1046839296,
+    "private_bytes": 1497407488,
+    "gpu_adapter_csv": "32, 33, 6856, 40.91, 37",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 11.0625,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 58.60900000000038,
+    "cpu_s": 48.171875,
+    "rss_bytes": 1046863872,
+    "private_bytes": 1497407488,
+    "gpu_adapter_csv": "45, 29, 7089, 35.70, 36",
+    "other_godot": [
+      {
+        "pid": 20964,
+        "cpu_s": 0.015625,
+        "headless": true
+      },
+      {
+        "pid": 31424,
+        "cpu_s": 7.015625,
+        "headless": true
+      },
+      {
+        "pid": 73296,
+        "cpu_s": 12.15625,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 63.5,
+    "cpu_s": 52.625,
+    "rss_bytes": 1047060480,
+    "private_bytes": 1497407488,
+    "gpu_adapter_csv": "22, 3, 6988, 75.78, 38",
+    "other_godot": [
+      {
+        "pid": 20964,
+        "cpu_s": 0.015625,
+        "headless": true
+      },
+      {
+        "pid": 73296,
+        "cpu_s": 12.625,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 67.60900000000038,
+    "cpu_s": 56.984375,
+    "rss_bytes": 1047093248,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "40, 20, 6941, 36.38, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 12.875,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 72.53099999999904,
+    "cpu_s": 60.609375,
+    "rss_bytes": 1047138304,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "36, 21, 6945, 36.40, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 12.953125,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 77.0619999999999,
+    "cpu_s": 64.8125,
+    "rss_bytes": 1047142400,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "57, 44, 6943, 37.53, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 13.21875,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 81.07799999999952,
+    "cpu_s": 69.03125,
+    "rss_bytes": 1047175168,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "5, 19, 6971, 37.70, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 13.359375,
+        "headless": true
+      },
+      {
+        "pid": 76180,
+        "cpu_s": 6.40625,
+        "headless": true
+      },
+      {
+        "pid": 76260,
+        "cpu_s": 0.03125,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 85.10900000000038,
+    "cpu_s": 72.796875,
+    "rss_bytes": 1047191552,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "12, 17, 6915, 37.11, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 13.40625,
+        "headless": true
+      },
+      {
+        "pid": 76180,
+        "cpu_s": 8.171875,
+        "headless": true
+      },
+      {
+        "pid": 76260,
+        "cpu_s": 0.03125,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 89.57799999999952,
+    "cpu_s": 76.46875,
+    "rss_bytes": 1047207936,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "6, 15, 7005, 60.85, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 13.625,
+        "headless": true
+      },
+      {
+        "pid": 76180,
+        "cpu_s": 8.828125,
+        "headless": true
+      },
+      {
+        "pid": 76260,
+        "cpu_s": 0.03125,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 93.39099999999962,
+    "cpu_s": 80.59375,
+    "rss_bytes": 1047216128,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "12, 4, 6998, 69.62, 37",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 13.671875,
+        "headless": true
+      },
+      {
+        "pid": 76180,
+        "cpu_s": 8.890625,
+        "headless": true
+      },
+      {
+        "pid": 76260,
+        "cpu_s": 0.03125,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 97.32799999999952,
+    "cpu_s": 84.203125,
+    "rss_bytes": 1047220224,
+    "private_bytes": 1497255936,
+    "gpu_adapter_csv": "25, 23, 6938, 37.90, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 13.78125,
+        "headless": true
+      },
+      {
+        "pid": 76180,
+        "cpu_s": 9.0,
+        "headless": true
+      },
+      {
+        "pid": 76260,
+        "cpu_s": 0.03125,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  },
+  {
+    "elapsed_s": 101.3119999999999,
+    "cpu_s": 87.734375,
+    "rss_bytes": 303026176,
+    "private_bytes": 608174080,
+    "gpu_adapter_csv": "3, 26, 6412, 26.62, 36",
+    "other_godot": [
+      {
+        "pid": 73296,
+        "cpu_s": 13.859375,
+        "headless": true
+      },
+      {
+        "pid": 76180,
+        "cpu_s": 9.109375,
+        "headless": true
+      },
+      {
+        "pid": 76260,
+        "cpu_s": 0.03125,
+        "headless": true
+      },
+      {
+        "pid": 77684,
+        "cpu_s": 0.03125,
+        "headless": true
+      }
+    ]
+  }
+]

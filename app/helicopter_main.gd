@@ -195,7 +195,7 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  var presentation_paused: bool=_aftermath_paused or not session.holds.is_empty()
  if wreck_active:
   if not _crash_presentation.active:
-   _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],false)
+   _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],false,World.aircraft_local_seconds(lighting_config,session.sim.time()))
    var impact_body: PackedFloat64Array=session.crash.get("body",s)
    var impact_pose: Transform3D=Frames.root_transform(Frames.quat_to_render(impact_body.slice(6,10)),Frames.ned_to_render(impact_body.slice(0,3)),_airplane.cg_model_m)
    _crash_presentation.start(session.crash,impact_pose,_airplane.cg_model_m,Frames.ned_to_render(wind))
@@ -207,7 +207,7 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  _rig.update(pos,Frames.root_transform(body,pos,_airplane.cg_model_m),body,dt,presentation_paused if wreck_active else session.sim.paused,_ground_height)
  World.update(_environment,session.sim.time(),Frames.ned_to_render(wind),pos,_camera)
  if _night_kit!=null and not wreck_active:
-  _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],session.power.armed)
+  _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],session.power.armed,World.aircraft_local_seconds(lighting_config,session.sim.time()))
  var speed: float=sqrt(s[3]*s[3]+s[4]*s[4]+s[5]*s[5])
  _hud.text=tr("RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER")+"\n"+tr("X-Cell reference physics · HX-700 visual")+"\n"
  _hud.text+=tr("Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm")%[-s[2],speed,session.sim.aux[0],session.aircraft.context.drive_model.governor_target_main_rad_s*60.0/(2.0*PI)]+"\n"
@@ -217,7 +217,10 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  else:
   _hud.text+=tr("Arrows: cyclic · A/D: yaw · W/S: collective")+"\n"
   _hud.text+=tr("B: arm/disarm · H: hold/start · I: flight mode · G: trainer")+"\n"
- if _night_kit!=null: _hud.text+="L: "+tr("Night lights: "+_night_kit.mode)+"\n"
+ if _night_kit!=null:
+  _hud.text+="L: "+tr("Night lights: "+_night_kit.active_mode)
+  if _night_kit.mode=="auto": _hud.text+=" · "+tr("Night lights: auto")
+  _hud.text+="\n"
  if not session.radio.connected: _hud.text+=tr("R: restart · P: pause/resume · C: camera · Esc: menu")+"\n"
  _hud.text+=tr("TRAINER") if session.trainer_enabled else tr("DIRECT CYCLIC")
  _hud.text+="\n"+(tr(session.pause_reason) if not session.pause_reason.is_empty() else _note)
@@ -237,6 +240,8 @@ func _ground_height(x: float,z: float) -> float:
  return Terrain.sample(-z,x,session.ground_surfaces)[0]
 
 func _on_session_resetting() -> void:
+ if _night_kit!=null: _night_kit.set_mode("auto")
+ World.flow_to(0.0)
  if recorder!=null and recorder.recording: recorder.stop()
  _rotor_phase_rebase_pending=true
  _aftermath_paused=false

@@ -22,4 +22,13 @@ ok   explicit discard leaves the named library unchanged
 ok   unavailable selection fixture remains readable recovery data
 ok   unavailable recovered fields refuse before changing the active draft
 ok   failed restore cannot replace stored text with fallback UI values
-Workshop recovery UI: 22 checks, 0 failures
+ok   two fresh editors start with the same missing recovery identity
+ok   first editor can publish its recovery snapshot
+ok   second editor refuses to overwrite another session and retains its own draft
+ok   recovery review pins the exact snapshot shown to the user
+ok   owning editor can replace the snapshot it last wrote
+ok   stale restore requires review of the replacement before mutating the editor
+ok   stale discard keeps the newer recovery and active editor unchanged
+ok   conflict refreshes the review identity and restores normal editing actions
+ok   explicit discard after refreshed review removes only the reviewed snapshot
+Workshop recovery UI: 31 checks, 0 failures
