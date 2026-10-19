@@ -10,6 +10,7 @@ const Frames = preload("res://render/frames.gd")
 const MainScene = preload("res://main.tscn")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const SceneryCollision = preload("res://sim/scenery_collision.gd")
 
 var _checks := 0
 var _failures := 0
@@ -79,6 +80,12 @@ func _production() -> void:
 		and absf(float(fuel_by_kind.get("glow_fuel", -1.0)) - float(live.get("fuel_remaining_kg", -2.0))) < 1.0e-12
 		and absf(float(energy_sources.get("glow_fuel", -1.0)) - float(fuel_by_kind.get("glow_fuel", -2.0))) < 1.0e-12,
 		str({live = live, typed = fuel_by_kind, sources = energy_sources}))
+	_check("production crash labels accepted-endpoint mass and fuel samples",
+		director.report.get("mass_sample_basis") == "accepted-endpoint-approximation"
+		and director.report.get("fuel_sample_basis") == "accepted-endpoint-approximation"
+		and int(director.report.get("mass_sample_tick", -1)) == session.sim.tick,
+		str({mass_basis = director.report.get("mass_sample_basis"), fuel_basis = director.report.get("fuel_sample_basis"),
+			tick = director.report.get("mass_sample_tick"), sample_time = director.report.get("mass_sample_time_s")}))
 	_check("production crash labels the compatibility scalar as kerosene-only",
 		float(director.report.get("fuel_kg", -1.0)) == 0.0
 		and director.report.get("fuel_kind") == "kerosene"
@@ -96,6 +103,50 @@ func _units() -> void:
 		and WreckController._overlap_fraction(Vector3(1.5, 0.5, 0.5), Vector3.ZERO, bounds) == 0.0)
 	_check("a thin skin's region is thickened, a bulky part's barely", is_equal_approx(WreckController._inventory_region(AABB(Vector3.ZERO, Vector3(1, 0.002, 1))).size.y, WreckController.INVENTORY_MIN_THICKNESS_M)
 		and is_equal_approx(WreckController._inventory_region(AABB(Vector3.ZERO, Vector3(1, 0.5, 1))).size.y, 0.5 + 2.0 * WreckController.INVENTORY_MARGIN_M))
+	_impact_sample_helpers()
+
+
+func _impact_sample_helpers() -> void:
+	var contact := SceneryCollision.Event.new()
+	contact.tick = 12
+	contact.time_fraction = 0.25
+	contact.contact_mass_properties = {
+		"ok": true,
+		"mass_kg": 2.0,
+		"cg_body_m": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"inertia": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+		"inverse": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+	}
+	var endpoint := {
+		"ok": true,
+		"mass_kg": 3.0,
+		"finite_fuel": true,
+		"cg_body_m": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"inertia": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+		"inverse": PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]),
+	}
+	var selected: Dictionary = Director._select_mass_sample(contact, endpoint)
+	_check("crash report selects the same valid contact-time mass sample as collision response",
+		selected.get("basis") == "impact-contact" and selected.get("sample", {}).get("mass_kg") == 2.0)
+	var fallback: Dictionary = Director._select_mass_sample(RefCounted.new(), endpoint)
+	_check("finite fuel without a contact sample is explicitly an endpoint approximation",
+		fallback.get("basis") == "accepted-endpoint-approximation" and fallback.get("sample", {}).get("mass_kg") == 3.0)
+	var fuel_sample := {
+		"ok": true,
+		"finite_fuel": true,
+		"stores": [
+			{"family": "gasoline", "remaining_kg": 0.12},
+			{"family": "kerosene", "remaining_kg": 0.23},
+			{"family": "kerosene", "remaining_kg": 0.04},
+			{"family": "glow", "remaining_kg": 0.50},
+		],
+	}
+	var by_kind: Dictionary = Director._energy_sources_at_sample(fuel_sample,
+		{"gasoline": 0.8, "kerosene": 0.7, "glow_fuel": 0.9}, [])
+	_check("typed crash sources report remaining gasoline, kerosene and Glow by family",
+		absf(float(by_kind.get("gasoline", -1.0)) - 0.12) < 1.0e-12
+		and absf(float(by_kind.get("kerosene", -1.0)) - 0.27) < 1.0e-12
+		and absf(float(by_kind.get("glow_fuel", -1.0)) - 0.50) < 1.0e-12, str(by_kind))
 
 
 ## A section that no inventory item reaches still gets the floor mass, taken from the core: the total never changes.
