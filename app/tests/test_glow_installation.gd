@@ -59,8 +59,13 @@ func _test_installation(label: String, aircraft_path: String) -> void:
 	_check(label + " installed profile family matches its 2T/4T data", attached.model.propulsion.glow.profile.family == value.family)
 	_check(label + " installed identity hashes exact source bytes",
 		attached.model.propulsion.glow.identity.sha256 == FileAccess.get_sha256(source_path))
+	var runtime_axis: Variant = attached.model.propulsion.get("axis", null)
+	var axis_norm_squared := 0.0
+	if runtime_axis is PackedFloat64Array:
+		for component: float in runtime_axis:
+			axis_norm_squared += component * component
 	_check(label + " installed propeller has a unit runtime axis",
-		attached.model.propulsion.has("axis") and attached.model.propulsion.axis == PackedFloat64Array([1.0, 0.0, 0.0]))
+		runtime_axis is PackedFloat64Array and runtime_axis.size() == 3 and absf(axis_norm_squared - 1.0) < 1.0e-9)
 	var install: Dictionary = attached.model.propulsion.glow
 	_check(label + " keeps authored reference fuel separate from tank capacity",
 		install.initial_fuel_kg == install.reference_fuel_kg
@@ -224,24 +229,24 @@ func _test_inventory_and_axis(label: String, baseline: Dictionary, raw: Dictiona
 
 	var invalid_raw := raw.duplicate(true)
 	for item: Dictionary in invalid_raw.inventory:
-		if item.get("name") == baseline.fuel_inventory:
+		if item.get("id") == model.fuel_system.tanks[0].liquid_inventory_id:
 			item.energy_source = "battery"
 	var bad_fuel: Dictionary = Installation.prepare_value(baseline, invalid_raw, model.duplicate(true), PackedByteArray())
 	_check(label + " refuses a non-glow energy source tank", not bad_fuel.get("ok", false))
 
 	invalid_raw = raw.duplicate(true)
 	for item: Dictionary in invalid_raw.inventory:
-		if item.get("name") == baseline.fuel_inventory:
+		if item.get("id") == model.fuel_system.tanks[0].liquid_inventory_id:
 			item.position.unit = "cm"
 	var bad_position: Dictionary = Installation.prepare_value(baseline, invalid_raw, model.duplicate(true), PackedByteArray())
 	_check(label + " refuses malformed tank geometry quantity", not bad_position.get("ok", false))
 	invalid_raw = raw.duplicate(true)
 	for item: Dictionary in invalid_raw.inventory:
-		if item.get("name") == baseline.fuel_inventory:
+		if item.get("id") == model.fuel_system.tanks[0].liquid_inventory_id:
 			invalid_raw.inventory.append(item.duplicate(true))
 			break
 	var duplicate_fuel: Dictionary = Installation.prepare_value(baseline, invalid_raw, model.duplicate(true), PackedByteArray())
-	_check(label + " refuses ambiguous duplicate glow fuel inventory names", not duplicate_fuel.get("ok", false))
+	_check(label + " refuses duplicate liquid inventory IDs", not duplicate_fuel.get("ok", false))
 
 	var candidate_model: Dictionary = model.duplicate(true)
 	candidate_model.propulsion.axis = PackedFloat64Array([2.0, 0.0, 0.0])

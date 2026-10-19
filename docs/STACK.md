@@ -30,6 +30,8 @@ Aircraft flight has no third-party native solver. The experimental RC ground act
 
 [`app_root.tscn`](../app/app_root.tscn) loads `app_root.gd`. No user arguments opens Home; `--input-report` starts diagnostics; `--vehicle=mt8-bisonte` and `--vehicle=monster-car-2` start the corresponding ground activity; remaining arguments take the direct-flight route. Direct flights do not read Home preferences. The aircraft catalog routes fixed-wing IDs to `main.tscn` and rotorcraft IDs to the `helicopter_main.gd` activity.
 
+The explicit [landscape catalog](../app/landscapes/catalog.gd) registers Club field (default) and Green paradise. Home remembers a landscape ID and rebuilds its backdrop; flight and Workshop trials receive the same ID and field path. Direct flights resolve `--landscape=<id>` independently. Both flight routes validate field data before building the selected adapter's visuals and matching obstacle inventory. Field surfaces still supply ground contact; the shared kernel has no landscape branches. Selection changes only on Home between flights. [Authoring contract](LANDSCAPES.md).
+
 The fixed-wing, helicopter and ground-vehicle sessions each install one `VehicleModel` into `Simulation`. The model declares the state layout and read-only stage evaluators; the [VehicleModel contract](../app/sim/vehicle_model.gd) defines callback purity, events and substeps. The kernel owns tick validation, integration, event handling, state publication, checkpoints and fault recovery; it does not branch on vehicle type. Sessions and adapters own vehicle data, controls, environment setup and replay identity. The ground activity drives the same kernel through explicit 240 Hz ticks.
 
 The rigid-body state has 13 float64 values; optional continuous state blocks are packed after it for integration. Simulation code uses scalars and packed float64 arrays: positions are NED (north/east/down), body vectors are FRD (forward/right/down), and attitudes map body to NED. Rendering converts detached state at [frames.gd](../app/render/frames.gd). Checkpoint envelopes identify the selected vehicle and law/backend so replay cannot silently switch implementations.
@@ -47,6 +49,7 @@ A native backend may replace one evaluator boundary, never the kernel's tick tra
 | `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/` | Product shell, catalog, preferences, localization and build identity |
 | `app/sim/`, `app/physics/`, `app/input/` | Sessions, shared kernel, vehicle laws, float64 state/replay and control devices |
 | `app/workshop/`, `app/scenarios/`, `app/failures/` | Aircraft variants, resolved flight scenarios and fixed-wing failure practice |
+| `app/landscapes/` | Ordered landscape registry, per-landscape rendering/contact adapters and custom field definitions |
 | `app/data/` | Aircraft, schemas, ground-vehicle, field, scenery and sky data |
 | `app/aircraft/`, `app/render/`, `app/environment/`, `app/scenery/`, `app/audio/` | Vehicle visuals, presentation, lighting, field life and sound |
 | `app/assets/`, `app/tests/` | Runtime assets/licenses; tests, trace/capture checks and benchmarks |

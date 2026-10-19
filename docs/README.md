@@ -15,6 +15,7 @@ Documentation and ownership index. Runtime code, configuration and accepted data
 | Main-line work and acceptance gates | [ROADMAP](../ROADMAP.md#where-we-are) |
 | Performance/visual implementation order, gates and idea decisions | [Global implementation plan](plans/global-performance-visual-quality.md); [dated research and sources](research/godot-global-review-2026-10-14.md) |
 | Aircraft format, fields, conventions and extension rules | [AIRCRAFT_CONTRACT](AIRCRAFT_CONTRACT.md) |
+| Landscape folders, field data, adapters, registration and validation | [Landscape contributor guide](LANDSCAPES.md); [selection plan](plans/landscape-selection.md) |
 | Workbench: edit, save and test experimental aircraft | [Aircraft Workshop entry point](AIRCRAFT-WORKSHOP.md); [consolidated AE plan](plans/aircraft-editor.md) |
 | Aircraft geometry, generators and configuration limits | The aircraft guide below and its asset README |
 | Delivered source packages and their current asset references | [Source-delivery index](../assets/source-deliveries/README.md) |

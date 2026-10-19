@@ -90,7 +90,7 @@ Weather and time controls: [wind](research/wind-implementation/README.md), [atmo
 
 ## Aircraft Workshop
 
-The [Workbench guide](AIRCRAFT-WORKSHOP.md) owns the workflow, supported adjustments and evidence map; the [AE plan](plans/aircraft-editor.md) owns pending integration gates. Run these read-only checks from the repository root:
+The [Workbench guide](AIRCRAFT-WORKSHOP.md) owns the workflow, supported adjustments and evidence map; the [AE plan](plans/aircraft-editor.md) owns pending integration gates. Run these checks from the repository root:
 
 ```sh
 python3 research/aircraft-standardization/build_models.py --check

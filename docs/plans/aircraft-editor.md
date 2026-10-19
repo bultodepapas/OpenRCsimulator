@@ -17,14 +17,14 @@ The guide describes the current interface, supported operations, schemas, persis
 | AE-00 | Initial source/ownership audit and implemented-path reconciliation | Keep interfaces coordinated as new aircraft families and authoring seams arrive |
 | AE-01/02 | Shared compiler, catalog-discovered descriptor generator, descriptor versions, exact source/dependency/compiler pins and deterministic trial identity | Complete current-fleet generation/conformance; regenerate stale descriptors for Extra, P-51 and Ventage after the finite-liquid registration update; richer module composition and migration remain open |
 | AE-03 | Local variant library, immutable revisions, copy/load/trash/restore, atomic index replacement, stale-save refusal and backup recovery | First-write interruption recovery, revision-bound delete confirmation, unambiguous trash generations, draft recovery, and explicit orphan-lock policy |
-| AE-04…07 | Detached shared compiler, conventional controls, supported legacy prescribed-RPM scaling, inventory/mass transforms and common checks; Stik/Extra fixtures and 20 synthetic identities | Wider combinations and refinement coverage; family-specific transforms; full affected-module checks |
+| AE-04…07 | Detached shared compiler, conventional controls, legacy prescribed-RPM transforms and initial Stik/legacy-Extra fixtures with synthetic identities | Requalify current sources and fixtures after Extra's finite-glow migration; wider combinations/refinement and family transforms remain open |
 | AE-08/09 | Shared preview/editor, catalog selection, presets, comparison, undo/redo, Home/Pause routes, English/Spanish and captured viewport checks | Broader presentation-anchor coverage, persistent drafts, control-response editing, accessibility and owner playtests |
 | AE-10 | Frozen airborne trials, return to the same draft, F5 identity and preservation of the previous flight on failed preparation | Full crash/replay/recording and longer-duration trial matrix |
 | AE-11…26 | Not complete | Work and gates are sequenced in [delivery sequence](#3-delivery-sequence-and-acceptance-gates); AE-19 is the current-fleet gate and AE-25 is the twenty-airframe gate |
 
 The catalog currently has **eight fixed-wing configurations** and a separately selected rotorcraft. Identified airplane sources use stable physical IDs and Workshop v3 ID bindings; explicit readers retain ID-less v2 and historical v1/v2 behavior. The compiler must derive support from validated modules and never dispatch transformations by aircraft name or ID. Following the finite-liquid registration update, descriptors for Extra, P-51 and Ventage need regeneration; fleet conformance remains open. Rotorcraft authoring and qualification remain under their separate vehicle contract and are not counted in airplane conformance.
 
-The shared legacy prescribed-RPM path is demonstrated on the Ugly Stik and Extra. Other propulsion families may appear in the catalog and fly under their own validated runtime, but Workshop edits stay disabled until their reusable module, generated bindings and tests pass. The 20-identity compiler fixture proves generic dispatch; it is not an aircraft-fleet, packaging or onboarding result.
+The initial legacy prescribed-RPM proof used the Stik and the then-current Extra. Extra now uses finite glow and no longer qualifies for legacy size/mass/power transforms. Current fixtures and the two-aircraft V1 gate need reconciliation with the NITRO/aircraft owners; do not enable legacy transforms to satisfy a historical fixture. Other families retain registered conventional-control and tank-capacity operations where supported. Twenty synthetic IDs establish only the behavior of that recorded fixture, not current fleet or packaging acceptance.
 
 ## 1. Scope and delivery gates
 
@@ -55,7 +55,7 @@ No gate requires a CAD editor, arbitrary physics scripts, cloud sharing, multipl
 
 The physical aircraft remains `openrc-aircraft v2`. The generated companion descriptor uses the current `openrc-aircraft-workshop v3` format for identified sources; ID-less source and saved-record readers retain their explicitly versioned compatibility behavior. Descriptors bind source bytes, module assertions, presentation identity and generated model manifests without copying physical values into Workshop metadata. The contract owns the complete binding rules.
 
-The validated physical model and closed module registry select available operations. Descriptor assertions may narrow or verify a supported binding; they do not select a solver law or provide executable transformation rules. Stable component keys survive inventory rename/reorder, while exact source and manifest pins still require descriptor regeneration. Saved variants keep their historical identity and are never silently rewritten or rebound.
+The validated physical model and closed module registry select available operations. Descriptor module assertions must match that classification; they do not select a solver law or provide executable transformation rules. Stable component keys survive inventory rename/reorder, while exact source and manifest pins still require descriptor regeneration. Saved variants keep their historical identity and are never silently rewritten or rebound.
 
 The shared compiler, recipe and launch path must not branch on aircraft ID, display name, maker, filename or inventory text. Catalog/resource lookup and provenance may use IDs. A new physical capability needs an owned schema/module change and reusable tests; an ordinary aircraft using existing capabilities should need only its generated sources, bindings and conformance evidence.
 
@@ -63,10 +63,11 @@ The shared compiler, recipe and launch path must not branch on aircraft ID, disp
 
 | Configuration family | Current role in Workshop acceptance |
 | --- | --- |
-| Jensen Ugly Stik baseline and Great Planes Extra 300S | Shared V1 fixtures for the existing legacy prescribed-RPM transforms; distinct geometry and gear exercise the same editor path |
+| Jensen Ugly Stik baseline | Current simple prescribed-RPM scaling path; broader combinations still need qualification |
+| Great Planes Extra 300S | Now finite glow; legacy scaling evidence is historical. Regenerate bindings and requalify supported operations, trim and trials |
 | Three finite-glow Stik configurations | Separate 2T/4T module and installation gates; do not infer family behavior from the legacy Stik |
-| Turbo Lumber Evolution | Electric and imported-model fixture for later shared module/presentation work |
-| P-51D Mustang and Ventage Jet | Finite-liquid integration and module registration currently block generated Workshop descriptor checks; resolve through the owning shared registry and generator |
+| Turbo Lumber Evolution | Shared imported-model bindings exist; electric editing and complete presentation qualification remain open |
+| P-51D Mustang and Ventage Jet | Finite-liquid modules are registered; generated descriptors and fleet conformance must follow the updated sources |
 | X-Cell research rotorcraft | Separate vehicle schema and qualification path; excluded from fixed-wing Workshop conformance |
 
 Catalog discovery, not this table, defines the fleet. New catalog entries must be checked automatically; the table explains the current coverage boundary.
@@ -95,20 +96,20 @@ Dependencies are explicit. A gate may split into smaller reviews, but its accept
 | AE-03 | Local library, immutable revisions and deletion/recovery; AE-02 | Interrupted-write, corrupt-record, stale-delete, trash-generation, duplicate identity and restart cases retain a recoverable record |
 | AE-04 | Generic resolver and detached no-op compiler; AE-02 | No-op numerical/trajectory parity; unsupported modules and incompatible bindings fail closed |
 | AE-05 | Shared inventory mass and conventional controls; AE-04 | Independent mass, CG, inertia and surface checks; reordered/renamed inventory does not redirect edits |
-| AE-06 | Legacy prescribed-RPM propulsion transform; AE-04 | Stik/Extra power, RPM, thrust and trim bounds; unfamiliar IDs use the same implementation |
-| AE-07 | Uniform geometry, virtual propeller/suspension and plausibility policy; AE-05/06 | Six exposed Stik sizes, declared Extra envelope, derived geometry/mass checks and real session startup |
+| AE-06 | Legacy prescribed-RPM propulsion transform; AE-04 | Power, RPM, thrust and trim bounds on two compatible airframe fixtures; retain the original Stik/Extra proof and reconcile Extra's changed family before closing V1 |
+| AE-07 | Uniform geometry, virtual propeller/suspension and plausibility policy; AE-05/06 | Six exposed Stik sizes and a second compatible airframe's declared envelope; derived geometry/mass checks and real session startup |
 | AE-08 | Shared presentation binding and preview integration; AE-07 | Datum, CG, hinges, propeller, hull, contacts and imported-model cases match effective data without ID-specific editor paths |
 | AE-09 | Workshop library UI, Home/Pause route, editing history and localization; AE-03/08 | Keyboard journey, EN/ES viewport captures and resolution of the too-small preview reported in [UI-29 evidence](../research/menu-investigations/UI-29-R3/README.md); save/load/history and invalid-draft behavior remain usable |
 | AE-10 | Transactional trial, return, restart and frozen identity; AE-04/09 | Stik/Extra workflow, failed-start rollback, retained draft and correct trace/checkpoint identity |
 | AE-11 | Effective-model runway-start qualification; AE-10 | Gear, wheel profile, equilibrium, clearance and selected-field fixtures; no aircraft-ID permission list |
-| AE-12 | Stable component editing, ballast and mass/CG fitting; AE-05/10 | Independent first-moment/tensor oracles; impossible target and unsupported mount cases reject cleanly; fixed structural hubs retain their authored position relative to the new CG |
+| AE-12 | Stable component editing, ballast and mass/CG fitting; AE-05/10 | Independent first-moment/full-tensor oracles; impossible targets, negative ballast and unsupported mounts reject cleanly; hubs stay fixed in structural coordinates while their offsets are recomputed from the new CG |
 | AE-13 | Match-my-airplane wizard and measurement provenance; AE-12 | Measured mass/CG round trip; unknown inputs remain estimated; reference chord and MAC remain distinct; matched geometry stays inside source-backed limits |
 | AE-14 | Coupled shaft, thrust-axis and optional wake modules; AE-01/12 | No-op parity, source-backed ranges and correct composition with geometry, gear and loads |
-| AE-15 | Electric motor and battery modules; AE-01/12 | Fixed-voltage bus and OCV/resistance pack behavior remain distinct; include pack mass/energy, numerical stiffness, reset/replay and unsupported combinations |
+| AE-15 | Electric motor and battery modules; AE-01/12 | Fixed-voltage, OCV/resistance and pack-ECM behavior remain distinct; include pack mass/energy, numerical stiffness, reset/replay and unsupported combinations; coordinate with [BAT](battery-realism.md) |
 | AE-16 | Scoped installation/profile inputs and independent finite-glow 2T/4T modules; AE-01/12 | Qualify fixed-hardware transforms first; cover exact dependency identity, moving mass/CG, thermal/fuel lifecycle and reset/replay; reject cross-family transforms (never apply 2T rules to 4T or vice versa) |
 | AE-17 | Turbine module and start/gear qualification; AE-01/12 | Spool, intake, timestep, identity and actual start modes are validated without Ventage-specific editor behavior |
-| AE-18 | Shared parameter pages generated from supported module definitions; AE-14…17 | UI/compiler/tests share bounds and labels; physical/rendered controls agree and unsupported operations are explained |
-| AE-19 | Current fixed-wing fleet conformance, migration, data-only variants and variant CLI; AE-03/11…18 | All eight airplane entries pass fresh-install and dependency/version cases after regenerating the stale Extra, P-51 and Ventage descriptors; rotorcraft remains separate. A variant CLI is mutually exclusive with `--aircraft` and does not read or write player preferences |
+| AE-18 | Shared parameter pages generated from supported module definitions; AE-14…17 | UI/compiler/tests share bounds and labels; physical/rendered travel agrees, radio shaping is not applied twice, and unsupported operations are explained |
+| AE-19 | Current fixed-wing fleet conformance, migration, data-only variants and variant CLI; AE-03/11…18 | Every discovered airplane entry passes fresh-install and missing/newer/corrupt dependency cases; regenerate stale descriptors before qualification. Data-only bundles reject executable resources and unsafe paths; migration preserves the original. Proposed `--aircraft-variant=<bundle-or-local-path>` is mutually exclusive with `--aircraft` and does not read or write player preferences |
 | AE-20 | Unpowered/glide starts and bounded performance experiments; AE-10 plus family adapter | Bind results to exact initial state, commands, environment and termination. Label static outputs separately from scripted speed, climb, roll or endurance results and state each method's limits |
 | AE-21 | Supported drag, polar, incidence and tail packages; AE-01/20 | Domain, trim, stall-join and numerical limits are reported per field and module |
 | AE-22 | Capability-based shared recipes, parameter sweeps and seeded discovery; AE-20/21 | Same recipe applies to compatible bases, explains incompatibility and searches within fixed bounds |
@@ -127,6 +128,7 @@ Dependencies are explicit. A gate may split into smaller reviews, but its accept
 - Prove no-op parity, independent transform arithmetic, invalid-input refusal and rollback. Use actual session/model builders for presentation and gear claims; screenshots alone do not establish interaction behavior.
 - Keep numerical/simulation consistency distinct from measured aircraft data, flight performance and pilot acceptance. Record tested envelopes and unresolved model assumptions beside each result.
 - Run focused checks for the changed owner paths, then the repository's required integration checks. Keep the test report tied to the source revision and commands that produced it.
+- For physics/control tuning, follow the [flight logging workflow](../FLIGHT-LOGGING.md): retain an exact-replayed baseline and compare one explicit candidate with the same tick/input tape. Check `complete` and `solver_changed`; do not rerecord golden flights for editor-only work.
 
 ### Verification dimensions
 

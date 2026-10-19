@@ -179,6 +179,17 @@ func finite_fuel_is_active() -> bool:
 	return glow_is_active() or liquid_fuel_is_active()
 
 
+## Presentation reads accepted combustion state, separately from the ignition command.
+func propulsion_source_running() -> bool:
+	if not propulsion_power_enabled():
+		return false
+	if liquid_fuel_is_active():
+		return LiquidFlight.valid(self, sim.continuous) and sim.continuous[_liquid_index() + 1] == 1.0
+	if glow_is_active():
+		return sim.continuous.size() >= GlowFlight.SIZE and sim.continuous[7] == 1.0
+	return true
+
+
 func _liquid_index() -> int:
 	return wheel_index() + wheel_count()
 

@@ -19,7 +19,7 @@ Eight vehicles in a full 360° studio tour: Ventage Jet first, followed by the h
 
 [Download v0.1.3](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.3) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. Packages are unsigned; see the [first-launch guide](docs/FIRST-LAUNCH.md) for checksums, platform setup, controls and radio calibration.
 
-**First flight:** new Home preferences start on the Stik runway with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
+**First flight:** new Home preferences start on the Stik runway at Club field with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
 
 The aircraft and features below describe **current source**, which may differ from the download. The [v0.1.3 release notes](docs/releases/v0.1.3.md) describe that package and its known limits. Software checks do not establish physical flight validation.
 
@@ -34,7 +34,7 @@ The aircraft and features below describe **current source**, which may differ fr
 | [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | 1.55 m, 4S electric, fixed wheels | Experimental; finite battery by default, optional ideal supply; flaps up, assists off |
 | [RC Helicopter Research Trainer](docs/HELICOPTER.md) | X-Cell .60 SE flight reference with an HX-700 visual surrogate | Experimental historical playable reference; ground-pad or hover start; physical validation remains open |
 
-All five fixed-wing airframes offer runway or airborne starts. The Stik also has three experimental [glow-engine installations](docs/GLOW-ENGINES.md): O.S. MAX-61FX and MAX-55AX two-strokes, and FS-64V four-stroke, with finite fuel and engine start/cut/mixture controls. These share the Stik visual family.
+All five fixed-wing airframes offer runway or airborne starts at Club field; Green paradise uses airborne starts. The Stik also has three experimental [glow-engine installations](docs/GLOW-ENGINES.md): O.S. MAX-61FX and MAX-55AX two-strokes, and FS-64V four-stroke, with finite fuel and engine start/cut/mixture controls. These share the Stik visual family.
 
 The playable helicopter uses X-Cell reference physics. The articulated HX-700 inspector and electric 3D candidate are separate research tools; the candidate is laboratory-only. Aircraft-specific controls and modeling limits live in the linked guides.
 
@@ -54,18 +54,24 @@ The playable helicopter uses X-Cell reference physics. The articulated HX-700 in
 | Audio | Positional combustion/electric/turbine, propeller/airframe, wind and wildlife sound, with Doppler, propagation delay and air absorption. [Audio](docs/AUDIO-PLAN.md) · [Audio realism](docs/plans/audio-realism.md) |
 | Smoke | Faint Stik glow exhaust plus an optional white smoke trail, drifting with the configured wind. **H** toggles the pump on keyboard; **J** assigns a radio AUX control. [Smoke feature](docs/SMOKE-PLAN.md) |
 | Collisions and crashes | Approximate collision proxies, wrecks, debris, fire/smoke and a component damage/cost report. Prices and repair outcomes are estimates. Aftermath persists until Restart. [Crash scope](docs/CRASH-DAMAGE-PLAN.md) |
-| Menus and settings | English/Spanish Home and Help, saved aircraft/weather/lighting choices, pause on focus loss, and Settings for window mode, interface scale, opaque panels, reduced motion, game volume and menu volume. Aircraft Workshop trials, Natural Random briefings and optional fixed-wing emergency practice are also available. [Player guide](docs/FIRST-LAUNCH.md) · [Workshop](docs/AIRCRAFT-WORKSHOP.md) · [Natural Random](docs/plans/natural-random-flight.md) · [Failure practice](docs/plans/failure-mode.md) |
+| Menus and settings | English/Spanish Home and Help, saved aircraft/landscape/weather/lighting choices, pause on focus loss, and Settings for window mode, interface scale, opaque panels, reduced motion, game volume and menu volume. Aircraft Workshop trials, Club field Natural Random briefings and optional fixed-wing emergency practice are also available. [Player guide](docs/FIRST-LAUNCH.md) · [Workshop](docs/AIRCRAFT-WORKSHOP.md) · [Natural Random](docs/plans/natural-random-flight.md) · [Failure practice](docs/plans/failure-mode.md) |
 | Recording and diagnostics | **F10** records fixed-wing flights; **F11** marks maneuvers. [Export CSV, verify exact replay and compare candidate physics](docs/FLIGHT-LOGGING.md). Separate helicopter/truck recorders, controller reports, captures and a source-only [flight-test card](research/flight-test/README.md) support investigations. [Tools and commands](docs/TOOLS.md) |
 
 Takeoff/landing calibration, controller compatibility, target-machine performance and pilot readability still require acceptance. Collision proxies, damage thresholds and wreck deformation are engineering estimates; flyable aircraft structural damage remains unimplemented. The [roadmap](ROADMAP.md) records the remaining gates.
 
 ![Ugly Stik flying over the field](docs/media/flight.png)
 
-| Field by day | Runway at night |
-| --- | --- |
-| ![Aerial view of the club, runway, parking and trees](docs/research/landscape-upgrade/LU-21/evidence/final-after-day/aerial_overview.png) | ![Illuminated runway threshold and club at night](docs/research/landscape-upgrade/LU-21/evidence/final-after-night/runway_threshold.png) |
+## Landscapes
 
-These are unedited Godot captures from the [landscape verification](docs/research/landscape-upgrade/LU-21/README.md).
+On Home, press **Landscape** to cycle between **Club field** (the default) and **Green paradise**. The backdrop updates and the choice is saved. To switch after flying, use **Pause → End flight → Home**, select the other landscape, then Fly. Restart keeps the current landscape.
+
+Club field retains the runway, lake, vegetation, buildings and night fixtures. Green paradise contains only a flat grass surface, with no scenery obstacles or lake; airplanes start airborne and the helicopter starts at hover. Natural Random requires Club field. RC truck courses remain separate.
+
+| Club field | Green paradise |
+| --- | --- |
+| ![Club field with its runway, lake, trees and buildings](docs/research/landscape-upgrade/L21-24/club_field-flight.png) | ![Green paradise with a flat grass surface and no scenery objects](docs/research/landscape-upgrade/L21-24/green_paradise-flight.png) |
+
+These are unedited native Godot captures. [Loading and switching verification](docs/research/landscape-upgrade/L21-24/README.md) · [Add a landscape](docs/LANDSCAPES.md) · [Implementation plan and remaining gates](docs/plans/landscape-selection.md).
 
 ## Other experimental activities
 

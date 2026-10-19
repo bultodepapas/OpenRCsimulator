@@ -50,6 +50,7 @@ func _initialize() -> void:
 		invalid.simulation.continuous[index] = -0.1
 		check("negative fuel restore refuses transactionally", not destination.restore_checkpoint(invalid) and original == var_to_bytes(destination.checkpoint()))
 		# A small positive usable inventory locates exhaustion inside this tick.
+		flight.sim.state[RB.POS + 2] = -1000.0 # rundown remains clear of ground contacts
 		flight.sim.continuous[index] = 1e-9
 		flight.sim.continuous[index + 1] = 1.0
 		flight.sim.step()
@@ -57,9 +58,9 @@ func _initialize() -> void:
 		check("exhaustion located and source latches off", flight.sim.fault_reason.is_empty() and flight.sim.continuous[index] == 0.0 and flight.sim.continuous[index + 1] == 0.0 and events.size() == 1 and events[0].type == "fuel_exhausted")
 		var residue: Dictionary = flight.mass_properties()
 		check("unusable residue remains onboard", residue.ok and is_equal_approx(residue.fuel_remaining_kg, config.unusable_kg) and residue.fuel_usable_kg == 0.0)
-		for tick: int in 20:
+		for tick: int in 2400:
 			flight.sim.step()
-		check("post exhaustion coasts without negative fuel", flight.sim.fault_reason.is_empty() and flight.sim.continuous[index] == 0.0 and flight.sim.continuous[index + 1] == 0.0)
+		check("ten second exhaustion coast retains nonnegative fuel and accepted stopped source", flight.sim.fault_reason.is_empty() and flight.sim.continuous[index] == 0.0 and flight.sim.continuous[index + 1] == 0.0 and not flight.propulsion_source_running())
 		flight.reset()
 		check("reset restores selected fuel and source", is_equal_approx(flight.mass_properties().fuel_remaining_kg, 0.5 * config.capacity_kg) and flight.sim.continuous[index + 1] == 1.0)
 		flight.free()

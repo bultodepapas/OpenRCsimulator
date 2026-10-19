@@ -2,13 +2,13 @@
 
 **Date:** 2026-10-19. **Source baseline:** `903d0b444`. The tree was clean at the start; unrelated documentation, website and cleanup edits appeared during review and were preserved. This review adds documentation, audit probes and a Word export helper. It does not alter simulation behaviour or regenerate aircraft data, physics, goldens or existing flight evidence.
 
-The [unified audit standard and completion plan](../../../plans/fuel-mass-balance.md) owns findings A1 through A10, current status, future-aircraft admission and completion gates. This page retains reproducible evidence. The adjacent Word document is an export of that plan; edit the Markdown first and use the [export helper](../../../../research/fuel-systems/FUEL-00-R1/build_document.py) with the managed document runtime and `python-docx==1.2.0`. The DOCX metadata records its source SHA-256. Historical FUEL-00 through 04 evidence keeps its original snapshot scope.
+The [fuel guide and remaining work](../../../plans/fuel-mass-balance.md) describe current code. This page owns the findings and reproductions at `903d0b444`; they are not current implementation status. The adjacent Word document is a dated export of the original audit plan, with its original source SHA-256 in metadata. It is not synchronized with later guide revisions. Its [export helper](../../../../research/fuel-systems/FUEL-00-R1/build_document.py) uses the managed document runtime and `python-docx==1.2.0`. Historical FUEL-00 through 04 evidence keeps its original scope.
 
 ## Source anchors
 
 Locations below refer to the reviewed source baseline, not graph-index line ranges. The knowledge graph was consulted first; missing/stale GDScript results required working-source verification.
 
-| Finding | Current source and observation |
+| Finding | Source and observation at the audited baseline |
 | --- | --- |
 | A1 | `app/render/crash/director.gd:95,215-220,249`: kerosene-only scalar versus live glow source map. `app/render/crash/effects.gd:483-504`: the stain uses the source map and already sees glow |
 | A2 | `app/sim/flight_session.gd:146-160,3549-3550,3591,3729`: fill setter/reset and metadata exist; checkpoint does not serialize the selected fill |
@@ -22,6 +22,34 @@ Locations below refer to the reviewed source baseline, not graph-index line rang
 | A10 | Generator check logs below; `docs/research/fuel-systems/FUEL-05/ft-glow-compare.md`: missing commit identities and invalid trim in the current comparison |
 
 `.orfl` mass/CG is at `app/sim/flight_log.gd:176-179`. Ordinary trace column definitions at `app/sim/trace.gd:16-26,55-61` still have no live mass/CG. The [R05-B integration boundary](../../physics-audit-2026-10-14/remediation/R05/R05-B-dynamic-mass-integration-boundary.md) retains contact-event/remainder and free-rotor scope; a live mass accessor alone does not close that handoff.
+
+## Findings at the audited baseline
+
+The following findings and proposed repairs are retained from the original audit plan. Later code supersedes their implementation claims; use the current guide above for supported behavior.
+
+P1 blocks consistent software behaviour or the common standard; P2 blocks qualification or complete integration. Historical findings F01 through F22 remain in FUEL-00 as dated evidence.
+
+**A1 P1 Crash remaining fuel is inconsistent.** At a production glow crash with 25 percent remaining, `energy_sources.glow_fuel` is 0.0749805 kg, while `report.fuel_kg` and the kerosene scalar passed to crash effects are zero. The director initializes that scalar from kerosene only. The glow stain reads the correct source dictionary; this does not prove a missing stain. Close under FUEL-06-R1 with typed fuel reporting, consistent consumer inputs and a production-path regression.
+
+**A2 P1 Restored fill preference and provenance are incomplete.** A half-fill checkpoint restores its actual fuel correctly into a fresh full-default session, but the destination retains `fuel_start_fill = 1`. Its trace omits the half-fill selection and reset loads 0.299922 kg instead of 0.149961 kg. This does not show a failure of exact state continuation. Close under FUEL-07-R1 by declaring and testing a restore/reset policy, serializing the launch selection or recording it as unknown; never infer it from remaining fuel.
+
+**A3 P1 Tank validation and the glow installation use different identities.** The contract binds liquid and shell by ID, but the glow installation still finds `fuel_inventory` by exact display name and prepares capacity from the authored liquid mass. It does not apply normalized capacity, pickup or unusable mass. A renamed item can satisfy the tank contract while breaking the installation. Close ID/capacity binding in FUEL-05-R1; close delivered feed and residue in FUEL-09.
+
+**A4 P1 The old plan confuses balance CG and solver datum.** D2 and older FUEL-04 prose promise a datum at `plan_cg`; the current contract, loader and installation retain the authored inventory CG. Empty-tank balancing does not move that reference. Section 3.2 and the [decision record](../DECISIONS.md) supersede that wording without rebasing runtime state.
+
+**A5 P1 The proposed rotational feed formula had mixed signs.** Existing feed implements apparent gravity as minus non-gravitational force divided by mass and omits rotation. The old proposal added point-acceleration terms to that apparent gravity. Instead derive it from gravity minus the complete inertial acceleration at the liquid point. A rotating-point fixture must establish the signs before FUEL-09; this concerns the proposal, not an existing rotational implementation.
+
+**A6 P2 Fleet migration and its evidence are incomplete.** FUEL-05 snapshots exist, but its linked README is absent. Synthetic electric donor IDs, declared-state CG ranges, Ventage hopper/smoke accounting and finite operation of the remaining combustion fleet stay open. Reconcile the Ventage shell/liquid centroid separation against an explicit physical interpretation. Its smoke tank is currently authored empty. Do not invent liquid to fill it or label estimated placements as measured.
+
+**A7 P2 Mass-report coverage and drift enforcement are incomplete.** Its non-recursive glob omits the nested battery configuration. Registered static margins are gated, but printed `DRIFT` does not affect exit status. The informational `plan_cg_matches_inventory` compares wet inventory even for an empty-tank target, and the report does not expose the declared CG range. Close in FUEL-05-R1 with catalog-plus-supported-variant coverage, explicit declared-state results and a failing drift mode where required.
+
+**A8 P2 Depletion event units leak from the battery helper.** Glow renames `battery_exhausted` to `fuel_exhausted` while retaining `charge_residual_c`. Normalize the fuel payload to a declared mass unit and test the complete schema under FUEL-08. Keep the reusable event locator.
+
+**A9 P2 Registry/profile equality is tested but not enforced at loading.** Glow profiles still derive density from embedded component data. Current tests establish agreement with the registry; the runtime installation does not reject a divergent blend. Close this seam with AS/NITRO in FUEL-05-R1, including a mismatch refusal and source-identity test.
+
+**A10 P2 Qualification evidence is not reproducible end to end.** Read-only generator checks flag stale Timber physics output; Ventage passes the UTF-8 check. FUEL-05 FT comparisons contain blank commit identities and an invalid 55AX trim result. Preserve these as findings, not accepted flight-feel proof. Resolve or classify each under its owner before FUEL-05/12 closure.
+
+Fourteen focused native Windows tests passed with 4,626 checks and zero failures. Both A1 and A2 still reproduce. Ordinary CSV traces still lack live mass/CG although `.orfl` has them. No full-suite, target-GPU, pilot or physical-validation result is claimed by this audit.
 
 ## Native focused tests
 
@@ -50,7 +78,7 @@ From the repository root, use the native pinned binary documented in [TOOLS](../
 | test_crash_masses | 27 | [log](2026-10-19-test_crash_masses-win-godot-4.7.2.log) |
 | test_workshop_compiler | 321 | [log](2026-10-19-test_workshop_compiler-win-godot-4.7.2.log) |
 
-The resource-kernel momentum fixture reports an error-refinement ratio of 16.0003129; removing the datum correction leaves about 0.122812 law error that does not refine away. This is the current run, distinct from historical FUEL-04 values.
+The resource-kernel momentum fixture reports an error-refinement ratio of 16.0003129; removing the datum correction leaves about 0.122812 law error that does not refine away. This is the retained audit run, distinct from historical FUEL-04 values.
 
 ## Reproduced integration gaps
 
@@ -84,6 +112,6 @@ This audit does not close FUEL-05 through 14, replay the FUEL-05 candidate FT re
 
 ## Word export verification
 
-The Word export contains the unified Markdown, with its source SHA-256 in document metadata. The packaged `render_docx.py` pipeline rendered seven Letter pages; every final page PNG was visually inspected. Tables repeat their headers and no clipping or orphan final page remains. The packaged accessibility audit reports zero high, medium or low findings. Local Markdown targets and the DOCX source identity were checked.
+The dated Word export contains the original audit-plan Markdown, with its source SHA-256 in document metadata. The packaged `render_docx.py` pipeline rendered seven Letter pages; every final page PNG was visually inspected. Tables repeat their headers and no clipping or orphan final page remains. The packaged accessibility audit reports zero high, medium or low findings. Local Markdown targets and the DOCX source identity were checked.
 
 Authoring used the managed Python runtime with `python-docx==1.2.0`. This Windows runtime bundles no LibreOffice and exposes no dependency-loader tool, so conversion used a task-local official LibreOffice 24.2.7.2 download under WSL, a fresh isolated profile, and the managed Poppler rasterizer. The user's desktop office installation was not used. Rendered PNG/PDF files remain internal QA intermediates under ignored `tmp/`; the delivered artifact is the DOCX.

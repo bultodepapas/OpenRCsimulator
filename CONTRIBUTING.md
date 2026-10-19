@@ -31,6 +31,8 @@ Documentation-only changes need link and content checks; they do not require rer
 
 Keep dated evidence and primary sources in `docs/research/`, and experiments, generators and measurement reducers in `research/`. Pin dependency versions. Reuse suitable free assets with redistribution rights; include their license, provenance and processing steps. Keep reference scans with unclear redistribution rights out of commits.
 
+For a new landscape, follow the [landscape contributor guide](docs/LANDSCAPES.md). Green paradise demonstrates the folder, field data and adapter interface; add one explicit registry entry, keep Club field available, and verify loading, switching, lighting and exported resources.
+
 ## Documentation
 
 Use the [documentation map](docs/README.md) for authoritative topic homes, track ownership, step IDs and writing conventions. Keep current guides concise and accurate to implementation. Preserve sources and required evidence; consolidate useful information before removing completed/superseded plans. Commands belong in [TOOLS](docs/TOOLS.md), controls in [FIRST-LAUNCH](docs/FIRST-LAUNCH.md), and aircraft authoring in [AIRCRAFT_CONTRACT](docs/AIRCRAFT_CONTRACT.md).

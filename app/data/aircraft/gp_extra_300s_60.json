@@ -737,7 +737,7 @@
       "id": "fuel_flight",
       "name": "fuel (full tank)",
       "mass": {
-        "value": 0.304207,
+        "value": 0.30420660000000005,
         "unit": "kg",
         "kind": "derived",
         "source": "FUEL-08: full finite-glow start (D4): manual p3 GPMQ4105 12 oz tank (12 US fl oz = 0.355 l) x app/data/fuels/openrc-fuel-registry.json blend glow_10n_18castor (856.92 kg/m3 at 298.15 K); finite 61FX consumption uses the existing NITRO candidate profile"
