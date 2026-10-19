@@ -55,6 +55,10 @@ var _navigation_focus: Control
 var _library_button: Button
 var _build_identity: Label
 var _page_buttons: Dictionary = {}
+var _page_selector: OptionButton
+var _action_notes: VBoxContainer
+var _name_body: VBoxContainer
+var _name_error: Label
 var _page_nodes: Dictionary = {}
 var _active_page := "setup"
 var _compact := false
@@ -91,7 +95,6 @@ var _layout_panel: PanelContainer
 var _columns: BoxContainer
 var _aircraft_column: VBoxContainer
 var _recipe_selectors: GridContainer
-var _preset_grid: GridContainer
 var _preset_selector: OptionButton
 var _settle_frames := 3
 var _base_selector: OptionButton
@@ -108,7 +111,6 @@ var _mass_policy_selector: OptionButton
 var _factor_sliders: Dictionary = {}
 var _factor_values: Dictionary = {}
 var _factor_hints: Dictionary = {}
-var _preset_buttons: Dictionary = {}
 var _summary_label: Label
 var _errors_label: Label
 var _status_label: Label
@@ -276,14 +278,20 @@ func _build_ui() -> void:
 	page.add_child(_header)
 	var heading := VBoxContainer.new()
 	heading.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var title := _label("Aircraft Workshop", "CardTitle")
+	var title := _label("Aircraft Workshop", "CardTitle", true)
+	title.max_lines_visible = 1
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	title.name = "WorkshopTitle"
 	heading.add_child(title)
 	_build_identity = _label("", "SecondaryLabel", true, false)
 	_build_identity.name = "BuildIdentity"
+	_build_identity.max_lines_visible = 1
+	_build_identity.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	heading.add_child(_build_identity)
 	_header.add_child(heading)
 	var back := _button("Back to Pause" if return_destination == "Pause" else "Back to Home", "", "CloseWorkshop")
+	back.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	back.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	back.pressed.connect(_request_close)
 	_header.add_child(back)
 
@@ -302,6 +310,15 @@ func _build_ui() -> void:
 		tab.pressed.connect(_set_page.bind(spec[0]))
 		_identity_line.add_child(tab)
 		_page_buttons[spec[0]] = tab
+	_page_selector = OptionButton.new()
+	_page_selector.name = "WorkshopPage"
+	_page_selector.fit_to_longest_item = false
+	_page_selector.clip_text = true
+	_page_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_page_selector.add_item("Flight setup")
+	_page_selector.add_item("Compare")
+	_page_selector.item_selected.connect(func(index: int) -> void: _set_page("setup" if index == 0 else "compare"))
+	_identity_line.add_child(_page_selector)
 	var flexible := Control.new()
 	flexible.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_identity_line.add_child(flexible)
@@ -373,6 +390,7 @@ func _build_ui() -> void:
 	_footer.add_theme_constant_override("separation", 12)
 	page.add_child(_footer)
 	var notes := VBoxContainer.new()
+	_action_notes = notes
 	notes.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_footer.add_child(notes)
 	_validation_label = _label("", "SecondaryLabel", true)
@@ -402,8 +420,15 @@ func _resize_layout() -> void:
 	var available := _screen.size - Vector2(48, 36)
 	_layout_panel.custom_minimum_size = Vector2(maxf(0, available.x), maxf(0, available.y))
 	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
+	var tight := enlarged and available.y < 600
 	_compact = available.x < 1050 or enlarged
-	_header.vertical = available.x < 700
+	_header.vertical = available.x < 650
+	var back := find_child("CloseWorkshop", true, false) as Button
+	back.custom_minimum_size.x = (200 if available.x < 1100 else 380) if enlarged else 200
+	back.text = tr("Back") if available.x < 1100 and enlarged else tr("Back to Pause" if return_destination == "Pause" else "Back to Home")
+	back.tooltip_text = tr("Back to Pause" if return_destination == "Pause" else "Back to Home")
+	for tab: Button in _page_buttons.values(): tab.visible = not _compact
+	_page_selector.visible = _compact
 	_identity_line.vertical = available.x < 650
 	_footer.vertical = available.x < 1100 or enlarged
 	_inspector.custom_minimum_size.x = 0 if _compact else (520 if available.x >= 1550 else 400)
@@ -411,15 +436,15 @@ func _resize_layout() -> void:
 	_aircraft_column.visible = not _compact or _compact_view
 	_inspector.visible = not _compact or not _compact_view
 	_view_button.visible = _compact
-	_view_button.text = tr("Edit") if _compact_view else tr("Preview")
+	_view_button.text = tr("Edit") if _compact_view else (tr("View") if enlarged else tr("Preview"))
+	_save_button.text = tr("Save") if available.x < 1100 and enlarged else tr("Save build")
+	var note_parent: Node = _page_nodes.setup.get_parent() if tight else _footer
+	if _action_notes.get_parent() != note_parent:
+		_action_notes.reparent(note_parent)
+		if not tight: _footer.move_child(_action_notes, 0)
 	_recipe_selectors.columns = 1 if enlarged else 2
 	_trial_button.custom_minimum_size.x = 0 if enlarged else 190
-	if _active_page == "compare" and _compact:
-		_compact_view = false
-		_aircraft_column.visible = false
-		_inspector.visible = true
-	if is_instance_valid(_library_dialog) and _library_dialog.visible:
-		_library_dialog.popup_centered_clamped(Vector2i(680, 520), 0.9)
+	
 
 
 func _build_aircraft_panel(parent: VBoxContainer) -> void:
@@ -472,7 +497,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_variant_selector.item_selected.connect(_on_variant_selected)
 	content.add_child(_variant_selector)
 
-	var variant_actions := HBoxContainer.new()
+	var variant_actions := HFlowContainer.new()
 	variant_actions.add_theme_constant_override("separation", 8)
 	_load_button = _button("Load", "", "LoadVariant")
 	_load_button.disabled = true
@@ -501,6 +526,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	_copy_button.pressed.connect(_request_copy)
 	content.add_child(_copy_button)
 	var rename := _button("Name or rename this build", "", "RenameBuild")
+	rename.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	rename.pressed.connect(func() -> void: _show_name_dialog(false))
 	content.add_child(rename)
 
@@ -1444,7 +1470,14 @@ func _build_library() -> void:
 	add_child(_library_dialog)
 	var body := VBoxContainer.new()
 	body.add_theme_constant_override("separation", 16)
-	_library_dialog.add_child(body)
+	var scroll := ScrollContainer.new()
+	scroll.name = "LibraryScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.follow_focus = true
+	scroll.custom_minimum_size = Vector2(300, 100)
+	_library_dialog.add_child(scroll)
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(body)
 	body.add_child(_label("Stock aircraft", "CardTitle"))
 	_base_selector = OptionButton.new()
 	_base_selector.name = "BaseAircraft"
@@ -1485,11 +1518,22 @@ func _build_name_dialog() -> void:
 			if not succeeded: _saved_variant_id = previous
 		else:
 			succeeded = _save_variant()
-		if succeeded: _name_dialog.hide())
+		if succeeded:
+			_name_dialog.hide()
+			_trial_button.disabled = not _edit_valid()
+		else:
+			_name_error.text = _status_label.text)
 	_name_dialog.canceled.connect(func() -> void:
 		_variant_name.text = _name_before
-		_refresh_identity())
+		_refresh_identity()
+		_trial_button.disabled = not _edit_valid()
+		if _save_button.is_visible_in_tree(): _save_button.grab_focus())
 	add_child(_name_dialog)
+	_name_body = VBoxContainer.new()
+	_name_body.add_child(_label("Build name", "SecondaryLabel"))
+	_name_error = _label("", "ErrorLabel", true)
+	_name_body.add_child(_name_error)
+	_name_dialog.add_child(_name_body)
 	# The name field is created with library controls; saving a new draft can show it here.
 
 
@@ -1527,7 +1571,9 @@ func _show_name_dialog(as_copy: bool) -> void:
 	_close_library()
 	_name_as_copy = as_copy
 	_name_before = _variant_name.text
-	_variant_name.reparent(_name_dialog)
+	_variant_name.reparent(_name_body)
+	_name_body.move_child(_variant_name, 1)
+	_name_error.text = ""
 	_variant_name.visible = true
 	_name_dialog.title = tr("Save a copy") if as_copy else tr("Save build")
 	_name_dialog.popup_centered_clamped(Vector2i(560, 180), 0.9)
@@ -1558,6 +1604,7 @@ func _load_selected_variant() -> void:
 func _set_page(page: String) -> void:
 	if not _page_nodes.has(page): return
 	_active_page = page
+	_page_selector.select(0 if page == "setup" else 1)
 	_compact_view = false
 	for id: String in _page_nodes:
 		_page_nodes[id].visible = id == page
@@ -1623,7 +1670,11 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	_guard_dialog.dialog_hide_on_ok = false
 	_guard_dialog.ok_button_text = tr("Save and continue")
 	_guard_dialog.cancel_button_text = tr("Cancel")
-	_guard_dialog.add_button(tr("Discard changes"), false, "discard")
+	var discard := _guard_dialog.add_button(tr("Discard changes"), false, "discard")
+	for button: Button in [_guard_dialog.get_ok_button(), _guard_dialog.get_cancel_button(), discard]:
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_guard_dialog.get_label().autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_guard_dialog.confirmed.connect(_navigation_save)
 	_guard_dialog.canceled.connect(_navigation_abort)
 	_guard_dialog.custom_action.connect(func(action: String) -> void:

@@ -1831,18 +1831,33 @@ func _show_trace_recovery_dialog(error_code: int) -> void:
 	var dialog := ConfirmationDialog.new()
 	dialog.title = tr("Trace not saved")
 	dialog.dialog_text = tr("The recording stopped, but the manual flight trace was not saved (error %d). Choose Retry save, Discard trace and continue, or Stay.") % error_code
+	dialog.theme = UiTheme.build()
 	dialog.exclusive = true
 	dialog.get_ok_button().text = tr("Stay") # default action is the safe choice
 	dialog.get_cancel_button().hide() # Escape and the window close still map to Stay
 	_trace_retry_button = dialog.add_button(tr("Retry save"), false, "retry")
 	_trace_discard_button = dialog.add_button(tr("Discard trace and continue"), true, "discard")
+	var text_scale := clampf(UiTheme.text_scale, 1.0, 2.0)
+	var message := dialog.get_label()
+	message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	message.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for button: Button in [dialog.get_ok_button(), _trace_retry_button, _trace_discard_button]:
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.custom_minimum_size.y = roundi(44.0 * text_scale)
+	var visible_size: Vector2i = get_tree().root.size
+	var desired_size := Vector2i(roundi(560.0 * text_scale), roundi(220.0 * text_scale))
+	var viewport_limit := Vector2i(maxi(1, roundi(visible_size.x * 0.9)), maxi(1, roundi(visible_size.y * 0.9)))
+	var dialog_minimum := Vector2i(mini(desired_size.x, viewport_limit.x), mini(desired_size.y, viewport_limit.y))
+	dialog.min_size = dialog_minimum
+	dialog.size = dialog_minimum
 	dialog.custom_action.connect(_on_trace_recovery_action)
 	dialog.confirmed.connect(_cancel_exit_request)
 	dialog.canceled.connect(_cancel_exit_request)
 	dialog.close_requested.connect(_cancel_exit_request)
 	_trace_recovery_dialog = dialog
 	add_child(dialog)
-	dialog.popup_centered()
+	dialog.popup_centered_clamped(dialog_minimum, 0.9)
 	dialog.get_ok_button().grab_focus.call_deferred()
 
 

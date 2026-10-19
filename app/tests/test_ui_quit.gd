@@ -3,6 +3,7 @@ extends SceneTree
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 const HOME_PREFS := "user://test_ui_quit_home.cfg"
 const DIRECT_PREFS := "user://test_ui_quit_direct.cfg"
 const WORKSHOP_PREFS := "user://test_ui_quit_workshop.cfg"
@@ -193,11 +194,27 @@ func _check_direct_recording_and_failed_save(initial_auto_accept: bool) -> void:
 	app.quit_requests = 0
 	var always_fails := AlwaysFailRecorder.new()
 	app.flight.recorder = always_fails
+	var previous_window_size: Vector2i = root.size
+	root.size = Vector2i(1280, 720) # Headless SceneTree starts at 64×64; exercise a normal desktop viewport.
+	await ui.settle()
+	var previous_text_scale: float = UiTheme.text_scale
+	UiTheme.text_scale = 2.0
 	app.quit_app()
 	await ui.settle()
 	var stay_dialog := app.get("_trace_recovery_dialog") as ConfirmationDialog
+	var message_label := stay_dialog.get_label() if stay_dialog != null else null
+	var desktop_size: Vector2i = root.size
+	_check("trace recovery uses the shared theme, wraps, and stays within the viewport at 200%",
+		stay_dialog != null and stay_dialog.theme.default_font_size >= 40
+		and message_label != null and message_label.autowrap_mode == TextServer.AUTOWRAP_WORD_SMART
+		and stay_dialog.size.x <= desktop_size.x and stay_dialog.size.y <= desktop_size.y,
+		"font=%s size=%s viewport=%s" % [str(stay_dialog.theme.default_font_size) if stay_dialog != null else "none",
+		str(stay_dialog.size) if stay_dialog != null else "none", str(desktop_size)])
 	if stay_dialog != null:
 		stay_dialog.confirmed.emit()
+	await ui.settle()
+	UiTheme.text_scale = previous_text_scale
+	root.size = previous_window_size
 	await ui.settle()
 	_check("Stay keeps an always-failing trace pending and the app open",
 		app.quit_requests == 0 and always_fails.stop_calls == 1 and app._trace_recovery.pending_count() == 1)

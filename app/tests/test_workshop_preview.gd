@@ -45,24 +45,28 @@ func _run() -> void:
 		and not preview.is_physics_processing()
 		and viewport.render_target_update_mode != SubViewport.UPDATE_ALWAYS,
 		"update_mode=%d" % viewport.render_target_update_mode)
-	_check("fits every model bound inside the inspection viewport", _all_bounds_fit(preview, 1.0, 0.68), _projected_bounds_text(preview, 1.0))
+	_check("fits every model bound inside the inspection viewport", _all_bounds_fit(preview, 1.0, 0.82), _projected_bounds_text(preview, 1.0))
 	_check("size label names the actual scale and span", size_label != null
 		and size_label.text.contains("100%") and size_label.text.contains("span")
 		and size_label.tooltip_text.contains("0.50 m"), size_label.text if size_label != null else "missing label")
+	var default_width_fraction := _projected_width_fraction(preview, 1.0)
+	_check("default inspection uses the target width while retaining margin",
+		default_width_fraction >= 0.55 and default_width_fraction <= 0.75,
+		"projected width fraction=%.3f" % default_width_fraction)
 	_check("grid uses the declared half-meter world spacing", _grid_spacing_is_world_units(grid))
 	for extreme_scale: float in [0.5, 2.0]:
 		preview.set_aircraft(AIRCRAFT_ID, extreme_scale)
 		await _settle()
 		_check("qualified %.0f%% scale retains all model bounds" % (extreme_scale * 100.0),
 			is_equal_approx(float(preview.get("_requested_scale")), extreme_scale)
-			and _all_bounds_fit(preview, extreme_scale, 0.68), _projected_bounds_text(preview, extreme_scale))
+			and _all_bounds_fit(preview, extreme_scale, 0.82), _projected_bounds_text(preview, extreme_scale))
 
 	preview.set_aircraft(AIRCRAFT_ID, 0.6)
 	await _settle()
 	var recipe_scale_before := float(preview.get("_requested_scale"))
 	var inspect_distance := camera.position.length()
 	_check("Inspect refits the effective draft scale without changing its value",
-		is_equal_approx(recipe_scale_before, 0.6) and _all_bounds_fit(preview, 0.6, 0.68), _projected_bounds_text(preview, 0.6))
+		is_equal_approx(recipe_scale_before, 0.6) and _all_bounds_fit(preview, 0.6, 0.82), _projected_bounds_text(preview, 0.6))
 
 	preview.set_view_mode("compare")
 	await _settle()
@@ -72,7 +76,7 @@ func _run() -> void:
 	var pair_grid := preview.get("_grid") as MeshInstance3D
 	_check("Compare fits the larger original member and keeps draft scale intact",
 		compare_distance > inspect_distance and is_equal_approx(float(preview.get("_requested_scale")), recipe_scale_before)
-		and _all_bounds_fit(preview, 0.6, 0.68), _projected_bounds_text(preview, 0.6))
+		and _all_bounds_fit(preview, 0.6, 0.82), _projected_bounds_text(preview, 0.6))
 
 	preview.set_comparison_original(true)
 	await _settle()
@@ -82,7 +86,7 @@ func _run() -> void:
 		and camera.position.distance_to(compare_camera_position) < 0.0001
 		and camera.basis.is_equal_approx(compare_camera_basis)
 		and preview.get("_grid") == pair_grid
-		and _all_bounds_fit(preview, 1.0, 0.68), _projected_bounds_text(preview, 1.0))
+		and _all_bounds_fit(preview, 1.0, 0.82), _projected_bounds_text(preview, 1.0))
 	_check("comparison size label reports original span in world units",
 		size_label.text.begins_with("Original") and size_label.text.contains("100%")
 		and size_label.text.contains("span"), size_label.text)
@@ -93,7 +97,7 @@ func _run() -> void:
 	_check("draft toggle shows its actual 60% scale without refitting the pair",
 		is_equal_approx(draft_root.scale.x, 0.6)
 		and camera.position.distance_to(compare_camera_position) < 0.0001
-		and _all_bounds_fit(preview, 0.6, 0.68), _projected_bounds_text(preview, 0.6))
+		and _all_bounds_fit(preview, 0.6, 0.82), _projected_bounds_text(preview, 0.6))
 	_check("switching view mode leaves the recipe value unchanged",
 		is_equal_approx(float(preview.get("_requested_scale")), recipe_scale_before))
 
@@ -101,7 +105,7 @@ func _run() -> void:
 		preview.set_standard_view(standard_view)
 		await _settle(1)
 		_check("%s standard view retains all tips" % standard_view,
-			_all_bounds_fit(preview, 0.6, 0.68), _projected_bounds_text(preview, 0.6))
+			_all_bounds_fit(preview, 0.6, 0.82), _projected_bounds_text(preview, 0.6))
 
 	preview.zoom_by(4.0)
 	await _settle(1)
@@ -126,8 +130,8 @@ func _run() -> void:
 	_check("Reset restores the default angle and zoom without changing Compare selection",
 		reset_state.mode == "compare" and bool(reset_state.comparison_original)
 		and is_equal_approx(float(reset_state.zoom), 1.0)
-		and is_equal_approx(float(reset_state.yaw_deg), 35.0)
-		and is_equal_approx(float(reset_state.pitch_deg), 18.0))
+		and is_equal_approx(float(reset_state.yaw_deg), 0.0)
+		and is_equal_approx(float(reset_state.pitch_deg), 10.0))
 
 	preview.grab_focus()
 	var before_keyboard: Dictionary = preview.get_view_state()
@@ -153,6 +157,16 @@ func _run() -> void:
 	await _settle(1)
 	var view_rect: Rect2 = (preview.get("_viewport_container") as Control).get_global_rect()
 	var center := view_rect.get_center()
+	var camera_button := preview.find_child("OrbitLeft", true, false) as Button
+	var camera_button_center := camera_button.get_global_rect().get_center()
+	var before_camera_button_drag: Dictionary = preview.get_view_state()
+	await _mouse_button(camera_button_center, MOUSE_BUTTON_LEFT, true)
+	await _mouse_motion(center)
+	await _mouse_button(center, MOUSE_BUTTON_LEFT, false)
+	var after_camera_button_drag: Dictionary = preview.get_view_state()
+	_check("camera toolbar drag does not orbit the model beneath its overlay",
+		is_equal_approx(float(after_camera_button_drag.yaw_deg), float(before_camera_button_drag.yaw_deg))
+		and is_equal_approx(float(after_camera_button_drag.pitch_deg), float(before_camera_button_drag.pitch_deg)))
 	var outside := Vector2(center.x, maxf(view_rect.end.y + 8.0, root.size.y - 4.0))
 	var keyboard_before: Dictionary = preview.get_view_state()
 	await _mouse_button(center, MOUSE_BUTTON_LEFT, true)
@@ -184,12 +198,26 @@ func _run() -> void:
 	_check("mouse wheel over toolbar does not change zoom",
 		is_equal_approx(float(preview.get_view_state().zoom), outside_zoom_before))
 
+	var widescreen_layout := PreviewScript.new() as Control
+	widescreen_layout.position = Vector2(50.0, 180.0)
+	widescreen_layout.size = Vector2(680.0, 368.0)
+	root.add_child(widescreen_layout)
+	await _settle()
+	var widescreen_image := widescreen_layout.find_child("PreviewImage", true, false) as Control
+	_check("720p preview retains at least 320 px of image height",
+		widescreen_image.size.y >= 320.0,
+		"image=%s preview=%s" % [widescreen_image.size, widescreen_layout.size])
+	widescreen_layout.queue_free()
+	await process_frame
+
 	root.size = Vector2i(380, 250)
 	await _settle()
 	var compact_preview_rect := preview.get_global_rect()
 	var compact_image := preview.find_child("PreviewImage", true, false) as Control
 	var compact_toolbar := preview.find_child("PreviewControls", true, false) as Control
+	var compact_camera_toolbar := preview.find_child("CameraControls", true, false) as Control
 	var compact_layout_fits := compact_image.size.y > 80.0 and compact_preview_rect.encloses(compact_image.get_global_rect())
+	compact_layout_fits = compact_layout_fits and compact_preview_rect.encloses(compact_camera_toolbar.get_global_rect())
 	for control_name: String in ["InspectMode", "CompareMode", "CompareOriginal", "CompareDraft", "ResetView",
 			"ViewFront", "ViewSide", "ViewTop", "OrbitLeft", "OrbitUp", "OrbitDown", "OrbitRight", "ZoomOut", "ZoomIn"]:
 		var control := preview.find_child(control_name, true, false) as Control
@@ -243,6 +271,21 @@ func _projected_bounds_text(preview: Control, scale: float) -> String:
 		var point: Vector3 = rig.global_transform * ((bounds.get_endpoint(corner_index) - bounds.get_center()) * scale)
 		points.append(camera.unproject_position(point) / size)
 	return "size=%s bounds=%s" % [size, points]
+
+
+func _projected_width_fraction(preview: Control, scale: float) -> float:
+	var bounds: AABB = preview.get("_model_bounds")
+	var rig := preview.get("_rig") as Node3D
+	var camera := preview.get("_camera") as Camera3D
+	var size: Vector2 = camera.get_viewport().get_visible_rect().size
+	var minimum_x := INF
+	var maximum_x := -INF
+	for corner_index: int in 8:
+		var point: Vector3 = rig.global_transform * ((bounds.get_endpoint(corner_index) - bounds.get_center()) * scale)
+		var screen := camera.unproject_position(point)
+		minimum_x = minf(minimum_x, screen.x)
+		maximum_x = maxf(maximum_x, screen.x)
+	return (maximum_x - minimum_x) / size.x
 
 
 func _grid_spacing_is_world_units(grid_instance: MeshInstance3D) -> bool:

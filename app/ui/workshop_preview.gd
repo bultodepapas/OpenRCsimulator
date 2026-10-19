@@ -10,10 +10,10 @@ const MIN_MODEL_SCALE := 0.5
 const MAX_MODEL_SCALE := 2.0
 const MIN_ZOOM := 0.5
 const MAX_ZOOM := 4.0
-const DEFAULT_YAW_DEG := 35.0
-const DEFAULT_PITCH_DEG := 18.0
+const DEFAULT_YAW_DEG := 0.0
+const DEFAULT_PITCH_DEG := 10.0
 const PITCH_LIMIT_DEG := 88.0
-const FIT_FILL := 0.68
+const FIT_FILL := 0.80
 const SAFE_FILL := 0.93
 
 var _viewport_container: SubViewportContainer
@@ -42,6 +42,9 @@ var _inspect_button: Button
 var _compare_button: Button
 var _original_button: Button
 var _draft_button: Button
+var _camera_panel: PanelContainer
+var _compact_layout := true
+var _layout_initialized := false
 
 
 func _init() -> void:
@@ -76,6 +79,7 @@ func _init() -> void:
 	_build_world()
 	_build_toolbar()
 	_build_badge()
+	_apply_preview_layout()
 	resized.connect(_on_resized)
 	_viewport_container.resized.connect(_on_resized)
 
@@ -413,17 +417,13 @@ func _build_toolbar() -> void:
 	panel.offset_left = 8.0
 	panel.offset_top = 8.0
 	panel.offset_right = -8.0
-	panel.custom_minimum_size.y = 60.0
+	panel.custom_minimum_size.y = 34.0
 	panel.mouse_filter = Control.MOUSE_FILTER_STOP
 	panel.add_theme_stylebox_override("panel", _overlay_style())
 	add_child(panel)
-	var rows := VBoxContainer.new()
-	rows.add_theme_constant_override("separation", 2)
-	panel.add_child(rows)
-
 	var mode_row := HBoxContainer.new()
 	mode_row.add_theme_constant_override("separation", 4)
-	rows.add_child(mode_row)
+	panel.add_child(mode_row)
 	_inspect_button = _make_button("Inspect", "View the draft at its fitted size.", "InspectMode")
 	_inspect_button.toggle_mode = true
 	_inspect_button.pressed.connect(set_view_mode.bind("inspect"))
@@ -444,11 +444,24 @@ func _build_toolbar() -> void:
 	reset_button.pressed.connect(reset_view)
 	mode_row.add_child(reset_button)
 
+	_camera_panel = PanelContainer.new()
+	_camera_panel.name = "CameraControls"
+	_camera_panel.anchor_right = 1.0
+	_camera_panel.anchor_top = 1.0
+	_camera_panel.anchor_bottom = 1.0
+	_camera_panel.offset_left = 8.0
+	_camera_panel.offset_top = -44.0
+	_camera_panel.offset_right = -8.0
+	_camera_panel.offset_bottom = -8.0
+	_camera_panel.custom_minimum_size.y = 36.0
+	_camera_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	_camera_panel.add_theme_stylebox_override("panel", _overlay_style())
+	add_child(_camera_panel)
 	var camera_row := HBoxContainer.new()
 	camera_row.add_theme_constant_override("separation", 2)
-	rows.add_child(camera_row)
+	_camera_panel.add_child(camera_row)
 	for view_name: String in ["Front", "Side", "Top"]:
-		var view_button := _make_button(view_name, "Show the %s standard view." % view_name.to_lower(), "View" + view_name)
+		var view_button := _make_button(view_name, tr("Show the %s standard view.") % tr(view_name), "View" + view_name)
 		view_button.pressed.connect(set_standard_view.bind(view_name.to_lower()))
 		camera_row.add_child(view_button)
 	var orbit_left := _make_button("←", "Orbit left.", "OrbitLeft")
@@ -475,11 +488,13 @@ func _build_toolbar() -> void:
 func _build_badge() -> void:
 	var badge_panel := PanelContainer.new()
 	badge_panel.name = "PreviewSizeBadge"
+	badge_panel.anchor_left = 1.0
 	badge_panel.anchor_top = 1.0
+	badge_panel.anchor_right = 1.0
 	badge_panel.anchor_bottom = 1.0
-	badge_panel.offset_left = 8.0
+	badge_panel.offset_left = -260.0
 	badge_panel.offset_top = -36.0
-	badge_panel.offset_right = 260.0
+	badge_panel.offset_right = -8.0
 	badge_panel.offset_bottom = -6.0
 	badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	badge_panel.add_theme_stylebox_override("panel", _overlay_style())
@@ -488,8 +503,8 @@ func _build_badge() -> void:
 	_scale_badge.name = "PreviewSizeLabel"
 	_scale_badge.add_theme_font_size_override("font_size", 15)
 	_scale_badge.add_theme_color_override("font_color", Color("#F3F1EB"))
-	_scale_badge.text = "100% · span 0.00 m"
-	_scale_badge.tooltip_text = "Grid spacing: %.2f m between adjacent lines." % GRID_SPACING
+	_scale_badge.text = tr("%s  ·  %s%%  ·  span %.2f m") % [tr("Draft"), "100", 0.0]
+	_scale_badge.tooltip_text = tr("Grid spacing: %.2f m between adjacent lines.") % GRID_SPACING
 	badge_panel.add_child(_scale_badge)
 	_update_scale_badge()
 
@@ -497,8 +512,8 @@ func _build_badge() -> void:
 func _make_button(label: String, hint: String, node_name: String) -> Button:
 	var button := Button.new()
 	button.name = node_name
-	button.text = label
-	button.tooltip_text = hint
+	button.text = tr(label)
+	button.tooltip_text = tr(hint)
 	button.focus_mode = Control.FOCUS_ALL
 	button.add_theme_font_size_override("font_size", 14)
 	return button
@@ -526,19 +541,62 @@ func _sync_toolbar() -> void:
 		_draft_button.disabled = _view_mode != "compare"
 
 
+func _apply_preview_layout() -> void:
+	var compact := size.x < 600.0
+	if _layout_initialized and compact == _compact_layout:
+		return
+	_layout_initialized = true
+	_compact_layout = compact
+	if compact:
+		_viewport_container.offset_top = 82.0
+		_viewport_container.offset_bottom = -42.0
+		for panel: PanelContainer in [get_node("PreviewControls"), _camera_panel]:
+			panel.offset_left = 0.0
+			panel.offset_right = 0.0
+		var main_panel := get_node("PreviewControls") as PanelContainer
+		main_panel.offset_top = 8.0
+		_camera_panel.anchor_top = 0.0
+		_camera_panel.anchor_bottom = 0.0
+		_camera_panel.offset_top = 44.0
+		_camera_panel.offset_bottom = 80.0
+		var badge := get_node("PreviewSizeBadge") as PanelContainer
+		badge.anchor_left = 0.0
+		badge.anchor_right = 0.0
+		badge.offset_left = 8.0
+		badge.offset_right = 260.0
+	else:
+		_viewport_container.offset_top = 44.0
+		_viewport_container.offset_bottom = 0.0
+		var main_panel := get_node("PreviewControls") as PanelContainer
+		main_panel.offset_left = 8.0
+		main_panel.offset_right = -8.0
+		_camera_panel.anchor_top = 1.0
+		_camera_panel.anchor_bottom = 1.0
+		_camera_panel.offset_left = 8.0
+		_camera_panel.offset_top = -44.0
+		_camera_panel.offset_right = -8.0
+		_camera_panel.offset_bottom = -8.0
+		var badge := get_node("PreviewSizeBadge") as PanelContainer
+		badge.anchor_left = 1.0
+		badge.anchor_right = 1.0
+		badge.offset_left = -260.0
+		badge.offset_right = -8.0
+
+
 func _update_scale_badge() -> void:
 	if not is_instance_valid(_scale_badge):
 		return
 	var displayed_scale := _visible_model_scale()
 	var displayed_span := _model_bounds.size.x * displayed_scale
-	var shown_name := "Original" if _view_mode == "compare" and _comparison_original else "Draft"
+	var shown_name := tr("Original") if _view_mode == "compare" and _comparison_original else tr("Draft")
 	var percent := displayed_scale * 100.0
 	var percent_text := str(int(roundf(percent))) if is_equal_approx(percent, roundf(percent)) else String.num(percent, 2)
-	_scale_badge.text = "%s  ·  %s%%  ·  span %.2f m" % [shown_name, percent_text, displayed_span]
-	_scale_badge.tooltip_text = "Grid spacing: %.2f m between adjacent lines. Span is the model's X-axis tip-to-tip extent." % GRID_SPACING
+	_scale_badge.text = tr("%s  ·  %s%%  ·  span %.2f m") % [shown_name, percent_text, displayed_span]
+	_scale_badge.tooltip_text = tr("Grid spacing: %.2f m between adjacent lines. Span is the model's X-axis tip-to-tip extent.") % GRID_SPACING
 
 
 func _on_resized() -> void:
+	_apply_preview_layout()
 	_refresh_camera()
 
 
@@ -548,7 +606,13 @@ func _request_redraw() -> void:
 
 
 func _is_in_aircraft_viewport(global_point: Vector2) -> bool:
-	return is_instance_valid(_viewport_container) and _viewport_container.get_global_rect().has_point(global_point)
+	if not is_instance_valid(_viewport_container) or not _viewport_container.get_global_rect().has_point(global_point):
+		return false
+	for node: Node in find_children("*", "Button", true, false):
+		var button := node as Button
+		if is_instance_valid(button) and button.get_global_rect().has_point(global_point):
+			return false
+	return true
 
 
 func _input(event: InputEvent) -> void:

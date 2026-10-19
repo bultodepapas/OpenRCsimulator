@@ -1457,6 +1457,9 @@ msgstr "Valor"
 msgid "View the draft at its fitted size."
 msgstr "Ver el borrador ajustado al tamaño de la vista."
 
+msgid "View"
+msgstr "Ver"
+
 msgid "Wing area (m²)"
 msgstr "Superficie alar (m²)"
 
