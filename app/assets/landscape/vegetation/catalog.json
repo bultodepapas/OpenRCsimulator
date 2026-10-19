@@ -108,23 +108,171 @@
           }
         ]
       }
+    },
+    {
+      "id": "lolipop_maple_2026",
+      "title": "Maple Trees Pack",
+      "author": "LOLIPOP",
+      "url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_evidence": "assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt",
+      "license_sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574",
+      "conversion_proof": "assets/landscape/vegetation/derived/lolipop_maple_2026/conversion_manifest.json",
+      "conversion_proof_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
+      "source": {
+        "archive": {
+          "bytes": 150673952,
+          "name": "maple-trees-pack-lowpoly-game-ready-lods.zip",
+          "sha256": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a"
+        },
+        "creator": "LOLIPOP (@lolipop_1707)",
+        "license": "CC BY 4.0",
+        "mesh": {
+          "bounds_y_up_m": {
+            "center_offset_from_stem": [
+              0.17993402481079102,
+              9.160891233826987,
+              0.20144128799438477
+            ],
+            "max": [
+              6.485836982727051,
+              18.32444190979004,
+              8.867838859558105
+            ],
+            "min": [
+              -6.125968933105469,
+              -0.002659442136064172,
+              -8.464956283569336
+            ],
+            "size": [
+              12.61180591583252,
+              18.327101351926103,
+              17.33279514312744
+            ]
+          },
+          "gallery_origin_world": [
+            -20.0,
+            40.0,
+            0.0
+          ],
+          "material_triangles": {
+            "Bark_Mat": 2614,
+            "Cluster_Mat": 2927
+          },
+          "object": "Acer_large_3_LOD1",
+          "polygons": 5541,
+          "triangles": 5541,
+          "vertices": 4729
+        },
+        "name": "Maple trees pack (lowpoly, game ready, LODs)",
+        "original_entries": [
+          "source/Acer tree pack.fbx",
+          "textures/bark_ambientocclusion.png",
+          "textures/bark_basecolor.png",
+          "textures/bark_normal.png",
+          "textures/bark_roughness.png",
+          "textures/Cluster_albedo.png",
+          "textures/Cluster_AO.png",
+          "textures/Cluster_Normal.png",
+          "textures/Cluster_Opacity.png",
+          "textures/Cluster_Roughness.jpg"
+        ],
+        "url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0"
+      }
+    },
+    {
+      "id": "lolipop_grass_2026",
+      "title": "Grass pack (lowpoly, game-ready)",
+      "author": "LOLIPOP",
+      "url": "https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_evidence": "assets/landscape/vegetation/source/lolipop_grass_2026/LICENSE_GRASS.txt",
+      "license_sha256": "397715d253b1dd51299bb6cc785e634e4a106b89e6541d6cefcf905ffa5ee4a7",
+      "conversion_proof": "assets/landscape/vegetation/derived/lolipop_grass_2026/conversion_manifest.json",
+      "conversion_proof_sha256": "df6cb778c320209b8bc39233a1ff5cea7d684c9c59e8c6ff30a2cf783ff64cc8",
+      "source": {
+        "archive": {
+          "bytes": 4571974,
+          "name": "grass_pack_lowpoly_game-ready.zip",
+          "sha256": "304b2ea5c62f6dc635dc5d895534d5bd3812d58e25815d43fcd5ff7783a65fe4"
+        },
+        "creator": "LOLIPOP (@lolipop_1707)",
+        "license": "CC BY 4.0",
+        "license_notice": "assets/landscape/vegetation/source/lolipop_grass_2026/LICENSE_GRASS.txt",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "name": "Grass pack (lowpoly, game-ready)",
+        "original_entries": [
+          "license.txt",
+          "scene.bin",
+          "scene.gltf",
+          "textures/Checker_mat_baseColor.png",
+          "textures/Grass_Mat_baseColor.png",
+          "textures/Grass_Mat_metallicRoughness.png",
+          "textures/Grass_Mat_normal.png",
+          "textures/Man_ref_baseColor.png",
+          "textures/Tall_grass_Mat_baseColor.png",
+          "textures/Tall_grass_Mat_metallicRoughness.png",
+          "textures/Tall_grass_Mat_normal.png"
+        ],
+        "source_axis": "Z-up",
+        "url": "https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403"
+      }
+    },
+    {
+      "id": "dasy_forest_2026",
+      "title": "A forest (3) with a road at night for game — selected shrub",
+      "author": "dasy444",
+      "url": "https://sketchfab.com/3d-models/a-forest-3-with-a-road-at-night-for-game-61f8c7817fe6457fb26e4814cfc48a3f",
+      "license": "CC BY 4.0",
+      "license_url": "https://creativecommons.org/licenses/by/4.0/",
+      "license_evidence": "assets/landscape/vegetation/source/dasy_forest_2026/LICENSE_FOREST.txt",
+      "license_sha256": "d41803d1376ea56604881809a78a13d51d1ea54f8361460cbad413ab9c35161a",
+      "conversion_proof": "assets/landscape/vegetation/derived/dasy_forest_2026/conversion_manifest.json",
+      "conversion_proof_sha256": "35640e97201d704f6f2e99cb5a330ce728a3fc139d335687c033f89836f8da5e",
+      "source": {
+        "archive": {
+          "bytes": 20951847,
+          "name": "a_forest_3_with_a_road_at_night_for_game.zip",
+          "sha256": "7a6716d6e691838324e8270ec9c22b5f7793609342db579861626c3c8975bea3"
+        },
+        "creator": "dasy444",
+        "license": "CC BY 4.0",
+        "license_notice": "assets/landscape/vegetation/source/dasy_forest_2026/LICENSE_FOREST.txt",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "name": "a forest (3) with a road at night for game",
+        "original_entries": [
+          "license.txt",
+          "scene.bin",
+          "scene.gltf",
+          "textures/Material.003_baseColor.png",
+          "textures/Material.003_normal.png",
+          "textures/Material.004_baseColor.jpeg",
+          "textures/Material.004_normal.png",
+          "textures/Material_baseColor.png"
+        ],
+        "selected_mesh_index": 210,
+        "selected_mesh_name": "3f84aea6648aa6cc5af5f07ee43c6056-no-bg-preview (carve.photos).003_Material_0",
+        "url": "https://sketchfab.com/3d-models/a-forest-3-with-a-road-at-night-for-game-61f8c7817fe6457fb26e4814cfc48a3f"
+      }
     }
   ],
   "import": {
     "format": "glTF 2.0 and Wavefront OBJ/MTL",
-    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof",
+    "geometry_policy": "original source archives are preserved; Quaternius runtime tree buffers clamp only finite float COLOR_0 values in (1, 1.0002] to 1; oak LOD0 joins the 36 source parts while preserving positions and UVs exactly and normals within the conversion proof; maple preserves supplied large_3 LOD1 topology and bakes only its source transform",
     "lod_policy": "Godot 4.7.2 ResourceImporterScene automatic mesh LODs enabled for glTF assets; the oak source contributes LOD0 only, with supplier LOD1/LOD2 excluded; Wavefront OBJ assets use supplied geometry",
-    "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once"
+    "shared_material_policy": "original Quaternius glTF materials and textures are preserved; the oak legacy M_Quercus material maps its packed atlas to Principled BSDF base color with roughness 1.0 and BLEND alpha, as recorded in the conversion proof; Godot 4.7.2 imports metallic_specular at its native 0.5 default; OBJ/MTL diffuse materials are preserved; shared source files are extracted once; maple uses the source bark/leaf PBR maps with masked double-sided foliage; its conversion manifest records channel mapping"
   },
   "counts": {
-    "trees": 8,
-    "shrubs": 2,
-    "grass_and_herbs": 4,
+    "trees": 9,
+    "shrubs": 3,
+    "grass_and_herbs": 6,
     "flowers": 3,
     "crops": 2,
     "reeds": 1,
-    "total_assets": 20,
-    "source_triangles_one_of_each": 45269
+    "total_assets": 24,
+    "source_triangles_one_of_each": 51000
   },
   "files": [
     {
@@ -132,6 +280,24 @@
       "source_entry": "License_Standard.txt",
       "bytes": 852,
       "sha256": "120710e542c3ebaf83856c4eb55b4a1e680593b39302eba7fdc5d942dfe78c58"
+    },
+    {
+      "path": "LICENSE_FOREST.txt",
+      "source_entry": "assets/landscape/vegetation/source/dasy_forest_2026/LICENSE_FOREST.txt",
+      "bytes": 1039,
+      "sha256": "d41803d1376ea56604881809a78a13d51d1ea54f8361460cbad413ab9c35161a"
+    },
+    {
+      "path": "LICENSE_GRASS.txt",
+      "source_entry": "assets/landscape/vegetation/source/lolipop_grass_2026/LICENSE_GRASS.txt",
+      "bytes": 838,
+      "sha256": "397715d253b1dd51299bb6cc785e634e4a106b89e6541d6cefcf905ffa5ee4a7"
+    },
+    {
+      "path": "LICENSE_MAPLE.txt",
+      "source_entry": "assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt",
+      "bytes": 727,
+      "sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574"
     },
     {
       "path": "LICENSE_OAK.txt",
@@ -272,6 +438,24 @@
       "sha256": "ddf0e8837705702871d3f03de8cf7aeed61ad4bf8ee92052b6f95bdd771297b6"
     },
     {
+      "path": "models/dasy_forest_2026/forest_leafy_shrub.bin",
+      "source_entry": "assets/landscape/vegetation/derived/dasy_forest_2026/forest_leafy_shrub.bin",
+      "bytes": 4800,
+      "sha256": "a3aaa2eafd8166c1484ced803bcd3c4a532a8db765ede2ed5e0a3ebde81b5f3e"
+    },
+    {
+      "path": "models/dasy_forest_2026/forest_leafy_shrub.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/dasy_forest_2026/forest_leafy_shrub.gltf",
+      "bytes": 3197,
+      "sha256": "da595e680120341c16b042ae4d18a54a7db34f02c0500e89075debab797954e5"
+    },
+    {
+      "path": "models/dasy_forest_2026/textures/forest_leafy_shrub_basecolor.png",
+      "source_entry": "assets/landscape/vegetation/derived/dasy_forest_2026/textures/forest_leafy_shrub_basecolor.png",
+      "bytes": 3296891,
+      "sha256": "b9358314f5f6e6ced74736f93de4a6baf69f65732d7eb27128dd5b951bb1823d"
+    },
+    {
       "path": "models/Fern_1.bin",
       "source_entry": "glTF/Fern_1.bin",
       "bytes": 11448,
@@ -378,6 +562,114 @@
       "source_entry": "glTF/Leaves_TwistedTree_C.png",
       "bytes": 70353,
       "sha256": "0e459b56b14c0e81b1b7cf3d1e8c6f0bb71790eb6c46bb02a76a922d8df646ea"
+    },
+    {
+      "path": "models/lolipop_grass_2026/grass_lolipop_small.bin",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_small.bin",
+      "bytes": 2384,
+      "sha256": "c585021c51427d41a75ce9253d8de62eb29121d9a8de956e63c645d901e128c9"
+    },
+    {
+      "path": "models/lolipop_grass_2026/grass_lolipop_small.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_small.gltf",
+      "bytes": 4796,
+      "sha256": "fea7c09d7e8f6b01013c15f39d1cb9e51e41a04aef6e64f05686e360290afb87"
+    },
+    {
+      "path": "models/lolipop_grass_2026/grass_lolipop_tall.bin",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_tall.bin",
+      "bytes": 1920,
+      "sha256": "464e5174dfa9683fc1ff5782a817e2504d08d971946b52e48f4dff6c0d2b678e"
+    },
+    {
+      "path": "models/lolipop_grass_2026/grass_lolipop_tall.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_tall.gltf",
+      "bytes": 4788,
+      "sha256": "ba7f3ba7193326ad977aafbfdc75d90d643694ab4dd68d730d6d7a8ef36aea95"
+    },
+    {
+      "path": "models/lolipop_grass_2026/textures/grass_lolipop_small_basecolor.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_basecolor.png",
+      "bytes": 371665,
+      "sha256": "d91b2ab204902e84c76400201849254da0ab41dd6b109fa2ad7bc4017ebe3927"
+    },
+    {
+      "path": "models/lolipop_grass_2026/textures/grass_lolipop_small_mrao.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_mrao.png",
+      "bytes": 320295,
+      "sha256": "85ed0c78f7303c5015431c8818a88018e1be3ee14d201b9b3c6f1c7c755ccb93"
+    },
+    {
+      "path": "models/lolipop_grass_2026/textures/grass_lolipop_small_normal.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_normal.png",
+      "bytes": 410511,
+      "sha256": "2f83a76ee2defa4e214f139cdca684eba5b346a6d93ff6a65decbf929567856b"
+    },
+    {
+      "path": "models/lolipop_grass_2026/textures/grass_lolipop_tall_basecolor.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_basecolor.png",
+      "bytes": 1222592,
+      "sha256": "518b9973a47534a896d1a5d41f8cb2363dd5a80a013946d5cf3703134d684405"
+    },
+    {
+      "path": "models/lolipop_grass_2026/textures/grass_lolipop_tall_mrao.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_mrao.png",
+      "bytes": 655282,
+      "sha256": "7bb6c00839b46f1189de0a6c3ef887f7954dd4e2e8b0872e6ebe91468302754e"
+    },
+    {
+      "path": "models/lolipop_grass_2026/textures/grass_lolipop_tall_normal.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_normal.png",
+      "bytes": 1390883,
+      "sha256": "853befe53647d63a04d7e799716f50d8476ed8d634eaed9b573f4a2670815911"
+    },
+    {
+      "path": "models/maple_tree/maple_large_3_lod1.bin",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin",
+      "bytes": 321256,
+      "sha256": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f"
+    },
+    {
+      "path": "models/maple_tree/maple_large_3_lod1.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+      "bytes": 5315,
+      "sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_bark_ao-maple_bark_roughness.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png",
+      "bytes": 6115692,
+      "sha256": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_bark_basecolor.jpg",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg",
+      "bytes": 2981274,
+      "sha256": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_bark_normal.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png",
+      "bytes": 28222851,
+      "sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_leaves_ao-maple_leaves_roughness.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png",
+      "bytes": 3097706,
+      "sha256": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_leaves_basecolor.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png",
+      "bytes": 1757295,
+      "sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b"
+    },
+    {
+      "path": "models/maple_tree/textures/maple_leaves_normal.png",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png",
+      "bytes": 2586783,
+      "sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
     },
     {
       "path": "models/oak_tree/oak_lod0.bin",
@@ -1879,6 +2171,349 @@
           "LOD0"
         ],
         "alternate_source_lods_included": [],
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "maple_tree",
+      "source_id": "lolipop_maple_2026",
+      "source_name": "Acer_large_3_LOD1",
+      "description": "Mature broadleaf maple, supplier LOD1",
+      "role": "tree",
+      "scene": "res://assets/landscape/vegetation/models/maple_tree/maple_large_3_lod1.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+      "source_sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
+      },
+      "source_format": "glTF 2.0 converted from supplier FBX",
+      "source_conversion_proof_sha256": "ec1c882ee6045dbae5e7499fda2747da646db9c2fe2e0ecfc35af9cf1fe71421",
+      "source_triangles": 5541,
+      "source_surfaces": 2,
+      "source_materials": 2,
+      "source_bounds_m": {
+        "min": [
+          -6.125969,
+          -0.002659,
+          -8.464957
+        ],
+        "max": [
+          6.485837,
+          18.324442,
+          8.867838
+        ],
+        "size": [
+          12.611806,
+          18.327101,
+          17.332795
+        ],
+        "height": 18.327101,
+        "ground_offset": 0.002659
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -6.125969,
+          0.0,
+          -8.464957
+        ],
+        "max": [
+          6.485837,
+          18.327101,
+          8.867838
+        ],
+        "size": [
+          12.611806,
+          18.327101,
+          17.332795
+        ]
+      },
+      "textures": [
+        {
+          "uri": "textures/maple_bark_ao-maple_bark_roughness.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png"
+        },
+        {
+          "uri": "textures/maple_bark_basecolor.jpg",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg"
+        },
+        {
+          "uri": "textures/maple_bark_normal.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png"
+        },
+        {
+          "uri": "textures/maple_leaves_ao-maple_leaves_roughness.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png"
+        },
+        {
+          "uri": "textures/maple_leaves_basecolor.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png"
+        },
+        {
+          "uri": "textures/maple_leaves_normal.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.bin",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/maple_large_3_lod1.gltf",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_ao-maple_bark_roughness.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_basecolor.jpg",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_bark_normal.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_ao-maple_leaves_roughness.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_basecolor.png",
+        "assets/landscape/vegetation/derived/lolipop_maple_2026/textures/maple_leaves_normal.png"
+      ],
+      "lod": {
+        "source_supplied": true,
+        "source_lod": "LOD1",
+        "imported_supplied_levels": [
+          "LOD1"
+        ],
+        "alternate_source_lods_included": [],
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "grass_lolipop_small",
+      "source_id": "lolipop_grass_2026",
+      "source_name": "Grass main fresh.002_Grass_Mat_0",
+      "description": "Downloaded grass",
+      "role": "grass",
+      "scene": "res://assets/landscape/vegetation/models/lolipop_grass_2026/grass_lolipop_small.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_small.gltf",
+      "source_sha256": "fea7c09d7e8f6b01013c15f39d1cb9e51e41a04aef6e64f05686e360290afb87",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_small.bin": "c585021c51427d41a75ce9253d8de62eb29121d9a8de956e63c645d901e128c9",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_small.gltf": "fea7c09d7e8f6b01013c15f39d1cb9e51e41a04aef6e64f05686e360290afb87",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_basecolor.png": "d91b2ab204902e84c76400201849254da0ab41dd6b109fa2ad7bc4017ebe3927",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_mrao.png": "85ed0c78f7303c5015431c8818a88018e1be3ee14d201b9b3c6f1c7c755ccb93",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_normal.png": "2f83a76ee2defa4e214f139cdca684eba5b346a6d93ff6a65decbf929567856b"
+      },
+      "source_format": "glTF 2.0",
+      "source_conversion_proof_sha256": "df6cb778c320209b8bc39233a1ff5cea7d684c9c59e8c6ff30a2cf783ff64cc8",
+      "source_triangles": 26,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min": [
+          -0.111622,
+          -0.035322,
+          -0.145278
+        ],
+        "max": [
+          0.153271,
+          0.214436,
+          0.102961
+        ],
+        "size": [
+          0.264893,
+          0.249758,
+          0.24824
+        ],
+        "height": 0.249758,
+        "ground_offset": 0.035322
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.111622,
+          0.0,
+          -0.145278
+        ],
+        "max": [
+          0.153271,
+          0.249758,
+          0.102961
+        ],
+        "size": [
+          0.264893,
+          0.249758,
+          0.24824
+        ]
+      },
+      "textures": [
+        {
+          "uri": "textures/grass_lolipop_small_basecolor.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_basecolor.png"
+        },
+        {
+          "uri": "textures/grass_lolipop_small_mrao.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_mrao.png"
+        },
+        {
+          "uri": "textures/grass_lolipop_small_normal.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_normal.png"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_small.bin",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_small.gltf",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_basecolor.png",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_mrao.png",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_small_normal.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "grass_lolipop_tall",
+      "source_id": "lolipop_grass_2026",
+      "source_name": "Grass tall low.001_Tall_grass_Mat_0",
+      "description": "Downloaded grass",
+      "role": "grass",
+      "scene": "res://assets/landscape/vegetation/models/lolipop_grass_2026/grass_lolipop_tall.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_tall.gltf",
+      "source_sha256": "ba7f3ba7193326ad977aafbfdc75d90d643694ab4dd68d730d6d7a8ef36aea95",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_tall.bin": "464e5174dfa9683fc1ff5782a817e2504d08d971946b52e48f4dff6c0d2b678e",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_tall.gltf": "ba7f3ba7193326ad977aafbfdc75d90d643694ab4dd68d730d6d7a8ef36aea95",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_basecolor.png": "518b9973a47534a896d1a5d41f8cb2363dd5a80a013946d5cf3703134d684405",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_mrao.png": "7bb6c00839b46f1189de0a6c3ef887f7954dd4e2e8b0872e6ebe91468302754e",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_normal.png": "853befe53647d63a04d7e799716f50d8476ed8d634eaed9b573f4a2670815911"
+      },
+      "source_format": "glTF 2.0",
+      "source_conversion_proof_sha256": "df6cb778c320209b8bc39233a1ff5cea7d684c9c59e8c6ff30a2cf783ff64cc8",
+      "source_triangles": 20,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min": [
+          -0.266363,
+          -0.050886,
+          -0.224544
+        ],
+        "max": [
+          0.253518,
+          0.472768,
+          0.277511
+        ],
+        "size": [
+          0.519881,
+          0.523654,
+          0.502056
+        ],
+        "height": 0.523654,
+        "ground_offset": 0.050886
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.266363,
+          0.0,
+          -0.224544
+        ],
+        "max": [
+          0.253518,
+          0.523654,
+          0.277511
+        ],
+        "size": [
+          0.519881,
+          0.523654,
+          0.502056
+        ]
+      },
+      "textures": [
+        {
+          "uri": "textures/grass_lolipop_tall_basecolor.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_basecolor.png"
+        },
+        {
+          "uri": "textures/grass_lolipop_tall_mrao.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_mrao.png"
+        },
+        {
+          "uri": "textures/grass_lolipop_tall_normal.png",
+          "source_entry": "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_normal.png"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_tall.bin",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/grass_lolipop_tall.gltf",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_basecolor.png",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_mrao.png",
+        "assets/landscape/vegetation/derived/lolipop_grass_2026/textures/grass_lolipop_tall_normal.png"
+      ],
+      "lod": {
+        "source_supplied": false,
+        "godot_import_generate": true
+      }
+    },
+    {
+      "id": "forest_leafy_shrub",
+      "source_id": "dasy_forest_2026",
+      "source_name": "3f84aea6648aa6cc5af5f07ee43c6056-no-bg-preview (carve.photos).003_Material_0",
+      "description": "Downloaded shrub",
+      "role": "shrub",
+      "scene": "res://assets/landscape/vegetation/models/dasy_forest_2026/forest_leafy_shrub.gltf",
+      "source_entry": "assets/landscape/vegetation/derived/dasy_forest_2026/forest_leafy_shrub.gltf",
+      "source_sha256": "da595e680120341c16b042ae4d18a54a7db34f02c0500e89075debab797954e5",
+      "source_dependency_sha256": {
+        "assets/landscape/vegetation/derived/dasy_forest_2026/forest_leafy_shrub.bin": "a3aaa2eafd8166c1484ced803bcd3c4a532a8db765ede2ed5e0a3ebde81b5f3e",
+        "assets/landscape/vegetation/derived/dasy_forest_2026/forest_leafy_shrub.gltf": "da595e680120341c16b042ae4d18a54a7db34f02c0500e89075debab797954e5",
+        "assets/landscape/vegetation/derived/dasy_forest_2026/textures/forest_leafy_shrub_basecolor.png": "b9358314f5f6e6ced74736f93de4a6baf69f65732d7eb27128dd5b951bb1823d"
+      },
+      "source_format": "glTF 2.0",
+      "source_conversion_proof_sha256": "35640e97201d704f6f2e99cb5a330ce728a3fc139d335687c033f89836f8da5e",
+      "source_triangles": 144,
+      "source_surfaces": 1,
+      "source_materials": 1,
+      "source_bounds_m": {
+        "min": [
+          -0.532916,
+          -0.128152,
+          -0.433191
+        ],
+        "max": [
+          0.501943,
+          0.687161,
+          0.519497
+        ],
+        "size": [
+          1.034859,
+          0.815313,
+          0.952688
+        ],
+        "height": 0.815313,
+        "ground_offset": 0.128152
+      },
+      "grounded_bounds_m": {
+        "min": [
+          -0.532916,
+          0.0,
+          -0.433191
+        ],
+        "max": [
+          0.501943,
+          0.815313,
+          0.519497
+        ],
+        "size": [
+          1.034859,
+          0.815313,
+          0.952688
+        ]
+      },
+      "textures": [
+        {
+          "uri": "textures/forest_leafy_shrub_basecolor.png",
+          "source_entry": "assets/landscape/vegetation/derived/dasy_forest_2026/textures/forest_leafy_shrub_basecolor.png"
+        }
+      ],
+      "dependencies": [
+        "assets/landscape/vegetation/derived/dasy_forest_2026/forest_leafy_shrub.bin",
+        "assets/landscape/vegetation/derived/dasy_forest_2026/forest_leafy_shrub.gltf",
+        "assets/landscape/vegetation/derived/dasy_forest_2026/textures/forest_leafy_shrub_basecolor.png"
+      ],
+      "lod": {
+        "source_supplied": false,
         "godot_import_generate": true
       }
     }

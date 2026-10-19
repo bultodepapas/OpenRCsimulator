@@ -117,9 +117,9 @@ func _initialize() -> void:
 
 func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 	var expected_tree_ids: Dictionary = {}
-	for asset_value: Dictionary in ImportedVegetation.catalog().get("assets", []):
-		if str(asset_value.get("role", "")) == "tree":
-			expected_tree_ids[str(asset_value.get("id", ""))] = true
+	for alias: String in ["shade_tree", "sapling"]:
+		for asset_id: String in ImportedVegetation.ALIASES[alias]:
+			expected_tree_ids[asset_id] = true
 	var source_seeds: Dictionary = {}
 	for prefab: String in ["shade_tree", "sapling"]:
 		for seed in range(4096):
@@ -153,6 +153,19 @@ func _test_all_tree_sources_hit_crown(field: Dictionary) -> void:
 		_check("%s has a physical crown proxy" % asset_id, not crown.is_empty())
 		if crown.is_empty():
 			continue
+		if asset_id == "maple_tree":
+			var maple := VegetationPlacement.spec(str(source_seeds[asset_id].prefab), int(source_seeds[asset_id].seed))
+			var source_bounds: Dictionary = ImportedVegetation.get_asset(asset_id).source_bounds_m
+			var c := cos(deg_to_rad(37.0))
+			var s := sin(deg_to_rad(37.0))
+			var covers_source := true
+			for x: float in [float(source_bounds.min[0]), float(source_bounds.max[0])]:
+				for z: float in [float(source_bounds.min[2]), float(source_bounds.max[2])]:
+					var n := north - (s * x + c * z) * float(maple.scale)
+					var e := east + (c * x - s * z) * float(maple.scale)
+					covers_source = covers_source and n >= float(crown.bounds_north_min) and n <= float(crown.bounds_north_max) \
+						and e >= float(crown.bounds_east_min) and e <= float(crown.bounds_east_max)
+			_check("asymmetric maple crown bounds cover its rotated source footprint", covers_source)
 		var hit: SceneryCollision.Event = _sweep(built.world, north, east, float(crown.down),
 			_crown_sweep_half_length(crown))
 		_check("%s crown responds as soft foliage without trunk contact" % asset_id,

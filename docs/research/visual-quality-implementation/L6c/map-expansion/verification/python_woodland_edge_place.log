@@ -1,0 +1,11 @@
+test_contract_and_source_derived_triangle_budget (__main__.WoodlandEdgePlacementTests.test_contract_and_source_derived_triangle_budget) ... ok
+test_full_layout_envelopes_and_existing_masks_are_clear (__main__.WoodlandEdgePlacementTests.test_full_layout_envelopes_and_existing_masks_are_clear) ... ok
+test_generated_document_is_deterministic_and_current (__main__.WoodlandEdgePlacementTests.test_generated_document_is_deterministic_and_current) ... ok
+test_maple_clearance_uses_the_mature_placement_height (__main__.WoodlandEdgePlacementTests.test_maple_clearance_uses_the_mature_placement_height) ... ok
+test_short_grass_impostor_manifest_is_bound_to_catalog_source (__main__.WoodlandEdgePlacementTests.test_short_grass_impostor_manifest_is_bound_to_catalog_source) ... ok
+test_source_hashes_cover_reproducible_inputs_without_mutation (__main__.WoodlandEdgePlacementTests.test_source_hashes_cover_reproducible_inputs_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.429s
+
+OK

@@ -1,0 +1,96 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 1691.412,
+  "scenery": true,
+  "stats": {
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 893.556,
+    "cells": 55,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 136,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 83,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 113.921,
+      "fence": 17.607,
+      "fleet": 12.171,
+      "hedge": 10.531,
+      "instances": 163.65,
+      "meshes": 26.337,
+      "patch": 45.784,
+      "track": 0.823,
+      "woodland_edges": 67.829
+    },
+    "vegetation_instances": 30,
+    "vegetation_triangles": 91048,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "views": {
+    "club_understory": {
+      "draw_calls": 49.0,
+      "objects": 50.0,
+      "primitives": 164530.0,
+      "shadow_draw_calls": 0
+    },
+    "farm_maples": {
+      "draw_calls": 21.0,
+      "objects": 22.0,
+      "primitives": 118409.0,
+      "shadow_draw_calls": 0
+    },
+    "farm_understory": {
+      "draw_calls": 21.0,
+      "objects": 22.0,
+      "primitives": 120635.0,
+      "shadow_draw_calls": 0
+    },
+    "forest_maple": {
+      "draw_calls": 9.0,
+      "objects": 9.0,
+      "primitives": 104291.0,
+      "shadow_draw_calls": 0
+    },
+    "forest_shrub": {
+      "draw_calls": 20.0,
+      "objects": 21.0,
+      "primitives": 117563.0,
+      "shadow_draw_calls": 0
+    },
+    "meadow_tufts": {
+      "draw_calls": 76.0,
+      "objects": 77.0,
+      "primitives": 170924.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_club": {
+      "draw_calls": 170.0,
+      "objects": 171.0,
+      "primitives": 312297.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_farm": {
+      "draw_calls": 62.0,
+      "objects": 63.0,
+      "primitives": 169377.0,
+      "shadow_draw_calls": 0
+    }
+  },
+  "warm_frame_pacing_ms": {
+    "median": 0.582,
+    "p95": 1.109,
+    "samples": 180,
+    "view": "forest_shrub",
+    "vsync": "disabled"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 2195.621,
+  "scenery": true,
+  "stats": {
+    "botanical_batches": 11,
+    "botanical_plants": 221,
+    "botanical_triangles": 83650,
+    "build_ms": 1120.723,
+    "cells": 55,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 136,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 86,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 79.901,
+      "fence": 27.695,
+      "fleet": 15.671,
+      "hedge": 18.436,
+      "instances": 218.297,
+      "meshes": 35.334,
+      "patch": 60.762,
+      "track": 0.81,
+      "woodland_edges": 89.987
+    },
+    "vegetation_instances": 30,
+    "vegetation_triangles": 92982,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "views": {
+    "pilot_south": {
+      "draw_calls": 144.0,
+      "objects": 145.0,
+      "primitives": 303568.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_club": {
+      "draw_calls": 163.0,
+      "objects": 164.0,
+      "primitives": 307818.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_pavilion": {
+      "draw_calls": 143.0,
+      "objects": 144.0,
+      "primitives": 317172.0,
+      "shadow_draw_calls": 0
+    }
+  }
+}

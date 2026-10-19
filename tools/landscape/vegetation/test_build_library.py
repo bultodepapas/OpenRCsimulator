@@ -125,13 +125,16 @@ class BuildLibraryTests(unittest.TestCase):
             candidate_ids = {asset["id"] for asset in catalog["assets"]}
             installed_ids = {asset["id"] for asset in installed_catalog["assets"]}
             expected_installed_ids = candidate_ids - {library.OAK_ASSET_ID}
+            expected_installed_ids.add("maple_tree")
             if library.OAK_ASSET_ID in installed_ids:
                 expected_installed_ids.add(library.OAK_ASSET_ID)
             self.assertEqual(installed_ids, expected_installed_ids)
             self.assertIn(library.OAK_ASSET_ID, candidate_ids)
-            self.assertEqual(catalog["counts"]["total_assets"], 20)
-            self.assertEqual(catalog["counts"]["trees"], 8)
-            self.assertEqual(len(catalog["sources"]), 4)
+            self.assertIn("maple_tree", candidate_ids)
+            self.assertIn("maple_tree", installed_ids)
+            self.assertEqual(catalog["counts"]["total_assets"], 24)
+            self.assertEqual(catalog["counts"]["trees"], 9)
+            self.assertEqual(len(catalog["sources"]), 7)
 
             candidates = {
                 asset["id"]: asset
@@ -270,9 +273,9 @@ class BuildLibraryTests(unittest.TestCase):
                 oak_archive,
             )
 
-        self.assertEqual(catalog["counts"]["total_assets"], 20)
-        self.assertEqual(catalog["counts"]["trees"], 8)
-        self.assertEqual(len(catalog["sources"]), 4)
+        self.assertEqual(catalog["counts"]["total_assets"], 24)
+        self.assertEqual(catalog["counts"]["trees"], 9)
+        self.assertEqual(len(catalog["sources"]), 7)
         oak = next(asset for asset in catalog["assets"] if asset["id"] == library.OAK_ASSET_ID)
         self.assertEqual(oak["source_id"], library.OAK_SOURCE_ID)
         self.assertEqual(oak["source_triangles"], 5_303)
@@ -383,6 +386,105 @@ class BuildLibraryTests(unittest.TestCase):
         self.assertEqual(proof["material_mapping"]["alpha_mode"], "BLEND")
         self.assertIn("Godot 4.7 ignores it", proof["material_mapping"]["specular_note"])
 
+    def test_maple_lod1_catalog_contract_and_conversion_provenance(self) -> None:
+        with (
+            ZipFile(library.ARCHIVE) as standard,
+            ZipFile(library.CROPS_ARCHIVE) as crops,
+            ZipFile(library.REED_ARCHIVE) as reeds,
+            library.open_oak_conversion_archive() as oak_archive,
+        ):
+            catalog, library_files = library.catalog_for(standard, crops, reeds, oak_archive)
+
+        maple = next(asset for asset in catalog["assets"] if asset["id"] == "maple_tree")
+        self.assertEqual(maple["source_id"], "lolipop_maple_2026")
+        self.assertEqual(maple["source_name"], "Acer_large_3_LOD1")
+        self.assertEqual(maple["role"], "tree")
+        self.assertEqual(maple["source_triangles"], 5_541)
+        self.assertEqual(maple["source_surfaces"], 2)
+        self.assertEqual(maple["source_materials"], 2)
+        self.assertEqual(maple["lod"]["source_lod"], "LOD1")
+        self.assertEqual(maple["lod"]["imported_supplied_levels"], ["LOD1"])
+        self.assertEqual(maple["lod"]["alternate_source_lods_included"], [])
+        self.assertEqual(
+            maple["source_sha256"],
+            hashlib.sha256(library_files["models/maple_tree/" + library.MAPLE_GLTF]).hexdigest(),
+        )
+
+        gltf_bytes = library_files["models/maple_tree/" + library.MAPLE_GLTF]
+        gltf = json.loads(gltf_bytes)
+        self.assertEqual(len(gltf["materials"]), 2)
+        mask_materials = 0
+        opaque_materials = 0
+        for material in gltf["materials"]:
+            with self.subTest(material=material.get("name", "")):
+                if material.get("alphaMode", "OPAQUE") == "MASK":
+                    mask_materials += 1
+                    self.assertTrue(material.get("doubleSided", False))
+                    alpha_cutoff = float(material.get("alphaCutoff", 0.5))
+                    self.assertTrue(math.isfinite(alpha_cutoff))
+                    self.assertGreaterEqual(alpha_cutoff, 0.0)
+                    self.assertLessEqual(alpha_cutoff, 1.0)
+                else:
+                    opaque_materials += 1
+                    self.assertEqual(material.get("alphaMode", "OPAQUE"), "OPAQUE")
+                pbr = material["pbrMetallicRoughness"]
+                self.assertIn("baseColorTexture", pbr)
+                self.assertIn("normalTexture", material)
+                self.assertIn("metallicRoughnessTexture", pbr)
+                self.assertIn("occlusionTexture", material)
+                self.assertEqual(
+                    material["occlusionTexture"]["index"],
+                    pbr["metallicRoughnessTexture"]["index"],
+                )
+                texture_infos = {
+                    "albedo": pbr["baseColorTexture"],
+                    "normal": material["normalTexture"],
+                    "roughness": pbr["metallicRoughnessTexture"],
+                    "occlusion": material["occlusionTexture"],
+                }
+                for map_name, texture_info in texture_infos.items():
+                    texture = gltf["textures"][texture_info["index"]]
+                    image = gltf["images"][texture["source"]]
+                    runtime_path = "models/maple_tree/" + image["uri"]
+                    with self.subTest(material=material.get("name", ""), map=map_name):
+                        self.assertIn(runtime_path, library_files)
+                        self.assertTrue(library_files[runtime_path])
+                roughness = float(pbr.get("roughnessFactor", 1.0))
+                metallic = float(pbr.get("metallicFactor", 1.0))
+                self.assertTrue(math.isfinite(roughness))
+                self.assertGreaterEqual(roughness, 0.0)
+                self.assertLessEqual(roughness, 1.0)
+                self.assertTrue(math.isfinite(metallic))
+                self.assertGreaterEqual(metallic, 0.0)
+                self.assertLessEqual(metallic, 1.0)
+        self.assertEqual(mask_materials, 1)
+        self.assertEqual(opaque_materials, 1)
+
+        manifest = json.loads(library.MAPLE_MANIFEST.read_text(encoding="utf-8"))
+        self.assertEqual(maple["source_conversion_proof_sha256"], library.sha256_file(library.MAPLE_MANIFEST))
+        source = next(item for item in catalog["sources"] if item["id"] == "lolipop_maple_2026")
+        self.assertEqual(source["conversion_proof_sha256"], library.sha256_file(library.MAPLE_MANIFEST))
+        self.assertEqual(source["license_sha256"], library.sha256_file(library.MAPLE_SOURCE_DIR / "LICENSE_MAPLE.txt"))
+        self.assertEqual(source["source"], manifest["source"])
+        for input_item in manifest["inputs"]:
+            input_path = library.MAPLE_SOURCE_DIR / input_item["path"]
+            self.assertEqual(library.sha256_file(input_path), input_item["sha256"])
+        for output_item in manifest["outputs"]:
+            output_path = library.MAPLE_DERIVED_DIR / output_item["path"]
+            self.assertEqual(library.sha256_file(output_path), output_item["sha256"])
+
+        for dependency in maple["dependencies"]:
+            source_path = library.ROOT / dependency
+            self.assertEqual(
+                hashlib.sha256(source_path.read_bytes()).hexdigest(),
+                maple["source_dependency_sha256"][dependency],
+            )
+            source_prefix = library.MAPLE_DERIVED_DIR.relative_to(library.ROOT).as_posix() + "/"
+            runtime_relative_path = PurePosixPath(dependency).relative_to(source_prefix)
+            runtime_path = "models/maple_tree/" + runtime_relative_path.as_posix()
+            self.assertIn(runtime_path, library_files)
+            self.assertEqual(library_files[runtime_path], source_path.read_bytes())
+
     def test_tree_color_derivation_refuses_overshoot_beyond_reviewed_limit(self) -> None:
         with ZipFile(library.ARCHIVE) as standard:
             source_name = "glTF/Pine_1.gltf"
@@ -418,12 +520,20 @@ class BuildLibraryTests(unittest.TestCase):
             ]
 
             production_before = file_snapshot(library.RUNTIME)
+            maple_manifest = json.loads(library.MAPLE_MANIFEST.read_text(encoding="utf-8"))
+            maple_source_paths = (
+                library.MAPLE_MANIFEST,
+                library.MAPLE_SOURCE_DIR / "LICENSE_MAPLE.txt",
+                *(library.MAPLE_SOURCE_DIR / item["path"] for item in maple_manifest["inputs"]),
+                *(library.MAPLE_DERIVED_DIR / item["path"] for item in maple_manifest["outputs"]),
+            )
             source_evidence_before = {
                 path: path.read_bytes()
                 for path in (
                     library.SOURCE_LICENSE,
                     *library.SOURCE_NOTICES.keys(),
                     library.OAK_LICENSE_SOURCE,
+                    *maple_source_paths,
                 )
             }
             source_archive_hashes_before = {
@@ -437,6 +547,7 @@ class BuildLibraryTests(unittest.TestCase):
                     library.OAK_LICENSE_SOURCE,
                     library.OAK_CONVERSION_PROOF,
                     *(library.OAK_CONVERSION_DIR / item["entry"] for item in library.OAK_CONVERSION_FILES),
+                    *maple_source_paths,
                 )
             }
 
@@ -449,8 +560,8 @@ class BuildLibraryTests(unittest.TestCase):
             )
             self.assertEqual(generated.returncode, 0, generated.stderr)
             catalog = json.loads((candidate_root / "catalog.json").read_text(encoding="utf-8"))
-            self.assertEqual(catalog["counts"]["total_assets"], 20)
-            self.assertEqual(catalog["counts"]["trees"], 8)
+            self.assertEqual(catalog["counts"]["total_assets"], 24)
+            self.assertEqual(catalog["counts"]["trees"], 9)
             first_snapshot = file_snapshot(candidate_root)
 
             checked = subprocess.run(

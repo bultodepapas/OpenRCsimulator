@@ -1,0 +1,335 @@
+{
+	"asset": {
+		"generator": "Khronos glTF Blender I/O v5.2.40",
+		"version": "2.0"
+	},
+	"scene": 0,
+	"scenes": [
+		{
+			"name": "Scene",
+			"nodes": [
+				0
+			]
+		}
+	],
+	"nodes": [
+		{
+			"mesh": 0,
+			"name": "maple_tree"
+		}
+	],
+	"materials": [
+		{
+			"name": "Maple_Bark_PBR",
+			"normalTexture": {
+				"index": 0
+			},
+			"occlusionTexture": {
+				"index": 1,
+				"strength": 1.0
+			},
+			"pbrMetallicRoughness": {
+				"baseColorTexture": {
+					"index": 2
+				},
+				"metallicFactor": 0.0,
+				"metallicRoughnessTexture": {
+					"index": 1
+				},
+				"roughnessFactor": 1.0
+			},
+			"doubleSided": false,
+			"alphaMode": "OPAQUE"
+		},
+		{
+			"alphaMode": "MASK",
+			"doubleSided": true,
+			"name": "Maple_Leaves_PBR",
+			"normalTexture": {
+				"index": 3
+			},
+			"occlusionTexture": {
+				"index": 4,
+				"strength": 1.0
+			},
+			"pbrMetallicRoughness": {
+				"baseColorTexture": {
+					"index": 5
+				},
+				"metallicFactor": 0.0,
+				"metallicRoughnessTexture": {
+					"index": 4
+				},
+				"roughnessFactor": 1.0
+			},
+			"alphaCutoff": 0.5
+		}
+	],
+	"meshes": [
+		{
+			"name": "maple_tree_mesh",
+			"primitives": [
+				{
+					"attributes": {
+						"POSITION": 0,
+						"NORMAL": 1,
+						"TEXCOORD_0": 2,
+						"TEXCOORD_1": 3,
+						"TANGENT": 4
+					},
+					"indices": 5,
+					"material": 0
+				},
+				{
+					"attributes": {
+						"POSITION": 6,
+						"NORMAL": 7,
+						"TEXCOORD_0": 8,
+						"TEXCOORD_1": 9,
+						"TANGENT": 10
+					},
+					"indices": 11,
+					"material": 1
+				}
+			]
+		}
+	],
+	"textures": [
+		{
+			"sampler": 0,
+			"source": 0
+		},
+		{
+			"sampler": 0,
+			"source": 1
+		},
+		{
+			"sampler": 0,
+			"source": 2
+		},
+		{
+			"sampler": 0,
+			"source": 3
+		},
+		{
+			"sampler": 0,
+			"source": 4
+		},
+		{
+			"sampler": 0,
+			"source": 5
+		}
+	],
+	"images": [
+		{
+			"mimeType": "image/png",
+			"name": "maple_bark_normal",
+			"uri": "textures/maple_bark_normal.png"
+		},
+		{
+			"mimeType": "image/png",
+			"name": "maple_bark_ao-maple_bark_roughness",
+			"uri": "textures/maple_bark_ao-maple_bark_roughness.png"
+		},
+		{
+			"mimeType": "image/jpeg",
+			"name": "maple_bark_basecolor",
+			"uri": "textures/maple_bark_basecolor.jpg"
+		},
+		{
+			"mimeType": "image/png",
+			"name": "maple_leaves_normal",
+			"uri": "textures/maple_leaves_normal.png"
+		},
+		{
+			"mimeType": "image/png",
+			"name": "maple_leaves_ao-maple_leaves_roughness",
+			"uri": "textures/maple_leaves_ao-maple_leaves_roughness.png"
+		},
+		{
+			"mimeType": "image/png",
+			"name": "maple_leaves_basecolor",
+			"uri": "textures/maple_leaves_basecolor.png"
+		}
+	],
+	"accessors": [
+		{
+			"bufferView": 0,
+			"componentType": 5126,
+			"count": 2046,
+			"max": [
+				5.088388442993164,
+				17.869935989379883,
+				7.319889068603516
+			],
+			"min": [
+				-4.49963903427124,
+				-0.002659421181306243,
+				-6.8843159675598145
+			],
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 1,
+			"componentType": 5126,
+			"count": 2046,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 2,
+			"componentType": 5126,
+			"count": 2046,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 3,
+			"componentType": 5126,
+			"count": 2046,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 4,
+			"componentType": 5126,
+			"count": 2046,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 5,
+			"componentType": 5123,
+			"count": 7842,
+			"type": "SCALAR"
+		},
+		{
+			"bufferView": 6,
+			"componentType": 5126,
+			"count": 3097,
+			"max": [
+				6.485836982727051,
+				18.32444190979004,
+				8.867837905883789
+			],
+			"min": [
+				-6.125968933105469,
+				3.5547633171081543,
+				-8.464957237243652
+			],
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 7,
+			"componentType": 5126,
+			"count": 3097,
+			"type": "VEC3"
+		},
+		{
+			"bufferView": 8,
+			"componentType": 5126,
+			"count": 3097,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 9,
+			"componentType": 5126,
+			"count": 3097,
+			"type": "VEC2"
+		},
+		{
+			"bufferView": 10,
+			"componentType": 5126,
+			"count": 3097,
+			"type": "VEC4"
+		},
+		{
+			"bufferView": 11,
+			"componentType": 5123,
+			"count": 8781,
+			"type": "SCALAR"
+		}
+	],
+	"bufferViews": [
+		{
+			"buffer": 0,
+			"byteLength": 24552,
+			"byteOffset": 0,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 24552,
+			"byteOffset": 24552,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 16368,
+			"byteOffset": 49104,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 16368,
+			"byteOffset": 65472,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 32736,
+			"byteOffset": 81840,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 15684,
+			"byteOffset": 114576,
+			"target": 34963
+		},
+		{
+			"buffer": 0,
+			"byteLength": 37164,
+			"byteOffset": 130260,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 37164,
+			"byteOffset": 167424,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 24776,
+			"byteOffset": 204588,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 24776,
+			"byteOffset": 229364,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 49552,
+			"byteOffset": 254140,
+			"target": 34962
+		},
+		{
+			"buffer": 0,
+			"byteLength": 17562,
+			"byteOffset": 303692,
+			"target": 34963
+		}
+	],
+	"samplers": [
+		{
+			"magFilter": 9729,
+			"minFilter": 9987
+		}
+	],
+	"buffers": [
+		{
+			"byteLength": 321256,
+			"uri": "maple_large_3_lod1.bin"
+		}
+	]
+}

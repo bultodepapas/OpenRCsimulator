@@ -24,6 +24,8 @@ SCENERY_PATH = ROOT / "app/data/scenery/default.json"
 VEGETATION_CATALOG_PATH = ROOT / "app/assets/landscape/vegetation/catalog.json"
 TREE_CATALOG_PATH = ROOT / "app/assets/landscape/trees/catalog.json"
 HEDGE_MANIFEST_PATH = ROOT / "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json"
+GRASS_SHORT_MANIFEST_PATH = ROOT / "app/assets/landscape/vegetation/impostors/grass_common_short_4view.json"
+GRASS_SHORT_ATLAS_PATH = ROOT / "app/assets/landscape/vegetation/impostors/grass_common_short_4view.png"
 SHRUB_SPECIES_MANIFEST_PATHS = {
     "grass_common_tall": ROOT / "app/assets/landscape/vegetation/impostors/grass_common_tall_4view.json",
     "bush_common_flowers": HEDGE_MANIFEST_PATH,
@@ -41,7 +43,7 @@ TREE_WIND_SOURCE_PATH = ROOT / "app/render/tree_wind.gdshaderinc"
 GRASS_MASK_SOURCE_PATH = ROOT / "app/render/landscape_upgrade/scenery_grass_mask.gd"
 TREE_PLACEMENT_SOURCE_PATH = ROOT / "tools/trees/place.py"
 
-FORMAT = "openrc-woodland-edges v2"
+FORMAT = "openrc-woodland-edges v3"
 LOCAL_CARD_CENTERS_TANGENT_RADIAL_M = (
     (-1.5, 0.6), (-0.6, -0.9), (0.1, 0.2), (1.5, 1.1), (1.4, -0.5), (-1.2, 1.7),
     (0.4, 1.8), (-0.2, 2.5), (-2.3, -0.6), (-2.0, -1.8), (0.5, -1.6), (1.7, -2.0),
@@ -84,6 +86,20 @@ PATCH_RADIAL_ENVELOPE_LIMITS_M = {
     "woodland-edge-southwest": 8.172611,
     "woodland-edge-northwest": 7.847895,
 }
+# The twelve original grass positions remain as low, compact edge accents. New cards
+# sit in irregular clusters near the shrub groups; their centers stay within 5.2 m of
+# each patch floor center. Varying count and spread avoids a ring or a regular grid.
+GROUNDCOVER_CENTER_RADIUS_LIMIT_M = 5.2
+GROUNDCOVER_MIN_SPACING_M = 0.18
+GROUNDCOVER_SEED_BASE = 720000
+GROUNDCOVER_CLUMPS = (
+    (-3.2, -1.5, 5, 0.92),
+    (-1.4, 2.25, 12, 1.00),
+    (1.1, -3.0, 6, 1.15),
+    (3.2, 0.6, 11, 0.90),
+    (-0.25, 4.0, 6, 0.72),
+)
+GROUNDCOVER_NEW_CARDS_PER_PATCH = sum(item[2] for item in GROUNDCOVER_CLUMPS)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
@@ -101,7 +117,7 @@ def _source_hash(path: Path) -> str:
 
 def _source_number(source: str, name: str, *, integer: bool = False) -> float | int:
     kind = r"int" if integer else r"float"
-    pattern = rf"^const\s+{re.escape(name)}\s*:\s*{kind}\s*=\s*([-+0-9.eE]+)"
+    pattern = rf"^const\s+{re.escape(name)}\s*(?::\s*{kind})?\s*:?=\s*([-+0-9.eE]+)"
     match = re.search(pattern, source, re.MULTILINE)
     if match is None:
         raise ValueError(f"could not read {name} from current source")
@@ -207,10 +223,23 @@ def _max_prop_radii(prefab_source: str, model_source: str,
         ids = _vegetation_aliases(vegetation_source, prefab)
         if not ids:
             ids = [prefab] if prefab in assets else []
+        if "maple_tree" in ids and "maple_tree" not in assets:
+            raise ValueError("Maple placement alias has no matching vegetation catalog asset")
         candidates = [assets[item] for item in ids if item in assets]
         if not candidates:
             raise ValueError(f"no catalog assets resolve scenery vegetation alias {prefab}")
-        radii[prefab] = max(_vegetation_asset_radius(asset, max_height) for asset in candidates)
+        maple_height = (
+            float(_source_number(placement_source, "MATURE_MAPLE_HEIGHT_M"))
+            if "maple_tree" in ids
+            else max_height
+        )
+        radii[prefab] = max(
+            _vegetation_asset_radius(
+                asset,
+                maple_height if str(asset.get("id", "")) == "maple_tree" else max_height,
+            )
+            for asset in candidates
+        )
     if not radii:
         raise ValueError("scenery placement radius catalog is empty")
     return radii, max(radii.values())
@@ -409,6 +438,108 @@ def _grass_heights(path_seeds: list[int], ceiling_m: float) -> list[float]:
         ), 6)
         for index, seed in enumerate(grass_seeds)
     ]
+
+
+def _patch_local_to_world(template: dict[str, Any], point: tuple[float, float]) -> tuple[float, float]:
+    """Map patch-local tangent/radial coordinates into field north/east metres."""
+    center_north, center_east = (float(value) for value in template["center_ne_m"])
+    center_radius = math.hypot(center_north, center_east)
+    radial_north, radial_east = center_north / center_radius, center_east / center_radius
+    tangent_north, tangent_east = -radial_east, radial_north
+    tangent, radial = point
+    phase = float(template["rotation_rad"])
+    cosine, sine = math.cos(phase), math.sin(phase)
+    rotated_tangent = tangent * cosine - radial * sine
+    rotated_radial = tangent * sine + radial * cosine
+    rotated_tangent += float(template["skew"]) * rotated_radial
+    return (
+        round(center_north + rotated_tangent * tangent_north + rotated_radial * radial_north, 6),
+        round(center_east + rotated_tangent * tangent_east + rotated_radial * radial_east, 6),
+    )
+
+
+def _grass_card_radius_per_height(manifest: dict[str, Any]) -> float:
+    frame = [float(value) for value in manifest.get("frame_world_size_m", [])]
+    source_height = float(manifest.get("source_height_m", 0.0))
+    if len(frame) != 2 or min(frame) <= 0.0 or source_height <= 0.0:
+        raise ValueError("short-grass impostor manifest has invalid frame dimensions")
+    return math.hypot(frame[0] * 0.5, frame[1] * 0.5) / source_height
+
+
+def _groundcover_cards(
+    template: dict[str, Any], patch_index: int, legacy_grass_ne_m: list[list[float]],
+    legacy_grass_heights_m: list[float], grass_asset: dict[str, Any],
+    grass_manifest: dict[str, Any],
+) -> list[dict[str, Any]]:
+    """Create three envelope-preserving legacy cards and forty clumped skirt cards."""
+    patch_id = str(template["id"])
+    if len(legacy_grass_ne_m) != 3 or len(legacy_grass_heights_m) != 3:
+        raise ValueError(f"{patch_id}: expected the three retained grass positions")
+    card_radius_coefficient = _grass_card_radius_per_height(grass_manifest)
+    mesh_radius_coefficient = _vegetation_asset_radius(grass_asset, 1.0)
+    cards: list[dict[str, Any]] = []
+
+    # V3 runtime reads grass_cards. These records retain the old positions and IDs;
+    # their requested heights fit the same full-quad footprint as the old mesh.
+    for index, (point, old_height) in enumerate(zip(legacy_grass_ne_m, legacy_grass_heights_m)):
+        seed = int(710000 + patch_index * 100 + 100 + index)
+        old_radius = mesh_radius_coefficient * float(old_height)
+        max_card_height = old_radius / card_radius_coefficient
+        height = math.floor(min(float(old_height), max_card_height) * 1_000_000_000) / 1_000_000_000
+        cards.append({
+            "id": f"{patch_id}:grass:{index}",
+            "north_m": float(point[0]),
+            "east_m": float(point[1]),
+            "height_m": height,
+            "yaw_rad": round(math.tau * _hash01(seed, 4259, 73), 6),
+            "seed": seed,
+        })
+
+    center = (float(template["floor_center_ne_m"][0]), float(template["floor_center_ne_m"][1]))
+    occupied = [(float(card["north_m"]), float(card["east_m"])) for card in cards]
+    new_index = 0
+    for cluster_index, (anchor_tangent, anchor_radial, count, spread_m) in enumerate(GROUNDCOVER_CLUMPS):
+        cluster_seed = 730000 + patch_index * 20 + cluster_index
+        anchor = (
+            float(anchor_tangent) + (_hash01(cluster_seed, 61, 17) - 0.5) * 0.36,
+            float(anchor_radial) + (_hash01(cluster_seed, 67, 17) - 0.5) * 0.36,
+        )
+        for _ in range(count):
+            seed = GROUNDCOVER_SEED_BASE + patch_index * 100 + new_index
+            point: tuple[float, float] | None = None
+            for attempt in range(128):
+                radius = float(spread_m) * math.sqrt(_hash01(seed, attempt, 941))
+                angle = math.tau * _hash01(seed, attempt, 947)
+                local_point = (anchor[0] + math.cos(angle) * radius,
+                               anchor[1] + math.sin(angle) * radius)
+                candidate = _patch_local_to_world(template, local_point)
+                if math.dist(candidate, center) > GROUNDCOVER_CENTER_RADIUS_LIMIT_M:
+                    continue
+                if any(math.dist(candidate, other) < GROUNDCOVER_MIN_SPACING_M for other in occupied):
+                    continue
+                point = candidate
+                break
+            if point is None:
+                raise ValueError(f"{patch_id}: could not fit deterministic groundcover clump {cluster_index}")
+
+            occupied.append(point)
+            center_radius = math.dist(point, center)
+            taper = max(0.0, min(1.0, (center_radius - 2.4) /
+                                  (GROUNDCOVER_CENTER_RADIUS_LIMIT_M - 2.4)))
+            height = (0.22 + 0.16 * _hash01(seed, 4253, 73)) * (1.0 - 0.52 * taper)
+            cards.append({
+                "id": f"{patch_id}:groundcover:{new_index}",
+                "north_m": point[0],
+                "east_m": point[1],
+                "height_m": round(height, 6),
+                "yaw_rad": round(math.tau * _hash01(seed, 4259, 73), 6),
+                "seed": seed,
+            })
+            new_index += 1
+
+    if new_index != GROUNDCOVER_NEW_CARDS_PER_PATCH:
+        raise ValueError(f"{patch_id}: generated an incomplete groundcover population")
+    return cards
 
 
 def _parse_hedge_contract(source: str, palette_source: str) -> dict[str, float | int]:
@@ -685,6 +816,9 @@ def _expected_paths() -> list[dict[str, Any]]:
 
         result.append({
             "id": template["id"],
+            "center_ne_m": [round(center_north, 6), round(center_east, 6)],
+            "rotation_rad": phase,
+            "skew": skew,
             "paths_ne_m": paths,
             "grass_ne_m": [to_world(point) for point in template["grass_local_tangent_radial_m"]],
             "floor_center_ne_m": [round(center_north, 6), round(center_east, 6)],
@@ -707,6 +841,7 @@ def build_document() -> dict[str, Any]:
     vegetation_catalog = _read_json(VEGETATION_CATALOG_PATH)
     tree_catalog = _read_json(TREE_CATALOG_PATH)
     hedge_manifest = _read_json(HEDGE_MANIFEST_PATH)
+    grass_manifest = _read_json(GRASS_SHORT_MANIFEST_PATH)
     shrub_species_manifests = {
         source_id: _read_json(path)
         for source_id, path in SHRUB_SPECIES_MANIFEST_PATHS.items()
@@ -753,7 +888,23 @@ def build_document() -> dict[str, Any]:
     grass_triangles = int(grass_asset.get("source_triangles", 0))
     if grass_triangles <= 0:
         raise ValueError("grass source has no validated triangle count")
-    grass_horizontal_radius = _vegetation_asset_radius(grass_asset, GRASS_HEIGHT_M)
+    grass_frame_size = [float(value) for value in grass_manifest.get("frame_world_size_m", [])]
+    grass_source_height = float(grass_manifest.get("source_height_m", 0.0))
+    if (grass_manifest.get("format") != "openrc-vegetation-impostor v1"
+            or grass_manifest.get("derived_from_asset_id") != GRASS_ASSET_ID
+            or grass_manifest.get("source_geometry_sha256") != grass_asset.get("source_sha256")
+            or int(grass_manifest.get("source_triangles", -1)) != grass_triangles
+            or len(grass_frame_size) != 2 or min(grass_frame_size) <= 0.0
+            or grass_source_height <= 0.0
+            or not re.fullmatch(r"[0-9a-f]{64}", str(grass_manifest.get("atlas_sha256", "")))):
+        raise ValueError("short-grass impostor manifest does not match the current source asset")
+    catalog_height = float(grass_asset.get("source_bounds_m", {}).get("height", 0.0))
+    if not math.isclose(grass_source_height, catalog_height, rel_tol=0.0, abs_tol=1e-6):
+        raise ValueError("short-grass impostor source height differs from the vegetation catalog")
+    if (not GRASS_SHORT_ATLAS_PATH.is_file()
+            or hashlib.sha256(GRASS_SHORT_ATLAS_PATH.read_bytes()).hexdigest()
+            != grass_manifest["atlas_sha256"]):
+        raise ValueError("short-grass impostor atlas does not match its manifest hash")
     missing_species = sorted(set(SHRUB_SPECIES_COUNTS) - set(grass_assets))
     if missing_species:
         raise ValueError(f"missing woodland shrub source assets: {', '.join(missing_species)}")
@@ -825,7 +976,13 @@ def build_document() -> dict[str, Any]:
         patch = {
             "id": patch_template["id"],
             "paths_ne_m": patch_template["paths_ne_m"],
+            # Kept as v2 source-fit provenance; the v3 runtime contract is grass_cards.
             "grass_ne_m": patch_template["grass_ne_m"],
+            "grass_heights_m": patch_template["grass_heights_m"],
+            "grass_cards": _groundcover_cards(
+                patch_template, len(patches), patch_template["grass_ne_m"],
+                patch_template["grass_heights_m"], grass_asset, grass_manifest,
+            ),
             "floor_center_ne_m": patch_template["floor_center_ne_m"],
             "floor_half_size_m": float(patch_template["floor_half_size_m"]),
             "path_seeds": patch_template["path_seeds"],
@@ -833,12 +990,12 @@ def build_document() -> dict[str, Any]:
             "shrub_heights_m": patch_template["shrub_heights_m"],
             "shrub_height_m": float(patch_template["shrub_height_m"]),
             "shrub_width_m": SHRUB_WIDTH_M,
-            "grass_heights_m": patch_template["grass_heights_m"],
             "grass_height_m": GRASS_HEIGHT_M,
         }
         if (len(patch["paths_ne_m"]) != 12 or len(patch["path_seeds"]) != 12
                 or len(patch["shrub_species"]) != 12 or len(patch["shrub_heights_m"]) != 12
-                or len(patch["grass_ne_m"]) != 3 or len(patch["grass_heights_m"]) != 3):
+                or len(patch["grass_ne_m"]) != 3 or len(patch["grass_heights_m"]) != 3
+                or len(patch["grass_cards"]) != 3 + GROUNDCOVER_NEW_CARDS_PER_PATCH):
             raise ValueError(f"{patch['id']}: unexpected fixed patch shape")
         if float(patch["floor_half_size_m"]) != FLOOR_HALF_SIZE_M:
             raise ValueError(f"{patch['id']}: woodland floor size differs from its reviewed envelope")
@@ -870,12 +1027,20 @@ def build_document() -> dict[str, Any]:
                 raise ValueError(f"{patch['id']}: ImportedHedge layout must produce exactly one card per segment")
             actual_cards.extend(positions)
             card_clearance_radii.extend([patch_card_radius] * len(positions))
-        for index, point in enumerate(patch["grass_ne_m"]):
-            grass_height = float(patch["grass_heights_m"][index])
-            if grass_height <= 0.0 or grass_height > float(patch["grass_height_m"]) + 1e-9:
-                raise ValueError(f"{patch['id']}: grass height exceeds its old patch ceiling")
-            grass_points.append((float(point[0]), float(point[1])))
-            grass_radii.append(_vegetation_asset_radius(grass_asset, grass_height))
+        card_ids: set[str] = set()
+        card_seeds: set[int] = set()
+        for card in patch["grass_cards"]:
+            card_id = str(card["id"])
+            seed = int(card["seed"])
+            grass_height = float(card["height_m"])
+            if (card_id in card_ids or seed in card_seeds or grass_height <= 0.0
+                    or not 0.0 <= float(card["yaw_rad"]) < math.tau):
+                raise ValueError(f"{patch['id']}: invalid or duplicate groundcover record")
+            card_ids.add(card_id)
+            card_seeds.add(seed)
+            point = (float(card["north_m"]), float(card["east_m"]))
+            grass_points.append(point)
+            grass_radii.append(_grass_card_radius_per_height(grass_manifest) * grass_height)
         floor_centers.append((float(patch["floor_center_ne_m"][0]),
                               float(patch["floor_center_ne_m"][1])))
         patches.append(patch)
@@ -886,14 +1051,15 @@ def build_document() -> dict[str, Any]:
         source_id: count * len(patch_templates)
         for source_id, count in SHRUB_SPECIES_COUNTS.items()
     }
-    if (layout_card_count != 48 or grass_count != 12 or len(floor_centers) != 4
+    expected_grass_count = (3 + GROUNDCOVER_NEW_CARDS_PER_PATCH) * len(patch_templates)
+    if (layout_card_count != 48 or grass_count != expected_grass_count or len(floor_centers) != 4
             or len(set(all_path_seeds)) != 48 or species_counts != expected_species_counts):
-        raise ValueError("woodland-edge population differs from the reviewed 48-card/12-grass contract")
+        raise ValueError("woodland-edge population differs from the reviewed 48-shrub/172-grass contract")
     high_cap = int(hedge["high_instance_limit"])
     if layout_card_count > high_cap:
         raise ValueError("woodland-edge card count exceeds current ImportedHedge high-quality cap")
     floor_triangles = len(floor_centers) * FLOOR_TRIANGLES_PER_PATCH
-    source_triangle_budget = (layout_card_count * card_triangles + grass_count * grass_triangles
+    source_triangle_budget = (layout_card_count * card_triangles + grass_count * card_triangles
                              + floor_triangles)
 
     all_margins: dict[str, list[float]] = {}
@@ -919,16 +1085,16 @@ def build_document() -> dict[str, Any]:
     for index, (point, card_radius) in enumerate(zip(actual_cards, card_clearance_radii)):
         shrub_envelope = card_radius + PLANT_CLEARANCE_M
         check(point, shrub_envelope, f"shrub card {index}")
-    # Check every source grass mesh using its actual source AABB at the chosen fit height.
+    # Check every short-grass card using the complete square quad radius at its
+    # requested source height, including 1 m plant clearance.
     for index, (point, radius) in enumerate(zip(grass_points, grass_radii)):
-        check(point, radius + PLANT_CLEARANCE_M, f"grass clump {index}")
+        check(point, radius + PLANT_CLEARANCE_M, f"grass card {index}")
 
     # Check path sweeps and the four complete floor rectangles against the existing
     # masks. A circle of half-diagonal plus 1 m at each floor center contains the full
     # 4 m square and its reviewed clearance.
     swept_envelopes: list[float] = []
     patch_radial_envelope_used: dict[str, float] = {}
-    grass_cursor = 0
     for patch in patches:
         center = (float(patch["floor_center_ne_m"][0]), float(patch["floor_center_ne_m"][1]))
         radial_used = 0.0
@@ -943,10 +1109,14 @@ def build_document() -> dict[str, Any]:
                 check(point, swept_envelope, f"{patch['id']} path {path_index} swept envelope")
                 radial_used = max(radial_used, math.dist(point, center) + swept_envelope)
 
-        for grass_index, point_data in enumerate(patch["grass_ne_m"]):
-            point = (float(point_data[0]), float(point_data[1]))
-            radius = grass_radii[grass_cursor]
-            grass_cursor += 1
+        center_radius = 0.0
+        for card in patch["grass_cards"]:
+            point = (float(card["north_m"]), float(card["east_m"]))
+            radius = _grass_card_radius_per_height(grass_manifest) * float(card["height_m"])
+            center_radius = math.dist(point, center)
+            if (":groundcover:" in str(card["id"])
+                    and center_radius > GROUNDCOVER_CENTER_RADIUS_LIMIT_M + 1e-6):
+                errors.append(f"{patch['id']}: groundcover center exceeds its 5.2 m layout bound")
             radial_used = max(radial_used, math.dist(point, center) + radius + PLANT_CLEARANCE_M)
 
         half_diagonal = math.sqrt(2.0) * float(patch["floor_half_size_m"])
@@ -963,16 +1133,6 @@ def build_document() -> dict[str, Any]:
             )
         patch_radial_envelope_used[str(patch["id"])] = round(radial_used, 6)
 
-    # Source grass points form three loose clumps per edge patch; do not let them
-    # overlap the visible shrub card bounds.
-    grass_to_shrub_min_m = min(
-        math.hypot(grass[0] - card[0], grass[1] - card[1])
-        - grass_radii[grass_index] - card_radius
-        for grass_index, grass in enumerate(grass_points)
-        for card, card_radius in zip(actual_cards, card_clearance_radii)
-    )
-    if grass_to_shrub_min_m <= 0.0:
-        errors.append("grass source mesh overlaps a shrub-card quad")
     if errors:
         raise ValueError("\n".join(errors[:30]))
 
@@ -984,6 +1144,17 @@ def build_document() -> dict[str, Any]:
         for index, point in enumerate(actual_cards)
     ]
     max_nearest_neighbor = max(nearest_neighbor_distances)
+    grass_nearest_neighbor_distances = [
+        min(math.dist(point, other) for other_index, other in enumerate(grass_points)
+            if other_index != index)
+        for index, point in enumerate(grass_points)
+    ]
+    groundcover_shrub_center_min_m = min(
+        math.dist((float(card["north_m"]), float(card["east_m"])), shrub)
+        for patch in patches for card in patch["grass_cards"]
+        if str(card["id"]).split(":")[-2] == "groundcover"
+        for shrub in actual_cards
+    )
     source_paths = {
         "default_field": FIELD_PATH,
         "default_scenery": SCENERY_PATH,
@@ -991,6 +1162,7 @@ def build_document() -> dict[str, Any]:
         "vegetation_catalog": VEGETATION_CATALOG_PATH,
         "tree_card_catalog": TREE_CATALOG_PATH,
         "shrub_impostor_manifest": HEDGE_MANIFEST_PATH,
+        "grass_common_short_impostor_manifest": GRASS_SHORT_MANIFEST_PATH,
         "grass_common_tall_impostor_manifest": SHRUB_SPECIES_MANIFEST_PATHS["grass_common_tall"],
         "fern_1_impostor_manifest": SHRUB_SPECIES_MANIFEST_PATHS["fern_1"],
         "imported_hedge_builder": HEDGE_SOURCE_PATH,
@@ -1029,9 +1201,21 @@ def build_document() -> dict[str, Any]:
             "shrub_species_instances_per_patch": dict(SHRUB_SPECIES_COUNTS),
             "shrub_species_instance_counts": species_counts,
             "grass_source_asset_id": GRASS_ASSET_ID,
-            "grass_source_asset_sha256": str(grass_asset["source_sha256"]),
-            "grass_source_triangles_per_instance": grass_triangles,
-            "grass_instance_count": grass_count,
+            "grass_source_geometry_sha256": str(grass_manifest["source_geometry_sha256"]),
+            "grass_source_triangles": grass_triangles,
+            "grass_card_asset_id": str(grass_manifest["asset_id"]),
+            "grass_card_atlas_sha256": str(grass_manifest["atlas_sha256"]),
+            "grass_card_triangles_per_instance": card_triangles,
+            "grass_card_instance_count": grass_count,
+            "grass_card_source_height_m": round(grass_source_height, 9),
+            "grass_card_frame_world_size_m": [round(value, 9) for value in grass_frame_size],
+            "grass_card_max_height_m": round(max(
+                float(card["height_m"]) for patch in patches for card in patch["grass_cards"]
+            ), 9),
+            "grass_full_quad_horizontal_radius_m_at_max_height": round(
+                _grass_card_radius_per_height(grass_manifest) * max(
+                    float(card["height_m"]) for patch in patches for card in patch["grass_cards"]
+                ), 9),
             "floor_patch_count": len(floor_centers),
             "floor_half_size_m": FLOOR_HALF_SIZE_M,
             "floor_grid_cells_per_side": 2,
@@ -1042,7 +1226,6 @@ def build_document() -> dict[str, Any]:
             "shrub_full_quad_side_m_at_max_height": round(frame_world_size * shrub_max_scale, 9),
             "shrub_full_quad_horizontal_radius_m_at_max_height": round(shrub_full_quad_radius, 9),
             "shrub_full_quad_sphere_radius_m_at_max_height": round(shrub_full_quad_radius, 9),
-            "grass_mesh_max_horizontal_radius_m_at_grass_height": round(grass_horizontal_radius, 9),
             "tree_envelope": {key: round(value, 9) for key, value in tree_contract.items()},
             "layout_jitter_bound_m": round(path_displacement_bound, 9),
             "path_sweep_envelope_m_including_clearance": round(max(swept_envelopes), 9),
@@ -1054,10 +1237,24 @@ def build_document() -> dict[str, Any]:
             "segment_seed_count": len(set(all_path_seeds)),
             "shrub_species_instance_counts": species_counts,
             "grass_height_range_m": [round(min(
-                float(height) for patch in patches for height in patch["grass_heights_m"]
+                float(card["height_m"]) for patch in patches for card in patch["grass_cards"]
             ), 6), round(max(
-                float(height) for patch in patches for height in patch["grass_heights_m"]
+                float(card["height_m"]) for patch in patches for card in patch["grass_cards"]
             ), 6)],
+            "grass_card_count": grass_count,
+            "groundcover_card_count": sum(
+                1 for patch in patches for card in patch["grass_cards"]
+                if ":groundcover:" in str(card["id"])
+            ),
+            "groundcover_center_radius_max_m": round(max(
+                math.dist((float(card["north_m"]), float(card["east_m"])),
+                          (float(patch["floor_center_ne_m"][0]), float(patch["floor_center_ne_m"][1])))
+                for patch in patches for card in patch["grass_cards"]
+                if ":groundcover:" in str(card["id"])
+            ), 6),
+            "grass_card_nearest_neighbor_distance_min_m": round(min(grass_nearest_neighbor_distances), 6),
+            "grass_card_nearest_neighbor_distance_max_m": round(max(grass_nearest_neighbor_distances), 6),
+            "groundcover_to_shrub_nearest_center_m": round(groundcover_shrub_center_min_m, 6),
             "cards_per_short_segment_min": min(math.floor(length / float(hedge["card_spacing_m"]))
                                                  for length in path_segment_lengths),
             "cards_per_short_segment_max": max(math.floor(length / float(hedge["card_spacing_m"]))
@@ -1077,7 +1274,6 @@ def build_document() -> dict[str, Any]:
             "scenery_hedge_fence_segments_checked": len(scene_lines) - len(tracks),
             "scenery_patch_polygons_checked": len(scene_polygons),
             "minimum_tree_center_distance_to_plant_centers_m": round(minimum_tree_center_distance, 6),
-            "grass_to_shrub_bound_clearance_m": round(grass_to_shrub_min_m, 6),
             "minimum_margins_m_or_degrees": values,
             "passed": True,
         },

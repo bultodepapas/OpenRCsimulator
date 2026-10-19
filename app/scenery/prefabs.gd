@@ -27,7 +27,7 @@ const CATALOG := {
 	"club_sign": {size = Vector3(2.5, 2.2, 0.14), tier = "standard", shadow = true, kind = "estimated", source = "Club sign board"},
 	"round_bale": {size = Vector3(1.2, 1.2, 1.2), tier = "standard", shadow = true, kind = "borrowed", source = "Round bale 1.2 m (scenery report 01, SC-12)"},
 	"bale_stack": {size = Vector3(2.5, 1.85, 2.4), tier = "standard", shadow = true, kind = "estimated", source = "Big square bales 2.4 × 1.2 × 0.9 m, two high"},
-	"shade_tree": {size = Vector3(8.0, 10.5, 8.0), tier = "standard", shadow = true, variable = true, kind = "estimated", source = "Broadleaf shade tree by the car row (photo)"},
+	"shade_tree": {size = Vector3(18.0, 14.0, 18.0), tier = "standard", shadow = true, imported_vegetation = true, variable = true, kind = "estimated", source = "Conservative alias envelope including the 14 m downloaded club maple; actual dimensions use VegetationPlacement"},
 	"sapling": {size = Vector3(3.0, 4.8, 3.1), tier = "standard", shadow = true, imported_vegetation = true, variable = true, kind = "estimated", source = "LU-22 Quaternius Standard CommonTree_1 and CommonTree_3, uniformly fitted to 3.2–4.8 m"},
 	"bush": {size = Vector3(1.6, 0.85, 1.6), tier = "ornament", shadow = false, variable = true, kind = "estimated", source = "Garden shrub"},
 	"flower_clump": {size = Vector3(0.45, 0.40, 0.45), tier = "ornament", shadow = false, variable = true, kind = "estimated", source = "Compact flower-border bouquet (visual estimate)"},

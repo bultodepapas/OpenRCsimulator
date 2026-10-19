@@ -1,0 +1,251 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "count": 37,
+      "max": [
+        0.0013736113905906677,
+        1.0,
+        0.0010989756556227803
+      ],
+      "min": [
+        -0.0009682030649855733,
+        0.9999985694885254,
+        -0.0014338493347167969
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "count": 37,
+      "max": [
+        0.15327070653438568,
+        0.2144358605146408,
+        0.10296116024255753
+      ],
+      "min": [
+        -0.11162220686674118,
+        -0.03532220050692558,
+        -0.14527840912342072
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "count": 37,
+      "max": [
+        0.9214542508125305,
+        0.0014129389310255647,
+        0.9999992847442627,
+        1.0
+      ],
+      "min": [
+        -0.8374777436256409,
+        -0.001699630287475884,
+        -0.968722403049469,
+        -1.0
+      ],
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 3,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "count": 37,
+      "max": [
+        0.9954512715339661,
+        0.9685185551643372
+      ],
+      "min": [
+        0.02697255276143551,
+        0.028273940086364746
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "byteOffset": 0,
+      "componentType": 5126,
+      "count": 37,
+      "max": [
+        0.9954512715339661,
+        0.9685185551643372
+      ],
+      "min": [
+        0.02697255276143551,
+        0.028273940086364746
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 5,
+      "byteOffset": 0,
+      "componentType": 5125,
+      "count": 78,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "LOLIPOP (https://sketchfab.com/lolipop_1707)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403",
+      "title": "Grass pack (lowpoly, game-ready)"
+    },
+    "generator": "OpenRCsimulator convert_grass_pack.py",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 444,
+      "byteOffset": 0,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 444,
+      "byteOffset": 444,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 592,
+      "byteOffset": 888,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 296,
+      "byteOffset": 1480,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 296,
+      "byteOffset": 1776,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 312,
+      "byteOffset": 2072,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 2384,
+      "uri": "grass_lolipop_small.bin"
+    }
+  ],
+  "extensionsUsed": [
+    "KHR_materials_specular"
+  ],
+  "images": [
+    {
+      "uri": "textures/grass_lolipop_small_basecolor.png"
+    },
+    {
+      "uri": "textures/grass_lolipop_small_mrao.png"
+    },
+    {
+      "uri": "textures/grass_lolipop_small_normal.png"
+    }
+  ],
+  "materials": [
+    {
+      "alphaCutoff": 0.5,
+      "alphaMode": "MASK",
+      "doubleSided": true,
+      "extensions": {
+        "KHR_materials_specular": {
+          "specularColorFactor": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "specularFactor": 0.2628811777076761
+        }
+      },
+      "name": "grass_lolipop_small_PBR",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicFactor": 0.01,
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "grass_lolipop_small",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 0,
+            "POSITION": 1,
+            "TANGENT": 2,
+            "TEXCOORD_0": 3,
+            "TEXCOORD_1": 4
+          },
+          "indices": 5,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "grass_lolipop_small"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "grass_lolipop_small",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ]
+}

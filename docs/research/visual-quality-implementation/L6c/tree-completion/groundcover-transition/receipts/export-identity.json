@@ -1,0 +1,10 @@
+{
+  "OpenRC.exe": {
+    "bytes": 278690920,
+    "sha256": "4638507b5448d2545d6c8acb04bfb748f1435e04a1fff2f456ba65fc887a1132"
+  },
+  "openrc_ground_vehicle.dll": {
+    "bytes": 460800,
+    "sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+  }
+}

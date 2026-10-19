@@ -1,0 +1,14 @@
+Pair 1/5, default: start the live flight in the visible Godot window; do not use scripted input or change focus/pause behavior.
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 822, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 814, in main
+    run_campaign(args)
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 716, in run_campaign
+    run = _launch_and_summarize(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\profile_session.py", line 551, in _launch_and_summarize
+    "individual_pacing_pass": summary.get("pacing_gate", {}).get("pass"),
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'

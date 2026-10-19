@@ -3,7 +3,6 @@
 extends RefCounted
 
 const Hedge = preload("res://scenery/imported_hedge.gd")
-const Library = preload("res://scenery/imported_vegetation.gd")
 const Palette = preload("res://scenery/palette.gd")
 const Frames = preload("res://render/frames.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -14,12 +13,13 @@ const GroundTerrain = preload("res://physics/ground_terrain.gd")
 
 const DATA_PATH := "res://data/woodland_edges.json"
 const GRASS_ID := "grass_common_short"
-const TRIANGLE_BUDGET := 1988
-const SPECIES: Array[String] = ["grass_common_tall", "bush_common_flowers", "fern_1"]
+const TRIANGLE_BUDGET := 472
+const SPECIES: Array[String] = ["grass_common_tall", "bush_common_flowers", "fern_1", GRASS_ID]
 static var _card_material: ShaderMaterial
 static var _floor_material: ShaderMaterial
 static var _card_manifests: Dictionary = {}
 static var _defaults: Dictionary = {}
+static var _ground_heights: Dictionary = {}
 
 
 static func applicable(field: Dictionary, scenery: Dictionary, lake: Dictionary = {}) -> bool:
@@ -46,7 +46,7 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 	root.set_meta("plants", [])
 	if quality == "low" or not applicable(field, scenery, lake): return root
 	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
-	if not data is Dictionary or data.get("format") != "openrc-woodland-edges v2" \
+	if not data is Dictionary or data.get("format") != "openrc-woodland-edges v3" \
 			or not data.get("patches") is Array or data.patches.size() != 4:
 		push_error("Woodland edge recipe is missing or invalid")
 		return root
@@ -55,13 +55,8 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 	var surfaces := GroundSurfaces.build(surface_table.table, field)
 	if not surfaces.ok: return root
 	var terrain_lake: Dictionary = _defaults.lake if lake.is_empty() else lake
-	var grass_batches: Dictionary = {}
 	var plants: Array[Dictionary] = []
 	var triangles := 0
-	var grass_triangles := int(Library.get_asset(GRASS_ID).get("source_triangles", 0))
-	if grass_triangles != 155:
-		push_error("Woodland source geometry changed; requalify its budget")
-		return root
 	for patch: Dictionary in data.patches:
 		var shrub_records: Array[Dictionary] = []
 		for path_index in patch.paths_ne_m.size():
@@ -77,30 +72,17 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 				var location: Vector2 = record.position
 				plants.append({id = record.id, asset_id = record.species,
 					north = -location.y, east = location.x, height_m = record.height_m, patch = patch.id})
+		for plant: Dictionary in patch.grass_cards:
+			var seed := int(plant.seed)
+			if quality == "balanced" and Palette.hash01(seed, 4242) >= 0.5: continue
+			shrub_records.append(_grass_record(plant))
+			plants.append({id = plant.id, asset_id = GRASS_ID, north = plant.north_m,
+				east = plant.east_m, height_m = plant.height_m, patch = patch.id})
 		var merged := _merge_shrubs(shrub_records, surfaces.rects, terrain_lake)
 		if merged != null:
 			merged.name = str(patch.id) + "_Shrubs"
 			root.add_child(merged)
 			triangles += merged.multimesh.instance_count * Hedge.CARD_TRIANGLES
-		for index in patch.grass_ne_m.size():
-			var seed: int = int(patch.path_seeds[0]) + 100 + index
-			if quality == "balanced" and Palette.hash01(seed, 4242) >= 0.5: continue
-			var point: Array = patch.grass_ne_m[index]
-			var north := float(point[0])
-			var east := float(point[1])
-			var ground := GroundTerrain.sample_validated(north, east, surfaces.rects, terrain_lake)
-			if ground.size() != 3: continue
-			var placement := Transform3D(Basis(Vector3.UP, TAU * Palette.hash01(seed, 32)),
-				Frames.ned_to_render([north, east, -ground[0]]))
-			placement = Library.fit_to_height(GRASS_ID, float(patch.grass_heights_m[index]), placement)
-			if Library.queue(grass_batches, GRASS_ID, placement, seed).is_empty(): continue
-			triangles += grass_triangles
-			plants.append({id = "%s:grass:%d" % [patch.id, index], asset_id = GRASS_ID,
-				north = north, east = east, height_m = patch.grass_heights_m[index], patch = patch.id})
-	var grass := Library.build(grass_batches, false)
-	for child in grass.get_children():
-		if child is GeometryInstance3D: child.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	root.add_child(grass)
 	var floor_mesh := _floor(data.patches, surfaces.rects, terrain_lake)
 	root.add_child(floor_mesh)
 	triangles += int(floor_mesh.get_meta("triangles", 0))
@@ -109,7 +91,7 @@ static func build(field: Dictionary, scenery: Dictionary, quality: String, lake:
 		root.free()
 		return Node3D.new()
 	root.set_meta("triangles", triangles)
-	root.set_meta("batches", root.get_child_count() - 1 + grass.get_child_count())
+	root.set_meta("batches", root.get_child_count())
 	root.set_meta("plants", plants)
 	root.set_meta("source_recipe_sha256", FileAccess.get_sha256(DATA_PATH))
 	return root
@@ -135,8 +117,7 @@ static func _merge_shrubs(records: Array[Dictionary], surfaces: PackedFloat64Arr
 	# Read the existing CPU placement records, not GPU buffers (headless renderers return dummy transforms).
 	for record in records:
 		var transform: Transform3D = record.transform
-		var ground := GroundTerrain.sample_validated(-transform.origin.z, transform.origin.x, surfaces, lake)
-		if ground.size() == 3: transform.origin.y += ground[0]
+		transform.origin.y += _ground_height(transform.origin.x, transform.origin.z, surfaces, lake)
 		mesh.set_instance_transform(cursor, transform)
 		mesh.set_instance_color(cursor, record.tint)
 		mesh.set_instance_custom_data(cursor, Color(fposmod(float(record.yaw_rad), TAU) / TAU, float(SPECIES.find(record.species)), 0.0, 1.0))
@@ -155,13 +136,22 @@ static func _merge_shrubs(records: Array[Dictionary], surfaces: PackedFloat64Arr
 	return instance
 
 
+## applicable() restricts builds to the immutable default world held in _defaults.
+## Cache scalar terrain samples only (at most the 220 qualified plant centers),
+## never nodes, meshes or caller-owned metadata. Quality subsets share these centers.
+static func _ground_height(east: float, south: float, surfaces: PackedFloat64Array, lake: Dictionary) -> float:
+	var key := Vector2(east, south)
+	if _ground_heights.has(key): return float(_ground_heights[key])
+	var ground := GroundTerrain.sample_validated(-south, east, surfaces, lake)
+	var height := float(ground[0]) if ground.size() == 3 else 0.0
+	if _ground_heights.size() < 220: _ground_heights[key] = height
+	return height
+
+
 ## Fit each source image inside the previously qualified flowering-card envelope.
 ## Ground contact uses the source's true height within its square bake, not the quad bottom.
 static func _fit_species(record: Dictionary, species: String, seed: int, envelope_scale: float) -> void:
-	if not _card_manifests.has(species):
-		_card_manifests[species] = JSON.parse_string(FileAccess.get_file_as_string(
-			"res://assets/landscape/vegetation/impostors/%s_4view.json" % species))
-	var manifest: Dictionary = _card_manifests[species]
+	var manifest := _species_manifest(species)
 	var source_height := float(manifest.source_height_m)
 	var source_frame := float(manifest.frame_world_size_m[0])
 	var original: Transform3D = record.transform
@@ -178,6 +168,28 @@ static func _fit_species(record: Dictionary, species: String, seed: int, envelop
 	record.tint = Color(tone, tone, tone * (0.96 + 0.04 * Palette.hash01(seed, 613)), 1.0)
 
 
+static func _species_manifest(species: String) -> Dictionary:
+	if not _card_manifests.has(species):
+		_card_manifests[species] = JSON.parse_string(FileAccess.get_file_as_string(
+			"res://assets/landscape/vegetation/impostors/%s_4view.json" % species))
+	return _card_manifests[species]
+
+
+## The generator certifies each complete grass card against field exclusions.
+## Use the same measured source frame for height fitting and the ground-contact pivot.
+static func _grass_record(plant: Dictionary) -> Dictionary:
+	var manifest := _species_manifest(GRASS_ID)
+	var height := float(plant.height_m)
+	var side := height * float(manifest.frame_world_size_m[0]) / float(manifest.source_height_m)
+	var scale := side / Hedge._frame_size(Hedge._manifest())
+	var yaw := float(plant.yaw_rad)
+	var tone := 0.94 + 0.06 * Palette.hash01(int(plant.seed), 611)
+	return {id = plant.id, species = GRASS_ID, height_m = height, yaw_rad = yaw,
+		tint = Color(tone, tone, tone * 0.98, 1.0),
+		transform = Transform3D(Basis(Vector3.UP, yaw).scaled(Vector3.ONE * scale),
+			Vector3(float(plant.east_m), height * 0.5, -float(plant.north_m)))}
+
+
 static func _material() -> ShaderMaterial:
 	if _card_material == null:
 		_card_material = ShaderMaterial.new()
@@ -186,6 +198,7 @@ static func _material() -> ShaderMaterial:
 		_card_material.set_shader_parameter("atlas_frames", 4.0)
 		_card_material.set_shader_parameter("impostor_atlas", Hedge._atlas())
 		_card_material.set_shader_parameter("plain_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_tall_4view.png"))
+		_card_material.set_shader_parameter("short_grass_atlas", load("res://assets/landscape/vegetation/impostors/grass_common_short_4view.png"))
 		_card_material.set_shader_parameter("fern_atlas", load("res://assets/landscape/vegetation/impostors/fern_1_4view.png"))
 	return _card_material
 

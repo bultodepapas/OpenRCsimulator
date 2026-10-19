@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371829488383570 is unsupported (cull mode is not disabled)
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+         [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+         [2] build (res://scenery/imported_vegetation.gd:132)
+         [3] build (res://scenery/scenery.gd:384)
+         [4] attach (res://scenery/scenery.gd:174)
+         [5] build (res://render/field.gd:82)
+         [6] _build_field (res://main.gd:2059)
+         [7] build (res://render/world/world.gd:260)
+         [8] _build_world (res://main.gd:2015)
+         [9] _ready (res://main.gd:434)
+         [10] _run (res://tests/test_scenery_destruction_runtime.gd:15)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CRASH at 80.0 m/s (sink -0.0 m/s, fence impact (fence:fence-north:00:bay:00:0), normal speed 80.0 m/s) - [R] restart
+CRASH CAUSE: Hit a fence 80.0 m/s
+scenery destruction runtime: 8 checks, 0 failures

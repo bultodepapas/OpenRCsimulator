@@ -1,0 +1,11 @@
+Attribution
+
+This asset is adapted from “Maple trees pack (lowpoly, game ready, LODs)” by LOLIPOP (@lolipop_1707):
+https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0
+
+The source model is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/
+
+Changes made for OpenRCsimulator: selected Acer_large_3_LOD1, removed gallery placement, set the stem-ground origin and glTF axes, authored runtime PBR materials and alpha masking, and converted the mesh and texture files to glTF.
+
+If this model or a runtime export is redistributed, retain this attribution and license notice and identify the changes above.

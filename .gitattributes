@@ -23,6 +23,20 @@
 /assets/landscape/vegetation/source/opengameart_oak_tree_lod_2026/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
 /app/assets/landscape/vegetation/LICENSE_OAK.txt -text whitespace=-blank-at-eof,cr-at-eol
 /tools/landscape/vegetation/convert_oak.py -text whitespace=cr-at-eol
+# Maple conversion receipts and upstream files are bound by exact SHA-256 bytes.
+/assets/landscape/vegetation/source/lolipop_maple_2026/** -text
+/assets/landscape/vegetation/derived/lolipop_maple_2026/** -text
+/app/assets/landscape/vegetation/LICENSE_MAPLE.txt -text whitespace=cr-at-eol
+/assets/landscape/vegetation/source/lolipop_maple_2026/LICENSE_MAPLE.txt whitespace=cr-at-eol
+/tools/landscape/vegetation/convert_maple.py -text
+/assets/landscape/vegetation/source/lolipop_grass_2026/** -text
+/assets/landscape/vegetation/derived/lolipop_grass_2026/** -text
+/assets/landscape/vegetation/source/dasy_forest_2026/** -text
+/assets/landscape/vegetation/derived/dasy_forest_2026/** -text
+/tools/landscape/vegetation/convert_grass_pack.py -text
+/tools/landscape/vegetation/convert_forest_shrub.py -text
+/app/assets/landscape/vegetation/LICENSE_GRASS.txt -text
+/app/assets/landscape/vegetation/LICENSE_FOREST.txt -text
 # License snapshots retain the exact reviewed notice and upstream whitespace.
 /docs/research/visual-quality-implementation/L6a-R1/mature-oak/**/LICENSE_OAK.txt whitespace=-blank-at-eof,cr-at-eol
 /docs/research/visual-quality-implementation/L6b-R2/source/quaternius-standard/LICENSE.txt whitespace=-blank-at-eol,cr-at-eol

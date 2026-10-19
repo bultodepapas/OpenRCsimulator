@@ -86,6 +86,11 @@ OAK_ASSET_ID = "oak_tree"
 OAK_SOURCE_ID = "opengameart_oak_tree_lod_2026"
 OAK_DESCRIPTION = "Oak tree, supplier LOD0"
 
+MAPLE_SOURCE_DIR = ROOT / "assets/landscape/vegetation/source/lolipop_maple_2026"
+MAPLE_DERIVED_DIR = ROOT / "assets/landscape/vegetation/derived/lolipop_maple_2026"
+MAPLE_MANIFEST = MAPLE_DERIVED_DIR / "conversion_manifest.json"
+MAPLE_GLTF = "maple_large_3_lod1.gltf"
+
 SOURCE_NOTICES = {
     CROPS_NOTICE: (
         "Downloaded source: LowPoly Crops Pack\n"
@@ -935,7 +940,146 @@ def catalog_for(
         "files": file_records,
         "assets": assets,
     }
+    add_maple(catalog, pending_files)
+    add_converted_plant_pack(catalog, pending_files, "lolipop_grass_2026",
+        {"grass_lolipop_small": 26, "grass_lolipop_tall": 20}, "LICENSE_GRASS.txt",
+        "grass", "LOLIPOP", "Grass pack (lowpoly, game-ready)")
+    add_converted_plant_pack(catalog, pending_files, "dasy_forest_2026",
+        {"forest_leafy_shrub": 144}, "LICENSE_FOREST.txt", "shrub", "dasy444",
+        "A forest (3) with a road at night for game — selected shrub")
     return catalog, pending_files
+
+
+def add_converted_plant_pack(catalog: dict, library_files: dict[str, bytes], source_id: str,
+                             expected: dict[str, int], notice_name: str, role: str,
+                             author: str, title: str) -> None:
+    """Install reviewed supplied plant meshes after verifying their complete receipts."""
+    source = ROOT / "assets/landscape/vegetation/source" / source_id
+    derived = ROOT / "assets/landscape/vegetation/derived" / source_id
+    proof = derived / "conversion_manifest.json"
+    proof_bytes = proof.read_bytes()
+    manifest = json.loads(proof_bytes)
+    for key, base in (("inputs", source), ("outputs", derived)):
+        for item in manifest[key]:
+            path = output_path(base, item["path"])
+            if not path.is_file() or path.stat().st_size != item["bytes"] or sha256_file(path) != item["sha256"]:
+                raise BuildError(f"{source_id} {key} changed: {path}")
+    files = {item["path"]: output_path(derived, item["path"]).read_bytes() for item in manifest["outputs"]}
+    buffer = BytesIO()
+    with ZipFile(buffer, "w") as archive:
+        for name, data in files.items():
+            archive.writestr("glTF/" + archive_path(name), data)
+    buffer.seek(0)
+    prefix = derived.relative_to(ROOT).as_posix()
+    if {v["id"]: v["triangles"] for v in manifest["variants"]} != expected:
+        raise BuildError(f"{source_id} must retain the reviewed variant counts: {expected}")
+    installed: set[str] = set()
+    with ZipFile(buffer) as archive:
+        for variant in manifest["variants"]:
+            name, asset_id = variant["gltf"], variant["id"]
+            metadata = gltf_metadata(archive, "glTF/" + name, files[name])
+            if metadata["source_triangles"] != expected[asset_id] or metadata["source_surfaces"] != 1:
+                raise BuildError(f"grass source topology changed: {asset_id}")
+            dependencies = [PurePosixPath(p).relative_to("glTF").as_posix() for p in metadata["dependencies"]]
+            for dependency in dependencies:
+                runtime_path = "models/" + source_id + "/" + dependency
+                if runtime_path in installed:
+                    continue
+                installed.add(runtime_path)
+                data = files[dependency]
+                library_files[runtime_path] = data
+                catalog["files"].append({"path": runtime_path, "source_entry": prefix + "/" + dependency,
+                                         "bytes": len(data), "sha256": sha256_bytes(data)})
+            metadata["dependencies"] = [prefix + "/" + p for p in dependencies]
+            for texture in metadata["textures"]:
+                texture["source_entry"] = prefix + "/" + texture["uri"]
+            catalog["assets"].append({"id": asset_id, "source_id": source_id,
+                "source_name": variant["source_name"], "description": "Downloaded " + role, "role": role,
+                "scene": "res://assets/landscape/vegetation/models/" + source_id + "/" + name,
+                "source_entry": prefix + "/" + name, "source_sha256": sha256_bytes(files[name]),
+                "source_dependency_sha256": {prefix + "/" + p: sha256_bytes(files[p]) for p in dependencies},
+                "source_format": "glTF 2.0", "source_conversion_proof_sha256": sha256_bytes(proof_bytes),
+                **metadata, "lod": {"source_supplied": False, "godot_import_generate": True}})
+    notice = source / notice_name
+    notice_bytes = notice.read_bytes()
+    library_files[notice.name] = notice_bytes
+    catalog["files"].append({"path": notice.name, "source_entry": notice.relative_to(ROOT).as_posix(),
+                             "bytes": len(notice_bytes), "sha256": sha256_bytes(notice_bytes)})
+    catalog["sources"].append({"id": source_id, "title": title,
+        "author": author, "url": manifest["source"]["url"], "license": "CC BY 4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "license_evidence": notice.relative_to(ROOT).as_posix(), "license_sha256": sha256_bytes(notice_bytes),
+        "conversion_proof": proof.relative_to(ROOT).as_posix(), "conversion_proof_sha256": sha256_bytes(proof_bytes),
+        "source": manifest["source"]})
+    catalog["counts"]["total_assets"] += len(expected)
+    catalog["counts"]["grass_and_herbs" if role == "grass" else "shrubs"] += len(expected)
+    catalog["counts"]["source_triangles_one_of_each"] += sum(expected.values())
+    catalog["files"].sort(key=lambda item: item["path"].lower())
+
+
+def add_maple(catalog: dict, library_files: dict[str, bytes]) -> None:
+    """Include the reviewed supplier LOD1; verify every retained input and output."""
+    manifest_bytes = MAPLE_MANIFEST.read_bytes()
+    manifest = json.loads(manifest_bytes)
+    for key, base in (("inputs", MAPLE_SOURCE_DIR), ("outputs", MAPLE_DERIVED_DIR)):
+        for item in manifest[key]:
+            path = output_path(base, item["path"])
+            if not path.is_file() or path.stat().st_size != item["bytes"] or sha256_file(path) != item["sha256"]:
+                raise BuildError(f"maple {key} changed from conversion manifest: {path}")
+    output_files = {item["path"]: (MAPLE_DERIVED_DIR / item["path"]).read_bytes()
+                    for item in manifest["outputs"]}
+    buffer = BytesIO()
+    with ZipFile(buffer, "w") as archive:
+        for name, data in output_files.items():
+            archive.writestr("glTF/" + archive_path(name), data)
+    buffer.seek(0)
+    with ZipFile(buffer) as archive:
+        metadata = gltf_metadata(archive, "glTF/" + MAPLE_GLTF, output_files[MAPLE_GLTF])
+    if metadata["source_triangles"] != 5541 or metadata["source_surfaces"] != 2:
+        raise BuildError("maple conversion must preserve supplier large_3 LOD1: 5,541 triangles, two surfaces")
+    source_prefix = MAPLE_DERIVED_DIR.relative_to(ROOT).as_posix()
+    dependencies = [PurePosixPath(entry).relative_to("glTF").as_posix() for entry in metadata["dependencies"]]
+    for name in dependencies:
+        runtime_path = "models/maple_tree/" + name
+        data = output_files[name]
+        library_files[runtime_path] = data
+        catalog["files"].append({"path": runtime_path, "source_entry": source_prefix + "/" + name,
+                                 "bytes": len(data), "sha256": sha256_bytes(data)})
+    notice = MAPLE_SOURCE_DIR / "LICENSE_MAPLE.txt"
+    notice_bytes = notice.read_bytes()
+    library_files[notice.name] = notice_bytes
+    catalog["files"].append({"path": notice.name, "source_entry": notice.relative_to(ROOT).as_posix(),
+                             "bytes": len(notice_bytes), "sha256": sha256_bytes(notice_bytes)})
+    metadata["dependencies"] = [source_prefix + "/" + name for name in dependencies]
+    for texture in metadata["textures"]:
+        texture["source_entry"] = source_prefix + "/" + texture["uri"]
+    catalog["assets"].append({
+        "id": "maple_tree", "source_id": "lolipop_maple_2026", "source_name": "Acer_large_3_LOD1",
+        "description": "Mature broadleaf maple, supplier LOD1", "role": "tree",
+        "scene": "res://assets/landscape/vegetation/models/maple_tree/" + MAPLE_GLTF,
+        "source_entry": source_prefix + "/" + MAPLE_GLTF,
+        "source_sha256": sha256_bytes(output_files[MAPLE_GLTF]),
+        "source_dependency_sha256": {source_prefix + "/" + name: sha256_bytes(output_files[name]) for name in dependencies},
+        "source_format": "glTF 2.0 converted from supplier FBX",
+        "source_conversion_proof_sha256": sha256_bytes(manifest_bytes),
+        **metadata,
+        "lod": {"source_supplied": True, "source_lod": "LOD1", "imported_supplied_levels": ["LOD1"],
+                "alternate_source_lods_included": [], "godot_import_generate": True},
+    })
+    catalog["sources"].append({
+        "id": "lolipop_maple_2026", "title": "Maple Trees Pack", "author": "LOLIPOP",
+        "url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0",
+        "license": "CC BY 4.0", "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "license_evidence": notice.relative_to(ROOT).as_posix(), "license_sha256": sha256_bytes(notice_bytes),
+        "conversion_proof": MAPLE_MANIFEST.relative_to(ROOT).as_posix(),
+        "conversion_proof_sha256": sha256_bytes(manifest_bytes), "source": manifest["source"],
+    })
+    catalog["counts"]["trees"] += 1
+    catalog["counts"]["total_assets"] += 1
+    catalog["counts"]["source_triangles_one_of_each"] += 5541
+    catalog["files"].sort(key=lambda item: item["path"].lower())
+    catalog["import"]["geometry_policy"] += "; maple preserves supplied large_3 LOD1 topology and bakes only its source transform"
+    catalog["import"]["shared_material_policy"] += "; maple uses the source bark/leaf PBR maps with masked double-sided foliage; its conversion manifest records channel mapping"
 
 
 def write_if_changed(path: Path, data: bytes) -> None:

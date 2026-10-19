@@ -1,0 +1,207 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default environment keeps the downloaded grass on its static material path
+ok   default field loads for the integrated static-route contract
+ok   grass_common_short source part loads
+ok   grass_common_short build emits all source part batches
+ok   grass_common_short part 0 uses a private draw-mesh duplicate
+ok   grass_common_short part 0 surface count preserved
+ok   grass_common_short part 0 receives every supported scale/yaw instance
+ok   grass_common_short source surface 0 is a StandardMaterial3D
+ok   grass_common_short source surface 0 has the expected opaque double-sided material
+ok   grass_common_short source surface 0 does not use unsupported normal/alpha features
+ok   grass_common_short selected route matches the explicit quality mode
+ok   grass_common_short source triangle count unchanged by material conversion
+ok   grass_common_short vertex/normal/tangent/UV/index arrays remain unchanged
+ok   grass_common_short default route preserves every imported source material reference
+ok   grass_common_short enhanced route marks only the grass root for wind
+ok   grass_common_short source placement transforms remain unchanged by material conversion
+ok   grass_common_short all queued uniform-scale/yaw transforms reach their MultiMesh batches
+ok   grass_common_short source part transform is in supported uniform-scale/yaw family
+ok   grass_common_short maximum geometric radius plus 0.12 wind stays inside 0.4 m mask clearance
+ok   grass_common_short bounds fixture follows selected material route
+ok   grass_common_short cull margin follows the selected route and bounds 0.12 wind only when enhanced
+ok   grass_common_short displacement metadata is present only on enhanced grass batches
+ok   grass_common_tall source part loads
+ok   grass_common_tall build emits all source part batches
+ok   grass_common_tall part 0 uses a private draw-mesh duplicate
+ok   grass_common_tall part 0 surface count preserved
+ok   grass_common_tall part 0 receives every supported scale/yaw instance
+ok   grass_common_tall source surface 0 is a StandardMaterial3D
+ok   grass_common_tall source surface 0 has the expected opaque double-sided material
+ok   grass_common_tall source surface 0 does not use unsupported normal/alpha features
+ok   grass_common_tall selected route matches the explicit quality mode
+ok   grass_common_tall source triangle count unchanged by material conversion
+ok   grass_common_tall vertex/normal/tangent/UV/index arrays remain unchanged
+ok   grass_common_tall default route preserves every imported source material reference
+ok   grass_common_tall enhanced route marks only the grass root for wind
+ok   grass_common_tall source placement transforms remain unchanged by material conversion
+ok   grass_common_tall all queued uniform-scale/yaw transforms reach their MultiMesh batches
+ok   grass_common_tall source part transform is in supported uniform-scale/yaw family
+ok   grass_common_tall maximum geometric radius plus 0.12 wind stays inside 0.4 m mask clearance
+ok   grass_common_tall bounds fixture follows selected material route
+ok   grass_common_tall cull margin follows the selected route and bounds 0.12 wind only when enhanced
+ok   grass_common_tall displacement metadata is present only on enhanced grass batches
+ok   grass_wispy_tall source part loads
+ok   grass_wispy_tall build emits all source part batches
+ok   grass_wispy_tall part 0 uses a private draw-mesh duplicate
+ok   grass_wispy_tall part 0 surface count preserved
+ok   grass_wispy_tall part 0 receives every supported scale/yaw instance
+ok   grass_wispy_tall source surface 0 is a StandardMaterial3D
+ok   grass_wispy_tall source surface 0 has the expected opaque double-sided material
+ok   grass_wispy_tall source surface 0 does not use unsupported normal/alpha features
+ok   grass_wispy_tall selected route matches the explicit quality mode
+ok   grass_wispy_tall source triangle count unchanged by material conversion
+ok   grass_wispy_tall vertex/normal/tangent/UV/index arrays remain unchanged
+ok   grass_wispy_tall default route preserves every imported source material reference
+ok   grass_wispy_tall enhanced route marks only the grass root for wind
+ok   grass_wispy_tall source placement transforms remain unchanged by material conversion
+ok   grass_wispy_tall all queued uniform-scale/yaw transforms reach their MultiMesh batches
+ok   grass_wispy_tall source part transform is in supported uniform-scale/yaw family
+ok   grass_wispy_tall maximum geometric radius plus 0.12 wind stays inside 0.4 m mask clearance
+ok   grass_wispy_tall bounds fixture follows selected material route
+ok   grass_wispy_tall cull margin follows the selected route and bounds 0.12 wind only when enhanced
+ok   grass_wispy_tall displacement metadata is present only on enhanced grass batches
+ok   integrated high-tier build uses original static material route
+ok   enhanced route is an explicit process-local opt-in
+ok   grass-only shader loads
+ok   shader retains source double-sided Burley/Schlick opaque modes
+ok   shader uses source-color mipmapped repeating albedo sampling
+ok   wind magnitude is clamped to the audited 0.12 displacement ratio
+ok   zero-wind imported vertex-color contract is represented by a false default
+ok   vertex-color sRGB conversion is absent and must remain rejected if requested
+ok   grass shader has no unused root-darkening parameter
+ok   grass_common_short source part loads
+ok   grass_common_short build emits all source part batches
+ok   grass_common_short part 0 uses a private draw-mesh duplicate
+ok   grass_common_short part 0 surface count preserved
+ok   grass_common_short part 0 receives every supported scale/yaw instance
+ok   grass_common_short source surface 0 is a StandardMaterial3D
+ok   grass_common_short source surface 0 has the expected opaque double-sided material
+ok   grass_common_short source surface 0 does not use unsupported normal/alpha features
+ok   grass_common_short selected route matches the explicit quality mode
+ok   grass_common_short surface 0 enhanced route converts to the qualified ShaderMaterial
+ok   grass_common_short surface 0 albedo texture copied by identity
+ok   grass_common_short surface 0 albedo color copied
+ok   grass_common_short surface 0 vertex-color flag matches effective source
+ok   grass_common_short surface 0 UV1 scale/offset copied
+ok   grass_common_short surface 0 roughness/metallic/specular copied
+ok   grass_common_short source triangle count unchanged by material conversion
+ok   grass_common_short vertex/normal/tangent/UV/index arrays remain unchanged
+ok   grass_common_short default route preserves every imported source material reference
+ok   grass_common_short enhanced route marks only the grass root for wind
+ok   grass_common_short source placement transforms remain unchanged by material conversion
+ok   grass_common_short all queued uniform-scale/yaw transforms reach their MultiMesh batches
+ok   grass_common_short source part transform is in supported uniform-scale/yaw family
+ok   grass_common_short maximum geometric radius plus 0.12 wind stays inside 0.4 m mask clearance
+ok   grass_common_short bounds fixture follows selected material route
+ok   grass_common_short cull margin follows the selected route and bounds 0.12 wind only when enhanced
+ok   grass_common_short displacement metadata is present only on enhanced grass batches
+ok   grass_common_tall source part loads
+ok   grass_common_tall build emits all source part batches
+ok   grass_common_tall part 0 uses a private draw-mesh duplicate
+ok   grass_common_tall part 0 surface count preserved
+ok   grass_common_tall part 0 receives every supported scale/yaw instance
+ok   grass_common_tall source surface 0 is a StandardMaterial3D
+ok   grass_common_tall source surface 0 has the expected opaque double-sided material
+ok   grass_common_tall source surface 0 does not use unsupported normal/alpha features
+ok   grass_common_tall selected route matches the explicit quality mode
+ok   grass_common_tall surface 0 enhanced route converts to the qualified ShaderMaterial
+ok   grass_common_tall surface 0 albedo texture copied by identity
+ok   grass_common_tall surface 0 albedo color copied
+ok   grass_common_tall surface 0 vertex-color flag matches effective source
+ok   grass_common_tall surface 0 UV1 scale/offset copied
+ok   grass_common_tall surface 0 roughness/metallic/specular copied
+ok   grass_common_tall source triangle count unchanged by material conversion
+ok   grass_common_tall vertex/normal/tangent/UV/index arrays remain unchanged
+ok   grass_common_tall default route preserves every imported source material reference
+ok   grass_common_tall enhanced route marks only the grass root for wind
+ok   grass_common_tall source placement transforms remain unchanged by material conversion
+ok   grass_common_tall all queued uniform-scale/yaw transforms reach their MultiMesh batches
+ok   grass_common_tall source part transform is in supported uniform-scale/yaw family
+ok   grass_common_tall maximum geometric radius plus 0.12 wind stays inside 0.4 m mask clearance
+ok   grass_common_tall bounds fixture follows selected material route
+ok   grass_common_tall cull margin follows the selected route and bounds 0.12 wind only when enhanced
+ok   grass_common_tall displacement metadata is present only on enhanced grass batches
+ok   grass_wispy_tall source part loads
+ok   grass_wispy_tall build emits all source part batches
+ok   grass_wispy_tall part 0 uses a private draw-mesh duplicate
+ok   grass_wispy_tall part 0 surface count preserved
+ok   grass_wispy_tall part 0 receives every supported scale/yaw instance
+ok   grass_wispy_tall source surface 0 is a StandardMaterial3D
+ok   grass_wispy_tall source surface 0 has the expected opaque double-sided material
+ok   grass_wispy_tall source surface 0 does not use unsupported normal/alpha features
+ok   grass_wispy_tall selected route matches the explicit quality mode
+ok   grass_wispy_tall surface 0 enhanced route converts to the qualified ShaderMaterial
+ok   grass_wispy_tall surface 0 albedo texture copied by identity
+ok   grass_wispy_tall surface 0 albedo color copied
+ok   grass_wispy_tall surface 0 vertex-color flag matches effective source
+ok   grass_wispy_tall surface 0 UV1 scale/offset copied
+ok   grass_wispy_tall surface 0 roughness/metallic/specular copied
+ok   grass_wispy_tall source triangle count unchanged by material conversion
+ok   grass_wispy_tall vertex/normal/tangent/UV/index arrays remain unchanged
+ok   grass_wispy_tall default route preserves every imported source material reference
+ok   grass_wispy_tall enhanced route marks only the grass root for wind
+ok   grass_wispy_tall source placement transforms remain unchanged by material conversion
+ok   grass_wispy_tall all queued uniform-scale/yaw transforms reach their MultiMesh batches
+ok   grass_wispy_tall source part transform is in supported uniform-scale/yaw family
+ok   grass_wispy_tall maximum geometric radius plus 0.12 wind stays inside 0.4 m mask clearance
+ok   grass_wispy_tall bounds fixture follows selected material route
+ok   grass_wispy_tall cull margin follows the selected route and bounds 0.12 wind only when enhanced
+ok   grass_wispy_tall displacement metadata is present only on enhanced grass batches
+ok   integrated high-tier build uses enhanced grass-only material route
+ok   both independent source builds pass adapter validation
+ok   two grass builds own different ArrayMesh resources
+ok   two grass builds own different ShaderMaterial resources
+ok   both private materials use the same immutable shader resource
+ok   both builds intentionally share the source albedo texture
+ok   changing one build's shader uniforms cannot mutate the other build
+ok   adapter rejects unsupported normal map instead of silently dropping it
+ok   adapter rejects unsupported alpha scissor instead of silently dropping it
+ok   adapter rejects unsupported sRGB vertex color instead of silently dropping it
+ok   adapter rejects unsupported metallic texture instead of silently dropping it
+ok   adapter rejects unsupported roughness texture instead of silently dropping it
+ok   adapter rejects unsupported missing albedo texture instead of silently dropping it
+ok   adapter rejects unsupported disabled fog instead of silently dropping it
+ok   unsupported material mutation matrix explicitly matches adapter guards
+ok   adapter rejects unsupported normal_enabled instead of silently dropping it
+ok   adapter rejects unsupported bent_normal_enabled instead of silently dropping it
+ok   adapter rejects unsupported emission_enabled instead of silently dropping it
+ok   adapter rejects unsupported rim_enabled instead of silently dropping it
+ok   adapter rejects unsupported clearcoat_enabled instead of silently dropping it
+ok   adapter rejects unsupported anisotropy_enabled instead of silently dropping it
+ok   adapter rejects unsupported ao_enabled instead of silently dropping it
+ok   adapter rejects unsupported backlight_enabled instead of silently dropping it
+ok   adapter rejects unsupported heightmap_enabled instead of silently dropping it
+ok   adapter rejects unsupported subsurf_scatter_enabled instead of silently dropping it
+ok   adapter rejects unsupported subsurf_scatter_transmittance_enabled instead of silently dropping it
+ok   adapter rejects unsupported refraction_enabled instead of silently dropping it
+ok   adapter rejects unsupported detail_enabled instead of silently dropping it
+ok   adapter rejects unsupported albedo_texture_msdf instead of silently dropping it
+ok   adapter rejects unsupported disable_specular_occlusion instead of silently dropping it
+ok   adapter rejects unsupported shadow_to_opacity instead of silently dropping it
+ok   adapter rejects unsupported proximity_fade_enabled instead of silently dropping it
+ok   adapter rejects unsupported uv1_world_triplanar instead of silently dropping it
+ok   adapter rejects unsupported uv2_world_triplanar instead of silently dropping it
+ok   adapter rejects unsupported billboard_keep_scale instead of silently dropping it
+ok   adapter rejects unsupported fixed_size instead of silently dropping it
+ok   adapter rejects unsupported use_point_size instead of silently dropping it
+ok   adapter rejects unsupported use_particle_trails instead of silently dropping it
+ok   adapter rejects unsupported use_z_clip_scale instead of silently dropping it
+ok   adapter rejects unsupported use_fov_override instead of silently dropping it
+ok   adapter rejects unsupported grow instead of silently dropping it
+ok   adapter rejects unsupported ORM texture instead of silently dropping it
+ok   adapter rejects unsupported render priority instead of silently dropping it
+ok   adapter rejects unsupported inverted depth test instead of silently dropping it
+ok   adapter rejects unsupported distance fade instead of silently dropping it
+ok   adapter rejects unsupported billboard mode instead of silently dropping it
+ok   adapter rejects unsupported stencil mode instead of silently dropping it
+ok   adapter rejects unsupported next pass instead of silently dropping it
+ok   adapter rejects unsupported disabled texture repeat instead of silently dropping it
+ok   adapter rejects unsupported UV1 triplanar mapping instead of silently dropping it
+ok   adapter rejects unsupported UV2 triplanar mapping instead of silently dropping it
+ok   nonuniform fixture differs on all three scale axes
+ok   adapter transform predicate rejects a nonuniform scale
+ok   adapter rejects nonuniform raw MultiMesh scale whose cull envelope it cannot bound
+ok   library normalizes a nonuniform requested scale before the grass adapter sees it
+204 imported-grass wind checks, 0 failed

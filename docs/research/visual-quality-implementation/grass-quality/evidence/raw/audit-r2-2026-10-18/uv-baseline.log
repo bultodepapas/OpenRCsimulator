@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+WARNING: Tree wind is disabled for oak_tree because source material -9223371937416214660 is unsupported (transparency mode is not opaque or alpha scissor)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:380)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:82)
+       [6] _run (C:\DEVELOPMENT/OpenRCsimulator/tmp/grass-audit-r2/uv_guard_probe.gd:184)
+ERROR: Woodland edge recipe is missing or invalid
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://scenery/woodland_edge_habitat.gd:50)
+       [1] build (res://scenery/scenery.gd:400)
+       [2] attach (res://scenery/scenery.gd:174)
+       [3] build (res://render/field.gd:82)
+       [4] _run (C:\DEVELOPMENT/OpenRCsimulator/tmp/grass-audit-r2/uv_guard_probe.gd:184)
+GRASS QUALITY capture high -> C:\DEVELOPMENT\OpenRCsimulator/tmp/grass-audit-r2/uv-baseline

@@ -82,6 +82,32 @@ def loader_seed(text):
     return h
 
 
+def vegetation_alias_choices(prefab):
+    """Read one runtime vegetation alias list so generated group IDs follow its real ordering."""
+    source = (ROOT / "app/scenery/imported_vegetation.gd").read_text(encoding="utf-8")
+    match = re.search(r'^\s*"' + re.escape(prefab) + r'"\s*:\s*\[(.*?)\]', source, re.MULTILINE | re.DOTALL)
+    if match is None:
+        raise ValueError("app/scenery/imported_vegetation.gd has no %s alias list" % prefab)
+    choices = re.findall(r'"([^"]+)"', match.group(1))
+    if not choices:
+        raise ValueError("app/scenery/imported_vegetation.gd has an empty %s alias list" % prefab)
+    return choices
+
+
+def maple_group_id(base):
+    """Choose a readable deterministic ID whose shade_tree seed resolves to the downloaded Maple."""
+    choices = vegetation_alias_choices("shade_tree")
+    if "maple_tree" not in choices:
+        raise ValueError("shade_tree alias must include maple_tree for the Maple distribution")
+    maple_index = choices.index("maple_tree")
+    for suffix in range(1000):
+        group_id = "%s-%03d" % (base, suffix)
+        group_seed = loader_seed(group_id) & 0x7FFFFFFF
+        if group_seed % len(choices) == maple_index:
+            return group_id
+    raise ValueError("could not find a stable shade_tree group ID resolving to maple_tree")
+
+
 def car_polygon(north, east, heading_deg, size):
     """The model's XZ footprint transformed by scenery.gd's heading and NED placement."""
     half_width, half_length = size[0] * 0.5, size[1] * 0.5
@@ -352,8 +378,9 @@ def build():
     club_trees = [(-49.0, -22.0), (-52.5, -13.0), (-48.5, -4.0), (-53.0, 4.5), (-49.5, 12.0), (-31.5, -9.0), (-32.0, 10.5), (-28.0, -52.0), (-29.0, 52.0), (-44.0, -40.0)]
     inst("shade-trees", "club", ["shade_tree"], [(n, e, h01(n, e) * 360) for n, e in club_trees], "estimated",
          photo + "; shade-tree clump behind the car row")
-    saplings = [(-66.0, -32.0), (-66.0, -22.0), (-66.0, -12.0), (-66.0, -2.0),
-                (-66.0, 8.0), (-66.0, 18.0), (-66.0, 28.0)]
+    # Keep the sparse retained plants on their original ground points; three high-poly CommonTree_1
+    # row entries move to full-size Maple locations below, away from the runway approach.
+    saplings = [(-66.0, -32.0), (-66.0, -22.0), (-66.0, -2.0), (-66.0, 18.0)]
     inst("saplings", "club", ["sapling"], [(n, e, h01(e, n) * 360) for n, e in saplings], "estimated",
          "LU-22 downloaded CommonTree_1/CommonTree_3 saplings behind the club; outside the lake bank and north approach")
     bushes = [(-19.8, -6.4), (-24.5, -6.3), (-19.8, 6.4), (-24.8, 6.3), (-15.5, -20.5), (-15.5, 20.0)]
@@ -455,6 +482,18 @@ def build():
     for n, e, hd, prefab in farm:
         inst("farm-" + prefab, "horizon" if math.hypot(n, e) >= 1000 else "countryside", [prefab], [(n, e, hd)], "estimated",
              "Farmstead seen through the treeline's NNE gap (az 30 deg)")
+    # LU-22 downloaded Maples broaden the woodland color beyond the club without adding pines.
+    # The stable IDs are chosen against the runtime shade_tree alias so each singleton is a Maple.
+    farm_maples = [
+        ("maple-farm-south", 555.0, 295.0),
+        ("maple-farm-west", 580.0, 280.0),
+    ]
+    for base, n, e in farm_maples:
+        inst(maple_group_id(base), "countryside", ["shade_tree"], [(n, e, h01(n, e) * 360)], "estimated",
+             "LU-22 downloaded Maple on the southwest farm edge; irregularly grouped with its neighbor")
+    inst(maple_group_id("maple-forest-southwest"), "countryside", ["shade_tree"],
+         [(-480.0, -770.0, h01(-480.0, -770.0) * 360)], "estimated",
+         "LU-22 downloaded Maple in a southwest forest-edge gap, separated from the farm pair")
     # --- horizon landmarks where the skyline is low ---
     def lowest(az0, az1):
         best = None

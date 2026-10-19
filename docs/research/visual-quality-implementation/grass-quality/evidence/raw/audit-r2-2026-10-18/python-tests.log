@@ -1,0 +1,33 @@
+Pair 1/5, default: start the live flight in the visible Godot window; do not use scripted input or change focus/pause behavior.
+Campaign stopped: C:\Users\bulto\AppData\Local\Temp\tmpy_5fhc93\campaign\campaign.json
+Pair 1/5, default: start the live flight in the visible Godot window; do not use scripted input or change focus/pause behavior.
+Campaign stopped: C:\Users\bulto\AppData\Local\Temp\tmpz7k8ttn7\campaign\campaign.json
+Campaign stopped: C:\Users\bulto\AppData\Local\Temp\tmpfq0vd96q\campaign\campaign.json
+Pair 1/5, default: start the live flight in the visible Godot window; do not use scripted input or change focus/pause behavior.
+Campaign stopped: C:\Users\bulto\AppData\Local\Temp\tmpx22thm__\campaign\campaign.json
+Pair 1/5, default: start the live flight in the visible Godot window; do not use scripted input or change focus/pause behavior.
+Campaign stopped: C:\Users\bulto\AppData\Local\Temp\tmplftfvq4q\campaign\campaign.json
+Pair 1/5, default: start the live flight in the visible Godot window; do not use scripted input or change focus/pause behavior.
+Campaign stopped: C:\Users\bulto\AppData\Local\Temp\tmpa230q350\campaign\campaign.json
+.........E......................................
+======================================================================
+ERROR: test_grass_seam (unittest.loader._FailedTest.test_grass_seam)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_grass_seam
+Traceback (most recent call last):
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\loader.py", line 419, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\unittest\loader.py", line 362, in _get_module_from_name
+    __import__(name)
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\test_grass_seam.py", line 10, in <module>
+    from check_grass_seam import ground_radius
+  File "C:\DEVELOPMENT\OpenRCsimulator\tools\grass\check_grass_seam.py", line 11, in <module>
+    import flip_evaluator
+ModuleNotFoundError: No module named 'flip_evaluator'
+
+
+----------------------------------------------------------------------
+Ran 48 tests in 1.110s
+
+FAILED (errors=1)

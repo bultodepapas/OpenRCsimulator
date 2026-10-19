@@ -8,7 +8,11 @@ The implemented first delivery integrates four more retained CC0 forms (seven to
 
 The [global visual/performance plan](global-performance-visual-quality.md) owns shared budgets and sequencing. This plan refines existing L6c/L15b and optional L8, and registers follow-ups in the [landscape registry](../LANDSCAPE-PLAN.md). The [grass plan](grass-quality.md) owns turf and grass; coordinate shared vegetation materials, habitat masks and ground transitions there.
 
+The subsequent [club maple intake](../research/visual-quality-implementation/L6c/house-tree/README.md) integrates the user-supplied LOLIPOP archive at the white club: 14 m height, supplied LOD1, PBR maps and compressed mipmapped textures. It replaces the oak's mature alias slot while retaining the oak in the library. Native material and geometry checks pass; the pre-existing cold scene-build time gate still fails. The earlier flight evidence above predates this replacement.
+
 ## 1. Starting point and file ownership
+
+The [downloaded map expansion](../research/visual-quality-implementation/L6c/map-expansion/README.md) adds three more maples at the farm/southwest forest, 60 LOLIPOP grass tufts and four dasy444 shrubs. Three former club saplings are replaced, retaining 17 trees and the 650,000-triangle cap. Native distant views qualify an unmipped maple leaf-alpha atlas while retaining bark/normal/ORM mips. This later evidence records the new world layout and supersedes the club-only filtering policy.
 
 The table below records the pre-implementation baseline. Current implemented behavior and measurements are recorded in the linked evidence and pipeline guides.
 
@@ -142,7 +146,7 @@ The [completion record](../research/visual-quality-implementation/L6c/tree-compl
 | --- | --- |
 | L6a-R1 | Eight downloaded mature forms integrated. Original maps, source archives, licenses and conversion receipts retained. No newly modeled trees. True young forms and additional families remain outside this bounded delivery: the inspected realistic sapling is too heavy for the remaining geometry budget. |
 | L6b-R2 | Bark-only mipmaps and source-material foliage mask integrated; restrained world-space patch color validated by native readback. Ordinary leaf mipmaps rejected because they filled crown gaps. |
-| L7-R1 | Twelve irregular far habitat patches at the same 1,680 field trees. The [v2 understory refinement](../research/visual-quality-implementation/L6c/tree-completion/vegetation-refinement/README.md) mixes existing downloaded fern, tall-grass and flowering-shrub silhouettes with localized CC0 litter overlays. No new collision proxy. Complete scenery: 649,951 source triangles; broad ground/grass materials remain with their owners. |
+| L7-R1 | Twelve irregular far habitat patches at the same 1,680 field trees. The [v2 understory refinement](../research/visual-quality-implementation/L6c/tree-completion/vegetation-refinement/README.md) mixes existing downloaded fern, tall-grass and flowering-shrub silhouettes with localized CC0 litter overlays. No new collision proxy. The [v3 groundcover follow-up](../research/visual-quality-implementation/L6c/tree-completion/groundcover-transition/README.md) adds a low grass layer while reducing habitat geometry to 472 triangles/five batches; complete scenery is 648,435 triangles. Cold-build timing remains open on the measured host; broad ground/grass materials remain with their owners. |
 | L7-R2 | 64/128/256 m spatial batching evaluated and retained only as an opt-in control. Default batching unchanged. Density growth rejected for this delivery: no demonstrated composition benefit justifies revising the loader contract and shared budget. |
 | L8a | Native approach/orbit/pan recordings expose the current representation limits. Retain imported mesh LODs and separate far cards; no unqualified mesh-to-card handoff or supplier oak LOD substitution. The optional 1,000-triangle near-tree target is not claimed. |
 | L8b | Existing baker pinned and tested with one unchanged downloaded source. Its bounded fast full-sphere candidate failed the appearance gate; no plugin added to production. |

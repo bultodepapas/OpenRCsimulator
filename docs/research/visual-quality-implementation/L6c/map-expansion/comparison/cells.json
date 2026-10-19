@@ -1,0 +1,194 @@
+{
+  "0": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "field_build_ms": 1528.118,
+    "scenery": true,
+    "stats": {
+      "botanical_batches": 14,
+      "botanical_plants": 285,
+      "botanical_triangles": 85636,
+      "build_ms": 778.529,
+      "cells": 55,
+      "fleet": 4,
+      "flowers": 0,
+      "instances": 136,
+      "motion": 5,
+      "moving_people": 7,
+      "population": 24,
+      "population_triangles": 371573,
+      "quality": "high",
+      "shadows": 83,
+      "skipped": 0,
+      "theme": "temperate",
+      "timing_ms": {
+        "botanicals": 90.3,
+        "fence": 16.688,
+        "fleet": 9.86,
+        "hedge": 9.899,
+        "instances": 139.177,
+        "meshes": 26.618,
+        "patch": 41.535,
+        "track": 0.728,
+        "woodland_edges": 58.572
+      },
+      "vegetation_instances": 30,
+      "vegetation_triangles": 91048,
+      "woodland_edge_batches": 5,
+      "woodland_edge_plants": 220,
+      "woodland_edge_triangles": 472
+    },
+    "views": {
+      "club_understory": {
+        "draw_calls": 49.0,
+        "objects": 50.0,
+        "primitives": 164530.0,
+        "shadow_draw_calls": 0
+      },
+      "farm_maples": {
+        "draw_calls": 21.0,
+        "objects": 22.0,
+        "primitives": 118409.0,
+        "shadow_draw_calls": 0
+      },
+      "farm_understory": {
+        "draw_calls": 21.0,
+        "objects": 22.0,
+        "primitives": 120635.0,
+        "shadow_draw_calls": 0
+      },
+      "forest_maple": {
+        "draw_calls": 9.0,
+        "objects": 9.0,
+        "primitives": 104291.0,
+        "shadow_draw_calls": 0
+      },
+      "forest_shrub": {
+        "draw_calls": 20.0,
+        "objects": 21.0,
+        "primitives": 117563.0,
+        "shadow_draw_calls": 0
+      },
+      "meadow_tufts": {
+        "draw_calls": 76.0,
+        "objects": 77.0,
+        "primitives": 170924.0,
+        "shadow_draw_calls": 0
+      },
+      "postcard_club": {
+        "draw_calls": 170.0,
+        "objects": 171.0,
+        "primitives": 312297.0,
+        "shadow_draw_calls": 0
+      },
+      "postcard_farm": {
+        "draw_calls": 62.0,
+        "objects": 63.0,
+        "primitives": 169377.0,
+        "shadow_draw_calls": 0
+      }
+    },
+    "warm_frame_pacing_ms": {
+      "median": 0.526,
+      "p95": 3.314,
+      "samples": 180,
+      "view": "forest_shrub",
+      "vsync": "disabled"
+    }
+  },
+  "128": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "field_build_ms": 1498.444,
+    "scenery": true,
+    "stats": {
+      "botanical_batches": 14,
+      "botanical_plants": 285,
+      "botanical_triangles": 85636,
+      "build_ms": 759.825,
+      "cells": 55,
+      "fleet": 4,
+      "flowers": 0,
+      "instances": 136,
+      "motion": 5,
+      "moving_people": 7,
+      "population": 24,
+      "population_triangles": 371573,
+      "quality": "high",
+      "shadows": 83,
+      "skipped": 0,
+      "theme": "temperate",
+      "timing_ms": {
+        "botanicals": 87.687,
+        "fence": 17.446,
+        "fleet": 9.875,
+        "hedge": 10.207,
+        "instances": 135.92,
+        "meshes": 24.541,
+        "patch": 41.501,
+        "track": 0.694,
+        "woodland_edges": 58.548
+      },
+      "vegetation_instances": 30,
+      "vegetation_triangles": 91048,
+      "woodland_edge_batches": 5,
+      "woodland_edge_plants": 220,
+      "woodland_edge_triangles": 472
+    },
+    "views": {
+      "club_understory": {
+        "draw_calls": 51.0,
+        "objects": 52.0,
+        "primitives": 154741.0,
+        "shadow_draw_calls": 0
+      },
+      "farm_maples": {
+        "draw_calls": 19.0,
+        "objects": 20.0,
+        "primitives": 112868.0,
+        "shadow_draw_calls": 0
+      },
+      "farm_understory": {
+        "draw_calls": 21.0,
+        "objects": 22.0,
+        "primitives": 120635.0,
+        "shadow_draw_calls": 0
+      },
+      "forest_maple": {
+        "draw_calls": 9.0,
+        "objects": 9.0,
+        "primitives": 104291.0,
+        "shadow_draw_calls": 0
+      },
+      "forest_shrub": {
+        "draw_calls": 20.0,
+        "objects": 21.0,
+        "primitives": 117563.0,
+        "shadow_draw_calls": 0
+      },
+      "meadow_tufts": {
+        "draw_calls": 72.0,
+        "objects": 73.0,
+        "primitives": 158480.0,
+        "shadow_draw_calls": 0
+      },
+      "postcard_club": {
+        "draw_calls": 178.0,
+        "objects": 179.0,
+        "primitives": 318549.0,
+        "shadow_draw_calls": 0
+      },
+      "postcard_farm": {
+        "draw_calls": 58.0,
+        "objects": 59.0,
+        "primitives": 158295.0,
+        "shadow_draw_calls": 0
+      }
+    },
+    "warm_frame_pacing_ms": {
+      "median": 0.558,
+      "p95": 4.634,
+      "samples": 180,
+      "view": "forest_shrub",
+      "vsync": "disabled"
+    }
+  }
+}

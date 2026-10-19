@@ -1,0 +1,12 @@
+[
+  {
+    "test": "native-materials",
+    "exit_code": 0,
+    "log": "native-materials.log"
+  },
+  {
+    "test": "headless-materials",
+    "exit_code": 0,
+    "log": "headless-materials.log"
+  }
+]

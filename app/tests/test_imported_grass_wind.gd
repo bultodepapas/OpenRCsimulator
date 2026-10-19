@@ -60,6 +60,32 @@ func _test_mode(expect_enhanced: bool) -> void:
 	_test_unsupported_material_rejection("roughness texture")
 	_test_unsupported_material_rejection("missing albedo texture")
 	_test_unsupported_material_rejection("disabled fog")
+	var expected_unsupported_features: Array[String] = [
+		"normal_enabled", "bent_normal_enabled", "emission_enabled", "rim_enabled", "clearcoat_enabled",
+		"anisotropy_enabled", "ao_enabled", "backlight_enabled", "heightmap_enabled",
+		"subsurf_scatter_enabled", "subsurf_scatter_transmittance_enabled", "refraction_enabled",
+		"detail_enabled", "albedo_texture_msdf", "disable_specular_occlusion", "shadow_to_opacity",
+		"proximity_fade_enabled", "uv1_world_triplanar", "uv2_world_triplanar", "billboard_keep_scale",
+		"fixed_size", "use_point_size", "use_particle_trails", "use_z_clip_scale", "use_fov_override", "grow",
+	]
+	_check("unsupported material mutation matrix explicitly matches adapter guards",
+		expected_unsupported_features == GrassMaterial.UNSUPPORTED_MATERIAL_FEATURES)
+	for feature_name: String in expected_unsupported_features:
+		_test_unsupported_material_property_rejection(feature_name, true)
+	var unsupported_settings: Array[Dictionary] = [
+		{"name": "ORM texture", "property": "orm_texture"},
+		{"name": "render priority", "property": "render_priority", "value": 1},
+		{"name": "inverted depth test", "property": "depth_test", "value": BaseMaterial3D.DEPTH_TEST_INVERTED},
+		{"name": "distance fade", "property": "distance_fade_mode", "value": BaseMaterial3D.DISTANCE_FADE_PIXEL_ALPHA},
+		{"name": "billboard mode", "property": "billboard_mode", "value": BaseMaterial3D.BILLBOARD_ENABLED},
+		{"name": "stencil mode", "property": "stencil_mode", "value": BaseMaterial3D.STENCIL_MODE_OUTLINE},
+		{"name": "next pass", "property": "next_pass", "value": StandardMaterial3D.new()},
+		{"name": "disabled texture repeat", "property": "texture_repeat", "value": false},
+		{"name": "UV1 triplanar mapping", "property": "uv1_triplanar", "value": true},
+		{"name": "UV2 triplanar mapping", "property": "uv2_triplanar", "value": true},
+	]
+	for setting: Dictionary in unsupported_settings:
+		_test_unsupported_material_property_rejection(str(setting.name), setting.get("value"), str(setting.property))
 	_test_nonuniform_scale_rejection()
 	_test_queue_normalizes_nonuniform_scale()
 
@@ -331,11 +357,12 @@ func _test_unsupported_material_rejection(feature: String) -> void:
 			material.set_flag(BaseMaterial3D.FLAG_DISABLE_FOG, true)
 	var root := _build_asset_root(ASSET_IDS[0])
 	var node := _first_batch(root)
+	var snapshot := _capture_static_root(root)
 	var mesh := node.multimesh.mesh
 	var accepted := _apply_expected_rejection(root)
 	var output := mesh.surface_get_material(0)
 	_check("adapter rejects unsupported %s instead of silently dropping it" % feature,
-		not accepted and output == material and not root.has_meta("grass_wind"),
+		not accepted and output == material and _static_root_matches_snapshot(root, snapshot, material),
 		"accepted=%s, adapter output class=%s, grass_wind_meta=%s" % [str(accepted), str(output.get_class()) if output != null else "null", str(root.has_meta("grass_wind"))])
 	root.free()
 	material.normal_enabled = previous_normal_enabled
@@ -348,6 +375,82 @@ func _test_unsupported_material_rejection(feature: String) -> void:
 	material.roughness_texture = previous_roughness_texture
 	material.albedo_texture = previous_albedo_texture
 	material.set_flag(BaseMaterial3D.FLAG_DISABLE_FOG, previous_disable_fog)
+
+
+func _test_unsupported_material_property_rejection(label: String, value: Variant, property_name: String = "") -> void:
+	var feature_name := property_name if not property_name.is_empty() else label
+	var parts: Array[Dictionary] = PlantLibrary.get_parts(ASSET_IDS[0])
+	var materials: Array = parts[0].get("materials", []) if not parts.is_empty() else []
+	var material := materials[0] as StandardMaterial3D if not materials.is_empty() else null
+	if material == null:
+		_check("adapter source material available for unsupported %s case" % label, false)
+		return
+	var previous_value: Variant = material.get(feature_name)
+	var mutation_value: Variant = material.albedo_texture if feature_name == "orm_texture" else value
+	material.set(feature_name, mutation_value)
+	var mutation_applied: bool = material.get(feature_name) == mutation_value
+	var root := _build_asset_root(ASSET_IDS[0])
+	var snapshot := _capture_static_root(root)
+	var accepted := _apply_expected_rejection(root)
+	_check("adapter rejects unsupported %s instead of silently dropping it" % label,
+		mutation_applied and not accepted and _static_root_matches_snapshot(root, snapshot, material, feature_name, mutation_value),
+		"mutation_applied=%s accepted=%s property=%s" % [str(mutation_applied), str(accepted), feature_name])
+	root.free()
+	material.set(feature_name, previous_value)
+
+
+func _capture_static_root(root: Node3D) -> Dictionary:
+	var batches := _batch_nodes(root)
+	var multimeshes: Array = []
+	var meshes: Array = []
+	var margins: Array = []
+	for batch: MultiMeshInstance3D in batches:
+		multimeshes.append(batch.multimesh)
+		meshes.append(batch.multimesh.mesh if batch.multimesh != null else null)
+		margins.append(batch.extra_cull_margin)
+	var source_state: Dictionary = root.get_meta("_imported_vegetation_state")
+	return {
+		"state": source_state.duplicate(true),
+		"batches": batches,
+		"multimeshes": multimeshes,
+		"meshes": meshes,
+		"margins": margins,
+	}
+
+
+func _static_root_matches_snapshot(
+	root: Node3D,
+	snapshot: Dictionary,
+	source_material: StandardMaterial3D,
+	property_name: String = "",
+	expected_property_value: Variant = null
+) -> bool:
+	var batches: Array = snapshot.get("batches", [])
+	if root.has_meta("grass_wind") or root.get_child_count() != batches.size():
+		return false
+	if not root.has_meta("_imported_vegetation_state") or root.get_meta("_imported_vegetation_state") != snapshot.get("state"):
+		return false
+	if not property_name.is_empty() and source_material.get(property_name) != expected_property_value:
+		return false
+	var multimeshes: Array = snapshot.get("multimeshes", [])
+	var meshes: Array = snapshot.get("meshes", [])
+	var margins: Array = snapshot.get("margins", [])
+	var current_batches := _batch_nodes(root)
+	if current_batches.size() != batches.size():
+		return false
+	for index in range(current_batches.size()):
+		var batch: MultiMeshInstance3D = current_batches[index]
+		if batch != batches[index] or batch.multimesh != multimeshes[index]:
+			return false
+		if batch.multimesh == null or batch.multimesh.mesh != meshes[index]:
+			return false
+		if not _approximately_equal(batch.extra_cull_margin, float(margins[index])):
+			return false
+		if batch.has_meta("grass_wind_max_displacement_m"):
+			return false
+		if batch.multimesh.mesh.surface_get_material(0) != source_material:
+			return false
+	return true
 
 
 ## Only these deliberate rejection calls suppress their expected push_error output.

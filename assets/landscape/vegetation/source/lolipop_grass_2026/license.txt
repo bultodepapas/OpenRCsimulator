@@ -1,0 +1,11 @@
+Model Information:
+* title:	Grass pack (lowpoly, game-ready)
+* source:	https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403
+* author:	LOLIPOP (https://sketchfab.com/lolipop_1707)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Grass pack (lowpoly, game-ready)" (https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403) by LOLIPOP (https://sketchfab.com/lolipop_1707) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

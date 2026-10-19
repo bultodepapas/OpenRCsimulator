@@ -1,6 +1,6 @@
 {
   "field_id": "default",
-  "format": "openrc-woodland-edges v2",
+  "format": "openrc-woodland-edges v3",
   "patches": [
     {
       "floor_center_ne_m": [
@@ -8,6 +8,352 @@
         534.5
       ],
       "floor_half_size_m": 2.0,
+      "grass_cards": [
+        {
+          "east_m": 527.977804,
+          "height_m": 0.143804083,
+          "id": "woodland-edge-east-north:grass:0",
+          "north_m": 251.88788,
+          "seed": 710100,
+          "yaw_rad": 0.716465
+        },
+        {
+          "east_m": 530.127761,
+          "height_m": 0.131753876,
+          "id": "woodland-edge-east-north:grass:1",
+          "north_m": 245.62713,
+          "seed": 710101,
+          "yaw_rad": 3.567752
+        },
+        {
+          "east_m": 532.764691,
+          "height_m": 0.074949537,
+          "id": "woodland-edge-east-north:grass:2",
+          "north_m": 243.287937,
+          "seed": 710102,
+          "yaw_rad": 1.273683
+        },
+        {
+          "east_m": 532.275843,
+          "height_m": 0.309841,
+          "id": "woodland-edge-east-north:groundcover:0",
+          "north_m": 251.530733,
+          "seed": 720000,
+          "yaw_rad": 2.829523
+        },
+        {
+          "east_m": 531.859728,
+          "height_m": 0.318028,
+          "id": "woodland-edge-east-north:groundcover:1",
+          "north_m": 251.31433,
+          "seed": 720001,
+          "yaw_rad": 4.528024
+        },
+        {
+          "east_m": 531.916052,
+          "height_m": 0.253162,
+          "id": "woodland-edge-east-north:groundcover:2",
+          "north_m": 251.135801,
+          "seed": 720002,
+          "yaw_rad": 5.499896
+        },
+        {
+          "east_m": 532.544012,
+          "height_m": 0.223087,
+          "id": "woodland-edge-east-north:groundcover:3",
+          "north_m": 251.866748,
+          "seed": 720003,
+          "yaw_rad": 3.953548
+        },
+        {
+          "east_m": 532.263723,
+          "height_m": 0.214614,
+          "id": "woodland-edge-east-north:groundcover:4",
+          "north_m": 252.330124,
+          "seed": 720004,
+          "yaw_rad": 2.220917
+        },
+        {
+          "east_m": 535.441698,
+          "height_m": 0.318629,
+          "id": "woodland-edge-east-north:groundcover:5",
+          "north_m": 252.005965,
+          "seed": 720005,
+          "yaw_rad": 6.019532
+        },
+        {
+          "east_m": 536.375376,
+          "height_m": 0.226983,
+          "id": "woodland-edge-east-north:groundcover:6",
+          "north_m": 251.173421,
+          "seed": 720006,
+          "yaw_rad": 1.413372
+        },
+        {
+          "east_m": 535.601815,
+          "height_m": 0.257712,
+          "id": "woodland-edge-east-north:groundcover:7",
+          "north_m": 252.383832,
+          "seed": 720007,
+          "yaw_rad": 1.85535
+        },
+        {
+          "east_m": 535.891934,
+          "height_m": 0.319155,
+          "id": "woodland-edge-east-north:groundcover:8",
+          "north_m": 252.435341,
+          "seed": 720008,
+          "yaw_rad": 3.009574
+        },
+        {
+          "east_m": 536.070949,
+          "height_m": 0.3504,
+          "id": "woodland-edge-east-north:groundcover:9",
+          "north_m": 251.100823,
+          "seed": 720009,
+          "yaw_rad": 2.514578
+        },
+        {
+          "east_m": 536.723788,
+          "height_m": 0.232615,
+          "id": "woodland-edge-east-north:groundcover:10",
+          "north_m": 252.009799,
+          "seed": 720010,
+          "yaw_rad": 3.765348
+        },
+        {
+          "east_m": 536.052536,
+          "height_m": 0.274715,
+          "id": "woodland-edge-east-north:groundcover:11",
+          "north_m": 252.02106,
+          "seed": 720011,
+          "yaw_rad": 3.202568
+        },
+        {
+          "east_m": 536.228545,
+          "height_m": 0.228439,
+          "id": "woodland-edge-east-north:groundcover:12",
+          "north_m": 252.339635,
+          "seed": 720012,
+          "yaw_rad": 3.120021
+        },
+        {
+          "east_m": 535.591666,
+          "height_m": 0.283132,
+          "id": "woodland-edge-east-north:groundcover:13",
+          "north_m": 250.991704,
+          "seed": 720013,
+          "yaw_rad": 4.482675
+        },
+        {
+          "east_m": 536.246401,
+          "height_m": 0.350734,
+          "id": "woodland-edge-east-north:groundcover:14",
+          "north_m": 251.51577,
+          "seed": 720014,
+          "yaw_rad": 2.168857
+        },
+        {
+          "east_m": 535.356986,
+          "height_m": 0.299202,
+          "id": "woodland-edge-east-north:groundcover:15",
+          "north_m": 251.560127,
+          "seed": 720015,
+          "yaw_rad": 4.092757
+        },
+        {
+          "east_m": 535.171254,
+          "height_m": 0.243043,
+          "id": "woodland-edge-east-north:groundcover:16",
+          "north_m": 252.021877,
+          "seed": 720016,
+          "yaw_rad": 1.851707
+        },
+        {
+          "east_m": 533.452408,
+          "height_m": 0.235835,
+          "id": "woodland-edge-east-north:groundcover:17",
+          "north_m": 247.298998,
+          "seed": 720017,
+          "yaw_rad": 0.313795
+        },
+        {
+          "east_m": 532.920409,
+          "height_m": 0.308556,
+          "id": "woodland-edge-east-north:groundcover:18",
+          "north_m": 247.099307,
+          "seed": 720018,
+          "yaw_rad": 0.527498
+        },
+        {
+          "east_m": 532.985671,
+          "height_m": 0.294096,
+          "id": "woodland-edge-east-north:groundcover:19",
+          "north_m": 246.657607,
+          "seed": 720019,
+          "yaw_rad": 4.655248
+        },
+        {
+          "east_m": 532.886892,
+          "height_m": 0.34823,
+          "id": "woodland-edge-east-north:groundcover:20",
+          "north_m": 247.910855,
+          "seed": 720020,
+          "yaw_rad": 0.648299
+        },
+        {
+          "east_m": 532.270761,
+          "height_m": 0.236008,
+          "id": "woodland-edge-east-north:groundcover:21",
+          "north_m": 246.725793,
+          "seed": 720021,
+          "yaw_rad": 3.281377
+        },
+        {
+          "east_m": 531.99941,
+          "height_m": 0.283637,
+          "id": "woodland-edge-east-north:groundcover:22",
+          "north_m": 247.152871,
+          "seed": 720022,
+          "yaw_rad": 2.200016
+        },
+        {
+          "east_m": 536.111323,
+          "height_m": 0.180654,
+          "id": "woodland-edge-east-north:groundcover:23",
+          "north_m": 246.235493,
+          "seed": 720023,
+          "yaw_rad": 0.793931
+        },
+        {
+          "east_m": 535.838301,
+          "height_m": 0.293335,
+          "id": "woodland-edge-east-north:groundcover:24",
+          "north_m": 246.854694,
+          "seed": 720024,
+          "yaw_rad": 4.547774
+        },
+        {
+          "east_m": 536.323853,
+          "height_m": 0.220362,
+          "id": "woodland-edge-east-north:groundcover:25",
+          "north_m": 246.963438,
+          "seed": 720025,
+          "yaw_rad": 5.179294
+        },
+        {
+          "east_m": 536.370531,
+          "height_m": 0.239788,
+          "id": "woodland-edge-east-north:groundcover:26",
+          "north_m": 247.719207,
+          "seed": 720026,
+          "yaw_rad": 2.11814
+        },
+        {
+          "east_m": 535.905375,
+          "height_m": 0.201346,
+          "id": "woodland-edge-east-north:groundcover:27",
+          "north_m": 246.425713,
+          "seed": 720027,
+          "yaw_rad": 1.002361
+        },
+        {
+          "east_m": 536.138164,
+          "height_m": 0.362401,
+          "id": "woodland-edge-east-north:groundcover:28",
+          "north_m": 247.629879,
+          "seed": 720028,
+          "yaw_rad": 6.241193
+        },
+        {
+          "east_m": 536.379372,
+          "height_m": 0.21923,
+          "id": "woodland-edge-east-north:groundcover:29",
+          "north_m": 246.223849,
+          "seed": 720029,
+          "yaw_rad": 4.754669
+        },
+        {
+          "east_m": 536.411968,
+          "height_m": 0.199429,
+          "id": "woodland-edge-east-north:groundcover:30",
+          "north_m": 246.578447,
+          "seed": 720030,
+          "yaw_rad": 5.712928
+        },
+        {
+          "east_m": 536.885566,
+          "height_m": 0.24191,
+          "id": "woodland-edge-east-north:groundcover:31",
+          "north_m": 246.628622,
+          "seed": 720031,
+          "yaw_rad": 1.545294
+        },
+        {
+          "east_m": 535.998484,
+          "height_m": 0.278537,
+          "id": "woodland-edge-east-north:groundcover:32",
+          "north_m": 247.243596,
+          "seed": 720032,
+          "yaw_rad": 4.414317
+        },
+        {
+          "east_m": 535.666089,
+          "height_m": 0.192098,
+          "id": "woodland-edge-east-north:groundcover:33",
+          "north_m": 246.52869,
+          "seed": 720033,
+          "yaw_rad": 3.404191
+        },
+        {
+          "east_m": 537.535093,
+          "height_m": 0.280052,
+          "id": "woodland-edge-east-north:groundcover:34",
+          "north_m": 251.223334,
+          "seed": 720034,
+          "yaw_rad": 1.192382
+        },
+        {
+          "east_m": 537.964782,
+          "height_m": 0.168467,
+          "id": "woodland-edge-east-north:groundcover:35",
+          "north_m": 250.767447,
+          "seed": 720035,
+          "yaw_rad": 0.606881
+        },
+        {
+          "east_m": 538.688732,
+          "height_m": 0.168518,
+          "id": "woodland-edge-east-north:groundcover:36",
+          "north_m": 251.391251,
+          "seed": 720036,
+          "yaw_rad": 0.418202
+        },
+        {
+          "east_m": 537.909168,
+          "height_m": 0.202008,
+          "id": "woodland-edge-east-north:groundcover:37",
+          "north_m": 251.594228,
+          "seed": 720037,
+          "yaw_rad": 4.964058
+        },
+        {
+          "east_m": 538.369292,
+          "height_m": 0.176383,
+          "id": "woodland-edge-east-north:groundcover:38",
+          "north_m": 251.20692,
+          "seed": 720038,
+          "yaw_rad": 1.825629
+        },
+        {
+          "east_m": 538.311111,
+          "height_m": 0.158012,
+          "id": "woodland-edge-east-north:groundcover:39",
+          "north_m": 251.463456,
+          "seed": 720039,
+          "yaw_rad": 1.628896
+        }
+      ],
       "grass_height_m": 0.25,
       "grass_heights_m": [
         0.25,
@@ -202,6 +548,352 @@
         534.5
       ],
       "floor_half_size_m": 2.0,
+      "grass_cards": [
+        {
+          "east_m": 530.323781,
+          "height_m": 0.143804083,
+          "id": "woodland-edge-east-south:grass:0",
+          "north_m": -244.303752,
+          "seed": 710200,
+          "yaw_rad": 1.190561
+        },
+        {
+          "east_m": 528.221092,
+          "height_m": 0.080982406,
+          "id": "woodland-edge-east-south:grass:1",
+          "north_m": -250.772261,
+          "seed": 710201,
+          "yaw_rad": 2.852437
+        },
+        {
+          "east_m": 529.846547,
+          "height_m": 0.096179046,
+          "id": "woodland-edge-east-south:grass:2",
+          "north_m": -254.037478,
+          "seed": 710202,
+          "yaw_rad": 4.972878
+        },
+        {
+          "east_m": 534.480245,
+          "height_m": 0.215712,
+          "id": "woodland-edge-east-south:groundcover:0",
+          "north_m": -245.667299,
+          "seed": 720100,
+          "yaw_rad": 2.40672
+        },
+        {
+          "east_m": 533.24886,
+          "height_m": 0.171514,
+          "id": "woodland-edge-east-south:groundcover:1",
+          "north_m": -246.095779,
+          "seed": 720101,
+          "yaw_rad": 2.930479
+        },
+        {
+          "east_m": 534.418209,
+          "height_m": 0.176687,
+          "id": "woodland-edge-east-south:groundcover:2",
+          "north_m": -245.921185,
+          "seed": 720102,
+          "yaw_rad": 4.995888
+        },
+        {
+          "east_m": 534.167643,
+          "height_m": 0.200129,
+          "id": "woodland-edge-east-south:groundcover:3",
+          "north_m": -245.951503,
+          "seed": 720103,
+          "yaw_rad": 4.177605
+        },
+        {
+          "east_m": 533.05738,
+          "height_m": 0.317804,
+          "id": "woodland-edge-east-south:groundcover:4",
+          "north_m": -246.727536,
+          "seed": 720104,
+          "yaw_rad": 0.643793
+        },
+        {
+          "east_m": 537.387387,
+          "height_m": 0.311493,
+          "id": "woodland-edge-east-south:groundcover:5",
+          "north_m": -248.294902,
+          "seed": 720105,
+          "yaw_rad": 5.210166
+        },
+        {
+          "east_m": 536.438549,
+          "height_m": 0.270083,
+          "id": "woodland-edge-east-south:groundcover:6",
+          "north_m": -249.593194,
+          "seed": 720106,
+          "yaw_rad": 4.433204
+        },
+        {
+          "east_m": 536.962158,
+          "height_m": 0.293803,
+          "id": "woodland-edge-east-south:groundcover:7",
+          "north_m": -248.965175,
+          "seed": 720107,
+          "yaw_rad": 1.34463
+        },
+        {
+          "east_m": 537.659538,
+          "height_m": 0.237734,
+          "id": "woodland-edge-east-south:groundcover:8",
+          "north_m": -248.689563,
+          "seed": 720108,
+          "yaw_rad": 0.790384
+        },
+        {
+          "east_m": 536.493116,
+          "height_m": 0.312629,
+          "id": "woodland-edge-east-south:groundcover:9",
+          "north_m": -249.419635,
+          "seed": 720109,
+          "yaw_rad": 0.941001
+        },
+        {
+          "east_m": 536.793037,
+          "height_m": 0.314281,
+          "id": "woodland-edge-east-south:groundcover:10",
+          "north_m": -247.890371,
+          "seed": 720110,
+          "yaw_rad": 5.285331
+        },
+        {
+          "east_m": 536.262847,
+          "height_m": 0.232893,
+          "id": "woodland-edge-east-south:groundcover:11",
+          "north_m": -248.704694,
+          "seed": 720111,
+          "yaw_rad": 6.12298
+        },
+        {
+          "east_m": 537.349202,
+          "height_m": 0.305213,
+          "id": "woodland-edge-east-south:groundcover:12",
+          "north_m": -249.429238,
+          "seed": 720112,
+          "yaw_rad": 3.675993
+        },
+        {
+          "east_m": 536.598973,
+          "height_m": 0.323679,
+          "id": "woodland-edge-east-south:groundcover:13",
+          "north_m": -248.483941,
+          "seed": 720113,
+          "yaw_rad": 1.640497
+        },
+        {
+          "east_m": 536.517173,
+          "height_m": 0.304145,
+          "id": "woodland-edge-east-south:groundcover:14",
+          "north_m": -247.96552,
+          "seed": 720114,
+          "yaw_rad": 4.727633
+        },
+        {
+          "east_m": 537.169993,
+          "height_m": 0.269498,
+          "id": "woodland-edge-east-south:groundcover:15",
+          "north_m": -247.863646,
+          "seed": 720115,
+          "yaw_rad": 2.624641
+        },
+        {
+          "east_m": 536.710536,
+          "height_m": 0.251655,
+          "id": "woodland-edge-east-south:groundcover:16",
+          "north_m": -249.524846,
+          "seed": 720116,
+          "yaw_rad": 5.869969
+        },
+        {
+          "east_m": 532.056081,
+          "height_m": 0.346959,
+          "id": "woodland-edge-east-south:groundcover:17",
+          "north_m": -250.521022,
+          "seed": 720117,
+          "yaw_rad": 3.32404
+        },
+        {
+          "east_m": 531.041886,
+          "height_m": 0.195715,
+          "id": "woodland-edge-east-south:groundcover:18",
+          "north_m": -249.109453,
+          "seed": 720118,
+          "yaw_rad": 5.230587
+        },
+        {
+          "east_m": 531.904278,
+          "height_m": 0.291355,
+          "id": "woodland-edge-east-south:groundcover:19",
+          "north_m": -249.830032,
+          "seed": 720119,
+          "yaw_rad": 0.120034
+        },
+        {
+          "east_m": 530.84853,
+          "height_m": 0.161132,
+          "id": "woodland-edge-east-south:groundcover:20",
+          "north_m": -250.941142,
+          "seed": 720120,
+          "yaw_rad": 1.42852
+        },
+        {
+          "east_m": 531.305399,
+          "height_m": 0.213498,
+          "id": "woodland-edge-east-south:groundcover:21",
+          "north_m": -250.507998,
+          "seed": 720121,
+          "yaw_rad": 0.820104
+        },
+        {
+          "east_m": 531.497499,
+          "height_m": 0.194156,
+          "id": "woodland-edge-east-south:groundcover:22",
+          "north_m": -250.668263,
+          "seed": 720122,
+          "yaw_rad": 4.215475
+        },
+        {
+          "east_m": 535.013633,
+          "height_m": 0.2854,
+          "id": "woodland-edge-east-south:groundcover:23",
+          "north_m": -252.113647,
+          "seed": 720123,
+          "yaw_rad": 3.124144
+        },
+        {
+          "east_m": 534.279433,
+          "height_m": 0.22417,
+          "id": "woodland-edge-east-south:groundcover:24",
+          "north_m": -253.083435,
+          "seed": 720124,
+          "yaw_rad": 4.685065
+        },
+        {
+          "east_m": 533.948664,
+          "height_m": 0.201632,
+          "id": "woodland-edge-east-south:groundcover:25",
+          "north_m": -253.413977,
+          "seed": 720125,
+          "yaw_rad": 0.593651
+        },
+        {
+          "east_m": 534.718911,
+          "height_m": 0.315857,
+          "id": "woodland-edge-east-south:groundcover:26",
+          "north_m": -252.349631,
+          "seed": 720126,
+          "yaw_rad": 1.594669
+        },
+        {
+          "east_m": 534.115814,
+          "height_m": 0.263568,
+          "id": "woodland-edge-east-south:groundcover:27",
+          "north_m": -253.213375,
+          "seed": 720127,
+          "yaw_rad": 1.143391
+        },
+        {
+          "east_m": 534.859351,
+          "height_m": 0.246341,
+          "id": "woodland-edge-east-south:groundcover:28",
+          "north_m": -252.886648,
+          "seed": 720128,
+          "yaw_rad": 0.711288
+        },
+        {
+          "east_m": 534.520042,
+          "height_m": 0.250532,
+          "id": "woodland-edge-east-south:groundcover:29",
+          "north_m": -252.679626,
+          "seed": 720129,
+          "yaw_rad": 1.576741
+        },
+        {
+          "east_m": 534.961572,
+          "height_m": 0.31863,
+          "id": "woodland-edge-east-south:groundcover:30",
+          "north_m": -252.578808,
+          "seed": 720130,
+          "yaw_rad": 4.563305
+        },
+        {
+          "east_m": 535.113228,
+          "height_m": 0.223519,
+          "id": "woodland-edge-east-south:groundcover:31",
+          "north_m": -252.300406,
+          "seed": 720131,
+          "yaw_rad": 4.718525
+        },
+        {
+          "east_m": 533.895817,
+          "height_m": 0.245904,
+          "id": "woodland-edge-east-south:groundcover:32",
+          "north_m": -253.096412,
+          "seed": 720132,
+          "yaw_rad": 0.005465
+        },
+        {
+          "east_m": 534.314612,
+          "height_m": 0.250481,
+          "id": "woodland-edge-east-south:groundcover:33",
+          "north_m": -253.428461,
+          "seed": 720133,
+          "yaw_rad": 1.725441
+        },
+        {
+          "east_m": 539.284149,
+          "height_m": 0.152315,
+          "id": "woodland-edge-east-south:groundcover:34",
+          "north_m": -250.219763,
+          "seed": 720134,
+          "yaw_rad": 6.102655
+        },
+        {
+          "east_m": 538.719388,
+          "height_m": 0.154882,
+          "id": "woodland-edge-east-south:groundcover:35",
+          "north_m": -250.553013,
+          "seed": 720135,
+          "yaw_rad": 2.445357
+        },
+        {
+          "east_m": 538.469316,
+          "height_m": 0.226938,
+          "id": "woodland-edge-east-south:groundcover:36",
+          "north_m": -250.661093,
+          "seed": 720136,
+          "yaw_rad": 0.237479
+        },
+        {
+          "east_m": 539.070695,
+          "height_m": 0.160856,
+          "id": "woodland-edge-east-south:groundcover:37",
+          "north_m": -250.246185,
+          "seed": 720137,
+          "yaw_rad": 3.485396
+        },
+        {
+          "east_m": 538.726571,
+          "height_m": 0.158965,
+          "id": "woodland-edge-east-south:groundcover:38",
+          "north_m": -249.972903,
+          "seed": 720138,
+          "yaw_rad": 0.793068
+        },
+        {
+          "east_m": 538.566622,
+          "height_m": 0.192657,
+          "id": "woodland-edge-east-south:groundcover:39",
+          "north_m": -250.308394,
+          "seed": 720139,
+          "yaw_rad": 3.082343
+        }
+      ],
       "grass_height_m": 0.25,
       "grass_heights_m": [
         0.25,
@@ -396,6 +1088,352 @@
         201.5
       ],
       "floor_half_size_m": 2.0,
+      "grass_cards": [
+        {
+          "east_m": 205.976202,
+          "height_m": 0.09005932,
+          "id": "woodland-edge-southwest:grass:0",
+          "north_m": -547.539422,
+          "seed": 710300,
+          "yaw_rad": 6.215211
+        },
+        {
+          "east_m": 199.408363,
+          "height_m": 0.084999142,
+          "id": "woodland-edge-southwest:grass:1",
+          "north_m": -547.359402,
+          "seed": 710301,
+          "yaw_rad": 5.014104
+        },
+        {
+          "east_m": 195.925796,
+          "height_m": 0.143804083,
+          "id": "woodland-edge-southwest:grass:2",
+          "north_m": -550.17358,
+          "seed": 710302,
+          "yaw_rad": 4.077992
+        },
+        {
+          "east_m": 203.653137,
+          "height_m": 0.294743,
+          "id": "woodland-edge-southwest:groundcover:0",
+          "north_m": -550.963096,
+          "seed": 720200,
+          "yaw_rad": 2.069819
+        },
+        {
+          "east_m": 204.314284,
+          "height_m": 0.231879,
+          "id": "woodland-edge-southwest:groundcover:1",
+          "north_m": -549.980746,
+          "seed": 720201,
+          "yaw_rad": 2.419184
+        },
+        {
+          "east_m": 205.274012,
+          "height_m": 0.190168,
+          "id": "woodland-edge-southwest:groundcover:2",
+          "north_m": -550.58243,
+          "seed": 720202,
+          "yaw_rad": 4.689955
+        },
+        {
+          "east_m": 203.861888,
+          "height_m": 0.200838,
+          "id": "woodland-edge-southwest:groundcover:3",
+          "north_m": -550.373649,
+          "seed": 720203,
+          "yaw_rad": 2.258116
+        },
+        {
+          "east_m": 204.549548,
+          "height_m": 0.201059,
+          "id": "woodland-edge-southwest:groundcover:4",
+          "north_m": -550.232321,
+          "seed": 720204,
+          "yaw_rad": 4.560717
+        },
+        {
+          "east_m": 203.937567,
+          "height_m": 0.18464,
+          "id": "woodland-edge-southwest:groundcover:5",
+          "north_m": -555.603476,
+          "seed": 720205,
+          "yaw_rad": 2.12859
+        },
+        {
+          "east_m": 203.627599,
+          "height_m": 0.258714,
+          "id": "woodland-edge-southwest:groundcover:6",
+          "north_m": -555.140169,
+          "seed": 720206,
+          "yaw_rad": 5.962679
+        },
+        {
+          "east_m": 202.728472,
+          "height_m": 0.318171,
+          "id": "woodland-edge-southwest:groundcover:7",
+          "north_m": -555.644781,
+          "seed": 720207,
+          "yaw_rad": 2.068957
+        },
+        {
+          "east_m": 203.78423,
+          "height_m": 0.20868,
+          "id": "woodland-edge-southwest:groundcover:8",
+          "north_m": -554.802894,
+          "seed": 720208,
+          "yaw_rad": 6.020491
+        },
+        {
+          "east_m": 203.246236,
+          "height_m": 0.34074,
+          "id": "woodland-edge-southwest:groundcover:9",
+          "north_m": -554.802529,
+          "seed": 720209,
+          "yaw_rad": 0.534976
+        },
+        {
+          "east_m": 204.251852,
+          "height_m": 0.21097,
+          "id": "woodland-edge-southwest:groundcover:10",
+          "north_m": -554.515797,
+          "seed": 720210,
+          "yaw_rad": 1.157964
+        },
+        {
+          "east_m": 204.195074,
+          "height_m": 0.259919,
+          "id": "woodland-edge-southwest:groundcover:11",
+          "north_m": -555.018558,
+          "seed": 720211,
+          "yaw_rad": 0.513021
+        },
+        {
+          "east_m": 203.052352,
+          "height_m": 0.279272,
+          "id": "woodland-edge-southwest:groundcover:12",
+          "north_m": -555.730281,
+          "seed": 720212,
+          "yaw_rad": 3.1484
+        },
+        {
+          "east_m": 202.989741,
+          "height_m": 0.231417,
+          "id": "woodland-edge-southwest:groundcover:13",
+          "north_m": -555.225548,
+          "seed": 720213,
+          "yaw_rad": 4.724373
+        },
+        {
+          "east_m": 203.067257,
+          "height_m": 0.377839,
+          "id": "woodland-edge-southwest:groundcover:14",
+          "north_m": -554.316893,
+          "seed": 720214,
+          "yaw_rad": 0.469782
+        },
+        {
+          "east_m": 203.716696,
+          "height_m": 0.317809,
+          "id": "woodland-edge-southwest:groundcover:15",
+          "north_m": -554.036098,
+          "seed": 720215,
+          "yaw_rad": 1.977589
+        },
+        {
+          "east_m": 203.61649,
+          "height_m": 0.314448,
+          "id": "woodland-edge-southwest:groundcover:16",
+          "north_m": -555.473872,
+          "seed": 720216,
+          "yaw_rad": 4.738371
+        },
+        {
+          "east_m": 199.292148,
+          "height_m": 0.249153,
+          "id": "woodland-edge-southwest:groundcover:17",
+          "north_m": -549.398186,
+          "seed": 720217,
+          "yaw_rad": 5.867572
+        },
+        {
+          "east_m": 200.463544,
+          "height_m": 0.254118,
+          "id": "woodland-edge-southwest:groundcover:18",
+          "north_m": -550.792189,
+          "seed": 720218,
+          "yaw_rad": 1.709334
+        },
+        {
+          "east_m": 199.690827,
+          "height_m": 0.184258,
+          "id": "woodland-edge-southwest:groundcover:19",
+          "north_m": -549.896713,
+          "seed": 720219,
+          "yaw_rad": 1.472717
+        },
+        {
+          "east_m": 199.840042,
+          "height_m": 0.294445,
+          "id": "woodland-edge-southwest:groundcover:20",
+          "north_m": -550.931385,
+          "seed": 720220,
+          "yaw_rad": 5.771507
+        },
+        {
+          "east_m": 200.512759,
+          "height_m": 0.249543,
+          "id": "woodland-edge-southwest:groundcover:21",
+          "north_m": -550.465135,
+          "seed": 720221,
+          "yaw_rad": 2.821949
+        },
+        {
+          "east_m": 200.264278,
+          "height_m": 0.222959,
+          "id": "woodland-edge-southwest:groundcover:22",
+          "north_m": -549.618416,
+          "seed": 720222,
+          "yaw_rad": 4.379803
+        },
+        {
+          "east_m": 197.838795,
+          "height_m": 0.240363,
+          "id": "woodland-edge-southwest:groundcover:23",
+          "north_m": -554.459814,
+          "seed": 720223,
+          "yaw_rad": 0.566518
+        },
+        {
+          "east_m": 198.554713,
+          "height_m": 0.263098,
+          "id": "woodland-edge-southwest:groundcover:24",
+          "north_m": -554.594922,
+          "seed": 720224,
+          "yaw_rad": 3.106119
+        },
+        {
+          "east_m": 198.903881,
+          "height_m": 0.33981,
+          "id": "woodland-edge-southwest:groundcover:25",
+          "north_m": -553.310148,
+          "seed": 720225,
+          "yaw_rad": 4.130723
+        },
+        {
+          "east_m": 198.746352,
+          "height_m": 0.253901,
+          "id": "woodland-edge-southwest:groundcover:26",
+          "north_m": -554.698492,
+          "seed": 720226,
+          "yaw_rad": 0.676198
+        },
+        {
+          "east_m": 198.309995,
+          "height_m": 0.224608,
+          "id": "woodland-edge-southwest:groundcover:27",
+          "north_m": -553.322894,
+          "seed": 720227,
+          "yaw_rad": 2.2794
+        },
+        {
+          "east_m": 198.116524,
+          "height_m": 0.263839,
+          "id": "woodland-edge-southwest:groundcover:28",
+          "north_m": -553.633547,
+          "seed": 720228,
+          "yaw_rad": 0.936687
+        },
+        {
+          "east_m": 199.061765,
+          "height_m": 0.348169,
+          "id": "woodland-edge-southwest:groundcover:29",
+          "north_m": -554.096031,
+          "seed": 720229,
+          "yaw_rad": 0.215524
+        },
+        {
+          "east_m": 199.397867,
+          "height_m": 0.280884,
+          "id": "woodland-edge-southwest:groundcover:30",
+          "north_m": -553.888803,
+          "seed": 720230,
+          "yaw_rad": 3.915198
+        },
+        {
+          "east_m": 198.155604,
+          "height_m": 0.178439,
+          "id": "woodland-edge-southwest:groundcover:31",
+          "north_m": -554.713568,
+          "seed": 720231,
+          "yaw_rad": 3.659215
+        },
+        {
+          "east_m": 198.116587,
+          "height_m": 0.269684,
+          "id": "woodland-edge-southwest:groundcover:32",
+          "north_m": -553.339679,
+          "seed": 720232,
+          "yaw_rad": 4.683914
+        },
+        {
+          "east_m": 198.042625,
+          "height_m": 0.25842,
+          "id": "woodland-edge-southwest:groundcover:33",
+          "north_m": -553.910787,
+          "seed": 720233,
+          "yaw_rad": 5.097226
+        },
+        {
+          "east_m": 202.184705,
+          "height_m": 0.289286,
+          "id": "woodland-edge-southwest:groundcover:34",
+          "north_m": -556.482836,
+          "seed": 720234,
+          "yaw_rad": 5.89643
+        },
+        {
+          "east_m": 202.702941,
+          "height_m": 0.187815,
+          "id": "woodland-edge-southwest:groundcover:35",
+          "north_m": -556.656695,
+          "seed": 720235,
+          "yaw_rad": 3.780112
+        },
+        {
+          "east_m": 202.504774,
+          "height_m": 0.234308,
+          "id": "woodland-edge-southwest:groundcover:36",
+          "north_m": -557.109065,
+          "seed": 720236,
+          "yaw_rad": 2.673153
+        },
+        {
+          "east_m": 202.141885,
+          "height_m": 0.211723,
+          "id": "woodland-edge-southwest:groundcover:37",
+          "north_m": -557.156118,
+          "seed": 720237,
+          "yaw_rad": 1.658521
+        },
+        {
+          "east_m": 202.745231,
+          "height_m": 0.226678,
+          "id": "woodland-edge-southwest:groundcover:38",
+          "north_m": -557.259979,
+          "seed": 720238,
+          "yaw_rad": 4.672122
+        },
+        {
+          "east_m": 202.674452,
+          "height_m": 0.227943,
+          "id": "woodland-edge-southwest:groundcover:39",
+          "north_m": -556.324962,
+          "seed": 720239,
+          "yaw_rad": 4.763969
+        }
+      ],
       "grass_height_m": 0.25,
       "grass_heights_m": [
         0.156566,
@@ -590,6 +1628,352 @@
         -553.0
       ],
       "floor_half_size_m": 2.0,
+      "grass_cards": [
+        {
+          "east_m": -548.304859,
+          "height_m": 0.143804083,
+          "id": "woodland-edge-northwest:grass:0",
+          "north_m": 196.669895,
+          "seed": 710400,
+          "yaw_rad": 1.769926
+        },
+        {
+          "east_m": -547.248463,
+          "height_m": 0.137664799,
+          "id": "woodland-edge-northwest:grass:1",
+          "north_m": 203.634009,
+          "seed": 710401,
+          "yaw_rad": 1.955442
+        },
+        {
+          "east_m": -549.037867,
+          "height_m": 0.076483639,
+          "id": "woodland-edge-northwest:grass:2",
+          "north_m": 206.69952,
+          "seed": 710402,
+          "yaw_rad": 4.09199
+        },
+        {
+          "east_m": -550.821195,
+          "height_m": 0.264045,
+          "id": "woodland-edge-northwest:groundcover:0",
+          "north_m": 198.868628,
+          "seed": 720300,
+          "yaw_rad": 5.100198
+        },
+        {
+          "east_m": -552.487928,
+          "height_m": 0.30945,
+          "id": "woodland-edge-northwest:groundcover:1",
+          "north_m": 198.653832,
+          "seed": 720301,
+          "yaw_rad": 4.931844
+        },
+        {
+          "east_m": -552.239274,
+          "height_m": 0.281219,
+          "id": "woodland-edge-northwest:groundcover:2",
+          "north_m": 197.992941,
+          "seed": 720302,
+          "yaw_rad": 5.558379
+        },
+        {
+          "east_m": -552.18057,
+          "height_m": 0.337726,
+          "id": "woodland-edge-northwest:groundcover:3",
+          "north_m": 198.832252,
+          "seed": 720303,
+          "yaw_rad": 3.21973
+        },
+        {
+          "east_m": -551.213235,
+          "height_m": 0.285758,
+          "id": "woodland-edge-northwest:groundcover:4",
+          "north_m": 199.265574,
+          "seed": 720304,
+          "yaw_rad": 0.924128
+        },
+        {
+          "east_m": -554.21387,
+          "height_m": 0.307517,
+          "id": "woodland-edge-northwest:groundcover:5",
+          "north_m": 199.657122,
+          "seed": 720305,
+          "yaw_rad": 6.271968
+        },
+        {
+          "east_m": -555.578178,
+          "height_m": 0.267565,
+          "id": "woodland-edge-northwest:groundcover:6",
+          "north_m": 199.704681,
+          "seed": 720306,
+          "yaw_rad": 0.841484
+        },
+        {
+          "east_m": -555.259044,
+          "height_m": 0.355356,
+          "id": "woodland-edge-northwest:groundcover:7",
+          "north_m": 200.873349,
+          "seed": 720307,
+          "yaw_rad": 1.914504
+        },
+        {
+          "east_m": -555.563705,
+          "height_m": 0.313146,
+          "id": "woodland-edge-northwest:groundcover:8",
+          "north_m": 199.393752,
+          "seed": 720308,
+          "yaw_rad": 5.584457
+        },
+        {
+          "east_m": -554.798531,
+          "height_m": 0.33426,
+          "id": "woodland-edge-northwest:groundcover:9",
+          "north_m": 199.180424,
+          "seed": 720309,
+          "yaw_rad": 4.538857
+        },
+        {
+          "east_m": -554.88883,
+          "height_m": 0.272338,
+          "id": "woodland-edge-northwest:groundcover:10",
+          "north_m": 199.458593,
+          "seed": 720310,
+          "yaw_rad": 3.773113
+        },
+        {
+          "east_m": -554.357513,
+          "height_m": 0.275376,
+          "id": "woodland-edge-northwest:groundcover:11",
+          "north_m": 200.187109,
+          "seed": 720311,
+          "yaw_rad": 0.949055
+        },
+        {
+          "east_m": -555.540376,
+          "height_m": 0.245547,
+          "id": "woodland-edge-northwest:groundcover:12",
+          "north_m": 200.252305,
+          "seed": 720312,
+          "yaw_rad": 3.205445
+        },
+        {
+          "east_m": -554.983402,
+          "height_m": 0.360046,
+          "id": "woodland-edge-northwest:groundcover:13",
+          "north_m": 200.721326,
+          "seed": 720313,
+          "yaw_rad": 3.978571
+        },
+        {
+          "east_m": -555.626512,
+          "height_m": 0.278159,
+          "id": "woodland-edge-northwest:groundcover:14",
+          "north_m": 199.139861,
+          "seed": 720314,
+          "yaw_rad": 1.360641
+        },
+        {
+          "east_m": -554.551827,
+          "height_m": 0.260425,
+          "id": "woodland-edge-northwest:groundcover:15",
+          "north_m": 199.351105,
+          "seed": 720315,
+          "yaw_rad": 2.882446
+        },
+        {
+          "east_m": -554.987903,
+          "height_m": 0.20218,
+          "id": "woodland-edge-northwest:groundcover:16",
+          "north_m": 199.028128,
+          "seed": 720316,
+          "yaw_rad": 5.910524
+        },
+        {
+          "east_m": -549.059396,
+          "height_m": 0.199436,
+          "id": "woodland-edge-northwest:groundcover:17",
+          "north_m": 202.911729,
+          "seed": 720317,
+          "yaw_rad": 4.765791
+        },
+        {
+          "east_m": -551.172035,
+          "height_m": 0.218064,
+          "id": "woodland-edge-northwest:groundcover:18",
+          "north_m": 203.176772,
+          "seed": 720318,
+          "yaw_rad": 1.311841
+        },
+        {
+          "east_m": -549.901727,
+          "height_m": 0.326118,
+          "id": "woodland-edge-northwest:groundcover:19",
+          "north_m": 201.99179,
+          "seed": 720319,
+          "yaw_rad": 4.650167
+        },
+        {
+          "east_m": -550.853251,
+          "height_m": 0.357422,
+          "id": "woodland-edge-northwest:groundcover:20",
+          "north_m": 202.155748,
+          "seed": 720320,
+          "yaw_rad": 2.622148
+        },
+        {
+          "east_m": -550.800019,
+          "height_m": 0.193867,
+          "id": "woodland-edge-northwest:groundcover:21",
+          "north_m": 203.604173,
+          "seed": 720321,
+          "yaw_rad": 1.001402
+        },
+        {
+          "east_m": -549.57715,
+          "height_m": 0.186186,
+          "id": "woodland-edge-northwest:groundcover:22",
+          "north_m": 202.106351,
+          "seed": 720322,
+          "yaw_rad": 4.83434
+        },
+        {
+          "east_m": -552.801876,
+          "height_m": 0.292486,
+          "id": "woodland-edge-northwest:groundcover:23",
+          "north_m": 204.591689,
+          "seed": 720323,
+          "yaw_rad": 5.443427
+        },
+        {
+          "east_m": -553.468911,
+          "height_m": 0.253617,
+          "id": "woodland-edge-northwest:groundcover:24",
+          "north_m": 203.947973,
+          "seed": 720324,
+          "yaw_rad": 0.228563
+        },
+        {
+          "east_m": -553.113697,
+          "height_m": 0.194136,
+          "id": "woodland-edge-northwest:groundcover:25",
+          "north_m": 204.575344,
+          "seed": 720325,
+          "yaw_rad": 6.009753
+        },
+        {
+          "east_m": -553.813277,
+          "height_m": 0.289338,
+          "id": "woodland-edge-northwest:groundcover:26",
+          "north_m": 204.846314,
+          "seed": 720326,
+          "yaw_rad": 1.198998
+        },
+        {
+          "east_m": -554.396997,
+          "height_m": 0.21058,
+          "id": "woodland-edge-northwest:groundcover:27",
+          "north_m": 204.429648,
+          "seed": 720327,
+          "yaw_rad": 1.965605
+        },
+        {
+          "east_m": -553.298914,
+          "height_m": 0.173419,
+          "id": "woodland-edge-northwest:groundcover:28",
+          "north_m": 205.088404,
+          "seed": 720328,
+          "yaw_rad": 4.133695
+        },
+        {
+          "east_m": -553.646933,
+          "height_m": 0.204451,
+          "id": "woodland-edge-northwest:groundcover:29",
+          "north_m": 205.030682,
+          "seed": 720329,
+          "yaw_rad": 2.838823
+        },
+        {
+          "east_m": -554.480006,
+          "height_m": 0.264253,
+          "id": "woodland-edge-northwest:groundcover:30",
+          "north_m": 204.773451,
+          "seed": 720330,
+          "yaw_rad": 2.240762
+        },
+        {
+          "east_m": -553.274818,
+          "height_m": 0.23026,
+          "id": "woodland-edge-northwest:groundcover:31",
+          "north_m": 205.374217,
+          "seed": 720331,
+          "yaw_rad": 2.106731
+        },
+        {
+          "east_m": -553.042431,
+          "height_m": 0.286113,
+          "id": "woodland-edge-northwest:groundcover:32",
+          "north_m": 204.202925,
+          "seed": 720332,
+          "yaw_rad": 1.551142
+        },
+        {
+          "east_m": -553.937085,
+          "height_m": 0.281323,
+          "id": "woodland-edge-northwest:groundcover:33",
+          "north_m": 205.141861,
+          "seed": 720333,
+          "yaw_rad": 4.690242
+        },
+        {
+          "east_m": -557.532216,
+          "height_m": 0.178304,
+          "id": "woodland-edge-northwest:groundcover:34",
+          "north_m": 201.342883,
+          "seed": 720334,
+          "yaw_rad": 0.506022
+        },
+        {
+          "east_m": -556.820712,
+          "height_m": 0.177664,
+          "id": "woodland-edge-northwest:groundcover:35",
+          "north_m": 201.664898,
+          "seed": 720335,
+          "yaw_rad": 0.066249
+        },
+        {
+          "east_m": -557.467774,
+          "height_m": 0.199544,
+          "id": "woodland-edge-northwest:groundcover:36",
+          "north_m": 201.079206,
+          "seed": 720336,
+          "yaw_rad": 0.042376
+        },
+        {
+          "east_m": -556.518839,
+          "height_m": 0.299867,
+          "id": "woodland-edge-northwest:groundcover:37",
+          "north_m": 201.241005,
+          "seed": 720337,
+          "yaw_rad": 3.964957
+        },
+        {
+          "east_m": -557.177818,
+          "height_m": 0.168319,
+          "id": "woodland-edge-northwest:groundcover:38",
+          "north_m": 201.088957,
+          "seed": 720338,
+          "yaw_rad": 1.912778
+        },
+        {
+          "east_m": -557.006256,
+          "height_m": 0.223657,
+          "id": "woodland-edge-northwest:groundcover:39",
+          "north_m": 201.206494,
+          "seed": 720339,
+          "yaw_rad": 3.707632
+        }
+      ],
       "grass_height_m": 0.25,
       "grass_heights_m": [
         0.25,
@@ -787,17 +2171,26 @@
   "shrub_include_sparse_trees": false,
   "shrub_quality": "high",
   "source_geometry": {
-    "computed_source_triangle_budget": 1988,
+    "computed_source_triangle_budget": 472,
     "floor_grid_cells_per_side": 2,
     "floor_half_size_m": 2.0,
     "floor_patch_count": 4,
     "floor_triangle_count": 32,
     "floor_triangles_per_patch": 8,
-    "grass_instance_count": 12,
-    "grass_mesh_max_horizontal_radius_m_at_grass_height": 0.11185338,
+    "grass_card_asset_id": "grass_common_short_4view_impostor",
+    "grass_card_atlas_sha256": "7d94fd6e6be26b4117a419fbcfb782dd73934f8e8e12ce4d8ef835eebabc64c9",
+    "grass_card_frame_world_size_m": [
+      1.467514,
+      1.467514
+    ],
+    "grass_card_instance_count": 172,
+    "grass_card_max_height_m": 0.377839,
+    "grass_card_source_height_m": 1.334103,
+    "grass_card_triangles_per_instance": 2,
+    "grass_full_quad_horizontal_radius_m_at_max_height": 0.293889911,
     "grass_source_asset_id": "grass_common_short",
-    "grass_source_asset_sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
-    "grass_source_triangles_per_instance": 155,
+    "grass_source_geometry_sha256": "6957b50622c9e26e7296c1b47ea8653bc0d957e0a547de444e2ed96f0075a21a",
+    "grass_source_triangles": 155,
     "layout_jitter_bound_m": 0.362801599,
     "patch_radial_envelope_limits_m": {
       "woodland-edge-east-north": 8.057428,
@@ -881,26 +2274,27 @@
   },
   "source_sha256_normalized_text": {
     "app/assets/landscape/trees/catalog.json": "afab65435415f13816afe4c55856dd07cb74e00ac0d811ab174f7ff0d2b3a661",
-    "app/assets/landscape/vegetation/catalog.json": "e93dc1980e17ceb1e3e0d26f12a5175e014180707c6de857b7c6296754af8bf7",
+    "app/assets/landscape/vegetation/catalog.json": "e458263680779b41b6374ceba4cb732b9494ae0dfe020d4cff3b1b0c0e6a2e39",
     "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.json": "28e9a9a32da8dce203a9c3fb3f36648ad2b780e1a6189e375d0eb025b4ca18a2",
     "app/assets/landscape/vegetation/impostors/fern_1_4view.json": "55a875ac3c278dcf08f4c2d6f5df4f3ba1b399f0265f9f62d5f04cfd8ed729b5",
+    "app/assets/landscape/vegetation/impostors/grass_common_short_4view.json": "a217d565f3f44f48eb06a67e5ed28f2ef3ad9cc99b64e8e0b6d64214d816e5a5",
     "app/assets/landscape/vegetation/impostors/grass_common_tall_4view.json": "7e5e5df58a41ca89ae18f2b4a871856129f5faf787ce52d2e5a125ee8a3d238b",
     "app/data/field_loader.gd": "b81b1b0d3c0ee75a16bf65daba8575186c579aeb4f432ace22c1a36c98b25a11",
     "app/data/fields/default.json": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
     "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
-    "app/data/scenery/default.json": "43e05d91e8cc3a0c3ecd3c24db7b3bf60da6b092249289e2763f4f1484002681",
+    "app/data/scenery/default.json": "42bdb5c019d5db14b096f2a1e4fd02bd27cffdc4a07e191ff33b092f19faac54",
     "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
     "app/render/tree_wind.gdshaderinc": "cd5a5ddec7306b45144cbffa1e32db9bf0ef085063731d5fddca0e2783a5bb85",
     "app/render/treeline.gd": "4713a0674f8e3fb39305fa16fcfa6695a9f8736629b939c5f8686500d2c087f8",
     "app/scenery/imported_hedge.gd": "67bde34184e298295085757de642964fa4461fce29f84b0b3304165c6f96937c",
-    "app/scenery/imported_vegetation.gd": "23c5152a7db3f28433f9a14ca7a9de4a9371f1b260921497e2144db7af440bf2",
+    "app/scenery/imported_vegetation.gd": "23b438780d950a648f2740564d935a3203171c777d07b258450dd417a6877ece",
     "app/scenery/models.gd": "fb93bbb19b8155f3b9aa71be4cf17b1532b9b130d4b02c8cbfe8edcb2be619c9",
     "app/scenery/palette.gd": "b29470d48c2258544df0a2c4c9b41acaa240e4591042199e1c2056f035efd0da",
-    "app/scenery/prefabs.gd": "83fa18a7cdfc4860bf538c3ee2be4337215fea319661385b16d83a45a5efa7d8",
-    "app/scenery/vegetation_placement.gd": "d9aeb35700c781ce94cd3c9aad6f81731d48e54caca8628ac2d22c45b18dba45",
+    "app/scenery/prefabs.gd": "d4de56f83eb38bcbf368d819cc9fadbe301a1e644557f23886b26b7511b93d32",
+    "app/scenery/vegetation_placement.gd": "0b317be68a6e569d3ff42ce781f985e19aa4cbe4cee3d5c789b517f1a51ddce0",
     "tools/trees/place.py": "c580ad4196e6b589bf0580073ecf9a855e74f658c0de70b2b9a3fbbb30743c8c"
   },
-  "source_triangle_budget": 1988,
+  "source_triangle_budget": 472,
   "validation": {
     "all_current_treeline_positions_checked": 1680,
     "all_scenery_placement_envelopes_checked": 136,
@@ -909,22 +2303,27 @@
     "cards_per_short_segment_max": 1,
     "cards_per_short_segment_min": 1,
     "floor_rectangles_checked": 4,
+    "grass_card_count": 172,
+    "grass_card_nearest_neighbor_distance_max_m": 3.924066,
+    "grass_card_nearest_neighbor_distance_min_m": 0.181935,
     "grass_height_range_m": [
-      0.130298,
-      0.25
+      0.07495,
+      0.377839
     ],
-    "grass_to_shrub_bound_clearance_m": 3.025051,
+    "groundcover_card_count": 160,
+    "groundcover_center_radius_max_m": 4.837989,
+    "groundcover_to_shrub_nearest_center_m": 0.24452,
     "independent_shrub_segment_count": 48,
     "layout_cards_reproduced_from_imported_hedge_contract": 48,
     "minimum_margins_m_or_degrees": {
       "edge_ring_inner_m": 11.397602,
-      "edge_ring_outer_m": 5.185955,
+      "edge_ring_outer_m": 4.375578,
       "hedge_fence_clearance_m": 204.367494,
       "lake_bank_clearance_m": 375.546421,
       "props_clearance_m": 230.26115,
       "protected_gap_clearance_deg": 26.386204,
       "rotorpad_corridor_margin_m": 540.583368,
-      "rough_surface_margin_m": 19442.059492,
+      "rough_surface_margin_m": 19441.329096,
       "runway_corridor_margin_m": 139.558042,
       "scenery_patch_clearance_m": 536.951834,
       "track_clearance_m": 442.048593,
@@ -939,7 +2338,7 @@
       "woodland-edge-southwest": 8.130807
     },
     "path_sweep_samples_at_0_25m": 402,
-    "plant_geometry_centers_checked": 466,
+    "plant_geometry_centers_checked": 626,
     "scenery_hedge_fence_segments_checked": 10,
     "scenery_patch_polygons_checked": 1,
     "scenery_track_segments_checked": 29,

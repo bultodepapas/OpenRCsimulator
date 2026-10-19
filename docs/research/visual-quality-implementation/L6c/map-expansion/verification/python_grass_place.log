@@ -1,0 +1,10 @@
+test_check_detects_mutation_in_a_temporary_copy (__main__.GrassPlacementTests.test_check_detects_mutation_in_a_temporary_copy) ... ok
+test_committed_json_is_exact_generator_output (__main__.GrassPlacementTests.test_committed_json_is_exact_generator_output) ... ok
+test_radial_counts_follow_ring_width_outside_the_bounded_core (__main__.GrassPlacementTests.test_radial_counts_follow_ring_width_outside_the_bounded_core) ... ok
+test_reproducibility_digest_and_metadata_contract (__main__.GrassPlacementTests.test_reproducibility_digest_and_metadata_contract) ... ok
+test_rows_are_in_bounds_unique_and_use_the_renderer_encoding (__main__.GrassPlacementTests.test_rows_are_in_bounds_unique_and_use_the_renderer_encoding) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.374s
+
+OK

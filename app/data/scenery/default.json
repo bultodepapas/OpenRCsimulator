@@ -213,11 +213,8 @@
     "value": [
      [-66.0, -32.0, 172.5],
      [-66.0, -22.0, 80.2],
-     [-66.0, -12.0, 317.4],
      [-66.0, -2.0, 85.0],
-     [-66.0, 8.0, 284.7],
-     [-66.0, 18.0, 111.3],
-     [-66.0, 28.0, 257.7]
+     [-66.0, 18.0, 111.3]
     ],
     "unit": "m, m, deg",
     "kind": "estimated",
@@ -783,6 +780,51 @@
     "unit": "m, m, deg",
     "kind": "estimated",
     "source": "Farmstead seen through the treeline's NNE gap (az 30 deg)"
+   }
+  },
+  {
+   "id": "maple-farm-south-005",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "shade_tree",
+   "placements": {
+    "value": [
+     [555.0, 295.0, 8.8]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "LU-22 downloaded Maple on the southwest farm edge; irregularly grouped with its neighbor"
+   }
+  },
+  {
+   "id": "maple-farm-west-002",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "shade_tree",
+   "placements": {
+    "value": [
+     [580.0, 280.0, 35.6]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "LU-22 downloaded Maple on the southwest farm edge; irregularly grouped with its neighbor"
+   }
+  },
+  {
+   "id": "maple-forest-southwest-001",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "shade_tree",
+   "placements": {
+    "value": [
+     [-480.0, -770.0, 318.8]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "LU-22 downloaded Maple in a southwest forest-edge gap, separated from the farm pair"
    }
   },
   {

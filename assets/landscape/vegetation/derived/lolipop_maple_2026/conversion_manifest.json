@@ -1,0 +1,285 @@
+{
+  "asset_id": "maple_tree",
+  "conversion": {
+    "axis_conversion": "FBX Y-up to Blender Z-up baked into vertices; glTF Y-up export; no root-node transforms",
+    "decimation": false,
+    "gallery_translation_removed": [
+      -20.0,
+      40.0,
+      0.0
+    ],
+    "geometry_created": false,
+    "gltf_bounds_y_up_m": {
+      "max": [
+        6.485836982727051,
+        18.32444190979004,
+        8.867837905883789
+      ],
+      "min": [
+        -6.125968933105469,
+        -0.002659421181306243,
+        -8.464957237243652
+      ],
+      "size": [
+        12.61180591583252,
+        18.327101330971345,
+        17.33279514312744
+      ]
+    },
+    "method": "selected supplied Acer_large_3_LOD1; removed FBX gallery placement; baked the FBX axis rotation into the supplied vertices and custom loop normals; preserved UVs and topology; exported one identity-root glTF node with two material primitives",
+    "origin": "stem_ground at (0, 0, 0) metres; source object origin retained, canopy bounds not recentered",
+    "polygons_preserved": true,
+    "runtime_dimensions_at_14m": [
+      9.634108494909315,
+      14.0,
+      13.240453432549042
+    ],
+    "runtime_target_height_m": 14.0,
+    "runtime_uniform_scale_to_14m": 0.7638960319564478,
+    "source_bounds_y_up_m": {
+      "center_offset_from_stem": [
+        0.17993402481079102,
+        9.160891233826987,
+        0.20144128799438477
+      ],
+      "max": [
+        6.485836982727051,
+        18.32444190979004,
+        8.867838859558105
+      ],
+      "min": [
+        -6.125968933105469,
+        -0.002659442136064172,
+        -8.464956283569336
+      ],
+      "size": [
+        12.61180591583252,
+        18.327101351926103,
+        17.33279514312744
+      ]
+    },
+    "source_height_m": 18.327101351926103,
+    "source_to_baked_max_error": {
+      "normal_unit_vector": 0.00015597344879818276,
+      "position_m": 0.0,
+      "uv_unitless": 0.0
+    },
+    "source_vertex_color_attributes": [
+      {
+        "channel_max_rgba": [
+          0.9646865725517273,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "channel_min_rgba": [
+          0.051269467920064926,
+          1.0,
+          1.0,
+          1.0
+        ],
+        "count": 16623,
+        "domain": "CORNER",
+        "name": "color",
+        "type": "BYTE_COLOR"
+      }
+    ],
+    "texture_policy": "Pillow combines source Cluster albedo RGB and opacity R into PNG RGBA without color transforms. Source 16-bit bark AO and roughness are rounded to 8-bit UNORM for glTF, not clipped; source tangent normal maps and leaf roughness/AO images are copied byte-for-byte. Bark base color is JPEG quality 93. Blender packs AO in ORM red and roughness in ORM green; blue is unused/white.",
+    "triangles_preserved": true,
+    "vertex_color_policy": "The source page defines R as baked AO and B as bark blending. The FBX color layer imports with R=0.051..0.965 and G/B/A=1.0; it is removed so AO and bark-blend data are never used as base-color RGB. Separate authored AO maps are retained; source Bark_Mat and Cluster_Mat material regions remain separate."
+  },
+  "format": "openrc-maple-conversion-manifest v1",
+  "inputs": [
+    {
+      "bytes": 727,
+      "path": "LICENSE_MAPLE.txt",
+      "sha256": "56e3dda18eef50e5b1a4fd321fcb914d25c03bb0f5b3648590afe8bfe209f574"
+    },
+    {
+      "bytes": 7769756,
+      "path": "source/Acer tree pack.fbx",
+      "sha256": "b8f4ad7fe58178846acda10c59089425a2aa9a708947e8d7873a887bc3d02888"
+    },
+    {
+      "bytes": 1585157,
+      "path": "textures/Cluster_AO.png",
+      "sha256": "7febff6876b88c20656c9512b7dfe58dbf2236f7964ee0899355516f53ef35a4"
+    },
+    {
+      "bytes": 2586783,
+      "path": "textures/Cluster_Normal.png",
+      "sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
+    },
+    {
+      "bytes": 209640,
+      "path": "textures/Cluster_Opacity.png",
+      "sha256": "72947dc551bbc6868b37df9bbce82ebdaab230fc7d6bae68d1d331ceb41607f7"
+    },
+    {
+      "bytes": 495897,
+      "path": "textures/Cluster_Roughness.jpg",
+      "sha256": "d2980612fed98dce3257328daef98ce731c1be5fc5e729125a56f9685304485c"
+    },
+    {
+      "bytes": 1524036,
+      "path": "textures/Cluster_albedo.png",
+      "sha256": "05273a9b5c7c0eea559ffe1431737381495628018b2c34074b79fcb71dfeea07"
+    },
+    {
+      "bytes": 7856547,
+      "path": "textures/bark_ambientocclusion.png",
+      "sha256": "fefc86ebc8139ca628c73a9703d73ebe5f287672a1f3244386f3ccd4edbb3547"
+    },
+    {
+      "bytes": 28150673,
+      "path": "textures/bark_basecolor.png",
+      "sha256": "c1d6538651a02b64050595c9fe9acd927040af5fafd56c7a83a587abda817a66"
+    },
+    {
+      "bytes": 28222851,
+      "path": "textures/bark_normal.png",
+      "sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905"
+    },
+    {
+      "bytes": 7090866,
+      "path": "textures/bark_roughness.png",
+      "sha256": "f47c57ea7e79b7f7d7fe5f092e697d213bbef471f72a415d1653202663414408"
+    }
+  ],
+  "materials": [
+    {
+      "alpha_mode": "OPAQUE",
+      "base_color": "textures/maple_bark_basecolor.jpg",
+      "double_sided": false,
+      "metallic_factor": 0.0,
+      "name": "Maple_Bark_PBR",
+      "normal": "textures/maple_bark_normal.png",
+      "occlusion": "textures/maple_bark_ao-maple_bark_roughness.png (R)",
+      "roughness": "textures/maple_bark_ao-maple_bark_roughness.png (G)",
+      "source_material": "Bark_Mat",
+      "triangles": 2614
+    },
+    {
+      "alpha_cutoff": 0.5,
+      "alpha_mode": "MASK",
+      "alpha_source": "Cluster_Opacity.png composited into baseColorTexture alpha",
+      "base_color": "textures/maple_leaves_basecolor.png",
+      "double_sided": true,
+      "metallic_factor": 0.0,
+      "name": "Maple_Leaves_PBR",
+      "normal": "textures/maple_leaves_normal.png",
+      "occlusion": "textures/maple_leaves_ao-maple_leaves_roughness.png (R)",
+      "roughness": "textures/maple_leaves_ao-maple_leaves_roughness.png (G)",
+      "source_material": "Cluster_Mat",
+      "triangles": 2927
+    }
+  ],
+  "outputs": [
+    {
+      "bytes": 321256,
+      "path": "maple_large_3_lod1.bin",
+      "sha256": "e8373c9f61c5c3025becec5a0487cdc71b6b4d74276524176e0f1ec8252e2e8f"
+    },
+    {
+      "bytes": 5315,
+      "path": "maple_large_3_lod1.gltf",
+      "sha256": "ba5eb469c725d00eb8160b335211a2ab064f17669beccc3f93b6b63b62ead942"
+    },
+    {
+      "bytes": 6115692,
+      "path": "textures/maple_bark_ao-maple_bark_roughness.png",
+      "sha256": "f83abd3c81683b1a517e4bff3fb535196aa9d97011c2e11627855041f7543ce9"
+    },
+    {
+      "bytes": 2981274,
+      "path": "textures/maple_bark_basecolor.jpg",
+      "sha256": "85d948e43ec57ee5979c862b47faa0cea63b8a2b1d479c01ca3bf54f55984e31"
+    },
+    {
+      "bytes": 28222851,
+      "path": "textures/maple_bark_normal.png",
+      "sha256": "be4347e5d286f15c5fa29b314ed185dd36b5ed7e62fc29f9902649abb765f905"
+    },
+    {
+      "bytes": 3097706,
+      "path": "textures/maple_leaves_ao-maple_leaves_roughness.png",
+      "sha256": "5f709e2eff3763951115ea228305e780b522897639293dbda8dda93c77660329"
+    },
+    {
+      "bytes": 1757295,
+      "path": "textures/maple_leaves_basecolor.png",
+      "sha256": "243230eff1f0cc64bfa897d5c9898e40675400516fa251a24ab1abc1d92da57b"
+    },
+    {
+      "bytes": 2586783,
+      "path": "textures/maple_leaves_normal.png",
+      "sha256": "e5407c5bad3093a8a1564d0be24c6fa99af183a816a87b6b436f1f6b8a97a8d4"
+    }
+  ],
+  "source": {
+    "archive": {
+      "bytes": 150673952,
+      "name": "maple-trees-pack-lowpoly-game-ready-lods.zip",
+      "sha256": "338c3373fa656cfa83b4c3c847ad4996f7236b0236204bdabbe068240e10af9a"
+    },
+    "creator": "LOLIPOP (@lolipop_1707)",
+    "license": "CC BY 4.0",
+    "mesh": {
+      "bounds_y_up_m": {
+        "center_offset_from_stem": [
+          0.17993402481079102,
+          9.160891233826987,
+          0.20144128799438477
+        ],
+        "max": [
+          6.485836982727051,
+          18.32444190979004,
+          8.867838859558105
+        ],
+        "min": [
+          -6.125968933105469,
+          -0.002659442136064172,
+          -8.464956283569336
+        ],
+        "size": [
+          12.61180591583252,
+          18.327101351926103,
+          17.33279514312744
+        ]
+      },
+      "gallery_origin_world": [
+        -20.0,
+        40.0,
+        0.0
+      ],
+      "material_triangles": {
+        "Bark_Mat": 2614,
+        "Cluster_Mat": 2927
+      },
+      "object": "Acer_large_3_LOD1",
+      "polygons": 5541,
+      "triangles": 5541,
+      "vertices": 4729
+    },
+    "name": "Maple trees pack (lowpoly, game ready, LODs)",
+    "original_entries": [
+      "source/Acer tree pack.fbx",
+      "textures/bark_ambientocclusion.png",
+      "textures/bark_basecolor.png",
+      "textures/bark_normal.png",
+      "textures/bark_roughness.png",
+      "textures/Cluster_albedo.png",
+      "textures/Cluster_AO.png",
+      "textures/Cluster_Normal.png",
+      "textures/Cluster_Opacity.png",
+      "textures/Cluster_Roughness.jpg"
+    ],
+    "url": "https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0"
+  },
+  "toolchain": {
+    "blender": "5.2.2 LTS",
+    "converter": "tools/landscape/vegetation/convert_maple.py",
+    "converter_sha256": "bd3f68f8b10b56ea8cf870c9dd8000b4e8059e7d95f8ee48ffd2b37db1184913",
+    "gltf_exporter": "Khronos glTF Blender I/O v5.2.40"
+  }
+}

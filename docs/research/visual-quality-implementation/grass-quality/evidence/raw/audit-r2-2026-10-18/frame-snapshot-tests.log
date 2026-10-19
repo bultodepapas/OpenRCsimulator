@@ -1,0 +1,71 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   frametime defaults are 1 s warm-up and 20 s sample
+ok   custom finite warm-up and duration parse
+ok   logger stays disabled without its path
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   invalid logger arguments rejected
+ok   10 s warm-up config accepted
+ok   warm-up crossing frame accepted but excluded
+ok   logger waits for the next whole frame
+ok   first full post-warm-up frame recorded
+ok   terminal whole frame recorded
+ok   actual warm-up moves past a warm-up stall
+ok   full sampled frames exclude the warm-up stall
+ok   actual whole-frame sample end is reported
+ok   short aggregation config accepted
+ok   first aggregation frame accepted
+ok   second aggregation frame accepted
+ok   final frame completes at the whole-frame boundary
+ok   versioned format and legacy summary fields remain
+ok   legacy summary now aggregates monotonic wall time
+ok   engine delta has separate aggregate and percentile channel
+ok   raw frame arrays preserve exact wall intervals
+ok   per-frame simulation and performance metrics are retained
+ok   actual start and end differ from requested duration only by whole frame overrun
+ok   valid report writes successfully
+ok   written JSON round-trips raw samples
+ok   directory write failure is returned to the caller
+ok   zero sample duration rejected by helper
+ok   invalid metrics sample config accepted
+ok   first frame establishes contiguous clock
+ok   discontinuous monotonic interval rejected
+ok   metric schema config accepted
+ok   first metric shape accepted
+ok   changing raw metric shape rejected
+ok   effective grass snapshot verifies actual bindings and placement metadata
+ok   scenery tier comes from built scenery stats
+ok   ground detail flags and texture paths come from its bound material
+ok   imported route and species count come from the active MultiMesh
+ok   shader identity and source texture paths are stable resource evidence
+ok   distinct ground materials with matching texture slots verify
+ok   ground texture snapshot reports pathless and imported slot bindings
+ok   ground texture swap fixture preserves the same resource-path set
+ok   ground texture binding snapshot detects swapped uniform slots
+ok   enhanced route is recognized from the bound imported grass shader
+ok   missing NearGrass fails closed
+ok   unexpected imported grass shader route fails closed
+ok   missing field root fails closed with its cause
+ok   missing active Ground binding fails closed
+ok   default field data loads for the effective grass snapshot
+ok   default scenery data loads for the effective grass snapshot
+ok   production baseline builds the static imported profile
+ok   production baseline counts, batches, and source textures match the high-tier route
+ok   production baseline binds the shader-default grass photo flag off
+ok   hidden grass cannot qualify a performance profile
+ok   allocated but unsubmitted grass cannot qualify a performance profile
+ok   restored visible grass requalifies the observed profile
+ok   production enhanced profile binds the qualified grass shader
+ok   production enhanced profile reports its actual ground detail and normal maps
+ok   production enhanced counts, batches, and source textures match the alternate high-tier route
+68 checks, 0 failed

@@ -1,0 +1,18 @@
+Attribution
+
+This asset is adapted from “Grass pack (lowpoly, game-ready)” by LOLIPOP
+(@lolipop_1707):
+https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403
+
+The source model is licensed under Creative Commons Attribution 4.0
+International (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/
+
+The original Sketchfab download includes `license.txt` with the source
+attribution and license terms. Keep that notice with redistributed copies.
+
+Changes made for OpenRCsimulator: selected the supplied fresh small and low
+tall variants, removed gallery placement, baked the source Z-up basis into the
+vertices for glTF Y-up, retained source topology, UVs, normals, tangents and
+texture files, and changed grass alpha from BLEND to MASK with a 0.5 cutoff.
+No geometry was created or decimated.
