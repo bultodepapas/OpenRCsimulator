@@ -52,6 +52,8 @@ const ECLIPSE_CASES := {
 	eclipse_e_greatest = ["--date=2028-12-31", "--time=16:52", "--utc_offset=0", "--lat=30", "--lon=90"],
 	eclipse_f_partial_out = ["--date=2028-12-31", "--time=17:50", "--utc_offset=0", "--lat=30", "--lon=90"],
 	eclipse_moonrise = ["--date=2028-12-31", "--time=17:20", "--utc_offset=0"],
+	# The next total eclipse in front of the pilot in full darkness at the reference field (FW-MOON-10 scan).
+	eclipse_field_2032 = ["--date=2032-10-18", "--time=19:00", "--utc_offset=0"],
 }
 
 var _args: Dictionary = {}
