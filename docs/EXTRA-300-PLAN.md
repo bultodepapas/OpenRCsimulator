@@ -1,36 +1,41 @@
-# Great Planes Extra 300S .60
+# Great Planes Extra 300S .60: current scope and remaining work
 
-2026-10-16 · Revision 7 · **Status: experimental aircraft with runway and airborne starts; software envelope checks are complete. Independent flight, target-hardware and export acceptance remain open.** Prefix: `EX-`. Owned paths: `assets/aircraft/extra-300s-60/`, `app/aircraft/extra_300s_*`, `app/aircraft/extra_clearance.gd`, `app/aircraft/verify_extra.gd`, `app/aircraft/inspect_extra.gd`, generated `app/data/aircraft/gp_extra_300s_60.json`, `app/tests/test_extra_handling.gd`, `research/extra-300/`, `docs/research/extra-300-*`, `docs/research/extra-300-realism/`.
+Checked 2026-10-19 · Owner: Extra aircraft/model track · Prefix **EX-00…13** and repairs. Code and accepted data define implementation; software verification and physical acceptance are separate results.
 
-The aircraft is the Great Planes GPMA0236, 64-inch balsa Extra 300S with an O.S. .61FX-class installation. The native model and physics are specific to this kit. The generated physics file is [gp_extra_300s_60.json](../app/data/aircraft/gp_extra_300s_60.json); regenerate it with [derive_physics.py](../research/extra-300/ex05/derive_physics.py) after changing any geometry inputs it reads. The [asset README](../assets/aircraft/extra-300s-60/README.md) documents source evidence, geometry, builders and current model interfaces.
+**GPMA0236**, the 64-inch kit, flies experimentally as `gp-extra-300s-60`. Club runway and airborne starts are implemented; fresh product preferences select runway. Gear is a fixed taildragger, without brakes, retracts or flight flaps.
 
-The model flies as `gp-extra-300s-60` and remains marked experimental. Its builder exposes the stable airplane, propeller, hinge and gear interfaces used by the Stik-compatible render adapter. Geometry data and appearance are separate from mass, inertia, propulsion and aerodynamic estimates.
+The [aircraft data](../app/data/aircraft/gp_extra_300s_60.json) selects `finite_glow_fuel` and a dedicated [Extra installation](../app/data/glow/extra_61fx_2t.json). Shared glow physics supplies torque-balance propulsion and shaft reaction; fuel burn changes mass/CG/inertia. The 61FX profile is scaled from 55AX data, not measured on this Extra. Dry balance targets and live loaded CG remain distinct.
 
-Runway is the default product start, with airborne practice still available. The generated contact data now includes an explicitly estimated breakaway factor; [EX-08-R1](research/extra-300-realism/README.md#2026-10-16--runway-startup-ex-08-r1) records parked/takeoff regressions and the paired airborne trace. Independent ground-handling acceptance remains open.
+| Topic | Home |
+| --- | --- |
+| Geometry, finish, model interfaces and commands | [Asset guide](../assets/aircraft/extra-300s-60/README.md) |
+| Generated aircraft assumptions | [EX-05 derivation](../research/extra-300/ex05/derivation.md); source is `ex05/derive_physics.py` |
+| Shared engine/propeller and fuel behavior | [Glow guide](GLOW-ENGINES.md), [61FX dossier](research/glow-engines/NITRO-61FX/README.md), [fuel standard](FUEL-SYSTEM.md) |
+| Dated results and comparison tools | [Realism audit](research/extra-300-realism/README.md), [EX-06/08 probes](../research/extra-300/ex06/README.md) |
+
+Use the [aircraft contract](AIRCRAFT_CONTRACT.md), [player controls](FIRST-LAUNCH.md) and [flight logging workflow](FLIGHT-LOGGING.md). EX owns its sources, builder, generator, tests and research; shared physics/NITRO/fuel/input/crash/export boundaries stay with their [registered owners](README.md#tracks-plans-and-step-ids). Regenerate dependent data and model/Workshop bindings; never edit generated output.
 
 ## Steps and evidence
 
-| ID | Deliverable and proof | Status checked 2026-10-12 |
-| --- | --- | --- |
-| EX-00 | Select GPMA0236 and preserve sourced plans, manual and photos. [Family research](research/extra-300-family-research.md) · [resources](research/extra-300-resources.md) | Complete |
-| EX-01 | Establish datum and initial dimensions from the kit drawing. [Metrology](../research/extra-300/ex01/metrology.json) · [model report](research/extra-300-model-v1.md) | Complete; some shape details remain estimated |
-| EX-02 | Build and verify the native visual model. [Asset README](../assets/aircraft/extra-300s-60/README.md) · [visual review](research/extra-300-visual-review-v1.md) | Complete |
-| EX-03 | Register a separate catalog ID and preview path. | Complete; the aircraft is selectable and flyable experimentally |
-| EX-04 | Articulate surfaces and check moving-surface clearance at manual and 45° poses. `extra_clearance.gd` is part of the model verification. | Complete |
-| EX-05 | Generate attributed aircraft-specific physics data from the geometry and manual. [Derivation](../research/extra-300/ex05/derivation.md) | Complete; inputs remain partly estimated or borrowed |
-| EX-06 | Audit balance, propeller match and installed thrust frame. [EX-06/08 realism report](research/extra-300-realism/README.md) | Software corrections complete; propulsion remains physically unmeasured |
-| EX-07 | Trim and fly through the real session loop. `test_extra_handling.gd` checks hands-off flight, roll response, looping and recovery. | Complete; experimental |
-| EX-08 | Qualify the software envelope and lifecycle at 240/480 Hz. The audit adds 24 airborne and 7 ground cases and repairs the E5a research fixture without changing contact forces. [Verification summary](research/extra-300-realism/EX-08/verification-summary.json) | Software evidence complete; 13 unrelated baseline suite failures remain, and physical acceptance is open |
-| EX-09 | Compare with independent observations and qualify handling. [Audit and open physical gates](research/extra-300-realism/README.md) | Open; no matched flight dataset |
-| EX-10 | Apply the red/white/blue finish and prepare ground-orientation views. [Visual review](research/extra-300-visual-review-v1.md) | Implementation complete; pilot reading pending |
-| EX-11 | Select the Extra, fly, pause, restart, end and return without mixing aircraft state. | Complete |
-| EX-12 | Export both selectable aircraft from a clean checkout and measure cost on target hardware. | Open |
-| EX-13 | Extend aerobatics and conventional-gear behavior with dedicated shared physics and evidence. | Deferred; follows ROADMAP Gate F and ground-physics work |
+Original delivery results retain their dated scope. Neither old passing counts nor baseline failures establish current suite status.
 
-The bounded installation/envelope audit is preserved in [the research report](research/extra-300-realism/README.md), including before/after mass properties, shaft checks, flight metrics, baseline-failure triage and reproducible commands. Its software work does not close EX-09 physical validation.
+| ID | Delivered scope | Remaining acceptance / work |
+| --- | --- | --- |
+| EX-00/01 | Kit selection and [plan metrology](../research/extra-300/ex01/metrology.json) | Identify estimated shape/installation details on the actual build. |
+| EX-02/03/04 | Native model, catalog and articulation/clearance | Owner visual and loaded-airframe clearance review. [Model evidence](research/extra-300-model-v1.md). |
+| EX-05/06 | Generated physics, dry balance, shaft and propeller consistency; later finite-glow integration | Matched engine/propeller, mass/CG/inertia and aerodynamic identification. |
+| EX-07/08 | Handling/envelope/lifecycle probes and dated 240/480 Hz comparisons | Current installation parsing, maneuver trim, runway fixture and CI trace-reader failures remain open; see the recheck in the realism audit. |
+| EX-08-R1 | Runway support and estimated breakaway data | Starter-aware takeoff regression and physical ground/circuit qualification. [Startup/replay evidence](research/extra-300-realism/README.md#2026-10-16--runway-startup-ex-08-r1). |
+| EX-09 | Physical qualification | Open: matched observations, uncertainty and held-out comparisons. |
+| EX-10 | Red/white/blue finish and orientation views | Pilot readability and target rendering cost. [Visual evidence](research/extra-300-visual-review-v1.md). |
+| EX-11 | Select/fly/pause/restart/end integration | Recheck changed shared input/session/product paths. |
+| EX-12 | Export/performance qualification | Current clean-checkout fleet packages, per-aircraft smoke, relevant uninterrupted suite and target hardware. |
+| EX-13 | Further aerobatic/ground extensions | Deferred; require scoped shared mechanisms, data and lifecycle/qualification proof. |
 
 ## Current model limits
 
-The plan and manual provide qualitative handling guidance, but no numeric stall, spin, Vne or structural limits for this airplane. The derived aerodynamics use estimated lift limits, drag, inertia distribution and no identified low-Re airfoil polar. The propeller's Ct/Cp data are borrowed from an APC 11×6 proxy; the selected visual/physics size is 12×6. Balance uses an estimated dry component inventory and bookkeeping ballast. It is not a measured ballast recommendation.
+Lift/drag, low-Re polar, mass distribution and virtual ballast include estimates. The nominal 12×6 propeller uses borrowed APC 11×6 source data; the prototype propeller and installed response remain unidentified. Virtual ballast is not a hardware recommendation. Manual setup guidance does not establish measured stall/spin/Vne or structural limits.
 
-The installed 2° right / 0.5° down thrust angles now act through the shared angled-thrust consumer. The correction checks geometry and signs, but the model still lacks an Extra-specific torque-balance engine, propwash and P-factor. The manual's qualitative takeoff-yaw expectation is unmet. Do not add a rudder bias or tune force multipliers to conceal it. Independent mass/CG/inertia, engine/propeller measurements, low-speed observations, pilot assessment, export and target-machine cost remain acceptance work.
+The plan-derived 2° right / 0.5° down shaft and hub are consumed by physics. Torque-balance propulsion exists; propwash, P-factor, prop-disc side force and Extra-specific feed-pressure behavior do not. Retest the historical takeoff-yaw mismatch under current sources; do not hide missing mechanisms with a rudder bias or force multipliers.
+
+Physical flight/ground measurements, pilot review and target-hardware/export acceptance remain open independently of software regressions. Keep the aircraft experimental until the applicable gates have evidence.

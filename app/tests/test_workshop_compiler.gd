@@ -49,7 +49,7 @@ func _initialize() -> void:
 	_test_no_op(stik, "Stik")
 	_test_no_op(extra, "Extra")
 	_test_scale_policies(stik)
-	_test_scale_policies(extra)
+	_test_finite_glow_transform_refusal(extra)
 	_test_tank_and_fill_scaling(stik)
 	_test_tank_capacity_frozen_session(p51)
 	_test_power_and_controls(stik)
@@ -59,7 +59,6 @@ func _initialize() -> void:
 	_test_noop_trajectory(stik, STIK_PATH, "Stik")
 	_test_noop_trajectory(extra, EXTRA_PATH, "Extra")
 	_test_scaled_flight(stik, "Stik")
-	_test_scaled_flight(extra, "Extra")
 	print("Workshop compiler: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -215,6 +214,36 @@ func _test_power_and_controls(base: Dictionary) -> void:
 	_check("scale above the V1 bound is rejected", not clipped.ok and not clipped.errors.is_empty())
 
 
+func _test_finite_glow_transform_refusal(base: Dictionary) -> void:
+	var support: Dictionary = Compiler.capabilities(base)
+	_check("finite-glow installation reports its fixed-transform limitation",
+		not support.get("scale", true) and not support.get("weight", true)
+		and not support.get("power", true)
+		and str(support.get("note", "")).contains("finite-glow installation data must remain fixed"),
+		str(support))
+	for recipe: Dictionary in [
+		{"scale": 0.5}, {"scale": 1.5}, {"weight_multiplier": 1.25}, {"power_multiplier": 1.25},
+	]:
+		var refused: Dictionary = Compiler.compile(base, recipe)
+		var key: String = str(recipe.keys()[0])
+		_check("finite-glow source refuses unsupported %s edit" % key,
+			not refused.get("ok", false) and str(refused.get("errors", [])).contains(key)
+			and str(refused.get("errors", [])).contains("finite-glow installation data must remain fixed"),
+			str(refused.get("errors", [])))
+	var sized: Dictionary = Compiler.compile(base, {"tank_capacity_multiplier": 1.25})
+	_check("finite-glow tank capacity-only estimate remains independent of engine scaling",
+		sized.get("ok", false), str(sized.get("errors", [])))
+	if sized.get("ok", false):
+		var base_data: Dictionary = AircraftData.validate_and_derive(base)
+		var base_tank: Dictionary = base_data.model.fuel_system.tanks[0]
+		var sized_tank: Dictionary = sized.data.model.fuel_system.tanks[0]
+		_check("finite-glow tank sizing preserves fill and density while changing tank volume",
+			is_equal_approx(sized_tank.capacity_m3, base_tank.capacity_m3 * 1.25)
+			and is_equal_approx(sized_tank.start_fill, base_tank.start_fill)
+			and is_equal_approx(sized_tank.density_kg_m3, base_tank.density_kg_m3)
+			and is_equal_approx(sized_tank.liquid_mass_kg, base_tank.liquid_mass_kg * 1.25))
+
+
 func _test_tank_and_fill_scaling(base: Dictionary) -> void:
 	var authored := base.duplicate(true)
 	authored.fuel_system.tanks[0].reserve = {
@@ -352,11 +381,9 @@ func _test_tank_capacity_frozen_session(base: Dictionary) -> void:
 
 
 func _test_unfamiliar_identity(base: Dictionary) -> void:
-	var extra := _read(EXTRA_PATH)
 	var successful := 0
 	for index: int in 20:
-		var source: Dictionary = base if index % 2 == 0 else extra
-		var synthetic: Dictionary = source.duplicate(true)
+		var synthetic: Dictionary = base.duplicate(true)
 		var offset := 0.001 * float(index + 1)
 		synthetic.id = "unfamiliar-aircraft-%02d" % index
 		for component_variant: Variant in synthetic.inventory:

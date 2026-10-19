@@ -59,7 +59,7 @@ func _initialize() -> void:
 			if not session.sim.reset(session.sim.state):
 				quit(1)
 				return
-		var recorder: RefCounted = Recorder.new(session.sim)
+	var recorder: RefCounted = Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 		var metadata: Dictionary = session.trace_meta()
 		metadata.scenario = "G1b1 " + str(item[0])
 		metadata.configuration = "G1b1 verification fixture: %s; fixed sampled commands; calm air. Dive overrides trim with 40 m/s body-axis speed, -30 deg pitch, 1000 m altitude and idle RPM; full-power overrides throttle/RPM; other starts use session trim." % item[0]

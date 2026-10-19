@@ -4,8 +4,8 @@
   "price_date": "2026-10-16",
   "generated_from": {
     "price_catalog_sha256": "64b009a22268f84d81a1b5cf53f87f653d47bb4f483444c072d3e17d455c297e",
-    "aircraft_costing_sha256": "93a4c1fdbdc796e1c5edbe8170e2281e28a770f2a03bd5a3f9e8a6c8a71614da",
-    "aircraft_catalog_sha256": "3a4de2b5ede81f52b8adcbd2f8ed29e90d02d277684feb49656d789586e480e6",
+    "aircraft_costing_sha256": "612ab024c38ce7b97f60bf66b4d6e3fb2384594fb4af69420d5cdb0d0315f6db",
+    "aircraft_catalog_sha256": "fe462519dd1e5515ac182fca49f46344d7f2e5ad783d668d8ed755dbfe66cf0a",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
   },
@@ -3493,7 +3493,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "gp-extra-300s-60",
-      "source_sha256": "51ed5b438c4c8ddbda154306a2dda6e51e0c58115c4edf7ee1c9b87d4017d034",
+      "source_sha256": "62c76bc514b923b1ada51a0770378f7d085038fd6ae1bf4a92160d55cc55f69d",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -4002,8 +4002,8 @@
             "energy_source": ""
           },
           "fuel_flight": {
-            "name": "fuel (half tank)",
-            "mass": 0.152103,
+            "name": "fuel (full tank)",
+            "mass": 0.30420660000000005,
             "mass_unit": "kg",
             "energy_source": "glow_fuel"
           }
@@ -4034,7 +4034,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "p51d-mustang-120",
-      "source_sha256": "111558f3916d59a22d6c4fe1f8e5d9872e63422b7ce374e3eab4103485aa5fd9",
+      "source_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -4737,7 +4737,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
-      "source_sha256": "f5b3fdcb9dce9d1cea7a52c34d70a32eecfaf4c7c52d73a4acfe04d59b0e8158",
+      "source_sha256": "f9fce097f101f7969c4f4b5eef47305d84e4cc665d226c61f4beaad8a1585aea",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",

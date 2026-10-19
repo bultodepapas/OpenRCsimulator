@@ -1,0 +1,113 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   fuel mass model accepts full, partial and dry inventories
+ok   wet fuel mass retains the source mass  got 2.4, expected 2.4 (tol 0.000000002)
+ok   partial-fuel aircraft mass removes only burned fuel  got 2.28, expected 2.28 (tol 0.000000002)
+ok   dry aircraft mass equals the dry structure  got 2.2, expected 2.2 (tol 0.000000002)
+ok   wet CG is at the chosen datum  got 0.0, expected 0.0 (tol 0.000000002)
+ok   partial tank moves CG away from its side of the datum  got -0.01052631578947, expected -0.01052631578947 (tol 0.000000002)
+ok   dry CG settles at the dry structure centre  got -0.01818181818182, expected -0.01818181818182 (tol 0.000000002)
+ok   wet tensor agrees with dry body plus tank geometry  max component error=0
+ok   partial tensor follows the independent mass distribution  max component error=0
+ok   dry tensor returns to dry-body centroidal inertia  max component error=1.3877787807814457e-17
+ok   fuel removal changes the aircraft's inertia tensor
+ok   negative or excess remaining fuel is rejected
+ok   full co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   full fixed datum follows CM centripetal geometry  got 0.0, expected 0.0 (tol 0.0000000001)
+ok   partial co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   partial fixed datum follows CM centripetal geometry  got -0.26315789473684, expected -0.26315789473684 (tol 0.0000000001)
+ok   dry co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   dry fixed datum follows CM centripetal geometry  got -0.45454545454545, expected -0.45454545454545 (tol 0.0000000001)
+ok   2T installed aircraft loads  []
+ok   synthetic line has a valid fixed-datum resource reference
+ok   line fixture starts from selected main fuel plus authored line reference  [6000.0, 0.2542846, 390.0, 0.75, 0.82, 0.00014026089369, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.05, 1.0]
+ok   line inventory is independently initialized  got 0.05, expected 0.05 (tol 0.000000002)
+ok   line fixture combined inventory includes both stores  got 0.2542846, expected 0.2542846 (tol 0.000000002)
+ok   line fixture exposes two stable liquid stores  { &"ok": true, &"properties": { &"ok": true, &"mass_kg": 2.72082652401591, &"cg_body_m": [-0.00692286901367, 0.0, 0.00062678759744], &"inertia": [0.11651727271492, 0.30638595381326, 0.40219108245652, -0.0076956, 0.00868801825059, 0.00077112443071], &"inverse": [8.61063414421191, 3.26932882405429, 2.49042832785921, 0.21674541000837, -0.1864200563996, -0.01095038552129], &"inertia_origin": [0.11651834162615, 0.30651742137042, 0.40232148110244, -0.0076956, 0.00869982437516, 0.00077112443071] }, &"tanks": [{ &"id": "main_tank", &"fuel": "glow_10n_18castor", &"family": "glow", &"density_kg_m3": 856.92, &"capacity_m3": 0.00035, &"capacity_kg": 0.299922, &"unusable_kg": 0.0042846, &"reserve_kg": 0.0342768, &"reserve_fraction": 0.11428571428571, &"reserve_estimated": true, &"liquid_inventory_id": "item_fuel_main", &"shell_inventory_id": "item_fuel_tank", &"liquid_mass_kg": 0.299922, &"start_fill": 1.0, &"pickup": "clunk", &"feed": "suction_muffler" }, { "id": "test_feed_line_liquid", "fuel": "glow_10n_18castor", "family": "glow", "density_kg_m3": 856.92, "capacity_kg": 0.08, "unusable_kg": 0.0, "reserve_kg": 0.0, "reserve_estimated": false, "kind": "feed_line" }], &"remaining": { "main_tank": 0.2042846, "test_feed_line_liquid": 0.05 }, &"main_fuel_kg": 0.2042846, &"line_fuel_kg": 0.05, &"total_fuel_kg": 0.2542846, &"source_mode": 1 }
+ok   main and line masses remain separately sampled  got 0.2042846, expected 0.2042846 (tol 0.000000002)
+ok   pre-primed line sample matches its state slot  got 0.05, expected 0.05 (tol 0.000000002)
+ok   reference mass includes line inventory  got 2.72082652401591, expected 2.72082652401591 (tol 0.000000002)
+ok   main residue then line exhaustion integrate deterministically  { "state": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 6000.0, 0.0042846, 390.0, 0.75, 0.82, 0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "events": [{ &"type": "fuel_tank_unusable", &"time_s": 0.4000000000005, &"id": "main_tank_unusable", &"surface_residual": -0.00000000000025, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0042846, &"main_fuel_residual_kg": 0.0042846 }, { &"type": "fuel_exhausted", &"time_s": 0.5000000000005, &"id": "feed_line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "feed_line", &"resource_id": "test_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0042846 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.5000000000005 }] }
+ok   main-to-line-to-starved event order is explicit  [{ &"type": "fuel_tank_unusable", &"time_s": 0.4000000000005, &"id": "main_tank_unusable", &"surface_residual": -0.00000000000025, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0042846, &"main_fuel_residual_kg": 0.0042846 }, { &"type": "fuel_exhausted", &"time_s": 0.5000000000005, &"id": "feed_line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_exhausted", &"resource": "feed_line", &"resource_id": "test_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0042846 }, { "type": "glow_stopped", "reason": "fuel_exhausted", "time_s": 0.5000000000005 }]
+ok   depletion surfaces distinguish numeric residual from actual onboard residue
+ok   main unusable boundary time  got 0.4000000000005, expected 0.4 (tol 0.000000002)
+ok   line depletion boundary time  got 0.5000000000005, expected 0.5 (tol 0.000000002)
+ok   main event reports physical unusable residue  got 0.0042846, expected 0.0042846 (tol 0.000000002)
+ok   finite line is empty after its depletion event  got 0.0, expected 0.0 (tol 0.000000002)
+ok   main unusable residue is retained  got 0.0042846, expected 0.0042846 (tol 0.000000002)
+ok   engine stops only after both usable stores are exhausted
+ok   final mass context retains separate empty-line and residue entries  { &"ok": true, &"properties": { &"ok": true, &"mass_kg": 2.47082652401591, &"cg_body_m": [-0.02356548192423, 0.0, 0.00213358822311], &"inertia": [0.11633293314533, 0.29702690842651, 0.39287220997269, -0.0076956, 0.00787319653785, 0.00077112443071], &"inverse": [8.62255038129521, 3.37252683342813, 2.5488503899705, 0.22384936656295, -0.17323610018018, -0.01110551416349], &"inertia_origin": [0.11634418083864, 0.29841028500265, 0.39424433885552, -0.0076956, 0.00799742731041, 0.00077112443071] }, &"tanks": [{ &"id": "main_tank", &"fuel": "glow_10n_18castor", &"family": "glow", &"density_kg_m3": 856.92, &"capacity_m3": 0.00035, &"capacity_kg": 0.299922, &"unusable_kg": 0.0042846, &"reserve_kg": 0.0342768, &"reserve_fraction": 0.11428571428571, &"reserve_estimated": true, &"liquid_inventory_id": "item_fuel_main", &"shell_inventory_id": "item_fuel_tank", &"liquid_mass_kg": 0.299922, &"start_fill": 1.0, &"pickup": "clunk", &"feed": "suction_muffler" }, { "id": "test_feed_line_liquid", "fuel": "glow_10n_18castor", "family": "glow", "density_kg_m3": 856.92, "capacity_kg": 0.08, "unusable_kg": 0.0, "reserve_kg": 0.0, "reserve_estimated": false, "kind": "feed_line" }], &"remaining": { "main_tank": 0.0042846, "test_feed_line_liquid": 0.0 }, &"main_fuel_kg": 0.0042846, &"line_fuel_kg": 0.0, &"total_fuel_kg": 0.0042846, &"source_mode": 0 }
+ok   final main residue remains in the tank sample  got 0.0042846, expected 0.0042846 (tol 0.000000002)
+ok   final line sample is empty  got 0.0, expected 0.0 (tol 0.000000002)
+ok   total mass loss equals main usable fuel and line contents  got 0.25, expected 0.25 (tol 0.000000002)
+ok   synthetic pickup starts submerged with supported apparent gravity  [0.0, 0.2299532, 390.0, 0.75, 0.82, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.05, 1.0]
+ok   pickup loss switches to finite line then starves when line empties  { "state": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0749805, 390.0, 0.75, 0.82, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "events": [{ &"type": "fuel_pickup_lost", &"time_s": 0.2099454, &"id": "pickup_lost", &"surface_residual": -0.0, &"surface_unit": "m", &"time_error_bound_s": 0.0000000000005, &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0749805, &"line_fuel_kg": 0.05 }, { &"type": "fuel_starved", &"time_s": 0.3099454, &"id": "feed_line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_starved", &"resource": "feed_line", &"resource_id": "test_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0749805 }] }
+ok   pickup loss and later starvation are separate metre/kg boundaries  [{ &"type": "fuel_pickup_lost", &"time_s": 0.2099454, &"id": "pickup_lost", &"surface_residual": -0.0, &"surface_unit": "m", &"time_error_bound_s": 0.0000000000005, &"resource": "main_tank", &"resource_id": "main_tank", &"fuel_residual_kg": 0.0749805, &"line_fuel_kg": 0.05 }, { &"type": "fuel_starved", &"time_s": 0.3099454, &"id": "feed_line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, &"reason": "fuel_starved", &"resource": "feed_line", &"resource_id": "test_feed_line_liquid", &"fuel_residual_kg": 0.0, &"line_fuel_residual_kg": 0.0, &"main_fuel_kg": 0.0749805 }]
+ok   pickup starvation leaves line empty and main tank inventory untouched after loss  got 0.0, expected 0.0 (tol 0.000000002)
+ok   pickup starvation retains usable but unreachable main fuel  got 0.0749805, expected 0.0749805 (tol 0.00000002)
+ok   2T static propeller evaluates
+ok   2T static propeller cannot create mechanical power  QΩ − Tu=150.200787357029 W, blade drag dissipation=150.200787357029 W
+ok   2T static propeller closes to section drag dissipation  power gap=0.0 W
+ok   2T forward propeller evaluates
+ok   2T forward propeller cannot create mechanical power  QΩ − Tu=36.6947909594949 W, blade drag dissipation=36.6947909594949 W
+ok   2T forward propeller closes to section drag dissipation  power gap=0.00000000000002 W
+ok   2T reverse airflow propeller evaluates
+ok   2T reverse airflow propeller cannot create mechanical power  QΩ − Tu=283.307882777076 W, blade drag dissipation=283.307882777076 W
+ok   2T reverse airflow propeller closes to section drag dissipation  power gap=0.00000000000006 W
+ok   2T windmilling propeller evaluates
+ok   2T windmilling propeller cannot create mechanical power  QΩ − Tu=90.9389981017621 W, blade drag dissipation=90.9389981017621 W
+ok   2T windmilling propeller closes to section drag dissipation  power gap=-0.00000000000001 W
+ok   2T windmilling air drives the shaft
+ok   2T stopped in airflow propeller evaluates
+ok   2T stopped in airflow propeller cannot create mechanical power  QΩ − Tu=98.3272060562019 W, blade drag dissipation=98.3272060562019 W
+ok   2T stopped in airflow propeller closes to section drag dissipation  power gap=0.00000000000001 W
+ok   2T stopped in reverse airflow propeller evaluates
+ok   2T stopped in reverse airflow propeller cannot create mechanical power  QΩ − Tu=98.3272060562019 W, blade drag dissipation=98.3272060562019 W
+ok   2T stopped in reverse airflow propeller closes to section drag dissipation  power gap=0.00000000000003 W
+ok   2T rest propeller evaluates
+ok   2T rest propeller cannot create mechanical power  QΩ − Tu=0.0 W, blade drag dissipation=0.0 W
+ok   2T rest propeller closes to section drag dissipation  power gap=0.0 W
+ok   2T stationary propeller at rest has zero flow power
+ok   2T initial lifecycle state is valid  [6000.0, 0.299922, 390.0, 0.75, 0.82, 0.00014843401247, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+ok   2T running flight stage evaluates
+ok   2T running body and rotor angular momentum balance  max component error=5.551115123125783e-17
+ok   2T rotating coast stage evaluates
+ok   2T rotating coast body and rotor angular momentum balance  max component error=2.220446049250313e-16
+ok   2T stopped coast consumes no tank fuel  got 0.0, expected 0.0 (tol 0.000000002)
+ok   2T static stop holds the rotor at rest  [0.0, 0.0, -1.09125, 0.0, 0.0, -0.00095079987618, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+ok   2T forward windmill breaks the stop into positive RPM  [8055.35180084208, 0.0, -3.71025, 0.0, 0.0, -0.00095079987618, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -98.3272060562019, 0.0, 0.0, 0.0]
+ok   2T reverse airflow is refused at the one-way stop  []
+ok   4T installed aircraft loads  []
+ok   4T static propeller evaluates
+ok   4T static propeller cannot create mechanical power  QΩ − Tu=292.260107297568 W, blade drag dissipation=292.260107297569 W
+ok   4T static propeller closes to section drag dissipation  power gap=-0.00000000000006 W
+ok   4T forward propeller evaluates
+ok   4T forward propeller cannot create mechanical power  QΩ − Tu=63.8491002422051 W, blade drag dissipation=63.8491002422051 W
+ok   4T forward propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T reverse airflow propeller evaluates
+ok   4T reverse airflow propeller cannot create mechanical power  QΩ − Tu=626.437655534295 W, blade drag dissipation=626.437655534295 W
+ok   4T reverse airflow propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T windmilling propeller evaluates
+ok   4T windmilling propeller cannot create mechanical power  QΩ − Tu=166.090906875019 W, blade drag dissipation=166.090906875019 W
+ok   4T windmilling propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T windmilling air drives the shaft
+ok   4T stopped in airflow propeller evaluates
+ok   4T stopped in airflow propeller cannot create mechanical power  QΩ − Tu=172.090289073982 W, blade drag dissipation=172.090289073982 W
+ok   4T stopped in airflow propeller closes to section drag dissipation  power gap=-0.00000000000003 W
+ok   4T stopped in reverse airflow propeller evaluates
+ok   4T stopped in reverse airflow propeller cannot create mechanical power  QΩ − Tu=172.090289073982 W, blade drag dissipation=172.090289073982 W
+ok   4T stopped in reverse airflow propeller closes to section drag dissipation  power gap=-0.00000000000003 W
+ok   4T rest propeller evaluates
+ok   4T rest propeller cannot create mechanical power  QΩ − Tu=0.0 W, blade drag dissipation=0.0 W
+ok   4T rest propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T stationary propeller at rest has zero flow power
+ok   4T initial lifecycle state is valid  [6000.0, 0.1885224, 390.0, 0.75, 0.8375, 0.00008972370753, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.15, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+ok   4T running flight stage evaluates
+ok   4T running body and rotor angular momentum balance  max component error=1.1102230246251565e-16
+ok   4T rotating coast stage evaluates
+ok   4T rotating coast body and rotor angular momentum balance  max component error=1.1102230246251565e-16
+ok   4T stopped coast consumes no tank fuel  got 0.0, expected 0.0 (tol 0.000000002)
+ok   4T static stop holds the rotor at rest  [0.0, 0.0, -0.92590909090909, 0.0, 0.0, -0.00043652205354, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+ok   4T forward windmill breaks the stop into positive RPM  [7007.78764483419, 0.0, -3.14809090909091, 0.0, 0.0, -0.00043652205354, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -172.090289073982, 0.0, 0.0, 0.0]
+ok   4T reverse airflow is refused at the one-way stop  []
+glow flight physics: 110 checks, 0 failed

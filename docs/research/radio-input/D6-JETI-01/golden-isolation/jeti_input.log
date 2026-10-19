@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg" does not exist.
+   at: GDScript::reload (res://scenery/club_furniture.gd:6)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg" does not exist.
+   at: GDScript::reload (res://scenery/pit_chair.gd:6)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scenery/prefabs.gd:0)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg" does not exist.
+   at: GDScript::reload (res://render/flightline_barrier.gd:96)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg" does not exist.
+   at: GDScript::reload (res://render/flightline_barrier.gd:97)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg" does not exist.
+   at: GDScript::reload (res://render/flightline_barrier.gd:98)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg" does not exist.
+   at: GDScript::reload (res://render/flightline_barrier.gd:99)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg" does not exist.
+   at: GDScript::reload (res://render/flightline_barrier.gd:100)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg" does not exist.
+   at: GDScript::reload (res://render/flightline_barrier.gd:101)
+SCRIPT ERROR: Parse Error: Preload file "res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg" does not exist.
+   at: GDScript::reload (res://render/flightline_barrier.gd:102)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://scenery/collision_world.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://sim/flight_session.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_golden.gd:0)
+ERROR: Failed to load script "res://tests/test_golden.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+FAIL golden roll_15 replays (600 ticks): worst error: position 2.151998507818293 m, velocity 0.6731672755873923 m/s, attitude 0.04933758522134124, rate 0.1950361714229344 rad/s; auxiliary/discrete mismatch
+FAIL golden pull_throttle replays (720 ticks): worst error: position 8.981449458835794 m, velocity 1.4818987510249162 m/s, attitude 0.16970353235446486, rate 0.2632553040246326 rad/s; auxiliary/discrete mismatch
+FAIL golden rudder_doublet replays (720 ticks): worst error: position 4.9975659511622545 m, velocity 2.371340349471195 m/s, attitude 0.12003680952123646, rate 0.3444527974061067 rad/s; auxiliary/discrete mismatch
+FAIL golden glide_15 replays (1200 ticks): worst error: position 13.87620305641019 m, velocity 5.476350977312004 m/s, attitude 0.08313993236451107, rate 0.11196810714439709 rad/s; auxiliary/discrete mismatch
+4 golden flights, 4 failed

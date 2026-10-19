@@ -391,6 +391,34 @@ func _controls_guide() -> void:
 	profile.actions.smoke_toggle = {type = "unbound"}
 	guide.refresh(context)
 	_check("guide explains how to bind an available but cleared function", _guide_text(guide).contains("Assign in Controller settings") and not _guide_text(guide).contains("R1"))
+	var radio := Profile.defaults("radio", "jeti_mode2")
+	radio.aux = {
+		smoke = {type = "switch", buttons = [81, 82, 83], invert = false, label = "Sa"},
+		flaps = {type = "switch", buttons = [90, 91, 92], invert = true, label = "Sb"},
+		gear = {type = "switch", buttons = [100, 101], invert = false, label = "Sc"},
+	}
+	var radio_before := radio.duplicate(true)
+	context = {connected = true, device_name = "JETI DC/DS Radio", device_info = {kind = "radio"},
+		profile = radio, capabilities = {gear = true, smoke = true, flaps = true},
+		equipment_state = {gear = "extending", smoke = "on"}}
+	guide.refresh(context)
+	_check("maintained switch AUX appears as assigned equipment in the guide",
+		guide._equipment_labels.has("smoke") and guide._equipment_labels.has("flaps") and guide._equipment_labels.has("gear")
+		and not _guide_text(guide).contains("Assign in Controller settings"))
+	_check("guide shows physical switch names and observed indices without gamepad labels",
+		_guide_text(guide).contains("Sa") and _guide_text(guide).contains("Sb") and _guide_text(guide).contains("Sc")
+		and _guide_text(guide).contains("81") and _guide_text(guide).contains("101")
+		and not _guide_text(guide).contains("Circle"))
+	_check("switch equipment retains live state and leaves the profile unchanged",
+		_guide_text(guide).contains("Extending") and radio == radio_before)
+	context.capabilities.gear = false
+	guide.refresh(context)
+	_check("switch assignment does not enable unsupported aircraft equipment",
+		_guide_text(guide).contains("Not available") and not guide._equipment_labels.has("gear"))
+	context.erase("capabilities")
+	guide.refresh(context)
+	_check("guide without capability context still describes maintained switch AUX",
+		_guide_text(guide).contains("Sa") and _guide_text(guide).contains("Sb") and _guide_text(guide).contains("Sc"))
 	guide.refresh({})
 	_check("disconnect returns to keyboard and disables stale device tab", guide.keyboard_button.button_pressed and guide.controller_button.disabled)
 	var ui := UiDriver.new(self)

@@ -1,0 +1,137 @@
+extends SceneTree
+
+const Smoke := preload("res://render/smoke/exhaust.gd")
+const CAPTURE_DIR := "C:/DEVELOPMENT/OpenRCsimulator/tmp/workbench-plan-research-20261019"
+const STEP := 0.05
+
+var smoke: Node3D
+var pump_material: ShaderMaterial
+var failures := 0
+
+func _initialize() -> void:
+	call_deferred("_run")
+
+func _run() -> void:
+	root.size = Vector2i(640, 480)
+	var environment := Environment.new()
+	environment.background_mode = Environment.BG_COLOR
+	environment.background_color = Color.BLACK
+	var world := WorldEnvironment.new()
+	world.environment = environment
+	root.add_child(world)
+
+	var stage := Node3D.new()
+	root.add_child(stage)
+	var camera := Camera3D.new()
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	camera.size = 10.0
+	camera.position = Vector3(0.0, 22.0, -1.5)
+	camera.current = true
+	stage.add_child(camera)
+	camera.look_at(Vector3(0.0, 0.0, -1.5), Vector3.BACK)
+
+	smoke = Smoke.new()
+	stage.add_child(smoke)
+	var anchor := {
+		"position": Vector3.ZERO,
+		"direction": Vector3(0.0, 0.0, -1.0),
+		"radius_m": 0.02,
+		"kind": "glow_prop",
+		"pump": true,
+	}
+	if not smoke.configure(anchor):
+		_fail("EngineSmoke.configure failed")
+		return
+	smoke.exhaust.emitting = false
+	smoke.exhaust.visible = false
+	smoke.pump.visible = true
+	smoke.pump.fixed_fps = 1
+	smoke.pump.fract_delta = true
+	smoke.pump.interpolate = false
+	smoke.pump.local_coords = false
+	pump_material = smoke.pump.process_material as ShaderMaterial
+	pump_material.set_shader_parameter("tint", Vector3(1.0, 0.0, 0.0))
+	var draw_material := smoke.pump.draw_pass_1.material as StandardMaterial3D
+	draw_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	draw_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	draw_material.vertex_color_use_as_albedo = true
+
+	var clock := 0.0
+	var x := 0.0
+	var pose := Transform3D(Basis.IDENTITY, Vector3(x, 0.0, 0.0))
+	smoke.advance(clock, pose, "glow_prop", 7000.0, 2000.0, 12000.0, 0.5,
+		Vector3.ZERO, 1.0, true, 20.0, Vector3.ZERO)
+	for i in 7:
+		clock += STEP
+		x += 0.12
+		pose = Transform3D(Basis.IDENTITY, Vector3(x, 0.0, 0.0))
+		smoke.advance(clock, pose, "glow_prop", 7000.0, 2000.0, 12000.0, 0.5,
+			Vector3.ZERO, 1.0, true, 20.0, Vector3.ZERO)
+		await RenderingServer.frame_post_draw
+	var red_only := await _capture("red-only.png")
+	var red_before := _color_counts(red_only)
+	print("RED_ONLY red_pixels=%d blue_pixels=%d" % [red_before.red, red_before.blue])
+	_check("red birth colors visible before palette switch", red_before.red > 0 and red_before.blue == 0)
+
+	pump_material.set_shader_parameter("tint", Vector3(0.0, 0.0, 1.0))
+	for i in 7:
+		clock += STEP
+		x += 0.12
+		pose = Transform3D(Basis.IDENTITY, Vector3(x, 0.0, 0.0))
+		smoke.advance(clock, pose, "glow_prop", 7000.0, 2000.0, 12000.0, 0.5,
+			Vector3.ZERO, 1.0, true, 20.0, Vector3.ZERO)
+		await RenderingServer.frame_post_draw
+	var mixed := await _capture("red-blue-after-switch.png")
+	var mixed_counts := _color_counts(mixed)
+	print("RED_BLUE red_pixels=%d blue_pixels=%d" % [mixed_counts.red, mixed_counts.blue])
+	_check("old red and new blue births coexist", mixed_counts.red > 0 and mixed_counts.blue > 0)
+
+	smoke.advance(clock, pose, "glow_prop", 7000.0, 2000.0, 12000.0, 0.5,
+		Vector3.ZERO, 1.0, true, 20.0, Vector3.ZERO)
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var paused := await _capture("same-clock-pause.png")
+	_check("same-clock pause leaves rendered pixels unchanged", mixed.get_data() == paused.get_data())
+
+	smoke.reset()
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	var cleared := await _capture("reset-cleared.png")
+	var clear_counts := _color_counts(cleared)
+	print("RESET red_pixels=%d blue_pixels=%d" % [clear_counts.red, clear_counts.blue])
+	_check("reset clears live color state", clear_counts.red == 0 and clear_counts.blue == 0)
+
+	print("RESULT failures=%d" % failures)
+	quit(1 if failures > 0 else 0)
+
+func _capture(filename: String) -> Image:
+	await RenderingServer.frame_post_draw
+	var image: Image = root.get_texture().get_image()
+	var path := CAPTURE_DIR.path_join(filename)
+	var error := image.save_png(path)
+	if error != OK:
+		_fail("Could not save capture %s (error %d)" % [path, error])
+	return image
+
+func _color_counts(image: Image) -> Dictionary:
+	var red := 0
+	var blue := 0
+	for y in image.get_height():
+		for x in image.get_width():
+			var color := image.get_pixel(x, y)
+			if color.r > 0.02 and color.r > color.g * 1.5 and color.r > color.b * 1.5:
+				red += 1
+			elif color.b > 0.02 and color.b > color.r * 1.5 and color.b > color.g * 1.5:
+				blue += 1
+	return {"red": red, "blue": blue}
+
+func _check(label: String, condition: bool) -> void:
+	if condition:
+		print("PASS " + label)
+	else:
+		_fail(label)
+
+func _fail(label: String) -> void:
+	failures += 1
+	printerr("FAIL " + label)
+

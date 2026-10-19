@@ -21,5 +21,18 @@ func _initialize() -> void:
 				okay = okay and wav.mix_rate == 22050 and not wav.stereo and wav.format == AudioStreamWAV.FORMAT_16_BITS
 				okay = okay and wav.data.size() / 2 == int(entry.metrics.sample_count)
 				count += 1
-	print("AUD-05 exported audio: %d/30 sources, manifests and MIT notices: %s" % [count, "PASS" if okay and count == 30 else "FAIL"])
-	quit(0 if okay and count == 30 else 1)
+	var recorded_base: String = "res://assets/audio/soundscape/recorded/"
+	var recorded: Variant = JSON.parse_string(FileAccess.get_file_as_string(recorded_base + "manifest.json"))
+	okay = okay and recorded is Dictionary and FileAccess.get_file_as_string(recorded_base + "LICENSE.txt").contains("CC0 1.0")
+	if recorded is Dictionary:
+		for source: Dictionary in recorded.sources.values():
+			okay = okay and source.license == "CC0-1.0" and not str(source.page).is_empty()
+		for entry: Dictionary in recorded.assets:
+			var wav: AudioStreamWAV = load(recorded_base + str(entry.file)) as AudioStreamWAV
+			okay = okay and wav != null
+			if wav != null:
+				okay = okay and wav.mix_rate == 22050 and not wav.stereo and wav.format == AudioStreamWAV.FORMAT_16_BITS
+				okay = okay and wav.data.size() / 2 == int(entry.sample_count)
+				count += 1
+	print("Exported audio: %d/33 sources, manifests and MIT/CC0 notices: %s" % [count, "PASS" if okay and count == 33 else "FAIL"])
+	quit(0 if okay and count == 33 else 1)

@@ -27,7 +27,7 @@ def consumer(path: str) -> str:
         "propulsion.motor.no_load_context.temperature_c": "AircraftData._electric_propulsion: test context; no thermal law",
         "propulsion.motor.no_load_context.rpm": "AircraftData._electric_propulsion: Kv/test-voltage consistency",
         "propulsion.motor.no_load_context.voltage_v": "AircraftData._electric_propulsion: Kv/test-RPM consistency",
-        "propulsion.engine.fuel_flow": "Turbine.fuel_flow / session telemetry; no mass depletion",
+        "propulsion.engine.fuel_flow": "AircraftData._turbine / _liquid_fuel → Turbine.fuel_flow; turbine_map_v1 converts the authored RPM map to finite-store depletion and telemetry",
     }
     if path in reference_only:
         return reference_only[path]
@@ -44,6 +44,12 @@ def consumer(path: str) -> str:
         return "AircraftData._fuel_system: plan-CG acceptance at the declared balance fuel state; no force effect"
     if path.startswith("fuel_system.tanks[]."):
         return "AircraftData._fuel_system: tank capacity/unusable volume → model.fuel_system (registry density, start fill); FUEL-03, consumers from FUEL-05"
+    if path.startswith("propulsion.fuel_consumption."):
+        if path.endswith(".bsfc"):
+            return "AircraftData._liquid_fuel → LiquidFuel.flow_rate_kg_s: gasoline_bsfc_v1 consumption above the idle-power reference"
+        if path.endswith(".idle_flow"):
+            return "AircraftData._liquid_fuel → LiquidFuel.flow_rate_kg_s: gasoline_bsfc_v1 estimated running idle flow"
+        return "AircraftData._liquid_fuel → LiquidFuel.flow_rate_kg_s / LiquidFuelFlight: law-specific finite-store mass depletion"
     families = [
         ("inventory[].", "AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier"),
         ("reference.", "AircraftData reference/strip derivation → Aero.loads, trim, render datum checks"),

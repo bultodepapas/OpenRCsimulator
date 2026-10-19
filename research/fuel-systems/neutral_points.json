@@ -12,7 +12,7 @@
     "gp-extra-300s-60": {
       "np_x_m": 0.147033,
       "kind": "derived",
-      "source": "42.5 % MAC with the loaded half-tank CG at 27.98 % MAC (research/extra-300/ex05/derivation.md): plan_cg x 0.10266 + 0.1452 x MAC 0.305597 (taper formula)"
+      "source": "42.5 % MAC derived from the Extra aerodynamic model (research/extra-300/ex05/derivation.md, model z 0.0381 m; aircraft-data x uses the aft-positive conversion). Current loaded full-tank CG is 25.99 % MAC, giving 16.47 % MAC static margin; the estimate is not a flight measurement."
     },
     "p51d-mustang-120": {
       "np_x_m": 0.214398,

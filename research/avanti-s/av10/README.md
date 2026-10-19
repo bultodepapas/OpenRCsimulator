@@ -1,6 +1,8 @@
 # AV-10b independent variable-mass reference
 
-**Date:** 2026-10-13. **Status:** independent mechanics reference and analytic fixtures; production integration and physical acceptance remain pending. **Step:** AV-10b in the [turbine realism plan](../../../docs/plans/turbine-realism.md#13-incremental-implementation-sequence), especially [§4.5](../../../docs/plans/turbine-realism.md#45-changing-mass-cg-inertia-and-datum).
+**Date:** 2026-10-13. **Status at the recorded baseline:** independent mechanics reference and analytic fixtures; production integration and physical acceptance were pending. **Step:** AV-10b in the [turbine realism plan](../../../docs/plans/turbine-realism.md#13-incremental-implementation-sequence), especially [§4.5](../../../docs/plans/turbine-realism.md#45-changing-mass-cg-inertia-and-datum).
+
+Current production finite-store behavior is documented in the [shared fuel guide](../../../docs/FUEL-SYSTEM.md); remaining AV-10 qualification is in the turbine register. The baseline status above predates that integration.
 
 This directory contains a stdlib-only Python reference for a rigid dry body plus a prescribed body-fixed liquid inventory. It derives the open-system equations at a fixed dry-body datum, implements the equivalent instantaneous-CG equations, and compares them on independent fixtures. It does not change `app/` or establish an aircraft-specific fuel schedule.
 

@@ -46,7 +46,7 @@ static func fly(session: Node, field: Dictionary, pilot_script: Script, eastboun
 		wash_enabled = not session.aircraft.model.propulsion.get("slipstream", {}).is_empty()}
 	var recorder: RefCounted = null
 	if not trace_path.is_empty():
-		recorder = Recorder.new(session.sim)
+		recorder = Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 		var meta: Dictionary = session.trace_meta()
 		meta.scenario = "E3c2a continuous experimental circuit; parked start; calm air; wash off; estimated test pilot"
 		recorder.start(meta)

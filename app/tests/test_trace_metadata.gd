@@ -9,6 +9,7 @@ const Trace := preload("res://sim/trace.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const Flaps := preload("res://physics/flaps.gd")
 const GlowFlight := preload("res://physics/glow/flight.gd")
+const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const TIMBER := "turbo-lumber-evolution"
 const WHEEL_LAYOUT_SUFFIX := "wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
@@ -17,11 +18,11 @@ var _failures: int = 0
 var _checks: int = 0
 
 
-func _check(label: String, ok: bool) -> void:
+func _check(label: String, ok: bool, detail := "") -> void:
 	_checks += 1
 	if not ok:
 		_failures += 1
-		printerr("FAIL ", label)
+		printerr("FAIL ", label, " ", detail)
 
 
 func _aux_matches(encoded: String, aux: PackedFloat64Array) -> bool:
@@ -70,13 +71,19 @@ func _initialize() -> void:
 		var glow_profiled: bool = session.glow_is_active()
 		var wheel_profiled: bool = session.wheel_count() > 0
 		var expected_schema: String = "openrc-flight-meta v10" if glow_profiled else ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2")
-		if session.flaps_available():
+		if not glow_profiled and session.flaps_available():
 			expected_schema = "openrc-flight-meta v9" # optional flap layout follows the gear channels
-		elif session.gear_is_retractable():
+		elif not glow_profiled and session.gear_is_retractable():
 			expected_schema = "openrc-flight-meta v8" # published gear/input/extension metadata contract
-		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema)
+		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema,
+			"expected=%s actual=%s" % [expected_schema, meta.metadata_schema])
 		if wheel_profiled:
-			_check("wheel trace layout names appended rim-speed tail", str(meta.continuous_layout).ends_with(WHEEL_LAYOUT_SUFFIX))
+			var layout_text: String = str(meta.continuous_layout)
+			var wheel_suffix_index: int = layout_text.find(WHEEL_LAYOUT_SUFFIX)
+			var liquid_suffix_index: int = layout_text.find(LiquidFlight.LAYOUT)
+			var layout_order_ok: bool = layout_text.ends_with(WHEEL_LAYOUT_SUFFIX) if not session.liquid_fuel_is_active() \
+				else wheel_suffix_index >= 0 and liquid_suffix_index > wheel_suffix_index
+			_check("wheel trace layout keeps wheel tail before any fuel tail", layout_order_ok)
 			_check("wheel trace records selected-profile and source-file identity", str(meta.wheel_profile_sha256).length() == 64
 				and str(meta.wheel_profile_input_sha256).length() == 64)
 			_check("wheel trace has one state entry per gear contact", JSON.parse_string(meta.wheel_state_layout).size()
@@ -117,7 +124,8 @@ func _initialize() -> void:
 		_check("initial auxiliary snapshot", _aux_matches(meta.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
 		_check("powered start", meta.recording_start_engine_running == "true")
 		if entry.id == "p51d-mustang-120":
-			_check("P-51 shaft balance", meta.propulsion_model == "propeller-shaft-balance-v1")
+			_check("P-51 records the configured coupled shaft law",
+				meta.propulsion_model == "propeller-shaft-coupled-rk4-v1" and meta.shaft_integrator == "coupled-rk4")
 			_check("P-51 slipstream", meta.propwash_model == "tail-slipstream-increment-v1")
 		elif entry.id == "sebart-avanti-s-a200-p100rx":
 			_check("Avanti continuous turbine governor", meta.propulsion_model == Turbine.CONTINUOUS_LAW
@@ -148,6 +156,18 @@ func _initialize() -> void:
 		for _tick in 12:
 			session.sim.step()
 		recorder.start(session.trace_meta())
+		var trace_row_ok: bool = recorder.trace.row_count() == 1
+		_check("recording-start row accepted " + entry.id, trace_row_ok,
+			str({invalid = recorder.trace._invalid_weather, metadata_schema = recorder.trace.meta.get("metadata_schema"),
+				propulsion_model = recorder.trace.meta.get("propulsion_model"), columns = recorder.trace.columns(),
+				mass_schema = recorder.trace.meta.get("mass_trace_schema"), continuous_size = session.sim.continuous.size()}))
+		if session.liquid_fuel_is_active():
+			var current_fill: float = recorder.trace.value(0, "fuel_fill_fraction") if trace_row_ok else NAN
+			var recorded_meta: Dictionary = recorder.trace.meta
+			_check("mid-flight trace separates reset preference from accepted fuel inventory",
+				trace_row_ok and recorded_meta.recording_start_tick == 12 and recorded_meta.fuel_start_fill_known == true
+				and recorded_meta.fuel_start_fill == 1.0 and is_finite(current_fill) and current_fill < 1.0,
+				"recorded fill=%s selected reset fill=%s" % [str(current_fill), str(recorded_meta.get("fuel_start_fill"))])
 		if entry.id == TIMBER:
 			_check("Timber trace carries endpoint-sampled motor current", recorder.trace.columns().has("motor_current_a")
 				and recorder.trace.columns().has("drive_bus_current_a"))
@@ -161,11 +181,15 @@ func _initialize() -> void:
 		var snapshot: Dictionary = recorder.trace.meta.duplicate(true)
 		_check("mid-flight recording tick", snapshot.recording_start_tick == 12)
 		_check("mid-flight aux snapshot", _aux_matches(snapshot.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))
-		_check("CSV keeps new metadata", recorder.trace.to_csv().contains("# propulsion_model: " + snapshot.propulsion_model))
-		for index in RB.SIZE:
-			_check("state layout maps sample %d" % index, absf(recorder.trace.value(0, RB.STATE_LAYOUT[index]) - session.sim.state[index]) < 1e-12)
-		for index in Session.AUX_LAYOUT.size():
-			_check("aux layout maps sample %d" % index, recorder.trace.value(0, Session.AUX_LAYOUT[index]) == session.sim.aux[index])
+		_check("CSV keeps new metadata", recorder.trace.to_csv().contains("# propulsion_model: " + snapshot.propulsion_model),
+			"rows=%d invalid=%s" % [recorder.trace.row_count(), recorder.trace._invalid_weather])
+		if trace_row_ok:
+			for index in RB.SIZE:
+				_check("state layout maps sample %d" % index,
+					absf(recorder.trace.value(0, RB.STATE_LAYOUT[index]) - session.sim.state[index]) < 1e-12)
+			for index in Session.AUX_LAYOUT.size():
+				_check("aux layout maps sample %d" % index,
+					recorder.trace.value(0, Session.AUX_LAYOUT[index]) == session.sim.aux[index])
 		session.sim.step()
 		_check("metadata snapshot remains at recording start", recorder.trace.meta == snapshot)
 		recorder.recording = false
@@ -174,10 +198,14 @@ func _initialize() -> void:
 	session.aircraft_path = Catalog.entry("p51d-mustang-120").data
 	session.reload()
 	var prop: Dictionary = session.aircraft.model.propulsion
+	var original_propulsion: Dictionary = prop.duplicate(true)
+	var original_integrator: String = session.shaft_integrator()
 	prop.erase("shaft")
 	prop.erase("slipstream")
+	prop.erase("liquid_fuel")
 	prop.erase("normal_force")
 	prop.erase("pfactor_moment")
+	session._shaft_integrator = "split"
 	session.aircraft.model.envelope = {}
 	var changed: Dictionary = session.trace_meta()
 	_check("same ID, lag path", changed.propulsion_model == "propeller-rpm-lag-v1")
@@ -185,6 +213,8 @@ func _initialize() -> void:
 	_check("same ID, global aero", changed.aero_model == "global-derivatives-v1")
 	var features: Dictionary = JSON.parse_string(changed.propulsion_features)
 	_check("same ID, no propeller normal force/P-factor", not features.propeller_normal_force and not features.propeller_pfactor)
+	session.aircraft.model.propulsion = original_propulsion
+	session._shaft_integrator = original_integrator
 
 	session.aircraft_path = Catalog.entry(Catalog.DEFAULT_ID).data
 	session.reload()

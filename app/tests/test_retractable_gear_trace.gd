@@ -36,8 +36,9 @@ func _record_one(metadata: Dictionary, session: Node, inputs: PackedFloat64Array
 		aux: PackedFloat64Array) -> Trace:
 	var malformed := Trace.new()
 	malformed.meta = metadata.duplicate(true)
+	malformed.meta.mass_trace_schema = "openrc-mass-sample v1"
 	malformed.record(session.sim.tick, session.sim.time(), session.sim.state, session.sim.last_loads, inputs, aux,
-		session.sim.continuous.duplicate())
+		session.sim.continuous.duplicate(), session.mass_properties())
 	return malformed
 
 
@@ -68,10 +69,10 @@ func _initialize() -> void:
 	var turbulence_index: int = flight.turbulence_index()
 	var continuous: Array = JSON.parse_string(meta.recording_start_continuous)
 	var wheel_layout: Array = JSON.parse_string(meta.wheel_state_layout)
-	_check("recording metadata uses v9 gear/flap and complete turbine/wheel state",
+	_check("recording metadata uses v9 gear/flap and complete turbine/wheel/liquid state",
 		meta.metadata_schema == "openrc-flight-meta v9" and meta.gear_law == "retractable-point-gear-v1"
 		and meta.gear_trace_schema == "openrc-gear-trace v1" and wheel_layout.size() == flight.wheel_count()
-		and continuous.size() == 1 + wheel_layout.size() and meta.flap_law == Flaps.LAW
+		and continuous.size() == 1 + wheel_layout.size() + 2 and meta.flap_law == Flaps.LAW
 		and meta.flap_trace_schema == "openrc-flap-trace v1" and meta.flap_input_index == 6)
 	_check("gear, flap, and turbulence AUX states use the declared order",
 		gear_index >= 4 and flap_index == gear_index + 2 and turbulence_index == flap_index + 1
@@ -79,11 +80,19 @@ func _initialize() -> void:
 	_check("start snapshot records stowed gear target", start_state.available and start_state.extension == 0.0
 		and not start_state.target_down and flight.flap_state().actual == 0.0)
 
-	var recorder := Recorder.new(flight.sim, flight.electrical_state)
+	var recorder := Recorder.new(flight.sim, flight.electrical_state, Callable(flight, "mass_properties"))
 	recorder.start(meta)
-	_check("recorder starts the actual v12 trace", recorder.trace.row_count() == 1
-		and recorder.trace.columns().slice(-7) == GEAR_COLUMNS + FLAP_COLUMNS
-		and recorder.trace.to_csv().contains("# format: openrc-trace v12\n"))
+	var trace_columns: Array = recorder.trace.columns()
+	var gear_column: int = trace_columns.find(GEAR_COLUMNS[0])
+	var flap_column: int = trace_columns.find(FLAP_COLUMNS[0])
+	_check("recorder starts a complete v15 liquid/mass trace with gear and flap channels",
+		recorder.trace.row_count() == 1 and gear_column >= 0 and flap_column == gear_column + GEAR_COLUMNS.size()
+		and trace_columns.slice(gear_column, gear_column + GEAR_COLUMNS.size()) == GEAR_COLUMNS
+		and trace_columns.slice(flap_column, flap_column + FLAP_COLUMNS.size()) == FLAP_COLUMNS
+		and trace_columns.has("fuel_remaining_kg") and trace_columns.has("mass_kg")
+		and recorder.trace.value(0, "fuel_remaining_kg") > 0.0 and recorder.trace.value(0, "mass_kg") > 0.0
+		and recorder.trace.to_csv().contains("# format: openrc-trace v15\n")
+		and recorder.trace.to_csv().contains("# mass_base_trace_format: openrc-trace v12\n"))
 	_check("gear, wheel brake, and flap requests are accepted in flight",
 		flight.set_gear_down(true) and flight.set_wheel_brake(0.5) and flight.set_flaps(1.0))
 	flight.sim.inputs = flight._inputs()
@@ -110,14 +119,22 @@ func _initialize() -> void:
 			data_rows.append(line)
 	var header := data_rows[0].split(",") if not data_rows.is_empty() else PackedStringArray()
 	var row := data_rows[2].split(",") if data_rows.size() > 2 else PackedStringArray()
-	_check("CSV round-trip places turbulence before the gear and flap tails",
-		data_rows.size() == 3 and Array(header.slice(-7)) == GEAR_COLUMNS + FLAP_COLUMNS
+	var csv_gear_column: int = header.find(GEAR_COLUMNS[0])
+	var csv_flap_column: int = header.find(FLAP_COLUMNS[0])
+	_check("CSV round-trip preserves turbulence, gear/flap channels, and finite mass/fuel tails",
+		data_rows.size() == 3 and csv_gear_column >= 0 and csv_flap_column == csv_gear_column + GEAR_COLUMNS.size()
+		and Array(header.slice(csv_gear_column, csv_gear_column + GEAR_COLUMNS.size())) == GEAR_COLUMNS
+		and Array(header.slice(csv_flap_column, csv_flap_column + FLAP_COLUMNS.size())) == FLAP_COLUMNS
+		and Array(header.slice(-9)) == ["fuel_remaining_kg", "fuel_usable_kg", "fuel_fill_fraction", "fuel_reserve_fraction",
+			"fuel_source_latch", "mass_kg", "cg_body_x_m", "cg_body_y_m", "cg_body_z_m"]
 		and header.find(TURBULENCE_COLUMNS[0]) >= 0
 		and header.find(TURBULENCE_COLUMNS[-1]) < header.find(GEAR_COLUMNS[0])
 		and header.find(GEAR_COLUMNS[-1]) < header.find(FLAP_COLUMNS[0])
 		and is_equal_approx(float(row[header.find("gear_extension")]), extension)
 		and float(row[header.find("gear_target_down")]) == 1.0
-		and is_equal_approx(float(row[header.find("flap_fraction")]), flap_status.actual))
+		and is_equal_approx(float(row[header.find("flap_fraction")]), flap_status.actual)
+		and float(row[header.find("fuel_remaining_kg")]) > 0.0
+		and float(row[header.find("mass_kg")]) > 0.0)
 	_check("trace metadata retains turbulence and full gear start snapshots",
 		csv_text.contains("# gear_aux_index: %d\n" % gear_index)
 		and csv_text.contains("# turbulence_aux_index: %d\n" % turbulence_index)
@@ -158,7 +175,7 @@ func _initialize() -> void:
 
 	# Reject a command/state mismatch, malformed target, shortened AUX, and a misplaced
 	# turbulence tail at the recorder boundary. Invalid traces never emit partial CSV.
-	var baseline_meta: Dictionary = meta.duplicate(true)
+	var baseline_meta: Dictionary = flight.trace_meta()
 	var start_mismatch: Dictionary = baseline_meta.duplicate(true)
 	start_mismatch.recording_start_gear = "[0.0,1.0]"
 	var mismatch_trace := _record_one(start_mismatch, flight, flight.sim.inputs,

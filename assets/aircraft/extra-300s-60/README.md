@@ -1,26 +1,56 @@
-# Great Planes Extra 300S .60 (GPMA0236): visual geometry v1, flyable (experimental)
+# Great Planes Extra 300S .60: source and model guide
 
-`.60` is the kit size (64 in span, .61 nitro class). The model is **flyable (experimental)**: its flight data `app/data/aircraft/gp_extra_300s_60.json` is GENERATED from this geometry by `research/extra-300/ex05/derive_physics.py` (owned by the physics/catalog line).
+Checked 2026-10-19. `gp-extra-300s-60` is an experimental GPMA0236 aircraft with a native Godot model. This page owns geometry, finish, model interfaces and their tools. The [aircraft guide/plan](../../../docs/EXTRA-300-PLAN.md) owns current flight scope, pending checks and remaining EX work; [glow](../../../docs/GLOW-ENGINES.md) and [fuel](../../../docs/FUEL-SYSTEM.md) own shared runtime behavior.
 
-Edit [geometry.json](geometry.json). Coordinates are metres, +X right, +Y up, −Z nose. The origin is the nominal CG station (4-1/8 in aft of the rib-2D leading edge) at spinner-axis height. The physics CG is set separately in EX-05. Every group records its evidence kind; measured values come from [the EX-01 metrology](../../../research/extra-300/ex01/metrology.json), and estimated ones (gear track, pant width, propeller, section corner rounding) say so.
+## Sources and frames
 
-From the repository root:
+[geometry.json](geometry.json) is editable visual geometry with evidence kinds; [appearance.json](appearance.json) is the editable artistic finish. Plan/manual measurements come from [EX-01 metrology](../../../research/extra-300/ex01/metrology.json); estimated gear, propeller and rounded-section details remain labeled. Source PDFs/photos stay in ignored `references/extra-300/`; a fresh checkout does not include them.
+
+Model coordinates are metres, +X right, +Y up, −Z nose. The origin is the nominal manual CG station at spinner-axis height. It is not the live physics CG. The [model manifest](../../../app/data/aircraft_models/gp-extra-300s-60.json) declares the model-to-LE datum; shared frames belong to the [aircraft contract](../../../docs/AIRCRAFT_CONTRACT.md#coordinates-signs-and-units).
+
+## Pipeline and routine verification
+
+| Source / generated output | Pipeline |
+| --- | --- |
+| Plan/manual picks → [metrology.json](../../../research/extra-300/ex01/metrology.json) | `research/extra-300/ex01/measure.py`; needs local PDF sources, Poppler `pdfimages`, Pillow and NumPy |
+| [geometry.json](geometry.json) → [extra_300s_geometry.gd](../../../app/aircraft/extra_300s_geometry.gd) | [compile_geometry.py](compile_geometry.py); validates structure and metrology consistency |
+| [appearance.json](appearance.json) → [extra_300s_appearance.gd](../../../app/aircraft/extra_300s_appearance.gd) | [compile_appearance.py](compile_appearance.py) |
+| Geometry and attributed flight inputs → aircraft JSON / derivation | [EX-05 generator](../../../research/extra-300/ex05/derive_physics.py); includes the finite-glow installation selector |
+| Changed source/dependency identities → model and Workshop bindings | [Shared model/package pipeline](../../../docs/AIRCRAFT_CONTRACT.md#model-and-package-contract), [Workshop standard](../../../docs/AIRCRAFT_CONTRACT.md#workshop-authoring-standard) |
+
+From the repository root after [developer setup](../../../docs/TOOLS.md#developer-setup), these checks do not regenerate source artifacts. Bash is shown; native Windows uses `python` and the matching engine as described in setup.
 
 ```bash
-python3 assets/aircraft/extra-300s-60/compile_geometry.py           # writes app/aircraft/extra_300s_geometry.gd
-python3 assets/aircraft/extra-300s-60/compile_geometry.py --check   # stale copy, structure, and 197 values vs metrology.json
-python3 assets/aircraft/extra-300s-60/compile_appearance.py         # writes app/aircraft/extra_300s_appearance.gd (--check in CI)
-python3 research/extra-300/ex01/measure.py --check                  # needs the local plan/manual PDFs in references/
-research/extra-300/ex02/capture.sh                                  # needs xvfb-run: 85 renders + review/ (metrics, sheets, local plan overlays)
-python3 research/extra-300/ex05/derive_physics.py                   # REQUIRED after changing wing.*, tail.*, gear axles/track/wheels,
-                                                                    # spinner, firewall_z, cowl_rear_z, propeller.z, canopy.top or fuselage_stations (CI runs --check)
-app/test.sh                                                         # includes aircraft/verify_extra.gd
+python3 assets/aircraft/extra-300s-60/compile_geometry.py --check
+python3 assets/aircraft/extra-300s-60/compile_appearance.py --check
+python3 research/extra-300/ex05/derive_physics.py --check
+GODOT="$(app/get-godot.sh)"
+"$GODOT" --headless --path app --audio-driver Dummy --script res://aircraft/verify_extra.gd
+"$GODOT" --headless --path app --audio-driver Dummy --script res://tests/test_extra_installation.gd
+"$GODOT" --headless --path app --audio-driver Dummy --script res://tests/test_extra_handling.gd
+"$GODOT" --headless --path app --audio-driver Dummy --script res://tests/test_extra_runway.gd
 ```
 
-The [native builder](../../../app/aircraft/extra_300s_model.gd) keeps the Stik interface: `build()` → `{root, propeller, hinges, gear}` with `airplane`, `propeller` and `*_hinge` nodes. The swept aileron hinge is carried by a static `aileron_frame_*` parent, so `render/airplane.gd::apply_surfaces()` works unchanged. The report is [extra-300-model-v1.md](../../../docs/research/extra-300-model-v1.md).
+Import first on a fresh checkout; test/capture runners do it automatically. Inspect engine errors as well as exit codes and bound probe runtimes. The [evidence record](../../../docs/research/extra-300-realism/README.md) distinguishes checks actually completed from pending verification; `app/test.sh` owns the broader suite.
 
-The plan PDFs, manual, photos and CAD stay in the ignored `references/extra-300/`. Measured coordinates, code and selected captures are in the repo. Geometry and colours are original work, not copies of plan artwork.
+For an intentional source change, run the appropriate compilers without `--check`, then regenerate EX-05 whenever geometry it consumes changes. Rebuild affected model manifests/Workshop descriptors through their generators and verify their pins. Glow installation/profile changes use the [glow authoring pipeline](../../../docs/GLOW-ENGINES.md). Never hand-edit generated `.gd`, aircraft JSON or glow data.
 
-**Finish (EX-10a).** [appearance.json](appearance.json) holds the red/white/blue scheme adapted from the owner's photo (top, sides) and the .40 underside photo: colours, bands, stars and stripes in metres or chord fractions, labelled as an artistic estimate. [extra_300s_finish.gd](../../../app/aircraft/extra_300s_finish.gd) draws it with one shared shader per part from model-space UVs written by the builder. The upper surface reads red/white, the lower one blue/white; `review.py` measures that from the ground. Results: [visual review](../../../docs/research/extra-300-visual-review-v1.md).
+Rebuilding EX-01 metrology is separate from routine checks: `python3 research/extra-300/ex01/measure.py --check` requires the ignored source PDFs and its image tools. The committed metrology remains usable by the geometry compiler without those downloads.
 
-**Articulation, propeller, pilot (EX-04/EX-06).** Elevator and rudder hinge edges carry a 45° V-bevel, like the ailerons. [extra_clearance.gd](../../../app/aircraft/extra_clearance.gd) checks every moving surface against its neighbours at the manual throws and at 45°. The propeller uses 12×6 pitch to match the selected physics installation; its blade outline and section remain generic estimates. EX-06 derives physics thrust from the same 2° right/0.5° down shaft and hub. The pilot comes from the plan's figure and sits under a tinted transparent canopy (`appearance.json` → `canopy.alpha`; 1.0 = opaque fallback). The [realism audit](../../../docs/research/extra-300-realism/README.md) records physical limits and open gates.
+## Native builder and finish
+
+[extra_300s_model.gd](../../../app/aircraft/extra_300s_model.gd) is selected by the version-1 model manifest (`euler_hinges`); it builds native geometry rather than importing a scene. Its raw `build()` result contains `{root, propeller, hinges, gear}`. Stable `airplane`, `propeller` and hinge nodes remain bound through the common presentation contract. Static `aileron_frame_*` parents carry the swept hinge direction; commanded deflection acts on the child hinges.
+
+The [finish](../../../app/aircraft/extra_300s_finish.gd) uses model-space UVs and shared shaders for the estimated red/white/blue scheme. The plan-derived pilot sits under a tinted canopy; `appearance.json` controls its alpha. [EX-10 visual evidence](../../../docs/research/extra-300-visual-review-v1.md) records orientation checks and limits.
+
+The verifier checks posed control clearance at manual travel and 45° using [extra_clearance.gd](../../../app/aircraft/extra_clearance.gd). Those are software geometry checks, not measured loaded-airframe travel. The visual propeller is nominal 12×6 with estimated outline/section; the shaft frame has the plan's 2° right / 0.5° down angles. [EX-05](../../../research/extra-300/ex05/derivation.md) derives the physical axis and force arm from that frame and hub. Aerodynamics, mass/inertia and the active glow profile remain separately attributed estimates.
+
+## Captures and research probes
+
+```bash
+bash research/extra-300/ex02/capture.sh --suite inspection
+```
+
+The capture runner needs Xvfb/OpenGL and writes a new ignored output directory. Suites are `inspection`, `orbit`, `detail`, `distance`, `scale` or `all`. `all` also renders high-resolution scale views and runs `review.py`; its image analysis needs Pillow/NumPy. Plan overlays are skipped when the local raster cache is absent. The runner refuses to overwrite captures.
+
+The [EX-06/08 probe guide](../../../research/extra-300/ex06/README.md) owns signed-control, ground/envelope and 240/480 Hz comparison commands. Preserve baseline source/configuration and input tapes with the [flight logging workflow](../../../docs/FLIGHT-LOGGING.md). Historical probe success, predicted roll/loop metrics and rendered orientation do not establish physical flight validation.

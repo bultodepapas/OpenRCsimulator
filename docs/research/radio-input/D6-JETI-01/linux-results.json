@@ -1,0 +1,42 @@
+[
+  {
+    "script": "res://tests/test_jeti_identity.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.501,
+    "errors": [],
+    "log": "linux/test_jeti_identity.log"
+  },
+  {
+    "script": "res://tests/test_jeti_runtime.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.606,
+    "errors": [],
+    "log": "linux/test_jeti_runtime.log"
+  },
+  {
+    "script": "res://tests/test_switch_aux.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 0.31,
+    "errors": [],
+    "log": "linux/test_switch_aux.log"
+  },
+  {
+    "script": "res://tests/test_jeti_setup.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 1.123,
+    "errors": [],
+    "log": "linux/test_jeti_setup.log"
+  },
+  {
+    "script": "res://tests/test_overlay_manager.gd",
+    "exit_code": 0,
+    "passed": true,
+    "elapsed_s": 12.219,
+    "errors": [],
+    "log": "linux/test_overlay_manager.log"
+  }
+]

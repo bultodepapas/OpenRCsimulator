@@ -1,0 +1,115 @@
+{
+  "assets": [
+    {
+      "channels": 1,
+      "duration_s": 19.0,
+      "edits": {
+        "crossfade_s": 1,
+        "highpass_hz": 40.0,
+        "lowpass_hz": 3200.0,
+        "peak_cap": 0.42,
+        "source_duration_s": 20.0,
+        "start_s": 2.0,
+        "target_rms": 0.08
+      },
+      "file": "wind_low.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.04425048828125,
+        "peak": 0.41998291015625,
+        "rms": 0.07596087930032364,
+        "seam_step": 0.001007080078125
+      },
+      "sample_count": 418950,
+      "sample_rate_hz": 22050,
+      "sha256": "c1494b823374177e98a672db6de9fdb4509fe905f471e6d9e0fa5544f933c487",
+      "source": "wind"
+    },
+    {
+      "channels": 1,
+      "duration_s": 18.0,
+      "edits": {
+        "crossfade_s": 1,
+        "highpass_hz": 950.0,
+        "lowpass_hz": 8500.0,
+        "peak_cap": 0.42,
+        "source_duration_s": 19.0,
+        "start_s": 0.4,
+        "target_rms": 0.055
+      },
+      "file": "wind_high.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.073760986328125,
+        "peak": 0.390289306640625,
+        "rms": 0.054998306732148165,
+        "seam_step": 0.003814697265625
+      },
+      "sample_count": 396900,
+      "sample_rate_hz": 22050,
+      "sha256": "1e9523b9df711c1897e4fef896ffa54a40c205944a64afd2a75f7cf7f2a9a16d",
+      "source": "wind"
+    },
+    {
+      "channels": 1,
+      "duration_s": 21.0,
+      "edits": {
+        "crossfade_s": 1,
+        "highpass_hz": 150.0,
+        "lowpass_hz": 8500.0,
+        "peak_cap": 0.42,
+        "source_duration_s": 22.0,
+        "start_s": 24.0,
+        "target_rms": 0.018
+      },
+      "file": "windsock_fabric.wav",
+      "format": "signed 16-bit PCM little-endian",
+      "loop": true,
+      "metrics": {
+        "interior_step_p99": 0.0408935546875,
+        "peak": 0.419219970703125,
+        "rms": 0.017999443264298042,
+        "seam_step": 0.0010986328125
+      },
+      "sample_count": 463050,
+      "sample_rate_hz": 22050,
+      "sha256": "b0fe88199481f2ca9bf3668f92408b083428af8193b3b75065d228c69569402a",
+      "source": "fabric"
+    }
+  ],
+  "decoded_pcm_bytes": 2557800,
+  "dependencies": {
+    "miniaudio": "1.71",
+    "numpy": "2.4.6"
+  },
+  "format": "openrc-recorded-wind v1",
+  "generator": "tools/audio/import_wind_recordings.py",
+  "sources": {
+    "fabric": {
+      "author": "bmacphail",
+      "download": "https://cdn.freesound.org/previews/569/569537_12816528-hq.mp3",
+      "file": "tent_fabric_flapping_light_wind_hq.mp3",
+      "format": "public HQ MP3 preview; not the original WAV",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/bmacphail/sounds/569537/",
+      "retrieved": "2026-10-19",
+      "sha256": "d1f8b022feaee421eb6a0b16754e90f1e0289bd4cf09253d6262ea6235ae3d95",
+      "title": "Tent Fabric Flapping in Wind Ambient.wav"
+    },
+    "wind": {
+      "author": "SamuelGremaud",
+      "download": "https://cdn.freesound.org/previews/547/547472_8031303-hq.mp3",
+      "file": "wind_trees_hq.mp3",
+      "format": "public HQ MP3 preview; not the original WAV",
+      "license": "CC0-1.0",
+      "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "page": "https://freesound.org/people/SamuelGremaud/sounds/547472/",
+      "retrieved": "2026-10-19",
+      "sha256": "1e1a8479c6925c9ab35b9cf5f64c63fd448e284042da9a1d27cae5320d4bbc26",
+      "title": "WIND - 1"
+    }
+  }
+}

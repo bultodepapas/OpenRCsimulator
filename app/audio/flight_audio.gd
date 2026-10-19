@@ -15,6 +15,7 @@ const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
 var _last_tick: int = -1
+var _windsock: WeakRef
 var last_update_usec: int = 0
 
 
@@ -35,6 +36,11 @@ func configure(scene: Node3D) -> void:
 	var propulsion: Dictionary = flight.session.aircraft.model.propulsion
 	var glow_family: String = _glow_family(propulsion)
 	soundscape.configure(flight.field, str(propulsion.get("kind", "glow_prop")), audio_seed, glow_family)
+	var field_node: Node3D = flight.get("_field_node") as Node3D
+	if field_node != null:
+		var cues: Array = field_node.get_meta("wind_cues", [])
+		if not cues.is_empty():
+			_windsock = weakref(cues[0])
 	flight.session.resetting.connect(_on_resetting)
 	silence_legacy_ambience(flight)
 
@@ -108,7 +114,7 @@ func snapshot() -> Dictionary:
 	if not session.atmosphere_is_reference() and pressure_pa > 0.0:
 		humidity = 100.0 * float(atmosphere.get("vapor_pressure_pa", 0.0)) / pressure_pa
 	# Turbine load uses throttle; propellers use accepted-state aerodynamic torque.
-	return {
+	var result: Dictionary = {
 		rpm = rpm, max_rpm = EngineSound.reference_rpm(prop),
 		load = load_amount, throttle = session.sim.inputs[3], running = source_running,
 		blades = blades, sound_speed = sqrt(1.4 * 287.05 * float(atmosphere.get("temperature_k", 288.15))),
@@ -120,6 +126,16 @@ func snapshot() -> Dictionary:
 		jet_velocity = jet_velocity, jet_velocity_max = jet_velocity_max, exhaust_direction = exhaust,
 		glow = glow_state,
 	}
+	var sock: Node3D = _windsock.get_ref() as Node3D if _windsock != null else null
+	if is_instance_valid(sock):
+		var cloth: Node3D = sock.get_node_or_null("Fabric") as Node3D
+		if cloth != null and cloth.has_meta("centreline"):
+			var centres: PackedVector3Array = cloth.get_meta("centreline")
+			if centres.size() > 8:
+				result.fabric_source = sock.global_transform * centres[8]
+		if sock.has_meta("windsock_motion"):
+			result.windsock_inflation = float(sock.get_meta("windsock_motion").inflation)
+	return result
 
 
 static func propulsion_source_running(session: Node) -> bool:

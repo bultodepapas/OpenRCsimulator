@@ -17,7 +17,7 @@ TT owns `assets/aircraft/turbo-lumber-evolution/`, its runtime asset, Timber geo
 | Topic | Home / shared owner |
 | --- | --- |
 | Sources, build/check commands, adapter and asset advisories | [Asset guide](../assets/aircraft/turbo-lumber-evolution/README.md) |
-| Flight-data assumptions and sensitivity | [TT-07 derivation](../research/timber/tt07/derivation.md), [sensitivity](../research/timber/tt07/sensitivity.json) |
+| Flight-data assumptions and sensitivity | [TT-07 derivation](../research/timber/tt07/derivation.md), [sensitivity](../research/timber/tt07/sensitivity.md) |
 | Physical fields, model/package interfaces and authoring | [Aircraft contract](AIRCRAFT_CONTRACT.md), [Blender handoff](BLENDER-AIRCRAFT-HANDOFF.md); AS/model owners |
 | Motor/ESC and physical powertrain evidence | [Electric guide](ELECTRIC-PROPULSION-PLAN.md); EL |
 | Energy, pack telemetry and endurance | [Battery guide](plans/battery-realism.md); BAT |

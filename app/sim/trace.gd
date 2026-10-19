@@ -344,11 +344,18 @@ func _prepare_liquid_metadata(values: Array, base_count: int, base_layout: Strin
 		return false
 	var known: Variant = meta.get("fuel_start_fill_known", false)
 	var fill: Variant = meta.get("fuel_start_fill", 1.0)
+	var recording_start_tick: Variant = meta.get("recording_start_tick")
 	if typeof(known) != TYPE_BOOL or typeof(fill) not in [TYPE_INT, TYPE_FLOAT] \
-			or not is_finite(float(fill)) or float(fill) < 0.0 or float(fill) > 1.0:
+			or not is_finite(float(fill)) or float(fill) < 0.0 or float(fill) > 1.0 \
+			or typeof(recording_start_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(recording_start_tick)) \
+			or float(recording_start_tick) < 0.0 or float(recording_start_tick) != floor(float(recording_start_tick)):
 		_invalid_weather = true
 		return false
-	if known and absf(start_usable + float(unusable) - float(fill) * float(capacity)) \
+	# The selected reset fill describes the next launch. A recorder started after tick 0
+	# carries live inventory separately in its accepted mass sample and must not compare it
+	# with that reset preference.
+	if known and float(recording_start_tick) == 0.0 \
+			and absf(start_usable + float(unusable) - float(fill) * float(capacity)) \
 			> maxf(1e-10, float(capacity) * 1e-10):
 		_invalid_weather = true
 		return false
@@ -1312,7 +1319,8 @@ func _liquid_sample(sample: Dictionary, tick: int, t: float, continuous: PackedF
 	var identity: Dictionary = {registry_sha256 = str(sample.registry_sha256), blend = str(blend), family = str(family),
 		density_kg_m3 = density, reserve_fraction = reserve, reserve_basis = str(basis), reserve_estimated = bool(estimated)}
 	if _rows.is_empty():
-		if _liquid_start_fill_known and absf(fill - _liquid_start_fill) > 1e-9:
+		if _liquid_start_fill_known and int(meta.get("recording_start_tick", -1)) == 0 \
+				and absf(fill - _liquid_start_fill) > 1e-9:
 			_invalid_weather = true
 			return PackedFloat64Array()
 		_liquid_identity = identity

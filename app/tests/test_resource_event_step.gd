@@ -26,7 +26,7 @@ func _test_ordered_resource_depletion() -> void:
 			rate[3] = -1.0
 		return rate
 	var main_event := {
-		"id": "main_floor", "type": "main_empty", "sense": "falling", "priority": 10,
+		"id": "main_floor", "type": "main_empty", "sense": "falling", "surface_unit": "kg", "priority": 10,
 		"surface": func(state: PackedFloat64Array, _time_s: float) -> float: return state[0],
 		"enabled": func(state: PackedFloat64Array, _time_s: float) -> bool: return state[2] == 0.0,
 		"transition": func(state: PackedFloat64Array, _time_s: float) -> Dictionary:
@@ -35,7 +35,7 @@ func _test_ordered_resource_depletion() -> void:
 			return {"ok": true, "state": state, "event": {"source": "main"}},
 	}
 	var line_event := {
-		"id": "line_empty", "type": "line_empty", "sense": "falling", "priority": 20,
+		"id": "line_empty", "type": "line_empty", "sense": "falling", "surface_unit": "kg", "priority": 20,
 		"surface": func(state: PackedFloat64Array, _time_s: float) -> float: return state[1],
 		"enabled": func(state: PackedFloat64Array, _time_s: float) -> bool: return state[2] == 1.0,
 		"transition": func(state: PackedFloat64Array, _time_s: float) -> Dictionary:
@@ -54,6 +54,7 @@ func _test_ordered_resource_depletion() -> void:
 	if events.size() == 2:
 		_near("main boundary time", float(events[0].time_s), 0.8)
 		_near("line boundary time", float(events[1].time_s), 1.3)
+	_check("event surfaces carry explicit mass units", events[0].surface_unit == "kg" and events[1].surface_unit == "kg")
 	var final_state: PackedFloat64Array = result.state
 	_near("main resource reaches its boundary", final_state[0], 0.0)
 	_near("line resource reaches its boundary", final_state[1], 0.0)
@@ -70,7 +71,7 @@ func _test_tied_event_priority() -> void:
 		rate[0] = -1.0 if state[1] == 0.0 else 0.0
 		return rate
 	var low_priority := {
-		"id": "z_later", "type": "losing_tie", "sense": "falling", "priority": 20,
+		"id": "z_later", "type": "losing_tie", "sense": "falling", "surface_unit": "1", "priority": 20,
 		"surface": func(state: PackedFloat64Array, _time_s: float) -> float: return state[0],
 		"enabled": func(state: PackedFloat64Array, _time_s: float) -> bool: return state[1] == 0.0,
 		"transition": func(state: PackedFloat64Array, _time_s: float) -> Dictionary:
@@ -78,7 +79,7 @@ func _test_tied_event_priority() -> void:
 			return {"ok": true, "state": state},
 	}
 	var high_priority := {
-		"id": "a_first", "type": "winning_tie", "sense": "falling", "priority": 10,
+		"id": "a_first", "type": "winning_tie", "sense": "falling", "surface_unit": "1", "priority": 10,
 		"surface": func(state: PackedFloat64Array, _time_s: float) -> float: return state[0],
 		"enabled": func(state: PackedFloat64Array, _time_s: float) -> bool: return state[1] == 0.0,
 		"transition": func(state: PackedFloat64Array, _time_s: float) -> Dictionary:
@@ -102,7 +103,7 @@ func _test_failure_rolls_back() -> void:
 	var derivative: Callable = func(_state: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
 		return _padded([-1.0])
 	var rejected := {
-		"id": "reject", "type": "test", "sense": "falling",
+		"id": "reject", "type": "test", "sense": "falling", "surface_unit": "1",
 		"surface": func(state: PackedFloat64Array, _time_s: float) -> float: return state[0],
 		"transition": func(state: PackedFloat64Array, _time_s: float) -> Dictionary:
 			state[0] = -99.0

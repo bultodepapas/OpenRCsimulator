@@ -386,5 +386,19 @@
     }
   },
   "field_repeat_identical": true,
-  "limits": "Screenshots and software checks; no calibrated fabric data or full-session target performance acceptance."
+  "limits": "Screenshots and software checks; no calibrated fabric data or full-session target performance acceptance.",
+  "integration_sha256": {
+    "app/main.gd": "85c438a13c326f3faf51ab6ab9c4d36477ced689bbed00807233c98bda3d3eb4",
+    "app/render/field.gd": "7b32bacaf4cee96d290ae6fc9f1609d20df752e715dc7ba59b3546bba77f6342",
+    "app/render/world/world.gd": "97ebc636c924232d6543fa638308e4dc4f968c4312b02aeecb52da5ad4b659be",
+    "app/render/field_projected_shadows.gd": "73956cdfd096324e99e3814c2214a2abdbb6098b1633527faa53a8964e73d7de",
+    "app/tests/test_windsock.gd": "407fc17c2ecf2e7409f2d4e398f058165bbb69573bc35177b90c284bd2604a2f",
+    "app/tests/test_windsock_motion.gd": "60c0db383896d3277d3e42b711f2470f312e1ad68f753a7b14ffa54ae8608180",
+    "app/tests/test_field_projected_shadows.gd": "b53217e2f1a6de48185d29f59a6f9c18cf9109824e9c944cb294d14c399ebb53",
+    "tools/ground/capture_windsock.gd": "f5b50983ed0eaee1ca37f3adadb236c19cf95dce35626e8d20e3db39b14ccb8e",
+    "tools/ground/check_windsock.py": "deeb3f6a1217d1cee35b353e5b6390c6fdb6e875faf8245bbe58fcc3c5baca3f"
+  },
+  "focused_motion_checks": 35,
+  "latest_wind_flight_checks": 51,
+  "end_to_end_controls": "passed"
 }

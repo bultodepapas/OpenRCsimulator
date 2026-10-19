@@ -32,6 +32,7 @@ static func advance(state: PackedFloat64Array, time_s: float, dt: float,
 				or not event.get("type", "") is String or not event.get("surface") is Callable \
 				or not event.get("transition") is Callable \
 				or event.get("sense", "") not in ["falling", "rising", "either"] \
+				or not event.get("surface_unit", "") is String or str(event.surface_unit).strip_edges().is_empty() \
 				or (event.has("enabled") and not event.enabled is Callable):
 			return _failure("resource event definition is malformed")
 		ids[id] = true
@@ -122,7 +123,7 @@ static func advance(state: PackedFloat64Array, time_s: float, dt: float,
 				applied += 1
 				var report: Dictionary = {type = str(event.type), time_s = time_s + elapsed + earliest,
 					id = str(event.id), surface_residual = float(surface_at_root.value),
-					time_error_bound_s = float(candidate.time_error_s)}
+					surface_unit = str(event.surface_unit), time_error_bound_s = float(candidate.time_error_s)}
 				var details: Variant = transitioned.get("event", {})
 				if details is Dictionary:
 					report.merge(details, true)

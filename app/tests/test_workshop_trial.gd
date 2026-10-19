@@ -6,6 +6,7 @@ const Compiler := preload("res://workshop/compiler.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Descriptor := preload("res://workshop/descriptor.gd")
 const Dependencies := preload("res://workshop/dependencies.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
 var checks := 0
 var failures := 0
 
@@ -132,6 +133,11 @@ func _initialize() -> void:
 	payload.workshop_descriptor = descriptor.duplicate(true)
 	var historical_base: Dictionary = base.duplicate(true)
 	_strip_physical_identity(historical_base)
+	var historical_validation: Dictionary = AircraftData.validate_and_derive(historical_base)
+	check("v1 source remains valid after removing identity-bound fuel data",
+		historical_validation.get("ok", false))
+	if not historical_validation.get("ok", false):
+		printerr("Historical source errors: ", historical_validation.get("errors", []))
 	var historical_bytes: PackedByteArray = _source_bytes(historical_base)
 	var historical_descriptor: Dictionary = descriptor.duplicate(true)
 	historical_descriptor.format = Descriptor.LEGACY_FORMAT
@@ -205,6 +211,18 @@ func _has_physical_identity_metadata(base: Dictionary) -> bool:
 
 func _strip_physical_identity(base: Dictionary) -> void:
 	base.erase("physical_identity_version")
+	# FUEL-03: emulate the identity-free legacy fixture without v2 ID-bound tank state.
+	if base.erase("fuel_system"):
+		var balance: Dictionary = base.balance
+		balance.erase("fuel_state")
+		balance.erase("cg_range")
+		var mass := 0.0
+		var first := [0.0, 0.0, 0.0]
+		for item: Dictionary in base.inventory:
+			mass += float(item.mass.value)
+			for axis in 3:
+				first[axis] += float(item.mass.value) * float(item.position.value[axis])
+		balance.plan_cg.value = [first[0] / mass, first[1] / mass, first[2] / mass]
 	for item: Variant in base.get("inventory", []):
 		if item is Dictionary:
 			item.erase("id")

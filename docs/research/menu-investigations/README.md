@@ -1,5 +1,7 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-19: [UI-03-R1 — window-close trace preservation and runtime audit](../visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/README.md). Actual Windows close reproduction, save-failure/Workshop regressions, scoped verification and explicit remaining golden/performance gates.
+
 ## UI-02-R1 — pause and restart recovery, 2026-10-17
 
 Native Windows Godot 4.7.2 probes reproduced four defects against `1ef60b44`: R and the accident report reset the selected controller's session into a pause with no visible Continue action; restarting after controller loss resumed simulation without explicit device recovery; rejected keyboard runway restarts closed Pause; and the runway reset installed idle simulation inputs but left pilot commands at the generic 50% throttle default. The next keyboard sample or staged gamepad resume reapplied that power. The shell now owns these interactive restart routes and holds the menu through reset validation. Failed starts retain their error, successful controller restarts focus Continue, and runway commands match their solved zero-throttle inputs.

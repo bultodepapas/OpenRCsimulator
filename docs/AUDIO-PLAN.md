@@ -1,6 +1,6 @@
 # Immersive audio: current implementation and limits
 
-2026-10-12 · Revision 4 · Step prefix: **AUD-**
+2026-10-19 · Revision 5 · Step prefix: **AUD-**
 
 **Status:** AUD-01–05 are delivered. The new soundscape passed software qualification and stereo-speaker acceptance. Dedicated mixer-thread timing and target-platform qualification remain open limits. **Active plan:** [audio realism](plans/audio-realism.md) (AUD-06…13: glitches, engine voices, turbine).
 
@@ -10,7 +10,7 @@
 
 The soundscape reads simulation and view state without writing to the flight model, shared random state or trace. Aircraft audio remains the foreground cue; wind and wildlife sit behind it. Dynamic gains, filters, pause/restart and camera transitions are bounded. Legacy engine sound remains available with --soundscape=legacy.
 
-The source library contains original generated PCM with per-asset provenance. The current build has 30 soundscape sources (the turbine has whine and roar layers since AUD-10a); the procedural wildlife layer varies birds and adds distant dogs, nocturnal owls and crickets. No external recordings were required for the qualified release.
+The source library contains 30 original generated PCM sources and three edited CC0 recording loops with per-asset provenance. Since AUD-14, the wind layers use a real wind-in-trees recording, and fields with a windsock add one quiet spatial fabric source. Wind level and direction read the accepted weather sample; fabric position and inflation read the rendered sock. The fabric envelope fades with the scene mix, responds to wind above 1.2 m/s, and has a 55 m hearing limit. The 14 existing voices remain; a field can add at most one fabric player. The procedural wildlife layer varies birds and adds distant dogs, nocturnal owls and crickets.
 
 | Step | Result and evidence |
 | --- | --- |
@@ -20,6 +20,7 @@ The source library contains original generated PCM with per-asset provenance. Th
 | AUD-04 | Native gameplay captures and stereo-speaker review: [evidence](research/audio/AUD-04/README.md). Dedicated mixer timing was not qualified. |
 | AUD-05 | Wildlife variation and export qualification: [evidence](research/audio/AUD-05/README.md). Speaker feedback and the frozen regression suite are recorded there. |
 | AUD-06/07/10a | Linux Movie Maker bench; loop-wrap clicks, start pop, stuck limiter, Doppler camera-cut chirp and near-field clamp fixed; two-layer directional turbine voice: [evidence](research/audio/AUD-06/README.md), [plan](plans/audio-realism.md). Owner listening pending. |
+| AUD-14 | Downloaded CC0 wind and light fabric recordings, reproducible editing pipeline, long PCM loops, weather-driven wind and spatial windsock sound: [sources, changes and verification](research/audio/AUD-14/README.md). Speaker listening and acoustic calibration remain open. |
 
 ## Remaining qualification
 

@@ -245,17 +245,29 @@ func glow_set_mixture(value: float) -> bool:
 func glow_start() -> bool:
 	if not glow_is_active() or not _flight_ready() or failure_power_cut_active(): return false
 	var install: Dictionary=aircraft.model.propulsion.glow
+	if not GlowFlight.valid(sim.continuous,install): return false
 	var current: Dictionary=GlowFlight.unpack(sim.continuous,install)
-	if current.is_empty() or current.running or current.fuel_kg<=install.settings.starter_prime_kg: return false
+	if current.is_empty() or current.running: return false
+	var mode: int=int(sim.continuous[GlowFlight.SOURCE_MODE_INDEX])
+	var line_fuel: float=sim.continuous[GlowFlight.LINE_FUEL_INDEX]
+	var prime: float=install.settings.starter_prime_kg
+	var available: float=current.fuel_kg-line_fuel-install.unusable_fuel_kg if mode==GlowFlight.MODE_MAIN_TANK else line_fuel
+	# A starter does not refill a spent line or make unusable tank residue reachable.
+	if mode==GlowFlight.MODE_STARVED or available<=prime: return false
 	var rpm: float=maxf(sim.continuous[0],install.settings.minimum_start_rpm)
 	var started: Dictionary=GlowFlight.Life.request_start(install.profile,install.settings,current,rpm,true)
 	if not started.get("started",false): return false
 	var next: Dictionary=started.state
-	next.fuel_kg-=install.settings.starter_prime_kg
+	next.fuel_kg-=prime
+	if mode==GlowFlight.MODE_FEED_LINE: line_fuel-=prime
 	var source: Dictionary=GlowFlight.Source.evaluate(install.profile,rpm,next.air_fraction,sim.continuous[12],1.225*engine_charge_ratio(),true)
 	if not source.ok: return false
 	next.fuel_transport_kg_s=source.delivered_fuel_kg_s
-	var mass: Dictionary=GlowFlight.properties(self,next.fuel_kg)
+	var candidate: PackedFloat64Array=GlowFlight.put_state(sim.continuous,next)
+	candidate[0]=rpm
+	candidate[GlowFlight.LINE_FUEL_INDEX]=line_fuel
+	if not GlowFlight.valid(candidate,install): return false
+	var mass: Dictionary=GlowFlight.properties(self,next.fuel_kg,line_fuel)
 	if not mass.ok: return false
 	var prop: Dictionary=aircraft.model.propulsion
 	var impulse: float=prop.rotor_inertia*(rpm-sim.continuous[0])*TAU/60.0
@@ -264,8 +276,7 @@ func glow_start() -> bool:
 	for i in 3:
 		sim.state[RB.RATE+i]+=correction[i]
 		sim.state[RB.VEL+i]-=velocity_correction[i]
-	sim.continuous=GlowFlight.put_state(sim.continuous,next)
-	sim.continuous[0]=rpm
+	sim.continuous=candidate
 	sim.aux[AUX_RPM]=rpm
 	engine_running=true
 	return true
@@ -1851,7 +1862,8 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 	if not glow_is_active() or previous_values.size() != GlowFlight.SIZE + wheel_count() \
 			or candidate_values.size() != previous_values.size():
 		return Callable()
-	if not GlowFlight.mass_context(self, previous_values).get("ok", false) or not GlowFlight.mass_context(self, candidate_values).get("ok", false):
+	var before_context: Dictionary = GlowFlight.mass_context(self, previous_values)
+	if not before_context.get("ok", false) or not GlowFlight.mass_context(self, candidate_values).get("ok", false):
 		return Callable()
 	var before: float = previous_values[1]
 	var after: float = candidate_values[1]
@@ -1863,13 +1875,16 @@ func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values
 	return func(fraction: float) -> Dictionary:
 		if not is_finite(fraction) or fraction < 0.0 or fraction > 1.0:
 			return {ok = false, reason = "contact mass fraction is outside the tick"}
-		var values: PackedFloat64Array = previous_values.duplicate()
-		values[1] = lerpf(before, after, fraction)
-		values[GlowFlight.LINE_FUEL_INDEX] = lerpf(before_line, after_line, fraction)
-		var context: Dictionary = GlowFlight.mass_context(self, values)
-		if not context.get("ok", false):
+		var total: float = lerpf(before, after, fraction)
+		var line: float = lerpf(before_line, after_line, fraction)
+		# Interpolate inventories only. Discrete supply modes change at events and
+		# are not meaningful on this geometric interpolation of accepted endpoints.
+		var properties: Dictionary = GlowFlight.properties(self, total, line)
+		if not properties.get("ok", false):
 			return {ok = false}
-		var result: Dictionary = FuelSample.build(context.properties, context.tanks, context.remaining,
+		var remaining: Dictionary = {str(before_context.tanks[0].id): total-line}
+		if before_context.tanks.size()>1: remaining[str(before_context.tanks[1].id)]=line
+		var result: Dictionary = FuelSample.build(properties, before_context.tanks, remaining,
 			contact_tick, start_time + fraction * dt, true)
 		result.sample_boundary = "swept_contact_linear_inventory"
 		result.impact_fraction = fraction
@@ -3317,7 +3332,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	var anchors_end := AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
 	if anchors_end > AUX_ANCHORS:
 		# E3b1: stick/slip transitions from the committed state, with the steer the last tick used.
-		var wheel_speeds: PackedFloat64Array = sim.continuous.slice(wheel_index()) if wheel_count() > 0 else PackedFloat64Array()
+		var wheel_speeds: PackedFloat64Array = sim.continuous.slice(wheel_index(), wheel_index() + wheel_count()) if wheel_count() > 0 else PackedFloat64Array()
 		out.append_array(Ground.anchor_step(sim.state, current_landing_gear(aux), aux[AUX_SERVO + 2], ground_surfaces,
 			aux.slice(AUX_ANCHORS, anchors_end), wheel_count() > 0, wheel_speeds, _lake))
 	if lag >= 0 and lag < aux.size():

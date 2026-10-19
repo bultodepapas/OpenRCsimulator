@@ -179,9 +179,13 @@ actuator cannot be replayed against a model that removes its state. Clean histor
 recordings remain exportable and require their original source for exact replay.
 The separate **T** CSV route includes `cmd_flaps`, `flap_fraction` and `flap_deg`
 when flaps are installed. Current interactive recordings use `openrc-trace v14`
-with `mass_kg` and `cg_body_x_m`/`cg_body_y_m`/`cg_body_z_m`: these are also CG
-offsets from O. Metadata `mass_base_trace_format` identifies the underlying trace
-layout; older technical traces retain their declared versions.
+for accepted mass/CG or `v15` for finite-liquid stores and their source latch.
+The `mass_kg` and `cg_body_x_m`/`cg_body_y_m`/`cg_body_z_m` channels use offsets
+from O. Metadata `mass_base_trace_format` retains the underlying propulsion/atmosphere
+layout. Glow traces declare their v3 line/source state through `openrc-glow-trace v2`;
+readers keep explicit compatibility for historical layouts. Active fixed-wing
+Recorder callers provide the accepted `mass_properties` callback. See the
+[fuel standard](FUEL-SYSTEM.md); older technical traces retain their declared versions.
 
 The log does not collect rendering frames, audio, GPU counters, operating-system
 telemetry, calibration files or network traffic. Wall-clock observer cost is an

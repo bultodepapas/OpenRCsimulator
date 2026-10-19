@@ -140,7 +140,7 @@ func _controller_rows() -> void:
 		var binding: Dictionary = bindings.get(action_id, {})
 		if binding.get("type", "unbound") == "unbound":
 			continue
-		var prompt := Prompts.prompt(binding, family, info)
+		var prompt := Prompts.prompt(binding, family, info, profile)
 		if not gamepad and binding.get("type", "") == "button":
 			prompt = { text = tr("Button %d") % int(binding.button), texture_path = "" }
 		_row(tr(action.label), prompt.text, prompt.texture_path)
@@ -148,12 +148,12 @@ func _controller_rows() -> void:
 		if _context.has("capabilities"):
 			continue
 		var binding: Dictionary = profile.get("aux", {}).get(channel, {})
-		if binding.get("type", "") not in ["axis", "button"]:
+		if binding.get("type", "") not in ["axis", "button", "switch"]:
 			continue
-		var prompt := Prompts.prompt(binding, family if gamepad else "generic", info)
+		var prompt := Prompts.prompt(binding, family if gamepad else "generic", info, profile)
 		if binding.type == "axis":
 			prompt.text = tr("Axis %d") % int(binding.axis)
-		elif not gamepad:
+		elif binding.type == "button" and not gamepad:
 			prompt.text = tr("Button %d") % int(binding.button)
 		_row(tr({ smoke = "Smoke AUX", flaps = "Flaps", gear = "Gear request" }[channel]), prompt.text)
 	_row(tr("Pause"), Keys.label(KEY_ESCAPE))
@@ -171,8 +171,8 @@ func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, f
 		var caption := tr({gear = "Landing gear", smoke = "Smoke", flaps = "Flaps"}[channel])
 		var available := bool(capabilities.get(channel, false))
 		var aux: Dictionary = profile.get("aux", {}).get(channel, {})
-		var binding: Dictionary = aux if aux.get("type", "") in ["button", "axis"] else bindings.get(action_id, {})
-		var prompt := Prompts.prompt(binding, family if gamepad else "generic", info)
+		var binding: Dictionary = aux if aux.get("type", "") in ["button", "axis", "switch"] else bindings.get(action_id, {})
+		var prompt := Prompts.prompt(binding, family if gamepad else "generic", info, profile)
 		if not aux.is_empty() and binding.get("type", "") == "axis":
 			prompt.text = tr("Axis %d") % int(binding.axis)
 		elif not gamepad and binding.get("type", "") == "button":
