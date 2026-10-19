@@ -2,6 +2,12 @@
 
 2026-10-19: [UI-03-R1 — window-close trace preservation and runtime audit](../visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/README.md). Actual Windows close reproduction, save-failure/Workshop regressions, scoped verification and explicit remaining golden/performance gates.
 
+## UI-01-R1 — Fly directly into flight, 2026-10-19
+
+Home's airplane Fly action now resumes the accepted session directly when controller readiness is verified. The deferred handoff samples without advancing incremental throttle, preserves the selected launch power, and yields to an explicit pause or a newer flight route. Unverified or unavailable controllers still show recovery; helicopter startup retains its existing flow.
+
+Native Windows Godot 4.7.2 headless checks passed `test_controller_pause_recovery.gd` (59/59, now including direct Fly, runway idle and advancing ticks without Continue), `test_controller_menu.gd` (48/48) and `test_ui_input.gd`. All three changed scripts passed `--check-only`. `test_ui_home.gd` passed its launch assertions but retained 37 layout failures, also reproduced with the pre-change `app_root.gd` (blob `b6f2d8937`) in the isolated imported baseline. No Home layout, physics or aircraft data changed in this follow-up.
+
 ## UI-02-R2 — restart directly into flight, 2026-10-19
 
 Airplane restarts from R, the mapped controller, Pause and the accident report now resume as soon as the accepted start and controls are ready. The shell samples controller readiness without advancing simulation or incremental throttle. An already armed radio retains readiness under unchanged device/profile ownership; low-throttle gates still apply to device/profile and focus recovery. Rate throttle uses the selected launch power, including runway idle. Unready, invalid or disconnected controls and rejected starts retain the visible recovery menu. Helicopter restart behavior is unchanged.

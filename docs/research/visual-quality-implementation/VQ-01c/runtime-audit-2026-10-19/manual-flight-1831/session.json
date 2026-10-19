@@ -1,0 +1,34 @@
+{
+  "started_utc": "2026-10-19T23:31:20.281621+00:00",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--log-file",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-recordings\\20261019-183120\\engine.log",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\manual-flight-profiler\\entry.gd"
+  ],
+  "git_head": "21ad34754447dd5c66e95ae926de80134059b17e",
+  "git_status": "M app/tests/test_aircraft_light_control.gd\n M app/tests/test_controller_pause_recovery.gd\n M docs/FIRST-LAUNCH.md\n M docs/MENU-PLAN.md\n?? docs/research/aircraft-editor/AE-03a/\n?? docs/research/field-world/FW-35c/",
+  "os": "Windows-10-10.0.26100-SP0",
+  "cpu_logical": 24,
+  "cpu_physical": 12,
+  "limits": [
+    "GPU is whole-adapter utilization",
+    "Engine process/physics monitors are smoothed engine metrics",
+    "No GPU timestamp queries, screen recording or physics observer",
+    "Caches were recently cleared; startup can include cache regeneration",
+    "Normal focus safety and user preferences remain active"
+  ],
+  "source_sha256": {
+    "app\\main.gd": "9b70889d76625d4f390e4aa0c973527c9e8503d40dd931e9c63806073ad48e11",
+    "app\\app_root.gd": "5ab1b146bedf6b42fc1fc1c7a697b10a7159f3ef7eb89bd49014b1c32802bfa3",
+    "app\\project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+    "app\\sim\\simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d",
+    "tmp\\manual-flight-profiler\\entry.gd": "da70e73095d7628b58906af47fa6b2c4c13497759886914159b6a73045de105a",
+    "tmp\\manual-flight-profiler\\observer.gd": "608ee7d243ceb61ec4ee6d4722078795589c0db09c343e5de31136a8b9c9b615",
+    "tmp\\manual-flight-profiler\\record.py": "0d8f691472571da75e849aadb666d7cd6e439e13f6bc6e0b92ef839f8b3b8f66"
+  },
+  "pid": 58572
+}

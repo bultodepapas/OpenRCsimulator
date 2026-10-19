@@ -473,3 +473,12 @@ also pass. The isolated cloud path uses less CPU, but overall FPS improvement is
 unproven and low landing FPS remains unresolved under the recorded shared-host
 and focus limitations. Physics, timestep, input response and visual quality were
 preserved.
+
+### Manual pilot recording — 18:31 Bogotá
+
+The [manual Stik flight](manual-flight-1831/README.md) retains 4K/VSync native frame,
+CPU/GPU, memory and error data from one user-controlled session. Active flight
+averages 40.61 FPS, p95 37.07 ms, with a 4.987 s callback gap while simulator CPU
+and whole-adapter GPU usage fall near zero. The waiting call remains unidentified;
+no speculative runtime fix or physics change was made. Raw data, source identities,
+the timeline and shared-host/sampling limitations are retained with the report.

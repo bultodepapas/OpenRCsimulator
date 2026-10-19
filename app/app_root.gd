@@ -663,7 +663,7 @@ func start_flight(request: Dictionary = {}) -> void:
 
 ## Fly is the explicit launch action; a ready airplane needs no second Continue action.
 func _finish_controller_launch(target: Node) -> void:
-	if flight == null or flight.session != target or screens.top() != null:
+	if not is_instance_valid(target) or flight == null or flight.session != target or screens.top() != null:
 		return # a newer route or an explicit pause takes precedence over this deferred launch
 	if not Catalog.is_rotorcraft(str(flight.get("aircraft_id"))):
 		target._poll_controller(false) # readiness only: leave staged launch throttle untouched

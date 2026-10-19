@@ -24,6 +24,8 @@ These test builds have no trusted developer signing/notarization. If macOS refus
 
 Home selects the aircraft, landscape, language, launch, weather and lighting. Menus support keyboard/mouse and an explicitly selected gamepad; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
 
+**Fly** starts the airplane directly when its controls are ready; no extra **Continue** is needed. Unready or unavailable controls open Pause for recovery.
+
 Fresh settings select the Ugly Stik on the Club field runway. Every flight-capable catalog airplane supports this default there: stopped near the threshold, landing gear down and throttle closed. Changing airplanes keeps the runway selection. **Start: in the air** is the next option for trimmed airborne practice; saved explicit choices take precedence, and Restart repeats the selected launch. Finite-glow aircraft, including the Extra, need **F7** to start; see the [engine guide](GLOW-ENGINES.md) and [flight options](#4-settings-and-flight-options).
 
 **Landscape** cycles between **Club field**, with its runway and scenery, and **Green paradise**, a flat grass surface without scenery objects or a lake. The backdrop updates immediately and the choice is remembered. To switch during a session, use **Pause → End flight → Home**, select the other landscape, then Fly. Green uses airborne airplane starts and helicopter hover; Natural Random requires Club field. RC-car courses are separate. [Landscape details and authoring](LANDSCAPES.md).
