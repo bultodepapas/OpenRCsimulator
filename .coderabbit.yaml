@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# The GitHub App installation grants OSS access; this file controls reviews.
+language: en-US
+early_access: false
+enable_free_tier: true
+tone_instructions: >-
+  Be concise. Prioritize reproducible correctness, numerical stability,
+  regressions and missing evidence. Explain concrete failure cases; avoid
+  speculative findings and cosmetic rewrites.
+
+reviews:
+  profile: chill
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_in_walkthrough: true
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+    auto_incremental_review: true
+    auto_pause_after_reviewed_commits: 5
+  path_instructions:
+    - path: "app/{sim,physics}/**"
+      instructions: >-
+        Apply STACK.md's kernel boundaries. Simulation state uses float64
+        scalars and packed float64 arrays; engine vector/transform types belong
+        at rendering boundaries. Check RK stage time/state, deterministic replay,
+        checkpoint identity and bounded read-only observers. Vehicle behavior
+        enters through VehicleModel contracts. Software checks do not establish
+        physical realism; intentional physics changes need explained evidence.
+    - path: "app/data/**"
+      instructions: >-
+        Apply AIRCRAFT_CONTRACT.md where applicable. Aircraft v2 quantities
+        require value, unit, kind and source; invalid data cannot fly. Review
+        generated changes together with their source pipeline and provenance.
+        Do not suggest hand-editing generated physics or geometry.
+    - path: "app/tests/**"
+      instructions: >-
+        Check that tests exercise observable behavior and meaningful numerical
+        invariants. Golden flight changes require an intentional, explained
+        physics change. Preserve the narrow documented pending physical checks;
+        do not broaden exemptions to make tests pass.
+
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "**/AGENTS.md"
+      - "STACK.md"
+      - "AIRCRAFT_CONTRACT.md"
+
+chat:
+  auto_reply: false
+
+issue_enrichment:
+  auto_enrich:
+    enabled: false
+  planning:
+    enabled: false
+    auto_planning:
+      enabled: false
