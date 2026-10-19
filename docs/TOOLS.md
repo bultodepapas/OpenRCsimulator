@@ -29,6 +29,8 @@ Inspect exit status **and** engine errors in logs: Godot can report runtime scri
 
 Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js prototype. To reproduce the Linux app CI job with Docker and `act`: `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
 
+Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.playwright-mcp/` for browser sessions. Retain accepted evidence under `docs/research/` or `docs/media/`. Local cleanup must preserve source deliveries, `references/`, tool binaries/environments and registered worktrees (`git worktree list`), including those nested in scratch directories.
+
 ## App and release commands
 
 | Purpose | Command | Scope |

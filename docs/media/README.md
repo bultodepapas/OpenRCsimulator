@@ -19,6 +19,8 @@ Status: refreshed 2026-10-16 from source commit `404bb1bfd225f25159a03d60dfebdf8
 | P-51D Mustang 1/4 | [View](p51d-mustang.png) |
 | Turbo Lumber Evolution | [View](turbo-lumber-evolution.png) |
 
+Website review captures live in [site/](site/): eight WEB-06 partner views (1280×900 and 390×900, English/Spanish, day/night) and two support-strip views. [The website guide](../../site/README.md#web-06--manufacturer-acknowledgments-2026-10-17) owns their verification record. They are separate from the simulator media manifest above.
+
 ## Reproduce
 
 From the repository root on Linux with Xvfb and Mesa:

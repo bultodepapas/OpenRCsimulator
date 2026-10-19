@@ -3,9 +3,11 @@ dist/
 # Godot editor cache and downloaded tool binaries
 .godot/
 .tools/
-# Local browser sessions and scratch outputs. Retain accepted evidence under docs/research/.
+# Local browser sessions and scratch outputs. Retain accepted evidence under docs/.
+/.playwright-cli/
 /.playwright-mcp/
 /tmp/
+/output/
 # Third-party plans, scans and CAD files: reference only, licenses unknown. Never commit.
 # Anchored to the repository root: a `references/` folder inside docs/research/ (licensed, attributed files) is tracked.
 /references/

@@ -1,258 +1,156 @@
-# Fuel, mass and balance plan
+# Fuel system audit standard and completion plan
 
-**Date:** 2026-10-19. **Status:** active. FUEL-00…04 delivered; D1–D8 adopted as recommended on 2026-10-19 (owner: "procede con la implementación"; [DECISIONS](../../DECISIONS.md)). **Owner:** physics track, subtrack with prefix `FUEL-` (D1), registered in the [documentation map](../README.md#tracks-plans-and-step-ids). **Steps:** FUEL-00…FUEL-14. **Evidence:** [FUEL-00 audit and sources](../research/fuel-systems/FUEL-00/README.md); reproducible scripts in [`research/fuel-systems/FUEL-00/`](../../research/fuel-systems/FUEL-00/).
+**Updated 2026-10-19. Owner:** physics, subtrack `FUEL-00` through `FUEL-14`. **Status:** active; FUEL-00 through 04 delivered, 05 through 07 partially integrated, 08 through 14 open. This is the single completion plan for fuel, mass and balance. The [aircraft contract](../../AIRCRAFT_CONTRACT.md) remains authoritative for accepted fields and frames. The [review evidence](../research/fuel-systems/FUEL-00-R1/README.md) identifies the audited commit, commands and reproduced defects. The Word document beside that evidence is a dated export of this Markdown, not another editable standard.
 
-**Owns (proposed):** this plan, `docs/research/fuel-systems/`, `research/fuel-systems/`, the shared fuel-property registry and energy-store loader with their tests, and the mass/balance report tool.
+## 1 Conclusion and scope
 
-**Does not own:** `app/physics/glow/` (NITRO), `app/physics/turbine.gd` and AV-10 (Ventage Jet), contract/schema files (AS; co-edited per step), Workshop (AE), failures (EM), crash/economy (CR), HUD/AUD/menus, kernel files `simulation.gd`, `vehicle_model.gd` and `mass_inventory.gd` (physics/SF), and each aircraft's generator (its aircraft owner). Every step below names its co-owner. Generated aircraft data changes only through its generator.
+The shared mass kernel and the finite glow installation provide a sound foundation. The system is not yet complete across the fleet: gasoline and kerosene still have prescribed mass, the glow adapter does not consume the new tank contract fully, and crash reporting and restored-session fill settings contain reproduced inconsistencies. Complete those seams before adding more fuel behaviour.
 
-## 1. Goal
+This plan covers glow two-stroke and four-stroke, gasoline premix, turbine kerosene, and the mass accounting of smoke liquid. It standardizes existing configurations and the admission of future aircraft. Battery electrochemistry stays with BAT; its pack mass remains constant. Helicopter and ground-vehicle adoption stays behind their own gates. Dynamic slosh, fuel temperature dynamics, foaming, vapor and fire simulation are outside this completion scope.
 
-Make fuel weight, tank position and fuel burn behave like a real RC airplane for glow and gasoline engines, and give kerosene turbines, smoke oil and later ground/rotor vehicles the same contract. Concretely:
+Use three separate acceptance labels: **software verified**, **evidence constrained**, and **physically validated**. Passing tests establishes only the first. Manufacturer capacities and borrowed engine data constrain estimates; they do not identify an installed aircraft. Physical validation requires measurements with uncertainty under FUEL-13.
 
-1. Fuel mass is volume × density of the actual blend at a stated temperature, from one registry.
-2. Each tank has a declared position, size, capacity, unusable residue and empty shell; liquid and shell are separate items.
-3. Burn changes mass, CG and full inertia continuously; every consumer (dynamics, contacts, HUD, crash, economy, logs) reads the same live sample.
-4. Balance is defined like a real manual: the plan CG at a declared fuel state, an optional CG range at that state, and a positive static margin at every fill from full to empty.
-5. Engines drain what they deliver. Feed depends on the specific force at the tank and carburetor, including rotation. The tank stops feeding at its unusable residue, not at the last gram.
-6. One law for every family; family-specific parts stay with their owners.
+## 2 Audit of the current tree
 
-Acceptance has the same three levels as the [turbine plan](turbine-realism.md#1-objective-and-definition-of-realism): **software verified** (equations, units, events, replay), **evidence constrained** (sourced densities, capacities, consumption and placement, with uncertainty), **physically validated** (weighed full/empty airplane, measured burn per flight). Software checks never close the physical level.
+The fuel audit baseline is commit `903d0b444` on 2026-10-19, initially clean. Unrelated documentation and cleanup changes appeared during review and were preserved. The baseline includes recent FUEL, BAT and aircraft integration changes. Historical [FUEL-00](../research/fuel-systems/FUEL-00/README.md) numbers describe an earlier tree; they must not be presented as today's fleet. Source locations and complete reproductions are in [FUEL-00-R1](../research/fuel-systems/FUEL-00-R1/README.md).
 
-Out of scope: slosh dynamics, fuel temperature dynamics, fire (CR-35), engine tuning (NITRO/AV) and new aircraft.
+### 2.1 What is implemented
 
-## 2. What exists on 2026-10-19
+The registry contains seven components and three blends, with GDScript and generator readers. The v2 loader accepts `fuel_system.tanks`, stable inventory references, capacity and unusable volumes, fuel-state balance and an optional CG range. `MassInventory.prepare_reference/evaluate_reference` and `FixedDatumBody.derivative` implement the shared fixed-datum law; `glow/fuel_mass.gd` is a compatibility adapter.
 
-| Mechanism | State | Where |
-| --- | --- | --- |
-| Variable mass, CG, inertia | Glow Stiks only. One fixed-shape tank, uniform density scaling, co-moving efflux, body datum at the initial wet CG. Independently verified: momentum is conserved to 1.8e-5 kg·m/s at 240 Hz, versus 8.5e-2 without the datum correction | `app/physics/glow/fuel_mass.gd`, `flight.gd:226` |
-| General resource kernel | `MassInventory`: dry parts plus resources with capacity, stable IDs and tensor checks. Runtime never calls `prepare`/`evaluate`; it agrees with `FuelMass` to 1e-16 | `app/physics/mass_inventory.gd` |
-| Kernel hook | Open-system stage derivative in `VehicleModel` | `app/sim/simulation.gd:236`, `app/sim/vehicle_model.gd:27` |
-| Consumption | Glow: per-cycle air law (2T/4T). Turbine: `fuel_flow` table, telemetry only. Gasoline: none | `two_stroke.gd`, `four_stroke.gd`, `turbine.gd:188` |
-| Feed | Glow: hydrostatic head along the specific force plus estimated drive pressure. No rotation, pickup or unusable fuel | `app/physics/glow/fuel_feed.gd` |
-| Exhaustion | Glow: bracketed to 1e-12 s; the engine stops on the last gram | `lifecycle.gd:491-495` |
-| Contract | Fuel is a generic inventory item with an `energy_source` tag. Energies are `prescribed_fuel` or `finite_glow_fuel`. The glow tank is bound by item name | `aircraft-contract-v2.json:180-194`, `installation.gd:250` |
-| Balance | Loader requires `plan_cg` to match the inventory CG at the declared state. No range; the fuel state is free text, explicit only for the Extra | `aircraft_data.gd:338-414` |
-| Start and reset | Always the declared fill (half tank); reset refuels | `flight_session.gd:2710-2714` |
-| Measurement | VAL-5a weighing and VAL-6a swing reducers already record fuel state | [weighing](../../research/validation/weighing/README.md), [inertia](../../research/validation/inertia/README.md) |
+Five finite glow Stik configurations burn fuel and update stage-local mass, CG and inertia. Their tanks now start full: 350 ml for the 55AX and 61FX variants and 220 ml for the FS-64V. The session exposes `mass_properties()`, the HUD uses live mass, crash severity/effective mass use live properties, and `.orfl` records mass and CG. Home offers 25, 50, 75 and 100 percent; the session API accepts a fraction in `(0, 1]`, and reset uses the selection. These are implemented slices of FUEL-05, 06 and 07, not closure of all their original gates.
 
-Fleet, from [`static_margin.out.txt`](../../research/fuel-systems/FUEL-00/static_margin.out.txt). Full tank = twice the declared fill; neutral points are the repository's own estimates.
-
-| Aircraft | Fuel, burn | Declared fill | Tank ahead of CG | CG shift full→empty | Static margin full / declared / empty (% MAC) |
-| --- | --- | --- | ---: | ---: | --- |
-| Stik glow 55AX / 61FX / FS-64V | Glow, finite | 0.12 kg = "half tank" | 221 mm | +18 to +21 mm | 7.0 / 3.8 / **0.3–0.7** |
-| Base Stik `jensen_ugly_stik_60` | Glow, fixed | 0.12 kg | 221 mm | +18 mm | 6.7 / 3.8 / 0.7 |
-| Extra 300S .60 | Glow 61FX, fixed | 0.146 kg (355 ml tank) | 138 mm | +12 mm | 16.4 / 14.5 / 12.5 |
-| P-51D 1/4 | Gasoline DA-120, fixed | 0.37 kg (1 l tank) | 327 mm | +11 mm | 8.3 / 7.2 / 6.1 |
-| Ventage Jet | Kerosene, fixed | 1.28 kg (3.2 l tank) | 190 mm | +42 mm | 13.7 / 8.5 / **2.1** |
-| Synthetic electric Stiks | None | Carry glow "fuel (half tank)" donor items | — | — | — |
-| Timber | LiPo | Well-formed inventory reference | — | 0 | — |
-
-## 3. Audit findings
-
-Full evidence, file references and reproduction commands are in [FUEL-00](../research/fuel-systems/FUEL-00/README.md#5-findings).
-
-| ID | Priority | Finding | Fixed by |
+| Current configuration | Tank and authored fill | Runtime consumption | Remaining work |
 | --- | --- | --- | --- |
-| F01 | P0 | Stik glow balance is defined with a half tank. The empty-tank static margin falls to 0.3–0.7 % against the 43.5 % c neutral-point estimate, so every glow flight ends nearly neutral. The Great Planes and Top Flite manuals balance with an empty tank | D3, FUEL-05 |
-| F02 | P0 | Ventage Jet: SebArt's 240 mm is applied at half tank, and the empty tank moves the CG to 263 mm, aft of the manual's 260 mm aft limit (margin 8.5 → 2.1 %). The Krill 2.1 m manual (same tank bay) gives 240 mm full and 260 mm with landing fuel, which implies a tank about 70–90 mm ahead of the CG, not the modelled 190 mm | D3, AV-10c with FUEL-05 |
-| F03 | P0 | Fuel quantity is inconsistent: 0.12 kg vs "150 ml" vs a 225 ml fuel box vs an "8–10 oz" tank vs the 350 cc the manuals recommend. "Usable premix" is the half-tank mass; a full tank cannot be represented | FUEL-03, FUEL-05 |
-| F04 | P0 | Glow density has four values: 0.80, 0.82, about 0.857 (profile) and a hard-coded 0.8 in the HUD, which overstates volume by 7 % | FUEL-01, FUEL-02 |
-| F05 | P0 | Wet mass after burn is still used by the HUD load factor, crash severity/effective mass/wreck mass, crash fuel stain and economy; the trace has no live mass or CG | FUEL-06 |
-| F06 | P1 | NITRO-61FX README flows are ×0.76 low (the calibration mirror includes 2T trapping; runtime does not), so its endurance is about 30 % optimistic | FUEL-01 (NITRO) |
-| F07 | P1 | Two mass kernels for one law (`FuelMass`, `MassInventory`) | FUEL-04 |
-| F08 | P1 | Two datum conventions: glow uses the initial wet CG; AV-10b proposes a dry datum | D2, FUEL-04 |
-| F09 | P1 | Contract gaps: no tank object; tank bound by name; generator selects the fuel item by array index `inv[6]`; template fuel item lacks `energy_source`; 5 kg per-item cap | FUEL-01, FUEL-03 |
-| F10 | P1 | No finite fuel for gasoline or kerosene; the glow profile contract cannot express gasoline | FUEL-08, AV-10 |
-| F11 | P1 | No CG range; the fuel state of `plan_cg` is implicit except for the Extra | FUEL-03 |
-| F12 | P1 | Tanks and liquid are point masses (`size [0,0,0]`) on every aircraft except the glow liquid and the jet | FUEL-05 |
-| F13 | P1 | Synthetic electric Stiks carry a glow engine, tank and fuel as donor mass, without IDs or a battery | FUEL-05 (D7) |
-| F14 | P1 | Feed: fill is measured against initial fuel, not capacity; the fuel centroid is fixed while the feed law lowers a free surface; no rotational acceleration (20 % g at the tank at q = 3 rad/s); no pickup, unusable fuel or line run-on | FUEL-09 |
-| F15 | P1 | Fill cannot be chosen at start; reset always refuels to the declared fill | FUEL-07 |
-| F16 | P2 | Workshop `weight_multiplier` also scales the fuel; Workshop transforms are disabled for finite glow | FUEL-11 (AE) |
-| F17 | P2 | Ventage Jet's 1.3 l smoke tank is not in the inventory; full it would move the CG 16 mm forward | FUEL-05 (AV, SM) |
-| F18 | P2 | Economy prices fuel on the Stiks only | FUEL-10 (CR) |
-| F19 | P2 | No fuel gauge, low-fuel warning, lean-out cue or fuel-system failure; only `glow_fuel_cut` exists | FUEL-10, EM-15/16 |
-| F20 | P2 | Nitro truck keeps body mass fixed while its fuel state falls; the X-Cell .60 helicopter has no fuel | FUEL-14 (RCV, HELI) |
-| F21 | P1 | FS-64V flow looks low: 13–17 ml/min at full throttle, against 16–18 ml/min mixed from its manual and 20 cc/min at full throttle for the similar Saito FA-62B | FUEL-08 (NITRO) |
-| F22 | P1 | Stik tank "8–10 oz" is below the 350 cc the 55AX/61FX manuals recommend (220 cc for the FS-64V) | FUEL-05 |
+| Five finite glow Stiks | 350 or 220 ml, full | Finite glow | ID-based installation binding, unusable residue and feed, full evidence |
+| Base Stik | 350 ml, half | Prescribed | Keep reference role explicit; qualify a finite product replacement |
+| Extra 300S | 355 ml, half | Prescribed | Install finite glow through NITRO |
+| P-51D | 1 l, half | Prescribed gasoline | Qualified gasoline consumption adapter |
+| Ventage Jet | 3.2 l, half | Flow telemetry; mass prescribed | AV depletion, hopper, balance and smoke-store accounting |
+| Electric Stik specimens | Donor inventory | No liquid consumption | Neutral ballast IDs or real motor and pack inventory |
+| Timber and optional finite pack | Battery inventory | BAT owns energy | Include nested pack configuration in fleet mass-report coverage |
 
-What already works and must be preserved: the glow datum law and moment transfer, live-CG contacts, exhaustion localization, reset refuel, the trace's fuel-never-increases check, the Extra generator's dry-then-fuel balance, and Timber's inventory pattern.
+Nine top-level aircraft files declare tanks. The mass report covers 14 top-level inventory-bearing files; the nested Timber pack configuration is omitted. Only the Extra declares a CG range. Tank declaration does not itself enable consumption. Current reported empty Stik static margin is 3.835 percent MAC, rather than the historical 0.3 to 0.7 percent; the neutral points remain estimates.
 
-## 4. Target physical model
+### 2.2 Open findings and disposition
 
-### 4.1 Fuel properties
+P1 blocks consistent software behaviour or the common standard; P2 blocks qualification or complete integration. Historical findings F01 through F22 remain in FUEL-00 as dated evidence.
 
-One registry of fuel blends. Each entry lists its components with volume fractions and per-component density at a reference temperature, each with a source, plus an optional measured-density override. The temperature slopes are about −0.94 kg/m³/K for methanol-based glow, −0.92 for gasoline and −0.74 for kerosene.
+**A1 P1 Crash remaining fuel is inconsistent.** At a production glow crash with 25 percent remaining, `energy_sources.glow_fuel` is 0.0749805 kg, while `report.fuel_kg` and the kerosene scalar passed to crash effects are zero. The director initializes that scalar from kerosene only. The glow stain reads the correct source dictionary; this does not prove a missing stain. Close under FUEL-06-R1 with typed fuel reporting, consistent consumer inputs and a production-path regression.
 
-Glow blend density is computed from components, as `profile.gd` already does: 72/10/18 methanol/nitro/castor gives 856.9 kg/m³. Fuels with 15 % or 30 % nitro, or synthetic oil, reach 874–937 kg/m³. Each blend carries ±2 % uncertainty (Menon's measured blend is 1.6 % above ideal mixing). Gasoline premix (747–751 kg/m³ at 745 kg/m³ gasoline; batch spread 715–775) and kerosene with 5 % oil (810 kg/m³) are registry entries.
+**A2 P1 Restored fill preference and provenance are incomplete.** A half-fill checkpoint restores its actual fuel correctly into a fresh full-default session, but the destination retains `fuel_start_fill = 1`. Its trace omits the half-fill selection and reset loads 0.299922 kg instead of 0.149961 kg. This does not show a failure of exact state continuation. Close under FUEL-07-R1 by declaring and testing a restore/reset policy, serializing the launch selection or recording it as unknown; never infer it from remaining fuel.
 
-Fuel mass is always `volume × density`; no file writes a density in prose. Values and sources are in [FUEL-00 §6](../research/fuel-systems/FUEL-00/README.md#6-external-sources).
+**A3 P1 Tank validation and the glow installation use different identities.** The contract binds liquid and shell by ID, but the glow installation still finds `fuel_inventory` by exact display name and prepares capacity from the authored liquid mass. It does not apply normalized capacity, pickup or unusable mass. A renamed item can satisfy the tank contract while breaking the installation. Close ID/capacity binding in FUEL-05-R1; close delivered feed and residue in FUEL-09.
 
-### 4.2 Tank and energy store
+**A4 P1 The old plan confuses balance CG and solver datum.** D2 and older FUEL-04 prose promise a datum at `plan_cg`; the current contract, loader and installation retain the authored inventory CG. Empty-tank balancing does not move that reference. Section 3.2 and the [decision record](../../DECISIONS.md) supersede that wording without rebasing runtime state.
 
-An energy store binds by ID to its shell inventory item and owns:
+**A5 P1 The proposed rotational feed formula had mixed signs.** Existing feed implements apparent gravity as minus non-gravitational force divided by mass and omits rotation. The old proposal added point-acceleration terms to that apparent gravity. Instead derive it from gravity minus the complete inertial acceleration at the liquid point. A rotating-point fixture must establish the signs before FUEL-09; this concerns the proposal, not an existing rotational implementation.
 
-- fuel blend ID;
-- capacity volume and unusable volume;
-- liquid geometry: box size and centroid (cylinder later if a tank needs it);
-- pickup point (JSBSim's `drain_location`);
-- pickup type (`clunk`, `felt_clunk`, `fixed`, `hopper`) and feed type (`suction_muffler` for glow, `pumped_diaphragm` for gasoline, `ecu_pump` for turbines);
-- start fill fraction, overridable per session;
-- optionally, a feed `priority` for multi-tank and hopper layouts.
+**A6 P2 Fleet migration and its evidence are incomplete.** FUEL-05 snapshots exist, but its linked README is absent. Synthetic electric donor IDs, declared-state CG ranges, Ventage hopper/smoke accounting and finite operation of the remaining combustion fleet stay open. Reconcile the Ventage shell/liquid centroid separation against an explicit physical interpretation. Its smoke tank is currently authored empty. Do not invent liquid to fill it or label estimated placements as measured.
 
-Field meanings follow [JSBSim's `FGTank`](https://github.com/JSBSim-Team/jsbsim/blob/master/src/models/propulsion/FGTank.cpp) where one exists (capacity, unusable volume, drain location, priority). We use its ideas, not its LGPL code, which does not run in GDScript.
+**A7 P2 Mass-report coverage and drift enforcement are incomplete.** Its non-recursive glob omits the nested battery configuration. Registered static margins are gated, but printed `DRIFT` does not affect exit status. The informational `plan_cg_matches_inventory` compares wet inventory even for an empty-tank target, and the report does not expose the declared CG range. Close in FUEL-05-R1 with catalog-plus-supported-variant coverage, explicit declared-state results and a failing drift mode where required.
 
-**Glow tank height.** The tank height relative to the carburetor follows the selected engine's manual, and the three O.S. rules differ:
+**A8 P2 Depletion event units leak from the battery helper.** Glow renames `battery_exhausted` to `fuel_exhausted` while retaining `charge_residual_c`. Normalize the fuel payload to a declared mass unit and test the complete schema under FUEL-08. Keep the reusable event locator.
 
-| Engine | Rule |
-| --- | --- |
-| FX | Tank top 5–10 mm above the needle |
-| 55AX | Tank center level with the carburetor |
-| FS-64V | Tank center 10 mm below the needle |
+**A9 P2 Registry/profile equality is tested but not enforced at loading.** Glow profiles still derive density from embedded component data. Current tests establish agreement with the registry; the runtime installation does not reject a divergent blend. Close this seam with AS/NITRO in FUEL-05-R1, including a mismatch refusal and source-identity test.
 
-**Liquid shape.** The liquid stays a fixed-shape, uniform-density distribution (`fixed_geometry_uniform_density_v1`). Against a settling free surface it is off by about 0.3 mm of CG in level flight on the Stik, and by at most 4.9 mm under acceleration. A quasi-static centroid (JSBSim-style drain interpolation, or free-surface tilt under load) is evaluated only in FUEL-09 (D6).
+**A10 P2 Qualification evidence is not reproducible end to end.** Read-only generator checks flag stale Ventage derivation text and Timber physics output. FUEL-05 FT comparisons contain blank commit identities and an invalid 55AX trim result. Preserve these as findings, not accepted flight-feel proof. Resolve or classify each under its owner before FUEL-05/12 closure.
 
-### 4.3 Mass properties and datum
+Fourteen focused native Windows tests passed with 4,626 checks and zero failures. Both A1 and A2 still reproduce. Ordinary CSV traces still lack live mass/CG although `.orfl` has them. No full-suite, target-GPU, pilot or physical-validation result is claimed by this audit.
 
-All finite resources go through `MassInventory`: dry parts plus resources, about one fixed datum. The open-system derivative (`FuelMass.datum_derivative`, verified) moves to a shared helper keyed by law ID. Co-moving efflux needs no dm/dt or dI/dt terms; adding `-İω` would create spin-up. The fuel's own momentum flux is about 0.04 N against 30 N of thrust and stays out.
+## 3 Common standard
 
-The datum must not move with the fuel fill. Recommendation for D2: the datum is the declared `plan_cg` point, a fixed geometric point. For existing glow Stiks this equals today's initial wet CG, so their law output is unchanged. With `plan_cg` at the empty tank it is also the dry CG that AV-10b proposes.
+### 3.1 Data and ownership
 
-Each accepted tick publishes one mass-properties sample (mass, CG, inertia, fuel per store, law ID). Consumers read it and never recompute it.
+Use `openrc-aircraft v2` quantities `{value, unit, kind, source}`. Every tank has a stable ID, registry blend ID, liquid and shell inventory IDs, capacity and unusable volume in `l`, pickup and feed. Preserve the contract's current enums. The liquid item carries the matching energy-source family, position and nonzero box dimensions; the shell is separate dry mass. The current schema has no authored `start_fill`, pickup-coordinate, line-volume or feed-priority field: add those only through a reviewed versioned extension when a consumer is ready.
 
-### 4.4 Consumption
+Generate liquid mass once from selected authored volume and registry density. The loader derives normalized start fill as liquid mass divided by capacity mass. Never duplicate density in aircraft prose or select a liquid by name or array index. Mass, capacity and geometry must agree, with finite values and positive usable capacity. A zero unusable volume is an explicit estimate, not evidence that every drop can be delivered. Qualify shell geometry or disclose the point-mass approximation separately from liquid geometry.
 
-The tank drains the delivered flow, not the commanded flow.
+The registry owns blend composition, reference density, temperature and provenance. NITRO owns glow consumption/feed/lifecycle; P51 owns its gasoline adapter; AV owns turbine ECU/pump/hopper. Aircraft generators own inventory/balance; AS owns schema and normalization; physics owns mass and state contracts. UI, HUD, AUD, CR, EM and AE consume those contracts within the [track boundaries](../README.md#tracks-plans-and-step-ids). No vehicle-specific branch enters `Simulation`.
 
-- **Glow:** existing per-cycle law (NITRO). Measured glow BSFC is about 1.39 kg/kWh at peak power, 2.4–3× that of small gasoline two-strokes. The 4T flow needs review (F21).
-- **Gasoline:** first a minimal law on the existing propulsion: delivered flow = brake-specific consumption × shaft power, with an idle floor and gasoline premix chemistry.
-  - The measured BSFC band is 406–580 g/kWh.
-  - For the P-51's installed 6.9 kW this gives 63–90 ml/min at full throttle, or 11–16 min per litre. Desert Aircraft quotes 71 g/min for the DA-100 at 6,000 rpm.
-  - A full gasoline engine family like glow is a separate owner decision (D5).
-- **Turbine:** AV-10a.
+### 3.2 Frames mass and balance
 
-Consumption evidence carries its kind: `wot_flow`, `idle_flow`, `bsfc_map` or `mixed_endurance`. A mixed-flight endurance figure is never converted into a full-throttle flow. Every model output is labelled as model output and compared with manufacturer figures in the evidence. No idle flow has been published for glow or gasoline engines, so idle flow stays estimated.
+**The solver datum O is the CG of the authored reference inventory, fixed for that loaded model.** It does not change with burn, session fill or reset. The balance target `plan_cg` is a structural point checked at `balance.fuel_state`; it can differ from O. A full-tank reference inventory makes O a full-tank CG; a half-tank reference makes it that configuration's half-tank CG. Neither is automatically the dry CG. This clarifies D2 while preserving its requirement for a fixed reference.
 
-### 4.5 Feed, pickup and unusable fuel
+Use the [contract's coordinate conversion](../../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units). Geometry, gear, hull, thrust and intake arms remain relative to O. Stages obtain total mass, live CG offset and the full tensor about the live CG from one prepared inventory and the stage's resource masses. Contacts use arms from that live CG. Rendering converts at the boundary; simulation retains float64 arrays.
 
-The specific force at a point is `f = -F_nongrav/m + ω̇×r + ω×(ω×r)` for the tank and the carburetor.
+Use the existing co-moving-efflux law and momentum/refinement fixtures. Do not add mass-derivative spin-up terms to it. Internal transfer conserves total mass while changing first moment and inertia. A future non-co-moving discharge must declare its momentum flux and validation; it cannot silently reuse the present assumption.
 
-- **Glow (suction):** keep the hydrostatic head law, add the rotational terms, measure fill against capacity, and share the tank geometry with 4.2.
-- **Clunk pickup:** follows `f`. It feeds while the liquid covers it along `f` and the store is above its unusable volume. Otherwise the line volume runs out, then the engine leans and stops through the existing lifecycle.
-- **Pumped gasoline:** head-insensitive inside a declared pressure band. The DA-120 manual says "the tank can be mounted almost anywhere".
-- **Hopper/UAT:** the engine starves only when the hopper is empty. Main-tank depletion alone is not a fuel cut.
+Check a manual CG range only at the declared balance state. The adopted propeller default is empty tanks; jet balance needs a full hopper and empty main tank, which current `empty_tanks` cannot express separately. Extend that state through AS/AV before claiming it is enforced. Report full, authored, session-start, reserve and empty CG and inertia. Require positive static margin against the disclosed neutral-point estimate throughout the permitted fill envelope; this screens an estimate, not physical handling. For one fixed-centroid tank and fixed neutral point, endpoints bound longitudinal CG. For independently varying tanks check envelope vertices or provide an equivalent bound. Never rebalance hardware per fill.
 
-All starvation is deterministic: no probability, no bank-angle rule. Inverted flight with a working clunk keeps running. The manuals' vibration-induced foaming stays out until there is data to drive it.
+### 3.3 Flow feed and exhaustion
 
-### 4.6 Balance, CG range and stability
+Integrate delivered outflow in kg/s. Glow retains its per-cycle laws. The first gasoline adapter uses sourced BSFC times nonnegative delivered shaft power plus a disclosed idle rule; define stopped, windmilling and negative-power behaviour. AV binds its existing turbine flow data to finite stores and ECU lifecycle. Smoke liquid is a separate resource if consumption is activated; an authored empty smoke tank requires no invented liquid mass.
 
-- `plan_cg` declares its fuel state. The default is `empty`, as the Great Planes Extra 300S and Top Flite Giant P-51D manuals state ("ready to fly and an empty fuel tank"). Jets use a full hopper and an empty main tank. D3 decides per aircraft.
-- An optional `cg_range` (forward and aft limits with sources) applies at that declared state only. Manual ranges are written for the balance state: the Extra's ±9.5 mm range would put its full tank 2.3 mm ahead of the forward limit, which is normal.
-- The mass/balance report prints CG and static margin at full, start and empty for every aircraft. It gates on two things: the declared-state range, and a positive static margin at every fill against the aircraft's neutral-point estimate.
-- A generator never rebalances hardware per fill state.
+Evidence distinguishes full-throttle flow, idle flow, BSFC and mixed-flight endurance. A manufacturer's mixed-flight duration cannot directly calibrate full-throttle flow. Review FS-64V consumption under NITRO before qualification. Do not tune source data merely to make endurance pass.
 
-### 4.7 Left out, with reasons
+Derive apparent acceleration at each relevant point from gravity minus its inertial acceleration. For a rigidly fixed point relative to CG, point acceleration includes angular acceleration cross r and omega cross omega cross r; their apparent contributions have opposite signs. A fixed-datum calculation must also include the datum-to-CG acceleration correction. Test outward apparent acceleration in steady rotation, the angular-acceleration sign, level 1 g and free fall independently.
 
-Dynamic slosh is left out. A half-full 16 oz tank sloshes at about 1.7–3.2 Hz (Dodge 2000), close to RC short-period frequencies, so the case is not frequency separation. It is mass: the CG excursion is bounded at about 4.9 mm in a 3 kg airplane, and no small-aircraft slosh flight data exist. The quasi-static centroid of 4.2 is the most this plan considers; slosh reopens only if a measured flight disagrees. Fuel temperature, vapor, foaming and fire (CR-35) are also left out.
+Feed uses absolute capacity, remaining usable mass, geometry and pickup/feed hardware. Unusable residue stays onboard and contributes mass after starvation. Near-empty starvation drains a declared line/hopper volume before the lifecycle stops the source; count that liquid once. Inverted flight follows pickup coverage and apparent acceleration, not bank angle. Main-tank exhaustion need not stop a full hopper. Feed reductions are continuous where the law permits; discrete changes are explicit located events.
 
-## 5. Data standard (contract extension, opt-in)
+All RK stage queries stay pure. Located events commit nonnegative resources, typed residuals with units, stable ordering and the correct stopped/restart state. Rejected stages roll back the whole transaction. The vehicle model supplies layout and evaluators through the existing kernel contract; the kernel stays vehicle independent.
 
-Implemented in FUEL-03; the authoritative text is [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md#presence-evidence-and-defaults).
+### 3.4 Samples checkpoints and consumers
 
-- `fuel_system.tanks[]` binds each tank to its liquid and shell inventory items by id, the same pattern as BAT-09's `mount_inventory_id`. A tank also names:
-  - a registry `fuel` blend;
-  - `capacity` and `unusable` in litres;
-  - `pickup` and `feed`.
-- `balance.fuel_state` is `as_inventory` (the default) or `empty_tanks`. `balance.cg_range` is checked at that state.
-- `model.fuel_system` exposes per tank:
-  - registry density;
-  - capacity and unusable mass;
-  - start fill (liquid mass / capacity mass).
+Publish a consistent accepted-state mass sample: tick/time, total mass, live CG relative to O, full inertia/inverse, per-store remaining/usable quantities, blend identity and law identity. This is a target extension: today's `mass_properties()` is a pure single-tank query with fewer fields, not a cached per-tick bus. Persistent caches require complete invalidation.
 
-**Rules enforced by the loader:**
-1. Density comes from the registry only.
-2. Every reference uses an id.
-3. Liquid mass ≤ capacity × density.
-4. The liquid box holds the capacity, so a declared tank cannot be a point mass.
-5. No liquid-fuel item exists outside a tank.
-6. The plan CG lies in `cg_range` at the declared state. Full and empty fills are reported by the mass/balance report, not range-checked.
-7. Electric aircraft declare no tanks.
+HUD load factor, CG marker, crash/contact effective mass, wreck mass, fuel exposure/pricing, trace and `.orfl` diagnostics use that accepted state or the corresponding impact-time sample. Swept contact kinematics and mass need consistent time; label any approximation explicitly.
 
-The template carries one complete example.
+Checkpoint/replay identity includes source bytes, registry/installation laws, store layout, complete continuous/discrete feed/lifecycle state and launch-fill policy. Exact continuation needs actual remaining mass; reset and provenance also need the selected launch setting. Specify compatible legacy reads and explicit rejection of unsupported versions. Rejected restore cannot partly change a session. Keep recording read-only and bounded; reuse the [flight logging workflow](../FLIGHT-LOGGING.md), CSV exporters and free plotting tools.
 
-**Rule left to the generators (FUEL-05):** the liquid item's mass is derived from start fill × capacity × registry density, never authored twice.
+### 3.5 Admission of future aircraft
 
-## 6. Steps
+Before enabling a new combustion configuration, supply a reproducible generator; source-backed fuel family/capacity; stable shell/liquid bindings; geometry/datum; explicit balance state and sourced range or disclosed missing-range limitation; a supported finite propulsion/feed installation; and section 5 checks. A tank object alone is insufficient.
 
-| ID | Work | Co-owner | Proof / status |
-| --- | --- | --- | --- |
-| FUEL-00 | Audit of code, data, contract and plans; external sources; reproducible scripts | — | **Delivered 2026-10-19**: [FUEL-00](../research/fuel-systems/FUEL-00/README.md) |
-| FUEL-01 | Byte-identical repairs and baseline. (a) Generator selects inventory records by id, not position. (b) HUD reads the profile density. (c) Calibration mirror's 2T flow drops trapping; NITRO-61FX README corrected. (d) Template fuel item gets `energy_source`. (e) Mass/balance report, neutral-point register and stored baseline, checked in `app/test.sh` | NITRO, AS, HUD | **Delivered 2026-10-19**: [FUEL-01](../research/fuel-systems/FUEL-01/README.md). 20 fingerprints identical; generated JSON byte-identical; HUD shows 140 mL for 0.12 kg; 61FX flows 38.8/46.0/58.1 ml/min; four mutations detected |
-| FUEL-02 | Fuel-property registry and loader; glow profiles validated against it; no prose densities | NITRO | **Delivered 2026-10-19**: [FUEL-02](../research/fuel-systems/FUEL-02/README.md). `openrc-fuel-registry v1` (7 components, 3 blends), GDScript and Python readers; 30 + 3 checks; glow profiles equal the registry blend (856.92 kg/m³); two loader mutations detected. Prose densities leave the aircraft data in FUEL-05 |
-| FUEL-03 | Contract: `fuel_system.tanks[]` bound by inventory id (BAT-09 pattern), `balance.fuel_state`, `balance.cg_range`; schema, loader, template and [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) text | AS | **Delivered 2026-10-19**: [FUEL-03](../research/fuel-systems/FUEL-03/README.md). 27 checks (19 refusals by reason), two mutations detected, 20 fingerprints identical, offline schema agrees, template carries a tank |
-| FUEL-04 | One mass kernel: prepared fast path in `MassInventory`, shared open-system helper, glow migrated, datum per D2 | Physics/SF, NITRO | **Delivered 2026-10-19**: [FUEL-04](../research/fuel-systems/FUEL-04/README.md). `MassInventory.prepare_reference/evaluate_reference` + `FixedDatumBody`; bit-identical to `FuelMass` (0 mismatches, 20 fingerprints identical); momentum fixture 4th-order (ratio 16.0001), law error 0.0626 without the correction; cost no worse (min 17.1 vs 18.6 µs) |
-| FUEL-05 | Fleet data through generators: capacities from engine/kit manuals (F22) and start fill, registry densities, tank boxes and heights, IDs, balance state per D3, Ventage tank position re-estimated (F02), electric donor items per D7, Ventage smoke store | Stik, EX, P51, AV, SM owners | Mass/balance report before/after; every aircraft inside its range at the balance state with positive margin at full and empty; golden and FT baselines re-recorded with a written reason |
-| FUEL-06 | Publish the live mass-properties sample; HUD load factor, crash director/effective mass/wreck/fuel stain, economy and `.orfl`/trace columns read it (closes the R05-B handoff) | HUD, CR, FL | Empty-tank tests: HUD n uses live mass; crash `fuel_kg` equals the remaining fuel; log shows mass and CG every tick; replay exact |
-| FUEL-07 | Start fill per session or scenario (default per D4); reset to the selection; fill in checkpoint and replay identity; menu control | UI | Session tests at 0.1/0.5/1.0; restore after reset; old checkpoints refused with a message |
-| FUEL-08 | Finite fuel for the remaining fleet: gasoline consumption law for the P-51 (D5); Extra through the NITRO installation path; Ventage Jet through AV-10a/c; NITRO review of the 4T flow (F21). Opt-in variants first | NITRO, P51, AV | Exhaustion localized; P-51 within 406–580 g/kWh at its shaft power; glow within the manuals' mixed-flight endurance when flown on a mixed tape; figures labelled by kind |
-| FUEL-09 | Feed v2: rotational point acceleration, fill vs capacity, clunk pickup, unusable residue, line volume run-on, pumped gasoline feed | NITRO, EM | Fixtures: inverted cruise keeps running; sustained negative g near empty starves after the line volume; continuity of the feed factor; no starvation at 90° bank |
-| FUEL-10 | Presentation: fuel gauge in ml and %, low-fuel warning at an authored reserve, lean-out cue, consistent fuel pricing | HUD, AUD, CR | Overlay and audio tests; pricing rule applied fleet-wide |
-| FUEL-11 | Workshop: move/resize tank, choose fill, dry-only weight multiplier, target CG and ballast (AE-12) | AE | AE oracles; CG recomputed; fuel never scaled |
-| FUEL-12 | Flight-feel evidence: same tick/input tape at full vs empty per the [flight logging workflow](../FLIGHT-LOGGING.md); FT card at two fills | FT, FL | Trim elevator, stall speed (∝ √m), pitch response and glide differences match the hand calculation; `solver_changed`/`complete` checked |
-| FUEL-13 | Physical validation: weigh an airplane empty and full (VAL-5a) to get the tank centroid; timed burn per flight; owner's Stik if available | VAL | Raw inputs, uncertainty, configuration; model vs measurement |
-| FUEL-14 | Other vehicles on the same kernel: nitro truck mass, helicopter nitro tank | RCV, HELI | Each track's own gates; only when that track schedules it |
+Publish the evidence kind for density, placement, unusable residue, consumption and reserve. Preserve free manufacturer references and their licences instead of fabricating replacement data or assets. Estimates remain estimates after reuse. Retain prescribed-fuel specimens as named references with explicit limitations, not evidence of finite operation. Existing product routes stay supported until reviewed replacements pass.
 
-## 7. Order and first slice
+## 4 Work packages and execution order
 
-```text
-FUEL-00 → FUEL-01 → FUEL-02 → FUEL-04 → FUEL-03 → FUEL-05 → FUEL-06 → FUEL-07
-                                              ↘ FUEL-08 ∥ FUEL-09 → FUEL-10/11 → FUEL-12 → FUEL-13
-```
+Keep the original IDs and owners. Repair suffixes refine existing steps. Each package is independently reviewable and records tests and limitations beside its evidence.
 
-FUEL-04 runs before FUEL-03. The kernel works with today's glow tank data, while the battery track (BAT-09) is changing the same schema, loader and contract files on 2026-10-19. FUEL-03 starts once that work lands and reuses its inventory-binding pattern for packs. FUEL-05 is the step that changes flight behavior (D3/D4/D7). AV-10a/b/c keeps its own IDs and status; FUEL-03/04 supply the shared contract and kernel it consumes.
-
-## 8. Owner decisions
-
-All eight recommendations were adopted on 2026-10-19 ([DECISIONS](../../DECISIONS.md)). Each stays revisable; D3 and D4 change flight behavior only in FUEL-05.
-
-| ID | Question | Recommendation (adopted) |
+| ID | Status | Next work and closure evidence |
 | --- | --- | --- |
-| D1 | New `FUEL-` subtrack, or fold into NITRO | New subtrack under physics; it spans glow, gasoline, turbine, Workshop and presentation |
-| D2 | Fixed datum | `plan_cg` point. Unchanged for glow today; equals AV-10b's dry datum when the plan CG is at an empty tank |
-| D3 | Fuel state of the plan CG | `empty` for propeller aircraft, as the Extra and Top Flite P-51 manuals state; jets use a full hopper with an empty main tank. For the Ventage Jet, choose between SebArt's unqualified 240 mm and Krill's "240 mm full". For the Stik this restores about 4 % margin at empty and about 10 % at full |
-| D4 | Default start fill | Full tank for finite-fuel aircraft, with a session choice |
-| D5 | Gasoline scope | Minimal BSFC law first; a gasoline engine family only with matched data |
-| D6 | Fuel centroid | Keep the fixed shape in FUEL-04 (0.3 mm level, ≤ 4.9 mm under load). Test a quasi-static centroid in FUEL-09 and adopt it only if it changes a fixture by more than 1 mm. No dynamic slosh |
-| D7 | Synthetic electric Stiks | Keep the donor mass but rename it as neutral ballast with IDs, or give them a real battery/motor inventory |
-| D8 | Display units | ml and % by default; oz as an option (UI) |
+| FUEL-00 through 04 | Delivered foundation | Preserve [00](../research/fuel-systems/FUEL-00/README.md), [01](../research/fuel-systems/FUEL-01/README.md), [02](../research/fuel-systems/FUEL-02/README.md), [03](../research/fuel-systems/FUEL-03/README.md), [04](../research/fuel-systems/FUEL-04/README.md). R1 clarifies datum and completion scope |
+| FUEL-05-R1 | Partial | AS/NITRO/aircraft: ID/capacity/blend binding, donor IDs, balance/ranges, nested-variant reporting, drift refusal; missing evidence index, generator checks and before/after proofs |
+| FUEL-06-R1 | Partial | Physics/CR/FL/HUD: A1, crash/effects/economy consumers, impact-time sampling and versioned trace mass/CG; production tests with nonzero and exhausted fuel |
+| FUEL-07-R1 | Partial | Session/UI/FL: A2; 0.1/0.5/1.0 ground and airborne starts, reset, JSON restore and exact replay; selected or unknown provenance |
+| FUEL-08 | Open | NITRO/P51/AV: finite Extra, gasoline and turbine adapters; 4T flow review; A8 event units; exhaustion/restart and full/mixed/idle domains |
+| FUEL-09 | Open | NITRO/EM/AV: rotation signs, capacity-based feed, pickup, residue, line/hopper transfer; schema with supported consumers, conservation and deterministic starvation |
+| FUEL-10 | Open beyond glow ml display | HUD/AUD/CR/UI: ml/percent, authored reserve, low-fuel/lean-out cues and pricing; optional oz in UI |
+| FUEL-11 | Open | AE: finite-store tank/fill transforms, dry-only multiplier, target CG/ballast; identities and replay; fuel never scales with dry weight |
+| FUEL-12 | Open | FT/FL/aircraft: exact baseline replay and one candidate on the same tick/input tape; FT at full/low fill; identities, markers, CSV and report |
+| FUEL-13 | Open physical gate | VAL: empty/full weighing/CG and timed burn with configuration and uncertainty; compare model to measurement |
+| FUEL-14 | Vehicle-owned deferral | RCV/HELI: shared resource contracts with separate native/backend and vehicle qualification |
 
-## 9. Verification and evidence layout
+**First slice:** close the reproduced inconsistencies under FUEL-06-R1 and 07-R1, then complete FUEL-05-R1 contract/evidence. NITRO, gasoline and AV adapters can proceed separately under FUEL-08; FUEL-09 consumes the same stores. FUEL-10/11 follow stable interfaces. FUEL-12 qualifies each promoted configuration; FUEL-13 remains separately reported.
 
-- **Software checks per step:** analytic oracles (mass, first moment, tensor), the FUEL-00 momentum fixture, refusal tests for every contract rule, actual-session tests, replay identity, and one deliberate mutation per new rule. Run them on a disposable copy, as [AGENTS](../../AGENTS.md) requires.
-- **Fleet proofs:** fingerprints from `app/tests/fingerprint_vehicles.gd` against the exact pre-step commit. Golden flights are re-recorded only in FUEL-05/08, with the reason written down.
-- **Evidence:** `docs/research/fuel-systems/FUEL-NN/` holds the README with commands and results; scripts and data live in `research/fuel-systems/FUEL-NN/`.
-- **Report tool:** the mass/balance report, which FUEL-01 generalizes from `cg_shift.py`, runs in the suite as a non-gating report until FUEL-05 makes the range a gate.
+AV-10a/b/c and AV-05b/23/25/27/28 retain turbine ownership; NITRO retains laws/calibration. R05-B and VAL-AUD-R05/R07 handoffs require their own complete evidence, including remaining contact-event/remainder and free-rotor work. FUEL-06 alone cannot close them. AS-12/16 owns schema; AE-12/13/16/17 consumes FUEL-11; EM-15/16/21 consumes feed/mass; CR-35/37 consumes remaining stores. G4a/G4b and X-DATA-11 proposals are superseded here; per-tick rebasing is not the standard. BAT shares inventory semantics but owns battery energy. Drone fuel work is outside the present aircraft scope.
 
-## 10. Risks
+Adopted D1 and D3 through D8 remain: one FUEL subtrack, empty-tank prop balance/explicit jet hopper balance, full default for finite configurations, minimal gasoline BSFC scope, fixed liquid shape, neutral electric donor items or real hardware, and ml/percent display. D2 is clarified in section 3.2. FUEL-09 considers a quasi-static centroid only for a documented effect above 1 mm and with a consistent momentum law. Dynamic slosh stays deferred.
 
-- Golden flights, FT baselines, NITRO refinement/endurance records, R05-B contact evidence, glow identity hashes and `MASS_CONTACT_LAW` checkpoints all change in FUEL-04/05. Batch the re-records and explain each one.
-- `MassInventory.evaluate` validates on every call and runs on every RK stage; FUEL-04 must add a prepared path and bench it.
-- Several tracks edit the shared contract, session and crash files. Coordinate per step and stage only your own paths.
-- Estimated tank positions and blends must not become "measured" through reuse; FUEL-13 is the only physical step.
+## 5 Acceptance gates and evidence
 
-## 11. Coordination
+### 5.1 Software completion
 
-| Other step | Owner | Relation |
-| --- | --- | --- |
-| AV-10a/b/c, AV-05b/23/25/27/28 | Ventage Jet | Consumes FUEL-03/04; AV keeps turbine depletion, ECU, hopper and pump |
-| VAL-AUD-R05, R07 | Physics, AV | FUEL-04 is the proposed home of the shared datum and finite-resource rule |
-| R05-B handoff | Physics, CR | Closed by FUEL-06 |
-| AS-12, AS-16 | AS | FUEL-03 aligns the energy-store naming with AS-16 |
-| AE-12, AE-13, AE-16, AE-17 | AE | FUEL-11; wet-to-dry mass handled by FUEL-03/04 |
-| EM-15, EM-16, EM-21 | EM | FUEL-09 provides deterministic starvation; EM-21 detachment uses the same kernel |
-| CR-35, CR-37 | CR | FUEL-06 supplies remaining fuel and live mass |
-| NITRO-04, NITRO-2T/4T-04 | NITRO | FUEL-08/13 supply measured burn per flight |
-| G4a, G4b, X-DATA-11 | Proposals | Superseded by FUEL-04/05/07 (G4b's per-tick state shift is replaced by the per-stage fixed datum) |
-| VAL-5, VAL-6 | VAL | FUEL-13 reuses both reducers |
-| RCV-36 follow-up, HELI fuel | RCV, HELI | FUEL-14 |
+1. Schema, loader and generators agree on tank validity, blend, IDs, quantities, capacity/geometry and balance state. Rename/reorder preserves bindings. Verify fresh-checkout generation and byte/EOL identities.
+2. Independent mass/first-moment/full-tensor oracles cover empty, reserve, partial, full and asymmetric stores. Include physical tensors, co-moving momentum and convergence. Internal transfer cannot create mass.
+3. Real sessions qualify full/low-fill starts, trim, ground contacts, burn, residue, event ordering, starvation, stop and restart. Query/render order cannot alter outcomes. A failed transaction retains the prior accepted state.
+4. JSON checkpoint restore reproduces exact continuation and the declared reset/provenance policy. Changed identities are refused as specified. Incomplete/recovered logs cannot establish exact equivalence.
+5. Production HUD, crash report/effects/wreck/economy and both diagnostic formats agree with remaining-store state. Test A1/A2 explicitly, not only helper results.
+6. Run applicable generator/schema/offline and complete app checks per [TOOLS](../TOOLS.md). Keep deliberate defects on disposable copies. Qualify shared-kernel cost through paired target-machine runs; isolated tests prove neither a full suite nor performance.
+
+### 5.2 Aircraft and physical qualification
+
+Each promoted configuration retains source/configuration identity, generator diff, full/start/reserve/empty report, declared-state range check and neutral-point estimate. Re-record goldens only for explained physics changes. Unaffected vehicles and reference specimens preserve required trajectories; changed source identities need explanation even when values are equal.
+
+Follow the [flight logging workflow](../FLIGHT-LOGGING.md): retain baseline `.orfl`, prove exact replay, then compare one candidate on the same tick/input tape. Check `solver_changed` and `complete`. Compare trim, pitch response, glide and stall changes with predictions and stated assumptions; square-root mass scaling applies only to a controlled same-CLmax/atmosphere comparison. Candidate replay and FT predictions do not establish measured realism.
+
+Close physical validation only after actual empty/full weighing, CG and burn observations with calibration and uncertainty reach the VAL reducers. Software completion may ship with that gate explicitly pending. The track stays active until required aircraft software packages close and remaining physical/other-vehicle scope is recorded.
+
+## 6 Sources and maintenance
+
+[FUEL-00-R1](../research/fuel-systems/FUEL-00-R1/README.md) owns this audit's anchors, test logs and defect probes. The [FUEL-00 manifest](../research/fuel-systems/FUEL-00/sources.json) retains manuals, density tables, measurements and licence/access records. Historical values are not current calibration. FUEL-01 retains the 61FX mirror repair; FUEL-02/04 retain registry and momentum proofs.
+
+[JSBSim's tank reference](https://jsbsim-team.github.io/jsbsim/classJSBSim_1_1FGTank.html), rechecked 2026-10-19, distinguishes capacity, contents, unusable volume, location/drain location and priority. These support the conceptual distinctions; OpenRC retains its own schema, units and validation. No solver code is copied.
+
+Update status in section 4 when evidence lands; the documentation registry links here. Contract fields live in AIRCRAFT_CONTRACT, commands in TOOLS and GLOW-ENGINES, decisions in DECISIONS, and dated results in the owning FUEL evidence directory. Preserve historical measurements and scope. When complete, move enduring operating rules into the canonical guide and retire this plan under the documentation conventions.
