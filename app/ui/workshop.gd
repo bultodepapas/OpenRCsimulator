@@ -37,7 +37,12 @@ const PRESET_LABELS := {"mini": "Mini", "giant": "Giant", "light": "Light", "hea
 ## Set before adding this screen to the ScreenStack. Defaults to the current catalog aircraft.
 var initial_aircraft_id := Catalog.DEFAULT_ID
 var variants_root := VARIANT_ROOT
-var return_destination := "Home"
+var return_destination := "Home":
+	set(value):
+		return_destination = "Pause" if value == "Pause" else "Home"
+		if is_instance_valid(_screen):
+			var back := _screen.find_child("CloseWorkshop", true, false) as Button
+			if back != null: back.text = "Back to Pause" if return_destination == "Pause" else "Back to Home"
 var _baseline: Dictionary = {}
 var _library_dialog: AcceptDialog
 var _name_dialog: ConfirmationDialog
@@ -1610,6 +1615,7 @@ func request_navigation(destination: String, proceed: Callable, cancel: Callable
 	_guard_name.placeholder_text = tr("Name this build")
 	_guard_name.max_length = 64
 	_guard_name.text = _variant_name.text
+	body.add_child(_label("Build name", "SecondaryLabel"))
 	body.add_child(_guard_name)
 	_guard_error = _label("", "ErrorLabel", true)
 	body.add_child(_guard_error)

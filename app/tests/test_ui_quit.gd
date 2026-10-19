@@ -224,6 +224,31 @@ func _check_workshop_suspended_recording() -> void:
 	root.add_child(app)
 	await process_frame
 	await process_frame
+	app.open_workshop()
+	await ui.settle()
+	var live_editor: Node = app.screens.top()
+	live_editor.set_variant_name("Unsaved Home draft")
+	app.quit_app()
+	await ui.settle()
+	var live_guard := live_editor.get("_guard_dialog") as ConfirmationDialog
+	_check("quit guards a live dirty Workshop before any flight or route change",
+		live_guard != null and live_guard.get_parent() == app and live_editor.has_unsaved_changes()
+		and app.flight == null and app.screens.top() == live_editor)
+	if live_guard != null:
+		live_guard.canceled.emit()
+	await ui.settle()
+	_check("Cancel from the live Workshop quit guard keeps the editor and draft",
+		live_editor.has_unsaved_changes() and app.flight == null and app.screens.top() == live_editor)
+	var live_close_button := live_editor.find_child("CloseWorkshop", true, false) as Button
+	if live_close_button != null:
+		live_close_button.pressed.emit()
+	await ui.settle()
+	var close_guard := live_editor.get("_guard_dialog") as ConfirmationDialog
+	if close_guard != null:
+		close_guard.custom_action.emit("discard")
+	await ui.settle()
+	_check("editor Close uses its own guard and returns to Home", app.screens.is_top("home")
+		and app.screens.top() == app.home)
 	app.start_flight()
 	await process_frame
 	if app.flight == null:
