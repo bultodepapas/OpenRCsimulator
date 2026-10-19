@@ -113,7 +113,7 @@ def aircraft_rows() -> list[dict]:
         missing = sum(1 for i in inventory if not i.get("id"))
         if missing:
             row["flags"].append("missing_id:%d_items" % missing)
-        if capabilities.get("energy") in ELECTRIC_ENERGY and any("fuel" in i.get("name", "").lower() for i in inventory):
+        if capabilities.get("energy") in ELECTRIC_ENERGY and any("fuel" in i.get("name", "").lower() and not i.get("name", "").startswith("donor mass") for i in inventory):
             row["flags"].append("fuel_named_items_on_electric_aircraft")
         for name, (mass, cg) in states.items():
             state = {"mass_kg": round(mass, 6), "cg_m": [round(v, 6) for v in cg],

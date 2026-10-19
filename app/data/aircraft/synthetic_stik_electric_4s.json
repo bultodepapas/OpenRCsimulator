@@ -1,7 +1,7 @@
 {
   "format": "openrc-aircraft v2",
   "id": "synthetic_stik_electric_4s",
-  "description": "Synthetic electric propulsion demo configuration based on the existing Ugly Stik geometry and original inventory mass distribution. It is not a real electric conversion, a validated aircraft, or a Timber dataset.",
+  "description": "Synthetic electric propulsion demo configuration based on the existing Ugly Stik geometry and original inventory mass distribution. It is not a real electric conversion, a validated aircraft, or a Timber dataset. FUEL-05d: inventory items named 'donor mass' keep the glow Stik's mass distribution only; the fixture carries no engine, tank or fuel.",
   "frames": {
     "le_frame": "positions in metres from the wing leading edge at the fuselage centreline: [x_aft, y_right, z_up]; z = 0 on the thrust line",
     "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up"
@@ -68,7 +68,7 @@
   },
   "inventory": [
     {
-      "name": "engine O.S. MAX-61FX",
+      "name": "donor mass at the glow engine station (no engine modeled)",
       "mass": {
         "value": 0.55,
         "unit": "kg",
@@ -97,7 +97,7 @@
       }
     },
     {
-      "name": "muffler E-4010",
+      "name": "donor mass at the glow muffler station",
       "mass": {
         "value": 0.15,
         "unit": "kg",
@@ -213,7 +213,7 @@
       }
     },
     {
-      "name": "fuel tank (empty)",
+      "name": "donor mass at the fuel-tank station (no tank)",
       "mass": {
         "value": 0.055,
         "unit": "kg",
@@ -242,7 +242,7 @@
       }
     },
     {
-      "name": "fuel (half tank)",
+      "name": "donor mass at the fuel station (no fuel)",
       "mass": {
         "value": 0.12,
         "unit": "kg",

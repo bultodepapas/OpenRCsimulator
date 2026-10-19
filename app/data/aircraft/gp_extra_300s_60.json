@@ -61,13 +61,13 @@
   "balance": {
     "plan_cg": {
       "value": [
-        0.10266,
+        0.1088,
         0.0,
-        -0.023952
+        -0.025021
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "loaded inventory CG after virtual balance at the manual p43 4-1/8 in dry, empty-tank datum (model z 0; EX-01 read 4.116 in), then adding the prescribed fixed half-tank fuel; not a measured airplane"
+      "source": "FUEL-05b: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); the flown inventory adds a fixed half tank; not a measured airplane"
     },
     "firewall": {
       "value": [
@@ -79,7 +79,22 @@
       "kind": "measured",
       "source": "firewall station, assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology)"
     },
-    "configuration": "virtual-balanced-dry-manual-p43-plus-fixed-half-tank-v1",
+    "configuration": "virtual-balanced-dry-manual-p43-plus-fixed-half-tank-v2",
+    "fuel_state": "empty_tanks",
+    "cg_range": {
+      "forward": {
+        "value": 0.099275,
+        "unit": "m",
+        "kind": "manual",
+        "source": "Great Planes Extra 300S .60 manual EXT6P03 p43: balance point +-3/8 in, empty tank"
+      },
+      "aft": {
+        "value": 0.118325,
+        "unit": "m",
+        "kind": "manual",
+        "source": "Great Planes Extra 300S .60 manual EXT6P03 p43: balance point +-3/8 in, empty tank"
+      }
+    },
     "cg_tolerance": {
       "value": 0.001,
       "unit": "m",
@@ -722,10 +737,10 @@
       "id": "fuel_flight",
       "name": "fuel (half tank)",
       "mass": {
-        "value": 0.146,
+        "value": 0.152103,
         "unit": "kg",
-        "kind": "estimated",
-        "source": "12 oz tank = 355 ml, half at 0.82 g/ml glow fuel; prescribed flight state (no consumption model, G4)"
+        "kind": "derived",
+        "source": "FUEL-05b: half of the manual p3 GPMQ4105 12 oz tank (12 US fl oz = 0.355 l) x app/data/fuels/openrc-fuel-registry.json blend glow_10n_18castor (856.92 kg/m3 at 298.15 K); prescribed flight state (no consumption)"
       },
       "position": {
         "value": [
@@ -735,21 +750,45 @@
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "same as the tank"
+        "source": "same as the tank; uniform liquid box holding the 0.355 l capacity"
       },
-      "energy_source": "glow_fuel",
       "size": {
         "value": [
-          0,
-          0,
-          0
+          0.12,
+          0.065,
+          0.046
         ],
         "unit": "m",
-        "kind": "derived",
-        "source": "AS-02 compatibility default: explicit point-mass dimensions preserve the v1 omitted-size inertia behavior"
-      }
+        "kind": "estimated",
+        "source": "rough envelope for intrinsic inertia"
+      },
+      "energy_source": "glow_fuel"
     }
   ],
+  "fuel_system": {
+    "tanks": [
+      {
+        "id": "main_tank",
+        "fuel": "glow_10n_18castor",
+        "liquid_inventory_id": "fuel_flight",
+        "shell_inventory_id": "fuel_tank",
+        "capacity": {
+          "value": 0.355,
+          "unit": "l",
+          "kind": "manual",
+          "source": "manual p3 GPMQ4105 12 oz tank (12 US fl oz = 0.355 l)"
+        },
+        "unusable": {
+          "value": 0.005,
+          "unit": "l",
+          "kind": "estimated",
+          "source": "FUEL-05b: clunk residue estimate; no published value (docs/research/fuel-systems/FUEL-00 section 6.3)"
+        },
+        "pickup": "clunk",
+        "feed": "suction_muffler"
+      }
+    ]
+  },
   "crash_hull": {
     "value": [
       [
@@ -986,7 +1025,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: Helmbold wing + downwashed tail"
       },
       "CLq": {
-        "value": 5.813289,
+        "value": 5.806488,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: tail volume + DATCOM wing term"
@@ -1046,13 +1085,13 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin + DATCOM body"
       },
       "CYp": {
-        "value": -0.065287,
+        "value": -0.065268,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin above the CG"
       },
       "CYr": {
-        "value": 0.326371,
+        "value": 0.326478,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin behind the CG"
@@ -1064,19 +1103,19 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
       },
       "Clb": {
-        "value": -0.032981,
+        "value": -0.032996,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: wing at CL_ref + low-wing interference + fin"
       },
       "Clp": {
-        "value": -0.596857,
+        "value": -0.596853,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: strip theory with taper + stab + fin"
       },
       "Clr": {
-        "value": 0.128669,
+        "value": 0.128847,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: CL_ref/4 + fin"
@@ -1112,7 +1151,7 @@
         "source": "research/extra-300/ex05/derive_physics.py: tail about the wing-body ac; the CG transfer gives the static margin"
       },
       "Cmq": {
-        "value": -9.226903,
+        "value": -9.233061,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"
@@ -1136,25 +1175,25 @@
         "source": "research/extra-300/ex05/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": -0.019332,
+        "value": -0.019419,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: -CL_ref/8 + fin"
       },
       "Cnr": {
-        "value": -0.17873,
+        "value": -0.178828,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
       },
       "Cnda_right": {
-        "value": 0.0201,
+        "value": 0.020136,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.5, taper 0.5)"
       },
       "Cnda_left": {
-        "value": -0.0201,
+        "value": -0.020136,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/extra-300/ex05/derive_physics.py: adverse yaw"
@@ -1439,9 +1478,9 @@
       },
       "thrust_line_offset": {
         "value": [
-          -0.368558,
+          -0.368312,
           0.00014,
-          0.023917
+          0.023875
         ],
         "unit": "m",
         "kind": "derived",
@@ -1477,13 +1516,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 689.74492,
+          "value": 691.171661,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 16.823418,
+          "value": 16.855831,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
@@ -1515,13 +1554,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 689.74492,
+          "value": 691.171661,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 16.823418,
+          "value": 16.855831,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
@@ -1553,13 +1592,13 @@
           "source": "assets/aircraft/extra-300s-60/geometry.json (EX-01 metrology); wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."
         },
         "stiffness": {
-          "value": 215.89779,
+          "value": 215.891864,
           "unit": "N/m",
           "kind": "estimated",
           "source": "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."
         },
         "damping": {
-          "value": 9.412264,
+          "value": 9.42053,
           "unit": "N·s/m",
           "kind": "estimated",
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."

@@ -1,0 +1,82 @@
+{
+  "card": "ft-card-v4",
+  "commit": "",
+  "dirty_paths": [],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "<scratch>/snap/app",
+  "only": null,
+  "aircraft": {
+    "jensen-das-ugly-stik-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 556.7,
+      "valid_tests": 39,
+      "tests": 39,
+      "data_file": "data/aircraft/jensen_ugly_stik_60.json",
+      "data_sha256": "43e2d00d0034f26225f7bed4bb0fea9a7996e73bae41f3aca0602e2c605704cf"
+    },
+    "stik-glow-61fx-2t": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 2262.7,
+      "valid_tests": 35,
+      "tests": 39,
+      "data_file": "data/aircraft/stik_glow_61fx_2t.json",
+      "data_sha256": "8d370ba37800af1c5326f12c3ca8cfe7a601256f264689dbb8a6fc66ff777881"
+    },
+    "stik-glow-55ax-2t": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 2005.2,
+      "valid_tests": 36,
+      "tests": 39,
+      "data_file": "data/aircraft/stik_glow_55ax_2t.json",
+      "data_sha256": "8dcfb98e3a2e8a5a9808df0729bc5fe5a4de483afcb94e0bb6e9018fd35df62e"
+    },
+    "stik-glow-fs64v-4t": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 2194.6,
+      "valid_tests": 35,
+      "tests": 39,
+      "data_file": "data/aircraft/stik_glow_fs64v_4t.json",
+      "data_sha256": "c42640d6f6e4d25bb8db0266ed3310e22432366098d9e84bcccf8dc3097643c6"
+    },
+    "gp-extra-300s-60": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 607.6,
+      "valid_tests": 39,
+      "tests": 39,
+      "data_file": "data/aircraft/gp_extra_300s_60.json",
+      "data_sha256": "2af361eb1617119383484349bf55262801410525f5ef45a9fb485701d380a338"
+    },
+    "p51d-mustang-120": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 1092.2,
+      "valid_tests": 39,
+      "tests": 39,
+      "data_file": "data/aircraft/p51d_mustang_120.json",
+      "data_sha256": "eddd977927848db90d4cbbb34a47df7160c1071c2d7b7d7e08627385c0b75798"
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 788.2,
+      "valid_tests": 39,
+      "tests": 39,
+      "data_file": "data/aircraft/sebart_avanti_s_a200.json",
+      "data_sha256": "0f349482a9845bdbd7d8d95d9ebb8240184799e947fa1309af1e4102b75370ce"
+    },
+    "turbo-lumber-evolution": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 846.9,
+      "valid_tests": 38,
+      "tests": 39,
+      "data_file": "data/aircraft/turbo_lumber_evolution.json",
+      "data_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf"
+    }
+  }
+}

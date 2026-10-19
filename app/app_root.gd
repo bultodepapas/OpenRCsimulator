@@ -501,7 +501,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	var departing_home: Control = home
 	var aircraft: String = departing_home.aircraft_id if departing_home != null else ""
 	var chosen_start: String = departing_home.start_choice if departing_home != null else "airborne"
-	var chosen_battery: String = departing_home.battery_mode if departing_home != null else "ideal"
+	var chosen_battery: String = departing_home.battery_mode if departing_home != null else ""
 	var chosen_weather: Dictionary = WeatherSettings.defaults()
 	var chosen_lighting: Dictionary = TimeOfDay.defaults()
 	if has_home:
@@ -542,8 +542,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
 	flight.aircraft_id = route_aircraft_id if has_home or is_random or helicopter_route else ""
 	flight.start_choice = chosen_start
-	if "battery_mode" in flight: # BAT-13: Home's battery choice; direct routes read --battery=
-		flight.battery_mode = chosen_battery if has_home and not is_random else "ideal"
+	if "battery_mode" in flight: # BAT-13: Home's battery choice; random and direct routes use the aircraft default or --battery=
+		flight.battery_mode = chosen_battery if has_home and not is_random else ""
 	flight.weather_config = chosen_weather.duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
 	if not helicopter_route:

@@ -173,11 +173,16 @@ static func entry(id: String) -> Dictionary:
 
 ## BAT-13 battery modes: "ideal" flies the aircraft's main data; "pack" flies its optional finite-pack data
 ## (same airframe and aircraft id, pack_ecm energy). Aircraft without battery data only offer "ideal".
+## Owner decision 2026-10-19: the finite pack is the default wherever an aircraft provides it.
 const BATTERY_MODES := ["ideal", "pack"]
 
 
 static func battery_data(id: String) -> String:
 	return str(entry(id).get("battery_data", ""))
+
+
+static func default_battery_mode(id: String) -> String:
+	return "pack" if has_battery_mode(id, "pack") else "ideal"
 
 
 static func has_battery_mode(id: String, mode: String) -> bool:

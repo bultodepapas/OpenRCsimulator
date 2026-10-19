@@ -25,6 +25,7 @@ func _run() -> void:
 	await process_frame
 	await _live_flight()
 	await _live_pack_flight()
+	await _live_ideal_flight()
 	print("overlay battery flight: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)
 
@@ -66,11 +67,11 @@ func _live_flight() -> void:
 	await process_frame
 
 
-## BAT-13/15: the Timber in battery mode "pack" through the product route (--aircraft, --battery): O9 shows the
+## BAT-13/15: the Timber without --battery flies its default finite pack (owner default, 2026-10-19): O9 shows the
 ## pack_ecm cell rows and temperature from radio-style sensors, and still no true SOC outside Diagnostics.
 func _live_pack_flight() -> void:
 	var flight: Node = load("res://main.tscn").instantiate()
-	flight.user_args = PackedStringArray(["--aircraft=turbo-lumber-evolution", "--battery=pack"])
+	flight.user_args = PackedStringArray(["--aircraft=turbo-lumber-evolution"])
 	flight.overlays_enabled = true
 	flight.overlay_settings = { preset = "full", units = "metric" }
 	root.add_child(flight)
@@ -90,5 +91,22 @@ func _live_pack_flight() -> void:
 		and panel.values.cell_min.visible and panel.values.temperature.visible,
 		"%s | %s | %s" % [panel.values.cell_avg.text, panel.values.cell_min.text, panel.values.temperature.text])
 	_check("pack: no true SOC in the Full preset", not _texts(overlays).contains("SOC"))
+	flight.queue_free()
+	await process_frame
+
+
+## --battery=ideal keeps the constant-voltage Timber: no dynamic battery, so O9 stays hidden.
+func _live_ideal_flight() -> void:
+	var flight: Node = load("res://main.tscn").instantiate()
+	flight.user_args = PackedStringArray(["--aircraft=turbo-lumber-evolution", "--battery=ideal"])
+	flight.overlays_enabled = true
+	flight.overlay_settings = { preset = "full", units = "metric" }
+	root.add_child(flight)
+	for i in 30:
+		await process_frame
+	var overlays: CanvasLayer = flight.get("_overlays")
+	var session: Node = flight.get("session")
+	_check("--battery=ideal flies the fixed bus", session != null and session.is_flyable() and not session.battery_is_dynamic())
+	_check("ideal: O9 stays hidden", overlays != null and not overlays.frames.battery.visible)
 	flight.queue_free()
 	await process_frame

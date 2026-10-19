@@ -25,6 +25,16 @@ if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
 from migrate import legacy_input, numeric_parity, upgrade  # noqa: E402
 from physical_identity import validate_physical_identity  # noqa: E402
+FUEL_DIR = ROOT / "research" / "fuel-systems"
+if str(FUEL_DIR) not in sys.path:
+    sys.path.insert(0, str(FUEL_DIR))
+import fuel_registry  # noqa: E402
+
+# FUEL-05b: the manual's 12 oz tank, the registry glow blend, a fixed half tank (prescribed fuel: no burn).
+TANK_L = 0.355
+TANK_SOURCE = "manual p3 GPMQ4105 12 oz tank (12 US fl oz = 0.355 l)"
+GLOW_BLEND = "glow_10n_18castor"
+FIXED_FILL = 0.5
 
 GEOMETRY = ROOT / "assets/aircraft/extra-300s-60/geometry.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
@@ -254,7 +264,9 @@ items = [
     ("fin and rudder, covered", 0.07, "estimated", "sheeted built-up fin", le(fin_cz, fin_cy), [0.22, 0.01, 0.3], "derived", "area centroid of the fin polygon", "vertical_tail"),
     ("pushrods, horns, hardware", 0.1, "estimated", "clevises, horns, pushrods, screws: rough sum", le(0.3), None, "estimated", "spread along the fuselage", "control_hardware"),
 ]
-fuel_item = ("fuel (half tank)", 0.146, "estimated", "12 oz tank = 355 ml, half at 0.82 g/ml glow fuel; prescribed flight state (no consumption model, G4)", le(fw + 0.07), None, "estimated", "same as the tank", "fuel_flight")
+fuel_item = ("fuel (half tank)", TANK_L * 1e-3 * fuel_registry.blend_density(GLOW_BLEND) * FIXED_FILL, "derived",
+             f"FUEL-05b: half of the {TANK_SOURCE} x {fuel_registry.blend_source(GLOW_BLEND)}; prescribed flight state (no consumption)",
+             le(fw + 0.07), [0.12, 0.065, 0.046], "estimated", "same as the tank; uniform liquid box holding the 0.355 l capacity", "fuel_flight")
 mass0 = sum(i[1] for i in items)
 mom0 = [sum(i[1] * i[4][k] for i in items) for k in range(3)]
 x_target = cg_target_model_z - LE0
@@ -524,9 +536,12 @@ data = {
     },
     "start": {"level_speed": q(float(V_start), "m/s", "derived", D("1.6 x the 1-g stall at the flight mass and CL_max, rounded"))},
     "balance": {
-        "plan_cg": q(cg, "m", "derived", "loaded inventory CG after virtual balance at the manual p43 4-1/8 in dry, empty-tank datum (model z 0; EX-01 read 4.116 in), then adding the prescribed fixed half-tank fuel; not a measured airplane"),
+        "plan_cg": q(dry_cg, "m", "derived", "FUEL-05b: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); the flown inventory adds a fixed half tank; not a measured airplane"),
         "firewall": q(le(fw), "m", "measured", "firewall station, " + GEO_SRC),
-        "configuration": "virtual-balanced-dry-manual-p43-plus-fixed-half-tank-v1",
+        "configuration": "virtual-balanced-dry-manual-p43-plus-fixed-half-tank-v2",
+        "fuel_state": "empty_tanks",
+        "cg_range": {"forward": q(dry_cg[0] - 0.009525, "m", "manual", MANUAL + " p43: balance point +-3/8 in, empty tank"),
+                     "aft": q(dry_cg[0] + 0.009525, "m", "manual", MANUAL + " p43: balance point +-3/8 in, empty tank")},
         "cg_tolerance": q(0.001, "m", "estimated", D("dry virtual reference build balanced to the manual p43 empty-tank point, then fixed half-tank fuel added; NOT a measured airplane")),
     },
     "inventory": [
@@ -535,6 +550,11 @@ data = {
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
+    "fuel_system": {"tanks": [{
+        "id": "main_tank", "fuel": GLOW_BLEND, "liquid_inventory_id": "fuel_flight", "shell_inventory_id": "fuel_tank",
+        "capacity": q(TANK_L, "l", "manual", TANK_SOURCE),
+        "unusable": q(0.005, "l", "estimated", "FUEL-05b: clunk residue estimate; no published value (docs/research/fuel-systems/FUEL-00 section 6.3)"),
+        "pickup": "clunk", "feed": "suction_muffler"}]},
     "crash_hull": q([point for _, point in crash_hull_probes], "m", "measured", "Body crash points (le frame) from " + GEO_SRC + ": wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."),
     "crash_hull_ids": [identity for identity, _ in crash_hull_probes],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).

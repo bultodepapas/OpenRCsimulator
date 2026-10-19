@@ -23,7 +23,7 @@ MUTS = [
  ("venting never stops", "render/crash/effects.gd", text_sub("	var venting := _age >= _vent_start_s and _age < _vent_end_s", "	var venting := _age >= _vent_start_s")),
  ("reset keeps pending venting", "render/crash/effects.gd", text_sub("	_fire_duration = 0\n	_vent_start_s = INF", "	_fire_duration = 0")),
  ("P-51 fuel tagged as glow", "data/aircraft/p51d_mustang_120.json", text_sub('"energy_source": "gasoline"', '"energy_source": "glow_fuel"')),
- ("synthetic donor ballast tagged as fuel", "data/aircraft/synthetic_stik_electric_4s.json", json_labels(lambda a: None) if False else text_sub('"name": "fuel (half tank)",', '"name": "fuel (half tank)",\n      "energy_source": "glow_fuel",')),
+ ("synthetic donor ballast tagged as fuel", "data/aircraft/synthetic_stik_electric_4s.json", json_labels(lambda a: None) if False else text_sub('"name": "donor mass at the fuel station (no fuel)",', '"name": "donor mass at the fuel station (no fuel)",\n      "energy_source": "glow_fuel",')),
 ]
 work = os.path.join(SP, "mut22b")
 for label, rel, edit in MUTS:

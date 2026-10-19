@@ -62,8 +62,10 @@ var lighting_config: Dictionary = TimeOfDay.defaults()
 var sky_config: Dictionary = SkyConfig.defaults()
 var time_of_day: String = "day"
 var start_button: Button
-## BAT-13: "ideal" or "pack"; the battery choice is shown only for aircraft whose catalog entry has battery_data.
+## BAT-13: the effective mode, "ideal" or "pack". The player's preference starts at the finite pack (owner default,
+## 2026-10-19) and applies wherever the aircraft has battery_data; other aircraft fly ideal without losing it.
 var battery_mode: String = "ideal"
+var _battery_preference: String = "pack"
 var battery_button: Button
 
 var fly_button: Button
@@ -868,7 +870,7 @@ func set_aircraft(id: String) -> void:
 	if entering_rotorcraft:
 		start_choice = "runway"
 	set_start_choice(start_choice)
-	set_battery_mode(battery_mode)
+	set_battery_mode(_battery_preference)
 	var e := Catalog.entry(aircraft_id)
 	var flyable := Catalog.can_fly(aircraft_id)
 	var rotorcraft: bool = Catalog.is_rotorcraft(aircraft_id)
@@ -940,7 +942,9 @@ func set_start_choice(choice: String) -> void:
 
 ## BAT-13: keep the selected mode only where the aircraft supports it; aircraft without pack data stay ideal.
 func set_battery_mode(mode: String) -> void:
-	battery_mode = mode if Catalog.has_battery_mode(aircraft_id, mode) else "ideal"
+	if mode in Catalog.BATTERY_MODES:
+		_battery_preference = mode
+	battery_mode = _battery_preference if Catalog.has_battery_mode(aircraft_id, _battery_preference) else "ideal"
 	battery_button.visible = not Catalog.battery_data(aircraft_id).is_empty() and not Catalog.is_rotorcraft(aircraft_id)
 	battery_button.text = tr("Battery: finite pack (experimental)") if battery_mode == "pack" else tr("Battery: ideal (never runs flat)")
 	battery_button.tooltip_text = tr("Finite pack: charge runs out, voltage sags under load and in the cold, the pack warms and the ESC cuts power at low voltage. Ideal: constant voltage.")

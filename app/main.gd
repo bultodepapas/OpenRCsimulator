@@ -91,8 +91,9 @@ var flight_scenario: Dictionary = {}
 var remember_lighting_selection: bool = true
 var _experimental_aircraft_path := ""
 var _electric_demo: String = ""
-## BAT-13: "ideal" (the aircraft's main data) or "pack" (its finite-pack data). Home sets it; else --battery=<mode>.
-var battery_mode: String = "ideal"
+## BAT-13: "ideal" (the aircraft's main data) or "pack" (its finite-pack data). Home sets it; else --battery=<mode>;
+## empty means the aircraft's default (the finite pack where the catalog provides one).
+var battery_mode: String = ""
 ## Home supplies its selection. Quick Flight defaults to runway; technical routes keep their reference start.
 var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
@@ -408,6 +409,8 @@ func _ready() -> void:
 		return
 	if args.has("battery"):
 		battery_mode = str(args.get("battery", ""))
+	if battery_mode.is_empty():
+		battery_mode = "ideal" if not _electric_demo.is_empty() else Catalog.default_battery_mode(aircraft_id)
 	if not Catalog.has_battery_mode(aircraft_id, battery_mode) or (battery_mode != "ideal" and not _electric_demo.is_empty()):
 		printerr("battery mode '%s' refused for '%s': use ideal, or pack where the catalog declares battery_data" % [battery_mode, aircraft_id])
 		set_process(false)
