@@ -404,7 +404,7 @@ def gear_contact(identity, name, position, stiffness, travel, steering=0.0):
         "position": q(position, "m", "derived", GEO_SRC + "; wheel bottom = axle minus radius, transformed to LE frame. Axle stations/heights from EX-01 metrology; diameters from kit references; main track 0.32 m is estimated, not measured."),
         "stiffness": q(stiffness, "N/m", "estimated", "E5a: numerical E1 heave rule omega*dt=0.09 at 240 Hz, total k=m*(0.09*240)^2; split by ground-projected static load share for equal sag. Not measured wire/strap stiffness."),
         "damping": q(2 * 0.3 * math.sqrt(stiffness * mass / 3), "N·s/m", "estimated", "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."),
-        "max_compression": q(travel, "m", "estimated", "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."),
+        "max_compression": q(travel, "m", "estimated", "GP-06c reserve-energy travel (main 0.10 m, tail 0.08 m): the peak compression of a level/three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: main 93 mm, tail 73 mm). Replaces the E5a 0.08/0.05 m thresholds, which collapsed below the 7 ft/s limit drop. A full-size certification convention borrowed for RC; not measured gear travel or structural strength."),
     }
     if steering:
         contact["max_steering"] = q(steering, "deg", "estimated", "E5a: provisional +/-25 deg rudder-linked tail wheel, as the P-51 fixture. Negative coefficient: positive right-yaw command steers the aft wheel left, forcing the tail left and nose right. No caster or measured linkage ratio.")
@@ -413,9 +413,9 @@ def gear_contact(identity, name, position, stiffness, travel, steering=0.0):
 
 landing_gear = {
     "description": "E5a: fixed main wheels and rudder-linked tail wheel. File-backed GP-02 wheel profiles supply per-contact radius, inertia and rim-speed dynamics; terrain-aware contact and wheel-radius corrections are active. E5a spring, damping, tyre and steering values remain provisional. The 1.25 breakaway factor is the shared E3b1 engineering estimate midpoint borrowed from Stik, not an Extra measurement; no caster or brakes.",
-    "contacts": [gear_contact("contact_main_left", "main_left", main_pos[0], k_main, 0.08),
-                 gear_contact("contact_main_right", "main_right", main_pos[1], k_main, 0.08),
-                 gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.05, -25.0)],
+    "contacts": [gear_contact("contact_main_left", "main_left", main_pos[0], k_main, 0.10),
+                 gear_contact("contact_main_right", "main_right", main_pos[1], k_main, 0.10),
+                 gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.08, -25.0)],
     "rolling_resistance": q(0.04, "1", "estimated", "E5a: reuse Stik E2 reference C_rr for similarly sized model wheels; Extra 69.85 mm mains and 25.4 mm tail are not separately calibrated. Field factors apply per contact."),
     "side_friction": q(0.8, "1", "borrowed", "E5a: same provisional JSBSim c172x coefficient used by Stik and P-51 E2 fixtures; no Extra tyre measurement."),
     "peak_slip_angle": q(6.0, "deg", "borrowed", "E5a: same provisional 6 degree peak-slip regularization as Stik/P-51 E2; no Extra tyre measurement."),

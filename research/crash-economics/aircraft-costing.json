@@ -369,7 +369,7 @@
       ],
       "notes": "Own physical inventory coverage, with explicit null prices and five servo units. Full replacement total remains unknown. No baseline BOM inheritance.",
       "dossier": {
-        "expected_source_sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62",
+        "expected_source_sha256": "2af361eb1617119383484349bf55262801410525f5ef45a9fb485701d380a338",
         "lines": [
           {
             "id": "engine_main",
@@ -655,7 +655,7 @@
       ],
       "notes": "Independent coverage of the physical P-51 inventory with exact DA-120 and explicit large-aircraft/ordinary-servo and canister value proxies. The DA-120 amount is a current manufacturer listing but is Sold out. Known priced-part subtotal is $2,456.71: $1,249.00 DA-120 package, seven $103.39 SA-1230SG+ control-servo proxies, two $16.99 HS-311 throttle/choke-servo proxies, and two $225.00 KS3086 canister-body proxies. Linkage, exhaust headers/hardware, the rest of the aircraft and installed proxy identities remain unpriced or unknown; this is not a complete-build purchase amount.",
       "dossier": {
-        "expected_source_sha256": "a37f7f4296b789b2fec3d48d73bfadd3ad83177954d2db5b1348db557be5a321",
+        "expected_source_sha256": "eddd977927848db90d4cbbb34a47df7160c1071c2d7b7d7e08627385c0b75798",
         "lines": [
           {
             "id": "engine_main",
@@ -1000,7 +1000,7 @@
       ],
       "notes": "Independent coverage of the physical 2m Avanti inventory. Known priced-part subtotal is $6,559.12: $2,749.00 exact 2m ARF without retracts, $2,780.00 legacy P100-RX (#850100), $225.00 A200-16 tank, five $98.99 SA-1258TG+ value proxies for the manual's DS8411 group, and three $103.39 SA-1230SG+ value proxies for its DS8911 group. The subtotal is not a complete aircraft or a purchasable matched assembly: pneumatic retracts and turbine installation accessories remain unknown, and current proxy stock does not establish eight-unit availability. No propeller is present in the jet inventory.",
       "dossier": {
-        "expected_source_sha256": "387047f77349b61fe0eb463a93794b50d31ec76c65087f0d3cb3f9fe402f7e75",
+        "expected_source_sha256": "0f349482a9845bdbd7d8d95d9ebb8240184799e947fa1309af1e4102b75370ce",
         "lines": [
           {
             "id": "airframe_arf_package",
@@ -1259,7 +1259,7 @@
       ],
       "notes": "Independent partial inventory coverage, reviewed 2026-10-16. Known replacement-parts subtotal $465.87 across seven physical rows; five physical groups and assembly remain unpriced. Wing and propeller/spinner values are composite estimates from separate offers. Six servo proxies are counted once: four in the wing and two in tail_servos. Complete package alternatives remain excluded. Automatic propeller billing remains disabled because propeller_main also includes its spinner.",
       "dossier": {
-        "expected_source_sha256": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+        "expected_source_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
         "lines": [
           {
             "id": "wing_main",

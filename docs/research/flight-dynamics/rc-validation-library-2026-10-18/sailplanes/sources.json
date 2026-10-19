@@ -1,0 +1,815 @@
+[
+  {
+    "id": "allen-lin-2007-soaring-flight-control",
+    "title": "Guidance and Control of an Autonomous Soaring UAV",
+    "authors": [
+      "Michael J. Allen",
+      "Victor Lin"
+    ],
+    "year": 2007,
+    "type": "technical-report",
+    "source_url": "https://ntrs.nasa.gov/citations/20070022339",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20070022339/downloads/20070022339.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/allen-lin-2007-soaring-flight-control.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Electric motorglider field campaign with 23 thermal encounters, total-energy control and atmospheric estimates.",
+    "limitations": "Cloud Swift/4.27 m research motor glider, not a general sport RC airplane. Reported closed-loop soaring performance is not an open-loop aerodynamic identification.",
+    "access": "downloaded",
+    "sha256": "7cec65858918b8afc65eb0809bb6b075cf2f9e75564b8d8458d09546a9ad604e",
+    "bytes": 7533981,
+    "retrieved_utc": "2026-10-19T01:47:22.380498+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "resolved_url": "https://ntrs.nasa.gov/api/citations/20070022339/downloads/20070022339.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "allen-2006-cloudswift-flight-summary",
+    "title": "Autonomous Soaring 2005 Flight Data Summary",
+    "authors": [
+      "Michael J. Allen"
+    ],
+    "year": 2006,
+    "type": "technical-report",
+    "source_url": "https://ntrs.nasa.gov/citations/20070022832",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20070022832/downloads/20070022832.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/allen-2006-cloudswift-flight-summary.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "CloudSwift flight-by-flight notes, 2005 soaring results and June 2006 appendices with inertia-swing measurements, configuration, propeller tests and PID/excitation maneuvers.",
+    "limitations": "Flight summary and appendices, not a complete downloadable raw telemetry archive; overlaps Allen/Lin2007 and multiple configurations/test dates.",
+    "access": "downloaded",
+    "sha256": "8e18f39276795e10728697f3c91473cad4e116a2af0517a0ad51028f8713f273",
+    "bytes": 15463502,
+    "retrieved_utc": "2026-10-19T01:47:24.160320+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Title and flight-summary structure inspected; June 2006 configuration/inertia/propulsion/maneuver appendices located in full text.",
+    "resolved_url": "https://ntrs.nasa.gov/api/citations/20070022832/downloads/20070022832.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "allen-2005-soaring-endurance-analysis",
+    "title": "Autonomous Soaring for Improved Endurance of a Small Uninhabited Air Vehicle",
+    "authors": [
+      "Michael J. Allen"
+    ],
+    "year": 2005,
+    "type": "technical-report",
+    "source_url": "https://ntrs.nasa.gov/citations/20050041655",
+    "download_url": "https://ntrs.nasa.gov/api/citations/20050041655/downloads/20050041655.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/allen-2005-soaring-endurance-analysis.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Three-degree-of-freedom atmospheric-energy/endurance model informed by radiation and sounding observations.",
+    "limitations": "Simulation study, not a glider flight validation; predicted endurance cannot be treated as measured RC performance.",
+    "access": "downloaded",
+    "sha256": "fea0f6ea8228e0b9393ba013532b0ff2b75e1f22f397f3613aec94f2a15fa35e",
+    "bytes": 1011900,
+    "retrieved_utc": "2026-10-19T01:47:20.609958+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "resolved_url": "https://ntrs.nasa.gov/api/citations/20050041655/downloads/20050041655.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "tabor-2018-ardusoar",
+    "title": "ArduSoar: an Open-Source Thermalling Controller for Resource-Constrained Autopilots",
+    "authors": [
+      "Samuel Tabor",
+      "Iain Guilliard",
+      "Andrey Kolobov"
+    ],
+    "year": 2018,
+    "type": "conference-paper",
+    "source_url": "https://arxiv.org/abs/1802.08215",
+    "download_url": "https://arxiv.org/pdf/1802.08215",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/tabor-2018-ardusoar.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Real small-RC-sailplane flights testing thermal estimation and energy-state control with ArduPlane.",
+    "limitations": "Controller/thermal-estimator performance and closed-loop flights; not independent whole-airframe coefficient identification or raw flight logs.",
+    "access": "downloaded",
+    "sha256": "2d1eabc8780de8dc3a5c5c60eebe802df55ad8c53db9ccb1a74418e7e6dec1cc",
+    "bytes": 1670922,
+    "retrieved_utc": "2026-10-19T01:47:21.066334+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "doi": "10.48550/arXiv.1802.08215",
+    "resolved_url": "https://arxiv.org/pdf/1802.08215",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "guilliard-2018-pomdp-thermalling",
+    "title": "Autonomous Thermalling as a Partially Observable Markov Decision Process (Extended Version)",
+    "authors": [
+      "Iain Guilliard",
+      "Richard Rogahn",
+      "Jim Piavis",
+      "Andrey Kolobov"
+    ],
+    "year": 2018,
+    "type": "conference-paper",
+    "source_url": "https://arxiv.org/abs/1805.09875",
+    "download_url": "https://arxiv.org/pdf/1805.09875",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/guilliard-2018-pomdp-thermalling.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Paired field flights of RC motor gliders, comparing autonomous thermalling controllers under shared conditions.",
+    "limitations": "Controller/thermal-estimator performance and closed-loop flights; not independent whole-airframe coefficient identification or raw flight logs.",
+    "access": "downloaded",
+    "sha256": "a9d5947f325c56a2e7df46c367582acbb323404bf3201f2f784ead22b2724690",
+    "bytes": 2220105,
+    "retrieved_utc": "2026-10-19T01:47:21.608036+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "doi": "10.48550/arXiv.1805.09875",
+    "resolved_url": "https://arxiv.org/pdf/1805.09875",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "reddy-2018-glider-field-learning",
+    "title": "Glider soaring via reinforcement learning in the field",
+    "authors": [
+      "Gautam Reddy",
+      "Jerome Wong-Ng",
+      "Antonio Celani",
+      "Terrence J. Sejnowski",
+      "Massimo Vergassola"
+    ],
+    "year": 2018,
+    "type": "journal-article",
+    "source_url": "https://www.nature.com/articles/s41586-018-0533-0",
+    "download_url": "https://papers.cnl.salk.edu/PDFs/Soaring%20Like%20a%20Bird%20via%20Reinforcement%20Learning%20in%20the%20Field%202018-4514.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/reddy-2018-glider-field-learning.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "A two-metre glider flown in real thermals with recorded wind/attitude estimates; contrasts field evidence and numerical trials.",
+    "limitations": "No assumption that navigation success identifies the airframe; signals include estimated winds and feedback-control effects.",
+    "access": "downloaded",
+    "sha256": "a40c69568fe1b32d077902b193f3aebc804e5ec544ef0569a078569e4280ee41",
+    "bytes": 3743103,
+    "retrieved_utc": "2026-10-19T01:47:26.720446+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "doi": "10.1038/s41586-018-0533-0",
+    "resolved_url": "https://papers.cnl.salk.edu/PDFs/Soaring%20Like%20a%20Bird%20via%20Reinforcement%20Learning%20in%20the%20Field%202018-4514.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "bronz-2021-dynamic-soaring-part1",
+    "title": "Flight Testing of Dynamic Soaring Part-1: Leeward Inclined Circle Trajectory",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "conference-paper",
+    "source_url": "https://hal.science/hal-03098769",
+    "download_url": "https://enac.hal.science/hal-03098769v1/file/BRONZ_Scitech21_DynS_compressed.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-2021-dynamic-soaring-part1.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Measured glider dynamic-soaring trajectories and energy balance in ridge-leeward wind shear; associated public logger data.",
+    "limitations": "Flight energy extraction depends on propulsion, wind estimate and trajectory; plots/derived power are not independent force measurements.",
+    "access": "downloaded",
+    "sha256": "42a35ca47135b6fca25b7fffc2c46822b2112643bcc2cd2771548d90b03e7e5b",
+    "bytes": 2127298,
+    "retrieved_utc": "2026-10-19T01:47:24.836672+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "doi": "10.2514/6.2021-1527",
+    "resolved_url": "https://enac.hal.science/hal-03098769v1/file/BRONZ_Scitech21_DynS_compressed.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "bronz-2021-dynamic-soaring-part2",
+    "title": "Flight Testing of Dynamic Soaring Part-2: Open-Field Inclined Circle Trajectory",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "conference-paper",
+    "source_url": "https://enac.hal.science/hal-04087058v1",
+    "download_url": null,
+    "local_path": null,
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Open-field dynamic-soaring flight experiments, companion to the author-published Muret logger/LIDAR collection.",
+    "limitations": "Author project and HAL publication records checked; no full-text download link located. Companion campaign to the author-published Muret logger/LIDAR collection, not independent validation of an arbitrary RC glider.",
+    "access": "link-only",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:47:24.161608+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "doi": "10.2514/6.2021-2803"
+  },
+  {
+    "id": "depenbusch-2018-autonomous-soaring-thesis",
+    "title": "Development and Field Testing of an Autonomous Soaring System",
+    "authors": [
+      "Nathan T. Depenbusch"
+    ],
+    "year": 2018,
+    "type": "thesis",
+    "source_url": "https://www.aero.psu.edu/avia/publications.html",
+    "download_url": "https://www.aero.psu.edu/avia/pubs/Depenbusch_PhD.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/depenbusch-2018-autonomous-soaring-thesis.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Modified RnR SB-XC (4.2 m, 6.37 kg test installation) AutoSOAR development and Aberdeen field tests: nine flights, eleven total hours, 7.8 hours with autonomous soaring engaged. Includes flight energy/control response and atmospheric-estimation behavior.",
+    "limitations": "Overlaps AutoSOAR papers; closed-loop control and atmospheric estimates are not open-loop coefficient identification. Test configuration differs from NASA Cloud Swift despite shared SB-XC ancestry.",
+    "access": "downloaded",
+    "sha256": "74c18714df3b61ec39026eedcb154a939b9a7680f0359091a147be3428877bad",
+    "bytes": 228440755,
+    "retrieved_utc": "2026-10-19T01:56:27.031014+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Title, abstract, chapter 6 platform and September 2015 flight-campaign sections inspected; full PDF parsed without executing embedded content.",
+    "resolved_url": "https://www.aero.psu.edu/avia/pubs/Depenbusch_PhD.pdf",
+    "verified": "PDF magic and full-document text parsing; source range lengths and ETag checked"
+  },
+  {
+    "id": "bird-2013-wind-estimation-soaring-thesis",
+    "title": "Wind Estimation and Closed-Loop Control of a Soaring Vehicle",
+    "authors": [
+      "John Bird"
+    ],
+    "year": 2013,
+    "type": "thesis",
+    "source_url": "https://www.aero.psu.edu/avia/publications.html",
+    "download_url": "https://www.aero.psu.edu/avia/pubs/Bird_MS.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bird-2013-wind-estimation-soaring-thesis.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Escale Fox RC-sailplane wind estimation, airframe modeling and closed-loop soaring control evaluated in batch and hardware-in-the-loop simulations.",
+    "limitations": "Simulation and hardware-in-the-loop results, not a new real-flight validation campaign; atmospheric and airframe assumptions must remain separate from measurements.",
+    "access": "downloaded",
+    "sha256": "d8b640ad379464f6a003d6839c259a073b710dca4ed36fd2dc800810afd2af33",
+    "bytes": 7192282,
+    "retrieved_utc": "2026-10-19T01:47:40.253098+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Title, abstract, platform description and simulation/conclusions sections inspected; explicit hardware-in-the-loop boundary checked.",
+    "resolved_url": "https://www.aero.psu.edu/avia/pubs/Bird_MS.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "daugherty-2013-energy-state-soaring-thesis",
+    "title": "Improving Autonomous Soaring via Energy State Estimation and Extremum Seeking Control",
+    "authors": [
+      "Shawn C. Daugherty"
+    ],
+    "year": 2013,
+    "type": "thesis",
+    "source_url": "https://www.aero.psu.edu/avia/publications.html",
+    "download_url": "https://www.aero.psu.edu/avia/pubs/Daugherty_MS.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/daugherty-2013-energy-state-soaring-thesis.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "SB-XC model, XFLR5-derived aerodynamic terms, energy estimation and extremum-seeking control tested in Silent Wings hardware-in-the-loop simulations.",
+    "limitations": "No actual flight campaign for the proposed controller: section 5.2.2 states flight testing was prevented by approval/time constraints. Comparisons to earlier published flights are not independent flight measurements.",
+    "access": "downloaded",
+    "sha256": "1e8a362afbd95101a3bc8b1cbe5e4396b232669c2830dfec4a3eadca672928db",
+    "bytes": 12288766,
+    "retrieved_utc": "2026-10-19T01:47:52.714241+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Title, abstract, model/platform descriptions and section 5.2.2 inspected; hardware-in-the-loop/simulation classification verified.",
+    "resolved_url": "https://www.aero.psu.edu/avia/pubs/Daugherty_MS.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "bird-2019-atmospherically-aware-guidance-thesis",
+    "title": "Atmospherically Aware Aircraft Guidance using In Situ Observations",
+    "authors": [
+      "John Bird"
+    ],
+    "year": 2019,
+    "type": "thesis",
+    "source_url": "https://www.aero.psu.edu/avia/publications.html",
+    "download_url": "https://www.aero.psu.edu/avia/pubs/Bird_PhD.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bird-2019-atmospherically-aware-guidance-thesis.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "SB-XC and Vulture platforms, speed-to-fly flight tests and in-situ atmospheric estimates compared with weather-model analyses and radiosondes; also numerical guidance studies.",
+    "limitations": "Mixed field and simulation evidence. Solar-power response was simulated or used vertical air motion as surrogate because no solar-equipped aircraft was available; numerical energy savings are not measured flight savings. Vulture flight platform is based on G2 Aviation Vera2V; its polar was assumed similar to SB-XC because a flight-data polar was unavailable.",
+    "access": "downloaded",
+    "sha256": "35e425b8ec703cbb9648b8e4de091ce853879bbcf399d6f0c74b6de7a5bbc22c",
+    "bytes": 17330622,
+    "retrieved_utc": "2026-10-19T01:48:13.612184+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Title, abstract, chapter 3 platforms, solar-model qualification and chapter 8 field/simulation conclusions inspected.",
+    "resolved_url": "https://www.aero.psu.edu/avia/pubs/Bird_PhD.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "bird-langelaan-2017-hybrid-soaring-polar",
+    "title": "Design Space Exploration for Hybrid Solar/Soaring Aircraft",
+    "authors": [
+      "John J. Bird",
+      "Jack W. Langelaan"
+    ],
+    "year": 2017,
+    "type": "conference-paper",
+    "source_url": "https://www.aero.psu.edu/avia/publications.html",
+    "download_url": "https://www.aero.psu.edu/avia/pubs/BirLan17.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bird-langelaan-2017-hybrid-soaring-polar.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Authors fit an SB-XC speed polar to flight data and compare performance at common wing loading.",
+    "limitations": "Most design-space results are analytical; manned PW-5/Discus polars are comparators, not RC data.",
+    "access": "downloaded",
+    "sha256": "6a3103b7ec6df260d73741ff9ee4f4cb314c57ab7222a627f0a933b0f7750a56",
+    "bytes": 424173,
+    "retrieved_utc": "2026-10-19T01:47:57.003395+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "resolved_url": "https://www.aero.psu.edu/avia/pubs/BirLan17.pdf",
+    "verified": "PDF magic, first-page text parsing",
+    "doi": "10.2514/6.2017-4092"
+  },
+  {
+    "id": "bird-2014-closing-loop-dynamic-soaring",
+    "title": "Closing the Loop in Dynamic Soaring",
+    "authors": [
+      "John J. Bird",
+      "Jack W. Langelaan",
+      "Corey Montella",
+      "John Spletzer",
+      "Joachim Grenestedt"
+    ],
+    "year": 2014,
+    "type": "conference-paper",
+    "source_url": "https://www.aero.psu.edu/avia/publications.html",
+    "download_url": "https://www.aero.psu.edu/avia/pubs/BirLan14.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bird-2014-closing-loop-dynamic-soaring.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Escale Fox dynamic-soaring model using AVL and component drag, with guidance and control evaluated through simulation and hardware-in-the-loop experiments.",
+    "limitations": "Numerical/hardware-in-the-loop evidence, not newly measured flight dynamics. The aircraft is an RC glider model with assumed aerodynamic characteristics.",
+    "access": "downloaded",
+    "sha256": "b67406aba6be3332df5e6f6990b51b5ba182f4665c5b12e8a386ce4e61fced12",
+    "bytes": 1491193,
+    "retrieved_utc": "2026-10-19T01:48:03.302057+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Title, platform/model section and simulation-results section VI inspected; actual-flight validation not claimed.",
+    "resolved_url": "https://www.aero.psu.edu/avia/pubs/BirLan14.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "richardson-2012-high-speed-dynamic-soaring",
+    "title": "High-Speed Dynamic Soaring",
+    "authors": [
+      "Philip L. Richardson"
+    ],
+    "year": 2012,
+    "type": "practitioner-article",
+    "source_url": "https://www2.whoi.edu/staff/prichardson/",
+    "download_url": "https://www2.whoi.edu/staff/prichardson/wp-content/uploads/sites/75/2018/11/Richardson-2012-RCSD-High-speed-Dynamic-Soaring.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/richardson-2012-high-speed-dynamic-soaring.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Author observations of high-speed RC dynamic soaring and a simplified energy model.",
+    "limitations": "RC Soaring Digest practitioner article, not a wind-tunnel/sysID study or a calibrated full sensor log; observed speed records and model predictions remain separate.",
+    "access": "downloaded",
+    "sha256": "746601f312e7ffaf1001dfa02b75437be38439f746b5cf3ccd54dd2671b406e5",
+    "bytes": 1892890,
+    "retrieved_utc": "2026-10-19T01:48:04.847877+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "resolved_url": "https://www2.whoi.edu/staff/prichardson/wp-content/uploads/sites/75/2018/11/Richardson-2012-RCSD-High-speed-Dynamic-Soaring.pdf",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "lichota-2020-cularis-multi-axis",
+    "title": "Multi-Axis Inputs for Identification of a Reconfigurable Fixed-Wing UAV",
+    "authors": [
+      "Piotr Lichota"
+    ],
+    "year": 2020,
+    "type": "journal-article",
+    "source_url": "https://www.mdpi.com/2226-4310/7/8/113",
+    "download_url": "https://www.mdpi.com/2226-4310/7/8/113/pdf",
+    "local_path": null,
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Multiplex Cularis geometry and experiment-design/identification methodology for independently actuated control surfaces.",
+    "limitations": "Source abstract describes exciting an aircraft model; do not claim real-flight validation without checking the full methods.",
+    "access": "download-failed",
+    "sha256": null,
+    "bytes": null,
+    "retrieved_utc": "2026-10-19T01:48:04.891650+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "doi": "10.3390/aerospace7080113",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "id": "condomines-2015-solius-wind-identification",
+    "title": "Experimental Wind Field Estimation and Aircraft Identification",
+    "authors": [
+      "Jean-Philippe Condomines",
+      "Murat Bronz",
+      "Gautier Hattenberger",
+      "Jean-François Erdelyi"
+    ],
+    "year": 2015,
+    "type": "conference-paper",
+    "source_url": "https://hal.science/hal-01204624",
+    "download_url": "https://hal.science/hal-01204624/document",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/condomines-2015-solius-wind-identification.pdf",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Instrumented Multiplex Solius motorglider and wind-tunnel motor/propeller tests; wind and aerodynamic-estimation methods.",
+    "limitations": "Preliminary flight/wind-estimation results; identification integration described as ongoing; sensor angle offsets and propulsion dependence matter.",
+    "access": "downloaded",
+    "sha256": "4d0b590d4b29ffc744008e858337153773929b7ab52b709b93c3deb33ab84b25",
+    "bytes": 9793199,
+    "retrieved_utc": "2026-10-19T01:48:08.786001+00:00",
+    "license": "Not stated; publicly accessible primary-source copy, redistribution not inferred",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "resolved_url": "https://enac.hal.science/hal-01204624/document",
+    "verified": "PDF magic, first-page text parsing"
+  },
+  {
+    "id": "diana2-dataset-readme",
+    "title": "Flexible Diana 2 scaled glider UAV dataset: original README",
+    "authors": [
+      "Andres Jurisson",
+      "Bart Eussen",
+      "Coen de Visser",
+      "Roeland de Breuker"
+    ],
+    "year": 2026,
+    "type": "dataset-documentation",
+    "source_url": "https://doi.org/10.4121/0c3fcef0-5b63-480c-ae40-3ff726c657e9.v1",
+    "download_url": "https://data.4tu.nl/file/0c3fcef0-5b63-480c-ae40-3ff726c657e9/b6174ca4-642e-47e8-a4eb-3bb4435d80ec",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/diana2-dataset-readme.md",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original metadata for the 2022 nine-flight aeroelastic campaign and sensor-calibration collection.",
+    "limitations": "Companion artifact from the existing Diana dataset, not an independent study. Complete 2.57 GB flight archive is not mirrored; calibration files alone are not flight time histories.",
+    "access": "downloaded",
+    "sha256": "254652e7857d23472ff6f0faf1aba597e2a16fce271208e83d14f3f474bf6bd1",
+    "bytes": 3679,
+    "retrieved_utc": "2026-10-19T01:48:09.821393+00:00",
+    "license": "CC BY 4.0 per 4TU dataset record",
+    "read_depth": "Original README read: flight-file names, 200 Hz resampling, 12 IMUs, 21 strain gauges and separate calibration/archive roles checked.",
+    "resolved_url": "https://data.4tu.nl/file/0c3fcef0-5b63-480c-ae40-3ff726c657e9/b6174ca4-642e-47e8-a4eb-3bb4435d80ec",
+    "verified": "UTF-8 Markdown content inspected against dataset landing page and publisher MD5"
+  },
+  {
+    "id": "diana2-sensor-calibration",
+    "title": "Flexible Diana 2 scaled glider UAV: sensor calibration archive",
+    "authors": [
+      "Andres Jurisson",
+      "Bart Eussen",
+      "Coen de Visser",
+      "Roeland de Breuker"
+    ],
+    "year": 2026,
+    "type": "experimental-calibration-dataset",
+    "source_url": "https://doi.org/10.4121/0c3fcef0-5b63-480c-ae40-3ff726c657e9.v1",
+    "download_url": "https://data.4tu.nl/file/0c3fcef0-5b63-480c-ae40-3ff726c657e9/df584f30-f88b-407a-a631-da403cc10cdc",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/diana2-sensor-calibration.zip",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Wind-tunnel probe, IMU, strain and control-surface calibration artifacts supporting aeroelastic flight-test interpretation.",
+    "limitations": "Companion artifact from the existing Diana dataset, not an independent study. Complete 2.57 GB flight archive is not mirrored; calibration files alone are not flight time histories.",
+    "access": "downloaded",
+    "sha256": "633af9ccc877ce09fd51c3a473abc96fa759d706885c003b7ea1fca84d6b4026",
+    "bytes": 49424275,
+    "retrieved_utc": "2026-10-19T01:48:18.240382+00:00",
+    "license": "CC BY 4.0 per 4TU dataset record",
+    "read_depth": "Source record and abstract/first-page inspection; not a complete coefficient audit",
+    "resolved_url": "https://data.4tu.nl/file/0c3fcef0-5b63-480c-ae40-3ff726c657e9/df584f30-f88b-407a-a631-da403cc10cdc",
+    "archive_members": 19,
+    "verified": "ZIP CRC integrity check"
+  },
+  {
+    "id": "bronz-laurac-2020-flight3-sd-telemetry",
+    "title": "Bronz dynamic-soaring dataset: Laurac 2020 flight 3 onboard logger stream",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "flight-telemetry",
+    "source_url": "https://github.com/mrtbrnz/dynamic_soaring/tree/76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "download_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/20_11_2020_Laurac/flight3/20_11_20__11_28_20_SD.data",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-laurac-2020-flight3-sd.data",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
+    "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. Plain-text asynchronous message stream, not a uniform CSV. ACTUATORS/COMMANDS are not independently measured surface angles.",
+    "access": "downloaded",
+    "sha256": "09df3f601507ba9b76bce98307ebe14e8f49360ed311a69045280363ce2ab711",
+    "bytes": 43561418,
+    "retrieved_utc": "2026-10-19T01:48:22.129109+00:00",
+    "license": "Repository includes GPL-3.0 license; no separate data-specific license located. Original notice retained; redistribution not inferred beyond stated terms.",
+    "read_depth": "Inspected logger message types/timestamp ranges, XML message/configuration definitions, smart-probe CSV columns or LIDAR header as applicable; not a calibrated response reconstruction.",
+    "git_commit": "76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "repository_path": "data/20_11_2020_Laurac/flight3/20_11_20__11_28_20_SD.data",
+    "resolved_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/20_11_2020_Laurac/flight3/20_11_20__11_28_20_SD.data",
+    "verified": "Plain-text header/content inspection; pinned Git commit and original repository path retained"
+  },
+  {
+    "id": "bronz-laurac-2020-flight3-sd-definitions",
+    "title": "Bronz dynamic-soaring dataset: Laurac onboard message definitions",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "dataset-documentation",
+    "source_url": "https://github.com/mrtbrnz/dynamic_soaring/tree/76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "download_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/20_11_2020_Laurac/flight3/20_11_20__11_28_20_SD.log",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-laurac-2020-flight3-sd.log",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
+    "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. XML retains the original source basename in data_file; use repository_path to pair the locally renamed data stream.",
+    "access": "downloaded",
+    "sha256": "cf8b45dec8b7319bed4dbf36427ebe79880fda8a9f29abaee4365ec67fbb72d1",
+    "bytes": 194383,
+    "retrieved_utc": "2026-10-19T01:48:18.599758+00:00",
+    "license": "Repository includes GPL-3.0 license; no separate data-specific license located. Original notice retained; redistribution not inferred beyond stated terms.",
+    "read_depth": "Inspected logger message types/timestamp ranges, XML message/configuration definitions, smart-probe CSV columns or LIDAR header as applicable; not a calibrated response reconstruction.",
+    "git_commit": "76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "repository_path": "data/20_11_2020_Laurac/flight3/20_11_20__11_28_20_SD.log",
+    "resolved_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/20_11_2020_Laurac/flight3/20_11_20__11_28_20_SD.log",
+    "verified": "Plain-text header/content inspection; pinned Git commit and original repository path retained"
+  },
+  {
+    "id": "bronz-muret-2021-flight2-sd-telemetry",
+    "title": "Bronz dynamic-soaring dataset: Muret 2021 flight 2 onboard logger stream",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "flight-telemetry",
+    "source_url": "https://github.com/mrtbrnz/dynamic_soaring/tree/76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "download_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/16_04_2021_Muret/Flight_2/21_04_16__12_39_53_SD.data",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-muret-2021-flight2-sd.data",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
+    "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. Plain-text asynchronous message stream, not a uniform CSV. ACTUATORS/COMMANDS are not independently measured surface angles.",
+    "access": "downloaded",
+    "sha256": "a1b3e39b09819467112adcdecfc0bbc298e360f2fb12b39dc7c0e116ee725c99",
+    "bytes": 43472186,
+    "retrieved_utc": "2026-10-19T01:48:25.464451+00:00",
+    "license": "Repository includes GPL-3.0 license; no separate data-specific license located. Original notice retained; redistribution not inferred beyond stated terms.",
+    "read_depth": "Inspected logger message types/timestamp ranges, XML message/configuration definitions, smart-probe CSV columns or LIDAR header as applicable; not a calibrated response reconstruction.",
+    "git_commit": "76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "repository_path": "data/16_04_2021_Muret/Flight_2/21_04_16__12_39_53_SD.data",
+    "resolved_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/16_04_2021_Muret/Flight_2/21_04_16__12_39_53_SD.data",
+    "verified": "Plain-text header/content inspection; pinned Git commit and original repository path retained"
+  },
+  {
+    "id": "bronz-muret-2021-flight2-sd-definitions",
+    "title": "Bronz dynamic-soaring dataset: Muret onboard message definitions",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "dataset-documentation",
+    "source_url": "https://github.com/mrtbrnz/dynamic_soaring/tree/76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "download_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/16_04_2021_Muret/Flight_2/21_04_16__12_39_53_SD.log",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-muret-2021-flight2-sd.log",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
+    "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. XML retains the original source basename in data_file; use repository_path to pair the locally renamed data stream.",
+    "access": "downloaded",
+    "sha256": "cd881e6794f48d8dbad077e7ba37a9edf42b35f29d8af179ac8be005abe57411",
+    "bytes": 206622,
+    "retrieved_utc": "2026-10-19T01:48:22.735275+00:00",
+    "license": "Repository includes GPL-3.0 license; no separate data-specific license located. Original notice retained; redistribution not inferred beyond stated terms.",
+    "read_depth": "Inspected logger message types/timestamp ranges, XML message/configuration definitions, smart-probe CSV columns or LIDAR header as applicable; not a calibrated response reconstruction.",
+    "git_commit": "76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "repository_path": "data/16_04_2021_Muret/Flight_2/21_04_16__12_39_53_SD.log",
+    "resolved_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/16_04_2021_Muret/Flight_2/21_04_16__12_39_53_SD.log",
+    "verified": "Plain-text header/content inspection; pinned Git commit and original repository path retained"
+  },
+  {
+    "id": "bronz-muret-2021-lidar",
+    "title": "Bronz dynamic-soaring dataset: Muret 2021 LIDAR wind measurements",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "wind-measurements",
+    "source_url": "https://github.com/mrtbrnz/dynamic_soaring/tree/76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "download_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/16_04_2021_Muret/Lidar/WLS71086_2021_04_16__10_57_20.rtd",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-muret-2021-lidar.rtd",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
+    "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied. LIDAR header specifies UTC+2; clock alignment to the onboard logs has not been established.",
+    "access": "downloaded",
+    "sha256": "770539735c434a732ba10bfd7f58bcc7c15ba06701f70c63f1a5299b83650818",
+    "bytes": 12385855,
+    "retrieved_utc": "2026-10-19T01:48:26.528820+00:00",
+    "license": "Repository includes GPL-3.0 license; no separate data-specific license located. Original notice retained; redistribution not inferred beyond stated terms.",
+    "read_depth": "Inspected logger message types/timestamp ranges, XML message/configuration definitions, smart-probe CSV columns or LIDAR header as applicable; not a calibrated response reconstruction.",
+    "git_commit": "76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "repository_path": "data/16_04_2021_Muret/Lidar/WLS71086_2021_04_16__10_57_20.rtd",
+    "resolved_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/16_04_2021_Muret/Lidar/WLS71086_2021_04_16__10_57_20.rtd",
+    "verified": "Plain-text header/content inspection; pinned Git commit and original repository path retained"
+  },
+  {
+    "id": "bronz-laurac-smartprobe-example",
+    "title": "Bronz dynamic-soaring dataset: original smart-probe example CSV",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "processed-flight-data",
+    "source_url": "https://github.com/mrtbrnz/dynamic_soaring/tree/76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "download_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/20_11_2020_Laurac/flight3/smartprobe_example.csv",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-laurac-smartprobe-example.csv",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
+    "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied.",
+    "access": "downloaded",
+    "sha256": "70c16edaf71d55bd4128f3a316e848970fc2e5ea8351cf8533c10dd7b3b351e9",
+    "bytes": 915492,
+    "retrieved_utc": "2026-10-19T01:48:26.516137+00:00",
+    "license": "Repository includes GPL-3.0 license; no separate data-specific license located. Original notice retained; redistribution not inferred beyond stated terms.",
+    "read_depth": "Inspected logger message types/timestamp ranges, XML message/configuration definitions, smart-probe CSV columns or LIDAR header as applicable; not a calibrated response reconstruction.",
+    "git_commit": "76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "repository_path": "data/20_11_2020_Laurac/flight3/smartprobe_example.csv",
+    "resolved_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/data/20_11_2020_Laurac/flight3/smartprobe_example.csv",
+    "verified": "Plain-text header/content inspection; pinned Git commit and original repository path retained"
+  },
+  {
+    "id": "bronz-repository-license",
+    "title": "Bronz dynamic-soaring repository: original license notice",
+    "authors": [
+      "Murat Bronz",
+      "Nikola Gavrilovic",
+      "Antoine Drouin",
+      "Gautier Hattenberger",
+      "Jean-Marc Moschetta"
+    ],
+    "year": 2021,
+    "type": "license-documentation",
+    "source_url": "https://github.com/mrtbrnz/dynamic_soaring/tree/76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "download_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/LICENSE",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/bronz-repository-license.txt",
+    "topics": [
+      "sailplanes",
+      "soaring",
+      "flight dynamics"
+    ],
+    "relevance": "Original public campaign file associated with dynamic-soaring flight experiments; inspect with its message definitions and paper.",
+    "limitations": "Same two-campaign dataset; each file is a companion artifact, not a new independent study. Sensor estimates and commanded controls differ from direct measurements; no complete airframe coefficient identification is implied.",
+    "access": "downloaded",
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "bytes": 35149,
+    "retrieved_utc": "2026-10-19T01:48:26.686353+00:00",
+    "license": "Repository includes GPL-3.0 license; no separate data-specific license located. Original notice retained; redistribution not inferred beyond stated terms.",
+    "read_depth": "Inspected logger message types/timestamp ranges, XML message/configuration definitions, smart-probe CSV columns or LIDAR header as applicable; not a calibrated response reconstruction.",
+    "git_commit": "76222e07399dbcb266da7abb6fe53e896d4086c7",
+    "repository_path": "LICENSE",
+    "resolved_url": "https://raw.githubusercontent.com/mrtbrnz/dynamic_soaring/76222e07399dbcb266da7abb6fe53e896d4086c7/LICENSE",
+    "verified": "Plain-text header/content inspection; pinned Git commit and original repository path retained"
+  },
+  {
+    "id": "prodan-2013-cularis-receding-horizon-flight-control",
+    "title": "Receding horizon flight control for trajectory tracking of autonomous aerial vehicles",
+    "authors": [
+      "Ionela Prodan",
+      "Sorin Olaru",
+      "Ricardo Bencatel",
+      "Joao Borges de Sousa",
+      "Cristina Stoica",
+      "Silviu-Iulian Niculescu"
+    ],
+    "year": 2013,
+    "type": "journal-article",
+    "source_url": "https://centralesupelec.hal.science/hal-00876457",
+    "download_url": "https://centralesupelec.hal.science/hal-00876457/preview/UAV_2.07.2013.pdf",
+    "local_path": "references/rc-validation-library-2026-10-18/sailplanes/cularis-2013-receding-horizon-flight-control.pdf",
+    "topics": [
+      "Multiplex Cularis",
+      "trajectory tracking",
+      "flight tests"
+    ],
+    "relevance": "Remotely piloted Cularis-05 flight demonstration of trajectory control, with separate modeling/simulation context.",
+    "limitations": "Controller validation is not an independent identification of all aerodynamic derivatives. Test installation and flight conditions are specific to the Cularis platform. Multiple platforms (Cularis-05, Pilatos-03 and Alfa-06) are described; individual plots cannot all be attributed to Cularis without a platform-specific label.",
+    "access": "downloaded",
+    "sha256": "7ad0193744e68c019082d0b1f503364a36968ecb6dfb3699ffb1484284d67737",
+    "bytes": 3251107,
+    "retrieved_utc": "2026-10-19T01:51:10.910696+00:00",
+    "license": "Institutionally hosted author copy; redistribution not inferred",
+    "read_depth": "Title/author first page and flight-test section inspected; no coefficient extraction",
+    "doi": "10.1016/j.conengprac.2013.05.010",
+    "verified": "PDF signature and full searchable text parsing"
+  }
+]

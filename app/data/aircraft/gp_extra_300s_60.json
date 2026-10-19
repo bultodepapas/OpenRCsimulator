@@ -1489,10 +1489,10 @@
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
         },
         "max_compression": {
-          "value": 0.08,
+          "value": 0.1,
           "unit": "m",
           "kind": "estimated",
-          "source": "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."
+          "source": "GP-06c reserve-energy travel (main 0.10 m, tail 0.08 m): the peak compression of a level/three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: main 93 mm, tail 73 mm). Replaces the E5a 0.08/0.05 m thresholds, which collapsed below the 7 ft/s limit drop. A full-size certification convention borrowed for RC; not measured gear travel or structural strength."
         },
         "max_steering": {
           "value": 0,
@@ -1527,10 +1527,10 @@
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
         },
         "max_compression": {
-          "value": 0.08,
+          "value": 0.1,
           "unit": "m",
           "kind": "estimated",
-          "source": "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."
+          "source": "GP-06c reserve-energy travel (main 0.10 m, tail 0.08 m): the peak compression of a level/three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: main 93 mm, tail 73 mm). Replaces the E5a 0.08/0.05 m thresholds, which collapsed below the 7 ft/s limit drop. A full-size certification convention borrowed for RC; not measured gear travel or structural strength."
         },
         "max_steering": {
           "value": 0,
@@ -1565,10 +1565,10 @@
           "source": "E5a: damping ratio 0.3 with loader m/3 convention, as the P-51 contact fixture; not a measured Extra leg/tyre response."
         },
         "max_compression": {
-          "value": 0.05,
+          "value": 0.08,
           "unit": "m",
           "kind": "estimated",
-          "source": "E5a: provisional numerical collapse threshold (main 0.08 m, tail 0.05 m), beyond static sag; not measured gear travel or structural strength."
+          "source": "GP-06c reserve-energy travel (main 0.10 m, tail 0.08 m): the peak compression of a level/three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: main 93 mm, tail 73 mm). Replaces the E5a 0.08/0.05 m thresholds, which collapsed below the 7 ft/s limit drop. A full-size certification convention borrowed for RC; not measured gear travel or structural strength."
         },
         "max_steering": {
           "value": -25.0,

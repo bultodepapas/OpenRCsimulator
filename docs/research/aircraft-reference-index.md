@@ -20,9 +20,11 @@ The owner-supplied RHB/Horizon Ultra Stick 120 material differs from the Jensen 
 
 Published Ultra Stick 25e/120 measurements (UMN flight identification, NASA FASER wind tunnel and flight spin) and other RC airframes' data are registered in [RC-class aerodynamic data sources](flight-dynamics/rc-aero-data-sources.md). Originals: local only, `references/rc-aero-data/`.
 
-The expanded [RC aerodynamic validation library, 2026-10-18](flight-dynamics/rc-validation-library-2026-10-18/README.md) collects additional Stik-family studies, conventional RC aircraft, flying wings, flight logs, low-Reynolds tunnel data and propeller experiments. Its topic manifests distinguish measured evidence, numerical studies, metadata-only leads and verified local downloads.
+The expanded [RC flight-dynamics validation library, 2026-10-18](flight-dynamics/rc-validation-library-2026-10-18/README.md) collects additional Stik-family studies, conventional RC aircraft, flying wings, jets, helicopters, sailplanes, flight logs, low-Reynolds tunnel data and propeller experiments. Its topic manifests distinguish measured evidence, numerical studies, metadata-only leads and verified local downloads.
 
 MoJo's drawing identity and geometry remain unknown; only signature, format, size and hash were examined. Use the same CAD audit/inventory; the filename does not establish span or engine class. Original: local only, `references/mojo-60/MoJo Parts 60.dwg`.
+
+Fuel sources for every aircraft are registered in the [FUEL-00 source review](fuel-systems/FUEL-00/README.md#6-external-sources) with its [manifest](fuel-systems/FUEL-00/sources.json). They cover engine and kit manuals for tank size, height and balance condition, fuel and oil densities, and measured consumption. Originals are local only, in `references/rc-fuel-systems/`.
 
 ## SebArt Avanti S A200
 

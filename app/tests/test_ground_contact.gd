@@ -14,6 +14,8 @@ const FlightSession := preload("res://sim/flight_session.gd")
 
 const PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const G := 9.80665
+## Horizontal drift (m) below which the h vs h/2 order check is not meaningful (GP-06b; same floor as E5a).
+const DRIFT_FLOOR := 1e-7
 
 var _failures := 0
 var _count := 0
@@ -93,8 +95,9 @@ func _initialize() -> void:
 	# nose-down pitch with only the nose wheel touching → nose-up moment.
 	var rolled := Ground.loads(_level(0.24, 0.0, 0.0, 0.1), gear)
 	_check("rolled right on the ground: rolling moment restores (Mx < 0)", rolled.size() == 6 and rolled[3] < 0.0, str(rolled))
-	var nosed := Ground.loads(_level(0.30, 0.0, -0.2), gear)
-	var c := Ground.compressions(_level(0.30, 0.0, -0.2), gear)
+	# GP-06b: the corrected wheel bottoms sit 5 mm higher; at 0.30 m the nose wheel no longer touched (it had 0.9 mm).
+	var nosed := Ground.loads(_level(0.29, 0.0, -0.2), gear)
+	var c := Ground.compressions(_level(0.29, 0.0, -0.2), gear)
 	_check("nose-down on the nose wheel only: nose-up moment (My > 0)", c[0] < 0.0 and c[1] < 0.0 and c[2] > 0.0 and nosed.size() == 6 and nosed[4] > 0.0, str(nosed))
 
 	# Drop test (gear only, no air): from 0.5 m, level, at rest. Energy never grows; it settles on its wheels
@@ -130,14 +133,17 @@ func _initialize() -> void:
 	_check("h vs h/2 after 1 s of bouncing: altitude within 1 mm, attitude within 1e-3, sink within 1 cm/s", dz < 1e-3 and dq < 1e-3 and dv < 1e-2, "Δz %s m, Δq %s, Δw %s m/s (h2 ticks %d)" % [dz, dq, dv, h2.ticks])
 	# Without tyre friction (E2) the contact force is vertical in NED, so the CG must not move horizontally. RK4 on
 	# body-axis velocities leaves a truncation drift during the bounce; it is integration error, not a force, if it
-	# shrinks ≥ 8× at h/2 (4th order: 16×). With friction the rocking wheels scrub and really move the CG.
+	# shrinks ≥ 8× at h/2 (4th order: 16×), or when both drifts are already below DRIFT_FLOOR (0.1 µm, where the
+	# non-smooth touchdown, not the smooth truncation, sets the residual; E5a uses the same 1e-7 floor). With friction the
+	# rocking wheels scrub and really move the CG.
 	var n_h := _drop(model, 0.5, 1.0, true)
 	Engine.physics_ticks_per_second = 480
 	var n_h2 := _drop(model, 0.5, 1.0, true)
 	Engine.physics_ticks_per_second = saved
 	var drift_h: float = absf(n_h.state[RB.POS])
 	var drift_h2: float = absf(n_h2.state[RB.POS])
-	_check("normal force only: horizontal drift is integration error, ≤ 0.1 mm at h and ≥ 8× smaller at h/2", drift_h < 1e-4 and drift_h2 * 8.0 <= drift_h, "north %s m at h, %s m at h/2" % [drift_h, drift_h2])
+	_check("normal force only: horizontal drift is integration error, ≤ 0.1 mm at h and ≥ 8× smaller at h/2 (or below the floor)",
+		drift_h < 1e-4 and (drift_h2 * 8.0 <= drift_h or maxf(drift_h, drift_h2) < DRIFT_FLOOR), "north %s m at h, %s m at h/2" % [drift_h, drift_h2])
 
 	# The real session: nothing changes in the air (loads bit-identical to the air-only evaluator at the trimmed
 	# start), a low drop is a landing, a high drop breaks the gear, and the hull still crashes the rest.

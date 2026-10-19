@@ -660,7 +660,7 @@ landing_gear = {
     "contacts": [
         gear_contact("contact_main_left", "main_left", main_pos[0], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
         gear_contact("contact_main_right", "main_right", main_pos[1], k_main, 0.12, 0, "breaking travel: a level touchdown at about 2.5 m/s sink reaches it (½mv² against the springs with the static sag); RC practice, not measured"),
-        gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.08, -25.0, "tail-wheel leg travel before the fuselage hits: estimated"),
+        gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.105, -25.0, "GP-06c reserve-energy travel: the peak tail compression of a three-point free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: 96 mm). Replaces the estimated 0.08 m, which collapsed in the 7 ft/s limit drop. A full-size certification convention borrowed for RC; not measured strut travel or strength"),
     ],
     "rolling_resistance": q(0.03, "1", "estimated", "between a full-size tyre on concrete (JSBSim c172x 0.022) and the Stik's 76 mm wheel (0.04): the 171 mm wheels deform less; per-surface factors (grass) come from the field"),
     # P51-21: stiction (shared E3b1 law), required by the qualified runway start. No P-51-specific measurement exists.

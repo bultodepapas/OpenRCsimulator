@@ -4,7 +4,7 @@
   "price_date": "2026-10-16",
   "generated_from": {
     "price_catalog_sha256": "64b009a22268f84d81a1b5cf53f87f653d47bb4f483444c072d3e17d455c297e",
-    "aircraft_costing_sha256": "0c1d76d155352d03edc886ba72238d270c05aba2fb8d9d6c0e28ca170208946e",
+    "aircraft_costing_sha256": "9288b3a28c7387c484e7bf985310ca285ec8be229f6f85c9e6d3e6ccc4a21c96",
     "aircraft_catalog_sha256": "9345386d7f17adcfde8fa8bc1eb9b70916c50dbc8f2c308a58b0b0ce6cdbc548",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
@@ -2033,7 +2033,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "jensen-das-ugly-stik-60",
-      "source_sha256": "954366d373192b9692dc86159896833708c73b8dbd281d800ab459f1c099c049",
+      "source_sha256": "43e2d00d0034f26225f7bed4bb0fea9a7996e73bae41f3aca0602e2c605704cf",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
@@ -2398,7 +2398,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-61fx-2t",
-      "source_sha256": "a4c934de89eb39ac2f626f05725953bceb3927ed9aca7272e6a4f470695c0893",
+      "source_sha256": "8d370ba37800af1c5326f12c3ca8cfe7a601256f264689dbb8a6fc66ff777881",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
@@ -2763,7 +2763,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-55ax-2t",
-      "source_sha256": "010b43ae6eb60967ea12005585452312fceaaca1a13967609d128d4932f9b641",
+      "source_sha256": "8dcfb98e3a2e8a5a9808df0729bc5fe5a4de483afcb94e0bb6e9018fd35df62e",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3128,7 +3128,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "stik-glow-fs64v-4t",
-      "source_sha256": "a226298fc93c2f601e47f6cdcbc6262f813bcfe4e5b8ab9b90eb67e446415757",
+      "source_sha256": "c42640d6f6e4d25bb8db0266ed3310e22432366098d9e84bcccf8dc3097643c6",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
@@ -3493,7 +3493,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "gp-extra-300s-60",
-      "source_sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62",
+      "source_sha256": "2af361eb1617119383484349bf55262801410525f5ef45a9fb485701d380a338",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -4034,7 +4034,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "p51d-mustang-120",
-      "source_sha256": "a37f7f4296b789b2fec3d48d73bfadd3ad83177954d2db5b1348db557be5a321",
+      "source_sha256": "eddd977927848db90d4cbbb34a47df7160c1071c2d7b7d7e08627385c0b75798",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -4737,7 +4737,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
-      "source_sha256": "387047f77349b61fe0eb463a93794b50d31ec76c65087f0d3cb3f9fe402f7e75",
+      "source_sha256": "0f349482a9845bdbd7d8d95d9ebb8240184799e947fa1309af1e4102b75370ce",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -5305,7 +5305,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "turbo-lumber-evolution",
-      "source_sha256": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+      "source_sha256": "0fa617d87f0e414533120a3aefe973c20dd06eac762784ad66d9b26c2f59cdaf",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",

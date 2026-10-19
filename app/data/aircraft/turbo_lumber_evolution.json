@@ -1221,10 +1221,10 @@
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "max_compression": {
-          "value": 0.08,
+          "value": 0.1,
           "unit": "m",
           "kind": "estimated",
-          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation"
+          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation. GP-06c reserve-energy travel: peak main compression of a level free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: 95 mm); the earlier 0.08 m collapsed in the 7 ft/s limit drop. Borrowed full-size convention, not measured"
         },
         "max_steering": {
           "value": 0.0,
@@ -1259,10 +1259,10 @@
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "max_compression": {
-          "value": 0.08,
+          "value": 0.1,
           "unit": "m",
           "kind": "estimated",
-          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation"
+          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation. GP-06c reserve-energy travel: peak main compression of a level free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: 95 mm); the earlier 0.08 m collapsed in the 7 ft/s limit drop. Borrowed full-size convention, not measured"
         },
         "max_steering": {
           "value": 0.0,
@@ -1297,10 +1297,10 @@
           "source": "research/timber/tt07/derive_physics.py: estimated geometry/textbook derivation; not flight identified"
         },
         "max_compression": {
-          "value": 0.08,
+          "value": 0.1,
           "unit": "m",
           "kind": "estimated",
-          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation"
+          "source": "TT-07 inputs.json: Lumped wheel compression travel m before terminal failure, not authored suspension rotation. GP-06c reserve-energy travel: peak main compression of a level free drop at the former 14 CFR 23.727 reserve velocity, 1.2 x 7 ft/s = 2.56 m/s with wing lift 2/3 W through the CG (23.473(d)/(e)), x1.05 rounded up to 5 mm (research/ground-physics/gp06/reserve_drop.gd: 95 mm); the earlier 0.08 m collapsed in the 7 ft/s limit drop. Borrowed full-size convention, not measured"
         },
         "max_steering": {
           "value": -30.0,

@@ -168,3 +168,33 @@ static func roll_rate(s: PackedFloat64Array, target: float, k: float, st: Dictio
 	var error: float = target - s[RB.RATE]
 	var i := _integrate(st, "roll_rate_i", 2.0 * k * error, dt, 1.0)
 	return clampf(k * 1.0 * error + i, -1.0, 1.0)
+
+
+# --- Approach and flare (the FT-01 landing law, shared by landing, go_around and dead_stick_landing) --------------
+
+## Elevator on a coupled approach: a sink-rate target that closes on the glide path (`h_path` and the wheels' height
+## `h`, m), PI through the pitch attitude around the attitude the approach started with. `hz` is the tick rate.
+static func approach_pitch(s: PackedFloat64Array, h: float, h_path: float, v_app: float, gamma: float, a1: float, k: float, st: Dictionary, hz := 240.0) -> float:
+	if not st.has("app_pitch0"):
+		st.app_pitch0 = euler(s)[1]
+	var climb_error: float = (-v_app * tan(gamma) + 0.3 * (h_path - h)) - climb_rate(s)
+	st.climb_i = clampf(float(st.get("climb_i", 0.0)) + climb_error / hz, -10.0, 10.0)
+	var wanted: float = float(st.app_pitch0) + 0.03 * climb_error + 0.02 * float(st.climb_i)
+	return pitch(s, clampf(wanted, deg_to_rad(-15.0), a1 - deg_to_rad(3.0)), k, st, 1.0 / hz)
+
+
+## Throttle on a coupled approach: PI on the speed around half the trimmed throttle (suits engines with spool lag).
+static func approach_throttle(s: PackedFloat64Array, v_app: float, start_throttle: float, st: Dictionary, hz := 240.0) -> float:
+	st.speed_i = clampf(float(st.get("speed_i", 0.0)) + (v_app - speed(s)) / hz, -20.0, 20.0)
+	return clampf(0.5 * start_throttle + 0.1 * (v_app - speed(s)) + 0.03 * float(st.speed_i), 0.0, 1.0)
+
+
+## Flare: from the attitude at the flare height, raise the nose until the sink follows the wheels' height `h` down
+## (0.3 m/s + 0.6/s × h), PI on sink, the attitude bounded by −2° and min(12°, stall start − 2°).
+static func flare(s: PackedFloat64Array, h: float, a1: float, k: float, st: Dictionary, hz := 240.0) -> float:
+	if not st.has("flare_pitch0"):
+		st.flare_pitch0 = euler(s)[1]
+	var sink_error: float = -climb_rate(s) - (0.3 + 0.6 * h)
+	st.flare_i = clampf(float(st.get("flare_i", 0.0)) + sink_error / hz, -2.0, 2.0)
+	var wanted: float = float(st.flare_pitch0) + 0.08 * sink_error + 0.15 * float(st.flare_i)
+	return pitch(s, clampf(wanted, deg_to_rad(-2.0), minf(deg_to_rad(12.0), a1 - deg_to_rad(2.0))), k, st, 1.0 / hz)
