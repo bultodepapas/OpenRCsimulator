@@ -150,9 +150,11 @@ func _test_extremes_reset_and_replay() -> void:
 	var cue: Dictionary = {id = "MotionGroupingSock", north = 0.0, east = 0.0, length = 2.5,
 		pole_height = 3.0, throat_diameter = 0.45, tail_diameter = 0.12}
 	var low_sock: Node3D = Windsock.build(cue)
+	var medium_sock: Node3D = Windsock.build(cue)
 	var high_sock: Node3D = Windsock.build(cue)
 	var low_fps: Variant = low_sock.get_meta("windsock_motion")
 	var high_fps: Variant = high_sock.get_meta("windsock_motion")
+	var medium_fps: Variant = medium_sock.get_meta("windsock_motion")
 	var low_frames: int = 0
 	var high_frames: int = 0
 	var previous_low: int = 0
@@ -161,7 +163,10 @@ func _test_extremes_reset_and_replay() -> void:
 		var time_s: float = float(tick) / SAMPLE_HZ
 		var wind: Array = _tape_wind(tick)
 		Windsock.advance(low_sock, time_s, wind)
+		Windsock.advance(medium_sock, time_s, wind)
 		Windsock.advance(high_sock, time_s, wind)
+		if tick % 4 == 0:
+			Windsock.update(medium_sock, time_s, wind)
 		var low_sample: int = int(floor(float(tick) * 30.0 / SAMPLE_HZ))
 		var high_sample: int = int(floor(float(tick) * 144.0 / SAMPLE_HZ))
 		if low_sample > previous_low:
@@ -173,10 +178,12 @@ func _test_extremes_reset_and_replay() -> void:
 			high_frames += 1
 			previous_high = high_sample
 	_check("same 240 Hz wind tape has frame reads at both 30 and 144 fps", low_frames > 100 and high_frames > low_frames)
-	_check("30/144 fps grouping leaves replay state identical", _same_snapshot(low_fps.state_snapshot(), high_fps.state_snapshot()))
+	_check("30/60/144 fps grouping leaves replay state identical", _same_snapshot(low_fps.state_snapshot(), high_fps.state_snapshot())
+		and _same_snapshot(medium_fps.state_snapshot(), high_fps.state_snapshot()))
 	_check("grouped update() calls do not attach scene processing", not low_sock.is_processing()
 		and not low_sock.is_physics_processing() and not high_sock.is_processing() and not high_sock.is_physics_processing())
 	low_sock.free()
+	medium_sock.free()
 	high_sock.free()
 
 
@@ -193,6 +200,10 @@ func _tape_wind(tick: int) -> Array:
 
 
 func _test_main_wind_callback() -> void:
+	var saved_environment: Dictionary = {}
+	for key: String in ["OPENRC_SCENERY", "OPENRC_SCENERY_AUDIO", "OPENRC_SCENERY_BIRDS"]:
+		saved_environment[key] = OS.get_environment(key)
+		OS.set_environment(key, "off")
 	var main: Node = load("res://main.tscn").instantiate() as Node
 	main.call("set_user_args", PackedStringArray([
 		"--weather=turbulent", "--scenery=off", "--soundscape=off", "--smoke=off", "--crash-effects=off",
@@ -208,6 +219,11 @@ func _test_main_wind_callback() -> void:
 	if sim != null and cues.size() == 1:
 		var sock: Node3D = cues[0] as Node3D
 		var motion: Variant = sock.get_meta("windsock_motion")
+		session.call("reset")
+		var startup_wind: PackedFloat64Array = session.call("wind_at", 0.0)
+		_check("session reset aligns the basket with the committed startup wind",
+			_angle_error(float(motion.basket_yaw_rad), atan2(startup_wind[0], startup_wind[1])) < 1e-5
+			and float(motion.inflation) == 0.0 and float(motion.simulated_time_s) == 0.0)
 		var initial_index: int = int(motion.simulated_step_index)
 		var aux_before: PackedFloat64Array = sim.get("aux").duplicate()
 		var time_s: float = float(sim.call("time"))
@@ -223,6 +239,12 @@ func _test_main_wind_callback() -> void:
 			int(motion.simulated_step_index) > initial_index
 			and absf(float(motion.simulated_time_s) - final_time) <= STEP_S + 1e-8,
 			"motion %.6f s / session %.6f s" % [float(motion.simulated_time_s), final_time])
+		var physical_before: PackedFloat64Array = sim.get("state").duplicate()
+		aux_before = sim.get("aux").duplicate()
+		main.call("_advance_windsock", int(sim.get("tick")), final_time, sim.get("state"),
+			sim.get("last_loads"), sim.get("inputs"), sim.get("aux"))
+		_check("windsock observer preserves physical state and turbulence history",
+			_same_f64(physical_before, sim.get("state")) and _same_f64(aux_before, sim.get("aux")))
 	else:
 		_check("production Main session and field are available", false)
 	main.set_process(false)
@@ -236,6 +258,9 @@ func _test_main_wind_callback() -> void:
 	if main.get_parent() == root:
 		root.remove_child(main)
 	main.free()
+	for key: String in saved_environment:
+		if str(saved_environment[key]).is_empty(): OS.unset_environment(key)
+		else: OS.set_environment(key, str(saved_environment[key]))
 	await process_frame
 
 

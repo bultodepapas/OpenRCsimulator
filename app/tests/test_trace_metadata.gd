@@ -59,7 +59,7 @@ func _initialize() -> void:
 	session.input_enabled = false
 	session.setup()
 	root.add_child(session)
-	var recorder: RefCounted = Recorder.new(session.sim, session.electrical_state)
+	var recorder: RefCounted = Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 	for entry in Catalog.airplane_flyable_entries(): # TT-06: previews carry no data file
 		session.aircraft_path = entry.data
 		_check("reload " + entry.id, session.reload().begins_with("aircraft reloaded:"))
@@ -69,7 +69,7 @@ func _initialize() -> void:
 		# Metadata expectations follow the resolved aircraft model, not a fixed ID list.
 		var glow_profiled: bool = session.glow_is_active()
 		var wheel_profiled: bool = session.wheel_count() > 0
-		var expected_schema: String = "openrc-flight-meta v7" if glow_profiled else ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2")
+		var expected_schema: String = "openrc-flight-meta v10" if glow_profiled else ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2")
 		if session.flaps_available():
 			expected_schema = "openrc-flight-meta v9" # optional flap layout follows the gear channels
 		elif session.gear_is_retractable():
@@ -91,6 +91,17 @@ func _initialize() -> void:
 			_check("glow trace records the accepted installation law", meta.propulsion_model == GlowFlight.LAW)
 			_check("glow trace keeps the explicit cycle family", meta.glow_family == expected_family and start.get("family", "") == expected_family)
 			_check("glow profile identity carries the installation hash", str(identity.get("profile", {}).get("sha256", "")).length() == 64)
+			_check("finite Glow trace identifies its selected tank and registry",
+				str(meta.get("glow_fuel_tank_id", "")).length() > 0
+				and str(meta.get("glow_fuel_registry_sha256", "")).length() == 64)
+			var line_fuel: float = float(start.get("feed_line_fuel_kg", NAN))
+			var main_fuel: float = float(start.get("main_fuel_kg", NAN))
+			var source_mode: float = float(start.get("fuel_source_mode", NAN))
+			_check("Glow start summary separates main and feed-line stores",
+				is_finite(line_fuel) and is_finite(main_fuel) and is_finite(source_mode)
+				and absf(line_fuel + main_fuel - float(start.get("fuel_kg", NAN))) < 1e-9
+				and line_fuel == float(JSON.parse_string(meta.recording_start_continuous)[17])
+				and source_mode == float(JSON.parse_string(meta.recording_start_continuous)[18]))
 			_check("glow recording start matches all continuous state slots",
 				JSON.parse_string(meta.recording_start_continuous).size() == GlowFlight.SIZE + session.wheel_count()
 				and _aux_matches(meta.recording_start_continuous, session.sim.continuous))
@@ -143,7 +154,10 @@ func _initialize() -> void:
 		if glow_profiled:
 			_check("glow CSV exposes accepted firing events and finite tank state",
 				recorder.trace.columns().has("glow_fire_events") and recorder.trace.columns().has("glow_fuel_kg")
-				and recorder.trace.row_count() == 1)
+				and recorder.trace.columns().has("glow_line_fuel_kg")
+				and recorder.trace.columns().has("mass_kg")
+				and recorder.trace.row_count() == 1
+				and recorder.trace.to_csv().begins_with("# format: openrc-trace v14\n"))
 		var snapshot: Dictionary = recorder.trace.meta.duplicate(true)
 		_check("mid-flight recording tick", snapshot.recording_start_tick == 12)
 		_check("mid-flight aux snapshot", _aux_matches(snapshot.recording_start_aux, session.sim.aux.slice(0, Session.AUX_LAYOUT.size())))

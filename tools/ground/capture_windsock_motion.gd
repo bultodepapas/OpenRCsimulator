@@ -253,9 +253,9 @@ func _mesh_metrics() -> Dictionary:
 		for surface: int in mesh_instance.mesh.get_surface_count():
 			surfaces += 1
 			var arrays: Array = mesh_instance.mesh.surface_get_arrays(surface)
-			var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+			var indices: Variant = arrays[Mesh.ARRAY_INDEX]
 			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-			triangles += (indices.size() if not indices.is_empty() else vertices.size()) / 3
+			triangles += (indices.size() if indices is PackedInt32Array and not indices.is_empty() else vertices.size()) / 3
 	return {"surface_count": surfaces, "triangle_count": triangles}
 
 

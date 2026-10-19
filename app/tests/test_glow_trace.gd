@@ -11,6 +11,13 @@ const GLOW_COLUMNS: Array[String] = [
 	"glow_phase_revolutions", "glow_mixture_command_phi", "glow_fuel_transport_kg_s",
 	"glow_opportunity_count", "glow_fire_count", "glow_fire_events", "glow_firing_accumulator",
 	"glow_shaft_work_j", "glow_propeller_work_j", "glow_thrust_work_j", "glow_chemical_work_j",
+	"glow_line_fuel_kg", "glow_fuel_source_mode",
+]
+const LEGACY_GLOW_COLUMNS: Array[String] = [
+	"glow_fuel_kg", "glow_temperature_k", "glow_running", "glow_stop_reason_code",
+	"glow_phase_revolutions", "glow_mixture_command_phi", "glow_fuel_transport_kg_s",
+	"glow_opportunity_count", "glow_fire_count", "glow_fire_events", "glow_firing_accumulator",
+	"glow_shaft_work_j", "glow_propeller_work_j", "glow_thrust_work_j", "glow_chemical_work_j",
 ]
 
 var _failures: int = 0
@@ -59,7 +66,7 @@ func _test_live_glow_traces() -> void:
 	session.input_enabled = false
 	session.setup()
 	root.add_child(session)
-	var recorder: RefCounted = Recorder.new(session.sim, session.electrical_state)
+	var recorder: RefCounted = Recorder.new(session.sim, session.electrical_state, Callable(session, "mass_properties"))
 	for aircraft_id: String in ["stik-glow-55ax-2t", "stik-glow-fs64v-4t"]:
 		var entry: Dictionary = Catalog.entry(aircraft_id)
 		session.aircraft_path = entry.data
@@ -70,11 +77,33 @@ func _test_live_glow_traces() -> void:
 			and before.get("running", false), str(before))
 		recorder.start(session.trace_meta())
 		var trace: RefCounted = recorder.trace
-		_check("" + family + " trace accepts tick zero", trace.row_count() == 1 and trace.to_csv().begins_with("# format: openrc-trace v9\n"))
-		_check("" + family + " trace declares physical channels", trace.columns().slice(Trace.COLUMNS.size()) == GLOW_COLUMNS, str(trace.columns()))
+		var trace_ready: bool = trace.row_count() == 1
+		_check("" + family + " mass-wrapped trace accepts tick zero", trace_ready
+			and trace.to_csv().begins_with("# format: openrc-trace v14\n"))
+		_check("" + family + " trace declares physical and accepted-mass channels",
+			trace.columns().slice(Trace.COLUMNS.size(), Trace.COLUMNS.size() + GLOW_COLUMNS.size()) == GLOW_COLUMNS
+			and trace.columns().slice(trace.columns().size() - Trace.MASS_COLUMNS.size()) == Trace.MASS_COLUMNS,
+			str(trace.columns()))
 		_check("" + family + " metadata preserves cycle family", trace.meta.glow_family == family
-			and trace.meta.continuous_layout == "rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; running, reason, opportunities, fires, firing accumulator; mixture; shaft/prop/thrust/chemical work J"
+			and trace.meta.metadata_schema == "openrc-flight-meta v10"
+			and trace.meta.propulsion_model == Trace.GLOW_LAW_V3
+			and trace.meta.continuous_layout == Trace.GLOW_CONTINUOUS_LAYOUT_V3
 				+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if session.wheel_count() > 0 else ""))
+		if not trace_ready:
+			printerr("Trace rejected current Glow metadata: invalid=%s metadata=%s" % [trace._invalid_weather, trace.meta])
+			recorder.recording = false
+			recorder.detach()
+			session.free()
+			continue
+		_check("" + family + " v3 accepted sample ties main and line state to mass inventory",
+			trace._glow_line_layout
+			and str(trace.meta.glow_fuel_tank_id).length() > 0
+			and str(trace.meta.glow_fuel_registry_sha256).length() == 64
+			and trace.value(0, "glow_line_fuel_kg") == session.sim.continuous[17]
+			and trace.value(0, "glow_fuel_source_mode") == session.sim.continuous[18]
+			and trace.value(0, "mass_kg") > 0.0
+			and trace.to_csv().contains("# glow_trace_schema: " + Trace.GLOW_TRACE_SCHEMA_V2))
+		_test_legacy_glow_trace(session)
 		var initial_fuel: float = float(before.fuel_kg)
 		for _tick in 120:
 			session.sim.step()
@@ -110,11 +139,53 @@ func _test_live_glow_traces() -> void:
 			"before=%s after=%s" % [work_before_cut, cut_state.get("shaft_work_j", NAN)])
 		_check("" + family + " CSV declares glow schema and mode semantics", trace.to_csv().contains("# glow_trace_schema: " + Trace.GLOW_TRACE_SCHEMA)
 			and trace.to_csv().contains("# glow_mode_semantics:")
+			and trace.to_csv().contains("# glow_supply_mode_semantics:")
 			and trace.to_csv().contains("glow_fire_events"))
 		_test_bad_glow_samples(session)
 		recorder.recording = false
 	recorder.detach()
 	session.free()
+
+
+func _test_legacy_glow_trace(session: Node) -> void:
+	# Keep historical hub-inflow traces readable only with their original 17-slot law/layout.
+	var metadata: Dictionary = session.trace_meta().duplicate(true)
+	metadata.metadata_schema = "openrc-flight-meta v7"
+	metadata.propulsion_model = Trace.GLOW_LAW_V2
+	metadata.continuous_layout = Trace.GLOW_CONTINUOUS_LAYOUT_V2
+	if session.wheel_count() > 0:
+		metadata.continuous_layout += "; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail"
+	metadata.erase("glow_fuel_tank_id")
+	metadata.erase("glow_feed_line_inventory_id")
+	metadata.erase("glow_fuel_registry_sha256")
+	var start: Dictionary = JSON.parse_string(metadata.glow_recording_start)
+	start.erase("main_fuel_kg")
+	start.erase("feed_line_fuel_kg")
+	start.erase("fuel_source_mode")
+	metadata.glow_recording_start = JSON.stringify(start, "", true, true)
+	var continuous: Array = JSON.parse_string(metadata.recording_start_continuous)
+	var projected: Array = continuous.slice(0, 17)
+	projected.append_array(continuous.slice(19))
+	metadata.recording_start_continuous = JSON.stringify(projected, "", true, true)
+	if metadata.has("launch_continuous"):
+		var launch: Array = JSON.parse_string(metadata.launch_continuous)
+		var projected_launch: Array = launch.slice(0, 17)
+		projected_launch.append_array(launch.slice(19))
+		metadata.launch_continuous = JSON.stringify(projected_launch, "", true, true)
+	if metadata.has("wheel_state_layout"):
+		var wheels: Array = JSON.parse_string(metadata.wheel_state_layout)
+		for index: int in wheels.size():
+			wheels[index].index = int(wheels[index].index) - 2
+		metadata.wheel_state_layout = JSON.stringify(wheels, "", true, true)
+	var legacy := Trace.new()
+	legacy.meta = metadata
+	var legacy_values := PackedFloat64Array(projected)
+	legacy.record(session.sim.tick, session.sim.time(), session.sim.state, session.sim.last_loads,
+		session.sim.inputs, session.sim.aux, legacy_values)
+	_check("historical v2 law accepts only its original 17 slots",
+		legacy.row_count() == 1 and legacy.columns().slice(Trace.COLUMNS.size()) == LEGACY_GLOW_COLUMNS
+		and legacy.to_csv().begins_with("# format: openrc-trace v9\n"),
+		"rows=%d invalid=%s" % [legacy.row_count(), legacy._invalid_weather])
 
 
 func _all_glow_rows_finite(trace: RefCounted, family: String) -> bool:

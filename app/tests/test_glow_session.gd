@@ -65,10 +65,11 @@ func _initialize():
 		f.reset()
 		check(id+" reset restores all engine state",f.is_flyable() and f.sim.continuous==init)
 		# Exhaust in the next tick from a positive left limit, then continue coasting.
-		f.sim.continuous[1]=1e-8
-		check(id+" exact exhaustion event",advance(f,2) and f.sim.continuous[1]==0. and f.glow_state().stop_reason=="fuel_exhausted")
+		var residue: float=f.aircraft.model.propulsion.glow.unusable_fuel_kg
+		f.sim.continuous[1]=residue+1e-8
+		check(id+" exact exhaustion event retains unusable residue",advance(f,2) and f.sim.continuous[1]==residue and f.glow_state().stop_reason=="fuel_exhausted")
 		check(id+" exhausted engine cannot start",not f.glow_start())
-		check(id+" exhausted coast",advance(f,40) and f.sim.continuous[1]==0.)
+		check(id+" exhausted coast",advance(f,40) and f.sim.continuous[1]==residue)
 		f.reset()
 		f.sim.continuous[2]=f.aircraft.model.propulsion.glow.settings.temperature_firing_hot_zero_k+1.
 		check(id+" hot shutdown",advance(f,1) and f.glow_state().stop_reason=="overheat" and not f.glow_state().running)

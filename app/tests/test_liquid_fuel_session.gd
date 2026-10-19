@@ -79,14 +79,22 @@ func _nonzero_residue() -> void:
 	check("positive unusable volume normalizes", fixture.ok)
 	if not fixture.ok:
 		return
-	fixture.model.wheel_profile = AircraftData.load_file(path).model.wheel_profile.duplicate(true)
+	# load_file resolves wing-polar and wheel assets; the authored change only
+	# affects normalized fuel records, so retain those resolved external modules.
+	var normalized_fuel: Dictionary = fixture.model.fuel_system
+	var normalized_adapter: Dictionary = fixture.model.propulsion.liquid_fuel
+	var semantic_sha: String = fixture.model.data_sha256
+	fixture.model = AircraftData.load_file(path).model.duplicate(true)
+	fixture.model.fuel_system = normalized_fuel
+	fixture.model.propulsion.liquid_fuel = normalized_adapter
+	fixture.model.data_sha256 = semantic_sha
+	fixture.input_identity = {format=AircraftData.FORMAT,sha256=JSON.stringify(raw,"",true,true).sha256_text()}
 	var flight: Node = Flight.new()
 	flight.input_enabled = false
 	flight.setup("synthetic://positive-residue", "", fixture)
 	check("positive-residue full launch admits", flight.is_flyable())
 	if not flight.is_flyable():
-		print("positive residue refusal: ", flight.start.get("message", ""), "; ", flight.sim.fault_reason,
-			" continuous=", flight.sim.continuous, " adapter=", fixture.model.propulsion.liquid_fuel)
+		print("positive residue refusal: ", flight.start.get("message", ""), "; ", flight.sim.fault_reason)
 		flight.free()
 		return
 	check("launch below unusable amount is refused without preference mutation", not flight.set_fuel_start_fill(0.05) and flight.fuel_start_fill == 1.0)

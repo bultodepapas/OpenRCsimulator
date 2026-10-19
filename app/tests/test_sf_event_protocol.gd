@@ -258,7 +258,7 @@ func _glow_route() -> void:
 		for _i in 24:
 			session.sim.step()
 		# The cut command edits state between ticks; an in-tick stop is the tank running dry.
-		session.sim.continuous[1] = 1.0e-7 # kg of fuel left
+		session.sim.continuous[1] = session.aircraft.model.propulsion.glow.unusable_fuel_kg + 1.0e-7 # usable kg above residue
 		var located: Dictionary = _run_until_event(session, 240)
 		var types: Array = []
 		for event in session.sim.last_events:

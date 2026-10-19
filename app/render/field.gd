@@ -121,6 +121,13 @@ static func advance_wind(field_node: Node3D, time_s: float, wind_ned: Array) -> 
 		Windsock.advance(cue, time_s, wind_ned)
 
 
+static func reset_wind(field_node: Node3D, time_s: float, wind_ned: Array) -> void:
+	if field_node == null:
+		return
+	for cue: Node3D in field_node.get_meta("wind_cues", []):
+		Windsock.reset(cue, time_s, wind_ned)
+
+
 ## Render boundary: world wind is east/up/south; the motion model consumes north/east/down.
 static func update_wind(field_node: Node3D, time_s: float, wind: Vector3) -> void:
 	if field_node == null:

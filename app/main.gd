@@ -772,7 +772,11 @@ func _ready() -> void:
 
 func _advance_windsock(_tick: int, time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
-	FieldBuilder.advance_wind(_field_node, time_s, Array(session.wind_at(time_s)))
+	var wind_ned: Array = Array(session.wind_at(time_s))
+	if _tick == 0:
+		FieldBuilder.reset_wind(_field_node, time_s, wind_ned)
+	else:
+		FieldBuilder.advance_wind(_field_node, time_s, wind_ned)
 
 
 func _process(delta: float) -> void:

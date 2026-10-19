@@ -322,7 +322,12 @@ note("balance", "Jxx Jyy Jzz (kg m2)", inertia(cg), "component boxes + parallel 
 
 CL_max = note("aero", "CL_max", 1.05, "estimated: 13 % symmetric section clmax ~1.15 at Re 3e5, x0.9 wing (no polar identified)")
 Vs = note("aero", "1-g stall (m/s)", math.sqrt(2 * mass * G0 / (RHO * S * CL_max)), "flight mass, CL_max")
-V_start = note("aero", "start speed (m/s)", round(1.6 * Vs), "1.6 x the 1-g stall, rounded: the trimmed in-air start")
+START_SPEED_SOURCE = (
+    "estimated from the installed O.S. 61FX candidate trim envelope: 22 m/s is the lowest whole-m/s setting tested "
+    "with a six-axis root and at least 1% throttle for full and 10% tank at reference and hot-high conditions; "
+    "the original 17 m/s estimate stalls at the minimum throttle command at reference conditions"
+)
+V_start = note("aero", "start speed (m/s)", max(round(1.6 * Vs), 22), START_SPEED_SOURCE)
 CL_ref = note("aero", "CL_ref", mass * G0 / (0.5 * RHO * V_start ** 2 * S), "level flight at the start speed; CL-dependent cross terms are frozen there")
 
 # --- Lateral-directional --------------------------------------------------------------------------------------
@@ -544,7 +549,7 @@ data = {
         "aero_reference_point": q(le(x_arp, arp_y), "m", "derived", D("wing-body aerodynamic centre: 25 % MAC moved forward by the fuselage (Raymer K_fus); on the wing chord plane")),
         "planform": "tapered",
     },
-    "start": {"level_speed": q(float(V_start), "m/s", "derived", D("1.6 x the 1-g stall at the flight mass and CL_max, rounded"))},
+    "start": {"level_speed": q(float(V_start), "m/s", "estimated", START_SPEED_SOURCE)},
     "balance": {
         "plan_cg": q(dry_cg, "m", "derived", "FUEL-08: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); finite-glow flight reference starts with a full tank; not a measured airplane"),
         "firewall": q(le(fw), "m", "measured", "firewall station, " + GEO_SRC),

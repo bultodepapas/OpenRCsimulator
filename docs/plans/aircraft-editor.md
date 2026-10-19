@@ -1,6 +1,6 @@
 # Aircraft experiment editor plan
 
-**Date:** 2026-10-19. **Revision:** 4 — current source alignment and consolidated acceptance plan. **Status:** the shared Workshop, local variant library, compiler and airborne trial loop have an implemented slice; full fleet and release gates remain open. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track.
+**Date:** 2026-10-19. **Revision:** 5 — future customization, smoke and simple experiment workflow. **Status:** the shared Workshop has an implemented slice; the new ideas in section 5 are proposed, with full fleet and release gates open. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track.
 
 The plan owns remaining work and acceptance. The [Aircraft Workshop guide](../AIRCRAFT-WORKSHOP.md) owns current player behavior and implementation details. The [aircraft contract](../AIRCRAFT_CONTRACT.md) owns physical and generated authoring schemas. [DECISIONS](../DECISIONS.md) owns durable rationale. Use the current repository state and linked evidence when a dated proposal differs.
 
@@ -111,10 +111,10 @@ Dependencies are explicit. A gate may split into smaller reviews, but its accept
 | AE-18 | Shared parameter pages generated from supported module definitions; AE-14…17 | UI/compiler/tests share bounds and labels; physical/rendered travel agrees, radio shaping is not applied twice, and unsupported operations are explained |
 | AE-19 | Current fixed-wing fleet conformance, migration, data-only variants and variant CLI; AE-03/11…18 | Every discovered airplane entry passes fresh-install and missing/newer/corrupt dependency cases; regenerate stale descriptors before qualification. Data-only bundles reject executable resources and unsafe paths; migration preserves the original. Proposed `--aircraft-variant=<bundle-or-local-path>` is mutually exclusive with `--aircraft` and does not read or write player preferences |
 | AE-20 | Unpowered/glide starts and bounded performance experiments; AE-10 plus family adapter | Bind results to exact initial state, commands, environment and termination. Label static outputs separately from scripted speed, climb, roll or endurance results and state each method's limits |
-| AE-21 | Supported drag, polar, incidence and tail packages; AE-01/20 | Domain, trim, stall-join and numerical limits are reported per field and module |
+| AE-21 | Supported aerodynamic packages and later authored wingtip/tail geometry packages; AE-01/20 plus AS/model contracts for geometry | Domain, trim, stall-join and numerical limits are reported per field/module; changed geometry, mass, aero, hinges and contacts agree before shape options become available |
 | AE-22 | Capability-based shared recipes, parameter sweeps and seeded discovery; AE-20/21 | Same recipe applies to compatible bases, explains incompatibility and searches within fixed bounds |
 | AE-23 | Wider scale targets and combinations; relevant AE-14…22 modules | Qualify 25–400% targets with boundary/field-clearance diagnostics, offline 240/480/960 Hz refinement and bounded runtime cost |
-| AE-24 | Registered paint/decal slots, thumbnails and presentation polish; AE-08/19 | Appearance changes leave physics and trace identity stable; save/load and localization are covered |
+| AE-24 | Registered paint/decal slots, smoke profiles, thumbnails and simple customization; local editing after AE-08/09 and AS slot contracts, portable profiles after AE-19; SM-10…15 for smoke | Follow the staged delivery below; appearance preserves physical identity/trace values, has a separate presentation identity, and passes instance isolation, save/load, localization and bounded-render checks |
 | AE-25 | Twenty-airframe onboarding plus cross-platform, accessibility and playtest acceptance; AE-19…24 | Frozen editor; data/assets/bindings/evidence only for the twentieth ordinary aircraft; fresh-clone and package checks |
 | AE-26 | Consolidate delivered guide, authoring standard and evidence links; AE-25 | Current contracts are linked once, dated evidence is retained, and superseded planning prose is removed |
 
@@ -144,15 +144,88 @@ Dependencies are explicit. A gate may split into smaller reviews, but its accept
 
 ## 5. Planned player-facing work
 
-The shared screen should expose only operations supported by the selected aircraft's validated modules, with short explanations and comparison values. It must not become a raw JSON editor.
+**Future design, not implemented functionality.** Make experimentation fun and easy: choose an aircraft, pick a preset, change a few understandable settings, preview, save a copy and test fly. This section is the product backlog; the linked owner plans define renderer, model, fuel and session work. An idea does not become a release requirement until its bounded slice and acceptance evidence are selected.
 
-AE-12/13 add component balance and a guided “match my airplane” flow for dimensions, ready-to-fly mass, CG and supported hardware. User measurements retain their source and confidence; the wizard cannot silently promote estimates to measured facts.
+### 5.1 A simple editor first
 
-AE-18 adds module-backed pages for supported controls and power systems. AE-20/21 add bounded experiments only when their inputs, initial state and result limits can be stated. AE-22 supplies reusable capability-based recipes and a bounded, seeded “try a change” path; candidates are explained before save or flight. Cosmetic controls remain limited to registered safe presentation slots under AE-24.
+1. Start with preset cards and a useful aircraft preview. Offer **Appearance**, **Smoke**, **Flight setup** and **Compare** only when the corresponding capabilities are available; keep deeper controls under **More options**.
+2. Choose a named part or declared attachment on the preview. Use color swatches, clear units and an explanation of the result. Distinguish a painted wingtip from a wingtip shape that changes flight.
+3. Link a declared left/right pair by default; allow independent colors or edits after unlinking. Offer copy-to-pair, per-page reset, before/after comparison and one undo operation per edit or slider drag. Extend the existing history instead of creating a second undo system.
+4. Preview appearance and bounded smoke playback in the isolated Workshop scene. Provide Play, Pause and Restart preview; entering this mode must not run another flight or change the retained session. The existing preview is still-only; playback is new work.
+5. Show what changed, save a named preset/build or copy, then use the validated trial route. Keep camera/HUD choices in the trial setup, under their existing owners.
 
-Performance displays must distinguish measured user inputs, static evaluator results and scripted simulation results. Speed, climb, roll and endurance labels require a declared setup, duration/termination rule and supported domain; do not infer them from one mass or power ratio.
+Unsupported controls stay unavailable with a short reason. Keep the supported preset list useful; advanced settings must not fill the first screen with technical parameters. Reuse free tools and licensed assets where suitable, with provenance retained.
 
-These ideas describe later gates. They do not promise arbitrary geometry, unrestricted hardware assembly, imported scripts, or performance outcomes that have not been measured.
+### 5.2 Idea catalogue
+
+All entries are pending candidates. Paint and show effects belong to AE-24; changes to installed hardware or aerodynamic shape follow the physical module gates even when their controls look simple.
+
+| Idea | Easy example | Owning gate / dependency |
+| --- | --- | --- |
+| Body and wing colors | Blue body, cream wings; choose upper and underside separately | AE-24a; AS material slots |
+| Wingtip and tail accents | Bright tips and a contrasting rudder for orientation | AE-24a; authored paint regions |
+| Stripes and patterns | Select a built-in stripe, checker or roundel and adjust its accent color | AE-24a; bounded decal/pattern slots |
+| Name and number | Put “RC-27” or a short build name on a declared tail/body panel | AE-24a; text/decal bounds |
+| Spinner and prop-tip accents | Match a spinner to the tail; color supported prop tips | AE-24a; rotor/blur presentation checks |
+| Reusable palettes | Apply one palette to compatible trim slots, then reset one part | AE-24a/d; compatible slot mapping |
+| One or several smoke colors | Red left trail, blue right trail, white center trail | AE-24b/c; SM-10…12 |
+| Emitter positions | Select supported left/right wingtip, exhaust, rear-fuselage or tail-surface slots | AE-24b/c; AS anchors and SM-11 |
+| Smoke amount and shape | Fine ribbon, soft cloud or wide fan; simple Low/Medium/High amount | AE-24b/c; SM width/fullness budget |
+| Smoke bursts | Hold while pressed, or emit a three-second burst | AE-24c; SM-13 and AUX/UI ownership |
+| Smoke persistence | Short or long puff life and soft fade after release | AE-24c; SM-13/14 |
+| Color sequences | Alternate two colors or step through a saved rainbow palette | AE-24c; bounded presentation timeline |
+| Smoke preview | Play the same short pass in calm wind or a chosen preview wind | AE-24c; SM/M5 preview contract |
+| Display lights | Pick a supported steady or strobe accent for a show setup | Later AE-24; AS/FW slots and bounded lighting; physical hardware separate |
+| Mass and CG wizard | Enter measured mass/CG or move an allowed battery/ballast component | AE-12/13; inventory/mount constraints |
+| Battery packages | Compare a lighter pack with a compatible higher-capacity pack | AE-15; BAT mass/energy laws |
+| Powerplant packages | Select a compatible engine/motor/ESC installation | AE-14…17; family-specific data and validators |
+| Propeller packages | Choose a qualified diameter/pitch option with matching visual blades | AE-14…17; load maps, inertia and clearance |
+| Servo packages | Compare compatible servo mass, speed and control response | AE-12/18; SAV/AS actuator contract |
+| Travel and response | Trainer/Sport throw presets, independent axes and supported response settings | AE-18; input shaping applied once |
+| Flaps and mixed controls | Choose supported differential, flaps or airbrake settings | AE-18; qualified AS/aircraft modules |
+| Wingtip shapes | Select an authored rounded tip, tip plate or winglet package | Later AE-21b; geometry/aero/mass agreement |
+| Tail shapes | Compare supported fin or stabilizer packages with coherent hinges and loads | Later AE-21b; AS/model and aero owners |
+| A/B comparison | See original versus candidate and a concise “what changed” list | AE-09/20; common conditions and valid starts |
+| One-change experiments | Suggest one bounded change while preserving locked settings | AE-22; seeded capability-based proposals |
+| Glide and bench cards | Prepare a power-off glide, or evaluate static thrust/RPM/torque | AE-20; session starts and evaluator limits |
+| Goal recipes | Explore “lighter trainer” or a supported endurance comparison | AE-20/22/23; show predicted results and conditions |
+| Build notes | Keep measured dimensions, weighing date and setup notes with the build | AE-03/13; provenance separate from cosmetic metadata |
+| Favorite presets | Save a palette or smoke profile and copy only compatible settings | AE-24d; capability checks and revision history |
+| Thumbnail and test view | Save a model thumbnail; choose an existing camera/HUD preset for the trial | AE-24 / CAM / HUD; shared view settings |
+| Portable recipe cards | Export a data-only build/profile with preview and required capabilities | AE-19/24d; dependency and safe-import validation |
+
+Changing color does not qualify a new material system or a physical aircraft part. VQ keeps its [targeted material-repair scope](global-performance-visual-quality.md#vq-02b--conditional-aircraft-repair); AE owns these future per-build controls. Reuse the [model/authoring plan](aircraft-standardization.md#workbench-customization-bindings-proposed), [smoke plan](../SMOKE-PLAN.md#future-user-customization--proposed-sm-10-onward), [battery plan](battery-realism.md), [servo plan](savox-servos.md), [camera plan](camera-views.md) and [HUD plan](flight-overlays.md) rather than duplicating their implementations.
+
+### 5.3 Smoke presets and understandable controls
+
+The detailed emitter/render contract lives in SM-10…15. In the Workshop, select a preset, toggle available emitters on the model, pick a color per emitter and adjust **Smoke amount**. **More options** separates width, fade, burst time and puff lifetime. **Smoke amount** means visual fullness; physical smoke-fluid capacity in ml and supply endurance need the separate [FUEL extension](fuel-mass-balance.md#future-smoke-fluid-resource).
+
+The following are illustrative profile values to qualify, not implemented defaults or measured emissions:
+
+| Preset | Proposed setup | Simple example |
+| --- | --- | --- |
+| Classic Exhaust | Supported authored engine outlet; source-driven operation | Faint neutral exhaust; engine state retains authority |
+| Twin Ribbons | Red left wingtip and blue right wingtip, linked amount | Medium amount; 3 s burst; each puff fades within 6 s |
+| Tricolor Pass | Red/white/blue across two tips and one approved center/tail mount | One button controls the enabled group; per-emitter colors remain editable |
+| Tail Comet | An approved rear-fuselage or separately declared tail-surface slot | Gold soft plume; 5 s burst; 8 s puff lifetime |
+| Rainbow Burst | One or more declared show emitters, discrete palette steps | Change the color of new puffs each second during a bounded burst |
+| Clear Trainer | Contrasting top/underside, bright tips and tail, show smoke off | One preset for aircraft orientation without extra effects |
+
+Turning emission off stops new puffs; existing puffs retain their birth color and continue to age and drift. A long lifetime is not an unlimited supply. Show plumes on electric or turbine aircraft require an explicit authored show-effect route; they do not activate healthy-engine exhaust or claim installed smoke hardware. Keep flight physics, physical identity and physical trace values unchanged; store visual profile/seed/timing identity separately for captures or any future visual replay.
+
+### 5.4 Small delivery slices and acceptance
+
+| Slice | Scope and dependencies | Completion evidence |
+| --- | --- | --- |
+| AE-24a — simple appearance | Local palettes, declared paint regions, short names/numbers and selected built-in patterns; AE-08/09 plus AS bindings | Two independent instances, reset/undo, EN/ES and small-window journeys; shared materials and physical flight results unchanged |
+| AE-24b — simple smoke | One qualified emitter profile, color/amount presets and isolated preview; SM-10…12 and AS effect slots | Save/load and old-build compatibility; missing slots explained; source exhaust/show behavior remains distinct; bounded preview and identical physical results |
+| AE-24c — airshow profiles | Multiple named emitters, linked pairs, bursts/fade, palette sequences and optional preview wind; SM-11…15 | Stop/expiry/pause/reset/return and sequence timing checked at different render rates; one total particle/GPU budget; no material bleed or stale plumes |
+| AE-24d — reusable profiles | Favorites, compatible-only copy, thumbnails and versioned data-only import/export; portability after AE-19 | Fresh-install round trip, missing/changed-slot refusal and explicit migration; original build remains intact; imported profiles contain no executable resources |
+| AE-21b — shape packages, later | Authored wingtip/tail options after the physical/model contracts and AE-20/21 | Visual geometry, mass/CG/inertia, aero, control hinges, hull/gear and trim/start checks agree; source-backed limits and modeling assumptions remain visible |
+
+Start with AE-24a and one smoke profile after the shared contracts are ready. Local cosmetic work can proceed before full-fleet portability; it does not close the existing save/trial, physics, platform or pilot gates. Keep later lights, shape packages and performance recipes behind their named owners and validation.
+
+Performance displays distinguish measured user inputs, static evaluator results and scripted simulation results. Speed, climb, roll and endurance labels require a declared setup, duration/termination rule and supported domain. User mass/CG measurements retain their evidence; unknown values remain estimated. A cosmetic preset must not silently install hardware, alter weather or add stabilization.
 
 ## 6. Evidence and references
 

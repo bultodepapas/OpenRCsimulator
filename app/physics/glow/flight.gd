@@ -14,7 +14,6 @@ const RB := preload("res://physics/rigid_body.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Coupling := preload("res://physics/rotor_coupling.gd")
-const Boundary := preload("res://physics/electric_battery_step.gd")
 const ResourceStep := preload("res://physics/resource_event_step.gd")
 const FuelFeed := preload("res://physics/glow/fuel_feed.gd")
 const LEGACY_SIZE := 17
@@ -233,8 +232,12 @@ static func _stage_mass_context(owner: Node, values: PackedFloat64Array) -> Dict
 		return {ok=false}
 	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	var line: Dictionary=install.get("feed_line",{})
-	var line_fuel: float=clampf(values[LINE_FUEL_INDEX],0.0,float(line.get("capacity_kg",0.0)))
-	var main_fuel: float=clampf(values[1]-values[LINE_FUEL_INDEX],0.0,install.capacity_fuel_kg)
+	# Preserve the inactive resource across a left-limit boundary trial. In line
+	# mode, a slightly negative line value is only the event locator overshoot;
+	# subtracting that raw value keeps the main-tank mass constant before clipping.
+	var raw_line_fuel: float=values[LINE_FUEL_INDEX]
+	var line_fuel: float=clampf(raw_line_fuel,0.0,float(line.get("capacity_kg",0.0)))
+	var main_fuel: float=clampf(values[1]-raw_line_fuel,0.0,install.capacity_fuel_kg)
 	var total: float=main_fuel+line_fuel
 	var properties_result: Dictionary=properties(owner,total,line_fuel)
 	if not properties_result.get("ok",false): return {ok=false}
@@ -248,6 +251,129 @@ static func _stop_for_fuel(state: Dictionary, reason: String) -> Dictionary:
 	next.stop_reason=reason
 	next.fuel_transport_kg_s=0.0
 	return next
+
+
+static func _pickup_surface_sample(owner: Node, combined: PackedFloat64Array, time_s: float) -> Dictionary:
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	if not bool(install.get("has_pickup_position",false)) or not install.has("fuel_feed"):
+		return {ok=true,defined=false,margin_m=NAN}
+	var body: PackedFloat64Array=combined.slice(0,RB.SIZE)
+	var values: PackedFloat64Array=combined.slice(RB.SIZE)
+	var result: Dictionary=point(owner,body,values,time_s)
+	if not result.get("ok",false): return {ok=false,defined=false,margin_m=NAN}
+	var feed: Dictionary=result.get("fuel_feed",{})
+	if feed.is_empty() or not feed.get("g_eff") is PackedFloat64Array:
+		return {ok=true,defined=false,margin_m=NAN}
+	var margin: float=FuelFeed.pickup_margin_m(feed.g_eff,float(feed.get("fill_fraction",NAN)),
+		install.pickup_position,install.tank_position,install.tank_size)
+	return {ok=true,defined=is_finite(margin),margin_m=margin}
+
+
+static func _transition_source(combined: PackedFloat64Array, owner: Node, mode: int,
+		reason: String = "", total_override: float = NAN, line_override: float = NAN) -> PackedFloat64Array:
+	var out: PackedFloat64Array=combined.duplicate()
+	var values: PackedFloat64Array=out.slice(RB.SIZE)
+	if is_finite(total_override): values[1]=total_override
+	if is_finite(line_override): values[LINE_FUEL_INDEX]=line_override
+	values[SOURCE_MODE_INDEX]=float(mode)
+	if not reason.is_empty():
+		var install: Dictionary=owner.aircraft.model.propulsion.glow
+		var state: Dictionary=unpack(values,install)
+		if state.is_empty(): return PackedFloat64Array([NAN])
+		values=put_state(values,_stop_for_fuel(state,reason))
+	for index: int in values.size(): out[RB.SIZE+index]=values[index]
+	return out
+
+
+static func _resource_events(owner: Node) -> Array:
+	var install: Dictionary=owner.aircraft.model.propulsion.glow
+	var line: Dictionary=install.get("feed_line",{})
+	var events: Array=[]
+	events.append({
+		id="rotor_stop",type="rotor_stop",sense="falling",priority=0,
+		surface=func(state: PackedFloat64Array,_at: float) -> float: return state[RB.SIZE],
+		transition=func(state: PackedFloat64Array,_at: float) -> Dictionary:
+			return {ok=true,state=project_stop(state,RB.SIZE,owner),event={rpm_residual=0.0}},
+	})
+	events.append({
+		id="main_tank_unusable",type="fuel_tank_unusable",sense="falling",priority=10,
+		enabled=func(state: PackedFloat64Array,_at: float) -> bool:
+			return int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_MAIN_TANK,
+		surface=func(state: PackedFloat64Array,_at: float) -> float:
+			return state[RB.SIZE+1]-state[RB.SIZE+LINE_FUEL_INDEX]-install.unusable_fuel_kg,
+		transition=func(state: PackedFloat64Array,_at: float) -> Dictionary:
+			var line_mass: float=maxf(0.0,state[RB.SIZE+LINE_FUEL_INDEX])
+			var main_id: String=str(install.fuel_tank.id)
+			if not line.is_empty() and line_mass>0.0:
+				var total: float=line_mass+install.unusable_fuel_kg
+				return {ok=true,state=_transition_source(state,owner,MODE_FEED_LINE,"",total),
+					event={type="fuel_tank_unusable",resource="main_tank",resource_id=main_id,
+						fuel_residual_kg=install.unusable_fuel_kg,main_fuel_residual_kg=install.unusable_fuel_kg}}
+			var total: float=line_mass+install.unusable_fuel_kg
+			return {ok=true,state=_transition_source(state,owner,MODE_STARVED,"fuel_exhausted",total),
+				event={type="fuel_exhausted",reason="fuel_exhausted",resource="main_tank",resource_id=main_id,
+					fuel_residual_kg=install.unusable_fuel_kg,main_fuel_residual_kg=install.unusable_fuel_kg}}
+	})
+	if not line.is_empty():
+		events.append({
+			id="feed_line_empty",type="fuel_line_empty",sense="falling",priority=11,
+			enabled=func(state: PackedFloat64Array,_at: float) -> bool:
+				return int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_FEED_LINE,
+			surface=func(state: PackedFloat64Array,_at: float) -> float:
+				return state[RB.SIZE+LINE_FUEL_INDEX],
+			transition=func(state: PackedFloat64Array,at: float) -> Dictionary:
+				var total: float=maxf(0.0,state[RB.SIZE+1])
+				var line_mass: float=maxf(0.0,state[RB.SIZE+LINE_FUEL_INDEX])
+				var main_mass: float=maxf(0.0,total-line_mass)
+				var can_use_main: bool=main_mass>install.unusable_fuel_kg
+				if can_use_main and bool(install.get("has_pickup_position",false)):
+					var sample: Dictionary=_pickup_surface_sample(owner,state,at)
+					if not sample.get("ok",false): return {ok=false}
+					can_use_main=bool(sample.get("defined",false)) and float(sample.margin_m)>=0.0
+				var next_mode: int=MODE_MAIN_TANK if can_use_main else MODE_STARVED
+				var reason: String="" if can_use_main else ("fuel_exhausted" if main_mass<=install.unusable_fuel_kg else "fuel_starved")
+				var event_type: String="fuel_line_empty" if can_use_main else reason
+				return {ok=true,state=_transition_source(state,owner,next_mode,reason,main_mass,0.0),
+					event={type=event_type,reason=reason,resource="feed_line",resource_id=str(line.liquid_inventory_id),
+						fuel_residual_kg=line_mass,line_fuel_residual_kg=line_mass,main_fuel_kg=main_mass}}
+		})
+	if bool(install.get("has_pickup_position",false)) and install.has("fuel_feed"):
+		events.append({
+			id="pickup_lost",type="fuel_pickup_lost",sense="falling",priority=20,
+			enabled=func(state: PackedFloat64Array,at: float) -> bool:
+			return int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_MAIN_TANK,
+			surface=func(state: PackedFloat64Array,at: float) -> float:
+				var sample: Dictionary=_pickup_surface_sample(owner,state,at)
+				if not sample.get("ok",false): return NAN
+				return float(sample.margin_m) if sample.get("defined",false) else 1.0,
+			transition=func(state: PackedFloat64Array,at: float) -> Dictionary:
+				var line_mass: float=maxf(0.0,state[RB.SIZE+LINE_FUEL_INDEX])
+				var main_mass: float=maxf(0.0,state[RB.SIZE+1]-line_mass)
+				if not line.is_empty() and line_mass>0.0:
+					return {ok=true,state=_transition_source(state,owner,MODE_FEED_LINE),
+						event={type="fuel_pickup_lost",resource="main_tank",resource_id=str(install.fuel_tank.id),
+							fuel_residual_kg=main_mass,line_fuel_kg=line_mass}}
+				return {ok=true,state=_transition_source(state,owner,MODE_STARVED,"fuel_starved"),
+					event={type="fuel_starved",reason="fuel_starved",resource="main_tank",resource_id=str(install.fuel_tank.id),
+						fuel_residual_kg=main_mass}}
+		})
+		events.append({
+			id="pickup_recovered",type="fuel_pickup_recovered",sense="rising",priority=15,
+			enabled=func(state: PackedFloat64Array,at: float) -> bool:
+				if int(state[RB.SIZE+SOURCE_MODE_INDEX])==MODE_MAIN_TANK \
+						or state[RB.SIZE+1]-state[RB.SIZE+LINE_FUEL_INDEX]<=install.unusable_fuel_kg: return false
+				return true,
+			surface=func(state: PackedFloat64Array,at: float) -> float:
+				var sample: Dictionary=_pickup_surface_sample(owner,state,at)
+				if not sample.get("ok",false): return NAN
+				return float(sample.margin_m) if sample.get("defined",false) else -1.0,
+			transition=func(state: PackedFloat64Array,_at: float) -> Dictionary:
+				var main_mass: float=maxf(0.0,state[RB.SIZE+1]-state[RB.SIZE+LINE_FUEL_INDEX])
+				return {ok=true,state=_transition_source(state,owner,MODE_MAIN_TANK),
+					event={type="fuel_pickup_recovered",resource="main_tank",resource_id=str(install.fuel_tank.id),
+						fuel_residual_kg=main_mass}}
+		})
+	return events
 
 static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
 	var prop: Dictionary=owner.aircraft.model.propulsion
@@ -462,7 +588,7 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 	var result: Dictionary=point(owner,body,values,time_s)
 	if not result.ok: return {}
 	var mass: Dictionary=result.get("mass",{})
-	if mass.is_empty(): mass=properties(owner,values[1])
+	if mass.is_empty(): mass=properties(owner,values[1],values[LINE_FUEL_INDEX])
 	if not mass.ok: return {}
 	var rpm: float=maxf(0.0,values[0])
 	var airframe: Dictionary=result.get("airframe",{})
@@ -480,6 +606,8 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 	derivative.resize(SIZE)
 	derivative[0]=coupling.spin_acceleration*60.0/TAU
 	for i in 6: derivative[i+1]=result.rates[Life.CONTINUOUS_KEYS[i]]
+	if int(values[SOURCE_MODE_INDEX])==MODE_FEED_LINE:
+		derivative[LINE_FUEL_INDEX]=derivative[1]
 	derivative[13]=result.source.brake_power_w
 	derivative[14]=result.propeller.shaft_power_w
 	derivative[15]=result.propeller.thrust_power_w
@@ -549,7 +677,7 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 		var reported: Dictionary=event.duplicate(true)
 		if reported.get("type","")=="rotor_stop":
 			reported.type="glow_rotor_stopped"
-		if reported.get("type","") in ["fuel_tank_unusable","fuel_line_empty","fuel_exhausted","fuel_starved"]:
+		if reported.get("type","") in ["fuel_exhausted","fuel_starved"]:
 			stopped_time=float(reported.get("time_s",stopped_time))
 		events.append(reported)
 	if was_running and not bool(accepted_state.running):
@@ -580,10 +708,16 @@ static func telemetry(owner: Node) -> Dictionary:
 	out.firing_fraction=result.firing_fraction
 	out.propeller=result.propeller
 	out.hub_air_velocity_body_m_s=result.hub_air_velocity_body_m_s
-	out.mass_properties=properties(owner,values[1])
+	var context: Dictionary=mass_context(owner,values)
+	if not context.get("ok",false): return {ok=false,message="Glow fuel mass context is invalid"}
+	out.mass_properties=context.properties
 	# FUEL-01b: the installed blend's own density (profile.gd), so displays never assume a fixed g/mL.
 	out.fuel_density_kg_m3=float(owner.aircraft.model.propulsion.glow.profile.fuel.density_kg_m3)
 	out.fuel_volume_m3=maxf(0.0,values[1])/out.fuel_density_kg_m3
+	out.main_fuel_kg=context.main_fuel_kg
+	out.line_fuel_kg=context.line_fuel_kg
+	out.total_fuel_kg=context.total_fuel_kg
+	out.fuel_source_mode=context.source_mode
 	out.shaft_work_j=values[13]
 	out.propeller_work_j=values[14]
 	out.thrust_work_j=values[15]
