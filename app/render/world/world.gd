@@ -64,7 +64,7 @@ const FLOW_AGX_BELOW_SUN_DEG := 10.0
 ## FW-MOON-06d frame_state: the slow sky terms interpolated between steps. Colours and exposure terms geometrically,
 ## shape terms linearly; the lobes only while the brighter lobe stays on the same side (dot of the two steps' lobe
 ## directions above LOBE_SWAP_DOT; one step moves it ~0.1°).
-const FRAME_COLOUR_KEYS := ["zenith_lin", "haze_lin", "cloud_lin", "ambient_lin", "moon_lin", "moon_earthshine"]
+const FRAME_COLOUR_KEYS := ["zenith_lin", "haze_lin", "cloud_lin", "ambient_lin", "moon_lin", "moon_earthshine", "moon_aureole_lin"]
 const FRAME_SCALAR_KEYS := ["exposure", "gain", "adapt_y", "adapt_y_anchor", "moon_display_scale"]
 const FRAME_LINEAR_KEYS := ["moon_radius", "moon_squash", "moon_display_gamma", "moon_phase_l", "moon_phase_k"]
 const LOBE_SWAP_DOT := 0.99

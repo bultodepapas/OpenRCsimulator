@@ -54,6 +54,8 @@ const FLEET_VIEWS := {
 	"pit_service": {eye = [-15.0, -36.0, -1.8], at = [-19.9, -38.0, -1.02], fov = 30.0},
 }
 var args := {}
+## SUN-03: the crossing case's start and end angle from the sun (deg).
+const SUN_CROSSING_DEG := 4.0
 
 func _initialize() -> void:
 	OS.set_environment("OPENRC_SCENERY_AUDIO", "off") # visual timings; avoid audio mixing in a capture-only process
@@ -183,6 +185,9 @@ func _run() -> void:
 		aircraft.root.visible = false
 		blocker.visible = false
 		flare.intensity = 1.0
+		camera.set_meta(&"openrc_optics", "lens" if case.begins_with("glare_lens") else "eye") # SUN-04
+		if flare.has_method("rest"):
+			flare.rest()
 		built.environment.tonemap_exposure = original_exposure
 		sky.set_shader_parameter("sun_disc", original_disc)
 		sky.set_shader_parameter("cloud_coverage", original_cloud)
@@ -217,6 +222,23 @@ func _run() -> void:
 					aircraft.root.position += camera.basis.x * 1.4
 			if case in ["glare_side", "glare_side_off"]:
 				camera.look_at(camera.position + Vector3(-sun.z, 0.2, sun.x))
+			if case.begins_with("glare_offset_"):
+				# SUN-02 veil: the pilot's view centred on the aircraft 60 m away, `deg` beside the sun. With
+				# _hidden (aircraft removed) and _off (no glare) the four images give its displayed contrast.
+				var parts := case.trim_prefix("glare_offset_").split("_")
+				camera.fov = 30.0
+				aircraft.root.visible = not "hidden" in parts
+				_follow_aircraft(camera, aircraft.root, sun, float(parts[0]))
+			if case.begins_with("glare_crossing"):
+				camera.fov = 30.0
+				aircraft.root.visible = not "hidden" in case
+				_follow_aircraft(camera, aircraft.root, sun, -SUN_CROSSING_DEG)
+			if case.begins_with("glare_disc_zoom"):
+				# SUN-01: the disc itself (limb darkening, refraction flattening) and its aureole, sky only.
+				camera.fov = 2.5
+				flare.intensity = 0.0
+			if case.begins_with("glare_lens"):
+				camera.look_at(camera.position + (sun + sun.cross(Vector3.UP).normalized() * 0.25).normalized())
 			if case in ["glare_night", "glare_night_off"]:
 				sky.set_shader_parameter("sun_disc", 0.0)
 		else:
@@ -235,8 +257,20 @@ func _run() -> void:
 		if case.ends_with("_ortho"):
 			camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 			camera.size = 10.0
+		var warm_clock := float(args.get("botanical_clock", 1.5))
 		for i in 60:
-			World.update(built.environment, float(args.get("botanical_clock", 1.5)), Vector3(float(args.get("botanical_wind", 0.0)), 0, 1.0 if args.has("botanical_wind") else 0.0), camera.position + -camera.basis.z * 30.0, camera)
+			if case.begins_with("glare_crossing"):
+				# SUN-03 crossing: the aircraft flies from 4° before the sun to 4° past it in 1.33 s of simulation with the
+				# view following it, then holds there 0.67 s (_late: 5 s).
+				var step := 1.0 / 30.0 if i < 40 or not "late" in case else 0.25
+				warm_clock = float(args.get("botanical_clock", 1.5)) + (float(i) / 30.0 if i < 40 else 40.0 / 30.0 + (i - 39) * step)
+				_follow_aircraft(camera, aircraft.root, sun, lerpf(-SUN_CROSSING_DEG, SUN_CROSSING_DEG, minf(float(i) / 39.0, 1.0)))
+			if case.begins_with("glare_afterimage"):
+				# SUN-03: 1.33 s of simulation looking at the sun, then 40° away (out of the frame) for 0.67 s.
+				warm_clock = float(args.get("botanical_clock", 1.5)) + float(i) / 30.0
+				if i == 40:
+					camera.look_at(camera.position + (sun + sun.cross(Vector3.UP).normalized() * 0.84).normalized())
+			World.update(built.environment, warm_clock, Vector3(float(args.get("botanical_wind", 0.0)), 0, 1.0 if args.has("botanical_wind") else 0.0), camera.position + -camera.basis.z * 30.0, camera)
 			if horizon_diagnostic == "no-rim":
 				for mat: ShaderMaterial in World.haze_materials(built.field):
 					if mat.shader.resource_path == "res://render/ground.gdshader":
@@ -289,6 +323,9 @@ func _run() -> void:
 			motion = motion_frames, timing_valid = motion == "off",
 			p99_ms = frames[mini(frames.size()-1, ceili(frames.size()*0.99)-1)],
 			glare_visible = flare.visible, glare_strength = flare.get_meta("strength", 0.0), exposure = built.environment.tonemap_exposure,
+			glare_afterimage = flare.get_meta("afterimage", 0.0), glare_optics = flare.get_meta("optics", ""),
+			glare_aureole_coeff = flare.get_meta("aureole_coeff", 0.0),
+			glare_solar_uv = flare.get_meta("solar_uv", Vector2(-1.0, -1.0)),
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
 			marker_center_px = camera.unproject_position(Frames.ned_to_render([15.0, 51.0, -0.35]))}
 	var file := FileAccess.open(out.path_join("report.json"), FileAccess.WRITE)
@@ -296,3 +333,13 @@ func _run() -> void:
 	print("LU native capture complete: ", out)
 	parent.free()
 	quit()
+
+
+## SUN-02/03: the pilot's view centred on the aircraft 60 m away, `offset_deg` from the sun across its azimuth, belly
+## toward the eye (planform, the most visible attitude).
+static func _follow_aircraft(camera: Camera3D, aircraft: Node3D, sun: Vector3, offset_deg: float) -> void:
+	var offset_rad := deg_to_rad(offset_deg)
+	var across := sun.cross(Vector3.UP).normalized()
+	aircraft.position = camera.position + (sun * cos(offset_rad) + across * sin(offset_rad)).normalized() * 60.0
+	camera.look_at(aircraft.position)
+	aircraft.basis = camera.basis * Basis(Vector3.RIGHT, PI / 2.0)

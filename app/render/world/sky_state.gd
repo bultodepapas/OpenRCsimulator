@@ -50,6 +50,8 @@ const SUN_SHADOW_FULL_DEG := 0.5
 ## day sky's uniforms exactly at (1, 0) and one lobe).
 const CLOUD_DIRECT_SHARE_DAY := 0.8
 const CLOUD_WEIGHT_FLOOR := 1e-4
+## FW-MOON-08a: an aureole below this fraction of the zenith radiance is dropped (by day it is ~10⁻⁶).
+const AUREOLE_FLOOR := 1e-4
 ## The eye's local adaptation to the disc (FW-MOON-03). At night the full moon is 10⁴–10⁵ times brighter than the scene
 ## the exposure serves, so a physical disc is a white blob and a crescent's earthshine a grey disc. When the lit full
 ## moon outside the atmosphere would exceed MOON_DISPLAY_PEAK on the display (radiance × exposure), the shader scales
@@ -216,6 +218,19 @@ static func cloud_light_weights(sun_direct: float, moon_direct: float, sky_light
 	return w / maxf(w.x + w.y, 1.0)
 
 
+## FW-MOON-08a: the aureole's scale. Krisciunas & Schaefer (1991, PASP 103:1033) give the moon's scattered sky
+## brightness as f(ρ)·I*·10^(−0.4·k·X_moon)·(1 − 10^(−0.4·k·X)), with a Rayleigh part 10^5.36·(1.06 + cos²ρ) (eq. 21)
+## and an aerosol part 10^(6.15 − ρ/40), or 6.2·10⁷·ρ⁻² within 10° (eq. 19; ρ in degrees). This sky already draws the
+## moonlit zenith (`moon_zenith`, render units), which KS91 puts at f(Z_moon)·I*·…·(1 − 10^(−0.4k)): the ratio fixes
+## the render scale, and I* and the moon's extinction cancel. Returned: the aerosol part's coefficient,
+## moon_zenith · 10^6.15 / f(Z_moon); the shader multiplies it by the angular shape and the path term.
+static func moon_aureole(moon_zenith: Vector3, moon_elevation_deg: float) -> Vector3:
+	var z := clampf(90.0 - moon_elevation_deg, 0.0, 180.0)
+	var c := cos(deg_to_rad(z))
+	var f := pow(10.0, 5.36) * (1.06 + c * c) + (pow(10.0, 6.15 - z / 40.0) if z >= 10.0 else 6.2e7 / maxf(z * z, 1.0))
+	return moon_zenith * pow(10.0, 6.15) / f
+
+
 ## FW-MOON-03: the moon's photometric inputs. Real skies carry their place (Ephemeris.sky()), so Lunar supplies the
 ## exact phase, distance, sun direction and earthshine; hand-built test skies keep the original elongation phase.
 static func _moon(sky: Dictionary) -> Dictionary:
@@ -337,6 +352,10 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 	var excess := _lum(base) * MOON_DISC * _lum(_lin(a.zenith)) * float(a.exposure) * gain / MOON_DISPLAY_PEAK
 	var display_scale := 1.0 / excess if excess > 1.0 else 1.0
 	var display_gamma := lerpf(1.0, MOON_DISPLAY_GAMMA, smoothstep(0.0, log(100.0), log(maxf(excess, 1.0))))
+	# FW-MOON-08a: the aureole, KS91's aerosol scattering around the moon, anchored to this sky's own moonlit zenith.
+	var aureole := moon_aureole(k_zenith * tint * m.zenith, moon_el) if moon_el > -1.0 else Vector3.ZERO
+	if _lum(aureole) < AUREOLE_FLOOR * _lum(zenith):
+		aureole = Vector3.ZERO # a 10⁻⁶ moon by day: invisible, and the day sky stays byte-identical
 
 	return {
 		sun_azimuth_deg = sky.sun.azimuth_deg, sun_elevation_deg = sun_el,
@@ -378,6 +397,7 @@ static func state(sky: Dictionary, moon_config: Dictionary = {}) -> Dictionary:
 		moon_earthshine = EARTHSHINE_TINT * float(moon.earthshine),
 		moon_display_scale = display_scale,
 		moon_display_gamma = display_gamma,
+		moon_aureole_lin = aureole,
 		moon_render_to_body = moon_render_to_body(moon.lunar),
 		moon_squash = moon_squash(float(moon.lunar.true_elevation_deg)) if not moon.lunar.is_empty() else 1.0,
 		moon_textured = not moon.lunar.is_empty(),

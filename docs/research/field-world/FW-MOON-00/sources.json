@@ -419,6 +419,32 @@
    "redistribution": "permitted-with-credit",
    "retrieved_at": "2026-10-19",
    "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/krisciunas-schaefer-1991-moonlight-pasp-103-1033.pdf",
+   "url": "https://cta-redmine.irap.omp.eu/attachments/download/3619/1991PASP__103_1033K.pdf",
+   "bytes": 792162,
+   "sha256": "0aad057176c209de46a663d760583a738806c54e6c9679b773b3c581c873c624",
+   "file_type": "PDF",
+   "kind": "paper",
+   "license": "© 1991 Astronomical Society of the Pacific; mirror copy. Reference only.",
+   "use": "FW-MOON-08: KS91 eqs. 3, 15, 19-21 (aerosol aureole 6.2e7·ρ⁻² within 10°, 10^(6.15−ρ/40) beyond; airmass; dark sky 79 nL) verified in the original.",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
+  },
+  {
+   "path": "references/moon/papers/crumey-2014-contrast-threshold-arxiv-1405.4209.pdf",
+   "url": "https://arxiv.org/pdf/1405.4209",
+   "bytes": 1348165,
+   "sha256": "fa6ef183f9402be4d321bff5fa2c112510f89ca683b534e33c63fdb6538e50a4",
+   "file_type": "PDF",
+   "kind": "paper",
+   "license": "arXiv preprint of MNRAS 442, 2600 (2014). Reference only.",
+   "use": "FW-MOON-08b: naked-eye point-source threshold ΔI = F(6.505e-4·B^¼ − 8.461e-4·B^½)² lux (eq. 53, scotopic 1e-5–3.4e-2 cd/m²); F = 2 gives 6.18 mag at 21.83 mag/arcsec².",
+   "redistribution": "local-reference-only",
+   "retrieved_at": "2026-10-19",
+   "parsed_ok": true
   }
  ],
  "links": [
@@ -449,8 +475,8 @@
   },
   {
    "url": "https://doi.org/10.1086/132921",
-   "status": "not downloaded",
-   "note": "Krisciunas & Schaefer 1991, PASP 103:1033. PDF mirror overloaded (saved page was an error); formulas taken from specsim/thorsky."
+   "status": "downloaded (mirror)",
+   "note": "Krisciunas & Schaefer 1991, PASP 103:1033. Downloaded 2026-10-19 from a mirror (files: references/moon/papers/krisciunas-schaefer-1991-moonlight-pasp-103-1033.pdf); formulas checked against specsim and the original."
   },
   {
    "url": "https://doi.org/10.1016/0019-1035(91)90053-V",
