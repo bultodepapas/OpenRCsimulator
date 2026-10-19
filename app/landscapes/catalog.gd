@@ -1,49 +1,49 @@
 extends RefCounted
 
-const ClubField = preload("res://landscapes/club_field/landscape.gd")
-const GreenParadise = preload("res://landscapes/green_paradise/landscape.gd")
+const ADAPTERS: Array = [
+	preload("res://landscapes/club_field/landscape.gd"),
+	preload("res://landscapes/green_paradise/landscape.gd"),
+]
 
 const DEFAULT_ID: String = "club_field"
 
 
 static func ids() -> Array[String]:
 	var ordered: Array[String] = []
-	ordered.append(ClubField.ID)
-	ordered.append(GreenParadise.ID)
+	for adapter in ADAPTERS:
+		ordered.append(str(adapter.ID))
 	return ordered
 
 
 static func has(id: String) -> bool:
-	return id == ClubField.ID or id == GreenParadise.ID
+	return _adapter(id) != null
 
 
 static func entry(id: String) -> Dictionary:
-	if id == ClubField.ID:
-		return {id = ClubField.ID, name = ClubField.DISPLAY_NAME, field_path = ClubField.FIELD_PATH}
-	if id == GreenParadise.ID:
-		return {
-			id = GreenParadise.ID,
-			name = GreenParadise.DISPLAY_NAME,
-			field_path = GreenParadise.FIELD_PATH,
-		}
-	return {}
+	var adapter: Variant = _adapter(id)
+	if adapter == null:
+		return {}
+	return {id = adapter.ID, name = adapter.DISPLAY_NAME, field_path = adapter.FIELD_PATH}
 
 
 static func build(id: String, field: Dictionary, lighting: Dictionary = {}) -> Node3D:
-	if id == ClubField.ID:
-		return ClubField.build(field, lighting)
-	if id == GreenParadise.ID:
-		return GreenParadise.build(field, lighting)
-	return null
+	var adapter: Variant = _adapter(id)
+	return adapter.build(field, lighting) if adapter != null else null
 
 
 static func collision_world(id: String, field: Dictionary) -> Dictionary:
-	if id == ClubField.ID:
-		return ClubField.collision_world(field)
-	if id == GreenParadise.ID:
-		return GreenParadise.collision_world(field)
+	var adapter: Variant = _adapter(id)
+	if adapter != null:
+		return adapter.collision_world(field)
 	return {
 		ok = false,
 		world = {},
 		errors = PackedStringArray(["landscape: unknown id '%s'" % id]),
 	}
+
+
+static func _adapter(id: String) -> Variant:
+	for adapter in ADAPTERS:
+		if str(adapter.ID) == id:
+			return adapter
+	return null

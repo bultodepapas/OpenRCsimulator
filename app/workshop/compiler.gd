@@ -177,6 +177,7 @@ static func _transform_candidate(raw: Dictionary, base_id: String, scale: float,
 		if tank_variant is Dictionary:
 			_transform_q(tank_variant, "capacity", tank_ratio, base_id, TANK_POLICY + ": tank volume × s³")
 			_transform_q(tank_variant, "unusable", tank_ratio, base_id, TANK_POLICY + ": tank residue × s³")
+			_transform_q(tank_variant, "reserve", tank_ratio, base_id, TANK_POLICY + ": reserve volume × s³")
 	_transform_q(raw.plausibility, "mass_range", mass_ratio, base_id,
 		"virtual consistency band × target mass ratio " + str(mass_ratio) + "; original range retained in base evidence")
 	# inertia_reference is donor evidence used by AircraftData's plausibility comparison.

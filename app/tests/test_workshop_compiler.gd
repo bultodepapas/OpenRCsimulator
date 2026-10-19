@@ -45,6 +45,7 @@ func _initialize() -> void:
 	_test_no_op(extra, "Extra")
 	_test_scale_policies(stik)
 	_test_scale_policies(extra)
+	_test_tank_and_fill_scaling(stik)
 	_test_power_and_controls(stik)
 	_test_unfamiliar_identity(stik)
 	_test_catalog_registry()
@@ -206,6 +207,47 @@ func _test_power_and_controls(base: Dictionary) -> void:
 		_tank_follows_airframe(base_data.model, weighted.data.model, 1.25, "weighted 125%")
 	var clipped: Dictionary = Compiler.compile(base, {"scale": 2.01})
 	_check("scale above the V1 bound is rejected", not clipped.ok and not clipped.errors.is_empty())
+
+
+func _test_tank_and_fill_scaling(base: Dictionary) -> void:
+	var authored := base.duplicate(true)
+	authored.fuel_system.tanks[0].reserve = {
+		"value": 0.05,
+		"unit": "l",
+		"kind": "manual",
+		"source": "Workshop FUEL-11 authored-reserve regression",
+	}
+	var base_data: Dictionary = AircraftData.validate_and_derive(authored)
+	_check("authored-reserve fixture validates", base_data.ok, str(base_data.errors))
+	if not base_data.ok:
+		return
+	var compiled: Dictionary = Compiler.compile(authored, {"scale": 0.5, "weight_multiplier": 1.5})
+	_check("scaled tank with authored reserve compiles", compiled.ok, str(compiled.errors))
+	if not compiled.ok:
+		return
+	var s := 0.5
+	var tank_ratio := pow(s, 3.0)
+	var dry_ratio := pow(s, 2.0) * 1.5
+	var base_tank: Dictionary = base_data.model.fuel_system.tanks[0]
+	var tank: Dictionary = compiled.data.model.fuel_system.tanks[0]
+	var raw_tank: Dictionary = compiled.raw.fuel_system.tanks[0]
+	_check("capacity, unusable volume and authored reserve scale together by s³",
+		is_equal_approx(raw_tank.capacity.value, authored.fuel_system.tanks[0].capacity.value * tank_ratio)
+		and is_equal_approx(raw_tank.unusable.value, authored.fuel_system.tanks[0].unusable.value * tank_ratio)
+		and is_equal_approx(raw_tank.reserve.value, authored.fuel_system.tanks[0].reserve.value * tank_ratio))
+	_check("tank sizing stays independent of dry weight multiplier",
+		is_equal_approx(tank.capacity_m3, base_tank.capacity_m3 * tank_ratio)
+		and is_equal_approx(tank.reserve_fraction, base_tank.reserve_fraction))
+	_check("fill and blend density remain unchanged by Workshop scaling",
+		is_equal_approx(tank.start_fill, base_tank.start_fill)
+		and is_equal_approx(tank.density_kg_m3, base_tank.density_kg_m3)
+		and is_equal_approx(tank.capacity_kg / tank.capacity_m3, base_tank.density_kg_m3))
+	_check("fuel mass follows tank volume while dry mass follows selected mass policy",
+		is_equal_approx(tank.liquid_mass_kg, base_tank.liquid_mass_kg * tank_ratio)
+		and is_equal_approx(compiled.data.model.mass_kg - tank.liquid_mass_kg,
+			(base_data.model.mass_kg - base_tank.liquid_mass_kg) * dry_ratio))
+	_check("authored reserve provenance becomes derived with scaled units",
+		raw_tank.reserve.kind == "derived" and str(raw_tank.reserve.source).contains("reserve volume × s³"))
 
 
 func _test_unfamiliar_identity(base: Dictionary) -> void:

@@ -113,7 +113,7 @@ python3 "$HERE/../research/glow-engines/test_refinement_report.py"
 python3 "$HERE/../research/glow-engines/test_pilot_review.py"
 python3 "$HERE/../research/fuel-systems/test_fuel_registry.py"
 python3 "$HERE/../research/fuel-systems/test_mass_balance_report.py"
-python3 "$HERE/../research/fuel-systems/mass_balance_report.py" --check "$HERE/../research/fuel-systems/mass_balance_current.json"
+python3 "$HERE/../research/fuel-systems/mass_balance_report.py" --check "$HERE/../research/fuel-systems/mass_balance_current.json" --fail-on-drift
 python3 "$HERE/../research/glow-engines/reference/test_reference.py"
 
 echo "== P51-16: separated hardware inventory and physical inertia stay consistent"

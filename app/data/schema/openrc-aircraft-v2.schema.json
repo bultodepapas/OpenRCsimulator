@@ -2335,6 +2335,7 @@
             "fixed_voltage",
             "ocv_resistance",
             "finite_glow_fuel",
+            "finite_liquid_fuel",
             "pack_ecm"
           ]
         },
@@ -2628,6 +2629,19 @@
                 }
               },
               "unusable": {
+                "$ref": "#/$defs/evidence",
+                "properties": {
+                  "value": {
+                    "type": "number",
+                    "maximum": 50,
+                    "minimum": 0
+                  },
+                  "unit": {
+                    "const": "l"
+                  }
+                }
+              },
+              "reserve": {
                 "$ref": "#/$defs/evidence",
                 "properties": {
                   "value": {
@@ -3464,6 +3478,9 @@
           "type": "string",
           "minLength": 1,
           "pattern": "[^\\u0001-\\u0020]"
+        },
+        "fuel_consumption": {
+          "$ref": "#/$defs/liquidFuelConsumption"
         },
         "id": {
           "type": "string",
@@ -4328,6 +4345,9 @@
           "type": "string",
           "minLength": 1,
           "pattern": "[^\\u0001-\\u0020]"
+        },
+        "fuel_consumption": {
+          "$ref": "#/$defs/liquidFuelConsumption"
         },
         "id": {
           "type": "string",
@@ -5218,6 +5238,72 @@
       },
       "$comment": "Flat four-column rows: angle magnitude, lift magnitude, profile drag, attached fraction. Runtime enforces groups of four, column ranges, ordering, C1 boundaries and induced reference consistency."
     },
+    "liquidFuelConsumption": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": [
+            "law",
+            "tank_id",
+            "bsfc",
+            "idle_flow"
+          ],
+          "properties": {
+            "law": {
+              "const": "gasoline_bsfc_v1"
+            },
+            "tank_id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "bsfc": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 2.0,
+                  "exclusiveMinimum": 0.05
+                },
+                "unit": {
+                  "const": "kg/kWh"
+                }
+              }
+            },
+            "idle_flow": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "maximum": 0.01,
+                  "minimum": 0.0
+                },
+                "unit": {
+                  "const": "kg/s"
+                }
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": [
+            "law",
+            "tank_id"
+          ],
+          "properties": {
+            "law": {
+              "const": "turbine_map_v1"
+            },
+            "tank_id": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
     "electricPackEcmBattery": {
       "type": "object",
       "required": [
@@ -5618,18 +5704,52 @@
         }
       },
       "then": {
-        "properties": {
-          "capabilities": {
+        "allOf": [
+          {
             "properties": {
-              "propulsion_layout": {
-                "const": "single_centerline_jet"
-              },
-              "energy": {
-                "const": "prescribed_fuel"
+              "capabilities": {
+                "properties": {
+                  "propulsion_layout": {
+                    "const": "single_centerline_jet"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "propulsion": {
+                  "required": [
+                    "fuel_consumption"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "capabilities": {
+                  "properties": {
+                    "energy": {
+                      "const": "finite_liquid_fuel"
+                    }
+                  }
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "capabilities": {
+                  "properties": {
+                    "energy": {
+                      "const": "prescribed_fuel"
+                    }
+                  }
+                }
               }
             }
           }
-        }
+        ]
       }
     },
     {
@@ -5672,11 +5792,33 @@
               }
             },
             "else": {
-              "properties": {
-                "capabilities": {
-                  "properties": {
-                    "energy": {
-                      "const": "prescribed_fuel"
+              "if": {
+                "properties": {
+                  "propulsion": {
+                    "required": [
+                      "fuel_consumption"
+                    ]
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "capabilities": {
+                    "properties": {
+                      "energy": {
+                        "const": "finite_liquid_fuel"
+                      }
+                    }
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "capabilities": {
+                    "properties": {
+                      "energy": {
+                        "const": "prescribed_fuel"
+                      }
                     }
                   }
                 }
@@ -5694,6 +5836,89 @@
               }
             }
           }
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "propulsion": {
+            "properties": {
+              "kind": {
+                "const": "glow_prop"
+              },
+              "fuel_consumption": {
+                "properties": {
+                  "law": {
+                    "const": "gasoline_bsfc_v1"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "propulsion": {
+            "properties": {
+              "engine": {
+                "required": [
+                  "shaft"
+                ],
+                "not": {
+                  "required": [
+                    "glow_installation"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "propulsion": {
+            "properties": {
+              "kind": {
+                "const": "turbine"
+              },
+              "fuel_consumption": {
+                "properties": {
+                  "law": {
+                    "const": "turbine_map_v1"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "fuel_system": {
+            "required": [
+              "tanks"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "propulsion": {
+            "required": [
+              "fuel_consumption"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "fuel_system"
         ]
       }
     },

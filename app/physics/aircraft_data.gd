@@ -1465,6 +1465,131 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 	return {format = "openrc-fuel-system v1", fuel_state = fuel_state, tanks = tanks, registry_sha256 = registry_identity}
 
 
+## FUEL-08: finite gasoline or turbine consumption over registry-bound tanks. The fixed reference model already includes
+## the authored liquid and its unusable residue; only usable liquid varies through MassInventory.
+static func _liquid_fuel(errors: PackedStringArray, raw: Dictionary, model: Dictionary) -> Dictionary:
+	var propulsion_raw: Dictionary = raw.get("propulsion", {})
+	var consumption: Dictionary = propulsion_raw.get("fuel_consumption", {})
+	var law: String = str(consumption.get("law", ""))
+	var tank_id: String = str(consumption.get("tank_id", ""))
+	var propulsion_kind: String = str(propulsion_raw.get("kind", "glow_prop"))
+	var family := ""
+	if law == "gasoline_bsfc_v1":
+		family = "gasoline"
+		if propulsion_kind != "glow_prop":
+			errors.append("propulsion.fuel_consumption.law: gasoline_bsfc_v1 requires glow_prop propulsion")
+		var raw_engine: Dictionary = propulsion_raw.get("engine", {})
+		if not raw_engine.has("shaft") or raw_engine.has("glow_installation"):
+			errors.append("propulsion.fuel_consumption.law: gasoline_bsfc_v1 requires the legacy shaft and excludes glow_installation")
+	elif law == "turbine_map_v1":
+		family = "kerosene"
+		if propulsion_kind != "turbine":
+			errors.append("propulsion.fuel_consumption.law: turbine_map_v1 requires turbine propulsion")
+	else:
+		errors.append("propulsion.fuel_consumption.law: unsupported law '%s'" % law)
+		return {}
+	var fuel_system: Dictionary = model.get("fuel_system", {})
+	var normalized_tanks: Array = fuel_system.get("tanks", [])
+	if normalized_tanks.is_empty():
+		errors.append("propulsion.fuel_consumption: requires a normalized fuel_system")
+		return {}
+	var bound_tank: Dictionary = {}
+	var stores_by_id: Dictionary = {}
+	var store_ids := PackedStringArray()
+	var inventory_by_id: Dictionary = {}
+	for item: Variant in raw.get("inventory", []):
+		if item is Dictionary and item.has("id"):
+			inventory_by_id[str(item.id)] = item
+	var resources: Array[Dictionary] = []
+	for tank: Dictionary in normalized_tanks:
+		var id: String = str(tank.get("id", ""))
+		var item: Variant = inventory_by_id.get(str(tank.get("liquid_inventory_id", "")), null)
+		if not item is Dictionary:
+			errors.append("fuel_system.tanks.%s: bound liquid inventory item is missing" % id)
+			return {}
+		var capacity: float = float(tank.get("capacity_kg", NAN))
+		var unusable: float = float(tank.get("unusable_kg", NAN))
+		var reference: float = float(tank.get("liquid_mass_kg", NAN))
+		if not is_finite(capacity) or not is_finite(unusable) or not is_finite(reference) \
+				or capacity <= unusable or reference < unusable - 1.0e-9:
+			errors.append("fuel_system.tanks.%s: authored liquid mass must include its unusable residue and remain within capacity" % id)
+			continue
+		var position: Array = item.position.value
+		var size: Array = item.size.value
+		var cg: PackedFloat64Array = model.cg_le
+		var center_body := PackedFloat64Array([
+			-(float(position[0]) - cg[0]),
+			float(position[1]) - cg[1],
+			-(float(position[2]) - cg[2]),
+		])
+		var size_body := PackedFloat64Array([float(size[0]), float(size[1]), float(size[2])])
+		resources.append({
+			id = id,
+			reference_mass_kg = maxf(reference - unusable, 0.0),
+			capacity_mass_kg = capacity - unusable,
+			center_body_m = center_body,
+			size_body_m = size_body,
+		})
+		stores_by_id[id] = {
+			id = id,
+			fuel = str(tank.get("fuel", "")),
+			family = str(tank.get("family", "")),
+			liquid_inventory_id = str(tank.get("liquid_inventory_id", "")),
+			shell_inventory_id = str(tank.get("shell_inventory_id", "")),
+			capacity_kg = capacity,
+			unusable_kg = unusable,
+			reference_kg = reference,
+			reference_usable_kg = maxf(reference - unusable, 0.0),
+			reserve_kg = float(tank.get("reserve_kg", unusable)),
+		}
+		store_ids.append(id)
+		if id == tank_id:
+			bound_tank = tank
+	if not errors.is_empty():
+		return {}
+	if bound_tank.is_empty():
+		errors.append("propulsion.fuel_consumption.tank_id: '%s' does not bind a declared tank" % tank_id)
+		return {}
+	if str(bound_tank.get("family", "")) != family:
+		errors.append("propulsion.fuel_consumption.tank_id: '%s' must contain %s, got %s" % [tank_id, family, bound_tank.get("family", "")])
+		return {}
+	var prepared: Dictionary = MassInventory.prepare_reference(float(model.mass_kg), model.inertia, resources)
+	if not prepared.get("ok", false):
+		errors.append("propulsion.fuel_consumption: cannot prepare tank mass reference: %s" % str(prepared.get("error", "unknown error")))
+		return {}
+	var normalized_propulsion: Dictionary = model.get("propulsion", {})
+	var adapter := {
+		format = "openrc-liquid-fuel v1",
+		law = law,
+		tank_id = tank_id,
+		tank_ids = PackedStringArray([tank_id]),
+		store_ids = store_ids,
+		stores_by_id = stores_by_id,
+		capacity_kg = float(bound_tank.capacity_kg),
+		unusable_kg = float(bound_tank.unusable_kg),
+		reference_kg = float(bound_tank.liquid_mass_kg),
+		reference_usable_kg = maxf(float(bound_tank.liquid_mass_kg) - float(bound_tank.unusable_kg), 0.0),
+		prepared_inventory = prepared,
+	}
+	if law == "gasoline_bsfc_v1":
+		var bsfc: Variant = _q(errors, "propulsion.fuel_consumption.bsfc", consumption.get("bsfc"), "kg/kWh", 0.05, 2.0)
+		var idle_flow: Variant = _q(errors, "propulsion.fuel_consumption.idle_flow", consumption.get("idle_flow"), "kg/s", 0.0, 0.01)
+		var shaft: Variant = normalized_propulsion.get("shaft", null)
+		if not shaft is Dictionary:
+			errors.append("propulsion.fuel_consumption: normalized shaft model is missing")
+		elif bsfc != null and idle_flow != null:
+			adapter.bsfc_kg_kwh = float(bsfc)
+			adapter.idle_flow_kg_s = float(idle_flow)
+			adapter.idle_power_w = float(shaft.idle_power)
+	elif law == "turbine_map_v1":
+		var flow_map: Variant = normalized_propulsion.get("fuel_flow", PackedFloat64Array())
+		if not flow_map is PackedFloat64Array or flow_map.size() < 4:
+			errors.append("propulsion.fuel_consumption: normalized turbine fuel_flow map is missing")
+		else:
+			adapter.fuel_flow_kg_s_by_rpm = flow_map.duplicate()
+	return {} if not errors.is_empty() else adapter
+
+
 ## Left-to-right inventory first moment over the items whose id is not excluded; null when massless.
 static func _inventory_cg(inventory: Variant, excluded_ids: Array) -> Variant:
 	if not inventory is Array:
