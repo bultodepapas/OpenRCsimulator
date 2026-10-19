@@ -32,6 +32,23 @@ The [native windsock oracle](native.json) passes **39 checks**, including indepe
 
 This is a flat-ground shadow. It does not add self-shadowing, cloth light transmission or shadows on other objects. Softness and opacity remain presentation estimates. Native timings on this desktop cannot establish complete flight frame budgets, minimum hardware or other platforms. A full application suite and owner playtest are separate checks.
 
+## VQ-04a-F3: windsock upload CPU optimization
+
+2026-10-19. `windsock.gd` now accumulates fabric extrema directly instead of allocating and scanning 104 corner points per upload. It reuses one yaw basis, caches the cue's immutable nodes/material/dimensions/hardware bounds, and transforms hardware corners directly into the combined bounds. Exact repeated poses skip CPU uploads; shared-clock GPU flutter still runs. Explicit reset forces an upload. The cache belongs to one cue and is released with it; runtime replacement of its meshes/materials is not supported by this renderer.
+
+The fixed motion integrator, wind inputs, shaders, shadow resolution and refresh rules are unchanged. On an AMD Ryzen 9 5900X, pinned native Windows Godot 4.7.2 headless, 30 paired batches alternating baseline/candidate order gave:
+
+| One-cue CPU workload | Baseline mean | Optimized mean | Reduction |
+| --- | ---: | ---: | ---: |
+| 240 wind/motion ticks and 60 render updates | 4.279 ms | 2.423 ms | 43.4% |
+| 60 repeated updates at paused time | 2.770 ms | 0.221 ms | 92.0% |
+
+The active workload uses changing wind; both sides include the same input generation and motion calls. These are elapsed CPU component batch times, not single-frame costs or complete flight FPS. [Raw paired batches and source identities](optimization/compare.json) retain every observation. The baseline renderer was frozen before editing from commit `8c77c36ab8abc7633d30b5dd143b58ecc7a9c1d2`; dependencies are shared with the candidate.
+
+The comparison passes 2,400 exact motion-state cases, 600 exact rendered-state cases and six direct bounds cases at default/maximum dimensions. Calm, gust, turns, reversal and updrafts use the same 240 Hz tape. All **22 native images are pixel-exact** against the pre-optimization captures, including seven masks and shadow-hidden controls. The [native oracle](optimization/native.json) again passes 39 checks. **441 focused assertions pass**, including frame grouping at 30/60/144 FPS, committed session wind, resets, lighting/visibility, bounds, audio and data validation. Both changed scripts parse; a newly exported Windows resource pack mounts in an empty project and constructs the windsock and its 512² caster. [Verification](optimization/verification.json) records checks, warnings, capture identities and image hashes.
+
+Full application tests and owner playtest were not repeated in this pass. No GPU saving or whole-flight frame-budget improvement is established. Reproduce the paired benchmark with [the ground tool instructions](../../../../../tools/ground/README.md#windsock-cpu-comparison-vq-04a-f3).
+
 ## Reproduce and sources
 
 Use the pinned engine from the repository root:

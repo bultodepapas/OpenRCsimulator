@@ -144,6 +144,18 @@ Run `res://tests/test_windsock.gd` and `res://tests/test_windsock_motion.gd` wit
 
 The capture uses the production sleeve/material and a fixed 240 Hz wind tape. It records two views of calm, light/full/strong flow, reversal, vertical gust and recovery; `--sequence` adds a 61-frame gust/turn/calm tape at 12 FPS. `capture.json` includes source/image hashes, wind vectors, state, renderer and mesh cost. Check engine errors as well as exit status. The CPU probe reports 30 batch means for tick advances and 60 Hz uploads after warmup; run it alone. These component checks do not qualify full-flight frame time or physical fabric dynamics.
 
+### Windsock CPU comparison (VQ-04a-F3)
+
+Before editing the renderer, copy `app/render/windsock.gd` to an absolute path outside `app/`. Keep its dependencies identical to the candidate; the tool loads both scripts in the same project. Then run alone with the pinned engine:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/tools/ground/compare_windsock_optimization.gd" -- `
+  --baseline=C:/absolute/baseline/windsock.gd --out=C:/absolute/comparison.json
+```
+
+The harness compares 2,400 motion states, 600 render states and six bounds cases exactly, then measures 30 paired batches in alternating order. Active batches contain 240 advances and 60 updates with changing wind; paused batches contain 60 updates at the model's current timestamp. JSON retains raw batch microseconds, means, medians and source hashes. An equivalence mismatch exits nonzero. Check logs for engine errors too. This measures one cue's headless CPU work, with no GPU or whole-flight FPS claim. [Accepted measurements and native visual parity](../../docs/research/visual-quality-implementation/VQ-04a/windsock/README.md#vq-04a-f3-windsock-upload-cpu-optimization) own the evidence.
+
 L10b reuses the flight-cue harness for the pilot station:
 
 ```bash

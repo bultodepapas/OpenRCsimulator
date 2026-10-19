@@ -131,6 +131,13 @@ static func build(cue: Dictionary) -> Node3D:
 	var basket := _instance("Basket", basket_hardware, false)
 	basket.mesh.surface_set_material(0, _material(SupportFinish, SUPPORT_MAPS))
 	root.add_child(basket)
+	var hardware_boxes: Array[AABB] = [support.mesh.get_aabb(), basket.mesh.get_aabb()]
+	var hardware_transforms: Array[Transform3D] = [support.transform, basket.transform]
+	# These meshes and materials belong to this cue for its lifetime. Keep their
+	# handles and static local bounds instead of resolving them at every upload.
+	root.set_meta("_windsock_view", {fabric = fabric, basket = basket, support = support,
+		material = fabric_material, dimensions = cue_dimensions,
+		hardware_boxes = hardware_boxes, hardware_transforms = hardware_transforms})
 	_apply_motion(root, motion)
 	return root
 
@@ -157,7 +164,7 @@ static func reset(root: Node3D, time_s: float = 0.0, wind_ned: Array = [0.0, 0.0
 	if motion == null:
 		return
 	motion.reset(time_s, wind_ned)
-	_apply_motion(root, motion)
+	_apply_motion(root, motion, true)
 
 
 ## Arc-length reference used to build the bind mesh: the first 3/8 stays straight,
@@ -220,38 +227,50 @@ static func _motion_model(root: Node3D) -> Variant:
 	return root.get_meta("windsock_motion")
 
 
-static func _apply_motion(root: Node3D, motion: Variant) -> void:
-	var fabric := root.get_node_or_null("Fabric") as MeshInstance3D
-	var basket := root.get_node_or_null("Basket") as MeshInstance3D
-	var support := root.get_node_or_null("Support") as MeshInstance3D
-	if fabric == null or basket == null or support == null:
+static func _apply_motion(root: Node3D, motion: Variant, force: bool = false) -> void:
+	var view: Dictionary = root.get_meta("_windsock_view", {})
+	if view.is_empty() or not is_instance_valid(view.fabric) \
+			or not is_instance_valid(view.basket) or not is_instance_valid(view.support):
 		return
-	var material := fabric.mesh.surface_get_material(0) as ShaderMaterial
-	if material == null:
-		return
-	var dimensions: Dictionary = root.get_meta("windsock_dimensions", {})
 	var chain: PackedVector3Array = motion.centerline_local
 	if chain.size() != MOTION_POINTS:
 		return
 	var yaw_rad: float = float(motion.basket_yaw_rad)
 	var inflation_value: float = clampf(float(motion.inflation), 0.0, 1.0)
+	if not force and view.has("chain") and chain == view.chain \
+			and yaw_rad == view.yaw and inflation_value == view.inflation:
+		return # GPU flutter still follows the shared clock; these bounds cover every phase.
+	var fabric: MeshInstance3D = view.fabric
+	var basket: MeshInstance3D = view.basket
+	var material: ShaderMaterial = view.material
+	var dimensions: Dictionary = view.dimensions
 	material.set_shader_parameter("centerline_points", chain)
 	material.set_shader_parameter("basket_yaw_rad", yaw_rad)
 	material.set_shader_parameter("inflation", inflation_value)
 	basket.rotation.y = yaw_rad
 	var rendered_centres := PackedVector3Array()
 	var mount := Vector3(float(dimensions.arm_m), float(dimensions.height_m), 0.0)
+	var yaw_basis := Basis(Vector3.UP, yaw_rad)
 	for point: Vector3 in chain:
-		rendered_centres.append((mount + point).rotated(Vector3.UP, yaw_rad))
+		rendered_centres.append(yaw_basis * (mount + point))
 	fabric.set_meta("centreline", rendered_centres)
 	var fabric_bounds := _fabric_bounds(chain, yaw_rad, inflation_value, dimensions)
 	fabric.custom_aabb = fabric_bounds
 	fabric.set_meta("visual_bounds", fabric_bounds)
-	var bounds_points := PackedVector3Array()
-	_append_aabb_corners(bounds_points, fabric_bounds, Transform3D.IDENTITY)
-	_append_aabb_corners(bounds_points, support.mesh.get_aabb(), support.transform)
-	_append_aabb_corners(bounds_points, basket.mesh.get_aabb(), basket.transform)
-	root.set_meta("visual_bounds", _aabb_from_points(bounds_points))
+	var minimum := fabric_bounds.position
+	var maximum := fabric_bounds.end
+	var hardware_boxes: Array[AABB] = view.hardware_boxes
+	var hardware_transforms: Array[Transform3D] = view.hardware_transforms
+	hardware_transforms[1] = basket.transform
+	for index: int in hardware_boxes.size():
+		for corner: int in 8:
+			var point: Vector3 = hardware_transforms[index] * hardware_boxes[index].get_endpoint(corner)
+			minimum = minimum.min(point)
+			maximum = maximum.max(point)
+	root.set_meta("visual_bounds", AABB(minimum, maximum - minimum))
+	view.chain = chain
+	view.yaw = yaw_rad
+	view.inflation = inflation_value
 
 
 static func _fabric_bounds(
@@ -259,12 +278,14 @@ static func _fabric_bounds(
 		yaw_rad: float,
 		inflation_value: float,
 		dimensions: Dictionary) -> AABB:
-	var points := PackedVector3Array()
+	var minimum := Vector3(1.0e20, 1.0e20, 1.0e20)
+	var maximum := Vector3(-1.0e20, -1.0e20, -1.0e20)
 	var throat_diameter_m: float = float(dimensions.throat_diameter_m)
 	var tail_diameter_m: float = float(dimensions.tail_diameter_m)
 	var length_m: float = float(dimensions.length_m)
 	var arm_m: float = float(dimensions.arm_m)
 	var height_m: float = float(dimensions.height_m)
+	var yaw_basis := Basis(Vector3.UP, yaw_rad)
 	for point_index: int in chain.size():
 		var t: float = _station_fraction(point_index)
 		var taper: float = t
@@ -276,12 +297,13 @@ static func _fabric_bounds(
 		var margin: float = nominal_radius * section_scale * (1.0 + FOLD_AMPLITUDE)
 		margin += length_m * (0.01 + 0.004 * inflation_value)
 		var centre := Vector3(arm_m + chain[point_index].x, height_m + chain[point_index].y, chain[point_index].z)
-		centre = centre.rotated(Vector3.UP, yaw_rad)
-		for dx: float in [-margin, margin]:
-			for dy: float in [-margin, margin]:
-				for dz: float in [-margin, margin]:
-					points.append(centre + Vector3(dx, dy, dz))
-	return _aabb_from_points(points)
+		centre = yaw_basis * centre
+		# Every old corner was centre +/- this same margin on each axis.
+		# Accumulate the extrema directly instead of allocating/scanning 104 points.
+		var half_extent := Vector3(margin, margin, margin)
+		minimum = minimum.min(centre - half_extent)
+		maximum = maximum.max(centre + half_extent)
+	return AABB(minimum, maximum - minimum)
 
 
 static func _station_fraction(point_index: int) -> float:

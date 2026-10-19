@@ -1,0 +1,372 @@
+{
+  "format": "openrc-windsock-optimization-verification v1",
+  "date": "2026-10-19",
+  "baseline_commit": "8c77c36ab8abc7633d30b5dd143b58ecc7a9c1d2",
+  "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "renderer": "gl_compatibility",
+  "godot": "4.7.2-stable (official)",
+  "platform": "Windows",
+  "sources_sha256": {
+    "baseline_renderer": "749b53c1253964f249e905883f9e4ffbac191cdcb8a651e5b9ca4a2b5af6a1c0",
+    "candidate_renderer": "a902104a6186800b4e9f7503df73c482a106aa3a3cc360fc45847dc12dfa96d0",
+    "harness": "e1bb43416aabaf0c0ca2cd9136b7a86b1a38ff8de6e0e43bf260a6d513e89768",
+    "motion": "ad487410160748f8c01cd8f6d904f3a4e5089bc86827eac8a1cbe49a2681bb8e"
+  },
+  "focused_checks": {
+    "test_projected_shadow": 43,
+    "test_shadow_collection": 77,
+    "test_windsock": 17,
+    "test_windsock_motion": 35,
+    "test_flight_cue_shadows": 20,
+    "test_recorded_audio": 47,
+    "test_windsock_shadow": 22,
+    "test_field_projected_shadows": 59,
+    "test_windsock_data": 121
+  },
+  "focused_checks_total": 441,
+  "focused_failures": 0,
+  "expected_warnings": [
+    "Existing unsupported maple_tree wind material",
+    "Existing aircraft inertia data warning"
+  ],
+  "native_oracle_checks": 39,
+  "native_oracle_passed": true,
+  "resource_pack": {
+    "preset": "Windows",
+    "mounted_in_empty_project": true,
+    "windsock_and_512_caster_constructed": true,
+    "scope": "Resources only; not a standalone installer or native library qualification"
+  },
+  "image_comparisons": [
+    {
+      "image": "calm-mask.png",
+      "width": 512,
+      "height": 512,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "1a83e6f2fb2c37cfccf4284f6fba8183144d47072ae7469e703bfe78b332e1af",
+      "after_png_sha256": "1a83e6f2fb2c37cfccf4284f6fba8183144d47072ae7469e703bfe78b332e1af"
+    },
+    {
+      "image": "calm-no-shadow.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "90e60521b6aeddea12ca99755a23a3fa16989052ac56fc7addda5917320ad473",
+      "after_png_sha256": "90e60521b6aeddea12ca99755a23a3fa16989052ac56fc7addda5917320ad473"
+    },
+    {
+      "image": "calm.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "00251478fdff3f8fc80d250479653058838d577ef839a4c6a202d6a912b851d0",
+      "after_png_sha256": "00251478fdff3f8fc80d250479653058838d577ef839a4c6a202d6a912b851d0"
+    },
+    {
+      "image": "high-sun-mask.png",
+      "width": 512,
+      "height": 512,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "226faa76e8a0178ec2dcaf9d897ad96ecdbfbd4b1e51b636f906b7565fb3ed49",
+      "after_png_sha256": "226faa76e8a0178ec2dcaf9d897ad96ecdbfbd4b1e51b636f906b7565fb3ed49"
+    },
+    {
+      "image": "high-sun-no-shadow.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "b667f1dfa453c634edc4b24a64d848a8b7f5e1ae95550e9c5bb64f06cdfad6af",
+      "after_png_sha256": "b667f1dfa453c634edc4b24a64d848a8b7f5e1ae95550e9c5bb64f06cdfad6af"
+    },
+    {
+      "image": "high-sun.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "113d1adf40f662fb204b3c2414ef06da0dfb13f6411edaf21dcd79d37fd70dd9",
+      "after_png_sha256": "113d1adf40f662fb204b3c2414ef06da0dfb13f6411edaf21dcd79d37fd70dd9"
+    },
+    {
+      "image": "light-mask.png",
+      "width": 512,
+      "height": 512,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "86bc262af41d12f47057fc28165d1627c156b03589285312a4a9b6d871d9153f",
+      "after_png_sha256": "86bc262af41d12f47057fc28165d1627c156b03589285312a4a9b6d871d9153f"
+    },
+    {
+      "image": "light-no-shadow.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "d83f91bbeb596d64076c4535d7d3edb2fb9ba7939ed6787ff7957724e1210998",
+      "after_png_sha256": "d83f91bbeb596d64076c4535d7d3edb2fb9ba7939ed6787ff7957724e1210998"
+    },
+    {
+      "image": "light.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "749b4967d026b193f2d72af67c1f08a67e37c8ef726492e8f3a41ec411648c96",
+      "after_png_sha256": "749b4967d026b193f2d72af67c1f08a67e37c8ef726492e8f3a41ec411648c96"
+    },
+    {
+      "image": "low-sun-mask.png",
+      "width": 512,
+      "height": 512,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "89549dc9d393955023d0d16bf890f646c4daa8a4f7a63977920b5b74eb0e54f7",
+      "after_png_sha256": "89549dc9d393955023d0d16bf890f646c4daa8a4f7a63977920b5b74eb0e54f7"
+    },
+    {
+      "image": "low-sun-no-shadow.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "c257f842fc1b006ebf710eb73748c831b3f4906d2b9cc65f6ca2f4c971df0dd4",
+      "after_png_sha256": "c257f842fc1b006ebf710eb73748c831b3f4906d2b9cc65f6ca2f4c971df0dd4"
+    },
+    {
+      "image": "low-sun-wide.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "a718850b3b5254eee8f07e9f1a9a1e353083dfd9eb667dfbc08d00abe030c38e",
+      "after_png_sha256": "a718850b3b5254eee8f07e9f1a9a1e353083dfd9eb667dfbc08d00abe030c38e"
+    },
+    {
+      "image": "low-sun.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "a3bfd7e8c305445ae4870e89f7f1c2eb3adb6043f9d3c31ef516d699d02ce826",
+      "after_png_sha256": "a3bfd7e8c305445ae4870e89f7f1c2eb3adb6043f9d3c31ef516d699d02ce826"
+    },
+    {
+      "image": "night-mask.png",
+      "width": 512,
+      "height": 512,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "226faa76e8a0178ec2dcaf9d897ad96ecdbfbd4b1e51b636f906b7565fb3ed49",
+      "after_png_sha256": "226faa76e8a0178ec2dcaf9d897ad96ecdbfbd4b1e51b636f906b7565fb3ed49"
+    },
+    {
+      "image": "night-no-shadow.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "420995de12da10e269cf47d2b597888dbb9f7eee3ba8bb60e2744b40ac714976",
+      "after_png_sha256": "420995de12da10e269cf47d2b597888dbb9f7eee3ba8bb60e2744b40ac714976"
+    },
+    {
+      "image": "night.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "420995de12da10e269cf47d2b597888dbb9f7eee3ba8bb60e2744b40ac714976",
+      "after_png_sha256": "420995de12da10e269cf47d2b597888dbb9f7eee3ba8bb60e2744b40ac714976"
+    },
+    {
+      "image": "reverse-mask.png",
+      "width": 512,
+      "height": 512,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "9ee9e58e39ef4a6eb25eadeb4ceb68b3eedad085ec3899958d06c715326ade35",
+      "after_png_sha256": "9ee9e58e39ef4a6eb25eadeb4ceb68b3eedad085ec3899958d06c715326ade35"
+    },
+    {
+      "image": "reverse-no-shadow.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "1276a22bdb4a2c52cc5a0de0635ff52ee0bd640098802d8045da0e1322950ff0",
+      "after_png_sha256": "1276a22bdb4a2c52cc5a0de0635ff52ee0bd640098802d8045da0e1322950ff0"
+    },
+    {
+      "image": "reverse.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "f4000ca7d00308688ef958e75b07eb0433164a846d627e3d80a391c4bb01edc5",
+      "after_png_sha256": "f4000ca7d00308688ef958e75b07eb0433164a846d627e3d80a391c4bb01edc5"
+    },
+    {
+      "image": "strong-mask.png",
+      "width": 512,
+      "height": 512,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "f57c38a84a1fd9a1df79b541a77207164e9458127ad98881e4f99665b1e8f9d3",
+      "after_png_sha256": "f57c38a84a1fd9a1df79b541a77207164e9458127ad98881e4f99665b1e8f9d3"
+    },
+    {
+      "image": "strong-no-shadow.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "89780303b6619d515609c14f727673e6405d55b972630465419707774f226ec8",
+      "after_png_sha256": "89780303b6619d515609c14f727673e6405d55b972630465419707774f226ec8"
+    },
+    {
+      "image": "strong.png",
+      "width": 1280,
+      "height": 720,
+      "changed_rgba_pixels": 0,
+      "before_png_sha256": "3b0589ed9dc2275fa0f09c0dabcff603020dd56ded71a99fc919e24d65eaa305",
+      "after_png_sha256": "3b0589ed9dc2275fa0f09c0dabcff603020dd56ded71a99fc919e24d65eaa305"
+    }
+  ],
+  "before_capture": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "records": [
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2725), S: (1.996084, 3.8725, 0.545)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "calm",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 0.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.274444), S: (2.29822, 3.874444, 0.548888)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "light",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 1.5
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "strong",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      },
+      {
+        "bounds": "[P: (-2.984, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "reverse",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": -12.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 15.0,
+        "mask_size": 512,
+        "name": "low-sun",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 75.0,
+        "mask_size": 512,
+        "name": "high-sun",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": -12.0,
+        "mask_size": 512,
+        "name": "night",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      }
+    ],
+    "renderer": "gl_compatibility",
+    "sources_sha256": {
+      "res://render/field_projected_shadows.gd": "5a7115d0e62853b96e1582f4b0b6eed785d074652ba576f631d7277501b68d50",
+      "res://render/windsock_deformation.gdshaderinc": "74c26d2f5dac781959d2c0c7cf2c2468047225ce7564623ee55174a3d30dae13",
+      "res://render/windsock_fabric.gdshader": "e494822a41ac727f5a2063148da5b5966cce361f87a2a87fd11ef8a43beaceca",
+      "res://render/windsock_projected_shadow.gd": "e4aab08df8ec849f039fc06f61211c5f4a8e7e9901d1492e715f76387a1b35c9",
+      "res://render/windsock_shadow_mask.gdshader": "9145d98677f88a3a0def847be70c89425ce8d00be59b8c47c68301d22b83d328"
+    }
+  },
+  "after_capture": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "records": [
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2725), S: (1.996084, 3.8725, 0.545)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "calm",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 0.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.274444), S: (2.29822, 3.874444, 0.548888)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "light",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 1.5
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "strong",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      },
+      {
+        "bounds": "[P: (-2.984, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 45.0,
+        "mask_size": 512,
+        "name": "reverse",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": -12.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 15.0,
+        "mask_size": 512,
+        "name": "low-sun",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": 75.0,
+        "mask_size": 512,
+        "name": "high-sun",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      },
+      {
+        "bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+        "elevation_deg": -12.0,
+        "mask_size": 512,
+        "name": "night",
+        "target_pixels": 262144,
+        "triangles": 5266,
+        "wind_east_mps": 12.0
+      }
+    ],
+    "renderer": "gl_compatibility",
+    "sources_sha256": {
+      "res://render/field_projected_shadows.gd": "5a7115d0e62853b96e1582f4b0b6eed785d074652ba576f631d7277501b68d50",
+      "res://render/windsock_deformation.gdshaderinc": "74c26d2f5dac781959d2c0c7cf2c2468047225ce7564623ee55174a3d30dae13",
+      "res://render/windsock_fabric.gdshader": "e494822a41ac727f5a2063148da5b5966cce361f87a2a87fd11ef8a43beaceca",
+      "res://render/windsock_projected_shadow.gd": "e4aab08df8ec849f039fc06f61211c5f4a8e7e9901d1492e715f76387a1b35c9",
+      "res://render/windsock_shadow_mask.gdshader": "9145d98677f88a3a0def847be70c89425ce8d00be59b8c47c68301d22b83d328"
+    }
+  },
+  "limitations": "One-cue headless CPU component timings, not GPU savings or complete flight FPS; same desktop only. Full app suite and owner playtest were not run in this optimization pass."
+}
