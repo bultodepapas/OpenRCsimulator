@@ -1,0 +1,300 @@
+{
+  "date": "2026-10-19",
+  "files": [
+    {
+      "path": "captures/jeti-setup-en-1280x720.png",
+      "bytes": 99691,
+      "sha256": "aaec1f734843ffccc0a77b65c2f807d8220285b07014d2261f243efcbb5cd555"
+    },
+    {
+      "path": "captures/jeti-setup-en-1920x1080.png",
+      "bytes": 112335,
+      "sha256": "a840a63e2e6d8b7cab83362af1b759c63133d00ee4e0ccbf239e6dd9701b4048"
+    },
+    {
+      "path": "captures/jeti-setup-es-1280x720.png",
+      "bytes": 100233,
+      "sha256": "8c3ecb1622a60eb2ee9e21409be10f25ff9582dfe08f3891bc3a0a29fe8cd321"
+    },
+    {
+      "path": "captures/jeti-setup-es-1920x1080.png",
+      "bytes": 110447,
+      "sha256": "20350393f65d05c9e8bb7783dadcebaae932feab56d7fa9d6e028673e26e7b69"
+    },
+    {
+      "path": "evidence-checkout.json",
+      "bytes": 5745,
+      "sha256": "b467e375dff685d46648aeaf2c95b3a0f5f33f2238a7f1db3bb757ef29cbff4e"
+    },
+    {
+      "path": "full-app-preflight.log",
+      "bytes": 7621,
+      "sha256": "e2bdf9eea4bc3b8d6c5060f0abce5f4a6cb8803d6187c9394db369ff4f0b1a9e"
+    },
+    {
+      "path": "golden-isolation/comparison.json",
+      "bytes": 15525,
+      "sha256": "ae79390dbdd9b8d0e2fa3c078b599208d04fc0e8e8adf76f06c475c47e98a232"
+    },
+    {
+      "path": "golden-isolation/jeti_input.log",
+      "bytes": 3348,
+      "sha256": "692e30c39f91ec653856ae5cffdfb98545ee127651072d62d2a53c52251e78da"
+    },
+    {
+      "path": "golden-isolation/original_input.log",
+      "bytes": 3348,
+      "sha256": "692e30c39f91ec653856ae5cffdfb98545ee127651072d62d2a53c52251e78da"
+    },
+    {
+      "path": "linux/test_jeti_identity.log",
+      "bytes": 116,
+      "sha256": "6ac75f4b941babd8c1c0af835bfafc705397f39f612f0de665f94f617954fd1d"
+    },
+    {
+      "path": "linux/test_jeti_runtime.log",
+      "bytes": 109,
+      "sha256": "5e38f8ceed8fa79d74fdeded8d292e01fd03c2132e068a078d9a0e9083aef9dd"
+    },
+    {
+      "path": "linux/test_jeti_setup.log",
+      "bytes": 3400,
+      "sha256": "a0268837fec8de307c1f7dcae42d447b863ac27e32fa8e955976bb1eaaa5d9b8"
+    },
+    {
+      "path": "linux/test_overlay_manager.log",
+      "bytes": 1471,
+      "sha256": "b11a5cd81dbaddecc6286b8f45e4e19ca995e40231c5f6427a5ad38176f6278e"
+    },
+    {
+      "path": "linux/test_switch_aux.log",
+      "bytes": 105,
+      "sha256": "21aabf6281921407ef2230c3c9b28c672e665133480405dbfb9ea6d5ce8cff5c"
+    },
+    {
+      "path": "linux-results.json",
+      "bytes": 955,
+      "sha256": "8b15979199a295fea11945ae8c73fe56650e26c0b5689290e6bc6602c43081e5"
+    },
+    {
+      "path": "native/test_controller_actions.log",
+      "bytes": 1164,
+      "sha256": "e2f5a89c5e28aea2c67a5995cb1e9d5a5af27d29a5b2608279628b256ce3b89c"
+    },
+    {
+      "path": "native/test_controller_auto_defaults.log",
+      "bytes": 130,
+      "sha256": "2eb4e06d781a81291bf02d2e9df3477da62d3d3394a6e6598b55ebfa1dbda33e"
+    },
+    {
+      "path": "native/test_controller_aux_runtime.log",
+      "bytes": 746,
+      "sha256": "0630b346cd3961711b01703e38498d2f644a88c7765f8adb9b1dbbcdb35e2a94"
+    },
+    {
+      "path": "native/test_controller_aux_setup.log",
+      "bytes": 1425,
+      "sha256": "2923f512343a83211c0a7ddcc2169ce34d0b7a27be75775fc81f7c1a62f0e879"
+    },
+    {
+      "path": "native/test_controller_binding_audit.log",
+      "bytes": 127,
+      "sha256": "9eb22330216a04435f6875b46814cd1cf86bb3e9692528451af12afd5379ec88"
+    },
+    {
+      "path": "native/test_controller_conditioning.log",
+      "bytes": 124,
+      "sha256": "9b8c038e71819df9ae378ce4f27d76f79b34057ffd18150fc98773ee97a28c89"
+    },
+    {
+      "path": "native/test_controller_extended_actions.log",
+      "bytes": 124,
+      "sha256": "58cc385ce4e1289d573f312e9c097f680b54373aeb253f5c8fef674865745329"
+    },
+    {
+      "path": "native/test_controller_flight_actions.log",
+      "bytes": 385,
+      "sha256": "d179be59a47c9de4924a9eae6cd3ee5aa2fb8840f1e1bf07fcaaca2de1f3c806"
+    },
+    {
+      "path": "native/test_controller_ground.log",
+      "bytes": 130,
+      "sha256": "08546d238a099bca698108991ddc6c1537a4d4596450403d83a8e0979c707248"
+    },
+    {
+      "path": "native/test_controller_integration.log",
+      "bytes": 676,
+      "sha256": "549b5c89472eba233f1b1e36454d486018850d1ef9b2bb57156d6a555dfe1475"
+    },
+    {
+      "path": "native/test_controller_menu.log",
+      "bytes": 1711,
+      "sha256": "f2bd173951c2563c957fd982783db0a703bb5f9dab8f63a70d284ef7e5e1a229"
+    },
+    {
+      "path": "native/test_controller_pause_recovery.log",
+      "bytes": 1477,
+      "sha256": "75e147036752d563279fff988c0334e045634814e123132ec577ffcfc0e630eb"
+    },
+    {
+      "path": "native/test_controller_persistence.log",
+      "bytes": 604,
+      "sha256": "fa3399c714f5da2b3397a955c424b8f385998f0c0bbb71193de2f18aa4b8105a"
+    },
+    {
+      "path": "native/test_controller_profile.log",
+      "bytes": 119,
+      "sha256": "7539022a8bf9e6ec52044801b90f5f7275673f3008ad626daf6d61c2599cb7b1"
+    },
+    {
+      "path": "native/test_controller_profile_hardening.log",
+      "bytes": 131,
+      "sha256": "d6386e165b268b777bd2a2eca6c90552cdcc4dab1792f9e415db9bb233b48635"
+    },
+    {
+      "path": "native/test_controller_prompts.log",
+      "bytes": 115,
+      "sha256": "1477a2f13e02e753ecbbca397fdb7c79176b7e28169c3b3f8ef712d04c2659b1"
+    },
+    {
+      "path": "native/test_controller_registry.log",
+      "bytes": 120,
+      "sha256": "f675ae5d91208bad7f9634e532a7fe0946504d2caa91061e134e6d7756c672c0"
+    },
+    {
+      "path": "native/test_controller_responsive.log",
+      "bytes": 135,
+      "sha256": "7d1bd5de453a2a969ff374bdcce957b0f96a4a51567424240d4fff5eb806b2f8"
+    },
+    {
+      "path": "native/test_controller_routing_audit.log",
+      "bytes": 127,
+      "sha256": "95ce59eaeef875dfd2aa5ad16f2a84777a0e5292a975d164b215a5ce8287d911"
+    },
+    {
+      "path": "native/test_controller_sections.log",
+      "bytes": 122,
+      "sha256": "841125aef119b06385ad36cf7ae1af6c0366de88a8d0162dfbb4489a960e81e4"
+    },
+    {
+      "path": "native/test_controller_settings_save.log",
+      "bytes": 125,
+      "sha256": "23c1f12c5fccdcc1d980c61635b1d6a6eb105867542579007a3a7ed38d86c280"
+    },
+    {
+      "path": "native/test_controller_setup.log",
+      "bytes": 3409,
+      "sha256": "1cf7eb7465505d8997aee9f9502a3d79f4ee04888bbd2fc8ce29da7cd2a7042c"
+    },
+    {
+      "path": "native/test_controller_setup_safety.log",
+      "bytes": 1602,
+      "sha256": "47b646e0186b0a29b51ad37b4ae870fa63510925b6ef98e562ba135721d740b9"
+    },
+    {
+      "path": "native/test_controller_store.log",
+      "bytes": 125,
+      "sha256": "36a8dd35b00d05fe032f2802114958c38a88b78a6742caccd85a94ffe0365c14"
+    },
+    {
+      "path": "native/test_e2e_input.log",
+      "bytes": 2568,
+      "sha256": "93dcd67b1236b719204608a25237030670462ed60b02f19f7dadb8a12f3a387a"
+    },
+    {
+      "path": "native/test_flight_log.log",
+      "bytes": 5782,
+      "sha256": "ec5f9a5ca4c00de4fec04e53822109798e320b720ed59adec799f51e8d76eac9"
+    },
+    {
+      "path": "native/test_heli_3d_controller.log",
+      "bytes": 125,
+      "sha256": "e87015d0c09e5c65d9fd39a089409f3384ce11beade0d0df40913979ce0d6eb8"
+    },
+    {
+      "path": "native/test_input_report.log",
+      "bytes": 116,
+      "sha256": "964c1904908e7cbb61d780acf7cdc56a26319e85a71e60497dae92c58d933273"
+    },
+    {
+      "path": "native/test_input_report_buttons.log",
+      "bytes": 115,
+      "sha256": "039a7e1b4c9914b44e426acdd3e7913b3b23d6634761810926e79a2d989c14ac"
+    },
+    {
+      "path": "native/test_input_report_e2e.log",
+      "bytes": 475,
+      "sha256": "9b3db69925a7d9aabbd26da53df45f3fb6a7b8b711c6d1b6e59fa9de6475e38b"
+    },
+    {
+      "path": "native/test_jeti_identity.log",
+      "bytes": 122,
+      "sha256": "cf85fbdc6daf4d4b6b704f7456e131bb46743f1181f76f386bf3374ed6d385b4"
+    },
+    {
+      "path": "native/test_jeti_runtime.log",
+      "bytes": 115,
+      "sha256": "d5b267b05a217c2aeca146c439204167dd39ab4e7d14c1c2d9fe1d277d8ce30d"
+    },
+    {
+      "path": "native/test_jeti_setup.log",
+      "bytes": 3510,
+      "sha256": "395d61450c7d4b9eb4131894d0f22e14fde9fe9bb552d1c2c59b499d4a86aeef"
+    },
+    {
+      "path": "native/test_overlay_manager.log",
+      "bytes": 1483,
+      "sha256": "adc59994f047237b22d91136fdc2b4f41152acd5837a586d7acfc3c6593ad524"
+    },
+    {
+      "path": "native/test_rc_input.log",
+      "bytes": 99,
+      "sha256": "e7ef25f39b2f12b1ee9e5c7b2646ebbd7705ae38a0da7cdf69fa2c6301381530"
+    },
+    {
+      "path": "native/test_rc_profile_validation.log",
+      "bytes": 108,
+      "sha256": "157396e7efe257267441e673ff19b4f86d550c149d69b27e4cef1405839e7f99"
+    },
+    {
+      "path": "native/test_smoke_aux.log",
+      "bytes": 1040,
+      "sha256": "23b66a5d757ba3ea28d736b934f3ab74b46ff69a03316accef3eb90c38f436e6"
+    },
+    {
+      "path": "native/test_switch_aux.log",
+      "bytes": 111,
+      "sha256": "83182591e84ee2e7bd036d2e0847765fa763f7fe131feddb54bed71816214864"
+    },
+    {
+      "path": "native-device-observation.json",
+      "bytes": 1369,
+      "sha256": "78354aab7b2fe2be7048a1d983fc8522f9e37b059640579a63c1f0d66cc4a8e8"
+    },
+    {
+      "path": "native-results.json",
+      "bytes": 7738,
+      "sha256": "28b3ad70ba130cafcc0aa747b21a0f96c9ac1af5f2e8365c76cd04f4b81b8637"
+    },
+    {
+      "path": "parse-all-linux.json",
+      "bytes": 244161,
+      "sha256": "cb7bc43a18d41bcaacfd41a4d887eea2f33b8c77c10c0757dc208200af934a36"
+    },
+    {
+      "path": "README.md",
+      "bytes": 7160,
+      "sha256": "118cb3d7c152b4e88066007e4062e4b1047147da81da7792135307a3a00982d0"
+    },
+    {
+      "path": "supplied-profile.log",
+      "bytes": 212,
+      "sha256": "64a93bb9d1b8a1edd3966fc2a96029ee9196a5f116fe6786f6055f70a665dbdd"
+    },
+    {
+      "path": "verification.json",
+      "bytes": 6925,
+      "sha256": "9ca51391f060c4fd3bedd5f410b252c20b9aecde7e154ae0e6607b9cd12d7dd8"
+    }
+  ]
+}

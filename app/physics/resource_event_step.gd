@@ -12,13 +12,15 @@ const MAX_SEGMENTS: int = 256
 const MAX_ROOT_TRIALS: int = 128
 const MAX_DT_S: float = 60.0
 const SURFACE_TOL: float = 1e-10
+const BODY_SIZE: int = 13
 
 
 static func advance(state: PackedFloat64Array, time_s: float, dt: float,
 		derivative: Callable, first: PackedFloat64Array, events: Array,
 		max_surface_evaluations: int = 200000) -> Dictionary:
-	if state.is_empty() or not _finite(state, state.size()) or not is_finite(time_s) \
+	if state.size() < BODY_SIZE or not _finite(state, state.size()) or not is_finite(time_s) \
 			or not is_finite(dt) or dt <= 0.0 or dt > MAX_DT_S or not is_finite(time_s + dt) \
+			or time_s + dt <= time_s \
 			or not derivative.is_valid() or (not first.is_empty() and not _finite(first, state.size())) \
 			or events.is_empty() or max_surface_evaluations <= 0:
 		return _failure("resource event step input is malformed")

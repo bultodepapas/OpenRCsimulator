@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+project_root=C:/DEVELOPMENT/OpenRCsimulator/tmp/fuel-completion/final-snapshot/app/
+aircraft=res://data/aircraft/stik_glow_55ax_2t.json
+mass_reference_matches_model=true
+query_order_point_bytes_exact=true
+stage_sha256=b20417ec1a89cc8cea447740cfab23d1080e94b10e09b740bf3895b4ef216378
+query_count=16 result_bytes=165136

@@ -34,6 +34,8 @@ An adaptive reference solver needs independent qualification too. Dense output s
 
 Keep local event-bracket error separate from absolute-clock rounding. A positive post-event remainder can be smaller than one float64 clock increment while still having a meaningful state increment; refusing it because `time + remainder == time` can abort an otherwise valid tick. Test near-endpoint events at nonzero clocks, and require both residual and local-time bounds before accepting a root. An exact interpolated root may need no projection correction; do not require the old solver's roundoff to be nonzero. ([EL2a-P2](../research/propulsion/EL2a-P2/README.md))
 
+A root's residual tolerance must not decide which side of zero contains a resource. Treating a small positive endpoint as exhausted produced an unbracketed root, while treating a small positive start as zero skipped real depletion. Use strict sign comparisons to detect crossings, then apply the residual bound to the located root. Compare signs directly: multiplying subnormal endpoints can underflow to zero and invent a crossing. ([FUEL-12-R2](../research/fuel-systems/FUEL-12/HARDENING-R2.md))
+
 ### A unilateral rotor stop is a coupled constraint
 
 A combustion cutoff that suppresses deceleration below 1 RPM prevents an electric rotor from reaching its actual rest boundary. Localize the crossing, define the trial continuation and preserve momentum when projecting the tiny residual. At relative rest, include the body's angular acceleration in static-friction/breakaway decisions: body-driven forward spin still needs moving-side bearing loss even with the electrical source off. Scalar rotor tests alone miss that case. ([EL1d](../research/propulsion/EL1d/README.md))

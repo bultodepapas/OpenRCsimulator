@@ -117,7 +117,7 @@ Use the [flight-model audit](flight-model-robustness-audit.md), [repair implemen
 
 ### Ugly Stik
 
-Start with the [source and local-reference map](ugly-stik-resources.md), [model investigations](ugly-stik-investigations/README.md), [current model record](ugly-stik-model-v4.md), [engine v5 evidence](ugly-stik-engine-v5.md) and the [US-V09a covering/shading pass](ugly-stik-finish-v6.md). Visual and authoring work is indexed under [visual investigations](ugly-stik-visual-investigations/README.md) and [tooling investigations](ugly-stik-tooling-investigations/README.md). See the [Ugly Stik plan](../UGLY-STIK-PLAN.md) and reproducible [model pipeline](../../research/ugly-stik/).
+Start with the [current model guide and remaining acceptance](../UGLY-STIK-PLAN.md) and [authoring/capture pipeline](../../assets/aircraft/ugly-stik-60/README.md). Dated evidence includes the [source and local-reference map](ugly-stik-resources.md), [model investigations](ugly-stik-investigations/README.md), [v4 delivery](ugly-stik-model-v4.md), [engine v5](ugly-stik-engine-v5.md) and [US-V09…12 finish/feedback passes](ugly-stik-finish-v6.md). Visual and authoring work is indexed under [visual investigations](ugly-stik-visual-investigations/README.md) and [tooling investigations](ugly-stik-tooling-investigations/README.md).
 
 ### Extra 300S
 

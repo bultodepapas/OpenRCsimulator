@@ -18,7 +18,17 @@ The field lighting cache now includes `shadow_strength` as well as direction and
 
 Native captures use pinned Godot 4.7.2, Compatibility/OpenGL 3.3 and an NVIDIA RTX 3090. The seven fixed cases cover calm, light and strong wind, reversal, 15°/75° sun, and zero shadow strength. Hiding the receiver yields **zero changed visible pixels** against the pre-change shader in all seven cases. The original projection's independent native GPU oracle also passes.
 
-Focused tests cover moving uniforms and bounds, pause/cache reuse, calm residuals, root pose, source visibility, lighting strength, map budgets and teardown. Native motion/oracle and component timing results are retained with the final verification record.
+**320 focused assertions pass**: projected shadow 43, geometry collection 77, windsock geometry 17, windsock motion 35, legacy contact shadows 20, recorded audio 47, moving windsock shadow 22, and integrated field shadows 59. They cover moving uniforms and bounds, pause/cache reuse, calm residuals, root pose, source visibility, lighting strength, map budgets and teardown. The original independent projection GPU oracle also passes.
+
+The [native windsock oracle](native.json) passes **39 checks**, including independent world-space ray/plane intersections at four unsupported sleeve stations in five wind/light cases, clear borders, repeated-pose equality, reversal, hiding and zero-strength restoration. A two-texel neighborhood allows raster edges and sub-centimetre flutter. A Windows resource pack mounted in an empty project loads the shared shader include and constructs its 512² caster successfully; this is resource qualification, not an installer test.
+
+[Verification and source identities](verification.json) retain the image comparisons and timing summary; [capture metadata](capture.json) identifies the seven static cases. In the alternating dynamic/cached fixture, the moving mask's median GPU time is **0.070 ms**. The mask p95 is **1.806 ms**, with noisy GPU spikes also present in the cached controls; these samples do not establish an isolated GPU deadline. Wall p95 is 16.98 ms dynamic versus 17.02 ms cached at the requested 60 FPS cap. Raw main/mask CPU/GPU and wall samples remain in `native.json`; no full-flight performance gate is claimed.
+
+| Previous mast-only shadow | Moving sleeve and basket |
+| --- | --- |
+| ![Previous pole shadow](images/before-strong.png) | ![Current complete shadow](images/strong.png) |
+
+[Calm sag](images/calm.png) · [Reversed wind](images/reverse.png) · [Low sun, full footprint](images/low-sun-wide.png) · [High sun](images/high-sun.png) · [Production field](images/field.png).
 
 This is a flat-ground shadow. It does not add self-shadowing, cloth light transmission or shadows on other objects. Softness and opacity remain presentation estimates. Native timings on this desktop cannot establish complete flight frame budgets, minimum hardware or other platforms. A full application suite and owner playtest are separate checks.
 
@@ -30,6 +40,7 @@ Use the pinned engine from the repository root:
 godot --headless --path app --script res://tests/test_windsock_shadow.gd
 godot --headless --path app --script res://tests/test_field_projected_shadows.gd
 godot --path app --audio-driver Dummy --script tools/shadows/windsock_capture.gd -- --out=C:/absolute/new-directory
+godot --path app --audio-driver Dummy --script tools/shadows/windsock_probe.gd -- --out=C:/absolute/native.json
 ```
 
 Use an absolute `--script` path if the engine resolves it relative to `app/`. Captures require a real renderer; headless script checks cannot qualify silhouettes.

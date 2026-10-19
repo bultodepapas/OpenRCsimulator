@@ -1,0 +1,92 @@
+{
+	"aircraft_path": "res://data/aircraft/p51d_mustang_120.json",
+	"engine": "4.7.2-stable (official)",
+	"failed": false,
+	"format": "openrc-fuel-cost v1",
+	"initial_warmup_runs": 1,
+	"repeats": 5,
+	"runs": [
+		{
+			"elapsed_usec": 1128495,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 1880.825
+		},
+		{
+			"elapsed_usec": 1145300,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 1908.8333333333333
+		},
+		{
+			"elapsed_usec": 1128475,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 1880.7916666666667
+		},
+		{
+			"elapsed_usec": 1146733,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 1911.2216666666666
+		},
+		{
+			"elapsed_usec": 1384910,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 2308.1833333333334
+		},
+		{
+			"elapsed_usec": 1435928,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 2393.213333333333
+		},
+		{
+			"elapsed_usec": 1394455,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 2324.0916666666667
+		},
+		{
+			"elapsed_usec": 1466583,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 2444.305
+		},
+		{
+			"elapsed_usec": 1436067,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 2393.445
+		},
+		{
+			"elapsed_usec": 1391120,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 2318.5333333333333
+		}
+	],
+	"scope": "headless physics only; setup/import/recording excluded; same absolute tape; not target GPU qualification",
+	"ticks": 600
+}

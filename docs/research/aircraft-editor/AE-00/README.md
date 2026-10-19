@@ -37,7 +37,7 @@ All references were accessed on 2026-10-19. Documentation is the 4.7 series; ren
 
 Run from the repository root with the pinned native console build. [Combined raw output](diagnostic-checks.log) retains import and six suites; [generator output](generator-checks.log) records the later read-only freshness checks. Both generator commands also passed earlier in this investigation.
 
-Documentation verification checked relative targets, anchors, exact path case, 13 command/source paths, six suite filenames and every AE-00…26 acceptance row. It passed for 12 related documents: 894 local link checks and 898 against a fresh no-checkout clone's HEAD plus overlaid candidate documentation. This validates documentation paths, not an exported application or the full app suite.
+Revision 6 documentation verification checked relative targets, anchors, exact path case, 13 command/source paths, six suite filenames and every AE-00…26 acceptance row. It passed for 12 related documents: 894 local link checks and 898 against a fresh no-checkout clone's HEAD plus overlaid candidate documentation. This validates documentation paths, not an exported application or the full app suite.
 
 ```powershell
 python research/aircraft-standardization/build_models.py --check
@@ -98,6 +98,7 @@ The actual native process was launched with `Start-Process -WindowStyle Hidden` 
 | [AppRoot](../../../../app/app_root.gd), `open_workshop`, `_start_workshop_trial`, `_return_to_workshop` | Only Home/Pause open the editor. A trial retains/detaches its original editor and previous flight; return resolves recording and reattaches them. Internal editor focus after return is not an established acceptance claim. | Preserve draft/page/history/focus and explicit Pause context. Test failed start, failed trace save, repeat inputs and resumed ownership. |
 | AppRoot `open_pause`, trial note; [Pause menu](../../../../app/ui/pause_menu.gd) | “Esc to return” actually opens Pause. Both Session and Exit disclosures expose Return to Workshop; trace-failure text still names End flight. | One direct Return to Workshop alongside Resume trial, accurate Escape/recording-recovery copy, no duplicate route. |
 | AppRoot WM-close/`quit_app`; [screen](../../../../app/ui/screen.gd), [stack](../../../../app/ui/screen_stack.gd) | Window close goes through the app's trace/quit path without checking Workshop dirty state; the trial's editor is outside the tree. Shared screen input/holds/focus must remain authoritative. | Inspect retained editor before quit side effects; serialize draft then trace decisions, coalesce repeat closes and preserve current sessions on Cancel. |
+| AppRoot `_trace_saved_or_discarded`; [manual recorder](../../../../app/sim/recorder.gd), [quit fixtures](../../../../app/tests/test_ui_quit.gd) | Manual stop sets `recording = false` before save and retains its trace object. On failure, the existing guard blocks once; the next press passes. A multi-recorder quit can save/stop one before another fails. | Do not promise recording survives a failed save. Require explicit pending trace-save state with Stay/Retry where supported/Discard, independent recorder outcomes, and no repeated-input implicit discard. This is an additional UI/trace-owner dependency. |
 | [Theme](../../../../app/ui/ui_theme.gd), [scaling](../../../../app/ui/ui_scale.gd) | Existing charcoal/amber tokens, named variations, independent text scaling, opaque/reduced-motion preferences and logical-canvas policy. | Extend existing roles; no second theme/router/DPI factor or required blur pass. |
 
 Primary guidance accessed 2026-10-19:
@@ -109,6 +110,8 @@ Primary guidance accessed 2026-10-19:
 - [W3C non-web ICT guidance](https://www.w3.org/WAI/standards-guidelines/wcag/non-web-ict/): application to native software needs interpretation. The proposed native gates are product requirements, not legal/WCAG certification or a claim of tested screen-reader support.
 
 UI-29's existing screenshots remain dated observations. New layout dimensions, model occupancy, navigation and user-task success targets are proposed and unmeasured. Shared UI behavior and hardware/export gates remain with their owners; this audit does not supersede prior native results.
+
+Revision 7 documentation verification passed 922 relative link/anchor checks across 12 related documents, both locally and against a fresh no-checkout clone at `255b58ad3` with overlaid candidate docs. The same checks retain 13 command/source paths, six existing suite filenames and all 27 parent AE acceptance rows. `git diff --check` also passed. Independent Luna Max reviews found no remaining blocking contradiction after correcting page availability, scale fixtures, full-payload dirty comparison and stopped-recorder recovery. No runtime suite or native matrix was rerun for this documentation-only follow-up. Other work committed concurrently; this follow-up did not stage, commit or push.
 
 ## Planning outcome and limits
 

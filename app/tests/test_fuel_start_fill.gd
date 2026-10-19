@@ -159,7 +159,10 @@ func _checkpoint_selection() -> void:
 			_check("native unknown selection resets to the receiving preference",
 				next_destination.fuel_start_fill == 0.75
 				and is_equal_approx(next_destination.mass_properties().fuel_remaining_kg, 0.75 * full)
-				and next_destination.trace_meta().get("fuel_start_fill_known", false))
+				and next_destination.trace_meta().get("fuel_start_fill_known", true),
+				"fill=%s remaining=%s expected=%s known=%s" % [next_destination.fuel_start_fill,
+				str(next_destination.mass_properties().fuel_remaining_kg), str(0.75 * full),
+					str(next_destination.trace_meta().get("fuel_start_fill_known", true))])
 			next_destination.free()
 			var json_destination: Node = Flight.new()
 			json_destination.input_enabled = false
@@ -180,7 +183,10 @@ func _checkpoint_selection() -> void:
 			_check("JSON unknown selection resets to the receiving preference",
 				json_destination.fuel_start_fill == 0.25
 				and is_equal_approx(json_destination.mass_properties().fuel_remaining_kg, 0.25 * full)
-				and json_destination.trace_meta().get("fuel_start_fill_known", false))
+				and json_destination.trace_meta().get("fuel_start_fill_known", true),
+				"fill=%s remaining=%s expected=%s known=%s" % [json_destination.fuel_start_fill,
+				str(json_destination.mass_properties().fuel_remaining_kg), str(0.25 * full),
+				str(json_destination.trace_meta().get("fuel_start_fill_known", true))])
 			json_destination.free()
 		source.free()
 		destination.free()

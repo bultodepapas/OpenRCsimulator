@@ -1,0 +1,92 @@
+{
+	"aircraft_path": "res://data/aircraft/sebart_avanti_s_a200.json",
+	"engine": "4.7.2-stable (official)",
+	"failed": false,
+	"format": "openrc-fuel-cost v1",
+	"initial_warmup_runs": 1,
+	"repeats": 5,
+	"runs": [
+		{
+			"elapsed_usec": 738493,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 1230.8216666666667
+		},
+		{
+			"elapsed_usec": 753293,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 1255.4883333333332
+		},
+		{
+			"elapsed_usec": 753160,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 1255.2666666666667
+		},
+		{
+			"elapsed_usec": 741951,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 1236.585
+		},
+		{
+			"elapsed_usec": 760443,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 1267.405
+		},
+		{
+			"elapsed_usec": 742542,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 1237.57
+		},
+		{
+			"elapsed_usec": 839071,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 1398.4516666666666
+		},
+		{
+			"elapsed_usec": 996244,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 1660.4066666666668
+		},
+		{
+			"elapsed_usec": 948496,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 1580.8266666666666
+		},
+		{
+			"elapsed_usec": 952630,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 1587.7166666666667
+		}
+	],
+	"scope": "headless physics only; setup/import/recording excluded; same absolute tape; not target GPU qualification",
+	"ticks": 600
+}

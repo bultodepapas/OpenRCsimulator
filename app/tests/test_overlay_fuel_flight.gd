@@ -60,8 +60,19 @@ func _initialize() -> void:
 			warnings.size() == 1 and warnings[0] == below.mass_sample)
 		_check("production path plays the existing warning asset on Master",
 			manager.get("_fuel_warning_player").playing and manager.get("_fuel_warning_player").bus == &"Master")
+	var warning_player: AudioStreamPlayer = manager.get("_fuel_warning_player")
+	var warning_playback: AudioStreamPlayback = warning_player.get_stream_playback()
+	var warning_playback_ref: WeakRef = weakref(warning_playback) if warning_playback != null else null
+	warning_playback = null
 	session.free()
 	manager.queue_free()
 	await process_frame
+	# AudioServer releases the playback after the removed player is observed by its mix thread.
+	if warning_playback_ref != null:
+		var release_deadline_msec := Time.get_ticks_msec() + 500
+		while warning_playback_ref.get_ref() != null and Time.get_ticks_msec() < release_deadline_msec:
+			await create_timer(0.02).timeout
+		_check("warning playback is released after overlay teardown", warning_playback_ref.get_ref() == null,
+			"AudioServer retained the playback after the bounded drain")
 	print("overlay fuel flight: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed else 0)

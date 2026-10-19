@@ -1,0 +1,68 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   estimated prop map satisfies J·Ct ≤ Cp over 0≤J≤1.2 samples  minimum prop-drag minus thrust power=0 W
+ok   estimated prop map satisfies J·Ct ≤ Cp at every interval endpoint and extremum  minimum admissibility margin=0 W
+ok   beyond map coverage uses negative drag Ct and a zero Cp floor  Ct=-0.015 Cp=0.0; windmilling is not qualified
+ok   2t estimated prop produces positive static thrust
+ok   2t estimated prop absorbs positive shaft torque
+ok   2t Propulsion.prop_torque matches thrust_torque load  prop=0.14261277619428 output=0.14261277619428
+ok   2t forward inflow advances the propeller
+ok   2t forward inflow unloads the estimated Cp curve
+ok   2t thrust remains forward under forward inflow
+ok   2t initial admission torque exceeds estimated static prop load  { "ok": true, "message": "", "indicated_torque_nm": 0.37033932755088, "mechanical_torque_nm": 0.035, "pumping_torque_nm": 0.00053571553845, "valve_torque_nm": 0.0, "shaft_torque_nm": 0.33480361201243, "delivered_fuel_kg_s": 0.00010349906191, "burned_fuel_kg_s": 0.00005771107692, "unburned_fuel_kg_s": 0.00004578798499, "fuel_input_power_w": 3564.50769230769, "chemical_power_w": 2423.86523076923, "indicated_power_w": 193.909218461538, "mechanical_loss_w": 18.3259571459405, "pumping_loss_w": 0.2805, "valve_loss_w": 0.0, "cycle_work_j": 2.32691062153846, "air_charge_kg_cycle": 0.00000562683, "cycle_frequency_hz": 83.3333333333333, "opportunity_frequency_hz": 83.3333333333333, "firing_frequency_hz": 83.3333333333333 }
+ok   2t has positive initial shaft acceleration  23101.5900982977
+ok   2t low admission overcomes prop torque with negative shaft acceleration  -37189.9233843317
+ok   2t spin-up reaction opposes positive rotor acceleration
+ok   2t spin-down reaction opposes negative rotor acceleration
+ok   2t uses its family-specific cadence
+ok   720-degree opportunity cadence is half the 2T cadence
+ok   2t simulation accepted every requested RK4 tick  ticks=600 fault=
+ok   2t loaded run spins above and below its initial RPM
+ok   2t fixed prop produces positive thrust and body inflow
+ok   2t delivered fuel contains the burned mass
+ok   2t integrated prop drag work covers thrust work in still air  margin=344.5211106299107 J prop=1002.13078399771 J thrust=657.609673367797 J
+ok   2t body-free angular momentum closes against prop drag impulse  1.2323475573339238e-14 N·m·s
+ok   2t rotor and translation work close independently  0.0005676233087115179 J
+ok   2t 240/480/960 Hz traces stay finite
+ok   2t 480/960 Hz endpoint refinement improves over 240/480 Hz  coarse=0.00387726650447 fine=0.00193246696065
+ok   2t conservation error tightens at the finest step  work=0.00056762330871→0.00003522226893 angular=0.00000000000001→0.00000000000003
+ok   2t full continuous checkpoint is valid
+ok   2t branch continuation runs without a simulation fault
+ok   2t accepts its exact checkpoint for replay
+ok   2t restored checkpoint pauses before explicit resume
+ok   2t pause prevents a physics tick
+ok   2t checkpoint replay is byte-exact
+ok   2t malformed joint RK stage faults and pauses
+ok   2t malformed joint RK stage rolls back every state lane
+ok   4t estimated prop produces positive static thrust
+ok   4t estimated prop absorbs positive shaft torque
+ok   4t Propulsion.prop_torque matches thrust_torque load  prop=0.14261277619428 output=0.14261277619428
+ok   4t forward inflow advances the propeller
+ok   4t forward inflow unloads the estimated Cp curve
+ok   4t thrust remains forward under forward inflow
+ok   4t initial admission torque exceeds estimated static prop load  { "ok": true, "message": "", "indicated_torque_nm": 0.38123166071414, "mechanical_torque_nm": 0.025, "pumping_torque_nm": 0.0006127465309, "valve_torque_nm": 0.006, "shaft_torque_nm": 0.34961891418324, "delivered_fuel_kg_s": 0.00005174953096, "burned_fuel_kg_s": 0.00003394769231, "unburned_fuel_kg_s": 0.00001780183865, "fuel_input_power_w": 1782.25384615385, "chemical_power_w": 1425.80307692308, "indicated_power_w": 199.612430769231, "mechanical_loss_w": 13.0899693899575, "pumping_loss_w": 0.32083333333333, "valve_loss_w": 3.14159265358979, "cycle_work_j": 4.79069833846154, "air_charge_kg_cycle": 0.0000066198, "cycle_frequency_hz": 41.6666666666667, "opportunity_frequency_hz": 41.6666666666667, "firing_frequency_hz": 41.6666666666667 }
+ok   4t has positive initial shaft acceleration  24877.13872321
+ok   4t low admission overcomes prop torque with negative shaft acceleration  -36107.0434096068
+ok   4t spin-up reaction opposes positive rotor acceleration
+ok   4t spin-down reaction opposes negative rotor acceleration
+ok   4t uses its family-specific cadence
+ok   720-degree opportunity cadence is half the 2T cadence
+ok   4t simulation accepted every requested RK4 tick  ticks=600 fault=
+ok   4t loaded run spins above and below its initial RPM
+ok   4t fixed prop produces positive thrust and body inflow
+ok   4t delivered fuel contains the burned mass
+ok   4t integrated prop drag work covers thrust work in still air  margin=368.7047419360546 J prop=1070.57125594687 J thrust=701.866514010815 J
+ok   4t body-free angular momentum closes against prop drag impulse  2.3314683517128287e-15 N·m·s
+ok   4t rotor and translation work close independently  0.0006040459650193952 J
+ok   4t 240/480/960 Hz traces stay finite
+ok   4t 480/960 Hz endpoint refinement improves over 240/480 Hz  coarse=0.00421206467484 fine=0.00209981493733
+ok   4t conservation error tightens at the finest step  work=0.00060404596502→0.00003745981962 angular=0.0→0.00000000000006
+ok   4t full continuous checkpoint is valid
+ok   4t branch continuation runs without a simulation fault
+ok   4t accepts its exact checkpoint for replay
+ok   4t restored checkpoint pauses before explicit resume
+ok   4t pause prevents a physics tick
+ok   4t checkpoint replay is byte-exact
+ok   4t malformed joint RK stage faults and pauses
+ok   4t malformed joint RK stage rolls back every state lane
+glow shaft/prop coupling: 65 checks, 0 failed

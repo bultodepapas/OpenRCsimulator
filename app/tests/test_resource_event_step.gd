@@ -175,6 +175,13 @@ func _test_invalid_definitions() -> void:
 		var malformed_rate: Callable = func(_state: PackedFloat64Array, _at: float) -> Variant: return output
 		var result: Dictionary = ResourceStep.advance(_padded([1.0]), 0.0, 0.1, malformed_rate, PackedFloat64Array(), [event])
 		_check("malformed first derivative refuses cleanly "+str(typeof(output)), not result.get("ok", true) and not result.has("state"))
+	for size: int in [0, 1, 12]:
+		var truncated := PackedFloat64Array()
+		truncated.resize(size)
+		var result: Dictionary = ResourceStep.advance(truncated, 0.0, 0.1, derivative, PackedFloat64Array(), [event])
+		_check("truncated rigid body refuses before RK "+str(size), not result.get("ok", true) and not result.has("state"))
+	var stalled_clock: Dictionary = ResourceStep.advance(_padded([1.0]), 1e20, 0.1, derivative, PackedFloat64Array(), [event])
+	_check("a timestep must advance the absolute clock", not stalled_clock.get("ok", true) and not stalled_clock.has("state"))
 
 
 func _padded(values: Array) -> PackedFloat64Array:

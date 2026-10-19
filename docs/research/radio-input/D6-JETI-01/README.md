@@ -15,7 +15,7 @@ A two-second [native F1 observation](native-device-observation.json) completed w
 
 ## Verification
 
-Engine: Godot `4.7.2.stable.official.ed1daf0bf`. Windows uses the native console build; Linux uses Ubuntu/WSL2 on its own filesystem. [Verification metadata](verification.json) records exact owned-source hashes and snapshot scope. The shared working tree contains unrelated concurrent changes.
+Engine: Godot `4.7.2.stable.official.ed1daf0bf`. Windows uses the native console build; Linux uses Ubuntu/WSL2 on its own filesystem. [Verification metadata](verification.json) records exact owned-source hashes and snapshot scope; the [artifact manifest](artifact-sha256.json) hashes the retained evidence. The shared working tree contains unrelated concurrent changes.
 
 | Check | Result | Evidence |
 | --- | --- | --- |

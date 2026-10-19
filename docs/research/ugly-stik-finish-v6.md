@@ -2,6 +2,8 @@
 
 2026-10-13 · US-V09a · Code in `b19f6a4` on geometry v3, appearance v4 (atlas now 2048 px) and engine v5. These are visual changes only: mass, inertia, aerodynamics, contacts and golden flights are untouched.
 
+Scope checked 2026-10-19: the original subsections retain their dated captures, counts, runtime findings and integration failures. Current scope/acceptance belongs to the [model guide](../UGLY-STIK-PLAN.md), commands to the [asset guide](../../assets/aircraft/ugly-stik-60/README.md). The recheck below supersedes current-status readings of the old test blockers; it does not replace their original evidence.
+
 ## Audit
 
 The audit used the 28-image showcase (`research/ugly-stik/model-v4/capture-detail.sh`), production flight captures (close-up/chase, fixed day and golden hour) and a new bench that renders the model under the production atmosphere. Findings at HEAD `9a3dda9`:
@@ -171,3 +173,25 @@ Evidence ([hashes](ugly-stik-finish-v6-evidence/v12-SHA256SUMS)), with a fixed s
 - Rounded fuselage corners (8 mm radius) still produce a thin, sometimes dashed sun glint at flight distance. Compatibility has no specular antialiasing; FXAA or a renderer preset (VQ-06) would treat it globally.
 - The stabiliser, fin, rudder, elevator and fuselage are sheeted (Jensen sheet 1: stab "1/16 sheet top & bottom" over 1/8 × 3/16 in diagonal ribs; 1/4 in sheet fin, rudder and elevator; 1/4 in sides, 1/8 in top, 3/32 in bottom). Their film therefore stays flat; only the open wing bays carry structure.
 - llvmpipe software renders establish pixels and repeatability, not target-GPU cost or readability. The owner's 20/50/100 m orientation scoring (US-06) should be repeated with this finish.
+
+## 2026-10-19 documentation recheck
+
+Godot 4.7.2 official, native Windows; focused checks in the current working tree. Before/after hashes of the Stik model sources and render adapter were unchanged during these runs. This is not a fresh-package or uninterrupted full-suite qualification.
+
+| Check | Observed result |
+| --- | --- |
+| Geometry / appearance compilers (`--check`) | Pass; source, generated geometry/data and SVG are current. |
+| Model manifest / Workshop descriptor generators (`--check`) | Pass; all eight Workshop descriptors are current. |
+| Atlas checker with explicit native engine | Pass in a clean temporary import project: 2048² imported/runtime pixels match; a stale SVG mutation is rejected in a disposable tree. |
+| `verify_model.gd` | 919 checks pass; this includes the built control-linkage sweep. |
+| `test_stik_grain.gd` / grain bake `--check` | Seven checks pass; every procedural pixel and mip byte matches the baked resource. |
+| `test_gear_flex.gd` | 27 checks pass. |
+| `test_prop_strike_feedback.gd` | 16 checks pass. |
+| `test_airframe_scuffs.gd` / `test_soft_contact_feedback.gd` | 14 / 23 checks pass; the historical production-scene blocker above does not occur in this run. |
+| Reserved-station dimension helper | Pass in a minimal disposable tree; its report writer did not overwrite the retained v3 evidence. |
+
+All six native verifier/test scripts above exit 0 without engine errors (1,006 checks). The current scripts/data establish software behavior; the original mesh counts are dated observations, not current budgets.
+
+Local links/anchors and literal guide paths pass. Bash and PowerShell example syntax pass. The capture runners are LF in Git but CRLF in this Windows checkout, where Bash syntax fails; disposable LF copies pass syntax and both v4 help routes. Use the documented Linux LF checkout for rendering.
+
+Full orientation/bench renders, winding/rod mutation runs, owner readability scoring, installed measurements, export and target-GPU timing were not repeated. Those gates remain open in the model guide. This visual recheck does not qualify the active D8b-R2 pull-up/wing-polar research.

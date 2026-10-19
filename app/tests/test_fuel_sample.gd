@@ -36,8 +36,38 @@ func _initialize() -> void:
 	check("constant-mass aircraft does not invent fuel state", not Sample.build(properties, [], {}, 0, 0.0, false).finite_fuel)
 	for amount: float in [-0.1, 0.41, NAN, INF]:
 		check("invalid resource amount refused %s" % amount, not Sample.build(properties,tanks,{left=amount,right=0.4},0,0.0,true).ok)
+	check("fuel below required unusable residue is refused", not Sample.build(properties,tanks,{left=0.0,right=0.4},0,0.0,true).ok)
+	var residue: Dictionary = Sample.build(properties,tanks,{left=0.01,right=0.02},0,0.0,true)
+	check("exact unusable residue remains a valid empty store", residue.ok and residue.stores[0].remaining_kg == 0.01 and residue.stores[0].usable_kg == 0.0)
+	var near_residue: Dictionary = Sample.build(properties,tanks,{left=0.01-1.0e-10,right=0.02},0,0.0,true)
+	check("roundoff below residue clamps to physical residue", near_residue.ok and near_residue.stores[0].remaining_kg == 0.01)
+	var near_capacity: Dictionary = Sample.build(properties,tanks,{left=0.4+1.0e-10,right=0.4},0,0.0,true)
+	check("roundoff over capacity clamps to capacity and bounded fill", near_capacity.ok and near_capacity.stores[0].remaining_kg == 0.4 and near_capacity.fill_fraction <= 1.0)
+	check("materially over-capacity amount is refused", not Sample.build(properties,tanks,{left=0.4+1.0e-8,right=0.4},0,0.0,true).ok)
 	check("missing store refused", not Sample.build(properties,tanks,{left=0.2},0,0.0,true).ok)
 	check("unrecognized store refused", not Sample.build(properties,tanks,{left=0.2,right=0.4,extra=0.1},0,0.0,true).ok)
+	check("duplicate store ids are refused", not Sample.build(properties,[tanks[0],tanks[0]],{left=0.2},0,0.0,true).ok)
+	check("nondictionary tank is refused without a runtime error", not Sample.build(properties,[true],{left=0.2},0,0.0,true).ok)
+	for field: String in ["density_kg_m3", "capacity_kg", "unusable_kg", "reserve_kg"]:
+		var bad_tanks: Array = tanks.duplicate(true)
+		bad_tanks[0][field] = true
+		check("boolean tank %s is refused" % field, not Sample.build(properties,bad_tanks,amounts,0,0.0,true).ok)
+	var bad_reserve_flag: Array = tanks.duplicate(true)
+	bad_reserve_flag[0].reserve_estimated = 1
+	check("integer reserve provenance flag is refused", not Sample.build(properties,bad_reserve_flag,amounts,0,0.0,true).ok)
+	var bad_ok: Dictionary = properties.duplicate(true)
+	bad_ok.ok = 1
+	check("integer accepted-state flag is refused", not Sample.build(bad_ok,tanks,amounts,0,0.0,true).ok)
+	var bad_mass: Dictionary = properties.duplicate(true)
+	bad_mass.mass_kg = true
+	check("boolean mass is refused", not Sample.build(bad_mass,tanks,amounts,0,0.0,true).ok)
+	check("boolean tick is refused", not Sample.build(properties,tanks,amounts,true,1.0,true).ok)
+	check("negative tick is refused", not Sample.build(properties,tanks,amounts,-1,1.0,true).ok)
+	check("boolean time is refused", not Sample.build(properties,tanks,amounts,1,true,true).ok)
+	check("integer finite-fuel flag is refused", not Sample.build(properties,tanks,amounts,1,1.0,1).ok)
+	var huge_tank: Array = [{id="huge",fuel="fixture",family="fixture",density_kg_m3=1.0e-250,
+		capacity_kg=1.0e250,unusable_kg=0.0,reserve_kg=0.0,reserve_estimated=false}]
+	check("finite inputs with overflowing derived volume are refused", not Sample.build(properties,huge_tank,{huge=1.0e250},0,0.0,true).ok)
 	var bad: Dictionary = properties.duplicate(true)
 	bad.cg_body_m[0] = NAN
 	check("nonfinite CG refused", not Sample.build(bad,tanks,amounts,0,0.0,true).ok)

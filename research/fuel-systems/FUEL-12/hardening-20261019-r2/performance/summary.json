@@ -1,0 +1,147 @@
+{
+  "format": "openrc-fuel-hardening-performance v1",
+  "probe_sha256": "6cde5531d56e4705d2fa1957fcd5f932276518f9a1c3fd48d4a2eb4a7cb66d53",
+  "scope": "Sequential headless simulation-only batch averages; setup/import/recording excluded; one warm-up and five repeats per fill; not individual-tick tails or target GPU/release qualification.",
+  "records": [
+    {
+      "aircraft": "stik_glow_61fx_2t",
+      "source": "baseline",
+      "ok": true,
+      "exit": 0,
+      "errors": [],
+      "fills": [
+        {
+          "fill": 1.0,
+          "median_ms_per_tick": 3.8121416666666668,
+          "min_ms_per_tick": 3.4463150000000002,
+          "max_ms_per_tick": 4.094658333333333
+        },
+        {
+          "fill": 0.1,
+          "median_ms_per_tick": 3.7928,
+          "min_ms_per_tick": 3.295185,
+          "max_ms_per_tick": 4.17896
+        }
+      ]
+    },
+    {
+      "aircraft": "stik_glow_61fx_2t",
+      "source": "candidate",
+      "ok": true,
+      "exit": 0,
+      "errors": [],
+      "fills": [
+        {
+          "fill": 1.0,
+          "median_ms_per_tick": 2.9542183333333334,
+          "min_ms_per_tick": 2.93433,
+          "max_ms_per_tick": 2.970423333333333
+        },
+        {
+          "fill": 0.1,
+          "median_ms_per_tick": 3.8145383333333336,
+          "min_ms_per_tick": 2.9974566666666664,
+          "max_ms_per_tick": 4.111695
+        }
+      ]
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "source": "baseline",
+      "ok": true,
+      "exit": 0,
+      "errors": [],
+      "fills": [
+        {
+          "fill": 1.0,
+          "median_ms_per_tick": 2.1260333333333334,
+          "min_ms_per_tick": 1.8908866666666668,
+          "max_ms_per_tick": 2.2338533333333332
+        },
+        {
+          "fill": 0.1,
+          "median_ms_per_tick": 1.8944516666666666,
+          "min_ms_per_tick": 1.8867016666666665,
+          "max_ms_per_tick": 2.0222433333333334
+        }
+      ]
+    },
+    {
+      "aircraft": "p51d_mustang_120",
+      "source": "candidate",
+      "ok": true,
+      "exit": 0,
+      "errors": [],
+      "fills": [
+        {
+          "fill": 1.0,
+          "median_ms_per_tick": 1.9088333333333332,
+          "min_ms_per_tick": 1.8807916666666666,
+          "max_ms_per_tick": 2.3081833333333335
+        },
+        {
+          "fill": 0.1,
+          "median_ms_per_tick": 2.393213333333333,
+          "min_ms_per_tick": 2.3185333333333333,
+          "max_ms_per_tick": 2.444305
+        }
+      ]
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "source": "baseline",
+      "ok": true,
+      "exit": 0,
+      "errors": [],
+      "fills": [
+        {
+          "fill": 1.0,
+          "median_ms_per_tick": 1.1908316666666667,
+          "min_ms_per_tick": 1.1884483333333333,
+          "max_ms_per_tick": 1.5170866666666667
+        },
+        {
+          "fill": 0.1,
+          "median_ms_per_tick": 1.1925816666666667,
+          "min_ms_per_tick": 1.1869583333333333,
+          "max_ms_per_tick": 1.2663616666666666
+        }
+      ]
+    },
+    {
+      "aircraft": "sebart_avanti_s_a200",
+      "source": "candidate",
+      "ok": true,
+      "exit": 0,
+      "errors": [],
+      "fills": [
+        {
+          "fill": 1.0,
+          "median_ms_per_tick": 1.2552666666666668,
+          "min_ms_per_tick": 1.2308216666666667,
+          "max_ms_per_tick": 1.267405
+        },
+        {
+          "fill": 0.1,
+          "median_ms_per_tick": 1.5808266666666666,
+          "min_ms_per_tick": 1.2375699999999998,
+          "max_ms_per_tick": 1.6604066666666668
+        }
+      ]
+    }
+  ],
+  "baseline_solver_sha256": "db4aba33ea9e4c32cc087f7682938931370dbc859bd5d36352df42ab79d105a8",
+  "current_solver_sha256": "e3eb9fa00446b0084ee013dc50da6382fc3f46477a3f2e1e9e4b0a2a503f9c6b",
+  "overlap": "A separate scenery-build audit ran on the shared host during the final three-family sweep. No isolated causal speedup or release-headroom claim is made. Earlier less-contended MAX-61FX paired measurements are retained alongside the final-source sweep.",
+  "quiet_probe": {
+    "before": {
+      "1.0": 2.7549866666666665,
+      "0.1": 2.762386666666667
+    },
+    "after": {
+      "1.0": 2.7469166666666665,
+      "0.1": 2.769495
+    }
+  },
+  "initial_contended_probe": "cost-before.json; excluded from any speedup claim"
+}

@@ -62,6 +62,11 @@ static func valid(values: PackedFloat64Array, install: Dictionary) -> bool:
 	if not is_finite(line_fuel) or line_fuel<0.0 or line_fuel>float(line.get("capacity_kg",0.0)) \
 			or main_fuel<0.0 or main_fuel>install.capacity_fuel_kg or values[SOURCE_MODE_INDEX]!=floor(values[SOURCE_MODE_INDEX]) \
 			or values[SOURCE_MODE_INDEX]<MODE_STARVED or values[SOURCE_MODE_INDEX]>MODE_FEED_LINE: return false
+	# Accepted states retain the main tank's unusable residue in every source mode.
+	# Subtracting a separately stored line can lose a few float64 rounding steps.
+	var residue_roundoff: float=FuelMass.CAPACITY_ROUNDING_EPSILONS*FuelMass.FLOAT64_EPSILON \
+		* maxf(absf(values[1]),absf(line_fuel)) if not line.is_empty() else 0.0
+	if main_fuel<install.unusable_fuel_kg and install.unusable_fuel_kg-main_fuel>residue_roundoff: return false
 	if line.is_empty() and (line_fuel!=0.0 or values[SOURCE_MODE_INDEX]==MODE_FEED_LINE): return false
 	if values[SOURCE_MODE_INDEX]==MODE_FEED_LINE and line_fuel<=0.0: return false
 	var source_mode: int=int(values[SOURCE_MODE_INDEX])

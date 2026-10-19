@@ -1,0 +1,57 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   main depletes before the primed line
+ok   earliest resource event is first  [{ &"type": "main_empty", &"time_s": 0.8, &"id": "main_floor", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, "source": "main" }, { &"type": "line_empty", &"time_s": 1.3, &"id": "line_empty", &"surface_residual": 0.0, &"surface_unit": "kg", &"time_error_bound_s": 0.0000000000005, "source": "line" }]
+ok   main boundary time  got 0.8 expected 0.8 (tol 0.0000000002)
+ok   line boundary time  got 1.3 expected 1.3 (tol 0.0000000002)
+ok   event surfaces carry explicit mass units
+ok   main resource reaches its boundary  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   line resource reaches its boundary  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   total liquid is conserved across source changes  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   depletion ends in the starved mode
+ok   boundary solve remains within deterministic budget
+ok   simultaneous boundaries integrate
+ok   tie priority and stable ordering select one active transition
+ok   tied boundary is located once  got 0.5 expected 0.5 (tol 0.0000000002)
+ok   post-transition remainder follows the new mode  got 0.0 expected 0.0 (tol 0.0000000002)
+ok   failed event transition rejects the complete trial
+ok   failed transition leaves caller state untouched  got 0.25 expected 0.25 (tol 0.0000000002)
+ok   failed trial exposes no partially accepted state
+ok   falling tiny boundary integrates
+ok   falling positive endpoint distance is not a zero crossing
+ok   falling tiny boundary integrates
+ok   falling tiny initial distance still triggers the event
+ok   falling tiny boundary time  got 0.00005 expected 0.00005 (tol 0.000000000001)
+ok   rising tiny boundary integrates
+ok   rising positive endpoint distance is not a zero crossing
+ok   rising tiny boundary integrates
+ok   rising tiny initial distance still triggers the event
+ok   rising tiny boundary time  got 0.00005 expected 0.00005 (tol 0.000000000001)
+ok   either tiny boundary integrates
+ok   either positive endpoint distance is not a zero crossing
+ok   either tiny boundary integrates
+ok   either tiny initial distance still triggers the event
+ok   either tiny boundary time  got 0.00005 expected 0.00005 (tol 0.000000000001)
+ok   subnormal same-side endpoints do not cross
+ok   malformed event refuses cleanly [&"surface"]
+ok   malformed event refuses cleanly [&"transition"]
+ok   malformed event refuses cleanly [&"enabled"]
+ok   malformed event refuses cleanly [&"priority"]
+ok   malformed event refuses cleanly [&"priority"]
+ok   malformed event refuses cleanly [&"surface_tolerance"]
+ok   malformed event refuses cleanly [&"surface_tolerance"]
+ok   malformed event refuses cleanly [&"type"]
+ok   missing event field refuses cleanly type
+ok   missing event field refuses cleanly surface_unit
+ok   missing event field refuses cleanly surface
+ok   missing event field refuses cleanly transition
+ok   malformed first derivative refuses cleanly 0
+ok   malformed first derivative refuses cleanly 28
+ok   malformed first derivative refuses cleanly 2
+ok   malformed first derivative refuses cleanly 1
+ok   malformed first derivative refuses cleanly 33
+ok   truncated rigid body refuses before RK 0
+ok   truncated rigid body refuses before RK 1
+ok   truncated rigid body refuses before RK 12
+ok   a timestep must advance the absolute clock
+resource event step: 54 checks, 0 failed

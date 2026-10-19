@@ -4,11 +4,14 @@ const Flight := preload("res://sim/flight_session.gd")
 const TICKS := 600
 const REPEATS := 5
 var output_path := ""
+var aircraft_path := "res://data/aircraft/stik_glow_61fx_2t.json"
 
 func _initialize() -> void:
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):
 			output_path = argument.trim_prefix("--out=")
+		elif argument.begins_with("--aircraft="):
+			aircraft_path = argument.trim_prefix("--aircraft=")
 	if output_path.is_empty() or FileAccess.file_exists(output_path):
 		printerr("Use --out=<new absolute JSON path>")
 		quit(2)
@@ -18,7 +21,7 @@ func _initialize() -> void:
 	for fill: float in [1.0, 0.1]:
 		var flight: Node = Flight.new()
 		flight.input_enabled = false
-		flight.setup("res://data/aircraft/stik_glow_61fx_2t.json")
+		flight.setup(aircraft_path)
 		flight.set_fuel_start_fill(fill)
 		flight.reset()
 		var initial: Dictionary = flight.checkpoint()
@@ -46,7 +49,7 @@ func _initialize() -> void:
 		flight.free()
 	var file := FileAccess.open(output_path, FileAccess.WRITE)
 	file.store_string(JSON.stringify({format="openrc-fuel-cost v1",engine=Engine.get_version_info().string,
-		ticks=TICKS,repeats=REPEATS,initial_warmup_runs=1,failed=failed,runs=runs,
+		aircraft_path=aircraft_path,ticks=TICKS,repeats=REPEATS,initial_warmup_runs=1,failed=failed,runs=runs,
 		scope="headless physics only; setup/import/recording excluded; same absolute tape; not target GPU qualification"},"\t",true,true))
 	file.close()
 	print("Fuel cost: %s; %s" % [str(not failed),output_path])

@@ -2,6 +2,8 @@
 
 Checked 2026-10-19 with native Godot 4.7.2 on Windows. The [engineering standard](../../../FUEL-SYSTEM.md) owns current behavior; the [qualification plan](../../../plans/fuel-mass-balance.md) owns remaining measurement, performance and extension gates. This record closes the functional fixed-wing software audit, not physical or release qualification.
 
+The subsequent [FUEL-12-R2 hardening round](HARDENING-R2.md) repairs tiny-fuel event boundaries, unusable-residue restoration, unknown fill provenance and malformed adapter/sample handling. It records 49 passing focused scripts, ten complete same-law comparisons with exact candidate replay, and updated three-family timing evidence. Results below retain the original completion snapshot.
+
 ## Implemented result
 
 Current finite Stiks and Extra use the versioned glow adapter. P-51 and Ventage consume their explicit gasoline/turbine stores. Every supported adapter updates mass, CG and inertia, preserves unusable residue, locates exhaustion and continues with its stopped-source law. A glow installation can additionally declare an identified pre-primed line and pickup plane; synthetic tests cover loss of access, finite line depletion and retained unreachable main fuel. Bundled aircraft retain line-free/main-only data until their owners have source-backed delivery geometry.

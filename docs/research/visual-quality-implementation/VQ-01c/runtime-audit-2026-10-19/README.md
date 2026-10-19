@@ -213,3 +213,94 @@ The full WIP snapshots remain in local scratch storage; hashes alone cannot recr
 uncommitted source from a clean clone. The packaged native observer includes pause
 logging added after the first long sample; its earlier source was not separately
 frozen. Exact-source retention must precede any future adoption-quality timing run.
+
+## Follow-up campaign — source drift and loading attribution
+
+The second campaign froze 2,990 application/source inputs from the concurrent WIP at
+`a518147ab`, including matching sibling authoring JSON and the test audio helper.
+The frozen files, rather than that commit alone, define the measured source. Three
+Luna Max investigations covered replay provenance, loading attribution and lifecycle.
+The lead ran the native measurements and reviewed their scope. The only production
+change from this follow-up adds two missing scenery construction timing fields.
+
+The fresh native live-input baseline completed **30.001 s / 1,778 frames**, unpaused
+and fault-free, with no pause events. Frame p50/p95/p99 were
+**16.669/18.713/20.066 ms**; maximum **345.523 ms**. At that largest interval the
+simulation advanced exactly 12 ticks, respecting the configured catch-up bound.
+It advanced 7,132 ticks between the measured frame endpoints. This is steady trimmed
+flight on the shared workstation, without physical-device or independent pilot
+qualification. It is not a comparison against the earlier campaign's different WIP.
+
+A separate inclusive `Main._process` instrumentation run opened Pause at tick 35
+with a menu hold and no crash/fault. It is excluded from active-flight qualification.
+Its paused presentation p50/p95 costs were **957/1,461 µs** overall, **69/116 µs** in
+HUD work and **7/12 µs** in the history/audio segment. That evidence does not justify
+a HUD ring-buffer rewrite or establish the cause of the native frame stall.
+The temporary instrumentation was confined to retained scratch sources.
+
+The native real Home/Fly attribution probe completed three cycles, each unpaused at
+first draw (tick 12), with zero orphan nodes. Home first draw from source loading was
+**6.197 s**. Fly first draws were **3.270, 2.136 and 1.870 s**; Home returns were
+**0.986, 0.970 and 1.003 s**. Nested inclusive measurements showed initial Home field
+construction at **2.385 s**, including **1.442 s** in scenery attachment. Later scenery
+attachments took approximately **0.26–0.29 s**. First flight creation took **1.206 s**,
+and later creations approximately **0.23 s**. Nested intervals overlap and must not be
+added. This is attribution, without an optimization comparison or controlled cold caches.
+
+A second native split measured first-flight resource load at **1.456 s**, but warm
+loads at **0.529/0.545 ms** and instantiation at **0.055/0.063 ms**. The earlier
+approximately 0.23 s warm creation cost did not reproduce. A separate headless probe
+confirmed that a strong PackedScene reference avoids reload, but the measured warm
+cost is too small to justify retaining it. No scene cache was integrated. These runs
+do not establish a loading speedup or explain all host/cache variation.
+
+The existing scenery statistics omitted `ImportedVegetation.build` and
+`Population.build`. A [four-line change](../../../../../app/scenery/scenery.gd) adds
+their inclusive build/attachment timings to `stats.timing_ms`. In one native cold
+build, these accounted for **353.655 + 120.608 = 474.263 ms** out of **1,047.639 ms**.
+The recorded phases consequently covered **99.8%**, compared with **54.5%** without
+the two fields in that same sample. Warm values were **2.64–4.58 ms** for vegetation
+and **5.39–7.86 ms** for population. This improves profiling coverage; it changes no
+geometry, resource ownership, gameplay or physics law and makes no FPS claim.
+
+The seven native builds in that campaign all reported finite, nonnegative values for
+both fields. Three Home/Fly cycles remained unpaused at first draw with zero orphan
+nodes. The initial revised diagnostic overlay redeclared a local variable and failed
+parsing before gameplay; its source/log are retained and excluded. The corrected
+overlay passed check-only and native execution. The production change contains only
+the four timing lines, without the temporary overlay.
+
+All four freshly recorded scratch maneuvers self-replayed at **zero body error**, with
+auxiliary and discrete agreement. The four stored goldens still fail with the same
+errors as before. Comparing stored and regenerated records shows identical input
+transition ticks and discrete modes, but different trim-derived commands, body
+velocity/attitude and auxiliary values at tick zero. The command tapes are not
+byte-identical. This establishes a different initial trim before integration starts.
+
+History shows subsequent finite-fuel, mass/balance and aerodynamic-data changes while
+the replay harness/policy remained unchanged. That supports source/reference drift;
+the old records' dirty stamps and missing aircraft/config hashes prevent reconstructing
+their exact source. The glide stamp's commit object is unavailable locally. Current
+self-consistency does not establish physical accuracy or authorize replacing references
+from unrelated WIP. No stored golden or assertion was changed.
+
+The independent lifecycle review found no additional defect on the supported
+single-AppRoot route. Concurrent AppRoots can conflict over the shared close policy;
+the production entry installs one root, so this remains an embedding limitation.
+
+Final verification on the current shared tree passed **126/126 scenery assertions**
+and three native Home/Fly cycles without engine errors. The frozen baseline and
+instrumented-copy scenery suites each passed the other **125** assertions but failed
+the existing 800 ms cold-build gate (**2,671.082 / 863.248 ms**). These runs have
+different host/cache histories; the current pass does not establish a speedup or
+close the target-hardware loading gate. No budget, reference or assertion was relaxed.
+The integrated file's bytes match the reviewed, parsed and natively exercised candidate.
+
+The follow-up commands, source identities, raw measurements and final experiment
+decision are retained in [round-2/manifest.json](round-2/manifest.json) and
+[round-2/verification-summary.json](round-2/verification-summary.json). The full suite,
+export/device matrix, long soak and qualified full-session frame/CPU gates remain open.
+The official [Godot 4.7 profiler guide](https://docs.godotengine.org/en/4.7/tutorials/scripting/debug/the_profiler.html)
+describes manual inclusive microsecond timing; [Performance monitor documentation](https://docs.godotengine.org/en/4.7/classes/class_performance.html)
+notes that some monitor values can lag by up to one second. Sampled engine counters
+are not independent per-frame or per-method measurements.

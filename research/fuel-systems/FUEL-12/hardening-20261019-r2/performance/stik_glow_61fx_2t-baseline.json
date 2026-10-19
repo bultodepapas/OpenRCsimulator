@@ -1,0 +1,92 @@
+{
+	"aircraft_path": "res://data/aircraft/stik_glow_61fx_2t.json",
+	"engine": "4.7.2-stable (official)",
+	"failed": false,
+	"format": "openrc-fuel-cost v1",
+	"initial_warmup_runs": 1,
+	"repeats": 5,
+	"runs": [
+		{
+			"elapsed_usec": 2277204,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 3795.34
+		},
+		{
+			"elapsed_usec": 2456795,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 4094.6583333333333
+		},
+		{
+			"elapsed_usec": 2067789,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 3446.315
+		},
+		{
+			"elapsed_usec": 2287285,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 3812.141666666667
+		},
+		{
+			"elapsed_usec": 2333108,
+			"fault": "",
+			"fill": 1.0,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 3888.5133333333333
+		},
+		{
+			"elapsed_usec": 2275680,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 0,
+			"ticks": 600,
+			"usec_per_tick": 3792.8
+		},
+		{
+			"elapsed_usec": 2207117,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 1,
+			"ticks": 600,
+			"usec_per_tick": 3678.528333333333
+		},
+		{
+			"elapsed_usec": 2507376,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 2,
+			"ticks": 600,
+			"usec_per_tick": 4178.96
+		},
+		{
+			"elapsed_usec": 2317390,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 3,
+			"ticks": 600,
+			"usec_per_tick": 3862.3166666666666
+		},
+		{
+			"elapsed_usec": 1977111,
+			"fault": "",
+			"fill": 0.1,
+			"repeat": 4,
+			"ticks": 600,
+			"usec_per_tick": 3295.185
+		}
+	],
+	"scope": "headless physics only; setup/import/recording excluded; same absolute tape; not target GPU qualification",
+	"ticks": 600
+}
