@@ -5,15 +5,17 @@
 # feels, g_eff = −(non-gravitational force)/mass: gravity itself accelerates fuel and airframe alike. A steady
 # up-line (thrust minus drag holding the airplane against gravity) or a full-throttle acceleration sends it aft,
 # so the carburetor ahead of the tank must lift fuel; a dive that drag is slowing sends it forward and richens; a
-# hard pull with a low tank sinks the surface away from a carburetor above it; an emptying tank lowers the surface. Orifice flow scales with the square root of the driving pressure; the engine was needled in
+# hard pull with a low tank sinks the surface away from a carburetor above it; an emptying tank lowers the surface.
+# An optional authored pickup is available only while submerged below this same free surface. Orifice flow scales
+# with the square root of the driving pressure; the engine was needled in
 # level 1 g flight with a full tank, so the delivered flow is the needled flow times
 #   k = sqrt((p_drive + Δp_head) / (p_drive + Δp_head,needled)),   0 ≤ k ≤ MAX_FACTOR.
 # The driving pressure rises with the admitted flow squared from an idle floor to its full-throttle value:
 #   p_drive = p_idle + (p_wot − p_idle)·(admission·rpm/rated_rpm)²   (capped at p_wot).
 # The free surface of a box tank lies perpendicular to g_eff at a depth set by the fill fraction (exact for a
 # surface parallel to a tank face, an estimate otherwise). Apparent gravity includes point acceleration from
-# translational force, angular acceleration and centripetal acceleration. Slosh, clunk blockage, pickup geometry,
-# and fuel-line inventory beyond the separate transport lag are not modelled.
+# translational force, angular acceleration and centripetal acceleration. Slosh, clunk blockage, and within-tick
+# line pressure or reprime are not modelled. A separately authored pre-primed line is another finite inventory.
 # Pure functions of float64 body-frame (FRD) arrays; transcendental calls go through math3d.
 extends RefCounted
 
@@ -42,6 +44,26 @@ static func head_pa(g_eff: PackedFloat64Array, fill: float, carburetor: PackedFl
 	var depth := absf(down[0]) * tank_size[0] + absf(down[1]) * tank_size[1] + absf(down[2]) * tank_size[2]
 	var surface := M.dot(down, tank_center) + (0.5 - clampf(fill, 0.0, 1.0)) * depth
 	return density * g * (M.dot(down, carburetor) - surface)
+
+
+## Signed distance below the free surface in the apparent-down direction. Positive means submerged. A near-zero
+## apparent gravity has no defined surface and returns NaN so an authored pickup fails closed.
+static func pickup_margin_m(g_eff: PackedFloat64Array, fill: float, pickup: PackedFloat64Array,
+		tank_center: PackedFloat64Array, tank_size: PackedFloat64Array) -> float:
+	if g_eff.size() != 3 or pickup.size() != 3 or tank_center.size() != 3 or tank_size.size() != 3 \
+			or not is_finite(fill) or fill < 0.0 or fill > 1.0:
+		return NAN
+	for values: PackedFloat64Array in [g_eff, pickup, tank_center, tank_size]:
+		for value: float in values:
+			if not is_finite(value):
+				return NAN
+	var gravity: float = M.norm(g_eff)
+	if not is_finite(gravity) or gravity < MIN_G:
+		return NAN
+	var down: PackedFloat64Array = M.scale(g_eff, 1.0 / gravity)
+	var depth: float = absf(down[0]) * tank_size[0] + absf(down[1]) * tank_size[1] + absf(down[2]) * tank_size[2]
+	var surface: float = M.dot(down, tank_center) + (0.5 - fill) * depth
+	return M.dot(down, pickup) - surface
 
 
 ## Driving pressure (Pa) of the carburetor and tank pressurization at a throttle admission and rpm.
@@ -92,7 +114,8 @@ static func evaluate(feed: Dictionary, force_body: PackedFloat64Array, mass_kg: 
 		admission: float, rpm: float, tank_center: PackedFloat64Array, tank_size: PackedFloat64Array,
 		tank_arm_from_cg_body_m: PackedFloat64Array,
 		alpha_body: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]),
-		omega_body: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0])) -> Dictionary:
+		omega_body: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0]),
+		pickup_position_body_m: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
 	if not is_finite(remaining_fuel_kg) or not is_finite(capacity_fuel_kg) or capacity_fuel_kg <= 0.0 \
 			or not is_finite(unusable_fuel_kg) or unusable_fuel_kg < 0.0 or unusable_fuel_kg >= capacity_fuel_kg \
 			or not is_finite(admission) or not is_finite(rpm) or rpm < 0.0:
@@ -102,13 +125,22 @@ static func evaluate(feed: Dictionary, force_body: PackedFloat64Array, mass_kg: 
 		return {ok = false, message = "Glow feed apparent gravity inputs are malformed"}
 	var fill: float = clampf(remaining_fuel_kg / capacity_fuel_kg, 0.0, 1.0)
 	var head: float = head_pa(g_eff, fill, feed.carburetor_body_m, tank_center, tank_size, float(feed.density_kg_m3))
+	var pickup_margin: float = 0.0
+	var pickup_wet: bool = true
+	if not pickup_position_body_m.is_empty():
+		pickup_margin = pickup_margin_m(g_eff, fill, pickup_position_body_m, tank_center, tank_size)
+		if not is_finite(pickup_margin):
+			return {ok = false, message = "Authored Glow pickup has no defined free surface at current apparent gravity"}
+		pickup_wet = pickup_margin >= 0.0
 	var needled: float = needled_head_pa(feed, tank_center, tank_size, STANDARD_GRAVITY)
 	var drive: float = drive_pa(admission, rpm, feed)
 	var flow_factor: float = 0.0 if remaining_fuel_kg <= unusable_fuel_kg \
-		else factor(drive, head, needled)
+		else (factor(drive, head, needled) if pickup_wet else 0.0)
 	return {ok = true, factor = flow_factor, head_pa = head, needled_head_pa = needled,
 		drive_pa = drive, g_eff = g_eff, fill_fraction = fill,
 		usable_fuel_kg = maxf(0.0, remaining_fuel_kg - unusable_fuel_kg),
+		pickup_margin_m = pickup_margin, pickup_surface_defined = not pickup_position_body_m.is_empty(),
+		pickup_wet = pickup_wet,
 		alpha_body_rad_s2 = alpha_body.duplicate(), omega_body_rad_s = omega_body.duplicate()}
 
 

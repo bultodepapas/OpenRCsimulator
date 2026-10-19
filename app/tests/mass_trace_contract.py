@@ -1,8 +1,10 @@
 """Validate and project accepted mass/CG and finite-liquid trace suffixes."""
 import csv
 import io
+import json
 import math
 from pathlib import Path
+import re
 import tempfile
 
 FORMAT = 'openrc-trace v14'
@@ -138,23 +140,26 @@ def _validate_liquid_rows(metadata, rows, dt):
 
 
 def project(path, validator, *args, **kwargs):
-    """Validate v14 mass channels and pass an unchanged v3-v13 projection to `validator`.
+    """Validate v14/v15 mass channels and pass an unchanged v3-v13 projection to `validator`.
 
     The source artifact is never rewritten. `validator` keeps ownership of its existing trace-family
-    equations and version contract; this wrapper verifies the v14 extension before projecting it away.
+        equations and version contract; this wrapper verifies the v14/v15 extension before projecting it away.
     """
     metadata, data_lines = _parts(path)
     trace_format = metadata.get('format')
     claimed_mass = any(key in metadata for key in ('mass_trace_schema', 'mass_base_trace_format', 'mass_sample_timing'))
-    claimed_liquid = any(key in metadata for key in (
-        'liquid_fuel_trace_schema', 'liquid_fuel_model', 'liquid_fuel_schema', 'fuel_consumption_law',
-        'fuel_store_id', 'fuel_state_index', 'fuel_capacity_kg', 'fuel_unusable_kg'))
+    claimed_liquid_trace = 'liquid_fuel_trace_schema' in metadata
+    claimed_liquid_model = any(key in metadata for key in (
+        'liquid_fuel_model', 'liquid_fuel_schema', 'fuel_consumption_law', 'fuel_store_id',
+        'fuel_state_index', 'fuel_capacity_kg', 'fuel_unusable_kg', 'fuel_registry_sha256',
+        'fuel_blend', 'fuel_family', 'fuel_density_kg_m3', 'fuel_reserve_fraction',
+        'fuel_reserve_basis', 'fuel_reserve_estimated', 'fuel_start_fill', 'fuel_start_fill_known'))
     if trace_format not in (FORMAT, LIQUID_FORMAT):
-        if claimed_mass or claimed_liquid:
+        if claimed_mass or claimed_liquid_trace:
             raise ValueError('accepted mass/liquid trace metadata requires openrc-trace v14 or v15')
         return False, None
     has_liquid = trace_format == LIQUID_FORMAT
-    if has_liquid != claimed_liquid:
+    if has_liquid != claimed_liquid_trace or (not has_liquid and claimed_liquid_model):
         raise ValueError('finite-liquid trace claims require openrc-trace v15')
     if (metadata.get('mass_trace_schema') != SCHEMA
             or metadata.get('mass_sample_timing') != SAMPLE_TIMING):

@@ -935,7 +935,7 @@
       "kind": "pack_ecm",
       "pack": {
         "id": "lipo-4s1p-3200-30c-class",
-        "sha256": "995c3983084aa2b58206b0265783022fa4eb514ce246a53767fb99e9a15179f9"
+        "sha256": "cdf90adb42613419665d7a6976c94a8b937abb4984c366610181026be9c20b09"
       },
       "mount_inventory_id": "battery_main",
       "initial_soc": {

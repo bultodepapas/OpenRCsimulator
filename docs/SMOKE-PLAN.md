@@ -1,6 +1,6 @@
 # RC smoke: engine exhaust and auxiliary pump
 
-2026-10-12 · Revision 4 · Step prefix: **SM-**
+2026-10-19 · Revision 5 · Step prefix: **SM-**
 
 **Status:** Stik glow exhaust and optional pump are integrated. Software and native Windows visual verification are recorded in [SM-00…09](research/smoke-investigations/SM-00-09/README.md). Real-radio, other-platform and target-display acceptance remain open.
 
@@ -50,3 +50,32 @@ The recorded emitter tests and off-camera processing questions are in [investiga
 | SM-09 | Shared wind advection. | Implemented now because M5 exists: the same uniform wind/gust/turbulence service drives old and new puffs. Spatial wake/thermal/damage effects require separate evidence. |
 
 The implementation and its software proof do not close physical emissions, real-radio or all-platform acceptance. Keep those limits distinct from the integrated flight feature; do not re-record golden flights for smoke.
+
+## Future user customization — proposed SM-10 onward
+
+Everything below is pending; the implemented SM-00…09 behavior and evidence above are unchanged. The renderer currently uses one authored exhaust anchor per configured aircraft smoke rig, fixed engine/pump appearance, 1.25 s exhaust-puff and 6 s pump-puff lifetimes, and bounded 96/768-particle systems. It has no user-facing color, mount, burst-duration or resource-endurance editor.
+
+Keep source-coupled engine exhaust separate from a user-requested show effect. Engine exhaust follows a supported, authored outlet and the engine's operating state. A colored or wingtip/tail show plume is a presentation choice; it does not assert engine exhaust, fuel chemistry, smoke-fluid inventory, or a physical smoke system. Neither kind changes aircraft data, mass, forces, controls, flight state or traces.
+
+Simple future examples are **Classic Exhaust** (automatic effect at a supported exhaust outlet), **Twin Wingtips** (for example, red left and blue right display plumes when both named slots exist), and **Tail Accent**. Color swatches such as white, gray, blue and red are display tints only. A rear-fuselage or tail-end slot is distinct from a slot on the horizontal or vertical tail surface; show only mounts declared for that aircraft's model and verified by its owner. Do not offer arbitrary coordinates, infer a mount from the model origin, or enable a slot whose placement is absent or unvalidated. Coordinate the Workbench settings with [AE's planned player-facing work](plans/aircraft-editor.md#5-planned-player-facing-work); that plan owns the shared editor flow and safe cosmetic-slot contract.
+
+Use precise, friendly labels instead of an unexplained “duration” or “volume” control:
+
+| Setting | Meaning |
+| --- | --- |
+| **Puff lifetime** | How long each emitted puff exists before it fades. It does not control how long new puffs are emitted. |
+| **Burst duration** | How long a one-shot request emits new puffs. Existing puffs continue through their own lifetime after the burst ends. |
+| **Trail persistence / length** | How far the visible wake remains behind the aircraft. It emerges from speed, puff lifetime, emission spacing and wind; it is not the same as burst duration. Any length target is approximate and view-dependent. |
+| **Visual fullness** | The perceived plume thickness, shaped by width, opacity and particle birth rate/density. It is a rendering control, not smoke mass or physical volume. Prefer named presets such as Fine, Standard and Full. |
+| **Resource endurance** | Time supported by a real smoke-fluid supply and consumption model. This is not implemented and must not be presented as a tank, remaining quantity, refill or endurance until the [fuel, mass and balance contract](plans/fuel-mass-balance.md) defines the source, units, inventory and draw-down and the aircraft owner supplies qualified data. |
+
+| Step | Pending work | Acceptance evidence |
+| --- | --- | --- |
+| SM-10 | Define a compact visual profile with named color swatches and presets; keep source-coupled exhaust distinct from show-effect plumes. | Source selection and labels cannot imply unsupported hardware or emissions. Color changes affect appearance only; no raw JSON or free-form coordinates enter the UI. |
+| SM-11 | Extend the model-owned attachment contract for multiple validated emitters, such as `left_wingtip`, `right_wingtip`, `rear_fuselage`, and separately authored `tailplane_left/right` or fin slots where suitable. | Each aircraft advertises only authored, reviewed slots. Check transformed positions, orientation, surface/control clearance, datum/CG handling and unavailable-slot behavior; never require every aircraft to offer every mount. |
+| SM-12 | Add bounded per-emitter color, width and visual-fullness presets, including multi-color combinations on compatible named slots. | Evaluate all enabled emitters together against one preallocated particle budget, distance LOD, transparency and GPU-time bounds; a profile cannot multiply allocation without limit. Appearance never changes simulation or trace identity. |
+| SM-13 | Expose burst duration, puff lifetime and approximate trail persistence as separate presentation settings with clear bounds and copy. | Tests prove burst stop, residual-puff fade and expiry are independent. No fluid capacity, consumption, mass or remaining-time claim appears before the FUEL contract and aircraft data qualify it. |
+| SM-14 | Preserve shared wind, pause/reset/reload/return behavior and bounded processing across simultaneous emitters. | All puffs use the existing presented-session wind/time; pause freezes age, reset clears old requests, off-camera aging remains correct, and worst-case multi-emitter captures meet the declared particle/GPU budget without changing flight state or replay. |
+| SM-15 | Integrate supported profiles into Aircraft Workshop in coordination with AE-24. | The Workshop exposes only model-declared safe cosmetic slots and saved presets; unsupported mounts stay unavailable, and appearance edits leave physical identity and traces stable. Follow the linked AE plan for shared UI ownership. |
+
+These are presentation and authoring gates, not a promise that every aircraft has smoke hardware or that smoke effects are physically measured. Keep real-radio, physical-emissions, FUEL and platform qualification separate from a successful customization UI.

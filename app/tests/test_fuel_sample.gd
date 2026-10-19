@@ -23,6 +23,13 @@ func _initialize() -> void:
 	check("volume fill and weighted reserve use capacities", is_equal_approx(sample.fill_fraction, 0.5) and is_equal_approx(sample.reserve_fraction, 0.125))
 	check("unusable residue remains onboard and is excluded from usable fuel", is_equal_approx(sample.fuel_remaining_kg, 0.6) and is_equal_approx(sample.fuel_usable_kg, 0.57))
 	check("estimated reserve provenance is explicit", sample.reserve_estimated and sample.reserve_basis == "estimated reserve")
+	var with_line: Array = tanks.duplicate(true)
+	with_line.append({id="line", kind="feed_line", fuel="water_fixture", family="fixture",
+		density_kg_m3=1000.0, capacity_kg=0.002, unusable_kg=0.0, reserve_kg=0.0, reserve_estimated=false})
+	var dry_line: Dictionary = Sample.build(properties, with_line, {left=0.2,right=0.4,line=0.0},0,0.0,true)
+	check("an empty delivery line cannot mislabel healthy main tanks as low fuel", dry_line.ok and not dry_line.low_fuel and dry_line.stores[2].kind == "feed_line")
+	var reserve_main: Dictionary = Sample.build(properties, with_line, {left=0.04,right=0.4,line=0.002},0,0.0,true)
+	check("main reserve still warns with a primed line", reserve_main.ok and reserve_main.low_fuel)
 	sample.cg_body_m[0] = 123.0
 	sample.stores[0].remaining_kg = 123.0
 	check("observation is detached from owner and store definitions", properties.cg_body_m[0] == 0.01 and amounts.left == 0.2)

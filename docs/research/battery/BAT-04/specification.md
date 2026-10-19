@@ -1,8 +1,8 @@
 # BAT-04 — Battery data formats and `pack_ecm` law specification
 
-2026-10-19 · **Status:** normative specification for BAT-04…11. The GDScript runtime (`app/physics/battery/`) and the independent Python reference (`research/battery/ecm_reference.py`) implement this text separately; BAT-03/06 compare them. Plan: [battery realism](../../../plans/battery-realism.md).
+2026-10-19 · Field and law reference for BAT-04…11. Implemented behavior comes from the [pack loader](../../../../app/physics/battery/battery_data.gd), [aircraft loader](../../../../app/physics/aircraft_data.gd), [pack law](../../../../app/physics/battery/pack_ecm.gd) and [ESC supervisor](../../../../app/physics/battery/esc_supervisor.gd). BAT-03/06 compare the law with an [independent Python reference](../../../../research/battery/ecm_reference.py). Integration, limitations and remaining work: [battery guide](../../../plans/battery-realism.md).
 
-Every physical quantity uses the repository quantity form `{value, unit, kind, source}` with `kind` in `manual | measured | borrowed | estimated | derived`. Integers that are counts (cells) and enumerations are plain JSON values.
+Every physical quantity uses the repository quantity form `{value, unit, kind, source}` with `kind` in `manual | measured | borrowed | estimated | derived`. Pack topology counts and enumerations are plain JSON values; aircraft ESC `fixed_cells` uses a quantity with an integer value. `Q` below denotes a quantity, not literal JSON.
 
 ## 1. Cell template — `openrc-cell-template v1`
 
@@ -26,6 +26,8 @@ Generated into `app/data/batteries/cells/<id>.json` by `research/battery/bat-05/
 | `limits` | object of Q | `v_max`, `v_cutoff`, `v_damage_floor` (`V`, per cell, `v_damage_floor < v_cutoff < v_max`), `t_min_k`, `t_max_k` (`K`). `v_cutoff` is the template's data floor (the loaded voltage that defines SOC 0), which can sit above a datasheet's minimum; `v_damage_floor` carries the chemistry limit |
 
 SOC 0 is the template data floor: discharge to `v_cutoff` at the reference rate. SOC 1 is full charge. Values outside the knots are clamped, never extrapolated. A template has one reference capacity; multi-temperature data are normalized to each test's own capacity before fitting, and coulombic capacity does not vary with temperature at runtime.
+
+The table includes generator conventions as well as loader checks. The GDScript loader does not currently validate template id/display name, generator/provenance metadata or median-τ branch ordering. The Python reference checks branch ordering; valid generated-data comparisons do not prove equal rejection behavior for every malformed input.
 
 ## 2. Pack — `openrc-battery v1`
 
@@ -58,15 +60,17 @@ hA(v) = still_air_w_per_k + forced_w_per_k_per_sqrt_mps · sqrt(max(v_cool, 0))
 
 ## 3. Aircraft `propulsion.battery` with `kind: "pack_ecm"`
 
-```json
+Field sketch (not copyable JSON); a complete accepted example is the [generated Timber pack aircraft](../../../../app/data/aircraft/battery/turbo_lumber_evolution_4s_pack.json).
+
+```text
 "battery": {
   "kind": "pack_ecm",
   "pack": {"id": "lipo-4s1p-3200-30c-class", "sha256": "<bytes of the pack file>"},
   "mount_inventory_id": "battery_main",
   "initial_soc": Q "1" in (0, 1],
-  "auxiliary_current_a": Q "A" ≥ 0,
+  "auxiliary_current_a": Q "A" in [0, 100],
   "cooling_airflow_fraction": Q "1" in [0, 1],
-  "weak_cell": {"capacity_factor": Q "1" in (0, 1], "resistance_factor": Q "1" in [1, 10], "soc_offset": Q "1" in [0, 0.5)}
+  "weak_cell": {"capacity_factor": Q "1" in [0.01, 1], "resistance_factor": Q "1" in [1, 10], "soc_offset": Q "1" in [0, 0.5)}
 }
 ```
 
@@ -76,19 +80,19 @@ hA(v) = still_air_w_per_k + forced_w_per_k_per_sqrt_mps · sqrt(max(v_cool, 0))
 
 `propulsion.esc` keeps `kind: "ideal_motoring"` and `command_mapping: "identity"`, and **requires** `low_voltage_cutoff` when the battery is `pack_ecm` (forbidden otherwise):
 
-```json
+```text
 "low_voltage_cutoff": {
   "mode": "soft" | "hard" | "off",
   "cell_detection": "auto" | "fixed",
-  "fixed_cells": Q "1", integer value (only with "fixed"),
-  "detection_max_cell_v": Q "V" (only with "auto"),
-  "cutoff_per_cell_v": Q "V",
+  "fixed_cells": Q "1", integer in [1, 24] (only with "fixed"),
+  "detection_max_cell_v": Q "V" in [0.5, 6] (only with "auto"),
+  "cutoff_per_cell_v": Q "V" in [0.5, 5],
   "soft_limit": Q "1" in [0, 1),
-  "soft_ramp_s": Q "s" > 0,
-  "debounce_s": Q "s" ≥ 0,
+  "soft_ramp_s": Q "s" in (0, 60],
+  "debounce_s": Q "s" in [0, 60],
   "recovery": "throttle_reset" | "latched",
   "reset_throttle_max": Q "1" in [0, 0.2],
-  "voltage_filter_s": Q "s" ≥ 0.02
+  "voltage_filter_s": Q "s" in [0.02, 10]
 }
 ```
 
@@ -164,4 +168,4 @@ recovery      → throttle_reset: in phase 2 or 3, if u ≤ reset_throttle_max a
 phase 0 or 1  → limit 1
 ```
 
-Order within one sample: recovery is tested first in phases 2 and 3 (before the phase-2 timer advances); the debounce test runs in the same sample as the 0 → 1 transition. Timer comparisons use a 1 ns tolerance (`timer ≥ debounce_s − 1e-9`, and the ramp fraction is exactly 1 once `timer ≥ soft_ramp_s − 1e-9`) so accumulated `dt` rounding does not delay a decision by one sample. The phase-3 timer is not advanced. The new limit applies to the next tick (zero-order hold). Cell detection happens once, at reset ("connection"): `fixed` → `fixed_cells`; `auto` → `max(1, ceil(V_rest/detection_max_cell_v − 1e-9))` with `V_rest = E_oc − R_p·I_aux`. A deeply discharged pack can therefore be misdetected; that is modeled behaviour, not an error.
+Order within one sample: recovery is tested first in phases 2 and 3 (before the phase-2 timer advances); the debounce test runs in the same sample as the 0 → 1 transition. Timer comparisons use a 1 ns tolerance (`timer ≥ debounce_s − 1e-9`, and the ramp fraction is exactly 1 once `timer ≥ soft_ramp_s − 1e-9`) so accumulated `dt` rounding does not delay a decision by one sample. The phase-3 timer is not advanced. The new limit applies to the next tick (zero-order hold). Cell detection happens once, at reset ("connection"): `fixed` → `fixed_cells`; `auto` → `clamp(ceil(V_rest/detection_max_cell_v − 1e-9), 1, 24)` with `V_rest = E_oc − R_p·I_aux`. A deeply discharged pack can therefore be misdetected; that is modeled behaviour, not an error.

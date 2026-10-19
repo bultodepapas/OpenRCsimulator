@@ -292,10 +292,28 @@ def add_v2_overlay(schema: dict, spec: dict):
     tank_fields["reserve"] = fuel_quantity("l", 0, 50)
     tank_fields["pickup"] = {"type": "string", "enum": enum_of("/fuel_system/tanks/*/pickup")}
     tank_fields["feed"] = {"type": "string", "enum": enum_of("/fuel_system/tanks/*/feed")}
+    tank_fields["pickup_position"] = {
+        "$ref": "#/$defs/evidence",
+        "properties": {
+            "value": {"type": "array", "minItems": 3, "maxItems": 3,
+                      "items": {"type": "number", "minimum": -3, "maximum": 3}},
+            "unit": {"const": "m"},
+        },
+    }
+    tank_fields["feed_line"] = {
+        "type": "object",
+        "required": ["id", "liquid_inventory_id", "capacity"],
+        "properties": {
+            "id": {"type": "string", "minLength": 1},
+            "liquid_inventory_id": {"type": "string", "minLength": 1},
+            "capacity": fuel_quantity("l", 0, 50, exclusive_low=True),
+        },
+        "additionalProperties": False,
+    }
     root_props["fuel_system"] = {
         "type": "object", "required": ["tanks"],
         "properties": {"tanks": {"type": "array", "minItems": 1, "items": {
-            "type": "object", "required": [name for name in tank_fields if name != "reserve"], "properties": tank_fields,
+            "type": "object", "required": [name for name in tank_fields if name not in ("reserve", "pickup_position", "feed_line")], "properties": tank_fields,
             "additionalProperties": False}}},
         "additionalProperties": False,
     }

@@ -437,7 +437,7 @@ static func ground_share(camera: Camera3D) -> float:
 static func update(environment: Environment, clock_s: float, wind := Vector3.ZERO, view_target: Variant = null,
 		camera: Camera3D = null) -> bool:
 	ShaderClock.update(clock_s, wind)
-	var field_ref: Variant = environment.get_meta("fw_wind_field", null)
+	var field_ref: Variant = environment.get_meta("fw_wind_field") if environment.has_meta("fw_wind_field") else null
 	if field_ref is WeakRef:
 		var wind_field: Node3D = field_ref.get_ref() as Node3D
 		if is_instance_valid(wind_field):

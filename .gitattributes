@@ -45,6 +45,9 @@
 /docs/research/visual-quality-implementation/grass-quality/evidence/pack-2026-10-18/** -text whitespace=cr-at-eol
 # Workshop descriptors bind exact aircraft bytes on every platform.
 /app/data/aircraft/*.json text eol=crlf
+/app/data/aircraft/battery/*.json text eol=crlf
+# Pack records hash exact generated cell bytes; checkout conversion cannot change them.
+/app/data/batteries/**/*.json text eol=lf
 /app/data/rotorcraft/*.json text eol=crlf
 /app/data/workshop/*.json text eol=lf
 /app/data/ground/wheel_profiles.json text eol=lf

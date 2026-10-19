@@ -5,11 +5,13 @@ import io
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
 import unittest
 from check_trimmed_flight import check_coupled_metadata, check, check_fixed_bus_sample
+from mass_trace_contract import COLUMNS as MASS_COLUMNS, LIQUID_COLUMNS
 
 APP = Path(__file__).resolve().parents[1]
 CHECKER = APP / 'tests/check_trimmed_flight.py'
@@ -109,7 +111,8 @@ class TraceAcceptance(unittest.TestCase):
                 source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
                 has_flaps = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
                 self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9' if has_flaps else 'openrc-flight-meta v6')
-                self.assertEqual(metadata['format'], 'openrc-trace v14')
+                finite_liquid = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
+                self.assertEqual(metadata['format'], 'openrc-trace v15' if finite_liquid else 'openrc-trace v14')
                 self.assertEqual(metadata['mass_trace_schema'], 'openrc-mass-sample v1')
                 self.assertEqual(metadata['mass_sample_timing'],
                                  'accepted mass_properties sample for this row tick/time')
@@ -118,16 +121,35 @@ class TraceAcceptance(unittest.TestCase):
                                       else 'openrc-trace v7' if aircraft == 'turbo-lumber-evolution' and extra
                                       else 'openrc-trace v3')
                 self.assertEqual(metadata['mass_base_trace_format'], expected_mass_base)
+                header = next(csv.reader(line for line in path.read_text().splitlines()
+                                         if line and not line.startswith('#')))
+                if finite_liquid:
+                    continuous = json.loads(metadata['recording_start_continuous'])
+                    self.assertEqual(metadata['liquid_fuel_trace_schema'], 'openrc-liquid-fuel-trace v1')
+                    self.assertEqual(metadata['liquid_fuel_model'], 'single-store-finite-liquid-fixed-datum-v1')
+                    self.assertEqual(metadata['liquid_fuel_schema'], 'openrc-liquid-fuel v1')
+                    self.assertIn(metadata['fuel_consumption_law'], ('gasoline_bsfc_v1', 'turbine_map_v1'))
+                    self.assertTrue(metadata['fuel_store_id'])
+                    self.assertEqual(int(metadata['fuel_state_index']), len(continuous) - 2)
+                    self.assertRegex(metadata['fuel_registry_sha256'], r'^[0-9a-f]{64}$')
+                    self.assertEqual(header[-len(LIQUID_COLUMNS) - len(MASS_COLUMNS):-len(MASS_COLUMNS)],
+                                     LIQUID_COLUMNS)
+                    self.assertEqual(header[-len(MASS_COLUMNS):], MASS_COLUMNS)
+                else:
+                    self.assertNotIn('liquid_fuel_trace_schema', metadata)
+                    self.assertFalse(any(key in metadata for key in (
+                        'liquid_fuel_model', 'liquid_fuel_schema', 'fuel_consumption_law',
+                        'fuel_store_id', 'fuel_capacity_kg', 'fuel_unusable_kg',
+                        'fuel_registry_sha256', 'fuel_blend', 'fuel_family',
+                        'fuel_density_kg_m3', 'fuel_reserve_fraction')))
                 if aircraft == 'sebart-avanti-s-a200-p100rx':
                     self.assertEqual(json.loads(metadata['input_layout']),
                                      ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake', 'flaps'])
                     self.assertEqual(metadata['gear_law'], 'retractable-point-gear-v1')
                     self.assertEqual(metadata['gear_trace_schema'], 'openrc-gear-trace v1')
                     self.assertEqual(len(json.loads(metadata['recording_start_gear'])), 2)
-                    self.assertEqual(len(json.loads(metadata['recording_start_continuous'])), 4)
-                    header = next(csv.reader(line for line in path.read_text().splitlines()
-                                             if line and not line.startswith('#')))
-                    self.assertEqual(header[-11:-7], ['gear_extension', 'gear_target_down',
+                    self.assertEqual(len(json.loads(metadata['recording_start_continuous'])), 6)
+                    self.assertEqual(header[-16:-12], ['gear_extension', 'gear_target_down',
                                                    'cmd_gear_down', 'cmd_wheel_brake'])
                 self.assertEqual(metadata['aircraft_input_format'], json.loads(source.read_text())['format'])
                 self.assertEqual(metadata['aircraft_input_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())

@@ -172,6 +172,13 @@ func _test_field_integration() -> void:
 		cue_projectors += 1 if source != null and projected else 0
 	_check("all three default field cues have projected maps", field.flight_cues.size() == 3 and cue_projectors == 3,
 		"cues=%d projected=%d" % [field.flight_cues.size(), cue_projectors])
+	var sock := field_node.get_node_or_null("windsock") as Node3D
+	var mast_shape: Dictionary = Projected.collect(sock.get_node("Support"), 0.04)
+	var mast_only := false
+	for projector: Node in projectors:
+		if projector.get("source") == sock:
+			mast_only = int(projector.get("triangle_count")) == int(mast_shape.triangles)
+	_check("windsock cached shadow contains only its fixed mast", mast_only)
 	var legacy_cues := field_node.get_node_or_null("FlightCueShadows") as MeshInstance3D
 	_check("matching legacy cue contact mesh is hidden", legacy_cues != null and not legacy_cues.visible)
 

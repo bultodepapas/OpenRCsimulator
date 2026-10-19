@@ -1369,6 +1369,7 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 			by_id[item.id] = item
 	var tanks: Array = []
 	var liquid_ids: Array = []
+	var feed_line_ids: Dictionary = {}
 	var registry_identity := ""
 	if raw.has("fuel_system"):
 		if not str(raw.capabilities.get("energy", "")) in FUEL_ENERGY:
@@ -1384,7 +1385,7 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 			var tank: Dictionary = raw.fuel_system.tanks[i]
 			var path := "fuel_system.tanks[%d]" % i
 			var id: String = tank.id
-			if used.has("tank:" + id):
+			if used.has("tank:" + id) or feed_line_ids.has(id):
 				errors.append("%s.id: duplicate tank id '%s'" % [path, id])
 			used["tank:" + id] = true
 			if not registry.blends.has(tank.fuel):
@@ -1431,13 +1432,69 @@ static func _fuel_system(errors: PackedStringArray, raw: Dictionary) -> Dictiona
 			var size: Array = liquid.size.value
 			if float(size[0]) * float(size[1]) * float(size[2]) < capacity * 0.001 * (1.0 - 1.0e-9):
 				errors.append("%s: liquid '%s' box %.3f l cannot hold the %s l capacity" % [path, tank.liquid_inventory_id, float(size[0]) * float(size[1]) * float(size[2]) * 1000.0, capacity])
+			var pickup_position: Variant = null
+			if tank.has("pickup_position"):
+				pickup_position = _q(errors, path + ".pickup_position", tank.pickup_position, "m", -3.0, 3.0, 3)
+			var normalized_line: Dictionary = {}
+			if tank.has("feed_line"):
+				var line: Dictionary = tank.feed_line
+				var line_id: String = str(line.id)
+				var line_liquid_id: String = str(line.liquid_inventory_id)
+				if line_id == id or feed_line_ids.has(line_id) or used.has("tank:" + line_id):
+					errors.append("%s.feed_line.id: duplicate fuel resource id '%s'" % [path, line_id])
+				feed_line_ids[line_id] = true
+				if used.has(line_liquid_id):
+					errors.append("%s.feed_line.liquid_inventory_id: each inventory item belongs to one tank or line role only" % path)
+				used[line_liquid_id] = true
+				var line_item: Variant = by_id.get(line_liquid_id)
+				if not line_item is Dictionary:
+					errors.append("%s.feed_line.liquid_inventory_id: item '%s' must name an inventory item" % [path, line_liquid_id])
+				else:
+					if line_item.get("energy_source") != FUEL_FAMILY_SOURCE[family]:
+						errors.append("%s.feed_line.liquid_inventory_id: item '%s' must declare energy_source '%s'" % [path, line_liquid_id, FUEL_FAMILY_SOURCE[family]])
+					var line_capacity = _q(errors, path + ".feed_line.capacity", line.capacity, "l", 0.0, 50.0)
+					if line_capacity != null:
+						var line_capacity_kg: float = float(line_capacity) * 0.001 * density
+						var line_mass_kg: float = float(line_item.mass.value)
+						if float(line_capacity) <= 0.0 or float(line_capacity) > float(capacity):
+							errors.append("%s.feed_line.capacity: must be positive and no greater than its tank capacity" % path)
+						if line_mass_kg <= 0.0 or line_mass_kg > line_capacity_kg * (1.0 + 1.0e-9):
+							errors.append("%s.feed_line: preprimed liquid mass must be positive and no greater than capacity at the bound blend density" % path)
+						var line_size: Array = line_item.size.value
+						var line_box_m3: float = float(line_size[0]) * float(line_size[1]) * float(line_size[2])
+						if line_box_m3 < float(line_capacity) * 0.001 * (1.0 - 1.0e-9):
+							errors.append("%s.feed_line: liquid item box cannot hold its declared capacity" % path)
+						liquid_ids.append(line_liquid_id)
+						normalized_line = {
+							id = line_id,
+							liquid_inventory_id = line_liquid_id,
+							capacity_m3 = float(line_capacity) * 0.001,
+							capacity_kg = line_capacity_kg,
+							reference_mass_kg = line_mass_kg,
+							family = family,
+							density_kg_m3 = density,
+							position_inventory_le_m = PackedFloat64Array(line_item.position.value),
+							size_m = PackedFloat64Array(line_item.size.value),
+							source = {
+								capacity = line.capacity.duplicate(true),
+								mass = line_item.mass.duplicate(true),
+								position = line_item.position.duplicate(true),
+								size = line_item.size.duplicate(true),
+							},
+						}
 			liquid_ids.append(tank.liquid_inventory_id)
-			tanks.append({id = id, fuel = tank.fuel, family = family, density_kg_m3 = density,
+			var normalized_tank := {id = id, fuel = tank.fuel, family = family, density_kg_m3 = density,
 				capacity_m3 = capacity * 0.001, capacity_kg = capacity_kg, unusable_kg = unusable * 0.001 * density,
 				reserve_kg = reserve * 0.001 * density, reserve_fraction = reserve / float(capacity),
 				reserve_estimated = not tank.has("reserve") or str(tank.reserve.kind) == "estimated",
 				liquid_inventory_id = tank.liquid_inventory_id, shell_inventory_id = tank.shell_inventory_id,
-				liquid_mass_kg = liquid_kg, start_fill = liquid_kg / capacity_kg, pickup = tank.pickup, feed = tank.feed})
+				liquid_mass_kg = liquid_kg, start_fill = liquid_kg / capacity_kg, pickup = tank.pickup, feed = tank.feed}
+			if pickup_position != null:
+				normalized_tank.pickup_position_inventory_le_m = pickup_position
+				normalized_tank.pickup_position_source = tank.pickup_position.duplicate(true)
+			if not normalized_line.is_empty():
+				normalized_tank.feed_line = normalized_line
+			tanks.append(normalized_tank)
 		for item: Dictionary in inventory:
 			if item.get("energy_source", "") in LIQUID_FUEL_SOURCES and not str(item.get("id", "")) in liquid_ids:
 				errors.append("fuel_system: liquid fuel item '%s' belongs to no declared tank" % str(item.get("id", item.get("name", "?"))))
@@ -1496,6 +1553,10 @@ static func _liquid_fuel(errors: PackedStringArray, raw: Dictionary, model: Dict
 	if normalized_tanks.is_empty():
 		errors.append("propulsion.fuel_consumption: requires a normalized fuel_system")
 		return {}
+	for tank: Dictionary in normalized_tanks:
+		if tank.has("pickup_position_inventory_le_m") or tank.has("feed_line"):
+			errors.append("propulsion.fuel_consumption: pickup_position and feed_line require a supported feed adapter; finite_liquid_fuel does not yet model them")
+			return {}
 	var bound_tank: Dictionary = {}
 	var stores_by_id: Dictionary = {}
 	var store_ids := PackedStringArray()

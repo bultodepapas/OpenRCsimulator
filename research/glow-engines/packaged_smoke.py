@@ -18,6 +18,19 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = [('stik-glow-55ax-2t', 'glow_2t'), ('stik-glow-fs64v-4t', 'glow_4t')]
+GLOW_LAW = 'glow-mean-cycle-finite-tank-line-pickup-v3'
+GLOW_TRACE_SCHEMA = 'openrc-glow-trace v2'
+GLOW_COLUMNS = [
+    'glow_fuel_kg', 'glow_temperature_k', 'glow_running', 'glow_stop_reason_code',
+    'glow_phase_revolutions', 'glow_mixture_command_phi', 'glow_fuel_transport_kg_s',
+    'glow_opportunity_count', 'glow_fire_count', 'glow_fire_events', 'glow_firing_accumulator',
+    'glow_shaft_work_j', 'glow_propeller_work_j', 'glow_thrust_work_j', 'glow_chemical_work_j',
+    'glow_line_fuel_kg', 'glow_fuel_source_mode',
+]
+
+import sys
+sys.path.insert(0, str(ROOT / 'app/tests'))
+from mass_trace_contract import COLUMNS as MASS_COLUMNS, project as project_mass_trace
 
 
 def sha256(path):
@@ -35,7 +48,22 @@ def inspect_trace(path, aircraft, family):
     assert meta['glow_family'] == family, meta
     assert aircraft in text
     identity = json.loads(meta['glow_identity'])
-    assert identity and meta['propulsion_model'] == 'glow-mean-cycle-finite-tank-hub-inflow-v2'
+    assert identity and meta['propulsion_model'] == GLOW_LAW
+    assert meta['metadata_schema'] == 'openrc-flight-meta v10'
+    assert meta['glow_trace_schema'] == GLOW_TRACE_SCHEMA
+    assert meta['format'] == 'openrc-trace v14'
+    assert meta['mass_base_trace_format'] == 'openrc-trace v9'
+    assert meta['mass_trace_schema'] == 'openrc-mass-sample v1'
+    assert meta['mass_sample_timing'] == 'accepted mass_properties sample for this row tick/time'
+    assert meta['continuous_layout'].endswith(
+        '; feed-line liquid mass kg; fuel source mode (0 starved, 1 main tank, 2 pre-primed line)'
+        '; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail'
+    )
+    header = next(csv.reader(line for line in text.splitlines() if line and not line.startswith('#')))
+    assert header[-len(GLOW_COLUMNS) - len(MASS_COLUMNS):-len(MASS_COLUMNS)] == GLOW_COLUMNS
+    assert header[-len(MASS_COLUMNS):] == MASS_COLUMNS
+    handled, mass_report = project_mass_trace(path, lambda _base_path: True)
+    assert handled and mass_report is True
     assert all(math.isfinite(float(value)) for row in rows for value in row.values())
     assert all(float(row['engine_rpm']) > 0 and float(row['glow_running']) == 1 for row in rows)
     fuel = [float(row['glow_fuel_kg']) for row in rows]
@@ -43,6 +71,11 @@ def inspect_trace(path, aircraft, family):
     assert fuel[-1] > 0 and fuel[-1] < fuel[0]
     assert all(b <= a for a, b in zip(fuel, fuel[1:]))
     assert fires[-1] > fires[0] and all(b >= a for a, b in zip(fires, fires[1:]))
+    line_fuel = [float(row['glow_line_fuel_kg']) for row in rows]
+    source_mode = [float(row['glow_fuel_source_mode']) for row in rows]
+    assert all(value >= 0 for value in line_fuel)
+    assert all(value in (0, 1, 2) for value in source_mode)
+    assert all(mode != 2 or line > 0 for mode, line in zip(source_mode, line_fuel))
     return dict(aircraft=aircraft, family=family, rows=len(rows), identity=identity,
                 initial_rpm=float(rows[0]['engine_rpm']), final_rpm=float(rows[-1]['engine_rpm']),
                 consumed_fuel_kg=fuel[0]-fuel[-1], successful_fires=fires[-1]-fires[0],

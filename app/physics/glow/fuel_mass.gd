@@ -24,6 +24,15 @@ static func prepare(wet_mass: float, wet_inertia: PackedFloat64Array, reference_
 		reference_mass_kg = reference_fuel, capacity_mass_kg = capacity,
 		center_body_m = tank_position, size_body_m = tank_size}])
 
+
+## Multi-resource fixed-reference form used only when a Glow installation has a separate finite feed-line store.
+## The one-resource path above remains operation-for-operation compatible with existing aircraft.
+static func prepare_resources(wet_mass: float, wet_inertia: PackedFloat64Array,
+		resources: Array) -> Dictionary:
+	if wet_inertia.size() != 6 or resources.is_empty():
+		return {ok = false, error = "Glow resource reference is malformed"}
+	return MassInventory.prepare_reference(wet_mass, wet_inertia, resources)
+
 static func evaluate(wet_mass: float, wet_inertia: PackedFloat64Array, reference_fuel: float,
 		remaining: float, tank_position: PackedFloat64Array, tank_size: PackedFloat64Array,
 		capacity_fuel: float = -1.0, tank_id: String = RESOURCE_ID) -> Dictionary:
@@ -32,6 +41,10 @@ static func evaluate(wet_mass: float, wet_inertia: PackedFloat64Array, reference
 	if not prepared.get("ok", false):
 		return {ok = false}
 	return MassInventory.evaluate_reference(prepared, PackedFloat64Array([remaining]))
+
+
+static func evaluate_resources(prepared: Dictionary, amounts: PackedFloat64Array) -> Dictionary:
+	return MassInventory.evaluate_reference(prepared, amounts)
 
 ## Convert a derivative evaluated for CM acceleration into the fixed datum's acceleration.
 static func datum_derivative(s: PackedFloat64Array, properties: Dictionary, force: PackedFloat64Array,

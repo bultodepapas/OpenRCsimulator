@@ -1,0 +1,484 @@
+Diagnostic outputs from 2026-10-19. Inputs changed during this review; see README.md for scope.
+
+===== build_models_check.log =====
+model manifests current (5 visual families)
+
+===== build_descriptors_check.log =====
+capabilities.energy: has unregistered value 'finite_liquid_fuel'; propulsion.fuel_consumption: is not registered for this propulsion family; propulsion.engine: shaft, glow installation, and energy selections do not match a registered propulsion variant
+
+===== test_descriptor_checkout.log =====
+F.......
+======================================================================
+FAIL: test_fresh_checkouts_keep_exact_bindings (__main__.CheckoutBindings.test_fresh_checkouts_keep_exact_bindings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\research\aircraft-editor\test_descriptor_checkout.py", line 51, in test_fresh_checkouts_keep_exact_bindings
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : capabilities.energy: has unregistered value 'finite_liquid_fuel'; propulsion.fuel_consumption: is not registered for this propulsion family; propulsion.engine: shaft, glow installation, and energy selections do not match a registered propulsion variant
+
+
+----------------------------------------------------------------------
+Ran 8 tests in 1.039s
+
+FAILED (failures=1)
+
+===== godot_import.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Started Project initialization (5 steps)[39m[0m
+[   0% ] [90m[1mfirst_scan_filesystem[22m | Scanning file structure...[39m[0m
+[  16% ] [90m[1mfirst_scan_filesystem[22m | Loading global class names...[39m[0m
+[  33% ] [90m[1mfirst_scan_filesystem[22m | Verifying GDExtensions...[39m[0m
+[  50% ] [90m[1mfirst_scan_filesystem[22m | Creating autoload scripts...[39m[0m
+[  66% ] [90m[1mfirst_scan_filesystem[22m | Initializing plugins...[39m[0m
+[  83% ] [90m[1mfirst_scan_filesystem[22m | Starting file scan...[39m[0m
+[92m[ DONE ][39m [1mfirst_scan_filesystem[22m
+[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | Started Registering global classes... (4 steps)[39m[0m
+[   0% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  20% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  40% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[  60% ] [90m[1mupdate_scripts_classes[22m | [39m[0m
+[92m[ DONE ][39m [1mupdate_scripts_classes[22m
+[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Started Loading editor (5 steps)[39m[0m
+[   0% ] [90m[1mloading_editor_layout[22m | Loading editor layout...[39m[0m
+[  16% ] [90m[1mloading_editor_layout[22m | Loading docks...[39m[0m
+[  33% ] [90m[1mloading_editor_layout[22m | Reopening scenes...[39m[0m
+[  50% ] [90m[1mloading_editor_layout[22m | Loading central editor layout...[39m[0m
+[  66% ] [90m[1mloading_editor_layout[22m | Loading plugin window layout...[39m[0m
+[  83% ] [90m[1mloading_editor_layout[22m | Editor layout ready.[39m[0m
+[92m[ DONE ][39m [1mloading_editor_layout[22m
+[0m
+
+===== capture-out.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Workshop capture: C:\DEVELOPMENT\OpenRCsimulator\tmp\workbench-docs-20261019\capture-es-1080.png error=0
+
+===== capture-err.log =====
+
+===== verified-test_workshop_compiler.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL 50% constant-wing-loading recipe validates ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL 150% geometric recipe validates ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL 200% geometric result reports the source v2 quantity bound ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 01 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 03 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 07 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 09 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 11 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 13 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 15 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 17 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL module-shape transform compiles unfamiliar identity 19 ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL twenty unfamiliar IDs compile through the generic path 11
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+trim: nonfinite iterated trim residual
+trim: nonfinite iterated trim residual
+FAIL Extra base and compiled no-op both trim and fly base=nonfinite iterated trim residual compiled=nonfinite iterated trim residual
+aircraft data warning: inertia: Jyy = 0.0229 kg·m2 is 2.06× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.1163 kg·m2 is 2.04× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.9055 kg·m2 is 2.00× the scaled UltraStick25e value
+FAIL Extra 50% candidate compiles for flight ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL Extra 75% candidate compiles for flight ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+trim: nonfinite iterated trim residual
+FAIL Extra 100% session validates aircraft and trim nonfinite iterated trim residual
+FAIL Extra 100% session reports flyable before stepping nonfinite iterated trim residual
+FAIL Extra 125% candidate compiles for flight ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL Extra 150% candidate compiles for flight ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+FAIL Extra 200% candidate compiles for flight ["scale: unsupported for this aircraft module combination. No-op compilation remains available. finite-glow installation data must remain fixed until its module transform is qualified"]
+Workshop compiler: 299 checks, 21 failures
+
+===== verified-test_workshop_descriptor.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+102 checks, 0 failed
+
+===== verified-test_workshop_integration.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Static function "advance()" not found in base "res://render/windsock.gd".
+   at: GDScript::reload (res://render/field.gd:121)
+SCRIPT ERROR: Parse Error: Static function "update()" not found in base "res://render/windsock.gd".
+   at: GDScript::reload (res://render/field.gd:130)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://landscapes/club_field/landscape.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://landscapes/catalog.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_state/preferences.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_root.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_workshop_integration.gd:0)
+ERROR: Failed to load script "res://tests/test_workshop_integration.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
+   at: build (res://landscapes/club_field/landscape.gd:12)
+   GDScript backtrace (most recent call first):
+       [0] build (res://landscapes/club_field/landscape.gd:12)
+       [1] build (res://landscapes/catalog.gd:31)
+       [2] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [3] build (res://render/world/world.gd:275)
+       [4] _init (res://ui/home_scene.gd:92)
+       [5] show_home (res://app_root.gd:271)
+       [6] _ready (res://app_root.gd:211)
+       [7] _run (res://tests/test_workshop_integration.gd:31)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [1] build (res://render/world/world.gd:275)
+       [2] _init (res://ui/home_scene.gd:92)
+       [3] show_home (res://app_root.gd:271)
+       [4] _ready (res://app_root.gd:211)
+       [5] _run (res://tests/test_workshop_integration.gd:31)
+ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.
+   at: get_meta (core/object/object.cpp:1053)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/world/world.gd:440)
+       [1] _frame_aircraft (res://ui/home_scene.gd:117)
+       [2] _ready (res://ui/home_scene.gd:126)
+       [3] show_home (res://app_root.gd:273)
+       [4] _ready (res://app_root.gd:211)
+       [5] _run (res://tests/test_workshop_integration.gd:31)
+ok   Home keyboard opens Workshop
+SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
+   at: build (res://landscapes/club_field/landscape.gd:12)
+   GDScript backtrace (most recent call first):
+       [0] build (res://landscapes/club_field/landscape.gd:12)
+       [1] build (res://landscapes/catalog.gd:31)
+       [2] _build_field (res://main.gd:2107)
+       [3] build (res://render/world/world.gd:275)
+       [4] _build_world (res://main.gd:2063)
+       [5] _ready (res://main.gd:472)
+       [6] _start_workshop_trial (res://app_root.gd:1165)
+       [7] _run (res://tests/test_workshop_integration.gd:44)
+       [8] tap (res://tests/ui_driver.gd:24)
+       [9] settle (res://tests/ui_driver.gd:55)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] _build_field (res://main.gd:2108)
+       [1] build (res://render/world/world.gd:275)
+       [2] _build_world (res://main.gd:2063)
+       [3] _ready (res://main.gd:472)
+       [4] _start_workshop_trial (res://app_root.gd:1165)
+       [5] _run (res://tests/test_workshop_integration.gd:44)
+       [6] tap (res://tests/ui_driver.gd:24)
+       [7] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid call. Nonexistent function 'advance_wind' in base 'GDScript'.
+   at: _advance_windsock (res://main.gd:775)
+   GDScript backtrace (most recent call first):
+       [0] _advance_windsock (res://main.gd:775)
+       [1] commit_prepared_reset (res://sim/simulation.gd:153)
+       [2] reset (res://sim/simulation.gd:103)
+       [3] _reset_airborne_start (res://sim/flight_session.gd:2210)
+       [4] reset (res://sim/flight_session.gd:2161)
+       [5] _ready (res://main.gd:645)
+       [6] _start_workshop_trial (res://app_root.gd:1165)
+       [7] _run (res://tests/test_workshop_integration.gd:44)
+       [8] tap (res://tests/ui_driver.gd:24)
+       [9] settle (res://tests/ui_driver.gd:55)
+ok   200% trial starts
+ok   trial has distinct physical identity
+ok   catalog visual identity is retained
+ok   trial is airborne
+FAIL trial session applies tank-size ratio to capacity and accepted fuel mass
+ok   trial trace records exact source
+SCRIPT ERROR: Invalid call. Nonexistent function 'advance_wind' in base 'GDScript'.
+   at: _advance_windsock (res://main.gd:775)
+   GDScript backtrace (most recent call first):
+       [0] _advance_windsock (res://main.gd:775)
+       [1] commit_prepared_reset (res://sim/simulation.gd:153)
+       [2] reset (res://sim/simulation.gd:103)
+       [3] _reset_airborne_start (res://sim/flight_session.gd:2210)
+       [4] reset (res://sim/flight_session.gd:2161)
+       [5] reload (res://sim/flight_session.gd:1590)
+       [6] _run (res://tests/test_workshop_integration.gd:70)
+       [7] tap (res://tests/ui_driver.gd:24)
+       [8] settle (res://tests/ui_driver.gd:55)
+ok   F5 resolves frozen candidate
+ok   render pose preserves 200% scale
+ok   scaled CG is the simulated world position
+ok   camera extent follows scaled geometry
+ok   wreck geometry follows jensen-das-ugly-stik-60 at 200%
+ok   wreck rigid bodies keep unit scale
+SCRIPT ERROR: Invalid call. Nonexistent function 'advance_wind' in base 'GDScript'.
+   at: _advance_windsock (res://main.gd:775)
+   GDScript backtrace (most recent call first):
+       [0] _advance_windsock (res://main.gd:775)
+       [1] commit_prepared_reset (res://sim/simulation.gd:153)
+       [2] reset (res://sim/simulation.gd:103)
+       [3] _reset_airborne_start (res://sim/flight_session.gd:2210)
+       [4] reset (res://sim/flight_session.gd:2161)
+       [5] restart_flight (res://app_root.gd:1593)
+       [6] _run (res://tests/test_workshop_integration.gd:81)
+       [7] tap (res://tests/ui_driver.gd:24)
+       [8] settle (res://tests/ui_driver.gd:55)
+ok   trial restart keeps frozen identity and experimental mass
+SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
+   at: build (res://landscapes/club_field/landscape.gd:12)
+   GDScript backtrace (most recent call first):
+       [0] build (res://landscapes/club_field/landscape.gd:12)
+       [1] build (res://landscapes/catalog.gd:31)
+       [2] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [3] build (res://render/world/world.gd:275)
+       [4] _init (res://ui/home_scene.gd:92)
+       [5] _rebuild_home_scene (res://app_root.gd:1520)
+       [6] _return_to_workshop (res://app_root.gd:1230)
+       [7] end_flight (res://app_root.gd:1612)
+       [8] _run (res://tests/test_workshop_integration.gd:86)
+       [9] tap (res://tests/ui_driver.gd:24)
+       [10] settle (res://tests/ui_driver.gd:55)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [1] build (res://render/world/world.gd:275)
+       [2] _init (res://ui/home_scene.gd:92)
+       [3] _rebuild_home_scene (res://app_root.gd:1520)
+       [4] _return_to_workshop (res://app_root.gd:1230)
+       [5] end_flight (res://app_root.gd:1612)
+       [6] _run (res://tests/test_workshop_integration.gd:86)
+       [7] tap (res://tests/ui_driver.gd:24)
+       [8] settle (res://tests/ui_driver.gd:55)
+ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.
+   at: get_meta (core/object/object.cpp:1053)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/world/world.gd:440)
+       [1] _frame_aircraft (res://ui/home_scene.gd:117)
+       [2] _ready (res://ui/home_scene.gd:126)
+       [3] _rebuild_home_scene (res://app_root.gd:1530)
+       [4] _return_to_workshop (res://app_root.gd:1230)
+       [5] end_flight (res://app_root.gd:1612)
+       [6] _run (res://tests/test_workshop_integration.gd:86)
+       [7] tap (res://tests/ui_driver.gd:24)
+       [8] settle (res://tests/ui_driver.gd:55)
+ok   return restores same editor instance
+ok   trial return preserves draft and edit history
+ok   Home is still behind editor
+FAIL Extra 50% starts through the same Workshop action
+FAIL Extra 200% starts through the same Workshop action
+SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
+   at: build (res://landscapes/club_field/landscape.gd:12)
+   GDScript backtrace (most recent call first):
+       [0] build (res://landscapes/club_field/landscape.gd:12)
+       [1] build (res://landscapes/catalog.gd:31)
+       [2] _build_field (res://main.gd:2107)
+       [3] build (res://render/world/world.gd:275)
+       [4] _build_world (res://main.gd:2063)
+       [5] _ready (res://main.gd:472)
+       [6] start_flight (res://app_root.gd:576)
+       [7] _run (res://tests/test_workshop_integration.gd:111)
+       [8] settle (res://tests/ui_driver.gd:55)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] _build_field (res://main.gd:2108)
+       [1] build (res://render/world/world.gd:275)
+       [2] _build_world (res://main.gd:2063)
+       [3] _ready (res://main.gd:472)
+       [4] start_flight (res://app_root.gd:576)
+       [5] _run (res://tests/test_workshop_integration.gd:111)
+       [6] settle (res://tests/ui_driver.gd:55)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid call. Nonexistent function 'advance_wind' in base 'GDScript'.
+   at: _advance_windsock (res://main.gd:775)
+   GDScript backtrace (most recent call first):
+       [0] _advance_windsock (res://main.gd:775)
+       [1] commit_prepared_reset (res://sim/simulation.gd:153)
+       [2] reset (res://sim/simulation.gd:103)
+       [3] _reset_airborne_start (res://sim/flight_session.gd:2210)
+       [4] reset (res://sim/flight_session.gd:2161)
+       [5] _ready (res://main.gd:645)
+       [6] start_flight (res://app_root.gd:576)
+       [7] _run (res://tests/test_workshop_integration.gd:111)
+       [8] settle (res://tests/ui_driver.gd:55)
+ok   original aircraft still starts
+ok   paused original accepts an independent sky
+ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.
+   at: get_meta (core/object/object.cpp:1053)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/world/world.gd:440)
+       [1] _process (res://main.gd:799)
+ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.
+   at: get_meta (core/object/object.cpp:1053)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/world/world.gd:440)
+       [1] _process (res://main.gd:799)
+ok   invalid draft retains original flight and editor
+ok   failed candidate startup preserves old flight and camera
+ok   failed candidate startup preserves old recorder
+ok   failed candidate startup preserves adapted exposure
+SCRIPT ERROR: Invalid call. Nonexistent function 'build' in base 'GDScript'.
+   at: build (res://landscapes/club_field/landscape.gd:12)
+   GDScript backtrace (most recent call first):
+       [0] build (res://landscapes/club_field/landscape.gd:12)
+       [1] build (res://landscapes/catalog.gd:31)
+       [2] _build_field (res://main.gd:2107)
+       [3] build (res://render/world/world.gd:275)
+       [4] _build_world (res://main.gd:2063)
+       [5] _ready (res://main.gd:472)
+       [6] _start_workshop_trial (res://app_root.gd:1165)
+       [7] _run (res://tests/test_workshop_integration.gd:137)
+       [8] settle (res://tests/ui_driver.gd:55)
+ERROR: Required object "rp_child" is null.
+   at: add_child (scene/main/node.cpp:1715)
+   GDScript backtrace (most recent call first):
+       [0] _build_field (res://main.gd:2108)
+       [1] build (res://render/world/world.gd:275)
+       [2] _build_world (res://main.gd:2063)
+       [3] _ready (res://main.gd:472)
+       [4] _start_workshop_trial (res://app_root.gd:1165)
+       [5] _run (res://tests/test_workshop_integration.gd:137)
+       [6] settle (res://tests/ui_driver.gd:55)
+aircraft data warning: inertia: Jyy = 0.0229 kg·m2 is 2.05× the scaled UltraStick25e value
+SCRIPT ERROR: Invalid call. Nonexistent function 'advance_wind' in base 'GDScript'.
+   at: _advance_windsock (res://main.gd:775)
+   GDScript backtrace (most recent call first):
+       [0] _advance_windsock (res://main.gd:775)
+       [1] commit_prepared_reset (res://sim/simulation.gd:153)
+       [2] reset (res://sim/simulation.gd:103)
+       [3] _reset_airborne_start (res://sim/flight_session.gd:2210)
+       [4] reset (res://sim/flight_session.gd:2161)
+       [5] _ready (res://main.gd:645)
+       [6] _start_workshop_trial (res://app_root.gd:1165)
+       [7] _run (res://tests/test_workshop_integration.gd:137)
+       [8] settle (res://tests/ui_driver.gd:55)
+ok   50% trial from Pause starts independently
+ok   trial can choose its own sky
+ok   trial return preserves adapted exposure
+ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.
+   at: get_meta (core/object/object.cpp:1053)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/world/world.gd:440)
+       [1] _process (res://main.gd:799)
+ERROR: The object does not have any 'meta' values with the key 'fw_wind_field'.
+   at: get_meta (core/object/object.cpp:1053)
+   GDScript backtrace (most recent call first):
+       [0] update (res://render/world/world.gd:440)
+       [1] _process (res://main.gd:799)
+ok   return restores previous flight
+ok   original tick and state preserved
+ok   previous flight remains paused
+ok   return restores original sky presentation
+ok   Pause editor draft preserved
+Workshop integration: 3 failed
+
+===== verified-test_workshop_store.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+108 checks, 0 failed
+
+===== verified-test_workshop_trial.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Aircraft presentation changed after the Workshop trial was frozen.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:56)
+       [1] _initialize (res://tests/test_workshop_trial.gd:36)
+FAIL v1 saved descriptor can still launch through its explicit adapter
+FAIL legacy descriptor trial hash binds the resolved model manifest
+Workshop trial: 37 checks, 2 failed
+
+===== verified-test_workshop_ui.log =====
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   screen renders its title, preview and test action
+ok   airplane selector discovers every fixed-wing flyable aircraft
+ok   initial keyboard focus enters the aircraft selector
+ok   Workshop is a still editor with no flight session
+ok   layout fits 720p height
+ok   layout fits 1080p height
+ok   opening starts at the top of the editor
+ok   Spanish locale translates the Workshop title
+ok   Tab advances focus inside the editor
+ok   fixed-wing selection remains aligned: jensen-das-ugly-stik-60
+ok   no-op build validates: jensen-das-ugly-stik-60
+ok   unsupported controls stay visible and inactive: jensen-das-ugly-stik-60
+ok   fixed-wing selection remains aligned: stik-glow-61fx-2t
+ok   no-op build validates: stik-glow-61fx-2t
+ok   unsupported controls stay visible and inactive: stik-glow-61fx-2t
+ok   fixed-wing selection remains aligned: stik-glow-55ax-2t
+ok   no-op build validates: stik-glow-55ax-2t
+ok   unsupported controls stay visible and inactive: stik-glow-55ax-2t
+ok   fixed-wing selection remains aligned: stik-glow-fs64v-4t
+ok   no-op build validates: stik-glow-fs64v-4t
+ok   unsupported controls stay visible and inactive: stik-glow-fs64v-4t
+ok   fixed-wing selection remains aligned: gp-extra-300s-60
+ok   no-op build validates: gp-extra-300s-60
+ok   unsupported controls stay visible and inactive: gp-extra-300s-60
+ok   fixed-wing selection remains aligned: p51d-mustang-120
+ok   no-op build validates: p51d-mustang-120
+ok   unsupported controls stay visible and inactive: p51d-mustang-120
+ok   fixed-wing selection remains aligned: sebart-avanti-s-a200-p100rx
+ok   no-op build validates: sebart-avanti-s-a200-p100rx
+ok   unsupported controls stay visible and inactive: sebart-avanti-s-a200-p100rx
+ok   fixed-wing selection remains aligned: turbo-lumber-evolution
+ok   no-op build validates: turbo-lumber-evolution
+ok   unsupported controls stay visible and inactive: turbo-lumber-evolution
+ok   tank-size control explains the absence of a declared finite tank: turbo-lumber-evolution
+ok   catalog includes aircraft with restricted Workshop adjustments
+ok   direct rotorcraft requests return to the fixed-wing default
+ok   direct rotorcraft requests explain the Workshop limit
+ok   declared tank exposes a separate estimated-capacity control
+ok   tank-size edit compiles and is called out as an estimate
+ok   intermediate recipe values are never silently rounded
+ok   slider displays the exact saved multiplier
+ok   scale selector includes the exact intermediate size
+ok   malformed recipe is refused before changing the draft
+ok   scale 50% compiles
+ok   scale 200% compiles
+ok   Mini preset produces a valid recipe
+ok   Giant preset produces a valid recipe
+ok   Light preset produces a valid recipe
+ok   Heavy preset produces a valid recipe
+ok   Fast preset produces a valid recipe
+ok   Agile preset produces a valid recipe
+ok   Slow preset produces a valid recipe
+ok   Undo restores the prior recipe
+ok   Reset returns every value to compiler defaults
+ok   first Undo restores the preceding edit
+ok   second Undo restores the original
+ok   Redo restores both edits
+ok   new edit clears the redo branch
+ok   slider drag contributes one history entry
+ok   undoing a slider drag restores its starting value
+ok   a drag without changes preserves redo
+ok   history is bounded
+ok   changing source clears both history branches
+ok   Save creates one local revision
+ok   Save updates the same variant as revision two
+ok   saved provenance pins exact source, compiler and dependencies
+ok   Test Fly emits the exact pinned snapshot and variant revision
+ok   Load restores the saved recipe and original source bytes
+ok   loading a saved variant clears unrelated undo state
+ok   Delete removes the saved variant and disables its actions
+ok   deleting the current variant leaves an unsaved draft
+ok   Undo delete restores the original revision
+ok   saving the retained draft creates a separate variant
+ok   concurrent save fixture advances the revision
+ok   stale editor save preserves the newer revision and current draft
+ok   conflicting draft can be saved as its own copy
+ok   precise saved recipe round-trips without quantization
+ok   removed catalog fixture is stored independently
+ok   unavailable source load preserves the entire current draft
+ok   backup recovery visibly identifies the earlier revision
+ok   saving a recovered draft advances past existing immutable revisions
+ok   historical metadata fixture saves
+ok   loaded draft separates recipe physics from record metadata
+ok   historical recipe can be renamed
+ok   historical recipe copy receives a separate identity
+ok   copy leaves the source history untouched
+Workshop UI: 0 failed
+
+===== Final generator checks after source updates =====
+python research/aircraft-standardization/build_models.py --check: exit 0; model manifests current (5 visual families)
+python research/aircraft-editor/build_descriptors.py --check: exit 0; 8 Workshop descriptors are current.

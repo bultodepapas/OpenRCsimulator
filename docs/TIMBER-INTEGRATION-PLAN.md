@@ -2,7 +2,7 @@
 
 2026-10-13 · Revision 6 · Step prefix: **TT-** · Owned paths: `assets/aircraft/turbo-lumber-evolution/`, `research/timber/`, `app/assets/aircraft/turbo-lumber-evolution/`, `app/aircraft/timber_*.gd`, `app/aircraft/verify_timber.gd`, `app/aircraft/inspect_timber.gd`, generated `app/data/aircraft/turbo_lumber_evolution.json`, `app/tests/test_timber_*.gd`, `docs/research/timber-integration/`. Shared changes stay with their owners (§6).
 
-**Status: playable EXPERIMENTAL aircraft (2026-10-12). TT-07/08/10/11/12 deliver its generated electric v2 configuration, catalog flight, product controls, qualified three-point runway start and electric sound. TT-09 baseline handling and replay checks pass; the broader stall/aerobatic/landing envelope remains open. TT-01/02/03/05/06 asset and articulation evidence is retained. Flaps stay up, assists off and the nominal 4S bus is prescribed. [Playable baseline evidence](research/timber-integration/TT-10/README.md). Physical Gate TT-C, owner visual/pilot review, performance acceptance and public packaging remain open.**
+**Status: playable EXPERIMENTAL aircraft.** TT-07/08/10/11/12 delivered its generated electric v2 configuration, catalog flight, product controls, qualified three-point runway start and electric sound ([2026-10-12 baseline](research/timber-integration/TT-10/README.md)). Flaps stay up and assists off. The finite pack is now the default; the prescribed nominal 4S bus remains the ideal option. Current energy behavior, controls and remaining battery work live in the [battery guide](plans/battery-realism.md). The broader stall/aerobatic/landing envelope, physical Gate TT-C, owner visual/pilot review, performance acceptance and public packaging remain open.
 
 **Current visual delivery: r2-d75ae605aa3a (TT-19).** The r2 source replaces the r1 runtime GLB, preserves articulated controls and supplies explicit crash sections. Current source/pipeline instructions live in the [asset guide](../assets/aircraft/turbo-lumber-evolution/README.md); [TT-19](research/timber-integration/TT-19/README.md) records the upgrade checks and remaining delivery advisories. The Revision 4 findings below remain dated r1 evidence.
 
@@ -33,9 +33,9 @@ External model-author delivery requirements: [self-contained Blender handoff](BL
 | Reference hardware | E-flite Turbo Timber Evolution 1.5 m, B revision (EFL105250B class): 800 Kv SPM-1012 motor, Avian 70 A ESC, EFL5962 11×7.3 three-blade propeller, 4S 3200 mAh 30C pack class | [EL1a reference](research/propulsion/EL1a/timber-reference.md) |
 | Manual anchors | Span 1.555 m, length 1.040 m, 1.860 kg empty / 2.190 kg with pack, CG 60 ± 5 mm aft of the root LE (slats off); throws in **mm**: aileron ±33/±25, elevator ±20/±15, rudder ±30/±20; flaps 20/35 mm with 16 %/30 % down-elevator mix | [B manual](research/timber-integration/TT-00/sources.md) pages 3, 13, 14 |
 | r1 geometry used | Span 1.5479 m, length 1.1166 m (+76.6 mm), wing area 0.329 m², MAC 0.213 m, wheel radii 0.058/0.014 m, track 0.264 m, thrust origin (0, 0, −0.2515) m with 2° down/2° right, datum D0 = symmetry plane × root LE × thrust-axis height | `r1/metadata.json` |
-| Configuration | Wheels installed, flaps up (`flaps: not_simulated`), no slats, no floats, receiver assist off, airborne or qualified runway start; airborne speed is 1.6× the estimated 1-g stall, 13.0739 m/s, fixed-voltage pack law first | §4 |
+| Configuration | Wheels installed, flaps up (`flaps: not_simulated`), no slats, no floats, receiver assist off, airborne or qualified runway start; original TT-07/08 ideal-bus configuration below, current battery selection in the [battery guide](plans/battery-realism.md#2-current-delivery) | §4 |
 | Labels | PREVIEW at TT-06; EXPERIMENTAL from TT-08/10; FLYABLE only after Gate TT-C | Catalog semantics |
-| Out of scope | Floats/water, thrust reverse, SAFE/AS3X emulation, battery thermal, flexible wings, multibody suspension, structural damage physics, a generic aircraft plugin | Visual section detachment is implemented by TT-19; remaining deferrals retained |
+| Out of scope | Floats/water, thrust reverse, SAFE/AS3X emulation, flexible wings, multibody suspension, structural damage physics, a generic aircraft plugin | Pack thermal belongs to BAT; visual section detachment is implemented by TT-19 |
 
 ## 2. How the fifth aircraft plugs into the app
 
@@ -144,7 +144,7 @@ TT-07 runs in parallel with TT-03…TT-05 once TT-02 is accepted. TT-12 and TT-1
 | `app/data/ground/wheel_profiles.json` | Timber profile | TT-11 | GP |
 | `app/sim/flight_session.gd`, `app/ui/home.gd`, `app/app_root.gd` | Runway-qualified ID list | TT-11 | Physics, menu |
 | `app/export_presets.cfg`, `app/export.sh` | Asset LICENSE in include filters; pack probe and Timber launch smoke | TT-17 | Export maintainer |
-| `app/scenery/models.gd`, `app/data/scenery/models/fleet_timber.json`, `default.json` fleet group | Optional parked snapshot | TT-13b | Scenery |
+| `app/scenery/models.gd`, generated parked snapshot and `default.json` fleet group | Optional parked snapshot, not yet delivered | TT-13b | Scenery |
 | `docs/README.md`, `ROADMAP.md`, `docs/STACK.md`, `README.md` | Registry owned paths, "Where we are", layout row, aircraft list | TT-06, TT-10, TT-17 | Docs owner with the track lead |
 
 Re-read `git status` before each shared patch; stage only the listed hunks. Do not edit other aircraft geometry, regenerate their data or re-record their goldens.
