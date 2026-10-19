@@ -68,6 +68,8 @@ Idle in flight after the change (rpm / thrust): 61FX 4,489 / +0.97 N at 10 m/s, 
 
 Level-flight throttle at the start speed: 61FX 1.5 % → 20.0 %, Extra 1.5 % → 22.1 %, 55AX 10.3 % → 22.4 %, FS-64V 11.0 % → 36.8 %. The after-change `power_step` flights are in the [D6e-R3 report](../../flight-dynamics/power-climb-2026-10-19/README.md#after-nitro-06).
 
+On the whole flight-test card, flown on the same tree with and without the law ([FT-05 verification](../../flight-test/FT-05/README.md#verification)), the four non-glow aircraft are unchanged to the last bit and the four glow aircraft gain valid tests: their power-off stalls break for the first time (9.3–10.8 m/s), the slowest level trim falls from 18–21 m/s to 10–12 m/s, the idle glide ratio becomes finite (9.0–14.4), and the landings touch down at 11.7–13.6 m/s instead of 19.4–25.0 m/s. Full-throttle values are unchanged by construction.
+
 ## Verification
 
 - `test_glow_carburetor.gd`, 58 checks: the nozzle constants recomputed from their definitions; g(r) and r(y) against independent scalar values at 1e-12; the choked identity r = y; the balance r·x = a·g(r) at a mid opening; wide-open admission 1 at every speed; charge ∝ 1/rpm at a small opening; monotone in the opening and in the speed; the lens, its inverse and the travel exponent; rejection of invalid inputs. `research/glow-engines/test_carburetor.py` holds the same values for the Python mirror.
