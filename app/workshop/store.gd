@@ -24,6 +24,7 @@ const RECIPE_KEYS: PackedStringArray = [
 	"power_multiplier",
 	"control_multiplier",
 	"tank_capacity_multiplier",
+	"mass_edits",
 	"id",
 	"name",
 ]
@@ -169,7 +170,7 @@ static func save_variant(
 	var existing_variant: Dictionary = {}
 	var stored_descriptor: Dictionary = {}
 	var stored_dependencies: Dictionary = {}
-	var stored_compiler_version: String = WorkshopCompiler.COMPILER_VERSION
+	var stored_compiler_version: String = WorkshopCompiler.version_for_recipe(recipe)
 	var revision: int = 1
 	var previous_revision: int = 0
 	var is_existing_variant: bool = false
@@ -191,8 +192,8 @@ static func save_variant(
 			errors.append("Saved variant changed from expected revision %d to revision %d; reload before saving." % [expected_revision, previous_revision])
 			return _result(false, errors)
 		var pinned_compiler_version: String = str(existing_variant.get("compiler_version", ""))
-		if pinned_compiler_version != WorkshopCompiler.COMPILER_VERSION:
-			errors.append("This variant is pinned to compiler %s; create a new variant to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.COMPILER_VERSION])
+		if pinned_compiler_version != WorkshopCompiler.version_for_recipe(recipe):
+			errors.append("This variant is pinned to compiler %s; save a copy to use compiler %s." % [pinned_compiler_version, WorkshopCompiler.version_for_recipe(recipe)])
 			return _result(false, errors)
 		stored_compiler_version = pinned_compiler_version
 		if str(existing_variant["base_id"]) != base_id or str(existing_variant["base_sha256"]) != base_hash:
@@ -795,6 +796,9 @@ static func _validate_recipe(value: Variant) -> Dictionary:
 	var tree_result: Dictionary = _validate_json_tree(recipe)
 	if not bool(tree_result["ok"]):
 		errors.append_array(tree_result["errors"])
+	if recipe.has("mass_edits"):
+		var extended: Dictionary = WorkshopParameters.validate(recipe)
+		if not extended.ok: errors.append_array(extended.errors)
 	return _result(errors.is_empty(), errors)
 
 

@@ -41,6 +41,18 @@ const PRESET_LABELS := {"mini": "Mini", "giant": "Giant", "light": "Light", "hea
 ## Set before adding this screen to the ScreenStack. Defaults to the current catalog aircraft.
 var initial_aircraft_id := Catalog.DEFAULT_ID
 var variants_root := VARIANT_ROOT
+## Only the interactive application opts into recovery; tests/captures use isolated roots.
+var recovery_enabled := false
+var recovery_root := "user://workshop_recovery"
+var _recovery_timer: Timer
+var _recovery_dialog: ConfirmationDialog
+var _recovery_text: Label
+var _recovery_button: Button
+var _recovery_loaded: Dictionary = {}
+var _recovery_pending := false
+var _recovery_restoring := false
+var _recovery_requires_copy := false
+var _recovery_last: Dictionary = {}
 var return_destination := "Home":
 	set(value):
 		return_destination = "Pause" if value == "Pause" else "Home"
@@ -209,6 +221,7 @@ func _ready() -> void:
 	_compile_recipe()
 	_mark_baseline()
 	_focus_default.call_deferred()
+	if recovery_enabled: _start_recovery.call_deferred()
 
 
 func _enter_tree() -> void:
@@ -1460,6 +1473,7 @@ func _messages(value: Variant, fallback: String) -> String:
 
 func _request_trial() -> void:
 	if _trial_pending: return
+	if is_instance_valid(_recovery_dialog) and _recovery_dialog.visible: return
 	if _library_dialog.visible or _name_dialog.visible or (is_instance_valid(_guard_dialog) and _guard_dialog.visible): return
 	for key: String in _pending_numbers.keys(): _commit_number(key)
 	if not _edit_valid():
@@ -1472,6 +1486,7 @@ func _request_trial() -> void:
 		set_note("This catalog aircraft has no flight model and cannot start a trial.")
 		return
 	_capture_interaction()
+	if recovery_enabled: _autosave_draft()
 	_trial_button.disabled = true
 	_trial_pending = true
 	trial_requested.emit({
@@ -1512,6 +1527,11 @@ func _request_close() -> void:
 
 ## Main-window close consumes one active editor modal before beginning an exit decision.
 func dismiss_modal_for_exit() -> bool:
+	if is_instance_valid(_recovery_dialog) and _recovery_dialog.visible:
+		_recovery_dialog.hide()
+		_trial_button.disabled = not _edit_valid()
+		_library_button.grab_focus()
+		return true
 	if is_instance_valid(_transfer_dialog) and _transfer_dialog.visible:
 		_transfer_dialog.hide()
 		_transfer_proposal.clear()
@@ -1713,6 +1733,7 @@ func _close_library() -> void:
 
 
 func _request_save() -> void:
+	if is_instance_valid(_recovery_dialog) and _recovery_dialog.visible: return
 	for key: String in _pending_numbers.keys(): _commit_number(key)
 	if not _edit_valid():
 		_set_page("setup")
@@ -1772,6 +1793,7 @@ func _set_page(page: String) -> void:
 		_page_buttons[id].set_pressed_no_signal(id == page)
 	_body_scroll.scroll_vertical = 0
 	_resize_layout()
+	_schedule_recovery()
 
 
 func _toggle_compact_view() -> void:
@@ -1787,12 +1809,15 @@ func _draft_payload() -> Dictionary:
 
 
 func has_unsaved_changes() -> bool:
-	return not _invalid_fields.is_empty() or not _pending_numbers.is_empty() or not _presentation_buffers.is_empty() \
+	return _recovery_requires_copy or not _invalid_fields.is_empty() or not _pending_numbers.is_empty() or not _presentation_buffers.is_empty() \
 		or (not _baseline.is_empty() and _draft_payload() != _baseline)
 
 
 func _mark_baseline() -> void:
+	_recovery_requires_copy = false
 	_baseline = _draft_payload()
+	if is_instance_valid(_recovery_timer) and not _recovery_pending and not _recovery_restoring:
+		_discard_current_recovery()
 	_refresh_identity()
 
 
@@ -1804,6 +1829,7 @@ func _refresh_identity() -> void:
 	var revision := " · " + tr("revision %d") % _saved_variant_revision if _saved_variant_revision > 0 else ""
 	_build_identity.text = "%s · %s%s · %s" % [display_name, tr(str(Catalog.entry(_base_id).get("name", _base_id))), revision, state]
 	_build_identity.tooltip_text = _build_identity.text
+	_schedule_recovery()
 
 
 func _edit_valid() -> bool:
@@ -1885,6 +1911,7 @@ func _navigation_save() -> void:
 
 func _navigation_finish() -> void:
 	var next := _navigation_proceed
+	if recovery_enabled and not _recovery_pending: _discard_current_recovery()
 	_clear_navigation()
 	if next.is_valid(): next.call()
 
@@ -2212,3 +2239,198 @@ func _restore_history(snapshot: Dictionary) -> void:
 	_sync_controls()
 	_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
+
+
+func _start_recovery() -> void:
+	if not recovery_enabled or is_instance_valid(_recovery_timer): return
+	_recovery_timer = Timer.new()
+	_recovery_timer.name = "DraftRecoveryDebounce"
+	_recovery_timer.one_shot = true
+	_recovery_timer.wait_time = 0.75
+	_recovery_timer.process_mode = Node.PROCESS_MODE_ALWAYS
+	_recovery_timer.timeout.connect(_autosave_draft)
+	add_child(_recovery_timer)
+	_recovery_button = _button("Recovered draft…", "", "RecoverDraft")
+	_recovery_button.visible = false
+	_recovery_button.pressed.connect(_show_recovery)
+	_library_note.get_parent().add_child(_recovery_button)
+	var service: Script = load("res://workshop/draft_store.gd")
+	_recovery_loaded = service.load_snapshot(recovery_root)
+	_recovery_pending = bool(_recovery_loaded.get("exists", false))
+	_recovery_button.visible = _recovery_pending
+	if _recovery_pending: _show_recovery()
+
+
+func _recovery_editor_state() -> Dictionary:
+	var buffers := {}
+	for page: String in ["appearance", "smoke"]:
+		buffers[page] = _page_nodes[page].get_editor_state()
+	return {"page": _active_page, "name": _variant_name.text, "numeric_buffers": _pending_numbers.duplicate(true),
+		"presentation_buffers": buffers, "camera": _preview.get_view_state()}
+
+
+func _schedule_recovery() -> void:
+	if not recovery_enabled or _recovery_pending or _recovery_restoring or not is_instance_valid(_recovery_timer): return
+	_recovery_timer.start()
+
+
+## Explicitly callable for teardown/tests. Does not create a named library revision.
+func _autosave_draft() -> bool:
+	if not recovery_enabled or _recovery_pending or _recovery_restoring or _base_bytes.is_empty(): return false
+	if not has_unsaved_changes(): return true
+	var build := _draft_payload()
+	var state := _recovery_editor_state()
+	var snapshot := {"build": build, "editor": state}
+	if snapshot == _recovery_last: return true
+	if build.descriptor.is_empty():
+		var descriptor: Dictionary = load("res://workshop/descriptor.gd").load_for(_base_id, _base_bytes)
+		if not descriptor.ok:
+			set_note("Automatic draft recovery is unavailable: " + _messages(descriptor.errors, "Source pins could not be read."))
+			return false
+		build.descriptor = descriptor.descriptor
+	if build.dependencies.is_empty():
+		var dependencies: Dictionary = load("res://workshop/dependencies.gd").capture(_base)
+		if not dependencies.ok:
+			set_note("Automatic draft recovery is unavailable: " + _messages(dependencies.errors, "Dependency pins could not be read."))
+			return false
+		build.dependencies = dependencies.manifest
+	if str(build.compiler).is_empty(): build.compiler = Compiler.version_for_recipe(_recipe)
+	var result: Dictionary = load("res://workshop/draft_store.gd").save_snapshot(recovery_root, build, state)
+	if not result.ok:
+		set_note("Automatic draft recovery failed: " + _messages(result.errors, "Retry by editing the build."))
+		return false
+	_recovery_last = snapshot.duplicate(true)
+	return true
+
+
+func _show_recovery() -> void:
+	if not _recovery_pending: return
+	_close_library()
+	if not is_instance_valid(_recovery_dialog):
+		_recovery_dialog = ConfirmationDialog.new()
+		_recovery_dialog.name = "RecoveredDraftDialog"
+		_recovery_dialog.title = tr("Recovered draft")
+		_recovery_dialog.ok_button_text = tr("Restore as a new build")
+		_recovery_dialog.cancel_button_text = tr("Later")
+		_recovery_dialog.theme = _screen.theme
+		_recovery_dialog.exclusive = true
+		_recovery_dialog.dialog_hide_on_ok = false
+		_recovery_dialog.confirmed.connect(_request_recovery_restore)
+		_recovery_dialog.canceled.connect(func() -> void:
+			_trial_button.disabled = not _edit_valid()
+			_library_button.grab_focus())
+		_recovery_dialog.add_button(tr("Discard recovered draft"), false, "discard")
+		_recovery_dialog.custom_action.connect(func(action: StringName) -> void:
+			if action == "discard": _discard_pending_recovery())
+		add_child(_recovery_dialog)
+		var scroll := ScrollContainer.new()
+		scroll.custom_minimum_size = Vector2(260, 140)
+		scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		_recovery_dialog.add_child(scroll)
+		_recovery_text = _label("", "SecondaryLabel", true, false)
+		_recovery_text.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		scroll.add_child(_recovery_text)
+	var lines := PackedStringArray([tr("Restore keeps the saved library unchanged. Review all values and save a new build.")])
+	if _recovery_loaded.get("ok", false):
+		var payload: Dictionary = _recovery_loaded.payload
+		var state: Dictionary = _recovery_loaded.editor
+		lines.append(str(state.get("name", "")))
+		lines.append(str(Catalog.entry(str(payload.base_id)).get("name", payload.base_id)))
+		for key: String in payload.recipe:
+			lines.append("%s: %s" % [key, str(payload.recipe[key])])
+		for key: String in state.get("numeric_buffers", {}): lines.append("%s: %s" % [key, state.numeric_buffers[key]])
+		for page: String in state.get("presentation_buffers", {}):
+			var raw: Dictionary = state.presentation_buffers[page]
+			lines.append("%s · %s · %s" % [tr(page.capitalize()), raw.get("color_text", ""), raw.get("marking_text", "")])
+	if not _recovery_loaded.get("compatible", false):
+		lines.append(tr("This draft is unavailable with the current dependencies. Its stored data remains unchanged."))
+		lines.append(_messages(_recovery_loaded.get("compatibility_errors", []), ""))
+	lines.append(_messages(_recovery_loaded.get("errors", []), ""))
+	_recovery_text.text = "\n".join(lines)
+	_recovery_dialog.get_ok_button().disabled = not bool(_recovery_loaded.get("ok", false)) or not bool(_recovery_loaded.get("compatible", false))
+	_recovery_dialog.popup_centered_clamped(Vector2i(680, 480), 0.9)
+	_recovery_dialog.get_cancel_button().grab_focus()
+	_trial_button.disabled = true
+
+
+func _request_recovery_restore() -> void:
+	_recovery_dialog.hide()
+	request_navigation("Restore recovered draft", _apply_recovered_draft)
+
+
+func _apply_recovered_draft() -> void:
+	var fresh: Dictionary = load("res://workshop/draft_store.gd").load_snapshot(recovery_root)
+	if not fresh.get("ok", false) or not fresh.get("compatible", false) or fresh.get("payload", {}) != _recovery_loaded.get("payload", {}) or fresh.get("editor", {}) != _recovery_loaded.get("editor", {}):
+		_recovery_loaded = fresh
+		set_note("The recovered draft changed or is unavailable. Review it again.")
+		_show_recovery()
+		return
+	var payload: Dictionary = fresh.payload
+	var state: Dictionary = fresh.editor
+	for key: String in state.numeric_buffers:
+		if not _factor_inputs.has(key):
+			set_note("A recovered numeric field is unavailable. The stored draft remains unchanged.")
+			return
+	_recovery_restoring = true
+	_base_id = payload.base_id
+	_base = payload.base.duplicate(true)
+	_base_bytes = payload.base_bytes.duplicate()
+	_workshop_descriptor = payload.workshop_descriptor.duplicate(true)
+	_variant_dependencies = payload.dependencies.duplicate(true)
+	_saved_compiler_version = payload.compiler_version
+	_saved_variant_id = ""
+	_saved_variant_revision = 0
+	_selected_variant_id = ""
+	_recipe = payload.recipe.duplicate(true)
+	_presentation = payload.presentation_profile.duplicate(true)
+	_invalid_fields.clear()
+	_pending_numbers.clear()
+	_presentation_buffers.clear()
+	_refresh_base_summary()
+	_capabilities = Compiler.capabilities(_base)
+	_resolve_presentation()
+	_clear_history()
+	_variant_name.text = state.name
+	_select_base(_base_id)
+	_update_aircraft_description(Catalog.entry(_base_id))
+	_sync_controls()
+	_preview.set_aircraft(_base_id, _preview_scale())
+	_set_page(state.page)
+	if state.has("camera"): _preview.restore_view_state(state.camera)
+	for key: String in state.numeric_buffers:
+		_factor_inputs[key].text = state.numeric_buffers[key]
+		_number_changed(state.numeric_buffers[key], key)
+	for page: String in state.presentation_buffers:
+		if not _page_nodes[page].restore_editor_state(state.presentation_buffers[page]):
+			_presentation_errors.append(tr("A recovered text field is unavailable; review the stored draft before discarding it."))
+	_recovery_requires_copy = true
+	_compile_recipe()
+	_recovery_restoring = false
+	_recovery_pending = false
+	_recovery_loaded.clear()
+	_recovery_button.hide()
+	_recovery_last.clear()
+	set_note("Draft restored. Review the values and save a new build.")
+	_schedule_recovery()
+
+
+func _discard_pending_recovery() -> void:
+	if not _discard_current_recovery(): return
+	_recovery_pending = false
+	_recovery_loaded.clear()
+	_recovery_button.hide()
+	_recovery_dialog.hide()
+	_trial_button.disabled = not _edit_valid()
+	_library_button.grab_focus()
+	_schedule_recovery()
+
+
+func _discard_current_recovery() -> bool:
+	if not recovery_enabled: return true
+	var result: Dictionary = load("res://workshop/draft_store.gd").discard_snapshot(recovery_root)
+	if not result.ok:
+		set_note("Recovered draft could not be discarded: " + _messages(result.errors, "Retry later."))
+		return false
+	if is_instance_valid(_recovery_timer): _recovery_timer.stop()
+	_recovery_last.clear()
+	return true

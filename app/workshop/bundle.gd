@@ -103,7 +103,7 @@ static func decode(bytes: PackedByteArray) -> Dictionary:
 		"variant_revision": 0,
 	}
 	return {"ok": true, "errors": PackedStringArray(), "payload": payload,
-		"compiler_compatible": str(value["compiler_version"]) == Compiler.COMPILER_VERSION,
+		"compiler_compatible": str(value["compiler_version"]) == Compiler.version_for_recipe(value["recipe"]),
 		"presentation_profile_available": bool(content.get("profile_available", false))}
 
 
@@ -135,7 +135,7 @@ static func import_variant(bytes: PackedByteArray, store_root: String = Store.DE
 	if not bool(decoded.get("ok", false)):
 		return decoded
 	var payload: Dictionary = decoded["payload"]
-	if str(payload.get("compiler_version", "")) != Compiler.COMPILER_VERSION:
+	if str(payload.get("compiler_version", "")) != Compiler.version_for_recipe(payload.recipe):
 		return _failure("This bundle is pinned to a different Workshop compiler version and cannot be imported without migration.")
 	var profile_check: Dictionary = PresentationProfile.validate_stored(payload.get("presentation_profile", null))
 	if not bool(profile_check.get("ok", false)) or bool(profile_check.get("newer_version", false)):

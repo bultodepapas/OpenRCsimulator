@@ -120,7 +120,10 @@ func update_visual(snapshot: Dictionary, environment: Environment, _sun: Directi
 	# The background samples p + offset, so geometry translates by -offset. Select the nearest
 	# periodic copy, keeping its world centre fixed as the camera moves within a tile. A copy
 	# switch is beyond this camera's far plane plus the formation radius, even far from the field.
-	var camera := get_viewport().get_camera_3d()
+	# Home builds its World before attachment. Initialize the materials and origin copy
+	# there too; the next attached update selects the actual viewport's camera.
+	var viewport := get_viewport()
+	var camera := viewport.get_camera_3d() if viewport != null else null
 	var eye := camera.global_position if camera != null else Vector3.ZERO
 	select_view_copy(eye)
 	visible = true

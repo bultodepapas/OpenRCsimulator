@@ -98,7 +98,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	if typeof(pinned_compiler_value) != TYPE_STRING:
 		return {ok = false, errors = PackedStringArray(["Saved variant compiler version must be a string."])}
 	var pinned_compiler: String = pinned_compiler_value
-	if not pinned_compiler.is_empty() and pinned_compiler != compiler.COMPILER_VERSION:
+	if not pinned_compiler.is_empty() and pinned_compiler != compiler.version_for_recipe(checked_recipe.values):
 		return {ok = false, errors = PackedStringArray(["This saved variant requires a different Workshop compiler version; the saved variant remains unchanged."])}
 	# Hash the same normalized numeric values the compiler consumes (1 == 1.0).
 	var recipe: Dictionary = checked_recipe.values
@@ -119,7 +119,7 @@ static func freeze(payload: Dictionary) -> Dictionary:
 	recipe.erase("name")
 	var base_sha: String = _sha(base_bytes)
 	var recipe_sha: String = _sha(JSON.stringify(recipe, "", true, true).to_utf8_buffer())
-	var compiler_version: String = compiler.COMPILER_VERSION
+	var compiler_version: String = compiler.version_for_recipe(recipe)
 	var trial_id: String = "workshop-" + _sha((base_sha + ":" + recipe_sha + ":" + descriptor_sha \
 		+ ":" + visual_family + ":" + model_manifest_sha + ":" + dependency_sha + ":" + compiler_version).to_utf8_buffer()).substr(0, 32)
 	recipe.id = trial_id

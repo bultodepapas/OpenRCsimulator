@@ -17,6 +17,7 @@ const DEFINITIONS_VERSION := 1
 const ALLOWED_KEYS := [
 	"scale", "mass_policy", "weight_multiplier", "power_multiplier", "control_multiplier",
 	"tank_capacity_multiplier", "id", "name",
+	"mass_edits",
 ]
 
 
@@ -133,4 +134,23 @@ static func validate(recipe: Dictionary) -> Dictionary:
 			errors.append("recipe.%s: expected a nonempty string" % key)
 		else:
 			values[key] = str(text).strip_edges()
+	# Optional extension: absence/empty edits preserve every legacy recipe identity.
+	if recipe.has("mass_edits"):
+		var edits: Variant = recipe.mass_edits
+		if not edits is Array or edits.size() > 32:
+			errors.append("recipe.mass_edits: expected at most 32 measured component masses")
+		else:
+			var seen := {}
+			for edit: Variant in edits:
+				if not edit is Dictionary or edit.size() != 3 or not edit.has_all(["id", "mass_kg", "source"]):
+					errors.append("recipe.mass_edits: expected only id, mass_kg and source")
+					continue
+				if typeof(edit.id) != TYPE_STRING or edit.id.is_empty() or edit.id.length() > 80 or seen.has(edit.id):
+					errors.append("recipe.mass_edits: component IDs must be unique stable IDs")
+				else: seen[edit.id] = true
+				if typeof(edit.mass_kg) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(edit.mass_kg)) or float(edit.mass_kg) < 0.001 or float(edit.mass_kg) > 5.0:
+					errors.append("recipe.mass_edits: measured mass must be within [0.001, 5] kg")
+				if typeof(edit.source) != TYPE_STRING or edit.source.strip_edges().is_empty() or edit.source.length() > 256:
+					errors.append("recipe.mass_edits: provide a measurement source of at most 256 characters")
+			if errors.is_empty() and not edits.is_empty(): values.mass_edits = edits.duplicate(true)
 	return {"ok": errors.is_empty(), "errors": errors, "values": values}
