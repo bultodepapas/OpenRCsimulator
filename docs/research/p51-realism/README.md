@@ -62,3 +62,18 @@ The [integration report](P51-15/integration.md) records 206/208 unit scripts and
 ## Remaining physical acceptance
 
 The [current acceptance plan](../../P51-PLAN.md#limits-and-next-evidence) owns build measurements, installed propulsion, model-scale stability/stall and pilot/target-hardware gates. Features proposed in this audit were subsequently delivered where recorded in the later-step reports above. The 6.12° trim and fixed-gear/prescribed-fuel observations belong to the original snapshot, not today's configuration.
+
+## 2026-10-19 documentation recheck
+
+Godot 4.7.2 official, native Windows; current working tree, not a frozen qualification baseline. A before/after source comparison detected concurrent shared glow-flight edits. The focused results below do not establish an uninterrupted full suite, package acceptance or physical validation.
+
+| Check | Observed result |
+| --- | --- |
+| Geometry source/compiler, appearance, VLM and P51-05 generators (`--check`) | All five pass without regeneration. |
+| Independent P51-15 inventory oracle | Pass; reference inventory 21.499999 kg, paired roll/yaw correction +0.449604 kg·m² retained. |
+| `verify_p51.gd` / `verify_p51_clearance.gd` | 251 / 72 checks pass, without engine errors. |
+| `test_p51_envelope.gd` / `test_p51_ground.gd` | 17 / 14 checks pass, without engine errors. |
+| `test_p51_handling.gd` | 17 of 18 pass. Full-up power-off maneuver reaches 9.3° α against the 11.9° stall-start assertion; exit 1. Other handling assertions, including loop and spin recovery, pass. |
+| Three-second actual P-51 CLI flight / `check_trimmed_flight.py` | Both exit 0; the reader checks the complete finite trace against the requested duration and exact aircraft-input bytes. |
+
+Commands and generators live in the [asset guide](../../../assets/aircraft/p51d-mustang-120/README.md) and [audit tools](../../../research/p51/p51-15/README.md). Retain the handling failure for diagnosis against identified sources; do not widen its band to claim acceptance. Drawing/photo metrology and rendered captures were not repeated: the ignored `references/p51-mustang/` cache is absent here. Target-hardware timing, fresh packages and the broader suite were not rerun.

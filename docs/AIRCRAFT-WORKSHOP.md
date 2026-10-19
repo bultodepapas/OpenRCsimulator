@@ -8,6 +8,7 @@ The Workbench feature is named **Aircraft Workshop** in the application (**Talle
 | Develop the feature; find pending steps and acceptance gates | [Consolidated AE plan](plans/aircraft-editor.md) |
 | Explore proposed customization, smoke presets and easy experiment ideas | [Future Workbench backlog](plans/aircraft-editor.md#5-planned-player-facing-work) |
 | Implement the next slice; find dependencies, contracts and tests | [Ordered work packages](plans/aircraft-editor.md#56-implementation-packages-and-order) and [required test matrix](plans/aircraft-editor.md#57-required-test-matrix) |
+| Design the menus, editing flow and model inspection | [Proposed interface contract](plans/aircraft-editor.md#59-menus-workflow-and-visual-design) |
 | Author physical data, stable IDs and model manifests | [Aircraft contract](AIRCRAFT_CONTRACT.md#workshop-authoring-standard) |
 | Generate descriptors, run checks or capture the editor | [Workshop commands](TOOLS.md#aircraft-workshop) |
 | Inspect dated results and limitations | [Verification and evidence](#verification) |

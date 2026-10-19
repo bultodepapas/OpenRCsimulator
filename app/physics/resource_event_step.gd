@@ -29,12 +29,21 @@ static func advance(state: PackedFloat64Array, time_s: float, dt: float,
 		var event: Dictionary = event_value
 		var id: Variant = event.get("id", null)
 		if not id is String or id.strip_edges().is_empty() or ids.has(id) \
-				or not event.get("type", "") is String or not event.get("surface") is Callable \
+				or not event.get("type", "") is String or str(event.get("type", "")).strip_edges().is_empty() \
+				or not event.get("surface") is Callable \
 				or not event.get("transition") is Callable \
 				or event.get("sense", "") not in ["falling", "rising", "either"] \
-				or not event.get("surface_unit", "") is String or str(event.surface_unit).strip_edges().is_empty() \
+				or not event.get("surface_unit", "") is String or str(event.get("surface_unit", "")).strip_edges().is_empty() \
 				or (event.has("enabled") and not event.enabled is Callable):
 			return _failure("resource event definition is malformed")
+		if not event.surface.is_valid() or not event.transition.is_valid() \
+				or (event.has("enabled") and not event.enabled.is_valid()) \
+				or typeof(event.get("priority", 100)) != TYPE_INT:
+			return _failure("resource event callbacks or priority are invalid")
+		if event.has("surface_tolerance"):
+			var tolerance: Variant = event.surface_tolerance
+			if typeof(tolerance) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(tolerance)) or float(tolerance) <= 0.0:
+				return _failure("resource event surface tolerance must be finite and positive")
 		ids[id] = true
 
 	var accepted: PackedFloat64Array = state.duplicate()
@@ -164,9 +173,10 @@ static func _trial(state: PackedFloat64Array, time_s: float, dt: float, derivati
 		var id: String = str(event.id)
 		var value: float = float(start_values[id])
 		tracker.extrema[id] = {minimum = value, maximum = value}
-	var initial: PackedFloat64Array = derivative.call(state, time_s) if first.is_empty() else first
-	if not _finite(initial, state.size()):
+	var raw_initial: Variant = derivative.call(state, time_s) if first.is_empty() else first
+	if not raw_initial is PackedFloat64Array or not _finite(raw_initial, state.size()):
 		return {ok = false, message = "initial derivative is malformed or nonfinite"}
+	var initial: PackedFloat64Array = raw_initial
 	var tracked: Callable = func(values: PackedFloat64Array, at: float) -> PackedFloat64Array:
 		if not _finite(values, state.size()):
 			tracker.ok = false
@@ -306,24 +316,26 @@ static func _surface_sample(event: Dictionary, state: PackedFloat64Array, at: fl
 
 
 static func _crossed(start_value: float, end_value: float, sense: String) -> bool:
+	# A residual tolerance bounds a located root; it cannot change which side
+	# of zero contains a resource. Even tiny positive fuel must still deplete.
 	match sense:
 		"falling":
-			return start_value > SURFACE_TOL and end_value <= SURFACE_TOL
+			return start_value > 0.0 and end_value <= 0.0
 		"rising":
-			return start_value < -SURFACE_TOL and end_value >= -SURFACE_TOL
+			return start_value < 0.0 and end_value >= 0.0
 		"either":
-			return absf(start_value) > SURFACE_TOL and start_value * end_value <= 0.0
+			return (start_value > 0.0 and end_value <= 0.0) or (start_value < 0.0 and end_value >= 0.0)
 	return false
 
 
 static func _crossed_extrema(start_value: float, minimum: float, maximum: float, sense: String) -> bool:
 	match sense:
 		"falling":
-			return start_value > SURFACE_TOL and minimum <= SURFACE_TOL
+			return start_value > 0.0 and minimum <= 0.0
 		"rising":
-			return start_value < -SURFACE_TOL and maximum >= -SURFACE_TOL
+			return start_value < 0.0 and maximum >= 0.0
 		"either":
-			return absf(start_value) > SURFACE_TOL and minimum <= 0.0 and maximum >= 0.0
+			return (start_value > 0.0 and minimum <= 0.0) or (start_value < 0.0 and maximum >= 0.0)
 	return false
 
 

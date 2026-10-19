@@ -11,6 +11,8 @@ Date: 2026-10-19. Scope: D6-JETI-01…03 and UI-15-JETI-01…02 software. The [a
 
 No physical Sa–Sj map is installed. Windows button numbering in the PDF does not establish Godot event indices. The missing initial `J` reported in the source PDF is not reproduced by these UI fixtures; a real F1 report must distinguish backend naming from the original build's layout.
 
+A two-second [native F1 observation](native-device-observation.json) completed with an empty device list. No physical-JETI observation is available from this session.
+
 ## Verification
 
 Engine: Godot `4.7.2.stable.official.ed1daf0bf`. Windows uses the native console build; Linux uses Ubuntu/WSL2 on its own filesystem. [Verification metadata](verification.json) records exact owned-source hashes and snapshot scope. The shared working tree contains unrelated concurrent changes.
@@ -20,7 +22,7 @@ Engine: Godot `4.7.2.stable.official.ed1daf0bf`. Windows uses the native console
 | Native controller/session/UI regressions | 38/38 programs pass | [Results and log paths](native-results.json) |
 | New JETI identity/runtime/setup, switch AUX and control guide on Linux | 5/5 programs pass | [Results and log paths](linux-results.json) |
 | Complete app GDScript parse | 1,052/1,052 pass | [Per-script hashes and results](parse-all-linux.json); excludes generated `.godot`/captures |
-| Original supplier CFG on a disposable copy | 9/9 checks pass | [Log](supplied-profile.log), [reproducible probe](../../../../../research/input/jeti/verify_supplied_profile.gd) |
+| Original supplier CFG on a disposable copy | 9/9 checks pass | [Log](supplied-profile.log), [reproducible probe](../../../../research/input/jeti/verify_supplied_profile.gd) |
 | Native EN/ES setup fixtures | Four captures inspected | Captures below; synthetic controls, no hardware claim |
 | Full `app/test.sh` | Fails in unrelated CR-29 preflight | [Log](full-app-preflight.log): stale generated `worked-examples.json`, before units/complete parse |
 | Golden flight replay isolation | Four failures reproduced identically with original and candidate input | [Comparison and frozen physics hashes](golden-isolation/comparison.json), [original log](golden-isolation/original_input.log), [candidate log](golden-isolation/jeti_input.log) |
@@ -28,6 +30,8 @@ Engine: Godot `4.7.2.stable.official.ed1daf0bf`. Windows uses the native console
 Identity has 52 checks, runtime 93, switch AUX 75, JETI setup 52 and the overlay manager 116. Regression coverage includes existing profile/store persistence and failed-save rollback, automatic selection, independent menu ownership, setup/capture safety, compact/large-text layouts, flight actions, helicopter/car input, diagnostics and flight logging. The final affected UI programs replace their earlier pre-fix runs in the native result index; unchanged input programs retain their passing run.
 
 The full-suite preflight failure is outside this task's input/UI changes. Complete parse and focused tests were run separately afterward. Golden isolation uses an earlier input integration candidate and the original intake input against the same frozen physics/data; it establishes that those four failures predate this work, not final-source golden acceptance. Physics, aircraft data and golden recordings were not changed by this task. The whole repository is not claimed green.
+
+Git attributes preserve the original attachment/extraction bytes and dated receipts. [Fresh-checkout verification](evidence-checkout.json) checks the preserved source manifest and evidence with automatic line-ending conversion both enabled and disabled. The historical source hashes were not rewritten to accommodate conversion.
 
 ## Reproduce
 

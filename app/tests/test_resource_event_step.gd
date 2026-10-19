@@ -10,6 +10,8 @@ func _initialize() -> void:
 	_test_ordered_resource_depletion()
 	_test_tied_event_priority()
 	_test_failure_rolls_back()
+	_test_small_boundary_signs()
+	_test_invalid_definitions()
 	print("resource event step: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -119,6 +121,60 @@ func _test_failure_rolls_back() -> void:
 func _near(label: String, actual: float, expected: float, tolerance: float = 2.0e-10) -> void:
 	_check(label, is_finite(actual) and absf(actual - expected) <= tolerance,
 		"got %s expected %s (tol %s)" % [actual, expected, tolerance])
+
+
+func _test_small_boundary_signs() -> void:
+	for sense: String in ["falling", "rising", "either"]:
+		var direction: float = 1.0 if sense == "rising" else -1.0
+		for exhaust: bool in [false, true]:
+			var amount: float = 5e-11 if exhaust else 1.0
+			var rate: float = 1e-6 if exhaust else 1.0
+			var dt: float = 1e-3 if exhaust else 1.0-5e-11
+			var initial := _padded([-direction*amount, 0.0])
+			var derivative: Callable = func(state: PackedFloat64Array, _at: float) -> PackedFloat64Array:
+				return _padded([direction*rate if state[1] == 0.0 else 0.0, 0.0])
+			var event := {id="small", type="boundary", sense=sense, surface_unit="kg",
+				enabled=func(state: PackedFloat64Array, _at: float) -> bool: return state[1] == 0.0,
+				surface=func(state: PackedFloat64Array, _at: float) -> float: return state[0],
+				transition=func(state: PackedFloat64Array, _at: float) -> Dictionary:
+					state[0]=0.0
+					state[1]=1.0
+					return {ok=true, state=state}}
+			var result: Dictionary = ResourceStep.advance(initial, 0.0, dt, derivative, PackedFloat64Array(), [event])
+			_check(sense+" tiny boundary integrates", result.get("ok", false), str(result.get("message", "")))
+			if not result.get("ok", false): continue
+			if exhaust:
+				_check(sense+" tiny initial distance still triggers the event", result.events.size()==1 and result.state[1]==1.0 and result.state[0]==0.0)
+				_near(sense+" tiny boundary time", result.events[0].time_s, amount/rate, 1e-12)
+			else:
+				_check(sense+" positive endpoint distance is not a zero crossing", result.events.is_empty() and result.state[1]==0.0 and direction*result.state[0]<0.0)
+	# Multiplying opposite subnormal signs can underflow to signed zero. Same-side
+	# values must not manufacture an `either` crossing through that multiplication.
+	_check("subnormal same-side endpoints do not cross", not ResourceStep._crossed(1e-300, 2e-300, "either"))
+
+
+func _test_invalid_definitions() -> void:
+	var event := {id="empty", type="empty", sense="falling", surface_unit="kg",
+		surface=func(state: PackedFloat64Array, _at: float) -> float: return state[0],
+		transition=func(state: PackedFloat64Array, _at: float) -> Dictionary: return {ok=true, state=state}}
+	var derivative: Callable = func(_state: PackedFloat64Array, _at: float) -> PackedFloat64Array: return _padded([-1.0])
+	var invalid: Array[Dictionary] = [{surface=Callable()}, {transition=Callable()}, {enabled=Callable()},
+		{priority="first"}, {priority=true}, {surface_tolerance=NAN}, {surface_tolerance=-1.0}, {type=" "}]
+	for fields: Dictionary in invalid:
+		var candidate: Dictionary = event.duplicate()
+		candidate.merge(fields, true)
+		var state := _padded([1.0])
+		var result: Dictionary = ResourceStep.advance(state, 0.0, 0.1, derivative, PackedFloat64Array(), [candidate])
+		_check("malformed event refuses cleanly "+str(fields.keys()), not result.get("ok", true) and not result.has("state") and state[0]==1.0)
+	for field: String in ["type", "surface_unit", "surface", "transition"]:
+		var candidate: Dictionary = event.duplicate()
+		candidate.erase(field)
+		var result: Dictionary = ResourceStep.advance(_padded([1.0]), 0.0, 0.1, derivative, PackedFloat64Array(), [candidate])
+		_check("missing event field refuses cleanly "+field, not result.get("ok", true) and not result.has("state"))
+	for output: Variant in [null, [], 1, false, PackedFloat64Array([NAN])]:
+		var malformed_rate: Callable = func(_state: PackedFloat64Array, _at: float) -> Variant: return output
+		var result: Dictionary = ResourceStep.advance(_padded([1.0]), 0.0, 0.1, malformed_rate, PackedFloat64Array(), [event])
+		_check("malformed first derivative refuses cleanly "+str(typeof(output)), not result.get("ok", true) and not result.has("state"))
 
 
 func _padded(values: Array) -> PackedFloat64Array:

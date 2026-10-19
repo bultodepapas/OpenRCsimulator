@@ -3943,14 +3943,16 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 				or typeof(fuel_session.get("start_fill")) not in [TYPE_FLOAT, TYPE_INT] \
 				or typeof(fuel_session.get("selection_known")) != TYPE_BOOL:
 			return false
-		restored_fuel_fill = float(fuel_session.start_fill)
-		if not is_finite(restored_fuel_fill) or restored_fuel_fill <= 0.0 or restored_fuel_fill > 1.0:
+		var serialized_fuel_fill: float = float(fuel_session.start_fill)
+		if not is_finite(serialized_fuel_fill) or serialized_fuel_fill <= 0.0 or serialized_fuel_fill > 1.0:
 			return false
-		if liquid_fuel_is_active() and restored_fuel_fill * float(aircraft.model.propulsion.liquid_fuel.capacity_kg) <= float(aircraft.model.propulsion.liquid_fuel.unusable_kg):
+		if liquid_fuel_is_active() and serialized_fuel_fill * float(aircraft.model.propulsion.liquid_fuel.capacity_kg) <= float(aircraft.model.propulsion.liquid_fuel.unusable_kg):
 			return false
-		if glow_is_active() and restored_fuel_fill * float(aircraft.model.propulsion.glow.capacity_fuel_kg) <= float(aircraft.model.propulsion.glow.unusable_fuel_kg):
+		if glow_is_active() and serialized_fuel_fill * float(aircraft.model.propulsion.glow.capacity_fuel_kg) <= float(aircraft.model.propulsion.glow.unusable_fuel_kg):
 			return false
 		restored_fuel_fill_known = bool(fuel_session.selection_known)
+		if restored_fuel_fill_known:
+			restored_fuel_fill = serialized_fuel_fill
 	if not aircraft.model.get("envelope", {}).is_empty():
 		if candidate.get("aero_loads_law") != Aero.LOADS_LAW or candidate.get("wake_state_unit") != Aero.WAKE_STATE_UNIT:
 			return false

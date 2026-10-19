@@ -24,11 +24,37 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _initialize() -> void:
+	_checkpoint_json_bounds()
 	_session()
 	_checkpoint_selection()
 	_home()
 	print("FUEL-07 start fill: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed > 0 else 0)
+
+
+func _checkpoint_json_bounds() -> void:
+	var malformed: String = _carrier(PackedByteArray([0, 1, 2, 3]))
+	_check("checksummed malformed Variant bytes are rejected", not CheckpointJson.decode(malformed).get("ok", false))
+	var overlong_text: String = " ".repeat(int(CheckpointJson.MAX_TEXT_BYTES) + 1)
+	_check("oversized checkpoint text is rejected", not CheckpointJson.decode(overlong_text).get("ok", false))
+	var oversized_payload := PackedByteArray()
+	oversized_payload.resize(int(CheckpointJson.MAX_PAYLOAD_BYTES) + 1)
+	oversized_payload.fill(0)
+	_check("JSON encoder refuses native payloads above 16 MiB",
+		CheckpointJson.encode({"oversized": oversized_payload}).is_empty())
+	_check("JSON decoder refuses raw payloads above 16 MiB",
+		not CheckpointJson.decode(_carrier(oversized_payload)).get("ok", false))
+
+
+func _carrier(payload: PackedByteArray) -> String:
+	var hashing := HashingContext.new()
+	hashing.start(HashingContext.HASH_SHA256)
+	hashing.update(payload)
+	return JSON.stringify({
+		"format": CheckpointJson.FORMAT,
+		"payload_base64": Marshalls.raw_to_base64(payload),
+		"sha256": hashing.finish().hex_encode(),
+	})
 
 
 func _session() -> void:
@@ -63,6 +89,7 @@ func _checkpoint_selection() -> void:
 		var source: Node = Flight.new()
 		source.input_enabled = false
 		source.setup(GLOW)
+		var full: float = source.aircraft.model.propulsion.glow.capacity_fuel_kg
 		source.set_fuel_start_fill(fill)
 		source.reset()
 		var saved: Dictionary = source.checkpoint()
@@ -131,7 +158,8 @@ func _checkpoint_selection() -> void:
 			next_destination.reset()
 			_check("native unknown selection resets to the receiving preference",
 				next_destination.fuel_start_fill == 0.75
-				and is_equal_approx(next_destination.sim.continuous[1], 0.75 * full))
+				and is_equal_approx(next_destination.mass_properties().fuel_remaining_kg, 0.75 * full)
+				and next_destination.trace_meta().get("fuel_start_fill_known", false))
 			next_destination.free()
 			var json_destination: Node = Flight.new()
 			json_destination.input_enabled = false
@@ -151,7 +179,8 @@ func _checkpoint_selection() -> void:
 			json_destination.reset()
 			_check("JSON unknown selection resets to the receiving preference",
 				json_destination.fuel_start_fill == 0.25
-				and is_equal_approx(json_destination.sim.continuous[1], 0.25 * full))
+				and is_equal_approx(json_destination.mass_properties().fuel_remaining_kg, 0.25 * full)
+				and json_destination.trace_meta().get("fuel_start_fill_known", false))
 			json_destination.free()
 		source.free()
 		destination.free()

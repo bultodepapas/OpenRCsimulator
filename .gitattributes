@@ -151,3 +151,8 @@
 /docs/research/visual-quality-implementation/L6c/tree-completion/** -text whitespace=cr-at-eol
 /docs/research/visual-quality-implementation/L8b/2026-10-18/** -text whitespace=cr-at-eol
 /docs/research/visual-quality-implementation/grass-quality/evidence/raw/audit-2026-10-18/** -text whitespace=cr-at-eol
+
+# JETI supplier attachments and dated receipts retain their recorded byte hashes.
+/docs/research/radio-input/D6-JETI-00/** -text -whitespace
+/docs/research/radio-input/D6-JETI-01/** -text whitespace=cr-at-eol
+/docs/research/radio-input/D6-JETI-01/**/*.log -whitespace

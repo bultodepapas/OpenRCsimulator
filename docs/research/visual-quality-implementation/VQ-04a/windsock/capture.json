@@ -1,0 +1,76 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"records": [
+		{
+			"bounds": "[P: (-0.14, 0.0, -0.2725), S: (1.996084, 3.8725, 0.545)]",
+			"elevation_deg": 45.0,
+			"mask_size": 512,
+			"name": "calm",
+			"target_pixels": 262144,
+			"triangles": 5266,
+			"wind_east_mps": 0.0
+		},
+		{
+			"bounds": "[P: (-0.14, 0.0, -0.274444), S: (2.29822, 3.874444, 0.548888)]",
+			"elevation_deg": 45.0,
+			"mask_size": 512,
+			"name": "light",
+			"target_pixels": 262144,
+			"triangles": 5266,
+			"wind_east_mps": 1.5
+		},
+		{
+			"bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+			"elevation_deg": 45.0,
+			"mask_size": 512,
+			"name": "strong",
+			"target_pixels": 262144,
+			"triangles": 5266,
+			"wind_east_mps": 12.0
+		},
+		{
+			"bounds": "[P: (-2.984, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+			"elevation_deg": 45.0,
+			"mask_size": 512,
+			"name": "reverse",
+			"target_pixels": 262144,
+			"triangles": 5266,
+			"wind_east_mps": -12.0
+		},
+		{
+			"bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+			"elevation_deg": 15.0,
+			"mask_size": 512,
+			"name": "low-sun",
+			"target_pixels": 262144,
+			"triangles": 5266,
+			"wind_east_mps": 12.0
+		},
+		{
+			"bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+			"elevation_deg": 75.0,
+			"mask_size": 512,
+			"name": "high-sun",
+			"target_pixels": 262144,
+			"triangles": 5266,
+			"wind_east_mps": 12.0
+		},
+		{
+			"bounds": "[P: (-0.14, 0.0, -0.2825), S: (3.124, 3.8825, 0.565)]",
+			"elevation_deg": -12.0,
+			"mask_size": 512,
+			"name": "night",
+			"target_pixels": 262144,
+			"triangles": 5266,
+			"wind_east_mps": 12.0
+		}
+	],
+	"renderer": "gl_compatibility",
+	"sources_sha256": {
+		"res://render/field_projected_shadows.gd": "5a7115d0e62853b96e1582f4b0b6eed785d074652ba576f631d7277501b68d50",
+		"res://render/windsock_deformation.gdshaderinc": "74c26d2f5dac781959d2c0c7cf2c2468047225ce7564623ee55174a3d30dae13",
+		"res://render/windsock_fabric.gdshader": "e494822a41ac727f5a2063148da5b5966cce361f87a2a87fd11ef8a43beaceca",
+		"res://render/windsock_projected_shadow.gd": "e4aab08df8ec849f039fc06f61211c5f4a8e7e9901d1492e715f76387a1b35c9",
+		"res://render/windsock_shadow_mask.gdshader": "9145d98677f88a3a0def847be70c89425ce8d00be59b8c47c68301d22b83d328"
+	}
+}

@@ -1,10 +1,10 @@
 # Aircraft experiment editor plan
 
-**Date:** 2026-10-19. **Revision:** 6 — source-backed implementation packages, customization contracts and test gates. **Status:** the shared Workshop has an implemented slice; section 5 is pending product work. AE-00 investigation has advanced, not the feature/release gates. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track.
+**Date:** 2026-10-19. **Revision:** 7 — menu structure, editing logic, inspection, visual design and interaction acceptance. **Status:** the shared Workshop has an implemented slice; section 5 is pending product work. AE-00 investigation has advanced, not the feature/release gates. **Prefix:** AE-00…AE-26. **Owner:** aircraft-editor track.
 
 The plan owns remaining work and acceptance. The [Aircraft Workshop guide](../AIRCRAFT-WORKSHOP.md) owns current player behavior and implementation details. The [aircraft contract](../AIRCRAFT_CONTRACT.md) owns physical and generated authoring schemas. [DECISIONS](../DECISIONS.md) owns durable rationale. Use the current repository state and linked evidence when a dated proposal differs.
 
-For the next work: [ideas and examples](#52-idea-catalogue), [profile contract](#55-presentation-contract-to-implement), [ordered implementation packages](#56-implementation-packages-and-order), [test matrix](#57-required-test-matrix), and [performance/evidence gates](#58-performance-and-evidence-gates). The [2026-10-19 source and official-documentation investigation](../research/aircraft-editor/AE-00/README.md) records current seams, diagnostic failures and a native color probe.
+For the next work: [ideas and examples](#52-idea-catalogue), [profile contract](#55-presentation-contract-to-implement), [ordered implementation packages](#56-implementation-packages-and-order), [test matrix](#57-required-test-matrix), [performance/evidence gates](#58-performance-and-evidence-gates), and [menu, workflow and visual design](#59-menus-workflow-and-visual-design). The [2026-10-19 source and official-documentation investigation](../research/aircraft-editor/AE-00/README.md) records current seams, diagnostic failures and a native color probe.
 
 **Owns:** `app/workshop/`, `app/ui/workshop.gd`, `app/ui/workshop_preview.gd`, `app/data/workshop/`, `app/tests/test_workshop_*.gd`, `research/aircraft-editor/`, this plan and [AE evidence](../research/aircraft-editor/AE-01-10/README.md). Existing implementation paths are `app/workshop/` and `research/aircraft-editor/`; do not create a parallel `aircraft_editor/` subsystem.
 
@@ -101,7 +101,7 @@ Dependencies are explicit. A gate may split into smaller reviews, but its accept
 | AE-06 | Legacy prescribed-RPM propulsion transform; AE-04 | Power, RPM, thrust and trim bounds on two compatible airframe fixtures; retain the original Stik/Extra proof and reconcile Extra's changed family before closing V1 |
 | AE-07 | Uniform geometry, virtual propeller/suspension and plausibility policy; AE-05/06 | Six exposed Stik sizes and a second compatible airframe's declared envelope; derived geometry/mass checks and real session startup |
 | AE-08 | Shared presentation binding and preview integration; AE-07 | Datum, CG, hinges, propeller, hull, contacts and imported-model cases match effective data without ID-specific editor paths |
-| AE-09 | Workshop library UI, Home/Pause route, editing history and localization; AE-03/08 | Keyboard journey, EN/ES viewport captures and resolution of the too-small preview reported in [UI-29 evidence](../research/menu-investigations/UI-29-R3/README.md); save/load/history and invalid-draft behavior remain usable |
+| AE-09 | Workshop library UI, Home/Pause route, editing history and localization; AE-03/08; split into AE-09a…f in [interface delivery](#597-interface-delivery-and-verification) | Context-aware entry/return, guarded draft replacement, clear save/trial states and keyboard/controller journeys; EN/ES viewport captures and resolution of the too-small preview reported in [UI-29 evidence](../research/menu-investigations/UI-29-R3/README.md) |
 | AE-10 | Transactional trial, return, restart and frozen identity; AE-04/09 | Stik/Extra workflow, failed-start rollback, retained draft and correct trace/checkpoint identity |
 | AE-11 | Effective-model runway-start qualification; AE-10 | Gear, wheel profile, equilibrium, clearance and selected-field fixtures; no aircraft-ID permission list |
 | AE-12 | Stable component editing, ballast and mass/CG fitting; AE-05/10 | Independent first-moment/full-tensor oracles; impossible targets, negative ballast and unsupported mounts reject cleanly; hubs stay fixed in structural coordinates while their offsets are recomputed from the new CG |
@@ -312,6 +312,139 @@ Compatibility uses GLES3 particle processing. The [pinned 4.7.2 renderer source]
 For every adopted preset, record allocation, enabled slots, maximum life, visible bounds/history, birth density, overdraw and paired baseline/candidate frame distributions. Follow the [VQ baseline protocol](global-performance-visual-quality.md#baseline-protocol): 10 s warmup + 60 s sample, at least three alternating pairs, same idle host/output/cap, plus separate uncapped diagnosis. If paired variability masks the 0.5 ms allowance, report inconclusive and improve/extend measurement. Exercise calm/gust wind, 150/300/600 m LOD boundaries, offscreen aging, dense overlap, all supported cameras and longest-life settings. Longer puff life changes occupancy, spacing and bounds; increasing only `lifetime` cannot qualify Tail Comet. Capped FPS is not an isolated GPU-cost measurement. Event ordering and physical state retain exact contracts; GPU pixels require an established same-renderer tolerance, not cross-driver bit identity.
 
 After warmup, require no unexplained growth in 20 Home/Fly/Workshop/reset cycles; full DT-12 still separately requires 50 cycles and a 30-minute soak. Run meaningful resource/identity/lifecycle checks before broader integration. Record source/config hashes, engine/backend/GPU, exact commands, input/seed/clock, pass/failure counts, captures, timings and limits in the owning step's existing evidence home. Keep original failed attempts. A software or visual pass does not establish measured smoke emissions, physical aircraft validation or real-radio acceptance.
+
+### 5.9 Menus, workflow and visual design
+
+**Proposed interface contract.** The current screen is a modal with aircraft/preview, saved builds, presets, physical controls and results in one scrolling body. Only Test fly remains pinned. Source switching and Close have no dirty-draft guard. The [reviewed native capture](../research/menu-investigations/UI-29-R3/captures/es-1920x1080-100-workshop.webp) documents the small model and dense form; it is dated evidence, not a mockup of this proposal. The [menu/source audit](../research/aircraft-editor/AE-00/README.md#menu-and-workflow-audit) records the verified seams and external guidance.
+
+AE owns this workflow and its screens. Reuse the [shared menu shell](../MENU-REDESIGN-PLAN.md#7-screen-flows-and-behavior), `Screen`/`ScreenStack`, `ui_theme.gd`, `ui_scale.gd`, localization and selected-menu-device routing. UI owns shared changes. Do not introduce a second theme, modal manager, input router or preferences store. The first delivery improves today's physical editor; later pages appear only after their owning capability is implemented.
+
+#### 5.9.1 Information hierarchy and destinations
+
+| Surface | Contents and interaction |
+| --- | --- |
+| Header | Aircraft Workshop, current build name or “Unsaved build”, base aircraft and saved/changed state. A labeled Back action names Home or Pause according to the opener. Keep hashes, paths and compiler versions in Details. |
+| Library | One on-demand destination with Stock aircraft and My builds. Browsing/highlighting does not replace the editor. Open/New build is explicit and passes the replacement guard. Show base aircraft, readable revision/status and active-build selection distinctly; search/filter only when the library needs it. Empty library offers New build, not an error. While this surface owns input, Open/New build is its primary action and underlying Test fly is inactive; closing restores the Library opener. |
+| Page navigation | Stable order: Appearance, Smoke, Flight setup, Compare. Unimplemented pages are absent. An implemented but unsupported page explains the aircraft's missing capability; its reason is accessible without hover. Restore the last available page in this editor visit; otherwise select the first supported page. Today's first delivery has Flight setup and Compare. |
+| Inspector | One selected page and part/emitter at a time. Presets precede individual controls; More options reveals supported advanced fields. Named part/mount lists provide the same selection as model picking. No mandatory wizard before Test fly. |
+| Preview | Dominant aircraft view with named view controls, selected part/mount indication and optional bounded playback. Selecting a part changes the inspector, not the build. Hide annotations that are irrelevant to the current page. |
+| Action bar | One primary Test fly. Save build is secondary and always discoverable; Save a copy and Delete live with library/build actions. Status remains beside its action. Per-page reset and Undo/Redo stay near editing; Back remains reachable at every text size. |
+
+Keep one active build across pages. Do not make “Appearance build”, “Smoke build” and “Flight build” separate records. Starting a new build never changes Home's selected aircraft or the retained flight. Saving is optional before a trial; naming is required for a saved build, not for Test fly.
+
+#### 5.9.2 Layout and inspection
+
+Start with this wide-screen composition; dimensions below are prototype targets to verify, not measured acceptance already achieved:
+
+```text
++----------------------------------------------------------------------------+
+| Back to Home/Pause   Aircraft Workshop   Build name · Unsaved changes        |
+| Library              Appearance | Smoke | Flight setup | Compare            |
+|------------------------------------------------+---------------------------|
+|                                                | Selected page / part      |
+|                                                | Preset                    |
+|             LARGE AIRCRAFT PREVIEW              | Main controls and values  |
+|                                                | More options              |
+|                                                | Reset this page           |
+| Views · Inspect / Compare size · Reset view     | Undo · Redo               |
+|------------------------------------------------+---------------------------|
+| Ready for an experimental trial                 Save build     [ Test fly ] |
++----------------------------------------------------------------------------+
+```
+
+At 1920×1080 logical reference size, begin with a 480–560 px inspector; give the remaining body width to the preview. Keep the library closed while editing rather than adding a permanent third column. Aim for a preview rectangle of at least 900×520 at default text. At 1280×720, first test a compact split with a preview of at least 560×320 and short page content. If content does not fit, use View/Edit destinations sharing the same draft, with a clearly labeled Preview action from Edit. At 150–200% text, prefer this reflow over shrinking controls or aircraft. The header/actions remain reachable; only the inspector or library body scrolls, with no horizontal form scrolling or scrolling panel inside another scrolling panel.
+
+Use the shared logical canvas scale once; do not apply another DPI multiplier. Resize, language and text-scale changes preserve page, draft, selected part and logical focus. Refit only presentation bounds, never physical recipe values. Ultrawide adds inspection space rather than stretching controls; fullscreen 4K follows the same logical composition. Small-window recovery prioritizes editing and exits over simultaneous preview. Reconcile final breakpoints with measured content fit, including translated errors.
+
+| View mode | Required distinction |
+| --- | --- |
+| Inspect | Fit the effective model with margin, aiming for roughly 55–75% of usable width while retaining all tips/tail/gear. Offer orbit, zoom, standard views and Reset view with keyboard/controller equivalents. Clamp zoom and avoid clipping. No automatic continuous orbit. |
+| Compare size | Original/Draft toggles use the same camera, pose, world-unit grid and zoom, fitted to the larger member of the pair. Do not independently normalize both models and imply equal size. Show size and span labels. Switching view mode never changes the build or Undo history. |
+| Part/mount selection | Outline plus readable name identifies selection; color alone is insufficient. Keep selected panels/mounts visible without hiding the airframe. Pointer picking is optional convenience; the inspector list is authoritative and works without a mouse. |
+| Smoke playback | Explicit Play/Pause/Restart after AE-24b.2. Orbit does not start playback. Frame both aircraft and bounded plume for a labeled effect view; do not pretend a static no-history preview contains operating exhaust. Preview wind/clock never change trial conditions. |
+
+#### 5.9.3 State and action rules
+
+Track these dimensions separately: **draft origin** (new/saved and exact baseline revision), **changed content**, **validation** (checking/blocked/ready), **operation** (idle/loading/saving/preparing), and **preview** (loading/ready/unavailable). A stored build can be readable but unavailable for a new trial. A preview failure and a physical-validation failure are different states; if the accepted trial requires a missing presentation dependency, block that trial explicitly rather than inferring success from a thumbnail.
+
+Changed content compares the current canonical persisted values with its baseline, including recipe, profile and saved name. Camera, page, scroll, part selection and playback position do not count as build edits. Undo back to the baseline clears Unsaved changes; an empty undo stack alone cannot determine cleanliness. No autosave or invalid-draft persistence is implied by this design.
+
+| Situation / action | Required result |
+| --- | --- |
+| Edit a field, drag or apply preset | Update only its declared scope; one drag/preset is one undo operation. Preserve exact loaded intermediate values. Show current value, unit and default; numeric entry is an alternative to dragging. Invalid text stays visible with a reason until corrected or cancelled; never silently coerce it into a launchable value. |
+| Checking / preparation pending | Identify the pending operation, disable repeated Save/Test fly and stop stale results overwriting a newer draft. Keep selection/focus stable. Offer Cancel only where cancellation exists; a cancelled request cannot later activate a flight. A synchronous operation must remain bounded before it can be advertised as responsive. |
+| Save new / Save existing | Ask for a name when needed; update the captured UUID/expected revision when existing. Mark saved only after successful storage publication. On stale/save failure, retain the full draft and offer review/reload or Save a copy when supported; never reload automatically. |
+| Valid unsaved draft → Test fly | Freeze and prepare that exact draft without forcing Save. Keep the editor instance/history and original flight. Show Airborne start and the actual inherited flight conditions; preview wind is separate. Use AE-10a's pre-activation rollback guarantee. |
+| Invalid draft → Test fly/Save | Explain the first actionable blocking reason beside the action; Review issues navigates to the field/page on request. Do not auto-scroll or steal focus on every edit. An invalid draft cannot overwrite a valid build; invalid-draft recovery remains separately gated. |
+| Trial → Pause → Return to Workshop | Stop/resolve trial trace recording through the existing explicit recovery flow, then restore the same draft, page, selection, scroll and focus. The retained original flight stays paused until explicit Resume. A failed trace save cannot silently discard recording or route to Home. |
+| Switch page, inspect, browse library | Keep the current draft; no loss confirmation. Opening a different stock/saved build requires the replacement guard below. |
+| Reset | Label its scope: Reset this page/part versus Reset entire build. A local reset is undoable without a confirmation; an entire changed build requires a clear scope confirmation. Resets never delete saved revisions. |
+
+Trial Pause keeps Resume trial as its primary action and exposes one direct Return to Workshop action, with Restart trial/quit in their appropriate destinations. Remove the duplicate Return entries in separate disclosures. The flight hint must say Escape opens Pause, then Return to Workshop; trace-save recovery must name the actual visible action. Never tell users to press a hidden or renamed End flight button. AE/UI coordinate this narrow route change without redesigning normal-flight Pause.
+
+Route **Open another build, New build, Back/Close, menu quit and window-manager close** through one loss guard whenever they would abandon a changed draft. Capture the intended destination/build before prompting. Offer Save and continue, Discard changes and Cancel; Cancel is the safe initial choice. Invalid builds cannot use Save and continue; keep Review issues, Discard and Cancel available. A failed save stays in the editor and does not execute the pending destination. Discard authorizes the captured transition; erase the draft only when that transition commits, so a later trace-save cancellation still preserves it. Leaving a clean draft requires no confirmation. For quit/WM-close, inspect the retained editor even while it is detached during a trial; resolve its draft decision before stopping recorders or changing sessions. Then apply the existing trace-save/discard flow. Cancelling either stage preserves the trial/previous flight and editor; a prior explicit successful Save remains saved. Coalesce repeated close events and do not stack duplicate prompts. No exit route bypasses draft or trace protection.
+
+```mermaid
+flowchart LR
+    E[Home or Pause] --> D[Workshop draft]
+    D -->|valid, Save optional| T[Prepare frozen trial]
+    T -->|failure| D
+    T -->|success| F[Experimental trial]
+    F --> P[Trial Pause]
+    P -->|Return; resolve recording| D
+    D -->|replace or leave| G{Unsaved changes?}
+    G -->|no| X[Continue captured route and trace guards]
+    G -->|yes| C[Save / Discard / Cancel]
+    C -->|Save succeeds or explicit Discard| X
+    C -->|Cancel or Save fails| D
+```
+
+Delete is a distinct library action: show the captured build name/revision, default to Cancel and apply AE-03b's revision-bound delete/trash-generation contract. Deleting the loaded saved build must retain its in-memory draft, mark its saved ancestry unavailable and require Save a copy for further persistence. Confirmation never follows a newly highlighted library row.
+
+#### 5.9.4 Page design and understandable copy
+
+| Page | First visible controls and explanation |
+| --- | --- |
+| Appearance | Palette → named region → swatch. Show a concise scope such as “Wing tips only”; offer Apply to pair and per-region reset. Patterns/text are separate bounded controls after AE-24a.2. Keep the selected swatch/name visible on light and dark palettes. |
+| Smoke | Preset → supported mount/group → per-emitter named color → Smoke amount. More options groups Shape, Emission (hold/burst/pulse), Burst duration and Puff lifetime separately. Summarize, for example, “Emit for 3 s; each puff fades within 6 s.” Show automatic source exhaust separately from optional show plumes; missing mounts explain preset incompatibility. |
+| Flight setup | Group Size and mass, Powerplant and Controls by validated capability; supported current controls first. Defaults and effective changes are visible. Hardware packages, CG wizard and response controls appear only after their physical gates. Do not infer flight performance from a preset's name. |
+| Compare | Show changed values first in aligned Original / Draft / Difference columns with units; All values is secondary. Keep visual-only versus physical changes explicit. Missing values are unavailable with a reason, never zero. Static thrust/RPM remain evaluator outputs; speed/climb/endurance require AE-20's declared experiment. |
+
+Status text answers what happened and what to do next: “Saved”, “Unsaved changes”, “Checking build”, “Ready for a trial”, or a specific blocking reason. “Ready” means accepted for this experimental session, not physically validated. Keep one persistent blocking summary, field-level corrections and optional technical Details; success notices are quiet and never cover an action. Do not expose raw JSON, stack traces or solver vocabulary as the normal editing journey. Preserve technical identity/diagnostics in Details for review.
+
+#### 5.9.5 Visual language, feedback and motion
+
+Reuse charcoal `#111A20`, warm white `#F3F1EB`, secondary `#B8C4C9` and amber `#EABF66` from the shared theme. Amber identifies the primary action/focus; selection also has an underline, border or label so it differs from keyboard focus. Reserve danger styling for deletion, discard or blocking errors. Avoid repeated nested cards; use quiet aligned rows and one separating edge between preview and inspector. No decorative gauges, invented workshop props or blur dependency. Keep a neutral, well-lit inspection background and a readable grid; optional existing field context cannot obscure a small model or turn into another scene-authoring project.
+
+Use the existing type roles and spacing rhythm (4/8/12/16/24/32/48 logical px); prototype 48–56 px control rows and 56–64 px primary actions at the reference scale, expanding for text. Measure rendered glyphs rather than assuming nominal font size proves legibility. Essential values/reasons stay at readable body size; do not squeeze text to make the layout fit. Inputs have visible labels, units, selected value, focused/error/disabled states and a reachable explanation for unavailable controls. Additional state cues accompany color.
+
+Retain the shared 140 ms entrance behavior and reduced-motion/opaque preferences. Part highlight and tab changes give immediate feedback; optional fades never delay input or validation errors. Avoid camera travel on each slider change, forced orbit, animated smoke when idle and sound on automatic focus. Use the shared optional menu-audio policy. All motion/preview costs remain inside [section 5.8's combined budget](#58-performance-and-evidence-gates), with no new per-screen allowance.
+
+#### 5.9.6 Input, focus and accessibility
+
+Tab/Shift+Tab follow meaningful groups; directional navigation stays within the current list/tab/inspector until an explicit region transition. Define focus neighbors after reflow rather than relying on geometric guesses. Lists consume navigation, sliders consume value adjustment and text fields consume typing; Enter activates only the focused action. Keep Test fly out of implicit form submission. Orbit/zoom has labeled buttons and a reset action. The chosen menu gamepad follows the existing controller owner; radio flight channels never drive menu selection or leak held AUX into the trial.
+
+Back/Escape resolves the topmost popup/dialog first, then any uncommitted field edit or expanded inspection/library view, then the Workshop exit guard. Every event is consumed once. Cancel returns focus to the opener; Back must not also activate Test fly or resume the retained flight. If reflow or capability changes remove the focused control, focus moves to the nearest meaningful visible group. An unavailable field's reason has a reachable Details/Why unavailable control; do not assume a disabled button can receive focus.
+
+Test EN/ES and 30–40% text expansion at 100/150/200% text. Keep long names, signed deltas, units and errors readable. Preserve the shared menu targets of ≥4.5:1 essential text and ≥3:1 focus/essential boundaries on the actual composited background; swatches/selection have names/shapes as alternatives. Reduced motion and opaque mode retain the same operations. Use [XAG 112 focus/navigation](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/112), [XAG 102 contrast](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/102), [W3C focus-order](https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html) and [error-identification guidance](https://www.w3.org/WAI/WCAG22/Understanding/error-identification.html) as design evidence; these native-menu targets do not establish WCAG certification or untested assistive-technology support.
+
+#### 5.9.7 Interface delivery and verification
+
+| Subphase / dependencies | Deliverable | Required proof |
+| --- | --- | --- |
+| AE-09a — screen/state contract | Final page map, draft baseline/dirty rules, action-state table, exit/recording guard order and source-backed labels; coordinate UI/AE/SM | Table-driven cases cover clean/dirty, valid/invalid, new/saved/unavailable and idle/pending. Camera/page changes do not dirty; undo-to-baseline clears dirty; no duplicate trial/exit. |
+| AE-08b — inspection, parallel with AE-09a | Large independent preview, Inspect versus Compare size, standard views/orbit/zoom/reset; no dependency on unbuilt paint/smoke | Current procedural and imported aircraft, declared size extremes and small/large spans. Record actual viewport/projected model bounds; all tips remain visible, size comparison preserves world scale, controls work without pointer picking and idle redraw stops. |
+| AE-09b — shell/library reflow; AE-09a/08b | Header, on-demand library, one inspector/page, pinned Save/Test fly and compact View/Edit fallback using current physical controls | EN/ES 720p/1080p/4K captures and Control rectangles prove fit, readable aircraft, no horizontal scrolling, reachable exits/actions and consistent layout after resize. No unimplemented placeholder pages. |
+| AE-09c — loss guards and library operations; AE-09a plus AE-03a/b for persistence | Unified replace/close/quit guard, captured targets, pending/error states, save/copy/delete feedback | Dirty source/load/Close/Escape/WM-close, including detached trial editor and repeated close; Save failure/stale revision, selection changed during confirmation and delete-current/restore. Cancel/failure preserves draft/old flight/recording, except an explicitly completed Save; original saved revisions remain. |
+| AE-09d — inspector feedback/history; AE-09b/c | Page/part reset, exact numeric entry, grouped preset edits, changed-only comparison and actionable issue navigation | One drag/preset/reset gives one undo; invalid input stays recoverable; focus/scroll stays stable; field/page/baseline names are clear. Rename does not recompile physics. Appearance/smoke pages additionally require their AE-24 contracts. |
+| AE-09e — input/localization; AE-09b/d and UI/D6 owners | Focus map, keyboard/menu-pad equivalence, loss/reconnect recovery, reduced motion/opaque and translated copy | Keyboard-only end-to-end journey plus selected Xbox/DualSense synthetic routing; focus at every breakpoint and popup; held Accept/Back/AUX isolation. Physical hardware claims require actual device testing. |
+| AE-09f — native/user acceptance; AE-09b…e and AE-10/10a for the advertised trial scope | Native geometry/capture review and formative task report; extend existing UI/Workshop tests and capture tools | Complete the tasks/matrix below. Resolve the small-preview defect with measured bounds and owner review. Verify direct trial-return action, accurate Escape/trace-recovery labels and internal focus restoration. Keep remaining gates explicit. |
+
+Native matrix: EN/ES at 1280×720 and 1920×1080 with 100/150/200% text; actual fullscreen 3840×2160 and ultrawide at default text; one small-window recovery case at 200%. Include opaque/reduced-motion, long labels, empty library, unavailable model, invalid build, pending/failure state and open popup. Record actual output/DPI/logical canvas and keep screenshots outside timing measurements. Do not infer physical fullscreen 4K from a requested window size.
+
+Required journeys: (1) stock → one supported edit → Undo/Redo → Save copy → reload; (2) unsaved valid edit → Test fly → Pause → return to the same editor; (3) dirty build → browse another → Cancel; (4) invalid edit → review/correct or discard without losing the saved build; (5) stale save/delete and failed trial preserve the right target; (6) once implemented, Twin Ribbons → change one emitter → preview → save/return. Exercise every journey by keyboard and supported menu pad; assert retained simulation ticks/state, recording ownership, draft/page/focus and correct destination. Headless tests prove logic; native captures/manual interaction prove visual fit and picking. Use existing [Workshop commands](../TOOLS.md#aircraft-workshop); do not publish commands for a new test before its file exists.
+
+Formative review uses at least three first-time users, tasks 1–4 and the smoke task when available. Record completion, assistance, wrong turns, data loss and whether users distinguish Save, Test fly, puff lifetime and burst duration. Target ≥90% unassisted task completion across recorded attempts, no critical loss/incorrect launch, and owner approval of model visibility/copy; report small-sample limits. Separate warm page/part switching from cold model loads using the shared UI/VQ measurement protocol. No runtime implementation, new native captures or user acceptance is claimed by this plan revision.
 
 ## 6. Evidence and references
 

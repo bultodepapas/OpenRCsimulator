@@ -4,6 +4,7 @@ const Flight := preload("res://sim/flight_session.gd")
 const LiquidFlight := preload("res://sim/liquid_fuel_flight.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const CheckpointJson := preload("res://sim/checkpoint_json.gd")
 var checks := 0
 var failures := 0
 
@@ -46,10 +47,71 @@ func _initialize() -> void:
 			flight.sim.step()
 			destination.sim.step()
 		check("restored continuation exact", var_to_bytes(destination.sim.checkpoint()) == var_to_bytes(flight.sim.checkpoint()))
+		var legacy: Dictionary = flight.checkpoint()
+		legacy.erase("fuel_session")
+		check("legacy liquid checkpoint retains destination selection as unknown",
+			destination.restore_checkpoint(legacy) and destination.fuel_start_fill == 0.5
+			and destination.trace_meta().get("fuel_start_fill_known", true) == false
+			and destination.sim.continuous == flight.sim.continuous)
+		var unknown_checkpoint: Dictionary = destination.checkpoint()
+		var unknown_json: String = destination.checkpoint_json()
+		var malformed_unknown: Dictionary = unknown_checkpoint.duplicate(true)
+		malformed_unknown.fuel_session.start_fill = "0.5"
+		var native_before: PackedByteArray = var_to_bytes(destination.checkpoint())
+		check("malformed unknown liquid selection refuses native restore transactionally",
+			not destination.restore_checkpoint(malformed_unknown)
+			and var_to_bytes(destination.checkpoint()) == native_before)
+		var native_destination: Node = Flight.new()
+		native_destination.input_enabled = false
+		native_destination.setup(path)
+		native_destination.set_fuel_start_fill(0.75)
+		check("chained native liquid checkpoint preserves receiving selection and exact state",
+			native_destination.restore_checkpoint(unknown_checkpoint)
+			and native_destination.fuel_start_fill == 0.75
+			and native_destination.trace_meta().get("fuel_start_fill_known", true) == false
+			and native_destination.sim.continuous == destination.sim.continuous
+			and var_to_bytes(native_destination.sim.checkpoint()) == var_to_bytes(destination.sim.checkpoint()))
+		native_destination.reset()
+		check("native unknown liquid selection resets to receiving preference",
+			native_destination.fuel_start_fill == 0.75
+			and is_equal_approx(native_destination.mass_properties().fuel_remaining_kg, 0.75 * float(config.capacity_kg)))
+		native_destination.free()
+		var decoded_unknown: Dictionary = CheckpointJson.decode(unknown_json)
+		var malformed_json_snapshot: Dictionary = decoded_unknown.snapshot.duplicate(true)
+		malformed_json_snapshot.fuel_session.start_fill = true
+		var malformed_unknown_json: String = CheckpointJson.encode(malformed_json_snapshot)
+		var json_destination: Node = Flight.new()
+		json_destination.input_enabled = false
+		json_destination.setup(path)
+		json_destination.set_fuel_start_fill(0.25)
+		check("chained JSON liquid checkpoint preserves receiving selection and exact state",
+			json_destination.restore_checkpoint_json(unknown_json)
+			and json_destination.fuel_start_fill == 0.25
+			and json_destination.trace_meta().get("fuel_start_fill_known", true) == false
+			and json_destination.sim.continuous == destination.sim.continuous
+			and var_to_bytes(json_destination.sim.checkpoint()) == var_to_bytes(destination.sim.checkpoint()))
+		var json_before: PackedByteArray = var_to_bytes(json_destination.checkpoint())
+		check("malformed unknown liquid selection refuses JSON restore transactionally",
+			not json_destination.restore_checkpoint_json(malformed_unknown_json)
+			and var_to_bytes(json_destination.checkpoint()) == json_before
+			and json_destination.fuel_start_fill == 0.25)
+		json_destination.reset()
+		check("JSON unknown liquid selection resets to receiving preference",
+			json_destination.fuel_start_fill == 0.25
+			and is_equal_approx(json_destination.mass_properties().fuel_remaining_kg, 0.25 * float(config.capacity_kg)))
+		json_destination.free()
 		var invalid: Dictionary = flight.checkpoint()
 		var original: PackedByteArray = var_to_bytes(destination.checkpoint())
 		invalid.simulation.continuous[index] = -0.1
 		check("negative fuel restore refuses transactionally", not destination.restore_checkpoint(invalid) and original == var_to_bytes(destination.checkpoint()))
+		var bad_latch: Dictionary = flight.checkpoint()
+		bad_latch.simulation.continuous[index + 1] = 2.0
+		check("unsupported finite-source latch refuses transactionally",
+			not destination.restore_checkpoint(bad_latch) and original == var_to_bytes(destination.checkpoint()))
+		var bad_layout: Dictionary = flight.checkpoint()
+		bad_layout.simulation.continuous.append(0.0)
+		check("wrong finite-fuel continuous layout refuses transactionally",
+			not destination.restore_checkpoint(bad_layout) and original == var_to_bytes(destination.checkpoint()))
 		# A small positive usable inventory locates exhaustion inside this tick.
 		flight.sim.state[RB.POS + 2] = -1000.0 # rundown remains clear of ground contacts
 		flight.sim.continuous[index] = 1e-9
@@ -63,7 +125,7 @@ func _initialize() -> void:
 			flight.sim.step()
 		check("ten second exhaustion coast retains nonnegative fuel and accepted stopped source", flight.sim.fault_reason.is_empty() and flight.sim.continuous[index] == 0.0 and flight.sim.continuous[index + 1] == 0.0 and not flight.propulsion_source_running())
 		flight.reset()
-		check("reset restores selected fuel and source", is_equal_approx(flight.mass_properties().fuel_remaining_kg, 0.5 * config.capacity_kg) and flight.sim.continuous[index + 1] == 1.0)
+		check("reset restores selected fuel and source", is_equal_approx(flight.mass_properties().fuel_remaining_kg, 0.5 * config.capacity_kg) and flight.sim.continuous[index + 1] == 1.0 and flight.trace_meta().get("fuel_start_fill_known", false))
 		flight.free()
 		destination.free()
 	_nonzero_residue()
@@ -102,6 +164,11 @@ func _nonzero_residue() -> void:
 	var invalid: Dictionary = flight.checkpoint()
 	invalid.fuel_session.start_fill = 0.05
 	check("restored impossible launch fill is refused transactionally", not flight.restore_checkpoint(invalid) and before == var_to_bytes(flight.checkpoint()))
+	var unknown_invalid: Dictionary = flight.checkpoint()
+	unknown_invalid.fuel_session.start_fill = 0.05
+	unknown_invalid.fuel_session.selection_known = false
+	check("impossible serialized fill is rejected even when its provenance is unknown",
+		not flight.restore_checkpoint(unknown_invalid) and before == var_to_bytes(flight.checkpoint()))
 	var index: int = flight._liquid_index()
 	flight.sim.state[RB.POS + 2] = -1000.0
 	flight.sim.continuous[index] = 1e-9

@@ -26,11 +26,11 @@ The estimated 1 L main tank uses `gasoline_bsfc_v1` with estimated consumption. 
 
 Original delivery reports retain dated source identities. Their passing counts, performance figures and baseline failures do not establish current suite status.
 
-| IDs | Implemented scope / evidence | Remaining work |
+| IDs | Current scope / evidence | Remaining work |
 | --- | --- | --- |
 | P51-00…05 | Reference selection, metrology, native model, catalog, clearance and generated physics; [silhouette method](../research/p51/p51-02/silhouette/README.md) | Resolve estimated build dimensions and concealed details. |
 | P51-06…09, 12/13 | Shaft/propeller, ground behavior, section/stall and flight probes; [original research](research/p51-flight-realism.md) | Matched RC propulsion, aero and ground validation. |
-| P51-10 / V01…15 | Finish, details, lights and control-surface corrections; [visual review](research/p51-visual-review-v2.md), [V15 audit](research/p51-realism/P51-V15/README.md) | V09 owner paint choice; rendered/pilot acceptance. |
+| P51-10 / V01…08, V10…15 | Finish, details, lights and control-surface corrections; [visual review](research/p51-visual-review-v2.md), [V15 audit](research/p51-realism/P51-V15/README.md) | V09 owner paint choice; rendered/pilot acceptance. |
 | P51-11a…c | [Flaps/smoke](research/p51-realism/P51-11a/README.md), [retracts/brakes](research/p51-realism/P51-11b/README.md) | Installed mechanism/force calibration and shared-law limits. |
 | P51-14 | Owner Gate 2 review | Open: trim feel, takeoff swing, stall break and landing. |
 | P51-15…18 | Inventory correction, probes and dated integration/performance checks; [audit](research/p51-realism/README.md) | Current full-suite, export and target-hardware qualification. |
@@ -39,6 +39,8 @@ Original delivery reports retain dated source identities. Their passing counts, 
 | P51-24…26 | [Rudder correction](research/p51-realism/P51-24/README.md), [body yaw](research/p51-realism/P51-25/README.md), [sidewash](research/p51-realism/P51-26/README.md) | Recheck powered directional/trim discrepancies, then compare matched observations. |
 
 ## Limits and next evidence
+
+The [2026-10-19 recheck](research/p51-realism/README.md#2026-10-19-documentation-recheck) records a current handling assertion failure separately from passing generator/model/envelope/ground/CLI checks. Software acceptance is not complete.
 
 Mass distribution, rigging, CG, throws and installation include estimates. The four-blade 26×12 map is a BEM extrapolation fitted to two/three-blade data; the DA-120 curve and static-RPM anchor are not installed dynamometer measurements. Virtual balance mass is not a hardware recommendation.
 
