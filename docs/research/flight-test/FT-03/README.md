@@ -45,12 +45,15 @@ Sources, caveats and local copies: [RC-class aerodynamic data sources](../../fli
 
 ## Findings for the owning tracks
 
-1. **Post-stall spin (physics).** Against both measured spins, the developed spin is roll-dominated and too steep, with about a third of the vertical force. The card window is about three turns in, and airspeed still rises about 1 m/s per second, so a longer pro-spin hold should come first.
+1. **Post-stall spin (physics).** Against both measured spins, the developed spin is roll-dominated and too steep, with about a third of the vertical force. The card window is about three turns in, and airspeed still rises about 1 m/s per second, so a longer pro-spin hold should come first. **Follow-up ([D10-R4](../../flight-dynamics/spin-post-stall-2026-10-19/README.md)):** the spin is steady by 6–10 s at the same state, so the finding stands. A measured Stik-class polar shows the post-stall lift collapse is about twice too deep. That accounts for part of the vertical force, not the spin's yaw, α or sideslip.
 2. **Stopped propeller drag (propulsion).** [`propulsion.gd`](../../../../app/physics/propulsion.gd) returns zero loads for a non-glow propeller below 1 rpm.
    - The Timber's propeller stops in its idle glide, which flies at L/D 13.9.
    - Hartman and Biermann's locked-propeller data (NACA Report 641) predict ΔCD ≈ 0.017 for its 11×7.3 three-blade propeller, so L/D would be about 10.9.
    - The same method predicts the FliTePlat's measured increment.
    - A free-wheeling propeller drags less than a locked one, so a locked stop is the upper case.
+   - This is the planned propulsion step G1d, stopped and windmilling drag ([investigation](../../roadmap-investigations/03-propeller-propwash.md); the project audit of 2026-10-06 recorded it too).
+   - The propulsion research ([EL1a-R1 §08](../../propulsion/EL1a-R1/03-propeller-validation.md#08--stopped-and-windmilling-propeller-drag)) does not transfer NACA metal-propeller values to an 11-inch plastic propeller and asks for locked, free-windmilling and ESC-brake measurements of the exact installation.
+   - The FliTePlat cross-check above is offered to G1d as a magnitude check, not as its model.
 3. **Stik dihedral effect (D10 follow-up).** Clβ at trim α is −0.079, twice the Ultra Stick 25e's flight-identified −0.039; the data's base value is −0.0545.
 4. **Glow idle (glow engines; FT-01 finding 2).** The glow Stiks still turn 5,000–8,800 rpm at idle in the glide and do not descend at 1.3 and 1.6 Vs.
 

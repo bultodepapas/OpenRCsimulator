@@ -99,8 +99,8 @@ The manifest's `links` list records the leads without a downloaded file and why:
 
 Comparisons made so far, with numbers and caveats, live in [FT-03](../flight-test/FT-03/README.md#against-measured-rc-class-data). In brief:
 
-- [`spin_state.py`](../../../research/flight-test/spin_state.py) compares the `spin` card with the FASER and Extra 260 spins. The model's spin matches their Ωb/2V and roll rate, but it is roll-dominated, steeper (α 19–23° against about 30–35°) and holds about a third of the Extra 260's vertical force.
-- [`polar_fit.py`](../../../research/flight-test/polar_fit.py) fits the airframe polars. The Stik's lift matches the FASER tunnel within 5 %, and the fleet's CDmin and e lie in the measured range. Its glide check found a candidate propulsion gap: a stopped non-glow propeller adds no drag (NACA Report 641 basis above).
+- [`spin_state.py`](../../../research/flight-test/spin_state.py) compares the `spin` card with the FASER and Extra 260 spins. The model's spin matches their Ωb/2V and roll rate, but it is roll-dominated, steeper (α 19–23° against about 30–35°) and holds about a third of the Extra 260's vertical force. A 20 s hold confirms the state is steady ([D10-R4](spin-post-stall-2026-10-19/README.md)). D10-R4 also digitizes the FASER whole-aircraft lift curve: it keeps 89–94 % of CLmax after the stall, against 45–56 % for the Stik's production law.
+- [`polar_fit.py`](../../../research/flight-test/polar_fit.py) fits the airframe polars. The Stik's lift matches the FASER tunnel within 5 %, and the fleet's CDmin and e lie in the measured range. Its glide check shows the known gap that the planned propulsion step G1d owns: a stopped non-glow propeller adds no drag. G1d asks for measurements of the exact installation; the NACA Report 641 cross-check above is a magnitude check only.
 - The static lateral derivatives screen the Avanti against the T-2 jet and the Stik against the Ultra Stick 25e. The Stik's Clβ at trim is twice the 25e's.
 
 Still open:
