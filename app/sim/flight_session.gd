@@ -3235,7 +3235,7 @@ func trace_meta() -> Dictionary:
 		aircraft_semantic_hash_convention = "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
 		configuration = aircraft.model.get("configuration", "unspecified"),
 		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else Aero.LOADS_LAW + " with bounded attached oracle",
-		wing_polar_model = "tabulated-wing-v1 (experimental finite-wing strip reference)" if model.get("envelope", {}).has("wing_polar") else "legacy attached-to-flat-plate blend",
+		wing_polar_model = ("tabulated-wing-v1 (experimental finite-wing strip reference)" + ("; spanwise stall progression g = %s" % model.envelope.wing_polar.spanwise_progression if model.envelope.wing_polar.has("spanwise_progression") else "")) if model.get("envelope", {}).has("wing_polar") else "legacy attached-to-flat-plate blend",
 		ground_effect_model = ("image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above %.1f spans)" % GroundEffect.FADE_SPAN_RATIO) if GroundEffect.enabled(model) else "none",
 		propulsion_model = propulsion_model,
 		propwash_model = "tail-slipstream-axial-transport-v1" if WashTransport.enabled(prop) else (

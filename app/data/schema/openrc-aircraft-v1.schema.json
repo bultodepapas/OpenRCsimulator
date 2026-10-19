@@ -1278,6 +1278,20 @@
             },
             "negative": {
               "$ref": "#/$defs/wingPolarSamples"
+            },
+            "spanwise_progression": {
+              "description": "D8b-R2d optional spanwise stall progression gain g: strip i reads the table at its angle times 1 + g*(lambda_i - 1), lambda_i its induced-map row sum over the mean. 0 or absent = one shared table.",
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "1"
+                }
+              }
             }
           }
         },

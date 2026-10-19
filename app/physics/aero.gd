@@ -411,6 +411,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
 	var flap_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array())
 	var polar: Dictionary = env.get("wing_polar", {})
+	# D8b-R2d (optional): spanwise stall progression; strip i reads the table at its angle times strip_factor[i].
+	var strip_factor: PackedFloat64Array = polar.get("strip_factor", PackedFloat64Array())
 	# D11j: the section's pitching moment about its aerodynamic centre as a pure couple per strip (q_i·S_i·c_i·Cm_ac);
 	# 0 (absent) adds no arithmetic, so aircraft without it stay byte-identical to the frozen oracle.
 	var cm_ac: float = surfaces.get("wing_cm_ac", 0.0)
@@ -443,7 +445,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 			cd = cd0 + (1.0-weight)*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
 			if not polar.is_empty():
-				var sample := WingPolar.evaluate(effective, base, polar)
+				var sample := WingPolar.evaluate(effective if strip_factor.is_empty() else effective * strip_factor[i], base, polar)
 				cl = sample[0]
 				weight = 1.0-sample[2]
 				cd = sample[1] + sample[2]*ge[i]*k_induced*M.pow_(cl-cl_min_d, 2)
@@ -451,7 +453,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 			cd = cd0 + (1.0-weight)*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(effective), 2)
 			if not polar.is_empty():
-				var sample := WingPolar.evaluate(effective, base, polar)
+				var sample := WingPolar.evaluate(effective if strip_factor.is_empty() else effective * strip_factor[i], base, polar)
 				cl = sample[0]
 				weight = 1.0-sample[2]
 				cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
@@ -493,7 +495,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 				clean_base = cl0 + cla * clean_effective
 			if ge_active:
 				clean_base += (1.0 - ge[i]) * (strip_slope * (clean_effective + float(env.strip_alpha_zero)) - clean_base)
-			var clean_coeff := _section_coefficients(clean_effective, clean_base, env, polar, cd0, cd90,
+			var clean_coeff := _section_coefficients(clean_effective if strip_factor.is_empty() else clean_effective * strip_factor[i],
+				clean_base, env, polar, cd0, cd90,
 				k_induced, cl_min_d, induced_factor)
 			flap_delta_cl = cl - clean_coeff[0]
 		wing_cl += (plane_speeds[i] * cl) / stations
@@ -817,6 +820,7 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var n_span: float = env.n2 - env.n1
 	var wing_cl := 0.0
 	var polar: Dictionary = env.get("wing_polar", {})
+	var strip_factor: PackedFloat64Array = polar.get("strip_factor", PackedFloat64Array()) # D8b-R2d, as in _local_loads
 	for i in stations:
 		var effective: float = angles[i]
 		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
@@ -834,7 +838,7 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 			base += (1.0 - ge[i]) * (strip_slope * (effective + float(env.strip_alpha_zero)) - base)
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 		if not polar.is_empty():
-			var sample := WingPolar.evaluate(effective, base, polar)
+			var sample := WingPolar.evaluate(effective if strip_factor.is_empty() else effective * strip_factor[i], base, polar)
 			cl = sample[0]
 			weight = 1.0 - sample[2]
 		if flap_active and i < flap_shifts.size():

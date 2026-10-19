@@ -1613,7 +1613,7 @@ static func _ground_effect(errors: PackedStringArray, node: Variant, envelope: D
 static func _wing_polar(errors: PackedStringArray, node: Variant, envelope: Dictionary, aero: Dictionary) -> Dictionary:
 	var path := "aero.wing_polar"
 	var raw := _dictionary(errors, path, node)
-	_reject_unknown_keys(errors, path, raw, ["method", "basis", "positive", "negative"])
+	_reject_unknown_keys(errors, path, raw, ["method", "basis", "positive", "negative", "spanwise_progression"])
 	if raw.get("method") != WingPolar.METHOD or raw.get("basis") != "finite-wing-strip-reference":
 		errors.append(path + ": expected tabulated-wing-v1 and finite-wing-strip-reference basis")
 	if not envelope.has("induced_map"):
@@ -1639,6 +1639,25 @@ static func _wing_polar(errors: PackedStringArray, node: Variant, envelope: Dict
 			continue
 		polar[name] = WingPolar.prepare(samples, 1.0 if name == "positive" else -1.0,
 			slope, offset, aero.CD0, envelope.CD90, errors, path + "." + name)
+	# Optional (D8b-R2d): spanwise stall progression. Strip i reads the table at its angle times
+	# f_i = 1 + g·(λ_i − 1), where λ_i is its attached loading relative to the wing mean: the induced-map row sum over the
+	# mean row sum. A rectangular wing's root (λ > 1) then separates first and a tapered wing's tip; g = 0 or absent
+	# leaves every strip on the shared table. Derived from the calibrated map, so it adds no aircraft coefficient.
+	if errors.is_empty() and raw.has("spanwise_progression"):
+		var gain: Variant = _q(errors, path + ".spanwise_progression", raw.get("spanwise_progression"), "1", 0.0, 1.0)
+		var rows: PackedFloat64Array = envelope.get("strip_row_sum", PackedFloat64Array())
+		var mean := 0.0
+		for value: float in rows:
+			mean += value / float(rows.size())
+		if gain != null and errors.is_empty():
+			if rows.size() != envelope.station_ys.size() or not (mean > 0.0):
+				errors.append(path + ".spanwise_progression: requires positive induced-map row sums for every station")
+			else:
+				var factors := PackedFloat64Array()
+				for value: float in rows:
+					factors.append(1.0 + float(gain) * (value / mean - 1.0))
+				polar.spanwise_progression = float(gain)
+				polar.strip_factor = factors
 	return polar if errors.is_empty() else {}
 
 

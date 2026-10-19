@@ -496,7 +496,8 @@
         "method",
         "basis",
         "positive",
-        "negative"
+        "negative",
+        "spanwise_progression"
       ]
     },
     {
@@ -964,6 +965,7 @@
     "/aero/surfaces/*/*",
     "/aero/wing_polar/positive",
     "/aero/wing_polar/negative",
+    "/aero/wing_polar/spanwise_progression",
     "/aero/ground_effect/*",
     "/landing_gear/rolling_resistance",
     "/landing_gear/side_friction",

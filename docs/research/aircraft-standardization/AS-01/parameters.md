@@ -78,6 +78,7 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.surfaces.wing_station_incidence` | rad | length 3…3, each(≥-0.2, ≤0.2) | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.wing_polar.negative` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
 | `aero.wing_polar.positive` | deg, 1, 1, 1 | length 16…256, each(≥0, ≤90) | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
+| `aero.wing_polar.spanwise_progression` | 1 | ≥0, ≤1 | AircraftData._wing_polar → WingPolar.prepare / Aero local wing |
 | `balance.cg_tolerance` | m | ≥1e-06, ≤0.005 | AircraftData.validate_and_derive: inventory/declared CG acceptance |
 | `balance.firewall` | m | length 3…3, each(≥-2, ≤2) | AircraftData._q: reference validation only; no force effect |
 | `balance.plan_cg` | m | length 3…3, each(≥-2, ≤2) | AircraftData.validate_and_derive: inventory CG agreement; not an override |
@@ -199,4 +200,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 185 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 186 distinct quantity paths. Shared paths retain branch-dependent ranges.

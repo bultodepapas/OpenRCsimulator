@@ -2,7 +2,8 @@
 # (Hangar 9 Ultra Stick 120): its static whole-aircraft lift retention (faser_cl.csv, Owens et al. 2006 Fig. 2a) and its
 # roll damping (faser_clp.csv, Hoe et al. 2012 Fig. 14, forced oscillation). Read-only; any aircraft JSON or candidate.
 # Static whole-aircraft loads (Aero.loads at 25 m/s, controls neutral) at 0.5 deg steps; Clp = (dMx/dp)*2/(rho/2 V S b^2)
-# at p = 0 by central difference. Retention CL/CLmax is compared with FASER aligned at the two lift peaks; Clp at the
+# at p = 0 by central difference. Retention CL/CLmax is compared with FASER aligned at the two stall peaks (the maximum
+# between 8 and 18 deg; FASER's is 15 deg); Clp at the
 # same angle of attack. The FASER Clp is a finite-frequency forced-oscillation value; a quasi-steady model is expected
 # to differ where it depends on reduced frequency (above stall). Analog evidence, not a Jensen acceptance band.
 # Run from the repository root, with absolute or res:// paths:
@@ -18,6 +19,8 @@ const RB := preload("res://physics/rigid_body.gd")
 
 const ANALOG := "res://../research/flight-robustness/d8b-r2/analog/"
 const SPEED := 25.0
+## Peak alignment uses the lift maximum inside the stall region, not a later post-stall plateau value.
+const STALL_REGION_DEG := [8.0, 18.0]
 const RHO := 1.225
 const ZERO := {elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0}
 const RETENTION_DEG := [15.0, 16.0, 17.0, 18.0, 20.0, 22.0, 25.0, 28.0, 30.0] # FASER angles, compared peak-aligned
@@ -115,7 +118,7 @@ static func _curves(model: Dictionary) -> Dictionary:
 		alpha.append(deg)
 		cl.append(value)
 		clp.append(d * 2.0 / (0.5 * RHO * SPEED * S * b * b))
-		if value > peak:
+		if value > peak and deg >= STALL_REGION_DEG[0] and deg <= STALL_REGION_DEG[1]:
 			peak = value
 			peak_alpha = deg
 	return {alpha = alpha, cl = cl, clp = clp, peak = peak, peak_alpha = peak_alpha}
