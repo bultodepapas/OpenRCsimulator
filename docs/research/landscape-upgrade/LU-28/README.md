@@ -96,9 +96,13 @@ godot --path app --audio-driver Dummy --resolution 1280x720 \
   --frames=360
 ```
 
-For the reference, add `--scenery_file=<absolute-path-to-reference-scenery.json>`.
-That retained fixture excludes only the new `countryside-*` groups, so the
-adapter also omits the corresponding surfaces. It preserves the mountains and
-the existing club/woodland. Normal launches enable the addition for Club;
+For the reference, add `--plain_reference=<absolute-path-to-reference-scenery.json>`.
+That retained fixture excludes only the new `countryside-*` groups. The capture
+builder preserves the canonical lake, near grass and woodland, replaces the
+scenery placements, and removes the new surfaces before creating the world
+lighting. Plain `--scenery_file` would disable the lake and fail the strict
+woodland identity gate; measurements from that mismatched reference were rejected.
+Reference construction time includes this replacement and is not compared.
+Normal launches enable the addition for Club;
 scenery-off, the landscape comparison switch and ineligible custom fields
 omit it. Green paradise remains separate.

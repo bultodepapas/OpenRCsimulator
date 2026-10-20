@@ -13,6 +13,7 @@ const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
 const SceneryMaterials := preload("res://scenery/scenery.gd")
 const ReferenceScenery := preload("res://scenery/scenery_loader.gd")
 const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
+const ReferenceField := preload("res://render/field.gd")
 const FLEET_VIEWS := {
 	"plain_village": {eye = [-610.0, -960.0, -45.0], at = [-680.0, -760.0, -3.0], fov = 55.0},
 	"plain_highway": {eye = [-350.0, 880.0, -22.0], at = [50.0, 945.0, -0.2], fov = 50.0},
@@ -90,22 +91,13 @@ func _run() -> void:
 			quit(1)
 			return
 		snapshot = SnapshotLighting.snapshot(lighting.config)
-	var built := World.build(parent, loaded.field, Callable(), {}, snapshot)
-	# LU-28 A/B: custom reference layouts fail the strict woodland identity gate.
-	# Restore the unchanged canonical woodland for an equal-content comparison.
-	if str(args.get("plain_reference", "off")) == "on" and not built.field.has_node("Countryside"):
-		var reference_scene: Node3D = built.field.get_node("Scenery")
-		var old_edges: Node = reference_scene.get_node("WoodlandEdges")
-		old_edges.free()
-		var canonical := ReferenceScenery.load_from(ReferenceScenery.DEFAULT_PATH, loaded.field)
-		var edges := ReferenceWoodland.build(loaded.field, canonical.scenery,
-			str(reference_scene.get_meta("stats").quality))
-		reference_scene.add_child(edges)
-		var stats: Dictionary = reference_scene.get_meta("stats")
-		stats.woodland_edge_plants = edges.get_meta("plants").size()
-		stats.woodland_edge_triangles = edges.get_meta("triangles")
-		stats.woodland_edge_batches = edges.get_meta("batches")
-		reference_scene.set_meta("stats", stats)
+	var reference_builder := Callable()
+	if args.has("plain_reference"):
+		reference_builder = func() -> void:
+			_build_plain_reference(parent, loaded.field, snapshot, str(args.plain_reference))
+	var built := World.build(parent, loaded.field, reference_builder, {}, snapshot)
+	if reference_builder.is_valid():
+		built.field = parent.get_node("Field")
 	var lake: Node3D = built.field.get_node_or_null("Lake")
 	var lake_diagnostics := {}
 	if lake != null:
@@ -399,3 +391,32 @@ static func _follow_aircraft(camera: Camera3D, aircraft: Node3D, sun: Vector3, o
 	aircraft.position = camera.position + (sun * cos(offset_rad) + across * sin(offset_rad)).normalized() * 60.0
 	camera.look_at(aircraft.position)
 	aircraft.basis = camera.basis * Basis(Vector3.RIGHT, PI / 2.0)
+
+
+## LU-28: retain the canonical lake, near grass and woodland while replacing
+## only scenery placements and removing countryside surfaces. --scenery_file
+## alone would disable the lake and its plants, invalidating the comparison.
+static func _build_plain_reference(parent: Node3D, field: Dictionary, lighting: Dictionary, path: String) -> void:
+	var built := ReferenceField.build(field, lighting)
+	var old_scene: Node3D = built.get_node("Scenery")
+	var canonical: Dictionary = old_scene.get_meta("source_definition")
+	old_scene.free()
+	var plain: Node3D = built.get_node("Countryside")
+	var materials: Array = built.get_meta("lighting_materials")
+	materials.erase(plain.get_meta("lighting_material"))
+	built.set_meta("lighting_materials", materials)
+	plain.free()
+	var reference := ReferenceScenery.load_from(path, field)
+	var opts := SceneryMaterials.options()
+	var lake: Dictionary = built.get_meta("lake_context")
+	var scenery := SceneryMaterials.build(field, reference.scenery, opts, lighting, lake)
+	scenery.get_node("WoodlandEdges").free()
+	var edges := ReferenceWoodland.build(field, canonical, str(opts.quality), lake)
+	scenery.add_child(edges)
+	var stats: Dictionary = scenery.get_meta("stats")
+	stats.woodland_edge_plants = edges.get_meta("plants").size()
+	stats.woodland_edge_triangles = edges.get_meta("triangles")
+	stats.woodland_edge_batches = edges.get_meta("batches")
+	scenery.set_meta("stats", stats)
+	built.add_child(scenery)
+	parent.add_child(built)
