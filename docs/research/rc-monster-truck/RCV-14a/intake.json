@@ -451,193 +451,193 @@
     "artifacts": [
       {
         "bytes": 31068,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/build_mt8.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/build_mt8.py",
         "sha256": "97c64ede9586857eeeac91e2d94d6fd18001221a14319f7ef920c21dbeedd761"
       },
       {
         "bytes": 3700,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/check_mt8.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/check_mt8.py",
         "sha256": "e03c155772886b71619f1c12b56f552c4fe900a32c73e6abc34d71b73f716ae5"
       },
       {
         "bytes": 2434,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/compose_sheets.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/compose_sheets.py",
         "sha256": "53caf8e3f583c3f7de2254919430f0a1c183a3bbaa4321cf5d2fccbd62eb3de2"
       },
       {
         "bytes": 6105,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/gen_rig_gd.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/gen_rig_gd.py",
         "sha256": "965541e13a3ac68b3d4380056a66d621e5a47735358df14f6adbe5053346b502"
       },
       {
         "bytes": 3494,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/godot_check_report.json",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/godot_check_report.json",
         "sha256": "675412d1bc3717af4f73d2fb28abbff9d92fc9bea223e15844e728b40a5fa312"
       },
       {
         "bytes": 4902,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/mt8_rig.gd",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/mt8_rig.gd",
         "sha256": "b120b5d202b78d537bb3c71a61339af95463209eb918966535e3c34f760e65a2"
       },
       {
         "bytes": 326,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/project.godot",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/project.godot",
         "sha256": "f554ced0fab9fd368ccf4752f8bacc6b2918addb55d7cd26fab0b2b14d9740e0"
       },
       {
         "bytes": 10682,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/test_mt8.gd",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/test_mt8.gd",
         "sha256": "75d76ca08962e1c5d11c6a9af344b65e43d68caf335bfedfdf9ad30a7b306b79"
       },
       {
         "bytes": 8604,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/mt8_geo.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/mt8_geo.py",
         "sha256": "c319fd06ae97b525417ac6f31d01d86218e32fd04f21f43cb64a0e6040b6a354"
       },
       {
         "bytes": 2697,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/mt8_pose.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/mt8_pose.py",
         "sha256": "a4ffc3a4a961a74c0dcff1b4b48e706cdf8a5a28a6a4ca21f77d0c8db97f9f7a"
       },
       {
         "bytes": 9239,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/mt8_spec.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/mt8_spec.py",
         "sha256": "fd00b8e7d95e32028ee861e950b43c25ae2efa0b90faccd9ab4cc7c5a3ad56f0"
       },
       {
         "bytes": 389,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/gltf_export_settings.json",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/gltf_export_settings.json",
         "sha256": "5126ac49ac5dd7363bd54e93d3aacd1c5401b7587c3ca7014ff532d892f4a23e"
       },
       {
         "bytes": 2506,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/interference_report.json",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/interference_report.json",
         "sha256": "29c5d094fd1978507eb26d66bd66b4094f8e6558aff8dd32764bed8a2ecd6bc7"
       },
       {
         "bytes": 716526,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.blend",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.blend",
         "sha256": "e5aa9270bfa9507dd6e74e972f65c1aebe62566512760723565b79399397f0c8"
       },
       {
         "bytes": 1929840,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb",
         "sha256": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6"
       },
       {
         "bytes": 7612,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json",
         "sha256": "8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef"
       },
       {
         "bytes": 1287383,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/01_tres_cuartos_delantero.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/01_tres_cuartos_delantero.png",
         "sha256": "7bcc5dbbbf2aa253736f634e142334c7c73ce7b8e792f7cf525d5f62f89bf717"
       },
       {
         "bytes": 1278331,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/02_tres_cuartos_trasero.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/02_tres_cuartos_trasero.png",
         "sha256": "74ec065cd076f33a15cc9168bd4d3d98a4f876e3250996ace063078e06c442ce"
       },
       {
         "bytes": 1070003,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/03_frontal.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/03_frontal.png",
         "sha256": "d29b728eff1f63affd8512f19f135904cc3847cf02ba6d161ed0841bca310fe5"
       },
       {
         "bytes": 1163696,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/04_lateral_izquierdo.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/04_lateral_izquierdo.png",
         "sha256": "e58fe59136b7f9432dbb86b17d8a1056352697ffe8617edd60495d1c3bcce114"
       },
       {
         "bytes": 1189844,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/05_superior.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/05_superior.png",
         "sha256": "ce69896c554599c1b3b14576143d98ead0e5c1e95059c6420a36827917a5887a"
       },
       {
         "bytes": 1112577,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/06_inferior.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/06_inferior.png",
         "sha256": "a7896c8d056f47e04fd7a61844054d3e5f64b2e2f56b5cdd5d0a5a4202e43666"
       },
       {
         "bytes": 1223907,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/07_bajos_tres_cuartos.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/07_bajos_tres_cuartos.png",
         "sha256": "24785a84c88823abee51e61affaef106f4118cdbe43e97fd04bcea2d90fa3c97"
       },
       {
         "bytes": 1246143,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/10_compresion_max_giro_izq_30.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/10_compresion_max_giro_izq_30.png",
         "sha256": "6412bfe022d56ff1cbdda4aa6383a68564dc0c36d95af69eaaa2219a90b133f8"
       },
       {
         "bytes": 1337448,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/11_extension_max_giro_der_30.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/11_extension_max_giro_der_30.png",
         "sha256": "d8d2d35c8e08cf0d46c47c92a0ce8fc755306f2f63449c8fd1c84e2f70a214cc"
       },
       {
         "bytes": 1111553,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/12_frontal_extension_max.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/12_frontal_extension_max.png",
         "sha256": "ae7b415e3b52bee6301d89ace2e9944eebef873d7216137837a82b6efb850f24"
       },
       {
         "bytes": 1059874,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/13_frontal_compresion_max.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/13_frontal_compresion_max.png",
         "sha256": "73a5b06fc00a6219a7627eb9cd07b51cfc7f67c8baaf890917b041dff1f683d4"
       },
       {
         "bytes": 1206346,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/14_superior_giro_izq_30.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/14_superior_giro_izq_30.png",
         "sha256": "033afc4662f2a6b826a0fce3daf36d6794c7e9fd12ba038670fcf319aed6634c"
       },
       {
         "bytes": 1290263,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/15_articulacion_cruzada.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/15_articulacion_cruzada.png",
         "sha256": "dd0ef0d15276e00fd9a31dd6da59a7668c1d80da400c5c9f50d3eb4c2ee97432"
       },
       {
         "bytes": 1324781,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/20_volcado_techo.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/20_volcado_techo.png",
         "sha256": "e6fd746e575917ba8fec74c6bcb61a4d56974019c16aa51d4fd92065df26e0c0"
       },
       {
         "bytes": 1250307,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/21_volcado_costado.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/21_volcado_costado.png",
         "sha256": "802ca8e87230d480b6398fbed86bb41aaf64477a2880f78179992ff470c26bfa"
       },
       {
         "bytes": 1269995,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/30_proxies_colision.png",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/renders/30_proxies_colision.png",
         "sha256": "d7599e9b5cb2039471287b877fcc32aaf9fa1cbf3c156bbee3c183ac6b35b92e"
       },
       {
         "bytes": 2492,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/README.md",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/README.md",
         "sha256": "30d6bbc494927eff20a492ee7663b40010002bdf744ba92b304619cfc9bcab4a"
       },
       {
         "bytes": 6934,
-        "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/render_mt8.py",
+        "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/render_mt8.py",
         "sha256": "d425372ae3d207ae7e9e80163f3aad0404a291c2940ed58aca030106518d4620"
       }
     ],
     "geometry_spec": {
-      "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json",
+      "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json",
       "sha256": "8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef"
     },
     "package_export_glb": {
       "bytes": 1929840,
-      "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb",
+      "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb",
       "sha256": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6"
     },
-    "package_root": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte",
+    "package_root": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte",
     "rig": {
-      "path": "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/mt8_rig.gd",
+      "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/mt8_rig.gd",
       "sha256": "b120b5d202b78d537bb3c71a61339af95463209eb918966535e3c34f760e65a2"
     },
     "submitted_glb": {
       "bytes": 1929840,
       "matches_package_export": true,
-      "path": "RC CARS/MT8_Bisonte_1.glb",
+      "path": "assets/source-deliveries/mt8-bisonte/MT8_Bisonte_1.glb",
       "sha256": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6"
     }
   },

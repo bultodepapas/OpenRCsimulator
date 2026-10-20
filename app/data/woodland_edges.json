@@ -2279,7 +2279,7 @@
     "app/assets/landscape/vegetation/impostors/fern_1_4view.json": "55a875ac3c278dcf08f4c2d6f5df4f3ba1b399f0265f9f62d5f04cfd8ed729b5",
     "app/assets/landscape/vegetation/impostors/grass_common_short_4view.json": "a217d565f3f44f48eb06a67e5ed28f2ef3ad9cc99b64e8e0b6d64214d816e5a5",
     "app/assets/landscape/vegetation/impostors/grass_common_tall_4view.json": "7e5e5df58a41ca89ae18f2b4a871856129f5faf787ce52d2e5a125ee8a3d238b",
-    "app/data/field_loader.gd": "b81b1b0d3c0ee75a16bf65daba8575186c579aeb4f432ace22c1a36c98b25a11",
+    "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
     "app/data/fields/default.json": "5dd1111ba51b242751f004c29385b6c7c6fc371adee399d43d6ab99b102731e5",
     "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
     "app/data/scenery/default.json": "42bdb5c019d5db14b096f2a1e4fd02bd27cffdc4a07e191ff33b092f19faac54",

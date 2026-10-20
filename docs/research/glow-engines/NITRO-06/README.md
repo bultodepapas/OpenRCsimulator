@@ -87,6 +87,13 @@ On the whole flight-test card, flown on the same tree with and without the law (
 
 ## Reproduce
 
+Release verification, 2026-10-19: the carburettor's `pow`, `sqrt` and `acos` calls
+now use the existing `math3d` wrappers, satisfying the H6 simulation boundary.
+Those wrappers call the same built-ins. A native Godot 4.7.2 comparison of 5,005
+sampled flow, root, lens, opening and capacity outputs against the pre-routing
+source was byte-identical; the checked carburettor suite passed all 58 checks.
+This routing change does not alter the physical law.
+
 ```sh
 GODOT="$(app/get-godot.sh)"
 "$GODOT" --headless --path app --audio-driver Dummy --script res://tests/test_glow_carburetor.gd

@@ -99,12 +99,20 @@ func glow_bounded_trim_contract() -> void:
 					float(seed), float(condition.rho), float(condition.charge))
 				check("Extra 22 m/s six-axis root: %s fill=%s seed=%s" % [condition.name, fill, seed],
 					solved.ok and finite_result(solved) and solved.residual < 1e-8 and solved.throttle >= 0.0 and solved.throttle <= 1.0)
-			for seed in [0.4, 0.75, 0.95]:
-				var refused_result: Dictionary = Trim._solve_from("level", 17.0, model, G, model.controls.throw_rad,
-					float(seed), 1.225, 1.0)
-				check("Extra idle-limited 17 m/s refuses cleanly fill=%s seed=%s" % [fill, seed],
-					not refused_result.ok and "stalled" in refused_result.message and finite_result(refused_result) and
-					refused_result.throttle >= 0.0 and refused_result.throttle <= 1.0 and refused_result.residual > 1e-8)
+		# NITRO-06's flow restriction removed the old high-speed idle floor. The real installation can now trim
+		# at 17 m/s. Retain the bounded-throttle refusal gate using an explicitly excessive idle opening.
+		var excessive_idle: Dictionary = model.duplicate(true)
+		excessive_idle.propulsion.glow.throttle_idle_offset = 0.3
+		for seed in [0.4, 0.75, 0.95]:
+			var slow: Dictionary = Trim._solve_from("level", 17.0, model, G, model.controls.throw_rad,
+				float(seed), 1.225, 1.0)
+			check("Extra flow-restricted 17 m/s converges fill=%s seed=%s" % [fill, seed],
+				slow.ok and finite_result(slow) and slow.residual < 1e-8 and slow.throttle >= 0.0 and slow.throttle <= 1.0)
+			var refused_result: Dictionary = Trim._solve_from("level", 17.0, excessive_idle, G,
+				excessive_idle.controls.throw_rad, float(seed), 1.225, 1.0)
+			check("synthetic excessive-idle 17 m/s refuses cleanly fill=%s seed=%s" % [fill, seed],
+				not refused_result.ok and "stalled" in refused_result.message and finite_result(refused_result) and
+				refused_result.throttle == 0.0 and refused_result.residual > 1e-8)
 
 
 func linear_contract() -> void:
