@@ -4606,3 +4606,10 @@ msgstr "Salir al escritorio"
 
 msgid "Devices, profiles and radio calibration"
 msgstr "Dispositivos, perfiles y calibración de la radio"
+
+# UI-33: landscape display names on Home and in the Pause identity line (UI-30 AL-5).
+msgid "Club field"
+msgstr "Campo del club"
+
+msgid "Green paradise"
+msgstr "Paraíso verde"

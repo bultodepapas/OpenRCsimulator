@@ -106,7 +106,7 @@ func _run() -> void:
 	check("Home retains Green after helicopter flight", app.home.landscape_id == GREEN)
 	TranslationServer.set_locale("es")
 	await ui.settle()
-	check("landscape selector translates its label", app.home.landscape_button.text == "Paisaje: Green paradise")
+	check("landscape selector translates its label", app.home.landscape_button.text == "Paisaje: Paraíso verde")
 	TranslationServer.set_locale("en")
 	await ui.close_app(app)
 
