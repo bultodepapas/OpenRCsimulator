@@ -71,6 +71,7 @@ func configure(player: Node, field: Dictionary, landscape: String, requested: Di
 				agent.free()
 				for candidate in candidates: candidate.free()
 				return prepared
+			agent.apply_presentation(checked.config)
 			var state: PackedFloat64Array = agent.session.sim.state
 			var player_state: PackedFloat64Array = player.sim.state
 			if Math.norm(Math.v3(state[0] - player_state[0], state[1] - player_state[1], state[2] - player_state[2])) < 30.0:
@@ -113,6 +114,19 @@ func configure(player: Node, field: Dictionary, landscape: String, requested: Di
 
 func _refuse(message: String) -> Dictionary:
 	return {ok = false, errors = PackedStringArray([message])}
+
+
+## Presentation edits apply immediately without rebuilding or changing a flight.
+func apply_presentation(requested: Dictionary) -> Dictionary:
+	var checked: Dictionary = Config.validate(requested)
+	if not checked.ok:
+		return checked
+	for key: String in ["engine_volume", "show_labels", "label_distance_m"]:
+		config[key] = checked.config[key]
+	for agent in agents:
+		agent.apply_presentation(config)
+	changed.emit()
+	return {ok = true, errors = PackedStringArray()}
 
 
 func _before_step(tick: int) -> void:

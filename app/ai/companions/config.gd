@@ -15,6 +15,9 @@ const ALLOWED_KEYS := [
 	"activity",
 	"pilot",
 	"incidents_enabled",
+	"engine_volume",
+	"show_labels",
+	"label_distance_m",
 ]
 
 
@@ -27,6 +30,9 @@ static func defaults() -> Dictionary:
 		"activity": ACTIVITY,
 		"pilot": PILOT_SKILL,
 		"incidents_enabled": false,
+		"engine_volume": 1.0,
+		"show_labels": false,
+		"label_distance_m": 250.0,
 	}
 
 
@@ -83,6 +89,21 @@ static func validate(raw: Variant) -> Dictionary:
 		errors.append("incidents_enabled must be false for the MVP")
 	else:
 		normalized.incidents_enabled = false
+
+	var labels_value: Variant = source.get("show_labels", normalized.show_labels)
+	if typeof(labels_value) != TYPE_BOOL:
+		errors.append("show_labels must be a boolean")
+	else:
+		normalized.show_labels = labels_value
+	for key: String in ["engine_volume", "label_distance_m"]:
+		var value: Variant = source.get(key, normalized[key])
+		var lower := 0.0 if key == "engine_volume" else 50.0
+		var upper := 1.0 if key == "engine_volume" else 1000.0
+		if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)) \
+				or float(value) < lower or float(value) > upper:
+			errors.append("%s must be a finite number in [%s, %s]" % [key, lower, upper])
+		else:
+			normalized[key] = float(value)
 
 	if normalized.enabled and normalized.count == 0:
 		errors.append("enabled companions require a count from 1 to %d" % MAX_COUNT)

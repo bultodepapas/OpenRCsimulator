@@ -13,6 +13,10 @@ const MAX_SEED := 4294967295
 var enabled_check: CheckBox
 var count_picker: OptionButton
 var seed_edit: LineEdit
+var volume_slider: HSlider
+var volume_label: Label
+var labels_check: CheckBox
+var label_distance: SpinBox
 var status_label: Label
 var save_default_check: CheckBox
 var remove_button: Button
@@ -54,13 +58,16 @@ func configure(config: Dictionary, status: Dictionary = {}) -> void:
 	enabled_check.button_pressed = bool(config.get("enabled", false))
 	count_picker.select(requested_count - 1)
 	seed_edit.text = str(config.get("seed", 0))
+	volume_slider.value = 100.0 * float(config.get("engine_volume", 1.0))
+	labels_check.button_pressed = bool(config.get("show_labels", false))
+	label_distance.value = float(config.get("label_distance_m", 250.0))
 	_in_flight = bool(status.get("in_flight", false))
 	_active_count = maxi(0, _status_integer(status, "active", "active_count", 0))
 	var airborne := maxi(0, _status_integer(status, "airborne", "airborne_count", 0))
 	var requested := maxi(0, _status_integer(status, "requested", "requested_count", requested_count))
 	status_label.text = tr("Traffic: %d airborne / %d active / %d requested") % [airborne, _active_count, requested]
 	if _in_flight:
-		status_label.text += "\n" + tr("Changes apply after Restart flight. Remove now clears the current companions.")
+		status_label.text += "\n" + tr("Flight settings apply after Restart flight. Sound and labels apply immediately. Remove now clears the current companions.")
 		var stopped := int(status.get("faulted", 0)) + int(status.get("crashed", 0))
 		if stopped > 0:
 			status_label.text += "\n" + tr("%d companions stopped; restart or remove them.") % stopped
@@ -163,6 +170,45 @@ func _build() -> void:
 		"Experienced Ugly Stik pilots fly circuits at Club field, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable.",
 		"SecondaryLabel", true,
 	))
+	var volume_row := HBoxContainer.new()
+	volume_row.add_theme_constant_override("separation", 16)
+	var volume_title := Widgets.label("Companion engine volume", "SectionLabel", true)
+	volume_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	volume_row.add_child(volume_title)
+	volume_slider = HSlider.new()
+	volume_slider.name = "CompanionEngineVolume"
+	volume_slider.min_value = 0.0
+	volume_slider.max_value = 100.0
+	volume_slider.step = 5.0
+	volume_slider.value = 100.0
+	volume_slider.custom_minimum_size.x = 180.0
+	volume_slider.value_changed.connect(_on_volume_changed)
+	volume_row.add_child(volume_slider)
+	volume_label = Widgets.label("100%", "SecondaryLabel")
+	volume_label.custom_minimum_size.x = 48.0
+	volume_row.add_child(volume_label)
+	body.add_child(volume_row)
+	labels_check = CheckBox.new()
+	labels_check.name = "ShowCompanionLabels"
+	labels_check.text = "Show companion labels"
+	labels_check.toggled.connect(_on_setting_changed)
+	body.add_child(labels_check)
+	var distance_row := HBoxContainer.new()
+	distance_row.add_theme_constant_override("separation", 16)
+	var distance_title := Widgets.label("Label distance", "SectionLabel", true)
+	distance_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	distance_row.add_child(distance_title)
+	label_distance = SpinBox.new()
+	label_distance.name = "CompanionLabelDistance"
+	label_distance.min_value = 50.0
+	label_distance.max_value = 1000.0
+	label_distance.step = 25.0
+	label_distance.value = 250.0
+	label_distance.suffix = "m"
+	label_distance.custom_minimum_size.x = 220.0
+	label_distance.value_changed.connect(_on_setting_changed)
+	distance_row.add_child(label_distance)
+	body.add_child(distance_row)
 
 	status_label = Widgets.label("", "SecondaryLabel", true)
 	status_label.name = "CompanionTrafficStatus"
@@ -214,7 +260,8 @@ func _resize_layout() -> void:
 func _sync_focus_order() -> void:
 	if not is_inside_tree():
 		return
-	var focusables: Array[Control] = [enabled_check, count_picker, seed_edit]
+	var focusables: Array[Control] = [enabled_check, count_picker, seed_edit, volume_slider,
+		labels_check, label_distance.get_line_edit()]
 	if save_default_check.visible:
 		focusables.append(save_default_check)
 	if remove_button.visible:
@@ -246,6 +293,12 @@ func _status_integer(status: Dictionary, primary: String, secondary: String, fal
 func _on_setting_changed(_value: Variant = null) -> void:
 	if error_label.visible:
 		set_error("")
+
+
+func _on_volume_changed(value: float) -> void:
+	if volume_label != null:
+		volume_label.text = "%d%%" % roundi(value)
+	_on_setting_changed()
 
 
 func _on_save_default_toggled(pressed: bool) -> void:
@@ -282,6 +335,9 @@ func _on_apply() -> void:
 		"enabled": enabled_check.button_pressed,
 		"count": count,
 		"seed": seed_value,
+		"engine_volume": volume_slider.value / 100.0,
+		"show_labels": labels_check.button_pressed,
+		"label_distance_m": label_distance.value,
 	})
 
 

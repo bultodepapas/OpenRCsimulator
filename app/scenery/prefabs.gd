@@ -363,6 +363,16 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 	k.xf = saved
 	_pavilion_wall_course(k, w, d)
 	k.hip_roof(w, d, h + 0.15, 1.8, 0.5, _c("roof_slate"))
+	# Thin capped ridges give the slate a constructed termination above the roof skin.
+	var hip_ridge_half := 5.0 - 3.5 * 0.98
+	var ridge_left := Vector3(-hip_ridge_half, 4.70, 0)
+	var ridge_right := Vector3(hip_ridge_half, 4.70, 0)
+	var ridge_col := _c("roof_slate").lightened(0.18)
+	k.beam(ridge_left, ridge_right, 0.075, ridge_col)
+	for p: Vector3 in [Vector3(-5.0, 2.88, -3.5), Vector3(-5.0, 2.88, 3.5)]:
+		k.beam(p, ridge_left, 0.067, ridge_col)
+	for p: Vector3 in [Vector3(5.0, 2.88, -3.5), Vector3(5.0, 2.88, 3.5)]:
+		k.beam(p, ridge_right, 0.067, ridge_col)
 	# Eave boards follow the existing hip roof, staying inside its overhang.
 	var eave_x := w * 0.5 + 0.5 - 0.05
 	var eave_z := d * 0.5 + 0.5 - 0.05
@@ -385,6 +395,11 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 		Vector3(w * 0.5 + 0.2, 2.62, vz1 - 0.2), _c("roof_metal_dark"))
 	k.quad(Vector3(-w * 0.5 - 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.91, vz0),
 		Vector3(-w * 0.5 - 0.2, 2.91, vz0), _c("wood_light"))
+	# Raised longitudinal seams at realistic sheet spacing on the lean-to roof.
+	for i in 18:
+		var seam_x := -4.35 + float(i) * 0.51
+		k.beam(Vector3(seam_x, 2.655, vz1 - 0.18),
+			Vector3(seam_x, 2.985, vz0 - 0.02), 0.017, _c("roof_metal_dark").lightened(0.16))
 	# The veranda's front fascia and slim side barge trim close the exposed sheet edges.
 	k.beam(Vector3(-4.62, 2.64, vz1 - 0.16), Vector3(4.62, 2.64, vz1 - 0.16), 0.08, _c("wood_light"))
 	for side: float in [-1.0, 1.0]:

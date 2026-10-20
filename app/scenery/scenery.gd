@@ -10,6 +10,7 @@ const Loader = preload("res://scenery/scenery_loader.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
+const BuildingRoofs = preload("res://scenery/building_roofs.gd")
 const PowerLines = preload("res://scenery/power_lines.gd")
 const Models = preload("res://scenery/models.gd")
 const Population = preload("res://scenery/population.gd")
@@ -277,6 +278,9 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var motion_parent := Node3D.new()
 	motion_parent.name = "Motion"
 	root.add_child(motion_parent)
+	var roof_parent := Node3D.new()
+	roof_parent.name = "BuildingRoofs"
+	root.add_child(roof_parent)
 	var timing := {}
 	for group: Dictionary in scenery.groups:
 		var g0 := Time.get_ticks_usec()
@@ -317,6 +321,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						kit.xf = xf
 						var moving: Array = Prefabs.build(prefab, kit, pl.seed, theme)
 						kit.xf = Transform3D.IDENTITY
+						for roof: MeshInstance3D in BuildingRoofs.create(prefab, xf, pl.seed, damage_id):
+							roof_parent.add_child(roof)
 						for part: Dictionary in moving:
 							var moving_node := _motion_node(part, xf, pl.seed)
 							moving_node.set_meta("damage_motion_id", damage_id)
@@ -647,6 +653,10 @@ static func apply_damage(field_node: Node3D, damage: Dictionary, force_shadows: 
 	for child: Node in root.get_children():
 		if child is MeshInstance3D and child.has_meta("damage_ranges"):
 			DamageBatches.apply(child, damage)
+	var roofs: Node3D = root.get_node_or_null("BuildingRoofs")
+	if roofs != null:
+		for roof: Node3D in roofs.get_children():
+			roof.visible = damage.get(roof.get_meta("damage_motion_id"), {}).get("state", "") != "broken"
 	commit_lighting(field_node, prepare_lighting(field_node, root.get_meta("damage_lighting", {}), true))
 
 static func _find_scenery(field_node: Node3D) -> Node3D:

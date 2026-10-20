@@ -2207,6 +2207,8 @@ func set_companion_config(raw: Dictionary) -> Dictionary:
 	var checked: Dictionary = _companion_options(raw)
 	if checked.ok:
 		companion_config = checked.config.duplicate(true)
+		if companions != null:
+			companions.apply_presentation(companion_config)
 	return checked
 
 

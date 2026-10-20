@@ -89,7 +89,7 @@ static func _roof(k: MeshKit, trim: Color) -> void:
 				k.quad(a,b,c,d,tone)
 		for i in 9:
 			var z := -1.39+i*2.78/8.0
-			k.beam(Vector3(0,2.861,z),Vector3(side*1.69,2.016,z),0.014,roof.lightened(0.08))
+			k.beam(Vector3(0,2.886,z),Vector3(side*1.69,2.041,z),0.014,roof.lightened(0.08))
 		# Folded ridge flashing and gable fascia.
 		var a := Vector3(0,2.88,-1.4)
 		var b := Vector3(side*0.085,2.836,-1.4)

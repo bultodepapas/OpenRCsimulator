@@ -22,6 +22,10 @@ var _last_command: Dictionary = {}
 var _weather_rms := PackedFloat64Array()
 var _audio_enabled := false
 var _accepted_trim: Dictionary = {}
+var _engine_volume := 1.0
+var _show_labels := false
+var _label_distance_m := 250.0
+var _traffic_label: Label3D
 
 
 func configure(player: Node, field: Dictionary, slot: int, count: int, seed_value: int,
@@ -81,8 +85,35 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 func _ready() -> void:
 	if _audio_enabled and not view.is_empty():
 		_engine = EngineSound.create(view.root, session.sim, EngineSound.reference_rpm(session.aircraft.model.propulsion))
-		_engine.volume_db = -15.0
 		_engine.max_distance = 450.0
+		_apply_engine_volume()
+
+
+## Cosmetic configuration only; the manager validates values before this boundary.
+func apply_presentation(settings: Dictionary) -> void:
+	_engine_volume = float(settings.engine_volume)
+	_show_labels = bool(settings.show_labels)
+	_label_distance_m = float(settings.label_distance_m)
+	_apply_engine_volume()
+	if _show_labels and not view.is_empty() and _traffic_label == null:
+		_traffic_label = Label3D.new()
+		_traffic_label.name = "TrafficLabel"
+		_traffic_label.text = tr("Companion %d") % (slot_id + 1)
+		_traffic_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		_traffic_label.fixed_size = true
+		_traffic_label.font_size = 24
+		_traffic_label.pixel_size = 0.0014
+		_traffic_label.outline_size = 4
+		_traffic_label.no_depth_test = false
+		_traffic_label.visible = false
+		add_child(_traffic_label)
+	if _traffic_label != null:
+		_traffic_label.visible = false # The next render checks camera/distance and stop state.
+
+
+func _apply_engine_volume() -> void:
+	if _engine != null:
+		_engine.volume_db = -80.0 if _engine_volume == 0.0 else -15.0 + linear_to_db(_engine_volume)
 
 
 func _refuse(message: String) -> Dictionary:
@@ -140,13 +171,18 @@ func render(delta: float, frozen: bool) -> void:
 	var state: PackedFloat64Array = session.sim.interpolated(Engine.get_physics_interpolation_fraction())
 	var pose: Vector3 = Frames.ned_to_render([state[0], state[1], state[2]])
 	view.root.transform = Frames.root_transform(Frames.quat_to_render(state.slice(6, 10)), pose, _cg_model)
+	if _traffic_label != null:
+		_traffic_label.position = pose + Vector3.UP * 2.0
+		var camera: Camera3D = get_viewport().get_camera_3d() if is_inside_tree() else null
+		_traffic_label.visible = _show_labels and failure.is_empty() and session.crash.is_empty() \
+			and camera != null and camera.global_position.distance_squared_to(pose) <= _label_distance_m * _label_distance_m
 	if not stopped:
 		_prop_angle = fposmod(_prop_angle + TAU * float(session.sim.aux[0]) / 60.0 * minf(delta, 0.1), TAU)
 	view.propeller.rotation.z = _prop_angle * float(view.get("propeller_spin_sign", 1.0))
 	Builder.apply_controls(view, ControlSurfaces.hinge_rotations_from_surfaces(session.surface_angles_deg()), float(session.commands.throttle))
 	if _engine != null:
-		_engine.stream_paused = stopped
-		if not stopped:
+		_engine.stream_paused = stopped or _engine_volume == 0.0
+		if not _engine.stream_paused:
 			EngineSound.update(_engine, 0.0, float(session.sim.aux[0]), EngineSound.reference_rpm(session.aircraft.model.propulsion))
 
 

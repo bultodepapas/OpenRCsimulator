@@ -101,7 +101,10 @@ func _camera(close: bool) -> void:
 
 func _capture(label: String, close: bool) -> void:
 	_camera(close)
-	await RenderingServer.frame_post_draw
-	await RenderingServer.frame_post_draw
+	# Drain the final manual process request on Compatibility before a still
+	# readback; no new presentation time or particle request is submitted here.
+	for draw in 8:
+		await process_frame
+		await RenderingServer.frame_post_draw
 	var error := root.get_texture().get_image().save_png(out.path_join(label + ".png"))
 	if error != OK: push_error("Could not save capture " + label)
