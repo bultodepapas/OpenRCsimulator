@@ -84,8 +84,18 @@ exit 0
         self.assertIn("import failed", result.stdout)
         self.assertNotIn("VISITED", result.stdout)
 
-    def test_p51_envelope_has_a_full_flight_budget(self):
-        (self.root / "tests" / "test_p51_envelope.gd").touch()
+    def test_measured_slow_gates_have_bounded_ci_budgets(self):
+        slow_gates = {
+            "test_workshop_starts.gd",
+            "test_p51_ground.gd",
+            "test_trim_throttle.gd",
+            "test_prop_strike.gd",
+            "test_p51_handling.gd",
+            "test_ui_modal_responsive.gd",
+            "test_rcv_handling.gd",
+        }
+        for name in slow_gates | {"test_p51_envelope.gd"}:
+            (self.root / "tests" / name).touch()
         result = self.run_partition(0, 1)
         self.assertEqual(result.returncode, 0, result.stdout)
         budgets = {}
@@ -94,6 +104,9 @@ exit 0
             for arg in report["command"]:
                 if arg.startswith("res://tests/"):
                     budgets[arg.rsplit("/", 1)[-1]] = report["timeout_seconds"]
+        for name in slow_gates:
+            with self.subTest(test=name):
+                self.assertEqual(budgets[name], 120)
         self.assertEqual(budgets["test_p51_envelope.gd"], 180)
         self.assertEqual(budgets["test_probe_00.gd"], 60)
 

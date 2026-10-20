@@ -312,6 +312,9 @@ for t in "$HERE"/tests/test_*.gd; do
     test_heli_session.gd|test_heli_ground_session.gd) test_timeout=300 ;; # Actual preset hover, pilot-compensated landing and checkpoint replay.
     test_failure_session.gd|test_failure_shutdown.gd) test_timeout=180 ;; # EM: real 20-second onsets at 240 Hz, fleet parity and replay
     test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions
+    # v0.1.4 CI max 53.452 s; v0.1.5 prop-strike measured 55.943 s on WSL and hit CI's 60 s cap.
+    # Raise supervision only; bounded test loops and all assertion gates remain unchanged.
+    test_workshop_starts.gd|test_p51_ground.gd|test_trim_throttle.gd|test_prop_strike.gd|test_p51_handling.gd|test_ui_modal_responsive.gd|test_rcv_handling.gd) test_timeout=120 ;;
     test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_airfield_course.gd|test_rcv_airfield_track.gd|test_rcv_obstacle_contacts.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd|test_rcv_nitro_activity.gd|test_rcv_nitro_session.gd|test_nitro_dynamics.gd) test_timeout=300 ;;
     test_aircraft_catalog.gd|test_aircraft_light_control.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_landscapes.gd|test_runway_cli.gd|test_runway_fleet.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
