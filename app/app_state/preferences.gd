@@ -15,7 +15,8 @@ const FailureConfig := preload("res://failures/config.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
 
 const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
-const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false}
+const NIGHT_FIELD_ACTIVATION_CHOICES: Array[String] = ["auto", "on", "off"]
+const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false, "field_activation": "auto"}
 ## FUEL-07: the start fills Home offers for finite-fuel aircraft (fractions of the tank).
 const FUEL_FILLS := [1.0, 0.75, 0.5, 0.25]
 
@@ -53,6 +54,7 @@ const DEFAULTS := {
 	# FW-71: compact presentation choices, kept outside flight physics and the existing weather schema.
 	night_field_lighting = "club",
 	night_campfire = false,
+	night_field_activation = "auto",
 	# FW-78: additive visual selection. Old preferences retain the exact classic sky.
 	sky_config = SkyConfig.DEFAULTS,
 	# EM-09: optional injected failures are off until the player opts in.
@@ -157,6 +159,9 @@ static func load_from(path: String) -> Dictionary:
 	var night_campfire: Variant = cfg.get_value("night", "campfire", DEFAULTS.night_campfire)
 	if typeof(night_campfire) == TYPE_BOOL:
 		prefs.night_campfire = night_campfire
+	var night_field_activation: Variant = cfg.get_value("night", "field_activation", DEFAULTS.night_field_activation)
+	if typeof(night_field_activation) == TYPE_STRING and NIGHT_FIELD_ACTIVATION_CHOICES.has(night_field_activation):
+		prefs.night_field_activation = night_field_activation
 	if cfg.has_section_key("moon", "config"):
 		var checked_moon: Dictionary = MoonConfig.validate(cfg.get_value("moon", "config"))
 		if checked_moon.ok:
@@ -184,6 +189,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	var checked_night: Dictionary = validate_night_options({
 		"field_lighting": prefs.get("night_field_lighting", DEFAULTS.night_field_lighting),
 		"campfire": prefs.get("night_campfire", DEFAULTS.night_campfire),
+		"field_activation": prefs.get("night_field_activation", DEFAULTS.night_field_activation),
 	})
 	if not checked_night.ok:
 		return ERR_INVALID_DATA
@@ -222,6 +228,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 		cfg.set_value("flight", "lighting_config", checked_lighting.config.duplicate(true))
 	cfg.set_value("night", "field_lighting", checked_night.options.field_lighting)
 	cfg.set_value("night", "campfire", checked_night.options.campfire)
+	cfg.set_value("night", "field_activation", checked_night.options.field_activation)
 	cfg.set_value("sky", "config", checked_sky.config)
 	cfg.set_value("failures", "config", checked_failures.config.duplicate(true))
 	cfg.set_value("moon", "config", checked_moon.config)
@@ -234,15 +241,21 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	return cfg.save(path)
 
 
-## Night options are visual-only. Keep their product values strict in preferences and direct CLI launches.
+## Night options are visual-only. Two-key values are accepted for older callers and migrate to automatic activation.
 static func validate_night_options(raw: Variant) -> Dictionary:
-	if not raw is Dictionary or raw.size() != 2 or not raw.has_all(["field_lighting", "campfire"]):
-		return {ok = false, options = {}, errors = PackedStringArray(["night options must contain field_lighting and campfire only"])}
+	if not raw is Dictionary or not raw.has_all(["field_lighting", "campfire"]) \
+			or raw.size() != 2 and raw.size() != 3 \
+			or raw.size() == 3 and not raw.has("field_activation"):
+		return {ok = false, options = {}, errors = PackedStringArray(["night options must contain field_lighting, campfire and optional field_activation"])}
 	if typeof(raw.field_lighting) != TYPE_STRING or not NIGHT_FIELD_LIGHTING_CHOICES.has(raw.field_lighting):
 		return {ok = false, options = {}, errors = PackedStringArray(["field_lighting must be club, airfield or off"])}
 	if typeof(raw.campfire) != TYPE_BOOL:
 		return {ok = false, options = {}, errors = PackedStringArray(["campfire must be a boolean"])}
-	return {ok = true, options = {"field_lighting": raw.field_lighting, "campfire": raw.campfire}, errors = PackedStringArray()}
+	var field_activation: Variant = raw.get("field_activation", "auto")
+	if typeof(field_activation) != TYPE_STRING or not NIGHT_FIELD_ACTIVATION_CHOICES.has(field_activation):
+		return {ok = false, options = {}, errors = PackedStringArray(["field_activation must be auto, on or off"])}
+	return {ok = true, options = {"field_lighting": raw.field_lighting, "campfire": raw.campfire,
+		"field_activation": field_activation}, errors = PackedStringArray()}
 
 
 ## The direct route always starts from product defaults and never consults saved preferences.
@@ -258,6 +271,11 @@ static func night_options_from_args(args: Dictionary) -> Dictionary:
 		if typeof(campfire) != TYPE_STRING or campfire not in ["on", "off"]:
 			return {ok = false, options = {}, errors = PackedStringArray(["--campfire must be on or off"])}
 		options.campfire = campfire == "on"
+	if args.has("field-activation"):
+		var field_activation: Variant = args.get("field-activation")
+		if typeof(field_activation) != TYPE_STRING or not NIGHT_FIELD_ACTIVATION_CHOICES.has(field_activation):
+			return {ok = false, options = {}, errors = PackedStringArray(["--field-activation must be auto, on or off"])}
+		options.field_activation = field_activation
 	return validate_night_options(options)
 
 

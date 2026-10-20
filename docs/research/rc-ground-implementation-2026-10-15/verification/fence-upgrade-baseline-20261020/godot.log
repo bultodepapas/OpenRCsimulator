@@ -1,0 +1,115 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+GROUND_CLOSEUP {"case_id":"mt8-bisonte__track_start__low-orbit__day","complete":true,"frame_count":0,"image":"C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\fence-upgrade-baseline-20261020/mt8-bisonte__track_start__low-orbit__day.png","state_unchanged":true}
+
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+SCRIPT ERROR: Trying to assign value of type 'Nil' to a variable of type 'Dictionary'.
+   at: append_span (res://scenery/power_lines.gd:47)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+SCRIPT ERROR: Trying to assign value of type 'Nil' to a variable of type 'Dictionary'.
+   at: append_span (res://scenery/power_lines.gd:47)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+SCRIPT ERROR: Trying to assign value of type 'Nil' to a variable of type 'Dictionary'.
+   at: append_span (res://scenery/power_lines.gd:47)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parse JSON failed. Error at line 0: Unknown error getting token
+   at: parse_string (core/io/json.cpp:629)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+SCRIPT ERROR: Trying to assign value of type 'Nil' to a variable of type 'Dictionary'.
+   at: append_span (res://scenery/power_lines.gd:47)
+   GDScript backtrace (most recent call first):
+       [0] append_span (res://scenery/power_lines.gd:47)
+       [1] build (res://scenery/scenery.gd:393)
+       [2] attach (res://scenery/scenery.gd:175)
+       [3] build (res://render/field.gd:89)
+       [4] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [5] build (res://render/world/world.gd:291)
+       [6] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [7] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+WARNING: Tree wind is disabled for maple_tree because source material -9223371888091199198 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:398)
+       [4] attach (res://scenery/scenery.gd:175)
+       [5] build (res://render/field.gd:89)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:291)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)

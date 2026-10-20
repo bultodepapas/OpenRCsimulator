@@ -510,6 +510,7 @@ func _night_options_from_preferences() -> Dictionary:
 	var checked: Dictionary = Preferences.validate_night_options({
 		"field_lighting": preferences.get("night_field_lighting", Preferences.DEFAULTS.night_field_lighting),
 		"campfire": preferences.get("night_campfire", Preferences.DEFAULTS.night_campfire),
+		"field_activation": preferences.get("night_field_activation", Preferences.DEFAULTS.night_field_activation),
 	})
 	return checked.options.duplicate(true) if checked.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
 
@@ -651,6 +652,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		var selected_night: Dictionary = _night_options_from_preferences()
 		preferences.night_field_lighting = selected_night.field_lighting
 		preferences.night_campfire = selected_night.campfire
+		preferences.night_field_activation = selected_night.field_activation
 		var err: Error = Preferences.save_to(preferences_path, preferences)
 		_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
 		flight._note = _settings_note
@@ -1459,6 +1461,7 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 			preferences.sky_config = sky_result.config
 			preferences.night_field_lighting = night_result.options.field_lighting
 			preferences.night_campfire = night_result.options.campfire
+			preferences.night_field_activation = night_result.options.field_activation
 			if night_changed:
 				var save_error: Error = Preferences.save_to(preferences_path, preferences)
 				_settings_note = "" if save_error == OK else tr("Could not save settings (error %d).") % save_error
@@ -1489,6 +1492,7 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 		preferences.time_of_day = "day"
 		preferences.night_field_lighting = night_result.options.field_lighting
 		preferences.night_campfire = night_result.options.campfire
+		preferences.night_field_activation = night_result.options.field_activation
 		Conditions.session_preset = "day"
 		if save_selection:
 			var err: Error = Preferences.save_to(preferences_path, preferences)
@@ -1500,7 +1504,7 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 func _apply_flight_night_options(options: Dictionary) -> bool:
 	if flight == null or not flight.has_method("set_night_options"):
 		return false
-	var result: Variant = flight.call("set_night_options", options.field_lighting, options.campfire)
+	var result: Variant = flight.call("set_night_options", options.field_lighting, options.campfire, options.field_activation)
 	return typeof(result) != TYPE_BOOL or result
 
 
@@ -1627,6 +1631,7 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	preferences.lighting_invalid = false
 	preferences.night_field_lighting = checked_night.options.field_lighting
 	preferences.night_campfire = checked_night.options.campfire
+	preferences.night_field_activation = checked_night.options.field_activation
 	if lighting_changed:
 		preferences.time_of_day = "day"
 		Conditions.session_preset = "day"

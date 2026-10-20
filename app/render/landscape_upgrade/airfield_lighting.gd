@@ -13,6 +13,7 @@ const HEAD_PATH := "res://assets/landscape/night-lighting/lamp-head.glb"
 const LAMP_SHADER := preload("res://render/landscape_upgrade/field_lamp.gdshader")
 const HEAD_SCALE := 2.4
 const RUNWAY_MARKER_SHADER: Shader = preload("res://render/landscape_upgrade/runway_marker.gdshader")
+const RUNWAY_GROUND_SPILL_SHADER: Shader = preload("res://render/landscape_upgrade/runway_ground_spill.gdshader")
 
 const LIGHTS_ON_ELEVATION_DEG := 3.0
 const FULL_NIGHT_ELEVATION_DEG := -4.0
@@ -26,6 +27,7 @@ const RUNWAY_MARKER_CAMERA_OFFSET_M := 0.075 # offsets the optical face by appro
 const RUNWAY_MARKER_READABILITY_GAIN_FLOOR := 0.0025 # art-directed floor for a 50 mm light source at the far field.
 const RUNWAY_MARKER_FADE_START_M := 300.0 # estimated useful field distance; no photometric claim.
 const RUNWAY_MARKER_FADE_END_M := 600.0 # fade the readability aid outside the field.
+const RUNWAY_GROUND_SPILL_DIAMETER_M := 0.65 # small dry-turf scatter patch; no reflective streak.
 const RUNWAY_EDGE_ROW := "runway_edge_stakes"
 const RUNWAY_THRESHOLD_ROW := "threshold_stakes"
 const FLOOD_HOUSING := Color("#41484a")
@@ -47,6 +49,7 @@ const WINDOW_SPECS: Array[Dictionary] = [
 ]
 
 var _profile := "club"
+var _activation := "auto"
 var _last_snapshot := {}
 var _head_directions := {}
 var _environment: Environment
@@ -55,6 +58,7 @@ var _spot_bindings: Array[Dictionary] = []
 var _sprite_bindings: Array[Dictionary] = []
 var _omnis: Array[OmniLight3D] = []
 var _window_materials: Array[ShaderMaterial] = []
+var _ground_spill_material: ShaderMaterial
 var _last_night_factor := -1.0
 var _last_exposure := -1.0
 var _sdr_local_gain := 1.0
@@ -109,7 +113,9 @@ func apply_lighting(snapshot: Dictionary) -> void:
 	# Regional homes/obstruction lights are independent of the club's light switch.
 	if is_instance_valid(_regional):
 		_regional.apply_night(_night_factor(snapshot))
-	var factor := _night_factor(snapshot) if _profile != "off" else 0.0
+	var factor := 0.0
+	if _profile != "off" and _activation != "off":
+		factor = 1.0 if _activation == "on" else _night_factor(snapshot)
 	var exposure := _current_exposure()
 	if is_equal_approx(factor, _last_night_factor) and is_equal_approx(exposure, _last_exposure):
 		return
@@ -141,6 +147,8 @@ func apply_lighting(snapshot: Dictionary) -> void:
 	for material: ShaderMaterial in _window_materials:
 		if is_instance_valid(material):
 			material.set_shader_parameter("night_glow", factor)
+	if is_instance_valid(_ground_spill_material):
+		_ground_spill_material.set_shader_parameter("night_factor", factor)
 
 
 ## FW-71: profile changes only presentation; fixtures and physical proxies stay installed.
@@ -158,6 +166,20 @@ func set_profile(profile: String) -> bool:
 			var material: ShaderMaterial = binding.material
 			material.set_shader_parameter("edge_color", Color("#fff5e6") if profile == "airfield" else Color("#f4eee2"))
 			material.set_shader_parameter("halo_min_px", 5.5 if profile == "airfield" else RUNWAY_MARKER_HALO_MIN_PX)
+	if is_instance_valid(_ground_spill_material):
+		_ground_spill_material.set_shader_parameter("tint", Color("#fff5e6") if profile == "airfield" else Color("#f4eee2"))
+	_last_night_factor = -1.0
+	_last_exposure = -1.0
+	apply_lighting(_last_snapshot)
+	return true
+
+
+## Manual override affects the visual lamp output only. Hardware and collision proxies stay installed.
+func set_activation(activation: String) -> bool:
+	if not activation in ["auto", "on", "off"]:
+		return false
+	_activation = activation
+	set_meta("field_activation", activation)
 	_last_night_factor = -1.0
 	_last_exposure = -1.0
 	apply_lighting(_last_snapshot)
@@ -280,6 +302,7 @@ func _build_fixture_hardware(lights: Dictionary) -> void:
 	if fixtures.is_empty():
 		set_meta("fixture_hardware", {"flood_housings": 0, "marker_posts": 0})
 		return
+	_build_marker_ground_spill(fixtures)
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	# The existing shaft supports the downloaded, independently aimed heads on one narrow crossarm.
@@ -315,6 +338,38 @@ func _build_fixture_hardware(lights: Dictionary) -> void:
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(instance)
 	set_meta("fixture_hardware", {"flood_housings": floods, "marker_posts": posts})
+
+
+## All low edge pools use one MultiMesh draw and no additional Light3D or shadow pass.
+func _build_marker_ground_spill(fixtures: Array) -> void:
+	for fx: Dictionary in fixtures:
+		if str(fx.get("id", "")) != RUNWAY_EDGE_ROW or not (fx.get("points", null) is Array):
+			continue
+		var points: Array = fx.points
+		if points.is_empty():
+			return
+		var quad := QuadMesh.new()
+		quad.size = Vector2.ONE
+		_ground_spill_material = ShaderMaterial.new()
+		_ground_spill_material.shader = RUNWAY_GROUND_SPILL_SHADER
+		quad.material = _ground_spill_material
+		var batch := MultiMesh.new()
+		batch.transform_format = MultiMesh.TRANSFORM_3D
+		batch.mesh = quad
+		batch.instance_count = points.size()
+		var basis := Basis(Vector3.RIGHT, -PI / 2.0).scaled(Vector3(
+			RUNWAY_GROUND_SPILL_DIAMETER_M, RUNWAY_GROUND_SPILL_DIAMETER_M, 1.0))
+		for i in points.size():
+			var point: Array = points[i]
+			batch.set_instance_transform(i, Transform3D(basis, _render(float(point[0]), float(point[1]), 0.015)))
+		var instance := MultiMeshInstance3D.new()
+		instance.name = "RunwayEdgeGroundSpill"
+		instance.multimesh = batch
+		instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		instance.extra_cull_margin = RUNWAY_GROUND_SPILL_DIAMETER_M
+		add_child(instance)
+		set_meta("ground_spill_instances", points.size())
+		return
 
 
 ## Reuse the downloaded module, with optical axis -Z; no procedural replacement housing.

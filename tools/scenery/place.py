@@ -591,6 +591,14 @@ def build():
     for i in range(5):
         n, e = polar(1250.0 + i * 90.0, p_az - 3.0 + i * 1.5)
         pylons.append((n, e, p_az + 90.0))
+    # LU-30: local -Z follows the conductors; local X crossarms span the corridor.
+    # Use endpoint/centered tangents so adjacent source-mesh sockets remain aligned.
+    pylons = [
+        (n, e, math.degrees(math.atan2(
+            pylons[min(i + 1, len(pylons) - 1)][1] - pylons[max(0, i - 1)][1],
+            pylons[min(i + 1, len(pylons) - 1)][0] - pylons[max(0, i - 1)][0])))
+        for i, (n, e, _) in enumerate(pylons)
+    ]
     inst("pylons", "horizon", ["pylon"], pylons, "estimated", "Transmission line in the tree-free east corridor, in front of the wind farm")
     # LU-23: production meadow and flower instances are downloaded asset batches
     # assembled by botanical_habitats.gd; this source emits no procedural cushions.

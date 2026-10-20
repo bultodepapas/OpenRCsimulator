@@ -1,0 +1,48 @@
+{
+  "format": "openrc-ground-closeup-summary-v1",
+  "complete": true,
+  "case_count": 1,
+  "cases": [
+    {
+      "case_id": "mt8-bisonte__track_start__low-orbit__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\fence-upgrade-baseline-20261020/mt8-bisonte__track_start__low-orbit__day.png",
+      "image_sha256": "7ab792a63c7861720929d148f5dc48886bb6fb4bf7d0b45aa9743fff65bfb380",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_start",
+      "camera_mode": "low-orbit",
+      "lighting": "day",
+      "state_sha256": "275f741536e4b862cef1f28e9e1ce0b4e13d98dc01d2544bc6bbba6319e1b37d",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "draw_calls": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "mesh_signature_sha256": "f7e86f46e6fc037105b2889e0a4b35ce083b3c577736cd1f070b5afe78f26d29",
+      "mesh_geometry_signature_sha256": "508be2dddc4f14944f451c0ebf20f0738458aac3bb03d7854033e666ff6a6f7d",
+      "unique_texture_count": 76
+    }
+  ]
+}
