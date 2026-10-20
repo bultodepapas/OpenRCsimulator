@@ -8,6 +8,7 @@ const Screen := preload("res://ui/screen.gd")
 const ScreenTheme := preload("res://ui/ui_theme.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
+const UiScale := preload("res://ui/ui_scale.gd")
 
 signal continue_requested
 signal restart_requested
@@ -206,8 +207,8 @@ func _sync_sidebar_fade() -> void:
 		return
 	if _panel.is_queued_for_deletion() or _sidebar_fade.is_queued_for_deletion():
 		return
-	_sidebar_fade.offset_left = _panel.size.x
-	_sidebar_fade.offset_right = _panel.size.x + 32.0
+	_sidebar_fade.offset_left = _panel.offset_left + _panel.size.x
+	_sidebar_fade.offset_right = _panel.offset_left + _panel.size.x + 32.0
 
 
 ## Shows why the flight is paused and whether it can go on, and puts the keyboard focus on the first action.
@@ -259,10 +260,12 @@ func _update_large_text_panel_width() -> void:
 	if viewport_width > 0.0:
 		var viewport_limit := maxf(WIDTH, viewport_width * MAX_RAIL_VIEWPORT_RATIO)
 		panel_width = minf(desired_width, viewport_limit)
+	var span := UiScale.span_margin(viewport_width) # UI-35c (UI-30 SP-5): the sidebar joins the centred span
 	_panel.custom_minimum_size.x = panel_width
-	_panel.offset_right = panel_width
-	_sidebar_fade.offset_left = panel_width
-	_sidebar_fade.offset_right = panel_width + 32.0
+	_panel.offset_left = span
+	_panel.offset_right = span + panel_width
+	_sidebar_fade.offset_left = span + panel_width
+	_sidebar_fade.offset_right = span + panel_width + 32.0
 	_defer_scroll_restore()
 
 

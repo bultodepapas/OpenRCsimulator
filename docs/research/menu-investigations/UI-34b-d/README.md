@@ -36,4 +36,30 @@ A language switch now re-renders the start label without recording it as the rem
 
 One [`test_ui_home.gd`](../../../../app/tests/test_ui_home.gd) assertion encoded the AS-6 dead end. It now asserts that Workshop and Natural Random stay available while failure practice stays airplane-only.
 
-Regression runs: RESULTS-PENDING
+Regression runs (headless Godot 4.7.2): a 32-suite batch on the integrated tree, then the affected suites re-run on a clean copy of HEAD. All pass:
+
+| Suite | Result |
+| --- | --- |
+| `test_ui_aircraft_flow` | 19 ok |
+| `test_ui_home` | 242 ok |
+| `test_ui_aircraft` | 65 ok |
+| `test_ui_preserved_choices` | 19 ok |
+| `test_field_integration` | 39 ok |
+
+The other suites in the batch all passed too:
+- **Home:** `test_ui_home_layout`, `test_ui_home_start_layout`, `test_ui_home_legend`, `test_ui_home_preview_cache`, `test_ui_preview_requests`, `test_ui_preview_resources`
+- **Catalog and Natural Random:** `test_aircraft_catalog`, `test_ui_natural_random`, `test_natural_random_screen`, `test_natural_random_flight`
+- **Workshop:** `test_workshop_integration`, `test_workshop_ui`
+- **Shell and language:** `test_ui_language`, `test_landscapes`, `test_ui_battery_mode`, `test_ui_change_aircraft`, `test_ui_recovery_dead_ends`
+- **Pause and flight routes:** `test_ui_pause`, `test_ui_quit`, `test_ui_runway`, `test_failure_routes`
+- **Controllers:** `test_controller_pause_recovery`, `test_controller_menu`
+- **Other screens:** `test_ui_help`, `test_settings_ui`, `test_ui_update_notice`, `test_ui_weather`
+
+The batch's three failures were all stale expectations or environment, not defects:
+- `test_ui_home` still pinned the AS-6 dead end.
+- `test_ui_aircraft` pinned full names on the card, the Timber's long Spanish name and the helicopter's disabled Workshop and Natural Random.
+- `test_field_integration` could not preload HUD radio images merged from another track before `--import`.
+
+## Addendum: HN-3
+
+Off the Flight page, a **FlyCaption** above the pinned FLY reads "Next flight: <short name>" (ES "Próximo vuelo: …"). The Aircraft and Practice pages now say which aircraft FLY launches. The Flight page already shows it in the card, so it has no caption. [`test_ui_home_span.gd`](../../../../app/tests/test_ui_home_span.gd) checks all three pages; the regression set is in [UI-35c](../UI-35c/README.md). HN-4, a separated Quit, stays open because the compact 304 px rail has no spare width.

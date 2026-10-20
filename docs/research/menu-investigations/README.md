@@ -1,5 +1,7 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-20: UI-30 repairs: [UI-31 recovery dead ends](UI-31/README.md), [UI-32 preserved choices](UI-32/README.md), [UI-33 interaction and words](UI-33/README.md), [UI-34a switch from Pause](UI-34a/README.md), [UI-34b–d aircraft flow](UI-34b-d/README.md), [UI-35 shared dialog states](UI-35/README.md), [UI-36 Settings and content](UI-36/README.md). Each lists its tests, captures and the findings that remain open.
+
 2026-10-20: [UI-30 — menu system audit at 1080p and above](UI-30/README.md). Software-rendered (Xvfb/llvmpipe) captures of the production app from 1920×1080 to 5120×1440 (16:9, 16:10, 21:9, 32:9; EN/ES; 150% text), code review of pause, aircraft switching, theme and chrome, and 62 graded findings. The repair order is UI-31…38 in [the redesign plan](../../MENU-REDESIGN-PLAN.md#11-ui-30-audit-repairs).
 
 2026-10-19: [UI-03-R1 — window-close trace preservation and runtime audit](../visual-quality-implementation/VQ-01c/runtime-audit-2026-10-19/README.md). Actual Windows close reproduction, save-failure/Workshop regressions, scoped verification and explicit remaining golden/performance gates.

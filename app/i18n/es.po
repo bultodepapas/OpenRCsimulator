@@ -4659,3 +4659,7 @@ msgstr "Vista previa sin guardar: Conservar cambios la guarda, Cerrar la descart
 
 msgid "Changes preview at once. Keep changes saves them; Close discards them."
 msgstr "Los cambios se previsualizan al instante. Conservar cambios los guarda; Cerrar los descarta."
+
+# UI-34b (HN-3, added for the parallel UI-34 session): caption above FLY on the Aircraft and Practice pages.
+msgid "Next flight: %s"
+msgstr "Próximo vuelo: %s"

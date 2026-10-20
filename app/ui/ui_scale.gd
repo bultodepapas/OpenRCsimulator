@@ -33,6 +33,15 @@ static func logical_size_for(pixels: Vector2i) -> Vector2i:
 	return Vector2i(maxi(1, roundi(float(pixels.x) / factor)), maxi(1, roundi(float(pixels.y) / factor)))
 
 
+## UI-35c (UI-30 SP-5): beyond a 21:9 canvas the menus keep a centred 2560-wide span; the scene still fills the screen.
+const SPAN_WIDTH := 2560.0
+
+
+## Logical pixels between each screen edge and the menu span (0 up to 21:9).
+static func span_margin(logical_width: float) -> float:
+	return maxf(0.0, (logical_width - SPAN_WIDTH) * 0.5) if logical_width > SPAN_WIDTH + 40.0 else 0.0
+
+
 static func is_compact(logical_size: Vector2i) -> bool:
 	return logical_size.x < COMPACT_WIDTH or logical_size.y < COMPACT_HEIGHT
 
