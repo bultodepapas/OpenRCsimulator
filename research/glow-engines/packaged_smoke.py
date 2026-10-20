@@ -18,7 +18,7 @@ import tempfile
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = [('stik-glow-55ax-2t', 'glow_2t'), ('stik-glow-fs64v-4t', 'glow_4t')]
-GLOW_LAW = 'glow-mean-cycle-finite-tank-line-pickup-v3'
+GLOW_LAW = 'glow-mean-cycle-carburettor-v4'
 GLOW_TRACE_SCHEMA = 'openrc-glow-trace v2'
 GLOW_COLUMNS = [
     'glow_fuel_kg', 'glow_temperature_k', 'glow_running', 'glow_stop_reason_code',
