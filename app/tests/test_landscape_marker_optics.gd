@@ -133,13 +133,18 @@ func _initialize() -> void:
 		field_lights.free()
 		quit(1)
 		return
-	var expected_edge_points := [[9.0, -50.0], [9.0, -30.0], [9.0, -10.0], [9.0, 10.0], [9.0, 30.0], [9.0, 50.0],
-		[21.0, -50.0], [21.0, -30.0], [21.0, -10.0], [21.0, 10.0], [21.0, 30.0], [21.0, 50.0]]
+	var expected_edge_points := [[8.6, -50.0], [8.6, -30.0], [8.6, -10.0], [8.6, 10.0], [8.6, 30.0], [8.6, 50.0],
+		[21.4, -50.0], [21.4, -30.0], [21.4, -10.0], [21.4, 10.0], [21.4, 30.0], [21.4, 50.0]]
 	var threshold_points: Array = threshold_fixture.points
-	_check("existing runway point sets and sizes remain exact",
+	_check("edge markers sit 0.4 m into the grass outside both 12 m runway edges",
 		edge_fixture.points == expected_edge_points and float(edge_fixture.size) == 0.05
 		and threshold_points == [[11.0, -51.0], [15.0, -51.0], [19.0, -51.0],
 			[11.0, 51.0], [15.0, 51.0], [19.0, 51.0]])
+	_check("runway and threshold marker optics are 0.12 m above the grass",
+		is_equal_approx(float(edge_fixture.height), 0.12)
+		and is_equal_approx(float(threshold_fixture.height), 0.12)
+		and is_equal_approx(FieldLights._render(8.6, -50.0, float(edge_fixture.height)).y, 0.12)
+		and is_equal_approx(FieldLights._render(11.0, -51.0, float(threshold_fixture.height)).y, 0.12))
 	var endpoint_indices: Array[int] = [0, 3]
 	var view_samples := [
 		{"label": "near outward", "offset": 8.0, "green": true},

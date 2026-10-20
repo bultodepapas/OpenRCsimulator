@@ -528,63 +528,63 @@
       "points": {
         "value": [
           [
-            9,
+            8.6,
             -50
           ],
           [
-            9,
+            8.6,
             -30
           ],
           [
-            9,
+            8.6,
             -10
           ],
           [
-            9,
+            8.6,
             10
           ],
           [
-            9,
+            8.6,
             30
           ],
           [
-            9,
+            8.6,
             50
           ],
           [
-            21,
+            21.4,
             -50
           ],
           [
-            21,
+            21.4,
             -30
           ],
           [
-            21,
+            21.4,
             -10
           ],
           [
-            21,
+            21.4,
             10
           ],
           [
-            21,
+            21.4,
             30
           ],
           [
-            21,
+            21.4,
             50
           ]
         ],
         "unit": "m",
         "kind": "estimated",
-        "source": "Existing stakes on both long edges of the 100 x 12 m runway, every 20 m."
+        "source": "Low markers 0.4 m into the grass beyond both long edges of the estimated 100 x 12 m runway, every 20 m."
       },
       "height": {
-        "value": 0.35,
+        "value": 0.12,
         "unit": "m",
         "kind": "estimated",
-        "source": "Garden stake height estimate."
+        "source": "Low-profile grass-edge fixture estimate; 0.12 m above ground."
       },
       "intensity": {
         "value": 5,
@@ -599,10 +599,10 @@
         "source": "Diffuser diameter estimate."
       },
       "color_temperature": {
-        "value": 3000,
+        "value": 4000,
         "unit": "K",
         "kind": "estimated",
-        "source": "Warm-white stake tint estimate."
+        "source": "Neutral-white runway edge cue estimate."
       }
     },
     {
@@ -642,10 +642,10 @@
         "source": "Existing directional threshold marker positions."
       },
       "height": {
-        "value": 0.35,
+        "value": 0.12,
         "unit": "m",
         "kind": "estimated",
-        "source": "Garden stake height estimate."
+        "source": "Low-profile end fixture estimate matching the runway-edge markers."
       },
       "intensity": {
         "value": 5,

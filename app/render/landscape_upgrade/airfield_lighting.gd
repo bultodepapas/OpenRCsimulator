@@ -156,7 +156,7 @@ func set_profile(profile: String) -> bool:
 	for binding: Dictionary in _sprite_bindings:
 		if not str(binding.marker_row).is_empty():
 			var material: ShaderMaterial = binding.material
-			material.set_shader_parameter("edge_color", Color("#fff5e6") if profile == "airfield" else Color("#f2d3a2"))
+			material.set_shader_parameter("edge_color", Color("#fff5e6") if profile == "airfield" else Color("#f4eee2"))
 			material.set_shader_parameter("halo_min_px", 5.5 if profile == "airfield" else RUNWAY_MARKER_HALO_MIN_PX)
 	_last_night_factor = -1.0
 	_last_exposure = -1.0
@@ -255,7 +255,7 @@ static func _runway_marker_material(source: ShaderMaterial, row_name: String) ->
 	if material.shader != RUNWAY_MARKER_SHADER:
 		material = source.duplicate() as ShaderMaterial
 		material.shader = RUNWAY_MARKER_SHADER
-		material.set_shader_parameter("edge_color", Color("#f2d3a2"))
+		material.set_shader_parameter("edge_color", Color("#f4eee2"))
 		material.set_shader_parameter("threshold_green", Color("#22e66d"))
 		material.set_shader_parameter("threshold_red", Color("#ff453c"))
 		material.set_shader_parameter("core_min_px", RUNWAY_MARKER_CORE_MIN_PX)
