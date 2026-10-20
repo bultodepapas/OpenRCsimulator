@@ -15,6 +15,10 @@ The Freesound pages describe the skateboard recording as a Magneto Mini Cruiser 
 
 Playback applies the shared manual powertrain distance law once, with Godot's own 3D attenuation disabled. The ground route uses an authored -12 dB gain trim so wheel texture stays under the engine under power; this is a mix choice, not an acoustic calibration.
 
+`GroundAudioModel.snapshot_contacts()` reads the accepted rigid-body state, installed gear, wheel speed and contact law without advancing physics. `GroundAudio.update_contacts()` consumes those detached points. It bounds the rig at eight contacts, with three surface loops and one impact player per contact. Rolling requires load and at least 0.35 m/s wheel motion. Surface changes crossfade over 120 ms, wheel grains use distinct phase offsets, and the engine masking envelope settles over 250 ms. The 80 ms pause fade precedes stopping playback.
+
+Touchdowns use a contact edge after at least 140 ms airborne, a 650 ms per-contact debounce, and approach speed of at least 0.2 m/s. The last airborne approach sample covers an accepted state that is already rebounding; an earlier dive does not inflate a later landing. Impact emitters stay at their touchdown point while roll emitters follow their wheels. Helicopter contacts set `roll_enabled=false`. These thresholds and material substitutions are authored sound-design choices, not measurements of RC landing gear.
+
 | Source input | Page license and identity | Downloaded preview SHA-256 |
 | --- | --- | --- |
 | `hard_skateboard_roll_hq.mp3` | [FOSSarts / 740125](https://freesound.org/people/FOSSarts/sounds/740125/), CC0 | `3ca0b4ea4e6d5df0c91aeedebb12793f675d0b8ffc1a22aec57872492c09c584` |

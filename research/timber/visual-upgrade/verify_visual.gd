@@ -113,6 +113,8 @@ func _run() -> void:
 	_check("wreck section contact boxes and centers unchanged", source_groups == candidate_groups)
 	var report := {checks = _checks, failures = _failures, visual_detail_meshes = details,
 		source_groups = source_groups, candidate_groups = candidate_groups,
+		visual_details_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_details.gd"),
+		visual_lighting_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
 		asset_sha256 = FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/timber.glb")}
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):

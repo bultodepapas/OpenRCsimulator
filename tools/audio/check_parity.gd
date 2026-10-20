@@ -1,4 +1,4 @@
-## AUD-04: compare the real main scene with the read-only soundscape adapter on/off.
+## AUD-04 / AUD-15: compare the real main scene with the full engine + gear adapter on/off.
 ## Run against the isolated work app:
 ## godot --headless --path .tools/audio-work/app --script C:/DEVELOPMENT/OpenRCsimulator/tools/audio/check_parity.gd -- --soundscape=off --report=C:/DEVELOPMENT/OpenRCsimulator/docs/research/audio/AUD-04/parity.json
 ## Add --electric-demo=4s for the separate electric route. This qualifies simulation parity only,
@@ -168,12 +168,12 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 			for _sample: int in PAUSE_SAMPLES:
 				_render_accepted_pose(candidate)
 				var paused_before: PackedByteArray = _session_guard(candidate_session)
-				var paused_snapshot: Dictionary = audio.snapshot()
+				audio.snapshot()
 				if _session_guard(candidate_session) != paused_before:
 					error_text = "snapshot mutated session during pause at accepted tick %d" % accepted_tick
 					break
-				audio.soundscape.update_sound(paused_snapshot, 1.0 / 240.0)
-				highest_audio_update_usec = maxi(highest_audio_update_usec, audio.soundscape.last_update_usec)
+				audio._process(1.0 / 240.0)
+				highest_audio_update_usec = maxi(highest_audio_update_usec, audio.last_update_usec)
 				if _session_guard(candidate_session) != paused_before or _session_bytes(baseline_session) != _session_bytes(candidate_session):
 					error_text = "audio update changed paused session parity at accepted tick %d" % accepted_tick
 					break
@@ -216,8 +216,8 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 			break
 		read_snapshot_checks += 1
 		var before_update: PackedByteArray = _session_guard(candidate_session)
-		audio.soundscape.update_sound(sound_snapshot, 1.0 / 240.0)
-		highest_audio_update_usec = maxi(highest_audio_update_usec, audio.soundscape.last_update_usec)
+		audio._process(1.0 / 240.0)
+		highest_audio_update_usec = maxi(highest_audio_update_usec, audio.last_update_usec)
 		if _session_guard(candidate_session) != before_update:
 			error_text = "update_sound mutated session at accepted tick %d" % accepted_tick
 			break
@@ -239,7 +239,7 @@ func _run_pair(aircraft_id: String, electric_demo: String) -> Dictionary:
 			_render_accepted_pose(candidate)
 			var after_reset_before_audio: PackedByteArray = _session_guard(candidate_session)
 			var reset_snapshot: Dictionary = audio.snapshot()
-			audio.soundscape.update_sound(reset_snapshot, 1.0 / 240.0)
+			audio._process(1.0 / 240.0)
 			restart_audio_read_only = _session_guard(candidate_session) == after_reset_before_audio
 			if not restart_audio_read_only or _session_bytes(baseline_session) != _session_bytes(candidate_session):
 				error_text = "audio mutated state or parity after restart reset"
@@ -352,7 +352,11 @@ func _finish() -> void:
 			"soundscape_model.gd": _resource_sha256("res://audio/soundscape_model.gd"),
 			"soundscape.gd": _resource_sha256("res://audio/soundscape.gd"),
 			"flight_audio.gd": _resource_sha256("res://audio/flight_audio.gd"),
+			"powertrain_audio.gd": _resource_sha256("res://audio/powertrain_audio.gd"),
+			"ground_audio.gd": _resource_sha256("res://audio/ground_audio.gd"),
+			"ground_audio_model.gd": _resource_sha256("res://audio/ground_audio_model.gd"),
 		},
+		"adapter_update": "FlightAudio._process: soundscape and landing gear",
 		"headless": true,
 		"physics_hz": Engine.physics_ticks_per_second,
 		"weather": WEATHER,

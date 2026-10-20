@@ -198,6 +198,16 @@ func _ready() -> void:
 		Conditions.session_preset = "" # no interactive sky choice may leak into a later technical route
 		MoonConfig.session_config = {} # nor a saved moon choice (FW-MOON-12)
 		var direct_aircraft := aircraft_argument(user_args)
+		var checked_companions := CompanionConfig.from_args(user_args)
+		if not checked_companions.get("ok", false):
+			var companion_errors: PackedStringArray = checked_companions.get("errors", PackedStringArray())
+			printerr("; ".join(companion_errors))
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		if companion_cli_options_unsupported_for_aircraft(direct_aircraft, user_args):
+			printerr("AI companions currently support fixed-wing aircraft only.")
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 		if failure_cli_options_unsupported_for_aircraft(direct_aircraft, user_args):
 			printerr("Failure options currently support fixed-wing aircraft only.")
 			get_tree().quit(ERR_INVALID_PARAMETER)
@@ -269,6 +279,14 @@ static func failure_cli_options_unsupported_for_aircraft(id: String, args: Packe
 			if arg == option or arg.begins_with(option + "="):
 				return true
 	return false
+
+
+## Rotorcraft do not host companion flights; zero explicitly disables the optional CLI group.
+static func companion_cli_options_unsupported_for_aircraft(id: String, args: PackedStringArray) -> bool:
+	if not Catalog.is_rotorcraft(id):
+		return false
+	var checked: Dictionary = CompanionConfig.from_args(args)
+	return checked.get("ok", false) and bool(checked.config.get("enabled", false))
 
 
 ## Keep the existing airplane scene route intact and select the rotorcraft script for explicit catalog IDs.

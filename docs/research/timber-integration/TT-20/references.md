@@ -48,3 +48,4 @@ The indexed code graph is ready but stale for the current tracked `app/ui/accide
 - [E-flite Turbo Timber 1.5 m product page](https://www.e-fliterc.com/product/turbo-timber-1.5m-bnf-basic-with-as3x-and-safe-select-includes-floats/EFL15250.html) — official landing/navigation/strobe wording for the shared light system.
 - [Official E-flite overview video](https://www.youtube.com/watch?v=qVAveeNrDVY) — inspected flight and water-operation footage; pre-B hardware revision.
 - [Poly Haven Polystyrene](https://polyhaven.com/a/polystyrene) — CC0 material candidate.
+- [ambientCG Rubber002](https://ambientcg.com/view?id=Rubber002) — CC0 tire micro-normal and roughness maps; source albedo is unused.

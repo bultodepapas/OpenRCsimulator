@@ -7,6 +7,7 @@ const CollisionWorld := preload("res://scenery/collision_world.gd")
 const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const SceneryDamage := preload("res://sim/scenery_damage.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const Math3D := preload("res://physics/math3d.gd")
 
 var _checks := 0
 var _failures := 0
@@ -119,15 +120,36 @@ func _initialize() -> void:
 	var north := 12.0
 	var east := -8.0
 	var height_m := 45.0
-	var heading_rad := 0.35
+	var baseline_euler: PackedFloat64Array = Math3D.q_to_euler(spawned.start.state.slice(RB.ATT, RB.ATT + 4))
+	var baseline_heading := 1.1
+	var baseline_attitude: PackedFloat64Array = Math3D.q_from_euler(baseline_heading,
+		baseline_euler[1], baseline_euler[2])
+	var trim_state: PackedFloat64Array = spawned.start.state.duplicate()
+	for axis: int in 4:
+		trim_state[RB.ATT + axis] = baseline_attitude[axis]
+	spawned.start.state = trim_state
+	var heading_rad := -0.35
 	var terrain: PackedFloat64Array = spawned.environment.terrain(north, east)
 	_check("external airborne spawn accepts a finite local NED pose",
 		spawned.external_spawn_airborne(north, east, height_m, heading_rad))
 	var spawn_state: PackedFloat64Array = spawned.sim.state.duplicate()
+	var spawn_euler: PackedFloat64Array = Math3D.q_to_euler(spawn_state.slice(RB.ATT, RB.ATT + 4))
+	var nose_ned: PackedFloat64Array = Math3D.q_rotate(spawn_state.slice(RB.ATT, RB.ATT + 4),
+		PackedFloat64Array([1.0, 0.0, 0.0]))
+	var ground_velocity_ned: PackedFloat64Array = Math3D.q_rotate(spawn_state.slice(RB.ATT, RB.ATT + 4),
+		spawn_state.slice(RB.VEL, RB.VEL + 3))
+	var velocity_heading := atan2(ground_velocity_ned[1], ground_velocity_ned[0])
 	_check("spawn sets local position and height above sampled terrain",
 		spawned.sim.tick == 0 and absf(spawn_state[RB.POS] - north) < 1e-12 \
 			and absf(spawn_state[RB.POS + 1] - east) < 1e-12 \
 			and absf(spawn_state[RB.POS + 2] + terrain[0] + height_m) < 1e-10)
+	_check("external spawn heading replaces a nonzero trim heading and preserves trim pitch/roll",
+		absf(wrapf(spawn_euler[0] - heading_rad, -PI, PI)) < 1e-12 \
+			and absf(spawn_euler[1] - baseline_euler[1]) < 1e-12 \
+			and absf(spawn_euler[2] - baseline_euler[2]) < 1e-12)
+	_check("spawned ground velocity follows the absolute nose heading",
+		absf(wrapf(velocity_heading - heading_rad, -PI, PI)) < 0.02 \
+			and absf(wrapf(atan2(nose_ned[1], nose_ned[0]) - heading_rad, -PI, PI)) < 1e-12)
 	_check("spawn rejects nonfinite poses without changing the reset state",
 		not spawned.external_spawn_airborne(INF, east, height_m, heading_rad)
 		and _same_array(spawn_state, spawned.sim.state))

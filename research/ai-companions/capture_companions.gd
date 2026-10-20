@@ -46,6 +46,8 @@ func _run() -> void:
 	app.controllers.refresh()
 	app.preferences.latency_marker = false
 	app.preferences.first_flight_hint_seen = true
+	app.home._toggle_flight_details()
+	await ui.settle()
 	app.open_companions_settings(app.home.companions_button)
 	await ui.settle()
 	await _capture("home-dialog.png")

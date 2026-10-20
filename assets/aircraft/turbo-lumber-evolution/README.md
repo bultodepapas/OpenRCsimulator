@@ -95,7 +95,7 @@ Suites are `inspection`, `orbit`, `distance` or `all`; captures record camera/po
 
 The imported r2 has 42,519 triangles, 21 mesh nodes and 49 material surfaces. Fewer triangles than r1 do not establish lower frame cost. [TT-19](../../../docs/research/timber-integration/TT-19/README.md) retains exact measurements, captures, package checks and clearance observations.
 
-The shared builder applies two per-instance cowl material overrides with 0.8 mm render-only normal growth. This reduces white tearing from foam/marking-shell intersections while leaving source and physical geometry intact. Remaining marking edges and white wing-root closure faces need a source-author correction. Remove the offset only with a corrected delivery and matching checks.
+The source has overlapping foam and marking shells. The production finish repairs their material assignment on duplicated instance meshes and applies small render-only paint offsets; it preserves every original triangle position and winding. The raw facade retains the source finish for metrology. These presentation repairs do not make the source watertight or replace a corrected delivery; white wing-root closure faces remain part of the authored construction.
 
 The author reports flap contact at 40° and wire/bracket contact beyond about 6°; these are distinct from Godot's control-triangle checks. Merged leg/fuselage overlap includes intended attachments and does not qualify suspension clearance. The bounded visual motion does not close that source-author review.
 

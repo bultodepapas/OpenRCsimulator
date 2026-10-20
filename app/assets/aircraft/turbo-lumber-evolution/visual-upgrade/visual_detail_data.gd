@@ -24,7 +24,7 @@ const DATA := {
   },
   "free_textures": {
     "foam": {
-      "download": "1K Normal GL and Roughness PNG maps",
+      "download": "1K Normal GL and Roughness JPEG maps",
       "id": "Polystyrene",
       "license": "CC0 1.0",
       "maps": {
@@ -84,6 +84,24 @@ const DATA := {
     }
   ],
   "material_profiles": {
+    "cowl_black_finish": {
+      "grow_amount_m": 0.0015,
+      "grow_meshes": [
+        "cowl"
+      ],
+      "materials": [
+        "black"
+      ],
+      "meshes": [
+        "cowl"
+      ],
+      "metallic": 0.0,
+      "normal_scale": 0.012,
+      "roughness": 0.97,
+      "specular": 0.08,
+      "texture": "foam",
+      "world_tiling_per_m": 3.0
+    },
     "foam": {
       "materials": [
         "white"
@@ -175,12 +193,80 @@ const DATA := {
     }
   },
   "paint_seam_repair": {
+    "authored_paint_regions": [
+      {
+        "max_projection_distance_m": 0.004,
+        "mesh": "cowl",
+        "min_normal_axis_dot": 0.65,
+        "min_normal_dot": -0.1,
+        "normal_axis_root": [
+          0.0,
+          1.0,
+          0.0
+        ],
+        "paint_material": "black",
+        "root_bounds_max": [
+          0.05,
+          0.028,
+          -0.155
+        ],
+        "root_bounds_min": [
+          -0.05,
+          0.015,
+          -0.205
+        ]
+      },
+      {
+        "max_projection_distance_m": 0.004,
+        "mesh": "cowl",
+        "min_normal_axis_dot": 0.8,
+        "min_normal_dot": -0.1,
+        "normal_axis_root": [
+          0.0,
+          0.0,
+          -1.0
+        ],
+        "paint_material": "black",
+        "root_bounds_max": [
+          0.01,
+          0.029,
+          -0.196
+        ],
+        "root_bounds_min": [
+          -0.01,
+          0.022,
+          -0.204
+        ]
+      },
+      {
+        "max_projection_distance_m": 0.004,
+        "mesh": "cowl",
+        "min_normal_axis_dot": 0.9,
+        "min_normal_dot": -0.1,
+        "normal_axis_root": [
+          0.0,
+          0.0,
+          1.0
+        ],
+        "paint_material": "black",
+        "root_bounds_max": [
+          0.05,
+          0.026,
+          -0.156
+        ],
+        "root_bounds_min": [
+          -0.05,
+          0.014,
+          -0.158
+        ]
+      }
+    ],
     "materials": [
       "red",
       "black",
       "dark_grey"
     ],
-    "max_centroid_distance_m": 0.002,
+    "max_projection_distance_m": 0.002,
     "meshes": [
       "cowl",
       "fin_fixed",
@@ -189,6 +275,11 @@ const DATA := {
       "wing_right_fixed"
     ],
     "min_normal_dot": 0.82,
+    "smooth_normal_materials": [
+      "white",
+      "black",
+      "red"
+    ],
     "smooth_normals_meshes": [
       "cowl",
       "fin_fixed"
@@ -201,15 +292,15 @@ const DATA := {
       "color": "#282c2f",
       "font_size": 28,
       "host": "fuselage_core",
-      "max_width_m": 0.23,
+      "max_width_m": 0.17,
       "sides": [
         "left",
         "right"
       ],
       "surface_offset_m": 0.00025,
       "target_yz_root": [
-        0.018,
-        -0.095
+        -0.016,
+        0.06
       ],
       "text": "TURBO LUMBER EVOLUTION"
     },

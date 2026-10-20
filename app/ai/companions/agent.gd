@@ -51,7 +51,7 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 		return _refuse(pilot.configure_error)
 	var pose: Dictionary = pilot.initial_pose()
 	if not session.external_spawn_airborne(float(pose.north), float(pose.east),
-			float(pose.height_m), float(pose.heading_rad)):
+			float(pose.height_agl_m), float(pose.heading_rad)):
 		return _refuse("Companion launch pose was refused.")
 	add_child(session)
 	if visuals:

@@ -2,7 +2,7 @@
   "assets": [
     {
       "asset": "Polystyrene",
-      "download": "1K Normal GL and Roughness PNG maps",
+      "download": "1K Normal GL and Roughness JPEG maps",
       "license": "CC0 1.0",
       "runtime_files": {
         "polystyrene_nor_gl_1k.jpg": "f9d739a05cc4d09230703cb1d831bb4c0334fed4b258490b1c453461acf7b574",

@@ -184,6 +184,10 @@ func _on_resetting() -> void:
 		ground_audio.reset()
 
 
+func contact_snapshot() -> Array[Dictionary]:
+	return GroundAudioModel.snapshot_contacts(flight.session, flight.field)
+
+
 func _process(delta: float) -> void:
 	var started: int = Time.get_ticks_usec()
 	if flight == null or soundscape == null:
@@ -194,7 +198,7 @@ func _process(delta: float) -> void:
 	_last_tick = tick
 	var sound_snapshot: Dictionary = snapshot()
 	soundscape.update_sound(sound_snapshot, delta)
-	var ground_contacts: Array[Dictionary] = GroundAudioModel.snapshot_contacts(flight.session, flight.field)
+	var ground_contacts: Array[Dictionary] = contact_snapshot()
 	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
 	ground_audio.update_contacts(tick, bool(sound_snapshot.get("paused", false)), ground_contacts,
 		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))

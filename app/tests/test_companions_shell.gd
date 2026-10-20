@@ -3,6 +3,7 @@ extends SceneTree
 
 const CompanionsDialog := preload("res://ui/companions_dialog.gd")
 const CompanionConfig := preload("res://ai/companions/config.gd")
+const AppRoot := preload("res://app_root.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const UiInput := preload("res://ui/ui_input.gd")
@@ -41,6 +42,18 @@ func _run() -> void:
 	root.add_child(app)
 	await ui.settle()
 	var defaults: Dictionary = CompanionConfig.defaults()
+	_check("rotorcraft direct route rejects an enabled companion group",
+		AppRoot.companion_cli_options_unsupported_for_aircraft("xcell-60-research", PackedStringArray(["--companions=3"])))
+	_check("rotorcraft direct route allows an explicitly disabled group",
+		not AppRoot.companion_cli_options_unsupported_for_aircraft("xcell-60-research", PackedStringArray(["--companions=0"])))
+	_check("fixed-wing direct route keeps enabled companions available",
+		not AppRoot.companion_cli_options_unsupported_for_aircraft(CompanionConfig.AIRCRAFT_ID, PackedStringArray(["--companions=3"])))
+	_check("non-companion direct arguments leave companions disabled",
+		CompanionConfig.from_args(PackedStringArray(["--quick-flight", "--aircraft=xcell-60-research"])).config == defaults)
+	for invalid_companion_arg in ["--companions", "--companions=4", "--companions=-1", "--companions=1.5",
+		"--companions-seed", "--companions-seed=-1", "--companions-seed=4294967296"]:
+		_check("direct companion CLI validates %s" % invalid_companion_arg,
+			not CompanionConfig.from_args(PackedStringArray([invalid_companion_arg])).get("ok", false))
 	_check("Home companions default Off with count 1 and seed 1",
 		app.home.companion_config == defaults and not app.home.companions_button.disabled
 		and app.home.companions_button.tooltip_text.contains("Off"), str(app.home.companion_config))
@@ -49,9 +62,7 @@ func _run() -> void:
 	app.home.set_landscape("club_field")
 
 	# Cancel discards the Home draft and leaves the on-disk preference at defaults.
-	app.home.companions_button.grab_focus()
-	await ui.tap(KEY_ENTER)
-	await ui.settle()
+	await _open_home_companions(app)
 	var dialog: CompanionsDialog = app.companions_dialog
 	_check("Home opens the companions dialog through the shell", dialog != null and app.screens.is_top("companions"))
 	dialog.enabled_check.button_pressed = true
@@ -65,9 +76,7 @@ func _run() -> void:
 		str(persisted.companion_config))
 
 	# Apply writes the validated config as an additive preference.
-	app.home.companions_button.grab_focus()
-	await ui.tap(KEY_ENTER)
-	await ui.settle()
+	await _open_home_companions(app)
 	dialog = app.companions_dialog
 	dialog.enabled_check.button_pressed = true
 	dialog.count_picker.select(2)
@@ -82,7 +91,9 @@ func _run() -> void:
 	persisted = Preferences.load_from(PREFS)
 	_check("Home Apply persists the checked count and seed", persisted.companion_config == applied_config,
 		str(persisted.companion_config))
-	_check("Home summary reflects the saved choice", app.home.companions_button.text == "AI"
+	_check("Home summary reflects the saved choice", app.home.companions_button.text.contains("Flight companions")
+		and app.home.companions_button.text.contains("On")
+		and app.home.companions_button.text.contains("3")
 		and app.home.companions_button.tooltip_text.contains("On")
 		and app.home.companions_button.tooltip_text.contains("3")
 		and app.home.companions_button.tooltip_text.contains("101"),
@@ -242,6 +253,16 @@ func _open_pause_companions(app: Node) -> void:
 		await ui.tap(KEY_ENTER)
 		await ui.settle()
 	menu.companions_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+
+
+func _open_home_companions(app: Node) -> void:
+	if not app.home._flight_details.visible:
+		app.home._details_button.grab_focus()
+		await ui.tap(KEY_ENTER)
+		await ui.settle()
+	app.home.companions_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 

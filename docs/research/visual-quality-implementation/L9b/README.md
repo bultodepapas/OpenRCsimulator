@@ -24,9 +24,10 @@ The shader changes colour and close-view normals only. The default field JSON, v
 | Pilot, facing flight area | [baseline](before-pilot.png) | [current](after-pilot.png) |
 | Runway threshold | [baseline](before-threshold.png) | [close grass/taxi view](after-close.png) |
 | Raised inspection | — | [runway and taxi overview](after-aerial.png) |
+| Scripted aircraft takeoff, idle | — | [ground close-up](after-aircraft-close.png), [wide flightline](after-runway-wide.png) |
 
 The pilot and close views retain visible grass grain; the aerial view shows the runway, pilot-side maintained band, fence and pad as a coherent layout. The final taxi tone was reduced after an intermediate capture read as a dark trench.
 
 ## Checks and limits
 
-`test_field_surfaces.gd` passed 19 checks; `test_scenery_loader.gd`, `test_scenery_build.gd`, and `test_landscapes.gd` passed (the last reported 49 checks). The native capture script completed for pilot, close, threshold and aerial views without shader errors. The known unsupported maple wind-material warning appeared in the captures. The scripted runway-flight scenario could not start because `flight_session.gd` failed to preload during concurrent work in the shared tree; the independent scene captures above establish the visual result only.
+`test_field_surfaces.gd` passed 19 checks; `test_scenery_loader.gd`, `test_scenery_build.gd`, `test_field_integration.gd`, and `test_landscapes.gd` passed (the last reported 49 checks). The native scene capture completed for pilot, close, threshold and aerial views without shader errors. A subsequent scripted runway scenario completed 51 frames across five views after a transient `flight_session.gd` preload error during concurrent edits. The known unsupported maple wind-material warning appeared in captures. These software checks do not establish owner flight readability or physical realism.

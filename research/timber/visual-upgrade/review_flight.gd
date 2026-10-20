@@ -8,6 +8,7 @@ var _out := ""
 var _case := "takeoff"
 var _record_frames := false
 var _frames := 660
+var _crash_speed := 22.0
 var _flight: Node3D
 var _records: Array = []
 var _failures: Array[String] = []
@@ -18,6 +19,7 @@ func _initialize() -> void:
 		if arg.begins_with("--review-case="): _case = arg.trim_prefix("--review-case=")
 		if arg == "--review-record": _record_frames = true
 		if arg.begins_with("--review-frames="): _frames = int(arg.trim_prefix("--review-frames="))
+		if arg.begins_with("--review-crash-speed="): _crash_speed = float(arg.trim_prefix("--review-crash-speed="))
 	_run.call_deferred()
 
 func _snapshot() -> Array:
@@ -57,7 +59,7 @@ func _run() -> void:
 			throttle = 0.22 if time_s < 3.0 else 1.0}
 	if _case == "crash":
 		session.input_enabled = false
-		var state := RB.make_state(M.v3(-25, -15, -5), M.v3(22, 0, 0),
+		var state := RB.make_state(M.v3(-25, -15, -5), M.v3(_crash_speed, 0, 0),
 			M.q_from_euler(0.2, -0.95, 0.55), M.v3(0.4, 0.1, 0.2))
 		session.sim.state = state
 		session.sim.previous = state.duplicate()
@@ -127,10 +129,13 @@ func _run() -> void:
 			if not str(session.sim.fault_reason).is_empty():
 				_failures.append("simulation fault: " + session.sim.fault_reason)
 				break
+	if not str(session.sim.fault_reason).is_empty() and not _failures.has("simulation fault: " + session.sim.fault_reason):
+		_failures.append("simulation fault: " + session.sim.fault_reason)
 	if _case == "crash" and crash_frame < 0: _failures.append("flown crash did not occur")
 	if _case == "takeoff" and not session.crash.is_empty(): _failures.append("takeoff tape crashed")
 	if _case == "takeoff" and not airborne: _failures.append("takeoff tape did not become airborne")
 	var report := {case = _case, failures = _failures, records = _records,
+		fixture_crash_initial_speed_mps = _crash_speed if _case == "crash" else 0.0,
 		final_tick = session.sim.tick, final_state = Array(session.sim.state),
 		final_fault = session.sim.fault_reason, final_pause_reason = session.pause_reason, final_holds = session.holds,
 		fixture_focus_resumes = fixture_focus_resumes,

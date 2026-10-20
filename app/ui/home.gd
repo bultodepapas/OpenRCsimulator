@@ -400,14 +400,6 @@ func _init() -> void:
 	_details_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_details_button.pressed.connect(_toggle_flight_details)
 	disclosure_row.add_child(_details_button)
-	companions_button = _button("Flight companions", "QuietButton")
-	companions_button.name = "FlightCompanions"
-	companions_button.custom_minimum_size = Vector2(40.0, 24.0)
-	companions_button.flat = true
-	companions_button.size_flags_horizontal = Control.SIZE_SHRINK_END
-	companions_button.autowrap_mode = TextServer.AUTOWRAP_OFF
-	companions_button.pressed.connect(func() -> void: companions_requested.emit(companions_button))
-	disclosure_row.add_child(companions_button)
 	flight_page.add_child(disclosure_row)
 	_flight_details = VBoxContainer.new()
 	_flight_details.name = "FlightDetails"
@@ -428,6 +420,13 @@ func _init() -> void:
 	limits_label.name = "LaunchLimits"
 	limits_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_flight_details.add_child(limits_label)
+	companions_button = _button("Flight companions", "QuietButton")
+	companions_button.name = "FlightCompanions"
+	companions_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	companions_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	companions_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	companions_button.pressed.connect(func() -> void: companions_requested.emit(companions_button))
+	_flight_details.add_child(companions_button)
 	# BAT-13: the battery mode is a launch detail; the collapsed flight card has no spare height (test_ui_home).
 	battery_button = _button("", "HomeChoice")
 	battery_button.name = "BatteryChoice"
@@ -1350,7 +1349,9 @@ func _update_companions_text() -> void:
 	var count := int(companion_config.get("count", 1))
 	var seed := int(companion_config.get("seed", 1))
 	var available := not Catalog.is_rotorcraft(aircraft_id) and landscape_id == Landscapes.DEFAULT_ID
-	companions_button.text = "AI"
+	companions_button.text = tr("Flight companions: %s · %d") % [
+		tr("On") if enabled else tr("Off"), count,
+	]
 	companions_button.tooltip_text = tr("Flight companions: %s · %d companions · seed %d") % [
 		tr("On") if enabled else tr("Off"), count, seed,
 	]

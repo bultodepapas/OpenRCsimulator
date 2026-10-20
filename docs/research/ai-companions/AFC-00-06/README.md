@@ -53,17 +53,35 @@ zero. Successful runner reports/logs are retained under `checks/`.
 | Check | Result/scope |
 | --- | --- |
 | `test_companions_config.gd` | 22 checks; bounds, unsupported choices, CLI overlays and missing/duplicate values |
-| `test_companions_session.gd` | 40 checks; atomic packet validation, explicit driver, spawn, holds and damage seam |
+| `test_companions_session.gd` | 42 checks; atomic packet validation, explicit driver, absolute spawn heading, holds and damage seam |
 | `test_companions_manager.gd` | 43 checks; 10k parity, 240-tick player preservation, deterministic launch, one tick, refusal, damage publication and cleanup |
-| `test_companions_pilot.gd` | Focused controller/configuration/encounter checks; long flights run separately |
+| `test_companions_pilot.gd` | 24 focused controller/configuration/encounter checks; long flights run separately |
 | `test_companions_dialog.gd` | Keyboard/controller navigation, malformed seed, draft/Cancel, status and Remove |
 | `test_companions_shell.gd` | Home persistence, live three-agent flight, Pause freeze, next-restart rebuild to two, save rollback, removal and direct-route isolation |
 | Existing start-choice and aircraft-contact suites | 36 and 63 checks respectively |
+| Existing session guards and flight-log suites | 32 and 3,247 checks respectively |
+| Existing Home UI and full project parser | Passed; one existing unsupported tree-material warning in the UI run |
+
+The existing Pause suite has one unresolved audio assertion: it expects the legacy
+generator's `stream_paused` flag even though the current soundscape owns playback.
+Its measured output was silent at −200 dB, and the remaining Pause/lifecycle checks
+passed. Companions were disabled in that test. The failed report/log is retained;
+this is not a claim that the complete application suite passes.
+
+The rotorcraft CLI refusal probe deliberately exits `ERR_INVALID_PARAMETER` (31).
+Its expected diagnostic was present and there were no engine errors; the generic
+runner records that nonzero exit as `process_exit`, not a passing invocation.
 
 The long [pilot matrix](../pilot/README.md) owns the calm/gentle 120-second scenarios,
 observed flight envelopes and repeatability receipts. Short encounter tests show
 bounded avoidance responses; they do not establish collision avoidance against
 every player maneuver.
+
+The external-driver matrix exposed a spawn integration bug: requested absolute
+heading had been added to the trimmed start's existing heading. The corrected
+spawn replaces heading while preserving trim pitch/roll. A regression uses a
+nonzero original trim heading and checks attitude, velocity alignment and reset
+identity. Pilot gains, the 40 m radius limit and aircraft physics were unchanged.
 
 ## Preliminary complete-callback costs
 
@@ -76,11 +94,13 @@ other workspace tracks were active, so they are not an isolated target-host lab.
 
 | Companions | p50 tick, run 1 / 2 | p95 tick, run 1 / 2 | Mean tick, run 1 / 2 |
 | --- | --- | --- | --- |
-| 0 | 1.186 / 0.811 ms | 1.910 / 1.250 ms | 1.217 / 0.872 ms |
-| 1 | 1.723 / 1.714 ms | 3.095 / 2.205 ms | 1.976 / 1.786 ms |
-| 3 | 3.490 / 3.551 ms | 5.042 / 4.731 ms | 3.680 / 3.701 ms |
+| 0 | 0.798 / 0.777 ms | 1.163 / 0.866 ms | 0.847 / 0.790 ms |
+| 1 | 1.651 / 1.690 ms | 2.112 / 2.416 ms | 1.719 / 1.787 ms |
+| 3 | 3.417 / 3.518 ms | 4.057 / 7.273 ms | 3.509 / 4.154 ms |
 
-Both reports are complete and all aircraft advanced every measured tick. **The
+Both reports use the corrected absolute heading, are complete, and all aircraft
+advanced every measured tick. The two three-aircraft runs have substantial tail
+variation on this shared host; retain both rather than selecting the faster run. **The
 2 ms p95 fleet target is not met**, including the one-companion case in these runs.
 The off baseline also misses the existing 500 µs player target. Do not infer 60 fps
 from these numbers. The controls explicitly label this an experimental slice,

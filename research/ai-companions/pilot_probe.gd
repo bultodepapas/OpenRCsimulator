@@ -12,6 +12,7 @@ const STIK_ID := "jensen-das-ugly-stik-60"
 const TICKS_PER_SECOND := 240
 const COMMAND_DIVISOR := 4
 const FLIGHT_TICKS := 120 * TICKS_PER_SECOND
+const SPOT_CHECK_TICKS := 3 * TICKS_PER_SECOND
 const SEED := 20261020
 const OUTPUT_RELATIVE := "res://../docs/research/ai-companions/pilot"
 const MIN_CLEARANCE_M := 20.0
@@ -24,6 +25,8 @@ const PAIR_SEPARATION_M := 15.0
 var _checks: int = 0
 var _failures: int = 0
 var _sample_rows := PackedStringArray()
+var _flight_ticks: int = FLIGHT_TICKS
+var _spot_check: bool = false
 
 
 func _check(label: String, passed: bool, detail: String = "") -> void:
@@ -34,6 +37,9 @@ func _check(label: String, passed: bool, detail: String = "") -> void:
 
 
 func _initialize() -> void:
+	_spot_check = OS.get_cmdline_user_args().has("--spot-check")
+	if _spot_check:
+		_flight_ticks = SPOT_CHECK_TICKS
 	call_deferred("_run")
 
 
@@ -44,6 +50,12 @@ func _run() -> void:
 		quit(1)
 		return
 	var field: Dictionary = loaded.field
+	if _spot_check:
+		var spot_result: Dictionary = _run_fleet(field, 1, "calm", false, false)
+		print("companion pilot heading spot-check: %d checks, %d failed; ticks=%d" % [
+			_checks, _failures, int(spot_result.get("ticks", 0))])
+		quit(1 if _failures > 0 else 0)
+		return
 	var calm_results: Array = []
 	var gentle_results: Array = []
 	for count in range(1, 4):
@@ -55,11 +67,13 @@ func _run() -> void:
 	var first_trace: PackedFloat64Array = deterministic_first.get("trace", PackedFloat64Array())
 	var second_trace: PackedFloat64Array = deterministic_second.get("trace", PackedFloat64Array())
 	var replay_identical: bool = first_trace.to_byte_array() == second_trace.to_byte_array()
+	var replay_complete: bool = int(deterministic_first.get("ticks", -1)) == _flight_ticks \
+		and int(deterministic_second.get("ticks", -1)) == _flight_ticks
 	_check("seeded three-aircraft calm replay has bit-identical sampled state and command trace",
 		replay_identical)
 	_check("both seeded replay flights complete 120 simulated seconds",
-		deterministic_first.get("ticks", -1) == FLIGHT_TICKS and deterministic_second.get("ticks", -1) == FLIGHT_TICKS)
-	var output_result: Dictionary = _write_qualification_outputs(calm_results + gentle_results, replay_identical)
+		replay_complete)
+	var output_result: Dictionary = _write_qualification_outputs(calm_results + gentle_results, replay_identical, replay_complete)
 	_check("qualification CSV outputs are written", output_result.get("ok", false), str(output_result.get("reason", "")))
 	print("companion pilot qualification: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -114,6 +128,14 @@ func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace:
 			for old: Node in sessions:
 				old.free()
 			return {"weather": weather_id, "count": count, "ticks": 0, "stop_reason": "external setup/spawn failed"}
+		var spawn_state: PackedFloat64Array = session.sim.state
+		var actual_heading: float = Math3D.q_to_euler(Math3D.quat(
+			spawn_state[RigidBody.ATT], spawn_state[RigidBody.ATT + 1],
+			spawn_state[RigidBody.ATT + 2], spawn_state[RigidBody.ATT + 3]))[0]
+		var heading_error: float = absf(wrapf(actual_heading - float(pose.heading_rad), -PI, PI))
+		_check("%s %d-slot spawn matches the pilot's absolute heading" % [weather_id, slot],
+			heading_error <= 1e-9, "requested=%.9f actual=%.9f error=%.9f rad" % [
+			float(pose.heading_rad), actual_heading, heading_error])
 		root.add_child(session)
 		sessions.append(session)
 		pilots.append(pilot)
@@ -122,7 +144,7 @@ func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace:
 	var player_traffic: Array = [{"id": "player", "is_player": true, "wingspan_m": 1.7, "state": player_state}]
 	if record_rows and _sample_rows.is_empty():
 		_sample_rows.append("weather,count,seed,slot,time_s,north_m,east_m,height_agl_m,tas_m_s,clearance_m,radius_error_m,roll,pitch,yaw,throttle")
-	for tick in FLIGHT_TICKS:
+	for tick in _flight_ticks:
 		for slot in count:
 			var session: Node = sessions[slot]
 			var pilot: Variant = pilots[slot]
@@ -222,14 +244,15 @@ func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace:
 		if not stop_reason.is_empty():
 			break
 	var completed_ticks: int = int(sessions[0].sim.tick) if not sessions.is_empty() else 0
-	var completed: bool = stop_reason.is_empty() and completed_ticks >= FLIGHT_TICKS
+	var completed: bool = stop_reason.is_empty() and completed_ticks >= _flight_ticks
 	var highest_target: float = 35.0 + float(count - 1) * 20.0
 	var max_clearance_limit: float = highest_target + 20.0
 	var detail: String = "ticks=%d/%d AGL=%.2f..%.2fm TAS=%.2f..%.2fm/s max_radius_error=%.2fm min_player=%.2fm min_pair=%.2fm max_bank=%.1fdeg max_input=%.4f refusals=%d%s" % [
-		completed_ticks, FLIGHT_TICKS, min_clearance, max_clearance, min_tas, max_tas, max_radius_error,
+		completed_ticks, _flight_ticks, min_clearance, max_clearance, min_tas, max_tas, max_radius_error,
 		min_player_separation, min_pair_separation, rad_to_deg(max_bank), max_control, refusals,
 		" stop=" + stop_reason if not stop_reason.is_empty() else ""]
-	var label: String = "%s %d-Stik flight for 120 simulated seconds" % [weather_id, count]
+	var label: String = "%s %d-Stik flight for %d simulated seconds" % [
+		weather_id, count, _flight_ticks / TICKS_PER_SECOND]
 	_check(label + " completes without refusal, crash or simulation fault", completed and refusals == 0, detail)
 	_check(label + " stays within the clearance envelope", min_clearance >= MIN_CLEARANCE_M and max_clearance <= max_clearance_limit, detail)
 	_check(label + " stays within the 10..25 m/s TAS envelope", min_tas >= MIN_TAS_MPS and max_tas <= MAX_TAS_MPS, detail)
@@ -291,7 +314,7 @@ func _distance3(first: PackedFloat64Array, second: PackedFloat64Array) -> float:
 	return sqrt(north * north + east * east + down * down)
 
 
-func _write_qualification_outputs(results: Array, replay_identical: bool) -> Dictionary:
+func _write_qualification_outputs(results: Array, replay_identical: bool, replay_complete: bool) -> Dictionary:
 	var output_dir: String = ProjectSettings.globalize_path(OUTPUT_RELATIVE)
 	var dir_error: int = DirAccess.make_dir_recursive_absolute(output_dir)
 	if dir_error != OK and not DirAccess.dir_exists_absolute(output_dir):
@@ -315,11 +338,24 @@ func _write_qualification_outputs(results: Array, replay_identical: bool) -> Dic
 	for row: String in _sample_rows:
 		samples_file.store_line(row)
 	samples_file.close()
-	var summary_path: String = output_dir.path_join("qualification.md")
+	var summary_path: String = output_dir.path_join("README.md")
 	var summary_file: FileAccess = FileAccess.open(summary_path, FileAccess.WRITE)
 	if summary_file == null:
-		return {"ok": false, "reason": "could not open qualification.md (error %d)" % FileAccess.get_open_error()}
+		return {"ok": false, "reason": "could not open README.md (error %d)" % FileAccess.get_open_error()}
+	var failed_results: int = 0
+	var radial_failures: int = 0
+	for item_value: Variant in results:
+		var item: Dictionary = item_value
+		if float(item.max_radius_error) > MAX_RADIUS_ERROR_M:
+			radial_failures += 1
+		if not _item_passes(item):
+			failed_results += 1
 	summary_file.store_line("# Ugly Stik Companion Pilot Qualification")
+	summary_file.store_line("")
+	var matrix_qualified: bool = failed_results == 0 and replay_identical and replay_complete
+	summary_file.store_line("**%s** Maximum absolute radial error: %.2f m against the %.2f m gate; %d of %d matrix scenarios failed at least one gate (%d exceeded the radius gate)." % [
+		"Qualified for the tested matrix gates." if matrix_qualified else "Not qualified for the tested matrix gates.",
+		_max_result(results, "max_radius_error"), MAX_RADIUS_ERROR_M, failed_results, results.size(), radial_failures])
 	summary_file.store_line("")
 	summary_file.store_line("Seeded FlightSession matrix, generated by `research/ai-companions/pilot_probe.gd` with the checked Godot 4.7.2 runner. Each aircraft completed 120 simulated seconds unless its row says otherwise. The controller was sampled at 60 Hz and each accepted command held for four 240 Hz physics ticks.")
 	summary_file.store_line("")
@@ -327,13 +363,21 @@ func _write_qualification_outputs(results: Array, replay_identical: bool) -> Dic
 	summary_file.store_line("|---|---:|---:|---:|---:|---:|---:|---:|---:|---|")
 	for item_value: Variant in results:
 		var item: Dictionary = item_value
-		var outcome: String = "pass" if item.complete and item.stop_reason.is_empty() else "fail: " + str(item.stop_reason)
+		var outcome: String = "pass" if _item_passes(item) else "fail: one or more gates"
 		summary_file.store_line("| %s | %d | %d | %.2f–%.2f | %.2f–%.2f | %.2f | %.2f | %s | %.1f | %s |" % [
 			item.weather, item.count, item.ticks, item.min_clearance, item.max_clearance, item.min_tas, item.max_tas,
 			item.max_radius_error, item.min_player_separation,
 			("n/a" if item.count == 1 else "%.2f" % item.min_pair_separation), item.max_bank_deg, outcome])
 	summary_file.store_line("")
-	summary_file.store_line("Seeded repeatability (three aircraft, calm, same seed): **%s**." % ("bit-identical for all sampled state and command values" if replay_identical else "failed"))
+	summary_file.store_line("Seeded repeatability (three aircraft, calm, same seed): **%s**; both repeats completed: **%s**." % [
+		"bit-identical for all sampled state and command values" if replay_identical else "failed",
+		"yes" if replay_complete else "no"])
+	summary_file.store_line("")
+	summary_file.store_line("## Run integrity note")
+	summary_file.store_line("")
+	summary_file.store_line("The earlier `external-driver-qualification-matrix-v2` run is retained only as a discovered integration regression, not pilot qualification evidence. `FlightSession` applied the requested absolute spawn yaw as an offset to the trimmed start yaw (+90°), so that run followed the wrong headings and its radial excursions cannot be attributed to the pilot. The session seam was corrected before this rerun; this probe now checks tick-zero yaw against the requested absolute heading within 1e-9 rad.")
+	summary_file.store_line("")
+	summary_file.store_line("Earlier checked-runner report and log: `.tools/companions-pilot-qualification/external-driver-qualification-matrix-v2-qrcr4fnl/report.json` and `engine.log` (capture `c5262db7-ab2d-49df-97d4-d0f7efcc666d`). Corrected seam spot-check: `.tools/companions-pilot-qualification/external-heading-spot-check-v2-fjnqi693/report.json` (12 checks passed, 720 calm ticks; requested and actual yaw both 1.600436539 rad).")
 	summary_file.store_line("")
 	summary_file.store_line("| Gate | Limit |")
 	summary_file.store_line("|---|---:|")
@@ -348,6 +392,25 @@ func _write_qualification_outputs(results: Array, replay_identical: bool) -> Dic
 	summary_file.store_line("Run-specific checked-runner log identity and source hashes are recorded after the run.")
 	summary_file.close()
 	return {"ok": true, "directory": output_dir}
+
+
+func _max_result(results: Array, key: String) -> float:
+	var highest: float = -INF
+	for item_value: Variant in results:
+		var item: Dictionary = item_value
+		highest = maxf(highest, float(item.get(key, -INF)))
+	return highest
+
+
+func _item_passes(item: Dictionary) -> bool:
+	return item.get("complete", false) and str(item.get("stop_reason", "" )).is_empty() \
+		and float(item.get("min_clearance", -INF)) >= MIN_CLEARANCE_M \
+		and float(item.get("max_clearance", INF)) <= 35.0 + float(item.get("count", 1) - 1) * 20.0 + 20.0 \
+		and float(item.get("min_tas", -INF)) >= MIN_TAS_MPS and float(item.get("max_tas", INF)) <= MAX_TAS_MPS \
+		and float(item.get("max_radius_error", INF)) <= MAX_RADIUS_ERROR_M \
+		and float(item.get("min_player_separation", -INF)) >= PLAYER_SEPARATION_M \
+		and float(item.get("max_control", INF)) <= 1.0 \
+		and (int(item.get("count", 1)) == 1 or float(item.get("min_pair_separation", -INF)) >= PAIR_SEPARATION_M)
 
 
 func SimStateFinite(state: PackedFloat64Array) -> bool:

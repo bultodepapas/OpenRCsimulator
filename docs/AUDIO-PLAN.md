@@ -2,9 +2,9 @@
 
 2026-10-20 · Revision 6 · Step prefix: **AUD-**
 
-**Status:** AUD-01–05 are delivered. The new soundscape passed software qualification and stereo-speaker acceptance. Dedicated mixer-thread timing and target-platform qualification remain open limits. **Active plan:** [audio realism](plans/audio-realism.md) (AUD-06…13: glitches, engine voices, turbine).
+**Status:** AUD-01–05 passed software qualification and stereo-speaker acceptance. AUD-15 adds fleet engine profiles and ground-contact audio; its source matching and listening qualification remain incomplete. Dedicated mixer-thread timing and target-platform qualification remain open limits. **Active plan:** [audio realism](plans/audio-realism.md).
 
-**Owns:** app/audio, app/assets/audio/soundscape, tools/audio and the soundscape/wildlife tests. Simulation, aircraft data, UI, scenery and world rendering remain with their owners. The only active audio workstream is this integration.
+**Owns:** app/audio, its soundscape/powertrain/landing-gear assets, tools/audio and the associated tests. Simulation, aircraft data, UI, scenery and world rendering remain with their owners.
 
 ## Current implementation
 
@@ -18,6 +18,18 @@ These are authored audio profiles, not recordings of every installed engine: the
 
 Landing-gear audio reads accepted gear contacts and surface type. Rolling and touchdown events have separate envelopes and bounded players. Loaded moving wheels create rolling sound; airborne and stationary gear do not. Lower engine power exposes the quieter ground layer. Spawn, reset and pause prime the contact observer without inventing a landing. [Ground assets and contact contract](research/audio/AUD-15/landing-gear.md), [verification](research/audio/AUD-15/validation.md).
 
+| Aircraft | Installed audio profile |
+| --- | --- |
+| Jensen Das Ugly Stik .60 | Phase-aware two-stroke fallback; accepted legacy shaft RPM |
+| Stik O.S. .61FX | Two-stroke firing telemetry |
+| Stik O.S. .55AX | Two-stroke firing telemetry, −1 dB installation trim |
+| Stik O.S. FS-64V | Four-stroke firing telemetry |
+| Great Planes Extra 300S .60 | Two-stroke fallback, +0.7 dB installation trim |
+| P-51D Mustang 120 | Two-band gasoline surrogate; separate propeller coast after cutoff |
+| SebArt Avanti S / P100RX | Designed turbine surrogate with exhaust directivity |
+| Turbo Lumber Evolution | Electric propeller surrogate; no combustion idle |
+| X-Cell .60 research | Two-band rotor surrogate; accepted rotor inertia/autorotation; skid impacts |
+
 | Step | Result and evidence |
 | --- | --- |
 | AUD-01 | Source, license, API and integration audit: [sources](research/audio/AUD-01/sources.md), [integration audit](research/audio/AUD-01/integration-audit.md). |
@@ -27,6 +39,7 @@ Landing-gear audio reads accepted gear contacts and surface type. Rolling and to
 | AUD-05 | Wildlife variation and export qualification: [evidence](research/audio/AUD-05/README.md). Speaker feedback and the frozen regression suite are recorded there. |
 | AUD-06/07/10a | Linux Movie Maker bench; loop-wrap clicks, start pop, stuck limiter, Doppler camera-cut chirp and near-field clamp fixed; two-layer directional turbine voice: [evidence](research/audio/AUD-06/README.md), [plan](plans/audio-realism.md). Owner listening pending. |
 | AUD-14 | Downloaded CC0 wind and light fabric recordings, reproducible editing pipeline, long PCM loops, weather-driven wind and spatial windsock sound: [sources, changes and verification](research/audio/AUD-14/README.md). Speaker listening and acoustic calibration remain open. |
+| AUD-15 | Six powertrain loops, three rolling loops and one touchdown clip; installed profiles, spatial contact emitters, smooth mixing and restart/pause handling. [Sources](research/audio/AUD-15/sources.md), [ground audio](research/audio/AUD-15/landing-gear.md), [verification and remaining gates](research/audio/AUD-15/validation.md). |
 
 ## Remaining qualification
 

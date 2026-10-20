@@ -1,0 +1,437 @@
+{
+	"action_rects": {
+		"DamageBreakdown": [
+			635.0,
+			680.0,
+			365.0,
+			54.0
+		],
+		"InspectWreck": [
+			362.0,
+			680.0,
+			263.0,
+			54.0
+		],
+		"RestartFlight": [
+			1010.0,
+			680.0,
+			226.0,
+			54.0
+		]
+	},
+	"aircraft_id": "turbo-lumber-evolution",
+	"card_rect": [
+		340.0,
+		420.0,
+		920.0,
+		552.0
+	],
+	"catalog_hash": "7de95c0f2988acde8c01d76aee54cf79b1be2124cb51469595247b51b9d86950",
+	"details_scroll_rect": [
+		362.0,
+		743.0,
+		876.0,
+		178.0
+	],
+	"effective_text_scale": 1.0,
+	"expanded": true,
+	"fixture": "Manufactured deterministic propeller-strike scenario using Incident.begin(turbo-lumber-evolution), Incident._mark_propeller(), and the current Catalog/Calculator; follows the existing test_economy_cr39.gd pattern. No amount fields are authored or overridden by this capture script.",
+	"format": "openrc-timber-cost-review v1",
+	"headline": "At least US$16.98",
+	"incident_id": "2026-10-20T18:47:02-1667934",
+	"layout_trace": [
+		{
+			"column_combined_minimum": [
+				469.0,
+				4215.0
+			],
+			"column_size": [
+				469.0,
+				4215.0
+			],
+			"details_custom_maximum": [
+				-1.0,
+				178.0
+			],
+			"details_custom_minimum": [
+				0.0,
+				0.0
+			],
+			"details_size": [
+				0.0,
+				0.0
+			],
+			"expanded": false,
+			"metrics": {
+				"details_max_height": 178.0,
+				"gutter": 28.0,
+				"headline_size": 56,
+				"max_panel_height": 944.0,
+				"panel_width": 920.0
+			},
+			"panel_combined_minimum": [
+				920.0,
+				4259.0
+			],
+			"panel_custom_minimum": [
+				920.0,
+				0.0
+			],
+			"panel_size": [
+				920.0,
+				4259.0
+			],
+			"phase": "shown-collapsed",
+			"surface_size": [
+				1600.0,
+				1000.0
+			]
+		},
+		{
+			"column_combined_minimum": [
+				469.0,
+				4402.0
+			],
+			"column_size": [
+				469.0,
+				4402.0
+			],
+			"details_custom_maximum": [
+				-1.0,
+				178.0
+			],
+			"details_custom_minimum": [
+				0.0,
+				178.0
+			],
+			"details_size": [
+				96.0,
+				178.0
+			],
+			"expanded": true,
+			"metrics": {
+				"details_max_height": 178.0,
+				"gutter": 28.0,
+				"headline_size": 56,
+				"max_panel_height": 944.0,
+				"panel_width": 920.0
+			},
+			"panel_combined_minimum": [
+				920.0,
+				4446.0
+			],
+			"panel_custom_minimum": [
+				920.0,
+				0.0
+			],
+			"panel_size": [
+				920.0,
+				4446.0
+			],
+			"phase": "expanded-before-frame",
+			"surface_size": [
+				1600.0,
+				1000.0
+			]
+		},
+		{
+			"column_combined_minimum": [
+				469.0,
+				508.0
+			],
+			"column_size": [
+				876.0,
+				4402.0
+			],
+			"details_custom_maximum": [
+				-1.0,
+				178.0
+			],
+			"details_custom_minimum": [
+				0.0,
+				178.0
+			],
+			"details_size": [
+				876.0,
+				178.0
+			],
+			"expanded": true,
+			"metrics": {
+				"details_max_height": 178.0,
+				"gutter": 28.0,
+				"headline_size": 56,
+				"max_panel_height": 944.0,
+				"panel_width": 920.0
+			},
+			"panel_combined_minimum": [
+				920.0,
+				552.0
+			],
+			"panel_custom_minimum": [
+				920.0,
+				0.0
+			],
+			"panel_size": [
+				920.0,
+				4446.0
+			],
+			"phase": "expanded-frame-1",
+			"surface_size": [
+				1600.0,
+				1000.0
+			]
+		},
+		{
+			"column_combined_minimum": [
+				469.0,
+				508.0
+			],
+			"column_size": [
+				876.0,
+				508.0
+			],
+			"details_custom_maximum": [
+				-1.0,
+				178.0
+			],
+			"details_custom_minimum": [
+				0.0,
+				178.0
+			],
+			"details_size": [
+				876.0,
+				178.0
+			],
+			"expanded": true,
+			"metrics": {
+				"details_max_height": 178.0,
+				"gutter": 28.0,
+				"headline_size": 56,
+				"max_panel_height": 944.0,
+				"panel_width": 920.0
+			},
+			"panel_combined_minimum": [
+				920.0,
+				552.0
+			],
+			"panel_custom_minimum": [
+				920.0,
+				0.0
+			],
+			"panel_size": [
+				920.0,
+				552.0
+			],
+			"phase": "expanded-frame-2",
+			"surface_size": [
+				1600.0,
+				1000.0
+			]
+		},
+		{
+			"column_combined_minimum": [
+				469.0,
+				508.0
+			],
+			"column_size": [
+				876.0,
+				508.0
+			],
+			"details_custom_maximum": [
+				-1.0,
+				178.0
+			],
+			"details_custom_minimum": [
+				0.0,
+				178.0
+			],
+			"details_size": [
+				876.0,
+				178.0
+			],
+			"expanded": true,
+			"metrics": {
+				"details_max_height": 178.0,
+				"gutter": 28.0,
+				"headline_size": 56,
+				"max_panel_height": 944.0,
+				"panel_width": 920.0
+			},
+			"panel_combined_minimum": [
+				920.0,
+				552.0
+			],
+			"panel_custom_minimum": [
+				920.0,
+				0.0
+			],
+			"panel_size": [
+				920.0,
+				552.0
+			],
+			"phase": "expanded-explicit-layout",
+			"surface_size": [
+				1600.0,
+				1000.0
+			]
+		},
+		{
+			"column_combined_minimum": [
+				469.0,
+				508.0
+			],
+			"column_size": [
+				876.0,
+				508.0
+			],
+			"details_custom_maximum": [
+				-1.0,
+				178.0
+			],
+			"details_custom_minimum": [
+				0.0,
+				178.0
+			],
+			"details_size": [
+				876.0,
+				178.0
+			],
+			"expanded": true,
+			"metrics": {
+				"details_max_height": 178.0,
+				"gutter": 28.0,
+				"headline_size": 56,
+				"max_panel_height": 944.0,
+				"panel_width": 920.0
+			},
+			"panel_combined_minimum": [
+				920.0,
+				552.0
+			],
+			"panel_custom_minimum": [
+				920.0,
+				0.0
+			],
+			"panel_size": [
+				920.0,
+				552.0
+			],
+			"phase": "expanded-frame-3",
+			"surface_size": [
+				1600.0,
+				1000.0
+			]
+		}
+	],
+	"locale": "en",
+	"offscreen_failures": [],
+	"report_amount_state_after": {
+		"complete": false,
+		"currency": "USD",
+		"high_minor": null,
+		"known_subtotal_minor": 1698,
+		"lines": [
+			{
+				"action": "inspection",
+				"amount_minor": null,
+				"high_minor": null,
+				"id": "fuselage_main",
+				"low_minor": 0,
+				"notes": "No price attached. The EFL105251 fuselage listing does not establish complete canopy and fittings coverage.",
+				"offer_id": null,
+				"price_basis": "estimated",
+				"quantity": 1
+			},
+			{
+				"action": "replacement",
+				"amount_minor": 1698,
+				"high_minor": 1698,
+				"id": "propeller_main",
+				"low_minor": 1698,
+				"notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. The physical inventory row explicitly combines a three-blade propeller and spinner. The candidate replacement value can be recorded as a composite economic row, but a propeller strike must not automatically charge for the unstruck spinner. Preserve empty runtime propeller bindings unless the simulation separately models/bills these parts. Composite estimate from separate offers, not one sold package: 1 x timber_evolution_propeller_efl5962_horizon_20261015: 799 USD cents each; observed 2026-10-15; In stock at Horizon Hobby; https://www.horizonhobby.com/product/3-blade-propeller-11-x-7.3/EFL5962.html | 1 x timber_evolution_spinner_efl17553_horizon_20261015: 899 USD cents each; observed 2026-10-15; In stock at Horizon Hobby; https://www.horizonhobby.com/product/spinner-turbo-timber/EFL17553.html",
+				"offer_id": null,
+				"price_basis": "estimated",
+				"quantity": 1
+			},
+			{
+				"action": "inspection",
+				"amount_minor": null,
+				"availability": "In stock at Horizon Hobby",
+				"high_minor": null,
+				"id": "motor_main",
+				"low_minor": 0,
+				"notes": "Spektrum SPM-1012 is an 800Kv motor and a commercial proxy only. The fictional build does not establish its exact installed motor SKU.",
+				"observed_on": "2026-10-15",
+				"offer_id": "timber_evolution_motor_spm1012_horizon_20261015",
+				"price_basis": "price_proxy",
+				"price_kind": "live_retailer_listing_price",
+				"quantity": 1,
+				"seller_domain": "www.horizonhobby.com",
+				"source_url": "https://www.horizonhobby.com/product/spektrum-avian-2815-800kv-brushless-outrunner-motor/SPM-1012.html"
+			}
+		],
+		"low_minor": 1698,
+		"outcome": "inspection",
+		"replacement_minor": null,
+		"salvage_minor": 0,
+		"total_minor": null
+	},
+	"report_amount_state_before": {
+		"complete": false,
+		"currency": "USD",
+		"high_minor": null,
+		"known_subtotal_minor": 1698,
+		"lines": [
+			{
+				"action": "inspection",
+				"amount_minor": null,
+				"high_minor": null,
+				"id": "fuselage_main",
+				"low_minor": 0,
+				"notes": "No price attached. The EFL105251 fuselage listing does not establish complete canopy and fittings coverage.",
+				"offer_id": null,
+				"price_basis": "estimated",
+				"quantity": 1
+			},
+			{
+				"action": "replacement",
+				"amount_minor": 1698,
+				"high_minor": 1698,
+				"id": "propeller_main",
+				"low_minor": 1698,
+				"notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. The physical inventory row explicitly combines a three-blade propeller and spinner. The candidate replacement value can be recorded as a composite economic row, but a propeller strike must not automatically charge for the unstruck spinner. Preserve empty runtime propeller bindings unless the simulation separately models/bills these parts. Composite estimate from separate offers, not one sold package: 1 x timber_evolution_propeller_efl5962_horizon_20261015: 799 USD cents each; observed 2026-10-15; In stock at Horizon Hobby; https://www.horizonhobby.com/product/3-blade-propeller-11-x-7.3/EFL5962.html | 1 x timber_evolution_spinner_efl17553_horizon_20261015: 899 USD cents each; observed 2026-10-15; In stock at Horizon Hobby; https://www.horizonhobby.com/product/spinner-turbo-timber/EFL17553.html",
+				"offer_id": null,
+				"price_basis": "estimated",
+				"quantity": 1
+			},
+			{
+				"action": "inspection",
+				"amount_minor": null,
+				"availability": "In stock at Horizon Hobby",
+				"high_minor": null,
+				"id": "motor_main",
+				"low_minor": 0,
+				"notes": "Spektrum SPM-1012 is an 800Kv motor and a commercial proxy only. The fictional build does not establish its exact installed motor SKU.",
+				"observed_on": "2026-10-15",
+				"offer_id": "timber_evolution_motor_spm1012_horizon_20261015",
+				"price_basis": "price_proxy",
+				"price_kind": "live_retailer_listing_price",
+				"quantity": 1,
+				"seller_domain": "www.horizonhobby.com",
+				"source_url": "https://www.horizonhobby.com/product/spektrum-avian-2815-800kv-brushless-outrunner-motor/SPM-1012.html"
+			}
+		],
+		"low_minor": 1698,
+		"outcome": "inspection",
+		"replacement_minor": null,
+		"salvage_minor": 0,
+		"total_minor": null
+	},
+	"requested_text_scale": 1.0,
+	"screenshot": "cost-report.png",
+	"text_scale_cap": 1.5,
+	"viewport": [
+		1600,
+		1000
+	]
+}

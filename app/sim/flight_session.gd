@@ -2488,9 +2488,10 @@ func _reset_airborne_start() -> bool:
 	var weather_aux: PackedFloat64Array = _restart_weather_aux()
 	var initial: PackedFloat64Array = start.state.duplicate() if _has_valid_start() else PackedFloat64Array()
 	if _external_spawn_heading_set and initial.size() == RB.SIZE:
-		var attitude := M.quat(initial[RB.ATT], initial[RB.ATT + 1], initial[RB.ATT + 2], initial[RB.ATT + 3])
-		var heading_rotation: PackedFloat64Array = M.q_from_euler(_external_spawn_heading_rad, 0.0, 0.0)
-		var spawned_attitude: PackedFloat64Array = M.q_normalized(M.q_mul(heading_rotation, attitude))
+		var trim_euler: PackedFloat64Array = M.q_to_euler(M.quat(initial[RB.ATT], initial[RB.ATT + 1],
+			initial[RB.ATT + 2], initial[RB.ATT + 3]))
+		var spawned_attitude: PackedFloat64Array = M.q_from_euler(_external_spawn_heading_rad,
+			trim_euler[1], trim_euler[2])
 		for axis: int in 4:
 			initial[RB.ATT + axis] = spawned_attitude[axis]
 	if _has_valid_start() and not weather_is_calm():

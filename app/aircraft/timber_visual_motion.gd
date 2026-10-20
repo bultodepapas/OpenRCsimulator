@@ -15,8 +15,8 @@ const LONGITUDINAL_SLIP_DUST_MPS := 0.75
 const LATERAL_SLIP_DUST_MPS := 0.65
 const LOOSE_SURFACE_ROLLING_FACTOR := 5.0
 const CABLE_CLEARANCE_TRAVEL_DEG := 6.0
-const DUST_AMOUNT := 12
-const DUST_LIFETIME_S := 0.56
+const DUST_AMOUNT := 16
+const DUST_LIFETIME_S := 0.64
 
 var _session: Node
 var _airplane: Dictionary = {}
@@ -343,8 +343,8 @@ func _make_dust_emitter(role: String) -> CPUParticles3D:
 	particles.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	particles.direction = Vector3.UP
 	particles.spread = 28.0
-	particles.initial_velocity_min = 0.08
-	particles.initial_velocity_max = 0.24
+	particles.initial_velocity_min = 0.12
+	particles.initial_velocity_max = 0.34
 	particles.gravity = Vector3(0.0, -0.12, 0.0)
 	particles.scale_amount_min = 0.12
 	particles.scale_amount_max = 0.55
@@ -353,16 +353,24 @@ func _make_dust_emitter(role: String) -> CPUParticles3D:
 	particles.use_fixed_seed = true
 	particles.seed = 7130 if role == "left" else 7131
 	particles.color_ramp = _dust_fade()
-	var material := StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	material.billboard_mode = BaseMaterial3D.BILLBOARD_PARTICLES
-	material.vertex_color_use_as_albedo = true
-	material.billboard_keep_scale = true
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
-	material.albedo_texture = TIRE_DUST_TEXTURE
+	var dust_shader := Shader.new()
+	dust_shader.code = """
+	shader_type spatial;
+	render_mode unshaded, blend_mix, depth_draw_never, cull_disabled;
+	uniform sampler2D dust_texture : source_color, filter_linear, repeat_disable;
+	void fragment() {
+		vec2 centered_uv = UV * 2.0 - vec2(1.0);
+		float radial_fade = 1.0 - smoothstep(0.54, 1.0, length(centered_uv));
+		vec4 dust = texture(dust_texture, UV);
+		ALBEDO = dust.rgb * COLOR.rgb;
+		ALPHA = dust.a * COLOR.a * radial_fade;
+	}
+	"""
+	var material := ShaderMaterial.new()
+	material.shader = dust_shader
+	material.set_shader_parameter("dust_texture", TIRE_DUST_TEXTURE)
 	var mesh := QuadMesh.new()
-	mesh.size = Vector2(0.055, 0.055)
+	mesh.size = Vector2(0.075, 0.075)
 	mesh.material = material
 	particles.mesh = mesh
 	add_child(particles)
@@ -496,7 +504,18 @@ func _update_contact_dust(state: PackedFloat64Array, contacts: Array, compressio
 					position[1] + normal[1] * compression_m,
 					position[2] + normal[2] * compression_m,
 				])
-				emitter.global_transform = Transform3D(Basis.IDENTITY, Frames.ned_to_render(Array(contact_ned)))
+				var ground_normal := Frames.ned_to_render(Array(normal)).normalized()
+				var heading_ned: PackedFloat64Array = frame.get("heading", PackedFloat64Array())
+				var side_ned: PackedFloat64Array = frame.get("side", PackedFloat64Array())
+				var rearward := Vector3.ZERO
+				if heading_ned.size() == 3:
+					rearward = -Frames.ned_to_render(Array(heading_ned)).normalized()
+				if side_ned.size() == 3 and absf(lateral_speed) >= LATERAL_SLIP_DUST_MPS:
+					rearward += Frames.ned_to_render(Array(side_ned)).normalized() * signf(lateral_speed) * 0.3
+				var plume_direction := (ground_normal * 0.82 + rearward.normalized() * 0.58).normalized()
+				emitter.direction = plume_direction
+				emitter.global_transform = Transform3D(Basis.IDENTITY,
+					Frames.ned_to_render(Array(contact_ned)) + ground_normal * 0.004)
 
 
 func _is_loose_surface(surfaces: PackedFloat64Array, frame: Dictionary) -> bool:

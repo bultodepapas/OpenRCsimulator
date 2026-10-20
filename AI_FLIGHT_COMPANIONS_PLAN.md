@@ -15,7 +15,7 @@ Main, rather than adding wrapper scenes. Settings apply at launch/restart; Remov
 is immediate. Hot admission and recall are not implemented.
 
 Keep Phase 0/1 release gates open: measured three-companion p95 complete callback
-cost is 4.7–5.0 ms on the inspected host, above the proposed 2 ms budget. Target
+cost is 4.1–7.3 ms on the shared development host, above the proposed 2 ms budget. Target
 rendered performance, broad aircraft/encounter qualification, fleet recording,
 long lifecycle soaks and all later phases remain pending. The phase tables below
 retain their full target scope; they must not be interpreted as completed by this

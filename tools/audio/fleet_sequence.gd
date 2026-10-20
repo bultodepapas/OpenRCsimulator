@@ -8,9 +8,15 @@ extends SceneTree
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const Math3D = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const Spec = preload("res://spec.gd")
 const Trim = preload("res://physics/trim.gd")
 
 var capture_fps := 60
+var sequence_elapsed_s := 0.0
+var sequence_wall_elapsed_s := 0.0
+var sequence_start_usec := 0
+var sequence_duration_s := 0.0
+var _last_telemetry_s := -INF
 const FIXED_TIMELINE: Array = [
 	[0.0, "off"], [2.0, "start"], [4.0, "idle"], [7.0, "taxi"],
 	[10.0, "takeoff"], [22.0, "flight"], [27.0, "landing"],
@@ -31,10 +37,13 @@ var scene: Node3D
 var adapter: Node
 var premaster_capture: AudioEffectCapture
 var master_capture: AudioEffectCapture
+var premaster_samples := PackedVector2Array()
 var master_samples := PackedVector2Array()
+var pcm_frames_captured := 0
 var premaster_frames := 0
 var premaster_peak := 0.0
 var premaster_over_unity := 0
+var premaster_discarded_frames := 0
 var premaster_max_step := 0.0
 var premaster_steps_over_08 := 0
 var _premaster_previous := Vector2.ZERO
@@ -130,21 +139,30 @@ func _run() -> void:
 		if not _has_runway():
 			notes.append("runway launch unavailable; takeoff segment remains a live aircraft-input attempt")
 	var timeline: Array = ROTOR_TIMELINE if rotorcraft else FIXED_TIMELINE
-	var end_frame := roundi(float(timeline[-1][0]) * capture_fps)
+	sequence_duration_s = float(timeline[-1][0])
+	_discard_probe_preamble()
 	stage = str(timeline[0][1])
 	events.append(_event(stage, "initial production adapter state"))
-	while frame < end_frame:
-		var t := float(frame) / capture_fps
+	sequence_start_usec = Time.get_ticks_usec()
+	while sequence_elapsed_s < sequence_duration_s:
+		var t := float(Time.get_ticks_usec() - sequence_start_usec) / 1000000.0
+		if t >= sequence_duration_s:
+			break
+		sequence_elapsed_s = t
 		var next := _stage_at(timeline, t)
 		if next != stage:
 			stage = next
 			_enter_stage(stage)
 		await process_frame
+		sequence_wall_elapsed_s = float(Time.get_ticks_usec() - sequence_start_usec) / 1000000.0
+		sequence_elapsed_s = minf(sequence_wall_elapsed_s, sequence_duration_s)
 		_drain_audio_probe()
 		_resume_focus_pause(session)
-		_record_frame(t)
+		_record_frame(sequence_elapsed_s)
 		frame += 1
 	_drain_audio_probe()
+	sequence_wall_elapsed_s = float(Time.get_ticks_usec() - sequence_start_usec) / 1000000.0
+	_finalize_capture_samples()
 	var wav_path := str(args.out) + ".wav"
 	var wav_error := _save_wav(wav_path)
 	if wav_error != OK:
@@ -308,30 +326,42 @@ func _stage_landing_fixture() -> void:
 
 
 func _controls() -> Dictionary:
+	var session: Node = scene.session
 	if rotorcraft:
-		var collective := 0.5
+		var collective_target := 0.5
 		match stage:
-			"takeoff": collective = 0.68
-			"flight": collective = 0.60
-			"landing": collective = 0.49
-			"settle", "shutdown", "off": collective = 0.5
-		return {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = collective}
-	var throttle := 0.0
+			"takeoff": collective_target = 0.68
+			"flight": collective_target = 0.60
+			"landing": collective_target = 0.49
+			"settle", "shutdown", "off": collective_target = 0.5
+		return {roll = 0.0, pitch = 0.0, yaw = 0.0,
+			throttle = _throttle_rate_input(session, collective_target)}
+	var throttle_target := 0.0
 	var pitch := 0.0
 	match stage:
-		"start", "idle", "landing": throttle = 0.12
-		"taxi": throttle = 0.2
+		"start", "idle", "landing": throttle_target = 0.12
+		"taxi": throttle_target = 0.2
 		"takeoff":
-			throttle = 1.0
+			throttle_target = 1.0
 			pitch = 0.12
-		"flight": throttle = 0.55
-		"rollout", "shutdown", "off": throttle = 0.0
-	return {roll = 0.0, pitch = pitch, yaw = 0.0, throttle = throttle}
+		"flight": throttle_target = 0.55
+		"rollout", "shutdown", "off": throttle_target = 0.0
+	return {roll = 0.0, pitch = pitch, yaw = 0.0,
+		throttle = _throttle_rate_input(session, throttle_target)}
+
+
+func _throttle_rate_input(session: Node, target: float) -> float:
+	# read_raw receives a keyboard-style rate command (-1..1), not an RC throttle target.
+	# Convert the scheduled position into the rate signal the production command integrator expects.
+	var step: float = float(Spec.CONTROLS.throttle_rate) * maxf(float(session.sim.dt()), 0.0)
+	if step <= 0.0:
+		return 0.0
+	return clampf((target - float(session.commands.throttle)) / step, -1.0, 1.0)
 
 
 func _event(name: String, action: String) -> Dictionary:
 	var session: Node = scene.session
-	return {frame = frame, time_s = float(frame) / capture_fps, stage = name, action = action,
+	return {frame = frame, time_s = sequence_elapsed_s, stage = name, action = action,
 		tick = int(session.sim.tick), aircraft = aircraft_id}
 
 
@@ -381,14 +411,14 @@ func _install_audio_probe() -> void:
 		if environment_bus >= 0:
 			AudioServer.set_bus_mute(environment_bus, true)
 	premaster_capture = AudioEffectCapture.new()
-	premaster_capture.buffer_length = maxf(0.5, 2.0 / float(capture_fps))
+	premaster_capture.buffer_length = 2.0
 	AudioServer.add_bus_effect(output_bus, premaster_capture)
 	var master_index := AudioServer.get_bus_index(&"Master")
 	if master_index < 0:
 		notes.append("post-master probe unavailable: Master bus is missing")
 		return
 	master_capture = AudioEffectCapture.new()
-	master_capture.buffer_length = maxf(0.5, 2.0 / float(capture_fps))
+	master_capture.buffer_length = 2.0
 	# Appending after the configured Master effects captures the delivered software mix.
 	AudioServer.add_bus_effect(master_index, master_capture)
 
@@ -399,6 +429,7 @@ func _drain_audio_probe() -> void:
 		if available > 0:
 			var buffer: PackedVector2Array = premaster_capture.get_buffer(available)
 			for sample: Vector2 in buffer:
+				premaster_samples.append(sample)
 				premaster_frames += 1
 				premaster_peak = maxf(premaster_peak, maxf(absf(sample.x), absf(sample.y)))
 				if maxf(absf(sample.x), absf(sample.y)) >= 1.0:
@@ -410,6 +441,7 @@ func _drain_audio_probe() -> void:
 						premaster_steps_over_08 += 1
 				_premaster_previous = sample
 				_premaster_has_previous = true
+		premaster_discarded_frames = premaster_capture.get_discarded_frames()
 	if master_capture != null:
 		var master_available := master_capture.get_frames_available()
 		if master_available > 0:
@@ -448,6 +480,83 @@ func _save_wav(path: String) -> Error:
 	return wav.save_to_wav(path)
 
 
+func _discard_probe_preamble() -> void:
+	# Scene construction and route setup are outside the 37/42 s evidence interval.
+	if premaster_capture != null:
+		var premaster_available := premaster_capture.get_frames_available()
+		if premaster_available > 0:
+			premaster_capture.clear_buffer()
+	if master_capture != null:
+		var master_available := master_capture.get_frames_available()
+		if master_available > 0:
+			master_capture.clear_buffer()
+	premaster_samples.clear()
+	master_samples.clear()
+	premaster_frames = 0
+	premaster_peak = 0.0
+	premaster_over_unity = 0
+	premaster_discarded_frames = 0
+	premaster_max_step = 0.0
+	premaster_steps_over_08 = 0
+	_premaster_previous = Vector2.ZERO
+	_premaster_has_previous = false
+	master_peak = 0.0
+	master_over_unity = 0
+	master_max_step = 0.0
+	master_steps_over_08 = 0
+	master_invalid_sample = false
+	master_discarded_frames = 0
+	_master_previous = Vector2.ZERO
+	_master_has_previous = false
+	pcm_frames_captured = 0
+	_last_telemetry_s = -INF
+
+
+func _finalize_capture_samples() -> void:
+	pcm_frames_captured = master_samples.size()
+	premaster_frames = premaster_samples.size()
+	premaster_peak = 0.0
+	premaster_over_unity = 0
+	premaster_max_step = 0.0
+	premaster_steps_over_08 = 0
+	var previous := Vector2.ZERO
+	var has_previous := false
+	for sample: Vector2 in premaster_samples:
+		var level := maxf(absf(sample.x), absf(sample.y))
+		premaster_peak = maxf(premaster_peak, level)
+		if level >= 1.0:
+			premaster_over_unity += 1
+		if has_previous:
+			var step := maxf(absf(sample.x - previous.x), absf(sample.y - previous.y))
+			premaster_max_step = maxf(premaster_max_step, step)
+			if step >= 0.8:
+				premaster_steps_over_08 += 1
+		previous = sample
+		has_previous = true
+	master_peak = 0.0
+	master_over_unity = 0
+	master_max_step = 0.0
+	master_steps_over_08 = 0
+	master_invalid_sample = false
+	previous = Vector2.ZERO
+	has_previous = false
+	for sample: Vector2 in master_samples:
+		if not is_finite(sample.x) or not is_finite(sample.y):
+			master_invalid_sample = true
+			continue
+		var level := maxf(absf(sample.x), absf(sample.y))
+		master_peak = maxf(master_peak, level)
+		if level >= 1.0:
+			master_over_unity += 1
+		if has_previous:
+			var step := maxf(absf(sample.x - previous.x), absf(sample.y - previous.y))
+			master_max_step = maxf(master_max_step, step)
+			if step >= 0.8:
+				master_steps_over_08 += 1
+		previous = sample
+		has_previous = true
+
+
 func _contact_summary() -> Dictionary:
 	var ground := _ground_snapshot()
 	var contacts: Array = ground.get("contacts", [])
@@ -480,7 +589,7 @@ func _record_frame(t: float) -> void:
 	var snapshot: Dictionary = adapter.call("snapshot") if adapter.has_method("snapshot") else {}
 	var contacts := _contact_summary()
 	var grounded := int(contacts.grounded)
-	if not rotorcraft and stage in ["takeoff", "flight"] and grounded == 0 and _height_m() > 1.0:
+	if stage in ["takeoff", "flight"] and grounded == 0 and _height_m() > 1.0:
 		takeoff_seen = true
 	if stage in ["landing", "rollout", "settle"]:
 		if grounded > 0:
@@ -509,9 +618,9 @@ func _record_frame(t: float) -> void:
 				volume_db = legacy.volume_db
 	bench_rows.append([t, float(snapshot.get("rpm", 0.0)), source.distance_to(listener),
 		pitch_scale, volume_db, float(soundscape.get("last_doppler")) if soundscape != null else 1.0])
-	var telemetry_stride := maxi(1, roundi(float(capture_fps) / 10.0))
-	if frame % telemetry_stride != 0:
+	if t - _last_telemetry_s < 0.09:
 		return
+	_last_telemetry_s = t
 	var targets: Dictionary = {}
 	var powertrain: Node = null
 	if soundscape != null:
@@ -526,6 +635,7 @@ func _record_frame(t: float) -> void:
 		height_m = _height_m(), paused = bool(session.sim.paused),
 		fault = str(session.sim.fault_reason), crash = not session.crash.is_empty(),
 		contacts = contacts, powertrain = targets, audio_mix = _audio_mix_summary(soundscape)})
+	previous_grounded = grounded
 
 
 func _audio_mix_summary(soundscape: Node) -> Dictionary:
@@ -551,10 +661,9 @@ func _audio_mix_summary(soundscape: Node) -> Dictionary:
 			var impact: AudioStreamPlayer3D = slot.get("impact") as AudioStreamPlayer3D
 			if impact != null and impact.playing:
 				active_impact_count += 1
-	return {engine_gain_model: engine_level, engine_player_db: mix_engine_level,
-		gear_roll_gain_model_sum: ground_roll_gain, gear_touchdown_players: active_impact_count,
-		gear_contact_slots: ground_slots}
-	previous_grounded = grounded
+	return {engine_gain_model = engine_level, engine_player_db = mix_engine_level,
+		gear_roll_gain_model_sum = ground_roll_gain, gear_touchdown_players = active_impact_count,
+		gear_contact_slots = ground_slots}
 
 
 func _height_m() -> float:
@@ -604,9 +713,12 @@ func _report(timeline: Array) -> Dictionary:
 	return {
 		format = "openrc-audio-fleet-sequence-v1", aircraft = aircraft_id, vehicle = "rotorcraft" if rotorcraft else "fixed-wing",
 		godot = Engine.get_version_info().string, fps = capture_fps, mix_rate = AudioServer.get_mix_rate(),
-		driver = AudioServer.get_driver_name(), frames = frame, duration_s = float(frame) / capture_fps,
+		driver = AudioServer.get_driver_name(), frames = frame, duration_s = sequence_wall_elapsed_s,
+		scheduled_duration_s = sequence_duration_s, wall_elapsed_s = sequence_wall_elapsed_s,
 		pcm_wav = {path = str(args.out) + ".wav", sample_format = "signed PCM16 stereo",
 			frames = master_samples.size(), seconds = float(master_samples.size()) / float(AudioServer.get_mix_rate()),
+		scheduled_frames = roundi(sequence_duration_s * float(AudioServer.get_mix_rate())),
+		captured_frames = pcm_frames_captured,
 			discarded_frames = master_discarded_frames, peak_linear = master_peak,
 			peak_dbfs = linear_to_db(maxf(master_peak, 0.0000001)), over_unity_samples = master_over_unity,
 			max_sample_step = master_max_step, sample_steps_over_0_8 = master_steps_over_08,
@@ -615,14 +727,17 @@ func _report(timeline: Array) -> Dictionary:
 		route = route, staged_landing_fixture = landing_fixture_ok,
 		landing_fixture_message = landing_fixture_message, actual_runway_takeoff_observed = takeoff_seen,
 		actual_contact_after_landing_stage = touchdown_seen, rollout_or_settle_contact_observed = rollout_contact_seen,
-		landing_rollout_not_applicable = rotorcraft, start_state = "accepted session snapshot; non-glow combustion start/stop are bench engine_running latch stimuli",
+		landing_rollout_not_applicable = rotorcraft, actual_liftoff_observed = takeoff_seen,
+		actual_rotor_liftoff_observed = takeoff_seen if rotorcraft else false,
+		start_state = "accepted session snapshot; non-glow combustion start/stop are bench engine_running latch stimuli",
 		start_choice = "ground" if rotorcraft else "runway", initial_stage_schedule = timeline,
 		audio_source = source_info, contacts = _contact_summary(), events = events, samples = rows,
-		telemetry_rate_hz = float(capture_fps) / float(maxi(1, roundi(float(capture_fps) / 10.0))),
+		telemetry_rate_hz = float(rows.size()) / maxf(sequence_wall_elapsed_s, 1e-9),
 		columns = ["t", "rpm", "distance_m", "motor_pitch_scale", "motor_volume_db", "doppler"],
 		rows = bench_rows,
 		premaster = {frames = premaster_frames, peak_linear = premaster_peak,
 			peak_dbfs = linear_to_db(maxf(premaster_peak, 0.0000001)), over_unity_samples = premaster_over_unity,
+			discarded_frames = premaster_discarded_frames,
 			max_sample_step = premaster_max_step, sample_steps_over_0_8 = premaster_steps_over_08,
 			meaning = "AudioEffectCapture on the soundscape sum before the Master limiter; sample-step threshold is a screening statistic, not a perceptual click verdict."},
 		fault = str(session.sim.fault_reason), crash = not session.crash.is_empty(), focus_resumes = focus_resumes,

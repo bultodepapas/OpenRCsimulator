@@ -7,7 +7,8 @@ gates live in [the implementation plan](../AI_FLIGHT_COMPANIONS_PLAN.md).
 ## Use
 
 1. Choose **Club field** and a fixed-wing player aircraft on Home.
-2. Open **Flight companions**, enable companions, choose **1–3**, and Apply.
+2. Open **More flight details → Flight companions**, enable companions,
+   choose **1–3**, and Apply.
    Start with one; additional aircraft substantially increase CPU cost.
 3. Fly. The companions launch airborne in separated circuits north of the runway.
 4. **Pause → Session options → Flight companions** shows the current population.
