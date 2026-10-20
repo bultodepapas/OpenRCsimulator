@@ -6,6 +6,7 @@
 extends SceneTree
 const Flight = preload("res://sim/flight_session.gd")
 const AircraftData = preload("res://physics/aircraft_data.gd")
+const WheelProfiles = preload("res://physics/wheel_profiles.gd")
 const PATH: String = "res://data/aircraft/p51d_mustang_120.json"
 var failures: int = 0
 
@@ -13,21 +14,40 @@ var failures: int = 0
 func run_flight(rate: int, mode: String, lagged: bool) -> PackedFloat64Array:
 	Engine.physics_ticks_per_second = rate
 	var flight: Flight = Flight.new()
-	flight.setup_shaft_integrator(mode)
 	flight.setup(PATH)
-	if not lagged:
+	if not lagged or mode == "split":
 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PATH))
-		raw.aero.surfaces.horizontal.erase("downwash_gradient")
-		# The optional ground-effect closure requires the gradient-derived free-tail law.
-		# Remove both only from this in-memory integrator fixture; production lag/ground effect stay enabled.
-		raw.aero.erase("ground_effect")
-		var candidate := AircraftData.validate_and_derive(raw)
-		if not candidate.ok or not flight._apply(candidate) or flight.downwash_index() != -1:
+		if mode == "split":
+			# The current v11 P-51 has finite fuel and requires coupled RK4; retain its older
+			# prescribed-fuel compatibility path only for measuring the split integrator.
+			raw.propulsion.erase("fuel_consumption")
+			raw.capabilities.energy = "prescribed_fuel"
+		if not lagged:
+			raw.aero.surfaces.horizontal.erase("downwash_gradient")
+			# The optional ground-effect closure requires the gradient-derived free-tail law.
+			# Remove both only from this in-memory integrator fixture; production lag/ground effect stay enabled.
+			raw.aero.erase("ground_effect")
+		var candidate: Dictionary = AircraftData.validate_and_derive(raw)
+		var profiled: Dictionary = WheelProfiles.apply_to_model(candidate.model) if candidate.get("ok", false) else {}
+		if not candidate.get("ok", false) or not profiled.get("ok", false):
 			failures += 1
-			printerr("FAIL refinement flight could not drop the downwash lag: ", candidate.get("errors", []))
+			printerr("FAIL refinement flight could not prepare its in-memory model: ",
+				candidate.get("errors", profiled.get("errors", [])))
 			flight.free()
 			return PackedFloat64Array()
-		flight.reset()
+		candidate.model = profiled.model
+		candidate.wheel_profile_identity = profiled.identity
+		if not flight._apply(candidate) or (not lagged and flight.downwash_index() != -1):
+			failures += 1
+			printerr("FAIL refinement flight could not apply its in-memory model")
+			flight.free()
+			return PackedFloat64Array()
+	if not flight.setup_shaft_integrator(mode):
+		failures += 1
+		printerr("FAIL refinement flight refused shaft mode ", mode, ": ", flight.shaft_error)
+		flight.free()
+		return PackedFloat64Array()
+	flight.reset()
 	flight.input_enabled = false
 	flight.sim.inputs[3] += 0.03
 	for tick: int in rate / 2:

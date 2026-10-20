@@ -192,8 +192,8 @@ func _windsock_error(cue: Node3D) -> String:
 		var material: ShaderMaterial = part.mesh.surface_get_material(0) as ShaderMaterial
 		if material == null or material.shader == null:
 			return "missing %s shader material" % part_name
-		var channels: Array[String] = ["fabric_color", "fabric_normal", "fabric_roughness"] \
-			if part_name == "Fabric" else ["metal_normal", "metal_roughness", "concrete_color", "concrete_normal"]
+		var channels := PackedStringArray(["fabric_color", "fabric_normal", "fabric_roughness"]) \
+			if part_name == "Fabric" else PackedStringArray(["metal_normal", "metal_roughness", "concrete_color", "concrete_normal"])
 		for channel: String in channels:
 			var texture: Texture2D = material.get_shader_parameter(channel) as Texture2D
 			if texture == null or texture.get_width() <= 0 or texture.get_height() <= 0:
