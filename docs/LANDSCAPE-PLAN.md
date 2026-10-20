@@ -71,6 +71,11 @@ and mesh-accounting CPU work without changing the rendered landscape. Matched
 captures are pixel-identical; existing grass-mask integration failures and the
 limits of shared-machine timing are recorded in its evidence.
 
+[LU-32](research/landscape-upgrade/LU-32/README.md) skips redundant lighting
+and storm material updates. Stable-input CPU paths improve; continuously
+changing inputs have mixed measured results. Transition checks and nine
+paired native captures retain the visual behavior, without an FPS claim.
+
 | Remaining gate | Current status | Evidence |
 | --- | --- | --- |
 | Nearby scenery-query cost | The 100 µs target remains open; measured costs and the accepted bounds are recorded in the latest native reports. | [LU-21](research/landscape-upgrade/LU-21/README.md), [LU-22](research/landscape-upgrade/LU-22/README.md) |

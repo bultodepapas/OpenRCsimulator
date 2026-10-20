@@ -51,7 +51,7 @@ func _initialize() -> void:
 				new_count += 1
 	var banks: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://assets/audio/powertrains/BANKS.json"))
 	okay = okay and banks is Dictionary and banks.has_all(["gasoline", "electric", "turbine", "rotor"])
-	okay = okay and new_count >= 9 # six engine loops plus rolling/impact sources
+	okay = okay and new_count == 10 # six engine loops plus three rolling loops and one impact
 	print("Exported audio: %d original/ambience + %d powertrain/gear sources and notices: %s" %
 		[count, new_count, "PASS" if okay else "FAIL"])
 	quit(0 if okay else 1)

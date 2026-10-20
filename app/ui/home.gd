@@ -24,6 +24,7 @@ const Landscapes := preload("res://landscapes/catalog.gd")
 const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
+const CompanionConfig := preload("res://ai/companions/config.gd")
 
 ## The Fly button was pressed (emitted once: further presses are ignored while the flight starts).
 signal fly_requested
@@ -31,6 +32,7 @@ signal ground_vehicle_requested
 signal workshop_requested(from: Control)
 signal natural_random_requested(from: Control)
 signal failures_requested(from: Control)
+signal companions_requested(from: Control)
 signal quit_requested
 ## The player asked for the next interface language (a Preferences.LANGUAGES code).
 signal language_requested(code: String)
@@ -91,6 +93,8 @@ var workshop_button: Button
 var natural_random_button: Button
 var failures_button: Button
 var failure_summary_label: Label
+var companions_button: Button
+var companion_config: Dictionary = CompanionConfig.defaults()
 var weather_button: Button
 var time_button: Button
 var language_button: Button
@@ -396,6 +400,14 @@ func _init() -> void:
 	_details_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_details_button.pressed.connect(_toggle_flight_details)
 	disclosure_row.add_child(_details_button)
+	companions_button = _button("Flight companions", "QuietButton")
+	companions_button.name = "FlightCompanions"
+	companions_button.custom_minimum_size = Vector2(40.0, 24.0)
+	companions_button.flat = true
+	companions_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	companions_button.autowrap_mode = TextServer.AUTOWRAP_OFF
+	companions_button.pressed.connect(func() -> void: companions_requested.emit(companions_button))
+	disclosure_row.add_child(companions_button)
 	flight_page.add_child(disclosure_row)
 	_flight_details = VBoxContainer.new()
 	_flight_details.name = "FlightDetails"
@@ -1056,6 +1068,7 @@ func set_aircraft(id: String) -> void:
 	failures_button.disabled = rotorcraft
 	failures_button.tooltip_text = tr("Failure practice currently supports airplanes only.") if rotorcraft else ""
 	_update_failure_summary()
+	_update_companions_text()
 	if had_focus and not flyable:
 		next_button.grab_focus()
 	if is_node_ready():
@@ -1132,6 +1145,7 @@ func set_landscape(id: String) -> void:
 	landscape_id = id if Landscapes.has(id) else Landscapes.DEFAULT_ID
 	landscape_button.text = tr("Landscape: %s") % tr(Landscapes.entry(landscape_id).name)
 	landscape_button.tooltip_text = tr("Choose the landscape for your next flight.")
+	_update_companions_text()
 	if natural_random_button != null:
 		_update_landscape_activities()
 
@@ -1304,6 +1318,16 @@ func set_failure_config(config: Dictionary) -> void:
 		_update_failure_summary()
 
 
+func set_companion_config(raw: Variant) -> Dictionary:
+	var checked: Dictionary = CompanionConfig.validate(raw)
+	if not checked.get("ok", false):
+		return checked
+	companion_config = checked.config.duplicate(true)
+	if is_node_ready():
+		_update_companions_text()
+	return checked
+
+
 func _update_failure_summary() -> void:
 	if failure_summary_label == null:
 		return
@@ -1317,6 +1341,22 @@ func _update_failure_summary() -> void:
 		failure_summary_label.text = tr("Next flight failures: %d%% · Catastrophic enabled") % probability
 	else:
 		failure_summary_label.text = tr("Next flight failures: %d%% · Standard") % probability
+
+
+func _update_companions_text() -> void:
+	if companions_button == null:
+		return
+	var enabled := bool(companion_config.get("enabled", false))
+	var count := int(companion_config.get("count", 1))
+	var seed := int(companion_config.get("seed", 1))
+	var available := not Catalog.is_rotorcraft(aircraft_id) and landscape_id == Landscapes.DEFAULT_ID
+	companions_button.text = "AI"
+	companions_button.tooltip_text = tr("Flight companions: %s · %d companions · seed %d") % [
+		tr("On") if enabled else tr("Off"), count, seed,
+	]
+	if not available:
+		companions_button.tooltip_text += "\n" + tr("Available for airplanes at Club Field.")
+	companions_button.disabled = not available
 
 
 ## UI-16: a small card at the top right over the backdrop (outside the column, so nothing moves) saying that the
@@ -1369,6 +1409,7 @@ func _update_texts() -> void:
 	next_button.tooltip_text = tr("Next aircraft")
 	_update_weather_text()
 	_update_failure_summary()
+	_update_companions_text()
 	_update_control()
 	if is_node_ready(): _apply_responsive_layout.call_deferred()
 

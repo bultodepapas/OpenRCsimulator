@@ -12,9 +12,12 @@ const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const EngineSound = preload("res://render/engine_sound.gd")
 const PowertrainAudio = preload("res://audio/powertrain_audio.gd")
+const GroundAudio = preload("res://audio/ground_audio.gd")
+const GroundAudioModel = preload("res://audio/ground_audio_model.gd")
 const TIMBER_ID := "turbo-lumber-evolution"
 var flight: Node3D
 var soundscape: Soundscape
+var ground_audio: GroundAudio
 var _last_tick: int = -1
 var _windsock: WeakRef
 var last_update_usec: int = 0
@@ -38,6 +41,9 @@ func configure(scene: Node3D) -> void:
 	var glow_family: String = _glow_family(propulsion)
 	soundscape.configure(flight.field, str(propulsion.get("kind", "glow_prop")), audio_seed, glow_family,
 		PowertrainAudio.profile_for(flight.aircraft_id, propulsion))
+	ground_audio = GroundAudio.new()
+	ground_audio.configure(self, soundscape.output_bus())
+	ground_audio.bind_soundscape(soundscape)
 	var field_node: Node3D = flight.get("_field_node") as Node3D
 	if field_node != null:
 		var cues: Array = field_node.get_meta("wind_cues", [])
@@ -174,6 +180,8 @@ static func propeller_blade_count(aircraft_id: String) -> int:
 func _on_resetting() -> void:
 	_last_tick = -1
 	soundscape.reset_observer()
+	if ground_audio != null:
+		ground_audio.reset()
 
 
 func _process(delta: float) -> void:
@@ -184,5 +192,10 @@ func _process(delta: float) -> void:
 	if tick < _last_tick:
 		soundscape.reset_observer()
 	_last_tick = tick
-	soundscape.update_sound(snapshot(), delta)
+	var sound_snapshot: Dictionary = snapshot()
+	soundscape.update_sound(sound_snapshot, delta)
+	var ground_contacts: Array[Dictionary] = GroundAudioModel.snapshot_contacts(flight.session, flight.field)
+	var engine_power: float = float(sound_snapshot.get("throttle", 0.0)) if bool(sound_snapshot.get("running", false)) else 0.0
+	ground_audio.update_contacts(tick, bool(sound_snapshot.get("paused", false)), ground_contacts,
+		engine_power, delta, sound_snapshot.get("listener", Vector3.ZERO), float(Engine.physics_ticks_per_second))
 	last_update_usec = Time.get_ticks_usec() - started

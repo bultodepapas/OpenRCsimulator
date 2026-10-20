@@ -172,6 +172,29 @@ def build():
     return outputs
 
 
+def _lossless_import_sidecars(write):
+    required = {'compress/mode=0', 'force/8_bit=false', 'edit/normalize=false', 'edit/trim=false'}
+    stale = []
+    for filename in [*LOOPS, *IMPACTS]:
+        path = OUTPUT / (filename + '.import')
+        if not path.is_file():
+            stale.append(filename + '.import (run Godot import once to create the WAV sidecar)')
+            continue
+        lines = path.read_text().splitlines()
+        settings = {line.split('=', 1)[0]: line for line in lines if '=' in line}
+        if write:
+            settings['compress/mode'] = 'compress/mode=0'
+            updated = [settings.get(line.split('=', 1)[0], line) if '=' in line else line for line in lines]
+            if 'compress/mode' not in {line.split('=', 1)[0] for line in lines if '=' in line}:
+                updated.append('compress/mode=0')
+            path.write_text('\n'.join(updated) + '\n', encoding='utf-8', newline='\n')
+            lines = updated
+        if not required.issubset(set(lines)):
+            stale.append(filename + '.import (unmodified 16-bit PCM required)')
+    if stale:
+        raise SystemExit('Stale landing-gear import settings: ' + ', '.join(stale))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check', action='store_true')
@@ -180,18 +203,17 @@ def main():
     if args.check:
         stale = [name for name, data in outputs.items()
                  if not (OUTPUT / name).is_file() or (OUTPUT / name).read_bytes() != data]
-        for filename in LOOPS:
-            sidecar = OUTPUT / (filename + '.import')
-            if not sidecar.is_file() or not {'compress/mode=0', 'force/8_bit=false',
-                                             'edit/normalize=false', 'edit/trim=false'}.issubset(
-                    set(sidecar.read_text().splitlines())):
-                stale.append(filename + '.import (unmodified PCM required for loop guard)')
+        try:
+            _lossless_import_sidecars(write=False)
+        except SystemExit as error:
+            stale.append(str(error))
         if stale:
             raise SystemExit('Stale landing-gear outputs: ' + ', '.join(stale))
     else:
         OUTPUT.mkdir(parents=True, exist_ok=True)
         for name, data in outputs.items():
             (OUTPUT / name).write_bytes(data)
+        _lossless_import_sidecars(write=True)
     loops = sum(1 for name in LOOPS)
     print(f"Landing-gear recordings {'checked' if args.check else 'built'}: {loops} loops, "
           f"{len(IMPACTS)} touchdown one-shot, {sum(len(v) for k, v in outputs.items() if k.endswith('.wav')):,} bytes")

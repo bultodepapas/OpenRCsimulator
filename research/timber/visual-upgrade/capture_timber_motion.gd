@@ -1,4 +1,4 @@
-## Temporary capture helper for visually inspecting the live-render suspension pose.
+## Capture helper for the settled runway suspension pose and visible tire contact details.
 extends SceneTree
 
 const Session := preload("res://sim/flight_session.gd")
@@ -48,10 +48,10 @@ func _capture() -> void:
 	motion._process(0.0)
 
 	var camera := Camera3D.new()
-	camera.position = Vector3(0.24, -0.045, 0.20)
+	camera.position = Vector3(0.12, -0.18, 0.37)
 	camera.fov = 54.0
 	stage.add_child(camera)
-	camera.look_at(Vector3(0.025, -0.125, 0.030), Vector3.UP)
+	camera.look_at(Vector3(0.0, -0.125, 0.025), Vector3.UP)
 	camera.current = true
 	var key := DirectionalLight3D.new()
 	key.rotation_degrees = Vector3(-34.0, -27.0, 0.0)

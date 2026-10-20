@@ -46,6 +46,8 @@ const FailureConfig := preload("res://failures/config.gd")
 const FailureCatalog := preload("res://failures/catalog.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const FailureMenu := preload("res://ui/failures_menu.gd")
+const CompanionConfig := preload("res://ai/companions/config.gd")
+const CompanionsDialog := preload("res://ui/companions_dialog.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
 const NaturalRandom = preload("res://scenarios/natural_random.gd")
@@ -113,6 +115,9 @@ var weather_dialog: CanvasLayer:
 var time_of_day_dialog: CanvasLayer:
 	get:
 		return screens.get_screen("time_of_day") as CanvasLayer
+var companions_dialog: CanvasLayer:
+	get:
+		return screens.get_screen("companions") as CanvasLayer
 var failure_menu: CanvasLayer:
 	get:
 		return screens.get_screen("failures") as CanvasLayer
@@ -124,6 +129,8 @@ var _controller_restart_edges: Dictionary = {}
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
+## Natural Random flights and Workshop trials do not expose companion setup; direct and normal fixed-wing flights do.
+var _flight_companions_available := false
 ## NR: a draft never enters preferences; only an accepted flight can become the repeat selection.
 var last_random_scenario: Dictionary = {}
 var random_seed_source: Callable = Callable()
@@ -311,6 +318,7 @@ func show_home() -> void:
 	home.set_lighting_config(lighting_config)
 	home.set_sky_config(preferences.get("sky_config", SkyConfig.defaults()))
 	home.set_failure_config(preferences.get("failure_config", FailureConfig.defaults()))
+	home.set_companion_config(preferences.get("companion_config", CompanionConfig.defaults()))
 	home.set_time_of_day(world_preset)
 	home.fly_requested.connect(start_flight)
 	home.ground_vehicle_requested.connect(start_ground_vehicle)
@@ -327,6 +335,7 @@ func show_home() -> void:
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
 	home.failures_requested.connect(open_failures_settings)
+	home.companions_requested.connect(open_companions_settings)
 	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
 	screens.push("home", home)
@@ -580,6 +589,8 @@ func start_flight(request: Dictionary = {}) -> void:
 	if home_scene != null:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = _create_flight(route_aircraft_id)
+	_flight_companions_available = not is_random and not helicopter_route \
+		and landscape_id == Landscapes.DEFAULT_ID and _has_property(flight, "companion_config")
 	flight.field_path = field_path
 	flight.landscape_id = landscape_id
 	if flight.has_method("set_user_args"):
@@ -611,6 +622,14 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.set("failure_config", failure_config_for_flight.duplicate(true))
 	if not helicopter_route and _has_property(flight, "failure_notifications"):
 		flight.set("failure_notifications", bool(failure_config_for_flight.get("notify", true)))
+	# Home preferences feed only the ordinary Club fixed-wing route. Direct CLI arguments and Natural Random
+	# remain owned by their flight entry points, and are never overwritten with Home settings.
+	if has_home and not is_random and not helicopter_route and landscape_id == Landscapes.DEFAULT_ID \
+			and _has_property(flight, "companion_config"):
+		var checked_companions: Dictionary = CompanionConfig.validate(
+			preferences.get("companion_config", CompanionConfig.defaults())
+		)
+		flight.set("companion_config", checked_companions.config if checked_companions.get("ok", false) else CompanionConfig.defaults())
 	add_child(flight)
 	if is_random and flight.startup_error.is_empty():
 		var accepted: Dictionary = flight.bind_scenario(request)
@@ -623,6 +642,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		remove_child(flight)
 		flight.queue_free()
 		flight = null
+		_flight_companions_available = false
 		add_child(home_scene)
 		home_scene.camera.make_current()
 		screens.push("home", departing_home)
@@ -1166,6 +1186,9 @@ func open_pause() -> void:
 	pause_menu.workshop_button.visible = not helicopter_route and not trial_pause
 	pause_menu.failure_settings_requested.connect(open_failures_settings)
 	pause_menu.failure_settings_button.visible = has_home and not helicopter_route
+	pause_menu.companions_requested.connect(open_companions_settings)
+	pause_menu.companions_button.visible = _flight_companions_available and not trial_pause
+	pause_menu.set_companion_config(_flight_companion_config())
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.time_of_day_button.visible = not helicopter_route
 	pause_menu.time_of_day_button.text = tr("Sky and lighting")
@@ -1534,6 +1557,150 @@ func open_failures_settings(from: Control = null) -> void:
 	screens.push("failures", menu, from)
 
 
+## Home saves the next-flight choice; Pause sends it to the current flight for its next restart.
+func open_companions_settings(from: Control = null) -> void:
+	var opened_from_home: bool = flight == null and screens.is_top("home") and home != null \
+		and not home.companions_button.disabled
+	var opened_from_pause: bool = flight != null and screens.is_top("pause") and _flight_companions_available \
+		and pause_menu != null and pause_menu.companions_button.visible
+	if not opened_from_home and not opened_from_pause:
+		return
+	if from == null:
+		from = home.companions_button if opened_from_home else pause_menu.companions_button
+	var config: Dictionary = _home_companion_config() if opened_from_home else _flight_companion_config()
+	var status: Dictionary = _companion_status() if opened_from_pause else {}
+	var dialog := CompanionsDialog.new()
+	dialog.configure(config, status)
+	if opened_from_pause and (not has_home or not bool(preferences.get("writable", true))):
+		dialog.save_default_check.visible = false
+		dialog.save_default_check.focus_mode = Control.FOCUS_NONE
+		dialog.save_as_default = false
+		dialog.call("_sync_focus_order")
+	dialog.applied.connect(_on_companions_applied)
+	dialog.removed.connect(_on_companions_removed)
+	dialog.close_requested.connect(close_companions)
+	if not screens.push("companions", dialog, from):
+		dialog.free()
+
+
+func close_companions() -> void:
+	if screens.is_top("companions"):
+		screens.pop()
+
+
+func _home_companion_config() -> Dictionary:
+	var checked: Dictionary = CompanionConfig.validate(
+		preferences.get("companion_config", CompanionConfig.defaults())
+	)
+	return checked.config if checked.get("ok", false) else CompanionConfig.defaults()
+
+
+func _flight_companion_config() -> Dictionary:
+	var raw: Variant = flight.get("companion_config") if flight != null and _has_property(flight, "companion_config") \
+		else CompanionConfig.defaults()
+	var checked: Dictionary = CompanionConfig.validate(raw)
+	return checked.config if checked.get("ok", false) else CompanionConfig.defaults()
+
+
+func _companion_status() -> Dictionary:
+	var status: Dictionary = {}
+	if flight != null and flight.has_method("companion_status"):
+		var raw_status: Variant = flight.call("companion_status")
+		if raw_status is Dictionary:
+			status = raw_status.duplicate(true)
+	status.in_flight = flight != null
+	status.save_as_default = false
+	return status
+
+
+func _on_companions_applied(raw: Dictionary) -> void:
+	if companions_dialog == null:
+		return
+	var checked: Dictionary = CompanionConfig.validate(raw)
+	if not checked.get("ok", false):
+		var validation_errors: PackedStringArray = checked.get("errors", PackedStringArray())
+		companions_dialog.set_error("; ".join(validation_errors))
+		return
+	if flight == null and screens.get_screen("home") != null:
+		var candidate: Dictionary = preferences.duplicate(true)
+		candidate.companion_config = checked.config.duplicate(true)
+		var save_error: Error = Preferences.save_to(preferences_path, candidate)
+		if save_error != OK:
+			companions_dialog.set_error(tr("Could not save settings (error %d).") % save_error)
+			_settings_note = tr("Could not save settings (error %d).") % save_error
+			home.set_note(_settings_note)
+			return
+		preferences = candidate
+		_settings_note = ""
+		home.set_companion_config(checked.config)
+		home.set_note("")
+		close_companions()
+		return
+	if flight == null or screens.get_screen("pause") == null or not flight.has_method("set_companion_config"):
+		companions_dialog.set_error(tr("Companion settings are unavailable for this flight."))
+		return
+	var previous_config := _flight_companion_config()
+	var result: Variant = flight.call("set_companion_config", checked.config)
+	if not result is Dictionary or not bool(result.get("ok", false)):
+		var errors := PackedStringArray()
+		if result is Dictionary:
+			for error: Variant in result.get("errors", []):
+				errors.append(str(error))
+		companions_dialog.set_error("; ".join(errors))
+		return
+	var applied: Dictionary = CompanionConfig.validate(result.get("config", checked.config))
+	if not applied.get("ok", false):
+		companions_dialog.set_error(tr("The flight returned invalid companion settings."))
+		return
+	pause_menu.set_companion_config(applied.config)
+	if companions_dialog.save_as_default:
+		var candidate: Dictionary = preferences.duplicate(true)
+		candidate.companion_config = applied.config.duplicate(true)
+		var save_error: Error = Preferences.save_to(preferences_path, candidate)
+		if save_error != OK:
+			var rollback: Dictionary = flight.call("set_companion_config", previous_config)
+			pause_menu.set_companion_config(previous_config)
+			companions_dialog.set_error(tr("Could not save settings (error %d).") % save_error)
+			if not rollback.get("ok", false):
+				var rollback_errors := PackedStringArray()
+				for error: Variant in rollback.get("errors", []):
+					rollback_errors.append(str(error))
+				companions_dialog.set_error(tr("Could not save settings (error %d). %s") % [save_error, "; ".join(rollback_errors)])
+			pause_menu.set_note(tr("Could not save settings (error %d).") % save_error)
+			return
+		preferences = candidate
+		pause_menu.set_note("")
+	close_companions()
+
+
+func _on_companions_removed() -> void:
+	if flight == null or not flight.has_method("remove_companions_now"):
+		return
+	flight.call("remove_companions_now")
+	_refresh_companions_dialog_status()
+
+
+func _refresh_companions_dialog_status() -> void:
+	if companions_dialog == null or flight == null:
+		return
+	var dialog := companions_dialog as CompanionsDialog
+	var draft := {
+		"enabled": dialog.enabled_check.button_pressed,
+		"count": dialog.count_picker.get_selected_id(),
+		"seed": dialog.seed_edit.text,
+		"save_as_default": dialog.save_default_check.button_pressed,
+	}
+	var config := _flight_companion_config()
+	var status := _companion_status()
+	dialog.configure(config, status)
+	dialog.enabled_check.button_pressed = bool(draft.enabled)
+	dialog.count_picker.select(clampi(int(draft.count), 1, 3) - 1)
+	dialog.seed_edit.text = str(draft.seed)
+	if dialog.save_default_check.visible:
+		dialog.save_default_check.button_pressed = bool(draft.save_as_default)
+		dialog.save_as_default = bool(draft.save_as_default)
+
+
 ## Inspect the accepted model in Pause (including Workshop variants), or validate
 ## the Home selection without creating a session, drawing an event or changing it.
 func _failure_availability() -> Dictionary:
@@ -1829,6 +1996,7 @@ func _commit_end_flight() -> void:
 	remove_child(flight) # out of the tree now: its camera, sound and session stop this frame
 	flight.queue_free()
 	flight = null
+	_flight_companions_available = false
 	show_home()
 	if home != null and not last_failure_status.is_empty():
 		home.set_failure_debrief(last_failure_status)

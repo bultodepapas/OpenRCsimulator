@@ -34,7 +34,7 @@ The Movie Maker bench (`bench.sh`, usage in its header) adds a `crash` scenario 
 
 For longer wildlife listening, add `--wildlife-review --duration=130`; this holds neutral controls in the real trimmed flight and keeps the pilot camera. Add `--time-of-day=23:00` for owls/crickets. The optional harness-only `--resume-focus` explicitly resumes focus-loss pauses only when no fault, crash or session hold exists; it never changes production focus behavior. Reports record these resumes and final physics tick/paused state. The checker rejects a wildlife review that did not sustain the flight. No species is forced for a listening review.
 
-Export verification uses `godot --headless --editor --path app --export-pack Windows /absolute/output/audio.pck`, then runs `check_pack.gd` with that PCK as the sole user argument from an empty project. It checks all 33 imported WAVs, PCM format and sample count, three manifests and MIT/CC0 notices. This is resource-pack qualification, not a full installer/release smoke test.
+Export verification uses `godot --headless --editor --path app --export-pack Windows /absolute/output/audio.pck`, then runs `check_pack.gd` with that PCK as the sole user argument from an empty project. It checks 33 original/ambience WAVs plus six powertrain loops and four landing-gear clips, PCM format and sample count, manifests, bank definitions and MIT/CC0 notices. This is resource-pack qualification, not a full installer/release smoke test.
 
 AUD-14 adds real wind/fabric recordings. Source downloads and hashes are in `research/audio/AUD-14/recordings/environment/`; exact pinned editing dependencies are separate from the synthetic generators. The importer decodes the retained MP3 previews, trims, crossfades, filters and normalizes them into long mono PCM loops. Versioned `.wav.import` files keep `compress/mode=0`; Godot's QOA default cannot use the PCM wrap guard. Reproduction and focused checks:
 
@@ -48,3 +48,14 @@ godot --display-driver headless --audio-driver WASAPI --path app --script /absol
 `wind_probe.gd` is a staged presentation bench for calm, light/strong wind, gusts and reversal, pause/resume, and listener distance. It captures Master plus an isolated fabric bus, reports the actual audio driver, source identities, peaks, capture-buffer discards, measured wall update rate and update times, and checks native pause/bus cleanup. Settled measurements exclude the first 0.5 s per stage; digital silence reports a finite -240 dBFS floor. Compare captured duration with wall time as well as the discard counter. It does not qualify acoustic realism or replace a flight test. See [AUD-14](../../docs/research/audio/AUD-14/README.md) for results and limitations.
 
 Live gameplay defaults to audio on. Use `--soundscape=off` for silence, `--soundscape=legacy` for the retained G3b engine, `--audio-seed=<integer>` for a reproducible ambience sequence, `--audio-delay=off` to hear the aircraft without propagation delay, and `--audio-absorption=off` to remove air absorption for source-level calibration ([AUD-11](../../docs/research/audio/AUD-11/README.md)). The new runtime requires no external audio middleware. Source WAVs, import settings, provenance and license are under `app/assets/audio/soundscape/`.
+
+AUD-15 adds installed powertrain banks and landing-gear contacts. The current behavior and source-fit limits are in [AUDIO-PLAN](../../docs/AUDIO-PLAN.md), with [engine provenance](../../docs/research/audio/AUD-15/sources.md), [ground provenance](../../docs/research/audio/AUD-15/landing-gear.md) and [validation](../../docs/research/audio/AUD-15/validation.md). Both importers reproduce from retained licensed previews without network access:
+
+```sh
+python tools/audio/recorded_powertrains.py --check
+python tools/audio/import_landing_gear.py --check
+godot --headless --path app --script res://tests/test_powertrain_audio.gd
+godot --headless --path app --script res://tests/test_ground_audio.gd
+```
+
+`fleet_sequence.gd -- --list` lists the supported fleet. Its capture report distinguishes accepted live physics from explicit approach resets and harness engine-latch stimuli. Stage names alone do not establish successful takeoff, landing or a continuous full flight; consult the recorded outcomes.

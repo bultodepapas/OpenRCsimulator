@@ -1,11 +1,25 @@
 # AI flight companions implementation plan
 
-**Status: proposed; no runtime implementation authorized by this document.**
-Inspection date: 2026-10-20. Baseline: `e1e8cd66`; working tree clean before this plan.
-Owner: proposed Flight Companions track, prefix **AFC-00…32**. Register the track in
-[docs/README.md](docs/README.md#tracks-plans-and-step-ids) before implementation.
-Every step below is pending. Numeric targets are proposed engineering/gameplay gates,
-not measured RC aircraft properties or claims of current performance.
+**Status: implementation authorized; experimental airborne slice in progress.**
+Original inspection: 2026-10-20, baseline `e1e8cd66`. Track **AFC-00…32** is registered
+in [docs/README.md](docs/README.md#tracks-plans-and-step-ids).
+The [current guide](docs/AI-FLIGHT-COMPANIONS.md) describes implemented controls and
+limits; [dated evidence](docs/research/ai-companions/AFC-00-06/README.md) records tests
+and costs. Numeric targets below remain acceptance gates, not performance claims.
+
+The first implementation covers parts of AFC-00…06: a controllerless session
+seam, one-to-three Stik circuits, common tick snapshots, basic proximity response,
+player-authored scenery damage publication, model/audio instances, and Home/Pause
+settings. It uses programmatically composed manager/agent nodes, consistent with
+Main, rather than adding wrapper scenes. Settings apply at launch/restart; Remove
+is immediate. Hot admission and recall are not implemented.
+
+Keep Phase 0/1 release gates open: measured three-companion p95 complete callback
+cost is 4.7–5.0 ms on the inspected host, above the proposed 2 ms budget. Target
+rendered performance, broad aircraft/encounter qualification, fleet recording,
+long lifecycle soaks and all later phases remain pending. The phase tables below
+retain their full target scope; they must not be interpreted as completed by this
+initial slice.
 
 ## 1. Product outcome and scope
 

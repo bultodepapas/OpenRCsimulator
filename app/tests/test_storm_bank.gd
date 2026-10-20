@@ -21,6 +21,7 @@ func _run_tests() -> void:
 	await _test_scene_isolation_and_reconfiguration()
 	await _test_seeded_geometry_and_rng()
 	await _test_advection_and_rebase()
+	_test_material_refresh()
 	await process_frame
 	print("storm bank: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
@@ -261,6 +262,59 @@ func _test_exposure_independent_materials(bank: StormBank, layers: Array, offset
 	bank.update_visual(scene, night_environment, null, 1.0)
 	_check("night bank material copies scene-linear sky colors without exposure scaling",
 		_material_colors_match(bank, night_environment))
+
+
+func _test_material_refresh() -> void:
+	var selection: Dictionary = SkyConfig.for_preset("distant_storm")
+	var profile: Dictionary = SkyConfig.validate(selection).profile
+	var resolved: Dictionary = SkyAppearance.resolve(profile, selection)
+	var scene := _snapshot(resolved.cloud_layers, Vector2.ZERO)
+	var environment := Atmosphere.environment()
+	var bank := StormBank.new()
+	bank.configure(profile, 147)
+	bank.update_visual(scene, environment, null, 1.0)
+	bank.update_visual(scene, environment, null, 2.0)
+	_check("unchanged material lighting still advances the visual clock", bank.snapshot().clock_s == 2.0)
+	environment.fog_density = 0.007
+	bank.update_visual(scene, environment, null, 3.0)
+	var fog_matches := true
+	for material: ShaderMaterial in bank._materials + [bank._rain_material]:
+		fog_matches = fog_matches and is_equal_approx(float(material.get_shader_parameter("haze_density")), 0.007 * 0.35)
+	_check("fog-only edits reach every cloud and rain material", fog_matches)
+	var event := {"event_id": "first", "source_world": [10.0, 20.0, 30.0]}
+	bank.apply_flash(event, 0.5, 1.0)
+	_check("flash reaches cloud and rain uniforms", _flash_matches(bank, Vector3(10, 20, 30), 0.425))
+	event.event_id = "second"
+	bank.apply_flash(event, 0.5, 1.0)
+	_check("equal flash uniforms retain the latest event metadata", bank.snapshot().flash.event_id == "second")
+	bank.apply_flash(event, 0.5, 2.0)
+	_check("same flash responds to exposure changes", _flash_matches(bank, Vector3(10, 20, 30), 0.2125))
+	event.source_world = [40.0, 50.0, 60.0]
+	bank.apply_flash(event, 0.5, 2.0)
+	_check("same flash radiance responds to source movement", _flash_matches(bank, Vector3(40, 50, 60), 0.2125))
+	bank.apply_flash(event, 0.0, 2.0)
+	_check("zero-level event retains its source and clears radiance", _flash_matches(bank, Vector3(40, 50, 60), 0.0))
+	bank.apply_flash({}, 0.0, 1.0)
+	bank.apply_flash({}, 0.0, 1.0)
+	_check("repeated empty clears reset every flash uniform", _flash_matches(bank, Vector3.ZERO, 0.0))
+	bank.apply_flash(event, 0.5, 2.0)
+	bank.configure(profile, 148)
+	bank.update_visual(scene, environment, null, 4.0)
+	bank.apply_flash(event, 0.5, 2.0)
+	_check("recreated materials initialize unchanged colors and fog",
+		_material_colors_match(bank, environment)
+		and is_equal_approx(float(bank._rain_material.get_shader_parameter("haze_density")), 0.007 * 0.35))
+	_check("recreated materials initialize unchanged flash values", _flash_matches(bank, Vector3(40, 50, 60), 0.2125))
+	bank.free()
+
+
+func _flash_matches(bank: StormBank, source: Vector3, radiance: float) -> bool:
+	for material: ShaderMaterial in bank._materials:
+		if material.get_shader_parameter("flash_source") != source \
+				or not is_equal_approx(float(material.get_shader_parameter("flash_radiance")), radiance):
+			return false
+	return bank._rain_material.get_shader_parameter("flash_source") == source \
+		and is_equal_approx(float(bank._rain_material.get_shader_parameter("flash_radiance")), radiance * 0.16)
 
 
 func _material_colors_match(bank: StormBank, environment: Environment) -> bool:

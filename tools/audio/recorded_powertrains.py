@@ -67,7 +67,9 @@ RECORDINGS = {
 # low-pass, target RMS, peak ceiling). Source rate is retained: no upsampling.
 EDITS = {
     "gasoline_low.wav": ("gas_120cc", 0.10, 1.55, 0.20, 45.0, 12000.0, 0.100, 0.398107),
-    "gasoline_high.wav": ("gas_120cc", 6.20, 2.05, 0.25, 45.0, 14000.0, 0.100, 0.398107),
+    # The 5.0 s takeoff section holds a steadier envelope and similar high engine tone
+    # than the later, stronger fly-by section; avoid baking that level swell into the loop.
+    "gasoline_high.wav": ("gas_120cc", 5.00, 2.05, 0.25, 45.0, 14000.0, 0.100, 0.398107),
     "electric_quad.wav": ("electric_quad", 26.0, 9.0, 0.75, 50.0, 12000.0, 0.100, 0.398107),
     "turbine_designed.wav": ("designed_jet", 32.0, 12.0, 1.0, 55.0, 14000.0, 0.100, 0.398107),
     "rotor_low.wav": ("toy_helicopter", 14.6, 4.0, 0.50, 45.0, 12000.0, 0.100, 0.398107),
@@ -140,6 +142,29 @@ def shape_loop(samples, sample_rate, low_hz, high_hz):
     return np.fft.irfft(np.fft.rfft(samples) * response, n=len(samples))
 
 
+def rms_envelope(samples, sample_rate, window_s=0.1, hop_s=0.01):
+    window = max(1, round(window_s * sample_rate))
+    hop = max(1, round(hop_s * sample_rate))
+    if len(samples) < window:
+        return np.asarray([np.sqrt(np.mean(samples * samples))], dtype=np.float64)
+    return np.asarray([
+        np.sqrt(np.mean(samples[start:start + window] ** 2))
+        for start in range(0, len(samples) - window + 1, hop)
+    ], dtype=np.float64)
+
+
+def near_wrap_rms_range_db(samples, sample_rate):
+    window = max(1, round(0.1 * sample_rate))
+    hop = max(1, round(0.01 * sample_rate))
+    half_span = round(0.5 * sample_rate)
+    rms_values = []
+    for center in range(-half_span, half_span, hop):
+        indices = (np.arange(center - window // 2, center - window // 2 + window) % len(samples))
+        rms_values.append(np.sqrt(np.mean(samples[indices] ** 2)))
+    rms_values = np.maximum(np.asarray(rms_values, dtype=np.float64), 1e-12)
+    return float(20.0 * np.log10(np.max(rms_values) / np.min(rms_values)))
+
+
 def build():
     if np.__version__ != "2.4.6" or miniaudio.__version__ != "1.71":
         raise RuntimeError("Install exact tools/audio/requirements-recordings.txt versions")
@@ -178,9 +203,20 @@ def build():
         source, rate = decoded[source_key]
         first = round(start_s * rate)
         count = round(duration_s * rate)
-        samples = source[first:first + count].copy()
+        source_window = source[first:first + count].copy()
+        samples = source_window.copy()
         if len(samples) != count:
             raise RuntimeError(f"Truncated source segment for {filename}")
+        source_envelope = rms_envelope(source_window, rate)
+        source_quality = {
+            "peak_abs": float(np.max(np.abs(source_window))),
+            "samples_at_or_above_0_999_full_scale": int(np.count_nonzero(np.abs(source_window) >= 0.999)),
+            "rms_envelope_window_s": 0.1,
+            "rms_envelope_hop_s": 0.01,
+            "rms_envelope_p95_p05_db": float(20.0 * np.log10(
+                max(float(np.quantile(source_envelope, 0.95)), 1e-12) /
+                max(float(np.quantile(source_envelope, 0.05)), 1e-12))),
+        }
         samples -= np.mean(samples)
         overlap = round(crossfade_s * rate)
         if overlap <= 0 or overlap * 2 >= len(samples):
@@ -194,6 +230,15 @@ def build():
         blob, pcm = wav_bytes(samples, rate)
         seam_step = abs(float(pcm[-1] - pcm[0]))
         interior_step_p99 = float(np.quantile(np.abs(np.diff(pcm)), 0.99))
+        first_differences = np.diff(pcm)
+        second_differences = np.diff(first_differences)
+        wrap_step = float(pcm[0] - pcm[-1])
+        wrap_second_difference = max(
+            abs(float(first_differences[-1] - wrap_step)),
+            abs(float(wrap_step - first_differences[0])),
+        )
+        interior_second_difference_p99 = float(np.quantile(np.abs(second_differences), 0.99))
+        near_wrap_energy_range_db = near_wrap_rms_range_db(pcm, rate)
         if not np.isfinite(pcm).all() or np.max(np.abs(pcm)) > peak_cap + (1.0 / 32768.0):
             raise RuntimeError(f"Invalid PCM or headroom for {filename}")
         if seam_step > max(interior_step_p99 * 1.5, 0.002):
@@ -221,11 +266,16 @@ def build():
                 "peak_cap": peak_cap,
                 "applied_gain": gain,
             },
+            "source_quality": source_quality,
             "metrics": {
                 "rms": float(np.sqrt(np.mean(pcm * pcm))),
                 "peak": float(np.max(np.abs(pcm))),
                 "seam_step": seam_step,
                 "interior_step_p99": interior_step_p99,
+                "wrap_second_difference": wrap_second_difference,
+                "interior_second_difference_p99": interior_second_difference_p99,
+                "wrap_second_difference_p99_ratio": wrap_second_difference / max(interior_second_difference_p99, 1e-12),
+                "near_wrap_100ms_rms_range_db": near_wrap_energy_range_db,
             },
         })
 

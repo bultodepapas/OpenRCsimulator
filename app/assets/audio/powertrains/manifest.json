@@ -19,28 +19,39 @@
       "format": "signed 16-bit PCM little-endian",
       "loop": true,
       "metrics": {
+        "interior_second_difference_p99": 0.01416015625,
         "interior_step_p99": 0.028951110839843697,
+        "near_wrap_100ms_rms_range_db": 2.37438022299263,
         "peak": 0.398101806640625,
         "rms": 0.08348879944705083,
-        "seam_step": 0.012664794921875
+        "seam_step": 0.012664794921875,
+        "wrap_second_difference": 0.0040283203125,
+        "wrap_second_difference_p99_ratio": 0.28448275862068967
       },
       "sample_count": 59535,
       "sample_rate_hz": 44100,
       "sha256": "ec1c2bac4deec6221ff3aecf25a4997b55bd60245d022fce4d55d76299945f87",
-      "source": "gas_120cc"
+      "source": "gas_120cc",
+      "source_quality": {
+        "peak_abs": 0.370361328125,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 2.0024041846698517,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
     },
     {
       "channels": 1,
       "duration_s": 1.8,
       "edits": {
-        "applied_gain": 0.492361553587544,
+        "applied_gain": 0.4923615535875441,
         "crossfade_curve": "equal_power",
         "crossfade_s": 0.25,
         "highpass_hz": 45.0,
         "lowpass_hz": 14000.0,
         "peak_cap": 0.398107,
-        "source_endpoint_correlation": 0.06784695785096653,
-        "source_start_s": 6.2,
+        "source_endpoint_correlation": -0.0285365000833013,
+        "source_start_s": 5.0,
         "source_window_s": 2.05,
         "target_rms": 0.1
       },
@@ -48,15 +59,26 @@
       "format": "signed 16-bit PCM little-endian",
       "loop": true,
       "metrics": {
-        "interior_step_p99": 0.028778076171875,
+        "interior_second_difference_p99": 0.020453796386718626,
+        "interior_step_p99": 0.034271240234375,
+        "near_wrap_100ms_rms_range_db": 2.666103903138014,
         "peak": 0.398101806640625,
-        "rms": 0.08209046522855834,
-        "seam_step": 0.00927734375
+        "rms": 0.09603241854934637,
+        "seam_step": 0.011749267578125,
+        "wrap_second_difference": 0.012451171875,
+        "wrap_second_difference_p99_ratio": 0.6087462512868753
       },
       "sample_count": 79380,
       "sample_rate_hz": 44100,
-      "sha256": "21b977aaecb61006d0f69389566d918292076767b3d41b00f71d05f9cb907732",
-      "source": "gas_120cc"
+      "sha256": "5ddf11372061f92997e2d0fea34babb1ba9a9b97217df0914fe2ccc8f16ef030",
+      "source": "gas_120cc",
+      "source_quality": {
+        "peak_abs": 0.8083038330078125,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 1.850596694511858,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
     },
     {
       "channels": 1,
@@ -77,15 +99,26 @@
       "format": "signed 16-bit PCM little-endian",
       "loop": true,
       "metrics": {
+        "interior_second_difference_p99": 0.020111083984375,
         "interior_step_p99": 0.026214599609375,
+        "near_wrap_100ms_rms_range_db": 1.8202579157645604,
         "peak": 0.398101806640625,
         "rms": 0.07114037195939772,
-        "seam_step": 0.013885498046875
+        "seam_step": 0.013885498046875,
+        "wrap_second_difference": 0.009429931640625,
+        "wrap_second_difference_p99_ratio": 0.46889226100151743
       },
       "sample_count": 396000,
       "sample_rate_hz": 48000,
       "sha256": "a20108fe11cf56503ca3adcd943c5ef0b6d49b1e0fa6ebb8644ba41e179c71a1",
-      "source": "electric_quad"
+      "source": "electric_quad",
+      "source_quality": {
+        "peak_abs": 0.97216796875,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 2.273755447438854,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
     },
     {
       "channels": 1,
@@ -106,15 +139,26 @@
       "format": "signed 16-bit PCM little-endian",
       "loop": true,
       "metrics": {
+        "interior_second_difference_p99": 0.183624267578125,
         "interior_step_p99": 0.15951599121093807,
+        "near_wrap_100ms_rms_range_db": 0.6560765249760258,
         "peak": 0.23419189453125,
         "rms": 0.09999697003989748,
-        "seam_step": 0.044708251953125
+        "seam_step": 0.044708251953125,
+        "wrap_second_difference": 0.184417724609375,
+        "wrap_second_difference_p99_ratio": 1.0043210902443078
       },
       "sample_count": 485100,
       "sample_rate_hz": 44100,
       "sha256": "86b7d17e19f2642d2aaf8acedbc82a48447a524642c9e5a1c1f919d2f067e7f4",
-      "source": "designed_jet"
+      "source": "designed_jet",
+      "source_quality": {
+        "peak_abs": 0.9353179931640625,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 0.1513972871758989,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
     },
     {
       "channels": 1,
@@ -135,15 +179,26 @@
       "format": "signed 16-bit PCM little-endian",
       "loop": true,
       "metrics": {
+        "interior_second_difference_p99": 0.09933654785156243,
         "interior_step_p99": 0.105743408203125,
+        "near_wrap_100ms_rms_range_db": 4.321950507668804,
         "peak": 0.398101806640625,
         "rms": 0.08266838396303355,
-        "seam_step": 0.02496337890625
+        "seam_step": 0.02496337890625,
+        "wrap_second_difference": 0.051605224609375,
+        "wrap_second_difference_p99_ratio": 0.5194988725246236
       },
       "sample_count": 168000,
       "sample_rate_hz": 48000,
       "sha256": "571c6fb9a57e132e29de4bf2ad61149a67ed78f800b817e3db6f7f41685af6dd",
-      "source": "toy_helicopter"
+      "source": "toy_helicopter",
+      "source_quality": {
+        "peak_abs": 0.3077239990234375,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 5.6035762335314585,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
     },
     {
       "channels": 1,
@@ -164,15 +219,26 @@
       "format": "signed 16-bit PCM little-endian",
       "loop": true,
       "metrics": {
+        "interior_second_difference_p99": 0.10827728271484371,
         "interior_step_p99": 0.11279296875,
+        "near_wrap_100ms_rms_range_db": 4.323452430113136,
         "peak": 0.398101806640625,
         "rms": 0.09344178173010591,
-        "seam_step": 0.0279541015625
+        "seam_step": 0.0279541015625,
+        "wrap_second_difference": 0.0289306640625,
+        "wrap_second_difference_p99_ratio": 0.2671905254465155
       },
       "sample_count": 192000,
       "sample_rate_hz": 48000,
       "sha256": "8da9dab4abc549ccff072c9ee13b299df0b0913eaf800106bc45e15b9761ab40",
-      "source": "toy_helicopter"
+      "source": "toy_helicopter",
+      "source_quality": {
+        "peak_abs": 0.1759490966796875,
+        "rms_envelope_hop_s": 0.01,
+        "rms_envelope_p95_p05_db": 6.325063828491599,
+        "rms_envelope_window_s": 0.1,
+        "samples_at_or_above_0_999_full_scale": 0
+      }
     }
   ],
   "banks": {

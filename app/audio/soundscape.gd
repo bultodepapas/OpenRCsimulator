@@ -69,6 +69,7 @@ var fabric_audio: RefCounted
 var _glow_pending_start: bool = false
 var _glow_capacity: int = 0
 var _last_glow_refill_usec: int = 0
+var _glow_level: float = 0.0
 var gain: float = 0.0
 var clock_s: float = 0.0
 var wildlife := Wildlife.new()
@@ -119,6 +120,7 @@ func _enter_tree() -> void:
 		_glow_pending_start = true
 		_glow_capacity = 0
 		_last_glow_refill_usec = 0
+		_glow_level = 0.0
 		glow_voice.reset()
 	if fabric_audio != null:
 		fabric_audio.rebind(_bus_names[2])
@@ -216,6 +218,10 @@ func _create_glow_player() -> void:
 	glow_player.attenuation_filter_cutoff_hz = 6500.0
 	glow_player.attenuation_filter_db = 0.0 # bus-level absorption and screening (AUD-11b)
 	glow_player.volume_db = -80.0
+	if not voice_profile.is_empty():
+		glow_player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
+		glow_player.max_distance = 0.0
+		glow_player.max_db = 6.0
 	add_child(glow_player)
 	_glow_pending_start = true
 	_glow_capacity = 0
@@ -260,6 +266,10 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 	# Aircraft voices take air absorption and screening from their bus (AUD-11b); ambience keeps the 3D shelf.
 	player.attenuation_filter_db = 0.0 if bus_name == AIRCRAFT_BUS else -12.0
 	player.volume_db = -80.0
+	if bus_name == AIRCRAFT_BUS and not voice_profile.is_empty():
+		player.attenuation_model = AudioStreamPlayer3D.ATTENUATION_DISABLED
+		player.max_distance = 0.0
+		player.max_db = 6.0
 	# Doppler is computed once from both moving endpoints; Godot Doppler stays disabled.
 	add_child(player)
 	voices.append(player)
@@ -346,6 +356,7 @@ func reset_observer() -> void:
 		_glow_pending_start = true
 		_glow_capacity = 0
 		_last_glow_refill_usec = 0
+		_glow_level = 0.0
 		glow_voice.reset()
 	wildlife.reset()
 	if fabric_audio != null:
@@ -464,7 +475,7 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	for i: int in 2:
 		var breathing: float = 0.78 + 0.22 * sin(clock_s * (0.11 + 0.03 * i) + 2.2 * i)
 		_level(CRICKET_FIRST + i, 0.11 * float(wildlife_presence.cricket) * breathing * duck, dt)
-	if not _start_offsets.is_empty():
+	if not paused and not _start_offsets.is_empty():
 		for index: int in _start_offsets:
 			if use_glow_voice and int(index) < 2:
 				continue
@@ -579,15 +590,21 @@ func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
 	if not voice_profile.is_empty():
 		# AUD-15: loaded exhaust dominates under power; closed-throttle windmilling keeps only mechanics.
 		target_level *= (0.48 + 1.15 * sqrt(power)) * db_to_linear(float(voice_profile.get("trim_db", 0.0)))
-	var level: float = lerpf(db_to_linear(glow_player.volume_db + AIRCRAFT_TRIM_DB), target_level * gain * screen_gain * duck, 1.0 - exp(-dt / 0.09))
-	glow_player.volume_db = linear_to_db(maxf(level, 0.0001)) - AIRCRAFT_TRIM_DB
-	if _glow_pending_start:
+	_glow_level = lerpf(_glow_level, target_level * screen_gain * duck, 1.0 - exp(-dt / 0.09))
+	# The scene fade is applied after the voice envelope, so pausing at gain=0 never cuts a lagging level.
+	var distance_level: float = PowertrainAudio.distance_gain(glow_player.global_position.distance_to(
+		snapshot.get("listener", Vector3.ZERO))) if not voice_profile.is_empty() else 1.0
+	glow_player.volume_db = linear_to_db(maxf(_glow_level * gain * distance_level, 0.0001)) - AIRCRAFT_TRIM_DB
+	if _glow_pending_start and not paused:
 		glow_player.play()
 		var playback := glow_player.get_stream_playback() as AudioStreamGeneratorPlayback
 		if playback != null:
 			playback.set_meta("openrc_generator_source", glow_player.stream)
 		_glow_pending_start = false
-	if paused:
+	glow_player.stream_paused = paused and gain <= 0.0
+	# Keep the short generator queue filled through the scene fade. The oscillator holds the last accepted RPM;
+	# this audio refill does not advance simulation state.
+	if paused and gain <= 0.0:
 		return
 	var playback := glow_player.get_stream_playback() as AudioStreamGeneratorPlayback
 	if playback == null:
@@ -614,7 +631,10 @@ func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
 func _level(index: int, target: float, dt: float) -> void:
 	_levels[index] = lerpf(_levels[index], target, 1.0 - exp(-dt / 0.09))
 	var trim: float = AIRCRAFT_TRIM_DB if index < 3 else 0.0
-	voices[index].volume_db = linear_to_db(maxf(_levels[index] * gain, 0.0001)) - trim
+	var path_gain: float = 1.0
+	if index < 3 and not voice_profile.is_empty():
+		path_gain = PowertrainAudio.distance_gain(voices[index].global_position.distance_to(_previous_listener)) * voices[index].unit_size / 8.0
+	voices[index].volume_db = linear_to_db(maxf(_levels[index] * gain * path_gain, 0.0001)) - trim
 
 
 func _pitch(index: int, target: float, dt: float) -> void:

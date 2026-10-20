@@ -31,6 +31,30 @@ func _groups(wreck: Node) -> Array:
 		})
 	return records
 
+## Paint repartition and smoothed normals may change surface/index organization.
+## Compare exact float32 position bits and triangle winding, including duplicate counts.
+func _geometry_signature(mesh: Mesh) -> Dictionary:
+	var triangles := {}
+	for surface in mesh.get_surface_count():
+		if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES:
+			return {unsupported_primitive = true}
+		var arrays := mesh.surface_get_arrays(surface)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX] != null else PackedInt32Array()
+		var keys: Array[String] = []
+		for vertex in vertices:
+			keys.append(PackedFloat32Array([vertex.x, vertex.y, vertex.z]).to_byte_array().hex_encode())
+		var count := indices.size() if not indices.is_empty() else vertices.size()
+		for first in range(0, count, 3):
+			var a := keys[indices[first] if not indices.is_empty() else first]
+			var b := keys[indices[first + 1] if not indices.is_empty() else first + 1]
+			var c := keys[indices[first + 2] if not indices.is_empty() else first + 2]
+			var rotations: Array[String] = [a + b + c, b + c + a, c + a + b]
+			rotations.sort()
+			var key := rotations[0]
+			triangles[key] = int(triangles.get(key, 0)) + 1
+	return {bounds = mesh.get_aabb(), triangles = triangles}
+
 func _run() -> void:
 	ShaderClock.register()
 	var source := Timber.build()
@@ -51,7 +75,8 @@ func _run() -> void:
 			continue
 		_check("rest transform " + str(path), Imported.relative(source.root, original).is_equal_approx(Imported.relative(candidate.root, current)))
 		if original is MeshInstance3D:
-			_check("original mesh resource " + str(path), original.mesh == current.mesh)
+			_check("exact original geometry and winding " + str(path),
+				original.mesh == current.mesh or _geometry_signature(original.mesh) == _geometry_signature(current.mesh))
 	var details := 0
 	for node: MeshInstance3D in candidate.root.find_children("*", "MeshInstance3D", true, false):
 		if not original_paths.has(candidate.root.get_path_to(node)):

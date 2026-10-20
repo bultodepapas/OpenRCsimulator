@@ -37,6 +37,7 @@ var _direction: float = 1.0
 var _target_speed_mps: float = 15.0
 var _trim_throttle: float = 0.45
 var _field_ground_up_m: float = 0.0
+var _target_height_agl_m: float = 0.0
 var _runway_north_m: float = 0.0
 var _runway_east_m: float = 0.0
 var _runway_length_m: float = 0.0
@@ -62,10 +63,10 @@ func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: 
 		return _refuse("the airborne Stik profile is qualified only for the Club field")
 	if trim.is_empty():
 		return _refuse("a solved FlightSession trim is required")
-	var speed_result: Dictionary = _read_number(trim, ["V", "airspeed_m_s", "speed_m_s", "speed"], 15.0)
+	var speed_result: Dictionary = _read_number(trim, ["V", "airspeed_m_s", "speed_m_s", "speed"], NAN)
 	if not speed_result.ok or float(speed_result.value) < MIN_TRIM_SPEED_MPS or float(speed_result.value) > MAX_TRIM_SPEED_MPS:
 		return _refuse("the trim speed must be finite and between %.1f and %.1f m/s" % [MIN_TRIM_SPEED_MPS, MAX_TRIM_SPEED_MPS])
-	var throttle_result: Dictionary = _read_number(trim, ["throttle", "trim_throttle", "throttle_command"], 0.45)
+	var throttle_result: Dictionary = _read_number(trim, ["throttle", "trim_throttle", "throttle_command"], NAN)
 	if not throttle_result.ok or float(throttle_result.value) < MIN_TRIM_THROTTLE or float(throttle_result.value) > MAX_TRIM_THROTTLE:
 		return _refuse("trim throttle must be finite and in [0, 1]")
 	var pilot_value: Variant = field.get("pilot", {})
@@ -114,7 +115,8 @@ func configure(slot: int, count: int, seed_value: int, trim: Dictionary, field: 
 	_radius_m = maxf(_runway_length_m * ROUTE_RADIUS_LENGTH_FACTOR, _runway_width_m * ROUTE_RADIUS_WIDTH_FACTOR)
 	_center_north_m = _runway_north_m + ROUTE_CENTER_RADIUS_FACTOR * _radius_m + ROUTE_CENTER_WIDTH_FACTOR * _runway_width_m
 	_center_east_m = _runway_east_m
-	_target_height_m = _field_ground_up_m + BASE_HEIGHT_AGL_M + float(slot) * HEIGHT_BAND_M
+	_target_height_agl_m = BASE_HEIGHT_AGL_M + float(slot) * HEIGHT_BAND_M
+	_target_height_m = _field_ground_up_m + _target_height_agl_m
 	# The seed moves the fleet around its shared orbit; slot offsets preserve separation.
 	var seed_phase: float = TAU * float(seed_value) / UINT32_MODULUS
 	_phase_rad = fposmod(seed_phase + TAU * float(slot) / float(count), TAU)
@@ -138,6 +140,7 @@ func initial_pose() -> Dictionary:
 		"north": north,
 		"east": east,
 		"height_m": _target_height_m,
+		"height_agl_m": _target_height_agl_m,
 		"heading_rad": heading,
 	}
 
@@ -264,7 +267,9 @@ func _avoidance_velocity(
 		if typeof(item_value) != TYPE_DICTIONARY:
 			continue
 		var item: Dictionary = item_value
-		if int(item.get("slot", -1)) == _slot and str(item.get("id", "")) == "companion-%d" % _slot:
+		var item_id: String = str(item.get("id", ""))
+		if item_id == "companion-%d" % _slot \
+				and (not item.has("slot") or int(item.get("slot", -1)) == _slot):
 			continue
 		var other: Dictionary = _traffic_kinematics(item)
 		if not other.ok:
@@ -285,7 +290,8 @@ func _avoidance_velocity(
 		var closest_down: float = rel_down + rel_v_down * closest_time
 		var closest_distance: float = Math3D.sqrt_(closest_north * closest_north + closest_east * closest_east + closest_down * closest_down)
 		var closure_speed: float = Math3D.sqrt_(rel_speed_sq)
-		var minimum_distance: float = DEFAULT_PLAYER_SEPARATION_M if bool(item.get("is_player", true)) else 15.0
+		var is_player: bool = bool(item.get("is_player", item.get("player", true)))
+		var minimum_distance: float = DEFAULT_PLAYER_SEPARATION_M if is_player else 15.0
 		minimum_distance = maxf(minimum_distance, 3.0 * float(item.get("wingspan_m", 1.7)))
 		minimum_distance = maxf(minimum_distance, closure_speed * 0.5)
 		if closest_distance >= minimum_distance:

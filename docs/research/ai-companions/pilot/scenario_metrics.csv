@@ -1,0 +1,7 @@
+weather,count,seed,ticks,complete,min_agl_m,max_agl_m,min_tas_m_s,max_tas_m_s,max_radius_error_m,min_player_separation_m,min_pair_separation_m,max_bank_deg,max_abs_input,refusals,stop_reason
+calm,1,20261020,1,false,35.000340,35.000340,14.999981,14.999981,0.062500,281.100171,inf,0.000708,0.28256165,0,"session rejected tick 1 for slot 0"
+calm,2,20261020,1,false,35.000340,55.000508,14.999981,14.999981,0.062500,131.207383,161.121439,0.000708,0.28256165,0,"session rejected tick 1 for slot 0"
+calm,3,20261020,1,false,35.000340,75.000159,14.999981,14.999981,0.062500,179.717857,139.892120,0.000708,0.28256165,0,"session rejected tick 1 for slot 0"
+gentle-practice,1,20261020,1,false,35.000190,35.000190,14.991150,14.991150,0.062860,281.099943,inf,0.000723,0.28256165,0,"session rejected tick 1 for slot 0"
+gentle-practice,2,20261020,1,false,35.000190,55.000479,14.991150,15.008819,0.062860,131.207311,161.121439,0.000725,0.28256165,0,"session rejected tick 1 for slot 0"
+gentle-practice,3,20261020,1,false,35.000190,74.999980,14.991150,15.004973,0.068365,179.715035,139.892120,0.000730,0.28256165,0,"session rejected tick 1 for slot 0"

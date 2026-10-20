@@ -4,30 +4,30 @@
   "source_glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
   "material_profiles": {
     "foam": {
-      "meshes": ["aileron_left", "aileron_right", "elevator", "fin_fixed", "flap_left", "flap_right", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed"],
+      "meshes": ["aileron_left", "aileron_right", "elevator", "fin_fixed", "flap_left", "flap_right", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed", "cowl"],
       "materials": ["white"],
-      "roughness": 0.76,
-      "specular": 0.22,
+      "roughness": 0.9,
+      "specular": 0.16,
       "metallic": 0.0,
       "normal_scale": 0.035,
       "world_tiling_per_m": 3.0,
       "texture": "foam"
     },
     "paint": {
-      "materials": ["red", "black", "dark_grey", "light_red", "light_green"],
+      "materials": ["red", "black", "dark_grey"],
       "grow_meshes": ["elevator", "fin_fixed", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed"],
       "grow_amount_m": 0.0004,
-      "roughness": 0.46,
-      "specular": 0.28,
+      "roughness": 0.92,
+      "specular": 0.17,
       "metallic": 0.0,
-      "normal_scale": 0.035,
+      "normal_scale": 0.024,
       "world_tiling_per_m": 3.0,
       "texture": "foam"
     },
     "glass_decal": {
       "materials": ["glass"],
-      "roughness": 0.38,
-      "specular": 0.32,
+      "roughness": 0.62,
+      "specular": 0.22,
       "metallic": 0.0,
       "opacity": 1.0
     },
@@ -39,15 +39,15 @@
     },
     "plastic_hub": {
       "materials": ["light_grey"],
-      "roughness": 0.52,
-      "specular": 0.28,
+      "roughness": 0.62,
+      "specular": 0.22,
       "metallic": 0.08
     },
     "rubber": {
       "meshes": ["wheel_left", "wheel_right", "tailwheel"],
       "materials": ["foam"],
-      "roughness": 0.94,
-      "specular": 0.14,
+      "roughness": 0.98,
+      "specular": 0.08,
       "metallic": 0.0,
       "normal_scale": 0.08,
       "world_tiling_per_m": 14.0,
@@ -58,18 +58,19 @@
     "fuselage_label": {
       "host": "fuselage_core",
       "text": "TURBO LUMBER EVOLUTION",
-      "local_position": [0.0603, 0.024, 0.465],
+      "target_yz_root": [0.018, -0.095],
+      "max_width_m": 0.23,
+      "surface_offset_m": 0.00025,
       "font_size": 28,
-      "pixel_size_m": 0.00062,
       "color": "#282c2f",
       "sides": ["left", "right"]
     },
     "main_gear_springs": {
       "host": "gear_cables",
-      "travel_fraction": [0.22, 0.78],
-      "coil_radius_m": 0.0033,
-      "wire_radius_m": 0.00072,
-      "turns": 18,
+      "travel_fraction": [0.42, 0.64],
+      "coil_radius_m": 0.00425,
+      "wire_radius_m": 0.00065,
+      "turns": 8,
       "segments_per_turn": 12
     },
     "main_wheel_hub_fasteners": {
@@ -80,6 +81,13 @@
       "head_depth_m": 0.0012,
       "axial_center_m": 0.018
     }
+  },
+  "paint_seam_repair": {
+    "meshes": ["cowl", "fin_fixed", "fuselage_core", "wing_left_fixed", "wing_right_fixed"],
+    "materials": ["red", "black", "dark_grey"],
+    "max_centroid_distance_m": 0.002,
+    "min_normal_dot": 0.82,
+    "smooth_normals_meshes": ["cowl", "fin_fixed"]
   },
   "fracture_details": {
     "wing_left": {

@@ -54,6 +54,9 @@ def generated_files() -> dict[Path, bytes]:
     for mesh_name in spec["surface_details"]["main_wheel_hub_fasteners"]["hosts"]:
         if mesh_name not in meshes:
             raise ValueError(f"unknown wheel hub host: {mesh_name}")
+    for mesh_name in spec["paint_seam_repair"]["meshes"]:
+        if mesh_name not in meshes:
+            raise ValueError(f"unknown mesh for paint seam repair: {mesh_name}")
 
     endpoints = geometry["landing_gear"]["suspension"]["cable_endpoints"]
     cable_paths = []
@@ -71,6 +74,7 @@ def generated_files() -> dict[Path, bytes]:
         "source_glb_sha256": actual_glb_hash,
         "material_profiles": spec["material_profiles"],
         "surface_details": spec["surface_details"],
+        "paint_seam_repair": spec["paint_seam_repair"],
         "main_gear_cables": cable_paths,
         "fracture_details": spec["fracture_details"],
         "free_textures": spec["free_textures"],

@@ -13,6 +13,7 @@ const OverlaySettings := preload("res://render/overlays/overlay_settings.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const FailureConfig := preload("res://failures/config.gd")
 const MoonConfig := preload("res://environment/moon_config.gd")
+const CompanionConfig := preload("res://ai/companions/config.gd")
 
 const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
 const NIGHT_FIELD_ACTIVATION_CHOICES: Array[String] = ["auto", "on", "off"]
@@ -61,6 +62,16 @@ const DEFAULTS := {
 	failure_config = {"probability_percent": 0, "include_catastrophic": false, "notify": true},
 	# FW-MOON-12: visual-only moon choices ([moon] config). An additive section like [hud]: no schema change.
 	moon_config = MoonConfig.DEFAULTS,
+	# AI companions are an additive section. Keep the existing schema so newer files remain protected by `writable`.
+	companion_config = {
+		"enabled": false,
+		"count": 1,
+		"seed": 1,
+		"aircraft_id": "jensen-das-ugly-stik-60",
+		"activity": "circuits",
+		"pilot": "experienced",
+		"incidents_enabled": false,
+	},
 }
 
 
@@ -168,6 +179,13 @@ static func load_from(path: String) -> Dictionary:
 			prefs.moon_config = checked_moon.config
 		else:
 			prefs.note = _append_note(prefs.note, "invalid moon settings; using the real moon")
+	var checked_companions: Dictionary = CompanionConfig.validate(
+		cfg.get_value("companions", "config", DEFAULTS.companion_config)
+	)
+	if checked_companions.get("ok", false):
+		prefs.companion_config = checked_companions.config.duplicate(true)
+	else:
+		prefs.note = _append_note(prefs.note, "invalid companion settings; using defaults")
 	return prefs
 
 
@@ -207,6 +225,11 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	var checked_moon: Dictionary = MoonConfig.validate(prefs.get("moon_config", MoonConfig.DEFAULTS))
 	if not checked_moon.ok:
 		return ERR_INVALID_DATA
+	var checked_companions: Dictionary = CompanionConfig.validate(
+		prefs.get("companion_config", DEFAULTS.companion_config)
+	)
+	if not checked_companions.get("ok", false):
+		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
 	var weather_schema: int = 5 if checked_weather.config.format == WeatherSettings.COLUMN_FORMAT else (3 if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
 		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA))
@@ -232,6 +255,7 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	cfg.set_value("sky", "config", checked_sky.config)
 	cfg.set_value("failures", "config", checked_failures.config.duplicate(true))
 	cfg.set_value("moon", "config", checked_moon.config)
+	cfg.set_value("companions", "config", checked_companions.config.duplicate(true))
 	var hud: Dictionary = OverlaySettings.validate(prefs.get("hud", DEFAULTS.hud))
 	cfg.set_value("hud", "preset", hud.preset)
 	cfg.set_value("hud", "visible", hud.visible)

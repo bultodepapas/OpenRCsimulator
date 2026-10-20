@@ -105,7 +105,11 @@ static func from_args(args: PackedStringArray, base: Variant = {}) -> Dictionary
 	var saw_count := false
 	var saw_seed := false
 	for arg_value: String in args:
-		if arg_value.begins_with("--companions="):
+		if arg_value == "--companions":
+			errors.append("--companions requires an '=count' value")
+		elif arg_value == "--companions-seed":
+			errors.append("--companions-seed requires an '=seed' value")
+		elif arg_value.begins_with("--companions="):
 			if saw_count:
 				errors.append("--companions may be supplied once")
 				continue

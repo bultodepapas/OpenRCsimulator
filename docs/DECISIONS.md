@@ -4,7 +4,7 @@ A small record of what we choose and why. The two guiding principles remain esta
 
 | Date | Decision | Reasoning | Status | Revisit when |
 | --- | --- | --- | --- | --- |
-| 2026-10-20 | **AUD-15: use licensed downloaded recordings where their source fit is explicit; retain the phase-aware glow fallback.** This revises AUD D2's generated-only direction at the owner's request. Recorded banks use bounded explicit distance gain; the remaining original voices keep D5's Godot attenuation. | CC0 RC gasoline, electric and toy-rotor sources are available with reproducible edits; exact glow and RC-turbine recordings were not obtained. A downloaded designed turbine source and the other surrogates are labeled as such. Source identity must not imply acoustic calibration. D1 remains: no invented audio-only shaft run-down. | [Sources](research/audio/AUD-15/sources.md), [guide](AUDIO-PLAN.md); perceptual qualification remains open. | Matched stationary recordings with measured RPM/load become available, or listening identifies an unsuitable surrogate. |
+| 2026-10-20 | **AUD-15: use licensed downloaded recordings where their source fit is explicit; retain the phase-aware glow fallback.** This revises AUD D2's generated-only direction at the owner's request. Installed aircraft voices use bounded explicit distance gain with Godot panning; legacy standalone Soundscape configurations retain D5's attenuation. | CC0 RC gasoline, electric and toy-rotor sources are available with reproducible edits; exact glow and RC-turbine recordings were not obtained. A downloaded designed turbine source and the other surrogates are labeled as such. Source identity must not imply acoustic calibration. D1 remains: no invented audio-only shaft run-down. | [Sources](research/audio/AUD-15/sources.md), [guide](AUDIO-PLAN.md); perceptual qualification remains open. | Matched stationary recordings with measured RPM/load become available, or listening identifies an unsuitable surrogate. |
 | 2026-10-20 | **LU-09-R2: separate runway-light activation from its color profile and keep low marker illumination batched.** Auto follows solar elevation; manual On/Off overrides it. Clear near-grass clumps from existing fixture collision footprints. | The same Club/Airfield palette can serve daytime manual operation without changing saved defaults. Twelve small diffuse turf patches add one draw instead of twelve dynamic lights; 22 footprint masks preserve visible fixture clearance without changing the flight kernel. | Implemented; [research, captures and checks](research/landscape-upgrade/LU-09-R2/README.md). | Target-GPU profiling, a surveyed RC field, wet-surface materials or physical photometry justify changing the visual model. |
 | 2026-10-19 | **DT-11a: reject crowded shoreline planting candidates before sampling terrain.** Preserve candidate generation, seed consumption and both acceptance predicates. | The same 285-plant layout needs 56 shoreline terrain queries instead of 141; complete botanical construction improves 25.1% in five paired processes. | Implemented; [geometry, layout and seed-regression evidence](research/visual-quality-implementation/VQ-01c/loading/botanical-spacing/README.md). | Either predicate gains side effects, or a changed shoreline recipe makes the ordering more expensive. |
 | 2026-10-19 | **DT-11a: reuse exact ground-patch CPU buffers across scene builds.** Key polygon, surface, theme, seed and transform; bound FIFO retention to eight entries and 4 MiB of serialized keys/payloads. | Repeated default-field construction spends about 43 ms regenerating unchanged gravel. Fresh scene resources retain independent ownership; transformed output stays byte-identical. | Implemented; [paired construction, lifecycle and regression evidence](research/visual-quality-implementation/VQ-01c/loading/ground-patch-cache/README.md). | A caller moves patch generation off the main thread, adds a dynamic geometry input, or profiling shows cache churn or retention outweighing construction savings. |
@@ -595,3 +595,16 @@ the footer. Changing the image does not change hardware detection, arming or
 axis mapping. This lets a pilot choose the visual reference without implying
 that the pictured transmitter is attached or qualified. [Source, capture and
 verification](research/flight-overlays/HUD-05-R2/README.md).
+
+### 2026-10-20 — Keep the player tick driver while introducing airborne companions (AFC-01/03)
+
+Controllerless aircraft use the same session guards and kernel through a validated
+external command seam. Preserve the player's automatic scheduling; capture fleet
+states before its tick and advance companions only after that tick succeeds.
+This confines the first integration to independent aircraft without changing the
+single-model kernel or coupling player dynamics to AI. Launch the whole roster
+at tick zero until nonzero weather origins and fleet replay qualify. Mirror only
+player-authored scenery damage after the common tick. The experimental 1–3-aircraft
+ceiling is not a performance pass: measured costs exceed the proposed fleet budget.
+[Current limits and evidence](AI-FLIGHT-COMPANIONS.md).
+

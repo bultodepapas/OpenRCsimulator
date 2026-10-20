@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "1e9a0c71-b201-4da3-961f-5cb709c53cc2",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_storm_bank.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T18:50:42.346236+00:00",
+  "label": "storm-bank",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf-r2\\checks\\storm-bank-iztztazg\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf-r2\\checks\\storm-bank-iztztazg\\report.json",
+  "timeout_seconds": 45.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.984,
+  "log_bytes": 108,
+  "log_sha256": "1621a7efb7f93c11a0289444bcca84c3aa494b6f9fd5781f3ffcb8d7d59a8483"
+}

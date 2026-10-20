@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+building production World for day
+WARNING: Tree wind is disabled for maple_tree because source material -9223371913609345067 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:398)
+       [4] attach (res://scenery/scenery.gd:175)
+       [5] build (res://render/field.gd:98)
+       [6] build (C:/DEVELOPMENT/OpenRCsimulator/tmp/landscape-perf-r2/baseline_world.gd:293)
+       [7] _capture_phase (C:/DEVELOPMENT/OpenRCsimulator/tmp/landscape-perf-r2/baseline_storm_capture.gd:168)
+       [8] _run (C:/DEVELOPMENT/OpenRCsimulator/tmp/landscape-perf-r2/baseline_storm_capture.gd:89)
+drawing 8 native frames for distant_storm-day-pilot-fov50
+captured distant_storm-day-pilot-fov50.png
+drawing 8 native frames for distant_storm-day-pilot-fov25
+captured distant_storm-day-pilot-fov25.png
+building production World for dusk
+drawing 8 native frames for distant_storm-dusk-pilot-fov50
+captured distant_storm-dusk-pilot-fov50.png
+drawing 8 native frames for distant_storm-dusk-pilot-fov25
+captured distant_storm-dusk-pilot-fov25.png
+building production World for fullmoon
+drawing 8 native frames for distant_storm-fullmoon-pilot-fov50
+captured distant_storm-fullmoon-pilot-fov50.png
+drawing 8 native frames for distant_storm-fullmoon-pilot-fov25
+captured distant_storm-fullmoon-pilot-fov25.png
+FW-83 storm-bank gallery wrote 6 images to C:/DEVELOPMENT/OpenRCsimulator/tmp/landscape-perf-r2/storm-before

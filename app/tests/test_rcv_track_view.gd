@@ -89,6 +89,38 @@ func _initialize() -> void:
 		var tyre_mesh := (tyres[0] as MeshInstance3D).mesh
 		var tyre_finish := tyre_mesh.surface_get_material(0) as BaseMaterial3D
 		check(tyre_finish != null and tyre_finish.albedo_texture != null and tyre_finish.normal_texture != null and tyre_finish.roughness_texture != null, "tyre source retains color, normal and roughness maps")
+	var service := view.get_node("TrackServiceDetail") as Node3D
+	check(service.get_child_count() == 3, "two safety tape spans and a timing cabinet dress the verges")
+	var service_clear := true
+	var service_below_cap := true
+	for asset_name in ["SouthJumpSafetyTape", "NorthRollerSafetyTape", "TimingControlCabinet"]:
+		var asset := service.get_node(asset_name) as Node3D
+		var half_east := 0.21 if asset_name == "TimingControlCabinet" else 1.73
+		var half_north := 0.18 if asset_name == "TimingControlCabinet" else 0.23
+		for east_offset in [-half_east, 0.0, half_east]:
+			for north_offset in [-half_north, 0.0, half_north]:
+				service_clear = service_clear and float(road.call(-asset.position.z + north_offset, asset.position.x + east_offset).track_coverage) < 0.0001
+		service_below_cap = service_below_cap and asset.position.y + asset.scale.y * (1.121 if asset_name == "TimingControlCabinet" else 1.0) < 1.5
+		check(not asset.find_children("*", "MeshInstance3D", true, false).is_empty(), "sourced service asset has visible geometry: " + asset_name)
+	var batched := service.get_node("SouthJumpSafetyTape/TapeAndWeightedPosts") as MeshInstance3D
+	var tape_mesh := batched.mesh as ArrayMesh
+	var tape_triangles := 0
+	var tape_textured := true
+	for surface_index in range(tape_mesh.get_surface_count()):
+		var tape_arrays := tape_mesh.surface_get_arrays(surface_index)
+		var tape_indices: PackedInt32Array = tape_arrays[Mesh.ARRAY_INDEX]
+		var tape_vertices: PackedVector3Array = tape_arrays[Mesh.ARRAY_VERTEX]
+		tape_triangles += (tape_indices.size() if not tape_indices.is_empty() else tape_vertices.size()) / 3
+		var tape_finish := tape_mesh.surface_get_material(surface_index) as BaseMaterial3D
+		tape_textured = tape_textured and tape_finish != null and tape_finish.albedo_texture != null
+	check(tape_mesh.get_surface_count() == 3 and tape_triangles == 4816 and tape_textured, "batched tape preserves all source triangles and three textured materials")
+	check(tape_mesh.get_aabb().size.distance_to(Vector3(3.34975, 1.0, 0.34988)) < 0.002, "batched tape preserves supplier scale and bounds")
+	var cabinet_meshes := service.get_node("TimingControlCabinet").find_children("*", "MeshInstance3D", true, false)
+	var cabinet_mesh := (cabinet_meshes[0] as MeshInstance3D).mesh
+	var cabinet_finish := cabinet_mesh.surface_get_material(0) as BaseMaterial3D
+	check(cabinet_finish != null and cabinet_finish.albedo_texture != null and cabinet_finish.normal_texture != null, "timing cabinet retains source color and normal maps")
+	check(service_clear, "service props remain beyond the sampled road shoulder")
+	check(service_below_cap, "service props remain below the local 1.5 m height cap")
 	check(view.find_children("*", "CollisionObject3D", true, false).is_empty(), "renderer creates no second physical world")
 	view.free()
 	print("RCV track view: %d failures" % failures)

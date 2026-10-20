@@ -18,6 +18,7 @@ static func apply(root: Node3D) -> bool:
 		return false
 	if root.has_meta(APPLIED_META):
 		return true
+	_repair_painted_surface_poke_through(root)
 	_apply_material_finishes(root)
 	_add_fuselage_markings(root)
 	_add_gear_springs(root)
@@ -89,6 +90,229 @@ static func _mesh_instances(root: Node3D) -> Array[MeshInstance3D]:
 	return out
 
 
+## Remap base-foam faces that sit directly beneath painted shells to the covering paint.
+## Every source triangle keeps its exact vertex positions and winding; only draw-surface material grouping changes.
+static func _repair_painted_surface_poke_through(root: Node3D) -> void:
+	var config: Dictionary = VisualData.DATA.paint_seam_repair
+	var mesh_names: Array = config.meshes
+	var paint_names: Array = config.materials
+	var max_distance := float(config.max_centroid_distance_m)
+	var min_normal_dot := float(config.min_normal_dot)
+	var smooth_meshes: Array = config.smooth_normals_meshes
+	for mesh_instance: MeshInstance3D in _mesh_instances(root):
+		if not mesh_names.has(String(mesh_instance.name)) or not mesh_instance.mesh is ArrayMesh:
+			continue
+		var source_mesh := mesh_instance.mesh as ArrayMesh
+		var smooth_normals := smooth_meshes.has(String(mesh_instance.name))
+		var smooth_lookup: Dictionary = _smooth_normal_lookup(source_mesh) if smooth_normals else {}
+		var materials_by_name: Dictionary = {}
+		var paint_faces: Array[Dictionary] = []
+		var white_surfaces: Array[int] = []
+		for surface_index in source_mesh.get_surface_count():
+			var surface_material := mesh_instance.get_active_material(surface_index) as Material
+			if surface_material == null:
+				continue
+			var material_name := String(surface_material.resource_name)
+			materials_by_name[material_name] = surface_material
+			if material_name == "white":
+				white_surfaces.append(surface_index)
+			elif paint_names.has(material_name):
+				var arrays := source_mesh.surface_get_arrays(surface_index)
+				var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+				var indices := _triangle_indices(arrays, vertices.size())
+				for triangle in range(indices.size() / 3):
+					var a := vertices[indices[triangle * 3]]
+					var b := vertices[indices[triangle * 3 + 1]]
+					var c := vertices[indices[triangle * 3 + 2]]
+					var normal := (b - a).cross(c - a).normalized()
+					paint_faces.append({
+						center = (a + b + c) / 3.0,
+						normal = normal,
+						material = material_name,
+				})
+		if white_surfaces.is_empty() or paint_faces.is_empty():
+			continue
+		var remaps: Dictionary = {}
+		var remapped_triangle_count := 0
+		for surface_index in white_surfaces:
+			var arrays := source_mesh.surface_get_arrays(surface_index)
+			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var indices := _triangle_indices(arrays, vertices.size())
+			var surface_remaps: Dictionary = {}
+			for triangle in range(indices.size() / 3):
+				var a := vertices[indices[triangle * 3]]
+				var b := vertices[indices[triangle * 3 + 1]]
+				var c := vertices[indices[triangle * 3 + 2]]
+				var center := (a + b + c) / 3.0
+				var normal := (b - a).cross(c - a).normalized()
+				var target_material := _nearest_covering_paint(center, normal, paint_faces, max_distance, min_normal_dot)
+				if not target_material.is_empty():
+					surface_remaps[triangle] = target_material
+			if not surface_remaps.is_empty():
+				remaps[surface_index] = surface_remaps
+				remapped_triangle_count += surface_remaps.size()
+		if remaps.is_empty() and not smooth_normals:
+			continue
+		var derived := ArrayMesh.new()
+		derived.resource_name = source_mesh.resource_name
+		for surface_index in source_mesh.get_surface_count():
+			var surface_material := mesh_instance.get_active_material(surface_index) as Material
+			var original_name := source_mesh.surface_get_name(surface_index)
+			var arrays := source_mesh.surface_get_arrays(surface_index)
+			if not remaps.has(surface_index) and not smooth_normals:
+				derived.add_surface_from_arrays(source_mesh.surface_get_primitive_type(surface_index), arrays)
+				var copied_index := derived.get_surface_count() - 1
+				derived.surface_set_material(copied_index, surface_material)
+				derived.surface_set_name(copied_index, original_name)
+				continue
+			var surface_remaps: Dictionary = remaps.get(surface_index, {})
+			var split: Dictionary = _split_material_surface(arrays, surface_remaps, smooth_lookup, surface_index, String(surface_material.resource_name))
+			var split_names: Array[String] = []
+			for name_variant in split.keys():
+				split_names.append(String(name_variant))
+			split_names.sort()
+			for split_name in split_names:
+				var split_arrays: Array = split[split_name]
+				if (split_arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array).is_empty():
+					continue
+				derived.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, split_arrays)
+				var split_index := derived.get_surface_count() - 1
+				var target_material: Material = materials_by_name.get(split_name, surface_material)
+				derived.surface_set_material(split_index, target_material)
+				derived.surface_set_name(split_index, original_name if split_name == String(surface_material.resource_name) else original_name + "_corrected_" + split_name)
+		for surface_index in source_mesh.get_surface_count():
+			mesh_instance.set_surface_override_material(surface_index, null)
+		mesh_instance.mesh = derived
+		mesh_instance.set_meta("timber_paint_seam_faces", remapped_triangle_count)
+
+
+static func _triangle_indices(arrays: Array, vertex_count: int) -> PackedInt32Array:
+	var source_indices: Variant = arrays[Mesh.ARRAY_INDEX]
+	if source_indices is PackedInt32Array and not (source_indices as PackedInt32Array).is_empty():
+		return source_indices as PackedInt32Array
+	var indices := PackedInt32Array()
+	indices.resize(vertex_count)
+	for index in vertex_count:
+		indices[index] = index
+	return indices
+
+
+static func _smooth_normal_lookup(mesh: ArrayMesh) -> Dictionary:
+	var records: Array[Dictionary] = []
+	var buckets: Dictionary = {}
+	for surface_index in mesh.get_surface_count():
+		var arrays := mesh.surface_get_arrays(surface_index)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals_value: Variant = arrays[Mesh.ARRAY_NORMAL]
+		var normals: PackedVector3Array = normals_value if normals_value is PackedVector3Array else PackedVector3Array()
+		var indices := _triangle_indices(arrays, vertices.size())
+		for triangle in range(indices.size() / 3):
+			var vertex_indices := PackedInt32Array([indices[triangle * 3], indices[triangle * 3 + 1], indices[triangle * 3 + 2]])
+			var a := vertices[vertex_indices[0]]
+			var b := vertices[vertex_indices[1]]
+			var c := vertices[vertex_indices[2]]
+			var cross := (b - a).cross(c - a)
+			var area := cross.length() * 0.5
+			if area < 1.0e-12:
+				continue
+			var face_normal := cross.normalized()
+			if not normals.is_empty():
+				var authored_normal := (normals[vertex_indices[0]] + normals[vertex_indices[1]] + normals[vertex_indices[2]]).normalized()
+				if authored_normal.length_squared() > 0.5 and face_normal.dot(authored_normal) < 0.0:
+					face_normal = -face_normal
+			for corner in 3:
+				var key := _normal_position_key(vertices[vertex_indices[corner]])
+				var record := {surface = surface_index, triangle = triangle, corner = corner, key = key, normal = face_normal, area = area}
+				records.append(record)
+				var bucket: Array = buckets.get(key, [])
+				bucket.append(record)
+				buckets[key] = bucket
+	var smoothed: Dictionary = {}
+	for record: Dictionary in records:
+		var sum := Vector3.ZERO
+		for neighbour: Dictionary in buckets[record.key]:
+			if record.normal.dot(neighbour.normal) >= 0.66:
+				sum += neighbour.normal * float(neighbour.area)
+		var normal: Vector3 = sum.normalized() if sum.length_squared() > 1.0e-12 else record.normal
+		var lookup_key := "%d:%d:%d" % [int(record.surface), int(record.triangle), int(record.corner)]
+		smoothed[lookup_key] = normal
+	return smoothed
+
+
+static func _normal_position_key(point: Vector3) -> String:
+	return "%d:%d:%d" % [roundi(point.x * 100000.0), roundi(point.y * 100000.0), roundi(point.z * 100000.0)]
+
+
+static func _nearest_covering_paint(center: Vector3, normal: Vector3, paint_faces: Array[Dictionary], max_distance: float, min_normal_dot: float) -> String:
+	var best_distance := max_distance
+	var best_material := ""
+	for paint_face: Dictionary in paint_faces:
+		if normal.dot(paint_face.normal) < min_normal_dot:
+			continue
+		var distance := center.distance_to(paint_face.center)
+		if distance < best_distance:
+			best_distance = distance
+			best_material = String(paint_face.material)
+	return best_material
+
+
+static func _split_material_surface(source: Array, triangle_remaps: Dictionary, smooth_lookup: Dictionary, surface_index: int, default_material: String) -> Dictionary:
+	var vertices: PackedVector3Array = source[Mesh.ARRAY_VERTEX]
+	var indices := _triangle_indices(source, vertices.size())
+	var groups: Dictionary = {}
+	for triangle in range(indices.size() / 3):
+		var output_name := String(triangle_remaps.get(triangle, default_material))
+		if not groups.has(output_name):
+			groups[output_name] = _empty_surface_arrays()
+		var output: Array = groups[output_name]
+		for corner in 3:
+			var normal_key := "%d:%d:%d" % [surface_index, triangle, corner]
+			var has_smooth_normal := smooth_lookup.has(normal_key)
+			_append_surface_vertex(output, source, indices[triangle * 3 + corner], smooth_lookup.get(normal_key, Vector3.ZERO), has_smooth_normal)
+		groups[output_name] = output
+	return groups
+
+
+static func _empty_surface_arrays() -> Array:
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array()
+	return arrays
+
+
+static func _append_surface_vertex(output: Array, source: Array, vertex_index: int, smooth_normal: Vector3 = Vector3.ZERO, use_smooth_normal: bool = false) -> void:
+	var source_vertices: PackedVector3Array = source[Mesh.ARRAY_VERTEX]
+	var out_vertices: PackedVector3Array = output[Mesh.ARRAY_VERTEX]
+	out_vertices.append(source_vertices[vertex_index])
+	output[Mesh.ARRAY_VERTEX] = out_vertices
+	var source_normals_value: Variant = source[Mesh.ARRAY_NORMAL]
+	if use_smooth_normal or (source_normals_value is PackedVector3Array and not (source_normals_value as PackedVector3Array).is_empty()):
+		var out_normals: PackedVector3Array = output[Mesh.ARRAY_NORMAL] if output[Mesh.ARRAY_NORMAL] is PackedVector3Array else PackedVector3Array()
+		out_normals.append(smooth_normal if use_smooth_normal else (source_normals_value as PackedVector3Array)[vertex_index])
+		output[Mesh.ARRAY_NORMAL] = out_normals
+	var source_colors_value: Variant = source[Mesh.ARRAY_COLOR]
+	if source_colors_value is PackedColorArray and not (source_colors_value as PackedColorArray).is_empty():
+		var source_colors := source_colors_value as PackedColorArray
+		var out_colors: PackedColorArray = output[Mesh.ARRAY_COLOR] if output[Mesh.ARRAY_COLOR] is PackedColorArray else PackedColorArray()
+		out_colors.append(source_colors[vertex_index])
+		output[Mesh.ARRAY_COLOR] = out_colors
+	for channel in [Mesh.ARRAY_TEX_UV, Mesh.ARRAY_TEX_UV2]:
+		var source_uvs_value: Variant = source[channel]
+		if not source_uvs_value is PackedVector2Array or (source_uvs_value as PackedVector2Array).is_empty():
+			continue
+		var source_uvs := source_uvs_value as PackedVector2Array
+		var out_uvs: PackedVector2Array = output[channel] if output[channel] is PackedVector2Array else PackedVector2Array()
+		out_uvs.append(source_uvs[vertex_index])
+		output[channel] = out_uvs
+	var source_tangents_value: Variant = source[Mesh.ARRAY_TANGENT]
+	if source_tangents_value is PackedFloat32Array and not (source_tangents_value as PackedFloat32Array).is_empty():
+		var source_tangents := source_tangents_value as PackedFloat32Array
+		var out_tangents: PackedFloat32Array = output[Mesh.ARRAY_TANGENT] if output[Mesh.ARRAY_TANGENT] is PackedFloat32Array else PackedFloat32Array()
+		for component in 4:
+			out_tangents.append(source_tangents[vertex_index * 4 + component])
+		output[Mesh.ARRAY_TANGENT] = out_tangents
+
+
 static func _find_mesh(root: Node3D, name: String) -> MeshInstance3D:
 	return root.find_child(name, true, false) as MeshInstance3D
 
@@ -98,18 +322,25 @@ static func _add_fuselage_markings(root: Node3D) -> void:
 	var host := _find_mesh(root, str(config.host))
 	if host == null:
 		return
+	var host_to_root := ImportedModel.relative(root, host)
+	var root_to_host := host_to_root.affine_inverse()
+	var target: Array = config.target_yz_root
 	var group := Node3D.new()
 	group.name = "TimberFuselageMarkings"
 	group.set_meta("crash_no_bounds", true)
 	host.add_child(group)
-	var local_position: Array = config.local_position
 	for side: String in config.sides:
 		var sign_x := -1.0 if side == "left" else 1.0
+		var surface := _sample_fuselage_side(root, host, sign_x, float(target[0]), float(target[1]))
+		if surface.is_empty():
+			continue
 		var label := Label3D.new()
 		label.name = "TurboLumberName_" + side
 		label.text = str(config.text)
 		label.font_size = int(config.font_size)
-		label.pixel_size = float(config.pixel_size_m)
+		var fallback_font: Font = ThemeDB.fallback_font
+		var text_width_px := fallback_font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, label.font_size).x
+		label.pixel_size = float(config.max_width_m) / maxf(text_width_px, 1.0)
 		label.modulate = Color(str(config.color))
 		label.shaded = true
 		label.no_depth_test = false
@@ -117,12 +348,61 @@ static func _add_fuselage_markings(root: Node3D) -> void:
 		label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		label.position = Vector3(sign_x * (absf(float(local_position[0])) + 0.001), float(local_position[1]), float(local_position[2]))
-		var text_axis := Vector3(0, 0, -1) if side == "right" else Vector3(0, 0, 1)
-		var outward := Vector3.RIGHT if side == "right" else Vector3.LEFT
-		label.basis = Basis(text_axis, Vector3.UP, outward)
+		var outward: Vector3 = surface.normal
+		var up := (Vector3.UP - outward * Vector3.UP.dot(outward)).normalized()
+		if up.length_squared() < 0.5:
+			up = (Vector3.FORWARD - outward * Vector3.FORWARD.dot(outward)).normalized()
+		var text_axis := up.cross(outward).normalized()
+		var root_basis := Basis(text_axis, up, outward).orthonormalized()
+		var root_position: Vector3 = surface.position + outward * float(config.surface_offset_m)
+		label.transform = Transform3D(root_to_host.basis * root_basis, root_to_host * root_position)
 		label.set_meta("crash_no_bounds", true)
 		group.add_child(label)
+
+
+static func _sample_fuselage_side(root: Node3D, host: MeshInstance3D, side_sign: float, target_y: float, target_z: float) -> Dictionary:
+	var best_x := -INF if side_sign > 0.0 else INF
+	var best_position := Vector3.ZERO
+	var best_normal := Vector3.ZERO
+	var mesh_to_root := ImportedModel.relative(root, host)
+	var normal_to_root := mesh_to_root.basis.inverse().transposed()
+	for surface_index in host.mesh.get_surface_count():
+		var arrays := host.mesh.surface_get_arrays(surface_index)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var indices := _triangle_indices(arrays, vertices.size())
+		for triangle in range(indices.size() / 3):
+			var ia := indices[triangle * 3]
+			var ib := indices[triangle * 3 + 1]
+			var ic := indices[triangle * 3 + 2]
+			var a := mesh_to_root * vertices[ia]
+			var b := mesh_to_root * vertices[ib]
+			var c := mesh_to_root * vertices[ic]
+			var weights := _barycentric_yz(Vector2(target_y, target_z), a, b, c)
+			if weights.x < -0.00001 or weights.y < -0.00001 or weights.z < -0.00001:
+				continue
+			var point := a * weights.x + b * weights.y + c * weights.z
+			var local_normal := (normals[ia] * weights.x + normals[ib] * weights.y + normals[ic] * weights.z) if not normals.is_empty() else (b - a).cross(c - a)
+			var outward := (normal_to_root * local_normal).normalized()
+			if side_sign * outward.x < 0.35:
+				continue
+			if (side_sign > 0.0 and point.x > best_x) or (side_sign < 0.0 and point.x < best_x):
+				best_x = point.x
+				best_position = point
+				best_normal = outward
+	return {} if best_normal.length_squared() < 0.5 else {position = best_position, normal = best_normal}
+
+
+static func _barycentric_yz(point: Vector2, a: Vector3, b: Vector3, c: Vector3) -> Vector3:
+	var a2 := Vector2(a.y, a.z)
+	var b2 := Vector2(b.y, b.z)
+	var c2 := Vector2(c.y, c.z)
+	var denominator := (b2.y - c2.y) * (a2.x - c2.x) + (c2.x - b2.x) * (a2.y - c2.y)
+	if absf(denominator) < 1.0e-12:
+		return Vector3(-1.0, -1.0, -1.0)
+	var wa := ((b2.y - c2.y) * (point.x - c2.x) + (c2.x - b2.x) * (point.y - c2.y)) / denominator
+	var wb := ((c2.y - a2.y) * (point.x - c2.x) + (a2.x - c2.x) * (point.y - c2.y)) / denominator
+	return Vector3(wa, wb, 1.0 - wa - wb)
 
 
 static func _add_gear_springs(root: Node3D) -> void:
@@ -277,11 +557,7 @@ static func _cross_section_outline(root: Node3D, host: MeshInstance3D, cut_x: fl
 	for surface_index in host.mesh.get_surface_count():
 		var arrays := host.mesh.surface_get_arrays(surface_index)
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
-		if indices.is_empty():
-			indices.resize(vertices.size())
-			for index in vertices.size():
-				indices[index] = index
+		var indices := _triangle_indices(arrays, vertices.size())
 		for triangle in range(0, indices.size() - 2, 3):
 			var points: Array[Vector3] = [
 				mesh_to_root * vertices[indices[triangle]],

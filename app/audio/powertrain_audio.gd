@@ -153,10 +153,11 @@ func update_sound(snapshot: Dictionary, delta: float, mix_gain: float = 1.0, dop
 		player.volume_db = linear_to_db(maxf(levels[index] * scene_gain, 0.00001)) - BUS_TRIM_DB
 		var pitch: float = clampf(_rpm / references[index], 0.35, 2.5) * clampf(doppler, 0.65, 1.5)
 		player.pitch_scale = lerpf(player.pitch_scale, pitch, 1.0 - exp(-dt / 0.035)) if _started else pitch
-		if not _started:
+		if not _started and not paused:
 			player.play(float(index) * 0.173)
 		player.stream_paused = paused and mix_gain <= 0.001
-	_started = true
+	if not paused:
+		_started = true
 	last_targets = {rpm = _rpm, accepted_rpm = accepted_rpm, running = running, family = family,
 		weights = weights, level = level, distance_gain = path_gain, paused = paused}
 

@@ -21,6 +21,7 @@ var apply_button: Button
 var error_label: Label
 var dialog_panel: PanelContainer
 var _screen: Control
+var _body_scroll: ScrollContainer
 var _in_flight := false
 var _active_count := 0
 var save_as_default := false
@@ -35,7 +36,17 @@ func _init() -> void:
 func _ready() -> void:
 	_resize_layout()
 	_sync_focus_order()
-	enabled_check.grab_focus.call_deferred()
+	_focus_initial.call_deferred()
+
+
+func _focus_initial() -> void:
+	# Footer visibility changes the scroll viewport after its first container sort.
+	await get_tree().process_frame
+	if not is_inside_tree():
+		return
+	enabled_check.grab_focus()
+	_body_scroll.ensure_control_visible(enabled_check)
+	_body_scroll.scroll_vertical = 0
 
 
 func configure(config: Dictionary, status: Dictionary = {}) -> void:
@@ -50,6 +61,11 @@ func configure(config: Dictionary, status: Dictionary = {}) -> void:
 	status_label.text = tr("Traffic: %d airborne / %d active / %d requested") % [airborne, _active_count, requested]
 	if _in_flight:
 		status_label.text += "\n" + tr("Changes apply after Restart flight. Remove now clears the current companions.")
+		var stopped := int(status.get("faulted", 0)) + int(status.get("crashed", 0))
+		if stopped > 0:
+			status_label.text += "\n" + tr("%d companions stopped; restart or remove them.") % stopped
+		if not str(status.get("error", "")).is_empty():
+			status_label.text += "\n" + str(status.error)
 	status_label.visible = _in_flight
 	save_default_check.visible = _in_flight
 	save_default_check.focus_mode = Control.FOCUS_ALL if _in_flight else Control.FOCUS_NONE
@@ -85,10 +101,11 @@ func _build() -> void:
 	dialog_panel.add_child(shell)
 	shell.add_child(Widgets.label("Flight companions", "TitleLabel", true))
 	shell.add_child(Widgets.label(
-		"Choose whether to fly with a small group of AI pilots.", "SecondaryLabel", true,
+		"Experimental companion flights. Start with one aircraft; additional aircraft increase CPU use.", "SecondaryLabel", true,
 	))
 
 	var body_scroll := ScrollContainer.new()
+	_body_scroll = body_scroll
 	body_scroll.name = "CompanionsSettingsScroll"
 	body_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	body_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -143,7 +160,7 @@ func _build() -> void:
 		"SecondaryLabel", true,
 	))
 	body.add_child(Widgets.label(
-		"This MVP uses experienced Ugly Stik pilots flying circuits. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable.",
+		"Experienced Ugly Stik pilots fly circuits at Club field, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable.",
 		"SecondaryLabel", true,
 	))
 
@@ -191,7 +208,7 @@ func _resize_layout() -> void:
 	if not is_inside_tree():
 		return
 	var available := _screen.size - Vector2(48.0, 48.0)
-	dialog_panel.custom_minimum_size = Vector2(minf(800.0, available.x), minf(560.0, available.y))
+	dialog_panel.custom_minimum_size = Vector2(minf(800.0, available.x), minf(650.0, available.y))
 
 
 func _sync_focus_order() -> void:

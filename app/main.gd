@@ -24,6 +24,8 @@ const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const FailureConfig := preload("res://failures/config.gd")
+const CompanionConfig := preload("res://ai/companions/config.gd")
+const CompanionManager := preload("res://ai/companions/manager.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const CrashDirector = preload("res://render/crash/director.gd")
 const AccidentIncident = preload("res://economy/incident.gd")
@@ -104,6 +106,12 @@ var start_choice: String = "airborne"
 ## start's flying trim; technical routes keep the reference trim (NAN) unless they select airborne_half_power.
 var trim_throttle: float = NAN
 var weather_config: Dictionary = {}
+## Airborne companion choices are resolved at launch/restart; direct flights ignore Home preferences.
+var companion_config: Dictionary = CompanionConfig.defaults()
+var companions: Node
+var _companions_initialized := false
+var _companions_reset_pending := false
+var _companions_error := ""
 ## Resolved only when this flight is created. Session reset retains its draw and onset.
 var failure_config: Dictionary = FailureConfig.defaults()
 var failure_seed: int = -1
@@ -300,6 +308,16 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	var companion_options: Dictionary = CompanionConfig.from_args(user_args, companion_config)
+	if not companion_options.ok:
+		startup_error = "; ".join(companion_options.errors)
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	companion_config = companion_options.config
 	var variant_launch: Dictionary = preload("res://workshop/launch.gd").from_args(args)
 	if not variant_launch.ok:
 		startup_error = "; ".join(PackedStringArray(variant_launch.errors))
@@ -778,6 +796,17 @@ func _ready() -> void:
 		if not archived.is_empty():
 			_accident_report.show_archived(archived)
 		session.crash_auto_restart = false
+	var companion_launch: Dictionary = _start_companions()
+	if not companion_launch.ok:
+		startup_error = "; ".join(companion_launch.errors)
+		session.hold("companions-start-refused")
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	_companions_initialized = true
 	flight_log = FlightLog.new(session)
 	if args.has("flight-log"):
 		if typeof(args["flight-log"]) != TYPE_STRING or str(args["flight-log"]).is_empty() or _scripted or args.has("capture"):
@@ -1626,6 +1655,8 @@ func _forget_scenario() -> void:
 ## TOD-08a: paired technical replay checkpoint; native Variant encoding preserves physics bits.
 ## This is not a live-input save game or a rendered trace player.
 func checkpoint() -> Dictionary:
+	if companions != null and not companions.agents.is_empty():
+		return {} # The paired checkpoint does not yet represent a fleet.
 	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field":
 		return {}
 	var selection: Dictionary = VisualTimeline.evaluate(_visual_timeline, session.sim.tick)
@@ -1664,6 +1695,8 @@ func checkpoint() -> Dictionary:
 ## Validate both halves and prepare detached shadow geometry before the physics owner commits.
 ## No await: an invalid record cannot change the live world, recording or simulation.
 func restore_checkpoint(candidate: Variant) -> Dictionary:
+	if companions != null and not companions.agents.is_empty():
+		return {ok = false, errors = ["Remove companions before restoring a player-only checkpoint."]}
 	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field" or not startup_error.is_empty():
 		return {ok = false, errors = ["visual checkpoint requires a ready production flight"]}
 	var economic_restore: Dictionary = {}
@@ -2076,6 +2109,10 @@ func _exit_tree() -> void:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	if _companions_initialized and (companions != null or companion_config.enabled) and not _companions_reset_pending:
+		_companions_reset_pending = true
+		session.hold("companions-reset")
+		call_deferred("_restart_companions")
 	_aircraft_lights.reset()
 	_aircraft_lights_hud_dirty = true
 	World.flow_to(0.0)
@@ -2107,6 +2144,74 @@ func _on_resetting() -> void:
 	if _engine_audio != null and _soundscape_audio == null and _engine_audio.playing:
 		# A new flight: discard the prior flight's audio queue and oscillator state.
 		EngineSound.restart(_engine_audio)
+
+
+func _companion_options(raw: Dictionary) -> Dictionary:
+	var checked: Dictionary = CompanionConfig.validate(raw)
+	if not checked.ok or not checked.config.enabled:
+		return checked
+	var args := _user_args()
+	if _scripted or args.has("capture") or args.has("trace") or not workshop_trial.is_empty() \
+			or not flight_scenario.is_empty() or not _experimental_aircraft_path.is_empty():
+		return {ok = false, errors = ["Companions require a normal fixed-wing flight at Club field."]}
+	return CompanionManager.validate_context(session, field, landscape_id, checked.config)
+
+
+func set_companion_config(raw: Dictionary) -> Dictionary:
+	var checked: Dictionary = _companion_options(raw)
+	if checked.ok:
+		companion_config = checked.config.duplicate(true)
+	return checked
+
+
+func companion_status() -> Dictionary:
+	var result: Dictionary = companions.status() if companions != null else {
+		active = 0, airborne = 0, requested = int(companion_config.count) if companion_config.enabled else 0}
+	result.in_flight = true
+	if not _companions_error.is_empty():
+		result.error = _companions_error
+	return result
+
+
+func remove_companions_now() -> void:
+	if companions != null:
+		companions.remove_now()
+
+
+func _start_companions() -> Dictionary:
+	var checked: Dictionary = _companion_options(companion_config)
+	if not checked.ok:
+		return checked
+	if not companion_config.enabled:
+		return checked
+	var candidate := CompanionManager.new()
+	candidate.name = "FlightCompanions"
+	var prepared: Dictionary = candidate.configure(session, field, landscape_id, companion_config,
+		true, str(_user_args().get("soundscape", "on")) != "off")
+	if not prepared.ok:
+		candidate.free()
+		return prepared
+	companions = candidate
+	add_child(companions)
+	return prepared
+
+
+func _restart_companions() -> void:
+	_companions_reset_pending = false
+	if not is_inside_tree() or session == null:
+		return
+	if not session.start_error.is_empty() or session.sim.tick != 0:
+		_companions_error = "Flight restart was refused; the previous companions are retained."
+		session.release("companions-reset")
+		return
+	if companions != null:
+		remove_child(companions)
+		companions.free()
+		companions = null
+	var result: Dictionary = _start_companions()
+	_companions_error = "" if result.ok else "; ".join(result.errors)
+	session.release("companions-reset")
+	session.resume()
 
 
 ## Arguments after `--`: --capture, --inspect, --scripted, --t=3.0, --roll=1, --out=/path.png, --trace=/path.csv,

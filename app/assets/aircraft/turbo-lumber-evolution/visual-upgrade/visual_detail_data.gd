@@ -99,12 +99,13 @@ const DATA := {
         "rudder",
         "stabilizer_fixed",
         "wing_left_fixed",
-        "wing_right_fixed"
+        "wing_right_fixed",
+        "cowl"
       ],
       "metallic": 0.0,
       "normal_scale": 0.035,
-      "roughness": 0.76,
-      "specular": 0.22,
+      "roughness": 0.9,
+      "specular": 0.16,
       "texture": "foam",
       "world_tiling_per_m": 3.0
     },
@@ -114,8 +115,8 @@ const DATA := {
       ],
       "metallic": 0.0,
       "opacity": 1.0,
-      "roughness": 0.38,
-      "specular": 0.32
+      "roughness": 0.62,
+      "specular": 0.22
     },
     "metal": {
       "materials": [
@@ -139,14 +140,12 @@ const DATA := {
       "materials": [
         "red",
         "black",
-        "dark_grey",
-        "light_red",
-        "light_green"
+        "dark_grey"
       ],
       "metallic": 0.0,
-      "normal_scale": 0.035,
-      "roughness": 0.46,
-      "specular": 0.28,
+      "normal_scale": 0.024,
+      "roughness": 0.92,
+      "specular": 0.17,
       "texture": "foam",
       "world_tiling_per_m": 3.0
     },
@@ -155,8 +154,8 @@ const DATA := {
         "light_grey"
       ],
       "metallic": 0.08,
-      "roughness": 0.52,
-      "specular": 0.28
+      "roughness": 0.62,
+      "specular": 0.22
     },
     "rubber": {
       "materials": [
@@ -169,11 +168,31 @@ const DATA := {
       ],
       "metallic": 0.0,
       "normal_scale": 0.08,
-      "roughness": 0.94,
-      "specular": 0.14,
+      "roughness": 0.98,
+      "specular": 0.08,
       "texture": "rubber",
       "world_tiling_per_m": 14.0
     }
+  },
+  "paint_seam_repair": {
+    "materials": [
+      "red",
+      "black",
+      "dark_grey"
+    ],
+    "max_centroid_distance_m": 0.002,
+    "meshes": [
+      "cowl",
+      "fin_fixed",
+      "fuselage_core",
+      "wing_left_fixed",
+      "wing_right_fixed"
+    ],
+    "min_normal_dot": 0.82,
+    "smooth_normals_meshes": [
+      "cowl",
+      "fin_fixed"
+    ]
   },
   "schema": "openrc-timber-visual-details v1",
   "source_glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
@@ -182,28 +201,28 @@ const DATA := {
       "color": "#282c2f",
       "font_size": 28,
       "host": "fuselage_core",
-      "local_position": [
-        0.0603,
-        0.024,
-        0.465
-      ],
-      "pixel_size_m": 0.00062,
+      "max_width_m": 0.23,
       "sides": [
         "left",
         "right"
       ],
+      "surface_offset_m": 0.00025,
+      "target_yz_root": [
+        0.018,
+        -0.095
+      ],
       "text": "TURBO LUMBER EVOLUTION"
     },
     "main_gear_springs": {
-      "coil_radius_m": 0.0033,
+      "coil_radius_m": 0.00425,
       "host": "gear_cables",
       "segments_per_turn": 12,
       "travel_fraction": [
-        0.22,
-        0.78
+        0.42,
+        0.64
       ],
-      "turns": 18,
-      "wire_radius_m": 0.00072
+      "turns": 8,
+      "wire_radius_m": 0.00065
     },
     "main_wheel_hub_fasteners": {
       "axial_center_m": 0.018,

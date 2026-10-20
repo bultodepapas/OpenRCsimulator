@@ -270,7 +270,7 @@ func _update_cable_followers(angles: Dictionary, root: Node3D) -> void:
 	if absf(left_angle - float(_last_cable_angles.get("left", 0.0))) < 0.00005 \
 		and absf(right_angle - float(_last_cable_angles.get("right", 0.0))) < 0.00005:
 		return
-	var anchor_deltas: Array[Vector3] = []
+	var anchor_deltas_root: Array[Vector3] = []
 	for link: Dictionary in _cable_links:
 		var role: String = link.role
 		var leg: Dictionary = {}
@@ -279,13 +279,16 @@ func _update_cable_followers(angles: Dictionary, root: Node3D) -> void:
 				leg = candidate
 				break
 		if leg.is_empty():
-			anchor_deltas.append(Vector3.ZERO)
+			anchor_deltas_root.append(Vector3.ZERO)
 			continue
 		var axis: Vector3 = leg.axis_root
 		var pivot: Vector3 = leg.pivot_root
 		var rest_anchor: Vector3 = link.anchor_root
 		var rotated_anchor := pivot + Basis(axis, float(angles.get(role, 0.0))) * (rest_anchor - pivot)
-		anchor_deltas.append(_cables.global_basis.inverse() * root.global_basis * (rotated_anchor - rest_anchor))
+		anchor_deltas_root.append(rotated_anchor - rest_anchor)
+	var anchor_deltas: Array[Vector3] = []
+	for delta_root: Vector3 in anchor_deltas_root:
+		anchor_deltas.append(_cables.global_basis.inverse() * root.global_basis * delta_root)
 	_cable_runtime_mesh.clear_surfaces()
 	for surface_index in _cable_surfaces.size():
 		var surface: Dictionary = _cable_surfaces[surface_index]
@@ -295,11 +298,30 @@ func _update_cable_followers(angles: Dictionary, root: Node3D) -> void:
 		for vertex_index in vertices.size():
 			var weight: Vector2 = weights[vertex_index]
 			var cable_index := clampi(int(weight.x), 0, anchor_deltas.size() - 1)
-			vertices[vertex_index] += anchor_deltas[cable_index] * pow(weight.y, 1.5)
+			vertices[vertex_index] += anchor_deltas[cable_index] * weight.y
 		arrays[Mesh.ARRAY_VERTEX] = vertices
 		_cable_runtime_mesh.add_surface_from_arrays(surface.primitive, arrays)
 		if surface.material != null:
 			_cable_runtime_mesh.surface_set_material(surface_index, surface.material)
+	for follower: Dictionary in _spring_followers:
+		var spring_instance := follower.node as MeshInstance3D
+		var spring_mesh := follower.mesh as ArrayMesh
+		var link_index: int = follower.link_index
+		if not is_instance_valid(spring_instance) or spring_mesh == null or link_index < 0 or link_index >= anchor_deltas_root.size():
+			continue
+		var local_delta: Vector3 = spring_instance.global_basis.inverse() * root.global_basis * anchor_deltas_root[link_index]
+		spring_mesh.clear_surfaces()
+		for surface_index in follower.surfaces.size():
+			var spring_surface: Dictionary = follower.surfaces[surface_index]
+			var spring_arrays: Array = spring_surface.arrays.duplicate(true)
+			var spring_vertices: PackedVector3Array = spring_surface.vertices.duplicate()
+			var spring_weights: Array[float] = spring_surface.weights
+			for vertex_index in spring_vertices.size():
+				spring_vertices[vertex_index] += local_delta * spring_weights[vertex_index]
+			spring_arrays[Mesh.ARRAY_VERTEX] = spring_vertices
+			spring_mesh.add_surface_from_arrays(spring_surface.primitive, spring_arrays)
+			if spring_surface.material != null:
+				spring_mesh.surface_set_material(surface_index, spring_surface.material)
 	_last_cable_angles = {"left": left_angle, "right": right_angle}
 
 
@@ -506,6 +528,7 @@ func _on_session_resetting() -> void:
 			emitter.emitting = false
 			emitter.speed_scale = 1.0
 			emitter.restart()
+			emitter.emitting = false
 	_last_cable_angles = {"left": -999.0, "right": -999.0}
 	_update_cable_followers({"left": 0.0, "right": 0.0}, _airplane.root)
 

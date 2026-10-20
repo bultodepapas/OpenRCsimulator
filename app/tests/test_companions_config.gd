@@ -47,5 +47,7 @@ func _initialize() -> void:
 	_check("invalid CLI count is refused", not Config.from_args(PackedStringArray(["--companions=3.5"]), injected).ok)
 	_check("invalid CLI seed is refused", not Config.from_args(PackedStringArray(["--companions-seed=4294967296"]), injected).ok)
 	_check("duplicate CLI count is refused", not Config.from_args(PackedStringArray(["--companions=1", "--companions=2"]), injected).ok)
+	_check("CLI count flag without a value is refused", not Config.from_args(PackedStringArray(["--companions"]), injected).ok)
+	_check("CLI seed flag without a value is refused", not Config.from_args(PackedStringArray(["--companions-seed"]), injected).ok)
 	print("companion config: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

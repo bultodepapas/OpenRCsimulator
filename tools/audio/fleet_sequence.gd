@@ -10,7 +10,7 @@ const Math3D = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const Trim = preload("res://physics/trim.gd")
 
-const FPS := 60
+var capture_fps := 60
 const FIXED_TIMELINE: Array = [
 	[0.0, "off"], [2.0, "start"], [4.0, "idle"], [7.0, "taxi"],
 	[10.0, "takeoff"], [22.0, "flight"], [27.0, "landing"],
@@ -29,8 +29,27 @@ var aircraft_id := ""
 var rotorcraft := false
 var scene: Node3D
 var adapter: Node
+var premaster_capture: AudioEffectCapture
+var master_capture: AudioEffectCapture
+var master_samples := PackedVector2Array()
+var premaster_frames := 0
+var premaster_peak := 0.0
+var premaster_over_unity := 0
+var premaster_max_step := 0.0
+var premaster_steps_over_08 := 0
+var _premaster_previous := Vector2.ZERO
+var _premaster_has_previous := false
+var master_peak := 0.0
+var master_over_unity := 0
+var master_max_step := 0.0
+var master_steps_over_08 := 0
+var master_invalid_sample := false
+var _master_previous := Vector2.ZERO
+var _master_has_previous := false
+var master_discarded_frames := 0
 var events: Array[Dictionary] = []
 var rows: Array[Dictionary] = []
+var bench_rows: Array[Array] = []
 var notes: PackedStringArray = []
 var takeoff_seen := false
 var touchdown_seen := false
@@ -62,6 +81,11 @@ func _run() -> void:
 		quit(1)
 		return
 	aircraft_id = str(args.aircraft)
+	capture_fps = clampi(int(args.get("fps", 60)), 1, 60)
+	if args.has("size"):
+		var dimensions := str(args.size).split("x")
+		if dimensions.size() == 2:
+			get_root().size = Vector2i(int(dimensions[0]), int(dimensions[1]))
 	if not Catalog.can_fly(aircraft_id):
 		printerr("fleet sequence refuses unknown or non-flyable aircraft: ", aircraft_id)
 		quit(1)
@@ -91,6 +115,7 @@ func _run() -> void:
 		return
 	var session: Node = scene.session
 	session.read_raw = _controls
+	_install_audio_probe()
 	if rotorcraft:
 		_enter_rotor_off()
 	else:
@@ -98,19 +123,27 @@ func _run() -> void:
 		if not _has_runway():
 			notes.append("runway launch unavailable; takeoff segment remains a live aircraft-input attempt")
 	var timeline: Array = ROTOR_TIMELINE if rotorcraft else FIXED_TIMELINE
-	var end_frame := roundi(float(timeline[-1][0]) * FPS)
+	var end_frame := roundi(float(timeline[-1][0]) * capture_fps)
 	stage = str(timeline[0][1])
-	events.append(_event("sequence_start", "production adapter attached"))
+	events.append(_event(stage, "initial production adapter state"))
 	while frame < end_frame:
-		var t := float(frame) / FPS
+		var t := float(frame) / capture_fps
 		var next := _stage_at(timeline, t)
 		if next != stage:
 			stage = next
 			_enter_stage(stage)
 		await process_frame
+		_drain_audio_probe()
 		_resume_focus_pause(session)
 		_record_frame(t)
 		frame += 1
+	_drain_audio_probe()
+	var wav_path := str(args.out) + ".wav"
+	var wav_error := _save_wav(wav_path)
+	if wav_error != OK:
+		printerr("could not save master PCM WAV: ", wav_path, " error=", wav_error)
+		quit(1)
+		return
 	var report := _report(timeline)
 	var output := FileAccess.open(str(args.out) + ".json", FileAccess.WRITE)
 	if output == null:
@@ -291,7 +324,7 @@ func _controls() -> Dictionary:
 
 func _event(name: String, action: String) -> Dictionary:
 	var session: Node = scene.session
-	return {frame = frame, time_s = float(frame) / FPS, stage = name, action = action,
+	return {frame = frame, time_s = float(frame) / capture_fps, stage = name, action = action,
 		tick = int(session.sim.tick), aircraft = aircraft_id}
 
 
@@ -318,7 +351,94 @@ func _ground_snapshot() -> Dictionary:
 	if adapter.has_method("ground_snapshot"):
 		var value: Variant = adapter.call("ground_snapshot")
 		return value if value is Dictionary else {}
+	if adapter.has_method("contact_snapshot"):
+		var value: Variant = adapter.call("contact_snapshot")
+		if value is Dictionary:
+			return value
+		if value is Array:
+			return {contacts = value, tick = int(scene.session.sim.tick)}
 	return {}
+
+
+func _install_audio_probe() -> void:
+	var soundscape: Node = adapter.get("soundscape") as Node
+	if soundscape == null or not soundscape.has_method("output_bus"):
+		notes.append("pre-master probe unavailable: soundscape output bus is not exposed")
+		return
+	var output_bus := AudioServer.get_bus_index(StringName(soundscape.call("output_bus")))
+	if output_bus < 0:
+		notes.append("pre-master probe unavailable: soundscape output bus is missing")
+		return
+	if args.has("engine-only") and soundscape.has_method("environment_bus"):
+		var environment_bus := AudioServer.get_bus_index(StringName(soundscape.call("environment_bus")))
+		if environment_bus >= 0:
+			AudioServer.set_bus_mute(environment_bus, true)
+	premaster_capture = AudioEffectCapture.new()
+	premaster_capture.buffer_length = maxf(0.5, 2.0 / float(capture_fps))
+	AudioServer.add_bus_effect(output_bus, premaster_capture)
+	var master_index := AudioServer.get_bus_index(&"Master")
+	if master_index < 0:
+		notes.append("post-master probe unavailable: Master bus is missing")
+		return
+	master_capture = AudioEffectCapture.new()
+	master_capture.buffer_length = maxf(0.5, 2.0 / float(capture_fps))
+	# Appending after the configured Master effects captures the delivered software mix.
+	AudioServer.add_bus_effect(master_index, master_capture)
+
+
+func _drain_audio_probe() -> void:
+	if premaster_capture != null:
+		var available := premaster_capture.get_frames_available()
+		if available > 0:
+			var buffer: PackedVector2Array = premaster_capture.get_buffer(available)
+			for sample: Vector2 in buffer:
+				premaster_frames += 1
+				premaster_peak = maxf(premaster_peak, maxf(absf(sample.x), absf(sample.y)))
+				if maxf(absf(sample.x), absf(sample.y)) >= 1.0:
+					premaster_over_unity += 1
+				if _premaster_has_previous:
+					var step := maxf(absf(sample.x - _premaster_previous.x), absf(sample.y - _premaster_previous.y))
+					premaster_max_step = maxf(premaster_max_step, step)
+					if step >= 0.8:
+						premaster_steps_over_08 += 1
+				_premaster_previous = sample
+				_premaster_has_previous = true
+	if master_capture != null:
+		var master_available := master_capture.get_frames_available()
+		if master_available > 0:
+			var master_buffer: PackedVector2Array = master_capture.get_buffer(master_available)
+			for sample: Vector2 in master_buffer:
+				var finite_sample := sample
+				if not is_finite(sample.x) or not is_finite(sample.y):
+					master_invalid_sample = true
+					finite_sample = Vector2.ZERO
+				master_samples.append(finite_sample)
+				var peak := maxf(absf(finite_sample.x), absf(finite_sample.y))
+				master_peak = maxf(master_peak, peak)
+				if peak >= 1.0:
+					master_over_unity += 1
+				if _master_has_previous:
+					var step := maxf(absf(finite_sample.x - _master_previous.x), absf(finite_sample.y - _master_previous.y))
+					master_max_step = maxf(master_max_step, step)
+					if step >= 0.8:
+					master_steps_over_08 += 1
+				_master_previous = finite_sample
+				_master_has_previous = true
+			master_discarded_frames = master_capture.get_discarded_frames()
+
+
+func _save_wav(path: String) -> Error:
+	var wav := AudioStreamWAV.new()
+	wav.mix_rate = AudioServer.get_mix_rate()
+	wav.stereo = true
+	wav.format = AudioStreamWAV.FORMAT_16_BITS
+	var data := PackedByteArray()
+	data.resize(master_samples.size() * 4)
+	for index: int in master_samples.size():
+		data.encode_s16(index * 4, clampi(roundi(master_samples[index].x * 32767.0), -32768, 32767))
+		data.encode_s16(index * 4 + 2, clampi(roundi(master_samples[index].y * 32767.0), -32768, 32767))
+	wav.data = data
+	return wav.save_to_wav(path)
 
 
 func _contact_summary() -> Dictionary:
@@ -360,11 +480,33 @@ func _record_frame(t: float) -> void:
 			touchdown_seen = true
 			if stage in ["rollout", "settle"]:
 				rollout_contact_seen = true
-	if frame % 6 != 0:
+	var soundscape: Node = adapter.get("soundscape") as Node
+	var source: Vector3 = snapshot.get("source", Vector3.ZERO)
+	var listener: Vector3 = snapshot.get("listener", Vector3.ZERO)
+	var pitch_scale := 1.0
+	var volume_db := -120.0
+	if soundscape != null:
+		var powertrain: Node = soundscape.get("powertrain") as Node
+		if powertrain != null and not powertrain.get("players").is_empty():
+			var bank_player: AudioStreamPlayer3D = powertrain.get("players")[0]
+			pitch_scale = bank_player.pitch_scale
+			volume_db = bank_player.volume_db
+		else:
+			var glow: AudioStreamPlayer3D = soundscape.get("glow_player") as AudioStreamPlayer3D
+			if glow != null:
+				pitch_scale = glow.pitch_scale
+				volume_db = glow.volume_db
+			elif soundscape.get("voices").size() > 0:
+				var legacy: AudioStreamPlayer3D = soundscape.get("voices")[0]
+				pitch_scale = legacy.pitch_scale
+				volume_db = legacy.volume_db
+	bench_rows.append([t, float(snapshot.get("rpm", 0.0)), source.distance_to(listener),
+		pitch_scale, volume_db, float(soundscape.get("last_doppler")) if soundscape != null else 1.0])
+	var telemetry_stride := maxi(1, roundi(float(capture_fps) / 10.0))
+	if frame % telemetry_stride != 0:
 		return
 	var targets: Dictionary = {}
 	var powertrain: Node = null
-	var soundscape: Node = adapter.get("soundscape") as Node
 	if soundscape != null:
 		powertrain = soundscape.get("powertrain") as Node
 		if powertrain != null:
@@ -376,7 +518,35 @@ func _record_frame(t: float) -> void:
 		throttle = float(snapshot.get("throttle", 0.0)), speed_mps = _speed_mps(),
 		height_m = _height_m(), paused = bool(session.sim.paused),
 		fault = str(session.sim.fault_reason), crash = not session.crash.is_empty(),
-		contacts = contacts, powertrain = targets})
+		contacts = contacts, powertrain = targets, audio_mix = _audio_mix_summary(soundscape)})
+
+
+func _audio_mix_summary(soundscape: Node) -> Dictionary:
+	var engine_level := 0.0
+	var mix_engine_level := -100.0
+	if soundscape != null:
+		var powertrain: Node = soundscape.get("powertrain") as Node
+		if powertrain != null:
+			var targets: Variant = powertrain.get("last_targets")
+			if targets is Dictionary:
+				engine_level = float(targets.get("level", 0.0))
+			if not powertrain.get("players").is_empty():
+				mix_engine_level = (powertrain.get("players")[0] as AudioStreamPlayer3D).volume_db
+	var ground_slots := 0
+	var ground_roll_gain := 0.0
+	var active_impact_count := 0
+	var ground_audio: Node = adapter.get("ground_audio") as Node if adapter != null else null
+	if ground_audio != null:
+		for slot: Dictionary in ground_audio.get("_slots"):
+			ground_slots += 1
+			for layer_gain: float in slot.get("layer_gain", []):
+				ground_roll_gain += layer_gain
+			var impact: AudioStreamPlayer3D = slot.get("impact") as AudioStreamPlayer3D
+			if impact != null and impact.playing:
+				active_impact_count += 1
+	return {engine_gain_model: engine_level, engine_player_db: mix_engine_level,
+		gear_roll_gain_model_sum: ground_roll_gain, gear_touchdown_players: active_impact_count,
+		gear_contact_slots: ground_slots}
 	previous_grounded = grounded
 
 
@@ -426,14 +596,21 @@ func _report(timeline: Array) -> Dictionary:
 	var source_path := "res://audio/helicopter_audio.gd" if rotorcraft else "res://audio/flight_audio.gd"
 	return {
 		format = "openrc-audio-fleet-sequence-v1", aircraft = aircraft_id, vehicle = "rotorcraft" if rotorcraft else "fixed-wing",
-		godot = Engine.get_version_info().string, fps = FPS, mix_rate = AudioServer.get_mix_rate(),
-		driver = AudioServer.get_driver_name(), frames = frame, duration_s = float(frame) / FPS,
+		godot = Engine.get_version_info().string, fps = capture_fps, mix_rate = AudioServer.get_mix_rate(),
+		driver = AudioServer.get_driver_name(), frames = frame, duration_s = float(frame) / capture_fps,
 		route = route, staged_landing_fixture = landing_fixture_ok,
 		landing_fixture_message = landing_fixture_message, actual_runway_takeoff_observed = takeoff_seen,
 		actual_contact_after_landing_stage = touchdown_seen, rollout_or_settle_contact_observed = rollout_contact_seen,
 		landing_rollout_not_applicable = rotorcraft, start_state = "accepted session snapshot; non-glow combustion start/stop are bench engine_running latch stimuli",
 		start_choice = "ground" if rotorcraft else "runway", initial_stage_schedule = timeline,
-		audio_source = source_info, contacts = _contact_summary(), events = events, samples_10_hz = rows,
+		audio_source = source_info, contacts = _contact_summary(), events = events, samples = rows,
+		telemetry_rate_hz = float(capture_fps) / float(maxi(1, roundi(float(capture_fps) / 10.0))),
+		columns = ["t", "rpm", "distance_m", "motor_pitch_scale", "motor_volume_db", "doppler"],
+		rows = bench_rows,
+		premaster = {frames = premaster_frames, peak_linear = premaster_peak,
+			peak_dbfs = linear_to_db(maxf(premaster_peak, 0.0000001)), over_unity_samples = premaster_over_unity,
+			max_sample_step = premaster_max_step, sample_steps_over_0_8 = premaster_steps_over_08,
+			meaning = "AudioEffectCapture on the soundscape sum before the Master limiter; sample-step threshold is a screening statistic, not a perceptual click verdict."},
 		fault = str(session.sim.fault_reason), crash = not session.crash.is_empty(), focus_resumes = focus_resumes,
 		notes = notes, audio_adapter_sha256 = FileAccess.get_sha256(source_path),
 		note = "Movie Maker PCM from the production adapter. Fixed-wing takeoff/flight is live from runway; the later descending approach is staged by resetting FlightSession, then contacts/rollout use the live physics session. Helicopter lifecycle uses its ground route; no wheel taxi or rollout is claimed. Audio captures are software evidence, not speaker or acoustic validation.",

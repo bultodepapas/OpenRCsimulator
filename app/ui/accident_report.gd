@@ -31,6 +31,8 @@ var _status_label: Label
 var _amount_label: Label
 var _caption_label: Label
 var _details_button: Button
+var _report_column: VBoxContainer
+var _report_actions: HFlowContainer
 var _inspect_button: Button
 var _restart_button: Button
 var _hide_archived_button: Button
@@ -261,6 +263,7 @@ func _build_ui() -> void:
 	_report_panel.add_theme_stylebox_override("panel", _card_style())
 	_surface.add_child(_report_panel)
 	var column := VBoxContainer.new()
+	_report_column = column
 	column.name = "ReportColumn"
 	column.add_theme_constant_override("separation", _scaled(9))
 	_report_panel.add_child(column)
@@ -295,6 +298,7 @@ func _build_ui() -> void:
 	column.add_child(_aircraft_identity)
 
 	var actions := HFlowContainer.new()
+	_report_actions = actions
 	actions.name = "ReportActions"
 	actions.add_theme_constant_override("h_separation", _scaled(10))
 	actions.add_theme_constant_override("v_separation", _scaled(8))
@@ -376,9 +380,49 @@ func _layout() -> void:
 	var metrics := layout_metrics(viewport_size, UiTheme.text_scale)
 	var gutter := float(metrics.gutter)
 	var width := float(metrics.panel_width)
+	var identity_value: Variant = _report.get("identity", {})
+	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
+	var timber := str(identity.get("aircraft_id", _report.get("aircraft_id", ""))) == "turbo-lumber-evolution"
+	var compact_timber := timber and viewport_size.y <= 800.0 and UiTheme.text_scale > 1.25
+	if _report_column != null:
+		_report_column.add_theme_constant_override("separation", _scaled(4) if compact_timber else _scaled(9))
+	if _report_actions != null:
+		_report_actions.add_theme_constant_override("h_separation", _scaled(4) if compact_timber else _scaled(10))
+		_report_actions.add_theme_constant_override("v_separation", _scaled(4) if compact_timber else _scaled(8))
+		for button: Button in [_inspect_button, _details_button, _restart_button, _hide_archived_button]:
+			if compact_timber:
+				button.custom_minimum_size.y = _scaled(48)
+				button.add_theme_font_size_override("font_size", _scaled(28 if button == _inspect_button else 24))
+			else:
+				button.custom_minimum_size.y = _scaled(54)
+				button.remove_theme_font_size_override("font_size")
+			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if _restore_button != null:
+		_restore_button.custom_minimum_size.y = _scaled(48) if compact_timber else _scaled(54)
+	if _title_label != null:
+		_title_label.add_theme_font_size_override("font_size", _scaled(26) if compact_timber else _scaled(30))
+	if _status_label != null:
+		_status_label.add_theme_font_size_override("font_size", _scaled(16) if compact_timber else _scaled(18))
+	if _caption_label != null:
+		_caption_label.add_theme_font_size_override("font_size", _scaled(16) if compact_timber else _scaled(18))
+	if _aircraft_identity != null:
+		_aircraft_identity.add_theme_font_size_override("font_size", _scaled(14) if compact_timber else _scaled(15))
+	if _amount_label != null:
+		var headline_size := int(metrics.headline_size)
+		if compact_timber:
+			headline_size = maxi(64, roundi(float(headline_size) * 0.86))
+		_amount_label.add_theme_font_size_override("font_size", headline_size)
+	var card_style := _report_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if card_style != null:
+		var vertical_padding := _scaled(14) if compact_timber else _scaled(22)
+		card_style.content_margin_top = vertical_padding
+		card_style.content_margin_bottom = vertical_padding
 	_report_panel.custom_minimum_size.x = width
-	_details_scroll.custom_minimum_size.y = float(metrics.details_max_height) if _expanded else 0.0
-	_details_scroll.custom_maximum_size.y = float(metrics.details_max_height)
+	var details_height := float(metrics.details_max_height)
+	if compact_timber:
+		details_height = minf(details_height, 96.0)
+	_details_scroll.custom_minimum_size.y = details_height if _expanded else 0.0
+	_details_scroll.custom_maximum_size.y = details_height
 	_report_panel.size = _report_panel.get_combined_minimum_size()
 	_report_panel.size.x = width
 	var max_height := float(metrics.max_panel_height)
