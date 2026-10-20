@@ -10,6 +10,8 @@ const FieldLoader := preload("res://data/field_loader.gd")
 const GroundStart := preload("res://physics/ground_start.gd")
 const Ground := preload("res://physics/ground_contact.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const TAKEOFF_SECONDS := 5.0
+
 
 var checks := 0
 var failures := 0
@@ -74,12 +76,18 @@ func _run_rate(rate: int, field: Dictionary) -> void:
 		and session.crash.is_empty() and session.prop_strike.is_empty(),
 		"speed %.8f m/s, drift %.8f m, crash=%s prop_strike=%s fault=%s" % [idle_speed, idle_drift,
 			str(session.crash), str(session.prop_strike), session.sim.fault_reason])
+	# The finite-glow Extra (NITRO-61FX) parks with its warm engine stopped, as every glow runway start does;
+	# the takeoff starts it the way the pilot's F7 does (the legacy lag engine is always running).
+	if session.glow_is_active() and not session.engine_running:
+		_check("%d Hz glow engine starts on the runway" % rate, session.glow_start(), session.pause_reason)
 	var inputs: PackedFloat64Array = session.sim.inputs.duplicate()
 	inputs[1] = 0.35
 	inputs[3] = 1.0
 	session.sim.inputs = inputs
+	# Five seconds of full throttle: the legacy lag engine cleared the runway inside 3 s, the finite-glow MAX-61FX
+	# spools from its stopped idle (10–90 % in about 2.8 s, FT-05) and lifts off at about 2.5 s.
 	var airborne_tick := -1
-	for tick in roundi(3.0 / dt):
+	for tick in roundi(TAKEOFF_SECONDS / dt):
 		session.sim.step()
 		session._physics_process(dt)
 		if airborne_tick < 0 and _airborne(session):
@@ -89,7 +97,7 @@ func _run_rate(rate: int, field: Dictionary) -> void:
 	var finish: PackedFloat64Array = session.sim.state
 	var altitude_gain := start[RB.POS + 2] - finish[RB.POS + 2]
 	var final_anchors := _anchor_flags(session)
-	_check("%d Hz 3 s takeoff clears runway with session crash/prop-strike checks" % rate,
+	_check("%d Hz %.0f s takeoff clears runway with session crash/prop-strike checks" % [rate, TAKEOFF_SECONDS],
 		airborne_tick >= 0 and _speed(finish) > 15.0 and altitude_gain > 1.0
 		and final_anchors.size() == 3 and final_anchors[0] == 0.0 and final_anchors[1] == 0.0 and final_anchors[2] == 0.0
 		and session.sim.fault_reason.is_empty() and session.crash.is_empty() and session.prop_strike.is_empty(),
