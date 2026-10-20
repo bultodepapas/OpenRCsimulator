@@ -39,7 +39,9 @@ func _initialize() -> void:
 		var frozen: Dictionary = variant.frozen
 		var original_model: Dictionary = frozen.data.model.duplicate(true)
 		for choice: String in ["runway", "airborne", "airborne_half_power"]:
-			var expected: bool = choice != "airborne_half_power"
+			# D6e-R3: the 50 % level trim is offered to every airplane; a trial that trims airborne also trims at
+			# half throttle inside the assessment budget (the search is warm-started and bracketed, cruise_trim.gd).
+			var expected: bool = true
 			if choice == "runway" and str(variant.id) == STIK_ID:
 				var scale_value: float = float(variant.recipe.get("scale", 1.0))
 				expected = scale_value == 0.1 or (scale_value >= 0.5 and scale_value <= 1.25)

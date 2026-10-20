@@ -57,6 +57,47 @@ The glow installations mapped the stick to a constant charge per cycle, so the i
 - **Hands-off lateral behaviour:** the Extra, Timber and Avanti spiral away within 30 s of a small aileron pulse (FT-04 `hands_off`: 627°, 851°, 292° of heading); the power-step test holds the wings level for that reason. Spiral stability is its own investigation.
 - **Start operating point (owner decision, D6e-R1 follow-up):** trimming the airborne start at the aircraft's cruise (for the Stik, the existing 50 % option at 20.6 m/s) would put idle below and full throttle above the trim as a pilot expects; it does not change the physics of the full-throttle pull-up on a 1.5 T/W airplane.
 
+## The owner's procedure in the complete flight scene
+
+`scene_probe.gd` ([tools](../../../../research/flight-dynamics/power-climb/README.md)) instantiates `main.tscn` with Home's default **Gentle breeze** weather (1.5 m/s east wind, 0.6 m/s gusts with a 0.15 m/s upward component for 4 s every 14 s, light turbulence), keyboard sampling on, and holds a throttle hands-off from the airborne start. Height after 40 s from 30 m (the Timber's keyboard start speed reads 11.4 m/s because the state speed is over the ground, into the headwind):
+
+| Aircraft, slow start (1.6 Vs) | Trim throttle | 30 % | 50 % |
+| --- | ---: | ---: | ---: |
+| Timber, 13.1 m/s | 37 % | ground in 32 s | +12 m (peak +25 m, phugoid) |
+| Ventage Jet, 29 m/s | 9 % | +181 m (14° mean, phugoid 18–41 m/s) | +268 m (peak pitch 40°) |
+| Extra, 22 m/s | 22 % | −7 m (peak +24 m) | −2 m after a +64 m phugoid |
+| Ugly Stik, 15 m/s | 28 % | +10 m | +65 m |
+
+The jet at 30 % and the Stik at 50 % climb exactly as the hands-off card predicts; the gusts add a little lift and the phugoids are large, which is what a pilot sees as "it keeps going up". A keyboard-style takeoff (full throttle, up elevator held until airborne plus 3 s, then sticks centred and 50 %) ends in a bunt for the Timber and the Stik: at 55–75° of pitch with the wing unloaded the sudden release pitches past the trim angle into negative lift. That is a crude input, not a pilot's, and is reported as such.
+
+## Remedy: the 50 % start for every airplane
+
+The pilot's trim is the lever: a model is trimmed for the throttle it cruises at, and the catalog's slow start is not that trim. D6e-R1 built that start for the Stik (`cruise_trim.gd`, a bounded six-axis solve for the level speed at a requested throttle). This step offers it to every fixed-wing airplane (`half_power_start_supported` now excludes only rotorcraft; the bounded solve still refuses a launch it cannot bracket), widens the speed bound to 2.5 × the slow start, and makes the search fast enough for a launch and for the Workshop's 16 s qualification budget: a warm-started Newton (`Trim.solve` takes an optional initial point) and a bracketed Illinois false-position search replace 25–35 cold bisections with 6–10 warm solves. Solve times fell from 12–19 s to 2.6–6.0 s on the glow and electric aircraft and to 0.05–0.3 s on the others; the solutions are the same (speeds agree to 0.01 m/s).
+
+The level trims at half throttle, with the elevator a pilot would hold at that speed:
+
+| Aircraft | Slow start | 50 % start | Elevator at 50 % | Hands-off 10 s drift |
+| --- | ---: | ---: | ---: | ---: |
+| Ugly Stik | 15.0 m/s | 20.60 m/s | 1.36° up | 0.000 m |
+| Stik MAX-61FX | 20.0 | 30.54 | 0.89° up | 0.56 m (fuel burn) |
+| Stik MAX-55AX | 20.0 | 29.36 | 0.93° up | 0.44 m |
+| Stik FS-64V | 20.0 | 22.93 | 1.15° up | 0.17 m |
+| Extra 300S | 22.0 | 33.08 | 0.62° up | 0.28 m |
+| P-51D 1/4 | 25.0 | 46.02 | 0.43° up | 0.12 m |
+| Ventage Jet | 29.0 | 55.99 | 0.81° up | 0.71 m (fuel burn) |
+| Timber | 13.1 | 16.18 | 0.55° down | 0.000 m |
+
+`test_half_power_start.gd` (62 checks) flies every one: level at 50 % within the drift above, climbing at full throttle (31–119 m in 12 s; the P-51 first sinks because its thrust line is 71 mm above the CG) and descending at a quarter throttle (4–36 m in 8 s). In the complete scene with the gentle breeze:
+
+| Aircraft, 50 % start | 30 % | 50 % | 70 % |
+| --- | ---: | ---: | ---: |
+| Timber, 16.2 m/s | ground in 13 s | −0.4 m | +61 m |
+| Ventage Jet, 56.0 m/s | ground in 11 s | +17 m | +268 m |
+| Extra, 33.1 m/s | ground in 11 s | +7 m | +44 m (peak +88 m) |
+| Ugly Stik, 20.6 m/s | ground in 10 s | +1.6 m | +80 m |
+
+Below half the airplane descends, above half it climbs, and the trim stays where it is. This is a start-point choice, not a physics change: the fixed-trim pull-up at full throttle on a 1.5 thrust-to-weight airplane remains, as it does on the real model. Making this start Home's default, and giving the runway start the same cruise trim so a takeoff is flown with up elevator and levels off at half throttle, are the owner's decisions; the data for both is above.
+
 ## After NITRO-06
 
 The four glow-law aircraft, the same test, the same tree otherwise (filled from `tmp/ft-v5-power-after`; the complete card v5 baseline is [FT-05](../../flight-test/FT-05/README.md)):

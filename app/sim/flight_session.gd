@@ -530,9 +530,14 @@ static func _runway_model_supported(model: Dictionary) -> bool:
 	return not gear.is_empty() and gear.has("breakaway_factor") and not gear.get("contacts", []).is_empty()
 
 
-## D6e-R1: explicitly selected operating point, not an aircraft cruise-speed claim.
+## D6e-R1: explicitly selected operating point, not an aircraft cruise-speed claim. D6e-R3 offers it to every
+## fixed-wing airplane: the bounded six-axis solve (cruise_trim.gd) still refuses a launch whose 50 % equilibrium it
+## cannot bracket, so support here means "this launch may be asked for", never "it exists".
 static func half_power_start_supported(aircraft_id: String) -> bool:
-	return aircraft_id == "jensen-das-ugly-stik-60"
+	if aircraft_id.is_empty():
+		return false
+	var catalog: Script = load("res://app_state/aircraft_catalog.gd")
+	return not catalog.is_rotorcraft(aircraft_id)
 
 
 func _selected_airborne_trim(model: Dictionary, down_m: float = -30.0) -> Dictionary:
@@ -547,7 +552,9 @@ func _selected_airborne_trim(model: Dictionary, down_m: float = -30.0) -> Dictio
 	if not half_power_start_supported(str(model.get("id", ""))):
 		return {ok = false, message = "half-power airborne start is not qualified for this aircraft"}
 	# Search bounds limit this opt-in policy; they do not prescribe a flight speed.
-	var t: Dictionary = PowerTrim.solve_level_at_throttle(speed, 0.5, 2.0 * speed, model, sim.gravity, model.controls.throw_rad, density, charge)
+	# D6e-R3: the level speed at half throttle lies between 1.3 and 2.0 times the slow start speed across the fleet
+	# (Timber 1.25, Ventage Jet 1.92); the bound leaves room for a thinner atmosphere without reaching the solver's limit.
+	var t: Dictionary = PowerTrim.solve_level_at_throttle(speed, 0.5, minf(PowerTrim.MAX_SEARCH_SPEED_MPS, 2.5 * speed), model, sim.gravity, model.controls.throw_rad, density, charge)
 	if t.ok:
 		t.state = Scenarios.Trim.state_for(t.V, t.alpha, t.gamma, PI / 2.0, M.v3(60.0, -40.0, -30.0), t.beta)
 	return t
