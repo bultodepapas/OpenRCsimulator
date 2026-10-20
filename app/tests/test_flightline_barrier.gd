@@ -8,9 +8,8 @@ const Loader = preload("res://data/field_loader.gd")
 const DEFAULT_PATH: String = "res://data/fields/default.json"
 const FOOT_WIDTH_M: float = 0.08
 const MAX_BAY_SPAN_M: float = 2.4
-const FIRST_SLAT_CENTRE_M: float = 0.225
+const FIRST_SLAT_CENTRE_M: float = 0.24
 const TOP_SLAT_MARGIN_M: float = 0.06
-const SLAT_HEIGHT_M: float = 0.05
 
 var _count: int = 0
 var _failed: int = 0
@@ -54,7 +53,7 @@ func _check_mesh(cue: Dictionary) -> void:
 		finite_unit = finite_unit and vertices[index].is_finite() and normals[index].is_finite() and absf(normals[index].length() - 1.0) < 0.00001
 	_check("all geometry and normals are finite and unit length", finite_unit)
 	var material := mesh.surface_get_material(0) as ShaderMaterial
-	_check("one merged opaque detail mesh stays below 20,000 triangles", vertices.size() / 3 < 20000 and material != null and not material.shader.code.contains("ALPHA =") and mesh_instance.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, str(vertices.size() / 3))
+	_check("one merged opaque fitted mesh stays below 40,000 triangles", vertices.size() / 3 < 40000 and material != null and not material.shader.code.contains("ALPHA =") and mesh_instance.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, str(vertices.size() / 3))
 	_check_detail(mesh_instance, vertices, normals)
 	_check("repeat build owns distinct, byte-identical mesh data", mesh != repeat_mesh and vertices.to_byte_array() == repeat_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].to_byte_array() and normals.to_byte_array() == repeat_mesh.surface_get_arrays(0)[Mesh.ARRAY_NORMAL].to_byte_array())
 	_test_posts_and_bays(cue, vertices)
@@ -122,7 +121,7 @@ func _test_boundary_variants(default_cue: Dictionary) -> void:
 		_check("boundary dimensions remain contained", bounds.size.is_equal_approx(Vector3(width, height, 0.08)) and absf(bounds.position.x + width * 0.5) < 0.00001 and absf(bounds.position.y) < 0.00001)
 		var arrays: Array = mesh.mesh.surface_get_arrays(0)
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-		_check("maximum custom detail geometry remains below 34,000 triangles", vertices.size() / 3 < 34000, str(vertices.size() / 3))
+		_check("maximum custom fitted geometry remains below 75,000 triangles", vertices.size() / 3 < 75000, str(vertices.size() / 3))
 		var positions: PackedVector3Array = Barrier.post_positions(variant)
 		var posts_per_bank: int = positions.size() / 2
 		_check("boundary post layout keeps the gap", absf(positions[posts_per_bank].x - positions[posts_per_bank - 1].x - FOOT_WIDTH_M - gap_width) < 0.00001)
@@ -176,7 +175,7 @@ func _check_detail(instance: MeshInstance3D, vertices: PackedVector3Array, norma
 		cursor = item.end
 	_check("no floating fittings survive outside the damage ranges", cursor == vertices.size())
 	var material := instance.mesh.surface_get_material(0) as ShaderMaterial
-	for channel: String in ["wood_color", "wood_normal", "wood_roughness", "metal_color", "metal_normal", "metal_roughness", "metalness"]:
+	for channel: String in ["wood_color", "wood_normal", "wood_roughness", "metal_color", "metal_normal", "metal_roughness", "metalness", "zinc_color", "zinc_normal", "zinc_roughness", "zinc_metalness"]:
 		var texture := material.get_shader_parameter(channel) as Texture2D
 		_check("downloaded %s has distance mipmaps" % channel, texture != null and texture.get_image().has_mipmaps())
 

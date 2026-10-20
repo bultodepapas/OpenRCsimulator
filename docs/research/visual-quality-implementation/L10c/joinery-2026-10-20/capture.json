@@ -1,0 +1,75 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "barrier_surfaces": 1,
+  "barrier_triangles": 27752,
+  "builder_sha256": "1976fed7906a069e0841a693c6031805d8387d079297674cdf61faaeb2a887b6",
+  "complete": true,
+  "method": "gl_compatibility",
+  "plant_source_triangles": 42761,
+  "plants": 99,
+  "records": [
+    {
+      "draws": 56,
+      "eye": [
+        3.45000004768372,
+        0.319999992847443,
+        -3.95000004768372
+      ],
+      "fov": 52.0,
+      "sha256": "d635962329ded4bdead3610239d3a661e1613a43071e814e3dca3d6fec74b683",
+      "view": "foot"
+    },
+    {
+      "draws": 53,
+      "eye": [
+        3.5,
+        0.949999988079071,
+        -3.40000009536743
+      ],
+      "fov": 48.0,
+      "sha256": "52b41f79d5e3a7e496731fe56870e06e90cd907e826f594046da9b6e2eb37c28",
+      "view": "detail"
+    },
+    {
+      "draws": 146,
+      "eye": [
+        3.5,
+        0.949999988079071,
+        -5.59999990463257
+      ],
+      "fov": 48.0,
+      "sha256": "4841ab349bf4098e8cab0fffd69417d5995ba177a18a79a2d394606948055909",
+      "view": "rear"
+    },
+    {
+      "draws": 68,
+      "eye": [
+        9.0,
+        1.70000004768372,
+        1.0
+      ],
+      "fov": 55.0,
+      "sha256": "bb8a904c4558fe745f3d0fdb77d5f311b9805e8c906c5395b39e56113b1d495c",
+      "view": "flightline"
+    },
+    {
+      "draws": 136,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "sha256": "b4137d837aa6ffe1b867b2972ad658fe31d37a7a0323b79798169e43db89daa7",
+      "view": "pilot"
+    }
+  ],
+  "sources": {
+    "res://render/flightline_barrier.gd": "1976fed7906a069e0841a693c6031805d8387d079297674cdf61faaeb2a887b6",
+    "res://render/flightline_barrier.gdshader": "b3b010e063ac1ea1487a4258033488bd9d1b1e5bdc74ef69704eb358f37a15ad",
+    "res://render/flightline_barrier_detail.gd": "c757c3d6a549da75b178675d3d608ce98a34b1edf5c071ce3c01c8eca0afe854",
+    "res://render/flightline_barrier_foliage.gdshader": "01e8725624361f950c4581d4fb901d1b451b7ff3938adecef70d2bfc8705c1b0",
+    "res://render/flightline_barrier_planting.gd": "8b3def9a44069d334b3f103a361dec8970e7bc3bdd20df012003fd8747b2791c",
+    "res://render/flightline_barrier_soil.gdshader": "8f65d6b3c954af669fcb6ff1a61b726a200ea0c5086330cae9a2be179b8345fa"
+  }
+}

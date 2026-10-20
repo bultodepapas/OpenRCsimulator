@@ -1,0 +1,37 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b639b3d6-4511-4145-a0e5-3579fb7dc34e",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_regional_lighting.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T16:35:10.995115+00:00",
+  "label": "lighting-native",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\power-lines-r1\\checks\\lighting-native-e66eimr1\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\power-lines-r1\\checks\\lighting-native-e66eimr1\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 2.062,
+  "log_bytes": 746,
+  "log_sha256": "fad495263d8cef944acd872a50612f2557bd38e92078fbc591f7e554ab49eb6c"
+}

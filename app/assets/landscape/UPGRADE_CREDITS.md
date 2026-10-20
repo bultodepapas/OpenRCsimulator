@@ -169,5 +169,8 @@ not included in the runtime asset.
 
 [Power Pole by Grab3D](https://grab3d.com/models/city/power-pole/), CC0-1.0.
 An existing insulator is extracted from the source utility pole, scaled and
-reoriented beneath the lattice crossarms. Source files, license text and hashes
+reoriented beneath the lattice crossarms. LU-30-R1 uses the pinned Godot 4.7.2
+meshoptimizer LOD (1,488 → 372 triangles per insulator), compacted and refitted
+to the same 0.30 × 1.10 × 0.30 m attachment envelope.
+Source files, license text and hashes
 are retained in the repository's `assets/landscape/power-lines/` directory.

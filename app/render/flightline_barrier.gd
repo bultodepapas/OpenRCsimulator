@@ -11,9 +11,10 @@ const POST_WIDTH_M: float = 0.08
 const POST_DEPTH_M: float = 0.08
 const FOOT_HEIGHT_M: float = 0.02
 const CAP_HEIGHT_M: float = 0.02
-const SLAT_HEIGHT_M: float = 0.05
-const SLAT_DEPTH_M: float = 0.06
-const FIRST_SLAT_CENTRE_M: float = 0.225
+const SLAT_HEIGHT_M: float = 0.065
+const TOP_SLAT_HEIGHT_M: float = 0.08
+const SLAT_DEPTH_M: float = 0.045
+const FIRST_SLAT_CENTRE_M: float = 0.24
 const TOP_SLAT_MARGIN_M: float = 0.06
 const MAX_BAY_SPAN_M: float = 2.4
 const SLAT_COUNT: int = 4
@@ -55,6 +56,7 @@ static func parts(cue: Dictionary) -> Array[Dictionary]:
 	var posts_per_bank: int = positions.size() / 2
 	var bay_count: int = posts_per_bank - 1
 	var height: float = float(cue.height)
+	var row_pitch: float = (height - TOP_SLAT_MARGIN_M - FIRST_SLAT_CENTRE_M) / float(SLAT_COUNT - 1)
 	var cap_base_y: float = height - CAP_HEIGHT_M
 	var post_body_height: float = height - FOOT_HEIGHT_M - CAP_HEIGHT_M
 	for index: int in positions.size():
@@ -73,9 +75,11 @@ static func parts(cue: Dictionary) -> Array[Dictionary]:
 			for slat: int in SLAT_COUNT:
 				var fraction: float = float(slat) / float(SLAT_COUNT - 1)
 				var centre_y: float = lerpf(FIRST_SLAT_CENTRE_M, height - TOP_SLAT_MARGIN_M, fraction)
+				var nominal_height: float = TOP_SLAT_HEIGHT_M if slat == SLAT_COUNT - 1 else SLAT_HEIGHT_M
+				var rail_height: float = minf(nominal_height, row_pitch - 0.025)
 				parts.append({id = "barrier:%s:rail:%d:%02d:%d" % [cue.id, bank, bay, slat],
-					size = Vector3(span, SLAT_HEIGHT_M, SLAT_DEPTH_M),
-					base = Vector3(centre_east, centre_y - SLAT_HEIGHT_M * 0.5, 0.0), color = ORANGE, profile = "wood"})
+					size = Vector3(span, rail_height, SLAT_DEPTH_M),
+					base = Vector3(centre_east, centre_y - rail_height * 0.5, 0.0), color = ORANGE, profile = "wood"})
 	return parts
 
 
@@ -93,13 +97,17 @@ static func build(cue: Dictionary) -> Node3D:
 		index += 1
 	var material := ShaderMaterial.new()
 	material.shader = Finish
-	material.set_shader_parameter("wood_color", preload("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg"))
-	material.set_shader_parameter("wood_normal", preload("res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg"))
-	material.set_shader_parameter("wood_roughness", preload("res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("wood_color", preload("res://assets/landscape/flightline/Wood060_2K-JPG_Color.jpg"))
+	material.set_shader_parameter("wood_normal", preload("res://assets/landscape/flightline/Wood060_2K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("wood_roughness", preload("res://assets/landscape/flightline/Wood060_2K-JPG_Roughness.jpg"))
 	material.set_shader_parameter("metal_color", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg"))
 	material.set_shader_parameter("metal_normal", preload("res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg"))
 	material.set_shader_parameter("metal_roughness", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg"))
 	material.set_shader_parameter("metalness", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg"))
+	material.set_shader_parameter("zinc_color", preload("res://assets/landscape/flightline/Metal038_1K-JPG_Color.jpg"))
+	material.set_shader_parameter("zinc_normal", preload("res://assets/landscape/flightline/Metal038_1K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("zinc_roughness", preload("res://assets/landscape/flightline/Metal038_1K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("zinc_metalness", preload("res://assets/landscape/flightline/Metal038_1K-JPG_Metalness.jpg"))
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "Barrier"
 	mesh_instance.mesh = kit.to_mesh(material)

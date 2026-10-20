@@ -586,24 +586,30 @@ def build():
         n, e = polar(3900.0 + i * 220.0, t_az - 6.0 + i * 4.0)
         turbines.append((n, e, 250.0))
     inst("turbines", "horizon", ["turbine"], turbines, "estimated", "Wind farm in the east corridor; rotors face the SW breeze (and the pilot)")
-    p_az, p_sky = lowest(88.0, 100.0)
-    pylons = []
-    for i in range(5):
-        n, e = polar(1250.0 + i * 90.0, p_az - 3.0 + i * 1.5)
-        pylons.append((n, e, p_az + 90.0))
-    # LU-30: local -Z follows the conductors; local X crossarms span the corridor.
-    # Use endpoint/centered tangents so adjacent source-mesh sockets remain aligned.
+    # LU-30-R1: closer east line in the low-skyline corridor, beyond the flight box and clear of tree rows.
+    pylon_points = [
+        (50.0, 650.0), (50.0, 770.0), (50.0, 890.0),
+        (50.0, 1010.0), (50.0, 1130.0), (50.0, 1250.0),
+        (50.0, 1370.0), (50.0, 1490.0), (50.0, 1610.0),
+    ]
+    # Local -Z follows the conductors; local X crossarms span the corridor.
+    # Endpoint/centered tangents keep neighboring source-mesh sockets aligned.
     pylons = [
         (n, e, math.degrees(math.atan2(
-            pylons[min(i + 1, len(pylons) - 1)][1] - pylons[max(0, i - 1)][1],
-            pylons[min(i + 1, len(pylons) - 1)][0] - pylons[max(0, i - 1)][0])))
-        for i, (n, e, _) in enumerate(pylons)
+            pylon_points[min(i + 1, len(pylon_points) - 1)][1] - pylon_points[max(0, i - 1)][1],
+            pylon_points[min(i + 1, len(pylon_points) - 1)][0] - pylon_points[max(0, i - 1)][0])))
+        for i, (n, e) in enumerate(pylon_points)
     ]
-    inst("pylons", "horizon", ["pylon"], pylons, "estimated", "Transmission line in the tree-free east corridor, in front of the wind farm")
+    pylon_view = pylon_points[len(pylon_points) // 2]
+    p_az = math.degrees(math.atan2(pylon_view[1], pylon_view[0]))
+    p_sky = sky_at(sky, p_az)
+    p_dist = math.hypot(*pylon_view)
+    inst("pylons", "countryside", ["pylon"], pylons, "estimated",
+         "Estimated nine-tower east transmission line, clear of the flight box, farm buildings and treelines")
     # LU-23: production meadow and flower instances are downloaded asset batches
     # assembled by botanical_habitats.gd; this source emits no procedural cushions.
     report += [("village/church", v_az, v_sky, 32.0, 2100.0), ("turbines", t_az, t_sky, 121.0, 4000.0),
-               ("pylons", p_az, p_sky, 30.0, 1400.0), ("farmstead silo", 30.0, sky_at(sky, 30.0), 15.0, 705.0)]
+               ("pylons", p_az, p_sky, 30.0, p_dist), ("farmstead silo", 30.0, sky_at(sky, 30.0), 15.0, 705.0)]
     data = {
         "format": "openrc-scenery v1",
         "field": field["id"],

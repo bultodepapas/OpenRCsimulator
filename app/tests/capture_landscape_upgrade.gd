@@ -16,6 +16,11 @@ const ReferenceScenery := preload("res://scenery/scenery_loader.gd")
 const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const ReferenceField := preload("res://render/field.gd")
 const FLEET_VIEWS := {
+	"power_runway_east": {eye = [0.0, -13.0, -1.7], at = [50.0, 850.0, -18.0], fov = 55.0},
+	"power_corridor": {eye = [-330.0, 380.0, -130.0], at = [50.0, 1100.0, -15.0], fov = 70.0},
+	"power_detail": {eye = [62.0, 625.0, -23.0], at = [50.0, 650.0, -24.5], fov = 40.0},
+	"power_pilot": {eye = [0.0, -13.0, -1.7], at = [600.0, 650.0, -18.0], fov = 65.0},
+	"power_airfield": {eye = [-180.0, -220.0, -90.0], at = [480.0, 610.0, -8.0], fov = 65.0},
 	"power_overview": {eye = [-230.0, 980.0, -70.0], at = [50.0, 1450.0, -15.0], fov = 55.0},
 	"power_close": {eye = [70.0, 1210.0, -10.0], at = [109.0, 1245.25, -16.0], fov = 50.0},
 	"power_insulators": {eye = [122.0, 1210.0, -20.0], at = [109.0, 1245.25, -22.0], fov = 35.0},
@@ -233,9 +238,7 @@ func _run() -> void:
 			World.set_night_options(str(built.night_options.field_lighting), bool(built.night_options.campfire),
 				str(built.night_options.field_activation))
 		if lighting_helper != null:
-			lighting_helper.set_process(not case.begins_with("marker_") and str(args.get("ground_spill", "on")) != "off")
-		if ground_spill != null and str(args.get("ground_spill", "on")) == "off":
-			ground_spill.visible = false
+			lighting_helper.set_process(not case.begins_with("marker_"))
 		aircraft.root.visible = false
 		blocker.visible = false
 		flare.intensity = 1.0
@@ -354,6 +357,12 @@ func _run() -> void:
 				# Hold sky/exposure fixed to isolate the lamp fade and real opaque-depth occlusion.
 				var elevation := 3.0 if case == "marker_off" else -0.5 if case == "marker_half" else -4.0
 				lighting_helper.apply_lighting({sun_elevation_deg = elevation})
+			await process_frame
+			await RenderingServer.frame_post_draw
+		# Diagnostic control: let the sky and floods settle first, then remove only this batched turf pool.
+		if ground_spill != null and str(args.get("ground_spill", "on")) == "off" and lighting_helper != null:
+			lighting_helper.set_process(false)
+			ground_spill.visible = false
 			await process_frame
 			await RenderingServer.frame_post_draw
 		if args.has("horizon_diagnostic"):

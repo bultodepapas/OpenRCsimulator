@@ -58,3 +58,23 @@ void rc_track_surface_finish(vec2 p, vec2 gx, vec2 gy, float view_distance_m,
 		roughness = mix(roughness, max(roughness, 0.88), shoulder * coverage * 0.55);
 	}
 }
+
+// Paint lies in the road material itself, following the exact sampled surface.
+// Its ragged opacity models rubbed chalk; it adds no visual or physical height.
+void rc_track_paint_lane(vec2 p, vec2 gx, vec2 gy, float coverage,
+		inout vec3 albedo, inout float roughness) {
+	float lane_distance = abs(rc_track_center_distance(p));
+	float from_line = abs(lane_distance - rc_track_lane_half_width_m);
+	if (from_line > 0.10) {
+		return;
+	}
+	float edge_noise = vnoise(p * 19.0 + vec2(41.0, 13.0));
+	float ragged_distance = from_line + (edge_noise - 0.5) * 0.018;
+	float pixel_m = max(length(gx), length(gy));
+	float stripe = 1.0 - smoothstep(0.024, 0.043 + min(pixel_m * 0.45, 0.055), ragged_distance);
+	float chips = smoothstep(0.26, 0.54, vnoise(p * 11.0 + vec2(8.0, 34.0)));
+	float opacity = stripe * (0.16 + 0.72 * chips) * smoothstep(0.28, 0.72, coverage);
+	vec3 chalk = OUTPUT_IS_SRGB ? vec3(0.88, 0.84, 0.73) : vec3(0.75, 0.67, 0.49);
+	albedo = mix(albedo, chalk, opacity);
+	roughness = mix(roughness, 0.96, opacity);
+}

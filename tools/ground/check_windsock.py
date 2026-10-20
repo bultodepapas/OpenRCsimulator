@@ -184,7 +184,7 @@ def main():
         'assets/landscape/windsock/PROVENANCE.json',
         'render/pilot_station.gd', 'render/pilot_station_detail.gd',
         'render/pilot_station.gdshader', 'assets/landscape/pilot-station/PROVENANCE.json',
-        'render/flightline_barrier.gd',
+        'render/flightline_barrier.gd', 'render/flightline_barrier_detail.gd',
         'render/flightline_barrier.gdshader', 'render/flightline_barrier_planting.gd',
         'render/flightline_barrier_foliage.gdshader', 'render/flightline_barrier_soil.gdshader',
         'assets/landscape/flightline/PROVENANCE.json', 'assets/landscape/vegetation/catalog.json',

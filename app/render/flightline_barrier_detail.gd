@@ -1,11 +1,12 @@
-## L10c-R3: fitted timber, galvanized rail saddles and formed post caps.
+## L10c-R4: shaped timber, fastened galvanized saddles and formed post caps.
 ## Every fitting stays inside its parent's damage range and the original cue envelope.
 extends RefCounted
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 
-const STEEL := Color("#868e8e")
-const STEEL_EDGE := Color("#aab1af")
-const BOLT := Color("#b9c0bf")
+# The low green channel tags newly fitted zinc hardware in the shared shader.
+const STEEL := Color(0.25, 0.15, 0.40)
+const STEEL_EDGE := Color(0.33, 0.15, 0.48)
+const BOLT := Color(0.43, 0.15, 0.56)
 
 
 static func append(kit: MeshKit, part: Dictionary, index: int) -> void:
@@ -19,7 +20,7 @@ static func append(kit: MeshKit, part: Dictionary, index: int) -> void:
 		_timber(kit, Vector3(size.y, size.x - 0.092, size.z), timber, index)
 		kit.xf = saved
 		for end: float in [-1.0, 1.0]:
-			_rail_saddle(kit, centre, size.x, end)
+			_rail_saddle(kit, centre, size, end)
 	elif size.y <= 0.03 and part.base.y > 0.1:
 		_post_cap(kit, centre, size, part.color)
 	else:
@@ -36,15 +37,17 @@ static func _timber(kit: MeshKit, size: Vector3, color: Color, index: int) -> vo
 	var h := size * 0.5
 	var bevel := 0.0025
 	var section := _section(h.x, h.z, bevel)
-	var bow_x := (float(index % 7) - 3.0) * 0.0005
-	var bow_z := (float(index % 5) - 2.0) * 0.0008
+	var bow_x := (float((index * 17) % 11) - 5.0) * 0.0009
+	var bow_z := (float((index * 23) % 13) - 6.0) * 0.0008
+	var twist := (float((index * 19) % 9) - 4.0) * 0.004
 	var rings: Array[PackedVector3Array] = []
 	for station: int in 3:
 		var t := float(station) / 2.0
 		var crown := sin(t * PI)
 		var ring := PackedVector3Array()
 		for p: Vector2 in section:
-			ring.append(Vector3(p.x + bow_x * crown, lerpf(-h.y, h.y, t), p.y + bow_z * crown))
+			var shaped := p.rotated(twist * crown)
+			ring.append(Vector3(shaped.x + bow_x * crown, lerpf(-h.y, h.y, t), shaped.y + bow_z * crown))
 		rings.append(ring)
 	for station: int in 2:
 		for side: int in 8:
@@ -59,23 +62,37 @@ static func _timber(kit: MeshKit, size: Vector3, color: Color, index: int) -> vo
 
 ## A folded U saddle bears the timber's underside and cheeks, then meets the post face.
 ## The runway face gets a domed carriage-bolt head; the back carries its washer and nut.
-static func _rail_saddle(kit: MeshKit, centre: Vector3, span: float, end: float) -> void:
-	var cut_x := centre.x + end * (span * 0.5 - 0.046)
+static func _rail_saddle(kit: MeshKit, centre: Vector3, size: Vector3, end: float) -> void:
+	var cut_x := centre.x + end * (size.x * 0.5 - 0.046)
 	var cheek_x := cut_x - end * 0.055
 	var post_face_x := cut_x + end * 0.006
-	kit.box(Vector3(0.002, 0.052, 0.066), Vector3(post_face_x, centre.y, 0.0), STEEL, true)
-	kit.box(Vector3(0.12, 0.002, 0.064), Vector3(cheek_x, centre.y - 0.026, 0.0), STEEL_EDGE, true)
+	var cheek_z := size.z * 0.5 + 0.001
+	var cheek_height := maxf(0.025, size.y - 0.01)
+	kit.box(Vector3(0.002, size.y + 0.002, size.z + 0.006),
+		Vector3(post_face_x, centre.y, 0.0), STEEL, true)
+	kit.box(Vector3(0.12, 0.002, size.z + 0.004),
+		Vector3(cheek_x, centre.y - size.y * 0.5 - 0.001, 0.0), STEEL_EDGE, true)
 	for side: float in [-1.0, 1.0]:
-		kit.box(Vector3(0.12, 0.040, 0.002), Vector3(cheek_x, centre.y, side * 0.031), STEEL, true)
+		kit.box(Vector3(0.12, cheek_height, 0.002),
+			Vector3(cheek_x, centre.y, side * cheek_z), STEEL, true)
 		var saved := kit.xf
 		var bolt_x := cut_x - end * 0.070
 		kit.xf = Transform3D(Basis(Vector3.RIGHT, side * PI * 0.5),
-			Vector3(bolt_x, centre.y, side * 0.032))
+			Vector3(bolt_x, centre.y, side * (cheek_z + 0.001)))
 		kit.cylinder(0.009, 0.009, 0.0013, 10, Vector3.ZERO, STEEL_EDGE)
 		if side > 0.0:
 			kit.cylinder(0.0072, 0.0025, 0.0034, 10, Vector3(0, 0.0013, 0), BOLT)
 		else:
 			kit.cylinder(0.0065, 0.0065, 0.0034, 6, Vector3(0, 0.0013, 0), BOLT)
+		kit.xf = saved
+		# The saddle returns across the visible tube face; a low-profile rivet fixes it to steel.
+		var flange_x := post_face_x + end * 0.016
+		var flange_z := side * 0.03815
+		kit.box(Vector3(0.028, cheek_height, 0.0023),
+			Vector3(flange_x, centre.y, flange_z), STEEL, true)
+		kit.xf = Transform3D(Basis(Vector3.RIGHT, side * PI * 0.5),
+			Vector3(flange_x, centre.y, side * 0.0393))
+		kit.cylinder(0.004, 0.0036, 0.0006, 8, Vector3.ZERO, BOLT)
 		kit.xf = saved
 
 

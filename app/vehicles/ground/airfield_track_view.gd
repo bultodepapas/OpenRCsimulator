@@ -3,7 +3,10 @@ extends RefCounted
 
 const GRAVEL_SHADER := preload("res://scenery/gravel.gdshader")
 const PALETTE := preload("res://scenery/palette.gd")
+const TRACK_FURNITURE := preload("res://vehicles/ground/track_furniture.gd")
+const MARK_PAINT := preload("res://vehicles/ground/track_mark_paint.gdshader")
 const TRACK_BARRIER := preload("res://assets/landscape/track-barrier/concrete-road-barrier-lod2.glb")
+const TRACK_TYRE := preload("res://assets/landscape/track-tyre/old-tyre-1k.glb")
 const GRID_STEP_M := 0.10
 
 # The authored road-contact AABBs are the authority. Cache fitted visual meshes
@@ -70,6 +73,10 @@ static func build(course: Dictionary, road: Callable, ground_material: ShaderMat
 		if ground_material != null:
 			material = ground_material.duplicate() as ShaderMaterial
 			material.set_shader_parameter("rc_track_surface", true)
+			material.set_shader_parameter("rc_track_shape", Vector4(
+				float(track.center_east_m), -float(track.center_north_m),
+				float(track.half_straight_m), float(track.radius_m)))
+			material.set_shader_parameter("rc_track_lane_half_width_m", float(track.lane_width_m) * 0.5)
 			# The physical road already supplied geometric normals, including micro-relief.
 			material.set_shader_parameter("terrain_relief_enabled", false)
 		var surface := MeshInstance3D.new()
@@ -78,12 +85,11 @@ static func build(course: Dictionary, road: Callable, ground_material: ShaderMat
 		surface.material_override = material
 		surface.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root.add_child(surface)
-	_add_lane_edges(root, track, road)
 	_add_start_line(root, track, road)
 	_add_arrows(root, track, road)
-	_add_flags(root, track, road)
 	_add_walls(root, track)
-	_add_signs(root, road)
+	_add_tyre_stacks(root, road)
+	TRACK_FURNITURE.add(root, track, road)
 	return root
 
 
@@ -155,69 +161,6 @@ static func _dirt_color(coverage: float) -> Color:
 	return Color(color.r, color.g, color.b, 1.0 - coverage)
 
 
-static func _path(track: Dictionary) -> Array[Vector2]:
-	var cn := float(track.center_north_m)
-	var ce := float(track.center_east_m)
-	var r := float(track.radius_m)
-	var half := float(track.half_straight_m)
-	var points: Array[Vector2] = []
-	var straight_steps := maxi(2, ceili(2.0 * half / 0.10))
-	var arc_steps := maxi(16, ceili(PI * r / 0.15))
-	for i in range(straight_steps + 1):
-		var t := float(i) / float(straight_steps)
-		points.append(Vector2(ce - half + 2.0 * half * t, -(cn + r)))
-	for i in range(1, arc_steps + 1):
-		var angle := PI * float(i) / float(arc_steps)
-		points.append(Vector2(ce + half + r * sin(angle), -(cn + r * cos(angle))))
-	for i in range(1, straight_steps + 1):
-		var t := float(i) / float(straight_steps)
-		points.append(Vector2(ce + half - 2.0 * half * t, -(cn - r)))
-	for i in range(1, arc_steps + 1):
-		var angle := PI + PI * float(i) / float(arc_steps)
-		points.append(Vector2(ce - half + r * sin(angle), -(cn + r * cos(angle))))
-	return points
-
-
-static func _add_lane_edges(root: Node3D, track: Dictionary, road: Callable) -> void:
-	var path := _path(track)
-	if path.size() < 4:
-		return
-	var vertices := PackedVector3Array()
-	var normals := PackedVector3Array()
-	var indices := PackedInt32Array()
-	var half := float(track.lane_width_m) * 0.5
-	var strip_width := 0.085
-	for side in [-1.0, 1.0]:
-		var base := vertices.size()
-		for i in range(path.size()):
-			var tangent := (path[mini(i + 1, path.size() - 1)] - path[maxi(i - 1, 0)]).normalized()
-			if tangent.length_squared() < 0.000001:
-				tangent = Vector2.RIGHT
-			var lateral := Vector2(-tangent.y, tangent.x)
-			var center := path[i] + lateral * float(side) * half
-			for across in [-0.5, 0.5]:
-				var point := center + lateral * float(across) * strip_width
-				var sample := _sample(road, point.x, -point.y)
-				vertices.append(Vector3(point.x, float(sample.get("height_m", 0.0)) + 0.012, point.y))
-				normals.append(_normal(sample))
-		for i in range(path.size() - 1):
-			var index := base + i * 2
-			indices.append_array(PackedInt32Array([index, index + 2, index + 1, index + 1, index + 2, index + 3]))
-	var arrays: Array = []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var edge := MeshInstance3D.new()
-	edge.name = "LaneEdgePaint"
-	edge.mesh = mesh
-	edge.material_override = _flat_material(Color("#ead9b0"))
-	edge.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	root.add_child(edge)
-
-
 static func _add_start_line(root: Node3D, track: Dictionary, road: Callable) -> void:
 	var width := float(track.lane_width_m)
 	var n := float(track.center_north_m) - float(track.radius_m)
@@ -229,7 +172,7 @@ static func _add_start_line(root: Node3D, track: Dictionary, road: Callable) -> 
 		var paint := PlaneMesh.new()
 		paint.size = Vector2(0.27, width / 8.0 * 0.97)
 		mark.mesh = paint
-		mark.material_override = _flat_material(Color("#f0eee8") if i % 2 == 0 else Color("#343434"))
+		mark.material_override = _mark_material(Color("#d4c9b1") if i % 2 == 0 else Color("#383b38"))
 		mark.position = Vector3(e, float(sample.get("height_m", 0.0)) + 0.004, -mark_n)
 		mark.name = "StartGrid%02d" % i
 		mark.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
@@ -280,46 +223,9 @@ static func _add_arrow(root: Node3D, road: Callable, east: float, north: float, 
 	var arrow := MeshInstance3D.new()
 	arrow.name = node_name
 	arrow.mesh = arrow_mesh
-	arrow.material_override = _flat_material(Color("#f0eee8"))
+	arrow.material_override = _mark_material(Color("#d4c9b1"))
 	arrow.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	root.add_child(arrow)
-
-
-static func _add_flags(root: Node3D, track: Dictionary, road: Callable) -> void:
-	var spawn: Dictionary = {}
-	for value in track.get("spawns", []):
-		if typeof(value) == TYPE_DICTIONARY and str(value.get("id", "")) == "track_start":
-			spawn = value
-			break
-	if spawn.is_empty():
-		return
-	var n := float(spawn.get("north_m", 39.0))
-	var e := float(spawn.get("east_m", -9.0))
-	var half := float(track.lane_width_m) * 0.5
-	for side in [-1.0, 1.0]:
-		var flag_n := n + float(side) * (half + 0.58)
-		var sample := _sample(road, e, flag_n)
-		var ground := float(sample.get("height_m", 0.0))
-		var pole := MeshInstance3D.new()
-		var cylinder := CylinderMesh.new()
-		cylinder.top_radius = 0.022
-		cylinder.bottom_radius = 0.032
-		cylinder.height = 1.45
-		pole.mesh = cylinder
-		pole.position = Vector3(e, ground + 0.725, -flag_n)
-		pole.material_override = _flat_material(Color("#42494b"))
-		pole.name = "StartFlagPole"
-		pole.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(pole)
-		var cloth := MeshInstance3D.new()
-		var flag_mesh := BoxMesh.new()
-		flag_mesh.size = Vector3(0.42, 0.22, 0.025)
-		cloth.mesh = flag_mesh
-		cloth.position = Vector3(e + 0.22, ground + 1.28, -flag_n)
-		cloth.material_override = _flat_material(PALETTE.col("flag_red") if side < 0.0 else PALETTE.col("flag_white"))
-		cloth.name = "StartFlag"
-		cloth.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		root.add_child(cloth)
 
 
 static func _add_walls(root: Node3D, track: Dictionary) -> void:
@@ -342,6 +248,45 @@ static func _add_walls(root: Node3D, track: Dictionary) -> void:
 		barrier.position = Vector3((emin + emax) * 0.5, (bottom + top) * 0.5, -(nmin + nmax) * 0.5)
 		barrier.name = str(wall.get("id", "TrackWall"))
 		root.add_child(barrier)
+
+
+static func _add_tyre_stacks(root: Node3D, road: Callable) -> void:
+	# Worn 0.6 m tyres sit beyond the road shoulder, not on the contact course.
+	# No extra collision is implied by this scenery-only dressing.
+	var source := TRACK_TYRE.instantiate()
+	var meshes := source.find_children("*", "MeshInstance3D", true, false)
+	if meshes.is_empty():
+		source.free()
+		return
+	var tyre_mesh := (meshes[0] as MeshInstance3D).mesh
+	var stacks := Node3D.new()
+	stacks.name = "TrackTyreStacks"
+	root.add_child(stacks)
+	var placements := [
+		{"east": -17.0, "north": 34.5, "count": 3, "yaw": 0.25},
+		{"east": 3.4, "north": 34.9, "count": 2, "yaw": -0.32},
+		{"east": -21.8, "north": 45.0, "count": 3, "yaw": 0.68},
+	]
+	for index in range(placements.size()):
+		var placement: Dictionary = placements[index]
+		var east := float(placement.east)
+		var north := float(placement.north)
+		var sample := _sample(road, east, north)
+		if not _valid_height(sample):
+			continue
+		var stack := Node3D.new()
+		stack.name = "OffCourseTyreStack%02d" % index
+		stack.position = Vector3(east, float(sample.height_m), -north)
+		stacks.add_child(stack)
+		for layer in range(int(placement.count)):
+			var tyre := MeshInstance3D.new()
+			tyre.name = "WornTyre%02d" % layer
+			tyre.mesh = tyre_mesh
+			tyre.rotation = Vector3(PI * 0.5, float(placement.yaw) + layer * 0.61, 0.0)
+			tyre.position = Vector3(sin(float(layer) * 1.7) * 0.014,
+				0.082237 + float(layer) * 0.165, cos(float(layer) * 1.3) * 0.012)
+			stack.add_child(tyre)
+	source.free()
 
 
 static func _fitted_barrier(size: Vector3, turn_around: bool) -> ArrayMesh:
@@ -401,35 +346,9 @@ static func _fitted_barrier(size: Vector3, turn_around: bool) -> ArrayMesh:
 	return fitted
 
 
-static func _add_signs(root: Node3D, road: Callable) -> void:
-	var es := TranslationServer.get_locale().begins_with("es")
-	_add_label(root, road, "CIRCUITO RC\nACCESO" if es else "RC CIRCUIT\nACCESS", 22.8, -12.6, 1.18)
-	_add_label(root, road, "SALTOS" if es else "JUMPS", 35.7, 1.0, 0.62)
-	_add_label(root, road, "ONDULACIONES" if es else "ROLLERS", 54.6, 0.0, 0.62)
-	_add_label(root, road, "ESLALON" if es else "SLALOM", 47.8, 0.0, 0.62)
-
-
-static func _add_label(root: Node3D, road: Callable, text_value: String, north: float, east: float, lift: float) -> void:
-	var sample := _sample(road, east, north)
-	var label := Label3D.new()
-	label.text = text_value
-	label.font_size = 40
-	label.pixel_size = 0.0007
-	label.fixed_size = true
-	label.visibility_range_end = 90.0
-	label.modulate = Color("#f1d6a0")
-	label.outline_size = 6
-	label.outline_modulate = Color("#33302b")
-	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.position = Vector3(east, float(sample.get("height_m", 0.0)) + lift, -north)
-	root.add_child(label)
-
-
-static func _flat_material(color: Color) -> StandardMaterial3D:
-	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	material.roughness = 0.9
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
-	material.cull_mode = BaseMaterial3D.CULL_DISABLED
+static func _mark_material(color: Color) -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = MARK_PAINT
+	material.set_shader_parameter("pigment", color)
 	return material
 
