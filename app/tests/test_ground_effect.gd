@@ -23,6 +23,8 @@ const FieldLoader := preload("res://data/field_loader.gd")
 
 const STIK_PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const EXTRA_ID := "gp-extra-300s-60"
+# Control without the module: the Extra declared none until EX-14e; the Timber still has none.
+const CONTROL_ID := "turbo-lumber-evolution"
 const RHO := 1.225
 var ZERO_WIND := PackedFloat64Array([0.0, 0.0, 0.0])
 # docs/research/roadmap-investigations/02-aerodynamics-rc-scale.md T6 (image-method VLM, AR 5 rectangular, α 4°).
@@ -132,22 +134,24 @@ func _exact_inactivity(session: Node) -> void:
 	var low_air := Air.compute(low, ZERO_WIND, RHO)
 	_check("0.5 m: loads with a ground differ from the free-air loads",
 		Aero.loads(low, low_air, d, model, RHO, NAN, 0.0) != Aero.loads(low, low_air, d, model, RHO))
-	var extra := FlightSession.new()
-	extra.setup(Catalog.entry(EXTRA_ID).data)
-	root.add_child(extra)
-	extra.input_enabled = false
-	extra.reset()
-	var extra_model: Dictionary = extra.aircraft.model
-	var extra_state: PackedFloat64Array = extra.start.state.duplicate()
-	extra_state[RB.POS + 2] = -0.5
-	var extra_d: Dictionary = extra._deflections(extra.sim.aux)
-	var extra_air := Air.compute(extra_state, ZERO_WIND, RHO)
-	_check("Extra (no module): no factors at 0.5 m and reach 0", not GroundEffect.enabled(extra_model)
-		and GroundEffect.factors(extra_state, extra_model, 0.0).is_empty() and GroundEffect.reach(extra_model) == 0.0)
-	_check("Extra: loads with a ground are byte-identical", Aero.loads(extra_state, extra_air, extra_d, extra_model, RHO, NAN, 0.0).to_byte_array()
-		== Aero.loads(extra_state, extra_air, extra_d, extra_model, RHO).to_byte_array())
-	_check("Extra: the session never samples a ground", extra._ground_effect_reach == 0.0 and is_nan(extra._ground_up(extra_state)))
-	extra.free()
+	var extra_data: Dictionary = AD.load_file(Catalog.entry(EXTRA_ID).data)
+	_check("the Extra declares aero.ground_effect (EX-14e)", extra_data.get("ok", false) and GroundEffect.enabled(extra_data.model))
+	var control := FlightSession.new()
+	control.setup(Catalog.entry(CONTROL_ID).data)
+	root.add_child(control)
+	control.input_enabled = false
+	control.reset()
+	var control_model: Dictionary = control.aircraft.model
+	var control_state: PackedFloat64Array = control.start.state.duplicate()
+	control_state[RB.POS + 2] = -0.5
+	var control_d: Dictionary = control._deflections(control.sim.aux)
+	var control_air := Air.compute(control_state, ZERO_WIND, RHO)
+	_check("Timber (no module): no factors at 0.5 m and reach 0", not GroundEffect.enabled(control_model)
+		and GroundEffect.factors(control_state, control_model, 0.0).is_empty() and GroundEffect.reach(control_model) == 0.0)
+	_check("Timber: loads with a ground are byte-identical", Aero.loads(control_state, control_air, control_d, control_model, RHO, NAN, 0.0).to_byte_array()
+		== Aero.loads(control_state, control_air, control_d, control_model, RHO).to_byte_array())
+	_check("Timber: the session never samples a ground", control._ground_effect_reach == 0.0 and is_nan(control._ground_up(control_state)))
+	control.free()
 
 
 ## Wind-axis lift, drag and the pitch moment of body loads at angle of attack alpha (β ≈ 0 here).

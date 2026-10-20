@@ -145,7 +145,10 @@ func _initialize() -> void:
 			_check("Timber coupled electric motor", meta.propulsion_model == "electric-fixed-bus-coupled-stop-v1")
 			_check("Timber no unmodeled propwash", meta.propwash_model == "none")
 		elif glow_profiled:
-			_check("glow no unmodeled propwash", meta.propwash_model == "none")
+			# EX-14c: a glow aircraft may declare the quasi-static tail slipstream (the Extra); it is then named, never transported.
+			var washed: bool = not session.aircraft.model.propulsion.get("slipstream", {}).is_empty()
+			_check("glow propwash is named exactly as declared " + entry.id,
+				meta.propwash_model == ("tail-slipstream-increment-v1" if washed else "none") and meta.continuous_layout.find("axial wash") < 0)
 		else:
 			_check("Stik/Extra lag " + entry.id, meta.propulsion_model == "propeller-rpm-lag-v1")
 			_check("Stik/Extra no propwash", meta.propwash_model == "none")

@@ -107,3 +107,7 @@ Checks ran in a concurrently edited tree, not a frozen qualification baseline. G
 - The actual CLI produces 721 finite rows over three seconds with finite-glow combustion and consumption. The existing glow trace inspector passes and the aircraft-input bytes match. The conventional `check_trimmed_flight.py` rejects this glow base format, including in the current Extra `app/test.sh` route; that acceptance path remains pending.
 
 The local CLI observation is neither package qualification nor physical validation. Close the current test/runner gaps before renewing software-envelope or full-suite acceptance. Source-PDF metrology and rendered capture review were not repeated; the ignored original PDFs are absent here.
+
+## 2026-10-20 — Realism pass (EX-14)
+
+[EX-14](EX-14/README.md) compares the model with the RCM April 2000 review, the RC Universe build-thread owner reports and comparable 60-size Extras ([sources](EX-14/sources.json)). It replaces the virtual ballast with RCM's weighed 124 oz build, composes the tail propwash, P-factor and propeller normal force with the Glow shaft, adds the fuselage side force that knife-edge needs (D10-R3) and fits ground effect to this wing. It also fixes the full-throttle dive fault (NITRO-61FX-R1). The rudder-free takeoff swing, the earlier "failed qualitative target" above, now goes left. The open findings, led by propulsion strength at high rpm, are ranked there.

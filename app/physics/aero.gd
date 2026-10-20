@@ -588,6 +588,18 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var wing_body_cl: float = surfaces.get("wing_body_cl_beta", 0.0)
 	if wing_body_cl != 0.0:
 		mx_sum += 0.5 * rho * float(ref.S) * float(ref.b) * wing_body_cl * v0 * v1 * (1.0 - sideslip_weight(air.beta, env))
+	# D10-R3 (optional): the fuselage side force the strips and the fin lack, at the ARP where the oracle's CYb puts it.
+	# Allen-Perkins: the attached slender-body part ½ρ·S·CYβ_B·u·v (linear at small β, where the oracle's CYb carries the
+	# same term) plus the crossflow drag −½ρ·(η·c_d·S_side)·|v_c|·v, v_c = √(v² + w²) the body's crossflow speed. Neither
+	# fades with sideslip: the crossflow part carries knife-edge and grows with α in a spin. No body yaw couple is implied
+	# (the oracle's Cnb is the fin's unless body_cn_beta declares one).
+	var body_cy: float = surfaces.get("body_cy_beta", 0.0)
+	var body_cda: float = surfaces.get("body_crossflow_area", 0.0)
+	if body_cy != 0.0 or body_cda != 0.0:
+		var fy_body: float = 0.5 * rho * (float(ref.S) * body_cy * v0 * v1 - body_cda * M.sqrt_(v1 * v1 + v2 * v2) * v1)
+		fy_sum += fy_body
+		mx_sum += -az * fy_body
+		mz_sum += ax * fy_body
 	return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
 
 

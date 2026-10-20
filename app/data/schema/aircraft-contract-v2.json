@@ -445,6 +445,8 @@
         "wing_section_cm_ac",
         "body_cn_beta",
         "wing_body_cl_beta",
+        "body_cy_beta",
+        "body_crossflow_area",
         "attached_limit",
         "tail_local_limit",
         "tail_stall_end",

@@ -139,7 +139,7 @@ note("reference", "quarter-chord sweep (deg)", math.degrees(sweep_qc), "aft posi
 note("reference", "half-chord sweep (deg)", math.degrees(sweep_hc), "")
 
 # Manual p43 setup datum: 4-1/8 in aft of the rib-2D LE, at model z 0 (EX-01 reads 4.116 in).
-# This is the EMPTY-TANK balance target; finite fuel is added after solving dry ballast.
+# This is the EMPTY-TANK balance target; finite fuel is added after the dry build-mass closure (EX-14a).
 cg_target_model_z = 0.0
 cg_target_mac = (cg_target_model_z - mac_le_z) / mac
 note("balance", "manual empty-tank target (% MAC)", 100 * cg_target_mac, "manual p43 first-flight balance point; range +-3/8 in")
@@ -281,18 +281,29 @@ mass0 = sum(i[1] for i in items)
 mom0 = [sum(i[1] * i[4][k] for i in items) for k in range(3)]
 x_target = cg_target_model_z - LE0
 x_cg0 = mom0[0] / mass0
-nose = x_cg0 > x_target
-xb = le(g["spinner"]["back_z"] - 0.01)[0] if nose else le(0.85)[0]
-mb = mass0 * (x_target - x_cg0) / (xb - x_target)
-ballast_pos = [xb, 0.0, 0.0 if nose else 0.02]
-note("balance", "dry inventory before balancing mass (kg, CG x_aft m)", [mass0, x_cg0], f"manual empty-tank target x_aft {x_target:.4f}")
-note("balance", "virtual balancing mass (kg)", mb, ("spinner/nose weight" if nose else "tail weight") + " that puts the dry inventory on the manual p43 empty-tank balance point")
-items.append(("virtual reference-build balancing mass", mb, "derived",
-              f"{SCRIPT}: m = M (x_CG - x0) / (x_ballast - x_CG) on the dry inventory for manual p43 empty-tank balance; virtual reference build, NOT measured hardware or a ballast recommendation (manual: balance with the receiver battery first)",
-              ballast_pos, [0.025, 0.025, 0.025], "estimated", "spinner weight position (manual p43)" if nose else "stick-on tail weight position (manual p43)", "ballast_reference"))
+# EX-14a: the only weighed .61FX build is RCM's prototype (Jack J. Joseph, RCM April 2000 p.2 specification box: O.S.
+# .61FX, 12 oz tank, "Weight, Ready to Fly 124 oz (7 lbs, 12 oz)", 24 oz/sq ft); owner builds on the RC Universe
+# build thread weigh 7.6-8.4 lb (docs/research/extra-300-realism/EX-14). The estimated inventory falls short of it,
+# so one unaccounted build mass (glue, covering, paint, fuel line, wiring, hardware) closes both the measured mass and
+# the manual p43 empty-tank balance point; its station follows from the inventory's own moment.
+MEASURED_DRY_KG = 124 * OZ
+mb = MEASURED_DRY_KG - mass0
+if mb <= 0:
+    raise ValueError("EX-14a: the estimated dry inventory already exceeds the measured build mass")
+xb = (MEASURED_DRY_KG * x_target - mom0[0]) / mb
+if not le(g["spinner"]["back_z"])[0] <= xb <= le(T["rudder_hinge_z"])[0]:
+    raise ValueError(f"EX-14a: the build-mass closure station {xb:.3f} m lies outside the fuselage")
+ballast_pos = [xb, mom0[1] / mass0, mom0[2] / mass0]  # at the inventory's own height and lateral station
+note("balance", "dry inventory before the build-mass closure (kg, CG x_aft m)", [mass0, x_cg0], f"manual empty-tank target x_aft {x_target:.4f}")
+note("balance", "measured dry build mass (kg)", MEASURED_DRY_KG, "RCM April 2000 review prototype, O.S. .61FX: 124 oz ready to fly (owner builds 7.6-8.4 lb)")
+note("balance", "unaccounted build-mass closure (kg, x_aft m)", [mb, xb], "m = M_measured - M_inventory at x = (M_measured x_target - sum m x) / m: closes the measured mass and the manual p43 empty-tank balance point")
+# The name keeps the "virtual reference-build balancing mass" marker: crash economics excludes it as no purchasable part.
+items.append(("virtual reference-build balancing mass (EX-14a: unaccounted build mass closing the RCM-weighed 124 oz)", mb, "derived",
+              f"{SCRIPT}: EX-14a closure: RCM April 2000 prototype 124 oz ready to fly minus the estimated inventory, placed where the dry build balances at the manual p43 point; glue, covering, paint, wiring and hardware the inventory does not list. NOT measured component data or a ballast recommendation",
+              ballast_pos, [0.3, fus_w, fus_d], "estimated", "solved station; spread over the fuselage around it", "ballast_reference"))
 dry_mass = mass0 + mb
 dry_cg = [sum(i[1] * i[4][k] for i in items) / dry_mass for k in range(3)]
-note("balance", "dry balanced reference (kg, CG x_aft m)", [dry_mass, dry_cg[0]], "manual p43 target with empty tank; virtual ballast is derived from the estimated inventory")
+note("balance", "dry balanced reference (kg, CG x_aft m)", [dry_mass, dry_cg[0]], "RCM-weighed mass at the manual p43 empty-tank target")
 
 # The finite-glow flight reference adds the full tank only after the manual's dry balance condition is met.
 items.append(fuel_item)
@@ -343,6 +354,16 @@ ce_v = note("lateral", "rudder effectiveness (local)", tau_r / sidewash, f"tau {
 CYb_v = -slope_v * Sv / S
 fus_x0_area = 0.8 * fus_w * fus_d  # rounded box cross-section near x0 (~0.45 L)
 CYb_B = note("lateral", "CYb body (1/rad)", -2 * 1.3 * fus_x0_area / S, "-2 K_i S0/S, K_i 1.3 low wing (DATCOM), S0 0.8 w d")
+# EX-14d (D10-R3): the local model's fuselage side force (Allen-Perkins, at the ARP). Its attached slope is the same
+# DATCOM body term, so local and oracle agree at small sideslip; NACA TN 3551 (Letko & Williams) measured
+# -1.5/rad on A_max for a fuselage of this section (d/w 1.27, between their square and deep bodies), x K_i 1.3 = -1.95,
+# against this -2.09. The crossflow part eta c_d S_side carries knife-edge, which the fin cannot (it stalls near 15 deg).
+side_pts = [(g["spinner"]["tip_z"], 0.0)] + [(r_[0], r_[2] - r_[3]) for r_ in st]
+S_side = note("lateral", "fuselage side area (m2)", sum(0.5 * (h0 + h1) * (z1 - z0) for (z0, h0), (z1, h1) in zip(side_pts, side_pts[1:])),
+              "fuselage stations from the spinner tip to the tail post (canopy, gear and wheel pants left out)")
+eta_ap = note("lateral", "crossflow finite-length factor eta", 0.65, "estimated: Allen-Perkins eta at fineness L/h 6.7 (literature value, not in the local files); Selig 2010 eq. 7 aspect-ratio correction at AR = L/h gives 0.62")
+cd_cross = note("lateral", "fuselage crossflow drag coefficient", 1.4, "estimated: Polhamus NASA TR R-29 Fig. 7(a), rounded rectangle r/b 0.2, subcritical (crossflow Re 0.6-2.3e5 at 33 m/s); sharp corners give ~1.6")
+body_cda = note("lateral", "body crossflow drag area eta c_d S_side (m2)", eta_ap * cd_cross * S_side, "Allen-Perkins: CY_cross = -(eta c_d S_side / S) |sin beta| sin beta at zero alpha")
 arm_v_arp = xv_ac - x_arp
 CYdr = slope_v * Sv / S * ce_v
 Cnb = slope_v * Sv / S * arm_v_arp / b
@@ -515,15 +536,40 @@ for k_j in range(22):
 note("propulsion", "C_N, C_M at J 0.3 and 0.5 (per rad)", [nf_rows[6][1], pm_rows[6][1], nf_rows[10][1], pm_rows[10][1]], "x rho n2 D4 and x rho n2 D5")
 # Tail pieces: geometry only; the wake (momentum theory, swirl, sidewash) is computed by physics/slipstream.gd.
 fin_te_at = lambda y: T["rudder_te_low"][0] + (T["rudder_top_te_z"] - T["rudder_te_low"][0]) * (y - T["rudder_te_low"][1]) / (T["fin_top_y"] - T["rudder_te_low"][1])
-fin_root_y = fus_top(xv_ac)  # as the P-51: the fuselage blocks the wash below its top line
+fin_root_y = fus_top(xv_ac)
 fin_chords = [fin_te_at(fin_root_y) - fin_le_at(fin_root_y), fin_te_at(T["fin_top_y"]) - T["fin_le_top_z"]]
-note("slipstream", "fin piece: root height, span, chords (m)", [fin_root_y, T["fin_top_y"] - fin_root_y] + fin_chords,
-     "fuselage top at the fin ac up to the fin tip; LE/TE lines of the fin polygon. The rudder below the fuselage top line is left out (P-51 convention)")
+# Unlike the P-51's, the Extra's rudder runs down past the slender tail post to the fuselage bottom line, straight
+# behind the thrust line: that part sits in the wash (the reason the model's tail lifts in a 1/3-throttle taxi and it
+# pivots in a hammerhead), so it is its own piece, not dropped.
+post_top = st[-1][2]
+low_rudder = [(z_post, post_top), (fin_te_at(post_top), post_top), tuple(T["rudder_te_low"]), tuple(T["rudder_bottom_corner"]), tuple(T["rudder_bottom_hinge"])]
+S_low, low_cz, _ = shoelace(low_rudder)
+low_bottom = 0.5 * (T["rudder_bottom_hinge"][1] + T["rudder_bottom_corner"][1])  # mid-height of the slanted bottom edge
+low_chords = [T["rudder_bottom_corner"][0] - z_post, fin_te_at(post_top) - z_post]
+note("slipstream", "fin piece above the fuselage top: root height, span, chords (m), area (m2)", [fin_root_y, T["fin_top_y"] - fin_root_y] + fin_chords + [Sv - S_low],
+     "fuselage top at the fin ac up to the fin tip; LE/TE lines of the fin polygon")
+note("slipstream", "rudder piece below the fuselage top: bottom height, span, chords (m), area (m2)", [low_bottom, post_top - low_bottom] + low_chords + [S_low],
+     "rudder behind the tail post, from the mid-height of its slanted bottom edge to the fuselage top line at the post; polygon area")
 slip_pieces = [
-    {"surface": "vertical", "area": Sv, "root": le(xv_ac, fin_root_y), "span_dir": [0.0, 0.0, 1.0], "span": T["fin_top_y"] - fin_root_y, "chords": fin_chords},
+    {"surface": "vertical", "area": Sv - S_low, "root": le(xv_ac, fin_root_y), "span_dir": [0.0, 0.0, 1.0], "span": T["fin_top_y"] - fin_root_y, "chords": fin_chords},
+    {"surface": "vertical", "area": S_low, "root": le(low_cz, low_bottom), "span_dir": [0.0, 0.0, 1.0], "span": post_top - low_bottom, "chords": low_chords},
     {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, 1.0, 0.0], "span": T["stab_half_span"], "chords": [crh, cth]},
     {"surface": "horizontal", "area": Sh / 2, "root": le(xh_ac, T["stab_y"]), "span_dir": [0.0, -1.0, 0.0], "span": T["stab_half_span"], "chords": [crh, cth]},
 ]
+
+# --- EX-14e: ground effect constants of this planform (research/extra-300/ex14/ground_effect_vlm.py writes the table) --
+GE = json.load(open(ROOT / "research/extra-300/ex14/vlm_ground_effect.json"))
+arp_wheels = W["chord_plane_y"] - (GEAR["main_axle"][1] - GEAR["main_wheel_diameter"] / 2)
+x_wheels = arp_wheels / b
+_ge_at = lambda key: next(r[key] for r in GE["rows"] if abs(r["x"] - 0.12) < 1e-9)
+GE_SRC_I = (f"research/extra-300/ex14/ground_effect_vlm.py: least-squares fit of the faded runtime law to the same-CL induced-drag ratio of the "
+            f"P-51's image-method Weissinger VLM run on this wing (straight taper, no dihedral or twist), x = ARP height / span 0.06-1.5, rms {GE['fit_induced']['rms']:.3f}; "
+            f"ratio {_ge_at('cdi_ratio_same_cl'):.2f} at x 0.12 (the low wing sits at x {x_wheels:.2f} on its wheels) where Raymer's 33x^1.5 gives 0.58. No fuselage; not measured")
+GE_SRC_T = (f"research/extra-300/ex14/ground_effect_vlm.py: least-squares fit of the faded runtime law to the VLM's tail downwash ratio per unit wing lift "
+            f"over the stabilizer quarter-chord line ({T['stab_y'] - W['chord_plane_y']:.3f} m above the chord plane), rms {GE['fit_tail']['rms']:.3f}; "
+            f"ratio {_ge_at('tail_downwash_ratio_per_lift'):.2f} at x 0.12. No fuselage; not measured")
+note("ground effect", "induced c, e; tail c, e (VLM fit)", [GE["fit_induced"]["coefficient"], GE["fit_induced"]["exponent"], GE["fit_tail"]["coefficient"], GE["fit_tail"]["exponent"]],
+     f"EX-14e image-method VLM of this planform, faded runtime law; ARP {arp_wheels:.3f} m above the main-wheel contact in a level attitude (x {x_wheels:.3f})")
 
 # --- Assemble ----------------------------------------------------------------------------------------------------
 stik = legacy_input(json.load(open(STIK)))
@@ -598,13 +644,13 @@ data = {
     },
     "start": {"level_speed": q(float(V_start), "m/s", "estimated", START_SPEED_SOURCE)},
     "balance": {
-        "plan_cg": q(dry_cg, "m", "derived", "FUEL-08: dry (empty-tank) inventory CG after virtual balance at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in); finite-glow flight reference starts with a full tank; not a measured airplane"),
+        "plan_cg": q(dry_cg, "m", "derived", "FUEL-08/EX-14a: dry (empty-tank) CG of the RCM-weighed 124 oz build, balanced at the manual p43 4-1/8 in point (model z 0; EX-01 read 4.116 in) by the build-mass closure; finite-glow flight reference starts with a full tank; mass distribution estimated, not measured"),
         "firewall": q(le(fw), "m", "measured", "firewall station, " + GEO_SRC),
-        "configuration": "virtual-balanced-dry-manual-p43-plus-full-finite-glow-tank-v2",
+        "configuration": "rcm-weighed-dry-manual-p43-plus-full-finite-glow-tank-v3",
         "fuel_state": "empty_tanks",
         "cg_range": {"forward": q(dry_cg[0] - 0.009525, "m", "manual", MANUAL + " p43: balance point +-3/8 in, empty tank"),
                      "aft": q(dry_cg[0] + 0.009525, "m", "manual", MANUAL + " p43: balance point +-3/8 in, empty tank")},
-        "cg_tolerance": q(0.001, "m", "estimated", D("dry virtual reference build balanced to the manual p43 empty-tank point, then full finite-glow fuel added; NOT a measured airplane")),
+        "cg_tolerance": q(0.001, "m", "estimated", D("EX-14a: RCM-weighed dry mass with an estimated inventory, closed to the manual p43 empty-tank point, then full finite-glow fuel added; the mass distribution is not measured")),
     },
     "inventory": [
         dict({"id": it[8], "name": it[0], "mass": inventory_mass(it), "position": q([float(v) for v in it[4]], "m", it[6], it[7])},
@@ -622,7 +668,7 @@ data = {
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "spinner", "tail_end", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
     "plausibility": {
-        "mass_range": q([3.0, 3.8], "kg", "manual", MANUAL + ": 7-7.5 lb (3.18-3.40 kg) dry; RCM review build 124 oz (3.52 kg) RTF; widened for fuel"),
+        "mass_range": q([3.0, 4.2], "kg", "manual", MANUAL + ": 7-7.5 lb (3.18-3.40 kg) dry; RCM review build 124 oz (3.52 kg) RTF; RC Universe owner builds 7.6-8.4 lb (3.45-3.81 kg); widened for the 0.30 kg full tank"),
         "inertia_reference": stik["plausibility"]["inertia_reference"],
     },
     "controls": {
@@ -657,6 +703,8 @@ data = {
         "coefficients": coefficients,
         "surfaces": {
             "wing_aileron_effectiveness": q(wing_ail_eff, "1", "derived", D("|Clda_right| 2n b / (CLa sum(y)) over the loader's equal-area tapered strips")),
+            "body_cy_beta": q(CYb_B, "1/rad", "derived", D("EX-14d (D10-R3): the DATCOM body side-force slope -2 K_i S0/S (K_i 1.3 low wing), as in the oracle's CYb; NACA TN 3551 fuselage-alone -1.5/rad on A_max x K_i gives -0.116")),
+            "body_crossflow_area": q(body_cda, "m2", "derived", D("EX-14d (D10-R3): Allen-Perkins eta 0.65 x c_d 1.4 (Polhamus TR R-29, subcritical rounded rectangle) x fuselage side area from geometry.json; estimated factors")),
             "attached_limit": same("attached_limit"),
             "tail_local_limit": same("tail_local_limit"),
             "tail_stall_end": same("tail_stall_end"),
@@ -681,6 +729,13 @@ data = {
                 "control_effectiveness": q(ce_v, "1", "derived", D("thin-airfoil tau x 0.8 / sidewash factor")),
                 "incidence": q(0.0, "rad", "estimated", "symmetric fin; propulsion installation angles are separate"),
             },
+        },
+        # EX-14e: the shared M5-GE-1 module with constants fitted to this planform and tail (image-method VLM).
+        "ground_effect": {
+            "induced_coefficient": q(GE["fit_induced"]["coefficient"], "1", "derived", GE_SRC_I),
+            "induced_exponent": q(GE["fit_induced"]["exponent"], "1", "derived", GE_SRC_I),
+            "downwash_coefficient": q(GE["fit_tail"]["coefficient"], "1", "derived", GE_SRC_T),
+            "downwash_exponent": q(GE["fit_tail"]["exponent"], "1", "derived", GE_SRC_T),
         },
     },
     "propulsion": json.loads(json.dumps(stik["propulsion"])),
@@ -715,7 +770,8 @@ def check_consistency(d):
     cy = fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * fin_["control_effectiveness"]["value"]
     arm = fin_["position"]["value"][0] - arp[0]
     exp = {"CYdr": cy, "Cndr": -cy * arm / b_, "Cldr": cy * (fin_["position"]["value"][2] - arp[2]) / b_,
-           "Cnb": fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * arm / b_}
+           "Cnb": fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * arm / b_,
+           "CYb": -fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ + d["aero"]["surfaces"]["body_cy_beta"]["value"]}
     for k, v in exp.items():
         d["aero"]["coefficients"][k]["value"] = v  # exact, unrounded: the loader compares to 1e-8
 check_consistency(data)
@@ -752,12 +808,13 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
 ## Known simplifications
 
 - The plan-derived 2° right / 0.5° down thrust axis and actual propeller hub are now applied through `thrust_angles` and the CG-relative hub offset. The physics names an APC 12×6 Sport, but the Ct/Cp tables remain a borrowed UIUC APC 11×6 proxy; the exact prototype propeller is unknown.
-- Fuselage directional destabilization is omitted (v1 contract: Cnb equals the fin term), as for the Stik.
+- EX-14d (D10-R3): the local model carries the fuselage side force at the ARP (attached slope = the oracle's body CYb, plus Allen-Perkins crossflow drag with estimated eta and c_d). Its yaw moment is not: the slender-body part acts on the forebody (destabilizing) and the crossflow part at the side-area centroid about 0.2 m behind the CG (stabilizing); they roughly cancel near knife-edge sideslip, and the oracle's Cnb stays the fin term (v1 contract), as for the Stik. Canopy, gear and wheel-pant side areas are left out.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
-- EX-14c: the quasi-static tail slipstream (momentum wake, Selig wash factor, swirl, Ribner sidewash), propeller normal force and P-factor follow the P-51 method on the Glow propeller surrogate. The rudder below the fuselage top line, the wing in the wake, a transported (lagged) wake and the jet normal force are not modelled; no Extra wake measurement exists. Finite 61FX glow consumption uses the existing candidate profile (torque and combustion estimates remain unvalidated); no Extra-specific carburetor-feed calibration is available, so feed-pressure/starvation behavior is not represented. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
+- EX-14e: ground effect uses the shared M5-GE-1 law with constants fitted to an image-method VLM of this wing and tail (no fuselage, no rolled-up wake); not measured on a flare.
+- EX-14c: the quasi-static tail slipstream (momentum wake, Selig wash factor, swirl, Ribner sidewash), propeller normal force and P-factor follow the P-51 method on the Glow propeller surrogate. The fin is two pieces (above the fuselage top line, and the rudder behind the tail post down to its bottom edge); both use the vertical surface's per-area law, although the lower piece is all rudder. The wing in the wake, a transported (lagged) wake and the jet normal force are not modelled; no Extra wake measurement exists. Finite 61FX glow consumption uses the existing candidate profile (torque and combustion estimates remain unvalidated); no Extra-specific carburetor-feed calibration is available, so feed-pressure/starvation behavior is not represented. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
 """
 
 if "--check" in sys.argv:

@@ -57,6 +57,8 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `aero.reference_coefficients.CLadot` | 1/rad | ≥-100, ≤100 | AircraftData reference validation only; no alpha-dot force consumer |
 | `aero.surfaces.attached_limit` | deg | ≥1, ≤8 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.body_cn_beta` | 1/rad | ≥-0.5, ≤0 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.body_crossflow_area` | m2 | ≥0, ≤1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
+| `aero.surfaces.body_cy_beta` | 1/rad | ≥-1, ≤0 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.horizontal.area` | m2 | ≥0.001, ≤1 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.horizontal.control_effectiveness` | 1 | ≥0.01, ≤1.5 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
 | `aero.surfaces.horizontal.downwash_gradient` | 1 | ≥0, ≤0.9 | AircraftData._surfaces/_induced_map → Aero local wing/tail and downwash |
@@ -222,4 +224,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 208 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 210 distinct quantity paths. Shared paths retain branch-dependent ranges.

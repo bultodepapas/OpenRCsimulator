@@ -2405,6 +2405,17 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var wing_body_cl = _dq(domain, errors, "aero.surfaces.wing_body_cl_beta", node.get("wing_body_cl_beta"), "1/rad", -0.3, 0.1)
 		if wing_body_cl != null:
 			out.wing_body_cl_beta = float(wing_body_cl)
+	# Optional (D10-R3): the fuselage's side force, which neither the strips nor the fin carry, applied at the ARP in the
+	# local model (Aero._local_loads): an attached slender-body slope (the oracle's CYb then carries fin + body) and an
+	# Allen-Perkins crossflow drag area eta*c_d*S_side that grows into knife-edge and spins. Absent = no force, no rule.
+	if node.has("body_cy_beta"):
+		var body_cy = _dq(domain, errors, "aero.surfaces.body_cy_beta", node.get("body_cy_beta"), "1/rad", -1.0, 0.0)
+		if body_cy != null:
+			out.body_cy_beta = float(body_cy)
+	if node.has("body_crossflow_area"):
+		var body_cda = _dq(domain, errors, "aero.surfaces.body_crossflow_area", node.get("body_crossflow_area"), "m2", 0.0, 1.0)
+		if body_cda != null:
+			out.body_crossflow_area = float(body_cda)
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name
@@ -2436,7 +2447,9 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		Cnb = fin.lift_slope*fin.area/area*arm/span + float(out.get("body_cn_beta", 0.0))}
 	if out.has("wing_body_cl_beta"):
 		expected.Clb = -fin.lift_slope*fin.area/area*(fin.position[2]-arp[2])/span + float(out.wing_body_cl_beta)
+	if out.has("body_cy_beta"):
+		expected.CYb = -fin.lift_slope*fin.area/area + float(out.body_cy_beta)
 	for key in expected:
 		if absf(aero[key]-expected[key]) > 1e-8:
-			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm, body_cn_beta and wing_body_cl_beta (expected %.8f)" % [key, expected[key]])
+			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm, body_cn_beta, wing_body_cl_beta and body_cy_beta (expected %.8f)" % [key, expected[key]])
 	return out

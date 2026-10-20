@@ -1248,6 +1248,32 @@
                 }
               }
             },
+            "body_cy_beta": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -1.0,
+                  "maximum": 0.0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
+            "body_crossflow_area": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": 0.0,
+                  "maximum": 1.0
+                },
+                "unit": {
+                  "const": "m2"
+                }
+              }
+            },
             "horizontal": {
               "type": "object",
               "required": [

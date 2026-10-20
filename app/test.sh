@@ -308,6 +308,7 @@ for t in "$HERE"/tests/test_*.gd; do
     test_half_power_start.gd) test_timeout=600 ;; # D6e-R3: eight airplanes, each solved and flown three times at 240 Hz; measured 219 s on the shared VM, 300 s under load
     test_glow_session.gd) test_timeout=180 ;; # Four coupled installations with replay and takeoff; measured 67 s on Linux.
     test_glow_dive_support.gd) test_timeout=120 ;; # NITRO-61FX-R1: two 12 s full-throttle dives at 240 Hz; measured 32 s on the shared VM.
+    test_extra_handling.gd|test_extra_runway.gd) test_timeout=120 ;; # EX-14c tail slipstream: measured 66 s / 46 s on the quiet shared VM (53 / 41 s before), 77 / 51 s under load.
     test_pilot_trim.gd) test_timeout=300 ;; # Fleet controls plus frozen/live inventory comparisons; measured 117 s natively.
     test_accident_integration.gd) test_timeout=180 ;; # Multiple complete aircraft/effects rebuilds; native 77-check gate, WSL mounted source exceeds 60 s.
     test_p51_envelope.gd) test_timeout=180 ;; # Segmented slipstream full-flight checks measured 61 s on the native editor.

@@ -98,40 +98,40 @@
    "plan_cg_m": [
     0.1088,
     0.0,
-    -0.025021
+    -0.026159
    ],
    "plan_cg_matches_inventory": true,
    "plan_cg_state": "empty",
    "states": {
     "declared": {
      "cg_m": [
-      0.096573,
+      0.097347,
       0.0,
-      -0.022893
+      -0.024076
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 3.577676,
-     "static_margin_pct_mac": 16.512
+     "mass_kg": 3.819548,
+     "static_margin_pct_mac": 16.259
     },
     "empty": {
      "cg_m": [
       0.1088,
       0.0,
-      -0.025021
+      -0.026159
      ],
-     "cg_shift_from_declared_mm": 12.227,
-     "mass_kg": 3.273469,
+     "cg_shift_from_declared_mm": 11.453,
+     "mass_kg": 3.515341,
      "static_margin_pct_mac": 12.511
     },
     "full": {
      "cg_m": [
-      0.096573,
+      0.097347,
       0.0,
-      -0.022893
+      -0.024076
      ],
      "cg_shift_from_declared_mm": 0.0,
-     "mass_kg": 3.577676,
-     "static_margin_pct_mac": 16.512
+     "mass_kg": 3.819548,
+     "static_margin_pct_mac": 16.259
     }
    },
    "variant_kind": "catalog"
