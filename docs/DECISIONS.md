@@ -4,7 +4,7 @@ A small record of what we choose and why. The two guiding principles remain esta
 
 | Date | Decision | Reasoning | Status | Revisit when |
 | --- | --- | --- | --- | --- |
-| 2026-10-20 | **AUD-15: use licensed downloaded recordings where their source fit is explicit; retain the phase-aware glow fallback.** This revises AUD D2's generated-only direction at the owner's request. Installed aircraft voices use bounded explicit distance gain with Godot panning; legacy standalone Soundscape configurations retain D5's attenuation. | CC0 RC gasoline, electric and toy-rotor sources are available with reproducible edits; exact glow and RC-turbine recordings were not obtained. A downloaded designed turbine source and the other surrogates are labeled as such. Source identity must not imply acoustic calibration. D1 remains: no invented audio-only shaft run-down. | [Sources](research/audio/AUD-15/sources.md), [guide](AUDIO-PLAN.md); perceptual qualification remains open. | Matched stationary recordings with measured RPM/load become available, or listening identifies an unsuitable surrogate. |
+| 2026-10-20 | **AUD-15: use licensed downloaded recordings where their source fit is explicit; retain the phase-aware glow fallback.** This revises AUD D2's generated-only direction at the owner's request. Installed aircraft voices use bounded explicit distance gain with Godot panning; legacy standalone Soundscape configurations retain D5's attenuation. A dedicated glow PCM worker owns a bounded 50 ms queue and detached accepted telemetry; playback access takes the AudioServer lock, and teardown joins before releasing playback. | CC0 RC gasoline, electric and toy-rotor sources are available with reproducible edits; exact glow and RC-turbine recordings were not obtained. Surrogates do not imply acoustic calibration. Slow main-thread frames starved the prior glow source; the worker decouples PCM production from those updates without predicting new physical RPM. Long-flight timing requires separate qualification. D1 remains: no invented audio-only shaft run-down. | [Sources](research/audio/AUD-15/sources.md), [guide](AUDIO-PLAN.md), [native evidence](research/audio/AUD-15/validation.md); perceptual qualification remains open. | Matched stationary recordings with measured RPM/load become available, listening identifies an unsuitable surrogate, or target-platform timing rejects the worker/fallback. |
 | 2026-10-20 | **LU-09-R2: separate runway-light activation from its color profile and keep low marker illumination batched.** Auto follows solar elevation; manual On/Off overrides it. Clear near-grass clumps from existing fixture collision footprints. | The same Club/Airfield palette can serve daytime manual operation without changing saved defaults. Twelve small diffuse turf patches add one draw instead of twelve dynamic lights; 22 footprint masks preserve visible fixture clearance without changing the flight kernel. | Implemented; [research, captures and checks](research/landscape-upgrade/LU-09-R2/README.md). | Target-GPU profiling, a surveyed RC field, wet-surface materials or physical photometry justify changing the visual model. |
 | 2026-10-19 | **DT-11a: reject crowded shoreline planting candidates before sampling terrain.** Preserve candidate generation, seed consumption and both acceptance predicates. | The same 285-plant layout needs 56 shoreline terrain queries instead of 141; complete botanical construction improves 25.1% in five paired processes. | Implemented; [geometry, layout and seed-regression evidence](research/visual-quality-implementation/VQ-01c/loading/botanical-spacing/README.md). | Either predicate gains side effects, or a changed shoreline recipe makes the ordering more expensive. |
 | 2026-10-19 | **DT-11a: reuse exact ground-patch CPU buffers across scene builds.** Key polygon, surface, theme, seed and transform; bound FIFO retention to eight entries and 4 MiB of serialized keys/payloads. | Repeated default-field construction spends about 43 ms regenerating unchanged gravel. Fresh scene resources retain independent ownership; transformed output stays byte-identical. | Implemented; [paired construction, lifecycle and regression evidence](research/visual-quality-implementation/VQ-01c/loading/ground-patch-cache/README.md). | A caller moves patch generation off the main thread, adds a dynamic geometry input, or profiling shows cache churn or retention outweighing construction savings. |
@@ -607,4 +607,41 @@ at tick zero until nonzero weather origins and fleet replay qualify. Mirror only
 player-authored scenery damage after the common tick. The experimental 1–3-aircraft
 ceiling is not a performance pass: measured costs exceed the proposed fleet budget.
 [Current limits and evidence](AI-FLIGHT-COMPANIONS.md).
+
+### 2026-10-20 — Bind companion admission to qualified source profiles (AFC-02)
+
+Accept only the evidenced aircraft, field geometry, controller, engine version and
+solver sources. Keep unknown stall/approach/entry values explicit; a flyable catalog
+entry alone does not qualify AI activities. Compare the complete normalized field,
+not just its ID. Profile qualification normalizes solver UTF-8 line endings to LF
+so Git checkout conversion cannot invalidate identical code; existing flight-log
+raw identities and replay rules stay unchanged. This permits no source-code drift
+and makes no cross-platform trajectory claim. Missing readable sources in compiled
+exports refuse companion admission until package qualification is implemented.
+[Profile checks and fresh-clone evidence](research/ai-companions/AFC-02/README.md).
+
+### 2026-10-20 — Check static companion corridors against session geometry (AFC-02)
+
+Source qualification cannot establish clearance after scenery changes. Before
+replacing a roster, test the continuous circular corridor against all scalar
+collision bounds, the analytic ground-height envelope and maximum lake water
+height. Inflate each requested altitude band with explicit tracking allowances,
+accepted contact geometry and obstacle clearance; keep a separate horizontal
+policy around people and shelter footprints. Hash the consumed bounds independently
+of the supplied collision-world identity. This launch-only check preserves the
+controller and every physics tick. It establishes nominal corridor clearance,
+not containment during avoidance/recovery, complete pits-zone protection or
+dynamic encounter safety. [Contract and evidence](research/ai-companions/AFC-02/README.md).
+
+### 2026-10-20 — Link existing aircraft logs before adding fleet replay (AFC-02)
+
+Use a distinct fixed-roster diagnostic manifest and final summary around unchanged
+`.orfl` writers. Start only at the common launch boundary, monitor after every
+aircraft's accepted row, and close before sessions are replaced. Bound duration,
+writers and JSON metadata; stop incomplete on writer, clock, crash/fault or shared
+damage interruptions. Preserve explicit `fleet_restore`, `decision_replay` and
+`shared_world_replay` refusals until the full event/checkpoint contract exists.
+Synchronous log writes and close-time hashing are accepted only for this opt-in
+diagnostic; they do not close the fleet recording performance gate.
+[Capture contract](AI-FLIGHT-COMPANIONS.md#diagnostic-capture).
 

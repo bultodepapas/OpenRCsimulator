@@ -92,7 +92,7 @@ static func validate(raw: Variant) -> Dictionary:
 
 
 ## Overlay only explicit developer CLI settings on an injected UI/default record.
-## Supported flags are --companions=<0..3> and --companions-seed=<u32>.
+## Capture options are validated here but never merged into the persisted record.
 static func from_args(args: PackedStringArray, base: Variant = {}) -> Dictionary:
 	var starting: Variant = defaults()
 	if typeof(base) == TYPE_DICTIONARY and not base.is_empty():
@@ -138,6 +138,31 @@ static func from_args(args: PackedStringArray, base: Variant = {}) -> Dictionary
 				errors.append("--companions-seed must be an unsigned 32-bit integer")
 				continue
 			candidate.seed = seed_value
+	var recording: Dictionary = recording_options(args)
+	errors.append_array(recording.errors)
+	if not str(recording.directory).is_empty() and not candidate.enabled:
+		errors.append("--companions-record requires enabled companions")
 	if not errors.is_empty():
 		return {"ok": false, "config": {}, "errors": errors}
 	return validate(candidate)
+
+
+## Developer-only capture paths never enter persisted companion settings.
+static func recording_options(args: PackedStringArray) -> Dictionary:
+	var directory := ""
+	var found := false
+	var player_log := false
+	var errors := PackedStringArray()
+	for arg: String in args:
+		if arg == "--flight-log" or arg.begins_with("--flight-log="): player_log = true
+		if arg != "--companions-record" and not arg.begins_with("--companions-record="): continue
+		if found:
+			errors.append("--companions-record may be supplied once")
+		found = true
+		if arg == "--companions-record" or arg.trim_prefix("--companions-record=").strip_edges().is_empty():
+			errors.append("--companions-record requires a new output directory")
+		else:
+			directory = arg.trim_prefix("--companions-record=")
+	if found and player_log:
+		errors.append("Use --companions-record or --flight-log, not both")
+	return {ok = errors.is_empty(), errors = errors, directory = directory}

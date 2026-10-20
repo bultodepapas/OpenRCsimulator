@@ -1,0 +1,79 @@
+{
+  "format": "openrc-ai-airspace-flight-comparison v1",
+  "complete": true,
+  "baseline": "docs/research/ai-companions/AFC-00-R1/candidate-profile.json",
+  "baseline_sha256": "4badc8f1573e009eb67709a4ac8ecbdc9f1e7534fc308eb25c14e2bfeb405ef7",
+  "candidate": "docs/research/ai-companions/AFC-02/airspace-flight-traces-final.json",
+  "candidate_sha256": "3fa4f24f7a76c95d5f5099b7a08095ad1a0bc6bf39a134373146322046fc98ae",
+  "cases": [
+    {
+      "count": 0,
+      "all_state_and_command_hashes_equal": true,
+      "measured_ticks": 2400,
+      "trace_fingerprints": {
+        "player": {
+          "command_sha256": "5f03b059f3f3446e73b2de9fb0e9e2ae72ec1734264da7226f8e893af3fb5296",
+          "state_sha256": "295bd75b0c4c064a29a79a5a80e07af2406f234df419a678083de74ece8362a4"
+        }
+      }
+    },
+    {
+      "count": 1,
+      "all_state_and_command_hashes_equal": true,
+      "measured_ticks": 2400,
+      "trace_fingerprints": {
+        "companion-1": {
+          "command_sha256": "deca240e73b4aae3ee3a76310a78032ddfed86e44e102674d23d2f63d3daa9de",
+          "state_sha256": "b80adfe6f77d4ef2e10820fd3b96913ee1abbdbeaf2d3eec925cc8a133bd5263"
+        },
+        "player": {
+          "command_sha256": "5f03b059f3f3446e73b2de9fb0e9e2ae72ec1734264da7226f8e893af3fb5296",
+          "state_sha256": "295bd75b0c4c064a29a79a5a80e07af2406f234df419a678083de74ece8362a4"
+        }
+      }
+    },
+    {
+      "count": 2,
+      "all_state_and_command_hashes_equal": true,
+      "measured_ticks": 2400,
+      "trace_fingerprints": {
+        "companion-1": {
+          "command_sha256": "deca240e73b4aae3ee3a76310a78032ddfed86e44e102674d23d2f63d3daa9de",
+          "state_sha256": "b80adfe6f77d4ef2e10820fd3b96913ee1abbdbeaf2d3eec925cc8a133bd5263"
+        },
+        "companion-2": {
+          "command_sha256": "74dec9bd119615f893aff6fe45e8d91af21558dce19a33ef117839fcb516b130",
+          "state_sha256": "0d345b7b8a081141cd88945398a6616c52bcb9363e809c2ae587af041860db75"
+        },
+        "player": {
+          "command_sha256": "5f03b059f3f3446e73b2de9fb0e9e2ae72ec1734264da7226f8e893af3fb5296",
+          "state_sha256": "295bd75b0c4c064a29a79a5a80e07af2406f234df419a678083de74ece8362a4"
+        }
+      }
+    },
+    {
+      "count": 3,
+      "all_state_and_command_hashes_equal": true,
+      "measured_ticks": 2400,
+      "trace_fingerprints": {
+        "companion-1": {
+          "command_sha256": "deca240e73b4aae3ee3a76310a78032ddfed86e44e102674d23d2f63d3daa9de",
+          "state_sha256": "b80adfe6f77d4ef2e10820fd3b96913ee1abbdbeaf2d3eec925cc8a133bd5263"
+        },
+        "companion-2": {
+          "command_sha256": "c05d74b4693e29f684c45cf95cf48cf4d83630a298c1760e8e83ce664873c4da",
+          "state_sha256": "b0ee7bc4d25feb0eaf589897d7a5ee35b1e1988a5276f72e0c23a8be6c5275aa"
+        },
+        "companion-3": {
+          "command_sha256": "eac86bb69042cec98eb27d92af2d417b7b6a2ebb5af9c1aa3567b1e30735bc36",
+          "state_sha256": "e39c510eb1a01d866832e54697adde459d38a5c6a98c875a1b3ced4b885497eb"
+        },
+        "player": {
+          "command_sha256": "5f03b059f3f3446e73b2de9fb0e9e2ae72ec1734264da7226f8e893af3fb5296",
+          "state_sha256": "295bd75b0c4c064a29a79a5a80e07af2406f234df419a678083de74ece8362a4"
+        }
+      }
+    }
+  ],
+  "scope": "Headless state and command equality for the retained 0\u20133-companion input tape; no physical, full-flight-containment or performance qualification."
+}

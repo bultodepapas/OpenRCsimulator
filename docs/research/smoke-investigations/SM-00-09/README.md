@@ -67,3 +67,17 @@ All five processes exit 0 without script errors. Source review confirms a remain
 Local links/anchors, literal guide paths and shell-example syntax pass, including inbound links to the retained future-plan anchors. The missing full-entrypoint artifact above was not replaced with an inferred result.
 
 Rendered probe/flight/package checks, frame timing, long soak, other backends, physical emissions and real-radio review were not rerun. The current [guide](../../../SMOKE.md) and plan separate those gates from integrated behavior and from the proposed AE/SM customization API.
+
+## 2026-10-20 Avanti tailpipe show smoke (SM-11-R1)
+
+Stock Ventage Jet flights now offer a requested white trail through the existing profile renderer and H/gamepad/AUX controls. The separate `show_tailpipe` show mount copies AV-31's presentation outlet; existing tail and wingtip mounts remain intact. This does not identify turbine emissions or smoke-fluid hardware. [Current behavior](../../../SMOKE.md#avanti--ventage-jet-show-smoke-sm-11-r1) is authoritative.
+
+The preset uses one 768-particle pool, three-second puffs and the existing swept-birth ribbon shape. Native review at the jet's actual half-power trim rejected sparse six-second puffs and a scattered cloud before selecting the denser ribbon. No shader, force, mass, fuel-consumption law or golden flight was changed.
+
+[Native capture receipt](avanti/capture.json) records Godot 4.7.2, Windows Compatibility/OpenGL, RTX 3090, source/image hashes, one show emitter, no simulation fault and 1,800 actual physics ticks. [Capture harness](../../../../tools/smoke/capture_avanti.gd) advances eight 240 Hz ticks per presentation; camera framing is scripted. Four retained views show the tailpipe, trail, residual smoke 0.5 seconds after OFF and expiry 3.5 seconds after OFF. These are local visual observations, not GPU performance or cross-platform qualification.
+
+![Avanti show trail](avanti/flight-trail.png)
+
+All 29 Avanti checks pass, covering transformed outlet placement, H/echo, accepted source and finite-fuel latch gates, crash/fault suppression, active pause/reset, explicit Workshop choices and bit-identical smoke-on/off simulation channels after 240 ticks. The additional tailpipe slot remains individually selectable; Tricolor keeps its original three mounts and particle budget. Six existing smoke, customization and presentation suites also pass (393 checks). [Checked invocation logs and receipts](avanti/checks.json) retain these results and the native capture invocation.
+
+The customization generator's nine Python tests pass. Its `--check` also passes in a fresh local clone with the smoke changes applied and `core.autocrlf=false`, following the documented checkout convention. An initial partial-checkout attempt omitted `.gitattributes` and correctly failed exact manifest-byte comparison; restoring the documented checkout procedure resolved that fixture error. The full app suite, real radio, other GPU/OS backends and long soak were not run for this change. A shared-tree Timber parse error during verification was corrected by its owning parallel track; no Timber files were edited for smoke.

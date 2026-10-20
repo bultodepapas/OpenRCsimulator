@@ -176,7 +176,10 @@ func _update_contact(contact: Dictionary, slot: Dictionary, state_delta: float, 
 		and force >= force_off and rolling_speed >= ROLL_SPEED_ON_MPS
 	var target: float = 0.0
 	if can_roll:
-		var speed_mix: float = smoothstep(ROLL_SPEED_ON_MPS, 12.0, rolling_speed)
+		# A gentle onset, then sublinear energy growth: taxiing must not disappear
+		# beneath a quadratic envelope intended for the much faster takeoff roll.
+		var speed_mix: float = smoothstep(ROLL_SPEED_ON_MPS, 1.5, rolling_speed) \
+			* pow(clampf(rolling_speed / 12.0, 0.0, 1.0), 0.6)
 		var load_mix: float = clampf(sqrt(load_ratio), 0.0, 1.0)
 		target = 0.42 * speed_mix * load_mix * _engine_mask
 	_set_roll_targets(slot, str(contact.get("surface", "hard")), target, visual_delta, rolling_speed)
@@ -320,7 +323,9 @@ func _enter_tree() -> void:
 
 
 func _exit_tree() -> void:
-	stop()
+	# A retained session can advance while this rig is detached. Reattachment must
+	# observe its current contact state, not replay a landing from the hidden interval.
+	reset()
 	if is_instance_valid(_soundscape):
 		var release_callable := Callable(self, "_on_buses_releasing")
 		if _soundscape.is_connected("buses_releasing", release_callable):

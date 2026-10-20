@@ -1,0 +1,103 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "builder_sha256": "1d22a627575ebd7b4d6375adc376886fd8fabb15a016ef8c1974c7f664cc4ca8",
+  "complete": true,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "draws": 106,
+      "eye": [
+        -29.2000007629395,
+        2.20000004768372,
+        9.5
+      ],
+      "fov": 66.0,
+      "sha256": "dae22f1f85866808651d36ec29819f0032276c509e3f499c94d4d60d9ea74a1a",
+      "view": "front"
+    },
+    {
+      "draws": 84,
+      "eye": [
+        -29.0,
+        8.0,
+        14.0
+      ],
+      "fov": 62.0,
+      "sha256": "15a330d17addb1d3882324915997bcda31cb65be504cffe1d63572fa4f31c30b",
+      "view": "roof"
+    },
+    {
+      "draws": 75,
+      "eye": [
+        -30.0,
+        1.54999995231628,
+        16.7999992370605
+      ],
+      "fov": 74.0,
+      "sha256": "b46487c7cb98e63a42de09b2ff2f5ab29adb0ab0b425b8498d783e3467f19033",
+      "view": "underside"
+    },
+    {
+      "draws": 194,
+      "eye": [
+        -49.0,
+        4.5,
+        11.5
+      ],
+      "fov": 60.0,
+      "sha256": "74eaa53b0a27049a5db0d17301177cf7383ac4595f9b86e6fb946800e062d23f",
+      "view": "end"
+    },
+    {
+      "draws": 116,
+      "eye": [
+        -12.0,
+        5.0,
+        1.5
+      ],
+      "fov": 65.0,
+      "sha256": "28eee5421d148ba4a6b6ad685d9eacf421cb5fada7466daff4735198ad0c4395",
+      "view": "context"
+    }
+  ],
+  "scenery_stats": {
+    "airfield_detail_batches": 6,
+    "airfield_detail_instances": 46,
+    "airfield_detail_triangles": 65852,
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 1202.95,
+    "cells": 60,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 171,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 83,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 0.76,
+      "botanicals": 104.617,
+      "fence": 42.899,
+      "fleet": 13.332,
+      "hedge": 15.789,
+      "instances": 205.913,
+      "meshes": 58.586,
+      "patch": 73.616,
+      "population": 133.782,
+      "track": 2.143,
+      "vegetation": 379.407,
+      "woodland_edges": 78.034
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  }
+}

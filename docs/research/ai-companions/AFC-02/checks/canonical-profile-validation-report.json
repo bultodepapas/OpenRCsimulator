@@ -1,0 +1,74 @@
+{
+  "format": "openrc-afc02-profile-validation v2",
+  "step": "AFC-02",
+  "captured_utc": "2026-10-20T20:24:01.624330+00:00",
+  "runner_report": {
+    "format": "openrc-godot-check v1",
+    "capture_id": "518b9e48-e924-43ba-b574-63f612c9a963",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_companions_profiles.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T20:24:01.624330+00:00",
+    "label": "afc02-canonical-profile-loader-test",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\afc02-canonical-profile-loader-test-2fnmguq3\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\afc02-canonical-profile-loader-test-2fnmguq3\\report.json",
+    "timeout_seconds": 180.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "AFC-02 companion profile validation:"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 3.078,
+    "log_bytes": 1800,
+    "log_sha256": "4b1bda8a0813e3f8797551676323fb8245c88f74def9bcbceeefe1e65aed6b1c"
+  },
+  "profile_assertions": {
+    "checks": 29,
+    "failed": 0
+  },
+  "identity": {
+    "solver_raw_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
+    "solver_raw_identity_method": "Unmodified FlightLog.solver_identity(): sorted res:// paths plus exact raw source bytes under physics, sim, failures.",
+    "solver_qualification_sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "solver_qualification_normalization": "strict UTF-8 decoding; CRLF and lone CR converted to LF; hash sorted resource path bytes followed by normalized UTF-8 source bytes.",
+    "solver_source_file_count": 133,
+    "aircraft_data_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "field_data_sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "controller_sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "engine_version": "4.7.2"
+  },
+  "regressions": [
+    "canonical identity equals the profile pin for all 133 runtime solver sources",
+    "LF and CRLF source variants have equal canonical hashes",
+    "empty and missing source sets fail closed",
+    "unknown normalization fails closed",
+    "synthetic source-code drift changes the hash and is rejected against current sources",
+    "FlightLog raw solver identity is retained separately and unchanged"
+  ],
+  "limits": "Narrow software qualification only. The canonical source hash tolerates newline representation changes, not source changes. This does not establish physical validation or cross-platform trajectory equivalence.",
+  "evidence": {
+    "engine_log_path": "checks/canonical-profile-validation-engine.log",
+    "engine_log_sha256": "4b1bda8a0813e3f8797551676323fb8245c88f74def9bcbceeefe1e65aed6b1c",
+    "report_path": "checks/canonical-profile-validation-report.json"
+  }
+}

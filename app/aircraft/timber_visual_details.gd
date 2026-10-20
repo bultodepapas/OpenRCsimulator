@@ -10,6 +10,17 @@ const RUBBER_NORMAL: Texture2D = preload("res://assets/aircraft/turbo-lumber-evo
 const RUBBER_ROUGHNESS: Texture2D = preload("res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/textures/Rubber002_1K-JPG_Roughness.jpg")
 
 const APPLIED_META := "timber_visual_details_applied"
+const PAINT_FACE_GRID_CELL_M := 0.01
+const FRACTURE_CAP_OFFSET_M := 0.00012
+const PAINT_REPAIR_CACHE_CAPACITY := 8
+const FUSELAGE_SAMPLE_CACHE_CAPACITY := 256
+const PAINT_REPAIR_CACHE_REVISION := "paint-template-v1"
+
+## These bounded caches contain derived render data only. Source meshes and material resources stay untouched.
+static var _paint_repair_cache: Dictionary = {}
+static var _paint_repair_cache_order: Array[String] = []
+static var _fuselage_sample_cache: Dictionary = {}
+static var _fuselage_sample_cache_order: Array[String] = []
 
 
 ## Safe to call from the catalog builder or an inspector. Returns true when the detail layer exists.
@@ -109,39 +120,64 @@ static func _repair_painted_surface_poke_through(root: Node3D) -> void:
 			continue
 		var source_mesh := mesh_instance.mesh as ArrayMesh
 		var smooth_mesh := smooth_meshes.has(String(mesh_instance.name))
-		var smooth_lookup: Dictionary = _smooth_normal_lookup(source_mesh, mesh_instance, smooth_normal_materials) if smooth_mesh else {}
 		var materials_by_name: Dictionary = {}
-		var paint_faces: Array[Dictionary] = []
 		var white_surfaces: Array[int] = []
+		var paint_surfaces: Array[int] = []
+		var active_material_names: Array[String] = []
 		for surface_index in source_mesh.get_surface_count():
 			var surface_material := mesh_instance.get_active_material(surface_index) as Material
 			if surface_material == null:
+				active_material_names.append("")
 				continue
 			var material_name := String(surface_material.resource_name)
+			active_material_names.append(material_name)
 			materials_by_name[material_name] = surface_material
 			if material_name == "white":
 				white_surfaces.append(surface_index)
 			elif paint_names.has(material_name):
-				var arrays := source_mesh.surface_get_arrays(surface_index)
-				var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-				var indices := _triangle_indices(arrays, vertices.size())
-				for triangle in range(indices.size() / 3):
-					var ia := indices[triangle * 3]
-					var ib := indices[triangle * 3 + 1]
-					var ic := indices[triangle * 3 + 2]
-					var a := vertices[ia]
-					var b := vertices[ib]
-					var c := vertices[ic]
-					var normal := _surface_triangle_normal(arrays, vertices, ia, ib, ic)
-					var bounds := AABB(a, Vector3.ZERO).expand(b).expand(c).grow(max_region_distance)
-					paint_faces.append({
-						vertices = PackedVector3Array([a, b, c]),
-						bounds = bounds,
-						normal = normal,
-						material = material_name,
-				})
-		if white_surfaces.is_empty() or paint_faces.is_empty():
+				paint_surfaces.append(surface_index)
+		var cache_key := _paint_repair_cache_key(root, mesh_instance, source_mesh, config, active_material_names)
+		if _paint_repair_cache.has(cache_key):
+			_touch_bounded_cache(_paint_repair_cache, _paint_repair_cache_order, cache_key)
+			var cached: Dictionary = _paint_repair_cache[cache_key]
+			if bool(cached.get("noop", false)):
+				continue
+			var cached_template: Dictionary = cached.template
+			var cached_mesh := _instantiate_surface_template(cached_template, materials_by_name)
+			_replace_repaired_mesh(mesh_instance, source_mesh, cached_mesh, int(cached.remapped_triangle_count))
 			continue
+		if white_surfaces.is_empty() or paint_surfaces.is_empty():
+			_bounded_cache_store(_paint_repair_cache, _paint_repair_cache_order, cache_key, {noop = true}, PAINT_REPAIR_CACHE_CAPACITY)
+			continue
+		var paint_faces: Array[Dictionary] = []
+		for surface_index in paint_surfaces:
+			var surface_material := mesh_instance.get_active_material(surface_index) as Material
+			if surface_material == null:
+				continue
+			var material_name := String(surface_material.resource_name)
+			var arrays := source_mesh.surface_get_arrays(surface_index)
+			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var indices := _triangle_indices(arrays, vertices.size())
+			for triangle in range(indices.size() / 3):
+				var ia := indices[triangle * 3]
+				var ib := indices[triangle * 3 + 1]
+				var ic := indices[triangle * 3 + 2]
+				var a := vertices[ia]
+				var b := vertices[ib]
+				var c := vertices[ic]
+				var normal := _surface_triangle_normal(arrays, vertices, ia, ib, ic)
+				var bounds := AABB(a, Vector3.ZERO).expand(b).expand(c).grow(max_region_distance)
+				paint_faces.append({
+					vertices = PackedVector3Array([a, b, c]),
+					bounds = bounds,
+					normal = normal,
+					material = material_name,
+				})
+		if paint_faces.is_empty():
+			_bounded_cache_store(_paint_repair_cache, _paint_repair_cache_order, cache_key, {noop = true}, PAINT_REPAIR_CACHE_CAPACITY)
+			continue
+		var smooth_lookup: Dictionary = _smooth_normal_lookup(source_mesh, mesh_instance, smooth_normal_materials) if smooth_mesh else {}
+		var paint_face_index := _build_paint_face_index(paint_faces)
 		var remaps: Dictionary = {}
 		var remapped_triangle_count := 0
 		for surface_index in white_surfaces:
@@ -157,18 +193,20 @@ static func _repair_painted_surface_poke_through(root: Node3D) -> void:
 				var b := vertices[ib]
 				var c := vertices[ic]
 				var normal := _surface_triangle_normal(arrays, vertices, ia, ib, ic)
-				var target_material := _fully_covered_paint(a, b, c, normal, paint_faces, max_distance, min_normal_dot)
+				var target_material := _fully_covered_paint(a, b, c, normal, paint_faces, max_distance, min_normal_dot, paint_face_index)
 				if target_material.is_empty():
-					target_material = _authored_paint_region(root, mesh_instance, a, b, c, normal, paint_faces, authored_regions)
+					target_material = _authored_paint_region(root, mesh_instance, a, b, c, normal, paint_faces, authored_regions, paint_face_index)
 				if not target_material.is_empty():
 					surface_remaps[triangle] = target_material
 			if not surface_remaps.is_empty():
 				remaps[surface_index] = surface_remaps
 				remapped_triangle_count += surface_remaps.size()
 		if remaps.is_empty() and not smooth_mesh:
+			_bounded_cache_store(_paint_repair_cache, _paint_repair_cache_order, cache_key, {noop = true}, PAINT_REPAIR_CACHE_CAPACITY)
 			continue
 		var derived := ArrayMesh.new()
 		derived.resource_name = source_mesh.resource_name
+		var template_surfaces: Array[Dictionary] = []
 		for surface_index in source_mesh.get_surface_count():
 			var surface_material := mesh_instance.get_active_material(surface_index) as Material
 			var material_name := String(surface_material.resource_name) if surface_material != null else ""
@@ -180,6 +218,12 @@ static func _repair_painted_surface_poke_through(root: Node3D) -> void:
 				if surface_material != null:
 					derived.surface_set_material(copied_index, surface_material)
 				derived.surface_set_name(copied_index, original_name)
+				template_surfaces.append({
+					primitive = source_mesh.surface_get_primitive_type(surface_index),
+					name = original_name,
+					material_name = material_name,
+					arrays = arrays,
+				})
 				continue
 			var surface_remaps: Dictionary = remaps.get(surface_index, {})
 			var split: Dictionary = _split_material_surface(arrays, surface_remaps, smooth_lookup, surface_index, material_name)
@@ -195,14 +239,151 @@ static func _repair_painted_surface_poke_through(root: Node3D) -> void:
 				var split_index := derived.get_surface_count() - 1
 				var target_material: Material = materials_by_name.get(split_name, surface_material)
 				derived.surface_set_material(split_index, target_material)
-				derived.surface_set_name(split_index, original_name if split_name == material_name else original_name + "_corrected_" + split_name)
-		for surface_index in source_mesh.get_surface_count():
-			mesh_instance.set_surface_override_material(surface_index, null)
-		mesh_instance.mesh = derived
-		mesh_instance.set_meta("timber_paint_seam_faces", remapped_triangle_count)
+				var output_surface_name := original_name if split_name == material_name else original_name + "_corrected_" + split_name
+				derived.surface_set_name(split_index, output_surface_name)
+				template_surfaces.append({
+					primitive = Mesh.PRIMITIVE_TRIANGLES,
+					name = output_surface_name,
+					material_name = String(target_material.resource_name) if target_material != null else "",
+					arrays = split_arrays,
+				})
+		var template := {resource_name = source_mesh.resource_name, surfaces = template_surfaces}
+		_bounded_cache_store(_paint_repair_cache, _paint_repair_cache_order, cache_key, {
+			template = template,
+			remapped_triangle_count = remapped_triangle_count,
+		}, PAINT_REPAIR_CACHE_CAPACITY)
+		_replace_repaired_mesh(mesh_instance, source_mesh, derived, remapped_triangle_count)
 
 
-static func _authored_paint_region(root: Node3D, mesh_instance: MeshInstance3D, a: Vector3, b: Vector3, c: Vector3, normal: Vector3, paint_faces: Array[Dictionary], regions: Array) -> String:
+static func _paint_repair_cache_key(root: Node3D, mesh_instance: MeshInstance3D, mesh: ArrayMesh, config: Dictionary, active_material_names: Array[String]) -> String:
+	var mesh_to_root := ImportedModel.relative(root, mesh_instance)
+	var header := {
+		"revision": PAINT_REPAIR_CACHE_REVISION,
+		"mesh_name": String(mesh_instance.name),
+		"source_resource_name": mesh.resource_name,
+		"active_material_names": active_material_names,
+		"relative_transform_f64": _transform_cache_bytes(mesh_to_root).hex_encode(),
+		"repair_config": config,
+		"grid_cell_m": PAINT_FACE_GRID_CELL_M,
+	}
+	return _mesh_content_sha256(mesh, JSON.stringify(header))
+
+
+static func _mesh_content_sha256(mesh: Mesh, header: String = "") -> String:
+	var context := HashingContext.new()
+	context.start(HashingContext.HASH_SHA256)
+	context.update(header.to_utf8_buffer())
+	context.update(mesh.resource_name.to_utf8_buffer())
+	context.update(PackedInt32Array([mesh.get_surface_count()]).to_byte_array())
+	for surface_index in mesh.get_surface_count():
+		context.update(PackedInt32Array([mesh.surface_get_primitive_type(surface_index)]).to_byte_array())
+		if mesh is ArrayMesh:
+			context.update((mesh as ArrayMesh).surface_get_name(surface_index).to_utf8_buffer())
+		var arrays := mesh.surface_get_arrays(surface_index)
+		for channel in Mesh.ARRAY_MAX:
+			var value: Variant = arrays[channel]
+			context.update(PackedInt32Array([channel]).to_byte_array())
+			if value == null:
+				context.update(PackedByteArray([0]))
+				continue
+			context.update(PackedByteArray([1]))
+			context.update(str(typeof(value), ":").to_utf8_buffer())
+			var bytes := _packed_array_bytes(value)
+			context.update(PackedInt64Array([bytes.size()]).to_byte_array())
+			context.update(bytes)
+	return context.finish().hex_encode()
+
+
+static func _packed_array_bytes(value: Variant) -> PackedByteArray:
+	if value is PackedByteArray:
+		return value as PackedByteArray
+	if value is PackedInt32Array:
+		return (value as PackedInt32Array).to_byte_array()
+	if value is PackedInt64Array:
+		return (value as PackedInt64Array).to_byte_array()
+	if value is PackedFloat32Array:
+		return (value as PackedFloat32Array).to_byte_array()
+	if value is PackedFloat64Array:
+		return (value as PackedFloat64Array).to_byte_array()
+	if value is PackedVector2Array:
+		return (value as PackedVector2Array).to_byte_array()
+	if value is PackedVector3Array:
+		return (value as PackedVector3Array).to_byte_array()
+	if value is PackedVector4Array:
+		return (value as PackedVector4Array).to_byte_array()
+	if value is PackedColorArray:
+		return (value as PackedColorArray).to_byte_array()
+	if value is Array:
+		return JSON.stringify(value).to_utf8_buffer()
+	return str(value).to_utf8_buffer()
+
+
+static func _transform_cache_bytes(transform: Transform3D) -> PackedByteArray:
+	return PackedFloat64Array([
+		transform.basis.x.x, transform.basis.x.y, transform.basis.x.z,
+		transform.basis.y.x, transform.basis.y.y, transform.basis.y.z,
+		transform.basis.z.x, transform.basis.z.y, transform.basis.z.z,
+		transform.origin.x, transform.origin.y, transform.origin.z,
+	]).to_byte_array()
+
+
+static func _instantiate_surface_template(template: Dictionary, materials_by_name: Dictionary) -> ArrayMesh:
+	var derived := ArrayMesh.new()
+	derived.resource_name = String(template.get("resource_name", ""))
+	for surface: Dictionary in template.surfaces:
+		derived.add_surface_from_arrays(int(surface.primitive), surface.arrays)
+		var surface_index := derived.get_surface_count() - 1
+		var material_name := String(surface.material_name)
+		var surface_material := materials_by_name.get(material_name) as Material
+		if surface_material != null:
+			derived.surface_set_material(surface_index, surface_material)
+		derived.surface_set_name(surface_index, String(surface.name))
+	return derived
+
+
+static func _replace_repaired_mesh(mesh_instance: MeshInstance3D, source_mesh: ArrayMesh, derived: ArrayMesh, remapped_triangle_count: int) -> void:
+	for surface_index in source_mesh.get_surface_count():
+		mesh_instance.set_surface_override_material(surface_index, null)
+	mesh_instance.mesh = derived
+	mesh_instance.set_meta("timber_paint_seam_faces", remapped_triangle_count)
+
+
+static func _touch_bounded_cache(cache: Dictionary, order: Array[String], key: String) -> void:
+	order.erase(key)
+	order.append(key)
+
+
+static func _bounded_cache_store(cache: Dictionary, order: Array[String], key: String, value: Variant, capacity: int) -> void:
+	if not cache.has(key) and cache.size() >= capacity and not order.is_empty():
+		var expired: String = order.pop_front()
+		cache.erase(expired)
+	cache[key] = value
+	_touch_bounded_cache(cache, order, key)
+static func _build_paint_face_index(paint_faces: Array[Dictionary]) -> Dictionary:
+	var index: Dictionary = {}
+	for paint_face: Dictionary in paint_faces:
+		var bounds: AABB = paint_face.bounds
+		var min_cell := Vector3i(
+			floori(bounds.position.x / PAINT_FACE_GRID_CELL_M),
+			floori(bounds.position.y / PAINT_FACE_GRID_CELL_M),
+			floori(bounds.position.z / PAINT_FACE_GRID_CELL_M)
+		)
+		var max_cell := Vector3i(
+			floori(bounds.end.x / PAINT_FACE_GRID_CELL_M),
+			floori(bounds.end.y / PAINT_FACE_GRID_CELL_M),
+			floori(bounds.end.z / PAINT_FACE_GRID_CELL_M)
+		)
+		for x in range(min_cell.x, max_cell.x + 1):
+			for y in range(min_cell.y, max_cell.y + 1):
+				for z in range(min_cell.z, max_cell.z + 1):
+					var key := "%d:%d:%d" % [x, y, z]
+					var bucket: Array = index.get(key, [])
+					bucket.append(paint_face)
+					index[key] = bucket
+	return index
+
+
+static func _authored_paint_region(root: Node3D, mesh_instance: MeshInstance3D, a: Vector3, b: Vector3, c: Vector3, normal: Vector3, paint_faces: Array[Dictionary], regions: Array, paint_face_index: Dictionary = {}) -> String:
 	var mesh_to_root := ImportedModel.relative(root, mesh_instance)
 	var center_root := mesh_to_root * ((a + b + c) / 3.0)
 	var normal_to_root := mesh_to_root.basis.inverse().transposed()
@@ -213,10 +394,20 @@ static func _authored_paint_region(root: Node3D, mesh_instance: MeshInstance3D, 
 		var bounds := AABB(_vector3(region.root_bounds_min), Vector3.ZERO).expand(_vector3(region.root_bounds_max))
 		if not bounds.has_point(center_root):
 			continue
+		if bool(region.get("require_all_vertices_inside", false)):
+			var all_vertices_inside := true
+			for vertex_root: Vector3 in [mesh_to_root * a, mesh_to_root * b, mesh_to_root * c]:
+				if not bounds.has_point(vertex_root):
+					all_vertices_inside = false
+					break
+			if not all_vertices_inside:
+				continue
 		var axis := _vector3(region.get("normal_axis_root", [0.0, 1.0, 0.0])).normalized()
 		if normal_root.dot(axis) < float(region.get("min_normal_axis_dot", 0.0)):
 			continue
-		var covered := _fully_covered_paint(a, b, c, normal, paint_faces, float(region.max_projection_distance_m), float(region.min_normal_dot))
+		if bool(region.get("allow_authored_override", false)):
+			return String(region.paint_material)
+		var covered := _fully_covered_paint(a, b, c, normal, paint_faces, float(region.max_projection_distance_m), float(region.min_normal_dot), paint_face_index)
 		if covered == String(region.paint_material):
 			return covered
 	return ""
@@ -293,11 +484,11 @@ static func _normal_position_key(point: Vector3) -> String:
 	return "%d:%d:%d" % [roundi(point.x * 100000.0), roundi(point.y * 100000.0), roundi(point.z * 100000.0)]
 
 
-static func _fully_covered_paint(a: Vector3, b: Vector3, c: Vector3, normal: Vector3, paint_faces: Array[Dictionary], max_distance: float, min_normal_dot: float) -> String:
+static func _fully_covered_paint(a: Vector3, b: Vector3, c: Vector3, normal: Vector3, paint_faces: Array[Dictionary], max_distance: float, min_normal_dot: float, paint_face_index: Dictionary = {}) -> String:
 	var samples := PackedVector3Array([a, b, c, (a + b) * 0.5, (b + c) * 0.5, (c + a) * 0.5, (a + b + c) / 3.0])
 	var material_scores: Dictionary = {}
 	for point in samples:
-		var covered := _covering_paint_at(point, normal, paint_faces, max_distance, min_normal_dot)
+		var covered := _covering_paint_at(point, normal, paint_faces, max_distance, min_normal_dot, paint_face_index)
 		if covered.is_empty():
 			return ""
 		if material_scores.is_empty():
@@ -323,9 +514,18 @@ static func _fully_covered_paint(a: Vector3, b: Vector3, c: Vector3, normal: Vec
 	return best_material
 
 
-static func _covering_paint_at(point: Vector3, normal: Vector3, paint_faces: Array[Dictionary], max_distance: float, min_normal_dot: float) -> Dictionary:
+static func _covering_paint_at(point: Vector3, normal: Vector3, paint_faces: Array[Dictionary], max_distance: float, min_normal_dot: float, paint_face_index: Dictionary = {}) -> Dictionary:
 	var distances: Dictionary = {}
-	for paint_face: Dictionary in paint_faces:
+	var candidate_faces: Array = paint_faces
+	if not paint_face_index.is_empty():
+		var cell := Vector3i(
+			floori(point.x / PAINT_FACE_GRID_CELL_M),
+			floori(point.y / PAINT_FACE_GRID_CELL_M),
+			floori(point.z / PAINT_FACE_GRID_CELL_M)
+		)
+		candidate_faces = paint_face_index.get("%d:%d:%d" % [cell.x, cell.y, cell.z], [])
+	for face_variant in candidate_faces:
+		var paint_face: Dictionary = face_variant
 		var paint_normal: Vector3 = paint_face.normal
 		var bounds: AABB = paint_face.bounds
 		if normal.dot(paint_normal) < min_normal_dot or not bounds.has_point(point):
@@ -432,6 +632,7 @@ static func _add_fuselage_markings(root: Node3D) -> void:
 		return
 	var host_to_root := ImportedModel.relative(root, host)
 	var root_to_host := host_to_root.affine_inverse()
+	var sample_cache_prefix := _mesh_content_sha256(host.mesh, "fuselage-surface-sampling-v1:" + _transform_cache_bytes(host_to_root).hex_encode())
 	var target: Array = config.target_yz_root
 	var group := Node3D.new()
 	group.name = "TimberFuselageMarkings"
@@ -439,7 +640,7 @@ static func _add_fuselage_markings(root: Node3D) -> void:
 	host.add_child(group)
 	for side: String in config.sides:
 		var sign_x := -1.0 if side == "left" else 1.0
-		var center_surface := _sample_fuselage_side(root, host, sign_x, float(target[0]), float(target[1]))
+		var center_surface := _sample_fuselage_side(root, host, sign_x, float(target[0]), float(target[1]), sample_cache_prefix)
 		if center_surface.is_empty():
 			continue
 		var fallback_font: Font = ThemeDB.fallback_font
@@ -458,7 +659,7 @@ static func _add_fuselage_markings(root: Node3D) -> void:
 			if character != " " and character_width_px > 0.0:
 				var offset_m := (prior_width_px + character_width_px * 0.5 - text_width_px * 0.5) * pixel_size
 				var nominal_root: Vector3 = center_surface.position + center_axis * offset_m
-				var surface := _sample_fuselage_side(root, host, sign_x, nominal_root.y, nominal_root.z)
+				var surface := _sample_fuselage_side(root, host, sign_x, nominal_root.y, nominal_root.z, sample_cache_prefix)
 				if not surface.is_empty():
 					var outward: Vector3 = surface.normal
 					var up := _surface_text_up(outward)
@@ -490,7 +691,13 @@ static func _surface_text_up(outward: Vector3) -> Vector3:
 	return up
 
 
-static func _sample_fuselage_side(root: Node3D, host: MeshInstance3D, side_sign: float, target_y: float, target_z: float) -> Dictionary:
+static func _sample_fuselage_side(root: Node3D, host: MeshInstance3D, side_sign: float, target_y: float, target_z: float, cache_prefix: String = "") -> Dictionary:
+	var cache_key := ""
+	if not cache_prefix.is_empty():
+		cache_key = cache_prefix + ":" + PackedFloat64Array([side_sign, target_y, target_z]).to_byte_array().hex_encode()
+		if _fuselage_sample_cache.has(cache_key):
+			_touch_bounded_cache(_fuselage_sample_cache, _fuselage_sample_cache_order, cache_key)
+			return _fuselage_sample_cache[cache_key]
 	var best_x := -INF if side_sign > 0.0 else INF
 	var best_position := Vector3.ZERO
 	var best_normal := Vector3.ZERO
@@ -520,7 +727,10 @@ static func _sample_fuselage_side(root: Node3D, host: MeshInstance3D, side_sign:
 				best_x = point.x
 				best_position = point
 				best_normal = outward
-	return {} if best_normal.length_squared() < 0.5 else {position = best_position, normal = best_normal}
+	var result := {} if best_normal.length_squared() < 0.5 else {position = best_position, normal = best_normal}
+	if not cache_key.is_empty():
+		_bounded_cache_store(_fuselage_sample_cache, _fuselage_sample_cache_order, cache_key, result, FUSELAGE_SAMPLE_CACHE_CAPACITY)
+	return result
 
 
 static func _barycentric_yz(point: Vector2, a: Vector3, b: Vector3, c: Vector3) -> Vector3:
@@ -628,16 +838,27 @@ static func _add_hub_fasteners(root: Node3D) -> void:
 		group.name = "TimberHubFasteners"
 		group.set_meta("crash_no_bounds", true)
 		host.add_child(group)
+		var surface := SurfaceTool.new()
+		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+		var bolt_pose := Node3D.new()
 		for side_sign in [-1.0, 1.0]:
 			for fastener_index in int(config.count):
 				var angle := TAU * float(fastener_index) / float(config.count)
-				var fastener := MeshInstance3D.new()
-				fastener.name = "HubBolt_%d_%s" % [fastener_index, "outer" if side_sign > 0 else "inner"]
-				fastener.mesh = cap
-				fastener.position = Vector3(side_sign * (float(config.axial_center_m) + float(config.head_depth_m) * 0.5), float(config.circle_radius_m) * cos(angle), float(config.circle_radius_m) * sin(angle))
-				fastener.rotation.z = -side_sign * PI * 0.5
-				fastener.set_meta("crash_no_bounds", true)
-				group.add_child(fastener)
+				bolt_pose.position = Vector3(side_sign * (float(config.axial_center_m) + float(config.head_depth_m) * 0.5), float(config.circle_radius_m) * cos(angle), float(config.circle_radius_m) * sin(angle))
+				bolt_pose.rotation.z = -side_sign * PI * 0.5
+				surface.append_from(cap, 0, bolt_pose.transform)
+		bolt_pose.free()
+		surface.set_material(material)
+		var merged := surface.commit() as ArrayMesh
+		if merged == null:
+			group.free()
+			continue
+		merged.resource_name = "TimberHubFastenersMerged"
+		var batch := MeshInstance3D.new()
+		batch.name = "HubFastenersMerged"
+		batch.mesh = merged
+		batch.set_meta("crash_no_bounds", true)
+		group.add_child(batch)
 
 
 static func _add_fracture_reveals(root: Node3D) -> void:
@@ -646,7 +867,9 @@ static func _add_fracture_reveals(root: Node3D) -> void:
 		var host := _find_mesh(root, str(config.host))
 		if host == null or host.mesh == null:
 			continue
-		var outline := _cross_section_outline(root, host, float(config.cut_x_m))
+		var cut_x := float(config.cut_x_m)
+		var outline_x := float(config.get("outline_x_m", cut_x))
+		var outline := _cross_section_outline(root, host, outline_x)
 		if outline.size() < 3:
 			continue
 		var normal_sign := 1.0 if section == "wing_left" else -1.0
@@ -660,7 +883,7 @@ static func _add_fracture_reveals(root: Node3D) -> void:
 		host.add_child(reveal)
 		var foam := MeshInstance3D.new()
 		foam.name = "TornEPOCrossSection"
-		foam.mesh = _face_mesh(_roughen_outline(outline, 0.00065), float(config.cut_x_m), normal_sign, 0.00012)
+		foam.mesh = _face_mesh(_roughen_outline(outline, 0.00065), cut_x, normal_sign, FRACTURE_CAP_OFFSET_M)
 		foam.material_override = _foam_cut_material()
 		foam.set_meta("crash_no_bounds", true)
 		reveal.add_child(foam)
@@ -673,7 +896,9 @@ static func _add_fracture_reveals(root: Node3D) -> void:
 		spar_mesh.radial_segments = 20
 		spar_mesh.rings = 2
 		spar.mesh = spar_mesh
-		spar.position = Vector3(float(config.cut_x_m) - normal_sign * float(config.spar_depth_m) * 0.5, float(config.spar_y_m), float(config.spar_z_m))
+		var spar_depth := float(config.spar_depth_m)
+		var spar_proud := float(config.get("spar_proud_m", 0.0))
+		spar.position = Vector3(cut_x - normal_sign * spar_depth * 0.5 + normal_sign * (FRACTURE_CAP_OFFSET_M + spar_proud), float(config.spar_y_m), float(config.spar_z_m))
 		spar.rotation.z = -normal_sign * PI * 0.5
 		spar.material_override = _carbon_material()
 		spar.set_meta("crash_no_bounds", true)
@@ -782,12 +1007,21 @@ static func _face_mesh(outline: PackedVector3Array, cut_x: float, normal_sign: f
 		var p_center := Vector3(cut_x + normal_sign * offset, center.y, center.z)
 		var p_a := Vector3(cut_x + normal_sign * offset, a.y, a.z)
 		var p_b := Vector3(cut_x + normal_sign * offset, b.y, b.z)
+		var face_cross := (p_a - p_center).cross(p_b - p_center)
+		if face_cross.length_squared() <= 1.0e-18:
+			continue
+		# Godot's back-face culling treats clockwise triangles as front-facing.
+		# Keep every triangle consistent even when the roughened outline is locally concave.
+		if face_cross.dot(normal) >= 0.0:
+			var swap_point := p_a
+			p_a = p_b
+			p_b = swap_point
 		st.set_normal(normal)
 		st.add_vertex(p_center)
 		st.set_normal(normal)
-		st.add_vertex(p_a if normal_sign > 0.0 else p_b)
+		st.add_vertex(p_a)
 		st.set_normal(normal)
-		st.add_vertex(p_b if normal_sign > 0.0 else p_a)
+		st.add_vertex(p_b)
 	return st.commit()
 
 
@@ -797,6 +1031,7 @@ static func _foam_cut_material() -> StandardMaterial3D:
 	material.albedo_color = Color("#eeeae0")
 	material.roughness = 0.94
 	material.metallic_specular = 0.08
+	_apply_surface_texture(material, {"texture": "foam", "normal_scale": 0.12, "world_tiling_per_m": 3.0})
 	return material
 
 

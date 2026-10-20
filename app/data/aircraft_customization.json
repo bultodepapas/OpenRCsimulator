@@ -226,7 +226,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e"
+          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -253,7 +253,7 @@
           "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
         }
       ],
-      "slots_sha256": "12b76fde8b78bff4c3299944257ccdc7498d2e3e8eec44e4d8d944092608aa27"
+      "slots_sha256": "29d80b5f51123ed00727061643db3952ba71f0f53eb219f21eacd6ba4fb01bf4"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -481,7 +481,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e"
+          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -508,7 +508,7 @@
           "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
         }
       ],
-      "slots_sha256": "27669b3b648caba51c2f232e21782dbac4aa20807f912df96091b8a143841b3b"
+      "slots_sha256": "a0e0229126ad390717bf85cf45ed4ac96e69da69ccf623a739a4b342d94c62fc"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -756,7 +756,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e"
+          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -783,7 +783,7 @@
           "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
         }
       ],
-      "slots_sha256": "b4166b28167d3e18f59246f80c354f125542a17da977f3a78192b2857f1e49d3"
+      "slots_sha256": "d7dc703f4bd5339bce000bdd6968d3b4688e748d65a1e779633521a08a168c23"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -881,6 +881,24 @@
           ]
         },
         {
+          "id": "show_tailpipe",
+          "label": "Tailpipe",
+          "kind": "show",
+          "pair": "",
+          "role": "tailpipe",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.07992,
+            1.28196
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
+        },
+        {
           "id": "show_wing_tip_left",
           "label": "Left wingtip",
           "kind": "show",
@@ -921,7 +939,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e"
+          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -948,7 +966,7 @@
           "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
         }
       ],
-      "slots_sha256": "129f2bcfc688bcf892d6378ed098409e1a2820367b7edd0855331e7615a52b63"
+      "slots_sha256": "429351b5841d7407fb0905167915cfe590ad4e2f847a515992165a95d68b9047"
     },
     {
       "format": "openrc-aircraft-customization-bindings",
@@ -1160,7 +1178,7 @@
       "presentation_sources": [
         {
           "path": "res://render/aircraft_customization.gd",
-          "sha256": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e"
+          "sha256": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d"
         },
         {
           "path": "res://render/presentation_sources.gd",
@@ -1187,7 +1205,7 @@
           "sha256": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a"
         }
       ],
-      "slots_sha256": "7f64f9ab6d225ab311de836421709df8f9d53db731d2633218736c057378a576"
+      "slots_sha256": "238c2af3c75807344e1d20da8bf6fc81aaf700b5c315fb186bdb082389f000c7"
     }
   ]
 }

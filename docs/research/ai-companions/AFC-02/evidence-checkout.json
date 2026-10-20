@@ -1,0 +1,223 @@
+{
+  "format": "openrc-afc02-evidence-checkout v1",
+  "step": "AFC-02",
+  "captured_utc": "2026-10-20T20:26:53.971272+00:00",
+  "observed_main_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "method": "Copied the current .gitattributes and the six listed evidence files into a disposable Git repository. Committed only that temporary repository, then created fresh no-hardlinks clones with core.autocrlf=true and false configured before checkout.",
+  "disposable_commit": "01b45cf5b7e3712abcdcba8a0f8644ee18b6d31f",
+  "gitattributes_blob": "e55ad59da98c5b58541205729246bc9d773b120b",
+  "main_index_sha256_before": "b3a7440beef1a9982a3a52fdf667f021387bcd5b2ea2cac74c788ae604540ad8",
+  "main_index_sha256_after": "b3a7440beef1a9982a3a52fdf667f021387bcd5b2ea2cac74c788ae604540ad8",
+  "main_index_unchanged": true,
+  "source_files": {
+    "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log": {
+      "sha256": "4b1bda8a0813e3f8797551676323fb8245c88f74def9bcbceeefe1e65aed6b1c",
+      "bytes": 1800,
+      "crlf_lines": 32,
+      "lf_lines": 0,
+      "lone_cr": 0
+    },
+    "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json": {
+      "sha256": "d91419b3d52d33116dfe5eb2e05a117c28154ff134c13e6e5460e7830f672f16",
+      "bytes": 3304,
+      "crlf_lines": 0,
+      "lf_lines": 74,
+      "lone_cr": 0
+    },
+    "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log": {
+      "sha256": "87ac4ddc2b36116abb6ed0969cd966e935ce63e76fd5d2228e3f65ba198b209b",
+      "bytes": 1150,
+      "crlf_lines": 14,
+      "lf_lines": 0,
+      "lone_cr": 0
+    },
+    "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json": {
+      "sha256": "7af6db9661d2654574ced0606e321824291a33a8cb4ab803b355e9b915c5d71d",
+      "bytes": 1275,
+      "crlf_lines": 40,
+      "lf_lines": 0,
+      "lone_cr": 0
+    },
+    "docs/research/ai-companions/AFC-02/integration-receipt.json": {
+      "sha256": "0fa3dd2d18fce66f9cf9bc93174db225f26c00e1989614f78e2d7ccf2efaebfd",
+      "bytes": 2984,
+      "crlf_lines": 0,
+      "lf_lines": 52,
+      "lone_cr": 0
+    },
+    "docs/research/ai-companions/pilot/flight_samples_1hz.csv": {
+      "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+      "bytes": 196250,
+      "crlf_lines": 0,
+      "lf_lines": 1441,
+      "lone_cr": 0
+    }
+  },
+  "checkout_results": {
+    "true": {
+      "core_autocrlf": "true",
+      "commit": "01b45cf5b7e3712abcdcba8a0f8644ee18b6d31f",
+      "gitattributes_blob": "e55ad59da98c5b58541205729246bc9d773b120b",
+      "files": {
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log": {
+          "sha256": "4b1bda8a0813e3f8797551676323fb8245c88f74def9bcbceeefe1e65aed6b1c",
+          "bytes": 1800,
+          "crlf_lines": 32,
+          "lf_lines": 0,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json": {
+          "sha256": "d91419b3d52d33116dfe5eb2e05a117c28154ff134c13e6e5460e7830f672f16",
+          "bytes": 3304,
+          "crlf_lines": 0,
+          "lf_lines": 74,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log": {
+          "sha256": "87ac4ddc2b36116abb6ed0969cd966e935ce63e76fd5d2228e3f65ba198b209b",
+          "bytes": 1150,
+          "crlf_lines": 14,
+          "lf_lines": 0,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json": {
+          "sha256": "7af6db9661d2654574ced0606e321824291a33a8cb4ab803b355e9b915c5d71d",
+          "bytes": 1275,
+          "crlf_lines": 40,
+          "lf_lines": 0,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/integration-receipt.json": {
+          "sha256": "0fa3dd2d18fce66f9cf9bc93174db225f26c00e1989614f78e2d7ccf2efaebfd",
+          "bytes": 2984,
+          "crlf_lines": 0,
+          "lf_lines": 52,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/pilot/flight_samples_1hz.csv": {
+          "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+          "bytes": 196250,
+          "crlf_lines": 0,
+          "lf_lines": 1441,
+          "lone_cr": 0
+        }
+      },
+      "attributes": {
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log": [
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log: whitespace: unset"
+        ],
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json": [
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json: whitespace: unspecified"
+        ],
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log": [
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log: whitespace: unset"
+        ],
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json": [
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json: whitespace: unspecified"
+        ],
+        "docs/research/ai-companions/AFC-02/integration-receipt.json": [
+          "docs/research/ai-companions/AFC-02/integration-receipt.json: text: unset",
+          "docs/research/ai-companions/AFC-02/integration-receipt.json: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/integration-receipt.json: whitespace: unspecified"
+        ],
+        "docs/research/ai-companions/pilot/flight_samples_1hz.csv": [
+          "docs/research/ai-companions/pilot/flight_samples_1hz.csv: text: unset",
+          "docs/research/ai-companions/pilot/flight_samples_1hz.csv: eol: unspecified",
+          "docs/research/ai-companions/pilot/flight_samples_1hz.csv: whitespace: unspecified"
+        ]
+      }
+    },
+    "false": {
+      "core_autocrlf": "false",
+      "commit": "01b45cf5b7e3712abcdcba8a0f8644ee18b6d31f",
+      "gitattributes_blob": "e55ad59da98c5b58541205729246bc9d773b120b",
+      "files": {
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log": {
+          "sha256": "4b1bda8a0813e3f8797551676323fb8245c88f74def9bcbceeefe1e65aed6b1c",
+          "bytes": 1800,
+          "crlf_lines": 32,
+          "lf_lines": 0,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json": {
+          "sha256": "d91419b3d52d33116dfe5eb2e05a117c28154ff134c13e6e5460e7830f672f16",
+          "bytes": 3304,
+          "crlf_lines": 0,
+          "lf_lines": 74,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log": {
+          "sha256": "87ac4ddc2b36116abb6ed0969cd966e935ce63e76fd5d2228e3f65ba198b209b",
+          "bytes": 1150,
+          "crlf_lines": 14,
+          "lf_lines": 0,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json": {
+          "sha256": "7af6db9661d2654574ced0606e321824291a33a8cb4ab803b355e9b915c5d71d",
+          "bytes": 1275,
+          "crlf_lines": 40,
+          "lf_lines": 0,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/AFC-02/integration-receipt.json": {
+          "sha256": "0fa3dd2d18fce66f9cf9bc93174db225f26c00e1989614f78e2d7ccf2efaebfd",
+          "bytes": 2984,
+          "crlf_lines": 0,
+          "lf_lines": 52,
+          "lone_cr": 0
+        },
+        "docs/research/ai-companions/pilot/flight_samples_1hz.csv": {
+          "sha256": "8b6293ef761844afba150313152f2262e417af5ddc43373424a905ad805745d2",
+          "bytes": 196250,
+          "crlf_lines": 0,
+          "lf_lines": 1441,
+          "lone_cr": 0
+        }
+      },
+      "attributes": {
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log": [
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-engine.log: whitespace: unset"
+        ],
+        "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json": [
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/canonical-profile-validation-report.json: whitespace: unspecified"
+        ],
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log": [
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/engine.log: whitespace: unset"
+        ],
+        "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json": [
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json: text: unset",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/checks/profile-manager-canonical-yp6wa77x/report.json: whitespace: unspecified"
+        ],
+        "docs/research/ai-companions/AFC-02/integration-receipt.json": [
+          "docs/research/ai-companions/AFC-02/integration-receipt.json: text: unset",
+          "docs/research/ai-companions/AFC-02/integration-receipt.json: eol: unspecified",
+          "docs/research/ai-companions/AFC-02/integration-receipt.json: whitespace: unspecified"
+        ],
+        "docs/research/ai-companions/pilot/flight_samples_1hz.csv": [
+          "docs/research/ai-companions/pilot/flight_samples_1hz.csv: text: unset",
+          "docs/research/ai-companions/pilot/flight_samples_1hz.csv: eol: unspecified",
+          "docs/research/ai-companions/pilot/flight_samples_1hz.csv: whitespace: unspecified"
+        ]
+      }
+    }
+  },
+  "evidence_bytes_match_current_and_between_clones": true,
+  "gitattributes_blob_matches_between_clones": true,
+  "retained_checkout_root": ".tools/afc02-evidence-checkout-629v1h3a"
+}

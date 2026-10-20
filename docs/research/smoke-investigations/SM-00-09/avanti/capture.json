@@ -1,0 +1,68 @@
+{
+	"captures_sha256": {
+		"flight-trail.png": "098b727cb23d674fa70fde7afdc6dfc8c1cbc91ecab961f1fdf91ac57112be35",
+		"off-expired.png": "11050a39e44d12416667babf135cc2d06a0b2d4a0a323df16b5d8fca34ecd77b",
+		"off-residual.png": "ad390ae4b3b428661c060b428828f24b9062e3a0b4dad7eb938ee706a0f2c198",
+		"tailpipe-close.png": "2bd69e783a8a644851cb0cca9e42bd4828ac369396f90fc868573c2bec7e9ffe"
+	},
+	"crash": {},
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"fault": "",
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"scope": "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted.",
+	"smoke": {
+		"allocation": {
+			"budget_limit": 768,
+			"capacity": 768,
+			"configured": true,
+			"fault": "",
+			"show_emitters": 1,
+			"slot_particles": {
+				"show_tailpipe": 768
+			},
+			"source_emitters": 0
+		},
+		"disabled": false,
+		"mode": "stock",
+		"preset": "avanti-white-tailpipe-v1",
+		"requested": false,
+		"source_running": true
+	},
+	"smoke_on": {
+		"allocation": {
+			"budget_limit": 768,
+			"capacity": 768,
+			"configured": true,
+			"fault": "",
+			"show_emitters": 1,
+			"slot_particles": {
+				"show_tailpipe": 768
+			},
+			"source_emitters": 0
+		},
+		"disabled": false,
+		"mode": "stock",
+		"preset": "avanti-white-tailpipe-v1",
+		"requested": true,
+		"source_running": true
+	},
+	"source_sha256": {
+		"C:/DEVELOPMENT/OpenRCsimulator/tools/smoke/capture_avanti.gd": "e361fe9a1ba559b1b4061575382d0f0ac4e2a4cfc9f97f1f70d64bb6aaf75dea",
+		"res://data/aircraft_customization.json": "531c1c128b34dbc1a8d960f968af7e6b83ba1347b0cc54003ec52fa03a9461ff",
+		"res://main.gd": "eabb1b5e0d981aef9758aeb5e595a56848e91fa02ef6f0ca3364683d1d6158c2",
+		"res://render/smoke/profile_process.gdshader": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1",
+		"res://render/smoke/profile_smoke.gd": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547",
+		"res://render/smoke/stock_profile.gd": "ce44e62ab7b3bdb457b9d978c605f3428d7bdb296126942e4fefa35b4c7c395d"
+	},
+	"tick": 1800
+}

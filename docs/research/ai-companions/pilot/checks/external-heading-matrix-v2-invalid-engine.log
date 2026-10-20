@@ -1,0 +1,151 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Club field loads from accepted data  []
+ok   calm 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 0-slot Club field installs
+ok   calm 0-slot pilot accepts current Stik trim
+ok   calm 0-slot spawn uses reset-boundary AGL pose
+ok   calm 1-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.94..35.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=infm max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 1-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.94..35.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=infm max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 1-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.94..35.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=infm max_bank=26.2deg max_input=0.6576 refusals=0
+FAIL calm 1-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.94..35.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=infm max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 1-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.94..35.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=infm max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 1-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.94..35.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=infm max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 0-slot Club field installs
+ok   calm 0-slot pilot accepts current Stik trim
+ok   calm 0-slot spawn uses reset-boundary AGL pose
+ok   calm 1-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 1-slot Club field installs
+ok   calm 1-slot pilot accepts current Stik trim
+ok   calm 1-slot spawn uses reset-boundary AGL pose
+ok   calm 2-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.94..55.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=25.04m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 2-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.94..55.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=25.04m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 2-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.94..55.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=25.04m max_bank=26.2deg max_input=0.6576 refusals=0
+FAIL calm 2-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.94..55.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=25.04m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 2-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.94..55.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=25.04m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 2-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.94..55.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=25.04m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 2-Stik flight for 120 simulated seconds keeps all aircraft centers at least 15 m apart  ticks=28800/28800 AGL=33.94..55.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=25.04m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 0-slot Club field installs
+ok   calm 0-slot pilot accepts current Stik trim
+ok   calm 0-slot spawn uses reset-boundary AGL pose
+ok   calm 1-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 1-slot Club field installs
+ok   calm 1-slot pilot accepts current Stik trim
+ok   calm 1-slot spawn uses reset-boundary AGL pose
+ok   calm 2-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 2-slot Club field installs
+ok   calm 2-slot pilot accepts current Stik trim
+ok   calm 2-slot spawn uses reset-boundary AGL pose
+ok   calm 3-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+FAIL calm 3-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps all aircraft centers at least 15 m apart  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   gentle-practice 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   gentle-practice 0-slot Club field installs
+ok   gentle-practice 0-slot pilot accepts current Stik trim
+ok   gentle-practice 0-slot spawn uses reset-boundary AGL pose
+ok   gentle-practice 1-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.93..35.01m TAS=14.56..15.34m/s max_radius_error=64.09m min_player=122.48m min_pair=infm max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 1-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.93..35.01m TAS=14.56..15.34m/s max_radius_error=64.09m min_player=122.48m min_pair=infm max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 1-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.93..35.01m TAS=14.56..15.34m/s max_radius_error=64.09m min_player=122.48m min_pair=infm max_bank=26.3deg max_input=0.6605 refusals=0
+FAIL gentle-practice 1-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.93..35.01m TAS=14.56..15.34m/s max_radius_error=64.09m min_player=122.48m min_pair=infm max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 1-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.93..35.01m TAS=14.56..15.34m/s max_radius_error=64.09m min_player=122.48m min_pair=infm max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 1-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.93..35.01m TAS=14.56..15.34m/s max_radius_error=64.09m min_player=122.48m min_pair=infm max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   gentle-practice 0-slot Club field installs
+ok   gentle-practice 0-slot pilot accepts current Stik trim
+ok   gentle-practice 0-slot spawn uses reset-boundary AGL pose
+ok   gentle-practice 1-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   gentle-practice 1-slot Club field installs
+ok   gentle-practice 1-slot pilot accepts current Stik trim
+ok   gentle-practice 1-slot spawn uses reset-boundary AGL pose
+ok   gentle-practice 2-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.93..55.01m TAS=14.56..15.46m/s max_radius_error=78.62m min_player=122.48m min_pair=25.04m max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 2-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.93..55.01m TAS=14.56..15.46m/s max_radius_error=78.62m min_player=122.48m min_pair=25.04m max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 2-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.93..55.01m TAS=14.56..15.46m/s max_radius_error=78.62m min_player=122.48m min_pair=25.04m max_bank=26.3deg max_input=0.6605 refusals=0
+FAIL gentle-practice 2-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.93..55.01m TAS=14.56..15.46m/s max_radius_error=78.62m min_player=122.48m min_pair=25.04m max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 2-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.93..55.01m TAS=14.56..15.46m/s max_radius_error=78.62m min_player=122.48m min_pair=25.04m max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 2-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.93..55.01m TAS=14.56..15.46m/s max_radius_error=78.62m min_player=122.48m min_pair=25.04m max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 2-Stik flight for 120 simulated seconds keeps all aircraft centers at least 15 m apart  ticks=28800/28800 AGL=33.93..55.01m TAS=14.56..15.46m/s max_radius_error=78.62m min_player=122.48m min_pair=25.04m max_bank=26.3deg max_input=0.6605 refusals=0
+ok   gentle-practice 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   gentle-practice 0-slot Club field installs
+ok   gentle-practice 0-slot pilot accepts current Stik trim
+ok   gentle-practice 0-slot spawn uses reset-boundary AGL pose
+ok   gentle-practice 1-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   gentle-practice 1-slot Club field installs
+ok   gentle-practice 1-slot pilot accepts current Stik trim
+ok   gentle-practice 1-slot spawn uses reset-boundary AGL pose
+ok   gentle-practice 2-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   gentle-practice 2-slot Club field installs
+ok   gentle-practice 2-slot pilot accepts current Stik trim
+ok   gentle-practice 2-slot spawn uses reset-boundary AGL pose
+ok   gentle-practice 3-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.93..75.01m TAS=14.55..15.50m/s max_radius_error=78.32m min_player=122.48m min_pair=23.62m max_bank=26.3deg max_input=0.6619 refusals=0
+ok   gentle-practice 3-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.93..75.01m TAS=14.55..15.50m/s max_radius_error=78.32m min_player=122.48m min_pair=23.62m max_bank=26.3deg max_input=0.6619 refusals=0
+ok   gentle-practice 3-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.93..75.01m TAS=14.55..15.50m/s max_radius_error=78.32m min_player=122.48m min_pair=23.62m max_bank=26.3deg max_input=0.6619 refusals=0
+FAIL gentle-practice 3-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.93..75.01m TAS=14.55..15.50m/s max_radius_error=78.32m min_player=122.48m min_pair=23.62m max_bank=26.3deg max_input=0.6619 refusals=0
+ok   gentle-practice 3-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.93..75.01m TAS=14.55..15.50m/s max_radius_error=78.32m min_player=122.48m min_pair=23.62m max_bank=26.3deg max_input=0.6619 refusals=0
+ok   gentle-practice 3-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.93..75.01m TAS=14.55..15.50m/s max_radius_error=78.32m min_player=122.48m min_pair=23.62m max_bank=26.3deg max_input=0.6619 refusals=0
+ok   gentle-practice 3-Stik flight for 120 simulated seconds keeps all aircraft centers at least 15 m apart  ticks=28800/28800 AGL=33.93..75.01m TAS=14.55..15.50m/s max_radius_error=78.32m min_player=122.48m min_pair=23.62m max_bank=26.3deg max_input=0.6619 refusals=0
+ok   calm 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 0-slot Club field installs
+ok   calm 0-slot pilot accepts current Stik trim
+ok   calm 0-slot spawn uses reset-boundary AGL pose
+ok   calm 1-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 1-slot Club field installs
+ok   calm 1-slot pilot accepts current Stik trim
+ok   calm 1-slot spawn uses reset-boundary AGL pose
+ok   calm 2-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 2-slot Club field installs
+ok   calm 2-slot pilot accepts current Stik trim
+ok   calm 2-slot spawn uses reset-boundary AGL pose
+ok   calm 3-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+FAIL calm 3-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps all aircraft centers at least 15 m apart  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 0-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 0-slot Club field installs
+ok   calm 0-slot pilot accepts current Stik trim
+ok   calm 0-slot spawn uses reset-boundary AGL pose
+ok   calm 1-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 1-slot Club field installs
+ok   calm 1-slot pilot accepts current Stik trim
+ok   calm 1-slot spawn uses reset-boundary AGL pose
+ok   calm 2-slot weather preset loads
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   calm 2-slot Club field installs
+ok   calm 2-slot pilot accepts current Stik trim
+ok   calm 2-slot spawn uses reset-boundary AGL pose
+ok   calm 3-Stik flight for 120 simulated seconds completes without refusal, crash or simulation fault  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds stays within the clearance envelope  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds stays within the 10..25 m/s TAS envelope  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+FAIL calm 3-Stik flight for 120 simulated seconds stays within the assigned circuit band  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps the player at least 30 m clear  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps normalized inputs within travel  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   calm 3-Stik flight for 120 simulated seconds keeps all aircraft centers at least 15 m apart  ticks=28800/28800 AGL=33.94..75.01m TAS=14.94..15.03m/s max_radius_error=72.46m min_player=123.50m min_pair=23.88m max_bank=26.2deg max_input=0.6576 refusals=0
+ok   seeded three-aircraft calm replay has bit-identical sampled state and command trace
+ok   both seeded replay flights complete 120 simulated seconds
+ok   qualification CSV outputs are written
+companion pilot qualification: 130 checks, 8 failed

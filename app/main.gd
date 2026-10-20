@@ -288,9 +288,11 @@ var _frametimes_sim_start_tick: int = 0
 var _note := ""
 var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
-const ProfileSmoke := preload("res://render/smoke/profile_smoke.gd")
+const ProfileSmoke := preload("res://render/smoke/smoke_system.gd")
+const StockSmoke := preload("res://render/smoke/stock_profile.gd")
 const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 var _profile_smoke: Node3D
+var _stock_smoke_profile := false
 var _profile_smoke_tick := 0
 var _profile_request_tape: Array = []
 var _profile_source_tape: Array = []
@@ -298,6 +300,8 @@ var _profile_last_request := -1.0
 var _profile_last_running := false
 var _profile_presented_request := 0.0
 var _profile_presented_running := false
+var _profile_last_level := -1.0
+var _profile_presented_level := 0.0
 var _smoke: EngineSmoke
 var _smoke_key_on := false
 var _smoke_assignment: SmokeAssignment
@@ -699,19 +703,25 @@ func _ready() -> void:
 	PropellerBlur.attach(_airplane, session, self)
 	# A frozen profile replaces the legacy exhaust rig. Global smoke-off suppresses
 	# either runtime, while technical trace/capture routes may still render a profile.
-	var profile_smoke_entries: Array = workshop_trial.get("presentation_profile", {}).get("smoke", [])
+	var selected_smoke_profile: Dictionary = workshop_trial.get("presentation_profile", {})
+	# Stock effects use authored show mounts, never inferred engine exhaust. A saved
+	# Workshop appearance (including an empty smoke selection) owns its own choices.
+	if workshop_trial.is_empty() and str(args.get("smoke-backend", "profile")) != "legacy" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
+		selected_smoke_profile = StockSmoke.for_aircraft(_airplane.get("customization_bindings", {}), session.aircraft.model.propulsion)
+		_stock_smoke_profile = not selected_smoke_profile.is_empty()
+	var profile_smoke_entries: Array = selected_smoke_profile.get("smoke", [])
 	if not profile_smoke_entries.is_empty():
 		if str(args.get("smoke", "on")) != "off":
 			_smoke_key_on = str(args.get("smoke-pump", "off")) == "on"
 			var described := AircraftCustomization.describe(aircraft_id)
 			_profile_smoke = ProfileSmoke.new()
 			add_child(_profile_smoke)
-			if not described.get("ok", false) or not _profile_smoke.configure(workshop_trial.presentation_profile, described.get("bindings", {})):
-				startup_error = "The frozen smoke profile is no longer available."
+			if not described.get("ok", false) or not _profile_smoke.configure(selected_smoke_profile, described.get("bindings", {})):
+				startup_error = "The aircraft smoke profile is no longer available."
 				return
 			_profile_smoke.play()
 			session.sim.stepped.connect(_sample_profile_smoke)
-	elif str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
+	elif workshop_trial.is_empty() and str(args.get("smoke-backend", "profile")) == "legacy" and str(args.get("smoke", "on")) != "off" and not _scripted and not args.has("capture") and not args.has("trace") and session.aircraft.get("ok", false):
 		var mouths: Array = _airplane.get("exhausts", [])
 		if mouths.size() == 1 and EngineSmoke.valid_anchor(mouths[0]) \
 				and Propulsion.source_kind(session.aircraft.model.propulsion) == mouths[0].kind:
@@ -808,6 +818,16 @@ func _ready() -> void:
 		return
 	_companions_initialized = true
 	flight_log = FlightLog.new(session)
+	var fleet_capture: Dictionary = CompanionConfig.recording_options(user_args)
+	if not str(fleet_capture.directory).is_empty():
+		var capture_started: Dictionary = companions.start_recording(str(fleet_capture.directory))
+		if not capture_started.ok:
+			startup_error = "; ".join(capture_started.errors)
+			session.hold("companion-capture-refused")
+			printerr(startup_error)
+			if not interactive_start: get_tree().quit(ERR_CANT_CREATE)
+			return
+		_update_flight_log_label()
 	if args.has("flight-log"):
 		if typeof(args["flight-log"]) != TYPE_STRING or str(args["flight-log"]).is_empty() or _scripted or args.has("capture"):
 			push_error("--flight-log requires a new file path and a physics flight.")
@@ -960,7 +980,7 @@ func _update_smoke() -> void:
 		wash = _airplane.root.global_basis * Vector3(-axis[1], axis[2], axis[0]) * maxf(flow.w, 0.0)
 	_smoke.advance(clock_s, _airplane.root.global_transform, Propulsion.source_kind(prop), sim.aux[0],
 		float(prop.get("idle_rpm", 0.0)), float(prop.get("max_rpm", 0.0)), sim.inputs[3], _render_wind(clock_s),
-		request, session.crash.is_empty() and sim.fault_reason.is_empty(), _camera.global_position.distance_to(_airplane.root.global_position), wash)
+		request, session.propulsion_source_running() and session.crash.is_empty() and sim.fault_reason.is_empty(), _camera.global_position.distance_to(_airplane.root.global_position), wash)
 
 
 func _begin_smoke_assignment() -> void:
@@ -1433,13 +1453,19 @@ func _unhandled_input(event: InputEvent) -> void:
 				return
 		match event.physical_keycode:
 			KEY_F10:
-				if flight_log != null and not _scripted:
+				if companions != null and companions.recording_status().active:
+					companions.stop_recording("stopped by F10")
+					get_viewport().set_input_as_handled()
+				elif flight_log != null and not _scripted:
 					if flight_log.recording: flight_log.stop()
 					else: flight_log.start()
 					_update_flight_log_label()
 					get_viewport().set_input_as_handled()
 			KEY_F11:
-				if flight_log != null and flight_log.recording:
+				if companions != null and companions.recording_status().active:
+					companions.mark_recording()
+					get_viewport().set_input_as_handled()
+				elif flight_log != null and flight_log.recording:
 					flight_log.mark()
 					_note = "Flight log marker at tick %d" % session.sim.tick
 					get_viewport().set_input_as_handled()
@@ -1600,7 +1626,7 @@ func _overlay_snapshot() -> Dictionary:
 
 func _smoke_requested_for_presentation() -> bool:
 	if _profile_smoke != null:
-		return session.radio.smoke_amount() > 0.0 if session.radio.connected else _smoke_key_on
+		return _profile_smoke_request() > 0.0
 	return _smoke != null and float(_smoke.levels.pump) > 0.0
 
 
@@ -2021,6 +2047,17 @@ func _update_flight_log_label() -> void:
 		_flight_log_label.add_theme_constant_override("shadow_offset_x", 1)
 		_flight_log_label.add_theme_constant_override("shadow_offset_y", 1)
 		_flight_log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if companions != null and companions.recording_status().active:
+		var capture: Dictionary = companions.recording_status()
+		_flight_log_label.text = "FLEET REC %.1f s · F10 stop · F11 mark" % (float(capture.last_tick) / 240.0)
+		_flight_log_label.tooltip_text = str(capture.directory)
+		return
+	if companions != null and not flight_log.recording and flight_log.note.is_empty():
+		var capture: Dictionary = companions.recording_status()
+		if not str(capture.directory).is_empty():
+			_flight_log_label.text = "Fleet capture saved" if capture.complete else "Fleet capture incomplete"
+			_flight_log_label.tooltip_text = str(capture.error) if not str(capture.error).is_empty() else str(capture.directory)
+			return
 	_flight_log_label.text = "REC %.1f s · F10 stop · F11 mark" % flight_log.seconds() if flight_log.recording else flight_log.note
 	_flight_log_label.tooltip_text = flight_log.note
 
@@ -2099,6 +2136,8 @@ func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
 
 
 func _exit_tree() -> void:
+	if companions != null and is_instance_valid(companions):
+		companions.stop_recording("flight closed")
 	if _frame_diagnostics != null:
 		_frame_diagnostics.stop()
 	if _accident_incident != null:
@@ -2152,7 +2191,7 @@ func _companion_options(raw: Dictionary) -> Dictionary:
 		return checked
 	var args := _user_args()
 	if _scripted or args.has("capture") or args.has("trace") or not workshop_trial.is_empty() \
-			or not flight_scenario.is_empty() or not _experimental_aircraft_path.is_empty():
+			or not flight_scenario.is_empty() or not _experimental_aircraft_path.is_empty() or not _electric_demo.is_empty():
 		return {ok = false, errors = ["Companions require a normal fixed-wing flight at Club field."]}
 	return CompanionManager.validate_context(session, field, landscape_id, checked.config)
 
@@ -2646,12 +2685,16 @@ func capture_evidence() -> Dictionary:
 
 
 func _smoke_evidence() -> Dictionary:
+	if _stock_smoke_profile:
+		return {mode = "stock", preset = StockSmoke.PRESET_ID, disabled = _profile_smoke == null,
+			requested = _profile_smoke != null and _profile_smoke_request() > 0.0,
+			source_running = _profile_presented_running,
+			allocation = _profile_smoke.budget_info() if _profile_smoke != null else {}}
 	if _profile_smoke != null:
 		return {mode = "profile", profile_identity = session.workshop_presentation_identity.duplicate(true),
 			requested = _smoke_requested_for_presentation(), source_running = _profile_presented_running,
 			allocation = _profile_smoke.budget_info()}
-	var frozen_smoke: Array = workshop_trial.get("presentation_profile", {}).get("smoke", [])
-	if not frozen_smoke.is_empty():
+	if workshop_trial.has("presentation_profile"):
 		return {mode = "profile", profile_identity = session.workshop_presentation_identity.duplicate(true),
 			requested = false, disabled = true}
 	if _smoke != null:
@@ -2662,14 +2705,16 @@ func _smoke_evidence() -> Dictionary:
 func _sample_profile_smoke(tick: int, _time: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	if _profile_smoke == null: return
-	var request: float = session.radio.smoke_amount() if session.radio.connected else (1.0 if _smoke_key_on else 0.0)
+	var request := _profile_smoke_request()
 	var running: bool = session.propulsion_source_running() and session.crash.is_empty() and session.sim.fault_reason.is_empty()
 	if request != _profile_last_request:
 		_profile_request_tape.append({tick = tick, level = request})
 		_profile_last_request = request
-	if running != _profile_last_running:
-		_profile_source_tape.append({tick = tick, kind = Propulsion.source_kind(session.aircraft.model.propulsion), running = running, level = 1.0})
+	var level := _profile_source_level()
+	if running != _profile_last_running or not is_equal_approx(level, _profile_last_level):
+		_profile_source_tape.append({tick = tick, kind = Propulsion.source_kind(session.aircraft.model.propulsion), running = running, level = level})
 		_profile_last_running = running
+		_profile_last_level = level
 	# Event tapes are bounded even while the renderer is not presenting this world.
 	if _profile_request_tape.size() > 256 or _profile_source_tape.size() > 256:
 		_reset_profile_smoke()
@@ -2680,21 +2725,37 @@ func _update_profile_smoke() -> void:
 	var tick: int = session.sim.tick
 	if tick < _profile_smoke_tick: _reset_profile_smoke()
 	var prop: Dictionary = session.aircraft.model.propulsion
-	var request: float = session.radio.smoke_amount() if session.radio.connected else (1.0 if _smoke_key_on else 0.0)
+	var request := _profile_smoke_request()
 	var elapsed := float(tick - _profile_smoke_tick) / 240.0
 	var transforms := AircraftCustomization.smoke_transforms(_airplane)
+	var sample := {kind = Propulsion.source_kind(prop), running = _profile_presented_running,
+		level = _profile_presented_level, source_id = str(prop.get("id", "$propulsion")),
+		wash_mps = _profile_smoke_wash(prop), changes = _profile_source_tape.duplicate(true)}
+	var sources := ProfileSmoke.source_map(sample)
 	if _profile_smoke_tick == 0:
 		_profile_smoke.advance(0.0, {tick = 0, slot_transforms = transforms}, _render_wind(0.0), 0.0,
 			{kind = Propulsion.source_kind(prop), running = false, level = 1.0})
 	_profile_smoke.advance(elapsed, {tick = tick, slot_transforms = transforms,
-		camera_distance_m = _camera.global_position.distance_to(_airplane.root.global_position)}, _render_wind(session.sim.time()),
+		camera_distance_m = _camera.global_position.distance_to(_airplane.root.global_position),
+		safety_stop = not session.crash.is_empty() or not session.sim.fault_reason.is_empty()}, _render_wind(session.sim.time()),
 		{level = _profile_presented_request, changes = _profile_request_tape.duplicate(true)},
-		{kind = Propulsion.source_kind(prop), running = _profile_presented_running, level = 1.0, changes = _profile_source_tape.duplicate(true)})
+		{kind = sample.kind, running = sample.running, level = sample.level, changes = sample.changes, sources = sources})
 	_profile_request_tape.clear()
 	_profile_source_tape.clear()
 	_profile_smoke_tick = tick
 	_profile_presented_request = request
+	_profile_presented_level = _profile_source_level()
 	_profile_presented_running = session.propulsion_source_running() and session.crash.is_empty() and session.sim.fault_reason.is_empty()
+
+
+## The stock tailpipe display follows accepted source state, including fuel exhaustion.
+## Custom show profiles keep their independent, user-authored scheduling semantics.
+func _profile_smoke_request() -> float:
+	if not session.crash.is_empty() or not session.sim.fault_reason.is_empty():
+		return 0.0
+	if _stock_smoke_profile and not session.propulsion_source_running():
+		return 0.0
+	return session.radio.smoke_amount() if session.radio.connected else (1.0 if _smoke_key_on else 0.0)
 
 
 func _supports_show_smoke() -> bool:
@@ -2708,8 +2769,31 @@ func _reset_profile_smoke() -> void:
 	_profile_source_tape.clear()
 	_profile_last_request = -1.0
 	_profile_last_running = false
+	_profile_last_level = -1.0
+	_profile_presented_level = 0.0
 	_profile_presented_request = 0.0
 	_profile_presented_running = false
 	if _profile_smoke != null:
 		_profile_smoke.reset()
 		_profile_smoke.play()
+
+
+## Read-only visual observations. Source state remains owned by FlightSession.
+func _profile_source_level() -> float:
+	if _profile_smoke == null or int(_profile_smoke.get("_profile").get("version", 1)) < 2:
+		return 1.0 # historical v1 scheduling semantics
+	var prop: Dictionary = session.aircraft.model.propulsion
+	var observation := ProfileSmoke.source_observation(prop, session.sim.aux[0], session.sim.inputs[3],
+		session.propulsion_source_running())
+	return float(observation.level)
+
+
+func _profile_smoke_wash(prop: Dictionary) -> Vector3:
+	if not prop.has("slipstream") or not session.propulsion_source_running():
+		return Vector3.ZERO
+	var air: Dictionary = session.air_data(session.sim.state, session.sim.time())
+	var rho: float = session.air_density()
+	var output: PackedFloat64Array = Propulsion.thrust_torque(air.v_air, session.sim.aux[0], prop, rho)
+	var flow: Dictionary = Slipstream.wake(air.v_air, output[0], output[1], prop, rho)
+	var axis: PackedFloat64Array = Propulsion.axis(prop)
+	return _airplane.root.global_basis * Vector3(-axis[1], axis[2], axis[0]) * clampf(float(flow.w), 0.0, 30.0)

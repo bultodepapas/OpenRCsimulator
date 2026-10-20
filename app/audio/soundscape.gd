@@ -4,6 +4,7 @@ extends Node3D
 const Model = preload("res://audio/soundscape_model.gd")
 const Wildlife = preload("res://audio/wildlife.gd")
 const GlowVoice = preload("res://audio/glow_voice.gd")
+const GlowAudioPump = preload("res://audio/glow_audio_pump.gd")
 const PowertrainAudio = preload("res://audio/powertrain_audio.gd")
 const WindsockAudioController = preload("res://audio/windsock_audio.gd")
 const PATH: String = "res://assets/audio/soundscape/"
@@ -60,15 +61,13 @@ var birds: Array[AudioStreamWAV] = []
 var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 var kind: String = "glow_prop"
 var glow_family: String = ""
-var glow_voice = GlowVoice.new()
+var glow_pump = GlowAudioPump.new()
 var glow_player: AudioStreamPlayer3D
 var powertrain: Node3D
 var voice_profile: Dictionary = {}
 ## At most one validated field windsock; separate from the fourteen existing scene voices.
 var fabric_audio: RefCounted
 var _glow_pending_start: bool = false
-var _glow_capacity: int = 0
-var _last_glow_refill_usec: int = 0
 var _glow_level: float = 0.0
 var gain: float = 0.0
 var clock_s: float = 0.0
@@ -115,13 +114,11 @@ func _enter_tree() -> void:
 		if voice.stream is AudioStreamWAV and voice.stream.loop_mode != AudioStreamWAV.LOOP_DISABLED:
 			_start_offsets[index] = 0.0
 	if glow_player != null:
+		glow_pump.stop()
 		glow_player.bus = _bus_names[1]
 		glow_player.volume_db = -80.0
 		_glow_pending_start = true
-		_glow_capacity = 0
-		_last_glow_refill_usec = 0
 		_glow_level = 0.0
-		glow_voice.reset()
 	if fabric_audio != null:
 		fabric_audio.rebind(_bus_names[2])
 	if powertrain != null:
@@ -188,6 +185,7 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 				_start_offsets.erase(index)
 				voices[index].stream = null
 			if glow_player != null:
+				glow_pump.stop()
 				glow_player.queue_free()
 				glow_player = null
 		else:
@@ -206,7 +204,6 @@ func _create_glow_player() -> void:
 	var generator := AudioStreamGenerator.new()
 	generator.mix_rate = GlowVoice.RATE
 	generator.buffer_length = 0.15
-	glow_voice.reset()
 	glow_player = AudioStreamPlayer3D.new()
 	glow_player.name = "GlowEngine"
 	glow_player.stream = generator
@@ -224,8 +221,6 @@ func _create_glow_player() -> void:
 		glow_player.max_db = 6.0
 	add_child(glow_player)
 	_glow_pending_start = true
-	_glow_capacity = 0
-	_last_glow_refill_usec = 0
 
 
 func _setup_buses() -> void:
@@ -351,13 +346,11 @@ func reset_observer() -> void:
 		if i >= EVENT_FIRST and i < EVENT_FIRST + EVENT_COUNT:
 			voices[i].stop()
 	if glow_player != null:
+		glow_pump.stop()
 		glow_player.stop()
 		glow_player.volume_db = -80.0
 		_glow_pending_start = true
-		_glow_capacity = 0
-		_last_glow_refill_usec = 0
 		_glow_level = 0.0
-		glow_voice.reset()
 	wildlife.reset()
 	if fabric_audio != null:
 		fabric_audio.reset()
@@ -397,8 +390,6 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	gain = move_toward(gain, mix_target, dt / (0.08 if paused else 0.35))
 	for voice: AudioStreamPlayer3D in voices:
 		voice.stream_paused = paused and gain <= 0.0
-	if glow_player != null:
-		glow_player.stream_paused = paused and gain <= 0.0
 	if not paused:
 		clock_s += dt
 	_screen_clock -= dt
@@ -580,7 +571,6 @@ func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
 	telemetry["load"] = float(telemetry.get("load", snapshot.get("load", 0.45)))
 	telemetry["throttle"] = float(telemetry.get("throttle", snapshot.get("throttle", 0.45)))
 	telemetry["blade_count"] = int(telemetry.get("blade_count", snapshot.get("blades", 2)))
-	glow_voice.set_telemetry(telemetry)
 	var rpm: float = maxf(float(telemetry.get("rpm", 0.0)), 0.0)
 	var max_rpm: float = maxf(float(telemetry.get("max_rpm", 12000.0)), 1.0)
 	var spin: float = clampf(rpm / max_rpm, 0.0, 1.3)
@@ -597,35 +587,17 @@ func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
 	glow_player.volume_db = linear_to_db(maxf(_glow_level * gain * distance_level, 0.0001)) - AIRCRAFT_TRIM_DB
 	if _glow_pending_start and not paused:
 		glow_player.play()
+		glow_player.stream_paused = true
 		var playback := glow_player.get_stream_playback() as AudioStreamGeneratorPlayback
 		if playback != null:
 			playback.set_meta("openrc_generator_source", glow_player.stream)
+			glow_pump.start(playback, telemetry, GlowVoice.RATE)
 		_glow_pending_start = false
-	glow_player.stream_paused = paused and gain <= 0.0
-	# Keep the short generator queue filled through the scene fade. The oscillator holds the last accepted RPM;
-	# this audio refill does not advance simulation state.
-	if paused and gain <= 0.0:
-		return
-	var playback := glow_player.get_stream_playback() as AudioStreamGeneratorPlayback
-	if playback == null:
-		return
-	var available: int = playback.get_frames_available()
-	if _glow_capacity <= 0:
-		_glow_capacity = available
-	var now: int = Time.get_ticks_usec()
-	var gap: float = float(now - _last_glow_refill_usec) / 1000000.0 if _last_glow_refill_usec > 0 else 0.05
-	_last_glow_refill_usec = now
-	var target_seconds: float = 0.035 if gap <= 0.018 else 0.05
-	var target_frames: int = mini(_glow_capacity, ceili(target_seconds * GlowVoice.RATE))
-	var queued: int = _glow_capacity - available
-	var frames: int = clampi(target_frames - queued, 0, available)
-	if frames > 0:
-		# Synchronize oscillator phase at the point after already queued audio, not at the
-		# older accepted snapshot's immediate phase.
-		telemetry["audio_queue_frames"] = queued
-		glow_voice.set_telemetry(telemetry)
-		var buffer: PackedVector2Array = glow_voice.render(float(telemetry["rpm"]), max_rpm, frames)
-		playback.push_buffer(buffer)
+	elif not _glow_pending_start:
+		glow_pump.update_telemetry(telemetry)
+	# The dedicated producer holds the latest accepted telemetry through slow physics frames.
+	# Only playback state and spatial mix belong to this main-thread adapter.
+	glow_player.stream_paused = (paused and gain <= 0.0) or not glow_pump.is_primed()
 
 
 func _level(index: int, target: float, dt: float) -> void:
@@ -668,6 +640,7 @@ func _exit_tree() -> void:
 	for voice: AudioStreamPlayer3D in voices:
 		voice.stop()
 	if glow_player != null:
+		glow_pump.stop()
 		glow_player.stop()
 	if powertrain != null:
 		powertrain.reset_observer()

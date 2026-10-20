@@ -8,6 +8,10 @@ const MANIFEST_PATH := ASSET_PATH + "BANKS.json"
 const BUS_TRIM_DB := 12.0
 const GUARD_FRAMES := 64
 const MAX_LAYERS := 3
+# Authored source matching, measured at 8 m before Master (AUD-15).
+# Recording crest factors differ from the procedural firing voice; equal gains are not equal levels.
+const FAMILY_TRIM_DB := {"glow_2t": -8.0, "glow_4t": -8.0, "gasoline": 6.0,
+	"electric": 6.0, "turbine": 9.0, "rotor": 6.0}
 var profile: Dictionary = {}
 var layers: Array[Dictionary] = []
 var players: Array[AudioStreamPlayer3D] = []
@@ -33,7 +37,8 @@ static func profile_for(aircraft_id: String, propulsion: Dictionary) -> Dictiona
 		family = "rotor"
 	var blades: int = 4 if aircraft_id == "p51d-mustang-120" else (3 if aircraft_id == "turbo-lumber-evolution" else 2)
 	# A .55 installation is slightly lighter voiced than the .61; no fabricated recording identity.
-	var trim: float = -1.0 if aircraft_id == "stik-glow-55ax-2t" else (0.7 if aircraft_id == "gp-extra-300s-60" else 0.0)
+	var trim: float = float(FAMILY_TRIM_DB.get(family, 0.0))
+	trim += -1.0 if aircraft_id == "stik-glow-55ax-2t" else (0.7 if aircraft_id == "gp-extra-300s-60" else 0.0)
 	return {id = aircraft_id, family = family, max_rpm = EngineSound.reference_rpm(propulsion),
 		blades = blades, trim_db = trim}
 
@@ -136,7 +141,9 @@ func update_sound(snapshot: Dictionary, delta: float, mix_gain: float = 1.0, dop
 		# Rotor inertia/autorotation remain audible with the drive in hold.
 		level = 0.40 * pow(ratio, 1.5) * (0.35 + 0.65 * load_amount) * spin
 	elif family == "turbine":
-		level = 0.7 * (0.20 + 0.80 * pow(ratio, 1.7)) * spin if running else 0.0
+		# Idle retains a quiet whine; exhaust energy grows strongly with accepted spool speed.
+		# Saturate amplitude at rated speed; overspeed can still raise pitch without exhausting mix headroom.
+		level = 0.7 * (0.015 + 0.985 * pow(minf(ratio, 1.0), 2.6)) * spin if running else 0.0
 		level *= db_to_linear(Model.table_db(Model.ROAR_DIRECTIVITY, Model.exhaust_angle_deg(snapshot)) * 0.45)
 	var references := PackedFloat64Array()
 	for layer: Dictionary in layers:

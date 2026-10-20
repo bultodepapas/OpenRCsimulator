@@ -24,6 +24,7 @@ func _run() -> void:
 	_test_surface_selection()
 	_test_real_session_snapshot()
 	_test_contact_audio_state_machine()
+	_test_reattachment()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -82,6 +83,16 @@ func _test_contact_audio_state_machine() -> void:
 	_check("roll source is positioned at its gear point before playback", hard_player.global_position == taxi.position)
 	_check("ground audio uses the common manual path law without Godot double attenuation",
 		hard_player.attenuation_model == AudioStreamPlayer3D.ATTENUATION_DISABLED)
+	var slow_taxi: Dictionary = taxi.duplicate(true)
+	slow_taxi.rolling_speed_mps = 2.0
+	for _frame: int in 80:
+		audio.update_contacts(1, false, [slow_taxi], 0.0, 1.0 / 60.0, Vector3.ZERO)
+	var slow_level: float = float(audio.get("_slots")[0].layer_gain[0])
+	_check("walking-speed taxi retains an audible roll envelope", slow_level > 0.1 and hard_player.playing)
+	for _frame: int in 80:
+		audio.update_contacts(1, false, [taxi], 0.0, 1.0 / 60.0, Vector3.ZERO)
+	_check("faster rolling grows smoothly above the taxi level",
+		float(audio.get("_slots")[0].layer_gain[0]) > slow_level * 1.5)
 	var grass := _contact("main", 1400.0, 1000.0, 0.0, 8.0, true, "grass")
 	audio.update_contacts(2, false, [grass], 1.0, 1.0 / 60.0, Vector3.ZERO)
 	_check("mown terrain crossfades to the grass recording", (audio.get_node("Roll_0_1") as AudioStreamPlayer3D).playing)
@@ -154,6 +165,34 @@ func _test_contact_audio_state_machine() -> void:
 	_check("per-contact voice pool remains bounded", audio.contact_slot_count == GroundAudio.MAX_CONTACTS
 		and audio.get_child_count() <= GroundAudio.MAX_CONTACTS * 4)
 	audio.stop()
+	root.remove_child(audio)
+	audio.free()
+
+
+func _test_reattachment() -> void:
+	var audio := GroundAudio.new()
+	audio.configure(root, &"Master")
+	var contact := _contact("retained", 0.0, 1000.0, 2.0, 0.0, false, "hard")
+	for tick: int in range(51):
+		audio.update_contacts(tick, false, [contact], 0.0, 1.0 / 60.0)
+	root.remove_child(audio)
+	root.add_child(audio)
+	contact.normal_force_n = 1200.0
+	contact.grounded = true
+	contact.approach_speed_mps = 0.0
+	audio.update_contacts(1000, false, [contact], 0.0, 1.0 / 60.0)
+	_check("reattachment seeds contact instead of replaying a landing during detachment",
+		audio.touchdown_events == 0 and not (audio.get_node("Touchdown_0") as AudioStreamPlayer3D).playing)
+	contact.normal_force_n = 0.0
+	contact.grounded = false
+	contact.approach_speed_mps = 2.0
+	for tick: int in range(1001, 1051):
+		audio.update_contacts(tick, false, [contact], 0.0, 1.0 / 60.0)
+	contact.normal_force_n = 1200.0
+	contact.grounded = true
+	contact.approach_speed_mps = 0.0
+	audio.update_contacts(1051, false, [contact], 0.0, 1.0 / 60.0)
+	_check("a new landing after reattachment still emits its impact", audio.touchdown_events == 1)
 	root.remove_child(audio)
 	audio.free()
 

@@ -95,6 +95,8 @@ func _run() -> void:
 
 	await _test_glow_pause()
 	await _test_helicopter_audio_read_only()
+	# Let the audio mixer retire streams released by the scene before the fast Dummy test quits.
+	await create_timer(0.1, true, false, true).timeout
 
 	print("AUD-15 powertrain checks: %d, failed: %d" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)

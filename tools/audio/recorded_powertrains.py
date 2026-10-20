@@ -67,13 +67,21 @@ RECORDINGS = {
 # low-pass, target RMS, peak ceiling). Source rate is retained: no upsampling.
 EDITS = {
     "gasoline_low.wav": ("gas_120cc", 0.10, 1.55, 0.20, 45.0, 12000.0, 0.100, 0.398107),
-    # The 5.0 s takeoff section holds a steadier envelope and similar high engine tone
-    # than the later, stronger fly-by section; avoid baking that level swell into the loop.
-    "gasoline_high.wav": ("gas_120cc", 5.00, 2.05, 0.25, 45.0, 14000.0, 0.100, 0.398107),
+    # This short higher-RPM takeoff slice keeps the dominant line near 248 Hz instead
+    # of looping the earlier 166/332-to-248 Hz spool transition.
+    "gasoline_high.wav": ("gas_120cc", 6.00, 1.25, 0.25, 45.0, 14000.0, 0.100, 0.398107),
     "electric_quad.wav": ("electric_quad", 26.0, 9.0, 0.75, 50.0, 12000.0, 0.100, 0.398107),
     "turbine_designed.wav": ("designed_jet", 32.0, 12.0, 1.0, 55.0, 14000.0, 0.100, 0.398107),
     "rotor_low.wav": ("toy_helicopter", 14.6, 4.0, 0.50, 45.0, 12000.0, 0.100, 0.398107),
     "rotor_high.wav": ("toy_helicopter", 2.0, 4.5, 0.50, 45.0, 12000.0, 0.100, 0.398107),
+}
+
+# Reduce slow source-distance level movement in the two fly-around rotor loops.
+# Apply this before final global normalization so their intended mean RMS and the
+# existing peak ceiling remain controlled by the common output stage.
+LEVELING = {
+    "rotor_low.wav": {"window_s": 0.2, "max_gain_db": 3.0},
+    "rotor_high.wav": {"window_s": 0.2, "max_gain_db": 3.0},
 }
 
 # These acoustic estimates are references for runtime pitch mapping, not RPM
@@ -140,6 +148,42 @@ def shape_loop(samples, sample_rate, low_hz, high_hz):
     frequency = np.fft.rfftfreq(len(samples), 1.0 / sample_rate)
     response = (1.0 - np.exp(-((frequency / low_hz) ** 4))) * np.exp(-((frequency / high_hz) ** 8))
     return np.fft.irfft(np.fft.rfft(samples) * response, n=len(samples))
+
+
+def level_periodic_rms(samples, sample_rate, window_s, max_gain_db):
+    """Apply bounded gain from a circular moving RMS envelope without a wrap transient."""
+    window = max(3, round(window_s * sample_rate))
+    if window >= len(samples):
+        raise ValueError("Envelope-level window must be shorter than the loop")
+    count = len(samples)
+    kernel = np.zeros(count, dtype=np.float64)
+    offsets = np.arange(window, dtype=np.int64) - (window // 2)
+    kernel[offsets % count] = 1.0 / window
+    smoothed_power = np.fft.irfft(
+        np.fft.rfft(samples * samples) * np.fft.rfft(kernel), n=count
+    )
+    envelope = np.sqrt(np.maximum(smoothed_power, 1e-12))
+    target_rms = float(np.sqrt(np.mean(samples * samples)))
+    gain_limit = 10.0 ** (max_gain_db / 20.0)
+    gains = np.clip(target_rms / envelope, 1.0 / gain_limit, gain_limit)
+    leveled = samples * gains
+    metrics = {
+        "algorithm": "circular_moving_rms",
+        "window_s": window_s,
+        "max_gain_db": max_gain_db,
+        "target_basis": "input loop RMS before final global normalization",
+        "applied_gain_min_db": max(-max_gain_db, float(20.0 * np.log10(np.min(gains)))),
+        "applied_gain_max_db": min(max_gain_db, float(20.0 * np.log10(np.max(gains)))),
+        "rms_envelope_p95_p05_before_db": float(20.0 * np.log10(
+            max(float(np.quantile(rms_envelope(samples, sample_rate), 0.95)), 1e-12) /
+            max(float(np.quantile(rms_envelope(samples, sample_rate), 0.05)), 1e-12)
+        )),
+        "rms_envelope_p95_p05_after_db": float(20.0 * np.log10(
+            max(float(np.quantile(rms_envelope(leveled, sample_rate), 0.95)), 1e-12) /
+            max(float(np.quantile(rms_envelope(leveled, sample_rate), 0.05)), 1e-12)
+        )),
+    }
+    return leveled, metrics
 
 
 def rms_envelope(samples, sample_rate, window_s=0.1, hop_s=0.01):
@@ -223,6 +267,12 @@ def build():
             raise RuntimeError(f"Invalid crossfade for {filename}")
         samples, correlation, curve = loop_crossfade(samples, overlap)
         samples = shape_loop(samples, rate, low_hz, high_hz)
+        leveling = None
+        if filename in LEVELING:
+            settings = LEVELING[filename]
+            samples, leveling = level_periodic_rms(
+                samples, rate, settings["window_s"], settings["max_gain_db"]
+            )
         rms = float(np.sqrt(np.mean(samples * samples)))
         peak = float(np.max(np.abs(samples)))
         gain = min(target_rms / max(rms, 1e-12), peak_cap / max(peak, 1e-12))
@@ -265,6 +315,7 @@ def build():
                 "target_rms": target_rms,
                 "peak_cap": peak_cap,
                 "applied_gain": gain,
+                "envelope_leveling": leveling,
             },
             "source_quality": source_quality,
             "metrics": {

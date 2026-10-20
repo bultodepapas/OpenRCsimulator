@@ -1,0 +1,47 @@
+[
+  {
+    "script": "research/timber/tt01/manifest.py",
+    "args": [
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "Timber r2 delivery: 144 files, 19438463 bytes, visual revision r2-d75ae605aa3a: identical to the manifest\n",
+    "stderr": ""
+  },
+  {
+    "script": "assets/aircraft/turbo-lumber-evolution/build_geometry.py",
+    "args": [
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "Timber geometry.json is up to date (revision r2-d75ae605aa3a)\n",
+    "stderr": ""
+  },
+  {
+    "script": "assets/aircraft/turbo-lumber-evolution/compile_geometry.py",
+    "args": [
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "Timber geometry source/runtime: identical\n",
+    "stderr": ""
+  },
+  {
+    "script": "research/timber/tt03/check_asset.py",
+    "args": [
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "Timber asset: timber.glb = r2 export d75ae605aa3a, licence copied, sidecar present, generated artifacts at revision r2-d75ae605aa3a\n",
+    "stderr": ""
+  },
+  {
+    "script": "research/timber/tt07/derive_physics.py",
+    "args": [
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "TT-07 Timber physics current\n",
+    "stderr": ""
+  }
+]

@@ -94,6 +94,22 @@ class CustomizationGeneratorTests(unittest.TestCase):
                 dot = sum(a * b for a, b in zip(target["direction"], target["up"]))
                 self.assertAlmostEqual(dot, 0.0, places=3)
 
+    def test_avanti_tailpipe_is_a_distinct_show_mount_at_the_authored_outlet(self) -> None:
+        slots = generator.validate_source(self.source, self.families)
+        smoke = {slot["id"]: slot for slot in slots["sebart-avanti-s-a200-p100rx"]["smoke_slots"]}
+        geometry = json.loads((self.root / "assets/aircraft/avanti-s-a200/blender-geometry.json").read_text(encoding="utf-8"))
+        pipe = smoke["show_tailpipe"]
+        self.assertEqual(pipe["kind"], "show")
+        self.assertEqual(pipe["position_m"], geometry["turbine"]["outlet_position"])
+        self.assertEqual(pipe["direction"], geometry["turbine"]["outlet_direction"])
+        self.assertNotEqual(pipe["position_m"], smoke["show_tail"]["position_m"])
+        for change in ({"pair": "wing_tips"}, {"role": "exhaust"}, {"role": "tail"}):
+            bad = copy.deepcopy(self.source)
+            family = next(f for f in bad["families"] if f["visual_family"] == "sebart-avanti-s-a200-p100rx")
+            next(s for s in family["smoke_slots"] if s["id"] == "show_tailpipe").update(change)
+            with self.assertRaises(generator.CustomizationError):
+                generator.validate_source(bad, self.families)
+
     def test_source_rejects_invalid_marking_count_axes_and_extent(self) -> None:
         for key, value in (
             ("max_chars", 13),

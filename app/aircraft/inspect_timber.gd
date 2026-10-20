@@ -171,6 +171,7 @@ func _run() -> void:
 		"suite": suite,
 		"finish": _initialize_arg("finish", "production"),
 		"visual_details_sha256": FileAccess.get_sha256("res://aircraft/timber_visual_details.gd"),
+		"visual_detail_data_sha256": FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd"),
 		"visual_lighting_sha256": FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
 		"aircraft_id": _airplane.root.get_meta("aircraft_id"),
 		"visual_revision": _airplane.root.get_meta("visual_revision"),

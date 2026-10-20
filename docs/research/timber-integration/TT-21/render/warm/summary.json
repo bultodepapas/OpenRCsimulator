@@ -1,0 +1,290 @@
+{
+  "format": "openrc-timber-native-render-summary v1",
+  "mode": "production",
+  "baseline_sha256": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+  "candidate_sha256": "a9bb210dbdb2171a61aaa5e8ab6e301f5209ef47b088525c602fe82ac6c04e2f",
+  "merge": {},
+  "views": [
+    {
+      "view": "inspection_oblique_front_left",
+      "variants": {
+        "baseline": {
+          "visible_draw_calls_median": 165.0,
+          "visible_primitives_median": 36813.0,
+          "visible_objects_median": 165.0,
+          "render_cpu_ms_median": 0.44650000333786,
+          "render_gpu_ms_median": 0.551999986171722,
+          "frame_setup_cpu_ms_median": 0.006
+        },
+        "candidate": {
+          "visible_draw_calls_median": 143.0,
+          "visible_primitives_median": 36813.0,
+          "visible_objects_median": 143.0,
+          "render_cpu_ms_median": 0.423000007867813,
+          "render_gpu_ms_median": 0.55349999666214,
+          "frame_setup_cpu_ms_median": 0.005
+        }
+      },
+      "pixel_pairs": [
+        {
+          "pair": 0,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_oblique_front_left_baseline_0.png",
+          "candidate_image": "inspection_oblique_front_left_candidate_0.png"
+        },
+        {
+          "pair": 1,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_oblique_front_left_baseline_1.png",
+          "candidate_image": "inspection_oblique_front_left_candidate_1.png"
+        },
+        {
+          "pair": 2,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_oblique_front_left_baseline_2.png",
+          "candidate_image": "inspection_oblique_front_left_candidate_2.png"
+        }
+      ]
+    },
+    {
+      "view": "inspection_oblique_rear_right_full",
+      "variants": {
+        "baseline": {
+          "visible_draw_calls_median": 165.0,
+          "visible_primitives_median": 36749.0,
+          "visible_objects_median": 165.0,
+          "render_cpu_ms_median": 0.463499993085861,
+          "render_gpu_ms_median": 0.540499985218048,
+          "frame_setup_cpu_ms_median": 0.006
+        },
+        "candidate": {
+          "visible_draw_calls_median": 143.0,
+          "visible_primitives_median": 36749.0,
+          "visible_objects_median": 143.0,
+          "render_cpu_ms_median": 0.4784999936819075,
+          "render_gpu_ms_median": 1.1010000109672529,
+          "frame_setup_cpu_ms_median": 0.006
+        }
+      },
+      "pixel_pairs": [
+        {
+          "pair": 0,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_oblique_rear_right_full_baseline_0.png",
+          "candidate_image": "inspection_oblique_rear_right_full_candidate_0.png"
+        },
+        {
+          "pair": 1,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_oblique_rear_right_full_baseline_1.png",
+          "candidate_image": "inspection_oblique_rear_right_full_candidate_1.png"
+        },
+        {
+          "pair": 2,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_oblique_rear_right_full_baseline_2.png",
+          "candidate_image": "inspection_oblique_rear_right_full_candidate_2.png"
+        }
+      ]
+    },
+    {
+      "view": "inspection_gear_front",
+      "variants": {
+        "baseline": {
+          "visible_draw_calls_median": 154.0,
+          "visible_primitives_median": 33858.0,
+          "visible_objects_median": 154.0,
+          "render_cpu_ms_median": 0.472000002861023,
+          "render_gpu_ms_median": 0.5724999904632565,
+          "frame_setup_cpu_ms_median": 0.006
+        },
+        "candidate": {
+          "visible_draw_calls_median": 132.0,
+          "visible_primitives_median": 33858.0,
+          "visible_objects_median": 132.0,
+          "render_cpu_ms_median": 0.450000002980232,
+          "render_gpu_ms_median": 1.00399994850159,
+          "frame_setup_cpu_ms_median": 0.006
+        }
+      },
+      "pixel_pairs": [
+        {
+          "pair": 0,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_gear_front_baseline_0.png",
+          "candidate_image": "inspection_gear_front_candidate_0.png"
+        },
+        {
+          "pair": 1,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_gear_front_baseline_1.png",
+          "candidate_image": "inspection_gear_front_candidate_1.png"
+        },
+        {
+          "pair": 2,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_gear_front_baseline_2.png",
+          "candidate_image": "inspection_gear_front_candidate_2.png"
+        }
+      ]
+    },
+    {
+      "view": "inspection_nose_left",
+      "variants": {
+        "baseline": {
+          "visible_draw_calls_median": 143.0,
+          "visible_primitives_median": 37309.0,
+          "visible_objects_median": 143.0,
+          "render_cpu_ms_median": 0.46100001037120797,
+          "render_gpu_ms_median": 1.1324999928474448,
+          "frame_setup_cpu_ms_median": 0.006
+        },
+        "candidate": {
+          "visible_draw_calls_median": 132.0,
+          "visible_primitives_median": 37309.0,
+          "visible_objects_median": 132.0,
+          "render_cpu_ms_median": 0.5189999938011169,
+          "render_gpu_ms_median": 1.131500005722045,
+          "frame_setup_cpu_ms_median": 0.007
+        }
+      },
+      "pixel_pairs": [
+        {
+          "pair": 0,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_nose_left_baseline_0.png",
+          "candidate_image": "inspection_nose_left_candidate_0.png"
+        },
+        {
+          "pair": 1,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_nose_left_baseline_1.png",
+          "candidate_image": "inspection_nose_left_candidate_1.png"
+        },
+        {
+          "pair": 2,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "inspection_nose_left_baseline_2.png",
+          "candidate_image": "inspection_nose_left_candidate_2.png"
+        }
+      ]
+    },
+    {
+      "view": "distance_020m_level_crossing",
+      "variants": {
+        "baseline": {
+          "visible_draw_calls_median": 165.0,
+          "visible_primitives_median": 30657.0,
+          "visible_objects_median": 165.0,
+          "render_cpu_ms_median": 0.42599999904632546,
+          "render_gpu_ms_median": 0.385999992489815,
+          "frame_setup_cpu_ms_median": 0.005
+        },
+        "candidate": {
+          "visible_draw_calls_median": 143.0,
+          "visible_primitives_median": 30657.0,
+          "visible_objects_median": 143.0,
+          "render_cpu_ms_median": 0.47649998962879203,
+          "render_gpu_ms_median": 0.41699999570846547,
+          "frame_setup_cpu_ms_median": 0.006
+        }
+      },
+      "pixel_pairs": [
+        {
+          "pair": 0,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "distance_020m_level_crossing_baseline_0.png",
+          "candidate_image": "distance_020m_level_crossing_candidate_0.png"
+        },
+        {
+          "pair": 1,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "distance_020m_level_crossing_baseline_1.png",
+          "candidate_image": "distance_020m_level_crossing_candidate_1.png"
+        },
+        {
+          "pair": 2,
+          "pixels": 921600,
+          "changed_pixels": 0,
+          "pixels_over_1": 0,
+          "pixels_over_8": 0,
+          "max_channel_difference": 0,
+          "mean_absolute_channel_difference": 0.0,
+          "baseline_image": "distance_020m_level_crossing_baseline_2.png",
+          "candidate_image": "distance_020m_level_crossing_candidate_2.png"
+        }
+      ]
+    }
+  ],
+  "limits": "Render timings are descriptive shared-desktop observations. Pixel comparisons use raw RGB captures, not compressed or rescaled images. Draw calls describe this isolated viewport, not the full simulator."
+}

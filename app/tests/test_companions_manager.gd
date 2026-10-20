@@ -176,6 +176,46 @@ func _run_manager_gate(field: Dictionary, world: Dictionary, damage_proxy: Dicti
 		_same_f64(player.sim.state, initial_player_state) and _same_f64(player.sim.aux, initial_player_aux)
 			and _same_f64(player.sim.inputs, initial_player_inputs))
 	var original_agents: Array[Node] = manager.agents.duplicate()
+	var profile_identity: Dictionary = manager.status().profile_identity
+	_check("manager records the accepted aircraft, controller, solver and field profile identities",
+		profile_identity.get("aircraft_id") == Config.AIRCRAFT_ID
+		and str(profile_identity.get("controller_sha256", "")).length() == 64
+		and str(profile_identity.get("solver_sha256", "")).length() == 64
+		and str(profile_identity.get("solver_qualification_sha256", "")).length() == 64
+		and str(profile_identity.get("field_profile_sha256", "")).length() == 64)
+	profile_identity.clear()
+	_check("profile diagnostic identity is detached", not manager.status().profile_identity.is_empty())
+	var airspace_report: Dictionary = manager.status().airspace_report
+	_check("launch records clearance against the actual world and companion model",
+		airspace_report.get("scope") == "nominal_circuit_corridor" \
+		and airspace_report.get("collision_world_identity") == world.identity \
+		and airspace_report.get("proxy_count") == world.proxies.size() \
+		and str(airspace_report.get("geometry_sha256", "")).length() == 64 \
+		and airspace_report.get("count") == COMPANION_COUNT)
+	airspace_report.clear()
+	_check("airspace diagnostics are detached", not manager.status().airspace_report.is_empty())
+	var original_airspace: Dictionary = manager.status().airspace_report
+	# Keep the supplied identity unchanged: admission must inspect the actual shapes.
+	var blocked_world: Dictionary = world.duplicate(true)
+	var blocker := {id = "afc-route-blocker", kind = "fixture", part = "box", shape = "box",
+		response_class = "hard_terminal", north = 279.0, east = 0.0, down = -35.0,
+		radius = 0.0, half_length = 0.0, half_x = 1.0, half_down = 1.0, half_z = 1.0,
+		sin_heading = 0.0, cos_heading = 1.0,
+		bounds_north_min = 278.0, bounds_north_max = 280.0, bounds_east_min = -1.0, bounds_east_max = 1.0,
+		bounds_down_min = -36.0, bounds_down_max = -34.0}
+	blocked_world.proxies.append(blocker)
+	_check("obstructed session world installs at tick zero", player.set_collision_world(blocked_world))
+	var blocked: Dictionary = manager.configure(player, field, "club_field", _requested_config(), false, false)
+	_check("route obstruction refuses admission before replacing the live roster",
+		not blocked.get("ok", true) and str(blocked.get("errors", [])).contains("afc-route-blocker") \
+		and _same_agent_refs(manager.agents, original_agents) and manager.status().airspace_report == original_airspace \
+		and player.sim.tick == 0 and manager.accepted_ticks == 0)
+	var disabled_manager := Manager.new()
+	var off_admission: Dictionary = disabled_manager.configure(player, field, "club_field", Config.defaults(), false, false)
+	_check("disabled companions bypass the airspace gate", off_admission.ok and disabled_manager.status().airspace_report.is_empty())
+	disabled_manager.remove_now()
+	disabled_manager.free()
+	_check("original session collision world restores", player.set_collision_world(world))
 	_check("manager agents begin at tick zero", manager.agents.all(func(agent: Node) -> bool: return agent.session.sim.tick == 0))
 
 	var deterministic_manager: Node = Manager.new()
@@ -208,6 +248,10 @@ func _run_manager_gate(field: Dictionary, world: Dictionary, damage_proxy: Dicti
 		not count_refusal.get("ok", true) and _same_agent_refs(manager.agents, original_agents)
 			and manager.get_child_count() == COMPANION_COUNT, str(count_refusal))
 	var bad_field: Dictionary = field.duplicate(true)
+	bad_field.surfaces[0].center_north += 1.0
+	var geometry_refusal: Dictionary = manager.configure(player, bad_field, "club_field", _requested_config(), false, false)
+	_check("same-id modified field is refused without replacing the live fleet",
+		not geometry_refusal.get("ok", true) and _same_agent_refs(manager.agents, original_agents), str(geometry_refusal))
 	bad_field.id = "unsupported_field"
 	var field_refusal: Dictionary = manager.configure(player, bad_field, "club_field", _requested_config(), false, false)
 	var landscape_refusal: Dictionary = manager.configure(player, field, "backyard", _requested_config(), false, false)
@@ -294,6 +338,8 @@ func _run_manager_gate(field: Dictionary, world: Dictionary, damage_proxy: Dicti
 				player_damage_imported = player_damage_imported and agent.session.scenery_damage() == player.scenery_damage()
 	_check("player before_step/stepped callbacks advance each companion exactly once", ticks_exactly_once,
 		"player=%d manager=%d" % [player.sim.tick, manager.accepted_ticks])
+	_check("fleet observations are sampled only on the 60 Hz planning cadence",
+		manager.observation_batches == PLAYER_PARITY_TICKS / 4, str(manager.observation_batches))
 	_check("three-agent fleet leaves player state, aux, and input bytes unchanged over 240 ticks",
 		paired_bytes_equal, "with=%d without=%d" % [player.sim.tick, manual_player.sim.tick])
 	_check("player-authored scenery damage imports after the shared tick", player_damage_imported,

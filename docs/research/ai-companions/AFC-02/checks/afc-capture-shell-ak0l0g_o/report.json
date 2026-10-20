@@ -1,0 +1,63 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "6d4a61fa-229f-4d8f-b811-e93ba5f46182",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_shell.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:16:10.298367+00:00",
+  "label": "afc-capture-shell",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-02\\checks\\afc-capture-shell-ak0l0g_o\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-02\\checks\\afc-capture-shell-ak0l0g_o\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Companions shell: 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 1,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371813482919697 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 80,
+      "message": "Player is inactive. Call play() before requesting get_stream_playback().",
+      "context": [
+        "   at: get_stream_playback (scene/audio/audio_stream_player_internal.cpp:336)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] refill (res://render/engine_audio.gd:82)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "engine_error",
+  "detail": "",
+  "exit_code": 1,
+  "ok": false,
+  "elapsed_seconds": 26.375,
+  "log_bytes": 5588,
+  "log_sha256": "c7171e87cad0717b2fbe0a0a96744b24ce1c423953d199c7e50e2c17d738e2c9"
+}

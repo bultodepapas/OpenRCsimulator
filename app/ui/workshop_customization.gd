@@ -9,13 +9,18 @@ var _bindings: Dictionary = {}
 var _profile: Dictionary = {}
 var _slot: OptionButton
 var _color: OptionButton
+var _picker: ColorPickerButton
+var _color_cancel: Button
 var _custom_color: LineEdit
 var _error: Label
 var _enabled: CheckButton
 var _shape: OptionButton
 var _mode: OptionButton
 var _palette_selector: OptionButton
+var _palette_mode: OptionButton
 var _palette_buttons: Array[Button] = []
+var _copy_target: OptionButton
+var _copy_button: Button
 var _marking_box: VBoxContainer
 var _marking_slot: OptionButton
 var _marking_text: LineEdit
@@ -79,10 +84,24 @@ func _ready() -> void:
 		if not _syncing: validity_changed.emit(page_kind, has_pending_color() or has_pending_marking()))
 	_custom_color.text_submitted.connect(func(_value: String) -> void: apply_color())
 	custom.add_child(_custom_color)
+	if page_kind == "smoke":
+		_picker = ColorPickerButton.new()
+		_picker.name = "SmokeColorPicker"
+		_picker.tooltip_text = tr("Choose any sRGB color and alpha, then Apply color to keep it.")
+		_picker.edit_alpha = true
+		_picker.custom_minimum_size = Vector2(44.0, 32.0)
+		_picker.color_changed.connect(_on_picker_color_changed)
+		custom.add_child(_picker)
 	var apply := Button.new()
 	apply.text = "Apply color"
 	apply.pressed.connect(apply_color)
 	custom.add_child(apply)
+	if page_kind == "smoke":
+		_color_cancel = Button.new()
+		_color_cancel.name = "CancelSmokeColor"
+		_color_cancel.text = tr("Cancel")
+		_color_cancel.pressed.connect(cancel_pending_edit)
+		custom.add_child(_color_cancel)
 	_controls.add_child(custom)
 	if page_kind == "appearance":
 		var reset_region := Button.new()
@@ -94,6 +113,11 @@ func _ready() -> void:
 		_palette_selector = options("Color steps", [])
 		_palette_selector.name = "SmokePaletteStep"
 		_palette_selector.item_selected.connect(_select_palette_step)
+		_palette_mode = options("Palette transition", ["step", "smooth"])
+		_palette_mode.name = "SmokePaletteMode"
+		_palette_mode.item_selected.connect(func(index: int) -> void:
+			if _syncing: return
+			change("palette_mode", "step" if index == 0 else "smooth"))
 		var palette_actions := HFlowContainer.new()
 		for spec: Array in [["Add color step", 1], ["Remove last step", -1], ["Use single color", 0]]:
 			var action := Button.new()
@@ -102,8 +126,10 @@ func _ready() -> void:
 			palette_actions.add_child(action)
 			_palette_buttons.append(action)
 		_controls.add_child(palette_actions)
-		number_field("step_s", "Color step duration", 0.05, 8.0, 0.05, "s")
-		number_field("amount", "Amount", 0.0, 1.0, 0.05, "×")
+		number_field("step_s", "Step duration / palette period", 0.05, 8.0, 0.05, "s")
+		number_field("amount", "Legacy amount", 0.0, 1.0, 0.05, "×")
+		number_field("density", "Density", 0.0, 2.0, 0.05, "×")
+		number_field("emission_rate_hz", "Emission rate", 1.0, 240.0, 1.0, "puffs/s")
 		number_field("width_m", "Width", 0.01, 2.0, 0.01, "m")
 		number_field("lifetime_s", "Puff lifetime", 0.1, 8.0, 0.1, "s")
 		_shape = options("Shape", ["ribbon", "cloud", "fan"])
@@ -120,6 +146,14 @@ func _ready() -> void:
 		number_field("burst_s", "Burst duration", 0.1, 8.0, 0.1, "s")
 		number_field("pulse_period_s", "Pulse period", 0.1, 8.0, 0.1, "s")
 		number_field("pulse_duty", "Pulse on fraction", 0.05, 0.95, 0.05, "×")
+		number_field("phase_offset_s", "Palette phase offset", 0.0, 60.0, 0.05, "s")
+		number_field("jet_speed_mps", "Jet speed", 0.0, 30.0, 0.1, "m/s")
+		number_field("turbulence_mps", "Turbulence", 0.0, 5.0, 0.05, "m/s")
+		number_field("dispersion_m2_s", "Dispersion", 0.0, 2.0, 0.01, "m²/s")
+		number_field("buoyancy_mps", "Buoyancy", -2.0, 3.0, 0.05, "m/s")
+		number_field("drag_s", "Drag", 0.05, 3.0, 0.05, "s")
+		number_field("velocity_inheritance", "Outlet velocity", 0.0, 1.0, 0.05, "×")
+		_build_copy_controls()
 		label("Duration controls new emission; existing puffs fade for their full lifetime.", _controls)
 		_build_advanced_group(custom)
 	_error = label("")
@@ -131,7 +165,8 @@ func _build_advanced_group(color_row: Control) -> void:
 	_advanced.name = "SmokeMoreOptions"
 	_advanced.add_theme_constant_override("separation", 10)
 	_advanced.visible = false
-	var basic: Array = [_enabled, _color, color_row, _field_rows.amount, _field_rows.width_m, _field_rows.lifetime_s, _shape]
+	var basic: Array = [_enabled, _color, color_row, _field_rows.amount, _field_rows.density,
+		_field_rows.emission_rate_hz, _field_rows.width_m, _field_rows.lifetime_s, _shape]
 	for child: Node in _controls.get_children():
 		if child in basic or (child is Label and child.text == "Shape"): continue
 		_controls.remove_child(child)
@@ -145,6 +180,21 @@ func _build_advanced_group(color_row: Control) -> void:
 		_advanced_button.text = "Fewer options" if expanded else "More options")
 	_controls.add_child(_advanced_button)
 	_controls.add_child(_advanced)
+
+func _build_copy_controls() -> void:
+	var row := HBoxContainer.new()
+	_copy_target = OptionButton.new()
+	_copy_target.name = "SmokeCopyTarget"
+	_copy_target.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_copy_target.add_item(tr("Copy to another emitter…"))
+	row.add_child(_copy_target)
+	_copy_button = Button.new()
+	_copy_button.name = "SmokeCopySettings"
+	_copy_button.text = tr("Copy settings")
+	_copy_button.tooltip_text = tr("Make a one-time copy of this emitter's settings. Later edits stay independent.")
+	_copy_button.pressed.connect(copy_settings_to_target)
+	row.add_child(_copy_button)
+	_controls.add_child(row)
 
 func label(text: String, parent: Node = self) -> Label:
 	var result := Label.new()
@@ -195,7 +245,7 @@ func configure(bindings: Dictionary, profile: Dictionary) -> void:
 		if slot.id == selected: _slot.select(_slot.item_count - 1)
 	_controls.visible = _slot.item_count > 0
 	_slot.disabled = _slot.item_count == 0
-	_note.text = "Paint changes only the selected registered region." if page_kind == "appearance" else "Show smoke is a visual effect. Source exhaust follows the running engine."
+	_note.text = "Paint changes only the selected registered region." if page_kind == "appearance" else _smoke_version_note()
 	if _slot.item_count == 0:
 		_slot.add_item("No registered regions" if page_kind == "appearance" else "No registered emitters")
 		_note.text = "This model has no registered customization for this page."
@@ -210,23 +260,62 @@ func configure(bindings: Dictionary, profile: Dictionary) -> void:
 		_custom_color.text = buffer
 	validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
 
+func _smoke_version_note() -> String:
+	if int(_profile.get("version", Profile.VERSION)) == 1:
+		return tr("Viewing a legacy smoke profile. New controls use v2 defaults; the first smoke edit creates a v2 draft.")
+	return tr("Show smoke is a visual effect. Source exhaust follows the running engine.")
+
+func _display_smoke_entry(entry: Dictionary) -> Dictionary:
+	var result: Dictionary = Profile.normalize_smoke_entry(entry, int(_profile.get("version", Profile.VERSION)))
+	if bool(result.get("ok", false)):
+		return result.value
+	# Keep malformed or unsupported source values visible without silently repairing them.
+	var fallback: Dictionary = Profile.smoke_v2_defaults()
+	fallback.merge(entry, true)
+	return fallback
+
+func _sync_copy_targets(source_slot: String) -> void:
+	if not is_instance_valid(_copy_target):
+		return
+	var kind := ""
+	for slot: Dictionary in _bindings.get("smoke_slots", []):
+		if str(slot.get("id", "")) == source_slot:
+			kind = str(slot.get("kind", ""))
+			break
+	_copy_target.clear()
+	_copy_target.add_item(tr("Copy to another emitter…"))
+	_copy_target.set_item_metadata(0, "")
+	for slot: Dictionary in _bindings.get("smoke_slots", []):
+		if str(slot.get("id", "")) == source_slot or str(slot.get("kind", "")) != kind:
+			continue
+		_copy_target.add_item(tr(str(slot.get("label", slot.get("id", "Emitter")))))
+		_copy_target.set_item_metadata(_copy_target.item_count - 1, str(slot.get("id", "")))
+	_copy_target.select(0)
+	_copy_target.disabled = _copy_target.item_count <= 1
+	_copy_button.disabled = _copy_target.disabled
+
 func current_entry() -> Dictionary:
 	if _slot.item_count == 0 or _slot.get_item_metadata(_slot.selected) == null: return {}
 	var id := str(_slot.get_item_metadata(_slot.selected))
 	for entry: Dictionary in _profile.get("paint" if page_kind == "appearance" else "smoke", []):
 		if entry.slot == id: return entry.duplicate(true)
 	if page_kind == "appearance": return {slot = id, color = "#FFFFFFFF", pattern = "solid", accent = "none"}
-	return {slot = id, enabled = false, color = "#FFFFFFFF", amount = 0.5, width_m = 0.12,
+	var defaults: Dictionary = Profile.smoke_v2_defaults()
+	defaults.merge({slot = id, enabled = false, color = "#FFFFFFFF", amount = 0.5, width_m = 0.12,
 		lifetime_s = 3.0, shape = "ribbon", mode = "hold", burst_s = 0.0,
-		pulse_period_s = 0.0, pulse_duty = 0.0, palette = [], step_s = 0.0}
+		pulse_period_s = 0.0, pulse_duty = 0.0, palette = [], step_s = 0.0}, true)
+	return defaults
 
 func sync_fields() -> void:
 	if not is_instance_valid(_custom_color): return
 	var entry := current_entry()
 	if entry.is_empty(): return
+	var display_entry := _display_smoke_entry(entry) if page_kind == "smoke" else entry
 	_syncing = true
 	var color := selected_color(entry)
 	_custom_color.text = color
+	if page_kind == "smoke":
+		_picker.color = Color.from_string(color, Color.WHITE) if not color.is_empty() else Color.WHITE
 	_color.select(COLORS.size() + 1 if color.is_empty() else (COLORS.values().find(color) if color in COLORS.values() else COLORS.size()))
 	if page_kind == "smoke":
 		var selected_index := maxi(_palette_selector.selected, 0)
@@ -238,18 +327,25 @@ func sync_fields() -> void:
 		_palette_buttons[0].disabled = entry.palette.size() >= Profile.MAX_PALETTE_COLORS
 		_palette_buttons[1].disabled = entry.palette.is_empty()
 		_palette_buttons[2].disabled = entry.palette.is_empty()
+		_palette_mode.select(1 if str(display_entry.get("palette_mode", "step")) == "smooth" else 0)
+		_palette_mode.disabled = entry.palette.size() < 2
 		_enabled.set_pressed_no_signal(entry.enabled)
 		_shape.select(["ribbon", "cloud", "fan"].find(entry.shape))
 		_mode.select(["hold", "burst", "pulse"].find(entry.mode))
 		for key: String in _fields:
-			_fields[key].set_value_no_signal(entry[key])
-			var relevant: bool = (key != "burst_s" or entry.mode == "burst") and (key not in ["pulse_period_s", "pulse_duty"] or entry.mode == "pulse") and (key != "step_s" or entry.palette.size() > 1)
+			var values: Dictionary = display_entry if key != "amount" else entry
+			if values.has(key): _fields[key].set_value_no_signal(values[key])
+			var relevant: bool = (key != "amount" or int(_profile.get("version", Profile.VERSION)) == 1) \
+				and (key != "burst_s" or entry.mode == "burst") \
+				and (key not in ["pulse_period_s", "pulse_duty"] or entry.mode == "pulse") \
+				and (key not in ["step_s", "phase_offset_s"] or entry.palette.size() > 1)
 			_fields[key].editable = relevant
 			_field_rows[key].visible = relevant
+		_sync_copy_targets(str(entry.slot))
 	_syncing = false
 	_shown_slot = _slot.selected
 	if page_kind == "smoke": _shown_palette = _palette_selector.selected
-	validity_changed.emit(page_kind, has_pending_marking())
+	validity_changed.emit(page_kind, has_pending_color() or has_pending_marking())
 
 func has_pending_color() -> bool:
 	if not is_instance_valid(_custom_color) or _syncing: return false
@@ -505,7 +601,9 @@ func apply_preset(index: int) -> void:
 	var shows: Array = []
 	var sources: Array = []
 	for slot: Dictionary in _bindings.get("smoke_slots", []):
-		if slot.kind == "show": shows.append(slot)
+		# Multi-color presets use the paired tips and tail. Other authored mounts
+		# remain selectable individually without exceeding the three-show budget.
+		if slot.kind == "show" and slot.get("role", "") in ["wing_tip_left", "wing_tip_right", "tail"]: shows.append(slot)
 		elif slot.kind == "source": sources.append(slot)
 	if index == 1:
 		propose(next)

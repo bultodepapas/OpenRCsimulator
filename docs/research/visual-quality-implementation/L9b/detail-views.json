@@ -1,0 +1,90 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 1984.905,
+  "scenery": true,
+  "stats": {
+    "airfield_detail_batches": 5,
+    "airfield_detail_instances": 8,
+    "airfield_detail_triangles": 4482,
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 1285.997,
+    "cells": 60,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 171,
+    "motion": 5,
+    "moving_people": 7,
+    "pit_shelter_surfaces": 2,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 83,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 4.99,
+      "botanicals": 66.199,
+      "fence": 28.009,
+      "fleet": 11.643,
+      "hedge": 9.849,
+      "instances": 134.342,
+      "meshes": 369.119,
+      "patch": 45.289,
+      "population": 98.207,
+      "track": 1.415,
+      "vegetation": 319.556,
+      "woodland_edges": 52.639
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "views": {
+    "carpark_close": {
+      "draw_calls": 110.0,
+      "objects": 110.0,
+      "primitives": 293333.0,
+      "shadow_draw_calls": 0
+    },
+    "club_close": {
+      "draw_calls": 153.0,
+      "objects": 154.0,
+      "primitives": 315337.0,
+      "shadow_draw_calls": 0
+    },
+    "flower_close": {
+      "draw_calls": 142.0,
+      "objects": 143.0,
+      "primitives": 309397.0,
+      "shadow_draw_calls": 0
+    },
+    "pilot_north": {
+      "draw_calls": 101.0,
+      "objects": 103.0,
+      "primitives": 259719.0,
+      "shadow_draw_calls": 0
+    },
+    "pilot_south": {
+      "draw_calls": 168.0,
+      "objects": 169.0,
+      "primitives": 314825.0,
+      "shadow_draw_calls": 0
+    },
+    "runway_aerial": {
+      "draw_calls": 102.0,
+      "objects": 103.0,
+      "primitives": 239936.0,
+      "shadow_draw_calls": 0
+    },
+    "taxi_close": {
+      "draw_calls": 122.0,
+      "objects": 124.0,
+      "primitives": 221257.0,
+      "shadow_draw_calls": 0
+    }
+  }
+}

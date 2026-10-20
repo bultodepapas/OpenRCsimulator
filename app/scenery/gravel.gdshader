@@ -5,9 +5,14 @@ shader_type spatial;
 render_mode cull_back;
 
 uniform float detail_strength : hint_range(0.0, 1.0) = 1.0;
+uniform bool use_photo_aggregate = false;
+uniform sampler2D aggregate_albedo : source_color, repeat_enable, filter_linear_mipmap;
+uniform bool use_photo_worn = false;
+uniform sampler2D worn_albedo : source_color, repeat_enable, filter_linear_mipmap;
 varying vec3 ground_color;
 varying vec2 ground_position;
 varying float aggregate_mask;
+varying float worn_mask;
 
 // Reuse the project's integer cloud hash: stable across large/negative world coordinates.
 #include "res://render/cloud_field.gdshaderinc"
@@ -27,7 +32,8 @@ float grain(vec2 p) {
 void vertex() {
 	ground_color = COLOR.rgb;
 	ground_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xz;
-	aggregate_mask = clamp((1.0 - COLOR.a) * 2.0, 0.0, 1.0);
+	aggregate_mask = smoothstep(0.44, 0.50, COLOR.a) * clamp((1.0 - COLOR.a) * 2.0, 0.0, 1.0);
+	worn_mask = clamp((0.45 - COLOR.a) * 2.2, 0.0, 1.0);
 }
 
 void fragment() {
@@ -40,7 +46,18 @@ void fragment() {
 	float fine = grain(p * 23.0) - 0.5;
 	float broad = grain(p * mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8)) * 6.0) - 0.5;
 	float variation = amount * (0.32 * fine * fine_filter + 0.12 * broad * broad_filter);
-	ALBEDO = ground_color * (1.0 + variation);
+	vec3 base = ground_color * (1.0 + variation);
+	// The source pebbles are seen only on gravel interiors. World UVs keep neighbouring
+	// patch cells seamless; a partial blend preserves the hand laid shoulder colour.
+	if (use_photo_aggregate && amount > 0.01) {
+		vec3 scanned = texture(aggregate_albedo, p / 2.9).rgb * vec3(0.88, 0.91, 0.82);
+		base = mix(base, scanned, amount * 0.56 * broad_filter);
+	}
+	if (use_photo_worn && worn_mask > 0.01) {
+		vec3 sparse = texture(worn_albedo, p / 2.0).rgb * vec3(0.82, 0.92, 0.75);
+		base = mix(base, sparse, worn_mask * 0.65 * broad_filter);
+	}
+	ALBEDO = base;
 	ROUGHNESS = 0.88;
 	SPECULAR = 0.3;
 	// A submillimetre bump conveys grain without moving the actual ground plane.

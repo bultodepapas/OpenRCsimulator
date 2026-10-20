@@ -1,0 +1,395 @@
+{
+  "date": "2026-10-20",
+  "step": "SM-11-R1",
+  "scope": "Focused native Windows software regressions and OpenGL capture; not full-suite, physical-emissions, performance, hardware or platform qualification.",
+  "source_sha256": {
+    "app/main.gd": "eabb1b5e0d981aef9758aeb5e595a56848e91fa02ef6f0ca3364683d1d6158c2",
+    "app/render/smoke/stock_profile.gd": "ce44e62ab7b3bdb457b9d978c605f3428d7bdb296126942e4fefa35b4c7c395d",
+    "app/render/aircraft_customization.gd": "769fa1fbc358ea221eda94687b3cf1a473c2e55a5fd918cb45ca2233141c966d",
+    "app/workshop/presentation.gd": "238d16ea1a0bd5d44bdfd56bc0d4d247ccee91a67851bb33e95a75bb2f455510",
+    "app/ui/workshop_customization.gd": "c9292e4e2181ce97d0b72602b46fc72a1b55e9fe986e17e9a6f20aa953bf2dd0",
+    "app/tests/test_avanti_smoke.gd": "b2f107e64c38e4cf6c8c5e261cf2d327bcc68e6e40c5eae19b6a1d985425d995",
+    "app/tests/test_aircraft_customization.gd": "a02fb930385cf4a6d1e8e653a1199ce91679fac6a94e75e1fa6a9e471260154a",
+    "assets/aircraft/customization-bindings.json": "01c71997e2731b63b1da2a1e495ae3310cc750215e930af580f7b4216ea4c08a",
+    "app/data/aircraft_customization.json": "531c1c128b34dbc1a8d960f968af7e6b83ba1347b0cc54003ec52fa03a9461ff",
+    "research/aircraft-standardization/build_customization.py": "a89edfba235d621968626ed2096e38371e46078f03f73ca3d41cf5663d8572b6",
+    "research/aircraft-standardization/test_customization.py": "c965ab362ebc3232b7cc5e6e1e5db6acfa861ba40044f5dfbdf1d9395ecee6b3"
+  },
+  "checks": [
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "008448e6-ae2e-4315-a6c7-7e229e7f133d",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_avanti_smoke.gd",
+          "--",
+          "--scenery=off",
+          "--birds=off",
+          "--soundscape=off"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:59:59.384557+00:00",
+        "label": "avanti-smoke-regression",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\avanti-smoke-regression-cfd3wivl\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\avanti-smoke-regression-cfd3wivl\\report.json",
+        "timeout_seconds": 180.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Avanti smoke: 29 checks, 0 failed"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 13.375,
+        "log_bytes": 2395,
+        "log_sha256": "11c120670dc94a510461393b4b52c549602764143696dfcbdd3a66fd0dd845cf"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nok   Avanti customization bindings are accepted\r\nok   stock factory returns a full Avanti presentation profile\r\nok   stock factory refuses unrelated visual families\r\nok   stock factory refuses missing tailpipe mount\r\nok   show_tailpipe transform follows generated turbine outlet coordinates\r\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\r\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\r\nok   normal Avanti route selects the stock smoke profile\r\nok   stock evidence identifies preset and one bounded show pool\r\nok   --smoke=off keeps the stock identity but creates no profile renderer\r\nok   stock renderer primes its pool at the authored turbine outlet\r\nok   Avanti source is running for the smoke request fixture\r\nok   H enables stock smoke and the request reaches its configured maximum\r\nok   key echo does not toggle the held smoke request\r\nok   a second H press turns stock smoke off\r\nok   H can turn stock smoke back on for lifecycle and parity checks\r\nok   stock request is gated when accepted propulsion is stopped\r\nok   Avanti fixture has an accepted finite-fuel source latch\r\nok   accepted fuel exhaustion gates smoke while engine mode stays on\r\nok   stock request is gated after crash\r\nok   stock request is gated after simulation fault\r\nok   stock hold request activates its bounded tailpipe emitter\r\nok   pause freezes stock smoke clock and history\r\nok   reset clears H and puff history, then records the accepted tick-zero source\r\nok   stock smoke-on and --smoke=off sessions start from identical states\r\nok   parity fixture advances exactly 240 fault-free ticks with accepted inputs\r\nok   stock hold request emits at least one scheduled tailpipe interval\r\nok   stock smoke leaves every simulation channel bit-identical after 240 equal ticks\r\nok   Workshop can freeze an Avanti trial with an explicit empty smoke choice\r\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\r\nok   explicit empty Workshop choice suppresses the Avanti stock smoke default\r\nok   Tricolor exposes all four show mounts but authors only three entries\r\nAvanti smoke: 29 checks, 0 failed\r\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "7dbff2ee-35f2-408c-b3b5-22380ef06b91",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_smoke_profiles.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:47:42.251196+00:00",
+        "label": "smoke-profile-regression",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\smoke-profile-regression-0sohizyr\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\smoke-profile-regression-0sohizyr\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.454,
+        "log_bytes": 113,
+        "log_sha256": "53253313f09b0147e5890b45ccaf610ac58a59e18c28cb6927b63dc2b403b2a2"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nProfile smoke: 36 checks, 0 failures\r\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "54107f56-24be-4bec-9b19-5d7d9b5c389f",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_aircraft_customization.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:49:20.697902+00:00",
+        "label": "aircraft-customization",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\aircraft-customization-q2hp4e5s\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\aircraft-customization-q2hp4e5s\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 13.703,
+        "log_bytes": 121,
+        "log_sha256": "4404f1840459614f72e4589ed30b8544bcbf5664820259586e0a8a0891872a79"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nAircraft customization: 155 checks, 0 failed\r\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "d8f11f39-62eb-4df6-87f1-eddc5fce76d5",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_smoke.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:49:20.717524+00:00",
+        "label": "workshop-smoke",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\workshop-smoke-3kw_bf2a\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\workshop-smoke-3kw_bf2a\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 1
+        },
+        "diagnostics": [
+          {
+            "severity": "warning",
+            "kind": "WARNING",
+            "line": 6,
+            "message": "Tree wind is disabled for maple_tree because source material -9223371756809483669 is unsupported (cull mode is not disabled)",
+            "context": [
+              "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+              "   GDScript backtrace (most recent call first):",
+              "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+            ]
+          }
+        ],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 29.969,
+        "log_bytes": 2206,
+        "log_sha256": "90486ce9aad6356823e080d51a05a261959ced07bb9c9f4d89dade1cf4e4f6c7"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nok   default aircraft has verified smoke bindings\r\nok   test aircraft declares both show and source endpoints\r\nok   dual-route smoke profile freezes for an isolated trial\r\nWARNING: Tree wind is disabled for maple_tree because source material -9223371756809483669 is unsupported (cull mode is not disabled)\r\n   at: push_warning (core/variant/variant_utility.cpp:1033)\r\n   GDScript backtrace (most recent call first):\r\n       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)\r\n       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)\r\n       [2] build (res://scenery/imported_vegetation.gd:132)\r\n       [3] build (res://scenery/scenery.gd:425)\r\n       [4] attach (res://scenery/scenery.gd:178)\r\n       [5] build (res://render/field.gd:98)\r\n       [6] build (res://landscapes/club_field/landscape.gd:12)\r\n       [7] build (res://landscapes/catalog.gd:31)\r\n       [8] _build_field (res://main.gd:2348)\r\n       [9] build (res://render/world/world.gd:291)\r\n       [10] _build_world (res://main.gd:2303)\r\n       [11] _ready (res://main.gd:522)\r\n       [12] _start_trial (res://tests/test_workshop_smoke.gd:139)\r\n       [13] _run (res://tests/test_workshop_smoke.gd:49)\r\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\r\nok   global smoke-off suppresses both profile and legacy runtimes\r\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\r\nok   profile mode owns the shared renderer and accepts the direct pump request\r\nok   capture evidence records profile identity and shared allocation\r\nok   flight source test uses the finite-glow model\r\nok   direct smoke-pump request enters the 240 Hz request tape\r\nok   running accepted glow source enters the source tape\r\nok   stopped accepted source is distinct from enabled ignition command\r\nok   accepted finite-glow latch enqueues one exact off event\r\nok   smoke sampling leaves accepted physics state untouched\r\nWorkshop smoke integration: 12 checks, 0 failures\r\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "36ebb2d7-e16c-4093-bf5f-0a4d86872f12",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_workshop_presentation.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:54:32.581595+00:00",
+        "label": "workshop-presentation",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\workshop-presentation-xonoshyu\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\workshop-presentation-xonoshyu\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 0.578,
+        "log_bytes": 119,
+        "log_sha256": "cf2c6f7872c6f257c0a6f6a5c062f4b6d5aca84c743263775d21bdeafbba2b90"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nWorkshop presentation: 52 checks, 0 failed\r\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "4f5ed641-e430-47ad-b6c4-6ee5337faa92",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_presentation_sources.gd"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:54:33.430038+00:00",
+        "label": "presentation-sources",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\presentation-sources-zgrext83\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\presentation-sources-zgrext83\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 4.282,
+        "log_bytes": 126,
+        "log_sha256": "be100e7f3900e9ca4347a2bfd2d34288c07f2d2c1cddce73612bfd47b30e98ea"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\nPresentation source proofs: 76 checks, 0 failures\r\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "0e7cdf54-4286-4328-9d6f-bf419396f572",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--headless",
+          "--path",
+          "app",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "res://tests/test_engine_smoke.gd",
+          "--",
+          "--soundscape=off",
+          "--scenery=off"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:54:32.741730+00:00",
+        "label": "engine-smoke",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\engine-smoke-9rt66fae\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\engine-smoke-9rt66fae\\report.json",
+        "timeout_seconds": 90.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 15.953,
+        "log_bytes": 282,
+        "log_sha256": "5f9173b14db3692341bdb648afd7a6d82d3d17d5a2337970aed62b8212cbad9c"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\n\r\naircraft data warning: inertia: Jyy = 0.3692 kg\u00b7m2 is 2.02\u00d7 the scaled UltraStick25e value\r\nradio connected: sm-gamepad|0000:0000|SM fake gamepad (gamepad profile)\r\nSM engine smoke: 62 checks, 0 failures\r\n"
+    },
+    {
+      "report": {
+        "format": "openrc-godot-check v1",
+        "capture_id": "8bcb8f4e-1a33-4e20-9be2-76c50b90b766",
+        "command": [
+          ".tools/Godot_v4.7.2-stable_win64_console.exe",
+          "--path",
+          "app",
+          "--rendering-driver",
+          "opengl3",
+          "--audio-driver",
+          "Dummy",
+          "--script",
+          "C:/DEVELOPMENT/OpenRCsimulator/tools/smoke/capture_avanti.gd",
+          "--",
+          "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/smoke-investigations/SM-00-09/avanti",
+          "--soundscape=off",
+          "--scenery=off",
+          "--birds=off"
+        ],
+        "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+        "started_utc": "2026-10-20T20:55:22.990410+00:00",
+        "label": "avanti-smoke-native-final",
+        "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\avanti-smoke-native-final-kcm0tzyw\\engine.log",
+        "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\avanti-smoke-native-final-kcm0tzyw\\report.json",
+        "timeout_seconds": 120.0,
+        "max_log_bytes": 8388608,
+        "warnings_as_errors": false,
+        "required_text": [
+          "Avanti smoke capture complete"
+        ],
+        "process_exit": 0,
+        "complete": true,
+        "counts": {
+          "error": 0,
+          "warning": 0
+        },
+        "diagnostics": [],
+        "missing_required_text": [],
+        "reason": "passed",
+        "detail": "",
+        "exit_code": 0,
+        "ok": true,
+        "elapsed_seconds": 26.359,
+        "log_bytes": 417,
+        "log_sha256": "2390f7cbfef9750b6496cc76ac63dda2a749cd1d3dfbc51591a6b581b4b897eb"
+      },
+      "engine_log_utf8": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\r\nOpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090\r\n\r\naircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed\r\nAvanti smoke capture complete: C:/DEVELOPMENT/OpenRCsimulator/docs/research/smoke-investigations/SM-00-09/avanti\r\n"
+    }
+  ],
+  "python_generator_tests": {
+    "command": [
+      "python",
+      "research/aircraft-standardization/test_customization.py"
+    ],
+    "tests": 9,
+    "failures": 0
+  },
+  "fresh_clone_generation_check": {
+    "command": [
+      "python",
+      "research/aircraft-standardization/build_customization.py",
+      "--check"
+    ],
+    "core_autocrlf": false,
+    "attributes_checked_out_first": true,
+    "ok": true
+  }
+}

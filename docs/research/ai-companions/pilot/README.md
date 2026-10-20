@@ -2,47 +2,72 @@
 
 ## Result
 
-**Not qualified for the 40 m circuit-radius gate.** All six calm/gentle-practice flights completed 28,800 physics ticks (120 simulated seconds) for each requested fleet size, with no pilot refusals, crashes, or simulation faults. The measured maximum absolute radial error was 64.09–78.62 m, exceeding the 40 m gate in every scenario. The seeded three-aircraft calm repeat was bit-identical across all sampled state and command values; both repeated flights completed.
+The pilot passed the six tested calm and gentle-practice matrix scenarios for one, two, and three companions. Every aircraft completed 28,800 physics ticks (120 simulated seconds) without a pilot refusal, crash, or simulation fault. Both additional three-aircraft calm repeats completed and produced bit-identical sampled states and commands for the same seed.
 
-The controller stayed within the other measured limits: local terrain clearance was 33.93–75.01 m, true airspeed was 14.55–15.50 m/s, player separation was at least 122.48 m, fleet center separation was at least 23.62 m, and normalized input magnitude peaked at 0.662. Maximum observed bank was 26.34°; the controller's 25° bank-demand clamp is not a measured hard cap on aircraft bank.
+| Weather | Companions | AGL min–max (m) | TAS min–max (m/s) | Max radial error (m) | Min player distance (m) | Min fleet distance (m) | Max bank (°) | Result |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| Calm | 1 | 34.44–35.01 | 14.97–15.02 | 1.22 | 123.51 | n/a | 21.9 | Pass |
+| Calm | 2 | 34.44–55.01 | 14.97–15.02 | 1.22 | 123.51 | 161.25 | 21.9 | Pass |
+| Calm | 3 | 34.44–75.01 | 14.97–15.02 | 1.22 | 123.51 | 140.00 | 21.9 | Pass |
+| Gentle practice | 1 | 34.31–35.01 | 14.57–15.43 | 1.64 | 122.31 | n/a | 21.3 | Pass |
+| Gentle practice | 2 | 34.31–55.01 | 14.57–15.47 | 2.39 | 122.31 | 160.60 | 25.6 | Pass |
+| Gentle practice | 3 | 34.31–75.00 | 14.57–15.50 | 4.05 | 122.31 | 121.74 | 26.0 | Pass |
 
-| Weather | Companions | Ticks per aircraft | AGL min–max (m) | TAS min–max (m/s) | Max radial error (m) | Player separation min (m) | Fleet separation min (m) | Max bank (°) | Status |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---|
-| Calm | 1 | 28,800 | 33.940–35.008 | 14.943–15.034 | 72.464 | 123.504 | n/a | 26.187 | Fail: radius |
-| Calm | 2 | 28,800 | 33.940–55.011 | 14.943–15.034 | 72.464 | 123.504 | 25.045 | 26.187 | Fail: radius |
-| Calm | 3 | 28,800 | 33.940–75.006 | 14.943–15.034 | 72.464 | 123.504 | 23.881 | 26.187 | Fail: radius |
-| Gentle practice | 1 | 28,800 | 33.934–35.009 | 14.564–15.342 | 64.094 | 122.475 | n/a | 26.342 | Fail: radius |
-| Gentle practice | 2 | 28,800 | 33.934–55.010 | 14.564–15.464 | 78.617 | 122.475 | 25.038 | 26.342 | Fail: radius |
-| Gentle practice | 3 | 28,800 | 33.934–75.007 | 14.547–15.497 | 78.322 | 122.475 | 23.615 | 26.342 | Fail: radius |
+Across the matrix, local terrain clearance ranged from 34.31 to 75.01 m, TAS from 14.57 to 15.50 m/s, maximum absolute circuit-radius error was 4.05 m against a 40 m limit, player separation stayed above 122.30 m against a 30 m limit, and companion centers stayed above 121.74 m against a 15 m limit. Normalized control magnitude peaked at 0.7854. The greatest measured aircraft bank was 25.97°; the 25° controller demand clamp is not a hard cap on the aircraft's dynamic bank response.
 
-The exact scenario values and one-second aircraft samples are in [scenario_metrics.csv](scenario_metrics.csv) and [flight_samples_1hz.csv](flight_samples_1hz.csv). The radial-error peak is a real trajectory excursion in the sampled states, not a missing pair-distance sample; the metrics now evaluate clearance, TAS, player separation, and all fleet pairs on every accepted tick.
+The exact scenario metrics and one-second aircraft samples are in [scenario_metrics.csv](scenario_metrics.csv) and [flight_samples_1hz.csv](flight_samples_1hz.csv). The checked-runner matrix report and full engine log are retained in [checks](checks/).
 
-## Method
+## Method and scope
 
-The checked Godot 4.7.2 run exercised the current `FlightSession` external-driver path with the Jensen Das Ugly Stik 60 and accepted Club field. The pilot was sampled at 60 Hz, and its trim-relative roll/pitch/yaw commands plus absolute throttle were held for four 240 Hz physics ticks. The six scenario runs used seed `20261020`; the two additional calm three-aircraft repeats used the same seed.
+The probe used the current `FlightSession` external-driver path with the accepted Jensen Das Ugly Stik 60 and normalized Club field. It sampled the controller at 60 Hz and held each accepted trim-relative roll, pitch, and yaw command plus absolute throttle for four 240 Hz physics ticks. The six weather/count scenarios used seed `20261020`; the two repeated calm three-aircraft runs used the same seed. The probe checked requested absolute spawn heading against tick-zero session yaw within `1e-9` rad for each spawned aircraft.
+
+This pilot matrix loads the Club field surfaces and uses the stationary field pilot position as the player reference. It does not load the complete `CollisionSetup`/lake inventory and contains no moving encounter traffic during the long flights. A separate [three-aircraft production check](../AFC-00-06/production-120s.json) exercises the manager with the full Club collision and lake inventory for 28,800 ticks per aircraft; its checked report is [here](../AFC-00-06/checks/production-120s-report.json). That run is complementary evidence, not a substitute for or replay of this six-scenario matrix.
+
+The matrix gates were local clearance of at least 20 m and no more than 20 m above the highest assigned altitude band; TAS 10–25 m/s; absolute circuit radial error at most 40 m; player distance at least 30 m; aircraft-center separation at least 15 m; and normalized command magnitude at most 1. These gates establish performance only for the tested scope and do not establish physical realism.
+
+The gentle-practice condition is the project's estimated practice preset: 1.5 m/s east wind, 0.6 m/s horizontal gust, 0.15 m/s vertical gust, and N/E/D turbulence RMS 0.15/0.15/0.08 m/s with weather seed `20261011`. It is not measured site weather.
+
+## Reproduce
+
+From the repository root:
 
 ```powershell
-python tools/godot/run_checked.py --out-dir .tools/companions-pilot-qualification --label external-driver-qualification-matrix-v2 --timeout 1800 --require-text "companion pilot qualification:" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script C:/DEVELOPMENT/OpenRCsimulator/research/ai-companions/pilot_probe.gd
+python tools/godot/run_checked.py --label companions-pilot-matrix --timeout 1800 --require-text "companion pilot qualification:" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/ai-companions/pilot_probe.gd -- --out=../tmp/companions-pilot-matrix
 ```
 
-The measured gates were: terrain clearance at least 20 m and no more than 20 m above the highest assigned altitude band; TAS 10–25 m/s; absolute radial error at most 40 m; player distance at least 30 m; aircraft-center separation at least 15 m; normalized input magnitude at most 1. These are qualification limits used by this probe, not independent evidence of physical realism.
+The current probe writes both CSVs and a preliminary README into the required new
+output directory; missing or existing destinations are refused. Review results
+before retaining a new evidence set. These historical run identities remain tied
+to the source hashes below. For a three-second heading check without output files,
+replace `--out=...` with `--spot-check` and the runner's required text with
+`"companion pilot heading spot-check:"`.
 
-The gentle-practice preset is an estimated practice condition: 1.5 m/s east wind, 0.6 m/s horizontal gust, 0.15 m/s vertical gust, and N/E/D turbulence RMS 0.15/0.15/0.08 m/s with weather seed `20261011`. It is not a measurement of site weather.
+The output-routing follow-up passed the same 12 heading checks and refused this
+existing evidence directory with the intended exit code 2, before running a matrix.
+Its [receipt and raw checks](checks/output-guard/receipt.json) preserve that
+expected refusal separately from the passing flight check. The full historical
+matrix below was not rerun or overwritten by this tooling change.
 
-Focused controller tests passed 24 checks, including bounded head-on avoidance, reciprocal zero-CPA head-on turn selection toward opposite world sides, mirrored nonzero-CPA crossings, faster traffic closing from behind, self-traffic filtering, deterministic commands, and safe refusal of malformed/unsupported observations. Config tests passed 22 checks, including rejection of missing CLI flag values.
+## Controller behavior and regression record
+
+Focused pilot tests passed 24 checks, including bounded head-on avoidance, reciprocal zero-CPA head-on avoidance with deterministic opposite world-side turns, mirrored nonzero-CPA crossing corrections, faster traffic closing from behind, self-traffic filtering, deterministic commands, and safe refusal of malformed or unsupported observations. Config tests passed 22 checks, including refusal of `--companions` and `--companions-seed` when their values are missing. The retained logs are [pilot tests](checks/pilot-controller-tests-engine.log) and [config tests](checks/pilot-config-tests-engine.log), with their checked-runner reports beside them.
+
+The earlier `external-driver-qualification-matrix-v2` run is retained only as an integration regression finding, not pilot qualification evidence. `FlightSession` applied the pilot's requested absolute spawn yaw as a rotation offset from the already east-facing trimmed start, adding 90° and sending aircraft along the wrong headings. Its radial excursions therefore cannot be attributed to the pilot. The session seam was corrected to apply absolute yaw while preserving trim pitch and roll; the fix is covered by the session regression test and by the tick-zero heading assertions in this probe. The old [matrix report](checks/external-heading-matrix-v2-invalid-report.json) and [log](checks/external-heading-matrix-v2-invalid-engine.log) preserve the failure; the corrected [heading spot-check report](checks/external-heading-spot-check-v2-report.json) records 12 passing checks over 720 calm ticks.
 
 ## Evidence identity
 
-- Checked-runner result: **complete**, engine process exit code 1 because eight radial-error checks failed (six matrix scenarios and two repeat flights); zero engine errors/warnings. The runner itself did not time out.
-- Log: `.tools/companions-pilot-qualification/external-driver-qualification-matrix-v2-qrcr4fnl/engine.log`
-- Runner report: `.tools/companions-pilot-qualification/external-driver-qualification-matrix-v2-qrcr4fnl/report.json`
-- Capture ID: `c5262db7-ab2d-49df-97d4-d0f7efcc666d`
-- Log SHA-256: `9f7164d4a094a4e1f5ad17552f362769ae60c5b166ce8d08840200ebed70008f`
-- Runner-report SHA-256: `f91ce7046fe7f5a766a62df617a1c5cdf6847ccd609c70d77de4dcd53f45c69f`
-- Pilot source SHA-256: `6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade`
-- Config source SHA-256: `2455c71f7b42b3b3e7f1b1cb6378b0534645b2ddd9281d3338e5d346a563601b`
-- Pilot tests SHA-256: `4ffe103f9d53925f57bf1c5dd5ce4d6315dfff047c17e3cbd0a38181f0ae9f4e`
-- Config tests SHA-256: `ab4136b671a2ae07af1653785fe89b902797e88d6b5118572ed471328f0e273d`
-- Probe source SHA-256: `49bfefb2bc5ffb47f2726c6d4fca30cf8d66b8c274059be11551e47481dc24dd`
+The corrected checked-runner matrix completed successfully with process exit code 0, no checked-runner engine diagnostics, 148 passing checks, and elapsed time 546.031 s. Session setup printed the accepted aircraft's inertia advisory (`Jyy = 0.3692 kg·m²`, 2.02× the scaled UltraStick25e value); it caused no refusal, crash, or simulation fault. This elapsed time is a development-host measurement, not a 60 fps acceptance result.
 
-This evidence does not establish 60 fps performance, physical validation, or performance with moving/encounter traffic during long flights. The long-flight matrix used a stationary player at the accepted field pilot position and the companion fleet only.
+- Capture ID: `c34bcd46-f775-4762-a80d-32d5e9c62b5d`
+- Runner report SHA-256: `3c4103302b5844bea524f3a6f65b46d75e8017137f53081b5a3f65b5c4c23f36`
+- Engine log SHA-256: `3de1a94d8842f37c06ec59972a88d3f394380842cbccb9cb0d984d13323f49ab`
+- Pilot source SHA-256: `6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade`
+- Probe source SHA-256: `3ad69bb7d1be36f038c954cf718851be3ea016d3b3c1cd0e1cf06a226e4fa00f`
+- Session seam source SHA-256: `ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263`
+- Config source SHA-256: `2455c71f7b42b3b3e7f1b1cb6378b0534645b2ddd9281d3338e5d346a563601b`
+- Pilot test SHA-256: `4ffe103f9d53925f57bf1c5dd5ce4d6315dfff047c17e3cbd0a38181f0ae9f4e`
+- Config test SHA-256: `ab4136b671a2ae07af1653785fe89b902797e88d6b5118572ed471328f0e273d`
+
+The adjacent [source receipt](../AFC-00-06/source-receipt.json) records the broader companion integration input hashes. The matrix, heading spot-check, invalid pre-fix run, and focused test runner reports and logs are retained under [checks](checks/).
+
+This qualification does not establish 60 fps performance or physical validation. It also does not cover longer soak duration, moving encounter traffic during long flights, or the complete world collision inventory in the matrix itself. Companion cost measurements and their open performance gate are documented in [AFC-00-06](../AFC-00-06/README.md).

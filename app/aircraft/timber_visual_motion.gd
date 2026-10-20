@@ -356,8 +356,17 @@ func _make_dust_emitter(role: String) -> CPUParticles3D:
 	var dust_shader := Shader.new()
 	dust_shader.code = """
 	shader_type spatial;
-	render_mode unshaded, blend_mix, depth_draw_never, cull_disabled;
+	render_mode unshaded, blend_mix, depth_draw_never, cull_disabled, skip_vertex_transform;
 	uniform sampler2D dust_texture : source_color, filter_linear, repeat_disable;
+	void vertex() {
+		// Shader materials replace StandardMaterial3D's particle billboard mode, so rebuild
+		// the quad in view space and retain the per-particle transform scale.
+		vec3 center_view = (MODELVIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+		float width_scale = length(MODELVIEW_MATRIX[0].xyz);
+		float height_scale = length(MODELVIEW_MATRIX[1].xyz);
+		VERTEX = center_view + vec3(VERTEX.x * width_scale, VERTEX.y * height_scale, 0.0);
+		NORMAL = vec3(0.0, 0.0, 1.0);
+	}
 	void fragment() {
 		vec2 centered_uv = UV * 2.0 - vec2(1.0);
 		float radial_fade = 1.0 - smoothstep(0.54, 1.0, length(centered_uv));
@@ -468,25 +477,40 @@ func _update_contact_dust(state: PackedFloat64Array, contacts: Array, compressio
 	var continuous: PackedFloat64Array = _session.sim.continuous
 	if first_wheel < 0 or first_wheel + wheel_count > continuous.size():
 		return
-	var wheel_speeds := continuous.slice(first_wheel, first_wheel + wheel_count)
+	var paused: bool = _session.sim.paused or not _session.holds.is_empty()
+	if paused:
+		for emitter_value: Variant in _dust_emitters.values():
+			var emitter := emitter_value as CPUParticles3D
+			if is_instance_valid(emitter):
+				emitter.speed_scale = 0.0
+				emitter.emitting = false
+		return
+	var has_compressed_wheel := false
+	for amount: float in compression:
+		if amount > 0.0:
+			has_compressed_wheel = true
+			break
+	if not has_compressed_wheel:
+		for emitter_value: Variant in _dust_emitters.values():
+			var emitter := emitter_value as CPUParticles3D
+			if is_instance_valid(emitter):
+				emitter.speed_scale = 1.0
+				emitter.emitting = false
+		return
 	var steer: float = _session.sim.aux[_session.AUX_SERVO + 2]
 	var surfaces: PackedFloat64Array = _session.ground_surfaces
 	var lake_value: Variant = _session.get("_lake")
 	var lake: Dictionary = lake_value if lake_value is Dictionary else {}
-	var paused: bool = not _session.holds.is_empty()
 	for leg: Dictionary in _legs:
 		var index: int = leg.contact_index
 		var emitter := _dust_emitters.get(index) as CPUParticles3D
-		if emitter == null or index >= contacts.size() or index >= wheel_speeds.size():
+		if emitter == null or index >= contacts.size() or index >= wheel_count:
 			continue
-		emitter.speed_scale = 0.0 if paused else 1.0
-		if paused:
-			emitter.emitting = false
-			continue
+		emitter.speed_scale = 1.0
 		var contact: Dictionary = contacts[index]
 		var frame: Dictionary = GroundWheels.frame(state, contact, steer, surfaces,
 			PackedFloat64Array(), false, lake)
-		var slip_speed: float = float(frame.get("long_speed", 0.0)) - float(wheel_speeds[index])
+		var slip_speed: float = float(frame.get("long_speed", 0.0)) - float(continuous[first_wheel + index])
 		var lateral_speed: float = float(frame.get("side_speed", 0.0))
 		var real_contact: bool = float(frame.get("normal_load", 0.0)) >= MIN_DUST_NORMAL_LOAD_N
 		var slipping: bool = absf(slip_speed) >= LONGITUDINAL_SLIP_DUST_MPS \

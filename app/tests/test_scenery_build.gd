@@ -139,6 +139,22 @@ func _test_build() -> void:
 		if c is MeshInstance3D and str(c.name).begins_with("cell_"):
 			cell_surfaces += (c as MeshInstance3D).mesh.get_surface_count()
 	_check("one surface per cell (one shared material)", cell_surfaces == int(stats.cells))
+	var shelter_nodes: Array[MeshInstance3D] = []
+	for child: Node in root.get_children():
+		if child is MeshInstance3D and str(child.name).begins_with("PitShelter_"):
+			shelter_nodes.append(child as MeshInstance3D)
+	_check("two open shelters each retain one independent damage-aware surface",
+		shelter_nodes.size() == 2 and int(stats.get("pit_shelter_surfaces", -1)) == 2)
+	for shelter_mesh: MeshInstance3D in shelter_nodes:
+		var material := shelter_mesh.mesh.surface_get_material(0) as ShaderMaterial
+		var ranges: Array = shelter_mesh.get_meta("damage_ranges", [])
+		_check("%s keeps its roof, timber, slab and furniture in one PBR surface" % shelter_mesh.name,
+			shelter_mesh.mesh.get_surface_count() == 1 and material != null
+			and material.shader == load("res://scenery/pit_shelter_roof.gdshader")
+			and material.get_shader_parameter("roof_albedo") is Texture2D
+			and material.get_shader_parameter("wood_albedo") is Texture2D
+			and material.get_shader_parameter("slab_albedo") is Texture2D
+			and ranges.size() == 1 and str(ranges[0].id).begins_with("prop:pit-shelters:"))
 	var tris := _triangles(root)
 	print("     triangles: %d, build %.1f ms" % [tris, stats.build_ms])
 	_check("triangles within the scenery budget (%d)" % BUDGET_TRIANGLES, tris <= BUDGET_TRIANGLES, str(tris))

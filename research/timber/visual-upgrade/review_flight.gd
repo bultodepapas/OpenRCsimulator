@@ -141,12 +141,42 @@ func _run() -> void:
 		fixture_focus_resumes = fixture_focus_resumes,
 		asset_sha256 = FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/timber.glb"),
 		visual_details_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_details.gd"),
+		visual_detail_data_sha256 = FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd"),
 		visual_motion_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_motion.gd"),
 		visual_lighting_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
 		adapter = RenderingServer.get_video_adapter_name(), renderer = RenderingServer.get_current_rendering_method(),
 		crash = _flight._crash_director.stats() if crash_frame >= 0 else {}}
-	FileAccess.open(_out.path_join("report.json"), FileAccess.WRITE).store_string(JSON.stringify(report, "\t") + "\n")
-	_flight.free()
+	# Like the loading probe, observe mixer release outside the review/timing window.
+	# One rendered frame is not necessarily one audio mix callback on a fast host.
+	var playbacks: Array[WeakRef] = []
+	_collect_audio_playbacks(_flight, playbacks)
+	_flight.queue_free()
+	_flight = null
+	var cleanup_started := Time.get_ticks_usec()
 	await process_frame
+	await process_frame
+	var remaining := _remaining_audio_playbacks(playbacks)
+	while remaining > 0 and Time.get_ticks_usec() - cleanup_started < 1000000:
+		await process_frame
+		remaining = _remaining_audio_playbacks(playbacks)
+	report.fixture_shutdown = {tracked_playbacks = playbacks.size(), remaining_playbacks = remaining,
+		elapsed_usec = Time.get_ticks_usec() - cleanup_started, timeout_usec = 1000000}
+	if remaining > 0:
+		_failures.append("review audio teardown did not drain within one second")
+	FileAccess.open(_out.path_join("report.json"), FileAccess.WRITE).store_string(JSON.stringify(report, "\t") + "\n")
 	print("TT-20 production review: %s, %d captures, %d failures" % [_case, _records.size(), _failures.size()])
 	quit(0 if _failures.is_empty() else 1)
+
+func _collect_audio_playbacks(node: Node, refs: Array[WeakRef]) -> void:
+	if node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D:
+		if node.has_stream_playback():
+			refs.append(weakref(node.get_stream_playback()))
+	for child in node.get_children():
+		_collect_audio_playbacks(child, refs)
+
+func _remaining_audio_playbacks(refs: Array[WeakRef]) -> int:
+	var remaining := 0
+	for ref in refs:
+		if ref.get_ref() != null:
+			remaining += 1
+	return remaining

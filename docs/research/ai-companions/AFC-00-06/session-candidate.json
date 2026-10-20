@@ -26,7 +26,7 @@
 	},
 	"comparison_method": "Open-loop: baseline body/internal initial state and post-conditioning input tape; candidate aircraft mass/inertia/configuration and current solver. Not a newly trimmed flight or pilot adaptation.",
 	"complete": true,
-	"current_solver_sha256": "0b2fcad7f0baca9fbfa6b81f43d141910061b98da0c4522b1a9b05e2fb67e583",
+	"current_solver_sha256": "c4b300e71e5cd2e5251d8ef5df4d7d6190c6195aa200d05990e45abb1f0242ef",
 	"dt_s": 0.004166666666666667,
 	"error": "",
 	"events": [

@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "028e8b71-0d27-41fc-89ab-23229f1a0cfb",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/research/timber/visual-upgrade/verify_visual.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/timber-integration/TT-21/visual-isolation.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:23:16.512551+00:00",
+  "label": "visual-isolation-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\timber-integration\\TT-21\\checks\\visual-isolation-final-9y20ex3x\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\timber-integration\\TT-21\\checks\\visual-isolation-final-9y20ex3x\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.328,
+  "log_bytes": 139,
+  "log_sha256": "a487b2c3653b2fc27d62408b08e1dd9625beb623040bc3ed1bfc1449c2cf79e5"
+}

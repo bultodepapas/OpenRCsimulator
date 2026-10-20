@@ -1,0 +1,105 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default Pause fits (1280, 720) without a scrollbar
+ok   100% Pause rail stays at its original 384px width
+ok   default Resume stays inside the pause panel
+ok   default Pause fits (1920, 1080) without a scrollbar
+ok   100% Pause rail stays at its original 384px width
+ok   default Resume stays inside the pause panel
+ok   pending Pause focus is disconnected when teardown frees the menu
+ok   live Pause starts with a 384px rail at 100%
+ok   live theme change expands the Pause rail at 200%
+ok   live theme revert restores the 384px Pause rail at 100%
+ok   200% Pause rail widens while staying within the viewport bound
+ok   Spanish Continue stays on one line at 200% text
+ok   200% Pause keeps its header and Continue visible together
+ok   200% Continue remains enabled and keyboard-focusable
+ok   200% exit options open and Quit remains operable
+WARNING: Tree wind is disabled for maple_tree because source material -9223371797158688516 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:398)
+       [4] attach (res://scenery/scenery.gd:175)
+       [5] build (res://render/field.gd:98)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] <anonymous lambda> (res://ui/home_scene.gd:91)
+       [9] build (res://render/world/world.gd:291)
+       [10] _init (res://ui/home_scene.gd:92)
+       [11] show_home (res://app_root.gd:302)
+       [12] _ready (res://app_root.gd:246)
+       [13] _run (res://tests/test_ui_pause.gd:52)
+       [14] _initialize (res://tests/test_ui_pause.gd:27)
+       [15] _run_pause_layout_checks (res://tests/test_ui_pause.gd:455)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   flying with engine sound
+ok   200% Spanish opens Pause with Continue focused
+ok   Esc opens the pause menu, focus on Continue
+ok   secondary Pause actions use the quiet treatment
+ok   quiet Pause rows are left-aligned while Continue stays centered
+ok   the session is held and paused
+ok   simulation frozen (tick 120)
+ok   propeller frozen
+FAIL engine sound paused and silent (-200.0 dB) 
+ok   Down navigates the menu -> Restart
+ok   navigation keys never reach the flight commands
+ok   R, T and P do nothing behind the menu
+ok   Session options follows the primary recovery actions
+ok   Session options expands its secondary actions
+ok   Settings stays on the primary pause list
+ok   Back first closes Session options
+ok   Esc again: back to the flight
+ok   flying again: ticks, sound
+ok   a key held through Continue does not fly
+ok   pressed again after release, it flies
+CRASH at 0.0 m/s (sink 0.0 m/s, airframe contact (hull point 3), point speed 0.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Prop strike on the ground at 1.7 m/s, pitch -2°, bank -0° (throttle closed, low airspeed)
+ok   crash shown
+ok   menu explains the crash
+ok   crash countdown frozen under the menu (360 ticks left)
+ok   Continue does not fly through the crash
+ok   wreck persists after Continue until explicit restart
+ok   menu Restart clears the wreck and resumes flight
+ok   focus lost -> paused with the menu open
+ok   Enter on Continue resumes
+ok   Esc in the calibration wizard cancels it and opens Pause
+ok   fault: Continue disabled, focus on Restart, reason shown
+ok   fault: Continue refused, menu stays
+ok   Restart: a fresh trimmed flight
+ok   rejected restart keeps its menu, hold and explanation
+ok   rejected restart preserves the frozen flight
+ok   retry after rejected restart resumes keyboard flight
+ok   keyboard cycle 0 pauses again
+ok   keyboard cycle 0 restarts and advances
+ok   keyboard cycle 0 stays at runway idle without throttle input
+ok   keyboard cycle 1 pauses again
+ok   keyboard cycle 1 restarts and advances
+ok   keyboard cycle 1 stays at runway idle without throttle input
+ok   keyboard cycle 2 pauses again
+ok   keyboard cycle 2 restarts and advances
+ok   keyboard cycle 2 stays at runway idle without throttle input
+ok   keyboard R shares the successful restart flow
+ok   failure settings are reachable by keyboard
+ok   Exit options are reachable on the primary pause list
+ok   End flight reachable by keyboard
+trace saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/traces/trace-2026-10-20T19-05-21.csv (64 rows)
+ok   End flight saved the trace
+ok   back on Home, flight freed
+ok   focus on Fly again
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   failed save opens explicit recovery with Stay as the safe default
+ok   failed-save decision keeps the current flight held
+ok   Stay keeps the failed trace pending and the flight in place
+ok   a later End reoffers recovery without stopping or discarding implicitly
+ok   only explicit Discard trace and continue ends the flight
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   5 cycles: same node count on Home every time [736.0, 736.0, 736.0, 736.0, 736.0, 736.0]
+ok   5 cycles: no session, engine sound or pause menu left
+1 failed

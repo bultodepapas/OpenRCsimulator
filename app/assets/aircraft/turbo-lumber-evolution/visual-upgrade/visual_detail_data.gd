@@ -6,20 +6,24 @@ const DATA := {
   "aircraft_id": "turbo-lumber-evolution",
   "fracture_details": {
     "wing_left": {
-      "cut_x_m": -0.072,
+      "cut_x_m": 0.0040323841,
       "host": "wing_left_fixed",
+      "outline_x_m": 0.0036,
       "spar_depth_m": 0.008,
+      "spar_proud_m": 0.0008,
       "spar_radius_m": 0.0048,
-      "spar_y_m": 0.104,
-      "spar_z_m": 0.102
+      "spar_y_m": 0.1092,
+      "spar_z_m": 0.0684
     },
     "wing_right": {
-      "cut_x_m": 0.072,
+      "cut_x_m": -0.0040323846,
       "host": "wing_right_fixed",
+      "outline_x_m": -0.0036,
       "spar_depth_m": 0.008,
+      "spar_proud_m": 0.0008,
       "spar_radius_m": 0.0048,
-      "spar_y_m": 0.104,
-      "spar_z_m": 0.102
+      "spar_y_m": 0.1092,
+      "spar_z_m": 0.0684
     }
   },
   "free_textures": {
@@ -85,7 +89,7 @@ const DATA := {
   ],
   "material_profiles": {
     "cowl_black_finish": {
-      "grow_amount_m": 0.0015,
+      "grow_amount_m": 0.0004,
       "grow_meshes": [
         "cowl"
       ],
@@ -195,69 +199,25 @@ const DATA := {
   "paint_seam_repair": {
     "authored_paint_regions": [
       {
-        "max_projection_distance_m": 0.004,
-        "mesh": "cowl",
-        "min_normal_axis_dot": 0.65,
-        "min_normal_dot": -0.1,
+        "allow_authored_override": true,
+        "mesh": "fuselage_core",
+        "min_normal_axis_dot": 0.85,
         "normal_axis_root": [
           0.0,
           1.0,
           0.0
         ],
         "paint_material": "black",
+        "require_all_vertices_inside": true,
         "root_bounds_max": [
-          0.05,
-          0.028,
-          -0.155
+          -0.0308,
+          0.0199,
+          -0.0519
         ],
         "root_bounds_min": [
-          -0.05,
-          0.015,
-          -0.205
-        ]
-      },
-      {
-        "max_projection_distance_m": 0.004,
-        "mesh": "cowl",
-        "min_normal_axis_dot": 0.8,
-        "min_normal_dot": -0.1,
-        "normal_axis_root": [
-          0.0,
-          0.0,
-          -1.0
-        ],
-        "paint_material": "black",
-        "root_bounds_max": [
-          0.01,
-          0.029,
-          -0.196
-        ],
-        "root_bounds_min": [
-          -0.01,
-          0.022,
-          -0.204
-        ]
-      },
-      {
-        "max_projection_distance_m": 0.004,
-        "mesh": "cowl",
-        "min_normal_axis_dot": 0.9,
-        "min_normal_dot": -0.1,
-        "normal_axis_root": [
-          0.0,
-          0.0,
-          1.0
-        ],
-        "paint_material": "black",
-        "root_bounds_max": [
-          0.05,
-          0.026,
-          -0.156
-        ],
-        "root_bounds_min": [
-          -0.05,
-          0.014,
-          -0.158
+          -0.0443,
+          0.0125,
+          -0.0853
         ]
       }
     ],

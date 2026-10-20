@@ -1,0 +1,442 @@
+{
+  "aircraft_id": "turbo-lumber-evolution",
+  "asset_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+  "captures": [
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        0.0,
+        0.0,
+        -3.86375999450684
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_front.png",
+      "fov_deg": null,
+      "ortho_size_m": 1.8546048,
+      "png_sha256": "40a24605e3c27b813d7bc49db27741f0a2437cdb47196b318fedfe79917f69c8",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        -3.86375999450684,
+        0.0,
+        0.278190732002258
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_side_left.png",
+      "fov_deg": null,
+      "ortho_size_m": 1.8546048,
+      "png_sha256": "23b838eac537ea768ddb237b21f006abde8192811f6e7fdc3ed9206c0446d966",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        0.0,
+        3.86375999450684,
+        0.278190732002258
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_top.png",
+      "fov_deg": null,
+      "ortho_size_m": 1.8546048,
+      "png_sha256": "fcdf1b90c482c97d0635ad7ff3d4e48d66950f60c3bb4da2ef743450d9cda58c",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        0.0,
+        -3.86375999450684,
+        0.278190732002258
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_bottom.png",
+      "fov_deg": null,
+      "ortho_size_m": 1.8546048,
+      "png_sha256": "0bc574a35831b74d166534b5f67219977677a68ab242e15b2cc32f9b8dc629c4",
+      "projection": "ortho",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        -1.15912795066834,
+        0.556381464004517,
+        -0.880937218666077
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_oblique_front_left.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "d0433255325f83815e0d49c5ad265ac073b47da0b8f88c9e597a6acd36162169",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        1.08185279369354,
+        0.618201613426209,
+        1.51459395885468
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_oblique_rear_right.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "79a9ca7f8c3ecc200883c405167eafeba53c32ebcaec17ffd392c15bc298cf87",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        -1.15912795066834,
+        0.556381464004517,
+        -0.880937218666077
+      ],
+      "controls": {
+        "flap": 36.6,
+        "pitch": 1.0,
+        "roll": 1.0,
+        "yaw": 1.0
+      },
+      "file": "inspection_oblique_front_left_full.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "ca0abe2d010c2582dbb81f0e8eb4f29134bf7db0a28f678a8028ea9c43430b29",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        1.08185279369354,
+        0.618201613426209,
+        1.51459395885468
+      ],
+      "controls": {
+        "flap": 36.6,
+        "pitch": 1.0,
+        "roll": 1.0,
+        "yaw": 1.0
+      },
+      "file": "inspection_oblique_rear_right_full.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "bf06769946afe8cfbf404cb9d049e0ce6bd90267d0823226a24fb4eb2c98f050",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        0.927302420139313,
+        -0.309100806713104,
+        -1.03548765182495
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_low_front_right.png",
+      "fov_deg": 40.0,
+      "ortho_size_m": null,
+      "png_sha256": "4e7a97a60703e3042b47b4e5024a8264137d53b7e85d2befadc88ac1af041e2e",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0,
+        0.278190732002258
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        -0.300000011920929,
+        -0.159999996423721,
+        -0.600000023841858
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_gear_front.png",
+      "fov_deg": 30.0,
+      "ortho_size_m": null,
+      "png_sha256": "10f1587355382c3d6db09d22640173793f4a429c5da1186ae911a6fc6689d475",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        -0.170000001788139,
+        0.0
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        -0.449999988079071,
+        0.0500000007450581,
+        -0.550000011920929
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_nose_left.png",
+      "fov_deg": 30.0,
+      "ortho_size_m": null,
+      "png_sha256": "fee6f20ef036532fad2f09aaaf2cfb3cc90cf2f46443272779e60a73c6dde51b",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        -0.00999999977648258,
+        -0.200000002980232
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "attitude_deg": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "camera_position_m": [
+        0.449999988079071,
+        0.0799999982118607,
+        0.449999988079071
+      ],
+      "controls": {
+        "flap": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "yaw": 0.0
+      },
+      "file": "inspection_tail_right.png",
+      "fov_deg": 30.0,
+      "ortho_size_m": null,
+      "png_sha256": "d69cc9eff6d70fb7ccc21f30a6bf0d29125e3738f7fa6b2baf97531432dce821",
+      "projection": "persp",
+      "target_m": [
+        0.0,
+        0.0199999995529652,
+        0.720000028610229
+      ],
+      "up": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  ],
+  "finish": "production",
+  "format": "openrc-capture-manifest v1",
+  "geometry_sha256": "ffb27f941c834778454af013593be7d3db358eded8c26543a3316976bae3ed83",
+  "image_size": [
+    1280,
+    720
+  ],
+  "light": {
+    "ambient": [
+      0.75,
+      0.78,
+      0.82
+    ],
+    "ambient_energy": 0.55,
+    "sky": "9bcef0",
+    "sun_energy": 1.1,
+    "sun_rotation_deg": [
+      -50,
+      -35,
+      0
+    ]
+  },
+  "limits": "Prepared views for geometry and material review of the imported r2 model under the Compatibility renderer; not a pilot readability test.",
+  "model_sha256": "0f27b1cecd358b86fd06d260a824dbbb2f2b7b6a1b878fb0dc43847ec5f36fe1",
+  "ortho_size_m": 1.8546048,
+  "renderer": "NVIDIA GeForce RTX 3090",
+  "rendering_method": "gl_compatibility",
+  "span_m": 1.545504,
+  "status": "visual preview geometry of the author's r2 export; dimensions measured on the Godot-imported scene, ranges and installation angles estimated by the author; not calibrated, not flyable",
+  "suite": "inspection",
+  "throws_deg": {
+    "aileron": 34.475,
+    "elevator": 17.893,
+    "rudder": 18.364
+  },
+  "throws_source": "manual millimetres converted at the assumed stations (geometry.json controls); full flap = 35 mm = 36.6 deg",
+  "visual_detail_data_sha256": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+  "visual_details_sha256": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+  "visual_lighting_sha256": "0fcfff831a85ee3473eeaec90d32db92fcc8e387e32148d0171a9abe06bc0af2",
+  "visual_revision": "r2-d75ae605aa3a"
+}

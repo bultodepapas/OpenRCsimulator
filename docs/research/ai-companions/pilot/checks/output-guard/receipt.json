@@ -1,0 +1,25 @@
+{
+  "format": "openrc-afc02-probe-output-guard v1",
+  "captured_utc": "2026-10-20T20:28:22.383666+00:00",
+  "source": "research/ai-companions/pilot_probe.gd",
+  "source_sha256": "60140cc90b8d079c149c5560172a6bbb286ac0f23e48d5241a9a5eadc93f09aa",
+  "scope": "Twelve heading spot-checks after output-routing change; intentional existing-destination refusal exits2 before running the matrix. Does not rerun or replace the historical full matrix.",
+  "checks": [
+    {
+      "label": "heading",
+      "expected_process_exit": 0,
+      "report": "heading-report.json",
+      "report_sha256": "78399e9ffb9b520044266d67ff0b1fca95aaa6f1f32e421b3edc733e31b80070",
+      "log": "heading-engine.log",
+      "log_sha256": "bec2cfa47c0e07d40bd5019a803ce74659c8cc7c4bcd29e9b9bad0b4e63bfd14"
+    },
+    {
+      "label": "existing-output-refusal",
+      "expected_process_exit": 2,
+      "report": "existing-output-refusal-report.json",
+      "report_sha256": "92363603ea4795ffe7f50b301718923e075a184808538609c9ac882f1c699aa0",
+      "log": "existing-output-refusal-engine.log",
+      "log_sha256": "80c3b3eef60d5a2dcb1fdd67887575eabb2662ea86b3aa1ef37d6e3f9e3970a5"
+    }
+  ]
+}

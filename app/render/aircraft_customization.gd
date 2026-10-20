@@ -13,7 +13,7 @@ const LABEL_RE := "^[ -~]{1,32}$"
 const NODE_PATH_RE := "^[A-Za-z0-9_]+(/[A-Za-z0-9_]+)*$"
 const PARAM_RE := "^[A-Za-z_][A-Za-z0-9_]{0,63}$"
 const PAINT_KINDS := ["standard_albedo", "shader_color"]
-const SMOKE_ROLES := ["wing_tip_left", "wing_tip_right", "tail", "exhaust"]
+const SMOKE_ROLES := ["wing_tip_left", "wing_tip_right", "tail", "tailpipe", "exhaust"]
 const MARKING_TEXT_ALPHABET := "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 -ÁÉÍÓÚÜÑáéíóúüñ"
 const MARKING_FONT_SIZE := 64
 const MARKING_MIN_WIDTH_M := 0.01
@@ -523,8 +523,8 @@ static func _validate_slot_group(slots: Array, group: String, errors: PackedStri
 					errors.append("smoke show pose must contain three-number vectors")
 				if role in ["wing_tip_left", "wing_tip_right"] and str(slot.get("pair", "")) != "wing_tips":
 					errors.append("smoke wingtip endpoint pair is missing")
-				if role == "tail" and not str(slot.get("pair", "")).is_empty():
-					errors.append("smoke tail endpoint must be unpaired")
+				if role in ["tail", "tailpipe"] and not str(slot.get("pair", "")).is_empty():
+					errors.append("smoke tail/tailpipe endpoint must be unpaired")
 			else:
 				if role != "exhaust" or str(slot.get("source_kind", "")) != "glow_prop" or str(slot.get("source_anchor_ref", "")) != "exhausts[0]" \
 					or str(slot.get("physical_source_ref", "")) != "propulsion.id" or str(slot.get("physical_source_kind_ref", "")) != "propulsion.kind":

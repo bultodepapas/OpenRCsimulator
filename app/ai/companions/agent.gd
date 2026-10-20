@@ -8,6 +8,7 @@ const Frames := preload("res://render/frames.gd")
 const Builder := preload("res://render/airplane.gd")
 const EngineSound := preload("res://render/engine_sound.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
+const Profiles := preload("res://ai/companions/profile_loader.gd")
 
 var session: Node
 var pilot: RefCounted
@@ -20,10 +21,11 @@ var _prop_angle := 0.0
 var _last_command: Dictionary = {}
 var _weather_rms := PackedFloat64Array()
 var _audio_enabled := false
+var _accepted_trim: Dictionary = {}
 
 
 func configure(player: Node, field: Dictionary, slot: int, count: int, seed_value: int,
-		visuals: bool, audio_enabled: bool) -> Dictionary:
+		visuals: bool, audio_enabled: bool, qualification: Dictionary = {}) -> Dictionary:
 	slot_id = slot
 	name = "Companion%d" % (slot + 1)
 	session = Flight.new()
@@ -32,6 +34,15 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 			or not session.set_lake_context(player.lake_context()) \
 			or not session.set_collision_world(player.collision_world()):
 		return _refuse("Companion aircraft or field configuration failed.")
+	# The manager validates the profile once per launch; direct fixtures validate here.
+	if qualification.is_empty():
+		qualification = Profiles.load_profile(Catalog.DEFAULT_ID, session.aircraft.input_identity, field)
+	if not qualification.get("ok", false):
+		return _refuse("; ".join(qualification.get("errors", PackedStringArray(["Companion profile was refused."]))))
+	var identity: Dictionary = qualification.get("identity", {})
+	if identity.get("aircraft_data_sha256") != session.aircraft.input_identity.get("sha256") \
+			or identity.get("aircraft_data_format") != session.aircraft.input_identity.get("format"):
+		return _refuse("Companion session data differs from the qualified aircraft.")
 	var weather: Dictionary = player.weather_configuration().duplicate(true)
 	# Independent aircraft turbulence; the common mean/gust profile keeps the same launch clock.
 	if weather.has("turbulence_seed"):
@@ -47,6 +58,7 @@ func configure(player: Node, field: Dictionary, slot: int, count: int, seed_valu
 	var trim: Dictionary = session.trims.duplicate()
 	trim.throttle = float(session.start.throttle)
 	trim.speed_m_s = float(session.start.get("V", 15.0))
+	_accepted_trim = trim.duplicate()
 	if not pilot.configure(slot, count, seed_value, trim, field):
 		return _refuse(pilot.configure_error)
 	var pose: Dictionary = pilot.initial_pose()
@@ -84,19 +96,20 @@ func _refuse(message: String) -> Dictionary:
 func observation() -> Dictionary:
 	var state: PackedFloat64Array = session.sim.state.duplicate()
 	var air: Dictionary = session.air_data(state)
-	var trim: Dictionary = session.trims.duplicate()
-	trim.throttle = float(session.start.throttle)
-	trim.speed_m_s = float(session.start.get("V", 15.0))
 	return {id = "companion-%d" % slot_id, slot = slot_id, state = state, airspeed_m_s = float(air.V),
 		wind_ned = session.wind_at(session.sim.time()),
 		ground_clearance_m = -state[2] - float(session.environment.ground(state[0], state[1])[0]),
-		trim = trim, turbulence_rms_m_s = _weather_rms.duplicate(), is_player = false}
+		trim = _accepted_trim.duplicate(), turbulence_rms_m_s = _weather_rms.duplicate(), is_player = false}
+
+
+func needs_command(tick: int) -> bool:
+	return failure.is_empty() and session.crash.is_empty() and (tick % 4 == 0 or _last_command.is_empty())
 
 
 func prepare(snapshot: Dictionary, tick: int, traffic: Array) -> bool:
 	if not failure.is_empty() or not session.crash.is_empty():
 		return false
-	if tick % 4 == 0 or _last_command.is_empty():
+	if needs_command(tick):
 		var planned: Dictionary = pilot.command(snapshot, tick, traffic)
 		if not planned.get("ok", false):
 			failure = str(planned.get("reason", "Companion pilot refused this state."))

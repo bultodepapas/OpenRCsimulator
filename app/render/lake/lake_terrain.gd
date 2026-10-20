@@ -66,6 +66,9 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 	var basin_material := ShaderMaterial.new()
 	basin_material.shader = BANK_SHADER
 	basin_material.set_shader_parameter("grass", ground_material.get_shader_parameter("grass"))
+	basin_material.set_shader_parameter("rc_dirt_albedo", load("res://assets/landscape/rc-ground/dirt-albedo.jpg"))
+	basin_material.set_shader_parameter("rc_dirt_normal", load("res://assets/landscape/rc-ground/dirt-normal.jpg"))
+	basin_material.set_shader_parameter("rc_dirt_roughness", load("res://assets/landscape/rc-ground/dirt-roughness.jpg"))
 	Atmosphere.update_ground_material(basin_material, lighting)
 	mask_parameters(basin_material, lake)
 	basin.material_override = basin_material

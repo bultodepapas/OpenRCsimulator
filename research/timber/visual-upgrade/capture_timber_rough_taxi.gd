@@ -54,6 +54,9 @@ func _capture() -> void:
 	if not start_result.get("ok", false):
 		_fail("rough-ground contact equilibrium was refused", {"detail": str(start_result)})
 		return
+	# The native capture may lose OS focus. Its controlled external-tick fixture owns
+	# this synthetic session, so explicitly resume before driving and rendering it.
+	_session.sim.set_paused(false)
 	if not _session.is_flyable():
 		_fail("rough-ground session is not flyable", {"start_error": str(_session.start_error)})
 		return

@@ -36,6 +36,14 @@ For a package check, export the `Windows` preset to a PCK, then run the same ext
 
 ## Native timing
 
+For the stock Avanti tailpipe effect, run `capture_avanti.gd` with the native renderer:
+
+```powershell
+& '.tools/Godot_v4.7.2-stable_win64_console.exe' --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/capture_avanti.gd" -- --out="$PWD/tmp/avanti-smoke-review" --soundscape=off --scenery=off --birds=off
+```
+
+Use a fresh output directory. It captures a close tailpipe view, an actual trimmed flight trail and residual smoke after OFF, advancing eight real physics ticks per 30 Hz presentation. `app/tests/test_avanti_smoke.gd` checks stock controls, lifecycle and physical-state parity headlessly. The [stock effect guide](../../docs/SMOKE.md#avanti--ventage-jet-show-smoke-sm-11-r1) owns behavior and limits.
+
 ```sh
 "$(app/get-godot.sh)" --path app --rendering-driver opengl3 --audio-driver Dummy -- \
   --frametimes=/absolute/off.json --warmup=2 --t=4 --smoke=off --soundscape=off --scenery=off --birds=off --crash-effects=off

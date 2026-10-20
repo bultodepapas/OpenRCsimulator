@@ -68,6 +68,8 @@ The factory layout uses paired lower-cowl landing lamps, wingtip navigation lens
 
 [TT-20](../../../docs/research/timber-integration/TT-20/README.md) records the photographs, technical references, inspected flight footage and native visual verification.
 
+[TT-21](../../../docs/research/timber-integration/TT-21/README.md) records bounded finish-data caches, batched wheel hardware and skipped airborne dust work, with paired CPU measurements and unchanged-render checks. Cached data never owns a model's nodes or materials; meshes and finish materials remain per instance.
+
 ## Verification and review
 
 ```bash

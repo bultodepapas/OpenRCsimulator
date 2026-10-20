@@ -13,6 +13,14 @@ const Frames = preload("res://render/frames.gd")
 const Postcards = preload("res://scenery/postcards.gd")
 const Scenery = preload("res://scenery/scenery.gd")
 
+const DETAIL_VIEWS := {
+	"club_close": {eye = [-12.0, -5.0, -1.0], at = [-15.2, -4.7, -0.18], fov = 55.0},
+	"flower_close": {eye = [-14.0, -3.0, -0.7], at = [-15.4, -3.0, -0.2], fov = 55.0},
+	"carpark_close": {eye = [-39.0, -10.0, -1.4], at = [-39.0, -18.0, 0.0], fov = 55.0},
+	"runway_aerial": {eye = [-24.0, 0.0, -38.0], at = [12.0, 0.0, 0.0], fov = 55.0},
+	"taxi_close": {eye = [5.0, -31.0, -2.0], at = [14.0, -27.0, -0.1], fov = 55.0},
+}
+
 var _args := {}
 
 
@@ -50,7 +58,11 @@ func _run() -> void:
 	if _args.has("views"):
 		wanted = str(_args.views).split(",")
 	for name: String in wanted:
-		var v: Dictionary = Postcards.VIEWS[name]
+		var v: Dictionary = DETAIL_VIEWS.get(name, Postcards.VIEWS.get(name, {}))
+		if v.is_empty():
+			printerr("Unknown capture view: ", name)
+			quit(1)
+			return
 		cam.fov = v.fov
 		cam.look_at_from_position(Frames.ned_to_render(v.eye), Frames.ned_to_render(v.at), Vector3.UP)
 		await RenderingServer.frame_post_draw

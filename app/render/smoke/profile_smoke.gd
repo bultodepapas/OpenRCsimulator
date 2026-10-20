@@ -3,14 +3,14 @@ extends Node3D
 ## Profile-driven, presentation-only smoke. A single 768-slot budget is shared by
 ## every enabled named show or accepted source endpoint in this profile.
 
+const Presentation := preload("res://workshop/presentation.gd")
 const Schedule := preload("res://render/smoke/profile_smoke_schedule.gd")
 const PROCESS_SHADER := preload("res://render/smoke/profile_process.gdshader")
 const TICKS_PER_SECOND := 240
 const MAX_INTERVAL_TICKS := 24
 const TOTAL_PARTICLES := 768
-const MAX_ENTRIES := 4
-const MAX_SHOW_ENTRIES := 3
-const MAX_SOURCE_ENTRIES := 1
+const MAX_ENTRIES := 8
+const MAX_ACTIVE_ENTRIES := 4
 const MAX_BIRTH_EVENTS := 32
 const MAX_HISTORY_SECONDS := 8.3
 const HISTORY_SAMPLE_S := 0.2
@@ -19,6 +19,12 @@ const SMOKE_ENTRY_KEYS: PackedStringArray = [
 	"burst_s", "pulse_period_s", "pulse_duty", "palette", "step_s",
 ]
 
+static var _shared_mask: ImageTexture
+
+var _event_buffers: Dictionary = {}
+var _resolved: Dictionary = {}
+var _last_birth_tick: Dictionary = {}
+var _lod := 1.0
 var _schedule = Schedule.new()
 var _profile: Dictionary = {}
 var _bindings: Dictionary = {}
@@ -57,6 +63,7 @@ func configure(profile: Dictionary, bindings: Dictionary) -> bool:
 		_last_transforms.clear()
 		_primed_slots.clear()
 	_profile = profile.duplicate(true)
+	_profile.smoke = validation.entries
 	_bindings = bindings.duplicate(true)
 	_endpoint_by_id = validation.endpoints
 	var active_entries: Array[Dictionary] = []
@@ -78,6 +85,8 @@ func configure(profile: Dictionary, bindings: Dictionary) -> bool:
 	_stopped = false
 	_last_tick = -1
 	_last_interval_s = 0.0
+	_lod = 1.0
+	_last_birth_tick.clear()
 	_fault = ""
 	return true
 
@@ -95,6 +104,7 @@ func pause() -> void:
 ## Stop new births while existing particles continue to age and drift on advance().
 func stop() -> void:
 	_stopped = true
+	_schedule.cancel_bursts()
 
 
 ## Clear puffs and scheduler history. A reset also authorizes an explicit reconfigure.
@@ -106,6 +116,7 @@ func reset() -> void:
 	_last_interval_s = 0.0
 	_fault = ""
 	_history.clear()
+	_last_birth_tick.clear()
 	_last_transforms.clear()
 	_primed_slots.clear()
 	_schedule.reset()
@@ -171,12 +182,15 @@ func advance(dt: float, pose: Dictionary, wind: Vector3, request: Variant,
 		_schedule.rebase(tick)
 		_prime_transforms(pose)
 		return {"ok": true, "discontinuity_reset": true, "interval_ticks": 0}
-	var effective_request: Variant = 0.0 if _stopped else request
-	var effective_source: Variant = _source_with_stop(source_sample) if _stopped else source_sample
+	var safety_stop := bool(pose.get("safety_stop", false))
+	if safety_stop or _stopped:
+		_schedule.cancel_bursts()
+	var effective_request: Variant = 0.0 if _stopped or safety_stop else request
+	var effective_source: Variant = _source_with_stop(source_sample) if _stopped or safety_stop else source_sample
 	var schedule_result: Dictionary = _schedule.advance(_last_tick, tick, effective_request, effective_source)
 	var transforms: Dictionary = pose.get("slot_transforms", {})
 	var camera_distance := _finite_camera_distance(pose.get("camera_distance_m", 0.0))
-	var lod := 1.0 if camera_distance < 150.0 else (0.5 if camera_distance < 300.0 else (0.25 if camera_distance <= 600.0 else 0.0))
+	var lod := _distance_lod(camera_distance)
 	var segment_data: Dictionary = {}
 	for slot: String in _emitters.keys():
 		var current_transform: Variant = _slot_transform(transforms, slot)
@@ -194,11 +208,11 @@ func advance(dt: float, pose: Dictionary, wind: Vector3, request: Variant,
 	if bool(schedule_result.get("ok", false)):
 		for slot: String in _emitters.keys():
 			_update_emitter(slot, schedule_result.events.get(slot, []), segment_data.get(slot, {"valid": false}),
-				wind, interval_s, lod)
+				wind, interval_s, lod, tick)
 	else:
 		_fault = str(schedule_result.get("error", "smoke event scheduler failed"))
 		for slot: String in _emitters.keys():
-			_update_emitter(slot, [], segment_data.get(slot, {"valid": false}), wind, interval_s, 0.0)
+			_update_emitter(slot, [], segment_data.get(slot, {"valid": false}), wind, interval_s, 0.0, tick)
 	_last_tick = tick
 	_last_interval_s = interval_s
 	_update_bounds(tick, segment_data, wind.length())
@@ -221,7 +235,7 @@ func budget_info() -> Dictionary:
 			source_count += 1
 	return {"configured": _configured, "capacity": total, "budget_limit": TOTAL_PARTICLES,
 		"show_emitters": show_count, "source_emitters": source_count,
-		"slot_particles": per_slot, "fault": _fault}
+		"slot_particles": per_slot, "resolved_rates_hz": _resolved.duplicate(true), "saturated": _is_saturated(), "fault": _fault}
 
 
 func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
@@ -230,7 +244,7 @@ func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
 	if typeof(profile.get("visual_seed")) != TYPE_INT or int(profile.visual_seed) < 0 or int(profile.visual_seed) > 2147483647:
 		return _invalid("visual_seed must be a nonnegative 31-bit integer")
 	if not profile.get("smoke") is Array or profile.smoke.size() > MAX_ENTRIES:
-		return _invalid("profile smoke must contain at most four registered entries")
+		return _invalid("profile smoke must contain at most eight registered entries")
 	if not bindings.get("smoke_slots") is Array:
 		return _invalid("bindings require registered smoke_slots")
 	var endpoints: Dictionary = {}
@@ -244,34 +258,34 @@ func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
 			return _invalid("smoke slot IDs and kinds must be unique and registered")
 		if kind == "show" and (not endpoint.has("position_m") or not endpoint.has("direction")):
 			return _invalid("show endpoint requires its authored local pose")
-		if kind == "source" and (str(endpoint.get("source_kind", "")) != "glow_prop"
-			or str(endpoint.get("source_anchor_ref", "")) != "exhausts[0]"
-			or str(endpoint.get("physical_source_ref", "")) != "propulsion.id"
-			or str(endpoint.get("physical_source_kind_ref", "")) != "propulsion.kind"):
-			return _invalid("source endpoint selectors are unsupported")
+		if kind == "source":
+			var legacy := str(endpoint.get("source_anchor_ref", "")) == "exhausts[0]" and str(endpoint.get("source_kind", "")) == "glow_prop"
+			var stable := not str(endpoint.get("source_id", "")).is_empty() and not str(endpoint.get("anchor_id", "")).is_empty() and not str(endpoint.get("source_kind", "")).is_empty()
+			if not legacy and not stable:
+				return _invalid("source endpoint requires stable source and anchor identities")
 		endpoints[id] = endpoint
 	var seen: Dictionary = {}
-	var show_count := 0
-	var source_count := 0
+	var active_count := 0
+	var normalized: Array[Dictionary] = []
 	for value: Variant in profile.smoke:
 		if not value is Dictionary:
 			return _invalid("smoke profile entry must be an object")
 		var entry: Dictionary = value
-		if not _has_exact_keys(entry, SMOKE_ENTRY_KEYS):
-			return _invalid("smoke profile entry has missing or unsupported keys")
+		var normalized_entry: Dictionary = Presentation.normalize_smoke_entry(entry, int(profile.get("version", 1)))
+		if not bool(normalized_entry.ok):
+			return _invalid(str(normalized_entry.errors))
+		entry = normalized_entry.value
+		normalized.append(entry)
 		var slot := str(entry.slot)
 		if slot.is_empty() or not endpoints.has(slot) or seen.has(slot):
 			return _invalid("smoke profile must select unique registered slot IDs")
 		seen[slot] = true
 		if typeof(entry.enabled) != TYPE_BOOL:
 			return _invalid("smoke enabled must be boolean")
-		var endpoint: Dictionary = endpoints[slot]
-		if str(endpoint.kind) == "show":
-			show_count += 1
-		else:
-			source_count += 1
-		if show_count > MAX_SHOW_ENTRIES or source_count > MAX_SOURCE_ENTRIES:
-			return _invalid("profile exceeds three show endpoints or one source endpoint")
+		if bool(entry.enabled):
+			active_count += 1
+		if active_count > MAX_ACTIVE_ENTRIES:
+			return _invalid("profile exceeds four active emitters")
 		var amount := _bounded(entry.amount, 0.0, 1.0)
 		var width := _bounded(entry.width_m, 0.01, 2.0)
 		var lifetime := _bounded(entry.lifetime_s, 0.1, 8.0)
@@ -300,23 +314,60 @@ func _validate_profile(profile: Dictionary, bindings: Dictionary) -> Dictionary:
 			return _invalid("zero/one-color palettes require step_s zero")
 		if entry.palette.size() >= 2 and step < 0.05:
 			return _invalid("multiple palette colors require step_s 0.05..8")
-	return {"ok": true, "endpoints": endpoints}
+	return {"ok": true, "endpoints": endpoints, "entries": normalized}
 
 
 func _allocate_emitters(active_entries: Array[Dictionary]) -> void:
+	_event_buffers.clear()
+	_resolved.clear()
 	if active_entries.is_empty():
 		return
-	var base_count := TOTAL_PARTICLES / active_entries.size()
-	var extra := TOTAL_PARTICLES % active_entries.size()
+	var version := int(_profile.get("version", 1))
+	var demands: Array[int] = []
+	var total_demand := 0
+	for entry: Dictionary in active_entries:
+		var demand := maxi(1, ceili(float(entry.get("emission_rate_hz", 48.0)) * float(entry.lifetime_s)))
+		demands.append(demand)
+		total_demand += demand
+	var counts: Array[int] = []
+	var assigned := 0
+	for index in active_entries.size():
+		var count := TOTAL_PARTICLES / active_entries.size() if version == 1 else demands[index]
+		if version >= 2 and total_demand > TOTAL_PARTICLES:
+			# Every configured outlet retains a small floor; proportional demand uses
+			# the remainder. No pool changes while live particles exist.
+			count = 8 + floori(float(TOTAL_PARTICLES - 8 * active_entries.size()) * demands[index] / total_demand)
+		counts.append(count)
+		assigned += count
+	var target := TOTAL_PARTICLES if version == 1 or total_demand > TOTAL_PARTICLES else total_demand
+	var remainder := target - assigned
+	for index in remainder:
+		counts[index % counts.size()] += 1
 	var mask := _mask_texture()
 	for index in active_entries.size():
 		var entry: Dictionary = active_entries[index]
 		var slot := str(entry.slot)
-		var count := base_count + (1 if index < extra else 0)
+		var count := counts[index]
+		var requested := float(entry.get("emission_rate_hz", float(count) / float(entry.lifetime_s)))
+		var resolved := minf(requested, float(count) / float(entry.lifetime_s))
+		_resolved[slot] = {"requested_hz": requested, "resolved_hz": resolved, "capacity": count}
 		var emitter := _make_emitter(slot, count, entry, mask, int(_profile.visual_seed))
 		_emitters[slot] = emitter
 		add_child(emitter)
 		_primed_slots[slot] = false
+
+
+func _is_saturated() -> bool:
+	for rate: Dictionary in _resolved.values():
+		if float(rate.resolved_hz) + 0.00001 < float(rate.requested_hz):
+			return true
+	return false
+
+
+func get_plume_bounds() -> AABB:
+	for emitter: GPUParticles3D in _emitters.values():
+		return emitter.visibility_aabb
+	return AABB(Vector3.ZERO, Vector3.ONE)
 
 
 func _make_emitter(slot: String, count: int, entry: Dictionary, mask: ImageTexture,
@@ -341,7 +392,20 @@ func _make_emitter(slot: String, count: int, entry: Dictionary, mask: ImageTextu
 	process.set_shader_parameter("size_growth", 0.42 if str(entry.shape) == "ribbon" else 0.7)
 	process.set_shader_parameter("buoyancy", 0.18 if str(entry.shape) == "ribbon" else 0.27)
 	process.set_shader_parameter("shape_mode", ["ribbon", "cloud", "fan"].find(str(entry.shape)))
-	process.set_shader_parameter("amount", float(entry.amount))
+	process.set_shader_parameter("amount", float(entry.amount) if int(_profile.get("version", 1)) == 1 else 1.0)
+	process.set_shader_parameter("legacy_motion", int(_profile.get("version", 1)) == 1)
+	for parameter: String in ["density", "jet_speed_mps", "dispersion_m2_s", "buoyancy_mps", "turbulence_mps", "drag_s", "velocity_inheritance"]:
+		if entry.has(parameter):
+			process.set_shader_parameter(parameter, float(entry[parameter]))
+	var capacity_rate := float(count) / float(entry.lifetime_s)
+	process.set_shader_parameter("rate_fraction", minf(1.0, float(entry.get("emission_rate_hz", capacity_rate)) / capacity_rate))
+	process.set_shader_parameter("field_seed", float(visual_seed % 4096) * 0.0137)
+	process.set_shader_parameter("bore_radius_m", float(_endpoint_by_id.get(slot, {}).get("radius_m", float(entry.width_m) * 0.025)))
+	var times := PackedFloat32Array()
+	var states := PackedVector4Array()
+	times.resize(MAX_BIRTH_EVENTS)
+	states.resize(MAX_BIRTH_EVENTS)
+	_event_buffers[slot] = {"times": times, "states": states, "levels": times.duplicate(), "next_states": states.duplicate(), "transitions": times.duplicate(), "wash": times.duplicate()}
 	emitter.process_material = process
 	var material := StandardMaterial3D.new()
 	material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
@@ -361,7 +425,7 @@ func _make_emitter(slot: String, count: int, entry: Dictionary, mask: ImageTextu
 
 
 func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
-		wind: Vector3, interval_s: float, lod: float) -> void:
+		wind: Vector3, interval_s: float, lod: float, tick: int) -> void:
 	var emitter: GPUParticles3D = _emitters[slot]
 	var material := emitter.process_material as ShaderMaterial
 	var valid_pose := bool(segment.get("valid", false))
@@ -381,15 +445,20 @@ func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
 	material.set_shader_parameter("wind_velocity", wind)
 	material.set_shader_parameter("interval_s", interval_s)
 	material.set_shader_parameter("lod", lod if can_birth else 0.0)
-	var time_values := PackedFloat32Array()
-	var state_values := PackedVector4Array()
-	var level_values := PackedFloat32Array()
-	time_values.resize(MAX_BIRTH_EVENTS)
+	var buffers: Dictionary = _event_buffers[slot]
+	var time_values: PackedFloat32Array = buffers.times
+	var state_values: PackedVector4Array = buffers.states
+	var level_values: PackedFloat32Array = buffers.levels
+	var next_values: PackedVector4Array = buffers.next_states
+	var transitions: PackedFloat32Array = buffers.transitions
+	var wash_values: PackedFloat32Array = buffers.wash
 	time_values.fill(0.0)
-	state_values.resize(MAX_BIRTH_EVENTS)
 	state_values.fill(Vector4.ZERO)
-	level_values.resize(MAX_BIRTH_EVENTS)
 	level_values.fill(0.0)
+	next_values.fill(Vector4.ZERO)
+	transitions.fill(0.0)
+	wash_values.fill(0.0)
+	material.set_shader_parameter("presentation_time_s", float(tick) / TICKS_PER_SECOND)
 	var event_count := 0
 	var has_active_event := false
 	if can_birth:
@@ -403,20 +472,28 @@ func _update_emitter(slot: String, raw_events: Array, segment: Dictionary,
 			time_values[event_count] = float(item.offset_s)
 			state_values[event_count] = Vector4(color.r, color.g, color.b, color.a)
 			level_values[event_count] = level
+			var next_color: Color = item.get("next_color", color)
+			next_values[event_count] = Vector4(next_color.r, next_color.g, next_color.b, next_color.a)
+			transitions[event_count] = float(item.get("transition_s", 0.0))
+			wash_values[event_count] = float(item.get("wash_mps", 0.0))
 			event_count += 1
 			has_active_event = has_active_event or level > 0.0
 	material.set_shader_parameter("birth_event_times", time_values)
 	material.set_shader_parameter("birth_event_states", state_values)
 	material.set_shader_parameter("birth_event_levels", level_values)
+	material.set_shader_parameter("birth_event_next_states", next_values)
+	material.set_shader_parameter("birth_event_transitions", transitions)
+	material.set_shader_parameter("birth_event_wash", wash_values)
 	material.set_shader_parameter("birth_event_count", event_count)
 	if not can_birth:
 		material.set_shader_parameter("birth_event_count", 0)
 		has_active_event = false
 	emitter.emitting = has_active_event
 	if has_active_event:
+		_last_birth_tick[slot] = tick
 		emitter.request_particles_process(interval_s, 0.0)
 		RenderingServer.particles_request_process(emitter.get_base())
-	elif interval_s > 0.0:
+	elif interval_s > 0.0 and tick <= int(_last_birth_tick.get(slot, -1000000)) + ceili(emitter.lifetime * TICKS_PER_SECOND) + MAX_INTERVAL_TICKS:
 		emitter.request_particles_process(0.0, interval_s)
 		RenderingServer.particles_request_process(emitter.get_base())
 
@@ -528,10 +605,15 @@ func _source_with_stop(sample: Variant) -> Variant:
 	if sample is Dictionary:
 		var stopped: Dictionary = sample.duplicate(true)
 		stopped["level"] = 0.0
+		stopped["running"] = false
+		if stopped.get("sources") is Dictionary:
+			for source_id: String in stopped.sources:
+				stopped.sources[source_id] = _source_with_stop(stopped.sources[source_id])
 		if stopped.get("changes") is Array:
 			for index in stopped.changes.size():
 				if stopped.changes[index] is Dictionary:
 					stopped.changes[index]["level"] = 0.0
+					stopped.changes[index]["running"] = false
 		return stopped
 	return {"kind": "", "running": false, "level": 0.0}
 
@@ -551,6 +633,8 @@ func _slot_seed(visual_seed: int, slot: String) -> int:
 
 
 func _mask_texture() -> ImageTexture:
+	if is_instance_valid(_shared_mask):
+		return _shared_mask
 	var image := Image.create(64, 64, false, Image.FORMAT_RGBA8)
 	for y in 64:
 		for x in 64:
@@ -560,7 +644,8 @@ func _mask_texture() -> ImageTexture:
 			var lobes := 0.82 + 0.12 * sin(u * 11.0 + sin(v * 8.0)) * cos(v * 9.0)
 			var alpha := pow(maxf(0.0, 1.0 - radius), 1.6) * lobes
 			image.set_pixel(x, y, Color(1.0, 1.0, 1.0, alpha))
-	return ImageTexture.create_from_image(image)
+	_shared_mask = ImageTexture.create_from_image(image)
+	return _shared_mask
 
 
 func _bounded(value: Variant, minimum: float, maximum: float) -> float:
@@ -600,3 +685,20 @@ func _fail_closed(message: String) -> Dictionary:
 	for emitter: GPUParticles3D in _emitters.values():
 		emitter.emitting = false
 	return {"ok": false, "error": _fault, "interval_ticks": 0}
+
+
+func _distance_lod(distance: float) -> float:
+	# Ten-percent hysteresis avoids birth-rate chatter at distance boundaries.
+	if _lod == 1.0 and distance > 165.0:
+		_lod = 0.5
+	if _lod == 0.5:
+		if distance < 135.0: _lod = 1.0
+		elif distance > 330.0: _lod = 0.25
+	if _lod == 0.25:
+		if distance < 270.0: _lod = 0.5
+		elif distance > 660.0: _lod = 0.0
+	if _lod == 0.0 and distance < 540.0:
+		_lod = 0.25
+	if distance > 700.0:
+		_lod = 0.0
+	return _lod

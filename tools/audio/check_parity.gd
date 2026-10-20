@@ -54,6 +54,8 @@ func _initialize() -> void:
 		_aircraft_results.append(result)
 		if not result.get("ok", false):
 			_fail("pair %s" % aircraft_id, str(result.get("error", "unknown failure")))
+	# Let the mixer retire the last pair's released playback resources before the fast exit.
+	await create_timer(0.1, true, false, true).timeout
 	_finish()
 
 
@@ -351,6 +353,8 @@ func _finish() -> void:
 		"audio_modules_sha256": {
 			"soundscape_model.gd": _resource_sha256("res://audio/soundscape_model.gd"),
 			"soundscape.gd": _resource_sha256("res://audio/soundscape.gd"),
+			"glow_audio_pump.gd": _resource_sha256("res://audio/glow_audio_pump.gd"),
+			"glow_voice.gd": _resource_sha256("res://audio/glow_voice.gd"),
 			"flight_audio.gd": _resource_sha256("res://audio/flight_audio.gd"),
 			"powertrain_audio.gd": _resource_sha256("res://audio/powertrain_audio.gd"),
 			"ground_audio.gd": _resource_sha256("res://audio/ground_audio.gd"),

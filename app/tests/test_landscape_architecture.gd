@@ -18,7 +18,7 @@ const BASELINE_MAX := {
 const SHELTER_SEED := 1234
 const SHELTER_CHAIR_SLOTS := 5
 const DEFAULT_SHELTER_CHAIR_COUNT := 4
-const TRIANGLE_BUDGET := 3000 # Pavilion and two shelters' structural additions; shared furniture is held constant.
+const TRIANGLE_BUDGET := 5600 # Pavilion and two shelters' structure, including folded roofs, drainage, post shoes and frame joints; furniture is held constant.
 const CHAIR_TRIANGLE_BUDGET := 700 # Per-chair implementation budget; the full-scene 650k ceiling remains in vegetation tests.
 
 var _failures := 0
@@ -70,13 +70,47 @@ func _initialize() -> void:
 		_check("%s adds no moving parts" % id, moving.is_empty() and repeat_moving.is_empty())
 		var mesh := kit.to_mesh(StandardMaterial3D.new())
 		_check("%s still emits one batched surface" % id, mesh.get_surface_count() == 1)
+		if id == "pit_shelter":
+			var roof_top_triangles := 0
+			var roof_under_triangles := 0
+			var timber_axis_triangles := [0, 0, 0]
+			var diagonal_timber_triangles := [0, 0]
+			var slab_top_triangles := 0
+			for vertex in range(0, kit.cols.size(), 3):
+				var color: Color = kit.cols[vertex]
+				if color == Color(1.0, 0.0, 1.0):
+					roof_top_triangles += 1
+				elif color == Color(0.0, 1.0, 1.0):
+					roof_under_triangles += 1
+				elif color == Color(1.0, 1.0, 0.0):
+					slab_top_triangles += 1
+				elif color == Color(1.0, 0.5, 0.0):
+					diagonal_timber_triangles[0] += 1
+				elif color == Color(0.0, 0.5, 1.0):
+					diagonal_timber_triangles[1] += 1
+				elif color.r > 0.7 and color.g == 0.0 and color.b == 0.0:
+					timber_axis_triangles[0] += 1
+				elif color.g > 0.7 and color.r == 0.0 and color.b == 0.0:
+					timber_axis_triangles[1] += 1
+				elif color.b > 0.7 and color.r == 0.0 and color.g == 0.0:
+					timber_axis_triangles[2] += 1
+			_check("pit_shelter has folded roof faces and a separate metal underside",
+				roof_top_triangles >= 300 and roof_under_triangles == 2,
+				"top=%d underside=%d" % [roof_top_triangles, roof_under_triangles])
+			_check("pit_shelter maps wood grain along beams, rafters and posts",
+				timber_axis_triangles[0] > 0 and timber_axis_triangles[1] > 0 and timber_axis_triangles[2] > 0,
+				"X=%d Z=%d Y=%d" % timber_axis_triangles)
+			_check("pit_shelter tags both brace leans and its concrete slab",
+				diagonal_timber_triangles[0] > 0 and diagonal_timber_triangles[1] > 0
+				and slab_top_triangles == 2,
+				"diagonal=%s slab=%d" % [diagonal_timber_triangles, slab_top_triangles])
 		builds[id] = {"triangles": kit.triangle_count(), "bounds": bounds}
 		print("     %s: %d triangles; min=%s max=%s" % [id, kit.triangle_count(), bounds.position, bounds.end])
 
 	var pavilion_delta: int = int(builds.pavilion.triangles) - LEGACY_BASELINE_TRIANGLES.pavilion
 	var shelter_delta: int = int(builds.pit_shelter.triangles) - structural_shelter_baseline
 	var default_layout_delta := pavilion_delta + 2 * shelter_delta
-	_check("structural additions stay under the 3k default-layout triangle budget",
+	_check("structural additions stay under the 5.6k default-layout triangle budget",
 		default_layout_delta > 0 and default_layout_delta <= TRIANGLE_BUDGET,
 		"pavilion +%d, each shelter +%d, default total +%d" % [pavilion_delta, shelter_delta, default_layout_delta])
 	print("     structural additions: pavilion +%d, shelter +%d each, default total +%d (budget %d)" % [

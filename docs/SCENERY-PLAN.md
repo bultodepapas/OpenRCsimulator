@@ -1,6 +1,6 @@
 # Scenery plan: current field and remaining gates
 
-2026-10-20 · Revision 13 · Step prefix: **SC** · Gate: **SC**
+2026-10-20 · Revision 15 · Step prefix: **SC** · Gate: **SC**
 
 **Status:** scenery is implemented and on by default. The owner requested that default on 2026-10-11. Gate SC readability and performance acceptance remains open. SC-18, SC-22 and SC-24 are partial; optional SC-19b and SC-21 remain parked.
 
@@ -26,6 +26,12 @@ Placement data and source packages are documented in [scenery provenance](../ass
 [SC-08-R3](research/scenery-implementation/SC-08-R3/README.md) adds fitted timber cladding, door hardware, vents, roof seams and drainage to the parking-side shed, reusing the existing timber source and cell batch.
 
 [SC-08-R4](research/scenery-implementation/SC-08-R4/README.md) refines the pit folding chairs with tubular frames, hinges, rubber feet and curved cloth with edge binding, reusing the existing fabric source and cell batch.
+
+[SC-08-R5](research/scenery-implementation/SC-08-R5/README.md) gives both open pit shelters folded corrugated metal roofing, PBR timber framing, raised steel post feet, and roof/underside native capture evidence. Each shelter retains one damage-aware surface.
+
+[SC-08-R6](research/scenery-implementation/SC-08-R6/README.md) finishes the shelters' bracing, folded roof edges and open drainage, then cuts cold roof-texture loading through 3D import compression without changing source maps.
+
+[SC-08-R7](research/scenery-implementation/SC-08-R7/README.md) textures the large shelter slabs with an existing CC0 concrete set, sizes the roof rafters, and adds visible steel frame connections and correctly aligned diagonal timber grain.
 
 Static object contact uses the separate float64 LU-05 collision world. [CR-17a local damage](research/crash-damage-investigations/CR-17a/README.md) removes failed fence pieces and lightweight props from their visual batches and subsequent contacts, with bounded material-specific effects and checkpoint/reset state. Large obstacles retain their main structure. Proxy dimensions, contact response and failure cutoffs are gameplay estimates. See the [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) for the original detector and measured cost.
 

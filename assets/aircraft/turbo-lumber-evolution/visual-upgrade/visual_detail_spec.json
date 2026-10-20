@@ -28,7 +28,7 @@
       "meshes": ["cowl"],
       "materials": ["black"],
       "grow_meshes": ["cowl"],
-      "grow_amount_m": 0.0015,
+      "grow_amount_m": 0.0004,
       "roughness": 0.97,
       "specular": 0.08,
       "metallic": 0.0,
@@ -103,53 +103,37 @@
     "smooth_normal_materials": ["white", "black", "red"],
     "authored_paint_regions": [
       {
-        "mesh": "cowl",
+        "mesh": "fuselage_core",
         "paint_material": "black",
-        "root_bounds_min": [-0.05, 0.015, -0.205],
-        "root_bounds_max": [0.05, 0.028, -0.155],
+        "root_bounds_min": [-0.0443, 0.0125, -0.0853],
+        "root_bounds_max": [-0.0308, 0.0199, -0.0519],
         "normal_axis_root": [0.0, 1.0, 0.0],
-        "min_normal_axis_dot": 0.65,
-        "max_projection_distance_m": 0.004,
-        "min_normal_dot": -0.1
-      },
-      {
-        "mesh": "cowl",
-        "paint_material": "black",
-        "root_bounds_min": [-0.01, 0.022, -0.204],
-        "root_bounds_max": [0.01, 0.029, -0.196],
-        "normal_axis_root": [0.0, 0.0, -1.0],
-        "min_normal_axis_dot": 0.8,
-        "max_projection_distance_m": 0.004,
-        "min_normal_dot": -0.1
-      },
-      {
-        "mesh": "cowl",
-        "paint_material": "black",
-        "root_bounds_min": [-0.05, 0.014, -0.158],
-        "root_bounds_max": [0.05, 0.026, -0.156],
-        "normal_axis_root": [0.0, 0.0, 1.0],
-        "min_normal_axis_dot": 0.9,
-        "max_projection_distance_m": 0.004,
-        "min_normal_dot": -0.1
+        "min_normal_axis_dot": 0.85,
+        "require_all_vertices_inside": true,
+        "allow_authored_override": true
       }
     ]
   },
   "fracture_details": {
     "wing_left": {
       "host": "wing_left_fixed",
-      "cut_x_m": -0.072,
-      "spar_y_m": 0.104,
-      "spar_z_m": 0.102,
+      "cut_x_m": 0.0040323841,
+      "outline_x_m": 0.0036,
+      "spar_y_m": 0.1092,
+      "spar_z_m": 0.0684,
       "spar_radius_m": 0.0048,
-      "spar_depth_m": 0.008
+      "spar_depth_m": 0.008,
+      "spar_proud_m": 0.0008
     },
     "wing_right": {
       "host": "wing_right_fixed",
-      "cut_x_m": 0.072,
-      "spar_y_m": 0.104,
-      "spar_z_m": 0.102,
+      "cut_x_m": -0.0040323846,
+      "outline_x_m": -0.0036,
+      "spar_y_m": 0.1092,
+      "spar_z_m": 0.0684,
       "spar_radius_m": 0.0048,
-      "spar_depth_m": 0.008
+      "spar_depth_m": 0.008,
+      "spar_proud_m": 0.0008
     }
   },
   "free_textures": {

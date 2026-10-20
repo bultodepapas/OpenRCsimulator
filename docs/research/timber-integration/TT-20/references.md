@@ -49,3 +49,4 @@ The indexed code graph is ready but stale for the current tracked `app/ui/accide
 - [Official E-flite overview video](https://www.youtube.com/watch?v=qVAveeNrDVY) — inspected flight and water-operation footage; pre-B hardware revision.
 - [Poly Haven Polystyrene](https://polyhaven.com/a/polystyrene) — CC0 material candidate.
 - [ambientCG Rubber002](https://ambientcg.com/view?id=Rubber002) — CC0 tire micro-normal and roughness maps; source albedo is unused.
+- [Godot 4.7 SurfaceTool](https://docs.godotengine.org/en/4.7/classes/class_surfacetool.html) — clockwise triangle front faces; used to audit the new fracture faces and camera-ray culling.

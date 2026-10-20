@@ -1,0 +1,277 @@
+{
+  "schema": "openrc-timber-native-visual-review v1",
+  "date": "2026-10-20",
+  "engine": "Godot 4.7.2 stable",
+  "renderer": "gl_compatibility",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "note": "Fixed input/clock review fixtures. Video is encoded at 30 fps from every second 60 Hz fixture frame, with no audio; wall-clock performance is not measured.",
+  "cases": {
+    "takeoff": {
+      "case": "takeoff",
+      "source_capture": "tmp/timber-overhaul/verified-takeoff",
+      "report": "takeoff/report.json",
+      "engine_check": "takeoff/engine-check.json",
+      "captures": 6,
+      "failure_count": 0,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "final_tick": 2640,
+      "video_frames": 330,
+      "video_fps": 30,
+      "artifacts": {
+        "engine-check.json": {
+          "sha256": "40417e6e2013ac70fafbb8b2b1d4d722b971f55d8e3850d79e992ba6c735de2b",
+          "bytes": 1449
+        },
+        "engine.log": {
+          "sha256": "014f203de00800135b3541b588f6b8dd7b09d3f042a39850c922d11a7ea9babf",
+          "bytes": 327
+        },
+        "fixture-incident.json": {
+          "sha256": "964356a1df1860f49ca99e55a7bf11fe795cc5419e5f4b821a5c8d6e7a781ad6",
+          "bytes": 2459
+        },
+        "report.json": {
+          "sha256": "bbba9f3d3f0184bc18ce1b93a3d3447ff44e8e7a1019bfeaaed0ce93951c5a15",
+          "bytes": 6399
+        },
+        "review.mp4": {
+          "sha256": "f045016094d1d9d06a52c6be7f4d022c5c11b8dfb87ec47812c4f5c03f6c9a93",
+          "bytes": 16302756
+        },
+        "takeoff-000.png": {
+          "sha256": "37efac7a95657bae6193ec2bde04be4fecd679c91cb349e4f7e4c1ab00d243d1",
+          "bytes": 3110871
+        },
+        "takeoff-120.png": {
+          "sha256": "d6b0f7798c1e6931e219ddbd9b9f35f7e0ede74b7b8f09312b28a47e5d9df62e",
+          "bytes": 3060710
+        },
+        "takeoff-240.png": {
+          "sha256": "a0f1ea8b80a7bb257f735d9ea64d4e2b97eb37be869d35d270ba10bb5885a3fa",
+          "bytes": 2384220
+        },
+        "takeoff-360.png": {
+          "sha256": "1fd3a4d8a2edbfe1a4cd150dae1099c1c2373610ea752a4ce4dc5d35094dc037",
+          "bytes": 1568421
+        },
+        "takeoff-540.png": {
+          "sha256": "42364e853c23e7fb29a73f1019aae836c7f8238eb7b454ed5ad052f9af30e2dd",
+          "bytes": 1053206
+        },
+        "takeoff-659.png": {
+          "sha256": "e5eae5a22dd5aea0db4da190d92d4973c80fd797ad6180b734ba941e8af3ea00",
+          "bytes": 1258291
+        }
+      }
+    },
+    "dusk": {
+      "case": "dusk",
+      "source_capture": "tmp/timber-overhaul/verified-dusk",
+      "report": "dusk/report.json",
+      "engine_check": "dusk/engine-check.json",
+      "captures": 6,
+      "failure_count": 0,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "final_tick": 2640,
+      "video_frames": 0,
+      "video_fps": null,
+      "artifacts": {
+        "engine-check.json": {
+          "sha256": "d5b59d1c493c83b5f4c653cfacc2c83dc9ba51a2ba96150b37be937951747185",
+          "bytes": 1467
+        },
+        "engine.log": {
+          "sha256": "014f203de00800135b3541b588f6b8dd7b09d3f042a39850c922d11a7ea9babf",
+          "bytes": 327
+        },
+        "fixture-incident.json": {
+          "sha256": "0414fd1cfc69149d8b256a0cef6a5767d0a81521f47e798820a13866ec703957",
+          "bytes": 2459
+        },
+        "report.json": {
+          "sha256": "4ec4a9e0433f684b7322f206ddbb362b02a6517b2938378b0a80fdf4673b95d7",
+          "bytes": 6402
+        },
+        "takeoff-000.png": {
+          "sha256": "0a7a538c418094cb86f5a1392171db49cbe890cbae6e7ee11617c35b9c7d118c",
+          "bytes": 1814277
+        },
+        "takeoff-120.png": {
+          "sha256": "9e31c0d9b4bc20f740d71271de6da246bfcdc94a2d9adb3ffc785715d7619929",
+          "bytes": 1785294
+        },
+        "takeoff-240.png": {
+          "sha256": "1702620e36bdae957118fa44f564988e05aae546355f7df6efee15a843f425ca",
+          "bytes": 1462086
+        },
+        "takeoff-360.png": {
+          "sha256": "7d03e9110bdc8c5429d04531110add3ff3b81f3f3ae2c9afd2f2d200c920fef9",
+          "bytes": 1124639
+        },
+        "takeoff-540.png": {
+          "sha256": "22c494b7e9af9949ae0f681b2237d747d76b44b265eeacad1413722ff1adb290",
+          "bytes": 926938
+        },
+        "takeoff-659.png": {
+          "sha256": "bb5f7eb7f11c7478b97929da0c82e8735545bfe056f896493d1285a9f3703187",
+          "bytes": 1120844
+        }
+      }
+    },
+    "crash-c3": {
+      "case": "crash-c3",
+      "source_capture": "tmp/timber-overhaul/verified-crash-c3",
+      "report": "crash-c3/report.json",
+      "engine_check": "crash-c3/engine-check.json",
+      "captures": 6,
+      "failure_count": 0,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "final_tick": 62,
+      "video_frames": 330,
+      "video_fps": 30,
+      "artifacts": {
+        "crash-000.png": {
+          "sha256": "b9561e003e4cdd6b830dd842a38ec4f0a61013038aa27cd8ee233173a2266859",
+          "bytes": 1187174
+        },
+        "crash-025.png": {
+          "sha256": "336615471c708c656170cf1e7f0e0faae537c68e58a9151b8aad6de3c72fe223",
+          "bytes": 2416823
+        },
+        "crash-045.png": {
+          "sha256": "f0ce3dea75f801d4198470c423cd9667ec748839f06a82004f7ec5b9c45e39c0",
+          "bytes": 2841571
+        },
+        "crash-105.png": {
+          "sha256": "1e07420999a36bcffcd2b2698dabdcb9066b5040eba775e46ea3f67800c51f26",
+          "bytes": 2906273
+        },
+        "crash-315.png": {
+          "sha256": "1e07420999a36bcffcd2b2698dabdcb9066b5040eba775e46ea3f67800c51f26",
+          "bytes": 2906273
+        },
+        "crash-615.png": {
+          "sha256": "1e07420999a36bcffcd2b2698dabdcb9066b5040eba775e46ea3f67800c51f26",
+          "bytes": 2906273
+        },
+        "engine-check.json": {
+          "sha256": "3bd16c6d33e2aa700903ae930f762b45038278355df04ab7de7445c9c8887e7b",
+          "bytes": 1453
+        },
+        "engine.log": {
+          "sha256": "eae571b750d8fa5e23620968ad5f6786f8d2af1530d1d138e20d7c282ae433f7",
+          "bytes": 519
+        },
+        "fixture-incident.json": {
+          "sha256": "afbd62d1db88d48390064d3fd45471d858c130d5281a53880fd035b2d265a07b",
+          "bytes": 2549
+        },
+        "report.json": {
+          "sha256": "fdabe37d39156abce00b593c303537874f48fb459cf08c78fd260aff1cfe88bd",
+          "bytes": 12677
+        },
+        "review.mp4": {
+          "sha256": "f138b917edce84c5392db7ff91e5f8ce531f01fe9b2a6a6783d516b097f70e4f",
+          "bytes": 2851024
+        }
+      }
+    },
+    "crash-c4": {
+      "case": "crash-c4",
+      "source_capture": "tmp/timber-overhaul/verified-crash-c4",
+      "report": "crash-c4/report.json",
+      "engine_check": "crash-c4/engine-check.json",
+      "captures": 6,
+      "failure_count": 0,
+      "engine_errors": 0,
+      "engine_warnings": 0,
+      "final_tick": 38,
+      "video_frames": 330,
+      "video_fps": 30,
+      "artifacts": {
+        "crash-000.png": {
+          "sha256": "c4ce0ca80755dcaff93250704b54a268d12118ea6a114b3c41000fd322eae398",
+          "bytes": 1185641
+        },
+        "crash-019.png": {
+          "sha256": "94146b367165f199df170203e29b59d487227104fafaddf492c54b23cbd2ea45",
+          "bytes": 2427982
+        },
+        "crash-039.png": {
+          "sha256": "355c5d088b49bd08a5ceacb672440632fc7883f65c557f9cf3ea9c25414b41f5",
+          "bytes": 2791913
+        },
+        "crash-099.png": {
+          "sha256": "900e1a1c3974b80f0e5a602b723ba76b819d62d7c0c166fdfd5d55976fa246b4",
+          "bytes": 2879385
+        },
+        "crash-309.png": {
+          "sha256": "5cf4aa0764d1a549d4f6afb699de2e4925ca3915b7b7b069206345f3ffee14cd",
+          "bytes": 2850309
+        },
+        "crash-609.png": {
+          "sha256": "72ca6f1e3e5bea5a0d8e9bad0a41509000d5e8ab4f5876c6be9f6a96dd5b6e1b",
+          "bytes": 2850233
+        },
+        "engine-check.json": {
+          "sha256": "f4d05711879ee53e370ada9250903f039c554fef708a0977349975c9295de88f",
+          "bytes": 1485
+        },
+        "engine.log": {
+          "sha256": "db67ee1409912b3600f8065719d04f1f928c01f1c1ccde1795ea5b3e6feaac21",
+          "bytes": 519
+        },
+        "fixture-incident.json": {
+          "sha256": "fc863782978b52fedb19c2137b2de05ab547062d7e00456f89247c2f92cffe87",
+          "bytes": 2548
+        },
+        "report.json": {
+          "sha256": "0bb28c200dc54ae691135fe1b3ab12f9d50938acac35f32b72639ab33f9fd509",
+          "bytes": 12538
+        },
+        "review.mp4": {
+          "sha256": "4d3fb9d63679edd6a3b2e93c978347f538e30d80e8c619ab93783e1b46726674",
+          "bytes": 3138256
+        }
+      }
+    }
+  },
+  "inspection": "inspection/manifest.json",
+  "crash_only_revision_intact_comparison": {
+    "identical_png_count": 12,
+    "identical_views": [
+      "inspection_bottom.png",
+      "inspection_front.png",
+      "inspection_gear_front.png",
+      "inspection_low_front_right.png",
+      "inspection_nose_left.png",
+      "inspection_oblique_front_left.png",
+      "inspection_oblique_front_left_full.png",
+      "inspection_oblique_rear_right.png",
+      "inspection_oblique_rear_right_full.png",
+      "inspection_side_left.png",
+      "inspection_tail_right.png",
+      "inspection_top.png"
+    ],
+    "note": "The final fracture placement/material correction affects hidden crash-only geometry. All twelve intact inspection PNGs are byte-identical to the accepted pre-correction views."
+  },
+  "delivery_verification": {
+    "current_runtime_hashes": {
+      "visual_details_sha256": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+      "visual_detail_data_sha256": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+      "asset_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722"
+    },
+    "all_native_reports_match_current_runtime": true,
+    "artifact_hashes_verified": 55,
+    "video_full_decode_passed": [
+      "crash-c3/review.mp4",
+      "crash-c4/review.mp4",
+      "takeoff/review.mp4"
+    ],
+    "local_document_file_links_resolved": 85,
+    "fracture_self_occlusion_and_pixel_witnesses_passed": true
+  }
+}

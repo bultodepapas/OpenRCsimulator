@@ -1,0 +1,44 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "9e197592-5b85-40a3-a8d5-ebb3da2696c1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--script",
+    "res://../research/timber/visual-upgrade/capture_timber_fracture_reveals.gd",
+    "--",
+    "--aircraft=turbo-lumber-evolution",
+    "--quick-flight",
+    "--scenery=off",
+    "--start=airborne",
+    "--frames=150",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/timber-overhaul/fracture-reveal-c4-visible-witness-final7"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T20:24:59.648734+00:00",
+  "label": "timber-fracture-final-frozen-culling-ab",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-overhaul\\native-fracture-witness-final7\\timber-fracture-final-frozen-culling-ab-dl0734zy\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\timber-overhaul\\native-fracture-witness-final7\\timber-fracture-final-frozen-culling-ab-dl0734zy\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "TT-20 fracture reveal review"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 56.328,
+  "log_bytes": 546,
+  "log_sha256": "771b6dc9696a6b5af8fc6c71af4477b86ab0ce310f6cc3a57ce5d15e66f28149"
+}

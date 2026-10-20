@@ -18,7 +18,7 @@
 		],
 		"source": "default-field runway reset; loaded wheel contacts"
 	},
-	"checks": 40,
+	"checks": 41,
 	"dust_fixture_uses_temporary_wheel_slip_override": true,
 	"failures": 0,
 	"poses": {
@@ -47,6 +47,7 @@
 				"cable_safe_articulation_limit_degrees": 6.0,
 				"cable_vertex_delta_m": 0.00862784124910831,
 				"dust_fixture_telemetry_restored": true,
+				"focus_pause_stops_dust": true,
 				"loaded_compression_m": [
 					0.0211789751299373,
 					0.02086702653177,
@@ -229,6 +230,11 @@
 		},
 		{
 			"check": "paused session freezes and stops new dust",
+			"detail": "",
+			"passed": true
+		},
+		{
+			"check": "focus-style simulation pause freezes dust without a hold",
 			"detail": "",
 			"passed": true
 		},

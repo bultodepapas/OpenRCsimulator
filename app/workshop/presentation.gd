@@ -4,11 +4,12 @@ extends RefCounted
 ## carry resource paths, executable scripts, or mount coordinates.
 
 const FORMAT: String = "openrc-aircraft-presentation"
-const VERSION: int = 1
+const VERSION: int = 2
+const LEGACY_VERSION: int = 1
 const IDENTITY_FORMAT: String = "openrc-aircraft-presentation-identity"
 const IDENTITY_VERSION: int = 1
 const BINDINGS_FORMAT: String = "openrc-aircraft-customization-bindings"
-const BINDINGS_VERSION: int = 2
+const BINDINGS_VERSION: int = 3
 const LEGACY_BINDINGS_VERSION: int = 1
 const SCHEDULE_POLICY: String = "ticks-240-v1"
 const PRESENTATION_ENGINE_VERSION: String = "4.7.2"
@@ -20,6 +21,14 @@ const MAX_MARKING_SLOTS: int = 16
 const MAX_SMOKE_SLOTS: int = 4
 const MAX_SHOW_SMOKE_SLOTS: int = 3
 const MAX_SOURCE_SMOKE_SLOTS: int = 1
+const MAX_AUTHORED_SMOKE_SLOTS: int = 8
+const SMOKE_V2_BOUNDS := {
+	"density": [0.0, 2.0, 1.0], "emission_rate_hz": [1.0, 240.0, 48.0],
+	"jet_speed_mps": [0.0, 30.0, 0.65], "dispersion_m2_s": [0.0, 2.0, 0.1],
+	"buoyancy_mps": [-2.0, 3.0, 0.27], "turbulence_mps": [0.0, 5.0, 0.22],
+	"drag_s": [0.05, 3.0, 0.4], "velocity_inheritance": [0.0, 1.0, 1.0],
+	"phase_offset_s": [0.0, 60.0, 0.0],
+}
 const MAX_PALETTE_COLORS: int = 8
 const MAX_TEXT_LENGTH: int = 12
 const MAX_LABEL_LENGTH: int = 32
@@ -69,7 +78,7 @@ const HEX_DIGITS: String = "0123456789ABCDEF"
 
 ## Explicit legacy/stock appearance. Passing a verified companion binds even the empty
 ## profile to that exact model and slot contract.
-static func defaults(bindings: Dictionary = {}) -> Dictionary:
+static func defaults(bindings: Dictionary = {}, version: int = VERSION) -> Dictionary:
 	var pins: Dictionary = {"visual_family": "", "model_manifest_sha256": "", "slots_sha256": ""}
 	if not bindings.is_empty():
 		var checked_bindings: Dictionary = _validate_bindings(bindings)
@@ -77,7 +86,7 @@ static func defaults(bindings: Dictionary = {}) -> Dictionary:
 			pins = checked_bindings["pins"].duplicate(true)
 	return {
 		"format": FORMAT,
-		"version": VERSION,
+		"version": version,
 		"binding": pins,
 		"paint": [],
 		"markings": [],
@@ -118,7 +127,7 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 		errors.append("Presentation profile has missing or unsupported fields.")
 		return _result(false, errors, {}, false)
 	if source["format"] != FORMAT or not _integer_number(source["version"]) \
-			or int(source["version"]) != VERSION:
+			or int(source["version"]) not in [LEGACY_VERSION, VERSION]:
 		errors.append("Presentation profile format or version is unsupported.")
 		return _result(false, errors, {}, false)
 	if source["schedule_policy"] != SCHEDULE_POLICY:
@@ -128,6 +137,7 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 		errors.append("Presentation visual_seed must be an integer from 0 through 2147483647.")
 	if not errors.is_empty():
 		return _result(false, errors, {}, false)
+	context["profile_version"] = int(source["version"])
 
 	var binding_result: Dictionary = _validate_profile_binding(source["binding"])
 	if not bool(binding_result.get("ok", false)):
@@ -196,7 +206,9 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 	var smoke_seen: Dictionary = {}
 	var show_smoke_count: int = 0
 	var source_smoke_count: int = 0
-	if typeof(source["smoke"]) != TYPE_ARRAY or source["smoke"].size() > MAX_SMOKE_SLOTS:
+	var smoke_limit: int = MAX_SMOKE_SLOTS if int(source["version"]) == LEGACY_VERSION else MAX_AUTHORED_SMOKE_SLOTS
+	var enabled_smoke_count: int = 0
+	if typeof(source["smoke"]) != TYPE_ARRAY or source["smoke"].size() > smoke_limit:
 		errors.append("Presentation smoke profiles must be an array of at most %d entries." % MAX_SMOKE_SLOTS)
 	else:
 		for entry: Variant in source["smoke"]:
@@ -205,6 +217,8 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 				errors.append_array(checked.get("errors", PackedStringArray()))
 				break
 			var normalized: Dictionary = checked["value"]
+			if bool(normalized["enabled"]):
+				enabled_smoke_count += 1
 			if smoke_seen.has(normalized["slot"]):
 				errors.append("Presentation profile contains a duplicate smoke slot.")
 				break
@@ -216,8 +230,10 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 				elif smoke_kind == "source":
 					source_smoke_count += 1
 			canonical_smoke.append(normalized)
-	if show_smoke_count > MAX_SHOW_SMOKE_SLOTS or source_smoke_count > MAX_SOURCE_SMOKE_SLOTS:
+	if int(source["version"]) == LEGACY_VERSION and (show_smoke_count > MAX_SHOW_SMOKE_SLOTS or source_smoke_count > MAX_SOURCE_SMOKE_SLOTS):
 		errors.append("Presentation smoke profiles support at most three show slots and one source outlet.")
+	if enabled_smoke_count > MAX_SMOKE_SLOTS:
+		errors.append("Presentation smoke profiles support at most four enabled outlets.")
 	canonical_smoke.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
 		return str(left["slot"]) < str(right["slot"]))
 
@@ -225,7 +241,7 @@ static func validate(value: Variant, bindings: Dictionary = {}) -> Dictionary:
 		return _result(false, errors, {}, false)
 	var canonical: Dictionary = {
 		"format": FORMAT,
-		"version": VERSION,
+		"version": int(source["version"]),
 		"binding": resolved_pins,
 		"paint": canonical_paint,
 		"markings": canonical_markings,
@@ -616,10 +632,13 @@ static func _slot_map(value: Array, required_keys: PackedStringArray, optional_k
 			if slot["kind"] not in ["show", "source"] or typeof(slot["pair"]) != TYPE_STRING \
 					or (not str(slot["pair"]).is_empty() and not _valid_slot_id(str(slot["pair"]))) \
 					or typeof(slot["role"]) != TYPE_STRING \
-					or not ["wing_tip_left", "wing_tip_right", "tail", "exhaust"].has(str(slot["role"])):
+					or not ["wing_tip_left", "wing_tip_right", "tail", "tailpipe", "exhaust"].has(str(slot["role"])):
 				errors.append("Customization smoke endpoint kind, pair, or role is invalid.")
 				return result
 			if slot["kind"] == "show":
+				if str(slot["role"]) == "tailpipe" and not str(slot["pair"]).is_empty():
+					errors.append("Customization tailpipe show endpoint must be unpaired.")
+					return result
 				if (str(slot["node_path"]) != "." and not _safe_node_path(slot["node_path"])) \
 						or typeof(slot["position_m"]) != TYPE_ARRAY \
 						or slot["position_m"].size() != 3 or typeof(slot["direction"]) != TYPE_ARRAY \

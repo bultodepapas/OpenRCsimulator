@@ -1,0 +1,55 @@
+{
+  "format": "openrc-ai-aircraft v1",
+  "id": "jensen-das-ugly-stik-60",
+  "catalog_id": "jensen-das-ugly-stik-60",
+  "aircraft_data": {
+    "path": "res://data/aircraft/jensen_ugly_stik_60.json",
+    "format": "openrc-aircraft v2",
+    "sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+  },
+  "controller": {
+    "path": "res://ai/companions/pilot.gd",
+    "sha256": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade"
+  },
+  "solver": {
+    "sha256": "1526c98431a7dee5206eb992e10f40e436a7ef80d173e8c1dbfe6f1ad8f33b7e",
+    "normalization": "utf8-lf"
+  },
+  "engine_version": "4.7.2",
+  "field_profile_id": "club-default",
+  "qualification": {
+    "status": "qualified_for_narrow_scope",
+    "activities": [
+      "circuits"
+    ],
+    "skill": "experienced",
+    "start_modes": [
+      "airborne"
+    ],
+    "unqualified_modes": [
+      "ground",
+      "takeoff",
+      "runway",
+      "landing"
+    ],
+    "roster_count": {
+      "min": 1,
+      "max": 3
+    },
+    "evidence": "docs/research/ai-companions/pilot/README.md"
+  },
+  "performance": {
+    "stall_speed": {
+      "status": "unknown"
+    },
+    "approach_speed": {
+      "status": "unknown"
+    },
+    "cruise_speed": {
+      "status": "unknown"
+    },
+    "entry_speed": {
+      "status": "unknown"
+    }
+  }
+}

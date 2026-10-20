@@ -1,0 +1,287 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "arguments": {
+    "cases": "lake_shore,lake_overview",
+    "frames": "30",
+    "height": "720",
+    "out": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/landscape-upgrade/LU-22-R1/before",
+    "scenery": "on",
+    "scenery_birds": "off",
+    "width": "1280"
+  },
+  "botanical_stats": {
+    "airfield_detail_batches": 5,
+    "airfield_detail_instances": 8,
+    "airfield_detail_triangles": 4482,
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 1035.468,
+    "cells": 60,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 171,
+    "motion": 5,
+    "moving_people": 7,
+    "pit_shelter_surfaces": 2,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 83,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 5.145,
+      "botanicals": 67.291,
+      "cell_meshes": 43.268,
+      "fence": 28.671,
+      "fleet": 10.777,
+      "hedge": 10.213,
+      "instances": 141.668,
+      "meshes": 103.971,
+      "patch": 47.128,
+      "population": 92.936,
+      "shelter_material": 57.723,
+      "shelter_meshes": 2.237,
+      "track": 1.431,
+      "vegetation": 315.047,
+      "woodland_edges": 57.652
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "cases": {
+    "lake_overview": {
+      "draws": 114.0,
+      "exposure": 0.600000023841858,
+      "frame_ms_raw": [
+        1.316,
+        1.923,
+        1.104,
+        1.21,
+        1.362,
+        1.404,
+        2.089,
+        1.085,
+        2.626,
+        1.33,
+        1.46,
+        1.263,
+        1.969,
+        1.407,
+        2.052,
+        1.021,
+        2.005,
+        1.09,
+        3.193,
+        1.306,
+        2.123,
+        0.993,
+        1.318,
+        2.149,
+        1.155,
+        1.246,
+        1.388,
+        1.453,
+        2.85,
+        1.391
+      ],
+      "glare_afterimage": 0.0,
+      "glare_aureole_coeff": 0.000000126776937900502,
+      "glare_background_scale": 7.24765098967616,
+      "glare_optics": "eye",
+      "glare_solar_uv": "(-1.0, -1.0)",
+      "glare_strength": 7.24765098967616,
+      "glare_visible": false,
+      "lamp_factor": 0.0,
+      "marker_center_px": "(11324.93, 22655.01)",
+      "median_ms": 1.391,
+      "motion": [],
+      "night_options": {
+        "campfire": false,
+        "field_activation": "auto",
+        "field_lighting": "club"
+      },
+      "p95_ms": 2.85,
+      "p99_ms": 3.193,
+      "primitives": 278082.0,
+      "regional_flashes_px": [
+        [
+          1002.18487548828,
+          34.2465744018555
+        ],
+        [
+          1070.44104003906,
+          34.4245223999023
+        ],
+        [
+          1144.19873046875,
+          34.5167236328125
+        ],
+        [
+          1225.10498046875,
+          34.523078918457
+        ],
+        [
+          766.957946777344,
+          36.1141624450684
+        ]
+      ],
+      "shadow_draws": 0,
+      "timing_valid": true,
+      "video_memory": 604974758.0,
+      "visible_draws": 114
+    },
+    "lake_shore": {
+      "draws": 88.0,
+      "exposure": 0.600000023841858,
+      "frame_ms_raw": [
+        1.162,
+        2.035,
+        1.13,
+        2.164,
+        1.268,
+        1.236,
+        2.367,
+        0.995,
+        1.135,
+        2.021,
+        1.08,
+        1.368,
+        2.084,
+        1.082,
+        2.701,
+        1.774,
+        1.399,
+        1.446,
+        1.977,
+        1.026,
+        1.288,
+        2.055,
+        0.996,
+        2.15,
+        0.996,
+        1.797,
+        0.99,
+        1.253,
+        2.007,
+        1.0
+      ],
+      "glare_afterimage": 0.0,
+      "glare_aureole_coeff": 0.000000126776937900502,
+      "glare_background_scale": 7.24765098967616,
+      "glare_optics": "eye",
+      "glare_solar_uv": "(-1.0, -1.0)",
+      "glare_strength": 7.24765098967616,
+      "glare_visible": false,
+      "lamp_factor": 0.0,
+      "marker_center_px": "(851.1831, 315.9871)",
+      "median_ms": 1.368,
+      "motion": [],
+      "night_options": {
+        "campfire": false,
+        "field_activation": "auto",
+        "field_lighting": "club"
+      },
+      "p95_ms": 2.367,
+      "p99_ms": 2.701,
+      "primitives": 207016.0,
+      "regional_flashes_px": [
+        [
+          1365.962890625,
+          305.735992431641
+        ],
+        [
+          1479.51696777344,
+          305.138244628906
+        ],
+        [
+          1615.58459472656,
+          304.160858154297
+        ],
+        [
+          1783.7783203125,
+          302.689239501953
+        ],
+        [
+          -7291.953125,
+          39.6858367919922
+        ],
+        [
+          1044.56262207031,
+          305.684387207031
+        ]
+      ],
+      "shadow_draws": 0,
+      "timing_valid": true,
+      "video_memory": 604974758.0,
+      "visible_draws": 88
+    }
+  },
+  "driver": "3.3.0 NVIDIA 617.42",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "field_build_ms": 1760.338,
+  "height": 720,
+  "lake": {
+    "bank_shader": "res://render/lake/bank.gdshader",
+    "bounds": "[P: (73.25, -5.45, -145.75), S: (103.5, 5.456786, 70.5)]",
+    "first_cross": "(0.004758, -0.5625, 0.008294)",
+    "first_normal": "(0.012433, 0.999763, 0.017871)",
+    "grass_texture": "():<ImageTexture#-9223371912166504722>",
+    "identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "mask_count": 20,
+    "mask_mode": 1,
+    "triangles": 44952,
+    "vertices": 13205
+  },
+  "night_options": {
+    "campfire": false,
+    "field_activation": "auto",
+    "field_lighting": "club"
+  },
+  "reflection_slots": 2,
+  "regional": {
+    "batches": 40,
+    "counts": {
+      "antenna_mid_lights": 4,
+      "antenna_service": 2,
+      "antenna_top_beacons": 2,
+      "antenna_towers": 2,
+      "barn_loading": 2,
+      "church_entrance": 1,
+      "church_windows": 8,
+      "farm_gate_bollards": 4,
+      "farm_upper_windows": 2,
+      "hill_window_optics": 18,
+      "house_porches": 20,
+      "occupied_house_windows": 45,
+      "power_wire_markers": 8,
+      "pylon_top_lights": 9,
+      "rural_junctions": 3,
+      "shed_worklight": 1,
+      "silo_access": 2,
+      "turbine_beacons": 4,
+      "turbine_service": 4,
+      "village_street_ends": 2
+    },
+    "dynamic_lights": 0,
+    "hardware_triangles": 3418,
+    "houses": 12,
+    "visible": true
+  },
+  "renderer": "gl_compatibility",
+  "width": 1280
+}

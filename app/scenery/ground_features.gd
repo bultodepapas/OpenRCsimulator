@@ -44,8 +44,12 @@ static func track(k: MeshKit, pts: PackedVector2Array, width: float, surface: St
 	var lanes: Array
 	if surface == "worn":
 		# A quiet, single pedestrian tread. Its lower lift lets an existing slab or gravel apron cover the join.
-		var edge := Color("#536b40")
-		var tread := Color("#4f6940")
+		var edge := Color("#647a4b")
+		var tread := Color("#627747")
+		# Opaque shader markers, not transparency: the downloaded sparse grass
+		# scan breaks up the centre more strongly than the feathered shoulders.
+		edge.a = 0.32
+		tread.a = 0.18
 		lanes = [[-1.0, -0.62, edge], [-0.62, 0.62, tread], [0.62, 1.0, edge]]
 	else:
 		# lanes across the width (fractions of the half-width): edge, rut, crown, rut, edge

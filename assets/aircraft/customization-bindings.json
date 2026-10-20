@@ -807,6 +807,24 @@
             0,
             1
           ]
+        },
+        {
+          "id": "show_tailpipe",
+          "label": "Tailpipe",
+          "kind": "show",
+          "pair": "",
+          "role": "tailpipe",
+          "node_path": ".",
+          "position_m": [
+            0,
+            0.07992,
+            1.28196
+          ],
+          "direction": [
+            0,
+            0,
+            1
+          ]
         }
       ]
     },

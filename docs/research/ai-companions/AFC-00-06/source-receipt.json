@@ -1,0 +1,159 @@
+{
+  "format": "openrc-companions-source-receipt v1",
+  "captured_utc": "2026-10-20T19:21:28.815803+00:00",
+  "observed_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "note": "Working-tree file hashes define these inputs. Concurrent commits do not imply identical source. Raw checked reports retain their original capture paths; copied logs retain the original SHA-256.",
+  "source_sha256": {
+    "app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "app/main.gd": "3d85af060e5fba5afe3fe937e23b6f2d5773770e2599678b5e99f4a474499c9f",
+    "app/app_root.gd": "a96eed74b41f0549515c61888a47af2237a2bdb79dd915a4a0e627b48940374f",
+    "app/app_state/preferences.gd": "245dbed378aefb4519c51f4a760074c65f7e9eb6ee0385f000f0926541453c9c",
+    "app/ui/home.gd": "ef07c0c73694ff7c38484e2caafd23b6f27ac76576c7aa6fd3aa4d3d386001cc",
+    "app/ui/pause_menu.gd": "3a4db3d5c51fa9bcb93c329f383b45448773a107eaf6e7a62eae7d6c65e3be99",
+    "app/ui/companions_dialog.gd": "a91c72d4f08533995b30662351eae689b54116977a773004c6d94706d397a07b",
+    "app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "app/ai/companions/agent.gd": "75e384873f5342232954c85913281cebedf20871c42cf8bf0f2e2300e42bec68",
+    "app/ai/companions/config.gd": "2455c71f7b42b3b3e7f1b1cb6378b0534645b2ddd9281d3338e5d346a563601b",
+    "app/ai/companions/manager.gd": "164cdf8a2dbd33849055d72b6bcc1c9a3c612a79c9df47583bd3c3f3832312d3",
+    "app/ai/companions/pilot.gd": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "app/tests/test_companions_config.gd": "ab4136b671a2ae07af1653785fe89b902797e88d6b5118572ed471328f0e273d",
+    "app/tests/test_companions_dialog.gd": "a030839cd4f41e35726eb582f058fe4c7dcfd9655ec961e5579f0d1cf0745b51",
+    "app/tests/test_companions_manager.gd": "7fca61dd157b4a7f51ca048b04fcb1e3079be8065419645c37fbd89f27a58afc",
+    "app/tests/test_companions_pilot.gd": "4ffe103f9d53925f57bf1c5dd5ce4d6315dfff047c17e3cbd0a38181f0ae9f4e",
+    "app/tests/test_companions_session.gd": "5cc7f2ef45b4af04a9eb566671d7e97b8ccdea564214e5ae2d720c4f95eec7d0",
+    "app/tests/test_companions_shell.gd": "0016fe88150afbc8de00e525938beb82c0d81eb445b593a4f2d2ea68288ae5f5",
+    "research/ai-companions/capture_companions.gd": "65b87e87866ea41f54fbb7842f1dc1bc40ce25f4b8b8e93232b188515692712e",
+    "research/ai-companions/cost_probe.gd": "862b601764ec95af9f6d92e5bb1bedd565735b0eafb587b59f566b1721e176c0",
+    "research/ai-companions/pilot_probe.gd": "3ad69bb7d1be36f038c954cf718851be3ea016d3b3c1cd0e1cf06a226e4fa00f",
+    "research/ai-companions/production_probe.gd": "68e64c0d73c3ab2571d1a9fb294db5bdbb1a79963d27fadaf15b9d0b4f12fccc"
+  },
+  "checks": [
+    {
+      "case": "config",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "d974d16a-dec2-42cd-a6fe-ba02b9cb60bb"
+    },
+    {
+      "case": "pilot",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "22a9e212-3ab1-42e5-a8cf-a8c530516bb7"
+    },
+    {
+      "case": "session",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "08fd707c-9acc-43d6-8730-168215c40def"
+    },
+    {
+      "case": "manager",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "d03c77eb-3c64-4082-b103-24e3d18df409"
+    },
+    {
+      "case": "dialog",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "07b693e8-ac37-4651-af38-00c6c44ed439"
+    },
+    {
+      "case": "shell",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "b3bf5b25-e009-478a-aa86-7347763cc80a"
+    },
+    {
+      "case": "home",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "98aba337-cf99-4309-acc0-0e8ba4f03ef4"
+    },
+    {
+      "case": "parse",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "753a5f98-9206-4edc-bcfd-9ec82c0fdd34"
+    },
+    {
+      "case": "start-choice",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "4264ed9d-bfa0-4ae4-a1dd-712d9d444fe3"
+    },
+    {
+      "case": "contact",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "24d6a031-0296-488f-9b56-a25d0a97dea0"
+    },
+    {
+      "case": "session-guards",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "46db617a-cced-44cb-bab6-b5ace36c20aa"
+    },
+    {
+      "case": "flight-log",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "b37de162-b2d1-440b-a4cc-5793f3566a60"
+    },
+    {
+      "case": "pause-unresolved-audio",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 1,
+      "capture_id": "9002a7f1-cf96-4361-9ce4-a55a37bb745a"
+    },
+    {
+      "case": "rotorcraft-expected-refusal",
+      "ok": false,
+      "reason": "process_exit",
+      "process_exit": 31,
+      "capture_id": "24512795-c413-4049-bdf2-52aeee61875f"
+    },
+    {
+      "case": "native-capture",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "3ce26ce3-57a4-485a-941e-3c9170cac257"
+    },
+    {
+      "case": "cost-1",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "a609d534-725f-462a-8348-d8239216a6ca"
+    },
+    {
+      "case": "cost-2",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "57e3e1a4-10e8-4a40-918b-badede0a48da"
+    },
+    {
+      "case": "production-120s",
+      "ok": true,
+      "reason": "passed",
+      "process_exit": 0,
+      "capture_id": "7b959600-ea5b-4d52-8360-cf6f9fe4df82"
+    }
+  ]
+}

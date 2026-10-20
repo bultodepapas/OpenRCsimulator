@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "3b5e5949-04ca-493a-b1a9-e4e8bdfb34ac",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_record.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-02/capture-tests-native.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:27:07.001383+00:00",
+  "label": "afc-capture-record-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-02\\checks\\afc-capture-record-final-7d_30ge5\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-02\\checks\\afc-capture-record-final-7d_30ge5\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "companions record: 157 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 22.156,
+  "log_bytes": 14243,
+  "log_sha256": "f3cdd4a1d57132a9fc3784691ac1ee0813ba63aaa57c27b741387ba4301f03ec"
+}

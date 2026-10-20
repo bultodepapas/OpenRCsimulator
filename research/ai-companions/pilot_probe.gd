@@ -14,7 +14,6 @@ const COMMAND_DIVISOR := 4
 const FLIGHT_TICKS := 120 * TICKS_PER_SECOND
 const SPOT_CHECK_TICKS := 3 * TICKS_PER_SECOND
 const SEED := 20261020
-const OUTPUT_RELATIVE := "res://../docs/research/ai-companions/pilot"
 const MIN_CLEARANCE_M := 20.0
 const MAX_TAS_MPS := 25.0
 const MIN_TAS_MPS := 10.0
@@ -27,6 +26,7 @@ var _failures: int = 0
 var _sample_rows := PackedStringArray()
 var _flight_ticks: int = FLIGHT_TICKS
 var _spot_check: bool = false
+var _output_dir := ""
 
 
 func _check(label: String, passed: bool, detail: String = "") -> void:
@@ -38,12 +38,25 @@ func _check(label: String, passed: bool, detail: String = "") -> void:
 
 func _initialize() -> void:
 	_spot_check = OS.get_cmdline_user_args().has("--spot-check")
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--out="):
+			_output_dir = argument.trim_prefix("--out=")
 	if _spot_check:
 		_flight_ticks = SPOT_CHECK_TICKS
 	call_deferred("_run")
 
 
 func _run() -> void:
+	if not _spot_check:
+		if _output_dir.is_empty():
+			printerr("Supply --out=<new directory>; qualification never overwrites accepted evidence.")
+			quit(2)
+			return
+		_output_dir = ProjectSettings.globalize_path(_output_dir)
+		if DirAccess.dir_exists_absolute(_output_dir) or FileAccess.file_exists(_output_dir):
+			printerr("Qualification output must be a new directory.")
+			quit(2)
+			return
 	var loaded: Dictionary = FieldLoader.load_from()
 	_check("Club field loads from accepted data", loaded.get("ok", false), str(loaded.get("errors", [])))
 	if not loaded.get("ok", false):
@@ -315,7 +328,9 @@ func _distance3(first: PackedFloat64Array, second: PackedFloat64Array) -> float:
 
 
 func _write_qualification_outputs(results: Array, replay_identical: bool, replay_complete: bool) -> Dictionary:
-	var output_dir: String = ProjectSettings.globalize_path(OUTPUT_RELATIVE)
+	var output_dir: String = _output_dir
+	if DirAccess.dir_exists_absolute(output_dir) or FileAccess.file_exists(output_dir):
+		return {"ok": false, "reason": "output appeared during the run; existing evidence is preserved"}
 	var dir_error: int = DirAccess.make_dir_recursive_absolute(output_dir)
 	if dir_error != OK and not DirAccess.dir_exists_absolute(output_dir):
 		return {"ok": false, "reason": "could not create output directory (error %d)" % dir_error}
@@ -372,12 +387,6 @@ func _write_qualification_outputs(results: Array, replay_identical: bool, replay
 	summary_file.store_line("Seeded repeatability (three aircraft, calm, same seed): **%s**; both repeats completed: **%s**." % [
 		"bit-identical for all sampled state and command values" if replay_identical else "failed",
 		"yes" if replay_complete else "no"])
-	summary_file.store_line("")
-	summary_file.store_line("## Run integrity note")
-	summary_file.store_line("")
-	summary_file.store_line("The earlier `external-driver-qualification-matrix-v2` run is retained only as a discovered integration regression, not pilot qualification evidence. `FlightSession` applied the requested absolute spawn yaw as an offset to the trimmed start yaw (+90°), so that run followed the wrong headings and its radial excursions cannot be attributed to the pilot. The session seam was corrected before this rerun; this probe now checks tick-zero yaw against the requested absolute heading within 1e-9 rad.")
-	summary_file.store_line("")
-	summary_file.store_line("Earlier checked-runner report and log: `.tools/companions-pilot-qualification/external-driver-qualification-matrix-v2-qrcr4fnl/report.json` and `engine.log` (capture `c5262db7-ab2d-49df-97d4-d0f7efcc666d`). Corrected seam spot-check: `.tools/companions-pilot-qualification/external-heading-spot-check-v2-fjnqi693/report.json` (12 checks passed, 720 calm ticks; requested and actual yaw both 1.600436539 rad).")
 	summary_file.store_line("")
 	summary_file.store_line("| Gate | Limit |")
 	summary_file.store_line("|---|---:|")

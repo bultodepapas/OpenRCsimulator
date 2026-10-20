@@ -1,0 +1,8 @@
+{
+  "schema": "tt21-motion-source-baseline-v1",
+  "captured_utc": "2026-10-20",
+  "source": "app/aircraft/timber_visual_motion.gd",
+  "copy": "research/timber/optimization/motion_baseline.gd",
+  "sha256": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3",
+  "git_status": "modified at capture (pre-existing Turbo Lumber visual implementation)"
+}

@@ -1,0 +1,103 @@
+{
+  "format": "openrc-ai-static-airspace-receipt v1",
+  "captured_utc": "2026-10-20T21:00:43.696813+00:00",
+  "complete": true,
+  "engine": "4.7.2-stable (official)",
+  "checks": {
+    "airspace": {
+      "report": "checks/afc-airspace-unit-j4p9_9ti/report.json",
+      "report_sha256": "5fafe28f2b0192d2189e9d95d6da9658274d352f47a20913d2692eedc6287233",
+      "log_sha256": "36d92741509e1457a1c5e00d78669e80ed1eed9dacbf7da9c10739c7ed2d18a3",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 4.047
+    },
+    "manager": {
+      "report": "checks/afc-airspace-manager-f_wcjb9x/report.json",
+      "report_sha256": "bf4ecfbf54c475a67f627a2f050705d94698415a8bbad9abbd73cdb14face752",
+      "log_sha256": "ba44d202043fd0dd61842fe931fd92d21c25eee7d43e5b5cb994cf40f3882b9f",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 41.953
+    },
+    "profiles": {
+      "report": "checks/afc-airspace-profiles-final-0h2f2775/report.json",
+      "report_sha256": "ed3602a390b2d26114e5cfde7a2e75fc24dec3681e9090bf26ea6b24e1d8decb",
+      "log_sha256": "2026b782b3e4b08daafea2dc798cf0c7021f15200522415b5b8847cba3715ba9",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 6.89
+    },
+    "shell": {
+      "report": "checks/afc-airspace-shell-final-krjmtjox/report.json",
+      "report_sha256": "f0b28232a9be50a262ac925c27b9b513f2270773493585fe52cc77cab6320961",
+      "log_sha256": "fdfcfaa463fc13548964e24dcd7074f16d4ae71df2a9bf874953f7ac3fa78c66",
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "elapsed_seconds": 17.766
+    },
+    "trace_equivalence": {
+      "report": "checks/afc-airspace-equivalence-final-t1uzztmd/report.json",
+      "report_sha256": "75135990da9683363f561525aa6ff26b941125cebd776314a52e88cd079049be",
+      "log_sha256": "4b4c7f6a4661203ad9af7a1884802f12ebf3b15fae92a75be8ed5545228dd10d",
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "elapsed_seconds": 35.891
+    }
+  },
+  "counts": {
+    "airspace": 48,
+    "manager": 53,
+    "profiles": 30
+  },
+  "source_sha256": {
+    "app/ai/companions/airspace.gd": "6e45e981e60be04e9ed5b6d6dd8ea21861b90bc100cd242420a7a8b7c61f8920",
+    "app/ai/companions/manager.gd": "88e15c48488229c57baf7a1113101501558ca81291084bc815698abda2ddc40a",
+    "app/ai/companions/agent.gd": "34cb3329b0106f5e45f88443f874867c7fa330fb573f22c4922f9db9e82b4021",
+    "app/ai/companions/pilot.gd": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "app/ai/companions/profile_loader.gd": "ca5632d7785f61d9fbb7f367d7c4f531327a71187dc4584cd7d6a8bd28c4232d",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+    "app/data/ai/companions/fields/club-default.json": "7d9305158ee28d564d03a85379186130c07dc4abce61923595c07c7cd43d62d4",
+    "app/tests/test_companions_airspace.gd": "f3f5fdcd60af35e884565deed1832d71421921a3ed7f0bc825e1da69f3722987",
+    "app/tests/test_companions_manager.gd": "43622e8b54f1a6c0ee202fc3965611d6263bb044cea999da5b7af5833e417cf9",
+    "app/tests/test_companions_profiles.gd": "47c379b2a64c1d8a618cdcdfd6f440f30c93affb7054f9c573dd8d8b4ce9315f",
+    "app/tests/test_companions_shell.gd": "0016fe88150afbc8de00e525938beb82c0d81eb445b593a4f2d2ea68288ae5f5",
+    "app/physics/aircraft_contact_contract.gd": "84a46a225b368b8a40bb37e5f3b5714b822983f054ae0480f791ef46c20a5734",
+    "app/physics/ground_terrain.gd": "47da45a9b106040518ede9c71924d05451f1d57b63ffea19219ba74abb58f01a",
+    "app/physics/lake_surface.gd": "42eb06e2573a67c3be7f799d718aba9793bb887d837003a433e01cb4cc46d224",
+    "app/scenery/collision_world.gd": "9f601b43a1eee5925036298d7fd3f2c0a241a8f69685ab05b8c6aa2fac8f5894",
+    "app/scenery/collision_setup.gd": "49c409796bfefc7e1da71ff47140999ce6e58e230c0cafbe8f2bef234c0c68bb",
+    "research/ai-companions/performance_probe.gd": "2b346fd614dfb612970ab2e3923a2a5c6e71ff26192d53acc5e9f0051da86789",
+    "app/ai/companions/config.gd": "2455c71f7b42b3b3e7f1b1cb6378b0534645b2ddd9281d3338e5d346a563601b",
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4",
+    "app/sim/environment.gd": "14f172a6179ec8c0537850d1b8c0bf79e554a910ca6079a1089f6e15fad4c2b0",
+    "app/sim/flight_session.gd": "ac26a5eb61a3ee9478242dd68fe7e00f285f1b9a2dbf43f2d96c6075911d5263",
+    "app/sim/simulation.gd": "4f3a23e1056a8b4d42d6179483518ed9946a944de951d6237a8bb87af0745c2d"
+  },
+  "evidence_sha256": {
+    "static-airspace.json": "58d11bbcfed93b315c6a91af0ea90a86b492ec047b17cc521520992cb63c863d",
+    "airspace-flight-traces-final.json": "3fa4f24f7a76c95d5f5099b7a08095ad1a0bc6bf39a134373146322046fc98ae",
+    "airspace-flight-comparison.json": "01f8a4922445a4a311aa3cb75af9de068a9bac3705b869b2f67de68311aff514"
+  },
+  "scope": "Launch-only static nominal corridor. Pilot, kernel and physics data unchanged. All checked state/command fingerprints equal the retained baseline.",
+  "exclusions": [
+    "Full application suite",
+    "Full-trajectory containment",
+    "Moving obstacles",
+    "General field keepouts",
+    "Rendered performance qualification"
+  ]
+}

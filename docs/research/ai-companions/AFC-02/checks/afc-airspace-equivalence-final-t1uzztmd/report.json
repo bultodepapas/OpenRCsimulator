@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "8408631d-26a6-4ef7-90f2-ef1a79738e5b",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/ai-companions/performance_probe.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-02/airspace-flight-traces-final.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T20:57:33.002029+00:00",
+  "label": "afc-airspace-equivalence-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-02\\checks\\afc-airspace-equivalence-final-t1uzztmd\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\ai-companions\\AFC-02\\checks\\afc-airspace-equivalence-final-t1uzztmd\\report.json",
+  "timeout_seconds": 300.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "AFC PERFORMANCE PROFILE COMPLETE"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 35.891,
+  "log_bytes": 14985,
+  "log_sha256": "4b4c7f6a4661203ad9af7a1884802f12ebf3b15fae92a75be8ed5545228dd10d"
+}

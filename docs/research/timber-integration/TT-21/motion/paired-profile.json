@@ -1,0 +1,5925 @@
+{
+	"engine_version": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"execution_scope": "shared development host with concurrent root/research work; order pairing reduces but does not eliminate host scheduling/frequency effects",
+	"failures": [],
+	"fixture": "independently built private Turbo Lumber sessions with exact matched state, continuous telemetry, aux, surfaces, and contacts",
+	"input_immutability": [
+		{
+			"continuous_unchanged": true,
+			"fixture": "baseline",
+			"ground_surfaces_unchanged": true,
+			"matched_final_state_and_previous": true,
+			"passed": true
+		},
+		{
+			"continuous_unchanged": true,
+			"fixture": "candidate",
+			"ground_surfaces_unchanged": true,
+			"matched_final_state_and_previous": true,
+			"passed": true
+		}
+	],
+	"input_states": {
+		"airborne_compression_m": [
+			-0.158818817620312,
+			-0.159132768968189,
+			-0.159007780071837
+		],
+		"airborne_state_sha256": "e2cb470309598ce77bdd27e23e0f887c1608c67a6371970b1b32525838abda03",
+		"settled_rest_compression_m": [
+			0.0211789751299373,
+			0.02086702653177,
+			0.0209908383028937
+		],
+		"taxi_a_compression_m": [
+			0.00117922037990963,
+			0.000867049253996756,
+			0.000990991816812504
+		],
+		"taxi_a_state_sha256": "e1e2e85c488bc005da3ce6ffa28ed113bdcb47390f9892714733ff65e1a316ec",
+		"taxi_b_compression_m": [
+			0.00917912227992067,
+			0.00886704016510604,
+			0.00899093041124496
+		],
+		"taxi_b_state_sha256": "987be3e1209613f892d79afefefff166c67691d012b15dacf43c3fc479d9886d",
+		"taxi_compression_l1_delta_m": 0.0239998314055528
+	},
+	"paired_profiles": [
+		{
+			"baseline_median_batch_mean_us_per_call": 112.7,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 116.7,
+					"candidate_batch_mean_us": 121.4,
+					"candidate_over_baseline_batch_ratio": 1.04027420736932,
+					"median_pair_ratio": 0.99685378373903
+				},
+				{
+					"baseline_batch_mean_us": 111.2,
+					"candidate_batch_mean_us": 109.3,
+					"candidate_over_baseline_batch_ratio": 0.982913669064748,
+					"median_pair_ratio": 0.976722049151956
+				},
+				{
+					"baseline_batch_mean_us": 104.3,
+					"candidate_batch_mean_us": 110.6,
+					"candidate_over_baseline_batch_ratio": 1.06040268456376,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 107.2,
+					"candidate_batch_mean_us": 103.8,
+					"candidate_over_baseline_batch_ratio": 0.968283582089552,
+					"median_pair_ratio": 0.98989898989899
+				},
+				{
+					"baseline_batch_mean_us": 101.95,
+					"candidate_batch_mean_us": 102.55,
+					"candidate_over_baseline_batch_ratio": 1.0058852378617,
+					"median_pair_ratio": 0.99
+				},
+				{
+					"baseline_batch_mean_us": 112.55,
+					"candidate_batch_mean_us": 109.85,
+					"candidate_over_baseline_batch_ratio": 0.976010661928032,
+					"median_pair_ratio": 0.987136994949495
+				},
+				{
+					"baseline_batch_mean_us": 103.25,
+					"candidate_batch_mean_us": 106.2,
+					"candidate_over_baseline_batch_ratio": 1.02857142857143,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 113.1,
+					"candidate_batch_mean_us": 112.45,
+					"candidate_over_baseline_batch_ratio": 0.994252873563218,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 107.5,
+					"candidate_batch_mean_us": 103.4,
+					"candidate_over_baseline_batch_ratio": 0.961860465116279,
+					"median_pair_ratio": 0.995049504950495
+				},
+				{
+					"baseline_batch_mean_us": 124.5,
+					"candidate_batch_mean_us": 147.4,
+					"candidate_over_baseline_batch_ratio": 1.18393574297189,
+					"median_pair_ratio": 1.03699753896637
+				},
+				{
+					"baseline_batch_mean_us": 121.5,
+					"candidate_batch_mean_us": 127.0,
+					"candidate_over_baseline_batch_ratio": 1.04526748971193,
+					"median_pair_ratio": 1.00971239981141
+				},
+				{
+					"baseline_batch_mean_us": 129.7,
+					"candidate_batch_mean_us": 126.2,
+					"candidate_over_baseline_batch_ratio": 0.973014649190439,
+					"median_pair_ratio": 0.985530246452577
+				},
+				{
+					"baseline_batch_mean_us": 118.0,
+					"candidate_batch_mean_us": 119.15,
+					"candidate_over_baseline_batch_ratio": 1.00974576271186,
+					"median_pair_ratio": 1.005
+				},
+				{
+					"baseline_batch_mean_us": 113.3,
+					"candidate_batch_mean_us": 110.55,
+					"candidate_over_baseline_batch_ratio": 0.975728155339806,
+					"median_pair_ratio": 0.995327102803738
+				},
+				{
+					"baseline_batch_mean_us": 135.15,
+					"candidate_batch_mean_us": 127.65,
+					"candidate_over_baseline_batch_ratio": 0.944506104328524,
+					"median_pair_ratio": 0.980580693815988
+				},
+				{
+					"baseline_batch_mean_us": 109.75,
+					"candidate_batch_mean_us": 112.35,
+					"candidate_over_baseline_batch_ratio": 1.02369020501139,
+					"median_pair_ratio": 0.980769230769231
+				},
+				{
+					"baseline_batch_mean_us": 100.7,
+					"candidate_batch_mean_us": 101.05,
+					"candidate_over_baseline_batch_ratio": 1.00347567030785,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 116.4,
+					"candidate_batch_mean_us": 114.9,
+					"candidate_over_baseline_batch_ratio": 0.987113402061856,
+					"median_pair_ratio": 0.990047534165181
+				},
+				{
+					"baseline_batch_mean_us": 111.0,
+					"candidate_batch_mean_us": 115.8,
+					"candidate_over_baseline_batch_ratio": 1.04324324324324,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 105.3,
+					"candidate_batch_mean_us": 105.6,
+					"candidate_over_baseline_batch_ratio": 1.002849002849,
+					"median_pair_ratio": 0.995145631067961
+				},
+				{
+					"baseline_batch_mean_us": 106.45,
+					"candidate_batch_mean_us": 104.15,
+					"candidate_over_baseline_batch_ratio": 0.978393612024425,
+					"median_pair_ratio": 0.995098039215686
+				},
+				{
+					"baseline_batch_mean_us": 137.0,
+					"candidate_batch_mean_us": 138.25,
+					"candidate_over_baseline_batch_ratio": 1.00912408759124,
+					"median_pair_ratio": 1.00480769230769
+				},
+				{
+					"baseline_batch_mean_us": 118.7,
+					"candidate_batch_mean_us": 130.4,
+					"candidate_over_baseline_batch_ratio": 1.09856781802864,
+					"median_pair_ratio": 1.11430348258706
+				},
+				{
+					"baseline_batch_mean_us": 103.55,
+					"candidate_batch_mean_us": 104.25,
+					"candidate_over_baseline_batch_ratio": 1.00676001931434,
+					"median_pair_ratio": 0.990243670283647
+				},
+				{
+					"baseline_batch_mean_us": 135.55,
+					"candidate_batch_mean_us": 140.2,
+					"candidate_over_baseline_batch_ratio": 1.03430468461822,
+					"median_pair_ratio": 1.01533380514272
+				},
+				{
+					"baseline_batch_mean_us": 119.9,
+					"candidate_batch_mean_us": 110.2,
+					"candidate_over_baseline_batch_ratio": 0.919099249374479,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 114.5,
+					"candidate_batch_mean_us": 108.95,
+					"candidate_over_baseline_batch_ratio": 0.951528384279476,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 106.5,
+					"candidate_batch_mean_us": 115.1,
+					"candidate_over_baseline_batch_ratio": 1.08075117370892,
+					"median_pair_ratio": 1.00990099009901
+				},
+				{
+					"baseline_batch_mean_us": 110.0,
+					"candidate_batch_mean_us": 107.85,
+					"candidate_over_baseline_batch_ratio": 0.980454545454545,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 112.85,
+					"candidate_batch_mean_us": 123.7,
+					"candidate_over_baseline_batch_ratio": 1.09614532565352,
+					"median_pair_ratio": 1.01457431457431
+				},
+				{
+					"baseline_batch_mean_us": 101.65,
+					"candidate_batch_mean_us": 101.6,
+					"candidate_over_baseline_batch_ratio": 0.999508116084604,
+					"median_pair_ratio": 0.990147544166181
+				},
+				{
+					"baseline_batch_mean_us": 128.5,
+					"candidate_batch_mean_us": 127.75,
+					"candidate_over_baseline_batch_ratio": 0.994163424124514,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 141.9,
+					"candidate_batch_mean_us": 151.5,
+					"candidate_over_baseline_batch_ratio": 1.0676532769556,
+					"median_pair_ratio": 1.01708494208494
+				},
+				{
+					"baseline_batch_mean_us": 123.75,
+					"candidate_batch_mean_us": 123.35,
+					"candidate_over_baseline_batch_ratio": 0.996767676767677,
+					"median_pair_ratio": 0.995652173913044
+				},
+				{
+					"baseline_batch_mean_us": 127.25,
+					"candidate_batch_mean_us": 131.1,
+					"candidate_over_baseline_batch_ratio": 1.03025540275049,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 110.35,
+					"candidate_batch_mean_us": 105.1,
+					"candidate_over_baseline_batch_ratio": 0.952424105120072,
+					"median_pair_ratio": 0.99009900990099
+				},
+				{
+					"baseline_batch_mean_us": 110.9,
+					"candidate_batch_mean_us": 112.1,
+					"candidate_over_baseline_batch_ratio": 1.01082055906222,
+					"median_pair_ratio": 1.00485436893204
+				},
+				{
+					"baseline_batch_mean_us": 125.8,
+					"candidate_batch_mean_us": 117.0,
+					"candidate_over_baseline_batch_ratio": 0.930047694753577,
+					"median_pair_ratio": 0.976868443343976
+				},
+				{
+					"baseline_batch_mean_us": 114.5,
+					"candidate_batch_mean_us": 117.25,
+					"candidate_over_baseline_batch_ratio": 1.02401746724891,
+					"median_pair_ratio": 1.00490196078431
+				},
+				{
+					"baseline_batch_mean_us": 105.4,
+					"candidate_batch_mean_us": 108.6,
+					"candidate_over_baseline_batch_ratio": 1.0303605313093,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 101.25,
+					"candidate_batch_mean_us": 100.1,
+					"candidate_over_baseline_batch_ratio": 0.988641975308642,
+					"median_pair_ratio": 0.98989898989899
+				},
+				{
+					"baseline_batch_mean_us": 108.4,
+					"candidate_batch_mean_us": 113.3,
+					"candidate_over_baseline_batch_ratio": 1.04520295202952,
+					"median_pair_ratio": 1.005
+				},
+				{
+					"baseline_batch_mean_us": 102.35,
+					"candidate_batch_mean_us": 100.8,
+					"candidate_over_baseline_batch_ratio": 0.98485588666341,
+					"median_pair_ratio": 0.995049504950495
+				},
+				{
+					"baseline_batch_mean_us": 99.95,
+					"candidate_batch_mean_us": 100.6,
+					"candidate_over_baseline_batch_ratio": 1.00650325162581,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 118.2,
+					"candidate_batch_mean_us": 122.05,
+					"candidate_over_baseline_batch_ratio": 1.03257191201354,
+					"median_pair_ratio": 1.01395950405851
+				},
+				{
+					"baseline_batch_mean_us": 115.3,
+					"candidate_batch_mean_us": 109.3,
+					"candidate_over_baseline_batch_ratio": 0.9479618386817,
+					"median_pair_ratio": 0.99537037037037
+				},
+				{
+					"baseline_batch_mean_us": 109.5,
+					"candidate_batch_mean_us": 106.05,
+					"candidate_over_baseline_batch_ratio": 0.968493150684931,
+					"median_pair_ratio": 0.995283018867924
+				},
+				{
+					"baseline_batch_mean_us": 107.55,
+					"candidate_batch_mean_us": 113.4,
+					"candidate_over_baseline_batch_ratio": 1.05439330543933,
+					"median_pair_ratio": 0.990384615384615
+				},
+				{
+					"baseline_batch_mean_us": 115.05,
+					"candidate_batch_mean_us": 108.05,
+					"candidate_over_baseline_batch_ratio": 0.939156888309431,
+					"median_pair_ratio": 0.989949494949495
+				},
+				{
+					"baseline_batch_mean_us": 116.45,
+					"candidate_batch_mean_us": 117.6,
+					"candidate_over_baseline_batch_ratio": 1.00987548303993,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 111.2,
+					"candidate_batch_mean_us": 109.5,
+					"candidate_over_baseline_batch_ratio": 0.984712230215827,
+					"median_pair_ratio": 0.995098039215686
+				},
+				{
+					"baseline_batch_mean_us": 122.9,
+					"candidate_batch_mean_us": 117.8,
+					"candidate_over_baseline_batch_ratio": 0.958502847843775,
+					"median_pair_ratio": 0.997005988023952
+				},
+				{
+					"baseline_batch_mean_us": 114.6,
+					"candidate_batch_mean_us": 112.55,
+					"candidate_over_baseline_batch_ratio": 0.982111692844677,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.15,
+					"candidate_batch_mean_us": 109.95,
+					"candidate_over_baseline_batch_ratio": 1.00732936326157,
+					"median_pair_ratio": 0.990243670283647
+				},
+				{
+					"baseline_batch_mean_us": 130.05,
+					"candidate_batch_mean_us": 118.7,
+					"candidate_over_baseline_batch_ratio": 0.912725874663591,
+					"median_pair_ratio": 1.0095871559633
+				},
+				{
+					"baseline_batch_mean_us": 124.75,
+					"candidate_batch_mean_us": 124.7,
+					"candidate_over_baseline_batch_ratio": 0.999599198396794,
+					"median_pair_ratio": 1.00318396226415
+				},
+				{
+					"baseline_batch_mean_us": 101.55,
+					"candidate_batch_mean_us": 101.95,
+					"candidate_over_baseline_batch_ratio": 1.00393894633186,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.2,
+					"candidate_batch_mean_us": 107.25,
+					"candidate_over_baseline_batch_ratio": 0.982142857142857,
+					"median_pair_ratio": 1.00462962962963
+				},
+				{
+					"baseline_batch_mean_us": 107.65,
+					"candidate_batch_mean_us": 101.25,
+					"candidate_over_baseline_batch_ratio": 0.940548072457037,
+					"median_pair_ratio": 0.995049504950495
+				},
+				{
+					"baseline_batch_mean_us": 130.3,
+					"candidate_batch_mean_us": 120.9,
+					"candidate_over_baseline_batch_ratio": 0.927858787413661,
+					"median_pair_ratio": 0.966002530044276
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 112.225,
+			"case": "settled_rest",
+			"paired_median_batch_ratio_candidate_over_baseline": 0.999553657240699,
+			"paired_median_change_percent": -0.0446342759301221,
+			"paired_median_pair_ratio_candidate_over_baseline": 1.0,
+			"pairs_per_batch": 20
+		},
+		{
+			"baseline_median_batch_mean_us_per_call": 275.15,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 256.45,
+					"candidate_batch_mean_us": 260.4,
+					"candidate_over_baseline_batch_ratio": 1.01540261259505,
+					"median_pair_ratio": 1.00650291737248
+				},
+				{
+					"baseline_batch_mean_us": 245.4,
+					"candidate_batch_mean_us": 237.85,
+					"candidate_over_baseline_batch_ratio": 0.969233903830481,
+					"median_pair_ratio": 1.00436681222707
+				},
+				{
+					"baseline_batch_mean_us": 228.25,
+					"candidate_batch_mean_us": 230.15,
+					"candidate_over_baseline_batch_ratio": 1.00832420591457,
+					"median_pair_ratio": 1.00440537183667
+				},
+				{
+					"baseline_batch_mean_us": 384.25,
+					"candidate_batch_mean_us": 365.65,
+					"candidate_over_baseline_batch_ratio": 0.951594014313598,
+					"median_pair_ratio": 0.990395812435866
+				},
+				{
+					"baseline_batch_mean_us": 311.0,
+					"candidate_batch_mean_us": 316.2,
+					"candidate_over_baseline_batch_ratio": 1.01672025723473,
+					"median_pair_ratio": 0.962902441248898
+				},
+				{
+					"baseline_batch_mean_us": 307.1,
+					"candidate_batch_mean_us": 314.6,
+					"candidate_over_baseline_batch_ratio": 1.02442201237382,
+					"median_pair_ratio": 1.00425531914894
+				},
+				{
+					"baseline_batch_mean_us": 254.35,
+					"candidate_batch_mean_us": 267.0,
+					"candidate_over_baseline_batch_ratio": 1.04973461765284,
+					"median_pair_ratio": 1.00434790827804
+				},
+				{
+					"baseline_batch_mean_us": 249.4,
+					"candidate_batch_mean_us": 254.15,
+					"candidate_over_baseline_batch_ratio": 1.01904570970329,
+					"median_pair_ratio": 1.01067413769027
+				},
+				{
+					"baseline_batch_mean_us": 305.4,
+					"candidate_batch_mean_us": 316.95,
+					"candidate_over_baseline_batch_ratio": 1.03781925343811,
+					"median_pair_ratio": 1.00413223140496
+				},
+				{
+					"baseline_batch_mean_us": 287.85,
+					"candidate_batch_mean_us": 283.1,
+					"candidate_over_baseline_batch_ratio": 0.983498349834984,
+					"median_pair_ratio": 0.995771500089397
+				},
+				{
+					"baseline_batch_mean_us": 264.05,
+					"candidate_batch_mean_us": 247.4,
+					"candidate_over_baseline_batch_ratio": 0.936943760651392,
+					"median_pair_ratio": 0.983157820090061
+				},
+				{
+					"baseline_batch_mean_us": 254.4,
+					"candidate_batch_mean_us": 259.0,
+					"candidate_over_baseline_batch_ratio": 1.01808176100629,
+					"median_pair_ratio": 0.999981891931044
+				},
+				{
+					"baseline_batch_mean_us": 262.5,
+					"candidate_batch_mean_us": 264.65,
+					"candidate_over_baseline_batch_ratio": 1.00819047619048,
+					"median_pair_ratio": 0.983175914994097
+				},
+				{
+					"baseline_batch_mean_us": 280.15,
+					"candidate_batch_mean_us": 280.7,
+					"candidate_over_baseline_batch_ratio": 1.0019632339818,
+					"median_pair_ratio": 0.993953287484634
+				},
+				{
+					"baseline_batch_mean_us": 281.05,
+					"candidate_batch_mean_us": 277.45,
+					"candidate_over_baseline_batch_ratio": 0.98719089130048,
+					"median_pair_ratio": 0.987447478991597
+				},
+				{
+					"baseline_batch_mean_us": 313.3,
+					"candidate_batch_mean_us": 302.4,
+					"candidate_over_baseline_batch_ratio": 0.965209064794127,
+					"median_pair_ratio": 0.982924603839637
+				},
+				{
+					"baseline_batch_mean_us": 255.15,
+					"candidate_batch_mean_us": 239.4,
+					"candidate_over_baseline_batch_ratio": 0.938271604938272,
+					"median_pair_ratio": 0.989306676449009
+				},
+				{
+					"baseline_batch_mean_us": 270.15,
+					"candidate_batch_mean_us": 278.2,
+					"candidate_over_baseline_batch_ratio": 1.0297982602258,
+					"median_pair_ratio": 1.0085484136117
+				},
+				{
+					"baseline_batch_mean_us": 356.15,
+					"candidate_batch_mean_us": 363.95,
+					"candidate_over_baseline_batch_ratio": 1.0219008844588,
+					"median_pair_ratio": 0.996463283871191
+				},
+				{
+					"baseline_batch_mean_us": 370.95,
+					"candidate_batch_mean_us": 448.3,
+					"candidate_over_baseline_batch_ratio": 1.20851866828414,
+					"median_pair_ratio": 1.04759269507471
+				},
+				{
+					"baseline_batch_mean_us": 392.55,
+					"candidate_batch_mean_us": 396.15,
+					"candidate_over_baseline_batch_ratio": 1.00917080626672,
+					"median_pair_ratio": 0.969454875977707
+				},
+				{
+					"baseline_batch_mean_us": 391.75,
+					"candidate_batch_mean_us": 394.45,
+					"candidate_over_baseline_batch_ratio": 1.00689215060625,
+					"median_pair_ratio": 0.998623091269379
+				},
+				{
+					"baseline_batch_mean_us": 313.8,
+					"candidate_batch_mean_us": 318.6,
+					"candidate_over_baseline_batch_ratio": 1.01529636711281,
+					"median_pair_ratio": 1.00900488400488
+				},
+				{
+					"baseline_batch_mean_us": 356.7,
+					"candidate_batch_mean_us": 339.45,
+					"candidate_over_baseline_batch_ratio": 0.951640033641716,
+					"median_pair_ratio": 0.997296586392331
+				},
+				{
+					"baseline_batch_mean_us": 368.9,
+					"candidate_batch_mean_us": 351.95,
+					"candidate_over_baseline_batch_ratio": 0.954052588777446,
+					"median_pair_ratio": 0.952686084142395
+				},
+				{
+					"baseline_batch_mean_us": 365.9,
+					"candidate_batch_mean_us": 360.5,
+					"candidate_over_baseline_batch_ratio": 0.985241869363214,
+					"median_pair_ratio": 0.987900332299268
+				},
+				{
+					"baseline_batch_mean_us": 369.25,
+					"candidate_batch_mean_us": 404.25,
+					"candidate_over_baseline_batch_ratio": 1.09478672985782,
+					"median_pair_ratio": 1.04185607455362
+				},
+				{
+					"baseline_batch_mean_us": 342.0,
+					"candidate_batch_mean_us": 325.55,
+					"candidate_over_baseline_batch_ratio": 0.951900584795322,
+					"median_pair_ratio": 0.979335058273991
+				},
+				{
+					"baseline_batch_mean_us": 375.5,
+					"candidate_batch_mean_us": 408.6,
+					"candidate_over_baseline_batch_ratio": 1.08814913448735,
+					"median_pair_ratio": 0.997276244404257
+				},
+				{
+					"baseline_batch_mean_us": 284.0,
+					"candidate_batch_mean_us": 293.6,
+					"candidate_over_baseline_batch_ratio": 1.03380281690141,
+					"median_pair_ratio": 1.00632934024674
+				},
+				{
+					"baseline_batch_mean_us": 318.3,
+					"candidate_batch_mean_us": 312.65,
+					"candidate_over_baseline_batch_ratio": 0.98224945020421,
+					"median_pair_ratio": 0.995086360929125
+				},
+				{
+					"baseline_batch_mean_us": 311.5,
+					"candidate_batch_mean_us": 344.4,
+					"candidate_over_baseline_batch_ratio": 1.10561797752809,
+					"median_pair_ratio": 1.01987832484437
+				},
+				{
+					"baseline_batch_mean_us": 324.9,
+					"candidate_batch_mean_us": 350.4,
+					"candidate_over_baseline_batch_ratio": 1.07848568790397,
+					"median_pair_ratio": 1.08494167869168
+				},
+				{
+					"baseline_batch_mean_us": 281.95,
+					"candidate_batch_mean_us": 287.9,
+					"candidate_over_baseline_batch_ratio": 1.02110303245256,
+					"median_pair_ratio": 0.994694614995942
+				},
+				{
+					"baseline_batch_mean_us": 290.9,
+					"candidate_batch_mean_us": 304.75,
+					"candidate_over_baseline_batch_ratio": 1.04761086283946,
+					"median_pair_ratio": 1.04304578974447
+				},
+				{
+					"baseline_batch_mean_us": 349.0,
+					"candidate_batch_mean_us": 336.9,
+					"candidate_over_baseline_batch_ratio": 0.965329512893983,
+					"median_pair_ratio": 0.984928683620384
+				},
+				{
+					"baseline_batch_mean_us": 326.0,
+					"candidate_batch_mean_us": 342.1,
+					"candidate_over_baseline_batch_ratio": 1.04938650306748,
+					"median_pair_ratio": 1.02121212121212
+				},
+				{
+					"baseline_batch_mean_us": 308.9,
+					"candidate_batch_mean_us": 308.9,
+					"candidate_over_baseline_batch_ratio": 1.0,
+					"median_pair_ratio": 1.00351288056206
+				},
+				{
+					"baseline_batch_mean_us": 257.4,
+					"candidate_batch_mean_us": 260.15,
+					"candidate_over_baseline_batch_ratio": 1.01068376068376,
+					"median_pair_ratio": 1.00652173913043
+				},
+				{
+					"baseline_batch_mean_us": 312.7,
+					"candidate_batch_mean_us": 320.0,
+					"candidate_over_baseline_batch_ratio": 1.02334505916214,
+					"median_pair_ratio": 0.989269195189639
+				},
+				{
+					"baseline_batch_mean_us": 267.35,
+					"candidate_batch_mean_us": 291.1,
+					"candidate_over_baseline_batch_ratio": 1.08883486066953,
+					"median_pair_ratio": 1.02133162142333
+				},
+				{
+					"baseline_batch_mean_us": 257.85,
+					"candidate_batch_mean_us": 268.75,
+					"candidate_over_baseline_batch_ratio": 1.04227263913128,
+					"median_pair_ratio": 1.00408163265306
+				},
+				{
+					"baseline_batch_mean_us": 258.8,
+					"candidate_batch_mean_us": 252.25,
+					"candidate_over_baseline_batch_ratio": 0.974690880989181,
+					"median_pair_ratio": 0.985239361702128
+				},
+				{
+					"baseline_batch_mean_us": 284.55,
+					"candidate_batch_mean_us": 263.5,
+					"candidate_over_baseline_batch_ratio": 0.926023545949745,
+					"median_pair_ratio": 0.963370677962953
+				},
+				{
+					"baseline_batch_mean_us": 243.5,
+					"candidate_batch_mean_us": 256.2,
+					"candidate_over_baseline_batch_ratio": 1.05215605749487,
+					"median_pair_ratio": 1.00429216173897
+				},
+				{
+					"baseline_batch_mean_us": 260.3,
+					"candidate_batch_mean_us": 250.05,
+					"candidate_over_baseline_batch_ratio": 0.96062235881675,
+					"median_pair_ratio": 0.993440205316785
+				},
+				{
+					"baseline_batch_mean_us": 242.65,
+					"candidate_batch_mean_us": 238.0,
+					"candidate_over_baseline_batch_ratio": 0.980836595920049,
+					"median_pair_ratio": 0.998015873015873
+				},
+				{
+					"baseline_batch_mean_us": 231.15,
+					"candidate_batch_mean_us": 234.95,
+					"candidate_over_baseline_batch_ratio": 1.01643954142332,
+					"median_pair_ratio": 0.997757847533632
+				},
+				{
+					"baseline_batch_mean_us": 236.25,
+					"candidate_batch_mean_us": 230.45,
+					"candidate_over_baseline_batch_ratio": 0.975449735449735,
+					"median_pair_ratio": 0.99553491338928
+				},
+				{
+					"baseline_batch_mean_us": 236.25,
+					"candidate_batch_mean_us": 237.45,
+					"candidate_over_baseline_batch_ratio": 1.00507936507937,
+					"median_pair_ratio": 1.00219298245614
+				},
+				{
+					"baseline_batch_mean_us": 232.45,
+					"candidate_batch_mean_us": 237.9,
+					"candidate_over_baseline_batch_ratio": 1.02344590234459,
+					"median_pair_ratio": 1.00441520467836
+				},
+				{
+					"baseline_batch_mean_us": 228.6,
+					"candidate_batch_mean_us": 227.75,
+					"candidate_over_baseline_batch_ratio": 0.996281714785652,
+					"median_pair_ratio": 0.995594713656388
+				},
+				{
+					"baseline_batch_mean_us": 230.2,
+					"candidate_batch_mean_us": 231.25,
+					"candidate_over_baseline_batch_ratio": 1.00456125108601,
+					"median_pair_ratio": 0.995565388397247
+				},
+				{
+					"baseline_batch_mean_us": 223.25,
+					"candidate_batch_mean_us": 223.45,
+					"candidate_over_baseline_batch_ratio": 1.00089585666293,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 226.3,
+					"candidate_batch_mean_us": 223.75,
+					"candidate_over_baseline_batch_ratio": 0.988731771984092,
+					"median_pair_ratio": 0.995515604890605
+				},
+				{
+					"baseline_batch_mean_us": 229.55,
+					"candidate_batch_mean_us": 224.85,
+					"candidate_over_baseline_batch_ratio": 0.979525157917665,
+					"median_pair_ratio": 0.99780701754386
+				},
+				{
+					"baseline_batch_mean_us": 224.75,
+					"candidate_batch_mean_us": 224.6,
+					"candidate_over_baseline_batch_ratio": 0.999332591768632,
+					"median_pair_ratio": 0.997826086956522
+				},
+				{
+					"baseline_batch_mean_us": 226.05,
+					"candidate_batch_mean_us": 229.9,
+					"candidate_over_baseline_batch_ratio": 1.01703163017032,
+					"median_pair_ratio": 0.997835497835498
+				},
+				{
+					"baseline_batch_mean_us": 225.05,
+					"candidate_batch_mean_us": 222.95,
+					"candidate_over_baseline_batch_ratio": 0.990668740279938,
+					"median_pair_ratio": 0.997767857142857
+				},
+				{
+					"baseline_batch_mean_us": 227.2,
+					"candidate_batch_mean_us": 225.25,
+					"candidate_over_baseline_batch_ratio": 0.991417253521127,
+					"median_pair_ratio": 0.997747747747748
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 277.825,
+			"case": "variable_compression_taxi",
+			"paired_median_batch_ratio_candidate_over_baseline": 1.00754131339837,
+			"paired_median_change_percent": 0.754131339836506,
+			"paired_median_pair_ratio_candidate_over_baseline": 0.997787437343358,
+			"pairs_per_batch": 20
+		},
+		{
+			"baseline_median_batch_mean_us_per_call": 98.8,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 97.65,
+					"candidate_batch_mean_us": 58.6,
+					"candidate_over_baseline_batch_ratio": 0.600102406554019,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 96.25,
+					"candidate_batch_mean_us": 58.45,
+					"candidate_over_baseline_batch_ratio": 0.607272727272727,
+					"median_pair_ratio": 0.607315200701908
+				},
+				{
+					"baseline_batch_mean_us": 97.6,
+					"candidate_batch_mean_us": 58.0,
+					"candidate_over_baseline_batch_ratio": 0.594262295081967,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 101.55,
+					"candidate_batch_mean_us": 59.55,
+					"candidate_over_baseline_batch_ratio": 0.586410635155096,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 98.0,
+					"candidate_batch_mean_us": 58.7,
+					"candidate_over_baseline_batch_ratio": 0.598979591836735,
+					"median_pair_ratio": 0.603103741496599
+				},
+				{
+					"baseline_batch_mean_us": 97.35,
+					"candidate_batch_mean_us": 62.7,
+					"candidate_over_baseline_batch_ratio": 0.644067796610169,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 95.6,
+					"candidate_batch_mean_us": 57.8,
+					"candidate_over_baseline_batch_ratio": 0.604602510460251,
+					"median_pair_ratio": 0.606382978723404
+				},
+				{
+					"baseline_batch_mean_us": 94.55,
+					"candidate_batch_mean_us": 57.25,
+					"candidate_over_baseline_batch_ratio": 0.605499735589635,
+					"median_pair_ratio": 0.602150537634409
+				},
+				{
+					"baseline_batch_mean_us": 97.95,
+					"candidate_batch_mean_us": 57.7,
+					"candidate_over_baseline_batch_ratio": 0.589076059213885,
+					"median_pair_ratio": 0.602150537634409
+				},
+				{
+					"baseline_batch_mean_us": 100.0,
+					"candidate_batch_mean_us": 58.35,
+					"candidate_over_baseline_batch_ratio": 0.5835,
+					"median_pair_ratio": 0.605274822695036
+				},
+				{
+					"baseline_batch_mean_us": 104.55,
+					"candidate_batch_mean_us": 64.7,
+					"candidate_over_baseline_batch_ratio": 0.618842659014825,
+					"median_pair_ratio": 0.601020408163265
+				},
+				{
+					"baseline_batch_mean_us": 97.45,
+					"candidate_batch_mean_us": 58.75,
+					"candidate_over_baseline_batch_ratio": 0.60287326834274,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 97.2,
+					"candidate_batch_mean_us": 58.85,
+					"candidate_over_baseline_batch_ratio": 0.605452674897119,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 99.9,
+					"candidate_batch_mean_us": 59.35,
+					"candidate_over_baseline_batch_ratio": 0.594094094094094,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 96.95,
+					"candidate_batch_mean_us": 58.35,
+					"candidate_over_baseline_batch_ratio": 0.601856627127385,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 95.45,
+					"candidate_batch_mean_us": 57.75,
+					"candidate_over_baseline_batch_ratio": 0.605028810895757,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 96.75,
+					"candidate_batch_mean_us": 57.7,
+					"candidate_over_baseline_batch_ratio": 0.596382428940568,
+					"median_pair_ratio": 0.605274822695036
+				},
+				{
+					"baseline_batch_mean_us": 95.65,
+					"candidate_batch_mean_us": 57.6,
+					"candidate_over_baseline_batch_ratio": 0.602195504443283,
+					"median_pair_ratio": 0.6
+				},
+				{
+					"baseline_batch_mean_us": 97.8,
+					"candidate_batch_mean_us": 61.65,
+					"candidate_over_baseline_batch_ratio": 0.630368098159509,
+					"median_pair_ratio": 0.60829346092504
+				},
+				{
+					"baseline_batch_mean_us": 95.65,
+					"candidate_batch_mean_us": 57.8,
+					"candidate_over_baseline_batch_ratio": 0.604286461055933,
+					"median_pair_ratio": 0.605274822695036
+				},
+				{
+					"baseline_batch_mean_us": 96.25,
+					"candidate_batch_mean_us": 57.9,
+					"candidate_over_baseline_batch_ratio": 0.601558441558442,
+					"median_pair_ratio": 0.6
+				},
+				{
+					"baseline_batch_mean_us": 95.75,
+					"candidate_batch_mean_us": 58.05,
+					"candidate_over_baseline_batch_ratio": 0.606266318537859,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 95.6,
+					"candidate_batch_mean_us": 57.5,
+					"candidate_over_baseline_batch_ratio": 0.601464435146444,
+					"median_pair_ratio": 0.6
+				},
+				{
+					"baseline_batch_mean_us": 98.75,
+					"candidate_batch_mean_us": 61.25,
+					"candidate_over_baseline_batch_ratio": 0.620253164556962,
+					"median_pair_ratio": 0.603103741496599
+				},
+				{
+					"baseline_batch_mean_us": 96.55,
+					"candidate_batch_mean_us": 58.25,
+					"candidate_over_baseline_batch_ratio": 0.603314344899016,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 96.85,
+					"candidate_batch_mean_us": 58.8,
+					"candidate_over_baseline_batch_ratio": 0.607124419204956,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 96.8,
+					"candidate_batch_mean_us": 58.2,
+					"candidate_over_baseline_batch_ratio": 0.601239669421488,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 100.35,
+					"candidate_batch_mean_us": 59.25,
+					"candidate_over_baseline_batch_ratio": 0.590433482810164,
+					"median_pair_ratio": 0.602040816326531
+				},
+				{
+					"baseline_batch_mean_us": 96.15,
+					"candidate_batch_mean_us": 58.6,
+					"candidate_over_baseline_batch_ratio": 0.609464378575143,
+					"median_pair_ratio": 0.608454647256439
+				},
+				{
+					"baseline_batch_mean_us": 97.1,
+					"candidate_batch_mean_us": 58.1,
+					"candidate_over_baseline_batch_ratio": 0.598352214212152,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 101.55,
+					"candidate_batch_mean_us": 65.85,
+					"candidate_over_baseline_batch_ratio": 0.648449039881832,
+					"median_pair_ratio": 0.603030303030303
+				},
+				{
+					"baseline_batch_mean_us": 134.1,
+					"candidate_batch_mean_us": 82.35,
+					"candidate_over_baseline_batch_ratio": 0.614093959731544,
+					"median_pair_ratio": 0.608247422680412
+				},
+				{
+					"baseline_batch_mean_us": 98.2,
+					"candidate_batch_mean_us": 58.5,
+					"candidate_over_baseline_batch_ratio": 0.595723014256619,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 98.85,
+					"candidate_batch_mean_us": 59.2,
+					"candidate_over_baseline_batch_ratio": 0.598887202832575,
+					"median_pair_ratio": 0.604166666666667
+				},
+				{
+					"baseline_batch_mean_us": 105.3,
+					"candidate_batch_mean_us": 65.7,
+					"candidate_over_baseline_batch_ratio": 0.623931623931624,
+					"median_pair_ratio": 0.610526315789474
+				},
+				{
+					"baseline_batch_mean_us": 100.35,
+					"candidate_batch_mean_us": 60.7,
+					"candidate_over_baseline_batch_ratio": 0.604882909815645,
+					"median_pair_ratio": 0.598969072164948
+				},
+				{
+					"baseline_batch_mean_us": 129.25,
+					"candidate_batch_mean_us": 68.1,
+					"candidate_over_baseline_batch_ratio": 0.526885880077369,
+					"median_pair_ratio": 0.601052405498282
+				},
+				{
+					"baseline_batch_mean_us": 155.6,
+					"candidate_batch_mean_us": 64.35,
+					"candidate_over_baseline_batch_ratio": 0.413560411311054,
+					"median_pair_ratio": 0.60209567698047
+				},
+				{
+					"baseline_batch_mean_us": 128.2,
+					"candidate_batch_mean_us": 69.45,
+					"candidate_over_baseline_batch_ratio": 0.541731669266771,
+					"median_pair_ratio": 0.601052405498282
+				},
+				{
+					"baseline_batch_mean_us": 107.95,
+					"candidate_batch_mean_us": 62.95,
+					"candidate_over_baseline_batch_ratio": 0.583140342751274,
+					"median_pair_ratio": 0.604050711193568
+				},
+				{
+					"baseline_batch_mean_us": 122.2,
+					"candidate_batch_mean_us": 83.95,
+					"candidate_over_baseline_batch_ratio": 0.686988543371522,
+					"median_pair_ratio": 0.611122448979592
+				},
+				{
+					"baseline_batch_mean_us": 109.6,
+					"candidate_batch_mean_us": 67.45,
+					"candidate_over_baseline_batch_ratio": 0.615419708029197,
+					"median_pair_ratio": 0.608045279967657
+				},
+				{
+					"baseline_batch_mean_us": 101.7,
+					"candidate_batch_mean_us": 62.95,
+					"candidate_over_baseline_batch_ratio": 0.61897738446411,
+					"median_pair_ratio": 0.606060606060606
+				},
+				{
+					"baseline_batch_mean_us": 111.95,
+					"candidate_batch_mean_us": 67.65,
+					"candidate_over_baseline_batch_ratio": 0.604287628405538,
+					"median_pair_ratio": 0.602040816326531
+				},
+				{
+					"baseline_batch_mean_us": 111.45,
+					"candidate_batch_mean_us": 67.05,
+					"candidate_over_baseline_batch_ratio": 0.601615074024226,
+					"median_pair_ratio": 0.602607709750567
+				},
+				{
+					"baseline_batch_mean_us": 99.6,
+					"candidate_batch_mean_us": 59.45,
+					"candidate_over_baseline_batch_ratio": 0.596887550200803,
+					"median_pair_ratio": 0.601991281949673
+				},
+				{
+					"baseline_batch_mean_us": 97.6,
+					"candidate_batch_mean_us": 58.55,
+					"candidate_over_baseline_batch_ratio": 0.599897540983607,
+					"median_pair_ratio": 0.601052405498282
+				},
+				{
+					"baseline_batch_mean_us": 97.75,
+					"candidate_batch_mean_us": 58.85,
+					"candidate_over_baseline_batch_ratio": 0.602046035805627,
+					"median_pair_ratio": 0.602040816326531
+				},
+				{
+					"baseline_batch_mean_us": 110.95,
+					"candidate_batch_mean_us": 67.95,
+					"candidate_over_baseline_batch_ratio": 0.612438035150969,
+					"median_pair_ratio": 0.604001176816711
+				},
+				{
+					"baseline_batch_mean_us": 103.45,
+					"candidate_batch_mean_us": 60.95,
+					"candidate_over_baseline_batch_ratio": 0.58917351377477,
+					"median_pair_ratio": 0.601020408163265
+				},
+				{
+					"baseline_batch_mean_us": 99.9,
+					"candidate_batch_mean_us": 59.9,
+					"candidate_over_baseline_batch_ratio": 0.5995995995996,
+					"median_pair_ratio": 0.604063531353135
+				},
+				{
+					"baseline_batch_mean_us": 101.9,
+					"candidate_batch_mean_us": 60.75,
+					"candidate_over_baseline_batch_ratio": 0.596172718351325,
+					"median_pair_ratio": 0.595959595959596
+				},
+				{
+					"baseline_batch_mean_us": 105.4,
+					"candidate_batch_mean_us": 72.05,
+					"candidate_over_baseline_batch_ratio": 0.683586337760911,
+					"median_pair_ratio": 0.603030303030303
+				},
+				{
+					"baseline_batch_mean_us": 107.4,
+					"candidate_batch_mean_us": 64.45,
+					"candidate_over_baseline_batch_ratio": 0.600093109869646,
+					"median_pair_ratio": 0.605914918414918
+				},
+				{
+					"baseline_batch_mean_us": 101.8,
+					"candidate_batch_mean_us": 60.55,
+					"candidate_over_baseline_batch_ratio": 0.594793713163065,
+					"median_pair_ratio": 0.602040816326531
+				},
+				{
+					"baseline_batch_mean_us": 102.55,
+					"candidate_batch_mean_us": 61.7,
+					"candidate_over_baseline_batch_ratio": 0.601657727937591,
+					"median_pair_ratio": 0.605113636363636
+				},
+				{
+					"baseline_batch_mean_us": 96.85,
+					"candidate_batch_mean_us": 58.95,
+					"candidate_over_baseline_batch_ratio": 0.608673205988642,
+					"median_pair_ratio": 0.603103741496599
+				},
+				{
+					"baseline_batch_mean_us": 100.2,
+					"candidate_batch_mean_us": 63.75,
+					"candidate_over_baseline_batch_ratio": 0.63622754491018,
+					"median_pair_ratio": 0.607862029097215
+				},
+				{
+					"baseline_batch_mean_us": 97.5,
+					"candidate_batch_mean_us": 58.7,
+					"candidate_over_baseline_batch_ratio": 0.602051282051282,
+					"median_pair_ratio": 0.608247422680412
+				},
+				{
+					"baseline_batch_mean_us": 99.35,
+					"candidate_batch_mean_us": 60.9,
+					"candidate_over_baseline_batch_ratio": 0.61298439859084,
+					"median_pair_ratio": 0.604166666666667
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 59.3,
+			"case": "airborne",
+			"paired_median_batch_ratio_candidate_over_baseline": 0.602048658928454,
+			"paired_median_change_percent": -39.7951341071546,
+			"paired_median_pair_ratio_candidate_over_baseline": 0.604166666666667,
+			"pairs_per_batch": 20
+		},
+		{
+			"baseline_median_batch_mean_us_per_call": 60.675,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 63.55,
+					"candidate_batch_mean_us": 61.1,
+					"candidate_over_baseline_batch_ratio": 0.961447678992919,
+					"median_pair_ratio": 0.968253968253968
+				},
+				{
+					"baseline_batch_mean_us": 61.1,
+					"candidate_batch_mean_us": 58.95,
+					"candidate_over_baseline_batch_ratio": 0.96481178396072,
+					"median_pair_ratio": 0.966939890710383
+				},
+				{
+					"baseline_batch_mean_us": 61.0,
+					"candidate_batch_mean_us": 58.7,
+					"candidate_over_baseline_batch_ratio": 0.962295081967213,
+					"median_pair_ratio": 0.966939890710383
+				},
+				{
+					"baseline_batch_mean_us": 62.45,
+					"candidate_batch_mean_us": 59.05,
+					"candidate_over_baseline_batch_ratio": 0.945556445156125,
+					"median_pair_ratio": 0.950819672131147
+				},
+				{
+					"baseline_batch_mean_us": 60.8,
+					"candidate_batch_mean_us": 58.95,
+					"candidate_over_baseline_batch_ratio": 0.969572368421053,
+					"median_pair_ratio": 0.967213114754098
+				},
+				{
+					"baseline_batch_mean_us": 62.0,
+					"candidate_batch_mean_us": 61.25,
+					"candidate_over_baseline_batch_ratio": 0.987903225806452,
+					"median_pair_ratio": 0.975273224043716
+				},
+				{
+					"baseline_batch_mean_us": 61.4,
+					"candidate_batch_mean_us": 60.0,
+					"candidate_over_baseline_batch_ratio": 0.977198697068404,
+					"median_pair_ratio": 0.967213114754098
+				},
+				{
+					"baseline_batch_mean_us": 61.3,
+					"candidate_batch_mean_us": 58.65,
+					"candidate_over_baseline_batch_ratio": 0.956769983686786,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 59.7,
+					"candidate_batch_mean_us": 57.65,
+					"candidate_over_baseline_batch_ratio": 0.965661641541039,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 60.5,
+					"candidate_batch_mean_us": 58.25,
+					"candidate_over_baseline_batch_ratio": 0.962809917355372,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 60.5,
+					"candidate_batch_mean_us": 58.3,
+					"candidate_over_baseline_batch_ratio": 0.963636363636364,
+					"median_pair_ratio": 0.950819672131147
+				},
+				{
+					"baseline_batch_mean_us": 63.2,
+					"candidate_batch_mean_us": 61.15,
+					"candidate_over_baseline_batch_ratio": 0.967563291139241,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 63.35,
+					"candidate_batch_mean_us": 60.3,
+					"candidate_over_baseline_batch_ratio": 0.951854775059195,
+					"median_pair_ratio": 0.951996927803379
+				},
+				{
+					"baseline_batch_mean_us": 61.5,
+					"candidate_batch_mean_us": 59.8,
+					"candidate_over_baseline_batch_ratio": 0.972357723577236,
+					"median_pair_ratio": 0.967741935483871
+				},
+				{
+					"baseline_batch_mean_us": 60.65,
+					"candidate_batch_mean_us": 58.85,
+					"candidate_over_baseline_batch_ratio": 0.970321516900247,
+					"median_pair_ratio": 0.966939890710383
+				},
+				{
+					"baseline_batch_mean_us": 61.65,
+					"candidate_batch_mean_us": 58.8,
+					"candidate_over_baseline_batch_ratio": 0.953771289537713,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 60.4,
+					"candidate_batch_mean_us": 58.45,
+					"candidate_over_baseline_batch_ratio": 0.96771523178808,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 67.1,
+					"candidate_batch_mean_us": 64.6,
+					"candidate_over_baseline_batch_ratio": 0.96274217585693,
+					"median_pair_ratio": 0.958743169398907
+				},
+				{
+					"baseline_batch_mean_us": 64.75,
+					"candidate_batch_mean_us": 61.1,
+					"candidate_over_baseline_batch_ratio": 0.943629343629344,
+					"median_pair_ratio": 0.966939890710383
+				},
+				{
+					"baseline_batch_mean_us": 59.7,
+					"candidate_batch_mean_us": 57.65,
+					"candidate_over_baseline_batch_ratio": 0.965661641541039,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.9,
+					"candidate_batch_mean_us": 58.45,
+					"candidate_over_baseline_batch_ratio": 0.975792988313856,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 59.85,
+					"candidate_batch_mean_us": 58.35,
+					"candidate_over_baseline_batch_ratio": 0.974937343358396,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 59.55,
+					"candidate_batch_mean_us": 58.0,
+					"candidate_over_baseline_batch_ratio": 0.973971452560873,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 60.9,
+					"candidate_batch_mean_us": 60.4,
+					"candidate_over_baseline_batch_ratio": 0.991789819376026,
+					"median_pair_ratio": 0.975131981105863
+				},
+				{
+					"baseline_batch_mean_us": 59.95,
+					"candidate_batch_mean_us": 57.85,
+					"candidate_over_baseline_batch_ratio": 0.964970809007506,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.6,
+					"candidate_batch_mean_us": 58.15,
+					"candidate_over_baseline_batch_ratio": 0.975671140939597,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.0,
+					"candidate_batch_mean_us": 57.35,
+					"candidate_over_baseline_batch_ratio": 0.972033898305085,
+					"median_pair_ratio": 0.96638418079096
+				},
+				{
+					"baseline_batch_mean_us": 58.9,
+					"candidate_batch_mean_us": 57.4,
+					"candidate_over_baseline_batch_ratio": 0.974533106960951,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.15,
+					"candidate_batch_mean_us": 57.1,
+					"candidate_over_baseline_batch_ratio": 0.965342349957735,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 60.7,
+					"candidate_batch_mean_us": 59.75,
+					"candidate_over_baseline_batch_ratio": 0.984349258649094,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 60.65,
+					"candidate_batch_mean_us": 59.1,
+					"candidate_over_baseline_batch_ratio": 0.97444352844188,
+					"median_pair_ratio": 0.966939890710383
+				},
+				{
+					"baseline_batch_mean_us": 60.35,
+					"candidate_batch_mean_us": 58.6,
+					"candidate_over_baseline_batch_ratio": 0.971002485501243,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 59.6,
+					"candidate_batch_mean_us": 57.75,
+					"candidate_over_baseline_batch_ratio": 0.968959731543624,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.15,
+					"candidate_batch_mean_us": 57.5,
+					"candidate_over_baseline_batch_ratio": 0.972104818258664,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 61.85,
+					"candidate_batch_mean_us": 58.6,
+					"candidate_over_baseline_batch_ratio": 0.947453516572352,
+					"median_pair_ratio": 0.96638418079096
+				},
+				{
+					"baseline_batch_mean_us": 60.65,
+					"candidate_batch_mean_us": 60.25,
+					"candidate_over_baseline_batch_ratio": 0.993404781533388,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 60.45,
+					"candidate_batch_mean_us": 58.4,
+					"candidate_over_baseline_batch_ratio": 0.966087675765095,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.7,
+					"candidate_batch_mean_us": 57.35,
+					"candidate_over_baseline_batch_ratio": 0.960636515912898,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.65,
+					"candidate_batch_mean_us": 57.2,
+					"candidate_over_baseline_batch_ratio": 0.958927074601844,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 72.45,
+					"candidate_batch_mean_us": 70.6,
+					"candidate_over_baseline_batch_ratio": 0.974465148378192,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 67.9,
+					"candidate_batch_mean_us": 61.5,
+					"candidate_over_baseline_batch_ratio": 0.905743740795287,
+					"median_pair_ratio": 0.950819672131147
+				},
+				{
+					"baseline_batch_mean_us": 64.9,
+					"candidate_batch_mean_us": 60.45,
+					"candidate_over_baseline_batch_ratio": 0.931432973805855,
+					"median_pair_ratio": 0.966939890710383
+				},
+				{
+					"baseline_batch_mean_us": 84.1,
+					"candidate_batch_mean_us": 76.2,
+					"candidate_over_baseline_batch_ratio": 0.906064209274673,
+					"median_pair_ratio": 0.959016393442623
+				},
+				{
+					"baseline_batch_mean_us": 101.65,
+					"candidate_batch_mean_us": 95.5,
+					"candidate_over_baseline_batch_ratio": 0.939498278406296,
+					"median_pair_ratio": 0.97744091668656
+				},
+				{
+					"baseline_batch_mean_us": 75.05,
+					"candidate_batch_mean_us": 66.5,
+					"candidate_over_baseline_batch_ratio": 0.886075949367089,
+					"median_pair_ratio": 0.96799795186892
+				},
+				{
+					"baseline_batch_mean_us": 67.35,
+					"candidate_batch_mean_us": 64.85,
+					"candidate_over_baseline_batch_ratio": 0.962880475129918,
+					"median_pair_ratio": 0.96025641025641
+				},
+				{
+					"baseline_batch_mean_us": 64.85,
+					"candidate_batch_mean_us": 62.8,
+					"candidate_over_baseline_batch_ratio": 0.968388589051658,
+					"median_pair_ratio": 0.967302209550962
+				},
+				{
+					"baseline_batch_mean_us": 59.95,
+					"candidate_batch_mean_us": 58.6,
+					"candidate_over_baseline_batch_ratio": 0.977481234361968,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.45,
+					"candidate_batch_mean_us": 57.75,
+					"candidate_over_baseline_batch_ratio": 0.971404541631623,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 59.6,
+					"candidate_batch_mean_us": 58.05,
+					"candidate_over_baseline_batch_ratio": 0.973993288590604,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 59.5,
+					"candidate_batch_mean_us": 57.8,
+					"candidate_over_baseline_batch_ratio": 0.971428571428571,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 61.05,
+					"candidate_batch_mean_us": 60.5,
+					"candidate_over_baseline_batch_ratio": 0.990990990990991,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 64.55,
+					"candidate_batch_mean_us": 61.05,
+					"candidate_over_baseline_batch_ratio": 0.94577846630519,
+					"median_pair_ratio": 0.967733541504033
+				},
+				{
+					"baseline_batch_mean_us": 59.9,
+					"candidate_batch_mean_us": 58.95,
+					"candidate_over_baseline_batch_ratio": 0.984140233722871,
+					"median_pair_ratio": 0.975131981105863
+				},
+				{
+					"baseline_batch_mean_us": 60.1,
+					"candidate_batch_mean_us": 60.15,
+					"candidate_over_baseline_batch_ratio": 1.00083194675541,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 60.6,
+					"candidate_batch_mean_us": 57.95,
+					"candidate_over_baseline_batch_ratio": 0.956270627062706,
+					"median_pair_ratio": 0.966101694915254
+				},
+				{
+					"baseline_batch_mean_us": 62.0,
+					"candidate_batch_mean_us": 59.75,
+					"candidate_over_baseline_batch_ratio": 0.963709677419355,
+					"median_pair_ratio": 0.96638418079096
+				},
+				{
+					"baseline_batch_mean_us": 60.5,
+					"candidate_batch_mean_us": 58.35,
+					"candidate_over_baseline_batch_ratio": 0.964462809917355,
+					"median_pair_ratio": 0.966666666666667
+				},
+				{
+					"baseline_batch_mean_us": 63.55,
+					"candidate_batch_mean_us": 63.9,
+					"candidate_over_baseline_batch_ratio": 1.00550747442958,
+					"median_pair_ratio": 0.967477525118985
+				},
+				{
+					"baseline_batch_mean_us": 62.7,
+					"candidate_batch_mean_us": 62.05,
+					"candidate_over_baseline_batch_ratio": 0.9896331738437,
+					"median_pair_ratio": 0.967213114754098
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 58.9,
+			"case": "paused_focus_style",
+			"paired_median_batch_ratio_candidate_over_baseline": 0.96763926146366,
+			"paired_median_change_percent": -3.236073853634,
+			"paired_median_pair_ratio_candidate_over_baseline": 0.966666666666667,
+			"pairs_per_batch": 20
+		},
+		{
+			"baseline_median_batch_mean_us_per_call": 110.1,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 111.75,
+					"candidate_batch_mean_us": 110.25,
+					"candidate_over_baseline_batch_ratio": 0.986577181208054,
+					"median_pair_ratio": 0.990990990990991
+				},
+				{
+					"baseline_batch_mean_us": 110.25,
+					"candidate_batch_mean_us": 110.65,
+					"candidate_over_baseline_batch_ratio": 1.00362811791383,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 122.5,
+					"candidate_batch_mean_us": 113.7,
+					"candidate_over_baseline_batch_ratio": 0.928163265306122,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 113.25,
+					"candidate_batch_mean_us": 116.3,
+					"candidate_over_baseline_batch_ratio": 1.02693156732892,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 112.95,
+					"candidate_batch_mean_us": 112.15,
+					"candidate_over_baseline_batch_ratio": 0.992917220008854,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 111.6,
+					"candidate_batch_mean_us": 109.95,
+					"candidate_over_baseline_batch_ratio": 0.985215053763441,
+					"median_pair_ratio": 0.995575221238938
+				},
+				{
+					"baseline_batch_mean_us": 139.6,
+					"candidate_batch_mean_us": 149.3,
+					"candidate_over_baseline_batch_ratio": 1.06948424068768,
+					"median_pair_ratio": 1.01744186046512
+				},
+				{
+					"baseline_batch_mean_us": 120.3,
+					"candidate_batch_mean_us": 115.85,
+					"candidate_over_baseline_batch_ratio": 0.963009143807149,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 117.25,
+					"candidate_batch_mean_us": 117.1,
+					"candidate_over_baseline_batch_ratio": 0.998720682302772,
+					"median_pair_ratio": 1.00900974025974
+				},
+				{
+					"baseline_batch_mean_us": 118.9,
+					"candidate_batch_mean_us": 119.4,
+					"candidate_over_baseline_batch_ratio": 1.00420521446594,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 111.0,
+					"candidate_batch_mean_us": 115.25,
+					"candidate_over_baseline_batch_ratio": 1.03828828828829,
+					"median_pair_ratio": 1.01347918715175
+				},
+				{
+					"baseline_batch_mean_us": 116.3,
+					"candidate_batch_mean_us": 115.3,
+					"candidate_over_baseline_batch_ratio": 0.99140154772141,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 121.8,
+					"candidate_batch_mean_us": 118.95,
+					"candidate_over_baseline_batch_ratio": 0.976600985221675,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 112.65,
+					"candidate_batch_mean_us": 113.05,
+					"candidate_over_baseline_batch_ratio": 1.00355082112739,
+					"median_pair_ratio": 0.995454545454545
+				},
+				{
+					"baseline_batch_mean_us": 112.85,
+					"candidate_batch_mean_us": 111.95,
+					"candidate_over_baseline_batch_ratio": 0.992024811696943,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 111.5,
+					"candidate_batch_mean_us": 112.8,
+					"candidate_over_baseline_batch_ratio": 1.01165919282511,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 110.7,
+					"candidate_batch_mean_us": 109.85,
+					"candidate_over_baseline_batch_ratio": 0.992321589882565,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 112.75,
+					"candidate_batch_mean_us": 109.95,
+					"candidate_over_baseline_batch_ratio": 0.975166297117517,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 111.85,
+					"candidate_batch_mean_us": 110.9,
+					"candidate_over_baseline_batch_ratio": 0.991506481895396,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 110.3,
+					"candidate_batch_mean_us": 109.75,
+					"candidate_over_baseline_batch_ratio": 0.995013599274705,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.05,
+					"candidate_batch_mean_us": 109.6,
+					"candidate_over_baseline_batch_ratio": 1.00504355800092,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 110.05,
+					"candidate_batch_mean_us": 108.95,
+					"candidate_over_baseline_batch_ratio": 0.990004543389369,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 110.1,
+					"candidate_batch_mean_us": 110.0,
+					"candidate_over_baseline_batch_ratio": 0.999091734786558,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.6,
+					"candidate_batch_mean_us": 110.95,
+					"candidate_over_baseline_batch_ratio": 1.01231751824818,
+					"median_pair_ratio": 0.990990990990991
+				},
+				{
+					"baseline_batch_mean_us": 107.8,
+					"candidate_batch_mean_us": 107.9,
+					"candidate_over_baseline_batch_ratio": 1.00092764378479,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 107.9,
+					"candidate_batch_mean_us": 107.8,
+					"candidate_over_baseline_batch_ratio": 0.999073215940686,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.2,
+					"candidate_batch_mean_us": 108.9,
+					"candidate_over_baseline_batch_ratio": 1.00646950092421,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.65,
+					"candidate_batch_mean_us": 109.45,
+					"candidate_over_baseline_batch_ratio": 1.00736309249885,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.35,
+					"candidate_batch_mean_us": 109.6,
+					"candidate_over_baseline_batch_ratio": 1.00228623685414,
+					"median_pair_ratio": 1.0045045045045
+				},
+				{
+					"baseline_batch_mean_us": 110.75,
+					"candidate_batch_mean_us": 111.3,
+					"candidate_over_baseline_batch_ratio": 1.00496613995485,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.1,
+					"candidate_batch_mean_us": 108.1,
+					"candidate_over_baseline_batch_ratio": 1.0,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.15,
+					"candidate_batch_mean_us": 109.3,
+					"candidate_over_baseline_batch_ratio": 1.01063337956542,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 107.55,
+					"candidate_batch_mean_us": 107.4,
+					"candidate_over_baseline_batch_ratio": 0.99860529986053,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.0,
+					"candidate_batch_mean_us": 110.15,
+					"candidate_over_baseline_batch_ratio": 1.0105504587156,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.1,
+					"candidate_batch_mean_us": 108.45,
+					"candidate_over_baseline_batch_ratio": 1.00323774283071,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.35,
+					"candidate_batch_mean_us": 108.1,
+					"candidate_over_baseline_batch_ratio": 0.997692662667282,
+					"median_pair_ratio": 1.00462962962963
+				},
+				{
+					"baseline_batch_mean_us": 108.35,
+					"candidate_batch_mean_us": 109.65,
+					"candidate_over_baseline_batch_ratio": 1.01199815413013,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.0,
+					"candidate_batch_mean_us": 108.2,
+					"candidate_over_baseline_batch_ratio": 1.00185185185185,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.7,
+					"candidate_batch_mean_us": 108.3,
+					"candidate_over_baseline_batch_ratio": 0.996320147194112,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.25,
+					"candidate_batch_mean_us": 108.3,
+					"candidate_over_baseline_batch_ratio": 1.00046189376443,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 111.55,
+					"candidate_batch_mean_us": 111.5,
+					"candidate_over_baseline_batch_ratio": 0.999551770506499,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.15,
+					"candidate_batch_mean_us": 108.55,
+					"candidate_over_baseline_batch_ratio": 1.00369856680536,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.2,
+					"candidate_batch_mean_us": 108.3,
+					"candidate_over_baseline_batch_ratio": 1.00092421441774,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 110.15,
+					"candidate_batch_mean_us": 108.85,
+					"candidate_over_baseline_batch_ratio": 0.988197911938266,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.65,
+					"candidate_batch_mean_us": 108.35,
+					"candidate_over_baseline_batch_ratio": 0.997238840312931,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.45,
+					"candidate_batch_mean_us": 108.3,
+					"candidate_over_baseline_batch_ratio": 0.998616874135546,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 117.05,
+					"candidate_batch_mean_us": 111.05,
+					"candidate_over_baseline_batch_ratio": 0.948739854762922,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 113.6,
+					"candidate_batch_mean_us": 109.6,
+					"candidate_over_baseline_batch_ratio": 0.964788732394366,
+					"median_pair_ratio": 0.995495495495496
+				},
+				{
+					"baseline_batch_mean_us": 108.55,
+					"candidate_batch_mean_us": 109.45,
+					"candidate_over_baseline_batch_ratio": 1.00829111008752,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 107.65,
+					"candidate_batch_mean_us": 107.3,
+					"candidate_over_baseline_batch_ratio": 0.996748722712494,
+					"median_pair_ratio": 0.995412844036697
+				},
+				{
+					"baseline_batch_mean_us": 110.1,
+					"candidate_batch_mean_us": 113.65,
+					"candidate_over_baseline_batch_ratio": 1.0322434150772,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.65,
+					"candidate_batch_mean_us": 109.25,
+					"candidate_over_baseline_batch_ratio": 0.996352029183767,
+					"median_pair_ratio": 0.991110935524652
+				},
+				{
+					"baseline_batch_mean_us": 111.75,
+					"candidate_batch_mean_us": 112.75,
+					"candidate_over_baseline_batch_ratio": 1.0089485458613,
+					"median_pair_ratio": 1.00892857142857
+				},
+				{
+					"baseline_batch_mean_us": 113.45,
+					"candidate_batch_mean_us": 112.7,
+					"candidate_over_baseline_batch_ratio": 0.99338915821948,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 115.35,
+					"candidate_batch_mean_us": 115.65,
+					"candidate_over_baseline_batch_ratio": 1.00260078023407,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 112.55,
+					"candidate_batch_mean_us": 113.15,
+					"candidate_over_baseline_batch_ratio": 1.00533096401599,
+					"median_pair_ratio": 1.0042735042735
+				},
+				{
+					"baseline_batch_mean_us": 108.75,
+					"candidate_batch_mean_us": 108.95,
+					"candidate_over_baseline_batch_ratio": 1.00183908045977,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 108.7,
+					"candidate_batch_mean_us": 111.15,
+					"candidate_over_baseline_batch_ratio": 1.02253909843606,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 109.65,
+					"candidate_batch_mean_us": 108.15,
+					"candidate_over_baseline_batch_ratio": 0.986320109439125,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 107.85,
+					"candidate_batch_mean_us": 107.8,
+					"candidate_over_baseline_batch_ratio": 0.999536393138618,
+					"median_pair_ratio": 1.0
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 109.9,
+			"case": "cable_and_coil_vertices_variable_pose",
+			"paired_median_batch_ratio_candidate_over_baseline": 0.99977588525325,
+			"paired_median_change_percent": -0.0224114746750326,
+			"paired_median_pair_ratio_candidate_over_baseline": 1.0,
+			"pairs_per_batch": 20
+		},
+		{
+			"baseline_median_batch_mean_us_per_call": 48.325,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 48.35,
+					"candidate_batch_mean_us": 48.1,
+					"candidate_over_baseline_batch_ratio": 0.99482936918304,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.05,
+					"candidate_batch_mean_us": 48.9,
+					"candidate_over_baseline_batch_ratio": 0.996941896024465,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.15,
+					"candidate_batch_mean_us": 48.1,
+					"candidate_over_baseline_batch_ratio": 0.998961578400831,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.3,
+					"candidate_batch_mean_us": 48.05,
+					"candidate_over_baseline_batch_ratio": 0.994824016563147,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.45,
+					"candidate_batch_mean_us": 47.95,
+					"candidate_over_baseline_batch_ratio": 0.989680082559339,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.4,
+					"candidate_batch_mean_us": 49.5,
+					"candidate_over_baseline_batch_ratio": 1.02272727272727,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 50.0,
+					"candidate_batch_mean_us": 49.2,
+					"candidate_over_baseline_batch_ratio": 0.984,
+					"median_pair_ratio": 0.990384615384615
+				},
+				{
+					"baseline_batch_mean_us": 48.1,
+					"candidate_batch_mean_us": 48.0,
+					"candidate_over_baseline_batch_ratio": 0.997920997920998,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.45,
+					"candidate_batch_mean_us": 48.3,
+					"candidate_over_baseline_batch_ratio": 0.996904024767802,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.95,
+					"candidate_batch_mean_us": 48.0,
+					"candidate_over_baseline_batch_ratio": 1.00104275286757,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.1,
+					"candidate_batch_mean_us": 48.25,
+					"candidate_over_baseline_batch_ratio": 1.0031185031185,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.3,
+					"candidate_batch_mean_us": 48.0,
+					"candidate_over_baseline_batch_ratio": 0.993788819875776,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.35,
+					"candidate_batch_mean_us": 48.5,
+					"candidate_over_baseline_batch_ratio": 1.00310237849018,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.1,
+					"candidate_batch_mean_us": 49.1,
+					"candidate_over_baseline_batch_ratio": 1.0,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 51.1,
+					"candidate_batch_mean_us": 48.85,
+					"candidate_over_baseline_batch_ratio": 0.955968688845401,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 50.1,
+					"candidate_batch_mean_us": 48.6,
+					"candidate_over_baseline_batch_ratio": 0.970059880239521,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.7,
+					"candidate_batch_mean_us": 48.4,
+					"candidate_over_baseline_batch_ratio": 0.993839835728953,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.3,
+					"candidate_batch_mean_us": 48.55,
+					"candidate_over_baseline_batch_ratio": 1.00517598343685,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.2,
+					"candidate_batch_mean_us": 48.8,
+					"candidate_over_baseline_batch_ratio": 1.01244813278008,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.55,
+					"candidate_batch_mean_us": 48.0,
+					"candidate_over_baseline_batch_ratio": 0.988671472708548,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 51.15,
+					"candidate_batch_mean_us": 50.65,
+					"candidate_over_baseline_batch_ratio": 0.990224828934506,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.55,
+					"candidate_batch_mean_us": 48.35,
+					"candidate_over_baseline_batch_ratio": 0.995880535530381,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.05,
+					"candidate_batch_mean_us": 47.9,
+					"candidate_over_baseline_batch_ratio": 0.99687825182102,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.0,
+					"candidate_batch_mean_us": 49.05,
+					"candidate_over_baseline_batch_ratio": 1.00102040816327,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.3,
+					"candidate_batch_mean_us": 49.3,
+					"candidate_over_baseline_batch_ratio": 1.0,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.8,
+					"candidate_batch_mean_us": 47.7,
+					"candidate_over_baseline_batch_ratio": 0.997907949790795,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.05,
+					"candidate_batch_mean_us": 47.8,
+					"candidate_over_baseline_batch_ratio": 0.994797086368366,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.2,
+					"candidate_batch_mean_us": 49.45,
+					"candidate_over_baseline_batch_ratio": 1.02593360995851,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.6,
+					"candidate_batch_mean_us": 49.2,
+					"candidate_over_baseline_batch_ratio": 0.991935483870968,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.25,
+					"candidate_batch_mean_us": 48.05,
+					"candidate_over_baseline_batch_ratio": 0.995854922279793,
+					"median_pair_ratio": 0.989795918367347
+				},
+				{
+					"baseline_batch_mean_us": 47.9,
+					"candidate_batch_mean_us": 47.9,
+					"candidate_over_baseline_batch_ratio": 1.0,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.85,
+					"candidate_batch_mean_us": 48.1,
+					"candidate_over_baseline_batch_ratio": 1.00522466039707,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.35,
+					"candidate_batch_mean_us": 48.0,
+					"candidate_over_baseline_batch_ratio": 0.992761116856256,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.15,
+					"candidate_batch_mean_us": 47.85,
+					"candidate_over_baseline_batch_ratio": 0.993769470404984,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.3,
+					"candidate_batch_mean_us": 48.2,
+					"candidate_over_baseline_batch_ratio": 0.997929606625259,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 50.45,
+					"candidate_batch_mean_us": 49.0,
+					"candidate_over_baseline_batch_ratio": 0.971258671952428,
+					"median_pair_ratio": 0.979591836734694
+				},
+				{
+					"baseline_batch_mean_us": 48.45,
+					"candidate_batch_mean_us": 48.35,
+					"candidate_over_baseline_batch_ratio": 0.997936016511868,
+					"median_pair_ratio": 0.980196078431373
+				},
+				{
+					"baseline_batch_mean_us": 48.25,
+					"candidate_batch_mean_us": 48.05,
+					"candidate_over_baseline_batch_ratio": 0.995854922279793,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.5,
+					"candidate_batch_mean_us": 48.15,
+					"candidate_over_baseline_batch_ratio": 0.992783505154639,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.0,
+					"candidate_batch_mean_us": 48.15,
+					"candidate_over_baseline_batch_ratio": 1.003125,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.05,
+					"candidate_batch_mean_us": 47.6,
+					"candidate_over_baseline_batch_ratio": 0.990634755463059,
+					"median_pair_ratio": 0.979591836734694
+				},
+				{
+					"baseline_batch_mean_us": 47.9,
+					"candidate_batch_mean_us": 47.95,
+					"candidate_over_baseline_batch_ratio": 1.00104384133612,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.0,
+					"candidate_batch_mean_us": 48.6,
+					"candidate_over_baseline_batch_ratio": 1.0125,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.75,
+					"candidate_batch_mean_us": 48.0,
+					"candidate_over_baseline_batch_ratio": 0.984615384615385,
+					"median_pair_ratio": 0.979795918367347
+				},
+				{
+					"baseline_batch_mean_us": 50.6,
+					"candidate_batch_mean_us": 50.85,
+					"candidate_over_baseline_batch_ratio": 1.00494071146245,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.4,
+					"candidate_batch_mean_us": 48.3,
+					"candidate_over_baseline_batch_ratio": 0.997933884297521,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.75,
+					"candidate_batch_mean_us": 47.5,
+					"candidate_over_baseline_batch_ratio": 0.994764397905759,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.1,
+					"candidate_batch_mean_us": 47.65,
+					"candidate_over_baseline_batch_ratio": 0.990644490644491,
+					"median_pair_ratio": 0.99
+				},
+				{
+					"baseline_batch_mean_us": 51.35,
+					"candidate_batch_mean_us": 50.6,
+					"candidate_over_baseline_batch_ratio": 0.98539435248296,
+					"median_pair_ratio": 0.98
+				},
+				{
+					"baseline_batch_mean_us": 48.6,
+					"candidate_batch_mean_us": 48.85,
+					"candidate_over_baseline_batch_ratio": 1.00514403292181,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 51.35,
+					"candidate_batch_mean_us": 53.25,
+					"candidate_over_baseline_batch_ratio": 1.03700097370983,
+					"median_pair_ratio": 0.979795918367347
+				},
+				{
+					"baseline_batch_mean_us": 51.25,
+					"candidate_batch_mean_us": 48.95,
+					"candidate_over_baseline_batch_ratio": 0.955121951219512,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.9,
+					"candidate_batch_mean_us": 48.15,
+					"candidate_over_baseline_batch_ratio": 1.00521920668058,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.55,
+					"candidate_batch_mean_us": 47.5,
+					"candidate_over_baseline_batch_ratio": 0.998948475289169,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.55,
+					"candidate_batch_mean_us": 47.25,
+					"candidate_over_baseline_batch_ratio": 0.993690851735016,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.6,
+					"candidate_batch_mean_us": 47.4,
+					"candidate_over_baseline_batch_ratio": 0.995798319327731,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.8,
+					"candidate_batch_mean_us": 47.75,
+					"candidate_over_baseline_batch_ratio": 0.998953974895398,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 50.4,
+					"candidate_batch_mean_us": 49.4,
+					"candidate_over_baseline_batch_ratio": 0.98015873015873,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.6,
+					"candidate_batch_mean_us": 50.7,
+					"candidate_over_baseline_batch_ratio": 1.04320987654321,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.1,
+					"candidate_batch_mean_us": 47.95,
+					"candidate_over_baseline_batch_ratio": 0.996881496881497,
+					"median_pair_ratio": 1.0
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 48.175,
+			"case": "contact_dust_paved_no_slip",
+			"paired_median_batch_ratio_candidate_over_baseline": 0.996892760824649,
+			"paired_median_change_percent": -0.310723917535061,
+			"paired_median_pair_ratio_candidate_over_baseline": 1.0,
+			"pairs_per_batch": 20
+		},
+		{
+			"baseline_median_batch_mean_us_per_call": 46.975,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 49.3,
+					"candidate_batch_mean_us": 47.4,
+					"candidate_over_baseline_batch_ratio": 0.961460446247465,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 56.75,
+					"candidate_batch_mean_us": 57.8,
+					"candidate_over_baseline_batch_ratio": 1.01850220264317,
+					"median_pair_ratio": 1.01041666666667
+				},
+				{
+					"baseline_batch_mean_us": 47.7,
+					"candidate_batch_mean_us": 47.55,
+					"candidate_over_baseline_batch_ratio": 0.99685534591195,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.0,
+					"candidate_batch_mean_us": 49.4,
+					"candidate_over_baseline_batch_ratio": 1.02916666666667,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.15,
+					"candidate_batch_mean_us": 46.8,
+					"candidate_over_baseline_batch_ratio": 0.992576882290562,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 46.75,
+					"candidate_over_baseline_batch_ratio": 0.99468085106383,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.1,
+					"candidate_batch_mean_us": 47.0,
+					"candidate_over_baseline_batch_ratio": 0.997876857749469,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.6,
+					"candidate_batch_mean_us": 46.5,
+					"candidate_over_baseline_batch_ratio": 0.997854077253219,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.1,
+					"candidate_batch_mean_us": 46.7,
+					"candidate_over_baseline_batch_ratio": 0.991507430997877,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 51.9,
+					"candidate_batch_mean_us": 49.1,
+					"candidate_over_baseline_batch_ratio": 0.946050096339114,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.05,
+					"candidate_batch_mean_us": 49.25,
+					"candidate_over_baseline_batch_ratio": 1.00407747196738,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.75,
+					"candidate_batch_mean_us": 46.85,
+					"candidate_over_baseline_batch_ratio": 1.00213903743316,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.0,
+					"candidate_batch_mean_us": 46.3,
+					"candidate_over_baseline_batch_ratio": 1.00652173913043,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.45,
+					"candidate_batch_mean_us": 46.25,
+					"candidate_over_baseline_batch_ratio": 0.995694294940797,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.1,
+					"candidate_batch_mean_us": 49.2,
+					"candidate_over_baseline_batch_ratio": 1.02286902286902,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.5,
+					"candidate_batch_mean_us": 47.25,
+					"candidate_over_baseline_batch_ratio": 0.994736842105263,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.75,
+					"candidate_batch_mean_us": 48.95,
+					"candidate_over_baseline_batch_ratio": 1.02513089005236,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.7,
+					"candidate_batch_mean_us": 47.3,
+					"candidate_over_baseline_batch_ratio": 0.991614255765199,
+					"median_pair_ratio": 0.978945035460993
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 46.7,
+					"candidate_over_baseline_batch_ratio": 0.992561105207226,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.6,
+					"candidate_batch_mean_us": 45.8,
+					"candidate_over_baseline_batch_ratio": 0.982832618025751,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.65,
+					"candidate_batch_mean_us": 46.25,
+					"candidate_over_baseline_batch_ratio": 0.991425509110397,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 46.7,
+					"candidate_over_baseline_batch_ratio": 0.994675186368477,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.35,
+					"candidate_batch_mean_us": 46.55,
+					"candidate_over_baseline_batch_ratio": 1.00431499460626,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.6,
+					"candidate_batch_mean_us": 46.7,
+					"candidate_over_baseline_batch_ratio": 1.00214592274678,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 46.75,
+					"candidate_over_baseline_batch_ratio": 0.99680170575693,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.75,
+					"candidate_batch_mean_us": 48.85,
+					"candidate_over_baseline_batch_ratio": 0.981909547738693,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 47.2,
+					"candidate_over_baseline_batch_ratio": 1.00425531914894,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.55,
+					"candidate_batch_mean_us": 46.6,
+					"candidate_over_baseline_batch_ratio": 1.00107411385607,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.75,
+					"candidate_batch_mean_us": 46.75,
+					"candidate_over_baseline_batch_ratio": 1.0,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.6,
+					"candidate_batch_mean_us": 46.7,
+					"candidate_over_baseline_batch_ratio": 1.00214592274678,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.75,
+					"candidate_batch_mean_us": 46.85,
+					"candidate_over_baseline_batch_ratio": 1.00213903743316,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.75,
+					"candidate_batch_mean_us": 46.8,
+					"candidate_over_baseline_batch_ratio": 1.00106951871658,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.2,
+					"candidate_batch_mean_us": 48.3,
+					"candidate_over_baseline_batch_ratio": 0.981707317073171,
+					"median_pair_ratio": 0.990384615384615
+				},
+				{
+					"baseline_batch_mean_us": 47.2,
+					"candidate_batch_mean_us": 46.45,
+					"candidate_over_baseline_batch_ratio": 0.984110169491525,
+					"median_pair_ratio": 0.989583333333333
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 46.3,
+					"candidate_over_baseline_batch_ratio": 0.98615548455804,
+					"median_pair_ratio": 0.989583333333333
+				},
+				{
+					"baseline_batch_mean_us": 47.3,
+					"candidate_batch_mean_us": 47.25,
+					"candidate_over_baseline_batch_ratio": 0.998942917547569,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.8,
+					"candidate_batch_mean_us": 46.9,
+					"candidate_over_baseline_batch_ratio": 1.00213675213675,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.4,
+					"candidate_batch_mean_us": 46.7,
+					"candidate_over_baseline_batch_ratio": 1.00646551724138,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.55,
+					"candidate_batch_mean_us": 46.8,
+					"candidate_over_baseline_batch_ratio": 1.00537056928034,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.65,
+					"candidate_batch_mean_us": 46.4,
+					"candidate_over_baseline_batch_ratio": 0.994640943193998,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 52.9,
+					"candidate_batch_mean_us": 48.35,
+					"candidate_over_baseline_batch_ratio": 0.913988657844991,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.9,
+					"candidate_batch_mean_us": 46.4,
+					"candidate_over_baseline_batch_ratio": 0.968684759916493,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.3,
+					"candidate_batch_mean_us": 46.85,
+					"candidate_over_baseline_batch_ratio": 0.990486257928118,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.7,
+					"candidate_batch_mean_us": 46.5,
+					"candidate_over_baseline_batch_ratio": 0.995717344753747,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.7,
+					"candidate_batch_mean_us": 46.35,
+					"candidate_over_baseline_batch_ratio": 0.992505353319058,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.65,
+					"candidate_batch_mean_us": 46.3,
+					"candidate_over_baseline_batch_ratio": 0.992497320471597,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.3,
+					"candidate_batch_mean_us": 46.4,
+					"candidate_over_baseline_batch_ratio": 1.00215982721382,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.6,
+					"candidate_batch_mean_us": 46.75,
+					"candidate_over_baseline_batch_ratio": 1.00321888412017,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.65,
+					"candidate_batch_mean_us": 48.2,
+					"candidate_over_baseline_batch_ratio": 0.990750256937307,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.7,
+					"candidate_batch_mean_us": 46.95,
+					"candidate_over_baseline_batch_ratio": 1.00535331905782,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.15,
+					"candidate_batch_mean_us": 47.2,
+					"candidate_over_baseline_batch_ratio": 1.00106044538706,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.25,
+					"candidate_batch_mean_us": 46.95,
+					"candidate_over_baseline_batch_ratio": 0.993650793650794,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.45,
+					"candidate_batch_mean_us": 47.2,
+					"candidate_over_baseline_batch_ratio": 0.994731296101159,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.85,
+					"candidate_batch_mean_us": 46.5,
+					"candidate_over_baseline_batch_ratio": 0.992529348986126,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 46.5,
+					"candidate_over_baseline_batch_ratio": 0.990415335463259,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 48.65,
+					"candidate_batch_mean_us": 47.75,
+					"candidate_over_baseline_batch_ratio": 0.981500513874615,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.8,
+					"candidate_batch_mean_us": 46.35,
+					"candidate_over_baseline_batch_ratio": 0.990384615384615,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 46.35,
+					"candidate_batch_mean_us": 46.3,
+					"candidate_over_baseline_batch_ratio": 0.998921251348436,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 49.7,
+					"candidate_batch_mean_us": 51.25,
+					"candidate_over_baseline_batch_ratio": 1.03118712273642,
+					"median_pair_ratio": 1.0
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 47.25,
+					"candidate_over_baseline_batch_ratio": 1.00425079702444,
+					"median_pair_ratio": 1.0
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 46.8,
+			"case": "contact_dust_synthetic_rough_slip",
+			"paired_median_batch_ratio_candidate_over_baseline": 0.996259525255338,
+			"paired_median_change_percent": -0.374047474466155,
+			"paired_median_pair_ratio_candidate_over_baseline": 1.0,
+			"pairs_per_batch": 20
+		},
+		{
+			"baseline_median_batch_mean_us_per_call": 46.975,
+			"batch_samples": [
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 9.5,
+					"candidate_over_baseline_batch_ratio": 0.201912858660999,
+					"median_pair_ratio": 0.197826086956522
+				},
+				{
+					"baseline_batch_mean_us": 46.85,
+					"candidate_batch_mean_us": 9.3,
+					"candidate_over_baseline_batch_ratio": 0.198505869797225,
+					"median_pair_ratio": 0.201992753623188
+				},
+				{
+					"baseline_batch_mean_us": 49.75,
+					"candidate_batch_mean_us": 10.05,
+					"candidate_over_baseline_batch_ratio": 0.202010050251256,
+					"median_pair_ratio": 0.193783896537338
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 9.2,
+					"candidate_over_baseline_batch_ratio": 0.195744680851064,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.5,
+					"candidate_batch_mean_us": 9.0,
+					"candidate_over_baseline_batch_ratio": 0.193548387096774,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.197018104366347,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.197228144989339,
+					"median_pair_ratio": 0.197826086956522
+				},
+				{
+					"baseline_batch_mean_us": 46.4,
+					"candidate_batch_mean_us": 9.1,
+					"candidate_over_baseline_batch_ratio": 0.196120689655172,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 9.05,
+					"candidate_over_baseline_batch_ratio": 0.192553191489362,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 47.15,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.196182396606575,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 46.5,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.198924731182796,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.196599362380446,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 49.35,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.187436676798379,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 48.6,
+					"candidate_batch_mean_us": 9.45,
+					"candidate_over_baseline_batch_ratio": 0.194444444444444,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 47.75,
+					"candidate_batch_mean_us": 9.4,
+					"candidate_over_baseline_batch_ratio": 0.196858638743455,
+					"median_pair_ratio": 0.199677938808374
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 9.2,
+					"candidate_over_baseline_batch_ratio": 0.196162046908316,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 46.5,
+					"candidate_batch_mean_us": 9.3,
+					"candidate_over_baseline_batch_ratio": 0.2,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.197228144989339,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.7,
+					"candidate_batch_mean_us": 9.35,
+					"candidate_over_baseline_batch_ratio": 0.200214132762313,
+					"median_pair_ratio": 0.204166666666667
+				},
+				{
+					"baseline_batch_mean_us": 46.85,
+					"candidate_batch_mean_us": 9.3,
+					"candidate_over_baseline_batch_ratio": 0.198505869797225,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.197228144989339,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 9.2,
+					"candidate_over_baseline_batch_ratio": 0.195536663124336,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.6,
+					"candidate_batch_mean_us": 9.15,
+					"candidate_over_baseline_batch_ratio": 0.196351931330472,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.25,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.195767195767196,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 48.45,
+					"candidate_batch_mean_us": 9.2,
+					"candidate_over_baseline_batch_ratio": 0.189886480908153,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 46.6,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.198497854077253,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 50.1,
+					"candidate_batch_mean_us": 10.25,
+					"candidate_over_baseline_batch_ratio": 0.204590818363273,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 48.1,
+					"candidate_batch_mean_us": 9.55,
+					"candidate_over_baseline_batch_ratio": 0.198544698544699,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 9.35,
+					"candidate_over_baseline_batch_ratio": 0.199148029818956,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.196599362380446,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.2,
+					"candidate_batch_mean_us": 9.4,
+					"candidate_over_baseline_batch_ratio": 0.199152542372881,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 9.3,
+					"candidate_over_baseline_batch_ratio": 0.198294243070362,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 9.3,
+					"candidate_over_baseline_batch_ratio": 0.197662061636557,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.197228144989339,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 9.15,
+					"candidate_over_baseline_batch_ratio": 0.19468085106383,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 47.15,
+					"candidate_batch_mean_us": 9.35,
+					"candidate_over_baseline_batch_ratio": 0.1983032873807,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.9,
+					"candidate_batch_mean_us": 9.15,
+					"candidate_over_baseline_batch_ratio": 0.195095948827292,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.197018104366347,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.55,
+					"candidate_batch_mean_us": 9.2,
+					"candidate_over_baseline_batch_ratio": 0.197636949516649,
+					"median_pair_ratio": 0.2
+				},
+				{
+					"baseline_batch_mean_us": 49.05,
+					"candidate_batch_mean_us": 10.55,
+					"candidate_over_baseline_batch_ratio": 0.215086646279307,
+					"median_pair_ratio": 0.206207482993197
+				},
+				{
+					"baseline_batch_mean_us": 47.7,
+					"candidate_batch_mean_us": 9.55,
+					"candidate_over_baseline_batch_ratio": 0.20020964360587,
+					"median_pair_ratio": 0.196040372670807
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 9.1,
+					"candidate_over_baseline_batch_ratio": 0.193411264612115,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 9.15,
+					"candidate_over_baseline_batch_ratio": 0.19468085106383,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 46.8,
+					"candidate_batch_mean_us": 9.0,
+					"candidate_over_baseline_batch_ratio": 0.192307692307692,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 9.1,
+					"candidate_over_baseline_batch_ratio": 0.193823216187433,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 9.2,
+					"candidate_over_baseline_batch_ratio": 0.195744680851064,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.55,
+					"candidate_batch_mean_us": 9.0,
+					"candidate_over_baseline_batch_ratio": 0.193340494092374,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 47.0,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.196808510638298,
+					"median_pair_ratio": 0.2
+				},
+				{
+					"baseline_batch_mean_us": 49.65,
+					"candidate_batch_mean_us": 10.15,
+					"candidate_over_baseline_batch_ratio": 0.204431017119839,
+					"median_pair_ratio": 0.201599671862182
+				},
+				{
+					"baseline_batch_mean_us": 46.85,
+					"candidate_batch_mean_us": 9.05,
+					"candidate_over_baseline_batch_ratio": 0.193169690501601,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 47.55,
+					"candidate_batch_mean_us": 9.15,
+					"candidate_over_baseline_batch_ratio": 0.192429022082019,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 48.65,
+					"candidate_batch_mean_us": 9.15,
+					"candidate_over_baseline_batch_ratio": 0.188078108941418,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 48.0,
+					"candidate_batch_mean_us": 9.4,
+					"candidate_over_baseline_batch_ratio": 0.195833333333333,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 46.8,
+					"candidate_batch_mean_us": 9.35,
+					"candidate_over_baseline_batch_ratio": 0.199786324786325,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 46.5,
+					"candidate_batch_mean_us": 8.95,
+					"candidate_over_baseline_batch_ratio": 0.19247311827957,
+					"median_pair_ratio": 0.193570767807586
+				},
+				{
+					"baseline_batch_mean_us": 46.7,
+					"candidate_batch_mean_us": 9.25,
+					"candidate_over_baseline_batch_ratio": 0.198072805139186,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 47.05,
+					"candidate_batch_mean_us": 9.1,
+					"candidate_over_baseline_batch_ratio": 0.193411264612115,
+					"median_pair_ratio": 0.191489361702128
+				},
+				{
+					"baseline_batch_mean_us": 46.65,
+					"candidate_batch_mean_us": 9.2,
+					"candidate_over_baseline_batch_ratio": 0.197213290460879,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.95,
+					"candidate_batch_mean_us": 9.05,
+					"candidate_over_baseline_batch_ratio": 0.192758253461129,
+					"median_pair_ratio": 0.195652173913043
+				},
+				{
+					"baseline_batch_mean_us": 46.85,
+					"candidate_batch_mean_us": 9.15,
+					"candidate_over_baseline_batch_ratio": 0.195304162219851,
+					"median_pair_ratio": 0.193570767807586
+				}
+			],
+			"batches": 60,
+			"calls_per_source": 1200,
+			"candidate_median_batch_mean_us_per_call": 9.25,
+			"case": "contact_dust_no_compression",
+			"paired_median_batch_ratio_candidate_over_baseline": 0.196703936509372,
+			"paired_median_change_percent": -80.3296063490628,
+			"paired_median_pair_ratio_candidate_over_baseline": 0.195652173913043,
+			"pairs_per_batch": 20
+		}
+	],
+	"profiling_mode": "same-process order-alternating headless CPU microbenchmark; not an FPS measurement",
+	"runtime_sources": {
+		"baseline_path": "research/timber/optimization/motion_baseline.gd",
+		"baseline_sha256": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3",
+		"baseline_sha256_after": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3",
+		"candidate_path": "app/aircraft/timber_visual_motion.gd",
+		"candidate_sha256": "cab8d170d89c474c0ba586ad7f4078a172482ba1a88a8801538e97253d433938",
+		"candidate_sha256_after": "cab8d170d89c474c0ba586ad7f4078a172482ba1a88a8801538e97253d433938",
+		"stable_after_measurement": true
+	},
+	"sample_design": {
+		"batches": 60,
+		"calls_per_source_per_case": 1200,
+		"order": "baseline-first/candidate-first alternate on each matched input pair",
+		"pairs_per_batch": 20,
+		"timer": "Time.get_ticks_usec around one observer method call; input setup outside timing",
+		"warmup_pairs_per_case": 60
+	},
+	"schema": "tt21-timber-motion-paired-profile-v1",
+	"snapshot_parity": [
+		{
+			"after_exact_parity": true,
+			"before_exact_parity": true,
+			"measurement_preserved_snapshot": true,
+			"pose": "settled_rest"
+		},
+		{
+			"after_exact_parity": true,
+			"before_exact_parity": true,
+			"measurement_preserved_snapshot": true,
+			"pose": "variable_compression_taxi"
+		},
+		{
+			"after_exact_parity": true,
+			"before_exact_parity": true,
+			"measurement_preserved_snapshot": true,
+			"pose": "airborne"
+		},
+		{
+			"after_exact_parity": true,
+			"before_exact_parity": true,
+			"measurement_preserved_snapshot": true,
+			"pose": "paused_focus_style"
+		},
+		{
+			"after_exact_parity": true,
+			"before_exact_parity": true,
+			"measurement_preserved_snapshot": true,
+			"pose": "reset_rest"
+		},
+		{
+			"after_exact_parity": true,
+			"before_exact_parity": true,
+			"measurement_preserved_snapshot": true,
+			"pose": "wreck_stopped"
+		}
+	],
+	"snapshots_after_measurement": [
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "settled_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "settled_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "settled_rest"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0853352248668671,
+						-0.167268872261047,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170057460665703,
+						0.0773870348930359,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "0bf45b715fe6afd2beda3bfb0ccf6401f76ef82f1ea0353a82533f4744323177",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0475204102694988,
+							-0.140032514929771,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284023601561785,
+							0.0211909934878349,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "b614fe5387ced4a4c0166899c314fbca8498e669d4abce40933237f947201912",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.019251512363553,
+							-0.139956519007683,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0282395500689745,
+							0.0211190059781075,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "c8c3ce39af09fc6c6d2ea1ca3a3c3e05d56ba64b593964cf56962a2cefdc047c",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.00917912227992067,
+					0.00886704016510604,
+					0.00899093041124496
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18606685e-07, 0.100421235, 0.99494493, 1.1971144e-08, 0.994945, -0.10042123, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788879752159,
+							-0.107652574777603,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18644934e-07, -0.0971902, -0.9952658, -1.1585975e-08, 0.99526584, -0.097190194, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859788954257965,
+							-0.107652314007282,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "variable_compression_taxi",
+				"state_sha256": "987be3e1209613f892d79afefefff166c67691d012b15dacf43c3fc479d9886d"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0853352248668671,
+						-0.167268872261047,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170057460665703,
+						0.0773870348930359,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "0bf45b715fe6afd2beda3bfb0ccf6401f76ef82f1ea0353a82533f4744323177",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0475204102694988,
+							-0.140032514929771,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284023601561785,
+							0.0211909934878349,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "b614fe5387ced4a4c0166899c314fbca8498e669d4abce40933237f947201912",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.019251512363553,
+							-0.139956519007683,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0282395500689745,
+							0.0211190059781075,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "c8c3ce39af09fc6c6d2ea1ca3a3c3e05d56ba64b593964cf56962a2cefdc047c",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.00917912227992067,
+					0.00886704016510604,
+					0.00899093041124496
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18606685e-07, 0.100421235, 0.99494493, 1.1971144e-08, 0.994945, -0.10042123, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788879752159,
+							-0.107652574777603,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18644934e-07, -0.0971902, -0.9952658, -1.1585975e-08, 0.99526584, -0.097190194, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859788954257965,
+							-0.107652314007282,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "variable_compression_taxi",
+				"state_sha256": "987be3e1209613f892d79afefefff166c67691d012b15dacf43c3fc479d9886d"
+			},
+			"pose": "variable_compression_taxi"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					-0.158818817620312,
+					-0.159132768968189,
+					-0.159007780071837
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "airborne",
+				"state_sha256": "e2cb470309598ce77bdd27e23e0f887c1608c67a6371970b1b32525838abda03"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					-0.158818817620312,
+					-0.159132768968189,
+					-0.159007780071837
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "airborne",
+				"state_sha256": "e2cb470309598ce77bdd27e23e0f887c1608c67a6371970b1b32525838abda03"
+			},
+			"pose": "airborne"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 0.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 0.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "paused_focus_style",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 0.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 0.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "paused_focus_style",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "paused_focus_style"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "reset_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "reset_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "reset_rest"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "wreck_stopped",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "wreck_stopped",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "wreck_stopped"
+		}
+	],
+	"snapshots_before_measurement": [
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "settled_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "settled_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "settled_rest"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0853352248668671,
+						-0.167268872261047,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170057460665703,
+						0.0773870348930359,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "0bf45b715fe6afd2beda3bfb0ccf6401f76ef82f1ea0353a82533f4744323177",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0475204102694988,
+							-0.140032514929771,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284023601561785,
+							0.0211909934878349,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "b614fe5387ced4a4c0166899c314fbca8498e669d4abce40933237f947201912",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.019251512363553,
+							-0.139956519007683,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0282395500689745,
+							0.0211190059781075,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "c8c3ce39af09fc6c6d2ea1ca3a3c3e05d56ba64b593964cf56962a2cefdc047c",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.00917912227992067,
+					0.00886704016510604,
+					0.00899093041124496
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18606685e-07, 0.100421235, 0.99494493, 1.1971144e-08, 0.994945, -0.10042123, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788879752159,
+							-0.107652574777603,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18644934e-07, -0.0971902, -0.9952658, -1.1585975e-08, 0.99526584, -0.097190194, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859788954257965,
+							-0.107652314007282,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "variable_compression_taxi",
+				"state_sha256": "987be3e1209613f892d79afefefff166c67691d012b15dacf43c3fc479d9886d"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0853352248668671,
+						-0.167268872261047,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170057460665703,
+						0.0773870348930359,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "0bf45b715fe6afd2beda3bfb0ccf6401f76ef82f1ea0353a82533f4744323177",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0475204102694988,
+							-0.140032514929771,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284023601561785,
+							0.0211909934878349,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "b614fe5387ced4a4c0166899c314fbca8498e669d4abce40933237f947201912",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.019251512363553,
+							-0.139956519007683,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0282395500689745,
+							0.0211190059781075,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "c8c3ce39af09fc6c6d2ea1ca3a3c3e05d56ba64b593964cf56962a2cefdc047c",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.00917912227992067,
+					0.00886704016510604,
+					0.00899093041124496
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18606685e-07, 0.100421235, 0.99494493, 1.1971144e-08, 0.994945, -0.10042123, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788879752159,
+							-0.107652574777603,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.18644934e-07, -0.0971902, -0.9952658, -1.1585975e-08, 0.99526584, -0.097190194, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859788954257965,
+							-0.107652314007282,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "variable_compression_taxi",
+				"state_sha256": "987be3e1209613f892d79afefefff166c67691d012b15dacf43c3fc479d9886d"
+			},
+			"pose": "variable_compression_taxi"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					-0.158818817620312,
+					-0.159132768968189,
+					-0.159007780071837
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "airborne",
+				"state_sha256": "e2cb470309598ce77bdd27e23e0f887c1608c67a6371970b1b32525838abda03"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					-0.158818817620312,
+					-0.159132768968189,
+					-0.159007780071837
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "airborne",
+				"state_sha256": "e2cb470309598ce77bdd27e23e0f887c1608c67a6371970b1b32525838abda03"
+			},
+			"pose": "airborne"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 0.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 0.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "paused_focus_style",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0856394022703171,
+						-0.167116209864616,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.170904010534287,
+						0.0772343724966049,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "c8af26d0ea96e129a021071d781a816c19972abe6db9837cb3c6d6fd6c2874fd",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0477140843868256,
+							-0.139937400817871,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0284679792821407,
+							0.0211625993251801,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "31da894bc2aa9d174b1946b316ac24f11f9c3262ecf4a3f1846db2f14718d84a",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0194810573011637,
+							-0.139788553118706,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0283566322177649,
+							0.021068848669529,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "a4665fa9131e1f20662208cfe54781b8a5342e319822e8db317064a3904a54c8",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 0.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 0.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, 0.104528464, 0.99452186, 1.2460764e-08, 0.9945219, -0.10452846, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0871915444731712,
+							-0.096114955842495,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1855625e-07, -0.104528464, -0.99452186, -1.2460764e-08, 0.9945219, -0.10452846, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0871589258313179,
+							-0.0964251831173897,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "paused_focus_style",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "paused_focus_style"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "reset_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "reset_rest",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "reset_rest"
+		},
+		{
+			"baseline": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "wreck_stopped",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"candidate": {
+				"aux_sha256": "f6438d74370bee411183c6f93a559cd2e7319f08beda173f47d2e50346dd14b2",
+				"cables": {
+					"aabb_position": [
+						-0.0777434855699539,
+						-0.170593872666359,
+						0.0116299539804459
+					],
+					"aabb_size": [
+						0.155133962631226,
+						0.0807120278477669,
+						0.0329192355275154
+					],
+					"name": "gear_cables",
+					"surface_count": 1,
+					"surfaces": [
+						{
+							"arrays_sha256": "b16d2f0e169ccf5afb47d73a68168579865d1321cb2739346d684a41898b9d48",
+							"index": 0,
+							"material_class": "StandardMaterial3D",
+							"material_name": "metal",
+							"primitive": 3
+						}
+					]
+				},
+				"coils": [
+					{
+						"aabb_position": [
+							-0.0426892265677452,
+							-0.142103880643845,
+							0.0224323309957981
+						],
+						"aabb_size": [
+							0.0267672203481197,
+							0.0218092277646065,
+							0.0148860476911068
+						],
+						"name": "TimberExtensionSpring_der",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "22b0d80909da9702325355459f919a25377fafd1cc98cafe9c90c386e51b9e39",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					},
+					{
+						"aabb_position": [
+							0.0161486025899649,
+							-0.14193619787693,
+							0.0160763710737228
+						],
+						"aabb_size": [
+							0.0266569014638662,
+							0.0217102468013763,
+							0.0126818642020226
+						],
+						"name": "TimberExtensionSpring_izq",
+						"surface_count": 1,
+						"surfaces": [
+							{
+								"arrays_sha256": "52b76db550e9b5a2c8cb878be286634ebccde564e26aad815687bac73072beac",
+								"index": 0,
+								"material_class": "null",
+								"material_name": "",
+								"primitive": 3
+							}
+						]
+					}
+				],
+				"compression_m": [
+					0.0211789751299373,
+					0.02086702653177,
+					0.0209908383028937
+				],
+				"continuous_sha256": "b4cee420c5f2f5cdf45bd0dd3fbe268246925a9b629226acff98950d3a2064c6",
+				"dust": [
+					{
+						"emitting": false,
+						"index": 0,
+						"speed_scale": 1.0
+					},
+					{
+						"emitting": false,
+						"index": 1,
+						"speed_scale": 1.0
+					}
+				],
+				"legs": [
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, 2.3841855e-07, 0, 1, 0, -2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, 0.99999994, 0, 1, 0, -0.99999994, 0, -1.1920929e-07, -0.046000004, -0.090346605, 0.030999998)",
+						"role": "left",
+						"wheel_position": [
+							-0.0859788060188293,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					},
+					{
+						"axle_transform": "Transform3D(-0.9999999, 0, -2.3841855e-07, 0, 1, 0, 2.3841855e-07, 0, -0.9999999, 0, 0, 0)",
+						"hinge_transform": "Transform3D(-1.1920929e-07, 0, -0.99999994, 0, 1, 0, 0.99999994, 0, -1.1920929e-07, 0.046000004, -0.090346605, 0.030999998)",
+						"role": "right",
+						"wheel_position": [
+							0.0859787911176682,
+							-0.107653401792049,
+							-0.0229999963194132
+						]
+					}
+				],
+				"pose": "wreck_stopped",
+				"state_sha256": "dac9517faa709366f10486bacf3864c33c1682b59ed7ed4207ecaabd564cba2c"
+			},
+			"pose": "wreck_stopped"
+		}
+	]
+}

@@ -1,0 +1,46 @@
+{
+  "format": "openrc-afc02-admission-rate-receipt v1",
+  "captured_utc": "2026-10-20T20:36:30.108402+00:00",
+  "observed_head": "51ad43579850b1890fc21e0f5559ef8e67976899",
+  "change": "Final launch-only guard: require Engine.physics_ticks_per_second == 240. 120/480Hz mutations are refused. The 240Hz flight/pilot/solver path is unchanged. Applied after the integrated-profile lifecycle/endurance capture, whose original source receipt remains intact.",
+  "source_sha256": {
+    "app/ai/companions/profile_loader.gd": "fc59c09aaafd014fc4094f2c22856e4b86970cb5ee875d51c750a855aedc452a",
+    "app/ai/companions/manager.gd": "a13eb3e3b4ef6a461fe2bee64b830a32d805e88b2a55eac58b7360ff3e466b59",
+    "app/ai/companions/agent.gd": "34cb3329b0106f5e45f88443f874867c7fa330fb573f22c4922f9db9e82b4021",
+    "app/ai/companions/pilot.gd": "6450514705530245d9fe607b6f712380c0e281cc7d7d2d4833a7f32654e5eade",
+    "app/tests/test_companions_profiles.gd": "cf5906d6c55a4cad308485edf10138608836eccfae3cac0e383d800f653252c7",
+    "app/tests/test_companions_manager.gd": "0f12a29c654d3dc315cb27300190c4622507c308f1cafad2b25c9c58850b6b56",
+    "app/data/ai/companions/aircraft/jensen-das-ugly-stik-60.json": "fe2bb2e5291f3a36bfc06e81a801d3ac77042364017897125a689546f2a64d5e",
+    "app/data/ai/companions/fields/club-default.json": "d25c7bc26ab7eb4b2eea8c6f096f3aa4084fee9f3c6f1b583db74bc529595284",
+    "app/project.godot": "660734763852b8b412da576f4bd77fe9d5db03a40c7ef6027710af30f719f1a4",
+    ".gitattributes": "0f968a1ac71cb0133bf4ee5fe0ea61384cde4e15c3810100350f8a851bcc0c12"
+  },
+  "checks": [
+    {
+      "report": "checks/profile-rate-guard-his06i6p/report.json",
+      "report_sha256": "eb7c3d46c8591d591c59d4ced57155db4b0a6e14af147e5c0b9deae96a7cc01c",
+      "log_sha256": "2026b782b3e4b08daafea2dc798cf0c7021f15200522415b5b8847cba3715ba9",
+      "completion": [
+        "AFC-02 companion profile validation: 30 checks, 0 failed"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    },
+    {
+      "report": "checks/profile-manager-rate-guard-4zcy262p/report.json",
+      "report_sha256": "89df58f1bfc2b9510b4ea4d31fc6aeb7e0f0c272413d17b8c88809a08ed98945",
+      "log_sha256": "87ac4ddc2b36116abb6ed0969cd966e935ce63e76fd5d2228e3f65ba198b209b",
+      "completion": [
+        "companions manager: 47 checks, 0 failed"
+      ],
+      "ok": true,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      }
+    }
+  ]
+}

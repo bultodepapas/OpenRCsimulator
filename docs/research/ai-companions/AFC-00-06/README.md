@@ -60,28 +60,41 @@ zero. Successful runner reports/logs are retained under `checks/`.
 | `test_companions_shell.gd` | Home persistence, live three-agent flight, Pause freeze, next-restart rebuild to two, save rollback, removal and direct-route isolation |
 | Existing start-choice and aircraft-contact suites | 36 and 63 checks respectively |
 | Existing session guards and flight-log suites | 32 and 3,247 checks respectively |
-| Existing Home UI and full project parser | Passed; one existing unsupported tree-material warning in the UI run |
+| Existing Home UI and headless editor import | Passed; one existing unsupported tree-material warning in the UI run |
 
 The existing Pause suite has one unresolved audio assertion: it expects the legacy
 generator's `stream_paused` flag even though the current soundscape owns playback.
 Its measured output was silent at −200 dB, and the remaining Pause/lifecycle checks
 passed. Companions were disabled in that test. The failed report/log is retained;
 this is not a claim that the complete application suite passes.
+The focused tests parse their dependencies; the editor import is not a substitute
+for `app/test.sh`'s explicit every-script parse loop or the complete suite.
 
 The rotorcraft CLI refusal probe deliberately exits `ERR_INVALID_PARAMETER` (31).
 Its expected diagnostic was present and there were no engine errors; the generic
 runner records that nonzero exit as `process_exit`, not a passing invocation.
 
-The long [pilot matrix](../pilot/README.md) owns the calm/gentle 120-second scenarios,
-observed flight envelopes and repeatability receipts. Short encounter tests show
-bounded avoidance responses; they do not establish collision avoidance against
-every player maneuver.
+The long [pilot matrix](../pilot/README.md) passed **148 checks** across calm/gentle
+120-second scenarios and two bit-identical seeded repeats. Maximum circuit radial
+error was 4.05 m against the unchanged 40 m gate, with no crashes, faults or pilot
+refusals. That report owns the detailed envelopes and repeatability receipts.
+Short encounter tests show bounded avoidance responses; they do not establish
+collision avoidance against every player maneuver.
 
 The external-driver matrix exposed a spawn integration bug: requested absolute
 heading had been added to the trimmed start's existing heading. The corrected
 spawn replaces heading while preserving trim pitch/roll. A regression uses a
 nonzero original trim heading and checks attitude, velocity alignment and reset
 identity. Pilot gains, the 40 m radius limit and aircraft physics were unchanged.
+
+The separate `production_probe.gd` ran the real manager with **three companions,
+seed 1, calm weather, and the full Club collision/lake context for 28,800 ticks
+per aircraft** (120 simulated seconds). Every player/AI tick was accepted, with
+no faults, crashes or pilot refusals; minimum local terrain clearance was
+34.568 m. This also exercises the opposite circuit direction from the matrix.
+`production-120s.json` and its checked report/log record the result. It is a
+specific airborne route integration check, not exhaustive obstacle avoidance,
+render/audio timing, or a long-session resource soak.
 
 ## Preliminary complete-callback costs
 
@@ -124,6 +137,7 @@ From the repository root, use the pinned engine and checked runner:
 ```powershell
 python tools/godot/run_checked.py --label companions-manager --timeout 180 -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_companions_manager.gd
 python tools/godot/run_checked.py --label companions-cost --timeout 180 -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/ai-companions/cost_probe.gd -- --out=../tmp/companions-cost.json
+python tools/godot/run_checked.py --label companions-production --timeout 300 --require-text "COMPANION PRODUCTION CHECK COMPLETE" -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/ai-companions/production_probe.gd -- --out=../tmp/companions-production.json
 python tools/godot/run_checked.py --label companions-capture --timeout 180 --require-text "COMPANION CAPTURES COMPLETE" -- .tools/Godot_v4.7.2-stable_win64_console.exe --path app --audio-driver Dummy --script ../research/ai-companions/capture_companions.gd -- --out=../tmp/companions-captures
 ```
 

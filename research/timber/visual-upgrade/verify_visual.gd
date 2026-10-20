@@ -55,6 +55,36 @@ func _geometry_signature(mesh: Mesh) -> Dictionary:
 			triangles[key] = int(triangles.get(key, 0)) + 1
 	return {bounds = mesh.get_aabb(), triangles = triangles}
 
+## Godot's CULL_BACK convention is clockwise front faces: (b-a)×(c-a) must
+## point opposite the stored outward normal. Check every generated foam triangle.
+func _fracture_face_cw_front(mesh: Mesh) -> bool:
+	if mesh == null or mesh.get_surface_count() != 1:
+		return false
+	if mesh.surface_get_primitive_type(0) != Mesh.PRIMITIVE_TRIANGLES:
+		return false
+	var arrays: Array = mesh.surface_get_arrays(0)
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX] is PackedInt32Array else PackedInt32Array()
+	if vertices.is_empty() or normals.size() != vertices.size():
+		return false
+	var count := indices.size() if not indices.is_empty() else vertices.size()
+	if count < 3 or count % 3 != 0:
+		return false
+	for first in range(0, count, 3):
+		var ia := indices[first] if not indices.is_empty() else first
+		var ib := indices[first + 1] if not indices.is_empty() else first + 1
+		var ic := indices[first + 2] if not indices.is_empty() else first + 2
+		if ia >= vertices.size() or ib >= vertices.size() or ic >= vertices.size():
+			return false
+		var face_cross: Vector3 = (vertices[ib] - vertices[ia]).cross(vertices[ic] - vertices[ia])
+		if face_cross.length_squared() < 1.0e-18:
+			return false
+		var stored_normal := (normals[ia] + normals[ib] + normals[ic]).normalized()
+		if face_cross.normalized().dot(stored_normal) >= -0.99:
+			return false
+	return true
+
 func _run() -> void:
 	ShaderClock.register()
 	var source := Timber.build()
@@ -82,6 +112,10 @@ func _run() -> void:
 		if not original_paths.has(candidate.root.get_path_to(node)):
 			details += 1
 			_check("detail excluded from collision bounds " + str(node.name), node.has_meta("crash_no_bounds"))
+	for section: String in ["wing_left", "wing_right"]:
+		var reveal: Node = candidate.root.find_child("TimberEPOFracture_" + section, true, false)
+		var foam: MeshInstance3D = reveal.get_node_or_null("TornEPOCrossSection") as MeshInstance3D if reveal != null else null
+		_check("fracture foam CW-front winding " + section, foam != null and _fracture_face_cw_front(foam.mesh))
 	for pose: Dictionary in [{aileron_left = 10.0, aileron_right = -10.0, elevator = 12.0, rudder = 15.0},
 			{aileron_left = -10.0, aileron_right = 10.0, elevator = -12.0, rudder = -15.0},
 			{aileron_left = 0.0, aileron_right = 0.0, elevator = 0.0, rudder = 0.0}]:
@@ -114,6 +148,7 @@ func _run() -> void:
 	var report := {checks = _checks, failures = _failures, visual_detail_meshes = details,
 		source_groups = source_groups, candidate_groups = candidate_groups,
 		visual_details_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_details.gd"),
+		visual_detail_data_sha256 = FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/visual-upgrade/visual_detail_data.gd"),
 		visual_lighting_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
 		asset_sha256 = FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/timber.glb")}
 	for arg: String in OS.get_cmdline_user_args():

@@ -7,6 +7,7 @@ const AppRoot := preload("res://app_root.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const UiInput := preload("res://ui/ui_input.gd")
+const LogReader := preload("res://tools/flight_log_cli.gd")
 
 const PREFS := "user://test_companions_shell_settings.cfg"
 const FUTURE_PREFS := "user://test_companions_shell_future.cfg"
@@ -238,12 +239,68 @@ func _run() -> void:
 	_check("direct fixed-wing Pause keeps the flight settings entry", direct.pause_menu != null
 		and direct.pause_menu.companions_button.visible)
 	await ui.close_app(direct)
+	await _check_capture_shell()
 
 	_remove_file(PREFS)
 	_remove_file(FUTURE_PREFS)
 	UiInput.isolate_joypads()
 	print("Companions shell: %d failed" % _failures)
 	quit(1 if _failures else 0)
+
+
+func _check_capture_shell() -> void:
+	var destination := ProjectSettings.globalize_path("res://../tmp/afc-shell-capture-%d" % Time.get_ticks_usec())
+	var app: Variant = load("res://app_root.tscn").instantiate()
+	app.user_args = PackedStringArray(["--quick-flight", "--companions=1", "--companions-record=" + destination])
+	app.preferences_path = PREFS
+	root.add_child(app)
+	await ui.settle()
+	var main: Node = app.flight
+	var state: Dictionary = main.companions.recording_status()
+	main._electric_demo = "4s"
+	_check("synthetic electric demo cannot enable companions or fleet capture",
+		not main._companion_options(main.companion_config).ok)
+	_check("synthetic electric demo retains explicit companion Off support",
+		main._companion_options(CompanionConfig.defaults()).ok)
+	main._electric_demo = ""
+	_check("direct CLI starts a fleet capture before flight ticks", state.active
+		and FileAccess.file_exists(destination.path_join("manifest.json")), str(state))
+	_check("capture HUD distinguishes the fleet and leaves the separate player log idle",
+		main._flight_log_label != null and main._flight_log_label.text.begins_with("FLEET REC")
+		and not main.flight_log.recording)
+	await ui.tap(KEY_F11)
+	await ui.tap(KEY_F10)
+	state = main.companions.recording_status()
+	_check("F10 closes all streams without starting a second player log",
+		not state.active and state.complete and not main.flight_log.recording, str(state))
+	_check("capture HUD confirms a saved cohort", main._flight_log_label.text == "Fleet capture saved",
+		main._flight_log_label.text)
+	var marker_tick := -1
+	for stream_name: String in ["player", "companion-0"]:
+		var inspected: Dictionary = LogReader.inspect(destination.path_join(stream_name + ".orfl"))
+		var marked := -1
+		for event: Dictionary in inspected.get("events", []):
+			if event.kind == "marker": marked = int(event.tick)
+		_check("F11 marks the %s stream" % stream_name, inspected.get("complete", false) and marked >= 0,
+			str(inspected.get("error", "marker missing")))
+		if marker_tick < 0: marker_tick = marked
+		else: _check("F11 marks every stream at the same tick", marked == marker_tick)
+	var summary_before := FileAccess.get_file_as_bytes(destination.path_join("summary.json"))
+	app.open_pause()
+	await ui.settle()
+	app.pause_menu.restart_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
+	var active_after_restart: bool = await _wait_for_active(main, 1)
+	_check("Restart rebuilds the companion without reusing its capture directory", active_after_restart
+		and not main.companions.recording_status().active
+		and FileAccess.get_file_as_bytes(destination.path_join("summary.json")) == summary_before)
+	_check("capture directory is never saved in Home preferences",
+		not FileAccess.get_file_as_string(PREFS).contains(destination))
+	# UiDriver drains stopped audio for a few frames before removing the tree.
+	# Freeze the live roster during that artificial drain, as Pause does in the UI.
+	main.session.hold("test-close")
+	await ui.close_app(app)
 
 
 func _open_pause_companions(app: Node) -> void:

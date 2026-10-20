@@ -1,0 +1,485 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"asset_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+	"case": "crash",
+	"crash": {
+		"active": true,
+		"effects": {
+			"fire": 0.0,
+			"marks": 3,
+			"particles": 700,
+			"splinters": 104,
+			"update_usec": 14
+		},
+		"impact_usec": 5021,
+		"report": {
+			"abrasion_class": 1,
+			"abrasion_j_per_kg": 90.1194197209333,
+			"cause": {
+				"detail": "path -52°, 23.4 m/s",
+				"factors": [],
+				"id": "dive",
+				"label": "Steep high-speed dive into the ground"
+			},
+			"cg_model": "(0.0, -0.002176, 0.06)",
+			"cg_offset_body_m": [
+				0.0,
+				0.0,
+				0.0
+			],
+			"class": 3,
+			"component": "propeller",
+			"component_basis": "aircraft data crash_hull_components label of the struck hull point; not a structural section ID",
+			"component_damage": 1.0,
+			"component_group": "propeller",
+			"component_is_estimate": false,
+			"contact_point_world": "(-14.1218, 0.025, 21.47027)",
+			"durability": 1.0,
+			"effective_mass_kg": 1.85151942883896,
+			"energy": {
+				"fire_kind": "",
+				"fire_s": 0.0,
+				"flare": false,
+				"flash": false,
+				"flash_radius_m": 0.0,
+				"flash_s": 0.0,
+				"stain": false,
+				"vent_delay_s": 10.1126898750123,
+				"vent_s": 20.0
+			},
+			"energy_j": 584.682144123724,
+			"energy_sources": {
+				"lipo": 0.33
+			},
+			"error": "",
+			"estimated_energy_j": 261.319255042338,
+			"friction_work_j": 197.361529188844,
+			"fuel_by_kind_kg": {},
+			"fuel_kg": 0.0,
+			"fuel_kg_basis": "declared inventory; legacy kerosene-only scalar",
+			"fuel_kind": "kerosene",
+			"fuel_sample_basis": "constant-build",
+			"impact_angle_deg": 50.8116136812194,
+			"inventory_boxes": [
+				{
+					"center": "(0.0, 0.1, 0.1013)",
+					"mass": 0.456,
+					"size": "(1.45, 0.025, 0.213535)"
+				},
+				{
+					"center": "(0.0, -0.025, 0.2208)",
+					"mass": 0.605,
+					"size": "(0.12, 0.12, 0.85)"
+				},
+				{
+					"center": "(0.0, -0.012, 0.7033)",
+					"mass": 0.08,
+					"size": "(0.596, 0.02, 0.15)"
+				},
+				{
+					"center": "(0.0, -0.16, 0.012)",
+					"mass": 0.135,
+					"size": "(0.263958, 0.16, 0.1)"
+				},
+				{
+					"center": "(0.0, -0.1, 0.7384)",
+					"mass": 0.012,
+					"size": "(0.028, 0.05, 0.04)"
+				},
+				{
+					"center": "(0.0, 0.0, -0.251)",
+					"mass": 0.032,
+					"size": "(0.2, 0.2, 0.05)"
+				},
+				{
+					"center": "(0.0, 0.0, -0.2125)",
+					"mass": 0.16,
+					"size": "(0.04, 0.04, 0.05)"
+				},
+				{
+					"center": "(0.0, -0.025, -0.142)",
+					"mass": 0.06,
+					"size": "(0.035, 0.016, 0.065)"
+				},
+				{
+					"center": "(0.0, -0.03, 0.118)",
+					"mass": 0.012,
+					"size": "(0.025, 0.01, 0.04)"
+				},
+				{
+					"center": "(0.0, -0.04, 0.228)",
+					"mass": 0.018,
+					"size": "(0.03, 0.02, 0.035)"
+				},
+				{
+					"center": "(0.0, 0.025, 0.058)",
+					"mass": 0.04,
+					"size": "(0.2, 0.02, 0.16)"
+				},
+				{
+					"center": "(0.0, -0.03, -0.052)",
+					"mass": 0.33,
+					"size": "(0.043, 0.032, 0.14)"
+				},
+				{
+					"center": "(0.0, 0.0, -0.220998)",
+					"mass": 0.25,
+					"size": "(0.04, 0.04, 0.04)"
+				}
+			],
+			"kinematics": "detected rigid contact point",
+			"kinematics_is_proxy": false,
+			"mass_basis": "rigid-body effective mass at the contact point",
+			"mass_kg": 2.19,
+			"mass_sample_basis": "constant-build",
+			"mass_sample_tick": 62,
+			"mass_sample_time_s": 0.258333333333333,
+			"normal_class": 3,
+			"normal_energy_j": 296.953698911748,
+			"prop_broken": false,
+			"sample_time": "detected_tick_point",
+			"severity": 0.795492404999508,
+			"slapdown_class": 2,
+			"slapdown_energy_j": 48.6580687126151,
+			"slapdown_j_per_kg": 22.218296215806,
+			"soft_rule": "impact",
+			"specific_energy_j_per_kg": 119.323860749926,
+			"speed_mps": 23.1074943687844,
+			"surface": "rough",
+			"tangential_speed_mps": 14.600983552345,
+			"tank_rupture_kind": "estimated: C4, or C3 central impact >=600 J; uncalibrated",
+			"tank_ruptured": false,
+			"tick": 62,
+			"trigger": "hull_contact",
+			"valid": true
+		},
+		"shader_warmup": {
+			"drawn": true,
+			"draws": 2,
+			"particle_samples": 8,
+			"usec": 373165
+		},
+		"update_usec": 35,
+		"water": {
+			"droplet_pool_size": 0,
+			"elapsed_s": 0.0,
+			"has_event": false,
+			"impact_audio_emitted": false,
+			"impact_audio_source_index": -1,
+			"impact_depth_m": 0.0,
+			"point_ned": [],
+			"rings_visible": 0,
+			"seed": 1,
+			"version": 1
+		},
+		"water_active": false,
+		"water_event_count": 0,
+		"wreck": {
+			"active_body_count": 5,
+			"c3_contact_exposure_index_j": 56.5955762962516,
+			"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+			"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+			"c3_contact_release_pending": false,
+			"c3_contact_release_thresholds_j": {
+				"canopy": 25.0,
+				"engine": 50.0,
+				"gear": 12.0,
+				"propeller": 4.0
+			},
+			"cg_model": "(0.0, -0.002176, 0.06)",
+			"class_level": 3,
+			"component_hint": "propeller",
+			"contact_point_model": "(-0.007391, -0.126579, -0.231966)",
+			"contact_shadow_count": 24,
+			"detached_group_count": 4,
+			"elapsed_s": 16.4708333333333,
+			"energy_estimate_source": "normal_energy_j",
+			"fragment_groups": [
+				"core",
+				"wing_left",
+				"wing_right",
+				"engine",
+				"propeller",
+				"horizontal_tail",
+				"vertical_tail",
+				"gear",
+				"gear",
+				"canopy"
+			],
+			"mass_kg": 2.19,
+			"max_speed_seen_mps": 18.4148008111958,
+			"normal_impact_energy_estimate_j": 296.953698911748,
+			"paused": false,
+			"pool_size": 24,
+			"prepared": true,
+			"release_kinds": [
+				"propeller",
+				"engine",
+				"canopy"
+			],
+			"scatter_energy_fraction": 0.12,
+			"scatter_energy_j": 35.6344448288455,
+			"secondary_impact_strength_unit": "J",
+			"secondary_impacts": 7,
+			"sleeping_body_count": 5,
+			"started": true
+		}
+	},
+	"failures": [],
+	"final_fault": "",
+	"final_holds": {},
+	"final_pause_reason": "CRASH at 23.1 m/s (sink 18.4 m/s, airframe contact (hull point 8), point speed 23.1 m/s at detected tick) - [R] restart",
+	"final_state": [
+		-21.5715489153227,
+		-14.0847897136697,
+		-0.302098569319176,
+		23.1060382958963,
+		0.0790177058613754,
+		-0.248466802724825,
+		0.847818026378802,
+		0.281168676478084,
+		-0.382076654001716,
+		0.236994092714501,
+		0.271157249548432,
+		0.000840798120870567,
+		-0.157586445739402
+	],
+	"final_tick": 62,
+	"fixture_crash_initial_speed_mps": 22.0,
+	"fixture_focus_resumes": 0,
+	"records": [
+		{
+			"camera": "[X: (-0.968218, 0.0, 0.250106), Y: (-0.070996, 0.958864, -0.274843), Z: (-0.239818, -0.283865, -0.92839), O: (-15.59219, 4.110634, 22.49747)]",
+			"commands": {
+				"pitch": 0.0,
+				"roll": 0.0,
+				"throttle": 0.499999998778588,
+				"yaw": 0.0
+			},
+			"compressions": [
+				-4.5760406623734,
+				-4.49049848506439,
+				-5.20721848980584
+			],
+			"crash": false,
+			"draw_calls": 181.0,
+			"fault": "",
+			"holds": {},
+			"image": "crash-000.png",
+			"motion_attached": true,
+			"pause_reason": "",
+			"paused": false,
+			"state": [
+				-24.7900699928752,
+				-14.9564754050526,
+				-4.70145725720565,
+				22.1057504292835,
+				-0.0188721446434122,
+				-0.0927374214008862,
+				0.838498592093145,
+				0.285569099452324,
+				-0.412996100357319,
+				0.211671022073049,
+				0.24389909080028,
+				0.118520364481153,
+				0.179415432414342
+			],
+			"tick": 4
+		},
+		{
+			"camera": "[X: (0.768221, 0.0, -0.640184), Y: (-0.209166, 0.945119, -0.250999), Z: (0.60505, 0.326727, 0.72606), O: (-9.121798, 3.225, 27.47027)]",
+			"commands": {
+				"pitch": 0.0,
+				"roll": 0.0,
+				"throttle": 0.499999998778588,
+				"yaw": 0.0
+			},
+			"compressions": [
+				-0.156730114395307,
+				-0.0837037722746079,
+				-0.777150093382623
+			],
+			"crash": true,
+			"draw_calls": 205.0,
+			"fault": "",
+			"holds": {},
+			"image": "crash-025.png",
+			"motion_attached": true,
+			"pause_reason": "CRASH at 23.1 m/s (sink 18.4 m/s, airframe contact (hull point 8), point speed 23.1 m/s at detected tick) - [R] restart",
+			"paused": true,
+			"state": [
+				-21.5715489153227,
+				-14.0847897136697,
+				-0.302098569319176,
+				23.1060382958963,
+				0.0790177058613754,
+				-0.248466802724825,
+				0.847818026378802,
+				0.281168676478084,
+				-0.382076654001716,
+				0.236994092714501,
+				0.271157249548432,
+				0.000840798120870567,
+				-0.157586445739402
+			],
+			"tick": 62
+		},
+		{
+			"camera": "[X: (-0.707107, 0.0, 0.707107), Y: (0.2395, 0.940893, 0.2395), Z: (-0.665312, 0.338704, -0.665312), O: (-14.42657, 1.664514, 13.68943)]",
+			"commands": {
+				"pitch": 0.0,
+				"roll": 0.0,
+				"throttle": 0.499999998778588,
+				"yaw": 0.0
+			},
+			"compressions": [
+				-0.156730114395307,
+				-0.0837037722746079,
+				-0.777150093382623
+			],
+			"crash": true,
+			"draw_calls": 192.0,
+			"fault": "",
+			"holds": {},
+			"image": "crash-045.png",
+			"motion_attached": true,
+			"pause_reason": "CRASH at 23.1 m/s (sink 18.4 m/s, airframe contact (hull point 8), point speed 23.1 m/s at detected tick) - [R] restart",
+			"paused": true,
+			"state": [
+				-21.5715489153227,
+				-14.0847897136697,
+				-0.302098569319176,
+				23.1060382958963,
+				0.0790177058613754,
+				-0.248466802724825,
+				0.847818026378802,
+				0.281168676478084,
+				-0.382076654001716,
+				0.236994092714501,
+				0.271157249548432,
+				0.000840798120870567,
+				-0.157586445739402
+			],
+			"tick": 62
+		},
+		{
+			"camera": "[X: (-0.707107, 0.0, 0.707107), Y: (0.2395, 0.940893, 0.2395), Z: (-0.665312, 0.338704, -0.665312), O: (-14.14967, 1.259845, 13.19228)]",
+			"commands": {
+				"pitch": 0.0,
+				"roll": 0.0,
+				"throttle": 0.499999998778588,
+				"yaw": 0.0
+			},
+			"compressions": [
+				-0.156730114395307,
+				-0.0837037722746079,
+				-0.777150093382623
+			],
+			"crash": true,
+			"draw_calls": 191.0,
+			"fault": "",
+			"holds": {},
+			"image": "crash-105.png",
+			"motion_attached": true,
+			"pause_reason": "CRASH at 23.1 m/s (sink 18.4 m/s, airframe contact (hull point 8), point speed 23.1 m/s at detected tick) - [R] restart",
+			"paused": true,
+			"state": [
+				-21.5715489153227,
+				-14.0847897136697,
+				-0.302098569319176,
+				23.1060382958963,
+				0.0790177058613754,
+				-0.248466802724825,
+				0.847818026378802,
+				0.281168676478084,
+				-0.382076654001716,
+				0.236994092714501,
+				0.271157249548432,
+				0.000840798120870567,
+				-0.157586445739402
+			],
+			"tick": 62
+		},
+		{
+			"camera": "[X: (-0.707107, 0.0, 0.707107), Y: (0.2395, 0.940893, 0.2395), Z: (-0.665312, 0.338704, -0.665312), O: (-14.14967, 1.259845, 13.19228)]",
+			"commands": {
+				"pitch": 0.0,
+				"roll": 0.0,
+				"throttle": 0.499999998778588,
+				"yaw": 0.0
+			},
+			"compressions": [
+				-0.156730114395307,
+				-0.0837037722746079,
+				-0.777150093382623
+			],
+			"crash": true,
+			"draw_calls": 191.0,
+			"fault": "",
+			"holds": {},
+			"image": "crash-315.png",
+			"motion_attached": true,
+			"pause_reason": "CRASH at 23.1 m/s (sink 18.4 m/s, airframe contact (hull point 8), point speed 23.1 m/s at detected tick) - [R] restart",
+			"paused": true,
+			"state": [
+				-21.5715489153227,
+				-14.0847897136697,
+				-0.302098569319176,
+				23.1060382958963,
+				0.0790177058613754,
+				-0.248466802724825,
+				0.847818026378802,
+				0.281168676478084,
+				-0.382076654001716,
+				0.236994092714501,
+				0.271157249548432,
+				0.000840798120870567,
+				-0.157586445739402
+			],
+			"tick": 62
+		},
+		{
+			"camera": "[X: (-0.707107, 0.0, 0.707107), Y: (0.2395, 0.940893, 0.2395), Z: (-0.665312, 0.338704, -0.665312), O: (-14.14967, 1.259845, 13.19228)]",
+			"commands": {
+				"pitch": 0.0,
+				"roll": 0.0,
+				"throttle": 0.499999998778588,
+				"yaw": 0.0
+			},
+			"compressions": [
+				-0.156730114395307,
+				-0.0837037722746079,
+				-0.777150093382623
+			],
+			"crash": true,
+			"draw_calls": 191.0,
+			"fault": "",
+			"holds": {},
+			"image": "crash-615.png",
+			"motion_attached": true,
+			"pause_reason": "CRASH at 23.1 m/s (sink 18.4 m/s, airframe contact (hull point 8), point speed 23.1 m/s at detected tick) - [R] restart",
+			"paused": true,
+			"state": [
+				-21.5715489153227,
+				-14.0847897136697,
+				-0.302098569319176,
+				23.1060382958963,
+				0.0790177058613754,
+				-0.248466802724825,
+				0.847818026378802,
+				0.281168676478084,
+				-0.382076654001716,
+				0.236994092714501,
+				0.271157249548432,
+				0.000840798120870567,
+				-0.157586445739402
+			],
+			"tick": 62
+		}
+	],
+	"renderer": "gl_compatibility",
+	"visual_detail_data_sha256": "7c2fe3538461f9f5fb6920f1eeb3eb6f02b914730049033b378ee2531e20021c",
+	"visual_details_sha256": "04e967c43e94b0a510993f64d4249bfeaa0c90f38ebe170fec1f4834ff720161",
+	"visual_lighting_sha256": "0fcfff831a85ee3473eeaec90d32db92fcc8e387e32148d0171a9abe06bc0af2",
+	"visual_motion_sha256": "abc055855e5b15e5602131fd7df8a18cdebd7814a95f4b62b04ba19beeea09f3"
+}

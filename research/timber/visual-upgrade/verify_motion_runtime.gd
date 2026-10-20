@@ -14,8 +14,12 @@ var failures := 0
 var check_count := 0
 var results: Array[Dictionary] = []
 var metrics: Dictionary = {}
+var report_output_override := ""
 
 func _initialize() -> void:
+	for arg: String in OS.get_cmdline_user_args():
+		if arg.begins_with("--out="):
+			report_output_override = arg.trim_prefix("--out=")
 	_run.call_deferred()
 
 func _check(label: String, ok: bool, detail: String = "") -> void:
@@ -97,6 +101,18 @@ func _dust_checks(motion: Node, session: Node, compression: PackedFloat64Array) 
 	_check("paused session freezes and stops new dust", not emitter.emitting and emitter.speed_scale == 0.0)
 	holds.erase("motion_test")
 	session.holds = holds
+	session.ground_surfaces = surfaces_test
+	session.sim.continuous = test_continuous
+	session.sim.set_paused(true)
+	motion._update_contact_dust(state, contacts, compression)
+	var focus_paused: bool = session.holds.is_empty() and session.sim.paused \
+		and not emitter.emitting and emitter.speed_scale == 0.0
+	_check("focus-style simulation pause freezes dust without a hold", focus_paused)
+	metrics["focus_pause_stops_dust"] = focus_paused
+	session.sim.set_paused(false)
+	session.sim.continuous = original_continuous
+	session.ground_surfaces = surfaces_original
+	motion._update_contact_dust(state, contacts, compression)
 
 func _run() -> void:
 	var entry: Dictionary = Catalog.entry("turbo-lumber-evolution")
@@ -285,7 +301,8 @@ func _run() -> void:
 			},
 		},
 	}
-	var report_path := ProjectSettings.globalize_path("res://../docs/research/timber-integration/TT-20/motion-runtime-checks.json")
+	var report_path := ProjectSettings.globalize_path(report_output_override if not report_output_override.is_empty()
+		else "res://../docs/research/timber-integration/TT-20/motion-runtime-checks.json")
 	var report_file := FileAccess.open(report_path, FileAccess.WRITE)
 	if report_file != null:
 		report_file.store_string(JSON.stringify(report, "\t") + "\n")

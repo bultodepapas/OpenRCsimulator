@@ -37,7 +37,7 @@ LABEL_RE = re.compile(r"^[ -~]{1,32}$")
 NODE_PATH_RE = re.compile(r"^[A-Za-z0-9_]+(?:/[A-Za-z0-9_]+)*$")
 PARAM_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
 PAINT_KINDS = {"standard_albedo", "shader_color"}
-SMOKE_ROLES = {"wing_tip_left", "wing_tip_right", "tail", "exhaust"}
+SMOKE_ROLES = {"wing_tip_left", "wing_tip_right", "tail", "tailpipe", "exhaust"}
 SOURCE_ANCHOR_REFS = {"exhausts[0]"}
 PHYSICAL_ID_REFS = {"propulsion.id"}
 PHYSICAL_KIND_REFS = {"propulsion.kind"}
@@ -237,8 +237,8 @@ def validate_source(source: Any, expected_families: set[str]) -> dict[str, dict[
                 _vector(slot["direction"], f"{slot_label}.direction", unit=True)
                 if role in {"wing_tip_left", "wing_tip_right"} and slot["pair"] != "wing_tips":
                     raise CustomizationError(f"{slot_label} must declare pair wing_tips")
-                if role == "tail" and slot["pair"]:
-                    raise CustomizationError(f"{slot_label} tail endpoint must have an empty pair")
+                if role in {"tail", "tailpipe"} and slot["pair"]:
+                    raise CustomizationError(f"{slot_label} tail/tailpipe endpoint must have an empty pair")
             else:
                 if role != "exhaust" or slot["pair"]:
                     raise CustomizationError(f"{slot_label} source endpoint must be an unpaired exhaust")

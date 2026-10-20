@@ -60,8 +60,9 @@ func _test_fleet_bindings_and_mounts() -> void:
 		for endpoint: Dictionary in bindings.get("smoke_slots", []):
 			if endpoint.kind == "show":
 				show_ids.append(str(endpoint.id))
-		_check(id + " declares paired wing and tail show mounts",
-			show_ids == ["show_tail", "show_wing_tip_left", "show_wing_tip_right"])
+		var expected_show_ids := ["show_tail", "show_wing_tip_left", "show_wing_tip_right"]
+		if id == "sebart-avanti-s-a200-p100rx": expected_show_ids.insert(1, "show_tailpipe")
+		_check(id + " declares authored show mounts", show_ids == expected_show_ids)
 		var transforms: Dictionary = Customization.smoke_transforms(airplane)
 		var expected_count := 4 if bindings.get("smoke_slots", []).size() == 4 else 3
 		_check(id + " resolves only authored smoke endpoints", transforms.size() == expected_count, str(transforms.keys()))

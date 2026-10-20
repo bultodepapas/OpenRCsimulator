@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   accepted Club field loads  []
+ok   slot 0 accepts complete solved trim
+ok   missing solved trim is refused
+ok   incomplete nonempty trim is refused
+ok   slot outside requested count is refused
+ok   unsupported field is refused
+ok   seed outside uint32 is refused
+ok   same seed reproduces initial pose
+ok   different seed changes initial circuit phase
+ok   fleet slots occupy distinct height bands
+ok   initial pose reports AGL height and valid heading
+ok   controller command is deterministic for the same seeded observation
+ok   controller emits finite normalized controls
+ok   malformed state is refused with finite bounded fallback
+ok   unqualified strong wind is refused safely
+ok   unqualified turbulence is refused safely
+ok   head-on closure activates player separation
+ok   zero-CPA reciprocal head-on aircraft both emit bounded avoidance
+ok   reciprocal zero-CPA fallback turns both aircraft toward opposite world sides  slot0_delta=0.28266 slot1_delta=0.65965 world_alignment=-0.18646
+ok   crossing traffic from either side activates avoidance
+ok   mirrored crossings produce opposite roll corrections  right_delta=0.28266 left_delta=-0.37699
+ok   faster aircraft closing from behind activates avoidance
+ok   self entry keyed by id and slot is ignored
+ok   traffic player alias activates avoidance
+companion pilot: 24 checks, 0 failed

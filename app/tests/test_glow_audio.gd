@@ -531,7 +531,7 @@ func _capture_segment(soundscape: Node, capture: AudioEffectCapture, family: Str
 		}
 		soundscape.update_sound(snapshot, 1.0 / 60.0)
 		if frame == 0:
-			var forwarded: Variant = soundscape.glow_voice._telemetry.get("source_vibration", null)
+			var forwarded: Variant = soundscape.glow_pump.telemetry_snapshot().get("source_vibration", null)
 			_check("native %s soundscape forwards valid source telemetry to the voice" % family,
 				forwarded is Dictionary and forwarded == source_vibration
 				and GlowVoice.source_vibration_pcm_peaks(forwarded, family, 6000.0).ok)
