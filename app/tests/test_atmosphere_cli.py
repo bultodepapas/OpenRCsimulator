@@ -10,6 +10,7 @@ import tempfile
 import unittest
 
 from check_atmosphere_trace import check
+from mass_trace_contract import COLUMNS as MASS_COLUMNS, LIQUID_COLUMNS
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -172,8 +173,14 @@ class AtmosphereCLI(unittest.TestCase):
                     self.assertLess(result['max_eas_error_mps'], 1e-6)
                     if is_retractable:
                         _comments, metadata, rows = _read_parts(self.aircraft_traces[(aircraft, duration)])
-                        self.assertEqual(rows[0][-7:-3], ['gear_extension', 'gear_target_down',
-                                                        'cmd_gear_down', 'cmd_wheel_brake'])
+                        gear_index = rows[0].index('gear_extension')
+                        self.assertEqual(rows[0][gear_index:gear_index + 4],
+                                         ['gear_extension', 'gear_target_down',
+                                          'cmd_gear_down', 'cmd_wheel_brake'])
+                        self.assertEqual(rows[0][gear_index + 4:-len(LIQUID_COLUMNS + MASS_COLUMNS)],
+                                         ['cmd_flaps', 'flap_fraction', 'flap_deg'])
+                        self.assertEqual(rows[0][-len(LIQUID_COLUMNS + MASS_COLUMNS):],
+                                         LIQUID_COLUMNS + MASS_COLUMNS)
                         self.assertEqual(len(json.loads(metadata['recording_start_gear'])), 2)
                         self.assertEqual(len(rows), result['rows'] + 1)
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate custom-atmosphere v6/v10 traces or calm standard-column v11 traces."""
+"""Validate custom-atmosphere v6, Glow v9, gear v10, or calm column v11 traces."""
 from flap_trace_contract import project as project_flaps
 from mass_trace_contract import project as project_mass_trace
 import argparse
@@ -13,7 +13,7 @@ import tempfile
 
 from check_trimmed_flight import (
     COLUMNS, ELECTRIC_COLUMNS, GEAR_COLUMNS, check_coupled_metadata, check_gear_metadata,
-    check_gear_sample, _has_gear_metadata,
+    check_gear_sample, _has_gear_metadata, _has_glow_trace_claim,
 )
 from check_wind_trace import (
     TURBULENCE_COLUMNS, TURBULENCE_MODEL, WEATHER_COLUMNS, check as check_wind, matrix as _quaternion_matrix,
@@ -262,14 +262,21 @@ def check(path, duration=None):
             data_lines.append(line)
     trace_format = metadata.get('format')
     gear = trace_format == 'openrc-trace v10'
-    if trace_format not in (FORMAT, 'openrc-trace v10'):
-        raise ValueError('expected custom-atmosphere trace v6 or retractable-gear trace v10')
+    glow = trace_format == 'openrc-trace v9'
+    claims_glow = _has_glow_trace_claim(metadata)
+    if trace_format not in (FORMAT, 'openrc-trace v9', 'openrc-trace v10'):
+        raise ValueError('expected custom-atmosphere trace v6, Glow trace v9 or retractable-gear trace v10')
+    if glow != claims_glow:
+        raise ValueError('trace format disagrees with the Glow trace contract')
     if gear != _has_gear_metadata(metadata):
         raise ValueError('trace format disagrees with retractable gear metadata')
     if gear:
         if metadata.get('metadata_schema') != 'openrc-flight-meta v8':
             raise ValueError('gear atmosphere trace requires flight metadata v8')
         check_gear_metadata(metadata)
+    elif glow:
+        if metadata.get('metadata_schema') != 'openrc-flight-meta v10':
+            raise ValueError('Glow atmosphere trace requires flight metadata v10')
     elif metadata.get('metadata_schema') not in (METADATA_SCHEMA, WHEEL_METADATA_SCHEMA):
         raise ValueError('trace v6 requires flight metadata v5 or wheel metadata v6')
     if metadata.get('atmosphere_model') != ATMOSPHERE_MODEL:
@@ -307,6 +314,13 @@ def check(path, duration=None):
     if not math.isfinite(dt) or not 0.0 < dt <= 1.0 or str(first_tick) != first_tick_text or first_tick < 0:
         raise ValueError('invalid trace clock or recording origin')
     check_coupled_metadata(metadata)
+    glow_contract = None
+    if glow:
+        wheel_claim = any(key in metadata for key in (
+            'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
+            'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes', 'launch_continuous',
+        ))
+        glow_contract = _glow_start_contract(metadata, wheel_claim)
     expected_timing = ('wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/shaft, current sampled servos); reset uses t=0'
                        if metadata.get('shaft_integrator') == 'coupled-rk4' else
                        'wind/TAS at row state time; loads_* wind and loads_t_s describe k1 (tick-1 body/turbine, current sampled servos); reset uses t=0'
@@ -318,11 +332,11 @@ def check(path, duration=None):
     reader = csv.DictReader(data_lines)
     fieldnames = reader.fieldnames
     has_turbulence = expected_weather_model == TURBULENCE_MODEL
-    expected_columns = (COLUMNS + WEATHER_COLUMNS
+    expected_columns = (COLUMNS + (glow_contract['columns'] if glow else []) + WEATHER_COLUMNS
                         + (TURBULENCE_COLUMNS if has_turbulence else [])
                         + ATMOSPHERIC_COLUMNS + (GEAR_COLUMNS if gear else []))
     if fieldnames != expected_columns or len(set(fieldnames or [])) != len(expected_columns):
-        raise ValueError('trace v6 columns/order mismatch')
+        raise ValueError('custom-atmosphere trace columns/order mismatch')
     rows = list(reader)
     if len(rows) < 2:
         raise ValueError('incomplete trace: need an initial sample and a flight tick')
@@ -381,7 +395,7 @@ def check(path, duration=None):
         wind_result = check_wind(projected_path, duration)
 
     result = {
-        'format': 'openrc-trace v10' if gear else FORMAT,
+        'format': 'openrc-trace v10' if gear else 'openrc-trace v9' if glow else FORMAT,
         'metadata_schema': metadata['metadata_schema'],
         'rows': len(rows),
         'first_tick': int(float(rows[0]['tick'])),
@@ -967,13 +981,14 @@ def check_column(path, duration=None):
 
 
 def _project_weather_trace(metadata, config, expected_columns, rows, has_turbulence):
-    """Project validated weather fields to the wind verifier, retaining gear-v10 identity."""
+    """Project validated weather fields, retaining Glow and retractable-gear identities."""
     projected_metadata = dict(metadata)
     gear = metadata.get('format') == 'openrc-trace v10'
+    glow = metadata.get('format') == 'openrc-trace v9'
     trace_version = 5 if has_turbulence else 4
-    projected_format = 10 if gear else trace_version
+    projected_format = 10 if gear else 9 if glow else trace_version
     projected_metadata['format'] = f'openrc-trace v{projected_format}'
-    if not gear:
+    if not gear and not glow:
         projected_metadata['metadata_schema'] = (
             WHEEL_METADATA_SCHEMA if metadata.get('metadata_schema') == WHEEL_METADATA_SCHEMA else
             'openrc-flight-meta v4' if has_turbulence else 'openrc-flight-meta v3'
