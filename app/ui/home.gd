@@ -8,6 +8,7 @@ extends "res://ui/screen.gd"
 
 const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const UiScale := preload("res://ui/ui_scale.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const KeyLabels := preload("res://ui/key_labels.gd")
 const Reference := preload("res://ui/controls_reference.gd")
@@ -143,6 +144,8 @@ var _details_button: Button
 var _details_chevron
 var _requested_aircraft_id := ""
 var _catalog_preview_label: Label
+## UI-34b (UI-30 HN-3): off the Flight page, the pinned FLY says which aircraft it launches.
+var _fly_caption: Label
 ## UI-34b (UI-30 SP-1, AS-2): beside the catalog on desktop layouts, what the selected aircraft is and its limits.
 var _catalog_detail: PanelContainer
 var _detail_name_label: Label
@@ -568,6 +571,11 @@ func _init() -> void:
 	fly_button.custom_minimum_size.y = 56
 	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	fly_button.pressed.connect(_on_fly)
+	_fly_caption = _label("", "SecondaryLabel", false)
+	_fly_caption.name = "FlyCaption"
+	_fly_caption.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_fly_caption.visible = false
+	primary_actions.add_child(_fly_caption)
 	primary_actions.add_child(fly_button)
 	primary_actions.add_child(ground_vehicle_button)
 	var utility_row := HBoxContainer.new()
@@ -698,6 +706,8 @@ static func _gradient_rect(rect_name: String, vertical: bool) -> TextureRect:
 
 func _update_catalog_texts() -> void:
 	_update_catalog_detail()
+	if _fly_caption != null:
+		_fly_caption.text = tr("Next flight: %s") % tr(Catalog.short_name(aircraft_id))
 	var selected_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else aircraft_id
 	for index in _catalog_ids.size():
 		var id: String = _catalog_ids[index]
@@ -795,6 +805,7 @@ func _select_page(index: int) -> void:
 	_scroll.scroll_vertical = 0
 	fly_button.visible = selected != 3
 	ground_vehicle_button.visible = selected == 3
+	_fly_caption.visible = selected == 1 or selected == 2
 	_update_catalog_detail_visibility()
 	if selected == 1:
 		_schedule_selected_aircraft_reveal()
@@ -849,6 +860,7 @@ func _apply_responsive_layout() -> void:
 	var large_text := UiTheme.text_scale >= 1.5
 	var compact_action_density := compact and not large_text
 	var inset := 24.0 if compact else 48.0
+	var span := UiScale.span_margin(viewport_size.x) # UI-35c (UI-30 SP-5): centred span beyond 21:9
 	var rail_width := minf(viewport_size.x * 0.48, 500.0) if large_text else \
 		clampf(viewport_size.x * 0.24, 280.0, 304.0) if compact else clampf(viewport_size.x * 0.167, 280.0, 340.0)
 	var header_top := 14.0 if compact else 20.0
@@ -889,22 +901,23 @@ func _apply_responsive_layout() -> void:
 	_set_responsive_font(_brand_label, UiTheme.SIZE.header, true)
 	var header_height := maxf(_header.get_combined_minimum_size().y, _header_actions.get_combined_minimum_size().y)
 	var header_action_width := maxf(420.0, language_button.custom_minimum_size.x + settings_button.custom_minimum_size.x + 8.0)
-	_header.offset_left = inset
-	_header.offset_right = inset + 620.0
+	_header.offset_left = inset + span
+	_header.offset_right = inset + span + 620.0
 	_header.offset_top = header_top
 	_header.offset_bottom = header_top + header_height
 	_header_actions.anchor_left = 1.0
 	_header_actions.anchor_right = 1.0
-	_header_actions.offset_left = -(inset + header_action_width)
-	_header_actions.offset_right = -inset
+	_header_actions.offset_left = -(inset + span + header_action_width)
+	_header_actions.offset_right = -(inset + span)
 	_header_actions.offset_top = header_top
 	_header_actions.offset_bottom = header_top + header_height
-	_rail_scrim.offset_right = inset + rail_width + (260.0 if compact else 320.0)
+	_rail_scrim.offset_left = span
+	_rail_scrim.offset_right = inset + span + rail_width + (260.0 if compact else 320.0)
 	_top_scrim.offset_bottom = 150.0 if compact else 176.0
-	_left_layout.offset_left = inset
-	_left_layout.offset_right = inset + rail_width
+	_left_layout.offset_left = inset + span
+	_left_layout.offset_right = inset + span + rail_width
 	if _catalog_detail != null:
-		var detail_left := inset + rail_width + 32.0
+		var detail_left := inset + span + rail_width + 32.0
 		_catalog_detail.offset_left = detail_left
 		_catalog_detail.offset_right = detail_left + clampf(viewport_size.x * 0.22, 360.0, 460.0)
 		_catalog_detail.offset_top = maxf(88.0 if compact else 108.0, header_top + header_height + 16.0)

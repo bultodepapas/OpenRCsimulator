@@ -133,7 +133,8 @@ func _run() -> void:
 	_check("FS-64V selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
-	_check("Enter on the arrow: the Extra on the card, in the backdrop and saved", home.aircraft_id == EXTRA and home.aircraft_name_label.text == Catalog.entry(EXTRA).name
+	_check("Enter on the arrow: the Extra on the card, in the backdrop and saved", home.aircraft_id == EXTRA and home.aircraft_name_label.text == Catalog.short_name(EXTRA)
+		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(EXTRA).name) # UI-34b: short card name, full tooltip
 		and app.home_scene.airplane.aircraft_id == EXTRA and Preferences.load_from(PREFS).aircraft == EXTRA)
 	_check("Extra: Fly enabled, its status says experimental", not home.fly_button.disabled and home.aircraft_status_label.text.begins_with("Experimental"))
 	_check("choosing never starts a flight", app.flight == null)
@@ -168,8 +169,8 @@ func _run() -> void:
 	_check("helicopter is last in the catalog with the HX-700 preview and pad start",
 		home.aircraft_id == HELI and home.aircraft_count_label.text == _aircraft_counter(HELI)
 		and app.home_scene.airplane.visual_family == "hx-700" and home.start_choice == "runway"
-		and home.start_button.text == "Start: helicopter pad" and home.workshop_button.disabled
-		and home.natural_random_button.disabled, "%s / %s" % [home.aircraft_id, home.aircraft_count_label.text])
+		and home.start_button.text == "Start: helicopter pad" and not home.workshop_button.disabled
+		and not home.natural_random_button.disabled, "%s / %s" % [home.aircraft_id, home.aircraft_count_label.text])
 	_check("helicopter selection is saved without starting a session",
 		Preferences.load_from(PREFS).aircraft == HELI and app.flight == null)
 	await ui.tap(KEY_ENTER)
@@ -198,7 +199,8 @@ func _run() -> void:
 	# The Timber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.
 	app.set_aircraft(TIMBER)
 	await ui.settle()
-	_check("Spanish: the Timber card shows its Spanish name", home.aircraft_name_label.text == "Turbo Tronco Evolución", home.aircraft_name_label.text)
+	_check("Spanish: the Timber card shows its Spanish name", home.aircraft_name_label.text == "Turbo Tronco"
+		and home.aircraft_name_label.tooltip_text == "Turbo Tronco Evolución", home.aircraft_name_label.text)
 	app.set_aircraft(AVANTI)
 	await ui.settle()
 	_check("Spanish: Ventage Jet keeps its name", home.aircraft_name_label.text == Catalog.entry(AVANTI).name, home.aircraft_name_label.text)

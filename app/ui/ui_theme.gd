@@ -54,6 +54,7 @@ static var text_scale := 1.0
 static var opaque_panels := false
 static var reduced_motion := false
 static var compact_layout := false
+static var _icon_cache := {}
 
 
 static func build() -> Theme:
@@ -229,6 +230,48 @@ static func _controls(theme: Theme) -> void:
 		track.content_margin_bottom = 2.0
 		track.set_corner_radius_all(2)
 		theme.set_stylebox(item, "HSlider", track)
+	# UI-35b (UI-30 VC-3): every focusable control shows the same inside outline, and toggles share one look.
+	theme.set_stylebox("focus", "HSlider", theme.get_stylebox("focus", "Button"))
+	for checked in [false, true]:
+		for disabled in [false, true]:
+			var state := ("checked" if checked else "unchecked") + ("_disabled" if disabled else "")
+			theme.set_icon(state, "CheckButton", _svg_icon(_toggle_svg(checked, disabled)))
+			theme.set_icon(state, "CheckBox", _svg_icon(_check_svg(checked, disabled)))
+	for type in ["VScrollBar", "HScrollBar"]:
+		var track := _box(Color(PANEL, 0.35), 0)
+		track.set_content_margin_all(3)
+		theme.set_stylebox("scroll", type, track)
+		theme.set_stylebox("scroll_focus", type, track)
+		for state in ["grabber", "grabber_highlight", "grabber_pressed"]:
+			var grabber := _box(FOCUS if state == "grabber_pressed" else Color(TEXT_2, 0.75 if state == "grabber_highlight" else 0.45), 0)
+			grabber.set_content_margin_all(3)
+			grabber.set_corner_radius_all(3)
+			theme.set_stylebox(state, type, grabber)
+
+
+## Small vector icons drawn at the current text scale, so they stay crisp at every canvas size.
+static func _svg_icon(svg: String) -> ImageTexture:
+	var key := "%s@%.3f" % [svg, text_scale]
+	if not _icon_cache.has(key): # build() runs per screen; rasterize each icon once per text scale
+		var bitmap := Image.new()
+		bitmap.load_svg_from_string(svg, text_scale)
+		_icon_cache[key] = ImageTexture.create_from_image(bitmap)
+	return _icon_cache[key]
+
+
+## The Settings pill, shared by every on/off switch.
+static func _toggle_svg(checked: bool, disabled: bool) -> String:
+	var alpha := 0.45 if disabled else 1.0
+	return '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="24" opacity="%.2f"><rect x="1" y="1" width="42" height="22" rx="11" fill="%s" stroke="%s"/><circle cx="%d" cy="12" r="7" fill="%s"/></svg>' \
+		% [alpha, "#EABF66" if checked else "#26353D", "#EABF66" if checked else "#A8B2B5", 32 if checked else 12, "#111A20" if checked else "#F3F1EB"]
+
+
+## A square check for multiple-choice lists (overlay sets, failure options).
+static func _check_svg(checked: bool, disabled: bool) -> String:
+	var alpha := 0.45 if disabled else 1.0
+	var mark := '<path d="M6 12.5l4 4 8-9" fill="none" stroke="#111A20" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>' if checked else ""
+	return '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" opacity="%.2f"><rect x="1.5" y="1.5" width="21" height="21" rx="5" fill="%s" stroke="%s" stroke-width="1.5"/>%s</svg>' \
+		% [alpha, "#EABF66" if checked else "#26353D", "#EABF66" if checked else "#A8B2B5", mark]
 
 
 static func _box(color: Color, padding: int) -> StyleBoxFlat:
@@ -285,10 +328,7 @@ static func _settings(theme: Theme) -> void:
 	theme.set_constant("separation", "HSeparator", 12)
 
 	for checked in [false, true]:
-		var svg := '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="24"><rect x="1" y="1" width="42" height="22" rx="11" fill="%s" stroke="%s"/><circle cx="%d" cy="12" r="7" fill="%s"/></svg>' % ["#EABF66" if checked else "#26353D", "#EABF66" if checked else "#A8B2B5", 32 if checked else 12, "#111A20" if checked else "#F3F1EB"]
-		var bitmap := Image.new()
-		bitmap.load_svg_from_string(svg, text_scale)
-		theme.set_icon("checked" if checked else "unchecked", "SettingsToggle", ImageTexture.create_from_image(bitmap))
+		theme.set_icon("checked" if checked else "unchecked", "SettingsToggle", _svg_icon(_toggle_svg(checked, false)))
 
 
 static func _home(theme: Theme) -> void:

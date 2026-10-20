@@ -81,7 +81,8 @@ func _notification(what: int) -> void:
 func _ready() -> void:
 	_surface.resized.connect(_update_layout)
 	_update_layout()
-	_close_button.grab_focus.call_deferred()
+	# UI-35a (UI-30 AL-4): start on the first category, so a pad or keyboard moves straight into the settings.
+	(_category_buttons[0] if not _category_buttons.is_empty() else _close_button).grab_focus.call_deferred()
 
 
 func _build() -> void:
@@ -409,6 +410,8 @@ func _sync_action_buttons() -> void:
 	_revert_button.disabled = not dirty
 	if dirty and _trial_deadline_msec <= 0 and _status_state in ["saved", "reverted", "expired"]:
 		_set_status("instructions")
+	elif _status_state == "instructions":
+		_refresh_status_text() # the instructions say whether there is anything to keep
 	if _trial_deadline_msec <= 0 and _status_state == "trial":
 		_set_status("instructions")
 
@@ -489,7 +492,9 @@ func _refresh_status_text() -> void:
 		"saved": _status.text = tr("Settings saved.")
 		"reverted": _status.text = tr("Changes reverted. Saved settings restored.")
 		"save_error": _status.text = tr("Could not save settings (error %d).") % int(_status_value)
-		_: _status.text = tr("Preview · Close to undo")
+		# UI-36 (UI-30 SC-1): one transaction, stated plainly; Keep changes is the only commit.
+		_: _status.text = tr("Unsaved preview: Keep changes saves it, Close discards it.") if _draft != _saved \
+			else tr("Changes preview at once. Keep changes saves them; Close discards them.")
 
 
 func _select_metadata(picker: OptionButton, value: Variant) -> void:

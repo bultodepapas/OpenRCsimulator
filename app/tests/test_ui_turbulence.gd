@@ -95,7 +95,7 @@ func _dialog_flow() -> void:
 	var minimum: Vector2 = panel.get_combined_minimum_size()
 	_check("two-tab dialog fits the 1024×720 base layout", minimum.x <= 1024.0 and minimum.y <= 720.0, str(minimum))
 	_check("Wind & Gusts starts selected with all existing controls", dialog.tab_container.current_tab == 0
-		and dialog.field_inputs.size() == 6 and dialog.preset_picker.selected == 0)
+		and dialog.field_inputs.size() == 6 and dialog.preset_picker.selected == 1) # UI-36: calm opens on its Calm preset
 	_check("initial legacy config displays turbulence off with zero RMS", not dialog.turbulence_enabled.button_pressed
 		and dialog.turbulence_inputs["north_rms_mps"].text == "0"
 		and dialog.turbulence_inputs["east_rms_mps"].text == "0"
@@ -129,6 +129,10 @@ func _dialog_flow() -> void:
 	_check("keyboard focus scrolls the turbulence body to the seed field",
 		ui.focus_name() == "seed" and dialog.tab_scroll.scroll_vertical > 0,
 		"scroll=%d focus=%s" % [dialog.tab_scroll.scroll_vertical, ui.focus_name()])
+	# UI-35a (UI-30 SC-5): the first Escape ends the field edit; the second cancels the whole draft.
+	await ui.tap(KEY_ESCAPE)
+	await ui.settle()
+	_check("Escape while editing a field keeps the Conditions draft open", app.weather_dialog != null)
 	await ui.tap(KEY_ESCAPE)
 	await ui.settle()
 	_check("cancel discards turbulence draft and returns Home focus", app.weather_dialog == null

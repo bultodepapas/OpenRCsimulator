@@ -154,7 +154,7 @@ func _init(initial_scenario: Dictionary = {}) -> void:
 	error_label = _label("", "SecondaryLabel", true)
 	error_label.name = "BriefingError"
 	error_label.visible = false
-	error_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.62))
+	error_label.theme_type_variation = "ErrorLabel" # UI-35b (UI-30 VC-5): one error colour
 	content.add_child(error_label)
 	content.move_child(error_label, 0)
 

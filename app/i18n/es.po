@@ -4641,3 +4641,25 @@ msgstr "Preparando el vuelo…"
 
 msgid "Turbo Lumber"
 msgstr "Turbo Tronco"
+
+# UI-35b: controller status errors carry a word, not only a colour (UI-30 AL-3).
+msgid "Problem: %s"
+msgstr "Problema: %s"
+
+# UI-36: Help headings (UI-30 SC-4).
+msgid "STICKS"
+msgstr "PALANCAS"
+
+msgid "RECORDING AND DEVELOPER"
+msgstr "GRABACIÓN Y DESARROLLO"
+
+# UI-36: Settings transaction line (UI-30 SC-1).
+msgid "Unsaved preview: Keep changes saves it, Close discards it."
+msgstr "Vista previa sin guardar: Conservar cambios la guarda, Cerrar la descarta."
+
+msgid "Changes preview at once. Keep changes saves them; Close discards them."
+msgstr "Los cambios se previsualizan al instante. Conservar cambios los guarda; Cerrar los descarta."
+
+# UI-34b (HN-3, added for the parallel UI-34 session): caption above FLY on the Aircraft and Practice pages.
+msgid "Next flight: %s"
+msgstr "Próximo vuelo: %s"

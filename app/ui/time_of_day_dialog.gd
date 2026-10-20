@@ -114,7 +114,7 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 	error_label = _label("", "SecondaryLabel", true)
 	error_label.name = "ApplyError"
 	error_label.visible = false
-	error_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.62))
+	error_label.theme_type_variation = "ErrorLabel" # UI-35b (UI-30 VC-5): one error colour
 	panel_column.add_child(error_label)
 	var actions := Widgets.button_row()
 	cancel_button = Button.new()

@@ -79,13 +79,17 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	left.add_child(_text("WHILE FLYING", "SectionLabel"))
 	var right := _column(columns)
 	right.add_theme_constant_override("separation", 5)
-	right.add_child(_text("FLY", "SectionLabel"))
+	right.add_child(_text("STICKS", "SectionLabel")) # UI-36 (UI-30 SC-4): not to be confused with WHILE FLYING
 	if _vehicle_type == Reference.ROTORCRAFT:
 		left.add_child(_key_table(Reference.shortcut_table(_vehicle_type), 2, 340))
 		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
 	else:
 		# Keep the existing table widths and use compact row spacing so the complete reference fits at 720p.
-		left.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0] or KEY_V in row[0] or KEY_F2 in row[0]))))
+		var pilot_rows: Array = Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0] or KEY_V in row[0] or KEY_F2 in row[0]))
+		# UI-36 (UI-30 SC-4): recording and data-reload keys are tools, listed after what a pilot needs.
+		left.add_child(_key_table(pilot_rows.filter(func(row: Array) -> bool: return not _is_developer_row(row))))
+		left.add_child(_text("RECORDING AND DEVELOPER", "SectionLabel"))
+		left.add_child(_key_table(pilot_rows.filter(_is_developer_row)))
 		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
 		right.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return KEY_H in row[0] or KEY_J in row[0] or KEY_V in row[0] or KEY_F2 in row[0]), 4, 145))
 	right.add_child(_text("RADIO", "SectionLabel"))
@@ -207,6 +211,11 @@ func _key_table(rows: Array, columns := 2, description_width := 340) -> GridCont
 		what.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		grid.add_child(what)
 	return grid
+
+
+## Trace recording, the flight log and the data reload serve evidence and development rather than flying.
+static func _is_developer_row(row: Array) -> bool:
+	return KEY_T in row[0] or KEY_F10 in row[0] or KEY_F5 in row[0]
 
 
 static func _gap(height: int) -> Control:

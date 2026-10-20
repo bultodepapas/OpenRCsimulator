@@ -39,7 +39,9 @@ static func button_row(separation := 12) -> HBoxContainer:
 
 static func sidebar_fade(width: int) -> TextureRect:
 	var gradient := Gradient.new()
-	gradient.colors = PackedColorArray([UiTheme.SIDEBAR, Color(UiTheme.SIDEBAR, 0.0)])
+	# UI-35b (UI-30 AL-3): opaque panels continue into their fade.
+	gradient.colors = PackedColorArray([Color(UiTheme.SIDEBAR, 1.0) if UiTheme.opaque_panels else UiTheme.SIDEBAR,
+		Color(UiTheme.SIDEBAR, 0.0)])
 	var texture := GradientTexture2D.new()
 	texture.gradient = gradient
 	texture.width = 64
