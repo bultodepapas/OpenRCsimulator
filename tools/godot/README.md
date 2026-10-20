@@ -274,3 +274,67 @@ write against known allocations. Denied/unsupported counters, PID replacement,
 counter resets, bounded samples, scan errors and failed report writes have
 separate regressions. Real Godot test classes additionally require
 `OPENRC_TEST_GODOT`; a passing resource fixture does not establish a leak-free game.
+
+## Incident bundles and Perfetto timelines (PT1h-R5)
+
+Capture frame diagnostics and OS counters in the **same checked invocation**:
+
+```powershell
+$GodotDirect = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+$Frames = Join-Path (Get-Location) 'tmp/incident-frames.json'
+.tools/godot-diagnostics-venv/Scripts/python.exe tools/godot/run_checked.py --resources --resource-interval 1 --timeout 180 -- $GodotDirect --headless --path app --audio-driver Dummy --max-fps 60 -- --scripted "--frametimes=$Frames" --frame-diagnostics --warmup=1 --t=10
+```
+
+Use a fresh frame-output path for each capture. The runner prints the unique run
+directory. Replace `RUN_DIR` below with that directory; the two offline tools use
+only Python's standard library and never launch the game:
+
+```powershell
+python tools/godot/incident_bundle.py RUN_DIR --frames tmp/incident-frames.json --out tmp/incident.zip --note "Describe the trigger and expected behavior"
+python tools/godot/perfetto_export.py --frames tmp/incident-frames.json --resources RUN_DIR/resources.json --out tmp/timeline.json
+```
+
+Open `timeline.json` in [Perfetto](https://ui.perfetto.dev/) with **Open trace file**.
+Frame slices represent wall intervals, including waiting; counter names include
+units. Process CPU, RSS, I/O, system memory and volume capacity retain their
+separate meanings from the resource guide above. GPU zero readings are omitted
+as unavailable-or-zero. Headless runs cannot establish GPU performance. Viewport
+timers may describe a previous render frame; coincident spikes do not prove cause.
+Remove `--headless` for a visible capture with the active graphics backend.
+
+Combined timelines require matching nonempty capture IDs and two clock anchors
+from both producers. Each timeline keeps its monotonic durations; UTC anchors
+only estimate alignment across processes. The trace records uncertainty and
+observed drift. The 20 ms per-anchor floor is an estimate, not an OS guarantee;
+brief clock excursions between anchors can escape detection. Detected drift
+beyond the allowance rejects the merge. `--max-clock-drift-ms` defaults to 50
+(range 0–1,000), in addition to anchor uncertainty. Avoid using this alignment
+to attribute individual short frames to OS samples. Older reports can be viewed
+one at a time with just `--frames` or `--resources`.
+
+The exporter validates source structure and emits explicit partial status for
+retained incomplete prefixes. Unknown measurements are never converted to zero.
+It exports a fixed set of known counters; unsupported metric names are listed in
+trace metadata and omitted from tracks.
+The combined input budget defaults to 64 MiB (`--max-input-bytes`, maximum
+256 MiB); the event budget defaults to 500,000 (`--max-events`, maximum 1,000,000).
+It exits 0 for a complete export, 1 for partial evidence or invalid sources, and
+2 for configuration, budget or output errors. Inspect the message: invalid
+sources produce no trace. All output paths must be new.
+
+An incident ZIP contains only the checked receipt, engine log, declared resource
+attachment and explicitly selected frame/flight-log attachments. It includes a
+manifest with hashes, association checks and missing/corrupt evidence. It never
+recursively collects the run folder. `--flight-log PATH.orfl` preserves an opaque,
+caller-selected attachment; packaging does not validate replay or prove that the
+flight log belongs to this run. The [flight logging workflow](../../docs/FLIGHT-LOGGING.md)
+remains authoritative for replay. Logs, command arguments and paths are retained
+verbatim; the tool does not upload them.
+
+Bundle completeness and the engine verdict are separate: successfully preserving
+a failed run does not make the run pass. Review the manifest and console summary.
+The bundle exits 0 when complete, 1 when evidence is partial, and 2 on
+configuration/output errors. Its per-file budget is 64 MiB (`--max-input-bytes`,
+maximum 256 MiB), with 256 MiB total (`--max-total-bytes`, maximum 1 GiB).
+Oversized attachments are omitted with a manifest issue. Stop capture producers
+before packaging so their files form a stable snapshot.

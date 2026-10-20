@@ -267,8 +267,9 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
     if resources:
         resource_path = directory / "resources.json"
         try:
-            resource_report = sampler.finish() if sampler is not None else {
-                "format": "openrc-resource-samples v1", "coverage": "no_samples", "samples": []}
+            if sampler is None:
+                raise RuntimeError(resource_failure or "resource sampler was not started; no resource artifact is available")
+            resource_report = sampler.finish()
             if resource_failure:
                 resource_report["coverage"] = "partial"
                 resource_report["runner_sampler_error"] = resource_failure

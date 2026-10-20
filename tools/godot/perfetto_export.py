@@ -11,6 +11,7 @@ import json
 import math
 import os
 from pathlib import Path
+import stat
 import sys
 from typing import Any
 
@@ -105,6 +106,12 @@ _INTEGER_RESOURCE_FIELDS = {
 _VOLUME_FIELDS = ("free_bytes", "total_bytes")
 _ALLOWED_COVERAGE = {"sampled", "partial", "no_samples", "capped"}
 _ALLOWED_MEASUREMENT_STATUS = {"ok", "partial", "unavailable"}
+_ALLOWED_FIELD_STATUSES = {
+    "ok", "disabled", "insufficient_samples", "insufficient_elapsed_time",
+    "dependency_unavailable", "counter_reset", "unsupported", "unknown",
+    "invalid", "denied", "process_unavailable", "unavailable", "error",
+}
+_ENGINE_FRAME_METRICS = {"fps_monitor", "sim_tick", "sim_time_s", "invalid_value_count"}
 
 
 def _strict_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -122,8 +129,22 @@ def _reject_constant(value: str) -> None:
 
 def _read_json(path: Path, byte_limit: int) -> tuple[dict[str, Any], int]:
     try:
-        with path.open("rb") as stream:
+        before = path.stat()
+        if not stat.S_ISREG(before.st_mode):
+            raise SourceError(f"source {path} must be a regular file")
+        if before.st_size > byte_limit:
+            raise BudgetError(f"combined source input exceeds the {byte_limit}-byte limit")
+        flags = os.O_RDONLY | getattr(os, "O_BINARY", 0) | getattr(os, "O_NONBLOCK", 0)
+        descriptor = os.open(path, flags)
+        with os.fdopen(descriptor, "rb") as stream:
+            current = os.fstat(stream.fileno())
+            if not stat.S_ISREG(current.st_mode):
+                raise SourceError(f"source {path} must be a regular file")
+            if current.st_size > byte_limit:
+                raise BudgetError(f"combined source input exceeds the {byte_limit}-byte limit")
             data = stream.read(byte_limit + 1)
+    except ExportError:
+        raise
     except OSError as error:
         raise SourceError(f"cannot read source {path}: {error}") from error
     if len(data) > byte_limit:
@@ -166,7 +187,12 @@ def read_sources(*, frames_path: Path | None = None, resources_path: Path | None
 
 
 def _is_number(value: Any) -> bool:
-    return type(value) in (int, float) and math.isfinite(float(value))
+    if type(value) not in (int, float):
+        return False
+    try:
+        return math.isfinite(float(value))
+    except (OverflowError, TypeError, ValueError):
+        return False
 
 
 def _safe_integer(value: Any, label: str, *, positive: bool = False) -> int:
@@ -180,6 +206,10 @@ def _nonempty_string(value: Any, label: str, *, max_length: int = 256) -> str:
     if not isinstance(value, str) or not value.strip() or len(value) > max_length:
         raise SourceError(f"{label} must be a non-empty string of at most {max_length} characters")
     return value
+
+
+def _metadata_string(value: Any, limit: int = 256) -> str | None:
+    return value[:limit] if isinstance(value, str) else None
 
 
 def _validate_clock(value: Any, expected_source: str, label: str) -> dict[str, Any]:
@@ -224,6 +254,10 @@ def _resource_clock(report: dict[str, Any]) -> dict[str, Any] | None:
 def _capture_id(report: dict[str, Any], label: str) -> str | None:
     if "capture_id" not in report:
         return None
+    if label == "frames" and report.get("capture_id") == "":
+        # Direct engine invocations can lack the runner's capture identity.
+        # They remain useful as a standalone relative trace, never as a join.
+        return None
     return _nonempty_string(report.get("capture_id"), f"{label}.capture_id")
 
 
@@ -243,19 +277,23 @@ def _validate_frames(report: dict[str, Any]) -> tuple[dict[str, Any], bool, dict
     for key, values in raw_metrics.items():
         if not isinstance(key, str) or not isinstance(values, list) or len(values) != count:
             raise SourceError(f"raw_metrics.{key} must contain exactly {count} samples")
+        if key in _FRAME_METRICS:
+            for index, value in enumerate(values):
+                if _is_number(value) and float(value) < 0:
+                    raise SourceError(f"raw_metrics.{key}[{index}] must be non-negative")
+    invalid_counts = raw_metrics.get("invalid_value_count")
+    if invalid_counts is not None:
+        for index, value in enumerate(invalid_counts):
+            if not _is_number(value) or value < 0 or not float(value).is_integer():
+                raise SourceError(f"raw_metrics.invalid_value_count[{index}] must be a non-negative integer")
 
     _capture_id(report, "frames")
     _frame_clock(report)
     partial = report.get("complete") is False
-    validation_report = report
-    if partial:
-        # validate_native_report correctly rejects incomplete reports. Validate
-        # the retained prefix as complete on a shallow copy, removing only that
-        # explicit completeness error and its dependent failure-text constraint.
-        validation_report = dict(report)
-        validation_report["complete"] = True
-        validation_report["failure"] = ""
-    errors, derived = validate_native_report(validation_report)
+    try:
+        errors, derived = validate_native_report(report)
+    except (RecursionError, OverflowError, TypeError, ValueError) as error:
+        raise SourceError(f"frame source validation failed safely: {error}") from error
     if partial:
         errors = [error for error in errors if error != "report is marked incomplete"]
     if errors or derived is None:
@@ -282,19 +320,45 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
     if type(sample_count) is not int or sample_count != len(samples):
         raise SourceError("sample_count must equal the number of samples")
     coverage = report.get("coverage")
-    if coverage not in _ALLOWED_COVERAGE:
+    if not isinstance(coverage, str) or coverage not in _ALLOWED_COVERAGE:
         raise SourceError("resource coverage must be sampled, partial, no_samples, or capped")
     measurement_status = report.get("measurement_status")
-    if measurement_status not in _ALLOWED_MEASUREMENT_STATUS:
+    if not isinstance(measurement_status, str) or measurement_status not in _ALLOWED_MEASUREMENT_STATUS:
         raise SourceError("resource measurement_status must be ok, partial, or unavailable")
     if (coverage == "no_samples") != (sample_count == 0):
         raise SourceError("no_samples coverage must agree with an empty samples array")
     if coverage == "capped" and report.get("capped") is not True:
         raise SourceError("capped coverage requires capped=true")
-    if type(report.get("error_count")) is not int or report["error_count"] < 0:
-        raise SourceError("resource error_count must be a non-negative integer")
+    if type(report.get("error_count")) is not int or not 0 <= report["error_count"] <= MAX_SAFE_INTEGER:
+        raise SourceError("resource error_count must be a non-negative safe integer")
     if type(report.get("capped")) is not bool:
         raise SourceError("resource capped must be a boolean")
+    if report["capped"] != (coverage == "capped"):
+        raise SourceError("resource capped flag must agree with coverage")
+    if (sample_count == 0) != (measurement_status == "unavailable"):
+        raise SourceError("unavailable measurement status must agree with no_samples coverage")
+    errors = report.get("errors")
+    if not isinstance(errors, list) or len(errors) > 20:
+        raise SourceError("resource errors must be an array of at most 20 entries")
+    if type(report.get("errors_truncated")) is not bool:
+        raise SourceError("resource errors_truncated must be a boolean")
+    if report["error_count"] < len(errors) or report["errors_truncated"] != (report["error_count"] > len(errors)):
+        raise SourceError("resource error_count/errors_truncated do not match the bounded errors array")
+    for index, error in enumerate(errors):
+        if (not isinstance(error, dict)
+                or not isinstance(error.get("code"), str) or not 1 <= len(error["code"]) <= 80
+                or not isinstance(error.get("field"), str) or not 1 <= len(error["field"]) <= 120
+                or not isinstance(error.get("message"), str) or len(error["message"]) > 500):
+            raise SourceError(f"resource errors[{index}] must have bounded code, field, and message strings")
+    platform = report.get("platform")
+    if platform is not None and (not isinstance(platform, str) or len(platform) > 128):
+        raise SourceError("resource platform must be a short string")
+    scope = report.get("scope")
+    if scope is not None:
+        if not isinstance(scope, dict) or len(scope) > 12:
+            raise SourceError("resource scope must be an object with at most 12 entries")
+        if any(not isinstance(key, str) or not isinstance(value, str) or len(value) > 500 for key, value in scope.items()):
+            raise SourceError("resource scope values must be bounded strings")
 
     previous_elapsed = -1.0
     common_volume_paths: list[str] | None = None
@@ -312,13 +376,15 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
         statuses = sample.get("field_status")
         if not isinstance(statuses, dict):
             raise SourceError(f"samples[{index}].field_status must be an object")
+        if len(statuses) > 80:
+            raise SourceError(f"samples[{index}].field_status exceeds the 80-entry schema limit")
 
         values: dict[str, int | float] = {}
         for field in _RESOURCE_METRICS:
             if field not in sample or field not in statuses:
                 raise SourceError(f"samples[{index}] is missing {field} or its field_status")
             status = statuses[field]
-            if not isinstance(status, str) or not status:
+            if not isinstance(status, str) or status not in _ALLOWED_FIELD_STATUSES:
                 raise SourceError(f"samples[{index}].field_status.{field} must be a non-empty string")
             bucket = status_counts.setdefault(field, {})
             bucket[status] = bucket.get(status, 0) + 1
@@ -328,8 +394,14 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
                 if field in _INTEGER_RESOURCE_FIELDS and type(value) is not int:
                     raise SourceError(f"samples[{index}].{field} must be an integer byte/count value")
                 values[field] = value
-            elif value is not None and not _is_number(value):
-                raise SourceError(f"samples[{index}].{field} must be numeric or null when status is {status!r}")
+            elif value is not None:
+                raise SourceError(f"samples[{index}].{field} must be null when status is {status!r}")
+            neutral_status = status == "ok" or (status == "disabled" and field == "num_threads")
+            neutral_status = neutral_status or (
+                status == "insufficient_samples" and field == "cpu_percent" and index == 0
+            )
+            if not neutral_status:
+                partial = True
 
         volumes = sample.get("volumes")
         if not isinstance(volumes, list) or len(volumes) > 8:
@@ -347,7 +419,7 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
                 if field not in volume or status_key not in statuses:
                     raise SourceError(f"samples[{index}].volumes[{volume_index}] is missing {field} or {status_key}")
                 status = statuses[status_key]
-                if not isinstance(status, str) or not status:
+                if not isinstance(status, str) or status not in _ALLOWED_FIELD_STATUSES:
                     raise SourceError(f"samples[{index}].field_status.{status_key} must be a non-empty string")
                 bucket = status_counts.setdefault(status_key, {})
                 bucket[status] = bucket.get(status, 0) + 1
@@ -357,13 +429,20 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
                     if type(value) is not int:
                         raise SourceError(f"samples[{index}].volumes[{volume_index}].{field} must be an integer")
                     normalized_volume["values"][field] = value
-                elif value is not None and not _is_number(value):
-                    raise SourceError(f"samples[{index}].volumes[{volume_index}].{field} must be numeric or null when status is {status!r}")
+                elif value is not None:
+                    raise SourceError(f"samples[{index}].volumes[{volume_index}].{field} must be null when status is {status!r}")
+                if status != "ok":
+                    partial = True
             normalized_volumes.append(normalized_volume)
         if common_volume_paths is None:
             common_volume_paths = volume_paths
         elif volume_paths != common_volume_paths:
             raise SourceError("volume paths and order must remain stable across resource samples")
+        expected_status_fields = set(_RESOURCE_METRICS)
+        for volume_index in range(len(volumes)):
+            expected_status_fields.update(f"volume[{volume_index}].{field}" for field in _VOLUME_FIELDS)
+        if set(statuses) != expected_status_fields:
+            raise SourceError(f"samples[{index}].field_status does not match the resource sample schema")
 
         normalized_samples.append({
             "elapsed_seconds": elapsed_float,
@@ -379,6 +458,16 @@ def _validate_resources(report: dict[str, Any]) -> tuple[dict[str, Any], bool, d
         "capped": report["capped"],
         "stop_reason": report.get("stop_reason") if isinstance(report.get("stop_reason"), str) else None,
         "status_counts": status_counts,
+        "partial_fields": {
+            field: dict(statuses)
+            for field, statuses in status_counts.items()
+            if any(
+                status != "ok"
+                and not (status == "disabled" and field == "num_threads")
+                and not (status == "insufficient_samples" and field == "cpu_percent" and count == 1)
+                for status, count in statuses.items()
+            )
+        },
         "volume_paths": common_volume_paths or [],
         "samples": normalized_samples,
     }
@@ -412,6 +501,13 @@ def _combined_clock(frame_clock: dict[str, Any], resource_clock: dict[str, Any],
         "alignment": "each monotonic timeline mapped by its start UNIX-minus-monotonic offset",
         "uncertainty_floor_usec": UNCERTAINTY_FLOOR_USEC,
         "combined_uncertainty_usec": combined_uncertainty,
+        "uncertainty_semantics": "anchor uncertainty estimate, not a guaranteed operating-system bound",
+        "effective_uncertainty_usec": {
+            "frame_start": _effective_uncertainty(frame_clock["start"]),
+            "frame_end": _effective_uncertainty(frame_clock["end"]),
+            "resource_start": _effective_uncertainty(resource_clock["start"]),
+            "resource_end": _effective_uncertainty(resource_clock["end"]),
+        },
         "max_clock_drift_usec": max_drift_usec,
         "frame_offset_start_usec": frame_offset_start,
         "resource_offset_start_usec": resource_offset_start,
@@ -422,6 +518,19 @@ def _combined_clock(frame_clock: dict[str, Any], resource_clock: dict[str, Any],
         "allowed_drift_usec": allowed,
     }
     return metadata, frame_offset_start, resource_offset_start
+
+
+def _check_clock_coverage(clock: dict[str, Any], first_usec: int, last_usec: int,
+                          label: str, max_clock_drift_ms: float) -> None:
+    start = clock["start"]
+    end = clock["end"]
+    lower = start["monotonic_usec"] - _effective_uncertainty(start) - int(round(max_clock_drift_ms * 1000.0))
+    upper = end["monotonic_usec"] + _effective_uncertainty(end) + int(round(max_clock_drift_ms * 1000.0))
+    if first_usec < lower or last_usec > upper:
+        raise SourceError(
+            f"{label} sample timestamps fall outside their monotonic clock anchors "
+            f"(data {first_usec}..{last_usec}, allowed {lower}..{upper})"
+        )
 
 
 def _chrome_timestamp(value: int, label: str) -> int:
@@ -448,7 +557,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
         raise BudgetError("provide at least one source")
     if type(max_events) is not int or not 1 <= max_events <= MAX_EVENTS:
         raise BudgetError(f"max_events must be between 1 and {MAX_EVENTS}")
-    if (type(max_clock_drift_ms) not in (int, float) or not math.isfinite(float(max_clock_drift_ms))
+    if (type(max_clock_drift_ms) not in (int, float) or not _is_number(max_clock_drift_ms)
             or not 0 <= float(max_clock_drift_ms) <= 1000):
         raise BudgetError("max_clock_drift_ms must be finite and between 0 and 1000")
 
@@ -482,10 +591,31 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
         frame_frame_starts = [int(end) - int(wall) for end, wall in zip(
             normalized_frames["frame_end_monotonic_usec"], normalized_frames["frame_wall_usec"]
         )]
-        frame_first_utc = frame_frame_starts[0] + frame_offset
+        _check_clock_coverage(
+            frame_clock, frame_frame_starts[0], int(normalized_frames["frame_end_monotonic_usec"][-1]),
+            "frame", float(max_clock_drift_ms),
+        )
         resource_samples = resource_info["samples"]
         if resource_samples:
+            resource_first_monotonic = resource_clock["origin_usec"] + int(round(resource_samples[0]["elapsed_seconds"] * 1_000_000))
+            resource_last_monotonic = resource_clock["origin_usec"] + int(round(resource_samples[-1]["elapsed_seconds"] * 1_000_000))
+            _check_clock_coverage(
+                resource_clock, resource_first_monotonic, resource_last_monotonic,
+                "resource", float(max_clock_drift_ms),
+            )
+        frame_first_utc = frame_frame_starts[0] + frame_offset
+        if resource_samples:
             resource_first_utc = resource_clock["origin_usec"] + int(round(resource_samples[0]["elapsed_seconds"] * 1_000_000)) + resource_offset
+            frame_last_utc = int(normalized_frames["frame_end_monotonic_usec"][-1]) + frame_offset
+            resource_last_utc = resource_clock["origin_usec"] + int(round(resource_samples[-1]["elapsed_seconds"] * 1_000_000)) + resource_offset
+            overlap_allowance = clock_metadata["combined_uncertainty_usec"] + clock_metadata["max_clock_drift_usec"]
+            if frame_last_utc + overlap_allowance < resource_first_utc or resource_last_utc + overlap_allowance < frame_first_utc:
+                raise SourceError("clock-aligned frame and resource data windows do not overlap within the clock uncertainty allowance")
+            clock_metadata["frame_data_utc_bounds_usec"] = [frame_first_utc, frame_last_utc]
+            clock_metadata["resource_data_utc_bounds_usec"] = [resource_first_utc, resource_last_utc]
+            clock_metadata["data_window_overlap_usec"] = max(
+                0, min(frame_last_utc, resource_last_utc) - max(frame_first_utc, resource_first_utc)
+            )
         else:
             resource_first_utc = None
         zero_utc = min(frame_first_utc, resource_first_utc) if resource_first_utc is not None else frame_first_utc
@@ -522,37 +652,64 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
 
     sources: dict[str, Any] = {}
     issues: list[str] = []
+    frame_metric_partial = False
     if normalized_frames is not None:
         raw_metrics = normalized_frames["raw_metrics"]
         frame_diagnostics = normalized_frames.get("frame_diagnostics")
+        invalid_counts = raw_metrics.get("invalid_value_count")
+        invalid_frame_indexes = {
+            index for index, value in enumerate(invalid_counts or []) if float(value) > 0
+        }
         gpu_available = (
             frame_diagnostics.get("render_timing_available")
             if isinstance(frame_diagnostics, dict) and type(frame_diagnostics.get("render_timing_available")) is bool
             else None
         )
         gpu_values = raw_metrics.get("render_gpu_ms")
-        gpu_zero_count = sum(value == 0 for value in gpu_values) if isinstance(gpu_values, list) else 0
-        gpu_positive_count = sum(value > 0 for value in gpu_values) if isinstance(gpu_values, list) else 0
+        valid_gpu_values = [
+            value for index, value in enumerate(gpu_values)
+            if index not in invalid_frame_indexes
+        ] if isinstance(gpu_values, list) else []
+        gpu_zero_count = sum(value == 0 for value in valid_gpu_values)
+        gpu_positive_count = sum(value > 0 for value in valid_gpu_values)
         gpu_contradictory = gpu_available is False and gpu_positive_count > 0
         frame_metrics = [key for key in raw_metrics if key in _FRAME_METRICS]
         unknown_metrics = [key for key in raw_metrics if key not in _FRAME_METRICS]
+        unknown_metric_names = [str(key)[:128] for key in unknown_metrics[:32]]
+        observer_samples_omitted = 0
+        frame_metric_partial = bool(invalid_frame_indexes or gpu_contradictory)
         frame_gaps = normalized_frames.get("failure", "")
         if frame_partial:
             issues.append(f"frame capture is incomplete: {str(frame_gaps)[:500] or 'retained prefix'}")
         if unknown_metrics:
-            issues.append("unexported frame metrics: " + ", ".join(unknown_metrics[:32]))
+            issues.append("unexported frame metrics: " + ", ".join(unknown_metric_names))
+        if invalid_frame_indexes:
+            issues.append(
+                f"observer counter samples omitted for {len(invalid_frame_indexes)} frame(s) "
+                "with invalid_value_count > 0"
+            )
         if gpu_contradictory:
             issues.append("positive GPU timer samples conflict with render_timing_available=false; GPU counters omitted")
+        diagnostics_metadata: dict[str, Any] = {}
+        if isinstance(frame_diagnostics, dict):
+            for key in ("enabled", "headless", "render_timing_available"):
+                if type(frame_diagnostics.get(key)) is bool:
+                    diagnostics_metadata[key] = frame_diagnostics[key]
+            if isinstance(frame_diagnostics.get("viewport_scope"), str):
+                diagnostics_metadata["viewport_scope"] = frame_diagnostics["viewport_scope"][:256]
         sources["frames"] = {
             "file": Path(frame_source).name,
             "format": normalized_frames["format"],
             "complete": normalized_frames["complete"],
             "frame_count": normalized_frames["frames"],
-            "route": normalized_frames.get("route"),
-            "case_id": normalized_frames.get("case_id"),
-            "backend": normalized_frames.get("backend"),
+            "route": _metadata_string(normalized_frames.get("route")),
+            "case_id": _metadata_string(normalized_frames.get("case_id")),
+            "backend": _metadata_string(normalized_frames.get("backend")),
             "raw_metric_names": frame_metrics,
-            "unknown_metric_names": unknown_metrics[:32],
+            "unknown_metric_names": unknown_metric_names,
+            "unknown_metric_count": len(unknown_metrics),
+            "invalid_observer_frame_count": len(invalid_frame_indexes),
+            "observer_counter_samples_omitted": 0,
             "gpu_timer": {
                 "timing_available": gpu_available,
                 "zero_samples": gpu_zero_count,
@@ -561,14 +718,12 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                     "contradictory_timing_unavailable" if gpu_contradictory else
                     "positive_samples_with_zero_sentinels" if gpu_positive_count and gpu_zero_count else
                     "measured_positive_samples" if gpu_positive_count else
+                    "invalid_samples_omitted" if gpu_values is not None and invalid_frame_indexes else
                     "unavailable_or_zero" if gpu_values is not None else "not_reported"
                 ),
+                "invalid_frames_omitted": len(invalid_frame_indexes),
             },
-            "frame_diagnostics": {
-                key: frame_diagnostics[key]
-                for key in ("enabled", "headless", "render_timing_available", "viewport_scope")
-                if isinstance(frame_diagnostics, dict) and key in frame_diagnostics
-            },
+            "frame_diagnostics": diagnostics_metadata,
         }
         if isinstance(frame_diagnostics, dict):
             for issue in frame_diagnostics.get("issues", []) if isinstance(frame_diagnostics.get("issues"), list) else []:
@@ -582,7 +737,6 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                 frame_starts, normalized_frames["frame_end_monotonic_usec"], normalized_frames["frame_wall_usec"])):
             if normalized_resources is not None:
                 start_utc = start + frame_offset
-                end_utc = int(end) + frame_offset
                 base = clock_metadata["zero_utc_usec"]
                 ts = _chrome_timestamp(start_utc - base, f"frames[{index}].ts")
             else:
@@ -605,6 +759,9 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             unit = _FRAME_METRICS[key]
             track = f"frame.{key} [{unit}]"
             for index, value in enumerate(values):
+                if index in invalid_frame_indexes and key not in _ENGINE_FRAME_METRICS:
+                    observer_samples_omitted += 1
+                    continue
                 if key == "render_gpu_ms" and value == 0:
                     continue
                 end = int(normalized_frames["frame_end_monotonic_usec"][index])
@@ -617,6 +774,7 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
                     "pid": 1, "tid": 1, "ts": _chrome_timestamp(timestamp, f"{track}[{index}].ts"),
                     "ph": "C", "name": track, "cat": "frame_metric", "args": {"value": value},
                 }, max_events)
+        sources["frames"]["observer_counter_samples_omitted"] = observer_samples_omitted
 
     if normalized_resources is not None:
         report = normalized_resources
@@ -624,6 +782,8 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             issues.append(
                 f"resource capture coverage={resource_info['coverage']}, measurement_status={resource_info['measurement_status']}"
             )
+        if resource_info["partial_fields"]:
+            issues.append("resource fields contain unavailable samples: " + ", ".join(list(resource_info["partial_fields"])[:32]))
         if resource_info["error_count"]:
             issues.append(f"resource sampler reported {resource_info['error_count']} error(s)")
         for field, (scope, unit) in _RESOURCE_METRICS.items():
@@ -663,6 +823,11 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
         sources["resources"] = {
             "file": Path(resource_source).name,
             "format": report["format"],
+            "platform": _metadata_string(report.get("platform"), 128),
+            "pid": report.get("pid") if type(report.get("pid")) is int and 0 <= report["pid"] <= MAX_SAFE_INTEGER else None,
+            "process_create_time": report.get("process_create_time") if _is_number(report.get("process_create_time")) else None,
+            "psutil_version": _metadata_string(report.get("psutil_version"), 64),
+            "scope": report.get("scope", {}),
             "coverage": resource_info["coverage"],
             "measurement_status": resource_info["measurement_status"],
             "sample_count": resource_info["sample_count"],
@@ -670,20 +835,24 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
             "capped": resource_info["capped"],
             "stop_reason": resource_info["stop_reason"],
             "field_status_counts": resource_info["status_counts"],
+            "partial_fields": resource_info["partial_fields"],
             "volume_paths": resource_info["volume_paths"],
         }
         source_errors = report.get("errors")
         if isinstance(source_errors, list):
             for error in source_errors[:20]:
                 if isinstance(error, dict):
-                    status = error.get("status")
+                    code = error.get("code")
                     field = error.get("field")
                     message = error.get("message")
-                    if all(isinstance(part, str) for part in (status, field, message)):
-                        issues.append(f"resource {status} {field}: {message[:300]}")
+                    if all(isinstance(part, str) for part in (code, field, message)):
+                        issues.append(f"resource {code} {field}: {message[:300]}")
 
+    partial = frame_partial or resource_partial or frame_metric_partial
     metadata = {
         "capture_id": capture_id,
+        "complete": not partial,
+        "partial": partial,
         "sources": sources,
         "source_issues": issues[:64],
         "clock": clock_metadata,
@@ -694,7 +863,6 @@ def build_trace(*, frames: dict[str, Any] | None = None, resources: dict[str, An
         "trace_event_count_before_metadata": len(events),
     }
     _make_event(events, _metadata_event(metadata), max_events)
-    partial = frame_partial or resource_partial
     return events, partial
 
 
@@ -703,7 +871,7 @@ def _validate_cli_budgets(max_input_bytes: int, max_events: int, max_clock_drift
         raise BudgetError(f"--max-input-bytes must be between 1 and {MAX_INPUT_BYTES}")
     if type(max_events) is not int or not 1 <= max_events <= MAX_EVENTS:
         raise BudgetError(f"--max-events must be between 1 and {MAX_EVENTS}")
-    if (type(max_clock_drift_ms) not in (int, float) or not math.isfinite(float(max_clock_drift_ms))
+    if (type(max_clock_drift_ms) not in (int, float) or not _is_number(max_clock_drift_ms)
             or not 0 <= float(max_clock_drift_ms) <= 1000):
         raise BudgetError("--max-clock-drift-ms must be finite and between 0 and 1000")
 

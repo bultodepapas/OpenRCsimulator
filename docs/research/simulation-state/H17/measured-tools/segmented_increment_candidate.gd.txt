@@ -1,0 +1,88 @@
+static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, b: float, c0: float, slope: float,
+		along: float, d2: float, centre: PackedFloat64Array, ax: PackedFloat64Array, core: float, swirl: float,
+		wash: PackedFloat64Array, state: PackedFloat64Array, v: PackedFloat64Array, d: Dictionary, model: Dictionary,
+		rho: float, wing_cl: float, subdivisions: int = 1) -> PackedFloat64Array:
+	var cuts: Array[float] = [a, b]
+	if core * core > d2:
+		var core_half := M.sqrt_(core * core - d2)
+		for cut: float in [-along - core_half, -along + core_half]:
+			if cut > a and cut < b:
+				cuts.append(cut)
+	if -along > a and -along < b:
+		cuts.append(-along)
+	cuts.sort()
+	if subdivisions > 1:
+		var fine: Array[float] = []
+		for j in cuts.size() - 1:
+			for k in subdivisions:
+				fine.append(cuts[j] + (cuts[j + 1] - cuts[j]) * float(k) / subdivisions)
+		fine.append(cuts[-1])
+		cuts = fine
+	var root: PackedFloat64Array = piece.root
+	var e: PackedFloat64Array = piece.span_dir
+	var span: float = piece.span
+	var full: float = c0 * span + 0.5 * slope * span * span
+	var cg: PackedFloat64Array = model.cg_le
+	var tail_pos: PackedFloat64Array = tail.position
+	var law := _tail_law(tail, model.surfaces, d, piece.surface == "vertical", wing_cl, rho)
+	# Cache the geometry arrays once; the quadrature samples reuse these exact scalar values.
+	var root_0: float = root[0]
+	var root_1: float = root[1]
+	var root_2: float = root[2]
+	var e_0: float = e[0]
+	var e_1: float = e[1]
+	var e_2: float = e[2]
+	var centre_0: float = centre[0]
+	var centre_1: float = centre[1]
+	var centre_2: float = centre[2]
+	var ax_0: float = ax[0]
+	var ax_1: float = ax[1]
+	var ax_2: float = ax[2]
+	var p: float = state[RB.RATE]
+	var q: float = state[RB.RATE + 1]
+	var r: float = state[RB.RATE + 2]
+	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	for j in cuts.size() - 1:
+		var lo: float = cuts[j]
+		var hi: float = cuts[j + 1]
+		var segment_area: float = (c0 * hi + 0.5 * slope * hi * hi) - (c0 * lo + 0.5 * slope * lo * lo)
+		if segment_area <= 0.0:
+			continue
+		var eta: float = ((0.5 * c0 * hi * hi + slope * hi * hi * hi / 3.0) - (0.5 * c0 * lo * lo + slope * lo * lo * lo / 3.0)) / segment_area
+		var s0 := 0.0
+		var s1 := 0.0
+		var s2 := 0.0
+		var weights := 0.0
+		var gauss_middle: float = 0.5 * (lo + hi)
+		var gauss_half: float = 0.5 * (hi - lo)
+		for k in 5:
+			var x: float = gauss_middle + gauss_half * PROFILE_X[k]
+			var weight: float = (c0 + slope * x) * PROFILE_W[k]
+			var rb0: float = -(root_0 + e_0 * x - centre_0)
+			var rb1: float = root_1 + e_1 * x - centre_1
+			var rb2: float = -(root_2 + e_2 * x - centre_2)
+			var axial: float = rb0 * ax_0 + rb1 * ax_1 + rb2 * ax_2
+			rb0 -= ax_0 * axial
+			rb1 -= ax_1 * axial
+			rb2 -= ax_2 * axial
+			var radius: float = maxf(M.sqrt_(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), core)
+			var scale: float = swirl / (radius * radius) * weight
+			s0 += (ax_1 * rb2 - ax_2 * rb1) * scale
+			s1 += (ax_2 * rb0 - ax_0 * rb2) * scale
+			s2 += (ax_0 * rb1 - ax_1 * rb0) * scale
+			weights += weight
+		s0 /= weights
+		s1 /= weights
+		s2 /= weights
+		# Segment centroid on the span line; its arm follows the legacy piece convention (shift from the surface position).
+		var arm_0: float = -(tail_pos[0] - cg[0])
+		var arm_1: float = tail_pos[1] - cg[1] + (root[1] + e[1] * eta - tail_pos[1])
+		var arm_2: float = -(tail_pos[2] - cg[2]) - (root[2] + e[2] * eta - tail_pos[2])
+		var rate_0: float = q * arm_2 - r * arm_1
+		var rate_1: float = r * arm_0 - p * arm_2
+		var rate_2: float = p * arm_1 - q * arm_0
+		var area: float = float(piece.area) * segment_area / full
+		_add_tail_load(out, law, 1.0, v[0] + (wash[0] - s0) + rate_0, v[1] + (wash[1] - s1) + rate_1, v[2] + (wash[2] - s2) + rate_2,
+			arm_0, arm_1, arm_2, area)
+		_add_tail_load(out, law, -1.0, v[0] + rate_0, v[1] + rate_1, v[2] + rate_2, arm_0, arm_1, arm_2, area)
+	return out

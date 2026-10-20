@@ -77,7 +77,9 @@ class ResourceRunnerTests(unittest.TestCase):
         factory.side_effect = RuntimeError("attach failed")
         checked = self.run_code(resources=True)
         self.assertTrue(checked["ok"])
-        self.assertIn("attach failed", self.resource_report(checked)["runner_sampler_error"])
+        self.assertIn("attach failed", checked["resources"]["error"])
+        self.assertFalse(checked["resources"]["published"])
+        self.assertFalse((Path(checked["report"]).parent / "resources.json").exists())
         factory.side_effect = None
         factory.return_value.finish.side_effect = RuntimeError("finish failed")
         checked = self.run_code(resources=True)
@@ -101,7 +103,9 @@ class ResourceRunnerTests(unittest.TestCase):
         checked = run_checked([str(self.root / "missing")], self.root, resources=True)
         self.assertEqual(checked["reason"], "launch_error")
         factory.assert_not_called()
-        self.assertEqual(self.resource_report(checked)["coverage"], "no_samples")
+        self.assertEqual(checked["resources"]["coverage"], "unavailable")
+        self.assertFalse(checked["resources"]["published"])
+        self.assertFalse((Path(checked["report"]).parent / "resources.json").exists())
 
     def test_disk_full_during_resource_publication_is_visible(self):
         self.mocked_sampler()

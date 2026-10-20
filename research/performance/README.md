@@ -430,3 +430,12 @@ retains the recoverable baseline commit, candidate dependency generator, exact
 commands, three runway repeats, airborne controls, unfavorable component timings
 and boundary/oracle regressions. Follow its reproduction steps for a frozen
 before/after comparison; the H16 oracle above isolates a different change.
+
+## Segmented slipstream invariants (H17)
+
+[H17](../../docs/research/simulation-state/H17/README.md) uses the same full-session
+probe to compare local geometry/interval reuse in segmented slipstream evaluation.
+It retains three P-51 trim repeats, a maneuver case, an unchanged Stik control,
+component measurements and exact parity tests. Its frozen baseline includes
+LU-25-R2 and H16. Follow the report's candidate generator and campaign commands;
+the original-method regression fixture checks the changed law directly.
