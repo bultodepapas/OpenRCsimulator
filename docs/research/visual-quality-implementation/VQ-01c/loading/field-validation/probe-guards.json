@@ -1,0 +1,40 @@
+[
+  {
+    "case": "identical-sources",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\identical-sources-must-not-exist.json"
+    ],
+    "exit_code": 2,
+    "output_not_created": true
+  },
+  {
+    "case": "nonempty-control",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\nonempty-control-must-not-exist.json"
+    ],
+    "exit_code": 2,
+    "output_not_created": true
+  }
+]

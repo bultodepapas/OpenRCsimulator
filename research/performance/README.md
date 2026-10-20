@@ -4,6 +4,11 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`field_validation_probe.gd` compares complete field validation and file loading
+with explicit source/data snapshots and a no-tree control. Its [DT-11a / L6b report](../../docs/research/visual-quality-implementation/VQ-01c/loading/field-validation/README.md)
+retains normalized-data/diagnostic parity, paired CPU batches, immutable-input
+guards and regression results. It runs headless and does not measure full startup or FPS.
+
 `ground_noise_probe.gd` compares complete seeded image generation and cache-empty
 ground-material creation with an explicit reference source. Its [DT-11a report](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-image/noise/README.md)
 retains exact native image/mip/material checks, paired timings and a separate warm
@@ -416,3 +421,12 @@ rendering and GPU work excluded.
 
 [H16 results, complete before/after scripts, commands and regression evidence](../../docs/research/simulation-state/H16/README.md)
 retain all three airborne repeats per aircraft and the flat runway result.
+
+## Contact-only lake bounds (LU-25-R2)
+
+The same complete-session probe measures conservative lake bounds rejection at
+the ground-terrain and prop-disc callers. The [LU-25-R2 record](../../docs/research/landscape-upgrade/LU-25-R2/README.md)
+retains the recoverable baseline commit, candidate dependency generator, exact
+commands, three runway repeats, airborne controls, unfavorable component timings
+and boundary/oracle regressions. Follow its reproduction steps for a frozen
+before/after comparison; the H16 oracle above isolates a different change.

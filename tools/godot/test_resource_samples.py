@@ -31,6 +31,7 @@ class FakeProcess:
         self.io_values = [SimpleNamespace(read_bytes=100, write_bytes=200,
                                           read_count=3, write_count=4)]
         self.thread_values = [2]
+        self.num_thread_calls = 0
         self.oneshot_calls = 0
         self.terminate_calls = 0
 
@@ -58,6 +59,7 @@ class FakeProcess:
         return self._next(self.cpu_values)
 
     def num_threads(self):
+        self.num_thread_calls += 1
         return self._next(self.thread_values)
 
     def io_counters(self):
@@ -96,7 +98,7 @@ class FakeClock:
     def __init__(self, value=10.0):
         self.value = value
 
-    def monotonic(self):
+    def perf_counter(self):
         return self.value
 
 
@@ -112,6 +114,10 @@ class ResourceSamplerTests(unittest.TestCase):
         for value in (True, 1.0, 0, -1, 10001):
             with self.subTest(max_samples=value), self.assertRaises(ValueError):
                 validate_options(max_samples=value)
+        for value in (None, 0, 1, "false"):
+            with self.subTest(include_threads=value), self.assertRaises(ValueError):
+                validate_options(include_threads=value)
+        self.assertEqual(validate_options(include_threads=True), ())
         with self.assertRaises(ValueError):
             validate_options(disk_paths="single-path-is-not-a-sequence")
         with self.assertRaises(ValueError):
@@ -141,8 +147,7 @@ class ResourceSamplerTests(unittest.TestCase):
                                                            read_count=4, write_count=5))
         clock = FakeClock()
         with tempfile.TemporaryDirectory() as temp:
-            with mock.patch("resource_samples.time.monotonic", side_effect=clock.monotonic), \
-                    mock.patch("resource_samples.time.perf_counter", side_effect=clock.monotonic):
+            with mock.patch("resource_samples.time.perf_counter", side_effect=clock.perf_counter):
                 sampler = ResourceSampler(44, interval=1.0, max_samples=3,
                                           disk_paths=[temp], backend=backend)
                 self.assertTrue(sampler.poll())
@@ -162,6 +167,25 @@ class ResourceSamplerTests(unittest.TestCase):
         self.assertEqual(report["summary"]["volume_free_capacity_minima"][temp]["free_bytes"], 1000)
         json.dumps(report, allow_nan=False)
         self.assertEqual(backend.process.oneshot_calls, 2)
+
+    def test_thread_count_is_opt_in_and_samples_when_enabled(self):
+        disabled_process = FakeProcess()
+        disabled = ResourceSampler(54, backend=FakeBackend(disabled_process))
+        self.assertTrue(disabled.poll())
+        disabled_report = disabled.finish()
+        self.assertEqual(disabled_process.num_thread_calls, 0)
+        self.assertIsNone(disabled_report["samples"][0]["num_threads"])
+        self.assertEqual(disabled_report["samples"][0]["field_status"]["num_threads"], "disabled")
+        self.assertFalse(disabled_report["include_threads"])
+
+        enabled_process = FakeProcess()
+        enabled = ResourceSampler(55, include_threads=True, backend=FakeBackend(enabled_process))
+        self.assertTrue(enabled.poll())
+        enabled_report = enabled.finish()
+        self.assertEqual(enabled_process.num_thread_calls, 1)
+        self.assertEqual(enabled_report["samples"][0]["num_threads"], 2)
+        self.assertEqual(enabled_report["samples"][0]["field_status"]["num_threads"], "ok")
+        self.assertTrue(enabled_report["include_threads"])
 
     def test_pid_reuse_and_exit_are_not_sampled(self):
         reused = FakeProcess()
@@ -216,7 +240,7 @@ class ResourceSamplerTests(unittest.TestCase):
         process = FakeProcess()
         process.io_values = [SimpleNamespace(read_bytes=-1, write_bytes=-5)]
         process.thread_values = ["unknown"]
-        sample = self._one_sample(FakeBackend(process))["samples"][0]
+        sample = self._one_sample(FakeBackend(process), include_threads=True)["samples"][0]
         self.assertIsNone(sample["io_read_bytes"])
         self.assertEqual(sample["field_status"]["io_read_bytes"], "unknown")
         self.assertIsNone(sample["io_write_bytes"])
@@ -248,7 +272,7 @@ class ResourceSamplerTests(unittest.TestCase):
                                              read_count=2, write_count=3)]
         backend = FakeBackend(process)
         clock = FakeClock()
-        with mock.patch("resource_samples.time.monotonic", side_effect=clock.monotonic):
+        with mock.patch("resource_samples.time.perf_counter", side_effect=clock.perf_counter):
             sampler = ResourceSampler(49, interval=1.0, max_samples=2, backend=backend)
             sampler.poll()
             clock.value = 11.0
@@ -291,7 +315,7 @@ class ResourceSamplerTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             backend.volume_error = AccessDenied("no volume access")
             clock = FakeClock()
-            with mock.patch("resource_samples.time.monotonic", side_effect=clock.monotonic):
+            with mock.patch("resource_samples.time.perf_counter", side_effect=clock.perf_counter):
                 sampler = ResourceSampler(51, interval=0.1, max_samples=10,
                                           disk_paths=[temp], backend=backend)
                 for index in range(10):
@@ -303,8 +327,8 @@ class ResourceSamplerTests(unittest.TestCase):
         self.assertTrue(report["errors_truncated"])
 
     @staticmethod
-    def _one_sample(backend):
-        sampler = ResourceSampler(52, backend=backend)
+    def _one_sample(backend, *, include_threads=False):
+        sampler = ResourceSampler(52, include_threads=include_threads, backend=backend)
         sampler.poll()
         return sampler.finish()
 
@@ -328,8 +352,9 @@ class ResourceSamplerTests(unittest.TestCase):
                 "deadline = time.monotonic() + 8",
                 "while not go.exists() and time.monotonic() < deadline: time.sleep(0.01)",
                 "if not go.exists(): raise SystemExit(7)",
-                "data = bytearray(64 * 1024 * 1024)",
-                "for offset in range(0, len(data), 4096): data[offset] = 1",
+                "data = bytearray(32 * 1024 * 1024)",
+                "for page in range(len(data) // 4096):",
+                "    start = page * 4096; data[start:start + 4] = page.to_bytes(4, 'little')",
                 "with target.open('wb') as stream:",
                 "    stream.write(b'x' * (1024 * 1024))",
                 "    stream.flush(); os.fsync(stream.fileno())",
@@ -338,7 +363,12 @@ class ResourceSamplerTests(unittest.TestCase):
                 "while time.monotonic() < deadline:",
                 "    for offset in range(0, len(data), 4096): data[offset] ^= 1",
             ))
-            child = subprocess.Popen([sys.executable, "-c", code],
+            # The Windows venv's sys.executable is an app-execution alias that
+            # launches python.exe as a child. Monitor the base executable so
+            # this test measures the PID we actually launch, as production does.
+            child_executable = (getattr(sys, "_base_executable", sys.executable)
+                                if sys.platform == "win32" else sys.executable)
+            child = subprocess.Popen([child_executable, "-c", code],
                                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
             sampler = None
             sample_count = 0
@@ -359,6 +389,16 @@ class ResourceSamplerTests(unittest.TestCase):
                     time.sleep(0.03)
                 self.assertTrue(ready.is_file(), "child exited before announcing readiness")
                 self.assertGreater(sample_count, 0, "no baseline sample was captured before allocation")
+                # Baseline must follow interpreter startup. Otherwise the test
+                # could attribute Python's own startup allocations to our payload.
+                ready_sample_count = sample_count
+                deadline = time.perf_counter() + 2
+                while sample_count == ready_sample_count and child.poll() is None:
+                    poll_once()
+                    if time.perf_counter() >= deadline:
+                        self.fail("no initialized-process baseline sample before allocation")
+                    time.sleep(0.01)
+                baseline_index = sample_count - 1
                 go.write_text("go", encoding="utf-8")
 
                 deadline = time.monotonic() + 8
@@ -380,15 +420,15 @@ class ResourceSamplerTests(unittest.TestCase):
                 child.wait(timeout=4)
                 self.assertEqual(child.returncode, 0)
                 self.assertGreater(report["sample_count"], 0)
-                baseline = report["samples"][0]
+                baseline = report["samples"][baseline_index]
                 self.assertEqual(baseline["field_status"]["rss_bytes"], "ok")
                 self.assertIsNotNone(baseline["rss_bytes"])
-                post_samples = report["samples"][1:]
+                post_samples = report["samples"][baseline_index + 1:]
                 post_rss = [sample["rss_bytes"] for sample in post_samples
                             if sample["field_status"].get("rss_bytes") == "ok"]
                 self.assertTrue(post_rss, "no valid RSS sample followed the allocation handshake")
                 self.assertGreaterEqual(max(post_rss) - baseline["rss_bytes"], 12 * 1024 * 1024,
-                                        f"touched 64 MiB allocation should raise RSS by at least 12 MiB "
+                                        f"touched 32 MiB allocation should raise RSS by at least 12 MiB "
                                         f"(baseline={baseline['rss_bytes']}, peak={max(post_rss)})")
                 self.assertEqual(target.stat().st_size, 1024 * 1024)
                 baseline_io = baseline["io_write_bytes"]

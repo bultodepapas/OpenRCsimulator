@@ -42,10 +42,11 @@ class ResourceRunnerTests(unittest.TestCase):
 
     def test_resource_receipt_identifies_bytes_and_same_invocation(self):
         factory = self.mocked_sampler()
-        checked = self.run_code(resources=True, resource_interval=.2, resource_disk_paths=[self.root])
+        checked = self.run_code(resources=True, resource_interval=.2, resource_disk_paths=[self.root], resource_threads=True)
         self.assertTrue(checked["ok"])
         self.assertTrue(factory.return_value.poll.called)
         self.assertEqual(factory.call_args.kwargs["interval"], .2)
+        self.assertTrue(factory.call_args.kwargs["include_threads"])
         raw = (Path(checked["report"]).parent / "resources.json").read_bytes()
         self.assertEqual(checked["resources"]["bytes"], len(raw))
         self.assertEqual(checked["resources"]["sha256"], hashlib.sha256(raw).hexdigest())
@@ -72,6 +73,8 @@ class ResourceRunnerTests(unittest.TestCase):
         checked = self.run_code(resources=True)
         self.assertTrue(checked["ok"])
         self.assertEqual(checked["resources"]["coverage"], "unavailable")
+        self.assertFalse(checked["resources"]["published"])
+        self.assertIsNone(checked["resources"]["file"])
 
     def test_nonzero_and_timeout_cannot_be_overridden_by_resources(self):
         self.mocked_sampler()
@@ -104,11 +107,14 @@ class ResourceRunnerTests(unittest.TestCase):
         self.assertTrue(checked["ok"])
         self.assertEqual(checked["resources"]["coverage"], "unavailable")
         self.assertIn("No space left", checked["resources"]["error"])
+        self.assertFalse(checked["resources"]["published"])
+        self.assertIsNone(checked["resources"]["file"])
         self.assertTrue(Path(checked["report"]).exists())
 
     def test_bad_options_and_launcher_refused_before_launch(self):
         self.mocked_sampler()
         bad = [{"resource_interval": .5}, {"resource_disk_paths": [self.root]},
+               {"resource_threads": True},
                {"resources": "yes"},
                {"resources": True, "resource_interval": float("nan")},
                {"resources": True, "resource_max_samples": 0},

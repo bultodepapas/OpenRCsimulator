@@ -104,7 +104,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                 max_log_bytes: int = 8 * 1024 * 1024, warnings_as_errors: bool = False,
                 required: list[str] | None = None, label: str = "godot",
                 resources: bool = False, resource_interval: float = 1.0,
-                resource_max_samples: int = 600, resource_disk_paths=()) -> dict:
+                resource_max_samples: int = 600, resource_disk_paths=(),
+                resource_threads: bool = False) -> dict:
     required = required or []
     if type(resources) is not bool:
         raise ValueError("resources must be a boolean")
@@ -114,6 +115,7 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
     if any(not s or len(s) > 4096 or "\n" in s or "\r" in s for s in required):
         raise ValueError("required text must be a nonempty single-line literal of at most 4096 characters")
     resource_backend = None
+    resource_source_hashes = {}
     if resources:
         # Validate configuration/dependency before launching anything. Import only
         # on demand, leaving ordinary test runs free of polling/dependencies.
@@ -122,11 +124,14 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
         else:
             from resource_samples import ResourceSampler, load_backend, validate_options
         validate_options(interval=resource_interval, max_samples=resource_max_samples,
-                         disk_paths=resource_disk_paths)
+                         disk_paths=resource_disk_paths, include_threads=resource_threads)
         if Path(command[0]).name.lower().endswith("_console.exe"):
             raise ValueError("resource sampling needs the direct Godot .exe, not its _console.exe launcher")
         resource_backend = load_backend()
-    elif resource_interval != 1.0 or resource_max_samples != 600 or resource_disk_paths:
+        resource_source_hashes = {
+            name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+            for name in ("run_checked.py", "resource_samples.py")}
+    elif resource_interval != 1.0 or resource_max_samples != 600 or resource_disk_paths or resource_threads:
         raise ValueError("resource options require --resources")
     out_dir = Path(out_dir).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -185,7 +190,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                     try:
                         sampler = ResourceSampler(process.pid, interval=resource_interval,
                                                   max_samples=resource_max_samples,
-                                                  disk_paths=resource_disk_paths, backend=resource_backend)
+                                                  disk_paths=resource_disk_paths, backend=resource_backend,
+                                                  include_threads=resource_threads)
                     except Exception as error:
                         resource_failure = f"{type(error).__name__}: {error}"[:1000]
                 while process.poll() is None or reader.is_alive():
@@ -266,13 +272,12 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
                 "command": command, "cwd": report["cwd"], "started_utc": report["started_utc"],
                 "process_exit": report["process_exit"], "reason": reason,
                 "log_sha256": report["log_sha256"], "elapsed_seconds": report["elapsed_seconds"]}
-            resource_report["tool_source_sha256"] = {
-                name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
-                for name in ("run_checked.py", "resource_samples.py")}
+            resource_report["tool_source_sha256"] = resource_source_hashes
             resource_bytes = (json.dumps(resource_report, indent=2, allow_nan=False) + "\n").encode("utf-8")
             with resource_path.open("xb") as stream:
                 stream.write(resource_bytes)
-            report["resources"] = {"file": "resources.json", "coverage": resource_report["coverage"],
+            report["resources"] = {"file": "resources.json", "published": True,
+                                   "coverage": resource_report["coverage"],
                                    "bytes": len(resource_bytes),
                                    "sha256": hashlib.sha256(resource_bytes).hexdigest(),
                                    "sample_count": resource_report.get("sample_count", 0),
@@ -281,7 +286,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
             if resource_failure:
                 report["resources"]["error"] = resource_failure
         except Exception as error:
-            report["resources"] = {"file": "resources.json", "coverage": "unavailable",
+            report["resources"] = {"file": None, "published": False, "attempted_file": "resources.json",
+                                   "coverage": "unavailable",
                                    "error": f"{type(error).__name__}: {error}"[:1000]}
     report_path.write_text(json.dumps(report, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
     return report
@@ -306,6 +312,8 @@ def main() -> int:
     parser.add_argument("--resource-max-samples", type=int, default=600, help="bounded sample count, 1–10000")
     parser.add_argument("--resource-disk-path", action="append", default=[], type=Path,
                         help="sample volume capacity for this existing directory; repeat up to eight times")
+    parser.add_argument("--resource-threads", action="store_true",
+                        help="also count threads; this can be expensive on Windows")
     parser.add_argument("command", nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ["--"] else args.command
@@ -315,7 +323,8 @@ def main() -> int:
                              required=args.require_text, label=args.label, resources=args.resources,
                              resource_interval=args.resource_interval,
                              resource_max_samples=args.resource_max_samples,
-                             resource_disk_paths=args.resource_disk_path)
+                             resource_disk_paths=args.resource_disk_path,
+                             resource_threads=args.resource_threads)
     except (OSError, ValueError) as error:
         print(f"Godot check configuration/output error: {error}", file=sys.stderr)
         return 2
@@ -337,8 +346,8 @@ def main() -> int:
             print(f"Missing completion text: {result['missing_required_text']}", file=sys.stderr)
     if "resources" in result:
         status = result["resources"]
-        print(f"Resource capture: {status['coverage']}; {Path(result['report']).parent / status['file']}",
-              file=sys.stderr)
+        location = f"; {Path(result['report']).parent / status['file']}" if status["published"] else "; no usable artifact published"
+        print(f"Resource capture: {status['coverage']}{location}", file=sys.stderr)
         if "error" in status:
             print(status["error"], file=sys.stderr)
         summary = status.get("summary", {})
@@ -348,7 +357,7 @@ def main() -> int:
             print(f"  Peak sampled process RAM: {peak_rss / 1048576:.1f} MiB RSS "
                   f"({status['sample_count']} samples); measurement status: {status['measurement_status']}", file=sys.stderr)
         if available is not None:
-            print(f"  Lowest sampled system available RAM: {available / 1073741824:.2f} GiB", file=sys.stderr)
+            print(f"  Lowest sampled system available RAM: {available / 1048576:.1f} MiB", file=sys.stderr)
         for path, volume in summary.get("volume_free_capacity_minima", {}).items():
             if volume.get("free_bytes") is not None:
                 print(f"  Lowest sampled volume free space ({path}): {volume['free_bytes'] / 1073741824:.2f} GiB", file=sys.stderr)

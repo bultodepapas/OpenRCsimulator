@@ -1,0 +1,164 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\verified-0.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.203466176986694,
+    "before_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    },
+    "after_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    }
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\verified-1.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.911162376403809,
+    "before_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    },
+    "after_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    }
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\verified-2.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.295691728591919,
+    "before_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    },
+    "after_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    }
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\verified-3.json",
+      "--candidate-first"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.115786552429199,
+    "before_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    },
+    "after_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    }
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\project",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\field_validation_probe.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\candidate.gd",
+      "--data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\default.json",
+      "--no-trees-data=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\no-trees.json",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\visual-quality-implementation\\VQ-01c\\loading\\field-validation\\verified-4.json"
+    ],
+    "exit_code": 0,
+    "wall_seconds": 7.111639976501465,
+    "before_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    },
+    "after_sha256": {
+      "reference": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+      "candidate": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+      "data": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+      "no_trees": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+      "probe": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31"
+    }
+  }
+]

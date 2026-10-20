@@ -37,7 +37,7 @@ _PROCESS_FIELDS = (
 
 
 def validate_options(*, interval: float = 1.0, max_samples: int = 600,
-                     disk_paths=()) -> tuple[str, ...]:
+                     disk_paths=(), include_threads: bool = False) -> tuple[str, ...]:
     """Validate monitor options without importing psutil or inspecting a PID.
 
     Returns normalized path strings for callers that want to reuse the result.
@@ -51,6 +51,8 @@ def validate_options(*, interval: float = 1.0, max_samples: int = 600,
         raise ValueError("resource interval must be finite and between 0.1 and 60 seconds")
     if type(max_samples) is not int or not 1 <= max_samples <= 10000:
         raise ValueError("resource max_samples must be an integer between 1 and 10000")
+    if type(include_threads) is not bool:
+        raise ValueError("resource include_threads must be true or false")
     if isinstance(disk_paths, (str, bytes, os.PathLike)):
         raise ValueError("resource disk_paths must be a sequence of existing directories")
     try:
@@ -98,9 +100,9 @@ class ResourceSampler:
     """
 
     def __init__(self, pid, *, interval: float = 1.0, max_samples: int = 600,
-                 disk_paths=(), backend=None):
+                 disk_paths=(), include_threads: bool = False, backend=None):
         paths = validate_options(interval=interval, max_samples=max_samples,
-                                 disk_paths=disk_paths)
+                                 disk_paths=disk_paths, include_threads=include_threads)
         if type(pid) is not int or pid <= 0:
             raise ValueError("resource sampler pid must be a positive integer")
 
@@ -108,8 +110,9 @@ class ResourceSampler:
         self.interval = float(interval)
         self.max_samples = max_samples
         self.disk_paths = paths
+        self.include_threads = include_threads
         self.backend = load_backend() if backend is None else backend
-        self._started_at = time.monotonic()
+        self._started_at = time.perf_counter()
         self._next_due = None
         self._process = None
         self._create_time = None
@@ -257,7 +260,11 @@ class ResourceSampler:
             self._object_fields(sample, statuses, lambda: process.cpu_times(),
                                 (("cpu_user_seconds", "user", "seconds", True),
                                  ("cpu_system_seconds", "system", "seconds", True)), label="cpu_times")
-            self._metric(sample, statuses, "num_threads", lambda: process.num_threads(), "integer")
+            if self.include_threads:
+                self._metric(sample, statuses, "num_threads", lambda: process.num_threads(), "integer")
+            else:
+                sample["num_threads"] = None
+                statuses["num_threads"] = "disabled"
             self._object_fields(sample, statuses, lambda: process.io_counters(),
                                 (("io_read_bytes", "read_bytes", "integer", True),
                                  ("io_write_bytes", "write_bytes", "integer", True),
@@ -410,14 +417,9 @@ class ResourceSampler:
         """Append one due sample; return false when not due or capture has stopped."""
         if self._finished or self._stop_reason is not None or self._capped:
             return False
-        schedule_at = time.monotonic()
-        if self._next_due is not None and schedule_at < self._next_due:
+        poll_started = time.perf_counter()
+        if self._next_due is not None and poll_started < self._next_due:
             return False
-        try:
-            poll_started = time.perf_counter()
-        except Exception as error:
-            poll_started = None
-            self._record_error("invalid_clock", "poll_overhead_usec", error)
         if not self._verify_process_identity():
             return False
 
@@ -440,18 +442,14 @@ class ResourceSampler:
         except Exception as error:
             self._record_error("system_sample", "system", error)
 
-        sampled_at = time.monotonic()
+        sampled_at = time.perf_counter()
         elapsed = sampled_at - self._started_at
         if not math.isfinite(elapsed) or elapsed < 0:
             self._record_error("invalid_clock", "elapsed_seconds", "monotonic elapsed time was invalid")
             elapsed = 0.0
         self._update_counter_deltas(sample, statuses, elapsed)
         sample["elapsed_seconds"] = elapsed
-        try:
-            overhead = (time.perf_counter() - poll_started) * 1_000_000 if poll_started is not None else math.nan
-        except Exception as error:
-            self._record_error("invalid_clock", "poll_overhead_usec", error)
-            overhead = math.nan
+        overhead = (sampled_at - poll_started) * 1_000_000
         if not math.isfinite(overhead) or overhead < 0:
             self._record_error("invalid_clock", "poll_overhead_usec", "monotonic poll duration was invalid")
             overhead = 0
@@ -557,12 +555,14 @@ class ResourceSampler:
                 "process": "direct launched PID only; descendants are not included",
                 "memory": "RSS and virtual size for this process; Windows virtual size is private commit",
                 "cpu": "process CPU time; derived percent is process CPU divided by elapsed wall time and may exceed 100%",
+            "thread_count": "process thread count is opt-in; it may add platform-dependent sampling overhead",
                 "io": "process I/O counters where the operating system exposes them; not physical disk traffic",
                 "system_memory": "system-wide virtual memory and swap snapshot",
                 "volumes": "free and total capacity for explicitly listed paths; not free VRAM",
             },
             "interval_seconds": self.interval,
             "max_samples": self.max_samples,
+            "include_threads": self.include_threads,
             "disk_paths": list(self.disk_paths),
             "coverage": coverage,
             "measurement_status": "unavailable" if not self._samples else ("partial" if self._error_count else "ok"),

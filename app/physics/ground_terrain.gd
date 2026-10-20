@@ -52,7 +52,7 @@ static func sample_validated(north: float, east: float, surfaces: PackedFloat64A
 		return base
 	# `lake` is immutable normalized output from LakeLoader. Keep this hot path validation-free; the
 	# public `sample` entry point checks untrusted lake dictionaries before calling here.
-	var basin: Dictionary = LakeSurface.sample_terrain_validated(lake, north, east)
+	var basin: Dictionary = LakeSurface.sample_covered_terrain_validated(lake, north, east)
 	if not bool(basin.get("covered", false)):
 		return base # outside the bounded bank, preserve the existing field sample exactly
 	var blend: float = float(basin.blend_fraction)

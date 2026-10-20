@@ -520,3 +520,14 @@ invalidation policy. Three repeated airborne callback comparisons support the
 small change; the runway measurement was flat. Preserve force arithmetic, guards,
 240 Hz stepping and data, with exact state/checkpoint comparisons and the original
 method oracle. [Measurements and regression limits](research/simulation-state/H16/README.md).
+
+### 2026-10-19 — Reject distant lake contact queries before diagnostic sampling (LU-25-R2)
+
+Ground terrain and prop-disc callers discard uncovered lake results. Give those
+callers a contact-only query that rejects points outside the bank bounds plus a
+full finite-difference margin. Keep the original sampler for boundary/interior
+queries and all full diagnostic consumers. Recompute the small bounds per call
+without adding cache state or changing normalized data. Three paired runway
+runs measured 19.58–19.84% lower CPU callback cost with identical trajectories
+and checkpoints; covered-point component queries cost roughly 1–2% more.
+[Measurements, oracle checks and existing golden failures](research/landscape-upgrade/LU-25-R2/README.md).

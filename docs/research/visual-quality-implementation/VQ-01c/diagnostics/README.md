@@ -79,3 +79,64 @@ The GDScript observer test is picked up by the existing unit-script partitioner;
 the production CLI checks run in `app/test.sh`'s integration partition. The offline
 reducer tests run in `research/test-tools.sh`. Full project CI, exports and extended
 native performance runs are outside this focused verification.
+
+## PT1h-R4 resource and storage evidence
+
+Verified 2026-10-19 with Python 3.11.9 / native Windows, Python 3.12 / WSL Linux,
+psutil 7.2.2 and the pinned Godot 4.7.2 engine. Usage is documented in the
+[resource tool guide](../../../../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4).
+
+The final native Windows **headless** production capture ran the scripted scene,
+one second of frame warm-up and three seconds of frame capture. OS sampling spans
+startup through exit: 19 samples over an 18.906-second checked invocation, using
+the default one-second interval with thread counting disabled. It observed
+606,187,520 bytes peak RSS (578.1 MiB), zero invalid/unavailable resource readings,
+and one engine warning for the known unsupported maple-tree wind material. The
+181-frame report completed. This is functional RAM/I/O evidence, not a GPU run,
+leak diagnosis, hardware performance gate or physical validation result.
+
+Recorded poll overhead was 2,628 microseconds median and 480,867 maximum. The
+maximum demonstrates the cooperative OS-call limit. A separate parent-reviewed
+backend profile isolated expensive Windows thread enumeration (about 14.5 ms
+median) and occasional long swap queries; thread counting is therefore optional.
+The default runner does not import psutil, query counters or write resource output.
+
+The complete `app/` storage scan found 3,800 regular files, 694,497,971 logical
+bytes (662.3 MiB), including 308,845,027 bytes of `.godot` imports and 209,035,318
+bytes of assets. A cached Linux Godot binary under `app/.tools/` was the largest
+individual file. Root-volume free space was 12,258,426,880 bytes, about 1.2%.
+These are dated metadata observations of a shared working tree. No cleanup was
+performed; logical file bytes do not describe allocated blocks or export size.
+
+During an earlier capture the host's available RAM fell to 2,281,472 bytes.
+The pressure series is retained separately; system pressure is not attributed to
+Godot. Another initial run emitted a four-instance ObjectDB leak warning; a verbose
+rerun and the final capture did not reproduce that warning. Both logs are retained.
+The warning remains unresolved; neither a rising startup RSS nor a successful
+process exit establishes a leak-free runtime.
+
+| Verification | Result |
+| --- | --- |
+| Final Windows `unittest discover -s tools/godot -p 'test_*.py'` | 79 discovered: 75 passed, four optional Godot tests skipped. Production Godot capture executed separately above. |
+| Linux full diagnostic suite before final clock/thread-option refinements | 78 discovered: 72 passed, four optional Godot and two Windows junction tests skipped. |
+| Final Linux `test_resource*.py` | 21 passed, including the controlled allocation/write fixture and runner integration. |
+| Controlled process accuracy | 32 MiB touched allocation, required RSS increase of at least 12 MiB, and at least 1 MiB observed write-counter increase where supported. Unsupported counters must remain null with a reason. |
+| Storage failure regressions | Bounded traversal/errors, exclusions, exact fixture sizes, hard-link semantics, symlink/junction skipping, deterministic top-file ties and exclusive output. |
+
+The parent tightened the final live fixture to take its baseline after the
+interpreter's readiness handshake, excluding interpreter startup allocations.
+That targeted accuracy test passed again on both Windows and Linux.
+
+The new mock/filesystem tests run through existing discovery. CI's integration job
+also installs the optional pinned backend to exercise real counters. Full CI and
+exports were not executed in this focused change.
+
+[resources-manifest.json](resources-manifest.json) identifies each compressed
+artifact and its uncompressed bytes. `resources-native.json.gz`,
+`resources-check.json.gz`, `resources-engine.log.gz` and `resources-frames.json.gz`
+retain the final capture. `resources-storage-app.json.gz` retains the storage
+scan. `resources-pressure.json.gz`, `resources-initial-warning.log.gz` and
+`resources-verbose-recheck.log.gz` retain the earlier observations. Final resource
+tool hashes match the reviewed source; the frame report supplies runtime source
+identity. Decompress into a new folder for inspection; absolute paths describe the
+original host. No golden flight was changed.

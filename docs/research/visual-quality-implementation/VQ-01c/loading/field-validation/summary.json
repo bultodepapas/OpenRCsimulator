@@ -1,0 +1,196 @@
+{
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "machine": {
+    "architecture": "x86_64",
+    "debug_build": true,
+    "os": "Windows",
+    "processor": "AMD Ryzen 9 5900X 12-Core Processor"
+  },
+  "aggregation": "median of five process medians of complete-call batch means; microseconds per call",
+  "processes": [
+    {
+      "process": 0,
+      "candidate_first": false,
+      "timings": {
+        "default:validate": {
+          "reference_usec": 11031.5,
+          "candidate_usec": 9012.6875,
+          "reduction_percent": 18.30043511761773
+        },
+        "default:load_from": {
+          "reference_usec": 12086.4375,
+          "candidate_usec": 10361.8125,
+          "reduction_percent": 14.269092939917162
+        },
+        "no-trees-control:validate": {
+          "reference_usec": 327.703125,
+          "candidate_usec": 330.203125,
+          "reduction_percent": -0.7628856148381269
+        },
+        "no-trees-control:load_from": {
+          "reference_usec": 715.578125,
+          "candidate_usec": 720.71875,
+          "reduction_percent": -0.7183876673144463
+        }
+      }
+    },
+    {
+      "process": 1,
+      "candidate_first": true,
+      "timings": {
+        "default:validate": {
+          "reference_usec": 11795.75,
+          "candidate_usec": 9427.75,
+          "reduction_percent": 20.075027022444523
+        },
+        "default:load_from": {
+          "reference_usec": 13329.5,
+          "candidate_usec": 10820.3125,
+          "reduction_percent": 18.82431824149443
+        },
+        "no-trees-control:validate": {
+          "reference_usec": 361.0625,
+          "candidate_usec": 344.484375,
+          "reduction_percent": 4.591483468928514
+        },
+        "no-trees-control:load_from": {
+          "reference_usec": 765.9375,
+          "candidate_usec": 744.96875,
+          "reduction_percent": 2.7376580987352073
+        }
+      }
+    },
+    {
+      "process": 2,
+      "candidate_first": false,
+      "timings": {
+        "default:validate": {
+          "reference_usec": 11065.0625,
+          "candidate_usec": 9082.5,
+          "reduction_percent": 17.91731858721991
+        },
+        "default:load_from": {
+          "reference_usec": 12163.3125,
+          "candidate_usec": 10114.0625,
+          "reduction_percent": 16.847795368243645
+        },
+        "no-trees-control:validate": {
+          "reference_usec": 356.21875,
+          "candidate_usec": 354.421875,
+          "reduction_percent": 0.5044302131765988
+        },
+        "no-trees-control:load_from": {
+          "reference_usec": 707.109375,
+          "candidate_usec": 702.484375,
+          "reduction_percent": 0.6540713733289127
+        }
+      }
+    },
+    {
+      "process": 3,
+      "candidate_first": true,
+      "timings": {
+        "default:validate": {
+          "reference_usec": 10941.5625,
+          "candidate_usec": 8959.75,
+          "reduction_percent": 18.112700996772624
+        },
+        "default:load_from": {
+          "reference_usec": 12264.125,
+          "candidate_usec": 10235.3125,
+          "reduction_percent": 16.54265999408845
+        },
+        "no-trees-control:validate": {
+          "reference_usec": 330.21875,
+          "candidate_usec": 332.75,
+          "reduction_percent": -0.7665373332071512
+        },
+        "no-trees-control:load_from": {
+          "reference_usec": 707.796875,
+          "candidate_usec": 709.71875,
+          "reduction_percent": -0.27152917282942113
+        }
+      }
+    },
+    {
+      "process": 4,
+      "candidate_first": false,
+      "timings": {
+        "default:validate": {
+          "reference_usec": 10913.4375,
+          "candidate_usec": 8997.0625,
+          "reduction_percent": 17.55977436073648
+        },
+        "default:load_from": {
+          "reference_usec": 12122.125,
+          "candidate_usec": 10058.4375,
+          "reduction_percent": 17.024139744475498
+        },
+        "no-trees-control:validate": {
+          "reference_usec": 325.34375,
+          "candidate_usec": 329.046875,
+          "reduction_percent": -1.138219191240042
+        },
+        "no-trees-control:load_from": {
+          "reference_usec": 701.828125,
+          "candidate_usec": 700.8125,
+          "reduction_percent": 0.14471135650199196
+        }
+      }
+    }
+  ],
+  "workloads": [
+    {
+      "workload": "default:validate",
+      "reference_usec": 11031.5,
+      "candidate_usec": 9012.6875,
+      "reduction_percent": 18.30043511761773,
+      "process_reduction_range_percent": [
+        17.55977436073648,
+        20.075027022444523
+      ]
+    },
+    {
+      "workload": "default:load_from",
+      "reference_usec": 12163.3125,
+      "candidate_usec": 10235.3125,
+      "reduction_percent": 15.850945209210076,
+      "process_reduction_range_percent": [
+        14.269092939917162,
+        18.82431824149443
+      ]
+    },
+    {
+      "workload": "no-trees-control:validate",
+      "reference_usec": 330.21875,
+      "candidate_usec": 332.75,
+      "reduction_percent": -0.7665373332071512,
+      "process_reduction_range_percent": [
+        -1.138219191240042,
+        4.591483468928514
+      ]
+    },
+    {
+      "workload": "no-trees-control:load_from",
+      "reference_usec": 707.796875,
+      "candidate_usec": 709.71875,
+      "reduction_percent": -0.27152917282942113,
+      "process_reduction_range_percent": [
+        -0.7183876673144463,
+        2.7376580987352073
+      ]
+    }
+  ],
+  "fixture_pairs": 55,
+  "final_batch_output_pairs": 240
+}

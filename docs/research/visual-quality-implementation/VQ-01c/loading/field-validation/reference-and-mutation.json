@@ -1,0 +1,117 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference-app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_treeline_data.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-test_treeline_data-headless.log",
+    "diagnostics": []
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference-app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-test_field_surfaces-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference-app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_treeline.gd"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 0,
+    "log": "reference-test_treeline-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371886145042431 is unsupported (cull mode is not disabled)",
+      "ERROR: Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "ERROR: Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "ERROR: Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\", \"authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json\"]",
+      "FAIL real Fly route creates flight"
+    ],
+    "classification": "rejected disposable-copy setup: missing sibling authoring assets",
+    "qualifies": false
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference-app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_treeline.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-fixed-test_treeline-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371886145042431 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference-app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_treeline.gd"
+    ],
+    "exit_code": 0,
+    "expected_exit_code": 0,
+    "log": "reference-fixed-test_treeline-native.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371886161819678 is unsupported (cull mode is not disabled)"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\reference-app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\field-key-20261019\\mutation-test.gd"
+    ],
+    "exit_code": 1,
+    "expected_exit_code": 1,
+    "log": "deliberate-first-index-mutation.log",
+    "diagnostics": [
+      "FAIL near-grid values retain the earliest duplicate index [\"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)\", \"objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 1)\"]"
+    ]
+  }
+]

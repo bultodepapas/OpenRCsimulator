@@ -211,6 +211,7 @@ options fail before launch.
 | `--resource-interval SECONDS` | 1; finite range 0.1–60. Shorter intervals cost more and still miss brief peaks. |
 | `--resource-max-samples COUNT` | 600; range 1–10,000. Reaching it stops sampling, not the game. |
 | `--resource-disk-path DIRECTORY` | None. Repeat up to eight times for volume free/total capacity; directories must exist. |
+| `--resource-threads` | Off. Include thread counts; Windows process enumeration makes this substantially more expensive. |
 
 The unique run directory gains `resources.json` with timestamps, raw samples,
 per-field availability, bounded errors, summaries, tool hashes and invocation/log identity.
@@ -234,6 +235,7 @@ Interpret the counters separately:
   They cannot attribute pressure to Godot. A volume capacity sample is not the
   size of the directory passed to `--resource-disk-path`.
 - Unknown, denied, unsupported and invalid values remain `null` with reasons.
+  Optional thread counts stay `null` / `disabled` unless requested.
   PID identity is checked; the tool never intentionally attaches to a replacement
   process. Use the direct Windows engine `.exe`: `_console.exe` is rejected because
   it launches a separate engine and would understate memory. Other launchers/shells

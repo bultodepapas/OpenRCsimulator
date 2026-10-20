@@ -1,0 +1,42 @@
+--- a/app/physics/lake_surface.gd
++++ b/app/physics/lake_surface.gd
+@@ -31,6 +31,17 @@
+ 	if shoreline.size() < 6 or shoreline.size() % 2 != 0:
+ 		return NAN
+ 	return _signed_polygon_distance(shoreline, north, east)
++
++
++## Contact-only query for validated definitions. Outside the bank, callers receive only covered=false;
++## they must not use this route for distances or finite-difference diagnostics outside coverage.
++## Keep a full stencil margin so boundary tolerance and near-bank samples use the original sampler.
++static func sample_covered_terrain_validated(lake: Dictionary, north: float, east: float) -> Dictionary:
++	if not is_finite(north) or not is_finite(east):
++		return _invalid_sample()
++	if _outside_expanded_polygon_aabb(lake.bank_ne_m, north, east, SAMPLE_EPSILON_M):
++		return {covered = false}
++	return sample_terrain_validated(lake, north, east)
+ 
+ 
+ ## Returns bounded ground state only inside the bank polygon. `ground_down_m` and both slopes are positive down.
+--- a/app/physics/ground_terrain.gd
++++ b/app/physics/ground_terrain.gd
+@@ -52,7 +52,7 @@
+ 		return base
+ 	# `lake` is immutable normalized output from LakeLoader. Keep this hot path validation-free; the
+ 	# public `sample` entry point checks untrusted lake dictionaries before calling here.
+-	var basin: Dictionary = LakeSurface.sample_terrain_validated(lake, north, east)
++	var basin: Dictionary = LakeSurface.sample_covered_terrain_validated(lake, north, east)
+ 	if not bool(basin.get("covered", false)):
+ 		return base # outside the bounded bank, preserve the existing field sample exactly
+ 	var blend: float = float(basin.blend_fraction)
+--- a/app/physics/hull_contact.gd
++++ b/app/physics/hull_contact.gd
+@@ -65,7 +65,7 @@
+ 	var depth := s[RB.POS + 2] + down[0] * lowest[0] + down[1] * lowest[1] + down[2] * lowest[2]
+ 	var point_ned: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), lowest))
+ 	if not lake.is_empty():
+-		var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point_ned[0], point_ned[1])
++		var terrain: Dictionary = LakeSurface.sample_covered_terrain_validated(lake, point_ned[0], point_ned[1])
+ 		if bool(terrain.get("covered", false)):
+ 			var surface_down: float = LakeSurface.water_height_down(lake, point_ned[0], point_ned[1], time_s)
+ 			if not is_finite(surface_down):

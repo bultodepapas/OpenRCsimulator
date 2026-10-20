@@ -65,7 +65,7 @@ static func prop_disc_depth(s: PackedFloat64Array, disc: Dictionary, lake: Dicti
 	var depth := s[RB.POS + 2] + down[0] * lowest[0] + down[1] * lowest[1] + down[2] * lowest[2]
 	var point_ned: PackedFloat64Array = M.add(RB._slice3(s, RB.POS), M.q_rotate(RB._att(s), lowest))
 	if not lake.is_empty():
-		var terrain: Dictionary = LakeSurface.sample_terrain_validated(lake, point_ned[0], point_ned[1])
+		var terrain: Dictionary = LakeSurface.sample_covered_terrain_validated(lake, point_ned[0], point_ned[1])
 		if bool(terrain.get("covered", false)):
 			var surface_down: float = LakeSurface.water_height_down(lake, point_ned[0], point_ned[1], time_s)
 			if not is_finite(surface_down):

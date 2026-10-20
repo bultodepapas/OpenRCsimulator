@@ -117,3 +117,37 @@ The parent reviewed both delegated components, requested fixes to byte accountin
 and unavailable/invalid-measurement handling, and ran the resulting tools against
 synthetic failures and the production app. Retained native data, source hashes,
 results and limitations are in [VQ-01c diagnostic evidence](visual-quality-implementation/VQ-01c/diagnostics/README.md).
+
+## PT1h-R4: process RAM, I/O and storage
+
+The next audit found that engine allocator/render counters did not cover process
+resident memory, system pressure, volume capacity or project file sizes. The
+checked runner now integrates optional pinned psutil sampling; a bounded metadata
+audit groups Godot imports, assets and retained outputs. Neither changes runtime
+or simulation state. Current commands and limits have one home in the
+[resource tool guide](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4).
+
+Additional primary references checked for this implementation:
+
+| Source | Applied finding |
+| --- | --- |
+| [psutil 7.2.2 release API](https://github.com/giampaolo/psutil/blob/release-7.2.2/docs/index.rst) | RSS/VMS platform differences, direct-process identity, unavailable I/O counters and oneshot caching. Reused the free library instead of implementing OS-specific bindings. |
+| [Exact package release](https://pypi.org/project/psutil/7.2.2/) | Optional dependency pin, isolated installation and supported desktop platforms. |
+| [Python scandir](https://docs.python.org/3.11/library/os.html#os.scandir) | Incremental metadata traversal with explicitly closed iterators and no file-content reads. |
+| [Python disk_usage](https://docs.python.org/3.11/library/shutil.html#shutil.disk_usage) | Filesystem capacity is distinct from the logical sizes of paths included in a scan. |
+| [Python performance clock](https://docs.python.org/3.11/library/time.html#time.perf_counter) | High-resolution elapsed/sampling clocks avoid the coarse Windows monotonic readings observed during review. |
+
+Parent review corrected equal-size top-file ordering, Windows exclusion casing,
+resource-output failure receipts and sampling clock precision. A stronger live
+fixture exposed the Windows Python venv launcher: sampling its PID underestimated
+the allocating child. The fixture now launches the base interpreter, checks a
+32 MiB touched allocation and a flushed 1 MiB write, and retains explicit unknown
+counter behavior. Production usage likewise requires the direct Godot executable.
+
+Measured Windows thread counting was substantially more expensive than RAM/I/O
+queries, so `--resource-threads` is opt-in. OS calls can still stall under pressure;
+sampling cost is recorded, and the tool does not promise a hard polling deadline.
+Denied counters, replaced/exited PIDs, reset counters, sample limits, full-disk
+publication failures, scan limits, unreadable paths and linked paths have regression
+coverage. Final verification and retained captures are in the existing
+[diagnostic evidence](visual-quality-implementation/VQ-01c/diagnostics/README.md#pt1h-r4-resource-and-storage-evidence).

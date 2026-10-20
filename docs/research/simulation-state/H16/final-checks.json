@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "name": "armed-offset-mutation",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass2-20261019\\base\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass2-20261019\\test_offset_mutation.gd"
+      ],
+      "exit_code": 1,
+      "engine_error": false,
+      "seconds": 4.922000000002299
+    },
+    {
+      "name": "baseline-golden",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass2-20261019\\base\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "exit_code": 1,
+      "engine_error": false,
+      "seconds": 4.842999999997119
+    }
+  ],
+  "golden_failure_lines_equal": true,
+  "mutation_caught": true,
+  "mutation_note": "Armed after valid setup and disarmed for reset to test direct stage behavior. The earlier always-on mutation also broke setup; that diagnostic log is retained separately."
+}
