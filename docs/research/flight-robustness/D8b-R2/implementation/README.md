@@ -78,6 +78,8 @@ $generator = (Resolve-Path research/flight-robustness/d8b-r2/make_candidates.gd)
 
 The [matrix README](matrix/README.md) supplies complete run/comparison commands. Original diagnosis and matrix captures retain their historical source hashes; later integration hashes must not be substituted for those run identities.
 
+Release integration, 2026-10-19: regenerated the three synthetic candidates with `make_candidates.gd` after the production Stik adopted FUEL-05f inventory/balance and the corresponding D11g derivatives. The synthetic polar tables are unchanged; the candidates now inherit the current base aircraft's fuel-system, mass, thrust-datum and derivative data. Generator freshness and loader validation pass. Historical matrix measurements above retain their original identities and are not measurements of these regenerated candidates.
+
 ## Still required for a production repair
 
 1. Identify a defensible Jensen/reference-build polar and control/mass bounds, including the falling lift branch, drag, Reynolds number and coefficient basis. Current synthetic families cannot supply that evidence.

@@ -140,6 +140,17 @@ Native Windows Godot 4.7.2: 39 checks pass. Both 40-second airborne holds comple
 - NITRO-06 test counts and generator checks: [NITRO-06 § Verification](../../glow-engines/NITRO-06/README.md#verification).
 - The non-glow aircraft are unchanged by this step: FT-05 records the same-tree comparison with and without the NITRO-06 files (see its verification); against FT-04 only the Timber compares at zero tolerance because other tracks changed the Stik, P-51 and Ventage Jet data in between.
 
+### 2026-10-19 finite-fuel trim and P-51 trace release regressions
+
+The P-51 and Avanti equilibrium regression had compared fixed-mass trim while their finite liquid fuel was burning. In `test_pilot_trim.gd`, a test-only wrapper holds only the usable-fuel derivative at zero for the strict 1 mm / 1 mm/s equilibrium comparison. It checks actual `mass_properties()` at both ends, restores the production stage before reset, and then runs the normal finite-fuel flight. Native checked Windows Godot 4.7.2 passed 118 checks in 116.563 s.
+
+| Aircraft | Frozen-start live mass / fuel | Production mass / fuel after 10 s | Production height / speed change |
+| --- | ---: | ---: | ---: |
+| P-51 | 21.873926 kg / 0.747854 kg | 21.872493 kg / 0.746421 kg | +0.019610 m / −0.005426 m/s |
+| Avanti | 12.734858 kg / 2.592560 kg | 12.716162 kg / 2.573864 kg | +0.215567 m / −0.059178 m/s |
+
+Both frozen-inventory holds remain within the original 1 mm and 1 mm/s bounds, with unchanged live mass and fuel. Production drift continues to be covered by the [10 s fleet half-power gate](../../../../app/tests/test_half_power_start.gd) (<1 m) and the [30 s P-51 hold](../../../../app/tests/test_p51_handling.gd) (<2 m and <0.3 m/s); those tolerances were not changed. The P-51 power-off stall check also requires a complete 961-row / 960-tick trace with no fault before the unchanged 11.9° α threshold; the native run passed 19 checks, reaching 20.8°. [Trim regression](../../../../app/tests/test_pilot_trim.gd) · [P-51 handling regression](../../../../app/tests/test_p51_handling.gd).
+
 ## Reproduce
 
 ```sh

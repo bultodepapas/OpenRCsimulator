@@ -8,10 +8,10 @@ const GlowFlight = preload("res://physics/glow/flight.gd")
 var failures := 0
 var count := 0
 
-func check(label: String, ok: bool) -> void:
+func check(label: String, ok: bool, detail: String = "") -> void:
 	count += 1
 	if not ok: failures += 1
-	print(("ok " if ok else "FAIL ") + label)
+	print(("ok " if ok else "FAIL ") + label + (": " + detail if not detail.is_empty() else ""))
 
 func _initialize() -> void:
 	call_deferred("run")
@@ -39,6 +39,26 @@ func finite_values(values: PackedFloat64Array) -> bool:
 		if not is_finite(value): return false
 	return true
 
+func freeze_liquid_inventory(session: Node) -> Callable:
+	# Test-only comparison fixture: hold only usable fuel constant so the solved
+	# equilibrium is measured at constant mass. The production evaluator is restored
+	# for the separate finite-fuel flight below.
+	var production_stage: Callable = session.sim.model.stage
+	var fuel_index: int = session._liquid_index()
+	session.sim.model.stage = func(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float) -> Dictionary:
+		var response: Variant = production_stage.call(body, continuous, at)
+		if typeof(response) != TYPE_DICTIONARY or response.is_empty():
+			return {}
+		var derivative: Variant = response.get("derivative", PackedFloat64Array())
+		if typeof(derivative) != TYPE_PACKED_FLOAT64_ARRAY or derivative.size() != continuous.size() \
+				or fuel_index < 0 or fuel_index >= derivative.size():
+			return {}
+		var held: PackedFloat64Array = derivative
+		held[fuel_index] = 0.0
+		response.derivative = held
+		return response
+	return production_stage
+
 func run() -> void:
 	for entry in Catalog.airplane_flyable_entries():
 		var s = make_session(entry)
@@ -49,6 +69,7 @@ func run() -> void:
 		var initial: PackedFloat64Array = s.sim.state.duplicate()
 		var glow_install: Dictionary=s.aircraft.model.propulsion.get("glow",{})
 		var finite_fuel_glow: bool=not glow_install.is_empty() and float(glow_install.initial_fuel_kg)>0.0
+		var finite_fuel_liquid: bool = s.liquid_fuel_is_active()
 		var initial_fuel_kg: float=float(s.sim.continuous[1]) if finite_fuel_glow else 0.0
 		if finite_fuel_glow and glow_install.has("fuel_feed"):
 			var initial_point: Dictionary=GlowFlight.point(s,s.sim.state,s.sim.continuous,0.0)
@@ -81,8 +102,55 @@ func run() -> void:
 				loads.size()==6 and finite_values(loads) and dynamics_rates.size()>0 and finite_values(dynamics_rates)
 				and linear_residual<0.01 and angular_residual<0.003 and shaft_torque_fraction<0.0015
 				and absf(dynamics_rates[0])<10.0)
-		fly(s, 2400)
-		if finite_fuel_glow:
+		if finite_fuel_liquid:
+			var frozen_start_mass: Dictionary = s.mass_properties()
+			var initial_response: Variant = s.sim.model.stage.call(s.sim.state, s.sim.continuous, s.sim.time())
+			var initial_fuel_rate: float = NAN
+			if typeof(initial_response) == TYPE_DICTIONARY and not initial_response.is_empty():
+				var initial_derivative: PackedFloat64Array = initial_response.get("derivative", PackedFloat64Array())
+				var fuel_index: int = s._liquid_index()
+				if fuel_index >= 0 and fuel_index < initial_derivative.size():
+					initial_fuel_rate = float(initial_derivative[fuel_index])
+			check(entry.id + " production liquid stage reports fuel consumption", frozen_start_mass.get("ok", false)
+				and frozen_start_mass.get("finite_fuel", false) and is_finite(initial_fuel_rate) and initial_fuel_rate < 0.0)
+			initial_fuel_kg = float(frozen_start_mass.get("fuel_remaining_kg", NAN))
+			var production_stage: Callable = freeze_liquid_inventory(s)
+			fly(s, 2400)
+			var frozen_end_mass: Dictionary = s.mass_properties()
+			var frozen_speed: float = M.norm(RB._slice3(s.sim.state, RB.VEL))
+			check(entry.id + " frozen-inventory equilibrium holds height/speed for 10 s",
+				s.sim.tick == 2400 and s.sim.fault_reason.is_empty() and finite_values(s.sim.state)
+				and absf(s.sim.state[2] - initial[2]) < 0.001
+				and absf(frozen_speed - s.start.V) < 0.001,
+				"Δheight %.6f m, Δspeed %.6f m/s" % [s.sim.state[2] - initial[2], frozen_speed - s.start.V])
+			check(entry.id + " frozen inventory preserves actual live mass and fuel",
+				frozen_start_mass.get("ok", false) and frozen_end_mass.get("ok", false)
+				and absf(float(frozen_end_mass.get("mass_kg", NAN)) - float(frozen_start_mass.get("mass_kg", NAN))) < 1e-9
+				and absf(float(frozen_end_mass.get("fuel_remaining_kg", NAN)) - initial_fuel_kg) < 1e-12)
+			# Restore the production law before reset and the real finite-inventory run.
+			s.sim.model.stage = production_stage
+			s.reset()
+			initial = s.sim.state.duplicate()
+			var production_start_mass: Dictionary = s.mass_properties()
+			initial_fuel_kg = float(production_start_mass.get("fuel_remaining_kg", NAN))
+			fly(s, 2400)
+			var production_end_mass: Dictionary = s.mass_properties()
+			var production_speed: float = M.norm(RB._slice3(s.sim.state, RB.VEL))
+			# Production drift remains bounded by the broader gates: half-power fleet holds
+			# (<1 m over 10 s) in test_half_power_start.gd and P-51 holds (<2 m / <0.3 m/s
+			# over 30 s) in test_p51_handling.gd. This comparison adds no new drift tolerance.
+			check(entry.id + " production finite-liquid neutral flight completes and consumes fuel",
+				s.sim.tick == 2400 and s.sim.fault_reason.is_empty() and finite_values(s.sim.state)
+				and finite_values(s.sim.continuous) and production_start_mass.get("ok", false)
+				and production_end_mass.get("ok", false) and is_finite(production_speed) and production_speed > 0.0
+				and float(production_end_mass.get("fuel_remaining_kg", NAN)) >= 0.0
+				and float(production_end_mass.get("fuel_remaining_kg", NAN)) < initial_fuel_kg)
+			print("%s finite-liquid neutral 10 s: fuel %.6f -> %.6f kg, live mass %.6f -> %.6f kg, Δheight %.6f m, Δspeed %.6f m/s" % [
+				entry.id, initial_fuel_kg, float(production_end_mass.get("fuel_remaining_kg", NAN)),
+				float(production_start_mass.get("mass_kg", NAN)), float(production_end_mass.get("mass_kg", NAN)),
+				initial[2] - s.sim.state[2], production_speed - s.start.V])
+		elif finite_fuel_glow:
+			fly(s, 2400)
 			var final_speed: float=M.norm(RB._slice3(s.sim.state,RB.VEL))
 			check(entry.id + " finite-fuel neutral flight consumes fuel with finite motion", s.sim.tick==2400
 				and s.sim.fault_reason.is_empty() and finite_values(s.sim.state) and finite_values(s.sim.continuous)
@@ -91,6 +159,7 @@ func run() -> void:
 				and absf(initial[2]-s.sim.state[2])<0.15
 				and absf(final_speed-s.start.V)<0.07)
 		else:
+			fly(s, 2400)
 			check(entry.id + " live neutral holds height/speed for 10 s", s.sim.tick == 2400 and s.sim.fault_reason.is_empty()
 				and absf(s.sim.state[2] - initial[2]) < 0.001
 				and absf(M.norm(RB._slice3(s.sim.state, RB.VEL)) - s.start.V) < 0.001)
@@ -130,17 +199,48 @@ func run() -> void:
 		check("faster jet cruise can trim", faster.ok)
 		jet.reset()
 		jet.trims.pitch = old_pitch
+		var pilot_correction_deg: float = 0.0
 		if corrected:
-			check("pilot correction accepts faster-cruise elevator", jet.adjust_elevator_trim((faster.pitch_command - old_pitch) * jet.throws_deg().elevator))
+			pilot_correction_deg = (faster.pitch_command - old_pitch) * jet.throws_deg().elevator
+			check("pilot correction accepts faster-cruise elevator", jet.adjust_elevator_trim(pilot_correction_deg))
 		# Start servos at the commanded positions to isolate equilibrium from actuator transients.
 		jet.sim.inputs = jet._inputs()
 		var aux: PackedFloat64Array = jet.sim.aux
 		aux[2] = jet.trims.pitch
 		jet.sim.aux = aux
 		var height: float = -jet.sim.state[2]
+		var production_stage: Callable = jet.sim.model.stage
+		var finite_liquid: bool = jet.liquid_fuel_is_active()
+		if finite_liquid:
+			production_stage = freeze_liquid_inventory(jet)
 		fly(jet, 1200)
 		check("faster cruise completed", jet.sim.tick == 1200 and jet.sim.fault_reason.is_empty())
 		gain.append(-jet.sim.state[2] - height)
+		if finite_liquid:
+			jet.sim.model.stage = production_stage
+		if corrected and finite_liquid:
+			jet.reset()
+			jet.trims.pitch = old_pitch
+			check("production Avanti correction accepts same faster-cruise elevator", jet.adjust_elevator_trim(pilot_correction_deg))
+			jet.sim.inputs = jet._inputs()
+			aux = jet.sim.aux
+			aux[2] = jet.trims.pitch
+			jet.sim.aux = aux
+			var production_start_mass: Dictionary = jet.mass_properties()
+			var production_start_height: float = -jet.sim.state[2]
+			var production_start_speed: float = M.norm(RB._slice3(jet.sim.state, RB.VEL))
+			fly(jet, 1200)
+			var production_end_mass: Dictionary = jet.mass_properties()
+			var production_end_speed: float = M.norm(RB._slice3(jet.sim.state, RB.VEL))
+			check("production Avanti corrected cruise completes and consumes finite fuel",
+				jet.sim.tick == 1200 and jet.sim.fault_reason.is_empty() and finite_values(jet.sim.state)
+				and production_start_mass.get("ok", false) and production_end_mass.get("ok", false)
+				and float(production_end_mass.get("fuel_remaining_kg", NAN)) >= 0.0
+				and float(production_end_mass.get("fuel_remaining_kg", NAN)) < float(production_start_mass.get("fuel_remaining_kg", NAN)))
+			print("Avanti production 40 m/s corrected trim, 5 s: fuel %.6f -> %.6f kg, live mass %.6f -> %.6f kg, Δspeed %.6f m/s, Δheight %.6f m" % [
+				float(production_start_mass.get("fuel_remaining_kg", NAN)), float(production_end_mass.get("fuel_remaining_kg", NAN)),
+				float(production_start_mass.get("mass_kg", NAN)), float(production_end_mass.get("mass_kg", NAN)),
+				production_end_speed - production_start_speed, -jet.sim.state[2] - production_start_height])
 		jet.free()
 	check("old trim climbs; pilot trim holds faster level cruise", gain[0] > 1.0 and absf(gain[1]) < 0.001)
 	print("Cruise height change: stale %.6f m, adjusted %.6f m" % [gain[0], gain[1]])

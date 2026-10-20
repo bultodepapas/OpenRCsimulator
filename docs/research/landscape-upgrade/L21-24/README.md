@@ -17,6 +17,8 @@ the [implementation plan](../../../plans/landscape-selection.md) owns remaining 
 The native captures are unedited test output. Home views verify selection presentation;
 flight overviews use a temporary camera at render (0, 85, 120) looking at (0, 0, −90).
 
+2026-10-19 export-gate follow-up: the release check's earlier `Pack missing L10a windsock data, mesh builder or material` message came from an outdated expectation of the packed field cue. `check_field_pack.gd` now validates the authored three-part `Fabric`/`Support`/`Basket` assembly, each mesh and shader material, and the required texture maps. A later Linux export attempt reached that validation but still exited on a typed-array script error; the checker now uses `PackedStringArray` for its texture-channel list. The Linux export smoke remains pending a clean CI rerun.
+
 | Club field | Green paradise |
 | --- | --- |
 | [Home](club-home.png) | [Home](green-home.png) |

@@ -240,6 +240,7 @@ for t in "$HERE"/tests/test_*.gd; do
   case "$(basename "$t")" in
     test_half_power_start.gd) test_timeout=600 ;; # Eight-aircraft 30 s flight matrix; measured 167 s on Linux.
     test_glow_session.gd) test_timeout=180 ;; # Four coupled installations with replay and takeoff; measured 67 s on Linux.
+    test_pilot_trim.gd) test_timeout=300 ;; # Fleet controls plus frozen/live inventory comparisons; measured 117 s natively.
     test_accident_integration.gd) test_timeout=180 ;; # Multiple complete aircraft/effects rebuilds; native 77-check gate, WSL mounted source exceeds 60 s.
     test_p51_envelope.gd) test_timeout=180 ;; # Segmented slipstream full-flight checks measured 61 s on the native editor.
     test_rcv_powertrain.gd) test_timeout=180 ;; # Nine complete powertrain checks; measured 64 s at 240/480 Hz.
