@@ -1,0 +1,12 @@
+{
+  "head": "bd6596aecce3b4e32c75d674fd628ef517fcda3d",
+  "status": " M ROADMAP.md\n M docs/DECISIONS.md\n M docs/research/README.md\n M research/performance/README.md\n M tools/godot/README.md\n M tools/godot/perfetto_export.py\n M tools/godot/run_checked.py\n M tools/godot/test_resource_runner.py\n?? docs/research/simulation-state/H17/\n?? tools/godot/incident_bundle.py\n?? tools/godot/test_incident_bundle.py\n?? tools/godot/test_perfetto_export.py\n",
+  "hashes": {
+    "app\\scenery\\ground_features.gd": "48b9c9a1121fa5b386058afa601e9ebd067e971cdf80eb51fdcabeb7fe359a3e",
+    "app\\scenery\\scenery.gd": "d39ddfc864a9b594c94071369524052adf688ee8a2e05ac0e960bd8eef77440c",
+    "app\\render\\field.gd": "7b32bacaf4cee96d290ae6fc9f1609d20df752e715dc7ba59b3546bba77f6342",
+    "app\\data\\scenery\\default.json": "3d60375dfe3a228cba1202a8cf92176d821aba332371af2bad45821bb6035867",
+    "app\\data\\fields\\default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "app\\project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c"
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "reference": {
+    "home_from_load_usec": [
+      3799837,
+      3748878,
+      3825760
+    ],
+    "first_fly_usec": [
+      2728783,
+      2661601,
+      2776520
+    ],
+    "warm_fly_median_usec": [
+      1469959.5,
+      1448989.5,
+      1499682.0
+    ],
+    "return_median_usec": [
+      969255,
+      936556,
+      965797
+    ],
+    "cycles": 9,
+    "ticks_at_first_draw": [
+      11
+    ],
+    "home_nodes": [
+      622
+    ],
+    "flight_nodes": [
+      1098
+    ],
+    "orphans": [
+      0
+    ]
+  },
+  "candidate": {
+    "home_from_load_usec": [
+      3870788,
+      3791220,
+      3764970
+    ],
+    "first_fly_usec": [
+      2682250,
+      2627985,
+      2586675
+    ],
+    "warm_fly_median_usec": [
+      1432094.0,
+      1409010.5,
+      1436228.0
+    ],
+    "return_median_usec": [
+      923038,
+      900129,
+      900824
+    ],
+    "cycles": 9,
+    "ticks_at_first_draw": [
+      11
+    ],
+    "home_nodes": [
+      622
+    ],
+    "flight_nodes": [
+      1098
+    ],
+    "orphans": [
+      0
+    ]
+  },
+  "median_of_process_medians_usec": {
+    "home_from_load_usec": {
+      "reference": 3799837,
+      "candidate": 3791220
+    },
+    "first_fly_usec": {
+      "reference": 2728783,
+      "candidate": 2627985
+    },
+    "warm_fly_median_usec": {
+      "reference": 1469959.5,
+      "candidate": 1432094.0
+    },
+    "return_median_usec": {
+      "reference": 965797,
+      "candidate": 900824
+    }
+  }
+}

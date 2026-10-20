@@ -1,0 +1,106 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"cache_bytes": 338620,
+	"cache_entries": 1,
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"exact_pairs": 6,
+	"failures": [],
+	"samples": [
+		{
+			"pair": 0,
+			"patches_ms": 42.708,
+			"scenery_ms": 744.088,
+			"usec": 1333643,
+			"variant": "reference"
+		},
+		{
+			"pair": 0,
+			"patches_ms": 58.209,
+			"scenery_ms": 302.126,
+			"usec": 701090,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"patches_ms": 0.182,
+			"scenery_ms": 193.134,
+			"usec": 539823,
+			"variant": "candidate"
+		},
+		{
+			"pair": 1,
+			"patches_ms": 42.398,
+			"scenery_ms": 233.238,
+			"usec": 572367,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"patches_ms": 42.6,
+			"scenery_ms": 231.857,
+			"usec": 583190,
+			"variant": "reference"
+		},
+		{
+			"pair": 2,
+			"patches_ms": 0.18,
+			"scenery_ms": 190.584,
+			"usec": 546879,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"patches_ms": 0.184,
+			"scenery_ms": 192.093,
+			"usec": 531965,
+			"variant": "candidate"
+		},
+		{
+			"pair": 3,
+			"patches_ms": 44.389,
+			"scenery_ms": 248.374,
+			"usec": 591921,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"patches_ms": 42.609,
+			"scenery_ms": 234.577,
+			"usec": 598099,
+			"variant": "reference"
+		},
+		{
+			"pair": 4,
+			"patches_ms": 0.191,
+			"scenery_ms": 189.375,
+			"usec": 534509,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"patches_ms": 0.193,
+			"scenery_ms": 190.453,
+			"usec": 530162,
+			"variant": "candidate"
+		},
+		{
+			"pair": 5,
+			"patches_ms": 42.261,
+			"scenery_ms": 231.509,
+			"usec": 568552,
+			"variant": "reference"
+		}
+	],
+	"scope": "native complete detached default field CPU construction; all node transforms, mesh arrays/bounds and MultiMesh buffers; not first draw or FPS"
+}

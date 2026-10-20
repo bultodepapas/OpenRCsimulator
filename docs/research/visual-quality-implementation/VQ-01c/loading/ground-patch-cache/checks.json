@@ -1,0 +1,1785 @@
+[
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "d8d61bfd-fd8e-4308-a598-8c62adf18a2b",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--check-only",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field_attribution.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T01:57:33.677996+00:00",
+    "label": "attribution-parse",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\attribution-parse-9dckz0_7\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\attribution-parse-9dckz0_7\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.219,
+    "log_bytes": 75,
+    "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+    "retained_log": "attribution-parse-9dckz0_7.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "3f5dc3f7-8369-47c4-bef6-f881f10c04b2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field-run-1.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:02:35.794693+00:00",
+    "label": "field-1",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-1-r0hqfyip\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-1-r0hqfyip\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371924162214004 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 12.437,
+    "log_bytes": 1125,
+    "log_sha256": "7a6ddbd4f81e8b3e952829fe137b19926c9679a5d914dab6210c98cdc62594f2",
+    "retained_log": "field-1-r0hqfyip.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "53509bcd-d6c0-466a-8a37-83b90af4feaf",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field-run-2.json",
+      "--reverse"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:02:48.506232+00:00",
+    "label": "field-2",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-2-7p2oah_e\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-2-7p2oah_e\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371924162214004 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 12.422,
+    "log_bytes": 1125,
+    "log_sha256": "65c563323ea4fae350e94ffc925f647062e0af4b24cf2534e9f1ea2514901c74",
+    "retained_log": "field-2-7p2oah_e.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "5bd4afc7-adee-4f5b-b4b8-2f0aec1b1379",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field-run-3.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:03:01.168515+00:00",
+    "label": "field-3",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-3-_zl9x2c8\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-3-_zl9x2c8\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371924162214004 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 12.297,
+    "log_bytes": 1125,
+    "log_sha256": "7a6ddbd4f81e8b3e952829fe137b19926c9679a5d914dab6210c98cdc62594f2",
+    "retained_log": "field-3-_zl9x2c8.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "994f08a4-383f-4c81-b62c-69e5fd5028aa",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field-run-4.json",
+      "--reverse"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:03:13.717840+00:00",
+    "label": "field-4",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-4-bjhc92_j\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-4-bjhc92_j\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371924162214004 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 12.703,
+    "log_bytes": 1125,
+    "log_sha256": "65c563323ea4fae350e94ffc925f647062e0af4b24cf2534e9f1ea2514901c74",
+    "retained_log": "field-4-bjhc92_j.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "2275b579-fe50-41ba-8b4b-989cdaacce4d",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field_compare.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\field-run-5.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:03:26.723996+00:00",
+    "label": "field-5",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-5-v_v_om8h\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-5-v_v_om8h\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "field comparison pairs=6 failures=[]"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371924162214004 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 12.5,
+    "log_bytes": 1125,
+    "log_sha256": "7a6ddbd4f81e8b3e952829fe137b19926c9679a5d914dab6210c98cdc62594f2",
+    "retained_log": "field-5-v_v_om8h.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "fa3d7580-3f9c-408d-b09a-a44c65e4b2a6",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field_attribution.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T01:57:41.104632+00:00",
+    "label": "field-attribution",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-attribution-8lurpyxu\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-attribution-8lurpyxu\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 11,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371934647974009 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 5.391,
+    "log_bytes": 2017,
+    "log_sha256": "642934af6e76a2e2b16c80fd4d3c89093671a83b01bd1f1df845e73cbed08d76",
+    "retained_log": "field-attribution-8lurpyxu.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "37537793-2e0a-4b25-bce4-91f18ad99e20",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field_compare.gd",
+      "--",
+      "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field-exploration.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:01:35.478805+00:00",
+    "label": "field-cache-exploration",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-cache-exploration-738xqa_x\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-cache-exploration-738xqa_x\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 2,
+      "warning": 0
+    },
+    "diagnostics": [
+      {
+        "severity": "error",
+        "kind": "SCRIPT ERROR",
+        "line": 4,
+        "message": "Parse Error: Cannot infer the type of \"directory\" variable because the value doesn't have a set type.",
+        "context": [
+          "   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field_compare.gd:41)"
+        ]
+      },
+      {
+        "severity": "error",
+        "kind": "ERROR",
+        "line": 6,
+        "message": "Failed to load script \"C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field_compare.gd\" with error \"Parse error\".",
+        "context": [
+          "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "process_exit",
+    "detail": "",
+    "exit_code": 1,
+    "ok": false,
+    "elapsed_seconds": 0.704,
+    "log_bytes": 605,
+    "log_sha256": "05a240dcd25a68f797245ba4f84d2b1cf575390243c2a40a0bec288245a67d41",
+    "retained_log": "field-cache-exploration-738xqa_x.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "f366e879-bc62-4303-831e-448e49f39f9c",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field_compare.gd",
+      "--",
+      "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field-exploration.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:01:42.392904+00:00",
+    "label": "field-cache-exploration-fixed",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-cache-exploration-fixed-dim0p36g\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\field-cache-exploration-fixed-dim0p36g\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371924162214004 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 12.547,
+    "log_bytes": 1125,
+    "log_sha256": "7a6ddbd4f81e8b3e952829fe137b19926c9679a5d914dab6210c98cdc62594f2",
+    "retained_log": "field-cache-exploration-fixed-dim0p36g.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "a353d952-3731-4837-b637-8ff06ec527d2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\loading-1-candidate.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:07:52.264295+00:00",
+    "label": "loading-1-candidate",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-1-candidate-hcce3kxg\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-1-candidate-hcce3kxg\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 16.156,
+    "log_bytes": 1828,
+    "log_sha256": "ba86dc2a60b73620959eb87095d13b8bdb0c6f7e90ce460e21e299d25a0f489d",
+    "retained_log": "loading-1-candidate-hcce3kxg.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "bf5ba334-efc2-4e1c-b8a1-ef21efbbc950",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\loading-1-reference.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:07:35.668780+00:00",
+    "label": "loading-1-reference",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-1-reference-g9wwxyar\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-1-reference-g9wwxyar\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 16.328,
+    "log_bytes": 1828,
+    "log_sha256": "db357c7727894c1e0f6be59dbea882e14000f455436841279ae7f3acdbb4f1d3",
+    "retained_log": "loading-1-reference-g9wwxyar.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "19f81482-bde6-4df5-ad51-331e64c56257",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\loading-1-reference.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:07:02.642182+00:00",
+    "label": "loading-1-reference",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-1-reference-viy_vcmk\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-1-reference-viy_vcmk\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 1,
+    "complete": true,
+    "counts": {
+      "error": 4,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      },
+      {
+        "severity": "error",
+        "kind": "ERROR",
+        "line": 21,
+        "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\"]",
+        "context": [
+          "   at: push_error (core/variant/variant_utility.cpp:1023)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] build (res://render/airplane.gd:53)"
+        ]
+      },
+      {
+        "severity": "error",
+        "kind": "ERROR",
+        "line": 30,
+        "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\"]",
+        "context": [
+          "   at: push_error (core/variant/variant_utility.cpp:1023)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] build (res://render/airplane.gd:53)"
+        ]
+      },
+      {
+        "severity": "error",
+        "kind": "ERROR",
+        "line": 39,
+        "message": "Aircraft model contract: [\"authoring source is missing: assets/aircraft/model-bindings.json\"]",
+        "context": [
+          "   at: push_error (core/variant/variant_utility.cpp:1023)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] build (res://render/airplane.gd:53)"
+        ]
+      },
+      {
+        "severity": "error",
+        "kind": "ERROR",
+        "line": 49,
+        "message": "Home Fly failed to create a valid flight",
+        "context": [
+          "   at: push_error (core/variant/variant_utility.cpp:1023)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd:185)"
+        ]
+      }
+    ],
+    "missing_required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "reason": "process_exit",
+    "detail": "",
+    "exit_code": 1,
+    "ok": false,
+    "elapsed_seconds": 9.906,
+    "log_bytes": 3414,
+    "log_sha256": "44fdf850bfa60948756308a85058f83b7481e49ab22e3f2c2bc9585db072dc01",
+    "retained_log": "loading-1-reference-viy_vcmk.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "92e27a87-d8c6-45a7-a978-262d30162978",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\loading-2-candidate.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:08:08.703023+00:00",
+    "label": "loading-2-candidate",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-2-candidate-mxs14ly8\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-2-candidate-mxs14ly8\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 15.688,
+    "log_bytes": 1828,
+    "log_sha256": "ecb890fb89dc567b75fbd473c52d76fdae7b4fc8cb42d66d11b472074ad738b5",
+    "retained_log": "loading-2-candidate-mxs14ly8.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "caeba8cf-5e4d-4bee-b4bb-024007643bbb",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\loading-2-reference.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:08:24.648983+00:00",
+    "label": "loading-2-reference",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-2-reference-y9yw5m_t\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-2-reference-y9yw5m_t\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 15.968,
+    "log_bytes": 1828,
+    "log_sha256": "4e3af33075585de47904444f43ddeec4c28b02a146645994f3ef4c9ac760ccee",
+    "retained_log": "loading-2-reference-y9yw5m_t.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "5f2b9761-ce78-4062-9658-5198c8d18a34",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\loading-3-candidate.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:08:57.698641+00:00",
+    "label": "loading-3-candidate",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-3-candidate-s8j22e40\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-3-candidate-s8j22e40\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 15.969,
+    "log_bytes": 1828,
+    "log_sha256": "486f0a6edde86687a55ea4c1e74b258ec69e1f254c18692da432f2bd68075a9a",
+    "retained_log": "loading-3-candidate-s8j22e40.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "a8bf964c-a6af-4bf0-a29b-106e8822cd7f",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--cycles=3",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\loading-3-reference.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:08:40.874824+00:00",
+    "label": "loading-3-reference",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-3-reference-llr9saak\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-3-reference-llr9saak\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "loading probe: 3 Home/Fly cycles"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 16.547,
+    "log_bytes": 1828,
+    "log_sha256": "18fb91bcbcd5c48404686d32742b1df59e907f25faa8023330d51ac87f0aa7a0",
+    "retained_log": "loading-3-reference-llr9saak.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "0dc48663-d2ee-4969-a603-fc166bc7113a",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/research/performance/loading_probe.gd",
+      "--",
+      "--output=C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/baseline-loading.json",
+      "--cycles=3"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T01:56:53.753271+00:00",
+    "label": "loading-baseline",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-baseline-rknhhqf8\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\loading-baseline-rknhhqf8\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371831451318166 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 17.516,
+    "log_bytes": 1825,
+    "log_sha256": "3d26658f9add79c64b06ba20230ecb9d23acd933b7c1366beda1c96dcbe6b36f",
+    "retained_log": "loading-baseline-rknhhqf8.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "dde08fab-ac15-4fdf-9259-1d8e194c6e34",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\patch_miss_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\miss-1.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:11:57.175383+00:00",
+    "label": "miss-1",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-1-mj89fs9_\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-1-mj89fs9_\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "pairs=12 exact=12 samples=24"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 2.25,
+    "log_bytes": 278,
+    "log_sha256": "cb248ac447509ad86b64126300b31acd5ea27bbb6972ab58545d00f43071bfc5",
+    "retained_log": "miss-1-mj89fs9_.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "8261e218-f2a5-4cef-981e-66659e15bbb1",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\patch_miss_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\miss-2.json",
+      "--reverse"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:11:59.532286+00:00",
+    "label": "miss-2",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-2-ogvwzhzr\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-2-ogvwzhzr\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "pairs=12 exact=12 samples=24"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 2.25,
+    "log_bytes": 278,
+    "log_sha256": "d2160578aeab535ede703c308e7d18b03ccb9ea43b3fb2e7c724798817a5d1eb",
+    "retained_log": "miss-2-ogvwzhzr.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "21d8d6a2-b131-4aa4-a94b-60fc3e93ceaf",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\patch_miss_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\miss-3.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:12:01.893653+00:00",
+    "label": "miss-3",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-3-l7u8casx\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-3-l7u8casx\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "pairs=12 exact=12 samples=24"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 2.25,
+    "log_bytes": 278,
+    "log_sha256": "7d78c32e103b6bf543135486ce252452ad950f823ee29c0fd9d654299a325a9e",
+    "retained_log": "miss-3-l7u8casx.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "fb449652-50a2-4713-8d43-f795242aaf59",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\patch_miss_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\miss-4.json",
+      "--reverse"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:12:04.245267+00:00",
+    "label": "miss-4",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-4-u57b6z0q\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-4-u57b6z0q\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "pairs=12 exact=12 samples=24"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 2.234,
+    "log_bytes": 278,
+    "log_sha256": "6928f1052840d2fc98feaafb7121e4395f12e15430e04817910eb65c570bee7c",
+    "retained_log": "miss-4-u57b6z0q.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "88d15763-484e-47d3-abb4-8530016bfbaa",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\patch_miss_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\miss-5.json"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:12:06.600231+00:00",
+    "label": "miss-5",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-5-dzig02x2\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\miss-5-dzig02x2\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "pairs=12 exact=12 samples=24"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 2.328,
+    "log_bytes": 278,
+    "log_sha256": "e934fa6c31673693e48f157f3d691c4a08c3c345d9d91356e25ef79510fa87f6",
+    "retained_log": "miss-5-dzig02x2.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "2e2856bf-f9af-47bd-b4a8-76b83f6fd792",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/test_patch_cache.gd",
+      "--",
+      "--candidate=C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/ground_candidate.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:06:23.991167+00:00",
+    "label": "patch-cache-draft",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\patch-cache-draft-2um22p2h\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\patch-cache-draft-2um22p2h\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.485,
+    "log_bytes": 122,
+    "log_sha256": "96ff925fc2f905140b29a059c1387f01b1a34b4f24380ada981e7d917efe32a6",
+    "retained_log": "patch-cache-draft-2um22p2h.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "66c104f2-c467-41a5-b76c-9a20894484b9",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--check-only",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/ground_candidate.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:00:22.337965+00:00",
+    "label": "patch-candidate-parse",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\patch-candidate-parse-9xak7mpv\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\patch-candidate-parse-9xak7mpv\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.312,
+    "log_bytes": 75,
+    "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+    "retained_log": "patch-candidate-parse-9xak7mpv.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "8e322115-fc44-4797-ae5f-119100820ae7",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_patch_cache.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:09:42.629843+00:00",
+    "label": "production-cache",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-cache-ak70jcz3\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-cache-ak70jcz3\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "94 checks, 0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.484,
+    "log_bytes": 122,
+    "log_sha256": "96ff925fc2f905140b29a059c1387f01b1a34b4f24380ada981e7d917efe32a6",
+    "retained_log": "production-cache-ak70jcz3.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "a69a1142-ed87-45dc-93bc-b58725f37e5d",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:09:50.005298+00:00",
+    "label": "production-field",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-field-ilssekxc\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-field-ilssekxc\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "all field integration checks passed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 7.516,
+    "log_bytes": 2393,
+    "log_sha256": "76ea80a22b31f21f511cac47ba6909a0a89b9128c19781a1d4da3af77282dfa5",
+    "retained_log": "production-field-ilssekxc.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "895e2552-11ec-49ff-8c97-1fe22aa4022d",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_flow.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:10:01.082841+00:00",
+    "label": "production-flow",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-flow-1q5jgiur\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-flow-1q5jgiur\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 2
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 3,
+        "message": "Bad --time_scale '-3' (0\u20133600); time stays frozen",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] resolve (res://render/world/conditions.gd:101)"
+        ]
+      },
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 8,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371923054917685 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 5.297,
+    "log_bytes": 1107,
+    "log_sha256": "91f2f4ce1f0ad1168fbf4f6056484e024f086afb1c0bb95fd39da901c3b577fa",
+    "retained_log": "production-flow-1q5jgiur.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "9dee6383-73fd-413c-bbb7-4d605171482e",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_landscape_gravel.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:09:43.808674+00:00",
+    "label": "production-gravel",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-gravel-edp83ir9\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-gravel-edp83ir9\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failures"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 3,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371967933970688 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 1.875,
+    "log_bytes": 729,
+    "log_sha256": "04ffe94f58718040de9dde627201a9ce82e35f11ec9d3a2c0c1e71b8e84d192a",
+    "retained_log": "production-gravel-edp83ir9.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "d2563771-8d92-48fa-a726-6f47fe497b3d",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_scenery_ground_lu08.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:09:43.213602+00:00",
+    "label": "production-ground",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-ground-ld93mj0r\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-ground-ld93mj0r\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "LU08 scenery ground checks passed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.469,
+    "log_bytes": 110,
+    "log_sha256": "df3ef4cc918baf6e8cc990e72a7858295591437c1705c9600b9363d6af859cb0",
+    "retained_log": "production-ground-ld93mj0r.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "325471af-7cf9-42e0-9a39-3ac43fd3e2a5",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "res://scenery/ground_features.gd",
+      "--check-only"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:10:06.482230+00:00",
+    "label": "production-parse",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-parse-mue3w1iw\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-parse-mue3w1iw\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.297,
+    "log_bytes": 75,
+    "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+    "retained_log": "production-parse-mue3w1iw.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "63afea3a-0c74-4381-a288-c43e789b0f6e",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "res://tests/test_ground_patch_cache.gd",
+      "--check-only"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:10:06.884834+00:00",
+    "label": "production-parse",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-parse-p0gy86ff\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-parse-p0gy86ff\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.281,
+    "log_bytes": 75,
+    "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+    "retained_log": "production-parse-p0gy86ff.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "1aba2005-caab-4bee-b973-201b1f15bef4",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_scenery_build.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:09:45.798032+00:00",
+    "label": "production-scenery",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-scenery-f0828_81\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-scenery-f0828_81\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "all scenery build checks passed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 5,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371933255465118 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 4.094,
+    "log_bytes": 8729,
+    "log_sha256": "96d0f84830c8a2aae179c739df1d25b2a85def4b3f9d36d1da35008dcfbb6a42",
+    "retained_log": "production-scenery-f0828_81.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "0cf45e1d-bcc7-480f-a177-c063c6e37cae",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:09:57.623803+00:00",
+    "label": "production-surfaces",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-surfaces-1kl42itd\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\production-surfaces-1kl42itd\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [
+      "0 failed"
+    ],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 4,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 3.359,
+    "log_bytes": 3030,
+    "log_sha256": "01ad0ef6a11cf28df0c2c87e14785014e31ea9eb33171c34fe405fd534f6ecb5",
+    "retained_log": "production-surfaces-1kl42itd.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "fede61d6-0fa5-4467-a355-23ab298049e3",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/ground-patch-reproduction-check/field_compare.gd",
+      "--check-only"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T02:11:35.799862+00:00",
+    "label": "reproduction-parse",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\reproduction-parse-zo2adhu9\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\reproduction-parse-zo2adhu9\\report.json",
+    "timeout_seconds": 60.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 0
+    },
+    "diagnostics": [],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.219,
+    "log_bytes": 75,
+    "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c",
+    "retained_log": "reproduction-parse-zo2adhu9.log.gz"
+  },
+  {
+    "format": "openrc-godot-check v1",
+    "capture_id": "30cb1c13-a8e9-4f2e-a66c-2fb4e9e58148",
+    "command": [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/field_attribution.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+    "started_utc": "2026-10-20T01:58:05.613019+00:00",
+    "label": "scenery-attribution",
+    "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\scenery-attribution-twk53q7t\\engine.log",
+    "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\loading-optimization-20261019\\checks\\scenery-attribution-twk53q7t\\report.json",
+    "timeout_seconds": 120.0,
+    "max_log_bytes": 8388608,
+    "warnings_as_errors": false,
+    "required_text": [],
+    "process_exit": 0,
+    "complete": true,
+    "counts": {
+      "error": 0,
+      "warning": 1
+    },
+    "diagnostics": [
+      {
+        "severity": "warning",
+        "kind": "WARNING",
+        "line": 11,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371934647974009 is unsupported (cull mode is not disabled)",
+        "context": [
+          "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+          "   GDScript backtrace (most recent call first):",
+          "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+        ]
+      }
+    ],
+    "missing_required_text": [],
+    "reason": "passed",
+    "detail": "",
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 6.938,
+    "log_bytes": 3934,
+    "log_sha256": "a17f53991b6d9bc1113f4210cb08ff814aea525fff29a9247ff18eadcbf694da",
+    "retained_log": "scenery-attribution-twk53q7t.log.gz"
+  }
+]

@@ -1,0 +1,106 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"cache_bytes": 338620,
+	"cache_entries": 1,
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"exact_pairs": 6,
+	"failures": [],
+	"samples": [
+		{
+			"pair": 0,
+			"patches_ms": 58.75,
+			"scenery_ms": 831.643,
+			"usec": 1419510,
+			"variant": "candidate"
+		},
+		{
+			"pair": 0,
+			"patches_ms": 43.38,
+			"scenery_ms": 243.8,
+			"usec": 614591,
+			"variant": "reference"
+		},
+		{
+			"pair": 1,
+			"patches_ms": 60.019,
+			"scenery_ms": 274.427,
+			"usec": 623057,
+			"variant": "reference"
+		},
+		{
+			"pair": 1,
+			"patches_ms": 0.269,
+			"scenery_ms": 198.109,
+			"usec": 540530,
+			"variant": "candidate"
+		},
+		{
+			"pair": 2,
+			"patches_ms": 0.239,
+			"scenery_ms": 192.453,
+			"usec": 551882,
+			"variant": "candidate"
+		},
+		{
+			"pair": 2,
+			"patches_ms": 42.859,
+			"scenery_ms": 238.601,
+			"usec": 621419,
+			"variant": "reference"
+		},
+		{
+			"pair": 3,
+			"patches_ms": 42.076,
+			"scenery_ms": 236.272,
+			"usec": 577456,
+			"variant": "reference"
+		},
+		{
+			"pair": 3,
+			"patches_ms": 0.214,
+			"scenery_ms": 192.26,
+			"usec": 524348,
+			"variant": "candidate"
+		},
+		{
+			"pair": 4,
+			"patches_ms": 0.209,
+			"scenery_ms": 189.892,
+			"usec": 525467,
+			"variant": "candidate"
+		},
+		{
+			"pair": 4,
+			"patches_ms": 61.133,
+			"scenery_ms": 296.197,
+			"usec": 638194,
+			"variant": "reference"
+		},
+		{
+			"pair": 5,
+			"patches_ms": 41.893,
+			"scenery_ms": 233.559,
+			"usec": 577604,
+			"variant": "reference"
+		},
+		{
+			"pair": 5,
+			"patches_ms": 0.23,
+			"scenery_ms": 191.718,
+			"usec": 533547,
+			"variant": "candidate"
+		}
+	],
+	"scope": "native complete detached default field CPU construction; all node transforms, mesh arrays/bounds and MultiMesh buffers; not first draw or FPS"
+}

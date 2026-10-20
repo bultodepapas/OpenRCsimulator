@@ -1,0 +1,29 @@
+{
+  "process_medians_usec": [
+    {
+      "candidate": 42756,
+      "reference": 41949
+    },
+    {
+      "candidate": 43011,
+      "reference": 42497
+    },
+    {
+      "candidate": 42017,
+      "reference": 42072
+    },
+    {
+      "candidate": 43392,
+      "reference": 44436
+    },
+    {
+      "candidate": 42916,
+      "reference": 42132
+    }
+  ],
+  "exact_pairs": 60,
+  "median_of_process_medians_usec": {
+    "reference": 42132,
+    "candidate": 42916
+  }
+}
