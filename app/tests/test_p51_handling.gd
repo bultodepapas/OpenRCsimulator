@@ -128,7 +128,11 @@ func _initialize() -> void:
 	var alpha_max := -1e30
 	for r in st.row_count():
 		alpha_max = maxf(alpha_max, atan2(float(st.value(r, "w_mps")), float(st.value(r, "u_mps"))))
-	_check("full-up power-off: α passes the stall start, finite", alpha_max > model.envelope.a1 and _finite(st), "α max %.1f° (stall start %.1f°)" % [rad_to_deg(alpha_max), rad_to_deg(model.envelope.a1)])
+	var stall_expected_ticks: int = roundi(stall.duration / session.sim.dt())
+	var stall_complete: bool = st.row_count() == stall_expected_ticks + 1 and session.sim.tick == stall_expected_ticks and session.sim.fault_reason.is_empty()
+	_check("full-up power-off: trace completes all 4 s at 240 Hz", stall_complete,
+		"%d/%d rows, tick %d, fault %s" % [st.row_count(), stall_expected_ticks + 1, session.sim.tick, session.sim.fault_reason])
+	_check("full-up power-off: α passes the stall start, finite", stall_complete and alpha_max > model.envelope.a1 and _finite(st), "α max %.1f° (stall start %.1f°)" % [rad_to_deg(alpha_max), rad_to_deg(model.envelope.a1)])
 
 	# Spin entry (idle, full up + full right rudder for 3.75 s), standard recovery for 1 s, then neutral: the
 	# rotation stops within 3 s of starting the recovery. A heavy warbird starts from 200 m.

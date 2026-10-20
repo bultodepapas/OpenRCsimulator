@@ -1,0 +1,64 @@
+{
+  "date_local": "2026-10-19",
+  "purpose": "Powered P-51 same-tape regression control for the engine-off shaft-boundary repair. This is software regression evidence, not physical validation or stopped-shaft acceptance.",
+  "platform": {
+    "os": "Windows x86_64",
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "runner": "tools/godot/run_checked.py"
+  },
+  "capture": {
+    "fixture": "baseline/capture_release_p51_flightlog.gd",
+    "aircraft": "app/data/aircraft/p51d_mustang_120.json",
+    "aircraft_sha256": "3b26d797c058639f6d76443dd1f1ca3399529046613bd868c3e7f9767568935d",
+    "baseline_commit": "a502e5fa2043027645b170e163d5f7a1092101a4",
+    "integrator": "coupled-rk4",
+    "tick_rate_hz": 240,
+    "ticks": 960,
+    "duration_s": 4.0,
+    "initial_shaft_rpm": 3362.966725681147,
+    "final_shaft_rpm": 5998.51442116109,
+    "input_schedule": "roll 0.04 for ticks 0-479 then -0.03; pitch -0.02 for ticks 0-239 then 0.01; yaw 0; throttle 0.56",
+    "markers": [0, 480, 960]
+  },
+  "baseline": {
+    "orfl": "baseline/powered-p51-4s.orfl",
+    "orfl_bytes": 869872,
+    "orfl_sha256": "b226f4d73b91062bdbaebb1af13d405561cde72054939667cf4b289486410982",
+    "solver_sha256": "a25ebd2163c434bf4d2cd53ff75ce8355ba55b8ae422f6ae476d842a00a443e6",
+    "replay": "baseline/replay/replay.json",
+    "mode": "exact",
+    "complete": true,
+    "solver_changed": false,
+    "rows": 961,
+    "csv": "baseline/replay/flight.csv",
+    "csv_sha256": "ae603bd1c4e6b47c13ada9aa121294213ae8cc04bc98c6d1b687ff3d6c5650cc",
+    "checked_run": "baseline/checks/exact-replay-report.json"
+  },
+  "candidate": {
+    "replay": "candidate/replay.json",
+    "mode": "candidate",
+    "complete": true,
+    "solver_changed": true,
+    "baseline_solver_sha256": "a25ebd2163c434bf4d2cd53ff75ce8355ba55b8ae422f6ae476d842a00a443e6",
+    "candidate_solver_sha256": "6bd05ba975facfd54e8926992c6d5a0359d147512073fe2e8f460a6820ab7759",
+    "source_base_commit": "deae49cf3f40f817593fba931832a5eb4b2f977c",
+    "source_base_worktree_dirty": true,
+    "modified_solver_file": "app/sim/flight_session.gd",
+    "modified_solver_file_git_blob_sha1": "cba286b17c17322b80be7d700e4c84aa7d5bbcfa",
+    "rows": 961,
+    "csv": "candidate/flight.csv",
+    "csv_sha256": "ae603bd1c4e6b47c13ada9aa121294213ae8cc04bc98c6d1b687ff3d6c5650cc",
+    "checked_run": "candidate/checks/replay-report.json"
+  },
+  "comparison": {
+    "report": "comparison.json",
+    "checked_run": "checks/compare-report.json",
+    "status": "ok",
+    "rows": 961,
+    "duration_s": 4.0,
+    "first_divergence": null,
+    "max_abs_and_rmse": 0.0,
+    "comparison_sha256": "3ce5c83d5c8650065a33b5326e4fd74116fd074b7b8a4f7d3ab9a9252fe81cb5"
+  },
+  "interpretation": "The candidate ran with the changed solver identity on the exact baseline input tape; complete candidate replay is confirmed and all compared body-state metrics are identical on this powered control. Stopped-shaft behavior is covered separately by focused shaft tests."
+}

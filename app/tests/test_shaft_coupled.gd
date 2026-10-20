@@ -3,6 +3,7 @@
 extends SceneTree
 
 const Flight := preload("res://sim/flight_session.gd")
+const SimKernel := preload("res://sim/simulation.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const AD := preload("res://physics/aircraft_data.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
@@ -267,6 +268,172 @@ func _coupling_physics() -> void:
 	flight.engine_running = false
 	_torque_closure(flight, "engine-off closure includes mechanical friction once")
 	flight.free()
+
+
+func _stopped_combustion_lock_and_cutoff() -> void:
+	var glide: Node = _coupled_fixture()
+	if glide == null or not glide.trim_at(18.0, "glide").get("ok", false):
+		_check("engine-off glide trim fixture starts", false)
+		if glide != null:
+			glide.free()
+		return
+	glide.reset()
+	var shaft_index: int = glide._rotor_index()
+	_check("power-off trim resets at zero relative shaft RPM", not glide.engine_running
+		and glide.sim.modes[0] == 0 and glide.sim.continuous[shaft_index] == 0.0)
+	glide.sim.inputs[1] = 0.21906288707026 # Match the P-51 pitch command at the failing first RK tick.
+	var direct: Dictionary = glide._coupled_response(glide.sim.state, _shaft_values(glide, glide.sim.continuous), glide.sim.time())
+	var direct_rate: float = float(direct.get("rpm_rate", NAN))
+	var axis: PackedFloat64Array = Prop.axis(glide.aircraft.model.propulsion)
+	var shaft_values: PackedFloat64Array = _shaft_values(glide, glide.sim.continuous)
+	var loads: PackedFloat64Array = direct.get("loads", PackedFloat64Array())
+	var required: float = NAN
+	if direct.get("ok", false) and loads.size() == 6:
+		var momentum: PackedFloat64Array = glide._coupled_rotor(glide.sim.state, shaft_values, glide.sim.time())
+		var body_derivative: PackedFloat64Array = RB.derivative(glide.sim.state, glide.sim.mass, glide.sim.inertia,
+			RB.inertia_inverse(glide.sim.inertia), M.v3(loads[0], loads[1], loads[2]),
+			M.v3(loads[3], loads[4], loads[5]), glide.sim.gravity, momentum)
+		required = float(glide.aircraft.model.propulsion.rotor_inertia) * (direct_rate * TAU / 60.0
+			+ M.dot(axis, body_derivative.slice(RB.RATE, RB.RATE + 3)))
+	var static_bound: float = float(glide.aircraft.model.propulsion.shaft.friction[0])
+	_check("resting engine-off coupling uses only bounded zero-speed shaft friction",
+		direct.get("ok", false) and absf(direct_rate) < 1e-10 and is_finite(required)
+		and absf(required) <= static_bound + 1e-9,
+		"required %s N·m; authored bound %s N·m" % [String.num_scientific(required), String.num_scientific(static_bound)])
+	var reverse_state: PackedFloat64Array = glide.sim.state.duplicate()
+	reverse_state[RB.RATE + 1] = 100.0
+	reverse_state[RB.RATE + 2] = -100.0
+	var before_reverse: PackedByteArray = _dynamic_bits(glide.sim)
+	var reverse_demand: Dictionary = glide._coupled_response(reverse_state, shaft_values, glide.sim.time())
+	_check("stopped engine-off shaft refuses reverse breakaway beyond authored friction",
+		not reverse_demand.get("ok", false) and before_reverse == _dynamic_bits(glide.sim), str(reverse_demand))
+	var stages: Array[float] = []
+	var real_stage: Callable = glide.sim.model.stage
+	glide.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+		stages.append(z[shaft_index])
+		return real_stage.call(s, z, t)
+	glide.sim.step()
+	glide.sim.model.stage = real_stage
+	_check("zero-RPM power-off glide accepts all four coupled RK stages",
+		glide.sim.tick == 1 and glide.sim.fault_reason.is_empty() and stages.size() == 4
+		and stages.all(func(rpm: float) -> bool: return is_finite(rpm) and rpm >= 0.0),
+		"stages %s; fault '%s'" % [str(stages), glide.sim.fault_reason])
+	glide.free()
+
+	var rundown: Node = _coupled_fixture()
+	if rundown == null or not rundown.trim_at(18.0, "glide").get("ok", false):
+		_check("positive-RPM engine-off cutoff fixture starts", false)
+		if rundown != null:
+			rundown.free()
+		return
+	rundown.reset()
+	var cutoff_index: int = rundown._rotor_index()
+	var liquid_index: int = rundown._liquid_index()
+	var fuel_config: Dictionary = rundown.aircraft.model.propulsion.liquid_fuel
+	var full_usable_fuel: float = float(fuel_config.capacity_kg) - float(fuel_config.unusable_kg)
+	_check("engine-off cutoff sweep starts with full usable finite fuel",
+		absf(rundown.sim.continuous[liquid_index] - full_usable_fuel) < 1e-12,
+		"state %s kg; full usable %s kg" % [String.num_scientific(rundown.sim.continuous[liquid_index]), String.num_scientific(full_usable_fuel)])
+	var initial_body: PackedFloat64Array = rundown.sim.state.duplicate()
+	var original_hz: int = Engine.physics_ticks_per_second
+	for test_hz: int in [120, 240, 480]:
+		Engine.physics_ticks_per_second = test_hz
+		for initial_rpm: float in [1.000001, 1.001, 1.01, 1.02, 1.05, 2.0]:
+			rundown.sim.continuous[cutoff_index] = initial_rpm
+			rundown.sim.aux[0] = initial_rpm
+			var reset_ok: bool = rundown.sim.reset(initial_body)
+			var planned_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
+				rundown.sim.continuous, rundown.sim.time())
+			var fuel_before: float = rundown.sim.continuous[liquid_index]
+			var fuel_event_declared: bool = rundown.sim.model.events.size() == 1 \
+				and rundown.sim.model.events[0].get("type") == "fuel_exhausted"
+			var cutoff_stages: Array[float] = []
+			var cutoff_stage: Callable = rundown.sim.model.stage
+			rundown.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+				cutoff_stages.append(z[cutoff_index])
+				return cutoff_stage.call(s, z, t)
+			rundown.sim.step()
+			rundown.sim.model.stage = cutoff_stage
+			var after_rundown: float = rundown.sim.continuous[cutoff_index]
+			var complete_tick: bool = reset_ok and rundown.sim.tick == 1 and rundown.sim.fault_reason.is_empty()
+			var finite_nonnegative_stages: bool = cutoff_stages.size() == 4 * planned_substeps \
+				and cutoff_stages.all(func(rpm: float) -> bool: return is_finite(rpm) and rpm >= 0.0)
+			_check("engine-off rundown %s RPM at %d Hz stays in the nonnegative RK domain" % [str(initial_rpm), test_hz],
+				complete_tick and not rundown.engine_running and finite_nonnegative_stages
+				and fuel_event_declared and fuel_before == full_usable_fuel
+				and rundown.sim.continuous[liquid_index] == fuel_before and rundown.sim.last_events.is_empty(),
+				"substeps=%d; stages %s; endpoint %s RPM; fault '%s'" % [planned_substeps, str(cutoff_stages), String.num_scientific(after_rundown), rundown.sim.fault_reason])
+			if complete_tick and after_rundown < Prop.STOPPED_RPM:
+				var stopped_endpoint: float = after_rundown
+				rundown.sim.step()
+				_check("sub-cutoff combustion RPM remains finite without a fabricated stop event (%s RPM at %d Hz)" % [str(initial_rpm), test_hz],
+					rundown.sim.tick == 2 and rundown.sim.fault_reason.is_empty()
+					and rundown.sim.continuous[cutoff_index] == stopped_endpoint
+					and rundown.sim.continuous[cutoff_index] >= 0.0)
+	Engine.physics_ticks_per_second = 240
+	rundown.engine_running = true
+	rundown.sim.continuous[cutoff_index] = Prop.STOPPED_RPM + 0.000001
+	rundown.sim.aux[0] = Prop.STOPPED_RPM + 0.000001
+	rundown.sim.continuous[liquid_index] = 1e-8
+	rundown.sim.continuous[liquid_index + 1] = 1.0
+	_check("same-tick fuel-exhaustion fixture resets with source latched on", rundown.sim.reset(initial_body))
+	var exhaustion_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
+		rundown.sim.continuous, rundown.sim.time())
+	var exhaustion_stages: Array[float] = []
+	var exhaustion_stage: Callable = rundown.sim.model.stage
+	rundown.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+		exhaustion_stages.append(z[cutoff_index])
+		return exhaustion_stage.call(s, z, t)
+	rundown.sim.step()
+	rundown.sim.model.stage = exhaustion_stage
+	var fuel_exhausted_event: bool = rundown.sim.last_events.any(
+		func(event: Dictionary) -> bool: return event.get("type") == "fuel_exhausted")
+	_check("near-cutoff refinement composes with same-tick finite-fuel exhaustion",
+		exhaustion_substeps > 1 and rundown.sim.tick == 1 and rundown.sim.fault_reason.is_empty()
+		and fuel_exhausted_event and rundown.sim.continuous[liquid_index] == 0.0
+		and rundown.sim.continuous[liquid_index + 1] == 0.0
+		and exhaustion_stages.size() >= 4 * exhaustion_substeps
+		and exhaustion_stages.all(func(rpm: float) -> bool: return is_finite(rpm) and rpm >= 0.0),
+		"substeps=%d; events=%s; RPM stages=%s; fault '%s'" % [exhaustion_substeps,
+		str(rundown.sim.last_events), str(exhaustion_stages), rundown.sim.fault_reason])
+	rundown.sim.continuous[cutoff_index] = Prop.STOPPED_RPM + 0.000001
+	rundown.sim.aux[0] = Prop.STOPPED_RPM + 0.000001
+	_check("depleted finite source resets with legacy engine mode still running", rundown.sim.reset(rundown.sim.state))
+	var depleted_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
+		rundown.sim.continuous, rundown.sim.time())
+	var depleted_stages: Array[float] = []
+	var depleted_stage: Callable = rundown.sim.model.stage
+	rundown.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+		depleted_stages.append(z[cutoff_index])
+		return depleted_stage.call(s, z, t)
+	rundown.sim.step()
+	rundown.sim.model.stage = depleted_stage
+	_check("zero-fuel source latch selects off-shaft refinement even when engine_running is true",
+		depleted_substeps > 1 and rundown.engine_running and rundown.sim.tick == 1
+		and rundown.sim.fault_reason.is_empty() and rundown.sim.continuous[liquid_index] == 0.0
+		and rundown.sim.continuous[liquid_index + 1] == 0.0
+		and depleted_stages.size() == 4 * depleted_substeps
+		and depleted_stages.all(func(rpm: float) -> bool: return is_finite(rpm) and rpm >= 0.0),
+		"substeps=%d; RPM stages=%s; fault '%s'" % [depleted_substeps, str(depleted_stages), rundown.sim.fault_reason])
+
+	Engine.physics_ticks_per_second = 16
+	rundown.engine_running = false
+	rundown.sim.continuous[cutoff_index] = Prop.STOPPED_RPM + 0.000001
+	rundown.sim.aux[0] = Prop.STOPPED_RPM + 0.000001
+	rundown.sim.continuous[liquid_index] = full_usable_fuel
+	rundown.sim.continuous[liquid_index + 1] = 0.0
+	_check("substep-cap fixture resets at supported 16 Hz", rundown.sim.reset(initial_body))
+	var excessive_substeps: int = rundown.sim.model.substeps.call(rundown.sim.state,
+		rundown.sim.continuous, rundown.sim.time())
+	var before_excessive_step: PackedByteArray = _dynamic_bits(rundown.sim)
+	rundown.sim.step()
+	_check("refinement above the kernel substep cap fails closed without clipping the requested count",
+		excessive_substeps > SimKernel.MAX_SUBSTEPS and rundown.sim.tick == 0
+		and rundown.sim.fault_reason.contains("substep count is not an integer within 1..%d" % SimKernel.MAX_SUBSTEPS)
+		and before_excessive_step == _dynamic_bits(rundown.sim),
+		"requested %d; cap %d; fault '%s'" % [excessive_substeps, SimKernel.MAX_SUBSTEPS, rundown.sim.fault_reason])
+	Engine.physics_ticks_per_second = original_hz
+	rundown.free()
 
 
 func _stage_local_integration() -> void:
@@ -623,6 +790,7 @@ func _initialize() -> void:
 		and p51_data.model.propulsion.rotor_inertia > 0.0)
 	_mode_and_legacy_paths()
 	_coupling_physics()
+	_stopped_combustion_lock_and_cutoff()
 	_stage_local_integration()
 	_joint_callback_falls_back_to_legacy()
 	_wind_time_purity()
