@@ -1,0 +1,12 @@
+$ python tools/scenery/place.py --check
+scenery layout matches the committed file
+
+$ python tools/scenery/bake_countryside.py --check
+Countryside geometry matches retained field, scenery and horizon
+
+$ python tools/scenery/test_countryside.py
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 3.781s
+
+OK
