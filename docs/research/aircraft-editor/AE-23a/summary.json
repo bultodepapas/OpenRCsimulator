@@ -1,0 +1,92 @@
+{
+  "scope": "2 s open-loop; exact baseline body/internal state and post-conditioning tape; candidate physical configuration",
+  "tape_checks": [
+    {
+      "candidate": "small",
+      "rows": 481,
+      "compared_columns": [
+        "cmd_roll",
+        "cmd_pitch",
+        "cmd_yaw",
+        "cmd_throttle",
+        "tick",
+        "t_s"
+      ],
+      "identical": true,
+      "complete": true,
+      "solver_changed": false
+    },
+    {
+      "candidate": "large",
+      "rows": 481,
+      "compared_columns": [
+        "cmd_roll",
+        "cmd_pitch",
+        "cmd_yaw",
+        "cmd_throttle",
+        "tick",
+        "t_s"
+      ],
+      "identical": true,
+      "complete": true,
+      "solver_changed": false
+    }
+  ],
+  "refinement": [
+    {
+      "scale": 0.35,
+      "mass_policy": "constant_wing_loading",
+      "position_error_240_960_m": 0.007886982868354745,
+      "position_error_240_480_m": 0.005431454688500757,
+      "position_error_480_960_m": 0.002455618494876396,
+      "velocity_error_240_960_mps": 0.00023848124318780078,
+      "minimum_altitude_m": 29.823803615104236,
+      "runway_available": false,
+      "airborne_available": true
+    },
+    {
+      "scale": 1.0,
+      "mass_policy": "constant_wing_loading",
+      "position_error_240_960_m": 0.002856308398641983,
+      "position_error_240_480_m": 0.001970164473729276,
+      "position_error_480_960_m": 0.0008861519912413781,
+      "velocity_error_240_960_mps": 3.7524831456026786e-05,
+      "minimum_altitude_m": 29.96482115217881,
+      "runway_available": true,
+      "airborne_available": true
+    },
+    {
+      "scale": 2.25,
+      "mass_policy": "constant_wing_loading",
+      "position_error_240_960_m": 0.0012728217185786338,
+      "position_error_240_480_m": 0.000880197316877144,
+      "position_error_480_960_m": 0.00039262905468782265,
+      "velocity_error_240_960_mps": 7.94252102121106e-05,
+      "minimum_altitude_m": 29.98160278639623,
+      "runway_available": false,
+      "airborne_available": true
+    },
+    {
+      "scale": 0.35,
+      "mass_policy": "geometric",
+      "position_error_240_960_m": 0.0048193011278543545,
+      "position_error_240_480_m": 0.003327048625716607,
+      "position_error_480_960_m": 0.0014922785753251114,
+      "velocity_error_240_960_mps": 0.00015221131533452013,
+      "minimum_altitude_m": 29.873512801863885,
+      "runway_available": false,
+      "airborne_available": true
+    },
+    {
+      "scale": 1.0,
+      "mass_policy": "geometric",
+      "position_error_240_960_m": 0.002856308398641983,
+      "position_error_240_480_m": 0.001970164473729276,
+      "position_error_480_960_m": 0.0008861519912413781,
+      "velocity_error_240_960_mps": 3.7524831456026786e-05,
+      "minimum_altitude_m": 29.96482115217881,
+      "runway_available": true,
+      "airborne_available": true
+    }
+  ]
+}

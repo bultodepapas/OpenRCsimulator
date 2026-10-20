@@ -41,6 +41,8 @@ Each invocation retains `engine.log` (combined stdout/stderr) and `report.json`
 (`openrc-godot-check v1`). The report includes the exact argument array, working
 directory, UTC start, elapsed wall time, child exit status, policy, verdict,
 diagnostic counts and up to 20 samples with log line numbers and following context.
+`log_bytes` and `log_sha256` identify the retained raw log, including incomplete
+prefixes. The digest detects changed artifacts; it is not an authenticity signature.
 ANSI colors and indentation do not hide errors. Ordinary embedded mentions such
 as `expected ERROR: example` are not error records. Output is replayed to stdout
 after completion; failures also print the report path and first diagnostics to
@@ -77,8 +79,9 @@ fails the run. Headless success does not qualify graphics, hardware or physics.
 `run_with_timeout` functions, including parse checks and reference/integration
 probes. Existing per-suite time budgets and named pending physical checks remain
 in that script. `OPENRC_CHECK_OUT` overrides the shell runner's evidence parent.
-Failed app CI jobs upload `godot-diagnostics-<part>-<shard>` artifacts for seven
-days. Python tools that launch their own subprocesses still own those subprocesses'
+App CI jobs that reach `app/test.sh` validate their collection, export JUnit and
+upload `godot-diagnostics-<part>-<shard>` artifacts for seven days, including failures.
+Python tools that launch their own subprocesses still own those subprocesses'
 acceptance rules; this change does not silently replace their contracts.
 
 ```sh
@@ -109,6 +112,52 @@ Five paired Windows simulation-test processes measured median direct execution
 Python interpreter startup excluded). This is a small local tooling measurement,
 not a target-machine physics budget or a full-project acceptance run.
 
+## Collection summaries and JUnit (PT1h-R2)
+
+Use a dedicated collection for each intended run, then summarize after every
+producer has stopped. For example, PowerShell:
+
+```powershell
+$checks = Join-Path 'tmp' ('checks-' + [guid]::NewGuid().ToString('N'))
+python tools/godot/run_checked.py --out-dir $checks --label simulation --require-text '11 checks, 0 failed' -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd
+python tools/godot/summarize.py $checks --junit "$checks/results.xml"
+```
+
+The summary verifies each immediate run directory's JSON, raw log size/hash,
+diagnostic counts and completion policy. Missing, malformed, changed or linked
+evidence becomes an error. Downloaded artifacts can move: paths embedded in reports
+are never followed. Reports created before `log_sha256` was added must be regenerated.
+An empty collection is refused. JUnit output is exclusively created, never replaced.
+Choose another XML filename when repeating a summary.
+
+The console prints totals and the first 20 failures with next actions and source
+context. XML includes every invocation. Exit 0 means all retained invocations
+passed, 1 means a failed/invalid invocation, and 2 means invalid configuration,
+empty/missing collection or output failure. Limits: `--max-runs` defaults to 10,000
+(hard maximum); `--max-log-bytes` defaults to 64 MiB per log;
+`--max-total-log-bytes` defaults to 512 MiB per collection. Metadata is capped at
+256 KiB per report and collection entries at 20,000. Processing is offline with
+bounded log reads. Regular files at the collection root (such as exported XML)
+are ignored; run evidence must be in immediate subdirectories.
+
+JUnit counts **commands**, including imports and parse checks, not GDScript
+assertions. A passing collection cannot prove that every intended suite was
+launched; the shell/CI exit status remains authoritative for suite completion.
+Do not mix old runs into a new collection or use wrapper duration as a physics/GPU
+performance measurement. This is a consistency check on trusted local artifacts;
+someone editing both metadata and evidence can forge a verdict. The explicit
+collection root may be an alias; linked run directories/files are refused.
+
+PT1h-R2 verified 2026-10-19: 38 diagnostic tests passed on native Windows; Linux
+passed 37 with the Windows junction test skipped. Both included the real Godot
+4.7.2 failure matrix. Seven shell partition regressions passed under WSL. A
+separate production simulation invocation passed its 11 checks; a deliberate
+zero-exit runtime error produced a failed JUnit case with its source location.
+The two-case report correctly contained one pass and one failure. Visual-tool
+regressions also cover baseline preservation, lock errors and invalid deadlines;
+the investigation records their final result. No full CI or fresh GPU run is
+claimed.
+
 ## Audit scope
 
 The 2026-10-19 audit reviewed the main test entrypoint, capture runner, input
@@ -118,8 +167,13 @@ Godot's exit code, and the unit log regex omitted shader errors. The checked run
 closes those paths and retains actionable evidence. Existing capture tooling already
 checks errors and validates image/manifest identity; it keeps its own contract.
 
-Two evidence-management behaviors remain explicit follow-ups: input reports replace
-an existing requested destination, and performance capture reruns remove previous
-same-name outputs. Use distinct output paths/directories when preserving baselines.
-This repair does not change those tools' overwrite semantics. Flight-log report
-write completion is handled in the [flight logging tool](../../docs/FLIGHT-LOGGING.md).
+The follow-up [20-source investigation](../../docs/research/debugging-tools-2026-10-19.md)
+adds collection integrity/JUnit and repairs the performance-output lifecycle:
+`visual_quality_cases.py --performance-only` now requires an empty `performance/`
+subdirectory under `--out` (apart from its lock). Existing complete or partial
+evidence is preserved; select a fresh `--out` for another run. Nonfinite deadlines
+are refused. The existing three-process measurement contract is unchanged.
+
+Input reports still replace an existing requested destination; choose a distinct
+path when preserving a baseline. Flight-log report write completion is handled in
+the [flight logging tool](../../docs/FLIGHT-LOGGING.md).

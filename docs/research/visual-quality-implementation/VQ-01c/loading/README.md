@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-19 construction follow-up: [content-keyed star-catalogue preparation](stars/README.md)
+preserves all native instance/material bytes in 40 pairs and reduces repeated
+complete star-field construction from 16.618 to 8.140 ms in five processes.
+Cold-construction non-regression and full Home/Fly/FPS acceptance remain open.
+
 2026-10-15 presentation follow-up: [projected-shadow framing reuse](shadow-framing/README.md)
 preserves 5,250 native state pairs and reduces shadow-update CPU time by 20–49%
 across four workloads. Headless/native shadow and Home checks exit cleanly;

@@ -1385,7 +1385,7 @@ func _refresh_size_readout() -> void:
 		return
 	var size_percent := String.num(_preview_scale() * 100.0, 4)
 	var summary: Dictionary = _compiled.get("summary", {})
-	if bool(_compiled.get("ok", false)) and summary.has("wing_span_m"):
+	if _edit_valid() and _pending_numbers.is_empty() and summary.has("wing_span_m"):
 		_scale_readout.text = tr("Size: %s%% · wingspan: %s m") % [size_percent, String.num(float(summary.wing_span_m), 4)]
 	else:
 		_scale_readout.text = tr("Proposed size: %s%% · wingspan pending validation.") % size_percent
@@ -1625,7 +1625,6 @@ func _compile_recipe() -> void:
 		_compiled = {"ok": false, "errors": ["Load an aircraft with valid flight data first."], "summary": {}}
 	else:
 		_compiled = Compiler.compile(_base.duplicate(true), _recipe.duplicate(true))
-	_refresh_size_readout()
 	var valid := bool(_compiled.get("ok", false))
 	_trial_button.disabled = not valid or not _edit_valid()
 	var compiled_data: Dictionary = _compiled.get("data", {})
@@ -2240,6 +2239,7 @@ func _commit_number(key: String) -> void:
 
 
 func _refresh_issues() -> void:
+	_refresh_size_readout()
 	var messages := _messages(_compiled.get("errors", []), "")
 	if not _presentation_buffers.is_empty(): messages += ("\n" if not messages.is_empty() else "") + tr("Apply or cancel the edited color or inscription before saving or starting a trial.")
 	if not _presentation_errors.is_empty(): messages += ("\n" if not messages.is_empty() else "") + "\n".join(_presentation_errors)

@@ -1,0 +1,51 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/aircraft-editor/size_refinement.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-size/accepted-refinement"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T00:25:21.700486+00:00",
+  "label": "accepted-refinement",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-size\\checks\\accepted-refinement-kolx8jwg\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\workshop-size\\checks\\accepted-refinement-kolx8jwg\\report.json",
+  "timeout_seconds": 180.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 29,
+      "message": "`NaN` (\"Not a Number\") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.",
+      "context": [
+        "   at: _stringify (core/io/json.cpp:86)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _run (res://../research/aircraft-editor/size_refinement.gd:64)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 31.906,
+  "log_bytes": 2601,
+  "log_sha256": "178977101deabeecd5d4131815bfdc47209c8b52950dfd4ee8ce5b96e5ce0682"
+}

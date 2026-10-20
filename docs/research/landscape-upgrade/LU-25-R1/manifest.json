@@ -1,0 +1,65 @@
+{
+  "baseline_lake_sha256": "dd9e3c3690eb2a71ad0928aee206d0fedcc4399a4b6cc41b542c1282e06a04a1",
+  "candidate_lake_sha256": "3a4e6649e2744bf98f256bf35b2bb7f31c29043bf48ef9661143f563aee9c0b5",
+  "paired_instrumented_leaf_sha256": "e8011d8990c28580872df666f60a421a9e6ad0fa007d1cad683ea5dd0eecc305",
+  "measured_tool_sha256": {
+    "instrument.py": "1595f6fc2109ef709abb524eaa7220efef0083522fe6bc604330ecedac90b2a9",
+    "paired_lake.gd": "9aa8c60f86321b5b2bf690da6b69a5fd65d8bf544d1876cb90af407eec149d79",
+    "perf_clock.gd": "0e5309b04d2991c4da80898721a0f5fb3b143695ffacbdaf5f68d4ca4c2d2fe3",
+    "profile_probe.gd": "b6556711a3858849b3d53e0e6f810fb50b81e6d17abb916d0fe28d04ff0276c7",
+    "run_affinity.py": "408a3ff4ccea88136f59ff81d628f2961b0f48e138f4fe2ee8912cf8a7ecaf6b",
+    "run_confirmation.py": "fc8c30ee1db92a495a8344ecae988e993836755dc1ca4c29ae3e09d53534e366",
+    "run_pairs.py": "fb0c518009ea8db6feffdf734865e7a05cfb6e6711afbf88cf673d2ce00da986",
+    "session_probe.gd": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
+  },
+  "runtime_delta": "Only physics/lake_surface.gd changed in the frozen app; original guard body retained.",
+  "snapshot_note": "Shared working tree frozen before profiling. Assets/import cache hard-linked as read-only inputs. Baseline hashes identify source/config; live-tree regression tests are recorded separately.",
+  "initial_baseline_metadata": {
+    "engine": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "required_version": "4.7.2",
+      "runtime_binary_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "runtime_binary_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    "probe": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\session_probe.gd",
+      "sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
+    },
+    "system": {
+      "logical_cpu_count": 24,
+      "machine": "AMD64",
+      "platform": "Windows-10-10.0.26100-SP0",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "python": "3.11.9",
+      "release": "10",
+      "system": "Windows"
+    },
+    "workspace": {
+      "branch": "main",
+      "commit": "5e2fbe32da2531928f01164fc9923cde943918f9",
+      "dirty_tracked_code": [],
+      "status_porcelain": [
+        " M docs/research/aircraft-editor/AE-03a/README.md",
+        " M docs/research/aircraft-editor/AE-03a/staging/checks/parse-all.log",
+        "?? docs/research/aircraft-editor/AE-03a/staging/verification.json",
+        "?? research/performance/scenery_empty_probe.gd"
+      ],
+      "untracked_code": [
+        {
+          "path": "docs/research/aircraft-editor/AE-03a/staging/verification.json",
+          "present": true,
+          "sha256": "a07eb34a7b85a57413255995f5a24bcea18a3a07d36a248cb445ad50ebc0b636",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/scenery_empty_probe.gd",
+          "present": true,
+          "sha256": "576ce74996ec3b80fde15bbf40d6635950c514259a928d0a61f3d783d24acdaa",
+          "tracked": false
+        }
+      ]
+    }
+  }
+}

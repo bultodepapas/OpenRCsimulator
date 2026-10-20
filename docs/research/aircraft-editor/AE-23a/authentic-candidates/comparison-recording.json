@@ -1,0 +1,77 @@
+{
+	"baseline_sha256": "ef704f8c62e60a09c6d80171d5b1555b6a6df989900285b6729552bd02ac607d",
+	"baseline_solver_sha256": "2d2e26c0475369563820e0bf1a422d525ffea19d204e0c38b6300bdad5b0cb03",
+	"candidates": [
+		{
+			"complete": true,
+			"errors": [],
+			"fault": "",
+			"final_tick": 480,
+			"identity": {
+				"ancestor_revision": 0,
+				"ancestor_variant_id": "",
+				"base_id": "jensen-das-ugly-stik-60",
+				"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+				"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+				"dependencies": {
+					"files": {
+						"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+					},
+					"format": "openrc-aircraft-workshop-dependencies v1"
+				},
+				"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+				"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+				"experimental": true,
+				"format": "openrc-aircraft-trial v1",
+				"presentation": {
+					"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+					"visual_family": "jensen-das-ugly-stik-60"
+				},
+				"recipe_sha256": "9ef1bf5fb761cbcd1c550393e519b724ef46905f49665c268d8d8c1fba4e4ac3",
+				"resolved_model_sha256": "bb9ee2eb0e26abc01e3072b9f544094e6bed97545736c1fd17b20fa5c92a62d6",
+				"resolved_sha256": "f04cbc961f34f49161f54c6e0a05b171c8f3b51cc6164fccfc4df923ef5d9609",
+				"trial_id": "workshop-6acf9e484a5ca2693a3115197658a7df"
+			},
+			"log_sha256": "29ca847937bfddc332d35fe3e858c07476514570e3f24bd1078bf9d309672166",
+			"ok": true,
+			"scale": 0.35
+		},
+		{
+			"complete": true,
+			"errors": [],
+			"fault": "",
+			"final_tick": 480,
+			"identity": {
+				"ancestor_revision": 0,
+				"ancestor_variant_id": "",
+				"base_id": "jensen-das-ugly-stik-60",
+				"base_sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007",
+				"compiler": "openrc-aircraft-workshop-v1-generic-compiler-2",
+				"dependencies": {
+					"files": {
+						"res://data/ground/wheel_profiles.json": "9e8de832fdcaa59ff5b9da2b94d7c244366afbf389ff11e51a51cdb7d8ff820b"
+					},
+					"format": "openrc-aircraft-workshop-dependencies v1"
+				},
+				"dependencies_sha256": "1a7ba2286b16df6e360760c00a23e36427ce0d46095486c475a5c0fb9b797e2a",
+				"descriptor_sha256": "a1b43490b93f5e45f1a7072c61b251670ac9661028cf242e25800d6f4aa791ac",
+				"experimental": true,
+				"format": "openrc-aircraft-trial v1",
+				"presentation": {
+					"model_manifest_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+					"visual_family": "jensen-das-ugly-stik-60"
+				},
+				"recipe_sha256": "c7719a26949f81def6a2c9db9ffbea1e964117d5700efb9c62bd27c2e900625f",
+				"resolved_model_sha256": "15a2c5219b1c28bf2ee337e5d4d34894e2e605f3b0a0fc4d3542c24dbf5cb843",
+				"resolved_sha256": "563bedc1cb23a94d7dfe5ac689a11c5c7f77dc63e899bd8befebcd5cf121a3af",
+				"trial_id": "workshop-6c379b891c27d650453c1879901968a3"
+			},
+			"log_sha256": "0f2c27f3848b96c4087bb6cf3693863ab3c77a9acf00c55bf281d95dc65063f0",
+			"ok": true,
+			"scale": 2.25
+		}
+	],
+	"current_solver_sha256": "2d2e26c0475369563820e0bf1a422d525ffea19d204e0c38b6300bdad5b0cb03",
+	"method": "Open-loop, baseline body/internal initial state and exact post-conditioning tape; authentic frozen Workshop mass/inertia/configuration. Not physical validation or equivalence.",
+	"solver_changed": false
+}

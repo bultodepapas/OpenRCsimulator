@@ -1,6 +1,6 @@
 """PT1h-R2: collection integrity and standard JUnit evidence, without Godot."""
-import hashlib
 import json
+import os
 from pathlib import Path
 import shutil
 import subprocess
@@ -102,6 +102,11 @@ class SummaryTests(unittest.TestCase):
         self.assertCountEqual([i["reason"] for i in items], ["warning", "missing_required_text"])
         self.assertFalse(any(i["ok"] for i in items))
 
+    def test_failure_reason_must_match_process_and_log(self):
+        report = self.run_code("raise SystemExit(7)")
+        self.change(report, reason="engine_error")
+        self.assertEqual(collect_runs(self.collection)[0]["reason"], "invalid_report")
+
     def test_output_cannot_overwrite_log_or_older_junit(self):
         report = self.run_code("print('preserve')")
         items = collect_runs(self.collection)
@@ -124,11 +129,27 @@ class SummaryTests(unittest.TestCase):
         self.assertIn("metadata limit", next(i for i in collect_runs(self.collection)
                                               if i["directory"] == Path(report["report"]).parent.name)["detail"])
 
+    def test_collection_log_budget(self):
+        self.run_code("print('12345')")
+        self.run_code("print('12345')")
+        with self.assertRaisesRegex(ValueError, "max-total-log-bytes"):
+            collect_runs(self.collection, max_total_log_bytes=10)
+        self.assertTrue(all(i["ok"] for i in collect_runs(self.collection, max_total_log_bytes=14)))
+
     def test_control_characters_are_safe_xml(self):
         self.run_code("print('ERROR: null \\x00 text')", label="bad\x01label")
         output = self.root / "results.xml"
         write_junit(output, collect_runs(self.collection))
         self.assertIn("null \ufffd text", ET.parse(output).find(".//failure").text)
+
+    def test_aggregate_duration_cannot_publish_infinity(self):
+        for _ in range(2):
+            report = self.run_code("pass")
+            self.change(report, elapsed_seconds=1e308)
+        output = self.root / "results.xml"
+        with self.assertRaisesRegex(ValueError, "aggregate elapsed"):
+            write_junit(output, collect_runs(self.collection))
+        self.assertFalse(output.exists())
 
     def test_linked_log_is_rejected(self):
         report = self.run_code("pass")
@@ -154,6 +175,18 @@ class SummaryTests(unittest.TestCase):
         result = subprocess.run(command, capture_output=True, text=True, timeout=10)
         self.assertEqual(result.returncode, 2)
         self.assertNotIn("Traceback", result.stderr)
+
+    @unittest.skipUnless(os.name == "nt", "Windows directory junction")
+    def test_junction_run_directory_is_rejected(self):
+        report = self.run_code("pass")
+        target = self.root / "outside-run"
+        Path(report["report"]).parent.rename(target)
+        junction = self.collection / "linked-run"
+        result = subprocess.run(["cmd.exe", "/c", "mklink", "/J", str(junction), str(target)],
+                                capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(junction.is_symlink())
+        self.assertEqual(collect_runs(self.collection)[0]["reason"], "invalid_report")
 
 
 if __name__ == "__main__":

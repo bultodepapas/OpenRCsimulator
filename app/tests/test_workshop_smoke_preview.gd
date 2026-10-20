@@ -109,7 +109,7 @@ func _run() -> void:
 	_check("Draft restores the paused pass pose", not preview._playing and preview._rig.position != Vector3.ZERO
 		and preview._smoke.visible and not preview._play_button.disabled)
 	preview.set_view_mode("inspect")
-	for scale: float in [0.5, 1.0, 2.0]:
+	for scale: float in [0.35, 0.5, 1.0, 2.0, 2.25]:
 		preview.set_aircraft("jensen-das-ugly-stik-60", scale)
 		_check("scale change resets pose and residual history %.1f" % scale,
 			preview._playhead_tick == 0 and preview._smoke.get("_history").is_empty())

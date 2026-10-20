@@ -42,7 +42,7 @@ If saving a manual trace fails during Return/Quit, recording has stopped. **Stay
 
 | Parameter | Current range or choices | Meaning |
 | --- | --- | --- |
-| Size | 50%, 75%, 100%, 125%, 150%, 200% | Uniform physical and visual scale |
+| Size | 35–225%; Tiny / Mini / Original / Large / Giant | Uniform physical and visual scale; complete aircraft validation still applies |
 | Mass scaling | Constant wing loading; geometric | Scale dry inventory mass with area or volume, before applying the weight multiplier |
 | Weight | 0.50–2.00× | Multiplies dry inventory mass; declared tank liquid follows tank scaling |
 | Tank capacity | 0.50–2.00× | Compiler sizing proposal for validated tanks; trial mass/fill integration remains under verification |
@@ -50,13 +50,15 @@ If saving a manual trace fails during Return/Quit, recording has stopped. **Stay
 | Control travel | 0.50–1.50× | Surface throw limits; does not change transmitter expo or servo speed |
 | Measured component mass | 0.001–5 kg per eligible existing inventory ID; at most 32 entries | Original stations and geometry; measurement source required; complete aircraft validation still applies |
 
-The six size choices are shortcuts. Loaded recipes may contain intermediate sizes within 50–200%; the editor adds their exact size to the selector and preserves their numeric multipliers instead of rounding them to the nearest shortcut or slider step. Invalid recipe inputs are refused before replacing the current draft.
+The size shortcuts are Tiny (35%), Mini (50%), Original (100%), Large (150%) and Giant (225%). **Smaller** divides size by 1.1; **Larger** multiplies it by 1.1, with explicit limits. Each action changes size only and adds one Undo entry. The selector retains the previous 75%, 125% and 200% choices and exact intermediate recipe values. The wingspan readout uses the validated model; pending or invalid edits are labeled proposed. Invalid imported recipe inputs are refused before replacing the draft. The separate Starting preset menu retains its existing recipes.
+
+[AE-23a evidence](research/aircraft-editor/AE-23a/README.md) covers the bounded extension and its limits. At default settings, the Stik spans 0.5334 m at 35% and 3.429 m at 225%. The 225% geometric-mass combination exceeds existing inventory limits and is correctly blocked. The broader 25–400% target remains open; this does not qualify arbitrary size/weight/power combinations or real resized hardware.
 
 Presets are Mini, Giant, Light, Heavy, More power, More travel and Light / low power. They apply only supported adjustments. Their names describe changes rather than measured flight performance. Valid slider values can still form an invalid combination: normal aircraft, trim and timestep checks remain authoritative.
 
 The catalog has eight airplane configurations; the Workshop filters out the separate rotorcraft entry. Size, dry-weight and virtual-power transforms require the simple prescribed-RPM capability, currently provided by the baseline Stik. Extra now uses a finite-glow installation, so it keeps those transforms disabled like the three finite-glow Stiks. Tank capacity is a separate operation for classified aircraft with validated tanks; conventional control travel follows the registered surface capability. Runway availability is qualified from the frozen candidate through the real session with the selected field and weather; it does not use an aircraft-ID allowlist. The compiler contains no aircraft-ID transformation branches.
 
-Runway qualification currently succeeds for all eight default fixed-wing configurations. The Stik at 150% and 200% is refused for runway starts while remaining available airborne. These are software start-qualification results, not physical-flight acceptance; half-power airborne starts are not currently available in the Workshop.
+Runway qualification currently succeeds for all eight default fixed-wing configurations. The tested Stik configurations at 35%, 150%, 200% and 225% are refused for runway starts while remaining available airborne. These are software start-qualification results, not physical-flight acceptance; half-power airborne starts are not currently available in the Workshop.
 
 Presentation bindings cover five authored visual families. Solid paint regions and source/show smoke endpoints are model-authored; short EN/ES registration text is registered for the Stik, Extra 300S and Timber. The current paint controls are solid fills; no broad whole-model repaint is inferred from a family name. The v2 customization companion pins its seven presentation source files and Godot 4.7.2 through a separate presentation proof package, leaving physical model-manifest identity independent of cosmetic source changes. Smoke profiles support up to eight palette colors, up to eight seconds for relevant duration/lifetime controls, and a total 768-particle profile-renderer allocation; these are implementation bounds, not measured performance guarantees.
 

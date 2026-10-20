@@ -17,6 +17,7 @@ import argparse
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import datetime, timezone
+import errno
 import hashlib
 import json
 import math
@@ -460,7 +461,13 @@ def _output_lock(output_dir: Path):
 
                 fcntl.flock(stream.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as error:
-            raise RuntimeError(f"another VQ-01b run owns {output_dir}") from error
+            if error.errno in (errno.EACCES, errno.EAGAIN):
+                raise RuntimeError(f"another VQ-01b run owns {output_dir}") from error
+            raise OSError(
+                error.errno,
+                f"could not acquire VQ-01b output lock {lock_path}: {error.strerror or error}",
+                str(lock_path),
+            ) from error
         try:
             yield
         finally:
@@ -718,8 +725,8 @@ def run_performance_cases(app_dir: Path, godot: str, output_dir: Path,
         raise ValueError(f"Godot executable not found: {godot}")
     if shutil.which(xvfb) is None and not Path(xvfb).is_file():
         raise ValueError(f"display runner not found: {xvfb}")
-    if output_dir.is_symlink():
-        raise RuntimeError(f"performance output directory must not be a symlink: {output_dir}")
+    if output_dir.is_symlink() or output_dir.resolve() != output_dir:
+        raise RuntimeError(f"performance output directory must not be a symlink or junction: {output_dir}")
     output_dir.mkdir(parents=True, exist_ok=True)
     with _output_lock(output_dir):
         return _run_performance_cases_locked(app_dir, repo_root, godot, output_dir,

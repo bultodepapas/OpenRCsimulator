@@ -29,7 +29,7 @@ Inspect exit status **and** engine errors in logs: Godot can report runtime scri
 
 For focused checks, use the [checked Godot runner](../tools/godot/README.md):
 `python tools/godot/run_checked.py --timeout 90 -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd`
-(PowerShell). It retains bounded logs and JSON verdicts, catches zero-exit engine/script/shader errors, and supports required completion text and strict warning checks. `app/test.sh` uses it for its direct Godot calls; `OPENRC_CHECK_OUT` selects the evidence parent. Failed app CI jobs retain diagnostic artifacts for seven days.
+(PowerShell). It retains bounded logs and JSON verdicts, catches zero-exit engine/script/shader errors, and supports required completion text and strict warning checks. `app/test.sh` uses it for its direct Godot calls; `OPENRC_CHECK_OUT` selects the evidence parent. App CI jobs that reach the test step retain diagnostic artifacts for seven days. Run `python tools/godot/summarize.py <collection> --junit <new.xml>` after capture to validate log integrity and export one JUnit case per invocation; see the runner guide for limits and exit codes.
 
 Node 24 (`.nvmrc`) is used by tree-authoring tools and the frozen three.js prototype; the production app and static project site do not require Node. To reproduce the Linux app CI job with Docker and `act`: `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
 

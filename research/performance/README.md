@@ -4,6 +4,11 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`stars_build_probe.gd` compares complete star-field construction with an explicit
+reference source. Its [DT-11a / FW-24-R1 report and command](../../docs/research/visual-quality-implementation/VQ-01c/loading/stars/README.md)
+cover native placement/buffer/material parity, warm and cache-empty timings, and
+separate startup/full-loading limits. It requires a native renderer.
+
 `scenery_empty_probe.gd` compares complete scenery-contact queries against an explicit
 reference source, including occupied bins with an empty hull envelope and real-hit
 controls. [LU-10-R1 evidence and commands](../../docs/research/landscape-upgrade/LU-10-R1/README.md)
@@ -276,3 +281,25 @@ The packager holds the clip's decoded frames in memory; use bounded case sizes.
 retain the initial four-clip subset, repeat/minimization parity, guards and a
 rejected partial collection. Human orientation, controlled reaction time, other
 aircraft/views/weather and the full acceptance matrix remain open.
+
+## Lake validation reuse (LU-25-R1)
+
+`lake_validation_benchmark.py` creates a disposable imported app copy and compares
+the original structural guard with bounded successful-definition reuse through
+two production sessions. It alternates 120-tick batches, compares complete
+checkpoints and hashes every measured numeric state. No benchmark switch is
+installed in the production application.
+
+```powershell
+python research/performance/lake_validation_benchmark.py --godot .tools/Godot_v4.7.2-stable_win64.exe --work tmp/lake-validation-new
+```
+
+Use a new work directory on the repository volume; assets/imports are hard-linked
+as read-only inputs. Do not import the disposable copy. Run timing alone on the
+host when possible. Defaults are 2,400 warmup and 14,400 sample ticks; `--aircraft`
+and `--case` select the workload. The native Windows executable is required so a
+timeout owns the engine rather than its console launcher.
+
+[Measured results, retained unfavorable runs and regression limits](../../docs/research/landscape-upgrade/LU-25-R1/README.md)
+describe the CPU-only scope. The runner rejects engine errors, incomplete runs,
+sample-count discrepancies and unequal trajectories.

@@ -63,7 +63,8 @@ func _run() -> void:
 					row.starts = {}
 					for choice: String in ["airborne", "runway"]:
 						row.starts[choice] = Qualification.qualify(frozen, Field.load_from().field, Weather.defaults(), choice)
-					passed = passed and bool(row.starts.airborne.ok) and (bool(row.starts.runway.ok) == (scale == 1.0))
+					passed = passed and bool(row.starts.airborne.ok) and bool(row.starts.runway.ok) \
+						and bool(row.starts.airborne.available) and (bool(row.starts.runway.available) == (scale == 1.0))
 			rows.append(row)
 			print("Scale ", scale, " ", policy, ": compiled=", compiled.ok)
 	var report := FileAccess.open(out.path_join("refinement.json"), FileAccess.WRITE)

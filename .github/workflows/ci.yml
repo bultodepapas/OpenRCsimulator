@@ -96,8 +96,12 @@ jobs:
           python3 app/tests/test_export_identity.py
           research/test-tools.sh
       - run: app/test.sh
+        id: app_check
+      - name: Validate diagnostic evidence and export JUnit
+        if: always() && steps.app_check.outcome != 'skipped'
+        run: python3 tools/godot/summarize.py tmp/godot-checks --junit tmp/godot-checks/results.xml
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        if: failure()
+        if: always() && steps.app_check.outcome != 'skipped'
         with:
           name: godot-diagnostics-${{ matrix.part }}-${{ matrix.shard }}
           path: tmp/godot-checks/

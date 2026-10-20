@@ -40,7 +40,8 @@ def read_run(directory: Path, max_log_bytes: int) -> dict:
             "ok": False, "time": 0.0, "detail": "", "diagnostics": []}
     try:
         report_path, log = directory / "report.json", directory / "engine.log"
-        if directory.is_symlink() or report_path.is_symlink() or log.is_symlink():
+        if (directory.is_symlink() or report_path.is_symlink() or log.is_symlink()
+                or directory.resolve() != directory.parent.resolve() / directory.name):
             raise ValueError("linked evidence is not supported")
         if not report_path.is_file() or not log.is_file():
             raise ValueError("missing report.json or engine.log (interrupted capture or incomplete artifact)")
@@ -97,6 +98,16 @@ def read_run(directory: Path, max_log_bytes: int) -> dict:
                              or (report["warnings_as_errors"] and counts["warning"])
                              or scanned["missing_required_text"]):
             raise ValueError("success contradicts process, completeness or diagnostic policy")
+        if report["reason"] not in CAPTURE_ERRORS:
+            if not report["complete"] or type(report.get("process_exit")) is not int:
+                raise ValueError("completed verdict lacks a completed process")
+            expected_reason = (
+                "process_exit" if report["process_exit"] != 0 else
+                "engine_error" if counts["error"] else
+                "warning" if report["warnings_as_errors"] and counts["warning"] else
+                "missing_required_text" if scanned["missing_required_text"] else "passed")
+            if report["reason"] != expected_reason:
+                raise ValueError("verdict reason contradicts process/log policy")
         command = report.get("command")
         if not isinstance(command, list) or not command or any(not isinstance(s, str) for s in command):
             raise ValueError("invalid command identity")
@@ -116,21 +127,36 @@ def read_run(directory: Path, max_log_bytes: int) -> dict:
     return item
 
 
-def collect_runs(root: Path, *, max_runs: int = 10000, max_log_bytes: int = 64 * 1024 * 1024) -> list[dict]:
-    if type(max_runs) is not int or not 1 <= max_runs <= 10000 or type(max_log_bytes) is not int or max_log_bytes <= 0:
-        raise ValueError("max-runs must be 1..10000 and max-log-bytes a positive integer")
+def collect_runs(root: Path, *, max_runs: int = 10000, max_log_bytes: int = 64 * 1024 * 1024,
+                 max_total_log_bytes: int = 512 * 1024 * 1024) -> list[dict]:
+    if (type(max_runs) is not int or not 1 <= max_runs <= 10000
+            or any(type(n) is not int or n <= 0 for n in (max_log_bytes, max_total_log_bytes))):
+        raise ValueError("max-runs must be 1..10000 and log byte limits positive integers")
     root = Path(root)
     if not root.is_dir():
         raise ValueError(f"report collection does not exist: {root}")
     directories = []
-    for path in root.iterdir():
+    for index, path in enumerate(root.iterdir()):
+        if index >= 20000:
+            raise ValueError("too many collection entries; use a dedicated collection")
         if path.is_dir() or path.is_symlink():
             directories.append(path)
             if len(directories) > max_runs:
                 raise ValueError("too many run directories; use a dedicated collection or raise --max-runs")
     if not directories:
         raise ValueError("no run directories; an empty collection is not a passing test run")
-    return [read_run(path, max_log_bytes) for path in sorted(directories)]
+    items = []
+    remaining = max_total_log_bytes
+    for path in sorted(directories):
+        log = path / "engine.log"
+        # Never inspect linked run directories when accounting for the read budget.
+        if (not path.is_symlink() and path.resolve() == path.parent.resolve() / path.name
+                and not log.is_symlink() and log.is_file()):
+            remaining -= log.stat().st_size
+            if remaining < 0:
+                raise ValueError("collection exceeds --max-total-log-bytes; narrow the collection or raise the limit")
+        items.append(read_run(path, max_log_bytes))
+    return items
 
 
 def detail_text(item: dict) -> str:
@@ -147,9 +173,12 @@ def write_junit(path: Path, items: list[dict]) -> None:
         raise ValueError("cannot publish an empty invocation collection")
     failures = sum(not item["ok"] and item["reason"] not in CAPTURE_ERRORS for item in items)
     errors = sum(item["reason"] in CAPTURE_ERRORS for item in items)
+    duration = sum(item['time'] for item in items)
+    if not math.isfinite(duration):
+        raise ValueError("aggregate elapsed duration is not finite")
     suite = ET.Element("testsuite", name="OpenRC checked Godot invocations", tests=str(len(items)),
                        failures=str(failures), errors=str(errors), skipped="0",
-                       time=f"{sum(item['time'] for item in items):.6f}")
+                       time=f"{duration:.6f}")
     for item in items:
         case = ET.SubElement(suite, "testcase", classname="OpenRC.GodotCommand",
                              name=XML_UNSAFE.sub("\ufffd", f"{item['name']} [{item['directory']}]"),
@@ -173,9 +202,11 @@ def main() -> int:
     parser.add_argument("--junit", type=Path, help="new JUnit XML file; parent directory must exist")
     parser.add_argument("--max-runs", type=int, default=10000)
     parser.add_argument("--max-log-bytes", type=int, default=64 * 1024 * 1024)
+    parser.add_argument("--max-total-log-bytes", type=int, default=512 * 1024 * 1024)
     args = parser.parse_args()
     try:
-        items = collect_runs(args.collection, max_runs=args.max_runs, max_log_bytes=args.max_log_bytes)
+        items = collect_runs(args.collection, max_runs=args.max_runs, max_log_bytes=args.max_log_bytes,
+                             max_total_log_bytes=args.max_total_log_bytes)
         if args.junit:
             write_junit(args.junit, items)
     except (OSError, ValueError) as error:
