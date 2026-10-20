@@ -1,0 +1,22 @@
+{
+  "format": "openrc-ground-closeup-plan-v1",
+  "variant": "baseline",
+  "output_dir": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\fence-upgrade-baseline-20261020",
+  "resolution": [
+    1280,
+    720
+  ],
+  "frames": 0,
+  "warmup_frames": 30,
+  "ticks": 0,
+  "pan_frames": 0,
+  "cases": [
+    {
+      "id": "mt8-bisonte__track_start__low-orbit__day",
+      "vehicle_id": "mt8-bisonte",
+      "spawn": "track_start",
+      "camera": "low-orbit",
+      "lighting": "day"
+    }
+  ]
+}

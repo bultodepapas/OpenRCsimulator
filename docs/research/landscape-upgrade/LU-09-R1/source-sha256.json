@@ -1,0 +1,9 @@
+{
+  "app/data/fields/lights.json": "00fd9baaa4e956f963191bd89af52f4ee6a87cf7065401bd0d4b6092239c0607",
+  "app/render/world/field_lights.gd": "878e9fba1ca5295ec51aa0a2825d7296b0d0c2de053447cc97dc7e3b0ae89195",
+  "app/render/landscape_upgrade/airfield_lighting.gd": "67fbb312da77987fce80e5dcce69c8c50a2bda81a0e9a2202ddfb96204003208",
+  "app/render/landscape_upgrade/runway_marker.gdshader": "c620befd3d2218bee04b98e16eeca89864c5052a30a04f62691d716d6746f92f",
+  "app/tests/capture_landscape_upgrade.gd": "ede2f600236f34b52a894e29fc3e42c322edf530b6c496244e0fbac51cba92ac",
+  "app/tests/test_landscape_marker_optics.gd": "9d8db95cfef34ab84972d91168fa99f67de0568b6adc53ca6c727cb581803f79",
+  "tools/landscape/verify_markers.py": "0814e71714304cbb9fe6878d7f56534842345d85daf706e9c2750f3ee15380a8"
+}

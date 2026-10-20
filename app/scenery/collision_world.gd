@@ -385,18 +385,35 @@ static func _add_person_proxy(proxies: Array[Dictionary], group_id: String, inde
 
 static func _add_pylon(proxies: Array[Dictionary], group_id: String, index: int, north: float, east: float,
 		heading: float) -> void:
-	# Open lattice stays open in collision too: four tapered corner columns and cross arms, not a solid tower box.
+	# Match the downloaded 30 m tower while leaving its lattice open. Its four legs taper from about ±3 m X / ±4 m Z
+	# at the foot to a narrow mast. Vertical capsules in three overlapping bands conservatively follow that taper without
+	# turning the whole tower into a solid box. All coordinates remain scalar N/E/down for the float64 collision kernel.
+	var leg_sections: Array[Dictionary] = [
+		{local_x = 2.6, local_z = 3.2, up = 5.0, radius = 1.5, half_length = 5.0},
+		{local_x = 1.1, local_z = 1.7, up = 14.5, radius = 1.0, half_length = 5.0},
+		{local_x = 0.6, local_z = 0.65, up = 24.5, radius = 0.75, half_length = 5.5},
+	]
 	for corner: int in 4:
-		var local_x := -2.0 if corner in [0, 3] else 2.0
-		var local_z := -2.0 if corner < 2 else 2.0
-		var base := _placement_point(north, east, heading, local_x * 1.5, local_z * 1.5)
-		_add_capsule(proxies, "landmark:%s:%02d:pylon_leg:%d" % [group_id, index, corner], "landmark", "pylon_leg",
-			"hard_terminal", base[0], base[1], -15.0, 0.18, 14.82)
-	for arm: int in 3:
-		var height: float = [18.0, 23.0, 27.5][arm]
-		var half_span: float = [16.0, 13.0, 8.0][arm]
+		var sign_x := -1.0 if corner in [0, 3] else 1.0
+		var sign_z := -1.0 if corner < 2 else 1.0
+		for section: int in leg_sections.size():
+			var geometry: Dictionary = leg_sections[section]
+			var at := _placement_point(north, east, heading,
+				sign_x * float(geometry.local_x), sign_z * float(geometry.local_z))
+			var suffix := "" if section == 0 else ":section:%d" % section
+			_add_capsule(proxies, "landmark:%s:%02d:pylon_leg:%d%s" % [group_id, index, corner, suffix],
+				"landmark", "pylon_leg", "hard_terminal", at[0], at[1], -float(geometry.up),
+				float(geometry.radius), float(geometry.half_length))
+	# The source arms are horizontal in the tower's local X axis. In the N/E collision frame that axis is also the
+	# _placement_point X axis, so use the placement heading directly (not heading + 90 degrees).
+	var arm_centers_up: Array[float] = [17.6, 23.1, 28.65]
+	var arm_half_widths: Array[float] = [4.4, 4.05, 3.85]
+	var arm_half_heights: Array[float] = [0.7, 0.55, 0.5]
+	var arm_half_depths: Array[float] = [1.7, 1.05, 0.65]
+	for arm: int in arm_centers_up.size():
 		_add_box_at_down(proxies, "landmark:%s:%02d:pylon_arm:%d" % [group_id, index, arm], "landmark", "pylon_arm",
-			"hard_terminal", north, east, -height, half_span, 0.22, 0.22, heading + 90.0)
+			"hard_terminal", north, east, -arm_centers_up[arm], 2.0 * arm_half_widths[arm],
+			2.0 * arm_half_heights[arm], 2.0 * arm_half_depths[arm], heading)
 
 
 static func _add_pit_shelter(proxies: Array[Dictionary], id: String, north: float, east: float, heading: float) -> void:

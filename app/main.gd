@@ -2116,7 +2116,7 @@ func _on_resetting() -> void:
 ## --quick-flight (runway default; every airplane trimmed for 50 % throttle like Home, D6e-R4),
 ## --start=runway|airborne|airborne_half_power (explicit launch override; without --quick-flight the reference trim),
 ## --rates=normal|full (D6e: the aircraft's normal-flight rates and expo on the keyboard/gamepad sticks, or the maximum throws),
-## --field-lighting=club|airfield|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
+## --field-lighting=club|airfield|off, --field-activation=auto|on|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 func _user_args() -> Dictionary:
 	var args := {}
@@ -2218,12 +2218,13 @@ func _build_world() -> bool:
 
 
 ## Commits a validated presentation change to this flight's field world.
-func set_night_options(profile: String, campfire: bool) -> bool:
-	var checked: Dictionary = Preferences.validate_night_options({"field_lighting": profile, "campfire": campfire})
+func set_night_options(profile: String, campfire: bool, activation: String = "auto") -> bool:
+	var checked: Dictionary = Preferences.validate_night_options({"field_lighting": profile, "campfire": campfire,
+		"field_activation": activation})
 	if not checked.get("ok", false):
 		return false
 	night_options = checked.options.duplicate(true)
-	World.set_night_options(profile, campfire)
+	World.set_night_options(profile, campfire, activation)
 	return true
 
 

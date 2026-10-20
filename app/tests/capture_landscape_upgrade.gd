@@ -224,9 +224,11 @@ func _run() -> void:
 	for case: String in cases:
 		camera.projection = Camera3D.PROJECTION_PERSPECTIVE
 		if case.begins_with("night_runway_"):
-			World.set_night_options(case.trim_prefix("night_runway_"), bool(built.night_options.campfire))
+			World.set_night_options(case.trim_prefix("night_runway_"), bool(built.night_options.campfire),
+				str(built.night_options.field_activation))
 		else:
-			World.set_night_options(str(built.night_options.field_lighting), bool(built.night_options.campfire))
+			World.set_night_options(str(built.night_options.field_lighting), bool(built.night_options.campfire),
+				str(built.night_options.field_activation))
 		if lighting_helper != null:
 			lighting_helper.set_process(not case.begins_with("marker_"))
 		aircraft.root.visible = false

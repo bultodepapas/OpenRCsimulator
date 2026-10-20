@@ -42,7 +42,7 @@ const CATALOG := {
 	"tractor": {size = Vector3(2.35, 2.35, 3.6), tier = "ornament", shadow = true, kind = "estimated", source = "Utility tractor"},
 	"turbine": {size = Vector3(6.4, 81.6, 11.0), tier = "landmark", shadow = false, kind = "estimated",
 		source = "Onshore 2–3 MW turbine, 80 m hub, 41 m blades (82 m rotor, a separate moving part); rotor 6.6 m ahead of the tower axis (SC-01 depth rule)"},
-	"pylon": {size = Vector3(17.0, 30.0, 6.0), tier = "landmark", shadow = false, kind = "estimated", source = "Lattice transmission tower 30 m"},
+	"pylon": {size = Vector3(8.65, 30.0, 8.45), tier = "landmark", shadow = false, kind = "estimated", source = "iPoly3D CC0 transmission tower TYK3rPu7E5, uniformly fitted to 30 m"},
 	"church": {size = Vector3(9.0, 32.0, 25.0), tier = "landmark", shadow = false, kind = "estimated", source = "Village church with spire"},
 	"village_house": {size = Vector3(9.0, 8.0, 11.0), tier = "standard", shadow = false, variable = true, kind = "estimated", source = "Village house"},
 }
@@ -584,34 +584,7 @@ static func _turbine(k: MeshKit, seed: int) -> Array:
 
 
 static func _pylon(k: MeshKit) -> void:
-	var col := _c("pylon")
-	var base := 3.0
-	var top := 1.0
-	var h := 26.0
-	var legs := [Vector3(-1, 0, -1), Vector3(1, 0, -1), Vector3(1, 0, 1), Vector3(-1, 0, 1)]
-	for c: Vector3 in legs:
-		k.beam(c * base, c * top + Vector3(0, h, 0), 0.18, col)
-	var levels := [0.0, 5.0, 10.0, 15.0, 20.0, 26.0]
-	for li in levels.size() - 1:
-		var y0: float = levels[li]
-		var y1: float = levels[li + 1]
-		var w0 := lerpf(base, top, y0 / h)
-		var w1 := lerpf(base, top, y1 / h)
-		for i in 4:
-			var a: Vector3 = legs[i]
-			var b: Vector3 = legs[(i + 1) % 4]
-			k.beam(a * w0 + Vector3(0, y0, 0), b * w1 + Vector3(0, y1, 0), 0.08, col)
-			k.beam(b * w0 + Vector3(0, y0, 0), a * w1 + Vector3(0, y1, 0), 0.08, col)
-			k.beam(a * w1 + Vector3(0, y1, 0), b * w1 + Vector3(0, y1, 0), 0.09, col)
-	for arm: Array in [[18.0, 8.0], [23.0, 6.5], [27.5, 4.0]]:
-		var y: float = arm[0]
-		var half: float = arm[1]
-		k.beam(Vector3(-half, y, 0), Vector3(half, y, 0), 0.22, col)
-		k.beam(Vector3(-half, y, 0), Vector3(0, y + 1.5, 0), 0.1, col)
-		k.beam(Vector3(half, y, 0), Vector3(0, y + 1.5, 0), 0.1, col)
-		for x: float in [-half, half]:
-			k.beam(Vector3(x, y, 0), Vector3(x, y - 2.0, 0), 0.12, _c("steel_dark"))
-	k.beam(Vector3(0, h, 0), Vector3(0, 30.0, 0), 0.15, col)
+	preload("res://scenery/power_lines.gd").append_tower(k)
 
 
 static func _church(k: MeshKit) -> void:

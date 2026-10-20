@@ -9,6 +9,7 @@ const Loader = preload("res://scenery/scenery_loader.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Prefabs = preload("res://scenery/prefabs.gd")
+const PowerLines = preload("res://scenery/power_lines.gd")
 const Models = preload("res://scenery/models.gd")
 const Population = preload("res://scenery/population.gd")
 const ImportedVegetation = preload("res://scenery/imported_vegetation.gd")
@@ -380,6 +381,18 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 			"flowers":
 				# The downloaded habitat library owns default meadow flowers; the rejected procedural cushions are retired.
 				pass
+		if group.type == "instances":
+			for i in range(group.placements.size() - 1):
+				var a: Dictionary = group.placements[i]
+				var b: Dictionary = group.placements[i + 1]
+				if a.prefab != "pylon" or b.prefab != "pylon":
+					continue
+				var wire_kit := _kit(cells, _cell((a.north + b.north) * 0.5, (a.east + b.east) * 0.5))
+				wire_kit.xf = Transform3D.IDENTITY
+				var first_wire := wire_kit.verts.size()
+				PowerLines.append_span(wire_kit, _placement_xf(a.north, a.east, a.heading),
+					_placement_xf(b.north, b.east, b.heading))
+				wire_kit.tag_damage(first_wire, "prop:%s:%02d" % [group.id, i])
 		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
 	var vegetation_started := Time.get_ticks_usec()
 	var vegetation := ImportedVegetation.build(vegetation_batches, false, {

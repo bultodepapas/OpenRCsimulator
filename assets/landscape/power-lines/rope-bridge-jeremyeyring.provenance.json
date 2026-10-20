@@ -1,0 +1,116 @@
+{
+  "asset": "rope-bridge-jeremyeyring.glb",
+  "title": "rope bridge - Free Model By Jeremy Eyring",
+  "author": "Jeremy Eyring",
+  "source_page": "https://poly.pizza/m/88e4zjTShuY",
+  "download_url": "https://static.poly.pizza/077e7fb2-2206-4a8d-ba59-14d64522b01a.glb",
+  "preview_url": "https://static.poly.pizza/077e7fb2-2206-4a8d-ba59-14d64522b01a.jpg",
+  "license": "Creative Commons Attribution 3.0 (CC BY 3.0)",
+  "license_url": "https://creativecommons.org/licenses/by/3.0/",
+  "license_text_file": "LICENSE-CC-BY-3.0.txt",
+  "attribution": "Rope Bridge by Jeremy Eyring, licensed under CC BY 3.0.",
+  "retrieved_utc": "2026-10-20",
+  "bytes": 862612,
+  "sha256": "b7265d3fb24261844e61eefd02aa831c44a538a860e8606655300712787f35ef",
+  "format": "GLB (glTF 2.0 binary)",
+  "triangles": 7044,
+  "mesh_names": [
+    "Object.1-Mesh",
+    "Object.2-Mesh",
+    "Object.3-Mesh",
+    "Object.4-Mesh"
+  ],
+  "materials": [
+    "woodTop",
+    "wood1",
+    "visse",
+    "rope"
+  ],
+  "texture_count": 4,
+  "image_count": 4,
+  "mesh_data": [
+    {
+      "mesh": "Object.1-Mesh",
+      "indexCount": 2484,
+      "vertices": 1508,
+      "min": [
+        -2994647.5,
+        -273559.4375,
+        0
+      ],
+      "max": [
+        2954297.25,
+        275546.96875,
+        1123419
+      ],
+      "material": 0
+    },
+    {
+      "mesh": "Object.2-Mesh",
+      "indexCount": 7920,
+      "vertices": 4166,
+      "min": [
+        -2994647.5,
+        -273559.4375,
+        0
+      ],
+      "max": [
+        2954297.25,
+        275546.96875,
+        1116880.75
+      ],
+      "material": 1
+    },
+    {
+      "mesh": "Object.3-Mesh",
+      "indexCount": 264,
+      "vertices": 160,
+      "min": [
+        -1375863.625,
+        -281589.9375,
+        768973.4375
+      ],
+      "max": [
+        1351907.875,
+        279403,
+        810184.25
+      ],
+      "material": 2
+    },
+    {
+      "mesh": "Object.4-Mesh",
+      "indexCount": 10464,
+      "vertices": 4592,
+      "min": [
+        -2619797.25,
+        -217134.546875,
+        718589.625
+      ],
+      "max": [
+        2532112.25,
+        223348.890625,
+        1056419.375
+      ],
+      "material": 3
+    }
+  ],
+  "root_nodes": [
+    {
+      "name": "Object.1",
+      "mesh": 0
+    },
+    {
+      "name": "Object.2",
+      "mesh": 1
+    },
+    {
+      "name": "Object.3",
+      "mesh": 2
+    },
+    {
+      "name": "Object.4",
+      "mesh": 3
+    }
+  ],
+  "notes": "Original GLB and preview downloaded from official Poly Pizza CDN, no geometry edited; inspect mesh separation and endpoint positions before using as cable spans."
+}

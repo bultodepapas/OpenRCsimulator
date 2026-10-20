@@ -43,7 +43,7 @@ const ADAPT_PUSH_LOG := 0.02
 const ADAPT_GROUND_WEIGHT := 0.5
 
 static var _night_profile := "club"
-static var _night_options := {field_lighting = "club", campfire = false}
+static var _night_options := {field_lighting = "club", field_activation = "auto", campfire = false}
 static var _night_owner: WeakRef
 static var _night_helper: WeakRef
 static var _night_fire: WeakRef
@@ -122,7 +122,9 @@ static func restore_presentation_context(context: Variant) -> bool:
 	if not profile in ["club", "airfield", "off"] or not options is Dictionary or not lights is Dictionary \
 			or not state is Dictionary or not shader_clock is Dictionary:
 		return false
-	if not options.get("field_lighting", "") in ["club", "airfield", "off"] or not options.get("campfire", false) is bool:
+	if not options.get("field_lighting", "") in ["club", "airfield", "off"] \
+			or not options.get("field_activation", "auto") in ["auto", "on", "off"] \
+			or not options.get("campfire", false) is bool:
 		return false
 	if not shader_clock.get("clock", NAN) is float and not shader_clock.get("clock", NAN) is int:
 		return false
@@ -158,7 +160,7 @@ static func restore_presentation_context(context: Variant) -> bool:
 	Exposure.set_value(exposure_value)
 	ShaderClock.update(float(shader_clock.clock), shader_clock.wind)
 	# Reapply the restored selection to the still-live scene-owned helpers and owner metadata.
-	set_night_options(_night_profile, bool(_night_options.campfire))
+	set_night_options(_night_profile, bool(_night_options.campfire), str(_night_options.get("field_activation", "auto")))
 	return flow_ok
 
 
@@ -256,10 +258,10 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	if flowing:
 		var start_el: float = Atmosphere.state.sun_elevation_deg
 		Atmosphere.state.tonemapper = "agx" if start_el < FLOW_AGX_BELOW_SUN_DEG else "aces"
-	# FW-31…34: at dusk the club lights come on (with time flowing they are built at once and switched by the sun).
+	# FW-31…34: keep default-field fixtures available for a manual daytime switch as well as dusk flow.
 	var lights := {}
 	var upgraded_lights: bool = LandscapeOptions.enabled() and field.get("id", "") == "default"
-	if upgraded_lights or (field.get("id", "") == "default" and not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG)):
+	if field.get("id", "") == "default":
 		var loaded := FieldLights.load_from()
 		if loaded.ok:
 			lights = loaded.lights
@@ -312,11 +314,11 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	var lights_node: Node3D = null
 	if not lights.is_empty():
 		lights_node = FieldLights.build(lights) # FW-31…34: visual only
-		lights_node.visible = upgraded_lights or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
+		lights_node.visible = upgraded_lights or _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0)))
 		parent.add_child(lights_node)
 	if lights_node != null and not upgraded_lights:
 		_night_legacy_lights = weakref(lights_node)
-		lights_node.visible = lights_node.visible and _night_profile != "off"
+		lights_node.visible = _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0)))
 	var airfield_lighting: Node3D = null
 	if upgraded_lights:
 		var scenery := {}
@@ -332,6 +334,7 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		parent.add_child(airfield_lighting)
 		airfield_lighting.bind_environment(environment, lights_node, SNAPSHOT_LOCAL_LIGHT_GAIN if not lighting.is_empty() else 1.0)
 		airfield_lighting.set_profile(_night_profile)
+		airfield_lighting.set_activation(str(_night_options.field_activation))
 		_night_helper = weakref(airfield_lighting)
 	# A physical hearth is installed even when its independently controlled flame is off.
 	if field.get("id", "") == "default":
@@ -368,32 +371,39 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 
 ## Independent presentation choices: explicit build options win over technical CLI defaults.
 static func resolve_night_options(supplied: Dictionary = {}) -> Dictionary:
-	var result := {field_lighting = "club", campfire = false}
+	var result := {field_lighting = "club", field_activation = "auto", campfire = false}
 	if supplied.is_empty():
 		for arg: String in OS.get_cmdline_user_args():
 			if arg.begins_with("--field-lighting="):
 				var profile := arg.get_slice("=", 1)
 				if profile in ["club", "airfield", "off"]:
 					result.field_lighting = profile
+			if arg.begins_with("--field-activation="):
+				var activation := arg.get_slice("=", 1)
+				if activation in ["auto", "on", "off"]:
+					result.field_activation = activation
 			if arg.begins_with("--campfire="):
 				result.campfire = arg.get_slice("=", 1) == "on"
 	else:
 		if str(supplied.get("field_lighting", "club")) in ["club", "airfield", "off"]:
 			result.field_lighting = str(supplied.get("field_lighting", "club"))
+		if str(supplied.get("field_activation", "auto")) in ["auto", "on", "off"]:
+			result.field_activation = str(supplied.get("field_activation", "auto"))
 		if supplied.get("campfire", false) is bool:
 			result.campfire = bool(supplied.get("campfire", false))
 	return result
 
 
-static func set_night_options(profile: String, campfire: bool) -> bool:
-	if not profile in ["club", "airfield", "off"]:
+static func set_night_options(profile: String, campfire: bool, activation: String = "auto") -> bool:
+	if not profile in ["club", "airfield", "off"] or not activation in ["auto", "on", "off"]:
 		return false
 	_night_profile = profile
-	_night_options = {field_lighting = profile, campfire = campfire}
+	_night_options = {field_lighting = profile, field_activation = activation, campfire = campfire}
 	if _night_helper != null and is_instance_valid(_night_helper.get_ref()):
+		_night_helper.get_ref().set_activation(activation)
 		_night_helper.get_ref().set_profile(profile)
 	if _night_legacy_lights != null and is_instance_valid(_night_legacy_lights.get_ref()):
-		_night_legacy_lights.get_ref().visible = profile != "off" and float(Atmosphere.state.get("sun_elevation_deg", 90.0)) < FIELD_LIGHTS_BELOW_SUN_DEG
+		_night_legacy_lights.get_ref().visible = _legacy_lights_enabled(float(Atmosphere.state.get("sun_elevation_deg", 90.0)))
 	if _night_fire != null and is_instance_valid(_night_fire.get_ref()):
 		_night_fire.get_ref().set_enabled(campfire)
 	if _night_owner != null and is_instance_valid(_night_owner.get_ref()):
@@ -406,6 +416,12 @@ static func set_night_options(profile: String, campfire: bool) -> bool:
 			reflection.position = original + Vector3(0.0001, 0.0, 0.0)
 			reflection.position = original
 	return true
+
+
+static func _legacy_lights_enabled(sun_elevation_deg: float) -> bool:
+	if _night_profile == "off" or str(_night_options.field_activation) == "off":
+		return false
+	return str(_night_options.field_activation) == "on" or sun_elevation_deg < FIELD_LIGHTS_BELOW_SUN_DEG
 
 
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
@@ -619,7 +635,7 @@ static func flow_to(clock_s: float) -> bool:
 	for m: ShaderMaterial in _flow.materials:
 		Atmosphere._set_haze_uniforms(m)
 	if _flow.lights_node != null and not _flow.get("upgraded_lights", false):
-		(_flow.lights_node as Node3D).visible = _night_profile != "off" and float(state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
+		(_flow.lights_node as Node3D).visible = _legacy_lights_enabled(float(state.sun_elevation_deg))
 	_turn_stars(float(state.lst_deg))
 	if not is_equal_approx(env.tonemap_exposure, state.exposure) and _adapt_clock < 0.0:
 		env.tonemap_exposure = state.exposure # no view target adapts it (e.g. evidence views)

@@ -12,6 +12,8 @@ const Conditions := preload("res://render/world/conditions.gd")
 const PRESET_IDS: Array[String] = ["", "legacy", "dawn", "noon", "sunset", "night"]
 const PRESET_LABELS: Array[String] = ["Custom", "Legacy daylight", "Dawn", "Noon", "Sunset", "Night"]
 const NIGHT_PROFILE_LABELS: Array[String] = ["Soft club", "Airfield", "Field lights off"]
+const NIGHT_ACTIVATION_IDS: Array[String] = ["auto", "on", "off"]
+const NIGHT_ACTIVATION_LABELS: Array[String] = ["Automatic", "Always on", "Always off"]
 const CAMPFIRE_LABELS: Array[String] = ["Campfire off", "Campfire on"]
 const NIGHT_PROFILE_IDS: Array[String] = ["club", "airfield", "off"]
 ## FW-MOON-13: moon choices (MoonConfig); the non-physical ones say so in their label.
@@ -43,6 +45,7 @@ var night_note: Label
 var phase_summary: Label
 var validation_note: Label
 var field_lighting_picker: OptionButton
+var field_activation_picker: OptionButton
 var campfire_picker: OptionButton
 var moon_picker: OptionButton
 var moon_phase_picker: OptionButton
@@ -193,6 +196,17 @@ func _build_controls() -> void:
 	_responsive_grids.append(field_lighting_row)
 	add_child(field_lighting_row)
 
+	var field_activation_row := _choice_row("Field light activation")
+	field_activation_row.name = "FieldActivationRow"
+	field_activation_picker = OptionButton.new()
+	field_activation_picker.name = "FieldActivation"
+	field_activation_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	field_activation_picker.fit_to_longest_item = false
+	field_activation_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	field_activation_row.add_child(field_activation_picker)
+	_responsive_grids.append(field_activation_row)
+	add_child(field_activation_row)
+
 	var campfire_row := _choice_row("Campfire")
 	campfire_row.name = "CampfireRow"
 	campfire_picker = OptionButton.new()
@@ -304,14 +318,19 @@ func _set_titles() -> void:
 			field_label.text = tr(String(key_value[1]))
 			field_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	var selected_field: int = field_lighting_picker.selected if field_lighting_picker != null else 0
+	var selected_activation: int = field_activation_picker.selected if field_activation_picker != null else 0
 	var selected_campfire: int = campfire_picker.selected if campfire_picker != null else 0
 	field_lighting_picker.clear()
 	for title: String in NIGHT_PROFILE_LABELS:
 		field_lighting_picker.add_item(tr(title))
+	field_activation_picker.clear()
+	for title: String in NIGHT_ACTIVATION_LABELS:
+		field_activation_picker.add_item(tr(title))
 	campfire_picker.clear()
 	for title: String in CAMPFIRE_LABELS:
 		campfire_picker.add_item(tr(title))
 	field_lighting_picker.select(clampi(selected_field, 0, NIGHT_PROFILE_LABELS.size() - 1))
+	field_activation_picker.select(clampi(selected_activation, 0, NIGHT_ACTIVATION_LABELS.size() - 1))
 	campfire_picker.select(clampi(selected_campfire, 0, CAMPFIRE_LABELS.size() - 1))
 	for pair: Array in [[moon_picker, MOON_MODE_LABELS], [moon_phase_picker, MOON_PHASE_LABELS],
 			[moon_size_picker, MOON_SIZE_LABELS], [moonlight_picker, MOONLIGHT_LABELS]]:
@@ -489,11 +508,13 @@ func read_draft() -> Dictionary:
 ## The field profile and campfire are separate, validated presentation choices.
 func read_night_options() -> Dictionary:
 	if field_lighting_picker.selected < 0 or field_lighting_picker.selected >= NIGHT_PROFILE_IDS.size() \
+			or field_activation_picker.selected < 0 or field_activation_picker.selected >= NIGHT_ACTIVATION_IDS.size() \
 			or campfire_picker.selected < 0 or campfire_picker.selected > 1:
-		return {"ok": false, "options": {}, "errors": PackedStringArray(["select a field-lighting and campfire option"])}
+		return {"ok": false, "options": {}, "errors": PackedStringArray(["select field-lighting, activation and campfire options"])}
 	return Preferences.validate_night_options({
 		"field_lighting": NIGHT_PROFILE_IDS[field_lighting_picker.selected],
 		"campfire": campfire_picker.selected == 1,
+		"field_activation": NIGHT_ACTIVATION_IDS[field_activation_picker.selected],
 	})
 
 
@@ -574,6 +595,7 @@ func _set_night_options(raw: Variant) -> void:
 	var checked: Dictionary = Preferences.validate_night_options(raw)
 	_night_options = checked.options.duplicate(true) if checked.get("ok", false) else Preferences.NIGHT_DEFAULTS.duplicate(true)
 	field_lighting_picker.select(NIGHT_PROFILE_IDS.find(str(_night_options.field_lighting)))
+	field_activation_picker.select(NIGHT_ACTIVATION_IDS.find(str(_night_options.field_activation)))
 	campfire_picker.select(1 if bool(_night_options.campfire) else 0)
 
 
@@ -598,7 +620,7 @@ func focus_controls() -> Array[Control]:
 			if advanced_grid.visible:
 				for edit: LineEdit in [date_input, offset_input, latitude_input, longitude_input, location_input]:
 					controls.append(edit)
-	controls.append_array([field_lighting_picker, campfire_picker, moon_picker])
+	controls.append_array([field_lighting_picker, field_activation_picker, campfire_picker, moon_picker])
 	if not moon_phase_picker.disabled:
 		controls.append(moon_phase_picker)
 	controls.append_array([moon_size_picker, moonlight_picker])

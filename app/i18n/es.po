@@ -1607,6 +1607,18 @@ msgstr "Taller"
 msgid "Field lighting"
 msgstr "Iluminación del campo"
 
+msgid "Field light activation"
+msgstr "Activación de luces del campo"
+
+msgid "Automatic"
+msgstr "Automática"
+
+msgid "Always on"
+msgstr "Siempre encendidas"
+
+msgid "Always off"
+msgstr "Siempre apagadas"
+
 msgid "Campfire"
 msgstr "Fogata"
 
