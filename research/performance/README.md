@@ -4,6 +4,11 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`field_validation_probe.gd` compares complete field validation and file loading
+with explicit source/data snapshots and a no-tree control. Its [DT-11a / L6b report](../../docs/research/visual-quality-implementation/VQ-01c/loading/field-validation/README.md)
+retains normalized-data/diagnostic parity, paired CPU batches, immutable-input
+guards and regression results. It runs headless and does not measure full startup or FPS.
+
 `ground_noise_probe.gd` compares complete seeded image generation and cache-empty
 ground-material creation with an explicit reference source. Its [DT-11a report](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-image/noise/README.md)
 retains exact native image/mip/material checks, paired timings and a separate warm
@@ -156,6 +161,10 @@ never bypass a pause/crash, weaken numerical guards or re-record goldens to fini
 ## Native frame evidence
 
 ### CPU, GPU and memory diagnosis
+
+For OS process RAM, system memory pressure, process I/O and project disk usage,
+use the [resource and storage tools](../../tools/godot/README.md#process-ram-io-and-storage-pt1h-r4).
+These complement the engine allocation counters below.
 
 Add `--frame-diagnostics` after Godot's `--` to the existing `--frametimes` command
 to retain root-viewport render CPU/GPU timings, global render setup CPU time,
@@ -388,3 +397,59 @@ timeout owns the engine rather than its console launcher.
 [Measured results, retained unfavorable runs and regression limits](../../docs/research/landscape-upgrade/LU-25-R1/README.md)
 describe the CPU-only scope. The runner rejects engine errors, incomplete runs,
 sample-count discrepancies and unequal trajectories.
+
+## Ground-stage layout queries (H16)
+
+`session_pair_probe.gd` compares two complete flight-session implementations through
+production input and simulation callbacks. It alternates 120-tick batches, hashes
+all measured numeric states and compares complete checkpoints after every batch.
+For the H16 method change, the original-method oracle can be compared with the
+current session:
+
+```powershell
+$probe = (Resolve-Path research/performance/session_pair_probe.gd).Path
+.tools/Godot_v4.7.2-stable_win64.exe --headless --path app --audio-driver Dummy --script $probe -- --reference=res://tests/ground_stage_reference.gd --candidate=res://sim/flight_session.gd --aircraft=jensen-das-ugly-stik-60 --case=trim --warmup=2400 --samples=14400 --output="$PWD/tmp/h16-pair-new.json"
+```
+
+Use a new output file. Run timing alone when possible and retain stdout/stderr
+through native engine exit; reject nonzero exit, engine errors, incomplete results
+or unequal fingerprints. The probe does not enforce CPU affinity; the retained
+Windows campaign runner did. The current-dependency oracle command is a repeatable
+method comparison, not a recreation of the dated working tree. Defaults measure
+10 warmup + 60 sampled simulation seconds. The result is CPU callback cost, with
+rendering and GPU work excluded.
+
+[H16 results, complete before/after scripts, commands and regression evidence](../../docs/research/simulation-state/H16/README.md)
+retain all three airborne repeats per aircraft and the flat runway result.
+
+## Contact-only lake bounds (LU-25-R2)
+
+The same complete-session probe measures conservative lake bounds rejection at
+the ground-terrain and prop-disc callers. The [LU-25-R2 record](../../docs/research/landscape-upgrade/LU-25-R2/README.md)
+retains the recoverable baseline commit, candidate dependency generator, exact
+commands, three runway repeats, airborne controls, unfavorable component timings
+and boundary/oracle regressions. Follow its reproduction steps for a frozen
+before/after comparison; the H16 oracle above isolates a different change.
+
+## Ground-patch construction cache (DT-11a)
+
+`ground_patch_cache/prepare.py --work <new-directory> --reference <original-ground_features.gd>`
+copies the current field/scenery callers outside `app/` and redirects only their
+ground-patch dependency. Run the emitted `field_compare.gd` with the native engine,
+`--path app --script <absolute-probe> -- --output=<new.json>`; `--reverse` changes
+the initial order. It checks six whole-field geometry pairs, input immutability
+and cache retention. Pair zero includes first-use caches and is excluded from warm
+medians. Run serially and retain checked logs. This measures detached construction;
+use `loading_probe.gd` separately for the real Home/Fly route.
+
+[Dated measurements, exact baseline, commands and limitations](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-patch-cache/README.md).
+The permanent regression is `res://tests/test_ground_patch_cache.gd`.
+
+## Segmented slipstream invariants (H17)
+
+[H17](../../docs/research/simulation-state/H17/README.md) uses the same full-session
+probe to compare local geometry/interval reuse in segmented slipstream evaluation.
+It retains three P-51 trim repeats, a maneuver case, an unchanged Stik control,
+component measurements and exact parity tests. Its frozen baseline includes
+LU-25-R2 and H16. Follow the report's candidate generator and campaign commands;
+the original-method regression fixture checks the changed law directly.

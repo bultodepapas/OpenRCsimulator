@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371768452871637 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:385)
+       [4] attach (res://scenery/scenery.gd:174)
+       [5] build (res://render/field.gd:88)
+       [6] build (res://landscapes/club_field/landscape.gd:12)
+       [7] build (res://landscapes/catalog.gd:31)
+       [8] _build_field (res://main.gd:2215)
+       [9] build (res://render/world/world.gd:289)
+       [10] _build_world (res://main.gd:2171)
+       [11] _ready (res://main.gd:496)
+       [12] start_flight (res://app_root.gd:600)
+       [13] _ready (res://app_root.gd:194)
+       [14] run (res://../tmp/audit2-fixes-2026-10-19/verify_quickflight_calibration_reload.gd:21)
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+before_K armed=true
+failsafe: calibrating radio
+after_K calibration=true paused=true
+before_F5 tick=28 throttle=0.0
+reload refused during radio calibration; finish or cancel calibration first
+after_F5 calibration=true paused=true tick_before=28 tick_after_reload=28 tick_after=28 throttle=0.0
+FIX_VERIFIED=true

@@ -465,6 +465,19 @@ static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, 
 	var cg: PackedFloat64Array = model.cg_le
 	var tail_pos: PackedFloat64Array = tail.position
 	var law := _tail_law(tail, model.surfaces, d, piece.surface == "vertical", wing_cl, rho)
+	# Cache the geometry arrays once; the quadrature samples reuse these exact scalar values.
+	var root_0: float = root[0]
+	var root_1: float = root[1]
+	var root_2: float = root[2]
+	var e_0: float = e[0]
+	var e_1: float = e[1]
+	var e_2: float = e[2]
+	var centre_0: float = centre[0]
+	var centre_1: float = centre[1]
+	var centre_2: float = centre[2]
+	var ax_0: float = ax[0]
+	var ax_1: float = ax[1]
+	var ax_2: float = ax[2]
 	var p: float = state[RB.RATE]
 	var q: float = state[RB.RATE + 1]
 	var r: float = state[RB.RATE + 2]
@@ -480,21 +493,23 @@ static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, 
 		var s1 := 0.0
 		var s2 := 0.0
 		var weights := 0.0
+		var gauss_middle: float = 0.5 * (lo + hi)
+		var gauss_half: float = 0.5 * (hi - lo)
 		for k in 5:
-			var x: float = 0.5 * (lo + hi) + 0.5 * (hi - lo) * PROFILE_X[k]
+			var x: float = gauss_middle + gauss_half * PROFILE_X[k]
 			var weight: float = (c0 + slope * x) * PROFILE_W[k]
-			var rb0: float = -(root[0] + e[0] * x - centre[0])
-			var rb1: float = root[1] + e[1] * x - centre[1]
-			var rb2: float = -(root[2] + e[2] * x - centre[2])
-			var axial: float = rb0 * ax[0] + rb1 * ax[1] + rb2 * ax[2]
-			rb0 -= ax[0] * axial
-			rb1 -= ax[1] * axial
-			rb2 -= ax[2] * axial
+			var rb0: float = -(root_0 + e_0 * x - centre_0)
+			var rb1: float = root_1 + e_1 * x - centre_1
+			var rb2: float = -(root_2 + e_2 * x - centre_2)
+			var axial: float = rb0 * ax_0 + rb1 * ax_1 + rb2 * ax_2
+			rb0 -= ax_0 * axial
+			rb1 -= ax_1 * axial
+			rb2 -= ax_2 * axial
 			var radius: float = maxf(M.sqrt_(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), core)
 			var scale: float = swirl / (radius * radius) * weight
-			s0 += (ax[1] * rb2 - ax[2] * rb1) * scale
-			s1 += (ax[2] * rb0 - ax[0] * rb2) * scale
-			s2 += (ax[0] * rb1 - ax[1] * rb0) * scale
+			s0 += (ax_1 * rb2 - ax_2 * rb1) * scale
+			s1 += (ax_2 * rb0 - ax_0 * rb2) * scale
+			s2 += (ax_0 * rb1 - ax_1 * rb0) * scale
 			weights += weight
 		s0 /= weights
 		s1 /= weights

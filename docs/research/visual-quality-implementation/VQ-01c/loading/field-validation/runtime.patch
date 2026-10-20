@@ -1,0 +1,73 @@
+diff --git a/app/data/field_loader.gd b/app/data/field_loader.gd
+index a9f3a557f..9a37b7b52 100644
+--- a/app/data/field_loader.gd
++++ b/app/data/field_loader.gd
+@@ -956,6 +956,7 @@ static func _validate_tree_positions(
+ 	if positions.is_empty() or positions.size() > MAX_TREELINE_POSITIONS:
+ 		errors.append("%s: expected 1..%d positions, got %d" % [path, MAX_TREELINE_POSITIONS, positions.size()])
+ 		return normalized
++	var axis_names: Array[String] = ["north", "east", "down"]
+ 	var seen_positions: Dictionary = {}
+ 	for index: int in range(positions.size()):
+ 		var point_path: String = "%s[%d]" % [path, index]
+@@ -970,7 +971,7 @@ static func _validate_tree_positions(
+ 		var coordinates: Array[float] = []
+ 		var valid_numbers: bool = true
+ 		for axis_index: int in range(3):
+-			var axis_name: String = ["north", "east", "down"][axis_index]
++			var axis_name: String = axis_names[axis_index]
+ 			var raw_coordinate: Variant = point[axis_index]
+ 			if typeof(raw_coordinate) != TYPE_FLOAT and typeof(raw_coordinate) != TYPE_INT:
+ 				errors.append("%s.%s: expected a number" % [point_path, axis_name])
+@@ -999,11 +1000,11 @@ static func _validate_tree_positions(
+ 			if radius < TREE_MIN_RADIUS_M or radius > TREE_MAX_RADIUS_M:
+ 				errors.append("%s: horizontal radius must be %.0f..%.0f m" % [point_path, TREE_MIN_RADIUS_M, TREE_MAX_RADIUS_M])
+ 		if absf(north_offset) <= TREE_MAX_RADIUS_M and absf(east_offset) <= TREE_MAX_RADIUS_M and down_offset == 0.0:
+-			var duplicate_key: String = "%d,%d,%d" % [
++			# Down is zero here; bounded quarter-metre coordinates fit exact int32 keys.
++			var duplicate_key := Vector2i(
+ 				roundi(north_offset / TREE_POSITION_GRID_M),
+-				roundi(east_offset / TREE_POSITION_GRID_M),
+-				roundi(down_offset / TREE_POSITION_GRID_M),
+-			]
++				roundi(east_offset / TREE_POSITION_GRID_M)
++			)
+ 			if seen_positions.has(duplicate_key):
+ 				errors.append("%s: duplicate position (same 0.25 m grid cell as index %d)" % [point_path, int(seen_positions[duplicate_key])])
+ 			else:
+diff --git a/app/tests/test_treeline_data.gd b/app/tests/test_treeline_data.gd
+index b9ea7cc18..a8689bbe1 100644
+--- a/app/tests/test_treeline_data.gd
++++ b/app/tests/test_treeline_data.gd
+@@ -283,6 +283,7 @@ func _initialize() -> void:
+ 	var maximum: Dictionary = Loader.validate(data)
+ 	_check("exactly 1,680 valid positions are accepted", bool(maximum["ok"]), str(maximum["errors"]))
+ 
++	_test_duplicate_cell_diagnostics()
+ 	print("%d checks, %d failed" % [_count, _failures])
+ 	quit(1 if _failures > 0 else 0)
+ 
+@@ -295,3 +296,23 @@ func _unique_ring_positions(count: int) -> Array:
+ 		var east: float = roundf(sin(angle) * 300.0 / GRID_M) * GRID_M
+ 		positions.append([north, east, 0.0])
+ 	return positions
++
++
++func _test_duplicate_cell_diagnostics() -> void:
++	var cases: Array = [
++		{label = "near-grid values retain the earliest duplicate index", points = [[300.0, 0.0, 0.0], [300.0000001, 0.0, 0.0], [299.9999999, 0.0, -0.0]], errors = PackedStringArray([
++			"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)",
++			"objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 0)"])},
++		{label = "off-grid rows keep quantization and later duplicate diagnostic order", points = [[300.125, 0.0, 0.0], [300.25, 0.0, 0.0]], errors = PackedStringArray([
++			"objects[0].positions.value[0].north: must be quantized to 0.25 m",
++			"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)"])},
++		{label = "negative half-grid ties retain signed rounding and duplicate order", points = [[-300.125, 0.0, 0.0], [-300.25, 0.0, 0.0]], errors = PackedStringArray([
++			"objects[0].positions.value[0].north: must be quantized to 0.25 m",
++			"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)"])},
++		{label = "non-flat rows do not claim a flat duplicate cell", points = [[300.0, 0.0, 0.25], [300.0, 0.0, 0.0], [300.0, 0.0, 0.0]], errors = PackedStringArray([
++			"objects[0].positions.value[0].down: treeline positions must be flat at 0 m",
++			"objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 1)"])},
++	]
++	for fixture: Dictionary in cases:
++		var result: Dictionary = Loader.validate(_with_treeline(fixture.points))
++		_check(fixture.label, not bool(result.ok) and result.field.is_empty() and result.errors == fixture.errors, str(result.errors))

@@ -1593,6 +1593,9 @@ func set_start_altitude(altitude: float) -> void:
 ## [F5] Reloads the aircraft data file, re-trims and restarts: tune a coefficient without restarting the app.
 ## Invalid data keeps the current aircraft flying. Returns a message for the panel.
 func reload() -> String:
+	# Refuse before loading/committing data: calibration owns the paused flight.
+	if calibration != null:
+		return "reload refused during radio calibration; finish or cancel calibration first"
 	var prepared := _prepare_aircraft(_load_selected_aircraft())
 	if not prepared.ok:
 		return "reload failed; previous aircraft and flight retained: %s" % prepared.message
@@ -2145,6 +2148,10 @@ func _crash(impact: ImpactSnapshot.Snapshot, impact_state: PackedFloat64Array = 
 
 ## The shell may retain an armed radio when restarting under the same device/profile ownership.
 func reset(preserve_radio_readiness := false) -> void:
+	# Shell restart cancels calibration explicitly. Direct callers must not bypass it
+	# or emit resetting (which would close the recorder) while the wizard is active.
+	if calibration != null:
+		return
 	_fuel_start_fill_known = true
 	if start_choice == START_RUNWAY:
 		var result := _reset_selected_runway_start()
@@ -2831,16 +2838,19 @@ func _wheel_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_ti
 
 ## Legacy gear keeps its original contact law; a file-backed wheel profile opts into terrain and wheel-spin state.
 func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: PackedFloat64Array, stage_air: Dictionary = {}, properties: Dictionary = {}) -> Dictionary:
-	if gear_is_retractable() and (not _gear_aux_valid(aux) or sim.inputs.size() != _input_count() or stage_air.is_empty()):
+	# Stage-local queries: the normalized model/layout does not change during this evaluation.
+	var retractable: bool = gear_is_retractable()
+	if retractable and (not _gear_aux_valid(aux) or sim.inputs.size() != _input_count() or stage_air.is_empty()):
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	var gear: Dictionary = current_landing_gear(aux)
 	var steer: float = aux[AUX_SERVO + 2]
-	var brake: float = sim.inputs[5] if gear_is_retractable() else 0.0
+	var brake: float = sim.inputs[5] if retractable else 0.0
 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
 	var hull: PackedFloat64Array = PackedFloat64Array()
 	if soft_hull_contacts:
-		if glow_is_active() or not properties.is_empty():
-			if _hull_contact.is_empty() or (glow_is_active() and values.size() < GlowFlight.SIZE):
+		var glow: bool = glow_is_active()
+		if glow or not properties.is_empty():
+			if _hull_contact.is_empty() or (glow and values.size() < GlowFlight.SIZE):
 				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 			# Geometry reach is independent of fuel; avoid any new mass/contact work in free flight.
 			if -s[RB.POS + 2] <= float(_hull_contact.reach):
@@ -2855,21 +2865,23 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 		for value: float in hull:
 			if not is_finite(value):
 				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
-	if gear_is_retractable():
+	if retractable:
 		hull = _add_loads(hull, RetractableGear.drag_loads(s, stage_air.v_air, aircraft.model.landing_gear, aux[gear_aux_index()], air_density(s)))
-	if wheel_count() == 0:
+	var wheel_total: int = wheel_count()
+	if wheel_total == 0:
 		return {ok = true, loads = _add_loads(Ground.loads(s, gear, steer, ground_surfaces, anchors,
 			PackedFloat64Array(), brake, _lake), hull), derivative = PackedFloat64Array()}
-	if values.size() != wheel_index() + wheel_count():
+	var first_wheel: int = wheel_index()
+	if values.size() != first_wheel + wheel_total:
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
-	var speeds: PackedFloat64Array = values.slice(wheel_index(), wheel_index() + wheel_count())
+	var speeds: PackedFloat64Array = values.slice(first_wheel, first_wheel + wheel_total)
 	for speed in speeds:
 		if not is_finite(speed):
 			return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	var evaluation: Dictionary = Ground.evaluate(s, gear, steer, ground_surfaces, anchors, speeds, brake, false, _lake)
 	var loads: PackedFloat64Array = evaluation.get("loads", PackedFloat64Array())
 	var rates: PackedFloat64Array = evaluation.get("derivative", PackedFloat64Array())
-	if (not loads.is_empty() and loads.size() != 6) or rates.size() != wheel_count():
+	if (not loads.is_empty() and loads.size() != 6) or rates.size() != wheel_total:
 		return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	for value in loads:
 		if not is_finite(value):

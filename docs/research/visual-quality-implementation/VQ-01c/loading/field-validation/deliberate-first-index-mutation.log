@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+124 checks, 1 failed
+FAIL near-grid values retain the earliest duplicate index ["objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)", "objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 1)"]

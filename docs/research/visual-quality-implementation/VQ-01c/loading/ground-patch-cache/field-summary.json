@@ -1,0 +1,42 @@
+{
+  "runs": [
+    {
+      "run": 1,
+      "reference": 576549,
+      "candidate": 532919,
+      "reduction_percent": 7.567440061469188
+    },
+    {
+      "run": 2,
+      "reference": 592115,
+      "candidate": 532279,
+      "reduction_percent": 10.105469376725807
+    },
+    {
+      "run": 3,
+      "reference": 573119,
+      "candidate": 537867,
+      "reduction_percent": 6.150904087981724
+    },
+    {
+      "run": 4,
+      "reference": 621419,
+      "candidate": 533547,
+      "reduction_percent": 14.140539635897841
+    },
+    {
+      "run": 5,
+      "reference": 583190,
+      "candidate": 534509,
+      "reduction_percent": 8.347365352629499
+    }
+  ],
+  "exact_pairs": 30,
+  "cache_bytes": 338620,
+  "cache_entries": 1,
+  "median_of_run_medians_usec": {
+    "reference": 583190,
+    "candidate": 533547
+  },
+  "reduction_percent": 8.512320170098942
+}

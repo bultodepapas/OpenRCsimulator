@@ -1,0 +1,63 @@
+{
+  "baseline_golden_command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass4-20261019\\base\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_golden.gd"
+  ],
+  "baseline_golden_failures": [
+    "FAIL golden roll_15 replays (600 ticks): worst error: position 2.151998507818293 m, velocity 0.6731672755873923 m/s, attitude 0.04933758522134124, rate 0.1950361714229344 rad/s; auxiliary/discrete mismatch",
+    "FAIL golden pull_throttle replays (720 ticks): worst error: position 8.981449458835794 m, velocity 1.4818987510249162 m/s, attitude 0.16970353235446486, rate 0.2632553040246326 rad/s; auxiliary/discrete mismatch",
+    "FAIL golden rudder_doublet replays (720 ticks): worst error: position 4.9975659511622545 m, velocity 2.371340349471195 m/s, attitude 0.12003680952123646, rate 0.3444527974061067 rad/s; auxiliary/discrete mismatch",
+    "FAIL golden glide_15 replays (1200 ticks): worst error: position 13.87620305641019 m, velocity 5.476350977312004 m/s, attitude 0.08313993236451107, rate 0.11196810714439709 rad/s; auxiliary/discrete mismatch"
+  ],
+  "original_methods_match": true,
+  "frozen_runtime_hashes_unchanged": 290,
+  "production_matches_measured": {
+    "app/physics/slipstream.gd": "c8178181b86ee9a8535d365a7e9f361e3660a698e51c1265a5ac6fa85470f86b"
+  },
+  "integrated_golden_matches_baseline": true,
+  "other_existing_failures": [
+    {
+      "test": "test_wash_transport",
+      "baseline_command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass4-20261019\\base\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wash_transport.gd"
+      ],
+      "failure_lines_match": true,
+      "failures": [
+        "FAIL p51d-mustang-120 production has only zero wheel state, no wash transport ",
+        "FAIL sebart-avanti-s-a200-p100rx combustion state excludes wash transport and starts with stationary wheels "
+      ]
+    },
+    {
+      "test": "test_p51_handling",
+      "baseline_command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\perf-pass4-20261019\\base\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_p51_handling.gd"
+      ],
+      "failure_lines_match": true,
+      "failures": [
+        "FAIL full-up power-off: \u03b1 passes the stall start, finite  \u03b1 max 9.3\u00b0 (stall start 11.9\u00b0)"
+      ]
+    }
+  ],
+  "passing_suites": 8,
+  "failing_suites": 3
+}

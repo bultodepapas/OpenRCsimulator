@@ -33,6 +33,8 @@ var _wall_delta_usec := PackedInt64Array()
 var _end_monotonic_usec := PackedInt64Array()
 var _metric_names := PackedStringArray()
 var _raw_metrics: Dictionary = {}
+var _capture_id: String = ""
+var _clock_start: Dictionary = {}
 
 
 static func options(args: Dictionary) -> Dictionary:
@@ -112,6 +114,8 @@ func configure(warmup_seconds: float, sample_seconds: float, frame_limit: int = 
 	sample_s = sample_seconds
 	max_frames = frame_limit
 	_warmup_usec = roundi(warmup_s * MICROSECONDS_PER_SECOND)
+	_capture_id = OS.get_environment("OPENRC_DIAGNOSTIC_CAPTURE_ID")
+	_clock_start = _clock_anchor()
 	_configured = true
 	return true
 
@@ -207,6 +211,19 @@ static func effective_grass_state(field_root: Node) -> Dictionary:
 	return GrassSceneSnapshot.effective_grass_state(field_root)
 
 
+## UTC is only for approximate cross-process correlation, never frame durations.
+## The 20 ms uncertainty floor is an estimate, not a system-clock guarantee.
+static func _clock_anchor() -> Dictionary:
+	var before: int = Time.get_ticks_usec()
+	var unix_usec: int = roundi(Time.get_unix_time_from_system() * MICROSECONDS_PER_SECOND)
+	var after: int = Time.get_ticks_usec()
+	return {
+		monotonic_usec = before + ((after - before) >> 1),
+		unix_usec = unix_usec,
+		uncertainty_usec = maxi(20000, (after - before + 1) >> 1),
+	}
+
+
 func report() -> Dictionary:
 	var wall_total: float = 0.0
 	for delta in _wall_delta_s:
@@ -220,6 +237,9 @@ func report() -> Dictionary:
 		raw_metrics[key] = values.duplicate()
 	return {
 		format = FORMAT,
+		capture_id = _capture_id,
+		clock = { source = "godot_ticks_usec", origin_usec = 0,
+			start = _clock_start.duplicate(), end = _clock_anchor() },
 		version = VERSION,
 		warmup_s = warmup_s,
 		sample_s = sample_s,

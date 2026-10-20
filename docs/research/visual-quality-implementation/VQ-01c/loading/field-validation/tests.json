@@ -1,0 +1,131 @@
+[
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_loader.gd"
+    ],
+    "script": "test_field_loader.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_field_loader-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "178 checks, 0 failed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_treeline_data.gd"
+    ],
+    "script": "test_treeline_data.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_treeline_data-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "124 checks, 0 failed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_scenery_loader.gd"
+    ],
+    "script": "test_scenery_loader.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_scenery_loader-headless.log",
+    "diagnostics": [],
+    "summaries": [
+      "all scenery loader checks passed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_field_surfaces.gd"
+    ],
+    "script": "test_field_surfaces.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_field_surfaces-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371934731860058 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "19 checks, 0 failed"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--headless",
+      "--script",
+      "res://tests/test_treeline.gd"
+    ],
+    "script": "test_treeline.gd",
+    "mode": "headless",
+    "exit_code": 0,
+    "log": "test_treeline-headless.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371886145042431 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "L7 tree runtime: 28631 checks, 0 failed; species [588, 531, 561]"
+    ]
+  },
+  {
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "64x64",
+      "--position",
+      "4000,4000",
+      "--script",
+      "res://tests/test_treeline.gd"
+    ],
+    "script": "test_treeline.gd",
+    "mode": "native",
+    "exit_code": 0,
+    "log": "test_treeline-native.log",
+    "diagnostics": [
+      "WARNING: Tree wind is disabled for maple_tree because source material -9223371886161819678 is unsupported (cull mode is not disabled)"
+    ],
+    "summaries": [
+      "L7 tree runtime: 31991 checks, 0 failed; species [588, 531, 561]"
+    ]
+  }
+]

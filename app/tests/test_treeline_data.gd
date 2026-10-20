@@ -283,6 +283,7 @@ func _initialize() -> void:
 	var maximum: Dictionary = Loader.validate(data)
 	_check("exactly 1,680 valid positions are accepted", bool(maximum["ok"]), str(maximum["errors"]))
 
+	_test_duplicate_cell_diagnostics()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -295,3 +296,23 @@ func _unique_ring_positions(count: int) -> Array:
 		var east: float = roundf(sin(angle) * 300.0 / GRID_M) * GRID_M
 		positions.append([north, east, 0.0])
 	return positions
+
+
+func _test_duplicate_cell_diagnostics() -> void:
+	var cases: Array = [
+		{label = "near-grid values retain the earliest duplicate index", points = [[300.0, 0.0, 0.0], [300.0000001, 0.0, 0.0], [299.9999999, 0.0, -0.0]], errors = PackedStringArray([
+			"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)",
+			"objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 0)"])},
+		{label = "off-grid rows keep quantization and later duplicate diagnostic order", points = [[300.125, 0.0, 0.0], [300.25, 0.0, 0.0]], errors = PackedStringArray([
+			"objects[0].positions.value[0].north: must be quantized to 0.25 m",
+			"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)"])},
+		{label = "negative half-grid ties retain signed rounding and duplicate order", points = [[-300.125, 0.0, 0.0], [-300.25, 0.0, 0.0]], errors = PackedStringArray([
+			"objects[0].positions.value[0].north: must be quantized to 0.25 m",
+			"objects[0].positions.value[1]: duplicate position (same 0.25 m grid cell as index 0)"])},
+		{label = "non-flat rows do not claim a flat duplicate cell", points = [[300.0, 0.0, 0.25], [300.0, 0.0, 0.0], [300.0, 0.0, 0.0]], errors = PackedStringArray([
+			"objects[0].positions.value[0].down: treeline positions must be flat at 0 m",
+			"objects[0].positions.value[2]: duplicate position (same 0.25 m grid cell as index 1)"])},
+	]
+	for fixture: Dictionary in cases:
+		var result: Dictionary = Loader.validate(_with_treeline(fixture.points))
+		_check(fixture.label, not bool(result.ok) and result.field.is_empty() and result.errors == fixture.errors, str(result.errors))

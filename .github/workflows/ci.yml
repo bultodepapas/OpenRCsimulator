@@ -95,6 +95,12 @@ jobs:
           python3 app/tests/test_ci_partitions.py
           python3 app/tests/test_export_identity.py
           research/test-tools.sh
+      - name: Optional process RAM and I/O backend regressions (PT1h-R4)
+        if: matrix.part == 'integration'
+        run: |
+          python3 -m venv "$RUNNER_TEMP/godot-resources-venv"
+          "$RUNNER_TEMP/godot-resources-venv/bin/python" -m pip install -r tools/godot/requirements-resources.txt
+          "$RUNNER_TEMP/godot-resources-venv/bin/python" -m unittest discover -s tools/godot -p 'test_resource*.py'
       - run: app/test.sh
         id: app_check
       - name: Validate diagnostic evidence and export JUnit

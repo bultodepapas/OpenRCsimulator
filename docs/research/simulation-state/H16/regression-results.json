@@ -1,0 +1,274 @@
+[
+  {
+    "test": "test_ground_stage_queries",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_stage_queries.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 5.937999999998283,
+    "test_sha256": "f5d255a0c5d8f91139c1998971417ac794aca340c06e5a1587342216fc7b5fe5"
+  },
+  {
+    "test": "test_wheel_session",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_wheel_session.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 3.2190000000009604,
+    "test_sha256": "8df96b65abc2d7f368c7c0682b579f5c671e35e6cf3ea2faccc6344fe44b7b1d"
+  },
+  {
+    "test": "test_ground_contact",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_contact.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 4.1709999999984575,
+    "test_sha256": "f868f666de104aae6693056dc23f8b3f994908238f760d8ee54ee5bbcec07fc8"
+  },
+  {
+    "test": "test_ground_stiction",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_stiction.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 40.09400000000096,
+    "test_sha256": "9c7b1304884cab830da50db382d464c7de3c603907e066c3b26414c8e17a0fbd"
+  },
+  {
+    "test": "test_retractable_gear_ground",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_retractable_gear_ground.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 18.51599999999962,
+    "test_sha256": "08e6f5f17095c757ccdf28458681e39fdca36a82836ae791533623a4a356e061"
+  },
+  {
+    "test": "test_p51_ground",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_p51_ground.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 42.85900000000038,
+    "test_sha256": "68ad3389f2f3f3c1ffcf9611e90157fd9fb15ccea8e0c0a0eed09b15d8cb79b7"
+  },
+  {
+    "test": "test_timber_ground",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_timber_ground.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 7.578000000001339,
+    "test_sha256": "beef834ffc264b7cefdb55c4ea83a61581685e63540f5768ea41a40775036710"
+  },
+  {
+    "test": "test_liquid_fuel_session",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_liquid_fuel_session.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 14.390999999999622,
+    "test_sha256": "0b636007d545de8f4fb0c36be2a6534c393270741ab3a18c8ff4bd02aee6e9cb"
+  },
+  {
+    "test": "test_glow_session",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_glow_session.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 79.53099999999904,
+    "test_sha256": "f3336b30a56fa21750f1779ab4d43b44226e1106995de192e5a14588495e462f"
+  },
+  {
+    "test": "test_lake_ground_contact",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_lake_ground_contact.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.4059999999990396,
+    "test_sha256": "e7b8f35d5aebda553395dfc36115afcf9c4bccf098fa60db11931546bb3e4f70"
+  },
+  {
+    "test": "test_lake_session",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_lake_session.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 3.375,
+    "test_sha256": "c3c52b9b13774d2e71532fc3b3f8bdab51c2d5b7ba833b9749b6730c5e5cbd2c"
+  },
+  {
+    "test": "test_checkpoint",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_checkpoint.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 6.21900000000096,
+    "test_sha256": "8192c74885e176a0f204d272cc7ea582e3063b122da27c761e5fdb393757c508"
+  },
+  {
+    "test": "test_checkpoint_integrity",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_checkpoint_integrity.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.39099999999962165,
+    "test_sha256": "cfc900ab607dbf05e875224603a877a0854926be951c803a2b89aae62b8e9bc0"
+  },
+  {
+    "test": "test_simulation",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_simulation.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 0.2970000000022992,
+    "test_sha256": "31ae0d9fbf9274122e23ef738b09a4f29f2d2fb4f12ad365ff177d2236cf2cf5"
+  },
+  {
+    "test": "test_ground_start_integrity",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ground_start_integrity.gd"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "elapsed_seconds": 3.0940000000009604,
+    "test_sha256": "ba306475d20dccd4e29efa64922ef907684d90f8f93cd4fd10cb3fc707cb75b8"
+  },
+  {
+    "test": "test_golden",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_golden.gd"
+    ],
+    "exit_code": 1,
+    "ok": false,
+    "elapsed_seconds": 5.78099999999904,
+    "test_sha256": "b8e73fffa402328953a77db00fd48d287e908687791c0ba4d4a3f4ba7422273c"
+  }
+]

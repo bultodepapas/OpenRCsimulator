@@ -4,6 +4,7 @@ A small record of what we choose and why. The two guiding principles remain esta
 
 | Date | Decision | Reasoning | Status | Revisit when |
 | --- | --- | --- | --- | --- |
+| 2026-10-19 | **DT-11a: reuse exact ground-patch CPU buffers across scene builds.** Key polygon, surface, theme, seed and transform; bound FIFO retention to eight entries and 4 MiB of serialized keys/payloads. | Repeated default-field construction spends about 43 ms regenerating unchanged gravel. Fresh scene resources retain independent ownership; transformed output stays byte-identical. | Implemented; [paired construction, lifecycle and regression evidence](research/visual-quality-implementation/VQ-01c/loading/ground-patch-cache/README.md). | A caller moves patch generation off the main thread, adds a dynamic geometry input, or profiling shows cache churn or retention outweighing construction savings. |
 | 2026-10-19 | **FW-35c: share flight-local aircraft light selection and add a 17:30 civil-time default.** Preserve solar dawn rules and the existing keyboard/controller cycles. Clear manual overrides at the session's existing `resetting` boundary. | Construction-time light selection missed later time changes; independent aircraft policies could overwrite explicit pilot choices. Presentation adapters retain geometry, exposure and equipment gates. | Implemented; [standard and lifecycle](AIRCRAFT-LIGHTING.md), [verification](research/field-world/FW-35c/README.md). | A persistent flight-save contract explicitly admits light selections, or an aircraft requires a separately defined automatic daytime policy. |
 | 2026-10-19 | **AE-12/13: measure existing component masses at fixed stations; version only the new evaluator.** Optional nonempty `mass_edits` selects measured-mass-1; legacy recipes retain compiler-2. Keep authored plan CG and fuel state, exclude liquid/virtual reference masses, and re-reference thrust/intake offsets to preserve structural points. | Stable inventory IDs exist, but source-backed mount envelopes do not. First-moment/inertia arithmetic cannot authorize hardware relocation or label inferred component mass measured. Immutable compiler pins require a new build when changing evaluators. | Implemented constrained slice; [guide](AIRCRAFT-WORKSHOP.md#measured-mass-and-cg), [evidence](research/aircraft-editor/AE-12-13/README.md) | Authored mounting/hardware contracts and physical weighing evidence justify component moves, ballast or broader matching. |
 | 2026-10-19 | **AE-03c/24d.1: recovery and thumbnails own separate bounded lifecycles.** One scratch recovery record preserves accepted build plus raw UI buffers; Restore creates detached ancestry. Selected-build thumbnails use a temporary world and copied-pixel LRU. | Automatic draft replacement cannot overwrite an unresolved recovery; unavailable selections must refuse before mutation. Thumbnail generation cannot borrow the active camera/profile or retain a live viewport. | Implemented software/native slices; [recovery](research/aircraft-editor/AE-03c/README.md), [thumbnails](research/aircraft-editor/AE-24d-1/README.md) | Filesystem interruption evidence, actual GPU measurements, new recovery fields or wider package/platform acceptance require revised contracts. |
@@ -511,3 +512,34 @@ Nine repeated structural guards per physics tick made unchanged lake validation 
 ### 2026-10-19 — Scope extreme virtual size bounds to compiler transforms (AE-23b)
 
 Support 10–500% Workshop aircraft as similarity experiments through the existing simulation. Validate the source with ordinary aircraft bounds first; then pass explicit dimensional factors emitted by the compiler to an allowlisted validation context. Keep control/coefficient bounds, provenance and physical consistency checks unchanged, strip private context before serialization, and distribute source-plus-recipe bundles. Globally widening stock import bounds would admit unrelated malformed aircraft. Explicit size actions select a versioned model; legacy recipes within 35–225% preserve their compiler and exact outputs. Scale the virtual plausibility band by total dry-plus-liquid mass. Short endpoint refinement and replay qualify this game-size slice only; Reynolds effects, actual hardware, sustained flights and isolated performance remain open. [Evidence](research/aircraft-editor/AE-23b/README.md).
+
+
+### 2026-10-19 — Reuse layout queries only within a ground-stage invocation (H16)
+
+Read gear/glow capability, wheel count and wheel offset once inside the existing
+stage. Keep those values local so resets and layout changes require no cache
+invalidation policy. Three repeated airborne callback comparisons support the
+small change; the runway measurement was flat. Preserve force arithmetic, guards,
+240 Hz stepping and data, with exact state/checkpoint comparisons and the original
+method oracle. [Measurements and regression limits](research/simulation-state/H16/README.md).
+
+### 2026-10-19 — Reject distant lake contact queries before diagnostic sampling (LU-25-R2)
+
+Ground terrain and prop-disc callers discard uncovered lake results. Give those
+callers a contact-only query that rejects points outside the bank bounds plus a
+full finite-difference margin. Keep the original sampler for boundary/interior
+queries and all full diagnostic consumers. Recompute the small bounds per call
+without adding cache state or changing normalized data. Three paired runway
+runs measured 19.58–19.84% lower CPU callback cost with identical trajectories
+and checkpoints; covered-point component queries cost roughly 1–2% more.
+[Measurements, oracle checks and existing golden failures](research/landscape-upgrade/LU-25-R2/README.md).
+
+### 2026-10-19 — Reuse quadrature invariants locally in segmented slipstream (H17)
+
+Read stable geometry components once per segmented-tail invocation and the Gauss
+midpoint/half-width once per segment. Preserve arithmetic order and all quadrature
+points; do not introduce persistent cache state or change the aerodynamic law.
+Three P-51 trim repeats measured a modest 0.90–1.66% lower paired CPU callback
+cost, with exact trajectories and checkpoints; the unchanged Stik path was flat.
+Keep the original-method oracle and report existing failures separately from
+the passing parity tests. [Measurements and regression limits](research/simulation-state/H17/README.md).

@@ -1,0 +1,29 @@
+{
+  "reference_commit": "a3df9bc0555664776d8b30e5f0a9ed402361c1b7",
+  "reference_matches_commit_after_line_ending_normalization": true,
+  "sources": {
+    "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "app/tests/test_treeline_data.gd": "68ebd6dceb5c4e2646d105951f2355dd6b12c49dd985bff412de0d1b5786cfc2",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "research/performance/field_validation_probe.gd": "6a17719c69067454aa98543016c0bcfa20a5fc218360a1e9d5b61e2329dc9b31",
+    ".tools/Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    ".tools/Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  "reference_sha256": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+  "fixture_sha256": {
+    "default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "no-trees.json": "3774f65b0747d449a0619d9f9bc40a236af855b081ecf572510da72f5082294e",
+    "probe-project.godot": "0112b2e2402b0aab39eea76ab2f8dae1e6654d92787c9705f6d574689fa061c1"
+  },
+  "regression_context_sha256": {
+    "app/tests/test_field_loader.gd": "fb62095e09c4e04980cf19df0e9cf5244e24a30ab7e111be2bf69c9169ebbdd0",
+    "app/tests/test_treeline.gd": "1d0a22b0532dd4fa4c6854efa2812c3798b7fdc6169dbd600e6ac39c5a47ef57",
+    "app/tests/test_scenery_loader.gd": "681c8d37f9cb342244f6895c02fddcc0997e8df65c5f9b50cd5b4b480020f548",
+    "app/tests/test_field_surfaces.gd": "d2c4be1c0819efa573ab9ee238e79180656a57d3d506630b7487f04f95828431",
+    "app/render/treeline.gd": "7359176c641960dc94879d7772984fcecf5b9d77bd92d4146eaeb8949c605213",
+    "app/render/field.gd": "7b32bacaf4cee96d290ae6fc9f1609d20df752e715dc7ba59b3546bba77f6342",
+    "assets/aircraft/model-bindings.json": "367e78f8dcde622b43b13bc8f0f0d715ad50508b326c1c2f7ba53f45ea439170",
+    "assets/aircraft/ugly-stik-60/geometry.json": "e6b40a32058947b4582eaf171270ea73fd724fcb4d78412d6b27ec93f58244e4"
+  },
+  "reference_copy_context": "source/config/data copied from shared app; large assets/imports hardlinked, no import. A sibling assets junction restores repository authoring-source reads for the Home/Fly portion of test_treeline."
+}

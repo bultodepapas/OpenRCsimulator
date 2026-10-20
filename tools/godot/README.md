@@ -1,6 +1,6 @@
 # Checked Godot commands
 
-`run_checked.py` wraps the existing Godot CLI with Python's standard library. It
+`run_checked.py` wraps the existing Godot CLI with Python's standard library by default. It
 fails on engine, script and shader error records even when Godot exits zero. No
 code is installed in the game or simulation loop. Import resources before running
 project scripts; the wrapper does not change engine options or project settings.
@@ -23,7 +23,8 @@ python3 tools/godot/run_checked.py --label simulation --timeout 90 -- \
 
 Pass the entire command after the first `--`, including Godot's own `--` before
 application arguments. Commands execute without shell expansion. Use the Windows
-console executable when diagnosing Godot on Windows. Standard engine flags are
+console executable when diagnosing Godot on Windows, except for the optional
+direct-process [RAM/I/O capture](#process-ram-io-and-storage-pt1h-r4). Standard engine flags are
 documented in the [Godot CLI manual](https://docs.godotengine.org/en/stable/tutorials/editor/command_line_tutorial.html).
 
 ## Options and evidence
@@ -184,3 +185,156 @@ After importing the project, `OPENRC_TEST_GODOT=<engine>` also enables the three
 production frame-capture regressions in `test_frame_capture.py`; the integration
 partition runs them automatically. They test diagnostics off/on and incomplete
 retained prefixes, not performance speed.
+
+## Process RAM, I/O and storage (PT1h-R4)
+
+Use `--resources` to sample OS counters outside the game. This reuses the free
+[`psutil`](https://github.com/giampaolo/psutil/tree/release-7.2.2) library, pinned
+only for this optional feature. Install it in an isolated environment:
+
+```powershell
+python -m venv .tools/godot-diagnostics-venv
+.tools/godot-diagnostics-venv/Scripts/python.exe -m pip install -r tools/godot/requirements-resources.txt
+$GodotDirect = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+.tools/godot-diagnostics-venv/Scripts/python.exe tools/godot/run_checked.py --resources --resource-interval 1 --resource-disk-path . --timeout 300 -- $GodotDirect --path app
+```
+
+On Linux, create the environment with `python3 -m venv .tools/godot-diagnostics-venv-linux`,
+then use its `bin/python` for the same pip/runner commands and `"$(app/get-godot.sh)"`
+as the executable. Close the game normally within the chosen timeout. All existing
+runner log policies still apply. Missing/wrong-version dependencies and invalid
+options fail before launch.
+
+| Option | Default and purpose |
+| --- | --- |
+| `--resources` | Off. Monitor only the directly launched PID; child processes are excluded. |
+| `--resource-interval SECONDS` | 1; finite range 0.1–60. Shorter intervals cost more and still miss brief peaks. |
+| `--resource-max-samples COUNT` | 600; range 1–10,000. Reaching it stops sampling, not the game. |
+| `--resource-disk-path DIRECTORY` | None. Repeat up to eight times for volume free/total capacity; directories must exist. |
+| `--resource-threads` | Off. Include thread counts; Windows process enumeration makes this substantially more expensive. |
+
+The unique run directory gains `resources.json` with timestamps, raw samples,
+per-field availability, bounded errors, summaries, tool hashes and invocation/log identity.
+`report.json` records its size/hash and coverage. `sampled` means a series was
+collected, not that every instant or allocation was observed. `capped`, `partial`
+and `no_samples` require reviewing the retained coverage/errors. Telemetry failure
+does not change the engine verdict; failed resource publication is explicitly
+reported as `unavailable`. `summarize.py` validates engine/log verdicts only and
+does not validate this optional resource attachment.
+
+Interpret the counters separately:
+
+- RSS is resident process RAM (Windows working set), including shared pages.
+  VMS is virtual address space on Unix and private commit on Windows. Neither is
+  Godot's static allocator count, unique physical memory or a leak diagnosis.
+- CPU percent derives from cumulative process CPU times and may exceed 100%.
+  First samples and counter resets have no usable delta. I/O counters are OS
+  process activity, not physical drive throughput; cached reads, pipes and
+  platform semantics differ. Deltas cover the sampled window only.
+- System available RAM/swap and volume free space include other applications.
+  They cannot attribute pressure to Godot. A volume capacity sample is not the
+  size of the directory passed to `--resource-disk-path`.
+- Unknown, denied, unsupported and invalid values remain `null` with reasons.
+  Optional thread counts stay `null` / `disabled` unless requested.
+  PID identity is checked; the tool never intentionally attaches to a replacement
+  process. Use the direct Windows engine `.exe`: `_console.exe` is rejected because
+  it launches a separate engine and would understate memory. Other launchers/shells
+  are also unsuitable. OS/filesystem calls have cooperative time bounds;
+  an unresponsive network filesystem can delay a poll.
+
+For project **file sizes**, the read-only audit needs no dependency:
+
+```powershell
+python tools/godot/storage_audit.py . --out tmp/storage-review.json --top 20 --max-seconds 30
+```
+
+It identifies the largest files and Godot-related storage categories, plus free
+space on the root volume. File bytes are logical sizes per path, not allocated
+blocks; hard-linked files count once per path. Exclusions and skipped links are
+reported; no symlink/junction entry is traversed, and no content is read or deleted.
+Review `.godot` imports, assets and retained captures separately before deciding
+what to keep. Run after producers stop for a more consistent snapshot.
+
+The output must be new. Scan limits, unreadable entries and other incomplete
+coverage produce exit 1 with a partial report; bad arguments or output failures
+produce exit 2. Complete scans exit 0. Use `--help` for traversal budgets and
+explicit exclusions. Totals on partial scans are lower bounds of the included
+paths, not full project usage. Existing `research/test-tools.sh` discovery runs
+the mock/filesystem regressions; the CI integration job additionally installs
+the pinned backend and exercises real child allocation and I/O.
+
+Focused verification after setup:
+
+```powershell
+.tools/godot-diagnostics-venv/Scripts/python.exe -m unittest discover -s tools/godot -p 'test_*.py'
+```
+
+The controlled process test checks an observed RAM increase and a flushed file
+write against known allocations. Denied/unsupported counters, PID replacement,
+counter resets, bounded samples, scan errors and failed report writes have
+separate regressions. Real Godot test classes additionally require
+`OPENRC_TEST_GODOT`; a passing resource fixture does not establish a leak-free game.
+
+## Incident bundles and Perfetto timelines (PT1h-R5)
+
+Capture frame diagnostics and OS counters in the **same checked invocation**:
+
+```powershell
+$GodotDirect = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+$Frames = Join-Path (Get-Location) 'tmp/incident-frames.json'
+.tools/godot-diagnostics-venv/Scripts/python.exe tools/godot/run_checked.py --resources --resource-interval 1 --timeout 180 -- $GodotDirect --headless --path app --audio-driver Dummy --max-fps 60 -- --scripted "--frametimes=$Frames" --frame-diagnostics --warmup=1 --t=10
+```
+
+Use a fresh frame-output path for each capture. The runner prints the unique run
+directory. Replace `RUN_DIR` below with that directory; the two offline tools use
+only Python's standard library and never launch the game:
+
+```powershell
+python tools/godot/incident_bundle.py RUN_DIR --frames tmp/incident-frames.json --out tmp/incident.zip --note "Describe the trigger and expected behavior"
+python tools/godot/perfetto_export.py --frames tmp/incident-frames.json --resources RUN_DIR/resources.json --out tmp/timeline.json
+```
+
+Open `timeline.json` in [Perfetto](https://ui.perfetto.dev/) with **Open trace file**.
+Frame slices represent wall intervals, including waiting; counter names include
+units. Process CPU, RSS, I/O, system memory and volume capacity retain their
+separate meanings from the resource guide above. GPU zero readings are omitted
+as unavailable-or-zero. Headless runs cannot establish GPU performance. Viewport
+timers may describe a previous render frame; coincident spikes do not prove cause.
+Remove `--headless` for a visible capture with the active graphics backend.
+
+Combined timelines require matching nonempty capture IDs and two clock anchors
+from both producers. Each timeline keeps its monotonic durations; UTC anchors
+only estimate alignment across processes. The trace records uncertainty and
+observed drift. The 20 ms per-anchor floor is an estimate, not an OS guarantee;
+brief clock excursions between anchors can escape detection. Detected drift
+beyond the allowance rejects the merge. `--max-clock-drift-ms` defaults to 50
+(range 0–1,000), in addition to anchor uncertainty. Avoid using this alignment
+to attribute individual short frames to OS samples. Older reports can be viewed
+one at a time with just `--frames` or `--resources`.
+
+The exporter validates source structure and emits explicit partial status for
+retained incomplete prefixes. Unknown measurements are never converted to zero.
+It exports a fixed set of known counters; unsupported metric names are listed in
+trace metadata and omitted from tracks.
+The combined input budget defaults to 64 MiB (`--max-input-bytes`, maximum
+256 MiB); the event budget defaults to 500,000 (`--max-events`, maximum 1,000,000).
+It exits 0 for a complete export, 1 for partial evidence or invalid sources, and
+2 for configuration, budget or output errors. Inspect the message: invalid
+sources produce no trace. All output paths must be new.
+
+An incident ZIP contains only the checked receipt, engine log, declared resource
+attachment and explicitly selected frame/flight-log attachments. It includes a
+manifest with hashes, association checks and missing/corrupt evidence. It never
+recursively collects the run folder. `--flight-log PATH.orfl` preserves an opaque,
+caller-selected attachment; packaging does not validate replay or prove that the
+flight log belongs to this run. The [flight logging workflow](../../docs/FLIGHT-LOGGING.md)
+remains authoritative for replay. Logs, command arguments and paths are retained
+verbatim; the tool does not upload them.
+
+Bundle completeness and the engine verdict are separate: successfully preserving
+a failed run does not make the run pass. Review the manifest and console summary.
+The bundle exits 0 when complete, 1 when evidence is partial, and 2 on
+configuration/output errors. Its per-file budget is 64 MiB (`--max-input-bytes`,
+maximum 256 MiB), with 256 MiB total (`--max-total-bytes`, maximum 1 GiB).
+Oversized attachments are omitted with a manifest issue. Stop capture producers
+before packaging so their files form a stable snapshot.

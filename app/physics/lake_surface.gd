@@ -33,6 +33,17 @@ static func shore_distance_validated(lake: Dictionary, north: float, east: float
 	return _signed_polygon_distance(shoreline, north, east)
 
 
+## Contact-only query for validated definitions. Outside the bank, callers receive only covered=false;
+## they must not use this route for distances or finite-difference diagnostics outside coverage.
+## Keep a full stencil margin so boundary tolerance and near-bank samples use the original sampler.
+static func sample_covered_terrain_validated(lake: Dictionary, north: float, east: float) -> Dictionary:
+	if not is_finite(north) or not is_finite(east):
+		return _invalid_sample()
+	if _outside_expanded_polygon_aabb(lake.bank_ne_m, north, east, SAMPLE_EPSILON_M):
+		return {covered = false}
+	return sample_terrain_validated(lake, north, east)
+
+
 ## Returns bounded ground state only inside the bank polygon. `ground_down_m` and both slopes are positive down.
 static func sample_terrain_validated(lake: Dictionary, north: float, east: float) -> Dictionary:
 	if not is_finite(north) or not is_finite(east):

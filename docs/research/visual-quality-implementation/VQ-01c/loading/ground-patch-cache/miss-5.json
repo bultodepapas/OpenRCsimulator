@@ -1,0 +1,221 @@
+{
+	"cache_policy": "candidate static cache cleared outside timing before every timed call",
+	"complete": true,
+	"exact_pairs": 12,
+	"failures": [],
+	"first_pair_retained_but_excluded_from_medians": 1,
+	"input": {
+		"field_id": "default",
+		"group_id": "car-park",
+		"point_count": 9,
+		"scenery_path": "res://data/scenery/default.json",
+		"seed": 2861725548,
+		"surface": "gravel",
+		"theme": "temperate",
+		"transform": "identity (same fresh ground-cell MeshKit transform as Scenery.build)"
+	},
+	"medians_usec_excluding_pair_1": {
+		"candidate": 42916,
+		"reference": 42132
+	},
+	"pair_count": 12,
+	"renderer_requirement": "none; CPU-only patch generation is valid headless",
+	"samples": [
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 1,
+			"usec": 42453,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 1,
+			"usec": 43047,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 2,
+			"usec": 42113,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 2,
+			"usec": 42103,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 3,
+			"usec": 42044,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 3,
+			"usec": 41854,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 4,
+			"usec": 41782,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 4,
+			"usec": 42102,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 5,
+			"usec": 41700,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 5,
+			"usec": 42927,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 6,
+			"usec": 42628,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 6,
+			"usec": 42324,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 7,
+			"usec": 42132,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 7,
+			"usec": 43163,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 8,
+			"usec": 43417,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 8,
+			"usec": 42147,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 9,
+			"usec": 41904,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 9,
+			"usec": 41878,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 10,
+			"usec": 42916,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 10,
+			"usec": 44294,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 11,
+			"usec": 52939,
+			"variant": "reference",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 11,
+			"usec": 76881,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 0,
+			"pair": 12,
+			"usec": 48543,
+			"variant": "candidate",
+			"vertices": 8460
+		},
+		{
+			"cache_cleared_before_call": true,
+			"order_index": 1,
+			"pair": 12,
+			"usec": 55732,
+			"variant": "reference",
+			"vertices": 8460
+		}
+	],
+	"variants": {
+		"candidate": "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/ground_candidate.gd",
+		"reference": "C:/DEVELOPMENT/OpenRCsimulator/tmp/loading-optimization-20261019/ground_reference.gd"
+	}
+}

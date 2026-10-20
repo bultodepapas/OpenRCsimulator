@@ -138,7 +138,16 @@ func _run() -> void:
 	# D6b-R3: both legacy direct flights and shell-managed sessions must stay
 	# paused throughout calibration, even with an armed radio at full throttle.
 	for managed: bool in [false, true]:
-		await _calibration_resume_guard(managed)
+		await _calibration_flight_guard(managed)
+	var resets: Array[int] = [0]
+	var on_reset := func() -> void: resets[0] += 1
+	_session.resetting.connect(on_reset)
+	var reload_result: String = _session.reload()
+	_check("reload works after calibration cancellation", reload_result.begins_with("aircraft reloaded")
+		and _session.calibration == null and not _session.sim.paused and _session.sim.tick == 0 and resets[0] == 1, reload_result)
+	_session.reset()
+	_check("restart works after calibration cancellation", not _session.sim.paused and _session.sim.tick == 0 and resets[0] == 2)
+	_session.resetting.disconnect(on_reset)
 	_key(KEY_K)
 	await _settle()
 	_check("K starts the calibration (paused, step 1)", _panel_has("CALIBRATION 1/5") and _session.sim.paused, (_main._panel as Label).text)
@@ -208,7 +217,7 @@ func _run() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
-func _calibration_resume_guard(managed: bool) -> void:
+func _calibration_flight_guard(managed: bool) -> void:
 	var previous_selection: bool = _session.external_controller_selection
 	_session.external_controller_selection = managed
 	var label := "managed calibration" if managed else "direct calibration"
@@ -219,6 +228,11 @@ func _calibration_resume_guard(managed: bool) -> void:
 	var tick: int = _session.sim.tick
 	var state: PackedByteArray = _session.sim.state.to_byte_array()
 	var reason: String = _session.pause_reason
+	var checkpoint: PackedByteArray = var_to_bytes(_session.sim.checkpoint())
+	var model: RefCounted = _session.sim.model
+	var resets: Array[int] = [0]
+	var on_reset := func() -> void: resets[0] += 1
+	_session.resetting.connect(on_reset)
 	_motion(2, 1.0)
 	await _settle()
 	_check(label + " advertises resume as unavailable", wizard != null and not _session.can_resume()
@@ -235,6 +249,24 @@ func _calibration_resume_guard(managed: bool) -> void:
 		and _session.sim.tick == tick and _session.sim.state.to_byte_array() == state
 		and _session.commands.throttle == 0.0 and _session.sim.inputs[3] == 0.0
 		and _session.calibration == wizard and _session.pause_reason == reason)
+	# D6b-R4: reload must refuse before committing aircraft data; reset must refuse
+	# before emitting resetting (which would close an active recorder).
+	for action: String in ["reload", "reset", "reset_preserving_radio", "F5", "R"]:
+		if action == "reload":
+			var result: String = _session.reload()
+			_check(label + " reload explains the refusal", result.begins_with("reload refused") and "calibration" in result, result)
+		elif action == "reset":
+			_session.reset()
+		elif action == "reset_preserving_radio":
+			_session.reset(true)
+		else:
+			_key(KEY_F5 if action == "F5" else KEY_R)
+		await _settle()
+		_check(label + " " + action + " preserves the entire paused flight", _session.sim.paused
+			and var_to_bytes(_session.sim.checkpoint()) == checkpoint and _session.sim.model == model
+			and _session.commands.throttle == 0.0 and _session.sim.inputs[3] == 0.0
+			and _session.calibration == wizard and _session.pause_reason == reason and resets[0] == 0)
+	_session.resetting.disconnect(on_reset)
 	_key(KEY_ESCAPE)
 	await _settle()
 	_check(label + " cancelling the wizard does not automatically resume", _session.calibration == null and _session.sim.paused)

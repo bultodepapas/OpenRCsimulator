@@ -1,0 +1,64 @@
+{
+  "format": "openrc-resource-evidence v1",
+  "captured_tool_sha256": {
+    "run_checked.py": "5c1103e139b51b54db10a6c81fbf6fc62ccbab30b6cba2651c83e4674c0344ed",
+    "resource_samples.py": "b9fd2b684e70ed62f03581940231ddd4d22315e36d85f43c03e5437ed2be6d5c"
+  },
+  "artifacts": {
+    "resources-native.json.gz": {
+      "sha256": "2560fd193caf99560563fbb9b7db0aae1dd7d78e2a60d644ad20b7a04ec57305",
+      "uncompressed_sha256": "f0b049966e5afaf78608a69729e20aa22cc98b485792f9188db9a82039b0aebe",
+      "uncompressed_bytes": 29743
+    },
+    "resources-check.json.gz": {
+      "sha256": "c7c7fff6f5f26f66aa961e9e7234c9bdf2e6fd93faa13dfd29b51006ddce00f3",
+      "uncompressed_sha256": "6c74669f3e47da27fb039a22466d4834e24c7c9e7c321bab27ce26de10088349",
+      "uncompressed_bytes": 3325
+    },
+    "resources-engine.log.gz": {
+      "sha256": "ed75ba56b023d0347f7be0858071c76f7a501e0f2c9c54ddefde3cce9eb3e692",
+      "uncompressed_sha256": "63b98cabb0e9987bb80460607724e0d00d5fc38322421b1ab4f6de076894683b",
+      "uncompressed_bytes": 1303
+    },
+    "resources-frames.json.gz": {
+      "sha256": "c62f2262df4cc3503494a208e002bf37b6379021e4722670f40df69e7f62c1bf",
+      "uncompressed_sha256": "1d170796f0fe5220e06b6b39e529b8071aeba75eb81e2e5541de96aa5fb6dac0",
+      "uncompressed_bytes": 127791
+    },
+    "resources-storage-app.json.gz": {
+      "sha256": "e2b2e8784c8c06ec53fff74b4df5bc122becd92624ac124989d458bbbceb1abb",
+      "uncompressed_sha256": "df0712f1f9516d690cd2bfe67616de1ca40138e2c871afcd6ba46c049a6a829b",
+      "uncompressed_bytes": 4630
+    },
+    "resources-initial-warning.log.gz": {
+      "sha256": "53c909d402cdaca609e45d1ecc9ff84fcf10f0b6db4ad5d3dc329730f6c67701",
+      "uncompressed_sha256": "9b48fe01d73a9b6fe9892b6ea344c971f589ad1ed8af124b8c851ecd83fc5688",
+      "uncompressed_bytes": 1427
+    },
+    "resources-pressure.json.gz": {
+      "sha256": "81c02ff6b3905e7cd93f390c75cf58943f0597e97a78c819806d351729b25ce0",
+      "uncompressed_sha256": "dd1391569f86618f272d63d7f95bc699e52d52735931cc2f4e8f0f6c49e387ff",
+      "uncompressed_bytes": 119428
+    },
+    "resources-verbose-recheck.log.gz": {
+      "sha256": "53dd58ad76f3c5ffd85d635fbe9774a5ca34a2011b0f46393b7c030ef8fd183a",
+      "uncompressed_sha256": "e1c749fe126f0db1af25fad1081b3163ff9bdb5c6fb7dce0bf27da68ad352ace",
+      "uncompressed_bytes": 80599
+    }
+  },
+  "verification": {
+    "windows": {
+      "discovered": 79,
+      "passed": 75,
+      "skipped_optional_godot": 4
+    },
+    "linux_prior_full": {
+      "discovered": 78,
+      "passed": 72,
+      "skipped": 6
+    },
+    "linux_final_resource_tests": {
+      "passed": 21
+    }
+  }
+}
