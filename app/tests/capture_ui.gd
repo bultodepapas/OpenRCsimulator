@@ -451,11 +451,27 @@ func _run() -> void:
 	if screen == "home" and home_control != null:
 		var home_focus: Control = viewport.gui_get_focus_owner()
 		var weather_button: Control = home_control.get("weather_button") as Control
+		var home_scroll: ScrollContainer = home_control.get_node("HomeRail/HomeContentScroll") as ScrollContainer
+		var home_scrollbar: VScrollBar = home_scroll.get_v_scroll_bar()
+		var flight_page: Control = home_control.get_node("HomeRail/HomeContentScroll/HomePages/FlightPage") as Control
+		var scroll_rect: Rect2 = home_scroll.get_global_rect()
+		var page_rect: Rect2 = flight_page.get_global_rect()
+		var page_minimum: Vector2 = flight_page.get_combined_minimum_size()
 		evidence["home_ui"] = {
 			"focus_name": "" if home_focus == null else str(home_focus.name),
 			"focus_path": "" if home_focus == null else str(home_focus.get_path()),
 			"weather_summary": "" if weather_button == null else weather_button.text,
 			"weather_tooltip": "" if weather_button == null else weather_button.tooltip_text,
+			"content_scroll": {
+				"rect": [scroll_rect.position.x, scroll_rect.position.y, scroll_rect.size.x, scroll_rect.size.y],
+				"page_rect": [page_rect.position.x, page_rect.position.y, page_rect.size.x, page_rect.size.y],
+				"page_minimum_size": [page_minimum.x, page_minimum.y],
+				"minimum_overflow_px": maxf(0.0, page_minimum.y - home_scroll.size.y),
+				"bar_visible": home_scrollbar.visible,
+				"bar_max": home_scrollbar.max_value,
+				"bar_page": home_scrollbar.page,
+				"bar_value": home_scrollbar.value,
+			},
 		}
 	if screen == "flight" and flight != null:
 		var session: Node = flight.get("session")
