@@ -64,7 +64,7 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 
 ## Landscape integration
 
-LU-00…30 adds licensed field assets, night lighting, imported vegetation, a finite lake, agricultural surroundings and downloaded transmission-line assets. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
+LU-00…30 adds licensed field assets, night lighting, imported vegetation, a finite lake, agricultural surroundings and downloaded transmission-line assets. [LU-30-R1](research/landscape-upgrade/LU-30-R1/README.md) brings the nearest transmission tower to 652 m from the field origin, expands the corridor to nine towers, reduces insulator geometry and adds 17 batched red markers. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
 
 | Remaining gate | Current status | Evidence |
 | --- | --- | --- |

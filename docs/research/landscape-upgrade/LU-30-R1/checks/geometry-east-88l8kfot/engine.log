@@ -1,0 +1,47 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   supplier topology retained: 5743 triangles
+ok   uniformly scaled tower height 30 m
+ok   measured tower footprint
+ok   nine downloaded towers installed
+ok   corridor visibly closer while outside local field
+ok   downloaded span topology retained
+ok   Godot winding declared
+ok   bounded tower spacing 0
+ok   crossarms transverse to route 0
+ok   seven complete conductors per span 0
+ok   wire marker lies on imported conductor 0
+ok   bounded tower spacing 1
+ok   crossarms transverse to route 1
+ok   seven complete conductors per span 1
+ok   wire marker lies on imported conductor 1
+ok   bounded tower spacing 2
+ok   crossarms transverse to route 2
+ok   seven complete conductors per span 2
+ok   wire marker lies on imported conductor 2
+ok   bounded tower spacing 3
+ok   crossarms transverse to route 3
+ok   seven complete conductors per span 3
+ok   wire marker lies on imported conductor 3
+ok   bounded tower spacing 4
+ok   crossarms transverse to route 4
+ok   seven complete conductors per span 4
+ok   wire marker lies on imported conductor 4
+ok   bounded tower spacing 5
+ok   crossarms transverse to route 5
+ok   seven complete conductors per span 5
+ok   wire marker lies on imported conductor 5
+ok   bounded tower spacing 6
+ok   crossarms transverse to route 6
+ok   seven complete conductors per span 6
+ok   wire marker lies on imported conductor 6
+ok   bounded tower spacing 7
+ok   crossarms transverse to route 7
+ok   seven complete conductors per span 7
+ok   wire marker lies on imported conductor 7
+ok   bounded full route: 7168 cable triangles
+ok   finite imported world geometry
+ok   sag remains above ground and below tower tops
+ok   cached source deterministic
+ok   six optimized downloaded insulators on each tower
+all power-line checks passed

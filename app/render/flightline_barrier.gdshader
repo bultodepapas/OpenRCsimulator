@@ -8,11 +8,18 @@ uniform sampler2D metal_color : source_color, filter_linear_mipmap_anisotropic, 
 uniform sampler2D metal_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D metal_roughness : filter_linear_mipmap_anisotropic, repeat_enable;
 uniform sampler2D metalness : filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D zinc_color : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D zinc_normal : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D zinc_roughness : filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D zinc_metalness : filter_linear_mipmap_anisotropic, repeat_enable;
+uniform float barrier_height_m = 0.65;
 varying float is_wood;
 varying float height_m;
 varying float board_variation;
 varying vec2 metal_uv;
 varying float upward;
+varying float downward;
+varying float rail_end_face;
 varying float is_fitting;
 varying float fitting_tone;
 
@@ -26,35 +33,52 @@ void vertex() {
 	// Wood049 is a horizontal-grain 0.8 m tile; red carries a per-board offset.
 	vec3 n = NORMAL;
 	upward = max(n.y, 0.0);
+	downward = max(-n.y, 0.0);
+	rail_end_face = step(0.9, abs(n.x));
 	TANGENT = abs(n.x) > 0.9 ? vec3(0.0, 0.0, 1.0) : vec3(1.0, 0.0, 0.0);
 	BINORMAL = normalize(cross(n, TANGENT));
-	UV = vec2(dot(VERTEX, TANGENT), dot(VERTEX, BINORMAL)) / 0.8;
+	UV = vec2(dot(VERTEX, TANGENT), dot(VERTEX, BINORMAL)) / 1.15;
 	UV += vec2(board_variation * 2.17, board_variation * 3.31);
 	metal_uv = vec2(dot(VERTEX, TANGENT), dot(VERTEX, BINORMAL)) / 0.35;
 }
 
 void fragment() {
 	vec3 timber = texture(wood_color, UV).rgb;
-	float rough = texture(wood_roughness, UV).r;
-	// Weathering follows the downloaded grain, with distinct exposure per board.
-	float patches = texture(wood_roughness, UV * vec2(0.43, 0.71) + vec2(0.21)).r;
-	float sunbleach = clamp(0.24 + board_variation * 0.29 + upward * 0.18 + patches * 0.14, 0.0, 0.82);
+	float timber_rough = texture(wood_roughness, UV).r;
+	// Wood060 carries actual lengthwise grain. Variation changes exposure, not the grain.
+	float patches = texture(wood_roughness, UV * vec2(0.47, 0.73) + vec2(0.21)).r;
+	float sunbleach = clamp(0.12 + board_variation * 0.25 + upward * 0.12 + patches * 0.12, 0.0, 0.58);
 	float luminance = dot(timber, vec3(0.2126, 0.7152, 0.0722));
-	vec3 silvered = vec3(luminance * 0.95 + 0.025, luminance * 0.95 + 0.025, luminance * 0.89 + 0.024);
-	vec3 wood = mix(timber * vec3(1.02, 0.88, 0.70), silvered, sunbleach);
+	vec3 silvered = vec3(luminance * 1.04 + 0.045, luminance * 1.03 + 0.041, luminance * 0.95 + 0.035);
+	vec3 wood = mix(timber * vec3(1.10, 1.02, 0.91), silvered, sunbleach);
 	float damp = 1.0 - smoothstep(0.02, 0.22 + patches * 0.12, height_m);
-	wood *= mix(vec3(1.0), vec3(0.56, 0.62, 0.43), damp * 0.45);
-	// Reuse Metal026's actual corrosion, not orange noise over every surface.
-	float wear = clamp(0.45 + damp * 0.42 + upward * 0.12, 0.0, 1.0);
-	vec3 steel = mix(COLOR.rgb * 0.78, texture(metal_color, metal_uv).rgb * 1.25, wear);
-	steel *= mix(vec3(1.0), vec3(0.48, 0.53, 0.37), damp * 0.6);
-	// Zinc-coated saddles and fasteners are cleaner than the older exposed posts.
-	float zinc_fleck = texture(metal_roughness, metal_uv * 0.7).r;
-	vec3 zinc = mix(vec3(0.43, 0.48, 0.49), vec3(0.65, 0.69, 0.69), fitting_tone);
-	steel = mix(steel, zinc * mix(0.93, 1.07, zinc_fleck), is_fitting);
+	wood *= mix(vec3(1.0), vec3(0.67, 0.72, 0.61), damp * 0.32);
+	// End grain absorbs finish, while downward faces receive a narrow contact shadow.
+	wood *= 1.0 - 0.16 * rail_end_face - 0.10 * downward;
+	// Metal038 provides real zinc spangle and scratches on posts and fittings.
+	vec3 zinc = texture(zinc_color, metal_uv).rgb * vec3(0.80, 0.83, 0.81) + vec3(0.19, 0.20, 0.19);
+	float zinc_rough = texture(zinc_roughness, metal_uv).r;
+	float zinc_metal = texture(zinc_metalness, metal_uv).r;
+	float old_rough = texture(metal_roughness, metal_uv * 0.76).r;
+	float rail_step = max((barrier_height_m - 0.06 - 0.225) / 3.0, 0.001);
+	float joint = 0.0;
+	for (int rail = 0; rail < 4; rail++) {
+		joint = max(joint, 1.0 - smoothstep(0.012, 0.055, abs(height_m - (0.225 + float(rail) * rail_step))));
+	}
+	// Corrosion is confined to the planted foot and the post faces behind saddles.
+	float post_joint = joint * rail_end_face * (1.0 - is_fitting);
+	float corrosion = (0.02 + damp * (0.14 + old_rough * 0.25) + post_joint * (0.035 + old_rough * 0.10)) * (1.0 - is_fitting);
+	vec3 steel = mix(zinc * 0.91, texture(metal_color, metal_uv * 0.76).rgb * 0.93, corrosion);
+	vec3 clean_fitting = zinc * (0.97 + 0.12 * fitting_tone);
+	steel = mix(steel, clean_fitting, is_fitting);
+	// Small local darkening gives the rail bearing and post junction visible depth.
+	steel *= 1.0 - 0.08 * downward - 0.07 * post_joint - 0.055 * is_fitting * (1.0 - fitting_tone);
 	ALBEDO = mix(steel, wood, is_wood);
-	ROUGHNESS = mix(mix(mix(0.48, texture(metal_roughness, metal_uv).r, wear), 0.46 + zinc_fleck * 0.12, is_fitting), clamp(rough * 0.5 + 0.43, 0.73, 0.97), is_wood);
-	METALLIC = mix(mix(mix(0.65, texture(metalness, metal_uv).r, wear), 0.78, is_fitting), 0.0, is_wood);
-	NORMAL_MAP = mix(texture(metal_normal, metal_uv).rgb, texture(wood_normal, UV).rgb, is_wood);
-	NORMAL_MAP_DEPTH = mix(mix(0.2, 0.10, is_fitting), 0.25, is_wood);
+	float steel_rough = clamp(0.31 + zinc_rough * 0.42 + corrosion * 0.22 + damp * 0.06, 0.40, 0.82);
+	float fitting_rough = clamp(0.30 + zinc_rough * 0.39, 0.39, 0.68);
+	ROUGHNESS = mix(mix(steel_rough, fitting_rough, is_fitting), clamp(timber_rough * 0.50 + 0.44, 0.73, 0.97), is_wood);
+	METALLIC = mix(mix(mix(zinc_metal * 0.84, texture(metalness, metal_uv * 0.76).r, corrosion), zinc_metal * 0.91, is_fitting), 0.0, is_wood);
+	vec3 steel_normal = mix(texture(zinc_normal, metal_uv).rgb, texture(metal_normal, metal_uv * 0.76).rgb, corrosion);
+	NORMAL_MAP = mix(steel_normal, texture(wood_normal, UV).rgb, is_wood);
+	NORMAL_MAP_DEPTH = mix(mix(0.18, 0.13, is_fitting), 0.29, is_wood);
 }

@@ -31,6 +31,12 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 	result.name = "Field"
 	# L9c: one ground pass for contained flat rectangles; retain legacy geometry for other valid fields.
 	var grass: ShaderMaterial = Ground.grass_material(lighting)
+	# The default club's mowing and taxi detail is presentation only. Field surfaces and contact stay authoritative.
+	grass.set_shader_parameter("club_field_detail", str(field.get("id", "")) == "default")
+	if str(field.get("id", "")) == "default":
+		# Reuse the bundled CC0 grass maps at walking distance; the shader fades them before the flight view.
+		var grass_detail := load("res://render/grass_ground_material.gd")
+		grass_detail.configure(grass)
 	var materials: Array[ShaderMaterial] = [grass]
 	var station := Frames.ned_to_render([field.pilot.north, field.pilot.east, 0.0])
 	grass.set_shader_parameter("pilot_xz", Vector2(station.x, station.z)) # Phase 2: the macro tone is pinned here

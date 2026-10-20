@@ -1,0 +1,22 @@
+{
+  "app/scenery/power_lines.gd": "1288bf35817353b596090e9ea9ca184513c89c7a7c00027aa919b11aaec722ed",
+  "app/scenery/prefabs.gd": "1d22a627575ebd7b4d6375adc376886fd8fabb15a016ef8c1974c7f664cc4ca8",
+  "app/scenery/scenery.gd": "7259f08447ddc122e7ed730984d707b72386f089859bd9db7b39feda52712027",
+  "app/scenery/collision_world.gd": "9f601b43a1eee5925036298d7fd3f2c0a241a8f69685ab05b8c6aa2fac8f5894",
+  "app/render/landscape_upgrade/regional_lighting.gd": "812982b26a541284aeb69c3d4249498bd209cd0a6c46576483a27d5f155b4c2b",
+  "app/render/landscape_upgrade/regional_beacon.gdshader": "a4acbe6152bf4e59925358bece49d28a8abbe779ddda95be6c1e3e1f18bd56fe",
+  "app/data/scenery/default.json": "46c64bf12dc5ae886189cb574773f0b90fab158614e77969c1eee789e9db4900",
+  "app/data/scenery/countryside.json": "a8d202009cf674b7f3b7e9c98cf7468e58b43ff6aa62761638290d2e1e92ae86",
+  "app/data/scenery/power_cable.json": "b29026e81fae6a77b51bd4900d9442ff657b11f31f37c672fd23f03e47289a13",
+  "app/data/scenery/power_insulator.json": "25a9a403893a04f8e21b8b9810b00225a620e5acf9188b66489659cbb8b6275b",
+  "tools/scenery/place.py": "b8c5d0df2e8d62f5804d7c7c66415d7e26a339290528397093effba362e10753",
+  "tools/scenery/bake_power_cable.py": "ac6f141a1c4c44e37cf78d66623fb8560bc64460d23327d30022907666a68e94",
+  "tools/scenery/bake_power_insulator.py": "34c0d0c94b391dd697efbf21d116b01359f7df7293f5d577fe4b032cf586aa30",
+  "app/test.sh": "b60592463387d8bede2fa4b99f09170394510369081949ab62d200cec25f1fde",
+  "app/tests/test_power_lines.gd": "f0d83ef1d0b72c3d7a983cb3126a46d88428ad2a6cdb5680c0be705f4f8d6cdf",
+  "app/tests/test_regional_lighting.gd": "f8acf6e9e0259b6f6e23a58cfd60e4bc634bb65dd57b225cff4ec839cb211457",
+  "app/tests/capture_landscape_upgrade.gd": "98ddf2e791e6ae358b19bb55919fc88542739b0f27e5ba6ff8769438f1bee37f",
+  "app/tests/test_scenery_build.gd": "a347de708d8f7a099b009c49edbd9c8adb8c4547618fa15a8d362e7064083705",
+  "app/assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb": "b0ab9d357e5fb70714db6a4322d3b73c326e959954a5c8962acefc0d1db0494e",
+  "assets/landscape/power-lines/insulator-source.glb": "4bea57ed1194b14ed629b89a3db82782174dc2c29b2bb62143ae4ac2c1e8ef84"
+}

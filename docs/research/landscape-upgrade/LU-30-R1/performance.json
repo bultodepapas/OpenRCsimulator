@@ -1,0 +1,287 @@
+{
+  "note": "Unpaired captures under shared desktop load and concurrent workspace activity; not isolated GPU costs or a speedup claim.",
+  "samples_per_case": 240,
+  "reports": {
+    "before": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "renderer": "gl_compatibility",
+      "width": 1280,
+      "height": 720,
+      "cases": {
+        "power_airfield": {
+          "median_ms": 1.546,
+          "p95_ms": 1.992,
+          "draws": 294.0,
+          "primitives": 487677.0,
+          "timing_valid": true
+        },
+        "power_pilot": {
+          "median_ms": 1.271,
+          "p95_ms": 2.092,
+          "draws": 162.0,
+          "primitives": 350216.0,
+          "timing_valid": true
+        }
+      },
+      "regional": {
+        "batches": 39,
+        "counts": {
+          "antenna_mid_lights": 4,
+          "antenna_service": 2,
+          "antenna_top_beacons": 2,
+          "antenna_towers": 2,
+          "barn_loading": 2,
+          "church_entrance": 1,
+          "church_windows": 8,
+          "farm_gate_bollards": 4,
+          "farm_upper_windows": 2,
+          "hill_window_optics": 18,
+          "house_porches": 20,
+          "occupied_house_windows": 45,
+          "rural_junctions": 3,
+          "shed_worklight": 1,
+          "silo_access": 2,
+          "turbine_beacons": 4,
+          "turbine_service": 4,
+          "village_street_ends": 2
+        },
+        "dynamic_lights": 0,
+        "hardware_triangles": 3418,
+        "houses": 12,
+        "visible": true
+      }
+    },
+    "noon": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "renderer": "gl_compatibility",
+      "width": 1280,
+      "height": 720,
+      "cases": {
+        "power_airfield": {
+          "median_ms": 1.585,
+          "p95_ms": 2.071,
+          "draws": 294.0,
+          "primitives": 489681.0,
+          "timing_valid": true
+        },
+        "power_corridor": {
+          "median_ms": 0.774,
+          "p95_ms": 1.293,
+          "draws": 45.0,
+          "primitives": 205219.0,
+          "timing_valid": true
+        },
+        "power_detail": {
+          "median_ms": 0.74,
+          "p95_ms": 1.145,
+          "draws": 17.0,
+          "primitives": 171549.0,
+          "timing_valid": true
+        },
+        "power_pilot": {
+          "median_ms": 1.257,
+          "p95_ms": 2.121,
+          "draws": 162.0,
+          "primitives": 352220.0,
+          "timing_valid": true
+        },
+        "power_runway_east": {
+          "median_ms": 1.241,
+          "p95_ms": 1.534,
+          "draws": 167.0,
+          "primitives": 374144.0,
+          "timing_valid": true
+        }
+      },
+      "regional": {
+        "batches": 40,
+        "counts": {
+          "antenna_mid_lights": 4,
+          "antenna_service": 2,
+          "antenna_top_beacons": 2,
+          "antenna_towers": 2,
+          "barn_loading": 2,
+          "church_entrance": 1,
+          "church_windows": 8,
+          "farm_gate_bollards": 4,
+          "farm_upper_windows": 2,
+          "hill_window_optics": 18,
+          "house_porches": 20,
+          "occupied_house_windows": 45,
+          "power_wire_markers": 8,
+          "pylon_top_lights": 9,
+          "rural_junctions": 3,
+          "shed_worklight": 1,
+          "silo_access": 2,
+          "turbine_beacons": 4,
+          "turbine_service": 4,
+          "village_street_ends": 2
+        },
+        "dynamic_lights": 0,
+        "hardware_triangles": 3418,
+        "houses": 12,
+        "visible": true
+      }
+    },
+    "dusk": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "renderer": "gl_compatibility",
+      "width": 1280,
+      "height": 720,
+      "cases": {
+        "power_corridor": {
+          "median_ms": 0.72,
+          "p95_ms": 1.056,
+          "draws": 63.0,
+          "primitives": 205345.0,
+          "timing_valid": true
+        },
+        "power_detail": {
+          "median_ms": 0.614,
+          "p95_ms": 1.031,
+          "draws": 22.0,
+          "primitives": 171593.0,
+          "timing_valid": true
+        },
+        "power_runway_east": {
+          "median_ms": 1.29,
+          "p95_ms": 2.037,
+          "draws": 148.0,
+          "primitives": 350366.0,
+          "timing_valid": true
+        }
+      },
+      "regional": {
+        "batches": 40,
+        "counts": {
+          "antenna_mid_lights": 4,
+          "antenna_service": 2,
+          "antenna_top_beacons": 2,
+          "antenna_towers": 2,
+          "barn_loading": 2,
+          "church_entrance": 1,
+          "church_windows": 8,
+          "farm_gate_bollards": 4,
+          "farm_upper_windows": 2,
+          "hill_window_optics": 18,
+          "house_porches": 20,
+          "occupied_house_windows": 45,
+          "power_wire_markers": 8,
+          "pylon_top_lights": 9,
+          "rural_junctions": 3,
+          "shed_worklight": 1,
+          "silo_access": 2,
+          "turbine_beacons": 4,
+          "turbine_service": 4,
+          "village_street_ends": 2
+        },
+        "dynamic_lights": 0,
+        "hardware_triangles": 3418,
+        "houses": 12,
+        "visible": true
+      }
+    },
+    "night": {
+      "adapter": "NVIDIA GeForce RTX 3090",
+      "engine": {
+        "build": "official",
+        "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+        "hex": 263938,
+        "major": 4,
+        "minor": 7,
+        "patch": 2,
+        "status": "stable",
+        "string": "4.7.2-stable (official)",
+        "timestamp": 0
+      },
+      "renderer": "gl_compatibility",
+      "width": 1280,
+      "height": 720,
+      "cases": {
+        "power_corridor": {
+          "median_ms": 0.81,
+          "p95_ms": 1.103,
+          "draws": 65.0,
+          "primitives": 215507.0,
+          "timing_valid": true
+        },
+        "power_detail": {
+          "median_ms": 0.699,
+          "p95_ms": 0.926,
+          "draws": 24.0,
+          "primitives": 181755.0,
+          "timing_valid": true
+        },
+        "power_runway_east": {
+          "median_ms": 1.477,
+          "p95_ms": 2.6,
+          "draws": 181.0,
+          "primitives": 383730.0,
+          "timing_valid": true
+        }
+      },
+      "regional": {
+        "batches": 40,
+        "counts": {
+          "antenna_mid_lights": 4,
+          "antenna_service": 2,
+          "antenna_top_beacons": 2,
+          "antenna_towers": 2,
+          "barn_loading": 2,
+          "church_entrance": 1,
+          "church_windows": 8,
+          "farm_gate_bollards": 4,
+          "farm_upper_windows": 2,
+          "hill_window_optics": 18,
+          "house_porches": 20,
+          "occupied_house_windows": 45,
+          "power_wire_markers": 8,
+          "pylon_top_lights": 9,
+          "rural_junctions": 3,
+          "shed_worklight": 1,
+          "silo_access": 2,
+          "turbine_beacons": 4,
+          "turbine_service": 4,
+          "village_street_ends": 2
+        },
+        "dynamic_lights": 0,
+        "hardware_triangles": 3418,
+        "houses": 12,
+        "visible": true
+      }
+    }
+  }
+}

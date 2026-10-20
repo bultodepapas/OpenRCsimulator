@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "0fe19a6e-7086-49dd-a48c-91f6182301b7",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_scenery_loader.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T16:32:15.689449+00:00",
+  "label": "loader",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\power-lines-r1\\checks\\loader-0rvaq5jk\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\power-lines-r1\\checks\\loader-0rvaq5jk\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 4.766,
+  "log_bytes": 1514,
+  "log_sha256": "9ba432c3affb72a8897913f11ee7706e7eb56ca868b53c3d7ba193f9ce824a64"
+}
