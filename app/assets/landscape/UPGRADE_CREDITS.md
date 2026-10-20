@@ -141,3 +141,11 @@ Roads reuse **Aerial Asphalt 01** by **Rob Tuytel / Poly Haven**, CC0-1.0:
 [asset](https://polyhaven.com/a/aerial_asphalt_01), [license and exact download](countryside/LICENSES.md).
 Fields reuse the retained CC0 grass/dirt photographs. Houses, farms, fences,
 trees and cattle reuse the existing scenery library and its attribution records.
+
+## Regional lighting (LU-29, 2026-10-20)
+
+[Radio tower by Poly by Google](https://poly.pizza/m/d1zYJG7rJGY), via Poly Pizza,
+CC BY 3.0. Unmodified source mesh/texture; runtime scale and separate light
+markers are described in [regional-lighting/LICENSES.md](regional-lighting/LICENSES.md).
+Fixture heads reuse the retained Innerscene CC0 model; hillside houses reuse
+the existing village-house prefab.

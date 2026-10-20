@@ -15,6 +15,11 @@ const ReferenceScenery := preload("res://scenery/scenery_loader.gd")
 const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const ReferenceField := preload("res://render/field.gd")
 const FLEET_VIEWS := {
+	"regional_turbines": {eye = [300.0, 2950.0, -100.0], at = [730.0, 4150.0, -80.0], fov = 50.0},
+	"regional_antenna": {eye = [770.0, -1630.0, -55.0], at = [1000.0, -1400.0, -32.5], fov = 44.0},
+	"regional_hills": {eye = [1850.0, -750.0, -260.0], at = [2350.0, -560.0, -205.0], fov = 50.0},
+	"regional_hill_close": {eye = [2290.0, -600.0, -218.0], at = [2350.0, -560.0, -204.0], fov = 48.0},
+	"regional_church": {eye = [-210.0, -2150.0, -15.0], at = [-165.0, -2093.5, -4.0], fov = 50.0},
 	"plain_village": {eye = [-610.0, -960.0, -45.0], at = [-680.0, -760.0, -3.0], fov = 55.0},
 	"plain_highway": {eye = [-350.0, 880.0, -22.0], at = [50.0, 945.0, -0.2], fov = 50.0},
 	"plain_crop": {eye = [480.0, 400.0, -8.0], at = [520.0, 500.0, -0.2], fov = 55.0},
@@ -96,6 +101,9 @@ func _run() -> void:
 		reference_builder = func() -> void:
 			_build_plain_reference(parent, loaded.field, snapshot, str(args.plain_reference))
 	var built := World.build(parent, loaded.field, reference_builder, {}, snapshot)
+	var regional: Node3D = parent.get_node_or_null("AirfieldLighting/RegionalLighting")
+	if regional != null and str(args.get("regional_lighting", "on")) == "off":
+		regional.visible = false # matched diagnostic: preserve all existing world content
 	if reference_builder.is_valid():
 		built.field = parent.get_node("Field")
 	var lake: Node3D = built.field.get_node_or_null("Lake")
@@ -189,6 +197,10 @@ func _run() -> void:
 		arguments = args, lake = lake_diagnostics, field_build_ms = built.field_build_ms,
 		reflection_slots = ProjectSettings.get_setting("rendering/reflections/reflection_atlas/reflection_count"),
 		botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
+	if regional != null:
+		report["regional"] = {counts = regional.get_meta("counts"), batches = regional.get_meta("batch_count"),
+			houses = regional.get_meta("hill_houses", 0), visible = regional.visible, dynamic_lights = regional.get_meta("dynamic_lights"),
+			hardware_triangles = regional.get_meta("hardware_triangles")}
 	var cases := str(args.get("cases", "pilot_north,postcard_club,glare_clear,glare_off,glare_blocked,glare_aircraft,glare_side,glare_night")).split(",")
 	for case: String in cases:
 		camera.projection = Camera3D.PROJECTION_PERSPECTIVE
@@ -365,6 +377,16 @@ func _run() -> void:
 			glare_solar_uv = flare.get_meta("solar_uv", Vector2(-1.0, -1.0)),
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
 			marker_center_px = camera.unproject_position(Frames.ned_to_render([15.0, 51.0, -0.35]))}
+		if regional != null:
+			case_report["regional_flashes_px"] = []
+			for optical: MultiMeshInstance3D in regional.find_children("beacon_*", "MultiMeshInstance3D", true, false):
+				for i in optical.multimesh.instance_count:
+					if optical.multimesh.get_instance_custom_data(i).r < 0.5:
+						continue
+					var point: Vector3 = optical.global_transform * optical.multimesh.get_instance_transform(i).origin
+					if not camera.is_position_behind(point):
+						var pixel := camera.unproject_position(point)
+						case_report.regional_flashes_px.append([pixel.x, pixel.y])
 		if case == "sun_alignment":
 			var sun_px := camera.unproject_position(camera.global_position + sun * 1000.0)
 			case_report.sun_px = [sun_px.x, sun_px.y]

@@ -325,7 +325,10 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 			var loaded_scenery := SceneryLoader.load_from(str(scenery_options.file), field)
 			if loaded_scenery.ok:
 				scenery = loaded_scenery.scenery
-		airfield_lighting = AirfieldLighting.build(field, lights, scenery)
+		var regional: bool = not scenery.is_empty() and not scenery_options.file_explicit \
+			and str(scenery_options.file) == SceneryLoader.DEFAULT_PATH \
+			and SceneryLayer.layout_file_applies(field, scenery_options)
+		airfield_lighting = AirfieldLighting.build(field, lights, scenery, regional)
 		parent.add_child(airfield_lighting)
 		airfield_lighting.bind_environment(environment, lights_node, SNAPSHOT_LOCAL_LIGHT_GAIN if not lighting.is_empty() else 1.0)
 		airfield_lighting.set_profile(_night_profile)

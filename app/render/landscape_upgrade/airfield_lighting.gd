@@ -7,6 +7,7 @@ extends Node3D
 const Frames := preload("res://render/frames.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
+const RegionalLighting := preload("res://render/landscape_upgrade/regional_lighting.gd")
 const WINDOW_SHADER: Shader = preload("res://render/landscape_upgrade/window_glow.gdshader")
 const HEAD_PATH := "res://assets/landscape/night-lighting/lamp-head.glb"
 const LAMP_SHADER := preload("res://render/landscape_upgrade/field_lamp.gdshader")
@@ -57,11 +58,12 @@ var _window_materials: Array[ShaderMaterial] = []
 var _last_night_factor := -1.0
 var _last_exposure := -1.0
 var _sdr_local_gain := 1.0
+var _regional: Node3D
 
 
 ## field_lights is FieldLights.load_from().lights; validated_scenery is the loader's normalized scenery result.
 ## No light sources are created for runway markers here: their existing MultiMesh sprites remain authoritative.
-static func build(field: Dictionary, field_lights: Dictionary = {}, validated_scenery: Dictionary = {}) -> Node3D:
+static func build(field: Dictionary, field_lights: Dictionary = {}, validated_scenery: Dictionary = {}, regional := false) -> Node3D:
 	Exposure.register() # the warm window shader shares the existing, live display-exposure global.
 	var fixture_data := field_lights
 	if not (fixture_data.get("fixtures", null) is Array):
@@ -73,6 +75,9 @@ static func build(field: Dictionary, field_lights: Dictionary = {}, validated_sc
 	node.name = "AirfieldLighting"
 	node._build_fixture_hardware(fixture_data)
 	node._build_clubhouse(validated_scenery)
+	if regional:
+		node._regional = RegionalLighting.build(validated_scenery)
+		node.add_child(node._regional)
 	node.set_meta("field_id", str(field.get("id", "")))
 	node.set_meta("night_factor", 0.0)
 	# A direct snapshot may be supplied by a caller; a fixture configuration has no sun fields and starts in daylight.
@@ -101,6 +106,9 @@ func bind_environment(environment: Environment, field_lights_node: Node3D = null
 ## Interpolates continuously from 3° sun elevation to −4°; geometry stays visible throughout daylight.
 func apply_lighting(snapshot: Dictionary) -> void:
 	_last_snapshot = snapshot.duplicate()
+	# Regional homes/obstruction lights are independent of the club's light switch.
+	if is_instance_valid(_regional):
+		_regional.apply_night(_night_factor(snapshot))
 	var factor := _night_factor(snapshot) if _profile != "off" else 0.0
 	var exposure := _current_exposure()
 	if is_equal_approx(factor, _last_night_factor) and is_equal_approx(exposure, _last_exposure):

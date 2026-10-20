@@ -1,0 +1,91 @@
+{
+  "asset": "Quaternius TV Tower",
+  "source_page_url": "https://poly.pizza/m/R8DtfW6Nx5",
+  "download_url": "https://static.poly.pizza/fc13f23c-953b-4dc9-bfd1-87b086ce4bf0.glb",
+  "author": "Quaternius",
+  "published_on": "2022-08-28",
+  "license": {
+    "name": "Public Domain (CC0)",
+    "url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "as_shown_on_source_page": true
+  },
+  "retrieved_on": "2026-10-20",
+  "source_filename": "tv_tower.glb",
+  "sha256": "2aad80307562183d7e214c7197e5e9422d57bc38a9ed9a0cf458879e07317f36",
+  "file_bytes": 38088,
+  "format": "glTF Binary (GLB 2.0)",
+  "geometry": {
+    "vertices": 912,
+    "triangles": 554,
+    "scene_bounds_m": {
+      "min": [
+        -0.2530613448470831,
+        -0.003506870631812807,
+        -0.17862445217925818
+      ],
+      "max": [
+        0.4805839154869318,
+        2.374494743553317,
+        0.45282556034810517
+      ]
+    },
+    "dimensions_m": [
+      0.7336452603340149,
+      2.3780016141851297,
+      0.6314500125273633
+    ]
+  },
+  "recommended_65m_instance": {
+    "uniform_scale": 27.33387547437539,
+    "vertical_translation_m": 0.0958563651547154,
+    "floor_min_y_m": 0,
+    "top_y_m": 65,
+    "scaled_bounds_m": {
+      "min": [
+        -6.917147287428137,
+        0,
+        -4.882498532546365
+      ],
+      "max": [
+        13.13622090090754,
+        65.00000000000001,
+        12.377477478169364
+      ]
+    }
+  },
+  "license_text": {
+    "local_file": "CC0-1.0-legalcode.html",
+    "source_url": "https://creativecommons.org/publicdomain/zero/1.0/legalcode.en",
+    "retrieved_on": "2026-10-20",
+    "file_bytes": 32223,
+    "sha256": "b43732f4c1463b087cf10d4daf8d8766514b2bf8f21bc5ef50905f95be227726"
+  },
+  "mounting_references": {
+    "coordinate_basis": "GLB scene coordinates after node transforms; Y up; references are relative to the asset origin.",
+    "mast_tip_center": {
+      "x": 0.0414683385,
+      "y": 2.374494743553317,
+      "z": 0.0229868225
+    },
+    "half_height_shaft_center": {
+      "x": 0.037890727,
+      "y": 1.1854939364607522,
+      "z": -1.6e-7,
+      "method": "center of the 12-vertex mast cross-section at adjacent mesh rings Y=1.23163 m and Y=1.09884 m; centerline interpolated at half-height."
+    },
+    "at_65m_scale": {
+      "uniform_scale": 27.33387547437539,
+      "vertical_translation_m": 0.0958563651547154,
+      "mast_tip_center": {
+        "x": 1.1334904006882467,
+        "y": 65,
+        "z": 0.6283189437665704
+      },
+      "half_height_shaft_center": {
+        "x": 1.0357004134515533,
+        "y": 32.5,
+        "z": -0.0000043734
+      }
+    }
+  }
+}

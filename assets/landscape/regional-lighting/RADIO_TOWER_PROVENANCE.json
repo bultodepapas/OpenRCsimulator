@@ -1,0 +1,112 @@
+{
+  "asset": "Radio tower",
+  "source_page_url": "https://poly.pizza/m/d1zYJG7rJGY",
+  "download_url": "https://static.poly.pizza/1ec028b2-68c4-4b58-b1c1-865679533864.glb",
+  "creator": "Poly by Google",
+  "published_on": "2017-10-22",
+  "license": {
+    "name": "Creative Commons Attribution 3.0 Unported (CC BY 3.0)",
+    "url": "https://creativecommons.org/licenses/by/3.0/",
+    "legalcode_url": "https://creativecommons.org/licenses/by/3.0/legalcode.en",
+    "attribution_required": true,
+    "attribution_text": "Radio tower by Poly by Google, via Poly Pizza, licensed under CC BY 3.0."
+  },
+  "retrieved_on": "2026-10-20",
+  "source_filename": "radio_tower.glb",
+  "sha256": "5dde0011e2545c9ff86b02c0401ea091ac1bd0efea6bac9ac32da68179d5776d",
+  "file_bytes": 933972,
+  "format": "glTF Binary (GLB 2.0)",
+  "geometry": {
+    "vertices": 3388,
+    "indices": 5076,
+    "triangles": 1692,
+    "coordinate_basis": "GLB scene coordinates, Y up; no node transforms.",
+    "bounds_m": {
+      "min": [
+        -4.712896823883057,
+        -0.06132800132036209,
+        -4.680595874786377
+      ],
+      "max": [
+        4.712902069091797,
+        36.71476364135742,
+        4.680595874786377
+      ]
+    },
+    "dimensions_m": [
+      9.425798892974854,
+      36.776091642677784,
+      9.361191749572754
+    ],
+    "top_center": {
+      "x": 0,
+      "y": 36.71476364135742,
+      "z": 0,
+      "method": "center of six unique highest-Y vertices; symmetric top surface extent X ±0.181482 m, Z ±0.176663 m."
+    },
+    "half_height_reference": {
+      "target_y_m": 18.32671782001853,
+      "centerline_geometry": "Open lattice at center; no solid central shaft crosses this height.",
+      "nearest_structural_surface_intersection": {
+        "x": -1.27564724109557,
+        "y": 18.32671782001853,
+        "z": 0.64245663848481
+      },
+      "radial_distance_m": 1.4282949331450914
+    }
+  },
+  "material": {
+    "count": 1,
+    "alpha_mode": "OPAQUE",
+    "base_color_factor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "embedded_texture": {
+      "format": "PNG",
+      "width": 2048,
+      "height": 2048,
+      "bit_depth": 8,
+      "color_type": "RGBA",
+      "bytes": 813295,
+      "texture_alpha_ignored_by_opaque_material": true
+    }
+  },
+  "recommended_65m_instance": {
+    "uniform_scale": 1.7674526328558806,
+    "vertical_translation_m": 0.1083943374014629,
+    "floor_min_y_m": 0,
+    "top_y_m": 65,
+    "scaled_bounds_m": {
+      "min": [
+        -8.329821899750225,
+        0,
+        -8.272731502225556
+      ],
+      "max": [
+        8.329831170408223,
+        65,
+        8.272731502225556
+      ]
+    },
+    "top_center": {
+      "x": 0,
+      "y": 65,
+      "z": 0
+    },
+    "nearest_mid_height_lattice_surface": {
+      "x": -2.2546460748697053,
+      "y": 32.5,
+      "z": 1.135511677185716
+    }
+  },
+  "license_text": {
+    "local_file": "CC-BY-3.0-legalcode.html",
+    "source_url": "https://creativecommons.org/licenses/by/3.0/legalcode.en",
+    "retrieved_on": "2026-10-20",
+    "file_bytes": 51105,
+    "sha256": "967a3670bcbfdc50614e71062b18effed899007a0e364541328ebdb863520132"
+  }
+}
