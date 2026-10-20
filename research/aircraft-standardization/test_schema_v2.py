@@ -203,6 +203,41 @@ def build_cases(app: Path) -> list[Case]:
         item.pop("id")
     idless["propulsion"].pop("id")
     idless["controls"].pop("surface_ids")
+
+    # Pre-identity v2 may still carry inventory IDs required by fuel-system
+    # references. Those IDs remain validated, while unrelated identity fields
+    # continue to require the complete versioned module.
+    referenced = add("identity:legacy-v2-fuel-references", stik, schema_ok=True, loader_ok=True,
+                     classification="identity")
+    referenced.pop("physical_identity_version")
+    referenced.pop("crash_hull_ids")
+    required_inventory_ids = set()
+    for tank in referenced.get("fuel_system", {}).get("tanks", []):
+        for field in ("liquid_inventory_id", "shell_inventory_id"):
+            required_inventory_ids.add(tank[field])
+        feed_line = tank.get("feed_line")
+        if isinstance(feed_line, dict):
+            required_inventory_ids.add(feed_line["liquid_inventory_id"])
+    battery = referenced.get("propulsion", {}).get("battery", {})
+    if isinstance(battery, dict) and battery.get("mount_inventory_id"):
+        required_inventory_ids.add(battery["mount_inventory_id"])
+    for item in referenced["inventory"]:
+        if item.get("id") not in required_inventory_ids:
+            item.pop("id", None)
+    for contact in referenced.get("landing_gear", {}).get("contacts", []):
+        contact.pop("id", None)
+    referenced["propulsion"].pop("id")
+    referenced["controls"].pop("surface_ids")
+    duplicate_reference = deepcopy(referenced)
+    duplicate_target = next(item for item in duplicate_reference["inventory"]
+                            if item.get("id") not in required_inventory_ids)
+    duplicate_target["id"] = next(iter(required_inventory_ids))
+    cases.append(Case("identity:legacy-v2-referenced-id-duplicate", duplicate_reference,
+                      True, False, "coupled-runtime-only"))
+    orphan_without_references = deepcopy(idless)
+    orphan_without_references["inventory"][0]["id"] = "unreferenced_component"
+    cases.append(Case("identity:legacy-v2-orphan-id", orphan_without_references,
+                      False, False, "identity"))
     for name, path in [
         ("version", ("physical_identity_version",)),
         ("inventory", ("inventory", 0, "id")),

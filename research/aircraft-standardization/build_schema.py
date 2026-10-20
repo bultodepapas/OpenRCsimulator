@@ -122,7 +122,6 @@ def add_physical_identity(schema: dict):
         "landing_gear": {"properties": {"contacts": {"items": {"required": ["id"]}}}},
         "propulsion": {"required": ["id"]}, "controls": {"required": ["surface_ids"]}}
     absent = {
-        "inventory": {"items": {"not": {"required": ["id"]}}},
         "landing_gear": {"properties": {"contacts": {"items": {"not": {"required": ["id"]}}}}},
         "propulsion": {"not": {"required": ["id"]}},
         "controls": {"not": {"required": ["surface_ids"]}}}
@@ -130,6 +129,21 @@ def add_physical_identity(schema: dict):
         "if": {"required": ["physical_identity_version"]},
         "then": {"required": ["crash_hull_ids"], "properties": required},
         "else": {"not": {"required": ["crash_hull_ids"]}, "properties": absent}})
+    # Historical v2 files may need inventory IDs for fuel tanks or a battery
+    # mount without carrying the complete physical-identity module. JSON Schema
+    # cannot verify those cross-property references; AircraftData validates the
+    # referenced subset for syntax, uniqueness and resolution.
+    reference_capable = {"anyOf": [
+        {"required": ["physical_identity_version"]},
+        {"required": ["fuel_system"]},
+        {"required": ["propulsion"], "properties": {"propulsion": {
+            "required": ["battery"], "properties": {"battery": {
+                "required": ["mount_inventory_id"]}}}}},
+    ]}
+    schema["allOf"].append({
+        "if": {"not": reference_capable},
+        "then": {"properties": {"inventory": {"items": {"not": {"required": ["id"]}}}}},
+    })
     schema["$comment"] += (
         " PhysicalIdentity additionally enforces hull-point count alignment and global ID uniqueness "
         "across inventory, supports, hull probes, propulsion and surfaces; the offline companion is "

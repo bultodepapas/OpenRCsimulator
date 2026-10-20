@@ -1,5 +1,5 @@
-# D8a: golden flights replay within tolerance (see tests/golden_flights.gd). A physics change that alters any of them
-# fails here; if the change is deliberate, re-record with tests/record_golden.gd and say so in the commit.
+# D8a: golden flights replay within tolerance (see tests/golden_flights.gd). An accepted model/physics change that alters
+# a trajectory fails here; re-record with tests/record_golden.gd only after validating and documenting that change.
 # Run: godot --headless --path . --script res://tests/test_golden.gd
 extends SceneTree
 

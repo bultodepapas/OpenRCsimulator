@@ -82,6 +82,17 @@ for az in 0 90 180 225 270; do shot "-land-az${az}-el0-100m" --t=1.5 --look_az=$
 shot "-land-30m" --t=1.5 --autozoom=0 --shadow=off
 shot "-land-low3m" --t=1.5 --alt=3 --autozoom=0 --shadow=off
 shot "-land-sun" --t=1.5 --look_az=225 --look_el=25
+# The review image above keeps full glare/cloud appearance. L1's alignment gate uses a separate, cloud/aureole/glare-
+# free view of the same solar direction so it can measure the disc itself instead of the clipped light field.
+SUN_ALIGNMENT="$HERE/captures/sun-alignment"
+mkdir -p "$SUN_ALIGNMENT"
+rm -f "$SUN_ALIGNMENT/sun_alignment.png" "$SUN_ALIGNMENT/report.json"
+if ! timeout 120 xvfb-run -a -s "-screen 0 1280x720x24" "$GODOT" --path "$HERE" \
+  --rendering-driver opengl3 --audio-driver Dummy --script res://tests/capture_landscape_upgrade.gd \
+  -- --out="$SUN_ALIGNMENT" --cases=sun_alignment > "$SUN_ALIGNMENT/run.log" 2>&1 \
+  || grep -qE "^[[:space:]]*(SCRIPT |SHADER )?ERROR:" "$SUN_ALIGNMENT/run.log"; then
+  cat "$SUN_ALIGNMENT/run.log"; exit 1
+fi
 # L0c: the airplane-in-view landscape shots again without the airplane: the background for the readability metric.
 shot "-land-30m-noplane" --t=1.5 --autozoom=0 --hide_airplane --shadow=off
 shot "-land-low3m-noplane" --t=1.5 --alt=3 --autozoom=0 --hide_airplane --shadow=off
@@ -214,7 +225,9 @@ manifest = {'format': 'openrc-capture-set v1', 'complete': True, 'captures': ent
             'treeline_readability': 'l6c/l6c-run-manifest.json',
             'treeline_readability_sha256': hashlib.sha256((root / 'l6c/l6c-run-manifest.json').read_bytes()).hexdigest(),
             'visual_quality_manifest': 'vq01b/visual-quality-run-manifest.json',
-            'visual_quality_manifest_sha256': hashlib.sha256((root / 'vq01b/visual-quality-run-manifest.json').read_bytes()).hexdigest()}
+            'visual_quality_manifest_sha256': hashlib.sha256((root / 'vq01b/visual-quality-run-manifest.json').read_bytes()).hexdigest(),
+            'sun_alignment_review': 'sun-alignment/report.json',
+            'sun_alignment_review_sha256': hashlib.sha256((root / 'sun-alignment/report.json').read_bytes()).hexdigest()}
 temp = root / 'run-manifest.tmp'
 temp.write_text(json.dumps(manifest, indent=2, sort_keys=True) + '\n')
 temp.replace(root / 'run-manifest.json')

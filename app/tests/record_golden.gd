@@ -1,5 +1,5 @@
-# Records the golden flights (tests/golden/*.json). NOT a test: run it only after a deliberate physics change, and say
-# why in the commit message (test_golden.gd fails until the goldens match the new physics).
+# Records the golden flights (tests/golden/*.json). NOT a test: run only after a deliberate, evidence-backed model or
+# physics change, and document its effect in the owning research report (test_golden.gd fails until they match).
 # Run: godot --headless --path . --script res://tests/record_golden.gd
 extends SceneTree
 

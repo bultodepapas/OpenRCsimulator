@@ -16,6 +16,7 @@ const PHYSICS_FORMATS: Array[String] = [
 	"openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4",
 	"openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6",
 	"openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9",
+	"openrc-flight-checkpoint v11", # Finite liquid fuel; FlightSession validates law/state on restore.
 ]
 const PAIRED_FIELDS: Array[String] = ["format", "physics", "timeline", "field_identity", "payload_sha256"]
 const PAIRED_MARKERS: Array[String] = ["physics", "timeline", "field_identity", "payload_sha256"]
@@ -54,7 +55,7 @@ static func make(snapshot: Dictionary, timeline: Variant, field_identity: String
 	return {"ok": true, "checkpoint": checkpoint, "errors": errors}
 
 
-## Open a paired checkpoint or a physics-only v1-v7 checkpoint with explicit legacy context.
+## Open a paired checkpoint or supported physics-only checkpoint with explicit legacy context.
 static func read(candidate: Variant, expected_field_identity: String) -> Dictionary:
 	if not _valid_identity(expected_field_identity):
 		return _failure_read(["expected_field_identity must be non-blank and at most 512 characters"])

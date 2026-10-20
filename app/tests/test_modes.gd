@@ -42,10 +42,14 @@ const RB := preload("res://physics/rigid_body.gd")
 ## D10-R5 (2026-10-19): the local law gains the wing-body dihedral couple (wing_body_cl_beta −0.0537). The 10 m/s trim
 ## is partly in the local regime, so only its three lateral centers move: dutch roll 0.447 → 0.515 Hz, ζ 0.366 → 0.302,
 ## spiral 0.423 → 0.244 1/s; 15 and 25 m/s are bit-identical. Report: docs/research/flight-dynamics/stik-roll-sideslip-2026-10-19.
+## Release-baseline refresh (2026-10-19): accepted FUEL-05f empty-tank balance/inventory geometry and the 62190e6ba
+## D11g derivative re-derivation change the Stik's mass properties and mode centers. Current centers were independently
+## checked against a manual Air/Aero/Propulsion/RigidBody Jacobian and SciPy eigenvalues at three central-difference
+## steps; see the D10-R5 report follow-up. The ±3% regression tolerance is unchanged.
 const BANDS := {
-	10.0: [0.90876188, 0.81032621, 0.16589314, 0.06879382, 0.07248863, 0.51484786, 0.30189753, 0.24415263, -11.08888985],
-	15.0: [1.17609159, 1.04149128, 0.09011891, 0.28653927, 0.05132270, 0.53036051, 0.32569783, -0.04975775, -15.42505926],
-	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 0.82247187, 0.32793166, -0.05423003, -25.19697216],
+	10.0: [0.98059613, 0.78050534, 0.16922381, 0.06812455, 0.07259273, 0.53017550, 0.30952332, 0.25744320, -10.97754419],
+	15.0: [1.33173894, 0.94390684, 0.10098099, 0.24573005, 0.05141645, 0.55865673, 0.32391459, -0.03877979, -15.36997587],
+	25.0: [2.13422156, 0.99312549, 0.05936862, 0.76391739, 0.03061378, 0.87203407, 0.32387780, -0.04671448, -25.19923635],
 }
 const TOL := 0.03
 ## Short-period damping floor per speed (default 0.5). D11d had to pin 10 m/s at 0.45 (ζ 0.47 with the tail's Cmq at

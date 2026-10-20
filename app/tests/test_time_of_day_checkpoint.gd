@@ -153,8 +153,14 @@ func _run() -> void:
 	for _tick: int in 12:
 		shaft_flight.session.sim.step()
 	var shaft_saved: Dictionary = shaft_flight.checkpoint()
-	check("real v4 physical checkpoint", shaft_saved.physics.format == "openrc-flight-checkpoint v7"
-		and shaft_saved.physics.physics_format == "openrc-flight-checkpoint v4")
+	check("finite-fuel coupled shaft emits a visual checkpoint", not shaft_saved.is_empty())
+	if shaft_saved.is_empty():
+		shaft_flight.free()
+		quit(1)
+		return
+	check("real finite-fuel v11 physical checkpoint", shaft_saved.physics.format == "openrc-flight-checkpoint v7"
+		and shaft_saved.physics.physics_format == "openrc-flight-checkpoint v11"
+		and shaft_saved.physics.liquid_physics_format == "openrc-flight-checkpoint v4")
 	check("coupled shaft paired restoration exact", shaft_flight.restore_checkpoint(shaft_saved).ok
 		and var_to_bytes(shaft_flight.session.checkpoint()) == var_to_bytes(shaft_saved.physics))
 	check("coupled shaft bare fallback exact", shaft_flight.restore_checkpoint(shaft_saved.physics).get("context_status") == "legacy_missing_visual"

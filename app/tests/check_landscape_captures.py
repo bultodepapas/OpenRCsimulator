@@ -10,6 +10,7 @@ import json
 import math
 import os
 import re
+import statistics
 import sys
 
 from PIL import Image
@@ -204,19 +205,64 @@ if sun is None or sun == "behind":
     problems.append("sun view: no projected sun position recorded")
 else:
     ex, ey = map(float, sun.split(","))
-    im = Image.open(os.path.join(d, "capture-land-sun.png")).convert("RGB")
-    px = im.load()
-    pts = [(x, y) for y in range(max(0, int(ey) - 40), min(im.size[1], int(ey) + 40))
-           for x in range(max(0, int(ex) - 40), min(im.size[0], int(ex) + 40)) if lum(px[x, y]) > 245]
-    if not pts:
-        problems.append("sun view: no sun disc found near its projected position")
+    print(f"full-atmosphere sun review projects to {ex:.1f},{ey:.1f}; disc geometry is checked in the isolated capture")
+
+# The full-atmosphere review image deliberately retains the clouds, solar aureole and glare. Those effects clipped the
+# small disc into a broad 252–255 luma patch on CI, so its centroid could not identify the disc centre. Measure the
+# actual ~8 px disc in the paired view, which keeps the same light direction and removes only those overlaid effects.
+alignment_dir = os.path.join(d, "sun-alignment")
+alignment_png = os.path.join(alignment_dir, "sun_alignment.png")
+alignment_report = os.path.join(alignment_dir, "report.json")
+try:
+    with open(alignment_report) as file:
+        alignment = json.load(file)
+    alignment_case = alignment["cases"]["sun_alignment"]
+    with open(alignment_png, "rb") as file:
+        alignment_digest = hashlib.sha256(file.read()).hexdigest()
+    if alignment_case.get("mode") != "isolated solar-disc alignment" \
+            or alignment_case.get("image_sha256") != alignment_digest:
+        problems.append("sun alignment: missing diagnostic mode or image/report hash mismatch")
+    if (abs(float(alignment_case.get("camera_fov_deg", -1.0)) - 50.0) > 0.01
+            or float(alignment_case.get("sun_disc", 0.0)) < 0.99
+            or float(alignment_case.get("cloud_coverage", 1.0)) > 0.001
+            or any(abs(float(value)) > 1e-9 for value in alignment_case.get("sun_aureole_lin", [1.0]))
+            or bool(alignment_case.get("glare_visible", True))
+            or float(alignment_case.get("glare_strength", 1.0)) > 1e-6):
+        problems.append("sun alignment: capture did not isolate the visible disc from clouds, aureole and glare")
+    ex, ey = map(float, alignment_case["sun_px"])
+    im = Image.open(alignment_png).convert("RGB")
+    if im.size != (1280, 720):
+        problems.append(f"sun alignment: expected a 1280x720 image, got {im.size[0]}x{im.size[1]}")
+    elif not (0.0 <= ex < 1280.0 and 0.0 <= ey < 720.0):
+        problems.append(f"sun alignment: projected disc is outside the image ({ex:.1f},{ey:.1f})")
     else:
-        cx = sum(p[0] for p in pts) / len(pts)
-        cy = sum(p[1] for p in pts) / len(pts)
-        err = ((cx - ex) ** 2 + (cy - ey) ** 2) ** 0.5
-        print(f"sun disc centroid {cx:.1f},{cy:.1f} vs projected {ex:.1f},{ey:.1f}: {err:.2f} px")
-        if err > 2.0:
-            problems.append(f"sun disc {err:.2f} px from the light direction (limit 2)")
+        px = im.load()
+        # The sun diameter is 0.53° (~8 px at this 50° vertical FOV). The 14 px search circle lets the
+        # detector localize a disc displaced by 5 px without using the projected position as its centre.
+        # The 12–22 px annulus estimates local sky radiance outside the disc; a +20 luma floor excludes the
+        # smooth legacy halo and sky gradient, leaving the compact solar photosphere for the centroid.
+        roi_radius = 14.0
+        background_values = [lum(px[x, y])
+                             for y in range(max(0, int(ey - 22)), min(im.size[1], int(ey + 23)))
+                             for x in range(max(0, int(ex - 22)), min(im.size[0], int(ex + 23)))
+                             if 12.0 ** 2 <= (x - ex) ** 2 + (y - ey) ** 2 <= 22.0 ** 2]
+        background = statistics.median(background_values) if background_values else 0.0
+        x0, x1 = max(0, int(ex - roi_radius)), min(im.size[0], int(ex + roi_radius + 1))
+        y0, y1 = max(0, int(ey - roi_radius)), min(im.size[1], int(ey + roi_radius + 1))
+        pts = [(x, y) for y in range(y0, y1) for x in range(x0, x1)
+               if (x - ex) ** 2 + (y - ey) ** 2 <= roi_radius ** 2
+               and lum(px[x, y]) > background + 20.0]
+        if not 20 <= len(pts) <= 160:
+            problems.append(f"sun alignment: isolated disc mask has implausible area ({len(pts)} px)")
+        else:
+            cx = sum(p[0] for p in pts) / len(pts)
+            cy = sum(p[1] for p in pts) / len(pts)
+            err = ((cx - ex) ** 2 + (cy - ey) ** 2) ** 0.5
+            print(f"isolated sun disc centroid {cx:.1f},{cy:.1f} vs projected {ex:.1f},{ey:.1f}: {err:.2f} px ({len(pts)} core px)")
+            if err > 2.0:
+                problems.append(f"sun disc {err:.2f} px from the light direction (limit 2)")
+except (OSError, ValueError, KeyError, TypeError) as error:
+    problems.append(f"sun alignment: missing or invalid isolated-disc evidence: {error}")
 if problems:
     print("FAIL " + "; ".join(problems))
     sys.exit(1)
