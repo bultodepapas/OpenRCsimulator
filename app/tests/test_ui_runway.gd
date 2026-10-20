@@ -329,8 +329,7 @@ func _rejected_launch_and_retry() -> void:
 	home.get("fly_button").grab_focus()
 	await ui.tap(KEY_UP)
 	_check("Spanish Home focuses the start selector", ui.focus_name() == "StartChoice", ui.focus_name())
-	await ui.tap(KEY_ENTER)
-	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_ENTER) # D6e-R4: the airplane cycle is runway ⇄ in the air
 	_check("real Spanish Home event selects runway without saving", home.get("start_choice") == RUNWAY
 		and FileAccess.get_file_as_string(ES_PREFS) == before)
 	app.set("field_path", BAD_FIELD) # Home was built from the valid default field; only this launch is rejected.

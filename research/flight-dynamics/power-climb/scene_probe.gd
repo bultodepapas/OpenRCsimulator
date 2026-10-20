@@ -1,6 +1,7 @@
 # D6e-R3: the owner's procedure in the complete flight scene (main.tscn: keyboard sampling, Home's gentle-breeze
-# weather, real engine callbacks). Airborne start then a throttle setting held hands-off, and a keyboard-style
-# runway takeoff (full throttle, up elevator held until airborne, then sticks centred and the throttle brought back).
+# weather, real engine callbacks). Airborne start then a throttle setting held hands-off, and a runway takeoff flown
+# as a pilot flies it (full throttle with up elevator until airborne, a 12° climb-out held with the elevator, then at
+# 40 m the sticks released and the throttle brought back).
 # Prints height, speed, pitch and path every 2 s. Read-only research probe; nothing is written to the tree.
 # Run: <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-dynamics/power-climb/scene_probe.gd" -- [--aircraft=<id,id>] [--seconds=40] [--trim=reference|cruise]
 # --trim=cruise is Home's launch trim (D6e-R4): every airplane trimmed for level flight at 50 % throttle, in the air
@@ -16,7 +17,10 @@ var seconds := 40.0
 var airborne_start := "airborne" # or airborne_half_power (D6e-R3: the 50 % level trim for every airplane)
 var throttles: PackedFloat64Array = [0.5, 0.3]
 var runway_cases := true
+var airborne_cases := true
 var trim_choice := "reference" # or cruise (D6e-R4)
+const CLIMB_PITCH_RAD := 0.2094 # 12°, a trainer's climb-out attitude
+const LEVEL_OFF_HEIGHT_M := 40.0
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
@@ -32,6 +36,8 @@ func _initialize() -> void:
 				throttles.append(float(item))
 		elif arg == "--no-runway":
 			runway_cases = false
+		elif arg == "--no-airborne":
+			airborne_cases = false
 		elif arg.begins_with("--trim="):
 			trim_choice = arg.substr(7)
 	call_deferred("run")
@@ -55,11 +61,12 @@ func run() -> void:
 	for id in aircraft:
 		var runway := FlightSession.runway_aircraft_supported(id)
 		var cases := []
-		for thr in throttles:
-			cases.append(["%s, throttle to %.0f %% at 1 s" % [airborne_start, thr * 100.0], airborne_start, thr])
+		if airborne_cases:
+			for thr in throttles:
+				cases.append(["%s, throttle to %.0f %% at 1 s" % [airborne_start, thr * 100.0], airborne_start, thr])
 		if runway and runway_cases:
-			cases.append(["runway: full throttle + up elevator until airborne + 3 s, then sticks centred and 50 %", "runway", 0.5])
-			cases.append(["runway: as above, then 35 %", "runway", 0.35])
+			cases.append(["runway: full throttle, 12° climb-out, released at 40 m with 50 %", "runway", 0.5])
+			cases.append(["runway: as above, with 35 %", "runway", 0.35])
 		for c in cases:
 			var main = load("res://main.tscn").instantiate()
 			main.aircraft_id = id
@@ -79,7 +86,13 @@ func run() -> void:
 			var throttle: float = float(c[2])
 			var h0: float = -s.sim.state[RB.POS + 2]
 			var trim_throttle: float = float(s.start.get("throttle", NAN))
-			print("SCENE ", id, " [", c[0], "] start ", c[1], " (launch trim %s) V=%.1f m/s, trim throttle %.3f, elevator trim %.3f, h0 %.1f m" % [str(s.trace_meta().get("launch_trim_throttle", "?")), _speed(s.sim.state), trim_throttle, float(s.trims.pitch), h0])
+			var meta: Dictionary = s.trace_meta()
+			print("SCENE ", id, " [", c[0], "] start ", c[1], " (launched %s, launch trim %s%s) V=%.1f m/s, trim throttle %.3f, elevator trim %.3f, h0 %.1f m" % [str(meta.get("launch_choice", "?")), str(meta.get("launch_trim_throttle", "?")), "" if s.start_error.is_empty() else ", start error: " + s.start_error, _speed(s.sim.state), trim_throttle, float(s.trims.pitch), h0])
+			if c[1] == "runway" and str(meta.get("launch_choice", "")) != "runway":
+				print("SCENE ", id, " [", c[0], "] skipped: the runway launch was not installed")
+				main.free()
+				await process_frame
+				continue
 			var phase := "ground" if c[1] == "runway" else "hold"
 			var airborne_t := -1.0
 			var max_h := h0
@@ -94,11 +107,14 @@ func run() -> void:
 				if c[1] == "runway":
 					if phase == "ground":
 						s.commands.throttle = 1.0
-						s.commands.pitch = 0.35 # up elevator held, as a thumb on the down-arrow key
-						if _airborne(s):
-							if airborne_t < 0.0:
+						if airborne_t < 0.0:
+							s.commands.pitch = 0.35 # up elevator held, as a thumb on the down-arrow key
+							if _airborne(s):
 								airborne_t = t
-							elif t - airborne_t > 3.0:
+						else:
+							# Climb-out: a 12° attitude held with the elevator, then released at 40 m with the throttle brought back.
+							s.commands.pitch = clampf(3.0 * (CLIMB_PITCH_RAD - _euler(s.sim.state)[1]), -0.4, 0.6)
+							if -s.sim.state[RB.POS + 2] - h0 >= LEVEL_OFF_HEIGHT_M:
 								phase = "hold"
 								s.commands.pitch = 0.0
 								s.commands.throttle = throttle

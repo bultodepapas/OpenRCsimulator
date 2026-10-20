@@ -1,7 +1,8 @@
 # D6e-R4: the launch trim throttle. Home and Quick Flight trim every airplane for level flight at 50 % throttle, in
 # the air and as the runway start's flying trim; the reference trim (trim_throttle NAN) stays the fixture of tests,
-# golden flights and the technical route. The owner's procedure is flown twice from the runway: with the cruise trim
-# the Stik holds its height at half throttle, with the reference trim it climbs away.
+# golden flights and the technical route. The owner's procedure is flown twice from the runway (full throttle, a 12°
+# climb-out held with the elevator, then sticks released and half throttle at 40 m): with the cruise trim the Stik
+# holds its height, with the reference trim it climbs away.
 # Run: godot --headless --path app --script res://tests/test_trim_throttle.gd
 extends SceneTree
 const Session = preload("res://sim/flight_session.gd")
@@ -9,9 +10,12 @@ const FieldLoader = preload("res://data/field_loader.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const Weather = preload("res://physics/wind_config.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const M = preload("res://physics/math3d.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 const STIK_ID := "jensen-das-ugly-stik-60"
-const HOLD_SECONDS := 40.0 # after the throttle is brought back: the climb rate is averaged over the second half
+const HOLD_SECONDS := 40.0 # after the release: the climb rate is averaged over the second half
+const CLIMB_PITCH_RAD := 0.2094 # 12°, a trainer's climb-out attitude
+const LEVEL_OFF_HEIGHT_M := 40.0
 var checks := 0
 var failures := 0
 var _pitch_raw := 0.0
@@ -65,36 +69,50 @@ func speed(s: Node) -> float:
 	return sqrt(st[RB.VEL] ** 2 + st[RB.VEL + 1] ** 2 + st[RB.VEL + 2] ** 2)
 
 
-## The owner's procedure: full throttle and up elevator until airborne plus three seconds, then sticks centred and the
-## throttle brought back to `throttle`. Returns the mean climb rate over the second half of the hold and the speeds.
+func pitch_rad(s: Node) -> float:
+	var st: PackedFloat64Array = s.sim.state
+	return M.q_to_euler(M.quat(st[RB.ATT], st[RB.ATT + 1], st[RB.ATT + 2], st[RB.ATT + 3]))[1]
+
+
+## The owner's procedure as a pilot flies it: full throttle with up elevator until airborne, a 12° climb-out held with
+## the elevator (a thumb on the key), then at 40 m the sticks are released and the throttle brought back to
+## `throttle`. Returns the mean climb rate over the second half of the hold, the heights and the speeds.
 func takeoff_and_hold(s: Node, throttle: float) -> Dictionary:
 	var dt: float = s.sim.dt()
+	var h0: float = -s.sim.state[RB.POS + 2]
 	s.commands.throttle = 1.0
 	_pitch_raw = 0.35
 	var airborne_t := -1.0
-	for _tick in roundi(20.0 / dt):
+	for _tick in roundi(40.0 / dt):
 		fly(s, 1)
 		if s.sim.paused or not s.crash.is_empty():
 			break
-		if airborne(s):
-			if airborne_t < 0.0:
-				airborne_t = s.sim.time()
-			elif s.sim.time() - airborne_t > 3.0:
+		if airborne_t < 0.0 and airborne(s):
+			airborne_t = s.sim.time()
+		if airborne_t >= 0.0:
+			_pitch_raw = clampf(3.0 * (CLIMB_PITCH_RAD - pitch_rad(s)), -0.4, 0.6)
+			if -s.sim.state[RB.POS + 2] - h0 >= LEVEL_OFF_HEIGHT_M:
 				break
+	var release_t: float = s.sim.time()
+	var h_release: float = -s.sim.state[RB.POS + 2]
+	var v_release: float = speed(s)
 	_pitch_raw = 0.0
 	s.commands.throttle = throttle
-	var t0: float = s.sim.time()
 	var h_mid := NAN
-	var v_mid := NAN
-	while s.sim.time() - t0 < HOLD_SECONDS and not s.sim.paused and s.crash.is_empty():
+	var min_h := INF
+	var max_h := -INF
+	while s.sim.time() - release_t < HOLD_SECONDS and not s.sim.paused and s.crash.is_empty():
 		fly(s, 1)
-		if is_nan(h_mid) and s.sim.time() - t0 >= 0.5 * HOLD_SECONDS:
-			h_mid = -s.sim.state[RB.POS + 2]
-			v_mid = speed(s)
+		var h: float = -s.sim.state[RB.POS + 2]
+		min_h = minf(min_h, h)
+		max_h = maxf(max_h, h)
+		if is_nan(h_mid) and s.sim.time() - release_t >= 0.5 * HOLD_SECONDS:
+			h_mid = h
 	var h_end: float = -s.sim.state[RB.POS + 2]
-	var span: float = s.sim.time() - t0 - 0.5 * HOLD_SECONDS
-	return {airborne_t = airborne_t, climb_rate = (h_end - h_mid) / span if span > 0.0 else NAN, h_mid = h_mid,
-		h_end = h_end, v_mid = v_mid, v_end = speed(s), crashed = not s.crash.is_empty() or s.sim.paused}
+	var span: float = s.sim.time() - release_t - 0.5 * HOLD_SECONDS
+	return {airborne_t = airborne_t, release_t = release_t, h_release = snappedf(h_release - h0, 0.01), v_release = snappedf(v_release, 0.01),
+		climb_rate = (h_end - h_mid) / span if span > 0.0 else NAN, h_mid = h_mid, h_end = h_end, min_h = min_h, max_h = max_h,
+		v_end = speed(s), pitch_end_deg = rad_to_deg(pitch_rad(s)), crashed = not s.crash.is_empty() or s.sim.paused}
 
 
 func run() -> void:
@@ -195,10 +213,11 @@ func run() -> void:
 	if results.has("reference") and results.has("cruise"):
 		var r: Dictionary = results.reference
 		var c: Dictionary = results.cruise
-		check("both takeoffs lift off and fly the hold without a crash", r.airborne_t > 0.0 and c.airborne_t > 0.0 and not r.crashed and not c.crashed)
+		check("both takeoffs lift off, climb out and fly the hold without a crash", r.airborne_t > 0.0 and c.airborne_t > 0.0
+			and r.h_release >= LEVEL_OFF_HEIGHT_M and c.h_release >= LEVEL_OFF_HEIGHT_M and not r.crashed and not c.crashed)
 		check("the reference-trimmed Stik climbs away at half throttle (%.2f m/s)" % r.climb_rate, r.climb_rate > 0.5)
-		check("the cruise-trimmed Stik holds its height at half throttle (%.2f m/s)" % c.climb_rate,
-			absf(c.climb_rate) < 0.3 and absf(c.climb_rate) < 0.25 * absf(r.climb_rate))
+		check("the cruise-trimmed Stik holds its height at half throttle (%.2f m/s, %.0f..%.0f m)" % [c.climb_rate, c.min_h, c.max_h],
+			absf(c.climb_rate) < 0.3 and absf(c.climb_rate) < 0.25 * absf(r.climb_rate) and c.min_h > 10.0)
 		check("the cruise-trimmed Stik settles near its trimmed speed (%.1f m/s)" % c.v_end, absf(c.v_end - cruise_speed(fleet)) < 0.15 * cruise_speed(fleet))
 	print("TRIM_THROTTLE_CHECKS ", checks, " failures=", failures)
 	quit(1 if failures else 0)
