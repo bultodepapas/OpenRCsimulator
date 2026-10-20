@@ -23,4 +23,10 @@ These dimensions, intensity and optical sizes are art estimates. No runway surve
 
 ## Verification
 
-The focused Godot 4.7.2 Compatibility checks cover data placement, height, day/off gating, dusk and night, binding identity and light counts. Native rendered captures and the marker pixel result are retained beside this record after review. The capture host uses Mesa llvmpipe; frame times are diagnostic only.
+Godot `4.7.2.stable.official.ed1daf0bf` passed `test_landscape_marker_optics.gd` (**34/0**), `test_landscape_lighting.gd` (**54/0**) and `test_world_field_lights.gd` (**86/0**) on the shared working tree. These cover placement and height, day/off gating, dusk/night transitions, binding identity, fixture counts and unchanged flood coverage. The pre-existing maple-tree wind-material warning appeared in the world check; none of these checks failed.
+
+Native Compatibility captures at 1280 × 720 show the [day approach](day/runway_threshold.png), [day runway interior](day/runway_inside.png), [night approach](night/runway_threshold.png) and [night runway interior](night/runway_inside.png). The low housings are visible in grass by day without glowing; the night edge points remain legible from both views. The [day](day/report.json) and [night](night/report.json) reports retain engine, adapter and capture arguments. Each case used 60 warmup frames and four measured frames, enough for visual review but not timing qualification.
+
+The controlled [marker capture](markers/report.json) holds the night sky/exposure fixed and varies only the lamp factor or an opaque blocker. [Pixel results](markers/marker-checks.json) pass **5/5** checks: clear core 18,371 encoded RGB sum, half 12,166, off 0, and blocker 1,156 with peak channel 4 versus clear peak 194. The blocker retains dark background pixels, so the guard checks that its peak stays ≤5 and its sum below 10% of the clear case. [Clear](markers/marker_clear.png), [half](markers/marker_half.png), [off](markers/marker_off.png), [blocker](markers/marker_occluded.png). This is encoded-image evidence, not measured radiance or physical night-flying validation.
+
+[Source hashes](source-sha256.json) bind the data, renderer, shader and verification tools used. The capture host uses Mesa llvmpipe; frame times are diagnostic only. Independent pilot readability and target-GPU review remain open.

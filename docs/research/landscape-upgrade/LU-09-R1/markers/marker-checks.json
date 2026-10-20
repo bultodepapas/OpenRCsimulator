@@ -1,0 +1,53 @@
+{
+  "checks": {
+    "visible_core": true,
+    "intermediate_fade": true,
+    "daylight_off": true,
+    "opaque_occlusion": true,
+    "fixed_exposure": true
+  },
+  "samples": {
+    "marker_clear": {
+      "sum_rgb": 18371,
+      "peak_rgb": [
+        149,
+        194,
+        160
+      ],
+      "lamp_factor": 1.0,
+      "exposure": 6827.11572265625
+    },
+    "marker_half": {
+      "sum_rgb": 12166,
+      "peak_rgb": [
+        99,
+        157,
+        120
+      ],
+      "lamp_factor": 0.5,
+      "exposure": 6827.11572265625
+    },
+    "marker_occluded": {
+      "sum_rgb": 1156,
+      "peak_rgb": [
+        0,
+        0,
+        4
+      ],
+      "lamp_factor": 1.0,
+      "exposure": 6827.11572265625
+    },
+    "marker_off": {
+      "sum_rgb": 0,
+      "peak_rgb": [
+        0,
+        0,
+        0
+      ],
+      "lamp_factor": 0.0,
+      "exposure": 6827.11572265625
+    }
+  },
+  "passed": true,
+  "note": "Encoded RGB comparison, not linear radiance or photometric calibration; the opaque blocker may retain a few background pixels. Raw engine PNGs."
+}
