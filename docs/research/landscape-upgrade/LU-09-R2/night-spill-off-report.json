@@ -5,7 +5,7 @@
     "frames": "4",
     "ground_spill": "off",
     "height": "720",
-    "out": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/night-switch-close-off",
+    "out": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/night-switch-close-off-final",
     "time_of_day": "night",
     "width": "1280"
   },
@@ -13,7 +13,7 @@
     "botanical_batches": 14,
     "botanical_plants": 285,
     "botanical_triangles": 85636,
-    "build_ms": 3374.159,
+    "build_ms": 3721.32,
     "cells": 60,
     "fleet": 4,
     "flowers": 0,
@@ -27,17 +27,17 @@
     "skipped": 0,
     "theme": "temperate",
     "timing_ms": {
-      "botanicals": 625.369,
-      "fence": 24.999,
-      "fleet": 52.632,
-      "hedge": 51.102,
-      "instances": 166.357,
-      "meshes": 26.764,
-      "patch": 42.779,
-      "population": 812.698,
-      "track": 0.614,
-      "vegetation": 1287.626,
-      "woodland_edges": 281.076
+      "botanicals": 636.444,
+      "fence": 28.309,
+      "fleet": 61.783,
+      "hedge": 64.008,
+      "instances": 233.265,
+      "meshes": 34.532,
+      "patch": 51.308,
+      "population": 922.309,
+      "track": 0.718,
+      "vegetation": 1405.411,
+      "woodland_edges": 280.4
     },
     "vegetation_instances": 42,
     "vegetation_triangles": 92776,
@@ -47,13 +47,13 @@
   },
   "cases": {
     "runway_marker_close": {
-      "draws": 165.0,
+      "draws": 166.0,
       "exposure": 5208.4267578125,
       "frame_ms_raw": [
-        158.732,
-        158.711,
-        162.456,
-        161.597
+        205.712,
+        201.334,
+        186.213,
+        179.427
       ],
       "glare_afterimage": 0.0,
       "glare_aureole_coeff": 0.000000217186184487483,
@@ -64,16 +64,16 @@
       "glare_visible": true,
       "lamp_factor": 1.0,
       "marker_center_px": "(1077.474, 96.38692)",
-      "median_ms": 161.597,
+      "median_ms": 201.334,
       "motion": [],
       "night_options": {
         "campfire": false,
         "field_activation": "auto",
         "field_lighting": "club"
       },
-      "p95_ms": 162.456,
-      "p99_ms": 162.456,
-      "primitives": 280824.0,
+      "p95_ms": 205.712,
+      "p99_ms": 205.712,
+      "primitives": 325488.0,
       "regional_flashes_px": [
         [
           862.332153320312,
@@ -98,8 +98,8 @@
       ],
       "shadow_draws": 0,
       "timing_valid": true,
-      "video_memory": 458352080.0,
-      "visible_draws": 165
+      "video_memory": 461566160.0,
+      "visible_draws": 166
     }
   },
   "driver": "4.5 (Core Profile) Mesa 25.2.8-0ubuntu0.24.04.4",
@@ -114,7 +114,7 @@
     "string": "4.7.2-stable (official)",
     "timestamp": 0
   },
-  "field_build_ms": 4357.715,
+  "field_build_ms": 4840.98,
   "height": 720,
   "lake": {
     "bank_shader": "res://render/lake/bank.gdshader",

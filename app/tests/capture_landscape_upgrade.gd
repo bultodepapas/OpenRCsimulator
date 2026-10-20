@@ -210,8 +210,6 @@ func _run() -> void:
 	var sky: ShaderMaterial = built.environment.sky.sky_material
 	var lighting_helper := parent.get_node_or_null("AirfieldLighting")
 	var ground_spill := parent.get_node_or_null("AirfieldLighting/RunwayEdgeGroundSpill") as MultiMeshInstance3D
-	if ground_spill != null and str(args.get("ground_spill", "on")) == "off":
-		ground_spill.visible = false
 	var sun: Vector3 = sky.get_shader_parameter("disc_dir")
 	var original_disc: float = sky.get_shader_parameter("sun_disc")
 	var original_cloud: float = sky.get_shader_parameter("cloud_coverage")
@@ -235,7 +233,9 @@ func _run() -> void:
 			World.set_night_options(str(built.night_options.field_lighting), bool(built.night_options.campfire),
 				str(built.night_options.field_activation))
 		if lighting_helper != null:
-			lighting_helper.set_process(not case.begins_with("marker_"))
+			lighting_helper.set_process(not case.begins_with("marker_") and str(args.get("ground_spill", "on")) != "off")
+		if ground_spill != null and str(args.get("ground_spill", "on")) == "off":
+			ground_spill.visible = false
 		aircraft.root.visible = false
 		blocker.visible = false
 		flare.intensity = 1.0

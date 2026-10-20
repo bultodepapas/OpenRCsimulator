@@ -4,7 +4,7 @@
     "cases": "runway_marker_close",
     "frames": "4",
     "height": "720",
-    "out": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/night-switch-close-on",
+    "out": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/night-switch-close-on-final",
     "time_of_day": "night",
     "width": "1280"
   },
@@ -12,7 +12,7 @@
     "botanical_batches": 14,
     "botanical_plants": 285,
     "botanical_triangles": 85636,
-    "build_ms": 3644.5,
+    "build_ms": 3867.949,
     "cells": 60,
     "fleet": 4,
     "flowers": 0,
@@ -26,17 +26,17 @@
     "skipped": 0,
     "theme": "temperate",
     "timing_ms": {
-      "botanicals": 631.34,
-      "fence": 26.626,
-      "fleet": 52.394,
-      "hedge": 53.964,
-      "instances": 171.985,
-      "meshes": 27.841,
-      "patch": 44.596,
-      "population": 938.839,
-      "track": 0.679,
-      "vegetation": 1398.377,
-      "woodland_edges": 295.496
+      "botanicals": 759.542,
+      "fence": 25.592,
+      "fleet": 62.942,
+      "hedge": 62.6,
+      "instances": 199.908,
+      "meshes": 44.213,
+      "patch": 53.607,
+      "population": 881.297,
+      "track": 1.987,
+      "vegetation": 1424.523,
+      "woodland_edges": 349.302
     },
     "vegetation_instances": 42,
     "vegetation_triangles": 92776,
@@ -49,10 +49,10 @@
       "draws": 166.0,
       "exposure": 5208.4267578125,
       "frame_ms_raw": [
-        175.691,
-        173.113,
-        169.682,
-        220.347
+        188.163,
+        179.669,
+        166.82,
+        171.562
       ],
       "glare_afterimage": 0.0,
       "glare_aureole_coeff": 0.000000217186184487483,
@@ -63,16 +63,16 @@
       "glare_visible": true,
       "lamp_factor": 1.0,
       "marker_center_px": "(1077.474, 96.38692)",
-      "median_ms": 175.691,
+      "median_ms": 179.669,
       "motion": [],
       "night_options": {
         "campfire": false,
         "field_activation": "auto",
         "field_lighting": "club"
       },
-      "p95_ms": 220.347,
-      "p99_ms": 220.347,
-      "primitives": 280848.0,
+      "p95_ms": 188.163,
+      "p99_ms": 188.163,
+      "primitives": 325488.0,
       "regional_flashes_px": [
         [
           862.332153320312,
@@ -97,7 +97,7 @@
       ],
       "shadow_draws": 0,
       "timing_valid": true,
-      "video_memory": 458352080.0,
+      "video_memory": 461566160.0,
       "visible_draws": 166
     }
   },
@@ -113,7 +113,7 @@
     "string": "4.7.2-stable (official)",
     "timestamp": 0
   },
-  "field_build_ms": 4678.843,
+  "field_build_ms": 5062.919,
   "height": 720,
   "lake": {
     "bank_shader": "res://render/lake/bank.gdshader",
