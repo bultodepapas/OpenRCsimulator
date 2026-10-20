@@ -91,8 +91,10 @@ class TraceAcceptance(unittest.TestCase):
     def test_active_aircraft_metadata(self):
         cases = [
             ('jensen-das-ugly-stik-60', 'propeller-rpm-lag-v1', 'none', False),
-            ('gp-extra-300s-60', 'propeller-rpm-lag-v1', 'none', False),
-            ('p51d-mustang-120', 'propeller-shaft-balance-v1', 'tail-slipstream-increment-v1', True),
+            # The Extra source installs a dedicated glow carburettor model; the P-51
+            # source supplies the shaft power curve used by the coupled RPM balance.
+            ('gp-extra-300s-60', 'glow-mean-cycle-carburettor-v4', 'none', False),
+            ('p51d-mustang-120', 'propeller-shaft-coupled-rk4-v1', 'tail-slipstream-increment-v1', True),
             ('sebart-avanti-s-a200-p100rx', 'turbine-rpm-governor-rk4-v1', 'none', False),
             # BAT-13: the Timber flies its finite pack by default; --battery=ideal keeps the fixed bus.
             ('turbo-lumber-evolution', 'electric-pack-ecm-coupled-events-v1', 'none', False),
@@ -110,7 +112,10 @@ class TraceAcceptance(unittest.TestCase):
                 self.assertEqual(metadata['propwash_model'], propwash)
                 source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
                 has_flaps = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
-                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9' if has_flaps else 'openrc-flight-meta v6')
+                expected_metadata_schema = ('openrc-flight-meta v10' if aircraft == 'gp-extra-300s-60'
+                                             else 'openrc-flight-meta v9' if has_flaps
+                                             else 'openrc-flight-meta v6')
+                self.assertEqual(metadata['metadata_schema'], expected_metadata_schema)
                 finite_liquid = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
                 self.assertEqual(metadata['format'], 'openrc-trace v15' if finite_liquid else 'openrc-trace v14')
                 self.assertEqual(metadata['mass_trace_schema'], 'openrc-mass-sample v1')
@@ -118,6 +123,7 @@ class TraceAcceptance(unittest.TestCase):
                                  'accepted mass_properties sample for this row tick/time')
                 expected_mass_base = ('openrc-trace v13' if propulsion == 'electric-pack-ecm-coupled-events-v1'
                                       else 'openrc-trace v12' if has_flaps
+                                      else 'openrc-trace v9' if aircraft == 'gp-extra-300s-60'
                                       else 'openrc-trace v7' if aircraft == 'turbo-lumber-evolution' and extra
                                       else 'openrc-trace v3')
                 self.assertEqual(metadata['mass_base_trace_format'], expected_mass_base)
@@ -160,6 +166,57 @@ class TraceAcceptance(unittest.TestCase):
                                           '--aircraft-input', str(source)],
                                          capture_output=True, text=True, timeout=10)
                 self.assertEqual(checked.returncode, 0, checked.stderr)
+
+    def test_glow_v4_layout_and_claim_mutations_fail(self):
+        from check_atmosphere_trace import GLOW_LAYOUT_V3, GLOW_LAYOUT_V4, WHEEL_LAYOUT_SUFFIX
+
+        path = self.directory / 'extra-glow-v4.csv'
+        result = self.run_app('--aircraft=gp-extra-300s-60', '--trace=' + str(path), '--t=.05')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('ERROR:', result.stdout)
+        lines = path.read_text().splitlines()
+        metadata = dict(line[2:].split(': ', 1) for line in lines if line.startswith('# '))
+        self.assertEqual(metadata['propulsion_model'], 'glow-mean-cycle-carburettor-v4')
+        self.assertEqual(metadata['glow_trace_schema'], 'openrc-glow-trace v2')
+        self.assertEqual(metadata['continuous_layout'], GLOW_LAYOUT_V4 + '; ' + WHEEL_LAYOUT_SUFFIX)
+        from check_trimmed_flight import check
+        self.assertIn('12 ticks', check(path, .05, 240))
+
+        mutations = (
+            ('v4 law with old admission layout',
+             {'continuous_layout': GLOW_LAYOUT_V3 + '; ' + WHEEL_LAYOUT_SUFFIX}),
+            ('glow law without trace schema', {'glow_trace_schema': None}),
+            ('glow law with split shaft integrator', {'shaft_integrator': 'split'}),
+            ('glow law with wrong rotor coupling', {'rotor_coupling': 'independent-spin-v1'}),
+        )
+        for index, (label, changes) in enumerate(mutations):
+            with self.subTest(mutation=label):
+                changed_lines = []
+                seen = set()
+                for line in lines:
+                    if not line.startswith('# ') or ': ' not in line:
+                        changed_lines.append(line)
+                        continue
+                    key, value = line[2:].split(': ', 1)
+                    if key not in changes:
+                        changed_lines.append(line)
+                    elif changes[key] is not None:
+                        changed_lines.append(f'# {key}: {changes[key]}')
+                        seen.add(key)
+                    else:
+                        seen.add(key)
+                self.assertEqual(seen, set(changes))
+                candidate = self.directory / f'bad-glow-v4-{index}.csv'
+                candidate.write_text('\n'.join(changed_lines) + '\n', encoding='utf-8')
+                with self.assertRaises(ValueError):
+                    check(candidate, .05, 240)
+
+        stray_claim = self.directory / 'stik-stray-glow-claim.csv'
+        ordinary_lines = self.source.read_text().splitlines()
+        ordinary_lines.insert(0, '# glow_trace_schema: openrc-glow-trace v2')
+        stray_claim.write_text('\n'.join(ordinary_lines) + '\n', encoding='utf-8')
+        with self.assertRaisesRegex(ValueError, 'trace format disagrees with the Glow trace contract'):
+            check(stray_claim, 3.0, 240)
 
     def test_active_avanti_gear_contract_rejects_incomplete_metadata_and_rows(self):
         path = self.directory / 'avanti-gear.csv'

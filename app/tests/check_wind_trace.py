@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify weather traces v4/v5/v10 using independent scalar wind, OU, and quaternion equations."""
+"""Verify weather traces v4/v5/v10 and Glow v9 using independent scalar equations."""
 from flap_trace_contract import project as project_flaps
 from mass_trace_contract import project as project_mass_trace
 import argparse
@@ -11,7 +11,7 @@ import re
 
 from check_trimmed_flight import (
     COLUMNS, GEAR_COLUMNS, check_coupled_metadata, check_gear_metadata,
-    check_gear_sample, _has_gear_metadata,
+    check_gear_sample, _has_gear_metadata, _has_glow_trace_claim, _glow_trace_validator,
 )
 
 WEATHER_COLUMNS = ['wind_north_mps', 'wind_east_mps', 'wind_down_mps', 'tas_mps',
@@ -261,6 +261,11 @@ def check(path, duration=None):
     check_coupled_metadata(metadata)
     trace_format = metadata.get('format')
     gear = trace_format == 'openrc-trace v10'
+    glow = trace_format == 'openrc-trace v9'
+    claims_glow = _has_glow_trace_claim(metadata)
+    if glow != claims_glow:
+        raise ValueError('trace format disagrees with the Glow trace contract')
+    glow_validator, glow_contract = _glow_trace_validator(metadata) if glow else (None, None)
     if trace_format == 'openrc-trace v4':
         trace_version = 4
         expected_schema = 'openrc-flight-meta v3'
@@ -279,8 +284,21 @@ def check(path, duration=None):
         else:
             raise ValueError('gear weather trace has an unsupported weather model')
         expected_schema = 'openrc-flight-meta v8'
+    elif glow:
+        if (metadata.get('metadata_schema') != 'openrc-flight-meta v10'
+                or metadata.get('glow_trace_schema') != 'openrc-glow-trace v2'):
+            raise ValueError('Glow weather trace requires its v2 trace and metadata schemas')
+        if metadata.get('weather_model') == TURBULENCE_MODEL:
+            trace_version = 5
+            expected_model = TURBULENCE_MODEL
+        elif metadata.get('weather_model') == 'uniform-ned-repeating-cosine-v1':
+            trace_version = 4
+            expected_model = 'uniform-ned-repeating-cosine-v1'
+        else:
+            raise ValueError('Glow weather trace has an unsupported weather model')
+        expected_schema = 'openrc-flight-meta v10'
     else:
-        raise ValueError('expected weather trace v4/v5 or retractable-gear trace v10')
+        raise ValueError('expected weather trace v4/v5, Glow v9 or retractable-gear trace v10')
     if gear != _has_gear_metadata(metadata):
         raise ValueError('trace format disagrees with retractable gear metadata')
     if gear:
@@ -288,7 +306,7 @@ def check(path, duration=None):
     # Flight metadata v6 is emitted only when validated wheel-state metadata is
     # present. check_coupled_metadata above rejects v6 without that payload and
     # rejects wheel metadata attached to a legacy schema.
-    if ((metadata.get('metadata_schema') != expected_schema if gear else
+    if ((metadata.get('metadata_schema') != expected_schema if gear or glow else
             metadata.get('metadata_schema') not in (expected_schema, 'openrc-flight-meta v6'))
             or metadata.get('weather_model') != expected_model):
         raise ValueError('weather trace metadata schema/model mismatch')
@@ -312,7 +330,7 @@ def check(path, duration=None):
     if metadata.get('weather_evidence') != 'user-selected/authored practice conditions; not measured meteorology':
         raise ValueError('unsupported weather evidence contract')
 
-    expected_columns = (COLUMNS + WEATHER_COLUMNS
+    expected_columns = (COLUMNS + (glow_contract['columns'] if glow else []) + WEATHER_COLUMNS
                         + (TURBULENCE_COLUMNS if trace_version == 5 else [])
                         + (GEAR_COLUMNS if gear else []))
     reader = csv.DictReader(line for line in lines if line and not line.startswith('#'))
@@ -340,6 +358,7 @@ def check(path, duration=None):
     maximum_wind_error = maximum_speed_error = maximum_turbulence_error = 0.0
     turbulence_end = turbulence_window[3:6] if turbulence_window is not None else None
     sigma = config['turbulence_rms_mps']
+    parsed_rows = []
     for raw in raw_rows:
         if set(raw) != set(reader.fieldnames) or any(value is None for value in raw.values()):
             raise ValueError('malformed row width')
@@ -423,6 +442,9 @@ def check(path, duration=None):
                 raise ValueError('velocity definition mismatch: '+key)
         previous = [row[key] for key in ('north_m', 'east_m', 'down_m', 'u_mps', 'v_mps', 'w_mps', 'qw', 'qx', 'qy', 'qz', 'p_radps', 'q_radps', 'r_radps')]
         previous_tick = int(tick)
+        parsed_rows.append(row)
+    if glow:
+        glow_validator(metadata, parsed_rows, glow_contract)
     if gear:
         check_gear_metadata(metadata, {key: float(value) for key, value in raw_rows[0].items()})
     if duration is not None:

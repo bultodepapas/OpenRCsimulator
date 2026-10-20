@@ -54,6 +54,9 @@ LIQUID_MODEL = 'single-store-finite-liquid-fixed-datum-v1'
 LIQUID_SCHEMA = 'openrc-liquid-fuel v1'
 LIQUID_LAYOUT = 'base propulsion/wheels; usable fuel kg; source latch 0/1'
 LIQUID_LAWS = {'gasoline_bsfc_v1', 'turbine_map_v1'}
+GLOW_LAWS = ('glow-mean-cycle-finite-tank-hub-inflow-v2',
+             'glow-mean-cycle-finite-tank-line-pickup-v3',
+             'glow-mean-cycle-carburettor-v4')
 GEAR_LAW = 'retractable-point-gear-v1'
 GEAR_TRACE_SCHEMA = 'openrc-gear-trace v1'
 GEAR_INPUT_LAYOUT = ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake']
@@ -149,7 +152,7 @@ def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Pat
             raise ValueError('legacy metadata cannot verify --aircraft-input')
         digest_key, convention_key = 'aircraft_data_sha256', 'aircraft_data_hash_convention'
         identity = 'legacy semantic-only metadata; exact input identity unavailable'
-    elif schema in {f'openrc-flight-meta v{version}' for version in range(2, 10)}:
+    elif schema in {f'openrc-flight-meta v{version}' for version in range(2, 11)}:
         if any(key in metadata for key in ('aircraft_data_sha256', 'aircraft_data_hash_convention')):
             raise ValueError('metadata v2 must use explicit input/semantic hash names')
         if metadata.get('aircraft_input_format') not in ('openrc-aircraft v1', 'openrc-aircraft v2'):
@@ -186,7 +189,7 @@ def check_metadata(metadata: dict, first: dict) -> None:
         'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1',
                              'turbine-rpm-governor-rk4-v1',
                              'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',
-                             'electric-ocv-resistance-coupled-events-v1', PACK_LAW),
+                             'electric-ocv-resistance-coupled-events-v1', PACK_LAW) + GLOW_LAWS,
         'propwash_model': ('none', 'tail-slipstream-increment-v1', 'tail-slipstream-axial-transport-v1'),
     }.items():
         if metadata.get(key) not in allowed:
@@ -223,6 +226,21 @@ def check_metadata(metadata: dict, first: dict) -> None:
     if not turbine and (features['turbine_ram_flow'] or features['turbine_ram_jet']):
         raise ValueError('propeller metadata declares turbine features')
     check_coupled_metadata(metadata)
+
+
+def _has_glow_trace_claim(metadata: dict) -> bool:
+    return (metadata.get('propulsion_model') in GLOW_LAWS
+            or any(key.startswith('glow_') for key in metadata))
+
+
+def _glow_trace_validator(metadata: dict):
+    # Reuse the atmosphere checker's versioned Glow state and row contracts so
+    # the ordinary flight checker validates the same suffix.
+    from check_atmosphere_trace import _check_glow_rows, _glow_start_contract
+    wheel_claim = any(key in metadata for key in (
+        'wheel_state_model', 'wheel_state_layout', 'wheel_profile_status', 'wheel_profile_sha256',
+        'wheel_profile_input_sha256', 'wheel_brakes', 'launch_continuous'))
+    return _check_glow_rows, _glow_start_contract(metadata, wheel_claim)
 
 
 def _has_gear_metadata(metadata: dict) -> bool:
@@ -386,6 +404,20 @@ def check_coupled_metadata(metadata: dict) -> None:
         wheel = None
 
     propulsion_model = metadata.get('propulsion_model')
+    glow_claim = _has_glow_trace_claim(metadata)
+    if glow_claim:
+        if (metadata.get('metadata_schema') == 'openrc-flight-meta v10'
+                and (metadata.get('shaft_integrator') != 'coupled-rk4'
+                     or metadata.get('rotor_coupling') != 'relative-spin-locked-inertia-reaction-v1')):
+            raise ValueError('Glow propulsion requires the coupled shaft contract')
+        if any(key in metadata for key in ('turbine_integrator', 'electric_configuration')):
+            raise ValueError('Glow propulsion cannot claim turbine or electric semantics')
+        _, glow_contract = _glow_trace_validator(metadata)
+        if wheel is not None:
+            _check_wheel_continuous(metadata, wheel, shaft=False,
+                                    glow_state_size=glow_contract['state_size'])
+        return
+
     shaft_models = {
         'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',
         'electric-ocv-resistance-coupled-events-v1', PACK_LAW,
@@ -449,8 +481,12 @@ def _check_wheel_metadata(metadata: dict, *, gear: bool = False, liquid: dict | 
         'wheel_profile_input_sha256', 'wheel_profile_hash_convention', 'wheel_brakes',
         'recording_start_continuous', 'launch_continuous',
     }
-    supported_schema = metadata.get('metadata_schema') == 'openrc-flight-meta v6' or (
-        gear and metadata.get('metadata_schema') in ('openrc-flight-meta v8', 'openrc-flight-meta v9'))
+    glow_line_schema = (not gear and metadata.get('metadata_schema') == 'openrc-flight-meta v10'
+                        and metadata.get('glow_trace_schema') == 'openrc-glow-trace v2'
+                        and metadata.get('propulsion_model') in GLOW_LAWS[1:])
+    supported_schema = (metadata.get('metadata_schema') == 'openrc-flight-meta v6' or
+                        (gear and metadata.get('metadata_schema') in (
+                            'openrc-flight-meta v8', 'openrc-flight-meta v9')) or glow_line_schema)
     if not supported_schema or not required.issubset(metadata):
         raise ValueError('incomplete or unsupported wheel-state metadata')
     if metadata.get('wheel_state_model') != WHEEL_STATE_MODEL:
@@ -501,6 +537,7 @@ def _check_wheel_metadata(metadata: dict, *, gear: bool = False, liquid: dict | 
 def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
                             battery: bool = False, wash_count: int | None = None,
                             turbine: bool = False, pack_slots: int = 0,
+                            glow_state_size: int | None = None,
                             liquid: dict | None = None) -> None:
     """Check wheel state arrays and ensure all declared wheel slots are the final slots."""
     try:
@@ -540,6 +577,9 @@ def _check_wheel_continuous(metadata: dict, wheel: dict, *, shaft: bool,
             raise ValueError('unsupported wheel continuous-state prefix')
         if wash_count is None or first_index != wash_count + 1 + (pack_slots or (3 if battery else 0)):
             raise ValueError('wheel state tail disagrees with shaft prefix')
+    elif glow_state_size is not None:
+        if first_index != glow_state_size:
+            raise ValueError('Glow wheel state tail disagrees with its continuous-state prefix')
     else:
         layout = metadata.get('continuous_layout')
         base_layout = ('none' if layout == WHEEL_LAYOUT_SUFFIX
@@ -585,8 +625,13 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
     gear = trace_format == 'openrc-trace v10'
     claims_gear = _has_gear_metadata(metadata)
     pack = trace_format == 'openrc-trace v13'
-    if trace_format not in ('openrc-trace v3', 'openrc-trace v7', 'openrc-trace v10', 'openrc-trace v13'):
-        raise ValueError("expected openrc-trace v3, calm fixed-bus v7, retractable-gear v10 or pack v13")
+    glow = trace_format == 'openrc-trace v9'
+    claims_glow = _has_glow_trace_claim(metadata)
+    if trace_format not in ('openrc-trace v3', 'openrc-trace v7', 'openrc-trace v9', 'openrc-trace v10', 'openrc-trace v13'):
+        raise ValueError("expected openrc-trace v3, calm fixed-bus v7, Glow v9, retractable-gear v10 or pack v13")
+    if glow != claims_glow:
+        raise ValueError('trace format disagrees with the Glow trace contract')
+    glow_validator, glow_contract = _glow_trace_validator(metadata) if glow else (None, None)
     if pack != (metadata.get('propulsion_model') == PACK_LAW):
         raise ValueError('trace format disagrees with the pack_ecm electric law')
     if gear != claims_gear:
@@ -601,6 +646,7 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
                 and metadata.get('propulsion_model') == 'electric-fixed-bus-coupled-stop-v1')):
         raise ValueError('trace format disagrees with the fixed-bus electric law')
     columns = COLUMNS + (ELECTRIC_COLUMNS if electric or pack else []) + (PACK_COLUMNS if pack else []) \
+        + (glow_contract['columns'] if glow else []) \
         + (GEAR_COLUMNS if gear else [])
     try:
         dt = float(metadata["dt_s"])
@@ -640,6 +686,8 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
     first, last = data[0], data[-1]
     identity = check_input_identity(metadata, allow_legacy, aircraft_input)
     check_metadata(metadata, first)
+    if glow:
+        glow_validator(metadata, data, glow_contract)
     if gear:
         check_gear_metadata(metadata, first)
     rpm_tolerance = 1.0

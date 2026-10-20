@@ -199,8 +199,9 @@ def project(path, validator, *args, **kwargs):
             cg = [float(row[column]) for column in COLUMNS[1:]]
         except (KeyError, TypeError, ValueError) as error:
             raise ValueError('nonnumeric mass/CG sample') from error
-        if (not all(math.isfinite(value) for value in [tick, time_s, mass, *cg])
-                or tick < 0 or tick != int(tick) or mass <= 0.0
+        if not all(math.isfinite(value) for value in [tick, time_s, mass, *cg]):
+            raise ValueError('non-finite accepted mass/CG sample')
+        if (tick < 0 or tick != int(tick) or mass <= 0.0
                 or abs(time_s - tick * dt) > 1e-8):
             raise ValueError('invalid accepted mass/CG sample')
         if index and tick != float(rows[index - 1]['tick']) + 1.0:

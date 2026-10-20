@@ -60,18 +60,25 @@ class ShaftCLI(unittest.TestCase):
         self.assertGreaterEqual(shaft_index, 0)
         self.assertAlmostEqual(json.loads(metadata['recording_start_continuous'])[shaft_index],
                                json.loads(metadata['recording_start_aux'])[0], places=10)
-        self.assertEqual(wheel_layout[-1]['index'] + 1,
+        liquid_tail_slots = (2 if metadata.get('liquid_fuel_trace_schema') == 'openrc-liquid-fuel-trace v1'
+                             else 0)
+        self.assertEqual(wheel_layout[-1]['index'] + 1 + liquid_tail_slots,
                          len(json.loads(metadata['recording_start_continuous'])))
 
-    def test_explicit_split_preserves_default_rows(self):
-        rows = []
-        for name, options in [('default', []), ('split', ['--shaft-integrator=split'])]:
-            path = self.directory / (name + '.csv')
-            self.run_engine(['--aircraft=' + AIRCRAFT, *options,
-                             '--trace=' + str(path), '--t=0.25'])
-            check_calm(path, 0.25, 240)
-            rows.append(_read_parts(path)[2])
-        self.assertEqual(*rows)
+    def test_production_finite_fuel_defaults_to_coupled_and_refuses_split(self):
+        default_path = self.directory / 'finite-fuel-default.csv'
+        self.run_engine(['--aircraft=' + AIRCRAFT, '--trace=' + str(default_path), '--t=0.25'])
+        check_calm(default_path, 0.25, 240)
+        _, metadata, table = _read_parts(default_path)
+        self.assertEqual(len(table) - 1, 61)
+        self.assertEqual(metadata['shaft_integrator'], 'coupled-rk4')
+        self.assertEqual(metadata['liquid_fuel_trace_schema'], 'openrc-liquid-fuel-trace v1')
+
+        split_path = self.directory / 'finite-fuel-split.csv'
+        log = self.run_engine(['--aircraft=' + AIRCRAFT, '--shaft-integrator=split',
+                               '--trace=' + str(split_path), '--t=0.25'], success=False)
+        self.assertIn('finite propeller propulsion requires coupled-rk4', log)
+        self.assertFalse(split_path.exists())
 
     def test_invalid_mode_and_unsupported_models_refuse_before_recording(self):
         cases = [

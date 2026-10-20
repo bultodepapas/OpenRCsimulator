@@ -61,12 +61,17 @@ GLOW_COLUMNS_V2 = GLOW_COLUMNS
 GLOW_COLUMNS_V3 = GLOW_COLUMNS + ['glow_line_fuel_kg', 'glow_fuel_source_mode']
 GLOW_LAW_V2 = 'glow-mean-cycle-finite-tank-hub-inflow-v2'
 GLOW_LAW_V3 = 'glow-mean-cycle-finite-tank-line-pickup-v3'
+GLOW_LAW_V4 = 'glow-mean-cycle-carburettor-v4'
 GLOW_TRACE_SCHEMA_V1 = 'openrc-glow-trace v1'
 GLOW_TRACE_SCHEMA_V2 = 'openrc-glow-trace v2'
 GLOW_LAYOUT_V2 = ('rpm; fuel kg, temperature K, servo, admission, fuel transport kg/s, crank revolutions; '
                   'running, reason, opportunities, fires, firing accumulator; mixture; '
                   'shaft/prop/thrust/chemical work J')
 GLOW_LAYOUT_V3 = (GLOW_LAYOUT_V2 + '; feed-line liquid mass kg; '
+                  'fuel source mode (0 starved, 1 main tank, 2 pre-primed line)')
+GLOW_LAYOUT_V4 = ('rpm; fuel kg, temperature K, servo, throttle opening, fuel transport kg/s, crank revolutions; '
+                  'running, reason, opportunities, fires, firing accumulator; mixture; '
+                  'shaft/prop/thrust/chemical work J; feed-line liquid mass kg; '
                   'fuel source mode (0 starved, 1 main tank, 2 pre-primed line)')
 GLOW_REASON_CODES_V2 = ['', 'not_started', 'cut', 'stall', 'fuel_exhausted', 'overheat']
 GLOW_REASON_CODES_V3 = GLOW_REASON_CODES_V2 + ['fuel_starved']
@@ -496,21 +501,21 @@ def _glow_start_contract(metadata, wheel_claim):
     """Bind v1/v2 Glow trace versions to their exact continuous law and install identity."""
     schema = metadata.get('glow_trace_schema')
     if schema == GLOW_TRACE_SCHEMA_V1:
-        state_size, law, flight_schema = 17, GLOW_LAW_V2, 'openrc-flight-meta v7'
+        state_size, laws, flight_schema = 17, (GLOW_LAW_V2,), 'openrc-flight-meta v7'
         layout = GLOW_LAYOUT_V2
         reason_codes = GLOW_REASON_CODES_V2
         columns = GLOW_COLUMNS_V2
         line_layout = False
     elif schema == GLOW_TRACE_SCHEMA_V2:
-        state_size, law, flight_schema = 19, GLOW_LAW_V3, 'openrc-flight-meta v10'
-        layout = GLOW_LAYOUT_V3
+        state_size, laws, flight_schema = 19, (GLOW_LAW_V3, GLOW_LAW_V4), 'openrc-flight-meta v10'
+        layout = GLOW_LAYOUT_V4 if metadata.get('propulsion_model') == GLOW_LAW_V4 else GLOW_LAYOUT_V3
         reason_codes = GLOW_REASON_CODES_V3
         columns = GLOW_COLUMNS_V3
         line_layout = True
     else:
         raise ValueError('missing or unsupported Glow trace schema')
 
-    if metadata.get('metadata_schema') != flight_schema or metadata.get('propulsion_model') != law:
+    if metadata.get('metadata_schema') != flight_schema or metadata.get('propulsion_model') not in laws:
         raise ValueError('Glow trace schema disagrees with its law or flight metadata version')
     expected_layout = layout + ('; ' + WHEEL_LAYOUT_SUFFIX if wheel_claim else '')
     if metadata.get('continuous_layout') != expected_layout:
