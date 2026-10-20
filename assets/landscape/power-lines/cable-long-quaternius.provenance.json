@@ -1,0 +1,72 @@
+{
+  "asset": "cable-long-quaternius.glb",
+  "title": "Cable Long - Free Model By Quaternius",
+  "author": "Quaternius",
+  "source_page": "https://poly.pizza/m/WNfAG8VSD5",
+  "download_url": "https://static.poly.pizza/7ac8f75d-bebb-40ae-af99-088261cd94f6.glb",
+  "preview_url": "https://static.poly.pizza/7ac8f75d-bebb-40ae-af99-088261cd94f6.jpg",
+  "license": "CC0 1.0 Universal (Public Domain Dedication)",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "license_text_file": "LICENSE-CC0-1.0.txt",
+  "retrieved_utc": "2026-10-20",
+  "bytes": 15912,
+  "sha256": "b0744ac4e2ddf86ef21e4621452cea44315d23f366928de2bba9455913013513",
+  "format": "GLB (glTF 2.0 binary)",
+  "triangles": 768,
+  "mesh_names": [
+    "Cable_Long"
+  ],
+  "materials": [
+    "Black"
+  ],
+  "texture_count": 0,
+  "image_count": 0,
+  "mesh_data": [
+    {
+      "mesh": "Cable_Long",
+      "indices": 2304,
+      "vertices": 400,
+      "min": [
+        -0.0014189180219546,
+        -0.000867570634000003,
+        -0.0250520072877407
+      ],
+      "max": [
+        0.00145710317883641,
+        0.000451027299277484,
+        0.00000739693632567651
+      ],
+      "material": 0
+    }
+  ],
+  "root_nodes": [
+    {
+      "name": "RootNode",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "Cable_Long",
+      "mesh": 0,
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        100,
+        100,
+        100
+      ]
+    }
+  ],
+  "notes": "Original GLB and preview downloaded from official Poly Pizza CDN; no geometry edited."
+}

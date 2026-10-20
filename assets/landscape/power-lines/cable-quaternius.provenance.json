@@ -1,0 +1,72 @@
+{
+  "asset": "cable-quaternius.glb",
+  "title": "Cable - Free Model By Quaternius",
+  "author": "Quaternius",
+  "source_page": "https://poly.pizza/m/aoNcGMnNiG",
+  "download_url": "https://static.poly.pizza/6a159a24-2595-42fa-a823-c83a9e836498.glb",
+  "preview_url": "https://static.poly.pizza/6a159a24-2595-42fa-a823-c83a9e836498.jpg",
+  "license": "CC0 1.0 Universal (Public Domain Dedication)",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "license_text_file": "LICENSE-CC0-1.0.txt",
+  "retrieved_utc": "2026-10-20",
+  "bytes": 8812,
+  "sha256": "34811b68d70ccdf58243e1bf59b2eb82df71fcae7b1484c82477d4cc971446a4",
+  "format": "GLB (glTF 2.0 binary)",
+  "triangles": 384,
+  "mesh_names": [
+    "Cable_Small"
+  ],
+  "materials": [
+    "Black"
+  ],
+  "texture_count": 0,
+  "image_count": 0,
+  "mesh_data": [
+    {
+      "mesh": "Cable_Small",
+      "indices": 1152,
+      "vertices": 200,
+      "min": [
+        -0.000860809755977243,
+        -0.000607920926995575,
+        -0.00945904105901718
+      ],
+      "max": [
+        0.000860758475027978,
+        0.000607873545959592,
+        0.0000397617368435021
+      ],
+      "material": 0
+    }
+  ],
+  "root_nodes": [
+    {
+      "name": "RootNode",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "Cable_Small",
+      "mesh": 0,
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        100,
+        100,
+        100
+      ]
+    }
+  ],
+  "notes": "Original GLB and preview downloaded from official Poly Pizza CDN; no geometry edited."
+}

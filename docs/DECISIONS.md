@@ -584,3 +584,12 @@ low shrub crop rows instead of exceeding the existing scenery triangle budget
 with twelve additional trees. Share shrub dimensions between rendering and
 collision proxies. The visual road surface does not add heightfield or tire
 physics. [Research, native evidence and limits](research/landscape-upgrade/LU-28/README.md).
+
+### 2026-10-20 — Keep the selected transmitter image separate from the input device (HUD-05-R2)
+
+Offer JETI DS-24 II and Radiolink T16D as saved O2 appearance choices. Animate
+both from the existing session controls and show the connected input device in
+the footer. Changing the image does not change hardware detection, arming or
+axis mapping. This lets a pilot choose the visual reference without implying
+that the pictured transmitter is attached or qualified. [Source, capture and
+verification](research/flight-overlays/HUD-05-R2/README.md).

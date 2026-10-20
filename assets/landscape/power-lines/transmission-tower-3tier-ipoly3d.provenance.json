@@ -1,0 +1,70 @@
+{
+  "asset": "transmission-tower-3tier-ipoly3d.glb",
+  "title": "Transmission Tower",
+  "author": "iPoly3D",
+  "source_page": "https://poly.pizza/m/TYK3rPu7E5",
+  "download_url": "https://static.poly.pizza/b233f7ce-a3fd-4aac-94a1-716bf5f29400.glb",
+  "license": "CC0 1.0 Universal (Public Domain Dedication)",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "license_text_file": "LICENSE-CC0-1.0.txt",
+  "retrieved_utc": "2026-10-20",
+  "bytes": 403896,
+  "sha256": "b0ab9d357e5fb70714db6a4322d3b73c326e959954a5c8962acefc0d1db0494e",
+  "format": "GLB (glTF 2.0 binary)",
+  "triangles": 5743,
+  "mesh_names": [
+    "Tower_1"
+  ],
+  "materials": [
+    "DefaultMaterial"
+  ],
+  "texture_count": 0,
+  "image_count": 0,
+  "primitive_count": 1,
+  "position_accessor_bounds": [
+    {
+      "mesh": "Tower_1",
+      "min": [
+        -0.00993403512984514,
+        -4.20389306698965e-10,
+        -0.00961738638579845
+      ],
+      "max": [
+        0.00993403326719999,
+        0.0688876882195473,
+        0.00978499371558428
+      ]
+    }
+  ],
+  "root_node_transforms": [
+    {
+      "name": "RootNode",
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        1,
+        1,
+        1
+      ]
+    },
+    {
+      "name": "Tower_1",
+      "mesh": 0,
+      "translation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        100,
+        100,
+        100
+      ]
+    }
+  ],
+  "included_wire_spans": false,
+  "notes": "Downloaded original GLB bytes from the official Poly Pizza asset CDN. Visual inspection shows a three-tier lattice transmission tower. No separate wire-span geometry is included; the single material is untextured."
+}
