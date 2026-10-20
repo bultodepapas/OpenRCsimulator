@@ -4,7 +4,8 @@ const CompanionsDialog := preload("res://ui/companions_dialog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const NO_WRITE_PATH := "user://test_companions_dialog_preferences.cfg"
-const DEFAULT_CONFIG := {"enabled": true, "count": 3, "seed": 1234567890}
+const DEFAULT_CONFIG := {"enabled": true, "count": 3, "seed": 1234567890,
+	"engine_volume": 1.0, "show_labels": false, "label_distance_m": 250.0}
 
 var _failures := 0
 var _applied_payloads: Array[Dictionary] = []
@@ -51,7 +52,7 @@ func _run() -> void:
 	await ui.joy_button(JOY_BUTTON_A)
 	_check("controller Accept applies the selected settings once", _applied_payloads.size() == 1,
 		str(_applied_payloads))
-	_check("Apply emits only the enabled, count and seed fields",
+	_check("Apply emits the flight and presentation draft",
 		_applied_payloads.size() == 1 and _applied_payloads[0] == DEFAULT_CONFIG,
 		str(_applied_payloads))
 	_applied_payloads.clear()
@@ -94,6 +95,20 @@ func _run() -> void:
 	await ui.joy_button(JOY_BUTTON_DPAD_DOWN)
 	_check("controller navigation moves from enable to count",
 		root.gui_get_focus_owner() == dialog.count_picker, ui.focus_name())
+	dialog.seed_edit.grab_focus()
+	await ui.tap(KEY_TAB)
+	_check("Tab reaches companion volume", root.gui_get_focus_owner() == dialog.volume_slider, ui.focus_name())
+	await ui.joy_button(JOY_BUTTON_DPAD_DOWN)
+	_check("controller reaches optional labels", root.gui_get_focus_owner() == dialog.labels_check, ui.focus_name())
+	dialog.volume_slider.value = 35.0
+	dialog.labels_check.button_pressed = true
+	dialog.label_distance.value = 500.0
+	dialog.apply_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("presentation values are emitted without touching the source", _applied_payloads.size() == 1
+		and _applied_payloads[0].engine_volume == 0.35 and _applied_payloads[0].show_labels
+		and _applied_payloads[0].label_distance_m == 500.0 and DEFAULT_CONFIG.engine_volume == 1.0)
+	_applied_payloads.clear()
 
 	# Pause scope exposes the current traffic status, default-save choice and immediate removal action.
 	dialog.configure(DEFAULT_CONFIG, {
@@ -104,7 +119,8 @@ func _run() -> void:
 	})
 	_check("in-flight status explains restart and Remove now behavior",
 		dialog.status_label.visible and dialog.status_label.text.contains("2 airborne / 3 active / 3 requested")
-		and dialog.status_label.text.contains("Changes apply after Restart flight")
+		and dialog.status_label.text.contains("Flight settings apply after Restart flight")
+		and dialog.status_label.text.contains("Sound and labels apply immediately")
 		and dialog.status_label.text.contains("Remove now clears the current companions."),
 		dialog.status_label.text)
 	_check("Remove companions is shown only for an active in-flight group",

@@ -182,7 +182,7 @@ func render(delta: float, frozen: bool) -> void:
 	Builder.apply_controls(view, ControlSurfaces.hinge_rotations_from_surfaces(session.surface_angles_deg()), float(session.commands.throttle))
 	if _engine != null:
 		_engine.stream_paused = stopped or _engine_volume == 0.0
-		if not _engine.stream_paused:
+		if not stopped and _engine_volume > 0.0 and _engine.playing:
 			EngineSound.update(_engine, 0.0, float(session.sim.aux[0]), EngineSound.reference_rpm(session.aircraft.model.propulsion))
 
 

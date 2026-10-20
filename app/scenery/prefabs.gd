@@ -396,8 +396,8 @@ static func _pavilion(k: MeshKit, seed: int) -> Array:
 	k.quad(Vector3(-w * 0.5 - 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.58, vz1 - 0.2), Vector3(w * 0.5 + 0.2, 2.91, vz0),
 		Vector3(-w * 0.5 - 0.2, 2.91, vz0), _c("wood_light"))
 	# Raised longitudinal seams at realistic sheet spacing on the lean-to roof.
-	for i in 18:
-		var seam_x := -4.35 + float(i) * 0.51
+	for i in 12:
+		var seam_x := -4.18 + float(i) * 0.76
 		k.beam(Vector3(seam_x, 2.655, vz1 - 0.18),
 			Vector3(seam_x, 2.985, vz0 - 0.02), 0.017, _c("roof_metal_dark").lightened(0.16))
 	# The veranda's front fascia and slim side barge trim close the exposed sheet edges.

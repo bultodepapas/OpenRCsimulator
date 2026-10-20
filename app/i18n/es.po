@@ -4902,3 +4902,66 @@ msgstr "Aplica o cancela la inscripción editada antes de cambiar de panel."
 
 msgid "Legacy smoke migration is unavailable for this model."
 msgstr "La migración del humo heredado no está disponible para este modelo."
+
+msgid "Flight companions"
+msgstr "Compañeros de vuelo"
+
+msgid "Experimental companion flights. Start with one aircraft; additional aircraft increase CPU use."
+msgstr "Vuelos experimentales con compañeros. Empieza con un avión; añadir más aumenta el uso de CPU."
+
+msgid "Enable companions"
+msgstr "Activar compañeros"
+
+msgid "Companion count"
+msgstr "Cantidad de compañeros"
+
+msgid "1 companion"
+msgstr "1 compañero"
+
+msgid "2 companions"
+msgstr "2 compañeros"
+
+msgid "3 companions"
+msgstr "3 compañeros"
+
+msgid "Traffic seed"
+msgstr "Semilla del tráfico"
+
+msgid "Enter a whole-number seed from 0 to 4,294,967,295 to repeat the same companion choices."
+msgstr "Introduce una semilla entera entre 0 y 4.294.967.295 para repetir la selección de compañeros."
+
+msgid "Experienced Ugly Stik pilots fly circuits at Club field, in calm air or a gentle breeze. Alternate aircraft, aerobatics, runway operations, incidents, and aircraft-to-aircraft contact are unavailable."
+msgstr "Pilotos experimentados de Ugly Stik vuelan circuitos en el campo del club, con aire en calma o brisa suave. Otros aviones, acrobacias, operaciones de pista, incidentes y contacto entre aviones aún no están disponibles."
+
+msgid "Companion engine volume"
+msgstr "Volumen de los motores de los compañeros"
+
+msgid "Show companion labels"
+msgstr "Mostrar etiquetas de los compañeros"
+
+msgid "Label distance"
+msgstr "Distancia de las etiquetas"
+
+msgid "Companion %d"
+msgstr "Compañero %d"
+
+msgid "Traffic: %d airborne / %d active / %d requested"
+msgstr "Tráfico: %d en vuelo / %d activos / %d solicitados"
+
+msgid "Flight settings apply after Restart flight. Sound and labels apply immediately. Remove now clears the current companions."
+msgstr "Los ajustes de vuelo se aplican al reiniciar el vuelo. El sonido y las etiquetas cambian de inmediato. Retirar ahora elimina a los compañeros actuales."
+
+msgid "%d companions stopped; restart or remove them."
+msgstr "%d compañeros detenidos; reinicia o retíralos."
+
+msgid "Save these settings as the default"
+msgstr "Guardar estos ajustes como predeterminados"
+
+msgid "Remove companions now"
+msgstr "Retirar compañeros ahora"
+
+msgid "Enter a whole-number seed from 0 to 4,294,967,295."
+msgstr "Introduce una semilla entera entre 0 y 4.294.967.295."
+
+msgid "Choose between 1 and 3 companions."
+msgstr "Elige entre 1 y 3 compañeros."

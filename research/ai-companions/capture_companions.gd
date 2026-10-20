@@ -54,6 +54,9 @@ func _run() -> void:
 	app.companions_dialog.enabled_check.button_pressed = true
 	app.companions_dialog.count_picker.select(2)
 	app.companions_dialog.seed_edit.text = "20261020"
+	if OS.get_cmdline_user_args().has("--labels"):
+		app.companions_dialog.labels_check.button_pressed = true
+		app.companions_dialog.label_distance.value = 500.0
 	app.companions_dialog._on_apply()
 	await ui.settle()
 	app.start_flight()

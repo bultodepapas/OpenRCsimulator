@@ -63,15 +63,7 @@ const DEFAULTS := {
 	# FW-MOON-12: visual-only moon choices ([moon] config). An additive section like [hud]: no schema change.
 	moon_config = MoonConfig.DEFAULTS,
 	# AI companions are an additive section. Keep the existing schema so newer files remain protected by `writable`.
-	companion_config = {
-		"enabled": false,
-		"count": 1,
-		"seed": 1,
-		"aircraft_id": "jensen-das-ugly-stik-60",
-		"activity": "circuits",
-		"pilot": "experienced",
-		"incidents_enabled": false,
-	},
+	companion_config = CompanionConfig.DEFAULTS,
 }
 
 

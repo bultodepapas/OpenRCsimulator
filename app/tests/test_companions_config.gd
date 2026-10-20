@@ -20,6 +20,16 @@ func _initialize() -> void:
 	_check("defaults select only the accepted Stik circuit profile",
 		defaults.get("aircraft_id", "") == STIK_ID and defaults.get("activity", "") == "circuits"
 		and defaults.get("pilot", "") == "experienced" and defaults.get("incidents_enabled", true) == false)
+	_check("presentation defaults preserve audio and keep labels optional", defaults.engine_volume == 1.0
+		and not defaults.show_labels and defaults.label_distance_m == 250.0)
+	var cosmetic: Dictionary = Config.validate({engine_volume = 0, show_labels = true, label_distance_m = 1000})
+	_check("presentation preferences accept mute and bounded labels", cosmetic.ok
+		and cosmetic.config.engine_volume == 0.0 and cosmetic.config.show_labels)
+	for bad_value: Variant in [-0.1, 1.1, NAN, INF, true, "0.5"]:
+		_check("invalid volume refuses atomically", not Config.validate({engine_volume = bad_value}).ok)
+	for bad_value: Variant in [49.0, 1001.0, NAN, true]:
+		_check("invalid label distance refuses atomically", not Config.validate({label_distance_m = bad_value}).ok)
+	_check("label toggle requires a boolean", not Config.validate({show_labels = 1}).ok)
 	var checked: Dictionary = Config.validate({"enabled": true, "count": 3, "seed": 4294967295})
 	_check("valid three-aircraft uint32 config normalizes fixed MVP choices", checked.ok
 		and checked.config.count == 3 and checked.config.seed == 4294967295

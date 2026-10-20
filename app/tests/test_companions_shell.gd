@@ -132,17 +132,26 @@ func _run() -> void:
 	var flight_config_before: Dictionary = main.companion_config.duplicate(true)
 	dialog.count_picker.select(0)
 	dialog.seed_edit.text = "5"
+	dialog.volume_slider.value = 0.0
+	dialog.labels_check.button_pressed = true
 	await ui.tap(KEY_ESCAPE)
 	await ui.settle()
 	_check("Pause Cancel leaves the flight config and active group unchanged",
 		main.companion_config == flight_config_before and main.companion_status().active == 3,
 		str(main.companion_config))
+	_check("Cancel preserves live companion presentation", main.companions.agents[0]._engine_volume == 1.0
+		and not main.companions.agents[0]._show_labels)
 
 	# Apply changes the configuration for Restart; live pilots remain the original three until then.
 	await _open_pause_companions(app)
 	dialog = app.companions_dialog
 	dialog.count_picker.select(1)
 	dialog.seed_edit.text = "202"
+	dialog.volume_slider.value = 0.0
+	dialog.labels_check.button_pressed = true
+	dialog.label_distance.value = 500.0
+	var live_agent: Node = main.companions.agents[0]
+	var live_state: PackedByteArray = live_agent.session.sim.state.to_byte_array()
 	dialog.apply_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
@@ -150,6 +159,11 @@ func _run() -> void:
 		main.companion_config.count == 2 and main.companion_config.seed == 202
 		and main.companion_status().active == 3 and main.companions.agents.size() == 3,
 		str(main.companion_status()))
+	_check("sound and labels apply without replacing or advancing the paused flight",
+		main.companions.agents[0] == live_agent and live_agent._engine_volume == 0.0
+		and live_agent._show_labels and live_agent._label_distance_m == 500.0
+		and live_agent._traffic_label != null and live_agent._engine.volume_db == -80.0
+		and live_agent.session.sim.state.to_byte_array() == live_state)
 
 	# Restart uses Main's deferred manager rebuild after the session reset.
 	app.pause_menu.restart_button.grab_focus()
@@ -182,6 +196,8 @@ func _run() -> void:
 	dialog = app.companions_dialog
 	dialog.count_picker.select(0)
 	dialog.seed_edit.text = "303"
+	dialog.volume_slider.value = 80.0
+	dialog.labels_check.button_pressed = false
 	dialog.save_default_check.grab_focus()
 	await ui.tap(KEY_ENTER)
 	dialog.apply_button.grab_focus()
@@ -190,6 +206,8 @@ func _run() -> void:
 	_check("Pause save failure rolls the staged flight config back",
 		main.companion_config == before_failed_save and dialog.error_label.visible,
 		str(main.companion_config))
+	_check("failed save also restores live presentation", main.companions.agents[0]._engine_volume == 0.0
+		and main.companions.agents[0]._show_labels)
 	_check("Pause save failure preserves the previous on-disk default",
 		Preferences.load_from(PREFS).companion_config == persisted.companion_config)
 	await ui.tap(KEY_ESCAPE)

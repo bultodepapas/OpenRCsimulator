@@ -381,7 +381,10 @@ func _make_emitter(slot: String, count: int, entry: Dictionary, mask: ImageTextu
 	emitter.fract_delta = true
 	emitter.use_fixed_seed = true
 	emitter.seed = _slot_seed(visual_seed, slot)
-	emitter.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH
+	# Compatibility view-depth sorting renders a two-frame-old history buffer.
+	# Fresh lifetime ordering keeps v2 puffs attached to a moving outlet; it is
+	# an age order, not global transparent depth sorting. V1 keeps its old policy.
+	emitter.draw_order = GPUParticles3D.DRAW_ORDER_VIEW_DEPTH if int(_profile.get("version", 1)) == 1 else GPUParticles3D.DRAW_ORDER_LIFETIME
 	emitter.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	var process := ShaderMaterial.new()
 	process.shader = PROCESS_SHADER

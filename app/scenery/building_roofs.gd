@@ -4,6 +4,15 @@ extends RefCounted
 
 const Palette = preload("res://scenery/palette.gd")
 const ROOF_SHADER: Shader = preload("res://scenery/building_roofs.gdshader")
+const SLATE_DIFF: Texture2D = preload("res://assets/landscape/building-roofs/roof_slates_03_diff_1k.jpg")
+const SLATE_NORMAL: Texture2D = preload("res://assets/landscape/building-roofs/roof_slates_03_nor_gl_1k.png")
+const SLATE_ARM: Texture2D = preload("res://assets/landscape/building-roofs/roof_slates_03_arm_1k.jpg")
+const CLAY_DIFF: Texture2D = preload("res://assets/landscape/building-roofs/clay_roof_tiles_diff_1k.jpg")
+const CLAY_NORMAL: Texture2D = preload("res://assets/landscape/building-roofs/clay_roof_tiles_nor_gl_1k.png")
+const CLAY_ARM: Texture2D = preload("res://assets/landscape/building-roofs/clay_roof_tiles_arm_1k.jpg")
+const METAL_DIFF: Texture2D = preload("res://assets/landscape/pit-shelter/corrugated_iron_02_diff_2k.jpg")
+const METAL_NORMAL: Texture2D = preload("res://assets/landscape/pit-shelter/corrugated_iron_02_nor_gl_2k.png")
+const METAL_ARM: Texture2D = preload("res://assets/landscape/pit-shelter/corrugated_iron_02_arm_2k.jpg")
 const OFFSET_M := 0.018
 static var _materials: Dictionary = {}
 
@@ -36,29 +45,25 @@ static func create(prefab: String, xf: Transform3D, seed: int, damage_id: String
 static func _material(kind: String) -> ShaderMaterial:
 	if _materials.has(kind):
 		return _materials[kind]
-	var asset := ""
-	var folder := "res://assets/landscape/building-roofs/"
-	var suffix := "_1k"
+	var maps: Array[Texture2D]
 	var tint := Color.WHITE
 	var metallic := 0.0
 	match kind:
 		"slate":
-			asset = "roof_slates_03"
+			maps = [SLATE_DIFF, SLATE_NORMAL, SLATE_ARM]
 			tint = Color(0.95, 0.96, 0.97)
 		"clay":
-			asset = "clay_roof_tiles"
+			maps = [CLAY_DIFF, CLAY_NORMAL, CLAY_ARM]
 			tint = Color(0.96, 0.94, 0.91)
 		"shed_metal", "metal":
-			asset = "corrugated_iron_02"
-			folder = "res://assets/landscape/pit-shelter/"
-			suffix = "_2k"
+			maps = [METAL_DIFF, METAL_NORMAL, METAL_ARM]
 			metallic = 0.78
 			tint = Color(0.38, 0.52, 0.43) if kind == "shed_metal" else Color(0.72, 0.75, 0.76)
 	var mat := ShaderMaterial.new()
 	mat.shader = ROOF_SHADER
-	mat.set_shader_parameter("albedo_map", load(folder + asset + "_diff" + suffix + ".jpg"))
-	mat.set_shader_parameter("normal_map", load(folder + asset + "_nor_gl" + suffix + ".png"))
-	mat.set_shader_parameter("arm_map", load(folder + asset + "_arm" + suffix + ".jpg"))
+	mat.set_shader_parameter("albedo_map", maps[0])
+	mat.set_shader_parameter("normal_map", maps[1])
+	mat.set_shader_parameter("arm_map", maps[2])
 	mat.set_shader_parameter("tint", Vector3(tint.r, tint.g, tint.b))
 	mat.set_shader_parameter("metallic_scale", metallic)
 	mat.set_shader_parameter("normal_strength", 0.38 if kind == "slate" else 0.67)

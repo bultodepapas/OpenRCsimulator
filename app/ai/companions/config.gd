@@ -21,19 +21,22 @@ const ALLOWED_KEYS := [
 ]
 
 
+const DEFAULTS := {
+	"enabled": false,
+	"count": 1,
+	"seed": 1,
+	"aircraft_id": AIRCRAFT_ID,
+	"activity": ACTIVITY,
+	"pilot": PILOT_SKILL,
+	"incidents_enabled": false,
+	"engine_volume": 1.0,
+	"show_labels": false,
+	"label_distance_m": 250.0,
+}
+
+
 static func defaults() -> Dictionary:
-	return {
-		"enabled": false,
-		"count": 1,
-		"seed": 1,
-		"aircraft_id": AIRCRAFT_ID,
-		"activity": ACTIVITY,
-		"pilot": PILOT_SKILL,
-		"incidents_enabled": false,
-		"engine_volume": 1.0,
-		"show_labels": false,
-		"label_distance_m": 250.0,
-	}
+	return DEFAULTS.duplicate(true)
 
 
 ## Accept a partial UI record, fill the fixed MVP choices, and reject unsupported settings.

@@ -60,7 +60,7 @@ func _run() -> void:
 	for frame in 255: await _frame()
 	await _capture("off-expired", false)
 	var report := {aircraft_id = aircraft_id, engine = Engine.get_version_info(), renderer = RenderingServer.get_video_adapter_name(),
-		scope = "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted. OFF expires requested show smoke; ordinary exhaust still follows its running engine.",
+		scope = "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted. Two-draw and eight-additional-draw still readbacks are separate; neither is a zero-delay live alignment test. OFF expires requested show smoke; ordinary exhaust still follows its running engine.",
 		tick = flight.session.sim.tick, fault = flight.session.sim.fault_reason,
 		crash = flight.session.crash, smoke_on = on_evidence, smoke = flight._smoke_evidence(),
 		source_sha256 = {}, captures_sha256 = {}}
@@ -69,6 +69,7 @@ func _run() -> void:
 		report.source_sha256[path] = FileAccess.get_sha256(path)
 	for label in ["tailpipe-close", "flight-trail", "off-residual", "off-expired"]:
 		report.captures_sha256[label + ".png"] = FileAccess.get_sha256(out.path_join(label + ".png"))
+		report.captures_sha256[label + "-two-draw.png"] = FileAccess.get_sha256(out.path_join(label + "-two-draw.png"))
 	var file := FileAccess.open(out.path_join("capture.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "\t"))
 	print("Stock smoke capture complete: ", out)
@@ -101,6 +102,9 @@ func _camera(close: bool) -> void:
 
 func _capture(label: String, close: bool) -> void:
 	_camera(close)
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	root.get_texture().get_image().save_png(out.path_join(label + "-two-draw.png"))
 	# Drain the final manual process request on Compatibility before a still
 	# readback; no new presentation time or particle request is submitted here.
 	for draw in 8:
