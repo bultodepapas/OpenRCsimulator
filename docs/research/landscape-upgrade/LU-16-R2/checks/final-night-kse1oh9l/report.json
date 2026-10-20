@@ -1,0 +1,56 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a96f3855-bb5d-4295-a9b9-2b4595b28535",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--script",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains-r2/capture.gd",
+    "--",
+    "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains-r2/final-night",
+    "--cases=pilot_north,twilight_aircraft",
+    "--frames=180",
+    "--time-of-day=21:00"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T13:00:42.368690+00:00",
+  "label": "final-night",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\mountains-r2\\checks\\final-night-kse1oh9l\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\mountains-r2\\checks\\final-night-kse1oh9l\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 4,
+      "message": "Tree wind is disabled for maple_tree because source material -9223371914834081874 is unsupported (cull mode is not disabled)",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.344,
+  "log_bytes": 1002,
+  "log_sha256": "4eaa48ac86be198eb717584ba06cf4ac16acc9381a88d5158d6c7e6305f7c175"
+}

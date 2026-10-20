@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-20",
+  "checks": {
+    "horizon": {
+      "checks": 48,
+      "failed": 0
+    },
+    "landscapes": {
+      "checks": 49,
+      "failed": 0
+    },
+    "world_flow": {
+      "checks": 26,
+      "failed": 0
+    }
+  },
+  "offline_commands": [
+    "python tools/terrain/import_mountains.py --check",
+    "python tools/terrain/bake_mountain_habitat.py --check"
+  ],
+  "habitat_disposable_mutation": {
+    "exit_code": 1,
+    "stderr": "Mountain habitat texture is stale or edited"
+  },
+  "source_sha256": {
+    "app/assets/landscape/mountains/aerial_grass_rock_diff_1k.jpg": "57b8041bfe0d0f01430e4dbaad45e7ddddf0a9fc97317f90dbc51f7b0d9e1b5d",
+    "app/assets/landscape/mountains/aerial_grass_rock_diff_1k.jpg.import": "1a960fa0c5e46f13735befca32c0018a94678fb764616a03602821539cd8ae9b",
+    "app/assets/landscape/mountains/aerial_rocks_01_diff_1k.jpg": "0f184f4a1da57342d240086b5abfb804bb129bc649024c9546b054bb918264b7",
+    "app/assets/landscape/mountains/aerial_rocks_01_diff_1k.jpg.import": "a2be7732ad94810de66a960777de8ebac358510dc769d64ad06b79727091a017",
+    "app/assets/landscape/mountains/habitat.png": "a03b2e7a3b5ea9042e39a0688eab019fa1fa8092523066be0123a19bf86900b7",
+    "app/assets/landscape/mountains/habitat.png.import": "cf7663e2b229eebc4f2de0b3edf1bf31d8598a232c8e416e25c7d0312dbfb36d",
+    "app/assets/landscape/mountains/relief.png": "5521aa9956ef6db6c7414e3cf5de5848af50e62c1246bf590cadc45ef1d6a6c6",
+    "app/assets/landscape/mountains/relief.png.import": "d67213e6fb6ecec119934059a5764b4880e925f1f35dcf5301f630c9dcfcce42",
+    "app/assets/landscape/mountains/sources.json": "d07c42ed5144f5a03fd39b0551e677be8fd71ccb3cdb78da58ff2e4ece8d25dc",
+    "app/data/fields/mountains.json": "6021d86d9e87e136455ff7e4253f190a129ace187185fb7b71c66aec16f2efb8",
+    "app/render/landscape_upgrade/ridge_haze.gdshader": "c3eab6b4786f936c552ff3bb8f45a6e737da98c7f08b269e92ba9371156ae92a",
+    "app/render/landscape_upgrade/ridges.gd": "9c816a4e23de3e574f672a9257dfeb83d6a709e064ede10f4ba2929f6b23aeeb",
+    "app/tests/test_landscape_horizon.gd": "85b1d1170d39c703ea6add91d4ca08915c223c0aa2a5aae2eefe0735b67514fa",
+    "tools/terrain/bake_mountain_habitat.py": "78d4bcde1c2ba67b3255b4f04da77f9d98ad30893326305403e815ec031802d4",
+    "tools/terrain/import_mountains.py": "a4c542c4f8afca0eee48b2271ac1ab7896fb354e4fe4c109fadadabe15e127e5"
+  },
+  "benchmark_driver_smoke": {
+    "command": "python docs/research/landscape-upgrade/LU-16-R2/benchmark.py --out tmp/mountains-r2/reproduce-smoke --repeats 1 --frames 60 --cases pilot_north",
+    "exit_code": 0
+  }
+}

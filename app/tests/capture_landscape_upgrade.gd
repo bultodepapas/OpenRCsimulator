@@ -11,7 +11,16 @@ const Postcards := preload("res://scenery/postcards.gd")
 const LightingConfig := preload("res://environment/time_of_day_config.gd")
 const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
 const SceneryMaterials := preload("res://scenery/scenery.gd")
+const ReferenceScenery := preload("res://scenery/scenery_loader.gd")
+const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const FLEET_VIEWS := {
+	"plain_village": {eye = [-610.0, -960.0, -45.0], at = [-680.0, -760.0, -3.0], fov = 55.0},
+	"plain_highway": {eye = [-350.0, 880.0, -22.0], at = [50.0, 945.0, -0.2], fov = 50.0},
+	"plain_crop": {eye = [480.0, 400.0, -8.0], at = [520.0, 500.0, -0.2], fov = 55.0},
+	"plain_overview": {eye = [-650.0, -950.0, -680.0], at = [350.0, 260.0, 0.0], fov = 58.0},
+	"plain_east": {eye = [-450.0, 350.0, -220.0], at = [400.0, 950.0, 0.0], fov = 55.0},
+	"plain_farm": {eye = [450.0, 160.0, -75.0], at = [610.0, 365.0, -3.0], fov = 55.0},
+	"plain_farm_gate": {eye = [726.0, 705.0, -5.0], at = [748.0, 666.0, -2.0], fov = 58.0},
 	"night_runway_club": {eye = [15.0, 72.0, -2.2], at = [15.0, -51.0, -0.35], fov = 40.0},
 	"night_runway_airfield": {eye = [15.0, 72.0, -2.2], at = [15.0, -51.0, -0.35], fov = 40.0},
 	"night_runway_off": {eye = [15.0, 72.0, -2.2], at = [15.0, -51.0, -0.35], fov = 40.0},
@@ -82,6 +91,21 @@ func _run() -> void:
 			return
 		snapshot = SnapshotLighting.snapshot(lighting.config)
 	var built := World.build(parent, loaded.field, Callable(), {}, snapshot)
+	# LU-28 A/B: custom reference layouts fail the strict woodland identity gate.
+	# Restore the unchanged canonical woodland for an equal-content comparison.
+	if str(args.get("plain_reference", "off")) == "on" and not built.field.has_node("Countryside"):
+		var reference_scene: Node3D = built.field.get_node("Scenery")
+		var old_edges: Node = reference_scene.get_node("WoodlandEdges")
+		old_edges.free()
+		var canonical := ReferenceScenery.load_from(ReferenceScenery.DEFAULT_PATH, loaded.field)
+		var edges := ReferenceWoodland.build(loaded.field, canonical.scenery,
+			str(reference_scene.get_meta("stats").quality))
+		reference_scene.add_child(edges)
+		var stats: Dictionary = reference_scene.get_meta("stats")
+		stats.woodland_edge_plants = edges.get_meta("plants").size()
+		stats.woodland_edge_triangles = edges.get_meta("triangles")
+		stats.woodland_edge_batches = edges.get_meta("batches")
+		reference_scene.set_meta("stats", stats)
 	var lake: Node3D = built.field.get_node_or_null("Lake")
 	var lake_diagnostics := {}
 	if lake != null:

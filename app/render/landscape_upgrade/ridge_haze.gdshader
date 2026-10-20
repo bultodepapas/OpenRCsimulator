@@ -1,7 +1,7 @@
 // LU-16. Distant terrain shares the ground/sky directional haze, not only engine uniform fog.
 // Original MIT. No artificial ground-rim fade: ridge height and distance retain their depth cues.
 shader_type spatial;
-render_mode cull_back, diffuse_burley;
+render_mode cull_back;
 
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846);
 uniform vec3 sun_dir = vec3(0.0, 0.707, 0.707);
@@ -12,6 +12,13 @@ uniform vec3 lobe_dir = vec3(1.0, 0.0, 0.0);
 uniform float lobe_k = 8.0;
 uniform float lobe_height = 1.5708;
 uniform float beta = 0.00017;
+// LU-16-R1: offline source-derived normals/cavities, shared by all four chunks.
+// Data texture (not sRGB); no displacement, parallax or per-frame terrain work.
+uniform sampler2D relief : filter_linear_mipmap_anisotropic, repeat_disable;
+// LU-16-R2: offline habitat classification + two shared CC0 photographic tiles.
+uniform sampler2D habitat : filter_linear_mipmap_anisotropic, repeat_disable;
+uniform sampler2D grass_rock : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+uniform sampler2D rocks : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 varying vec3 world_pos;
 
 void vertex() {
@@ -19,7 +26,25 @@ void vertex() {
 }
 
 void fragment() {
-	ALBEDO = COLOR.rgb;
+	vec2 terrain_uv = vec2((world_pos.x + 6500.0) / 13000.0, (-world_pos.z - 1600.0) / 7000.0);
+	vec4 detail = texture(relief, terrain_uv);
+	vec3 terrain_normal = normalize(detail.rgb * 2.0 - 1.0);
+	NORMAL = normalize((VIEW_MATRIX * vec4(terrain_normal, 0.0)).xyz);
+	vec3 biome = texture(habitat, terrain_uv).rgb;
+	// World coordinates keep all chunk edges continuous. Different orientations
+	// and footprints break alignment between the vegetation and scree patterns.
+	vec3 grass = texture(grass_rock, world_pos.xz / 125.0).rgb;
+	vec2 rock_uv = vec2(world_pos.x * 0.8 + world_pos.z * 0.6,
+		-world_pos.x * 0.6 + world_pos.z * 0.8) / 180.0;
+	vec3 stone = texture(rocks, rock_uv).rgb;
+	float grass_value = dot(grass, vec3(0.299, 0.587, 0.114));
+	float stone_value = dot(stone, vec3(0.299, 0.587, 0.114));
+	vec3 meadow = mix(vec3(0.17, 0.24, 0.095), vec3(0.245, 0.255, 0.14), biome.b);
+	vec3 vegetation = mix(meadow, vec3(0.065, 0.145, 0.065), biome.g * 0.8);
+	vegetation *= clamp(grass_value * 3.0, 0.55, 1.45);
+	vec3 outcrop = vec3(0.205, 0.20, 0.18) * clamp(stone_value * 2.6, 0.6, 1.4);
+	float rock_cover = smoothstep(0.18, 0.8, biome.r + (stone_value - 0.3) * 0.3);
+	ALBEDO = mix(vegetation, outcrop, rock_cover) * detail.a;
 	ROUGHNESS = 1.0;
 	SPECULAR = 0.12;
 	vec3 to_frag = world_pos - CAMERA_POSITION_WORLD;
@@ -30,4 +55,9 @@ void fragment() {
 	vec3 lobe = lobe_lin * pow(az, lobe_k) * exp(-max(asin(clamp(v.y, -1.0, 1.0)), 0.0) / lobe_height);
 	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter + lobe;
 	FOG = vec4(haze, 1.0 - exp(-beta * d));
+}
+
+// Match the field's dry diffuse response; distant rock does not need specular work.
+void light() {
+	DIFFUSE_LIGHT += LIGHT_COLOR * max(dot(NORMAL, LIGHT), 0.0) * (1.0 / PI) * ATTENUATION;
 }

@@ -554,3 +554,23 @@ dimensions and transforms require no persistent invalidation policy. Exact field
 and prefab comparisons support the change, with 27.1% lower placed-object build
 time across five processes. Generic box/quad optimizations were inconclusive or
 slower and were rejected. [Evidence and limits](research/visual-quality-implementation/VQ-01c/loading/timber-colors/README.md).
+
+### 2026-10-20 — Use reduced downloaded relief for the Club mountain backdrop (LU-16-R1)
+
+Retain the four-chunk, 12,288-triangle budget and derive the closer silhouette
+from public SRTM data. Bake finer drainage normals and gentle cavity shading into
+one small mipmapped texture instead of adding runtime terrain generation,
+extra shadow passes or a terrain plugin. Keep shared time-of-day haze and
+scene-local materials. The rotated/scaled scenery is visual-only; L12/L13
+still own physical heightfield integration. [Sources and verification](research/landscape-upgrade/LU-16-R1/README.md).
+
+### 2026-10-20 — Bound mountain detail with offline masks and a static finer mesh (LU-16-R2)
+
+Use two downloaded CC0 photographic tiles with GPU compression and mipmaps.
+Bake rock, sheltered vegetation and upland masks from retained SRTM before
+runtime. Increase the four shared-material chunks to 27,648 triangles to
+improve crests; remove unused vertex colors. Reject independent automatic
+chunk LOD because the probe changed shared edge segments and transition
+thresholds. This replaces R1's 12,288-triangle limit with a measured bounded
+increase, adding no draw calls, shadow passes or terrain frame callbacks.
+[Sources, LOD probe and repeated native measurements](research/landscape-upgrade/LU-16-R2/README.md).

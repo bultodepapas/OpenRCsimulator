@@ -1,0 +1,1633 @@
+{
+  "format": "openrc-scenery v1",
+  "field": "default",
+  "theme": "temperate",
+  "generator": "tools/scenery/place.py",
+  "profile": {
+    "name": "photo",
+    "pits_min_behind_m": {
+      "value": 13.7,
+      "unit": "m",
+      "kind": "manual",
+      "source": "AMA 2010: pit line a minimum of 45 ft behind the safety line (report 03)"
+    },
+    "spectators_min_behind_m": {
+      "value": 19.8,
+      "unit": "m",
+      "kind": "manual",
+      "source": "AMA 2010: spectator line a minimum of 65 ft (report 03)"
+    },
+    "parking_min_behind_m": {
+      "value": 24.4,
+      "unit": "m",
+      "kind": "manual",
+      "source": "AMA 2010: parking a minimum of 80 ft (report 03); the photo's compact car row (O-7)"
+    },
+    "pits_min_from_centreline_m": {
+      "value": 30.0,
+      "unit": "m",
+      "kind": "manual",
+      "source": "BMFA handbook 11.2(c): pits >= 30 m from the take-off and landing path"
+    },
+    "flight_box_depth_m": {
+      "value": 229.0,
+      "unit": "m",
+      "kind": "manual",
+      "source": "AMA 2022 sport field: 750 ft beyond the safety line"
+    },
+    "flight_box_half_width_m": {
+      "value": 305.0,
+      "unit": "m",
+      "kind": "manual",
+      "source": "AMA 2022 sport field: 1,000 ft each side"
+    },
+    "flight_box_max_height_m": {
+      "value": 1.5,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "SCENERY-PLAN height rule: only low props in the flight box"
+    },
+    "approach_slope": {
+      "value": 0.05,
+      "unit": "1",
+      "kind": "borrowed",
+      "source": "ICAO Annex 14 code-1 approach surface 1:20, an analogy, not an RC rule"
+    },
+    "tree_clearance_m": {
+      "value": 3.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Keeps props off the L6b tree cards' trunks"
+    },
+    "runway_margin_m": {
+      "value": 3.0,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Keeps props off the runway edge"
+    }
+  },
+  "groups": [
+    {
+      "id": "pit-shelters",
+      "type": "instances",
+      "zone": "pits",
+      "collides": false,
+      "prefab": "pit_shelter",
+      "placements": {
+        "value": [
+          [
+            -18.5,
+            -31.0,
+            0
+          ],
+          [
+            -18.5,
+            31.0,
+            0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; two shelters toward each runway end, open to the field"
+      }
+    },
+    {
+      "id": "pavilion",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "pavilion",
+      "placements": {
+        "value": [
+          [
+            -22.0,
+            0.0,
+            0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; central white pavilion, veranda to the field"
+      }
+    },
+    {
+      "id": "club-sign",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "club_sign",
+      "placements": {
+        "value": [
+          [
+            -15.5,
+            -9.5,
+            0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Beside the pavilion, readable from the pilot line"
+      }
+    },
+    {
+      "id": "flagpole",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "flagpole",
+      "placements": {
+        "value": [
+          [
+            -16.0,
+            8.5,
+            315
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Flag streams NE: the field's breeze from the SW (sun side, estimated)"
+      }
+    },
+    {
+      "id": "picnic",
+      "type": "instances",
+      "zone": "spectators",
+      "collides": false,
+      "prefab": "picnic_table",
+      "placements": {
+        "value": [
+          [
+            -24.5,
+            -9.5,
+            90
+          ],
+          [
+            -28.0,
+            -9.0,
+            85
+          ],
+          [
+            -24.5,
+            9.75,
+            90
+          ],
+          [
+            -28.25,
+            10.5,
+            95
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Beside the pavilion, as at most club fields"
+      }
+    },
+    {
+      "id": "benches",
+      "type": "instances",
+      "zone": "spectators",
+      "collides": false,
+      "prefab": "bench",
+      "placements": {
+        "value": [
+          [
+            -16.5,
+            -14.0,
+            0
+          ],
+          [
+            -16.5,
+            -11.0,
+            0
+          ],
+          [
+            -16.5,
+            11.5,
+            0
+          ],
+          [
+            -16.5,
+            14.5,
+            0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Spectator benches between the shelters and the pavilion, facing the field"
+      }
+    },
+    {
+      "id": "shed",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "shed",
+      "placements": {
+        "value": [
+          [
+            -40.5,
+            -33.5,
+            90
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; small shed by the van"
+      }
+    },
+    {
+      "id": "shade-trees",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "shade_tree",
+      "placements": {
+        "value": [
+          [
+            -49.0,
+            -22.0,
+            169.9
+          ],
+          [
+            -52.5,
+            -13.0,
+            326.4
+          ],
+          [
+            -48.5,
+            -4.0,
+            192.0
+          ],
+          [
+            -53.0,
+            4.5,
+            21.4
+          ],
+          [
+            -49.5,
+            12.0,
+            181.2
+          ],
+          [
+            -31.5,
+            -9.0,
+            124.0
+          ],
+          [
+            -32.0,
+            10.5,
+            247.1
+          ],
+          [
+            -28.0,
+            -52.0,
+            86.1
+          ],
+          [
+            -29.0,
+            52.0,
+            207.0
+          ],
+          [
+            -44.0,
+            -40.0,
+            203.6
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; shade-tree clump behind the car row"
+      }
+    },
+    {
+      "id": "saplings",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "sapling",
+      "placements": {
+        "value": [
+          [
+            -66.0,
+            -32.0,
+            172.5
+          ],
+          [
+            -66.0,
+            -22.0,
+            80.2
+          ],
+          [
+            -66.0,
+            -2.0,
+            85.0
+          ],
+          [
+            -66.0,
+            18.0,
+            111.3
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "LU-22 downloaded CommonTree_1/CommonTree_3 saplings behind the club; outside the lake bank and north approach"
+      }
+    },
+    {
+      "id": "bushes",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "bush",
+      "placements": {
+        "value": [
+          [
+            -19.75,
+            -6.5,
+            293.5
+          ],
+          [
+            -24.5,
+            -6.25,
+            261.4
+          ],
+          [
+            -19.75,
+            6.5,
+            75.1
+          ],
+          [
+            -24.75,
+            6.25,
+            239.9
+          ],
+          [
+            -15.5,
+            -20.5,
+            213.2
+          ],
+          [
+            -15.5,
+            20.0,
+            179.1
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Planting around the pavilion"
+      }
+    },
+    {
+      "id": "flower-border",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "flower_clump",
+      "placements": {
+        "value": [
+          [
+            -15.5,
+            -5.0,
+            221.8
+          ],
+          [
+            -15.5,
+            -4.0,
+            298.1
+          ],
+          [
+            -15.5,
+            -2.75,
+            166.3
+          ],
+          [
+            -15.5,
+            -1.75,
+            12.2
+          ],
+          [
+            -15.5,
+            1.75,
+            329.2
+          ],
+          [
+            -15.5,
+            3.0,
+            132.7
+          ],
+          [
+            -15.5,
+            4.0,
+            127.7
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Flower border in front of the veranda"
+      }
+    },
+    {
+      "id": "pilots",
+      "type": "instances",
+      "zone": "pilot_line",
+      "collides": false,
+      "prefab": "person_pilot",
+      "placements": {
+        "value": [
+          [
+            0.0,
+            -13.0,
+            5
+          ],
+          [
+            -0.5,
+            16.0,
+            350
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Other pilots on the flight line"
+      }
+    },
+    {
+      "id": "pits-people",
+      "type": "instances",
+      "zone": "pits",
+      "collides": false,
+      "prefab": "person_standing",
+      "placements": {
+        "value": [
+          [
+            -19.0,
+            -38.5,
+            160
+          ],
+          [
+            -18.75,
+            -25.5,
+            20
+          ],
+          [
+            -18.5,
+            25.0,
+            340
+          ],
+          [
+            -19.25,
+            37.5,
+            200
+          ],
+          [
+            -16.75,
+            -33.0,
+            0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Club members in the pits"
+      }
+    },
+    {
+      "id": "seated",
+      "type": "instances",
+      "zone": "spectators",
+      "collides": false,
+      "prefab": "person_sitting",
+      "placements": {
+        "value": [
+          [
+            -16.5,
+            -14.0,
+            0
+          ],
+          [
+            -16.5,
+            11.5,
+            0
+          ],
+          [
+            -16.5,
+            14.5,
+            0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Spectators on the benches"
+      }
+    },
+    {
+      "id": "veranda-people",
+      "type": "instances",
+      "zone": "club",
+      "collides": false,
+      "prefab": "person_standing",
+      "placements": {
+        "value": [
+          [
+            -17.5,
+            -2.5,
+            10
+          ],
+          [
+            -17.75,
+            1.5,
+            350
+          ],
+          [
+            -16.5,
+            4.25,
+            30
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "On the veranda steps"
+      }
+    },
+    {
+      "id": "fleet",
+      "type": "fleet",
+      "zone": "pits",
+      "collides": false,
+      "aircraft": [
+        "jensen-das-ugly-stik-60",
+        "gp-extra-300s-60",
+        "p51d-mustang-120",
+        "sebart-avanti-s-a200-p100rx"
+      ],
+      "placements": {
+        "value": [
+          [
+            -17.6,
+            -38.0,
+            15.0,
+            0
+          ],
+          [
+            -17.6,
+            -24.0,
+            350.0,
+            1
+          ],
+          [
+            -17.8,
+            24.0,
+            10.0,
+            2
+          ],
+          [
+            -17.6,
+            38.5,
+            345.0,
+            3
+          ]
+        ],
+        "unit": "m, m, deg, index",
+        "kind": "estimated",
+        "source": "Under the pit shelters, as in the photo"
+      }
+    },
+    {
+      "id": "avanti-cradle",
+      "type": "instances",
+      "zone": "pits",
+      "collides": false,
+      "prefab": "avanti_cradle",
+      "placements": {
+        "value": [
+          [
+            -17.6,
+            38.5,
+            345.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Padded trestles directly under the catalog Ventage Jet snapshot, which is an in-air-start model with gear retracted"
+      }
+    },
+    {
+      "id": "cars",
+      "type": "instances",
+      "zone": "parking",
+      "collides": false,
+      "prefabs": [
+        "car_sedan",
+        "car_hatch",
+        "car_suv",
+        "car_sport"
+      ],
+      "placements": {
+        "value": [
+          [
+            -37.75,
+            -21.0,
+            181
+          ],
+          [
+            -38.5,
+            -17.25,
+            174
+          ],
+          [
+            -37.5,
+            -13.0,
+            190
+          ],
+          [
+            -38.25,
+            -8.25,
+            183
+          ],
+          [
+            -37.25,
+            -3.75,
+            171
+          ],
+          [
+            -38.5,
+            0.5,
+            192
+          ],
+          [
+            -37.5,
+            4.5,
+            177
+          ],
+          [
+            -44.0,
+            -32.5,
+            96
+          ],
+          [
+            -40.5,
+            -26.0,
+            106
+          ],
+          [
+            -44.0,
+            0.0,
+            82
+          ],
+          [
+            -44.0,
+            6.5,
+            101
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated; informal offset row and canted end spaces (estimated from the reference photo)"
+      }
+    },
+    {
+      "id": "car-park",
+      "type": "patch",
+      "zone": "parking",
+      "surface": "gravel",
+      "collides": false,
+      "points": {
+        "value": [
+          [
+            -33.5,
+            -24.0
+          ],
+          [
+            -33.5,
+            5.5
+          ],
+          [
+            -35.0,
+            7.0
+          ],
+          [
+            -44.5,
+            7.0
+          ],
+          [
+            -45.5,
+            5.5
+          ],
+          [
+            -45.5,
+            -34.5
+          ],
+          [
+            -44.0,
+            -36.0
+          ],
+          [
+            -35.0,
+            -36.0
+          ],
+          [
+            -33.5,
+            -34.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Gravel strip under the car row"
+      }
+    },
+    {
+      "id": "access-track",
+      "type": "track",
+      "zone": "countryside",
+      "surface": "dirt",
+      "collides": false,
+      "width": {
+        "value": 3.2,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Single-lane farm track"
+      },
+      "points": {
+        "value": [
+          [
+            -38.0,
+            -36.5
+          ],
+          [
+            -46.0,
+            -46.0
+          ],
+          [
+            -62.0,
+            -55.0
+          ],
+          [
+            -100.0,
+            -70.0
+          ],
+          [
+            -130.0,
+            -75.0
+          ],
+          [
+            -173.25,
+            -100.0
+          ],
+          [
+            -216.5,
+            -125.0
+          ],
+          [
+            -259.75,
+            -150.0
+          ],
+          [
+            -303.0,
+            -175.0
+          ],
+          [
+            -346.5,
+            -200.0
+          ],
+          [
+            -389.75,
+            -225.0
+          ],
+          [
+            -433.0,
+            -250.0
+          ],
+          [
+            -476.25,
+            -275.0
+          ],
+          [
+            -519.5,
+            -300.0
+          ],
+          [
+            -563.0,
+            -325.0
+          ],
+          [
+            -606.25,
+            -350.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Through the L6b SSW gap (az 210 deg)"
+      }
+    },
+    {
+      "id": "worn-parking-door",
+      "type": "track",
+      "zone": "countryside",
+      "surface": "worn",
+      "collides": false,
+      "width": {
+        "value": 0.9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Single-person worn-grass connector"
+      },
+      "points": {
+        "value": [
+          [
+            -33.0,
+            -34.0
+          ],
+          [
+            -30.0,
+            -25.0
+          ],
+          [
+            -26.0,
+            -16.0
+          ],
+          [
+            -23.0,
+            -12.0
+          ],
+          [
+            -20.0,
+            -10.0
+          ],
+          [
+            -18.0,
+            -12.0
+          ],
+          [
+            -13.8,
+            -12.0
+          ],
+          [
+            -13.8,
+            -0.25
+          ],
+          [
+            -19.0,
+            -0.25
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Worn pedestrian path from the car park to the pavilion's central door"
+      }
+    },
+    {
+      "id": "worn-door-pits",
+      "type": "track",
+      "zone": "countryside",
+      "surface": "worn",
+      "collides": false,
+      "width": {
+        "value": 0.9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Single-person worn-grass connector"
+      },
+      "points": {
+        "value": [
+          [
+            -19.0,
+            -0.25
+          ],
+          [
+            -18.5,
+            3.0
+          ],
+          [
+            -17.5,
+            6.0
+          ],
+          [
+            -15.0,
+            8.0
+          ],
+          [
+            -13.8,
+            9.0
+          ],
+          [
+            -13.8,
+            31.0
+          ],
+          [
+            -15.5,
+            31.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Worn pedestrian path around the flower border to the east shelter's open front bay"
+      }
+    },
+    {
+      "id": "hay-bales",
+      "type": "instances",
+      "zone": "flight_box",
+      "collides": false,
+      "prefab": "round_bale",
+      "placements": {
+        "value": [
+          [
+            79.0,
+            68.5,
+            137.8
+          ],
+          [
+            83.0,
+            91.25,
+            154.7
+          ],
+          [
+            79.0,
+            100.25,
+            31.0
+          ],
+          [
+            74.25,
+            116.25,
+            254.6
+          ],
+          [
+            80.75,
+            144.75,
+            336.2
+          ],
+          [
+            80.5,
+            156.5,
+            178.3
+          ],
+          [
+            78.75,
+            177.0,
+            115.6
+          ],
+          [
+            81.75,
+            197.75,
+            182.4
+          ],
+          [
+            87.25,
+            84.75,
+            232.5
+          ],
+          [
+            82.25,
+            93.5,
+            142.7
+          ],
+          [
+            95.25,
+            163.25,
+            40.3
+          ],
+          [
+            102.0,
+            188.75,
+            1.1
+          ],
+          [
+            103.0,
+            207.75,
+            258.9
+          ],
+          [
+            136.5,
+            83.75,
+            247.5
+          ],
+          [
+            142.25,
+            93.0,
+            54.2
+          ],
+          [
+            140.0,
+            151.25,
+            70.3
+          ],
+          [
+            135.25,
+            168.5,
+            314.9
+          ],
+          [
+            129.5,
+            180.75,
+            219.5
+          ],
+          [
+            151.25,
+            134.25,
+            199.6
+          ],
+          [
+            150.25,
+            167.25,
+            137.9
+          ],
+          [
+            153.75,
+            186.0,
+            55.4
+          ],
+          [
+            154.0,
+            208.0,
+            283.5
+          ],
+          [
+            178.5,
+            71.25,
+            156.4
+          ],
+          [
+            175.5,
+            90.25,
+            218.5
+          ],
+          [
+            177.0,
+            128.0,
+            108.6
+          ],
+          [
+            175.5,
+            160.25,
+            105.3
+          ],
+          [
+            174.25,
+            178.5,
+            337.2
+          ],
+          [
+            197.25,
+            82.75,
+            8.3
+          ],
+          [
+            198.75,
+            94.25,
+            27.0
+          ],
+          [
+            197.0,
+            118.75,
+            173.9
+          ],
+          [
+            201.25,
+            150.0,
+            163.2
+          ],
+          [
+            202.0,
+            171.0,
+            317.8
+          ],
+          [
+            199.5,
+            190.25,
+            312.9
+          ],
+          [
+            197.5,
+            205.5,
+            102.6
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Round bales along mown rows (SC-12); row IDs stay stable while bank-near bales move to 2 m footprint clearance"
+      }
+    },
+    {
+      "id": "hedge-north-w",
+      "type": "hedge",
+      "zone": "countryside",
+      "collides": false,
+      "height": {
+        "value": 1.8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Field hedgerow"
+      },
+      "width": {
+        "value": 1.6,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Field hedgerow"
+      },
+      "points": {
+        "value": [
+          [
+            242.0,
+            -300.0
+          ],
+          [
+            243.5,
+            -150.0
+          ],
+          [
+            241.5,
+            40.0
+          ],
+          [
+            242.0,
+            58.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Just beyond the AMA flight box (229 m past the safety line)"
+      }
+    },
+    {
+      "id": "hedge-north-e",
+      "type": "hedge",
+      "zone": "countryside",
+      "collides": false,
+      "height": {
+        "value": 1.8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Field hedgerow"
+      },
+      "width": {
+        "value": 1.6,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Field hedgerow"
+      },
+      "points": {
+        "value": [
+          [
+            242.0,
+            72.0
+          ],
+          [
+            244.0,
+            180.0
+          ],
+          [
+            242.5,
+            300.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Just beyond the AMA flight box (229 m past the safety line)"
+      }
+    },
+    {
+      "id": "fence-north",
+      "type": "fence",
+      "zone": "countryside",
+      "style": "wire",
+      "collides": false,
+      "points": {
+        "value": [
+          [
+            239.5,
+            -300.0
+          ],
+          [
+            239.5,
+            300.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Post-and-wire boundary in front of the hedge"
+      }
+    },
+    {
+      "id": "paddock-fence",
+      "type": "fence",
+      "zone": "countryside",
+      "style": "rail",
+      "collides": false,
+      "points": {
+        "value": [
+          [
+            -20.0,
+            330.0
+          ],
+          [
+            60.0,
+            330.0
+          ],
+          [
+            60.0,
+            440.0
+          ],
+          [
+            -20.0,
+            440.0
+          ],
+          [
+            -20.0,
+            330.0
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Paddock outside the flight box's side (AMA: 305 m)"
+      }
+    },
+    {
+      "id": "cows",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "cow",
+      "placements": {
+        "value": [
+          [
+            12.5,
+            344.75,
+            298.2
+          ],
+          [
+            24.5,
+            395.0,
+            315.3
+          ],
+          [
+            38.0,
+            423.5,
+            257.4
+          ],
+          [
+            17.0,
+            370.0,
+            243.6
+          ],
+          [
+            -3.0,
+            356.25,
+            5.3
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Grazing cattle (SC-14)"
+      }
+    },
+    {
+      "id": "sheep",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "sheep",
+      "placements": {
+        "value": [
+          [
+            35.25,
+            355.75,
+            83.9
+          ],
+          [
+            16.25,
+            407.25,
+            274.0
+          ],
+          [
+            10.75,
+            385.0,
+            359.3
+          ],
+          [
+            27.25,
+            408.5,
+            83.9
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "A few sheep (SC-14)"
+      }
+    },
+    {
+      "id": "bale-stacks",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "bale_stack",
+      "placements": {
+        "value": [
+          [
+            -34.0,
+            318.0,
+            90
+          ],
+          [
+            -31.0,
+            321.5,
+            0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Big square bales by the paddock gate"
+      }
+    },
+    {
+      "id": "tractor",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "tractor",
+      "placements": {
+        "value": [
+          [
+            -27.0,
+            326.0,
+            250
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "A tractor by the bale stacks"
+      }
+    },
+    {
+      "id": "farm-barn",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "barn",
+      "placements": {
+        "value": [
+          [
+            597.5,
+            345.0,
+            205.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Farmstead seen through the treeline's NNE gap (az 30 deg)"
+      }
+    },
+    {
+      "id": "farm-silo",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "silo",
+      "placements": {
+        "value": [
+          [
+            611.5,
+            351.0,
+            0.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Farmstead seen through the treeline's NNE gap (az 30 deg)"
+      }
+    },
+    {
+      "id": "farm-farmhouse",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "farmhouse",
+      "placements": {
+        "value": [
+          [
+            591.5,
+            321.0,
+            200.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Farmstead seen through the treeline's NNE gap (az 30 deg)"
+      }
+    },
+    {
+      "id": "farm-tractor",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "tractor",
+      "placements": {
+        "value": [
+          [
+            585.5,
+            349.0,
+            120.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Farmstead seen through the treeline's NNE gap (az 30 deg)"
+      }
+    },
+    {
+      "id": "maple-farm-south-005",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "shade_tree",
+      "placements": {
+        "value": [
+          [
+            555.0,
+            295.0,
+            8.8
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "LU-22 downloaded Maple on the southwest farm edge; irregularly grouped with its neighbor"
+      }
+    },
+    {
+      "id": "maple-farm-west-002",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "shade_tree",
+      "placements": {
+        "value": [
+          [
+            580.0,
+            280.0,
+            35.6
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "LU-22 downloaded Maple on the southwest farm edge; irregularly grouped with its neighbor"
+      }
+    },
+    {
+      "id": "maple-forest-southwest-001",
+      "type": "instances",
+      "zone": "countryside",
+      "collides": false,
+      "prefab": "shade_tree",
+      "placements": {
+        "value": [
+          [
+            -480.0,
+            -770.0,
+            318.8
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "LU-22 downloaded Maple in a southwest forest-edge gap, separated from the farm pair"
+      }
+    },
+    {
+      "id": "church",
+      "type": "instances",
+      "zone": "horizon",
+      "collides": false,
+      "prefab": "church",
+      "placements": {
+        "value": [
+          [
+            -164.75,
+            -2093.5,
+            0.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Village church in the low-skyline west sector"
+      }
+    },
+    {
+      "id": "village",
+      "type": "instances",
+      "zone": "horizon",
+      "collides": false,
+      "prefab": "village_house",
+      "placements": {
+        "value": [
+          [
+            -240.75,
+            -2199.75,
+            224.8
+          ],
+          [
+            -107.5,
+            -2135.5,
+            76.1
+          ],
+          [
+            -176.5,
+            -2212.75,
+            266.4
+          ],
+          [
+            -118.75,
+            -2208.75,
+            337.4
+          ],
+          [
+            -208.75,
+            -2195.25,
+            4.5
+          ],
+          [
+            -129.75,
+            -1986.0,
+            130.0
+          ],
+          [
+            -100.75,
+            -2076.75,
+            293.4
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Village around the church"
+      }
+    },
+    {
+      "id": "turbines",
+      "type": "instances",
+      "zone": "horizon",
+      "collides": false,
+      "prefab": "turbine",
+      "placements": {
+        "value": [
+          [
+            1075.0,
+            3749.0,
+            250.0
+          ],
+          [
+            856.5,
+            4030.0,
+            250.0
+          ],
+          [
+            604.0,
+            4297.75,
+            250.0
+          ],
+          [
+            318.0,
+            4549.0,
+            250.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Wind farm in the east corridor; rotors face the SW breeze (and the pilot)"
+      }
+    },
+    {
+      "id": "pylons",
+      "type": "instances",
+      "zone": "horizon",
+      "collides": false,
+      "prefab": "pylon",
+      "placements": {
+        "value": [
+          [
+            109.0,
+            1245.25,
+            178.0
+          ],
+          [
+            81.75,
+            1337.5,
+            178.0
+          ],
+          [
+            50.0,
+            1429.25,
+            178.0
+          ],
+          [
+            13.25,
+            1520.0,
+            178.0
+          ],
+          [
+            -28.0,
+            1609.75,
+            178.0
+          ]
+        ],
+        "unit": "m, m, deg",
+        "kind": "estimated",
+        "source": "Transmission line in the tree-free east corridor, in front of the wind farm"
+      }
+    }
+  ]
+}

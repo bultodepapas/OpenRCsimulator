@@ -4,12 +4,18 @@ const Library := preload("res://scenery/imported_vegetation.gd")
 const Palette := preload("res://scenery/palette.gd")
 const MATURE_MAPLE_HEIGHT_M := 14.0
 const CLUB_MAPLE_SEED := 793949324 # Existing shade-trees placement 6; keep the clubhouse Maple mature.
+const ORCHARD_BERRY_GROUP_ID := "countryside-orchard"
+const ORCHARD_BERRY_ASSET := "forest_leafy_shrub"
 
 static func handles(prefab: String) -> bool:
 	return prefab in ["shade_tree", "sapling", "bush", "flower_clump"]
 
-static func spec(prefab: String, seed: int) -> Dictionary:
+static func spec(prefab: String, seed: int, group_id: String = "") -> Dictionary:
 	var asset_id := Library.resolve_id(prefab, seed)
+	if prefab == "bush" and group_id == ORCHARD_BERRY_GROUP_ID:
+		# LU-28's compact berry rows reuse the downloaded forest shrub. Keeping the
+		# choice here shares dimensions and fit with the scenery collision proxy.
+		asset_id = ORCHARD_BERRY_ASSET
 	var asset := Library.get_asset(asset_id)
 	if asset.is_empty():
 		return {}

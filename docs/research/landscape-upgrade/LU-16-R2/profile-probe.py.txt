@@ -1,0 +1,111 @@
+"""Write a 256 x 96 profile from the retained SRTM source into this scratch project."""
+from __future__ import annotations
+
+import hashlib
+import importlib.util
+import json
+from pathlib import Path
+import sys
+
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[2]
+sys.dont_write_bytecode = True
+SOURCE = ROOT / "tools/terrain/import_mountains.py"
+spec = importlib.util.spec_from_file_location("mountain_importer", SOURCE)
+module = importlib.util.module_from_spec(spec)
+assert spec.loader is not None
+spec.loader.exec_module(module)
+sampler = module.source_sampler() if hasattr(module, "source_sampler") else None
+
+module.COLUMNS = 128
+module.ROWS = 48
+coarse_bytes, _coarse_normal_bytes = module.generate()
+coarse = json.loads(coarse_bytes)
+assert coarse["columns"] == 128 and coarse["rows"] == 48
+coarse_out = HERE / "mountains-128x48.json"
+coarse_out.write_bytes(coarse_bytes)
+
+module.COLUMNS = 192
+module.ROWS = 72
+middle_bytes, _middle_normal_bytes = module.generate()
+middle = json.loads(middle_bytes)
+assert middle["columns"] == 192 and middle["rows"] == 72
+middle_out = HERE / "mountains-192x72.json"
+middle_out.write_bytes(middle_bytes)
+
+module.COLUMNS = 256
+module.ROWS = 96
+profile_bytes, _normal_bytes = module.generate()
+profile = json.loads(profile_bytes)
+assert profile["columns"] == 256 and profile["rows"] == 96
+out = HERE / "mountains-256x96.json"
+out.write_bytes(profile_bytes)
+
+
+def triangular_height(data: dict, u: float, v: float) -> float:
+    columns, rows = data["columns"], data["rows"]
+    x = min(columns - 1.0e-12, max(0.0, u * columns))
+    y = min(rows - 1.0e-12, max(0.0, v * rows))
+    column, row = int(x), int(y)
+    fx, fy = x - column, y - row
+    stride = columns + 1
+    heights = data["heights_m"]
+    a = heights[row * stride + column]
+    b = heights[(row + 1) * stride + column]
+    c = heights[row * stride + column + 1]
+    d = heights[(row + 1) * stride + column + 1]
+    if fx + fy <= 1.0:
+        return a * (1.0 - fx - fy) + b * fy + c * fx
+    return b * (1.0 - fx) + d * (fx + fy - 1.0) + c * (1.0 - fy)
+
+
+quality = {}
+if callable(sampler):
+    profiles = {"128x48": coarse, "192x72": middle, "256x96": profile}
+    diffs = {name: [] for name in profiles}
+    point_count = 0
+    for row in range(97):
+        for column in range(257):
+            u, v = column / 256, row / 96
+            actual = float(sampler(u, v))
+            point_count += 1
+            for name, data in profiles.items():
+                diffs[name].append(abs(triangular_height(data, u, v) - actual))
+    for name, values in diffs.items():
+        values.sort()
+        quality[name] = {
+            "samples": len(values),
+            "max_abs_m": values[-1],
+            "p95_abs_m": values[int((len(values) - 1) * 0.95)],
+            "rms_m": (sum(value * value for value in values) / len(values)) ** 0.5,
+        }
+    quality["sample_grid"] = "all 256x96 mesh vertices; triangular interpolation compared with source_sampler"
+
+report = {
+    "profile": str(out),
+    "profile_bytes": len(profile_bytes),
+    "profile_sha256": hashlib.sha256(profile_bytes).hexdigest(),
+    "source_crop_sha256": profile["source_crop_sha256"],
+    "columns": profile["columns"],
+    "rows": profile["rows"],
+    "sample_count": len(profile["heights_m"]),
+    "coarse_profile_bytes": len(coarse_bytes),
+    "coarse_profile_path": str(coarse_out),
+    "middle_profile_bytes": len(middle_bytes),
+    "middle_profile_path": str(middle_out),
+    "source_sampler_available": hasattr(module, "source_sampler"),
+    "mesh_error_at_fine_grid_vertices": quality,
+}
+if hasattr(module, "source_sampler"):
+    if callable(sampler):
+        maximum_grid_delta = 0.0
+        for row in range(module.ROWS + 1):
+            for column in range(module.COLUMNS + 1):
+                sampled = float(sampler(column / module.COLUMNS, row / module.ROWS))
+                stored = profile["heights_m"][row * (module.COLUMNS + 1) + column]
+                maximum_grid_delta = max(maximum_grid_delta, abs(sampled - stored))
+        report["source_sampler_max_grid_delta_m"] = maximum_grid_delta
+report_path = HERE / "profile-report.json"
+report_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+print(json.dumps(report, sort_keys=True))

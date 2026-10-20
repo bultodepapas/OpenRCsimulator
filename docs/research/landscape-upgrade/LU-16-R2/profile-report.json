@@ -1,0 +1,36 @@
+{
+  "profile": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\mountains-r2\\lod-probe\\mountains-256x96.json",
+  "profile_bytes": 165026,
+  "profile_sha256": "43b179f04e1a358fa57fd1d220f467bf25adbc1e28c5e82cb2dfb9fc59df7a93",
+  "source_crop_sha256": "d639fc35d79a5117cd8a9474941278fe8b306dc1463dc1e1938092eb607d2222",
+  "columns": 256,
+  "rows": 96,
+  "sample_count": 24929,
+  "coarse_profile_bytes": 42042,
+  "coarse_profile_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\mountains-r2\\lod-probe\\mountains-128x48.json",
+  "middle_profile_bytes": 93377,
+  "middle_profile_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\mountains-r2\\lod-probe\\mountains-192x72.json",
+  "source_sampler_available": true,
+  "mesh_error_at_fine_grid_vertices": {
+    "128x48": {
+      "samples": 24929,
+      "max_abs_m": 127.6099999999999,
+      "p95_abs_m": 31.18100000000004,
+      "rms_m": 13.774237686274164
+    },
+    "192x72": {
+      "samples": 24929,
+      "max_abs_m": 73.0884999999999,
+      "p95_abs_m": 19.48850000000016,
+      "rms_m": 8.71064460926532
+    },
+    "256x96": {
+      "samples": 24929,
+      "max_abs_m": 0.0049999999999954525,
+      "p95_abs_m": 0.004445891203690877,
+      "rms_m": 0.002722281882447306
+    },
+    "sample_grid": "all 256x96 mesh vertices; triangular interpolation compared with source_sampler"
+  },
+  "source_sampler_max_grid_delta_m": 0.0049999999999954525
+}

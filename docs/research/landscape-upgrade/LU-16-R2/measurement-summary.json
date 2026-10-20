@@ -1,0 +1,130 @@
+{
+  "pilot_north": {
+    "reference": {
+      "per_run_median_ms": [
+        0.915,
+        0.864,
+        0.854
+      ],
+      "per_run_p95_ms": [
+        1.618,
+        1.604,
+        1.7
+      ],
+      "median_of_p95_ms": 1.618,
+      "draws": 84.0,
+      "primitives": 204089.0
+    },
+    "final": {
+      "per_run_median_ms": [
+        0.911,
+        0.89,
+        0.969
+      ],
+      "per_run_p95_ms": [
+        1.453,
+        1.71,
+        1.921
+      ],
+      "median_of_p95_ms": 1.71,
+      "draws": 84.0,
+      "primitives": 219449.0
+    }
+  },
+  "mountain_detail": {
+    "reference": {
+      "per_run_median_ms": [
+        0.523,
+        0.533,
+        0.492
+      ],
+      "per_run_p95_ms": [
+        1.005,
+        0.946,
+        0.884
+      ],
+      "median_of_p95_ms": 0.946,
+      "draws": 4.0,
+      "primitives": 94176.0
+    },
+    "final": {
+      "per_run_median_ms": [
+        0.535,
+        0.504,
+        0.531
+      ],
+      "per_run_p95_ms": [
+        0.955,
+        0.879,
+        1.132
+      ],
+      "median_of_p95_ms": 0.955,
+      "draws": 4.0,
+      "primitives": 105696.0
+    }
+  },
+  "mountain_oblique": {
+    "reference": {
+      "per_run_median_ms": [
+        0.693,
+        0.646,
+        0.674
+      ],
+      "per_run_p95_ms": [
+        1.84,
+        1.847,
+        1.787
+      ],
+      "median_of_p95_ms": 1.84,
+      "draws": 19.0,
+      "primitives": 116233.0
+    },
+    "final": {
+      "per_run_median_ms": [
+        0.635,
+        0.673,
+        0.654
+      ],
+      "per_run_p95_ms": [
+        1.948,
+        1.877,
+        2.0
+      ],
+      "median_of_p95_ms": 1.948,
+      "draws": 19.0,
+      "primitives": 127753.0
+    }
+  },
+  "twilight_aircraft": {
+    "reference": {
+      "per_run_median_ms": [
+        1.159,
+        1.109,
+        1.104
+      ],
+      "per_run_p95_ms": [
+        1.393,
+        1.492,
+        1.427
+      ],
+      "median_of_p95_ms": 1.427,
+      "draws": 312.0,
+      "primitives": 302745.0
+    },
+    "final": {
+      "per_run_median_ms": [
+        1.156,
+        1.131,
+        1.107
+      ],
+      "per_run_p95_ms": [
+        2.177,
+        1.532,
+        1.376
+      ],
+      "median_of_p95_ms": 1.532,
+      "draws": 312.0,
+      "primitives": 318105.0
+    }
+  }
+}

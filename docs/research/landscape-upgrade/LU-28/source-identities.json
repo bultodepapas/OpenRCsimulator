@@ -1,0 +1,15 @@
+{
+  "tools/scenery/place.py": "669349001c655af991beef68ca86aeb87ad9c6d614a58575ddb4999b1e7a0cac",
+  "tools/scenery/bake_countryside.py": "7debd339b6e00c8ac6faae122fd64741c64c9def1d9aa70b3fc712bae4545804",
+  "app/data/scenery/default.json": "053acc415552b47f3e8e321928f646af6fb67a074a43406568ad23783c722bc5",
+  "app/data/scenery/countryside.json": "9c9cd7df8a7ed4a58605d66d8992672236ecaafa039a3a0df9adbccb4a215680",
+  "app/render/field.gd": "7ba5855fb6939180b103d6dfdc4f972924a3bb81ce8973eee49503b1dc3afdb5",
+  "app/render/landscape_upgrade/countryside.gd": "5a26c006ee728670f7f6d2a978f04cfff5e02c8c1167fe25299cc4e477de290f",
+  "app/render/landscape_upgrade/countryside_surface.gdshader": "480dcd73612bb1da051ef48b9591ab2daa105d8b650f940b4c6eb91cb1332661",
+  "app/scenery/scenery.gd": "3c6d7ee530c49dfff935ef4993bfb88185854b68739528a97ef0f3f91934d795",
+  "app/scenery/vegetation_placement.gd": "97e2072775587efcb784b311050b6018e9a157662a96271c0e738464031fe4b8",
+  "app/scenery/collision_world.gd": "b9deaff07b19789ff1d5f9a0e545263f12b52d22fc8484f87139bf43c47dd957",
+  "app/tests/capture_landscape_upgrade.gd": "d2a159bf0677a8154f12758996407547768aab97669f8c23cc556e5892ef6689",
+  "app/tests/test_countryside.gd": "1cd229be2133b94270dbf941115e8082b18d7da54c8b6120e4c3cc36e8ffc1a1",
+  "tools/scenery/test_countryside.py": "3d37ee28af3b856f3aa9c80c5fd310bd584525a203e6373eeac056bfecef9ecd"
+}

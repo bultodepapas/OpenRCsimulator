@@ -1,0 +1,31 @@
+{
+  "retrieved": "2026-10-20",
+  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "provider_terms": "https://docs.polyhaven.com/en/faq",
+  "assets": [
+    {
+      "asset": "aerial_grass_rock",
+      "author": "Rob Tuytel",
+      "provider": "Poly Haven",
+      "license": "CC0-1.0",
+      "page": "https://polyhaven.com/a/aerial_grass_rock",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/aerial_grass_rock/aerial_grass_rock_diff_1k.jpg",
+      "file": "aerial_grass_rock_diff_1k.jpg",
+      "bytes": 666655,
+      "sha256": "57b8041bfe0d0f01430e4dbaad45e7ddddf0a9fc97317f90dbc51f7b0d9e1b5d",
+      "modifications": "Downloaded JPG unchanged. Godot imports VRAM-compressed 1024px mipmaps. Shader uses luminance to modulate art-directed material colors."
+    },
+    {
+      "asset": "aerial_rocks_01",
+      "author": "Rob Tuytel",
+      "provider": "Poly Haven",
+      "license": "CC0-1.0",
+      "page": "https://polyhaven.com/a/aerial_rocks_01",
+      "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/aerial_rocks_01/aerial_rocks_01_diff_1k.jpg",
+      "file": "aerial_rocks_01_diff_1k.jpg",
+      "bytes": 812635,
+      "sha256": "0f184f4a1da57342d240086b5abfb804bb129bc649024c9546b054bb918264b7",
+      "modifications": "Downloaded JPG unchanged. Godot imports VRAM-compressed 1024px mipmaps. Shader uses luminance to modulate art-directed material colors."
+    }
+  ]
+}

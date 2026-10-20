@@ -1,0 +1,147 @@
+{
+  "format": "openrc-countryside-evidence v1",
+  "date": "2026-10-20",
+  "method": "Three sequential reference/candidate pairs, four fixed views, 60 warm-up and 360 measured frames each. Native 1280x720, RTX 3090, Compatibility. Reference restores unchanged woodland via --plain_reference=on. Wall frame times, not isolated GPU or flight-solver timings.",
+  "cases": {
+    "pilot_north": {
+      "reference": {
+        "p95_ms_median": 2.08,
+        "p95_ms_range": [
+          2.058,
+          2.194
+        ],
+        "draws": [
+          78.0
+        ],
+        "primitives": [
+          341329.0
+        ],
+        "video_memory_bytes": [
+          407226354.0
+        ]
+      },
+      "candidate": {
+        "p95_ms_median": 1.613,
+        "p95_ms_range": [
+          1.357,
+          1.775
+        ],
+        "draws": [
+          94.0
+        ],
+        "primitives": [
+          236533.0
+        ],
+        "video_memory_bytes": [
+          428641382.0,
+          432901766.0
+        ]
+      }
+    },
+    "plain_east": {
+      "reference": {
+        "p95_ms_median": 2.206,
+        "p95_ms_range": [
+          2.123,
+          2.286
+        ],
+        "draws": [
+          49.0
+        ],
+        "primitives": [
+          317895.0
+        ],
+        "video_memory_bytes": [
+          407226354.0
+        ]
+      },
+      "candidate": {
+        "p95_ms_median": 1.55,
+        "p95_ms_range": [
+          1.531,
+          1.708
+        ],
+        "draws": [
+          59.0
+        ],
+        "primitives": [
+          166451.0
+        ],
+        "video_memory_bytes": [
+          428641382.0,
+          432901766.0
+        ]
+      }
+    },
+    "plain_farm": {
+      "reference": {
+        "p95_ms_median": 2.048,
+        "p95_ms_range": [
+          1.533,
+          2.113
+        ],
+        "draws": [
+          29.0
+        ],
+        "primitives": [
+          290079.0
+        ],
+        "video_memory_bytes": [
+          407226354.0
+        ]
+      },
+      "candidate": {
+        "p95_ms_median": 1.214,
+        "p95_ms_range": [
+          1.051,
+          1.284
+        ],
+        "draws": [
+          37.0
+        ],
+        "primitives": [
+          137795.0
+        ],
+        "video_memory_bytes": [
+          428641382.0,
+          432901766.0
+        ]
+      }
+    },
+    "plain_overview": {
+      "reference": {
+        "p95_ms_median": 2.673,
+        "p95_ms_range": [
+          2.411,
+          3.02
+        ],
+        "draws": [
+          185.0
+        ],
+        "primitives": [
+          427765.0
+        ],
+        "video_memory_bytes": [
+          407226354.0
+        ]
+      },
+      "candidate": {
+        "p95_ms_median": 2.466,
+        "p95_ms_range": [
+          2.253,
+          2.538
+        ],
+        "draws": [
+          211.0
+        ],
+        "primitives": [
+          326487.0
+        ],
+        "video_memory_bytes": [
+          428641382.0,
+          432901766.0
+        ]
+      }
+    }
+  }
+}

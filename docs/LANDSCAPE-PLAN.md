@@ -1,8 +1,8 @@
 # Landscape plan: current field and open work
 
-2026-10-17 · Revision 9 · Step prefix: **L**
+2026-10-20 · Revision 12 · Step prefix: **L**
 
-**Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…27 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
+**Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…28 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
 
 **Owns:** field data, landscape rendering and tools listed in the [track registry](README.md#tracks-plans-and-step-ids). Field-world composition is coordinated in [FIELD-WORLD-PLAN](FIELD-WORLD-PLAN.md); selectable time is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md). Scenery assets remain in [SCENERY-PLAN](SCENERY-PLAN.md).
 
@@ -11,6 +11,8 @@
 Home selects Club field or Green paradise through the explicit landscape catalog. The scenery, lake and vegetation work below describes Club field; Green uses one flat grass mesh without those layers. [Contributor guide](LANDSCAPES.md), [selection plan and remaining gates](plans/landscape-selection.md), [L21–L24 verification](research/landscape-upgrade/L21-24/README.md).
 
 - L0–L7 provide the capture baseline, fixed-sun sky/haze/clouds, shared field builder, treeline cards and far landscape. L6 uses validated CC0 source packages and a small runtime atlas; detailed source meshes remain authoring inputs.
+- LU-16-R2 refines Club's downloaded Colombian SRTM mountains at 1.6–8.6 km north. Four chunks now use 27,648 triangles, source-derived relief/habitat textures and two compressed CC0 photographs for rock and vegetation variation. These mountains remain visual-only. [Sources, captures and repeated cost measurements](research/landscape-upgrade/LU-16-R2/README.md).
+- LU-28 adds 50 agricultural parcels, a divided highway, connected village/farm roads, eight houses, a second farmyard, fences, shrub crop rows and cattle. Offline geometry uses 24 spatial batches and 6,380 triangles; the road photograph is downloaded CC0 and other assets are reused. Surfaces remain visual-only; added structures use the existing scenery collision pipeline. [Research, captures, checks and cost](research/landscape-upgrade/LU-28/README.md).
 - L9 has filtered turf and field surfaces. L9e is engineering-verified; L9b's visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
 - L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10a-R1](research/visual-quality-implementation/L10a/README.md) adds textured fabric, seams, folds and mast fittings. [L10b-R1](research/visual-quality-implementation/L10b/README.md) renews the station with textured timber, powder-coated framing and fitted hardware. [L10c-R1/R2](research/visual-quality-implementation/L10c/README.md) add bevelled rails, two-sided hardware, downloaded wood/metal textures, weathering and bounded grass/clover at post feet. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
 - L14 static obstacle contacts now use the shared float64 LU-05 collision world, built from field, scenery and light data. Its inventory includes field-tree trunk/crown proxies and nearby structures, vehicles, parked aircraft, lights and field objects. The [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) records coverage and limits. Proxy sizes, foliage responses and impact thresholds are gameplay estimates, not sourced structural strength; the nearby-query cost gate remains open.
@@ -61,7 +63,7 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 
 ## Landscape integration
 
-LU-00…27 adds licensed field assets, night lighting, imported vegetation and a finite lake. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
+LU-00…28 adds licensed field assets, night lighting, imported vegetation, a finite lake and agricultural surroundings. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
 
 | Remaining gate | Current status | Evidence |
 | --- | --- | --- |

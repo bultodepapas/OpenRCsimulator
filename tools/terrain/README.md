@@ -1,5 +1,18 @@
 # Terrain generation tools
 
+## Downloaded mountain backdrop (LU-16-R2)
+
+`import_mountains.py` reduces a retained public SRTM crop to the Club field's
+four mountain chunks (27,648 triangles), with a shared mipmapped relief texture.
+`bake_mountain_habitat.py` precomputes rock, sheltered vegetation and upland masks
+for two downloaded CC0 photographs. Both generators support `--check`.
+Source, licenses,
+transforms and regeneration commands: [mountain provenance](../../assets/landscape/mountains/README.md).
+The backdrop starts 1.6 km north of the pilot; it is visual-only and does not
+change terrain contact. [Native captures and repeated measurements](../../docs/research/landscape-upgrade/LU-16-R2/README.md).
+
+## Original L7 hill profile
+
 `gen_terrain.py` generates the committed visual hill profile used by L7. This is a partial L13a delivery: it does not create the full terrain grid, near-field swales, runway masks, collision terrain, or physics data.
 
 Run from the repository root:

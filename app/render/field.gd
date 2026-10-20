@@ -17,6 +17,7 @@ const Windsock = preload("res://render/windsock.gd")
 const Scenery = preload("res://scenery/scenery.gd") # SC-02a: on by default; explicit scenery-off remains a no-op.
 const LandscapeOptions = preload("res://render/landscape_upgrade/options.gd")
 const DistantRidges = preload("res://render/landscape_upgrade/ridges.gd")
+const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
@@ -107,6 +108,16 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 		var ridges := DistantRidges.build(lighting)
 		result.add_child(ridges)
 		materials.append(ridges.get_meta("lighting_material") as ShaderMaterial)
+	if LandscapeOptions.enabled() and scenery_node != null and field.get("id", "") == "default":
+		var definition: Dictionary = scenery_node.get_meta("source_definition", {})
+		var has_plain_layout := false
+		for group: Dictionary in definition.get("groups", []):
+			has_plain_layout = has_plain_layout or group.get("id") == "countryside-hamlet"
+		if has_plain_layout:
+			var countryside := Countryside.build(lighting)
+			result.add_child(countryside)
+			if countryside.has_meta("lighting_material"):
+				materials.append(countryside.get_meta("lighting_material") as ShaderMaterial)
 	FieldProjectedShadows.attach(result, field, lighting)
 	result.set_meta("lighting_materials", materials)
 	result.set_meta("lighting_snapshot", lighting.duplicate(true))

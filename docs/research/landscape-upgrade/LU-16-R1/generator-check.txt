@@ -1,0 +1,2 @@
+Original source/output check passed.
+Disposable elevation mutation rejected: Mountain profile is stale or edited
