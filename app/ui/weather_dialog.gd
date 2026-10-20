@@ -282,9 +282,8 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	tab_bar.tab_changed.connect(_on_tab_changed)
 	_set_tab_titles()
 
-	error_label = _label(ERROR_TEXT, "SecondaryLabel", false, false)
+	error_label = _label(ERROR_TEXT, "ErrorLabel", false, false) # UI-35b (UI-30 VC-5): errors read as errors
 	error_label.name = "WeatherError"
-	error_label.add_theme_color_override("font_color", UiTheme.TEXT)
 	error_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	error_label.visible = false
 	column.add_child(error_label)
@@ -299,12 +298,13 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	apply_button = Button.new()
 	apply_button.name = "Apply"
 	apply_button.text = "Apply"
+	apply_button.theme_type_variation = "PrimaryButton" # UI-35a (UI-30 VC-1): the commit action, as in Time and Failures
 	apply_button.custom_minimum_size.x = 132.0
 	apply_button.pressed.connect(_on_apply)
 	actions.add_child(apply_button)
 	column.add_child(actions)
 	_set_focus_ring()
-	_set_fields(_base_config)
+	_set_fields(_base_config, _matching_preset(_base_config)) # UI-36 (UI-30 SC-6): name a stock preset when it is one
 
 
 func _ready() -> void:
@@ -444,7 +444,9 @@ func _update_scroll_height() -> void:
 	var fixed_chrome_height: float = panel.get_combined_minimum_size().y - tab_scroll.custom_minimum_size.y
 	var viewport_height: float = viewport_size.y
 	var available_height: float = maxf(0.0, viewport_height - 32.0 - fixed_chrome_height)
-	var target_height: float = minf(340.0, available_height)
+	# UI-35a (UI-30 SP-3): the body takes the height its page needs, up to 88% of the canvas, before scrolling.
+	var page_height: float = tab_scroll.get_child(0).get_combined_minimum_size().y if tab_scroll.get_child_count() > 0 else 340.0
+	var target_height: float = minf(minf(page_height, maxf(340.0, viewport_height * 0.88 - fixed_chrome_height)), available_height)
 	if available_height >= 120.0:
 		target_height = maxf(target_height, 120.0)
 	if absf(target_height - tab_scroll.custom_minimum_size.y) >= 0.5:
@@ -501,6 +503,16 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 		_set_error_visible(false)
 	_setting_fields = false
 	_set_focus_ring()
+
+
+## Picker index of the stock preset equal to `config`, or 0 (Custom).
+func _matching_preset(config: Dictionary) -> int:
+	var entries: Array[Dictionary] = WeatherSettings.presets()
+	for index: int in entries.size():
+		var checked: Dictionary = WeatherSettings.validate(entries[index].config)
+		if checked.get("ok", false) and checked.config == config:
+			return index + 1
+	return 0
 
 
 func _on_preset_selected(index: int) -> void:
@@ -801,6 +813,7 @@ func _set_error_visible(visible: bool) -> void:
 func _on_tab_changed(_tab: int) -> void:
 	var focused: Control = get_viewport().gui_get_focus_owner()
 	wind_page.visible = _tab == 0
+	subtitle_label.visible = _tab == 0 # UI-36 (UI-30 SC-8): the wind intro belongs to the Wind page only
 	turbulence_page.visible = _tab == 1
 	atmosphere_page.visible = _tab == 2
 	time_of_day_page.visible = _tab == 3

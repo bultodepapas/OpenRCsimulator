@@ -129,6 +129,10 @@ func _dialog_flow() -> void:
 	_check("keyboard focus scrolls the turbulence body to the seed field",
 		ui.focus_name() == "seed" and dialog.tab_scroll.scroll_vertical > 0,
 		"scroll=%d focus=%s" % [dialog.tab_scroll.scroll_vertical, ui.focus_name()])
+	# UI-35a (UI-30 SC-5): the first Escape ends the field edit; the second cancels the whole draft.
+	await ui.tap(KEY_ESCAPE)
+	await ui.settle()
+	_check("Escape while editing a field keeps the Conditions draft open", app.weather_dialog != null)
 	await ui.tap(KEY_ESCAPE)
 	await ui.settle()
 	_check("cancel discards turbulence draft and returns Home focus", app.weather_dialog == null

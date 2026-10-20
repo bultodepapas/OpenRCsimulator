@@ -2348,7 +2348,10 @@ func _set_status(text: String, is_error: bool) -> void:
 	status_label.tooltip_text = text
 	status_label.text = text
 	status_label.visible = not text.is_empty()
-	status_label.add_theme_color_override("font_color", Color(1.0, 0.62, 0.42) if is_error else Color(0.86, 0.9, 0.94))
+	# UI-35b (UI-30 VC-5, AL-3): the theme's error colour plus a word, so an error never relies on colour alone.
+	status_label.add_theme_color_override("font_color", ScreenTheme.ERROR if is_error else Color(0.86, 0.9, 0.94))
+	if is_error and not text.is_empty():
+		status_label.text = tr("Problem: %s") % text
 
 
 static func _section_label(text: String) -> Label:

@@ -104,6 +104,9 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 	if escape_before_gui:
+		var focused := get_viewport().gui_get_focus_owner()
+		if focused is LineEdit and (focused as LineEdit).is_editing():
+			return # UI-35a (UI-30 SC-5): the field's own Escape ends the edit; the next Escape cancels the screen
 		get_viewport().set_input_as_handled()
 		close_requested.emit()
 
