@@ -22,7 +22,7 @@ reviews:
   path_instructions:
     - path: "app/{sim,physics}/**"
       instructions: >-
-        Apply STACK.md's kernel boundaries. Simulation state uses float64
+        Apply docs/STACK.md's kernel boundaries. Simulation state uses float64
         scalars and packed float64 arrays; engine vector/transform types belong
         at rendering boundaries. Check RK stage time/state, deterministic replay,
         checkpoint identity and bounded read-only observers. Vehicle behavior
@@ -30,7 +30,7 @@ reviews:
         physical realism; intentional physics changes need explained evidence.
     - path: "app/data/**"
       instructions: >-
-        Apply AIRCRAFT_CONTRACT.md where applicable. Aircraft v2 quantities
+        Apply docs/AIRCRAFT_CONTRACT.md where applicable. Aircraft v2 quantities
         require value, unit, kind and source; invalid data cannot fly. Review
         generated changes together with their source pipeline and provenance.
         Do not suggest hand-editing generated physics or geometry.
@@ -46,8 +46,8 @@ knowledge_base:
     enabled: true
     filePatterns:
       - "**/AGENTS.md"
-      - "STACK.md"
-      - "AIRCRAFT_CONTRACT.md"
+      - "docs/STACK.md"
+      - "docs/AIRCRAFT_CONTRACT.md"
 
 chat:
   auto_reply: false
