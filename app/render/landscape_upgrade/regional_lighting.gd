@@ -4,6 +4,7 @@ extends Node3D
 const Palette := preload("res://scenery/palette.gd")
 const Kit := preload("res://scenery/mesh_kit.gd")
 const Scenery := preload("res://scenery/scenery.gd")
+const PowerLines := preload("res://scenery/power_lines.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const BEACON := preload("res://render/landscape_upgrade/regional_beacon.gdshader")
 const WINDOW := preload("res://render/landscape_upgrade/regional_window.gdshader")
@@ -49,6 +50,8 @@ func _build(scenery: Dictionary) -> void:
 				Vector3(float(p.east), 0, -float(p.north)))
 			var seed := int(p.get("seed", 0))
 			match prefab:
+				"pylon":
+					_point(xf * Vector3(0, 30.12, 0), RED, false, 0.35, false, 3000, "pylon_top_lights")
 				"turbine":
 					_point(xf * Vector3(0, 82.4, 1.5), RED, true, 0.9, false, 12000, "turbine_beacons")
 					_fixture(xf * Vector3(0, 2.8, 3.3), 2.8, "turbine_service", false, 0.35)
@@ -66,6 +69,18 @@ func _build(scenery: Dictionary) -> void:
 								Vector3(side * 4.06, 3.2, -1.0 + i * 3.6)), Vector2(0.85, 2.35), 0.45, "church_windows")
 				"shed":
 					_fixture(xf * Vector3(0.6, 2.15, -1.4), 2.15, "shed_worklight", false, 0.4)
+		var placements: Array = group.get("placements", [])
+		for i in maxi(0, placements.size() - 1):
+			var a: Dictionary = placements[i]
+			var b: Dictionary = placements[i + 1]
+			if a.get("prefab", group.get("prefab", "")) != "pylon" or b.get("prefab", group.get("prefab", "")) != "pylon":
+				continue
+			var ax := Scenery._placement_xf(a.north, a.east, a.get("heading", 0))
+			var bx := Scenery._placement_xf(b.north, b.east, b.get("heading", 0))
+			# Steady red wire markers on the upper energized conductor.
+			# Static shader billboards share regional cells; no Light3D or tick.
+			_point(PowerLines.conductor_point(ax, bx, 4, 0.5), RED, false,
+				0.22, false, 3000, "power_wire_markers")
 	# Sparse junctions and gates, not a continuous bright road across the agricultural plain.
 	for p: Vector3 in [Vector3(948, 5.5, 430), Vector3(923, 5.5, -600), Vector3(-863, 4.5, 687)]:
 		_fixture(p, p.y, "rural_junctions", true, 1.0)

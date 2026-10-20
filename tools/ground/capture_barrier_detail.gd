@@ -78,7 +78,7 @@ func _run() -> void:
 		report["plants"] = vegetation.get_meta("layout").size()
 		report["plant_source_triangles"] = vegetation.get_meta("source_triangles")
 	var source_hashes := {}
-	for path: String in ["res://render/flightline_barrier.gd", "res://render/flightline_barrier.gdshader", "res://render/flightline_barrier_planting.gd", "res://render/flightline_barrier_foliage.gdshader", "res://render/flightline_barrier_soil.gdshader"]:
+	for path: String in ["res://render/flightline_barrier.gd", "res://render/flightline_barrier_detail.gd", "res://render/flightline_barrier.gdshader", "res://render/flightline_barrier_planting.gd", "res://render/flightline_barrier_foliage.gdshader", "res://render/flightline_barrier_soil.gdshader"]:
 		source_hashes[path] = FileAccess.get_sha256(path)
 	report["sources"] = source_hashes
 	var file := FileAccess.open(out.path_join("capture.json"), FileAccess.WRITE)

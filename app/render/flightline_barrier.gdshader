@@ -13,9 +13,13 @@ varying float height_m;
 varying float board_variation;
 varying vec2 metal_uv;
 varying float upward;
+varying float is_fitting;
+varying float fitting_tone;
 
 void vertex() {
 	is_wood = step(COLOR.b * 1.3, COLOR.r);
+	is_fitting = (1.0 - step(0.25, COLOR.g)) * (1.0 - is_wood);
+	fitting_tone = clamp((COLOR.b - 0.40) / 0.16, 0.0, 1.0);
 	height_m = VERTEX.y;
 	board_variation = clamp((COLOR.r - 0.72) / 0.18, 0.0, 1.0);
 	// Model-space mapping survives the damage batch's vertex/normal/colour rebuild.
@@ -44,9 +48,13 @@ void fragment() {
 	float wear = clamp(0.45 + damp * 0.42 + upward * 0.12, 0.0, 1.0);
 	vec3 steel = mix(COLOR.rgb * 0.78, texture(metal_color, metal_uv).rgb * 1.25, wear);
 	steel *= mix(vec3(1.0), vec3(0.48, 0.53, 0.37), damp * 0.6);
+	// Zinc-coated saddles and fasteners are cleaner than the older exposed posts.
+	float zinc_fleck = texture(metal_roughness, metal_uv * 0.7).r;
+	vec3 zinc = mix(vec3(0.43, 0.48, 0.49), vec3(0.65, 0.69, 0.69), fitting_tone);
+	steel = mix(steel, zinc * mix(0.93, 1.07, zinc_fleck), is_fitting);
 	ALBEDO = mix(steel, wood, is_wood);
-	ROUGHNESS = mix(mix(0.48, texture(metal_roughness, metal_uv).r, wear), clamp(rough * 0.5 + 0.43, 0.73, 0.97), is_wood);
-	METALLIC = mix(mix(0.65, texture(metalness, metal_uv).r, wear), 0.0, is_wood);
+	ROUGHNESS = mix(mix(mix(0.48, texture(metal_roughness, metal_uv).r, wear), 0.46 + zinc_fleck * 0.12, is_fitting), clamp(rough * 0.5 + 0.43, 0.73, 0.97), is_wood);
+	METALLIC = mix(mix(mix(0.65, texture(metalness, metal_uv).r, wear), 0.78, is_fitting), 0.0, is_wood);
 	NORMAL_MAP = mix(texture(metal_normal, metal_uv).rgb, texture(wood_normal, UV).rgb, is_wood);
-	NORMAL_MAP_DEPTH = mix(0.2, 0.25, is_wood);
+	NORMAL_MAP_DEPTH = mix(mix(0.2, 0.10, is_fitting), 0.25, is_wood);
 }

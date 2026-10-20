@@ -1,0 +1,227 @@
+{
+  "commands": {
+    "first": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/fence-ablation-final-20261020/first",
+      "--cue=flightline_barrier",
+      "--field-shadows=off"
+    ],
+    "repeat": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/fence-ablation-final-20261020/repeat",
+      "--cue=flightline_barrier",
+      "--field-shadows=off"
+    ],
+    "scenery": [
+      "xvfb-run",
+      "-a",
+      "-s",
+      "-screen 0 960x540x24",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "--path",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/app",
+      "--resolution",
+      "960x540",
+      "--rendering-driver",
+      "opengl3",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tools/ground/capture_windsock.gd",
+      "--",
+      "--out=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/fence-ablation-final-20261020/scenery",
+      "--cue=flightline_barrier",
+      "--field-shadows=off",
+      "--scenery=on"
+    ]
+  },
+  "complete": true,
+  "cue": "flightline_barrier",
+  "format": "openrc-l10c-review v1",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "identical_repeat": true,
+  "invisible_feature_control_rejected": true,
+  "metrics": {
+    "first": {
+      "close": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 3021,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 21.50380668652764
+      },
+      "overview": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 2727,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 22.36046938027136
+      },
+      "pilot_left": {
+        "added_draws": 5,
+        "added_primitives": 29628,
+        "changed_pixels": 16147,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 40.41828203381433,
+        "outside_cue_control_rejected": true,
+        "protected_runway_pixels": 22740
+      },
+      "pilot_right": {
+        "added_draws": 5,
+        "added_primitives": 29628,
+        "changed_pixels": 16279,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 39.89059524540819,
+        "outside_cue_control_rejected": true,
+        "protected_runway_pixels": 22740
+      },
+      "rear": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 3278,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 23.471934106162294
+      }
+    },
+    "repeat": {
+      "close": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 3021,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 21.50380668652764
+      },
+      "overview": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 2727,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 22.36046938027136
+      },
+      "pilot_left": {
+        "added_draws": 5,
+        "added_primitives": 29628,
+        "changed_pixels": 16147,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 40.41828203381433,
+        "outside_cue_control_rejected": true,
+        "protected_runway_pixels": 22740
+      },
+      "pilot_right": {
+        "added_draws": 5,
+        "added_primitives": 29628,
+        "changed_pixels": 16279,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 39.89059524540819,
+        "outside_cue_control_rejected": true,
+        "protected_runway_pixels": 22740
+      },
+      "rear": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 3278,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 23.471934106162294
+      }
+    },
+    "scenery": {
+      "close": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 3019,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 22.15071215634316
+      },
+      "overview": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 2003,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 21.43984023964054
+      },
+      "pilot_left": {
+        "added_draws": 5,
+        "added_primitives": 29628,
+        "changed_pixels": 16156,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 39.59785838078732,
+        "outside_cue_control_rejected": true,
+        "protected_runway_pixels": 22740
+      },
+      "pilot_right": {
+        "added_draws": 5,
+        "added_primitives": 29628,
+        "changed_pixels": 16281,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 39.01658374792703,
+        "outside_cue_control_rejected": true,
+        "protected_runway_pixels": 22740
+      },
+      "rear": {
+        "added_draws": 5,
+        "added_primitives": 29438,
+        "changed_pixels": 3236,
+        "clipped_white_pixels": 0,
+        "mean_changed_rgb_delta": 23.141532756489493
+      }
+    }
+  },
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)",
+  "sources_sha256": {
+    "app/assets/landscape/flightline/PROVENANCE.json": "e60e428f6ed2f8996330be7038488696a7ecbf4fc4075076d9ea56ec4e69dd81",
+    "app/assets/landscape/pilot-station/PROVENANCE.json": "b580c9fb76d4865280d9b5b55dd2f65799e342a79a3020fab55564b2fe6d8a95",
+    "app/assets/landscape/vegetation/catalog.json": "e458263680779b41b6374ceba4cb732b9494ae0dfe020d4cff3b1b0c0e6a2e39",
+    "app/assets/landscape/windsock/PROVENANCE.json": "ca8664515567b7ca0a87a9a1ea47e7f2216552f2b70a2bc97d913235fe72e312",
+    "app/data/field_loader.gd": "3b6f797fa1a85f235a48eb1f3c5069d244ece212c6c1c2f21b3921ac749419e1",
+    "app/data/fields/default.json": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407",
+    "app/render/field.gd": "4bc253c6567be5e13afc804bd19c7055132d0b02cc387e1fbddd376dba1b1b5b",
+    "app/render/flight_cue_shadows.gd": "ae026a9a3c408e05ffa80b4c27f07c58332fc545b7debc86a11139b76f6bfbad",
+    "app/render/flightline_barrier.gd": "1976fed7906a069e0841a693c6031805d8387d079297674cdf61faaeb2a887b6",
+    "app/render/flightline_barrier.gdshader": "b3b010e063ac1ea1487a4258033488bd9d1b1e5bdc74ef69704eb358f37a15ad",
+    "app/render/flightline_barrier_detail.gd": "c757c3d6a549da75b178675d3d608ce98a34b1edf5c071ce3c01c8eca0afe854",
+    "app/render/flightline_barrier_foliage.gdshader": "01e8725624361f950c4581d4fb901d1b451b7ff3938adecef70d2bfc8705c1b0",
+    "app/render/flightline_barrier_planting.gd": "8b3def9a44069d334b3f103a361dec8970e7bc3bdd20df012003fd8747b2791c",
+    "app/render/flightline_barrier_soil.gdshader": "8f65d6b3c954af669fcb6ff1a61b726a200ea0c5086330cae9a2be179b8345fa",
+    "app/render/near_grass.gd": "6086f71dcecd27eb2d7d58d01445acab7e4d7f0337e55e79a8082bd20a8f7976",
+    "app/render/pilot_station.gd": "aa5f9e62eb7ee9265a6cf3cec2284f69a12940a880ea4a0c89e8481180fd1704",
+    "app/render/pilot_station.gdshader": "b82a2901fcf66319df14372b6e0bbdec00c639f6fe5123ac3f2a1ce37fde6cd2",
+    "app/render/pilot_station_detail.gd": "3dd3c775d76d526041567fe0271d5cc74e80fdbbb4a2b9a3eec62e22e20f3521",
+    "app/render/windsock.gd": "a902104a6186800b4e9f7503df73c482a106aa3a3cc360fc45847dc12dfa96d0",
+    "app/render/windsock_fabric.gdshader": "e494822a41ac727f5a2063148da5b5966cce361f87a2a87fd11ef8a43beaceca",
+    "app/render/windsock_motion.gd": "ad487410160748f8c01cd8f6d904f3a4e5089bc86827eac8a1cbe49a2681bb8e",
+    "app/render/windsock_support.gdshader": "e5c23819262effa8429783cb873a7957f771a9d5a0e8f5ac1a0af49e2f756549",
+    "app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "tools/ground/capture_windsock.gd": "f5b50983ed0eaee1ca37f3adadb236c19cf95dce35626e8d20e3db39b14ccb8e",
+    "tools/ground/check_windsock.py": "1be4b1e1f8cffe3417c3c466f78c68bb52abdc2cdd01a32905b02d6887bec39a"
+  }
+}

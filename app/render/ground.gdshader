@@ -22,6 +22,7 @@ render_mode cull_back;
 #include "res://render/grass_surface.gdshaderinc"
 #include "res://render/turf_detail.gdshaderinc"
 #include "res://render/rc_ground_detail.gdshaderinc"
+#include "res://vehicles/ground/track_surface_detail.gdshaderinc"
 
 // L15d: the same cumulus density as the sky, projected along the sun ray to a 1.5 km deck.
 // Only direct sunlight is attenuated. Ambient light and the calibrated haze keep their energy.
@@ -372,6 +373,12 @@ void fragment() {
 			NORMAL = normalize(mix(NORMAL, rc_project_normal(base_normal, dirt_normal, VIEW_MATRIX, 0.55 * photo_weight), dirt_weight));
 			ROUGHNESS = mix(ROUGHNESS, clamp(dirt_roughness, 0.65, 1.0), dirt_weight);
 			rc_soil_specular = dirt_weight;
+			if (rc_track_surface) {
+				rc_track_surface_finish(world_pos.xz, turf_dx, turf_dy, d,
+					rc_coverage, VIEW_MATRIX, ALBEDO, NORMAL, ROUGHNESS);
+				rc_track_paint_lane(world_pos.xz, turf_dx, turf_dy,
+					rc_coverage, ALBEDO, ROUGHNESS);
+			}
 		}
 	}
 	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter + lobe_term(v);

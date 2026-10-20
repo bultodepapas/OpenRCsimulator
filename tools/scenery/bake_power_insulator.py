@@ -10,7 +10,11 @@ import argparse
 import hashlib
 import json
 import math
+import os
+import shutil
 import struct
+import subprocess
+import tempfile
 from collections import defaultdict
 from pathlib import Path
 
@@ -22,6 +26,7 @@ EXPECTED_SHA256 = "4bea57ed1194b14ed629b89a3db82782174dc2c29b2bb62143ae4ac2c1e8e
 OUTPUT_HEIGHT_M = 1.1
 OUTPUT_WIDTH_X_M = 0.30
 OUTPUT_DEPTH_Z_M = 0.30
+TARGET_TRIANGLES = 300
 
 # The base-color atlas inspection locates the mint-glass pin on the positive-X
 # side of the crossarm. Select all its small connected hardware/glass pieces,
@@ -39,6 +44,63 @@ PIN_ENVELOPE = {
 EXPECTED_COMPONENTS = 47
 EXPECTED_VERTICES = 1192
 EXPECTED_TRIANGLES = 1488
+
+GODOT_DECIMATOR = r'''extends SceneTree
+
+func _initialize() -> void:
+	var args: PackedStringArray = OS.get_cmdline_user_args()
+	if args.size() != 3:
+		push_error("Expected input JSON, output JSON, and target triangle count")
+		quit(2)
+		return
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(args[0]))
+	if not parsed is Dictionary:
+		push_error("Could not parse insulator mesh input JSON")
+		quit(2)
+		return
+	var data: Dictionary = parsed
+	var vertices := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var indices := PackedInt32Array()
+	for i in range(0, data.positions.size(), 3):
+		vertices.append(Vector3(data.positions[i], data.positions[i + 1], data.positions[i + 2]))
+		normals.append(Vector3(data.normals[i], data.normals[i + 1], data.normals[i + 2]))
+	for index in data.triangles:
+		indices.append(index)
+	var arrays: Array = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_INDEX] = indices
+	var mesh := ArrayMesh.new()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var imported := ImporterMesh.from_mesh(mesh)
+	imported.generate_lods(25.0, 60.0, [])
+	var target := int(args[2])
+	var best_indices := indices
+	var best_distance := absi(indices.size() / 3 - target)
+	var lod_counts: Array[int] = []
+	for lod in imported.get_surface_lod_count(0):
+		var candidate: PackedInt32Array = imported.get_surface_lod_indices(0, lod)
+		var count := candidate.size() / 3
+		lod_counts.append(count)
+		var distance := absi(count - target)
+		if candidate.size() >= 12 and distance < best_distance:
+			best_distance = distance
+			best_indices = candidate
+	var output := {
+		"triangles": Array(best_indices),
+		"lod_triangle_counts": lod_counts,
+		"godot_version": Engine.get_version_info()["string"],
+	}
+	var file := FileAccess.open(args[1], FileAccess.WRITE)
+	if file == null:
+		push_error("Could not write decimated insulator indices")
+		quit(2)
+		return
+	file.store_string(JSON.stringify(output))
+	quit()
+'''
 
 
 def read_glb(path: Path) -> tuple[dict, bytes]:
@@ -141,7 +203,145 @@ def select_pin_components(positions: list[tuple[float, float, float]], indices: 
     return selected
 
 
-def build_data(document: dict, binary: bytes, digest: str) -> dict:
+def resolve_godot(explicit_path: str | None) -> Path:
+    candidates = [explicit_path, os.environ.get("GODOT"), shutil.which("godot")]
+    candidates.extend(
+        str(ROOT / relative)
+        for relative in (
+            ".tools/Godot_v4.7.2-stable_win64_console.exe",
+            ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        )
+    )
+    for candidate in candidates:
+        if not candidate:
+            continue
+        executable = Path(candidate).expanduser()
+        if not executable.is_file():
+            continue
+        result = subprocess.run(
+            [str(executable), "--version"],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=20,
+            check=False,
+        )
+        version = (result.stdout or result.stderr).strip().splitlines()
+        if result.returncode == 0 and version and version[0].startswith("4.7.2"):
+            return executable.resolve()
+    raise FileNotFoundError(
+        "Pinned Godot 4.7.2 is required for meshoptimizer reduction. Pass --godot PATH, "
+        "set GODOT, or run app/get-godot.sh to place its pinned binary in .tools."
+    )
+
+
+def decimate_with_godot(
+    positions: list[float], normals: list[float], triangles: list[int], godot: Path
+):
+    """Select the closest meshoptimizer LOD to the target using pinned Godot."""
+    input_data = {"positions": positions, "normals": normals, "triangles": triangles}
+    with tempfile.TemporaryDirectory(prefix="openrc_power_insulator_") as temporary:
+        temporary_path = Path(temporary)
+        input_path = temporary_path / "insulator-input.json"
+        output_path = temporary_path / "insulator-lod.json"
+        script_path = temporary_path / "reduce_insulator.gd"
+        input_path.write_text(json.dumps(input_data, separators=(",", ":")), encoding="utf-8")
+        script_path.write_text(GODOT_DECIMATOR, encoding="utf-8")
+        result = subprocess.run(
+            [
+                str(godot),
+                "--headless",
+                "--path",
+                str(ROOT / "app"),
+                "--script",
+                str(script_path),
+                "--",
+                str(input_path),
+                str(output_path),
+                str(TARGET_TRIANGLES),
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            check=False,
+        )
+        if result.returncode != 0 or not output_path.is_file():
+            raise RuntimeError(
+                "Godot meshoptimizer LOD generation failed:\n"
+                f"{result.stdout}\n{result.stderr}"
+            )
+        reduction = json.loads(output_path.read_text(encoding="utf-8"))
+
+    selected = [int(index) for index in reduction["triangles"]]
+    if len(selected) % 3:
+        raise ValueError("Godot returned an incomplete triangle list")
+    if not selected or min(selected) < 0 or max(selected) >= len(positions) // 3:
+        raise ValueError("Godot returned out-of-range LOD indices")
+
+    # Compact the vertex streams to the LOD's referenced source vertices while
+    # preserving the original position/normal values and deterministic order.
+    used = sorted(set(selected))
+    remap = {source_index: output_index for output_index, source_index in enumerate(used)}
+    compact_positions = [positions[index * 3 + axis] for index in used for axis in range(3)]
+    compact_normals = [normals[index * 3 + axis] for index in used for axis in range(3)]
+    compact_triangles = [remap[index] for index in selected]
+    retained_component_sizes = sorted(
+        (len(faces) for _vertices, faces in connected_components(compact_triangles)),
+        reverse=True,
+    )
+    metadata = {
+        "method": "Godot ImporterMesh.generate_lods (meshoptimizer)",
+        "godot_version": reduction["godot_version"],
+        "target_triangles": TARGET_TRIANGLES,
+        "lod_triangle_counts": reduction["lod_triangle_counts"],
+        "source_triangles": len(triangles) // 3,
+        "output_triangles": len(compact_triangles) // 3,
+        "source_vertices": len(positions) // 3,
+        "output_vertices": len(used),
+        "output_component_triangle_counts": retained_component_sizes,
+    }
+    return compact_positions, compact_normals, compact_triangles, metadata
+
+
+def fit_decimated_envelope(positions: list[float], normals: list[float]):
+    """Restore the authored attachment envelope after the LOD drops extrema."""
+    vertices = [positions[i : i + 3] for i in range(0, len(positions), 3)]
+    bounds = [[min(v[axis] for v in vertices), max(v[axis] for v in vertices)] for axis in range(3)]
+    sizes = [pair[1] - pair[0] for pair in bounds]
+    target_sizes = [OUTPUT_WIDTH_X_M, OUTPUT_HEIGHT_M, OUTPUT_DEPTH_Z_M]
+    if any(size <= 1e-12 for size in sizes):
+        raise ValueError(f"Decimated insulator has degenerate bounds: {bounds}")
+    scales = [target_sizes[axis] / sizes[axis] for axis in range(3)]
+    centers = [(pair[0] + pair[1]) * 0.5 for pair in bounds]
+    fitted_positions = []
+    fitted_normals = []
+    for index, vertex in enumerate(vertices):
+        fitted_positions.extend(
+            (
+                round((vertex[0] - centers[0]) * scales[0], 9),
+                round((vertex[1] - bounds[1][1]) * scales[1], 9),
+                round((vertex[2] - centers[2]) * scales[2], 9),
+            )
+        )
+        normal = normals[index * 3 : index * 3 + 3]
+        transformed = tuple(normal[axis] / scales[axis] for axis in range(3))
+        length = math.sqrt(sum(value * value for value in transformed))
+        if length < 1e-12:
+            raise ValueError(f"Degenerate decimated normal at vertex {index}")
+        fitted_normals.extend(round(value / length, 9) for value in transformed)
+    return fitted_positions, fitted_normals, {
+        "input_bounds_m": [[round(value, 9) for value in pair] for pair in bounds],
+        "axis_scales": [round(value, 9) for value in scales],
+        "output_bounds_m": [
+            [-OUTPUT_WIDTH_X_M * 0.5, OUTPUT_WIDTH_X_M * 0.5],
+            [-OUTPUT_HEIGHT_M, 0.0],
+            [-OUTPUT_DEPTH_Z_M * 0.5, OUTPUT_DEPTH_Z_M * 0.5],
+        ],
+    }
+
+
+def build_data(document: dict, binary: bytes, digest: str, godot: Path) -> dict:
     mesh = next(mesh for mesh in document["meshes"] if mesh.get("name") == "power-pole_body")
     if len(mesh["primitives"]) != 1:
         raise ValueError("Expected the retained source mesh's single primitive")
@@ -206,6 +406,14 @@ def build_data(document: dict, binary: bytes, digest: str) -> dict:
     output_triangles = []
     for a, b, c in source_faces:
         output_triangles.extend((output_index[a], output_index[b], output_index[c]))
+    source_mesh_vertices = len(ordered_source_ids)
+    source_mesh_triangles = len(output_triangles) // 3
+    output_positions, output_normals, output_triangles, reduction = decimate_with_godot(
+        output_positions, output_normals, output_triangles, godot
+    )
+    output_positions, output_normals, lod_fit = fit_decimated_envelope(
+        output_positions, output_normals
+    )
 
     root_node = next(node for node in document["nodes"] if node.get("mesh") == 0)
     translation = root_node.get("translation", [0.0, 0.0, 0.0])
@@ -242,15 +450,19 @@ def build_data(document: dict, binary: bytes, digest: str) -> dict:
             "non_uniform_fit": True,
             "vertical_flip": True,
             "triangle_order": "source indices retained; Y reflection changes handedness to Godot clockwise",
+            "post_lod_envelope_fit": lod_fit,
         },
         "measurements": {
-            "source_vertices": len(ordered_source_ids),
-            "source_triangles": len(source_faces),
+            "source_vertices": source_mesh_vertices,
+            "source_triangles": source_mesh_triangles,
+            "output_vertices": reduction["output_vertices"],
+            "output_triangles": reduction["output_triangles"],
             "source_height_m": round(source_height, 9),
             "output_height_m": OUTPUT_HEIGHT_M,
             "output_width_x_m": OUTPUT_WIDTH_X_M,
             "output_depth_z_m": OUTPUT_DEPTH_Z_M,
         },
+        "reduction": reduction,
         "positions": output_positions,
         "normals": output_normals,
         "triangles": output_triangles,
@@ -260,12 +472,14 @@ def build_data(document: dict, binary: bytes, digest: str) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="verify generated data matches the saved JSON")
+    parser.add_argument("--godot", help="path to the pinned Godot 4.7.2 executable")
     args = parser.parse_args()
     digest = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
     if digest != EXPECTED_SHA256:
         raise SystemExit(f"Source SHA-256 mismatch: expected {EXPECTED_SHA256}, got {digest}")
+    godot = resolve_godot(args.godot)
     document, binary = read_glb(SOURCE)
-    data = build_data(document, binary, digest)
+    data = build_data(document, binary, digest, godot)
     output_text = json.dumps(data, separators=(",", ":")) + "\n"
     if args.check:
         if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != output_text:
@@ -276,8 +490,11 @@ def main() -> None:
         OUTPUT.write_text(output_text, encoding="utf-8")
         action = "Wrote"
     print(
-        f"{action} {OUTPUT.relative_to(ROOT)}: {data['measurements']['source_vertices']} vertices, "
-        f"{data['measurements']['source_triangles']} triangles, {data['selection']['component_count']} components"
+        f"{action} {OUTPUT.relative_to(ROOT)}: {data['measurements']['output_vertices']} vertices, "
+        f"{data['measurements']['output_triangles']} triangles "
+        f"(from {data['measurements']['source_triangles']}), "
+        f"{data['selection']['component_count']} source components, "
+        f"{len(data['reduction']['output_component_triangle_counts'])} retained shells"
     )
     print(
         f"Source bounds {data['selection']['source_bounds_mesh_local_m']}; "

@@ -3,9 +3,10 @@
 extends RefCounted
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 
-const STEEL := Color("#868e8e")
-const STEEL_EDGE := Color("#aab1af")
-const BOLT := Color("#b9c0bf")
+# The low green channel tags newly fitted zinc hardware in the shared shader.
+const STEEL := Color(0.25, 0.15, 0.40)
+const STEEL_EDGE := Color(0.33, 0.15, 0.48)
+const BOLT := Color(0.43, 0.15, 0.56)
 
 
 static func append(kit: MeshKit, part: Dictionary, index: int) -> void:

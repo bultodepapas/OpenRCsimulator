@@ -63,6 +63,32 @@ func _initialize() -> void:
 			var finish := barrier_mesh.surface_get_material(0) as BaseMaterial3D
 			check(finish != null and finish.albedo_texture != null and finish.normal_texture != null, "wall retains source PBR maps: " + str(wall.id))
 	check(barrier_triangles > 0 and barrier_triangles < 40000, "five fitted barriers stay within render geometry budget: %d triangles" % barrier_triangles)
+	var furniture := view.get_node("TrackFurniture") as Node3D
+	var clear_signs := true
+	for sign_name in ["AccessSign", "JumpsSign", "SlalomSign", "RollersSign"]:
+		var sign_root := furniture.get_node(sign_name) as Node3D
+		for sample_index in range(8):
+			var angle := TAU * float(sample_index) / 8.0
+			var east := sign_root.position.x + cos(angle) * 0.65
+			var north := -sign_root.position.z + sin(angle) * 0.65
+			clear_signs = clear_signs and float(road.call(north, east).track_coverage) < 0.0001
+	check(clear_signs, "all sign footprints remain clear of the sampled road")
+	var stacks := view.get_node("TrackTyreStacks") as Node3D
+	var tyres := stacks.find_children("WornTyre*", "MeshInstance3D", true, false)
+	var clear_tyres := true
+	for stack in stacks.get_children():
+		var anchor := stack as Node3D
+		for sample_index in range(8):
+			var angle := TAU * float(sample_index) / 8.0
+			var east := anchor.position.x + cos(angle) * 0.35
+			var north := -anchor.position.z + sin(angle) * 0.35
+			clear_tyres = clear_tyres and float(road.call(north, east).track_coverage) < 0.0001
+	check(clear_tyres, "tyre stacks remain beyond the sampled road shoulder")
+	check(tyres.size() == 8, "eight sourced worn tyres dress the off-course margins")
+	if not tyres.is_empty():
+		var tyre_mesh := (tyres[0] as MeshInstance3D).mesh
+		var tyre_finish := tyre_mesh.surface_get_material(0) as BaseMaterial3D
+		check(tyre_finish != null and tyre_finish.albedo_texture != null and tyre_finish.normal_texture != null and tyre_finish.roughness_texture != null, "tyre source retains color, normal and roughness maps")
 	check(view.find_children("*", "CollisionObject3D", true, false).is_empty(), "renderer creates no second physical world")
 	view.free()
 	print("RCV track view: %d failures" % failures)

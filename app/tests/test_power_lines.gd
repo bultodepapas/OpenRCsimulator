@@ -22,7 +22,11 @@ func _initialize() -> void:
 	for group: Dictionary in scene.groups:
 		if group.id == "pylons":
 			pylons = group.placements
-	check("five existing placement identities retained", pylons.size() == 5)
+	check("nine downloaded towers installed", pylons.size() == 9)
+	var closest := INF
+	for p: Dictionary in pylons:
+		closest = minf(closest, Vector2(p.north, p.east).length())
+	check("corridor visibly closer while outside local field", closest > 600.0 and closest < 900.0)
 	var profile: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Power.CABLE_DATA))
 	check("downloaded span topology retained", profile.triangles.size() == 128 * 3)
 	check("Godot winding declared", profile.transform.godot_clockwise)
@@ -33,11 +37,17 @@ func _initialize() -> void:
 		var ax := Scenery._placement_xf(a.north, a.east, a.heading)
 		var bx := Scenery._placement_xf(b.north, b.east, b.heading)
 		var route := (bx.origin - ax.origin).normalized()
+		check("bounded tower spacing %d" % i, ax.origin.distance_to(bx.origin) >= 119.99 and ax.origin.distance_to(bx.origin) < 160.0)
 		check("crossarms transverse to route %d" % i, absf(ax.basis.x.dot(route)) < 0.06)
 		var before := kit.verts.size()
 		Power.append_span(kit, ax, bx)
 		check("seven complete conductors per span %d" % i, kit.verts.size() - before == 7 * 128 * 3)
-	check("bounded full route: 3584 cable triangles", kit.verts.size() / 3 == 3584)
+		var marker := Power.conductor_point(ax, bx, 4, 0.5)
+		var nearest := INF
+		for vertex: Vector3 in kit.verts.slice(before + 4 * 128 * 3, before + 5 * 128 * 3):
+			nearest = minf(nearest, marker.distance_to(vertex))
+		check("wire marker lies on imported conductor %d" % i, nearest < 0.04)
+	check("bounded full route: 7168 cable triangles", kit.verts.size() / 3 == 7168)
 	var low := 1000.0
 	var high := -1000.0
 	var valid := true
@@ -50,6 +60,6 @@ func _initialize() -> void:
 	var clone := Kit.new()
 	Power.append_tower(clone)
 	check("cached source deterministic", clone.verts.slice(0, tower.pos.size()) == tower.pos)
-	check("six downloaded insulators on each tower", clone.verts.size() == (5743 + 6 * 1488) * 3)
+	check("six optimized downloaded insulators on each tower", clone.verts.size() == (5743 + 6 * 372) * 3)
 	print("all power-line checks passed" if failures == 0 else "%d power-line failures" % failures)
 	quit(0 if failures == 0 else 1)

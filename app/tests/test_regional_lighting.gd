@@ -16,6 +16,8 @@ func _initialize() -> void:
 	var helper: Node3D = Lighting.build(field, {}, scenery, true)
 	var regional: Node3D = helper.get_node("RegionalLighting")
 	var counts: Dictionary = regional.get_meta("counts")
+	check("nine steady tower top lights", counts.get("pylon_top_lights", 0) == 9)
+	check("eight upper conductor markers", counts.get("power_wire_markers", 0) == 8)
 	check("one top beacon on every existing turbine", counts.get("turbine_beacons", 0) == 4)
 	check("two downloaded communications towers", counts.get("antenna_towers", 0) == 2)
 	check("two top and four middle antenna markers", counts.get("antenna_top_beacons", 0) == 2 and counts.get("antenna_mid_lights", 0) == 4)

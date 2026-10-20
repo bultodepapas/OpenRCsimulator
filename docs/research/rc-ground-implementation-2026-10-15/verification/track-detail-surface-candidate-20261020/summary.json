@@ -1,0 +1,89 @@
+{
+  "format": "openrc-ground-closeup-summary-v1",
+  "complete": true,
+  "case_count": 2,
+  "cases": [
+    {
+      "case_id": "mt8-bisonte__track_start__chase__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\track-detail-surface-candidate-20261020/mt8-bisonte__track_start__chase__day.png",
+      "image_sha256": "c07e2430b449cd3d080e207c4f9a496c853e4343bd5e3b203afe4a22060d874f",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_start",
+      "camera_mode": "chase",
+      "lighting": "day",
+      "state_sha256": "275f741536e4b862cef1f28e9e1ce0b4e13d98dc01d2544bc6bbba6319e1b37d",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 60,
+        "p50": 3.537,
+        "p95": 4.6472,
+        "p99": 5.151039999999999
+      },
+      "draw_calls": {
+        "count": 60,
+        "p50": 453.0,
+        "p95": 453.0,
+        "p99": 453.0
+      },
+      "mesh_signature_sha256": "1bf746785aae20993f9bb4ecc3cc085b87be333f26d5b4cd6f26d14d32c3593a",
+      "mesh_geometry_signature_sha256": "d42ff64a75af68a3a3e678cc0404b6c168fa39384b55f0ab1243993b1ebad4f3",
+      "unique_texture_count": 79
+    },
+    {
+      "case_id": "mt8-bisonte__track_start__low-orbit__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\track-detail-surface-candidate-20261020/mt8-bisonte__track_start__low-orbit__day.png",
+      "image_sha256": "8f7177cd4419f36c99f53daeb81cd10d1d9c93e0cf5890120a4685c07dd4bd87",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_start",
+      "camera_mode": "low-orbit",
+      "lighting": "day",
+      "state_sha256": "275f741536e4b862cef1f28e9e1ce0b4e13d98dc01d2544bc6bbba6319e1b37d",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 60,
+        "p50": 3.1435,
+        "p95": 4.692299999999999,
+        "p99": 5.21069
+      },
+      "draw_calls": {
+        "count": 60,
+        "p50": 471.0,
+        "p95": 471.0,
+        "p99": 471.0
+      },
+      "mesh_signature_sha256": "1bf746785aae20993f9bb4ecc3cc085b87be333f26d5b4cd6f26d14d32c3593a",
+      "mesh_geometry_signature_sha256": "d42ff64a75af68a3a3e678cc0404b6c168fa39384b55f0ab1243993b1ebad4f3",
+      "unique_texture_count": 79
+    }
+  ]
+}

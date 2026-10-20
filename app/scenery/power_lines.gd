@@ -1,5 +1,5 @@
 ## LU-30: downloaded tower, insulator and sagging conductor geometry.
-## Original source files remain intact; fitted derivatives retain source topology.
+## Original sources remain intact; insulators use a baked meshoptimizer LOD.
 extends RefCounted
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const TOWER_SCENE: PackedScene = preload("res://assets/landscape/power-lines/transmission-tower-3tier-ipoly3d.glb")
@@ -87,6 +87,30 @@ static func append_span(kit: MeshKit, from: Transform3D, to: Transform3D) -> voi
 		var indices: Array = _cable.triangles
 		for i in range(0, indices.size(), 3):
 			kit.tri(positions[indices[i]], positions[indices[i + 1]], positions[indices[i + 2]], Color("343b3f"))
+
+## A marker follows the same downloaded cable centerline as the visible mesh.
+static func conductor_point(from: Transform3D, to: Transform3D, socket_index: int, fraction: float) -> Vector3:
+	if _cable.is_empty():
+		_cable = JSON.parse_string(FileAccess.get_file_as_string(CABLE_DATA))
+	var t := clampf(fraction, 0.0, 1.0)
+	var left := Vector2(0.0, 0.0)
+	var right := Vector2(1.0, 0.0)
+	for vertex: Dictionary in _cable.vertices:
+		var center: Array = vertex.center
+		var point := Vector2(float(center[0]), float(center[1]))
+		if point.x <= t and point.x >= left.x:
+			left = point
+		if point.x >= t and point.x <= right.x:
+			right = point
+	var sag := left.y
+	if right.x - left.x > 0.000001:
+		sag = lerpf(left.y, right.y, (t - left.x) / (right.x - left.x))
+	var socket := ATTACHMENTS[socket_index]
+	if socket_index < 6:
+		socket.y -= INSULATOR_HEIGHT_M
+	var a := from * socket
+	var b := to * socket
+	return a.lerp(b, t) + Vector3.UP * (sag * a.distance_to(b) * SAG_RATIO)
 
 static func source_arrays(scene: PackedScene) -> Dictionary:
 	var model := scene.instantiate()

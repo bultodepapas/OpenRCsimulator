@@ -1,0 +1,91 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "7fd456a9-f6a0-4e7e-b59c-61aec8e836b6",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_rcv_track_view.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T16:23:00.317239+00:00",
+  "label": "rcv-track-detail-view-20261020",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-monster-truck\\RCV-track\\track-detail-checks\\rcv-track-detail-view-20261020-744nco3e\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-monster-truck\\RCV-track\\track-detail-checks\\rcv-track-detail-view-20261020-744nco3e\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "RCV track view: 0 failures"
+  ],
+  "process_exit": 1,
+  "complete": false,
+  "counts": {
+    "error": 5,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 3,
+      "message": "Parse Error: Function \"sinf()\" not found in base self.",
+      "context": [
+        "   at: GDScript::reload (res://vehicles/ground/airfield_track_view.gd:385)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 5,
+      "message": "Parse Error: Function \"cosf()\" not found in base self.",
+      "context": [
+        "   at: GDScript::reload (res://vehicles/ground/airfield_track_view.gd:386)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 7,
+      "message": "Compile Error: Failed to compile depended scripts.",
+      "context": [
+        "   at: GDScript::reload (res://tests/test_rcv_track_view.gd:0)"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "ERROR",
+      "line": 9,
+      "message": "Failed to load script \"res://tests/test_rcv_track_view.gd\" with error \"Compilation failed\".",
+      "context": [
+        "   at: load (modules/gdscript/gdscript_resource_format.cpp:46)",
+        "PASS: default course loads"
+      ]
+    },
+    {
+      "severity": "error",
+      "kind": "SCRIPT ERROR",
+      "line": 12,
+      "message": "Invalid call. Nonexistent function 'build' in base 'GDScript'.",
+      "context": [
+        "   at: _initialize (res://tests/test_rcv_track_view.gd:20)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _initialize (res://tests/test_rcv_track_view.gd:20)"
+      ]
+    }
+  ],
+  "missing_required_text": [
+    "RCV track view: 0 failures"
+  ],
+  "reason": "timeout",
+  "detail": "",
+  "exit_code": 124,
+  "ok": false,
+  "elapsed_seconds": 120.844,
+  "log_bytes": 940,
+  "log_sha256": "ce78721f47175c29457661f77f1557a13878570ee3c4f4423c7a679fe678a0f4"
+}

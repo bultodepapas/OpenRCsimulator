@@ -16,6 +16,11 @@ const ReferenceScenery := preload("res://scenery/scenery_loader.gd")
 const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const ReferenceField := preload("res://render/field.gd")
 const FLEET_VIEWS := {
+	"power_runway_east": {eye = [0.0, -13.0, -1.7], at = [50.0, 850.0, -18.0], fov = 55.0},
+	"power_corridor": {eye = [-330.0, 380.0, -130.0], at = [50.0, 1100.0, -15.0], fov = 70.0},
+	"power_detail": {eye = [62.0, 625.0, -23.0], at = [50.0, 650.0, -24.5], fov = 40.0},
+	"power_pilot": {eye = [0.0, -13.0, -1.7], at = [600.0, 650.0, -18.0], fov = 65.0},
+	"power_airfield": {eye = [-180.0, -220.0, -90.0], at = [480.0, 610.0, -8.0], fov = 65.0},
 	"power_overview": {eye = [-230.0, 980.0, -70.0], at = [50.0, 1450.0, -15.0], fov = 55.0},
 	"power_close": {eye = [70.0, 1210.0, -10.0], at = [109.0, 1245.25, -16.0], fov = 50.0},
 	"power_insulators": {eye = [122.0, 1210.0, -20.0], at = [109.0, 1245.25, -22.0], fov = 35.0},

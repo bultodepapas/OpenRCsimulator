@@ -1,0 +1,8 @@
+Old Tyre — MP / Poly Haven
+Asset: https://polyhaven.com/a/old_tyre
+License: CC0 1.0 Universal — https://polyhaven.com/license
+CC0 legal text: https://creativecommons.org/publicdomain/zero/1.0/
+
+The runtime GLB repacks the supplier's 1K glTF mesh and its original diffuse,
+OpenGL normal and ARM JPG maps. Source URLs and checksums are recorded in
+assets/source-deliveries/old-tyre-polyhaven/source-manifest.json.
