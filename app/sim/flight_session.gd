@@ -583,25 +583,32 @@ func cruise_trim_active() -> bool:
 	return half_power_start_supported(str(aircraft.get("model", {}).get("id", "")))
 
 
-## D6e-R4: re-solves the start when the selected trim throttle differs from the one the committed start was solved
-## for (a selection made after setup). The reference trim never refits here; its density refit lives in reset().
+## D6e-R4: re-solves a selected-throttle start when its requested throttle or launch air mass changed after setup.
+## This runs before the runway early return so its flying trim follows a changed field atmosphere too.
 ## Failure leaves an invalid start, as the atmosphere refit does. Returns {ok, changed[, message]}.
 func _refit_selected_trim() -> Dictionary:
-	if not cruise_trim_active() or start.get("requested_throttle", NAN) == selected_trim_throttle():
+	if not cruise_trim_active():
 		return {ok = true, changed = false}
 	var old_start: Dictionary = start
-	var refit: Dictionary = _selected_airborne_trim(aircraft.model, _atmosphere_down(old_start.get("state", PackedFloat64Array())))
+	var old_state: PackedFloat64Array = old_start.get("state", PackedFloat64Array())
+	var density: float = air_density(old_state)
+	var charge: float = engine_charge_ratio(old_state)
+	var throttle_changed: bool = old_start.get("requested_throttle", NAN) != selected_trim_throttle()
+	var atmosphere_changed: bool = _trim_density != density or _trim_charge != charge
+	if not throttle_changed and not atmosphere_changed:
+		return {ok = true, changed = false}
+	var refit: Dictionary = _selected_airborne_trim(aircraft.model, _atmosphere_down(old_state))
 	if not refit.ok:
 		start = refit
 		_trim_density = NAN
 		_trim_charge = NAN
 		return {ok = false, changed = true, message = "trim: " + str(refit.get("message", "trim failed"))}
-	if Sim.state_is_valid(old_start.get("state", PackedFloat64Array())):
+	if Sim.state_is_valid(old_state):
 		for axis: int in 3:
-			refit.state[RB.POS + axis] = old_start.state[RB.POS + axis]
+			refit.state[RB.POS + axis] = old_state[RB.POS + axis]
 	start = refit
-	_trim_density = air_density(start.state)
-	_trim_charge = engine_charge_ratio(start.state)
+	_trim_density = density
+	_trim_charge = charge
 	trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
 	return {ok = true, changed = true}
 

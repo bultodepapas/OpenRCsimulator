@@ -4,6 +4,8 @@ extends SceneTree
 
 const Preferences := preload("res://app_state/preferences.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const CruiseTrim := preload("res://physics/cruise_trim.gd")
+const Session := preload("res://sim/flight_session.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const ATMOSPHERE_ERROR_TEXT: String = "Check field elevation, temperature, QNH and humidity against the displayed limits."
 const WEATHER_ERROR_TEXT: String = "Enter values within the shown limits; gust period must be at least its duration. Seed must contain digits only."
@@ -288,8 +290,32 @@ func _home_to_flight_v3() -> void:
 	_check("active flight field uses the kernel density", expected_air.ok
 		and is_equal_approx(app.flight.session.air_density(), float(expected_air.rho_kgm3))
 		and is_equal_approx(float(active_atmosphere.get("rho_kgm3", NAN)), float(expected_air.rho_kgm3)))
-	_check("custom-density flight trims at the requested 15 m/s TAS",
-		is_equal_approx(float(app.flight.session.start.get("V", NAN)), 15.0), str(app.flight.session.start))
+	var start: Dictionary = app.flight.session.start
+	var trim_model: Dictionary = app.flight.session._trim_model(app.flight.session.aircraft.model)
+	var reference_speed: float = float(trim_model.get("start_speed", 15.0))
+	var start_state: PackedFloat64Array = PackedFloat64Array()
+	var state_value: Variant = start.get("state", PackedFloat64Array())
+	if typeof(state_value) == TYPE_PACKED_FLOAT64_ARRAY and state_value.size() > 2:
+		start_state = state_value
+	var selected_trim: Dictionary = {}
+	if start.get("ok", false) and not start_state.is_empty() and expected_air.get("ok", false):
+		selected_trim = CruiseTrim.solve_level_at_throttle(reference_speed,
+			Session.CRUISE_TRIM_THROTTLE, minf(CruiseTrim.MAX_SEARCH_SPEED_MPS, 2.5 * reference_speed),
+			trim_model, app.flight.session.sim.gravity, trim_model.controls.throw_rad,
+			app.flight.session.air_density(start_state), app.flight.session.engine_charge_ratio(start_state))
+	_check("Home-to-Fly solves the selected 50% trim at custom field density",
+		start.get("ok", false) and selected_trim.get("ok", false)
+		and start.get("mode", "") == "level"
+		and is_equal_approx(float(start.get("requested_throttle", NAN)), Session.CRUISE_TRIM_THROTTLE)
+		and is_equal_approx(float(start.get("reference_speed_mps", NAN)), reference_speed)
+		and is_equal_approx(float(start.get("V", NAN)), float(selected_trim.get("V", NAN)))
+		and is_equal_approx(float(start.get("throttle", NAN)), Session.CRUISE_TRIM_THROTTLE)
+		and is_equal_approx(app.flight.session._trim_density, app.flight.session.air_density(start_state))
+		and is_equal_approx(app.flight.session._trim_charge, app.flight.session.engine_charge_ratio(start_state)),
+		"start=%s expected=%s rho=%s cache=%s/%s choice=%s trim=%s" % [str(start), str(selected_trim),
+			str(app.flight.session.air_density(start_state)) if not start_state.is_empty() else "unavailable",
+			str(app.flight.session._trim_density), str(app.flight.session._trim_charge),
+			str(app.flight.session.start_choice), str(app.flight.session.selected_trim_throttle())])
 	_check("Home-to-Fly remembers v3 in outer schema 3", Preferences.load_from(PREFS).weather_config == weather
 		and _saved_schema() == 3)
 	await _close(app)
