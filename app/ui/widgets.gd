@@ -65,8 +65,8 @@ class RowGlyph extends Control:
 		name = "RowGlyph"
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 		set_anchors_preset(Control.PRESET_CENTER_RIGHT)
-		offset_left = -30.0
-		offset_right = -8.0
+		offset_left = -22.0
+		offset_right = -4.0
 		offset_top = -9.0
 		offset_bottom = 9.0
 

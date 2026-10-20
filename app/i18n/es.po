@@ -4613,3 +4613,13 @@ msgstr "Campo del club"
 
 msgid "Green paradise"
 msgstr "Paraíso verde"
+
+# UI-34b–d: catalog short names and details, preparing state (UI-30 audit).
+msgid "Choose a model for the next flight."
+msgstr "Elige un modelo para el próximo vuelo."
+
+msgid "Preparing flight…"
+msgstr "Preparando el vuelo…"
+
+msgid "Turbo Lumber"
+msgstr "Turbo Tronco"

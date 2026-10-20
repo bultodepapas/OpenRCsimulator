@@ -361,10 +361,10 @@ Rules for every step:
 
 | Step | Priority | Work | Fixes | Proof | Status |
 | --- | --- | --- | --- | --- | --- |
-| UI-31 | P0 | **Recovery dead ends.** See the list below this table. | PS-1–4, PS-7, PS-10–12 | Reproduce each dead end in `test_controller_pause_recovery.gd`, `test_ui_pause.gd` or `test_controller_menu.gd` first: fail before, pass after. Native calibration-card capture. | Proposed |
-| UI-32 | P0 | **Preserve choices.** Rotorcraft weather does not overwrite saved airplane turbulence. Battery mode and fuel fill persist per aircraft (additive preference keys; legacy files stay readable). The start is stored per vehicle class and resolved at launch. Selection keeps the Home note. | AS-3, AS-4, AS-7 | Preference round-trip tests. `test_ui_home.gd`: Stik → helicopter → Stik keeps turbulence and start; End flight keeps fuel and battery. | Proposed |
-| UI-33 | P1 | **Interaction and words.** See the list below this table. | HN-1–6, VC-4, VC-8, PS-5, SC-3, AL-1, AL-5 | A glossary check: no retired label left in source or `es.po`. Focus-order tests. EN/ES 1080p and 4K captures. Formative task "find Controls / change conditions". | Proposed |
-| UI-34 | P1 | **Aircraft flow.** See the list below this table. | SP-1, SP-2, SP-7, SP-8, HN-7, AS-1, AS-2, AS-5, AS-6, AS-8–11 | A UI test asserts ≤3 activations for a mid-flight switch, with the trace transaction preserved. At 1080p default text all catalog entries are visible without scrolling. Native 1080p/4K/21:9 captures. Re-run the UI-05 selection timing protocol. | Proposed |
+| UI-31 | P0 | **Recovery dead ends.** See the list below this table. | PS-1–4, PS-7, PS-10–12 | Reproduce each dead end in `test_controller_pause_recovery.gd`, `test_ui_pause.gd` or `test_controller_menu.gd` first: fail before, pass after. Native calibration-card capture. | Delivered 2026-10-20: [evidence](research/menu-investigations/UI-31/README.md). Smoke AUX is cancelled rather than stacked; Stay after a failed window-close save still resumes (owner decision) |
+| UI-32 | P0 | **Preserve choices.** Rotorcraft weather does not overwrite saved airplane turbulence. Battery mode and fuel fill persist per aircraft (additive preference keys; legacy files stay readable). The start is stored per vehicle class and resolved at launch. Selection keeps the Home note. | AS-3, AS-4, AS-7 | Preference round-trip tests. `test_ui_home.gd`: Stik → helicopter → Stik keeps turbulence and start; End flight keeps fuel and battery. | Delivered 2026-10-20: [evidence](research/menu-investigations/UI-32/README.md) |
+| UI-33 | P1 | **Interaction and words.** See the list below this table. | HN-1–6, VC-4, VC-8, PS-5, SC-3, AL-1, AL-5 | A glossary check: no retired label left in source or `es.po`. Focus-order tests. EN/ES 1080p and 4K captures. Formative task "find Controls / change conditions". | Delivered 2026-10-20: [evidence](research/menu-investigations/UI-33/README.md). HN-3 and HN-4 move to UI-34b; the garage backdrop stays with RCV |
+| UI-34 | P1 | **Aircraft flow.** See the list below this table. | SP-1, SP-2, SP-7, SP-8, HN-7, AS-1, AS-2, AS-5, AS-6, AS-8–11 | A UI test asserts ≤3 activations from Pause for a mid-flight switch, with the trace transaction preserved. At 1080p default text all catalog entries are visible without scrolling. Native 1080p/4K/21:9 captures. Re-run the UI-05 selection timing protocol. | UI-34a delivered 2026-10-20: [evidence](research/menu-investigations/UI-34a/README.md); UI-34b–d proposed |
 | UI-35 | P1 | **Shared modal shell.** See the list below this table. | VC-1–3, VC-5, VC-9, VC-10, SP-3, SP-5, SC-5, AL-3, AL-4 | Extend the modal matrix and run `check_contrast.py` on the new states. Capture every dialog in EN/ES at 1080p and 4K. Conditions needs no scroll at 1080p default text. | Proposed |
 | UI-36 | P2 | **Settings and content.** See the list below this table. | SC-1, SC-2, SC-4, SC-6–9, PS-6 | Settings preview/revert/persistence tests. A staging test: the current flight and active failures are unchanged until Restart. EN/ES captures. | Proposed; renderer options, units and paused weather need agreement from the DT, VQ, CAM, HUD and M5-W owners |
 | UI-37 | P2 | **Join the shell.** See the list below this table. | SP-4, SP-6, VC-6, VC-7, PS-8, PS-9, AL-2 | In-flight captures at 150% and 200% text, 1080p and 4K. Overlay layout tests at the new sizes. ES garage capture. Accident regression suites. | Proposed; coordinate with HUD, CR and RCV |
@@ -399,7 +399,7 @@ Rules for every step:
 - **UI-34b — catalog and summary layout** (SP-1, SP-2, SP-7, SP-8, AS-2, AS-9):
   - wide catalog panel with a summary line and status chip per entry, plus a selected-aircraft card;
   - flight details become a card in the scene area;
-  - the rail and summary widen with text scale before they scroll;
+  - at large text, details move to the scene-area card before the rail scrolls;
   - catalog entries get `short_name`;
   - a Home-fit test for every catalog entry.
 - **UI-34c — feedback and cost** (HN-7, AS-5, AS-8, AS-11):
@@ -460,6 +460,6 @@ Each sub-step is one reviewable change. Each step leaves a working app and retai
 Additional gates, on top of §10:
 
 - No route may leave `session.sim.paused` true with no visible Screen or calibration card. Assert this after every Pause, restart, trial and calibration path.
-- A mid-flight aircraft switch takes ≤3 activations.
+- A mid-flight aircraft switch takes ≤3 activations from Pause (Change aircraft → entry → Fly).
 - The catalog shows every current entry without scrolling at 1080p default text.
 - Each closed finding is re-captured with the same `audit.gd` case.
