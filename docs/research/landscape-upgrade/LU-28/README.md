@@ -54,9 +54,55 @@ identities and geometry budgets.
 
 The first 12-tree crop proposal exceeded the unchanged 650,000 scenery
 triangle ceiling (691,496). Reusing the retained low shrub source preserves
-the agricultural detail without that tree cost. The final scenery count is
-642,884, leaving 7,116 below that ceiling; the separate surface meshes add
-6,380 triangles. Shrub placement and collision dimensions use the same source bounds.
+the agricultural detail without that tree cost. The `test_scenery_build` fixture
+counts 642,884, leaving 7,116 below its ceiling; the separate surface meshes add
+6,380 triangles. This fixture omits the lake-context plants included in the
+native world, so its count is not a complete flight-world triangle count.
+Shrub placement and collision dimensions use the same source bounds.
+
+## Captures, measurements and checks
+
+| View | Before | Delivered |
+| --- | --- | --- |
+| Aerial plain | [Reference](captures/plain_overview-before.png) | [Fields and road network](captures/plain_overview.png) |
+| Farms | [Reference](captures/plain_farm-before.png) | [Yards and connections](captures/plain_farm.png), [gate detail](captures/plain_farm_gate.png) |
+| Roads and houses | — | [Highway](captures/plain_highway.png), [hamlet](captures/plain_village.png) |
+| Crop detail and light | — | [Rows and tramlines](captures/plain_crop.png), [east view](captures/plain_east.png), [twilight](captures/plain_farm-twilight.png) |
+| Pilot | — | [North view](captures/pilot_north.png) |
+
+Three sequential reference/candidate pairs used 60 warm-up and 360 measured
+frames per fixed view. Both worlds have the same lake identity and
+botanical/population/woodland counts; these controls were checked for all pairs.
+The numbers below are medians of the three per-run p95 frame times, in
+milliseconds. [Raw frames and summary](measurements/summary.json).
+
+| View | Reference p95 | Delivered p95 | Delivered p95 range | Draw calls before → after |
+| --- | ---: | ---: | ---: | ---: |
+| Pilot north | 1.421 | 1.483 | 1.440–1.594 | 82 → 94 |
+| Aerial plain | 1.969 | 2.213 | 2.130–2.270 | 191 → 211 |
+| East plain | 1.736 | 1.254 | 1.206–1.542 | 47 → 59 |
+| Farm | 1.115 | 1.118 | 1.111–1.180 | 27 → 37 |
+
+These are wall frame times on one desktop, not isolated GPU timings or full
+flight-solver costs. View-dependent lower times do not establish a general
+speedup. GPU resource monitoring varied across processes (candidate
+428,641,382–435,031,958 bytes, reference 431,120,374 bytes); the reference builder
+preloads canonical assets, so this is not a clean incremental-memory measurement.
+Lower-end hardware and independent pilot acceptance remain open.
+
+Passed software checks:
+
+- Seven offline geometry/source regressions and both generator `--check` runs.
+- 22 countryside integration checks, including containment of actual transformed
+  shrub bounds in their collision envelopes.
+- Existing scenery build, field integration, production collision world and
+  scenery eligibility checks; 49 landscape selection checks and 48 horizon checks.
+- Eight native daytime views and two twilight views, without script/shader errors.
+
+[Retained checked-run reports/logs](checks/) include the pre-existing unsupported
+maple-material wind warning; that material remains static. Full-suite execution,
+release export and physical calibration are not claimed by this delivery.
+Current implementation identities are in [source-identities.json](source-identities.json).
 
 ## Primary-source research
 
