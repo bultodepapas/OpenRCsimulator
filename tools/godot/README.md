@@ -338,3 +338,72 @@ configuration/output errors. Its per-file budget is 64 MiB (`--max-input-bytes`,
 maximum 256 MiB), with 256 MiB total (`--max-total-bytes`, maximum 1 GiB).
 Oversized attachments are omitted with a manifest issue. Stop capture producers
 before packaging so their files form a stable snapshot.
+
+## Repeated scene lifecycle checks (PT1h-R6)
+
+After importing the project, run a fresh-process, headless Home → flight → Home
+and Workshop open/close check:
+
+```powershell
+python tools/godot/lifecycle_check.py --godot .tools/Godot_v4.7.2-stable_win64.exe --scenario both --cycles 3
+```
+
+Linux: use `python3` and `--godot "$(app/get-godot.sh)"`. Add `--resources` using
+the pinned psutil environment above for process RAM, CPU and I/O. The command
+prints a unique directory under `tmp/godot-lifecycle` containing `summary.json`,
+`probe/lifecycle.json`, isolated preferences, and the checked engine log/receipt.
+No diagnostic code is loaded during normal play. Player preferences, controller
+profiles and Workshop variants are isolated from this probe.
+
+| Option | Default and meaning |
+| --- | --- |
+| `--scenario` | `both`; select `flight` or `workshop` to narrow a failure. |
+| `--cycles` | 3 measured cycles; range 2–30. |
+| `--warmup-cycles` | 1 full cycle before the baseline; range 1–5. |
+| `--settle-frames` | 8 frames per checkpoint; range 3–300, plus deferred-cleanup frames. |
+| `--dwell-seconds` | 0.25 extra seconds per checkpoint; range 0–10. |
+| `--timeout` | 300 seconds for the engine; maximum 3,600. |
+| `--max-node-growth`, `--max-orphan-growth` | 0; allowed increase over the settled baseline, range 0–10,000. |
+| `--max-static-growth-mib` | Disabled; optional allocator-growth budget, range 0–4,096 MiB. |
+| `--out-dir` | Parent directory for fresh run folders; existing captures are preserved. |
+
+The check compares equivalent settled Home states after warm-up. It fails for
+excess node/orphan growth, selected retired objects still alive, engine errors,
+incomplete evidence, or ObjectDB/resource shutdown leak warnings—even when Godot
+exits successfully. Ordinary warnings remain visible without failing the check.
+Exit codes are 0 passed, 1 failed/incomplete, and 2 configuration/output error.
+`complete` describes capture coverage independently of `ok`.
+
+Object/resource counts and static allocator bytes are recorded as trends. Static
+memory is not process RSS; startup caches and the probe's retained samples can
+increase it. A passing run checks these routes and selected object lifetimes,
+not every reference or a long gameplay session. Flight is paused before return;
+this is not a physics, GPU or frame-performance benchmark. The debug engine is
+required because release counters cannot establish these checks.
+
+The observer retains IDs and strings rather than owning inspected objects.
+Orphan inventory stops above 2,048 nodes, details are capped at 20 per sample,
+and truncation is explicit. JSON input is capped at 4 MiB and the warning scan
+at 8 MiB; oversized or unreadable evidence cannot pass. Reports include capture
+identity and source/report hashes. Checkpoints preserve an incomplete prefix on
+transition failure; a killed process or failed write may leave no usable prefix.
+
+For attribution, use Godot's existing
+[ObjectDB Profiler](https://docs.godotengine.org/en/stable/tutorials/scripting/debug/objectdb_profiler.html):
+take snapshots at the same settled Home state before and after repeated routes,
+then compare classes and inspect retained references. Reproduce the reported
+route first; a count increase alone does not identify its owner.
+
+The integration partition runs disposable real-engine fixtures covering clean
+transitions, an intentionally retained Workshop node, a failed return to Home,
+invalid options and output preservation. Run them directly with
+`OPENRC_TEST_GODOT` set to the direct engine executable:
+
+```powershell
+$env:OPENRC_TEST_GODOT = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+python -m unittest discover -s tools/godot -p 'test_lifecycle*.py'
+```
+
+The slower production smoke additionally requires `OPENRC_TEST_LIFECYCLE_NATIVE=1`.
+Recorded results and remaining uncertainties live in the
+[diagnostic evidence](../../docs/research/visual-quality-implementation/VQ-01c/diagnostics/README.md#pt1h-r6-lifecycle-retention-checks).

@@ -212,3 +212,74 @@ reviewed source identities. The retained files are:
 Resource attachments in bundles receive receipt/invocation integrity checks;
 their numeric measurements are validated by the timeline exporter, not by the
 packager. Optional `.orfl` attachments remain caller-selected and replay-unverified.
+
+## PT1h-R6 lifecycle retention checks
+
+Verified 2026-10-19 with Godot 4.7.2 on Windows and WSL Linux. The standalone
+probe exercises production Home → flight → Home and Workshop open/close routes,
+with isolated settings/library paths, warm-up and equivalent settled checkpoints.
+It retains selected object IDs without owning the objects. The checker combines
+growth/lifetime findings with the existing checked runner and explicitly scans
+shutdown leak warnings. Usage, options and limits belong in the
+[tool guide](../../../../../tools/godot/README.md#repeated-scene-lifecycle-checks-pt1h-r6).
+
+The final Windows run used one warm-up and three measured cycles, with optional
+psutil sampling. Every settled snapshot had **622 tree nodes, zero orphans,
+3,942 objects and 586 resources**. All eight selected retired objects per measured
+cycle and the final application root were gone after settling. Static allocator
+growth reached 188,308 bytes (0.180 MiB); no static-memory threshold was enabled.
+Snapshot construction measured 39–113 microseconds on this host; that excludes
+report serialization, settling, scene work and external resource polling. The
+observer is absent from normal play, so these captures do not add normal-game
+polling. Peak sampled process RSS was 759,918,592 bytes; the startup-to-exit RSS
+delta is not a settled leak measurement.
+
+The Linux run used one warm-up and two measured cycles. Node, orphan, object and
+resource counts also remained flat; static growth was 64,012 bytes. Both production
+runs completed and passed, with the existing maple-tree wind warning and no
+ObjectDB shutdown warning. The intermittent four-instance warning from PT1h-R5
+remains unresolved; these bounded runs do not establish leak freedom or a fix.
+
+The parent reviewed both delegated contributions, corrected a POSIX executable
+permission defect in the fixture, and caught an invalid cross-counter assumption:
+[Godot's tree-node count excludes orphans](https://docs.godotengine.org/en/stable/classes/class_performance.html#class-performance-constant-object-node-count).
+The final real-engine retained-node regression runs enough cycles for orphans to
+outnumber tree nodes; this must remain valid evidence and fail on retention/growth,
+not on schema validation. Linux was captured before that offline validator fix;
+the unchanged raw report was reanalyzed successfully with the final checker.
+Its original source hashes remain intact, and the manifest records the distinction.
+
+Failure verification retained with this change:
+
+- **Retained Workshop nodes:** the unchanged probe ran against a disposable app
+  that detached one node per cycle. Six retired nodes were detected including
+  warm-up; measured orphan growth was five. Capture completed, engine exited 1,
+  and analysis failed with both lifetime and orphan-growth findings. Fixture
+  teardown freed the nodes, confirming the finding does not depend on a shutdown
+  warning.
+- **Refused Home return:** engine exited 1 and the report retained its single
+  baseline sample with `complete=false` and an actionable transition failure.
+- **Archived ObjectDB warning:** the final scanner found the real PT1h-R5 warning.
+  Separate regressions confirm that a warning following more than 20 unrelated
+  warnings still fails; ordinary warnings and unanchored user text do not.
+- **Bad evidence and output:** regressions cover non-finite/deep/duplicate JSON,
+  budgets, capture/config mismatch, missing logs, output preservation, failed
+  writes, partial prefixes, and thresholds. Invalid checker options launch no engine.
+
+The five disposable real-engine fixture tests now run in `app/test.sh`'s
+integration partition. The expensive production smoke remains separately opt-in.
+Full project CI and exports were not run.
+
+| Final verification | Result |
+| --- | --- |
+| Windows full diagnostic suite, real-engine checks enabled | 150 discovered, 149 passed; optional production smoke skipped. Production CLI capture ran separately above. |
+| Linux full diagnostic suite | 150 discovered, 138 passed; 10 optional engine checks and two Windows junction tests skipped. |
+| Linux focused lifecycle suite, real-engine fixtures enabled | 31 discovered, 30 passed; optional production smoke skipped. |
+
+[lifecycle-manifest.json](lifecycle-manifest.json) records compressed/uncompressed
+hashes, reviewed source hashes, fixture analyses and the archived-warning result.
+`lifecycle-windows-*` preserves the final summary, raw probe, checked receipt/log
+and resource report; `lifecycle-linux-*` preserves the Linux summary, probe and
+receipt/log. `lifecycle-leak_workshop-*` and
+`lifecycle-fail_home_after_warmup-*` preserve the deliberate failures. Decompress
+to inspect; paths identify the original host. No simulation or golden flight changed.

@@ -3,30 +3,39 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import io
 import json
 import math
 import os
 from pathlib import Path
+import re
+import stat
 import sys
 import tempfile
 from typing import Any, Callable
 
 try:
-    from .run_checked import run_checked
+    from .run_checked import ANSI, run_checked
 except ImportError:  # direct script execution
-    from run_checked import run_checked
+    from run_checked import ANSI, run_checked
 
 
 FORMAT = "openrc-lifecycle-probe v1"
 SUMMARY_FORMAT = "openrc-godot-lifecycle-check v1"
 MAX_REPORT_BYTES = 4 * 1024 * 1024
+MAX_SOURCE_BYTES = 4 * 1024 * 1024
+MAX_ENGINE_LOG_BYTES = 8 * 1024 * 1024
 MAX_DETAILS = 20
+MAX_WARNING_DETAILS = 10
 MAX_INT = (1 << 63) - 1
 MIB = 1024 * 1024
 ROOT = Path(__file__).resolve().parents[2]
 APP_DIR = ROOT / "app"
 PROBE_SCRIPT = Path(__file__).with_name("lifecycle_probe.gd").resolve()
-DEFAULT_OUT = Path(tempfile.gettempdir()) / "godot-lifecycle"
+DEFAULT_OUT = ROOT / "tmp" / "godot-lifecycle"
+WARNING_LINE = re.compile(r"^WARNING:\s*(.*)$")
+SHUTDOWN_LEAK_WARNING = re.compile(r"(?:ObjectDB.*leak|resources.*in use at exit)", re.IGNORECASE)
 
 CONFIG_KEYS = {"scenario", "cycles", "warmup_cycles", "settle_frames", "dwell_seconds"}
 SAMPLE_KEYS = {
@@ -40,6 +49,7 @@ TOP_KEYS = {
     "format", "capture_id", "complete", "failure", "config", "debug_build",
     "samples", "cleanup", "total_retired_alive",
 }
+TOP_OPTIONAL_KEYS = {"godot", "scope"}
 
 
 def _strict_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -55,20 +65,49 @@ def _reject_json_constant(value: str) -> None:
     raise ValueError(f"non-finite JSON number is forbidden: {value}")
 
 
-def load_report(path: Path) -> dict[str, Any]:
-    """Load a small JSON object while rejecting duplicate keys and NaN/Infinity."""
+def _finite_json_float(value: str) -> float:
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError(f"non-finite JSON number is forbidden: {value[:64]}")
+    return result
+
+
+def _read_regular_file(path: Path, maximum_bytes: int, label: str) -> bytes:
+    metadata = path.stat()
+    if not stat.S_ISREG(metadata.st_mode):
+        raise ValueError(f"{label} is not a regular file")
+    if metadata.st_size > maximum_bytes:
+        raise ValueError(f"{label} exceeds {maximum_bytes} bytes")
     with path.open("rb") as stream:
-        data = stream.read(MAX_REPORT_BYTES + 1)
-    if len(data) > MAX_REPORT_BYTES:
-        raise ValueError(f"lifecycle report exceeds {MAX_REPORT_BYTES} bytes")
+        data = stream.read(maximum_bytes + 1)
+    if len(data) > maximum_bytes:
+        raise ValueError(f"{label} exceeds {maximum_bytes} bytes")
+    return data
+
+
+class ReportLoadError(ValueError):
+    def __init__(self, message: str, raw_sha256: str | None = None):
+        super().__init__(message)
+        self.raw_sha256 = raw_sha256
+
+
+def load_report_with_digest(path: Path) -> tuple[dict[str, Any], str]:
+    """Load bounded JSON, rejecting duplicate keys and every non-finite float."""
+    data = _read_regular_file(path, MAX_REPORT_BYTES, "lifecycle report")
+    digest = hashlib.sha256(data).hexdigest()
     try:
         value = json.loads(data.decode("utf-8"), object_pairs_hook=_strict_object,
-                           parse_constant=_reject_json_constant)
-    except (UnicodeDecodeError, json.JSONDecodeError) as error:
-        raise ValueError(f"invalid lifecycle JSON: {error}") from error
+                           parse_constant=_reject_json_constant, parse_float=_finite_json_float)
+    except (UnicodeDecodeError, ValueError, OverflowError, RecursionError) as error:
+        raise ReportLoadError(f"invalid lifecycle JSON: {error}", digest) from error
     if not isinstance(value, dict):
-        raise ValueError("lifecycle report root must be an object")
-    return value
+        raise ReportLoadError("lifecycle report root must be an object", digest)
+    return value, digest
+
+
+def load_report(path: Path) -> dict[str, Any]:
+    """Read a bounded lifecycle report. The digest variant is used by the CLI."""
+    return load_report_with_digest(path)[0]
 
 
 def _is_int(value: Any) -> bool:
@@ -143,7 +182,16 @@ def _validate_report(
 ) -> tuple[list[str], list[dict[str, Any]]]:
     errors: list[str] = []
     samples: list[dict[str, Any]] = []
-    if not _check_keys(report, TOP_KEYS, "report", errors):
+    if not isinstance(report, dict):
+        errors.append("report must be an object")
+        return errors, samples
+    missing = TOP_KEYS - report.keys()
+    extra = report.keys() - (TOP_KEYS | TOP_OPTIONAL_KEYS)
+    if missing:
+        errors.append(f"report missing keys: {', '.join(sorted(missing))}")
+    if extra:
+        errors.append(f"report has unexpected keys: {', '.join(sorted(extra))}")
+    if missing or extra:
         return errors, samples
 
     if report["format"] != FORMAT:
@@ -163,8 +211,6 @@ def _validate_report(
         errors.append("report.failure must be bounded text")
     elif complete and report["failure"]:
         errors.append("complete report cannot contain a failure reason")
-    elif not complete and not report["failure"]:
-        errors.append("incomplete report must state a failure reason")
 
     config_valid = _validate_config(report["config"], "report.config", errors)
     expected_valid = _validate_config(expected_config, "expected_config", errors)
@@ -173,6 +219,10 @@ def _validate_report(
 
     if type(report["debug_build"]) is not bool:
         errors.append("report.debug_build must be a boolean")
+    if "godot" in report and not _is_text(report["godot"], maximum=128):
+        errors.append("report.godot must be bounded nonempty text")
+    if "scope" in report and not _is_text(report["scope"], maximum=1024):
+        errors.append("report.scope must be bounded nonempty text")
 
     cleanup = report["cleanup"]
     if _check_keys(cleanup, {"retired_objects_checked", "retired_objects_alive", "complete"},
@@ -222,6 +272,8 @@ def _validate_report(
             if not _is_int(sample[key]):
                 errors.append(f"{where}.{key} must be a nonnegative bounded integer")
                 valid = False
+        # OBJECT_NODE_COUNT covers the scene tree; orphans are a separate pool
+        # and can legitimately outnumber the nodes still attached to the tree.
         if _is_int(sample["monotonic_usec"]):
             if previous_usec is not None and sample["monotonic_usec"] <= previous_usec:
                 errors.append(f"{where}.monotonic_usec must increase strictly")
@@ -240,9 +292,6 @@ def _validate_report(
         # The earlier field checks may have dropped a malformed sample.
         if "complete report.samples" not in " ".join(errors):
             errors.append("complete report contains an invalid sample")
-    if not complete and len(raw_samples) == 0:
-        errors.append("incomplete report must retain at least its diagnostic prefix sample")
-
     if isinstance(cleanup, dict) and type(cleanup.get("complete")) is bool:
         if complete and not cleanup["complete"]:
             errors.append("complete report requires complete cleanup")
@@ -252,7 +301,7 @@ def _validate_report(
             detail_count += len(cleanup["retired_objects_alive"])
         for sample in raw_samples[:31]:
             if isinstance(sample, dict) and isinstance(sample.get("retired_objects_alive"), list):
-                detail_count = max(detail_count, len(sample["retired_objects_alive"]))
+                detail_count += len(sample["retired_objects_alive"])
         if report["total_retired_alive"] < detail_count:
             errors.append("report.total_retired_alive is smaller than retained alive-object details")
     return errors, samples
@@ -288,7 +337,7 @@ def analyze_report(
     complete = bool(valid and report["complete"] and report["cleanup"]["complete"])
     metrics: dict[str, Any] = {}
 
-    if valid:
+    if valid and samples:
         baseline = samples[0]
         settled = samples[1:]
         node_deltas = [sample["node_count"] - baseline["node_count"] for sample in settled]
@@ -328,9 +377,16 @@ def analyze_report(
                 f"static_memory_growth: settled static memory rose by {max_static_delta / MIB:.6g} MiB "
                 f"from baseline (limit {max_static_growth_mib:.6g} MiB)")
         if not report["complete"]:
-            findings.append(f"probe_incomplete: {report['failure']}")
+            failure = report["failure"] or "report is incomplete without a failure reason"
+            findings.append(f"probe_incomplete: {failure}")
         if not report["cleanup"]["complete"]:
             findings.append("cleanup_incomplete: probe did not complete final cleanup checks")
+        if not report["debug_build"]:
+            findings.append("debug_build_required: orphan and static-memory checks require a debug build")
+    elif valid:
+        findings.append("probe_incomplete: no lifecycle samples were captured")
+        if not report["debug_build"]:
+            findings.append("debug_build_required: orphan and static-memory checks require a debug build")
 
     return {
         "complete": complete,
@@ -410,14 +466,94 @@ def _write_summary(path: Path, summary: dict[str, Any]) -> None:
     payload = (json.dumps(summary, indent=2, ensure_ascii=True, allow_nan=False) + "\n").encode("utf-8")
     if len(payload) > MAX_REPORT_BYTES:
         raise ValueError("lifecycle summary exceeds 4 MiB")
-    with path.open("xb") as stream:
-        stream.write(payload)
+    created = False
+    try:
+        with path.open("xb") as stream:
+            created = True
+            stream.write(payload)
+            stream.flush()
+    except BaseException:
+        if created:
+            try:
+                path.unlink()
+            except OSError:
+                pass
+        raise
+
+
+def _sha256_file(path: Path, *, maximum_bytes: int, label: str) -> str:
+    data = _read_regular_file(path, maximum_bytes, label)
+    return hashlib.sha256(data).hexdigest()
+
+
+def scan_engine_log(path: Any) -> dict[str, Any]:
+    """Count every anchored warning and retain at most ten warning details.
+
+    Shutdown ObjectDB/resource warnings receive a retained detail slot even when
+    ordinary warnings appeared earlier in the bounded log.
+    """
+    try:
+        if not isinstance(path, (str, os.PathLike)) or not path:
+            raise ValueError("runner did not provide an engine log path")
+        data = _read_regular_file(Path(path), MAX_ENGINE_LOG_BYTES, "engine log")
+    except (OSError, ValueError) as error:
+        return {
+            "complete": False,
+            "error": f"{type(error).__name__}: {error}"[:2048],
+            "engine_warning_count": None,
+            "shutdown_leak_warning_count": None,
+            "warning_details": [],
+            "warning_details_truncated": None,
+        }
+
+    warning_count = 0
+    shutdown_count = 0
+    details: list[dict[str, Any]] = []
+    for line_number, raw_line in enumerate(io.StringIO(data.decode("utf-8", errors="replace")), start=1):
+        clean = ANSI.sub("", raw_line).rstrip("\r\n")
+        match = WARNING_LINE.match(clean)
+        if not match:
+            continue
+        warning_count += 1
+        message = match.group(1).strip()
+        shutdown_warning = bool(SHUTDOWN_LEAK_WARNING.search(message))
+        if shutdown_warning:
+            shutdown_count += 1
+        detail = {
+            "line": line_number,
+            "message": message[:1000],
+            "shutdown_leak_warning": shutdown_warning,
+        }
+        if len(details) < MAX_WARNING_DETAILS:
+            details.append(detail)
+        elif shutdown_warning:
+            replacement = next((
+                index for index in range(len(details) - 1, -1, -1)
+                if not details[index]["shutdown_leak_warning"]
+            ), None)
+            if replacement is not None:
+                details[replacement] = detail
+
+    return {
+        "complete": True,
+        "error": "",
+        "engine_warning_count": warning_count,
+        "shutdown_leak_warning_count": shutdown_count,
+        "warning_details": details,
+        "warning_details_truncated": warning_count > len(details),
+    }
 
 
 def run_lifecycle(args: argparse.Namespace, runner: Callable[..., dict[str, Any]] = run_checked) -> tuple[int, dict[str, Any] | None]:
     """Execute one fresh lifecycle run and retain its raw probe and summary files."""
     try:
         godot, config = _validate_args(args)
+        source_hashes = {
+            "lifecycle_check.py": _sha256_file(
+                Path(__file__).resolve(), maximum_bytes=MAX_SOURCE_BYTES, label="lifecycle checker source"),
+            "lifecycle_probe.gd": _sha256_file(
+                PROBE_SCRIPT, maximum_bytes=MAX_SOURCE_BYTES, label="lifecycle probe source"),
+        }
         out_dir = args.out_dir.expanduser().resolve()
         out_dir.mkdir(parents=True, exist_ok=True)
         run_dir = Path(tempfile.mkdtemp(prefix="run-", dir=out_dir))
@@ -449,14 +585,24 @@ def run_lifecycle(args: argparse.Namespace, runner: Callable[..., dict[str, Any]
     raw_path = probe_dir / "lifecycle.json"
     report: dict[str, Any] | None = None
     analysis: dict[str, Any]
+    raw_report_sha256: str | None = None
     try:
-        report = load_report(raw_path)
+        report, raw_report_sha256 = load_report_with_digest(raw_path)
         analysis = analyze_report(
             report, engine.get("capture_id"), config,
             max_node_growth=args.max_node_growth,
             max_orphan_growth=args.max_orphan_growth,
             max_static_growth_mib=args.max_static_growth_mib,
         )
+    except ReportLoadError as error:
+        raw_report_sha256 = error.raw_sha256
+        analysis = {
+            "complete": False,
+            "ok": False,
+            "findings": [f"invalid_report: {error}"],
+            "metrics": {},
+            "interpretation": "Object, resource, and static-memory trends are diagnostic signals; passing is not proof of no leak.",
+        }
     except (OSError, ValueError) as error:
         analysis = {
             "complete": False,
@@ -466,11 +612,18 @@ def run_lifecycle(args: argparse.Namespace, runner: Callable[..., dict[str, Any]
             "interpretation": "Object, resource, and static-memory trends are diagnostic signals; passing is not proof of no leak.",
         }
 
+    log_scan = scan_engine_log(engine.get("log"))
     findings = list(analysis["findings"])
     if not engine.get("ok", False):
         reason = engine.get("reason", "unknown")
         findings.append(f"engine_check_failed: run_checked returned {reason}")
-    complete = bool(engine.get("complete", False) and analysis["complete"])
+    if not log_scan["complete"]:
+        findings.append(f"engine_log_scan_incomplete: {log_scan['error']}")
+    elif log_scan["shutdown_leak_warning_count"]:
+        findings.append(
+            "shutdown_leak_warning: engine log contains "
+            f"{log_scan['shutdown_leak_warning_count']} ObjectDB/resource shutdown leak warning(s)")
+    complete = bool(engine.get("complete", False) and analysis["complete"] and log_scan["complete"])
     summary = {
         "format": SUMMARY_FORMAT,
         "complete": complete,
@@ -478,6 +631,14 @@ def run_lifecycle(args: argparse.Namespace, runner: Callable[..., dict[str, Any]
         "findings": findings,
         "capture_id": engine.get("capture_id"),
         "config": config,
+        "counts": {
+            "engine_warning_count": log_scan["engine_warning_count"],
+            "shutdown_leak_warning_count": log_scan["shutdown_leak_warning_count"],
+        },
+        "engine_warning_count": log_scan["engine_warning_count"],
+        "engine_warning_details": log_scan["warning_details"],
+        "engine_warning_details_truncated": log_scan["warning_details_truncated"],
+        "shutdown_leak_warning_count": log_scan["shutdown_leak_warning_count"],
         "thresholds": {
             "max_node_growth": args.max_node_growth,
             "max_orphan_growth": args.max_orphan_growth,
@@ -492,8 +653,14 @@ def run_lifecycle(args: argparse.Namespace, runner: Callable[..., dict[str, Any]
             "process_exit": engine.get("process_exit"),
             "report": _relative_path(run_dir, engine.get("report")),
             "log": _relative_path(run_dir, engine.get("log")),
+            "log_scan_complete": log_scan["complete"],
+            "log_scan_error": log_scan["error"] or None,
         },
-        "probe_report": _relative_path(run_dir, raw_path) if raw_path.is_file() else None,
+        "raw_samples": _relative_path(run_dir, raw_path) if raw_path.is_file() else None,
+        "provenance": {
+            "source_sha256": source_hashes,
+            "raw_report_sha256": raw_report_sha256,
+        },
     }
     try:
         _write_summary(run_dir / "summary.json", summary)
@@ -514,8 +681,8 @@ def _relative_path(root: Path, value: Any) -> str | None:
     try:
         path = Path(value).resolve()
         return path.relative_to(root.resolve()).as_posix()
-    except (OSError, ValueError):
-        return value[:2048]
+    except (OSError, RuntimeError, ValueError):
+        return str(value)[:2048]
 
 
 def main(argv: list[str] | None = None, *, runner: Callable[..., dict[str, Any]] = run_checked) -> int:

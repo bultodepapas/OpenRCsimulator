@@ -433,6 +433,12 @@ before/after comparison; the H16 oracle above isolates a different change.
 
 ## Ground-patch construction cache (DT-11a)
 
+The [botanical spacing follow-up](../../docs/research/visual-quality-implementation/VQ-01c/loading/botanical-spacing/README.md)
+retains a separate field/metadata comparison and traced layout probe for moving
+cheap spacing rejection ahead of shoreline sampling. Its report includes original
+scripts, reconstruction commands, unfavorable whole-field results and the repaired
+habitat regression. It introduces no additional cache.
+
 `ground_patch_cache/prepare.py --work <new-directory> --reference <original-ground_features.gd>`
 copies the current field/scenery callers outside `app/` and redirects only their
 ground-patch dependency. Run the emitted `field_compare.gd` with the native engine,

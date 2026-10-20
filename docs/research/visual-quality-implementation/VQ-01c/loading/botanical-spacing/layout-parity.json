@@ -1,0 +1,239 @@
+{
+	"cases": [
+		{
+			"candidate_sha256": "7aa432e1d61570d7a478fd36d5e542e9bbafc1b4f9c4209c29a4a952c8be9c5e",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "default",
+			"plants": 87,
+			"quality": "low",
+			"reference_sha256": "7aa432e1d61570d7a478fd36d5e542e9bbafc1b4f9c4209c29a4a952c8be9c5e",
+			"shore_calls": {
+				"candidate": 56,
+				"reference": 141
+			}
+		},
+		{
+			"candidate_sha256": "939a914b7e6839baec34da26541106f689a7de712fff50702d8f3d5fea5ecef7",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "default",
+			"plants": 171,
+			"quality": "balanced",
+			"reference_sha256": "939a914b7e6839baec34da26541106f689a7de712fff50702d8f3d5fea5ecef7",
+			"shore_calls": {
+				"candidate": 56,
+				"reference": 141
+			}
+		},
+		{
+			"candidate_sha256": "9f51b844d30606c18ead1370d147689e0cb485e5f3e08ca2c9344ea6dea87078",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "default",
+			"plants": 285,
+			"quality": "high",
+			"reference_sha256": "9f51b844d30606c18ead1370d147689e0cb485e5f3e08ca2c9344ea6dea87078",
+			"shore_calls": {
+				"candidate": 56,
+				"reference": 141
+			}
+		},
+		{
+			"candidate_sha256": "ebcc1fc5bcabd376e62f77245583ba11cb94f82f28cdd6d71ef5d8c1c7902b3b",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "no_lake",
+			"plants": 68,
+			"quality": "low",
+			"reference_sha256": "ebcc1fc5bcabd376e62f77245583ba11cb94f82f28cdd6d71ef5d8c1c7902b3b",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "b58f56e16dca8d27eb0e5182293b0cff4477284d534d39fae5a90ed1d22e472b",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "no_lake",
+			"plants": 133,
+			"quality": "balanced",
+			"reference_sha256": "b58f56e16dca8d27eb0e5182293b0cff4477284d534d39fae5a90ed1d22e472b",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "2e07038ced71e570d38c7595aeee29c179d83d72863599f0570359a9ffc09784",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "no_lake",
+			"plants": 229,
+			"quality": "high",
+			"reference_sha256": "2e07038ced71e570d38c7595aeee29c179d83d72863599f0570359a9ffc09784",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "3d4d67e5b3cb0a41b382b7c458434265b33ea03dadeffb5a25fe3ddd173df2b3",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "shifted_pilot",
+			"plants": 87,
+			"quality": "low",
+			"reference_sha256": "3d4d67e5b3cb0a41b382b7c458434265b33ea03dadeffb5a25fe3ddd173df2b3",
+			"shore_calls": {
+				"candidate": 56,
+				"reference": 141
+			}
+		},
+		{
+			"candidate_sha256": "e01e2aa519ae6bd01664c47902d9e50ce363efe2bc60d224e59e815a1419b223",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "shifted_pilot",
+			"plants": 171,
+			"quality": "balanced",
+			"reference_sha256": "e01e2aa519ae6bd01664c47902d9e50ce363efe2bc60d224e59e815a1419b223",
+			"shore_calls": {
+				"candidate": 56,
+				"reference": 141
+			}
+		},
+		{
+			"candidate_sha256": "1618576dddc830e3eb7f2bb78460315e3f125a19213fbf2211d8bc3227481fc7",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "shifted_pilot",
+			"plants": 285,
+			"quality": "high",
+			"reference_sha256": "1618576dddc830e3eb7f2bb78460315e3f125a19213fbf2211d8bc3227481fc7",
+			"shore_calls": {
+				"candidate": 56,
+				"reference": 141
+			}
+		},
+		{
+			"candidate_sha256": "ebcc1fc5bcabd376e62f77245583ba11cb94f82f28cdd6d71ef5d8c1c7902b3b",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "blocked_shore",
+			"plants": 68,
+			"quality": "low",
+			"reference_sha256": "ebcc1fc5bcabd376e62f77245583ba11cb94f82f28cdd6d71ef5d8c1c7902b3b",
+			"shore_calls": {
+				"candidate": 3584,
+				"reference": 3584
+			}
+		},
+		{
+			"candidate_sha256": "b58f56e16dca8d27eb0e5182293b0cff4477284d534d39fae5a90ed1d22e472b",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "blocked_shore",
+			"plants": 133,
+			"quality": "balanced",
+			"reference_sha256": "b58f56e16dca8d27eb0e5182293b0cff4477284d534d39fae5a90ed1d22e472b",
+			"shore_calls": {
+				"candidate": 3584,
+				"reference": 3584
+			}
+		},
+		{
+			"candidate_sha256": "2e07038ced71e570d38c7595aeee29c179d83d72863599f0570359a9ffc09784",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "blocked_shore",
+			"plants": 229,
+			"quality": "high",
+			"reference_sha256": "2e07038ced71e570d38c7595aeee29c179d83d72863599f0570359a9ffc09784",
+			"shore_calls": {
+				"candidate": 3584,
+				"reference": 3584
+			}
+		},
+		{
+			"candidate_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "invalid_lake",
+			"plants": 0,
+			"quality": "low",
+			"reference_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "invalid_lake",
+			"plants": 0,
+			"quality": "balanced",
+			"reference_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "invalid_lake",
+			"plants": 0,
+			"quality": "high",
+			"reference_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "foreign_field",
+			"plants": 0,
+			"quality": "low",
+			"reference_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "foreign_field",
+			"plants": 0,
+			"quality": "balanced",
+			"reference_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		},
+		{
+			"candidate_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"exact": true,
+			"inputs_unchanged": true,
+			"kind": "foreign_field",
+			"plants": 0,
+			"quality": "high",
+			"reference_sha256": "94bf92b2324937e11252f56b57b662364bac4819af35574fc179c86e67b589cb",
+			"shore_calls": {
+				"candidate": 0,
+				"reference": 0
+			}
+		}
+	],
+	"complete": true
+}

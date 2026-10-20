@@ -1,0 +1,65 @@
+{
+  "runs": [
+    {
+      "reference": {
+        "usec": 838668,
+        "botanical_ms": 67.39
+      },
+      "candidate": {
+        "usec": 806335,
+        "botanical_ms": 51.686
+      }
+    },
+    {
+      "reference": {
+        "usec": 848430,
+        "botanical_ms": 70.682
+      },
+      "candidate": {
+        "usec": 946808,
+        "botanical_ms": 62.086
+      }
+    },
+    {
+      "reference": {
+        "usec": 824332,
+        "botanical_ms": 70.197
+      },
+      "candidate": {
+        "usec": 774140,
+        "botanical_ms": 52.982
+      }
+    },
+    {
+      "reference": {
+        "usec": 807577,
+        "botanical_ms": 69.008
+      },
+      "candidate": {
+        "usec": 728517,
+        "botanical_ms": 49.697
+      }
+    },
+    {
+      "reference": {
+        "usec": 599276,
+        "botanical_ms": 45.244
+      },
+      "candidate": {
+        "usec": 593207,
+        "botanical_ms": 32.512
+      }
+    }
+  ],
+  "exact_field_pairs": 30,
+  "median_of_process_medians": {
+    "reference": {
+      "usec": 824332,
+      "botanical_ms": 69.008
+    },
+    "candidate": {
+      "usec": 774140,
+      "botanical_ms": 51.686
+    }
+  }
+}

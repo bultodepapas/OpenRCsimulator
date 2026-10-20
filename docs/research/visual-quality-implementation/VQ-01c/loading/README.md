@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-19 construction follow-up: [shoreline spacing rejection before terrain sampling](botanical-spacing/README.md)
+reduces complete botanical construction by 25.1%, preserving 30 whole-field geometry
+pairs and 18 layout cases. Default shoreline queries fall from 141 to 56; candidate
+seeds, accepted plants and resource ownership remain unchanged.
+
 2026-10-19 construction follow-up: [bounded ground-patch buffer reuse](ground-patch-cache/README.md)
 preserves 30 native whole-field geometry pairs and reduces repeated field construction
 by 8.5%. Three paired Home/Fly processes complete 18 transitions with active simulation,

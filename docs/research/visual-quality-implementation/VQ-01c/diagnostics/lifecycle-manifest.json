@@ -1,0 +1,207 @@
+{
+  "date": "2026-10-19",
+  "artifacts": [
+    {
+      "file": "lifecycle-windows-summary.json.gz",
+      "bytes": 875,
+      "sha256": "9157e245b6ff1fc9dda3ac516bc05265543b0f9d468a1d3511b1ff4db4fe21b2",
+      "uncompressed_bytes": 1959,
+      "uncompressed_sha256": "4551193b30ea20a22c12f47db6332223e85208d4c7bd456bf580b5279b81445e"
+    },
+    {
+      "file": "lifecycle-windows-probe.json.gz",
+      "bytes": 620,
+      "sha256": "707720518c1c9491c1efe7496b15cc988a3b51a5547faea87d0530529eed2b77",
+      "uncompressed_bytes": 2312,
+      "uncompressed_sha256": "b0b40890fde00573a5a409e506c83c80d7dadd3d305543c9a8ec5a5698a1f7d3"
+    },
+    {
+      "file": "lifecycle-windows-receipt.json.gz",
+      "bytes": 1432,
+      "sha256": "41cace510642d70f388ebe3e7f70ce4f7aac11b3aa8f39f98f1dcbf8cd9639ab",
+      "uncompressed_bytes": 3503,
+      "uncompressed_sha256": "61ae9cfe63a0febcc23933453ef49f83624caeb99d2de9ded5815ba10077e7d7"
+    },
+    {
+      "file": "lifecycle-windows-engine.log.gz",
+      "bytes": 668,
+      "sha256": "1e7e3d378946d86db5c5df084454e7aa2aa1b111076aa47c88a0c47045d3b555",
+      "uncompressed_bytes": 1630,
+      "uncompressed_sha256": "b2826948d2019b7e08d0282cbde517799fd0a032abe40fd019122b109a68999e"
+    },
+    {
+      "file": "lifecycle-windows-resources.json.gz",
+      "bytes": 3831,
+      "sha256": "9dbb34437248ce11222fe2678cf71f2c44c8492c9987274caea15f655b227dc8",
+      "uncompressed_bytes": 32448,
+      "uncompressed_sha256": "6f91a94669e73912e7de15a1125d39b216f34e451f13adde82e8ac3c4f8a3efb"
+    },
+    {
+      "file": "lifecycle-linux-summary.json.gz",
+      "bytes": 877,
+      "sha256": "28905f9b4224379cf2936915e776a91d1b1a47a721384dcdcfaaa6dbbee8ac2f",
+      "uncompressed_bytes": 1959,
+      "uncompressed_sha256": "93aa0bfa1db8c2adbbd6598b095d131705b8f18659d3b7bf6e1fcb1763339457"
+    },
+    {
+      "file": "lifecycle-linux-probe.json.gz",
+      "bytes": 596,
+      "sha256": "47e40e7a0090149d517a30be75bba33fe47b34096a0d8469c1bc14a07a7098a4",
+      "uncompressed_bytes": 1890,
+      "uncompressed_sha256": "2e86831f02281752dd6439799d137345da0b7fc2e5890a26a398799d37e2e25a"
+    },
+    {
+      "file": "lifecycle-linux-receipt.json.gz",
+      "bytes": 936,
+      "sha256": "c67ebb84b73b47c0f92709d1869e5216a0cce4617229843359b04a1713424d1e",
+      "uncompressed_bytes": 1976,
+      "uncompressed_sha256": "2e2c41c9110ed0fab4ddc5ffb69ef849051c977c5990c00c5f41cec6da48bf32"
+    },
+    {
+      "file": "lifecycle-linux-engine.log.gz",
+      "bytes": 663,
+      "sha256": "fe25f0bfd155922ea3aae77ba05399da7a726f06617f9633e84aac1b0bbb9c89",
+      "uncompressed_bytes": 1522,
+      "uncompressed_sha256": "aa0bd0c5e967538bb5abb63776f208f39a67612f9a7b473778e0d118f5484b03"
+    },
+    {
+      "file": "lifecycle-leak_workshop-probe.json.gz",
+      "bytes": 870,
+      "sha256": "3e727cab7e3b2da24680485890c6ba9221e387d3fe32307837f095f82d5486f7",
+      "uncompressed_bytes": 6567,
+      "uncompressed_sha256": "73eca99ea8f1bff75d398a8e91f899dc685771644be9e06e27fa58745e109432"
+    },
+    {
+      "file": "lifecycle-leak_workshop-engine.log.gz",
+      "bytes": 206,
+      "sha256": "663f08131cb8bc8c8d81e84a56c510b2493cf799e0170029b13567b289e83044",
+      "uncompressed_bytes": 479,
+      "uncompressed_sha256": "76f32adb2efbbf8c258275c6f1cde10bcd809bf3483d0070f77e490e2c6b4e82"
+    },
+    {
+      "file": "lifecycle-fail_home_after_warmup-probe.json.gz",
+      "bytes": 580,
+      "sha256": "787f03fb04381db4670329cc644e40c004ccaa159c1fa67f037e6678eeb92ae2",
+      "uncompressed_bytes": 1130,
+      "uncompressed_sha256": "f854bdc609b69c215a7c2b5f111e76edb1b7e4fb1880bcfe8115ea4d761a2379"
+    },
+    {
+      "file": "lifecycle-fail_home_after_warmup-engine.log.gz",
+      "bytes": 224,
+      "sha256": "9a6a30a678b1e4d3cf99e559c9ad94a78d461aa896a37298aaf3dea0638bcd6a",
+      "uncompressed_bytes": 269,
+      "uncompressed_sha256": "7675c716454e7b7dff71e845bfdc24e343cefbaf1134c525347d4214540b5d91"
+    },
+    {
+      "file": "lifecycle-suite-windows-final.log.gz",
+      "bytes": 635,
+      "sha256": "1bf21ce7e3b88c0f3d6090c94dbac320bef9cf584b90ea65b0a91367b258f623",
+      "uncompressed_bytes": 1814,
+      "uncompressed_sha256": "aa8eff0faf53acc63431f24598851c2d7549f0bbccc7c7d70553e14d33d06a3c"
+    },
+    {
+      "file": "lifecycle-tests-linux-final.log.gz",
+      "bytes": 531,
+      "sha256": "2511258d233eb2e01ca1de5adc76bff7672f0d316b2d0bcd2278958ab9a44e11",
+      "uncompressed_bytes": 1364,
+      "uncompressed_sha256": "556f3e4fe5365aa8cf7a97d825674435f6be96465ba3db4eee8d475eac51ede5"
+    },
+    {
+      "file": "lifecycle-suite-linux-final.log.gz",
+      "bytes": 546,
+      "sha256": "f1a51aef3137a41d42ee2f11892f8f1f8172a9ec48eddb344177202524667f22",
+      "uncompressed_bytes": 1486,
+      "uncompressed_sha256": "39f1e3a6127c47f00ef27bd851c24d41b0591ab6a16b0f38f29d90424db7995e"
+    }
+  ],
+  "fixtures": {
+    "leak_workshop": {
+      "analysis": {
+        "complete": true,
+        "ok": false,
+        "findings": [
+          "retired_objects_alive: probe reported one or more retained retired objects",
+          "orphan_growth: settled orphan count rose by 5 from baseline (limit 0)"
+        ],
+        "metrics": {
+          "baseline_cycle": 0,
+          "settled_sample_count": 5,
+          "max_node_growth": 0,
+          "max_orphan_growth": 5,
+          "max_object_growth": 5,
+          "max_resource_growth": 0,
+          "max_static_memory_growth_bytes": 25636,
+          "max_static_memory_growth_mib": 0.024448394775390625,
+          "static_memory_gate_enabled": false
+        },
+        "interpretation": "Object, resource, and static-memory trends are diagnostic signals; passing is not proof of no leak."
+      },
+      "engine_exit": 1,
+      "total_retired_alive": 6
+    },
+    "fail_home_after_warmup": {
+      "analysis": {
+        "complete": false,
+        "ok": false,
+        "findings": [
+          "probe_incomplete: End flight did not return to Home; inspect engine.log for pending recovery or startup errors"
+        ],
+        "metrics": {
+          "baseline_cycle": 0,
+          "settled_sample_count": 0,
+          "max_node_growth": 0,
+          "max_orphan_growth": 0,
+          "max_object_growth": 0,
+          "max_resource_growth": 0,
+          "max_static_memory_growth_bytes": 0,
+          "max_static_memory_growth_mib": 0.0,
+          "static_memory_gate_enabled": false
+        },
+        "interpretation": "Object, resource, and static-memory trends are diagnostic signals; passing is not proof of no leak."
+      },
+      "engine_exit": 1,
+      "total_retired_alive": 0
+    }
+  },
+  "source_sha256": {
+    "lifecycle_check.py": "7125bc5ac19e946eda518497663e82ba583c91cf8e29a3a47d62fed5b0fd140d",
+    "lifecycle_probe.gd": "6308ceb3f296b75ad4061e75eebfc20ceff9fd2da4e4f34c2a632e9ef2d10108"
+  },
+  "linux_final_checker_reanalysis": {
+    "complete": true,
+    "ok": true,
+    "findings": [],
+    "metrics": {
+      "baseline_cycle": 0,
+      "settled_sample_count": 2,
+      "max_node_growth": 0,
+      "max_orphan_growth": 0,
+      "max_object_growth": 0,
+      "max_resource_growth": 0,
+      "max_static_memory_growth_bytes": 64012,
+      "max_static_memory_growth_mib": 0.061046600341796875,
+      "static_memory_gate_enabled": false
+    },
+    "interpretation": "Object, resource, and static-memory trends are diagnostic signals; passing is not proof of no leak."
+  },
+  "linux_capture_note": "Captured before correcting the offline orphan-versus-tree-count validation; final checker reanalysis above. Probe source unchanged.",
+  "previous_shutdown_warning_classification": {
+    "complete": true,
+    "error": "",
+    "engine_warning_count": 2,
+    "shutdown_leak_warning_count": 1,
+    "warning_details": [
+      {
+        "line": 3,
+        "message": "Tree wind is disabled for maple_tree because source material -9223371769006519767 is unsupported (cull mode is not disabled)",
+        "shutdown_leak_warning": false
+      },
+      {
+        "line": 22,
+        "message": "4 ObjectDB instances were leaked at exit (run with `--verbose` for details).",
+        "shutdown_leak_warning": true
+      }
+    ],
+    "warning_details_truncated": false
+  }
+}

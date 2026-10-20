@@ -222,6 +222,17 @@ for the lifecycle scenario, not an established leak cause.
 The first delivered slice is a bounded local incident ZIP and offline Perfetto
 adapter for existing frame/resource captures. Shared capture IDs and paired clock
 anchors support approximate correlation; incomplete prefixes remain explicit.
-This does not yet add a runtime event queue, scene markers, console or lifecycle
-probe. See the [usage guide](../../tools/godot/README.md#incident-bundles-and-perfetto-timelines-pt1h-r5)
+This slice does not add a runtime event queue, scene markers or console.
+See the [usage guide](../../tools/godot/README.md#incident-bundles-and-perfetto-timelines-pt1h-r5)
 and [reviewed tests/evidence](visual-quality-implementation/VQ-01c/diagnostics/README.md#pt1h-r5-incident-packaging-and-timeline-correlation).
+
+### Implemented follow-up: PT1h-R6
+
+The bounded lifecycle scenario now exercises both routes with warm-up, settling,
+retired-object IDs, node/orphan growth gates and explicit shutdown-warning checks.
+Disposable real-engine fixtures include a retained node and a failed transition.
+For deeper attribution, reuse the built-in
+[ObjectDB Profiler](https://docs.godotengine.org/en/stable/tutorials/scripting/debug/objectdb_profiler.html)
+and its snapshot comparison instead of building another object inspector.
+See [usage and limits](../../tools/godot/README.md#repeated-scene-lifecycle-checks-pt1h-r6)
+and [measured evidence](visual-quality-implementation/VQ-01c/diagnostics/README.md#pt1h-r6-lifecycle-retention-checks).
