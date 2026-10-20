@@ -301,6 +301,12 @@ static func _home(theme: Theme) -> void:
 	var quiet_row := {normal = Color.TRANSPARENT, hover = Color(BUTTON.hover, 0.78), pressed = Color(BUTTON.pressed, 0.92), disabled = Color.TRANSPARENT}
 	theme.set_type_variation("HomeAction", "Button")
 	_button(theme, "HomeAction", quiet_row, Color.TRANSPARENT, 0, SIZE.button, TEXT)
+	# UI-33 (UI-30 HN-1): rows that cycle a value or open a dialog reserve room for their right-hand glyph.
+	theme.set_type_variation("HomeChoice", "HomeAction")
+	for state: StringName in theme.get_stylebox_list("HomeAction"):
+		var reserved := theme.get_stylebox(state, "HomeAction").duplicate() as StyleBox
+		reserved.content_margin_right = maxf(reserved.content_margin_right, 36.0)
+		theme.set_stylebox(state, "HomeChoice", reserved)
 
 	var nav := {normal = Color.TRANSPARENT, hover = Color(BUTTON.hover, 0.58), pressed = Color.TRANSPARENT, disabled = Color.TRANSPARENT}
 	theme.set_type_variation("HomeNav", "Button")

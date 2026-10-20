@@ -184,10 +184,9 @@ func _init() -> void:
 	var build := BuildInfo.current()
 	var version_label := _label(build.label if build.source == "export" else "development build", "SecondaryLabel", build.source != "export")
 	version_label.name = "Version"
-	version_label.custom_minimum_size.x = 150.0
 	version_label.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	version_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	version_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	version_label.autowrap_mode = TextServer.AUTOWRAP_OFF # UI-33 (UI-30 VC-8): one quiet line beside the badge
 	_version_label = version_label
 	identity.add_child(version_label)
 	_header.add_child(identity)
@@ -234,14 +233,17 @@ func _init() -> void:
 	nav.add_child(aircraft_nav)
 	var practice_nav := _nav_button("Practice", "Practice", 2)
 	nav.add_child(practice_nav)
+	var garage_nav := _nav_button("RC garage", "Garage", 3)
+	nav.add_child(garage_nav)
+	# UI-33 (UI-30 HN-2): the four destinations above are pages; Workshop opens its own editor, last and marked.
 	workshop_button = _button("Workshop", "HomeNav")
 	workshop_button.name = "Workshop"
 	workshop_button.custom_minimum_size.y = 38
+	workshop_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	Widgets.mark_row(workshop_button, "open")
 	nav.add_child(workshop_button)
 	_nav_buttons.append(workshop_button)
-	var garage_nav := _nav_button("RC garage", "Garage", 3)
-	nav.add_child(garage_nav)
 
 	_scroll = ScrollContainer.new()
 	_scroll.name = "HomeContentScroll"
@@ -302,8 +304,9 @@ func _init() -> void:
 	aircraft_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	aircraft_preview_label.visible = false
 	flight_card_lines.add_child(aircraft_preview_label)
-	start_button = _button("", "HomeAction")
+	start_button = _button("", "HomeChoice")
 	start_button.name = "StartChoice"
+	Widgets.mark_row(start_button, "cycle")
 	start_button.custom_minimum_size.y = 36
 	start_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	start_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -316,8 +319,9 @@ func _init() -> void:
 	_conditions_row.columns = 1
 	_conditions_row.add_theme_constant_override("h_separation", 4)
 	_conditions_row.add_theme_constant_override("v_separation", 2)
-	landscape_button = _button("", "HomeAction")
+	landscape_button = _button("", "HomeChoice")
 	landscape_button.name = "Landscape"
+	Widgets.mark_row(landscape_button, "cycle")
 	landscape_button.custom_minimum_size.y = 38
 	landscape_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	landscape_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -329,8 +333,9 @@ func _init() -> void:
 	flight_page.add_child(landscape_button)
 	set_landscape(landscape_id)
 	flight_page.add_child(_conditions_row)
-	weather_button = _button("", "HomeAction")
+	weather_button = _button("", "HomeChoice")
 	weather_button.name = "Weather"
+	Widgets.mark_row(weather_button, "open")
 	weather_button.custom_minimum_size.y = 38
 	weather_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	weather_button.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -338,8 +343,9 @@ func _init() -> void:
 	weather_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
 	_conditions_row.add_child(weather_button)
-	time_button = _button("", "HomeAction")
+	time_button = _button("", "HomeChoice")
 	time_button.name = "TimeOfDay"
+	Widgets.mark_row(time_button, "cycle")
 	time_button.custom_minimum_size.y = 38
 	time_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	time_button.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -396,16 +402,18 @@ func _init() -> void:
 	limits_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_flight_details.add_child(limits_label)
 	# BAT-13: the battery mode is a launch detail; the collapsed flight card has no spare height (test_ui_home).
-	battery_button = _button("", "HomeAction")
+	battery_button = _button("", "HomeChoice")
 	battery_button.name = "BatteryChoice"
+	Widgets.mark_row(battery_button, "cycle")
 	battery_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	battery_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	battery_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	battery_button.visible = false
 	battery_button.pressed.connect(_cycle_battery_mode)
 	_flight_details.add_child(battery_button)
-	fuel_button = _button("", "HomeAction")
+	fuel_button = _button("", "HomeChoice")
 	fuel_button.name = "FuelChoice"
+	Widgets.mark_row(fuel_button, "cycle")
 	fuel_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	fuel_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	fuel_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -481,14 +489,18 @@ func _init() -> void:
 	practice_row.name = "PracticeActions"
 	practice_row.add_theme_constant_override("separation", 6)
 	practice_page.add_child(practice_row)
-	natural_random_button = _button("Natural Random", "HomeAction")
+	natural_random_button = _button("Natural Random", "HomeChoice")
 	natural_random_button.name = "NaturalRandom"
+	natural_random_button.alignment = HORIZONTAL_ALIGNMENT_LEFT # UI-33 (UI-30 HN-6): a row that opens a screen
+	Widgets.mark_row(natural_random_button, "open")
 	natural_random_button.custom_minimum_size.y = 42
 	natural_random_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	natural_random_button.pressed.connect(func() -> void: natural_random_requested.emit(natural_random_button))
 	practice_row.add_child(natural_random_button)
-	failures_button = _button("Failure practice", "HomeAction")
+	failures_button = _button("Failure practice", "HomeChoice")
 	failures_button.name = "Failures"
+	failures_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	Widgets.mark_row(failures_button, "open")
 	failures_button.custom_minimum_size.y = 42
 	failures_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	failures_button.pressed.connect(func() -> void: failures_requested.emit(failures_button))
@@ -559,6 +571,11 @@ func _init() -> void:
 	help_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	utility_row.add_child(help_button)
+	var quit_gap := Control.new() # UI-33 (UI-30 HN-4): leaving the application stands apart from Help
+	quit_gap.name = "QuitGap"
+	quit_gap.custom_minimum_size.x = 16.0
+	quit_gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	utility_row.add_child(quit_gap)
 	quit_button = _button("Quit", "QuietButton")
 	quit_button.name = "Quit"
 	quit_button.custom_minimum_size.y = 34
@@ -1046,7 +1063,7 @@ func _show_start_choice(choice: String) -> void:
 
 func set_landscape(id: String) -> void:
 	landscape_id = id if Landscapes.has(id) else Landscapes.DEFAULT_ID
-	landscape_button.text = tr("Landscape: %s") % Landscapes.entry(landscape_id).name
+	landscape_button.text = tr("Landscape: %s") % tr(Landscapes.entry(landscape_id).name)
 	landscape_button.tooltip_text = tr("Choose the landscape for your next flight.")
 	if natural_random_button != null:
 		_update_landscape_activities()

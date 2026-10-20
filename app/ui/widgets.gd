@@ -53,3 +53,37 @@ static func sidebar_fade(width: int) -> TextureRect:
 	rect.offset_left = width
 	rect.offset_right = width + 32
 	return rect
+
+
+## UI-33 (UI-30 HN-1): what a Home row does when pressed. "cycle" changes its value in place (two small arrows);
+## "open" opens a dialog or an editor (a chevron). Drawn in the secondary text colour, so no icon asset is needed.
+class RowGlyph extends Control:
+	var kind := "open"
+
+	func _init(glyph_kind := "open") -> void:
+		kind = glyph_kind
+		name = "RowGlyph"
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		set_anchors_preset(Control.PRESET_CENTER_RIGHT)
+		offset_left = -30.0
+		offset_right = -8.0
+		offset_top = -9.0
+		offset_bottom = 9.0
+
+	func _draw() -> void:
+		var color := get_theme_color("font_color", "SecondaryLabel")
+		var c := size * 0.5
+		var h := minf(size.y * 0.3, 5.0)
+		if kind == "cycle":
+			for side: float in [-1.0, 1.0]:
+				var tip := c + Vector2(side * (h + 4.0), 0.0)
+				var back := tip - Vector2(side * h * 1.2, 0.0)
+				draw_colored_polygon(PackedVector2Array([tip, back + Vector2(0.0, -h), back + Vector2(0.0, h)]), color)
+		else:
+			draw_polyline(PackedVector2Array([c + Vector2(-h * 0.5, -h), c + Vector2(h * 0.5, 0.0), c + Vector2(-h * 0.5, h)]),
+				color, 2.0, true)
+
+
+static func mark_row(button: Button, kind: String) -> void:
+	button.add_child(RowGlyph.new(kind))
+
