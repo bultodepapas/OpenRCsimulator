@@ -3,6 +3,7 @@ extends SceneTree
 const World := preload("res://render/world/world.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
+const FieldLights := preload("res://render/world/field_lights.gd")
 const Frames := preload("res://render/frames.gd")
 const Airplane := preload("res://render/airplane.gd")
 const Glare := preload("res://render/landscape_upgrade/sun_glare.gd")
@@ -15,6 +16,8 @@ const ReferenceScenery := preload("res://scenery/scenery_loader.gd")
 const ReferenceWoodland := preload("res://scenery/woodland_edge_habitat.gd")
 const ReferenceField := preload("res://render/field.gd")
 const FLEET_VIEWS := {
+	"power_overview": {eye = [-230.0, 980.0, -70.0], at = [50.0, 1450.0, -15.0], fov = 55.0},
+	"power_close": {eye = [70.0, 1210.0, -10.0], at = [109.0, 1245.25, -16.0], fov = 50.0},
 	"regional_turbines": {eye = [300.0, 2950.0, -100.0], at = [730.0, 4150.0, -80.0], fov = 50.0},
 	"regional_antenna": {eye = [770.0, -1630.0, -55.0], at = [1000.0, -1400.0, -32.5], fov = 44.0},
 	"regional_hills": {eye = [1850.0, -750.0, -260.0], at = [2350.0, -560.0, -205.0], fov = 50.0},
@@ -87,6 +90,22 @@ func _run() -> void:
 	var parent := Node3D.new()
 	root.add_child(parent)
 	var loaded: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	var marker_lights := FieldLights.load_from()
+	if not marker_lights.ok:
+		printerr(marker_lights.errors)
+		quit(1)
+		return
+	var threshold_marker: Dictionary = {}
+	for fixture: Dictionary in marker_lights.lights.fixtures:
+		if fixture.id == "threshold_stakes":
+			threshold_marker = fixture
+			break
+	if threshold_marker.is_empty():
+		printerr("Capture requires threshold_stakes")
+		quit(1)
+		return
+	var threshold_center: Array = threshold_marker.points[4]
+	var marker_world := Frames.ned_to_render([float(threshold_center[0]), float(threshold_center[1]), -float(threshold_marker.height)])
 	Atmosphere.engine_shadows = str(args.get("engine_shadows", "on")) != "off"
 	var snapshot := {}
 	if args.has("time-of-day"):
@@ -376,7 +395,7 @@ func _run() -> void:
 			glare_aureole_coeff = flare.get_meta("aureole_coeff", 0.0), glare_background_scale = flare.get_meta("background_scale", 0.0),
 			glare_solar_uv = flare.get_meta("solar_uv", Vector2(-1.0, -1.0)),
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
-			marker_center_px = camera.unproject_position(Frames.ned_to_render([15.0, 51.0, -0.35]))}
+			marker_center_px = camera.unproject_position(marker_world)}
 		if regional != null:
 			case_report["regional_flashes_px"] = []
 			for optical: MultiMeshInstance3D in regional.find_children("beacon_*", "MultiMeshInstance3D", true, false):

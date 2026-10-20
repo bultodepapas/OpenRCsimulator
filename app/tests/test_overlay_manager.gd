@@ -70,6 +70,10 @@ func _settings() -> void:
 	_check("custom keeps its own set, canonical order, no unknowns or duplicates", custom.visible == ["flight", "wind"], str(custom.visible))
 	_check("custom keeps units and stick mode", custom.units == "imperial" and custom.stick_mode == 1)
 	_check("a float stick mode is not an int", Settings.validate({ stick_mode = 1.0 }).stick_mode == 2)
+	_check("default radio appearance is JETI", Settings.DEFAULTS.radio_model == "jeti_ds24_ii")
+	_check("Radiolink is accepted; unknown appearance falls back to JETI",
+		Settings.validate({ radio_model = "radiolink_t16d" }).radio_model == "radiolink_t16d"
+		and Settings.validate({ radio_model = "unknown" }).radio_model == "jeti_ds24_ii")
 	_check("preset_for recognises every preset", Settings.PRESET_ORDER.all(func(p: String) -> bool: return Settings.preset_for(Settings.PRESETS[p]) == p))
 	_check("preset_for: any other set is custom", Settings.preset_for(["flight"]) == "custom")
 	_check("flight clock m:ss and h:mm:ss", FlightData.clock(75.9) == "1:15" and FlightData.clock(3725.0) == "1:02:05" and FlightData.clock(-3.0) == "0:00")
@@ -101,16 +105,18 @@ func _preferences() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	_check("no file: default overlays", Preferences.load_from(PREFS).hud == Settings.DEFAULTS)
 	var p := Preferences.load_from(PREFS)
-	p.hud = { preset = "custom", visible = ["flight", "telemetry"], units = "si", stick_mode = 1 }
+	p.hud = { preset = "custom", visible = ["flight", "telemetry"], units = "si", stick_mode = 1, radio_model = "radiolink_t16d" }
 	_check("save", Preferences.save_to(PREFS, p) == OK)
-	_check("custom overlays round-trip", Preferences.load_from(PREFS).hud == { preset = "custom", visible = ["flight", "telemetry"], units = "si", stick_mode = 1 })
+	_check("custom overlays and radio appearance round-trip", Preferences.load_from(PREFS).hud == p.hud)
 	var cfg := ConfigFile.new()
 	cfg.load(PREFS)
 	cfg.set_value("hud", "units", 7)
 	cfg.set_value("hud", "preset", "everything")
+	cfg.set_value("hud", "radio_model", "unknown")
 	cfg.save(PREFS)
 	var damaged: Dictionary = Preferences.load_from(PREFS).hud
-	_check("damaged [hud] values fall back per key", damaged.units == "auto" and damaged.preset == "pilot" and damaged.stick_mode == 1, str(damaged))
+	_check("damaged [hud] values fall back per key", damaged.units == "auto" and damaged.preset == "pilot"
+		and damaged.stick_mode == 1 and damaged.radio_model == "jeti_ds24_ii", str(damaged))
 
 
 func _manager() -> void:
@@ -142,6 +148,18 @@ func _manager() -> void:
 	manager.update(snap, 1.0)
 	await process_frame
 	_check("full layout: no overlap, all on screen", _layout_ok(manager, false), _rects(manager))
+	manager.set_radio_model("radiolink_t16d")
+	await process_frame
+	_check("Radiolink choice updates artwork and keeps Full layout clear at 720p",
+		manager.frames.transmitter.radio_model == "radiolink_t16d"
+		and manager.frames.transmitter.title_label.text.begins_with("RADIOLINK T16D")
+		and manager.frames.transmitter.gimbals.custom_minimum_size == Transmitter.RADIOLINK_SIZE
+		and _layout_ok(manager, false), _rects(manager))
+	manager.set_radio_model("jeti_ds24_ii")
+	await process_frame
+	_check("JETI remains selectable", manager.frames.transmitter.radio_model == "jeti_ds24_ii"
+		and manager.frames.transmitter.gimbals.custom_minimum_size == Transmitter.JETI_SIZE)
+	changes.clear()
 	manager.apply({ preset = "developer" }, false)
 	var typical := PackedStringArray()
 	for i in 14: # today's input panel plus status: about 14 lines of up to ~60 characters
@@ -315,8 +333,10 @@ func _dialog() -> void:
 	dialog.switches.telemetry.button_pressed = true
 	_check("switching Telemetry on gives the Full preset", manager.settings.preset == "full" and dialog.preset_picker.selected == 2)
 	dialog.units_picker.item_selected.emit(2)
+	dialog.radio_picker.item_selected.emit(1)
 	dialog.mode_picker.item_selected.emit(0)
-	_check("units and stick mode apply at once", manager.settings.units == "imperial" and manager.settings.stick_mode == 1)
+	_check("units, radio and stick mode apply at once", manager.settings.units == "imperial"
+		and manager.settings.radio_model == "radiolink_t16d" and manager.settings.stick_mode == 1)
 	dialog.preset_picker.item_selected.emit(0)
 	_check("choosing Off clears every switch", manager.settings.preset == "off" and not dialog.switches.flight.button_pressed)
 	await UiDriver.new(self).tap(KEY_ESCAPE)

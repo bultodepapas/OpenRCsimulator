@@ -742,6 +742,12 @@ msgstr "Datos de vuelo"
 msgid "Transmitter"
 msgstr "Emisora"
 
+msgid "Radio appearance"
+msgstr "Aspecto de la emisora"
+
+msgid "Stick mode"
+msgstr "Modo de palancas"
+
 msgid "Wind"
 msgstr "Viento"
 

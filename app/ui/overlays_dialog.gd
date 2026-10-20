@@ -163,7 +163,7 @@ func _picker(column: VBoxContainer, label_text: String, node_name: String) -> Op
 	row.add_theme_constant_override("separation", 12)
 	column.add_child(row)
 	var label := Widgets.label(label_text, "SecondaryLabel", false, false)
-	label.custom_minimum_size.x = 140
+	label.custom_minimum_size.x = 220
 	row.add_child(label)
 	var picker := OptionButton.new()
 	picker.name = node_name

@@ -22,7 +22,7 @@ Aircraft controls, the 17:30 local default, manual override lifecycle and reusab
 
 Sky, time and aircraft lighting apply to both selectable landscapes. Field-light fixtures and the campfire belong to Club field; Green paradise has neither. [Landscape selection and authoring](LANDSCAPES.md).
 
-The Conditions time controls select **Soft club**, **Airfield** or **Off** and toggle **Campfire** independently. Home remembers these choices; the default is Club with the fire off. The field mode changes lamp/marker appearance without removing the installed mast or hearth. Four heads share one 12 m mast; a separate low light continues to illuminate the windsock. Airfield uses cooler floods and white edge cues; the red/green threshold direction cues remain visual aids for this RC field, not airport certification.
+The Conditions time controls select **Soft club**, **Airfield** or **Off** and toggle **Campfire** independently. Home remembers these choices; the default is Club with the fire off. The field mode changes lamp/marker appearance without removing the installed mast or hearth. Four heads share one 12 m mast; a separate low light continues to illuminate the windsock. Both profiles use low white edge markers 0.4 m into the grass beside the 100 × 12 m runway; their 0.12 m housings remain visible by day with optical emission off. The threshold markers match their height and keep the red/green direction cues. Airfield uses cooler floods. These are visual aids for this RC field, not airport certification. [Low-marker refinement and evidence](research/landscape-upgrade/LU-09-R1/README.md).
 
 Technical launch options use explicit defaults independently of saved Home preferences:
 
