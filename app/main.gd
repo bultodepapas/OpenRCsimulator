@@ -294,6 +294,7 @@ const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 var _profile_smoke: Node3D
 var _stock_smoke_profile := false
 var _profile_smoke_tick := 0
+var _profile_presented_s := -1.0
 var _profile_request_tape: Array = []
 var _profile_source_tape: Array = []
 var _profile_last_request := -1.0
@@ -936,7 +937,10 @@ func _process(delta: float) -> void:
 	_camera_dt = dt
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_storm(visual_clock_s, frozen)
-	_update_smoke()
+	var smoke_clock_s := sim.time()
+	if not _scripted and _visual_pose.is_empty() and session.crash.is_empty() and sim.tick > 0:
+		smoke_clock_s = maxf(0.0, sim.time() - sim.dt() + Engine.get_physics_interpolation_fraction() * sim.dt())
+	_update_smoke(smoke_clock_s)
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
@@ -958,8 +962,8 @@ func _update_cg_model() -> void:
 		_cg_model = Frames.cg_in_model_frame(session.aircraft.model.cg_le, datum.x * scale_factor, datum.y * scale_factor)
 
 
-func _update_smoke() -> void:
-	_update_profile_smoke()
+func _update_smoke(presentation_time_s: float = -1.0) -> void:
+	_update_profile_smoke(presentation_time_s)
 	if _smoke == null or session == null:
 		return
 	var sim: Node = session.sim
@@ -2686,7 +2690,7 @@ func capture_evidence() -> Dictionary:
 
 func _smoke_evidence() -> Dictionary:
 	if _stock_smoke_profile:
-		return {mode = "stock", preset = StockSmoke.PRESET_ID, disabled = _profile_smoke == null,
+		return {mode = "stock", preset = StockSmoke.preset_id(_airplane.get("customization_bindings", {}), session.aircraft.model.propulsion), disabled = _profile_smoke == null,
 			requested = _profile_smoke != null and _profile_smoke_request() > 0.0,
 			source_running = _profile_presented_running,
 			allocation = _profile_smoke.budget_info() if _profile_smoke != null else {}}
@@ -2720,32 +2724,50 @@ func _sample_profile_smoke(tick: int, _time: float, _state: PackedFloat64Array,
 		_reset_profile_smoke()
 
 
-func _update_profile_smoke() -> void:
+func _update_profile_smoke(presentation_time_s: float = -1.0) -> void:
 	if _profile_smoke == null or session == null or session.sim.paused: return
-	var tick: int = session.sim.tick
-	if tick < _profile_smoke_tick: _reset_profile_smoke()
+	# Manual captures present accepted endpoints; live flight passes the exact
+	# interpolated clock used for the displayed model pose.
+	var clock_s := session.sim.time() if presentation_time_s < 0.0 else presentation_time_s
+	var tick := floori(clock_s * 240.0 + 0.000001)
+	if clock_s < _profile_presented_s: _reset_profile_smoke()
 	var prop: Dictionary = session.aircraft.model.propulsion
-	var request := _profile_smoke_request()
-	var elapsed := float(tick - _profile_smoke_tick) / 240.0
 	var transforms := AircraftCustomization.smoke_transforms(_airplane)
+	var request_changes: Array = []
+	var source_changes: Array = []
+	var future_requests: Array = []
+	var future_sources: Array = []
+	for event: Dictionary in _profile_request_tape:
+		if int(event.tick) <= tick: request_changes.append(event)
+		else: future_requests.append(event)
+	for event: Dictionary in _profile_source_tape:
+		if int(event.tick) <= tick: source_changes.append(event)
+		else: future_sources.append(event)
 	var sample := {kind = Propulsion.source_kind(prop), running = _profile_presented_running,
 		level = _profile_presented_level, source_id = str(prop.get("id", "$propulsion")),
-		wash_mps = _profile_smoke_wash(prop), changes = _profile_source_tape.duplicate(true)}
-	var sources := ProfileSmoke.source_map(sample)
-	if _profile_smoke_tick == 0:
-		_profile_smoke.advance(0.0, {tick = 0, slot_transforms = transforms}, _render_wind(0.0), 0.0,
-			{kind = Propulsion.source_kind(prop), running = false, level = 1.0})
-	_profile_smoke.advance(elapsed, {tick = tick, slot_transforms = transforms,
-		camera_distance_m = _camera.global_position.distance_to(_airplane.root.global_position),
-		safety_stop = not session.crash.is_empty() or not session.sim.fault_reason.is_empty()}, _render_wind(session.sim.time()),
-		{level = _profile_presented_request, changes = _profile_request_tape.duplicate(true)},
-		{kind = sample.kind, running = sample.running, level = sample.level, changes = sample.changes, sources = sources})
-	_profile_request_tape.clear()
-	_profile_source_tape.clear()
+		wash_mps = _profile_smoke_wash(prop), changes = source_changes}
+	if _profile_presented_s < 0.0:
+		# A reset/seek primes at this pose; never draw a bridge from a stale origin.
+		_profile_smoke.advance(0.0, {tick = tick, presentation_time_s = clock_s, slot_transforms = transforms},
+			_render_wind(clock_s), 0.0, {kind = sample.kind, running = false, level = 0.0})
+	else:
+		_profile_smoke.advance(clock_s - _profile_presented_s,
+			{tick = tick, presentation_time_s = clock_s, slot_transforms = transforms,
+			camera_distance_m = _camera.global_position.distance_to(_airplane.root.global_position),
+			safety_stop = not session.crash.is_empty() or not session.sim.fault_reason.is_empty()},
+			_render_wind(clock_s), {level = _profile_presented_request, changes = request_changes},
+			{kind = sample.kind, running = sample.running, level = sample.level, changes = source_changes,
+				sources = ProfileSmoke.source_map(sample)})
+	# Only presented events become the next interval's baseline; accepted future
+	# events stay queued until the interpolated aircraft reaches their timestamp.
+	for event: Dictionary in request_changes: _profile_presented_request = float(event.level)
+	for event: Dictionary in source_changes:
+		_profile_presented_running = bool(event.running)
+		_profile_presented_level = float(event.level)
+	_profile_request_tape = future_requests
+	_profile_source_tape = future_sources
 	_profile_smoke_tick = tick
-	_profile_presented_request = request
-	_profile_presented_level = _profile_source_level()
-	_profile_presented_running = session.propulsion_source_running() and session.crash.is_empty() and session.sim.fault_reason.is_empty()
+	_profile_presented_s = clock_s
 
 
 ## The stock tailpipe display follows accepted source state, including fuel exhaustion.
@@ -2765,6 +2787,7 @@ func _supports_show_smoke() -> bool:
 
 func _reset_profile_smoke() -> void:
 	_profile_smoke_tick = session.sim.tick if session != null else 0
+	_profile_presented_s = -1.0
 	_profile_request_tape.clear()
 	_profile_source_tape.clear()
 	_profile_last_request = -1.0

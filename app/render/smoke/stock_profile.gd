@@ -63,9 +63,15 @@ static func profile(bindings: Dictionary) -> Dictionary:
 		"slot": SLOT_ID, "enabled": true, "color": "#F0F2F5FF", "amount": 1.0,
 		"width_m": 2.0, "lifetime_s": 3.0, "shape": "ribbon", "mode": "hold",
 		"burst_s": 0.0, "pulse_period_s": 0.0, "pulse_duty": 0.0, "palette": [], "step_s": 0.0,
+		"emission_rate_hz": 240.0, "density": 0.4, "dispersion_m2_s": 0.28,
 	}]
 	var checked := Presentation.validate(result, bindings)
 	if not bool(checked.get("ok", false)):
 		push_warning("Stock smoke profile unavailable: " + str(checked.get("errors", [])))
 		return {}
 	return result
+
+
+static func preset_id(bindings: Dictionary, propulsion: Dictionary) -> String:
+	if str(bindings.get("visual_family", "")) == AVANTI_FAMILY: return PRESET_ID
+	return "stock-" + SmokeSystem.emissions_family(propulsion) + "-v2"

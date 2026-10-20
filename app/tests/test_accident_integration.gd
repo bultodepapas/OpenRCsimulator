@@ -10,6 +10,7 @@ const Events = preload("res://sim/aircraft_contact_events.gd")
 const ARCHIVE := "user://test_accident_integration.json"
 var checks := 0
 var failures := 0
+var audio_playback_refs: Array[WeakRef] = []
 
 
 func check(label: String, passed: bool) -> void:
@@ -145,10 +146,16 @@ func _run() -> void:
 	_test_cadence(session)
 	_test_variant_strikes()
 	await _test_terminal_determinism()
-	enabled.queue_free()
-	disabled.queue_free()
+	_retire_main(enabled)
+	_retire_main(disabled)
 	await process_frame
 	await process_frame
+	var cleanup_started := Time.get_ticks_usec()
+	var remaining_playbacks := _remaining_audio_playbacks()
+	while remaining_playbacks > 0 and Time.get_ticks_usec() - cleanup_started < 1000000:
+		await process_frame
+		remaining_playbacks = _remaining_audio_playbacks()
+	check("integration audio playbacks drain within one second after scene teardown", remaining_playbacks == 0)
 	DirAccess.remove_absolute(ARCHIVE)
 	DirAccess.remove_absolute(ARCHIVE + ".tmp")
 	print("CR-30/32: %d checks, %d failed" % [checks, failures])
@@ -234,7 +241,7 @@ func _test_variant_strikes() -> void:
 		check("variant retains selected source identity and inspection uncertainty: " + spec[0], prop_line.get("offer_id") == spec[2] and str(prop_line.get("source_url", "")).begins_with("https://") and report.get("total_minor") == null and report.get("high_minor") == null)
 		if spec[0] == "stik-glow-fs64v-4t":
 			check("sold-out manufacturer offer stays labeled in report", str(prop_line.get("availability", "")).to_lower().contains("sold out"))
-		main.queue_free()
+		_retire_main(main)
 
 
 func _lake_event(tick: int, material: String, bindings: Dictionary) -> Dictionary:
@@ -367,5 +374,26 @@ func _test_terminal_determinism() -> void:
 		if expected.is_empty():
 			expected = report
 		check("terminal crash report is independent of effects and publication cadence (%s)" % label, report == expected)
-		main.queue_free()
+		_retire_main(main)
 		await process_frame
+
+
+func _retire_main(main: Node) -> void:
+	_collect_audio_playbacks(main, audio_playback_refs)
+	main.queue_free()
+
+
+func _collect_audio_playbacks(node: Node, refs: Array[WeakRef]) -> void:
+	if node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D:
+		if node.has_stream_playback():
+			refs.append(weakref(node.get_stream_playback()))
+	for child in node.get_children():
+		_collect_audio_playbacks(child, refs)
+
+
+func _remaining_audio_playbacks() -> int:
+	var remaining := 0
+	for ref in audio_playback_refs:
+		if ref.get_ref() != null:
+			remaining += 1
+	return remaining

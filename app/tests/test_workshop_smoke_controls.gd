@@ -214,6 +214,16 @@ func _run() -> void:
 			motion_control.get_global_rect(), copy_control.get_global_rect(), scroll.scroll_vertical, int(scroll_bar.max_value)])
 		advanced.visible = false
 		scroll.scroll_vertical = 0
+		var capture_dir := OS.get_environment("OPENRC_SMOKE_UI_CAPTURE_DIR")
+		if not capture_dir.is_empty():
+			var viewport_image: Image = root.get_viewport().get_texture().get_image()
+			if not viewport_image.is_empty():
+				DirAccess.make_dir_recursive_absolute(capture_dir)
+				var capture_path := capture_dir.path_join("workshop-smoke-%dx%d.png" % [viewport_size.x, viewport_size.y])
+				var capture_error := viewport_image.save_png(capture_path)
+				print("Workshop smoke UI capture: %s (%s, %s)" % [capture_path, viewport_image.get_size(), error_string(capture_error)])
+			else:
+				print("Workshop smoke UI capture unavailable in this renderer at %dx%d" % [viewport_size.x, viewport_size.y])
 
 	page.queue_free()
 	await process_frame
