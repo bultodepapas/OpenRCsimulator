@@ -36,6 +36,8 @@ func _run() -> void:
 	var session: Node = _flight.session
 	session.set_physics_process(false)
 	session.sim.set_physics_process(false)
+	# Use the fixed fixture tape even when the host has a physical controller plugged in.
+	session.radio.disconnect_device()
 	session.input_enabled = true
 	session.read_raw = func() -> Dictionary:
 		var speed := float(session.sim.state[RB.VEL])
@@ -56,6 +58,8 @@ func _run() -> void:
 	_flight._rig.set_view("closeup")
 	var motion: Node = _flight._airplane.root.get_node_or_null("TimberVisualMotion")
 	var crash_frame := -1
+	var initial_down: float = session.sim.state[RB.POS + 2]
+	var airborne := false
 	for frame in 660:
 		for tick in 4:
 			if not session.sim.paused:
@@ -64,6 +68,8 @@ func _run() -> void:
 				session._physics_process(session.sim.dt())
 		if not session.crash.is_empty() and crash_frame < 0:
 			crash_frame = frame
+		if session.sim.state[RB.POS + 2] < initial_down - 0.2:
+			airborne = true
 		var before := _snapshot()
 		_flight._process(1.0 / 60.0)
 		_flight._panel.visible = false
@@ -96,6 +102,7 @@ func _run() -> void:
 				camera = str(_flight._camera.transform)})
 	if _case == "crash" and crash_frame < 0: _failures.append("flown crash did not occur")
 	if _case == "takeoff" and not session.crash.is_empty(): _failures.append("takeoff tape crashed")
+	if _case == "takeoff" and not airborne: _failures.append("takeoff tape did not become airborne")
 	var report := {case = _case, failures = _failures, records = _records,
 		adapter = RenderingServer.get_video_adapter_name(), renderer = RenderingServer.get_current_rendering_method(),
 		crash = _flight._crash_director.stats() if crash_frame >= 0 else {}}

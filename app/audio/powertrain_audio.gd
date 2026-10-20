@@ -46,8 +46,8 @@ func configure(voice_profile: Dictionary, bus: StringName) -> bool:
 	var manifest: Variant = JSON.parse_string(FileAccess.get_file_as_string(MANIFEST_PATH))
 	if not manifest is Dictionary:
 		return false
-	var bank: Dictionary = manifest.get("banks", {}).get(str(profile.get("family", "")), {})
-	for entry: Dictionary in bank.get("layers", []):
+	var bank: Array = manifest.get(str(profile.get("family", "")), [])
+	for entry: Dictionary in bank:
 		if layers.size() == MAX_LAYERS:
 			break
 		var source := load(ASSET_PATH + str(entry.file)) as AudioStreamWAV
@@ -143,18 +143,19 @@ func update_sound(snapshot: Dictionary, delta: float, mix_gain: float = 1.0, dop
 		references.append(float(layer.get("rpm", maximum * 0.65)))
 	var weights: PackedFloat64Array = band_weights(maxf(_rpm, 1.0), references)
 	var path_gain: float = distance_gain(source.distance_to(listener))
-	level *= db_to_linear(float(profile.get("trim_db", 0.0))) * path_gain * clampf(mix_gain, 0.0, 1.0)
+	level *= db_to_linear(float(profile.get("trim_db", 0.0))) * path_gain
+	var scene_gain: float = clampf(mix_gain, 0.0, 1.0)
 	for index: int in players.size():
 		var player: AudioStreamPlayer3D = players[index]
 		player.global_position = source
 		var target: float = level * weights[index] * float(layers[index].get("gain", 1.0))
 		levels[index] = lerpf(levels[index], target, 1.0 - exp(-dt / (0.08 if target > levels[index] else 0.12)))
-		player.volume_db = linear_to_db(maxf(levels[index], 0.00001)) - BUS_TRIM_DB
+		player.volume_db = linear_to_db(maxf(levels[index] * scene_gain, 0.00001)) - BUS_TRIM_DB
 		var pitch: float = clampf(_rpm / references[index], 0.35, 2.5) * clampf(doppler, 0.65, 1.5)
-		player.pitch_scale = lerpf(player.pitch_scale, pitch, 1.0 - exp(-dt / 0.035))
-		player.stream_paused = paused and mix_gain <= 0.001
+		player.pitch_scale = lerpf(player.pitch_scale, pitch, 1.0 - exp(-dt / 0.035)) if _started else pitch
 		if not _started:
 			player.play(float(index) * 0.173)
+		player.stream_paused = paused and mix_gain <= 0.001
 	_started = true
 	last_targets = {rpm = _rpm, accepted_rpm = accepted_rpm, running = running, family = family,
 		weights = weights, level = level, distance_gain = path_gain, paused = paused}

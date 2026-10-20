@@ -26,6 +26,7 @@ var _cables: MeshInstance3D
 var _cable_runtime_mesh: ArrayMesh
 var _cable_surfaces: Array[Dictionary] = []
 var _cable_links: Array[Dictionary] = []
+var _spring_followers: Array[Dictionary] = []
 var _last_cable_angles := {"left": 0.0, "right": 0.0}
 var _max_travel_rad := 0.0
 var _stopped := false
@@ -52,6 +53,11 @@ static func attach(airplane: Dictionary, session: Node) -> Node:
 	if observer._is_source_airframe() and session.has_signal("resetting"):
 		session.resetting.connect(observer._on_session_resetting)
 	return observer
+
+
+func _ready() -> void:
+	if not _is_source_airframe():
+		_disable_detached_copy()
 
 
 func _configure() -> bool:
@@ -113,6 +119,188 @@ func _configure() -> bool:
 		return false
 	_configure_cable_followers(suspension.get("cable_endpoints", {}), root)
 	return true
+
+
+## The source mesh contains the crossed cable runs and their coil springs. Deform its
+## vertices from the authored rest endpoints so each lower attachment follows its leg.
+func _configure_cable_followers(endpoints: Variant, root: Node3D) -> void:
+	if not endpoints is Dictionary:
+		return
+	_cables = root.find_child("gear_cables", true, false) as MeshInstance3D
+	if _cables == null or _cables.mesh == null:
+		return
+	var source_mesh := _cables.mesh
+	for endpoint_name in ["der", "izq"]:
+		var link: Dictionary = endpoints.get(endpoint_name, {})
+		var eyelet_value: Variant = link.get("fuselage_eyelet", [])
+		var anchor_value: Variant = link.get("anchor_rest", [])
+		if not _is_vector3(eyelet_value) or not _is_vector3(anchor_value):
+			continue
+		var eyelet_root := Vector3(float(eyelet_value[0]), float(eyelet_value[1]), float(eyelet_value[2]))
+		var anchor_root := Vector3(float(anchor_value[0]), float(anchor_value[1]), float(anchor_value[2]))
+		var role := "left" if anchor_root.x < 0.0 else "right"
+		_cable_links.append({
+			"endpoint_name": endpoint_name,
+			"role": role,
+			"eyelet_root": eyelet_root,
+			"anchor_root": anchor_root,
+			"eyelet_local": _cables.to_local(root.to_global(eyelet_root)),
+			"anchor_local": _cables.to_local(root.to_global(anchor_root)),
+		})
+	if _cable_links.size() != 2:
+		_cable_links.clear()
+		return
+	_cable_runtime_mesh = ArrayMesh.new()
+	for surface_index in source_mesh.get_surface_count():
+		var arrays: Array = source_mesh.surface_get_arrays(surface_index)
+		if arrays.size() <= Mesh.ARRAY_VERTEX or not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array:
+			_cable_surfaces.clear()
+			_cable_links.clear()
+			_cable_runtime_mesh = null
+			return
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var weights: Array[Vector2] = []
+		for vertex: Vector3 in vertices:
+			weights.append(_cable_vertex_weight(vertex))
+		var primitive: Mesh.PrimitiveType = source_mesh.surface_get_primitive_type(surface_index)
+		var material := source_mesh.surface_get_material(surface_index)
+		_cable_surfaces.append({
+			"primitive": primitive,
+			"arrays": arrays.duplicate(true),
+			"vertices": vertices.duplicate(),
+			"weights": weights,
+			"material": material,
+		})
+		_cable_runtime_mesh.add_surface_from_arrays(primitive, arrays)
+		if material != null:
+			_cable_runtime_mesh.surface_set_material(surface_index, material)
+	if _cable_surfaces.is_empty():
+		_cable_links.clear()
+		_cable_runtime_mesh = null
+		return
+	# Duplicate the imported resource so the observer cannot mutate another model instance.
+	_cables.mesh = _cable_runtime_mesh
+	_configure_coil_followers(root)
+
+
+func _configure_coil_followers(root: Node3D) -> void:
+	_spring_followers.clear()
+	for spring in root.find_children("TimberExtensionSpring_*", "MeshInstance3D", true, false):
+		var spring_instance := spring as MeshInstance3D
+		if spring_instance == null or spring_instance.mesh == null:
+			continue
+		var endpoint_name := str(spring_instance.name).trim_prefix("TimberExtensionSpring_")
+		var link_index := -1
+		for index in _cable_links.size():
+			if str(_cable_links[index].get("endpoint_name", "")) == endpoint_name:
+				link_index = index
+				break
+		if link_index < 0:
+			continue
+		var link: Dictionary = _cable_links[link_index]
+		var start: Vector3 = spring_instance.to_local(root.to_global(link.eyelet_root))
+		var end: Vector3 = spring_instance.to_local(root.to_global(link.anchor_root))
+		var source_mesh := spring_instance.mesh
+		var runtime_mesh := ArrayMesh.new()
+		var surfaces: Array[Dictionary] = []
+		for surface_index in source_mesh.get_surface_count():
+			var arrays: Array = source_mesh.surface_get_arrays(surface_index)
+			if arrays.size() <= Mesh.ARRAY_VERTEX or not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array:
+				surfaces.clear()
+				break
+			var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+			var weights: Array[float] = []
+			for vertex: Vector3 in vertices:
+				weights.append(_segment_weight(vertex, start, end))
+			var primitive: Mesh.PrimitiveType = source_mesh.surface_get_primitive_type(surface_index)
+			var material := source_mesh.surface_get_material(surface_index)
+			surfaces.append({
+				"primitive": primitive,
+				"arrays": arrays.duplicate(true),
+				"vertices": vertices.duplicate(),
+				"weights": weights,
+				"material": material,
+			})
+			runtime_mesh.add_surface_from_arrays(primitive, arrays)
+			if material != null:
+				runtime_mesh.surface_set_material(surface_index, material)
+		if surfaces.is_empty():
+			continue
+		spring_instance.mesh = runtime_mesh
+		_spring_followers.append({
+			"node": spring_instance,
+			"link_index": link_index,
+			"mesh": runtime_mesh,
+			"surfaces": surfaces,
+		})
+
+
+func _segment_weight(vertex: Vector3, start: Vector3, end: Vector3) -> float:
+	var delta := end - start
+	var length_sq := delta.length_squared()
+	return 0.0 if length_sq <= 1.0e-10 else clampf((vertex - start).dot(delta) / length_sq, 0.0, 1.0)
+
+
+func _cable_vertex_weight(vertex: Vector3) -> Vector2:
+	var best_index := 0
+	var best_t := 0.0
+	var best_distance := INF
+	for link_index in _cable_links.size():
+		var link: Dictionary = _cable_links[link_index]
+		var start: Vector3 = link.eyelet_local
+		var delta: Vector3 = link.anchor_local - start
+		var length_sq := delta.length_squared()
+		if length_sq <= 1.0e-10:
+			continue
+		var t := clampf((vertex - start).dot(delta) / length_sq, 0.0, 1.0)
+		var closest := start + delta * t
+		var distance_sq := vertex.distance_squared_to(closest)
+		if distance_sq < best_distance:
+			best_index = link_index
+			best_t = t
+			best_distance = distance_sq
+	return Vector2(float(best_index), best_t)
+
+
+func _update_cable_followers(angles: Dictionary, root: Node3D) -> void:
+	if _cables == null or not is_instance_valid(_cables) or _cable_runtime_mesh == null or _cable_surfaces.is_empty():
+		return
+	var left_angle := float(angles.get("left", 0.0))
+	var right_angle := float(angles.get("right", 0.0))
+	if absf(left_angle - float(_last_cable_angles.get("left", 0.0))) < 0.00005 \
+		and absf(right_angle - float(_last_cable_angles.get("right", 0.0))) < 0.00005:
+		return
+	var anchor_deltas: Array[Vector3] = []
+	for link: Dictionary in _cable_links:
+		var role: String = link.role
+		var leg: Dictionary = {}
+		for candidate: Dictionary in _legs:
+			if candidate.role == role:
+				leg = candidate
+				break
+		if leg.is_empty():
+			anchor_deltas.append(Vector3.ZERO)
+			continue
+		var axis: Vector3 = leg.axis_root
+		var pivot: Vector3 = leg.pivot_root
+		var rest_anchor: Vector3 = link.anchor_root
+		var rotated_anchor := pivot + Basis(axis, float(angles.get(role, 0.0))) * (rest_anchor - pivot)
+		anchor_deltas.append(_cables.global_basis.inverse() * root.global_basis * (rotated_anchor - rest_anchor))
+	_cable_runtime_mesh.clear_surfaces()
+	for surface_index in _cable_surfaces.size():
+		var surface: Dictionary = _cable_surfaces[surface_index]
+		var arrays: Array = surface.arrays.duplicate(true)
+		var vertices: PackedVector3Array = surface.vertices.duplicate()
+		var weights: Array[Vector2] = surface.weights
+		for vertex_index in vertices.size():
+			var weight: Vector2 = weights[vertex_index]
+			var cable_index := clampi(int(weight.x), 0, anchor_deltas.size() - 1)
+			vertices[vertex_index] += anchor_deltas[cable_index] * pow(weight.y, 1.5)
+		arrays[Mesh.ARRAY_VERTEX] = vertices
+		_cable_runtime_mesh.add_surface_from_arrays(surface.primitive, arrays)
+		if surface.material != null:
+			_cable_runtime_mesh.surface_set_material(surface_index, surface.material)
+	_last_cable_angles = {"left": left_angle, "right": right_angle}
 
 
 func _is_vector3(value: Variant) -> bool:
@@ -281,7 +469,11 @@ func _update_contact_dust(state: PackedFloat64Array, contacts: Array, compressio
 			var normal: PackedFloat64Array = frame.get("normal", PackedFloat64Array())
 			if position.size() == 3 and normal.size() == 3:
 				var compression_m := maxf(0.0, float(frame.get("compression", 0.0)))
-				var contact_ned := position + normal * compression_m
+				var contact_ned := PackedFloat64Array([
+					position[0] + normal[0] * compression_m,
+					position[1] + normal[1] * compression_m,
+					position[2] + normal[2] * compression_m,
+				])
 				emitter.global_transform = Transform3D(Basis.IDENTITY, Frames.ned_to_render(Array(contact_ned)))
 
 
@@ -314,8 +506,8 @@ func _on_session_resetting() -> void:
 			emitter.emitting = false
 			emitter.speed_scale = 1.0
 			emitter.restart()
-	_last_cable_angles = {"left": 0.0, "right": 0.0}
-	_update_cable_followers(_last_cable_angles, _airplane.root)
+	_last_cable_angles = {"left": -999.0, "right": -999.0}
+	_update_cable_followers({"left": 0.0, "right": 0.0}, _airplane.root)
 
 
 func _stop_after_crash() -> void:
@@ -339,8 +531,14 @@ func _disable_detached_copy() -> void:
 		var cable_copy := model_root.find_child("gear_cables", true, false) as MeshInstance3D
 		if cable_copy != null and cable_copy.mesh != null:
 			cable_copy.mesh = cable_copy.mesh.duplicate(true)
+		for spring in model_root.find_children("TimberExtensionSpring_*", "MeshInstance3D", true, false):
+			var spring_copy := spring as MeshInstance3D
+			if spring_copy != null and spring_copy.mesh != null:
+				spring_copy.mesh = spring_copy.mesh.duplicate(true)
 	for child: Node in get_children():
 		if child is CPUParticles3D:
 			child.emitting = false
 			child.speed_scale = 0.0
+	_session = null
+	_airplane = {}
 	_stopped = true

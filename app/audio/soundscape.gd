@@ -181,6 +181,8 @@ func configure(field: Dictionary, propulsion_kind: String, seed_value: int = 410
 			powertrain = bank
 			# No layered duplicate engine/propeller orders: the recording already contains the prop.
 			for index: int in 2:
+				if index == 1 and str(voice_profile.family) == "gasoline":
+					continue # Retain the prop-only coast layer for a cut engine, never powered combustion.
 				_start_offsets.erase(index)
 				voices[index].stream = null
 			if glow_player != null:
@@ -409,7 +411,8 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	var screen_gain: float = db_to_linear(-7.0 * screened)
 	if powertrain != null:
 		_level(0, 0.0, dt)
-		_level(1, 0.0, dt)
+		var coast: bool = str(voice_profile.family) == "gasoline" and not bool(snapshot.get("running", false))
+		_level(1, float(t.prop_gain) * screen_gain * 0.65 if coast else 0.0, dt)
 		powertrain.update_sound(snapshot, dt, gain * screen_gain, last_doppler)
 	elif use_glow_voice:
 		# Explicit glow profiles use the physical firing cadence voice; the old motor and

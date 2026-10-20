@@ -8,6 +8,8 @@
 extends SceneTree
 
 const Timber := preload("res://aircraft/timber_model.gd")
+const VisualDetails := preload("res://aircraft/timber_visual_details.gd")
+const VisualLighting := preload("res://aircraft/timber_visual_lighting.gd")
 const D: Dictionary = preload("res://aircraft/timber_geometry.gd").DATA
 const IMAGE_SIZE := Vector2i(1280, 720)
 const SKY := Color("#9bcef0")
@@ -121,6 +123,10 @@ func _run() -> void:
 	sun.light_energy = 1.1
 	get_root().add_child(sun)
 	_airplane = Timber.build()
+	# Metrology retains the raw facade; this inspector shows the same finish as flight.
+	if _initialize_arg("finish", "production") != "source":
+		VisualDetails.apply(_airplane.root)
+		VisualLighting.apply(_airplane.root)
 	get_root().add_child(_airplane.root)
 	_camera = Camera3D.new()
 	_camera.near = 0.02

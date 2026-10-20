@@ -11,7 +11,7 @@ Status: current implementation, checked 2026-10-19. Runtime settings live in [pr
 | Simulation | Shared float64 rigid-body kernel, RK4 and fixed 240 Hz ticks; Godot rigid-body nodes do not solve flight |
 | Aircraft data | Strict `openrc-aircraft v2` validation, unit-tagged quantities and derived mass/CG/inertia; v1 is an explicit historical path; [contract](AIRCRAFT_CONTRACT.md) |
 | Input and shell | Physical-keyboard controls and radio profiles with device calibration and throttle arming; Home, Settings, Help, pause and flight/vehicle activities |
-| Audio | Positional engine sources and field soundscape; original PCM assets and procedural mixing |
+| Audio | Positional installed powertrain profiles, licensed recording banks, phase-aware glow voices, contact-driven landing gear and field soundscape; [audio guide](AUDIO-PLAN.md) |
 | Delivery | Windows x86_64, Linux x86_64 and macOS universal ZIP exports; build identity embedded at export |
 | Checks | Headless GDScript and Python checks, golden flights, rendered captures and package smoke checks |
 

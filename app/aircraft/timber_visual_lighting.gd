@@ -28,23 +28,23 @@ static func apply(root: Node3D) -> void:
 	root.set_meta("light_anchors", anchors)
 
 static func _landing_lens(host: Node3D, landing: Vector3) -> void:
-		var lens := MeshInstance3D.new()
-		lens.name = "TimberLandingLens"
-		var mesh := SphereMesh.new()
-		mesh.radius = 0.006
-		mesh.height = 0.012
-		mesh.radial_segments = 16
-		mesh.rings = 8
-		lens.mesh = mesh
-		lens.position = landing
-		lens.scale = Vector3(1.0, 1.0, 0.3)
-		var material := StandardMaterial3D.new()
-		material.albedo_color = Color("#d7e4e6")
-		material.metallic = 0.35
-		material.roughness = 0.18
-		lens.material_override = material
-		lens.set_meta("crash_no_bounds", true)
-		host.add_child(lens)
+	var lens := MeshInstance3D.new()
+	lens.name = "TimberLandingLens"
+	var mesh := SphereMesh.new()
+	mesh.radius = 0.006
+	mesh.height = 0.012
+	mesh.radial_segments = 16
+	mesh.rings = 8
+	lens.mesh = mesh
+	lens.position = landing
+	lens.scale = Vector3(1.0, 1.0, 0.3)
+	var material := StandardMaterial3D.new()
+	material.albedo_color = Color("#d7e4e6")
+	material.metallic = 0.35
+	material.roughness = 0.18
+	lens.material_override = material
+	lens.set_meta("crash_no_bounds", true)
+	host.add_child(lens)
 
 static func _anchor(root: Node3D, host: Node3D, local: Vector3) -> Dictionary:
 	return {position = Imported.relative(root, host) * local,

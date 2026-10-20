@@ -4,10 +4,14 @@
   "source_glb_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
   "material_profiles": {
     "foam": {
+      "meshes": ["aileron_left", "aileron_right", "elevator", "fin_fixed", "flap_left", "flap_right", "fuselage_core", "rudder", "stabilizer_fixed", "wing_left_fixed", "wing_right_fixed"],
       "materials": ["white"],
       "roughness": 0.76,
       "specular": 0.22,
-      "metallic": 0.0
+      "metallic": 0.0,
+      "normal_scale": 0.035,
+      "world_tiling_per_m": 3.0,
+      "texture": "foam"
     },
     "paint": {
       "materials": ["red", "black", "dark_grey", "light_red", "light_green"],
@@ -15,7 +19,10 @@
       "grow_amount_m": 0.0004,
       "roughness": 0.46,
       "specular": 0.28,
-      "metallic": 0.0
+      "metallic": 0.0,
+      "normal_scale": 0.035,
+      "world_tiling_per_m": 3.0,
+      "texture": "foam"
     },
     "glass_decal": {
       "materials": ["glass"],
@@ -43,7 +50,8 @@
       "specular": 0.14,
       "metallic": 0.0,
       "normal_scale": 0.08,
-      "world_tiling_per_m": 14.0
+      "world_tiling_per_m": 14.0,
+      "texture": "rubber"
     }
   },
   "surface_details": {
@@ -91,18 +99,36 @@
       "spar_depth_m": 0.008
     }
   },
-  "free_texture": {
-    "id": "Rubber002",
-    "source_url": "https://ambientcg.com/view?id=Rubber002",
-    "download": "Rubber002_1K-PNG.zip",
-    "license": "CC0 1.0",
-    "maps": {
-      "normal": "source-textures/Rubber002_1K-PNG_NormalGL.png",
-      "roughness": "source-textures/Rubber002_1K-PNG_Roughness.png"
+  "free_textures": {
+    "foam": {
+      "id": "Polystyrene",
+      "source_url": "https://polyhaven.com/a/polystyrene",
+      "download": "1K Normal GL and Roughness PNG maps",
+      "license": "CC0 1.0",
+      "usage": "Low-strength normal and roughness maps on foam-painted airframe surfaces; aged diffuse color is intentionally unused.",
+      "maps": {
+        "normal": "source-textures/Polystyrene/polystyrene_nor_gl_1k.jpg",
+        "roughness": "source-textures/Polystyrene/polystyrene_rough_1k.jpg"
+      },
+      "runtime_maps": {
+        "normal": "polystyrene_nor_gl_1k.jpg",
+        "roughness": "polystyrene_rough_1k.jpg"
+      }
     },
-    "runtime_maps": {
-      "normal": "Rubber002_1K-PNG_NormalGL.png",
-      "roughness": "Rubber002_1K-PNG_Roughness.png"
+    "rubber": {
+      "id": "Rubber002",
+      "source_url": "https://ambientcg.com/view?id=Rubber002",
+      "download": "Rubber002_1K-JPG.zip",
+      "license": "CC0 1.0",
+      "usage": "Low-strength normal and roughness maps on the three authored foam tire surfaces; source albedo is intentionally unused.",
+      "maps": {
+        "normal": "source-textures/Rubber002_1K-JPG_NormalGL.jpg",
+        "roughness": "source-textures/Rubber002_1K-JPG_Roughness.jpg"
+      },
+      "runtime_maps": {
+        "normal": "Rubber002_1K-JPG_NormalGL.jpg",
+        "roughness": "Rubber002_1K-JPG_Roughness.jpg"
+      }
     }
   }
 }

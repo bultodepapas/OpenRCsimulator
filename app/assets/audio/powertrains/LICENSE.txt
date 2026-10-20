@@ -1,0 +1,17 @@
+Powertrain sound sources: CC0 1.0 Universal.
+Loop WAVs are edits of retained public HQ MP3 previews; these preview files are lossy transcodes, not original masters.
+The turbine layer is an explicitly designed synthetic effect, not a field recording.
+
+1 radio control plane taking off.wav by rcEyeSoar
+https://freesound.org/people/rcEyeSoar/sounds/176968/
+
+Quadrocopter Take-Off And Landing by Alcappuccino
+https://freesound.org/people/Alcappuccino/sounds/263022/
+
+Toy Engine Flying Around by qubodup
+https://freesound.org/people/qubodup/sounds/188241/
+
+jet_engine.wav by minian89
+https://freesound.org/people/minian89/sounds/152509/
+
+CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/

@@ -6,6 +6,8 @@
 
 Goal: the aircraft sounds like its engine. RPM and load are audible and believable at every distance. A jet sounds like a jet: a piercing intake whine, a heavy exhaust roar that is loudest behind it, and a spool-down when it stops. Nothing clicks, chirps or loops audibly. The owner accepted the wildlife as "natural and nicely spaced" ([AUD-05](../research/audio/AUD-05/README.md)). On 2026-10-19 the owner requested downloaded recordings focused on wind and windsock sounds; this extension is AUD-14 and does not change engine or wildlife sources.
 
+**2026-10-20 update (AUD-15):** the owner requested downloaded engine recordings and wheel/touchdown audio across the fleet. The [current audio guide](../AUDIO-PLAN.md) now owns the implemented profiles, contact mixer and source limitations. [Sources](../research/audio/AUD-15/sources.md) and [verification](../research/audio/AUD-15/validation.md) distinguish recording-based banks, procedural glow voices and the designed turbine surrogate. D2's generated-only policy is superseded for available licensed banks. The earlier findings below remain dated baseline evidence. Matched engine recordings, isolated starter/shutdown assets, full flight listening and AUD-13 acceptance remain open.
+
 ## 1. Reported symptoms
 
 The owner reports four things: the jet turbine does not sound good, it "goes away too fast", a real turbine is very loud, and there are glitches and odd cycles. The findings below map to those symptoms. "Goes away too fast" has three candidate causes: the jet is quieter and duller than a glow engine and fades with distance (F1, F3); no propagation delay (F8b); and the abrupt crash fade (F4). The AUD-06 bench decides which one dominates.
