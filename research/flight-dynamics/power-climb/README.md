@@ -18,3 +18,5 @@ python3 research/flight-dynamics/power-climb/fleet_neutral_point.py
 ```
 
 The flown measurement is the flight-test card's `power_step` test (card v5): `python3 research/flight-test/run.py --out <dir> --only power_step` ([card](../../flight-test/README.md#the-card)). Model predictions, not physical validation.
+
+`trim-practice/` holds the scripts that read the UMN Ultra Stick MATLAB logs (local-only under ignored `references/`) for the level-flight trim curve, the implied static margin, the inverted-push estimate and the fixed-elevator phugoid; run them with `python3 -I`. Their findings: [trim-practice-research.md](../../../docs/research/flight-dynamics/power-climb-2026-10-19/trim-practice-research.md).
