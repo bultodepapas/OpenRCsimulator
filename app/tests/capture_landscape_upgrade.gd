@@ -241,6 +241,18 @@ func _run() -> void:
 				camera.look_at(camera.position + (sun + sun.cross(Vector3.UP).normalized() * 0.25).normalized())
 			if case in ["glare_night", "glare_night_off"]:
 				sky.set_shader_parameter("sun_disc", 0.0)
+		elif case == "sun_alignment":
+			# The full-atmosphere L1 view is a presentation capture: cloud/aureole radiance clips the 0.53° disc
+			# into a broad white region on llvmpipe. Keep the same apparent light direction, but remove those
+			# overlays so a geometric centre can be measured independently of the projected coordinate.
+			sky.set_shader_parameter("cloud_coverage", 0.0)
+			sky.set_shader_parameter("sun_aureole_lin", Vector3.ZERO)
+			flare.intensity = 0.0
+			camera.fov = 50.0
+			var eye := Vector3(0.0, 2.0, 0.0)
+			var horizontal := Vector3(sun.x, 0.0, sun.z).normalized()
+			var view_dir := horizontal * cos(deg_to_rad(25.0)) + Vector3.UP * sin(deg_to_rad(25.0))
+			camera.look_at_from_position(eye, eye + view_dir * 100.0)
 		else:
 			var view: Dictionary = Postcards.VIEWS.runway_threshold if case.begins_with("marker_") else \
 				FLEET_VIEWS[case] if FLEET_VIEWS.has(case) else Postcards.VIEWS[case]
@@ -273,6 +285,10 @@ func _run() -> void:
 					if case.begins_with("glare_afterimage_rested") and flare.has_method("rest"):
 						flare.rest() # same view and veil, an eye that never saw the sun: the patch's control
 			World.update(built.environment, warm_clock, Vector3(float(args.get("botanical_wind", 0.0)), 0, 1.0 if args.has("botanical_wind") else 0.0), camera.position + -camera.basis.z * 30.0, camera)
+			if case == "sun_alignment":
+				# World.update refreshes the production sky. Reapply the isolation after that update for the captured frame.
+				sky.set_shader_parameter("cloud_coverage", 0.0)
+				sky.set_shader_parameter("sun_aureole_lin", Vector3.ZERO)
 			if i == 1 and flare.has_method("skyline") and flare.skyline() != null:
 				flare.skyline().finish() # SUN-09: in flight it builds over ~500 frames; captures use the finished one
 			if horizon_diagnostic == "no-rim":
@@ -315,10 +331,11 @@ func _run() -> void:
 				motion_frames.append({file = filename, time_s = float(i) / 60.0,
 					camera_position = camera.position, aircraft_position = aircraft.root.position,
 					exposure = built.environment.tonemap_exposure, glare_strength = flare.get_meta("strength", 0.0)})
-		root.get_texture().get_image().save_png(out.path_join(case + ".png"))
+		var image_path := out.path_join(case + ".png")
+		root.get_texture().get_image().save_png(image_path)
 		var raw_frames := frames.duplicate()
 		frames.sort()
-		report.cases[case] = {night_options = parent.get_meta("night_options", {}), draws = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		var case_report := {night_options = parent.get_meta("night_options", {}), draws = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 			visible_draws = RenderingServer.viewport_get_render_info(root.get_viewport_rid(), RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME),
 			shadow_draws = RenderingServer.viewport_get_render_info(root.get_viewport_rid(), RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME),
 			primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),
@@ -332,6 +349,17 @@ func _run() -> void:
 			glare_solar_uv = flare.get_meta("solar_uv", Vector2(-1.0, -1.0)),
 			lamp_factor = lighting_helper.get_meta("night_factor", 0.0) if lighting_helper != null else 0.0,
 			marker_center_px = camera.unproject_position(Frames.ned_to_render([15.0, 51.0, -0.35]))}
+		if case == "sun_alignment":
+			var sun_px := camera.unproject_position(camera.global_position + sun * 1000.0)
+			case_report.sun_px = [sun_px.x, sun_px.y]
+			case_report.image_sha256 = FileAccess.get_sha256(image_path)
+			case_report.mode = "isolated solar-disc alignment"
+			case_report.camera_fov_deg = camera.fov
+			case_report.sun_disc = sky.get_shader_parameter("sun_disc")
+			case_report.cloud_coverage = sky.get_shader_parameter("cloud_coverage")
+			var aureole: Vector3 = sky.get_shader_parameter("sun_aureole_lin")
+			case_report.sun_aureole_lin = [aureole.x, aureole.y, aureole.z]
+		report.cases[case] = case_report
 	var file := FileAccess.open(out.path_join("report.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "  "))
 	print("LU native capture complete: ", out)

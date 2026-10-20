@@ -126,6 +126,14 @@ The owner asked whether the trim, the throttle for level flight, inverted flight
 
 ## Verification
 
+### D6e-R4 release regression correction
+
+2026-10-19: the new trim-throttle test held 35% up elevator until three seconds after liftoff. At one second after liftoff the reference Stik already reached about 73° pitch; at the next second it was inverted. Both reference and cruise cases crashed before the steady-flight measurement. That open-loop rotation is not a valid assertion that any takeoff must settle into level flight after releasing the elevator.
+
+`test_trim_throttle.gd` now checks the two contracts separately: all eight fixed-wing runway routes retain the selected 50% flying trim while parked at idle, and neutral airborne holds compare the accepted reference/cruise equilibria at half throttle. Existing takeoff/ground tests retain responsibility for runway flight. The fixed-wing loader's rotorcraft case now explicitly asserts refusal instead of treating a failed load as a valid rotorcraft launch.
+
+Native Windows Godot 4.7.2: 39 checks pass. Both 40-second airborne holds complete without crashes; the reference trim climbs at 1.3494 m/s over the second half, while the cruise trim drifts by less than one micrometre and ends at 20.5971 m/s. No physics law, trim solver or tolerance was changed. This does not qualify a pilot's takeoff procedure or physical flight behavior.
+
 - `power_step` is valid on all eight aircraft in [FT-05](../../flight-test/FT-05/README.md) (314 of 320 card tests valid); its constant-speed prediction agrees with the flown end angle in the settled cases (0.1–4° at idle and 25 %); the before/after tables come from the same card and tree except the glow law.
 - NITRO-06 test counts and generator checks: [NITRO-06 § Verification](../../glow-engines/NITRO-06/README.md#verification).
 - The non-glow aircraft are unchanged by this step: FT-05 records the same-tree comparison with and without the NITRO-06 files (see its verification); against FT-04 only the Timber compares at zero tolerance because other tracks changed the Stik, P-51 and Ventage Jet data in between.

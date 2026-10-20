@@ -576,7 +576,7 @@ func start_flight(request: Dictionary = {}) -> void:
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
 	flight.aircraft_id = route_aircraft_id if has_home or is_random or helicopter_route else ""
 	flight.start_choice = chosen_start
-	if has_home or is_random:
+	if (has_home or is_random) and not helicopter_route:
 		flight.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: Home's launches fly trimmed for 50 % throttle
 	if "battery_mode" in flight: # BAT-13: Home's battery choice; random and direct routes use the aircraft default or --battery=
 		flight.battery_mode = chosen_battery if has_home and not is_random else ""

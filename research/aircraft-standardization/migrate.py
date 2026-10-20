@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 from copy import deepcopy
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -345,7 +346,8 @@ def legacy_input(raw: dict[str, Any]) -> dict[str, Any]:
     """Return a v1-layout copy for existing historical derivation/test tools.
 
     This removes v2-only root declarations and reverses the inert CLadot path
-    move. Numeric quantities and explicit compatibility defaults are retained.
+    move. An empty-tank v2 balance is rebased to its full inventory state because
+    v1 has no fuel-state selector. Other numeric quantities are retained.
     """
     if not isinstance(raw, dict):
         raise ValueError("aircraft root must be an object")
@@ -381,6 +383,63 @@ def legacy_input(raw: dict[str, Any]) -> dict[str, Any]:
     controls = data.get("controls")
     if isinstance(controls, dict):
         controls.pop("surface_ids", None)
+    balance = data.get("balance")
+    inventory = data.get("inventory")
+    if (isinstance(balance, dict) and balance.get("fuel_state") == "empty_tanks"
+            and isinstance(inventory, list) and inventory):
+        def finite_number(value: Any) -> bool:
+            if type(value) not in (int, float):
+                return False
+            try:
+                return math.isfinite(float(value))
+            except (OverflowError, ValueError):
+                return False
+
+        masses = []
+        positions = []
+        for item in inventory:
+            if not isinstance(item, dict):
+                masses = []
+                break
+            mass = item.get("mass", {}).get("value") if isinstance(item.get("mass"), dict) else None
+            position = item.get("position", {}).get("value") if isinstance(item.get("position"), dict) else None
+            if (not finite_number(mass) or float(mass) <= 0.0
+                    or not isinstance(position, list) or len(position) != 3
+                    or any(not finite_number(value) for value in position)):
+                masses = []
+                break
+            masses.append(float(mass))
+            positions.append([float(value) for value in position])
+        plan_cg = balance.get("plan_cg")
+        evidence_kinds = ("manual", "measured", "borrowed", "estimated", "derived")
+        original_cg = plan_cg.get("value") if isinstance(plan_cg, dict) else None
+        valid_original_cg = (
+            isinstance(original_cg, list) and len(original_cg) == 3
+            and all(finite_number(value) and -2.0 <= float(value) <= 2.0
+                    for value in original_cg)
+        )
+        original_source = plan_cg.get("source") if isinstance(plan_cg, dict) else None
+        valid_original_source = (
+            isinstance(original_source, str)
+            and any(ord(character) == 0 or ord(character) > 32 for character in original_source)
+        )
+        try:
+            total_mass = math.fsum(masses) if masses else 0.0
+            if (isinstance(plan_cg, dict) and valid_original_cg
+                    and plan_cg.get("kind") in evidence_kinds
+                    and valid_original_source
+                    and total_mass > 0.0 and math.isfinite(total_mass)):
+                moments = [math.fsum(mass * position[axis]
+                                     for mass, position in zip(masses, positions))
+                           for axis in range(3)]
+                if all(math.isfinite(moment) for moment in moments):
+                    plan_cg["value"] = [moment / total_mass for moment in moments]
+                    plan_cg["kind"] = "derived"
+                    plan_cg["source"] = "v1 compatibility projection: full inventory CG"
+        except OverflowError:
+            # Leave invalid/extreme source values untouched for the owning
+            # schema and runtime validators to diagnose.
+            pass
     aero = data.get("aero")
     if isinstance(aero, dict):
         reference = aero.get("reference_coefficients")

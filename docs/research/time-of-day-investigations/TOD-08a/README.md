@@ -2,6 +2,12 @@
 
 Status: implemented and software-verified, 2026-10-10. Parent: [time-of-day plan](../../../TIME-OF-DAY-PLAN.md).
 
+## TOD-08a-R1 — Finite-fuel checkpoint integration
+
+2026-10-19: the visual envelope's supported-format list omitted the new liquid-fuel v11 boundary. A production P-51 checkpoint therefore returned an empty visual record despite valid physics. The envelope now accepts v11, including inside the collision-world wrapper; FlightSession still validates the physics law, configuration and state during restoration.
+
+Native Windows Godot 4.7.2 checked runs pass `test_visual_checkpoint.gd` (48 checks) and `test_time_of_day_checkpoint.gd` (49 checks). Coverage includes byte-exact finite-fuel pairing, real P-51 paired/bare restoration and refusal of unknown inner formats. `test_time_of_day_edit.gd` passes 57 checks after its recorder fixtures receive the same electrical and mass samplers as production, preserving finite-fuel CSV rows through visual edits. These focused results do not replace the full release matrix or physical validation.
+
 ## Contract
 
 `Main.checkpoint()` pairs the existing physical checkpoint with a fixed-time visual timeline and field identity. `Main.restore_checkpoint(candidate)` validates the pair, prepares detached lighting resources, asks the existing physics owner to restore, then replaces the field, Sun and environment in the same synchronous call. Invalid visual data, incompatible physics and preparation failures leave the active flight, recording and scene unchanged. Successful restore closes the previous recording and retains the existing paused, recorded-input replay contract. It does not restore live radio conditioning, camera history, rendering/scenery preferences, propeller/audio phase or a complete saved game. Pixel comparisons hold those other settings fixed.

@@ -120,7 +120,7 @@ func _run() -> void:
 	unknown_format.format = "openrc-visual-checkpoint v99"
 	_check("unknown checkpoint format is refused", not VisualCheckpoint.read(unknown_format, "field:west").get("ok", false))
 
-	for version: int in [1, 2, 3, 4]:
+	for version: int in [1, 2, 3, 4, 5, 6, 8, 9, 11]:
 		var legacy: Dictionary = _physics(10, version)
 		var legacy_read: Dictionary = VisualCheckpoint.read(legacy, "field:west")
 		_check("legacy physics v%d gets explicit fallback" % version,
@@ -129,6 +129,20 @@ func _run() -> void:
 			and legacy_read.get("timeline", {}).get("anchor_tick", -1) == 0
 			and legacy_read.get("config", {}).get("mode", "") == "legacy"
 			and legacy_read.get("profile", "") == "legacy-spec")
+	var liquid: Dictionary = _physics(10, 11)
+	liquid.liquid_physics_format = "openrc-flight-checkpoint v4"
+	var collision: Dictionary = liquid.duplicate(true)
+	collision.physics_format = liquid.format
+	collision.format = "openrc-flight-checkpoint v7"
+	collision.collision_world_identity = "a".repeat(64)
+	for finite_snapshot: Dictionary in [liquid, collision]:
+		var finite_pair: Dictionary = VisualCheckpoint.make(finite_snapshot, timeline, "field:west")
+		var finite_read: Dictionary = VisualCheckpoint.read(finite_pair.get("checkpoint", {}), "field:west")
+		_check("finite liquid physics survives visual pairing exactly " + finite_snapshot.format,
+			finite_read.get("ok", false)
+			and var_to_bytes(finite_read.get("physics", {})) == var_to_bytes(finite_snapshot))
+	collision.physics_format = "openrc-flight-checkpoint v12"
+	_check("collision envelope still refuses unknown physics", not VisualCheckpoint.make(collision, timeline, "field:west").ok)
 	var partial_legacy: Dictionary = _physics(10)
 	partial_legacy["timeline"] = {}
 	_check("physics-only record with a visual marker never falls back", not VisualCheckpoint.read(partial_legacy, "field:west").get("ok", false))

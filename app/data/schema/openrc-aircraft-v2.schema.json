@@ -6384,15 +6384,6 @@
           ]
         },
         "properties": {
-          "inventory": {
-            "items": {
-              "not": {
-                "required": [
-                  "id"
-                ]
-              }
-            }
-          },
           "landing_gear": {
             "properties": {
               "contacts": {
@@ -6418,6 +6409,56 @@
               "required": [
                 "surface_ids"
               ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "not": {
+          "anyOf": [
+            {
+              "required": [
+                "physical_identity_version"
+              ]
+            },
+            {
+              "required": [
+                "fuel_system"
+              ]
+            },
+            {
+              "required": [
+                "propulsion"
+              ],
+              "properties": {
+                "propulsion": {
+                  "required": [
+                    "battery"
+                  ],
+                  "properties": {
+                    "battery": {
+                      "required": [
+                        "mount_inventory_id"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      "then": {
+        "properties": {
+          "inventory": {
+            "items": {
+              "not": {
+                "required": [
+                  "id"
+                ]
+              }
             }
           }
         }

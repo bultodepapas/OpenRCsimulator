@@ -1,8 +1,10 @@
 # D6e-R4: the launch trim throttle. Home and Quick Flight trim every airplane for level flight at 50 % throttle, in
 # the air and as the runway start's flying trim; the reference trim (trim_throttle NAN) stays the fixture of tests,
-# golden flights and the technical route. The owner's procedure is flown twice from the runway (full throttle, a 12°
-# climb-out held with the elevator, then sticks released and half throttle at 40 m): with the cruise trim the Stik
-# holds its height, with the reference trim it climbs away.
+# golden flights and the technical route. Runway fixtures verify the selected flying trim at idle. Two flown
+# comparisons separate the trim from the pilot: neutral airborne holds at half throttle with each trim, and the
+# owner's runway procedure flown as a pilot flies it (full throttle, a 12° climb-out held with the elevator, then the
+# sticks released and half throttle at 40 m). With the cruise trim the Stik holds its height; with the reference trim
+# it climbs away. An open-loop elevator pull held after lift-off loops a 1.5 T/W airplane in any trim and proves nothing.
 # Run: godot --headless --path app --script res://tests/test_trim_throttle.gd
 extends SceneTree
 const Session = preload("res://sim/flight_session.gd")
@@ -13,7 +15,7 @@ const RB = preload("res://physics/rigid_body.gd")
 const M = preload("res://physics/math3d.gd")
 const STIK := "res://data/aircraft/jensen_ugly_stik_60.json"
 const STIK_ID := "jensen-das-ugly-stik-60"
-const HOLD_SECONDS := 40.0 # after the release: the climb rate is averaged over the second half
+const HOLD_SECONDS := 40.0 # hands-off at the set throttle: the climb rate is averaged over the second half
 const CLIMB_PITCH_RAD := 0.2094 # 12°, a trainer's climb-out attitude
 const LEVEL_OFF_HEIGHT_M := 40.0
 var checks := 0
@@ -74,9 +76,39 @@ func pitch_rad(s: Node) -> float:
 	return M.q_to_euler(M.quat(st[RB.ATT], st[RB.ATT + 1], st[RB.ATT + 2], st[RB.ATT + 3]))[1]
 
 
+## Hands-off at `throttle` from the current state for HOLD_SECONDS. Returns the mean climb rate over the second half
+## of the hold, the heights and the speeds.
+func hold(s: Node, throttle: float) -> Dictionary:
+	_pitch_raw = 0.0
+	s.commands.throttle = throttle
+	var t0: float = s.sim.time()
+	var h_mid := NAN
+	var v_mid := NAN
+	var min_h := INF
+	var max_h := -INF
+	while s.sim.time() - t0 < HOLD_SECONDS and not s.sim.paused and s.crash.is_empty():
+		fly(s, 1)
+		var h: float = -s.sim.state[RB.POS + 2]
+		min_h = minf(min_h, h)
+		max_h = maxf(max_h, h)
+		if is_nan(h_mid) and s.sim.time() - t0 >= 0.5 * HOLD_SECONDS:
+			h_mid = h
+			v_mid = speed(s)
+	var h_end: float = -s.sim.state[RB.POS + 2]
+	var span: float = s.sim.time() - t0 - 0.5 * HOLD_SECONDS
+	return {complete = s.sim.time() - t0 >= HOLD_SECONDS, climb_rate = (h_end - h_mid) / span if span > 0.0 else NAN,
+		h_mid = h_mid, h_end = h_end, min_h = min_h, max_h = max_h, v_mid = v_mid, v_end = speed(s),
+		pitch_end_deg = rad_to_deg(pitch_rad(s)), crashed = not s.crash.is_empty() or s.sim.paused}
+
+
+## Compare each accepted airborne equilibrium with neutral sticks at the same throttle: the trim alone.
+func hold_at_throttle(s: Node, throttle: float) -> Dictionary:
+	return hold(s, throttle)
+
+
 ## The owner's procedure as a pilot flies it: full throttle with up elevator until airborne, a 12° climb-out held with
 ## the elevator (a thumb on the key), then at 40 m the sticks are released and the throttle brought back to
-## `throttle`. Returns the mean climb rate over the second half of the hold, the heights and the speeds.
+## `throttle`. Returns the hold result with the lift-off and release points.
 func takeoff_and_hold(s: Node, throttle: float) -> Dictionary:
 	var dt: float = s.sim.dt()
 	var h0: float = -s.sim.state[RB.POS + 2]
@@ -94,25 +126,11 @@ func takeoff_and_hold(s: Node, throttle: float) -> Dictionary:
 			if -s.sim.state[RB.POS + 2] - h0 >= LEVEL_OFF_HEIGHT_M:
 				break
 	var release_t: float = s.sim.time()
-	var h_release: float = -s.sim.state[RB.POS + 2]
+	var h_release: float = -s.sim.state[RB.POS + 2] - h0
 	var v_release: float = speed(s)
-	_pitch_raw = 0.0
-	s.commands.throttle = throttle
-	var h_mid := NAN
-	var min_h := INF
-	var max_h := -INF
-	while s.sim.time() - release_t < HOLD_SECONDS and not s.sim.paused and s.crash.is_empty():
-		fly(s, 1)
-		var h: float = -s.sim.state[RB.POS + 2]
-		min_h = minf(min_h, h)
-		max_h = maxf(max_h, h)
-		if is_nan(h_mid) and s.sim.time() - release_t >= 0.5 * HOLD_SECONDS:
-			h_mid = h
-	var h_end: float = -s.sim.state[RB.POS + 2]
-	var span: float = s.sim.time() - release_t - 0.5 * HOLD_SECONDS
-	return {airborne_t = airborne_t, release_t = release_t, h_release = snappedf(h_release - h0, 0.01), v_release = snappedf(v_release, 0.01),
-		climb_rate = (h_end - h_mid) / span if span > 0.0 else NAN, h_mid = h_mid, h_end = h_end, min_h = min_h, max_h = max_h,
-		v_end = speed(s), pitch_end_deg = rad_to_deg(pitch_rad(s)), crashed = not s.crash.is_empty() or s.sim.paused}
+	var result: Dictionary = hold(s, throttle)
+	result.merge({airborne_t = airborne_t, release_t = release_t, h_release = snappedf(h_release, 0.01), v_release = snappedf(v_release, 0.01)})
+	return result
 
 
 func run() -> void:
@@ -147,9 +165,10 @@ func run() -> void:
 	check("atmosphere refit keeps the selected trim throttle", cruise.is_flyable() and cruise.start.requested_throttle == 0.5
 		and absf(cruise.start.throttle - 0.5) < 1e-7 and absf(cruise.sim.state[2] + 45.0) < 1e-9)
 	explicit.free()
+	reference.free()
 	cruise.free()
 
-	# Refused selections fail closed; a rotorcraft keeps its reference launch.
+	# Refused selections fail closed; this fixed-wing session cannot load a rotorcraft.
 	for bad in [1.5, 0.0, -0.25, INF]:
 		var refused := make(STIK, STIK_ID, Session.START_AIRBORNE, float(bad))
 		check("trim throttle %s is refused before flight" % str(bad), not refused.is_flyable() and refused.sim.paused
@@ -161,8 +180,8 @@ func run() -> void:
 			rotorcraft_id = id
 			break
 	var rotor := make(str(Catalog.entry(rotorcraft_id).data), rotorcraft_id, Session.START_AIRBORNE, Session.CRUISE_TRIM_THROTTLE)
-	check("a rotorcraft (%s) keeps its reference launch under the product trim" % rotorcraft_id, not rotorcraft_id.is_empty()
-		and not rotor.cruise_trim_active() and not rotor.start.has("requested_throttle"))
+	check("the fixed-wing session refuses rotorcraft data (%s)" % rotorcraft_id, not rotorcraft_id.is_empty()
+		and not rotor.is_flyable() and rotor.sim.paused and not rotor.cruise_trim_active())
 	rotor.free()
 
 	# Selection after setup: airborne refits on reset, and the runway start carries the trim.
@@ -199,26 +218,47 @@ func run() -> void:
 			fleet.append({id = id, cruise_speed_mps = snappedf(a.start.V, 0.01), elevator_up_deg = snappedf(a.start.pitch_command * a.throws_deg().elevator, 0.01)})
 		a.free()
 	print("TRIM_THROTTLE_FLEET ", JSON.stringify(fleet))
+	var trimmed_speed: float = cruise_speed(fleet)
+
+	# Neutral airborne holds with each trim: the trim alone, without a pilot's maneuver.
+	var holds := {}
+	for trim in [NAN, Session.CRUISE_TRIM_THROTTLE]:
+		var s := make(STIK, STIK_ID, Session.START_AIRBORNE, float(trim))
+		var label: String = "reference" if is_nan(float(trim)) else "cruise"
+		check(label + " airborne start is flyable", s.is_flyable(), s.start_error)
+		if s.is_flyable():
+			holds[label] = hold_at_throttle(s, 0.5)
+			print("TRIM_THROTTLE_HOLD_%s " % label.to_upper(), JSON.stringify(holds[label]))
+		s.free()
+	if holds.has("reference") and holds.has("cruise"):
+		var r: Dictionary = holds.reference
+		var c: Dictionary = holds.cruise
+		check("both airborne holds complete without a crash", r.complete and c.complete and not r.crashed and not c.crashed)
+		check("airborne hold: the reference-trimmed Stik climbs away at half throttle (%.2f m/s)" % r.climb_rate, r.climb_rate > 0.5)
+		check("airborne hold: the cruise-trimmed Stik holds its height at half throttle (%.4f m/s)" % c.climb_rate,
+			absf(c.climb_rate) < 0.3 and absf(c.climb_rate) < 0.25 * absf(r.climb_rate))
+		check("airborne hold: the cruise-trimmed Stik stays at its trimmed speed (%.2f m/s)" % c.v_end, absf(c.v_end - trimmed_speed) < 0.15 * trimmed_speed)
 
 	# The owner's procedure from the runway, with each trim.
-	var results := {}
+	var takeoffs := {}
 	for trim in [NAN, Session.CRUISE_TRIM_THROTTLE]:
 		var s := make(STIK, STIK_ID, Session.START_RUNWAY, float(trim), field)
 		var label: String = "reference" if is_nan(float(trim)) else "cruise"
 		check(label + " runway start is flyable", s.is_flyable(), s.start_error)
 		if s.is_flyable():
-			results[label] = takeoff_and_hold(s, 0.5)
-			print("TRIM_THROTTLE_%s " % label.to_upper(), JSON.stringify(results[label]))
+			takeoffs[label] = takeoff_and_hold(s, 0.5)
+			print("TRIM_THROTTLE_TAKEOFF_%s " % label.to_upper(), JSON.stringify(takeoffs[label]))
 		s.free()
-	if results.has("reference") and results.has("cruise"):
-		var r: Dictionary = results.reference
-		var c: Dictionary = results.cruise
-		check("both takeoffs lift off, climb out and fly the hold without a crash", r.airborne_t > 0.0 and c.airborne_t > 0.0
-			and r.h_release >= LEVEL_OFF_HEIGHT_M and c.h_release >= LEVEL_OFF_HEIGHT_M and not r.crashed and not c.crashed)
-		check("the reference-trimmed Stik climbs away at half throttle (%.2f m/s)" % r.climb_rate, r.climb_rate > 0.5)
-		check("the cruise-trimmed Stik holds its height at half throttle (%.2f m/s, %.0f..%.0f m)" % [c.climb_rate, c.min_h, c.max_h],
+	if takeoffs.has("reference") and takeoffs.has("cruise"):
+		var r: Dictionary = takeoffs.reference
+		var c: Dictionary = takeoffs.cruise
+		check("both takeoffs lift off, climb out to the release height and fly the hold without a crash", r.airborne_t > 0.0
+			and c.airborne_t > 0.0 and r.h_release >= LEVEL_OFF_HEIGHT_M and c.h_release >= LEVEL_OFF_HEIGHT_M
+			and r.complete and c.complete and not r.crashed and not c.crashed)
+		check("after the takeoff the reference-trimmed Stik climbs away at half throttle (%.2f m/s)" % r.climb_rate, r.climb_rate > 0.5)
+		check("after the takeoff the cruise-trimmed Stik holds its height at half throttle (%.2f m/s, %.0f..%.0f m)" % [c.climb_rate, c.min_h, c.max_h],
 			absf(c.climb_rate) < 0.3 and absf(c.climb_rate) < 0.25 * absf(r.climb_rate) and c.min_h > 10.0)
-		check("the cruise-trimmed Stik settles near its trimmed speed (%.1f m/s)" % c.v_end, absf(c.v_end - cruise_speed(fleet)) < 0.15 * cruise_speed(fleet))
+		check("after the takeoff the cruise-trimmed Stik settles near its trimmed speed (%.1f m/s)" % c.v_end, absf(c.v_end - trimmed_speed) < 0.15 * trimmed_speed)
 	print("TRIM_THROTTLE_CHECKS ", checks, " failures=", failures)
 	quit(1 if failures else 0)
 

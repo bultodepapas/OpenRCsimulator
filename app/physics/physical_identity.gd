@@ -12,10 +12,21 @@ static func validate(raw: Dictionary) -> PackedStringArray:
 	var propulsion: Variant = raw.get("propulsion", {})
 	var controls: Variant = raw.get("controls", {})
 	if not raw.has("physical_identity_version"):
+		# V2 fuel and battery modules already use inventory IDs as references.
+		# Older v2 files may need those IDs without claiming the complete authored
+		# physical-identity module. Validate referenced IDs as a unique subset.
+		var referenced_inventory_ids := _referenced_inventory_ids(raw)
+		var referenced_seen := {}
 		var orphan := raw.has("crash_hull_ids")
 		if inventory is Array:
-			for item in inventory:
-				orphan = orphan or (item is Dictionary and item.has("id"))
+			for i in inventory.size():
+				var item: Variant = inventory[i]
+				if item is Dictionary and item.has("id"):
+					var inventory_id: Variant = item.get("id")
+					if referenced_inventory_ids.has(inventory_id):
+						_register(inventory_id, "/inventory/%d/id" % i, referenced_seen, issues)
+					else:
+						orphan = true
 		if gear is Dictionary and gear.get("contacts") is Array:
 			for item in gear.contacts:
 				orphan = orphan or (item is Dictionary and item.has("id"))
@@ -93,3 +104,31 @@ static func describe(raw: Dictionary) -> Dictionary:
 		inventory_index_by_id = inventory_index_by_id, hull_ids = PackedStringArray(raw.crash_hull_ids),
 		support_ids = support_ids, propulsion_id = raw.propulsion.id,
 		surface_ids = raw.controls.surface_ids.duplicate(true)}
+
+
+static func _referenced_inventory_ids(raw: Dictionary) -> Dictionary:
+	var referenced := {}
+	var fuel_system: Variant = raw.get("fuel_system", {})
+	if fuel_system is Dictionary:
+		var tanks: Variant = fuel_system.get("tanks", [])
+		if tanks is Array:
+			for tank in tanks:
+				if not tank is Dictionary:
+					continue
+				for key: String in ["liquid_inventory_id", "shell_inventory_id"]:
+					var inventory_id: Variant = tank.get(key, null)
+					if inventory_id is String and not inventory_id.is_empty():
+						referenced[inventory_id] = true
+				var feed_line: Variant = tank.get("feed_line", {})
+				if feed_line is Dictionary:
+					var line_inventory_id: Variant = feed_line.get("liquid_inventory_id", null)
+					if line_inventory_id is String and not line_inventory_id.is_empty():
+						referenced[line_inventory_id] = true
+	var propulsion: Variant = raw.get("propulsion", {})
+	if propulsion is Dictionary:
+		var battery: Variant = propulsion.get("battery", {})
+		if battery is Dictionary:
+			var mount_inventory_id: Variant = battery.get("mount_inventory_id", null)
+			if mount_inventory_id is String and not mount_inventory_id.is_empty():
+				referenced[mount_inventory_id] = true
+	return referenced

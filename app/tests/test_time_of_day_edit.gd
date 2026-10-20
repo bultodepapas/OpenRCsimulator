@@ -63,7 +63,7 @@ func _run() -> void:
 	flight.session.set_physics_process(false)
 	flight.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
 	flight.recorder.detach()
-	flight.recorder = MemoryRecorder.new(flight.session.sim)
+	flight.recorder = MemoryRecorder.new(flight.session.sim, flight.session.electrical_state, flight.session.mass_properties)
 	var sim: Node = flight.session.sim
 	for _tick: int in 12:
 		sim.step()
@@ -339,7 +339,7 @@ func _check_weather_csv_case(case_id: String, weather_id: String, aircraft: Stri
 	flight.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
 	flight.session.input_enabled = false
 	flight.recorder.detach()
-	flight.recorder = MemoryRecorder.new(flight.session.sim)
+	flight.recorder = MemoryRecorder.new(flight.session.sim, flight.session.electrical_state, flight.session.mass_properties)
 	var sim: Node = flight.session.sim
 	flight.recorder.start(flight._trace_meta())
 	var first_row_count: int = flight.recorder.trace.row_count()

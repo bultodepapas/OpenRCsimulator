@@ -132,12 +132,13 @@ func _initialize() -> void:
 	print("Pack L11a %s grass and %d clumps validated" % [
 		"imported" if expected_imported else "procedural", grass.get_meta("clumps")])
 	var cue: Node3D = field.get_node_or_null("windsock") as Node3D
-	if cue == null or cue.get_child_count() != 2 or not cue.get_node_or_null("Fabric") is MeshInstance3D:
-		printerr("Pack missing L10a windsock data, mesh builder or material")
+	var windsock_error := _windsock_error(cue)
+	if not windsock_error.is_empty():
+		printerr("Pack invalid L10a windsock: ", windsock_error)
 		field.free()
 		quit(1)
 		return
-	print("Pack L10a calm windsock validated")
+	print("Pack L10a calm windsock meshes, shaders and textures validated")
 	var station: Node3D = field.get_node_or_null("pilot_station") as Node3D
 	if station == null or station.get_child_count() != 1 or not station.get_node_or_null("Station") is MeshInstance3D:
 		printerr("Pack missing L10b pilot station")
@@ -176,6 +177,28 @@ func _image_alpha_equal(left: Image, right: Image) -> bool:
 		if left_data[alpha_index] != right_data[alpha_index]:
 			return false
 	return true
+
+
+## Export coverage for the current three-part windsock assembly and its runtime shader maps.
+func _windsock_error(cue: Node3D) -> String:
+	if cue == null:
+		return "missing default field cue"
+	if cue.get_child_count() != 3:
+		return "expected Fabric, Support and Basket meshes; found %d children" % cue.get_child_count()
+	for part_name: String in ["Fabric", "Support", "Basket"]:
+		var part: MeshInstance3D = cue.get_node_or_null(part_name) as MeshInstance3D
+		if part == null or part.mesh == null or part.mesh.get_surface_count() != 1:
+			return "missing %s mesh or single surface" % part_name
+		var material: ShaderMaterial = part.mesh.surface_get_material(0) as ShaderMaterial
+		if material == null or material.shader == null:
+			return "missing %s shader material" % part_name
+		var channels: Array[String] = ["fabric_color", "fabric_normal", "fabric_roughness"] \
+			if part_name == "Fabric" else ["metal_normal", "metal_roughness", "concrete_color", "concrete_normal"]
+		for channel: String in channels:
+			var texture: Texture2D = material.get_shader_parameter(channel) as Texture2D
+			if texture == null or texture.get_width() <= 0 or texture.get_height() <= 0:
+				return "missing %s texture on %s" % [channel, part_name]
+	return ""
 
 
 ## Export coverage: require real source meshes/materials and nonempty instance data.

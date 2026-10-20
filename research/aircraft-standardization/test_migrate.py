@@ -96,6 +96,56 @@ class AircraftMigration(unittest.TestCase):
                 if name != "gp_extra_300s_60.json":
                     self.assertIn("fuel_consumption", historical["propulsion"])
 
+    def test_empty_tank_projection_uses_full_inventory_cg_for_v1(self):
+        source = json.loads(
+            (ROOT / "app/data/aircraft/stik_glow_61fx_2t.json").read_text(encoding="utf-8")
+        )
+        original = deepcopy(source)
+        historical = legacy_input(source)
+        inventory = historical["inventory"]
+        total_mass = sum(item["mass"]["value"] for item in inventory)
+        expected = [
+            sum(item["mass"]["value"] * item["position"]["value"][axis] for item in inventory)
+            / total_mass
+            for axis in range(3)
+        ]
+        for actual, wanted in zip(historical["balance"]["plan_cg"]["value"], expected):
+            self.assertAlmostEqual(actual, wanted, places=14)
+        self.assertEqual(historical["balance"]["plan_cg"]["kind"], "derived")
+        self.assertEqual(
+            historical["balance"]["plan_cg"]["source"],
+            "v1 compatibility projection: full inventory CG",
+        )
+        self.assertEqual(source, original, "legacy projection must not mutate its v2 source")
+
+    def test_legacy_projection_preserves_malformed_plan_cg(self):
+        source = json.loads(
+            (ROOT / "app/data/aircraft/stik_glow_61fx_2t.json").read_text(encoding="utf-8")
+        )
+        malformed_values = [
+            "bad-vector", [0.0, 0.0], [0.0, 0.0, float("nan")],
+            [0.0, 0.0, 3.0], [0.0, 0.0, 10 ** 500],
+        ]
+        for malformed_value in malformed_values:
+            with self.subTest(value=malformed_value):
+                case = deepcopy(source)
+                evidence = case["balance"]["plan_cg"]
+                evidence["value"] = malformed_value
+                original_evidence = deepcopy(evidence)
+                projected = legacy_input(case)
+                self.assertEqual(projected["balance"]["plan_cg"], original_evidence)
+
+        for malformed_field, malformed_value in (
+            ("kind", "unsupported"), ("source", None), ("source", "\t\n"),
+        ):
+            with self.subTest(field=malformed_field):
+                case = deepcopy(source)
+                evidence = case["balance"]["plan_cg"]
+                evidence[malformed_field] = malformed_value
+                original_evidence = deepcopy(evidence)
+                projected = legacy_input(case)
+                self.assertEqual(projected["balance"]["plan_cg"], original_evidence)
+
     def test_legacy_projection_removes_v2_physical_identity_metadata(self) -> None:
         source = json.loads(
             (ROOT / "app/data/aircraft/turbo_lumber_evolution.json").read_text(encoding="utf-8")

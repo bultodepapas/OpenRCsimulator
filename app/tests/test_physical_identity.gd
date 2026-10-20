@@ -16,23 +16,30 @@ func legacy(raw: Dictionary) -> Dictionary:
 	var out := raw.duplicate(true)
 	out.erase("physical_identity_version")
 	out.erase("crash_hull_ids")
+	var referenced_inventory_ids := {}
+	var fuel_system: Variant = out.get("fuel_system", {})
+	if fuel_system is Dictionary:
+		for tank in fuel_system.get("tanks", []):
+			if not tank is Dictionary:
+				continue
+			for key: String in ["liquid_inventory_id", "shell_inventory_id"]:
+				var inventory_id: Variant = tank.get(key, null)
+				if inventory_id is String:
+					referenced_inventory_ids[inventory_id] = true
+			var feed_line: Variant = tank.get("feed_line", {})
+			if feed_line is Dictionary and feed_line.get("liquid_inventory_id") is String:
+				referenced_inventory_ids[feed_line.liquid_inventory_id] = true
+	var propulsion: Dictionary = out.get("propulsion", {})
+	var battery: Variant = propulsion.get("battery", {})
+	if battery is Dictionary and battery.get("mount_inventory_id") is String:
+		referenced_inventory_ids[battery.mount_inventory_id] = true
 	for part in out.inventory:
-		part.erase("id")
+		if not referenced_inventory_ids.has(part.get("id", null)):
+			part.erase("id")
 	for contact in out.get("landing_gear", {}).get("contacts", []):
 		contact.erase("id")
 	out.propulsion.erase("id")
 	out.controls.erase("surface_ids")
-	# FUEL-03 tanks bind inventory ids, so an id-free file predates them: it balances as authored (the datum).
-	if out.erase("fuel_system"):
-		out.balance.erase("fuel_state")
-		out.balance.erase("cg_range")
-		var mass := 0.0
-		var first := [0.0, 0.0, 0.0]
-		for part in out.inventory:
-			mass += float(part.mass.value)
-			for k in 3:
-				first[k] += float(part.mass.value) * float(part.position.value[k])
-		out.balance.plan_cg.value = [first[0] / mass, first[1] / mass, first[2] / mass]
 	return out
 
 func physical_model(model: Dictionary) -> Dictionary:
@@ -95,6 +102,16 @@ func _initialize() -> void:
 		check("metadata detached from source", raw.controls.surface_ids.elevator != "changed_in_derived_copy")
 	var base: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(Catalog.DEFAULT_ID).data))
 	checkpoint_identity(base)
+	var preidentity_with_orphan: Dictionary = legacy(base)
+	var found_unreferenced := false
+	for part in preidentity_with_orphan.inventory:
+		if not part.has("id"):
+			part.id = "unreferenced_component"
+			found_unreferenced = true
+			break
+	check("pre-identity permits referenced IDs only", found_unreferenced)
+	if found_unreferenced:
+		rejects("pre-identity rejects unreferenced inventory IDs", preidentity_with_orphan)
 	for bad: Variant in [null, true, false, "1", 0, 2, 1.5, {}, []]:
 		var raw := base.duplicate(true)
 		raw.physical_identity_version = bad
