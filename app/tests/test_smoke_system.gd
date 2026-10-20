@@ -111,6 +111,8 @@ func _main_checks() -> void:
 		check("request enters at matching presented tick", stock._profile_smoke_tick == 1
 			and stock._profile_request_tape.is_empty() and stock._profile_presented_request == 1.0
 			and stock._profile_smoke.budget_info().fault.is_empty())
+		_accepted_wash_checks(stock)
+		_fractional_source_checks(stock)
 		stock.session.crash = {"smoke_test": true}
 		check("crash gates new show requests", stock._profile_smoke_request() == 0.0)
 	stock.queue_free()
@@ -122,3 +124,96 @@ func check(label: String, passed: bool, detail: String = "") -> void:
 	if not passed:
 		failures += 1
 		printerr("FAIL ", label, " ", detail)
+
+
+func _accepted_wash_checks(stock: Node) -> void:
+	var state: PackedFloat64Array = stock.session.sim.state.duplicate()
+	var continuous: PackedFloat64Array = stock.session.sim.continuous.duplicate()
+	var auxiliary: PackedFloat64Array = stock.session.sim.aux.duplicate()
+	var modes: PackedInt64Array = stock.session.sim.modes.duplicate()
+	var inputs: PackedFloat64Array = stock.session.sim.inputs.duplicate()
+	var prop: Dictionary = stock.session.aircraft.model.propulsion
+	var accepted_time: float = stock.session.sim.time()
+	# A detached numerical RPM fixture exercises the conversion without changing
+	# accepted RPM, controls or engine state in the session.
+	var reference: Vector3 = stock._profile_smoke_wash(prop, state, 7500.0, accepted_time, true)
+	check("accepted wash numerical fixture has finite nonzero velocity", reference.is_finite() and reference.length() > 0.01)
+	var original_transform: Transform3D = stock._airplane.root.transform
+	for scale_factor: float in [0.1, 1.0, 5.0]:
+		stock._airplane.root.basis = Basis(Vector3.UP, 1.2).scaled(Vector3.ONE * scale_factor)
+		var wash: Vector3 = stock._profile_smoke_wash(prop, state, 7500.0, accepted_time, true)
+		check("accepted wash ignores rendered %.1fx scale and stale orientation" % scale_factor,
+			wash.is_equal_approx(reference), str(wash) + " vs " + str(reference))
+	stock._airplane.root.transform = original_transform
+	check("accepted cutoff removes wash despite numerical windmilling RPM",
+		stock._profile_smoke_wash(prop, state, 7500.0, accepted_time, false) == Vector3.ZERO)
+	var original_version: int = int(stock._profile_smoke._profile.version)
+	stock._profile_smoke._profile.version = 1
+	check("historical v1 profiles keep zero added wash",
+		stock._profile_smoke_wash(prop, state, 7500.0, accepted_time, true) == Vector3.ZERO)
+	stock._profile_smoke._profile.version = original_version
+	check("accepted wash observation leaves all physical arrays unchanged", state == stock.session.sim.state
+		and continuous == stock.session.sim.continuous and auxiliary == stock.session.sim.aux
+		and modes == stock.session.sim.modes and inputs == stock.session.sim.inputs)
+
+
+func _fractional_source_checks(stock: Node) -> void:
+	# Advance real accepted ticks before presenting the detached source tape below.
+	# The synthetic cut verifies presentation ordering; it is not a fuel experiment.
+	stock.session.sim.step()
+	stock.session.sim.step()
+	var state: PackedFloat64Array = stock.session.sim.state.duplicate()
+	var continuous: PackedFloat64Array = stock.session.sim.continuous.duplicate()
+	var auxiliary: PackedFloat64Array = stock.session.sim.aux.duplicate()
+	var modes: PackedInt64Array = stock.session.sim.modes.duplicate()
+	var inputs: PackedFloat64Array = stock.session.sim.inputs.duplicate()
+	var source_kind: String = str(stock.session.aircraft.model.propulsion.kind)
+	var expected_wash := Vector3(0, 0, 3)
+	stock._profile_presented_running = true
+	stock._profile_presented_level = 0.5
+	stock._profile_presented_wash = expected_wash
+	stock._profile_request_tape.clear()
+	stock._profile_source_tape = [{"tick": 2, "kind": source_kind, "running": false, "level": 0.0, "wash_mps": Vector3.ZERO}]
+	stock._update_profile_smoke(1.5 / 240.0)
+	var source_emitter: GPUParticles3D = stock._profile_smoke._emitters.source_exhaust
+	var material: ShaderMaterial = source_emitter.process_material
+	var wash_values: PackedVector3Array = material.get_shader_parameter("birth_event_wash")
+	check("future cutoff cannot remove prior presented wash", stock._profile_source_tape.size() == 1
+		and stock._profile_presented_wash == expected_wash and wash_values[0] == expected_wash)
+	stock._update_profile_smoke(2.25 / 240.0)
+	wash_values = material.get_shader_parameter("birth_event_wash")
+	var times: PackedFloat32Array = material.get_shader_parameter("birth_event_times")
+	var levels: PackedFloat32Array = material.get_shader_parameter("birth_event_levels")
+	check("accepted cutoff and wash share the exact fractional birth boundary",
+		int(material.get_shader_parameter("birth_event_count")) == 2
+		and wash_values[0] == expected_wash and wash_values[1] == Vector3.ZERO
+		and absf(times[1] - 0.5 / 240.0) < 0.000001 and levels[0] == 0.5 and levels[1] == 0.0)
+	check("presented cutoff becomes the next wash baseline", stock._profile_presented_wash == Vector3.ZERO
+		and not stock._profile_presented_running and stock._profile_source_tape.is_empty())
+	var emitter_id := source_emitter.get_instance_id()
+	var presented_before: float = stock._profile_presented_s
+	var history_before: Array = stock._profile_smoke._history.duplicate(true)
+	stock._profile_source_tape = [{"tick": 3, "kind": source_kind, "running": true, "level": 0.5, "wash_mps": expected_wash}]
+	var queued_before: Array = stock._profile_source_tape.duplicate(true)
+	stock.session.sim.set_paused(true)
+	stock._update_profile_smoke(2.1 / 240.0)
+	stock.session.sim.set_paused(false)
+	stock._update_profile_smoke(2.1 / 240.0)
+	check("pause fraction rollback retains puffs and queued accepted events",
+		stock._profile_smoke._emitters.source_exhaust.get_instance_id() == emitter_id
+		and stock._profile_presented_s == presented_before and stock._profile_source_tape == queued_before
+		and stock._profile_smoke._history == history_before)
+	stock._update_profile_smoke(2.8 / 240.0)
+	check("fractional presentation resumes when the clock catches up", stock._profile_presented_s > presented_before
+		and stock._profile_smoke._emitters.source_exhaust.get_instance_id() == emitter_id
+		and stock._profile_smoke.budget_info().fault.is_empty())
+	# Model an observer that previously saw a later accepted tick. Only detached
+	# presentation bookkeeping changes; the physical tick/state stay untouched.
+	stock._profile_last_accepted_tick = stock.session.sim.tick + 1
+	stock._update_profile_smoke(2.8 / 240.0)
+	check("accepted-tick rewind clears and reprimes instead of retaining old puffs",
+		stock._profile_smoke._emitters.source_exhaust.get_instance_id() != emitter_id
+		and stock._profile_source_tape.is_empty() and stock._profile_smoke._last_tick == 2)
+	check("fractional source and rewind presentation leave physical arrays unchanged", state == stock.session.sim.state
+		and continuous == stock.session.sim.continuous and auxiliary == stock.session.sim.aux
+		and modes == stock.session.sim.modes and inputs == stock.session.sim.inputs)

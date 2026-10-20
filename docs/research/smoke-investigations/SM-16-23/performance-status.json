@@ -26,5 +26,9 @@
     "Shared all-visual-work p95 budget and existing physics step gate"
   ],
   "production_pause_policy_changed": false,
-  "benchmark_harness_sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915"
+  "benchmark_harness_sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915",
+  "summary": "timing/summary.json",
+  "observed_p95_gate_pass": false,
+  "sample_validity": "All six r3 runs complete, advancing and fault/crash/pause-free; ON emitter active over99% of observed frames.",
+  "remaining_identity_limit": "Recorded before final activity accepted-wash and fractional-resume fixes."
 }
