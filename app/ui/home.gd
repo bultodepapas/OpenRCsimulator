@@ -770,6 +770,7 @@ func _apply_responsive_layout() -> void:
 	var viewport_size := get_viewport_rect().size
 	var compact := viewport_size.x < 1500.0 or viewport_size.y < 850.0
 	var large_text := UiTheme.text_scale >= 1.5
+	var compact_action_density := compact and not large_text
 	var inset := 24.0 if compact else 48.0
 	var rail_width := minf(viewport_size.x * 0.48, 500.0) if large_text else \
 		clampf(viewport_size.x * 0.24, 280.0, 304.0) if compact else clampf(viewport_size.x * 0.167, 280.0, 340.0)
@@ -829,6 +830,9 @@ func _apply_responsive_layout() -> void:
 	_left_layout.offset_bottom = -24.0
 	_navigation.columns = 2 if compact else 1
 	_conditions_row.columns = 1 if large_text else 2 if compact else 1
+	_pages[0].add_theme_constant_override("separation", 2 if compact_action_density else 6)
+	for action: Button in [start_button, landscape_button, weather_button, time_button, _details_button]:
+		_set_compact_action_density(action, compact_action_density)
 	for button in _nav_buttons:
 		button.custom_minimum_size.y = 36.0 if compact else 40.0
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -838,9 +842,12 @@ func _apply_responsive_layout() -> void:
 			label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 			label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_set_responsive_font(aircraft_name_label, 20 if compact else 28)
+	_set_responsive_font(start_button, 20 if compact else UiTheme.SIZE.button)
+	_set_responsive_font(landscape_button, 20 if compact else UiTheme.SIZE.button)
 	for condition_button in [weather_button, time_button]:
 		_set_responsive_font(condition_button, 18 if compact else UiTheme.SIZE.button)
 		condition_button.custom_minimum_size.y = 38.0 if compact else 48.0
+	_set_responsive_font(_details_button, 18 if compact else UiTheme.SIZE.button)
 	for utility in [controls_button, help_button, quit_button]:
 		utility.custom_minimum_size.y = 32.0 if compact else 34.0
 		utility.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -861,6 +868,23 @@ func _set_responsive_font(control: Control, logical_size: int, decorative := fal
 	var font_size := UiTheme._font_size(logical_size, decorative)
 	if not control.has_theme_font_size_override("font_size") or control.get_theme_font_size("font_size") != font_size:
 		control.add_theme_font_size_override("font_size", font_size)
+
+
+func _set_compact_action_density(button: Button, active: bool) -> void:
+	const DENSITY_META := "home_compact_action_density"
+	if button.has_meta(DENSITY_META) and bool(button.get_meta(DENSITY_META)) == active:
+		return
+	button.set_meta(DENSITY_META, active)
+	for state in ["normal", "hover", "pressed", "disabled"]:
+		if not active:
+			button.remove_theme_stylebox_override(state)
+			continue
+		var compact_style := button.get_theme_stylebox(state).duplicate() as StyleBoxFlat
+		if compact_style == null:
+			continue
+		compact_style.content_margin_top = 4.0
+		compact_style.content_margin_bottom = 4.0
+		button.add_theme_stylebox_override(state, compact_style)
 
 
 func _refresh_scrims() -> void:

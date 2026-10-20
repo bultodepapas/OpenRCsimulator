@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "a28c13fc-85c6-4719-8e37-cb8f2c915094",
+  "command": [
+    "python",
+    "tools/flight_log/flight_log.py",
+    "compare",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\propulsion\\G2a-RK4\\flight-log-2026-10-19/baseline/replay/flight.csv",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\g2a-p51-candidate-final-20261019/flight.csv",
+    "--out",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\g2a-p51-candidate-final-20261019/comparison.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T04:24:24.385598+00:00",
+  "label": "g2a-p51-baseline-vs-final-candidate",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\g2a-p51-baseline-vs-final-candidate-80hxw2v4\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\g2a-p51-baseline-vs-final-candidate-80hxw2v4\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Wrote"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.391,
+  "log_bytes": 91,
+  "log_sha256": "dd0442860ec7b4555556d273b90bf63d99b04f6737d6582be2427d3a569126f2"
+}

@@ -134,9 +134,22 @@ The owner asked whether the trim, the throttle for level flight, inverted flight
 
 Native Windows Godot 4.7.2: 39 checks pass. Both 40-second airborne holds complete without crashes; the reference trim climbs at 1.3494 m/s over the second half, while the cruise trim drifts by less than one micrometre and ends at 20.5971 m/s. No physics law, trim solver or tolerance was changed. This does not qualify a pilot's takeoff procedure or physical flight behavior.
 
+2026-10-19 follow-up: the Home-to-Fly custom-atmosphere fixture exposed a cached selected-trim mismatch: the session used the field density, but its selected 50% trim still had the 20.5971 m/s reference-density equilibrium. `_refit_selected_trim()` now refits when the requested throttle, density or engine charge differs from its cache, before the runway-start early return. The UI regression independently solves `CruiseTrim` from the active session density and charge and checks the selected speed, throttle and cache values. Native Windows Godot 4.7.2 `test_ui_atmosphere.gd` passes all atmosphere UI checks. This verifies Home-to-Fly startup consistency, not the atmosphere against measured weather or flight data.
+
 - `power_step` is valid on all eight aircraft in [FT-05](../../flight-test/FT-05/README.md) (314 of 320 card tests valid); its constant-speed prediction agrees with the flown end angle in the settled cases (0.1–4° at idle and 25 %); the before/after tables come from the same card and tree except the glow law.
 - NITRO-06 test counts and generator checks: [NITRO-06 § Verification](../../glow-engines/NITRO-06/README.md#verification).
 - The non-glow aircraft are unchanged by this step: FT-05 records the same-tree comparison with and without the NITRO-06 files (see its verification); against FT-04 only the Timber compares at zero tolerance because other tracks changed the Stik, P-51 and Ventage Jet data in between.
+
+### 2026-10-19 finite-fuel trim and P-51 trace release regressions
+
+The P-51 and Avanti equilibrium regression had compared fixed-mass trim while their finite liquid fuel was burning. In `test_pilot_trim.gd`, a test-only wrapper holds only the usable-fuel derivative at zero for the strict 1 mm / 1 mm/s equilibrium comparison. It checks actual `mass_properties()` at both ends, restores the production stage before reset, and then runs the normal finite-fuel flight. Native checked Windows Godot 4.7.2 passed 118 checks in 116.563 s.
+
+| Aircraft | Frozen-start live mass / fuel | Production mass / fuel after 10 s | Production height / speed change |
+| --- | ---: | ---: | ---: |
+| P-51 | 21.873926 kg / 0.747854 kg | 21.872493 kg / 0.746421 kg | +0.019610 m / −0.005426 m/s |
+| Avanti | 12.734858 kg / 2.592560 kg | 12.716162 kg / 2.573864 kg | +0.215567 m / −0.059178 m/s |
+
+Both frozen-inventory holds remain within the original 1 mm and 1 mm/s bounds, with unchanged live mass and fuel. Production drift continues to be covered by the [10 s fleet half-power gate](../../../../app/tests/test_half_power_start.gd) (<1 m) and the [30 s P-51 hold](../../../../app/tests/test_p51_handling.gd) (<2 m and <0.3 m/s); those tolerances were not changed. The P-51 power-off stall check also requires a complete 961-row / 960-tick trace with no fault before the unchanged 11.9° α threshold; the native run passed 19 checks, reaching 20.8°. [Trim regression](../../../../app/tests/test_pilot_trim.gd) · [P-51 handling regression](../../../../app/tests/test_p51_handling.gd).
 
 ## Reproduce
 

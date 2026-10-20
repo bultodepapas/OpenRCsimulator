@@ -84,8 +84,17 @@ exit 0
         self.assertIn("import failed", result.stdout)
         self.assertNotIn("VISITED", result.stdout)
 
-    def test_p51_envelope_has_a_full_flight_budget(self):
-        (self.root / "tests" / "test_p51_envelope.gd").touch()
+    def test_measured_slow_gates_have_bounded_ci_budgets(self):
+        slow_gates = {
+            "test_workshop_starts.gd",
+            "test_p51_ground.gd",
+            "test_prop_strike.gd",
+            "test_p51_handling.gd",
+            "test_ui_modal_responsive.gd",
+            "test_rcv_handling.gd",
+        }
+        for name in slow_gates | {"test_p51_envelope.gd", "test_trim_throttle.gd", "test_half_power_start.gd"}:
+            (self.root / "tests" / name).touch()
         result = self.run_partition(0, 1)
         self.assertEqual(result.returncode, 0, result.stdout)
         budgets = {}
@@ -94,8 +103,24 @@ exit 0
             for arg in report["command"]:
                 if arg.startswith("res://tests/"):
                     budgets[arg.rsplit("/", 1)[-1]] = report["timeout_seconds"]
+        for name in slow_gates:
+            with self.subTest(test=name):
+                self.assertEqual(budgets[name], 120)
         self.assertEqual(budgets["test_p51_envelope.gd"], 180)
+        # The merged trim regression includes both airborne holds and controlled runway takeoffs.
+        self.assertEqual(budgets["test_trim_throttle.gd"], 300)
+        self.assertEqual(budgets["test_half_power_start.gd"], 600)
         self.assertEqual(budgets["test_probe_00.gd"], 60)
+
+    def test_expected_cli_failures_are_uploaded_outside_positive_summary(self):
+        repository = Path(__file__).resolve().parents[2]
+        script = (repository / "app" / "test.sh").read_text(encoding="utf-8")
+        workflow = (repository / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+        self.assertIn('EXPECTED_CHECK_OUT="${OPENRC_EXPECTED_CHECK_OUT:-$HERE/../tmp/godot-checks-expected}"', script)
+        self.assertIn("summarize.py tmp/godot-checks --junit tmp/godot-checks/results.xml", workflow)
+        self.assertIn("path: tmp/godot-checks/", workflow)
+        self.assertIn("name: godot-expected-diagnostics-${{ matrix.part }}-${{ matrix.shard }}", workflow)
+        self.assertIn("tmp/godot-checks-expected/", workflow)
 
     def test_invalid_and_empty_partitions_are_rejected(self):
         for shard, count in [(8, 8), (-1, 8), (0, 0), (0, "08"), (0, 129), (19, 20)]:

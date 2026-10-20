@@ -25,6 +25,8 @@
 ## Temperature enters only through √(R·T0) at the ISA reference; density cancels from the ratio.
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
+
 const GAMMA := 1.4
 const R_AIR := 287.05
 const T_REFERENCE_K := 288.15
@@ -43,8 +45,8 @@ static func flow_function(r: float) -> float:
 	if r >= 1.0:
 		return 0.0
 	var k: float = (GAMMA - 1.0) / GAMMA
-	var inner: float = 2.0 * GAMMA / (GAMMA - 1.0) * (1.0 - pow(r, k))
-	return pow(r, 1.0 / GAMMA) * sqrt(maxf(inner, 0.0)) / PSI_CHOKED
+	var inner: float = 2.0 * GAMMA / (GAMMA - 1.0) * (1.0 - M.pow_(r, k))
+	return M.pow_(r, 1.0 / GAMMA) * M.sqrt_(maxf(inner, 0.0)) / PSI_CHOKED
 
 
 ## Manifold pressure ratio r for the demand/capacity ratio y = a/x: y below r_c (choked), else the root of
@@ -79,10 +81,10 @@ static func charge_ratio(y: float) -> float:
 static func _flow_function_slope(r: float) -> float:
 	var k: float = (GAMMA - 1.0) / GAMMA
 	var c: float = 2.0 * GAMMA / (GAMMA - 1.0)
-	var s: float = sqrt(maxf(c * (1.0 - pow(r, k)), 0.0))
+	var s: float = M.sqrt_(maxf(c * (1.0 - M.pow_(r, k)), 0.0))
 	if s <= 0.0:
 		return -INF
-	return (pow(r, 1.0 / GAMMA - 1.0) * s / GAMMA - pow(r, 1.0 / GAMMA) * c * k * pow(r, k - 1.0) / (2.0 * s)) / PSI_CHOKED
+	return (M.pow_(r, 1.0 / GAMMA - 1.0) * s / GAMMA - M.pow_(r, 1.0 / GAMMA) * c * k * M.pow_(r, k - 1.0) / (2.0 * s)) / PSI_CHOKED
 
 
 ## Open-area fraction of the barrel: the lens common to two equal circles offset by u = d/(2R), u in [0, 1].
@@ -93,7 +95,7 @@ static func lens_fraction(u: float) -> float:
 		return 1.0
 	if u >= 1.0:
 		return 0.0
-	return 2.0 / PI * (acos(u) - u * sqrt(1.0 - u * u))
+	return 2.0 / PI * (M.acos_(u) - u * M.sqrt_(1.0 - u * u))
 
 
 ## Barrel offset u_idle at which the lens equals the idle opening (0 < idle_opening < 1). NAN outside that range.
@@ -118,14 +120,14 @@ static func opening(servo: float, idle_offset_u: float, travel_exponent: float =
 			or not is_finite(travel_exponent) or travel_exponent <= 0.0:
 		return NAN
 	var closed: float = 1.0 - clampf(servo, 0.0, 1.0)
-	return lens_fraction(idle_offset_u * (pow(closed, travel_exponent) if closed > 0.0 else 0.0))
+	return lens_fraction(idle_offset_u * (M.pow_(closed, travel_exponent) if closed > 0.0 else 0.0))
 
 
 ## Choked volumetric capacity (m³/s of ambient-density air) of the fully open path with effective area Cd·A (m²).
 static func capacity_m3_s(effective_area_m2: float) -> float:
 	if not is_finite(effective_area_m2) or effective_area_m2 <= 0.0:
 		return NAN
-	return effective_area_m2 * PSI_CHOKED * sqrt(R_AIR * T_REFERENCE_K)
+	return effective_area_m2 * PSI_CHOKED * M.sqrt_(R_AIR * T_REFERENCE_K)
 
 
 ## Wide-open volumetric demand (m³/s at ambient density) of an engine breathing η_b of its displacement per cycle.

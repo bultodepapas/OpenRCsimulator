@@ -583,25 +583,32 @@ func cruise_trim_active() -> bool:
 	return half_power_start_supported(str(aircraft.get("model", {}).get("id", "")))
 
 
-## D6e-R4: re-solves the start when the selected trim throttle differs from the one the committed start was solved
-## for (a selection made after setup). The reference trim never refits here; its density refit lives in reset().
+## D6e-R4: re-solves a selected-throttle start when its requested throttle or launch air mass changed after setup.
+## This runs before the runway early return so its flying trim follows a changed field atmosphere too.
 ## Failure leaves an invalid start, as the atmosphere refit does. Returns {ok, changed[, message]}.
 func _refit_selected_trim() -> Dictionary:
-	if not cruise_trim_active() or start.get("requested_throttle", NAN) == selected_trim_throttle():
+	if not cruise_trim_active():
 		return {ok = true, changed = false}
 	var old_start: Dictionary = start
-	var refit: Dictionary = _selected_airborne_trim(aircraft.model, _atmosphere_down(old_start.get("state", PackedFloat64Array())))
+	var old_state: PackedFloat64Array = old_start.get("state", PackedFloat64Array())
+	var density: float = air_density(old_state)
+	var charge: float = engine_charge_ratio(old_state)
+	var throttle_changed: bool = old_start.get("requested_throttle", NAN) != selected_trim_throttle()
+	var atmosphere_changed: bool = _trim_density != density or _trim_charge != charge
+	if not throttle_changed and not atmosphere_changed:
+		return {ok = true, changed = false}
+	var refit: Dictionary = _selected_airborne_trim(aircraft.model, _atmosphere_down(old_state))
 	if not refit.ok:
 		start = refit
 		_trim_density = NAN
 		_trim_charge = NAN
 		return {ok = false, changed = true, message = "trim: " + str(refit.get("message", "trim failed"))}
-	if Sim.state_is_valid(old_start.get("state", PackedFloat64Array())):
+	if Sim.state_is_valid(old_state):
 		for axis: int in 3:
-			refit.state[RB.POS + axis] = old_start.state[RB.POS + axis]
+			refit.state[RB.POS + axis] = old_state[RB.POS + axis]
 	start = refit
-	_trim_density = air_density(start.state)
-	_trim_charge = engine_charge_ratio(start.state)
+	_trim_density = density
+	_trim_charge = charge
 	trims = {roll = start.roll_command, pitch = start.pitch_command, yaw = start.get("yaw_command", 0.0)}
 	return {ok = true, changed = true}
 
@@ -1224,6 +1231,10 @@ func _prepare_aircraft(data: Dictionary) -> Dictionary:
 		return {ok=false,data=data,start={ok=false},trims=neutral_trims,message="glow installation requires coupled-rk4"}
 	if electric and _shaft_explicit and not shaft_is_coupled():
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims, message = "electric propulsion requires coupled-rk4"}
+	if not model.get("propulsion", {}).get("liquid_fuel", {}).is_empty() \
+			and not Turbine.is_turbine(model.propulsion) and _shaft_explicit and not shaft_is_coupled():
+		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
+			message = "finite propeller propulsion requires coupled-rk4"}
 	if (electric or glow or (shaft_is_coupled() and _shaft_explicit)) and not _supports_coupled_shaft(model):
 		return {ok = false, data = data, start = {ok = false}, trims = neutral_trims,
 			message = "coupled-rk4 requires a propeller shaft model with positive carrier inertia"}
@@ -3182,6 +3193,31 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 				# Body acceleration can initiate forward relative spin even with the source off.
 				# Use moving-side bearing loss; the isolated motor's rest clamp is not valid here.
 				rate = (drive - friction) / float(prop.rotor_inertia) * 60.0 / TAU
+	elif not electric and not Propulsion.is_glow(prop) and Propulsion.has_rotor_dynamics(prop) \
+			and not (propulsion_power_enabled() and source_enabled) \
+			and rpm <= Propulsion.STOPPED_RPM and rate == 0.0:
+		# The combustion shaft's scalar law already suppresses negative torque below STOPPED_RPM,
+		# but coupling can still create negative relative spin from body acceleration. Resolve the
+		# stopped engine's authored zero-speed friction as bounded static shaft friction here.
+		var shaft_friction: PackedFloat64Array = prop.shaft.friction
+		var friction_limit: float = float(shaft_friction[0])
+		var w: PackedFloat64Array = s.slice(RB.RATE, RB.RATE + 3)
+		var body_momentum: PackedFloat64Array = RB.inertia_mul(stage_inertia, w)
+		var rotor_momentum: PackedFloat64Array = Dynamics.rotor_momentum(aircraft.model, rpm)
+		var free_body: PackedFloat64Array = RB.inertia_mul(stage_inverse,
+			M.sub(external.slice(3, 6), M.cross(w, M.add(body_momentum, rotor_momentum))))
+		var required: float = float(prop.rotor_inertia) * M.dot(Propulsion.axis(prop), free_body)
+		var drive: float = -Propulsion.prop_torque(rpm, M.dot(air.v_air, Propulsion.axis(prop)), prop, air_density(s))
+		if not is_finite(friction_limit) or friction_limit < 0.0 or not is_finite(required) or not is_finite(drive):
+			return {ok = false}
+		if absf(drive - required) <= friction_limit:
+			locked = true
+			rate = required / float(prop.rotor_inertia) * 60.0 / TAU
+		elif drive - required < -friction_limit:
+			return {ok = false} # unsupported reverse breakaway; do not clamp a negative RPM stage
+		else:
+			# A body-driven forward breakaway uses the moving side of the authored friction curve.
+			rate = (drive - friction_limit) / float(prop.rotor_inertia) * 60.0 / TAU
 	var response: Dictionary = RotorCoupling.response(M.v3(s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2]),
 		M.v3(external[3], external[4], external[5]), stage_inertia, stage_inverse,
 		Propulsion.axis(prop), prop.rotor_inertia, rpm * TAU / 60.0, rate * prop.rotor_inertia * TAU / 60.0)
@@ -3368,11 +3404,46 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 ## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5), or
 ## the shaft torque balance when the aircraft declares one (P51-06);
 ## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
-## SF-05: the gear's derived substep count while a wheel is within reach of the ground, otherwise one.
-func _substeps(body: PackedFloat64Array, _continuous: PackedFloat64Array, _t: float) -> int:
-	if not aircraft.get("ok", false) or not (aircraft.model.get("landing_gear") is Dictionary):
-		return 1
-	return Ground.substeps(body, current_landing_gear(), sim.dt(), ground_surfaces)
+## SF-05: contact refinement plus a bounded RK domain refinement for the engine-off combustion cutoff.
+func _substeps(body: PackedFloat64Array, continuous: PackedFloat64Array, at: float) -> int:
+	var count: int = 1
+	if aircraft.get("ok", false) and aircraft.model.get("landing_gear") is Dictionary:
+		count = Ground.substeps(body, current_landing_gear(), sim.dt(), ground_surfaces)
+	# The inherited combustion law changes to zero rate at STOPPED_RPM. Near that boundary, one full RK4
+	# half-stage can fall below zero even though the physical interval should advance only into the static branch.
+	# Refine that tick so each intermediate evaluation stays in-domain. This changes integration resolution only:
+	# it introduces no stop impulse, new friction law or projected endpoint. The margin accommodates stage-rate drift.
+	var source_may_stop_this_tick: bool = not propulsion_power_enabled() or liquid_fuel_is_active()
+	if shaft_is_coupled() and not Propulsion.is_electric(aircraft.model.propulsion) \
+			and not Propulsion.is_glow(aircraft.model.propulsion) \
+			and Propulsion.has_rotor_dynamics(aircraft.model.propulsion) \
+			and source_may_stop_this_tick and continuous.size() > _rotor_index():
+		var rpm: float = continuous[_rotor_index()]
+		if is_finite(rpm) and rpm > Propulsion.STOPPED_RPM:
+			var shaft_values: PackedFloat64Array = continuous.slice(0, _liquid_index()) if liquid_fuel_is_active() \
+				else continuous.duplicate()
+			var properties: Dictionary = LiquidFlight.properties(self, continuous, true) if liquid_fuel_is_active() else {}
+			# Finite-fuel exhaust can turn off the source partway through this same tick. Estimate the
+			# off-source domain rate even while its current latch is on so the event locator's remainder is safe.
+			var response: Dictionary = _coupled_response(body, shaft_values, at, properties, false)
+			if not response.get("ok", false):
+				# A bad preview cannot justify an unrefined step. Return an over-cap request so the
+				# kernel rejects the tick without committing a potentially malformed RK stage.
+				count = maxi(count, Sim.MAX_SUBSTEPS + 1)
+			else:
+				var rpm_rate: float = float(response.get("rpm_rate", NAN))
+				if not is_finite(rpm_rate):
+					count = maxi(count, Sim.MAX_SUBSTEPS + 1)
+				elif rpm_rate < 0.0:
+					var stage_drop: float = sim.dt() * -rpm_rate * 1.25
+					var required_steps: float = stage_drop / rpm
+					if not is_finite(stage_drop) or not is_finite(required_steps) \
+							or required_steps > Sim.MAX_SUBSTEPS:
+						count = maxi(count, Sim.MAX_SUBSTEPS + 1)
+					else:
+						var safe_steps: int = maxi(1, ceili(required_steps))
+						count = maxi(count, safe_steps)
+	return count
 
 
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:

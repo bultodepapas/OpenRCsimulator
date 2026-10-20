@@ -11,6 +11,7 @@ const Air = preload("res://physics/air_data.gd")
 const Prop = preload("res://physics/propulsion.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
+const LiquidFlight = preload("res://sim/liquid_fuel_flight.gd")
 var checks: int = 0
 var failures: int = 0
 
@@ -63,12 +64,26 @@ func _initialize() -> void:
 				and legacy._rotor_index() == 0 and legacy.wheel_index() == 1
 				and legacy.wheel_count() == 3 and not W.enabled(legacy.aircraft.model.propulsion)
 				and legacy.sim.continuous == expected)
-		elif legacy.glow_is_active() or legacy.turbine_is_continuous():
-			var expected_prefix: int = preload("res://physics/glow/flight.gd").SIZE if legacy.glow_is_active() else 1
+		elif legacy.glow_is_active():
+			var expected_prefix: int = preload("res://physics/glow/flight.gd").SIZE
 			check(id + " combustion state excludes wash transport and starts with stationary wheels",
 				not W.enabled(legacy.aircraft.model.propulsion) and legacy._rotor_index() == 0
 				and legacy.wheel_index() == expected_prefix
 				and legacy.sim.continuous.size() == expected_prefix + legacy.wheel_count()
+				and legacy.sim.continuous.slice(legacy.wheel_index(), legacy.wheel_index() + legacy.wheel_count()) == wheel_state)
+		elif legacy.liquid_fuel_is_active():
+			var expected_prefix: int = 1 if legacy.shaft_is_coupled() or legacy.turbine_is_continuous() else 0
+			var wheel_end: int = legacy.wheel_index() + legacy.wheel_count()
+			check(id + " finite-fuel state follows stationary source-declared wheels without wash transport",
+				not W.enabled(legacy.aircraft.model.propulsion) and legacy._rotor_index() == 0
+				and legacy.wheel_index() == expected_prefix and wheel_end <= legacy.sim.continuous.size()
+				and legacy.sim.continuous.slice(legacy.wheel_index(), wheel_end) == wheel_state
+				and LiquidFlight.valid(legacy, legacy.sim.continuous))
+		elif legacy.turbine_is_continuous():
+			check(id + " turbine state precedes source-declared stationary wheels without wash transport",
+				not W.enabled(legacy.aircraft.model.propulsion) and legacy._rotor_index() == 0
+				and legacy.wheel_index() == 1
+				and legacy.sim.continuous.size() == 1 + legacy.wheel_count()
 				and legacy.sim.continuous.slice(legacy.wheel_index(), legacy.wheel_index() + legacy.wheel_count()) == wheel_state)
 		else:
 			check(id + " production has only zero wheel state, no wash transport",

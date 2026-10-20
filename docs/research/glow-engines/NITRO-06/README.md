@@ -87,6 +87,19 @@ On the whole flight-test card, flown on the same tree with and without the law (
 
 ## Reproduce
 
+Release verification, 2026-10-19: the carburettor's `pow`, `sqrt` and `acos` calls
+now use the existing `math3d` wrappers, satisfying the H6 simulation boundary.
+Those wrappers call the same built-ins. A native Godot 4.7.2 comparison of 5,005
+sampled flow, root, lens, opening and capacity outputs against the pre-routing
+source was byte-identical; the checked carburettor suite passed all 58 checks.
+This routing change does not alter the physical law.
+
+The source/pack CLI smoke now requires the installed `glow-mean-cycle-carburettor-v4`
+law rather than the superseded line-pickup v3 law. Linux Godot 4.7.2 source runs
+passed both the 55AX two-stroke and FS-64V four-stroke cases: each completed 721
+finite rows over three seconds with decreasing fuel and increasing firing counts.
+This source run does not replace the exported-package checks.
+
 ```sh
 GODOT="$(app/get-godot.sh)"
 "$GODOT" --headless --path app --audio-driver Dummy --script res://tests/test_glow_carburetor.gd

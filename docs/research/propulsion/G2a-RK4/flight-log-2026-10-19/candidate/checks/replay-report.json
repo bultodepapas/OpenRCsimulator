@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "56ae0990-d39c-4c85-9b06-56fdfeea1b98",
+  "command": [
+    "python",
+    "tools/flight_log/flight_log.py",
+    "replay",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\propulsion\\G2a-RK4\\flight-log-2026-10-19/baseline/powered-p51-4s.orfl",
+    "--candidate",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\p51d_mustang_120.json",
+    "--out",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\g2a-p51-candidate-final-20261019",
+    "--godot",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T04:24:10.012690+00:00",
+  "label": "g2a-p51-candidate-final",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\g2a-p51-candidate-final-9migh8co\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\godot-checks\\g2a-p51-candidate-final-9migh8co\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "Wrote"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 6.953,
+  "log_bytes": 173,
+  "log_sha256": "488f490c3b24d4d726b7567c6f28fbe50a1ac3e56c94583a3bc564cf682f120f"
+}

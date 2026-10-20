@@ -112,6 +112,13 @@ jobs:
           name: godot-diagnostics-${{ matrix.part }}-${{ matrix.shard }}
           path: tmp/godot-checks/
           retention-days: 7
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always() && steps.app_check.outcome != 'skipped' && matrix.part == 'integration'
+        with:
+          name: godot-expected-diagnostics-${{ matrix.part }}-${{ matrix.shard }}
+          path: tmp/godot-checks-expected/
+          if-no-files-found: ignore
+          retention-days: 7
 
   native-linux:
     name: RC native Linux build

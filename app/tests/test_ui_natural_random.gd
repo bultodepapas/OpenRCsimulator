@@ -17,7 +17,6 @@ class CandidateFlight extends Main:
 			startup_error = "Injected failure after World.build"
 			return false
 		return built
-
 class TestApp extends AppRoot:
 	var refuse_world: bool = false
 	func _create_flight(_aircraft_id: String = "") -> Node:
@@ -102,6 +101,12 @@ func _run() -> void:
 	app.refuse_world = false
 	await _press(app.natural_random_screen.reroll_button)
 	await _press(app.natural_random_screen.fly_button)
+	if app.flight == null and app.natural_random_screen != null:
+		var failed_scenario: Dictionary = app.natural_random_screen.get("_scenario")
+		printerr("Random briefing launch rejected: %s (seed %s, aircraft %s)" % [
+			app.natural_random_screen.error_label.text, failed_scenario.get("seed", "?"),
+			failed_scenario.get("aircraft_id", "?"),
+		])
 	check("briefing launches one accepted random flight", app.flight != null and app.home == null and app.natural_random_screen == null)
 	if app.flight == null:
 		await ui.close_app(app)

@@ -80,7 +80,9 @@ func _run(session: Node, s: PackedFloat64Array, soft: bool, ticks: int) -> Dicti
 		if not session.crash.is_empty():
 			crashed_at = t
 			break
-		if first_contact < 0 and not HullContact.loads(session.sim.state, session._hull_contact).is_empty():
+		# Finite-fuel sessions prepare geometry only; force coefficients are sampled per stage from live mass properties.
+		# The contact indicator needs geometry and states only, so use the same representation without requesting forces.
+		if first_contact < 0 and not HullContact.contacts(session.sim.previous, session.sim.state, session._hull_contact).is_empty():
 			first_contact = t
 		max_depth = maxf(max_depth, _deepest(session, session.sim.state))
 		session.sim.step()

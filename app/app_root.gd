@@ -991,11 +991,15 @@ func _prepare_random_briefing(scenario: Dictionary) -> void:
 	candidate.physics_enabled = false
 	candidate.start_choice = scenario.start_choice
 	candidate.trim_throttle = FlightSession.CRUISE_TRIM_THROTTLE # D6e-R4: qualify the trim the flight will use
+	var default_battery_mode: String = Catalog.default_battery_mode(str(scenario.aircraft_id))
+	var aircraft_data_path: String = Catalog.data_for(str(scenario.aircraft_id), default_battery_mode)
 	var error: String = ""
-	if not candidate.setup_weather(scenario.weather_config):
+	if aircraft_data_path.is_empty():
+		error = "No default aircraft data is available for this random flight."
+	elif not candidate.setup_weather(scenario.weather_config):
 		error = candidate.weather_error
 	else:
-		candidate.setup(Catalog.entry(scenario.aircraft_id).data, scenario.aircraft_id)
+		candidate.setup(aircraft_data_path, scenario.aircraft_id)
 		candidate.hold("preparation")
 		if not candidate.set_field(loaded.field):
 			error = candidate.surface_error

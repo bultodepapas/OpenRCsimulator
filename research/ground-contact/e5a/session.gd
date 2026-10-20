@@ -7,6 +7,7 @@ const Ground: Script = preload("res://physics/ground_contact.gd")
 const RB: Script = preload("res://physics/rigid_body.gd")
 const M: Script = preload("res://physics/math3d.gd")
 const Field: Script = preload("res://data/field_loader.gd")
+const ROLLING_HOLD_THROTTLE := 0.1
 
 var failures: int = 0
 var count: int = 0
@@ -22,12 +23,16 @@ func anchor_flags(flight: Node) -> Array:
 
 func check(label: String, ok: bool, detail: String = "") -> void:
 	count += 1
-	print(("ok " if ok else "FAIL ") + label + " " + detail)
+	var message: String = ("ok " if ok else "FAIL ") + label
+	if not detail.is_empty():
+		message += " " + detail
+	print(message)
 	if not ok:
 		failures += 1
 
 
-func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool) -> Dictionary:
+func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool,
+		throttle_hold: bool = false) -> Dictionary:
 	Engine.physics_ticks_per_second = hz
 	var flight: Node = Flight.new()
 	flight.setup("res://data/aircraft/gp_extra_300s_60.json")
@@ -52,7 +57,8 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 		M.q_from_euler(PI / 2, pitch, 0), M.v3(0, 0, 0))
 	flight.reset()
 	flight.trims = {roll = 0.0, pitch = 0.0, yaw = 0.0}
-	flight.commands = {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	flight.commands = {roll = 0.0, pitch = 0.0, yaw = 0.0,
+		throttle = ROLLING_HOLD_THROTTLE if throttle_hold else 0.0}
 	if initial_speed == 0.0:
 		# Extra now has stiction: retain the product's solved support pose and loaded anchors,
 		# rather than attaching initially unloaded airborne-reset anchors to an approximate pose.
@@ -85,7 +91,10 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 	for tick in range(3 * hz):
 		var time: float = float(tick) / hz
 		flight.commands.yaw = yaw if time >= 0.25 else 0.0
-		flight.commands.throttle = 0.25 if pulse and time >= 0.5 and time < 1.5 else 0.0
+		if throttle_hold:
+			flight.commands.throttle = ROLLING_HOLD_THROTTLE
+		else:
+			flight.commands.throttle = 0.25 if pulse and time >= 0.5 and time < 1.5 else 0.0
 		flight.sim.inputs = flight._inputs()
 		flight._physics_process(1.0 / hz)
 		if not flight.crash.is_empty():
@@ -127,13 +136,14 @@ func trial(hz: int, initial_speed: float, yaw: float, powered: bool, pulse: bool
 
 func _initialize() -> void:
 	var original_hz: int = Engine.physics_ticks_per_second
-	for scenario in ["coast_left", "coast_right", "idle", "pulse", "rolling_idle", "rolling_pulse"]:
+	for scenario in ["coast_left", "coast_right", "idle", "pulse", "rolling_idle", "rolling_hold", "rolling_pulse"]:
 		var coasting: bool = scenario.begins_with("coast")
 		var yaw: float = -0.3 if scenario == "coast_left" else (0.3 if scenario == "coast_right" else 0.0)
 		var pair: Array = []
 		for hz in [240, 480, 960]:
 			var rolling: bool = coasting or scenario.begins_with("rolling")
-			var result: Dictionary = trial(hz, 3.0 if rolling else 0.0, yaw, not coasting, scenario.ends_with("pulse"))
+			var result: Dictionary = trial(hz, 3.0 if rolling else 0.0, yaw, not coasting,
+				scenario.ends_with("pulse"), scenario.ends_with("hold"))
 			check("%s at %d Hz completes without crash/fault" % [scenario, hz], result.ok, str(result.get("message", "")))
 			pair.append(result)
 			if result.ok:
@@ -168,14 +178,19 @@ func _initialize() -> void:
 			check("%s refinement level %d: 2 mm / 1 cm/s / 0.001 quaternion / 0.005 rad/s" % [scenario, level],
 				maxima[0] < 0.002 and maxima[1] < 0.01 and maxima[2] < 0.001 and maxima[3] < 0.005, str(maxima))
 			differences.append(Array(maxima))
-		# A once-per-tick stick/slip transition has grid-dependent timing, so its global error
-		# need not shrink monotonically. Keep both absolute bounds for the from-rest pulse;
-		# the matched rolling pulse/control retain the strict smooth-branch order check.
-		if differences.size() == 2 and scenario != "pulse":
+		# The from-rest pulse crosses stick/slip transitions. The rolling pulse has no contact-mode
+		# changes, but its throttle edges and tick-sampled engine updates can still make its accumulated
+		# position error oscillate. Both pulse cases keep all absolute bounds; rolling_hold is the
+		# constant-command powered fixture for the strict smooth-branch order check.
+		if differences.size() == 2 and scenario not in ["pulse", "rolling_pulse"]:
 			for group in range(4):
 				check("%s component group %d difference shrinks on second refinement" % [scenario, group],
 					differences[1][group] <= maxf(1e-7, differences[0][group] / 1.5),
 					str([differences[0][group], differences[1][group]]))
+			if scenario == "rolling_hold":
+				check("rolling-hold angular-rate order comparison resolves above the numerical floor",
+					differences[0][3] > 1e-7 and differences[1][3] < differences[0][3] / 1.5,
+					str([differences[0][3], differences[1][3]]))
 		results[scenario + "_refinement"] = differences
 	for prefix in ["", "rolling_"]:
 		for index in range(3):
@@ -186,6 +201,14 @@ func _initialize() -> void:
 					str([idle.peak_rpm, pulse.peak_rpm]))
 				check("%spulse moves farther than idle by more than the refinement allowance" % prefix, pulse.distance_m > idle.distance_m + 0.01,
 					str([idle.distance_m, pulse.distance_m]))
+	for index in range(3):
+		var idle: Dictionary = results.rolling_idle[index]
+		var hold: Dictionary = results.rolling_hold[index]
+		if idle.ok and hold.ok:
+			check("rolling hold produces resolved RPM response at %d Hz" % hold.hz,
+				hold.peak_rpm > idle.peak_rpm + 100.0, str([idle.peak_rpm, hold.peak_rpm]))
+			check("rolling hold moves farther than idle at %d Hz" % hold.hz,
+				hold.distance_m > idle.distance_m + 0.01, str([idle.distance_m, hold.distance_m]))
 	Engine.physics_ticks_per_second = original_hz
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):

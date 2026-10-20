@@ -16,8 +16,8 @@ REL = Path("research/ground-contact/e5a")
 DATA = Path("app/data/aircraft/gp_extra_300s_60.json")
 
 
-def run(command, cwd, output):
-    result = subprocess.run(command, cwd=cwd, capture_output=True, text=True, timeout=120,
+def run(command, cwd, output, timeout_seconds=120):
+    result = subprocess.run(command, cwd=cwd, capture_output=True, text=True, timeout=timeout_seconds,
                             env=dict(os.environ, PYTHONDONTWRITEBYTECODE="1"))
     log = result.stdout + result.stderr
     output.write_text(log)
@@ -28,7 +28,8 @@ def run(command, cwd, output):
 
 def checked_program(root, godot, script, output, expect_failure=False):
     code, log = run([str(godot), "--headless", "--path", str(root / "app"), "--script",
-                     str(root / REL / script)], root, output)
+                     str(root / REL / script)], root, output,
+                    timeout_seconds=180 if script == "session.gd" else 120)
     summary = re.findall(r"(\d+) checks, (\d+) failed", log)
     if not summary:
         raise RuntimeError("missing completed check summary: " + str(output))

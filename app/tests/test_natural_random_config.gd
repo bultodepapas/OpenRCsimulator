@@ -3,6 +3,9 @@ extends SceneTree
 const NaturalRandom := preload("res://scenarios/natural_random.gd")
 const ScenarioConfig := preload("res://scenarios/scenario_config.gd")
 const SolarPosition := preload("res://environment/solar_position.gd")
+const AircraftCatalog := preload("res://app_state/aircraft_catalog.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
 
 var _failures := 0
 
@@ -27,9 +30,41 @@ func _run() -> void:
 	_check("resolved identity survives full-precision JSON round trip", _json_round_trip_is_valid(scenario))
 	var sources: Dictionary = ScenarioConfig.validate_sources(scenario)
 	_check("current field, aircraft data and model sources match the record", bool(sources.get("ok", false)), str(sources.get("errors", [])))
+	_test_runtime_default_aircraft_sources()
 	_test_strict_mutations(scenario)
 	_test_custom_lighting(scenario)
 	_finish()
+
+
+func _test_runtime_default_aircraft_sources() -> void:
+	for aircraft_id: String in ScenarioConfig.EXPECTED_AIRCRAFT_IDS:
+		var mode: String = AircraftCatalog.default_battery_mode(aircraft_id)
+		var path: String = AircraftCatalog.data_for(aircraft_id, mode)
+		var loaded: Dictionary = AircraftData.load_file(path)
+		var source: Dictionary = ScenarioConfig.resolve_source_identities(aircraft_id, FieldLoader.DEFAULT_PATH, false)
+		_check("scenario identity uses runtime default %s data for %s" % [mode, aircraft_id],
+			loaded.get("ok", false) and source.get("ok", false)
+			and source.source.aircraft_identity == loaded.get("input_identity", {}).get("sha256", ""),
+			str(source.get("errors", [])))
+
+	var turbo_id := "turbo-lumber-evolution"
+	var turbo_entry: Dictionary = AircraftCatalog.entry(turbo_id)
+	var pack_path: String = AircraftCatalog.data_for(turbo_id, AircraftCatalog.default_battery_mode(turbo_id))
+	var base: Dictionary = AircraftData.load_file(str(turbo_entry.get("data", "")))
+	var pack: Dictionary = AircraftData.load_file(pack_path)
+	var seed_four: Dictionary = NaturalRandom.generate(4)
+	_check("seed 4 remains the deterministic Turbo Lumber UI regression draw",
+		seed_four.get("ok", false) and seed_four.scenario.aircraft_id == turbo_id)
+	_check("seed 4 binds the finite default pack input identity", seed_four.get("ok", false)
+		and pack.get("ok", false) and seed_four.scenario.aircraft_identity == pack.input_identity.sha256
+		and base.get("ok", false) and seed_four.scenario.aircraft_identity != base.input_identity.sha256)
+	if seed_four.get("ok", false) and base.get("ok", false):
+		var stale: Dictionary = seed_four.scenario.duplicate(true)
+		stale.aircraft_identity = base.input_identity.sha256
+		stale.identity = ""
+		stale.identity = ScenarioConfig.identity_for(stale)
+		_check("changing the default battery source invalidates an old random selection",
+			not ScenarioConfig.validate_sources(stale).get("ok", false))
 
 
 func _test_policy_copy() -> void:

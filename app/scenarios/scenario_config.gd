@@ -240,7 +240,12 @@ static func resolve_source_identities(aircraft_id: String, field_path: String = 
 	var visual_family := str(entry.get("visual_family", ""))
 	if visual_family.is_empty():
 		return {"ok": false, "source": {}, "errors": PackedStringArray(["aircraft catalog has no visual family for '%s'" % aircraft_id])}
-	var data_path := str(entry.data)
+	# Bind the scenario to the exact data source the interactive Main route selects when its battery mode is
+	# unspecified. If that catalog default changes later, validate_sources sees a different digest and refuses the
+	# old scenario instead of silently replaying it with another electrical configuration.
+	var data_path := AircraftCatalog.data_for(aircraft_id, AircraftCatalog.default_battery_mode(aircraft_id))
+	if data_path.is_empty() or not FileAccess.file_exists(data_path):
+		return {"ok": false, "source": {}, "errors": PackedStringArray(["aircraft catalog has no current default flight data for '%s'" % aircraft_id])}
 	var model_path := "res://data/aircraft_models/%s.json" % visual_family
 	var aircraft_key := "aircraft|%s|%s|%s|%s" % [aircraft_id, data_path, _file_stamp(data_path), _file_stamp(model_path)]
 	var aircraft_source: Dictionary = {}

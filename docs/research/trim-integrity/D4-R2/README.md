@@ -40,6 +40,16 @@ The mutation runner checks out only the original `trim.gd` bytes at the recorded
 
 Sources: repository [trim implementation](../../../../app/physics/trim.gd), [focused tests](../../../../app/tests/test_trim_integrity.gd), [scenario adapter](../../../../app/sim/scenarios.gd), [modal analysis](../../../../app/physics/flight_modes.gd), [D4-R1 preparation safeguards](../../../../app/sim/flight_session.gd). Original code/evidence, repository MIT license; no external assets or aircraft measurements.
 
+## Release regression check — 2026-10-19
+
+NITRO-06 removed the former high-speed idle-power floor, so the production Extra now
+converges at 17 m/s. The bounded-throttle negative test uses a detached, deliberately
+excessive idle opening (`throttle_idle_offset = 0.3`) instead. All three initial
+throttle guesses at full and 10% fuel must refuse with finite residuals and reach
+the zero-throttle bound; the real installation must converge with residual below
+`1e-8`. Reference and hot-high 22 m/s positive controls remain. Native checked
+Godot 4.7.2: **725 checks, 0 failed**. No solver, aircraft data or tolerance changed.
+
 Ready-to-paste commit message:
 
 ```text
