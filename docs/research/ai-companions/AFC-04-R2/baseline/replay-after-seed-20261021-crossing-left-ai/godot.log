@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+CRASH at 29.0 m/s (sink 23.5 m/s, airframe contact (hull point 3), point speed 28.9 m/s at detected tick) - [R] restart
+Flight log exact: 2423 rows verified.

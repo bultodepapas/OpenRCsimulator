@@ -569,6 +569,12 @@ func _headline_state(report: Dictionary) -> Dictionary:
 				"amount": _format_headline_money(int(subtotal), currency),
 				"caption": tr("Known subtotal only. It is not the complete cost."),
 			}
+		if _has_timber_pending_inspection(report):
+			return {
+				"status": tr("INSPECTION REQUIRED"),
+				"amount": tr("Inspection pending"),
+				"caption": tr("Inspect the affected parts to determine repair costs."),
+			}
 		return {
 			"status": tr("AMOUNT UNKNOWN"),
 			"amount": tr("Cost unavailable"),
@@ -698,6 +704,19 @@ func _is_timber_report() -> bool:
 	return identity is Dictionary and str(identity.get("aircraft_id", _report.get("aircraft_id", ""))) == "turbo-lumber-evolution"
 
 
+func _has_timber_pending_inspection(report: Dictionary) -> bool:
+	var identity: Variant = report.get("identity", {})
+	if not identity is Dictionary or str(identity.get("aircraft_id", report.get("aircraft_id", ""))) != "turbo-lumber-evolution" \
+		or report.get("ok") != true or report.get("outcome") != "inspection":
+		return false
+	var lines: Variant = report.get("lines", [])
+	if lines is Array:
+		for line: Variant in lines:
+			if line is Dictionary and str(line.get("action", "")) in ["inspection", "inspect"]:
+				return true
+	return false
+
+
 func _rebuild_timber_details() -> void:
 	var currency := _currency_code(_report.get("currency", "USD"))
 	_add_detail_section(tr("Affected parts"))
@@ -716,7 +735,11 @@ func _rebuild_timber_details() -> void:
 	if lines.is_empty():
 		_add_detail_text(tr("No assessed parts yet."), true)
 	_details_content.add_child(HSeparator.new())
-	_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
+	if _has_timber_pending_inspection(_report) and _valid_minor(_report.get("known_subtotal_minor")) == 0 \
+		and not _has_priced_action(_report):
+		_add_detail_text(tr("No confirmed charges yet."), true)
+	else:
+		_add_detail_money(tr("Known subtotal"), _report.get("known_subtotal_minor"), currency)
 	if _report.get("complete") == true:
 		_add_detail_money(tr("Complete estimated total"), _report.get("total_minor"), currency)
 	else:

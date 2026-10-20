@@ -1,0 +1,94 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "bank_builder_sha256": "b7467250cf9ba32bc59456aa851351b2c6930e18da5f1472ef89652e4cb996a8",
+  "bank_shader_sha256": "4695deb64a07893acd27d36e1df2583e86399d4ceccb21e5b27de46a3285a0b4",
+  "complete": true,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "at_ned": [
+        112.0,
+        130.0,
+        0.45
+      ],
+      "clock_s": 0.0,
+      "draws": 93,
+      "eye_ned": [
+        78.0,
+        113.0,
+        -1.5
+      ],
+      "fov": 58.0,
+      "sha256": "195e74263d47109c9f207cb611037528b5e3cbaa5b9d5d8a0e473cd4cd74383c",
+      "view": "lake_shore"
+    },
+    {
+      "at_ned": [
+        79.0,
+        112.0,
+        0.2
+      ],
+      "clock_s": 0.0,
+      "draws": 47,
+      "eye_ned": [
+        76.0,
+        110.0,
+        -1.6
+      ],
+      "fov": 48.0,
+      "sha256": "da7f89418d2892674a8c9b584449698a9b8e16f138bb30b0012dc5b7a0f74422",
+      "view": "bank_detail"
+    },
+    {
+      "at_ned": [
+        110.0,
+        125.0,
+        0.45
+      ],
+      "clock_s": 0.0,
+      "draws": 115,
+      "eye_ned": [
+        45.0,
+        50.0,
+        -45.0
+      ],
+      "fov": 55.0,
+      "sha256": "99f71323cc7992aa88a8a983c30ec6b7d50640e2f99e7e12edebb349d0f40f8e",
+      "view": "lake_overview"
+    },
+    {
+      "at_ned": [
+        87.0,
+        129.0,
+        0.45
+      ],
+      "clock_s": 0.0,
+      "draws": 94,
+      "eye_ned": [
+        77.0,
+        121.0,
+        -3.5
+      ],
+      "fov": 55.0,
+      "sha256": "f8a28e06aeb78dc0d078343d644a3fdc38aa7c8a9f6bac8fb49a02f3bb4ea661",
+      "view": "lily_detail"
+    },
+    {
+      "at_ned": [
+        87.0,
+        129.0,
+        0.45
+      ],
+      "clock_s": 3.0,
+      "draws": 94,
+      "eye_ned": [
+        77.0,
+        121.0,
+        -3.5
+      ],
+      "fov": 55.0,
+      "sha256": "529d54de89428c4ca716a58636167485fad8c942e867cc5a433bdfa8b47f1f60",
+      "view": "lily_wave_3s"
+    }
+  ]
+}

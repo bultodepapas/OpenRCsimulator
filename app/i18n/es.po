@@ -3655,6 +3655,18 @@ msgstr "Los datos de costes no corresponden a esta versión del avión; no se ap
 msgid "Prices were authored for an earlier revision of this aircraft; its priced parts and contacts were verified unchanged."
 msgstr "Los precios se crearon para una revisión anterior de este avión; se verificó que sus piezas con precio y sus contactos no cambiaron."
 
+msgid "This registered battery configuration preserves the priced inventory and contact bindings."
+msgstr "Esta configuración de batería registrada conserva el inventario con precios y las asociaciones de contactos."
+
+msgid "Inspection pending"
+msgstr "Inspección pendiente"
+
+msgid "Inspect the affected parts to determine repair costs."
+msgstr "Inspecciona las piezas afectadas para determinar el coste de reparación."
+
+msgid "No confirmed charges yet."
+msgstr "Aún no hay costes confirmados."
+
 # FW-MOON-13 moon choices (time-of-day controls)
 msgid "Moon"
 msgstr "Luna"
@@ -4792,6 +4804,9 @@ msgstr "Duración del paso / período de paleta"
 msgid "Legacy amount"
 msgstr "Cantidad heredada"
 
+msgid "The v1 amount is shown for reference and is read-only. Edit density or emission rate to create a v2 draft; the saved v1 revision stays unchanged."
+msgstr "El valor de v1 se muestra como referencia y no se puede editar. Cambia la densidad o la frecuencia de emisión para crear un borrador v2; la revisión v1 guardada no cambia."
+
 msgid "Density"
 msgstr "Densidad"
 
@@ -4864,11 +4879,8 @@ msgstr "%s: %.1f bocanadas/s"
 msgid "budget limited"
 msgstr "presupuesto limitado"
 
-msgid "Created a v2 draft from the empty legacy profile. No smoke remains enabled; the saved v1 revision is unchanged."
-msgstr "Se creó un borrador v2 a partir del perfil heredado vacío. No queda humo activado; la revisión guardada v1 no cambia."
-
-msgid "Created a v2 draft for %d smoke outlet(s). Outlet IDs and legacy amount were retained; review the new density and motion defaults. The saved v1 revision is unchanged."
-msgstr "Se creó un borrador v2 para %d emisores de humo. Se conservaron los identificadores de salida y la cantidad heredada; revisa los nuevos valores predeterminados de densidad y movimiento. La revisión guardada v1 no cambia."
+msgid "Created a v2 draft with %d enabled smoke outlet(s). Review density, rate, and motion before saving. The saved v1 revision is unchanged; v2 makes no claim of visual equivalence."
+msgstr "Se creó un borrador v2 con %d emisores de humo activados. Revisa la densidad, la frecuencia de emisión y el movimiento antes de guardar. La revisión v1 guardada no cambia; v2 no afirma equivalencia visual."
 
 msgid "Viewing a legacy smoke profile. New controls use v2 defaults; the first smoke edit creates a v2 draft."
 msgstr "Estás viendo un perfil de humo heredado. Los controles nuevos muestran valores predeterminados de v2; la primera edición del humo crea un borrador v2."

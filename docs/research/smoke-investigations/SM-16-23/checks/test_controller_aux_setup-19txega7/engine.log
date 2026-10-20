@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Back and Pause cannot be cleared
+ok   unbound optional actions disable redundant Clear
+ok   assigned optional actions expose Clear
+ok   clearing a binding keeps gamepad focus on Remap and skips disabled Clear
+ok   Clear writes an explicit unbound action and passes profile binding validation
+ok   auxiliary help distinguishes input assignment from aircraft capability
+ok   Axis mode creates a valid unbound smoke input without colliding with AETR
+ok   Axis mapping supports axis 9, edited endpoints, and automatic inversion
+ok   Invert swaps axis endpoints and remains consistent with the runtime shape
+ok   axis live preview identifies the selected auxiliary source axis
+ok   Flaps axis picker allocates a source outside AETR and the smoke axis
+ok   Gear button supports index 127 and toggle-on-press mode
+ok   button live preview names the button, mode, and physical state
+ok   button mode also supports maintained level behavior
+ok   Disabled cleanly removes optional channels from the draft
+ok   draft auxiliary mappings pass the profile binding validator
+ok   Save explains when an AUX mapping overlaps a flight axis
+ok   Remap explains when an action conflicts with an AUX input
+ok   auxiliary controls are reachable in their section with follow-focus
+all controller auxiliary setup checks passed

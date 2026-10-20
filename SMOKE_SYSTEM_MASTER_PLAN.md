@@ -1,6 +1,23 @@
 # Aircraft smoke system master plan
 
-**Date:** 2026-10-20 (America/Bogota). **Status:** proposed; no implementation authorized by this document. **Owner:** SM, with AS (aircraft bindings), AE (Workshop), M5 (weather), VQ/DT (rendering/performance), aircraft owners and propulsion owners. **New work packages:** SM-16–SM-25. All are pending.
+**Date:** 2026-10-20 (America/Bogota). **Status:** implementation authorized by the user and core overhaul delivered; rollout qualification remains open. **Owner:** SM, with AS (aircraft bindings), AE (Workshop), M5 (weather), VQ/DT (rendering/performance), aircraft owners and propulsion owners. **Work packages:** SM-16–SM-25. See the implementation status below; the original investigation and acceptance targets remain the baseline.
+
+## Implementation status — 2026-10-20
+
+Current behavior is documented in [SMOKE.md](docs/SMOKE.md). [SM-16–23 evidence](docs/research/smoke-investigations/SM-16-23/README.md) records source receipts, checks, captures and measurement limits. No physics solver or aircraft flight data was changed for smoke.
+
+| Phase | Delivered implementation | Remaining acceptance |
+| --- | --- | --- |
+| SM-16 | Pre-change source receipt, 62 legacy checks, 36 profile checks and 27 native capture checks retained. | Target hardware and complete visual-budget qualification. |
+| SM-17 | V2 profiles, v3 bindings, stable engine/outlet IDs, strict readers and ten-path source proofs; shared-engine/multiple-outlet fixtures. | Every supported package and fresh checkout. |
+| SM-18 | Shared stock/Workshop runtime, accepted source/load tapes, fractional displayed-pose clock, explicit empty precedence and lifecycle gates. | Fleet native visual review; legacy comparison remains available. |
+| SM-19 | Existing lit soft billboards retained; v2 expansion/dilution improves dissipation without a new draw pass or asset dependency. | Dense overlap, night/water intersections and full visual preference review. No atlas benefit is claimed. |
+| SM-20 | Bounded coherent world curl, exponential entrainment, independent jet/wash, safe direction sweep, smooth birth colors and scaled bore. | Broader 3D/wind/fast-pass visual matrix; supplied wash may lead presentation by less than one physics tick. |
+| SM-21 | Demand allocation, four active emitters/768 slots, reused event buffers, cached mounts, residual sleep and LOD hysteresis. | Paired timing, worst-case projected overdraw and full scene budget. |
+| SM-22 | Existing Workshop controls extended, color picker/hex, palette transitions/offset, per-emitter copy, Stop/Pause/Restart, residual framing, EN/ES labels. | 200% text scale and independent user task review. |
+| SM-23 | Eight fixed-wing configurations resolve shared outlet contracts; Stik/P-51 stock migrate to common renderer; helicopter reports explicit unavailable capability. V1 migration proposes a new revision with a report. | Extra exhaust authoring; HX-700/X-Cell engine/outlet pairing; stale saved builds require their original companion and explicit migration. |
+| SM-24 | Focused software and native Compatibility checks retained; 50 isolated native lifecycle cycles passed with stable post-release object/node/resource counts. | 50 complete Home/flight cycles, 30-minute soak, complete platform/controller/hardware and pilot acceptance; remove legacy only afterward. |
+| SM-25 | Canonical authoring/onboarding and reproducible smoke tools updated. | Fresh-checkout onboarding and final consolidation after qualification. |
 
 ## 1. Outcome, scope and evidence
 
@@ -8,15 +25,15 @@ Evolve the existing GPU puff renderer into one reusable, bounded aircraft smoke 
 
 The intended result is convincing RC exhaust and expressive game effects: independent emitter colors, continuous or stepped palettes, pulses, broad clouds, narrow trails and unusual color combinations. Engine-derived effects must remain credible for the actual installation. Decorative effects must be clearly identified as show smoke. Neither is a smoke-fluid simulation.
 
-This plan is grounded in the working tree, including existing uncommitted work, at Git HEAD `51ad43579850b1890fc21e0f5559ef8e67976899`. HEAD alone does **not** identify the reviewed source. In particular, `main.gd`, customization bindings, Workshop files and smoke documentation are already modified; `stock_profile.gd` and `test_avanti_smoke.gd` are currently untracked. Preserve them. Capture a new source receipt before implementation or measurements.
+The original planning audit was grounded in the working tree, including existing uncommitted work, at Git HEAD `51ad43579850b1890fc21e0f5559ef8e67976899`. HEAD alone does **not** identify the reviewed source. That baseline already contained edits to `main.gd`, customization bindings, Workshop files and smoke documentation, plus untracked stock-profile work. The retained baseline source receipt identifies those bytes separately from the implementation and measurement receipts.
 
 Repository graph discovery was attempted first; the indexed graph did not cover the current smoke implementation. Current files were then inspected directly. The local executable reports **`4.7.2.stable.official.ed1daf0bf`** with `--version`. [The downloader](app/get-godot.sh) pins 4.7.2-stable and its Linux archive SHA-512. [Project settings](app/project.godot) select **`gl_compatibility`**, 1280×720 and 4× MSAA. Official 4.7 documentation and the 4.7.2 GLES3 source were checked; see the dated investigations in §10. Do not substitute Forward+ examples or silently upgrade Godot.
 
-This planning review inspected existing captures, code and recorded evidence; it did not run a new GPU benchmark, fleet qualification or physical emissions experiment. Every numerical acceptance target below is a requirement, not a claimed result. Existing screenshots show a readable thin flight trail and faint close exhaust, but still images cannot establish turbulence quality or frame pacing.
+The original planning review inspected existing captures, code and recorded evidence; implementation checks are recorded separately in the evidence linked above. Every numerical acceptance target below is a requirement, not a claimed result. Existing screenshots show a readable thin flight trail and faint close exhaust, but still images cannot establish turbulence quality or frame pacing.
 
 Keep [SMOKE.md](docs/SMOKE.md) authoritative for current behavior, [SMOKE-PLAN.md](docs/SMOKE-PLAN.md) for existing SM-00–15 acceptance, and [AIRCRAFT-WORKSHOP.md](docs/AIRCRAFT-WORKSHOP.md) for current editor behavior. This file owns the proposed overhaul sequence. SM-16 must register its link and new IDs in the [ownership registry](docs/README.md#tracks-plans-and-step-ids), coordinating edits with current owners; do not duplicate delivered-step status. When the overhaul finishes, consolidate its operating contract and evidence links into those guides and remove superseded planning material under the repository conventions.
 
-## 2. Current implementation: retain, repair, extend
+## 2. Baseline implementation audit: retain, repair, extend
 
 | Evidence in current code | What exists | Consequence for this plan |
 | --- | --- | --- |

@@ -12,15 +12,33 @@ The [official-source audit](price-audit.md) rechecks 21 Turbo Timber Evolution r
 
 The partial parts value remains **$465.87**. Four wing servos and two tail servos are counted once. Complete BNF/PNP packages are excluded from that parts sum. Fuselage, combined tail, main/tail gear, wiring/lights and labor retain unpriced scope where available listings do not establish complete coverage. This is not a full aircraft value or a complete repair quotation.
 
+The default finite-battery flight previously failed cost binding because its registered pack file has a different source hash from the base aircraft. The loader now accepts only the exact catalog-declared battery variant, checks its aircraft ID and complete priced physical signature, and records the actual flown hash. Changed inventory names, masses or contacts and unrelated source hashes remain rejected. This corrects economics availability without changing the battery model or physical data.
+
 ## Report
 
 Turbo Lumber terminal reports open with an affected-parts table: part, action, quantity and estimate. Known charges appear first; inspections say **Pending**, not zero. Cents remain visible in the headline. Product SKU, sold-package description, package price, observation date and source are frozen with each incident and shown separately as reference information. Saved historical composite reports retain both their original amount and their propeller-and-spinner label.
 
 Price assumptions and unresolved coverage follow the actionable rows. Spanish and large-text layouts retain visible actions and a scrollable parts list. Other aircraft keep their existing report layout. The shared catalog adds display provenance without changing monetary arithmetic.
 
+Valid inspection-only reports say **Inspection pending** and **No confirmed charges yet**, while failed valuations retain the unavailable state. This presentation does not turn unknown damage into a free repair or invent confirmed replacements.
+
 ## Evidence and reproduction
 
 The [manifest](manifest.json) records source hashes, retained checks and capture identities. [English report](cost-en/cost-report.png), [Spanish large-text report](cost-es-large/cost-report.png), and the [production crash report](crash/crash-cost-report.png) use the current generated catalog. Their JSON receipts preserve calculated amounts and view immutability checks.
+
+The English/Spanish fixtures exercise a confirmed blade strike through the incident ledger: $7.99 plus pending spinner, motor and fuselage inspections. The native default-pack crash exercises accepted hull contact instead: one pending propeller inspection, no confirmed charge, and no complete total. These are distinct evidence cases; visual wreck breakup alone does not establish a priced component replacement.
+
+| Verification | Result |
+| --- | --- |
+| Source generators and runtime catalog freshness | Current; 62 Python tests pass |
+| Catalog identity, physical signatures and registered pack | 84 checks pass |
+| Incident mapping, prices and archived provenance | 52 checks pass |
+| Calculator, package allocation and spinner salvage guard | 67 checks pass |
+| Repair details and frozen source metadata | 49 checks pass |
+| Production incident integration and read-only behavior | 78 checks pass |
+| Report layout, localization, historical values and pending states | 119 checks pass |
+
+The native crash receipt additionally requires a validated nonempty dossier, a successful report and at least one assessed part. Opening the report preserves the ledger and full physics snapshot. The [physics comparison](physics-comparison.json) checks exact equality against TT-21 at all six captured states, the final state/tick and the crash decision. Render timings and aftermath scheduling are outside this comparison. These are software regression checks, not physical validation.
 
 Use the pinned Godot executable and checked runner from [TOOLS](../../../TOOLS.md). Capture directories must be new.
 

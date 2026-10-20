@@ -1,0 +1,65 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "bb2f4b49-2060-418f-82e9-af74fab56f6d",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_smoke_aux.gd",
+    "--",
+    "--scenery=off",
+    "--soundscape=off",
+    "--birds=off"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:51:21.661629+00:00",
+  "label": "test_smoke_aux",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-overhaul-final-checks\\test_smoke_aux-yh3tr0m2\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-overhaul-final-checks\\test_smoke_aux-yh3tr0m2\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment.",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:223)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 11,
+      "message": "Ignoring invalid aux.smoke assignment; radio flight channels remain available.",
+      "context": [
+        "   at: push_warning (core/variant/variant_utility.cpp:1033)",
+        "   GDScript backtrace (most recent call first):",
+        "       [0] sanitize_profile (res://input/smoke_aux.gd:261)"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.485,
+  "log_bytes": 1023,
+  "log_sha256": "04003a7a680100f7689eac46a09770a8f6053de95a6438e2bb0cfd8cabba9482"
+}

@@ -1,0 +1,18 @@
+{
+	"crash": false,
+	"emitting_frames": 0,
+	"harness_sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915",
+	"holds": {},
+	"observed_frames_including_warmup": 4184,
+	"pause_reason": "",
+	"peak_capacity": 0,
+	"smoke": {
+		"allocation": {},
+		"disabled": true,
+		"mode": "stock",
+		"preset": "avanti-white-tailpipe-v2",
+		"requested": false,
+		"source_running": false
+	},
+	"unattended_focus_resumes": 1
+}

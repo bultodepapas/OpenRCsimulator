@@ -33,7 +33,7 @@ Use the same invocation for the relevant suites:
 | Immutable storage, bundle and reviewed copy | `test_workshop_store.gd`, `test_workshop_bundle.gd`, `test_workshop_profile_transfer.gd` |
 | AUX/controller and stock activity integration | `test_smoke_aux.gd`, `test_controller_aux_runtime.gd`, `test_controller_aux_setup.gd`, `test_engine_smoke.gd`, `test_avanti_smoke.gd` |
 
-Linux LF checkouts use `GODOT="$(app/get-godot.sh)"` and `"$GODOT" --headless --path app --audio-driver Dummy --script res://tests/<script>.gd`. The repository runner is `app/test.sh`; use focused checks while editing, then required full/package gates. Fixture names do not establish physical validation. Fractional presented-time/source alignment is under integration and needs its own frame-rate/native receipt.
+Linux LF checkouts use `GODOT="$(app/get-godot.sh)"` and `"$GODOT" --headless --path app --audio-driver Dummy --script res://tests/<script>.gd`. The repository runner is `app/test.sh`; use focused checks while editing, then required full/package gates. Fixture names do not establish physical validation. Fractional presented-time/source alignment is integrated and covered by focused scheduling and native projection checks; complete flight-camera qualification remains separate.
 
 ## Native stock/profile comparison
 
@@ -47,13 +47,29 @@ Use identical aircraft, flight/input/weather/camera and settings for smoke OFF, 
 
 These short commands are diagnostic examples, not the master plan's longer acceptance workload. Alternate repeated conditions on an idle host; reject focus-paused/nonadvancing runs. Retain frame intervals, nodes/objects, draw calls, adapter/API, allocation/resolved rates and source/config identities. Frame caps and observer overhead limit inferred effect cost. Four emitters and at most 768 particles do not alone establish acceptable fill/sorting cost or scene pacing.
 
+For unattended matched measurements, `benchmark_flight.gd` hosts the production flight activity with controller/key input disabled. It explicitly resumes bare focus-loss pauses while retaining crash/fault/hold guards; this behavior belongs only to the measurement tool. Its sidecar records actual emitter activity and those resumes. For example:
+
+```powershell
+python tools/godot/run_checked.py --label smoke-timing --timeout 115 -- .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/benchmark_flight.gd" -- --aircraft=sebart-avanti-s-a200-p100rx --start=airborne_half_power --alt=200 --view=chase --frametimes="$PWD/tmp/fresh-on.json" --warmup=10 --t=60 --smoke=on --smoke-pump=on --soundscape=off --scenery=off --birds=off --crash-effects=off --companions=0
+```
+
+Use fresh paths and repeat OFF/ON in balanced order. Require `complete=true`, no pause/fault/crash, simulation elapsed/wall elapsed within 0.99–1.01, and ON emission during at least 95% of observed frames. Keep the `.json.smoke.json` sidecar. A capped desktop result cannot isolate GPU milliseconds or qualify another device; worst-case four-emitter overlap and full scenery require separate runs.
+
+The native lifecycle extension exercises repeated configure/reset/play/stop/pause/expire/free with warm-baseline object/node/resource comparisons:
+
+```powershell
+python tools/godot/run_checked.py --label smoke-lifecycle --timeout 180 -- .tools/Godot_v4.7.2-stable_win64_console.exe --path app --rendering-driver opengl3 --audio-driver Dummy --script res://tests/test_smoke_renderer_v2.gd -- --native --lifecycle-cycles=50 --lifecycle-out="$PWD/tmp/fresh-smoke-cycles"
+```
+
+This reports actual measured duration and allocator/video counters, with representative reset/residual/pause/expiry images. Fifty accelerated cycles do not substitute for a 30-minute wall-time soak or OS process-memory measurement.
+
 For Avanti tailpipe views:
 
 ```powershell
 & '.tools/Godot_v4.7.2-stable_win64_console.exe' --path app --rendering-driver opengl3 --audio-driver Dummy --script "$PWD/tools/smoke/capture_avanti.gd" -- --out="$PWD/tmp/avanti-smoke-review" --soundscape=off --scenery=off --birds=off
 ```
 
-The harness captures the tailpipe, a trimmed flight trail and residuals after OFF. Record which profile/source revision it uses; historical Avanti captures do not qualify the new v2 allocation, motion or fractional timing. Explicit empty/all-disabled Workshop profiles must remain empty in Test fly. Source-bound show smoke additionally needs accepted source operation; independent show mounts have their own request policy.
+The harness captures the outlet, a trimmed flight trail and residuals after OFF. Add `--aircraft=<catalog-id>` for another stock installation; default is Avanti. The final frame is nine seconds after show OFF, so admitted show puffs have expired; ordinary exhaust may continue from its running engine. Record which profile/source revision it uses; historical Avanti captures do not qualify the new v2 allocation, motion or fractional timing. Explicit empty/all-disabled Workshop profiles must remain empty in Test fly. Source-bound show smoke additionally needs accepted source operation; independent show mounts have their own request policy.
 
 ## Retained legacy probes
 

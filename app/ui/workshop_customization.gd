@@ -21,6 +21,8 @@ var _palette_mode: OptionButton
 var _palette_buttons: Array[Button] = []
 var _copy_target: OptionButton
 var _copy_button: Button
+var _legacy_amount_row: HBoxContainer
+var _legacy_amount_value: Label
 var _marking_box: VBoxContainer
 var _marking_slot: OptionButton
 var _marking_text: LineEdit
@@ -29,6 +31,7 @@ var _fields: Dictionary = {}
 var _field_rows: Dictionary = {}
 var _controls: VBoxContainer
 var _note: Label
+var _legacy_amount_note: Label
 var _advanced: VBoxContainer
 var _advanced_button: Button
 var _syncing := false
@@ -129,7 +132,18 @@ func _ready() -> void:
 			_palette_buttons.append(action)
 		_controls.add_child(palette_actions)
 		number_field("step_s", "Step duration / palette period", 0.05, 8.0, 0.05, "s")
-		number_field("amount", "Legacy amount", 0.0, 1.0, 0.05, "×")
+		_legacy_amount_row = HBoxContainer.new()
+		_legacy_amount_row.name = "SmokeLegacyAmountRow"
+		_field_rows["amount"] = _legacy_amount_row
+		var legacy_amount_label := label("Legacy amount", _legacy_amount_row)
+		legacy_amount_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_legacy_amount_value = label("", _legacy_amount_row)
+		_legacy_amount_value.name = "SmokeLegacyAmountValue"
+		_controls.add_child(_legacy_amount_row)
+		_legacy_amount_row.visible = false
+		_legacy_amount_note = label("The v1 amount is shown for reference and is read-only. Edit density or emission rate to create a v2 draft; the saved v1 revision stays unchanged.", _controls)
+		_legacy_amount_note.name = "SmokeLegacyAmountNote"
+		_legacy_amount_note.visible = false
 		number_field("density", "Density", 0.0, 2.0, 0.05, "×")
 		number_field("emission_rate_hz", "Emission rate", 1.0, 240.0, 1.0, "puffs/s")
 		number_field("width_m", "Width", 0.01, 2.0, 0.01, "m")
@@ -167,7 +181,7 @@ func _build_advanced_group(color_row: Control) -> void:
 	_advanced.name = "SmokeMoreOptions"
 	_advanced.add_theme_constant_override("separation", 10)
 	_advanced.visible = false
-	var basic: Array = [_enabled, _color, color_row, _field_rows.amount, _field_rows.density,
+	var basic: Array = [_enabled, _color, color_row, _legacy_amount_row, _legacy_amount_note, _field_rows.density,
 		_field_rows.emission_rate_hz, _field_rows.width_m, _field_rows.lifetime_s, _shape]
 	for child: Node in _controls.get_children():
 		if child in basic or (child is Label and child.text == "Shape"): continue
@@ -336,11 +350,16 @@ func sync_fields() -> void:
 		_enabled.set_pressed_no_signal(entry.enabled)
 		_shape.select(["ribbon", "cloud", "fan"].find(entry.shape))
 		_mode.select(["hold", "burst", "pulse"].find(entry.mode))
+		var legacy_profile := int(_profile.get("version", Profile.VERSION)) == Profile.LEGACY_VERSION
+		var legacy_amount_present: bool = legacy_profile and _profile.get("smoke", []).any(
+			func(candidate: Dictionary) -> bool: return str(candidate.get("slot", "")) == str(entry.get("slot", "")) and candidate.has("amount"))
+		_legacy_amount_row.visible = legacy_amount_present
+		_legacy_amount_value.text = String.num(float(entry.get("amount", 0.0)), 2)
+		_legacy_amount_note.visible = legacy_amount_present
 		for key: String in _fields:
 			var values: Dictionary = display_entry if key != "amount" else entry
 			if values.has(key): _fields[key].set_value_no_signal(values[key])
-			var relevant: bool = (key != "amount" or int(_profile.get("version", Profile.VERSION)) == 1) \
-				and (key != "burst_s" or entry.mode == "burst") \
+			var relevant: bool = (key != "burst_s" or entry.mode == "burst") \
 				and (key not in ["pulse_period_s", "pulse_duty"] or entry.mode == "pulse") \
 				and (key not in ["step_s", "phase_offset_s"] or entry.palette.size() > 1)
 			_fields[key].editable = relevant
@@ -506,14 +525,12 @@ func _promote_v1_profile(profile: Dictionary) -> Dictionary:
 		return {"ok": false, "errors": checked.get("errors", PackedStringArray()), "report": migrated.get("report", {})}
 	return {"ok": true, "profile": checked.profile, "report": migrated.get("report", {})}
 
-func _show_migration_note(report: Variant) -> void:
-	var outlet_count := 0
-	if report is Dictionary:
-		outlet_count = report.get("outlets", []).size()
-	if outlet_count == 0:
-		_note.text = tr("Created a v2 draft from the empty legacy profile. No smoke remains enabled; the saved v1 revision is unchanged.")
-	else:
-		_note.text = tr("Created a v2 draft for %d smoke outlet(s). Outlet IDs and legacy amount were retained; review the new density and motion defaults. The saved v1 revision is unchanged.") % outlet_count
+func _show_migration_note() -> void:
+	var enabled_count := 0
+	for entry: Dictionary in _profile.get("smoke", []):
+		if bool(entry.get("enabled", false)):
+			enabled_count += 1
+	_note.text = tr("Created a v2 draft with %d enabled smoke outlet(s). Review density, rate, and motion before saving. The saved v1 revision is unchanged; v2 makes no claim of visual equivalence.") % enabled_count
 
 func commit_entry(entry: Dictionary) -> bool:
 	var next := _profile.duplicate(true)
@@ -551,7 +568,7 @@ func commit_entry(entry: Dictionary) -> bool:
 	entries.append(entry)
 	next[key] = entries
 	if not propose(next): return false
-	if not migration_report.is_empty(): _show_migration_note(migration_report)
+	if not migration_report.is_empty(): _show_migration_note()
 	return true
 
 func copy_settings_to_target() -> bool:
@@ -696,7 +713,7 @@ func apply_preset(index: int) -> void:
 		if slot.kind == "show" and slot.get("role", "") in ["wing_tip_left", "wing_tip_right", "tail"]: shows.append(slot)
 		elif slot.kind == "source": sources.append(slot)
 	if index == 1:
-		if propose(next) and not migration_report.is_empty(): _show_migration_note(migration_report)
+		if propose(next) and not migration_report.is_empty(): _show_migration_note()
 		return
 	var selected: Array = sources if index == 6 else shows
 	if index == 6 and selected.size() > 1:
@@ -738,7 +755,7 @@ func apply_preset(index: int) -> void:
 		_error.text = tr("This preset needs registered emitters that this model does not provide.")
 		return
 	if not propose(next): return
-	if not migration_report.is_empty(): _show_migration_note(migration_report)
+	if not migration_report.is_empty(): _show_migration_note()
 	if not _profile.smoke.is_empty():
 		var first_slot := str(_profile.smoke[0].slot)
 		for item in _slot.item_count:

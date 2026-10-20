@@ -727,7 +727,7 @@ clock, pilot, guidance, controller, index, avoidance and world-state scripts;
 | ID | Concrete work | Proof / status |
 | --- | --- | --- |
 | AFC-03 | Compose manager/agent nodes and one session per agent; keep clock ownership explicit. Implement initial airborne join slots, ID/generation lifecycle, visibility-safe admission, common weather-time origin and the player-authored scenery-mask bridge. | Partial: manager/agent nodes, fixed launch slots, common snapshots, scenery-mask bridge; 47 manager checks, 653 lifecycle checks, and one 20-minute headless flight after 50 lifecycle cycles (10 visual/audio) in AFC-03-R1. Hot admission, generation reuse and nonzero-time weather joins remain open. |
-| AFC-04 | Implement guidance/controller/pilot for straight flight, bank-limited turns, circuit/hold, energy guard and recovery. Add traffic index and conservative player/AI avoidance from the first playable version. | Partial: float64 circle guidance and closest-approach response; 24 pilot checks, 191 independent prediction/selection checks and a strongest-threat vertical-demand repair in [AFC-04-R1](docs/research/ai-companions/AFC-04-R1/README.md). The 148-check circuit matrix was rerun with byte-identical CSVs; the earlier full-world 120 s production run also covers separated circuits. All six moving encounters miss 30 m and two cause terrain crashes; reachable avoidance, recovery and phase endurance gates remain open. |
+| AFC-04 | Implement guidance/controller/pilot for straight flight, bank-limited turns, circuit/hold, energy guard and recovery. Add traffic index and conservative player/AI avoidance from the first playable version. | Partial: float64 circle guidance and closest-approach response; strongest-threat selection repaired in [R1](docs/research/ai-companions/AFC-04-R1/README.md), conflicting descent/recovery targets repaired in [R2](docs/research/ai-companions/AFC-04-R2/README.md). R2 passes 318 focused checks and the 148-check circuit matrix with byte-identical CSVs. All seven surveyed encounters complete 60 s without crashes, but all six moving intercepts still miss 30 m; the two repaired crossings worsen to 4.13/3.86 m. Reachable avoidance, general recovery and phase endurance gates remain open. |
 | AFC-05 | Bind aircraft views through the real builder and float64 render boundary. Add limited spatial engine sources, pilot-camera preservation, optional labels and crash/fault cleanup fallback. | Partial: existing model builder, CG/render boundary, bounded engine voice and fault/crash freeze; native captures and 10 visual/audio lifecycle cycles retained. Labels, full crash presentation and target-renderer qualification remain open. |
 | AFC-06 | Add minimal Home/Pause controls: enabled, count, circuits, skill restricted to Experienced, seed, recall/remove. Persist only supported settings. Add explicit CLI `--companions=<0..3>` and `--companions-seed=<u32>` for deterministic developer launches; defaults remain Off. | Partial: default-Off Home/Pause settings, 1–3 count, seed, persistence, restart apply, Remove now and CLI. Dialog/shell tests pass; recall, hot edits, translations and complete keyboard/controller review remain open. |
 
@@ -748,15 +748,17 @@ profile and solver-fault isolation; selected existing UI, field and log regressi
 
 ### Phase 2 — Runway life and complete sorties
 
-**Entry blocker found in AFC-04-R1:** finish moving-encounter recovery before
-implementing this phase. Record the two failing crossing fixtures, including an
-exogenous player tape that survives AI termination; diagnose the altitude and
-rate-control response without changing aircraft physics. Evaluate bank/climb
+**Entry blocker, updated by AFC-04-R2:** finish reachable moving-encounter avoidance
+and recovery before implementing this phase. The two failing crossing tapes,
+full-duration exogenous player tapes, exact replays and bounded altitude-target
+repair are retained in [R2](docs/research/ai-companions/AFC-04-R2/README.md).
+That repair removes the two terrain crashes through 60 s but worsens their
+separation, so it does not close encounter qualification. Next evaluate bank/climb
 responses against every threat and terrain, add the planned reaction margin and
-maneuver hold/release policy, and test recovery with traffic overhead. Retain
-baseline tapes, exact replay and closed-loop comparison for each candidate.
-Require crash-free post-encounter recovery, explicit separation results and the
-existing circuit matrix before qualifying encounter recovery. The short
+maneuver hold/release policy, and test low-clearance recovery with traffic overhead.
+Retain baseline tapes, exact replay and closed-loop comparison for each candidate.
+Require crash-free post-encounter recovery, passing separation results and the
+existing circuit matrix before qualifying encounter avoidance. The 60-second
 survey does not close the multi-seed endurance or performance gates.
 
 **Outcome:** companions taxi, take off, join, land, vacate and repeat while other

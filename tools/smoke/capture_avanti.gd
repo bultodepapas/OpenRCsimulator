@@ -1,4 +1,4 @@
-## Native smoke review: actual Avanti flight, eight 240 Hz ticks per rendered frame.
+## Native stock smoke review: actual flight, eight 240 Hz ticks per rendered frame.
 extends SceneTree
 
 const World := preload("res://render/world/world.gd")
@@ -33,7 +33,7 @@ func _run() -> void:
 	flight.set_user_args(PackedStringArray(["--soundscape=off", "--scenery=off", "--birds=off", "--companions=0"]))
 	root.add_child(flight)
 	if flight._profile_smoke == null or not flight.startup_error.is_empty():
-		printerr("Avanti smoke unavailable: ", flight.startup_error)
+		printerr("Stock smoke unavailable for ", aircraft_id, ": ", flight.startup_error)
 		quit(1)
 		return
 	flight.set_process(false)
@@ -56,10 +56,11 @@ func _run() -> void:
 	flight._smoke_key_on = false
 	for frame in 15: await _frame()
 	await _capture("off-residual", false)
-	for frame in 90: await _frame()
+	# All admitted show lifetimes expire. Ordinary engine exhaust may continue.
+	for frame in 255: await _frame()
 	await _capture("off-expired", false)
 	var report := {aircraft_id = aircraft_id, engine = Engine.get_version_info(), renderer = RenderingServer.get_video_adapter_name(),
-		scope = "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted.",
+		scope = "Actual 240 Hz trimmed flight, presented at 30 Hz; camera framing only is scripted. OFF expires requested show smoke; ordinary exhaust still follows its running engine.",
 		tick = flight.session.sim.tick, fault = flight.session.sim.fault_reason,
 		crash = flight.session.crash, smoke_on = on_evidence, smoke = flight._smoke_evidence(),
 		source_sha256 = {}, captures_sha256 = {}}
@@ -70,7 +71,7 @@ func _run() -> void:
 		report.captures_sha256[label + ".png"] = FileAccess.get_sha256(out.path_join(label + ".png"))
 	var file := FileAccess.open(out.path_join("capture.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "\t"))
-	print("Avanti smoke capture complete: ", out)
+	print("Stock smoke capture complete: ", out)
 	var result := 0 if flight.session.sim.fault_reason.is_empty() and flight.session.crash.is_empty() else 1
 	flight.queue_free()
 	await process_frame

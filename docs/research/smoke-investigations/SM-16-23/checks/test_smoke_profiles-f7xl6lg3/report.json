@@ -1,0 +1,42 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "d6c4465f-a424-4721-8183-9e1a14db1c60",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_smoke_profiles.gd",
+    "--",
+    "--scenery=off",
+    "--soundscape=off",
+    "--birds=off"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T21:51:33.953555+00:00",
+  "label": "test_smoke_profiles",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-overhaul-final-checks\\test_smoke_profiles-f7xl6lg3\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\smoke-overhaul-final-checks\\test_smoke_profiles-f7xl6lg3\\report.json",
+  "timeout_seconds": 120.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.406,
+  "log_bytes": 113,
+  "log_sha256": "53253313f09b0147e5890b45ccaf610ac58a59e18c28cb6927b63dc2b403b2a2"
+}

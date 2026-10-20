@@ -142,6 +142,29 @@ func _timber_parts_behavior() -> void:
 	view.controller_action("details")
 	_check("historical composite keeps its spinner label and frozen charge", _details_text(view).contains("Propeller and spinner")
 		and _details_text(view).contains("US$16.98") and not _details_text(view).contains("Three-blade propeller"))
+	var pending := source.duplicate(true)
+	pending.ok = true
+	pending.lines = [source.lines[0].duplicate(true)]
+	pending.known_subtotal_minor = 0
+	pending.low_minor = 0
+	var pending_before := JSON.stringify(pending)
+	view.show_assessment(pending, true)
+	await _ui.settle()
+	_check("valid Timber inspection names the next step instead of unavailable cost",
+		view.find_child("ReportAmount", true, false).text == "Inspection pending"
+		and _details_text(view).contains("No confirmed charges yet.") and not _details_text(view).contains("US$0.00"))
+	_check("pending inspection presentation preserves all report amounts", JSON.stringify(pending) == pending_before
+		and JSON.stringify(view._report) == pending_before)
+	TranslationServer.set_locale("es")
+	await _ui.settle()
+	_check("pending Timber headline and no-charge explanation translate", view.find_child("ReportAmount", true, false).text == "Inspección pendiente"
+		and _details_text(view).contains("Aún no hay costes confirmados."))
+	_check_live_panel_bounds(view, "Timber pending inspection in Spanish")
+	TranslationServer.set_locale("en")
+	pending.ok = false
+	view.show_assessment(pending, true)
+	_check("failed valuation cannot masquerade as a valid pending inspection",
+		view.find_child("ReportAmount", true, false).text == "Cost unavailable")
 	view.queue_free()
 	await _ui.settle()
 

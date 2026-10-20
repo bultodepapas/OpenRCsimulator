@@ -163,14 +163,60 @@ func _run() -> void:
 		page.configure(bindings, legacy_checked.profile)
 		_select_slot(page, str(show_slots[0].id))
 		var default_density := float(Presentation.smoke_v2_defaults().density)
+		var legacy_amount := page.find_child("SmokeLegacyAmountValue", true, false) as Label
+		var legacy_amount_note := page.find_child("SmokeLegacyAmountNote", true, false) as Label
+		var original_amount := float(_entry_for(legacy_checked.profile, str(show_slots[0].id)).amount)
 		_check("untouched v1 profile stays v1 while controls show normalized v2 defaults",
 			int(page.get("_profile").version) == Presentation.LEGACY_VERSION
 			and is_equal_approx(float(page.find_child("SmokeDensity", true, false).value), default_density))
+		_check("v1 legacy amount is visible as read-only historical data",
+			is_instance_valid(legacy_amount) and is_equal_approx(float(legacy_amount.text), original_amount)
+			and is_instance_valid(legacy_amount_note) and legacy_amount_note.visible
+			and legacy_amount_note.text.contains("read-only")
+			and legacy_amount_note.text.contains("density or emission rate")
+			and not page.get("_fields").has("amount"))
 		page.call("change", "density", 1.1)
 		_check("first explicit smoke edit proposes v2 and preserves the original v1 snapshot",
 			int(page.get("_profile").version) == Presentation.VERSION
 			and is_equal_approx(float(page.call("current_entry").density), 1.1)
 			and untouched_snapshot == legacy_checked.profile)
+		_check("v2 promotion hides the read-only legacy amount control",
+			not page.get("_field_rows").amount.visible and not legacy_amount_note.visible)
+
+		page.configure(bindings, legacy_checked.profile)
+		page.call("apply_preset", 1)
+		var cleared_v1_note := str(page.get("_note").text)
+		_check("clearing populated v1 smoke describes the empty v2 draft accurately",
+			int(page.get("_profile").version) == Presentation.VERSION
+			and page.get("_profile").smoke.is_empty()
+			and cleared_v1_note.contains("0 enabled smoke outlet(s)")
+			and cleared_v1_note.contains("saved v1 revision is unchanged")
+			and cleared_v1_note.contains("no claim of visual equivalence")
+			and not cleared_v1_note.contains("legacy amount were retained"))
+
+		var empty_legacy: Dictionary = legacy_checked.profile.duplicate(true)
+		empty_legacy.smoke = []
+		var empty_legacy_checked: Dictionary = Presentation.validate(empty_legacy, bindings)
+		_check("empty v1 fixture validates", bool(empty_legacy_checked.get("ok", false)),
+			str(empty_legacy_checked.get("errors", [])))
+		if bool(empty_legacy_checked.get("ok", false)):
+			var empty_v1_snapshot: Dictionary = empty_legacy_checked.profile.duplicate(true)
+			page.configure(bindings, empty_legacy_checked.profile)
+			_select_slot(page, str(show_slots[0].id))
+			_check("empty v1 profile does not invent a legacy amount value",
+				not page.get("_field_rows").amount.visible and not legacy_amount_note.visible)
+			page.call("change", "enabled", true)
+			var enabled_v1_note := str(page.get("_note").text)
+			_check("enabling an outlet from empty v1 reports the enabled v2 draft",
+				int(page.get("_profile").version) == Presentation.VERSION
+				and _entry_for(page.get("_profile"), str(show_slots[0].id)).enabled
+				and enabled_v1_note.contains("1 enabled smoke outlet(s)")
+				and enabled_v1_note.contains("saved v1 revision is unchanged")
+				and enabled_v1_note.contains("no claim of visual equivalence")
+				and empty_v1_snapshot == empty_legacy_checked.profile)
+		else:
+			_check("empty v1 migration fixture is available", false,
+				str(empty_legacy_checked.get("errors", [])))
 	else:
 		_check("legacy profile migration fixture is available", false, str(legacy_checked.get("errors", [])))
 

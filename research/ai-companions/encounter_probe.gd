@@ -18,7 +18,8 @@ const TICKS_PER_SECOND := 240
 const PLAN_INTERVAL_TICKS := 4
 const TRAJECTORY_INTERVAL_TICKS := 24
 const DEFAULT_SECONDS := 12
-const MAX_SECONDS := 20
+const MAX_RECORDED_SECONDS := 20
+const MAX_UNRECORDED_SECONDS := 60
 const NOMINAL_INTERCEPT_SECONDS := 6.0
 const SEPARATION_GATE_M := 30.0
 const SEEDS := [20261020, 20261021]
@@ -30,12 +31,17 @@ const ROUTE_BASE_HEIGHT_AGL_M := 35.0
 const ROUTE_HEIGHT_BAND_M := 20.0
 const WINGSPAN_M := 1.7
 
-const CSV_HEADER := "case,seed,circuit_direction,tick,time_s,role,north_m,east_m,altitude_m,agl_m,roll,pitch,yaw,throttle,avoidance_active,distance_to_ai_m"
+const CSV_HEADER := "case,seed,circuit_direction,tick,time_s,role,north_m,east_m,altitude_m,agl_m,roll,pitch,yaw,throttle,avoidance_active,distance_to_ai_m,target_height_m,recovering_clearance,pitch_rad,bank_rad,q_radps"
 
 var _output_dir := ""
 var _pilot_path := PilotDefaultPath
 var _pilot_script: Script
 var _seconds := DEFAULT_SECONDS
+var _record_crossings := false
+var _record_none := false
+var _pilot_sha256 := ""
+var _probe_resource := ""
+var _probe_sha256 := ""
 var _field: Dictionary = {}
 var _lake: Dictionary = {}
 var _collision_world: Dictionary = {}
@@ -49,25 +55,38 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var parse_only := false
+	var seconds_seen := false
 	for argument: String in OS.get_cmdline_user_args():
 		if argument == "--parse-only":
 			parse_only = true
+		elif argument == "--record-crossings":
+			_record_crossings = true
+		elif argument == "--record-none":
+			_record_none = true
 		elif argument.begins_with("--out="):
 			_output_dir = argument.trim_prefix("--out=")
 		elif argument.begins_with("--pilot="):
 			_pilot_path = argument.trim_prefix("--pilot=")
 		elif argument.begins_with("--seconds="):
-			var parsed_seconds: Variant = argument.trim_prefix("--seconds=").to_int()
-			_seconds = int(parsed_seconds)
+			var raw_seconds: String = argument.trim_prefix("--seconds=")
+			if seconds_seen or not raw_seconds.is_valid_int():
+				_fail("--seconds must be supplied once as an exact integer.", 2)
+				return
+			seconds_seen = true
+			_seconds = raw_seconds.to_int()
 	if parse_only:
 		print("COMPANION ENCOUNTER SURVEY PARSE OK")
 		quit(0)
 		return
+	if _record_crossings and _record_none:
+		_fail("--record-crossings and --record-none cannot be combined.", 2)
+		return
 	if _output_dir.is_empty() or not _output_dir.is_absolute_path():
 		_fail("Supply --out=<new absolute directory>.", 2)
 		return
-	if _seconds < 1 or _seconds > MAX_SECONDS:
-		_fail("--seconds must be an integer from 1 to %d." % MAX_SECONDS, 2)
+	var max_seconds: int = MAX_UNRECORDED_SECONDS if _record_none else MAX_RECORDED_SECONDS
+	if _seconds < 1 or _seconds > max_seconds:
+		_fail("--seconds must be an integer from 1 to %d in this recording mode." % max_seconds, 2)
 		return
 	if _pilot_path.is_empty() or not _pilot_path.begins_with("res://"):
 		_fail("--pilot must be a Godot res:// script path.", 2)
@@ -98,22 +117,55 @@ func _run() -> void:
 	if not _pilot_script.can_instantiate():
 		_fail("Pilot script cannot be instantiated: %s" % _pilot_path)
 		return
+	var probe_script: Script = get_script() as Script
+	_probe_resource = probe_script.resource_path
+	var probe_source_path: String = ProjectSettings.globalize_path(_probe_resource)
+	_pilot_sha256 = FileAccess.get_sha256(ProjectSettings.globalize_path(_pilot_path))
+	_probe_sha256 = FileAccess.get_sha256(probe_source_path)
+	if _pilot_sha256.length() != 64 or _probe_sha256.length() != 64:
+		_fail("Pilot or probe source hash could not be captured before the survey.")
+		return
 	var make_dir_error: Error = DirAccess.make_dir_absolute(_output_dir)
 	if make_dir_error != OK or not DirAccess.dir_exists_absolute(_output_dir):
 		_fail("Could not create new survey directory (%d)." % make_dir_error)
 		return
 
 	var case_results: Array[Dictionary] = []
-	for seed_value: int in SEEDS:
-		for geometry: String in ["head-on", "crossing-left", "crossing-right"]:
-			case_results.append(_run_encounter(seed_value, geometry, false, true))
-	# This seventh fixture targets traffic-order replacement of a weaker player threat by a stronger peer.
-	# It is deliberately constructed at launch and is not a production spawn-admission scenario.
-	var fixture: Dictionary = _run_encounter(SEEDS[0], "parallel-two-threats", true, true)
-	case_results.append(fixture)
-	var repeat: Dictionary = _run_encounter(SEEDS[0], "parallel-two-threats", false, false)
-	var repeat_exact: bool = bool(fixture.get("valid_run", false)) and bool(repeat.get("valid_run", false)) \
-		and str(fixture.get("state_command_sha256", "")) == str(repeat.get("state_command_sha256", ""))
+	var repeat_case := "parallel-two-threats"
+	var repeat_seed := SEEDS[0]
+	var repeat_geometry := "parallel-two-threats"
+	var repeat_source: Dictionary = {}
+	if _record_crossings:
+		# These two crossings reproduced the earlier crash findings. The independent player
+		# sessions reuse the coupled player's exact tick-zero spawn spec and run to full duration.
+		for case_spec: Dictionary in [
+			{"seed": SEEDS[0], "geometry": "crossing-right"},
+			{"seed": SEEDS[1], "geometry": "crossing-left"},
+		]:
+			var seed_value: int = int(case_spec.seed)
+			var geometry: String = str(case_spec.geometry)
+			var case_id := "seed-%d-%s" % [seed_value, geometry]
+			var result: Dictionary = _run_encounter(seed_value, geometry, true, true, case_id)
+			var spawn_spec: Dictionary = result.get("player_initial_spawn_spec", {})
+			var exogenous: Dictionary = _run_exogenous_player(case_id, seed_value, spawn_spec, true)
+			result["exogenous_player"] = exogenous
+			case_results.append(result)
+		repeat_case = "crossing-right"
+		repeat_seed = SEEDS[0]
+		repeat_geometry = "crossing-right"
+		repeat_source = case_results[0]
+	else:
+		for seed_value: int in SEEDS:
+			for geometry: String in ["head-on", "crossing-left", "crossing-right"]:
+				case_results.append(_run_encounter(seed_value, geometry, false, true))
+		# This seventh fixture targets traffic-order replacement of a weaker player threat by a stronger peer.
+		# It is deliberately constructed at launch and is not a production spawn-admission scenario.
+		var fixture: Dictionary = _run_encounter(SEEDS[0], "parallel-two-threats", not _record_none, true)
+		case_results.append(fixture)
+		repeat_source = fixture
+	var repeat: Dictionary = _run_encounter(repeat_seed, repeat_geometry, false, false)
+	var repeat_exact: bool = bool(repeat_source.get("valid_run", false)) and bool(repeat.get("valid_run", false)) \
+		and str(repeat_source.get("state_command_sha256", "")) == str(repeat.get("state_command_sha256", ""))
 
 	var all_valid := true
 	var all_separation_gates := true
@@ -123,42 +175,56 @@ func _run() -> void:
 		all_separation_gates = all_separation_gates and bool(result.get("separation_gate_passed", false))
 		if not bool(result.get("valid_run", false)):
 			failed_cases.append(str(result.get("case", "unknown")))
+		var exogenous_value: Variant = result.get("exogenous_player", null)
+		if typeof(exogenous_value) == TYPE_DICTIONARY:
+			var exogenous: Dictionary = exogenous_value
+			all_valid = all_valid and bool(exogenous.get("valid_run", false))
+			if not bool(exogenous.get("valid_run", false)):
+				failed_cases.append(str(result.get("case_id", "unknown")) + "-exogenous-player")
 	var csv_text := "\n".join(_trajectory_rows) + "\n"
 	var csv_path: String = _output_dir.path_join("trajectory.csv")
 	var csv_write: Dictionary = _write_verified_text(csv_path, csv_text)
 	var csv_hash: String = str(csv_write.get("sha256", "")) if csv_write.get("ok", false) else ""
-	var probe_script: Script = get_script() as Script
-	var probe_source_path: String = ProjectSettings.globalize_path(probe_script.resource_path)
+	var captured_logs: Dictionary = {}
+	for result: Dictionary in case_results:
+		var case_logs: Dictionary = result.get("flight_logs", {})
+		if not case_logs.is_empty():
+			captured_logs[str(result.get("case_id", "unknown"))] = case_logs
+		var exogenous_result: Dictionary = result.get("exogenous_player", {})
+		var exogenous_logs: Dictionary = exogenous_result.get("flight_logs", {})
+		if not exogenous_logs.is_empty():
+			captured_logs[str(result.get("case_id", "unknown")) + "-exogenous"] = exogenous_logs
 	var report := {
 		"format": "openrc-companion-encounter-survey v1",
 		"title": "Companion Encounter Survey" if all_separation_gates else "Companion Encounter Survey — geometry gate miss; not a qualification",
 		"purpose": "Survey of actual fixed-step FlightSession encounters; not qualification or physical validation.",
 		"qualification_claimed": false,
 		"classification": "survey_only" if not all_separation_gates else "encounter_survey",
-		"scope": "Six nominal route-intercept geometries plus one constructed two-threat initial-conflict fixture. The fixture is not an admitted production spawn. Intruder motion comes from real controllerless FlightSessions at solved trim.",
+		"scope": "Two selected nominal crossing geometries with coupled and independent full-duration trim-neutral player sessions." if _record_crossings else "Six nominal route-intercept geometries plus one constructed two-threat initial-conflict fixture. The fixture is not an admitted production spawn. Intruder motion comes from real controllerless FlightSessions at solved trim.",
 		"geometry_note": "The six intruders are placed to meet the nominal circular route at 6 s from initial_pose and the field-derived circuit radius. Actual trimmed trajectories may miss that intercept.",
 		"engine": Engine.get_version_info().string,
 		"physics_hz": TICKS_PER_SECOND,
 		"ai_planning_hz": TICKS_PER_SECOND / PLAN_INTERVAL_TICKS,
 		"seconds": _seconds,
 		"requested_ticks": _seconds * TICKS_PER_SECOND,
+		"recording_mode": "crossings" if _record_crossings else ("none" if _record_none else "default_fixture"),
 		"weather": "calm",
 		"field_id": str(_field.get("id", "")),
 		"collision_identity": str(_collision_world.get("identity", "")),
 		"lake_identity": str(_lake.get("identity", "")),
 		"pilot_resource": _pilot_path,
-		"pilot_source_sha256": FileAccess.get_sha256(ProjectSettings.globalize_path(_pilot_path)),
-		"probe_resource": probe_script.resource_path,
-		"probe_source_sha256": FileAccess.get_sha256(probe_source_path),
+		"pilot_source_sha256": _pilot_sha256,
+		"probe_resource": _probe_resource,
+		"probe_source_sha256": _probe_sha256,
 		"aircraft_id": STIK_ID,
 		"separation_gate_m": SEPARATION_GATE_M,
 		"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m; peer distances are reported separately",
 		"separation_gate_passed_for_all_cases": all_separation_gates,
 		"valid_complete_runs": all_valid,
 		"deterministic_repeat": {
-			"case": "parallel-two-threats",
+			"case": repeat_case,
 			"repeat_complete": bool(repeat.get("complete", false)),
-			"first_sha256": str(fixture.get("state_command_sha256", "")),
+			"first_sha256": str(repeat_source.get("state_command_sha256", "")),
 			"repeat_sha256": str(repeat.get("state_command_sha256", "")),
 			"exact_state_command_match": repeat_exact,
 			"repeat_run": repeat,
@@ -169,7 +235,8 @@ func _run() -> void:
 		"artifacts": {
 			"trajectory_csv": {"path": csv_path, "sha256": csv_hash, "bytes": csv_text.to_utf8_buffer().size(),
 				"write_verified": bool(csv_write.get("ok", false)), "write_error": str(csv_write.get("error", ""))},
-			"first_recorded_scenario": "parallel-two-threats",
+			"first_recorded_scenario": "selected-crossings" if _record_crossings else ("none" if _record_none else "parallel-two-threats"),
+			"recorded_logs": captured_logs,
 		},
 	}
 	var report_text: String = JSON.stringify(report, "\t") + "\n"
@@ -180,7 +247,7 @@ func _run() -> void:
 		printerr("Report write could not be verified: %s" % str(report_write.get("error", "unknown")))
 		quit(1)
 		return
-	print("COMPANION ENCOUNTER SURVEY LOGS %s" % JSON.stringify(fixture.get("flight_logs", {})))
+	print("COMPANION ENCOUNTER SURVEY LOGS %s" % JSON.stringify(captured_logs))
 	print("COMPANION ENCOUNTER SURVEY VALID_RUNS %s DETERMINISTIC_REPEAT %s SEPARATION_GATES %s" % [
 		str(all_valid), str(repeat_exact), str(all_separation_gates)])
 	if not all_valid or not repeat_exact or not csv_write.get("ok", false):
@@ -191,7 +258,8 @@ func _run() -> void:
 	quit(0)
 
 
-func _run_encounter(seed_value: int, geometry: String, record_logs: bool, write_trajectory: bool) -> Dictionary:
+func _run_encounter(seed_value: int, geometry: String, record_logs: bool, write_trajectory: bool,
+		log_prefix := "") -> Dictionary:
 	var case_name := "seed-%d-%s" % [seed_value, geometry]
 	var pilot: Variant = _pilot_script.new()
 	if pilot == null or not pilot.has_method("configure") or not pilot.has_method("initial_pose") or not pilot.has_method("command"):
@@ -220,6 +288,7 @@ func _run_encounter(seed_value: int, geometry: String, record_logs: bool, write_
 
 	var roles: Array = [{"name": "ai", "session": ai}]
 	var intruder_specs: Array = []
+	var player_spawn_spec: Dictionary = {}
 	if geometry == "parallel-two-threats":
 		var heading: float = float(pose.heading_rad)
 		var right_north: float = -sin(heading)
@@ -235,19 +304,27 @@ func _run_encounter(seed_value: int, geometry: String, record_logs: bool, write_
 			"east": float(route.intruder_east), "altitude_m": float(pose.height_m),
 			"heading_rad": float(route.intruder_heading_rad)}]
 	for spec: Dictionary in intruder_specs:
+		var spawn_spec := {"north": float(spec.north), "east": float(spec.east),
+			"altitude_m": float(spec.altitude_m), "heading_rad": float(spec.heading_rad)}
 		var build: Dictionary = _new_session()
 		if not build.get("ok", false):
 			_free_roles(roles)
 			return _invalid_setup_result(case_name, seed_value, geometry, str(build.get("error", "Intruder setup failed.")))
 		var intruder: Node = build.session
-		if not _spawn_session(intruder, float(spec.north), float(spec.east), float(spec.altitude_m), float(spec.heading_rad)):
+		if not _spawn_session(intruder, float(spawn_spec.north), float(spawn_spec.east),
+				float(spawn_spec.altitude_m), float(spawn_spec.heading_rad)):
 			intruder.free()
 			_free_roles(roles)
 			return _invalid_setup_result(case_name, seed_value, geometry, "Trim-neutral intruder reset-boundary spawn failed: %s" % str(spec.name))
 		roles.append({"name": str(spec.name), "session": intruder})
+		if str(spec.name) == "player":
+			player_spawn_spec = spawn_spec.duplicate(true)
 
-	var result := _run_sessions(case_name, seed_value, geometry, route, pose, pilot, roles, record_logs, write_trajectory)
+	var result := _run_sessions(case_name, seed_value, geometry, route, pose, pilot, roles,
+		record_logs, write_trajectory, log_prefix)
 	_free_roles(roles)
+	if not player_spawn_spec.is_empty():
+		result["player_initial_spawn_spec"] = player_spawn_spec
 	return result
 
 
@@ -358,7 +435,7 @@ func _route_geometry(seed_value: int, geometry: String, pose: Dictionary, trim: 
 
 
 func _run_sessions(case_name: String, seed_value: int, geometry: String, route: Dictionary, pose: Dictionary,
-		pilot: Variant, roles: Array, record_logs: bool, write_trajectory: bool) -> Dictionary:
+		pilot: Variant, roles: Array, record_logs: bool, write_trajectory: bool, log_prefix := "") -> Dictionary:
 	var ticks_requested: int = _seconds * TICKS_PER_SECOND
 	var loggers: Dictionary = {}
 	var log_artifacts: Dictionary = {}
@@ -367,7 +444,9 @@ func _run_sessions(case_name: String, seed_value: int, geometry: String, route: 
 		for role: Dictionary in roles:
 			var name: String = str(role.name)
 			var logger: RefCounted = FlightLog.new(role.session)
-			var path: String = _output_dir.path_join("parallel-two-threats-%s.orfl" % name)
+			var suffix: String = "player-coupled" if not log_prefix.is_empty() and name == "player" else name
+			var filename: String = "%s-%s.orfl" % [log_prefix, suffix] if not log_prefix.is_empty() else "parallel-two-threats-%s.orfl" % name
+			var path: String = _output_dir.path_join(filename)
 			var start_error: Error = logger.start(path)
 			if start_error != OK:
 				failure_reason = "FlightLog start failed for %s (%d): %s" % [name, start_error, logger.failure]
@@ -456,7 +535,7 @@ func _run_sessions(case_name: String, seed_value: int, geometry: String, route: 
 			break
 		if write_trajectory and tick == 0:
 			_append_trajectory(case_name, seed_value, str(route.circuit_direction), 0, roles,
-				held_ai_controls, bool(held_ai_packet.get("avoidance_active", false)))
+				held_ai_controls, bool(held_ai_packet.get("avoidance_active", false)), held_ai_packet)
 
 		var all_advanced := true
 		for role: Dictionary in roles:
@@ -489,7 +568,7 @@ func _run_sessions(case_name: String, seed_value: int, geometry: String, route: 
 		min_to_peer = minf(min_to_peer, _minimum_to_role(roles, "peer"))
 		if write_trajectory and (tick + 1) % TRAJECTORY_INTERVAL_TICKS == 0:
 			_append_trajectory(case_name, seed_value, str(route.circuit_direction), tick + 1, roles,
-				held_ai_controls, bool(held_ai_packet.get("avoidance_active", false)))
+				held_ai_controls, bool(held_ai_packet.get("avoidance_active", false)), held_ai_packet)
 		for role: Dictionary in roles:
 			var session: Node = role.session
 			if not session.crash.is_empty():
@@ -593,6 +672,116 @@ func _run_sessions(case_name: String, seed_value: int, geometry: String, route: 
 	return case_result
 
 
+func _run_exogenous_player(case_name: String, seed_value: int, spawn_spec: Dictionary,
+		record_logs: bool) -> Dictionary:
+	var ticks_requested: int = _seconds * TICKS_PER_SECOND
+	if spawn_spec.is_empty():
+		return {"case_id": case_name, "complete": false, "valid_run": false, "ticks": 0,
+			"requested_ticks": ticks_requested, "failure_reason": "Coupled player spawn spec was unavailable.",
+			"flight_logs": {}}
+	var build: Dictionary = _new_session()
+	if not build.get("ok", false):
+		return {"case_id": case_name, "complete": false, "valid_run": false, "ticks": 0,
+			"requested_ticks": ticks_requested, "failure_reason": str(build.get("error", "Exogenous player setup failed.")),
+			"flight_logs": {}}
+	var player: Node = build.session
+	if not _spawn_session(player, float(spawn_spec.north), float(spawn_spec.east),
+			float(spawn_spec.altitude_m), float(spawn_spec.heading_rad)):
+		player.free()
+		return {"case_id": case_name, "complete": false, "valid_run": false, "ticks": 0,
+			"requested_ticks": ticks_requested, "failure_reason": "Independent player reset-boundary spawn failed.",
+			"player_initial_spawn_spec": spawn_spec.duplicate(true), "flight_logs": {}}
+	var role := {"name": "player-exogenous", "session": player}
+	var roles: Array = [role]
+	var log_artifacts: Dictionary = {}
+	var logger: RefCounted = null
+	var log_started := false
+	var failure_reason := ""
+	if record_logs:
+		logger = FlightLog.new(player)
+		var log_path: String = _output_dir.path_join("%s-player-exogenous.orfl" % case_name)
+		var start_error: Error = ERR_ALREADY_EXISTS if FileAccess.file_exists(log_path) or DirAccess.dir_exists_absolute(log_path) else logger.start(log_path)
+		if start_error != OK:
+			failure_reason = "FlightLog start failed for independent player (%d): %s" % [start_error, logger.failure]
+		else:
+			log_started = true
+			logger.mark("encounter survey exogenous player start: %s" % case_name)
+	var min_agl := {"player-exogenous": INF}
+	var peak_bank := {"player-exogenous": 0.0}
+	var finite: bool = _observe_metrics(roles, min_agl, peak_bank)
+	var completed_ticks := 0
+	var crash_seen: Dictionary = {}
+	var fault_seen := ""
+	var refusal := ""
+	var digest := HashingContext.new()
+	digest.start(HashingContext.HASH_SHA256)
+	digest.update("openrc-companion-exogenous-player-state-command-v1".to_utf8_buffer())
+	_digest_session(digest, player)
+	if not finite:
+		failure_reason = "Independent player has a nonfinite tick-zero state."
+	for tick in range(ticks_requested):
+		if not failure_reason.is_empty():
+			break
+		var controls: Dictionary = _neutral_trim_controls(player)
+		var staged: Dictionary = player.prepare_external_tick(controls)
+		if not staged.get("ok", false):
+			refusal = "tick %d: %s" % [tick, str(staged.get("errors", []))]
+			failure_reason = "Independent player command refused: " + refusal
+			break
+		if not player.step_external_tick():
+			failure_reason = "Independent player rejected tick %d." % tick
+			break
+		if int(player.sim.tick) != tick + 1:
+			failure_reason = "Independent player tick diverged after tick %d." % tick
+			break
+		var tick_commands := PackedFloat64Array([float(tick), float(controls.roll), float(controls.pitch),
+			float(controls.yaw), float(controls.throttle)])
+		digest.update(tick_commands.to_byte_array())
+		_digest_session(digest, player)
+		completed_ticks = tick + 1
+		finite = _observe_metrics(roles, min_agl, peak_bank) and finite
+		if not player.crash.is_empty() and crash_seen.is_empty():
+			crash_seen = player.crash.duplicate(true)
+		if not str(player.sim.fault_reason).is_empty() and fault_seen.is_empty():
+			fault_seen = str(player.sim.fault_reason)
+		if not finite:
+			failure_reason = "Independent player state became nonfinite at tick %d." % completed_ticks
+			break
+	if logger != null and log_started:
+		var end_detail := "completed %d of %d ticks" % [completed_ticks, ticks_requested]
+		if not crash_seen.is_empty():
+			end_detail += "; crash recorded"
+		if not fault_seen.is_empty():
+			end_detail += "; fault recorded"
+		if not failure_reason.is_empty():
+			logger.mark("encounter survey exogenous player end: %s; %s" % [failure_reason, end_detail])
+		else:
+			logger.mark("encounter survey exogenous player end: %s" % end_detail)
+		var stop_error: Error = logger.stop("completed" if failure_reason.is_empty() else failure_reason)
+		var log_hash: String = FileAccess.get_sha256(logger.path) if FileAccess.file_exists(logger.path) else ""
+		log_artifacts["player-exogenous"] = {"path": logger.path, "sha256": log_hash,
+			"rows_written": logger.rows_written, "stop_error": stop_error,
+			"verified": stop_error == OK and log_hash.length() == 64}
+	elif record_logs:
+		log_artifacts["player-exogenous"] = {"path": _output_dir.path_join("%s-player-exogenous.orfl" % case_name),
+			"sha256": "", "rows_written": 0, "verified": false, "error": failure_reason}
+	var complete: bool = failure_reason.is_empty() and completed_ticks == ticks_requested
+	var valid_run: bool = complete and finite and crash_seen.is_empty() and fault_seen.is_empty()
+	for artifact_value: Variant in log_artifacts.values():
+		valid_run = valid_run and bool(artifact_value.get("verified", false))
+	var min_agl_value: Variant = min_agl["player-exogenous"] if is_finite(float(min_agl["player-exogenous"])) else null
+	var peak_bank_value: Variant = peak_bank["player-exogenous"] if is_finite(float(peak_bank["player-exogenous"])) else null
+	var result := {"case_id": case_name, "role": "player-exogenous", "complete": complete,
+		"valid_run": valid_run, "finite_metrics": finite, "ticks": completed_ticks,
+		"requested_ticks": ticks_requested, "failure_reason": failure_reason,
+		"initial_spawn_matches_coupled_spec": true, "player_initial_spawn_spec": spawn_spec.duplicate(true),
+		"crash": crash_seen, "fault": fault_seen, "refusal": refusal,
+		"min_agl_m": min_agl_value, "peak_bank_deg": peak_bank_value,
+		"state_command_sha256": digest.finish().hex_encode(), "flight_logs": log_artifacts}
+	player.free()
+	return result
+
+
 func _snapshot(session: Node) -> Dictionary:
 	var state: PackedFloat64Array = session.sim.state.duplicate()
 	var now: float = session.sim.time()
@@ -690,7 +879,7 @@ func _digest_session(context: HashingContext, session: Node) -> void:
 
 
 func _append_trajectory(case_name: String, seed_value: int, direction: String, tick: int, roles: Array,
-		ai_controls: Dictionary, avoidance_active: bool) -> void:
+		ai_controls: Dictionary, avoidance_active: bool, held_ai_packet: Dictionary) -> void:
 	var ai_state: PackedFloat64Array = roles[0].session.sim.state
 	for role_index in range(roles.size()):
 		var role: Dictionary = roles[role_index]
@@ -699,11 +888,19 @@ func _append_trajectory(case_name: String, seed_value: int, direction: String, t
 		var terrain: PackedFloat64Array = session.environment.terrain(state[RigidBody.POS], state[RigidBody.POS + 1])
 		var controls: Dictionary = ai_controls if role_index == 0 else _neutral_trim_controls(session)
 		var separation: float = 0.0 if role_index == 0 else _distance(ai_state, state)
-		_trajectory_rows.append("%s,%d,%s,%d,%.3f,%s,%.8f,%.8f,%.8f,%.8f,%.6f,%.6f,%.6f,%.6f,%s,%.8f" % [
+		var euler: PackedFloat64Array = Math3D.q_to_euler(Math3D.quat(
+			state[RigidBody.ATT], state[RigidBody.ATT + 1], state[RigidBody.ATT + 2], state[RigidBody.ATT + 3]))
+		var target_height_text := ""
+		var recovering_text := ""
+		if role_index == 0 and held_ai_packet.has("target_height_m"):
+			target_height_text = "%.8f" % float(held_ai_packet.target_height_m)
+			recovering_text = str(bool(held_ai_packet.get("recovering_clearance", false)))
+		_trajectory_rows.append("%s,%d,%s,%d,%.3f,%s,%.8f,%.8f,%.8f,%.8f,%.6f,%.6f,%.6f,%.6f,%s,%.8f,%s,%s,%.8f,%.8f,%.8f" % [
 			case_name, seed_value, direction, tick, float(tick) / TICKS_PER_SECOND, str(role.name),
 			state[RigidBody.POS], state[RigidBody.POS + 1], -state[RigidBody.POS + 2], -state[RigidBody.POS + 2] - terrain[0],
 			float(controls.roll), float(controls.pitch), float(controls.yaw), float(controls.throttle),
-			str(avoidance_active if role_index == 0 else false), separation])
+			str(avoidance_active if role_index == 0 else false), separation, target_height_text, recovering_text,
+			euler[1], euler[2], state[RigidBody.RATE + 1]])
 
 
 func _role_crash(roles: Array, role_name: String) -> Dictionary:

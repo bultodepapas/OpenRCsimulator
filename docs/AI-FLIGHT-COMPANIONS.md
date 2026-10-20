@@ -5,8 +5,9 @@ gates live in [the implementation plan](../AI_FLIGHT_COMPANIONS_PLAN.md).
 [Verification and measured limits](research/ai-companions/AFC-00-06/README.md).
 Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md),
 [cost attribution and equivalence](research/ai-companions/AFC-00-R1/README.md),
-[lifecycle checks](research/ai-companions/AFC-03-R1/README.md), and
-[moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md).
+[lifecycle checks](research/ai-companions/AFC-03-R1/README.md),
+[moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md), and
+[avoidance clearance repair](research/ai-companions/AFC-04-R2/README.md).
 
 ## Use
 
@@ -42,7 +43,7 @@ the companion clock.
 | Weather | Reference atmosphere; mean wind ≤1.5 m/s, gust ≤0.6 m/s, updraft ≤0.15 m/s, turbulence RMS ≤[0.15, 0.15, 0.08] m/s |
 | Aircraft/activity/skill | Ugly Stik circuits, experienced pilots |
 | Population | Experimental fixed roster of 1–3; higher counts refused |
-| Avoidance | Predicted closest approach biases heading/altitude; moving-encounter qualification failed, including terrain crashes in two controlled crossing cases |
+| Avoidance | Predicted closest approach biases heading/altitude; descending targets stay above the recovery band. Moving-encounter separation remains unqualified |
 | Aircraft contact | Disabled; overlapping airplanes do not exchange contact forces |
 | Terrain/scenery | Launch checks the nominal circuit corridor against actual session terrain, lake and collision proxies; ordinary contact/crash checks remain active. Only the player changes shared scenery damage |
 | Crash/fault fallback | That companion stops, its voice is silenced, and status identifies it; restart or Remove clears it |
@@ -54,11 +55,13 @@ pilot difficulty choices, incidents, comic scenarios and busy-skies presets are
 still planned. No control advertises them as available. No model, physics law,
 solver frequency or golden flight was retuned to make this slice work.
 
-The moving-traffic survey in AFC-04-R1 missed the 30 m player separation target
-in all six head-on/crossing cases, and two crossing cases caused AI terrain contact.
-A strongest-threat selection repair removed a stale descent demand and a crash
-in a separate constructed two-threat fixture; it did not resolve those crossings
-or establish safe separation. Avoidance and recovery remain experimental.
+The moving-traffic survey still misses the 30 m player separation target in all
+six head-on/crossing cases. AFC-04-R2 removes the conflicting descent/recovery
+demands behind two earlier terrain crashes: all seven surveyed cases now complete
+60 seconds without a crash or simulation fault. This reduces vertical separation
+in the two repaired crossings; minimum player distance worsens to 4.13/3.86 m.
+The 35 m local-terrain altitude target floor is not a guaranteed flight-path
+clearance. Reachable conflict resolution and general recovery remain experimental.
 
 The measured three-companion CPU workload misses the plan's initial fleet budget.
 This is not a 60 fps or target-hardware qualification. A one-companion, 20-minute

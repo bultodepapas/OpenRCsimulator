@@ -1,7 +1,30 @@
 {
-  "captured_utc": "2026-10-20T21:55:16.904843+00:00",
-  "status": "Native timing unqualified: concurrent Godot processes and stalled direct-route timing launch; no idle-host delta or release-budget claim.",
-  "attempted_command": "Godot --path app --rendering-driver opengl3 --audio-driver Dummy -- --aircraft=sebart-avanti-s-a200-p100rx --start=airborne_half_power --view=chase --frametimes=tmp/smoke-perf-probe.json --warmup=2 --t=4 --smoke=on --smoke-pump=on --soundscape=off --scenery=off --birds=off --crash-effects=off --companions=0",
-  "other_processes_present": true,
-  "not_run": "Three alternating 10s warmup/60s matched pairs; full visual combined budget; 30min wall-time soak; supported desktop hardware qualification."
+  "format": "openrc-smoke-performance-status v1",
+  "updated_utc": "2026-10-20T22:16:04.119072+00:00",
+  "qualification": "open",
+  "campaign": "paired off/on, balanced order, ten-second warmup + sixty-second sample, Avanti airborne200m chase, scenery/audio/birds/companions/crash effects off",
+  "scope": "Exploratory native 1280x720 Compatibility/VSync timing, not isolated GPU cost, minimum hardware or full scene qualification.",
+  "rejected_attempts": [
+    {
+      "path": "tmp/smoke-perf-probe.json",
+      "reason": "Nonisolated direct-shell run; low simulation/wall progression and controller/focus interference."
+    },
+    {
+      "path": "tmp/smoke-overhaul-paired-timing/1-off.json",
+      "reason": "Simulation paused; stopped campaign."
+    },
+    {
+      "path": "tmp/smoke-overhaul-paired-timing-r2/2-on.json",
+      "reason": "Simulation paused after3.35s while frames continued. Rejected despite complete frame sampler."
+    }
+  ],
+  "current_limitation": "Other Godot processes were observed during early r3 samples and disappeared before later samples. Do not claim idle-host repeated-pair qualification or apply its wall delta as GPU time.",
+  "required_next": [
+    "Repeated idle-host matched off/on and retained legacy comparison",
+    "Worst-case four-emitter projected overdraw and full scene workload",
+    "Target/minimum hardware plus1080p stress",
+    "Shared all-visual-work p95 budget and existing physics step gate"
+  ],
+  "production_pause_policy_changed": false,
+  "benchmark_harness_sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915"
 }

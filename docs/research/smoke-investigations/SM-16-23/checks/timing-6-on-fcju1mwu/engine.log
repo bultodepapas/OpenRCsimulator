@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+SMOKE_TIMING_READY: {"allocation":{"budget_limit":768,"capacity":720,"configured":true,"fault":"","resolved_rates_hz":{"show_tailpipe":{"bore_radius_m":0.025,"capacity":720,"density":0.4,"requested_hz":240.0,"resolved_hz":240.0}},"saturated":false,"show_emitters":1,"slot_particles":{"show_tailpipe":720},"source_emitters":0},"disabled":false,"mode":"stock","preset":"avanti-white-tailpipe-v2","requested":true,"source_running":false}
+frame times: p50 16.85 ms, p95 29.28 ms, p99 36.27 ms over 3323 frames (complete=true) → C:\DEVELOPMENT\OpenRCsimulator\tmp\smoke-overhaul-paired-timing-r3\6-on.json

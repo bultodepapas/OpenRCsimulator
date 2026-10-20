@@ -226,6 +226,10 @@ func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary
 		target_height += float(avoidance.altitude_delta)
 	var clearance_value: Variant = snapshot.get("ground_clearance_m", height - _field_ground_up_m)
 	var clearance: float = float(clearance_value) if typeof(clearance_value) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(clearance_value)) else height - _field_ground_up_m
+	# Avoidance descent must not enter the terrain-recovery band. Use local terrain,
+	# with the lowest circuit band as the target floor; higher bands may still descend.
+	if float(avoidance.altitude_delta) < 0.0:
+		target_height = maxf(target_height, height - clearance + BASE_HEIGHT_AGL_M)
 	var recovery: bool = clearance < RECOVERY_CLEARANCE_M
 	if recovery:
 		target_height = maxf(target_height, height + 10.0)

@@ -294,6 +294,7 @@ const AircraftCustomization := preload("res://render/aircraft_customization.gd")
 var _profile_smoke: Node3D
 var _stock_smoke_profile := false
 var _profile_smoke_tick := 0
+var _profile_last_accepted_tick := -1
 var _profile_presented_s := -1.0
 var _profile_request_tape: Array = []
 var _profile_source_tape: Array = []
@@ -303,6 +304,8 @@ var _profile_presented_request := 0.0
 var _profile_presented_running := false
 var _profile_last_level := -1.0
 var _profile_presented_level := 0.0
+var _profile_last_wash := Vector3.ZERO
+var _profile_presented_wash := Vector3.ZERO
 var _smoke: EngineSmoke
 var _smoke_key_on := false
 var _smoke_assignment: SmokeAssignment
@@ -2709,28 +2712,41 @@ func _smoke_evidence() -> Dictionary:
 func _sample_profile_smoke(tick: int, _time: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 	if _profile_smoke == null: return
+	if _profile_last_accepted_tick >= 0 and tick < _profile_last_accepted_tick:
+		_reset_profile_smoke()
+	_profile_last_accepted_tick = tick
 	var request := _profile_smoke_request()
 	var running: bool = session.propulsion_source_running() and session.crash.is_empty() and session.sim.fault_reason.is_empty()
 	if request != _profile_last_request:
 		_profile_request_tape.append({tick = tick, level = request})
 		_profile_last_request = request
 	var level := _profile_source_level()
-	if running != _profile_last_running or not is_equal_approx(level, _profile_last_level):
-		_profile_source_tape.append({tick = tick, kind = Propulsion.source_kind(session.aircraft.model.propulsion), running = running, level = level})
+	var wash := _profile_smoke_wash(session.aircraft.model.propulsion, _state, _aux[0], _time, running)
+	if running != _profile_last_running or not is_equal_approx(level, _profile_last_level) or not wash.is_equal_approx(_profile_last_wash):
+		_profile_source_tape.append({tick = tick, kind = Propulsion.source_kind(session.aircraft.model.propulsion),
+			running = running, level = level, wash_mps = wash})
 		_profile_last_running = running
 		_profile_last_level = level
+		_profile_last_wash = wash
 	# Event tapes are bounded even while the renderer is not presenting this world.
 	if _profile_request_tape.size() > 256 or _profile_source_tape.size() > 256:
 		_reset_profile_smoke()
 
 
 func _update_profile_smoke(presentation_time_s: float = -1.0) -> void:
-	if _profile_smoke == null or session == null or session.sim.paused: return
+	if _profile_smoke == null or session == null: return
+	var accepted_tick: int = session.sim.tick
+	if _profile_last_accepted_tick >= 0 and accepted_tick < _profile_last_accepted_tick:
+		_reset_profile_smoke()
+	_profile_last_accepted_tick = accepted_tick
+	if session.sim.paused: return
 	# Manual captures present accepted endpoints; live flight passes the exact
 	# interpolated clock used for the displayed model pose.
 	var clock_s: float = session.sim.time() if presentation_time_s < 0.0 else presentation_time_s
 	var tick := floori(clock_s * 240.0 + 0.000001)
-	if clock_s < _profile_presented_s: _reset_profile_smoke()
+	# A resumed interpolation fraction can revisit an earlier point inside the
+	# same accepted tick. Retain puffs and queued events until it catches up.
+	if clock_s < _profile_presented_s: return
 	var prop: Dictionary = session.aircraft.model.propulsion
 	var transforms := AircraftCustomization.smoke_transforms(_airplane)
 	var request_changes: Array = []
@@ -2745,7 +2761,7 @@ func _update_profile_smoke(presentation_time_s: float = -1.0) -> void:
 		else: future_sources.append(event)
 	var sample := {kind = Propulsion.source_kind(prop), running = _profile_presented_running,
 		level = _profile_presented_level, source_id = str(prop.get("id", "$propulsion")),
-		wash_mps = _profile_smoke_wash(prop), changes = source_changes}
+		wash_mps = _profile_presented_wash, changes = source_changes}
 	if _profile_presented_s < 0.0:
 		# A reset/seek primes at this pose; never draw a bridge from a stale origin.
 		_profile_smoke.advance(0.0, {tick = tick, presentation_time_s = clock_s, slot_transforms = transforms},
@@ -2764,6 +2780,7 @@ func _update_profile_smoke(presentation_time_s: float = -1.0) -> void:
 	for event: Dictionary in source_changes:
 		_profile_presented_running = bool(event.running)
 		_profile_presented_level = float(event.level)
+		_profile_presented_wash = event.get("wash_mps", _profile_presented_wash)
 	_profile_request_tape = future_requests
 	_profile_source_tape = future_sources
 	_profile_smoke_tick = tick
@@ -2787,6 +2804,7 @@ func _supports_show_smoke() -> bool:
 
 func _reset_profile_smoke() -> void:
 	_profile_smoke_tick = session.sim.tick if session != null else 0
+	_profile_last_accepted_tick = session.sim.tick if session != null else -1
 	_profile_presented_s = -1.0
 	_profile_request_tape.clear()
 	_profile_source_tape.clear()
@@ -2794,6 +2812,8 @@ func _reset_profile_smoke() -> void:
 	_profile_last_running = false
 	_profile_last_level = -1.0
 	_profile_presented_level = 0.0
+	_profile_last_wash = Vector3.ZERO
+	_profile_presented_wash = Vector3.ZERO
 	_profile_presented_request = 0.0
 	_profile_presented_running = false
 	if _profile_smoke != null:
@@ -2811,12 +2831,19 @@ func _profile_source_level() -> float:
 	return float(observation.level)
 
 
-func _profile_smoke_wash(prop: Dictionary) -> Vector3:
-	if not prop.has("slipstream") or not session.propulsion_source_running():
+func _profile_smoke_wash(prop: Dictionary, accepted_state: PackedFloat64Array,
+		accepted_rpm: float, accepted_time_s: float, accepted_running: bool) -> Vector3:
+	# Historical profiles did not receive wash. The v2 observation is detached at
+	# the accepted tick; rendering never reevaluates the source or scales velocity.
+	if _profile_smoke == null or int(_profile_smoke.get("_profile").get("version", 1)) < 2:
 		return Vector3.ZERO
-	var air: Dictionary = session.air_data(session.sim.state, session.sim.time())
-	var rho: float = session.air_density()
-	var output: PackedFloat64Array = Propulsion.thrust_torque(air.v_air, session.sim.aux[0], prop, rho)
+	if not prop.has("slipstream") or not accepted_running or accepted_state.size() < RB.SIZE \
+			or not is_finite(accepted_rpm) or not is_finite(accepted_time_s):
+		return Vector3.ZERO
+	var air: Dictionary = session.air_data(accepted_state, accepted_time_s)
+	var rho: float = session.air_density(accepted_state)
+	var output: PackedFloat64Array = Propulsion.thrust_torque(air.v_air, accepted_rpm, prop, rho)
 	var flow: Dictionary = Slipstream.wake(air.v_air, output[0], output[1], prop, rho)
 	var axis: PackedFloat64Array = Propulsion.axis(prop)
-	return _airplane.root.global_basis * Vector3(-axis[1], axis[2], axis[0]) * clampf(float(flow.w), 0.0, 30.0)
+	var rotation := Frames.quat_to_render(accepted_state.slice(RB.ATT, RB.ATT + 4))
+	return rotation * Vector3(-axis[1], axis[2], axis[0]) * clampf(float(flow.w), 0.0, 30.0)

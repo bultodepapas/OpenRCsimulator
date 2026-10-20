@@ -1,13 +1,20 @@
 # Ugly Stik Companion Pilot Qualification
 
-2026-10-20 follow-up: [AFC-04-R1](../AFC-04-R1/README.md) requalified the narrow
-separated-circuit scope after repairing strongest-threat selection. Its 148-check
-matrix passed, with both CSVs byte-identical to the original evidence below.
+2026-10-20 current qualification: [AFC-04-R2](../AFC-04-R2/README.md) requalified
+the narrow separated-circuit scope after bounding descending avoidance targets
+above terrain recovery. Its 148-check matrix passed, with both CSVs byte-identical
+to the original evidence below; 318 focused integration checks also passed.
 The current pilot SHA-256 is
-`51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3`.
+`1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c`.
 The profile retains this fixed evidence entry point; original run identities below
-remain historical. AFC-04-R1 also found moving-encounter separation failures and
-two crossing-induced terrain crashes, which remain outside the qualified scope.
+remain historical. The 60-second moving-encounter survey completes without a
+crash, but every case still misses player separation; the two repaired crossings
+have worse minimum separation. Moving encounters remain outside the qualified scope.
+
+The preceding [AFC-04-R1](../AFC-04-R1/README.md) repaired strongest-threat
+selection and passed the same matrix with byte-identical CSVs. That source
+(`51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3`)
+is the retained R2 baseline, including its two crossing-induced terrain crashes.
 
 ## Result
 

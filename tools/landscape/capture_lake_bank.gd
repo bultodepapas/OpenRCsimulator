@@ -11,6 +11,8 @@ const VIEWS := [
 	{"name": "lake_shore", "eye": [78.0, 113.0, -1.5], "at": [112.0, 130.0, 0.45], "fov": 58.0},
 	{"name": "bank_detail", "eye": [76.0, 110.0, -1.6], "at": [79.0, 112.0, 0.2], "fov": 48.0},
 	{"name": "lake_overview", "eye": [45.0, 50.0, -45.0], "at": [110.0, 125.0, 0.45], "fov": 55.0},
+	{"name": "lily_detail", "eye": [77.0, 121.0, -3.5], "at": [87.0, 129.0, 0.45], "fov": 55.0},
+	{"name": "lily_wave_3s", "eye": [77.0, 121.0, -3.5], "at": [87.0, 129.0, 0.45], "fov": 55.0, "clock_s": 3.0},
 ]
 
 
@@ -78,6 +80,7 @@ func _run() -> void:
 	var records := []
 	var rid := viewport.get_viewport_rid()
 	for view: Dictionary in VIEWS:
+		Clock.update(float(view.get("clock_s", 0.0)))
 		camera.position = Frames.ned_to_render(view.eye)
 		camera.look_at(Frames.ned_to_render(view.at))
 		camera.fov = view.fov
@@ -90,6 +93,7 @@ func _run() -> void:
 			quit(1)
 			return
 		records.append({"view": view.name, "eye_ned": view.eye, "at_ned": view.at,
+			"clock_s": float(view.get("clock_s", 0.0)),
 			"fov": view.fov, "sha256": FileAccess.get_sha256(path),
 			"draws": RenderingServer.viewport_get_render_info(rid,
 				RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE,

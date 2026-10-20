@@ -64,6 +64,13 @@ The LU-22 delivery imported vegetation from three CC0 sources: Quaternius's *Sty
 
 The downloaded audition sounds are CC0-1.0 samples and are not claims about the lake's acoustics. Their exact source pages, file names, and SHA-256 values are listed in [`audio/water/LICENSES.md`](../audio/water/LICENSES.md). That manifest is explicitly included with Linux, Windows, and macOS exports.
 
+LU-22-R2 adds [3D Nymphaea leaf geometry](https://opengameart.org/content/lily-pads)
+by **Starry Skydancer** and a [small waterlily blossom](https://opengameart.org/content/lowpoly-waterlily)
+by **Aredon**, both CC0 assets.
+Emergent reeds reuse the retained Aredon CC0 clump above. Source URLs, exact
+hashes and the reproducible Blender conversion are recorded in
+[`pond-plants/README.md`](../../../assets/landscape/pond-plants/README.md).
+
 The water reference source is MIT-licensed. This permission notice applies to that source-derived shader work:
 
 MIT License

@@ -1,6 +1,5 @@
 extends SceneTree
 
-const Pilot := preload("res://ai/companions/pilot.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const Math3D := preload("res://physics/math3d.gd")
@@ -27,6 +26,8 @@ var _sample_rows := PackedStringArray()
 var _flight_ticks: int = FLIGHT_TICKS
 var _spot_check: bool = false
 var _output_dir := ""
+var _pilot_path := "res://ai/companions/pilot.gd"
+var _pilot_script: Script
 
 
 func _check(label: String, passed: bool, detail: String = "") -> void:
@@ -41,12 +42,24 @@ func _initialize() -> void:
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):
 			_output_dir = argument.trim_prefix("--out=")
+		elif argument.begins_with("--pilot="):
+			_pilot_path = argument.trim_prefix("--pilot=")
 	if _spot_check:
 		_flight_ticks = SPOT_CHECK_TICKS
 	call_deferred("_run")
 
 
 func _run() -> void:
+	if not _pilot_path.begins_with("res://") or not FileAccess.file_exists(_pilot_path):
+		printerr("Supply an existing --pilot=res://... script.")
+		quit(2)
+		return
+	_pilot_script = load(_pilot_path) as Script
+	if _pilot_script == null or not _pilot_script.can_instantiate():
+		printerr("Selected pilot script cannot be instantiated.")
+		quit(2)
+		return
+	print("PILOT SOURCE %s SHA256 %s" % [_pilot_path, FileAccess.get_sha256(_pilot_path)])
 	if not _spot_check:
 		if _output_dir.is_empty():
 			printerr("Supply --out=<new directory>; qualification never overwrites accepted evidence.")
@@ -121,7 +134,7 @@ func _run_fleet(field: Dictionary, count: int, weather_id: String, record_trace:
 		_check("%s %d-slot Club field installs" % [weather_id, slot], field_ok, str(session.surface_error))
 		session.reset()
 		var trim: Dictionary = session.start.duplicate(true)
-		var pilot := Pilot.new()
+		var pilot: Variant = _pilot_script.new()
 		var configured: bool = pilot.configure(slot, count, SEED, trim, field)
 		_check("%s %d-slot pilot accepts current Stik trim" % [weather_id, slot], configured, str(pilot.configure_error))
 		if not configured:

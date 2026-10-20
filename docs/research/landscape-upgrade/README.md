@@ -21,6 +21,7 @@ The installed target is Godot **4.7.2**, Compatibility/OpenGL. This index points
 | LU-21 | [Replacement cars/people, native images, performance, collisions, regression and licenses](LU-21/README.md) |
 | LU-22–27 | [Downloaded vegetation, finite lake, water contacts/audio, native captures, performance and export proof](LU-22/README.md) |
 | LU-22-R1 | [Textured lake bank, matched field grass, native before/after views and lake regressions](LU-22-R1/README.md) |
+| LU-22-R2 | [Downloaded waterlily leaves and blossoms, emergent reeds, native views and lake regressions](LU-22-R2/README.md) |
 | LU-28 | [Agricultural plain, connected roads, farms, settlement details and measured rendering cost](LU-28/README.md) |
 | LU-29 | [Turbine/antenna beacons, hillside homes, regional lighting details and native cost](LU-29/README.md) |
 | LU-30 | [Downloaded transmission towers, insulators, connected conductors and native measurements](LU-30/README.md) |

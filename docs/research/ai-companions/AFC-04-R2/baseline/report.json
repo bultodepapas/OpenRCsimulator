@@ -1,0 +1,417 @@
+{
+	"ai_planning_hz": 60,
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"artifacts": {
+		"first_recorded_scenario": "selected-crossings",
+		"recorded_logs": {
+			"seed-20261020-crossing-right": {
+				"ai": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-ai.orfl",
+					"rows_written": 2439,
+					"sha256": "fa7ef3fac64bb2ae4035a98a6963711e7c7d59957efd47b27aca4c460b94c132",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-coupled.orfl",
+					"rows_written": 2439,
+					"sha256": "5a74097741564e859cf86559f4802121877aa1fc80bb4c4524d9f6c5cca0ac1e",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"seed-20261020-crossing-right-exogenous": {
+				"player-exogenous": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-exogenous.orfl",
+					"rows_written": 2881,
+					"sha256": "0ab055ac39b92781c5bc628563d58f308b9095cc8f0e1ec597e93d333a19a87e",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"seed-20261021-crossing-left": {
+				"ai": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-ai.orfl",
+					"rows_written": 2423,
+					"sha256": "b0fa4edf1ccd2f43f9570f9e55539ca2a7834c73d57556cb29e3162e63a102ec",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-coupled.orfl",
+					"rows_written": 2423,
+					"sha256": "01639c19dc412f163fe8533eba18488bd8e594bae10500cc2b82dd5421259822",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"seed-20261021-crossing-left-exogenous": {
+				"player-exogenous": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-exogenous.orfl",
+					"rows_written": 2881,
+					"sha256": "e4acdf8cbb67cb88fc929dbe209c8823bc928eea1541c7f18e1468c20bb0c157",
+					"stop_error": 0,
+					"verified": true
+				}
+			}
+		},
+		"trajectory_csv": {
+			"bytes": 85961,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/trajectory.csv",
+			"sha256": "a4eeae92b5433d1d83aaf9c1d94d40bbac79240f38e2722499827088453efbd2",
+			"write_error": "",
+			"write_verified": true
+		}
+	},
+	"cases": [
+		{
+			"ai_crash": {
+				"impact": "<RefCounted#-9223371897067010326>",
+				"sink": 19.6757449000641,
+				"speed": 29.0566698555432,
+				"ticks_left": 360,
+				"why": "airframe contact (hull point 2), point speed 28.9 m/s at detected tick"
+			},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 396,
+			"case": "crossing-right",
+			"case_id": "seed-20261020-crossing-right",
+			"circuit_direction": "increasing",
+			"complete": false,
+			"exogenous_player": {
+				"case_id": "seed-20261020-crossing-right",
+				"complete": true,
+				"crash": {},
+				"failure_reason": "",
+				"fault": "",
+				"finite_metrics": true,
+				"flight_logs": {
+					"player-exogenous": {
+						"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-exogenous.orfl",
+						"rows_written": 2881,
+						"sha256": "0ab055ac39b92781c5bc628563d58f308b9095cc8f0e1ec597e93d333a19a87e",
+						"stop_error": 0,
+						"verified": true
+					}
+				},
+				"initial_spawn_matches_coupled_spec": true,
+				"min_agl_m": 34.9930181145764,
+				"peak_bank_deg": 0.00000000000236153055411852,
+				"player_initial_spawn_spec": {
+					"altitude_m": 35.0,
+					"east": -9.14649575368902,
+					"heading_rad": 1.15464021246239,
+					"north": 194.957523602079
+				},
+				"refusal": "",
+				"requested_ticks": 2880,
+				"role": "player-exogenous",
+				"state_command_sha256": "024ba369b36677d9422fe42a2fcf4d37a34ee986e47fb5e0ba98e69e2f847551",
+				"ticks": 2880,
+				"valid_run": true
+			},
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "ai crash at tick 2438: airframe contact (hull point 2), point speed 28.9 m/s at detected tick",
+			"finite_metrics": true,
+			"first_avoidance_tick": 268,
+			"fixture_parameters": {},
+			"flight_logs": {
+				"ai": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-ai.orfl",
+					"rows_written": 2439,
+					"sha256": "fa7ef3fac64bb2ae4035a98a6963711e7c7d59957efd47b27aca4c460b94c132",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261020-crossing-right-player-coupled.orfl",
+					"rows_written": 2439,
+					"sha256": "5a74097741564e859cf86559f4802121877aa1fc80bb4c4524d9f6c5cca0ac1e",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0,
+			"initial_target_height_error_m": 0.0,
+			"initial_target_height_matches_nominal": true,
+			"intruder_heading_offset_rad": -1.5707963267949,
+			"intruder_heading_rad": 1.15464021246239,
+			"intruder_start_east_m": -9.14649575368902,
+			"intruder_start_north_m": 194.957523602079,
+			"min_agl_m_by_role": {
+				"ai": 0.369135988346657,
+				"player": 34.9930181145764
+			},
+			"min_center_separation_m": 7.30630339103288,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 7.30630339103288,
+			"nominal_intercept_east_m": 73.1719660295122,
+			"nominal_intercept_north_m": 231.339811183368,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 1.0,
+				"roll": 1.0,
+				"throttle": 1.0,
+				"yaw": 1.0
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 179.318573840593,
+				"player": 0.00000000000208447725649658
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 610,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": -9.14649575368902,
+				"heading_rad": 1.15464021246239,
+				"north": 194.957523602079
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 2880,
+			"route_radius_m": 80.0,
+			"seed": 20261020,
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": false,
+			"state_command_sha256": "5774984cb7a139aeeb4dd8aea8469b3bbdba983dc94a36ba33a480e615408bb1",
+			"ticks": 2438,
+			"valid_run": false
+		},
+		{
+			"ai_crash": {
+				"impact": "<RefCounted#-9223371869116168466>",
+				"sink": 23.4841756776338,
+				"speed": 29.0420550583695,
+				"ticks_left": 360,
+				"why": "airframe contact (hull point 3), point speed 28.9 m/s at detected tick"
+			},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 398,
+			"case": "crossing-left",
+			"case_id": "seed-20261021-crossing-left",
+			"circuit_direction": "decreasing",
+			"complete": false,
+			"exogenous_player": {
+				"case_id": "seed-20261021-crossing-left",
+				"complete": true,
+				"crash": {},
+				"failure_reason": "",
+				"fault": "",
+				"finite_metrics": true,
+				"flight_logs": {
+					"player-exogenous": {
+						"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-exogenous.orfl",
+						"rows_written": 2881,
+						"sha256": "e4acdf8cbb67cb88fc929dbe209c8823bc928eea1541c7f18e1468c20bb0c157",
+						"stop_error": 0,
+						"verified": true
+					}
+				},
+				"initial_spawn_matches_coupled_spec": true,
+				"min_agl_m": 34.9931294964052,
+				"peak_bank_deg": 0.00000000000242252214337918,
+				"player_initial_spawn_spec": {
+					"altitude_m": 35.0,
+					"east": 8.8909299003912,
+					"heading_rad": -1.09535978607469,
+					"north": 194.422733839252
+				},
+				"refusal": "",
+				"requested_ticks": 2880,
+				"role": "player-exogenous",
+				"state_command_sha256": "0015cc7df3b42b728b69e085489e46dd5ec785835b0fd3ff160d24dfb75176b6",
+				"ticks": 2880,
+				"valid_run": true
+			},
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "ai crash at tick 2422: airframe contact (hull point 3), point speed 28.9 m/s at detected tick",
+			"finite_metrics": true,
+			"first_avoidance_tick": 268,
+			"fixture_parameters": {},
+			"flight_logs": {
+				"ai": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-ai.orfl",
+					"rows_written": 2423,
+					"sha256": "b0fa4edf1ccd2f43f9570f9e55539ca2a7834c73d57556cb29e3162e63a102ec",
+					"stop_error": 0,
+					"verified": true
+				},
+				"player": {
+					"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/ai-companions/AFC-04-R2/baseline/seed-20261021-crossing-left-player-coupled.orfl",
+					"rows_written": 2423,
+					"sha256": "01639c19dc412f163fe8533eba18488bd8e594bae10500cc2b82dd5421259822",
+					"stop_error": 0,
+					"verified": true
+				}
+			},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0,
+			"initial_target_height_error_m": 0.0,
+			"initial_target_height_matches_nominal": true,
+			"intruder_heading_offset_rad": 1.5707963267949,
+			"intruder_heading_rad": -1.09535978607469,
+			"intruder_start_east_m": 8.8909299003912,
+			"intruder_start_north_m": 194.422733839252,
+			"min_agl_m_by_role": {
+				"ai": 0.270441072482586,
+				"player": 34.9931294964052
+			},
+			"min_center_separation_m": 7.15605900483947,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 7.15605900483947,
+			"nominal_intercept_east_m": -71.1274392031297,
+			"nominal_intercept_north_m": 235.618129285985,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 1.0,
+				"roll": 1.0,
+				"throttle": 1.0,
+				"yaw": 1.0
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 179.868946794883,
+				"player": 0.00000000000215782661874469
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 606,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": 8.8909299003912,
+				"heading_rad": -1.09535978607469,
+				"north": 194.422733839252
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 2880,
+			"route_radius_m": 80.0,
+			"seed": 20261021,
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": false,
+			"state_command_sha256": "c9e7206e86717a34917ed90c95325179fec3fb0b48229bdafe2079e90af6e671",
+			"ticks": 2422,
+			"valid_run": false
+		}
+	],
+	"classification": "survey_only",
+	"collision_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae",
+	"deterministic_repeat": {
+		"case": "crossing-right",
+		"exact_state_command_match": false,
+		"first_sha256": "5774984cb7a139aeeb4dd8aea8469b3bbdba983dc94a36ba33a480e615408bb1",
+		"repeat_complete": false,
+		"repeat_run": {
+			"ai_crash": {
+				"impact": "<RefCounted#-9223371847406451203>",
+				"sink": 19.6757449000641,
+				"speed": 29.0566698555432,
+				"ticks_left": 360,
+				"why": "airframe contact (hull point 2), point speed 28.9 m/s at detected tick"
+			},
+			"ai_fault": "",
+			"ai_refusal": "",
+			"avoidance_samples": 396,
+			"case": "crossing-right",
+			"case_id": "seed-20261020-crossing-right",
+			"circuit_direction": "increasing",
+			"complete": false,
+			"expected_initial_target_height_m": 35.0,
+			"failure_reason": "ai crash at tick 2438: airframe contact (hull point 2), point speed 28.9 m/s at detected tick",
+			"finite_metrics": true,
+			"first_avoidance_tick": 268,
+			"fixture_parameters": {},
+			"flight_logs": {},
+			"geometry_kind": "nominal_route_intercept",
+			"initial_commanded_target_height_m": 35.0,
+			"initial_target_height_error_m": 0.0,
+			"initial_target_height_matches_nominal": true,
+			"intruder_heading_offset_rad": -1.5707963267949,
+			"intruder_heading_rad": 1.15464021246239,
+			"intruder_start_east_m": -9.14649575368902,
+			"intruder_start_north_m": 194.957523602079,
+			"min_agl_m_by_role": {
+				"ai": 0.369135988346657,
+				"player": 34.9930181145764
+			},
+			"min_center_separation_m": 7.30630339103288,
+			"min_separation_to_peer_m": null,
+			"min_separation_to_player_m": 7.30630339103288,
+			"nominal_intercept_east_m": 73.1719660295122,
+			"nominal_intercept_north_m": 231.339811183368,
+			"nominal_intercept_time_s": 6.0,
+			"peak_abs_axes": {
+				"pitch": 1.0,
+				"roll": 1.0,
+				"throttle": 1.0,
+				"yaw": 1.0
+			},
+			"peak_bank_deg_by_role": {
+				"ai": 179.318573840593,
+				"player": 0.00000000000208447725649658
+			},
+			"peer_crash": {},
+			"peer_fault": "",
+			"peer_refusal": "",
+			"pilot_refusal": "",
+			"planner_samples": 610,
+			"player_crash": {},
+			"player_fault": "",
+			"player_initial_spawn_spec": {
+				"altitude_m": 35.0,
+				"east": -9.14649575368902,
+				"heading_rad": 1.15464021246239,
+				"north": 194.957523602079
+			},
+			"player_refusal": "",
+			"production_spawn_admission": false,
+			"requested_ticks": 2880,
+			"route_radius_m": 80.0,
+			"seed": 20261020,
+			"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m",
+			"separation_gate_passed": false,
+			"state_command_sha256": "5774984cb7a139aeeb4dd8aea8469b3bbdba983dc94a36ba33a480e615408bb1",
+			"ticks": 2438,
+			"valid_run": false
+		},
+		"repeat_sha256": "5774984cb7a139aeeb4dd8aea8469b3bbdba983dc94a36ba33a480e615408bb1"
+	},
+	"engine": "4.7.2-stable (official)",
+	"failed_validity_cases": [
+		"crossing-right",
+		"crossing-left"
+	],
+	"field_id": "default",
+	"format": "openrc-companion-encounter-survey v1",
+	"geometry_note": "The six intruders are placed to meet the nominal circular route at 6 s from initial_pose and the field-derived circuit radius. Actual trimmed trajectories may miss that intercept.",
+	"lake_identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+	"physics_hz": 240,
+	"pilot_resource": "res://ai/companions/pilot.gd",
+	"pilot_source_sha256": "51ccb3cdec3a4c898277c1b30542131c9938841dbde9debc0e45bf24601db1b3",
+	"probe_resource": "res://../research/ai-companions/encounter_probe.gd",
+	"probe_source_sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4",
+	"process_success": false,
+	"purpose": "Survey of actual fixed-step FlightSession encounters; not qualification or physical validation.",
+	"qualification_claimed": false,
+	"recording_mode": "crossings",
+	"requested_ticks": 2880,
+	"scope": "Two selected nominal crossing geometries with coupled and independent full-duration trim-neutral player sessions.",
+	"seconds": 12,
+	"separation_gate_basis": "minimum actual AI-to-player center distance >= 30 m; peer distances are reported separately",
+	"separation_gate_m": 30.0,
+	"separation_gate_passed_for_all_cases": false,
+	"title": "Companion Encounter Survey — geometry gate miss; not a qualification",
+	"valid_complete_runs": false,
+	"weather": "calm"
+}

@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default aircraft has verified smoke bindings
+ok   test aircraft declares both show and source endpoints
+ok   dual-route smoke profile freezes for an isolated trial
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   global smoke-off suppresses both profile and legacy runtimes
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   profile mode owns the shared renderer and accepts the direct pump request
+ok   capture evidence records profile identity and shared allocation
+ok   flight source test uses the finite-glow model
+ok   direct smoke-pump request enters the 240 Hz request tape
+ok   running accepted glow source enters the source tape
+ok   stopped accepted source is distinct from enabled ignition command
+ok   accepted finite-glow latch enqueues one exact off event
+ok   smoke sampling leaves accepted physics state untouched
+Workshop smoke integration: 12 checks, 0 failures

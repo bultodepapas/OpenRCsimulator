@@ -42,6 +42,7 @@ The [global implementation plan](plans/global-performance-visual-quality.md#3-or
 | L9e-R1 | Compare current turf blending with one Laplacian candidate on retained maps. | Planned after VQ-02a and visibility reference; preserve masks/gradients/cues and pass combined visual/cost gates. |
 | L6b-R1 | Compare existing atlas alpha coverage with native alpha-to-coverage when a motion defect is reproduced. | Planned probe after VQ-02a; MSAA/scissor/edge compatibility, motion and cost proof. Custom mip importer excluded. |
 | LU-22-R1 | Correct one confirmed shore/material discontinuity using existing boundary/depth data. | [Delivered](research/landscape-upgrade/LU-22-R1/README.md): licensed dirt and shared field-grass maps, damp-bank transition and native before/after views. Lake geometry and contact checks pass; independent pilot and lower-end GPU review remain open. |
+| LU-22-R2 | Add depth-placed floating and emergent pond plants from free source meshes. | [Delivered](research/landscape-upgrade/LU-22-R2/README.md): CC0 leaves and blossoms, reused reeds, wave-following leaf shader, native views and validated shelf placement. Lower-end GPU and independent pilot review remain open. |
 
 The L15a windsock now consumes committed M5 wind with a swiveling basket and damped fabric response; [sources and software/visual evidence](research/wind-implementation/M5-W04b-R1/README.md). Independent physical cue calibration remains open. This delivery does not reopen completed foliage/audio work.
 

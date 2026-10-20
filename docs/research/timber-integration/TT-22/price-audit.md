@@ -38,7 +38,9 @@ Each linked product page was checked on 2026-10-20. Package quantity is what the
 
 ## Cost and source-data findings
 
-The current research dossier's $465.87 subtotal is arithmetically consistent across seven priced physical rows: wing $59.99 + four $13.99 servos = $115.95; EFL5962 prop $7.99 + EFL17553 spinner $8.99 = $16.98; motor $74.99; ESC $74.99; receiver proxy $84.99; two tail servo proxies $27.98; battery proxy $69.99. The six servo units are allocated once (4 wing + 2 tail). The prop/spinner amount is a composite of two separately sold items, not one package. Do not automatically bill the spinner for a prop-only collision. The subtotal is partial replacement-part pricing, not a full aircraft valuation; five physical groups and assembly remain unpriced, and there is no verified foam repair recipe.
+These findings describe the source state before TT-22. The [implemented corrections and verification](README.md) document their resolution; the dated observations remain historical evidence.
+
+The pre-update research dossier's $465.87 subtotal is arithmetically consistent across seven priced physical rows: wing $59.99 + four $13.99 servos = $115.95; EFL5962 prop $7.99 + EFL17553 spinner $8.99 = $16.98; motor $74.99; ESC $74.99; receiver proxy $84.99; two tail servo proxies $27.98; battery proxy $69.99. The six servo units are allocated once (4 wing + 2 tail). The prop/spinner amount is a composite of two separately sold items, not one package. Do not automatically bill the spinner for a prop-only collision. The subtotal is partial replacement-part pricing, not a full aircraft valuation; five physical groups and assembly remain unpriced, and there is no verified foam repair recipe.
 
 Three source-catalog details need correction or explicit supersession:
 
@@ -48,6 +50,6 @@ Three source-catalog details need correction or explicit supersession:
 
 The current manual's exact recommended SPMX32004S30 battery is **discontinued** on Horizon U.S. and has no current price on its product page. The SPMX324S50 proxy is the available current price source, not an exact priced recommendation. [SPMX32004S30 listing](https://www.horizonhobby.com/product/spektrum-14.8v-3200mah-4s-30c-smart-lipo-battery-ic3/SPMX32004S30.html)
 
-The costing source is [research/crash-economics/aircraft-costing.json](../../../../research/crash-economics/aircraft-costing.json), the offer evidence is [research/crash-economics/price-research-fleet.json](../../../../research/crash-economics/price-research-fleet.json), and the normalized catalog is [research/crash-economics/catalog.json](../../../../research/crash-economics/catalog.json). The generated runtime catalog is [app/data/economy/catalog.json](../../../../app/data/economy/catalog.json); this audit does not change it.
+The costing source is [research/crash-economics/aircraft-costing.json](../../../../research/crash-economics/aircraft-costing.json), the offer evidence is [research/crash-economics/price-research-fleet.json](../../../../research/crash-economics/price-research-fleet.json), and the normalized catalog is [research/crash-economics/catalog.json](../../../../research/crash-economics/catalog.json). The generated runtime catalog is [app/data/economy/catalog.json](../../../../app/data/economy/catalog.json); TT-22 regenerates it from the corrected authored sources.
 
 The older 2021 manual is useful only to explain the landing-gear and electronics revision history: [EFL105250 manual](https://www.horizonhobby.com/on/demandware.static/-/Sites-horizon-master/default/Manuals/EFL105250-Manual-EN.pdf). The current BNF and PNP sales pages describe the heavier-duty springs and 70A Smart Lite ESC as new for 2024.

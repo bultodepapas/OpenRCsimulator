@@ -1,0 +1,153 @@
+{
+  "format": "openrc-smoke-exploratory-timing v1",
+  "qualification": "open; not an isolated adoption comparison",
+  "captured_before_final_activity_wash_and_fractional_resume_fixes": true,
+  "hardware": "RTX3090 / OpenGL3.3 NVIDIA617.42 / Godot4.7.2",
+  "samples": [
+    {
+      "run": "1-off.json",
+      "condition": "off",
+      "raw_sha256": "8ad42514ffbf001cecd4de0d2b67885923f34f20aabd1f4cf1992da7bfab1281",
+      "compressed_report": "1-off.json.gz",
+      "sidecar": "1-off.json.smoke.json",
+      "complete": true,
+      "wall_frame_ms": {
+        "max": 80.017,
+        "p50": 16.634,
+        "p95": 18.132,
+        "p99": 20.0
+      },
+      "simulation_wall_ratio": 0.9984397083865236,
+      "physics_step_usec_smoothed_at_end": 2330.50682794632,
+      "emitting_frames": 0,
+      "observed_frames": 4184,
+      "capacity": 0,
+      "unattended_focus_resumes": 1
+    },
+    {
+      "run": "2-on.json",
+      "condition": "on",
+      "raw_sha256": "5d5524e2e03499cfd1199ca5eec9d3958225708a7f4a78d317ce1d7b25c4dbe6",
+      "compressed_report": "2-on.json.gz",
+      "sidecar": "2-on.json.smoke.json",
+      "complete": true,
+      "wall_frame_ms": {
+        "max": 29.455,
+        "p50": 16.812,
+        "p95": 20.818,
+        "p99": 24.975
+      },
+      "simulation_wall_ratio": 0.9964412069264409,
+      "physics_step_usec_smoothed_at_end": 2006.39669512913,
+      "emitting_frames": 4075,
+      "observed_frames": 4077,
+      "capacity": 720,
+      "unattended_focus_resumes": 1
+    },
+    {
+      "run": "3-on.json",
+      "condition": "on",
+      "raw_sha256": "9bb4e4a028a1a25d859188647bf33ea6b59682cc60ebc2db7a14f6047a223513",
+      "compressed_report": "3-on.json.gz",
+      "sidecar": "3-on.json.smoke.json",
+      "complete": true,
+      "wall_frame_ms": {
+        "max": 39.172,
+        "p50": 16.656,
+        "p95": 17.939,
+        "p99": 19.137
+      },
+      "simulation_wall_ratio": 0.9981484705944311,
+      "physics_step_usec_smoothed_at_end": 1456.51383850953,
+      "emitting_frames": 4189,
+      "observed_frames": 4191,
+      "capacity": 720,
+      "unattended_focus_resumes": 1
+    },
+    {
+      "run": "4-off.json",
+      "condition": "off",
+      "raw_sha256": "f96e16dcbfab34dc1cc4f0fdf64ce1e844b628c615badd2a08fcc5a1ef6bdaf0",
+      "compressed_report": "4-off.json.gz",
+      "sidecar": "4-off.json.smoke.json",
+      "complete": true,
+      "wall_frame_ms": {
+        "max": 91.333,
+        "p50": 16.65,
+        "p95": 17.905,
+        "p99": 19.348
+      },
+      "simulation_wall_ratio": 0.9986672202170405,
+      "physics_step_usec_smoothed_at_end": 1336.54021874989,
+      "emitting_frames": 0,
+      "observed_frames": 4182,
+      "capacity": 0,
+      "unattended_focus_resumes": 1
+    },
+    {
+      "run": "5-off.json",
+      "condition": "off",
+      "raw_sha256": "c853db7775dcd368378018489b5a22963e047189775831f5723955d7c7df3151",
+      "compressed_report": "5-off.json.gz",
+      "sidecar": "5-off.json.smoke.json",
+      "complete": true,
+      "wall_frame_ms": {
+        "max": 38.245,
+        "p50": 16.648,
+        "p95": 17.667,
+        "p99": 18.618
+      },
+      "simulation_wall_ratio": 0.998774145298028,
+      "physics_step_usec_smoothed_at_end": 1410.24622137374,
+      "emitting_frames": 0,
+      "observed_frames": 4195,
+      "capacity": 0,
+      "unattended_focus_resumes": 1
+    },
+    {
+      "run": "6-on.json",
+      "condition": "on",
+      "raw_sha256": "522a64479918d8347c973301a66d68f287988ced631a13ece29e714dc3aa40bb",
+      "compressed_report": "6-on.json.gz",
+      "sidecar": "6-on.json.smoke.json",
+      "complete": true,
+      "wall_frame_ms": {
+        "max": 43.411,
+        "p50": 16.848,
+        "p95": 29.277,
+        "p99": 36.269
+      },
+      "simulation_wall_ratio": 0.9981852916413553,
+      "physics_step_usec_smoothed_at_end": 1418.04147027263,
+      "emitting_frames": 3910,
+      "observed_frames": 3912,
+      "capacity": 720,
+      "unattended_focus_resumes": 0
+    }
+  ],
+  "pairs": [
+    {
+      "on": "2-on.json",
+      "off": "1-off.json",
+      "p95_delta_ms": 2.686
+    },
+    {
+      "on": "3-on.json",
+      "off": "4-off.json",
+      "p95_delta_ms": 0.034
+    },
+    {
+      "on": "6-on.json",
+      "off": "5-off.json",
+      "p95_delta_ms": 11.61
+    }
+  ],
+  "median_paired_p95_delta_ms": 2.686,
+  "limits": [
+    "Other Godot processes observed during early samples",
+    "VSync-capped wall frame measurements, not GPU timings",
+    "One Avanti outlet720slots with scenery disabled, not worstcasefouroutlet/fullscene",
+    "Finalactivitywash/resumeedgefixes postdate these source identities",
+    "Allvisuals shared budget and500us physics gate notqualified"
+  ]
+}

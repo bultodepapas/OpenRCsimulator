@@ -645,3 +645,17 @@ Synchronous log writes and close-time hashing are accepted only for this opt-in
 diagnostic; they do not close the fleet recording performance gate.
 [Capture contract](AI-FLIGHT-COMPANIONS.md#diagnostic-capture).
 
+### 2026-10-20 — Share smoke presentation through authored outlets and accepted source observations (SM-17–23)
+
+Stock exhaust and Workshop effects use one bounded GPU service on the pinned
+Compatibility renderer. Separate source installation, stable physical outlet and
+appearance/schedule so several outlets can follow one engine without duplicating
+physics. Missing installation evidence produces an unavailable capability.
+Profile v2 separates density, birth rate and motion; old revisions remain immutable
+and require explicit migration. Use the existing lit soft cards, coherent analytic
+curl and dilution before adding an atlas, draw pass or fluid solver. Retain the
+legacy comparison path until native rollout gates pass. Four active batches and
+768 slots are resource limits, not a measured performance guarantee.
+[Contract](SMOKE.md), [research and acceptance plan](../SMOKE_SYSTEM_MASTER_PLAN.md)
+and [implementation evidence](research/smoke-investigations/SM-16-23/README.md).
+

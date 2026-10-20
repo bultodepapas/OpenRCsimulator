@@ -1,5 +1,6 @@
 extends SceneTree
 ## Renderer/scheduler contracts. --native additionally compiles and exercises GLES3.
+## Add --lifecycle-cycles=50 --lifecycle-out=<fresh-absolute-dir> for bounded native cycling.
 const Smoke := preload("res://render/smoke/profile_smoke.gd")
 const Schedule := preload("res://render/smoke/profile_smoke_schedule.gd")
 var checks := 0
@@ -227,6 +228,9 @@ func _native_probe() -> void:
 	check("native pool recreation removes every pre-reset puff", _colored_pixels(root.get_texture().get_image()) == 0)
 	smoke.free()
 	var motion_report: Dictionary = await _native_motion_probe(camera)
+	var lifecycle_options := _lifecycle_options()
+	if int(lifecycle_options.cycles) > 0:
+		await _native_lifecycle_probe(int(lifecycle_options.cycles), str(lifecycle_options.output))
 	var output := ""
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): output = arg.trim_prefix("--out=")
@@ -467,3 +471,186 @@ func _test_scaled_bore() -> void:
 	check("scaled bore expands conservative bounds", smoke._maximum_bore_radius >= 0.05 - 0.000001)
 	smoke.free()
 	await process_frame
+
+
+func _lifecycle_options() -> Dictionary:
+	var count := 0
+	var output := ""
+	for argument in OS.get_cmdline_user_args():
+		if argument.begins_with("--lifecycle-cycles="):
+			var value := argument.trim_prefix("--lifecycle-cycles=")
+			if not value.is_valid_int():
+				check("native lifecycle cycle count is an integer", false)
+				continue
+			count = int(value)
+		if argument.begins_with("--lifecycle-out="):
+			output = argument.trim_prefix("--lifecycle-out=")
+	if count < 0 or count > 1000:
+		check("native lifecycle cycle count stays within 1..1000", false)
+		count = 0
+	if count > 0 and (not output.is_absolute_path() or DirAccess.dir_exists_absolute(output)):
+		check("native lifecycle requires a fresh absolute evidence directory", false)
+		count = 0
+	return {"cycles": count, "output": output}
+
+
+func _native_lifecycle_probe(cycle_count: int, output: String) -> void:
+	DirAccess.make_dir_recursive_absolute(output)
+	var campaign_start_us := Time.get_ticks_usec()
+	var initial_failures := failures
+	# Resource and shader caches are warmed before the measured object baseline.
+	# GDScript uses reference counting; drain frames release deferred native RIDs.
+	for warmup in 3:
+		await _native_lifecycle_cycle(-1 - warmup, "")
+		await _drain_draw_requests()
+	var baseline := _lifecycle_counters()
+	var records: Array[Dictionary] = []
+	var maximum_objects := int(baseline.objects)
+	var maximum_nodes := int(baseline.nodes)
+	var maximum_orphans := int(baseline.orphans)
+	var maximum_static_bytes := int(baseline.static_bytes)
+	var measured_start_us := Time.get_ticks_usec()
+	for cycle in cycle_count:
+		var record: Dictionary = await _native_lifecycle_cycle(cycle, output)
+		await _drain_draw_requests()
+		var counters := _lifecycle_counters()
+		record["after_release"] = counters
+		records.append(record)
+		maximum_objects = maxi(maximum_objects, int(counters.objects))
+		maximum_nodes = maxi(maximum_nodes, int(counters.nodes))
+		maximum_orphans = maxi(maximum_orphans, int(counters.orphans))
+		maximum_static_bytes = maxi(maximum_static_bytes, int(counters.static_bytes))
+		check("lifecycle cycle%d releases all aircraft nodes" % cycle, int(counters.nodes) <= int(baseline.nodes))
+		check("lifecycle cycle%d creates no orphan nodes" % cycle, int(counters.orphans) <= int(baseline.orphans))
+	var final := _lifecycle_counters()
+	check("native lifecycle object count returns to warmed baseline", int(final.objects) <= int(baseline.objects))
+	check("native lifecycle resource count returns to warmed baseline", int(final.resources) <= int(baseline.resources))
+	check("native lifecycle final orphan count returns to warmed baseline", int(final.orphans) <= int(baseline.orphans))
+	var report := {
+		"format": "openrc-smoke-native-lifecycle-v1", "engine": Engine.get_version_info(),
+		"adapter": RenderingServer.get_video_adapter_name(), "source_sha256": _source_receipt(),
+		"cycles": cycle_count, "warmup_cycles": 3, "baseline": baseline, "final": final,
+		"maximum_post_release": {"objects": maximum_objects, "nodes": maximum_nodes,
+			"orphans": maximum_orphans, "static_bytes": maximum_static_bytes},
+		"measured_wall_seconds": float(Time.get_ticks_usec() - measured_start_us) / 1000000.0,
+		"total_wall_seconds": float(Time.get_ticks_usec() - campaign_start_us) / 1000000.0,
+		"records": records, "checks": checks, "new_failures": failures - initial_failures,
+		"memory_scope": "Godot static allocator and renderer-reported video bytes; not OS process RSS or GPU-driver allocation. Zero video-byte reporting is unavailable, not zero device memory.",
+		"scope": "Repeated accelerated accepted-tick lifecycle with native draws. Each cycle configures four pools, emits, resets, plays, stops, ages residuals, pauses, releases pause, expires and frees. Fixed eight no-request draw drains precede reset/pause/expiry readback and post-release counters. This is not a thirty-minute wall-time soak or a performance budget campaign.",
+	}
+	var file := FileAccess.open(output.path_join("lifecycle.json"), FileAccess.WRITE)
+	if file == null:
+		check("native lifecycle evidence report opens", false)
+		return
+	file.store_string(JSON.stringify(report, "\t"))
+	print("Smoke lifecycle native: %d measured cycles, %.3f wall seconds, %d new failures; %s" % [cycle_count,
+		float(report.measured_wall_seconds), int(report.new_failures), output])
+
+
+func _native_lifecycle_cycle(cycle: int, output: String) -> Dictionary:
+	var started_us := Time.get_ticks_usec()
+	var before_failures := failures
+	var entries: Array = []
+	var endpoints: Array = []
+	var transforms: Dictionary = {}
+	for index in 4:
+		var slot := "lifecycle_%d" % index
+		var entry := _entry(slot)
+		entry.lifetime_s = 0.15
+		entry.color = "#FF0000FF"
+		entry.merge({"density": 2.0, "emission_rate_hz": 240.0, "jet_speed_mps": 0.0,
+			"dispersion_m2_s": 0.02, "buoyancy_mps": 0.0, "turbulence_mps": 0.0,
+			"velocity_inheritance": 0.0})
+		entries.append(entry)
+		endpoints.append(_source(slot) if index < 2 else _show(slot))
+		transforms[slot] = Transform3D(Basis.IDENTITY, Vector3((index - 1.5) * 0.22, 0, 0))
+	var smoke = Smoke.new()
+	root.add_child(smoke)
+	var configured := smoke.configure(_profile(entries), {"smoke_slots": endpoints})
+	check("lifecycle cycle%d configures four mixed emitters" % cycle, configured)
+	if not configured:
+		smoke.free()
+		return {"cycle": cycle, "configured": false, "new_failures": failures - before_failures}
+	var initial_budget: Dictionary = smoke.budget_info()
+	check("lifecycle cycle%d has four bounded pools" % cycle,
+		smoke.get_child_count() == 4 and initial_budget.slot_particles.size() == 4 and int(initial_budget.capacity) <= 768)
+	var source := {"kind": "glow_prop", "running": true, "level": 1.0, "wash_mps": Vector3.ZERO}
+	var pose := {"tick": 0, "slot_transforms": transforms}
+	smoke.advance(0.0, pose, Vector3.ZERO, 1.0, source)
+	for frame in 8:
+		await _lifecycle_step(smoke, pose, source)
+	await _drain_draw_requests()
+	check("lifecycle cycle%d emits visible smoke before reset" % cycle, _colored_pixels(root.get_texture().get_image()) > 0)
+	smoke.reset()
+	await _drain_draw_requests()
+	var reset_image := root.get_texture().get_image()
+	var reset_pixels := _colored_pixels(reset_image)
+	check("lifecycle cycle%d reset clears native pixels" % cycle, reset_pixels == 0)
+	check("lifecycle cycle%d reset replaces rather than accumulates pools" % cycle,
+		smoke.get_child_count() == 4 and smoke._emitters.size() == 4 and int(smoke.budget_info().capacity) == int(initial_budget.capacity))
+	smoke.play()
+	pose.tick = 0
+	smoke.advance(0.0, pose, Vector3.ZERO, 1.0, source)
+	for frame in 8:
+		await _lifecycle_step(smoke, pose, source)
+	await _drain_draw_requests()
+	check("lifecycle cycle%d play emits after reset" % cycle, _colored_pixels(root.get_texture().get_image()) > 0)
+	smoke.stop()
+	await _lifecycle_step(smoke, pose, source)
+	await _drain_draw_requests()
+	var residual_image := root.get_texture().get_image()
+	var residual_pixels := _colored_pixels(residual_image)
+	check("lifecycle cycle%d stop retains visible residuals" % cycle, residual_pixels > 0)
+	check("lifecycle cycle%d stop disables every birth source" % cycle,
+		smoke._emitters.values().all(func(emitter): return not emitter.emitting))
+	var frozen_pixels := residual_image.get_data().hex_encode().sha256_text()
+	var frozen_clock: float = smoke._presentation_time_s
+	smoke.pause()
+	for frame in 3:
+		await _lifecycle_step(smoke, pose, source)
+	await _drain_draw_requests()
+	check("lifecycle cycle%d pause freezes accepted particle time" % cycle, smoke._presentation_time_s == frozen_clock)
+	check("lifecycle cycle%d pause freezes native pixels" % cycle,
+		root.get_texture().get_image().get_data().hex_encode().sha256_text() == frozen_pixels)
+	# Release pause while keeping Stop emission latched, as the Workshop does.
+	smoke.play()
+	smoke.stop()
+	for frame in 8:
+		await _lifecycle_step(smoke, pose, source)
+	await _drain_draw_requests()
+	var expired_image := root.get_texture().get_image()
+	var expired_pixels := _colored_pixels(expired_image)
+	check("lifecycle cycle%d released residuals expire" % cycle, expired_pixels == 0)
+	check("lifecycle cycle%d keeps four pools until owner release" % cycle, smoke.get_child_count() == 4)
+	if not output.is_empty() and (cycle == 0 or cycle == 49 or failures > before_failures):
+		reset_image.save_png(output.path_join("cycle%03d-reset.png" % cycle))
+		residual_image.save_png(output.path_join("cycle%03d-residual.png" % cycle))
+		expired_image.save_png(output.path_join("cycle%03d-expired.png" % cycle))
+	var record := {"cycle": cycle, "configured": true, "capacity": int(initial_budget.capacity),
+		"batch_count": initial_budget.slot_particles.size(), "reset_pixels": reset_pixels,
+		"residual_pixels": residual_pixels, "expired_pixels": expired_pixels,
+		"reset_decoded_pixels_sha256": reset_image.get_data().hex_encode().sha256_text(),
+		"residual_decoded_pixels_sha256": frozen_pixels,
+		"expired_decoded_pixels_sha256": expired_image.get_data().hex_encode().sha256_text(),
+		"wall_seconds": float(Time.get_ticks_usec() - started_us) / 1000000.0,
+		"new_failures": failures - before_failures}
+	smoke.free()
+	return record
+
+
+func _lifecycle_step(smoke: Node3D, pose: Dictionary, source: Dictionary) -> void:
+	pose.tick += 8
+	smoke.advance(8.0 / 240.0, pose, Vector3.ZERO, 1.0, source)
+	await process_frame
+	await RenderingServer.frame_post_draw
+
+
+func _lifecycle_counters() -> Dictionary:
+	return {"objects": int(Performance.get_monitor(Performance.OBJECT_COUNT)),
+		"resources": int(Performance.get_monitor(Performance.OBJECT_RESOURCE_COUNT)),
+		"nodes": int(Performance.get_monitor(Performance.OBJECT_NODE_COUNT)),
+		"orphans": int(Performance.get_monitor(Performance.OBJECT_ORPHAN_NODE_COUNT)),
+		"static_bytes": int(Performance.get_monitor(Performance.MEMORY_STATIC)),
+		"video_bytes": int(Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED)),
+		"render_objects": int(RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME)),
+	}

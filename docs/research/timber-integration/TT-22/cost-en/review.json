@@ -38,7 +38,7 @@
 	"fixture": "Manufactured deterministic propeller-strike scenario using Incident.begin(turbo-lumber-evolution), Incident._mark_propeller(), and the current Catalog/Calculator; follows the existing test_economy_cr39.gd pattern. No amount fields are authored or overridden by this capture script.",
 	"format": "openrc-timber-cost-review v1",
 	"headline": "At least US$7.99",
-	"incident_id": "2026-10-20T21:49:40-1916697",
+	"incident_id": "2026-10-20T22:07:28-1695149",
 	"layout_trace": [
 		{
 			"column_combined_minimum": [

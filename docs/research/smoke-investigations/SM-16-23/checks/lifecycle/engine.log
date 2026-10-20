@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Smoke lifecycle native: 50 measured cycles, 18.648 wall seconds, 0 new failures; C:/DEVELOPMENT/OpenRCsimulator/tmp/smoke-native-lifecycle-50-first/cycles
+Smoke renderer v2: 788 checks, 0 failures
