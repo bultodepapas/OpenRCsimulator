@@ -17,7 +17,8 @@ const FieldBuilder = preload("res://render/field.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 
 const OPTS := {audio = false, birds = false, theme = "", quality = "high"}
-const BUDGET_TRIANGLES := 725000 # LU-30: imported towers/insulators + conductors; native evidence in LU-30, 715023 measured
+const BUDGET_NON_FLEET_TRIANGLES := 725000 # Keep the existing field allowance; SC-09-R1 tracks the new static fleet separately.
+const BUDGET_FLEET_TRIANGLES := 350000 # Full near meshes, before per-view automatic LOD; native evidence in SC-09-R1.
 const BUDGET_BUILD_MS := 800.0 # provisional ceiling includes cold source import/parsing (native sample: 714 ms); 150 ms target is reported, not gated
 
 var _failures := 0
@@ -87,7 +88,14 @@ func _test_build() -> void:
 	var stats: Dictionary = root.get_meta("stats")
 	print("     stats: ", stats)
 	_check("instances built (> 120)", int(stats.instances) > 120)
-	_check("the parked fleet: 4 aircraft", int(stats.fleet) == 4)
+	_check("the parked fleet: 13 aircraft across ready, grass and service bays", int(stats.fleet) == 13)
+	var parked_fleet := root.get_node("ParkedAircraft")
+	_check("parked aircraft are eight static batches with no active scripts",
+		parked_fleet.process_mode == Node.PROCESS_MODE_DISABLED and parked_fleet.get_child_count() == 8
+		and parked_fleet.get_children().all(func(child: Node) -> bool:
+			return child is MultiMeshInstance3D and child.get_script() == null and child.get_child_count() == 0))
+	_check("repeated aircraft share draws within each shelter",
+		int(stats.fleet_batch_surfaces) < int(stats.fleet_surfaces) and int(stats.fleet_batch_surfaces) <= 180)
 	var motion_counts := {rotor = 0, flag = 0, crown = 0, bush_tips = 0}
 	var motion_node: Node = root.get_node("Motion")
 	for part: Node in motion_node.get_children():
@@ -174,9 +182,12 @@ func _test_build() -> void:
 				break
 	_check("building roofs have fitted UVs, PBR maps and damage ids", fitted_roofs,
 		"roof nodes=%d" % roof_count)
+	var fleet_triangles := _triangles(root.get_node("ParkedAircraft"))
 	var tris := _triangles(root)
+	_check("static modern fleet stays below 350k full-detail triangles", fleet_triangles > 0 and fleet_triangles <= BUDGET_FLEET_TRIANGLES, str(fleet_triangles))
 	print("     triangles: %d, build %.1f ms" % [tris, stats.build_ms])
-	_check("triangles within the scenery budget (%d)" % BUDGET_TRIANGLES, tris <= BUDGET_TRIANGLES, str(tris))
+	_check("non-fleet geometry stays within its existing budget (%d)" % BUDGET_NON_FLEET_TRIANGLES,
+		tris - fleet_triangles <= BUDGET_NON_FLEET_TRIANGLES, "non-fleet=%d fleet=%d" % [tris - fleet_triangles, fleet_triangles])
 	_check("build time under %.0f ms on this CPU" % BUDGET_BUILD_MS, float(stats.build_ms) < BUDGET_BUILD_MS, str(stats.build_ms))
 	for c in root.get_children():
 		if c is GeometryInstance3D and (c as GeometryInstance3D).cast_shadow != GeometryInstance3D.SHADOW_CASTING_SETTING_OFF:

@@ -1,0 +1,168 @@
+{
+	"format": "openrc-parked-aircraft v1",
+	"aircraft": "gp-extra-300s-60",
+	"configuration": "assembled",
+	"size": [
+		1.624,
+		0.382,
+		1.36
+	],
+	"collision_parts": [
+		{
+			"part": "body",
+			"center": [
+				0.0,
+				0.208841145038605,
+				-0.056753545999527
+			],
+			"size": [
+				0.291898220777512,
+				0.444573521614075,
+				1.26042139530182
+			]
+		},
+		{
+			"part": "left_wing",
+			"center": [
+				-0.405900001525879,
+				0.179702594876289,
+				-0.170155331492424
+			],
+			"size": [
+				0.811800003051758,
+				0.122998036444187,
+				0.391092240810394
+			]
+		},
+		{
+			"part": "right_wing",
+			"center": [
+				0.405900001525879,
+				0.179702594876289,
+				-0.170155331492424
+			],
+			"size": [
+				0.811800003051758,
+				0.122998036444187,
+				0.391092240810394
+			]
+		},
+		{
+			"part": "tail",
+			"center": [
+				0.0,
+				0.198727503418922,
+				0.574697017669678
+			],
+			"size": [
+				0.625,
+				0.372529447078705,
+				0.317616105079651
+			]
+		},
+		{
+			"part": "gear",
+			"center": [
+				0.0,
+				0.0426177680492401,
+				0.0645569264888763
+			],
+			"size": [
+				0.371999979019165,
+				0.097688615322113,
+				1.04063522815704
+			]
+		},
+		{
+			"part": "propeller",
+			"center": [
+				0.0000609308481216431,
+				0.317537993192673,
+				-0.609955191612244
+			],
+			"size": [
+				0.30514395236969,
+				0.0364026501774788,
+				0.0283393859863281
+			]
+		}
+	],
+	"source_triangles": 19470,
+	"triangles": 19470,
+	"lod_triangles": [
+		4890,
+		1604
+	],
+	"surfaces": 15,
+	"ground_pitch_deg": 10.86,
+	"ground_wheel_level_error_m": 0.0,
+	"ground_support_wheels": 3,
+	"ground_wheel_contacts": [
+		[
+			-0.170999988913536,
+			0.000355124473571777,
+			-0.383424907922745
+		],
+		[
+			0.149000003933907,
+			0.000355124473571777,
+			-0.383424907922745
+		],
+		[
+			-0.00499999942258,
+			0.000355109572410584,
+			0.567615389823914
+		]
+	],
+	"source_builder": "res://render/airplane.gd::build(gp-extra-300s-60)",
+	"source_identity": {
+		"manifest": {
+			"path": "res://data/aircraft_models/gp-extra-300s-60.json",
+			"sha256": "c29c9b34dd36545a2f07be0b57a0d3f65e5f5778980cfc3a0d252b8048cded2a",
+			"pinned_sha256": "c29c9b34dd36545a2f07be0b57a0d3f65e5f5778980cfc3a0d252b8048cded2a",
+			"matches_pin": true
+		},
+		"builder": {
+			"path": "res://aircraft/extra_300s_model.gd",
+			"sha256": "8ba857793231d585781a965860b1fbbbe0b102ee3f6d3dc87bb0822b719cac3c",
+			"pinned_sha256": "8ba857793231d585781a965860b1fbbbe0b102ee3f6d3dc87bb0822b719cac3c",
+			"matches_pin": true
+		},
+		"geometry_script": {
+			"path": "res://aircraft/extra_300s_geometry.gd",
+			"sha256": "a4154a63d4b82802ce35a3fcaaf20afd32d62a698709e551b966e148f311c9b4",
+			"pinned_sha256": "a4154a63d4b82802ce35a3fcaaf20afd32d62a698709e551b966e148f311c9b4",
+			"matches_pin": true
+		},
+		"fleet_collector": {
+			"path": "res://scenery/fleet.gd",
+			"sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"pinned_sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"matches_pin": true
+		},
+		"airplane_snapshot_builder": {
+			"path": "res://render/airplane.gd",
+			"sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"pinned_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"matches_pin": true
+		},
+		"baker": {
+			"path": "res://../tools/scenery/bake_parked_aircraft.gd",
+			"sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"pinned_sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"matches_pin": true
+		},
+		"geometry_source": {
+			"path": "assets/aircraft/extra-300s-60/geometry.json",
+			"sha256": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c",
+			"pinned_sha256": "71d8a095c0fc6b8d3cf63b4abed6aab3af15604b9e81f116d1cff60fdcecc79c",
+			"matches_pin": true
+		},
+		"asset": {
+			"kind": "procedural",
+			"identity": "gp-extra-300s-60-v1",
+			"revision": "gp-extra-300s-60-v1"
+		}
+	},
+	"notes": "Stock authored livery; PBR materials and UV maps retained; root forward is local -Z; mesh is centred in XZ with bottom y=0."
+}

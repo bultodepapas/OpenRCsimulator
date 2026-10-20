@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "b775202c-df99-4c28-9dc1-cab3cc1896e7",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_companions_traffic_index.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:11:38.568558+00:00",
+  "label": "afc12-index-integrated",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\traffic-index\\afc12-index-integrated-dyolypgb\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\traffic-index\\afc12-index-integrated-dyolypgb\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "traffic index: 102 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.422,
+  "log_bytes": 151,
+  "log_sha256": "00715487a9fe4f2382909b6912c16bcd952c46a5974edabfa001d970e671d526"
+}

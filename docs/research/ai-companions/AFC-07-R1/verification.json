@@ -1,0 +1,18 @@
+{
+  "format": "openrc-afc-evidence v1",
+  "date": "2026-10-20",
+  "scope": "draft pure scheduler contracts; no live flight integration",
+  "sources": {
+    "research/ai-companions/traffic/runway_coordinator.gd": "7e9cd92fc4fc3d3c8d17cc0c0a8904ac4b292b65dea7bfd0ff5d85f81ed7d144",
+    "research/ai-companions/traffic/activity_quota_scheduler.gd": "9743d78f735561f7c766ba1097897df3e0e927f7def30ce47a6c9ed63a37d2a5",
+    "research/ai-companions/traffic/fleet_incident_scheduler.gd": "b78ec883c5a7fdd86fb66324b0c5cd83e1ef36952bc5f392a5674cb3f6cbe615",
+    "research/ai-companions/traffic/test_traffic_schedulers.gd": "ff2f42d4cf0e0ae9d01ab77512ee7eca5c076787716fb1a26df2e409e8310221",
+    "research/ai-companions/traffic/test_scheduler_boundaries.gd": "ea156950f4893b9622546eb7acfcd7dc7a2edb21795adc559792ded91ec5c878",
+    "research/ai-companions/traffic/project.godot": "e0212fb0762d0e25ceecb7d1f0735bf6474668b661f0eedc44bcc8eafb669cef"
+  },
+  "accepted_reports": [
+    "checks/boundaries-final-isc57ji1/report.json",
+    "checks/traffic-final-h2x4dyy0/report.json"
+  ],
+  "additional_boundary_checks": 20
+}

@@ -1,0 +1,44 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SHELTER index=0 center_n=-18.500 center_e=-31.000 heading=0.00 normalized_seed=556310523
+TABLE shelter=0 i=0 local=(-11.60,1.40) foam=false field_box=false tool_box=false service=none
+TABLE shelter=0 i=1 local=(-7.00,1.40) foam=true field_box=true tool_box=true service=charger
+TABLE shelter=0 i=2 local=(-2.40,1.40) foam=false field_box=true tool_box=true service=none
+TABLE shelter=0 i=3 local=(2.20,1.40) foam=false field_box=true tool_box=true service=none
+TABLE shelter=0 i=4 local=(6.80,1.40) foam=true field_box=true tool_box=false service=fuel
+TABLE shelter=0 i=5 local=(11.40,1.40) foam=true field_box=false tool_box=false service=none
+CHAIR shelter=0 i=0 exists=true center_local=(-9.995,0.355) center_n=-18.855 center_e=-40.995 yaw_local_deg=5.977 hashes=(0.03690,0.33711,0.94435,0.58693)
+CHAIR shelter=0 i=1 exists=true center_local=(-4.071,0.316) center_n=-18.816 center_e=-35.071 yaw_local_deg=-7.426 hashes=(0.63293,0.85765,0.89496,0.39200)
+COOLER shelter=0 i=1 center_local=(-2.871,0.1,0.9)
+CHAIR shelter=0 i=2 exists=true center_local=(0.317,0.282) center_n=-18.782 center_e=-30.683 yaw_local_deg=-33.969 hashes=(0.66820,0.09744,0.85260,0.00594)
+CHAIR shelter=0 i=3 exists=true center_local=(5.637,0.108) center_n=-18.608 center_e=-25.363 yaw_local_deg=-6.498 hashes=(0.42888,0.11380,0.63530,0.40549)
+COOLER shelter=0 i=3 center_local=(6.837,0.1,0.9)
+CHAIR shelter=0 i=4 exists=true center_local=(11.293,0.364) center_n=-18.864 center_e=-19.707 yaw_local_deg=-13.185 hashes=(0.66602,0.41121,0.95451,0.30823)
+SHELTER index=1 center_n=-18.500 center_e=31.000 heading=0.00 normalized_seed=556318442
+TABLE shelter=1 i=0 local=(-11.60,1.40) foam=false field_box=false tool_box=false service=none
+TABLE shelter=1 i=1 local=(-7.00,1.40) foam=true field_box=true tool_box=false service=charger
+TABLE shelter=1 i=2 local=(-2.40,1.40) foam=false field_box=true tool_box=true service=none
+TABLE shelter=1 i=3 local=(2.20,1.40) foam=true field_box=false tool_box=true service=none
+TABLE shelter=1 i=4 local=(6.80,1.40) foam=false field_box=true tool_box=false service=fuel
+TABLE shelter=1 i=5 local=(11.40,1.40) foam=false field_box=true tool_box=true service=none
+CHAIR shelter=1 i=0 exists=true center_local=(-10.186,-0.005) center_n=-18.495 center_e=20.814 yaw_local_deg=0.617 hashes=(0.38440,0.17857,0.49387,0.50897)
+CHAIR shelter=1 i=1 exists=true center_local=(-4.460,0.260) center_n=-18.760 center_e=26.540 yaw_local_deg=-2.909 hashes=(0.03995,0.53340,0.82455,0.45769)
+CHAIR shelter=1 i=2 exists=true center_local=(1.019,-0.267) center_n=-18.233 center_e=32.019 yaw_local_deg=-13.921 hashes=(0.08551,0.68211,0.16617,0.29753)
+CHAIR shelter=1 i=3 exists=true center_local=(6.219,-0.025) center_n=-18.475 center_e=37.219 yaw_local_deg=-22.930 hashes=(0.21066,0.59949,0.46834,0.16650)
+COOLER shelter=1 i=3 center_local=(7.419,0.1,0.9)
+CHAIR shelter=1 i=4 exists=false center_local=(10.971,-0.012) center_n=-18.488 center_e=41.971 yaw_local_deg=-27.656 hashes=(0.83177,0.14256,0.48549,0.09776)
+COOLER shelter=1 i=4 center_local=(12.171,0.1,0.9)
+AIRCRAFT group=fleet id=jensen-das-ugly-stik-60 config=assembled scale=1.000 elevation=0.100 n=-17.700 e=-40.300 heading=352.00 parts=6
+AIRCRAFT group=fleet id=gp-extra-300s-60 config=assembled scale=1.000 elevation=0.100 n=-17.600 e=-24.500 heading=12.00 parts=6
+AIRCRAFT group=fleet id=p51d-mustang-120 config=assembled scale=1.000 elevation=0.100 n=-17.800 e=29.700 heading=348.00 parts=6
+AIRCRAFT group=fleet id=sebart-avanti-s-a200-p100rx config=assembled scale=1.000 elevation=0.100 n=-17.600 e=35.800 heading=6.00 parts=5
+AIRCRAFT group=fleet id=turbo-lumber-evolution config=assembled scale=1.000 elevation=0.100 n=-17.200 e=20.600 heading=355.00 parts=6
+AIRCRAFT group=fleet-large-jet id=sebart-avanti-s-a200-p100rx config=assembled scale=1.300 elevation=0.000 n=-17.500 e=-48.000 heading=20.00 parts=5
+AIRCRAFT group=fleet-micro-jets id=sebart-avanti-s-a200-p100rx config=assembled scale=0.500 elevation=0.000 n=-21.400 e=-48.200 heading=50.00 parts=5
+AIRCRAFT group=fleet-micro-jets id=sebart-avanti-s-a200-p100rx config=assembled scale=0.500 elevation=0.000 n=-17.000 e=48.000 heading=340.00 parts=5
+AIRCRAFT group=fleet-grass id=turbo-lumber-evolution config=assembled scale=0.900 elevation=0.000 n=-21.100 e=47.900 heading=15.00 parts=6
+AIRCRAFT group=fleet-grass id=gp-extra-300s-60 config=assembled scale=0.900 elevation=0.000 n=-23.800 e=-29.500 heading=190.00 parts=6
+AIRCRAFT group=fleet-micro-bench id=sebart-avanti-s-a200-p100rx config=assembled scale=0.450 elevation=0.900 n=-19.900 e=-42.600 heading=90.00 parts=5
+AIRCRAFT group=fleet-sport-bench id=gp-extra-300s-60 config=assembled scale=0.650 elevation=0.900 n=-19.900 e=19.400 heading=270.00 parts=6
+AIRCRAFT group=fleet-service id=jensen-das-ugly-stik-60 config=service scale=1.000 elevation=1.120 n=-19.900 e=-19.600 heading=90.00 parts=4
+SUMMARY shelters=2 aircraft=13 furniture_boxes=115 part_pairs=0 expected_support_contacts=0 candidate_interferences=0

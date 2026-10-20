@@ -275,7 +275,8 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	var population_contact_kit := MeshKit.new()
 	var population_shadow_groups: Array[Dictionary] = []
 	var shadow_groups: Dictionary = {}
-	var stats := {instances = 0, skipped = 0, shadows = 0, motion = 0, flowers = 0, fleet = 0, theme = theme, quality = quality}
+	var stats := {instances = 0, skipped = 0, shadows = 0, motion = 0, flowers = 0, fleet = 0,
+		fleet_triangles = 0, fleet_surfaces = 0, theme = theme, quality = quality}
 	var motion_parent := Node3D.new()
 	motion_parent.name = "Motion"
 	root.add_child(motion_parent)
@@ -286,6 +287,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 	fleet_parent.name = "ParkedAircraft"
 	fleet_parent.process_mode = Node.PROCESS_MODE_DISABLED
 	root.add_child(fleet_parent)
+	var fleet_batches := {}
 	var timing := {}
 	for group: Dictionary in scenery.groups:
 		var g0 := Time.get_ticks_usec()
@@ -379,16 +381,29 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					var mesh := ParkedAircraft.mesh(pl.aircraft, pl.get("configuration", "assembled"))
 					if mesh == null:
 						continue
-					var parked := MeshInstance3D.new()
-					parked.name = "%s_%02d" % [group.id, placement_index]
-					parked.mesh = mesh
-					parked.transform = ParkedAircraft.transform_for(pl)
-					parked.visibility_range_end = 350.0
-					parked.visibility_range_end_margin = 25.0
-					parked.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-					parked.set_meta("placement", pl)
-					fleet_parent.add_child(parked)
+					# Batch repeated airframes per shelter, keeping east/west culling independent.
+					var batch_id := "%s_%s_%s" % [pl.aircraft, pl.get("configuration", "assembled"), "west" if pl.east < 0 else "east"]
+					if not fleet_batches.has(batch_id):
+						fleet_batches[batch_id] = {mesh = mesh, placements = []}
+					fleet_batches[batch_id].placements.append(pl)
+					var info := ParkedAircraft.info(pl.aircraft, pl.get("configuration", "assembled"))
+					var size := Vector3(float(info.size[0]), float(info.size[1]), float(info.size[2])) * float(pl.get("scale", 1.0))
+					var contact_xf := _placement_xf(pl.north, pl.east, pl.heading)
+					contact_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
+					var mode := "aircraft_jet" if pl.aircraft == "sebart-avanti-s-a200-p100rx" else "aircraft_prop"
+					if pl.get("configuration", "assembled") == "service":
+						mode = "aircraft_service"
+					if float(pl.get("elevation", 0.0)) >= 0.90:
+						# The occupied 2.4 x 0.8 m worktops receive the shadow; foam blocks occlude it naturally.
+						contact_xf.origin.y = 0.90
+						mode += "_bench"
+					population_shadow_groups.append({transform = contact_xf, size = size, mode = mode, damage_id = ""})
+					if shadow_strength > 0.0:
+						GroundFeatures.contact_shadow(population_contact_kit, contact_xf, size, mode, sun)
+						stats.shadows += 1
 					stats.fleet += 1
+					stats.fleet_triangles += Population.triangles(mesh)
+					stats.fleet_surfaces += mesh.get_surface_count()
 			"fence":
 				var points := PackedVector2Array()
 				for point: Vector2 in group.points:
@@ -435,6 +450,25 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 					_placement_xf(b.north, b.east, b.heading))
 				wire_kit.tag_damage(first_wire, "prop:%s:%02d" % [group.id, i])
 		timing[group.type] = float(timing.get(group.type, 0.0)) + (Time.get_ticks_usec() - g0) / 1000.0
+	stats.fleet_batch_surfaces = 0
+	for batch_id: String in fleet_batches:
+		var batch: Dictionary = fleet_batches[batch_id]
+		var multimesh := MultiMesh.new()
+		multimesh.transform_format = MultiMesh.TRANSFORM_3D
+		multimesh.mesh = batch.mesh
+		multimesh.instance_count = batch.placements.size()
+		for index: int in batch.placements.size():
+			multimesh.set_instance_transform(index, ParkedAircraft.transform_for(batch.placements[index]))
+		var parked := MultiMeshInstance3D.new()
+		parked.name = batch_id
+		parked.multimesh = multimesh
+		parked.visibility_range_end = 350.0
+		parked.visibility_range_end_margin = 25.0
+		parked.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		parked.set_meta("placements", batch.placements)
+		fleet_parent.add_child(parked)
+		stats.fleet_batch_surfaces += batch.mesh.get_surface_count()
+	stats.fleet_batches = fleet_batches.size()
 	var vegetation_started := Time.get_ticks_usec()
 	var vegetation := ImportedVegetation.build(vegetation_batches, false, {
 		tree_wind = bool(opts.get("tree_wind", true)),

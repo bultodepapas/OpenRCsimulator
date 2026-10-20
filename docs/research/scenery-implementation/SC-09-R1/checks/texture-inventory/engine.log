@@ -1,0 +1,56 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RESOURCE stik_assembled surfaces=29 tex_refs=4 unique_textures=3 unique_stored_bytes=3582712 decoded_bytes=28661092 repeat_stored_bytes=2796216
+  s1:albedo_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=b4a6f7feba21
+  s1:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=699064 hash=a42a0c85bde4
+  s2:albedo_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=b4a6f7feba21
+  s10:albedo_texture=PortableCompressedTexture2D 1024x128 17 bytes=87432 hash=977d0afa5dbe
+RESOURCE stik_service surfaces=27 tex_refs=3 unique_textures=2 unique_stored_bytes=3495280 decoded_bytes=27962024 repeat_stored_bytes=2796216
+  s1:albedo_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=b4a6f7feba21
+  s1:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=699064 hash=a42a0c85bde4
+  s2:albedo_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=b4a6f7feba21
+RESOURCE extra_assembled surfaces=15 tex_refs=0 unique_textures=0 unique_stored_bytes=0 decoded_bytes=0 repeat_stored_bytes=0
+RESOURCE p51_assembled surfaces=29 tex_refs=0 unique_textures=0 unique_stored_bytes=0 decoded_bytes=0 repeat_stored_bytes=0
+RESOURCE avanti_assembled surfaces=24 tex_refs=26 unique_textures=17 unique_stored_bytes=43057712 decoded_bytes=207181128 repeat_stored_bytes=25340744
+  s0:albedo_texture=PortableCompressedTexture2D 2048x2048 19 bytes=5592432 hash=fa5f6c39c9f0
+  s0:metallic_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=42e5978cef2a
+  s0:roughness_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=42e5978cef2a
+  s0:emission_texture=PortableCompressedTexture2D 2048x2048 19 bytes=5592432 hash=deacd6380d22
+  s3:albedo_texture=PortableCompressedTexture2D 512x512 19 bytes=349552 hash=c8bb71b85680
+  s3:metallic_texture=PortableCompressedTexture2D 512x512 17 bytes=174776 hash=f8c015612116
+  s3:roughness_texture=PortableCompressedTexture2D 512x512 17 bytes=174776 hash=f8c015612116
+  s3:emission_texture=PortableCompressedTexture2D 512x512 17 bytes=174776 hash=a680a4b78533
+  s4:albedo_texture=PortableCompressedTexture2D 1024x2048 19 bytes=2796240 hash=d6d347d23eeb
+  s4:metallic_texture=PortableCompressedTexture2D 1024x2048 17 bytes=1398120 hash=f6a3ecca8bb2
+  s4:roughness_texture=PortableCompressedTexture2D 1024x2048 17 bytes=1398120 hash=f6a3ecca8bb2
+  s4:emission_texture=PortableCompressedTexture2D 1024x2048 19 bytes=2796240 hash=a10459172c92
+  s7:albedo_texture=PortableCompressedTexture2D 128x512 19 bytes=87440 hash=8defd0e68273
+  s10:albedo_texture=PortableCompressedTexture2D 768x320 19 bytes=327808 hash=4a15f8e79a69
+  s13:albedo_texture=PortableCompressedTexture2D 2048x2048 19 bytes=5592432 hash=5075afec6533
+  s13:metallic_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=a229af67dd51
+  s13:roughness_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=a229af67dd51
+  s13:emission_texture=PortableCompressedTexture2D 2048x2048 19 bytes=5592432 hash=b05588ea81e7
+  s18:albedo_texture=PortableCompressedTexture2D 2048x2048 19 bytes=5592432 hash=fa5f6c39c9f0
+  s18:metallic_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=42e5978cef2a
+  s18:roughness_texture=PortableCompressedTexture2D 2048x2048 17 bytes=2796216 hash=42e5978cef2a
+  s18:emission_texture=PortableCompressedTexture2D 2048x2048 19 bytes=5592432 hash=deacd6380d22
+  s20:albedo_texture=PortableCompressedTexture2D 2048x1024 19 bytes=2796240 hash=b3697cf1790a
+  s20:metallic_texture=PortableCompressedTexture2D 2048x1024 17 bytes=1398120 hash=18d5ce42452b
+  s20:roughness_texture=PortableCompressedTexture2D 2048x1024 17 bytes=1398120 hash=18d5ce42452b
+  s20:emission_texture=PortableCompressedTexture2D 2048x1024 19 bytes=2796240 hash=6952e502db28
+RESOURCE timber_assembled surfaces=16 tex_refs=14 unique_textures=4 unique_stored_bytes=2097152 decoded_bytes=16777216 repeat_stored_bytes=5242880
+  s0:roughness_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=225f2b486741
+  s0:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=307a960a3ea1
+  s2:roughness_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=225f2b486741
+  s2:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=307a960a3ea1
+  s3:roughness_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=225f2b486741
+  s3:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=307a960a3ea1
+  s6:roughness_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=225f2b486741
+  s6:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=307a960a3ea1
+  s10:roughness_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=bc5ea321cbfd
+  s10:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=6c92251efa51
+  s13:roughness_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=225f2b486741
+  s13:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=307a960a3ea1
+  s14:roughness_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=225f2b486741
+  s14:normal_texture=PortableCompressedTexture2D 1024x1024 17 bytes=524288 hash=307a960a3ea1
+TOTAL per-resource unique textures=26 references=47 stored_bytes=52232856 decoded_bytes=280581460 reduction_percent=81.38

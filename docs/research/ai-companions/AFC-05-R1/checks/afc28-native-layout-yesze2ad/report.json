@@ -1,0 +1,39 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "ca3cc6ab-94d7-473a-af1a-efed288c8ee5",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--script",
+    "res://../research/ai-companions/test_presentation_layout.gd",
+    "--",
+    "--capture=D:/OpenRCsimulator-AFC-work/evidence/presentation/layout-native"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T22:53:15.116895+00:00",
+  "label": "afc28-native-layout",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc28-native-layout-yesze2ad\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\presentation\\checks\\afc28-native-layout-yesze2ad\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "companion layout: 284 checks, 0 failed"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 7.359,
+  "log_bytes": 212,
+  "log_sha256": "4e407c9793e97ec547827aee87fd872ceb3c2879284bf3deb74481b1fa867c79"
+}

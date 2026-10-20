@@ -1,0 +1,56 @@
+{
+  "lods": true,
+  "name": "Flower Empodium",
+  "categories": [
+    "nature",
+    "plants",
+    "flowers",
+    "ground cover",
+    "collection: namaqualand"
+  ],
+  "type": 2,
+  "tags": [
+    "karoo",
+    "field",
+    "yellow",
+    "floral",
+    "wildflower",
+    "south africa"
+  ],
+  "max_resolution": [
+    4096,
+    4096
+  ],
+  "polycount": 5820,
+  "texel_density": 19536.985949046062,
+  "dimensions": [
+    1322.8426575660706,
+    284.0941548347473,
+    268.3515117969364
+  ],
+  "staging": null,
+  "date_published": 1728345600,
+  "files_hash": "9b07e5501c6a00074d6bd55df2571f61687b2185",
+  "description": "Free 4K model of Empodium wildflower - realistic yellow Namaqualand groundcover with detailed textures and multiple growth variations.",
+  "authors": {
+    "Jenelle van Heerden": "Photography",
+    "Rico Cilliers": "modeling"
+  },
+  "category_id": "081de04a-c797-537e-abf1-c0ce1a92552f",
+  "category": "Nature/Plants/Wildflowers",
+  "collections": [
+    "namaqualand"
+  ],
+  "attributes": {
+    "lods": true,
+    "condition": [
+      "clean"
+    ],
+    "material": [
+      "plant"
+    ]
+  },
+  "img_version": "0ea6897e",
+  "download_count": 14917,
+  "thumbnail_url": "https://cdn.polyhaven.com/asset_img/thumbs/flower_empodium.png?width=256&height=256&format=webp&v=0ea6897e"
+}

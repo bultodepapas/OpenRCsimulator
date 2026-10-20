@@ -1,0 +1,62 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"checks": 49,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"expired_pixels": 0,
+	"failures": 0,
+	"motion": {
+		"dynamic_5s": [
+			{
+				"centroid_x_m": 1.53313052829236,
+				"centroid_y_m": 0.104970675965404,
+				"rate": 30,
+				"weight": 217.537257283926,
+				"width_m": 0.166254404607541
+			},
+			{
+				"centroid_x_m": 1.52964213851232,
+				"centroid_y_m": 0.107583896297068,
+				"rate": 60,
+				"weight": 218.290198460221,
+				"width_m": 0.16506849059884
+			},
+			{
+				"centroid_x_m": 1.52767990481195,
+				"centroid_y_m": 0.109168787518103,
+				"rate": 144,
+				"weight": 218.81568877399,
+				"width_m": 0.164340394206838
+			}
+		],
+		"maximum_centroid_drift_m": 0.00687992991879582,
+		"method": "Orthographic640x360 camera.size6m; color-channel range weights isolate red smoke from gray background; projected image centroid, not hidden3D positions. Eight no-new-request draws drain the last accepted GPU command before readback.",
+		"oracle_error_m": 0.0000678519578485748,
+		"oracle_expected_x_m": 3.0999977640081,
+		"oracle_image": {
+			"weight": 30.7843125909567,
+			"width": 8.07450576637969,
+			"x": 506.003949047158,
+			"y": 179.999490446114
+		},
+		"scope": "One native backend, single-side projection; not fleet continuity or full3D plume qualification."
+	},
+	"multicolor_pause_pixel_identical": true,
+	"scope": "Native GLES3 compile/render/lifecycle probe; not a frame-time or physical validation campaign.",
+	"source_sha256": {
+		"res://render/smoke/profile_process.gdshader": "aa11474349686f7c58341928da92f0b9e42c05eb15b96b43b65f84d77fe2cdd3",
+		"res://render/smoke/profile_smoke.gd": "ef417f0a9ce37ce2b67922f04f2d7370931393bc5df01aa50adb7b9edc2eba01",
+		"res://render/smoke/profile_smoke_schedule.gd": "558134c6dffe4d41899888b975db109bfa33f4e35ac6f01655f2f333dfbd0bb4",
+		"res://tests/test_smoke_renderer_v2.gd": "aecc6c7100c1fee50f4af93b87464e50f672f3c7a684a475ea57cbb75e81b0b3"
+	},
+	"visible_pixels": 129
+}

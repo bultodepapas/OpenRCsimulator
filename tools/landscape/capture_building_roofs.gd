@@ -13,7 +13,6 @@ const VIEWS := [
 	{name = "pavilion_roof", eye = [-12.0, 14.0, -11.0], at = [-22.0, 0.0, -3.0], fov = 43.0},
 	{name = "shed_roof", eye = [-27.0, -21.0, -8.0], at = [-40.5, -33.5, -1.5], fov = 42.0},
 	{name = "farm_roofs", eye = [450.0, 160.0, -75.0], at = [610.0, 365.0, -3.0], fov = 55.0},
-	{name = "farm_close", eye = [550.0, 300.0, -24.0], at = [594.0, 333.0, -3.0], fov = 50.0},
 ]
 
 
@@ -51,6 +50,11 @@ func _run() -> void:
 		quit(1)
 		return
 	var field := Field.build(loaded.field)
+	if field.get_node_or_null("Scenery") == null:
+		push_error("Production scenery did not attach; refusing an empty-field capture")
+		field.free()
+		quit(1)
+		return
 	viewport.add_child(field)
 	var environment := WorldEnvironment.new()
 	environment.environment = Atmosphere.environment()

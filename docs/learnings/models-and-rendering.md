@@ -34,6 +34,8 @@ A fixed FOV/viewport reference makes a minimum-pixel light grow into a large sur
 
 ## Rendering and visual evidence
 
+- **Reload generated resources with a real renderer before accepting a bake.** Headless snapshots saved empty texture data, and imported `PortableCompressedTexture2D` resources discarded their compressed buffers on re-save. Retain image buffers before saving, deduplicate identical payloads, then reload and inspect native captures. Check wheel contact against referenced triangle vertices: unused source vertices can extend an AABB below the visible tires. Recheck the final LOD geometry and collision offset together. [SC-09-R1](../research/scenery-implementation/SC-09-R1/README.md).
+
 - **Include shader defaults when auditing assigned textures.** On pinned Godot 4.7.2, `Shader.get_shader_uniform_list()` omits uniforms with default textures. Enumerate RenderingServer parameters and resolve material overrides/default textures explicitly; a native fixture should prove shared consumers and unchanged assignments. Keep assigned resources separate from visible draws, and CPU image bytes separate from resident VRAM. ([VQ-02a inventory](../research/visual-quality-implementation/VQ-02a/README.md))
 
 - **Differentiate a spatial signal before applying its screen-footprint filter.** Feeding a `dFdx`/`dFdy`-dependent filter into another derivative creates undefined higher-order derivatives. LU-12 keeps the grain height independent of that filter, differentiates it once, then attenuates the gradients. Compare detail-off pixels for filtering and restore the original material for cost measurement: a zero-strength shader still executes. ([Material checks](../research/landscape-upgrade/LU-11/materials.md))

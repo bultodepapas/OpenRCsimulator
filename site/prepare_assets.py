@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Regenerate the prepared OpenRC Simulator WebP image assets.
 
-Requires Pillow==12.3.0. Source PNGs remain untouched. Aircraft studio renders
-are saved losslessly; field captures are reduced to at most 1600 pixels wide
-and encoded as WebP at quality 85. Savox display copies are resized to 768 pixels
-wide and encoded losslessly; --brands-only rebuilds just those derivatives.
+Requires Pillow==12.3.0. Source images remain untouched. Field and vehicle images
+are reduced to at most 1600 pixels wide and encoded as WebP at quality 85. Savox
+display copies are resized to 768 pixels wide and encoded losslessly;
+--brands-only rebuilds just those derivatives.
 """
 
 from __future__ import annotations
@@ -21,14 +21,6 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = Path(__file__).resolve().parent / "assets"
 MAX_FIELD_WIDTH = 1600
 MAX_BRAND_WIDTH = 768
-
-STUDIO_IMAGES = (
-    "ugly-stik.png",
-    "extra-300s.png",
-    "p51d-mustang.png",
-    "avanti-s.png",
-    "turbo-lumber-evolution.png",
-)
 
 FIELD_IMAGES = (
     (
@@ -73,27 +65,6 @@ def report(source: Path, destination: Path, size: tuple[int, int], encoding: str
         f"{destination.relative_to(ROOT)}: {size[0]}x{size[1]}, {encoding}, "
         f"{source_size:,} -> {output_size:,} bytes"
     )
-
-
-def convert_studio_images() -> None:
-    source_dir = ROOT / "docs/media"
-    for filename in STUDIO_IMAGES:
-        source = source_dir / filename
-        destination = ASSET_DIR / f"{source.stem}.webp"
-        with Image.open(source) as opened:
-            opened.load()
-            require_supported_source_mode(opened, source)
-            size = opened.size
-            metadata = metadata_for_webp(opened)
-            opened.save(
-                destination,
-                format="WEBP",
-                lossless=True,
-                exact=True,
-                method=6,
-                **metadata,
-            )
-        report(source, destination, size, "lossless WebP")
 
 
 def convert_field_images() -> None:
@@ -156,7 +127,6 @@ def main() -> int:
 
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
     if not args.brands_only:
-        convert_studio_images()
         convert_field_images()
     convert_brand_images()
     return 0

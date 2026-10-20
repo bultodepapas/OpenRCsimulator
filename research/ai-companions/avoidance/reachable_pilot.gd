@@ -18,6 +18,7 @@ const TERRAIN_CLEARANCE_M := 20.0
 const TERRAIN_UNCERTAINTY_M := 5.0
 const AVOID_BANK_LIMIT_RAD := 0.4363323129985824
 const BANK_CHOICES_DEG := [-25.0, -20.0, -15.0, -10.0, -5.0, 0.0, 5.0, 10.0, 15.0, 20.0, 25.0]
+const AVOIDANCE_STATE_VERSION := "reachable-pilot-state-v1"
 
 var _planning_tick := 0
 var _planning_clearance_m := NAN
@@ -52,6 +53,62 @@ func command(snapshot: Dictionary, tick: int, traffic: Array = []) -> Dictionary
 	return packet
 
 
+## Serializable controller-only state for deterministic checkpoint continuation.
+## FlightSession state remains authoritative for physical position and velocity.
+func snapshot_state() -> Dictionary:
+	return {
+		"version": AVOIDANCE_STATE_VERSION,
+		"planning_tick": _planning_tick,
+		"has_held_maneuver": _has_held_maneuver,
+		"held_bank_rad": _held_bank_rad if _has_held_maneuver else 0.0,
+		"hold_until_tick": _hold_until_tick if _has_held_maneuver else -1,
+		"clear_since_tick": _clear_since_tick if _has_held_maneuver else -1,
+	}
+
+
+## Restore is atomic and strict so an untrusted/old checkpoint cannot poison control.
+func restore_state(candidate: Dictionary) -> Dictionary:
+	if candidate.size() != 6 or String(candidate.get("version", "")) != AVOIDANCE_STATE_VERSION:
+		return {"ok": false, "reason": "state_version_or_shape_mismatch"}
+	for key: String in ["planning_tick", "has_held_maneuver", "held_bank_rad", "hold_until_tick", "clear_since_tick"]:
+		if not candidate.has(key):
+			return {"ok": false, "reason": "state_missing_%s" % key}
+	var planning_tick_value: Variant = candidate.planning_tick
+	var has_held_value: Variant = candidate.has_held_maneuver
+	var held_bank_value: Variant = candidate.held_bank_rad
+	var hold_until_value: Variant = candidate.hold_until_tick
+	var clear_since_value: Variant = candidate.clear_since_tick
+	if typeof(planning_tick_value) != TYPE_INT or int(planning_tick_value) < 0 \
+			or typeof(has_held_value) != TYPE_BOOL \
+			or typeof(held_bank_value) not in [TYPE_FLOAT, TYPE_INT] \
+			or typeof(hold_until_value) != TYPE_INT \
+			or typeof(clear_since_value) != TYPE_INT:
+		return {"ok": false, "reason": "invalid_state_types"}
+	var planning_tick: int = int(planning_tick_value)
+	var has_held: bool = bool(has_held_value)
+	var held_bank: float = float(held_bank_value)
+	var hold_until: int = int(hold_until_value)
+	var clear_since: int = int(clear_since_value)
+	if not is_finite(held_bank) or absf(held_bank) > AVOID_BANK_LIMIT_RAD \
+			or clear_since < -1 or clear_since > planning_tick:
+		return {"ok": false, "reason": "state_value_out_of_range"}
+	if has_held:
+		if hold_until < 0:
+			return {"ok": false, "reason": "held_maneuver_missing_deadline"}
+	else:
+		if held_bank != 0.0 or hold_until != -1 or clear_since != -1:
+			return {"ok": false, "reason": "inactive_maneuver_state_not_canonical"}
+	_planning_tick = planning_tick
+	_has_held_maneuver = has_held
+	_held_bank_rad = held_bank if has_held else 0.0
+	_hold_until_tick = hold_until if has_held else -1
+	_clear_since_tick = clear_since if has_held else -1
+	_override_roll_demand = false
+	_selected_bank_target_rad = 0.0
+	_last_decision.clear()
+	return {"ok": true}
+
+
 func _avoidance_velocity(
 		state: PackedFloat64Array,
 		attitude: PackedFloat64Array,
@@ -62,6 +119,7 @@ func _avoidance_velocity(
 	# This branch is deliberately the production implementation, preserving the
 	# original controller path exactly when no moving traffic is present.
 	if traffic.is_empty():
+		_release_held_maneuver_if_clear()
 		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 	var own_speed: float = AvoidanceMath.sqrt_(own_velocity[0] * own_velocity[0] + own_velocity[1] * own_velocity[1])
@@ -74,6 +132,7 @@ func _avoidance_velocity(
 	var nominal_bank: float = clampf(_direction * atan2(_target_speed_mps * _target_speed_mps, G * _radius_m), -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
 	var threats: Array[Dictionary] = _prepare_threats(traffic, own_velocity)
 	if threats.is_empty():
+		_release_held_maneuver_if_clear()
 		return super._avoidance_velocity(state, attitude, own_velocity, base_air_north, base_air_east, traffic)
 
 	var clearance: float = _planning_clearance_m
@@ -83,7 +142,6 @@ func _avoidance_velocity(
 		nominal_bank, nominal_bank, clearance, threats)
 	var best_bank: float = nominal_bank
 	var best_score: float = float(baseline.score)
-	var best_prediction: Dictionary = baseline
 	for bank_degrees: float in BANK_CHOICES_DEG:
 		var candidate_bank: float = deg_to_rad(bank_degrees)
 		var result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
@@ -93,14 +151,12 @@ func _avoidance_velocity(
 		if candidate_score > best_score:
 			best_score = candidate_score
 			best_bank = candidate_bank
-			best_prediction = result
 	# Include the continuous nominal bank in the candidate set and favor it when
 	# a reachable choice cannot improve the worst predicted clearance.
 	var nominal_score: float = float(baseline.score)
 	if nominal_score >= best_score:
 		best_bank = nominal_bank
 		best_score = nominal_score
-		best_prediction = baseline
 
 	if _has_held_maneuver:
 		var held_result: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
@@ -113,33 +169,36 @@ func _avoidance_velocity(
 			_clear_since_tick = -1
 		var held_is_unsafe: bool = float(held_result.score) < -2.0
 		if held_is_unsafe and best_score > float(held_result.score) + 2.0:
-			_held_bank_rad = best_bank
-			_hold_until_tick = _planning_tick + HOLD_TIME_TICKS
+			_set_held_maneuver(best_bank, _planning_tick + HOLD_TIME_TICKS, "retarget")
 			_clear_since_tick = -1
 		elif _planning_tick >= _hold_until_tick and _clear_since_tick >= 0 \
 				and _planning_tick - _clear_since_tick >= RELEASE_CLEAR_TIME_TICKS:
-			_has_held_maneuver = false
-			_hold_until_tick = -1
-			_clear_since_tick = -1
+			_clear_held_maneuver("threat_clear")
 			return _unmodified_traffic_response(base_air_north, base_air_east)
 		else:
 			best_bank = _held_bank_rad
 	else:
 		if float(baseline.score) >= 0.0:
 			return _unmodified_traffic_response(base_air_north, base_air_east)
-		_has_held_maneuver = true
-		_held_bank_rad = best_bank
-		_hold_until_tick = _planning_tick + HOLD_TIME_TICKS
+		_set_held_maneuver(best_bank, _planning_tick + HOLD_TIME_TICKS, "conflict")
 		_clear_since_tick = -1
+	var selected_prediction: Dictionary = _score_bank(state, own_velocity, own_speed, current_bank,
+		nominal_bank, best_bank, clearance, threats)
 	_last_decision = {
 		"tick": _planning_tick,
 		"selected_bank_deg": rad_to_deg(best_bank),
 		"nominal_bank_deg": rad_to_deg(nominal_bank),
+		"has_held_maneuver": _has_held_maneuver,
+		"held_bank_deg": rad_to_deg(_held_bank_rad) if _has_held_maneuver else 0.0,
+		"hold_until_tick": _hold_until_tick if _has_held_maneuver else -1,
+		"clear_since_tick": _clear_since_tick if _has_held_maneuver else -1,
+		"selected_bank_is_held": _has_held_maneuver and is_equal_approx(best_bank, _held_bank_rad),
 		"baseline_score_m": float(baseline.score),
-		"candidate_score_m": best_score,
-		"candidate_player_min_m": float(best_prediction.minimum_player_distance_m),
-		"candidate_peer_min_m": float(best_prediction.minimum_peer_distance_m),
-		"terrain_margin_m": float(best_prediction.terrain_margin_m),
+		"best_candidate_adjusted_score_m": best_score,
+		"selected_score_m": float(selected_prediction.score),
+		"selected_player_min_m": _finite_diagnostic(selected_prediction.minimum_player_distance_m),
+		"selected_peer_min_m": _finite_diagnostic(selected_prediction.minimum_peer_distance_m),
+		"selected_terrain_margin_m": float(selected_prediction.terrain_margin_m),
 		"threat_count": threats.size(),
 	}
 
@@ -284,3 +343,49 @@ func _bank_response(base_air_north: float, base_air_east: float,
 func _unmodified_traffic_response(base_air_north: float, base_air_east: float) -> Dictionary:
 	return {"active": false, "air_north": base_air_north,
 		"air_east": base_air_east, "altitude_delta": 0.0}
+
+
+func _release_held_maneuver_if_clear() -> void:
+	if not _has_held_maneuver:
+		return
+	if _clear_since_tick < 0:
+		_clear_since_tick = _planning_tick
+	if _planning_tick >= _hold_until_tick \
+			and _planning_tick - _clear_since_tick >= RELEASE_CLEAR_TIME_TICKS:
+		_clear_held_maneuver("empty_traffic_clear")
+
+
+func _set_held_maneuver(bank_rad: float, deadline_tick: int, reason: String) -> void:
+	var changed: bool = not _has_held_maneuver or not is_equal_approx(_held_bank_rad, bank_rad)
+	_has_held_maneuver = true
+	_held_bank_rad = clampf(bank_rad, -AVOID_BANK_LIMIT_RAD, AVOID_BANK_LIMIT_RAD)
+	_hold_until_tick = deadline_tick
+	_clear_since_tick = -1
+	if changed:
+		_log_maneuver_transition("hold", reason)
+
+
+func _clear_held_maneuver(reason: String) -> void:
+	if not _has_held_maneuver:
+		return
+	_has_held_maneuver = false
+	_held_bank_rad = 0.0
+	_hold_until_tick = -1
+	_clear_since_tick = -1
+	_log_maneuver_transition("release", reason)
+
+
+func _log_maneuver_transition(action: String, reason: String) -> void:
+	print("AFC_REACHABLE_MANEUVER " + JSON.stringify({
+		"action": action,
+		"reason": reason,
+		"tick": _planning_tick,
+		"has_held_maneuver": _has_held_maneuver,
+		"held_bank_deg": rad_to_deg(_held_bank_rad) if _has_held_maneuver else 0.0,
+		"hold_until_tick": _hold_until_tick if _has_held_maneuver else -1,
+		"clear_since_tick": _clear_since_tick if _has_held_maneuver else -1,
+	}))
+
+
+func _finite_diagnostic(value: float) -> Variant:
+	return value if is_finite(value) else null

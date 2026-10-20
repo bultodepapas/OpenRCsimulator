@@ -1,0 +1,156 @@
+{
+	"format": "openrc-parked-aircraft v1",
+	"aircraft": "sebart-avanti-s-a200-p100rx",
+	"configuration": "assembled",
+	"size": [
+		1.996,
+		0.811,
+		2.236
+	],
+	"collision_parts": [
+		{
+			"part": "body",
+			"center": [
+				-0.000289961695671082,
+				0.345189437270164,
+				-0.00701385736465454
+			],
+			"size": [
+				0.470184087753296,
+				0.361641764640808,
+				2.22160577774048
+			]
+		},
+		{
+			"part": "left_wing",
+			"center": [
+				-0.4316246509552,
+				0.231083437800407,
+				0.127871006727219
+			],
+			"size": [
+				1.13315081596375,
+				0.135548174381256,
+				0.613301396369934
+			]
+		},
+		{
+			"part": "right_wing",
+			"center": [
+				0.516600131988525,
+				0.231083378195763,
+				0.127882599830627
+			],
+			"size": [
+				0.963200032711029,
+				0.13554809987545,
+				0.613323926925659
+			]
+		},
+		{
+			"part": "tail",
+			"center": [
+				0.000000983476638793945,
+				0.578045174479485,
+				0.778718054294586
+			],
+			"size": [
+				0.898581385612488,
+				0.506846010684967,
+				0.730557501316071
+			]
+		},
+		{
+			"part": "gear",
+			"center": [
+				0.0000000894069671630859,
+				0.126334771513939,
+				-0.356560707092285
+			],
+			"size": [
+				0.840082585811615,
+				0.253483504056931,
+				1.14754629135132
+			]
+		}
+	],
+	"source_triangles": 146652,
+	"triangles": 20474,
+	"lod_triangles": [
+		11202,
+		10094
+	],
+	"surfaces": 24,
+	"ground_pitch_deg": 0.05,
+	"ground_wheel_level_error_m": 0.0,
+	"ground_support_wheels": 3,
+	"ground_wheel_contacts": [
+		[
+			-0.319999933242798,
+			-0.000365704298019409,
+			0.165065228939056
+		],
+		[
+			0.320000141859055,
+			-0.000365749001502991,
+			0.165065288543701
+		],
+		[
+			0.000000159476002181691,
+			-0.000365719199180603,
+			-0.697935163974762
+		]
+	],
+	"source_builder": "res://render/airplane.gd::build(sebart-avanti-s-a200-p100rx)",
+	"source_identity": {
+		"manifest": {
+			"path": "res://data/aircraft_models/sebart-avanti-s-a200-p100rx.json",
+			"sha256": "acacb817a79410ee6d881138e013733356d68ad309a3acfc59b003adae1efe58",
+			"pinned_sha256": "acacb817a79410ee6d881138e013733356d68ad309a3acfc59b003adae1efe58",
+			"matches_pin": true
+		},
+		"builder": {
+			"path": "res://aircraft/imported_model.gd",
+			"sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
+			"pinned_sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
+			"matches_pin": true
+		},
+		"geometry_script": {
+			"path": "res://aircraft/avanti_s_blender_geometry.gd",
+			"sha256": "ca9c44cd9d8d147328b5b7bd7b77f1b6e237b90038e03de754cb84089873373b",
+			"pinned_sha256": "ca9c44cd9d8d147328b5b7bd7b77f1b6e237b90038e03de754cb84089873373b",
+			"matches_pin": true
+		},
+		"fleet_collector": {
+			"path": "res://scenery/fleet.gd",
+			"sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"pinned_sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"matches_pin": true
+		},
+		"airplane_snapshot_builder": {
+			"path": "res://render/airplane.gd",
+			"sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"pinned_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"matches_pin": true
+		},
+		"baker": {
+			"path": "res://../tools/scenery/bake_parked_aircraft.gd",
+			"sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"pinned_sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"matches_pin": true
+		},
+		"geometry_source": {
+			"path": "assets/aircraft/avanti-s-a200/blender-geometry.json",
+			"sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+			"pinned_sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d",
+			"matches_pin": true
+		},
+		"asset": {
+			"path": "res://assets/aircraft/avanti-s-a200/avanti_s.glb",
+			"sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
+			"pinned_sha256": "803d293d597d88d94cebe1c191e6453e5d108aca4d6e5d5eaabfa0a387cf0f36",
+			"matches_pin": true
+		}
+	},
+	"notes": "Stock authored livery; PBR materials and UV maps retained; root forward is local -Z; mesh is centred in XZ with bottom y=0."
+}

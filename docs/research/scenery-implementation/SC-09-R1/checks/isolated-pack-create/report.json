@@ -1,0 +1,40 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "df98db6b-9d1c-441d-bc99-456f6bae432e",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "D:/OpenRC-task-evidence/hangar-upgrade-2026-10-20/isolated-parked",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://verify_pack.gd",
+    "--",
+    "D:/OpenRC-task-evidence/hangar-upgrade-2026-10-20/fresh-check/app/assets/scenery/aircraft"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:51:37.899529+00:00",
+  "label": "isolated-pack-create-final",
+  "log": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\isolated-pack-create-final-nqq7q8ta\\engine.log",
+  "report": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\isolated-pack-create-final-nqq7q8ta\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.297,
+  "log_bytes": 75,
+  "log_sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+}

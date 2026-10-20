@@ -1,0 +1,38 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "5b1653c1-96c0-47f7-9d6f-213f8425137f",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "D:/OpenRC-task-evidence/hangar-upgrade-2026-10-20/texture_audit.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:49:14.298688+00:00",
+  "label": "texture-storage-final",
+  "log": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\texture-storage-final-ga2zfolu\\engine.log",
+  "report": "D:\\OpenRC-task-evidence\\hangar-upgrade-2026-10-20\\checks\\texture-storage-final-ga2zfolu\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.782,
+  "log_bytes": 5501,
+  "log_sha256": "d460eda8ca69577fb656d860e271cbd2c1cf1ab05cd261f60877a62bbf7fc1b9"
+}

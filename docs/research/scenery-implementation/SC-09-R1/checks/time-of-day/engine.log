@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: Tree wind is disabled for maple_tree because source material -9223371943321794470 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _field_node (res://tests/test_time_of_day_scenery_update.gd:117)
+       [5] _initialize (res://tests/test_time_of_day_scenery_update.gd:20)
+ok   fixture has retained nearby and population shadow batches
+ok   day to night prepares one replacement per retained shadow batch
+ok   prepare leaves live alpha and shadow geometry untouched
+ok   night commit succeeds
+ok   night clears mesh surfaces and material alpha in place
+ok   night keeps shadow node and material identity
+ok   night keeps static scenery mesh resources
+     scenery night update: prepare 0.106 ms, commit 0.132 ms, 25 cells, 0 triangles
+ok   zero-strength solar direction changes create no mesh replacements
+ok   night no-op commit preserves empty mesh resources
+ok   night to dawn prepares projected shadows
+ok   night to dawn commit succeeds
+     scenery dawn projection: prepare 9.546 ms, commit 0.171 ms, 25 cells, 2498 triangles
+ok   dawn mesh hash equals a fresh build
+ok   dawn preserves static geometry, batch nodes and material
+ok   dawn to noon update succeeds
+ok   stale prepared snapshot is refused
+ok   stale refusal leaves the newer noon state untouched
+ok   noon mesh hash equals a fresh build
+ok   cross-scene prepared state is refused
+ok   cross-scene refusal mutates neither field
+ok   no scenery child is a safe no-op
+ok   noon to night update succeeds
+ok   night mesh hash equals a fresh build
+ok   night to legacy reversal succeeds
+ok   legacy mesh hash equals a fresh build
+ok   final identity remains stable
+25 scenery lighting checks, 0 failed

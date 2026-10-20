@@ -1,0 +1,488 @@
+{
+  "format": "openrc-scenery-evidence v1",
+  "step": "SC-09-R1",
+  "recorded_utc": "2026-10-20T23:54:06.762762+00:00",
+  "workspace_head": "861bb7b59036c7f458189a7ed0240eac004dab05",
+  "scope": "Source fingerprints at delivery, generated resources, and retained evidence; shared workspace includes unrelated edits. No full release-export or target-hardware frame-time qualification.",
+  "sources": [
+    {
+      "path": "app/scenery/parked_aircraft.gd",
+      "bytes": 2798,
+      "sha256": "9d9438d9480a29feb4fa04555b8a651030164f8f92fa157adf84c4a6832f4ddf"
+    },
+    {
+      "path": "app/scenery/parked_aircraft.gd.uid",
+      "bytes": 20,
+      "sha256": "c7fda79420fe2617b8be12346c4535c254cc177f663c2659435d01c4070341a5"
+    },
+    {
+      "path": "app/scenery/fleet.gd",
+      "bytes": 20653,
+      "sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7"
+    },
+    {
+      "path": "app/scenery/scenery.gd",
+      "bytes": 37408,
+      "sha256": "a40ffb1932aa8cb61483e111412b9f807b1b3ef2ee74372c95464eb98431292c"
+    },
+    {
+      "path": "app/scenery/scenery_loader.gd",
+      "bytes": 18202,
+      "sha256": "7b07f2ecc47ffed2ef4d1ce7ca552f58bb14625666df30c6105ca017a682f541"
+    },
+    {
+      "path": "app/scenery/collision_world.gd",
+      "bytes": 38866,
+      "sha256": "09343d14f9cf0b38a770832d1056d143da39f78772ac54a1047ec4504944b7e9"
+    },
+    {
+      "path": "app/scenery/ground_features.gd",
+      "bytes": 27517,
+      "sha256": "a7770177c2d65b93986edee7ef1cb0f11a948ebfdda9e16e55d7eb9c102fb134"
+    },
+    {
+      "path": "app/scenery/capture_views.gd",
+      "bytes": 4474,
+      "sha256": "9865c5ae3978e0c09443d83f17da47c55e7e8ea08ba0b2370058d943192f3b73"
+    },
+    {
+      "path": "app/data/scenery/default.json",
+      "bytes": 33873,
+      "sha256": "f871d9917cdd7d240c173651b6a75a2083c1363006c4546e24ae7b0bf2b4264e"
+    },
+    {
+      "path": "app/export_presets.cfg",
+      "bytes": 6690,
+      "sha256": "c101d761dc070f0f85dd1187a8627a7a7e146cad2551d5fa52f4f0a24187bf54"
+    },
+    {
+      "path": "app/tests/test_scenery_build.gd",
+      "bytes": 20354,
+      "sha256": "b7314cee4b4352be4421604bdd45e66e626dba1442d62d526d5c260868f5d540"
+    },
+    {
+      "path": "app/tests/test_scenery_loader.gd",
+      "bytes": 8131,
+      "sha256": "559928ca01f63ce60b2fa486f57b7bfdb51452d1ba68a29b58f6c1a52a427745"
+    },
+    {
+      "path": "app/tests/test_landscape_population.gd",
+      "bytes": 11090,
+      "sha256": "ee190bc656ce13f1137f81a987227fb6cd3626c822ea6c18a6a367297f6e4371"
+    },
+    {
+      "path": "app/tests/test_landscape_collision.gd",
+      "bytes": 19066,
+      "sha256": "a1f74ed626f3f554222a889efeb044109c69f3115d28a694194d89c96d202985"
+    },
+    {
+      "path": "app/tests/test_landscape_collision_world.gd",
+      "bytes": 6513,
+      "sha256": "f18df66753a6377a695068fa199ce646d209d3c9710e03e5891abe0fef5149ac"
+    },
+    {
+      "path": "app/tests/test_parked_aircraft_collision.gd",
+      "bytes": 17802,
+      "sha256": "1046f607b4533250beaaa6c85fcaae731ed74946db99afa4ca3b1f21265b86c7"
+    },
+    {
+      "path": "app/tests/test_parked_aircraft_collision.gd.uid",
+      "bytes": 20,
+      "sha256": "61845b3749bdaee9fee097e3716fb74692ff029165eb1fca6e16f86f34fd1090"
+    },
+    {
+      "path": "tools/scenery/place.py",
+      "bytes": 39568,
+      "sha256": "f088e8872f00f01bb74fde0c3a6b3175d6907b0a7bc78d25cffd11950020a047"
+    },
+    {
+      "path": "tools/scenery/bake_parked_aircraft.gd",
+      "bytes": 24645,
+      "sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821"
+    },
+    {
+      "path": "tools/scenery/README.md",
+      "bytes": 6169,
+      "sha256": "6f51d6a44181f39e97cd36e4564a31836b5f1ba5d501a2337557c9ad4e70afef"
+    },
+    {
+      "path": "docs/SCENERY-PLAN.md",
+      "bytes": 6559,
+      "sha256": "5aec737cd27d21f82bd5a04e730073b01fb74c8882739b2ac682949d656484f9"
+    },
+    {
+      "path": "docs/DECISIONS.md",
+      "bytes": 184973,
+      "sha256": "3e12b923c7a969e75c4ff1bad847f9c310068ecaa9bb877958e276c520a21cbd"
+    },
+    {
+      "path": "docs/learnings/models-and-rendering.md",
+      "bytes": 30723,
+      "sha256": "f2916b9f624f5afef9f47d8d299440b34bc193621950b86735872b7aa816e794"
+    }
+  ],
+  "generated_assets": [
+    {
+      "path": "app/assets/scenery/aircraft/avanti_assembled.json",
+      "bytes": 4124,
+      "sha256": "c5bd2701975ec28dac28d0203024f00d2bcf633764bd99be0183b0225fccf7ab"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/avanti_assembled.res",
+      "bytes": 5025512,
+      "sha256": "9a71e869d6dffd8eb737b1af1a67136a17827b59b2ca04860e1643f056221326"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/extra_assembled.json",
+      "bytes": 4061,
+      "sha256": "f70a6684460476fa38856a4c1b26e9d79bc077ce2d0a0939a83013f3ed71245a"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/extra_assembled.res",
+      "bytes": 282718,
+      "sha256": "3ce0b5b337292da6276af757d0486625fcc760346f000e889a9b65d67e6679c3"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/p51_assembled.json",
+      "bytes": 4038,
+      "sha256": "3bbd11dfe2b0e160bba27e35bb34dd94afae07b69b72057a33de06eabdb26a4a"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/p51_assembled.res",
+      "bytes": 436375,
+      "sha256": "d65aa2095f1e676f41042c135ee562daf3242968e634cd43a6b9b7f643c96c2e"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_assembled.json",
+      "bytes": 4051,
+      "sha256": "91472c4d4af24cd53ba1d4f01eeae12939660b9a41b7b599cec76c91eb2db5a9"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_assembled.res",
+      "bytes": 584026,
+      "sha256": "b6b3e9c50355d060e134d4c6063f92bdf3c98c6d9bd74a72eac876e00c3b869c"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_service.json",
+      "bytes": 3454,
+      "sha256": "6fb4d06e32a0c3e7c15fee0b6cb9dd3719b78ffb215d387f2339d3cfa819d033"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/stik_service.res",
+      "bytes": 489964,
+      "sha256": "dd46d6f9e4c1ba0b7261bc186e5f5c66a5842a5e91817d3f166b08a69b217a7f"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/timber_assembled.json",
+      "bytes": 4245,
+      "sha256": "2d716eec3eb402f9e424915a38c9af372e533b058fb7e738ee76cf87708d9b0a"
+    },
+    {
+      "path": "app/assets/scenery/aircraft/timber_assembled.res",
+      "bytes": 1853457,
+      "sha256": "da434efa4ca738ec244299e3b685bcae4ee0ecb9a274fd49715957a304aa5ee7"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/fleet_close.png",
+      "bytes": 2319993,
+      "sha256": "3d73d6bae36103bcb290acbcb9e355858a467fe7f5d21abe5bc30e80221fcda1"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/hangar_bench.png",
+      "bytes": 1698474,
+      "sha256": "efbd83580c1b030d9e731cbc71aa8f70f7e592bce7dbd62a775d7f04c7023762"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/hangar_east.png",
+      "bytes": 1989093,
+      "sha256": "133b603a8fbfe994bca444672dc22e99a4a60fe61640435fb9e5a6d262ec65c9"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/hangar_east_bench.png",
+      "bytes": 2065117,
+      "sha256": "f31bbad1e516ae33378ed1851dc814b6bd675b08bb6ad1d30366deb7ab11585c"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/hangar_micro.png",
+      "bytes": 2366260,
+      "sha256": "e5db7827a2218c2b8ed9b3cef810be64b22ded3f3a49f92215cfb7fe0f5736ac"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/hangar_ready.png",
+      "bytes": 2152239,
+      "sha256": "282a26fcb148a25f7de9f4532e8e8adf510d01a829e1bb6ac376724d91ffadd9"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/hangar_service.png",
+      "bytes": 1981208,
+      "sha256": "2c7c3aee406805519f5d277428bd66eca77874fc5d58740033cc899a73ce7c8f"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/hangar_west.png",
+      "bytes": 1993852,
+      "sha256": "7030cf92d9fc6229c4c7ae173137ca0ed7564290e82849deb6b0c542c9e3c304"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/pilot_south.png",
+      "bytes": 1867487,
+      "sha256": "df3086e245a34aa33f830e3700c3fae3f8430d98736d1ae94bffe67e4df9d77b"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/postcard_club.png",
+      "bytes": 1682003,
+      "sha256": "c9f77afc912d801dfc7e05d0d44e33de5b234662db2cd031a1b9e6bc2a71fad8"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/postcard_pits.png",
+      "bytes": 1880219,
+      "sha256": "b99269948ae94ff2c4e72ec87818b5ffbd78d7b1085f0dfd6fa77069d3f7b9e3"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/after/views.json",
+      "bytes": 2895,
+      "sha256": "6dde8d32ed3dbec7a781ed8d95322ff7a21eb8f28323edf7c30d96ae7a0b9a28"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/before/fleet_close.png",
+      "bytes": 2313161,
+      "sha256": "15494cb80a04a7e7c5d400fa37fe568fa6c05679b0ec07f61866c895e291b15b"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/before/pilot_south.png",
+      "bytes": 1867280,
+      "sha256": "95543e524391f8b47e2a11c4c1dcceb23935052cc4f5a56d1eeb0acfd979e8e8"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/before/postcard_club.png",
+      "bytes": 1678242,
+      "sha256": "9cc081ae4c602ca9fc0e3ac94f875fbebf09959c222bb37365f40c60a19d6c82"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/before/postcard_pits.png",
+      "bytes": 1874656,
+      "sha256": "ed13b81f4b097d0d57749cef7f00fff3a0b42ec326313e6ee1c3e55286e48628"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/before/views.json",
+      "bytes": 1797,
+      "sha256": "d7efffdb3c9a2dc644b3f8bc4f6ea8f3f3faabd05ebd180675be55a72c6a3a20"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/aircraft-overlaps.log",
+      "bytes": 1855,
+      "sha256": "78bc36ce56ec0717060a3c22fc78dc38595ef4ee72513c6c818b751559a50cb7"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/assets/engine.log",
+      "bytes": 725,
+      "sha256": "2ea1bd00f08e2d67ab393286db4c27112ac4fe88747f234473c4dbbf2066c6ea"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/assets/report.json",
+      "bytes": 1305,
+      "sha256": "123d6fd419b66a9fa6797100fc624d834535a193322b040de5d2cc8dd93b3532"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/bake/engine.log",
+      "bytes": 1069,
+      "sha256": "21bfef98e2bc456350370c6046a14891012a164d3f02707c2fca27fcf63b7a8b"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/bake/report.json",
+      "bytes": 1302,
+      "sha256": "b78a92d831e3b5775dae8aef2c429b9f0645b477669b2ae6499d578651b729f6"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/build-budget/engine.log",
+      "bytes": 9723,
+      "sha256": "609a4a55932fa46d89b5bc2c42b0cbffe6809ac53d642b7f7828f168f49a7910"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/build-budget/report.json",
+      "bytes": 1639,
+      "sha256": "dc78d613f508e61dffe29c07df435beefd50a80e74581ab942ba3df15d3ebcd7"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/build-without-fleet/engine.log",
+      "bytes": 1973,
+      "sha256": "4ba06994077a56ea1cc4f6ec72df49b57efbe16588035013571903d430323829"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/build-without-fleet/report.json",
+      "bytes": 1708,
+      "sha256": "5133f611a5eb09c60e3716376eabfbb5c4d9769dfd6dee2ae2282d97a7054d19"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/capture/engine.log",
+      "bytes": 964,
+      "sha256": "43e356c3b92daf59ecaf185cd430d008894cecd5efabf4a0d5108cb972dcc92d"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/capture/report.json",
+      "bytes": 1998,
+      "sha256": "207bdd69d7ed5b38aea9f6436ccc83a90a071e015861c797d39838b2acffcc62"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/destruction/engine.log",
+      "bytes": 119,
+      "sha256": "9fd9f09ece6f9ec7f08cdbee937712f0d16cf7f09f68f918fd0adb8b16aeb3c8"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/destruction/report.json",
+      "bytes": 1218,
+      "sha256": "9343475e56c48c6ccc78a65b130752963bc3e323642eb2c9b024d538240ebede"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/destruction-runtime/engine.log",
+      "bytes": 1352,
+      "sha256": "8d2da6fe66899570f0a5fe60666309c20a4b5a97e9afd58c18fadac5b6a733e7"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/destruction-runtime/report.json",
+      "bytes": 1737,
+      "sha256": "17ad9f1f59df9b1c13d686628c4b08ceb731709fcb8591bbfddaa2608b036380"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/fresh-check.json",
+      "bytes": 3620,
+      "sha256": "e4ddc3ea3c0a9053a0f2ba6a2d97acd02c7c055e01b54e36333b5a7d8c2620a3"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/furniture-clearance.log",
+      "bytes": 5105,
+      "sha256": "f5f59c309dedc63fdaa7636e2316af287dc2ad687d88382fca73569173a87015"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/isolated-pack/engine.log",
+      "bytes": 215,
+      "sha256": "ca0b6ba648bb7b37b0ed4536b2d302434a4257544e6ab16a4f2a134b033c9fc4"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/isolated-pack/report.json",
+      "bytes": 1248,
+      "sha256": "accc1f4a7641b5ccbeb20b241d02b382385c472501abbfb696f8941ecbb0a216"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/isolated-pack-create/engine.log",
+      "bytes": 75,
+      "sha256": "83cf0b082206af2aa236c83064fbcfa76be1e00a4aa3558574b2f65965d9481c"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/isolated-pack-create/report.json",
+      "bytes": 1338,
+      "sha256": "3d716e8855faedd22cf96bcccaf0ebaea4f7aa147a3c896c849bd627f7cfd631"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/loader/engine.log",
+      "bytes": 1687,
+      "sha256": "4bc9d58163150fe6cc910bded67dd216081c96767586cf528a474b1ba6d64e2d"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/loader/report.json",
+      "bytes": 1163,
+      "sha256": "fe4daa68529e6d5328ab9ccea6f5a3bfa09ccd3d982f78f85005185d14f9c5f9"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/parked_aircraft_overlap_audit.gd",
+      "bytes": 5073,
+      "sha256": "812ea360f818cfa9c5d460f786cdc1ffc50f77b46324efb32c6255e9b199dd1d"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/pit_furniture_aircraft_clearance_audit.gd",
+      "bytes": 10329,
+      "sha256": "49277a65439e1c032ab79a98d58865250f3b4fc7fa873e21bfce83bf962753ae"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/population/engine.log",
+      "bytes": 4410,
+      "sha256": "06b047d82b38c40e27b7bb06b10cae276b03daf4846cd3e48764852afac3c678"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/population/report.json",
+      "bytes": 1715,
+      "sha256": "b407dc1ffbf52f2d9f5817b9364dbe0473ace2d0d0aa0812b11e24ef157c3ce7"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/profile_build.gd",
+      "bytes": 842,
+      "sha256": "dae8613aa07b268bfbbd4e2db8e16bf8be261e7cb47c80b678ad9a3339cee3bc"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_landscape_checkpoint.log",
+      "bytes": 306,
+      "sha256": "dfbb7ad09da6a89dc86cc4db9b7c3e41a8e86cd665d030567cfeeb67955a1a00"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_landscape_collision.log",
+      "bytes": 2726,
+      "sha256": "c9b27aa1a9eedc5faa2b92ecdf4b16762c4b2eaa44dade2a92415e5d4dd3c44f"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_landscape_collision_session.log",
+      "bytes": 2120,
+      "sha256": "f6abb5967b0490bfeedd9dc622170e9d90998a17562250781e088c5be8cbc00d"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_landscape_collision_setup.log",
+      "bytes": 1241,
+      "sha256": "9de20d39e70556f77a72f239d9d16788d9aadc08217ab7194439a39dc8209674"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_landscape_collision_support.log",
+      "bytes": 1552,
+      "sha256": "ce44b49e518a8e3b3e5662e3b046bedc120cfc7d14bcaaaad957d7f0b7468c81"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_landscape_collision_world.log",
+      "bytes": 765,
+      "sha256": "6cf1b7b0689ec6b0bfac5a3a5acdac0421a71970a22ffac9bcff150c715490a9"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_landscape_runtime.log",
+      "bytes": 7070,
+      "sha256": "7e75ef33a5ea9591d5e1f7686c04529213e90f069a86872ca1a4c5b01d978a70"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/test_parked_aircraft_collision.log",
+      "bytes": 2586,
+      "sha256": "da5886946c5c9caef83ab5a1f29f0793e96f37e845ad0fc5b6958e161904f89d"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/texture-inventory/engine.log",
+      "bytes": 5501,
+      "sha256": "d460eda8ca69577fb656d860e271cbd2c1cf1ab05cd261f60877a62bbf7fc1b9"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/texture-inventory/report.json",
+      "bytes": 1200,
+      "sha256": "d0749373bc5542aed8d2584dbefaeafe1a3eef351358b71dd72b02dd40e9031c"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/texture_audit.gd",
+      "bytes": 2897,
+      "sha256": "a2c9e432295939c15b11e87448c0f39a9f242332f23f2bf551869bd47852389c"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/time-of-day/engine.log",
+      "bytes": 2162,
+      "sha256": "1dfeeed571d96ef24992017c0755666fd95719d8b07590d4cc687aee945a26c3"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/time-of-day/report.json",
+      "bytes": 1732,
+      "sha256": "e79c04629825f5e5e0197963364b7aa5a2bd862bec4488c44df221ebccc583f9"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/checks/verify_pack.gd",
+      "bytes": 2043,
+      "sha256": "265c6c7eae3313f2232267819b1686e5982655dc228daea5337fda7986c8bf0a"
+    },
+    {
+      "path": "docs/research/scenery-implementation/SC-09-R1/README.md",
+      "bytes": 10416,
+      "sha256": "83407db0ffdf03d905d7b7a9d63c371f06faab6865e0665f908b0e3543e749f2"
+    }
+  ]
+}

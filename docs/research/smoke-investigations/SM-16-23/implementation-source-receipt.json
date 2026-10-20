@@ -1,0 +1,146 @@
+{
+  "format": "openrc-smoke-implementation-receipt v1",
+  "created_utc": "2026-10-20T22:38:51.162074+00:00",
+  "head": "861bb7b59036c7f458189a7ed0240eac004dab05",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "renderer": "gl_compatibility",
+  "scope": "Actual shared workingtree bytes;HEADisnotsoleidentity. Othertracks maycontinueediting. Smoke changed presentation only. Tests/captures carrytheirindividualsourceidentities.",
+  "files": {
+    "app/addons/aircraft_contract/export_plugin.gd": {
+      "sha256": "282bd3b46a6befb03e637dfb12ac0fabe04a78b6140139b9cc062f981b19ce44",
+      "lf_sha256": "282bd3b46a6befb03e637dfb12ac0fabe04a78b6140139b9cc062f981b19ce44",
+      "bytes": 5701
+    },
+    "app/data/aircraft_customization.json": {
+      "sha256": "8872cf94b5190e5e2191d45a8b2e66651775a6f74f6d06b7fe1ef8b90f2021ec",
+      "lf_sha256": "8872cf94b5190e5e2191d45a8b2e66651775a6f74f6d06b7fe1ef8b90f2021ec",
+      "bytes": 40921
+    },
+    "app/helicopter_main.gd": {
+      "sha256": "0727bdbec366c347305aa2900edcba16947d1a2e044f2348defbe5026b5351fb",
+      "lf_sha256": "5c6f1c7b7a827ac89dba68e3ad86f9222bd64c8ed229fd91fd816c66b1eb31ca",
+      "bytes": 27032
+    },
+    "app/i18n/es.po": {
+      "sha256": "2b97b87b8c7063d0d75cc2d3ccba8f229a137d8380c602b8cf9981e9119d2990",
+      "lf_sha256": "2b97b87b8c7063d0d75cc2d3ccba8f229a137d8380c602b8cf9981e9119d2990",
+      "bytes": 147582
+    },
+    "app/main.gd": {
+      "sha256": "324323bad7736d41faf5a296cdcb31db8253f4f819223265242d043d3f13bd06",
+      "lf_sha256": "8130e5e9a0f2984849b6bf61c1e9da6b72e6cfebfc8f828bd7c86878b5e1a140",
+      "bytes": 146943
+    },
+    "app/render/aircraft_customization.gd": {
+      "sha256": "deba8336fe538e07fc79d130c7bab9034bd50d73f2e6cc6369609a4d416c4ebc",
+      "lf_sha256": "2dcad15b11c34dfead00ebc42437eab3c2100fbbf620402364e039dffc9d9349",
+      "bytes": 41425
+    },
+    "app/render/presentation_sources.gd": {
+      "sha256": "6a9560ee518cb456138aab97824d9618a572c5d74d1be569d1af30c9b23134cc",
+      "lf_sha256": "ac76e470fd33d5fd6861d41cecbb9ef629b9eddfbab15500dc6d088376057c68",
+      "bytes": 10256
+    },
+    "app/render/smoke/exhaust.gd": {
+      "sha256": "c0fa5949b8cd2739c4bee0cd7fb85579809fe2028ee7e15427fb9c8c1a31fd57",
+      "lf_sha256": "d2a7cb28bdd97cb70e7d52ca65399c739e84eec3001fbd079c86b343bf5add34",
+      "bytes": 9649
+    },
+    "app/render/smoke/process.gdshader": {
+      "sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb",
+      "lf_sha256": "afd82b620d579f8c108e18e0a4d1f91ab7a4f122437169b70d4235263d1478fb",
+      "bytes": 2431
+    },
+    "app/render/smoke/profile_process.gdshader": {
+      "sha256": "aa11474349686f7c58341928da92f0b9e42c05eb15b96b43b65f84d77fe2cdd3",
+      "lf_sha256": "77103987db9c751912b9584db0ee085dfd003fae9c595f0f07167a43afcfbbea",
+      "bytes": 7360
+    },
+    "app/render/smoke/profile_smoke.gd": {
+      "sha256": "c567c81c017e924706d391212e4b7262a89ea71e3f8cf17bac3eff85f515e089",
+      "lf_sha256": "841cec524e70492226c83069a787dad07defcbb831376939f1cd9f3e374148d0",
+      "bytes": 30055
+    },
+    "app/render/smoke/profile_smoke_schedule.gd": {
+      "sha256": "558134c6dffe4d41899888b975db109bfa33f4e35ac6f01655f2f333dfbd0bb4",
+      "lf_sha256": "0bfdab40bdc5e97c6e83fa9c6641d9521ebfd83ddd946e88e2919ea5ca7e1d8a",
+      "bytes": 17310
+    },
+    "app/render/smoke/smoke_system.gd": {
+      "sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d",
+      "lf_sha256": "c4d18479f7e2bc377a0a45bf54ead19fa31bba72b0eb149cfe53bd008f3c3e4d",
+      "bytes": 3387
+    },
+    "app/render/smoke/stock_profile.gd": {
+      "sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f",
+      "lf_sha256": "0b7d9b6878eebaa23a213f257d869430b5587c752899846a3b92d554807e671f",
+      "bytes": 3306
+    },
+    "app/tests/test_presentation_sources.gd": {
+      "sha256": "8d39a7a31e5868a7d78bd570e512596dfc4e78cf9d684f05ce8db2035b8d6b75",
+      "lf_sha256": "59bdc439f35fa18af99cb0ab508e28b5bee85d5ea5f06e740a2ced2c4a78b3ea",
+      "bytes": 10090
+    },
+    "app/tests/test_smoke_bindings.gd": {
+      "sha256": "8aa209c51640609d456624526467375cdb9d8fedc75a0e5cc569873c06397439",
+      "lf_sha256": "8aa209c51640609d456624526467375cdb9d8fedc75a0e5cc569873c06397439",
+      "bytes": 6456
+    },
+    "app/tests/test_smoke_renderer_v2.gd": {
+      "sha256": "29dc6fbe6fff30112e6f204c4a43e049a7c16534c66600ecde03ce3e58bcd7eb",
+      "lf_sha256": "8174dbd1df6b52b347889f00633a16c0552daa85f69776c73a65b8a911da340d",
+      "bytes": 45216
+    },
+    "app/tests/test_smoke_system.gd": {
+      "sha256": "9a907f39b17949511c79112dcda50afa82754133b3a15d603c541817d153ae6d",
+      "lf_sha256": "689bc50ed2b87f8eac07140eaf01cf217a721f76c71e60da219d65f99a690d70",
+      "bytes": 13615
+    },
+    "app/tests/test_workshop_smoke_controls.gd": {
+      "sha256": "08cbae6ae5a5baafc4763c11a23a7cb65e21c170169c0988243962d85ae11510",
+      "lf_sha256": "08cbae6ae5a5baafc4763c11a23a7cb65e21c170169c0988243962d85ae11510",
+      "bytes": 18739
+    },
+    "app/tests/test_workshop_smoke_preview.gd": {
+      "sha256": "ebb75262adacc9776775ab16838733de720053598968dcdd2aeb81e80abf8469",
+      "lf_sha256": "7b67447521d4fbd7295d0ac74c2b1c1678de98aa819121bdcc06636449c51062",
+      "bytes": 13289
+    },
+    "app/ui/workshop_customization.gd": {
+      "sha256": "6dd07170f7cd61564bd31c40b5d53308dca0fadea286791ba43a736ad24175bb",
+      "lf_sha256": "6dd07170f7cd61564bd31c40b5d53308dca0fadea286791ba43a736ad24175bb",
+      "bytes": 36533
+    },
+    "app/ui/workshop_preview.gd": {
+      "sha256": "b6eff27e416028364d189dce86ab608b7aea530f7c762a6bf1d9c056882e82ca",
+      "lf_sha256": "74fffa78eed0fddd5203dc388493378ac57cb55f741441fdcb84cbb0bc50707b",
+      "bytes": 49282
+    },
+    "app/workshop/presentation.gd": {
+      "sha256": "55c3888fb671d33010c72c23885556c6ad398dff63a3eff5f9b9f1b746371e55",
+      "lf_sha256": "0686cb9b7f2c726ce40ac3a3baac8dd9ed2383e18d9aa172a49b1f7dac4f46c8",
+      "bytes": 52847
+    },
+    "assets/aircraft/customization-bindings.json": {
+      "sha256": "bf2539b29884b0e23515cfd9524c29813ffea936642f84de032f031ca3c997ab",
+      "lf_sha256": "bfe788f3ad8e3ffeb54db4a7db49da63c08df281be8be0e25320d6255c39e111",
+      "bytes": 31830
+    },
+    "research/aircraft-standardization/build_customization.py": {
+      "sha256": "a78b580aa320dfd4d34e27ef2e017cb395e19f71a5e35b25132a7228482e7ac6",
+      "lf_sha256": "a78b580aa320dfd4d34e27ef2e017cb395e19f71a5e35b25132a7228482e7ac6",
+      "bytes": 24097
+    },
+    "tools/smoke/benchmark_flight.gd": {
+      "sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915",
+      "lf_sha256": "4e2aededefedcaf5890564e1f964be477a827b2c396aa07a71b4b31ee6932915",
+      "bytes": 3380
+    },
+    "tools/smoke/capture_avanti.gd": {
+      "sha256": "bf94746ae4c42b2be36a19b2bc30c2c28d55d6cb545754579fd19466a462c16d",
+      "lf_sha256": "bf94746ae4c42b2be36a19b2bc30c2c28d55d6cb545754579fd19466a462c16d",
+      "bytes": 5542
+    }
+  },
+  "current_external_missing_dependency": null
+}

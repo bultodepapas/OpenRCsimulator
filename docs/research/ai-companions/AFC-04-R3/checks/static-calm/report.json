@@ -1,0 +1,100 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "fd8e58bd-a929-42a4-aba7-b4b911fce9c8",
+  "command": [
+    "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "../research/ai-companions/avoidance/assess_static_paths.gd",
+    "--",
+    "--trajectory=D:/OpenRCsimulator-AFC-work/evidence/avoidance/survey-reachable-60s-r2-20261020/trajectory.csv",
+    "--survey-report=D:/OpenRCsimulator-AFC-work/evidence/avoidance/survey-reachable-60s-r2-20261020/report.json",
+    "--out=D:/OpenRCsimulator-AFC-work/evidence/avoidance/survey-reachable-60s-r2-20261020/static-path-clearance.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T23:42:45.872296+00:00",
+  "label": "afc04-static-path-assessment-calm-r2-retry-20261020",
+  "log": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-static-path-assessment-calm-r2-retry-20261020-5zce2pqm\\engine.log",
+  "report": "D:\\OpenRCsimulator-AFC-work\\evidence\\avoidance\\godot-checks\\afc04-static-path-assessment-calm-r2-retry-20261020-5zce2pqm\\report.json",
+  "timeout_seconds": 240.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [
+    "STATIC PATH CHECK identity="
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 6
+  },
+  "diagnostics": [
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 3,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 5,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 7,
+      "message": "'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 9,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 11,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)"
+      ]
+    },
+    {
+      "severity": "warning",
+      "kind": "WARNING",
+      "line": 13,
+      "message": "'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.",
+      "context": [
+        "   at: open (core/io/resource_format_binary.cpp:1025)",
+        "STATIC PATH CHECK identity=0f12ece062872e80bf3e07b1eff33464825befb460272365bb58977868237dea cases=7 all_clear=true output=D:/OpenRCsimulator-AFC-work/evidence/avoidance/survey-reachable-60s-r2-20261020/static-path-clearance.json"
+      ]
+    }
+  ],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 3.579,
+  "log_bytes": 2212,
+  "log_sha256": "35126bbe7a3bcd480e23bfe0c6fc8e24aafe3d82adcc3e600ed89c3a1281f78e"
+}

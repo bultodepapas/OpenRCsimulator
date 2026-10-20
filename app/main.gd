@@ -2597,6 +2597,17 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 	}
 	var run_args: Dictionary = _user_args()
 	var route_name: String = "scripted-fixed" if _frametimes_scripted_fixed else "live-input"
+	# Endpoint evidence is read once after sampling; no new per-tick observer.
+	# Pacing alone cannot qualify a fleet whose sessions stopped or lost clock sync.
+	var companion_evidence := {enabled = companion_config.enabled, roster = []}
+	if companions != null:
+		companion_evidence.status = companions.status()
+		for agent: Node in companions.agents:
+			companion_evidence.roster.append({id = "companion-%d" % agent.slot_id,
+				tick = agent.session.sim.tick, time_s = agent.session.sim.time(),
+				paused = agent.session.sim.paused, fault = agent.session.sim.fault_reason,
+				failure = agent.failure, crashed = not agent.session.crash.is_empty(),
+				world_identity = agent.session.collision_world().get("identity", "")})
 	report.merge({
 		case_id = str(run_args.get("case", route_name)),
 		route = route_name,
@@ -2624,6 +2635,7 @@ func _finish_frame_time(exit_code: int = OK) -> void:
 		vsync = DisplayServer.window_get_vsync_mode() != DisplayServer.VSYNC_DISABLED,
 		aircraft_id = aircraft_id,
 		input_enabled = session.input_enabled,
+		flight_companions = companion_evidence,
 		simulation = {
 			scope = "first _process clock prime through sample completion; includes warm-up",
 			start_time_s = _frametimes_sim_start_s,

@@ -45,17 +45,17 @@ def catalog_fleet_ids():
         if preview:
             continue
         catalog_ids.append(ids[0])
-    models_text = (ROOT / "app/scenery/models.gd").read_text()
-    fleet_match = re.search(r"const FLEET := \{([^}]+)\}", models_text, re.DOTALL)
+    models_text = (ROOT / "app/scenery/parked_aircraft.gd").read_text(encoding="utf-8")
+    fleet_match = re.search(r"const AIRCRAFT := \{([^}]+)\}", models_text, re.DOTALL)
     if fleet_match is None:
-        raise ValueError("app/scenery/models.gd has no FLEET source map")
-    source_ids = [value for _key, value in re.findall(r'"([^"]+)"\s*:\s*"([^"]+)"', fleet_match.group(1))]
+        raise ValueError("app/scenery/parked_aircraft.gd has no AIRCRAFT source map")
+    source_ids = [key for key, _value in re.findall(r'"([^"]+)"\s*:\s*"([^"]+)"', fleet_match.group(1))]
     if not catalog_ids:
         raise ValueError("app/app_state/aircraft_catalog.gd has no readable catalog ids")
     if not source_ids:
-        raise ValueError("app/scenery/models.gd FLEET source map must contain at least one parked snapshot")
+        raise ValueError("parked AIRCRAFT source map must contain at least one snapshot")
     if len(source_ids) != len(set(source_ids)):
-        raise ValueError("app/scenery/models.gd FLEET source map contains duplicate parked snapshot ids")
+        raise ValueError("parked AIRCRAFT source map contains duplicate snapshot ids")
     invalid = sorted(set(source_ids) - set(catalog_ids))
     if invalid:
         raise ValueError("parked fleet snapshot ids must be flyable catalog entries (invalid=%s)" % invalid)
@@ -406,20 +406,38 @@ def build():
          "estimated", "Club members in the pits")
     inst("seated", "spectators", ["person_sitting"], [(-16.5, -14.0, 0), (-16.5, 11.5, 0), (-16.5, 14.5, 0)], "estimated", "Spectators on the benches")
     inst("veranda-people", "club", ["person_standing"], [(-17.4, -2.6, 10), (-17.8, 1.4, 350), (-16.4, 4.2, 30)], "estimated", "On the veranda steps")
-    # Park only aircraft with an existing snapshot; playable catalog entries can precede optional TT-13b snapshots.
+    # SC-09-R1: service benches and distinct ready bays; the apron stays clear between them.
+    # Uniform scales are visual Workshop-style variants, never new flyable configurations.
     fleet_aircraft = catalog_fleet_ids()
-    fleet_slots = [(-17.6, -38.0, 15.0), (-17.6, -24.0, 350.0), (-17.8, 24.0, 10.0), (-17.6, 38.5, 345.0)]
-    if len(fleet_slots) != len(fleet_aircraft):
-        raise ValueError("update fleet_slots for the %d catalog aircraft before generating scenery" % len(fleet_aircraft))
-    groups.append({"id": "fleet", "type": "fleet", "zone": "pits", "collides": False,
-                   "aircraft": fleet_aircraft,
-                   "placements": q([[n, e, heading, i] for i, (n, e, heading) in enumerate(fleet_slots)],
-                                   "m, m, deg, index", "estimated", "Under the pit shelters, as in the photo")})
-    avanti_i = fleet_aircraft.index("sebart-avanti-s-a200-p100rx")
-    avanti_n, avanti_e, avanti_heading = fleet_slots[avanti_i]
-    inst("avanti-cradle", "pits", ["avanti_cradle"], [(avanti_n, avanti_e, avanti_heading)], "estimated",
-         "Padded trestles directly under the catalog Ventage Jet snapshot, which is an in-air-start model with gear retracted",
-         snap=False)
+    stik, extra, mustang, jet, timber = (fleet_aircraft.index(id) for id in (
+        "jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120",
+        "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"))
+
+    def fleet(gid, rows, purpose, scale=1.0, elevation=0.0, configuration="assembled"):
+        groups.append({"id": gid, "type": "fleet", "zone": "pits", "collides": False,
+                       "aircraft": fleet_aircraft, "configuration": configuration,
+                       "scale": q(scale, "1", "estimated", "Uniform static display scale; " + purpose),
+                       "elevation": q(elevation, "m", "derived", "Receiver top: grass 0, slab 0.10, table 0.90, foam 1.12 m"),
+                       "placements": q(rows, "m, m, deg, index", "estimated", purpose)})
+
+    fleet("fleet", [(-17.7, -40.3, 352, stik), (-17.6, -24.5, 12, extra),
+                    (-17.8, 29.7, 348, mustang), (-17.6, 35.8, 6, jet),
+                    (-17.2, 20.6, 355, timber)],
+          "Current catalog models in staggered ready bays, between shelter columns and clear of the rear work aisle",
+          elevation=0.10)
+    fleet("fleet-large-jet", [(-17.5, -48.0, 20, jet)],
+          "Large turbine model on the grass at the open west end of the shelter, nose toward the flightline", scale=1.3)
+    fleet("fleet-micro-jets", [(-21.4, -48.2, 50, jet), (-17.0, 48.0, 340, jet)],
+          "Small sport jets beside the larger ready models with room to carry them to the flightline", scale=0.5)
+    fleet("fleet-grass", [(-21.1, 47.9, 15, timber), (-23.8, -29.5, 190, extra)],
+          "An electric bush plane and aerobatic model waiting on the mown grass", scale=0.9)
+    fleet("fleet-micro-bench", [(-19.9, -42.6, 90, jet)],
+          "Micro jet on the empty west end worktable for preflight preparation", scale=0.45, elevation=0.90)
+    fleet("fleet-sport-bench", [(-19.9, 19.4, 270, extra)],
+          "Small aerobatic model on the empty east end worktable", scale=0.65, elevation=0.90)
+    fleet("fleet-service", [(-19.9, -19.6, 90, stik)],
+          "Ugly Stik fuselage with its wing removed on the existing paired foam maintenance supports",
+          elevation=1.12, configuration="service")
     # Informal gravel parking: a loose, staggered row, an open gap, and canted spaces near the ends.
     # Vehicle positions are estimates; the four existing body styles rotate through the same 11 places.
     cars = [

@@ -1,0 +1,169 @@
+{
+	"format": "openrc-parked-aircraft v1",
+	"aircraft": "turbo-lumber-evolution",
+	"configuration": "assembled",
+	"size": [
+		1.546,
+		0.429,
+		1.129
+	],
+	"collision_parts": [
+		{
+			"part": "body",
+			"center": [
+				0.0,
+				0.200644105672836,
+				-0.0289593040943146
+			],
+			"size": [
+				0.139587298035622,
+				0.342269420623779,
+				0.990017235279083
+			]
+		},
+		{
+			"part": "left_wing",
+			"center": [
+				-0.38435971736908,
+				0.333213269710541,
+				-0.164935365319252
+			],
+			"size": [
+				0.776784181594849,
+				0.117623597383499,
+				0.227427631616592
+			]
+		},
+		{
+			"part": "right_wing",
+			"center": [
+				0.38435971736908,
+				0.333213269710541,
+				-0.164935380220413
+			],
+			"size": [
+				0.776784181594849,
+				0.117623597383499,
+				0.227427631616592
+			]
+		},
+		{
+			"part": "tail",
+			"center": [
+				0.0,
+				0.188848540186882,
+				0.404578596353531
+			],
+			"size": [
+				0.596000075340271,
+				0.293033748865128,
+				0.321532666683197
+			]
+		},
+		{
+			"part": "gear",
+			"center": [
+				-0.0000000149011611938477,
+				0.0816418528556824,
+				0.0411895215511322
+			],
+			"size": [
+				0.307895123958588,
+				0.183075249195099,
+				0.837892770767212
+			]
+		},
+		{
+			"part": "propeller",
+			"center": [
+				0.0224325880408287,
+				0.306865751743317,
+				-0.52108371257782
+			],
+			"size": [
+				0.234218865633011,
+				0.251820504665375,
+				0.122497171163559
+			]
+		}
+	],
+	"source_triangles": 34152,
+	"triangles": 17902,
+	"lod_triangles": [
+		4136,
+		3214
+	],
+	"surfaces": 16,
+	"ground_pitch_deg": 9.82,
+	"ground_wheel_level_error_m": 0.0,
+	"ground_support_wheels": 3,
+	"ground_wheel_contacts": [
+		[
+			-0.131999999284744,
+			0.0,
+			-0.320606768131256
+		],
+		[
+			0.131999984383583,
+			0.0,
+			-0.320606768131256
+		],
+		[
+			-0.00033078424166888,
+			-0.0000107884407043457,
+			0.441618472337723
+		]
+	],
+	"source_builder": "res://render/airplane.gd::build(turbo-lumber-evolution)",
+	"source_identity": {
+		"manifest": {
+			"path": "res://data/aircraft_models/turbo-lumber-evolution.json",
+			"sha256": "5abbb38e61d45bc9b07018455dd13576dd1478a18bcbe84b47be783c568f0c85",
+			"pinned_sha256": "5abbb38e61d45bc9b07018455dd13576dd1478a18bcbe84b47be783c568f0c85",
+			"matches_pin": true
+		},
+		"builder": {
+			"path": "res://aircraft/imported_model.gd",
+			"sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
+			"pinned_sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
+			"matches_pin": true
+		},
+		"geometry_script": {
+			"path": "res://aircraft/timber_geometry.gd",
+			"sha256": "ffb27f941c834778454af013593be7d3db358eded8c26543a3316976bae3ed83",
+			"pinned_sha256": "ffb27f941c834778454af013593be7d3db358eded8c26543a3316976bae3ed83",
+			"matches_pin": true
+		},
+		"fleet_collector": {
+			"path": "res://scenery/fleet.gd",
+			"sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"pinned_sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"matches_pin": true
+		},
+		"airplane_snapshot_builder": {
+			"path": "res://render/airplane.gd",
+			"sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"pinned_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"matches_pin": true
+		},
+		"baker": {
+			"path": "res://../tools/scenery/bake_parked_aircraft.gd",
+			"sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"pinned_sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"matches_pin": true
+		},
+		"geometry_source": {
+			"path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+			"sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+			"pinned_sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681",
+			"matches_pin": true
+		},
+		"asset": {
+			"path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
+			"sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+			"pinned_sha256": "d75ae605aa3afdf3f417a0ec535c3bd3126c2a5a4eb7827393727152245c6722",
+			"matches_pin": true
+		}
+	},
+	"notes": "Stock authored livery; PBR materials and UV maps retained; root forward is local -Z; mesh is centred in XZ with bottom y=0."
+}

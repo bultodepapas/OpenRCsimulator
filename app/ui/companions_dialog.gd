@@ -213,7 +213,7 @@ func _build() -> void:
 	status_label = Widgets.label("", "SecondaryLabel", true)
 	status_label.name = "CompanionTrafficStatus"
 	status_label.visible = false
-	shell.add_child(status_label)
+	body.add_child(status_label)
 
 	save_default_check = CheckBox.new()
 	save_default_check.name = "SaveCompanionsAsDefault"
@@ -221,13 +221,13 @@ func _build() -> void:
 	save_default_check.visible = false
 	save_default_check.focus_mode = Control.FOCUS_NONE
 	save_default_check.toggled.connect(_on_save_default_toggled)
-	shell.add_child(save_default_check)
+	body.add_child(save_default_check)
 
 	remove_button = Widgets.button("Remove companions now", "DestructiveButton")
 	remove_button.name = "RemoveCompanions"
 	remove_button.visible = false
 	remove_button.pressed.connect(_on_remove)
-	shell.add_child(remove_button)
+	body.add_child(remove_button)
 
 	error_label = Widgets.label("", "ErrorLabel", true)
 	error_label.name = "CompanionsError"

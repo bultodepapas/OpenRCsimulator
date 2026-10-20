@@ -40,7 +40,16 @@ func choose_weighted_activity(tick: int, pilot_id: String, options: Array[Dictio
 	if tick < 0 or pilot_id.is_empty():
 		return _reject("invalid_choice_context")
 	var eligible: Array[Dictionary] = []
+	var identities := {}
 	for option: Dictionary in options:
+		if typeof(option.get("activity_id")) != TYPE_STRING or String(option.activity_id).is_empty() \
+				or typeof(option.get("weight")) not in [TYPE_INT, TYPE_FLOAT] \
+				or not is_finite(float(option.weight)) or float(option.weight) < 0.0 \
+				or typeof(option.get("eligible")) != TYPE_BOOL:
+			return _reject("invalid_weighted_choice")
+		if identities.has(option.activity_id):
+			return _reject("duplicate_activity_id")
+		identities[option.activity_id] = true
 		var activity_id: String = String(option.get("activity_id", ""))
 		var weight: float = float(option.get("weight", 0.0))
 		if activity_id.is_empty() or not is_finite(weight) or weight <= 0.0 or not bool(option.get("eligible", false)):
@@ -115,12 +124,22 @@ func request_activity(tick: int, request_id: String, pilot_id: String, owner_id:
 func resolve(tick: int, eligibility_updates: Dictionary = {}) -> Dictionary:
 	if tick < 0:
 		return _reject("invalid_tick")
+	# Every queued intent must be revalidated at this exact grant boundary. Do
+	# this as an all-or-nothing preflight so a partial map cannot cancel some
+	# requests or grant others before the caller discovers an omitted pilot.
+	for request: Dictionary in _pending:
+		var request_id: String = String(request.get("request_id", ""))
+		if not eligibility_updates.has(request_id):
+			return {"ok": false, "reason": "grant_eligibility_missing", "request_id": request_id}
+		var candidate: Variant = eligibility_updates[request_id]
+		if not candidate is Dictionary or not candidate.has("eligible") or typeof(candidate["eligible"]) != TYPE_BOOL:
+			return {"ok": false, "reason": "grant_eligibility_update_invalid", "request_id": request_id}
 	var newly_cancelled: Array[Dictionary] = []
 	for index: int in range(_pending.size() - 1, -1, -1):
 		var request: Dictionary = _pending[index]
 		var request_id: String = String(request.get("request_id", ""))
-		var update: Variant = eligibility_updates.get(request_id, null)
-		if update is Dictionary and not bool(update.get("eligible", false)):
+		var update: Dictionary = eligibility_updates[request_id]
+		if not bool(update["eligible"]):
 			var reason: String = String(update.get("reason", "ineligible_at_grant"))
 			newly_cancelled.append(_cancel_pending_at(index, tick, reason))
 		elif int(_cooldown_until.get(_cooldown_key(String(request.get("pilot_id", "")), String(request.get("activity_id", ""))), -1)) > tick:
@@ -133,6 +152,8 @@ func resolve(tick: int, eligibility_updates: Dictionary = {}) -> Dictionary:
 	var used_by_quota: Dictionary = _active_quota_counts()
 	var used_owners: Dictionary = {}
 	for request: Dictionary in ranked:
+		if int(request["request_tick"]) > tick:
+			continue
 		if _active.size() >= _max_active:
 			break
 		var key: String = _owner_key(int(request["owner_id"]), int(request["generation"]))
@@ -165,10 +186,14 @@ func resolve(tick: int, eligibility_updates: Dictionary = {}) -> Dictionary:
 
 
 func complete_activity(tick: int, owner_id: int, generation: int, activity_id: String, outcome: String = "completed", safety_preemption: bool = false) -> Dictionary:
+	if tick < 0:
+		return _reject("invalid_tick")
 	var key: String = _owner_key(owner_id, generation)
 	if not _active.has(key):
 		return _reject("stale_activity_lease")
 	var lease: Dictionary = _active[key]
+	if tick < int(lease["granted_tick"]):
+		return _reject("tick_precedes_grant")
 	if String(lease.get("activity_id", "")) != activity_id:
 		return _reject("activity_identity_mismatch")
 	if tick < int(lease.get("minimum_until_tick", tick)) and not safety_preemption:
@@ -182,8 +207,15 @@ func complete_activity(tick: int, owner_id: int, generation: int, activity_id: S
 
 
 func retire_agent(tick: int, owner_id: int, generation: int, reason: String = "retired") -> Dictionary:
+	if tick < 0:
+		return _reject("invalid_tick")
 	var removed: int = 0
 	var key: String = _owner_key(owner_id, generation)
+	if _active.has(key) and tick < int(_active[key]["granted_tick"]):
+		return _reject("tick_precedes_grant")
+	for request: Dictionary in _pending:
+		if int(request["owner_id"]) == owner_id and int(request["generation"]) == generation and tick < int(request["request_tick"]):
+			return _reject("tick_precedes_request")
 	if _active.has(key):
 		var lease: Dictionary = _active[key]
 		_active.erase(key)
@@ -199,9 +231,13 @@ func retire_agent(tick: int, owner_id: int, generation: int, reason: String = "r
 
 
 func cancel_request(tick: int, request_id: String, owner_id: int, generation: int, reason: String = "cancelled") -> Dictionary:
+	if tick < 0:
+		return _reject("invalid_tick")
 	for index: int in range(_pending.size() - 1, -1, -1):
 		var request: Dictionary = _pending[index]
 		if String(request.get("request_id", "")) == request_id and int(request.get("owner_id", -1)) == owner_id and int(request.get("generation", -1)) == generation:
+			if tick < int(request["request_tick"]):
+				return _reject("tick_precedes_request")
 			_cancel_pending_at(index, tick, reason)
 			return {"ok": true}
 	return _reject("stale_activity_request")
@@ -231,44 +267,244 @@ func snapshot_state() -> Dictionary:
 
 
 func restore_state(candidate: Dictionary) -> Dictionary:
-	if String(candidate.get("version", "")) != STATE_VERSION:
+	if not _has_exact_keys(candidate, ["version", "choice_seed", "choice_rng_state", "pending", "active", "cooldown_until", "events", "request_sequence", "event_sequence", "max_pending", "max_active", "max_events"]):
+		return _reject("invalid_state_fields")
+	if typeof(candidate.get("version", null)) != TYPE_STRING or String(candidate["version"]) != STATE_VERSION:
 		return _reject("state_version_mismatch")
+	var integer_fields: Array[String] = ["choice_seed", "choice_rng_state", "request_sequence", "event_sequence", "max_pending", "max_active", "max_events"]
+	for field: String in integer_fields:
+		if not candidate.has(field) or typeof(candidate[field]) != TYPE_INT:
+			return _reject("invalid_integer_state_field")
 	var raw_pending: Variant = candidate.get("pending", null)
 	var raw_active: Variant = candidate.get("active", null)
 	var raw_cooldowns: Variant = candidate.get("cooldown_until", null)
 	var raw_events: Variant = candidate.get("events", null)
 	if not raw_pending is Array or not raw_active is Dictionary or not raw_cooldowns is Dictionary or not raw_events is Array:
 		return _reject("invalid_state_shape")
-	var max_pending: int = int(candidate.get("max_pending", 0))
-	var max_active: int = int(candidate.get("max_active", 0))
-	var max_events: int = int(candidate.get("max_events", 0))
+	var choice_seed: int = candidate["choice_seed"]
+	var choice_rng_state: int = candidate["choice_rng_state"]
+	var request_sequence: int = candidate["request_sequence"]
+	var event_sequence: int = candidate["event_sequence"]
+	var max_pending: int = candidate["max_pending"]
+	var max_active: int = candidate["max_active"]
+	var max_events: int = candidate["max_events"]
+	if choice_seed < 1 or choice_seed > 2147483646 or request_sequence < 0 or event_sequence < 0:
+		return _reject("invalid_seed_or_sequence")
 	if max_pending <= 0 or max_active <= 0 or max_events <= 0 or raw_pending.size() > max_pending or raw_active.size() > max_active or raw_events.size() > max_events or raw_cooldowns.size() > HARD_MAX_COOLDOWNS:
 		return _reject("state_bound_exceeded")
 	if max_pending > HARD_MAX_PENDING or max_active > HARD_MAX_ACTIVE or max_events > HARD_MAX_EVENTS:
 		return _reject("state_hard_bound_exceeded")
 	var restored_pending: Array[Dictionary] = []
+	var request_ids: Dictionary = {}
+	var owner_generations: Dictionary = {}
+	var pending_sequences: Dictionary = {}
+	var quota_limits: Dictionary = {}
 	for request: Variant in raw_pending:
-		if not request is Dictionary or not request.has("request_id") or not request.has("owner_id") or not request.has("generation"):
+		if not request is Dictionary or not _valid_pending_request(request, request_sequence):
 			return _reject("malformed_pending_request")
+		var request_id: String = String(request["request_id"])
+		var owner_key: String = _owner_key(int(request["owner_id"]), int(request["generation"]))
+		var pending_sequence: int = int(request["request_sequence"])
+		if request_ids.has(request_id) or owner_generations.has(owner_key):
+			return _reject("duplicate_pending_identity")
+		if pending_sequences.has(pending_sequence):
+			return _reject("duplicate_pending_sequence")
+		request_ids[request_id] = true
+		owner_generations[owner_key] = true
+		pending_sequences[pending_sequence] = true
+		if quota_limits.has(String(request["quota_key"])) and int(quota_limits[String(request["quota_key"])]) != int(request["quota"]):
+			return _reject("quota_definition_conflict")
+		quota_limits[String(request["quota_key"])] = int(request["quota"])
 		restored_pending.append(request.duplicate(true))
+	var restored_active: Dictionary = {}
+	var active_quota_counts: Dictionary = {}
+	for owner_key: Variant in raw_active.keys():
+		if typeof(owner_key) != TYPE_STRING or not _valid_active_lease(String(owner_key), raw_active[owner_key]):
+			return _reject("malformed_active_lease")
+		var lease: Dictionary = raw_active[owner_key]
+		var request_id: String = String(lease["request_id"])
+		var quota_key: String = String(lease["quota_key"])
+		if request_ids.has(request_id) or owner_generations.has(String(owner_key)):
+			return _reject("duplicate_active_identity")
+		request_ids[request_id] = true
+		owner_generations[String(owner_key)] = true
+		if quota_limits.has(quota_key) and int(quota_limits[quota_key]) != int(lease["quota"]):
+			return _reject("quota_definition_conflict")
+		quota_limits[quota_key] = int(lease["quota"])
+		active_quota_counts[quota_key] = int(active_quota_counts.get(quota_key, 0)) + 1
+		restored_active[String(owner_key)] = lease.duplicate(true)
+	for quota_key: Variant in active_quota_counts.keys():
+		if int(active_quota_counts[quota_key]) > int(quota_limits[quota_key]):
+			return _reject("active_quota_exceeded")
+	var restored_cooldowns: Dictionary = {}
+	for cooldown_key: Variant in raw_cooldowns.keys():
+		if typeof(cooldown_key) != TYPE_STRING or not _valid_cooldown_key(String(cooldown_key)) or typeof(raw_cooldowns[cooldown_key]) != TYPE_INT or int(raw_cooldowns[cooldown_key]) < 0:
+			return _reject("malformed_cooldown_state")
+		restored_cooldowns[String(cooldown_key)] = raw_cooldowns[cooldown_key]
 	var restored_events: Array[Dictionary] = []
+	var previous_event_sequence: int = 0
 	for event: Variant in raw_events:
-		if not event is Dictionary:
+		if not _valid_event_snapshot(event, event_sequence, previous_event_sequence):
 			return _reject("malformed_event")
 		restored_events.append(event.duplicate(true))
-	_choice_seed = _normalize_seed(int(candidate.get("choice_seed", 1)))
+		previous_event_sequence = int(event["sequence"])
+	# All checks finish before the target RNG, queues, leases, or event log change.
+	_choice_seed = choice_seed
 	_choice_rng.seed = _choice_seed
-	_choice_rng.state = int(candidate.get("choice_rng_state", _choice_rng.state))
+	_choice_rng.state = choice_rng_state
 	_pending = restored_pending
-	_active = raw_active.duplicate(true)
-	_cooldown_until = raw_cooldowns.duplicate(true)
+	_active = restored_active
+	_cooldown_until = restored_cooldowns
 	_events = restored_events
-	_request_sequence = int(candidate.get("request_sequence", 0))
-	_event_sequence = int(candidate.get("event_sequence", 0))
+	_request_sequence = request_sequence
+	_event_sequence = event_sequence
 	_max_pending = max_pending
 	_max_active = max_active
 	_max_events = max_events
 	return {"ok": true}
+
+
+func _valid_pending_request(value: Dictionary, maximum_request_sequence: int) -> bool:
+	if not _has_exact_keys(value, ["request_id", "pilot_id", "owner_id", "generation", "activity_id", "quota_key", "weight", "quota", "minimum_duration_ticks", "repeat_cooldown_ticks", "priority", "request_tick", "request_sequence"]):
+		return false
+	for field: String in ["request_id", "pilot_id", "activity_id", "quota_key"]:
+		if typeof(value.get(field, null)) != TYPE_STRING or String(value[field]).is_empty():
+			return false
+	for field: String in ["owner_id", "generation", "quota", "minimum_duration_ticks", "repeat_cooldown_ticks", "priority", "request_tick", "request_sequence"]:
+		if typeof(value.get(field, null)) != TYPE_INT:
+			return false
+	if int(value["owner_id"]) < 0 or int(value["generation"]) < 0 or int(value["quota"]) <= 0:
+		return false
+	if int(value["minimum_duration_ticks"]) < 0 or int(value["repeat_cooldown_ticks"]) < 0 or int(value["request_tick"]) < 0:
+		return false
+	if int(value["request_sequence"]) <= 0 or int(value["request_sequence"]) > maximum_request_sequence:
+		return false
+	return _positive_finite_number(value.get("weight", null))
+
+
+func _valid_active_lease(owner_key: String, value: Variant) -> bool:
+	if not value is Dictionary:
+		return false
+	var lease: Dictionary = value
+	if not _has_exact_keys(lease, ["request_id", "pilot_id", "owner_id", "generation", "activity_id", "quota_key", "quota", "weight", "granted_tick", "minimum_until_tick", "repeat_cooldown_ticks"]):
+		return false
+	for field: String in ["request_id", "pilot_id", "activity_id", "quota_key"]:
+		if typeof(lease.get(field, null)) != TYPE_STRING or String(lease[field]).is_empty():
+			return false
+	for field: String in ["owner_id", "generation", "quota", "granted_tick", "minimum_until_tick", "repeat_cooldown_ticks"]:
+		if typeof(lease.get(field, null)) != TYPE_INT:
+			return false
+	var owner_id: int = lease["owner_id"]
+	var generation: int = lease["generation"]
+	var quota: int = lease["quota"]
+	var granted_tick: int = lease["granted_tick"]
+	var minimum_until_tick: int = lease["minimum_until_tick"]
+	if owner_id < 0 or generation < 0 or owner_key != _owner_key(owner_id, generation) or quota <= 0:
+		return false
+	if granted_tick < 0 or minimum_until_tick < granted_tick or int(lease["repeat_cooldown_ticks"]) < 0:
+		return false
+	return _positive_finite_number(lease.get("weight", null))
+
+
+func _valid_cooldown_key(value: String) -> bool:
+	var separator: int = value.find(":")
+	if separator <= 0 or separator > 9:
+		return false
+	var length_text: String = value.substr(0, separator)
+	for character: String in length_text:
+		if character < "0" or character > "9":
+			return false
+	var pilot_length: int = int(length_text)
+	if pilot_length <= 0 or str(pilot_length) != length_text:
+		return false
+	var pilot_start: int = separator + 1
+	var activity_separator: int = pilot_start + pilot_length
+	if activity_separator >= value.length() or value.substr(activity_separator, 1) != ":":
+		return false
+	return not value.substr(pilot_start, pilot_length).is_empty() and not value.substr(activity_separator + 1).is_empty()
+
+
+func _valid_event_snapshot(event: Variant, maximum_sequence: int, prior_sequence: int) -> bool:
+	if not event is Dictionary:
+		return false
+	if not _has_exact_keys(event, ["sequence", "tick", "type", "payload"]):
+		return false
+	for field: String in ["sequence", "tick"]:
+		if typeof(event.get(field, null)) != TYPE_INT:
+			return false
+	if typeof(event.get("type", null)) != TYPE_STRING or String(event["type"]).is_empty() or not event.get("payload") is Dictionary:
+		return false
+	return int(event["sequence"]) > prior_sequence and int(event["sequence"]) <= maximum_sequence \
+		and int(event["tick"]) >= 0 and _valid_event_payload(String(event["type"]), event["payload"])
+
+
+func _valid_event_payload(event_type: String, payload: Dictionary) -> bool:
+	var identity_fields: Array[String] = ["owner_id", "generation"]
+	for field: String in identity_fields:
+		if typeof(payload.get(field, null)) != TYPE_INT or int(payload[field]) < 0:
+			return false
+	match event_type:
+		"activity_refused":
+			if not _has_exact_keys(payload, ["request_id", "owner_id", "generation", "activity_id", "reason"]):
+				return false
+			return _nonempty_string_fields(payload, ["request_id", "activity_id"]) and _string_fields(payload, ["reason"])
+		"activity_queued":
+			if not _has_exact_keys(payload, ["request_id", "owner_id", "generation", "activity_id", "quota_key"]):
+				return false
+			return _nonempty_string_fields(payload, ["request_id", "activity_id", "quota_key"])
+		"activity_granted":
+			if not _has_exact_keys(payload, ["request_id", "owner_id", "generation", "activity_id", "quota_key", "minimum_until_tick"]):
+				return false
+			if not _nonempty_string_fields(payload, ["request_id", "activity_id", "quota_key"]):
+				return false
+			return typeof(payload.get("minimum_until_tick", null)) == TYPE_INT and int(payload["minimum_until_tick"]) >= 0
+		"activity_request_cancelled":
+			if not _has_exact_keys(payload, ["request_id", "owner_id", "generation", "activity_id", "reason"]):
+				return false
+			return _nonempty_string_fields(payload, ["request_id", "activity_id"]) and _string_fields(payload, ["reason"])
+		"activity_completed":
+			if not _has_exact_keys(payload, ["owner_id", "generation", "activity_id", "outcome", "safety_preemption", "cooldown_until_tick"]):
+				return false
+			if not _nonempty_string_fields(payload, ["activity_id"]) or not _string_fields(payload, ["outcome"]):
+				return false
+			if typeof(payload.get("safety_preemption", null)) != TYPE_BOOL:
+				return false
+			return typeof(payload.get("cooldown_until_tick", null)) == TYPE_INT and int(payload["cooldown_until_tick"]) >= 0
+		"activity_aborted":
+			if not _has_exact_keys(payload, ["owner_id", "generation", "activity_id", "reason"]):
+				return false
+			return _nonempty_string_fields(payload, ["activity_id"]) and _string_fields(payload, ["reason"])
+	return false
+
+
+func _nonempty_string_fields(value: Dictionary, fields: Array[String]) -> bool:
+	for field: String in fields:
+		if typeof(value.get(field, null)) != TYPE_STRING or String(value[field]).is_empty():
+			return false
+	return true
+
+
+func _string_fields(value: Dictionary, fields: Array[String]) -> bool:
+	for field: String in fields:
+		if typeof(value.get(field, null)) != TYPE_STRING:
+			return false
+	return true
+
+
+func _has_exact_keys(value: Dictionary, fields: Array[String]) -> bool:
+	if value.size() != fields.size():
+		return false
+	for field: String in fields:
+		if not value.has(field):
+			return false
+	for key: Variant in value.keys():
+		if typeof(key) != TYPE_STRING:
+			return false
+	return true
+
+
+func _positive_finite_number(value: Variant) -> bool:
+	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and is_finite(float(value)) and float(value) > 0.0
 
 
 func _request_less(left: Dictionary, right: Dictionary) -> bool:

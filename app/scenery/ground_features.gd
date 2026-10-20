@@ -385,6 +385,9 @@ static func _tri_colored(k: MeshKit, a: Vector3, b: Vector3, c: Vector3, ca: Col
 ## "solid" (the footprint swept along the sun to its height), "roof" (only the roof outline, cast from `size.y`),
 ## "crown" (a disc of the crown, cast from 70 % of the height, plus the trunk's line).
 static func contact_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: String, sun: Vector3) -> void:
+	if mode.begins_with("aircraft_"):
+		_aircraft_shadow(k, t, size, mode, sun)
+		return
 	if mode == "person":
 		# A bounded contact patch on the real support plane, including veranda slabs.
 		var center := Vector2(t.origin.x, t.origin.z)
@@ -452,6 +455,70 @@ static func contact_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: Stri
 		_shadow_tri(k, centroid, a, b, core, core, core)
 		_shadow_tri(k, a, ao, bo, core, edge, edge)
 		_shadow_tri(k, a, bo, b, core, edge, core)
+
+
+## Compact, feathered planform shadow on the actual grass/slab receiver.
+## Retained by Scenery's existing lighting transaction; no per-frame process or shadow viewport.
+static func _aircraft_shadow(k: MeshKit, t: Transform3D, size: Vector3, mode: String, sun: Vector3) -> void:
+	var bench := mode.ends_with("_bench")
+	mode = mode.trim_suffix("_bench")
+	var half_span := size.x * 0.5
+	var half_length := size.z * 0.5
+	var wing_front := -0.18 if mode == "aircraft_jet" else -0.28
+	var wing_tip := 0.10 if mode == "aircraft_jet" else -0.22
+	var wing_back := 0.27 if mode == "aircraft_jet" else 0.03
+	var outline := PackedVector2Array([
+		Vector2(0, -1), Vector2(0.10, -0.72), Vector2(0.12, wing_front),
+		Vector2(1, wing_tip), Vector2(1, wing_back), Vector2(0.10, 0.30),
+		Vector2(0.07, 0.65), Vector2(0.38, 0.77), Vector2(0.38, 0.90),
+		Vector2(0.035, 0.89), Vector2(0, 1), Vector2(-0.035, 0.89),
+		Vector2(-0.38, 0.90), Vector2(-0.38, 0.77), Vector2(-0.07, 0.65),
+		Vector2(-0.10, 0.30), Vector2(-1, wing_back), Vector2(-1, wing_tip),
+		Vector2(-0.12, wing_front), Vector2(-0.10, -0.72)])
+	if mode == "aircraft_service":
+		outline = PackedVector2Array([Vector2(0, -1), Vector2(0.22, -0.7), Vector2(0.15, 0.6),
+			Vector2(1, 0.8), Vector2(1, 0.95), Vector2(-1, 0.95), Vector2(-1, 0.8),
+			Vector2(-0.15, 0.6), Vector2(-0.22, -0.7)])
+	var cast := shadow_cast(sun) * size.y * 0.35
+	var points := PackedVector2Array()
+	var center := Vector2.ZERO
+	for p: Vector2 in outline:
+		var world := t * Vector3(p.x * half_span, 0, p.y * half_length)
+		var point := Vector2(world.x, world.z) + cast
+		points.append(point)
+		center += point
+	if bench:
+		# Worktables are aligned east/west; clip their receiver so wing shadows never float beyond the edge.
+		var receiver := PackedVector2Array([
+			Vector2(t.origin.x - 1.2, t.origin.z - 0.4), Vector2(t.origin.x + 1.2, t.origin.z - 0.4),
+			Vector2(t.origin.x + 1.2, t.origin.z + 0.4), Vector2(t.origin.x - 1.2, t.origin.z + 0.4)])
+		var clipped := Geometry2D.intersect_polygons(points, receiver)
+		if clipped.is_empty():
+			return
+		points = clipped[0]
+		center = Vector2.ZERO
+		for point: Vector2 in points:
+			center += point
+	center /= float(points.size())
+	var lift := t.origin.y + 0.004
+	var core := Color(0, 0, 0, 0.32)
+	var edge := Color(0, 0, 0, 0)
+	var indices := Geometry2D.triangulate_polygon(points)
+	for i in range(0, indices.size(), 3):
+		_emit_fill_triangle(k, points[indices[i]], points[indices[i + 1]], points[indices[i + 2]],
+			core, core, core, lift)
+	for i in points.size():
+		var a := points[i]
+		var b := points[(i + 1) % points.size()]
+		var ao := a + (a - center).normalized() * 0.055
+		var bo := b + (b - center).normalized() * 0.055
+		if bench:
+			var receiver_min := Vector2(t.origin.x - 1.2, t.origin.z - 0.4)
+			var receiver_max := Vector2(t.origin.x + 1.2, t.origin.z + 0.4)
+			ao = ao.clamp(receiver_min, receiver_max)
+			bo = bo.clamp(receiver_min, receiver_max)
+		_emit_fill_triangle(k, a, ao, bo, core, edge, edge, lift)
+		_emit_fill_triangle(k, a, bo, b, core, edge, core, lift)
 
 
 ## Ground-plane offset per metre of height, away from the sun. The 0.2 floor bounds low-angle shadows.

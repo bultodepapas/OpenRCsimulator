@@ -1,0 +1,73 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default population data validates
+ok   parked snapshots are a nonempty unique subset of flyable aircraft
+ok   fleet placement IDs match the baked snapshot source map
+ok   jensen-das-ugly-stik-60 resolves to a material-preserving static mesh
+ok   gp-extra-300s-60 resolves to a material-preserving static mesh
+ok   p51d-mustang-120 resolves to a material-preserving static mesh
+ok   sebart-avanti-s-a200-p100rx resolves to a material-preserving static mesh
+ok   turbo-lumber-evolution resolves to a material-preserving static mesh
+ok   all four catalog car styles are used across 11 parking places
+ok   parked cars have a staggered, rotated layout
+ok   all 13 existing people placements remain in the layout
+ok   all three population person types occur in those 13 placements
+ok   every default person placement is covered by the population source map
+ok   car_sedan uses the production population batch
+ok   car_hatch uses the production population batch
+ok   car_suv uses the production population batch
+ok   car_sport uses the production population batch
+ok   the four legacy car IDs resolve to exactly three replacement body styles
+ok   person_standing uses a production population batch
+ok   person_sitting uses a production population batch
+ok   person_pilot uses a production population batch
+ok   snapshot has a grounded bottom fleet
+ok   snapshot has a grounded bottom fleet
+ok   snapshot has a grounded bottom fleet
+ok   snapshot has a grounded bottom fleet
+ok   snapshot has a grounded bottom fleet
+ok   snapshot has a grounded bottom fleet-large-jet
+ok   snapshot has a grounded bottom fleet-micro-jets
+ok   snapshot has a grounded bottom fleet-micro-jets
+ok   snapshot has a grounded bottom fleet-grass
+ok   snapshot has a grounded bottom fleet-grass
+ok   snapshot has a grounded bottom fleet-micro-bench
+ok   bench receiver is the existing table or foam top
+ok   snapshot has a grounded bottom fleet-sport-bench
+ok   bench receiver is the existing table or foam top
+ok   snapshot has a grounded bottom fleet-service
+ok   bench receiver is the existing table or foam top
+ok   layout has five slab, five grass and three bench aircraft
+ok   one maintenance configuration and at least four uniform scales
+ok   bench shadows stay on the table at high and low sun
+ok   bench shadows stay on the table at high and low sun
+     person_standing measured full mesh bounds: (0.684191, 1.66071, 0.320324)
+ok   person_standing has adult-scale head-to-foot proportions
+ok   person_standing has a plausible body width
+ok   person_standing geometry includes garments and limbs
+ok   person_standing shoe soles meet the prefab ground plane
+     person_sitting measured full mesh bounds: (0.559372, 1.236652, 0.691962)
+ok   person_sitting has adult-scale head-to-foot proportions
+ok   person_sitting has a plausible body width
+ok   person_sitting geometry includes garments and limbs
+ok   person_sitting shoe soles meet the prefab ground plane
+     person_pilot measured full mesh bounds: (0.556433, 1.66071, 0.475768)
+ok   person_pilot has adult-scale head-to-foot proportions
+ok   person_pilot has a plausible body width
+ok   person_pilot geometry includes garments and limbs
+ok   person_pilot shoe soles meet the prefab ground plane
+WARNING: Tree wind is disabled for maple_tree because source material -9223371935201621926 is unsupported (cull mode is not disabled)
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _warn_tree_wind_once (res://scenery/imported_vegetation.gd:432)
+       [1] _tree_asset_wind_supported (res://scenery/imported_vegetation.gd:383)
+       [2] build (res://scenery/imported_vegetation.gd:132)
+       [3] build (res://scenery/scenery.gd:473)
+       [4] _test_animated_parts (res://tests/test_landscape_population.gd:192)
+       [5] _initialize (res://tests/test_landscape_population.gd:40)
+ok   scenery retains the original rotor and flag count
+ok   downloaded trees and shrubs use source batches without procedural tip motions
+ok   people animate through the bounded population shader, not per-person Motion nodes
+ok   the production population batches all 24 default placements
+ok   added motion stays below 40 moving draws
+all landscape population checks passed

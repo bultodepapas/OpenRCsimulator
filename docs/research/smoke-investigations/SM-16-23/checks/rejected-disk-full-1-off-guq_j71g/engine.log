@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 617.42 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+SMOKE_TIMING_READY: {"allocation":{},"disabled":true,"mode":"stock","preset":"avanti-white-tailpipe-v2","requested":false,"source_running":false}
+frame times: p50 16.73 ms, p95 22.96 ms, p99 28.52 ms over 3477 frames (complete=true) → C:\DEVELOPMENT\OpenRCsimulator\tmp\smoke-lifetime-paired-timing-r2\1-off.json
+ERROR: Cannot write frame-time report 'C:\DEVELOPMENT\OpenRCsimulator\tmp\smoke-lifetime-paired-timing-r2\1-off.json': Can't write file
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _finish_frame_time (res://main.gd:2651)
+       [1] _log_frame_time (res://main.gd:2574)
+       [2] _process (res://main.gd:901)

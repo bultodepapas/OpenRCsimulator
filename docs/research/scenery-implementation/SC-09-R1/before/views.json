@@ -1,0 +1,75 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "field_build_ms": 2390.738,
+  "scenery": true,
+  "stats": {
+    "airfield_detail_batches": 5,
+    "airfield_detail_instances": 8,
+    "airfield_detail_triangles": 4482,
+    "botanical_batches": 14,
+    "botanical_plants": 285,
+    "botanical_triangles": 85636,
+    "build_ms": 1334.275,
+    "cells": 60,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 171,
+    "motion": 5,
+    "moving_people": 7,
+    "pit_shelter_surfaces": 2,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 83,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "airfield_detail": 7.752,
+      "botanicals": 90.836,
+      "cell_meshes": 53.94,
+      "fence": 37.48,
+      "fleet": 17.54,
+      "hedge": 14.499,
+      "instances": 197.661,
+      "meshes": 112.28,
+      "patch": 76.477,
+      "population": 136.258,
+      "shelter_material": 53.567,
+      "shelter_meshes": 3.837,
+      "track": 2.221,
+      "vegetation": 375.741,
+      "woodland_edges": 84.085
+    },
+    "vegetation_instances": 42,
+    "vegetation_triangles": 92776,
+    "woodland_edge_batches": 5,
+    "woodland_edge_plants": 220,
+    "woodland_edge_triangles": 472
+  },
+  "views": {
+    "fleet_close": {
+      "draw_calls": 122.0,
+      "objects": 123.0,
+      "primitives": 282962.0,
+      "shadow_draw_calls": 0
+    },
+    "pilot_south": {
+      "draw_calls": 174.0,
+      "objects": 175.0,
+      "primitives": 329156.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_club": {
+      "draw_calls": 201.0,
+      "objects": 202.0,
+      "primitives": 348555.0,
+      "shadow_draw_calls": 0
+    },
+    "postcard_pits": {
+      "draw_calls": 188.0,
+      "objects": 189.0,
+      "primitives": 408687.0,
+      "shadow_draw_calls": 0
+    }
+  }
+}

@@ -39,7 +39,12 @@ func _initialize() -> void:
 	var tree_count := 0
 	var car_count := 0
 	var lamp_count := 0
-	var fleet_count := 0
+	var fleet_proxy_count := 0
+	var fleet_placements := {}
+	var expected_fleet_count := 0
+	for group: Dictionary in scenery_result.scenery.groups:
+		if str(group.get("type", "")) == "fleet":
+			expected_fleet_count += group.get("placements", []).size()
 	for proxy: Dictionary in world.proxies:
 		if proxy.kind == "tree_trunk" or proxy.kind == "tree_foliage":
 			tree_count += 1
@@ -48,10 +53,11 @@ func _initialize() -> void:
 		elif proxy.kind == "lamp":
 			lamp_count += 1
 		elif proxy.kind == "parked_aircraft":
-			fleet_count += 1
+			fleet_proxy_count += 1
+			fleet_placements[str(proxy.damage_id)] = true
 	_check("production inventory includes the complete field canopy and trunk sets", tree_count >= 3360)
-	_check("production inventory includes vehicles, lights, and four parked aircraft",
-		car_count > 0 and lamp_count > 0 and fleet_count == 4)
+	_check("production inventory includes vehicles, lights, and every parked-aircraft placement",
+		car_count > 0 and lamp_count > 0 and fleet_placements.size() == expected_fleet_count and fleet_proxy_count >= expected_fleet_count)
 	var aircraft: Dictionary = AircraftData.load_file(Scenarios.AIRCRAFT)
 	_check("production aircraft contract supplies the real crash hull", aircraft.ok and aircraft.model.crash_hull.size() >= 3)
 	if aircraft.ok:

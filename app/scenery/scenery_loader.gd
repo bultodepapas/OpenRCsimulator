@@ -2,7 +2,7 @@
 ## Same contract as the field loader: {ok, errors, scenery}; invalid data is refused, never half-built. Every quantity is
 ## {value, unit, kind, source}. Rules: the distance profile (report 03), the flight-box height limit, the runway and its
 ## approach corridors (1:20, borrowed from ICAO Annex 14 code 1 as an analogy), clearance from the L6b trees, and
-## `collides` must be false (L14 owns collisions).
+## `collides` must be false: visual nodes stay passive; collision_world builds simulator contacts.
 extends RefCounted
 
 const Prefabs = preload("res://scenery/prefabs.gd")
@@ -78,7 +78,7 @@ static func validate(raw: Variant, field: Dictionary) -> Dictionary:
 				continue
 			ids[id] = true
 			if gd.get("collides", false) != false:
-				errors.append(path + ".collides: scenery is visual only until L14 (must be false)")
+				errors.append(path + ".collides: scenery nodes are visual only; collision_world owns contacts (must be false)")
 			var gtype := str(gd.get("type", ""))
 			if not GROUP_TYPES.has(gtype):
 				errors.append(path + ".type: expected one of %s" % [GROUP_TYPES])
@@ -278,7 +278,7 @@ static func _instances(errors: PackedStringArray, path: String, gd: Dictionary, 
 		group.aircraft = (ids as Array).map(func(x: Variant) -> String: return str(x))
 		for a: String in group.aircraft:
 			if not ParkedAircraft.AIRCRAFT.has(a):
-				errors.append("%s.aircraft: '%s' has no baked fleet model (tools/scenery/bake_fleet.gd)" % [path, a])
+				errors.append("%s.aircraft: '%s' has no baked fleet model (tools/scenery/bake_parked_aircraft.gd)" % [path, a])
 				return
 		group.prefab = "fleet"
 		var scale_value := _quantity(errors, path + ".scale", gd.scale, "1") if gd.has("scale") else 1.0

@@ -1,0 +1,126 @@
+{
+	"format": "openrc-parked-aircraft v1",
+	"aircraft": "jensen-das-ugly-stik-60",
+	"configuration": "service",
+	"size": [
+		0.559,
+		0.271,
+		1.296
+	],
+	"collision_parts": [
+		{
+			"part": "body",
+			"center": [
+				0.0,
+				0.0964301228523254,
+				-0.0490415692329407
+			],
+			"size": [
+				0.54610002040863,
+				0.147428065538406,
+				1.19746398925781
+			]
+		},
+		{
+			"part": "left_wing",
+			"center": [
+				-0.103476956486702,
+				0.121538698673248,
+				-0.140231505036354
+			],
+			"size": [
+				0.125889509916306,
+				0.013021394610405,
+				0.158731147646904
+			]
+		},
+		{
+			"part": "right_wing",
+			"center": [
+				0.103476956486702,
+				0.121538698673248,
+				-0.140231505036354
+			],
+			"size": [
+				0.125889509916306,
+				0.013021394610405,
+				0.158731147646904
+			]
+		},
+		{
+			"part": "tail",
+			"center": [
+				0.0,
+				0.135304465889931,
+				0.217740505933762
+			],
+			"size": [
+				0.558807373046875,
+				0.270608931779861,
+				0.860919833183289
+			]
+		}
+	],
+	"source_triangles": 43024,
+	"triangles": 21650,
+	"lod_triangles": [
+		9000,
+		7096
+	],
+	"surfaces": 27,
+	"ground_pitch_deg": 0.0,
+	"ground_wheel_level_error_m": 0.0,
+	"ground_support_wheels": 0,
+	"ground_wheel_contacts": [],
+	"source_builder": "res://render/airplane.gd::build(jensen-das-ugly-stik-60)",
+	"source_identity": {
+		"manifest": {
+			"path": "res://data/aircraft_models/jensen-das-ugly-stik-60.json",
+			"sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+			"pinned_sha256": "c59152bc08354325ea397dadc48c4d24a47de95300b6ddd927390a65134e3345",
+			"matches_pin": true
+		},
+		"builder": {
+			"path": "res://aircraft/ugly_stik_model.gd",
+			"sha256": "3966784259031fdcb939e9449c345228884f9cc26cc62709273a8588077b67ed",
+			"pinned_sha256": "3966784259031fdcb939e9449c345228884f9cc26cc62709273a8588077b67ed",
+			"matches_pin": true
+		},
+		"geometry_script": {
+			"path": "res://aircraft/ugly_stik_geometry.gd",
+			"sha256": "a7b5555500a5059ebdf9ad29ec63a5a5c463733b8cb80e5a688250d5ce22b01f",
+			"pinned_sha256": "a7b5555500a5059ebdf9ad29ec63a5a5c463733b8cb80e5a688250d5ce22b01f",
+			"matches_pin": true
+		},
+		"fleet_collector": {
+			"path": "res://scenery/fleet.gd",
+			"sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"pinned_sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"matches_pin": true
+		},
+		"airplane_snapshot_builder": {
+			"path": "res://render/airplane.gd",
+			"sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"pinned_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"matches_pin": true
+		},
+		"baker": {
+			"path": "res://../tools/scenery/bake_parked_aircraft.gd",
+			"sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"pinned_sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"matches_pin": true
+		},
+		"geometry_source": {
+			"path": "assets/aircraft/ugly-stik-60/geometry.json",
+			"sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+			"pinned_sha256": "89c7bb667dbee4022cb5041d23a524ce80ae04a882ad5508437e999f13a2d108",
+			"matches_pin": true
+		},
+		"asset": {
+			"kind": "procedural",
+			"identity": "jensen-60-nitro-61-v3",
+			"revision": "jensen-60-nitro-61-v3"
+		}
+	},
+	"notes": "Stock authored livery; PBR materials and UV maps retained; root forward is local -Z; mesh is centred in XZ with bottom y=0."
+}

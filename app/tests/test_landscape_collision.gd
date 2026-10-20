@@ -2,7 +2,6 @@ extends SceneTree
 
 const CollisionWorld := preload("res://scenery/collision_world.gd")
 const Collision := preload("res://sim/scenery_collision.gd")
-const Models := preload("res://scenery/models.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
 const Snapshot := preload("res://physics/impact_snapshot.gd")
@@ -43,7 +42,7 @@ func _test_world_inventory_and_identity() -> void:
 		return
 	var world: Dictionary = first.world
 	var tree_parts := 0
-	var fleet_count := 0
+	var fleet_placements := {}
 	var lamp_count := 0
 	var shelter_parts := 0
 	var cradle_parts := 0
@@ -51,7 +50,7 @@ func _test_world_inventory_and_identity() -> void:
 		if str(proxy.kind) in ["tree_trunk", "tree_foliage"]:
 			tree_parts += 1
 		if str(proxy.kind) == "parked_aircraft":
-			fleet_count += 1
+			fleet_placements[str(proxy.damage_id)] = true
 		if str(proxy.kind) == "lamp":
 			lamp_count += 1
 		if str(proxy.id).begins_with("building:shelter"):
@@ -59,7 +58,7 @@ func _test_world_inventory_and_identity() -> void:
 		if str(proxy.kind) == "aircraft_support":
 			cradle_parts += 1
 	_check("all 1,680 source trees make trunk/crown proxies", tree_parts == 3360)
-	_check("all four parked model IDs receive proxies", fleet_count == 4)
+	_check("each parked aircraft placement has collision proxies", fleet_placements.size() == 4)
 	_check("flood and stake fixtures receive proxies", lamp_count >= 3)
 	_check("open shelter has 18 posts plus roof", shelter_parts == 19)
 	_check("Avanti display cradle has explicit support boxes", cradle_parts == 6)
@@ -146,10 +145,19 @@ func _test_severity_and_energy_response() -> void:
 	var fleet_groups := [{id = "parked", type = "fleet", placements = [
 		{north = 5.0, east = 0.0, heading = 0.0, aircraft = "jensen-das-ugly-stik-60"}]}]
 	var aircraft_world := _world([], fleet_groups, [])
-	var aircraft_start := _state(0.0, 0.0, -0.22, 5.0, 0.0, 0.0)
-	var aircraft_end := _state(10.0, 0.0, -0.22, 5.0, 0.0, 0.0)
-	var gentle_plane: Array[Collision.Event] = Collision.contacts(aircraft_start, aircraft_end, hull,
-		aircraft_world, 13, mass, inertia)
+	var aircraft_proxy: Dictionary = {}
+	for proxy: Dictionary in aircraft_world.proxies:
+		if proxy.kind == "parked_aircraft":
+			aircraft_proxy = proxy
+			break
+	var gentle_plane: Array[Collision.Event] = []
+	if not aircraft_proxy.is_empty():
+		var span := float(aircraft_proxy.half_x) + 0.2
+		var aircraft_start := _state(float(aircraft_proxy.north), float(aircraft_proxy.east) - span,
+			float(aircraft_proxy.down), 0.0, 5.0, 0.0)
+		var aircraft_end := _state(float(aircraft_proxy.north), float(aircraft_proxy.east) + span,
+			float(aircraft_proxy.down), 0.0, 5.0, 0.0)
+		gentle_plane = Collision.contacts(aircraft_start, aircraft_end, hull, aircraft_world, 13, mass, inertia)
 	_check("low-speed contact with parked aircraft has a distinct nonterminal response", not gentle_plane.is_empty()
 		and gentle_plane[0].response_class == "light_airframe_impulse" and not gentle_plane[0].terminal)
 
@@ -189,11 +197,15 @@ func _test_building_vehicle_and_fleet_boxes() -> void:
 	var vehicle_hit := _sweep_n(world, 20.0, -0.7, 0.0, hull)
 	_check("car box creates terminal contact", not vehicle_hit.is_empty() and vehicle_hit[0].obstacle_kind == "vehicle")
 	for index: int in fleet_ids.size():
-		var center_north := 40.0 + 10.0 * float(index)
-		var model_key := str(Models.FLEET.find_key(fleet_ids[index]))
-		var model_size: Vector3 = Models.arrays(model_key).size
-		var size_down := -(Models.parked_base_height(model_key) + model_size.y * 0.5)
-		var hits := _sweep_n(world, center_north, size_down, 0.0, hull)
+		var placement_id := "fleet:fleet:%02d:%s" % [index, fleet_ids[index]]
+		var part: Dictionary = {}
+		for proxy: Dictionary in world.proxies:
+			if str(proxy.get("damage_id", "")) == placement_id:
+				part = proxy
+				break
+		var hits: Array[Collision.Event] = []
+		if not part.is_empty():
+			hits = _sweep_n(world, float(part.north), float(part.down), float(part.east), hull)
 		_check("parked aircraft %s is collidable" % fleet_ids[index], not hits.is_empty() and hits[0].obstacle_kind == "parked_aircraft")
 
 

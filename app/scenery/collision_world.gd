@@ -522,6 +522,16 @@ static func _add_local_box(proxies: Array[Dictionary], id: String, kind: String,
 		width, height, length, heading)
 
 
+static func _placement_box(proxies: Array[Dictionary], id: String, kind: String, part: String, response: String,
+		north: float, east: float, heading: float, local_center: Array, local_size: Array,
+		scale: float, elevation: float) -> void:
+	var center: PackedFloat64Array = _placement_point(north, east, heading,
+		float(local_center[0]) * scale, float(local_center[2]) * scale)
+	_add_box_at_down(proxies, id, kind, part, response, center[0], center[1],
+		-(elevation + float(local_center[1]) * scale),
+		float(local_size[0]) * scale, float(local_size[1]) * scale, float(local_size[2]) * scale, heading)
+
+
 static func _add_avanti_cradle(proxies: Array[Dictionary], id: String, north: float, east: float,
 		heading: float) -> void:
 	# Two padded crossbars and their four low trestle feet support the parked gear-up Avanti.

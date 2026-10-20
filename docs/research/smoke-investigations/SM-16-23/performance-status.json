@@ -30,5 +30,17 @@
   "summary": "timing/summary.json",
   "observed_p95_gate_pass": false,
   "sample_validity": "All six r3 runs complete, advancing and fault/crash/pause-free; ON emitter active over99% of observed frames.",
-  "remaining_identity_limit": "Recorded before final activity accepted-wash and fractional-resume fixes."
+  "remaining_identity_limit": "Six retained VIEW_DEPTH timing samples predate accepted wash, fractional-resume and LIFETIME draw ordering; they do not qualify final renderer.",
+  "current_source_attempt": {
+    "status": "rejected_before_sampling",
+    "report": "checks/rejected-current-timing-1-off-iqbrebbr/report.json",
+    "reason": "Concurrent scenery.gd and scenery_loader.gd preloaded missing res://scenery/parked_aircraft.gd. No current-source timing sample produced.",
+    "subsequently_resolved": true
+  },
+  "current_source_retry": {
+    "status": "rejected_report_write_failure",
+    "report": "checks/rejected-disk-full-1-off-guq_j71g/report.json",
+    "reason": "Drive had798720bytesfree; frame report opened but could not save. No complete current-source frame report or matched ON sample retained.",
+    "final_application_parse": "checks/smoke-final-main-parse-gts1bjd8/report.json"
+  }
 }

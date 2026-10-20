@@ -1,6 +1,6 @@
 {
 	"adapter": "NVIDIA GeForce RTX 3090",
-	"checks": 49,
+	"checks": 799,
 	"engine": {
 		"build": "official",
 		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
@@ -14,31 +14,73 @@
 	},
 	"expired_pixels": 0,
 	"failures": 0,
+	"live_outlet": {
+		"method": "40m/s straight outlet,30Hz accepted presentation,640x360 orthographic6m camera following an opaque green nozzle marker. One process_frame+frame_post_draw per interval; immediate get_image after frame30, no extra/no-request settling frames. Red smoke sampled aft of marker in that same draw; near zone0.3m aft and16px high; red threshold R-max(G,B)>0.015.",
+		"ordering_tradeoff": "Lifetime order uses current instances but is not view-dependent or global alpha sorting. The comparison overrides only a disposable v2 fixture to reproduce the former Compatibility history policy.",
+		"results": [
+			{
+				"accepted_tick": 240,
+				"accepted_time_s": 1.0,
+				"capacity": 192,
+				"carrier_velocity_mps": "(39.99996, 0.0, 0.0)",
+				"decoded_pixels_sha256": "44fc2c6514d174aa147cf9b7addb3bc4359f9f47dafe8cb0e282edd0cb211e78",
+				"draw_order": 1,
+				"expected_newborn_projected_x_px": 320.0,
+				"gap_m": 0.0,
+				"gap_pixels": 0,
+				"marker_left_px": 320,
+				"marker_pixels": 192,
+				"near_outlet_red_pixels": 216,
+				"newest_visible_smoke_px": 319,
+				"policy": "lifetime-fresh",
+				"requested_rate_hz": 240.0,
+				"source_x_m": 40.0
+			},
+			{
+				"accepted_tick": 240,
+				"accepted_time_s": 1.0,
+				"capacity": 192,
+				"carrier_velocity_mps": "(39.99996, 0.0, 0.0)",
+				"decoded_pixels_sha256": "19ccf90b1c9cbbde9a1c96f5c59a80cb8f613d85267a8aafc45c5c06001ef355",
+				"draw_order": 3,
+				"expected_newborn_projected_x_px": 320.0,
+				"gap_m": 3.91666666666667,
+				"gap_pixels": 235,
+				"marker_left_px": 320,
+				"marker_pixels": 192,
+				"near_outlet_red_pixels": 0,
+				"newest_visible_smoke_px": 84,
+				"policy": "view-depth-history",
+				"requested_rate_hz": 240.0,
+				"source_x_m": 40.0
+			}
+		]
+	},
 	"motion": {
 		"dynamic_5s": [
 			{
-				"centroid_x_m": 1.53313052829236,
-				"centroid_y_m": 0.104970675965404,
+				"centroid_x_m": 1.53349107234646,
+				"centroid_y_m": 0.105349709630808,
 				"rate": 30,
-				"weight": 217.537257283926,
-				"width_m": 0.166254404607541
+				"weight": 219.192159220576,
+				"width_m": 0.166713086844873
 			},
 			{
-				"centroid_x_m": 1.52964213851232,
-				"centroid_y_m": 0.107583896297068,
+				"centroid_x_m": 1.5299850540612,
+				"centroid_y_m": 0.107981226987367,
 				"rate": 60,
-				"weight": 218.290198460221,
-				"width_m": 0.16506849059884
+				"weight": 219.964708328247,
+				"width_m": 0.165461279933066
 			},
 			{
-				"centroid_x_m": 1.52767990481195,
-				"centroid_y_m": 0.109168787518103,
+				"centroid_x_m": 1.5280230530229,
+				"centroid_y_m": 0.109558030127696,
 				"rate": 144,
-				"weight": 218.81568877399,
-				"width_m": 0.164340394206838
+				"weight": 220.462747521698,
+				"width_m": 0.164747175621981
 			}
 		],
-		"maximum_centroid_drift_m": 0.00687992991879582,
+		"maximum_centroid_drift_m": 0.00689994171261787,
 		"method": "Orthographic640x360 camera.size6m; color-channel range weights isolate red smoke from gray background; projected image centroid, not hidden3D positions. Eight no-new-request draws drain the last accepted GPU command before readback.",
 		"oracle_error_m": 0.0000678519578485748,
 		"oracle_expected_x_m": 3.0999977640081,
@@ -51,12 +93,38 @@
 		"scope": "One native backend, single-side projection; not fleet continuity or full3D plume qualification."
 	},
 	"multicolor_pause_pixel_identical": true,
+	"ordering_views": {
+		"images": [
+			{
+				"colored_pixels": 4045,
+				"decoded_pixels_sha256": "d22e8720b74c037b65ab8623aff16fa09a728b30146d5ce58001bdf7bcba8ada",
+				"id": "ordering-lifetime-back"
+			},
+			{
+				"colored_pixels": 4162,
+				"decoded_pixels_sha256": "08cc2be49bb6d5812185cadcb5b31a0a032900a20e5cee6cc10a496977f7497c",
+				"id": "ordering-lifetime-front"
+			},
+			{
+				"colored_pixels": 4041,
+				"decoded_pixels_sha256": "97411f74a9c31b3210a0cb8f097381dc00ab223b95d3cce903e5c2a552dde596",
+				"id": "ordering-view-depth-back"
+			},
+			{
+				"colored_pixels": 4156,
+				"decoded_pixels_sha256": "472d33cef4e50dca2cde1f8692163c60dcde27ee64a36857e6e043ecf5faf94d",
+				"id": "ordering-view-depth-front"
+			}
+		],
+		"method": "Controlled opposing directional lights; two stationary opposing outlets using the same smooth red/blue/yellow palette with0.1s phaseoffset;2s acceptedtime. Opposing orthographicviews after8no-requestdraws freezeidenticalplumestate for informational orderingcomparison. Same seeds/profile for both drawpolicies.",
+		"scope": "Capture assertions establish visibility only. These images do not establish global alpha-order correctness for arbitrary crossing plumes, canopies, water or cameras."
+	},
 	"scope": "Native GLES3 compile/render/lifecycle probe; not a frame-time or physical validation campaign.",
 	"source_sha256": {
 		"res://render/smoke/profile_process.gdshader": "aa11474349686f7c58341928da92f0b9e42c05eb15b96b43b65f84d77fe2cdd3",
-		"res://render/smoke/profile_smoke.gd": "ef417f0a9ce37ce2b67922f04f2d7370931393bc5df01aa50adb7b9edc2eba01",
+		"res://render/smoke/profile_smoke.gd": "c567c81c017e924706d391212e4b7262a89ea71e3f8cf17bac3eff85f515e089",
 		"res://render/smoke/profile_smoke_schedule.gd": "558134c6dffe4d41899888b975db109bfa33f4e35ac6f01655f2f333dfbd0bb4",
-		"res://tests/test_smoke_renderer_v2.gd": "aecc6c7100c1fee50f4af93b87464e50f672f3c7a684a475ea57cbb75e81b0b3"
+		"res://tests/test_smoke_renderer_v2.gd": "29dc6fbe6fff30112e6f204c4a43e049a7c16534c66600ecde03ce3e58bcd7eb"
 	},
 	"visible_pixels": 129
 }

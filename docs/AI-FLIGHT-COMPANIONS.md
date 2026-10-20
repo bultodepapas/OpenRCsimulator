@@ -6,8 +6,9 @@ gates live in [the implementation plan](../AI_FLIGHT_COMPANIONS_PLAN.md).
 Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md),
 [cost attribution and equivalence](research/ai-companions/AFC-00-R1/README.md),
 [lifecycle checks](research/ai-companions/AFC-03-R1/README.md),
-[moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md), and
-[avoidance clearance repair](research/ai-companions/AFC-04-R2/README.md).
+[moving-encounter failures and selection repair](research/ai-companions/AFC-04-R1/README.md),
+[avoidance clearance repair](research/ai-companions/AFC-04-R2/README.md), and
+[sound, labels and accessible controls](research/ai-companions/AFC-05-R1/README.md).
 
 ## Use
 
@@ -17,8 +18,9 @@ Follow-up evidence: [qualified profiles](research/ai-companions/AFC-02/README.md
    Start with one; additional aircraft substantially increase CPU cost.
 3. Fly. The companions launch airborne in separated circuits north of the runway.
 4. **Pause → Session options → Flight companions** shows the current population.
-   Apply changes, then **Restart flight** to rebuild the roster. Changes made here
-   stay with this flight unless **Save these settings as the default** is selected.
+   Apply flight-setting changes, then **Restart flight** to rebuild the roster.
+   Sound and label settings apply immediately. Changes made here stay with this
+   flight unless **Save these settings as the default** is selected.
 5. **Remove companions now** immediately clears their sessions, models and audio.
    Restart brings back the configured roster. To keep them off, disable and Apply.
    Cancel discards the dialog draft.
@@ -27,6 +29,12 @@ Off is the default. Each companion uses the bundled Jensen Das Ugly Stik 60,
 an experienced circuit controller, independent full aircraft dynamics, and a
 bounded spatial engine voice. There are no duplicate cameras or field soundscapes.
 Player aircraft selection does not change the AI aircraft.
+
+**Companion engine volume** controls only companion voices; zero mutes them.
+**Show companion labels** is Off by default. When enabled, the labels follow the
+actual aircraft, respect scene depth and the selected 50–1000 m camera-distance
+limit, and disappear for stopped/crashed companions. These controls never select
+a camera or change flight dynamics. Apply commits the draft; Cancel discards it.
 
 The seed selects starting phase/direction and per-aircraft turbulence seeds.
 Repeatability requires the same aircraft data, source, weather and initial roster.
@@ -43,6 +51,7 @@ the companion clock.
 | Weather | Reference atmosphere; mean wind ≤1.5 m/s, gust ≤0.6 m/s, updraft ≤0.15 m/s, turbulence RMS ≤[0.15, 0.15, 0.08] m/s |
 | Aircraft/activity/skill | Ugly Stik circuits, experienced pilots |
 | Population | Experimental fixed roster of 1–3; higher counts refused |
+| Presentation | Immediate engine volume/mute; optional depth-tested labels with a distance limit; English/Spanish controls |
 | Avoidance | Predicted closest approach biases heading/altitude; descending targets stay above the recovery band. Moving-encounter separation remains unqualified |
 | Aircraft contact | Disabled; overlapping airplanes do not exchange contact forces |
 | Terrain/scenery | Launch checks the nominal circuit corridor against actual session terrain, lake and collision proxies; ordinary contact/crash checks remain active. Only the player changes shared scenery damage |
@@ -68,7 +77,10 @@ This is not a 60 fps or target-hardware qualification. A one-companion, 20-minut
 headless flight completed all 288,000 ticks with stable node/object/resource counts
 after 50 lifecycle cycles, including 10 visual/audio cycles. The three-companion
 multi-seed endurance matrix, rendered soaks, finite-fuel recovery, fleet replay,
-full crash presentation, translation coverage and platform package checks remain open.
+full crash presentation, complete feature translations and platform package checks remain open.
+The first qualification target is the user's Windows 11 / Ryzen 9 5900X / RTX 3090
+machine; native Linux/macOS tests and independent RC pilot review remain external
+release gates. The selected machine has not yet qualified a busy-skies count.
 
 ## Developer entry points
 
@@ -129,6 +141,8 @@ reconstruct shared-world events or establish exact fleet equivalence.
 | `app/ai/companions/config.gd` | Bounded settings and explicit CLI overlay |
 | `app/ai/companions/profile_loader.gd` | Launch-time validation of aircraft, controller, solver, field and engine qualification |
 | `app/ai/companions/airspace.gd` | Continuous static circuit clearance and person/shelter footprint exclusions at admission |
+| `app/ai/companions/traffic_index.gd` | Bounded swept-bounds candidate query, tested independently; runtime integration pending |
+| `app/ai/companions/static_trajectory.gd` | Continuous obstacle/protected-footprint and terrain clearance for bounded geometric paths; controller integration pending |
 | `app/ai/companions/fleet_record.gd` | Fixed-roster capture manifest, common-clock monitoring and bounded existing per-session writers |
 | `app/data/ai/companions/aircraft/`, `fields/` | Source-bound Stik/Club profiles and measured circuit scope |
 | `app/ai/companions/pilot.gd` | Float64 guidance, control demands and proximity response |
@@ -194,12 +208,20 @@ retain baseline/candidate evidence and qualify the changed sources first.
 Run focused tests through `tools/godot/run_checked.py`:
 `test_companions_config.gd`, `test_companions_session.gd`,
 `test_companions_pilot.gd`, `test_companions_manager.gd`,
-`test_companions_encounters.gd`,
+`test_companions_encounters.gd`, `test_companions_clearance.gd`, `test_companions_traffic_index.gd`, `test_companions_trajectory.gd`,
 `test_companions_profiles.gd`, `test_companions_airspace.gd`, `test_companions_lifecycle.gd`,
-`test_companions_record.gd`, `test_companions_dialog.gd`, and `test_companions_shell.gd`.
+`test_companions_record.gd`, `test_companions_dialog.gd`, `test_companions_presentation.gd`, `test_companions_layout.gd`,
+and `test_companions_shell.gd`.
 The long qualification matrix lives outside the regular unit suite in
 `research/ai-companions/pilot_probe.gd`. The same directory contains a two-minute
 production manager check with full scenery collision, complete callback cost
 measurements, native render probes, and `encounter_probe.gd` for bounded moving
 traffic and recorded two-threat flights. See the evidence reports for invocations
 and the distinction between failed flight gates and successful log replay.
+
+The independent traffic-index contract and continuous closest-approach oracle
+are recorded in [AFC-12 R1](research/ai-companions/AFC-12-R1/README.md). Its bounded
+allocation and zero omitted synthetic conflicts do not establish a supported
+aircraft count or replace flight qualification.
+
+The [static trajectory checker](research/ai-companions/AFC-12-R2/README.md) passes 38 geometric checks, including the real field and bounded maximum workload. It remains a reusable helper pending controller/context binding; it does not qualify maneuver containment.

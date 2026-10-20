@@ -1,0 +1,168 @@
+{
+	"format": "openrc-parked-aircraft v1",
+	"aircraft": "p51d-mustang-120",
+	"configuration": "assembled",
+	"size": [
+		2.82,
+		0.946,
+		2.42
+	],
+	"collision_parts": [
+		{
+			"part": "body",
+			"center": [
+				0.0,
+				0.324423998594284,
+				-0.0847539305686951
+			],
+			"size": [
+				0.268485486507416,
+				0.784185528755188,
+				2.28629684448242
+			]
+		},
+		{
+			"part": "left_wing",
+			"center": [
+				-0.702870488166809,
+				0.279499411582947,
+				-0.292036026716232
+			],
+			"size": [
+				1.4167742729187,
+				0.336357533931732,
+				0.732546627521515
+			]
+		},
+		{
+			"part": "right_wing",
+			"center": [
+				0.702870488166809,
+				0.279499411582947,
+				-0.292036026716232
+			],
+			"size": [
+				1.41677415370941,
+				0.336357533931732,
+				0.732546627521515
+			]
+		},
+		{
+			"part": "tail",
+			"center": [
+				0.0,
+				0.325509130954742,
+				0.882451474666595
+			],
+			"size": [
+				1.00660002231598,
+				0.656549036502838,
+				0.807136297225952
+			]
+		},
+		{
+			"part": "gear",
+			"center": [
+				0.0,
+				0.144806176424026,
+				-0.00645774602890015
+			],
+			"size": [
+				0.957000017166138,
+				0.388246566057205,
+				1.43357110023499
+			]
+		},
+		{
+			"part": "propeller",
+			"center": [
+				0.0,
+				0.586958855390549,
+				-1.08783531188965
+			],
+			"size": [
+				0.66040027141571,
+				0.659858465194702,
+				0.176755428314209
+			]
+		}
+	],
+	"source_triangles": 52325,
+	"triangles": 29683,
+	"lod_triangles": [
+		7513,
+		2863
+	],
+	"surfaces": 29,
+	"ground_pitch_deg": 12.23,
+	"ground_wheel_level_error_m": 0.0,
+	"ground_support_wheels": 3,
+	"ground_wheel_contacts": [
+		[
+			-0.466125011444092,
+			0.00638788938522339,
+			-0.63134890794754
+		],
+		[
+			0.435874998569489,
+			0.00638788938522339,
+			-0.63134890794754
+		],
+		[
+			-0.00999999791383743,
+			0.00638791918754578,
+			0.654638350009918
+		]
+	],
+	"source_builder": "res://render/airplane.gd::build(p51d-mustang-120)",
+	"source_identity": {
+		"manifest": {
+			"path": "res://data/aircraft_models/p51d-mustang-120.json",
+			"sha256": "7240fa81961b9f4862151d4ba1737696c401783c2a9457bd428bf9fa75d5fd76",
+			"pinned_sha256": "7240fa81961b9f4862151d4ba1737696c401783c2a9457bd428bf9fa75d5fd76",
+			"matches_pin": true
+		},
+		"builder": {
+			"path": "res://aircraft/p51d_model.gd",
+			"sha256": "f327dc87cdf6ef77342fda85e064d988698a71ea7e199d9ba42043914ec96e5e",
+			"pinned_sha256": "f327dc87cdf6ef77342fda85e064d988698a71ea7e199d9ba42043914ec96e5e",
+			"matches_pin": true
+		},
+		"geometry_script": {
+			"path": "res://aircraft/p51d_geometry.gd",
+			"sha256": "fdb4ac1c349da8896d358ae52aadd9e65a28978faab6f31d1bb0e255fb2178c7",
+			"pinned_sha256": "fdb4ac1c349da8896d358ae52aadd9e65a28978faab6f31d1bb0e255fb2178c7",
+			"matches_pin": true
+		},
+		"fleet_collector": {
+			"path": "res://scenery/fleet.gd",
+			"sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"pinned_sha256": "690c97188371aa41e17a2a3834f9456e59fc38d270749f970afbef02573e6bd7",
+			"matches_pin": true
+		},
+		"airplane_snapshot_builder": {
+			"path": "res://render/airplane.gd",
+			"sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"pinned_sha256": "9faf0174c31e774daded96d7b29d86074ddaa8359ce9b6e9bc2d441537fe8f4d",
+			"matches_pin": true
+		},
+		"baker": {
+			"path": "res://../tools/scenery/bake_parked_aircraft.gd",
+			"sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"pinned_sha256": "b22021d353a86cc7e6b3371ccd3ae155f7e2dd48aabf06579f9ffafbf6790821",
+			"matches_pin": true
+		},
+		"geometry_source": {
+			"path": "assets/aircraft/p51d-mustang-120/geometry.json",
+			"sha256": "7fdac38dd17a8264c06bd211cc643019f06b50046f03b3ed4de2006acd16d7a9",
+			"pinned_sha256": "7fdac38dd17a8264c06bd211cc643019f06b50046f03b3ed4de2006acd16d7a9",
+			"matches_pin": true
+		},
+		"asset": {
+			"kind": "procedural",
+			"identity": "p51d-mustang-120-v1",
+			"revision": "p51d-mustang-120-v1"
+		}
+	},
+	"notes": "Stock authored livery; PBR materials and UV maps retained; root forward is local -Z; mesh is centred in XZ with bottom y=0."
+}

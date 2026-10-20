@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WARNING: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_1.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_2.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rock_Medium_3.gltf': In external resource #0, invalid UID: 'uid://dgxk5y52ojxuu' - using text path instead: 'res://assets/landscape/airfield_detail/quaternius_rocks/Rocks_Diffuse.png'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #0, invalid UID: 'uid://hvjsevv06olb' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_diff_1k.jpg'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #1, invalid UID: 'uid://bj6t6x8xnch3e' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_arm_1k.jpg'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+WARNING: 'res://assets/landscape/airfield_detail/flower_empodium/flower_empodium_1k.gltf': In external resource #2, invalid UID: 'uid://ctqnmpeacmdk' - using text path instead: 'res://assets/landscape/airfield_detail/flower_empodium/textures/flower_empodium_nor_gl_1k.jpg'.
+   at: open (core/io/resource_format_binary.cpp:1025)
+STATIC PATH CHECK identity=0f12ece062872e80bf3e07b1eff33464825befb460272365bb58977868237dea cases=7 all_clear=true output=D:/OpenRCsimulator-AFC-work/evidence/avoidance/survey-reachable-60s-r2-20261020/static-path-clearance.json

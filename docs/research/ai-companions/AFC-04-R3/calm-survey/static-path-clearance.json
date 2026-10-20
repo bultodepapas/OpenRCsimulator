@@ -1,0 +1,526 @@
+{
+	"all_paths_clear": true,
+	"cases": [
+		{
+			"case_id": "seed-20261020-head-on",
+			"chunks": [
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 0.0,
+					"last_time_s": 12.8,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.8124254797656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 12.8,
+					"last_time_s": 25.6,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.6916818097656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 25.6,
+					"last_time_s": 38.4,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.1960564097656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 38.4,
+					"last_time_s": 51.2,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.0789163697656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 51.2,
+					"last_time_s": 60.0,
+					"point_count": 89,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.0566100797656
+				}
+			],
+			"clear": true,
+			"first_time_s": 0.0,
+			"last_time_s": 60.0,
+			"minimum_polyline_terrain_margin_m": 12.6916818097656,
+			"sample_count": 601
+		},
+		{
+			"case_id": "seed-20261020-crossing-left",
+			"chunks": [
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 0.0,
+					"last_time_s": 12.8,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.7313257697656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 12.8,
+					"last_time_s": 25.6,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.9018592497656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 25.6,
+					"last_time_s": 38.4,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.0607551397656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 38.4,
+					"last_time_s": 51.2,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.0481493697656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 51.2,
+					"last_time_s": 60.0,
+					"point_count": 89,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.0458890397656
+				}
+			],
+			"clear": true,
+			"first_time_s": 0.0,
+			"last_time_s": 60.0,
+			"minimum_polyline_terrain_margin_m": 12.7313257697656,
+			"sample_count": 601
+		},
+		{
+			"case_id": "seed-20261020-crossing-right",
+			"chunks": [
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 0.0,
+					"last_time_s": 12.8,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5704008597656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 12.8,
+					"last_time_s": 25.6,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5138828297656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 25.6,
+					"last_time_s": 38.4,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.2881741697656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 38.4,
+					"last_time_s": 51.2,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.2881741697656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 51.2,
+					"last_time_s": 60.0,
+					"point_count": 89,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.4754907997656
+				}
+			],
+			"clear": true,
+			"first_time_s": 0.0,
+			"last_time_s": 60.0,
+			"minimum_polyline_terrain_margin_m": 13.2881741697656,
+			"sample_count": 601
+		},
+		{
+			"case_id": "seed-20261021-head-on",
+			"chunks": [
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 0.0,
+					"last_time_s": 12.8,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.8915945297656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 12.8,
+					"last_time_s": 25.6,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.7929757797656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 25.6,
+					"last_time_s": 38.4,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.2875233797656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 38.4,
+					"last_time_s": 51.2,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.1955843397656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 51.2,
+					"last_time_s": 60.0,
+					"point_count": 89,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.1781014897656
+				}
+			],
+			"clear": true,
+			"first_time_s": 0.0,
+			"last_time_s": 60.0,
+			"minimum_polyline_terrain_margin_m": 12.7929757797656,
+			"sample_count": 601
+		},
+		{
+			"case_id": "seed-20261021-crossing-left",
+			"chunks": [
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 0.0,
+					"last_time_s": 12.8,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5431783997656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 12.8,
+					"last_time_s": 25.6,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5081270797656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 25.6,
+					"last_time_s": 38.4,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5069304597656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 38.4,
+					"last_time_s": 51.2,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5095195797656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 51.2,
+					"last_time_s": 60.0,
+					"point_count": 89,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5115175697656
+				}
+			],
+			"clear": true,
+			"first_time_s": 0.0,
+			"last_time_s": 60.0,
+			"minimum_polyline_terrain_margin_m": 13.5069304597656,
+			"sample_count": 601
+		},
+		{
+			"case_id": "seed-20261021-crossing-right",
+			"chunks": [
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 0.0,
+					"last_time_s": 12.8,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.8196167997656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 12.8,
+					"last_time_s": 25.6,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 12.9795322097656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 25.6,
+					"last_time_s": 38.4,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.1789320197656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 38.4,
+					"last_time_s": 51.2,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.1709711697656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 51.2,
+					"last_time_s": 60.0,
+					"point_count": 89,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.1695489497656
+				}
+			],
+			"clear": true,
+			"first_time_s": 0.0,
+			"last_time_s": 60.0,
+			"minimum_polyline_terrain_margin_m": 12.8196167997656,
+			"sample_count": 601
+		},
+		{
+			"case_id": "seed-20261020-parallel-two-threats",
+			"chunks": [
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 0.0,
+					"last_time_s": 12.8,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5940345597656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 12.8,
+					"last_time_s": 25.6,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5944778797656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 25.6,
+					"last_time_s": 38.4,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5945669097656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 38.4,
+					"last_time_s": 51.2,
+					"point_count": 129,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5945861797656
+				},
+				{
+					"candidate_proxies": 0,
+					"clear": true,
+					"first_time_s": 51.2,
+					"last_time_s": 60.0,
+					"point_count": 89,
+					"proxy_id": "",
+					"reason": "",
+					"segment_checks": 0,
+					"terrain_margin_m": 13.5945903497656
+				}
+			],
+			"clear": true,
+			"first_time_s": 0.0,
+			"last_time_s": 60.0,
+			"minimum_polyline_terrain_margin_m": 13.5940345597656,
+			"sample_count": 601
+		}
+	],
+	"checker_context": {
+		"aircraft_radius_m": 0.898964440234366,
+		"ground_upper_m": 0.007,
+		"identity": "0f12ece062872e80bf3e07b1eff33464825befb460272365bb58977868237dea",
+		"protected_count": 63,
+		"proxy_count": 6031,
+		"world_identity": "fb2be395cc783b3910f5eb2c5fcdef4936c36ea90bd8d25466d818f2b89743ae"
+	},
+	"format": "afc-reachable-observed-static-path-check-v1",
+	"interpolation_allowance_m": 0.5,
+	"interpretation": "Checks the supplied 10 Hz piecewise-linear center path with the static trajectory helper's conservative aircraft envelope and a caller-supplied 0.5 m interpolation allowance. The allowance covers only geometric approximation between polyline points; no controller tracking/prediction error bound is inferred. This does not assess dynamic aircraft conflicts or physical safety.",
+	"purpose": "Post-hoc static-geometry check of the AI's observed, sampled encounter path.",
+	"source_files": {
+		"aircraft": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/data/aircraft/jensen_ugly_stik_60.json",
+			"sha256": "5ef239c6c0470d6870bf72656cfb12795833764b0bd57c7d93bc17f790bd2007"
+		},
+		"assessment_harness": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/../research/ai-companions/avoidance/assess_static_paths.gd",
+			"sha256": "1a0aeb53e093f9afd9af4c385d2e0dba924774ec5d678ba497c424474beb9fba"
+		},
+		"candidate_pilot": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/../research/ai-companions/avoidance/reachable_pilot_r2.gd",
+			"sha256": "1c512e4bdc0c606cc575397dfe8e1d6fe3e8bf6b9bc0894bd20ce11366d47eb8"
+		},
+		"checker": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/ai/companions/static_trajectory.gd",
+			"sha256": "254792af7678f6ebb56be605ffecf241f72efcf2bad75dc8f424a31135c0f8a2"
+		},
+		"collision_setup": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/scenery/collision_setup.gd",
+			"sha256": "4acbf7c67e9670adc93323dbd32f8da1fe7b49f84cdd0dbe42ccd733d6ba92c4"
+		},
+		"encounter_probe": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/../research/ai-companions/encounter_probe.gd",
+			"sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+		},
+		"field": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/data/fields/default.json",
+			"sha256": "115404aaf3681a5f0dd9da9c07767a16b24e6735e32b990c655f14ba530bf407"
+		},
+		"lake": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/data/fields/lake.json",
+			"sha256": "41a246ad647085cf55d645a54356a681d2711d83fb9ddaf960fe52cb61c2a531"
+		},
+		"parent_pilot": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/ai/companions/pilot.gd",
+			"sha256": "1d5699fa89d219b26e6ff7dc58a797eb61f67152e9d9aedc64f5de1ca684615c"
+		},
+		"surface_table": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/data/ground/surface_friction.json",
+			"sha256": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586"
+		},
+		"survey_probe": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/afc04-isolated/app/../research/ai-companions/encounter_probe.gd",
+			"sha256": "d00004590c5793ba743f56b3d129a248d35fa085186e576d33f0ac9a2e832cc4"
+		},
+		"survey_report": {
+			"path": "D:/OpenRCsimulator-AFC-work/evidence/avoidance/survey-reachable-60s-r2-20261020/report.json",
+			"sha256": "b4b66a8489edf45ace7d7af6f70c58e40f7fda03b4548ec534700fe415dbbfed"
+		},
+		"trajectory_csv": {
+			"path": "D:/OpenRCsimulator-AFC-work/evidence/avoidance/survey-reachable-60s-r2-20261020/trajectory.csv",
+			"sha256": "c28ff520cfcc4462df61db5a66b5754512670c23d9472120de50549303e3b5e3"
+		}
+	}
+}
