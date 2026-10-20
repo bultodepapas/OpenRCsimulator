@@ -21,7 +21,15 @@ class FrameCaptureTests(unittest.TestCase):
         # Windows-mounted checkout; this is a functional check, not a speed gate.
         checked = run_checked(command, root / "checked", timeout=180)
         self.assertTrue(report.is_file(), checked)
-        return checked, json.loads(report.read_text(encoding="utf-8"))
+        frames = json.loads(report.read_text(encoding="utf-8"))
+        self.assertEqual(frames["capture_id"], checked["capture_id"])
+        clock = frames["clock"]
+        self.assertEqual(clock["source"], "godot_ticks_usec")
+        self.assertEqual(clock["origin_usec"], 0)
+        self.assertLessEqual(clock["start"]["monotonic_usec"], frames["frame_end_monotonic_usec"][0])
+        self.assertGreaterEqual(clock["end"]["monotonic_usec"], frames["frame_end_monotonic_usec"][-1])
+        self.assertGreaterEqual(clock["start"]["uncertainty_usec"], 20000)
+        return checked, frames
 
     def test_disabled_diagnostics_add_no_observer_metrics(self):
         with tempfile.TemporaryDirectory(prefix="openrc-frames-off-") as directory:

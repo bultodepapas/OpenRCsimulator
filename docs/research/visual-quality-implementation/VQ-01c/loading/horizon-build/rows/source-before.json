@@ -1,0 +1,13 @@
+{
+  "head": "8abefc50f0281526bdd13604f84694fee1686f27",
+  "status": " M docs/research/debugging-tools-2026-10-19.md\n",
+  "hashes": {
+    "app/render/horizon.gd": "22b6bc3deebe948492cf00a97cb3103c1abbaf35f03acac12187b9eac7a84448",
+    "app/data/fields/horizon.json": "922c2a6ca5825d06e2d6bebab16fbc21bad5f75f4d9ccbbdd18cfbb343b4ca40",
+    "app/project.godot": "b684ae94ed98046d1e5503c686696e47521802d58e7aa8abad5854a2d421ec5c",
+    ".tools/Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "candidate.gd": "8e8c0f813a0a302708fc75722f665ef470f4e4c98f8fe72a24a86f075d5cbbbf",
+    "probe.gd": "c2b0d4dcfe7bffa184fa486246a8879ed44c44795db9c6bc25282add04c65e56",
+    "reference.gd": "6370838af923dda9aed3623cc3827edfc4f67e540e2ac37c80c1401548cc52e0"
+  }
+}

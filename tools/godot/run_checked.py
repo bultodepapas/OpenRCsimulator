@@ -19,6 +19,7 @@ import sys
 import tempfile
 import threading
 import time
+import uuid
 
 
 ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
@@ -140,7 +141,9 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
     log = directory / "engine.log"
     report_path = directory / "report.json"
     started = time.monotonic()
-    report = {"format": "openrc-godot-check v1", "command": command, "cwd": os.getcwd(),
+    capture_id = str(uuid.uuid4())
+    report = {"format": "openrc-godot-check v1", "capture_id": capture_id,
+              "command": command, "cwd": os.getcwd(),
               "started_utc": datetime.now(timezone.utc).isoformat(), "label": label,
               "log": str(log), "report": str(report_path), "timeout_seconds": timeout,
               "max_log_bytes": max_log_bytes, "warnings_as_errors": warnings_as_errors,
@@ -180,7 +183,8 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
         with log.open("wb") as destination:
             try:
                 process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                           stdin=subprocess.DEVNULL, start_new_session=os.name != "nt")
+                                           stdin=subprocess.DEVNULL, start_new_session=os.name != "nt",
+                                           env={**os.environ, "OPENRC_DIAGNOSTIC_CAPTURE_ID": capture_id})
             except OSError as error:
                 reason, detail = "launch_error", str(error)
             if process is not None:
@@ -268,7 +272,9 @@ def run_checked(command: list[str], out_dir: Path = DEFAULT_OUT, *, timeout: flo
             if resource_failure:
                 resource_report["coverage"] = "partial"
                 resource_report["runner_sampler_error"] = resource_failure
+            resource_report["capture_id"] = capture_id
             resource_report["invocation"] = {
+                "capture_id": capture_id,
                 "command": command, "cwd": report["cwd"], "started_utc": report["started_utc"],
                 "process_exit": report["process_exit"], "reason": reason,
                 "log_sha256": report["log_sha256"], "elapsed_seconds": report["elapsed_seconds"]}

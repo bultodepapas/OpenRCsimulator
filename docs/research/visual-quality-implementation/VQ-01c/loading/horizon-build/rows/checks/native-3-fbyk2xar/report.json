@@ -1,0 +1,41 @@
+{
+  "format": "openrc-godot-check v1",
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--path",
+    "app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\horizon-row-optimization\\probe.gd",
+    "--",
+    "--directory=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\horizon-row-optimization",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\horizon-row-optimization\\run-3.json"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T01:46:35.842701+00:00",
+  "label": "native-3",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\horizon-row-optimization\\checks\\native-3-fbyk2xar\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\horizon-row-optimization\\checks\\native-3-fbyk2xar\\report.json",
+  "timeout_seconds": 60.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": true,
+  "required_text": [
+    "horizon exact mesh pairs=8 failures=[]"
+  ],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 1.609,
+  "log_bytes": 212,
+  "log_sha256": "74b096315333010acb3936599b0fd167cb42c52df6a97936af1d83a5dd5da873"
+}

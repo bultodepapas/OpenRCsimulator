@@ -18,6 +18,20 @@ MAX_ERRORS = 20
 MAX_DISK_PATHS = 8
 _MISSING = object()
 
+
+def clock_anchor() -> dict:
+    """Approximate UTC correlation; durations always retain their monotonic clock.
+
+    The 20 ms floor accommodates coarse system-clock APIs. This is an estimate,
+    not an OS guarantee: two anchors can detect drift, not every clock excursion.
+    """
+    before = time.perf_counter()
+    unix_usec = time.time_ns() // 1000
+    after = time.perf_counter()
+    return {"monotonic_usec": round((before + after) * 500000),
+            "unix_usec": unix_usec,
+            "uncertainty_usec": max(20000, math.ceil((after - before) * 500000))}
+
 _INTEGER_FIELDS = {
     "rss_bytes", "vms_bytes", "num_threads",
     "io_read_bytes", "io_write_bytes", "io_read_count", "io_write_count",
@@ -113,6 +127,8 @@ class ResourceSampler:
         self.include_threads = include_threads
         self.backend = load_backend() if backend is None else backend
         self._started_at = time.perf_counter()
+        self._clock_start = clock_anchor()
+        self._clock_end = None
         self._next_due = None
         self._process = None
         self._create_time = None
@@ -528,6 +544,7 @@ class ResourceSampler:
     def finish(self) -> dict:
         """Stop future polling and return a bounded JSON-serializable report."""
         if not self._finished:
+            self._clock_end = clock_anchor()
             self._finished = True
             if self._stop_reason is None:
                 self._stop_reason = "caller_finished"
@@ -546,6 +563,9 @@ class ResourceSampler:
             psutil_version = None
         return {
             "format": "openrc-resource-samples v1",
+            "clock": {"source": "python_perf_counter",
+                      "origin_usec": round(self._started_at * 1000000),
+                      "start": dict(self._clock_start), "end": dict(self._clock_end)},
             "pid": self.pid,
             "process_create_time": self._create_time,
             "platform": sys.platform,

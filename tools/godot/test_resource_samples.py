@@ -11,7 +11,7 @@ import unittest
 from types import SimpleNamespace
 from unittest import mock
 
-from resource_samples import ResourceSampler, load_backend, validate_options
+from resource_samples import ResourceSampler, clock_anchor, load_backend, validate_options
 
 
 class AccessDenied(Exception):
@@ -103,6 +103,22 @@ class FakeClock:
 
 
 class ResourceSamplerTests(unittest.TestCase):
+    def test_clock_anchor_brackets_wall_read_and_preserves_finish(self):
+        with mock.patch("resource_samples.time.perf_counter", side_effect=[10.0, 10.1]), \
+                mock.patch("resource_samples.time.time_ns", return_value=1000000000000):
+            anchor = clock_anchor()
+        self.assertEqual(anchor["monotonic_usec"], 10050000)
+        self.assertEqual(anchor["unix_usec"], 1000000000)
+        self.assertGreaterEqual(anchor["uncertainty_usec"], 50000)
+        sampler = ResourceSampler(44, backend=FakeBackend())
+        first = sampler.finish()["clock"]
+        with mock.patch("resource_samples.clock_anchor", side_effect=AssertionError("recaptured")):
+            second = sampler.finish()["clock"]
+        self.assertEqual(first, second)
+        self.assertLessEqual(first["origin_usec"], first["start"]["monotonic_usec"])
+        self.assertLessEqual(first["start"]["monotonic_usec"], first["end"]["monotonic_usec"])
+        self.assertGreaterEqual(first["start"]["uncertainty_usec"], 20000)
+
     def test_validation_is_independent_of_psutil(self):
         with mock.patch("resource_samples.importlib.import_module", side_effect=AssertionError("imported")):
             self.assertEqual(validate_options(), ())

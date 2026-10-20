@@ -40,6 +40,14 @@ class ResourceRunnerTests(unittest.TestCase):
         self.assertNotIn("resources", checked)
         self.assertFalse((Path(checked["report"]).parent / "resources.json").exists())
 
+    def test_capture_identity_reaches_child_and_is_unique(self):
+        code = "import os; print(os.environ['OPENRC_DIAGNOSTIC_CAPTURE_ID'])"
+        first = self.run_code(code)
+        second = self.run_code(code)
+        self.assertTrue(first["ok"])
+        self.assertNotEqual(first["capture_id"], second["capture_id"])
+        self.assertEqual(Path(first["log"]).read_text().strip(), first["capture_id"])
+
     def test_resource_receipt_identifies_bytes_and_same_invocation(self):
         factory = self.mocked_sampler()
         checked = self.run_code(resources=True, resource_interval=.2, resource_disk_paths=[self.root], resource_threads=True)
@@ -51,6 +59,8 @@ class ResourceRunnerTests(unittest.TestCase):
         self.assertEqual(checked["resources"]["bytes"], len(raw))
         self.assertEqual(checked["resources"]["sha256"], hashlib.sha256(raw).hexdigest())
         self.assertEqual(json.loads(raw)["invocation"]["log_sha256"], checked["log_sha256"])
+        self.assertEqual(json.loads(raw)["capture_id"], checked["capture_id"])
+        self.assertEqual(json.loads(raw)["invocation"]["capture_id"], checked["capture_id"])
         self.assertEqual(set(json.loads(raw)["tool_source_sha256"]), {"run_checked.py", "resource_samples.py"})
 
     def test_poll_failure_keeps_healthy_command_and_marks_partial(self):
