@@ -1,6 +1,6 @@
 # Landscape upgrade evidence
 
-Status: implementation delivered through **LU-30-R1**, checked 2026-10-20. Dated reports retain the native captures, asset provenance, software checks and exports; they do not establish physical validity or independent pilot acceptance. The nearby scenery-query target and lower-end hardware/pilot review remain open. Owner: environment integration lead. Current cross-track gates are in the [landscape guide](../../LANDSCAPE-PLAN.md#landscape-integration).
+Status: implementation delivered through **LU-31**, checked 2026-10-20. Dated reports retain the native captures, asset provenance, software checks and exports; they do not establish physical validity or independent pilot acceptance. The nearby scenery-query target and lower-end hardware/pilot review remain open. Owner: environment integration lead. Current cross-track gates are in the [landscape guide](../../LANDSCAPE-PLAN.md#landscape-integration).
 
 The installed target is Godot **4.7.2**, Compatibility/OpenGL. This index points to the dated records; consult those reports for each implementation snapshot and its exact limits.
 
@@ -24,6 +24,7 @@ The installed target is Godot **4.7.2**, Compatibility/OpenGL. This index points
 | LU-29 | [Turbine/antenna beacons, hillside homes, regional lighting details and native cost](LU-29/README.md) |
 | LU-30 | [Downloaded transmission towers, insulators, connected conductors and native measurements](LU-30/README.md) |
 | LU-30-R1 | [Closer nine-tower corridor, optimized insulators and efficient nighttime markers](LU-30-R1/README.md) |
+| LU-31 | [Lossless botanical placement and mesh accounting optimizations, parity and native measurements](LU-31/README.md) |
 | LU-25-R1 | [Bounded lake-validation reuse, paired CPU benchmarks and exact behavior checks](LU-25-R1/README.md) |
 | LU-25-R2 | [Contact-only lake bounds rejection, repeated runway CPU benchmarks and boundary parity](LU-25-R2/README.md) |
 | L21–24 | [Selectable Club field and Green paradise: loading, switching and resource-pack proof](L21-24/README.md) |

@@ -1,0 +1,15 @@
+{
+	"cases_completed": 4,
+	"cases_failed": 0,
+	"complete": true,
+	"display_server": "Windows",
+	"engine": "4.7.2-stable (official)",
+	"failures": [],
+	"format": "openrc-ground-closeup-run-v1",
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"resolution": [
+		1280,
+		720
+	],
+	"variant": "candidate"
+}

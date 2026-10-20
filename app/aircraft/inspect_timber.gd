@@ -3,6 +3,7 @@
 # in manifest.json. Distances scale with the measured span so a regenerated geometry keeps framing the airplane.
 # Run (needs a display, e.g. xvfb-run): godot --path app --rendering-driver opengl3 \
 #   --script res://aircraft/inspect_timber.gd -- --output-dir=/new/dir [--suite=inspection|orbit|distance|all] [--size=WIDTHxHEIGHT]
+# Optional --finish=source retains raw metrology materials; --view-filter=nose restricts the capture names.
 # Suites: inspection (12 review views), orbit (12 azimuths x 3 elevations), distance (pilot-view size at 20/50/100 m
 # with level, banked and nose-on attitudes, the Extra inspector's pilot eye and 50 deg field of view).
 extends SceneTree
@@ -101,6 +102,9 @@ func _run() -> void:
 	var out := _initialize_arg("output-dir", "")
 	var suite := _initialize_arg("suite", "inspection")
 	var selected := views(suite)
+	var view_filter := _initialize_arg("view-filter", "")
+	if not view_filter.is_empty():
+		selected = selected.filter(func(view: Dictionary) -> bool: return view.name.contains(view_filter))
 	if out.is_empty() or DirAccess.dir_exists_absolute(out) or selected.is_empty():
 		push_error("Pass --output-dir=PATH (a directory that does not exist yet) and a known --suite")
 		quit(2)
@@ -165,6 +169,9 @@ func _run() -> void:
 	var manifest := {
 		"format": "openrc-capture-manifest v1",
 		"suite": suite,
+		"finish": _initialize_arg("finish", "production"),
+		"visual_details_sha256": FileAccess.get_sha256("res://aircraft/timber_visual_details.gd"),
+		"visual_lighting_sha256": FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
 		"aircraft_id": _airplane.root.get_meta("aircraft_id"),
 		"visual_revision": _airplane.root.get_meta("visual_revision"),
 		"asset_sha256": _airplane.root.get_meta("asset_sha256"),

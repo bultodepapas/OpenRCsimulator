@@ -18,7 +18,8 @@ static func apply(root: Node3D) -> void:
 	var cowl := root.find_child("cowl", true, false) as Node3D
 	if cowl != null:
 		for side: float in [-1.0, 1.0]:
-			var landing := Vector3(side * 0.035, -0.035, -0.213)
+			# Seat the LED inside the existing lower-cowl oval recess (r2 skin).
+			var landing := Vector3(side * 0.0465, -0.0235, -0.196)
 			anchors["landing" if side < 0 else "landing_right"] = _anchor(root, cowl, landing)
 			_landing_lens(cowl, landing)
 	var fuselage := root.find_child("fuselage_core", true, false) as Node3D
@@ -31,17 +32,17 @@ static func _landing_lens(host: Node3D, landing: Vector3) -> void:
 	var lens := MeshInstance3D.new()
 	lens.name = "TimberLandingLens"
 	var mesh := SphereMesh.new()
-	mesh.radius = 0.006
-	mesh.height = 0.012
+	mesh.radius = 0.0035
+	mesh.height = 0.007
 	mesh.radial_segments = 16
 	mesh.rings = 8
 	lens.mesh = mesh
 	lens.position = landing
-	lens.scale = Vector3(1.0, 1.0, 0.3)
+	lens.scale = Vector3(0.55, 1.0, 1.0)
 	var material := StandardMaterial3D.new()
-	material.albedo_color = Color("#d7e4e6")
-	material.metallic = 0.35
-	material.roughness = 0.18
+	material.albedo_color = Color("#a8b3b9")
+	material.metallic = 0.4
+	material.roughness = 0.24
 	lens.material_override = material
 	lens.set_meta("crash_no_bounds", true)
 	host.add_child(lens)

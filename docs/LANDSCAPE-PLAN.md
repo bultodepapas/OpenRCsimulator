@@ -66,6 +66,11 @@ The [tree and forest quality plan](plans/tree-forest-quality.md) owns source sel
 
 LU-00…30 adds licensed field assets, night lighting, imported vegetation, a finite lake, agricultural surroundings and downloaded transmission-line assets. [LU-30-R1](research/landscape-upgrade/LU-30-R1/README.md) brings the nearest transmission tower to 652 m from the field origin, expands the corridor to nine towers, reduces insulator geometry and adds 17 batched red markers. Use compatible existing distributable assets where available; record source, license and conversion steps. The [LU evidence index](research/landscape-upgrade/README.md) links the dated implementation and verification records.
 
+[LU-31](research/landscape-upgrade/LU-31/README.md) reduces botanical placement
+and mesh-accounting CPU work without changing the rendered landscape. Matched
+captures are pixel-identical; existing grass-mask integration failures and the
+limits of shared-machine timing are recorded in its evidence.
+
 | Remaining gate | Current status | Evidence |
 | --- | --- | --- |
 | Nearby scenery-query cost | The 100 µs target remains open; measured costs and the accepted bounds are recorded in the latest native reports. | [LU-21](research/landscape-upgrade/LU-21/README.md), [LU-22](research/landscape-upgrade/LU-22/README.md) |

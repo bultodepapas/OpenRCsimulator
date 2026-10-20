@@ -66,11 +66,17 @@ func _run() -> void:
 	var view := AccidentReport.new()
 	root.add_child(view)
 	view.show_assessment(report, true)
+	var layout_trace: Array[Dictionary] = [_layout_measure(view, "shown-collapsed")]
 	view.controller_action("details")
+	layout_trace.append(_layout_measure(view, "expanded-before-frame"))
 	await process_frame
+	layout_trace.append(_layout_measure(view, "expanded-frame-1"))
 	await process_frame
+	layout_trace.append(_layout_measure(view, "expanded-frame-2"))
 	view._layout()
+	layout_trace.append(_layout_measure(view, "expanded-explicit-layout"))
 	await process_frame
+	layout_trace.append(_layout_measure(view, "expanded-frame-3"))
 	await RenderingServer.frame_post_draw
 
 	var image := root.get_texture().get_image()
@@ -139,6 +145,7 @@ func _run() -> void:
 		"card_rect": _rect_json(panel),
 		"details_scroll_rect": _rect_json(scroll),
 		"action_rects": _action_rects(view),
+		"layout_trace": layout_trace,
 		"offscreen_failures": _failures.duplicate(),
 		"screenshot": "cost-report.png",
 	}
@@ -211,3 +218,27 @@ func _action_rects(view: Node) -> Dictionary:
 
 func _write_failure(absolute_out: String) -> void:
 	FileAccess.open(absolute_out.path_join("failure.txt"), FileAccess.WRITE).store_string("\n".join(_failures) + "\n")
+
+
+func _layout_measure(view: Node, phase: String) -> Dictionary:
+	var panel := view._report_panel as Control
+	var scroll := view._details_scroll as Control
+	var column := panel.get_child(0) as Control
+	return {
+		"phase": phase,
+		"surface_size": _xy(view._surface.size),
+		"metrics": AccidentReport.layout_metrics(view._surface.size, UiTheme.text_scale),
+		"panel_size": _xy(panel.size),
+		"panel_combined_minimum": _xy(panel.get_combined_minimum_size()),
+		"panel_custom_minimum": _xy(panel.custom_minimum_size),
+		"column_size": _xy(column.size),
+		"column_combined_minimum": _xy(column.get_combined_minimum_size()),
+		"details_size": _xy(scroll.size),
+		"details_custom_minimum": _xy(scroll.custom_minimum_size),
+		"details_custom_maximum": _xy(scroll.custom_maximum_size),
+		"expanded": view._expanded,
+	}
+
+
+func _xy(value: Vector2) -> Array:
+	return [value.x, value.y]

@@ -74,6 +74,8 @@ func _run() -> void:
 		_flight._process(1.0 / 60.0)
 		_flight._panel.visible = false
 		_flight._hud.visible = false
+		# The report is reviewed separately, including its real calculated amounts.
+		_flight._accident_report.suspend(true)
 		if _case != "crash" or crash_frame < 0:
 			var plane: Node3D = _flight._airplane.root
 			_flight._camera.fov = 39.0
@@ -81,7 +83,6 @@ func _run() -> void:
 			_flight._camera.look_at_from_position(plane.to_global(Vector3(-1.65, 0.60, -1.65)),
 				plane.to_global(Vector3(0, 0, 0.23)), Vector3.UP)
 		elif frame > crash_frame + 15:
-			_flight._accident_report.suspend(true)
 			var wreck: Node = _flight._crash_director.wreck
 			if is_instance_valid(wreck._core_body):
 				var target: Vector3 = wreck._core_body.global_position
@@ -104,6 +105,10 @@ func _run() -> void:
 	if _case == "takeoff" and not session.crash.is_empty(): _failures.append("takeoff tape crashed")
 	if _case == "takeoff" and not airborne: _failures.append("takeoff tape did not become airborne")
 	var report := {case = _case, failures = _failures, records = _records,
+		asset_sha256 = FileAccess.get_sha256("res://assets/aircraft/turbo-lumber-evolution/timber.glb"),
+		visual_details_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_details.gd"),
+		visual_motion_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_motion.gd"),
+		visual_lighting_sha256 = FileAccess.get_sha256("res://aircraft/timber_visual_lighting.gd"),
 		adapter = RenderingServer.get_video_adapter_name(), renderer = RenderingServer.get_current_rendering_method(),
 		crash = _flight._crash_director.stats() if crash_frame >= 0 else {}}
 	FileAccess.open(_out.path_join("report.json"), FileAccess.WRITE).store_string(JSON.stringify(report, "\t") + "\n")

@@ -5,6 +5,8 @@ const Timber := preload("res://aircraft/timber_model.gd")
 const Builder := preload("res://render/airplane.gd")
 const Imported := preload("res://aircraft/imported_model.gd")
 const WreckScript := preload("res://render/crash/wreck.gd")
+const Lights := preload("res://render/world/aircraft_lights.gd")
+const ShaderClock := preload("res://render/shader_clock.gd")
 
 var _failures: Array[String] = []
 var _checks := 0
@@ -30,6 +32,7 @@ func _groups(wreck: Node) -> Array:
 	return records
 
 func _run() -> void:
+	ShaderClock.register()
 	var source := Timber.build()
 	var candidate := Builder.build(Builder.TIMBER_ID)
 	_check("both models build", not source.is_empty() and not candidate.is_empty())
@@ -61,6 +64,19 @@ func _run() -> void:
 		Imported.apply_surfaces(candidate, pose)
 		for key: String in source.hinges:
 			_check("control pose " + key, Imported.relative(source.root, source.hinges[key].node).is_equal_approx(Imported.relative(candidate.root, candidate.hinges[key].node)))
+	var kit := Lights.attach(candidate.root)
+	_check("factory light kit builds", kit != null)
+	for light_name in ["nav_left", "nav_right", "strobe_dorsal", "strobe_ventral", "landing_lamp", "landing_lamp_right"]:
+		var lamp := kit.get_node_or_null(light_name) as Node3D
+		_check("factory lens present " + light_name, lamp != null and lamp.visible and lamp.has_meta("crash_no_bounds"))
+	for light_name in ["nav_tail", "strobe_left", "strobe_right", "strip_left", "strip_right", "strip_belly", "strip_top_left", "strip_top_right"]:
+		var lamp := kit.get_node_or_null(light_name) as Node3D
+		_check("unsupported light stays dark " + light_name, lamp == null or not lamp.visible)
+	Lights.set_mode(kit, "nav")
+	_check("NAV preserves beacons and disables landing lamps", kit.get_node("strobe_dorsal").visible and not kit.get_node("landing_lamp").visible and not kit.get_node("landing_lamp_right").visible)
+	Lights.set_mode(kit, "off")
+	_check("OFF disables complete factory kit", not kit.visible)
+	Lights.set_mode(kit, "all")
 	var source_wreck := WreckScript.new()
 	var candidate_wreck := WreckScript.new()
 	root.add_child(source_wreck)

@@ -1,0 +1,12 @@
+{
+  "app/scenery/population.gd": "2c6c5c70d48f2ea4e19e730d5d6db0e8ee242eccae09ca16fbda38a68810d75a",
+  "app/scenery/imported_vegetation.gd": "638818450111dc06e77ee022d03f1a145199ef4189a2a2cd1d85a5d2f2704c40",
+  "app/scenery/botanical_habitats.gd": "8ad1e663b66863eb40fcf508ed3ec09fa3f2c2280bf8aa47795db1daa303eb1f",
+  "app/scenery/scenery.gd": "7259f08447ddc122e7ed730984d707b72386f089859bd9db7b39feda52712027",
+  "app/render/near_grass.gd": "6086f71dcecd27eb2d7d58d01445acab7e4d7f0337e55e79a8082bd20a8f7976",
+  "app/render/landscape_upgrade/scenery_grass_mask.gd": "c518383c7b496d719527cfec023a58a2b36be0236dc14b1f20d4beffa07d262e",
+  "app/render/field.gd": "a95ca5751227f48d38b4c3f0d608011a5a58478ac720e239e2534c548eba149d",
+  "app/render/world/world.gd": "e491ee53def841579c5e34200206d50b587c07ed4b28400a78d61d944cc08025",
+  "app/tests/capture_landscape_upgrade.gd": "98ddf2e791e6ae358b19bb55919fc88542739b0f27e5ba6ff8769438f1bee37f",
+  "app/data/scenery/default.json": "46c64bf12dc5ae886189cb574773f0b90fab158614e77969c1eee789e9db4900"
+}

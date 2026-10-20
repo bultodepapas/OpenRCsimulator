@@ -1,4 +1,9 @@
 # Keep hashed glow profiles, schemas and flight evidence byte-stable across checkouts.
+# AUD-15 recording recipes compare generated metadata byte-for-byte on Windows and Linux.
+/app/assets/audio/powertrains/*.json text eol=lf
+/app/assets/audio/powertrains/LICENSE.txt text eol=lf
+/app/assets/audio/landing_gear/*.json text eol=lf
+/app/assets/audio/landing_gear/LICENSE.txt text eol=lf
 # Grass placement is compared byte-for-byte with its LF generator output.
 /app/data/fields/grass.json text eol=lf
 # Downloaded vegetation and generated tree-color buffers carry exact file hashes.

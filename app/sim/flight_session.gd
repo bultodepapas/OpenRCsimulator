@@ -844,6 +844,7 @@ func configure_external_driver() -> bool:
 		radio.disconnect_device()
 	_external_pending_packet.clear()
 	_external_packet_ready = false
+	set_process_input(false)
 	set_physics_process(false)
 	sim.set_physics_process(false)
 	return true
@@ -888,6 +889,7 @@ func _load_selected_aircraft() -> Dictionary:
 
 func _ready() -> void:
 	if external_driver_enabled:
+		set_process_input(false)
 		set_physics_process(false)
 		if sim != null:
 			sim.set_physics_process(false)
@@ -1233,6 +1235,19 @@ func _collision_bins_for(proxies: Array[Dictionary], cell_size: float) -> Dictio
 ## Detached damage snapshot for renderer state and checkpoint inspection.
 func scenery_damage() -> Dictionary:
 	return _scenery_damage.duplicate(true)
+
+
+## Imports a detached world-owned damage snapshot into an external session.
+func import_external_scenery_damage(damage: Dictionary, tick: int) -> bool:
+	if not external_driver_enabled or sim == null or not _scenery_damage_is_valid(damage, tick):
+		return false
+	var detached: Dictionary = damage.duplicate(true)
+	if detached == _scenery_damage:
+		return true
+	_scenery_damage = detached
+	_clear_pending_scenery_damage()
+	scenery_damage_changed.emit()
+	return true
 
 
 func last_scenery_event() -> SceneryCollision.Event:
@@ -1919,6 +1934,13 @@ func _session_after_input() -> bool:
 					sim.previous, str(hit.rule)))
 			elif gear_collapsed(sim.state):
 				_crash(_gear_limit_impact(sim.state))
+			else:
+				# Only a flight that goes on can lose its propeller: a crash freezes the checkpoint untouched.
+				_check_prop_strike()
+		elif touches_ground(sim.state):
+			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
+		elif gear_collapsed(sim.state):
+			_crash(_gear_limit_impact(sim.state))
 	return physics_enabled and not sim.paused and sim.fault_reason.is_empty() \
 		and crash.is_empty() and _flight_ready() and Sim.state_is_valid(sim.state)
 
@@ -1930,26 +1952,35 @@ func prepare_external_tick(packet: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
 	var required := ["roll", "pitch", "yaw", "throttle"]
 	var allowed := ["roll", "pitch", "yaw", "throttle", "gear_down", "flaps", "brake"]
-	for key: Variant in packet.keys():
-		if typeof(key) != TYPE_STRING or not allowed.has(key):
-			errors.append("unsupported packet field: %s" % str(key))
+	var normalized_packet: Dictionary = {}
+	for raw_key: Variant in packet.keys():
+		if typeof(raw_key) not in [TYPE_STRING, TYPE_STRING_NAME]:
+			errors.append("unsupported packet field: %s" % str(raw_key))
+			continue
+		var key: String = str(raw_key)
+		if not allowed.has(key):
+			errors.append("unsupported packet field: %s" % key)
+		elif normalized_packet.has(key):
+			errors.append("duplicate packet field: %s" % key)
+		else:
+			normalized_packet[key] = packet[raw_key]
 	for key: String in required:
-		if not packet.has(key):
+		if not normalized_packet.has(key):
 			errors.append("missing required field: %s" % key)
-		elif not _external_number_is_in_range(packet[key], 0.0 if key == "throttle" else -1.0, 1.0):
+		elif not _external_number_is_in_range(normalized_packet[key], 0.0 if key == "throttle" else -1.0, 1.0):
 			errors.append("%s must be a finite number in [%s, 1]" % [key, "0" if key == "throttle" else "-1"])
-	if packet.has("gear_down"):
-		if typeof(packet.gear_down) != TYPE_BOOL:
+	if normalized_packet.has("gear_down"):
+		if typeof(normalized_packet.gear_down) != TYPE_BOOL:
 			errors.append("gear_down must be a bool")
 		elif not gear_is_retractable():
 			errors.append("gear_down is unsupported by this aircraft")
-	if packet.has("flaps"):
-		if not _external_number_is_in_range(packet.flaps, 0.0, 1.0):
+	if normalized_packet.has("flaps"):
+		if not _external_number_is_in_range(normalized_packet.flaps, 0.0, 1.0):
 			errors.append("flaps must be a finite number in [0, 1]")
 		elif not flaps_available():
 			errors.append("flaps are unsupported by this aircraft")
-	if packet.has("brake"):
-		if not _external_number_is_in_range(packet.brake, 0.0, 1.0):
+	if normalized_packet.has("brake"):
+		if not _external_number_is_in_range(normalized_packet.brake, 0.0, 1.0):
 			errors.append("brake must be a finite number in [0, 1]")
 		elif not gear_is_retractable():
 			errors.append("brake is unsupported without retractable landing gear")
@@ -1957,10 +1988,10 @@ func prepare_external_tick(packet: Dictionary) -> Dictionary:
 		return {ok = false, errors = errors}
 	var staged: Dictionary = {}
 	for key: String in required:
-		staged[key] = float(packet[key])
+		staged[key] = float(normalized_packet[key])
 	for key: String in ["gear_down", "flaps", "brake"]:
-		if packet.has(key):
-			staged[key] = packet[key] if key == "gear_down" else float(packet[key])
+		if normalized_packet.has(key):
+			staged[key] = normalized_packet[key] if key == "gear_down" else float(normalized_packet[key])
 	_external_pending_packet = staged
 	_external_packet_ready = true
 	return {ok = true, errors = []}
@@ -1970,7 +2001,7 @@ func prepare_external_tick(packet: Dictionary) -> Dictionary:
 func step_external_tick() -> bool:
 	if not external_driver_enabled or not _external_packet_ready or sim == null:
 		return false
-	if not physics_enabled or sim.paused or not sim.fault_reason.is_empty() or not holds.is_empty() \
+	if not physics_enabled or not sim.fault_reason.is_empty() or not holds.is_empty() \
 			or calibration != null or not _flight_ready() or sim.stop_at_tick >= 0 and sim.tick >= sim.stop_at_tick:
 		_discard_external_packet()
 		return false
@@ -1989,7 +2020,7 @@ func step_external_tick() -> bool:
 		_discard_external_packet()
 		return false
 	sim.step()
-	var accepted := sim.tick == previous_tick + 1 and sim.fault_reason.is_empty()
+	var accepted: bool = sim.tick == previous_tick + 1 and sim.fault_reason.is_empty()
 	_discard_external_packet()
 	return accepted
 
@@ -2004,13 +2035,6 @@ func _external_number_is_in_range(value: Variant, minimum: float, maximum: float
 		return false
 	var number := float(value)
 	return is_finite(number) and number >= minimum and number <= maximum
-			else:
-				# Only a flight that goes on can lose its propeller: a crash freezes the checkpoint untouched.
-				_check_prop_strike()
-		elif touches_ground(sim.state):
-			_crash(ImpactSnapshot.hull_contact(sim.state, sim.tick, aircraft.model.crash_hull, sim.previous))
-		elif gear_collapsed(sim.state):
-			_crash(_gear_limit_impact(sim.state))
 
 
 ## E3d2: a turning propeller whose disc reaches the field breaks: the engine stops (dead stick) and the flight goes on.

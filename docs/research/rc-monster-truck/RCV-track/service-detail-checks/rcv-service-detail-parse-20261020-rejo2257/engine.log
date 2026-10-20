@@ -1,0 +1,34 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default course loads
+PASS: render vertices match physics height plus 2 mm separation: 0.00000187 m
+PASS: triangle interpolation error stays below 8 mm: 0.006135 m
+PASS: render normals match physical gradient within packed-normal precision: 0.00011276
+PASS: terrain uses visible clockwise Godot front faces
+PASS: wall mesh matches its collision bounds: slalom_1
+PASS: wall has fitted source geometry: slalom_1
+PASS: wall retains detailed mapped geometry: slalom_1
+PASS: wall retains source PBR maps: slalom_1
+PASS: wall mesh matches its collision bounds: slalom_2
+PASS: wall has fitted source geometry: slalom_2
+PASS: wall retains detailed mapped geometry: slalom_2
+PASS: wall retains source PBR maps: slalom_2
+PASS: wall mesh matches its collision bounds: slalom_3
+PASS: wall has fitted source geometry: slalom_3
+PASS: wall retains detailed mapped geometry: slalom_3
+PASS: wall retains source PBR maps: slalom_3
+PASS: wall mesh matches its collision bounds: start_south
+PASS: wall has fitted source geometry: start_south
+PASS: wall retains detailed mapped geometry: start_south
+PASS: wall retains source PBR maps: start_south
+PASS: wall mesh matches its collision bounds: start_north
+PASS: wall has fitted source geometry: start_north
+PASS: wall retains detailed mapped geometry: start_north
+PASS: wall retains source PBR maps: start_north
+PASS: five fitted barriers stay within render geometry budget: 23610 triangles
+PASS: all sign footprints remain clear of the sampled road
+PASS: tyre stacks remain beyond the sampled road shoulder
+PASS: eight sourced worn tyres dress the off-course margins
+PASS: tyre source retains color, normal and roughness maps
+PASS: renderer creates no second physical world
+RCV track view: 0 failures

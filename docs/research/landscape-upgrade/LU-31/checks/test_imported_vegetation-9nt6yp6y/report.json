@@ -1,0 +1,36 @@
+{
+  "format": "openrc-godot-check v1",
+  "capture_id": "17bd4de9-91ed-47b2-9889-88e75136f368",
+  "command": [
+    ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "app",
+    "--script",
+    "res://tests/test_imported_vegetation.gd"
+  ],
+  "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "started_utc": "2026-10-20T17:09:33.306330+00:00",
+  "label": "test_imported_vegetation",
+  "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf\\checks\\test_imported_vegetation-9nt6yp6y\\engine.log",
+  "report": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\landscape-perf\\checks\\test_imported_vegetation-9nt6yp6y\\report.json",
+  "timeout_seconds": 90.0,
+  "max_log_bytes": 8388608,
+  "warnings_as_errors": false,
+  "required_text": [],
+  "process_exit": 0,
+  "complete": true,
+  "counts": {
+    "error": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "missing_required_text": [],
+  "reason": "passed",
+  "detail": "",
+  "exit_code": 0,
+  "ok": true,
+  "elapsed_seconds": 0.859,
+  "log_bytes": 109,
+  "log_sha256": "7ce87d314abb4ca88769de2512b9eeff62f5e889470fd09028ff61c2de6f9145"
+}
