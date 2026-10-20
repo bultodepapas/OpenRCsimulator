@@ -119,6 +119,17 @@ def _is_int_column(name: str) -> bool:
     return name == "tick" or any(pattern.fullmatch(name) for pattern in INTEGER_COLUMN_PATTERNS)
 
 
+def _bounded_decimal_index(digits: str, maximum: int) -> int | None:
+    """Parse a decimal column index without converting an unbounded integer string."""
+    value = 0
+    for character in digits:
+        digit = int(character)
+        if value > maximum // 10 or (value == maximum // 10 and digit > maximum % 10):
+            return None
+        value = value * 10 + digit
+    return value
+
+
 def _validate_header(header: Sequence[str], path: Path) -> tuple[str, ...]:
     names = tuple(name.strip() for name in header)
     if not names or any(not name for name in names):
@@ -131,19 +142,28 @@ def _validate_header(header: Sequence[str], path: Path) -> tuple[str, ...]:
         raise FlightLogError(f"{path}: missing required columns: {', '.join(missing)}")
 
     for prefix, first_index in INDEXED_COLUMN_FAMILIES.items():
+        indexed_names = [name for name in names if name.startswith(prefix)]
+        if not indexed_names:
+            continue
+        # A valid contiguous family cannot reach farther than its own column
+        # count. This bound avoids int()'s untrusted, potentially huge suffix.
+        maximum_index = first_index + len(indexed_names) - 1
         indices: list[int] = []
-        for name in names:
-            if name.startswith(prefix):
-                suffix = name[len(prefix) :]
-                if not suffix.isdecimal():
-                    raise FlightLogError(f"{path}: invalid indexed column name {name!r}")
-                indices.append(int(suffix))
-        if indices:
-            expected_count = max(indices) - first_index + 1
-            if min(indices) != first_index or len(indices) != expected_count:
+        for name in indexed_names:
+            suffix = name[len(prefix) :]
+            if not suffix.isdecimal():
+                raise FlightLogError(f"{path}: invalid indexed column name {name!r}")
+            index = _bounded_decimal_index(suffix, maximum_index)
+            if index is None:
                 raise FlightLogError(
                     f"{path}: {prefix} columns must be contiguous from {first_index}"
                 )
+            indices.append(index)
+        expected_count = max(indices) - first_index + 1
+        if min(indices) != first_index or len(indices) != expected_count:
+            raise FlightLogError(
+                f"{path}: {prefix} columns must be contiguous from {first_index}"
+            )
     return names
 
 

@@ -60,9 +60,10 @@ Reviewed [10% EN 1280×720](native/tiny-10-en720.png), [500% ES 1920×1080](nati
 From the repository root, use unique new output directories. The checked runner detects script errors even when Godot exits zero. Other suite commands are recorded verbatim in their retained reports.
 
 ```powershell
+$sizeRoot = (Get-Location).Path
 python tools/godot/run_checked.py --label virtual-size --timeout 120 --out-dir tmp/size-checks -- .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_virtual_size.gd
-.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/aircraft-editor/size_refinement.gd -- --extreme --out=../tmp/size-refinement-new
-.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/aircraft-editor/size_flight_comparison.gd -- --extreme --baseline=../docs/research/aircraft-editor/AE-23b/baseline.orfl --out=../tmp/size-recordings-new
+.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/aircraft-editor/size_refinement.gd -- --extreme "--out=$sizeRoot/tmp/size-refinement-new"
+.tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script ../research/aircraft-editor/size_flight_comparison.gd -- --extreme "--baseline=$sizeRoot/docs/research/aircraft-editor/AE-23b/baseline.orfl" "--out=$sizeRoot/tmp/size-recordings-new"
 python tools/flight_log/flight_log.py replay docs/research/aircraft-editor/AE-23b/recordings-final/size-10.orfl --out tmp/size-exact-new
 python research/aircraft-editor/build_descriptors.py --check
 ```

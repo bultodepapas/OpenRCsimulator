@@ -4,6 +4,12 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`ground_noise_probe.gd` compares complete seeded image generation and cache-empty
+ground-material creation with an explicit reference source. Its [DT-11a report](../../docs/research/visual-quality-implementation/VQ-01c/loading/ground-image/noise/README.md)
+retains exact native image/mip/material checks, paired timings and a separate warm
+control. It requires a native renderer and measures CPU construction/submission,
+not GPU completion, full loading or FPS.
+
 `grass_validation_probe.gd` compares complete grass validation and direct grass
 construction against an explicit reference source. Its [DT-11a / L11a report](../../docs/research/visual-quality-implementation/VQ-01c/loading/grass-validation/README.md)
 retains native buffer/mesh/material parity, malformed-input comparisons, paired

@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-19 construction follow-up: [ground-noise coordinate preparation](ground-image/noise/README.md)
+preserves 100 image/mip pairs and 30 native material pairs, reducing cache-empty
+ground-material construction by 35.7%. Scalar-oracle and integration checks pass;
+warm material, complete loading and FPS gains are not established.
+
 2026-10-19 construction follow-up: [single-join grass checksum](grass-validation/README.md)
 preserves 90 native build pairs and reduces complete direct grass construction by
 63–72%; validation alone falls from 80.850 to 14.375 ms. Seven headless suites
