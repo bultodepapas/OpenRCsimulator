@@ -30,7 +30,7 @@ The final retained [renderer receipt](renderer/native.json), copied from `tmp/sm
 
 The isolated orthographic 640×360 fixture uses a 6 m camera size and color-channel weights to estimate projected red-smoke centroids against a gray background. Eight draws without a new request drain the last GPU command before readback. The constant-target projected oracle error was **0.000067852 m**. The maximum projected centroid drift across **30/60/144 FPS** after five seconds of dynamic motion was **0.00687993 m**. These are single-side image projections on one backend, not hidden 3D particle positions, full-fleet trail continuity or physical trajectory identification.
 
-This probe includes uniform bore scaling and independent plume width. Broader rendered clearance, high-speed curves, dense crossings, night/water/canopy intersections and target-display preference remain open. Fractional presented-pose/source alignment is integrated but still requires its complete activity/native qualification; supplied wash can lead presentation by less than one physics tick.
+This probe includes uniform bore scaling and independent plume width. Broader rendered clearance, high-speed curves, dense crossings, night/water/canopy intersections and target-display preference remain open. Fractional presented-pose/source alignment is integrated but still requires its complete activity/native qualification. Final activity regressions also cover accepted-tick propwash, scale-independent velocity and fractional pause rollback; the renderer projection probe itself does not establish those activity results.
 
 ## Captures, performance and remaining qualification
 

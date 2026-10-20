@@ -78,6 +78,10 @@ func _run() -> void:
 	quit(result)
 
 func _frame() -> void:
+	# This manual accepted-tick capture owns its clock. Window focus must not
+	# pause smoke while synchronous physics ticks continue behind the still plume.
+	if flight.session.sim.fault_reason.is_empty() and flight.session.crash.is_empty():
+		flight.session.sim.set_paused(false)
 	for tick in 8: flight.session.sim.step()
 	var pose: Dictionary = flight._pose_of(flight.session.sim.state)
 	flight._render_pose(pose, flight.session.surfaces(), 0.0)

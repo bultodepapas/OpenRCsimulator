@@ -7,6 +7,8 @@ const Customization := preload("res://render/aircraft_customization.gd")
 const Builder := preload("res://render/airplane.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Trial := preload("res://workshop/trial.gd")
+const AircraftData := preload("res://physics/aircraft_data.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
 var checks := 0
 var failures := 0
 
@@ -132,7 +134,10 @@ func _accepted_wash_checks(stock: Node) -> void:
 	var auxiliary: PackedFloat64Array = stock.session.sim.aux.duplicate()
 	var modes: PackedInt64Array = stock.session.sim.modes.duplicate()
 	var inputs: PackedFloat64Array = stock.session.sim.inputs.duplicate()
-	var prop: Dictionary = stock.session.aircraft.model.propulsion
+	var fixture: Dictionary = AircraftData.load_file(Catalog.entry("p51d-mustang-120").data)
+	check("qualified prop-wash fixture loads", bool(fixture.get("ok", false)))
+	if not bool(fixture.get("ok", false)): return
+	var prop: Dictionary = fixture.model.propulsion
 	var accepted_time: float = stock.session.sim.time()
 	# A detached numerical RPM fixture exercises the conversion without changing
 	# accepted RPM, controls or engine state in the session.
@@ -167,7 +172,7 @@ func _fractional_source_checks(stock: Node) -> void:
 	var auxiliary: PackedFloat64Array = stock.session.sim.aux.duplicate()
 	var modes: PackedInt64Array = stock.session.sim.modes.duplicate()
 	var inputs: PackedFloat64Array = stock.session.sim.inputs.duplicate()
-	var source_kind: String = str(stock.session.aircraft.model.propulsion.kind)
+	var source_kind: String = Propulsion.source_kind(stock.session.aircraft.model.propulsion)
 	var expected_wash := Vector3(0, 0, 3)
 	stock._profile_presented_running = true
 	stock._profile_presented_level = 0.5
