@@ -6,18 +6,38 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 TEST_PART="${OPENRC_TEST_PART:-all}"
 UNIT_SHARDS="${OPENRC_UNIT_SHARDS:-1}"
 UNIT_SHARD="${OPENRC_UNIT_SHARD:-0}"
+CHECK_OUT="${OPENRC_CHECK_OUT:-$HERE/../tmp/godot-checks}"
+EXPECTED_CHECK_OUT="${OPENRC_EXPECTED_CHECK_OUT:-$HERE/../tmp/godot-checks-expected}"
 case "$TEST_PART" in all|integration|units) ;; *) echo "invalid OPENRC_TEST_PART" >&2; exit 2 ;; esac
 [[ "$UNIT_SHARDS" =~ ^[1-9][0-9]*$ && "$UNIT_SHARD" =~ ^(0|[1-9][0-9]*)$ ]] || { echo "invalid unit shard numbers" >&2; exit 2; }
 (( UNIT_SHARDS <= 128 && UNIT_SHARD < UNIT_SHARDS )) || { echo "unit shard out of range" >&2; exit 2; }
 if [[ "$TEST_PART" != units && ( "$UNIT_SHARDS" != 1 || "$UNIT_SHARD" != 0 ) ]]; then
   echo "unit shard selection requires OPENRC_TEST_PART=units" >&2; exit 2
 fi
+python3 - "$CHECK_OUT" "$EXPECTED_CHECK_OUT" <<'PY'
+from pathlib import Path
+import sys
+
+positive, expected = (Path(value).resolve() for value in sys.argv[1:])
+def contains(parent: Path, child: Path) -> bool:
+    return parent == child or parent in child.parents
+
+if contains(positive, expected) or contains(expected, positive):
+    raise SystemExit("positive and expected-failure evidence collections must be disjoint")
+PY
+mkdir -p "$EXPECTED_CHECK_OUT"
 GODOT="$("$HERE/get-godot.sh")"
 run_with_timeout() {
   local timeout_seconds="$1"
   shift
-  python3 "$HERE/../tools/godot/run_checked.py" --timeout "$timeout_seconds" \
-    --out-dir "${OPENRC_CHECK_OUT:-$HERE/../tmp/godot-checks}" \
+  local out_dir="${OPENRC_CHECK_OUT:-$CHECK_OUT}"
+  local runner_args=(--timeout "$timeout_seconds")
+  if [[ "$out_dir" != "$CHECK_OUT" ]]; then
+    if [[ -n "${OPENRC_CHECK_LABEL:-}" ]]; then runner_args+=(--label "$OPENRC_CHECK_LABEL"); fi
+    if [[ -n "${OPENRC_CHECK_REQUIRED_TEXT:-}" ]]; then runner_args+=(--require-text "$OPENRC_CHECK_REQUIRED_TEXT"); fi
+  fi
+  runner_args+=(--out-dir "$out_dir")
+  python3 "$HERE/../tools/godot/run_checked.py" "${runner_args[@]}" \
     -- "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"
 }
 run() { run_with_timeout 60 "$@"; }
@@ -220,6 +240,49 @@ done
 fi # offline generators, references and complete parse checks
 
 LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
+expected_failure() {
+  local label="$1" expected_exit="$2" expected_error="$3"
+  shift 3
+  local run_dir actual_exit
+  if (
+    export OPENRC_CHECK_OUT="$EXPECTED_CHECK_OUT"
+    export OPENRC_CHECK_LABEL="$label"
+    export OPENRC_CHECK_REQUIRED_TEXT="$expected_error"
+    run "$@"
+  ) > "$LOG" 2>&1; then
+    actual_exit=0
+  else
+    actual_exit=$?
+  fi
+  if [[ "$actual_exit" -ne "$expected_exit" ]]; then
+    echo "$label exited $actual_exit; expected $expected_exit" >&2
+    cat "$LOG"
+    exit 1
+  fi
+  if ! run_dir="$(python3 - "$LOG" "$EXPECTED_CHECK_OUT" <<'PY'
+from pathlib import Path
+import sys
+
+log = Path(sys.argv[1]).read_text(encoding="utf-8", errors="replace")
+collection = Path(sys.argv[2]).resolve()
+report_path = ""
+for line in log.splitlines():
+    if line.startswith("Godot check failed: ") and "report: " in line:
+        report_path = line.split("report: ", 1)[1]
+if not report_path:
+    raise SystemExit("checked runner did not report its failure evidence path")
+report = Path(report_path).resolve()
+if report.name != "report.json" or report.parent.parent != collection:
+    raise SystemExit("checked runner wrote outside the expected-failure collection")
+print(report.parent)
+PY
+  )"; then
+    echo "$label did not produce an expected-failure report path" >&2
+    cat "$LOG"
+    exit 1
+  fi
+  python3 "$HERE/tests/check_expected_cli_failure.py" "$run_dir" "$EXPECTED_CHECK_OUT" "$expected_exit" "$expected_error"
+}
 if [[ "$TEST_PART" != integration ]]; then
 unit_index=0
 selected_units=0
@@ -376,9 +439,8 @@ python3 "$HERE/tests/check_trimmed_flight.py" "$TRACE" --duration=3 --aircraft-i
 echo "== Avanti S physics data is not stale (research/avanti-s/av06/derive_physics.py --check, AV-06)"
 python3 "$HERE/../research/avanti-s/av06/derive_physics.py" --check || exit 1
 echo "== app: an unknown aircraft is refused on the direct route (exit 1, never another airplane)"
-for id in no-such-aircraft; do
-  if run -- --aircraft="$id" --trace=/dev/null --t=1 > /dev/null 2>&1; then echo "--aircraft=$id was not refused"; exit 1; fi
-done
+expected_failure unknown-aircraft 1 "aircraft 'no-such-aircraft' refused: not in the catalog (" \
+  -- --aircraft=no-such-aircraft --trace=/dev/null --t=1
 echo "refused"
 
 echo "== NITRO-02: both finite-fuel glow catalog routes emit complete versioned traces"
@@ -422,14 +484,19 @@ print("scripted route, raw samples and disabled input verified")
 PYLOGGER
 rm -f "$FT"
 echo "== VQ-01b: invalid logger options and output write failures fail the process"
-for bad in --t=0 --t=nan --warmup=-1 --capture --trace=/dev/null; do
-  if run -- --frametimes=/dev/null "$bad" > "$LOG" 2>&1; then
-    echo "logger accepted invalid option $bad"; exit 1
-  fi
-done
-if run -- --frametimes="$HERE" --warmup=0 --t=0.01 > "$LOG" 2>&1; then
-  echo "logger hid an output write failure"; exit 1
-fi
+python3 "$HERE/tests/check_expected_cli_failure.py" --self-test
+expected_failure frametimes-t-zero 31 "--t must be greater than 0 and at most 300 seconds" \
+  -- --frametimes=/dev/null --t=0
+expected_failure frametimes-t-nan 31 "--t requires a finite number" \
+  -- --frametimes=/dev/null --t=nan
+expected_failure frametimes-warmup-negative 31 "--warmup must be between 0 and 3600 seconds" \
+  -- --frametimes=/dev/null --warmup=-1
+expected_failure frametimes-capture-conflict 31 "--frametimes cannot be combined with --trace or --capture" \
+  -- --frametimes=/dev/null --capture
+expected_failure frametimes-trace-conflict 31 "--frametimes cannot be combined with --trace or --capture" \
+  -- --frametimes=/dev/null --trace=/dev/null
+expected_failure frametimes-write-failure 1 "Cannot write frame-time report '" \
+  -- --frametimes="$HERE" --warmup=0 --t=0.01
 
 echo "== fixed step: the real app with injected keys reaches the same state at 30, 60 and 144 fps rendering"
 HASHES=""

@@ -97,6 +97,16 @@ exit 0
         self.assertEqual(budgets["test_p51_envelope.gd"], 180)
         self.assertEqual(budgets["test_probe_00.gd"], 60)
 
+    def test_expected_cli_failures_are_uploaded_outside_positive_summary(self):
+        repository = Path(__file__).resolve().parents[2]
+        script = (repository / "app" / "test.sh").read_text(encoding="utf-8")
+        workflow = (repository / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+        self.assertIn('EXPECTED_CHECK_OUT="${OPENRC_EXPECTED_CHECK_OUT:-$HERE/../tmp/godot-checks-expected}"', script)
+        self.assertIn("summarize.py tmp/godot-checks --junit tmp/godot-checks/results.xml", workflow)
+        self.assertIn("path: tmp/godot-checks/", workflow)
+        self.assertIn("name: godot-expected-diagnostics-${{ matrix.part }}-${{ matrix.shard }}", workflow)
+        self.assertIn("tmp/godot-checks-expected/", workflow)
+
     def test_invalid_and_empty_partitions_are_rejected(self):
         for shard, count in [(8, 8), (-1, 8), (0, 0), (0, "08"), (0, 129), (19, 20)]:
             with self.subTest(shard=shard, count=count):
