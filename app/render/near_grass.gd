@@ -8,6 +8,8 @@ const SHADER: Shader = preload("res://render/near_grass.gdshader")
 const DATA_PATH: String = "res://data/fields/grass.json"
 const RADIUS_M: float = 30.0
 const CLEARANCE_M: float = 0.4 # estimated; exceeds the widest clump at maximum scale plus shader sway
+const LIGHT_CIRCLE_SEGMENTS := 16
+const STAKE_COLLISION_RADIUS_M := 0.035 # app/scenery/collision_world.gd::_add_lights
 const COUNT: int = 6000
 const BLADES: int = 7
 
@@ -64,6 +66,77 @@ static func accepts(north: float, east: float, field: Dictionary, exclusions: Ar
 			and absf(east - float(cue.east)) <= float(cue.width) * 0.5 + CLEARANCE_M:
 			return false
 	return on_rough
+
+
+## Ground footprints for the validated default field lights, expanded by GrassMask's 0.4 m margin.
+## Poles and stakes follow CollisionWorld's horizontal capsule radii; the hearth follows its box proxy.
+static func light_exclusions(lights: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for installation_value: Variant in lights.get("installations", []):
+		if typeof(installation_value) != TYPE_DICTIONARY:
+			continue
+		var installation: Dictionary = installation_value
+		var id := str(installation.get("id", "field_light"))
+		var kind := str(installation.get("type", ""))
+		var north: Variant = installation.get("north", null)
+		var east: Variant = installation.get("east", null)
+		if not _finite_number(north) or not _finite_number(east):
+			continue
+		if kind in ["mast", "low_light_mount"]:
+			var radius: Variant = installation.get("collision_radius", NAN)
+			if _finite_number(radius) and float(radius) > 0.0:
+				result.append(_circle_exclusion("field-light:%s" % id, float(north), float(east), float(radius)))
+		elif kind == "campfire_base":
+			var width: Variant = installation.get("width", NAN)
+			var depth: Variant = installation.get("depth", NAN)
+			var heading: Variant = installation.get("heading", 0.0)
+			if not _finite_positive(width) or not _finite_positive(depth) or not _finite_number(heading):
+				continue
+			var points := GrassMask._rectangle(float(north), float(east), float(heading),
+				0.0, 0.0, float(width), float(depth))
+			var footprint := GrassMask._record("field-light:%s" % id, "field_light", points)
+			if not footprint.is_empty():
+				result.append(footprint)
+	for fixture_value: Variant in lights.get("fixtures", []):
+		if typeof(fixture_value) != TYPE_DICTIONARY:
+			continue
+		var fixture: Dictionary = fixture_value
+		if str(fixture.get("type", "")) != "stake_row":
+			continue
+		var raw_points: Variant = fixture.get("points", [])
+		var size: Variant = fixture.get("size", 0.0)
+		if not raw_points is Array or not _finite_number(size):
+			continue
+		var radius := maxf(float(size) * 0.5, STAKE_COLLISION_RADIUS_M)
+		var fixture_id := str(fixture.get("id", "stake_row"))
+		for index: int in (raw_points as Array).size():
+			var point_value: Variant = raw_points[index]
+			if not point_value is Array or (point_value as Array).size() != 2:
+				continue
+			var point: Array = point_value
+			if not _finite_number(point[0]) or not _finite_number(point[1]):
+				continue
+			result.append(_circle_exclusion("field-light:%s:%d" % [fixture_id, index],
+				float(point[0]), float(point[1]), radius))
+	return result
+
+
+static func _circle_exclusion(id: String, north: float, east: float, radius: float) -> Dictionary:
+	var points := PackedVector2Array()
+	var circumscribed_radius := radius / cos(PI / float(LIGHT_CIRCLE_SEGMENTS))
+	for index: int in LIGHT_CIRCLE_SEGMENTS:
+		var angle := TAU * float(index) / float(LIGHT_CIRCLE_SEGMENTS)
+		points.append(Vector2(north + cos(angle) * circumscribed_radius,
+			east + sin(angle) * circumscribed_radius))
+	return GrassMask._record(id, "field_light", points)
+
+
+static func _finite_positive(value: Variant) -> bool:
+	return _finite_number(value) and float(value) > 0.0
+
+
+static func _finite_number(value: Variant) -> bool:
+	return (typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT) and is_finite(float(value))
 
 
 ## Seven separate opaque triangles. Roots are y=0; heights 0.10–0.18 m and footprint <0.2 m are artistic estimates.

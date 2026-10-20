@@ -172,11 +172,11 @@ def make_profile(document: dict, binary: bytes) -> dict:
             radial = [0.0, (dz / radial_length) * RADIUS_M, (dy / radial_length) * RADIUS_M]
             vertex_records.append({"center": [round(t, 9), round(sag, 9), 0.0], "radial": [round(value, 9) for value in radial]})
 
-    # Preserve component triangles and their topology, adapting face order to
-    # the Godot-facing convention expected by MeshKit.tri.
+    # Swapping source Y/Z already reverses handedness, converting glTF's CCW
+    # faces to Godot's clockwise order. Reversing indices again points inward.
     triangles = []
     for a, b, c in faces:
-        triangles.extend((new_index[a], new_index[c], new_index[b]))
+        triangles.extend((new_index[a], new_index[b], new_index[c]))
 
     if len(vertex_records) != 81 or len(triangles) != 128 * 3:
         raise AssertionError("Unexpected extracted topology")
@@ -202,7 +202,7 @@ def make_profile(document: dict, binary: bytes) -> dict:
             "radial": "source Y/Z cross-section directions mapped to runtime [along, up, side] and normalized to radius_m; source axial offsets are omitted",
             "radius_m": RADIUS_M,
             "godot_clockwise": True,
-            "face_order": "source GLB triangle order reversed per face for Godot MeshKit.tri",
+            "face_order": "source GLB indices retained; the Y/Z axis swap produces Godot clockwise faces",
         },
         "measurements": {
             "source_vertices": 81,

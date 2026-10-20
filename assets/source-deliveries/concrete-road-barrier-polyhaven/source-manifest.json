@@ -1,0 +1,89 @@
+{
+  "asset": "Concrete Road Barrier",
+  "asset_id": "concrete_road_barrier",
+  "author": "Amal Kumar",
+  "license": "CC0 1.0",
+  "license_url": "https://polyhaven.com/license",
+  "asset_url": "https://polyhaven.com/a/concrete_road_barrier",
+  "api_info_url": "https://api.polyhaven.com/info/concrete_road_barrier",
+  "api_files_url": "https://api.polyhaven.com/files/concrete_road_barrier",
+  "api_files_hash": "bc3dfafc1abfc83dfa19710745d6f0beba9d2368",
+  "downloaded_utc": "2026-10-20T16:01:32.059289+00:00",
+  "source_dimensions_mm": [
+    1545.3570485115051,
+    640.9457623958588,
+    835.279269143939
+  ],
+  "files": [
+    {
+      "path": "gltf/concrete_road_barrier_1k.gltf",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/concrete_road_barrier/concrete_road_barrier_1k.gltf",
+      "bytes": 2868,
+      "source_md5": "6d6feaf068f434e8dc163a1a9d983f4a",
+      "sha256": "c371e87d303fff3f0c9fbe88520f7837514364e5c66aac3244e115ffa673d061"
+    },
+    {
+      "path": "gltf/textures/concrete_road_barrier_nor_gl_1k.jpg",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/concrete_road_barrier/concrete_road_barrier_nor_gl_1k.jpg",
+      "bytes": 961760,
+      "source_md5": "5cc77a0a52de7f3e6c7405b5bfedfc6f",
+      "sha256": "c1072f51ff5c3d7158f0fbb0aa26e82b816b745b9f03639c4816832af2b37c52"
+    },
+    {
+      "path": "gltf/textures/concrete_road_barrier_arm_1k.jpg",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/concrete_road_barrier/concrete_road_barrier_arm_1k.jpg",
+      "bytes": 619502,
+      "source_md5": "a289412cc7fe2c265f0975b31d8edda1",
+      "sha256": "b940847648012f2db8c24b16e07ad1e39b3bd33ea493203364deca209606e4b4"
+    },
+    {
+      "path": "gltf/textures/concrete_road_barrier_diff_1k.jpg",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/concrete_road_barrier/concrete_road_barrier_diff_1k.jpg",
+      "bytes": 792641,
+      "source_md5": "0fc11541996e1ddbdb1875dff35bc1c9",
+      "sha256": "88b2d79829ffec7b11ac4d9c8554328f30b665d2c17f634197fde4f1ca8696fe"
+    },
+    {
+      "path": "gltf/concrete_road_barrier.bin",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/concrete_road_barrier/concrete_road_barrier.bin",
+      "bytes": 1374016,
+      "source_md5": "f256cb4d2bd9e5623b062502605dfcf2",
+      "sha256": "64a4f9bc6e4af64d714a252c3c13428c430a60569deba3d52ca6b7dd3aa70d8c"
+    },
+    {
+      "path": "blend/concrete_road_barrier_1k.blend",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/blend/1k/concrete_road_barrier/concrete_road_barrier_1k.blend",
+      "bytes": 2597168,
+      "source_md5": "a3e468415944c7271bd85b4c0c616fd6",
+      "sha256": "dcc454b077b9c4bb284090082c92eb7419273c3fab6bf96103d794c3c6f9ca63"
+    },
+    {
+      "path": "blend/textures/concrete_road_barrier_nor_gl_1k.exr",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/concrete_road_barrier/concrete_road_barrier_nor_gl_1k.exr",
+      "bytes": 2107925,
+      "source_md5": "4532c35acd13385062a40f7b0b50343b",
+      "sha256": "6206a26c3828677d47dc503963966ceb67e5676d72fc018026e2cedeada42cb4"
+    },
+    {
+      "path": "blend/textures/concrete_road_barrier_rough_1k.exr",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/exr/1k/concrete_road_barrier/concrete_road_barrier_rough_1k.exr",
+      "bytes": 518777,
+      "source_md5": "9dc756383e79a6c8d32a2bc02466c8a2",
+      "sha256": "3a80f68628a0394a3e7339a287ad563b41c54f75f013ba0126793ab9c6318d5c"
+    },
+    {
+      "path": "blend/textures/concrete_road_barrier_diff_1k.jpg",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/concrete_road_barrier/concrete_road_barrier_diff_1k.jpg",
+      "bytes": 792641,
+      "source_md5": "0fc11541996e1ddbdb1875dff35bc1c9",
+      "sha256": "88b2d79829ffec7b11ac4d9c8554328f30b665d2c17f634197fde4f1ca8696fe"
+    },
+    {
+      "path": "blend/textures/concrete_road_barrier_disp_1k.png",
+      "source_url": "https://dl.polyhaven.org/file/ph-assets/Models/png/1k/concrete_road_barrier/concrete_road_barrier_disp_1k.png",
+      "bytes": 1698556,
+      "source_md5": "cef5c0386ca9f7bd380e75594d6a1f96",
+      "sha256": "ccf9dd721250f42a138567eb776f1264842fd713f7368a61d923f2db0308c175"
+    }
+  ]
+}

@@ -79,9 +79,11 @@ func _interactive_pause_edit() -> void:
 	var dialog: CanvasLayer = app.time_of_day_dialog
 	var controls: VBoxContainer = dialog.get("controls") as VBoxContainer
 	var field_picker: OptionButton = controls.find_child("FieldLighting", true, false) as OptionButton
+	var activation_picker: OptionButton = controls.find_child("FieldActivation", true, false) as OptionButton
 	var campfire_picker: OptionButton = controls.find_child("Campfire", true, false) as OptionButton
-	_check("paused conditions expose three compact field profiles and a separate campfire toggle",
+	_check("paused conditions expose profile, activation and a separate campfire toggle",
 		field_picker != null and field_picker.item_count == 3 and field_picker.selected == 0
+		and activation_picker != null and activation_picker.item_count == 3 and activation_picker.selected == 0
 		and campfire_picker != null and campfire_picker.item_count == 2 and campfire_picker.selected == 0)
 	var mode_picker: OptionButton = controls.find_child("LightingMode", true, false) as OptionButton
 	var mode_popup: PopupMenu = mode_picker.get_popup()
@@ -157,6 +159,7 @@ func _interactive_pause_edit() -> void:
 	dialog = app.time_of_day_dialog
 	controls = dialog.get("controls") as VBoxContainer
 	field_picker = controls.find_child("FieldLighting", true, false) as OptionButton
+	activation_picker = controls.find_child("FieldActivation", true, false) as OptionButton
 	campfire_picker = controls.find_child("Campfire", true, false) as OptionButton
 	var preset_picker: OptionButton = controls.find_child("TimePreset", true, false) as OptionButton
 	var preset_popup: PopupMenu = preset_picker.get_popup()
@@ -178,6 +181,7 @@ func _interactive_pause_edit() -> void:
 	controls = dialog.get("controls") as VBoxContainer
 	preset_picker = controls.find_child("TimePreset", true, false) as OptionButton
 	field_picker = controls.find_child("FieldLighting", true, false) as OptionButton
+	activation_picker = controls.find_child("FieldActivation", true, false) as OptionButton
 	campfire_picker = controls.find_child("Campfire", true, false) as OptionButton
 	preset_popup = preset_picker.get_popup()
 	await ui.tap(KEY_TAB)
@@ -194,6 +198,7 @@ func _interactive_pause_edit() -> void:
 	field_picker = controls.find_child("FieldLighting", true, false) as OptionButton
 	campfire_picker = controls.find_child("Campfire", true, false) as OptionButton
 	field_picker.select(1)
+	activation_picker.select(1)
 	campfire_picker.select(1)
 	for tab_index: int in 16:
 		await ui.tap(KEY_TAB)
@@ -210,14 +215,15 @@ func _interactive_pause_edit() -> void:
 	_check("Apply preserves tick, state and live controls", session.sim.tick == initial_tick
 		and session.sim.state == initial_state and session.commands == initial_commands)
 	_check("paused Apply updates both visual options without changing the session",
-		flight.night_options == {"field_lighting": "airfield", "campfire": true}
+		flight.night_options == {"field_lighting": "airfield", "campfire": true, "field_activation": "on"}
 		and session.sim.tick == initial_tick and session.sim.state == initial_state
 		and session.commands == initial_commands)
 	_check("interactive Apply saves the configured start light", Preferences.load_from(PREFS).lighting_config == night_draft,
 		str(Preferences.load_from(PREFS).lighting_config))
 	_check("interactive Apply persists field lighting and campfire choices",
 		Preferences.load_from(PREFS).night_field_lighting == "airfield"
-		and Preferences.load_from(PREFS).night_campfire == true)
+		and Preferences.load_from(PREFS).night_campfire == true
+		and Preferences.load_from(PREFS).night_field_activation == "on")
 	_check("Apply returns focus to Time of day", ui.focus_name() == "TimeOfDay", ui.focus_name())
 
 	app.restart_flight()
@@ -225,7 +231,7 @@ func _interactive_pause_edit() -> void:
 		and session.sim.tick == 0 and flight.lighting_config == night_draft
 		and _timeline_event_count(flight) == 0)
 	_check("Restart reuses the saved night presentation choices",
-		flight.night_options == {"field_lighting": "airfield", "campfire": true})
+		flight.night_options == {"field_lighting": "airfield", "campfire": true, "field_activation": "on"})
 	app.open_pause()
 	await ui.settle()
 	app.end_flight()

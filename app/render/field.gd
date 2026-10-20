@@ -3,6 +3,7 @@ extends RefCounted
 
 const Atmosphere = preload("res://render/atmosphere.gd")
 const Frames = preload("res://render/frames.gd")
+const FieldLightData = preload("res://render/world/field_lights.gd")
 const Treeline = preload("res://render/treeline.gd")
 const Ground = preload("res://render/ground.gd")
 const NearGrass = preload("res://render/near_grass.gd")
@@ -21,6 +22,8 @@ const Countryside = preload("res://render/landscape_upgrade/countryside.gd")
 # Legacy fallback separation only; ordinary fields paint their surfaces in the rough ground pass.
 const SURFACE_LIFT: Dictionary = {"rough": 0.0, "mown": 0.015, "runway": 0.03, "rotorpad": 0.015}
 const GROUND_SUBDIVISIONS := 63
+static var _default_light_exclusions_loaded := false
+static var _default_light_exclusions_cache: Array[Dictionary] = []
 
 
 static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_exclusions: Array = []) -> Node3D:
@@ -94,10 +97,15 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 	var exclusions: Array = scenery_node.get_meta("grass_exclusions", []) if scenery_node != null else []
 	exclusions = exclusions.duplicate()
 	exclusions.append_array(extra_grass_exclusions)
+	var field_light_exclusions: Array[Dictionary] = []
+	if str(field.get("id", "")) == "default":
+		field_light_exclusions = _default_field_light_exclusions()
+	exclusions.append_array(field_light_exclusions)
 	var near_grass: Node3D
 	if scenery_node != null and field.id == "default":
 		var masks := ImportedNearGrass.exclusions_for(scenery_node.get_meta("source_definition", {}), lake)
 		masks.append_array(extra_grass_exclusions)
+		masks.append_array(field_light_exclusions)
 		near_grass = ImportedNearGrass.build(field, str(scenery_options.quality), masks)
 	else:
 		near_grass = NearGrass.build(field, grass, exclusions)
@@ -122,6 +130,17 @@ static func build(field: Dictionary, lighting: Dictionary = {}, extra_grass_excl
 	result.set_meta("lighting_materials", materials)
 	result.set_meta("lighting_snapshot", lighting.duplicate(true))
 	return result
+
+
+static func _default_field_light_exclusions() -> Array[Dictionary]:
+	if not _default_light_exclusions_loaded:
+		_default_light_exclusions_loaded = true
+		var loaded: Dictionary = FieldLightData.load_from()
+		if bool(loaded.get("ok", false)):
+			_default_light_exclusions_cache = NearGrass.light_exclusions(loaded.lights)
+		else:
+			push_warning("default field lights could not be validated for grass clearance: %s" % "; ".join(loaded.get("errors", [])))
+	return _default_light_exclusions_cache
 
 
 ## Read-only consumer of committed wind samples. No flight solver, RNG or input changes.
