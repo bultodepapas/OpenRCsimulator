@@ -86,7 +86,26 @@
       "selection_reason": "order ratios pass but the hold loses one of the required three loaded contacts at every tick rate; 0.10 keeps the oracle in the three-contact sliding domain"
     },
     "goldens_changed": false,
-    "mutation_gate": "pending; run verify.py --mutations in disposable clone before release publication"
+    "mutation_verification": {
+      "source_commit": "4b5d46a974b48fd8cf8d91b927a5b1a00943b1f6",
+      "mode": "disposable clone; fresh import and unmodified control before mutations",
+      "exit_code": 0,
+      "control": {
+        "checks.gd": {"checks": 21, "failures": 0},
+        "session.gd": {"checks": 116, "failures": 0},
+        "clone_checks.gd": {"checks": 21, "failures": 0},
+        "clone_session.gd": {"checks": 116, "failures": 0}
+      },
+      "mutations": {
+        "steering_sign": {"checks": 11, "failures": 1, "intended_assertion_failed": true},
+        "tail_position": {"checks": 21, "failures": 3, "intended_assertion_failed": true},
+        "missing_wheel_radius": {"checks": 21, "failures": 1, "intended_assertion_failed": true},
+        "wheel_crash_hull": {"checks": 21, "failures": 21, "intended_assertion_failed": true},
+        "inert_throttle": {"checks": 116, "failures": 15, "intended_assertion_failed": true}
+      },
+      "verified_mutations": 5,
+      "all_mutations_reached_expected_assertion": true
+    }
   },
   "physical_acceptance": false,
   "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
