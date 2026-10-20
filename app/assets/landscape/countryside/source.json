@@ -1,0 +1,13 @@
+{
+  "asset": "Aerial Asphalt 01",
+  "author": "Rob Tuytel",
+  "license": "CC0-1.0",
+  "retrieved": "2026-10-20",
+  "source": "https://polyhaven.com/a/aerial_asphalt_01",
+  "download": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/aerial_asphalt_01/aerial_asphalt_01_diff_1k.jpg",
+  "file": "aerial_asphalt_01_diff_1k.jpg",
+  "bytes": 635143,
+  "sha256": "28bfd71288b364f825e0feb750e487410422d80bf3c31d32da01cae3bf085b58",
+  "source_width_m": 30,
+  "modification": "Unchanged source JPEG; Godot VRAM compression and mipmaps at import"
+}

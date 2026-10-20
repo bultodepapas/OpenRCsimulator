@@ -269,7 +269,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 						kit = _kit(cells, _cell(pl.north, pl.east))
 					var damage_first := kit.verts.size() if kit != null else 0
 					if VegetationPlacement.handles(prefab):
-						var plant := VegetationPlacement.spec(prefab, pl.seed)
+						var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
 						var plant_xf := ImportedVegetation.fit_to_height(plant.asset_id, plant.height, xf)
 						var tone := 0.90 + 0.10 * Palette.hash01(pl.seed, 834)
 						var tint := Color(tone, minf(1.0, tone + 0.035), tone, 1.0)
@@ -313,7 +313,7 @@ static func build(field: Dictionary, scenery: Dictionary, opts: Dictionary, ligh
 							shadow_xf.origin.y = SupportSurfaces.height_at(pl.north, pl.east, support_surfaces)
 						var shadow_size: Vector3 = spec.size
 						if VegetationPlacement.handles(prefab):
-							var plant := VegetationPlacement.spec(prefab, pl.seed)
+							var plant := VegetationPlacement.spec(prefab, pl.seed, str(group.id))
 							shadow_size = Vector3(plant.width, plant.height, plant.depth)
 							if plant.asset_id == "maple_tree":
 								shadow_mode = "crown"

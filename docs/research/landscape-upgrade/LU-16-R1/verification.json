@@ -1,0 +1,252 @@
+{
+  "baseline_head": "9a55ea7acd92cfe5a888f2dba9428d756b69384c",
+  "checks": [
+    {
+      "label": "field-integration",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 0
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_field_integration.gd"
+      ],
+      "log": "field-integration-7brjbbih.log"
+    },
+    {
+      "label": "final-day",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1280x720",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains/final-day",
+        "--cases=pilot_north,horizon_raised120,postcard_farm,twilight_aircraft",
+        "--frames=360"
+      ],
+      "log": "final-day-h81uokyu.log"
+    },
+    {
+      "label": "final-dusk",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1280x720",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains/final-dusk",
+        "--cases=pilot_north,horizon_raised120,twilight_aircraft",
+        "--time-of-day=17:45",
+        "--frames=180"
+      ],
+      "log": "final-dusk-260usity.log"
+    },
+    {
+      "label": "final-night",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1280x720",
+        "--script",
+        "res://tests/capture_landscape_upgrade.gd",
+        "--",
+        "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains/final-night",
+        "--cases=pilot_north",
+        "--time-of-day=00:00",
+        "--frames=60"
+      ],
+      "log": "final-night-vi4exekg.log"
+    },
+    {
+      "label": "horizon",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscape_horizon.gd"
+      ],
+      "log": "horizon-48gln023.log"
+    },
+    {
+      "label": "landscapes",
+      "complete": true,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscapes.gd",
+        "--",
+        "--capture-landscapes=C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains/home-flight"
+      ],
+      "log": "landscapes-59_65rie.log"
+    },
+    {
+      "label": "landscapes-headless",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_landscapes.gd"
+      ],
+      "log": "landscapes-headless-38_g6pfk.log"
+    },
+    {
+      "label": "landscapes-native-keyboard",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains/test_landscapes_keyboard.gd",
+        "--",
+        "--capture-landscapes=C:/DEVELOPMENT/OpenRCsimulator/tmp/mountains/keyboard-home-flight"
+      ],
+      "log": "landscapes-native-keyboard-i8yl66f0.log"
+    },
+    {
+      "label": "ui-runway-complete",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_runway.gd"
+      ],
+      "log": "ui-runway-complete-ridikbo0.log"
+    },
+    {
+      "label": "ui-runway",
+      "complete": false,
+      "process_exit": 1,
+      "counts": {
+        "error": 0,
+        "warning": 1
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_runway.gd"
+      ],
+      "log": "ui-runway-hzwnmpzd.log"
+    },
+    {
+      "label": "world-flow",
+      "complete": true,
+      "process_exit": 0,
+      "counts": {
+        "error": 0,
+        "warning": 2
+      },
+      "command": [
+        ".tools/Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_world_flow.gd"
+      ],
+      "log": "world-flow-sr3dx0m3.log"
+    }
+  ],
+  "sha256": {
+    "app/render/landscape_upgrade/ridges.gd": "d72a237aa39016189da925584c62c5a035e03848570f589a3bc88c5f25412b0b",
+    "app/render/landscape_upgrade/ridge_haze.gdshader": "5a7c35be35993c705ffc9184b6483183f3a8730f517d8706fc63ec3ffc7e4b03",
+    "app/data/fields/mountains.json": "8def1e20c5262c3021b92ebb313c65acae587096edd84d967ad8b2c3b2e5d793",
+    "app/assets/landscape/mountains/relief.png": "5521aa9956ef6db6c7414e3cf5de5848af50e62c1246bf590cadc45ef1d6a6c6",
+    "app/assets/landscape/mountains/relief.png.import": "d67213e6fb6ecec119934059a5764b4880e925f1f35dcf5301f630c9dcfcce42",
+    "tools/terrain/import_mountains.py": "7c9c6a334e43ffe21b0c384fe9085e0c6c094bd2f7f9b32200f0c6ff11639e59"
+  }
+}

@@ -783,6 +783,282 @@
    }
   },
   {
+   "id": "countryside-hamlet",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "village_house",
+   "placements": {
+    "value": [
+     [-650.0, -900.0, 180.0],
+     [-710.0, -835.0, 0.0],
+     [-650.0, -770.0, 180.0],
+     [-710.0, -705.0, 0.0],
+     [-650.0, -640.0, 180.0],
+     [-710.0, -575.0, 0.0],
+     [-650.0, -510.0, 180.0],
+     [-710.0, -455.0, 0.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Eight village houses along the rural road south of the club; estimated layout, driveways supplied by the road layout"
+   }
+  },
+  {
+   "id": "countryside-farm-barn",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "barn",
+   "placements": {
+    "value": [
+     [780.0, 650.0, 205.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Secondary small farmyard at the eastern rural-road branch; estimated placement"
+   }
+  },
+  {
+   "id": "countryside-farmhouse",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "farmhouse",
+   "placements": {
+    "value": [
+     [750.0, 625.0, 20.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Farmhouse beside the eastern barn; estimated placement"
+   }
+  },
+  {
+   "id": "countryside-farm-silo",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "silo",
+   "placements": {
+    "value": [
+     [795.0, 660.0, 0.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Silo beside the eastern barn; estimated placement"
+   }
+  },
+  {
+   "id": "countryside-farm-tractor",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "tractor",
+   "placements": {
+    "value": [
+     [805.0, 630.0, 250.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Parked tractor by the eastern farmyard; static scenery placement"
+   }
+  },
+  {
+   "id": "countryside-farm-bales",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "round_bale",
+   "placements": {
+    "value": [
+     [793.5, 642.0, 0.0],
+     [794.75, 644.25, 0.0],
+     [796.0, 646.5, 0.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Three small round bales beside the eastern barn"
+   }
+  },
+  {
+   "id": "countryside-existing-farm-fence-west-north",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "wire",
+   "collides": false,
+   "points": {
+    "value": [
+     [578.0, 300.0],
+     [625.0, 300.0],
+     [625.0, 374.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated wire fence around the existing farmyard; east-side driveway gate kept open"
+   }
+  },
+  {
+   "id": "countryside-existing-farm-fence-south",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "wire",
+   "collides": false,
+   "points": {
+    "value": [
+     [578.0, 300.0],
+     [578.0, 374.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated wire fence around the existing farmyard; east-side driveway gate kept open"
+   }
+  },
+  {
+   "id": "countryside-existing-farm-fence-gate-south",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "wire",
+   "collides": false,
+   "points": {
+    "value": [
+     [578.0, 374.0],
+     [603.0, 374.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated wire fence around the existing farmyard; east-side driveway gate kept open"
+   }
+  },
+  {
+   "id": "countryside-existing-farm-fence-gate-north",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "wire",
+   "collides": false,
+   "points": {
+    "value": [
+     [616.0, 374.0],
+     [625.0, 374.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated wire fence around the existing farmyard; east-side driveway gate kept open"
+   }
+  },
+  {
+   "id": "countryside-east-farm-fence-west-north",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "rail",
+   "collides": false,
+   "points": {
+    "value": [
+     [732.0, 600.0],
+     [818.0, 600.0],
+     [818.0, 685.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated rail fence around the eastern farmyard; east-side driveway gate kept open"
+   }
+  },
+  {
+   "id": "countryside-east-farm-fence-south",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "rail",
+   "collides": false,
+   "points": {
+    "value": [
+     [732.0, 600.0],
+     [732.0, 685.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated rail fence around the eastern farmyard; east-side driveway gate kept open"
+   }
+  },
+  {
+   "id": "countryside-east-farm-fence-gate-north",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "rail",
+   "collides": false,
+   "points": {
+    "value": [
+     [744.0, 685.0],
+     [818.0, 685.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated rail fence around the eastern farmyard; east-side driveway gate kept open"
+   }
+  },
+  {
+   "id": "countryside-orchard",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "bush",
+   "placements": {
+    "value": [
+     [650.0, 450.0, 114.6],
+     [650.0, 453.0, 29.2],
+     [650.0, 456.0, 164.6],
+     [650.0, 459.0, 208.1],
+     [654.0, 450.0, 34.9],
+     [654.0, 453.0, 307.1],
+     [654.0, 456.0, 257.5],
+     [654.0, 459.0, 26.1],
+     [658.0, 450.0, 36.6],
+     [658.0, 453.0, 283.8],
+     [658.0, 456.0, 237.9],
+     [658.0, 459.0, 280.5]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Twelve existing downloaded forest leafy shrubs arranged in compact low berry rows (~0.7–0.85 m); estimated placement"
+   }
+  },
+  {
+   "id": "countryside-cows-paddock-fence",
+   "type": "fence",
+   "zone": "countryside",
+   "style": "wire",
+   "collides": false,
+   "points": {
+    "value": [
+     [850.0, 600.0],
+     [890.0, 600.0],
+     [890.0, 640.0],
+     [850.0, 640.0],
+     [850.0, 600.0]
+    ],
+    "unit": "m",
+    "kind": "estimated",
+    "source": "Estimated wire fence enclosing a small eastern cow paddock"
+   }
+  },
+  {
+   "id": "countryside-cows",
+   "type": "instances",
+   "zone": "countryside",
+   "collides": false,
+   "prefab": "cow",
+   "placements": {
+    "value": [
+     [860.0, 610.0, 30.0],
+     [860.0, 630.0, 210.0],
+     [880.0, 610.0, 155.0],
+     [880.0, 630.0, 340.0]
+    ],
+    "unit": "m, m, deg",
+    "kind": "estimated",
+    "source": "Four grazing cows in the small eastern wire paddock"
+   }
+  },
+  {
    "id": "maple-farm-south-005",
    "type": "instances",
    "zone": "countryside",

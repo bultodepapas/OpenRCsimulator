@@ -5,6 +5,7 @@ Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)).
 | Tool | What it does | Command |
 | --- | --- | --- |
 | `place.py` | Lays out the default field's scenery and writes `app/data/scenery/default.json` (`openrc-scenery v1`). Stdlib Python, integer hashes. It rebuilds the L6b treeline's tree heights and skyline so that landmarks go where the pilot can see them (`--report` prints the visibility table) | `python3 tools/scenery/place.py [--check] [--report]` |
+| `bake_countryside.py` | LU-28 crop parcels, roads and yards; static spatial batches follow the existing visual horizon. Run after `place.py`. Layout is estimated and supplies no physical terrain or tire friction. | `python3 tools/scenery/bake_countryside.py [--check]` |
 | `bake_models.gd` | Converts the third-party CC0 models (Quaternius cars, cow, sheep) into `openrc-scenery-model v1` JSON in `app/data/scenery/models/`. Checks each download's SHA-256, poses skinned meshes at their rest, puts the front to −Z, scales to the catalog size, reduces with meshoptimizer, and marks the car paint | `godot --headless --path app --script $PWD/tools/scenery/bake_models.gd -- --src=<downloads> [--check]` |
 | `bake_fleet.gd` | Snapshots the four catalog aircraft through the model teams' builder (read-only), reduces each to about 2,200–3,800 triangles and bakes triangle colours. Re-run after a model team changes an aircraft | `godot --headless --path app --script $PWD/tools/scenery/bake_fleet.gd [-- --check]` |
 | `scenario.sh` + `scenario_report.py` | The runway scenario (`app/scenery/runway_scenario.gd`, pilot in `takeoff_pilot.gd`): airplane at the threshold, scripted takeoff, five cameras × 12 instants, manifest, sync checks, comparison with the previous run (heatmaps, verdict), filmstrips, `report.html`, history timeline. Also run by `app/capture.sh` | `tools/scenery/scenario.sh [root] [-- --aircraft=<id> --scenery=off]` |
@@ -24,3 +25,10 @@ Offline tools of the scenery track ([SCENERY-PLAN](../../docs/SCENERY-PLAN.md)).
 - `--scenery_birds=off` (birds are on by default since UI-06d)
 
 Each option has an `OPENRC_SCENERY_*` environment-variable twin.
+
+LU-28 checks: `python3 tools/scenery/test_countryside.py` verifies tree clearance,
+road/driveway connections, farm gates, winding and protected flight-area geometry.
+`res://tests/test_countryside.gd` checks the shared field integration and lighting.
+Native views in `capture_landscape_upgrade.gd` include `plain_overview`,
+`plain_east`, `plain_farm`, `plain_farm_gate`, `plain_village`, `plain_highway`
+and `plain_crop`. [Captures, research and measured cost](../../docs/research/landscape-upgrade/LU-28/README.md).

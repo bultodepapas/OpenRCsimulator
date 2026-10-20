@@ -25,6 +25,7 @@ BALE_LAKE_CLEARANCE_M = 2.0
 BALE_CENTER_GAP_M = BALE_RADIUS_M * 2.0 + 0.25
 SAPLING_FOOTPRINT_RADIUS_M = 2.2
 SAPLING_LAKE_CLEARANCE_M = 8.0
+TREE_CLEARANCE_M = 3.0
 
 
 def catalog_fleet_ids():
@@ -234,6 +235,10 @@ def clear_of_trees(trees, n, e, radius):
     return all((n - tn) ** 2 + (e - te) ** 2 >= radius ** 2 for tn, te in trees)
 
 
+def clear_of_tree_segment(trees, start, end, radius):
+    return all(_point_segment_distance((tn, te), start, end) >= radius for tn, te in trees)
+
+
 def polar(r, az_deg):
     a = math.radians(az_deg)
     return r * math.cos(a), r * math.sin(a)
@@ -363,6 +368,13 @@ def build():
         g["placements"] = q(rows, "m, m, deg", kind, source)
         groups.append(g)
 
+    def fence(gid, style, points, source):
+        clearance = TREE_CLEARANCE_M + 0.2
+        for start, end in zip(points, points[1:]):
+            assert clear_of_tree_segment(trees, start, end, clearance), (gid, start, end)
+        groups.append({"id": gid, "type": "fence", "zone": "countryside", "style": style, "collides": False,
+                       "points": q(points, "m", "estimated", source)})
+
     photo = "Owner's reference photo, laid out to satisfy the `photo` profile (scenery report 03); positions estimated"
     # --- the club, behind the pilot (south) ---
     inst("pit-shelters", "pits", ["pit_shelter"], [(-18.5, -31.0, 0), (-18.5, 31.0, 0)], "estimated",
@@ -482,6 +494,60 @@ def build():
     for n, e, hd, prefab in farm:
         inst("farm-" + prefab, "horizon" if math.hypot(n, e) >= 1000 else "countryside", [prefab], [(n, e, hd)], "estimated",
              "Farmstead seen through the treeline's NNE gap (az 30 deg)")
+    # Small southern hamlet facing the countryside rural road; driveways share its layout.
+    hamlet = [
+        (-650.0, -900.0, 180.0), (-710.0, -835.0, 0.0),
+        (-650.0, -770.0, 180.0), (-710.0, -705.0, 0.0),
+        (-650.0, -640.0, 180.0), (-710.0, -575.0, 0.0),
+        (-650.0, -510.0, 180.0), (-710.0, -455.0, 0.0),
+    ]
+    inst("countryside-hamlet", "countryside", ["village_house"], hamlet, "estimated",
+         "Eight village houses along the rural road south of the club; estimated layout, driveways supplied by the road layout")
+    # A second compact yard sits on the eastern rural-road branch; the older NNE farm above stays in place.
+    inst("countryside-farm-barn", "countryside", ["barn"], [(780.0, 650.0, 205.0)], "estimated",
+         "Secondary small farmyard at the eastern rural-road branch; estimated placement")
+    inst("countryside-farmhouse", "countryside", ["farmhouse"], [(750.0, 625.0, 20.0)], "estimated",
+         "Farmhouse beside the eastern barn; estimated placement")
+    inst("countryside-farm-silo", "countryside", ["silo"], [(795.0, 660.0, 0.0)], "estimated",
+         "Silo beside the eastern barn; estimated placement")
+    inst("countryside-farm-tractor", "countryside", ["tractor"], [(805.0, 630.0, 250.0)], "estimated",
+         "Parked tractor by the eastern farmyard; static scenery placement")
+    inst("countryside-farm-bales", "countryside", ["round_bale"],
+         [(793.5, 642.0, 0.0), (794.75, 644.25, 0.0), (796.0, 646.5, 0.0)], "estimated",
+         "Three small round bales beside the eastern barn")
+    # Three-sided farmyard boundaries leave the east-side driveways open; short fence ends mark each gate gap.
+    original_fence_source = "Estimated wire fence around the existing farmyard; east-side driveway gate kept open"
+    fence("countryside-existing-farm-fence-west-north", "wire",
+          [[578.0, 300.0], [625.0, 300.0], [625.0, 374.0]], original_fence_source)
+    fence("countryside-existing-farm-fence-south", "wire",
+          [[578.0, 300.0], [578.0, 374.0]], original_fence_source)
+    fence("countryside-existing-farm-fence-gate-south", "wire",
+          [[578.0, 374.0], [603.0, 374.0]], original_fence_source)
+    fence("countryside-existing-farm-fence-gate-north", "wire",
+          [[616.0, 374.0], [625.0, 374.0]], original_fence_source)
+    east_fence_source = "Estimated rail fence around the eastern farmyard; east-side driveway gate kept open"
+    fence("countryside-east-farm-fence-west-north", "rail",
+          [[732.0, 600.0], [818.0, 600.0], [818.0, 685.0]], east_fence_source)
+    fence("countryside-east-farm-fence-south", "rail",
+          [[732.0, 600.0], [732.0, 685.0]], east_fence_source)
+    fence("countryside-east-farm-fence-gate-north", "rail",
+          [[744.0, 685.0], [818.0, 685.0]], east_fence_source)
+    # Compact 3 × 4 low berry rows use the existing downloaded shrub, spaced for their crop height.
+    orchard = [(n, e, h01(n, e) * 360.0)
+               for n in (650.0, 654.0, 658.0) for e in (450.0, 453.0, 456.0, 459.0)]
+    for n, e, _heading in orchard:
+        assert clear_of_trees(trees, n, e, SAPLING_FOOTPRINT_RADIUS_M + TREE_CLEARANCE_M), (n, e)
+    inst("countryside-orchard", "countryside", ["bush"], orchard, "estimated",
+         "Twelve existing downloaded forest leafy shrubs arranged in compact low berry rows (~0.7–0.85 m); estimated placement")
+    # Four decorative cows occupy a separate 40 × 40 m wire paddock east of the farms.
+    cow_paddock = [[850.0, 600.0], [890.0, 600.0], [890.0, 640.0], [850.0, 640.0], [850.0, 600.0]]
+    for n, e in ((860.0, 610.0), (860.0, 630.0), (880.0, 610.0), (880.0, 630.0)):
+        assert clear_of_trees(trees, n, e, 5.0), (n, e)
+    fence("countryside-cows-paddock-fence", "wire", cow_paddock,
+          "Estimated wire fence enclosing a small eastern cow paddock")
+    inst("countryside-cows", "countryside", ["cow"],
+         [(860.0, 610.0, 30.0), (860.0, 630.0, 210.0), (880.0, 610.0, 155.0), (880.0, 630.0, 340.0)],
+         "estimated", "Four grazing cows in the small eastern wire paddock")
     # LU-22 downloaded Maples broaden the woodland color beyond the club without adding pines.
     # The stable IDs are chosen against the runtime shade_tree alias so each singleton is a Maple.
     farm_maples = [
@@ -545,7 +611,7 @@ def build():
             "flight_box_half_width_m": q(305.0, "m", "manual", "AMA 2022 sport field: 1,000 ft each side"),
             "flight_box_max_height_m": q(1.5, "m", "estimated", "SCENERY-PLAN height rule: only low props in the flight box"),
             "approach_slope": q(0.05, "1", "borrowed", "ICAO Annex 14 code-1 approach surface 1:20, an analogy, not an RC rule"),
-            "tree_clearance_m": q(3.0, "m", "estimated", "Keeps props off the L6b tree cards' trunks"),
+            "tree_clearance_m": q(TREE_CLEARANCE_M, "m", "estimated", "Keeps props off the L6b tree cards' trunks"),
             "runway_margin_m": q(3.0, "m", "estimated", "Keeps props off the runway edge"),
         },
         "groups": groups,

@@ -189,7 +189,7 @@ static func _add_scenery(proxies: Array[Dictionary], scenery: Dictionary,
 				_add_person_proxy(proxies, group_id, index, prefab, north, east, heading, foot_height)
 			elif prefab == "bush":
 				_add_bush_proxy(proxies, "%s:%02d" % [group_id, index], north, east, heading,
-					int(placement.get("seed", 0)))
+					int(placement.get("seed", 0)), group_id)
 			elif prefab in ["cow", "sheep"]:
 				var size: Vector3 = Models.CATALOG[prefab].size
 				_add_box(proxies, "animal:%s:%02d:%s" % [group_id, index, prefab], "animal", prefab,
@@ -290,8 +290,8 @@ static func _add_imported_tree_proxies(proxies: Array[Dictionary], id: String, p
 
 
 static func _add_bush_proxy(proxies: Array[Dictionary], id: String, north: float, east: float,
-		heading: float, seed: int) -> void:
-	var vegetation: Dictionary = VegetationPlacement.spec("bush", seed)
+		heading: float, seed: int, group_id: String) -> void:
+	var vegetation: Dictionary = VegetationPlacement.spec("bush", seed, group_id)
 	if vegetation.is_empty():
 		return
 	var wind_margin := float(vegetation.wind_margin)

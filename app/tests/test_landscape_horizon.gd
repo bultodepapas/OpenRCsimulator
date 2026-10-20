@@ -11,7 +11,7 @@ const LightingSnapshot := preload("res://render/time_of_day_lighting.gd")
 const World := preload("res://render/world/world.gd")
 const RIDGE_SHADER_PATH := "res://render/landscape_upgrade/ridge_haze.gdshader"
 const EXPECTED_CHUNKS := 4
-const EXPECTED_TRIANGLES := 12288
+const EXPECTED_TRIANGLES := 27648
 
 var _checks := 0
 var _failures := 0
@@ -51,6 +51,7 @@ func _run() -> void:
 	var explicit_info := _ridge_info(explicit_ridges)
 	_check("explicit TOD field includes distant ridges", explicit_ridges != null)
 	_check_topology("explicit TOD", explicit_ridges, explicit_info)
+	_check_mountain_geometry(explicit_ridges)
 	var explicit_material: ShaderMaterial = explicit_info.get("material") as ShaderMaterial
 	_check("explicit TOD ridge material is the shared haze shader", explicit_material != null
 		and explicit_material.shader.resource_path == RIDGE_SHADER_PATH)
@@ -171,10 +172,55 @@ func _check_topology(label: String, ridges: Node3D, info: Dictionary) -> void:
 		ridges != null and (info.get("chunks", []) as Array).size() == EXPECTED_CHUNKS)
 	_check("%s has exactly %d actual triangles" % [label, EXPECTED_TRIANGLES],
 		int(info.get("triangles", 0)) == EXPECTED_TRIANGLES)
-	_check("%s declares the unchanged %d triangle budget" % [label, EXPECTED_TRIANGLES],
+	_check("%s declares the bounded %d triangle budget" % [label, EXPECTED_TRIANGLES],
 		int(info.get("declared_triangles", -1)) == EXPECTED_TRIANGLES)
 	_check("%s chunks share the discoverable common material" % label,
 		bool(info.get("material_consistent", false)) and bool(info.get("meta_material_matches", false)))
+
+
+func _check_mountain_geometry(ridges: Node3D) -> void:
+	if ridges == null:
+		return
+	var clockwise := true
+	var seams := true
+	var bounded := true
+	var previous := PackedVector3Array()
+	var maximum := 0.0
+	for chunk: MeshInstance3D in ridges.get_children():
+		var arrays: Array = chunk.mesh.surface_get_arrays(0)
+		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
+		var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+		for i in range(0, indices.size(), 3):
+			var a := vertices[indices[i]]
+			var b := vertices[indices[i + 1]]
+			var c := vertices[indices[i + 2]]
+			clockwise = clockwise and (b - a).cross(c - a).y < 0.0
+		for i in vertices.size():
+			var v := vertices[i]
+			maximum = maxf(maximum, v.y)
+			bounded = bounded and v.is_finite() and v.z <= -1600.0 and v.z >= -8600.0 \
+				and v.y >= 0.0 and v.y < 1600.0 and normals[i].y > 0.0
+		if not previous.is_empty():
+			for row in 73:
+				seams = seams and previous[row * 49 + 48] == vertices[row * 49]
+		previous = vertices
+		_check("mountain chunks add no shadow passes or per-frame callbacks",
+			chunk.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF and not chunk.is_processing())
+	_check("mountains face upward under Godot clockwise culling", clockwise)
+	_check("adjacent mountain chunks have exactly matching edges", seams)
+	_check("mountains remain outside the flight field with substantial relief", bounded and maximum > 900.0)
+	var material: ShaderMaterial = ridges.get_meta("lighting_material")
+	var texture: Texture2D = material.get_shader_parameter("relief")
+	_check("source relief is a bounded mipmapped data texture",
+		texture != null and texture.get_size() == Vector2(513, 193) and texture.get_image().has_mipmaps())
+	var habitat: Texture2D = material.get_shader_parameter("habitat")
+	_check("habitat mask follows the relief texture dimensions and has mipmaps",
+		habitat != null and habitat.get_size() == Vector2(513, 193) and habitat.get_image().has_mipmaps())
+	for key: String in ["grass_rock", "rocks"]:
+		var photo: Texture2D = material.get_shader_parameter(key)
+		_check("mountain %s uses a bounded mipmapped photograph" % key,
+			photo != null and photo.get_size() == Vector2(1024, 1024) and photo.get_image().has_mipmaps())
 
 
 func _descendant_count(node: Node) -> int:

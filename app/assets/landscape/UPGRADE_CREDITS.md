@@ -1,5 +1,31 @@
 # Landscape Upgrade Credits
 
+## LU-16-R1 downloaded mountain relief (2026-10-20)
+
+Club field's mountain backdrop now derives from **SRTM data courtesy of the
+U.S. Geological Survey; Mapzen Terrain Tiles**. The
+[public terrain dataset](https://registry.opendata.aws/terrain-tiles/) and
+[provider's SRTM terms](https://github.com/tilezen/joerd/blob/master/docs/attribution.md#srtm)
+permit this derivative. Source tile: `N04W074`, Colombian Eastern Cordillera.
+The source was cropped, rotated, resized, height-scaled, filtered and tapered;
+it does not represent a surveyed airfield or provide physical terrain.
+The generated elevation grid and normal/cavity PNG replace the earlier
+synthetic LU-01 ridges. Exact source hashes and transformations are retained in
+`assets/landscape/mountains/README.md` in the source distribution. Original
+adapter/shader/generator code remains MIT.
+
+## LU-16-R2 mountain surface detail (2026-10-20)
+
+[Aerial Grass Rock](https://polyhaven.com/a/aerial_grass_rock) and
+[Aerial Rocks 01](https://polyhaven.com/a/aerial_rocks_01) by **Rob Tuytel /
+Poly Haven**, CC0-1.0. Downloaded 1K JPG files are unchanged; Godot imports
+compressed mipmaps, and the shader applies artistic palette/scale changes.
+The habitat mask is derived from the same SRTM relief using slope, concavity
+and altitude. [Packaged sources, hashes and transformations](mountains/sources.json);
+[license references](mountains/LICENSES.md).
+
+## Earlier upgrade sources
+
 Status: LU-01–14 implementation credit record, updated 2026-10-12.
 
 The upgrade adds original procedural ridges, people, vegetation detail, support cradles, fixture hardware, shallow clubhouse window inserts, a warm-glazing shader, and sun-glare code. These contributions by OpenRCsimulator contributors are distributed under the repository [MIT license](../../../LICENSE). No new third-party media or runtime dependency was added. The optional screenshot checker uses Pillow 12.3.0 under its MIT-CMU license; Pillow is an offline evidence tool and is not redistributed in the simulator ([versioned license, checked 2026-10-11](https://github.com/python-pillow/Pillow/blob/12.3.0/LICENSE)).
@@ -108,3 +134,10 @@ Fern, tall-grass and short-grass cards are four-view renders of the existing Qua
 The maple source is also reused at the farm and southwest forest. New understory uses [LOLIPOP's Grass pack](https://sketchfab.com/3d-models/grass-pack-lowpoly-game-ready-422f42f618d342c6958b02613dc57403) and one shrub from [dasy444's forest scene](https://sketchfab.com/3d-models/a-forest-3-with-a-road-at-night-for-game-61f8c7817fe6457fb26e4814cfc48a3f), both CC BY 4.0. Selected supplied meshes are transformed to standalone glTF without modeling or decimation; grass alpha is adapted to MASK, shrub BLEND is retained. Attribution and modifications ship in [LICENSE_GRASS.txt](vegetation/LICENSE_GRASS.txt) and [LICENSE_FOREST.txt](vegetation/LICENSE_FOREST.txt).
 
 3D tree model by [LOLIPOP](https://sketchfab.com/lolipop_1707), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Source: [Maple Trees Pack](https://sketchfab.com/3d-models/maple-trees-pack-lowpoly-game-ready-lods-b5d2833c258f4054a01ee2b4ef85adf0). OpenRCsimulator selects the supplied `Acer_large_3_LOD1`, removes its gallery placement, converts its PBR materials and leaf alpha to glTF, and fits it uniformly beside the club. No tree geometry was modeled or decimated. Attribution and change details ship in [vegetation/LICENSE_MAPLE.txt](vegetation/LICENSE_MAPLE.txt); source and derivative identities are in [vegetation/catalog.json](vegetation/catalog.json).
+
+## Agricultural plain (LU-28, 2026-10-20)
+
+Roads reuse **Aerial Asphalt 01** by **Rob Tuytel / Poly Haven**, CC0-1.0:
+[asset](https://polyhaven.com/a/aerial_asphalt_01), [license and exact download](countryside/LICENSES.md).
+Fields reuse the retained CC0 grass/dirt photographs. Houses, farms, fences,
+trees and cattle reuse the existing scenery library and its attribution records.

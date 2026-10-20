@@ -1,0 +1,361 @@
+extends SceneTree
+
+const TOTAL_COLUMNS := 256
+const ROWS := 96
+const CHUNK_COUNT := 4
+const CHUNK_COLUMNS := TOTAL_COLUMNS / CHUNK_COUNT
+const VERTEX_COLUMNS := CHUNK_COLUMNS + 1
+const EAST_MIN := -6500.0
+const EAST_MAX := 6500.0
+const NORTH_MIN := 1600.0
+const NORTH_MAX := 8600.0
+const CURRENT_TRIANGLE_BUDGET := 12288
+const PROFILE_PATH := "res://mountains-256x96.json"
+
+var _heights := PackedFloat32Array()
+
+
+func _initialize() -> void:
+	var result: Dictionary = _run_probe()
+	var path := "res://lod-report.json"
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		push_error("Could not write LOD report: " + path)
+		quit(1)
+		return
+	file.store_string(JSON.stringify(result, "\t") + "\n")
+	file.close()
+	print("LOD probe complete: ", JSON.stringify(result.get("summary", {})))
+	quit(0)
+
+
+func _run_probe() -> Dictionary:
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(PROFILE_PATH))
+	if not parsed is Dictionary or parsed.get("columns") != TOTAL_COLUMNS \
+			or parsed.get("rows") != ROWS or not parsed.get("heights_m") is Array \
+			or parsed.heights_m.size() != (TOTAL_COLUMNS + 1) * (ROWS + 1):
+		push_error("Missing or invalid 256 x 96 mountain profile")
+		return {"error": "invalid profile"}
+	for value: Variant in parsed.heights_m:
+		_heights.append(float(value))
+
+	var importers: Array[ImporterMesh] = []
+	var vertex_sets: Array[PackedVector3Array] = []
+	var lod_indices_by_chunk: Array = []
+	var chunk_reports: Array[Dictionary] = []
+	var lod_count := -1
+	for chunk in range(CHUNK_COUNT):
+		var vertices := PackedVector3Array()
+		var normals := PackedVector3Array()
+		var colors := PackedColorArray()
+		var base_indices := PackedInt32Array()
+		for row in range(ROWS + 1):
+			var north := lerpf(NORTH_MIN, NORTH_MAX, float(row) / ROWS)
+			for column in range(VERTEX_COLUMNS):
+				var east := lerpf(EAST_MIN, EAST_MAX,
+					float(chunk * CHUNK_COLUMNS + column) / TOTAL_COLUMNS)
+				var height := _height_at(north, east)
+				var dn := (_height_at(north + 5.0, east) - _height_at(north - 5.0, east)) / 10.0
+				var de := (_height_at(north, east + 5.0) - _height_at(north, east - 5.0)) / 10.0
+				vertices.append(Vector3(east, height + 0.02, -north))
+				normals.append(Vector3(-de, 1.0, dn).normalized())
+				var slope := sqrt(dn * dn + de * de)
+				var rock := smoothstep(0.32, 0.80, slope) * smoothstep(340.0, 850.0, height)
+				var upland := smoothstep(550.0, 1150.0, height)
+				var color := Color("#28421f").lerp(Color("#3d4a2b"), upland).lerp(Color("#5c584c"), rock)
+				var variation := 0.91 + 0.09 * sin(east * 0.004 + north * 0.006)
+				colors.append(Color(color.r * variation, color.g * variation, color.b * variation))
+		for row in range(ROWS):
+			for column in range(CHUNK_COLUMNS):
+				var a := row * VERTEX_COLUMNS + column
+				var b := a + VERTEX_COLUMNS
+				# Match the production builder's clockwise front-face winding.
+				base_indices.append_array(PackedInt32Array([a, b, a + 1, b, b + 1, a + 1]))
+		var arrays: Array = []
+		arrays.resize(Mesh.ARRAY_MAX)
+		arrays[Mesh.ARRAY_VERTEX] = vertices
+		arrays[Mesh.ARRAY_NORMAL] = normals
+		arrays[Mesh.ARRAY_COLOR] = colors
+		arrays[Mesh.ARRAY_INDEX] = base_indices
+		var importer := ImporterMesh.new()
+		importer.add_surface(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {}, null, "Ridge%d" % chunk, 0)
+		importer.generate_lods(60.0, 0.0, [])
+		var mesh := importer.get_mesh()
+		var mesh_path := "res://Ridge%d.res" % chunk
+		var save_error := ResourceSaver.save(mesh, mesh_path)
+		if save_error != OK:
+			push_error("Could not save " + mesh_path + ": " + error_string(save_error))
+			return {"error": "resource save failed", "path": mesh_path, "code": save_error}
+		var size_file := FileAccess.open(mesh_path, FileAccess.READ)
+		var lod_indices: Array[PackedInt32Array] = [base_indices]
+		var local_lod_count := importer.get_surface_lod_count(0)
+		for lod in range(local_lod_count):
+			lod_indices.append(importer.get_surface_lod_indices(0, lod))
+		if lod_count < 0:
+			lod_count = local_lod_count
+		elif lod_count != local_lod_count:
+			push_error("Chunks produced different LOD counts")
+		lod_indices_by_chunk.append(lod_indices)
+		importers.append(importer)
+		vertex_sets.append(vertices)
+		var triangle_counts: Array[int] = []
+		for indices: PackedInt32Array in lod_indices:
+			triangle_counts.append(indices.size() / 3)
+		chunk_reports.append({
+			"chunk": chunk,
+			"vertices": vertices.size(),
+			"base_triangles": base_indices.size() / 3,
+			"lod_triangles": triangle_counts,
+			"lod_count": local_lod_count,
+			"lod_size_thresholds": _lod_sizes(importer, local_lod_count),
+			"resource_path": mesh_path,
+			"resource_bytes": size_file.get_length(),
+			"saved": save_error == OK,
+		})
+		size_file.close()
+
+	var level_reports: Array[Dictionary] = []
+	var total_levels := maxi(lod_count, 0) + 1
+	for level in range(total_levels):
+		var total_triangles := 0
+		var per_chunk_triangles: Array[int] = []
+		var aggregate_errors: Array[float] = []
+		var total_holes := 0
+		var total_samples := 0
+		var max_error := 0.0
+		var chunk_error_reports: Array[Dictionary] = []
+		for chunk in range(CHUNK_COUNT):
+			var indices: PackedInt32Array = lod_indices_by_chunk[chunk][level]
+			var triangles := indices.size() / 3
+			total_triangles += triangles
+			per_chunk_triangles.append(triangles)
+			if level == 0:
+				continue
+			var error_stats := _sample_surface_error(indices, vertex_sets[chunk])
+			total_holes += error_stats.holes
+			total_samples += error_stats.samples
+			max_error = maxf(max_error, error_stats.max_abs_m)
+			aggregate_errors.append_array(error_stats.errors)
+			error_stats.erase("errors")
+			chunk_error_reports.append({"chunk": chunk, "error": error_stats})
+		var report: Dictionary = {
+			"level": level,
+			"lod_size_threshold": null if level == 0 or lod_count <= 0 else importers[0].get_surface_lod_size(0, level - 1),
+			"total_triangles": total_triangles,
+			"triangles_per_chunk": per_chunk_triangles,
+			"ratio_of_256x96_base": float(total_triangles) / (TOTAL_COLUMNS * ROWS * 2),
+			"ratio_of_current_128x48_budget": float(total_triangles) / CURRENT_TRIANGLE_BUDGET,
+		}
+		if level > 0:
+			report["sampled_error"] = _aggregate_error_stats(aggregate_errors, total_holes, total_samples, max_error)
+			report["chunk_errors"] = chunk_error_reports
+			report["shared_border_seams"] = _seam_reports(lod_indices_by_chunk, level)
+		level_reports.append(report)
+
+	var profile_file := FileAccess.open(PROFILE_PATH, FileAccess.READ)
+	var resource_bytes := 0
+	for item: Dictionary in chunk_reports:
+		resource_bytes += int(item.resource_bytes)
+	var result := {
+		"format": "openrc-mountain-lod-probe v1",
+		"renderer": "gl_compatibility",
+		"profile": {
+			"path": PROFILE_PATH,
+			"bytes": profile_file.get_length(),
+			"columns": TOTAL_COLUMNS,
+			"rows": ROWS,
+			"source_crop_sha256": parsed.get("source_crop_sha256", ""),
+			"source_tile_sha256": parsed.get("source_tile_sha256", ""),
+		},
+		"generation": {
+			"method": "ImporterMesh.generate_lods(60.0, 0.0, [])",
+			"chunk_count": CHUNK_COUNT,
+			"chunk_columns": CHUNK_COLUMNS,
+			"rows": ROWS,
+			"base_triangles_total": TOTAL_COLUMNS * ROWS * 2,
+			"winding": "production clockwise [a,b,a+1,b,b+1,a+1]",
+			"positions": "east, profile_height + 0.02, -north; matching current builder bounds",
+		},
+		"lod_levels": level_reports,
+		"chunks": chunk_reports,
+		"summary": {
+			"current_triangle_budget": CURRENT_TRIANGLE_BUDGET,
+			"finer_base_triangles": TOTAL_COLUMNS * ROWS * 2,
+			"saved_resource_total_bytes": resource_bytes,
+			"saved_resource_paths": ["res://Ridge0.res", "res://Ridge1.res", "res://Ridge2.res", "res://Ridge3.res"],
+			"lod_levels_including_base": total_levels,
+		},
+	}
+	profile_file.close()
+	return result
+
+
+func _height_at(north: float, east: float) -> float:
+	var x := clampf((east - EAST_MIN) / (EAST_MAX - EAST_MIN) * TOTAL_COLUMNS, 0.0, TOTAL_COLUMNS)
+	var y := clampf((north - NORTH_MIN) / (NORTH_MAX - NORTH_MIN) * ROWS, 0.0, ROWS)
+	var column := mini(int(x), TOTAL_COLUMNS - 1)
+	var row := mini(int(y), ROWS - 1)
+	var a := row * (TOTAL_COLUMNS + 1) + column
+	var b := a + TOTAL_COLUMNS + 1
+	return lerpf(lerpf(_heights[a], _heights[a + 1], x - column),
+		lerpf(_heights[b], _heights[b + 1], x - column), y - row)
+
+
+func _lod_sizes(importer: ImporterMesh, count: int) -> Array[float]:
+	var sizes: Array[float] = []
+	for lod in range(count):
+		sizes.append(importer.get_surface_lod_size(0, lod))
+	return sizes
+
+
+func _sample_surface_error(indices: PackedInt32Array, vertices: PackedVector3Array) -> Dictionary:
+	const BIN_COLUMNS := 16
+	const BIN_ROWS := 16
+	var buckets: Array[Array] = []
+	for index in range(BIN_COLUMNS * BIN_ROWS):
+		buckets.append([])
+	for offset in range(0, indices.size(), 3):
+		var i0 := indices[offset]
+		var i1 := indices[offset + 1]
+		var i2 := indices[offset + 2]
+		var c0 := i0 % VERTEX_COLUMNS
+		var c1 := i1 % VERTEX_COLUMNS
+		var c2 := i2 % VERTEX_COLUMNS
+		var r0 := i0 / VERTEX_COLUMNS
+		var r1 := i1 / VERTEX_COLUMNS
+		var r2 := i2 / VERTEX_COLUMNS
+		var min_c := mini(c0, mini(c1, c2))
+		var max_c := maxi(c0, maxi(c1, c2))
+		var min_r := mini(r0, mini(r1, r2))
+		var max_r := maxi(r0, maxi(r1, r2))
+		var min_bin_c := mini(BIN_COLUMNS - 1, int(float(min_c) / CHUNK_COLUMNS * BIN_COLUMNS))
+		var max_bin_c := mini(BIN_COLUMNS - 1, int(float(max_c) / CHUNK_COLUMNS * BIN_COLUMNS))
+		var min_bin_r := mini(BIN_ROWS - 1, int(float(min_r) / ROWS * BIN_ROWS))
+		var max_bin_r := mini(BIN_ROWS - 1, int(float(max_r) / ROWS * BIN_ROWS))
+		for bin_r in range(min_bin_r, max_bin_r + 1):
+			for bin_c in range(min_bin_c, max_bin_c + 1):
+				buckets[bin_r * BIN_COLUMNS + bin_c].append(offset)
+	var errors: Array[float] = []
+	var border_errors: Array[float] = []
+	var holes := 0
+	for row in range(ROWS + 1):
+		for column in range(VERTEX_COLUMNS):
+			var bin_c := mini(BIN_COLUMNS - 1, int(float(column) / CHUNK_COLUMNS * BIN_COLUMNS))
+			var bin_r := mini(BIN_ROWS - 1, int(float(row) / ROWS * BIN_ROWS))
+			var candidates: Array = buckets[bin_r * BIN_COLUMNS + bin_c]
+			var found := false
+			var approximate_height := 0.0
+			for offset: int in candidates:
+				var i0 := indices[offset]
+				var i1 := indices[offset + 1]
+				var i2 := indices[offset + 2]
+				var c0 := float(i0 % VERTEX_COLUMNS)
+				var c1 := float(i1 % VERTEX_COLUMNS)
+				var c2 := float(i2 % VERTEX_COLUMNS)
+				var r0 := float(i0 / VERTEX_COLUMNS)
+				var r1 := float(i1 / VERTEX_COLUMNS)
+				var r2 := float(i2 / VERTEX_COLUMNS)
+				var denominator := (r1 - r2) * (c0 - c2) + (c2 - c1) * (r0 - r2)
+				if absf(denominator) < 1.0e-12:
+					continue
+				var weight0 := ((r1 - r2) * (column - c2) + (c2 - c1) * (row - r2)) / denominator
+				var weight1 := ((r2 - r0) * (column - c2) + (c0 - c2) * (row - r2)) / denominator
+				var weight2 := 1.0 - weight0 - weight1
+				if weight0 >= -1.0e-5 and weight1 >= -1.0e-5 and weight2 >= -1.0e-5:
+					approximate_height = weight0 * vertices[i0].y + weight1 * vertices[i1].y + weight2 * vertices[i2].y
+					found = true
+					break
+			if not found:
+				holes += 1
+				continue
+			var error := absf(vertices[row * VERTEX_COLUMNS + column].y - approximate_height)
+			errors.append(error)
+			if column == 0 or column == CHUNK_COLUMNS:
+				border_errors.append(error)
+	errors.sort()
+	border_errors.sort()
+	var sum_squared := 0.0
+	for error in errors:
+		sum_squared += error * error
+	return {
+		"samples": errors.size(),
+		"holes": holes,
+		"max_abs_m": errors[-1] if not errors.is_empty() else null,
+		"p95_abs_m": errors[mini(errors.size() - 1, int(floor((errors.size() - 1) * 0.95)))] if not errors.is_empty() else null,
+		"rms_m": sqrt(sum_squared / errors.size()) if not errors.is_empty() else null,
+		"border_sample_count": border_errors.size(),
+		"border_max_abs_m": border_errors[-1] if not border_errors.is_empty() else null,
+		"errors": errors,
+	}
+
+
+func _aggregate_error_stats(errors: Array[float], holes: int, total_samples: int, max_error: float) -> Dictionary:
+	if errors.is_empty():
+		return {"samples": total_samples, "holes": holes, "max_abs_m": null, "p95_abs_m": null, "rms_m": null}
+	errors.sort()
+	var sum_squared := 0.0
+	for error in errors:
+		sum_squared += error * error
+	return {
+		"samples": total_samples,
+		"holes": holes,
+		"max_abs_m": max_error,
+		"p95_abs_m": errors[mini(errors.size() - 1, int(floor((errors.size() - 1) * 0.95)))],
+		"rms_m": sqrt(sum_squared / errors.size()),
+	}
+
+
+func _seam_reports(all_indices: Array, level: int) -> Array[Dictionary]:
+	var seams: Array[Dictionary] = []
+	for left_chunk in range(CHUNK_COUNT - 1):
+		var left: PackedInt32Array = all_indices[left_chunk][level]
+		var right: PackedInt32Array = all_indices[left_chunk + 1][level]
+		var left_edges := _edge_segments(left, CHUNK_COLUMNS)
+		var right_edges := _edge_segments(right, 0)
+		var left_keys: Array = left_edges.segments
+		var right_keys: Array = right_edges.segments
+		left_keys.sort()
+		right_keys.sort()
+		var segment_match := left_keys == right_keys
+		seams.append({
+			"seam": "%d|%d" % [left_chunk, left_chunk + 1],
+			"segment_count_left": left_keys.size(),
+			"segment_count_right": right_keys.size(),
+			"segment_lists_identical": segment_match,
+			"retained_boundary_vertices_left": left_edges.get("vertex_count", 0),
+			"retained_boundary_vertices_right": right_edges.get("vertex_count", 0),
+			"all_rows_retained_left": left_edges.get("vertex_count", 0) == ROWS + 1,
+			"all_rows_retained_right": right_edges.get("vertex_count", 0) == ROWS + 1,
+			"mismatched_segments_left_only": _difference(left_keys, right_keys),
+			"mismatched_segments_right_only": _difference(right_keys, left_keys),
+		})
+	return seams
+
+
+func _edge_segments(indices: PackedInt32Array, edge_column: int) -> Dictionary:
+	var segments: Dictionary = {}
+	var boundary_rows: Dictionary = {}
+	for offset in range(0, indices.size(), 3):
+		for side in range(3):
+			var first := indices[offset + side]
+			var second := indices[offset + ((side + 1) % 3)]
+			if first % VERTEX_COLUMNS != edge_column or second % VERTEX_COLUMNS != edge_column:
+				continue
+			var first_row := first / VERTEX_COLUMNS
+			var second_row := second / VERTEX_COLUMNS
+			var low := mini(first_row, second_row)
+			var high := maxi(first_row, second_row)
+			if low == high:
+				continue
+			segments["%d:%d" % [low, high]] = true
+			boundary_rows[low] = true
+			boundary_rows[high] = true
+	return {"segments": segments.keys(), "vertex_count": boundary_rows.size()}
+
+
+func _difference(first: Array, second: Array) -> Array:
+	var result: Array = []
+	for value in first:
+		if not second.has(value):
+			result.append(value)
+	return result
