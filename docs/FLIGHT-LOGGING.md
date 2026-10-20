@@ -226,11 +226,18 @@ header or unflushed samples. A partial CSV without its report can be mistaken fo
 complete flight: retain both files. Disk/size errors stop recording visibly while
 leaving the simulator available; inspect the resulting file before using it as evidence.
 
+The native analysis CLI checks report writes and flush errors before announcing
+success. A report-output failure returns nonzero and names the path and filesystem
+error; partial output is not accepted evidence. Always check process status along
+with the report. For retained engine diagnostics, wrap native invocations with the
+[checked Godot runner](../tools/godot/README.md).
+
 ## Verification and developer workflow
 
 ```powershell
 & $env:GODOT --headless --path app --audio-driver Dummy --script res://tests/test_flight_log.gd
 & $env:GODOT --headless --path app --audio-driver Dummy --script res://tests/test_flight_log_ui.gd
+& $env:GODOT --headless --path app --audio-driver Dummy --script res://tests/test_flight_log_report_write.gd
 python -m unittest discover -s tools/flight_log -p "test_*.py"
 ```
 

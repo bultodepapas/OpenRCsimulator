@@ -4,6 +4,11 @@ VQ-01c CPU attribution and native-frame reduction; VQ-02a read-only import inven
 The [implementation plan](../../docs/plans/global-performance-visual-quality.md) owns order and gates.
 These tools do not change aircraft data, simulation, graphics settings or user preferences.
 
+`scenery_empty_probe.gd` compares complete scenery-contact queries against an explicit
+reference source, including occupied bins with an empty hull envelope and real-hit
+controls. [LU-10-R1 evidence and commands](../../docs/research/landscape-upgrade/LU-10-R1/README.md)
+define its paired batches, exact-parity checks and separate full-session limits.
+
 `woodland_build_probe.gd` compares the current woodland builder with an explicit reference
 using native-renderer scene snapshots and alternating construction timings. Its
 [measurement report and commands](../../docs/research/visual-quality-implementation/L6c/tree-completion/optimization/woodland/README.md)

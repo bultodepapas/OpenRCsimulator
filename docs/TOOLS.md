@@ -27,6 +27,10 @@ $GodotWindows = 'C:\Tools\Godot_v4.7.2-stable_win64_console.exe'
 
 Inspect exit status **and** engine errors in logs: Godot can report runtime script errors with exit code zero. WSL results establish Linux behavior, not native Windows GPU or device acceptance. On macOS, open `app/project.godot` with the matching Godot build.
 
+For focused checks, use the [checked Godot runner](../tools/godot/README.md):
+`python tools/godot/run_checked.py --timeout 90 -- $GodotWindows --headless --path app --audio-driver Dummy --script res://tests/test_simulation.gd`
+(PowerShell). It retains bounded logs and JSON verdicts, catches zero-exit engine/script/shader errors, and supports required completion text and strict warning checks. `app/test.sh` uses it for its direct Godot calls; `OPENRC_CHECK_OUT` selects the evidence parent. Failed app CI jobs retain diagnostic artifacts for seven days.
+
 Node 24 (`.nvmrc`) is used by tree-authoring tools and the frozen three.js prototype; the production app and static project site do not require Node. To reproduce the Linux app CI job with Docker and `act`: `act push -P ubuntu-24.04=catthehacker/ubuntu:act-latest -j app`.
 
 Use ignored `tmp/` or `output/` for scratch results and `.playwright-cli/` or `.playwright-mcp/` for browser sessions. Retain accepted evidence under `docs/research/` or `docs/media/`. Local cleanup must preserve source deliveries, `references/`, tool binaries/environments and registered worktrees (`git worktree list`), including those nested in scratch directories.
@@ -134,6 +138,8 @@ For a native rendered still:
 ```
 
 Arguments after `--`: `--language=en|es`, `--scale=<factor>` (default `2.0`), `--width=<px>`/`--height=<px>` (default 1280×720), `--1080p`, `--text-scale=1|1.5|2`, and `--out=<PNG-path>` (default `user://workshop-review.png`). Review cases: `--page=appearance|smoke|setup|compare`, `--preview`, `--dialog=library|save|guard|bundle-import`, `--invalid`, `--long-name`, `--opaque`, `--reduced-motion`, `--aircraft=<catalog-id>` and `--fullscreen`. Customization cases accept `--paint-color=#RRGGBBAA`, `--marking=RC-27`, `--smoke-preset=1..6`, and `--smoke-seconds=0..16`; inscription requires a registered mount. The script applies the shared canvas policy, writes a JSON geometry sidecar, and returns nonzero for out-of-bounds key actions/popups. Inspect the PNG as well; rectangles do not prove legibility. Fullscreen evidence must report the actual monitor/window pixels. A custom output directory must already exist. The script uses a separate empty-library root and needs a display; it does not save player variants. The [initial captures](research/aircraft-editor/AE-01-10/README.md#native-captures) retain their original scope.
+
+For a moving preview capture, add `--smoke-motion=pass --smoke-seconds=3 --smoke-preset=2 --page=smoke --scale=1` to the Workshop capture command; use `--smoke-seconds=6` for the paused endpoint. The sidecar records motion, tick, rig position, particle allocation and playback-control bounds. This illustrative pass does not run flight physics or establish a GPU cost result.
 
 The native GPU birth-color/lifecycle probe is `research/aircraft-editor/capture_smoke_profiles.gd`. Run it with the same display command in place of `capture_workshop.gd`; it writes rate captures and `metrics.json` under ignored `tmp/smoke-profile-native/`, returns nonzero when its checks fail, and allocates the production shared 768-particle profile budget. It is renderer evidence, not a portable performance benchmark.
 

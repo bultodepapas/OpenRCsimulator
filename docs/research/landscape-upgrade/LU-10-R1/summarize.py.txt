@@ -1,0 +1,80 @@
+import hashlib
+import json
+import pathlib
+import shutil
+import statistics
+import subprocess
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SCRATCH = pathlib.Path(__file__).resolve().parent
+OUT = ROOT / 'docs/research/landscape-upgrade/LU-10-R1'
+sys.path.insert(0, str(ROOT / 'research/performance'))
+from session_baseline import validate_probe_report, percentile_nearest_rank
+
+
+def sha(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+lake_name = 'lake-jensen-das-ugly-stik-60-12000-pair0-candidate'
+lake_path = SCRATCH / f'{lake_name}.json'
+cmd = [str(ROOT / '.tools/Godot_v4.7.2-stable_win64_console.exe'), '--headless',
+       '--path', str(SCRATCH / 'candidate-app'), '--audio-driver', 'Dummy', '--script',
+       str(ROOT / 'research/performance/session_probe.gd'), '--', f'--output={lake_path}',
+       '--case=lake', '--aircraft=jensen-das-ugly-stik-60', '--warmup-ticks=2400',
+       '--sample-ticks=12000', '--observer=on']
+if not lake_path.exists():
+    process = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
+    (SCRATCH / f'{lake_name}.log').write_text(process.stdout + process.stderr, encoding='utf-8')
+summary = dict(base_commit='5e2fbe32da2531928f01164fc9923cde943918f9',
+               engine_sha256=sha(ROOT / '.tools/Godot_v4.7.2-stable_win64.exe'),
+               launcher_sha256=sha(ROOT / '.tools/Godot_v4.7.2-stable_win64_console.exe'),
+               reference_sha256=sha(SCRATCH / 'reference.gd'),
+               candidate_sha256=sha(ROOT / 'app/sim/scenery_collision.gd'),
+               probe_sha256=sha(ROOT / 'research/performance/scenery_empty_probe.gd'),
+               sessions=[], queries=[], source_manifest={})
+for name in ('baseline-app', 'candidate-app'):
+    app = SCRATCH / name
+    summary['source_manifest'][name] = {
+        str(path.relative_to(app)).replace('\\', '/'): sha(path)
+        for path in app.rglob('*') if path.is_file() and '.godot' not in path.parts
+        and 'assets' not in path.parts and path.suffix in ('.gd', '.json', '.godot')}
+for path in sorted(SCRATCH.glob('*-pair*-*.json')):
+    data = json.loads(path.read_text())
+    shutil.copyfile(path, OUT / path.name)
+    log = path.with_suffix('.log')
+    shutil.copyfile(log, OUT / log.name)
+    errors = validate_probe_report(data)
+    if data['case_id'] != 'lake':
+        assert not errors, errors
+    summary['sessions'].append(dict(file=path.name, case=data['case_id'],
+        complete=data['complete'], completed=data['completed'], fingerprint=data['fingerprint'],
+        world=data['world'], failure=data['failure'],
+        p50_usec=percentile_nearest_rank(data['tick_usec'], .5),
+        p95_usec=percentile_nearest_rank(data['tick_usec'], .95)))
+for case in ('trim', 'runway', 'lake'):
+    groups = {}
+    for row in summary['sessions']:
+        if row['case'] == case:
+            count = '12000' if '12000' in row['file'] else '2400'
+            pair = row['file'].split('-pair')[1].split('-')[0]
+            groups.setdefault((count, pair), []).append(row)
+    for rows in groups.values():
+        assert len(rows) == 2
+        assert rows[0]['fingerprint'] == rows[1]['fingerprint']
+        assert rows[0]['completed'] == rows[1]['completed']
+        assert rows[0]['world'] == rows[1]['world']
+reports = [json.loads(path.read_text()) for path in sorted(OUT.glob('query-*.json'))]
+assert len(reports) == 3 and all(row['complete'] and row['inputs_unchanged'] for row in reports)
+for index, case in enumerate(reports[0]['cases']):
+    reference = [v / 200 for row in reports for v in row['cases'][index]['reference_batch_usec']]
+    candidate = [v / 200 for row in reports for v in row['cases'][index]['candidate_batch_usec']]
+    baseline = statistics.median(reference)
+    result = statistics.median(candidate)
+    summary['queries'].append(dict(case=case['label'], reference_median_usec=baseline,
+        candidate_median_usec=result, gain_percent=100 * (baseline - result) / baseline))
+for name in ('run_sessions.py', 'verify.py', 'summarize.py'):
+    shutil.copyfile(SCRATCH / name, OUT / f'{name}.txt')
+(OUT / 'summary.json').write_text(json.dumps(summary, indent=2) + '\n')
+print(json.dumps({k: summary[k] for k in ('queries', 'sessions')}, indent=2), flush=True)

@@ -1,0 +1,69 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   wood reaches its provisional energy threshold
+ok   wire reaches its provisional energy threshold
+ok   foam reaches its provisional energy threshold
+ok   straw reaches its provisional energy threshold
+ok   foliage reaches its provisional energy threshold
+ok   metal reaches its provisional energy threshold
+ok   masonry reaches its provisional energy threshold
+ok   wood_mark reaches its provisional energy threshold
+ok   foliage_mark reaches its provisional energy threshold
+ok   non-damageable profile stays unchanged
+ok   optional damage argument preserves legacy contacts  contacts=2
+ok   broken damage id filters every shared proxy
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+CRASH at 100.0 m/s (sink -0.1 m/s, test obstacle impact (obstacle:wood), normal speed 100.0 m/s) - restarting
+ok   direct sim.step commits threshold wood damage
+ok   accepted damage emits the no-argument change signal once
+ok   wood record includes impact state, energy, tick and NED vectors
+ok   public damage state is detached from session storage
+ok   active-only world omits broken shared proxies but retains unrelated proxies
+ok   same-identity world installation does not heal damage
+ok   session damage removes all matching proxies from later sweeps
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+CRASH at 100.0 m/s (sink -0.1 m/s, fence impact (obstacle:wire), normal speed 100.0 m/s) - restarting
+ok   fence hit remains hard-terminal while wire damage breaks
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+CRASH at 100.0 m/s (sink -0.1 m/s, test obstacle impact (obstacle:metal), normal speed 100.0 m/s) - restarting
+ok   metal impact marks but retains collision
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+CRASH at 100.0 m/s (sink -0.1 m/s, test obstacle impact (obstacle:masonry), normal speed 100.0 m/s) - restarting
+ok   masonry impact marks but retains collision
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+CRASH at 100.0 m/s (sink -0.1 m/s, test obstacle impact (obstacle:wood_mark), normal speed 100.0 m/s) - restarting
+ok   wood_mark impact marks but retains collision
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+CRASH at 100.0 m/s (sink -0.1 m/s, test obstacle impact (obstacle:foliage_mark), normal speed 100.0 m/s) - restarting
+ok   foliage_mark impact marks but retains collision
+ok   v7 checkpoint carries nonempty scenery damage
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+ok   checkpoint restores scenery damage
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+ok   older v7 checkpoint without optional damage restores empty state
+ok   checkpoint rejects a damage record for an absent proxy
+ok   malformed restore leaves simulation and damage atomic
+ok   checkpoint rejects nonfinite damage vectors
+ok   restored damaged flight continues exactly
+ok   test collision world installs
+aircraft data warning: inertia: Jyy = 0.3692 kg·m2 is 2.02× the scaled UltraStick25e value
+ok   test state reset succeeds
+ok   failed continuous projection discards staged damage
+ok   session reset clears committed scenery damage
+51 checks, 0 failed

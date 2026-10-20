@@ -1,0 +1,169 @@
+{
+	"actual_pixels": [
+		1920,
+		1080
+	],
+	"compact": false,
+	"controls": {
+		"AircraftPreview": {
+			"rect": [
+				50.0,
+				195.0,
+				1276.0,
+				730.0
+			],
+			"visible": true
+		},
+		"CloseWorkshop": {
+			"rect": [
+				1670.0,
+				48.0,
+				200.0,
+				48.4000015258789
+			],
+			"visible": true
+		},
+		"OpenLibrary": {
+			"rect": [
+				50.0,
+				134.0,
+				106.0,
+				49.0
+			],
+			"visible": true
+		},
+		"PreviewMotion": {
+			"rect": [
+				900.0,
+				206.0,
+				254.0,
+				34.4000015258789
+			]
+		},
+		"PreviewPlay": {
+			"rect": [
+				443.0,
+				206.0,
+				101.0,
+				34.4000015258789
+			]
+		},
+		"PreviewSmokeReset": {
+			"rect": [
+				548.0,
+				206.0,
+				122.0,
+				34.4000015258789
+			]
+		},
+		"PreviewWind": {
+			"rect": [
+				709.0,
+				206.0,
+				187.0,
+				34.4000015258789
+			]
+		},
+		"SaveVariant": {
+			"rect": [
+				1529.0,
+				972.0,
+				143.0,
+				66.0
+			],
+			"visible": true
+		},
+		"TestFly": {
+			"rect": [
+				1680.0,
+				972.0,
+				190.0,
+				66.0
+			],
+			"visible": true
+		},
+		"WorkshopColumns": {
+			"rect": [
+				50.0,
+				195.0,
+				1820.0,
+				765.0
+			],
+			"visible": true
+		},
+		"WorkshopPanel": {
+			"rect": [
+				24.0,
+				18.0,
+				1872.0,
+				1044.0
+			],
+			"visible": true
+		},
+		"WorkshopScroll": {
+			"rect": [
+				1350.0,
+				195.0,
+				520.0,
+				765.0
+			],
+			"visible": true
+		}
+	},
+	"dialog": "",
+	"dpi": 144,
+	"language": "en",
+	"logical_canvas": [
+		1920.0,
+		1080.0
+	],
+	"overflow": [],
+	"page": "smoke",
+	"preview": {
+		"comparison_original": false,
+		"geometry": {
+			"height_fraction": 0.0883412708693969,
+			"rect": [
+				547.062683105469,
+				313.078796386719,
+				181.878662109375,
+				60.6021118164063
+			],
+			"vertex_count": 143770,
+			"viewport": [
+				1276.0,
+				686.0
+			],
+			"width_fraction": 0.142538136449353
+		},
+		"mode": "inspect",
+		"pitch_deg": 0.0,
+		"rig_position": "(0.0, 0.0, 0.0)",
+		"smoke_budget": {
+			"budget_limit": 768,
+			"capacity": 768,
+			"configured": true,
+			"fault": "",
+			"show_emitters": 2,
+			"slot_particles": {
+				"show_wing_tip_left": 384,
+				"show_wing_tip_right": 384
+			},
+			"source_emitters": 0
+		},
+		"smoke_motion": "pass",
+		"smoke_tick": 720,
+		"standard_view": "side",
+		"yaw_deg": 90.0,
+		"zoom": 1.0
+	},
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"requested_pixels": [
+		1920,
+		1080
+	],
+	"scale": 1.0,
+	"screen_pixels": "(3840, 2160)",
+	"text_scale": 1.0,
+	"window_mode": 0
+}

@@ -4007,6 +4007,15 @@ msgstr "Vista previa visual · sin simulación de vuelo"
 msgid "Play smoke"
 msgstr "Reproducir humo"
 
+msgid "Stationary"
+msgstr "Estático"
+
+msgid "Illustrative pass"
+msgstr "Pasada ilustrativa"
+
+msgid "Six-second visual pass, then pause. No flight simulation. Changing motion clears the puffs."
+msgstr "Pasada visual de seis segundos y pausa. Sin simulación de vuelo. Cambiar el movimiento borra el humo."
+
 msgid "Pause smoke"
 msgstr "Pausar humo"
 
@@ -4501,3 +4510,36 @@ msgstr "Masa de origen: %.4f kg"
 
 msgid "Another session cleared the recovered draft. Automatic recovery will resume on your next edit."
 msgstr "Otra sesión eliminó el borrador recuperado. La recuperación automática continuará con tu próxima edición."
+
+msgid "Smaller"
+msgstr "Más pequeño"
+
+msgid "Larger"
+msgstr "Más grande"
+
+msgid "Tiny"
+msgstr "Diminuto"
+
+msgid "Large"
+msgstr "Grande"
+
+msgid "Reduce aircraft size one step."
+msgstr "Reduce el tamaño del avión un paso."
+
+msgid "Increase aircraft size one step."
+msgstr "Aumenta el tamaño del avión un paso."
+
+msgid "Set the aircraft to %s%% of its original size."
+msgstr "Ajusta el avión al %s%% de su tamaño original."
+
+msgid "The requested size is not a finite number."
+msgstr "El tamaño solicitado no es un número finito."
+
+msgid "The requested size could not be applied."
+msgstr "No se pudo aplicar el tamaño solicitado."
+
+msgid "Size: %s%% · wingspan: %s m"
+msgstr "Tamaño: %s%% · envergadura: %s m"
+
+msgid "Proposed size: %s%% · wingspan pending validation."
+msgstr "Tamaño propuesto: %s%% · envergadura pendiente de validación."

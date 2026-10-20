@@ -1,0 +1,207 @@
+{
+  "date": "2026-10-19",
+  "step": "AE-24b.2 / SM-15",
+  "result": "pass",
+  "scope": "Bounded moving Workshop preview; focused software checks and three native captures.",
+  "git_head_at_collection": "5e2fbe32da2531928f01164fc9923cde943918f9",
+  "shared_tree": true,
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "platform": "Windows",
+  "renderer": "Compatibility/OpenGL 3.3.0",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "driver": "617.42",
+  "preview": {
+    "ticks_per_second": 240,
+    "duration_ticks": 1440,
+    "distance_displayed_spans": 4,
+    "default_wind_m_s": [
+      0,
+      0,
+      1.5
+    ],
+    "native_capture_preset": "Twin Ribbons",
+    "native_capture_visual_seed": 0,
+    "headless_rates": [
+      30,
+      60,
+      144
+    ],
+    "headless_checks": 61,
+    "headless_reset_cycles": 20,
+    "particle_budget": 768
+  },
+  "commands": [
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_workshop_smoke_preview.gd"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_workshop_preview.gd"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_smoke_profiles.gd"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_workshop_smoke.gd"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_workshop_presentation.gd"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_workshop_ui.gd"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_workshop_thumbnails.gd"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\capture_workshop.gd",
+      "--",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-smoke-pass/pass-en.png",
+      "--scale=1",
+      "--1080p",
+      "--page=smoke",
+      "--smoke-preset=2",
+      "--smoke-motion=pass",
+      "--smoke-seconds=3"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\capture_workshop.gd",
+      "--",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-smoke-pass/pass-es.png",
+      "--language=es",
+      "--scale=1",
+      "--text-scale=2",
+      "--page=smoke",
+      "--preview",
+      "--smoke-preset=2",
+      "--smoke-motion=pass",
+      "--smoke-seconds=6"
+    ],
+    [
+      ".tools/Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-editor\\capture_workshop.gd",
+      "--",
+      "--out=C:/DEVELOPMENT/OpenRCsimulator/tmp/workshop-smoke-pass/pass-timber.png",
+      "--aircraft=turbo-lumber-evolution",
+      "--scale=1",
+      "--1080p",
+      "--page=smoke",
+      "--smoke-preset=2",
+      "--smoke-motion=pass",
+      "--smoke-seconds=3"
+    ],
+    [
+      "python",
+      "research/aircraft-standardization/build_customization.py",
+      "--check"
+    ],
+    [
+      "python",
+      "research/aircraft-editor/build_descriptors.py",
+      "--check"
+    ]
+  ],
+  "source_sha256": {
+    "app/ui/workshop_preview.gd": "2faec69ccb12b11a0d88a86ae259d1feb1f525a55b08d401b99366b3fc2f2bfe",
+    "app/tests/test_workshop_smoke_preview.gd": "222aec2855d92107053a93ab8cfc0caa3dc69d7f15109b8f09cf207f5a4c9047",
+    "research/aircraft-editor/capture_workshop.gd": "7149839b0db7f6a785cb9548ef2dd77b46c5f7064207147a9bcacdf3e4673baa",
+    "app/i18n/es.po": "03a9b5d2b0cf17dadf1b6a9da4458576e60af0d221bb488f555d776403b1e8ae",
+    "app/render/smoke/profile_smoke.gd": "2e4b6c1115a23e82f32621482c6e2b65fd3857b7a6729edd698e5ef6a9102547",
+    "app/render/smoke/profile_smoke_schedule.gd": "cac6ab86f90a2f889b5ae4ad3958de4e43826d47268523f665a182f2001cac7a",
+    "app/render/smoke/profile_process.gdshader": "d47865a4c0425ab58d8441aeba3923133c9742998492f0c165470e43b8bec8f1",
+    "app/render/aircraft_customization.gd": "bbfe087cff5111103e8327230d4d6e9a54b088fe9d814779b103105b1c80c64e",
+    "app/data/aircraft_customization.json": "886bb995bd9e2899b16652ee93fadecfa206121b459625f6885805245d1a1138"
+  },
+  "artifact_sha256": {
+    "preview.log": "70e5a0195d05c4490db9802126fe56777be0bf2f17e1407fa23898996478775f",
+    "generators.log": "d07b0b5bdf3382fd3b4f0e56f51df39c43d143d34385014ff7cb78f15e643254",
+    "test_workshop_preview.log": "6f9d8fab143761df586c17213f6c39eaefbaf80f8e1af7ad5b195829f13b947f",
+    "test_smoke_profiles.log": "53253313f09b0147e5890b45ccaf610ac58a59e18c28cb6927b63dc2b403b2a2",
+    "test_workshop_smoke.log": "45b6f8944b2929650eb898e6cb6de7e9d57f909ebe7f6e345c60d7597ee6881a",
+    "test_workshop_presentation.log": "cf2c6f7872c6f257c0a6f6a5c062f4b6d5aca84c743263775d21bdeafbba2b90",
+    "test_workshop_ui.log": "ffe37a8d6472059c1540b5e5e559ffac8f59cab8047251099353d4fc6d3df279",
+    "test_workshop_thumbnails.log": "2e9b1ee9fc6adb0588139c7615d215d472317c3455c6f47cbfc4c00158ad8dfa",
+    "pass-en.png": "b1b24408c9047bcbdbfbc900327a19bb4f41369fd3eebb56091fe3b7f163e3bc",
+    "pass-en.json": "4599ef539e76c5f9133e304ee86f54a8276f734b71216cb36319ad22baa581fd",
+    "pass-es.png": "df2298497997eb6ac07855fb8fee1ce26eb09448e142474267f1f3fd07e8161c",
+    "pass-es.json": "036d23eaaf26770c4c96a90fed32381028afb79a71e7ccaf71f5f32f456a410a",
+    "pass-timber.png": "4d40b054e2720a6e7f260bbbce70537791bad61add7d7492d14e7307069d17a7",
+    "pass-timber.json": "7cf6e7826527cccbb971c6488df4ff4bf05bd329aec3e94cce86e3d8d4a743de",
+    "capture-en.log": "d5bdbc8bf386f948610e9f033fbf642a55ab5a752c764249dd9b9a0ec9f00c99",
+    "capture-es.log": "7ee48fe0a6218f55e497a3156c2aeda5dc63504aa6fc078db91a2f48a5c5dbe0",
+    "capture-timber.log": "046117561ebc8bdc1a73d6108b9a4251ddc7c367424bdde111936ea76c532539"
+  },
+  "limits": [
+    "No full app/offline battery",
+    "No native memory or frame/GPU cost measurement",
+    "No cross-platform qualification",
+    "No full-plume framing or scrubber",
+    "No physical flight or emissions claim",
+    "Headless rate checks prove pose/tick agreement, not GPU pixel equality"
+  ]
+}

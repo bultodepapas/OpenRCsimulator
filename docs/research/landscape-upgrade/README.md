@@ -12,6 +12,7 @@ The installed target is Godot **4.7.2**, Compatibility/OpenGL. This index points
 | LU-04/06 | [Final native screenshots, glare checks, frame measurements and regression results](LU-06/README.md) |
 | LU-05 | [Swept scenery collision, responses, checkpoints and cost](LU-05/collision-report.md) |
 | LU-07–10 | [Connected crowns, gravel shoulders, service details, marker optics and detector optimization](LU-07/README.md) |
+| LU-10-R1 | [Empty hull-envelope query repair, oracle parity and separate session limits](LU-10-R1/README.md); full-flight cost acceptance remains open |
 | LU-11–14 | [Filtered gravel, construction details, twilight palette, collision coverage, native evidence and cost](LU-11/README.md); [resources/licenses](LU-11/resources.md) |
 | LU-15 | [Review of 14 native images and selection of the next upgrades](LU-15/README.md); followed by the implementation below |
 | LU-16–20 | [Image-led horizon, vegetation, ground and lighting refinements](LU-16/README.md) |

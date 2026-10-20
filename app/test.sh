@@ -16,20 +16,24 @@ GODOT="$("$HERE/get-godot.sh")"
 run_with_timeout() {
   local timeout_seconds="$1"
   shift
-  timeout "$timeout_seconds" "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"
+  python3 "$HERE/../tools/godot/run_checked.py" --timeout "$timeout_seconds" \
+    --out-dir "${OPENRC_CHECK_OUT:-$HERE/../tmp/godot-checks}" \
+    -- "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"
 }
 run() { run_with_timeout 60 "$@"; }
 
 # L6a imports the runtime PNG before tests; a clean checkout has no editor cache.
 IMPORT_LOG="$(mktemp)"
 echo "== import resource dependencies"
-if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --import > "$IMPORT_LOG" 2>&1 \
-  || grep -qE "^(SCRIPT |SHADER )?ERROR:" "$IMPORT_LOG"; then
+if ! run_with_timeout 180 --import > "$IMPORT_LOG" 2>&1; then
   cat "$IMPORT_LOG"; rm -f "$IMPORT_LOG"; exit 1
 fi
 rm -f "$IMPORT_LOG"
 
 if [[ "$TEST_PART" != units ]]; then
+echo "== PT1h-R1: real-engine diagnostic failure matrix"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../tools/godot/test_run_checked.py" NativeGodotTests
+
 echo "== HELI-03a/04: independent mean-inflow reference stays current"
 python3 "$HERE/../research/helicopter/reference/test_johnson_inflow.py"
 python3 "$HERE/../research/helicopter/reference/make_oracle.py" --check
@@ -252,8 +256,8 @@ for t in "$HERE"/tests/test_*.gd; do
     test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
-  # Godot reports runtime script errors without failing the run; treat any as a failure.
-  if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
+  # run_with_timeout checks every invocation for engine/script/shader errors,
+  # including errors printed with a successful process exit.
 done
 
 echo "== unit partition $UNIT_SHARD/$UNIT_SHARDS: $selected_units of $unit_index scripts"

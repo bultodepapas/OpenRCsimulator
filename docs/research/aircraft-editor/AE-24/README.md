@@ -52,8 +52,27 @@ Each PNG has an adjacent geometry JSON. Captures use a separate empty library an
 
 ## Remaining acceptance
 
-Patterns/decals and spinner/prop accents, rotorcraft editing, moving preview passes/scrub, bounded thumbnails and explicit migrations remain planned. Thumbnail production needs a separate cancellable renderer; reusing the interactive preview would replace the active draft/camera. Native dense overlap/frame/GPU cost, platform/export journeys, hardware/accessibility/playtests, wider scale/refinement, twenty-airframe onboarding and source-backed mass/CG/hardware editing remain open.
+Patterns/decals and spinner/prop accents, rotorcraft editing, preview scrub and explicit migrations remain planned. Subsequent [AE-24d.1](../AE-24d-1/README.md) delivered isolated bounded thumbnails; the moving-pass follow-up below extends playback. Native dense overlap/frame/GPU cost, platform/export journeys, hardware/accessibility/playtests, wider scale/refinement, twenty-airframe onboarding and source-backed mass/CG/hardware editing remain open.
 
 The final [CLI teardown log](analysis/cli-final.log) reports four retained audio stream/playback objects (MP3/WAV), including with `--soundscape=off` and the Dummy driver. Empty-profile controls also reproduced audio retention. This is an unresolved audio teardown gap, separate from the passing GPU particle lifecycle probes. Accepted-source gating and the global smoke-off route have focused follow-up coverage.
 
 An initial scale probe was rejected as evidence because it checked flyability after a fallback instead of the committed requested start. Only the authentic `WorkshopStartQualification` suite and its explicit accepted-route assertions support the runway statements above.
+
+## Moving preview pass (AE-24b.2 / SM-15)
+
+2026-10-19 follow-up. [Current behavior](../../../AIRCRAFT-WORKSHOP.md#using-the-workshop) adds a temporary six-second straight pass with whole-aircraft-path framing. The existing model pivot supplies authored world-space emitter transforms; the smoke rig remains a sibling, so residual puffs do not follow the airplane. No renderer/shader, physical recipe, source binding, simulation or golden flight changed. Original comparison now pauses playback and disables Play; scale changes clear residual history before moving the mounts.
+
+Evidence and exact commands are identified in [moving-pass/verification.json](moving-pass/verification.json). Native setup: Godot 4.7.2 `ed1daf0bf`, Windows Compatibility/OpenGL, NVIDIA RTX 3090, driver 617.42.
+
+| Check | Result and scope |
+| --- | --- |
+| [Preview integration](moving-pass/preview.log) | 61 checks, zero failures. Four authored show/source mounts resolve with one parent translation; 30/60/144 presented-delta tapes reach ticks 720/1440 and the same poses. Pause, completion/replay, hide, Original/Draft, invalid/long deltas and profile removal are covered. Front/Side/Top fit passes at 50/100/200% scale and start/mid/end. Twenty mode/play/reset cycles retain four pools, 768 particles and empty history after reset. These are headless state/resource checks, not native GPU memory or pixel equivalence. |
+| Existing focused suites | Preview inspection, profile smoke (36), flight smoke integration (12), presentation (52), Workshop UI and thumbnails (45) pass. Logs are retained beside the manifest. No script/runtime errors in the final logs. |
+| Generator checks | Five-family customization bindings and eight physical descriptors pass `--check` without regeneration. |
+| [English Stik midpoint](moving-pass/pass-en.png) | 1920×1080, 100% text/model, Twin Ribbons at tick 720. Moving wake visible; controls and model inspected. |
+| [Spanish Stik endpoint](moving-pass/pass-es.png) | 1280×720, 200% text, expanded preview, tick 1440. Endpoint remains framed, playback is paused, and the motion/wind controls wrap within the preview. |
+| [Electric Timber midpoint](moving-pass/pass-timber.png) | 1920×1080, 100% model, authored show endpoints at tick 720. No engine-exhaust claim. |
+
+Each capture has a geometry/clock/allocation sidecar; all report zero control overflow. Native captures use the real isolated Workshop renderer and an empty capture library. The default pass selects Side for readability. Framing covers the aircraft's whole path, not every drifting puff; smoke can leave the viewport, and these narrow ribbon examples show discrete puffs. Dense-overlap quality, broader material/shape/fleet coverage, rotated moving passes, wind-plume framing, scrubber, measured total cost and other platforms remain open. The 30/60/144 checks establish CPU pose/tick agreement; native GPU history retains the separate baseline evidence above.
+
+An initial test fixture used non-string dictionary keys and was correctly refused by the renderer; it was corrected to the canonical string-key profile before acceptance. An exploratory Timber 50% capture exposed the existing physical recipe refusal/fallback and was excluded; the accepted Timber capture explicitly requests 100%. No flyability or scale qualification is inferred from these captures. The full app/offline regression battery was not run. Other tracks changed unrelated files during this work; the manifest pins only this slice, not a frozen release checkout.

@@ -297,16 +297,30 @@ static func write_row(file: FileAccess, row: Dictionary, dt: float, _first_tick:
 	file.store_csv_line(values)
 
 
+static func write_report_file(path: String, encoded: String) -> Error:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		var open_error: Error = FileAccess.get_open_error()
+		return open_error if open_error != OK else ERR_FILE_CANT_OPEN
+	var stored: bool = file.store_string(encoded)
+	file.flush()
+	var write_error: Error = file.get_error()
+	file.close()
+	if not stored and write_error == OK:
+		write_error = ERR_FILE_CANT_WRITE
+	return write_error
+
+
 func _finish(error: String) -> void:
 	report.error = error
 	report.status = "ok" if error.is_empty() else "error"
 	if typeof(options.get("report")) == TYPE_STRING and not FileAccess.file_exists(options.report):
-		var file := FileAccess.open(options.report, FileAccess.WRITE)
-		if file != null:
-			file.store_string(JSON.stringify(report, "\t", true, true) + "\n")
-			file.close()
-		else:
-			error = "Cannot write report."
+		var encoded: String = JSON.stringify(report, "\t", true, true) + "\n"
+		var write_error: Error = write_report_file(str(options.report), encoded)
+		if write_error != OK:
+			error = "Cannot write report %s: %s (error %d)." % [str(options.report), error_string(write_error), write_error]
+			report.error = error
+			report.status = "error"
 	if not error.is_empty(): printerr(error)
 	else: print("Flight log %s: %d rows verified." % [report.mode, report.rows])
 	quit(0 if error.is_empty() else 1)

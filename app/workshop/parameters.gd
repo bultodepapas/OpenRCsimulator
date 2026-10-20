@@ -1,8 +1,10 @@
 extends RefCounted
 class_name WorkshopParameters
 
-const MIN_SCALE := 0.5
-const MAX_SCALE := 2.0
+## AE-23a: bounded virtual scale. The complete aircraft validator and selected
+## start qualification still decide which parameter combinations can fly.
+const MIN_SCALE := 0.35
+const MAX_SCALE := 2.25
 const MIN_WEIGHT_MULTIPLIER := 0.5
 const MAX_WEIGHT_MULTIPLIER := 2.0
 const MIN_POWER_MULTIPLIER := 0.5

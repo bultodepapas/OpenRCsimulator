@@ -24,6 +24,7 @@ signal trial_requested(payload: Dictionary)
 const LAYER := 20
 const VARIANT_ROOT := "user://aircraft_variants"
 const FACTOR_STEP := 0.05
+const SCALE_STEP_RATIO := 1.1
 const HISTORY_LIMIT := 32
 const SCALE_OPTIONS := [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 var _factor_capabilities: Dictionary = {}
@@ -166,6 +167,10 @@ var _delete_button: Button
 var _restore_button: Button
 var _last_deleted_id := ""
 var _scale_selector: OptionButton
+var _scale_smaller_button: Button
+var _scale_larger_button: Button
+var _scale_shortcut_buttons: Array[Button] = []
+var _scale_readout: Label
 var _mass_policy_selector: OptionButton
 var _factor_sliders: Dictionary = {}
 var _factor_values: Dictionary = {}
@@ -677,8 +682,8 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	_scale_selector.name = "Scale"
 	_scale_selector.focus_mode = Control.FOCUS_ALL
 	_scale_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for scale: float in SCALE_OPTIONS:
-		_scale_selector.add_item("%d%%" % roundi(scale * 100.0))
+	for scale: float in _scale_option_values():
+		_scale_selector.add_item(String.num(scale * 100.0, 4) + "%")
 		_scale_selector.set_item_metadata(_scale_selector.item_count - 1, scale)
 	_scale_selector.item_selected.connect(_on_scale_selected)
 	selector_grid.add_child(_scale_selector)
@@ -696,6 +701,47 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	_mass_policy_selector.tooltip_text = tr("Constant wing loading preserves wing loading as size changes. Geometric scales mass with volume.")
 	selector_grid.add_child(_mass_policy_selector)
 	content.add_child(selector_grid)
+
+	var scale_steps := HBoxContainer.new()
+	scale_steps.name = "ScaleSteps"
+	scale_steps.add_theme_constant_override("separation", 8)
+	_scale_smaller_button = _button("Smaller", "", "ScaleSmaller")
+	_scale_smaller_button.tooltip_text = tr("Reduce aircraft size one step.")
+	_scale_smaller_button.pressed.connect(_step_scale.bind(-1))
+	_scale_smaller_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scale_steps.add_child(_scale_smaller_button)
+	_scale_larger_button = _button("Larger", "", "ScaleLarger")
+	_scale_larger_button.tooltip_text = tr("Increase aircraft size one step.")
+	_scale_larger_button.pressed.connect(_step_scale.bind(1))
+	_scale_larger_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scale_steps.add_child(_scale_larger_button)
+	content.add_child(scale_steps)
+
+	var shortcut_row := HFlowContainer.new()
+	shortcut_row.name = "ScaleShortcuts"
+	shortcut_row.add_theme_constant_override("h_separation", 6)
+	shortcut_row.add_theme_constant_override("v_separation", 6)
+	var shortcut_group := ButtonGroup.new()
+	var shortcut_scales: Array[float] = []
+	for shortcut: Dictionary in _scale_shortcut_specs():
+		var shortcut_scale := float(shortcut.scale)
+		if not _within_scale_bounds(shortcut_scale) or shortcut_scales.has(shortcut_scale):
+			continue
+		shortcut_scales.append(shortcut_scale)
+		var shortcut_button := _button(str(shortcut.label), "", "Scale" + str(shortcut.key))
+		shortcut_button.toggle_mode = true
+		shortcut_button.button_group = shortcut_group
+		shortcut_button.set_meta("scale_value", shortcut_scale)
+		shortcut_button.tooltip_text = tr("Set the aircraft to %s%% of its original size.") % String.num(shortcut_scale * 100.0, 4)
+		shortcut_button.pressed.connect(_apply_scale.bind(shortcut_scale))
+		shortcut_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		shortcut_row.add_child(shortcut_button)
+		_scale_shortcut_buttons.append(shortcut_button)
+	content.add_child(shortcut_row)
+
+	_scale_readout = _label("", "SecondaryLabel", true)
+	_scale_readout.name = "ScaleReadout"
+	content.add_child(_scale_readout)
 
 	var factor_hint := _label("1× keeps the original value. Changes apply to a new trial flight.", "SecondaryLabel", true)
 	content.add_child(factor_hint)
@@ -1227,12 +1273,122 @@ func _on_variant_name_changed(_text: String) -> void:
 func _on_scale_selected(index: int) -> void:
 	if _syncing_controls or _base.is_empty():
 		return
-	if _recipe.get("scale", 1.0) == _scale_selector.get_item_metadata(index):
+	if index < 0 or index >= _scale_selector.item_count:
+		return
+	_apply_scale(float(_scale_selector.get_item_metadata(index)))
+
+
+func _step_scale(direction: int) -> void:
+	if direction == 0:
+		return
+	var current := float(_recipe.get("scale", 1.0))
+	var next := current * SCALE_STEP_RATIO if direction > 0 else current / SCALE_STEP_RATIO
+	_apply_scale(next)
+
+
+func _apply_scale(requested_scale: float) -> void:
+	if _syncing_controls or _base.is_empty() or not bool(_capabilities.get("scale", false)):
+		return
+	if not is_finite(requested_scale):
+		set_note("The requested size is not a finite number.")
+		return
+	var bounded_scale := clampf(requested_scale, Parameters.MIN_SCALE, Parameters.MAX_SCALE)
+	var proposed_recipe := _recipe.duplicate(true)
+	proposed_recipe["scale"] = bounded_scale
+	var checked: Dictionary = Parameters.validate(proposed_recipe)
+	if not bool(checked.get("ok", false)):
+		set_note(_messages(checked.get("errors", []), "The requested size could not be applied."))
+		return
+	var accepted_scale := float(checked.values.get("scale", bounded_scale))
+	if float(_recipe.get("scale", 1.0)) == accepted_scale:
 		return
 	_capture_undo()
-	_recipe["scale"] = float(_scale_selector.get_item_metadata(index))
+	_recipe["scale"] = accepted_scale
+	_sync_scale_controls()
 	_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
+
+
+func _scale_option_values() -> Array[float]:
+	var values: Array[float] = []
+	for candidate: float in SCALE_OPTIONS:
+		if _within_scale_bounds(candidate) and not values.has(candidate):
+			values.append(candidate)
+	for endpoint: float in [Parameters.MIN_SCALE, Parameters.MAX_SCALE]:
+		if _within_scale_bounds(endpoint) and not values.has(endpoint):
+			values.append(endpoint)
+	var current := float(_recipe.get("scale", 1.0))
+	if is_finite(current) and not values.has(current):
+		values.append(current)
+	values.sort()
+	return values
+
+
+func _within_scale_bounds(scale: float) -> bool:
+	return is_finite(scale) and scale >= Parameters.MIN_SCALE and scale <= Parameters.MAX_SCALE
+
+
+func _scale_shortcut_specs() -> Array[Dictionary]:
+	var mini_scale := 0.5
+	if not _within_scale_bounds(mini_scale) or mini_scale <= Parameters.MIN_SCALE:
+		mini_scale = -1.0
+		for candidate: float in SCALE_OPTIONS:
+			if _within_scale_bounds(candidate) and candidate > Parameters.MIN_SCALE and candidate < 1.0:
+				mini_scale = candidate
+				break
+		if mini_scale < 0.0:
+			mini_scale = (Parameters.MIN_SCALE + 1.0) * 0.5
+	var large_scale := 1.5
+	if not _within_scale_bounds(large_scale) or large_scale >= Parameters.MAX_SCALE:
+		large_scale = -1.0
+		for candidate: float in SCALE_OPTIONS:
+			if _within_scale_bounds(candidate) and candidate > 1.0 and candidate < Parameters.MAX_SCALE:
+				large_scale = candidate
+		if large_scale < 0.0:
+			large_scale = (1.0 + Parameters.MAX_SCALE) * 0.5
+	return [
+		{"key": "Tiny", "label": "Tiny", "scale": Parameters.MIN_SCALE},
+		{"key": "Mini", "label": "Mini", "scale": mini_scale},
+		{"key": "Original", "label": "Original", "scale": 1.0},
+		{"key": "Large", "label": "Large", "scale": large_scale},
+		{"key": "Giant", "label": "Giant", "scale": Parameters.MAX_SCALE},
+	]
+
+
+func _sync_scale_controls() -> void:
+	if not is_instance_valid(_scale_selector) or _recipe.is_empty():
+		return
+	var current := float(_recipe.get("scale", 1.0))
+	_scale_selector.clear()
+	var selected_index := -1
+	for scale: float in _scale_option_values():
+		_scale_selector.add_item(String.num(scale * 100.0, 4) + "%")
+		var index := _scale_selector.item_count - 1
+		_scale_selector.set_item_metadata(index, scale)
+		if scale == current:
+			selected_index = index
+	if selected_index >= 0:
+		_scale_selector.select(selected_index)
+	var supported := bool(_capabilities.get("scale", false))
+	_scale_selector.disabled = not supported
+	var effective_scale := _preview_scale()
+	_scale_smaller_button.disabled = not supported or effective_scale <= Parameters.MIN_SCALE
+	_scale_larger_button.disabled = not supported or effective_scale >= Parameters.MAX_SCALE
+	for button: Button in _scale_shortcut_buttons:
+		var shortcut_scale := float(button.get_meta("scale_value", -1.0))
+		button.set_pressed_no_signal(supported and is_equal_approx(effective_scale, shortcut_scale))
+		button.disabled = not supported
+
+
+func _refresh_size_readout() -> void:
+	if not is_instance_valid(_scale_readout):
+		return
+	var size_percent := String.num(_preview_scale() * 100.0, 4)
+	var summary: Dictionary = _compiled.get("summary", {})
+	if bool(_compiled.get("ok", false)) and summary.has("wing_span_m"):
+		_scale_readout.text = tr("Size: %s%% · wingspan: %s m") % [size_percent, String.num(float(summary.wing_span_m), 4)]
+	else:
+		_scale_readout.text = tr("Proposed size: %s%% · wingspan pending validation.") % size_percent
 
 
 func _on_mass_policy_selected(index: int) -> void:
@@ -1398,17 +1554,7 @@ func _sync_controls() -> void:
 		return
 	_syncing_controls = true
 	_preset_selector.select(0)
-	var scale := float(_recipe.get("scale", 1.0))
-	while _scale_selector.item_count > SCALE_OPTIONS.size():
-		_scale_selector.remove_item(_scale_selector.item_count - 1)
-	if scale not in SCALE_OPTIONS:
-		_scale_selector.add_item(String.num(scale * 100.0, 4) + "%")
-		_scale_selector.set_item_metadata(_scale_selector.item_count - 1, scale)
-	for index in _scale_selector.item_count:
-		if float(_scale_selector.get_item_metadata(index)) == scale:
-			_scale_selector.select(index)
-			break
-	_scale_selector.disabled = not bool(_capabilities.get("scale", false))
+	_sync_scale_controls()
 	var policy := str(_recipe.get("mass_policy", "constant_wing_loading"))
 	for index in _mass_policy_selector.item_count:
 		if str(_mass_policy_selector.get_item_metadata(index)) == policy:
@@ -1479,6 +1625,7 @@ func _compile_recipe() -> void:
 		_compiled = {"ok": false, "errors": ["Load an aircraft with valid flight data first."], "summary": {}}
 	else:
 		_compiled = Compiler.compile(_base.duplicate(true), _recipe.duplicate(true))
+	_refresh_size_readout()
 	var valid := bool(_compiled.get("ok", false))
 	_trial_button.disabled = not valid or not _edit_valid()
 	var compiled_data: Dictionary = _compiled.get("data", {})

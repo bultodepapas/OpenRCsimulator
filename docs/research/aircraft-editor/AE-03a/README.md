@@ -34,13 +34,15 @@ Cleanup verifies the normalized store/staging paths and matching live reservatio
 
 | Check | Result | Evidence |
 | --- | --- | --- |
-| Focused staging suite, including actual Windows open-file removal refusal/retry | 157 checks, 0 failed | [Final focused run](staging/checks/staging-io.log); [earlier 151-check draft](staging/checks/staging-draft.log) |
+| Focused staging suite, including actual Windows open-file removal refusal/retry | 157 checks, 0 failed | [Final focused run](staging/checks/workshop/test_workshop_staging.log); [earlier 151-check draft](staging/checks/staging-draft.log) |
 | Handled save-boundary matrix with explicit staging assertions | 35 cases, 806 checks, 0 failed | [Default run](staging/checks/workshop/test_workshop_store_interruptions.log) |
 | Abrupt native Windows writer termination | 35 cases, 1,086 checks, 0 failed | [Process run](staging/checks/native-process-cuts.log) |
 
 The focused suite covers complete/partial known layouts, the eight-entry boundary and refusal beyond it, every link location from store ancestor to revisions, absent/busy/mismatched reservations, wrong roots and published-path refusal. Injected revision/manifest readback corruption exercises the actual save error path. An unexpected-file case deliberately emits the retained-data warning and verifies every byte survives; older unrelated stages remain untouched. A held Windows file handle exercises a real removal error, followed by successful cleanup after release. The additional six checks were added after the original 151-check run; that original log is retained.
 
 A read-only second review found no concrete issues in the cleanup, reservation lifetime or initial safety tests. This was code review, not an additional test execution. The [cleanup verification receipt](staging/verification.json) records the final source hashes and run scope separately from the original baseline receipt.
+
+All **26 Workshop suites** passed with no engine errors. Native editor import, all eight generated descriptor checks and [all 1,111 script parse checks](staging/checks/parse-all.log) passed. The final focused rerun includes the six added Windows open-handle checks; the other Workshop suites and product storage source remained unchanged. This remains software verification on the recorded native Windows setup.
 
 ## Reproduce
 

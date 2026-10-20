@@ -1,0 +1,22 @@
+import pathlib
+import shutil
+import subprocess
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SCRATCH = pathlib.Path(__file__).resolve().parent
+OUT = ROOT / 'docs/research/visual-quality-implementation/VQ-01c/loading/stars'
+app = SCRATCH / 'reference-app'
+if app.exists():
+    raise RuntimeError('reference app must be a new snapshot')
+shutil.copytree(ROOT / 'app', app, ignore=shutil.ignore_patterns('.godot', 'assets', 'captures'))
+for name in ('assets', '.godot'):
+    subprocess.run(['cmd', '/c', 'mklink', '/J', str(app / name), str(ROOT / 'app' / name)],
+                   capture_output=True, check=True)
+shutil.copyfile(SCRATCH / 'reference.gd', app / 'render/world/stars.gd')
+for test in ('test_world_sky', 'test_sky_checkpoint'):
+    p = subprocess.run([str(ROOT / '.tools/Godot_v4.7.2-stable_win64_console.exe'),
+                        '--headless', '--path', str(app), '--audio-driver', 'Dummy',
+                        '--script', f'res://tests/{test}.gd'],
+                       capture_output=True, text=True, timeout=180)
+    (OUT / f'reference-{test}.log').write_text(p.stdout + p.stderr, encoding='utf-8')
+    print(test, p.returncode, (p.stdout + p.stderr)[-1200:], flush=True)

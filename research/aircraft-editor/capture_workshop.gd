@@ -14,12 +14,14 @@ func _run() -> void:
 	var page := "setup"
 	var dialog := ""
 	var preview_only := false
+	var size_controls := false
 	var fullscreen := false
 	var invalid := false
 	var long_name := false
 	var aircraft_id := ""
 	var smoke_preset := -1
 	var smoke_seconds := 0.0
+	var smoke_motion := "stationary"
 	var paint_color := ""
 	var marking := ""
 	var library_build := ""
@@ -36,6 +38,7 @@ func _run() -> void:
 		if argument.begins_with("--page="): page = argument.trim_prefix("--page=")
 		if argument.begins_with("--dialog="): dialog = argument.trim_prefix("--dialog=")
 		if argument == "--preview": preview_only = true
+		if argument == "--size-controls": size_controls = true
 		if argument == "--fullscreen": fullscreen = true
 		if argument == "--invalid": invalid = true
 		if argument == "--long-name": long_name = true
@@ -44,11 +47,16 @@ func _run() -> void:
 		if argument.begins_with("--aircraft="): aircraft_id = argument.trim_prefix("--aircraft=")
 		if argument.begins_with("--smoke-preset="): smoke_preset = argument.trim_prefix("--smoke-preset=").to_int()
 		if argument.begins_with("--smoke-seconds="): smoke_seconds = clampf(argument.trim_prefix("--smoke-seconds=").to_float(), 0.0, 16.0)
+		if argument.begins_with("--smoke-motion="): smoke_motion = argument.trim_prefix("--smoke-motion=")
 		if argument.begins_with("--paint-color="): paint_color = argument.trim_prefix("--paint-color=")
 		if argument.begins_with("--marking="): marking = argument.trim_prefix("--marking=")
 		if argument.begins_with("--library-build="): library_build = argument.trim_prefix("--library-build=")
 		if argument == "--favorite": favorite = true
 		if argument == "--1080p": pixels = Vector2i(1920, 1080)
+	if smoke_motion not in ["stationary", "pass"]:
+		push_error("Unknown smoke preview motion: " + smoke_motion)
+		quit(1)
+		return
 	root.size = pixels
 	if fullscreen: root.mode = Window.MODE_FULLSCREEN
 	await process_frame
@@ -88,13 +96,14 @@ func _run() -> void:
 	for frame in 12: await process_frame
 	if smoke_seconds > 0.0:
 		var smoke_preview: Node = workshop.get("_preview")
+		smoke_preview.set_motion_mode(smoke_motion)
 		smoke_preview.set_standard_view("side")
 		smoke_preview.toggle_playback()
 		smoke_preview.set_process(false)
 		for frame in ceili(smoke_seconds * 60.0):
 			smoke_preview.call("_process", 1.0 / 60.0)
 			await process_frame
-		smoke_preview.toggle_playback()
+		if smoke_preview.get("_playing"): smoke_preview.toggle_playback()
 	if not library_build.is_empty():
 		var imported: Dictionary = load("res://workshop/bundle.gd").import_file(library_build, workshop.variants_root)
 		if not imported.ok:
@@ -122,6 +131,9 @@ func _run() -> void:
 		workshop.set_recipe({weight_multiplier = 0.731})
 		workshop.request_navigation("Back to Home", func() -> void: pass)
 	for frame in 6: await process_frame
+	if size_controls:
+		var size_scroll: ScrollContainer = workshop.get("_body_scroll")
+		size_scroll.ensure_control_visible(workshop.find_child("ScaleReadout", true, false))
 	if not fixture_id.is_empty() and dialog == "library":
 		var scroll: ScrollContainer = workshop.get("_library_dialog").find_child("LibraryScroll", true, false)
 		scroll.ensure_control_visible(workshop.get("_favorite_button"))
@@ -137,7 +149,7 @@ func _run() -> void:
 		dpi = DisplayServer.screen_get_dpi(), window_mode = root.mode, language = language,
 		text_scale = text_scale, scale = requested_scale, page = page, dialog = dialog,
 		compact = workshop.get("_compact"), controls = {}, overflow = [], renderer = RenderingServer.get_video_adapter_name()}
-	for control_name: String in ["WorkshopPanel", "CloseWorkshop", "OpenLibrary", "TestFly", "SaveVariant", "WorkshopColumns", "AircraftPreview", "WorkshopScroll"]:
+	for control_name: String in ["WorkshopPanel", "CloseWorkshop", "OpenLibrary", "TestFly", "SaveVariant", "WorkshopColumns", "AircraftPreview", "WorkshopScroll", "Scale", "ScaleSmaller", "ScaleLarger", "ScaleTiny", "ScaleMini", "ScaleOriginal", "ScaleLarge", "ScaleGiant", "ScaleReadout"]:
 		var control := workshop.find_child(control_name, true, false) as Control
 		if control == null: continue
 		var rect := control.get_global_rect()
@@ -147,7 +159,17 @@ func _run() -> void:
 			if not Rect2(Vector2.ZERO, logical).encloses(rect): evidence.overflow.append(control_name)
 	var preview: Control = workshop.get("_preview")
 	evidence.preview = preview.call("get_view_state")
+	evidence.preview.smoke_motion = preview.get("_motion_mode")
+	evidence.preview.smoke_tick = preview.get("_playhead_tick")
+	evidence.preview.rig_position = str(preview.get("_rig").position)
+	evidence.preview.smoke_budget = preview.get("_smoke").budget_info() if is_instance_valid(preview.get("_smoke")) else {}
 	evidence.preview.geometry = _projected_geometry(preview)
+	for control_name: String in ["PreviewPlay", "PreviewSmokeReset", "PreviewWind", "PreviewMotion"]:
+		var control := preview.find_child(control_name, true, false) as Control
+		if control != null and control.is_visible_in_tree():
+			var rect := control.get_global_rect()
+			evidence.controls[control_name] = {rect = [rect.position.x, rect.position.y, rect.size.x, rect.size.y]}
+			if not preview.get_global_rect().encloses(rect): evidence.overflow.append(control_name)
 	for key: String in ["_library_dialog", "_name_dialog", "_guard_dialog", "_bundle_dialog", "_transfer_dialog"]:
 		var popup: Window = workshop.get(key)
 		if is_instance_valid(popup) and popup.visible:

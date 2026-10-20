@@ -99,6 +99,23 @@ Only focused regressions and editor import were run, not the entire cross-platfo
 CI/export matrix. PlotJuggler native import, exported-package logging qualification,
 3D playback and physical/pilot acceptance remain outside this evidence.
 
+## FL-04-R1 — analysis report write failures (2026-10-19)
+
+The native CLI previously checked report creation but ignored the result of
+`store_string()` and flush errors. It now checks both, returns a nonzero process
+status on failure and reports the output path and filesystem error. Success text
+is emitted only after the write check. A failed destination may retain partial
+JSON; process status remains mandatory when accepting a report.
+
+The focused [report-writer regression](../../../../app/tests/test_flight_log_report_write.gd)
+passes on native Windows and WSL Linux with Godot 4.7.2. It covers complete JSON,
+directory/file-as-parent failures, the actual CLI failure exit and a disposable
+successful-analysis fixture whose final report cannot be written. Linux also
+checks `/dev/full` to exercise failure after opening a writable destination.
+Focused reruns also passed the existing flight-log suite (3,247 checks, zero failures)
+and all 14 Python tool tests. No solver, recorded baseline or aircraft data changed.
+Usage and the partial-report boundary live in the [manual](../../../FLIGHT-LOGGING.md).
+
 ## References
 
 Primary documentation and project sources checked on 2026-10-14:
