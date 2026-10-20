@@ -96,6 +96,8 @@ func _run() -> void:
 		reference_builder = func() -> void:
 			_build_plain_reference(parent, loaded.field, snapshot, str(args.plain_reference))
 	var built := World.build(parent, loaded.field, reference_builder, {}, snapshot)
+	if reference_builder.is_valid():
+		built.field = parent.get_node("Field")
 	var lake: Node3D = built.field.get_node_or_null("Lake")
 	var lake_diagnostics := {}
 	if lake != null:

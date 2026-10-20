@@ -574,3 +574,13 @@ chunk LOD because the probe changed shared edge segments and transition
 thresholds. This replaces R1's 12,288-triangle limit with a measured bounded
 increase, adding no draw calls, shadow passes or terrain frame callbacks.
 [Sources, LOD probe and repeated native measurements](research/landscape-upgrade/LU-16-R2/README.md).
+
+### 2026-10-20 — Bake agricultural surfaces and reuse bounded scenery assets (LU-28)
+
+Keep cultivated parcels and connected roads in an offline-generated visual
+mesh, with spatial cells, a shared scene-local material and filtered metre-scale
+markings. Reuse retained structures/animals and downloaded photographs; use
+low shrub crop rows instead of exceeding the existing scenery triangle budget
+with twelve additional trees. Share shrub dimensions between rendering and
+collision proxies. The visual road surface does not add heightfield or tire
+physics. [Research, native evidence and limits](research/landscape-upgrade/LU-28/README.md).
